@@ -1,145 +1,118 @@
-Return-Path: <linux-kernel+bounces-73456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3EC85C2CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:38:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC90985C2CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B740D1F233CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:38:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79F71282F88
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA85076C98;
-	Tue, 20 Feb 2024 17:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560D477632;
+	Tue, 20 Feb 2024 17:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="c4fF2e3o"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mlHoopGF"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9541277632
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236B177F0E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708450684; cv=none; b=mbVqKm+HtjAOwRZ1obBaC3IO1ebSYWrEEBHq3sYo8UjiIwKKv+8GRqt8iMjPeOdFSfJSsesSftVPOQglFj6HxpDsCxyTPTVuRZbkALzHv/yUAfWDzL3p06pL4xGO3jdtp7BtjKqkGVPTEE9DBpn00A6pa/W2wNfmBAho6GW2k98=
+	t=1708450665; cv=none; b=N0vUp9T/rGw/Ul8RIAoMAwFaX+UR4rOL84p8sr3uRzyFFTesjR1+LV72LWDVhGYJJH/gDIYYKz1ltDLD+UowJPGgnndOoXcMHctD3jKv0w9jlsnnJXiu0WpR4XUVE+Wq/j+Q5rBaTOoCiOw46G6I482NaMKmg+XRiawgzDFMnio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708450684; c=relaxed/simple;
-	bh=chjHpOYI/dE8bwRfCd075t2HYI1qV4j36wPFpA4IeJU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cAoc0YwWpCObZmXGk5z0m+yqlLWU0xN7M0uYaf4ZuZja6aHymuSrD8kyTZJd5B79f50hcoK1ey7HLYb+GY+ZwzYEpbusWbEMLYauNYkR+gAa+sxNjY5r3T4jDKAYJgkn4BGo/5B4KRVszzuis454srsRO5W6DzRbjndmMsbJTuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=c4fF2e3o; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KEfweJ020497;
-	Tue, 20 Feb 2024 17:37:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=p0D1qsOzFR10TiLIZJjIoMBY5kcbdzXOoGhUqlF4COU=; b=c4
-	fF2e3oKqnSwDQM9DHgUKV4p9CzwMAUXXwHmDZEq+576r4/MRXoYzX63Bz95FLYAP
-	DdcQzsp9/8EljJ1Fu3rV/TbNm+ZqD+RXAoxXdYwUeu1hhipokzunMklaSf9V277H
-	/Pd0xnwWRoYm9L3STBf2eFgl3Xhe8pKyxCg4cb8496wsXIo8gowo7KcIB/bMpYDA
-	KPhKDdr6DNbXB5Hoybe8LjX4JTLMDLpkBGUIL1GaU/dZHOfi+AFWAF5GR6NWrjWO
-	78OsFChLXT/80O/omjxspg2NHRE5yWL0AUOnjbL15wN6KpKnsiMrU+kwUnzIVM50
-	D2iMwusBgsURKmP1cYZA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct3egxmp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 17:37:28 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KHbRVK031007
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 17:37:27 GMT
-Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 09:37:24 -0800
-Message-ID: <e59f02e4-03c9-42dc-9c04-65d339fa8cc2@quicinc.com>
-Date: Tue, 20 Feb 2024 09:37:15 -0800
+	s=arc-20240116; t=1708450665; c=relaxed/simple;
+	bh=WKpzNcvIK0P/NIuxFDXvfATWYBYq86v97mLTcUnLeqg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ufL7h0dJiaWUEY9ylgRfkun2lfNYfX94XUCR7WTLNo7xC2oQNek89L/Je4NqIRtKkhp8qrEW5ueXEVtRchTzK51QYa2gHaoIAguK+fG21DGkfygWhymiT8k0hQoCfgnbmsaui0PEpr6VI8J5IAMpNSIGaQfyqmYG+TGIKreshac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mlHoopGF; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-299354e5f01so2908981a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:37:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708450654; x=1709055454; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qhuni0civ32K5iUKCYdlSRc+Waum7V0xwhUm0rPzhhY=;
+        b=mlHoopGFd+69Ex1jDpWqYHxcFw4rtiUeO/ti8Tdg7Azx7UeqL0roFdsSG7GbFwfkoF
+         NsSbMIMpjjKIc1X8grlygtwVmNzxS2ToFP/Wok537ThWTG9UGz0d6Sw0E9xLs/Kvy8+1
+         8D7cAwguCdo3hDIlxjBRFvy3HvaLJUE67rXPheSOQkdegZmuXo4KmPdDEcz0ujjvsqQo
+         JstigPF9fwfQzaC+E/5ZBMAGWya4sLjgugrj7WZVCA0/qzJc+Jl9OrWQaVHmgoG6g+aI
+         zcuiPjz36a4UoDloLUMSgucr3NHs3jhpzAsOe3non7JicTUPDm4a8sNGM8sve6/pfZpC
+         5cbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708450654; x=1709055454;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qhuni0civ32K5iUKCYdlSRc+Waum7V0xwhUm0rPzhhY=;
+        b=GobtQeUyAzF/79qpHcTceSgQdIDnSXIij5QdZsOo8G0YGBCjk90V2rB3rqpSH4TfV9
+         ZkjZMGzenCrL8cGNfo3ZFbaw/jPWVkqr+QUAgmoWs7Ro2EbNd1f0upNsp6dt+NC30zDI
+         DVY30fsQL3beo85fba8Hpp8SC0GCZvqxyP2xY2YTPremqWcSZHfUZNP0HLZHP/9073Di
+         xI3usAD74gRE2AEXfZzZE32slzRBW6PL4xxdR93wIVgzZFDQc5Eop3pkFGO0VjyLT3Pr
+         VFWu5stagbpq2/PC8dskr9YBk6jzUk7eu7U6y2me4/yYEX8dx3jwQtqcNaFYluDyYInW
+         yPJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUMFPVa0GDltBpd6ipBBZOojDZT+lIR/DvEV4iA5r+49OublGjYkzHc7kwtZIikwsx0R4ITfMDMECt2/DqfPa8lPJbPxSYeKYkpAQty
+X-Gm-Message-State: AOJu0YxB745mDT0+rIUWQ/ZpbCwVwsaipz9zOhf0sDaY33H767IuNZ+A
+	kxph1M/VV7EvoE31DkW/4M54925NHbRZT3/GI3Y7/e9spi22XldDyqdHUd8ncrkrrRvqpaT57Ml
+	bsNegiQOnVzvCT1uOZL8NxojRlhTEM1MoyDyvMw==
+X-Google-Smtp-Source: AGHT+IF0E7p3xEhZaG2DRCXUZ6Y/iTvEcWqkaMIgiq8fc5zLouls5yDaamySwCKx14Lnh+WGWbXnjhylJHxjzIqdudQ=
+X-Received: by 2002:a17:90a:c598:b0:299:41dd:95c0 with SMTP id
+ l24-20020a17090ac59800b0029941dd95c0mr15044844pjt.16.1708450654484; Tue, 20
+ Feb 2024 09:37:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] LoongArch: Call early_init_fdt_scan_reserved_mem()
- earlier
-To: Huacai Chen <chenhuacai@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
-CC: <loongarch@lists.linux.dev>, Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren
-	<guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang
-	<jiaxun.yang@flygoat.com>, <linux-kernel@vger.kernel.org>,
-        <loongson-kernel@lists.loongnix.cn>, <kernel@quicinc.com>
-References: <20240218151403.2206980-1-chenhuacai@loongson.cn>
-Content-Language: en-US
-From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-In-Reply-To: <20240218151403.2206980-1-chenhuacai@loongson.cn>
+References: <20240205021123.2225933-1-qyousef@layalina.io> <20240205021123.2225933-3-qyousef@layalina.io>
+ <CAKfTPtAsij+_=n9JCxHw==j3-wC9rYZHEJyVmyBJsx_-Udhzgw@mail.gmail.com>
+ <20240220155913.n7uxb3e56kuhcxs2@airbuntu> <20240220161546.7r3leteuqygf6jxc@airbuntu>
+In-Reply-To: <20240220161546.7r3leteuqygf6jxc@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 20 Feb 2024 18:37:22 +0100
+Message-ID: <CAKfTPtAv-9HuX5xqEdMamo=YtyryA+K2nHBBG5XX7oyNybnUVA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RHSoEzoEOeai5k1Ch4kMzEmb3QD2kcWV
-X-Proofpoint-GUID: RHSoEzoEOeai5k1Ch4kMzEmb3QD2kcWV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 phishscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200126
 
-
-On 2/18/2024 7:14 AM, Huacai Chen wrote:
-> The unflatten_and_copy_device_tree() function contains a call to
-> memblock_alloc(). This means that memblock is allocating memory before
-> any of the reserved memory regions are set aside in the arch_mem_init()
-> function which calls early_init_fdt_scan_reserved_mem(). Therefore,
-> there is a possibility for memblock to allocate from any of the
-> reserved memory regions.
+On Tue, 20 Feb 2024 at 17:15, Qais Yousef <qyousef@layalina.io> wrote:
 >
-> Hence, move the call to early_init_fdt_scan_reserved_mem() to be earlier
-> in the init sequence, so that the reserved memory regions are set aside
-> before any allocations are done using memblock.
+> On 02/20/24 15:59, Qais Yousef wrote:
 >
-> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->  arch/loongarch/kernel/setup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > I realized that I wanted to also add a new patch to not double balance_interval
+> > for misfit failures. I think you indicated that seems the right thing to do?
 >
-> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
-> index edf2bba80130..634ef17fd38b 100644
-> --- a/arch/loongarch/kernel/setup.c
-> +++ b/arch/loongarch/kernel/setup.c
-> @@ -357,6 +357,8 @@ void __init platform_init(void)
->  	acpi_gbl_use_default_register_widths = false;
->  	acpi_boot_table_init();
->  #endif
-> +
-> +	early_init_fdt_scan_reserved_mem();
->  	unflatten_and_copy_device_tree();
->  
->  #ifdef CONFIG_NUMA
-> @@ -390,8 +392,6 @@ static void __init arch_mem_init(char **cmdline_p)
->  
->  	check_kernel_sections_mem();
->  
-> -	early_init_fdt_scan_reserved_mem();
-> -
->  	/*
->  	 * In order to reduce the possibility of kernel panic when failed to
->  	 * get IO TLB memory under CONFIG_SWIOTLB, it is better to allocate
-Hi Huacai,
+> I think this should do it?
 
-Thank you! This change looks good to me.
+yes it should do it
 
-Regards,
-
-Oreoluwa
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 70ffbb1aa15c..b12b7de495d0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11552,8 +11552,13 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>          * repeatedly reach this code, which would lead to balance_interval
+>          * skyrocketing in a short amount of time. Skip the balance_interval
+>          * increase logic to avoid that.
+> +        *
+> +        * Similarly misfit migration which is not necessarily an indication of
+> +        * the system being busy and requires lb to backoff to let it settle
+> +        * down.
+>          */
+> -       if (env.idle == CPU_NEWLY_IDLE)
+> +       if (env.idle == CPU_NEWLY_IDLE ||
+> +           env.migration_type == migrate_misfit)
+>                 goto out;
+>
+>         /* tune up the balancing interval */
 
