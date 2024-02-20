@@ -1,204 +1,165 @@
-Return-Path: <linux-kernel+bounces-72629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103B685B66D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB5D85B66F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:01:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 352A41C23D1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:01:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C201E1C23CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C69260DDC;
-	Tue, 20 Feb 2024 08:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62815D8E0;
+	Tue, 20 Feb 2024 08:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="dvifq2gp"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R2UwaObW"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F895F554
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5261660DD3
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419459; cv=none; b=oxkKRdKLqc3zN0i2E0NPhx54JpuB++rymz6xNA5UdEAw6d7UZgE6RfGGDTWMuZh6H2i391cPCLmovysl7UqJ/gcZr8pTm61NZV2dhUwdR7oO4bz5C+FHJS+rOZlqwVDOb/XxLdbPyBglnbvGUFoeUafjrF65XIHLO2fLVGfLC3o=
+	t=1708419575; cv=none; b=tEvAPJLWNTGmHScEp9oMmu6TNIyIBO88qkYYdfI611BRNVfot8ynOauK0xAXwjqJh45IJZ/zeJZAf/sPWdxHH32F4zvPOCN9eJ/uq1Hatv2pMb88/RziXbknjapOOxFyAde2jNMnoJnrJ9VuDl0bqMrDoJgHG9p8Ru7HvTyU/Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419459; c=relaxed/simple;
-	bh=d3J2viCIupmNu/Zrz/TXpO4/KSnq3KH1ha9ME5ghR1w=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=aPzhYj/Qh4AzHC8pgDJOBhu4iXQ/gemG7YgZe47HpCHeO3tG9XCx/et/zXWrEKWwxWqXqBh59+NvchNEqRHK2ue0uxtA98qHS4L0+yhMm9Ao3B3j5OHN20DTRpAICKLw4afiazdvoXy0OVGSspf0km+yHNhUpORrFJPEIzo7x2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=dvifq2gp; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240220085729euoutp02afb6d61807c26413710282e4b09636c6~1hnAVSdJD0613906139euoutp02L;
-	Tue, 20 Feb 2024 08:57:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240220085729euoutp02afb6d61807c26413710282e4b09636c6~1hnAVSdJD0613906139euoutp02L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708419449;
-	bh=6Jrr4BErpksEcMV4nXO6UqABNIRBF9KHU7/F0KYEIJU=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=dvifq2gp76nXlC4cEs/gnf4WII2EsnAlggPKd2dqgh21MCcKgUsxG/nWVhUn2CLtf
-	 OZ3TR07Lip2uRa5+0JyttTa9Uz6SiZub8dr4xE5cZaEIUqm7JKtsMkRJgk9YPgZKkE
-	 D+0QD5rFgDXA/sOqWf0CJG9wQnecHhnTvy9MMQ0g=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240220085729eucas1p1861faba1147f1de9f5021959fd68cb8c~1hnAKtA4P0622906229eucas1p1G;
-	Tue, 20 Feb 2024 08:57:29 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 4F.3B.09539.97964D56; Tue, 20
-	Feb 2024 08:57:29 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240220085729eucas1p23994be6aaf97fe2f41fa1a29c61dd30c~1hm-zsUIc1250512505eucas1p2p;
-	Tue, 20 Feb 2024 08:57:29 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240220085729eusmtrp1b456ef066080312b9669d778ca9cf87b~1hm-zJ9rL0761307613eusmtrp1q;
-	Tue, 20 Feb 2024 08:57:29 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-02-65d469791c0c
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id C0.DA.09146.87964D56; Tue, 20
-	Feb 2024 08:57:28 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240220085728eusmtip1538581640047c60aabeecc96ae099761~1hm-oA0pd0281902819eusmtip1P;
-	Tue, 20 Feb 2024 08:57:28 +0000 (GMT)
-Received: from localhost (106.210.248.172) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Tue, 20 Feb 2024 08:57:28 +0000
-Date: Tue, 20 Feb 2024 09:57:26 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: Luis Chamberlain <mcgrof@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] scripts: check-sysctl-docs: adapt to new API
-Message-ID: <20240220085726.bnlusgy5qdmcwpar@joelS2.panther.com>
+	s=arc-20240116; t=1708419575; c=relaxed/simple;
+	bh=c4iCp/4LdZ8uqcc7gfKoxfID/mtQMbjGzfWNBp54u0U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=s9vHr7iqF9E9HHUbvfkCI8agGRwXpWuilFocmYhe9IF4Kk3YVkphJPb6IjPtI+M4tddDhfvZVqN8A7d62Z75lyWPZ4h3EmqzKe9Wy55zuVN1P8UPGcWlwT8wiTNVHF6yf+EMzCtdoVBJUqgCI24GinUTTXyTbDxFeQFGWDmDrl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R2UwaObW; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4127077ee20so992885e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708419572; x=1709024372; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=bxKTBsN27scYI+0D63SrBS8H6thL+ZhoGE+WHGb0/OA=;
+        b=R2UwaObWzcttst39zaDwjaD45UU1La/URu3co1ox/Jk4AxIzSDByIWWxJG8tUpPZwB
+         +U0NzYz1UdeI9hMWc5QiRMrJ7p47Xfbq+jumKFTUTkim0gJofpTKnRnKE6mtMUXTq0tM
+         BnnOSHYA8IsnHASStbQd+SKaPEpRLAokye/rPluZReEbJ9tRBgZ7Gakbt4Gv3Tganfz1
+         V1C53Qpa3YmldU80M6KiVHFZn2Kv0oDM4nct21BPqs4HuMReggQZz+L42WNv9YKP18wn
+         Uu/uVmzGfXwfyKlZSG3fx8aTsXPKvw6OSopONOw/Eit8J638B7eM2U8vmOIeMYfBeUme
+         1i1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708419572; x=1709024372;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bxKTBsN27scYI+0D63SrBS8H6thL+ZhoGE+WHGb0/OA=;
+        b=Gbz5nVy72kLA9Ps5IW4ni3M6bDTXhJeYiRCbAJ+mBlTVScGOGl4uZB8J5KzKls+t9g
+         3Vm8T2a1oMeb54z6tm+CYdwvNsB1BgeSsN0imHZIrau/u+yrQEKwd1wO/y9S2JF6ubtx
+         LKR8y9iVBaU0R3cQQKyBH/KW3TqKJSMprbCQJXi65NHXRLt1yRkyJDDu7ljJ32VIxOFO
+         SBerOovtMyuy0Nek7MoxgrVKsTw/uz9vOKslF8ryIAO7qiWLXrxkgrrDyWfx+gyei2q9
+         NeAw+5OgnctHJB3e1ferNycQw12qtoNwvEf2pLmp3HWJkK/GtehW4e7FUgkHDE81MtzQ
+         Gpeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvJwVcCYUDlq7dC4sk4R33CgYgJ7K/B/rnjnStUu9tD/GOpcAzLt699DbjEdfiKabjiDs40km7Eg4Qp2CeHtb3jShxkT1Tfb3pIksC
+X-Gm-Message-State: AOJu0YyjCn9G6moR3n/fIy9GfvEpB7CHwOUPE/Notrgt18Qn/Ru6/Jma
+	TGXsJT7GTaeZ6QMWG9ADa52hIVfjdFH7FWJIWv72cxpevnWwr4Cj92yeiaGdKcg=
+X-Google-Smtp-Source: AGHT+IHtjnl8bomtyrFu1WGbD5XCu34yNOF8wdTXQzjo8fNmCTyrjszG5QL8BZBpHmsU3dOYq7xzNg==
+X-Received: by 2002:a05:600c:3545:b0:412:65e7:3639 with SMTP id i5-20020a05600c354500b0041265e73639mr3747396wmq.27.1708419572368;
+        Tue, 20 Feb 2024 00:59:32 -0800 (PST)
+Received: from [192.168.2.177] ([207.188.161.188])
+        by smtp.gmail.com with ESMTPSA id ba20-20020a0560001c1400b0033d640c8942sm2196669wrb.10.2024.02.20.00.59.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 00:59:31 -0800 (PST)
+Message-ID: <d7c1569b-30b3-45eb-bf41-44c1e9d0659f@gmail.com>
+Date: Tue, 20 Feb 2024 09:59:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="2i76zjxmk6xwic6d"
-Content-Disposition: inline
-In-Reply-To: <20240219-sysctl-check-v3-0-6940d5ff747b@weissschuh.net>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPKsWRmVeSWpSXmKPExsWy7djP87qVmVdSDQ6/F7W4vGsOm8XvH8+Y
-	LG5MeMrowOyxaVUnm8fnTXIe/d3H2AOYo7hsUlJzMstSi/TtErgy+mZ8YSxoE6nY+PQaYwPj
-	CsEuRk4OCQETiXUTNjB2MXJxCAmsYJT4vXYlI0hCSOALo8Sh//YQic+MEhvOzGWF6eh9P4EF
-	IrGcUaL1wBQmuKq7z6ZBZbYySnw4tpQJpIVFQFXizu6nYHPZBHQkzr+5wwxiiwjYSKz89pm9
-	i5GDg1nAQ2LvhFCQsDCQ+fP2LbBWXgEHidW/5rNB2IISJ2c+YQGxmQUqJJY332aDaJWWWP6P
-	AyTMKeAqcfDWVWaIQ5Ul5rzeAWXXSpzacgvsTgmBJxwSZzd2MUIkXCQ+7JvGBmELS7w6voUd
-	wpaROD25hwWiYTKjxP5/H9ghnNWMEssavzJBVFlLtFx5AtXhKLHncCMzyEUSAnwSN94KQhzK
-	JzFp23SoMK9ER5sQRLWaxOp7b1gmMCrPQvLaLCSvzUJ4DSKsJ3Fj6hRMYW2JZQtfM0PYthLr
-	1r1nWcDIvopRPLW0ODc9tdgwL7Vcrzgxt7g0L10vOT93EyMwHZ3+d/zTDsa5rz7qHWJk4mA8
-	xKgC1Pxow+oLjFIsefl5qUoivO5NF1KFeFMSK6tSi/Lji0pzUosPMUpzsCiJ86qmyKcKCaQn
-	lqRmp6YWpBbBZJk4OKUamAR3JXD+nXlEwXuBp0dktalK9vRFXDu1vptdEm5cebqs8ciV146v
-	Fq2z0vY6arvXxSqbkXERZ7V1fMz2D+dUr5qsnyz3ablrcf+x5CeN5lWfbv01naT/qWoLU92M
-	Yqmykr9tM0I/bfEvrdwhW+/GGrZcZZl/w/Nd4RoWmkzW+mm5hyMsZvur2dm8eB/8R8f9T178
-	XNeaQ1lq7GWrUz+6Xm0U/5oTzVMTEXe90O4Jg1rptZgN6gef7ujfsebTFRG2JatYfme/l9Yx
-	4v2kYW4873XcgZb1BZ1ikzyj0n48XOlWG6eqMOv+bk4t3e0bjpTtNmieuVbm3tk5JxadEWsM
-	VXBpMREx+Bmadvig9dx9SizFGYmGWsxFxYkA0tOgFMIDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFIsWRmVeSWpSXmKPExsVy+t/xu7oVmVdSDR71Wllc3jWHzeL3j2dM
-	FjcmPGV0YPbYtKqTzePzJjmP/u5j7AHMUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG
-	5rFWRqZK+nY2Kak5mWWpRfp2CXoZf/69YS5oEalo/fWQuYFxmWAXIyeHhICJRO/7CSxdjFwc
-	QgJLGSUeLj/JBJGQkdj45SorhC0s8edaFxtE0UdGif1L9jJBOFsZJbat+ATWwSKgKnFn91NG
-	EJtNQEfi/Js7zCC2iICNxMpvn9m7GDk4mAU8JPZOCAUJCwOZP2/fAmvlFXCQWP1rPtSCGYxA
-	zmo2iISgxMmZT1ggesskOs/lQpjSEsv/cYBUcAq4Shy8dZUZ4k5liTmvd0DZtRKf/z5jnMAo
-	PAvJoFkIg2YhDAKpYAY6eefWO2wYwtoSyxa+ZoawbSXWrXvPsoCRfRWjSGppcW56brGhXnFi
-	bnFpXrpecn7uJkZgRG479nPzDsZ5rz7qHWJk4mA8xKgC1Plow+oLjFIsefl5qUoivO5NF1KF
-	eFMSK6tSi/Lji0pzUosPMZoCg3Ais5Rocj4wVeSVxBuaGZgamphZGphamhkrifN6FnQkCgmk
-	J5akZqemFqQWwfQxcXBKNTBJ9b68ZK//lp0/zuDYvAeiPBe3We7QU/27wvZXy6ItfZMrQ9bY
-	JJcoXbrwefHvmao+i85Y5cvtLJy75rKWYBDn3peR0qXes5ZKGWYVzzvnNLtcc5fN67qihqmO
-	Zhz/Nim+zLlqdGrqtb7fG8+x6lT//qLFKHJASIx98e+TU1Zuf8zHpHm2ILXpq47mnsgLT8pu
-	Wr9Ynroy2WxZ0ZmpKz391MROXbY8nMB6f/tk779diq5Pd2p179hSKlxT5ftoaT7/v0jrxNSa
-	Ay6LzmneMj0yy4v9eVTIBe/Xjy1nXDtw9Zcd96RTD09s8zFpdOZe8euW1OYr3EnrpzWy5u1Y
-	9i1ioucKEU02/c3e6826ohq5lViKMxINtZiLihMBNwl5bV0DAAA=
-X-CMS-MailID: 20240220085729eucas1p23994be6aaf97fe2f41fa1a29c61dd30c
-X-Msg-Generator: CA
-X-RootMTR: 20240219201941eucas1p13b89861348f250d5e9b6b3b7441a56ed
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240219201941eucas1p13b89861348f250d5e9b6b3b7441a56ed
-References: <CGME20240219201941eucas1p13b89861348f250d5e9b6b3b7441a56ed@eucas1p1.samsung.com>
-	<20240219-sysctl-check-v3-0-6940d5ff747b@weissschuh.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: mediatek: mtk-socinfo: depends on CONFIG_SOC_BUS
+To: Daniel Golle <daniel@makrotopia.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ William-tw Lin <william-tw.lin@mediatek.com>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <cc8f7f7da5bdccce514a320e0ae7468659cf7346.1707327680.git.daniel@makrotopia.org>
+Content-Language: en-US, ca-ES, es-ES
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Autocrypt: addr=matthias.bgg@gmail.com; keydata=
+ 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
+In-Reply-To: <cc8f7f7da5bdccce514a320e0ae7468659cf7346.1707327680.git.daniel@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---2i76zjxmk6xwic6d
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hey Thomas
 
-Thx for your V3. I'll put it on my sysctl todo list for friday.
+On 07/02/2024 18:42, Daniel Golle wrote:
+> The mtk-socinfo driver uses symbols 'soc_device_register' and
+> 'soc_device_unregister' which are part of the bus driver for
+> System-on-Chip devices.
+> 
+> Select SOC_BUS to make sure that driver is built and the symbols are
+> available.
+> 
+> Fixes: 423a54da3c7e ("soc: mediatek: mtk-socinfo: Add driver for getting chip information")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-Best
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 
-On Mon, Feb 19, 2024 at 09:19:21PM +0100, Thomas Wei=DFschuh wrote:
-> The script expects the old sysctl_register_paths() API which was removed
-> some time ago. Adapt it to work with the new
-> sysctl_register()/sysctl_register_sz()/sysctl_register_init() APIs.
->=20
-> Per-namespace tables via __register_sysctl_table() are also handled.
->=20
-> Note that the script is already prepared for a potential constification
-> of the ctl_table structs.
->=20
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
 > ---
-> Changes in v3:
-> - Handle per-namespace tables
-> - Link to v2: https://lore.kernel.org/r/20231226-sysctl-check-v2-1-2d4f50=
-b30d34@weissschuh.net
->=20
-> Changes in v2:
-> - Remove unused global variable "paths"
-> - Remove docs for deleted variables "children" and "paths"
-> - Link to v1: https://lore.kernel.org/r/20231220-sysctl-check-v1-1-420ced=
-4a69d7@weissschuh.net
->=20
-> ---
-> Thomas Wei=DFschuh (3):
->       scripts: check-sysctl-docs: adapt to new API
->       ipc: remove linebreaks from arguments of __register_sysctl_table
->       scripts: check-sysctl-docs: handle per-namespace sysctls
->=20
->  ipc/ipc_sysctl.c          |  3 +--
->  scripts/check-sysctl-docs | 65 +++++++++++++++++++++++------------------=
-------
->  2 files changed, 33 insertions(+), 35 deletions(-)
-> ---
-> base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-> change-id: 20231220-sysctl-check-8802651d945d
->=20
-> Best regards,
-> --=20
-> Thomas Wei=DFschuh <linux@weissschuh.net>
->=20
-
---=20
-
-Joel Granados
-
---2i76zjxmk6xwic6d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmXUaXQACgkQupfNUreW
-QU/AFgv/XEA3IprJj+PBJmCrtoq5UR/KHlhkecyLtD2L3yZay1hq/4F4Ydd86hNa
-2PVyHKkpSnyD0cvEAi9KFBqjFuVxVpFfZ64jPykxSHDGrGCRRnLoDaQCClRCxkLC
-4T8aCSHyWZkkW3mcfxRA+LWolzhGKl9F5ySM8DiSuP+5HXrCQejFoyasuX3ctjnt
-BX2OMrCkr5djUcLr94r7cHPp/gOzkE1Zi6BJY/VjwwbihdmNlE2ErftmyLWuK66W
-w18vKfYdwua8ZKEFuXo021mwIpI+paTIaxCCovvJcwUOdmhfFDpwR87S3D5P+ObK
-kUy/YsVe1R5QLNGh5AHoNW4WS69fBeEDb9yf9UTKVTuCOb6BEFjR5dzECTSlZWrp
-omMqk8Rdu2ZM3j5b9u+cU37T6sWQ8KhdSQABbgyUQ/KPdnt84axSOdcyFYRVKS3D
-fSx18kyq/jSp1L58RQPncU73M7Igcv0MlU51ktOk0pf5s90VgeqW98eLTxr7t59M
-l9Vvhnuq
-=tMNS
------END PGP SIGNATURE-----
-
---2i76zjxmk6xwic6d--
+>   drivers/soc/mediatek/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
+> index 50c664b65f4d4..1b7afb19ccd63 100644
+> --- a/drivers/soc/mediatek/Kconfig
+> +++ b/drivers/soc/mediatek/Kconfig
+> @@ -72,6 +72,7 @@ config MTK_SOCINFO
+>   	tristate "MediaTek SoC Information"
+>   	default y
+>   	depends on NVMEM_MTK_EFUSE
+> +	select SOC_BUS
+>   	help
+>   	  The MediaTek SoC Information (mtk-socinfo) driver provides
+>   	  information about the SoC to the userspace including the
 
