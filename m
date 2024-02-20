@@ -1,116 +1,163 @@
-Return-Path: <linux-kernel+bounces-72816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CD6085B8FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB5685B8FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:27:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5A29B25DB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:25:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4674EB22419
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686DF612C4;
-	Tue, 20 Feb 2024 10:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0215C62806;
+	Tue, 20 Feb 2024 10:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HvHzJBqL"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="PHUvAw+5"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2030.outbound.protection.outlook.com [40.92.22.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCF460DFD
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424750; cv=none; b=cJ3zLvQYAEDB28lHchBTRl7hCSKfyutA5LkyuvDWePOyZqpyaM9CukEFJRuHGE2O9idkjW745zERnbgokL8CjwLirdOHbC/qXQ7uovpXHYdLEcPRHMOsv6jDyAHWjoV5XjPGFdZ1V8pbeqAtZSNbYy4yRo9UrzaPQhwvtD/1Q7k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424750; c=relaxed/simple;
-	bh=5ktclNbn2mEDXmqYAQYhA6bcJLKSeTx1A+GxurIEYMw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fjBEH6j0TkNRvqWft18Srkz8aCfmQ961O7RHG0T00GwtScbNnsBZbSvRzVCDB0o7yib/RWpCGiERXSSl3+Dc4i/5vZF3a47ScBx3hj8X1VDGqM03ivPweCUaDWGKzR3nBWyPiOwnT98dOiI9jYtTlFUlyJP1X8XKeYOR3qDkHmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HvHzJBqL; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d220e39907so52074921fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:25:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708424747; x=1709029547; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=djjvs/Usd09U05nC8p2eL3fflYkuMgnwDD4B9hrTwJI=;
-        b=HvHzJBqLP1oInkzpBfWLDEU3r1SZ1dx4JPqdFnc72c+joZTFZAuKGnTjXgAnkQR7XV
-         yR3Lyomi+uA5YbmFwjZXgCdM0KizaEQZ90AaFEYZqiGdZrWxkdL80oQObzSlQJzxmjV9
-         8EX86NybAmA7hbyT4oftmiH9A71CmNZav1qiGIzWcEK4qYFovI2WupCUAAZeOdDNC+2x
-         9jbpqWs+uXpcCwie9+XQgNBev3ouf7gK4/eXcbLPJ2C6jBpF4RnBBEdVzbq07b07zGqW
-         2GbN2kEuW8GRi++DzS3CW0GIQx1cU14Lvk5dut8N3n3Ny4zHRIrRnB/gTrLO9SUlenYh
-         HZeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708424747; x=1709029547;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=djjvs/Usd09U05nC8p2eL3fflYkuMgnwDD4B9hrTwJI=;
-        b=qrR4MxHS8pZDFBO8vSo1X89nxCzx02Yommc5RiNqusxvnUqPLm3HA714aEojM3kRgR
-         Dmru/JHE26hG7qPjG8W6GPk6GZqLPAW8ZNshQhTq6A4wxo9aWVEdjTnasqStfBf9kn6N
-         +YcmYpbuDhGXhQSVHScxbmg4RnMiC4mWRvJwfSqHMuxRX4d4mahPDlf47w8SEMJrXrQn
-         B+HUylXX4N+501a5cCCCoO/8osy9GSei12Zho4MhcTOVCemS58GAAZdW96ElGvMTnp7R
-         I8BQplWMaJo42lOZf8y7t6//dbW1XyEJ6PSm5We0U63YS6vwo27pzax25VkEtCeNI3r5
-         LuwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWSlKIaXm2NGuHojstTPYj2myHZuzD4dJbaiHHlfHfATgIN4E7PqP+kwzwPRY2MwabxrwrgID3/USdqwUUNRz0lhsAEAVwTt0eheW7
-X-Gm-Message-State: AOJu0Yx2IEWZ/CEcALfT2t3gaQv2WipgHqawsVjr0x7bVr6mJ/5lzhch
-	lntd/YfHYZGIki8HfYH6uYBPkekT8PSs9hqLN8aXY1bUCf7iY8BNsYae7mm4Du4=
-X-Google-Smtp-Source: AGHT+IHx1YYP44dRDHsO0C5F7uarbJ+O3QPbQ0mRFH68guy+79lu+WX2haXFFwA4mOASYsRHEDAnjQ==
-X-Received: by 2002:a05:651c:454:b0:2d2:438a:11ec with SMTP id g20-20020a05651c045400b002d2438a11ecmr2878652ljg.2.1708424747273;
-        Tue, 20 Feb 2024 02:25:47 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id q4-20020a5d5744000000b0033b47ee01f1sm13009716wrw.49.2024.02.20.02.25.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 02:25:46 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: kernel@pengutronix.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-In-Reply-To: <cover.1708340114.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1708340114.git.u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 0/4] w1: Convert to platform remove callback returning
- void
-Message-Id: <170842474594.51528.5868628696022611171.b4-ty@linaro.org>
-Date: Tue, 20 Feb 2024 11:25:45 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB9C6166A;
+	Tue, 20 Feb 2024 10:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708424755; cv=fail; b=FsZUUSEbR/uhbirT3t2Q68blYBdMdyNaU5KN/o8H3CkNUuRMRDohQjo8NvfMBR3pwp8f95j8u5rCZIvarfssVE8sPbwj1KLzescLxDb6jpzKWMSEXIJTu34cAPiLa3OoCeCSSElsEvhyZGzmviT5i+vVaGN+kphzCbYan3iIafM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708424755; c=relaxed/simple;
+	bh=jZYL1KwmKs4lkwUyd+2oKIz4gaxXCtGAgmToRjR+srs=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Lxe/BBoHiuEfuvkhrgVa3CwfpfcBAQiA5TJn17EsLqoA9MpvMRriiJXRKBFwfbx/oBgigLz8TSXLySM9/CuC8M505BsN1jyXUWsiIKeoRyBW2TzRoocjJQoeYgstBsLXY0JZIZX/Gt0vxvEPk9EZbS2DtYRy0vEuRgcKHthPV9A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=PHUvAw+5; arc=fail smtp.client-ip=40.92.22.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kxYTI7hidFU/OEUH20l8zcU8CbhGmpHv7+h2MYq9N0Ci9sajnMEpi2GTXhBTRdUvwVsq1IKnne6kLzgyrIEi+nAnV343abqyjcmk+SCNb+TqCvqZ+FRq0KlxkgHPPfThGwvF6o/sbmB+QCh+rUSbjR2hblHz6qIEc2F+EdZEq0hTzbvpdykKmebW8CkJUOs88JbvDym27HrtfqcKzn4oqcHbJQSfKKp0g0vKVIHHjU7KvImt2j76TYpj17W1VA3gDy+InTff6jK9nDTIDpHK/vSN68ETw5w/LNdQJtDgwd4srCHBA0Tfd4lEDTNCasaFLZXtekRHgoVgUH8ZolXhSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=orV3Wsjwr4nw1KXDjPNNhJzqk8xIk5dbZSLadb/zT6k=;
+ b=g8gMwC2NAehAl8rlPSkzKnT6iC6EyxFlfLCIgddjUHWb3RLf/qWwGCwi/6uM6f3EGOWharkDm5jJpyVpM42GEzUOCQPwURW1POUQW5m/8TOgx3ytIkpmTWrGh4Ul0699xZvR7/Fl8lmTaPnlGsrevdb7zWdne3yreSVBVO2G5QQCJANYc53bSL2yRTY7lG1JJ9YzCBGdUazptvaGRgBodxnLDcLygBuP64SI9W0rERAUQ231ZHDByJouUwL75XvEOxOyK9nD/aj0ylo/MJPrZZbdvviuCL0Y+LhK0Ph5v1iSnr7EAwYrZ5D469ztzEwGHUPddfbPieLhd5bJO0zM/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=orV3Wsjwr4nw1KXDjPNNhJzqk8xIk5dbZSLadb/zT6k=;
+ b=PHUvAw+5W2Najo+N8j61TFteFAQgPVQNBA9YqgLdNoII5K+g/l7sKJ0cCWDnAvPeyym0JLsvxff3W8o/Ojrn8pS71VkK2QXQH5MmjvGUmNnB7lL37GXebdVvK4hvEkHWiZcim+YuA/oGTPpypa3nytKG2jtKRr4HKnFBsEwk6+FDSG5pWnEVndv8LkZALGbUwu2by62S+UDbZQ17qj9OFRxP41lnb4DdIfkTYrJ5wSZqAMLg/8b2Wk9FeXgUmpURT6iKBkvqftDiV/3Spb+PyKtrwO5F8+rpeWoAHrVvKU/puxGSpHc1A2OFnv6KeDDNp54j2Oo+Laq23gV08r0kIQ==
+Received: from PH7PR20MB4962.namprd20.prod.outlook.com (2603:10b6:510:1fa::6)
+ by IA0PR20MB6813.namprd20.prod.outlook.com (2603:10b6:208:405::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
+ 2024 10:25:50 +0000
+Received: from PH7PR20MB4962.namprd20.prod.outlook.com
+ ([fe80::4719:8c68:6f:34ff]) by PH7PR20MB4962.namprd20.prod.outlook.com
+ ([fe80::4719:8c68:6f:34ff%6]) with mapi id 15.20.7292.033; Tue, 20 Feb 2024
+ 10:25:50 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Inochi Amaoto <inochiama@outlook.com>
+Cc: Chen Wang <unicorn_wang@outlook.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	dlan@gentoo.org,
+	dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] riscv: sophgo: add dmamux support for Sophgo CV1800/SG2000 SoCs
+Date: Tue, 20 Feb 2024 18:25:51 +0800
+Message-ID:
+ <PH7PR20MB49624AFE44E26F26490DC827BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [3w9Rb1Er7kn3myhQrBcbYwd0j/dwal0A08YsW70kltU=]
+X-ClientProxiedBy: KL1PR01CA0081.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:2::21) To PH7PR20MB4962.namprd20.prod.outlook.com
+ (2603:10b6:510:1fa::6)
+X-Microsoft-Original-Message-ID:
+ <20240220102552.870960-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR20MB4962:EE_|IA0PR20MB6813:EE_
+X-MS-Office365-Filtering-Correlation-Id: 32c8e1d0-c6d4-4139-a4ac-08dc31fe4f5d
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	1d6vjeKoHs1vdogZIXe8mLFnaQ3zLQs1NEGJZxh1f37OQrmoaz00CYLTuJ/MdptZu3KwqDhKry8481OBTCJyogAciQ+YNo6twohFqyfsFRBvDdxa3ixvnvdBW4G6kRU+Vted6QR4/tUq4ig0Zq4eYuvrpN1fbIrz/OCWrP2P0IoVveg+IuwjUm+o5hEkEtPBUQqJ2ZJ6Cfw14HV5Wsrob5yeGas82oBewf5LOi7MJSZ1vJ44V9l/LCfXmuVrVSSx9JxPVAJKl1/b+C7JHmPMoTxZ/Tb3Ai1B91UWKsgFJRrYFn/GufmtAwO5RibAlMmW+y4REcDYUTS/8XRdWTGaDX0jKlncymYvzMFfXV8IY/xCWMs9259HjXWWxgGD5yrLdpWChomPzBY2EGRgZqmuIuatYw4JwFQjwJny5th8ko1R6W0wgjoxxyRWHXwJ8SRgPZpC01mjzVSMzic9VmK5asiQLuo5py7NtiR81+mHgb7b87RvSItw/YCPbxJ/fOlnfAYqXsre5zUEGzcjgecGiKDmiIBJXsr2ri9mzWHXvnfNPCQEb/uxH+yig7eTJ1Yy1VOocWTvq+ghaIsswWik5+lg+tVFjzHcV+LfoA4wowqgQPPDBrHfoHEQbdxyRAWc
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?yDPx0JYt43KHiBhYrlK6RTaLQzPUDn41BB8V22vNEwePrpIVjhJBmwvBj7wg?=
+ =?us-ascii?Q?Q2DBkFi7FCyQTZFwoSyTWxfaq5kmdBXSYXm/I4iN4n5jt+TclQhPN0r0gBm9?=
+ =?us-ascii?Q?14YAFQDCIB1snOHFzMF7scPhGLMnAlCX8D9God2T+Z4AflBOIEUjQKYvQg04?=
+ =?us-ascii?Q?Jx3iIUi9m/JhBJEaYVIpkuA0mmuZSzMVHrYpaGk4Sa1dpZqRzk2JMWKxh3PO?=
+ =?us-ascii?Q?GJ7de3Nb+4Rner3xdyKPSjv0JoB+uguWXWgLA3xR578mFN07wDeHLp7DasXO?=
+ =?us-ascii?Q?ds6eFkkdysJz4oBZbGt0WDJEdtIP0ZoLa1m1ke6ey8CZhVb1llpts8nwmTeD?=
+ =?us-ascii?Q?qhwzUNClWzIBRi45g4Tvtq4KYA2BbflZ9r47MVmGjSeXmldRIlF0Rcxy9cXW?=
+ =?us-ascii?Q?vobALYl1k4Fx6mbBo3aoNxp+JludJON5pikr5K9TidraSRivmDy2bnLyjC4N?=
+ =?us-ascii?Q?KEDqo2tcNeBhCQC7EI1P9AcmsyRWa21eoeorsIameXrCYht8GM13i+Af8rEA?=
+ =?us-ascii?Q?6Q8HH90OtJOK8ugCTK1vYlhgI73qVwXmWeYRrmKQyrSsS92hTb+1RUgzIuZv?=
+ =?us-ascii?Q?0L6nAUZ61mDwWwFR88rU3EYbYTyfKZO4hJRQTGApbmn03Nxy115WD0Ea+wg5?=
+ =?us-ascii?Q?vszQzpf+C7+yu37dbBNdMph6hG8YAM96RcQMkP80eZgcuTwvZAWju15XR3lo?=
+ =?us-ascii?Q?fdGF8V7H87UZhzl0xbYxdd0tpqJiwYvQ6EC2wLHLq9/imdHBnxUBwG9k5aSj?=
+ =?us-ascii?Q?274NDCzYXgpjZCStRM6vvGAZGBs8bZ9QrII01VKOuVG8zfPVn983beAnxmbs?=
+ =?us-ascii?Q?/XgnWpVTSAC2md+c6r37lx5FSSDWgwApV/v4EMs562dbArQ4Xe+8tLoBH11l?=
+ =?us-ascii?Q?ruIrRTEMLpmjbLOu+9Jhd0XVu3b+sEtvSLcH9jN6N/DSRIRRqsCJR1fR5ulr?=
+ =?us-ascii?Q?c8D2mmNV1FSx53DBaIhcRxpX7GDh9HXDRnTAN+C/ZQkeuR8lLmP4mW6rB+o5?=
+ =?us-ascii?Q?jpASoE+mypa6Yo5n/gcuS8pvzMeWegKZEqYY1fqpqJEICxc9cIA7eJDgIcKD?=
+ =?us-ascii?Q?NRpVrL7dVQRZDcRdTcxPDDzNC/g1UHuVMyUZTK7iK4cgC+/HhM+yEAE17TXb?=
+ =?us-ascii?Q?CYltJBkA0y1bJsidQ3cbvgzrVxiTvEx8xSuINRYqr10p6JJdMvLTrkNCKMtt?=
+ =?us-ascii?Q?bTi2DUQUEBh43Jw3dR4bVCW6d74MtvSb9NK07wHMzQOHvhFBOlT3gZdZHxNH?=
+ =?us-ascii?Q?5sB2wvON1HquP8yQ3nD3?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32c8e1d0-c6d4-4139-a4ac-08dc31fe4f5d
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR20MB4962.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 10:25:50.4496
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR20MB6813
 
+Add dma multiplexer support for the Sophgo CV1800/SG2000 SoCs.
 
-On Mon, 19 Feb 2024 11:59:26 +0100, Uwe Kleine-König wrote:
-> this series converts all drivers below drivers/w1 to struct
-> platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
-> Provide a remove callback that returns no value") for an extended
-> explanation and the eventual goal.
-> 
-> All four conversations are trivial, because their .remove() callbacks
-> returned zero unconditionally.
-> 
-> [...]
+The patch include the following patch:
+http://lore.kernel.org/linux-riscv/PH7PR20MB4962F822A64CB127911978AABB4E2@PH7PR20MB4962.namprd20.prod.outlook.com/
 
-Applied, thanks!
+Changed from v2:
+1. fix wrong title of patch 2.
 
-[1/4] w1: mxc_w1: Convert to platform remove callback returning void
-      https://git.kernel.org/krzk/linux-w1/c/63724bbfb1e6b5e202f9393da4b25d4e7a46f5ec
-[2/4] w1: omap_hdq: Convert to platform remove callback returning void
-      https://git.kernel.org/krzk/linux-w1/c/aa68465cf3d39996b291fb2080946c2e4d7cc100
-[3/4] w1: sgi_w1: Convert to platform remove callback returning void
-      https://git.kernel.org/krzk/linux-w1/c/d7516044f167b219dae13010e6ff790e3fc96ef5
-[4/4] w1: w1-gpio: Convert to platform remove callback returning void
-      https://git.kernel.org/krzk/linux-w1/c/d97d263132a69a0bda54efce3df04e55fa6341f7
+Inochi Amaoto (4):
+  dt-bindings: dmaengine: Add dmamux for CV18XX/SG200X series SoC
+  dt-bindings: soc: sophgo: Add top misc controller of CV18XX/SG200X
+    series SoC
+  soc/sophgo: add top sysctrl layout file for CV18XX/SG200X
+  dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ .../bindings/dma/sophgo,cv1800-dmamux.yaml    |  44 ++++
+ .../soc/sophgo/sophgo,cv1800-top-syscon.yaml  |  48 ++++
+ drivers/dma/Kconfig                           |   9 +
+ drivers/dma/Makefile                          |   1 +
+ drivers/dma/cv1800-dmamux.c                   | 232 ++++++++++++++++++
+ include/dt-bindings/dma/cv1800-dma.h          |  55 +++++
+ include/soc/sophgo/cv1800-sysctl.h            |  30 +++
+ 7 files changed, 419 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,cv1800-top-syscon.yaml
+ create mode 100644 drivers/dma/cv1800-dmamux.c
+ create mode 100644 include/dt-bindings/dma/cv1800-dma.h
+ create mode 100644 include/soc/sophgo/cv1800-sysctl.h
+
+--
+2.43.2
 
 
