@@ -1,148 +1,153 @@
-Return-Path: <linux-kernel+bounces-72407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1079585B2E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:27:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D48A85B2DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460481C21AEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:27:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB4C41F2150D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF5059158;
-	Tue, 20 Feb 2024 06:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB4959151;
+	Tue, 20 Feb 2024 06:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ahNPY3Aw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DXlNDAQm"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CCD59149
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC7A59143
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708410426; cv=none; b=lKCaCbxJBBvr2hhDKAY6sThCooKPB2s8FzSa3gLGqLxxh0WAQhWhSauUrLRnJqj7yb0IC14mR6SR+PSB8GC73u7IjTxZr1444MS3NEoaT7a93OqE1gSbKYfHQAoWeOLGryXZPdhvyLudRqiVyxnYpOx4MNJcmwTFwXptDNAQ6FE=
+	t=1708410321; cv=none; b=Ncczp92t3E/PqY46UxQhjprQgPNivnU17h/c6p8AARhdFywitoU/k5WQxjVgIFCJaCO4rJs2MyGqfoLE2PgHajt6YIUaUJwTwF6vgN2O1WfilDUt5lZ5wCnXBdzp57QUkp9DFn30IxsVy/oqSTZz8j75dsLGJVlXtPbo/29fGxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708410426; c=relaxed/simple;
-	bh=KjbpEsZcL6BLoOczV14V5gdnm8XEq0JhlG2bKfRK0nA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=N8NDgOyr9WxlvFQP7UEf5UX50vyBJNYiuVh5vJEqXYyER3Ga2FzhFlSqYzXwOI8szo4tkK7GabdlQVYN7g4AvHpWcGK4JyJz+FiRY0BFdSZp6qhUmEEhkBPE3yInJXK04tu73t8Ld0wBp3VKPGpQHUQ4sfHJ9mjH3/Oout/ix6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ahNPY3Aw; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708410425; x=1739946425;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=KjbpEsZcL6BLoOczV14V5gdnm8XEq0JhlG2bKfRK0nA=;
-  b=ahNPY3AwbFpLa1SEt8FpZlVYc7uXRENmfD3+JEIXDWf4YbT9jwaw1BFU
-   D2FrjcrVC+uY0viMwO70++sif4yJBDndP5PXktGBalm/MPicDfIRvmrRd
-   vJl7f7GXjOUL+0rNQiZ2PB/aavaJjOFub3QCjjppHz2KnP/VchcE6TssA
-   rMreKARDjUm9W6aotACujfOsbW1Qo0Nq8Va9j0noPb20SejPKb9VlYq1q
-   UvVT3qGWlBdEb5d/EZN30av/izDfKJ2U49yYOmXOe2PpSup4fIu9vgg/0
-   sd3G8Nu3yGiaJsaiB5mTk6EE2kJJBZCRmFq17QcwTHpmPh5cvH6NcrEde
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2401599"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="2401599"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 22:27:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="27842144"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 22:26:59 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  Donet Tom
- <donettom@linux.ibm.com>,  linux-mm@kvack.org,
-  linux-kernel@vger.kernel.org,  Dave Hansen <dave.hansen@linux.intel.com>,
-  Mel Gorman <mgorman@suse.de>,  Ben Widawsky <ben.widawsky@intel.com>,
-  Feng Tang <feng.tang@intel.com>,  Michal Hocko <mhocko@kernel.org>,
-  Andrea Arcangeli <aarcange@redhat.com>,  Peter Zijlstra
- <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Rik van Riel
- <riel@surriel.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
- <willy@infradead.org>,  Mike Kravetz <mike.kravetz@oracle.com>,  Vlastimil
- Babka <vbabka@suse.cz>,  Dan Williams <dan.j.williams@intel.com>,  Hugh
- Dickins <hughd@google.com>,  Kefeng Wang <wangkefeng.wang@huawei.com>,
-  Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local variable
-In-Reply-To: <21f343fa-84a7-4539-91e2-6fc963dbfb62@kernel.org> (Aneesh Kumar
-	K. V.'s message of "Tue, 20 Feb 2024 09:40:00 +0530")
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
-	<20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
-	<63a0f7c4-3c3f-4097-9a24-d1e3fc7b6030@linux.ibm.com>
-	<20240219172130.82a16c1ebecbf8ba86a8987d@linux-foundation.org>
-	<21f343fa-84a7-4539-91e2-6fc963dbfb62@kernel.org>
-Date: Tue, 20 Feb 2024 14:25:03 +0800
-Message-ID: <87frxnps8w.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708410321; c=relaxed/simple;
+	bh=Vorv3Mu3J3BFVwhUlwwIWwNS7Cr2J+Xn1H2HkqA4Kew=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A9vJR1a7FWtJe9irk7s8l4z5rMH7tx/w+AVkq1jhylXXMfoEbTEhp4m/nkgUp7m645qYtPWa1rbFEaw3iFXK88vBcKVPenaoY5Sfe6fGIkhtf2N8q3WEfyfWbPRMii2Wl2jLJjj26HqjbD4KI+ZliDK8GhBOLJpWyxerIskNA3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DXlNDAQm; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512b29f82d1so2591100e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:25:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708410318; x=1709015118; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SUm5uLuiWHsztob0PnCfvKEIfDnDYyNF8vZfs3mZMuU=;
+        b=DXlNDAQm7BDJzjve/RYp9weJGutQf4WHCagNgNm+pz15hVaRrRnM1fX0xFdpCJ3nVc
+         +YdWH0YAVopbizsaAWkXlvJlAUIlbPogny2ZeJsrX1jz318loc0BhcGXUZCTZorSwo2J
+         cbOCUoBnU37BwWkp+DmXMvCR4UPCq3QeOQTpn3PlhuXU25t7I0aUQEDDSu9nLYd6+HKt
+         Wd51ZXpnW0OSy+3H6oaQ3zEUY0FTJphdHST3src2p97pkaUXFPVIUFW9J0x4j91LaSco
+         oR3Z9kTk/Fw98uZC4VNqBmRvfE0aHHuJgI7jB4aP0TxzPJP4Q2ebvOxJOYT01fDLOhTu
+         mZKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708410318; x=1709015118;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SUm5uLuiWHsztob0PnCfvKEIfDnDYyNF8vZfs3mZMuU=;
+        b=VnlYGDT4KTU1kDPUDUFJmnJ+Uyi3D1GFeiJCgiSw32oncCtaSaN0imSyutgYYNA0nm
+         hOM8oC2XXSYlQSLq3mAXlF5bPt9lizFl/tnqcpopc7IhHaR/mHPPNOhEMUO0CzhAe3dd
+         mbS85uN0WJSN/3ph77eTRx/VlgtUVTK5BGN8aFJnS/YrIENPIOJ3xJ5gWo/UjEAve2rV
+         lhTmnFbI9xFsSnl5rl5bNIMPeDYlfkYh6EZKgoLddP7YruoYXA7iUwOz/u/EsGTeTGU1
+         wj/aWSe1KyYsmdHxVtd+jqJk2PEZuFpylXRkRJd3kJjvCzGBZg+AfQs4UDI3ulbcNcZq
+         tLFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVFTiZ77pc7EQb5RwsBu/7DLDoa9FT9sL8rXL5p+gs6vprZ3Och/7dqppVB+N2H/0/bP4jUTMZ5jum7xcm+MpnVLE60hyXFKczzfVR0
+X-Gm-Message-State: AOJu0YwwYYrgfD4u0B3ZIPT8iL0G0aGTBKIKYdzxwS6h7NnYsaACzbPQ
+	Et4F6X+sNjcOpbzq1fTZbyuaPC3ljin5idMuxusF+KTFBJk0MLXB3uz9b1qeO+UMsIwqYCbD4Dg
+	xpDSokfSHnkQDOw3plzXCbgedNQ==
+X-Google-Smtp-Source: AGHT+IEGEjiRa6cGY39cJoh7Inpw4N/t1GFccwnmoUg3ZxjePzAvi5dJkKsrIUxP/whNEF8LmNdhpx1eVikpej1Fndc=
+X-Received: by 2002:a05:6512:4cd:b0:512:c802:7a9 with SMTP id
+ w13-20020a05651204cd00b00512c80207a9mr354252lfq.38.1708410317935; Mon, 19 Feb
+ 2024 22:25:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20240219031911.10372-1-fangzheng.zhang@unisoc.com> <5cb54690-b357-4e7b-ac6f-23fc8dfe575a@bytedance.com>
+In-Reply-To: <5cb54690-b357-4e7b-ac6f-23fc8dfe575a@bytedance.com>
+From: zhang fangzheng <fangzheng.zhang1003@gmail.com>
+Date: Tue, 20 Feb 2024 14:25:06 +0800
+Message-ID: <CA+kNDJKCbd8ygfsZYELKHjCa0BNUSvMM40zWCnkPo7Hrg=HBhQ@mail.gmail.com>
+Subject: Re: [PATCH V2 0/2] Introduce slabinfo version 2.2
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Fangzheng Zhang <fangzheng.zhang@unisoc.com>, Christoph Lameter <cl@linux.com>, 
+	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Greg KH <gregkh@linuxfoundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, tkjos@google.com, 
+	Yuming Han <yuming.han@unisoc.com>, Chunyan Zhang <zhang.lyra@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-"Aneesh Kumar K.V" <aneesh.kumar@kernel.org> writes:
+On Mon, Feb 19, 2024 at 7:29=E2=80=AFPM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> On 2024/2/19 11:19, Fangzheng Zhang wrote:
+> > Hi all,
+> >
+> > This series introduces slabinfo version 2.2 to users.
+> > In slabinfo V2.2, we added a slabreclaim column to
+> > record whether each slab pool is of reclaim type.
+> > This will be more conducive for users to obtain
+> > the type of each slabdata more intuitively than through
+> > the interface /sys/kernel/slab/$cache/reclaim_account.
+>
+> I want to recommend a better tool: drgn[1] for these tasks, instead of ch=
+anging
+> the output format of /proc/slabinfo, which may break existing userspace t=
+ools.
+>
+> [1] https://drgn.readthedocs.io/en/latest/index.html#
+>
 
-> On 2/20/24 6:51 AM, Andrew Morton wrote:
->> On Mon, 19 Feb 2024 14:04:23 +0530 Donet Tom <donettom@linux.ibm.com> wrote:
->> 
->>>>> --- a/mm/mempolicy.c
->>>>> +++ b/mm/mempolicy.c
->>>>> @@ -2526,7 +2526,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->>>>>   		if (node_isset(curnid, pol->nodes))
->>>>>   			goto out;
->>>>>   		z = first_zones_zonelist(
->>>>> -				node_zonelist(numa_node_id(), GFP_HIGHUSER),
->>>>> +				node_zonelist(thisnid, GFP_HIGHUSER),
->>>>>   				gfp_zone(GFP_HIGHUSER),
->>>>>   				&pol->nodes);
->>>>>   		polnid = zone_to_nid(z->zone);
->>>> 	int thisnid = cpu_to_node(thiscpu);
->>>>
->>>> Is there any dofference between numa_node_id() and
->>>> cpu_to_node(raw_smp_processor_id())?  And it it explicable that we're
->>>> using one here and not the other?
->>>
->>> Hi Andrew
->>>
->>> Both numa_node_id() and cpu_to_node(raw_smp_processor_id()) return the current execution node id,
->>> Since the current execution node is already fetched at the beginning (thisnid) we can reuse it instead of getting it again.
->> 
->> Sure, but mine was a broader thought: why do we have both?  Is one
->> preferable and if so why?
->
-> IIUC these are two helpers to fetch current numa node id. and either of them can be used based on need. The default implementation shows the details.
-> (One small difference is numa_node_id() can use optimized per cpu reader because it is fetching the per cpu variable of the currently running cpu.)
->
-> #ifndef numa_node_id
-> /* Returns the number of the current Node. */
-> static inline int numa_node_id(void)
-> {
-> 	return raw_cpu_read(numa_node);
-> }
-> #endif
->
-> #ifndef cpu_to_node
-> static inline int cpu_to_node(int cpu)
-> {
-> 	return per_cpu(numa_node, cpu);
-> }
-> #endif
->
-> In mpol_misplaced function, we need the cpu details because we are using that in other place (should_numa_migreate_memory()). So it makes it easy
-> to use cpu_to_node(thiscpu) instead of numa_node_id(). 
+Thank you very much for providing a new way.
+I have the following three questions about the new tool you provided:
+---- 1. From the introduction, the tool is described as an alternative
+to the crash utility.
+          Will the permission requirements have different effects when
+used, user or userdebug?
+----  2. The 'Helpers' chapter introduces the simple use of
+common.memory, but there is no output example.
+           It involves the use of slab objects, but it also needs to
+provide a specific slab_cache_name,
+           which cannot give an intuitive overall information like
+proc/slabinfo.
+           I guess it is difficult to achieve direct output of slab
+type (reclaim or unreclaim). I don=E2=80=99t know, right?
+---- 3. Regarding the supported versions, is it supported for both
+arm/arm64? I don't seem to have seen any similar instructions.
+Finally, I would like to express my gratitude again. This tool will be
+very helpful for me in other future work.
 
-IIUC, numa_node_id() is faster than cpu_to_node(thiscpu), even if we
-have thiscpu already.  cpu_to_node() is mainly used to get the node of
-NOT current CPU.  So, IMHO, we should only use numa_node_id() in this
-function.
-
---
-Best Regards,
-Huang, Ying
+> > And we have added an example of the output result
+> > executing '> cat proc/slabinfo' in the file
+> > Documentation/filesystems/proc.rst.
+> >
+> > Changes in v2:
+> > - Modify the slabinfo version number to 2.2.
+> > - Add an example of slabinfo output and future works.
+> >
+> > Changes in v1:
+> > - Add a slabreclaim column to record type of each slab
+> >   in file proc/slabinfo.
+> >
+> > [1] https://lore.kernel.org/linux-mm/20240131094442.28834-1-fangzheng.z=
+hang@unisoc.com/
+> >
+> > Fangzheng Zhang (2):
+> >   mm/slab: Add slabreclaim flag to slabinfo
+> >   Documentation: filesystems: introduce proc/slabinfo to users
+> >
+> >  Documentation/filesystems/proc.rst | 33 ++++++++++++++++++++++++++++++
+> >  mm/slab_common.c                   |  9 ++++----
+> >  2 files changed, 38 insertions(+), 4 deletions(-)
+> >
 
