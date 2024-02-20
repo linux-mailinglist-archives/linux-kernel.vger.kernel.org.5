@@ -1,146 +1,92 @@
-Return-Path: <linux-kernel+bounces-72458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F047085B3BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:17:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D911E85B3BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:16:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6758BB23BAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:17:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5721C21672
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7B35B5C8;
-	Tue, 20 Feb 2024 07:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXCgnMRH"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CF35B1F8;
+	Tue, 20 Feb 2024 07:16:15 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2F05B5BB
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:16:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F5D5A7AA
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708413382; cv=none; b=ijVMcJAJq5YKvkWCSMSDQs2cGQHre/xc2rOF4lbywUXPPum9qc/Y8E3doJ8jK03QxsEAGNyRRy7YukHbnMCkxnlf2Y41eBdJUpGS0dAhrn6P6RxvyqEXZJCMkfJLLGqmR16JSjXRSRTq6Dlip76l6TfTqBKNH5OQhstad8DgkSA=
+	t=1708413375; cv=none; b=eR8ZgHiLDS4Ytxme8FGsL85ftnOo11QBz2pwRtvSjAihg7Rfh+yXDiAdgs9PmXM9dnb+pfD1tRHRIggWG25EeiIyr4kz9zWxwHpESuScijea7quR4QOqTklAYGc1kE9+PreqBAR0f1yJnKwSUqPuX4hY150ImtCaT0+yvOD3KXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708413382; c=relaxed/simple;
-	bh=sjSnzcueANrVxDHSiTSIdj8mpFTdy6IKk/WEGATL4Hg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bwbIeg33xaVpFLU9akClskQJ3PBAnwe6Ru4B0svn99i92YpwaUkdrtSKCoCdxkGnF8xQsfGnpfAwarsoeRG6lgVq/LZL0xfW4hKt7+SuSj1vRh4pe7h54PUwaG/TaoGWiVSCL4BZxdBBGYuyxD7oGgal3+3qONwIG/b+H/ms0gU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UXCgnMRH; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7cedcea89a0so3228275241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:16:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708413379; x=1709018179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sjSnzcueANrVxDHSiTSIdj8mpFTdy6IKk/WEGATL4Hg=;
-        b=UXCgnMRHcsSHd8x/dufxf6l1RioRXosQFKGLNSZ3MnwZ1jawvDU8emRsuW+N1bQY+w
-         qriQTOGqeOXmsOqAh0zSwpCuFUv7NnWxfzDdNsEj1sr+1xvIIOOCeHq8ENOb3s1cAHby
-         AgD3HHz++Xk5NsYPEtE2KZgc4nMree2En3cT98wlp3xQLISsZ7jaI8r0p8uGbLyfx147
-         gPFp//ilFRVVbV9y1fBiDxibRJYWC7oUyE0AlGinDSAbY8GGt6SXABE9gQ1VlM3JNfwu
-         OAhyWPehyrabas/7bDywUX72SU2uMZHaMPrxm9QlMaB3uBza1UjCq7xikfqrUDYKxtSg
-         qRGg==
+	s=arc-20240116; t=1708413375; c=relaxed/simple;
+	bh=Y5g/NozKOkvYdEq6doQYTKN0YGh6Ay4GymYgkWKFTGo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=fnCWkR24lGkjvUMv3U1hI4qcHF6Jy/G/qMs6UlEwaiAQdSyL5vGvcmk1X0m87ThnjVx7x9s0zNJKJ5gFh+HLUaRGK5VzZmuORXILKS9QAuC39wKP+hZ2ING1ZBZbEQh9ttRlcCfM+89BK3p8UIsPcqOFw2F+m5gDfoicbmu6Vjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7baa66ebd17so644118339f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:16:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708413379; x=1709018179;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sjSnzcueANrVxDHSiTSIdj8mpFTdy6IKk/WEGATL4Hg=;
-        b=rglidzqrznHvlrHffZy+d1xZy0FUPME+NrL0oDm33Th2Piy9Z/rn8l4YZFxNO1zJ8j
-         S5fRsmQMDkfnEmo3LHFNBSeSY6RaZVFX4vyUCALr6Y+EaN6BE00oo81MQVV/ScgeLw5+
-         sdv692sCf14H2KmMfGUe5QqycUL7ZWJnw4P2ZAXP0kK9qKsAp4LjoVqfHk/2iy2eaMXg
-         YRPuqi/y+2Q9qvgM9k9fxmiueB3xP2t2VpvuxTP2Yck95cvW1WBwlWTAJAy+OANx1w+E
-         R8y8fZhgK8yy03HmLyMQLSxP26z/wd0N1poKTWDgLw8/zlYFX9N5nc95kFzfJedjJmKK
-         6AeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2FqAJzTocERVsk7d8VRSYCqQYQvXsRn5BJ95Jg7WYYCfYHKt7U1jLR0pmJQYxr82EzeeSEhlaFgfcUGkkupt+XVxb3rk4H3WGVuYF
-X-Gm-Message-State: AOJu0YzMVzO3QpIWeSpyHRpmg1fSIWy8EPquYyfzlR7rXLa1IqNARxmQ
-	/uhTts9Y/rgpKB2HWdk1ze8+6LLjyxC9TLEHrNJ424eIcbGccK9QN62chidV1YRaC24RZtqL7YO
-	eAFhu54Ax9h0bIGd8mm7HrW1+VF0=
-X-Google-Smtp-Source: AGHT+IF4m3dgoSMmOTM4bk0KoXHGseYv3UMy+OTOQ+OvzblAw7CY3DMgupyPNvuJ3tBg+ruYSxeWUDP5FHgbfoGuQEc=
-X-Received: by 2002:a05:6102:3751:b0:470:40f1:a185 with SMTP id
- u17-20020a056102375100b0047040f1a185mr7266227vst.13.1708413379290; Mon, 19
- Feb 2024 23:16:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708413373; x=1709018173;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/k/JrZr1BfcHhOAaV2oyCmSOvOCr7BBaqqXONQJem0=;
+        b=gg7EaGO7k66IEYBuhBwM9Dm9YO1M4iwmMWUUGC5qwVs39Y0VWDvOcDB71avqqopQch
+         /UfkSAr0E/PHYiUESNdNgygDqhSuGJIkC8z8L3Dpg+SoDz20Y/8OPwEb0wo3ByJNQ5/D
+         o5bJugJbyLu08lw2V57lVacPnixDXwgoLagSUAD8cSxIk72UoKvU2v8Y/uMgmGEVWyB9
+         9AwXSY6wnnEdl9BHgGS0TPFoM1Dtxj0iRdQMJUaduG4pX3YqZL6VbEmBm49LWEWvoxP2
+         iN2ZFqbeJPVnHXIZrubRWPnM7KA3JV7b4sIWSNl0OtwelfD2al9UZ8RGjZadybEvyKyD
+         y48A==
+X-Gm-Message-State: AOJu0YwRngAtj6/+pXGdeiAOr0uzCDkJmMUkibtH5ghNQzkqzSB1j2ps
+	HkYL0MAL4WecATJUtd6K3gfC3gF5xJGQeC6qgZrgif3q+jI7b1dXPgVXdzwRCx34hVcSITcdXyh
+	OgEMFTcWgN2RquzgCtTi3xEZ7Ulks/6Io7dV0CltdnkP8nwIN47K1zO1Yng==
+X-Google-Smtp-Source: AGHT+IFLa6a37A3Ttc9GvLlCffwoKXGlCdYtCzkj2b5rW2CSJb/4gq9zn/Ohj6OY5wIZYocvCRSiij+Mc9RhPU3V0uRLv4i34e6x
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219141703.3851-1-lipeifeng@oppo.com> <20240219141703.3851-2-lipeifeng@oppo.com>
- <7c648dac-3198-3dba-0a96-34798cfdbd99@oppo.com> <CAGsJ_4xPDUgcYxNu230QC--ZiKV71nJJ+v0LVR7yF1io+TiLdA@mail.gmail.com>
- <8ea640a1-fc2c-a6fa-cf4b-bb8c0b694b4f@oppo.com>
-In-Reply-To: <8ea640a1-fc2c-a6fa-cf4b-bb8c0b694b4f@oppo.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 20 Feb 2024 20:16:08 +1300
-Message-ID: <CAGsJ_4zrctJbGZ6EwTJh5PadG_1Vk09Djw8Vd+hzvorq_DMfig@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm/rmap: support folio_referenced to control if
- try_lock in rmap_walk
-To: =?UTF-8?B?5p2O5Z+56ZSL?= <lipeifeng@oppo.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, osalvador@suse.de, 
-	willy@infradead.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	tkjos@google.com, surenb@google.com, gregkh@google.com, v-songbaohua@oppo.com
+X-Received: by 2002:a05:6e02:188c:b0:365:21f4:7030 with SMTP id
+ o12-20020a056e02188c00b0036521f47030mr760052ilu.4.1708413372910; Mon, 19 Feb
+ 2024 23:16:12 -0800 (PST)
+Date: Mon, 19 Feb 2024 23:16:12 -0800
+In-Reply-To: <0000000000002cf4690610660f71@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000038d3680611cafc4d@google.com>
+Subject: Re: [syzbot] Test for 34ad5fab48f7bf510349
+From: syzbot <syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 5:00=E2=80=AFPM =E6=9D=8E=E5=9F=B9=E9=94=8B <lipeif=
-eng@oppo.com> wrote:
->
->
-> =E5=9C=A8 2024/2/20 11:01, Barry Song =E5=86=99=E9=81=93:
-> > Hi peifeng,
-> >
-> > On Tue, Feb 20, 2024 at 2:43=E2=80=AFPM =E6=9D=8E=E5=9F=B9=E9=94=8B <li=
-peifeng@oppo.com> wrote:
-> >> add more experts from Linux and Google.
-> >>
-> >>
-> >> =E5=9C=A8 2024/2/19 22:17, lipeifeng@oppo.com =E5=86=99=E9=81=93:
-> >>> From: lipeifeng <lipeifeng@oppo.com>
-> >>>
-> >>> The patch to support folio_referenced to control the bevavior
-> >>> of walk_rmap, which for some thread to hold the lock in rmap_walk
-> >>> instead of try_lock when using folio_referenced.
-> > please describe what problem the patch is trying to address,
-> > and why this modification is needed in commit message.
->
-> Hi Barry=EF=BC=9A
->
-> 1. the patch is one of the kshrinkd series patches.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-this seems like a bad name for the patchset as nobody knows
-what is kshrinkd. maybe something like "asynchronously
-reclaim contended folios rather than aging them"?
+***
 
->
-> 2. it is to support folio_referenced to control the bevavior of walk_rmap=
-,
->
-> kshrinkd would call folio_referenced through shrink_folio_list but it
-> doesn't
->
-> want to try_lock in rmap_walk during folio_referenced.
->
->
-> > btw, who is set rw_try_lock to 0, what is the benefit?
->
-> Actually, the current situation is that only shrink_folio_list will set
-> try_lock to 1=EF=BC=8C
+Subject: Test for 34ad5fab48f7bf510349
+Author: syoshida@redhat.com
 
-understood, as you don't want contended folios to be skipped
-by scanner any more.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
 
->
-> while others will be set to 0 that it would wait for rwsem-lock if
-> contened in rmap_walk.
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 9c962347cf85..c9ad41bce426 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -167,7 +167,8 @@ static inline u32 netlink_group_mask(u32 group)
+ static struct sk_buff *netlink_to_full_skb(const struct sk_buff *skb,
+ 					   gfp_t gfp_mask)
+ {
+-	unsigned int len = skb_end_offset(skb);
++	//unsigned int len = skb_end_offset(skb);
++	unsigned int len = skb->len;
+ 	struct sk_buff *new;
+ 
+ 	new = alloc_skb(len, gfp_mask);
 
-ok. other reclamation threads will still skip contended folios.
-
-As discussed, the patchset really needs detailed data to back up.
-
-Thanks
-Barry
 
