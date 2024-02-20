@@ -1,167 +1,152 @@
-Return-Path: <linux-kernel+bounces-72991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F199C85BB99
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:15:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573F785BB9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:16:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A880B214B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11A9A284DEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FED67C6A;
-	Tue, 20 Feb 2024 12:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4983867E6E;
+	Tue, 20 Feb 2024 12:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iTTDfv84"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjeB14b8"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D3541C66;
-	Tue, 20 Feb 2024 12:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10DC67A0F;
+	Tue, 20 Feb 2024 12:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431313; cv=none; b=MYdG/bv8ApdPhgVKSXDNPDDXtjJ/+CHMIYihDlalMCaUsmc8Za0nuqn90rPFqiJgWf4/r+cQ+/eT//2t2XSUnZTdbaXxssR/sjeONocipy4GNgeuxmmPz9fADX5Jhe4eo3c2d/hwAx4p04DF1KaEOnZ8eA9Spx+J0mjmAWBT9lM=
+	t=1708431358; cv=none; b=PKpE2rtKRuyL7C4FtOgHQyUi2OeMXWb4zaKYhDjreABOlXNEBBp3cQ8DouxZQ63EOnrMPqW4HwCoCahiPbHUtifW1HTYAjcGZcfWOSOIT+d/eEPJXsS5yBSRZ9/1Xj9UtpsUtnO8jnhWI45uD5XoVIQg6jxjCrZe0S8pu+SWg1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431313; c=relaxed/simple;
-	bh=r6nqoS7kMM7ci+2ReiSu0VCg0rHZGr/oGH/w6nlGJpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bA/lW39Gn+pD7Sl5F4Fe8tHF4tClZ+s5dcFcf0NqvRYdFtfmq8Vpv8b4xUTbZiBvIbXZRTKjrX3wr6q3w8gcQI+87ugDpiqMt55QqH/wg+/g5aewfWPbgc/bqJmoSk7EQ6ZkbvWSJ9JM87fW3zVHT/eSqfxAesYRZdM8E+oZzSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iTTDfv84; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KAZO5l001507;
-	Tue, 20 Feb 2024 12:14:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=cxFS81RMJtemynwSdZqrwfVjkZcRgXLWimSCapEpgBY=; b=iT
-	TDfv84WiSCPv56CT16vjGvt5oApl3jIHhXTwjZ069BpDjozpjCWkhDfAetJ3ZdPs
-	FsXaxstZfUmvd6ryoJCmeuqZi6lK3MAd+YzBkjfeEG1c+djSY3QhszCWwpU5YHqn
-	Yhsd0U+RMrTEsVTB86rAcjvfXHcTIp6Xnd6HSKSFBbJ4z4hf5z86I7dPsdvJJrGc
-	iqGG/XduTmP5KU7eX7Ltj82deoCiSkyrWW/2ZLN+QgMGn82aKMtxyGFQil3M4yDQ
-	f/pNpNPjpW5CiTVU4hj6jAo2rLwMGEN9tbDjM2Sh2OqnveABJLvP7luyacyPgEvU
-	IovxTYriR+x3pdgtoD4Q==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct3eg7k7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 12:14:57 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KCEuFV020391
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 12:14:56 GMT
-Received: from [10.216.16.129] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 04:14:50 -0800
-Message-ID: <f5177fad-214f-1b60-46ba-1dc0a4fb059e@quicinc.com>
-Date: Tue, 20 Feb 2024 17:44:47 +0530
+	s=arc-20240116; t=1708431358; c=relaxed/simple;
+	bh=NFKIpWFlrcLcgm96+Riat3ntN8g+TKcG0bqfTPRK4F8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=G+HKH84JQo4598EaN2UlVQrNyPuO+Cbz8jxvhZhPs8PjNXtUXE9KhJnobOaAm4dMI5aFARXWlnvsycOF7YJfwlAQb0XN6NpyY8h6ITkbjbJTBqsG84gzYSA7a1lmo78ylPVdCL39rn7lVsHCf+PB5STZ59JHPz2FyUIQ+jgToZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjeB14b8; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4126aa42402so10646695e9.0;
+        Tue, 20 Feb 2024 04:15:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708431355; x=1709036155; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1kHmAH30WGxy5AZqgJqTBRqpGld5Izrqx3fcp2YhQqw=;
+        b=hjeB14b87dnr13bbW/fyC0anOOQ2VbHDbOtLUbtzj5Cmb/vdMLJdkA6694mwxqfKxw
+         qBZDF4lUmoCGMcKLKfqL9a0O7e5vrtxrTiD9G9qOe1yhaoeqdsKUsrXkTkMKD6GiSmcb
+         PbUB6F05jBymkFDIoZg9Q8O+O1HmnMu/4wiOpbYCI/Wq+hH2Q8T2+uV1QpTb00GkHcCb
+         tKNW0/67dXUOSjPoKVXLN3exQQvN8LWuIxGyWEm3wM7DbRLrmAkAbguOeNmkWRhVhYqQ
+         J/YLFPaOw272P9RhLwikN3Mzyw7sNRWFc14XmMplN+p1w+TOQKlL9MJiIMfFD1uJlhJE
+         cOyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708431355; x=1709036155;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1kHmAH30WGxy5AZqgJqTBRqpGld5Izrqx3fcp2YhQqw=;
+        b=kkyHJsigsTrp2QH0YJJVtukK52Nsoq7x+ePb9GAa/ON4QtJiS7+qROi7ZhdwSHaRPp
+         qlKjBrvcCvYNz5rNtqpB0Gy3QDM4xT3RXRoRiEBFP1xVM2WXu4YwMzGgnG2BX8L4z31c
+         xA5DnuB/pIAxf4NY9q4TkQJy/9PN8GpUekfNYr9DbOG9JkgZ6+Mxlm321+EwL6P5Tb2P
+         CoqJW0YwZTiTgIsPjhxcaAClJug5XpkQEK1LQOY19yWrdS7S79wjkzRmeDOwvIzd6QXY
+         vfSUG1Ii4UermQ8ntrI8Zh/4VKML9aCzA3obFv5MKpYhnnN1MryWj0mwrYpKKJI3z8wW
+         Y2Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCWqcLVEkIEem6eSBQ4gTRN33y01ok4X3JLzu0X41hEBCPCDuZjAgOvp7910qrIhMtNVRm9ZR06Iq6AHNhUdKVkdZNHy1t0aOERtzo6GAoJVmgo/12ISxqQFeYk1cxNYUNoe6GxhPkEF/19hdWcS3ZV7GJYUEH1jhUTzRsHnNE5FRb37500vIFSS1z7tPu8CNWd7b8xL6hY1ANZCgQNqDQI=
+X-Gm-Message-State: AOJu0YzNTv88pwG51w1p+fd7UGIFLqWnO6Vmr5cuSEcR3ySFV1poRdgs
+	q8vD19XvvmkCFFLWu3wo92VXE1bRoYNj1WoX92Pem41DxjQu6DyW
+X-Google-Smtp-Source: AGHT+IH8LNEn6d2zlOk1KelrI39dl9uZ+tjiwqV5GG6X14RQwC+tUIx7y4JAcJ/RsWA+Kk8zORUWpg==
+X-Received: by 2002:a05:600c:45d2:b0:412:1e2:e237 with SMTP id s18-20020a05600c45d200b0041201e2e237mr10899429wmo.20.1708431355061;
+        Tue, 20 Feb 2024 04:15:55 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id ck4-20020a5d5e84000000b0033d3f0eee9dsm7984801wrb.27.2024.02.20.04.15.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 04:15:54 -0800 (PST)
+Message-ID: <9edfd3481a317ada51be03fa9da824edbcede9c0.camel@gmail.com>
+Subject: Re: [PATCH v13 3/3] iio: adc: ad7173: add AD7173 driver
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Ceclan Dumitru <mitrutzceclan@gmail.com>
+Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org, 
+ linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Jonathan
+ Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>,  Michael Walle <michael@walle.cc>, Andy Shevchenko
+ <andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>,  ChiaEn Wu
+ <chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
+ =?ISO-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>, Mike Looijmans
+ <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, David Lechner <dlechner@baylibre.com>, Ceclan
+ Dumitru <dumitru.ceclan@analog.com>,  linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
+Date: Tue, 20 Feb 2024 13:15:53 +0100
+In-Reply-To: <3bc2c1c6-726a-4751-ae81-4d8336619025@gmail.com>
+References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
+	 <20240220094344.17556-3-mitrutzceclan@gmail.com>
+	 <6af326b1bf24faea652b4549ff5db24b96ee80c5.camel@gmail.com>
+	 <3bc2c1c6-726a-4751-ae81-4d8336619025@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <broonie@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240215134856.1313239-4-quic_mdalam@quicinc.com>
- <d1c80d3f-3b70-4630-8f7d-b00983b487dd@linaro.org>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <d1c80d3f-3b70-4630-8f7d-b00983b487dd@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: L8yq_Uekkjs14WXkjphCaEBvZ_r7yuA5
-X-Proofpoint-GUID: L8yq_Uekkjs14WXkjphCaEBvZ_r7yuA5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200087
 
+On Tue, 2024-02-20 at 13:25 +0200, Ceclan Dumitru wrote:
+>=20
+>=20
+> On 2/20/24 12:38, Nuno S=C3=A1 wrote:
+> > On Tue, 2024-02-20 at 11:43 +0200, Dumitru Ceclan wrote:
+>=20
+> ...
+>=20
+> >=20
+> > > +};
+> > >=20
+> > > +	indio_dev->name =3D st->info->name;
+> > > +	indio_dev->modes =3D INDIO_DIRECT_MODE;
+> > > +	indio_dev->info =3D &ad7173_info;
+> > > +
+> > > +	spi->mode =3D SPI_MODE_3;
+> > > +
+> >=20
+> > I don't think we need the above. We should just enforce it to SPI_CPOL|=
+ SPI_CPHA
+> > in
+> > the bindings [2].
+> >=20
+> > [2]:
+> > https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree=
+/bindings/iio/imu/adi,adis16475.yaml#L45
+>=20
+> Rob Herring V1:
+>=20
+> """
+> > +=C2=A0 required:
+> > +=C2=A0=C2=A0=C2=A0 - compatible
+> > +=C2=A0=C2=A0=C2=A0 - reg
+> > +=C2=A0=C2=A0=C2=A0 - interrupts
+> > +=C2=A0=C2=A0=C2=A0 - spi-cpol
+> > +=C2=A0=C2=A0=C2=A0 - spi-cpha
+>=20
+> If the device(s) are not configurable, then you shouldn't need these 2
+> properties. The driver can hardcode the correct setting.
+> """
+>=20
+> ref:
+> https://lore.kernel.org/linux-iio/20230810205107.GA1136590-robh@kernel.or=
+g/
+>=20
 
+I see. I thought it was the other way around... Then, the other thing is th=
+at I think
+you should call spi_setup() after hardcoding the mode.
 
-On 2/15/2024 11:27 PM, Konrad Dybcio wrote:
-> On 15.02.2024 14:48, Md Sadre Alam wrote:
->> Add qpic spi nand driver support. The spi nand
->> driver currently supported the below commands.
->>
->> -- RESET
->> -- READ ID
->> -- SET FEATURE
->> -- GET FEATURE
->> -- READ PAGE
->> -- WRITE PAGE
->> -- ERASE PAGE
->>
->> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
-> 
-> [...]
-> 
->> +void snandc_set_reg(struct qcom_nand_controller *snandc, int offset, u32 val)
->> +{
->> +	struct nandc_regs *regs = snandc->regs;
->> +	__le32 *reg;
->> +
->> +	reg = offset_to_nandc_reg(regs, offset);
->> +
->> +	if (reg)
->> +		*reg = cpu_to_le32(val);
-> 
-> if (WARN_ON(!reg))
-> 	return;
-> 
-> instead?
-> 
-> This would be tragic..
-
-  will fix this in next patch.
-
-> 
-> [...]
-> 
->> +
->> +	ecc_cfg->cfg0 = (cwperpage - 1) << CW_PER_PAGE
->> +				| ecc_cfg->cw_data << UD_SIZE_BYTES
->> +				| 1 << DISABLE_STATUS_AFTER_WRITE
->> +				| 3 << NUM_ADDR_CYCLES
->> +				| ecc_cfg->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_RS
->> +				| 0 << STATUS_BFR_READ
->> +				| 1 << SET_RD_MODE_AFTER_STATUS
->> +				| ecc_cfg->spare_bytes << SPARE_SIZE_BYTES;
-> 
-> Let me introduce you to FIELD_PREP/GET and GENMASK().. Many assignments
-> in this file could use these.
-
-  Ok
-> 
-> Konrad
-
-Thanks for reviewing, will fix all the comments in next patch.
-
-Regards,
-Alam.
+- Nuno S=C3=A1
 
