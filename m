@@ -1,319 +1,170 @@
-Return-Path: <linux-kernel+bounces-72858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A8A85B999
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:53:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD5885B99E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99FED2846EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:53:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E4E1F24114
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E10364CF5;
-	Tue, 20 Feb 2024 10:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EDF65BB0;
+	Tue, 20 Feb 2024 10:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBlo2BJD"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TU7e7pDP"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AED65BA0;
-	Tue, 20 Feb 2024 10:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DDF664A9;
+	Tue, 20 Feb 2024 10:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708426384; cv=none; b=MbPEKXPyTnGgcQfywkzkqPD/hInNuXRTBD2Y7aHOpfwRQqWuUT8OKB0OWtW2qzguPETfB/JA3MiEt3ar4S/i+bntJNgXrvUFkP5JrL+fFZgECqUi8jPP54UHroXHQZjo8GCuaIaDdSB/g9SfpYDhgHjv7LN8FmkEwg6Si/9slUc=
+	t=1708426403; cv=none; b=C93xxsU9Gq5wEgYZFBs14wgnxL25TY/J/2+lk7iRqX41s/r86M5dXsfnU854XnJj/22u+NmjfENIoTZikQKOc/ihfk1pB4Rz/ySu76dvrdXp1JuxqA4t8NKCkQ5RW9eeseeH5jMhW8tCjqSy9WV19THvuMFxPf3PZ0I3Naxivyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708426384; c=relaxed/simple;
-	bh=cPB4IpVUuhfROKTHEBSmildqyu6M94KP8txrBEnrCQM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jprzdMX6uWVsuKxRQy4pztkUlH+LcseBufNXB42IqqLnXA1jKdmj661xNL5Fv5m3FaCxZ8xHW6zrMToFr3MpWez8DzZemCbD2nlIPHZya8Kg4/1yNVYD6PAyVB1QScZuxqA1SsUFG762STcDSce7LUZZRnvK2smjuZBnMY3S06M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBlo2BJD; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1708426403; c=relaxed/simple;
+	bh=WcrPPnFdIaTswNzGGLNCjpYeRfDUJLHsrVeXfxJS7Wk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=YTThp2efe7emMzZsHqJ+aDVRGQGQfnTC3T8ouv6S+fLj90pkGN6NfS4tWT34bQVXFso4Q0CN+8Mhy8358EmKHPHVjypY25rCdVsP+B0XIAXdmsOAwnb/M/T4Nc8ZpsiwpUGPh6yvZdy2MWUzYJz5F5y0mErrnphBcoOcPRwKjLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TU7e7pDP; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso216660766b.0;
-        Tue, 20 Feb 2024 02:53:02 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3394bec856fso3600667f8f.0;
+        Tue, 20 Feb 2024 02:53:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708426381; x=1709031181; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vV96ecaIb+VxMiPiMQTu7LG+p1XZZNBp/ggKsfTmuOs=;
-        b=SBlo2BJDwxkEfd77mUK4LKbuL7QFnfVyV3xkN08AClqCYwHF4n7BaoRGk+cwL9Vsw3
-         hlL1u1aae6Qb0STH9EsFUb8dMeN3x8bVZBhHCRFQjah/kjLac3FrqfjGIfj18HWFr/UJ
-         VTtao6x4rtI+XJP5LGFnExs3eEe9DpU5WQadbsvQS5qsLCS6Xq3O4hVwnImTp+ucQl0+
-         Wfntt6d2W90HTrbmpGaMNA5dFKT/qIdXqVGh5hhxeU4HhiNAm6l4YRq2Y5qWD4rRhvYg
-         jlO/LRd6z58XZWZU8Xnou82NU0pCIKhZzodQIQgfYz4oPFXpLiVaFSAjbrMm33lHZ1ke
-         FCVQ==
+        d=gmail.com; s=20230601; t=1708426400; x=1709031200; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Kk7TVBPE2HlTc1l9Sm4itMeOxxlwuSodhj0pqtVmHM=;
+        b=TU7e7pDP24TYuKARhHMIpwW55U49f5b5/PudxMBWTvNeKd9OHCk583W8CUl61O0loj
+         trxrqBIP32qju7gLSNWU1J83hO3wW+EadX28rggK7yR6wha4AdiGn/T/D4j/Po1r2AjM
+         h7FzLqBwei0ShQBtIfqolWxi3/X7p7j1TcJ0BaePblskZTihqaZcPEBt4Ely4wHyBkxD
+         /z79p9HHYgVseW5Uq3HXmqSIiIyicxOK+tMxM6QvDVGihInDVI01G4E3T55QFrO9y/eC
+         NfIzAUbsVvN5CqObIR+AxeNlHJ9G5ScKqDWr2p7+IaQsef0y2OYqirBb5lKJUetYdqH2
+         HD4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708426381; x=1709031181;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vV96ecaIb+VxMiPiMQTu7LG+p1XZZNBp/ggKsfTmuOs=;
-        b=GbaVWXG0OB/HiE16FLiHIcu4/XKNOOeLDPwXDavWVxeS3bKj77DZkn34uCODBG/tXj
-         /wIaT99sMAUkNuwuZaeOUsgWIxZ9V5+mFY7KkBpJTCzNTA9s12sxfxo7dh3hqBmyE1Ih
-         InPt2i7WZryw+mzfycLZNDQVwKxptbt/0BWpWRFNypJXFxNjZebbegMahFSFWGyAKier
-         Cze6hpE2GX4khk+Qx+giX9a3oTNAJ2w4rl9Y/YLzGRGkiA6lnwyC5/0p2oOkqVDs0oC4
-         dSL02mq8WGtElaoHHcjFaxKXL6AZ0wn88Yd8Ns3VINNeoAPcwhdsuSg0aO8ToTMLooXK
-         MCUA==
-X-Forwarded-Encrypted: i=1; AJvYcCX48QhzywGYr03COmwW4Dz6lWRneRtYU21vJlIpc2wkq+BNSicFGs4DQGz936PTBjvb+35Mad3JYp/heZQKuAE2/5ku6pJWmq/CBAlZTJ1hF2Roxq8aJTQiQTQsM7UhxkTK6oaze5zj3uFyeEixxzG4bPp8w7nRKCcH1HpbQcY5/vVH
-X-Gm-Message-State: AOJu0Yyi0H2CTiWW1SswNWUgrrTm9zaym9jvAxNiR8zW4462IMUA8jMT
-	jT0ks40XVZUOPeogjvZ0ANbV2NC7ZnZ/+PBO818MKR4DgIiM8VpX
-X-Google-Smtp-Source: AGHT+IGEvRWyyxIILWvy/wBWwDmHe1dBN022mBcIlhJpTbN1fxJDnkvnmdc0vuZ/e2jYeGHgM+Xfsw==
-X-Received: by 2002:a17:906:4558:b0:a3f:c90:7240 with SMTP id s24-20020a170906455800b00a3f0c907240mr602428ejq.36.1708426380643;
-        Tue, 20 Feb 2024 02:53:00 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id lu16-20020a170906fad000b00a3d5efc65e0sm2524450ejb.91.2024.02.20.02.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 02:53:00 -0800 (PST)
-Message-ID: <f0ec7c23aabc531f609f57b5e7ffb0c00047dfc4.camel@gmail.com>
-Subject: Re: [PATCH v2 2/5] spi: move splitting transfers to
- spi_optimize_message()
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: David Lechner <dlechner@baylibre.com>, Mark Brown <broonie@kernel.org>
-Cc: Martin Sperl <kernel@martin.sperl.org>, David Jander
- <david@protonic.nl>,  Jonathan Cameron <jic23@kernel.org>, Michael
- Hennerich <michael.hennerich@analog.com>, Nuno =?ISO-8859-1?Q?S=E1?=
- <nuno.sa@analog.com>, Alain Volmat <alain.volmat@foss.st.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>,  linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org,  linux-iio@vger.kernel.org, Jonathan
- Cameron <Jonathan.Cameron@huawei.com>,  Julien Stephan
- <jstephan@baylibre.com>
-Date: Tue, 20 Feb 2024 11:52:59 +0100
-In-Reply-To: <20240219-mainline-spi-precook-message-v2-2-4a762c6701b9@baylibre.com>
-References: 
-	<20240219-mainline-spi-precook-message-v2-0-4a762c6701b9@baylibre.com>
-	 <20240219-mainline-spi-precook-message-v2-2-4a762c6701b9@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        d=1e100.net; s=20230601; t=1708426400; x=1709031200;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Kk7TVBPE2HlTc1l9Sm4itMeOxxlwuSodhj0pqtVmHM=;
+        b=c2s7dfBOs93FR7GsgDlri+6XLVdl4l4ktDiAsjAHAz3+hhTma0V3na8GAx2ppJQXWg
+         6aLOUgESIaGVr03sJhfMWmcMEaAxROwOvC5TPkJdO6sDwjNy75sYouE/LgDB4119qqmS
+         RwU9PX5JS8Hh02MCtacAeGLmyBrq+zWN6h3I0x0SaiIl19EzFsNNpcj7VqzIv4vvejEw
+         uZ+iFDnOpU4F1vPPWRbF2WAW/BW6glXzVwSThtQiLEFT5ADXkHfTUZ2zUnpy5M5MPW32
+         93lP5Cff8Ww6C0vqshr3Ov+jonw4fKnEzqH43j0lYkJMBOBn/31HeGSiNJHQCCJ33NP4
+         I66g==
+X-Forwarded-Encrypted: i=1; AJvYcCWQx7LrfKPoA2JHEgQG7YCgaK5BBXEOl3oWE37zHUPwJ42hYjflTYAAlFNplejujq035HqRM2sf48v6Wi50M4eOWOE2bgxpyOW/fF3C9ZKyeOtfFEvp76gktOOA7rhbv6oQtE9MAjAkm/yokAsUgTGWgQ199jfL42m+dwCQbKHjYomg5HGFDcEHQwx1YiauEKm+Do2n1/IaiMuJNBc6P9y8y0LNCYXF6/j7l1EKQRv2OljDxZT9yvvv0Q==
+X-Gm-Message-State: AOJu0Yw8oXJDhpl/MLOGjFGVWm0YJGKw5AQON4vdvntSeOf9hj+69q65
+	7cB7ahmXljegQJrkgXH+TpqHnMpVZXycNhhkvGGz/CdES3l2QcaQ
+X-Google-Smtp-Source: AGHT+IH7465FJ5bRclP1AsBPW6J2ByerjfrQoZxMhpklVxMUbyc5bzfafg2vxzaK3n/7AH+GNoFpcw==
+X-Received: by 2002:a5d:5345:0:b0:33d:1bd1:8ae2 with SMTP id t5-20020a5d5345000000b0033d1bd18ae2mr9759369wrv.19.1708426400183;
+        Tue, 20 Feb 2024 02:53:20 -0800 (PST)
+Received: from [192.168.10.18] (54-240-197-233.amazon.com. [54.240.197.233])
+        by smtp.gmail.com with ESMTPSA id h5-20020a05600016c500b0033d60cba289sm3750737wrf.68.2024.02.20.02.53.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 02:53:19 -0800 (PST)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <0ba3a87b-7596-466c-9415-7af28c95dd1e@xen.org>
+Date: Tue, 20 Feb 2024 10:53:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info
+ handling
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
+ kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240215152916.1158-1-paul@xen.org> <ZdPQ_AcbTYMtArFJ@google.com>
+ <f85098ba-b56e-455a-9b73-909d71cf0b51@xen.org>
+Organization: Xen Project
+In-Reply-To: <f85098ba-b56e-455a-9b73-909d71cf0b51@xen.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-02-19 at 16:33 -0600, David Lechner wrote:
-> Splitting transfers is an expensive operation so we can potentially
-> optimize it by doing it only once per optimization of the message
-> instead of repeating each time the message is transferred.
->=20
-> The transfer splitting functions are currently the only user of
-> spi_res_alloc() so spi_res_release() can be safely moved at this time
-> from spi_finalize_current_message() to spi_unoptimize_message().
->=20
-> The doc comments of the public functions for splitting transfers are
-> also updated so that callers will know when it is safe to call them
-> to ensure proper resource management.
->=20
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
+On 20/02/2024 09:14, Paul Durrant wrote:
+> On 19/02/2024 22:06, Sean Christopherson wrote:
+>> On Thu, Feb 15, 2024, Paul Durrant wrote:
+>>> David Woodhouse (1):
+>>>    KVM: pfncache: rework __kvm_gpc_refresh() to fix locking issues
+>>>
+>>> Paul Durrant (19):
+>>>    KVM: pfncache: Add a map helper function
+>>>    KVM: pfncache: remove unnecessary exports
+>>>    KVM: x86/xen: mark guest pages dirty with the pfncache lock held
+>>>    KVM: pfncache: add a mark-dirty helper
+>>>    KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+>>>    KVM: pfncache: stop open-coding offset_in_page()
+>>>    KVM: pfncache: include page offset in uhva and use it consistently
+>>>    KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+>>>      HVA
+>>>    KVM: x86/xen: separate initialization of shared_info cache and 
+>>> content
+>>>    KVM: x86/xen: re-initialize shared_info if guest (32/64-bit) mode is
+>>>      set
+>>>    KVM: x86/xen: allow shared_info to be mapped by fixed HVA
+>>>    KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
+>>>    KVM: selftests: map Xen's shared_info page using HVA rather than GFN
+>>>    KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
+>>>    KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA
+>>>      capability
+>>>    KVM: x86/xen: split up kvm_xen_set_evtchn_fast()
+>>>    KVM: x86/xen: don't block on pfncache locks in
+>>>      kvm_xen_set_evtchn_fast()
+>>>    KVM: pfncache: check the need for invalidation under read lock first
+>>>    KVM: x86/xen: allow vcpu_info content to be 'safely' copied
+>>>
+>>> Sean Christopherson (1):
+>>>    KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+>>>
+>>>   Documentation/virt/kvm/api.rst                |  53 ++-
+>>>   arch/s390/kvm/diag.c                          |   2 +-
+>>>   arch/s390/kvm/gaccess.c                       |  14 +-
+>>>   arch/s390/kvm/kvm-s390.c                      |   4 +-
+>>>   arch/s390/kvm/priv.c                          |   4 +-
+>>>   arch/s390/kvm/sigp.c                          |   2 +-
+>>>   arch/x86/kvm/x86.c                            |   7 +-
+>>>   arch/x86/kvm/xen.c                            | 361 +++++++++++------
+>>>   include/linux/kvm_host.h                      |  49 ++-
+>>>   include/linux/kvm_types.h                     |   8 -
+>>>   include/uapi/linux/kvm.h                      |   9 +-
+>>>   .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++-
+>>>   virt/kvm/pfncache.c                           | 382 ++++++++++--------
+>>>   13 files changed, 591 insertions(+), 363 deletions(-)
+>>
+>> Except for the read_trylock() patch, just a few nits that I can fixup 
+>> when
+>> applying, though I'll defeinitely want your eyeballs on the end result 
+>> as they
+>> tweaks aren't _that_ trivial.
+>>
+>> Running tests now, if all goes well I'll push to kvm-x86 within the hour.
+> 
+> Oh, I read this last and you already made the changes :-) I'll check 
+> kvm-x86. Thanks.
+> 
 
-Acked-by: Nuno Sa <nuno.sa@analog.com>
-
->=20
-> v2 changes:
-> - Changed line break for multiline if condition
-> - Removed kernel doc inclusion (/** -> /*) from static members
-> - Picked up Jonathan's Reviewed-by
->=20
-> =C2=A0drivers/spi/spi.c | 110 +++++++++++++++++++++++++++++++++----------=
------------
-> =C2=A01 file changed, 68 insertions(+), 42 deletions(-)
->=20
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index f68d92b57543..ba4d3fde2054 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -1747,38 +1747,6 @@ static int __spi_pump_transfer_message(struct spi_=
-controller
-> *ctlr,
-> =C2=A0
-> =C2=A0	trace_spi_message_start(msg);
-> =C2=A0
-> -	/*
-> -	 * If an SPI controller does not support toggling the CS line on each
-> -	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
-> -	 * for the CS line, we can emulate the CS-per-word hardware function by
-> -	 * splitting transfers into one-word transfers and ensuring that
-> -	 * cs_change is set for each transfer.
-> -	 */
-> -	if ((msg->spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD)=
- ||
-> -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi_is_csgpiod(msg->spi))) {
-> -		ret =3D spi_split_transfers_maxwords(ctlr, msg, 1);
-> -		if (ret) {
-> -			msg->status =3D ret;
-> -			spi_finalize_current_message(ctlr);
-> -			return ret;
-> -		}
-> -
-> -		list_for_each_entry(xfer, &msg->transfers, transfer_list) {
-> -			/* Don't change cs_change on the last entry in the list */
-> -			if (list_is_last(&xfer->transfer_list, &msg->transfers))
-> -				break;
-> -			xfer->cs_change =3D 1;
-> -		}
-> -	} else {
-> -		ret =3D spi_split_transfers_maxsize(ctlr, msg,
-> -						=C2=A0 spi_max_transfer_size(msg-
-> >spi));
-> -		if (ret) {
-> -			msg->status =3D ret;
-> -			spi_finalize_current_message(ctlr);
-> -			return ret;
-> -		}
-> -	}
-> -
-> =C2=A0	if (ctlr->prepare_message) {
-> =C2=A0		ret =3D ctlr->prepare_message(ctlr, msg);
-> =C2=A0		if (ret) {
-> @@ -2124,6 +2092,8 @@ static void __spi_unoptimize_message(struct spi_mes=
-sage *msg)
-> =C2=A0	if (ctlr->unoptimize_message)
-> =C2=A0		ctlr->unoptimize_message(msg);
-> =C2=A0
-> +	spi_res_release(ctlr, msg);
-> +
-> =C2=A0	msg->optimized =3D false;
-> =C2=A0	msg->opt_state =3D NULL;
-> =C2=A0}
-> @@ -2169,15 +2139,6 @@ void spi_finalize_current_message(struct spi_contr=
-oller
-> *ctlr)
-> =C2=A0
-> =C2=A0	spi_unmap_msg(ctlr, mesg);
-> =C2=A0
-> -	/*
-> -	 * In the prepare_messages callback the SPI bus has the opportunity
-> -	 * to split a transfer to smaller chunks.
-> -	 *
-> -	 * Release the split transfers here since spi_map_msg() is done on
-> -	 * the split transfers.
-> -	 */
-> -	spi_res_release(ctlr, mesg);
-> -
-> =C2=A0	if (mesg->prepared && ctlr->unprepare_message) {
-> =C2=A0		ret =3D ctlr->unprepare_message(ctlr, mesg);
-> =C2=A0		if (ret) {
-> @@ -3819,6 +3780,10 @@ static int __spi_split_transfer_maxsize(struct
-> spi_controller *ctlr,
-> =C2=A0 * @msg:=C2=A0=C2=A0 the @spi_message to transform
-> =C2=A0 * @maxsize:=C2=A0 the maximum when to apply this
-> =C2=A0 *
-> + * This function allocates resources that are automatically freed during=
- the
-> + * spi message unoptimize phase so this function should only be called f=
-rom
-> + * optimize_message callbacks.
-> + *
-> =C2=A0 * Return: status of transformation
-> =C2=A0 */
-> =C2=A0int spi_split_transfers_maxsize(struct spi_controller *ctlr,
-> @@ -3857,6 +3822,10 @@ EXPORT_SYMBOL_GPL(spi_split_transfers_maxsize);
-> =C2=A0 * @msg:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the @spi_message to transfor=
-m
-> =C2=A0 * @maxwords: the number of words to limit each transfer to
-> =C2=A0 *
-> + * This function allocates resources that are automatically freed during=
- the
-> + * spi message unoptimize phase so this function should only be called f=
-rom
-> + * optimize_message callbacks.
-> + *
-> =C2=A0 * Return: status of transformation
-> =C2=A0 */
-> =C2=A0int spi_split_transfers_maxwords(struct spi_controller *ctlr,
-> @@ -4231,6 +4200,57 @@ static int __spi_validate(struct spi_device *spi, =
-struct
-> spi_message *message)
-> =C2=A0	return 0;
-> =C2=A0}
-> =C2=A0
-> +/*
-> + * spi_split_transfers - generic handling of transfer splitting
-> + * @msg: the message to split
-> + *
-> + * Under certain conditions, a SPI controller may not support arbitrary
-> + * transfer sizes or other features required by a peripheral. This funct=
-ion
-> + * will split the transfers in the message into smaller transfers that a=
-re
-> + * supported by the controller.
-> + *
-> + * Controllers with special requirements not covered here can also split
-> + * transfers in the optimize_message() callback.
-> + *
-> + * Context: can sleep
-> + * Return: zero on success, else a negative error code
-> + */
-> +static int spi_split_transfers(struct spi_message *msg)
-> +{
-> +	struct spi_controller *ctlr =3D msg->spi->controller;
-> +	struct spi_transfer *xfer;
-> +	int ret;
-> +
-> +	/*
-> +	 * If an SPI controller does not support toggling the CS line on each
-> +	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
-> +	 * for the CS line, we can emulate the CS-per-word hardware function by
-> +	 * splitting transfers into one-word transfers and ensuring that
-> +	 * cs_change is set for each transfer.
-> +	 */
-> +	if ((msg->spi->mode & SPI_CS_WORD) &&
-> +	=C2=A0=C2=A0=C2=A0 (!(ctlr->mode_bits & SPI_CS_WORD) || spi_is_csgpiod(=
-msg->spi))) {
-> +		ret =3D spi_split_transfers_maxwords(ctlr, msg, 1);
-> +		if (ret)
-> +			return ret;
-> +
-> +		list_for_each_entry(xfer, &msg->transfers, transfer_list) {
-> +			/* Don't change cs_change on the last entry in the list */
-> +			if (list_is_last(&xfer->transfer_list, &msg->transfers))
-> +				break;
-> +
-> +			xfer->cs_change =3D 1;
-> +		}
-> +	} else {
-> +		ret =3D spi_split_transfers_maxsize(ctlr, msg,
-> +						=C2=A0 spi_max_transfer_size(msg-
-> >spi));
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> =C2=A0/*
-> =C2=A0 * __spi_optimize_message - shared implementation for spi_optimize_=
-message()
-> =C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 and spi_maybe_optimize_message()
-> @@ -4254,10 +4274,16 @@ static int __spi_optimize_message(struct spi_devi=
-ce *spi,
-> =C2=A0	if (ret)
-> =C2=A0		return ret;
-> =C2=A0
-> +	ret =3D spi_split_transfers(msg);
-> +	if (ret)
-> +		return ret;
-> +
-> =C2=A0	if (ctlr->optimize_message) {
-> =C2=A0		ret =3D ctlr->optimize_message(msg);
-> -		if (ret)
-> +		if (ret) {
-> +			spi_res_release(ctlr, msg);
-> =C2=A0			return ret;
-> +		}
-> =C2=A0	}
-> =C2=A0
-> =C2=A0	msg->optimized =3D true;
->=20
-
+I checked the patches you amended. All LGTM and my tests are fine too.
 
