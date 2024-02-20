@@ -1,136 +1,153 @@
-Return-Path: <linux-kernel+bounces-73576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D1D85C46C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:14:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD2C85C46F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBD731C22E82
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:14:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FBA281C66
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54AD134CEF;
-	Tue, 20 Feb 2024 19:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB94134CEF;
+	Tue, 20 Feb 2024 19:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZoBzwloR"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zGgQflBk"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE196A8D0;
-	Tue, 20 Feb 2024 19:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B8A76C9C;
+	Tue, 20 Feb 2024 19:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708456445; cv=none; b=WIKCQDqqzwxwP3Pu6wUZX8Zs1iq2os3XomiXluAuXx55IXCjplQQQwwYOfxH7ZTbLHkCVVn5VOZpGFVRHqfF1XjJhh1BaHn6eLA6EnNNplpY91Rl4yqh8Iwqib9hwMgXjQQQskDFIsN8V3vmMNOEW92h9QbjXpQj/WeQzWxD78o=
+	t=1708456490; cv=none; b=JM14Xa2rqVESkYOCVJnAUGDOmtClV8fnVewZHElG+F5NPjBH+QkHDiCluM8oOE1eH+SVoOU0y5YkHwuJHkP0ygsvORMdX3MVCQSusGeqyP9SLSUUFsy8IrxqTYkqsT7fv4aSjhWHwdmc3Zkvd7HKFey18hJVT34SLVEQVudkYy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708456445; c=relaxed/simple;
-	bh=Vj/ZTfzxphIR8gVetdnx24KOvZPHcYyzRAok6VpGq0g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=I/5PKr++26BocL0LrA82a1RkLWGKFf4J8CWVf7Kp62uPLsxNTvJm0kA19M1CjGcxGFm4ffPLBH4l3dEc2um6cXyfFcEAIpZrwwfc3e/nlzl/QNFpvD6Y4qfRQwkrpkNsIXGT/5plH8wV4D1V7qU77v2An6Hurell/H8DHppEMCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZoBzwloR; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41272d44adcso2418155e9.3;
-        Tue, 20 Feb 2024 11:14:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708456442; x=1709061242; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GBBZEpewC9BLRC+ZISwlxkj/pUQLQpzkfsio0tQwFB0=;
-        b=ZoBzwloRr+1vuo9jWJat6uR7bqNKIGQ6U+lt2jAomtctCkp4C2BWBZYlfuqvNAhsva
-         kkcRd098aFDRMxb8iRxtMNAP5+bgXsTQN6GRNmSBsiW8ZRpl55FDUC/6Jj88XfCWb76Q
-         gNiboC9BT89MNpKAsji68chZfekZy/Nk39MRjv3orlMCa3Y+ZdPZGC27jrJGr8wKIuv+
-         JRjI0dtYTGdoJjVfeLszTr4KHHRRimUV7Ac5x3QL5tYqAsuQk0kBt5dBqfH3DQQp/Ehe
-         SaM8dibDK9WuPymCeIThRXe7HllnxYEzia0C8SC5WuPU5YJIdIrGN4CFeF0zq41POb0g
-         4gSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708456442; x=1709061242;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GBBZEpewC9BLRC+ZISwlxkj/pUQLQpzkfsio0tQwFB0=;
-        b=G8koPxt743Ui2wxdq3iicc2l8HRyBkjN60TH4Oy5SLY0xRfidCp34UthsyP+76Crfg
-         CBQWgFHOHmA4iGKpjDTuTAd7rWvYi3TKLqOsCskqtlzdhrKzZ/sNufHXD2alktaejY4f
-         SbU4laQ9oDk0XyZaFu+ArSdlB0qrOv7qB0/tRk1wfjzSgnmD8WhEJnGC8ppXgcd4OWOb
-         NJBxNQl7m6yAlGUZLLxv3A3r9XTOplwuH9MhtpYu00UQpvCcd10OwmiSFLJWn3vmBdFU
-         vW7m/PmLz4uqse0NkDCsSSsi+FwmuD78KRN49x71YjTBcZS1vvlyXIFn36ov8eUKCQN8
-         hfAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWWpzZEKV577+wnxY1/hu1jHRbcDEdi/4UBnQZb/Vs3VHKe7iKjGf4hLXglCAHIRA+a6X1MJC/oEtgB87hJj4Y84eGxC+P3HvOlmTIM
-X-Gm-Message-State: AOJu0YzZdGwb5D0S4jjCbxvlQsXICoAMPkTmzTgHvuJXFD1M+nO+TPQo
-	3yDjiS4gBxo+oEOLiUpFbxtqzQoD1LkVPMB9Ngc06jjiaqptl91Z
-X-Google-Smtp-Source: AGHT+IHBXdNX8jfFHVljuYY+fDBgzTiYvU4aoKgQpeXGTMPlWv5Vyn2OpBFMl+BtOqoPl7MZSe+EhQ==
-X-Received: by 2002:a05:600c:1391:b0:410:e41a:fc0d with SMTP id u17-20020a05600c139100b00410e41afc0dmr12504690wmf.24.1708456441861;
-        Tue, 20 Feb 2024 11:14:01 -0800 (PST)
-Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id i6-20020a05600c354600b004107686650esm15807564wmq.36.2024.02.20.11.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 11:14:01 -0800 (PST)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 20 Feb 2024 20:13:47 +0100
-Subject: [PATCH] phy: qcom: m31: match requested regulator name with dt
- schema
+	s=arc-20240116; t=1708456490; c=relaxed/simple;
+	bh=+4Wi//AXlr7TWKT21ayN/iDlBqiMB79qVAUTF+4TgX0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZWFdyD5ap5lKyZgj9TZH/1MlaQkkDUiYwuUT3A/Pyn6zvp6aS3k0gYQpjmCxsBLB5AwKOv3OJSGhIc1bRSEeXuyzLydaDusFiTcuqMHk+1cLoWWAxR6R0JlocIeFZbHUuodm0Fz3YnzZcPN6perJ+9nRdK9lNlGFOxo5hegQ/fM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=zGgQflBk; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41KJEKWm059295;
+	Tue, 20 Feb 2024 13:14:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708456460;
+	bh=Ju6D8qwe0btWZ8SqLU34cJuOdj9z/fwKarHqN2ID9Iw=;
+	h=From:To:CC:Subject:Date;
+	b=zGgQflBkHo9JqNDaJe6c65j6qonOFk+5yMJp4fI6slSUh0mhpivJuxYk8lg4LM1a7
+	 FMZj6OJ51GIA6GFFiWCcec05btRt4pW+DuAdUBEleRbOo8Fk6z9gpbxoj2e6v6ny2a
+	 GUduNpftU2R6U8Ml3URLCvR2DETjytI0McWEh2og=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41KJEKOs038953
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 20 Feb 2024 13:14:20 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 20
+ Feb 2024 13:14:20 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 20 Feb 2024 13:14:20 -0600
+Received: from udba0500997.dhcp.ti.com (udba0500997.dhcp.ti.com [128.247.81.249])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41KJEKoN051513;
+	Tue, 20 Feb 2024 13:14:20 -0600
+From: Brandon Brnich <b-brnich@ti.com>
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon
+	<will@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad
+ Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
+	<nfraprado@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Darren Etheridge <detheridge@ti.com>
+CC: Andrew Davis <afd@ti.com>, Brandon Brnich <b-brnich@ti.com>
+Subject: [PATCH v5 0/4] Add Support for Wave5 on TI Devices
+Date: Tue, 20 Feb 2024 13:14:09 -0600
+Message-ID: <20240220191413.3355007-1-b-brnich@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240220-phy-qcom-m31-regulator-fix-v1-1-7675b4a916b3@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAOr51GUC/x3MwQ5EMBCA4VeROe8kbSnhVTZ7KAaToEyXEPHuG
- sfvP/wXBBKmAFVygdDOgf0coT8JNIObe0Juo8EokyljFC7DiWvjJ5xSjUL9Nrq/F+z4wLKw1ro
- st6rWEAeLUMzv/Pu77wdEwVPabAAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-According to the 'qcom,ipq5332-usb-hsphy.yaml' schema, the 5V
-supply regulator must be defined via the 'vdd-supply' property.
-The driver however requests for the 'vdda-phy' regulator which
-results in the following message when the driver is probed on
-a IPQ5018 based board with a device tree matching to the schema:
+This series is responsible for adding support for Wave5 driver[0]
+across numerous TI K3 platforms.
 
-  qcom-m31usb-phy 5b000.phy: supply vdda-phy not found, using dummy regulator
-  qcom-m31usb-phy 5b000.phy: Registered M31 USB phy
+[0]: https://lore.kernel.org/all/ae6d2ad3-0b2a-462a-a9eb-9ce01e7a7f5e@xs4all.nl/
 
-This means that the regulator specified in the device tree never
-gets enabled.
+Changes since v4:
+=================
+* Remove clock-names from device tree nodes per Vignesh's request
+  - "vcodec" clock-name is defined as macro in driver, but unused
+  - no purpose to have it in dt node
 
-Change the driver to use the 'vdd' name for the regulator as per
-defined in the schema in order to ensure that the corresponding
-regulator gets enabled.
+Changes since v3:
+=================
 
-Fixes: 08e49af50701 ("phy: qcom: Introduce M31 USB PHY driver")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
- drivers/phy/qualcomm/phy-qcom-m31.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+* Address Andrew's comments
+  - remove disabled by default on all platforms
+  - reorder addresses in 84s4 to be correctly sorted
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-m31.c b/drivers/phy/qualcomm/phy-qcom-m31.c
-index c2590579190a..9d84858ba1db 100644
---- a/drivers/phy/qualcomm/phy-qcom-m31.c
-+++ b/drivers/phy/qualcomm/phy-qcom-m31.c
-@@ -297,7 +297,7 @@ static int m31usb_phy_probe(struct platform_device *pdev)
- 		return dev_err_probe(dev, PTR_ERR(qphy->phy),
- 				     "failed to create phy\n");
- 
--	qphy->vreg = devm_regulator_get(dev, "vdda-phy");
-+	qphy->vreg = devm_regulator_get(dev, "vdd");
- 	if (IS_ERR(qphy->vreg))
- 		return dev_err_probe(dev, PTR_ERR(qphy->phy),
- 				     "failed to get vreg\n");
+Changes since v2:
+=================
 
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240220-phy-qcom-m31-regulator-fix-97555a4650b1
+* Remove reference to k3 as requested
+* Rebase on v6.8-rc2 where new bindings are present
+* Remove am62a dts entry until hrtimer[1] patch gets merged
 
-Best regards,
+[1]: https://patchwork.kernel.org/project/linux-media/patch/20240125130833.1953617-1-devarsht@ti.com/
+
+Changes since v1:
+=================
+
+* Remove sram parameters
+  - sram-size property not included in bindings. Without this, size
+  will default to 0 so no point in specifying until binding is added.
+* Remove global CMA pools for each platform
+  - This is something that has been added in TI backport of driver
+  and does not yet have reliable support in upstream version.
+  - Removing for now with intention to add back once 48-bit
+  addressing is supported in upstream Wave5 driver.
+
+Brandon Brnich (3):
+  arm64: dts: ti: k3-j784s4: Add Wave5 Video Encoder/Decoder Node
+  arm64: dts: ti: k3-am62p: Add Wave5 Video Encoder/Decoder Node
+  arm64: defconfig: Enable Wave5 Video Encoder/Decoder
+
+Darren Etheridge (1):
+  arm64: dts: ti: k3-j721s2-main: Add Wave5 Video Encoder/Decoder Node
+
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi  |  8 ++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi |  8 ++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 16 ++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4.dtsi      |  2 ++
+ arch/arm64/configs/defconfig               |  1 +
+ 5 files changed, 35 insertions(+)
+
 -- 
-Gabor Juhos <j4g8y7@gmail.com>
+2.34.1
 
 
