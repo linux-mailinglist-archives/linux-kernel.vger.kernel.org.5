@@ -1,200 +1,275 @@
-Return-Path: <linux-kernel+bounces-73406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2497685C213
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:10:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBD6085C216
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:11:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4948F1C241BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:10:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51C981F23534
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A52E76910;
-	Tue, 20 Feb 2024 17:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A00276C60;
+	Tue, 20 Feb 2024 17:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xVV8sCgX"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2077.outbound.protection.outlook.com [40.107.223.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="kzvUBsnj"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5956768F5;
-	Tue, 20 Feb 2024 17:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449047; cv=fail; b=V+Q53SLhcK0AtTaWLbLEQ+x1z1P4I3anMYIaxlz8pNUNN060uYj9Fe4BlERMFnu5LC9TjdvmwVSWdRHaquXbCLlZrC/Ic+A78QF+DHF9/dE+MbAoJZIj0ISM6lmJrABexblJ0NBtTHKRniOsQfr2jn2GCfMT22OYLH42lcH98OM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449047; c=relaxed/simple;
-	bh=wdwFNNyM2iMZdMv/Ak6/yCUvOLBXHB2wg4HcNE4hz+U=;
-	h=Subject:From:To:Cc:References:Message-ID:Date:In-Reply-To:
-	 Content-Type:MIME-Version; b=Gmjnj4xa4JIGZtTrt3KSldG5njA4M3+g7pv2UHwE5d/iYJDqfi4GXslhxkQ80xnKAM+kTBwXR9ZzGfzg47RseIE99PeDSddGG+GtBg4C5dqg7okxfLBmaqTmCaJheJ3L+DADDa4M6K98TrSpYr3Ku+YO3Uokis4Q9b1BokrLOQE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xVV8sCgX; arc=fail smtp.client-ip=40.107.223.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQA3Gi6M6ETSL7BWjOinkRGx2ytTfET210eAqeOkbxPuenJP4A2Y8Kq18uhd652TIXHQhUgDAlmgoYtAMIyanHhMSXYfmL86X8wnvOxAiJsvz2h0DXAX5A4ZA9qk7D+M57LM2b7+HJhtAxzH1uZzYwVYo/NoHuxPgTKObhYVus6jvtB/CfGJ0J+HI6rySqY56ASO9HF46AZ3YNbm/g64ByqqTw86WBHUpY5lbwt4IfZsguOReVTi6IzW6TQnUQ4mVrNJP5zy/QpXKIu3V3MQE/SS3Dr4F7y82k/xu6R85y5MnW969x7eWXstXrhiev2i0awQmUmz2trFTIdum2PaNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=07hyiW4HkE9yWqRAhsDa7bcZubFOyKu9biw4V0KKNds=;
- b=Rmxj3oMoIg+SL7ILgbO5a7llZyFgAQv7nrUnICkzMwZoFKeBREqNsOCz+ydisnVx6LkYuoztWhO5PF48rv5B/gK9IbWQnvJc/AcWmTF+cOWGZnA5kMT7a2wE5TyAxlKwuMHhJAtlY0FNqClEFC9rNNON9KhY9z6r1qLKlf6M6T4USEa1+H2J8mV9XSgtV2LmAtTG9UILqCL9CfwZAepMWPTQ9gixIUuH6LBF0CGxTUjS1/lfdHw4OC3HUSW8/sQmKZ1Hi8nB7UtrVQwuo/cs0JzCDW/ThFkUwyv1aWu4HN4E5HmR6Dat0wq61scFqqjdmoj8tGQ4NpGuAzIKZgRd5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=07hyiW4HkE9yWqRAhsDa7bcZubFOyKu9biw4V0KKNds=;
- b=xVV8sCgXN4IuUIWp2tcaQfPq/8dR5fRPqda8x9oux3ilLKFnQfaZ8mpYKrVLzTJ3pXXcvGttDeG+0hlmi99mFJqsiay01jU9Lc/KaTI9vddmQj97w8EMOPmqXVfus6GCPp9SexCIbif/eX6yMH1y1kY4ng30XaLUEYlm6MiJdXk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH8PR12MB7325.namprd12.prod.outlook.com (2603:10b6:510:217::19)
- by LV3PR12MB9404.namprd12.prod.outlook.com (2603:10b6:408:219::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Tue, 20 Feb
- 2024 17:10:43 +0000
-Received: from PH8PR12MB7325.namprd12.prod.outlook.com
- ([fe80::a2e6:c3b5:4e05:825c]) by PH8PR12MB7325.namprd12.prod.outlook.com
- ([fe80::a2e6:c3b5:4e05:825c%4]) with mapi id 15.20.7316.018; Tue, 20 Feb 2024
- 17:10:42 +0000
-Subject: Re: [PATCH 0/2] FRU Memory Poison Manager
-From: "M K, Muralidhara" <muralimk@amd.com>
-To: Borislav Petkov <bp@alien8.de>, Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
- linux-kernel@vger.kernel.org, avadhut.naik@amd.com, john.allen@amd.com,
- muralidhara.mk@amd.com, naveenkrishna.chatradhi@amd.com,
- sathyapriya.k@amd.com
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214075242.GAZcxxSiMsDoacvC1M@fat_crate.local>
- <953d9c1a-b504-cde5-5de1-2ce9b838204a@amd.com>
-Message-ID: <a91d1dfd-f29f-1afd-c42e-b681450db052@amd.com>
-Date: Tue, 20 Feb 2024 22:40:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-In-Reply-To: <953d9c1a-b504-cde5-5de1-2ce9b838204a@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0209.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:e9::20) To PH8PR12MB7325.namprd12.prod.outlook.com
- (2603:10b6:510:217::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F1F768F5
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708449107; cv=none; b=rvdgynhLv98kmVW7YC2slO83xbXQRmQF6FQgblNxhx8X6keQoXZgCCgY9W916fQqbSKfLeg525PWKKkACYFVIDvacLpWe1rFPnmG7Ijw8XFOyt0BROk5jqIu9KqPgRPJIPgAOTqMgIyv4fhvAhSLskPmz8UQae2zw/OZEAMSJQ4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708449107; c=relaxed/simple;
+	bh=EJs09zYJJbSZ8cWFMENMnQp1ilbZKfVmQ4Hagg2pxBA=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=mXgjzjIyGSJPR009FHwrqTJ1Y/jT7e1+gPkKBJa+t0xvoIGIH12Py9fCb33gqlh8pUiy0f+PWIoTgDL/eCeBAQQe4nFCxClK49By/W42uf6A2Z/lIBUHWsHYZe1u9EKgjk+hvzZDRKNmHgQFqeuqd3AogUE1hsV7BeCXccHbCec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=kzvUBsnj; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d22fa5c822so38991901fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:11:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708449101; x=1709053901; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EBsPYOj4o/oYmqjND5mUcKc/lhfqBms3nMBFQ3ab9hc=;
+        b=kzvUBsnjLvj0xgcMxEFlC9DB/GEqmKd/EiM/XxvyedDuaJcd6xc5ivmyNwnSS55UuZ
+         23xdNf6LvnMSVk5nCNEu/uo0J5n3DHvletyM0qCUHhpJ6C1ekC/nBlW8SoMk0zRCOaJu
+         /AR66DoItp/nmBzoy3FxqIhkJmqdnU6fwK8HXTeIf9Y1EGnXCZx2fQ4AaVnzwfjeMp27
+         IKJ5dQQ5Zntynf3qKFC362y3346vzZTK3GazEe2zKozxfMW5f5JzaOQE19OWzcCM8xZ0
+         zs5keuthLnH7zMNeHtc0Mzi4RBThoZZ6KsIVTrePFIpek40/oOwCycVR0UTdXVq0GjK4
+         CckQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708449101; x=1709053901;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EBsPYOj4o/oYmqjND5mUcKc/lhfqBms3nMBFQ3ab9hc=;
+        b=Q0BBtFEanMoAuAbSiHVlRt/FPwsJ1VI/wBXJTtZDdI/a0wRzgpf9WubHFpKa6QRiSN
+         3pDtaTE6Xz+NzeScbchnIdHvUEbOyYNi6Efz3D/Y9Da7B2Emcb3jCdvU95zdNEkrzczt
+         mn1AE7qvfSbcB1Ooqal63zG8DbrOKXitVTJuQuaiufk9pW2tWhd/pNc34OIVt91uBvcf
+         XzPyVIQZHRj8GIUlBxXeNS1kFLqN2yxY3KR3elro6Spez9eZ0DtVdbA9p4msXRsBczfB
+         lL7zYq+tiWOcYy/gqREjJ4viniFp1egZZCJCBsU7nLmRS8q3j7rtHelqiiJVtjRncsNh
+         XF2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU6hiPiLgeUK1LPQGf49v1oMzk4ztduvEV7jqdA39kRDJLuBOFfk2XrcRfprjE3IFB+Hh31Xs6yb9d/QYj8ZTUALS0V01JA0kYhRs4k
+X-Gm-Message-State: AOJu0Yzq0xrZ/DByEcTmECnxOAjfwHmbsctQWU9dHlRwsPlr/TDbFvhS
+	kaNDaQ20EowXjX+kR7MnZPaQn0jSiEargyPnFFOkDS8+y3O1ddDXsWbtDIRLzpY=
+X-Google-Smtp-Source: AGHT+IE/S89tnO2LtN3j67GoQbINgLpjDYN7UkNP8HnGtOyZ+toxAR93pnkI/lei8Z5htDwisVq8kQ==
+X-Received: by 2002:a2e:3e1a:0:b0:2d2:39a5:d190 with SMTP id l26-20020a2e3e1a000000b002d239a5d190mr5615387lja.1.1708449101050;
+        Tue, 20 Feb 2024 09:11:41 -0800 (PST)
+Received: from localhost ([2a01:e0a:3c5:5fb1:2f02:c7d6:1af5:7c37])
+        by smtp.gmail.com with ESMTPSA id h5-20020a05600016c500b0033d60cba289sm4828605wrf.68.2024.02.20.09.11.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 09:11:40 -0800 (PST)
+References: <20231222111658.832167-1-jbrunet@baylibre.com>
+ <20231222111658.832167-5-jbrunet@baylibre.com>
+ <pqnl66xnct5lqua36iasqws4kowhqtn6vkq7fml76pomcnatj4@q66n3siflgoc>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
+Subject: Re: [PATCH v4 4/6] pwm: meson: use device data to carry information
+ around
+Date: Tue, 20 Feb 2024 18:10:59 +0100
+In-reply-to: <pqnl66xnct5lqua36iasqws4kowhqtn6vkq7fml76pomcnatj4@q66n3siflgoc>
+Message-ID: <1jcysrdpro.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR12MB7325:EE_|LV3PR12MB9404:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb14d8bb-fabb-4e7d-dded-08dc3236de96
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TGpQH67U5l53iUF05jrKn9yVBWbPOTMdoD1lQVTbkLz/rwKAf+zuT5XXzl+31sTqYPleovNs/OR0p35AWTg/IgtUTY/39eM38I0uuvx0XGUocAIUtB7P1PpG9tg7JpDK2A0KvxlLTz5YSAcl1ryVEAqmY/h22oOj8tua9jJD6ra5YAo4HcAMlboQQfakUxryYHqUN0xAjzwznRu/AV2wpbOs+TFsRp+spAH/2ZRMjYEBNj7gFRT/8uCOfbibyLnSPIDgCnKeqvlpL5Y6TGu8S2Zoxaghdu0Kq8NIq6bfZfpj9Fwrz3H8zlCvpyGJx4H5i4cYPFl6W7t4qqzE+uroUluoYmuq2vDNCwW/kj/3jzjaDBtYvq4zkt3ExM6sAmxchzE+3TPrQLXQwfNYlRmv/DxQQ+sKabbQ7oQ2nItfJU6FevX5nku5PbgTy+UPEUPro+Vs19s11IKfRBFe102wyAU5RxaM0ZxXbh5v7AxEnc5WB+8IzYkp+DJfZgDru0SqXN8zQXNLy9FqN5HSA3N8UIVk2FoWZ9iSIvp5THXvVXcdCw+AYzGpW8jkdmM5ujdY
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB7325.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?N0hvcnE4ME1mdVRxckF1ME1UamE3bDhNUjZYREpuNnU4Wmc1WUZ2VHBsYmdw?=
- =?utf-8?B?ZXNTcjVuWnYvQ3Q4VjZxN1hGYXBNcERZYWhSUSs3eFFjRkxualhzMEg3U0Iz?=
- =?utf-8?B?dkVTK0tyUEFEeU96SExxYmY4VGxPVUJ0T0h2U3lPdVdWTjMrTXV6VU9DT1Vt?=
- =?utf-8?B?ZEdDaUg0cWQ1RGRjUnlQVDkxYU1jcERTMFFGb3FTQWprb1U3THd5OVdJMjUv?=
- =?utf-8?B?OWE4QVB2ZWdpbjN5dG5qQnErQXFibTJnOHpEV1VhOWh5VUlHRy92K0liUHd4?=
- =?utf-8?B?QXh1UWJGbWJaek5DUVNRMVZIUStXN2tXSXQ2QWp2ZmJtemZXcndHWDhmTjRM?=
- =?utf-8?B?ZU4rQ0RLaS9rM2lMTHc1YXViT2JYeVhSMmwzanB4a2w5T3R0WWZROFpObjRV?=
- =?utf-8?B?anZUWng1Z3M5VjQ0dW0vZE41QmxzR2lKMUVrcXQ4dll0ZUx5RTgwMFZHbXA0?=
- =?utf-8?B?RUFkSHpVbjVuU05ZdXdEeUU5NldmKzY4MXlXWXJIOHF5bnRRWndFUWFvSzA0?=
- =?utf-8?B?aTVBMlUrM1F3NUh3NzBROHZ0cUF1dW1KclBzZU1ITlpmU3RFT2tOTXZyZlVW?=
- =?utf-8?B?czdBc1k0S0lVVG5xcnVTM1NZeUlDdkRnU2RhcDdoVDlLY0lUbjBCQ3VRRUhq?=
- =?utf-8?B?b0FOZHJCdGZmY2hCY1IyUlBzSkkwQ1dXaldWSll3U0JTdXNIU0lXT3RNOHBm?=
- =?utf-8?B?V2UyRmYyUGc3bjYrbUMvM0JMSlRPWTZvL2hpUncyUU5DZVlrRG1tYXNpREVU?=
- =?utf-8?B?b1VVbEl3cG1JOVVoT3M1Ny9OaWt0dXdRV0FSVlVlZEY1TnMxNlZ3Vlg3M1JP?=
- =?utf-8?B?YjVuN0RWaWFHemp2OE43eHArY2hNTTFjT0FEcGNSSFBQZVQ3L1cwSFp6aExP?=
- =?utf-8?B?c29tbU1LZ3UyaXBqVWhCV3N5TmVOTnJvc0FDbDd3WUdIY0Q3dytQaHNPTE1U?=
- =?utf-8?B?bURFTkhyMUZ3TEhzU0w2YVhZZTRkM3JkQkpNUmtqTGd1NGJaSTh5RFdUTzZr?=
- =?utf-8?B?eVZ0UFBDSUUxQmpNaGFNNGhDSU12NHh5SHZJQ3F4aXhEQmpOSit3bUhCaG42?=
- =?utf-8?B?OHBzM2Faejg1R3EvdWpJd0JhcWJJRUE1Q1hBeCs4ejU0cGZuUGNVVENvK3J5?=
- =?utf-8?B?MDFZeGh3OTdmYkZIYzNZMTcrM0FDRXdYeFBVZzJyeko1WERBRE1hdlo2amh2?=
- =?utf-8?B?TElUSFQyV1NyRmVEV2d1TnNOcVNpajhNYVovelU1RTJabzd4YTVFNjArKzVr?=
- =?utf-8?B?dmhpdEQzZURjRmFsSXZwaFQzQW5jbWRkRk83RmJJNlZvZVdlclY1RU0xZlg1?=
- =?utf-8?B?R0RoSkVNV0k5WlVVNUtMSXc4MFhzenFuRWNlK3p0Wnh1YnREellpMkpLdUcr?=
- =?utf-8?B?YWNEdkd6ajlhODhlOERNa0VGamc4czVDVU02R3VUUGpLbEwrSnhKU2QvT01h?=
- =?utf-8?B?SEswSEVyK2o5QXh4enp5QVFweENIUCtTQ1VnOUFxSHN3bDkyRjU0dEdlU3Bn?=
- =?utf-8?B?ZmJXZVRQVnlEbzZ0NTRYZThNY2tZb1VjVHlLLzJhQ3BCS2NaNno2MDFYQS9k?=
- =?utf-8?B?RUFIdGsvZWVsV1Jxd2JwcDRaTm5CSk5qWkVKcDMvRk94OUViTnZYVDd5Ylhs?=
- =?utf-8?B?MEVPMkNFMkQ4WE1sOVpzTzhUdS8wRDhsRlRzN08weGFPek9IOHJqTk5Ec05X?=
- =?utf-8?B?UFhobGdKUVJtaTh2cnd2TzRNdWZzcU1uUVdlWVRuWTBmS25ONElud2pVSmll?=
- =?utf-8?B?UHV2MFhhQy9qOUFsY2NMUHhTUkVIcnZkZ0syaC9LN1RZSHRzMHIrb2lERmxl?=
- =?utf-8?B?a3FsZjBveHdoM3FFT0h5dEFrYkM1emxaV1d0NmNRSkxOdllhSndZbzZsUFF4?=
- =?utf-8?B?T1pzcFB5VnViaGpEdVJRMVdBdGxVZ2N1WFN6elVhdFF6eEZ6ZXFxRzJBMDBo?=
- =?utf-8?B?Y2tZUVlZalc3aWxrR0xReUdmeVBuTSttQ0wzeUNBUTZQUzRqdWVCRThwSENW?=
- =?utf-8?B?ak04STFuWlFlSUtONVhvbVhJTHc2Nm9hTTNOMDd5UGIwRS9lOW5IZ2tSeHNZ?=
- =?utf-8?B?RWh5N08rVnFyM3I0b3VmUUJpT3dqeDZFMThKRy9RVWVER3gxODBUWWpjaHBI?=
- =?utf-8?Q?IhZd/feeNAl6DgCahxBRTSI37?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb14d8bb-fabb-4e7d-dded-08dc3236de96
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB7325.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 17:10:42.7955
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xOOGu0YD3k07YTUCRzA20KVdQJYoTJxA7QS63WqFA3Fcg4nP170J0bILrdd3U9WjNE1bJJgPICOAYU9GZ0IZJQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9404
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
+On Mon 05 Feb 2024 at 18:12, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutr=
+onix.de> wrote:
 
-On 2/20/2024 5:59 PM, M K, Muralidhara wrote:
-> Hi Boris,
-> 
-> On 2/14/2024 1:22 PM, Borislav Petkov wrote:
->> Caution: This message originated from an External Source. Use proper 
->> caution when opening attachments, clicking links, or responding.
->>
->>
->> On Tue, Feb 13, 2024 at 09:35:14PM -0600, Yazen Ghannam wrote:
->>> I included questions in code comments where I think more attention is
->>> needed.
->>
->> Lemme look.
->>
->>> Also, I kept Naveen as a maintainer in case he's still interested.
->>
->> I don't mind that as long as he responds to bug reports from users and
->> addresses them in timely manner.
->>
->>> I did some basic testing on a 2P server system without ERST support.
->>> Mostly I tried to check out the memory layout of the structures. And I
->>> did some memory error injections to check out the record updating flow.
->>> I did some fixups after testing, so I apologize if I missed anything.
->>
->> Right, I'd like for Murali and/or Naveen to test the final version but
->> lemme go through them first.
->>
-> Please include, we have worked previous versions of this patch set.
-> Co-developed-by: naveenkrishna.chatradhi@amd.com
-> Signed-off-by: naveenkrishna.chatradhi@amd.com
-> Co-developed-by: muralidhara.mk@amd.com
-> Signed-off-by: muralidhara.mk@amd.com
-> Co-developed-by: sathyapriya.k@amd.com
-> Signed-off-by: sathyapriya.k@amd.com
-> 
+> [[PGP Signed Part:Undecided]]
+> On Fri, Dec 22, 2023 at 12:16:52PM +0100, Jerome Brunet wrote:
+>> Use struct device data to carry the information data around, instead
+>> of embedded the pwm structure in it and using container_of()
+>>=20
+>> Doing so works just as well and makes it a little easier to add setup
+>> callback depending on the DT compatible.
+>>=20
+>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>> ---
+>>  drivers/pwm/pwm-meson.c | 39 +++++++++++++++++++++++----------------
+>>  1 file changed, 23 insertions(+), 16 deletions(-)
+>>=20
+>> diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
+>> index ef50c337f444..15c44185d784 100644
+>> --- a/drivers/pwm/pwm-meson.c
+>> +++ b/drivers/pwm/pwm-meson.c
+>> @@ -101,7 +101,6 @@ struct meson_pwm_data {
+>>  };
+>>=20=20
+>>  struct meson_pwm {
+>> -	struct pwm_chip chip;
+>>  	const struct meson_pwm_data *data;
+>>  	struct meson_pwm_channel channels[MESON_NUM_PWMS];
+>>  	void __iomem *base;
+>> @@ -114,7 +113,7 @@ struct meson_pwm {
+>>=20=20
+>>  static inline struct meson_pwm *to_meson_pwm(struct pwm_chip *chip)
+>>  {
+>> -	return container_of(chip, struct meson_pwm, chip);
+>> +	return dev_get_drvdata(chip->dev);
+>>  }
+>>=20=20
+>>  static int meson_pwm_request(struct pwm_chip *chip, struct pwm_device *=
+pwm)
+>> @@ -146,6 +145,7 @@ static int meson_pwm_calc(struct meson_pwm *meson, s=
+truct pwm_device *pwm,
+>>  			  const struct pwm_state *state)
+>>  {
+>>  	struct meson_pwm_channel *channel =3D &meson->channels[pwm->hwpwm];
+>> +	struct device *dev =3D pwm->chip->dev;
+>>  	unsigned int cnt, duty_cnt;
+>>  	unsigned long fin_freq;
+>>  	u64 duty, period, freq;
+>> @@ -168,19 +168,19 @@ static int meson_pwm_calc(struct meson_pwm *meson,=
+ struct pwm_device *pwm,
+>>=20=20
+>>  	fin_freq =3D clk_round_rate(channel->clk, freq);
+>>  	if (fin_freq =3D=3D 0) {
+>> -		dev_err(meson->chip.dev, "invalid source clock frequency\n");
+>> +		dev_err(dev, "invalid source clock frequency\n");
+>>  		return -EINVAL;
+>>  	}
+>>=20=20
+>> -	dev_dbg(meson->chip.dev, "fin_freq: %lu Hz\n", fin_freq);
+>> +	dev_dbg(dev, "fin_freq: %lu Hz\n", fin_freq);
+>>=20=20
+>>  	cnt =3D div_u64(fin_freq * period, NSEC_PER_SEC);
+>>  	if (cnt > 0xffff) {
+>> -		dev_err(meson->chip.dev, "unable to get period cnt\n");
+>> +		dev_err(dev, "unable to get period cnt\n");
+>>  		return -EINVAL;
+>>  	}
+>>=20=20
+>> -	dev_dbg(meson->chip.dev, "period=3D%llu cnt=3D%u\n", period, cnt);
+>> +	dev_dbg(dev, "period=3D%llu cnt=3D%u\n", period, cnt);
+>>=20=20
+>>  	if (duty =3D=3D period) {
+>>  		channel->hi =3D cnt;
+>> @@ -191,7 +191,7 @@ static int meson_pwm_calc(struct meson_pwm *meson, s=
+truct pwm_device *pwm,
+>>  	} else {
+>>  		duty_cnt =3D div_u64(fin_freq * duty, NSEC_PER_SEC);
+>>=20=20
+>> -		dev_dbg(meson->chip.dev, "duty=3D%llu duty_cnt=3D%u\n", duty, duty_cn=
+t);
+>> +		dev_dbg(dev, "duty=3D%llu duty_cnt=3D%u\n", duty, duty_cnt);
+>>=20=20
+>>  		channel->hi =3D duty_cnt;
+>>  		channel->lo =3D cnt - duty_cnt;
+>> @@ -214,7 +214,7 @@ static void meson_pwm_enable(struct meson_pwm *meson=
+, struct pwm_device *pwm)
+>>=20=20
+>>  	err =3D clk_set_rate(channel->clk, channel->rate);
+>>  	if (err)
+>> -		dev_err(meson->chip.dev, "setting clock rate failed\n");
+>> +		dev_err(pwm->chip->dev, "setting clock rate failed\n");
+>>=20=20
+>>  	spin_lock_irqsave(&meson->lock, flags);
+>>=20=20
+>> @@ -425,10 +425,10 @@ static const struct of_device_id meson_pwm_matches=
+[] =3D {
+>>  };
+>>  MODULE_DEVICE_TABLE(of, meson_pwm_matches);
+>>=20=20
+>> -static int meson_pwm_init_channels(struct meson_pwm *meson)
+>> +static int meson_pwm_init_channels(struct device *dev)
+>>  {
+>>  	struct clk_parent_data mux_parent_data[MESON_NUM_MUX_PARENTS] =3D {};
+>> -	struct device *dev =3D meson->chip.dev;
+>> +	struct meson_pwm *meson =3D dev_get_drvdata(dev);
+>>  	unsigned int i;
+>>  	char name[255];
+>>  	int err;
+>> @@ -438,7 +438,7 @@ static int meson_pwm_init_channels(struct meson_pwm =
+*meson)
+>>  		mux_parent_data[i].name =3D meson->data->parent_names[i];
+>>  	}
+>>=20=20
+>> -	for (i =3D 0; i < meson->chip.npwm; i++) {
+>> +	for (i =3D 0; i < MESON_NUM_PWMS; i++) {
+>>  		struct meson_pwm_channel *channel =3D &meson->channels[i];
+>>  		struct clk_parent_data div_parent =3D {}, gate_parent =3D {};
+>>  		struct clk_init_data init =3D {};
+>> @@ -519,28 +519,35 @@ static int meson_pwm_init_channels(struct meson_pw=
+m *meson)
+>>  static int meson_pwm_probe(struct platform_device *pdev)
+>>  {
+>>  	struct meson_pwm *meson;
+>> +	struct pwm_chip *chip;
+>>  	int err;
+>>=20=20
+>> +	chip =3D devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
+>> +	if (!chip)
+>> +		return -ENOMEM;
+>> +
+>>  	meson =3D devm_kzalloc(&pdev->dev, sizeof(*meson), GFP_KERNEL);
+>>  	if (!meson)
+>>  		return -ENOMEM;
+>>=20=20
+>> +	platform_set_drvdata(pdev, meson);
+>> +
+>>  	meson->base =3D devm_platform_ioremap_resource(pdev, 0);
+>>  	if (IS_ERR(meson->base))
+>>  		return PTR_ERR(meson->base);
+>>=20=20
+>>  	spin_lock_init(&meson->lock);
+>> -	meson->chip.dev =3D &pdev->dev;
+>> -	meson->chip.ops =3D &meson_pwm_ops;
+>> -	meson->chip.npwm =3D MESON_NUM_PWMS;
+>> +	chip->dev =3D &pdev->dev;
+>> +	chip->ops =3D &meson_pwm_ops;
+>> +	chip->npwm =3D MESON_NUM_PWMS;
+>>=20=20
+>>  	meson->data =3D of_device_get_match_data(&pdev->dev);
+>>=20=20
+>> -	err =3D meson_pwm_init_channels(meson);
+>> +	err =3D meson_pwm_init_channels(&pdev->dev);
+>>  	if (err < 0)
+>>  		return err;
+>>=20=20
+>> -	err =3D devm_pwmchip_add(&pdev->dev, &meson->chip);
+>> +	err =3D devm_pwmchip_add(&pdev->dev, chip);
+>>  	if (err < 0)
+>>  		return dev_err_probe(&pdev->dev, err,
+>>  				     "failed to register PWM chip\n");
 >
-Sorry, Just re-arranging the tags. Please add the below tags
+> Parts of this change overlap with plans I have for this driver. I
 
-Co-developed-by: naveenkrishna.chatradhi@amd.com
-Signed-off-by: naveenkrishna.chatradhi@amd.com
-Co-developed-by: muralidhara.mk@amd.com
-Signed-off-by: muralidhara.mk@amd.com
-Tested-by: sathyapriya.k@amd.com
+It does overlap indeed. I'll drop this one while rebasing
+
+> reworked the series a bit now, also affecting the meson driver, the
+> previous submission is available at
+> https://lore.kernel.org/linux-pwm/bf6f7c6253041f60ee8f35b5c9c9e8d595332fb=
+0.1706182805.git.u.kleine-koenig@pengutronix.de
+>
+> I don't see the nice benefit of this patch yet, but I assume this will
+> become clearer when I check the next patch.
+>
+> Best regards
+> Uwe
 
 
->> Thx.
->>
->> -- 
->> Regards/Gruss,
->>      Boris.
->>
->> https://people.kernel.org/tglx/notes-about-netiquette
->>
+--=20
+Jerome
 
