@@ -1,211 +1,124 @@
-Return-Path: <linux-kernel+bounces-72740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0830885B836
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A734585B837
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:52:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CAF31F26012
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 468761F26842
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279095D48B;
-	Tue, 20 Feb 2024 09:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D72612CD;
+	Tue, 20 Feb 2024 09:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S0k2SM1Z"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B0B60244
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="gOlGqt/D"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1C660244
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422605; cv=none; b=oBuJslrhJY0MIUj2UuLp3fwdKaaU1z/o8TLPDqIMVxX6OfhC3cqkuqqaDvmtvk+JbdY9jEvlutXxMlbZuUKMO9++J/jnwEeBClQ4KGj+oHqZcAvwZdTPGhNh49g8P1DbTw3f52+wovpzWEawzpEC9Z3xY/rcCclp+a0nPv7186I=
+	t=1708422619; cv=none; b=UwBS/Qo3a43UMrKkTi+H+qLBxEhqkdevZvTSqK2qZ/hX8oOYa9Qjg/03JVfFOQW4nTaITm9i6YioZhLpKa7J9FWTbFz/5lbRRMkBTdB+WkKuOb5vCLO59LiYLV6+WAqMv54W9D1jz5SbbaDdi/Vsg4RW/QUx1fKijz0cRl2Sc/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422605; c=relaxed/simple;
-	bh=lsQhrl07NU9DvhxC+y0Qv1a0Ty3WWDaIUaM1Cq0PIfs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uvlbFRpyJoLhPPTC9AdLpfAHInux8dY66isUUT+p+whPXAdPdCxrDbbmMU2CldyPsC3ty5RJgKPZPzQhYVKMRaeZ+6lLNX1CbfvMKgk1TFpMdcn4RQ1bNKP+9PYyboRf4BtS1lNFoRNpGSLyjzv7+p5EpVAtNWBOzHR277HuzHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S0k2SM1Z; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d066f8239so2430593f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708422602; x=1709027402; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UiakybdHbx8rY7NnuZZDYCRnrnocjLmFHQX/4uXHnW0=;
-        b=S0k2SM1Z5lY6rRgU0kB5ZH7QNEJ+xwl/+Rr6nHN28swL47UZJbGec87WJFEcCLNM/d
-         /JC7WomDg3d5yxlsmvuUQ282t+iYYLFa7saUDX0VGus6FNKdQdF9J+scPdBBzKRFKnKM
-         EDgWyDkaA/hfhcgfrQ3TbiRf6KNZp1R05fxRp3JydZe1wMZAnRZAEjpYODxkGmtxrEeS
-         3lT4MfWRQG/vh7kPrKE7nKmtfyGljuL3uXk7HSwx7l6aqZXK6UKYsyVBM2HUS291wxtk
-         Jz9UDuherpHHl6AEPzCN8ZUI+rMg7ranLRlg31XTLoSw5sDcX5NTicUwwfhpbavgwO+t
-         DNNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422602; x=1709027402;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UiakybdHbx8rY7NnuZZDYCRnrnocjLmFHQX/4uXHnW0=;
-        b=hgHyJkjG6L+LhsKg9zDaLD20q5imof7sh5B2fbD2h+LDVR9N5B1ZtLoj07capwrPQH
-         6M9p77PZUFTPTF2/cLFbWSaZFYsBls9/2Ep1FKC378mhA+C6a3amsDpXR3qQ44DNaQts
-         M9FLpe1fsmETj4Vsz7rjBa7A13WQoVeO3TWVJI0rVcbi1FdliEERCHhKoKjhu6Z7Nywl
-         1cnud9CFHZFrixRcdGv0gN5zX9WEWHYW1Lt2GzupOZvi6/+aDpFM1+iHqkBki2y6B2f8
-         gm/ItqEcrCW+v4uByKgt0DoIdmtzFkjD5MglANte/Uio/YI2darcjevLotna266gOIgV
-         XvJA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRUiQxwKqx5rGmZBdtm+Gs1/+UeW4fhel/NbwRw4QrNhv4B19rcKd2MrhTIik4+S1ClrKqUX1RtWS3evcVcXBZIf1sEx7+Gxxa7cIj
-X-Gm-Message-State: AOJu0YyoJ0mggtkddbFgPRJWhvzPoYOlnDtTIRmqW8PUQ6QIbazyVr+X
-	sFLB59pUBVHipwNcenaWuaN/FvIKuLIZENpam1PQuuNCmbT4B6Qpk9AgMtt5sCA=
-X-Google-Smtp-Source: AGHT+IE0aDSPjWECdAQ7HrYvb5CxiRvQrtXOKiRy5SNiUVy0PGuLwKURzvzfKJiYt9bm15vacoJflA==
-X-Received: by 2002:a5d:6912:0:b0:33d:2629:c518 with SMTP id t18-20020a5d6912000000b0033d2629c518mr5819994wru.64.1708422601761;
-        Tue, 20 Feb 2024 01:50:01 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n16-20020a5d4010000000b0033b888a0a63sm13016570wrp.0.2024.02.20.01.50.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 01:50:01 -0800 (PST)
-Message-ID: <37116892-bb59-4c40-85e2-8e1b4bc96b5f@linaro.org>
-Date: Tue, 20 Feb 2024 10:49:59 +0100
+	s=arc-20240116; t=1708422619; c=relaxed/simple;
+	bh=Pc+2+/vicu8XiIRtXQihQ0eQ9Yu0XvrHSeD0RBFf9Ek=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=ZUmKujevcrwFxJTHKzACt4TtKED/Kokze0BJC/10gQ6jW8DF5dilwYF8Q6zv8ogDhivPPt6Pf1k5F0glqyC8q1f4R1ZezeE2vE4AQR/5FRE+PRj5gP05OWyi4u76cmWwIXcZVNGuN2UhJNgn6zzJMxnLkjAIE9aI/j4WYGYMY00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=gOlGqt/D; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 63C19208360E;
+	Tue, 20 Feb 2024 01:50:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 63C19208360E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1708422617;
+	bh=3W4h4uwYh9kgjiCp95bdEHo8yCZlRGw0RiGys4AyqXo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gOlGqt/DvMESbE+KajpygWnefeYTuLU3APOtS4/x8x6PWyxUL7euqP9YtK4kavAR/
+	 2Sin1jD6nfypTzdJNfel2jtZBnbi0TUAL0e4WiBAOrAECsewVwJHpMK23LWNah4E7B
+	 AwAdH9ZPdyc+AIsd3yCIjyH48jBHCK4KiTdiS+Sk=
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	linux-kernel@vger.kernel.org
+Cc: ssengar@microsoft.com,
+	libo.chen@oracle.com,
+	mhklinux@outlook.com
+Subject: [PATCH] x86/Kconfig: Allow NR_CPUS between 512 and 8192
+Date: Tue, 20 Feb 2024 01:50:13 -0800
+Message-Id: <1708422613-15714-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/13] dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c
- bindings and example
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Rob Herring <robh@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Andi Shyti <andi.shyti@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-2-19a336e91dca@bootlin.com>
- <20240216022227.GA850600-robh@kernel.org>
- <CZ6FD7EHIJDT.32IEDVT9FG2GP@bootlin.com>
- <6effca50-29a4-43b9-86eb-310bd4e08e5c@linaro.org>
- <CZ6FUECKEX2B.36QWZZA5EYPI@bootlin.com>
- <cf360cbf-7414-4024-8bdd-d2aba7f048b3@linaro.org>
- <CZ93KAA53F8G.38AUM6RZGUYY7@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CZ93KAA53F8G.38AUM6RZGUYY7@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 19/02/2024 14:41, Théo Lebrun wrote:
-> Hello,
-> 
-> On Sat Feb 17, 2024 at 9:25 AM CET, Krzysztof Kozlowski wrote:
->> On 16/02/2024 11:40, Théo Lebrun wrote:
->>> On Fri Feb 16, 2024 at 11:33 AM CET, Krzysztof Kozlowski wrote:
->>>> On 16/02/2024 11:18, Théo Lebrun wrote:
->>>>>
->>>>>>> +        mobileye,id:
->>>>>>> +          $ref: /schemas/types.yaml#/definitions/uint32
->>>>>>> +          description: Platform-wide controller ID (integer starting from zero).
->>>>>>
->>>>>> instance indexes are a NAK. You can use i2cN aliases if you must.
->>>>>>
->>>>>> Why do you need it? To access OLB? If so, add cell args to the OLB 
->>>>>> phandle instead.
->>>>>
->>>>> Why we do what we do: I2C controller must write a 2 bit value depending
->>>>> on the bus speed. All I2C controllers write into the same register.
->>>>
->>>> Which register?  Your devices do not share IO address space.
->>>
->>> mobileye,olb is a prop with a phandle to a syscon. That syscon contains
->>> the register we are interested in.
->>
->> So exactly what Rob said... I don't understand why you have chosen to go
->> with alias.
-> 
-> I had misunderstood Rob's original message. Now that I've done some
-> tests to use cells I get what was meant. I'd have a follow-up question.
-> What should the cells contain? I see two options:
-> 
->  - phandle + I2C controller global index (from 0 thru 4). Then Linux
->    (or other) driver know how to map that index to register + mask
->    combo. ie:
-> 
->       i2c2: i2c@500000 {
->          compatible = "mobileye,eyeq5-i2c", "arm,primecell";
->          reg = <0 0x500000 0x0 0x1000>;
->          /* ... */
->          mobileye,olb = <&olb 2>;
->       };
-> 
->  - phandle + register offset + mask. ie:
-> 
->       i2c2: i2c@500000 {
->          compatible = "mobileye,eyeq5-i2c", "arm,primecell";
->          reg = <0 0x500000 0x0 0x1000>;
->          /* ... */
->          mobileye,olb = <&olb 0xB8 0x300>; /* phandle + offset + mask */
->       };
+Today there is no way one can choose any value between 512 to 8192
+for NR_CPUS seamlessly. NR_CPUS is guarded by NR_CPUS_RANGE_END which
+is further dependent on CPUMASK_OFFSTACK to allow NR_CPUs > 512.
 
-Whichever works for your current and possibly future needs and hardware,
-because property should have one meaning. It's anyway specific to the
-property. Second option is quite popular. Please design it for entire
-hardware, not for this one particular case.
+For x86, CPUMASK_OFFSTACK can only be enabled either by selecting MAXSMP
+or DEBUG_PER_CPU_MAPS. Both of these options has a cost to pay. MAXSMP
+will increase the NR_CPUS to 8192 which will have impact on kernel image
+size whereas DEBUG_PER_CPU_MAPS will have additional run time overheads.
+Thus there is no good way to have NR_CPUS anything between 512 to 8192.
 
-Best regards,
-Krzysztof
+Fix this by selecting CPUMASK_OFFSTACK if NR_CPUS > 512 and
+let NR_CPUS_RANGE_END set to 8192.
+
+On a Hyper-V system where max number of CPUs are only 2048, this
+patch saves around 1 MB of kernel image size, compare to MAXSMP.
+
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+---
+
+I want to mention that in ARM and other archs its very simple
+to select any value for NR_CPUS. This is an attempt to have more
+flexibilty in x86 arch as well to choose NR_CPUS.
+
+Some of the earlier discussions reated to it which could be of interest:
+https://lore.kernel.org/lkml/1708092603-14504-1-git-send-email-ssengar@linux.microsoft.com/
+https://lore.kernel.org/lkml/794a1211-630b-3ee5-55a3-c06f10df1490@linux.com/
+
+Another approach I can think of is to allow CPUMASK_OFFSTACK to be enabled
+more freely like the below patch of Libo Chen, that will also solve the
+problem I am addressing. But I feel this patch may have impact on other
+archs as well and I am not sure if that is in best interest of all the archs.
+
+https://lore.kernel.org/lkml/20220412231508.32629-2-libo.chen@oracle.com/
+
+ arch/x86/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 07a0c8d4e9c7..458f3f250d7f 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -34,6 +34,7 @@ config X86_64
+ 	select SWIOTLB
+ 	select ARCH_HAS_ELFCORE_COMPAT
+ 	select ZONE_DMA32
++	select CPUMASK_OFFSTACK if NR_CPUS > 512
+ 
+ config FORCE_DYNAMIC_FTRACE
+ 	def_bool y
+@@ -1006,8 +1007,7 @@ config NR_CPUS_RANGE_END
+ config NR_CPUS_RANGE_END
+ 	int
+ 	depends on X86_64
+-	default 8192 if  SMP && CPUMASK_OFFSTACK
+-	default  512 if  SMP && !CPUMASK_OFFSTACK
++	default 8192 if  SMP
+ 	default    1 if !SMP
+ 
+ config NR_CPUS_DEFAULT
+-- 
+2.34.1
 
 
