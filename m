@@ -1,275 +1,171 @@
-Return-Path: <linux-kernel+bounces-72369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FD2085B282
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:57:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A60485B284
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9B961F234B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:57:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 412C028385B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04AE57320;
-	Tue, 20 Feb 2024 05:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8708458135;
+	Tue, 20 Feb 2024 05:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KzEL21Xu"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZxiwAwk6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDC82030B;
-	Tue, 20 Feb 2024 05:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB10857872;
+	Tue, 20 Feb 2024 05:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708408638; cv=none; b=jOpBJ8aSYuQAwk8B/FTm6kRrIVTQqNPKOAyNr6DaX8fEIEihCrX9X1D0bEAWlAhJzWGBLIzsujaoiDUf8Mfd0G3fITzl3z8IUSp+GlGm8dXqjOWErja1PxiaJCOSpGZtVO4j/ws145pnO5WPCMDYLwIPt5MT1zrpqmN+XWzK7rI=
+	t=1708408640; cv=none; b=cWNduBsgyc7MyEdGCWcWEHLr/KGHluS8PoZhfcKjyHOtUd2OmXIbkvuX+v6v//tZv+0LpY1KqhrVKb1eokjy2SGhGTfsTO3GsexW4S3L93ZA5F/xs9951e+ozHpMFSRHmylh8NCP3xJSIbJM7JimPWZk5hviZTrhG+Q2/LkBGOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708408638; c=relaxed/simple;
-	bh=cqjaARe1FbdSF96HBwZNb30nAMlFo1CKlR4ykFhjXpE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=C8IpSrmTTsWtHYK/Ef2pb7FjMzZQ/M1X12E2zLQLFOxcFIEfZga4ajU36mrIrEVJZaTlJSPKeOoRAUipPTzOr1Cb2c3mTRkE8pr/yVI5i2NoEskLQpS/Qq1A4v+e6+fRqt1q0cQi7SXQEWAcxfwyoRVrIYed36BuOo0ehq7bXK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KzEL21Xu; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K43xfH025633;
-	Tue, 20 Feb 2024 05:57:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=1+w3uW+yuw2yO2IDZLFY2AOl401ceGZI48uk93ArssE=; b=Kz
-	EL21XumqkiNHVJI4Z2atx6EDp68cbGCZelp/a6erBWPvmFMQM6AHhCCmYydd3O25
-	Wc77/PR0PzRDJeuVz0fSYDW6QW0CadKicjDDNqiGGn1mjtxk20Gn/ghetfeqLiKU
-	DfNdo/TzhVuZviqrDxAelZ83AFlsHcelidEFL1ay6T3aZGR1Vtl6fe6R7oo7sCo4
-	3Ndqc/e5cuT7SXK/LU/RuTtZHoqftYFmpFDunzS3kmA+gLoMZhGoO8e2jo1UFYHS
-	PDY4VE93+O+CTV+UDaza8ycYKHDp1j9jxRVNIpc78Bt0LxbnHI3DfVZpgir111Y3
-	kA3Qh0VWAHkWPWpRRGBQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcmqp8583-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:57:12 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41K5uuJ2013923
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:56:56 GMT
-Received: from [10.214.197.177] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 19 Feb
- 2024 21:56:53 -0800
-Message-ID: <0e2c4aff-e5cd-4d83-a46e-120d2ab3d8f1@quicinc.com>
-Date: Tue, 20 Feb 2024 11:26:50 +0530
+	s=arc-20240116; t=1708408640; c=relaxed/simple;
+	bh=WvokzzLHQxAh7hjD95ixAi7uyIoGuo8fqr2T3mjV6Ns=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M4ZL8zS62G4GA0MbiCXzOujq/jwZuCwy6REjOIMItnWGpAdQfaynXPzO3ODqUnkvtj6qfAjPowrKxOdO3RkcdQmeo7aXulY4m3BDGKscz3E028j7NeKNztV8V23kZ0IdO1BeIE+ZZpXjyLdue/A0qbodvoJDpkqsRE0mJhFT0UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZxiwAwk6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3123C433C7;
+	Tue, 20 Feb 2024 05:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708408640;
+	bh=WvokzzLHQxAh7hjD95ixAi7uyIoGuo8fqr2T3mjV6Ns=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZxiwAwk6veKOA6h7hDm2XNyIDzTaiwW1xAiSaTZjB4d2j4h3oKGqu4z7ajkM8Sp1z
+	 Jcvl6Yr4sHE9xMi1+Qf7RwC/gORwG0seQEH0PDSMcQ7njuOMYI9KiavlK97j/go4/H
+	 tNpCb5Fq9aHrcNQPkE3Nv9PYiLt5CybzlwawtwCm+kMZ7Nfxq3ehgp2oDygH6QV3Du
+	 3siNAoFwPLsCoR32yG/Vgg6aq5gw0T4zQPIo5DxK9ZhjR6wVckMt+QT1bDd9f8b5h2
+	 D6hs8p8gMZCJo31RI6D1iP9fqauX2zm9rqOVbO/18mc5eCkaJ2Et1p9D5ZbYmnVtSS
+	 HBkjqPZjpZ9Yw==
+Date: Mon, 19 Feb 2024 21:57:18 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-tip-commits@vger.kernel.org, x86@kernel.org
+Subject: [PATCH] x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
+Message-ID: <20240220055718.turlqf2rfp36zsd5@treble>
+References: <20231010171020.462211-4-david.kaplan@amd.com>
+ <170774721951.398.8999401565129728535.tip-bot2@tip-bot2>
+ <20240215032049.GA3944823@dev-arch.thelio-3990X>
+ <20240215155349.GBZc4zjaHn8hj6xOq3@fat_crate.local>
+ <20240216054235.ecpwuni2f3yphhuc@treble>
+ <20240216212745.GAZc_TURO0t35GjTQM@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware: qcom_scm: Introduce batching of hyp assign
- calls
-Content-Language: en-GB
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski@linaro.org>, <luzmaximilian@gmail.com>,
-        <bartosz.golaszewski@linaro.org>, <quic_gurus@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_guptap@quicinc.com>, <quic_pkondeti@quicinc.com>,
-        <quic_pheragu@quicinc.com>
-References: <20240209112536.2262967-1-quic_dibasing@quicinc.com>
- <7fhl7uvhl26whumcl3f5hxflczws67lg3yq4gb5fyrig2ziux6@chft6orl6xne>
- <b65d6328-e7bd-4752-a82f-36323b41ef13@linaro.org>
-From: Dibakar Singh <quic_dibasing@quicinc.com>
-In-Reply-To: <b65d6328-e7bd-4752-a82f-36323b41ef13@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 18f7_PdPEotdbEg9qe-nI81g-u8THTay
-X-Proofpoint-ORIG-GUID: 18f7_PdPEotdbEg9qe-nI81g-u8THTay
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_05,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200041
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240216212745.GAZc_TURO0t35GjTQM@fat_crate.local>
 
+For CONFIG_RETHUNK kernels, objtool annotates all the function return
+sites so they can be patched during boot.  By design, after
+apply_returns() is called, all tail-calls to the compiler-generated
+default return thunk (__x86_return_thunk) should be patched out and
+replaced with whatever's needed for any mitigations (or lack thereof).
 
+With the following commit
 
-On 12-Feb-24 4:39 PM, Konrad Dybcio wrote:
-> On 9.02.2024 19:06, Elliot Berman wrote:
->> On Fri, Feb 09, 2024 at 04:55:36PM +0530, Dibakar Singh wrote:
->>> Expose an API qcom_scm_assign_table to allow client drivers to batch
->>> multiple memory regions in a single hyp assign call.
->>>
->>> In the existing situation, if our goal is to process an sg_table and
->>> transfer its ownership from the current VM to a different VM, we have a
->>> couple of strategies. The first strategy involves processing the entire
->>> sg_table at once and then transferring the ownership. However, this
->>> method may have an adverse impact on the system because during an SMC
->>> call, the NS interrupts are disabled, and this delay could be
->>> significant when dealing with large sg_tables. To address this issue, we
->>> can adopt a second strategy, which involves processing each sg_list in
->>> the sg_table individually and reassigning memory ownership. Although
->>> this method is slower and potentially impacts performance, it will not
->>> keep the NS interrupts disabled for an extended period.
->>>
->>> A more efficient strategy is to process the sg_table in batches. This
->>> approach addresses both scenarios by involving memory processing in
->>> batches, thus avoiding prolonged NS interrupt disablement for longer
->>> duration when dealing with large sg_tables. Moreover, since we process
->>> in batches, this method is faster compared to processing each item
->>> individually. The observations on testing both the approaches for
->>> performance is as follows:
->>>
->>> Allocation Size/            256MB            512MB            1024MB
->>> Algorithm Used           ===========      ===========      ============
->>>
->>> Processing each sg_list   73708(us)        149289(us)       266964(us)
->>> in sg_table one by one
->>>
->>> Processing sg_table in    46925(us)         92691(us)       176893(us)
->>> batches
->>>
->>> This implementation serves as a wrapper around the helper function
->>> __qcom_scm_assign_mem, which takes an sg_list and processes it in
->>> batches. We’ve set the limit to a minimum of 32 sg_list in a batch or a
->>> total batch size of 512 pages. The selection of these numbers is
->>> heuristic, based on the test runs conducted. Opting for a smaller number
->>> would compromise performance, while a larger number would result in
->>> non-secure interrupts being disabled for an extended duration.
->>>
->>> Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
->>> Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
->>> Signed-off-by: Dibakar Singh <quic_dibasing@quicinc.com>
->>> ---
->>>   drivers/firmware/qcom/qcom_scm.c       | 211 +++++++++++++++++++++++++
->>>   include/linux/firmware/qcom/qcom_scm.h |   7 +
->>>   2 files changed, 218 insertions(+)
->>>
->>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
->>> index 520de9b5633a..038b96503d65 100644
->>> --- a/drivers/firmware/qcom/qcom_scm.c
->>> +++ b/drivers/firmware/qcom/qcom_scm.c
->>> @@ -21,6 +21,8 @@
->>>   #include <linux/platform_device.h>
->>>   #include <linux/reset-controller.h>
->>>   #include <linux/types.h>
->>> +#include <linux/scatterlist.h>
->>> +#include <linux/slab.h>
->>>   
->>>   #include "qcom_scm.h"
->>>   
->>> @@ -1048,6 +1050,215 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->>>   }
->>>   EXPORT_SYMBOL_GPL(qcom_scm_assign_mem);
->>>   
->>> +/**
->>> + * qcom_scm_assign_mem_batch() - Make a secure call to reassign memory
->>> + *				   ownership of several memory regions
->>> + * @mem_regions:    A buffer describing the set of memory regions that need to
->>> + *		    be reassigned
->>> + * @nr_mem_regions: The number of memory regions that need to be reassigned
->>> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
->>> + *		    owners
->>> + * @src_sz:	    The size of the srcvms buffer (in bytes)
->>> + * @destvms:	    A buffer populated with the new owners and corresponding
->>> + *		    permission flags.
->>> + * @dest_sz:	    The size of the destvms buffer (in bytes)
->>> + *
->>> + * Return negative errno on failure, 0 on success.
->>> + */
->>> +static int qcom_scm_assign_mem_batch(struct qcom_scm_mem_map_info *mem_regions,
->>> +				     size_t nr_mem_regions, u32 *srcvms,
->>> +				     size_t src_sz,
->>> +				     struct qcom_scm_current_perm_info *destvms,
->>> +				     size_t dest_sz)
->>> +{
->>> +	dma_addr_t mem_dma_addr;
->>> +	size_t mem_regions_sz;
->>> +	int ret = 0, i;
->>> +
->>> +	for (i = 0; i < nr_mem_regions; i++) {
->>> +		mem_regions[i].mem_addr = cpu_to_le64(mem_regions[i].mem_addr);
->>> +		mem_regions[i].mem_size = cpu_to_le64(mem_regions[i].mem_size);
->>> +	}
->>> +
->>> +	mem_regions_sz = nr_mem_regions * sizeof(*mem_regions);
->>> +	mem_dma_addr = dma_map_single(__scm->dev, mem_regions, mem_regions_sz,
->>> +				      DMA_TO_DEVICE);
->>> +	if (dma_mapping_error(__scm->dev, mem_dma_addr)) {
->>> +		dev_err(__scm->dev, "mem_dma_addr mapping failed\n");
->>> +		return -ENOMEM;
->>> +	}
->>> +
->>> +	ret = __qcom_scm_assign_mem(__scm->dev, virt_to_phys(mem_regions),
->>> +				    mem_regions_sz, virt_to_phys(srcvms), src_sz,
->>> +				    virt_to_phys(destvms), dest_sz);
->>> +
->>> +	dma_unmap_single(__scm->dev, mem_dma_addr, mem_regions_sz, DMA_TO_DEVICE);
->>> +	return ret;
->>> +}
->>> +
->>> +/**
->>> + * qcom_scm_prepare_mem_batch() - Prepare batches of memory regions
->>> + * @sg_table:       A scatter list whose memory needs to be reassigned
->>> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
->>> + *		    owners
->>> + * @nr_src:	    The number of the src_vms buffer
->>> + * @destvms:	    A buffer populated with he vmid(s) for the new owners
->>> + * @destvms_perms:  A buffer populated with the permission flags of new owners
->>> + * @nr_dest:	    The number of the destvms
->>> + * @last_sgl:	    Denotes to the last scatter list element. Used in case of rollback
->>> + * @roll_back:	    Identifies whether we are executing rollback in case of failure
->>> + *
->>> + * Return negative errno on failure, 0 on success.
->>> + */
->>> +static int qcom_scm_prepare_mem_batch(struct sg_table *table,
->>> +				      u32 *srcvms, int nr_src,
->>> +				      int *destvms, int *destvms_perms,
->>> +				      int nr_dest,
->>> +				      struct scatterlist *last_sgl, bool roll_back)
->>> +{
->>> +	struct qcom_scm_current_perm_info *destvms_cp;
->>> +	struct qcom_scm_mem_map_info *mem_regions_buf;
->>> +	struct scatterlist *curr_sgl = table->sgl;
->>> +	dma_addr_t source_dma_addr, dest_dma_addr;
->>> +	size_t batch_iterator;
->>> +	size_t batch_start = 0;
->>> +	size_t destvms_cp_sz;
->>> +	size_t srcvms_cp_sz;
->>> +	size_t batch_size;
->>> +	u32 *srcvms_cp;
->>> +	int ret = 0;
->>> +	int i;
->>> +
->>> +	if (!table || !table->sgl || !srcvms || !nr_src ||
->>> +	    !destvms || !destvms_perms || !nr_dest || !table->nents)
->>> +		return -EINVAL;
->>> +
->>> +	srcvms_cp_sz = sizeof(*srcvms_cp) * nr_src;
->>> +	srcvms_cp = kmemdup(srcvms, srcvms_cp_sz, GFP_KERNEL);
->>> +	if (!srcvms_cp)
->>> +		return -ENOMEM;
->>> +
->>> +	for (i = 0; i < nr_src; i++)
->>> +		srcvms_cp[i] = cpu_to_le32(srcvms_cp[i]);
->>> +
->>> +	source_dma_addr = dma_map_single(__scm->dev, srcvms_cp,
->>> +					 srcvms_cp_sz, DMA_TO_DEVICE);
->>
->> Please use the new tzmem allocator:
->>
->> https://lore.kernel.org/all/20240205182810.58382-1-brgl@bgdev.pl/
-> 
-> And the new __free annotations, please
-> 
+  4461438a8405 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
 
-Noted, I will incorporate these changes in the V2 patch.
+a runtime check was added to do a WARN_ONCE() if the default return
+thunk ever gets executed after alternatives have been applied.  This
+warning is a sanity check to make sure objtool and apply_returns() are
+doing their job.
 
-> Konrad
+As Nathan reported, that check found something:
 
-Thanks,
-Dibakar
+  Unpatched return thunk in use. This should not happen!
+  WARNING: CPU: 0 PID: 1 at arch/x86/kernel/cpu/bugs.c:2856 __warn_thunk+0x27/0x40
+  Modules linked in:
+  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.7.0-01738-g4461438a8405-dirty #1
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
+  RIP: 0010:__warn_thunk+0x27/0x40
+  Code: 90 90 90 80 3d 22 20 c3 01 00 74 05 e9 32 a5 eb 00 55 c6 05 13 20 c3 01 01 48 89 e5 90 48 c7 c7 80 80 50 89 e8 6a c4 03 00 90 <0f> 0b 90 90 5d e9 0f a5 eb 00 cc cc cc cc cc cc cc cc cc cc cc cc
+  RSP: 0018:ffff8ba9c0013e10 EFLAGS: 00010286
+  RAX: 0000000000000000 RBX: ffffffff89afba70 RCX: 0000000000000000
+  RDX: 0000000000000000 RSI: 00000000ffffdfff RDI: 0000000000000001
+  RBP: ffff8ba9c0013e10 R08: 00000000ffffdfff R09: ffff8ba9c0013c88
+  R10: 0000000000000001 R11: ffffffff89856ae0 R12: 0000000000000000
+  R13: ffff88c101126ac0 R14: ffff8ba9c0013e78 R15: 0000000000000000
+  FS:  0000000000000000(0000) GS:ffff88c11f000000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: ffff88c119601000 CR3: 0000000018e2c000 CR4: 0000000000350ef0
+  Call Trace:
+   <TASK>
+   ? show_regs+0x60/0x70
+   ? __warn+0x84/0x150
+   ? __warn_thunk+0x27/0x40
+   ? report_bug+0x16d/0x1a0
+   ? console_unlock+0x4f/0xe0
+   ? handle_bug+0x43/0x80
+   ? exc_invalid_op+0x18/0x70
+   ? asm_exc_invalid_op+0x1b/0x20
+   ? ia32_binfmt_init+0x40/0x40
+   ? __warn_thunk+0x27/0x40
+   warn_thunk_thunk+0x16/0x30
+   do_one_initcall+0x59/0x230
+   kernel_init_freeable+0x1a4/0x2e0
+   ? __pfx_kernel_init+0x10/0x10
+   kernel_init+0x15/0x1b0
+   ret_from_fork+0x38/0x60
+   ? __pfx_kernel_init+0x10/0x10
+   ret_from_fork_asm+0x1b/0x30
+   </TASK>
+
+Boris debugged to find that the unpatched return site was in
+init_vdso_image_64(), and its translation unit wasn't being analyzed by
+objtool, so it never got annotated.  So it got ignored by
+apply_returns().
+
+This is only a minor issue, as this function is only called during boot.
+Still, objtool needs full visibility to the kernel.  Fix it by enabling
+objtool on vdso-image-{32,64}.o.
+
+Note this problem can only be seen with !CONFIG_X86_KERNEL_IBT, as that
+requires objtool to run individually on all translation units rather on
+vmlinux.o.
+
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Debugged-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+---
+ arch/x86/entry/vdso/Makefile | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index b1b8dd1608f7..4ee59121b905 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -34,8 +34,12 @@ obj-y					+= vma.o extable.o
+ KASAN_SANITIZE_vma.o			:= y
+ UBSAN_SANITIZE_vma.o			:= y
+ KCSAN_SANITIZE_vma.o			:= y
+-OBJECT_FILES_NON_STANDARD_vma.o		:= n
+-OBJECT_FILES_NON_STANDARD_extable.o	:= n
++
++OBJECT_FILES_NON_STANDARD_extable.o		:= n
++OBJECT_FILES_NON_STANDARD_vdso-image-32.o 	:= n
++OBJECT_FILES_NON_STANDARD_vdso-image-64.o 	:= n
++OBJECT_FILES_NON_STANDARD_vdso32-setup.o	:= n
++OBJECT_FILES_NON_STANDARD_vma.o			:= n
+ 
+ # vDSO images to build
+ vdso_img-$(VDSO64-y)		+= 64
+@@ -43,7 +47,6 @@ vdso_img-$(VDSOX32-y)		+= x32
+ vdso_img-$(VDSO32-y)		+= 32
+ 
+ obj-$(VDSO32-y)				 += vdso32-setup.o
+-OBJECT_FILES_NON_STANDARD_vdso32-setup.o := n
+ 
+ vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
+ vobjs32 := $(foreach F,$(vobjs32-y),$(obj)/$F)
+-- 
+2.43.0
+
 
