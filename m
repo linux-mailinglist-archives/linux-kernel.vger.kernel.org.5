@@ -1,240 +1,202 @@
-Return-Path: <linux-kernel+bounces-72528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7876485B4CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:19:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C95F885B4D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 061991F21CC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:19:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E65FB1C23C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40F25C8EA;
-	Tue, 20 Feb 2024 08:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702DC5CDC6;
+	Tue, 20 Feb 2024 08:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P5fxi12v"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kZklqQWO";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="a/lOCN0m"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED6041215
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708417173; cv=none; b=ArbotTalEr71P5MSdYFCNihbDFFILJL4+x5/ZbqunrP0R2rE4vt4AM3SZMdc60HMpCopjWrD4HJVCj9D1T9EH1gH3uvZL1JhTGeQ5NXeW2Sl8SrqLwUkGul6521wJBJKIbK2KiTTTERldZGPSpvCM/6KLMXIzrPgxA68VAjI/34=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708417173; c=relaxed/simple;
-	bh=ne6OIwC6Q4m/gonKfOP4zmqIeEWDkyxVyw9N1NHAagk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fCkwLHK+SZBP0lY3dYMEGmb+F5nQtmPhDqOka9+UaWtxhKrMIEV92TdNFV5eq8YDq0mZRqz2br6PLdR4sTbWU/BGVUrWmh/YyqH/FT6xKwlvUFQQfrEFX3JuYqMtSudVS7z7Rm2kDVa+QtOaoUSvnB61HGW4ozkYYJv4C9noJj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P5fxi12v; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512a9ae6c02so3031965e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:19:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0245C5F2;
+	Tue, 20 Feb 2024 08:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708417219; cv=fail; b=BG6aw6p/pO4ufMMciz6AnAzNZBAvs67M3egQuD8A701+QCsesUT3G+DlxpUNpcJDEFEqvJNuHoDf/KwRRk9N+/o6wCFOtbSyfv8luRr1OxhAmRlrOxueOafHC/vWXVATIu5U+k8X+tQi9RitCgyKSGfNyDjNJXVXgN2r2w3zUpo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708417219; c=relaxed/simple;
+	bh=NvpIgePNvmKNrHZZQqziduaReZQlz16EJUx4oEWJUu4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=dWfDyfzRxwQcmK+tLwHugvHCNOJAtzbDlouDwkBXR4Nhn53iFjOhNITclKohwRzS/RbJroDthMiVP4570t2SxtSBaKpxZMwhVCKUpy3Os4coM6pF9sLMAiVGB8jiD9lfW2tEDAVaT1qT+azQmJ5UEhW7Jrn3qEJizRY458VhSLY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kZklqQWO; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=a/lOCN0m; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41K7dIXY028831;
+	Tue, 20 Feb 2024 08:19:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=T6zJQu8ujok/GaJNC/5QUzR3oiy0YM/Y8T6jt59IfhU=;
+ b=kZklqQWON4rfnOq8eO9KDFnOKJrsh/utY89V1uzQVAObzVIiINOXEYMHs67FqGUcCAwk
+ 9TqnIsJIwho2ovxz5YwSzq4RjsaFpJpB2LfoZZQJl73X0CvqCw1ObXoVFD15rn8CdOGn
+ UaLNasNkAa55xr8aU72B3y5lQZvSklFa6/rwhMjaRU7zk1aPtJjDo5EA2+D0NxdFrkBZ
+ YAFtcapdqN8A3dySjBho0QdmuFubFSfFbvGR5Ccn1LPB5SXWWx9agzL0MCiw3aXtk8jm
+ FHxTydqu5IWqGoeinn4x6sInxu6EvD5BpXc7x3ftFOuI504JZLsS+bmPPK7JeHczLXWu mg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wamucx1ha-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 20 Feb 2024 08:19:46 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41K8FQ2j013254;
+	Tue, 20 Feb 2024 08:19:45 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wak86vq76-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 20 Feb 2024 08:19:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cjE+OLaJt6mYQoTYMoGJgy/RF6dD572tGHVzPlmx9tOLmbFCrPTms37SgoQlaby4XpXHaWvf6af0Uacxc0Rpi+CKkV7fHq8RQo050ODUU/4QAajC6C/+gh+E1y2fIOUmrbqo9a35GKU6gSo+6XJpxYIh4hmdp/vK8pxcgudFTN5YO1dvmubwIxHcYzKToNTfDUUSXBtR8vp+e5NVn7v7mZwV1QaXMHISAMJ5OdiniTg+eEUt5qk93pO6oaLdpg8PibdVrSsGGayDhaTZXUeEQOjGR02ahOn8hqC8aZ8wjAG5EawtRZwuQdMp0n3eWfv5h7E19xylp4q7GguPKx0rvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T6zJQu8ujok/GaJNC/5QUzR3oiy0YM/Y8T6jt59IfhU=;
+ b=BNOY49G2D6PziVzCzRMabOApmoTPWoAnK5wH080acEbJcVZrD944Wr+RtLJROZ/giUz73hAymJQM8OA7vO6qS2wXlusHJhxLGzJNzCppSTr1BiT5hmGkQ6Z168A7SRD/4RRMfSncSvc1EQ6UvZcNsZpCruI9EWfqg08tr3r9wj5BfIyFbBOgBp7v51/Trwu4hJ5wAMku/MVCkzt3PoRClPLmXC2YX/W5WjrOhWbD7BuQ21SZ8kYshf1cC81GJVZR7Sy57BHQjpnnL2wS/c5XMLPoGaWgO6hUbeCn3y1eijUJOzL8KeaZTu5vdHKJtguBdjjABNb2228PWWizpi6IHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708417169; x=1709021969; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HEziOHGiSIYIXSE2DKbMAoSccSRuJEWP3yua6RmUOog=;
-        b=P5fxi12vffvrIuvZB5sK08Fgaf/rRiFBMC9c1zposmptaMRna4tQ6mPCgMwtDNc3zX
-         uRrCqrkKMBzVf8GYV3e5XH5Gs7qXxbrmjQui+y2TRb58xQXZgygCiSfp+yvGvwrQAVZn
-         E62u32woJfva/G2fbh/aitCXYQq/J5535NdWM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708417169; x=1709021969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HEziOHGiSIYIXSE2DKbMAoSccSRuJEWP3yua6RmUOog=;
-        b=A1Zr6GtFG7N+Atow1ZyeOozKUV/1Lk70/s3yawD1eVk6u3pTbZXzFH7gz0m25UZdTY
-         dtY9FIpj+/30GvTTVqTTj2LGi2hwG7qjs6TY2dip1fTPhLit+bHB66OlZCq1vy7h1Vwd
-         HKQXeitDvsbfFKTSLtdzj44r6xSC42Ql50n68SV2lZcBfZivbBVhp4/HpQgNIiVyGdBo
-         EmybXzSVmHIklCo6ZyGv3rsG15DpXPcLkV7Vl79AN36aRT5h1qTF2eQM6S8DUs6Zgf7q
-         QhxbUYjCrGN8iuvhmU0yijU0PVSZFCgwonTwJ79ZNuWnSW8Z8CMh8kto4BoVj23X2028
-         FzWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWseQJReXdgNz3iddwspQA8joPXkrXVsLB4TE+ohZlQ9Onxf3FJcgsbE6gm8bLM2k9hysYadH2gzhkasZKCYiaqbDam7ACoR0w9nuvx
-X-Gm-Message-State: AOJu0YxYF52vRJvgjcgPIF5qzvdz5xwkTP7jLhQdX2GXDNzBcpgdCa/G
-	VQDX526MexGsau8KzTQB5MSVreqMT2mVQ/4kYIDEr/UglToR5mb0P/tDRPJesG1zm35w97ar3/2
-	VxZhsrRcBAKUb44zDyu4voj8/veAlxGAgw4e9
-X-Google-Smtp-Source: AGHT+IH5S9JhEAnlJW7wIUwPtqanO9wDlNvoGLQj6j/XUzV5A9r+YECp/Wu75hdzg56OEU7YxiSCvUVTZMQ1bRnLxMU=
-X-Received: by 2002:a05:6512:3b89:b0:512:b3a3:4adc with SMTP id
- g9-20020a0565123b8900b00512b3a34adcmr3730322lfv.0.1708417169550; Tue, 20 Feb
- 2024 00:19:29 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T6zJQu8ujok/GaJNC/5QUzR3oiy0YM/Y8T6jt59IfhU=;
+ b=a/lOCN0mliN7CtTRX+gJ2F4S9osw0l8nLwZWx3MtiSS5EH7FDNXlagNMqHemEyy9tPQSJiiHD/vIatDw6Sujq2u4n8cTJv/nifFM5YjDK1rwanAyGALwn75ZB0Ed5W3afUihHWUX7MCddDGC9qGHOo+6jl3QDndJYiYIUIYLttw=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by CH2PR10MB4391.namprd10.prod.outlook.com (2603:10b6:610:7d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 08:19:43 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 08:19:42 +0000
+Message-ID: <d27bc0d9-1a7f-4451-83ec-bf24df08f12e@oracle.com>
+Date: Tue, 20 Feb 2024 08:19:37 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 10/11] nvme: Atomic write support
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>
+Cc: axboe@kernel.dk, sagi@grimberg.me, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        ojaswin@linux.ibm.com, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+        nilay@linux.ibm.com, ritesh.list@gmail.com,
+        Alan Adamson <alan.adamson@oracle.com>
+References: <20240219130109.341523-1-john.g.garry@oracle.com>
+ <20240219130109.341523-11-john.g.garry@oracle.com>
+ <ZdOqKr6Js_nlobh5@kbusch-mbp> <20240220065553.GB9289@lst.de>
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240220065553.GB9289@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LNXP265CA0021.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5e::33) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126063500.2684087-1-wenst@chromium.org> <20240126063500.2684087-2-wenst@chromium.org>
- <74b9f249-fcb4-4338-bf7b-8477de6c935c@linaro.org> <CAGXv+5Hu+KsTBd1JtnKcaE3qUzPhHbunoVaH2++yfNopHtFf4g@mail.gmail.com>
- <21568334-b21f-429e-81cd-5ce77accaf3c@linaro.org> <CAGXv+5HxXzjigN3Bp96vkv71WfTJ1S2b7Wgafc4GxLmhu6+jMg@mail.gmail.com>
- <a4324473-e0c6-4d53-8de0-03b69480e40b@linaro.org> <CAGXv+5HAqmUizXztMH_nY6e+6oQh01hCtxEJXKtCn3_74-sOsQ@mail.gmail.com>
- <78241d63-3b9d-4c04-9ea5-11b45eac6f00@linaro.org> <20240130223856.GA2538998-robh@kernel.org>
- <CAGXv+5FwaNe7oesGwZ=yR0Pg82tEzEF3B0zjoex4qw+6zsSYbQ@mail.gmail.com> <CAPDyKFofy24N7ymzTF7wiADc17Tw9FiNTYMnbxgoioMBwDKVhA@mail.gmail.com>
-In-Reply-To: <CAPDyKFofy24N7ymzTF7wiADc17Tw9FiNTYMnbxgoioMBwDKVhA@mail.gmail.com>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 20 Feb 2024 16:19:18 +0800
-Message-ID: <CAGXv+5Fvdp__Razz_nxcedCV_P=Wbj=F_a6=s4V4SbW4RooueA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
- SDIO Bluetooth
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CH2PR10MB4391:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44ffc693-4d88-4334-d023-08dc31ecb0ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	uM0lkekj5pNWjf5lMT3P5G7huSjm5bArAoZIRvXsRvrsnTiveUU0MUAN9LCpgpyVO5KhcCTXoato05ljVzhjiypbQ7T9oq6ND3m1XWuEeQDqSboGPlrsWjJE2Izu2Hedn5Ej8N1uni6ZNOeF4uP+RI6cGiPO4wRDNJqWbbGtTy6HzgarQW72cPjW9hIbDhrfmx5jlW6zwE9DgDFDK0Q7eJxlGpQvWfZOLCcwEOTmxTcn6K1nLpzth0muhnNirWslD6kNt8bP1JEs4ClvYA80jLaOFUeZRuapEe6aeGGZ7GZSsKQ1DiXkEuqeYmDmhIDhHmU9E7OEO/K+loLg/u0ltGukM+WBdQZfhdsrZ6EimwHQsNKvS2eVtDpWOaZiDEzZBWcSxQciP1lZ/YAlAxPUvYHcdA5xwRy4NABGQngQVHbz2uSNPvH4aXq8NvBZhtAp0dE9LZgin50f2VbPgfGdd6QXJovsMyk95qgfDkQU/KNNpbeumATp0X7rm7BTtK+qm8ew5CRxVta/hJlxDWZnyEXL7W1f+eTsKjAg9OcVI4I=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MmRZT2c4QWRTVWtpS0toMVZpSnR2b3FlckI1K0YzV0x3dWJ4QWM5bEllUnB2?=
+ =?utf-8?B?TEdDSnQ3c0V1MjdKL1BzaDEyYkdmV2QrMHpSMGMvdXh0Tjg4Um5aWVppMEY5?=
+ =?utf-8?B?aXRKRkF2aWNzSExtQkRmU0F6YXpKYjlrTmc3c2JHQ2VvKzRkRFVnbXJDMENT?=
+ =?utf-8?B?MTVxRlA0RnlibW5CYjlNY1hSUWhvd3NrclFqODZjbklMcWFvay8zei8rNmdC?=
+ =?utf-8?B?ZFQrWDdoMVdya3RsNURYVUVaT0Y3TVFFb1NjTTVKQXp1d3I4N1lpN2dGTitv?=
+ =?utf-8?B?cTZ5QmxXeE84MG9pdk0yeTh5RVlOaVgraTRLZG0rMElxL2Znc1l4UFdBU1Aw?=
+ =?utf-8?B?SHVIY0lQWktpMFB0N2JyaURXQnhWSzF5Ry90Tk8wWGpkOHZXNDlleEFNbUxR?=
+ =?utf-8?B?NTZ0eTVYSUpjOHV0Uisxalp3c0gyVlVvOUxvL2VHbHJwNjhPQnoyYUVjeEd4?=
+ =?utf-8?B?WWNveFJzWU5zb2k4eFZIYkVhanpyeHR1UmRBNEo1Y1c1UHBxVHZNWG9oZGZG?=
+ =?utf-8?B?ZUh6cmlGTkZlMWZmN1o1ZkswcTFQRXkvWVR2TzVHdEwraUZ3aW1jeHEvaEIz?=
+ =?utf-8?B?M1Q1U1E4dSt4S25OUS9uT1N2WGlyV3dMZU1QV0EvUVg0NVdyTEc2MjV1OVhJ?=
+ =?utf-8?B?T0l5MVFmWExrLy93ZmdOSFpHWERWUzFyMDhGZlg5NlJFcXpSZytpUDFjaHlm?=
+ =?utf-8?B?M1BSZEdncG82alEycXl3MzFsQ09IUzNxZHdza21zaVNjeVA0SEdWaWdDU3FL?=
+ =?utf-8?B?MkZBT3Z3MG1RTzJKMDB6RVRLMTNKaHFJRzc5cTJsaGdsbXpnU2dUMUFRckxT?=
+ =?utf-8?B?SWxKTGRuUmhXdnhyNjgvOGRCL29MYm1ZU09ldnV2c1ZvZFJyMldDVDFUaXNn?=
+ =?utf-8?B?S1BMdjVCWTJJWU1GRy9pTDJzUlg2ZXVvdERuQnQ5WjVXdFhaNnQ3NnRYcmgw?=
+ =?utf-8?B?RjN2NlRHOEFtaUtVMUFPN3ArS0tOZnhYZ0Q1aVJGQU9OY3NFbGtoYU5vazZp?=
+ =?utf-8?B?QnY0a005aE84YS94dytwUUJnbTczenFocjRPRVhuNFYyY0ZBSXorV3cvUTFJ?=
+ =?utf-8?B?V1pSUkRYVFE2Q3czV0RKVHQyMnZFRVZacGZqOWxVTi9OZ0JoK3lFb1VUMWd0?=
+ =?utf-8?B?eGNJNVRzb3NsVjRaV3piVFRNTTJ0ZU9GREEzcFAvSHVzdEMzMWFSbnBPNzJa?=
+ =?utf-8?B?RXVVTlBvRDI2V1kzMkJiVG45cFN0d0VIQUUvdWo0WWtDZDlPZ01JeEh0Zkd3?=
+ =?utf-8?B?ZmRnWHhzVUV4bVhnY2lIVEpKVFpCLytHL2xOMEhLc1FtV3VINlcvRzhQZDM5?=
+ =?utf-8?B?MVZ4NnJYNHNkZmhaRlRsYTVSMmNTKytQVXJJY0JCQnpMaXUxREt1UlhCMnp5?=
+ =?utf-8?B?UDFJajFxSDBKRUZqcmYvTk9qWmZRRk5xTXp0QzVFSzNHazZDZmM3NXVFVUV0?=
+ =?utf-8?B?RDRtalRYdHE5M0ZzN2lMTkFzUkRTZXp5YkhWdjJWcEJxYzBwZTkxVlVKQ1Qw?=
+ =?utf-8?B?YUxZRU5JdVJSM0FTd016akpkY3BKT2xVZW1IRGc2WmFGUnlwMXU4NGk3UVJK?=
+ =?utf-8?B?aDRFUjgvMmg1THd2dEpMRDY4UjhIUHBkQmk0V0JhWDRuQUxjMUU0ZzVENVFq?=
+ =?utf-8?B?WHN4V3BSUEpQZHR1TFJyank5amIrTk9FRDlSSHRidkdiaTE0UDc1Tkk4bS9I?=
+ =?utf-8?B?T05ZRitaa1hKRTFPSDdBSVBDRytnc2tsRGthZ3RTNTlGRHpkcFgxQTJYbXpY?=
+ =?utf-8?B?R2dzU05Bam5ILzhUbFh2L25IekU0bUhxT1J0SVhwNW0zbG1XUXVpSWJyYzBr?=
+ =?utf-8?B?L3M2VnZ0eUwzcGZMdGJuaTVaZHFaVHZ1d1NXdXJWSkxLWXo3OUlJNmdEUE0w?=
+ =?utf-8?B?YmZhTW4zZm15eDZUVG1NWEw0ZGhva3htWXJXRkdHZU9HaUE4NHc1Zmp3MGJ3?=
+ =?utf-8?B?NWNBSmtZWXA4VkgwT2U4V2JNSnhpMWpOVDRBbVN0VUpnWjdlbmVKMlB3eS9u?=
+ =?utf-8?B?VTd4UEJVQURRR3c1VjZBeGJDT0lhSUpIRXFMckZVcUFWU3hZaGpmWDl6TUR3?=
+ =?utf-8?B?cytOWTdoZXVvOWdpcHAwU1NldmwrSXhKMldBVVQyMEF2Z1AzS0c5TUZYOC9s?=
+ =?utf-8?B?Mzl1blVkR1ZjZ1BDR0FoZVVJeTd4Unl4K1BQOHkvWExKZjFOck9CWEkxUVc2?=
+ =?utf-8?B?TFE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	++DEM7JkGJ6npCN+QwHzh4om4PMErtnLSLG6K//qBXkYqW/zje1T8uhS0NzIC1Zg50rX1QQVLr/Ic7W36GPeyj4AaXLL2ZkI/jeje3iTUfVHuwcjiyF/mduBVNQFm08twlE4NSAyGfzHESdj9rm1h6oWpcygiUGccctBE4XFZiEPYD21L27+FKY+EoTL5r7xIysQAreXzqmraCH1zHP/UpeIUOCAW1Urb0aPILEO6FAne09shC+Mf2scxu5fLBloZr/WKDpm1CrtfJMIuq+0Zv5pabF4xocuSnNKhOqHn24y3Yll4Eh4/k9/L22YcEZ0aIQ9SeDZp2PQk0O/JuAQ8AIiaLpZZcbnwzrr4prKrUONr7J9KTq5cCJhlz1b9iM/EgKndmBta3j+TQvKKdK398DtEVkpodBiiiu5LwyhI+QZ+4kfyNMe6VLNSBzKd7C8EjoPl2b95Ll97CCMNylF66VHk2pHScHiKQrPWfJajro5t5CZSEAUXg7ym4+1GBPsk6DjdKLP9Kjh36aNmcG4c5rJdvcsgFHlnzUqy9XiD41s2t6to24EN2vFTPHIXXSnC/pFQROaqjw6QdCt3mKs+P/hqe5r14yTbeB86/lvXEw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44ffc693-4d88-4334-d023-08dc31ecb0ac
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 08:19:42.7810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z/LY2EQRQlz7eUo4fRpz2BgBzFNaEMiGHetTSRLTd5DXgm9DyyWmjVLbAo2ZJ5rpUkmCQ1qLLiw8t8yPr/p0mw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4391
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402200059
+X-Proofpoint-GUID: WrQetJUHALk82U00GBw_Rr-E1eMpmCW-
+X-Proofpoint-ORIG-GUID: WrQetJUHALk82U00GBw_Rr-E1eMpmCW-
 
-On Tue, Feb 6, 2024 at 1:50=E2=80=AFAM Ulf Hansson <ulf.hansson@linaro.org>=
- wrote:
->
-> On Wed, 31 Jan 2024 at 04:39, Chen-Yu Tsai <wenst@chromium.org> wrote:
-> >
-> > (+CC Ulf Hansson)
-> >
-> > On Wed, Jan 31, 2024 at 6:38=E2=80=AFAM Rob Herring <robh@kernel.org> w=
-rote:
-> > >
-> > > On Tue, Jan 30, 2024 at 05:25:38PM +0100, Krzysztof Kozlowski wrote:
-> > > > On 30/01/2024 08:47, Chen-Yu Tsai wrote:
-> > > > > On Tue, Jan 30, 2024 at 3:37=E2=80=AFPM Krzysztof Kozlowski
-> > > > > <krzysztof.kozlowski@linaro.org> wrote:
-> > > > >>
-> > > > >> On 30/01/2024 04:32, Chen-Yu Tsai wrote:
-> > > > >>> On Mon, Jan 29, 2024 at 3:34=E2=80=AFPM Krzysztof Kozlowski
-> > > > >>> <krzysztof.kozlowski@linaro.org> wrote:
-> > > > >>>>
-> > > > >>>> On 29/01/2024 04:38, Chen-Yu Tsai wrote:
-> > > > >>>>
-> > > > >>>>>>> +allOf:
-> > > > >>>>>>> +  - $ref: bluetooth-controller.yaml#
-> > > > >>>>>>> +
-> > > > >>>>>>> +properties:
-> > > > >>>>>>> +  compatible:
-> > > > >>>>>>> +    enum:
-> > > > >>>>>>> +      - mediatek,mt7921s-bluetooth
-> > > > >>>>>>
-> > > > >>>>>> Can it be also WiFi on separate bus? How many device nodes d=
-o you need
-> > > > >>>>>> for this device?
-> > > > >>>>>
-> > > > >>>>> For the "S" variant, WiFi is also on SDIO. For the other two =
-variants,
-> > > > >>>>> "U" and "E", WiFi goes over USB and PCIe respectively. On bot=
-h those
-> > > > >>>>> variants, Bluetooth can either go over USB or UART. That is w=
-hat I
-> > > > >>>>> gathered from the pinouts. There are a dozen GPIO pins which =
-don't
-> > > > >>>>> have detailed descriptions though. If you want a comprehensiv=
-e
-> > > > >>>>> binding of the whole chip and all its variants, I suggest we =
-ask
-> > > > >>>>> MediaTek to provide it instead. My goal with the binding is t=
-o document
-> > > > >>>>> existing usage and allow me to upstream new device trees.
-> > > > >>>>>
-> > > > >>>>> For now we only need the Bluetooth node. The WiFi part is per=
-fectly
-> > > > >>>>> detectable, and the driver doesn't seem to need the WiFi rese=
-t pin.
-> > > > >>>>> The Bluetooth driver only uses its reset pin to reset a hung =
-controller.
-> > > > >>>>
-> > > > >>>> Then suffix "bluetooth" seems redundant.
-> > > > >>>
-> > > > >>> I think keeping the suffix makes more sense though. The chip is=
- a two
-> > > > >>> function piece, and this only targets one of the functions. Als=
-o, the
-> > > > >>
-> > > > >> That's why I asked and you said there is only one interface: SDI=
-O.
-> > > > >
-> > > > > There's only one interface, SDIO, but two SDIO functions. The two
-> > > > > functions, if both were to be described in the device tree, would
-> > > > > be two separate nodes. We just don't have any use for the WiFi on=
-e
-> > > > > right now. Does that make sense to keep the suffix?
-> > > >
-> > > > Number of functions does not really matter. Number of interfaces on=
- the
-> > > > bus would matter. Why would you have two separate nodes for the sam=
-e
-> > > > SDIO interface? Or do you want to say there are two interfaces?
-> >
-> > There is only one external interface. I don't know how the functions
-> > are stitched together internally.
-> >
-> > It could be that the separate functions have nothing in common other
-> > than sharing a standard external SDIO interface. Each function can be
-> > individually controlled, and operations for different functions are
-> > directed internally to the corresponding core.
-> >
-> > > Right, one device at 2 addresses on a bus should be a node with 2 "re=
-g"
-> > > entries, not 2 nodes with 1 "reg" address each.
-> >
-> > AFAICU that's not what the MMC controller binding, which I quote below,
-> > says. It implies that each SDIO function shall be a separate node under
-> > the MMC controller node.
->
-> Yes, that's what we decided to go with, a long time ago. At least in
-> this particular case, I think it makes sense, as each function
-> (child-node) may also describe additional resources routed to each
-> function.
->
-> A typical description could be for a WiFi-Bluetooth combo-chip, where
-> each function may have its own clocks, irqs and regulators being
-> routed.
+On 20/02/2024 06:55, Christoph Hellwig wrote:
+> On Mon, Feb 19, 2024 at 12:21:14PM -0700, Keith Busch wrote:
+>> Maybe patch 11 should be folded into this one. No bigged, the series as
+>> a whole looks good.
+> 
+> I did suggest just that last round already..
+> 
 
-Rob, Krzysztof, does that help you understand why the binding and example
-are written with bluetooth being one node and WiFi (should it ever be added=
-)
-being a separate node? It is based on the existing MMC controller bindings.
+I created the helper function and folded it in, but not the callsite. 
+Not folding in the callsite change did not make sense to me, but that 
+was my understanding of the request. Anyway, I can fold everything into 
+this patch.
 
-ChenYu
-
-
-> >
-> >
-> > patternProperties:
-> >   "^.*@[0-9]+$":
-> >     type: object
-> >     description: |
-> >       On embedded systems the cards connected to a host may need
-> >       additional properties. These can be specified in subnodes to the
-> >       host controller node. The subnodes are identified by the
-> >       standard \'reg\' property. Which information exactly can be
-> >       specified depends on the bindings for the SDIO function driver
-> >       for the subnode, as specified by the compatible string.
-> >
-> >     properties:
-> >       compatible:
-> >         description: |
-> >           Name of SDIO function following generic names recommended
-> >           practice
-> >
-> >       reg:
-> >         items:
-> >           - minimum: 0
-> >             maximum: 7
-> >             description:
-> >               Must contain the SDIO function number of the function thi=
-s
-> >               subnode describes. A value of 0 denotes the memory SD
-> >               function, values from 1 to 7 denote the SDIO functions.
-> >
-> >
-> > ChenYu
->
-> Kind regards
-> Uffe
+Thanks,
+John
 
