@@ -1,189 +1,139 @@
-Return-Path: <linux-kernel+bounces-72897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDD4E85BA54
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:22:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031E885BA00
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E60E1C221A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:22:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 359FF1C24A6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D491867E85;
-	Tue, 20 Feb 2024 11:21:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6540679E7;
+	Tue, 20 Feb 2024 11:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="s9nrO5Y/"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="BLdU6PEu"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D730664D9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6E165BD9;
+	Tue, 20 Feb 2024 11:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708428102; cv=none; b=ShL1UsBGE0ov1CjMqCau/KBsONRGCUz7tD+mMREnjJrlB7dDwSLmLdPiz1w8Crw/ZdH2XuB4HTxu8DV4yNC4n9/Rns2Or3GlnacwNsD37vqQ6wEBJM0CvTQ0ujR3SdQEMMIfaGv3aOtN414zisz+dbEWyqfM1yg9CHOhqwcZJG4=
+	t=1708427448; cv=none; b=NC20K2+LOAkvQA4956UXuvDUepetV0srKbQYauKXLNyJC9B39+S7dchpwBjoIbXAci/712k0BDg8JXXZMq1DgV+aX8Y8lBKM10Ikg10ARq/32VnZXRuiXFBECzk5K9q1LN3Yef9/57NOEv2Tdx7pdj6BLEte6tnzQpw2KaWxkoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708428102; c=relaxed/simple;
-	bh=INHQvRB/ojgLL1jJyHv4kt04JhA8r1SShwN3sZfPsZ8=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:References; b=RVw4A9KWOOPJmap8J3nfsBjOZn50lIdnWtYWGUJtmjFtwMxdhvoq7EA/5NHU6hy/ruKI7d8+5VLnKHNCw/0eSlV8JNSUUFNTJgddCRpIOkwb38Quv2rUiVIil1/ZDpCRfyTiV7rZOh/UvDPpDUGiykdw1Q9u9A/pSEOxWjyLHzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=s9nrO5Y/; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240220112138epoutp014e1a62ae0652fc2ebd460999fae0d76b~1jk3JEODR2828228282epoutp01f
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:21:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240220112138epoutp014e1a62ae0652fc2ebd460999fae0d76b~1jk3JEODR2828228282epoutp01f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708428098;
-	bh=9fGAvkkWp12wfZXJbzbavv2ZwQH5uBgyjHpo2ixsD5g=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=s9nrO5Y/2+9rMxzcwO8lBRBvPHPBIM4ouJ72/qRImVKjFySSrIQpgghQQcKSogBEG
-	 fUweX6u8ppsM01TrPotpPf4ou8a8vJQStDRecYXQ7ai67mGZpf+/zp7fozxuusgIIa
-	 wsfkGdBEWurXdqw72A2V24O8iKSUDyKJOT1uquKw=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240220112138epcas5p2f6ce1ff37994ee8c17b9d478d645c430~1jk24n3rP2571225712epcas5p2a;
-	Tue, 20 Feb 2024 11:21:38 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.175]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4TfH6S2xGcz4x9Pv; Tue, 20 Feb
-	2024 11:21:36 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	8E.F3.09672.04B84D56; Tue, 20 Feb 2024 20:21:36 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240220101235epcas5p16db3f82c8db1efd32299c48c875cdc87~1iokWVZc32498224982epcas5p1u;
-	Tue, 20 Feb 2024 10:12:35 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240220101235epsmtrp15a637026f007baa6d501581fbe3dc121~1iokVk8672766527665epsmtrp1D;
-	Tue, 20 Feb 2024 10:12:35 +0000 (GMT)
-X-AuditID: b6c32a4b-60bfd700000025c8-0e-65d48b404943
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	92.43.07368.21B74D56; Tue, 20 Feb 2024 19:12:34 +0900 (KST)
-Received: from cheetah.sa.corp.samsungelectronics.net (unknown
-	[107.109.115.53]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240220101233epsmtip2b9ecc58a6460c97f07645740b25e1462~1iojAi0Ht1920319203epsmtip2I;
-	Tue, 20 Feb 2024 10:12:33 +0000 (GMT)
-From: Tamseel Shams <m.shams@samsung.com>
-To: alim.akhtar@samsung.com, krzysztof.kozlowski+dt@linaro.org,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Tamseel Shams
-	<m.shams@samsung.com>
-Subject: [PATCH v3] serial: samsung: honor fifosize from dts at first
-Date: Tue, 20 Feb 2024 15:42:27 +0530
-Message-Id: <20240220101227.80741-1-m.shams@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHKsWRmVeSWpSXmKPExsWy7bCmhq5D95VUg+W/BSwezNvGZtG8eD2b
-	xbu5MhZ9Lx4yW2x6fI3V4vKuOWwWM87vY7I4s7iX3eJu62J2B06PTas62TzuXNvD5rF/7hp2
-	j81L6j36tqxi9Pi8SS6ALSrbJiM1MSW1SCE1Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8x
-	N9VWycUnQNctMwfoJiWFssScUqBQQGJxsZK+nU1RfmlJqkJGfnGJrVJqQUpOgUmBXnFibnFp
-	XrpeXmqJlaGBgZEpUGFCdsbrX/wFxwUqTs+fwtLA+J63i5GTQ0LARGLNusfsXYxcHEICuxkl
-	pk9bBeV8YpRYdO40I4TzjVFi68XzLDAts49MgkrsZZS4eXojVEsrk8TqE9OYuhg5ONgENCWO
-	n+cGMUUEiiQaP/OClDALbGCUeNCzAaxEWMBVYvUCGZCZLAKqEn92dzKC2LwCFhKTW26yQ+yS
-	l1i94QAzSK+EwCF2iUXXrrJBJFwkFv94A1UkLPHq+BYoW0riZX8blJ0uMfdhLxOEXSCxbNd3
-	qLi9xIErc1hAbmAGOnP9Ln2IsKzE1FPrwMqZBfgken8/gWrlldgxD8ZWlPi/ux9qjLjEuxVT
-	WCFsD4kVcyaAnSYkECtxtOct6wRG2VkIGxYwMq5ilEwtKM5NTy02LTDOSy2HR1Nyfu4mRnBC
-	0/LewfjowQe9Q4xMHIyHGCU4mJVEeFnKr6QK8aYkVlalFuXHF5XmpBYfYjQFhtlEZinR5Hxg
-	Ss0riTc0sTQwMTMzM7E0NjNUEud93To3RUggPbEkNTs1tSC1CKaPiYNTqoFJK2TH3UT2k1V6
-	Gsm7fs38E7LI89QGm+9S4u+nPzwcvHuW38pzzO7vvULEe47zHw6f7lF6UCbW3W55Tmyi3AXF
-	9+ud74TUb9S8/c1Rf3tniZXH8U9Ffam13/5EXbK4duqgnq/fss0rymdnW9pVyLitfeAxm6u8
-	SJwzY9/jyyeqzvopiEdfcCsydbx3d7LSYdd/T+0DTjF91Xf5N4HncN7tzFVqWd+ty9yPBOnw
-	/bkY5/HiiVHRUttn8y9WCPVvNlrFaPhbR6H4bBDzOZMFOyK36IuzqQmqXuksbFxnxqH+8Wz4
-	pK+2u90TXS3lXuYeZjrae+vZ56RVL55u0rnSwv5E6eTjk6vUTnhPM/Y8dj5JiaU4I9FQi7mo
-	OBEAl1tpjfEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupiluLIzCtJLcpLzFFi42LZdlhJXleo+kqqwfW5lhYP5m1js2hevJ7N
-	4t1cGYu+Fw+ZLTY9vsZqcXnXHDaLGef3MVmcWdzLbnG3dTG7A6fHplWdbB53ru1h89g/dw27
-	x+Yl9R59W1YxenzeJBfAFsVlk5Kak1mWWqRvl8CV8foXf8FxgYrT86ewNDC+5+1i5OSQEDCR
-	mH1kEmMXIxeHkMBuRomeL4fZIBLiEtN+7WeEsIUlVv57zg5R1Mwk8WPrReYuRg4ONgFNiePn
-	uUFqRATKJHZ132cFqWEW2MIoce7/X3aQGmEBV4nVC2RAalgEVCX+7O4Em8krYCExueUmO8R8
-	eYnVGw4wT2DkWcDIsIpRMrWgODc9N9mwwDAvtVyvODG3uDQvXS85P3cTIzi4tDR2MN6b/0/v
-	ECMTB+MhRgkOZiURXpbyK6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeQ1nzE4REkhPLEnNTk0t
-	SC2CyTJxcEo1MG2co3V12dY8A4/3bicYZxfdETAwEZ44zVEkWmgO34umyIAsUeFZx+M62Uw+
-	8FpVMSy8XLbHO9Ha7dm8tMytmfUvJ/BEpLc68s75YWf+yjJEPHvCtlNmls9u9Yf9/vNn/e5r
-	XnJM8ozR0pdMeZ8H2kov7ZrS9/65UEagxv61FW8/d+UYXjzLJRiue7PhjV4t8xmBCb1f2ZLV
-	ts5z/rXxy8QNS17JlN2XTeNakZ4bGjBtJfscNs2//7fWy2i4hxX3mSzR4ZvdflCBzSax313j
-	neHCqR7NrO2XAsq3htTHWXUrTdYQ+dDW+XLZ9bKkDSkfkhdFZco8DHk2+fd+i8kc3GWBS5+1
-	/coQePVt7qOvSizFGYmGWsxFxYkATQEMn50CAAA=
-X-CMS-MailID: 20240220101235epcas5p16db3f82c8db1efd32299c48c875cdc87
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240220101235epcas5p16db3f82c8db1efd32299c48c875cdc87
-References: <CGME20240220101235epcas5p16db3f82c8db1efd32299c48c875cdc87@epcas5p1.samsung.com>
+	s=arc-20240116; t=1708427448; c=relaxed/simple;
+	bh=MpJcVGRKO8AWBDMnssLpCilOGC18nfaO9n9RoVZq7VQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=cgEql6SejxSuarVPtVUuOgkRufbQN6a507YkaeJ8lXezjFlr7svcFkBdBz3qWTzuqaGVWbWS7+/v+feZy8pk/2hnT6DIs/yvNk3HUroEPA0MBPOYXe8NKG8J/7b30wcrbVLqjpvlyeZXhW0eOemNnDS+gZ7gv2b5s4DMRaV3QQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=BLdU6PEu; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1708427438; x=1709032238; i=markus.elfring@web.de;
+	bh=MpJcVGRKO8AWBDMnssLpCilOGC18nfaO9n9RoVZq7VQ=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=BLdU6PEuy96My08QHX+sfAMRWW4IK1X4d0T4z7p4DxV7MRkglWrcZf/j/tZKdw52
+	 YPMAa2l6FxXjQdxzj85XS/JNEH9oDG/yKaghQ2vCY2NfS1Kb49HmyUj+GrUD85WqQ
+	 8RNDEIiRbmSjIwPbGf/sSU2rQRZhM51J48MM7HybPKuk1Wofxj67i5sJb8fCQZu0v
+	 W/79FPqhyfb5sz0FQ05r+Usub8KlNKiZYpi0CoK3MsPsiy0LZ+Q9NgLIEq6arb5/3
+	 gu86okYONMl5QBxcn6SytaLQHWAyDAtkOmAFfD5zc4XMnhGSw7Qy4gsQb/CGAeWec
+	 m/95GOLhnMPpFIYZBQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M7Nig-1rZ6Xk3SFY-007pjU; Tue, 20
+ Feb 2024 11:56:00 +0100
+Message-ID: <9ff4221a-7083-4cb1-abde-1690f655da8d@web.de>
+Date: Tue, 20 Feb 2024 11:55:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Johan Hovold <johan+linaro@kernel.org>, freedreno@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Andrzej Hajda <andrzej.hajda@intel.com>,
+ Bjorn Andersson <andersson@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Vinod Koul <vkoul@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Kuogee Hsieh <quic_khsieh@quicinc.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Rob Clark <robdclark@gmail.com>, stable@vger.kernel.org
+References: <20240217150228.5788-4-johan+linaro@kernel.org>
+Subject: Re: [PATCH 3/6] soc: qcom: pmic_glink_altmode: fix drm bridge
+ use-after-free
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240217150228.5788-4-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+nHgQKTeGuYog2KEpVvwroQxHKbVWgy4x84LyT/hTMOvc2YQpn3
+ JDDJBBZ8e8iXt3Iuyj6UFT2vAkr8MqMibV6zXbFxjjJ4NonyB3VINxG4cgtMo5Xs7xuC6zv
+ xHHA+wCH+zFVfPWvJKoIfdB4zOgAfy83sRz8V39oAy7aiZgIKyhsi1FhkeElCu/itLaX0BA
+ SMxSEIL5gaOlUNFNP274g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:aOKHz1US+0c=;Y7LOb2uGXWAxALKRNeJNoMXdSED
+ 6mThPuSgax6MusWH8Ux/RV+9w1zP98fwHF/F/EFha/52Eso2NCDEZICzFoaqBbjVZwC8X9iXj
+ imqXDHI+XMO0+ZsKtOfqx24v88gE5o5vzibabRrgXDJNXGYIMVRv0FhA3zBLzLImf+0yKA0w3
+ JipXGp3SXIfH7L7HV9OeJp/lRlCX0T2dcB4emjiyAhry5gg7pglw5q81w+eBAmMASEC7p3QFl
+ fNJMxuiOt8h2Rezr4SEiSyEQA6eYjV9YL2u7jd2D7a/Z782fqk3AH3QRs5XYKldiKIQ/ET21w
+ kQy5vQRVco7VAXTQBMM4nu+jjOcrp7VwntKu1Lv8lSUeYMgoPk+03t1Jfd7Wq+v0DumL+b69s
+ EFpggdlfcwjmUZiY1H5L0aypyi1fqDno1dcoD3BThjr7HInZntawd5DklobDax+czHsflIRKo
+ EEald0kztZeVc20C//rszyjaE0lRLHAnbS1xEbuUhgIY6wQNfjOWsKpTlwmKkxJhg+G8V87Hw
+ CsGHwCQpWo8JUQ2u8u13to8icfvbIURNZ/+0TOfimg6fk1e3Xp6tk5ZST+n0FupyGgbuzh8Xk
+ /ckHy9ppsFBiMNkezud3jl9lRX5YB1WBEQYzDYOCWdxsFvo3mw715qMWQEMJjar3JQR4i/NFh
+ wpz15f441+KtAxdh9D+nYKtO57bx/KSH6YPyS0OgfVYWQnCwWw9/FSkWuNj+8E9Xouf+xnsSV
+ 7i9vSiZZCGaVCFmj7xKEWlGyBccfvDxkylTO9r0FdjfgxCZQFBHfYnKaMD47c7kVBC5lznyEq
+ 1ZP+jYKEtNDnFoMJvSTvMXP1v6aJ26Z0pgxbocw6whsgI=
 
-Currently for platforms which passes UART fifosize from DT gets
-override by local driver structure "s3c24xx_serial_drv_data",
-which is not intended. Change the code to honor fifosize from
-device tree at first.
+=E2=80=A6
+> Specifically, the dp-hpd bridge is currently registered before all
+> resources have been acquired which means that it can also be
+> deregistered on probe deferrals.
+>
+> In the meantime there is a race window where the new aux bridge driver
+> (or PHY driver previously) may have looked up the dp-hpd bridge and
+> stored a (non-reference-counted) pointer to the bridge which is about to
+> be deallocated.
+=E2=80=A6
+> +++ b/drivers/soc/qcom/pmic_glink_altmode.c
+=E2=80=A6
+> @@ -454,7 +454,7 @@ static int pmic_glink_altmode_probe(struct auxiliary=
+_device *adev,
+>  		alt_port->index =3D port;
+>  		INIT_WORK(&alt_port->work, pmic_glink_altmode_worker);
+>
+> -		alt_port->bridge =3D drm_dp_hpd_bridge_register(dev, to_of_node(fwnod=
+e));
+> +		alt_port->bridge =3D devm_drm_dp_hpd_bridge_alloc(dev, to_of_node(fwn=
+ode));
+>  		if (IS_ERR(alt_port->bridge)) {
+>  			fwnode_handle_put(fwnode);
+>  			return PTR_ERR(alt_port->bridge);
+=E2=80=A6
 
-Signed-off-by: Tamseel Shams <m.shams@samsung.com>
----
-Change Log:
-v1 -> v2:
-Acknowledged Krzysztof's comments
-Initialized "ret" variable
+The function call =E2=80=9Cfwnode_handle_put(fwnode)=E2=80=9D is used in m=
+ultiple if branches.
+https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/soc/qcom/pmic_gli=
+nk_altmode.c#L435
 
-v2 -> v3:
-intoduced new variable "fifosize_prop" to handle
-return value from call of "of_property_read_u32"
+I suggest to add a jump target so that a bit of exception handling
+can be better reused at the end of this function implementation.
 
- drivers/tty/serial/samsung_tty.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index 71d17d804fda..745702ec8eda 100644
---- a/drivers/tty/serial/samsung_tty.c
-+++ b/drivers/tty/serial/samsung_tty.c
-@@ -1952,7 +1952,7 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct s3c24xx_uart_port *ourport;
- 	int index = probe_index;
--	int ret, prop = 0;
-+	int ret, prop = 0, fifosize_prop = 1;
- 
- 	if (np) {
- 		ret = of_alias_get_id(np, "serial");
-@@ -1990,8 +1990,8 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
- 	}
- 
- 	if (np) {
--		of_property_read_u32(np,
--			"samsung,uart-fifosize", &ourport->port.fifosize);
-+		fifosize_prop = of_property_read_u32(np, "samsung,uart-fifosize",
-+				&ourport->port.fifosize);
- 
- 		if (of_property_read_u32(np, "reg-io-width", &prop) == 0) {
- 			switch (prop) {
-@@ -2009,10 +2009,13 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (ourport->drv_data->fifosize[index])
--		ourport->port.fifosize = ourport->drv_data->fifosize[index];
--	else if (ourport->info->fifosize)
--		ourport->port.fifosize = ourport->info->fifosize;
-+	if (fifosize_prop) {
-+		if (ourport->drv_data->fifosize[index])
-+			ourport->port.fifosize = ourport->drv_data->fifosize[index];
-+		else if (ourport->info->fifosize)
-+			ourport->port.fifosize = ourport->info->fifosize;
-+	}
-+
- 	ourport->port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_SAMSUNG_CONSOLE);
- 
- 	/*
--- 
-2.17.1
-
+Regards,
+Markus
 
