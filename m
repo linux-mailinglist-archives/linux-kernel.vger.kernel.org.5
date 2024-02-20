@@ -1,180 +1,141 @@
-Return-Path: <linux-kernel+bounces-72328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A51F285B207
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:57:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEB585B20A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B5DCB20D4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:57:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7C8E1C2222E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB51F56759;
-	Tue, 20 Feb 2024 04:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B70535B4;
+	Tue, 20 Feb 2024 05:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RdZ/jIKK"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="gI3nQWCM"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD45B45942;
-	Tue, 20 Feb 2024 04:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA191E49F
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708405033; cv=none; b=SWQF+rau4EK3o3NOiXfMdSiZypM9ZyQi9nWg+JO4WfHD1Jqny66M8/BoagYnOmCOO3oHd+UavuTe4Z/G70PLcSFz23rk/BysXf4HyQ60TBeUyHr4kyJF69Va6GvxH9+rofKdQeKko5HxpLPCBJBgN5X1oUIWHbzEUOcfQiRc7i4=
+	t=1708405200; cv=none; b=U7Uh+IxLC1QxxjWjh64RkIauC1ZbvEl2qGTabNQdHhXK9mvSMaqxDBuZS1Zl0vg3GcfTI5aYWO6E5olC624IVcvGbmQkU09WI6fbbE9DyikUW+1GNVOTaxEe+qzi5Zmlcrnr+xkmhObJuX64jDq3I+ZHsSJN+aAWUStmPvPiPG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708405033; c=relaxed/simple;
-	bh=MawsSdPUwxQAQsozFkAy+ITHA2q+yH579NNdBmQ+rcA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ro5AS7VVu9VLHkz7qyZuvtnYdrjuUoyHddvnVgOB2ppJ6DT8F6iZnEoQmoSlOJ8FvGPP8uEU9YMSceuj5wNbePcR1+ACl3SuHEABIxV61d6eAYR+eciRabPcH3a69x/jMbxRRRdKFt8jJHjPbFIl4G7bQV+BBN9AfjLGw9EzRd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RdZ/jIKK; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d1094b5568so66815261fa.1;
-        Mon, 19 Feb 2024 20:56:35 -0800 (PST)
+	s=arc-20240116; t=1708405200; c=relaxed/simple;
+	bh=bfq9r/FwJ6Vjtye0uqYAAX9eXYUmFqBiTHaf99LhLD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ePYn9YT9/JKF5WD1GMQiM6dhcO8+FsmEAa1wVv0EO22iDa7saPay+0qqJSSogERveSv+agVEcn0jzC3dRxSET7YgvrFeztJPyOX1Tljea2/Oy6vySlAhF2KPtsjqd33yojqWR91oHOzW83ogR98Wi7H3UfGsGUzbSwhqkbPwCHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=gI3nQWCM; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d7393de183so39834345ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708404994; x=1709009794; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wg3T1pEc7CYdM3PwDVHR28RzeLutlMFhPKCwmDpZrlA=;
-        b=RdZ/jIKKIGH5Ki9sCAHPDRJFkM9jqatou7iLJTJ4Werv3TzoSmMyH/AV+BuYNKJiNK
-         Jkfa6A15VTHCLWQCEvtTl/nGx4vRr0i5DcYQpKptaohJileimgSmFht36v3UVyfgrhkP
-         xsZPAXpEnhgrLfhajBXGVAyFGYIoUzlbn50Bc20CImkv9nn1QQAk5k4eAenpzAJ5S8ea
-         f605xKqAT7ZWZ8/ASTwBli4Af1xRZMlX8/0jWhS/071WYmpr0ABWI7Xgu678UR45OEvP
-         qoIZCM1i9Bov3+STJa6gcFGIYtF4OaQjNfquo8xyJF6zA+adObQ2CSzPW8KSCL4RTs1C
-         UysA==
+        d=bytedance.com; s=google; t=1708405198; x=1709009998; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WmfkLuOZGRlJcYuRzNNhWOooi71NhJh+zOe71aSAaNU=;
+        b=gI3nQWCMc0K0KTdfzjwJXR0t8OYzNaEX06GrU0u3ErX0IBxPz+Qu2S/xL37qpBn1td
+         No+T/hdOUCAal7gZETICJfJfln/DFwtbZIcq94h0V9lQjdX1YS5bbRRvLAC+7E4TN85I
+         U1X9tmDWjqgVupbbFYDIrucetNaEDryVtkMuKWPwH2uVaZPi2Czc8eaJozzXUCz2289Z
+         CfE0+GY3kQdk4yG/UgV56VMF5aIQOQrp6Y4nbsUWZkjMpvFnq7to77AQb+OfZH0XIeGO
+         kq62bwSLucCLWalPH2XAj28XRltrHR0ixBCvH/17zw3qrNiLk7dsJmqR236rTSDSiTSM
+         0SiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708404994; x=1709009794;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wg3T1pEc7CYdM3PwDVHR28RzeLutlMFhPKCwmDpZrlA=;
-        b=UPBJYFpphxIg/jVnTCb3viQgUgljlnHJjJpw30MXOyvX+h9fx/rEg4JkAkCSuty71e
-         Ru+ccfK/BMDSXk5FRDQciHknr5jwZJG198fkkAMaQ91zmlGegjpR7/n4pAiwldSowkei
-         oe/imP9nFZEcXl9kZOJrw96/ZQFByn17WLKT9H+bz9e2BtaC8vKk3+LSMbNiFEpgNKE5
-         fVdIXc2VQAvDpj6rWxlDw6JvlnndzdBymle4sw9zvcEFhVu+5sMNAij7Pw6zOjMvRQBz
-         o1p5E7houUrGGf9kAXOHejkbeVQXeYZnaogweeSek00a90gKhg86IQyWWabqTIb++4W9
-         KaTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLJr+fieAocbX3hhBifsSi8KIZUWhRexUBdcYfnUTukjkmZClU5mXH269doVgk0SNuHpYnQLXDNstW4m42URg6Bgli+YQJpjSodcTDukSkE7+cQFLONJIye2sip3ylewWbsN7X
-X-Gm-Message-State: AOJu0YwDfn3Np/ZoUxrnbKCmajlHfy9pXE9P/FtEYCz7FjMk16LjF1/F
-	Kyjj2P+NjG/TJbxgCpI5Fs0sxywHNaIwsMqwtC6t8Pjw84+jdkNtvHz+NHiR3HACbre+8xDToXk
-	Q9H16lOBhEIvCh+XYIeQ9mIB8pMI=
-X-Google-Smtp-Source: AGHT+IE51DNAgivlKygoc8YbW1wKrzKBcOJ4CPEsfVHtg+lnqpbB4fNtvhyJqsoLe19BPgghFJKRz+xa/iUE3D8jCkc=
-X-Received: by 2002:a2e:860e:0:b0:2d1:59:9474 with SMTP id a14-20020a2e860e000000b002d100599474mr9764115lji.48.1708404993637;
- Mon, 19 Feb 2024 20:56:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708405198; x=1709009998;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WmfkLuOZGRlJcYuRzNNhWOooi71NhJh+zOe71aSAaNU=;
+        b=IgZBk0e+yoezRn7CbFIG+Hy4vmceA2RD5dM6fPhGjpQJ4sgmPrljIx3b/voP7RZnuK
+         AzqTqnaYAJLSiDuAVSaaVqeejjewentfVobLnXDInI62gyn0mu0NLOJoygE1HYl+F4kc
+         Zvfc6idyOTC9foOy7e4uB+X6xjfcUWfwI5j/Kh2aunDlpIUgSkx4FQFn/JmpuRKgHBas
+         IQe2MYQMGQpFwoKZcD08HRN9YkHzmhynkGtDvUgwCmyXB5MVfzTYp43h9/Xa5UmHYcXr
+         lsk6i9j/F1D3zloeCzBLCzlI+K+b4MFpmTmL7VA126EvGSwS+8Nxfh89B2yl6Z0OhU6H
+         5Dqw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0rCRPjwwK1I2VkSH3jOXm5uyeb7WKD+L+n9J97Mi/gcfhE7+tePywQpvXnVanxyjzcPEuUDho84cqDX9bAJyBSoMaE7j/ALobgLW0
+X-Gm-Message-State: AOJu0Yz4z6r0GbIUOW+JEv+tJiD+BHH/mZKm2MsY91OZaPXM3ZsjraKU
+	ne78BrFgNqWB/9bDrLoGbeZY36iHX6e8rib+dR17wZ9Hm4i9zqA1BaZObxLele4=
+X-Google-Smtp-Source: AGHT+IGcgHQKBdYsumZ9p9EwZ9OT2Vm52iRT9Bn95nkv/sNY/YZC3wBRaeyvMR8/9/UbdN4UPVXfXA==
+X-Received: by 2002:a17:902:d382:b0:1db:c704:97d with SMTP id e2-20020a170902d38200b001dbc704097dmr7182876pld.16.1708405198123;
+        Mon, 19 Feb 2024 20:59:58 -0800 (PST)
+Received: from [10.254.117.3] ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id y11-20020a170903010b00b001db8f7720e2sm5255001plc.288.2024.02.19.20.59.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 20:59:57 -0800 (PST)
+Message-ID: <a6c22e30-cf10-4122-91bc-ceb9fb57a5d6@bytedance.com>
+Date: Tue, 20 Feb 2024 12:59:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219082040.7495-1-ryncsn@gmail.com> <20240219173147.3f4b50b7c9ae554008f50b66@linux-foundation.org>
- <CAMgjq7DgBOJhDJStwGuD+C6-FNYZBp-cu6M_HAgRry3gBSf7GA@mail.gmail.com> <CAGsJ_4zyf5OOq_WA7VjsDKp1ciaDwzM23Ef95_O-24oLtr_5AQ@mail.gmail.com>
-In-Reply-To: <CAGsJ_4zyf5OOq_WA7VjsDKp1ciaDwzM23Ef95_O-24oLtr_5AQ@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 20 Feb 2024 12:56:16 +0800
-Message-ID: <CAMgjq7AnZJSseC2BB_nF+s533YybyP_WU8HijEKFA=OXE1x41Q@mail.gmail.com>
-Subject: Re: [PATCH v4] mm/swap: fix race when skipping swapcache
-To: Barry Song <21cnbao@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
-	Minchan Kim <minchan@kernel.org>, Barry Song <v-songbaohua@oppo.com>, Yu Zhao <yuzhao@google.com>, 
-	SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, Aaron Lu <aaron.lu@intel.com>, stable@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] mm/zsmalloc: remove migrate_write_lock_nested()
+Content-Language: en-US
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: nphamcs@gmail.com, yosryahmed@google.com, Minchan Kim
+ <minchan@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ hannes@cmpxchg.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240219-b4-szmalloc-migrate-v1-0-34cd49c6545b@bytedance.com>
+ <20240219-b4-szmalloc-migrate-v1-2-34cd49c6545b@bytedance.com>
+ <20240220044825.GD11472@google.com>
+ <4f3c6c96-3bea-4369-a2de-e3c559505bba@bytedance.com>
+ <20240220045340.GE11472@google.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20240220045340.GE11472@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 20, 2024 at 12:01=E2=80=AFPM Barry Song <21cnbao@gmail.com> wro=
-te:
->
-> On Tue, Feb 20, 2024 at 4:42=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wr=
-ote:
-> >
-> > On Tue, Feb 20, 2024 at 9:31=E2=80=AFAM Andrew Morton <akpm@linux-found=
-ation.org> wrote:
-> > >
-> > > On Mon, 19 Feb 2024 16:20:40 +0800 Kairui Song <ryncsn@gmail.com> wro=
-te:
-> > >
-> > > > From: Kairui Song <kasong@tencent.com>
-> > > >
-> > > > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more thre=
-ads
-> > > > swapin the same entry at the same time, they get different pages (A=
-, B).
-> > > > Before one thread (T0) finishes the swapin and installs page (A)
-> > > > to the PTE, another thread (T1) could finish swapin of page (B),
-> > > > swap_free the entry, then swap out the possibly modified page
-> > > > reusing the same entry. It breaks the pte_same check in (T0) becaus=
-e
-> > > > PTE value is unchanged, causing ABA problem. Thread (T0) will
-> > > > install a stalled page (A) into the PTE and cause data corruption.
-> > > >
-> > > > @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf=
-)
-> > > >       if (!folio) {
-> > > >               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
-> > > >                   __swap_count(entry) =3D=3D 1) {
-> > > > +                     /*
-> > > > +                      * Prevent parallel swapin from proceeding wi=
-th
-> > > > +                      * the cache flag. Otherwise, another thread =
-may
-> > > > +                      * finish swapin first, free the entry, and s=
-wapout
-> > > > +                      * reusing the same entry. It's undetectable =
-as
-> > > > +                      * pte_same() returns true due to entry reuse=
-.
-> > > > +                      */
-> > > > +                     if (swapcache_prepare(entry)) {
-> > > > +                             /* Relax a bit to prevent rapid repea=
-ted page faults */
-> > > > +                             schedule_timeout_uninterruptible(1);
-> > >
-> > > Well this is unpleasant.  How often can we expect this to occur?
-> > >
-> >
-> > The chance is very low, using the current mainline kernel and ZRAM,
-> > even with threads set to race on purpose using the reproducer I
-> > provides, for 647132 page faults it occured 1528 times (~0.2%).
-> >
-> > If I run MySQL and sysbench with 128 threads and 16G buffer pool, with
-> > 6G cgroup limit and 32G ZRAM, it occured 1372 times for 40 min,
-> > 109930201 page faults in total (~0.001%).
->
+On 2024/2/20 12:53, Sergey Senozhatsky wrote:
+> On (24/02/20 12:51), Chengming Zhou wrote:
+>> On 2024/2/20 12:48, Sergey Senozhatsky wrote:
+>>> On (24/02/19 13:33), Chengming Zhou wrote:
+>>>>  static void migrate_write_unlock(struct zspage *zspage)
+>>>>  {
+>>>>  	write_unlock(&zspage->lock);
+>>>> @@ -2003,19 +1997,17 @@ static unsigned long __zs_compact(struct zs_pool *pool,
+>>>>  			dst_zspage = isolate_dst_zspage(class);
+>>>>  			if (!dst_zspage)
+>>>>  				break;
+>>>> -			migrate_write_lock(dst_zspage);
+>>>>  		}
+>>>>  
+>>>>  		src_zspage = isolate_src_zspage(class);
+>>>>  		if (!src_zspage)
+>>>>  			break;
+>>>>  
+>>>> -		migrate_write_lock_nested(src_zspage);
+>>>> -
+>>>> +		migrate_write_lock(src_zspage);
+>>>>  		migrate_zspage(pool, src_zspage, dst_zspage);
+>>>> -		fg = putback_zspage(class, src_zspage);
+>>>>  		migrate_write_unlock(src_zspage);
+>>>>  
+>>>> +		fg = putback_zspage(class, src_zspage);
+>>>
+>>> Hmm. Lockless putback doesn't look right to me. We modify critical
+>>> zspage fileds in putback_zspage().
+>>
+>> Which I think is protected by pool->lock, right? We already held it.
+> 
+> Not really. We have, for example, the following patterns:
+> 
+> 	get_zspage_mapping()
+> 	spin_lock(&pool->lock)
 
-Hi Barry,
+Right, this pattern is not safe actually, since we can't get stable fullness
+value of zspage outside pool->lock.
 
-> it might not be a problem for throughput. but for real-time and tail late=
-ncy,
-> this hurts. For example, this might increase dropping frames of UI which
-> is an important parameter to evaluate performance :-)
->
+But this pattern usage is only used in free_zspage path, so should be ok.
+Actually we don't use the fullness value returned from get_zspage_mapping()
+in the free_zspage() path, only use the class value to get the class.
 
-That's a true issue, as Chris mentioned before I think we need to
-think of some clever data struct to solve this more naturally in the
-future, similar issue exists for cached swapin as well and it has been
-there for a while. On the other hand I think maybe applications that
-are extremely latency sensitive should try to avoid swap on fault? A
-swapin could cause other issues like reclaim, throttled or contention
-with many other things, these seem to have a higher chance than this
-race.
+Anyway, this pattern is confusing, I think we should clean up that?
 
-> BTW, I wonder if ying's previous proposal - moving swapcache_prepare()
-> after swap_read_folio() will further help decrease the number?
-
-We can move the swapcache_prepare after folio alloc or cgroup charge,
-but I didn't see an observable change from statistics, for some
-workload the reading is even worse. I think that's mostly due to
-noise, or higher swap out rate since all raced threads will alloc an
-extra folio now. Applications that have many pages swapped out due to
-memory limit are already on the edge of triggering another reclaim, so
-a dozen more folio alloc could just trigger that...
-
-And we can't move it after swap_read_folio()... That's exactly what we
-want to protect.
+Thanks.
 
