@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-73293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821E085C091
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:02:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5788585C092
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5AD61C221AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:02:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 087401F22D96
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF5176C99;
-	Tue, 20 Feb 2024 16:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF40E77636;
+	Tue, 20 Feb 2024 16:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZBDBLFMJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/U4xc0o"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018D876C85
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4245277625
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444905; cv=none; b=fA51vr0rU/CCZOlLUJ6zcdeM7yHIE0lIQQz+e6xQr/qPwEh61wjuY+0wTdfZDUEQc84hJGyFnEdScRMlfn1NxZEE3FLgzZtmpvD7FmJdmFQCrwSjJ3wdXsptTxL1T/pIQDj7mBymPyrlMijlPtYlsVve5wmuJskrfnIlxeVZ2ic=
+	t=1708444906; cv=none; b=Le5p6aT/PeS9Aikuelxw3582Uif91Q5tBIgqvBj1TQMryGrB25tvmAxr25AbgcecH6VOgXeGQyxVZ3ooEIdaBOvzMnIRAE3N5xDnBxDWOqtORBJx3Kf1NcrI13q98M+QPR5cus7za20deoOqcj5xxjQFkQZHHXJjy0Z5t0hwvVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444905; c=relaxed/simple;
-	bh=b5/Z55R6exEVvxby5IEzYsTksFcDh5Hf4EvWs+jygLE=;
+	s=arc-20240116; t=1708444906; c=relaxed/simple;
+	bh=2chqzJLlGnaDjPT3os8qGNEAIFqkHbeg9jiI4JJjOYA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eVJc2sh8RsY/S0hJiWZqUj9/MDO3DEqLcS3kgZ7WmYgVywWHZXAXcreK/qTCsjivWFZ9sS+pDa30s43u61aUtp9UMuX4wnOI09Gcf2BQYHGB8mqrvvnjVlnMCo2Y8Y7PLchxf9xWwVvIeaBkKQhqMpt5tDzGQ3V8XwCmAqGQwIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZBDBLFMJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66C26C433F1;
-	Tue, 20 Feb 2024 16:01:43 +0000 (UTC)
+	 MIME-Version; b=kgC4+Y3u7XaMn4aWV1gw6RpvUcrVHwWYJjjYNVQZwgj3So+Z0YRCT3baWeAJi+qZvC7w77PS2b6r3++hQ5xkUPu/xrsSd/ak2od7SFUIwF9EOzIXt0yajfIcwytkbAhTlipf2h7LYe0Fy+Yd71UC539YyUPmIZ0ml3GgmnkcRHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/U4xc0o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A70AC433C7;
+	Tue, 20 Feb 2024 16:01:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708444904;
-	bh=b5/Z55R6exEVvxby5IEzYsTksFcDh5Hf4EvWs+jygLE=;
+	s=k20201202; t=1708444906;
+	bh=2chqzJLlGnaDjPT3os8qGNEAIFqkHbeg9jiI4JJjOYA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZBDBLFMJS2BrT4mZnHrA0+stJiohHRBo8uvCXXLWgZZpml4V1WpIb9mTyfFdsrZat
-	 h0EbCrgQEQx8Vdv0WzJnhGb3mEzEQhO0c0GU673ydgB0vL2B+YTda54pHQR6GNrzVk
-	 u+Qj/ex22frAV++VsRXP3wrZFRLfanliSpWaZlko64CI1XkU9G/HJGh5d444G2XZep
-	 4+rLCdx9XWggoaC72hMhvxH1KZvrppTZ26WKIRAmAO2IaNbCalvrpj7vyDspZyDE5g
-	 UzCSJkyCKL+51Egomc7/b16KNEmLR6QuXcyyqCL+6XVxECRylZNcRMfKyjnU3E0Fhm
-	 cyzfbR4Ymtvzg==
+	b=C/U4xc0oWdp1jZ7HhF+yTrGSflZaG3L5aV03rhLyEHRbNAi34ym8Zgllx3N5QAq7N
+	 9g0NsjIfQLbc17Ddfe0C0rxC19Kc68lzie5JXsRya2Tft7DFBEH51b9E68LU64Vba7
+	 RMUwYZW7MV046BNH9wMCx14bXHuha8DzGm+N3XHG4uKPjkQkg1TADMCkFZOMVZAR+n
+	 pj9K2DGxNtq5oZeD/mYATxoyfLW2+ib0BAm07oA6UXRkxRxMNeTDdPU69M5V9t8v6t
+	 0/0E6MnrGg/FApVx3OmXSBcgczSlDK/tQsiCz187kWeny47nkrgqe6xgOostK7KyYl
+	 aUnbV9U4i3arg==
 From: Oded Gabbay <ogabbay@kernel.org>
 To: dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Cc: Tal Risin <trisin@habana.ai>
-Subject: [PATCH 07/13] accel/habanalabs: initialize maybe-uninitialized variables
-Date: Tue, 20 Feb 2024 18:01:23 +0200
-Message-Id: <20240220160129.909714-7-ogabbay@kernel.org>
+Cc: Dani Liberman <dliberman@habana.ai>
+Subject: [PATCH 08/13] accel/habanalabs: fix error print
+Date: Tue, 20 Feb 2024 18:01:24 +0200
+Message-Id: <20240220160129.909714-8-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240220160129.909714-1-ogabbay@kernel.org>
 References: <20240220160129.909714-1-ogabbay@kernel.org>
@@ -58,39 +58,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Tal Risin <trisin@habana.ai>
+From: Dani Liberman <dliberman@habana.ai>
 
-Prevent static analysis warning.
+The unmasking is for event and it can be other event than RAZWI.
 
-Signed-off-by: Tal Risin <trisin@habana.ai>
+Signed-off-by: Dani Liberman <dliberman@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/accel/habanalabs/common/debugfs.c | 4 ++--
+ drivers/accel/habanalabs/common/firmware_if.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/accel/habanalabs/common/debugfs.c b/drivers/accel/habanalabs/common/debugfs.c
-index ab0fe74b49d0..b1c88d1837d9 100644
---- a/drivers/accel/habanalabs/common/debugfs.c
-+++ b/drivers/accel/habanalabs/common/debugfs.c
-@@ -484,7 +484,7 @@ static ssize_t mmu_asid_va_write(struct file *file, const char __user *buf,
- 	struct hl_debugfs_entry *entry = s->private;
- 	struct hl_dbg_device_entry *dev_entry = entry->dev_entry;
- 	struct hl_device *hdev = dev_entry->hdev;
--	char kbuf[MMU_KBUF_SIZE];
-+	char kbuf[MMU_KBUF_SIZE] = {0};
- 	char *c;
- 	ssize_t rc;
+diff --git a/drivers/accel/habanalabs/common/firmware_if.c b/drivers/accel/habanalabs/common/firmware_if.c
+index 364d292c76fa..a3df7cf162d8 100644
+--- a/drivers/accel/habanalabs/common/firmware_if.c
++++ b/drivers/accel/habanalabs/common/firmware_if.c
+@@ -526,7 +526,7 @@ int hl_fw_unmask_irq(struct hl_device *hdev, u16 event_type)
+ 						0, &result);
  
-@@ -546,7 +546,7 @@ static ssize_t mmu_ack_error_value_write(struct file *file,
- 	struct hl_debugfs_entry *entry = s->private;
- 	struct hl_dbg_device_entry *dev_entry = entry->dev_entry;
- 	struct hl_device *hdev = dev_entry->hdev;
--	char kbuf[MMU_KBUF_SIZE];
-+	char kbuf[MMU_KBUF_SIZE] = {0};
- 	ssize_t rc;
+ 	if (rc)
+-		dev_err(hdev->dev, "failed to unmask RAZWI IRQ %d", event_type);
++		dev_err(hdev->dev, "failed to unmask event %d", event_type);
  
- 	if (count > sizeof(kbuf) - 1)
+ 	return rc;
+ }
+@@ -565,7 +565,7 @@ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
+ 						total_pkt_size, 0, &result);
+ 
+ 	if (rc)
+-		dev_err(hdev->dev, "failed to unmask IRQ array\n");
++		dev_err(hdev->dev, "failed to unmask event array\n");
+ 
+ 	kfree(pkt);
+ 
 -- 
 2.34.1
 
