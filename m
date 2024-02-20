@@ -1,198 +1,280 @@
-Return-Path: <linux-kernel+bounces-73697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ABD785C616
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D4C85C617
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E635283C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:51:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7E7928365C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E951509BD;
-	Tue, 20 Feb 2024 20:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD571509BC;
+	Tue, 20 Feb 2024 20:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m4hxTeUj"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCo4DI85"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0B1612D7;
-	Tue, 20 Feb 2024 20:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708462306; cv=fail; b=IkGO5dXZ6qnfEuaU2oHbYW2Rr8rjr6EciysAD0O/kKkYj9zMgPNmDJMeIT0mQpiqhgjO/JsVyvforIsfFgA/aJNe5GREt2O7ALe2yxiVeAf9fqDE1GCT6rZPvSCHJjRKgKQcMDPqwf2atU+Xg+cqMvKRJXJPq2a67ZUwnWtr4Ek=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708462306; c=relaxed/simple;
-	bh=X0LCmOwgVZezZlR2LLDFtW+wZpGYN+2ICscAIVWzSO4=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=p5kipb7uavUCd/Ya145yw/zBZQD+3vsSd1jzUv1/cCJplZifeya1uxBrSQmRkh6kSYaHB/2netdwI4P/BmM5nkYClNl3V84GYVfE+YuIScvQgJdORf5yMWKRR5ZC3fNXASun5t+AtbDI143Q1VMQ0GxZ1vvH+6b1q6rw1Ye/AB0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m4hxTeUj; arc=fail smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708462305; x=1739998305;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=X0LCmOwgVZezZlR2LLDFtW+wZpGYN+2ICscAIVWzSO4=;
-  b=m4hxTeUjNAWyLQotve50tnPHAAeHhVV8ckOQemLp47z7brZr30u9d0SW
-   dvTVYMuJR5jUA09thKVjPFZCtijVDJBdCS9jzzyxS599la2OvFgsEsCjR
-   H+JMvdCh4efBfEU7oRVkSy77UgNOruYBflq1levcWkQY8DoZaXAJA/Mbh
-   j0QSFFvFlgiyGocIuienqoojQ25QEZ4HM0tNEP/UCe7fz4puwA/273HET
-   cABb7WFjdavrxnSn0PJbQY/94j3G7aCQm8q4cyfyCZGugnQx3O7UFfnth
-   LKFugHoMaS9VIRNx1BTPa0r0RZcP3Id3JRq5uSItAuN89VQ3Da6JNhGkI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2726898"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="2726898"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 12:51:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="4849447"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 12:51:44 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 12:51:43 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 12:51:42 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 12:51:42 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 20 Feb 2024 12:51:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e7BOH1/FYgU5QZelgZHIN+AQtr5n/ZG64LuP9yDD7cioF8KsYwCa5GiAKqZV0dHYz7FrQXBBUyIUb+ETGKKfgpzvWxrIbzGvznq7mXap5B3XhEEGk/OmgZMIvLc+kSx6D4ghTmS1+xeonooQqfd5rgDUodOqv4XVSIh2sLEhWOMz93nNUBdzHk+vbnKJHFOsjdQIbPWTxtc6jB7ThVwLH7weCEbgfbgLfgcH50Xwc9h/rVDx/2Asqx84O9OJgQ45QnyKRXaoHI4rJVhDNyUv+X++774tzFKzRFgWnfXFg5JZxrfeMm+9PwsQLxebRypu4TZcu9EvCyJZkV/u+8JdgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/DBfz2WfI1VtEutwj8lDYIn6U00/49rcSPHV3Gg6bEU=;
- b=nXEwJp7qwZKsgjlulnw4SpPA7foRZrktollg5P9PAOSMNGiDUGrTCxQGZq/TVFpYtz9DQHr9vCwfIYXiPCCSQbHDRADRb1aGur/L0k3WrTqxhFK4CNEvKuZxTgHOmG12sDXHRfGhz9gwPnCcLFeTlKAkY4O4JYrqKmvUsyymVlW8Tno+Rz/gFcGwCRraUc5E12VWuBChZjzP5OK+7ZonsdweFPbkfmztY3x4/6/t3yG3cGADFIqnX7CU8A/4xjvhWW9VwC9nIBvhMEeI8sJI9vPjOJs00MFZcVZZxwdECBMs4YesEO47NavneMUFdUG5kchVv4P23UOlmTjMV/Bxag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SA2PR11MB5115.namprd11.prod.outlook.com (2603:10b6:806:118::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 20:51:40 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 20:51:40 +0000
-Message-ID: <a52637c3-e5b8-4ef8-b9de-8c7dd0868630@intel.com>
-Date: Tue, 20 Feb 2024 12:51:38 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/5] selftests/resctrl: Split
- validate_resctrl_feature_request()
-Content-Language: en-US
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	<shuah@kernel.org>, <fenghua.yu@intel.com>
-CC: <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<ilpo.jarvinen@linux.intel.com>
-References: <cover.1708072203.git.maciej.wieczor-retman@intel.com>
- <79e6f4b5bcaf36214289e56167fe1d5657cb4d24.1708072203.git.maciej.wieczor-retman@intel.com>
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <79e6f4b5bcaf36214289e56167fe1d5657cb4d24.1708072203.git.maciej.wieczor-retman@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0185.namprd04.prod.outlook.com
- (2603:10b6:303:86::10) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB98612D7
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708462316; cv=none; b=RkmTip05ePXsqqYMCQLuVG/O1a5+HvX870dMcAL7qR63Z8RsbfW0uFnV7dHiXhD1n+j/LZhCC3j+imrlPdd08pGfR02J//9BsoGszg/ToZXf5Fhsfk3U2mISXSD+ZiBudTZ/SupMF6cSRbGP9npS3dVRrKX4ZajV6Ewf5UDjL/Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708462316; c=relaxed/simple;
+	bh=WX3M+NK2w1RQOB+/tfNTaya3uy5Fw2qPkTlrIq3dzzQ=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UJH13QTV28iWDjieosKXeJor9hIh3fXUlbcKSqtRWzyiJA28tTbU06W1XuMQD+3SS2FJa2j8tjnXd362oUfqZW9LpV6B/d6SiL56GNjZOwglOM8eWRIyKlpsghn7ew86AUorEV+c9cEBVUdFSNfvYKwjN8Q7FWqbMMclfJ6mbKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCo4DI85; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68CFC433F1;
+	Tue, 20 Feb 2024 20:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708462315;
+	bh=WX3M+NK2w1RQOB+/tfNTaya3uy5Fw2qPkTlrIq3dzzQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=nCo4DI85BHJ69QR3bY5sKbV3Xgu6NRQANtmhWSnfFBBbzqPCmF+UUrjQGWqLV3+R7
+	 O+Gz226ByOpb3xBylqqA9I93XQ25BONUY5/UNX1Jwj8yX4iyzPXTwutmbqaRNhhDRV
+	 Vazi7ElC4/D/zKGNqlX/TKbkUjUn3+L0fUUHLzR27HiKSzwJ+4I8iGlemDtH1s7WFa
+	 UXPk8SB09d867g0wBQXUEBONMb6XJG6DDaSzpin7jrr1aeOCYIREbSL7OirGLLnH77
+	 BOa0CgbIljp+86fqdnv8ZW9BpypXRd6xpo0wzATWCZqR+T3ulxr+Xai4gDeKPGc4oX
+	 bwIiQ17PgaAlg==
+Date: Tue, 20 Feb 2024 12:51:54 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2] f2fs: kill heap-based allocation
+Message-ID: <ZdUQ6uKYyfzn5Fhv@google.com>
+References: <20240207164620.1536038-1-jaegeuk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA2PR11MB5115:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3e33431-d47a-4a06-ea6d-08dc3255bcf6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A56U5ExnjXqdC+zS9dBuJGJ/Sj59oh/pi6r/tpMDhvknlxOadPB+fMKEPZDZgijbgchTsy8zFdf3XB9xQF90fpiRA6n5ODQS9tQwcf6EC8huYHzL3mxYUZ/lfMDVaSOEWUqZb4Tg/PBxn7T7ZYgVRQ+6EzSPKxI3Ux2klJJRLE0ug5QQbTGwRTCxfi9spuctq5/3HPBw1mn08M5LRJtvKvQMajISttxkw8TS1LtY63tlfBSEL8Y51qAM4uIApQebxZGjtecPvCyLZCc2NT99F4nBrLhOr34fRJiiXDIZf9/R/02l4vGyKAQ0reNvFvuScGq6GVulRiKWcp3yuA6Ws1PV3XsJ1bCaRAcD6jLuVkvM+VeSdE7fM5vNeBpnlQGKw3vmTeRWmDlETbBMhX/khwLmc4U8gXt0JOxo+raIb/qIjGE1GXtHY9D+HigZ4/N51nP98B93/9HLBaEiykZJf2Nw7HIzRvDYmmtZVgjeAMzoZ2EUOLysvwiKpgY+M0iV6ro19th31jjlzthI4F8WvuAfCwgCZ140u9Uh9zK1tII=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q1ZISm40TnppSlJPRE9Yekl1Y01Jbi93MkxSUlYrb3A5TVg2VzVVRk1QemdL?=
- =?utf-8?B?R3JyQTVRWS9Ddlh0NWNCT2tKanMyYStsZVU3T0Q2T0NOeEJsU3Y0ZFB0QzBB?=
- =?utf-8?B?K2VKemMrTVpnWTYvS0FqSnNKK1NOK0Rzbis3S3lubmN1V1R1dkhjZ1dUQk02?=
- =?utf-8?B?YWhPSjAvZXFET0ZtS3ZDSnhSUmR1K1RpeWluVy9ISmsxWGRSa1htS2hraGEz?=
- =?utf-8?B?b094WjhNQ2hqRzFubEVkQlNPY2VMMDEwbnhUUTlkNDZGTy9MK2xzbm54d1N2?=
- =?utf-8?B?MnFBbGhDN0crSXVZOW5LTWJnNzYxTzYrYWtIbHhPcXVYdDNyQ0ZvWnpIZnEw?=
- =?utf-8?B?elRUZXVVRnQrSm13QW96WEt3OXR1aDVncWZoaWNMdWxJT0lORStKMkpZQ1Ix?=
- =?utf-8?B?bE4wZUJ6QkpMM1lkSXd0OXpDZ2VjRERKdHN5UzE0Y0pydmNGa0JrZDRBQjBU?=
- =?utf-8?B?Sk9rcndqdGVuTmMzdkVxVHB3MzlkVEwybUs0RHdNTG8wREFsbWt0RWNMZE9P?=
- =?utf-8?B?MER5NXBwNHJ0WXpXcGhWdlMrY3gxTE9WaHNqN2tLeXRRa25aYmlTOE9VQkZi?=
- =?utf-8?B?eG9lZjVlWnhqVmU2cUZvbTgyZWNWaHdYRExkYi9kZlRLd1F3SHFTcFMyVnhC?=
- =?utf-8?B?Y29Kay9DclNYNEcxS2xidVhQaXV4WEtZK1NsZ0JwdkFXSlc4YitBeHFCa0pi?=
- =?utf-8?B?T1dRQjZhWDNIRWRzdkxBSTl6MzE2VmY3bmJrODJkTUZkTFZ1SWRRMmd2cmha?=
- =?utf-8?B?U3EveFBpT1ROUnVIOGpSaUxBWFZIU01NenJHTmwrWVoxdVlVV3VOWUQ1SEdx?=
- =?utf-8?B?ZVNzYXdTYVpPZjd0cXRuWFljdGxNcEtDN0cxRGxUbC84MnU0THFVanRMdlpv?=
- =?utf-8?B?WC9VUXF4QnpCUEFYdHZxUzVuUSs5K1dKRldwQ3BHek8vNTM1S2tWWVJKcHkx?=
- =?utf-8?B?S1QrWHFVY25TQ2tKdXpONCtkMHQvalZHSGxaWnhvSi9SMGNUc0tPSnJFVlYw?=
- =?utf-8?B?eVZHR3RQU3VTNEdESXAyWDNqVnh6Wmx2TVlpWEtWdVNZcXZOL01Ec284ZFZB?=
- =?utf-8?B?MXFNTCtVVW1wTmQxRCtuUGFWVFNlNGNLZHFSbW9TWWVpTjFPUlVDTXVOaHh3?=
- =?utf-8?B?RjNEQW1tVllTa0x5R3lpNDV1QlN4d1REbFlNQnJqRUVEWFZlU0hOWkE5eEty?=
- =?utf-8?B?N1ZWclpVNEpIVnl1cnFidW5VRG81R0JVOUNvdm1aaVR4eW0wQXZhaUUvOEJ1?=
- =?utf-8?B?MjVxaHhmYW1wd2t6RHZXdXFLSFh5Rk44a3AvWFMzYlRWNC8rdXg5N2x3c1pR?=
- =?utf-8?B?U0NLQ01LRWRaZGprRS9FUGNVUnE1Ym90dVkwRjd4dkl5ZVN1WE1PVnlZUUp1?=
- =?utf-8?B?MjdkRDVQVWVjNGF0ZXdHSFlSSENQYjVQUXAxbTVMUFVseHZKZkJVYURsaGRm?=
- =?utf-8?B?djFNcWlXdVJaSG1lU045NGVpOXM2K0dEVzlOYzA1UUNlZ3g0TXVQZGQ0M3V0?=
- =?utf-8?B?eHd4c1NmUXVGRDVqTCtodkdxUVFLOHJISWE2LysySmF1TXV6OUdxcHlDT2VM?=
- =?utf-8?B?S084TlduLy84cFcvS09vY0dPeFJwZGFKSDRWRE5HL1NPNEJaOVRqMEczVVZ4?=
- =?utf-8?B?Vk1pMm5XV2gvRUJwREEyWURJUkxtVmdpT3dhWWc5NldKYnlMQmRmblowNFd3?=
- =?utf-8?B?RlduckFSMDI0K0ZvOEFCcWVneENxcldjYjkrcS9uSlVvOXN1VUs0REFWNHVH?=
- =?utf-8?B?ZFVzb3dtdlB2ekc2M2R2YStaRkdHb0U4SWxOUVQ4L0ZDUmR3L1NQaFdxMzBG?=
- =?utf-8?B?Sm1KT3J1czFBMGVqNGdubGNZaXB1b2RVcFNYYW81R2xxbXRveWMrUGxCTlVa?=
- =?utf-8?B?d1Uwc3pEL3RrTmpLbm5ldjVEbjl4NmpVOG9ZYWg3SzU3L2UwdGFuNEYzRXNN?=
- =?utf-8?B?WXBXOTA3VGcvM2RHbjhFZ1JlOFg1L21KZXRLNlVRYnVTd045cFAvUzVqQWFU?=
- =?utf-8?B?NkM4TC80cENzNnMwRWVtZ1U4b2hRUm9wVGlXem1pOEJaczZhWE4xM3FxalNw?=
- =?utf-8?B?ZmNieEFmdmU0THd2cUVYcmI2YlFrUklDc0p1VE1mSFBVZTRrU3poRE1vZlFC?=
- =?utf-8?B?UnpZSjBmb2xCZk1sYk9aTWZjMVU5SlVaSHp3cDRFNVRyVHcwREg2dTZNQU9C?=
- =?utf-8?B?TUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3e33431-d47a-4a06-ea6d-08dc3255bcf6
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 20:51:40.4952
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: axo4cMhpj3qtorSFKYj4rAeonyQMaa3Epq4jsHLzXbsEEsbyZvDW7Vpr84WlMV9ub0tfvfSCGxHR1deZ8PPvHX/vphsUYBPbvQZdgyDO5Sk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5115
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207164620.1536038-1-jaegeuk@kernel.org>
 
-Hi Maciej,
+No one uses this feature. Let's kill it.
 
-On 2/16/2024 12:35 AM, Maciej Wieczor-Retman wrote:
-> validate_resctrl_feature_request() is used to test both if a resource is
-> present in the info directory, and if a passed monitoring feature is
-> present in the mon_features file.
-> 
-> Refactor validate_resctrl_feature_request() into two smaller functions
-> that each accomplish one check to give feature checking more
-> granularity:
-> - Resource directory presence in the /sys/fs/resctrl/info directory.
-> - Feature name presence in the /sys/fs/resctrl/info/<RESOURCE>/mon_features
->   file.
-> 
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> ---
+Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
 
-Thank you.
+ Change log from v1:
+  - keep mount options but give warnings instead
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+ Documentation/filesystems/f2fs.rst |  4 +--
+ fs/f2fs/gc.c                       |  5 ++-
+ fs/f2fs/segment.c                  | 54 ++++--------------------------
+ fs/f2fs/segment.h                  | 10 ------
+ fs/f2fs/super.c                    |  9 +----
+ 5 files changed, 11 insertions(+), 71 deletions(-)
 
-Reinette
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 9ac5083dae8e..c30a800604fd 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -126,9 +126,7 @@ norecovery		 Disable the roll-forward recovery routine, mounted read-
+ discard/nodiscard	 Enable/disable real-time discard in f2fs, if discard is
+ 			 enabled, f2fs will issue discard/TRIM commands when a
+ 			 segment is cleaned.
+-no_heap			 Disable heap-style segment allocation which finds free
+-			 segments for data from the beginning of main area, while
+-			 for node from the end of main area.
++no_heap			 Deprecated.
+ nouser_xattr		 Disable Extended User Attributes. Note: xattr is enabled
+ 			 by default if CONFIG_F2FS_FS_XATTR is selected.
+ noacl			 Disable POSIX Access Control List. Note: acl is enabled
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 501b93b45b6c..a089a938355b 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -280,12 +280,11 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
+ 			p->max_search > sbi->max_victim_search)
+ 		p->max_search = sbi->max_victim_search;
+ 
+-	/* let's select beginning hot/small space first in no_heap mode*/
++	/* let's select beginning hot/small space first. */
+ 	if (f2fs_need_rand_seg(sbi))
+ 		p->offset = get_random_u32_below(MAIN_SECS(sbi) *
+ 						SEGS_PER_SEC(sbi));
+-	else if (test_opt(sbi, NOHEAP) &&
+-		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
++	else if (type == CURSEG_HOT_DATA || IS_NODESEG(type))
+ 		p->offset = 0;
+ 	else
+ 		p->offset = SIT_I(sbi)->last_victim[p->gc_mode];
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 94c4f7b16c19..09af17af4e7a 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2634,16 +2634,14 @@ static int is_next_segment_free(struct f2fs_sb_info *sbi,
+  * This function should be returned with success, otherwise BUG
+  */
+ static void get_new_segment(struct f2fs_sb_info *sbi,
+-			unsigned int *newseg, bool new_sec, int dir)
++			unsigned int *newseg, bool new_sec)
+ {
+ 	struct free_segmap_info *free_i = FREE_I(sbi);
+ 	unsigned int segno, secno, zoneno;
+ 	unsigned int total_zones = MAIN_SECS(sbi) / sbi->secs_per_zone;
+ 	unsigned int hint = GET_SEC_FROM_SEG(sbi, *newseg);
+ 	unsigned int old_zoneno = GET_ZONE_FROM_SEG(sbi, *newseg);
+-	unsigned int left_start = hint;
+ 	bool init = true;
+-	int go_left = 0;
+ 	int i;
+ 
+ 	spin_lock(&free_i->segmap_lock);
+@@ -2657,30 +2655,10 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+ find_other_zone:
+ 	secno = find_next_zero_bit(free_i->free_secmap, MAIN_SECS(sbi), hint);
+ 	if (secno >= MAIN_SECS(sbi)) {
+-		if (dir == ALLOC_RIGHT) {
+-			secno = find_first_zero_bit(free_i->free_secmap,
++		secno = find_first_zero_bit(free_i->free_secmap,
+ 							MAIN_SECS(sbi));
+-			f2fs_bug_on(sbi, secno >= MAIN_SECS(sbi));
+-		} else {
+-			go_left = 1;
+-			left_start = hint - 1;
+-		}
+-	}
+-	if (go_left == 0)
+-		goto skip_left;
+-
+-	while (test_bit(left_start, free_i->free_secmap)) {
+-		if (left_start > 0) {
+-			left_start--;
+-			continue;
+-		}
+-		left_start = find_first_zero_bit(free_i->free_secmap,
+-							MAIN_SECS(sbi));
+-		f2fs_bug_on(sbi, left_start >= MAIN_SECS(sbi));
+-		break;
++		f2fs_bug_on(sbi, secno >= MAIN_SECS(sbi));
+ 	}
+-	secno = left_start;
+-skip_left:
+ 	segno = GET_SEG_FROM_SEC(sbi, secno);
+ 	zoneno = GET_ZONE_FROM_SEC(sbi, secno);
+ 
+@@ -2691,21 +2669,13 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+ 		goto got_it;
+ 	if (zoneno == old_zoneno)
+ 		goto got_it;
+-	if (dir == ALLOC_LEFT) {
+-		if (!go_left && zoneno + 1 >= total_zones)
+-			goto got_it;
+-		if (go_left && zoneno == 0)
+-			goto got_it;
+-	}
+ 	for (i = 0; i < NR_CURSEG_TYPE; i++)
+ 		if (CURSEG_I(sbi, i)->zone == zoneno)
+ 			break;
+ 
+ 	if (i < NR_CURSEG_TYPE) {
+ 		/* zone is in user, try another */
+-		if (go_left)
+-			hint = zoneno * sbi->secs_per_zone - 1;
+-		else if (zoneno + 1 >= total_zones)
++		if (zoneno + 1 >= total_zones)
+ 			hint = 0;
+ 		else
+ 			hint = (zoneno + 1) * sbi->secs_per_zone;
+@@ -2763,8 +2733,7 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+ 	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
+ 		return 0;
+ 
+-	if (test_opt(sbi, NOHEAP) &&
+-		(seg_type == CURSEG_HOT_DATA || IS_NODESEG(seg_type)))
++	if (seg_type == CURSEG_HOT_DATA || IS_NODESEG(seg_type))
+ 		return 0;
+ 
+ 	if (SIT_I(sbi)->last_victim[ALLOC_NEXT])
+@@ -2784,21 +2753,12 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+ static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
+ {
+ 	struct curseg_info *curseg = CURSEG_I(sbi, type);
+-	unsigned short seg_type = curseg->seg_type;
+ 	unsigned int segno = curseg->segno;
+-	int dir = ALLOC_LEFT;
+ 
+ 	if (curseg->inited)
+-		write_sum_page(sbi, curseg->sum_blk,
+-				GET_SUM_BLOCK(sbi, segno));
+-	if (seg_type == CURSEG_WARM_DATA || seg_type == CURSEG_COLD_DATA)
+-		dir = ALLOC_RIGHT;
+-
+-	if (test_opt(sbi, NOHEAP))
+-		dir = ALLOC_RIGHT;
+-
++		write_sum_page(sbi, curseg->sum_blk, GET_SUM_BLOCK(sbi, segno));
+ 	segno = __get_next_segno(sbi, type);
+-	get_new_segment(sbi, &segno, new_sec, dir);
++	get_new_segment(sbi, &segno, new_sec);
+ 	curseg->next_segno = segno;
+ 	reset_curseg(sbi, type, 1);
+ 	curseg->alloc_type = LFS;
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 6fadfb634aac..0f1a5210c163 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -131,16 +131,6 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+ #define SECTOR_TO_BLOCK(sectors)					\
+ 	((sectors) >> F2FS_LOG_SECTORS_PER_BLOCK)
+ 
+-/*
+- * indicate a block allocation direction: RIGHT and LEFT.
+- * RIGHT means allocating new sections towards the end of volume.
+- * LEFT means the opposite direction.
+- */
+-enum {
+-	ALLOC_RIGHT = 0,
+-	ALLOC_LEFT
+-};
+-
+ /*
+  * In the victim_sel_policy->alloc_mode, there are three block allocation modes.
+  * LFS writes data sequentially with cleaning operations.
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 5aaf44c4698b..916e82e9c307 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -733,10 +733,8 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			clear_opt(sbi, DISCARD);
+ 			break;
+ 		case Opt_noheap:
+-			set_opt(sbi, NOHEAP);
+-			break;
+ 		case Opt_heap:
+-			clear_opt(sbi, NOHEAP);
++			f2fs_warn(sbi, "heap/no_heap options were deprecated");
+ 			break;
+ #ifdef CONFIG_F2FS_FS_XATTR
+ 		case Opt_user_xattr:
+@@ -1962,10 +1960,6 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ 	} else {
+ 		seq_puts(seq, ",nodiscard");
+ 	}
+-	if (test_opt(sbi, NOHEAP))
+-		seq_puts(seq, ",no_heap");
+-	else
+-		seq_puts(seq, ",heap");
+ #ifdef CONFIG_F2FS_FS_XATTR
+ 	if (test_opt(sbi, XATTR_USER))
+ 		seq_puts(seq, ",user_xattr");
+@@ -2142,7 +2136,6 @@ static void default_options(struct f2fs_sb_info *sbi, bool remount)
+ 	set_opt(sbi, INLINE_XATTR);
+ 	set_opt(sbi, INLINE_DATA);
+ 	set_opt(sbi, INLINE_DENTRY);
+-	set_opt(sbi, NOHEAP);
+ 	set_opt(sbi, MERGE_CHECKPOINT);
+ 	F2FS_OPTION(sbi).unusable_cap = 0;
+ 	sbi->sb->s_flags |= SB_LAZYTIME;
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
