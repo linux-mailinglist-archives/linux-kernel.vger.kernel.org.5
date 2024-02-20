@@ -1,172 +1,144 @@
-Return-Path: <linux-kernel+bounces-72304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 056B185B1CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:03:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0042F85B1CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7172282B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:03:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16EDE1C21084
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF5653E3B;
-	Tue, 20 Feb 2024 04:03:20 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7DC52F68;
-	Tue, 20 Feb 2024 04:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBA053E3B;
+	Tue, 20 Feb 2024 04:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GGD68i5t"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163DC5577E;
+	Tue, 20 Feb 2024 04:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708401800; cv=none; b=KTzHjWIQw6IZInMT7+tf3pxozRsi6wOwGipaYOMY4TDclEiCyy/bj3zlgg6gCWa76NxF/3w0If2rq5gPxV29ulhVzNiQpArcqTe1+CeXCt1PEBW461RRoeXyK6+Uyb6rheFiP/UptescPdIGKSBaUKufOxwpAlC0zWztVICL1l4=
+	t=1708401828; cv=none; b=hRpMOLDMOIfM4QEonY9OKnirHPzhdObhiQzT/gx9IS8KCKeQgUWnIT733+doAmYDb6NHCPUqO2d3zc4ndHV1su4vaKfdxmjo+L+nXU6MFLoeqD+z3Y/+p+dxJ+IHZSSu/BO1o82+uegePazUr2MYgrXIYbC7+ilpwff0xiKBWvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708401800; c=relaxed/simple;
-	bh=8Q8ga5qF52jke2YKkP3E6vPsby0Wz8W15NX8pjBlS/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GjwsLXZR0qGDMvlRlPykO/9kxcyf7pvOFXbHn9or/O4J3vJMz532EslTo7L7dfEJP8KpPGL1JDPi1MeFejeLsmJk/+w/zVOZwtkAC9BZsa1E8R6FQjdB4EM50ZhOJ4mob/qb5HgjGiIKikSrMuD5tiTzsaLuNWrZ3EXYX700gl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-c0-65d4247f8241
-Date: Tue, 20 Feb 2024 13:03:06 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: akpm@linux-foundation.org, osalvador@suse.de,
-	baolin.wang@linux.alibaba.com, hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/vmscan: Fix a bug calling wakeup_kswapd() with a
- wrong zone index
-Message-ID: <20240220040306.GI65758@system.software.com>
-References: <20240216111502.79759-1-byungchul@sk.com>
- <871q97rec8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	s=arc-20240116; t=1708401828; c=relaxed/simple;
+	bh=IVIzkcVbOkPWz7ortT2t4T3hWJ3PaAF5jKVTkV8Afwk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O/2es3ym2XeXCUSm/d6esxdzLPWb4u7u9u3zf6NQmTKISvB5c0DCIo9vyQCjPr6yG8cHEouA3KpRy6vz0p4x+2JLFJv2xx7YhPV8JL8FBmefRPKsnqDs32r3RvcKvxxi/15iZJWt4Q3qqx+NYEjsTDxm72sAWrW8eP3qHVOv4ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GGD68i5t; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41K43N31076875;
+	Mon, 19 Feb 2024 22:03:23 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708401803;
+	bh=crnutHHUYH/0PHILJfzZc4/J5v3/2KFIL0jgBpVroak=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=GGD68i5tfpwUx0FRd18RieRmJMnE0s7TfBCpR8J3pcOwh7PA3gHKAhQgZlTaAh8vw
+	 EGI3wUPgRr10jagulji1ylowICYxLlOwyleiyK0M5a7QqG0BJn98A/9gFtdQIA1RNm
+	 /RALaXrdoxHXx8WNDqTMRjGeNeWomZZV5VWqTYXM=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41K43NA9035427
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 19 Feb 2024 22:03:23 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
+ Feb 2024 22:03:23 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 19 Feb 2024 22:03:23 -0600
+Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41K43JfC068689;
+	Mon, 19 Feb 2024 22:03:20 -0600
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Judith Mendez <jm@ti.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Wadim Egorov
+	<w.egorov@phytec.de>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v3 0/9] Fix MMC properties on Sitara K3 devices
+Date: Tue, 20 Feb 2024 09:33:17 +0530
+Message-ID: <170834878955.3471454.11267750873554490606.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213235701.2438513-1-jm@ti.com>
+References: <20240213235701.2438513-1-jm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871q97rec8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsXC9ZZnkW69ypVUg4k9ZhZz1q9hs/i/9xij
-	xepNvhaXd81hs7i35j+rxZlpRRYLNj5itDg5azKLA4fH4TfvmT0W73nJ5LHp0yR2jxMzfrN4
-	7Hxo6bH5dLXH501yAexRXDYpqTmZZalF+nYJXBnd0+YxFqyTrdjzexd7A+MT8S5GTg4JAROJ
-	jnX72GHsm/3zmEBsFgFViZ5/i9lAbDYBdYkbN34yg9giAhoSnxYuB6rn4mAWOMMosWr2elaQ
-	hLBAtMTjd3PBBvEKWEg8n9nDAmILCWRKdE7tYIOIC0qcnPkELM4soCVx499LoGUcQLa0xPJ/
-	HCBhTgE7iWPfnoPtEhVQljiw7TgTyC4JgQNsEve+LmCEOFRS4uCKGywTGAVmIRk7C8nYWQhj
-	FzAyr2IUyswry03MzDHRy6jMy6zQS87P3cQIDPlltX+idzB+uhB8iFGAg1GJh/dB3OVUIdbE
-	suLK3EOMEhzMSiK87k0XUoV4UxIrq1KL8uOLSnNSiw8xSnOwKInzGn0rTxESSE8sSc1OTS1I
-	LYLJMnFwSjUwrniUetTU7fEdrjiprdVHPH5J1O5omTKFy3Ri5l8Vl3UfexeWaJrv2nrpnmTM
-	5Xth823rwrJ1jwgy2QSLHD3UVnUo+sOp+8t8ZO17qxLsXJNO8yh/3ySds6a1+JuB2beK96re
-	hz79Y7U8NbuEW0qZ7e57NYF7gnMFkl6LGx1TePuq8Ft2V0iJEktxRqKhFnNRcSIATAjaAXUC
-	AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsXC5WfdrFuvciXVYOtbNYs569ewWfzfe4zR
-	YvUmX4vDc0+yWlzeNYfN4t6a/6wWZ6YVWSzY+IjR4uSsySwOnB6H37xn9li85yWTx6ZPk9g9
-	Tsz4zeKx86Glx+IXH5g8Np+u9vi8SS6AI4rLJiU1J7MstUjfLoEro3vaPMaCdbIVe37vYm9g
-	fCLexcjJISFgInGzfx4TiM0ioCrR828xG4jNJqAucePGT2YQW0RAQ+LTwuXsXYxcHMwCZxgl
-	Vs1ezwqSEBaIlnj8bi47iM0rYCHxfGYPC4gtJJAp0Tm1gw0iLihxcuYTsDizgJbEjX8vgZZx
-	ANnSEsv/cYCEOQXsJI59ew62S1RAWeLAtuNMExh5ZyHpnoWkexZC9wJG5lWMIpl5ZbmJmTmm
-	esXZGZV5mRV6yfm5mxiBAbys9s/EHYxfLrsfYhTgYFTi4X0QdzlViDWxrLgy9xCjBAezkgiv
-	e9OFVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8XuGpCUIC6YklqdmpqQWpRTBZJg5OqQbG+0+d
-	L/44dC2sbstlg89Np1ZVlSoe2lrHbWS3aX3qX+64TKE54ivL702rk3mzrkqml0NXymy+Zbvp
-	DL/TTlqbL0umhK9p+3g1+74Xp5v1GQ+euTYT1/+u/DTVYtvKc1f3+Qc2xd+55mW7TMzu1+yA
-	grraeRcb6iN5dT2Szp6LP6xaVq2itTpViaU4I9FQi7moOBEAq2C0/1wCAAA=
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Feb 20, 2024 at 11:42:31AM +0800, Huang, Ying wrote:
-> Byungchul Park <byungchul@sk.com> writes:
+Hi Judith Mendez,
+
+On Tue, 13 Feb 2024 17:56:52 -0600, Judith Mendez wrote:
+> This patch series aims to fix and update MMC nodes for TI
+> Sitara K3 devices with the following changes.
 > 
-> > With numa balancing on, when a numa system is running where a numa node
-> > doesn't have its local memory so it has no managed zones, the following
-> > oops has been observed. It's because wakeup_kswapd() is called with a
-> > wrong zone index, -1. Fixed it by checking the index before calling
-> > wakeup_kswapd().
-> >
-> >> BUG: unable to handle page fault for address: 00000000000033f3
-> >> #PF: supervisor read access in kernel mode
-> >> #PF: error_code(0x0000) - not-present page
-> >> PGD 0 P4D 0
-> >> Oops: 0000 [#1] PREEMPT SMP NOPTI
-> >> CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
-> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> >>    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> >> RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> >> Code: (omitted)
-> >> RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> >> RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> >> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> >> RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> >> R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> >> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> >> FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >> PKRU: 55555554
-> >> Call Trace:
-> >>  <TASK>
-> >> ? __die
-> >> ? page_fault_oops
-> >> ? __pte_offset_map_lock
-> >> ? exc_page_fault
-> >> ? asm_exc_page_fault
-> >> ? wakeup_kswapd
-> >> migrate_misplaced_page
-> >> __handle_mm_fault
-> >> handle_mm_fault
-> >> do_user_addr_fault
-> >> exc_page_fault
-> >> asm_exc_page_fault
-> >> RIP: 0033:0x55b897ba0808
-> >> Code: (omitted)
-> >> RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
-> >> RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
-> >> RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
-> >> RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
-> >> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> >> R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
-> >>  </TASK>
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > Reported-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-> > Cc: stable@vger.kernel.org
-> > Fixes: c574bbe917036 ("NUMA balancing: optimize page placement for memory tiering system")
-> > ---
-> >  mm/migrate.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index fbc8586ed735..51ee6865b0f6 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -2825,6 +2825,14 @@ static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
-> >  			if (managed_zone(pgdat->node_zones + z))
-> >  				break;
-> >  		}
-> > +
-> > +		/*
-> > +		 * If there are no managed zones, it should not proceed
-> > +		 * further.
-> > +		 */
-> > +		if (z < 0)
-> > +			return 0;
-> > +
+> The series introduces sdhci0 and sdhci2 nodes and enables
+> eMMC for AM62ax platform.
 > 
-> I think that it's better to check pgdat->nr_zones directly earlier in
-> the function.  That is a little easier to be understood.
-
-No. No matter what the value of ->nr_zones is, the oops is going to
-happen if there are no managed zones by any reason.
-
-	Byungchul
-
-> >  		wakeup_kswapd(pgdat->node_zones + z, 0,
-> >  			      folio_order(folio), ZONE_MOVABLE);
-> >  		return 0;
+> Also introduce fixes for MMC ITAP/OTAP values for AM64x
+> platform according to device datasheet [0], and add ITAP/
+> OTAP values for AM62p to enable the highest timing possible
+> for MMC0 and MMC1, according to device datasheet [1].
 > 
-> --
-> Best Regards,
-> Huang, Ying
+> [...]
+
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/9] arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
+      commit: d3ae4e8d8b6ac0db82264c5576daa260cac3d536
+[2/9] arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
+      commit: feb5d68cec77b6783f4febb8c91c1b1caa8b4924
+[3/9] arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
+      commit: e041ec6e86e7dbc49f5245ace6f3b965bb7c26f7
+[4/9] arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC
+      commit: 379c7752bbd0e81654544a896dd19c19ebb6faba
+[5/9] arm64: dts: ti: k3-am62p: Add ITAP/OTAP values for MMC
+      commit: 37f28165518f7df2ed085e4481dade9c262b593b
+[6/9] arm64: dts: ti: k3-am6*: Remove DLL properties for soft PHYs
+      commit: eea929f0e0e3f83d2c027b1e60630deb50df4494
+[7/9] arm64: dts: ti: k3-am6*: Fix ti,clkbuf-sel property in MMC nodes
+      commit: 2812d23ade3d614b451bff5d63d29a31b92d8859
+[8/9] arm64: dts: ti: k3-am6*: Fix bus-width property in MMC nodes
+      commit: 0ae3113a46a64266f19fdc9753d5e3a6748fc594
+[9/9] arm64: dts: ti: k3-am6*: Add bootph-all property in MMC node
+      commit: 5f0e6ce354f61092182b79d177585bd7310f12a2
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+--
+Vignesh
+
 
