@@ -1,123 +1,165 @@
-Return-Path: <linux-kernel+bounces-73590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FCB785C492
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:23:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30E0F85C4BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:25:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E95391F245AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:23:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6742B22B36
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8521B14A4C0;
-	Tue, 20 Feb 2024 19:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0FC1386B1;
+	Tue, 20 Feb 2024 19:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P2j8/i97"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S2OpNVNH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4CF1353EA;
-	Tue, 20 Feb 2024 19:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947DF768F1;
+	Tue, 20 Feb 2024 19:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708456955; cv=none; b=EGnMZ+CRecTprxRnDr1PWlR7rxaFJ0IvMUL9O5Xkl17QnBSsqiDRMSkentNSXwx71u8f0O1pD1zeee3YGZU6wNBhqLsbeY2vT0kJ8w7zjoyqlBAj14m8XxtIQMDmwu9rnCQ8G4+Zw+rwQXPRnyOxw58hmlJH4L2CJxiZTFXlsBQ=
+	t=1708457134; cv=none; b=H9fEw4En/an2Z6UhONBfp3/fn4TX2ET4YvPtuGAh1u1IOkSB+nnrErTHSRFrk8n1StHdOAoXLCutfztXkPmiJv+FtvunNykVAo5+sP39SPtIed/vjflakCo1iJg9IE0R4hdbWOvL1uH9wBaCcWS6G0wYlDhlwVSmGTFv9UIERsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708456955; c=relaxed/simple;
-	bh=iETYLic/GnoHZMrLLtBPhdaUdXYC0To+q4lhTtjXdgE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LphuXy1VZ2Czdtqwl1lQIWflcJBMMyujPg3qGccJaK9lga6Rb4ICL8+N3DLV9merr6Y/5n196jv+W74PQJHelkPH84ZKzkHIm6V0qWOSHqQyPQtF/NZh/Euv32Widp+SLCCLzz0Y6AUgmFOmeyP3vR2jtwTA2uzVHMZtBD9gQC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P2j8/i97; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41241f64c6bso34389645e9.0;
-        Tue, 20 Feb 2024 11:22:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708456952; x=1709061752; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vr4WFlS9/GiUzUgyJ2V+G5bwrUNZLQw/Jx2ML4aaFjk=;
-        b=P2j8/i97yq9HxvAc3oD4gMpkwdeyRlOZq/Mrw3n+nmQELd6lNuXFfi/l2gestaaxBN
-         B85lBJbUz+K9JdMhLwu1jXvv8N9XP6OhWSlyqohK29f0r1IAqDk0pe6i7qgdtD6UP+PR
-         cgdWxwMOuxID1mXT0GTgzagQtkur4lT86jHO1+RtSYyS7uW+EW9kXoru3TYM0YBeNwV1
-         3tbTk6ZTfD+l/sPkDD9171dHki9mKfN6fT4qFEKlkYWQL8Aw/X3qa9pqcrugGMkSiT+a
-         qkWZgEhelZWDkhDPKtfKfu3eUpwlMGRggxFLl7OEHyxs7IqPoN/Rt2Pq3fF82fuO202r
-         Cw8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708456952; x=1709061752;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vr4WFlS9/GiUzUgyJ2V+G5bwrUNZLQw/Jx2ML4aaFjk=;
-        b=UG+WyOqr2tFkqsysHxe1MnhQ5wXmuYUJAmXSe+I/aW8WHULibL4SMSvtEuVHpi5VYB
-         nrEsOIUYvZ+bZndBozfVm07FPbBm8waRSX538K9mfBKMWB684ioovkApu/wdjA0WBk94
-         FSROg4SxkPXlpJD4aPEu9qy18tTuhd/g7smdu5khxyk7lAJqx7mtTkSPxby6WCtvy/Wj
-         qpJLM8YXWL7R2r+vsmBHiSA4/ieo+McKdLSh+zvBKps17VPSwKm1bLM+ZPawTeEOkBsD
-         ruunRgnBkbRb+oecXZ0Bf7Nd2ABxBf5wYFiN8ViDjed/nOniJK4uONPRXzrPTdLKlmO3
-         8sXw==
-X-Forwarded-Encrypted: i=1; AJvYcCWwIh/s9nXmHOhINQWllF/huf168bdS7yp1YbUWxqtPcpx13TwBVrid6ElDRaVqmVuGrfXb9H7LcnSGuovdnvT79J06o6Z7vNKKoZ5BXikhmlEIJYz1Ovk+q1Rbx6uJpXXPcukTbBvCuWTkU2+xjR6K9SAgj4r+Z794In/XMgTRhTgykw==
-X-Gm-Message-State: AOJu0YzVivLlrOKQqdcguE0xiG3UrtoOSrLJn1bFhWqgDGyYN3C20/69
-	k6yU+W2EjRvQTbXTNo3SJhph25hyNi1Bg12aNSZxXa4SeLs9cq4GeIhAEzQ9K6U=
-X-Google-Smtp-Source: AGHT+IFZQREKFQJmcdKI/Yhn1UaRjKV+UzDWjPGCC+Re35EsAMnplszDN1boVkaacvaHa6v3pZOvoQ==
-X-Received: by 2002:a5d:6811:0:b0:33d:374f:83f1 with SMTP id w17-20020a5d6811000000b0033d374f83f1mr6373789wru.43.1708456952254;
-        Tue, 20 Feb 2024 11:22:32 -0800 (PST)
-Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id ba20-20020a0560001c1400b0033d640c8942sm3942265wrb.10.2024.02.20.11.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 11:22:31 -0800 (PST)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 20 Feb 2024 20:22:18 +0100
-Subject: [PATCH] dt-bindings: usb: qcom,dwc3: fix a typo in interrupts'
- description
+	s=arc-20240116; t=1708457134; c=relaxed/simple;
+	bh=M8gLGSCh+fPBDyoAw2lavmpyPpuGrjXLbQcD1/p22+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YC8EKgXlrNOfG4vgnOia9OBw9EYPm3LLQoqFDei/jdw9jiarYmX31yPT75qAd9847DDm+kEPgkExuVggjp2PM//us5v2QITw4q7unMzepgx6aTiMVBectkBk8nNeojtnEqZT/XcqZYZLOk3DV8jVJYjepuP7gwe9ggA7gx6UQvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S2OpNVNH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A64C433F1;
+	Tue, 20 Feb 2024 19:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708457134;
+	bh=M8gLGSCh+fPBDyoAw2lavmpyPpuGrjXLbQcD1/p22+o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S2OpNVNHpMC+QaZwwoQ+eHzY+O7HnU4GcR/O/ztTR85zJyrwRg5LgAO4sLd3OFaU7
+	 ZO2lOALpkoFqgK2z2kY2pPG4gPrl3qCzY6YxF/sP8dGDE9ySMY66LyTr51/VvixaXL
+	 5S7IFHSqwSk1SwUi7TFjWJzmpQMc1muHVU1/37uXSWf8xMC0hAgLAskJG5jD3wmNtF
+	 YGJ1G9wHjR2Y749I/kqBRE216WWa9PKiO324R2GXFRk55gImceAcPyKyCrnDfrUOjA
+	 pfD6LFJ6ScA7bHUpub4GG6Cl1AQC+mc/poBBSXmCoSz7j6PbyyZr7p0XmVrlIIqWnW
+	 D/d2yZ+FFGpWg==
+Date: Tue, 20 Feb 2024 19:25:28 +0000
+From: Conor Dooley <conor@kernel.org>
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Mihai.Sain@microchip.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	Nicolas.Ferre@microchip.com, andre.przywara@arm.com,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Cristian.Birsan@microchip.com,
+	Balakrishnan Sambath <balakrishnan.s@microchip.com>
+Subject: Re: [PATCH v3 2/3] ARM: dts: microchip: sama7g5: Add flexcom 10 node
+Message-ID: <20240220-lapel-diaper-0914f6da3beb@spud>
+References: <20240215091524.14732-1-mihai.sain@microchip.com>
+ <20240215091524.14732-3-mihai.sain@microchip.com>
+ <20240215-lustily-flick-69cb48b123c3@spud>
+ <PH8PR11MB6804E9353A8EEBD2B829D8B3824C2@PH8PR11MB6804.namprd11.prod.outlook.com>
+ <20240216075609e58aeee4@mail.local>
+ <cfafd563-1387-4775-bcb0-434ce3774827@tuxon.dev>
+ <20240216-eleven-exposure-dde558e63aaf@wendy>
+ <0798f21e-1ab6-4fd2-b7e3-18f35163fad1@tuxon.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240220-dt-bindins-qcom-dwc3-fix-typo-v1-1-742bf6e49641@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAOn71GUC/x3MQQqDMBBA0avIrDuQTC3SXkW6SDMTnYWJJqIW8
- e4NXT4+/BOKZJUCr+aELJsWTbHC3hrwo4uDoHI1kKHWEBnkFT8aWWPBxacJefd3DHrg+p0T2kf
- obPskxy5AfcxZavv/+/d1/QBCwZXqbwAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.12.3
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yzTjB1umydcFT1/o"
+Content-Disposition: inline
+In-Reply-To: <0798f21e-1ab6-4fd2-b7e3-18f35163fad1@tuxon.dev>
 
-The correct interrupt name is 'hs_phy_irq' not 'hs_phY_irq'.
 
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
- Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--yzTjB1umydcFT1/o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 63d150b216c5..38a3404ec71b 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -102,7 +102,7 @@ properties:
-     description: |
-       Different types of interrupts are used based on HS PHY used on target:
-         - pwr_event: Used for wakeup based on other power events.
--        - hs_phY_irq: Apart from DP/DM/QUSB2 PHY interrupts, there is
-+        - hs_phy_irq: Apart from DP/DM/QUSB2 PHY interrupts, there is
-                        hs_phy_irq which is not triggered by default and its
-                        functionality is mutually exclusive to that of
-                        {dp/dm}_hs_phy_irq and qusb2_phy_irq.
+On Mon, Feb 19, 2024 at 08:45:45PM +0200, claudiu beznea wrote:
+>=20
+>=20
+> On 16.02.2024 11:35, Conor Dooley wrote:
+> > On Fri, Feb 16, 2024 at 10:24:13AM +0200, claudiu beznea wrote:
+> >> On 16.02.2024 09:56, Alexandre Belloni wrote:
+> >>> On 16/02/2024 06:58:10+0000, Mihai.Sain@microchip.com wrote:
+> >>>>> diff --git a/arch/arm/boot/dts/microchip/sama7g5.dtsi b/arch/arm/bo=
+ot/dts/microchip/sama7g5.dtsi
+> >>>>> index 269e0a3ca269..c030b318985a 100644
+> >>>>> --- a/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> >>>>> +++ b/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> >>>>> @@ -958,6 +958,30 @@ i2c9: i2c@600 {
+> >>>>>  			};
+> >>>>>  		};
+> >>>>> =20
+> >>>>> +		flx10: flexcom@e2820000 {
+> >>>>> +			compatible =3D "atmel,sama5d2-flexcom";
+> >>>>
+> >>>> My comment here was ignored:
+> >>>> https://lore.kernel.org/all/20240214-robe-pregnancy-a1b056c9fe14@spu=
+d/
+> >>>>
+> >>>> The SAMA7G5 has the same flexcom controller as SAMA5D2 MPU.
+> >>>>
+> >>>
+> >>> Still, it needs its own compatible plus a fallback to
+> >>> atmel,sama5d2-flexcom
+> >>
+> >> I agree with this. Though, flexcom documentation is subject to YAML
+> >> conversion (a patch has been re-posted these days [1] and *maybe* it w=
+ill
+> >> be integrated this time). And there are multiple SoC DTs that need to =
+be
+> >> updated with their own flexcom compatible (lan966x, sam9x60, sama7g5).
+> >>
+> >> To avoid conflicting with the work at [1] and postponing this series w=
+e may
+> >> do the update after the [1] is done.
+> >>
+> >> Let me know your thoughts. Either way is fine by me.
+> >=20
+> > I'd be inclined to say that if we are gonna take a shortcut here, then
+> > this patch should add a specific compatible so that when the yaml
+> > conversion goes through you'll get a warning about this being
+> > undocumented rather than silence.
+>=20
+> All the flexcom nodes from all flexcom capable SoCs (including SAMA7G5)
+> have the same compatible introduced by Mihai.
+>=20
+> I don't like the idea of updating only the DTSes, either update all DTSes
+> and documentation or do it as it is already done (with sama5d2 compatible=
+).
+>=20
+> >=20
+> > A resend on the flexcom patch is required though, the rebase was not
+> > done correctly, so maybe Balakrishnan could "atmel,sama7g5-flexcom"
+> > add with a fallback to "atmel,sama5d2-flexcom" while they're fixing
+> > it up?
+>=20
+> I agree, and DTSes should also be updated along with documentation.
 
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240220-dt-bindins-qcom-dwc3-fix-typo-15f71492adaf
+I'm biased, I'll almost never disagree with updating things to use
+soc-specific compatibles...
 
-Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
+> With this we can go forward with this patch and avoid conflicting with wo=
+rk
+> that is currently in progress for flexcom.
 
+I forgot to actually CC Balakrishnan, but Nicolas fortunately forwarded
+it to them. They're added now though to make sure they see this.
+
+--yzTjB1umydcFT1/o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdT8qAAKCRB4tDGHoIJi
+0uYYAQCNNsmFlZfOvfTXCNDKZbuo0f1s3OpLcxwZv3bxHuakpwD/Q395wy39LoTo
+OfiPp3KJWQDtXxuRp23mobPwznUIswQ=
+=5pi2
+-----END PGP SIGNATURE-----
+
+--yzTjB1umydcFT1/o--
 
