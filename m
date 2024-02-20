@@ -1,99 +1,112 @@
-Return-Path: <linux-kernel+bounces-73408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C55585C21B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:12:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 563CE85C21D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:12:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 297FD1C21C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:12:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10E28282062
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:12:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB6376C63;
-	Tue, 20 Feb 2024 17:12:26 +0000 (UTC)
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD75A76C64;
+	Tue, 20 Feb 2024 17:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A2fWMjB1";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zXskBNwp"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B6676400;
-	Tue, 20 Feb 2024 17:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF85768F3;
+	Tue, 20 Feb 2024 17:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449146; cv=none; b=MtX9krSkSXjTMxcJGDh7TRkyUhhrZr2G0Q41qjbINb5zTA5ze3/q4hJDzv68cOAdVodzjDJB4U08+6kyRfzN/kelk9gplzbVyQ3PsUEjZJG+Ckp/WrH1oLHmwR2ZmnD3idvh/48LfVJ2AsmswpKY/VWJA8vcUjopzJEFPFgD2f4=
+	t=1708449166; cv=none; b=WfMj83LFitd39iYEYXgjoiiZXw0pXAzKSBA0VGJPjNPH4woioTeFN5Drie5mUwZUhZBtjqeRYuy0yHaNkvLNGvrIGYIUckUUEVHPWPjUvYgUmdJuW4E57wXUOdtQO8JIJ40NY/mSS3F0j8OvsxuSreCqux5O3YrOzb+1jgcPjUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449146; c=relaxed/simple;
-	bh=JbisBTtw0UM/EIrMQXtq0glLWVtyA5VTN8/MgDFpU6Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=gnvaIE6qyN1/qyZuYSJEuUa58K9MwYDHx8e7sfGlYKfvSsqfE08UnyxmUnk8Dl7OEtwjb5dXzJP3F30IqrHYu1T7HTFnzPqZ3+aP9vYlBCPZIkOwyMzlorrNva0/I31EzOezatcQxK/n1UlsJU0HlvX/Arn3wQKl+xe6yJv61SI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce2aada130so5030989a12.1;
-        Tue, 20 Feb 2024 09:12:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708449143; x=1709053943;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d0+1H1CS5imkuXW4qIVhFp0ILJQ8xT3FVRwc1X+D/jY=;
-        b=YbVoUsU9Vs9xVd6C544pXztX/6/7YYHxHtGYlDngTzsHSLg4pxtcvb0Y6WSbd+DyFD
-         8wvNnEX1RPJVneEWzmKGrzVZIs94cUK/ycearj2UyjtiVrfYJyKIspEHN/0GYIEs8IEX
-         m3ra3yT41imZrqArUNwOWr0Cn/EuTqaqwkD1KvPDZzoK7nxkNvqLa8j1DGmRbZvAqApA
-         PC3swNl4sCF3hVQEcw0yfm39gVLEsT4igaB0Yvdkr/tegXdvqy1tjR9cqu6rDzA1jQnE
-         LN7vmws8JslY2jCz1yMMrS4zNbwlWB6HEDVCTyRLstkCCA+siutbmeE5QvEx97fkplIo
-         o8/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXrcx2FnNRYLJPaNNl4qTylVDnihepoC1p2xxA0xKCHHk+IiCF/S1NCeTlsYIsxKwvFR9yYW2nygSJMXgPl9ijJK207gVtyA75jPg+axDiuR1/1I7hrs4OWdMK/fJ8quoT3ZJit7/YXrPo=
-X-Gm-Message-State: AOJu0YxokpuJflUqnkyE99uLJjVttaHWIJdgge80CE8Ns5n6UTMO/cnI
-	+yvBSmAS3O7KSKny3kX3XkSuy22cZNkvk2mqfv69XJb9y+Mg05Be
-X-Google-Smtp-Source: AGHT+IEjQTqB84zkrDXFP326djvX9CVyCrsGkBTmn1KJhLzVOpUMCoMTTwc6tbGSUFG8GDmkGsY6MQ==
-X-Received: by 2002:a05:6a20:c890:b0:19b:a07a:344d with SMTP id hb16-20020a056a20c89000b0019ba07a344dmr15459887pzb.7.1708449142396;
-        Tue, 20 Feb 2024 09:12:22 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:455a:b76d:46a7:7189? ([2620:0:1000:8411:455a:b76d:46a7:7189])
-        by smtp.gmail.com with ESMTPSA id u9-20020a62ed09000000b006e469a6ca72sm3690126pfh.15.2024.02.20.09.12.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 09:12:21 -0800 (PST)
-Message-ID: <cd332ec7-2e29-419a-87a4-e32852ad96e7@acm.org>
-Date: Tue, 20 Feb 2024 09:12:20 -0800
+	s=arc-20240116; t=1708449166; c=relaxed/simple;
+	bh=mzwyhdq+fMgEafvqseGJTXtDYih/dQ4/kROp9V9RbeU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CXgaWHH9+n9d/YvFP8xut2ROpGlTpa1+I2y7UlbduEDB505d9q4MSHfWIaq45LcZes/JM/eKFpHcv3rHR+Bglo1iQFJY+VffaLPpGgPNRS80lcvFOMJyP2TTJBVZxq3/47E5myiXzrJQuFTba8R9lAOvTgTKgB9o7I5prJ5NQlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A2fWMjB1; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zXskBNwp; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708449162;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mSHAfYIgTOaEzn4d0Y9lfsKjNJQSBoDQ7KhW/iaFfb4=;
+	b=A2fWMjB1JjQPtT1dSVxjD+FBAizT/AOYIkLhHJP4m2JnRw0E4Qb9bBrBlQnxy2fWBQMpWR
+	7Apwn1AMbyR517PEwMC9+K4ePwHYVoU+aCtOWWiX/3VgYXDUc0MXcC0vZDmLYG/LChTibe
+	hEFR7LGGNiziY9NHM39vIFlSQJmPNQNHpsosbrLLSrn88bK+JVo+kZojWGbdW8+ZZ/apdg
+	HAwZMZQaRZsFEszqyBElRvVYfcLmZPE0u86PK/tMd9C5XcPxaCPwar555zcilXIUdXuQRZ
+	JMDGvZhyS2ceh5rPZa6r+o38lr+B6I41E3QYBjd5AHnnq+2krsxtY+jRxtTMuQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708449162;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mSHAfYIgTOaEzn4d0Y9lfsKjNJQSBoDQ7KhW/iaFfb4=;
+	b=zXskBNwpTlyCapqr81po5bvbMgoWyomCGNp6X1ypT2UybdZ24qQN5BRov2Mvl3dWK+/Gwj
+	PqXrEsIBOCvzzlDQ==
+To: Anup Patel <apatel@ventanamicro.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>, Marc Zyngier
+ <maz@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Atish Patra
+ <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, Sunil V L
+ <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, Anup
+ Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v13 07/13] irqchip/riscv-imsic: Add device MSI domain
+ support for platform devices
+In-Reply-To: <CAK9=C2V3hQnpibHgHUpwRXWn4LSuGue0a7Sh9NFYPB6XOizjoA@mail.gmail.com>
+References: <20240220060718.823229-1-apatel@ventanamicro.com>
+ <20240220060718.823229-8-apatel@ventanamicro.com> <875xyji7mc.ffs@tglx>
+ <CAK9=C2V3hQnpibHgHUpwRXWn4LSuGue0a7Sh9NFYPB6XOizjoA@mail.gmail.com>
+Date: Tue, 20 Feb 2024 18:12:41 +0100
+Message-ID: <87msrvgiuu.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 2/2] block: adjust CFS request expire time
-Content-Language: en-US
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Jens Axboe <axboe@kernel.dk>,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
-References: <20240220114536.513494-1-zhaoyang.huang@unisoc.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240220114536.513494-1-zhaoyang.huang@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Where is patch 1/2 of this series? I don't see it in my mailbox.
+On Tue, Feb 20 2024 at 22:22, Anup Patel wrote:
+> On Tue, Feb 20, 2024 at 7:02=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>>
+>> On Tue, Feb 20 2024 at 11:37, Anup Patel wrote:
+>> > +#ifdef CONFIG_SMP
+>> > +static void imsic_msi_update_msg(struct irq_data *d, struct imsic_vec=
+tor *vec)
+>> > +{
+>> > +     struct msi_msg msg[2] =3D { [1] =3D { }, };
+>>
+>> That's a weird initializer and why do you need an array here?
+>>
+>>        struct msi_msg msg =3D { };
+>>
+>> Should be sufficient, no?
+>
+> I had taken reference from irq_msi_update_msg() in
+> arch/x86/kernel/apic/msi.c
 
-On 2/20/24 03:45, zhaoyang.huang wrote:
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> 
-> According to current policy, CFS's may suffer involuntary IO-latency by
+Which is equally bogus :)
 
-Did you perhaps mean "cause" instead of "suffer"?
-
-> being preempted by RT/DL tasks or IRQ.
-
-For which workloads? Sequential I/O or random I/O? If it is for random I/O,
-please take a look at patch "scsi: ufs: core: Add CPU latency QoS support
-for UFS driver"
-(https://lore.kernel.org/all/20231219123706.6463-1-quic_mnaresh@quicinc.com/)
-and let us know whether or not the Power Management Quality of Service (PM QoS)
-framework is perhaps a better solution.
+The charm of copy and pasta...
 
 Thanks,
 
-Bart.
+        tglx
 
