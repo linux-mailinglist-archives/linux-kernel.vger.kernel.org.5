@@ -1,171 +1,155 @@
-Return-Path: <linux-kernel+bounces-72647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2F285B6AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:06:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9CC85B6AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 910CF1F250B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:06:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DAB51C23DC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579E460276;
-	Tue, 20 Feb 2024 09:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F5B5BAC7;
+	Tue, 20 Feb 2024 09:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCl+nh95"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LIB+prbN"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11F85BAC7;
-	Tue, 20 Feb 2024 09:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D6F5A110
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419935; cv=none; b=ePLrS7waLHcz823F59sJsEWgOTJ6bjgsi1M1c/bVzTWVHHnjHpGTOAYq+pCgsGP4RTJsHUN1qFCRvM0j18gcwi7bcdORtqsavCP/ivIiPIBqVN3ulX+NI2TgRdsMf+XWiw1MMDsiWPeFU8ZXq12adJs3c7HuoTz7qOe4Xj0gS5Y=
+	t=1708419976; cv=none; b=nM7uoi1efn/IlWsO+d8BP5wKkMFW2FmY/h7k7ufySB43g5zY1HhURa/ZYRf/w1KrrOHhokoK6ZK41+osFul/qxfegzvMAv3y+n2NhOZQR9foRavkFiQMtd8dCwUd4vqFVoY1DlaZGwcM4F0AnVxaSMPAuNCnoruIOviJq7GaESI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419935; c=relaxed/simple;
-	bh=jK3b9DLJc9Th42/uIfgM88dYSGXRde4vwZMJjZeqWns=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=JFSQidP5ulHTH/D40DPBBmBAD8WKpj5xoMRB+P/Bo7szgXTGdOZYFI7Ngbd0cI2jNjrZQnUmrX6raHmyUzCQNFbGIKHuCYE0MmtazZox9LQ/I0YwnR4DsgHAsGCnF4DJeSFwia1/cv8mmDVD5LZa2A+XCbc0eN2vgecoVEBEo/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCl+nh95; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4126aee00b2so8852045e9.3;
-        Tue, 20 Feb 2024 01:05:33 -0800 (PST)
+	s=arc-20240116; t=1708419976; c=relaxed/simple;
+	bh=N84xpgCHrORAjoI2Nkdi/wi3wZrgord7nWepiT3bvPA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ib2zjpndLwpU1V70o0Ktv5ojtfSt2MbZ2W2aRmFq4pQhoGeXEyvqeK11fIG07enpKau1G2GnmkKJ4aNTmVk9ZvUsqvsADelq/RWQmjUv8rlbVmYroqla/N6CRk75MnmgwBMYSPvGBzfz8ZO0lLCeMw9SuKK7xVSvy8zQ4aQKe9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LIB+prbN; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso5718473276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:06:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708419932; x=1709024732; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ig5UbaNkYqer64gSBn+qlNSGWqY7ObrqlHVCVer7Hj0=;
-        b=nCl+nh95l2xfjO66LiC+sEZsJ9ZwGj//3iDT6ouLO+Kt1KfUJtIQ06jiC58781n4k+
-         YeyB+RqZ1j2K5ilvxQL8Divzd0pPRJet8iu7tjtPWUguqhpkiRMeEjab3O15+XuwyPET
-         Ttff8GOAR3A7jtzlEmC3COdY6Kq1IZ62NusEu1r0STuqJIV+2KUwoa4tVIUeQnul5PAl
-         R0/9bkYBBLw7/VHNluYBPwUo78MfTde4Gucnkiid8kHAnkQsjwlFYeAuwpyWDI+YVwOR
-         BeU5a46qq9fYIdXkDTLF+87IeSlWS0qyd+CVg2uZa1irPWY6zgNINF8W22ygLDEXVsXn
-         bmMA==
+        d=linaro.org; s=google; t=1708419973; x=1709024773; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R0CyeS56TSWYq1NAjfXsEvKV0TSPVdyTmQCCIvDs6Vk=;
+        b=LIB+prbNJQ4xwvId5haLIrz9MKnw2dAFfET7Y3YQF7PBn3wPmQLpZa+6E9ei/DXPmE
+         UmvBS0vnLKV087zDaFocXnSsig/WW2LJL6Q4biN4TcXcGiU0q74tQuWlpH4mOVCbfUnp
+         Q7RrHBQC7CN+wTw9VGIdmLRfny9zukw4STKn7/2y7wUZgXSe5VQVlQtShFvS6MsQJw5S
+         Rq25wYI2NTEIq0zFKUx/Qjg3kFmkEFMtg3w9qDR8gnycsze6A4/KuZkTwO+4VS+iPzoa
+         QMtMB8irZuCBIpVkHTkREMxQUnTS+UuBxVRtCfhbSq/B7mgXxa3alRtaUC0GsXawKxgS
+         iO9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708419932; x=1709024732;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ig5UbaNkYqer64gSBn+qlNSGWqY7ObrqlHVCVer7Hj0=;
-        b=joWR9u4WFQ0Mk0h9NROzcQzLwNAKS0JR7GTZOJolk/EaYqOp7q5fHqX4ALmCBI7sCC
-         RvmZAV3H5Ef/E/x2mfMXIUyNG29BoU789O+Jfi9pPLlASX22cEiH65lKML9Z7Pl3JGil
-         nfixuzhN2qFw8mjXlkFOGEv0V/XDiJcsXy1eRhnHIozNPZPMHExqGEfgzB8pgtEopGAf
-         ZoGeOqV/1hiMjSsGHATlhSAAreLUnyt7ovJmLXUsROeqpTeH4ZghIWo812wXDOdaTOZ2
-         YuatGU9fwjngWLx50/arKUxcsBmGTWKiU52m/YbmgsottPfiZg4Dj+lKfszLDNzC9xmT
-         wmww==
-X-Forwarded-Encrypted: i=1; AJvYcCWKixPwoY/TZyl6s3dVO3AToFC8YmJ33KmuMNFvOGW38tvc+yadXS5yNE2LX5oPxLNwRfJkBSxpmdXpL23IwqmPxvuA5bMyV5FbNsnoDrixI6vrtYhVcIsxMpMkWUnOq8VA84bwPf2ixRnly473osjQW5sXXpsJzWBF9z3zWYAhIutZJYFdcqzqL38WDeF11bHU96kDMZP1rnhDM34qSzp9Ou9rC4sri7TZ5UvOb3dzg5goJXiopimYfA==
-X-Gm-Message-State: AOJu0Yx3Vgnm0FRxK/nxVPcciojR4yY+pNu6QA2yK1gUQLV7YO0DHUAO
-	K08xHcN8OGeT9k9QBhv/JYZKmb+m6qc7YDns6vA/4c7JJUdo5AFd
-X-Google-Smtp-Source: AGHT+IFLOoKRegUiU+mZanJ0U2d2TL31TO0Zdg38BMIBc2yTRhNdPGtUWzTbgBCy4gzGh9AS1QwMPw==
-X-Received: by 2002:a05:600c:4f0d:b0:412:107d:cd6c with SMTP id l13-20020a05600c4f0d00b00412107dcd6cmr10595323wmq.28.1708419931996;
-        Tue, 20 Feb 2024 01:05:31 -0800 (PST)
-Received: from [10.24.67.19] ([15.248.2.27])
-        by smtp.gmail.com with ESMTPSA id l20-20020a1c7914000000b00412706c3ddasm570024wme.18.2024.02.20.01.05.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 01:05:31 -0800 (PST)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <54ef40fc-31dd-4d37-8091-66a1ff3df6b9@xen.org>
-Date: Tue, 20 Feb 2024 09:05:29 +0000
+        d=1e100.net; s=20230601; t=1708419973; x=1709024773;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R0CyeS56TSWYq1NAjfXsEvKV0TSPVdyTmQCCIvDs6Vk=;
+        b=JkZH8znXoSyZMS7FucVHsl4Jzz0SRn5DCSfhZUmLrVwrAXQ6Sl890I5Lry4p/MiapJ
+         cb8Gvd2e4RPwV2ChHBkRAWz414sh2Z2T5HznJO9ibv2/aR4A6ZnSqfe2GY31X42Jq2yt
+         BNPPWOZA2kbSLizSJSWV/VywlJmMwzvfuMWEZr0t9Jkvqqle/fKApsvk0KWSyX9RB3qu
+         JFO7RcPhW9vAjp95D5AK+VC60I5Qxco0voD981XGp/G7qdjlBGntVZMotT0ITbsDe99C
+         raRX1u4nPfctuDFyXPRxZVWFuUNz/dbEP2ipKGruHZFZTSp4LRTytYUk0X8pM5ROJuhP
+         Vj/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUIyK1MfWZb+MjYUr43e0S1vQtEa6ET3LRjAxBgv2qFKfli7ND13tCFcvOT5wBwy9grXpS/pETccDyncIWO+24zer5R2c+78mitNwa0
+X-Gm-Message-State: AOJu0YxKPmZnU40+uDrKa+0XGtK3ywSqIP39vS4iBdgZ0KtRHIBis8mq
+	aqVvsNVpmN/12YKiHLgoxsfvwVf01jXS+/QteR4CNwMQ6nwN5b6ZwSjPHiSv6YarLCZbqkg+dTi
+	D6zNuz2pWdr/txNhrrkhejt82EP6oMB00mo4eQA==
+X-Google-Smtp-Source: AGHT+IF50+ClBlIDnyyXGYJ4+9cr8Az9j0fxyWVTYfiRxOMlR8QjxPnTxJgiBCmodSw3Jj3u9rVrMXJR5+zExry6ZEc=
+X-Received: by 2002:a25:680e:0:b0:dbd:553d:9d6a with SMTP id
+ d14-20020a25680e000000b00dbd553d9d6amr14218173ybc.40.1708419972956; Tue, 20
+ Feb 2024 01:06:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v13 18/21] KVM: x86/xen: don't block on pfncache locks in
- kvm_xen_set_evtchn_fast()
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240215152916.1158-1-paul@xen.org>
- <20240215152916.1158-19-paul@xen.org> <ZdPQVP7eejq3eFjc@google.com>
-Organization: Xen Project
-In-Reply-To: <ZdPQVP7eejq3eFjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240205115721.1195336-1-quic_jingyw@quicinc.com>
+ <20240205115721.1195336-2-quic_jingyw@quicinc.com> <2fa4d857-7262-40df-a842-56945ecffb81@linaro.org>
+ <441ffff2-81a8-4b53-b15b-5ac6375d65c3@quicinc.com>
+In-Reply-To: <441ffff2-81a8-4b53-b15b-5ac6375d65c3@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 20 Feb 2024 11:06:01 +0200
+Message-ID: <CAA8EJpra8UjWzWArQQg3Cq3m7WLo4Shnsj=EOhb50Yh46bOh7w@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/6] dt-bindings: arm: qcom: Document sm8650p soc and
+ AIM500 AIoT board
+To: Jingyi Wang <quic_jingyw@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	andersson@kernel.org, konrad.dybcio@linaro.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 19/02/2024 22:04, Sean Christopherson wrote:
-> On Thu, Feb 15, 2024, Paul Durrant wrote:
->> From: Paul Durrant <pdurrant@amazon.com>
->>
->> As described in [1] compiling with CONFIG_PROVE_RAW_LOCK_NESTING shows that
->> kvm_xen_set_evtchn_fast() is blocking on pfncache locks in IRQ context.
->> There is only actually blocking with PREEMPT_RT because the locks will
->> turned into mutexes. There is no 'raw' version of rwlock_t that can be used
->> to avoid that, so use read_trylock() and treat failure to lock the same as
->> an invalid cache.
->>
->> [1] https://lore.kernel.org/lkml/99771ef3a4966a01fefd3adbb2ba9c3a75f97cf2.camel@infradead.org/T/#mbd06e5a04534ce9c0ee94bd8f1e8d942b2d45bd6
->>
->> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
->> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
->> ---
->> Cc: Sean Christopherson <seanjc@google.com>
->> Cc: Paolo Bonzini <pbonzini@redhat.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: "H. Peter Anvin" <hpa@zytor.com>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: x86@kernel.org
->>
->> v13:
->>   - Patch title change.
->>
->> v11:
->>   - Amended the commit comment.
->>
->> v10:
->>   - New in this version.
->> ---
->>   arch/x86/kvm/xen.c | 30 ++++++++++++++++++++----------
->>   1 file changed, 20 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
->> index 59073642c078..8650141b266e 100644
->> --- a/arch/x86/kvm/xen.c
->> +++ b/arch/x86/kvm/xen.c
->> @@ -1678,10 +1678,13 @@ static int set_shinfo_evtchn_pending(struct kvm_vcpu *vcpu, u32 port)
->>   	unsigned long flags;
->>   	int rc = -EWOULDBLOCK;
->>   
->> -	read_lock_irqsave(&gpc->lock, flags);
->> -	if (!kvm_gpc_check(gpc, PAGE_SIZE))
->> +	local_irq_save(flags);
->> +	if (!read_trylock(&gpc->lock))
->>   		goto out;
-> 
-> I am not comfortable applying this patch.  As shown by the need for the next patch
-> to optimize unrelated invalidations, switching to read_trylock() is more subtle
-> than it seems at first glance.  Specifically, there are no fairness guarantees.
-> 
-> I am not dead set against this change, but I don't want to put my SoB on what I
-> consider to be a hack.
-> 
-> I've zero objections if you can convince Paolo to take this directly, i.e. this
-> isn't a NAK.  I just don't want to take it through my tree.
+On Tue, 20 Feb 2024 at 11:00, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
+>
+>
+> Hi Krzysztof,
+>
+> On 2/5/2024 8:33 PM, Krzysztof Kozlowski wrote:
+> > On 05/02/2024 12:57, Jingyi Wang wrote:
+> >> Document Qualcomm SM8650P SoC and AIM500 AIoT board.
+> >
+> > Please describe shortly what is SM8650P and what are the differences
+> > with SM8650.
+> >
+> >>
+> >> Signed-off-by: Jingyi Wang <quic_jingyw@quicinc.com>
+> >> ---
+> >>  Documentation/devicetree/bindings/arm/qcom.yaml | 9 +++++++++
+> >>  1 file changed, 9 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> >> index 1999a5f2f254..e87ceb42853b 100644
+> >> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> >> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> >> @@ -88,11 +88,13 @@ description: |
+> >>          sm8450
+> >>          sm8550
+> >>          sm8650
+> >> +        sm8650p
+> >>          x1e80100
+> >>
+> >>    The 'board' element must be one of the following strings:
+> >>
+> >>          adp
+> >> +        aim500-aiot
+> >
+> > Drop this line.
+> >
+> drop this line will cause fail dt binding check failure, any suggestion on that?
 
-Ok. I'll drop this from v14 then. It can go separately, assuming there 
-is no move to add the raw lock which would negate it.
+It will not, it is just a free-form text
+
+> >>          cdp
+> >>          dragonboard
+> >>          idp
+> >> @@ -1051,6 +1053,13 @@ properties:
+> >>                - qcom,sm8650-qrd
+> >>            - const: qcom,sm8650
+> >>
+> >> +      - items:
+> >> +          - enum:
+> >> +              - qcom,sm8650p-aim500-aiot
+> >> +          - const: qcom,sm8650p-aim500
+> >> +          - const: qcom,sm8650p
+> >> +          - const: qcom,sm8650
+> >
+> >
+> >
+> > Best regards,
+> > Krzysztof
+> >
+> Thanks,
+> Jingyi
+>
+
+
+-- 
+With best wishes
+Dmitry
 
