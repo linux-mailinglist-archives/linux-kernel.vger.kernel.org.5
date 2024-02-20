@@ -1,210 +1,143 @@
-Return-Path: <linux-kernel+bounces-73353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E6685C15F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:28:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF32D85C186
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CE89B25249
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:28:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF97D1C218FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:35:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A78779DB9;
-	Tue, 20 Feb 2024 16:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ACF7640C;
+	Tue, 20 Feb 2024 16:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UHldAhU6"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="OOWj5tjy"
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620CC79941
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:25:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2532599
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.177.23.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446361; cv=none; b=B/FbmwQKrSkSWSATuqCtP/U5wWls+3TZCPnSO6Wenbk5s+uA40BDNddOlx4QOhYabLJ77n+EDs96S/l2s13fJEtvnRwLyRFFhcsJVJro+jsDYR9jayVO517WJwlohSSPGmA3su6UEc6JZHqtze2vmVjrLXKz0+kMjE7znXQCJUs=
+	t=1708446917; cv=none; b=d6ShIxC1AyXWcR7+jrrIUSBigwQrrcj1Um2zS8y6Kr+/8Wt10yUZfSHE5cKDuM2/78aiW5lgXapxNxohkPfwfd3GdmhZ112XqJ3jF8sWbjY5le/Gb5P7GMtgbKKLwnNWZDt1vJd6yEGQZxqLw7EVZUrmu8Z8vi0p5gdXDkCLgbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708446361; c=relaxed/simple;
-	bh=MtNTYYK+6+28ekFQX5xbREmMjtYbjCbTHU3QVy5WdIc=;
+	s=arc-20240116; t=1708446917; c=relaxed/simple;
+	bh=aS+TZc5AZuwu8ESRLu2x/0AcbnndqSOVq6MhbZymxZg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qmnzHEcipZj+KOhGKYgG3nlx0oIIoETdNj85+wC6lMsj1TqlhHjSlKvl2hh9jxqb3vg4s1nV3laEAtk6VG3IGc8gTf0NaK08OmHwl7qtiNtBiNwZQehkhsX7F2Ykw2w9fkCFgJ8M3cTX6vA7WUnXzi1A4QUQ3T6r6QEQAQU1PTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UHldAhU6; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-561587ce966so11379068a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:25:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708446357; x=1709051157; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OZ8v8X2fbB2BWapJA2Df3qbqU4Mifn6M/QSqXXZqY7c=;
-        b=UHldAhU6ftxK6UX4+A6zg4LTvsoATzfSmv3gob3hG+ZeTcuFzpo8I+wt8TP9qtP/bt
-         bHqp+hurSNdz5tBp8nNC2rYnkGJ51/ef8uRNEdjZEMy7Pl+A5Vdb93Yz7uHpYOieawp9
-         PSGHOhnA0f5qkNt+eyaPuBWvw6GQ5Dl5foRVguQ2NYRlx52n6Vs0SyIST/Fbi0r0KOLN
-         FVQ7KbNumw4kdN3maIu0gkf3QLgC+Gwzrui77O8B8LfV4Lslv/r22Uo7b2iIo4l1enyX
-         x9XAeKi6TME19CKMpxYgS9gLzq6AzaDh82nNn8vlxACLixXmN9T+62Ku1S4+AYC5aQir
-         6d8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708446357; x=1709051157;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OZ8v8X2fbB2BWapJA2Df3qbqU4Mifn6M/QSqXXZqY7c=;
-        b=pTkcLKkedyMdHCs4mMTWWZ96JS1eLEIDODqA3uwdRTKHwsjhPIDVIU+xkAy0K4ajsi
-         SSYsBM/ERcICDwfwug9IZWqfr9+GjRNvlHttRrO/wUJOS8QIJ7euvXjQ9PpdNXW6T1Li
-         Q9KgFm64WjG9tTvS2VVLJDzTRzkzj8nad3XEwZmHbooC56kT5Xpr+ZZ4d/jDllCI77WK
-         xzc7hWyJ/3sQE+S4FutaFv+HwPAtbE3mGpj8lFNTbO2dk8JJ3owtqLuh+0iElbEZJUoI
-         D8nhcplDqulTLaW/fxOrM/hkDeEGKSif4isYZkt9szrxdf+r5Bboc2IsRStUpiDNiiza
-         H+GA==
-X-Forwarded-Encrypted: i=1; AJvYcCX7HD2iZUPu0IaIfc2h+IRU94LpCvSq/5W8lc6AdH26xF8avj5d+rUrMPesJ5oYVobqCYXUsgKH+DV0xXh2FlDLaYGJtlZk6Za+pxXw
-X-Gm-Message-State: AOJu0YxfQG6d/KZQjX6AIaORfrv0AxeIObX9+6gTZGZXk08xvI8dVeWe
-	cuEZkm+4R8AoDPSzJkcDIMLedEgcLv0QJSGndcy245yQrpdP0wCDwZRmlytbVGI=
-X-Google-Smtp-Source: AGHT+IFcYYJlEmNaqLGIavK/2e+eL7voViTM/Mm2lFBExB6izE82wDysrJtvZSWkNUc6UZ7uvH8OSg==
-X-Received: by 2002:aa7:c908:0:b0:564:b94d:70df with SMTP id b8-20020aa7c908000000b00564b94d70dfmr3036075edt.17.1708446356733;
-        Tue, 20 Feb 2024 08:25:56 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n11-20020a056402434b00b00560c07f986asm3759697edc.58.2024.02.20.08.25.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 08:25:56 -0800 (PST)
-Message-ID: <3b6ab055-360b-4f73-8d11-8f52b272b7a8@linaro.org>
-Date: Tue, 20 Feb 2024 17:25:54 +0100
+	 In-Reply-To:Content-Type; b=MQtwzzJrRKwK0BNZS6U9k1wjS7Vks3NKr2GAHjIMW78GgH754QCcyn6CQU9Rv2Rm2N1P6vVLYkI0mLsSk/Kp872II8A06Hqa5SXig3x595R0ioGQjjYabVO1KmP1ymnmnEsHoq5d4VLhmkQRxzQ2tksX94MzOLiqob/D7X5T330=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz; spf=pass smtp.mailfrom=ixit.cz; dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b=OOWj5tjy; arc=none smtp.client-ip=89.177.23.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
+Received: from [10.0.0.200] (unknown [10.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ixit.cz (Postfix) with ESMTPSA id 32F20164DD1;
+	Tue, 20 Feb 2024 17:26:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+	t=1708446367;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=+PMw8eY5qmLGgnQucJsUVL59BT4Q6LYWu7fuwSVf89o=;
+	b=OOWj5tjyZF95EywhrFJrQoLX4nY2dHJQmbldcGj8rJXshBnfxzOynkUpHVqk0F1qf6cWOQ
+	N/s1AB8d27TM7dzwed3NhUQ2BURLk1hdIeknwSd/JnwtyIHrdS+Kf6lyRQwSIadRsXK5uX
+	JDM3MPRanFuXw5bpFFUtM9dvF6MlN0E=
+Message-ID: <214888b3-5837-4599-b4ed-089e8c30e825@ixit.cz>
+Date: Tue, 20 Feb 2024 17:26:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 1/5] dt-bindings: clock: histb-clock: Add missing
- common clock and Hi3798MV200 specific clock definition
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH v2 01/10] x86/Kconfig: enable X86_X2APIC by default and
+ improve help text
+To: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Cc: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ linux-kernel@vger.kernel.org, mingo@redhat.com, rdunlap@infradead.org,
+ tglx@linutronix.de, x86@kernel.org, yinghai@kernel.org
+References: <20220911084711.13694-2-mat.jonczyk@o2.pl>
+ <d6a06044-4137-46d7-a755-050846d8988c@ixit.cz>
+ <332bd358-95cc-4343-bff8-cc6e8c62ff89@o2.pl>
 Content-Language: en-US
-To: Yang Xiwen <forbidden405@outlook.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
- <20240217-clk-mv200-v2-1-b782e4eb66f7@outlook.com>
- <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
- <SEZPR06MB6959456E59D84C15F0C1B88396502@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <90e0dc10-8514-4827-998f-15b4d45d874e@linaro.org>
- <SEZPR06MB69594CBF0625989A5C54DC9096502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <SEZPR06MB69594CBF0625989A5C54DC9096502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: David Heidelberg <david@ixit.cz>
+Autocrypt: addr=david@ixit.cz; keydata=
+ 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
+In-Reply-To: <332bd358-95cc-4343-bff8-cc6e8c62ff89@o2.pl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 20/02/2024 17:19, Yang Xiwen wrote:
-> On 2/21/2024 12:13 AM, Krzysztof Kozlowski wrote:
->> On 20/02/2024 15:06, Yang Xiwen wrote:
->>> On 2/20/2024 6:10 PM, Krzysztof Kozlowski wrote:
->>>> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
->>>>> From: Yang Xiwen <forbidden405@outlook.com>
->>>>>
->>>>> According to the datasheet, some clocks are missing, add their
->>>>> definitions first.
->>>>>
->>>>> Some aliases for hi3798mv200 are also introduced.
->>>>>
->>>>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->>>>> ---
->>>>>    include/dt-bindings/clock/histb-clock.h | 21 +++++++++++++++++++++
->>>>>    1 file changed, 21 insertions(+)
->>>>>
->>>>> diff --git a/include/dt-bindings/clock/histb-clock.h b/include/dt-bindings/clock/histb-clock.h
->>>>> index e64e5770ada6..68a53053586a 100644
->>>>> --- a/include/dt-bindings/clock/histb-clock.h
->>>>> +++ b/include/dt-bindings/clock/histb-clock.h
->>>>> @@ -58,6 +58,27 @@
->>>>>    #define HISTB_USB3_UTMI_CLK1		48
->>>>>    #define HISTB_USB3_PIPE_CLK1		49
->>>>>    #define HISTB_USB3_SUSPEND_CLK1		50
->>>>> +#define HISTB_SDIO1_BIU_CLK		51
->>>>> +#define HISTB_SDIO1_CIU_CLK		52
->>>>> +#define HISTB_SDIO1_DRV_CLK		53
->>>>> +#define HISTB_SDIO1_SAMPLE_CLK		54
->>>>> +#define HISTB_ETH0_PHY_CLK		55
->>>>> +#define HISTB_ETH1_PHY_CLK		56
->>>>> +#define HISTB_WDG0_CLK			57
->>>>> +#define HISTB_USB2_UTMI0_CLK		HISTB_USB2_UTMI_CLK
->>>> Why? It's anyway placed oddly, the entries are ordered by number/value.
->>>
->>> So this is somewhat broken at the beginning. It named after
->>> histb-clock.h but actually they are all clocks for Hi3798CV200 SoC. For
->>> Hi3798MV200(also a HiSTB SoC), there is one additional UTMI clock.
->>>
->>>
->>> What solution do you prefer? rename UTMI_CLK to UTMI0_CLK, add UTMI1_CLK
->>> after it and increment all the indexes after it? Then the diff would be
->>> very ugly.
->> I still don't understand what is the problem you are trying to solve
->> here. Your commit msg says add missing ID, but that ID -
->> HISTB_USB2_UTMI_CLK - is already there.
+Sure, thank you a lot!
+
+David
+
+On 15/02/2024 22:10, Mateusz Jończyk wrote:
+> W dniu 2.02.2024 o 15:08, David Heidelberg pisze:
+>> Hello Mat,
 >>
->> I also do not get why there is a need to rename anything.
-> 
-> 
-> Because there are two USB2_UTMI_CLKs in total, at least for Hi3798MV200. 
-> UTMI1 is missing here. For other HiSTB SoCs, there could be even more.
-
-My comment was under UTMI0. We do not talk about UTMI1...
-
-> 
-> 
-> If we add USB2_UTMI1_CLK, it looks silly to keep USB2_UTMI_CLK without 
-> renaming it to UTMI0. Just like all the other clocks. E.g. 
-> I2Cn_CLK(n=0,1,2,3,4) etc.., so the same for USB2_UTMI_CLK.
-
-Then place it next to old name and explain why it is deprecated with
-comment.
-
-Best regards,
-Krzysztof
+>> any chance you would incorporate feedback and respin the series or/and at least X2APIC parts?
+>> For recent HW it becoming really necessary to have this option enabled.
+>>
+>> Thank you
+>> David
+>>
+> Hello,
+>
+> OK, I'll rebase, update and send the X2APIC patch. Can't give you an ETA though.
+>
+> I have mostly gave up kernel development, but you keep me motivated.
+>
+> Greetings,
+>
+> Mateusz
+>
+-- 
+David Heidelberg
 
 
