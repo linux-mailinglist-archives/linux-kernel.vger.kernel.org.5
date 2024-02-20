@@ -1,893 +1,684 @@
-Return-Path: <linux-kernel+bounces-73201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3290785BF31
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:55:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F388385BF32
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FA761F263FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:55:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A965E281AC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E55171B41;
-	Tue, 20 Feb 2024 14:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C51D71B3F;
+	Tue, 20 Feb 2024 14:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jJjV3yWg"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE7F6F515;
-	Tue, 20 Feb 2024 14:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DvgDBTMe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA28605DC
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708440945; cv=none; b=Z6QhcU2uU03/FSVCaYA6ZNqdc9gPoRq3lkYc7kUgQBVGMKQOcval92HfZPfvzfRSPZdhjpnNSADAXSg/RuIyTY9KB0b1soCfU82p8dIc5+eAEHtjDUj2uJF0u6AV24LN5QDwgHPrkdIFJA2c+z9cp3VgEDcDcbcOJkZOPFV2rU0=
+	t=1708441017; cv=none; b=mUSu2oEvFdZ0XvVBrI15tmlZ9kQTl+rJ0IfCkG0liW7g0hdwU0ONd8liF0ErYIoQrdxgWCLIcXAOd8K48PDHrMKynSblXnRNDA8qtBOhX6CkeppaQwUt30WwVLmvaG4dOVo6Ct8gGBDcmQSSajGlHMFDoE1XKD6TjLEIHqX7G24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708440945; c=relaxed/simple;
-	bh=VqCUtywSkBBtP6iRSlhULsk2/W/RFQ/yK2Ie89zEVpY=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=S+G9+ukLG/DyKMs5XYlEG3G9aGB/NoI2GuWSZ+gsHtdzPSVa0C2Cgcpw2dIRihUAUUHnSQy+q81FiK1J6DJf291ig3JMV5FRwGLE6fBM5JRN4r0yxGZQ2UTDjFuT/Y/QESwhZJEOflgQ47EO6yaR5NgVC5N5XDkwKs9skMKZT/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jJjV3yWg; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 764942083611;
-	Tue, 20 Feb 2024 06:55:42 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 764942083611
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708440942;
-	bh=bXtaNZ49gS3FezeGDUKfadE4ql5Ll/u4+kFpP9zktEU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jJjV3yWgCZ854PWJlC7NqYXGJ6Zt3XwhYgh87ksJ15AWyWbvJXkE1eDTQ7X3fRL5L
-	 tU9a+kDqYeeDOJQ0sDGi1WsrRfmjPgYw2hJMHRpxxLJso1AZkzG+zcxFKg7gaxXoea
-	 Tp2XOpStnwszugeEZt+YB/g1UufdzSj89rkWsVkY=
-From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: haiyangz@microsoft.com,
-	mhklinu@outlook.com,
-	kys@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	catalin.marinas@arm.com,
-	tglx@linutronix.de,
-	daniel.lezcano@linaro.org,
-	arnd@arndb.de
-Subject: [PATCH v2] hyperv-tlfs: Change prefix of generic HV_REGISTER_* MSRs to HV_MSR_*
-Date: Tue, 20 Feb 2024 06:55:33 -0800
-Message-Id: <1708440933-27125-1-git-send-email-nunodasneves@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1708441017; c=relaxed/simple;
+	bh=+/UKbtdXVLBG8loU7+LgE3YgGFxmU3l/FQyUDm9FBlE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mZgSrJIk7r54FHRfs2IBQ7ZZLeN55tPiOwBZ+oIeYBP3v2RN7K+YsDUPMfm9/AVsqES+UdxlnpSF3B5xdGmDx/E0R8vdrdngZR7xzwJ4Pqj1RSKTYDF+RlnvOlSVO/GWmGD7rzhrgF3lljgz5bJa+CGpZfkSKfdPZ18UH/77o54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DvgDBTMe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89FCCC43390;
+	Tue, 20 Feb 2024 14:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708441017;
+	bh=+/UKbtdXVLBG8loU7+LgE3YgGFxmU3l/FQyUDm9FBlE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DvgDBTMeLR2VaNqPDAg34yxd6aWuttUsptZ9kEk5V7gJ2FJ4mks9p+zo6MlL/b52W
+	 aCyxJGaU7iAE9tQZp/5FwNq5HANjcBprQNcLdnCW0ENLBi3lTTGXqql2MycsaJChl3
+	 Yip4sTLRiHRj53SDnPazFs86/BmKtk6WgyFCuKfJnW77HMqrhkzFz3liO4tZ3rKNQO
+	 pk88uUwNDLTn7Ac9nPNGbqCzyj/zVPaATsRo0cH846OwHD14a7JC2MgmxK3+DjtVSO
+	 9zOMJh8RTRgsKqA/To7Y5NY+tueO/d8EyoAkFmColUabs0I4G6DFqXFO0SaOnKNfhd
+	 DC49vPjRCfeSw==
+Date: Tue, 20 Feb 2024 15:56:53 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Erhard Furtner <erhard_f@mailbox.org>, Linux DRI Development <dri-devel@lists.freedesktop.org>, 
+	Huang Rui <ray.huang@amd.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Karolina Stolarek <karolina.stolarek@intel.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Zi Yan <ziy@nvidia.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: Running ttm_device_test leads to list_add corruption. prev->next
+ should be next (ffffffffc05cd428), but was 6b6b6b6b6b6b6b6b.
+ (prev=ffffa0b1a5c034f0) (kernel 6.7.5)
+Message-ID: <4xggxtkk44m3xcfucbougtuhr66s2pc7tilpnju7xnyw45facb@odsrpqp57kiz>
+References: <20240219230116.77b8ad68@yea>
+ <ZdRtDOhQGQUm5X4d@archie.me>
+ <9cdf0baa-f544-4fa8-bee3-568b790527cc@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6ge6lcgzg2duuvln"
+Content-Disposition: inline
+In-Reply-To: <9cdf0baa-f544-4fa8-bee3-568b790527cc@amd.com>
 
-The HV_REGISTER_ are used as arguments to hv_set/get_register(), which
-delegate to arch-specific mechanisms for getting/setting synthetic
-Hyper-V MSRs.
 
-On arm64, HV_REGISTER_ defines are synthetic VP registers accessed via
-the get/set vp registers hypercalls. The naming matches the TLFS
-document, although these register names are not specific to arm64.
+--6ge6lcgzg2duuvln
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, on x86 the prefix HV_REGISTER_ indicates Hyper-V MSRs accessed
-via rdmsrl()/wrmsrl(). This is not consistent with the TLFS doc, where
-HV_REGISTER_ is *only* used for used for VP register names used by
-the get/set register hypercalls.
+On Tue, Feb 20, 2024 at 02:28:53PM +0100, Christian K=F6nig wrote:
+> Am 20.02.24 um 10:12 schrieb Bagas Sanjaya:
+> > On Mon, Feb 19, 2024 at 11:01:16PM +0100, Erhard Furtner wrote:
+> > > Greetings!
+> > >=20
+> > > 'modprobe -v ttm-device-test' on my Ryzen 5950X amd64 box and on my T=
+alos II (ppc64) leads to immediate list_add corruption.
+> > >=20
+> > > The machines stay useable via VNC but the issue seems to cause memory=
+ corruption which shows up later on when PAGE_POISONING is enabled:
+> > >=20
+> > > [...]
+> > > KTAP version 1
+> > > 1..1
+> > >      KTAP version 1
+> > >      # Subtest: ttm_device
+> > >      # module: ttm_device_test
+> > >      1..5
+> > >      ok 1 ttm_device_init_basic
+> > >      # ttm_device_init_multiple: ASSERTION FAILED at drivers/gpu/drm/=
+ttm/tests/ttm_device_test.c:68
+> > >      Expected list_count_nodes(&ttm_devs[0].device_list) =3D=3D num_d=
+ev, but
+> > >          list_count_nodes(&ttm_devs[0].device_list) =3D=3D 4 (0x4)
+> > >          num_dev =3D=3D 3 (0x3)
+> > >      not ok 2 ttm_device_init_multiple
+> > > list_add corruption. prev->next should be next (ffffffffc05cd428), bu=
+t was 6b6b6b6b6b6b6b6b. (prev=3Dffffa0b1a5c034f0).
+> > > ------------[ cut here ]------------
+> > > kernel BUG at lib/list_debug.c:32!
+> > > invalid opcode: 0000 [#1] SMP NOPTI
+> > > CPU: 6 PID: 2129 Comm: kunit_try_catch Tainted: G                 N 6=
+=2E7.5-Zen3 #1
+> > > Hardware name: To Be Filled By O.E.M. B550M Pro4/B550M Pro4, BIOS P3.=
+40 01/18/2024
+> > > RIP: 0010:__list_add_valid_or_report+0x67/0x9c
+> > > Code: c7 c7 26 ff c4 90 48 89 c6 e8 2f 32 ca ff 0f 0b 4c 8b 02 49 39 =
+f0 74 14 48 89 d1 48 c7 c7 78 ff c4 90 4c 89 c2 e8 13 32 ca ff <0f> 0b 48 3=
+9 d7 74 05 4c 39 c7 75 17 48 89 f1 48 89 c2 48 89 fe 48
+> > > RSP: 0018:ffffb23b05d27df8 EFLAGS: 00010246
+> > > RAX: 0000000000000075 RBX: 0000000000000000 RCX: 0000000000000000
+> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > RBP: ffffa0b1a5c034f0 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0b1843b2628
+> > > R13: ffffa0b1b7c1f478 R14: ffffffffc0696480 R15: ffffa0b1a5c11000
+> > > FS:  0000000000000000(0000) GS:ffffa0b85eb80000(0000) knlGS:000000000=
+0000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00007ff09c005038 CR3: 000000026ce14000 CR4: 0000000000b50ef0
+> > > Call Trace:
+> > >   <TASK>
+> > >   ? __die_body+0x15/0x65
+> > >   ? die+0x2f/0x48
+> > >   ? do_trap+0x76/0x109
+> > >   ? __list_add_valid_or_report+0x67/0x9c
+> > >   ? __list_add_valid_or_report+0x67/0x9c
+> > >   ? do_error_trap+0x69/0xa6
+> > >   ? __list_add_valid_or_report+0x67/0x9c
+> > >   ? exc_invalid_op+0x4d/0x71
+> > >   ? __list_add_valid_or_report+0x67/0x9c
+> > >   ? asm_exc_invalid_op+0x1a/0x20
+> > >   ? __list_add_valid_or_report+0x67/0x9c
+> > >   ? __list_add_valid_or_report+0x67/0x9c
+> > >   ttm_device_init+0x10e/0x157 [ttm]
+> > >   ttm_device_kunit_init+0x3d/0x51 [ttm_kunit_helpers]
+> > >   ttm_device_fini_basic+0x6d/0x1b3 [ttm_device_test]
+> > >   ? timekeeping_get_ns+0x19/0x3b
+> > >   ? srso_alias_return_thunk+0x5/0xfbef5
+> > >   ? ktime_get_ts64+0x40/0x92
+> > >   kunit_try_run_case+0xaf/0x163 [kunit]
+> > >   ? kunit_try_catch_throw+0x1b/0x1b [kunit]
+> > >   ? kunit_try_catch_throw+0x1b/0x1b [kunit]
+> > >   kunit_generic_run_threadfn_adapter+0x15/0x20 [kunit]
+> > >   kthread+0xcf/0xd7
+> > >   ? kthread_complete_and_exit+0x1a/0x1a
+> > >   ret_from_fork+0x23/0x35
+> > >   ? kthread_complete_and_exit+0x1a/0x1a
+> > >   ret_from_fork_asm+0x11/0x20
+> > >   </TASK>
+> > > Modules linked in: ttm_device_test ttm_kunit_helpers drm_kunit_helper=
+s kunit rfkill dm_crypt nhpoly1305_avx2 nhpoly1305 chacha_generic chacha_x8=
+6_64 libchacha adiantum libpoly1305 algif_skcipher input_leds joydev hid_ge=
+neric usbhid hid amdgpu snd_hda_codec_hdmi amd64_edac snd_hda_intel amdxcp =
+mfd_core snd_intel_dspcfg edac_mce_amd gpu_sched snd_hda_codec video snd_hw=
+dep drm_suballoc_helper snd_hda_core i2c_algo_bit drm_ttm_helper snd_pcm wm=
+i_bmof ttm snd_timer evdev drm_exec snd drm_display_helper soundcore kvm_am=
+d k10temp drm_buddy rapl wmi gpio_amdpt gpio_generic button lz4 lz4_compres=
+s lz4_decompress zram sg nct6775 nct6775_core hwmon_vid hwmon loop configfs=
+ sha512_ssse3 sha512_generic sha256_ssse3 sha1_ssse3 sha1_generic aesni_int=
+el libaes crypto_simd cryptd xhci_pci xhci_hcd ccp usbcore usb_common sunrp=
+c dm_mod pkcs8_key_parser efivarfs
+> > > ---[ end trace 0000000000000000 ]---
+> > > RIP: 0010:__list_add_valid_or_report+0x67/0x9c
+> > > Code: c7 c7 26 ff c4 90 48 89 c6 e8 2f 32 ca ff 0f 0b 4c 8b 02 49 39 =
+f0 74 14 48 89 d1 48 c7 c7 78 ff c4 90 4c 89 c2 e8 13 32 ca ff <0f> 0b 48 3=
+9 d7 74 05 4c 39 c7 75 17 48 89 f1 48 89 c2 48 89 fe 48
+> > > RSP: 0018:ffffb23b05d27df8 EFLAGS: 00010246
+> > > RAX: 0000000000000075 RBX: 0000000000000000 RCX: 0000000000000000
+> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > RBP: ffffa0b1a5c034f0 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0b1843b2628
+> > > R13: ffffa0b1b7c1f478 R14: ffffffffc0696480 R15: ffffa0b1a5c11000
+> > > FS:  0000000000000000(0000) GS:ffffa0b85eb80000(0000) knlGS:000000000=
+0000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00007ff09c005038 CR3: 000000026ce14000 CR4: 0000000000b50ef0
+> > > Key type dns_resolver registered
+> > > NFS: Registering the id_resolver key type
+> > > Key type id_resolver registered
+> > > Key type id_legacy registered
+> > >      # ttm_device_fini_basic: try timed out
+> > > general protection fault, probably for non-canonical address 0x6b6b6b=
+6b6b6b6b6b: 0000 [#2] SMP NOPTI
+> > > CPU: 26 PID: 2119 Comm: modprobe Tainted: G      D          N 6.7.5-Z=
+en3 #1
+> > > Hardware name: To Be Filled By O.E.M. B550M Pro4/B550M Pro4, BIOS P3.=
+40 01/18/2024
+> > > RIP: 0010:kthread_stop+0x3c/0x78
+> > > Code: f0 0f c1 43 28 be 02 00 00 00 85 c0 74 0c 8d 50 01 09 c2 79 0a =
+be 01 00 00 00 e8 f5 31 37 00 48 89 df e8 35 f1 ff ff 48 89 c5 <f0> 80 08 0=
+2 48 89 df e8 6a ff ff ff f0 80 4b 02 02 48 89 df e8 f6
+> > > RSP: 0018:ffffb23b01fff938 EFLAGS: 00010246
+> > > RAX: 6b6b6b6b6b6b6b6b RBX: ffffa0b170ab6040 RCX: 0000000000000000
+> > > RDX: 000000006b6b6b6f RSI: 0000000000000002 RDI: 0000000000000000
+> > > RBP: 6b6b6b6b6b6b6b6b R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0b170ab6040
+> > > R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+> > > FS:  00007f9321e6ec40(0000) GS:ffffa0b85f080000(0000) knlGS:000000000=
+0000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00005592ea51ef40 CR3: 0000000189590000 CR4: 0000000000b50ef0
+> > > Call Trace:
+> > >   <TASK>
+> > >   ? __die_body+0x15/0x65
+> > >   ? die_addr+0x37/0x50
+> > >   ? exc_general_protection+0x1b6/0x1ec
+> > >   ? asm_exc_general_protection+0x26/0x30
+> > >   ? kthread_stop+0x3c/0x78
+> > >   ? kthread_stop+0x39/0x78
+> > >   kunit_try_catch_run+0xc9/0x155 [kunit]
+> > >   kunit_run_case_catch_errors+0x3f/0x93 [kunit]
+> > >   kunit_run_tests+0x182/0x516 [kunit]
+> > >   ? kunit_try_run_case_cleanup+0x39/0x39 [kunit]
+> > >   ? kunit_catch_run_case_cleanup+0x85/0x85 [kunit]
+> > >   __kunit_test_suites_init+0x64/0x83 [kunit]
+> > >   kunit_module_notify+0xda/0x177 [kunit]
+> > >   notifier_call_chain+0x5a/0x92
+> > >   blocking_notifier_call_chain+0x3e/0x60
+> > >   do_init_module+0xcb/0x218
+> > >   init_module_from_file+0x7a/0x99
+> > >   __do_sys_finit_module+0x162/0x223
+> > >   do_syscall_64+0x6e/0xd8
+> > >   entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> > > RIP: 0033:0x7f9321f7a479
+> > > Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 =
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f=
+0 ff ff 73 01 c3 48 8b 0d 87 89 0c 00 f7 d8 64 89 01 48
+> > > RSP: 002b:00007ffe2e350908 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> > > RAX: ffffffffffffffda RBX: 00005590b57cef40 RCX: 00007f9321f7a479
+> > > RDX: 0000000000000000 RSI: 00005590b5100c7c RDI: 0000000000000007
+> > > RBP: 0000000000000000 R08: 00007f9322043b20 R09: 0000000000000000
+> > > R10: 0000000000000050 R11: 0000000000000246 R12: 0000000000040000
+> > > R13: 00005590b5100c7c R14: 00005590b57cefe0 R15: 0000000000000000
+> > >   </TASK>
+> > > Modules linked in: nfsv4 dns_resolver nfs lockd grace ttm_device_test=
+ ttm_kunit_helpers drm_kunit_helpers kunit rfkill dm_crypt nhpoly1305_avx2 =
+nhpoly1305 chacha_generic chacha_x86_64 libchacha adiantum libpoly1305 algi=
+f_skcipher input_leds joydev hid_generic usbhid hid amdgpu snd_hda_codec_hd=
+mi amd64_edac snd_hda_intel amdxcp mfd_core snd_intel_dspcfg edac_mce_amd g=
+pu_sched snd_hda_codec video snd_hwdep drm_suballoc_helper snd_hda_core i2c=
+_algo_bit drm_ttm_helper snd_pcm wmi_bmof ttm snd_timer evdev drm_exec snd =
+drm_display_helper soundcore kvm_amd k10temp drm_buddy rapl wmi gpio_amdpt =
+gpio_generic button lz4 lz4_compress lz4_decompress zram sg nct6775 nct6775=
+_core hwmon_vid hwmon loop configfs sha512_ssse3 sha512_generic sha256_ssse=
+3 sha1_ssse3 sha1_generic aesni_intel libaes crypto_simd cryptd xhci_pci xh=
+ci_hcd ccp usbcore usb_common sunrpc dm_mod pkcs8_key_parser efivarfs
+> > > ---[ end trace 0000000000000000 ]---
+> > > RIP: 0010:__list_add_valid_or_report+0x67/0x9c
+> > > Code: c7 c7 26 ff c4 90 48 89 c6 e8 2f 32 ca ff 0f 0b 4c 8b 02 49 39 =
+f0 74 14 48 89 d1 48 c7 c7 78 ff c4 90 4c 89 c2 e8 13 32 ca ff <0f> 0b 48 3=
+9 d7 74 05 4c 39 c7 75 17 48 89 f1 48 89 c2 48 89 fe 48
+> > > RSP: 0018:ffffb23b05d27df8 EFLAGS: 00010246
+> > > RAX: 0000000000000075 RBX: 0000000000000000 RCX: 0000000000000000
+> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > RBP: ffffa0b1a5c034f0 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0b1843b2628
+> > > R13: ffffa0b1b7c1f478 R14: ffffffffc0696480 R15: ffffa0b1a5c11000
+> > > FS:  00007f9321e6ec40(0000) GS:ffffa0b85f080000(0000) knlGS:000000000=
+0000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00005592ea51ef40 CR3: 0000000189590000 CR4: 0000000000b50ef0
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> > > BUG task_struct (Tainted: G      D          N): Poison overwritten
+> > > ---------------------------------------------------------------------=
+--------
+> > >=20
+> > > 0xffffa0b170ab6068-0xffffa0b170ab6068 @offset=3D24680. First byte 0x6=
+c instead of 0x6b
+> > > Slab 0xffffea8944c2ac00 objects=3D8 used=3D8 fp=3D0x0000000000000000 =
+flags=3D0x4000000000000840(slab|head|zone=3D1)
+> > > Object 0xffffa0b170ab6040 @offset=3D24640 fp=3D0x0000000000000000
+> > >=20
+> > > Redzone  ffffa0b170ab6000: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  ffffa0b170ab6010: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  ffffa0b170ab6020: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  ffffa0b170ab6030: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Object   ffffa0b170ab6040: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   ffffa0b170ab6050: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   ffffa0b170ab6060: 6b 6b 6b 6b 6b 6b 6b 6b 6c 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkklkkkkkkk
+> > > Object   ffffa0b170ab6070: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > [...]
+> > > Object   ffffa0b170ab6fb0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   ffffa0b170ab6fc0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b a5  kkkkkkkkkkkkkkk.
+> > > Redzone  ffffa0b170ab6fd0: bb bb bb bb bb bb bb bb                   =
+       ........
+> > > Padding  ffffa0b170ab6fe0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  ffffa0b170ab6ff0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > CPU: 13 PID: 2 Comm: kthreadd Tainted: G      D          N 6.7.5-Zen3=
+ #1
+> > > Hardware name: To Be Filled By O.E.M. B550M Pro4/B550M Pro4, BIOS P3.=
+40 01/18/2024
+> > > Call Trace:
+> > >   <TASK>
+> > >   dump_stack_lvl+0x37/0x52
+> > >   check_bytes_and_report+0xa7/0x107
+> > >   check_object+0x157/0x253
+> > >   alloc_debug_processing+0x5d/0x111
+> > >   ___slab_alloc+0x288/0x561
+> > >   ? copy_process+0x35f/0x2276
+> > >   ? kthread_is_per_cpu+0x22/0x22
+> > >   ret_from_fork+0x23/0x35
+> > >   ? kthread_is_per_cpu+0x22/0x22
+> > >   ret_from_fork_asm+0x11/0x20
+> > >   </TASK>
+> > > FIX task_struct: Restoring Poison 0xffffa0b170ab6068-0xffffa0b170ab60=
+68=3D0x6b
+> > > FIX task_struct: Marking all objects used
+> > >=20
+> > >=20
+> > > The Talos II ppc64 trace looks a bit different:
+> > >=20
+> > > [...]
+> > > KTAP version 1
+> > > 1..1
+> > >      KTAP version 1
+> > >      # Subtest: ttm_pool
+> > >      # module: ttm_pool_test
+> > >      1..8
+> > >          KTAP version 1
+> > >          # Subtest: ttm_pool_alloc_basic
+> > >          ok 1 One page
+> > >          ok 2 More than one page
+> > >          ok 3 Above the allocation limit
+> > >      # ttm_pool_alloc_basic: ASSERTION FAILED at drivers/gpu/drm/ttm/=
+tests/ttm_pool_test.c:162
+> > >      Expected err =3D=3D 0, but
+> > >          err =3D=3D -12 (0xfffffffffffffff4)
+> > >          not ok 4 One page, with coherent DMA mappings enabled
+> > > list_add corruption. prev->next should be next (c00800000cf64fc0), bu=
+t was 0000000000000000. (prev=3Dc0002000061a4ad0).
+> > > ------------[ cut here ]------------
+> > > kernel BUG at lib/list_debug.c:32!
+> > > Oops: Exception in kernel mode, sig: 5 [#1]
+> > > BE PAGE_SIZE=3D4K MMU=3DRadix SMP NR_CPUS=3D32 NUMA PowerNV
+> > > Modules linked in: ttm_pool_test ttm_kunit_helpers drm_kunit_helpers =
+kunit snd_hrtimer snd_seq snd_seq_device snd_timer snd soundcore cfg80211 r=
+fkill input_leds evdev hid_generic usbhid hid radeon xts xhci_pci ctr xhci_=
+hcd drm_suballoc_helper i2c_algo_bit drm_ttm_helper cbc ttm aes_generic ofp=
+art usbcore libaes powernv_flash drm_display_helper at24 vmx_crypto gf128mu=
+l mtd backlight usb_common regmap_i2c opal_prd ibmpowernv lz4 lz4_compress =
+lz4_decompress zram pkcs8_key_parser powernv_cpufreq loop dm_mod configfs
+> > > CPU: 29 PID: 934 Comm: kunit_try_catch Tainted: G                TN 6=
+=2E7.5-gentoo-P9 #1
+> > > Hardware name: T2P9D01 REV 1.01 POWER9 0x4e1202 opal:skiboot-bc106a0 =
+PowerNV
+> > > NIP:  c000000000864744 LR: c000000000864740 CTR: 0000000000000000
+> > > REGS: c000200015333a30 TRAP: 0700   Tainted: G                TN  (6.=
+7.5-gentoo-P9)
+> > > MSR:  9000000000029032 <SF,HV,EE,ME,IR,DR,RI>  CR: 24000222  XER: 000=
+00000
+> > > CFAR: c0000000001d5620 IRQMASK: 0
+> > > GPR00: 0000000000000000 c000200015333cd0 c0000000011b4700 00000000000=
+00075
+> > > GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR08: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR12: 0000000000000000 c0002007fa4d5e00 c000000000182548 c0002000066=
+aa1c0
+> > > GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR20: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR24: 0000000000000000 c0002000061a4010 c00800000cf64fc0 c0002000061=
+a4020
+> > > GPR28: c0002000061a4ad0 c00800000cf64fa8 c00800000cf64fa0 c0002000061=
+a4010
+> > > NIP [c000000000864744] __list_add_valid_or_report+0xd4/0x120
+> > > LR [c000000000864740] __list_add_valid_or_report+0xd0/0x120
+> > > Call Trace:
+> > > [c000200015333cd0] [c000000000864740] __list_add_valid_or_report+0xd0=
+/0x120 (unreliable)
+> > > [c000200015333d30] [c00800000cf5eed8] ttm_pool_type_init+0xa0/0x120 [=
+ttm]
+> > > [c000200015333d80] [c00800000cf5efec] ttm_pool_init+0x94/0x170 [ttm]
+> > > [c000200015333de0] [c00800000cc6b324] ttm_pool_alloc_basic+0x9c/0x670=
+ [ttm_pool_test]
+> > > [c000200015333ea0] [c00800000bddf7f0] kunit_try_run_case+0xb8/0x220 [=
+kunit]
+> > > [c000200015333f60] [c00800000bde27c8] kunit_generic_run_threadfn_adap=
+ter+0x30/0x50 [kunit]
+> > > [c000200015333f90] [c000000000182670] kthread+0x130/0x140
+> > > [c000200015333fe0] [c00000000000d030] start_kernel_thread+0x14/0x18
+> > > Code: f8010070 4b970ea9 60000000 0fe00000 7c0802a6 3c62fff1 7d064378 =
+7d244b78 38639600 f8010070 4b970e85 60000000 <0fe00000> 7c0802a6 3c62fff1 7=
+ca62b78
+> > > ---[ end trace 0000000000000000 ]---
+> > >=20
+> > > note: kunit_try_catch[934] exited with irqs disabled
+> > >      # ttm_pool_alloc_basic: try timed out
+> > > BUG: Unable to handle kernel data access at 0x6b6b6b6b6b6b6b6b
+> > > Faulting instruction address: 0xc000000000181ae4
+> > > Oops: Kernel access of bad area, sig: 11 [#2]
+> > > BE PAGE_SIZE=3D4K MMU=3DRadix SMP NR_CPUS=3D32 NUMA PowerNV
+> > > Modules linked in: ttm_pool_test ttm_kunit_helpers drm_kunit_helpers =
+kunit snd_hrtimer snd_seq snd_seq_device snd_timer snd soundcore cfg80211 r=
+fkill input_leds evdev hid_generic usbhid hid radeon xts xhci_pci ctr xhci_=
+hcd drm_suballoc_helper i2c_algo_bit drm_ttm_helper cbc ttm aes_generic ofp=
+art usbcore libaes powernv_flash drm_display_helper at24 vmx_crypto gf128mu=
+l mtd backlight usb_common regmap_i2c opal_prd ibmpowernv lz4 lz4_compress =
+lz4_decompress zram pkcs8_key_parser powernv_cpufreq loop dm_mod configfs
+> > > CPU: 17 PID: 921 Comm: modprobe Tainted: G      D         TN 6.7.5-ge=
+ntoo-P9 #1
+> > > Hardware name: T2P9D01 REV 1.01 POWER9 0x4e1202 opal:skiboot-bc106a0 =
+PowerNV
+> > > NIP:  c000000000181ae4 LR: c00800000bde2a54 CTR: c000000000181a80
+> > > REGS: c0002000153871b0 TRAP: 0380   Tainted: G      D         TN  (6.=
+7.5-gentoo-P9)
+> > > MSR:  900000000280b032 <SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI>  CR: 4442228=
+2  XER: 00000000
+> > > CFAR: c00800000bde53ec IRQMASK: 0
+> > > GPR00: c00800000bde2a54 c000200015387450 c0000000011b4700 c0000000b1e=
+34d00
+> > > GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR08: 0000000000000000 0000000000000000 000000006b6b6b6c c00800000bd=
+e53d8
+> > > GPR12: c000000000181a80 c0002007fa4dd600 0000000020000000 00000000200=
+00000
+> > > GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR20: 0000000000000002 0000000020000000 c0000000023d78f8 c0000000023=
+d78a8
+> > > GPR24: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR28: c0002000153876c0 6b6b6b6b6b6b6b6b c0000000b1e34d00 c0000000b1e=
+34eb8
+> > > NIP [c000000000181ae4] kthread_stop+0x64/0x1c0
+> > > LR [c00800000bde2a54] kunit_try_catch_run+0x26c/0x2c0 [kunit]
+> > > Call Trace:
+> > > [c000200015387450] [c0000000001d5934] vprintk+0x84/0xc0 (unreliable)
+> > > [c000200015387490] [c00800000bde2a54] kunit_try_catch_run+0x26c/0x2c0=
+ [kunit]
+> > > [c000200015387540] [c00800000bde4f14] kunit_run_case_catch_errors+0x6=
+0/0xf0 [kunit]
+> > > [c0002000153875a0] [c00800000bddf448] kunit_run_tests+0x560/0x680 [ku=
+nit]
+> > > [c0002000153878d0] [c00800000bddf614] __kunit_test_suites_init+0xac/0=
+x160 [kunit]
+> > > [c000200015387970] [c00800000bde349c] kunit_exec_run_tests+0x44/0xb0 =
+[kunit]
+> > > [c0002000153879f0] [c00800000bddecbc] kunit_module_notify+0x4d4/0x590=
+ [kunit]
+> > > [c000200015387a90] [c0000000001842f0] notifier_call_chain+0xa0/0x190
+> > > [c000200015387b30] [c00000000018480c] blocking_notifier_call_chain+0x=
+5c/0xb0
+> > > [c000200015387b70] [c00000000020cf64] do_init_module+0x234/0x330
+> > > [c000200015387bf0] [c00000000021054c] init_module_from_file+0x9c/0xf0
+> > > [c000200015387cc0] [c000000000210740] sys_finit_module+0x190/0x420
+> > > [c000200015387d80] [c00000000002b808] system_call_exception+0x1b8/0x3=
+a0
+> > > [c000200015387e50] [c00000000000c270] system_call_vectored_common+0xf=
+0/0x280
+> > > --- interrupt: 3000 at 0x3fff9eb3d7c8
+> > > NIP:  00003fff9eb3d7c8 LR: 0000000000000000 CTR: 0000000000000000
+> > > REGS: c000200015387e80 TRAP: 3000   Tainted: G      D         TN  (6.=
+7.5-gentoo-P9)
+> > > MSR:  900000000280f032 <SF,HV,VEC,VSX,EE,PR,FP,ME,IR,DR,RI>  CR: 4842=
+2244  XER: 00000000
+> > > IRQMASK: 0
+> > > GPR00: 0000000000000161 00003fffc80d3ab0 00003fff9ec37100 00000000000=
+00007
+> > > GPR04: 0000000134f6df90 0000000000000000 000000000000001f 00000000000=
+00045
+> > > GPR08: 0000000000000000 0000000000000000 0000000000000000 00000000000=
+00000
+> > > GPR12: 0000000000000000 00003fff9ef7fbe0 0000000020000000 00000000200=
+00000
+> > > GPR16: 0000000000000000 0000000000000000 0000000000000020 00000000200=
+00000
+> > > GPR20: 0000000161994850 0000000020000000 0000000000000000 00000000000=
+00000
+> > > GPR24: 0000000000000000 0000000000000000 0000000000000000 00000001619=
+93f90
+> > > GPR28: 0000000134f6df90 0000000000040000 0000000000000000 00000001619=
+93cc0
+> > > NIP [00003fff9eb3d7c8] 0x3fff9eb3d7c8
+> > > LR [0000000000000000] 0x0
+> > > --- interrupt: 3000
+> > > Code: 40c2fff4 2c090000 41820164 39490001 7d494b78 2c090000 418000f4 =
+813e01a8 6d290020 79295fe2 0b090000 ebbe0738 <7d20e8a8> 61290002 7d20e9ad 4=
+0c2fff4
+> > > ---[ end trace 0000000000000000 ]---
+> > >=20
+> > > note: modprobe[921] exited with irqs disabled
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> > > BUG task_struct (Tainted: G      D         TN): Poison overwritten
+> > > ---------------------------------------------------------------------=
+--------
+> > >=20
+> > > 0xc0000000b1e34ebb-0xc0000000b1e34ebb @offset=3D20155. First byte 0x6=
+c instead of 0x6b
+> > > Slab 0xc00c000002c78c00 objects=3D5 used=3D4 fp=3D0xc0000000b1e33380 =
+flags=3D0x7ffc0000000840(slab|head|node=3D0|zone=3D0|lastcpupid=3D0x1fff)
+> > > Object 0xc0000000b1e34d00 @offset=3D19712 fp=3D0xc0000000b1e33380
+> > >=20
+> > > Redzone  c0000000b1e34c80: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34c90: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34ca0: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34cb0: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34cc0: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34cd0: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34ce0: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Redzone  c0000000b1e34cf0: bb bb bb bb bb bb bb bb bb bb bb bb bb bb =
+bb bb  ................
+> > > Object   c0000000b1e34d00: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d10: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d20: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d30: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d40: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d50: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d60: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d70: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d80: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34d90: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34da0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34db0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34dc0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34dd0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34de0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34df0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e00: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e10: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e20: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e30: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e40: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e50: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e60: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e70: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e80: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34e90: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34ea0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Object   c0000000b1e34eb0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6c 6b 6b =
+6b 6b  kkkkkkkkkkklkkkk
+> > > Object   c0000000b1e34ec0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > [...]
+> > > Object   c0000000b1e35cf0: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b =
+6b 6b  kkkkkkkkkkkkkkkk
+> > > Redzone  c0000000b1e36580: bb bb bb bb bb bb bb bb                   =
+       ........
+> > > Padding  c0000000b1e36590: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  c0000000b1e365a0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  c0000000b1e365b0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  c0000000b1e365c0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  c0000000b1e365d0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  c0000000b1e365e0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > Padding  c0000000b1e365f0: 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a =
+5a 5a  ZZZZZZZZZZZZZZZZ
+> > > CPU: 28 PID: 2 Comm: kthreadd Tainted: G      D         TN 6.7.5-gent=
+oo-P9 #1
+> > > Hardware name: T2P9D01 REV 1.01 POWER9 0x4e1202 opal:skiboot-bc106a0 =
+PowerNV
+> > > Call Trace:
+> > > [c00000000593b890] [c000000000e8ecf8] dump_stack_lvl+0x6c/0xb0 (unrel=
+iable)
+> > > [c00000000593b8c0] [c00000000041dad0] print_trailer+0x1e0/0x22c
+> > > [c00000000593b940] [c0000000004155f4] check_bytes_and_report+0x224/0x=
+240
+> > > [c00000000593b9f0] [c00000000041596c] check_object+0x35c/0x4a0
+> > > [c00000000593ba40] [c0000000004168dc] alloc_debug_processing+0xdc/0x2=
+70
+> > > [c00000000593bac0] [c000000000416c8c] get_partial_node.part.0+0x21c/0=
+x460
+> > > [c00000000593bb80] [c000000000417148] ___slab_alloc+0x278/0xb20
+> > > [c00000000593bc90] [c000000000417b3c] kmem_cache_alloc_node+0x14c/0x6=
+30
+> > > [c00000000593bd20] [c000000000140618] copy_process+0x408/0x3270
+> > > [c00000000593be00] [c0000000001435f4] kernel_clone+0xc4/0x5b0
+> > > [c00000000593be80] [c000000000143dc4] kernel_thread+0x84/0xc0
+> > > [c00000000593bf40] [c0000000001829bc] kthreadd+0x1ec/0x290
+> > > [c00000000593bfe0] [c00000000000d030] start_kernel_thread+0x14/0x18
+> > > FIX task_struct: Restoring Poison 0xc0000000b1e34ebb-0xc0000000b1e34e=
+bb=3D0x6b
+> > > FIX task_struct: Marking all objects used
+> > >=20
+> > >=20
+> > > Full dmesg and kernel .config of both machines attached.
+> > >=20
+> > > Regards,
+> > > Erhard
+> > > [    0.000000] Linux version 6.7.5-Zen3 (root@supah) (gcc (Gentoo 13.=
+2.1_p20240113-r1 p12) 13.2.1 20240113, GNU ld (Gentoo 2.41 p5) 2.41.0) #1 S=
+MP Mon Feb 19 12:44:46 -00 2024
+> > Is it vanilla kernel (i.e. no patches applied)? Can you also check curr=
+ent
+> > mainline (v6.8-rc5)?
+> >=20
+> > Confused...
+>=20
+> Oh, that is most likely kind of expected behavior.
+>=20
+> This kunit test is not meant to be run on real hardware, but rather just =
+as
+> stand a long kunit tests within user mode linux. I was assuming that it
+> doesn't even compiles on bare metal.
+>=20
+> We should probably either double check the kconfig options to prevent
+> compiling it or modify the test so that it can run on real hardware as we=
+ll.
 
-To fix this inconsistency and prevent future confusion, change the
-arch-generic aliases used by callers of hv_set/get_register() to have
-the prefix HV_MSR_ instead of HV_REGISTER_.
+I think any cross-compiled kunit run will be impossible to differentiate
+=66rom running on real hardware. We should just make it work there.
 
-Use the prefix HV_X64_MSR_ for the x86-only Hyper-V MSRs. On x86, the
-generic HV_MSR_'s point to the corresponding HV_X64_MSR_.
+Maxime
 
-Move the arm64 HV_REGISTER_* defines to the asm-generic hyperv-tlfs.h,
-since these are not specific to arm64. On arm64, the generic HV_MSR_'s
-point to the corresponding HV_REGISTER_.
+--6ge6lcgzg2duuvln
+Content-Type: application/pgp-signature; name="signature.asc"
 
-While at it, rename hv_get/set_registers() and related functions to
-hv_get/set_msr(), hv_get/set_nested_msr(), etc. These are only used for
-Hyper-V MSRs and this naming makes that clear.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
----
-Changes in v2:
-* Use HV_X64_MSR_ instead of HV_MSR_ in arch/x86/kernel/cpu/mshyperv.c
----
- arch/arm64/include/asm/hyperv-tlfs.h |  45 ++++-----
- arch/arm64/include/asm/mshyperv.h    |   4 +-
- arch/x86/hyperv/hv_init.c            |   8 +-
- arch/x86/include/asm/hyperv-tlfs.h   | 145 ++++++++++++++-------------
- arch/x86/include/asm/mshyperv.h      |  30 +++---
- arch/x86/kernel/cpu/mshyperv.c       |  56 +++++------
- drivers/clocksource/hyperv_timer.c   |  26 ++---
- drivers/hv/hv.c                      |  36 +++----
- drivers/hv/hv_common.c               |  22 ++--
- include/asm-generic/hyperv-tlfs.h    |  32 +++++-
- include/asm-generic/mshyperv.h       |   2 +-
- 11 files changed, 216 insertions(+), 190 deletions(-)
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdS9tQAKCRDj7w1vZxhR
+xfKNAQCpt57pcDIP/FpsNqWE5aAVLxrQMDQTyY+gls28jdEYIwEAsPFKPNGtLvZo
+Sp6v1avsVwxBoKeBkY7c9A5YR1+jTQ0=
+=KM0F
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/arm64/include/asm/hyperv-tlfs.h b/arch/arm64/include/asm/hyperv-tlfs.h
-index bc6c7ac934a1..54846d1d29c3 100644
---- a/arch/arm64/include/asm/hyperv-tlfs.h
-+++ b/arch/arm64/include/asm/hyperv-tlfs.h
-@@ -21,14 +21,6 @@
-  * byte ordering of Linux running on ARM64, so no special handling is required.
-  */
- 
--/*
-- * These Hyper-V registers provide information equivalent to the CPUID
-- * instruction on x86/x64.
-- */
--#define HV_REGISTER_HYPERVISOR_VERSION		0x00000100 /*CPUID 0x40000002 */
--#define HV_REGISTER_FEATURES			0x00000200 /*CPUID 0x40000003 */
--#define HV_REGISTER_ENLIGHTENMENTS		0x00000201 /*CPUID 0x40000004 */
--
- /*
-  * Group C Features. See the asm-generic version of hyperv-tlfs.h
-  * for a description of Feature Groups.
-@@ -41,28 +33,29 @@
- #define HV_STIMER_DIRECT_MODE_AVAILABLE		BIT(13)
- 
- /*
-- * Synthetic register definitions equivalent to MSRs on x86/x64
-+ * To support arch-generic code calling hv_set/get_register:
-+ * - On x86, HV_MSR_ indicates an MSR accessed via rdmsrl/wrmsrl
-+ * - On ARM, HV_MSR_ indicates a VP register accessed via hypercall
-  */
--#define HV_REGISTER_CRASH_P0		0x00000210
--#define HV_REGISTER_CRASH_P1		0x00000211
--#define HV_REGISTER_CRASH_P2		0x00000212
--#define HV_REGISTER_CRASH_P3		0x00000213
--#define HV_REGISTER_CRASH_P4		0x00000214
--#define HV_REGISTER_CRASH_CTL		0x00000215
-+#define HV_MSR_CRASH_P0		(HV_REGISTER_CRASH_P0)
-+#define HV_MSR_CRASH_P1		(HV_REGISTER_CRASH_P1)
-+#define HV_MSR_CRASH_P2		(HV_REGISTER_CRASH_P2)
-+#define HV_MSR_CRASH_P3		(HV_REGISTER_CRASH_P3)
-+#define HV_MSR_CRASH_P4		(HV_REGISTER_CRASH_P4)
-+#define HV_MSR_CRASH_CTL	(HV_REGISTER_CRASH_CTL)
- 
--#define HV_REGISTER_GUEST_OSID		0x00090002
--#define HV_REGISTER_VP_INDEX		0x00090003
--#define HV_REGISTER_TIME_REF_COUNT	0x00090004
--#define HV_REGISTER_REFERENCE_TSC	0x00090017
-+#define HV_MSR_VP_INDEX		(HV_REGISTER_VP_INDEX)
-+#define HV_MSR_TIME_REF_COUNT	(HV_REGISTER_TIME_REF_COUNT)
-+#define HV_MSR_REFERENCE_TSC	(HV_REGISTER_REFERENCE_TSC)
- 
--#define HV_REGISTER_SINT0		0x000A0000
--#define HV_REGISTER_SCONTROL		0x000A0010
--#define HV_REGISTER_SIEFP		0x000A0012
--#define HV_REGISTER_SIMP		0x000A0013
--#define HV_REGISTER_EOM			0x000A0014
-+#define HV_MSR_SINT0		(HV_REGISTER_SINT0)
-+#define HV_MSR_SCONTROL		(HV_REGISTER_SCONTROL)
-+#define HV_MSR_SIEFP		(HV_REGISTER_SIEFP)
-+#define HV_MSR_SIMP		(HV_REGISTER_SIMP)
-+#define HV_MSR_EOM		(HV_REGISTER_EOM)
- 
--#define HV_REGISTER_STIMER0_CONFIG	0x000B0000
--#define HV_REGISTER_STIMER0_COUNT	0x000B0001
-+#define HV_MSR_STIMER0_CONFIG	(HV_REGISTER_STIMER0_CONFIG)
-+#define HV_MSR_STIMER0_COUNT	(HV_REGISTER_STIMER0_COUNT)
- 
- union hv_msi_entry {
- 	u64 as_uint64[2];
-diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
-index 20070a847304..a975e1a689dd 100644
---- a/arch/arm64/include/asm/mshyperv.h
-+++ b/arch/arm64/include/asm/mshyperv.h
-@@ -31,12 +31,12 @@ void hv_set_vpreg(u32 reg, u64 value);
- u64 hv_get_vpreg(u32 reg);
- void hv_get_vpreg_128(u32 reg, struct hv_get_vp_registers_output *result);
- 
--static inline void hv_set_register(unsigned int reg, u64 value)
-+static inline void hv_set_msr(unsigned int reg, u64 value)
- {
- 	hv_set_vpreg(reg, value);
- }
- 
--static inline u64 hv_get_register(unsigned int reg)
-+static inline u64 hv_get_msr(unsigned int reg)
- {
- 	return hv_get_vpreg(reg);
- }
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 783ed339f341..0c74012b2594 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -642,14 +642,14 @@ void hyperv_cleanup(void)
- 	hv_hypercall_pg = NULL;
- 
- 	/* Reset the hypercall page */
--	hypercall_msr.as_uint64 = hv_get_register(HV_X64_MSR_HYPERCALL);
-+	hypercall_msr.as_uint64 = hv_get_msr(HV_X64_MSR_HYPERCALL);
- 	hypercall_msr.enable = 0;
--	hv_set_register(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+	hv_set_msr(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
- 
- 	/* Reset the TSC page */
--	tsc_msr.as_uint64 = hv_get_register(HV_X64_MSR_REFERENCE_TSC);
-+	tsc_msr.as_uint64 = hv_get_msr(HV_X64_MSR_REFERENCE_TSC);
- 	tsc_msr.enable = 0;
--	hv_set_register(HV_X64_MSR_REFERENCE_TSC, tsc_msr.as_uint64);
-+	hv_set_msr(HV_X64_MSR_REFERENCE_TSC, tsc_msr.as_uint64);
- }
- 
- void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die)
-diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-index 2ff26f53cd62..3787d26810c1 100644
---- a/arch/x86/include/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/asm/hyperv-tlfs.h
-@@ -182,7 +182,7 @@ enum hv_isolation_type {
- #define HV_X64_MSR_HYPERCALL			0x40000001
- 
- /* MSR used to provide vcpu index */
--#define HV_REGISTER_VP_INDEX			0x40000002
-+#define HV_X64_MSR_VP_INDEX			0x40000002
- 
- /* MSR used to reset the guest OS. */
- #define HV_X64_MSR_RESET			0x40000003
-@@ -191,10 +191,10 @@ enum hv_isolation_type {
- #define HV_X64_MSR_VP_RUNTIME			0x40000010
- 
- /* MSR used to read the per-partition time reference counter */
--#define HV_REGISTER_TIME_REF_COUNT		0x40000020
-+#define HV_X64_MSR_TIME_REF_COUNT		0x40000020
- 
- /* A partition's reference time stamp counter (TSC) page */
--#define HV_REGISTER_REFERENCE_TSC		0x40000021
-+#define HV_X64_MSR_REFERENCE_TSC		0x40000021
- 
- /* MSR used to retrieve the TSC frequency */
- #define HV_X64_MSR_TSC_FREQUENCY		0x40000022
-@@ -209,61 +209,61 @@ enum hv_isolation_type {
- #define HV_X64_MSR_VP_ASSIST_PAGE		0x40000073
- 
- /* Define synthetic interrupt controller model specific registers. */
--#define HV_REGISTER_SCONTROL			0x40000080
--#define HV_REGISTER_SVERSION			0x40000081
--#define HV_REGISTER_SIEFP			0x40000082
--#define HV_REGISTER_SIMP			0x40000083
--#define HV_REGISTER_EOM				0x40000084
--#define HV_REGISTER_SINT0			0x40000090
--#define HV_REGISTER_SINT1			0x40000091
--#define HV_REGISTER_SINT2			0x40000092
--#define HV_REGISTER_SINT3			0x40000093
--#define HV_REGISTER_SINT4			0x40000094
--#define HV_REGISTER_SINT5			0x40000095
--#define HV_REGISTER_SINT6			0x40000096
--#define HV_REGISTER_SINT7			0x40000097
--#define HV_REGISTER_SINT8			0x40000098
--#define HV_REGISTER_SINT9			0x40000099
--#define HV_REGISTER_SINT10			0x4000009A
--#define HV_REGISTER_SINT11			0x4000009B
--#define HV_REGISTER_SINT12			0x4000009C
--#define HV_REGISTER_SINT13			0x4000009D
--#define HV_REGISTER_SINT14			0x4000009E
--#define HV_REGISTER_SINT15			0x4000009F
-+#define HV_X64_MSR_SCONTROL			0x40000080
-+#define HV_X64_MSR_SVERSION			0x40000081
-+#define HV_X64_MSR_SIEFP			0x40000082
-+#define HV_X64_MSR_SIMP				0x40000083
-+#define HV_X64_MSR_EOM				0x40000084
-+#define HV_X64_MSR_SINT0			0x40000090
-+#define HV_X64_MSR_SINT1			0x40000091
-+#define HV_X64_MSR_SINT2			0x40000092
-+#define HV_X64_MSR_SINT3			0x40000093
-+#define HV_X64_MSR_SINT4			0x40000094
-+#define HV_X64_MSR_SINT5			0x40000095
-+#define HV_X64_MSR_SINT6			0x40000096
-+#define HV_X64_MSR_SINT7			0x40000097
-+#define HV_X64_MSR_SINT8			0x40000098
-+#define HV_X64_MSR_SINT9			0x40000099
-+#define HV_X64_MSR_SINT10			0x4000009A
-+#define HV_X64_MSR_SINT11			0x4000009B
-+#define HV_X64_MSR_SINT12			0x4000009C
-+#define HV_X64_MSR_SINT13			0x4000009D
-+#define HV_X64_MSR_SINT14			0x4000009E
-+#define HV_X64_MSR_SINT15			0x4000009F
- 
- /*
-  * Define synthetic interrupt controller model specific registers for
-  * nested hypervisor.
-  */
--#define HV_REGISTER_NESTED_SCONTROL            0x40001080
--#define HV_REGISTER_NESTED_SVERSION            0x40001081
--#define HV_REGISTER_NESTED_SIEFP               0x40001082
--#define HV_REGISTER_NESTED_SIMP                0x40001083
--#define HV_REGISTER_NESTED_EOM                 0x40001084
--#define HV_REGISTER_NESTED_SINT0               0x40001090
-+#define HV_X64_MSR_NESTED_SCONTROL		0x40001080
-+#define HV_X64_MSR_NESTED_SVERSION		0x40001081
-+#define HV_X64_MSR_NESTED_SIEFP			0x40001082
-+#define HV_X64_MSR_NESTED_SIMP			0x40001083
-+#define HV_X64_MSR_NESTED_EOM			0x40001084
-+#define HV_X64_MSR_NESTED_SINT0			0x40001090
- 
- /*
-  * Synthetic Timer MSRs. Four timers per vcpu.
-  */
--#define HV_REGISTER_STIMER0_CONFIG		0x400000B0
--#define HV_REGISTER_STIMER0_COUNT		0x400000B1
--#define HV_REGISTER_STIMER1_CONFIG		0x400000B2
--#define HV_REGISTER_STIMER1_COUNT		0x400000B3
--#define HV_REGISTER_STIMER2_CONFIG		0x400000B4
--#define HV_REGISTER_STIMER2_COUNT		0x400000B5
--#define HV_REGISTER_STIMER3_CONFIG		0x400000B6
--#define HV_REGISTER_STIMER3_COUNT		0x400000B7
-+#define HV_X64_MSR_STIMER0_CONFIG		0x400000B0
-+#define HV_X64_MSR_STIMER0_COUNT		0x400000B1
-+#define HV_X64_MSR_STIMER1_CONFIG		0x400000B2
-+#define HV_X64_MSR_STIMER1_COUNT		0x400000B3
-+#define HV_X64_MSR_STIMER2_CONFIG		0x400000B4
-+#define HV_X64_MSR_STIMER2_COUNT		0x400000B5
-+#define HV_X64_MSR_STIMER3_CONFIG		0x400000B6
-+#define HV_X64_MSR_STIMER3_COUNT		0x400000B7
- 
- /* Hyper-V guest idle MSR */
- #define HV_X64_MSR_GUEST_IDLE			0x400000F0
- 
- /* Hyper-V guest crash notification MSR's */
--#define HV_REGISTER_CRASH_P0			0x40000100
--#define HV_REGISTER_CRASH_P1			0x40000101
--#define HV_REGISTER_CRASH_P2			0x40000102
--#define HV_REGISTER_CRASH_P3			0x40000103
--#define HV_REGISTER_CRASH_P4			0x40000104
--#define HV_REGISTER_CRASH_CTL			0x40000105
-+#define HV_X64_MSR_CRASH_P0			0x40000100
-+#define HV_X64_MSR_CRASH_P1			0x40000101
-+#define HV_X64_MSR_CRASH_P2			0x40000102
-+#define HV_X64_MSR_CRASH_P3			0x40000103
-+#define HV_X64_MSR_CRASH_P4			0x40000104
-+#define HV_X64_MSR_CRASH_CTL			0x40000105
- 
- /* TSC emulation after migration */
- #define HV_X64_MSR_REENLIGHTENMENT_CONTROL	0x40000106
-@@ -276,31 +276,38 @@ enum hv_isolation_type {
- /* HV_X64_MSR_TSC_INVARIANT_CONTROL bits */
- #define HV_EXPOSE_INVARIANT_TSC		BIT_ULL(0)
- 
--/* Register name aliases for temporary compatibility */
--#define HV_X64_MSR_STIMER0_COUNT	HV_REGISTER_STIMER0_COUNT
--#define HV_X64_MSR_STIMER0_CONFIG	HV_REGISTER_STIMER0_CONFIG
--#define HV_X64_MSR_STIMER1_COUNT	HV_REGISTER_STIMER1_COUNT
--#define HV_X64_MSR_STIMER1_CONFIG	HV_REGISTER_STIMER1_CONFIG
--#define HV_X64_MSR_STIMER2_COUNT	HV_REGISTER_STIMER2_COUNT
--#define HV_X64_MSR_STIMER2_CONFIG	HV_REGISTER_STIMER2_CONFIG
--#define HV_X64_MSR_STIMER3_COUNT	HV_REGISTER_STIMER3_COUNT
--#define HV_X64_MSR_STIMER3_CONFIG	HV_REGISTER_STIMER3_CONFIG
--#define HV_X64_MSR_SCONTROL		HV_REGISTER_SCONTROL
--#define HV_X64_MSR_SVERSION		HV_REGISTER_SVERSION
--#define HV_X64_MSR_SIMP			HV_REGISTER_SIMP
--#define HV_X64_MSR_SIEFP		HV_REGISTER_SIEFP
--#define HV_X64_MSR_VP_INDEX		HV_REGISTER_VP_INDEX
--#define HV_X64_MSR_EOM			HV_REGISTER_EOM
--#define HV_X64_MSR_SINT0		HV_REGISTER_SINT0
--#define HV_X64_MSR_SINT15		HV_REGISTER_SINT15
--#define HV_X64_MSR_CRASH_P0		HV_REGISTER_CRASH_P0
--#define HV_X64_MSR_CRASH_P1		HV_REGISTER_CRASH_P1
--#define HV_X64_MSR_CRASH_P2		HV_REGISTER_CRASH_P2
--#define HV_X64_MSR_CRASH_P3		HV_REGISTER_CRASH_P3
--#define HV_X64_MSR_CRASH_P4		HV_REGISTER_CRASH_P4
--#define HV_X64_MSR_CRASH_CTL		HV_REGISTER_CRASH_CTL
--#define HV_X64_MSR_TIME_REF_COUNT	HV_REGISTER_TIME_REF_COUNT
--#define HV_X64_MSR_REFERENCE_TSC	HV_REGISTER_REFERENCE_TSC
-+/*
-+ * To support arch-generic code calling hv_set/get_register:
-+ * - On x86, HV_MSR_ indicates an MSR accessed via rdmsrl/wrmsrl
-+ * - On ARM, HV_MSR_ indicates a VP register accessed via hypercall
-+ */
-+#define HV_MSR_CRASH_P0		(HV_X64_MSR_CRASH_P0)
-+#define HV_MSR_CRASH_P1		(HV_X64_MSR_CRASH_P1)
-+#define HV_MSR_CRASH_P2		(HV_X64_MSR_CRASH_P2)
-+#define HV_MSR_CRASH_P3		(HV_X64_MSR_CRASH_P3)
-+#define HV_MSR_CRASH_P4		(HV_X64_MSR_CRASH_P4)
-+#define HV_MSR_CRASH_CTL	(HV_X64_MSR_CRASH_CTL)
-+
-+#define HV_MSR_VP_INDEX		(HV_X64_MSR_VP_INDEX)
-+#define HV_MSR_TIME_REF_COUNT	(HV_X64_MSR_TIME_REF_COUNT)
-+#define HV_MSR_REFERENCE_TSC	(HV_X64_MSR_REFERENCE_TSC)
-+
-+#define HV_MSR_SINT0		(HV_X64_MSR_SINT0)
-+#define HV_MSR_SVERSION		(HV_X64_MSR_SVERSION)
-+#define HV_MSR_SCONTROL		(HV_X64_MSR_SCONTROL)
-+#define HV_MSR_SIEFP		(HV_X64_MSR_SIEFP)
-+#define HV_MSR_SIMP		(HV_X64_MSR_SIMP)
-+#define HV_MSR_EOM		(HV_X64_MSR_EOM)
-+
-+#define HV_MSR_NESTED_SCONTROL	(HV_X64_MSR_NESTED_SCONTROL)
-+#define HV_MSR_NESTED_SVERSION	(HV_X64_MSR_NESTED_SVERSION)
-+#define HV_MSR_NESTED_SIEFP	(HV_X64_MSR_NESTED_SIEFP)
-+#define HV_MSR_NESTED_SIMP	(HV_X64_MSR_NESTED_SIMP)
-+#define HV_MSR_NESTED_EOM	(HV_X64_MSR_NESTED_EOM)
-+#define HV_MSR_NESTED_SINT0	(HV_X64_MSR_NESTED_SINT0)
-+
-+#define HV_MSR_STIMER0_CONFIG	(HV_X64_MSR_STIMER0_CONFIG)
-+#define HV_MSR_STIMER0_COUNT	(HV_X64_MSR_STIMER0_COUNT)
- 
- /*
-  * Registers are only accessible via HVCALL_GET_VP_REGISTERS hvcall and
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index 033b53f993c6..b06d6fd75367 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -293,24 +293,24 @@ static inline void hv_ivm_msr_write(u64 msr, u64 value) {}
- static inline void hv_ivm_msr_read(u64 msr, u64 *value) {}
- #endif
- 
--static inline bool hv_is_synic_reg(unsigned int reg)
-+static inline bool hv_is_synic_msr(unsigned int reg)
- {
--	return (reg >= HV_REGISTER_SCONTROL) &&
--	       (reg <= HV_REGISTER_SINT15);
-+	return (reg >= HV_X64_MSR_SCONTROL) &&
-+	       (reg <= HV_X64_MSR_SINT15);
- }
- 
--static inline bool hv_is_sint_reg(unsigned int reg)
-+static inline bool hv_is_sint_msr(unsigned int reg)
- {
--	return (reg >= HV_REGISTER_SINT0) &&
--	       (reg <= HV_REGISTER_SINT15);
-+	return (reg >= HV_X64_MSR_SINT0) &&
-+	       (reg <= HV_X64_MSR_SINT15);
- }
- 
--u64 hv_get_register(unsigned int reg);
--void hv_set_register(unsigned int reg, u64 value);
--u64 hv_get_non_nested_register(unsigned int reg);
--void hv_set_non_nested_register(unsigned int reg, u64 value);
-+u64 hv_get_msr(unsigned int reg);
-+void hv_set_msr(unsigned int reg, u64 value);
-+u64 hv_get_non_nested_msr(unsigned int reg);
-+void hv_set_non_nested_msr(unsigned int reg, u64 value);
- 
--static __always_inline u64 hv_raw_get_register(unsigned int reg)
-+static __always_inline u64 hv_raw_get_msr(unsigned int reg)
- {
- 	return __rdmsr(reg);
- }
-@@ -331,10 +331,10 @@ static inline int hyperv_flush_guest_mapping_range(u64 as,
- {
- 	return -1;
- }
--static inline void hv_set_register(unsigned int reg, u64 value) { }
--static inline u64 hv_get_register(unsigned int reg) { return 0; }
--static inline void hv_set_non_nested_register(unsigned int reg, u64 value) { }
--static inline u64 hv_get_non_nested_register(unsigned int reg) { return 0; }
-+static inline void hv_set_msr(unsigned int reg, u64 value) { }
-+static inline u64 hv_get_msr(unsigned int reg) { return 0; }
-+static inline void hv_set_non_nested_msr(unsigned int reg, u64 value) { }
-+static inline u64 hv_get_non_nested_msr(unsigned int reg) { return 0; }
- #endif /* CONFIG_HYPERV */
- 
- 
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index e6bba12c759c..08a7ca2cdcbb 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -45,70 +45,70 @@ bool hyperv_paravisor_present __ro_after_init;
- EXPORT_SYMBOL_GPL(hyperv_paravisor_present);
- 
- #if IS_ENABLED(CONFIG_HYPERV)
--static inline unsigned int hv_get_nested_reg(unsigned int reg)
-+static inline unsigned int hv_get_nested_msr(unsigned int reg)
- {
--	if (hv_is_sint_reg(reg))
--		return reg - HV_REGISTER_SINT0 + HV_REGISTER_NESTED_SINT0;
-+	if (hv_is_sint_msr(reg))
-+		return reg - HV_X64_MSR_SINT0 + HV_X64_MSR_NESTED_SINT0;
- 
- 	switch (reg) {
--	case HV_REGISTER_SIMP:
--		return HV_REGISTER_NESTED_SIMP;
--	case HV_REGISTER_SIEFP:
--		return HV_REGISTER_NESTED_SIEFP;
--	case HV_REGISTER_SVERSION:
--		return HV_REGISTER_NESTED_SVERSION;
--	case HV_REGISTER_SCONTROL:
--		return HV_REGISTER_NESTED_SCONTROL;
--	case HV_REGISTER_EOM:
--		return HV_REGISTER_NESTED_EOM;
-+	case HV_X64_MSR_SIMP:
-+		return HV_X64_MSR_NESTED_SIMP;
-+	case HV_X64_MSR_SIEFP:
-+		return HV_X64_MSR_NESTED_SIEFP;
-+	case HV_X64_MSR_SVERSION:
-+		return HV_X64_MSR_NESTED_SVERSION;
-+	case HV_X64_MSR_SCONTROL:
-+		return HV_X64_MSR_NESTED_SCONTROL;
-+	case HV_X64_MSR_EOM:
-+		return HV_X64_MSR_NESTED_EOM;
- 	default:
- 		return reg;
- 	}
- }
- 
--u64 hv_get_non_nested_register(unsigned int reg)
-+u64 hv_get_non_nested_msr(unsigned int reg)
- {
- 	u64 value;
- 
--	if (hv_is_synic_reg(reg) && ms_hyperv.paravisor_present)
-+	if (hv_is_synic_msr(reg) && ms_hyperv.paravisor_present)
- 		hv_ivm_msr_read(reg, &value);
- 	else
- 		rdmsrl(reg, value);
- 	return value;
- }
--EXPORT_SYMBOL_GPL(hv_get_non_nested_register);
-+EXPORT_SYMBOL_GPL(hv_get_non_nested_msr);
- 
--void hv_set_non_nested_register(unsigned int reg, u64 value)
-+void hv_set_non_nested_msr(unsigned int reg, u64 value)
- {
--	if (hv_is_synic_reg(reg) && ms_hyperv.paravisor_present) {
-+	if (hv_is_synic_msr(reg) && ms_hyperv.paravisor_present) {
- 		hv_ivm_msr_write(reg, value);
- 
- 		/* Write proxy bit via wrmsl instruction */
--		if (hv_is_sint_reg(reg))
-+		if (hv_is_sint_msr(reg))
- 			wrmsrl(reg, value | 1 << 20);
- 	} else {
- 		wrmsrl(reg, value);
- 	}
- }
--EXPORT_SYMBOL_GPL(hv_set_non_nested_register);
-+EXPORT_SYMBOL_GPL(hv_set_non_nested_msr);
- 
--u64 hv_get_register(unsigned int reg)
-+u64 hv_get_msr(unsigned int reg)
- {
- 	if (hv_nested)
--		reg = hv_get_nested_reg(reg);
-+		reg = hv_get_nested_msr(reg);
- 
--	return hv_get_non_nested_register(reg);
-+	return hv_get_non_nested_msr(reg);
- }
--EXPORT_SYMBOL_GPL(hv_get_register);
-+EXPORT_SYMBOL_GPL(hv_get_msr);
- 
--void hv_set_register(unsigned int reg, u64 value)
-+void hv_set_msr(unsigned int reg, u64 value)
- {
- 	if (hv_nested)
--		reg = hv_get_nested_reg(reg);
-+		reg = hv_get_nested_msr(reg);
- 
--	hv_set_non_nested_register(reg, value);
-+	hv_set_non_nested_msr(reg, value);
- }
--EXPORT_SYMBOL_GPL(hv_set_register);
-+EXPORT_SYMBOL_GPL(hv_set_msr);
- 
- static void (*vmbus_handler)(void);
- static void (*hv_stimer0_handler)(void);
-diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-index 8ff7cd4e20bb..b2a080647e41 100644
---- a/drivers/clocksource/hyperv_timer.c
-+++ b/drivers/clocksource/hyperv_timer.c
-@@ -81,14 +81,14 @@ static int hv_ce_set_next_event(unsigned long delta,
- 
- 	current_tick = hv_read_reference_counter();
- 	current_tick += delta;
--	hv_set_register(HV_REGISTER_STIMER0_COUNT, current_tick);
-+	hv_set_msr(HV_MSR_STIMER0_COUNT, current_tick);
- 	return 0;
- }
- 
- static int hv_ce_shutdown(struct clock_event_device *evt)
- {
--	hv_set_register(HV_REGISTER_STIMER0_COUNT, 0);
--	hv_set_register(HV_REGISTER_STIMER0_CONFIG, 0);
-+	hv_set_msr(HV_MSR_STIMER0_COUNT, 0);
-+	hv_set_msr(HV_MSR_STIMER0_CONFIG, 0);
- 	if (direct_mode_enabled && stimer0_irq >= 0)
- 		disable_percpu_irq(stimer0_irq);
- 
-@@ -119,7 +119,7 @@ static int hv_ce_set_oneshot(struct clock_event_device *evt)
- 		timer_cfg.direct_mode = 0;
- 		timer_cfg.sintx = stimer0_message_sint;
- 	}
--	hv_set_register(HV_REGISTER_STIMER0_CONFIG, timer_cfg.as_uint64);
-+	hv_set_msr(HV_MSR_STIMER0_CONFIG, timer_cfg.as_uint64);
- 	return 0;
- }
- 
-@@ -372,11 +372,11 @@ static __always_inline u64 read_hv_clock_msr(void)
- 	 * is set to 0 when the partition is created and is incremented in 100
- 	 * nanosecond units.
- 	 *
--	 * Use hv_raw_get_register() because this function is used from
--	 * noinstr. Notable; while HV_REGISTER_TIME_REF_COUNT is a synthetic
-+	 * Use hv_raw_get_msr() because this function is used from
-+	 * noinstr. Notable; while HV_MSR_TIME_REF_COUNT is a synthetic
- 	 * register it doesn't need the GHCB path.
- 	 */
--	return hv_raw_get_register(HV_REGISTER_TIME_REF_COUNT);
-+	return hv_raw_get_msr(HV_MSR_TIME_REF_COUNT);
- }
- 
- /*
-@@ -439,9 +439,9 @@ static void suspend_hv_clock_tsc(struct clocksource *arg)
- 	union hv_reference_tsc_msr tsc_msr;
- 
- 	/* Disable the TSC page */
--	tsc_msr.as_uint64 = hv_get_register(HV_REGISTER_REFERENCE_TSC);
-+	tsc_msr.as_uint64 = hv_get_msr(HV_MSR_REFERENCE_TSC);
- 	tsc_msr.enable = 0;
--	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr.as_uint64);
-+	hv_set_msr(HV_MSR_REFERENCE_TSC, tsc_msr.as_uint64);
- }
- 
- 
-@@ -450,10 +450,10 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
- 	union hv_reference_tsc_msr tsc_msr;
- 
- 	/* Re-enable the TSC page */
--	tsc_msr.as_uint64 = hv_get_register(HV_REGISTER_REFERENCE_TSC);
-+	tsc_msr.as_uint64 = hv_get_msr(HV_MSR_REFERENCE_TSC);
- 	tsc_msr.enable = 1;
- 	tsc_msr.pfn = tsc_pfn;
--	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr.as_uint64);
-+	hv_set_msr(HV_MSR_REFERENCE_TSC, tsc_msr.as_uint64);
- }
- 
- #ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
-@@ -555,14 +555,14 @@ static void __init hv_init_tsc_clocksource(void)
- 	 * thus TSC clocksource will work even without the real TSC page
- 	 * mapped.
- 	 */
--	tsc_msr.as_uint64 = hv_get_register(HV_REGISTER_REFERENCE_TSC);
-+	tsc_msr.as_uint64 = hv_get_msr(HV_MSR_REFERENCE_TSC);
- 	if (hv_root_partition)
- 		tsc_pfn = tsc_msr.pfn;
- 	else
- 		tsc_pfn = HVPFN_DOWN(virt_to_phys(tsc_page));
- 	tsc_msr.enable = 1;
- 	tsc_msr.pfn = tsc_pfn;
--	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr.as_uint64);
-+	hv_set_msr(HV_MSR_REFERENCE_TSC, tsc_msr.as_uint64);
- 
- 	clocksource_register_hz(&hyperv_cs_tsc, NSEC_PER_SEC/100);
- 
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index 51e5018ac9b2..a8ad728354cb 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -270,7 +270,7 @@ void hv_synic_enable_regs(unsigned int cpu)
- 	union hv_synic_scontrol sctrl;
- 
- 	/* Setup the Synic's message page */
--	simp.as_uint64 = hv_get_register(HV_REGISTER_SIMP);
-+	simp.as_uint64 = hv_get_msr(HV_MSR_SIMP);
- 	simp.simp_enabled = 1;
- 
- 	if (ms_hyperv.paravisor_present || hv_root_partition) {
-@@ -286,10 +286,10 @@ void hv_synic_enable_regs(unsigned int cpu)
- 			>> HV_HYP_PAGE_SHIFT;
- 	}
- 
--	hv_set_register(HV_REGISTER_SIMP, simp.as_uint64);
-+	hv_set_msr(HV_MSR_SIMP, simp.as_uint64);
- 
- 	/* Setup the Synic's event page */
--	siefp.as_uint64 = hv_get_register(HV_REGISTER_SIEFP);
-+	siefp.as_uint64 = hv_get_msr(HV_MSR_SIEFP);
- 	siefp.siefp_enabled = 1;
- 
- 	if (ms_hyperv.paravisor_present || hv_root_partition) {
-@@ -305,13 +305,12 @@ void hv_synic_enable_regs(unsigned int cpu)
- 			>> HV_HYP_PAGE_SHIFT;
- 	}
- 
--	hv_set_register(HV_REGISTER_SIEFP, siefp.as_uint64);
-+	hv_set_msr(HV_MSR_SIEFP, siefp.as_uint64);
- 
- 	/* Setup the shared SINT. */
- 	if (vmbus_irq != -1)
- 		enable_percpu_irq(vmbus_irq, 0);
--	shared_sint.as_uint64 = hv_get_register(HV_REGISTER_SINT0 +
--					VMBUS_MESSAGE_SINT);
-+	shared_sint.as_uint64 = hv_get_msr(HV_MSR_SINT0 + VMBUS_MESSAGE_SINT);
- 
- 	shared_sint.vector = vmbus_interrupt;
- 	shared_sint.masked = false;
-@@ -326,14 +325,13 @@ void hv_synic_enable_regs(unsigned int cpu)
- #else
- 	shared_sint.auto_eoi = 0;
- #endif
--	hv_set_register(HV_REGISTER_SINT0 + VMBUS_MESSAGE_SINT,
--				shared_sint.as_uint64);
-+	hv_set_msr(HV_MSR_SINT0 + VMBUS_MESSAGE_SINT, shared_sint.as_uint64);
- 
- 	/* Enable the global synic bit */
--	sctrl.as_uint64 = hv_get_register(HV_REGISTER_SCONTROL);
-+	sctrl.as_uint64 = hv_get_msr(HV_MSR_SCONTROL);
- 	sctrl.enable = 1;
- 
--	hv_set_register(HV_REGISTER_SCONTROL, sctrl.as_uint64);
-+	hv_set_msr(HV_MSR_SCONTROL, sctrl.as_uint64);
- }
- 
- int hv_synic_init(unsigned int cpu)
-@@ -357,17 +355,15 @@ void hv_synic_disable_regs(unsigned int cpu)
- 	union hv_synic_siefp siefp;
- 	union hv_synic_scontrol sctrl;
- 
--	shared_sint.as_uint64 = hv_get_register(HV_REGISTER_SINT0 +
--					VMBUS_MESSAGE_SINT);
-+	shared_sint.as_uint64 = hv_get_msr(HV_MSR_SINT0 + VMBUS_MESSAGE_SINT);
- 
- 	shared_sint.masked = 1;
- 
- 	/* Need to correctly cleanup in the case of SMP!!! */
- 	/* Disable the interrupt */
--	hv_set_register(HV_REGISTER_SINT0 + VMBUS_MESSAGE_SINT,
--				shared_sint.as_uint64);
-+	hv_set_msr(HV_MSR_SINT0 + VMBUS_MESSAGE_SINT, shared_sint.as_uint64);
- 
--	simp.as_uint64 = hv_get_register(HV_REGISTER_SIMP);
-+	simp.as_uint64 = hv_get_msr(HV_MSR_SIMP);
- 	/*
- 	 * In Isolation VM, sim and sief pages are allocated by
- 	 * paravisor. These pages also will be used by kdump
-@@ -382,9 +378,9 @@ void hv_synic_disable_regs(unsigned int cpu)
- 		simp.base_simp_gpa = 0;
- 	}
- 
--	hv_set_register(HV_REGISTER_SIMP, simp.as_uint64);
-+	hv_set_msr(HV_MSR_SIMP, simp.as_uint64);
- 
--	siefp.as_uint64 = hv_get_register(HV_REGISTER_SIEFP);
-+	siefp.as_uint64 = hv_get_msr(HV_MSR_SIEFP);
- 	siefp.siefp_enabled = 0;
- 
- 	if (ms_hyperv.paravisor_present || hv_root_partition) {
-@@ -394,12 +390,12 @@ void hv_synic_disable_regs(unsigned int cpu)
- 		siefp.base_siefp_gpa = 0;
- 	}
- 
--	hv_set_register(HV_REGISTER_SIEFP, siefp.as_uint64);
-+	hv_set_msr(HV_MSR_SIEFP, siefp.as_uint64);
- 
- 	/* Disable the global synic bit */
--	sctrl.as_uint64 = hv_get_register(HV_REGISTER_SCONTROL);
-+	sctrl.as_uint64 = hv_get_msr(HV_MSR_SCONTROL);
- 	sctrl.enable = 0;
--	hv_set_register(HV_REGISTER_SCONTROL, sctrl.as_uint64);
-+	hv_set_msr(HV_MSR_SCONTROL, sctrl.as_uint64);
- 
- 	if (vmbus_irq != -1)
- 		disable_percpu_irq(vmbus_irq);
-diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-index ccad7bca3fd3..65c0740484cb 100644
---- a/drivers/hv/hv_common.c
-+++ b/drivers/hv/hv_common.c
-@@ -228,19 +228,19 @@ static void hv_kmsg_dump(struct kmsg_dumper *dumper,
- 	 * contain the size of the panic data in that page. Rest of the
- 	 * registers are no-op when the NOTIFY_MSG flag is set.
- 	 */
--	hv_set_register(HV_REGISTER_CRASH_P0, 0);
--	hv_set_register(HV_REGISTER_CRASH_P1, 0);
--	hv_set_register(HV_REGISTER_CRASH_P2, 0);
--	hv_set_register(HV_REGISTER_CRASH_P3, virt_to_phys(hv_panic_page));
--	hv_set_register(HV_REGISTER_CRASH_P4, bytes_written);
-+	hv_set_msr(HV_MSR_CRASH_P0, 0);
-+	hv_set_msr(HV_MSR_CRASH_P1, 0);
-+	hv_set_msr(HV_MSR_CRASH_P2, 0);
-+	hv_set_msr(HV_MSR_CRASH_P3, virt_to_phys(hv_panic_page));
-+	hv_set_msr(HV_MSR_CRASH_P4, bytes_written);
- 
- 	/*
- 	 * Let Hyper-V know there is crash data available along with
- 	 * the panic message.
- 	 */
--	hv_set_register(HV_REGISTER_CRASH_CTL,
--			(HV_CRASH_CTL_CRASH_NOTIFY |
--			 HV_CRASH_CTL_CRASH_NOTIFY_MSG));
-+	hv_set_msr(HV_MSR_CRASH_CTL,
-+		   (HV_CRASH_CTL_CRASH_NOTIFY |
-+		    HV_CRASH_CTL_CRASH_NOTIFY_MSG));
- }
- 
- static struct kmsg_dumper hv_kmsg_dumper = {
-@@ -311,7 +311,7 @@ int __init hv_common_init(void)
- 		 * Register for panic kmsg callback only if the right
- 		 * capability is supported by the hypervisor.
- 		 */
--		hyperv_crash_ctl = hv_get_register(HV_REGISTER_CRASH_CTL);
-+		hyperv_crash_ctl = hv_get_msr(HV_MSR_CRASH_CTL);
- 		if (hyperv_crash_ctl & HV_CRASH_CTL_CRASH_NOTIFY_MSG)
- 			hv_kmsg_dump_register();
- 
-@@ -410,7 +410,7 @@ int hv_common_cpu_init(unsigned int cpu)
- 		*inputarg = mem;
- 	}
- 
--	msr_vp_index = hv_get_register(HV_REGISTER_VP_INDEX);
-+	msr_vp_index = hv_get_msr(HV_MSR_VP_INDEX);
- 
- 	hv_vp_index[cpu] = msr_vp_index;
- 
-@@ -507,7 +507,7 @@ EXPORT_SYMBOL_GPL(hv_is_hibernation_supported);
-  */
- static u64 __hv_read_ref_counter(void)
- {
--	return hv_get_register(HV_REGISTER_TIME_REF_COUNT);
-+	return hv_get_msr(HV_MSR_TIME_REF_COUNT);
- }
- 
- u64 (*hv_read_reference_counter)(void) = __hv_read_ref_counter;
-diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-index fdac4a1714ec..3d1b31f90ed6 100644
---- a/include/asm-generic/hyperv-tlfs.h
-+++ b/include/asm-generic/hyperv-tlfs.h
-@@ -625,6 +625,37 @@ struct hv_retarget_device_interrupt {
- 	struct hv_device_interrupt_target int_target;
- } __packed __aligned(8);
- 
-+/*
-+ * These Hyper-V registers provide information equivalent to the CPUID
-+ * instruction on x86/x64.
-+ */
-+#define HV_REGISTER_HYPERVISOR_VERSION		0x00000100 /*CPUID 0x40000002 */
-+#define HV_REGISTER_FEATURES			0x00000200 /*CPUID 0x40000003 */
-+#define HV_REGISTER_ENLIGHTENMENTS		0x00000201 /*CPUID 0x40000004 */
-+
-+/*
-+ * Synthetic register definitions equivalent to MSRs on x86/x64
-+ */
-+#define HV_REGISTER_CRASH_P0		0x00000210
-+#define HV_REGISTER_CRASH_P1		0x00000211
-+#define HV_REGISTER_CRASH_P2		0x00000212
-+#define HV_REGISTER_CRASH_P3		0x00000213
-+#define HV_REGISTER_CRASH_P4		0x00000214
-+#define HV_REGISTER_CRASH_CTL		0x00000215
-+
-+#define HV_REGISTER_GUEST_OSID		0x00090002
-+#define HV_REGISTER_VP_INDEX		0x00090003
-+#define HV_REGISTER_TIME_REF_COUNT	0x00090004
-+#define HV_REGISTER_REFERENCE_TSC	0x00090017
-+
-+#define HV_REGISTER_SINT0		0x000A0000
-+#define HV_REGISTER_SCONTROL		0x000A0010
-+#define HV_REGISTER_SIEFP		0x000A0012
-+#define HV_REGISTER_SIMP		0x000A0013
-+#define HV_REGISTER_EOM			0x000A0014
-+
-+#define HV_REGISTER_STIMER0_CONFIG	0x000B0000
-+#define HV_REGISTER_STIMER0_COUNT	0x000B0001
- 
- /* HvGetVpRegisters hypercall input with variable size reg name list*/
- struct hv_get_vp_registers_input {
-@@ -640,7 +671,6 @@ struct hv_get_vp_registers_input {
- 	} element[];
- } __packed;
- 
--
- /* HvGetVpRegisters returns an array of these output elements */
- struct hv_get_vp_registers_output {
- 	union {
-diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
-index cecd2b7bd033..2dc65c1d3117 100644
---- a/include/asm-generic/mshyperv.h
-+++ b/include/asm-generic/mshyperv.h
-@@ -157,7 +157,7 @@ static inline void vmbus_signal_eom(struct hv_message *msg, u32 old_msg_type)
- 		 * possibly deliver another msg from the
- 		 * hypervisor
- 		 */
--		hv_set_register(HV_REGISTER_EOM, 0);
-+		hv_set_msr(HV_MSR_EOM, 0);
- 	}
- }
- 
--- 
-2.25.1
-
+--6ge6lcgzg2duuvln--
 
