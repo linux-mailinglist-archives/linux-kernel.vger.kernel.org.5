@@ -1,151 +1,178 @@
-Return-Path: <linux-kernel+bounces-73637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341A785C55E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:02:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E74285C55D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:01:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D251C1F2191C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:02:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4259B2857AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2037E14D451;
-	Tue, 20 Feb 2024 20:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A2014C5AB;
+	Tue, 20 Feb 2024 20:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xfbtaRwU"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j1k3QNyy"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F9314AD11;
-	Tue, 20 Feb 2024 20:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7811C14A0B7
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708459286; cv=none; b=WyIlRAOGNJXRoEAmXCvnNio5zpC48XhMI3FTv2L6h5ApB+XEigrYjNyj+38YV/Dd8hmjXKRcwyZwg7x0UjS0t5ysSUFh7itsqnCBdYU740bsreShsJT968Mr0RPw4VaEPEKlvtdR7uERkcGyK8Qg+sa4OKTaTUrSuuIBUdFOGz4=
+	t=1708459285; cv=none; b=fIFTGWV18zqkRsWV/KJXLI8wgVvJpemequbW4C1uCnGSCqTxiufuFaTtv9UBtlY3bKn4C/68RxZY3da/eW4/a16e5SUFGP+JR2rod1MLoBwBrgQNZ50s4OtgEEyqw+hBQJyvx8p4xISmWEuH88v0xUGOVImtWrQZe2wD1KCCQpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708459286; c=relaxed/simple;
-	bh=yyYbfe7MYV+zSUFDLRCmIriY0MML29KBgGRbZMEyMio=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GoJ49d6krlurpAuOIHRsmCZsSwE2T2k2rjRoEuc0puhZ2WzjRZ53OXk/SfkxqoIhJQUW+vvHrMfFCikW/yBZ/Jgz/WPkO2R92ZSBUXW45oKXoSRzMHTE+GWLOMeTLrAf33iuCCp4QnOuq9lcdIH1yoBqWD5MuDLqGcmuhSDVL6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xfbtaRwU; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708459282;
-	bh=yyYbfe7MYV+zSUFDLRCmIriY0MML29KBgGRbZMEyMio=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=xfbtaRwUyxbkg1qJbonJSI1czecmACHWIvixLNBKyd9EKTGyFib2QRMO4e18yvttW
-	 leyXCGKa6h63m7A8tifRyXQmVfkqfez4gbJBup491hFZYu3Quhvck99ua3qfJryT2A
-	 Afrq8IAPQi2ZXBAJznzL+BNQ2BFlT2e87eUMAkuKXKPxp3vqmJAV11RYNE/XHDe9kM
-	 0Ao+hGLUvzYKyo9HO0tu3JrxzLTBLRihQVwFO4n48EJKOlgqkL27C6VZNlvFAgbJbd
-	 QhLcdjuwZFLA9RbLOQfhV4ez2IYtTiJP2zn4BlBVysmMaanef+B6s8QaWM/Eo6d+zz
-	 Ish82GNKlJWag==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9AADC37820CB;
-	Tue, 20 Feb 2024 20:01:22 +0000 (UTC)
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: sound-open-firmware@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH v2 2/2] ASoC: SOF: amd: Skip IRAM/DRAM size modification for Steam Deck OLED
-Date: Tue, 20 Feb 2024 22:01:15 +0200
-Message-ID: <20240220200116.438346-4-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240220200116.438346-1-cristian.ciocaltea@collabora.com>
-References: <20240220200116.438346-1-cristian.ciocaltea@collabora.com>
+	s=arc-20240116; t=1708459285; c=relaxed/simple;
+	bh=H0OqSoyPMkNjLT+pSoJDz6lzuRZUfrTWgoL7fXQcM0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eZjvOs+4rSbhAMSpvj76Lli+W73wyaYbX6hGtyM684dZ+ymoc17HZOJ8V1539ImXIQvyovs9AAKK2Xk/rT0KhY+zPwuLjhmMAmF4QL5zfjAPVAXiKWi4yEY6KjVBQ/Vmi3Bj1qtn5KGL3ZcfIjySIz4HwP7sMYekzfZA790nhpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j1k3QNyy; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e4884770d4so373444b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:01:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708459282; x=1709064082; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+BTLFzt0+pif+FJZs4rp/gi/2rjb27aKNMsMZ5GhVoM=;
+        b=j1k3QNyyb3HZ8d5giE6yngRzKEpH+DBmz/zjXg7AKdLqvlQaG1rOhqFHKO0nwlLmRW
+         jYxvp55VQdhywyKsmdKkRgB9Re6G0+bE1h7qIPKARK/5/7cITWrkPax5SPilAfl6hDfe
+         Vr171ft7z18PHCDRKKLbhcHeUkULfova4Or/xwxzJIunHrDLnggXtZQ1IGt87g6zvsI/
+         tURKsF2/EUyMcAQrPmuLgaWZVI7zbAwjS5OVrKlesjghDvKoJ+Gk0IXizq7ZK5F9k0U3
+         JwwZ18eLGtAA8JhaGXiQ5YwTzrVBJ+l5ij1/X4LDWclLS7qzDdYr9k+v+57yEWV7r9Nq
+         mL3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708459282; x=1709064082;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+BTLFzt0+pif+FJZs4rp/gi/2rjb27aKNMsMZ5GhVoM=;
+        b=QIGH0l7iPjsGlsP3//eoWY8+lfbd5w7if/aYZWPm/LFniy4rB5AqcboDEYV8C40U0G
+         AtzjLc8JBl+seyrPrzFAGcyRGY7Ur0enVVXwSuttaxhDmzFXAX4lePKnMLHtGK8lc7Yw
+         5HfGEFVX5p4xhk7dhvjaMtbGQDwCj5JVkenel/SfggIkVMLOIFMf7NsEgrnq6qQjhDUV
+         Vfa/ifZtXHKjOPXrmDaVAYJnWUA6mxnMN0WKJ/4Vu9G6O2Ppuwi1cOdeuKZqnw2ku93V
+         Lf0TXsBghTG6vBP/R8u+WlObic51ZFuPWoi1SzT4LnuV0AwvMq32qOGn+/MyvF5foAoi
+         A+Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCVIB7WwsXcACbw1ly3ztShUIC9dpYbtrAji1Odra+1Ziel+hqL+rWSOhfjztul0lGgPYVn9swGUxQuNviH/7FmPu84QhCGIfTk8bBTr
+X-Gm-Message-State: AOJu0YzL3f6ilv0lkP7PSlQeW3myN6crxIyNW7sD+UkmcZ2LBe3oU01x
+	83oTKh12tFgRmB5HjAsaXKTwhbSQD/RZ1Dx0o/AgmpcM0bCeAPUQlQnQ3U97hSw=
+X-Google-Smtp-Source: AGHT+IGfc2g2KrS2qeWItOGi6kUgUUR2E5eJQrP6AnVBmZn9AS3rSUK50sN05ecefr51aUz9/GdY2w==
+X-Received: by 2002:a05:6a20:4b22:b0:19e:cd14:1f8d with SMTP id fp34-20020a056a204b2200b0019ecd141f8dmr12888739pzb.35.1708459282480;
+        Tue, 20 Feb 2024 12:01:22 -0800 (PST)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id p21-20020aa78615000000b006e0949b2548sm6607017pfn.209.2024.02.20.12.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 12:01:22 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 20 Feb 2024 10:01:20 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+	allen.lkml@gmail.com, kernel-team@meta.com
+Subject: Re: [PATCH 16/17] workqueue: Allow cancel_work_sync() and
+ disable_work() from atomic contexts on BH work items
+Message-ID: <ZdUFEGm9PYfmdQYX@slm.duckdns.org>
+References: <20240216180559.208276-1-tj@kernel.org>
+ <20240216180559.208276-17-tj@kernel.org>
+ <CAJhGHyBR6up3o9Svxn=uL2a0rRcu-q3BR8TgdpLykR6iTZ3Aew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyBR6up3o9Svxn=uL2a0rRcu-q3BR8TgdpLykR6iTZ3Aew@mail.gmail.com>
 
-The recent introduction of the ACP/PSP communication for IRAM/DRAM fence
-register modification breaks the audio support on Valve's Steam Deck
-OLED device.
+Hello,
 
-It causes IPC timeout errors when trying to load DSP topology during
-probing:
+On Tue, Feb 20, 2024 at 03:33:34PM +0800, Lai Jiangshan wrote:
+> Hello, Tejun
+> 
+> On Sat, Feb 17, 2024 at 2:06 AM Tejun Heo <tj@kernel.org> wrote:
+> 
+> > @@ -4072,7 +4070,32 @@ static bool __flush_work(struct work_struct *work, bool from_cancel)
+> >         if (!pool)
+> >                 return false;
+> >
+> > -       wait_for_completion(&barr.done);
+> > +       if ((pool->flags & POOL_BH) && from_cancel) {
+> 
+> pool pointer might be invalid here, please check POOL_BH before
+> rcu_read_unlock()
 
-1707255557.688176 kernel: snd_sof_amd_vangogh 0000:04:00.5: ipc tx timed out for 0x30100000 (msg/reply size: 48/0)
-1707255557.689035 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ IPC dump start ]------------
-1707255557.689421 kernel: snd_sof_amd_vangogh 0000:04:00.5: dsp_msg = 0x0 dsp_ack = 0x91d14f6f host_msg = 0x1 host_ack = 0xead0f1a4 irq_stat >
-1707255557.689730 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ IPC dump end ]------------
-1707255557.690074 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ DSP dump start ]------------
-1707255557.690376 kernel: snd_sof_amd_vangogh 0000:04:00.5: IPC timeout
-1707255557.690744 kernel: snd_sof_amd_vangogh 0000:04:00.5: fw_state: SOF_FW_BOOT_COMPLETE (7)
-1707255557.691037 kernel: snd_sof_amd_vangogh 0000:04:00.5: invalid header size 0xdb43fe7. FW oops is bogus
-1707255557.694824 kernel: snd_sof_amd_vangogh 0000:04:00.5: unexpected fault 0x6942d3b3 trace 0x6942d3b3
-1707255557.695392 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ DSP dump end ]------------
-1707255557.695755 kernel: snd_sof_amd_vangogh 0000:04:00.5: Failed to setup widget PIPELINE.6.ACPHS1.IN
-1707255557.696069 kernel: snd_sof_amd_vangogh 0000:04:00.5: error: tplg component load failed -110
-1707255557.696374 kernel: snd_sof_amd_vangogh 0000:04:00.5: error: failed to load DSP topology -22
-1707255557.697904 kernel: snd_sof_amd_vangogh 0000:04:00.5: ASoC: error at snd_soc_component_probe on 0000:04:00.5: -22
-1707255557.698405 kernel: sof_mach nau8821-max: ASoC: failed to instantiate card -22
-1707255557.701061 kernel: sof_mach nau8821-max: error -EINVAL: Failed to register card(sof-nau8821-max)
-1707255557.701624 kernel: sof_mach: probe of nau8821-max failed with error -22
+Right, it had a local variable caching the test result from inside the
+rcu_read_lock() section and I removed it by mistake while splitting patches.
+Will fix.
 
-Introduce a new member skip_iram_dram_size_mod to struct acp_quirk_entry and
-use it to skip IRAM/DRAM size modification for Vangogh Galileo device.
+> > +               /*
+> > +                * We're flushing a BH work item which is being canceled. It
+> > +                * must have been executing during start_flush_work() and can't
+> > +                * currently be queued. If @work is still executing, we know it
+> > +                * is running in the BH context and thus can be busy-waited.
+> > +                *
+> > +                * On RT, prevent a live lock when current preempted soft
+> > +                * interrupt processing or prevents ksoftirqd from running by
+> > +                * keeping flipping BH. If the tasklet runs on a different CPU
+> > +                * then this has no effect other than doing the BH
+> > +                * disable/enable dance for nothing. This is copied from
+> > +                * kernel/softirq.c::tasklet_unlock_spin_wait().
+> > +                */
+> 
+> s/tasklet/BH work/g
 
-Fixes: 55d7bbe43346 ("ASoC: SOF: amd: Add acp-psp mailbox interface for iram-dram fence register modification")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- sound/soc/sof/amd/acp.c | 3 ++-
- sound/soc/sof/amd/acp.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Updated.
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 9d9197fa83ed..be7dc1e02284 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -26,6 +26,7 @@ MODULE_PARM_DESC(enable_fw_debug, "Enable Firmware debug");
- 
- static struct acp_quirk_entry quirk_valve_galileo = {
- 	.signed_fw_image = true,
-+	.skip_iram_dram_size_mod = true,
- };
- 
- const struct dmi_system_id acp_sof_quirk_table[] = {
-@@ -280,7 +281,7 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
- 	}
- 
- 	/* psp_send_cmd only required for vangogh platform (rev - 5) */
--	if (desc->rev == 5) {
-+	if (desc->rev == 5 && !(adata->quirks && adata->quirks->skip_iram_dram_size_mod)) {
- 		/* Modify IRAM and DRAM size */
- 		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | IRAM_DRAM_FENCE_2);
- 		if (ret)
-diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index b648ed194b9f..e229bb6b849d 100644
---- a/sound/soc/sof/amd/acp.h
-+++ b/sound/soc/sof/amd/acp.h
-@@ -209,6 +209,7 @@ struct sof_amd_acp_desc {
- 
- struct acp_quirk_entry {
- 	bool signed_fw_image;
-+	bool skip_iram_dram_size_mod;
- };
- 
- /* Common device data struct for ACP devices */
+> Although the comment is copied from kernel/softirq.c, but I can't
+> envision what the scenario is when the current task
+> "prevents ksoftirqd from running by keeping flipping BH"
+
+Yeah, that sentence is not the easiest to parse. The following parentheses
+might be helpful:
+
+ prevent a live lock (when current (preempted soft interrupt processing) or
+ (prevents ksoftirqd from running)) by keeping flipping BH.
+
+> since the @work is still executing or the tasklet is running.
+
+eb2dafbba8b8 ("tasklets: Prevent tasklet_unlock_spin_wait() deadlock on RT")
+is the commit which added the flipping to tasklet_unlock_spin_wait(). My
+understanding of RT isn't great but it sounds like BH execution can be
+preempted by someone else who does the busy wait which would be sad. IIUC,
+it looks like flipping BH off/on makes the busy waiting one yield to BH
+processing.
+
+> > @@ -4179,6 +4203,11 @@ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+> >
+> >         ret = __cancel_work(work, cflags | WORK_CANCEL_DISABLE);
+> >
+> > +       if (*work_data_bits(work) & WORK_OFFQ_BH)
+> > +               WARN_ON_ONCE(in_hardirq());
+> 
+> When !PREEMPT_RT, this check is sufficient.
+> 
+> But when PREEMP_RT, it should be only in the contexts that allow
+> local_bh_disable() for synching a BH work, although I'm not sure
+> what check code is proper.
+> 
+> In PREEMPT_RT, local_bh_disable() is disallowed in not only hardirq
+> context but also !preemptible() context (I'm not sure about it).
+>
+> __local_bh_disable_ip() (PREEMP_RT version) doesn't contain
+> full check except for "WARN_ON_ONCE(in_hardirq())" either.
+> 
+> Since the check is just for debugging, I'm OK with the current check.
+
+We should have enough test coverage with !RT kernels. If you can think of a
+better notation for RT, please be my guest.
+
+Thanks.
+
 -- 
-2.43.2
-
+tejun
 
