@@ -1,195 +1,189 @@
-Return-Path: <linux-kernel+bounces-73521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C23E85C3B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:41:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E8185C3BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C57271C221BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:41:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57ABF1F232E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6401339A6;
-	Tue, 20 Feb 2024 18:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D883A12EBD0;
+	Tue, 20 Feb 2024 18:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6yoiswL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ye+2xP9N"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2FA12F5AA;
-	Tue, 20 Feb 2024 18:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA1876C94;
+	Tue, 20 Feb 2024 18:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708454471; cv=none; b=jK2kfH6Gy2azKb8Qo7v2ITcr0Ra4Od1VxAb5jtlsufLdjf2zsWMp/2bOBs7jA2JIxdJn4XXCcpmgkhaemndtAMKBNZABBoNQ76hGGN6R52oFVcnhtRuNXPqfbz1Yk+fkrfNWjkJ4JlhcOCTF+MuBSjKa5v7P2k6Y4KWN+rDU1hU=
+	t=1708454493; cv=none; b=Bb2WkObviu0ub/f3PtNhpEejyagI81aFqTb50jwWDyV2P1Wshu+z9jFTHW3hogTVzz2KNTj2D0RYol3pJMPWSgzyH3UQGuvX0D5Y5x6CCMfyBvOeiaW+BWC39od2aI1x16/HjLwM2kVZ6AFjN1PWnUcpJZZi96nm7DK8Y5NmAeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708454471; c=relaxed/simple;
-	bh=15wVNh60n0mKgmlzygAoNpmkEvxBvaqNjKfNeAsjQ4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ueb46aWJ3x00zNeV1FVSzKmGyY6RPudqvvngIULgg11YRZoJ7mvp7JoxtY/LYQj23h86zQ3wiG9nRurKXOZTiVNkypuNuzyZlWYIi6JxStYH7skOlAkvKdpymXP0TusQxUw8W0CRCGqHZ48DKo5E3cVzf6+VQ6eUGe7tBVj4kpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6yoiswL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B2AC433F1;
-	Tue, 20 Feb 2024 18:41:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708454471;
-	bh=15wVNh60n0mKgmlzygAoNpmkEvxBvaqNjKfNeAsjQ4w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I6yoiswLuwvRkTOyHtca4QBI0nxQq61xnDFGgF7WkbRQhu0MCSk8+YurXOGrdIiMl
-	 3d5XPZ2nvg4A7VQjpqyNT995DJFhhfoW2gQKyrdhURCr+NNitthjAHKDQRccYbqH1B
-	 /t9BEYBB+YUfEE87SvH+CPIhYMKMy6KWPiDinKDiyTU7f5dB/o6FU4Q/7xt9V12D88
-	 SVpDh/lkadi34h2cIfqSiewK74H6QYjNthXd5VwPI4r5TazIMDnqQbrBuo5BECsrxi
-	 gj0kd9p7/av53ieW5iBv48Xs/P8gZcj/EXu/1tZYkg9+JSk7Ofg4lON/xG1wSFGDu7
-	 IU94Fw4NbtDbg==
-Date: Tue, 20 Feb 2024 18:41:06 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Nikita Travkin <nikita@trvn.ru>
-Cc: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: power: supply: Add Acer Aspire 1 EC
-Message-ID: <20240220-splinter-jackpot-ac1571af5b2d@spud>
-References: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
- <20240220-aspire1-ec-v3-1-02cb139a4931@trvn.ru>
+	s=arc-20240116; t=1708454493; c=relaxed/simple;
+	bh=DwSB6eIUrVV5+VdOy3mihW0HfnTmkbLesBD6cSOFYUw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cpApiiS21V6GLOlJcgd0IyThs+ekwcCULJpu9wb5E7Gvi8Bd9dq2f3cikyxgzOBOIQDpv7VDhKtQJIF8VtlbKWIQGnKkjeZDKXMIsAjK8rdB5OVo6l2hDZJpm7UOW7FzyJu/SYaWlObuxjytnpGJm5VuYLVmFMGBgz7irwF9LlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ye+2xP9N; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-563ed3d221aso7107232a12.0;
+        Tue, 20 Feb 2024 10:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708454489; x=1709059289; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1owq7Fy9RtBGgkYmyx+BQD0R3AB0m5IEudYK4GtR2Mw=;
+        b=Ye+2xP9NMgRCwa2r+PKU6SkLkJhsn/cn2wMazz5t2pieeggYGi86BTL6/Tectp8T9n
+         OgMafTGLa8xC2yzDsJmXpOk4t7lWBYN40YJzK29fVRM2H0Wl/KgYtN9V7Fb/xMnZRRHR
+         xdX/ffi3mVFPofkuLwsR+b+dOYCHDiEooS0TOHAgjp7V4Sxw339YqJShxUMmFqk2ANUx
+         rv9F89GWNDO2YXOnVmsVXCOedhZFm8Q3znUDh6QxVqkMU3s0/muWNWBbrEpqz+bPbMtT
+         mE3PVTC4ilR81giQrpbLU97sOn+ua+yWENBeK3nXTVfPhglx+3fKALD3JUCNz4smM/GU
+         NYuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708454489; x=1709059289;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1owq7Fy9RtBGgkYmyx+BQD0R3AB0m5IEudYK4GtR2Mw=;
+        b=tUP1mFWtv+fN8hKGthF7eLy+HgRtlunXL7bsMhGhmYtRcr3p99WFCbc3Ssezrx3rz3
+         W18V3r89uftPfeeuPpRt30YECXkH3EOiso1UoYUo4H+Jk+5+zszCymG13HYe0Mx6PFT3
+         Z0uSdpbyvz3USG2EE01XYPVOH3nwaa0uDDinGKjbTOxGh54uQ7BBbNrHDg2XzIVFow6y
+         jt7C0HDH0ekssUyQowi6xe1slnl2gCEc3Q2xUYggLIpbyNSEe6WBKV/jlCF6DN3AVRZo
+         H4/RdnnckKoNcw81zvir6c0yvhNukDwL4aw2UxJm32beFK3OKBtZ7b1MUDIw3kP9FaIc
+         wVGw==
+X-Forwarded-Encrypted: i=1; AJvYcCWpI12rD28pN0tBWkLZkEHwWKqUneGWhpeG62raZz9rBsYvvNU+dPXHe1K9aMEZVAsOEyRS2EAKEA7qe7/jqFpnRJXXqukoyIvyIFKvshBMw8CLvh0QxcAmNEa8nxv7DfVxrm8j7UcR
+X-Gm-Message-State: AOJu0YzbRjb8aBNN+/WpTEY9QfS/MV9i90kRX9eL9sWD+nFHAW+KhxyA
+	ujoE2L6qBcCtROQhrexjj8Do73g917FXaumm8+LlpOtectY1hday
+X-Google-Smtp-Source: AGHT+IFjHdwnwUxKeWXHSiGMm1iXa1mDeBERgCFjP3WMT9aHIgdToj2cGLMD5jeV30pW7fa9u9YM0Q==
+X-Received: by 2002:a17:906:fa87:b0:a3e:c6de:e5ae with SMTP id lt7-20020a170906fa8700b00a3ec6dee5aemr5152274ejb.0.1708454488971;
+        Tue, 20 Feb 2024 10:41:28 -0800 (PST)
+Received: from localhost.localdomain ([2a04:ee41:82:7577:4de1:dcc0:a48:7f])
+        by smtp.gmail.com with ESMTPSA id bm8-20020a170906c04800b00a3d9e6e9983sm4269594ejb.174.2024.02.20.10.41.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 10:41:28 -0800 (PST)
+From: Vasileios Amoiridis <vassilisamir@gmail.com>
+To: jic23@kernel.org
+Cc: lars@metafoo.de,
+	ang.iglesiasg@gmail.com,
+	andriy.shevchenko@linux.intel.com,
+	linus.walleij@linaro.org,
+	semen.protsenko@linaro.org,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vasileios Amoiridis <vassilisamir@gmail.com>
+Subject: [PATCH 1/2] drivers: iio: pressure: Fixes BMP38x and BMP390 SPI support
+Date: Tue, 20 Feb 2024 19:41:24 +0100
+Message-Id: <20240220184125.32602-1-vassilisamir@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NyfVgNR6xsvZmS5r"
-Content-Disposition: inline
-In-Reply-To: <20240220-aspire1-ec-v3-1-02cb139a4931@trvn.ru>
+Content-Transfer-Encoding: 8bit
 
+According to the datasheet of BMP38x and BMP390 devices, for an SPI
+read operation the first byte that is returned needs to be dropped,
+and the rest of the bytes are the actual data returned from the
+sensor.
 
---NyfVgNR6xsvZmS5r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 8d329309184d ("iio: pressure: bmp280: Add support for BMP380 sensor family")
+Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
+---
+ drivers/iio/pressure/bmp280-spi.c | 49 ++++++++++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
-Rob,
+diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
+index e8a5fed07e88..1972014dca93 100644
+--- a/drivers/iio/pressure/bmp280-spi.c
++++ b/drivers/iio/pressure/bmp280-spi.c
+@@ -8,6 +8,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/err.h>
+ #include <linux/regmap.h>
++#include <linux/bits.h>
+ 
+ #include "bmp280.h"
+ 
+@@ -35,6 +36,33 @@ static int bmp280_regmap_spi_read(void *context, const void *reg,
+ 	return spi_write_then_read(spi, reg, reg_size, val, val_size);
+ }
+ 
++static int bmp380_regmap_spi_read(void *context, const void *reg,
++				  size_t reg_size, void *val, size_t val_size)
++{
++	struct spi_device *spi = to_spi_device(context);
++	u8 rx_buf[4];
++	ssize_t status;
++
++	/*
++	 * Maximum number of consecutive bytes read for a temperature or
++	 * pressure measurement is 3.
++	 */
++	if (val_size > 3)
++		return -EINVAL;
++	/*
++	 * According to the BMP3xx datasheets, for a basic SPI read opertion,
++	 * the first byte needs to be dropped and the rest are the requested
++	 * data.
++	 */
++	status = spi_write_then_read(spi, reg, 1, rx_buf, val_size + 1);
++	if (status)
++		return status;
++
++	memcpy(val, rx_buf + 1, val_size);
++
++	return 0;
++}
++
+ static struct regmap_bus bmp280_regmap_bus = {
+ 	.write = bmp280_regmap_spi_write,
+ 	.read = bmp280_regmap_spi_read,
+@@ -42,10 +70,19 @@ static struct regmap_bus bmp280_regmap_bus = {
+ 	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+ };
+ 
++static struct regmap_bus bmp380_regmap_bus = {
++	.write = bmp280_regmap_spi_write,
++	.read = bmp380_regmap_spi_read,
++	.read_flag_mask = BIT(7),
++	.reg_format_endian_default = REGMAP_ENDIAN_BIG,
++	.val_format_endian_default = REGMAP_ENDIAN_BIG,
++};
++
+ static int bmp280_spi_probe(struct spi_device *spi)
+ {
+ 	const struct spi_device_id *id = spi_get_device_id(spi);
+ 	const struct bmp280_chip_info *chip_info;
++	struct regmap_bus *bmp_regmap_bus;
+ 	struct regmap *regmap;
+ 	int ret;
+ 
+@@ -58,8 +95,18 @@ static int bmp280_spi_probe(struct spi_device *spi)
+ 
+ 	chip_info = spi_get_device_match_data(spi);
+ 
++	switch (chip_info->chip_id[0]) {
++	case BMP380_CHIP_ID:
++	case BMP390_CHIP_ID:
++		bmp_regmap_bus = &bmp380_regmap_bus;
++		break;
++	default:
++		bmp_regmap_bus = &bmp280_regmap_bus;
++		break;
++	}
++
+ 	regmap = devm_regmap_init(&spi->dev,
+-				  &bmp280_regmap_bus,
++				  bmp_regmap_bus,
+ 				  &spi->dev,
+ 				  chip_info->regmap_config);
+ 	if (IS_ERR(regmap)) {
+-- 
+2.25.1
 
-On Tue, Feb 20, 2024 at 04:57:12PM +0500, Nikita Travkin wrote:
-> Add binding for the EC found in the Acer Aspire 1 laptop.
->=20
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
->  .../bindings/power/supply/acer,aspire1-ec.yaml     | 69 ++++++++++++++++=
-++++++
->  1 file changed, 69 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/power/supply/acer,aspire1-=
-ec.yaml b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.ya=
-ml
-> new file mode 100644
-> index 000000000000..984cf19cf806
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
-> @@ -0,0 +1,69 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/supply/acer,aspire1-ec.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Acer Aspire 1 Embedded Controller
-> +
-> +maintainers:
-> +  - Nikita Travkin <nikita@trvn.ru>
-> +
-> +description:
-> +  The Acer Aspire 1 laptop uses an embedded controller to control battery
-> +  and charging as well as to provide a set of misc features such as the
-> +  laptop lid status and HPD events for the USB Type-C DP alt mode.
-> +
-> +properties:
-> +  compatible:
-> +    const: acer,aspire1-ec
-> +
-> +  reg:
-> +    const: 0x76
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  acer,fn-selects-media-keys:
-> +    description: Configure the keyboard layout to invert the Fn key.
-> +      By default the function row of the keyboard inputs media keys
-> +      (i.e Vol-Up) when Fn is not pressed. With this option set, pressing
-> +      the key without Fn would input function keys (i.e. F11). The
-> +      firmware may choose to add this property when user selects the fn
-> +      mode in the firmware setup utility.
-> +    type: boolean
-
-We both had some comments on this property, and Nikita tried to follow
-up on yours (which was much more substantive than mine) but got no
-response:
-https://lore.kernel.org/all/20231214220210.GA988134-robh@kernel.org/
-
-Reading what you said, I'm not entirely sure what you were looking for,
-my guess is that you were wanted something controllable from userspace,
-but I'm not sure how you figured that should work where the firmware
-alone is able to control this.
-
-Cheers,
-Conor.
-
-> +
-> +  connector:
-> +    $ref: /schemas/connector/usb-connector.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |+
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        embedded-controller@76 {
-> +            compatible =3D "acer,aspire1-ec";
-> +            reg =3D <0x76>;
-> +
-> +            interrupts-extended =3D <&tlmm 30 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +            connector {
-> +                compatible =3D "usb-c-connector";
-> +
-> +                port {
-> +                    ec_dp_in: endpoint {
-> +                        remote-endpoint =3D <&mdss_dp_out>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
->=20
-> --=20
-> 2.43.0
->=20
-
---NyfVgNR6xsvZmS5r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdTyQgAKCRB4tDGHoIJi
-0uv6AP9Hs2QQv/YYHGYhhHhpqKqfT4EvP4wIJ2I3XnFPTLp7TAEAlyyHmfzBrCjD
-AgFzbLCEjTAQEJtMRKbH3EJ7Q9jMRwk=
-=2TYU
------END PGP SIGNATURE-----
-
---NyfVgNR6xsvZmS5r--
 
