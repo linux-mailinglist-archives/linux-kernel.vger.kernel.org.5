@@ -1,112 +1,91 @@
-Return-Path: <linux-kernel+bounces-73264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5147C85C031
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:41:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0038085BFD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:27:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA9791F2441E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:41:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AC1D282B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E9A7604D;
-	Tue, 20 Feb 2024 15:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF6876031;
+	Tue, 20 Feb 2024 15:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VaFiqMyX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QvzBDbJI"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2069.outbound.protection.outlook.com [40.107.96.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B301767C4E
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A466BB3C
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.69
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708443696; cv=fail; b=pi3uLpdyNnYKFI/hnKDeF/3S00Roh3vkk3GERRwBnTbyIuZ1YKlyT1FGDfL5zGEpOkbjJu6eWEaZWXyFiIFTWwzlrX8250T1Jh6Hfc2D4thKodIPyLK09rEHYY6K5gJyRg+gVIzQF94z4rjJT+c4aDtKIqZTArL5jY8T8ZoPlc0=
+	t=1708442861; cv=fail; b=aZXUtNlR2jb4KNpknSCmH+3gnyeCjLj2HjRSZtdMtP3Gqvxp4n82N6SLjPStV4hLLVmo4BC5CZu5Ko5xbAh1HDeSuGYHNHp3sSncZiTzwkEyuFUoKa1tWLVhy1r27/4AbI5E+NxlfyA0CMnUl+7qqX5ow9xn4V3BqSj0OJ6ojTo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708443696; c=relaxed/simple;
-	bh=cqkJ8dQlsbDTU9w3wStgIX0kL6geuagRjqiDLEsGdVM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=HiSBYdxAH/pXBx5tPQgKHdqHsKKLou1Ge8p072b3iyuYeJaY0ZBQuMwhHfxiPz+eeJfMs4daJXrJ8hrs1uk69A8JcGBRiyBBW8ahr4L/PfmVO9lmELavna+6ycQViTP0u3+eA3OD3lyw4LpxhCoPmSYsOJGPgMsXbVIYDggom5M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VaFiqMyX; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708443695; x=1739979695;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=cqkJ8dQlsbDTU9w3wStgIX0kL6geuagRjqiDLEsGdVM=;
-  b=VaFiqMyXrwM+KIkY9JT8vBJJ0anyAfeXUEWN7re9gZ0zD+o+IGRVdMyN
-   mEwtWHq1YfU1aJzz/1by0GvtwT0DKjVXuXpSJos/pvzjClFg9N8FwhVnW
-   E3I9Cv9elqaQUOMwwJlMse4spMNw/5f0FZzodMSfrrhWL1h1Ok4gQ9glY
-   oYxU5rOciyzGb8AWYU2CABfPIGwZphxL+aBprIBqGUnVNFqNRxZ6ml2q7
-   b2Pc42MEh0QefxIjeb/CriI/Cw9DpN97bEUXywSuQ9OnKI/+Ge0ew7RGb
-   L0VZgZKowSAfC5myLTDtYXHd2lOMzWTd4wn+Tw1QdNPlhIaCxT8HJLz96
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="6370121"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="6370121"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 07:41:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="9416976"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 07:41:34 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 07:41:33 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 07:41:33 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 20 Feb 2024 07:41:32 -0800
+	s=arc-20240116; t=1708442861; c=relaxed/simple;
+	bh=R3BTPJQBqCaqRdcxVA8uk1Czm+CpphmVBlCUzqkLt7E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KhICa4apcw0SZHDdPRHrM0sVvFLDNzJabXt/kcl/9gIPA8N8enomCzmMroqUGcyxJXiYR9SOmlUtBll2vHh5CLUuBNBj7ce8PnwLHtCPxnDK/QjWIVLC6F1SXmXPcYXVff12tEZyYvoy1l10t4HmkzQ/ydwLTQ02AIGnxYBcgMY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QvzBDbJI; arc=fail smtp.client-ip=40.107.96.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZsUVCof26RWKUudsaFQRvfyFCRgnMz08Z/dqNAw5WezgLBH4Gczfh5Nb55WDQM8XEg3qLTWkhglLkADt97MXluC5W5lcZ9bn+yxh6cv8yCmC2Y4Lh8FyD0nyxZcY2XnPdpNwuEX4oN6QnjCqA/ZAWMI49HrUV3X/9T+ZqiKUiaIywS5sR+E0nKicxnuTE3rXZbKfP4aBY7nqbr+L/mIC9L7IX809iYUw8YngXwh1Kk38Hbpcckp3AXB3UVcs7PNtWWjNkfPD9zYznDk+IK3N5z3lGI62CcZ8tCfCUCImCSCGMesd1mt6boPxf0is6/CnI3SBipvhyRIl2GpC5X0y9Q==
+ b=KlKEDd5v8PghDZLPBZIlQd8NGzJK3xVoeN1k4FlNigkOQaBoCpPro9Rz5NqqvSfwkuKwrJCu0yvKnecltZFQd3F1FRNqY2Sd38RGRSXEDam88twhkZzpD4vCmSySmwe8dFe1Qf4P8hTKbySEGNO5Xwjc6LCk5146jl1YFZZxCXCmen5YEwqzwFAxPURydsLx1XpzBEqJ245dAMK9VtUaHcVOTMWHuyzppiSHs8sG1Dn9FaT87JMLepXlHj+RyQqQIJ2zJ4cD3Zc9qN103xP8xs7ZFx9bXWcydS/LmQMAGYrA6F88p0yxcAdS09KT6NM9iQ3SnV2BUNNA1CfuI51IpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5vU+SX5rW0+7sFnQ6qfC/7O+R0btOD2h2S5us0HPXPg=;
- b=KPxXnwhBih66xk9jnhrspj7hh+wH4clCY8zRX2RomPVW6g2pPFVVOpUefL75ThCwGi/2Rdr4V8LfCvvIsFyF1oxKc30LRKW+MNjwRDZ5kplaI+BWAppbJc2eQHC4QIMNdy/2NG4ndxpVOSS/8HcVI0db78YvDaaezJSXRhU0B/vW7LRjwMPpNCeD5uVyi8Itts4V+ZMD5JHYH3rwWos8e1UMwxQCL6AvQVvQsGGLUq/xiAcLUdeMEXS119wjlvCB7dur0n54vwTw9kPZa5PyREyJRudzRe6B7h4BYY4jhMkL/0fNvJ30/7lhIWUaAWnBZ5V0HLtG0QObRPV5PH1nvg==
+ bh=8nxWFJB90gbNZQsWcogfDqtdcbBqqspezF/mb4mzN+I=;
+ b=dlc6Wp+/4vru3GFBDt11IjX0qVyDUGsDI/ROpuXCwHFOypqQp1ZfllycveFyGWGlIblMgNUtKZJCv/vPOWKUDcE3TxxLQGV9dp0byEgPs9GOKE/oqbgcpumB7nAuf7bg7KUhsT0d+Dmtzi+TkpXEcENL6dEP8Mk8YvkmqpHOZ8u8bM9n+8i+4jo4VZLzDy1uZpCQ4UoECB6kAeCIV6NyWdgj2RbOLOFY/C7M2aCUkz5b07Gk1yizcOMkIzElhdq2JgVc36+GyEj/J7zjLPumGJO4kUD1cclAEdOvNcpF4tmwTdhAkFUixTHwvWHAjcRZBNsgd3FIu8qxZyANTJ5IXg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8nxWFJB90gbNZQsWcogfDqtdcbBqqspezF/mb4mzN+I=;
+ b=QvzBDbJICP/m8p0tQpv1FzJnu3+nPHAyavxsAh3M2r7Q/vEBikT/3PX79Hi4+YFragMaCaBopaqxmE+rA+A4AInu8nRwqLyEgQPRRQ1MZUI+jKnlgLcCnXlj+Y3n/tDM7TagxKx4mnGfrmSvC3jshZO+9mUyGSruXuSmxQ7rK/e9U0qcgR6Mrgs/ldPO7v14u/LZ3AQPGSTJlBlqJF3x7t9WJg3GirvwFf2+0laRTHV5JXP441nCSG/McbhcOUTzwPpjbdiZyQ3rkZeZpo9OKOJssqsnwm8aNTtE4E3orDgj3L4Js840SMS5CRWuDnM/DBBi6zwNlc6aejIy2MakQA==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
- by CH3PR11MB8094.namprd11.prod.outlook.com (2603:10b6:610:156::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 15:41:30 +0000
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::4d4c:6d3e:4780:f643]) by MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::4d4c:6d3e:4780:f643%4]) with mapi id 15.20.7316.018; Tue, 20 Feb 2024
- 15:41:30 +0000
-Date: Tue, 20 Feb 2024 23:27:21 +0800
-From: Feng Tang <feng.tang@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-CC: Waiman Long <longman@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, "Peter
- Zijlstra" <peterz@infradead.org>, <linux-kernel@vger.kernel.org>, Jin Wang
-	<jin1.wang@intel.com>
-Subject: Re: [PATCH v3] clocksource: Scale the max retry number of watchdog
- read according to CPU numbers
-Message-ID: <ZdTE2SzO1pZ0QjUn@feng-clx.sh.intel.com>
-References: <20240129134505.961208-1-feng.tang@intel.com>
- <87msrwadvu.ffs@tglx>
- <ZdNnjdNTjtvpbGH0@feng-clx.sh.intel.com>
- <388686b2-5305-43d1-8edf-19ba66d52727@redhat.com>
- <0b7833a4-75f3-43ba-9d87-6f83cf4faa5a@paulmck-laptop>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0b7833a4-75f3-43ba-9d87-6f83cf4faa5a@paulmck-laptop>
-X-ClientProxiedBy: SG2PR02CA0100.apcprd02.prod.outlook.com
- (2603:1096:4:92::16) To MN0PR11MB6304.namprd11.prod.outlook.com
- (2603:10b6:208:3c0::7)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ CH0PR12MB5058.namprd12.prod.outlook.com (2603:10b6:610:e1::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7316.17; Tue, 20 Feb 2024 15:27:36 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::db3e:28df:adc1:9c15]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::db3e:28df:adc1:9c15%5]) with mapi id 15.20.7316.018; Tue, 20 Feb 2024
+ 15:27:35 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ "\"Huang, Ying\"" <ying.huang@intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
+ "\"Yin, Fengwei\"" <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>,
+ Rohan Puri <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "\"Vishal Moola (Oracle)\"" <vishal.moola@gmail.com>
+Subject: Re: [PATCH v6 2/4] mm/compaction: enable compacting >0 order folios.
+Date: Tue, 20 Feb 2024 10:27:33 -0500
+X-Mailer: MailMate (1.14r6018)
+Message-ID: <42FD6CCE-C3F7-4E5D-86C1-C2FE2EF06818@nvidia.com>
+In-Reply-To: <416d1450-6480-4113-b778-689a8f1d4e42@redhat.com>
+References: <20240216170432.1268753-1-zi.yan@sent.com>
+ <20240216170432.1268753-3-zi.yan@sent.com>
+ <416d1450-6480-4113-b778-689a8f1d4e42@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_EFFE56B8-C35C-45B0-B11A-1A1A9CF07B67_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: BL0PR1501CA0009.namprd15.prod.outlook.com
+ (2603:10b6:207:17::22) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -114,101 +93,275 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|CH3PR11MB8094:EE_
-X-MS-Office365-Filtering-Correlation-Id: db82b271-f221-4481-67f6-08dc322a6899
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|CH0PR12MB5058:EE_
+X-MS-Office365-Filtering-Correlation-Id: 69b66417-2430-4cc2-8c8c-08dc322876fb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GTKiUlSFSPR52mlBKKoj/aPRnDZEnsEFPqUtcYmEMlexAftq3SNmrSBp68rZUci4v0JPYixTg1IGxtKKLIyBAmDepkwPcN+83RDQnLcRi8zjfZlLFKI9tTOi3L+i0Og9jxS0QcBSghjotpXWi0o6KmD1QCxHsr9GEC+yQOpm5ZBMeKoh8ZKJEtN3vVoxaGyHcxY4iU8rEZLcb5gxcIh5xlYqrT99SLd0loEespkpQ69Mz9xSlVmWLFlEsztuOl/QmU7FbY+SF+bTK9gNRSeHUBZEUx9q479ViGV+rMZf4+Tw+hLAQYj7ZzuLvBt+ZUZJ+F5MnWfr7gMRZVj51Z8jMZZyhLI4BdFxbjHk5KiljulhjRpcKuEbXy5QKXQ/so6Ai5LvdTB65IwBaZS5GSfT6jXEN0G2v1vCqzCgxNNntaTllPs0xmkOOurSkcgzwyykgIlw0W93PiNIp4uDOfpPgklgs82dJahA+0n41PBxbOmVPD+8QeD38zJMXt717b88ZJYx2kbKIeg0pkeJqQ57BjEBTKubtMc8C9AlDO4Obuo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	RttCaIFKb/XTHxM9bhOsat70/wovuwcURUQoU4R47vyg98BhSXcahaWQdYIMiPg3kQsIXnwu8cUyuRwfMvDcl4DLTQvLgsbaStH10Xte2ixGa8yqv36zy9FarIYywK2sxhYNLaoQTaiILtwUdu6Bx+AO91WKjauqKpjf2kdcPHR7cx4K4KADte+3Uz98a5zfSRdY48MHbutX8yfNcoWMCzKhQ/0nLZ6MJrRxsQeQNHDT/jvDsk2oKQQnpoC97FH7Pg7moyRe7Qu3JkxvRlxrFFQ/aNd+rShmxGxzPvXHEb2hAQ2q3ukt2vQNSKHaOZcEr0b4pm+8+HlbX3V2sGdyAvHEUUNKhce4DwdvwxzZ/3fkW6fLi+JeBuE4DjT1UYTlFPINLhw6AiwLhzuANIIxqN5Im4kTRMdpUvC65OyfFiqKAt6mLRiRfE12i1qrme+OM5EUxJD6yojrnDfK5xwWnvtCRt+mpRR6youFuyShutQBsJOOMHLWQAJO9c0oQ3w/7o6xYxFEHp32MxKfUBgtSxwrdCjAGse29eVLK/OPylA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E5nGaBenukb1wrrA6R0KEN9uVqXMaPRu6IHrpMWzioMAcMXl7g+8NNJe5yrN?=
- =?us-ascii?Q?RSGRSkW1qRseXkWIAY4fFaCRJsaDqf310TtOIkrrEO5RyjVF779Ea3xdSDFu?=
- =?us-ascii?Q?kk+QsGkZviIEAfvgUR6FHu5mCOMqfH6ndtE5wdStniuniEMFS7Z1DyYYwjpQ?=
- =?us-ascii?Q?zYARtcQUUpvv5pJyKO1OOX+YrYiEwb6r0WGBvDHtp2/wxOIV38a2jVPKfMoP?=
- =?us-ascii?Q?s4vcb+5/XmTE0qaEjg9mnj13EK0OOxAm6auT6uZ/8rKO9EszusJ22UbBfOxe?=
- =?us-ascii?Q?/HIr0vwJD6EsI5KsY8pRiKpCX6ptYVaB3ieLLH0+F35MoAZKxLCRkrB7Y8DV?=
- =?us-ascii?Q?bGVuCsbPBvmrPzacRXHOQNNic8FTHbZUntqXlCMOIO35PUkVC8YHILL8dtdz?=
- =?us-ascii?Q?H1S75UUJvnZ47IeR4SLxxu/Xtz06Rl+NVF1aGebWWwZuq9IreYIlgjkBfh0p?=
- =?us-ascii?Q?dos9mDRzc7dc3l0TJ3vYZ76wCimna2hI1d3PhXj3DkJFjXPvdy7/Sn1OtbRD?=
- =?us-ascii?Q?CPagCf0s4U13+4EtgdednCB6LCrSYcpu0Vxy+1CRM3AEkFFgJPGHsgg2zgo4?=
- =?us-ascii?Q?3IXTpXlDGrEx/ZOH8AzsTylbmNkpyvnhGouWj+4fKZMAcPdSLHZzWRDNGXlx?=
- =?us-ascii?Q?o4owWX3EETSjzAndDytIREJuI4a5juaXasuJBqMNHEbIL0kPqko1suBzTENG?=
- =?us-ascii?Q?SVfgtueCJmtsBnMLobeMjGMkasNTbB3YaLxagiGwGfj5VfMij3f62G3RZ2nf?=
- =?us-ascii?Q?eS2ZcxwApghfUFknaIxA3ul0nQAX059qsNLtRqdpFF+4msbbAr6A4gFFRqXo?=
- =?us-ascii?Q?ZishBD8PDrG+caq1fwQ4rjCa2A4ifTQSJqP0k/SjtpBY0aJvYQiwwFj9akHi?=
- =?us-ascii?Q?M2KtT1c6oWYuARX7MpU9qd98i9KxcSNKy6oUvmG1iI+SVRidWA7o1VOUJCL2?=
- =?us-ascii?Q?o0OTH7zJFDeN3YFz+yij2wUEktLQYl5c4pSMQI9L/p1EPGhpAZ4hC/1xcCaN?=
- =?us-ascii?Q?VmBLT9ViV1FFNN7uvGMJZFlGnP6uKwXXN4OuBefAefJIJmaYtp6KcekBH/O7?=
- =?us-ascii?Q?7nj8e4Japd968Ul/8CTG6LPiaOkCeK2L/c9Hc3jChodGMnrDE3JPOSoi/hdr?=
- =?us-ascii?Q?cUpsIbUXQT9TCHnU5Su2T6IODMaBJwJxyH0LSp6HHjMqVK577a/HFeOCb+br?=
- =?us-ascii?Q?nmceCC6iaKbbcWJ5O/9mSDnbMl10IQu95m7ElMmkqJCTyQXBFjfm8fSciuRJ?=
- =?us-ascii?Q?9935of+6hrN//WypH6Cj1bYfnqxxNq8gDcH3AJoLpfc/c3GkNwZ+WmwthDHt?=
- =?us-ascii?Q?iY7ZDcYjpTyrkNT1qH0ji0onhZ2qXNbd+0zSfzo6MGV5WSntpxjhTBa/9zI1?=
- =?us-ascii?Q?9tddmHmGRrF8uNsjbFhZqMWI+G4ClIrqqQ8Og6CjRlYK61sFAXNrv2QlQmAT?=
- =?us-ascii?Q?rmU4IyfEL2xUxaqvv1Q5Lwud53iFzcLXVSQhS0XsIJZNFWv2VQ0jvMtKua//?=
- =?us-ascii?Q?nHsanf6YBsEBZiZi6dOOogSpOwhaQqPEvwu86ic1JFwhKXs1cLSG2eQIOdT0?=
- =?us-ascii?Q?rpcQamdzwNGpHrQOQ4EHYC5ie5pPcnLRsqi57cXQ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: db82b271-f221-4481-67f6-08dc322a6899
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?sv7OHzEgX5R0Gp14bnLrayq0vO+hHS8TN+oE3kT1z5NN01Z9/V20GngGo0TK?=
+ =?us-ascii?Q?HjyMzR8O2rXd3zX8yB+FUI4cvUp7YqCSS9DL21Itgq0QkLnIyrOvjxdlodls?=
+ =?us-ascii?Q?B/ecZVHWZOlxQA9uqASRrZ8mPoahaJiCIAKpIn+qmXLe3xsT6nlzLgvBDNxr?=
+ =?us-ascii?Q?kWUA1Va25GoMi4UTl3ZXpntufOXsYGIHe0saOVk1fEqLYeO3LP1mmTaVXnKN?=
+ =?us-ascii?Q?XnAF/7OFTeYgWAIFWj2AIhLZcD2AiUErgLLLq3AIaWGABGzPpfAGYPrT9Z9T?=
+ =?us-ascii?Q?jnwlHi17FcqXBl1MbSLbMg0XkwcfdIZ/ifKV0sCbpyO5VQe0wk+YkkyKSps8?=
+ =?us-ascii?Q?ONNiG0n2ym5gshVVrIsxj2uGlujqWHxKUeHr7rff0H6idAa3Weho0vl31v1F?=
+ =?us-ascii?Q?wdmBpwQ8IGDUhuRW22RxiGIFuPOGXOWxeB68yimj6+qt5+Rq7ohkETytfin4?=
+ =?us-ascii?Q?WxlI1EmLQz9S5pvFl1cP0h9mUkCBlKk2M9OB7NsLyGhFYzHzEd4EKosz99t9?=
+ =?us-ascii?Q?BqbGhEXBUBnWZUWnjfVPnSq3qOrwzuDqwl8MerP1HDNKgwpI12hcapxC72yD?=
+ =?us-ascii?Q?zyeF5tiIOmK3xPJ7cC3E8ME3r+j5TIf5l0y+QpusGlQqBUbOmHUeq+OJrjcx?=
+ =?us-ascii?Q?e51nv/loKxjr30bPFc0TjcuOIKuSfst2HrfGL+Mz/XglGH0rcFWGLtx3pdb/?=
+ =?us-ascii?Q?I3SgxrwPxM69RBEHnEa4ZhtpmGi1eq2g5I11aPb/rb7LjRjQO8/oShJxJWyk?=
+ =?us-ascii?Q?ZzxCDgfnwapqsAhqXEhnoIJdM+XuVBtaOYOl6mjmD0hLbhDrjHckOGCwo8xl?=
+ =?us-ascii?Q?aTfSAzDRWQgVz0ub+T1OaDogeqFI6Mdwsfqqdoy7jhLGSbaSsIqvsnPM3Ge6?=
+ =?us-ascii?Q?FGOcp6aT/Nm8mh/a0ARZvBbz9jXkUz9cSxQWay0WK5uVtBhprErKnemopWDK?=
+ =?us-ascii?Q?tE7b4Gp/1wOOghY69Ev4YbO0iEyW0tKAR/bhHzIIhbIOZx3WqJJZ4Noo1B65?=
+ =?us-ascii?Q?ifpuBUBWTZVBmCYEj8KUUaxmroZKrnXagwtDEGEHtktC8U2uEEl8A2EpYFz/?=
+ =?us-ascii?Q?BF1a9iPpooHR/H1gyTrX2h0FcmW20kQS7Rw2rc7EvnRwWdQGySn+/wssHOxB?=
+ =?us-ascii?Q?1IZEPfaytpjxAia3QqpyDQVO7Zz4aA8Q4wrgJ9Dh1odMsihxkwnNrXI0u3nQ?=
+ =?us-ascii?Q?naEQwUZcBzuw5Z3DbKtI8bShLmMcgr9hJDw4vtyr6/LD8Wl/WumobgJJLMls?=
+ =?us-ascii?Q?HaHfl5JiyFiy6kRRLPqiHBjXJ11gB9MT7gR030JgCPS+hoD8SAue+flg5Q39?=
+ =?us-ascii?Q?/bxRII6tkdwp5WMr1a2mC3bgI1sh4raVoMrCpLLrCBRAE5iJUJhDD1P5Vd48?=
+ =?us-ascii?Q?98DBrAFJH8ihpZtPezhLxRY8opWedfaOk+daFVj+D6wBU5sHmSEqeg3bPCWf?=
+ =?us-ascii?Q?LS22U7/3iIPM81c7IpHPVrBatkhfZj6gH6z5LQxyFrnilYUgEHbXVOa0NB4/?=
+ =?us-ascii?Q?QVzERGwjnJJxPaPPjfF75dFoktH+ttc7GIafaiG+xZNmQWhxhLNdpiJLbb+4?=
+ =?us-ascii?Q?KpnE4Nr91eNXwcVktBQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69b66417-2430-4cc2-8c8c-08dc322876fb
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 15:41:30.6019
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 15:27:35.7871
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6dasKC7BrWORSAj5W/nnfrMurHceP5bsMT3xkWxmtssQ0mt4yjC6sgdZIwd5qgvmFR8Ax7EiWAlp91XhVvIjAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8094
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: l8wN/2Izu/lGcujts9Js9zy/mKFheOro5rs/N6bSR+CR1kXZ8b76Es0KuslsOCwb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5058
 
-On Tue, Feb 20, 2024 at 07:24:27AM -0800, Paul E. McKenney wrote:
-> On Mon, Feb 19, 2024 at 09:20:31PM -0500, Waiman Long wrote:
-> > 
-> > On 2/19/24 09:37, Feng Tang wrote:
-> > > Hi Thomas,
-> > > 
-> > > On Mon, Feb 19, 2024 at 12:32:05PM +0100, Thomas Gleixner wrote:
-> > > > On Mon, Jan 29 2024 at 21:45, Feng Tang wrote:
-> > > > > +static inline long clocksource_max_watchdog_read_retries(void)
-> > > > > +{
-> > > > > +	long max_retries = max_cswd_read_retries;
-> > > > > +
-> > > > > +	if (max_cswd_read_retries <= 0) {
-> > > > > +		/* santity check for user input value */
-> > > > > +		if (max_cswd_read_retries != -1)
-> > > > > +			pr_warn_once("max_cswd_read_retries was set with an invalid number: %ld\n",
-> > > > > +				max_cswd_read_retries);
-> > > > > +
-> > > > > +		max_retries = ilog2(num_online_cpus()) + 1;
-> > > > I'm getting tired of these knobs and the horrors behind them. Why not
-> > > > simply doing the obvious:
-> > > > 
-> > > >         retries = ilog2(num_online_cpus()) + 1;
-> > > > 
-> > > > and remove the knob alltogether?
-> > > Thanks for the suggestion! Yes, this makes sense to me. IIUC, the
-> > > 'max_cswd_read_retries' was introduced mainly to cover different
-> > > platforms' requirement, which could now be covered by the new
-> > > self-adaptive number.
-> > > 
-> > > If there is no concern from other developers, I will send a new
-> > > version in this direction.
-> > 
-> > I see no problem simplifying it.
-> 
-> My guess is that we will eventually end up with something like this:
-> 
-> 	retries = ilog2(num_online_cpus()) / 2 + 1;
+--=_MailMate_EFFE56B8-C35C-45B0-B11A-1A1A9CF07B67_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Good point! Initially when writing the patch, I did try to search if
-there is a 'ilog4' api :) as the ilog2 of that 8-socket machine is
-about 10, which is more than enough.
+On 20 Feb 2024, at 4:03, David Hildenbrand wrote:
 
-Thanks,
-Feng
+> On 16.02.24 18:04, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> migrate_pages() supports >0 order folio migration and during compactio=
+n,
+>> even if compaction_alloc() cannot provide >0 order free pages,
+>> migrate_pages() can split the source page and try to migrate the base
+>> pages from the split.  It can be a baseline and start point for adding=
 
-> 
-> but I am not at all opposed to starting without the division by 2.
-> 
-> 							Thanx, Paul
+>> support for compacting >0 order folios.
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>> Suggested-by: Huang Ying <ying.huang@intel.com>
+>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>> Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> Tested-by: Yu Zhao <yuzhao@google.com>
+>> Cc: Adam Manzanares <a.manzanares@samsung.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>> Cc: Kemeng Shi <shikemeng@huaweicloud.com>
+>> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+>> Cc: Mel Gorman <mgorman@techsingularity.net>
+>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>> ---
+>>   mm/compaction.c | 66 ++++++++++++++++++++++++++++++++++++++---------=
+--
+>>   1 file changed, 52 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/mm/compaction.c b/mm/compaction.c
+>> index cc801ce099b4..aa6aad805c4d 100644
+>> --- a/mm/compaction.c
+>> +++ b/mm/compaction.c
+>> @@ -816,6 +816,21 @@ static bool too_many_isolated(struct compact_cont=
+rol *cc)
+>>   	return too_many;
+>>   }
+>>  +/*
+>
+>
+> Can't you add these comments to the respective checks? Like
+>
+> static bool skip_isolation_on_order(int order, int target_order)
+> {
+> 	/*
+> 	 * Unless we are performing global compaction (targert_order <
+> 	 * 0), skip any folios that are larger than the target order: we
+> 	 * wouldn't be here if we'd have a free folio with the desired
+> 	 * target_order, so migrating this folio would likely fail
+> 	 * later.
+> 	 */
+> 	if (target_order !=3D -1 && order >=3D target_order)
+> 		return true;
+> 	/*
+> 	 * We limit memory compaction to pageblocks and won't try
+> 	 * creating free blocks of memory that are larger than that.
+> 	 */
+> 	return order >=3D pageblock_order;
+> }
+>
+> Then, add a simple expressive function documentation (if really require=
+d) that doesn't contain all these details.
+>
+
+OK. No problem.
+
+>> + * 1. if the page order is larger than or equal to target_order (i.e.=
+,
+>> + * cc->order and when it is not -1 for global compaction), skip it si=
+nce
+>> + * target_order already indicates no free page with larger than targe=
+t_order
+>> + * exists and later migrating it will most likely fail;
+>> + *
+>> + * 2. compacting > pageblock_order pages does not improve memory frag=
+mentation,
+>
+> I'm pretty sure you meant "reduce" ?
+
+Yes.
+
+>
+>> + * skip them;
+>> + */
+>> +static bool skip_isolation_on_order(int order, int target_order)
+>> +{
+>> +	return (target_order !=3D -1 && order >=3D target_order) ||
+>> +		order >=3D pageblock_order;
+>> +}
+>> +
+>>   /**
+>>    * isolate_migratepages_block() - isolate all migrate-able pages wit=
+hin
+>>    *				  a single pageblock
+>> @@ -947,7 +962,22 @@ isolate_migratepages_block(struct compact_control=
+ *cc, unsigned long low_pfn,
+>>   			valid_page =3D page;
+>>   		}
+>>  -		if (PageHuge(page) && cc->alloc_contig) {
+>> +		if (PageHuge(page)) {
+>> +			/*
+>> +			 * skip hugetlbfs if we are not compacting for pages
+>> +			 * bigger than its order. THPs and other compound pages
+>> +			 * are handled below.
+>> +			 */
+>> +			if (!cc->alloc_contig) {
+>> +				const unsigned int order =3D compound_order(page);
+>> +
+>> +				if (order <=3D MAX_PAGE_ORDER) {
+>> +					low_pfn +=3D (1UL << order) - 1;
+>> +					nr_scanned +=3D (1UL << order) - 1;
+>> +				}
+>> +				goto isolate_fail;
+>> +			}
+>> +			/* for alloc_contig case */
+>>   			if (locked) {
+>>   				unlock_page_lruvec_irqrestore(locked, flags);
+>>   				locked =3D NULL;
+>> @@ -1008,21 +1038,24 @@ isolate_migratepages_block(struct compact_cont=
+rol *cc, unsigned long low_pfn,
+>>   		}
+>>    		/*
+>> -		 * Regardless of being on LRU, compound pages such as THP and
+>> -		 * hugetlbfs are not to be compacted unless we are attempting
+>> -		 * an allocation much larger than the huge page size (eg CMA).
+>> -		 * We can potentially save a lot of iterations if we skip them
+>> -		 * at once. The check is racy, but we can consider only valid
+>> -		 * values and the only danger is skipping too much.
+>> +		 * Regardless of being on LRU, compound pages such as THP
+>> +		 * (hugetlbfs is handled above) are not to be compacted unless
+>> +		 * we are attempting an allocation larger than the compound
+>> +		 * page size. We can potentially save a lot of iterations if we
+>> +		 * skip them at once. The check is racy, but we can consider
+>> +		 * only valid values and the only danger is skipping too much.
+>>   		 */
+>>   		if (PageCompound(page) && !cc->alloc_contig) {
+>>   			const unsigned int order =3D compound_order(page);
+>>  -			if (likely(order <=3D MAX_PAGE_ORDER)) {
+>> -				low_pfn +=3D (1UL << order) - 1;
+>> -				nr_scanned +=3D (1UL << order) - 1;
+>> +			/* Skip based on page order and compaction target order. */
+>> +			if (skip_isolation_on_order(order, cc->order)) {
+>> +				if (order <=3D MAX_PAGE_ORDER) {
+>> +					low_pfn +=3D (1UL << order) - 1;
+>> +					nr_scanned +=3D (1UL << order) - 1;
+>> +				}
+>> +				goto isolate_fail;
+>>   			}
+>> -			goto isolate_fail;
+>>   		}
+>>    		/*
+>> @@ -1165,10 +1198,11 @@ isolate_migratepages_block(struct compact_cont=
+rol *cc, unsigned long low_pfn,
+>>   			}
+>>    			/*
+>> -			 * folio become large since the non-locked check,
+>> -			 * and it's on LRU.
+>> +			 * Check LRU folio order under the lock
+>>   			 */
+>> -			if (unlikely(folio_test_large(folio) && !cc->alloc_contig)) {
+>> +			if (unlikely(skip_isolation_on_order(folio_order(folio),
+>> +							     cc->order) &&
+>> +				     !cc->alloc_contig)) {
+>>   				low_pfn +=3D folio_nr_pages(folio) - 1;
+>>   				nr_scanned +=3D folio_nr_pages(folio) - 1;
+>>   				folio_set_lru(folio);
+>> @@ -1788,6 +1822,10 @@ static struct folio *compaction_alloc(struct fo=
+lio *src, unsigned long data)
+>>   	struct compact_control *cc =3D (struct compact_control *)data;
+>>   	struct folio *dst;
+>>  +	/* this makes migrate_pages() split the source page and retry */
+>> +	if (folio_test_large(src) > 0)
+>> +		return NULL;
+>
+> Why the "> 0 " check ? Either it's large or it isn't.
+Will fix it.
+
+> Apart from that LGTM, but I am no compaction expert.
+
+Thanks.
+
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_EFFE56B8-C35C-45B0-B11A-1A1A9CF07B67_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXUxOUPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUfp8QAKK8/Mw+zVIYCOx0SuZJk+rY/IWYOr/QVWoc
++lMXSZ50ZvlzpmsJsBCdg+zrl0zPg1cPa66j6OrF8A8nQPvW5F/UDwMhUR1jrHJx
+HjYC3qI7eA7G72J+t1FEPq41sBtS/ypiAQbRwiK6KYME0GL42oMpeEPjyi67mixl
+SDv7RAOd3YsSi33LXLuSrCQ9BvrMvLMRTesLKHbi+g1xnpdxBdpoF9UdsGH63Xuk
+M5ASBmbftbakOQbRvtutmW3sMkL497PToKpXwYzs2aY11zWKwcdVLTivCreFiJ4X
+vAWnuY/rTEAQ0AL6sUIF7XUhGcLLsQKiaiAX8ez4IVOdkYun4qXZL8PGXKpo0BfD
+DgfJJLB3nLDy1/3iruThx5pFQXDkKR9qDkUg1kFsFuAmOXUVeSp6XSBfjXNz83OH
+N7/S8GwZTArb+YV0keMlmFBG2eu6ym5nWYUoOQk+KyfwbF3mF7oYyUyUAxXMYWht
+gwHtA02jqyXaAXDiYNMUOtg+A4jJyPG/Al9cMQmp7EU3Z19jKYDeYC8Xe4TheUfs
+ZxUD5NrQ0I3rqNpTdws/roHhD5Q+6Z4Mk7wbEcosvZ0yWJY3rKrAxa4h5i82nAEH
+zlgnB7M3IlKOAfNe4xgyfjti8wFxEJvKK0dc8Gkw5Ni8z6BElirM7wsSFLYJqi2T
+P59gLVCp
+=FCD4
+-----END PGP SIGNATURE-----
+
+--=_MailMate_EFFE56B8-C35C-45B0-B11A-1A1A9CF07B67_=--
 
