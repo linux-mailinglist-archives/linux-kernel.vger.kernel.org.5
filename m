@@ -1,137 +1,162 @@
-Return-Path: <linux-kernel+bounces-72556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C996785B521
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:28:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EECE85B55E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 052781C219E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:28:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05B88281F28
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A048F5C618;
-	Tue, 20 Feb 2024 08:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE6E5C912;
+	Tue, 20 Feb 2024 08:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OBOlYvZw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g8DDGgBH"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44045C8E3;
-	Tue, 20 Feb 2024 08:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015D45C8F2
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708417702; cv=none; b=g32VrOaEAp7sJguIeQ4LaERopkKqVYY6Lp+Iy7q+b/Svh1VOKtRmVJi5ckHznuAPvd6Iul/5ZnaIK7nDd+UEN4QMNbU0N+4g/kgaHb0Ql6OFmR26N36Pxwd98fdJYC409Rk3YBe9flpg+/MQxLHlIe6ENVeHQmtJz7E6LHNRI7c=
+	t=1708417725; cv=none; b=REyAjHPgTFjTkf9pVb5psV2u+NNLMMdxrIGMRf2cbJ0rpG7zxV3jEA6OY91m7A5pznjq0DYrm4GUanNhRj+oZu0uxu+uBI1K4EnLDTyhITFQuJy7mwbVv7ugqerZk21I6Nwb0GTJS1wYbqFaXRjUqs51WLQr4RMyL1BFzcy/qyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708417702; c=relaxed/simple;
-	bh=oJi3V1tRMEwgDlhC520Ifp/R6zBTkiVQaqZyEkhfrVA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EpGFMQ9OXemzvspeFmVTJzJtcJA7c62YPdE6uol31F6uCDBBZOjIrMhEko3ocVncQfIAaiTeT6kCVJuT9jkx4J6QUegVkgIeSyhkW0rlruZDnmBKzjSK1lPi+GfrbPDDpp419R6DEdyFEyIkQxdnSiTYaYGgtHSDxvyA8hr7Hb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OBOlYvZw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52899C433C7;
-	Tue, 20 Feb 2024 08:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708417702;
-	bh=oJi3V1tRMEwgDlhC520Ifp/R6zBTkiVQaqZyEkhfrVA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OBOlYvZw2tJRck/Zg8EMtwh7APiUr/fhwwAHze2BPIm7NcUcbqGJse9WXmPoi0ksw
-	 goQn52o3dXxiobRdcjtMGDPuPHsPoxGOkCWsIsPBb3Np/7WHHUtbGwtzvIxI2Kza8D
-	 ++rmMriBysq3Z9RoB/nNQlkwEwiilLM7RxS5/ULt83c2yjJ4z8Hhplxqi/b4ib8kdf
-	 xIFzdSy66602G9NdAlH5GY+NGK2BAZT7GsW+zUIzgDmS8NTqVUg1bwRJAnXfYLf2HB
-	 tlBRlPh6wRKL0sbFMSZYpjC02+h0dAFtGfAdaL5zFcR+iACpKVa4WVypeNl/XZyjii
-	 YRBdp0xU0g1GQ==
-Date: Tue, 20 Feb 2024 08:28:16 +0000
-From: Lee Jones <lee@kernel.org>
-To: James Bottomley <jejb@linux.ibm.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
-	Michael Schmitz <schmitzmic@gmail.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	drew@colorado.edu, Tnx to <Thomas_Roesch@m2.maus.de>,
-	linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 03/10] scsi: NCR5380: Replace snprintf() with the safer
- scnprintf() variant
-Message-ID: <20240220082816.GI10170@google.com>
-References: <20240208084512.3803250-1-lee@kernel.org>
- <20240208084512.3803250-4-lee@kernel.org>
- <CAMuHMdX72mpGgb3Wp0WRX3V78nn+bWUqiYz25CjeMNPpWaPmxg@mail.gmail.com>
- <20240208102939.GF689448@google.com>
- <98bdd564c6bf1894717d060f3187c779e969fc5f.camel@linux.ibm.com>
- <20240219152312.GD10170@google.com>
- <f5bef33da6c50e5fd067577f16f460025fe9a601.camel@linux.ibm.com>
+	s=arc-20240116; t=1708417725; c=relaxed/simple;
+	bh=EzBYJYexz/R7qydxMo7SSbDoihFTE9YS3BlAvcA9ylQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TLdWdL2Ls32vjzSwv2MP+JIZ3vc+irI1yHzWHvTqgOUdv7MeE/ZZFmc0Kp34hCqxx3455xvBcgoNQRHcWnEqIqbn9wzp39DHe+um0lZQ1fxKAVZM7ZeKgJYBQgGf4p3ZMF7cnpUycZaMyuSXP2t5PIJt0y2H6btNtaMaXsP8f1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g8DDGgBH; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41269c801eeso9547935e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708417722; x=1709022522; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9MLCi0s2a8fWThVWbSeoCMwkrcUJx51WlIXcaXYg5fk=;
+        b=g8DDGgBHXhvtqMmUwTK8WjJPD6DMOsKsHzylGoDMEynNJFJbCUI8Au95tlutHoQ+fY
+         2bnSmtTjmKv6Cx/kPk4sNjwIg1cnhFqei/tdhDTOQVjl2zx/1cdechqj0cZIHbHWiOXu
+         6l4YkN6fe7AbNavO30uQ4dQoBC8U9uaPMldpoxc9N357MtumCTJcRMzMNgj9EVYpCqPI
+         8ahQ5+cD9xiZW209LVmO5WAu5E4aNnxYbfPRtYbpJAVuNpvNZU+QOubSPtBC/jrh/3DI
+         9raKGMOFbgVbVpUwomnEcZ/82bXjfzCq52ZgUEMZVWMveIWw8axcQNOCNyQZ7Voyj0MP
+         4gbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708417722; x=1709022522;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9MLCi0s2a8fWThVWbSeoCMwkrcUJx51WlIXcaXYg5fk=;
+        b=XqtC8Q1WE4IDVvyAgkRaeY8P7ykpC94Ypj4y+FgFbuoxTKM+C9zDJ/Ew3ZC1Ku2fK5
+         9FcJp3KtvcNLuJJP1yGBZjsFihIfnsORaHMehtVl1Jk0nOmLKgcD8vJ5mn9vfKBuPALC
+         2qFRr2Nxq+lj/F79qz0MlKUK1wRAGPpt77Jwd+gFAnAvJyq6Pr0gwMfBl3i5JDAhFE+G
+         YJkS5nhRexCFmkM3VJbS6qu+x26ytSpw7c2r7O6ebu6P4cE/LKePrH2HF1gtSA1hhM9q
+         JoX17E61C/2rXuhOc3JAZd6c4l6tvJR+uLw/6cwM+W19CVfaX0CRt90wA/Q5a03Y1IQE
+         8r+g==
+X-Forwarded-Encrypted: i=1; AJvYcCXQn07YA4K59mO4v6ULdYuJmcIgV2wT8G23N+O6tdtRdwXr8GXpe1HoqBpyd+u8XMrDOUYV+BHIMcgwukSp73lGRSujQCOzd1SxETzZ
+X-Gm-Message-State: AOJu0YzOv1fsnbCUtNjTjKiRZLRps731kS15g+x2osd7nECGojYqnKVB
+	31K9H3cT9qWo7+/80rgx3/lfP5ywcOaNz1uNgc/RMbGnq/RvdCpyJBi6jfpcobQ=
+X-Google-Smtp-Source: AGHT+IGo74P7nUZYWJ+oeJU9HEqF/cs2IsJIyQfohwej4deJHSLY1vQ6vvoY9GE2up63pJfNilKt2w==
+X-Received: by 2002:a05:600c:4f96:b0:411:e7d5:cc5 with SMTP id n22-20020a05600c4f9600b00411e7d50cc5mr9420809wmq.4.1708417722242;
+        Tue, 20 Feb 2024 00:28:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id ay23-20020a05600c1e1700b004125ff0b572sm8943595wmb.8.2024.02.20.00.28.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 00:28:41 -0800 (PST)
+Message-ID: <b40f5b2d-d41f-47fa-8aae-30290e0d2737@linaro.org>
+Date: Tue, 20 Feb 2024 09:28:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f5bef33da6c50e5fd067577f16f460025fe9a601.camel@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/4] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
+ driver
+Content-Language: en-US
+To: Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ychuang3@nuvoton.com, schung@nuvoton.com
+References: <20240220004159.1580108-1-ychuang570808@gmail.com>
+ <20240220004159.1580108-5-ychuang570808@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240220004159.1580108-5-ychuang570808@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 19 Feb 2024, James Bottomley wrote:
-
-> On Mon, 2024-02-19 at 15:23 +0000, Lee Jones wrote:
-> > On Sat, 10 Feb 2024, James Bottomley wrote:
-> > 
-> > > On Thu, 2024-02-08 at 10:29 +0000, Lee Jones wrote:
-> > > > On Thu, 08 Feb 2024, Geert Uytterhoeven wrote:
-> > > > 
-> > > > > Hi Lee,
-> > > > > 
-> > > > > Thanks for your patch!
-> > > > > 
-> > > > > On Thu, Feb 8, 2024 at 9:48 AM Lee Jones <lee@kernel.org>
-> > > > > wrote:
-> > > > > > There is a general misunderstanding amongst engineers that
-> > > > > > {v}snprintf() returns the length of the data *actually*
-> > > > > > encoded into the destination array.  However, as per the C99
-> > > > > > standard {v}snprintf() really returns the length of the data
-> > > > > > that *would have been* written if there were enough space for
-> > > > > > it.  This misunderstanding has led to buffer-overruns in the
-> > > > > > past.  It's generally considered safer to use the
-> > > > > > {v}scnprintf() variants in their place (or even sprintf() in
-> > > > > > simple cases).  So let's do that.
-> > > > > 
-> > > > > Confused... The return value is not used at all?
-> > > > 
-> > > > Future proofing.  The idea of the effort is to rid the use
-> > > > entirely.
-> > > > 
-> > > >  - Usage is inside a sysfs handler passing PAGE_SIZE as the size
-> > > >    - s/snprintf/sysfs_emit/
-> > > >  - Usage is inside a sysfs handler passing a bespoke value as the
-> > > > size
-> > > >    - s/snprintf/scnprintf/
-> > > >  - Return value used, but does *not* care about overflow
-> > > >    - s/snprintf/scnprintf/
-> > > >  - Return value used, caller *does* care about overflow
-> > > >    - s/snprintf/seq_buf/
-> > > >  - Return value not used
-> > > >    - s/snprintf/scnprintf/
-> > > > 
-> > > > This is the final case.
-> > > 
-> > > To re-ask Geert's question: the last case can't ever lead to a bug
-> > > orproblem, what value does churning the kernel to change it
-> > > provide? As Finn said, if we want to deprecate it as a future
-> > > pattern, put it in checkpatch.
-> > 
-> > Adding this to checkpatch is a good idea.
-> > 
-> > What if we also take Kees's suggestion and hit all of these found in
-> > SCSI in one patch to keep the churn down to a minimum?
+On 20/02/2024 01:41, Jacky Huang wrote:
+> From: Jacky Huang <ychuang3@nuvoton.com>
 > 
-> That doesn't fix the churn problem because you're still changing the
-> source.  For ancient drivers, we keep the changes to a minimum to avoid
-> introducing inadvertent bugs which aren't discovered until months
-> later.  If there's no actual bug in the driver, there's no reason to
-> change the code.
+> Add common pinctrl and GPIO driver for Nuvoton MA35 series SoC, and
+> add support for ma35d1 pinctrl.
+> 
+> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+> ---
+>  drivers/pinctrl/nuvoton/Kconfig          |   19 +
+>  drivers/pinctrl/nuvoton/Makefile         |    2 +
+>  drivers/pinctrl/nuvoton/pinctrl-ma35.c   | 1211 +++++++++++++++
+>  drivers/pinctrl/nuvoton/pinctrl-ma35.h   |   51 +
+>  drivers/pinctrl/nuvoton/pinctrl-ma35d1.c | 1797 ++++++++++++++++++++++
+>  5 files changed, 3080 insertions(+)
+>  create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.c
+>  create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.h
+>  create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
 
-Okay, no problem.  Would you like me to drop these from the set and
-resubmit or are you happy to cherry-pick the remainder?
+Driver cannot depend on DTS, so please reorganize patchset so DTS is not
+in the middle or even split the DTS to separate patchset.
 
--- 
-Lee Jones [李琼斯]
+Best regards,
+Krzysztof
+
 
