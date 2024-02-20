@@ -1,84 +1,66 @@
-Return-Path: <linux-kernel+bounces-72802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C808C85B8E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DE685B8EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00B17B2B369
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:17:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4070AB2B79F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CAB2612FA;
-	Tue, 20 Feb 2024 10:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302976166E;
+	Tue, 20 Feb 2024 10:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rmn/FW8a"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="n7Ag8Kv/"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2017.outbound.protection.outlook.com [40.92.53.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7F260ED2
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424209; cv=none; b=bdopkC4vvyuF45WXp3azUJ07vWX8VfU9cP3YInL5/t7VSFC5T4OjMfpZtNF+ch/xSrXDBga05bocZ4VXebaInDHL6ovwkOXPdaz2wN2fuK7f4yZ4Yba6uCG1A6PDxK5Gb52ncgQ5QOGWfUOqrH9yIT4uECx4yE2TMf91nh2xYbE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424209; c=relaxed/simple;
-	bh=by5Wm/Wwl7lGUcPcc00U5JZPb531MlkWfFxyw7bgMKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b3N9VJ7/kT4hus6gWZAmMp4UJGC0Byur+XWn9pJStHLvKI/OyYuLYp5WLI3Nbo9T4y/BiOUN+t7hhZ0+Q44KKl3fm2bmn6H81eno+gj/vdhStxTdpIWBOtt+klAMF+gu2JJ+RdAkcLmeiAk5zTpqbY/Nqv2a3HgyBAycE0YTfZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rmn/FW8a; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d375993f4so1345755f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708424206; x=1709029006; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ISdve6kHImTTh0pCEXEVBi6FjNOnEVfHN/D0Hty/LNo=;
-        b=rmn/FW8a0sciqO949Evu+fD9KLXxosZosG9b7qKLQCneXy/FJbl1JLzRStEgHecTEd
-         QHfoct3K0eW3oFE7Kj7oNr6c25lEW78bajwkQgT8AjSLf7GYMrD5CkIN3a8NPDWvZ0ac
-         ySyVh3XFtXnaIb3t8doBN8cy87vKFKjiaIONwkSTi+ZvqoCCavlLMeP1pkrvq/Gf7Q6h
-         fITnC33E4uw/tGjAocpXginE91pamMJDv0KnWiM2GhFV67/8cR0y5rk65GqlNiXU+QlA
-         2VCVbcp4QJuULH1R4IuysbWC0kgH3feFrAJx2bAJFfd5cW1FqPrHMzx9KQ751qMvKR/y
-         FzFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708424206; x=1709029006;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISdve6kHImTTh0pCEXEVBi6FjNOnEVfHN/D0Hty/LNo=;
-        b=nR3Q6SWQRT2/QeruEPPddAl+QmclNE008vLK8wyaIaj9zAA3yILaYHI8KCKoYtavdK
-         ZBG0xmL+KyrhIw7nGHAiylltbPYrAMxrcJgGgz7KlIhoAUKhIaLR5D10pAGXJxoPlomv
-         8dwCvwfQR2iEmV1uI2L+Bmdgt57Yu7GZoSAw/5VYF0qgbNWmQlofeMvPr125GfwcbHP0
-         5EaYwNmeIN4TvxSzmaQoCoGyq+rVz+Th7s/qKh7r/2ujLy/PWu3X+5Ee+hFLHR5HU301
-         UrgB0qVZbWWZRvEjm5NdQi1vopBBANMyDYdQsT65zkQr+x8Tlqde6sRljA8KJt1TMo5M
-         3B0A==
-X-Forwarded-Encrypted: i=1; AJvYcCV16vxO35M0KE4LphbeeRbDNRP1ey18Ujf7h9Hua0/Utm/RJLKKO5Okc6TWMhJ2qZ+OMk7F9LPbx0lKbzz5iUv8DMMzqOzXZ/GG5zYx
-X-Gm-Message-State: AOJu0YyTPjqI3VKgpV8DTc0EGj86hCTmSlzabBGxLXoHediCtcRTNdeE
-	FB075GTWi0CENEMhHymI27acg+fFVgf+ZOnPkqtQH0UVC1fBagmWfdBfMkD897I=
-X-Google-Smtp-Source: AGHT+IEbWIRHwx3X+hn4PMbNET4E3jVcsaifn1eEYM61D2s3ixVnUGY6ilq72qn7cmBJePrHl+TjPQ==
-X-Received: by 2002:a5d:4389:0:b0:33d:3b83:6ca3 with SMTP id i9-20020a5d4389000000b0033d3b836ca3mr4451713wrq.64.1708424206134;
-        Tue, 20 Feb 2024 02:16:46 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id v4-20020a5d6784000000b0033d39626c27sm8491785wru.76.2024.02.20.02.16.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 02:16:45 -0800 (PST)
-Message-ID: <6fa7119e-bbde-46a4-b556-2845ee2fad5b@linaro.org>
-Date: Tue, 20 Feb 2024 11:16:44 +0100
-Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF2664A9A;
+	Tue, 20 Feb 2024 10:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708424230; cv=fail; b=uoJqzKwIP6nITv0AuEaozIslrE3i0IDIDdeHh7nsf31PaMT3uZHFiogI/FR9W2Pa5FCzIMwAAVAB1jJ6ChvjnEq6lfiiUXT7uexdVBc/ahzX1Q4ZGt8rX/IZ4Kcekb+6kQoaQTkW/UM6P2HEy7a7ypHTycUx/nAbseoB6L5U7lQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708424230; c=relaxed/simple;
+	bh=0IAsb8AYPdJn3EYsjU1R8C9vf1kKgJsZorTVHpNV4Kw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=XrtvevUI4Ko7GI3lVZd+BOnJ/SHILOTn5rvAmhG1kcPUOB5ha1H10/8DAfTbBsiHRno09LQ4yhG+kKKN/9xbGgefc/6/xOH1DC9ck/98LjzaSqrcUH0Jik6kWIhBXnwLCZMxlL2907HYsxQB1nYbHdwM3zNQQtSIeRV02R9pLmU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=n7Ag8Kv/; arc=fail smtp.client-ip=40.92.53.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QpRY0EBMTGeo3FkZHZIryvfA1X/TsF2YqIqlytDG1B2WoOPv0XuhBv0oKMHgivr1ZkqCRuYZEjm7o8BuqD8SQ3WqIUTkX7PAQjlRm/GF3OXtYy4pNG22CvP3GrFLRqqLxHYtzlGtwXGyMDaShvdS6jguV/GpOxOAummJWFMHh+r9ougIhL3eYqWo4obc3DTPPqft94INGdVuThidFzHiqnDEoDs284/jMcj372YORgWDBDor6TCURBEXNOVTu79vzDlwzwv7aXzUqWMrEB9Rfoqy6djzK80ufKt2haZwGPZ1EHCgf4sCsgXP0EnHc9D7iHijXlZBqggxWtTrGD3fsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gXgaYrCiqVf+qB6zHAiIi7msyjYK2/XZWr1QmhEMW88=;
+ b=Nm7PXtVop9Ul5247nby5WcX65GFmfU3wtF44Xv6Wdslki6srnjHZy+uXlCFZ5swweoXFoVe3GQ2HF5BTLFs5c1Gc0f/CF6bLKSwZbRgFi75qxVbpECoe2cjwXbSX9Zx5rOdOI6ffLcyPIe+3eai4XZx2D4kOBpJtv5GzqlyaxYWg03FDJGCgp/AkwhoTUoueOPVVFhyKerOa8S+/+kpnqC+MS2v8tpd44AGFCyLRRmlxm2GEX9CZVDUDJD37PbHCulzi/VnGE8767UdQoLFKL5f+TLK9T892oMlg7bCb0tjCDS4juHY5A4W+iEDnDXTDqaT7VIhWSdbJj3LCKgY1qA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gXgaYrCiqVf+qB6zHAiIi7msyjYK2/XZWr1QmhEMW88=;
+ b=n7Ag8Kv/Q2WG5D6OUF+pwCoZuvHWpnju7VXdUqdKJHfc6YJBJgO999t3P/w7sx+3VwtDvObwCj58Rn8GQgi6rDBshFFcQkef+iliQLMDII7wNhS+SlEobQBrghXcV5jaRw5XX6XfGmXX9VmiQ4JvTiY+w3mucFz44G3hAAPWU2cekh1KwtxG/2XNdDp/vEfXsxsPbrSW0psstNPBYmGfM5g7uZqtzh4aaVHmmPuiIXMQsfkmCx0fxAqktPijyMetIrfVXSnXmSJpb/meF0LQF/p0xz0dmLo18lJRbjDYH1ZF+QRhKLqWKi1GuieTEFSKYqYPA5GTs9J9mLHDADBUsw==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by SEZPR06MB5574.apcprd06.prod.outlook.com (2603:1096:101:cb::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
+ 2024 10:17:03 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 10:17:03 +0000
+Message-ID:
+ <SEZPR06MB695917EF191FE7537CCC559896502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Tue, 20 Feb 2024 18:16:58 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 1/5] dt-bindings: clock: histb-clock: Add missing
- common clock and Hi3798MV200 specific clock definition
+Subject: Re: [PATCH RFC v2 5/5] dt-bindings: clock:
+ hisilicon,clock-reset-controller: add Hi3798MV200 SoC support
 Content-Language: en-US
-To: Yang Xiwen <forbidden405@outlook.com>,
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
  <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -86,116 +68,129 @@ To: Yang Xiwen <forbidden405@outlook.com>,
 Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
- <20240217-clk-mv200-v2-1-b782e4eb66f7@outlook.com>
- <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
- <SEZPR06MB6959939E06B2F6068094DC3A96502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <SEZPR06MB6959939E06B2F6068094DC3A96502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
+ <20240217-clk-mv200-v2-5-b782e4eb66f7@outlook.com>
+ <ec0f1536-098c-42da-993a-a98f68f4eff1@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <ec0f1536-098c-42da-993a-a98f68f4eff1@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TMN: [sTM+VElmxJzdCOk2I4dUN+DJFGJ2JxwOzX+atQf9/sZ63vKyMr6tMIPzUa01pDKC]
+X-ClientProxiedBy: TYCP286CA0009.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:26c::11) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <f0ad7dde-8522-4345-8998-a93af540e52b@outlook.com>
+Precedence: bulk
+X-Mailing-List: linux-kernel@vger.kernel.org
+List-Id: <linux-kernel.vger.kernel.org>
+List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEZPR06MB5574:EE_
+X-MS-Office365-Filtering-Correlation-Id: 577416f0-7609-4de8-8a49-08dc31fd1537
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zd9gEbarB1xVFEfsrTumrKzLWsL9KwdxnvkY/Mw0+XDa7jhxZpXAHH74LckOsJ45FTuLkz0t7HBnGq+EDmoe23IPR7L8XS5Eg9aiuLV+Jc/3qy2OdJxgERD3/AYOT0JFCzYOipH1xpFPemMh6+2xxwOC1IC8rzSml8HLYZWbZ3vpHUd1F+l/34YGSy4LwNY78fEZtOaKam5h7uav9+atMAIEwbgg94v23RpGQ9Wz3XPvFeeq0TkNM0l6Wh44R2N/gl7p59T4S1zA32IInIHxj3nJpUStQqZHYnqs/eR/FDU+FVTNxO90f9QiktjsdMQJdxvVMFdmB4BRl/QByRjyXvCBnj4w9Dr4tTNHgxjzyzglI/xWw4D+op5sAxxVPzyja8npcNdt6qh6w7+45VlflZbib2yiylAVBXv0F1PcribNnaJQtNZ3ciHohGe125EYKVHAalAPW7KWTLrGNK3paBb/qFN8louyArAj5KVDhIWqVBoN3ISds21x5XBZ0VOQeg7UBX7QYi+pSzZ3+FuNBH043rnrbmqUvzo5CAMDytzaNolKRvZAKYn5luxRCUsQ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aUUvejJpd1VRTldIUEtydHFNaXJJd0c5VWZFMXJZQjJRQzJlYkJrUGpqRUZy?=
+ =?utf-8?B?SmhlQXhJNkU1UjMxYUJ2MWhueTVUTU5oSVpEUXlHNmxYSWpxQ2RlRVFhYVJm?=
+ =?utf-8?B?R0x4b2g1R3VIQlE5aVhWc0paNDFwb0ZzcTlqeHFrdWhHMnlTNDNVaEFMVlBx?=
+ =?utf-8?B?WFA3SnhrWkNjL1dUM2xYWEhQWE84UmNna2l0ek1KS1dUbEhTb1VnL0ZVcG5Y?=
+ =?utf-8?B?OFk5OUwyTnlQYS9zOVljU0tQU2hiTDZCVHNWMFRzSExvREtFNmdwTEFlYUxK?=
+ =?utf-8?B?aGNhOSt4UTFqNHBPSGdGcG4zUEovNldBSHlveEk2MjJEWE1Zc1F2TDZCMURh?=
+ =?utf-8?B?c29YMzhJdm12UUFLQWZOTVVxK21jeHl4WDdZbkgvVlFZQ1VhRkI5TTRsdThV?=
+ =?utf-8?B?N2t5SWZ1cWFpVkorRXNXN2dsMVB2T3RBZ1ZNb29KRnptWDU1dmJ1cGRCcmFW?=
+ =?utf-8?B?VmUwKzVtLzhJSDFjaXFOMmF2cmNWZURUL2hIYktBYWtJdjFWcTBsQmlSUW9X?=
+ =?utf-8?B?WFE3OTF4Z3BUTmV4Q20wblp1dzYxTGl5STRPMlBnUnM1bER3Zk52b0xBNVFa?=
+ =?utf-8?B?em5SRXZtaEgrWVg2NDRGdklyb3NZZENFdG9lWTBoKzdIZ1Z1cUg5OWZJU2Z6?=
+ =?utf-8?B?MHBRZHptY1dUUTRic3lZQUJtVkVvYlpNajE0Y2YxRUNIVjdYMk1hZ1JCYUVr?=
+ =?utf-8?B?Tk1CckRCS1RJZUtUczdpZ1RKejIrbjBUSzEya2xxaVVVTEx3bzVpdmMwWDV2?=
+ =?utf-8?B?UVNnWkRxZk5OcDJlZWNnZUFadnE5TUZpYkVQNTNkZG5maGNlZlFXcUFSL3hn?=
+ =?utf-8?B?SkdYcjQwTlR3dm5oanJEZlpPaVVudzFTc3MrN0JKRGwzYmQwRGxIU0EwREVH?=
+ =?utf-8?B?MUVNVGt5MFFaTjZUcytuM2k0TkhHSG4zczZ5K0RxMk4ycHUxa1FFYlBDMWVu?=
+ =?utf-8?B?V2tpb0lrOTBLYkVVQkgyOWFoYkY2UmxCUXlJMHp1ME9oM3FTTXZjTXJqcFhx?=
+ =?utf-8?B?VEZHWks3aGd5Sk9TMm5XNUdqTGMyYU5Ibjl3MG5mR2FyaG81bnhxL24zdVl0?=
+ =?utf-8?B?c3Y0STZtUWVyR1lWMHVTanRDeUZEY2Fia2k3VWdzaC9zdmtnZThDdUViTkMz?=
+ =?utf-8?B?ck9oSjhEMWw3UGVvdGlORnd0bFZwU2JLM1RyWk5UVVYzZmMxZmtpdjhaalN3?=
+ =?utf-8?B?R280dzlSbktEL2F1c2tiU1RwZjVCblJRejhxQTIrSEQ4MEFyUEhXTFpyemxP?=
+ =?utf-8?B?MWZkaG5MV2MrYkhrcU5EblRkNDV1SnRNelpCelhETUlTbFMvakFjSHBZQ2N6?=
+ =?utf-8?B?bFVwWWl6WFN2Y004aHlQVWt0VVdUaFBkNzFsVXBoaWp2T3FxOFhFQ0RkYklH?=
+ =?utf-8?B?bEJMVmswNjhXZk13anhDOEVZM0ZnK0gwTGZ3R0V5TGlBeVRnZnUzRWJYclBt?=
+ =?utf-8?B?MElvbHJERiswTS8yWjk4QzE3a1NVcERWNDNFWlZkMXl0QU81cnNsQlF6UVZG?=
+ =?utf-8?B?SEFucGhKeTJjOUJVa3h4RW9Ea0ZkT05LcVZGTGk2YUJ0M2ZEai9zRlA1Y3Bp?=
+ =?utf-8?B?Nk5rc0lhbzRPUHQxcUZmazI2d0YveGZUODROUzI2Zk1NYUlSWjBBOG81dy9Y?=
+ =?utf-8?B?UVlKa2JaSFNBc0pEcGN0ejlSNGZ4UlhDZkliUVNBeDNUQUQra1hEOGtIcmZF?=
+ =?utf-8?B?R0lpMm5mcGJFR1dHa2x0YTVSaG1iSUZTcXNER3lvbW1NdTlFY1RVTjBCZWRD?=
+ =?utf-8?Q?CYi//mvVoKmHQWLc1JeyroXz8HuAR006oKSvy38?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 577416f0-7609-4de8-8a49-08dc31fd1537
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 10:17:03.3492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5574
 
-On 20/02/2024 11:12, Yang Xiwen wrote:
-> On 2/20/2024 6:10 PM, Krzysztof Kozlowski wrote:
->> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
->>> From: Yang Xiwen <forbidden405@outlook.com>
->>>
->>> According to the datasheet, some clocks are missing, add their
->>> definitions first.
->>>
->>> Some aliases for hi3798mv200 are also introduced.
->>>
->>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->>> ---
->>>   include/dt-bindings/clock/histb-clock.h | 21 +++++++++++++++++++++
->>>   1 file changed, 21 insertions(+)
->>>
->>> diff --git a/include/dt-bindings/clock/histb-clock.h b/include/dt-bindings/clock/histb-clock.h
->>> index e64e5770ada6..68a53053586a 100644
->>> --- a/include/dt-bindings/clock/histb-clock.h
->>> +++ b/include/dt-bindings/clock/histb-clock.h
->>> @@ -58,6 +58,27 @@
->>>   #define HISTB_USB3_UTMI_CLK1		48
->>>   #define HISTB_USB3_PIPE_CLK1		49
->>>   #define HISTB_USB3_SUSPEND_CLK1		50
->>> +#define HISTB_SDIO1_BIU_CLK		51
->>> +#define HISTB_SDIO1_CIU_CLK		52
->>> +#define HISTB_SDIO1_DRV_CLK		53
->>> +#define HISTB_SDIO1_SAMPLE_CLK		54
->>> +#define HISTB_ETH0_PHY_CLK		55
->>> +#define HISTB_ETH1_PHY_CLK		56
->>> +#define HISTB_WDG0_CLK			57
->>> +#define HISTB_USB2_UTMI0_CLK		HISTB_USB2_UTMI_CLK
->> Why? It's anyway placed oddly, the entries are ordered by number/value.
+On 2/20/2024 6:15 PM, Krzysztof Kozlowski wrote:
+> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
 >>
->>> +#define HISTB_USB2_UTMI1_CLK		58
->>> +#define HISTB_USB3_REF_CLK		59
->>> +#define HISTB_USB3_GM_CLK		60
->>> +#define HISTB_USB3_GS_CLK		61
->>> +
->>> +/* Hi3798MV200 specific clocks */
->>> +
->>> +// reuse clocks of histb
->> Don't mix comment styles.
+>> This SoC is similar to Hi3798CV200.
 >>
->>> +#define HI3798MV200_GMAC_CLK		HISTB_ETH0_MAC_CLK
->>> +#define HI3798MV200_GMACIF_CLK		HISTB_ETH0_MACIF_CLK
->>> +#define HI3798MV200_FEMAC_CLK		HISTB_ETH1_MAC_CLK
->>> +#define HI3798MV200_FEMACIF_CLK		HISTB_ETH1_MACIF_CLK
->>> +#define HI3798MV200_FEPHY_CLK		HISTB_ETH1_PHY_CLK
->> I don't understand what do you want to achieve here. Clock IDs start
->> from 0 or 1.
-> They are aliases. A friendlier name compared to ETH0/1.
+>> Also document the specific DLL regs and add an example for it.
+>>
+>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+>> ---
+>>   .../clock/hisilicon,clock-reset-generator.yaml     | 36 ++++++++++++++++++++++
+>>   1 file changed, 36 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml b/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+>> index d37cd892473e..8ee844574eda 100644
+>> --- a/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+>> @@ -44,12 +44,17 @@ properties:
+>>             - hisilicon,hi3519-crg
+>>             - hisilicon,hi3798cv200-crg
+>>             - hisilicon,hi3798cv200-sysctrl
+>> +          - hisilicon,hi3798mv200-crg
+>> +          - hisilicon,hi3798mv200-sysctrl
+>>         - const: syscon
+>>         - const: simple-mfd
+>>   
+>>     reg:
+>>       maxItems: 1
+>>   
+>> +  ranges:
+>> +    maxItems: 1
+>> +
+>>     '#clock-cells':
+>>       const: 1
+>>   
+>> @@ -87,6 +92,12 @@ properties:
+>>       description: |
+>>         Reset controller for Hi3798CV200 GMAC module
+>>   
+>> +patternProperties:
+>> +  '.*-dll@[0-9a-f]+':
+>> +    type: object
+>> +    description: |
+>> +      eMMC/SD delay-locked-loop (DLL) register subnode
+> NAK, now all of the syscons have the DLL node?
+Oops. Forgot to remove this. it should be removed since it's now not 
+used anymore.
+>
+> Best regards,
+> Krzysztof
+>
 
-Fix your email client, so it will not remove line breaks before/after
-quotes. Your email client makes it unreadable.
-
-Aliases do not bind anything, so you can drop these.
-
-Best regards,
-Krzysztof
+-- 
+Regards,
+Yang Xiwen
 
 
