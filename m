@@ -1,121 +1,137 @@
-Return-Path: <linux-kernel+bounces-73104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218F085BDA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:51:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A476385BDA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 543581C21295
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:51:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED80285F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7355A6A355;
-	Tue, 20 Feb 2024 13:49:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EA96A8BE;
+	Tue, 20 Feb 2024 13:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UIbJoLjV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="mpQapRPp"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51FB26A33D;
-	Tue, 20 Feb 2024 13:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97127612C0
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436964; cv=none; b=AgTvMLNRq6vjExJlOurF+rO+hudUuX77HuVibM+W4eTPQXUIwcjrEzuk8indlYf7CMokSZYwnp0Y2Q1K2olYKmqK/jse+XDjKkeg2GFQBJkQ8dh+joetUhLyIxZAlJz/E5S+F8t6qieFWPRDBcuje2Etcs6njLN498TVrBMsFpM=
+	t=1708437001; cv=none; b=FluHPUXqTJmxn8vd3H7GwL30onohK2/kYXTX3Q3/9DdndRzbtmyNocOxZAJNqvUx/jz+Z7i93/eIkUNsV9Sg1OVrrm2mdUcDRvLBAbV44chezbR+JYxWqDa/NFCSMYTRQGbJGGADZKGURDZwadE5Y5EplVH+ao+wNqygu5KQDL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708436964; c=relaxed/simple;
-	bh=Ry+oD2aeuZyQ8lyL2bZUi5BX0g4Xx7EQvo1e3TAbr5I=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=bZ715y9vvNBIRx2MSUbljDwfDsBWXI9cgY7dVDyoSuJFdr7eF0l66ZwHKyuv9Z4n3Vk3+Sj/2OmY/c5yieV9ewDaCYPgUMT/OddbG67H14yqSiQgybP0hM7OMnUWPi0ihgJO3XLIrGCYVXCmKSp6AYHxOCqp1ejZhnMOWAmDncc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UIbJoLjV; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708436963; x=1739972963;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Ry+oD2aeuZyQ8lyL2bZUi5BX0g4Xx7EQvo1e3TAbr5I=;
-  b=UIbJoLjVjDTpeyUpxqpnIJvR9ehj/PFG2YqFBYHTw4MNNP/LEtF+pxZc
-   ugQ09kJ2deJlr4y6PFdpGNnuAfQfu9d7PbuWnCHiRP59yN2prrDBPyRas
-   DZobRPOWwgZ2IxNVJcNZnzJOuqKwPiBNPcOC1aBPSUjsrkrLd536zAPES
-   ehNFNL62o7o6yEIylj3uW8308x9DxZSj2TYUvKYmw4kcJyWvlvmO1p5f6
-   YjTem/IZApjVhiGSRh6N+2CXvXSm7dTqB2eVLgmAESFaRg3gVsgLKh+Pq
-   a2jy6uZn7xuHmhU0oFwugi9P8Rxu4KqM3RbXuTOk2qg83tNRJ3g2SD5iT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="24995632"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="24995632"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:49:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="4940842"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.249.21])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:49:21 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 20 Feb 2024 15:49:16 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: Fenghua Yu <fenghua.yu@intel.com>, 
-    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 3/3] selftests/resctrl: Move cleanups out of individual
- tests
-In-Reply-To: <63b9763211c2954f0ef517a817b3bf0c482df8cd.1708434017.git.maciej.wieczor-retman@intel.com>
-Message-ID: <f08dafda-c8a5-324a-464c-5b84d779c4ad@linux.intel.com>
-References: <cover.1708434017.git.maciej.wieczor-retman@intel.com> <63b9763211c2954f0ef517a817b3bf0c482df8cd.1708434017.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1708437001; c=relaxed/simple;
+	bh=lozYVyMc3VfOBnHiDoSHDqEFm2dofar5tpGyH1FwJ4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qxCXa1kjSDMg27HwJ8UILDcJ9f7CxyJpDgLNmE7tU98P2ykqX2senWiVuFgxIuxjpkOwvrN4F/C5//zrhoUfCkFVE7oHZqYSFDJvrKd1avjsdHgpEVVmbOVenx1vM1Z1xvYABgF/d7gfwhHRFTHTMujx7vbC7VUGu/G8+95xYyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=mpQapRPp; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41271fb0087so866685e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:49:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708436998; x=1709041798; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=atijrAqjDl7w1equm+2MU48dC3MbTNNsBttO38KSPYw=;
+        b=mpQapRPpK07QXsW6q3yyg7PBGqn4ugZoPY1UTc3Dh+ZX1kZee8z5AQGPm+J+fBCD+O
+         BVoBynxZEiT72/PhDRi6Xfo5bcbfjIvrM0sHUBv5ks+AyjkjciYNFH7Jsypl9Xl5fFCu
+         c1JDDhn0YGAUP6/epU0HMH8RkU28f2aVNyQd3nYVH09jjqkOHIHZbbTngLI2RB1nklZF
+         M8fMeif91oHJ15hIaln+kLVvTeAF3ObX/Gmp8bys/ITalxREXlio7YkYKVLIIQcpzChw
+         DjDbkI8GSMdS4jr6D0JygOjR0HecnyhuX3MJpsWDqcE3wDtzAyPN8jqJ2HL0jYUUP2Uw
+         wh1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708436998; x=1709041798;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=atijrAqjDl7w1equm+2MU48dC3MbTNNsBttO38KSPYw=;
+        b=Qd/gZdxgtUFQqK+Hj/qgakzevYHGuxmbdRraE/u4TfeLshLuebYfUKOG++1KhyT/+D
+         tg40DrVY3kSROR4HtwGOdNSBNF9hpRxStB7tjzwanjeWB4BcqkykfuUPoRRT8CJnfPDx
+         yMg7t3otmriPm3fueW47M9RLXAz79J0F37o6Fmzl7yMpW7AWgK18Ua0yZVGWEdtg4S92
+         dwEkXbbJy+n8w1K1hqCMq9XGgu3rlYGmr3m2S7b44D6Cr5CwHjhq/SzTXiPe/sN3mhHJ
+         thNc0fNkWmOuKT0M9mE5IQe0JnlfLpuumZDOVZbXB07J0jIuaWGS0C4Uohw0yeXE2TSH
+         WGMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTsnCfqBnwDDVZLYP6GhPZDWEeSzEAPMGrWnZfuseNOfpl/9NcRuJLZHY8jCLTlAi2CzpeBMc7Fz47H3H2PbyUHroul1ZL9AkjdWou
+X-Gm-Message-State: AOJu0Ywcep7M6EAomNPhqpQSAW7cbNC/612ZSR3W6AYqJ5oSMAkDkvdD
+	4E7NImkf4Iu3YbjCRuaosZVZTVt4xjEzlzNDJcefy6cNL9MQlQutEawB1mY/maM=
+X-Google-Smtp-Source: AGHT+IFwz1rgj01AxeALb187kQcQiPmPv9XO+Dm8PUvcdo4OlXUxE/BudbUXIdu4KCv8RvP93j4cTQ==
+X-Received: by 2002:a05:600c:3108:b0:412:6885:cabf with SMTP id g8-20020a05600c310800b004126885cabfmr3195203wmo.32.1708436997787;
+        Tue, 20 Feb 2024 05:49:57 -0800 (PST)
+Received: from airbuntu ([87.127.96.170])
+        by smtp.gmail.com with ESMTPSA id l37-20020a05600c1d2500b004126afe04f6sm3985233wms.32.2024.02.20.05.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 05:49:57 -0800 (PST)
+Date: Tue, 20 Feb 2024 13:49:55 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: Re: [PATCH] cpufreq: Change default transition delay to 2ms
+Message-ID: <20240220134955.4nlofes2g7oz4g6g@airbuntu>
+References: <20240205022500.2232124-1-qyousef@layalina.io>
+ <20240205074514.kiolurpounokalum@vireshk-i7>
+ <CAJZ5v0j2rA-+Jpdv6OZ_ymiqh0+RGzmJBNncKGBwuxO3PxgSKA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0j2rA-+Jpdv6OZ_ymiqh0+RGzmJBNncKGBwuxO3PxgSKA@mail.gmail.com>
 
-On Tue, 20 Feb 2024, Maciej Wieczor-Retman wrote:
-
-> Every test calls its cleanup function at the end of it's test function.
-> After the cleanup function pointer is added to the test framework this
-> can be simplified to executing the callback function at the end of the
-> generic test running function.
+On 02/12/24 16:53, Rafael J. Wysocki wrote:
+> On Mon, Feb 5, 2024 at 8:45 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 05-02-24, 02:25, Qais Yousef wrote:
+> > > 10ms is too high for today's hardware, even low end ones. This default
+> > > end up being used a lot on Arm machines at least. Pine64, mac mini and
+> > > pixel 6 all end up with 10ms rate_limit_us when using schedutil, and
+> > > it's too high for all of them.
+> > >
+> > > Change the default to 2ms which should be 'pessimistic' enough for worst
+> > > case scenario, but not too high for platforms with fast DVFS hardware.
+> > >
+> > > Signed-off-by: Qais Yousef <qyousef@layalina.io>
+> > > ---
+> > >  drivers/cpufreq/cpufreq.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > > index 44db4f59c4cc..8207f7294cb6 100644
+> > > --- a/drivers/cpufreq/cpufreq.c
+> > > +++ b/drivers/cpufreq/cpufreq.c
+> > > @@ -582,11 +582,11 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+> > >                * for platforms where transition_latency is in milliseconds, it
+> > >                * ends up giving unrealistic values.
+> > >                *
+> > > -              * Cap the default transition delay to 10 ms, which seems to be
+> > > +              * Cap the default transition delay to 2 ms, which seems to be
+> > >                * a reasonable amount of time after which we should reevaluate
+> > >                * the frequency.
+> > >                */
+> > > -             return min(latency * LATENCY_MULTIPLIER, (unsigned int)10000);
+> > > +             return min(latency * LATENCY_MULTIPLIER, (unsigned int)(2*MSEC_PER_SEC));
+> >
+> > Please add spaces around '*'.
+> >
+> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 > 
-> Make test cleanup functions static and call them from the end of
-> run_single_test() from the resctrl_test's cleanup function pointer.
+> I've adjusted the whitespace as suggested above and applied the patch
+> as 5.9 material.
+
+Sorry I missed that remark about the white space. Thanks for the fixup!
+
 > 
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> ---
->  tools/testing/selftests/resctrl/cat_test.c      | 4 +---
->  tools/testing/selftests/resctrl/cmt_test.c      | 3 +--
->  tools/testing/selftests/resctrl/mba_test.c      | 4 +---
->  tools/testing/selftests/resctrl/mbm_test.c      | 4 +---
->  tools/testing/selftests/resctrl/resctrl.h       | 4 ----
->  tools/testing/selftests/resctrl/resctrl_tests.c | 2 ++
->  6 files changed, 6 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> index 2d2f69d3e5b7..ad5ebce65c07 100644
-> --- a/tools/testing/selftests/resctrl/cat_test.c
-> +++ b/tools/testing/selftests/resctrl/cat_test.c
-> @@ -128,7 +128,7 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
->  	return fail;
->  }
->  
-> -void cat_test_cleanup(void)
-> +static void cat_test_cleanup(void)
->  {
->  	remove(RESULT_FILE_NAME);
->  }
-> @@ -289,8 +289,6 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
->  	ret = check_results(&param, test->resource,
->  			    cache_total_size, full_cache_mask, start_mask);
->  out:
-> -	cat_test_cleanup();
-> -
-
-Any goto out can now become return ret; and the out label be then removed.
-
-
--- 
- i.
-
+> Thanks!
 
