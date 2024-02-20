@@ -1,123 +1,110 @@
-Return-Path: <linux-kernel+bounces-72895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065CB85BA4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:22:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52D7185BA20
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF7FC1F25216
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:22:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0630A2834CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD8E67C7A;
-	Tue, 20 Feb 2024 11:21:36 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A101B664B6;
+	Tue, 20 Feb 2024 11:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaN2fh/i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B584567C70
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEAAC604A9;
+	Tue, 20 Feb 2024 11:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708428096; cv=none; b=j6AFDKABsGKlcSSQy/lWxZnlvio6eReh2aLTHZiKdBnUvYnrUPxw3rUCWycaUQlgNWXyE0F51WiYWETE0fN+XyoFKNIfRCgyBWRbHFRfX4AlXIIkFNH36Y3/CpKCOpiTktb/QfD0Dwv+lgHr7wh8D6SULGJgF8gfWTPLBuEU7I0=
+	t=1708427764; cv=none; b=ipKS+0ow/DL6CytI47ORwDilUmAjhHUesaYQVfA0+m7ptLwCq+UEq8ztwmhUM1zko9+LlO24Re0/VW05wHjM+8AtofBpjdN3nV3o5PwLN6IHMjXMZlYgMvc8JTO4eytkSif+erH68u3v4w7RQ19wWupkweyPZi7XdXG8PUr21a8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708428096; c=relaxed/simple;
-	bh=p3qHs+8yUn4gJnTCAezckQGse3mRhKycMBb4P4eMPqE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oEgagW8+spTewfq7luwEFJSMyPaiKwLLbQCT81YGPphW30fB9fyJjA4XMDKRGe9uUAVA6sjxb0lw5ENYZR0UWlfTWM1maogE1Nw11JS/M6vx3AnPXfNE8zGr8uHhgmrZ3U3miuc0h3FN78lOV5JnqVdQYc51yUzRqg3dU38f+2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TfH4h2Rpyz1xnyq;
-	Tue, 20 Feb 2024 19:20:04 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (unknown [7.185.36.236])
-	by mail.maildlp.com (Postfix) with ESMTPS id E18C2140118;
-	Tue, 20 Feb 2024 19:21:25 +0800 (CST)
-Received: from mdc.huawei.com (10.175.112.208) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 19:21:25 +0800
-From: =?UTF-8?q?=E9=99=88=E9=AA=8F?= <chenjun102@huawei.com>
-To: <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <xuqiang36@huawei.com>, <chenjun102@huawei.com>
-Subject: [PATCH v3] irqchip/mbigen: Don't use bus_get_dev_root() to find the parent
-Date: Tue, 20 Feb 2024 19:14:29 +0800
-Message-ID: <20240220111429.110666-1-chenjun102@huawei.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1708427764; c=relaxed/simple;
+	bh=b3Q8EgeZzo8W7wf2Dwybt5IsYpM0CIbjVQaLGahQYeE=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=CwV4ysz2Zg4E8x0QGl/Oz+FUa9r34fAHQq52bXSfC9XjhAvW/QmO/INhFtNh9RnrQ2PKFE1ZTynXIIlRQVQ9nvcJlEJ1DvUJ0pFkrpxmHE5SM7dfIgx01KyOfLafffyj1c9/J+OtteyIxoW2yUPajmy9vNkPUJ3sHYBQajjx3qE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaN2fh/i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F740C433C7;
+	Tue, 20 Feb 2024 11:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708427763;
+	bh=b3Q8EgeZzo8W7wf2Dwybt5IsYpM0CIbjVQaLGahQYeE=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=CaN2fh/ih+BYJIL5Ws+1+IwLVaYYExR7VKCj+S0U7o8mQSiMFCjIaJBr9RQiJHNba
+	 ENC16mJKyGByugLr4Rw72c9dZ/Cp0zjOk1slGQHrVViUhiF/nVuTj4wEwXdMT7y2vY
+	 Cgs3UzXf2q02/ld2Q78ujip4Shr8I4ExoAam969vmSe93IVhQNza4kebbDAkiwgl1x
+	 xAO60ToVjNJ9WG2BqsaNP6DdLc+FubLMNIGlCeIhXS5WsbVm9dVM3vFgYBQCgi5gfP
+	 COEmcJBS4d7YMaRIZgGHJuScS0DHqh33Oden2MMCyka2EHFVhkrFjbCATPIQCq1d++
+	 5kMhwYjofqNrg==
+Date: Tue, 20 Feb 2024 05:16:02 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
+From: Rob Herring <robh@kernel.org>
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>, 
+ Jingbao Qiu <qiujingbao.dlmu@gmail.com>, Vinod Koul <vkoul@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, dmaengine@vger.kernel.org, 
+ dlan@gentoo.org, Jisheng Zhang <jszhang@kernel.org>, 
+ Liu Gui <kenneth.liu@sophgo.com>, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: 
+ <PH7PR20MB4962823548BE1CB8E225ED09BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
+References: <PH7PR20MB49624130A5D0B71599D76358BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
+ <PH7PR20MB4962823548BE1CB8E225ED09BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
+Message-Id: <170842776103.2697493.3548601402716430308.robh@kernel.org>
+Subject: Re: [PATCH 2/4] dt-bindings: clock: sophgo: Add top misc
+ controller of CV18XX/SG200X series SoC
 
-From: Chen Jun <chenjun102@huawei.com>
 
-bus_get_dev_root() returns sp->dev_root set in subsys_register().
-And subsys_register() is not called by platform_bus_init().
+On Tue, 20 Feb 2024 18:20:29 +0800, Inochi Amaoto wrote:
+> CV18XX/SG200X series SoCs have a special top misc system controller,
+> which provides register access for several devices. In addition to
+> register access, this system controller also contains some subdevices
+> (such as dmamux).
+> 
+> Add bindings for top misc controller of CV18XX/SG200X series SoC.
+> 
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> ---
+>  .../soc/sophgo/sophgo,cv1800-top-syscon.yaml  | 48 +++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,cv1800-top-syscon.yaml
+> 
 
-For platform_bus_type, bus_get_dev_root() always returns NULL.
-This makes mbigen_of_create_domain() always return -ENODEV.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Don't try to retrieve the parent via bus_get_dev_root() and
-unconditionally hand a NULL pointer to of_platform_device_create() to
-fix this.
+yamllint warnings/errors:
 
-Fixes: fea087fc291b ("irqchip/mbigen: move to use bus_get_dev_root()")
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
-Cc: stable@vger.kernel.org
----
-v3: Modify change log
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/soc/sophgo/sophgo,cv1800-top-syscon.example.dtb: /example-0/syscon@3000000/dma-router: failed to match any schema with compatible: ['sophgo,cv1800-dmamux']
 
-v2: Modify change log
-    https://lore.kernel.org/all/20240219085314.85363-1-chenjun102@huawei.com/
+doc reference errors (make refcheckdocs):
 
-v1: https://lore.kernel.org/all/20240129130003.18181-1-chenjun102@huawei.com/
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/PH7PR20MB4962823548BE1CB8E225ED09BB502@PH7PR20MB4962.namprd20.prod.outlook.com
 
- drivers/irqchip/irq-mbigen.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-diff --git a/drivers/irqchip/irq-mbigen.c b/drivers/irqchip/irq-mbigen.c
-index 5101a3fb11df..58881d313979 100644
---- a/drivers/irqchip/irq-mbigen.c
-+++ b/drivers/irqchip/irq-mbigen.c
-@@ -235,22 +235,17 @@ static const struct irq_domain_ops mbigen_domain_ops = {
- static int mbigen_of_create_domain(struct platform_device *pdev,
- 				   struct mbigen_device *mgn_chip)
- {
--	struct device *parent;
- 	struct platform_device *child;
- 	struct irq_domain *domain;
- 	struct device_node *np;
- 	u32 num_pins;
- 	int ret = 0;
- 
--	parent = bus_get_dev_root(&platform_bus_type);
--	if (!parent)
--		return -ENODEV;
--
- 	for_each_child_of_node(pdev->dev.of_node, np) {
- 		if (!of_property_read_bool(np, "interrupt-controller"))
- 			continue;
- 
--		child = of_platform_device_create(np, NULL, parent);
-+		child = of_platform_device_create(np, NULL, NULL);
- 		if (!child) {
- 			ret = -ENOMEM;
- 			break;
-@@ -273,7 +268,6 @@ static int mbigen_of_create_domain(struct platform_device *pdev,
- 		}
- 	}
- 
--	put_device(parent);
- 	if (ret)
- 		of_node_put(np);
- 
--- 
-2.17.1
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
