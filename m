@@ -1,191 +1,162 @@
-Return-Path: <linux-kernel+bounces-73708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E59E85C68C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:02:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EE9185C670
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC5151F22BF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:02:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9BC4283410
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E1C151CDC;
-	Tue, 20 Feb 2024 21:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99512151CC9;
+	Tue, 20 Feb 2024 21:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CyIB3vGE"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="kULFM7iA"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BC114F9C8
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF04151CD9
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:01:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708462955; cv=none; b=RxeFnfZifPhu8+1+JEYp9wY93XbPuCu4uDn6n6s7x/myHPuFt/MPx7XP5NIGYeQpHnU4ElFhuFmylhU6mVZsRF2wtpbartI4ZTQjQWuTiJEysvHsxAfaqkSBBH8aXyoJ5pOByvxkHFbWbGNGBjo3u7jBgwIHGkA6gbSZMtll5p4=
+	t=1708462868; cv=none; b=V+QFBO8ftg0sszpcQftnqTIB6fnVui25XOuFtG6oDSrBrqtstXN7U1rbnzIHaW2YVFpVuDOR5csdcntwGU9DW4c4R9OKGZjElUWajvIzK7AfkHzjcdY3oA9e5TefjFdj0hfeZXjFhOb9DvQ+N2J1EY01tCJx7i8CqgbQK5IJ4B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708462955; c=relaxed/simple;
-	bh=o6XPqB/8zxNHpvV0fHVJdWnCnt75Wb6tUvyGsRj0mEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pPykxc+K+EuCtdP3u0byhsp4K+aJnm8g7HzDWcH+FXpQgLD03L9M5XjdHP93Ru1uzQ+KVZFZvZwYTqnnWlzJvnrjQDfXmFpaB/t5Si+7mriGjaZ45EfALbdMPwDm1tHE6VbkF5yhZuomC+v3nsoCfT+uWXNwkEgKTkejRQDcIA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CyIB3vGE; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412748b183aso270705e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:02:33 -0800 (PST)
+	s=arc-20240116; t=1708462868; c=relaxed/simple;
+	bh=c8mj9GCK/VYC0uTtjPPbxdw6XzLVLtkaxBhdmNk2hx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UVYLt1KvwQf4LdkeTAIq0zmhUwHATH1rdpyu+207qIoEOCyMJ/wUUEK9YeqSBuwC8t5JON/x6nWVLtvqVjsEocQG2QKLsCeIiZADKv9L/pixf+9VazBM61/31HuLb8rVQzhykEvl0ZKchkJpCqg4FR64gPEnN5HzIDqavH9TlvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=kULFM7iA; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33d36736d4eso2191435f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:01:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708462952; x=1709067752; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vHk8B1G9ngPFWZyvzcJjpFnWjSLSm2alsXCknI8ZS8Y=;
-        b=CyIB3vGE8eSTX9uWbtaob7o6JmuFZQ1x7nVLtjylPqvpzsK61iokku/uHoUHrFwvj4
-         +VmErEWnhSQfMz0UpEBg8rJXnqHgtSgVMBLV6CopJMOMFJ81T00o3DU/SSHx/tLe1yAy
-         10LjbjcfrVmBFyJtwuEL5zeCAbBlcMGdBwEYz9XQmRBDgkffK1nXg2tpTqbH59HDXAnl
-         fSRDzNEc0oTEC7JV7MBhslLaJvF+ealBdxTa3zp3uRbLOBBkJMTo1jmmcgoofQmXvStO
-         sFKqMotFp1xXCFWnrSfvr4+aLVqnPMi/13eJ/iVZqNZoIcRTWKG8CvVpC9mVU92vDatQ
-         dcYA==
+        d=arista.com; s=google; t=1708462865; x=1709067665; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6cMX9apdIMaiuiffRRE+pqVp7mvVIBBBOysSz9lAvD8=;
+        b=kULFM7iAaG3sISLY0+J6vPgniCsaexY7zQoSOY4D5mh3xTOqrabo/SoSnvz43abtMM
+         9ZY4VhCp/uojmc6WPRXizRTkRzhUgJl1fHhY9Of5Z3LP0+Clxf4xH+p0iZVpsd8Q5KF0
+         uvZUmiW0khDRiObV/qZNpwHuklnqEjRcD5FNyIygPmQ5xTXdfw8ZDdNolpa1AuJ3UbmZ
+         j3zGUQPyPZxeK1XWwR6hKFVjw4dmcYGYHWNS3thgkNixnvcCLCJgA1BSUc1qZiz1co8c
+         FWDLDurOwS/TvUqN35RreyfREkCRPZHiXOajYYdvg3UCSIBC34JZoR8M0hC6wTVd2j7i
+         3NkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708462952; x=1709067752;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vHk8B1G9ngPFWZyvzcJjpFnWjSLSm2alsXCknI8ZS8Y=;
-        b=oFc0V02DgKtzs8PjZQT4ecx+f5dSfMpII6A0rRVqxb4BNFT9ZJ0yw1HTRVV/6eYI9r
-         fY2N2PuptcEIcfqJ4Y6uDkRjgQOBXyLoHnnVCcx+VHqJfuT8kdpL8RGM3FvNzKRPQ+y2
-         4QuCIJI/TOsNHy4bXDidE62IcYfp0SfT89E3O0dykG7jkqCc+IBGkQkp5rWaXaYEs0zj
-         yW0GTRPnUjd3UjAbFHkcbvDXkqdPWdK3hv5n00vAMopJ3xfER3PP7EL1ZlaDarXpBLcS
-         jcRv16XZVNoM8hgz+ZmTobLV0pjxjqFl4eHc1OJkUXZPNhBRPdGN7t1lvTm7eROjtEZj
-         Aqyg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCITd82Vg2AsFxjog+HA1NNpiuxUf6buYNOYH1VXXhxhsVMskLKlp3KpluOwESs7eyPKWKYq3IYeojm8GXqFkF0Hyv2377ItsaDkLo
-X-Gm-Message-State: AOJu0YwCyj5mj9p5DAQpFwOX6YGb6vg79jjkIsVhRsz2OsDcCRx7ihQS
-	C32q7HXSmc8s3Qh9wz8RbLJivGdsxGaoSTBQSyDGy5jGPuoNdWp/Lrl7FP5J
-X-Google-Smtp-Source: AGHT+IGNd4EhKrOF2qguezkMCdiri+YzoOSXxtGqLSGpEMpRRkdkkVB+APiJgoZ4zrZJv+9oUTVssg==
-X-Received: by 2002:a05:600c:190c:b0:411:cb30:8e00 with SMTP id j12-20020a05600c190c00b00411cb308e00mr12141209wmq.3.1708462951917;
-        Tue, 20 Feb 2024 13:02:31 -0800 (PST)
-Received: from localhost (host86-164-109-77.range86-164.btcentralplus.com. [86.164.109.77])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05600c451200b0040fd1629443sm16087456wmo.18.2024.02.20.13.02.30
+        d=1e100.net; s=20230601; t=1708462865; x=1709067665;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6cMX9apdIMaiuiffRRE+pqVp7mvVIBBBOysSz9lAvD8=;
+        b=eWSFUJUukf7bnW4/A8awBfKBESMZDkjPC3sNAUTGz0WEX6PhHN6YeVqHpXn0k2yIh/
+         drx86lh0ezlm6bcZI7WxWooD0Tuu+7Chyuu0pdkLsMvjDQIOakD46NJ766SoLsDiepI+
+         TEanCUI2+GUVBaJ5v9zov2hCvnB16m+fT1foh0wetqu70a2NCuet9x9iPn7X9wzsY6gC
+         mztMqymueOxQBxXmkRCf+fcvzJwU0y6msiV8ulHk5iQ8jGyC34+9eIoFLKZvBBcTDuTP
+         HgZTUc/gtWTVcfscf8NBk3cnoRxCKlSWcUNh8gkLOyimCFvUBLJOgoOSjqaqimt88k+0
+         2ryA==
+X-Forwarded-Encrypted: i=1; AJvYcCXsno/sfz66M3ZwyhHV4Cp+NdujFNM6nGXuUSV264B8n6AJSEg2ORwbKu2vPnjDItRPbCjqqKa4gDXzWxfIAawrVktheCpE/GLz5MQi
+X-Gm-Message-State: AOJu0YxtJo3Pb1Qi0PSHC6kedcjQVqhsKC+GFjNSLdOx67l7LGRmSG0w
+	2wFk8UJ2mfo7fEp9Sm1GczQHgFCvdHTmjZD1EQjdXRGPbTiwPBdVXrLMsGirPA==
+X-Google-Smtp-Source: AGHT+IErgWlxbM4BdSaWIPsAX1uxLZhgjdIUFq/bEci8UGzh3k8U7ttlHkzOJNEl3ibxUM/AJLvC5w==
+X-Received: by 2002:adf:e548:0:b0:33d:26b1:c460 with SMTP id z8-20020adfe548000000b0033d26b1c460mr6979790wrm.39.1708462865208;
+        Tue, 20 Feb 2024 13:01:05 -0800 (PST)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id ba1-20020a0560001c0100b0033d67bdce97sm3692599wrb.84.2024.02.20.13.01.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 13:02:30 -0800 (PST)
-Date: Tue, 20 Feb 2024 21:00:15 +0000
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: Yajun Deng <yajun.deng@linux.dev>
-Cc: akpm@linux-foundation.org, Liam.Howlett@oracle.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, vbabka@suse.cz
-Subject: Re: [PATCH] mm/mmap: Add case 9 in vma_merge()
-Message-ID: <bc9e3cc3-26b8-41ad-b791-10ba61edc1c2@lucifer.local>
-References: <20240218085028.3294332-1-yajun.deng@linux.dev>
- <a5cd692e-34e3-4bc1-a8fa-f6bb56f04e8a@lucifer.local>
- <f88de15e-508f-f651-0164-346845d23e85@linux.dev>
+        Tue, 20 Feb 2024 13:01:04 -0800 (PST)
+From: Dmitry Safonov <dima@arista.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: Dmitry Safonov <dima@arista.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Subject: [PATCH] Documentation/ftrace: Correct wording on trace_options sharing
+Date: Tue, 20 Feb 2024 21:00:57 +0000
+Message-ID: <20240220-ftrace-options-docs-v1-1-95448f535056@arista.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f88de15e-508f-f651-0164-346845d23e85@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.13-dev-b6b4b
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708462857; l=2812; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=c8mj9GCK/VYC0uTtjPPbxdw6XzLVLtkaxBhdmNk2hx0=; b=jXhDaX0neWOtUA+vokXv020wbVW5s7v4qUlz41JpacdByfyFhRhNBHxMSe2s1zii1Go3naEX6 fhLzBLV4kQZAv/CbQHlq6GNX0AzuUqNLt8NlxPhwJ78mYBzRKhH41I/
+X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 11:00:30AM +0800, Yajun Deng wrote:
->
-> On 2024/2/19 07:03, Lorenzo Stoakes wrote:
-[snip]
->
-> Yes, it's not a merge case. I label this to make it easier to understand.
+I'm writing just another net selftest, where I'm planning to check
+tcp-ao tracepoints. As I want the test to clean up after itself and
+affect other possible tests as little as possible, I'm creating an
+ftrace instance with event filters. In order to simplify, going to
+disable most of trace_options I don't need. And the current wording
+made me think it's not possible to set per-instance trace_options.
+And trying that in practice contradicted the documentation:
 
-OK, I guess I have to be more explicit + less soft here to avoid confusion
-as you seem not to be paying attention to what I have said - We can't have
-this in the patch, full stop.
+> # echo 1 > events/signal/enable
+> # cd -
+> /root/ksft-ftrace-4Py39Z/instances/ksft
+> # echo 1 > events/signal/enable
+> # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 6/6   #P:2
+> #
+> #           TASK-PID     CPU#     TIMESTAMP  FUNCTION
+> #              | |         |         |         |
+>              cat-7568    [000]  491748.118710: signal_generate: sig=17 errno=0 code=1 comm=bash pid=6189 grp=1 res=0
+>             bash-6189    [001]  491748.119003: signal_deliver: sig=17 errno=0 code=1 sa_handler=55c728d3bce0 sa_flags=14000000
+> # cd -
+> /root/ksft-ftrace-4Py39Z/instances/ppp
+> # cat trace
+> # tracer: nop
+> #
+> JZÊ<¿type: 154
+> f>ï>¿type: 154
+> -¸ó>¿type: 153
+> vW.A?¿type: 154
 
-I (+ Liam) have already explained above as to why, but to emphasise - each
-case number refers to a merge case consistently throughout. Arbitrarily
-adding a new case label to describe one of the many early exit conditions
-proactively HURTS understanding.
+It seems that since commit 16270145ce6b ("tracing: Add trace options for
+core options to instances") it is possible to set per-instance
+trace_options, with an exception to three of them.
 
->
-> > >    *                    PPNNNNNNNNNN       PPPPPPPPPPCC
-> > >    *    mmap, brk or    case 4 below       case 5 below
-> > >    *    mremap move:
-> > > @@ -890,6 +890,9 @@ static struct vm_area_struct
-> > >   	if (vm_flags & VM_SPECIAL)
-> > >   		return NULL;
-> > >
-> > > +	if (prev && end < prev->vm_end) /* case 9 */
-> > > +		return NULL;
-> > > +
-> > I need to get back into vma_merge() head space, but I don't actually think
-> > a caller that's behaving correctly should ever do this. I know the ASCII
-> > diagram above lists it as a thing that can happen, but I think we
-> > implicitly avoid this from the way we invoke callers. Either prev == vma as
-> > per vma_merge_extend(), or the loops that invoke vma_merge_new_vma()
-> > wouldn't permit this to occur.
-> No, it will actually happen. That's why I submitted this patch.
+Document the current state of affairs.
 
-You aren't explaining any situation where this would happen. As Liam says,
-this is something you have to provide.
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ Documentation/trace/ftrace.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I have taken a moment to look into this and I am afraid I don't feel this
-patch makes sense.
+diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+index 7e7b8ec17934..c79a6bcef3c9 100644
+--- a/Documentation/trace/ftrace.rst
++++ b/Documentation/trace/ftrace.rst
+@@ -3603,9 +3603,9 @@ The files in the new directory work just like the files with the
+ same name in the tracing directory except the buffer that is used
+ is a separate and new buffer. The files affect that buffer but do not
+ affect the main buffer with the exception of trace_options. Currently,
+-the trace_options affect all instances and the top level buffer
+-the same, but this may change in future releases. That is, options
+-may become specific to the instance they reside in.
++most of the options are specific to the instance they reside in, but
++trace_printk, printk-msg-only and record-cmd are affecting all instances
++and the top level buffer, but this may change in future releases.
+ 
+ Notice that none of the function tracer files are there, nor is
+ current_tracer and available_tracers. This is because the buffers
 
-Firstly, let's assume you're right and we can reach this function with end
-< prev->vm_end:
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240220-ftrace-options-docs-81ecf05d07e4
 
-1. curr will be NULL as find_vma_intersection(mm, prev->vm_end, end) will
-   always find nothing since end < prev->vm_end.
+Best regards,
+-- 
+Dmitry Safonov <dima@arista.com>
 
-2. We discover next by using vma_lookup(mm, end). This will always be NULL
-   since no VMA starts at end (it is < prev->vm_end so within prev).
-
-3. Therefore next will always be NULL.
-
-4. Therefore the only situation in which the function would proceed is that
-   checked in the 'if (prev)' block, but that checks whether addr ==
-   prev->vm_end, but since end < prev->vm_end, it can't [we explicitly
-   check for addr >= end in a VM_WARN_ON()].
-
-Therefore - we will always abort in this case, and your early check is
-really not that useful - it's not something that is likely to come up
-(actually I don't think that it can come up, we'll come on to that), and so
-being very slightly delayed in exiting is not a great gain.
-
-You are then also introducing a fairly useless branch for everybody else
-for - if it even exists - a very rare scenario. I do not think this is a
-good RoI.
-
-As to whether this can happen - I have dug a bit into callers:
-
-1. vma_merge_extend() always specifies vma->vm_end as the start explicitly
-   to extend the VMA so this scenario isn't possible.
-
-2. Both callers of vma_merge_new_vma() are trying to insert a new VMA and
-   explicitly look for a prev VMA and thus should never trigger this
-   scenario.
-
-This leaves vma_modify(), and again I can't see a case where prev would not
-actually be the previous VMA, with start/end set accordingly.
-
-I am happy to be corrected/embarrassed if I'm missed something out here
-(vma_merge() is a great function for creating confusion + causing unlikely
-scenarios), so please do provide details of such a case if you can find
-one.
-
-TL;DR:
-
-- The case 9 stuff is completely wrong.
-- I do not think this patch is useful even if the scenario you describe
-  arises.
-- I can't see how the scenario you describe could arise.
-
-So overall, unless you can provide compelling evidence for both this
-scenario actually occurring in practice AND the need for an early exit,
-this patch is a no-go.
-
-In addition, if you were to find such, you'd really really need to beef out
-the commit message, which is far too short, and frankly incorrect at this
-point - if you perform a branch which 99.9999% of the time is not taken,
-you are not 'reducing unnecessary operations' you are creating them.
-
-If you could find compelling evidence to support this patch and send this
-as a v2 then I'd consider it, but for the patch in its current form:
-
-NACK.
 
