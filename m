@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-72884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE9785BA11
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:12:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC2FE85BA10
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C27B1F25270
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:12:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78BB4282061
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE84F66B5F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C8A66B5D;
 	Tue, 20 Feb 2024 11:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="B1J2PkBV"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Whoy5WhB"
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C894A66B56;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F341F66B32;
 	Tue, 20 Feb 2024 11:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708427485; cv=none; b=Npdnk96uXHqMZj/DUuGyDdYvakEUd5sJ1a6qaGgHGzCTmINz5t+GRAr0p6LEZM/8GuAJujA8SVnEoh5kw+Qn2/cz0xbV63F3/VK5k5fvKH4WzQv9VMZ73vBjJh5M25+IXxZ/BDc8sf1uIsC5gK4Ef1IIy24nXmw6N+e0ovt5zFw=
+	t=1708427485; cv=none; b=oOKQws/+EnnswUAIUZP0jqbokGF2LpFmiryftMBaXheoGVXvx8BvvWN4xoBMgw/RehW4TVkmjCfLq8fcJHbDk6Ha9O/frcV6cOIMdqjZvW9sc28lafe5zZsmVx62ULNjIVm1MUKYAHkcpAu69mkYfLiw6oTi4u/m7wHy0TPp1/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708427485; c=relaxed/simple;
-	bh=ulweI1Ce0cUyHQQ4Wm/kRBRiyj0VTxmuz/Nzdi2q6FM=;
+	bh=G5QNoctspJ1RDquSBWI4re9ufm9ecSTNMxVtKdOzPC4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ehb7m9GW4haHqyRnBSM38+AvUJ8b792YcNqYCUMNqELOdrLlC10vYSQ2JToBxttL2SHKMLTbpvpb3xdLt+KckZvPEG0VQM+TyOtueZBEheD4UuI/R+mS0Z3DkSYYRF7+i1lE8qMUF9MhwbajMRSx7NkhYOQ/LiEYgs75i7/u3WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=B1J2PkBV; arc=none smtp.client-ip=217.70.183.200
+	 MIME-Version; b=B8pBBiNmVdKQwUrnG/DgY/Y/PtJak6Ghv0OH/hYp28NK3iWsQjQF3GQGoFLqjuhc2zIcWsLoyAweWbGDeBtVDGC1WxosmSEW/m3TmnHbak9/x3KK+nkeBIi5GAZMDMdkSQ/TD81qhfSjtl7uBPPZtxrz1uA6vNW4xTXtyfjda2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Whoy5WhB; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 5F15D20005;
+Received: by mail.gandi.net (Postfix) with ESMTPA id 02C2420011;
 	Tue, 20 Feb 2024 11:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708427480;
+	t=1708427481;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Oc4ohg5LOK/NMkvzmh0zZUOGGe+/Ajs5RSnJ2qJvG0E=;
-	b=B1J2PkBV3YrYPkbsJWns43NxpX1dzq5ylZexnzpA51Q81L5vFhOtU2CXLk5eYfOWqv6+8+
-	E4TwED98yEMK2LQ4xdov4LL7R9Yx2RtK1tOrlv/JB5Et4Mb0PaO/WQ9P8+D1Tdii45sHSl
-	aMEI3YU84yBVMZHUQ7c8Lwv5KlxJXIw/6nQXlE1/2PixTlq/kiiKB3TSwWNLlLOzvisf0R
-	8/XCjNiWg79mI1ohYXULvbcivZKqKe0/OzTom/w/np31fGIs/y9ELWatfWj1pQJsFoG53c
-	x5q6Jnld5yMIDkr4D2yy/m6Ii3mVVHMox+dAmS2wQ0adrxBxehzFSdMEsm+dhg==
+	bh=THtvQDT+qQLPub8vG8YsD0SpllI5xUKHDkxR4GFPKUc=;
+	b=Whoy5WhBb2MER1f/zF9yAgQUCtgtnRPoP4ugCCbfrYr8zzS/xyhAzLcHgksQ4P0KkeJMcx
+	Tz3G907QEWnsnRioi84FpY3hRmk7H32clzOj3un89LY4gTQ12/1y5CbxX+oVzu41VjK9/t
+	OMQ6nGzecdjUOgxCH1aHpgErBZppwKisPopuwu3QvYo433aS1nOPBrukHiVT2ec0LNLXxh
+	csaEmUN0HH7Fzo0LZd9Slpx6rbJx1gazRwsD8/f0JwoOcnSkJxNiOhb/IOLZPa2oU2kzFg
+	kdBUXc7CHQ2zl8f6A6o3IPgVulcoVXqyCpDIgM6cIFjqvb+Xtt1exISK5iuhqw==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Linus Walleij <linus.walleij@linaro.org>,
 	Bartosz Golaszewski <brgl@bgdev.pl>,
@@ -55,9 +55,9 @@ Cc: linux-gpio@vger.kernel.org,
 	Luca Ceresoli <luca.ceresoli@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Herve Codina <herve.codina@bootlin.com>
-Subject: [PATCH 1/2] gpiolib: Introduce gpiod_device_add_link()
-Date: Tue, 20 Feb 2024 12:11:06 +0100
-Message-ID: <20240220111111.133826-2-herve.codina@bootlin.com>
+Subject: [PATCH 2/2] leds: gpio: Add devlinks between the gpio consumed and the gpio leds device
+Date: Tue, 20 Feb 2024 12:11:07 +0100
+Message-ID: <20240220111111.133826-3-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240220111111.133826-1-herve.codina@bootlin.com>
 References: <20240220111111.133826-1-herve.codina@bootlin.com>
@@ -70,95 +70,64 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
 
-With device-tree, some devlink related to gpios are automatically added
-when a consumer device is added and the attached node has phandles
-related to GPIOs.
-In some cases, the real device used to get the gpio during a probe() can
-be related to an of-node parent of the of-node used for the already done
-automatically devlink creation.
-For instance, a driver can be bound to a device and, during the
-probe(), the driver can walk its of-node children to get the GPIO
-described in these children nodes.
-In that case, an additional devlink between the device attached to the
-driver and the gpio consumer need to be created.
-Indeed, if the GPIO is removed, the consumer/supplier dependency should
-lead to remove first the consuming driver before removing the supplier.
+When a gpio is removed, the gpio leds consumer need to be removed first.
+This dependency consumer/supplier can be described by devlink links.
+In case of device-tree, even if some devlinks are created due to the
+presence of gpio phandles in the gpio leds children, these links do not
+help in removing the gpio leds device (i.e. the real consumer) before
+the consumed gpio.
+We can reach cases where the gpio are no more present and the gpio leds
+driver continue to have leds using these gpio.
+Further more, when the gpio come back, the gpio leds still use the old
+removed one.
 
-In order to give the possibility to this kind of driver to add additional
-devlinks, introduce gpiod_device_add_link().
+Indeed, the gpio are consumed by the parent of the consumer used in the
+devlink creation due to phandles. A link is missing between the gpio and
+the real gpio consumer, the gpio leds device itself.
+
+Use the newly introduced gpiod_device_add_link() to create this
+missing link between the gpio leds devices and the gpios.
+With that done, if a gpio is removed, the gpio leds is removed and the
+resources are correctly released.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/gpio/gpiolib.c        | 32 ++++++++++++++++++++++++++++++++
- include/linux/gpio/consumer.h |  5 +++++
- 2 files changed, 37 insertions(+)
+ drivers/leds/leds-gpio.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 8b3a0f45b574..416ab334b02d 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -4195,6 +4195,38 @@ static struct gpio_desc *gpiod_find_and_request(struct device *consumer,
- 	return desc;
- }
- 
-+/**
-+ * gpiod_device_add_link - Add a link between a GPIO consumer and a GPIO.
-+ * @consumer: GPIO consumer.
-+ * @desc: GPIO consumed.
-+ * @flags: Link flags, see device_link_add().
-+ *
-+ * This function can be used for drivers that need to add an additional
-+ * consumer/supplier device link to a GPIO.
-+ *
-+ * Returns:
-+ * On successful, the link created.
-+ * NULL if the link was not created due to a missing GPIO parent.
-+ *
-+ * In case of error an ERR_PTR() is returned.
-+ */
-+struct device_link *gpiod_device_add_link(struct device *consumer,
-+					  struct gpio_desc *desc,
-+					  u32 flags)
-+{
+diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+index 83fcd7b6afff..b3ec8ecbe5da 100644
+--- a/drivers/leds/leds-gpio.c
++++ b/drivers/leds/leds-gpio.c
+@@ -150,6 +150,7 @@ static struct gpio_leds_priv *gpio_leds_create(struct device *dev)
+ {
+ 	struct fwnode_handle *child;
+ 	struct gpio_leds_priv *priv;
 +	struct device_link *link;
-+
-+	if (!desc->gdev->dev.parent)
-+		return NULL;
-+
-+	link = device_link_add(consumer, desc->gdev->dev.parent, flags);
-+	if (!link)
-+		return ERR_PTR(-EINVAL);
-+
-+	return link;
-+}
-+EXPORT_SYMBOL_GPL(gpiod_device_add_link);
-+
- /**
-  * fwnode_gpiod_get_index - obtain a GPIO from firmware node
-  * @fwnode:	handle of the firmware node
-diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
-index db2dfbae8edb..4feed4e166b0 100644
---- a/include/linux/gpio/consumer.h
-+++ b/include/linux/gpio/consumer.h
-@@ -7,6 +7,7 @@
+ 	int count, ret;
  
- struct acpi_device;
- struct device;
-+struct device_link;
- struct fwnode_handle;
- 
- struct gpio_array;
-@@ -106,6 +107,10 @@ void devm_gpiod_put(struct device *dev, struct gpio_desc *desc);
- void devm_gpiod_unhinge(struct device *dev, struct gpio_desc *desc);
- void devm_gpiod_put_array(struct device *dev, struct gpio_descs *descs);
- 
-+struct device_link *gpiod_device_add_link(struct device *consumer,
-+					  struct gpio_desc *desc,
-+					  u32 flags);
+ 	count = device_get_child_node_count(dev);
+@@ -197,6 +198,20 @@ static struct gpio_leds_priv *gpio_leds_create(struct device *dev)
+ 		/* Set gpiod label to match the corresponding LED name. */
+ 		gpiod_set_consumer_name(led_dat->gpiod,
+ 					led_dat->cdev.dev->kobj.name);
 +
- int gpiod_get_direction(struct gpio_desc *desc);
- int gpiod_direction_input(struct gpio_desc *desc);
- int gpiod_direction_output(struct gpio_desc *desc, int value);
++		/*
++		 * Create a link between the GPIO and the gpio-leds device.
++		 * This allow to have a relationship between the gpio used and
++		 * the gpio-leds device in order to automatically remove the
++		 * gpio-leds device (consumer) when a GPIO (supplier) is removed.
++		 */
++		link = gpiod_device_add_link(dev, led_dat->gpiod,
++					     DL_FLAG_AUTOREMOVE_CONSUMER);
++		if (IS_ERR(link)) {
++			fwnode_handle_put(child);
++			return ERR_CAST(link);
++		}
++
+ 		priv->num_leds++;
+ 	}
+ 
 -- 
 2.43.0
 
