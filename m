@@ -1,163 +1,185 @@
-Return-Path: <linux-kernel+bounces-72818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB5685B8FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:27:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EE985B8FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4674EB22419
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB6F81F214F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:26:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0215C62806;
-	Tue, 20 Feb 2024 10:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="PHUvAw+5"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2030.outbound.protection.outlook.com [40.92.22.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57623612CE;
+	Tue, 20 Feb 2024 10:26:28 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB9C6166A;
-	Tue, 20 Feb 2024 10:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424755; cv=fail; b=FsZUUSEbR/uhbirT3t2Q68blYBdMdyNaU5KN/o8H3CkNUuRMRDohQjo8NvfMBR3pwp8f95j8u5rCZIvarfssVE8sPbwj1KLzescLxDb6jpzKWMSEXIJTu34cAPiLa3OoCeCSSElsEvhyZGzmviT5i+vVaGN+kphzCbYan3iIafM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424755; c=relaxed/simple;
-	bh=jZYL1KwmKs4lkwUyd+2oKIz4gaxXCtGAgmToRjR+srs=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Lxe/BBoHiuEfuvkhrgVa3CwfpfcBAQiA5TJn17EsLqoA9MpvMRriiJXRKBFwfbx/oBgigLz8TSXLySM9/CuC8M505BsN1jyXUWsiIKeoRyBW2TzRoocjJQoeYgstBsLXY0JZIZX/Gt0vxvEPk9EZbS2DtYRy0vEuRgcKHthPV9A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=PHUvAw+5; arc=fail smtp.client-ip=40.92.22.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kxYTI7hidFU/OEUH20l8zcU8CbhGmpHv7+h2MYq9N0Ci9sajnMEpi2GTXhBTRdUvwVsq1IKnne6kLzgyrIEi+nAnV343abqyjcmk+SCNb+TqCvqZ+FRq0KlxkgHPPfThGwvF6o/sbmB+QCh+rUSbjR2hblHz6qIEc2F+EdZEq0hTzbvpdykKmebW8CkJUOs88JbvDym27HrtfqcKzn4oqcHbJQSfKKp0g0vKVIHHjU7KvImt2j76TYpj17W1VA3gDy+InTff6jK9nDTIDpHK/vSN68ETw5w/LNdQJtDgwd4srCHBA0Tfd4lEDTNCasaFLZXtekRHgoVgUH8ZolXhSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=orV3Wsjwr4nw1KXDjPNNhJzqk8xIk5dbZSLadb/zT6k=;
- b=g8gMwC2NAehAl8rlPSkzKnT6iC6EyxFlfLCIgddjUHWb3RLf/qWwGCwi/6uM6f3EGOWharkDm5jJpyVpM42GEzUOCQPwURW1POUQW5m/8TOgx3ytIkpmTWrGh4Ul0699xZvR7/Fl8lmTaPnlGsrevdb7zWdne3yreSVBVO2G5QQCJANYc53bSL2yRTY7lG1JJ9YzCBGdUazptvaGRgBodxnLDcLygBuP64SI9W0rERAUQ231ZHDByJouUwL75XvEOxOyK9nD/aj0ylo/MJPrZZbdvviuCL0Y+LhK0Ph5v1iSnr7EAwYrZ5D469ztzEwGHUPddfbPieLhd5bJO0zM/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=orV3Wsjwr4nw1KXDjPNNhJzqk8xIk5dbZSLadb/zT6k=;
- b=PHUvAw+5W2Najo+N8j61TFteFAQgPVQNBA9YqgLdNoII5K+g/l7sKJ0cCWDnAvPeyym0JLsvxff3W8o/Ojrn8pS71VkK2QXQH5MmjvGUmNnB7lL37GXebdVvK4hvEkHWiZcim+YuA/oGTPpypa3nytKG2jtKRr4HKnFBsEwk6+FDSG5pWnEVndv8LkZALGbUwu2by62S+UDbZQ17qj9OFRxP41lnb4DdIfkTYrJ5wSZqAMLg/8b2Wk9FeXgUmpURT6iKBkvqftDiV/3Spb+PyKtrwO5F8+rpeWoAHrVvKU/puxGSpHc1A2OFnv6KeDDNp54j2Oo+Laq23gV08r0kIQ==
-Received: from PH7PR20MB4962.namprd20.prod.outlook.com (2603:10b6:510:1fa::6)
- by IA0PR20MB6813.namprd20.prod.outlook.com (2603:10b6:208:405::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
- 2024 10:25:50 +0000
-Received: from PH7PR20MB4962.namprd20.prod.outlook.com
- ([fe80::4719:8c68:6f:34ff]) by PH7PR20MB4962.namprd20.prod.outlook.com
- ([fe80::4719:8c68:6f:34ff%6]) with mapi id 15.20.7292.033; Tue, 20 Feb 2024
- 10:25:50 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Inochi Amaoto <inochiama@outlook.com>
-Cc: Chen Wang <unicorn_wang@outlook.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	dlan@gentoo.org,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] riscv: sophgo: add dmamux support for Sophgo CV1800/SG2000 SoCs
-Date: Tue, 20 Feb 2024 18:25:51 +0800
-Message-ID:
- <PH7PR20MB49624AFE44E26F26490DC827BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [3w9Rb1Er7kn3myhQrBcbYwd0j/dwal0A08YsW70kltU=]
-X-ClientProxiedBy: KL1PR01CA0081.apcprd01.prod.exchangelabs.com
- (2603:1096:820:2::21) To PH7PR20MB4962.namprd20.prod.outlook.com
- (2603:10b6:510:1fa::6)
-X-Microsoft-Original-Message-ID:
- <20240220102552.870960-1-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB0F60BBB;
+	Tue, 20 Feb 2024 10:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708424787; cv=none; b=DpYpQUz8LUjO6iu5qBZYoo1xB/jSfiVxAhF6ooVzLh81KEVI8MsrTlQ7YgInAAkf6HK8vmMBudtcDFO9TwgOULAhzAPIpNeq/tMhRRvUaDkiuBsSo/TDhtD9MfrRth8MEEjlMxjbm2yhWAK7duuoTy4RdAlPLGhfWH/x/F+dIHY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708424787; c=relaxed/simple;
+	bh=HtRyT0kM9vZyQaLBAdB4P0A2i9jJVXOsS6D6EEVfkLw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hlIQKBTpuD4wySQ4iKF1sHJtHj0Jp/AOuVX7ap53MIMNfASYxi3HF3ouXzk4UgNSgFHR7ZJFLR96GzJ32Tq9lZVC6MgKe6SHaeYaUlQsgIy7/SjgQWKaQLsNpNnysOR2mByDBxY/sh4AlQ+Lx0XV7IWh1r0vOtES/yMyLz7b9qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rcNKN-0003An-3x; Tue, 20 Feb 2024 11:26:19 +0100
+Message-ID: <2c5a82e1-31f0-4908-80b7-00b3b0257d59@leemhuis.info>
+Date: Tue, 20 Feb 2024 11:26:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR20MB4962:EE_|IA0PR20MB6813:EE_
-X-MS-Office365-Filtering-Correlation-Id: 32c8e1d0-c6d4-4139-a4ac-08dc31fe4f5d
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1d6vjeKoHs1vdogZIXe8mLFnaQ3zLQs1NEGJZxh1f37OQrmoaz00CYLTuJ/MdptZu3KwqDhKry8481OBTCJyogAciQ+YNo6twohFqyfsFRBvDdxa3ixvnvdBW4G6kRU+Vted6QR4/tUq4ig0Zq4eYuvrpN1fbIrz/OCWrP2P0IoVveg+IuwjUm+o5hEkEtPBUQqJ2ZJ6Cfw14HV5Wsrob5yeGas82oBewf5LOi7MJSZ1vJ44V9l/LCfXmuVrVSSx9JxPVAJKl1/b+C7JHmPMoTxZ/Tb3Ai1B91UWKsgFJRrYFn/GufmtAwO5RibAlMmW+y4REcDYUTS/8XRdWTGaDX0jKlncymYvzMFfXV8IY/xCWMs9259HjXWWxgGD5yrLdpWChomPzBY2EGRgZqmuIuatYw4JwFQjwJny5th8ko1R6W0wgjoxxyRWHXwJ8SRgPZpC01mjzVSMzic9VmK5asiQLuo5py7NtiR81+mHgb7b87RvSItw/YCPbxJ/fOlnfAYqXsre5zUEGzcjgecGiKDmiIBJXsr2ri9mzWHXvnfNPCQEb/uxH+yig7eTJ1Yy1VOocWTvq+ghaIsswWik5+lg+tVFjzHcV+LfoA4wowqgQPPDBrHfoHEQbdxyRAWc
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?yDPx0JYt43KHiBhYrlK6RTaLQzPUDn41BB8V22vNEwePrpIVjhJBmwvBj7wg?=
- =?us-ascii?Q?Q2DBkFi7FCyQTZFwoSyTWxfaq5kmdBXSYXm/I4iN4n5jt+TclQhPN0r0gBm9?=
- =?us-ascii?Q?14YAFQDCIB1snOHFzMF7scPhGLMnAlCX8D9God2T+Z4AflBOIEUjQKYvQg04?=
- =?us-ascii?Q?Jx3iIUi9m/JhBJEaYVIpkuA0mmuZSzMVHrYpaGk4Sa1dpZqRzk2JMWKxh3PO?=
- =?us-ascii?Q?GJ7de3Nb+4Rner3xdyKPSjv0JoB+uguWXWgLA3xR578mFN07wDeHLp7DasXO?=
- =?us-ascii?Q?ds6eFkkdysJz4oBZbGt0WDJEdtIP0ZoLa1m1ke6ey8CZhVb1llpts8nwmTeD?=
- =?us-ascii?Q?qhwzUNClWzIBRi45g4Tvtq4KYA2BbflZ9r47MVmGjSeXmldRIlF0Rcxy9cXW?=
- =?us-ascii?Q?vobALYl1k4Fx6mbBo3aoNxp+JludJON5pikr5K9TidraSRivmDy2bnLyjC4N?=
- =?us-ascii?Q?KEDqo2tcNeBhCQC7EI1P9AcmsyRWa21eoeorsIameXrCYht8GM13i+Af8rEA?=
- =?us-ascii?Q?6Q8HH90OtJOK8ugCTK1vYlhgI73qVwXmWeYRrmKQyrSsS92hTb+1RUgzIuZv?=
- =?us-ascii?Q?0L6nAUZ61mDwWwFR88rU3EYbYTyfKZO4hJRQTGApbmn03Nxy115WD0Ea+wg5?=
- =?us-ascii?Q?vszQzpf+C7+yu37dbBNdMph6hG8YAM96RcQMkP80eZgcuTwvZAWju15XR3lo?=
- =?us-ascii?Q?fdGF8V7H87UZhzl0xbYxdd0tpqJiwYvQ6EC2wLHLq9/imdHBnxUBwG9k5aSj?=
- =?us-ascii?Q?274NDCzYXgpjZCStRM6vvGAZGBs8bZ9QrII01VKOuVG8zfPVn983beAnxmbs?=
- =?us-ascii?Q?/XgnWpVTSAC2md+c6r37lx5FSSDWgwApV/v4EMs562dbArQ4Xe+8tLoBH11l?=
- =?us-ascii?Q?ruIrRTEMLpmjbLOu+9Jhd0XVu3b+sEtvSLcH9jN6N/DSRIRRqsCJR1fR5ulr?=
- =?us-ascii?Q?c8D2mmNV1FSx53DBaIhcRxpX7GDh9HXDRnTAN+C/ZQkeuR8lLmP4mW6rB+o5?=
- =?us-ascii?Q?jpASoE+mypa6Yo5n/gcuS8pvzMeWegKZEqYY1fqpqJEICxc9cIA7eJDgIcKD?=
- =?us-ascii?Q?NRpVrL7dVQRZDcRdTcxPDDzNC/g1UHuVMyUZTK7iK4cgC+/HhM+yEAE17TXb?=
- =?us-ascii?Q?CYltJBkA0y1bJsidQ3cbvgzrVxiTvEx8xSuINRYqr10p6JJdMvLTrkNCKMtt?=
- =?us-ascii?Q?bTi2DUQUEBh43Jw3dR4bVCW6d74MtvSb9NK07wHMzQOHvhFBOlT3gZdZHxNH?=
- =?us-ascii?Q?5sB2wvON1HquP8yQ3nD3?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32c8e1d0-c6d4-4139-a4ac-08dc31fe4f5d
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR20MB4962.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 10:25:50.4496
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR20MB6813
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] docs: new text on bisecting which also covers bug
+ validation
+Content-Language: en-US, de-DE
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
+ Nathan Chancellor <nathan@kernel.org>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
+ <petr@tesarici.cz>
+References: <bf1d2eba0d291ff583e01b5985a0dec248eaf27a.1708072870.git.linux@leemhuis.info>
+ <87edd8m7l0.fsf@meer.lwn.net>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <87edd8m7l0.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1708424785;dfa4e51b;
+X-HE-SMSGID: 1rcNKN-0003An-3x
 
-Add dma multiplexer support for the Sophgo CV1800/SG2000 SoCs.
+On 19.02.24 23:07, Jonathan Corbet wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> writes:
+> 
+>> Replace the existing brief explanation on bisecting regressions with a
+>> text describing the whole process from beginning to end -- while also
+>> describing how to validate if a problem is still present in mainline.
+>> This "two in one" approach is possible, as checking whenever a bug is in
+>> mainline is one of the first steps before performing a bisection anyway
+>> and thus described. Due to this approach the text also works quite
+>> nicely in conjunction with
+>> Documentation/admin-guide/reporting-issues.rst, as it covers all typical
+>> cases where users will need to build a kernel in exactly the same order.
+> 
+> I have scanned over this; don't really have a time to do a detailed
+> reading at this point.
 
-The patch include the following patch:
-http://lore.kernel.org/linux-riscv/PH7PR20MB4962F822A64CB127911978AABB4E2@PH7PR20MB4962.namprd20.prod.outlook.com/
+No problem, I didn't expect this to be something that would be merged
+quickly.
 
-Changed from v2:
-1. fix wrong title of patch 2.
+>  My overall impression is: it's useful
+> information, but I think we're going to overwhelm people.  I worry that
+> we're replacing a one-page file on how to do a bisect with a 1,900-line
+> beast.
 
-Inochi Amaoto (4):
-  dt-bindings: dmaengine: Add dmamux for CV18XX/SG200X series SoC
-  dt-bindings: soc: sophgo: Add top misc controller of CV18XX/SG200X
-    series SoC
-  soc/sophgo: add top sysctrl layout file for CV18XX/SG200X
-  dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
+I see you point and partly agree. But at the same time I partly disagree
+as well: the gist of the old document is not that different from what
+segment 3 of the TLDR in the new document outlines.
 
- .../bindings/dma/sophgo,cv1800-dmamux.yaml    |  44 ++++
- .../soc/sophgo/sophgo,cv1800-top-syscon.yaml  |  48 ++++
- drivers/dma/Kconfig                           |   9 +
- drivers/dma/Makefile                          |   1 +
- drivers/dma/cv1800-dmamux.c                   | 232 ++++++++++++++++++
- include/dt-bindings/dma/cv1800-dma.h          |  55 +++++
- include/soc/sophgo/cv1800-sysctl.h            |  30 +++
- 7 files changed, 419 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,cv1800-top-syscon.yaml
- create mode 100644 drivers/dma/cv1800-dmamux.c
- create mode 100644 include/dt-bindings/dma/cv1800-dma.h
- create mode 100644 include/soc/sophgo/cv1800-sysctl.h
+The main problem I thus see is that readers will likely be scared by the
+wall of text and thus will look for some shorter guide. We could avoid
+that by basically replacing the content of
+Documentation/admin-guide/bug-bisect.rst with something that is round
+about a copy of segment 3 of the TLDR with a short new and better intro
+on top of it (e.g. something along the lines of "This assumes that you
+(a) already set up everything up to compile your own Linux kernel from
+sources found in a local Git clone (b) checked if the regression was
+already solved in mainline (c) prepared, validated, and packed to the
+side a .config file with a kernel version known to be working. If any of
+this is not the case, you likely are better of following the
+Documentation/admin-guide/verify-bugs-and-bisect-regressions.rst instead.")
 
---
-2.43.2
+>  I suspect there are whole classes of readers who want the new
+> stuff, but there are others who would be better served by something much
+> more terse.
 
+As you can see from above I partly agree with that. But the old guide
+(or what I suggested doing above!) OTOH is so terse that it's not that
+different from what the man-page of 'git bisect' already outlines --
+except that it's a kernel specific example. Makes me wonder if that's
+really worth it, but I guess it is.
+
+> I'll repeat a question I've asked before: should we create a separate
+> "tutorials" book for this kind of material?
+
+To be honest I'm not sure if I can help here, as I'm not totally sure
+that I got your intend / long-term goal.
+
+>  I honestly think that the
+> readers for this kind of documentation will be a different crowd,
+
+"Different" from what? I mean, my new guide is added to the "user's and
+administrator's guide" book and from what I see we live in times where
+many users and admins might never have compiled a kernel, but still
+occasionally encounter a situation where they want to report a bug
+upstream. That guide allows them to do this. And even if they have
+occasionally complied a kernel in the past the guide works well for
+them, as the TLDR is easy to follow for such readers.
+
+> and
+> everybody might be better off if we put the tutorial material in one
+> place where they can find it easily.
+
+But do you expect more documents like that? FWIW, I for one don't plan
+to write anything more like this (revising the "reporting issues"
+document is next on my list). Unless more is forthcoming I guess a new
+book is not worth it.
+
+> Regardless, thanks for doing this,
+
+Thx for saying that!
+
+Ciao, Thorsten
 
