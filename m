@@ -1,255 +1,193 @@
-Return-Path: <linux-kernel+bounces-73015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9349785BC21
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:29:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0933585BC1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED570B23D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:29:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4131F233F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA8E6996D;
-	Tue, 20 Feb 2024 12:28:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456BC69317;
+	Tue, 20 Feb 2024 12:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="V7i8i2ko"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WPSM3YHc"
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544E769968;
-	Tue, 20 Feb 2024 12:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB062692E6;
+	Tue, 20 Feb 2024 12:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708432134; cv=none; b=p0dF14MmawUThV/F1prAguOvxu0G3jB2Y/txOg2y3gta5hIKEdkUOPijg+4E511fJBdy3jgrftoXGIzofEU4Kngdi51WK2G2sQGdWdyGl5uOgiIUbU4/0CICVY72o5NVQwyktBHNtMDZ4MCMRBX20notYiGmv0j1y0VGb9dqHXA=
+	t=1708432131; cv=none; b=sRSlEdFCm2b8tN0YFht36WECPUkuDua5TR++l/sXFOtCym7sD+VOh3DKH1kBMIiQLWTetCdlT+YjjAyKbP98VC8LfN6kNgde5xSvwtGpFlnS8q73cm2Yv6LOOXYObpYBGJL09LnE7rvyVah32gYeFt340OOHyGlcYQ0RxeDKcIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708432134; c=relaxed/simple;
-	bh=9hC48CFGOI+zH+J/OnR3D9Cvj+eSSX+d271pEsg8oYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JTQRFwAnRmSVKXDtRg+21dNhDmTY6N8hicVvAOT3CCXI/gMbT3uYPEyXOSADhCJZFciB1TVY+NwA42T7Q3wYNsU4HkC08DHILidFajcvNfFtGfrZ+cVwrtFIH+XFqyJozYxp4KmUzUJsHnA4b6o3JGpsmOXHWfDEfkgpbkEmdtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=V7i8i2ko; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K5laxu005396;
-	Tue, 20 Feb 2024 12:28:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=g28R+uJawHAgWOgBmwhyNrp8WnEMlRZ+lOB3MV0yd50=; b=V7
-	i8i2ko3gpKbqmbgIStQ7+rg1mEXmv0vXkgwdKevULxE80JN6lQQp9ejBf+OR7UX1
-	mnxNAM5B2xZSt7Fsu2ku6aKWNB21rPkchyYfKHrhPACJJzGH9jRbQQ/kENIYSKS5
-	/yc8MQequPiJxA9OBdnGPsCspMqr7aa5Xr6TVAnuTe+uORZB8Uxfna8o5Bxvh43q
-	hBwXPbi1vjZpdamOFBgW9ZXeRzMBWgvjGntg4fqwC660NcEmDeKmslxS3zm8FmLj
-	DKDQ1sfa4512fQnZuRIPSwvo5bxmXS8wT+f//1ntgJtwQOZGlW5nGhZLyMACQCCG
-	TJEvonc9iT4xReU7e05A==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcmqp8wm3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 12:28:43 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KCSgcB013993
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 12:28:42 GMT
-Received: from [10.216.16.129] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 04:28:36 -0800
-Message-ID: <196fe404-ad88-27da-9fd2-e717355be520@quicinc.com>
-Date: Tue, 20 Feb 2024 17:58:32 +0530
+	s=arc-20240116; t=1708432131; c=relaxed/simple;
+	bh=r8QqN47qRi91jsH0wIkGa3g4GltqYUwA5TqWyyelcXI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u2zAuNtG2TwfeNpirNu0nKOznYnVmSSKkjzhXzTl9m2usl3DPLo/F8luLx0FqGgJbJufQQcimhyj2DMzI/QhzrAd13KjomSwjMAnJ+iwsZfkeS7wKZzET5YhzQaKd+IZr4RLd0E9nChl86mjxNGgqANz8CIV1qOnMm+wPRxkAfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WPSM3YHc; arc=none smtp.client-ip=209.85.222.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7d6a85586e3so2545770241.2;
+        Tue, 20 Feb 2024 04:28:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708432129; x=1709036929; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3aiQTzceFpJVhyzyIE+RmD0TpAMXT5KcbC8jdpGnhkc=;
+        b=WPSM3YHckS+UX6Rthh8SWyXdb1SGIhvZhDGXxqE96lMq4opo15++/TVatAwXKHOTbH
+         nv7ktcpldhWYUputrZI9OD9Jq8C8+uEgeWLI9otavwqJnC9itMAhX0/YTvImuW6J+7Ab
+         wuHJUh3Xg0zjCOJBmuTwBaYyzm0f/35I7RbMswrGpE4d/5YfSCzyQVD+Wg9cMb8DJGKJ
+         O+MdcVDVMHbvaUUhEveFwitc7WhdsZ+MosGc27+/HOs9ZHgLvKX4N/hJs+hP/A1LnMIy
+         WqkZAylJatOxEyvZzEwydM5/8xcbpW69CuqimQebuJozBmaY5duY/q4C97JxgTPSCjmo
+         VvVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708432129; x=1709036929;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3aiQTzceFpJVhyzyIE+RmD0TpAMXT5KcbC8jdpGnhkc=;
+        b=Be4SECqH1UUQxyFeyeujh23ugf1eyJpqUcwN+2aAORDEuhpeeXYNUx+w8nyrNtvETF
+         orM7ZUWnk8u6xprXMJATHvCAAGa40O5yvSkMeOIGoCiqs9wlbnwvKSX+PD6/lyZ/rnRd
+         m4SIP7P+yy0Kd1InQb1UL6R0lRrnS2UewsHjJYMbVwRju5AURGftZDa5x3Epq5mqFWTJ
+         2zoHeEJuYPcUn6znKSy0HMyRCs6zuYH1owy4qC1ycCxVA1yrk0V/ZF6xRw6+6TQ3Cx3d
+         kDq7qRUgX10odiCj5q3M5etp8i4pDN9UrYEKxBPZLsZ0IFPF41agDldJv6V+ilLyVk1L
+         czjw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbfT6MSXYd5BHBCSBt2x4rr+MZbub0TCHYkHKMTF+wo52KB88vP/qjg/8H9CR7UEdRAnqKDm7VVx8c6fg0eifs5L93Pr98A5WaxjDoNQwsQWhjrXEeqaTfktEY6r5zA1/cd+Kt
+X-Gm-Message-State: AOJu0Yx897ZRzuapYprZaSAkdkRsZxtI2L6ygpIdHNMaG3gsTRg32oXs
+	m8dozkQPRUAwhH5fznClTX3M97F8Wu22xwL1nfL9i5Pj77Wrofbh4KdeyHLDTItIasFOr7z0i9I
+	xat82X8betmkqXNlwRpSikHstzY0=
+X-Google-Smtp-Source: AGHT+IHwF30bfGk9916HJb5yDfWumiVA0uNVSaYeMQ5DCb40KQGNw9eOj8D8lwggmW3cnt65RSM9JA16qoblaYVbCz4=
+X-Received: by 2002:a1f:e207:0:b0:4cb:fc25:7caa with SMTP id
+ z7-20020a1fe207000000b004cbfc257caamr4078533vkg.14.1708432128652; Tue, 20 Feb
+ 2024 04:28:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 1/5] spi: dt-bindings: add binding doc for spi-qpic-snand
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <broonie@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240215134856.1313239-2-quic_mdalam@quicinc.com>
- <8c3d8fc3-2c1e-4ece-abb1-b427a909ad39@linaro.org>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <8c3d8fc3-2c1e-4ece-abb1-b427a909ad39@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5-uOaEB-mW3eyFykmLRc0U2UUciV0rZr
-X-Proofpoint-ORIG-GUID: 5-uOaEB-mW3eyFykmLRc0U2UUciV0rZr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200090
+References: <20240213220331.239031-1-paweldembicki@gmail.com>
+ <20240213220331.239031-3-paweldembicki@gmail.com> <6db0fd10-556d-47ec-b15a-d03e805b2621@gmail.com>
+ <CAJN1Kkz9NPMuoKsm4XdmGS=Y9=SkYM-_EZhqxBojfGZycegtjw@mail.gmail.com> <20240215000427.jdivtxc5jxolmi5q@skbuf>
+In-Reply-To: <20240215000427.jdivtxc5jxolmi5q@skbuf>
+From: =?UTF-8?Q?Pawe=C5=82_Dembicki?= <paweldembicki@gmail.com>
+Date: Tue, 20 Feb 2024 13:28:37 +0100
+Message-ID: <CAJN1Kkwzz_Q7LdWCJ3gGdHw+OdQxq2+_5Aacq0fvHaE9SOog1w@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 02/15] net: dsa: vsc73xx: convert to PHYLINK
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org, linus.walleij@linaro.org, 
+	Andrew Lunn <andrew@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Claudiu Manoil <claudiu.manoil@nxp.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+czw., 15 lut 2024 o 01:04 Vladimir Oltean <olteanv@gmail.com> napisa=C5=82(=
+a):
+>
+> On Wed, Feb 14, 2024 at 01:56:10PM +0100, Pawe=C5=82 Dembicki wrote:
+> > =C5=9Br., 14 lut 2024 o 00:19 Florian Fainelli <f.fainelli@gmail.com> n=
+apisa=C5=82(a):
+> > >
+> > > On 2/13/24 14:03, Pawel Dembicki wrote:
+> > > > This patch replaces the adjust_link api with the phylink apis that =
+provide
+> > > > equivalent functionality.
+> > > >
+> > > > The remaining functionality from the adjust_link is now covered in =
+the
+> > > > phylink_mac_link_* and phylink_mac_config.
+> > > >
+> > > > Removes:
+> > > > .adjust_link
+> > > > Adds:
+> > > > .phylink_mac_config
+> > > > .phylink_mac_link_up
+> > > > .phylink_mac_link_down
+> > >
+> > > The implementation of phylink_mac_link_down() strictly mimics what ha=
+d
+> > > been done by adjust_link() in the phydev->link =3D=3D 0 case, but it =
+really
+> > > makes me wonder whether some bits do not logically belong to
+> > > phylink_mac_link_up(), like "Accept packets again" for instance.
+> > >
+> > > Are we certain there was not an assumption before that we would get
+> > > adjust_link() called first with phydev->link =3D 0, and then phydev->=
+link
+> > > =3D1 and that this specific sequence would program things just the wa=
+y we
+> > > want?
+> >
+> > Yes, it was the simplest conversion possible, without any improvements.
+> >
+> > Some part is implementation of datasheet (description of ARBEMPTY regis=
+ter):
+> >
+> >         /* Discard packets */
+> >         vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ARBITER, 0,
+> >                             VSC73XX_ARBDISC, BIT(port), BIT(port));
+> >
+> >         /* Wait until queue is empty */
+> >         ret =3D read_poll_timeout(vsc73xx_read, err, err < 0 || (val & =
+BIT(port)),
+> >                                 1000, 10000, false, vsc, VSC73XX_BLOCK_=
+ARBITER,
+> >                                 0, VSC73XX_ARBEMPTY, &val);
+> >         if (ret)
+> >                 dev_err(vsc->dev,
+> >                         "timeout waiting for block arbiter\n");
+> >         else if (err < 0)
+> >                 dev_err(vsc->dev, "error reading arbiter\n");
+> >
+> >         /* Put this port into reset */
+> >         vsc73xx_write(vsc, VSC73XX_BLOCK_MAC, port, VSC73XX_MAC_CFG,
+> >                       VSC73XX_MAC_CFG_RESET);
+> >
+> >
+> > I agree that VSC73XX_ARBDISC should be moved to phylink_mac_link_up.
+>
+> FWIW, ocelot_phylink_mac_link_down() also calls ocelot_port_flush()
+> which is more or less the same procedure for a different piece of hw.
+>
+> By re-reading the commit message of eb4733d7cffc ("net: dsa: felix:
+> implement port flushing on .phylink_mac_link_down"), I can find a good
+> reason to flush the port on link down and not on link up. With flow
+> control enabled, packets would remain in the queue system until there's
+> link again if not flushed there, otherwise.
+>
+> Pawe=C5=82, maybe it is simply the case that you should move the procedur=
+e
+> from the datasheet into a more clearly named sub-function?
+>
 
+I will try to do it more clearly.
 
-On 2/16/2024 12:32 AM, Krzysztof Kozlowski wrote:
-> On 15/02/2024 14:48, Md Sadre Alam wrote:
->> Add device-tree binding documentation for QCOM QPIC-SNAND-NAND Flash
->> Interface.
->>
-> 
-> A nit, subject: drop second/last, redundant "bindings". The
-> "dt-bindings" prefix is already stating that these are bindings.
-> See also:
-> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
-Ok
-> 
->> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
->>   .../bindings/spi/qcom,spi-qpic-snand.yaml     | 82 +++++++++++++++++++
->>   1 file changed, 82 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
->> new file mode 100644
->> index 000000000000..fa7484ce1319
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
-> 
-> Filename like compatible.
-Ok
-> 
->> @@ -0,0 +1,82 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/spi/qcom,spi-qpic-snand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm QPIC NAND controller
->> +
->> +maintainers:
->> +  - Md sadre Alam <quic_mdalam@quicinc.com>
->> +
-> 
-> Provide description which will describe hardware.
-Ok
-> 
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,ipq9574-snand
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    minItems: 2
->> +    maxItems: 3
-> 
-> You must document the items (could be sufficient in clock-names if the
-> names are obvious).
-Ok
-> 
-> 
-> Why the clocks are flexible? This given IPQ9574 has variable clock
-> inputs? Please explain.
+> > Other things could be optimised and it needs more care. (eg. This
+> > implementation doesn't disable phy when the interface goes down.) I
+> > plan to tweak it after the driver becomes usable. Please let me know
+> > if it should be fixed in this patch.
+>
+> What do you mean by disabling the PHY when the interface goes down,
+> exactly? Down as in administratively down, aka "ip link set swp0 down",
+> not when the link drops?
+>
 
-  I have checked Hardware Spec. and clocks are fixed in IPQ9574. Will fix in next
-  patch.
-> 
->> +
->> +  clock-names:
->> +    minItems: 2
->> +    maxItems: 3
->> +
-> 
-> required goes here.
-Ok
-> 
->> +allOf:
->> +  - $ref: /schemas/spi/spi-controller.yaml#
-> 
-> 
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,ipq9574-snand
->> +
->> +    then:
->> +      properties:
->> +        dmas:
->> +          items:
->> +            - description: tx DMA channel
->> +            - description: rx DMA channel
->> +            - description: cmd DMA channel
->> +
->> +        dma-names:
->> +          items:
->> +            - const: tx
->> +            - const: rx
->> +            - const: cmd
-> 
-> No clue why it is here, move it to top level.
-Ok
-> 
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
->> +    qpic_nand: spi@79b0000 {
-> 
-> Drop unused label
-Ok
-> 
->> +        compatible = "qcom,ipq9574-snand";
->> +        reg = <0x1ac00000 0x800>;
->> +
->> +        clocks = <&gcc GCC_QPIC_CLK>,
->> +                 <&gcc GCC_QPIC_AHB_CLK>,
->> +                 <&gcc GCC_QPIC_IO_MACRO_CLK>;
->> +        clock-names = "core", "aon", "iom";
->> +
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        flash@0 {
->> +            compatible = "spi-nand";
->> +            reg = <0>;
->> +            #address-cells = <1>;
->> +            #size-cells = <1>;
->> +            nand-ecc-engine = <&qpic_nand>;
->> +            nand-ecc-strength = <4>;
->> +            nand-ecc-step-size = <512>;
->> +            };
-> 
-> Fix indentation.
-Ok
-> 
->> +        };
-> 
-> Best regards,
-> Krzysztof
-> 
+I should be more precise.
+
+> That's a thing for the PHY driver to handle, by implementing .suspend()
+> and .resume(), I guess?
+>
+
+Yes, exactly.
+
+> What driver do the internal PHYs use?
+
+It is a PHY Vitesse VSC7385 from vitesse.c.
 
