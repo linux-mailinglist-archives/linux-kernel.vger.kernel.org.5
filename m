@@ -1,169 +1,231 @@
-Return-Path: <linux-kernel+bounces-73304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 414F285C0A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:05:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36EE785C0AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F35E01F247D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:05:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E41D1F2496C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD2676C8E;
-	Tue, 20 Feb 2024 16:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551CD7641B;
+	Tue, 20 Feb 2024 16:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YKAKuv+o"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=seco.com header.i=@seco.com header.b="mhAjC9T2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=seco.com header.i=@seco.com header.b="caRtvgnE"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2102.outbound.protection.outlook.com [40.107.8.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85EF763FE;
-	Tue, 20 Feb 2024 16:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708445055; cv=none; b=Xy6/WPZjlZ0kjcyfAfUKFXhgpa4uxADQeH4iPUlluKSdIYlD7Ckz1irZjqbh43omrZGN5yWSATexnqWfm/DcR4ytKm1t553A2KHu2ngp7735nBijJXowyah6HwNeYLmfonc02l/Ne9Kf0OjZCibbl4BPsH4KjTx9KVivhk9TVM4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708445055; c=relaxed/simple;
-	bh=Wwuqz9ZJr5TQFfwVUHEQzVdrwp0bIBroh6UK8Drtlvs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UOA0jBnrwyjJyfxwuebvGDoH35/UjPk0gzSPZWIr9gZFl8QyJM4cr8OGYaZa/hiDVya0bcsqMoOOlrg4+YiDBrHPuJLv47brLC8S9C0xwsFGw+fGlg3yyRc0Fx+A7Q/Znabg3Gu/hu+cF3Q3VRKY5CqTkgaM0UxE1AExyhFD/2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YKAKuv+o; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 809F3FF811;
-	Tue, 20 Feb 2024 16:04:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708445051;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zCS/sZcLThB2p5pcBcwaJElg/lIAc4UxkvYvhKEBitk=;
-	b=YKAKuv+oFy32r4yzngvTxz9ZzEgGhWjaUcK7o+FIJMrj1YXCyIlyS3m0P+F75guQjxERxx
-	5GN8UifikXPh6osJXnzA3KPoBnnxAc2c4MvF60T4hJekHW2LnOtArroVxgAzjFICjCMx+t
-	2tlkYeY7ytuSl/nYtQDRS7cK1w8tFu02pelhyC0L+GEX3iRTtzxuYqJM48QZl9bvOmM477
-	4zsJIkhwm26GwBCimrxKnHt7bgalvcrRv23xIvZ5R88FRQ/zLXpBnbGH7/i+Fde8K8l1yA
-	Nlav6FoPXJLcDK88R2hSzJ05ByuZFXBy9D8XZdkvCjBoiUgbZZ4VDAuxRVVBjA==
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: davem@davemloft.net
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH net-next 2/2] doc: sfp-phylink: mention the mac_capabilities and supported_interfaces
-Date: Tue, 20 Feb 2024 17:04:04 +0100
-Message-ID: <20240220160406.3363002-3-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240220160406.3363002-1-maxime.chevallier@bootlin.com>
-References: <20240220160406.3363002-1-maxime.chevallier@bootlin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D149E69E1C;
+	Tue, 20 Feb 2024 16:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.102
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708445080; cv=fail; b=IbNbj51TmRDXE1i4czJKD7gadljj6YrCRmX8Scp8DWv+9iJcTzMXwmCdCOn1gmYEuWAikyg65uV8jEtQcGorxSu6ZRWPYABtfxnO5LKRrQS981Vi7jXXY2U2KlRcxCZDlQ0GF4GYyNzrO28cd2qMxUcmSD/953cTrhemHZBKqvE=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708445080; c=relaxed/simple;
+	bh=CM7KTd8Ukj8Dyqy1Y6yhx+3G+H+N0EkTQKNiy8CSjJU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WiykGDypF2RcqgDCaIye6kYM81DjJR8YeU1r5QLldJcm93va3iNtR58j2H9N56LD8oiEx0Y364FMGLcvBxEF74e9iAxNymcfYHpartLB9RbU+HnX0uiQs5OvV217zn4ZIwxfr/3sH1aWHs6XUOH1eqR2n+z5MM4iUobg86JHZUc=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com; spf=pass smtp.mailfrom=seco.com; dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b=mhAjC9T2; dkim=fail (2048-bit key) header.d=seco.com header.i=@seco.com header.b=caRtvgnE reason="signature verification failed"; arc=fail smtp.client-ip=40.107.8.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seco.com
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
+ b=Xyh6PeoDGN+9yv63+7eSgIrj3dPk86qlNtHeYfT7O/1fJ47ibcR3SBqg9tiOKks8K1+Ros9qILO+Mi85KErwtZMyuocOX+Xbw6u3/EIB87MUYnYKDqcAEm51ahGgqAJ4XAKRKtsNyiu/RKoHvv+pTrIKJrQhLND/NICcktSr+FdTbGVoUgfvUKPf03DGbEgN0Hkz9/1kOtVQRK0rtqefzfHHPaFPHf/BhZf8fFVp1f2QfVLRNnp0GrdjDktwtNMJDamSwJbV5TwV4YBEHqJF7pCtLSocMPI6HsS1DwUijYPo/7vjI35l5k+TETTxWXIKLUatw0dA4IcvOzysm3hXXw==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CM7KTd8Ukj8Dyqy1Y6yhx+3G+H+N0EkTQKNiy8CSjJU=;
+ b=NIz4lhe6P7hQYsLJ/nZo/vY3EwpmY/oyef8/wVd2rQ+ac76ZqhYjXgVM9FsjotoMfm/5vbBliiAcHzbQSc7kXXwtai3CXwvNqK4CE82hlBK9Pnbejz4m5wEZ4usBLKzJeRp62B+rA3T+/yxIy4b4hBN/Mv1822/ZQ4WkrcGsLRboqbWsMCuq7Z1v4xjSrl0rr3KnBlDY6H6RnBPZv9Pse05oKqZhgLoRpOzrIS9teBjURwZFMstaBWVqcgQxMiw84XPdLh7ey4RufFwr5qaRpRFAID+bH+eHEyvBowEGXU/9vHmyHvc1LaUHwCZD5IHCRoMDQf+LtH1EbNHmzPJpfg==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 20.160.56.87) smtp.rcpttodomain=arndb.de smtp.mailfrom=seco.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=seco.com; dkim=pass
+ (signature was verified) header.d=seco.com; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=seco.com] dkim=[1,1,header.d=seco.com]
+ dmarc=[1,1,header.from=seco.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CM7KTd8Ukj8Dyqy1Y6yhx+3G+H+N0EkTQKNiy8CSjJU=;
+ b=mhAjC9T2Ec2x/4LXFZg2l7zqWcBMdURve3HfJHDFTLsxqD5GP2oolebZYEXBl+wa/nasipC2+MbUkVLwOWopfFOwCEjvcEymdHH5s+LP6w0ZPupJw++QVY4CPXkmL6it+60AUWgIn5Nmiag4G5mgiemKASo3AjDXjWfG6m6B/A7d5aau3AuzAu4oCEXNnpFKkpojbjWCPRKi+xfVVd8PThOQNsjBfUPnvwBLKVzY9qHpIVwJaIdv6bblnXXjRBeKIa4iUiPU1KD6smcS2cgQtwK4bE/WU8WWl/1ymQQXMa1u6xFRYipJlJ6K0Ol1CiNXTNXq+MtGD78eXviGYyAoRA==
+Received: from DB9PR01CA0003.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:1d8::8) by AS4PR03MB8280.eurprd03.prod.outlook.com
+ (2603:10a6:20b:4ce::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
+ 2024 16:04:33 +0000
+Received: from DB5PEPF00014B99.eurprd02.prod.outlook.com
+ (2603:10a6:10:1d8:cafe::a1) by DB9PR01CA0003.outlook.office365.com
+ (2603:10a6:10:1d8::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39 via Frontend
+ Transport; Tue, 20 Feb 2024 16:04:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.160.56.87)
+ smtp.mailfrom=seco.com; dkim=pass (signature was verified)
+ header.d=seco.com;dmarc=pass action=none header.from=seco.com;
+Received-SPF: Pass (protection.outlook.com: domain of seco.com designates
+ 20.160.56.87 as permitted sender) receiver=protection.outlook.com;
+ client-ip=20.160.56.87; helo=repost-eu.tmcas.trendmicro.com; pr=C
+Received: from repost-eu.tmcas.trendmicro.com (20.160.56.87) by
+ DB5PEPF00014B99.mail.protection.outlook.com (10.167.8.166) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Tue, 20 Feb 2024 16:04:32 +0000
+Received: from outmta (unknown [192.168.82.132])
+	by repost-eu.tmcas.trendmicro.com (Trend Micro CAS) with ESMTP id 9717220080092;
+	Tue, 20 Feb 2024 16:04:32 +0000 (UTC)
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (unknown [104.47.30.105])
+	by repre.tmcas.trendmicro.com (Trend Micro CAS) with ESMTPS id 23D942008006E;
+	Tue, 20 Feb 2024 16:04:31 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QsBW7ovs7Xe7FfDnZ66nF3QhLB6SXhnbkqW7/ybC7TAhsyJDAYqAjn8PgL/kHa7RkK2FW8LCROyireMeuEj1c6c+TCOwOnAipJrol6X7+J+WGLzxq1qVvnbZobo8eVsmeDEVOfTFoh4OX5uQoasQfvoWMXZ8l/g9LkxfyLKpfTPTnzLEVssHUvY/un+uDUfxgsHZ5n77a8pG5gOI9hvZxJQZ/yfiiYCTG5FSxzXv+t6wjaAomhgZiH9CAxdImZ/rM2JTtrCdjQb6J4ayJK0UOrdzKbz6m+dr6RSOum/nK6sxsEwDn9zVyT6gM8ujEGbGU+Isw7zkypsdUZoRU2fQEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1X4q+usKTYI+ic55BclcLU0SZuGORAgBFqWirRgUrDM=;
+ b=THxZbyGSfhbI9z2zwefVt7euQB7bEJ91QKVnKgtB/h6QQ6qlPdn01FYawitYWAmUoTXBP+Alw6zRZ1o0wT25Pr5IJf6avHFXhWHAcvJx6A3CR4aG1BiIFy8bDYtKfXwXHkIf9XHWHMj6XR7ZMXqYXEg4k+xbwkSKsZkzxqM6bFh6S/EjWAePPCyz2Zw9FuX0VFYaN6ux1M1O7qoQIBSOB6bwhibQnwKULigci2x1VbY7K5BK+N2ErHPxE22Y7UDg4JVe8nPKBUUhC0iY/J+Rbb4rlMIdv4EAO25MErKXmV0ylkVX/bG9nR3mLtzaGXGe1JaBJC8ZfCyDYoDWC/nnpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1X4q+usKTYI+ic55BclcLU0SZuGORAgBFqWirRgUrDM=;
+ b=caRtvgnE7OwFf4I3yCDs50mtKzkR6/RyWKvY8sMTyMwUtd7aC+Pp/qPBXt2cQAAE/1Vd63TSH1UJqglKGa/hBod8P3uICY2Tsm1x38QvAyTWIUV6O3oZR8GUNW+9JaSV9fes7k1pkXbHiQ7coiHk9uxb8/k+SLtssVcWCqbl3deTdTaULefnQT8ZGGI+MHGG3HH8Q4JuMQvxNwXOgiRcuZi1sC1Din5PwXd5jGDm1IOHTckxDhpauIlDTKtPM4hk5ZPh8VBMJVpCVCOD6SIRqpqo9EPKbYNxzTcmo4eMdXpxja8uX8NpngF/CV5YyMUIwjM+iZvaeQXD9gNyabjB0Q==
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=seco.com;
+Received: from DB9PR03MB8847.eurprd03.prod.outlook.com (2603:10a6:10:3dd::13)
+ by PA4PR03MB7133.eurprd03.prod.outlook.com (2603:10a6:102:f0::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 16:04:29 +0000
+Received: from DB9PR03MB8847.eurprd03.prod.outlook.com
+ ([fe80::9529:5f9c:1795:a94c]) by DB9PR03MB8847.eurprd03.prod.outlook.com
+ ([fe80::9529:5f9c:1795:a94c%7]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 16:04:29 +0000
+Message-ID: <cc5794cd-8f75-4694-bec6-1c8d7860f877@seco.com>
+Date: Tue, 20 Feb 2024 11:04:19 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH net v4 1/2] soc: fsl: qbman: Always disable
+ interrupts when taking cgr_lock
+Content-Language: en-US
+To: Vladimir Oltean <vladimir.oltean@nxp.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Roy Pledge <roy.pledge@nxp.com>, Camelia Groza <camelia.groza@nxp.com>,
+ Claudiu Manoil <claudiu.manoil@nxp.com>, Scott Wood <oss@buserror.net>,
+ stable@vger.kernel.org
+References: <20240215162327.3663092-1-sean.anderson@seco.com>
+ <20240219153016.ntltc76bphwrv6hn@skbuf>
+From: Sean Anderson <sean.anderson@seco.com>
+In-Reply-To: <20240219153016.ntltc76bphwrv6hn@skbuf>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: SJ0PR03CA0068.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::13) To DB9PR03MB8847.eurprd03.prod.outlook.com
+ (2603:10a6:10:3dd::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+X-MS-TrafficTypeDiagnostic:
+	DB9PR03MB8847:EE_|PA4PR03MB7133:EE_|DB5PEPF00014B99:EE_|AS4PR03MB8280:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4af1241e-3998-47e2-016d-08dc322da0a7
+X-TrendMicro-CAS-OUT-LOOP-IDENTIFIER: 656f966764b7fb185830381c646b41a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ IkX2YVrg9GsrOHVumir2MtxH7AooZnq1OtB2XNHhTP22WSC1Ux42XeDzHMPS8Q0fR4d7z/jKHX/EeSMaySsg8nDptKvLcPZ0rTicRLMwZqnq5BGNEBT8vWsnZY+8tCTVZI7TOrbN/KOrEUp8t/kxeFZajOjabVPs+M4UjMVcqIUGeG9arsasL6ABrrhbPb+a22ZaQjgj7fHHxgAsBxGnrFgACAtnA4O2lRx6NzpzUIF4CgXBL1EiihBuaMBGrvBbCXWFiQ6ao3gL3gPqgNjRNeggt8CUYVHyxWmmpOD8Y1tZukRttODtAQtkxtsHIrSGciV/ifG7DmgyLAbbU5OUnPmXMTqHrBSjAFfHunM0BZpl85b8mcGLb2+K9DVedKQiV0WIPciCFKvz21kHriJEUaNGSvQhT2rs2puRi5RtocTGzh1qXzcKF/RhaomVPzWI4FLqExfiFuy2jzMGschKGllJp5NOc2+BmXd9REtwkJn8+ZmZrIRN7Ti+gqv+oqESx26Bzczt6N16yhzulML5DQTpRA0adQd8pKJdWMQ2xGDyhQsU3ppsIR+ZySl4jL6IwSSu088JWVMc/8VDhIxIOgY3hNz/DdpPL5GpRGFeYVA=
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB8847.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR03MB7133
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ DB5PEPF00014B99.eurprd02.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	caaf93d8-9ec0-4aea-d828-08dc322d9e13
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VVP6h/Rf5ijhRdCNvbQr4EyNSIJ/KbvnZg8J4qCP1/X1PXLSgI/qRgOsZ23Gjjk4u9+YD6FWf1wts47fmeScEhX54DvEZr9fPJeZIS8h9ksV0A1bXnDUhYhQfDPTIdFTKKXqM9x1x8MTIZaAgNukrJSCnSOx7x+uxr1nptrs/RknQivFWqTLJxcVNT29ie2qXsd1O18q3qiTdhMd3iFGxto2JsEwGzW/VnokEmfjEPPQlEdzId3W9VUnNPn8N+/GUAo3YgRZKJCqQ2GmfXd399rlfGe8Y99zOR95U4BiROQ3nu5Ogb8yeqmmDMZD8jDNGphnhGyxZEGeUB8KlWqS2U2IQJ28Ytq27b9ZclYPbaBB5IH5SduWEHzs3UTxqRv8Hsc3WhJzdCfZ97k781rvfqAvzuEQf8QEJ2mAHpu/ceYlRJBMiw7VX8Sg4BEixPKabh5i7aWrAtUjSrxsNVob69rMLWlQS4nA+t0x9aT/+pVrCI1DWTcuiqaKuK3Wof5/CMBGvjfKO+iawOwQ3WZ96hNCqPX/3PI/MXIz5OuGPAT1pEljwMEm9IZoTLR8/uNQAojOewmGJx4RCcpTDWkDH8QoLvdupOoEGWB+6NVWjLCIawaaQwYFveSO5CSb49B7+IfJpkLyP3KFBiTOnhNEJg==
+X-Forefront-Antispam-Report:
+	CIP:20.160.56.87;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:repost-eu.tmcas.trendmicro.com;PTR:repost-eu.tmcas.trendmicro.com;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1102;
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 16:04:32.9203
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4af1241e-3998-47e2-016d-08dc322da0a7
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bebe97c3-6438-442e-ade3-ff17aa50e733;Ip=[20.160.56.87];Helo=[repost-eu.tmcas.trendmicro.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DB5PEPF00014B99.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR03MB8280
 
-When porting a driver from bare phylib to phylink, one of the mandatory
-steps is to fill-in the phylink_config.mac_capabilities and the
-supported_interfaces. Add a dedicated step in the porting guide, with
-some examples.
+On 2/19/24 10:30, Vladimir Oltean wrote:
+> Hi Sean,
+>
+> On Thu, Feb 15, 2024 at 11:23:26AM -0500, Sean Anderson wrote:
+>> smp_call_function_single disables IRQs when executing the callback. To
+>> prevent deadlocks, we must disable IRQs when taking cgr_lock elsewhere.
+>> This is already done by qman_update_cgr and qman_delete_cgr; fix the
+>> other lockers.
+>>
+>> Fixes: 96f413f47677 ("soc/fsl/qbman: fix issue in qman_delete_cgr_safe()=
+")
+>> CC: stable@vger.kernel.org
+>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+>> Reviewed-by: Camelia Groza <camelia.groza@nxp.com>
+>> Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> ---
+>> I got no response the first time I sent this, so I am resending to net.
+>> This issue was introduced in a series which went through net, so I hope
+>> it makes sense to take it via net.
+>>
+>> [1] https://cas5-0-urlprotect.trendmicro.com:443/wis/clicktime/v1/query?=
+url=3Dhttps%3a%2f%2flore.kernel.org%2flinux%2darm%2dkernel%2f20240108161904=
+2865093%2d1%2dsean.anderson%40seco.com%2f&umid=3D75622bdd-3d90-45a2-89a9-6=
+0921f1f3189&auth=3Dd807158c60b7d2502abde8a2fc01f40662980862-0625a208f4f6c24=
+1a307b4380763ba50532758bf
+>>
+>> (no changes since v3)
+>>
+>> Changes in v3:
+>> - Change blamed commit to something more appropriate
+>>
+>> Changes in v2:
+>> - Fix one additional call to spin_unlock
+>
+> Leo Li (Li Yang) is no longer with NXP. Until we figure out within NXP
+> how to continue with the maintainership of drivers/soc/fsl/, yes, please
+> continue to submit this series to 'net'. I would also like to point
+> out to Arnd that this is the case.
+>
+> Arnd, a large portion of drivers/soc/fsl/ is networking-related
+> (dpio, qbman). Would it make sense to transfer the maintainership
+> of these under the respective networking drivers, to simplify the
+> procedures?
+>
+> Also, your patches are whitespace-damaged. They do not apply to the
+> kernel, and patchwork shows this as well.
+> https://cas5-0-urlprotect.trendmicro.com:443/wis/clicktime/v1/query?url=
+=3Dhttps%3a%2f%2fpatchwork.kernel.org%2fproject%2fnetdevbpf%2fpatch%2f20240=
+215162327.3663092%2d1%2dsean.anderson%40seco.com%2f&umid=3D75622bdd-3d90-45=
+a2-89a9-60921f1f3189&auth=3Dd807158c60b7d2502abde8a2fc01f40662980862-ec9df0=
+3b11ef3e6b48a457ca5469e0b20c4b0439
+>
+> Please repost with this fixed.
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
- Documentation/networking/sfp-phylink.rst | 45 +++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 9 deletions(-)
+Hm, I used the same method I have in the past (git send-email). But I
+guess something is converting my tabs to spaces? Maybe it is related to
+the embedded world advertisement...
 
-diff --git a/Documentation/networking/sfp-phylink.rst b/Documentation/networking/sfp-phylink.rst
-index bc3365bbf096..30b1f2cf997f 100644
---- a/Documentation/networking/sfp-phylink.rst
-+++ b/Documentation/networking/sfp-phylink.rst
-@@ -231,16 +231,43 @@ this documentation.
-    For further information on these methods, please see the inline
-    documentation in :c:type:`struct phylink_mac_ops <phylink_mac_ops>`.
- 
--9. Remove calls to of_parse_phandle() for the PHY,
--   of_phy_register_fixed_link() for fixed links etc. from the probe
--   function, and replace with:
-+9. Fill-in the :c:type:`struct phylink_config <phylink_config>` fields with
-+   a reference to the :c:type:`struct device <device>` associated to your
-+   :c:type:`struct net_device <net_device>`:
- 
-    .. code-block:: c
- 
--	struct phylink *phylink;
- 	priv->phylink_config.dev = &dev.dev;
- 	priv->phylink_config.type = PHYLINK_NETDEV;
- 
-+   Fill-in the various speeds, pause and duplex modes your MAC can handle:
-+
-+   .. code-block:: c
-+
-+        priv->phylink_config.mac_capabilities = MAC_SYM_PAUSE | MAC_10 | MAC_100 | MAC_1000FD;
-+
-+   Fill-in all the :c:type:`phy_interface_t <phy_interface_t>` (i.e. all MAC to
-+   PHY link modes) that your MAC can output. The following example shows a
-+   configuration for a MAC that can handle all RGMII modes, SGMII and 1000BaseX.
-+   You must adjust these according to what your MAC is capable of, and not just
-+   the interface you wish to use:
-+
-+   .. code-block:: c
-+
-+       phy_interface_set_rgmii(priv->phylink_config.supported_interfaces);
-+        __set_bit(PHY_INTERFACE_MODE_SGMII,
-+                  priv->phylink_config.supported_interfaces);
-+        __set_bit(PHY_INTERFACE_MODE_1000BASEX,
-+                  priv->phylink_config.supported_interfaces);
-+
-+10. Remove calls to of_parse_phandle() for the PHY,
-+    of_phy_register_fixed_link() for fixed links etc. from the probe
-+    function, and replace with:
-+
-+    .. code-block:: c
-+
-+	struct phylink *phylink;
-+
- 	phylink = phylink_create(&priv->phylink_config, node, phy_mode, &phylink_ops);
- 	if (IS_ERR(phylink)) {
- 		err = PTR_ERR(phylink);
-@@ -249,14 +276,14 @@ this documentation.
- 
- 	priv->phylink = phylink;
- 
--   and arrange to destroy the phylink in the probe failure path as
--   appropriate and the removal path too by calling:
-+    and arrange to destroy the phylink in the probe failure path as
-+    appropriate and the removal path too by calling:
- 
--   .. code-block:: c
-+    .. code-block:: c
- 
- 	phylink_destroy(priv->phylink);
- 
--10. Arrange for MAC link state interrupts to be forwarded into
-+11. Arrange for MAC link state interrupts to be forwarded into
-     phylink, via:
- 
-     .. code-block:: c
-@@ -266,7 +293,7 @@ this documentation.
-     where ``link_is_up`` is true if the link is currently up or false
-     otherwise.
- 
--11. Verify that the driver does not call::
-+12. Verify that the driver does not call::
- 
- 	netif_carrier_on()
- 	netif_carrier_off()
--- 
-2.43.2
+Maybe the solution is to get a kernel.org email...
 
+--Sean
+
+[Embedded World 2024, SECO SpA]<https://www.messe-ticket.de/Nuernberg/embed=
+dedworld2024/Register/ew24517689>
 
