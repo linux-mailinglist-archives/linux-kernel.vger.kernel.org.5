@@ -1,144 +1,179 @@
-Return-Path: <linux-kernel+bounces-72411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0BD85B2EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:30:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1825785B2F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E15B71C212E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:30:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8D5D286DFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4F259174;
-	Tue, 20 Feb 2024 06:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="m+/qvWFK"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871D717740;
-	Tue, 20 Feb 2024 06:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEDF1EB4A;
+	Tue, 20 Feb 2024 06:31:36 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0972D29A8;
+	Tue, 20 Feb 2024 06:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708410609; cv=none; b=dB4jjarg4nmOF/DT9gI25sMt3EnmW696vCof7tF0dv18ZPelNJtP/BxZZk9nYtVlwVZy1zTZT8F+qbagOTJayqt3OxhlavMUxUh0uWyirtnZzXz4LEBXeauoeP8zO4upG3QdpqpeeUUuhVaAj8vfOLYfjKbRI6w4PzLFMNo9p58=
+	t=1708410695; cv=none; b=T0JqMWlkQRa78DdC352yxoWbK+qVZXUeggpMNc6ZeX6xvln8IzYeqIu5P3MQ81Vz0ldaZv1kDlR2z805x8Rk4xjgYeBsi44nVU92kQjaM8+ieUElf9POpoDXMzd+r+7ZpK8iJ3FhyF+1/au6BhMtPKpsuNdprJXIdbDpZI98J2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708410609; c=relaxed/simple;
-	bh=X5Ky79iDgxmJYSC+Z/i/7mg96HvOwr9JZSwlio3XVMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Imrgck5nGK443lwMGlpKwO1aig4tDeU1YLsVnY/W5pX4h/yUdKk8trHuEffxYHDrBt1L9MShXNqwVYP3NIQfDrlJxUtJfU3qw3zFn7n+m3ZGuPs5wImT7kYGtElD6/ZwOPrJ1JzYVw3WX24kTnlILSqU7kfFbOX99KSI2mKNKII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=m+/qvWFK; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id 2AB272083609; Mon, 19 Feb 2024 22:30:07 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2AB272083609
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708410607;
-	bh=s1rjPiaurgRUARd2EXAbH2FrRbDVT1VK83N6oook3eA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m+/qvWFKzJOa/daTEZQPx7WwkTyzEkawcfFWj8VebLxyKmypE23UPVEndTtZ5iwDD
-	 XcTsx6XZfzbi+1XLlRwx6j0zxNSHRprQ39UuxPRDWkDjJyTRF4nP6Cy7MlKR0GxHOp
-	 /t8rJbilqhcniSC6WdZmGjDSvuciWZW191DopTqQ=
-Date: Mon, 19 Feb 2024 22:30:07 -0800
-From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To: mhklinux@outlook.com
-Cc: haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-	boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/1] Drivers: hv: vmbus: Calculate ring buffer size for
- more efficient use of memory
-Message-ID: <20240220063007.GA17584@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20240213061959.782110-1-mhklinux@outlook.com>
+	s=arc-20240116; t=1708410695; c=relaxed/simple;
+	bh=P2xhFqP/sLJefSBnZs/bXJGtSX+uYWG8SN57iAHNZyA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=d2/2wALcIFJIDsjrU7Z0mCdl7AqhG4SJvxCMU/B1vnRFv6oSunu5Ps01qzz28eYlLTKb6H/r5izAUkwa8F8BQwW3QHEdSzTU2BygIMh5PT/jPpygGCQJijuJXLR9s6xvuirFgPwwCcphKKtgVRdNX9hBBrsB8AXfDQpjvq5RZYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Tf8g42lQtzqj7r;
+	Tue, 20 Feb 2024 14:30:56 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0D4911402DE;
+	Tue, 20 Feb 2024 14:31:30 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 14:31:29 +0800
+Message-ID: <2fdd3948-0fa0-c8af-a5b4-ce595314f9ac@huawei.com>
+Date: Tue, 20 Feb 2024 14:31:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213061959.782110-1-mhklinux@outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 5/7] ext4: fix slab-out-of-bounds in
+ ext4_mb_find_good_group_avg_frag_lists()
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<jack@suse.cz>, <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<yukuai3@huawei.com>, <stable@vger.kernel.org>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-6-libaokun1@huawei.com>
+ <ZdQ7FEA7KC4eAMpg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <ZdQ7FEA7KC4eAMpg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Mon, Feb 12, 2024 at 10:19:59PM -0800, mhkelley58@gmail.com wrote:
-> From: Michael Kelley <mhklinux@outlook.com>
-> 
-> The VMBUS_RING_SIZE macro adds space for a ring buffer header to the
-> requested ring buffer size.  The header size is always 1 page, and so
-> its size varies based on the PAGE_SIZE for which the kernel is built.
-> If the requested ring buffer size is a large power-of-2 size and the header
-> size is small, the resulting size is inefficient in its use of memory.
-> For example, a 512 Kbyte ring buffer with a 4 Kbyte page size results in
-> a 516 Kbyte allocation, which is rounded to up 1 Mbyte by the memory
-> allocator, and wastes 508 Kbytes of memory.
-> 
-> In such situations, the exact size of the ring buffer isn't that important,
-> and it's OK to allocate the 4 Kbyte header at the beginning of the 512
-> Kbytes, leaving the ring buffer itself with just 508 Kbytes. The memory
-> allocation can be 512 Kbytes instead of 1 Mbyte and nothing is wasted.
-> 
-> Update VMBUS_RING_SIZE to implement this approach for "large" ring buffer
-> sizes.  "Large" is somewhat arbitrarily defined as 8 times the size of
-> the ring buffer header (which is of size PAGE_SIZE).  For example, for
-> 4 Kbyte PAGE_SIZE, ring buffers of 32 Kbytes and larger use the first
-> 4 Kbytes as the ring buffer header.  For 64 Kbyte PAGE_SIZE, ring buffers
-> of 512 Kbytes and larger use the first 64 Kbytes as the ring buffer
-> header.  In both cases, smaller sizes add space for the header so
-> the ring size isn't reduced too much by using part of the space for
-> the header.  For example, with a 64 Kbyte page size, we don't want
-> a 128 Kbyte ring buffer to be reduced to 64 Kbytes by allocating half
-> of the space for the header.  In such a case, the memory allocation
-> is less efficient, but it's the best that can be done.
-> 
-> Fixes: c1135c7fd0e9 ("Drivers: hv: vmbus: Introduce types of GPADL")
-> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-> ---
->  include/linux/hyperv.h | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-> index 2b00faf98017..6ef0557b4bff 100644
-> --- a/include/linux/hyperv.h
-> +++ b/include/linux/hyperv.h
-> @@ -164,8 +164,28 @@ struct hv_ring_buffer {
->  	u8 buffer[];
->  } __packed;
->  
+On 2024/2/20 13:39, Ojaswin Mujoo wrote:
+> On Fri, Jan 26, 2024 at 04:57:14PM +0800, Baokun Li wrote:
+>
+> Hey Baokun,
+>
+> Good catch! I've added some minor comments below. Other than that feel
+> free to add
+>
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>
+>> We can trigger a slab-out-of-bounds with the following commands:
+>>
+>>      mkfs.ext4 -F /dev/$disk 10G
+>>      mount /dev/$disk /tmp/test
+>>      echo 2147483647 > /sys/fs/ext4/$disk/mb_group_prealloc
+>>      echo test > /tmp/test/file && sync
+>>
+>> ==================================================================
+>> BUG: KASAN: slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
+>> Read of size 8 at addr ffff888121b9d0f0 by task kworker/u2:0/11
+>> CPU: 0 PID: 11 Comm: kworker/u2:0 Tainted: GL 6.7.0-next-20240118 #521
+>> Call Trace:
+>>   dump_stack_lvl+0x2c/0x50
+>>   kasan_report+0xb6/0xf0
+>>   ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
+>>   ext4_mb_regular_allocator+0x19e9/0x2370 [ext4]
+>>   ext4_mb_new_blocks+0x88a/0x1370 [ext4]
+>>   ext4_ext_map_blocks+0x14f7/0x2390 [ext4]
+>>   ext4_map_blocks+0x569/0xea0 [ext4]
+>>   ext4_do_writepages+0x10f6/0x1bc0 [ext4]
+>> [...]
+>> ==================================================================
+>>
+>> The flow of issue triggering is as follows:
+>>
+>> // Set s_mb_group_prealloc to 2147483647 via sysfs
+>> ext4_mb_new_blocks
+>>    ext4_mb_normalize_request
+>>      ext4_mb_normalize_group_request
+>>        ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc
+>>    ext4_mb_regular_allocator
+>>      ext4_mb_choose_next_group
+>>        ext4_mb_choose_next_group_best_avail
+>>          mb_avg_fragment_size_order
+>>            order = fls(len) - 2 = 29
+>>          ext4_mb_find_good_group_avg_frag_lists
+>>            frag_list = &sbi->s_mb_avg_fragment_size[order]
+>>            if (list_empty(frag_list)) // Trigger SOOB!
+>>
+>> At 4k block size, the length of the s_mb_avg_fragment_size list is 14, but
+>> an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds to be
+>> triggered by an attempt to access an element at index 29.
+>>
+>> Therefore it is not allowed to set s_mb_group_prealloc to a value greater
+>> than s_clusters_per_group via sysfs, and to avoid returning an order from
+>> mb_avg_fragment_size_order() that is greater than MB_NUM_ORDERS(sb).
+>>
+>> Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
+>> CC: stable@vger.kernel.org
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c | 2 ++
+>>   fs/ext4/sysfs.c   | 9 ++++++++-
+>>   2 files changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index f44f668e407f..1ea6491b6b00 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -832,6 +832,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
+>>      return 0;
+>>    if (order == MB_NUM_ORDERS(sb))
+>>      order--;
+>> + if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
+>> +   order = MB_NUM_ORDERS(sb) - 1;
+>>    return order;
+>>   }
+> So along with this change, I think it'll also be good to add an extra
+> check in ext4_mb_choose_next_group_best_avail() as:
+>
+>    if (1 << min_order < ac->ac_o_ex.fe_len)
+>      min_order = fls(ac->ac_o_ex.fe_len);
+>   
+> + if (order >= MB_NUM_ORDERS(ac->ac_sb))
+> +   order = MB_NUM_ORDERS(ac->ac_sb) - 1;
 > +
-> +/*
-> + * If the requested ring buffer size is at least 8 times the size of the
-> + * header, steal space from the ring buffer for the header. Otherwise, add
-> + * space for the header so that is doesn't take too much of the ring buffer
-> + * space.
-> + *
-> + * The factor of 8 is somewhat arbitrary. The goal is to prevent adding a
-> + * relatively small header (4 Kbytes on x86) to a large-ish power-of-2 ring
-> + * buffer size (such as 128 Kbytes) and so end up making a nearly twice as
-> + * large allocation that will be almost half wasted. As a contrasting example,
-> + * on ARM64 with 64 Kbyte page size, we don't want to take 64 Kbytes for the
-> + * header from a 128 Kbyte allocation, leaving only 64 Kbytes for the ring.
-> + * In this latter case, we must add 64 Kbytes for the header and not worry
-> + * about what's wasted.
-> + */
-> +#define VMBUS_HEADER_ADJ(payload_sz) \
-> +	((payload_sz) >=  8 * sizeof(struct hv_ring_buffer) ? \
-> +	0 : sizeof(struct hv_ring_buffer))
-> +
->  /* Calculate the proper size of a ringbuffer, it must be page-aligned */
-> -#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + \
-> +#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(VMBUS_HEADER_ADJ(payload_sz) + \
->  					       (payload_sz))
->  
->  struct hv_ring_buffer_info {
+>    for (i = order; i >= min_order; i--) {
+>      int frag_order;
+>      /*
+>
+>
+> The reason for this is that otherwise when order is large eg 29,
+> we would unnecessarily loop from i=29 to i=13 while always
+> looking at the same avg_fragment_list[13].
+>
+> Regards,
+> ojaswin
 
-Thanks for the patch.
-It's worth noting that this will affect the size of ringbuffer calculation for
-some of the drivers: netvsc, storvsc_drv, hid-hyperv, and hyperv-keyboard.c.
-It will be nice to have this comment added in commit for future reference.
 
-Looks a good improvement to me,
-Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Yeah, good point! This will cut down on some unnecessary loops.
 
-> -- 
-> 2.25.1
-> 
+I'll add this extra check in the next version.
+
+Thanks for having a look!
+
+-- 
+With Best Regards,
+Baokun Li
+.
 
