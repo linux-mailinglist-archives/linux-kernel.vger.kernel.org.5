@@ -1,156 +1,76 @@
-Return-Path: <linux-kernel+bounces-72401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DD4E85B2D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85D7B85B2D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:21:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 141F52828D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:19:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41942283D2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F02E5916C;
-	Tue, 20 Feb 2024 06:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FHmyR6iB"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15FFA58ACD;
-	Tue, 20 Feb 2024 06:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D0B5822A;
+	Tue, 20 Feb 2024 06:21:16 +0000 (UTC)
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 6FFEE56B7F;
+	Tue, 20 Feb 2024 06:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708409909; cv=none; b=oivAGQw1Fb+puAiTSmFFIlFJ1jdYIPlhISv7DWlw9A4vI4BvnIDkWe3MCXq/ZwXfTa/qrfihWSGsZNAa0zdvUDWlV8T6iVnUjXztswqeR1Kbu6oB6yVKBgSddjvojM3CBJjLZ3mK2wgOkhLsw2mACZgM4YGtela0sfmKk8tIJeA=
+	t=1708410076; cv=none; b=uLvmb0JXKNjN9hEB2n54PsbTPMhir9Z2w8omsOoiKVxyx6oeY3PC6s0NDbBJ1N6a4RXnp/b7uCqVRReNmgfXXm5C0sFPZDisq7417Rbsgkuk7dfV89P1OaOuQH1SB/wPrUwrV59wWg1hAByXFBmhUEXb7p84GJS/VgwWNJV+UJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708409909; c=relaxed/simple;
-	bh=mOxmtY9st1BCh5hTsuJ9O39rltM8En2NwBJnC+c2x4g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=M6LD3jpGZkrgS29vPMmYFrqnJHjvLNmgrxJNV+CH4x6CUEy4usdNqPnuY9TwLSmXqtmVoVvuYldEWCBl6jucLVEX1ERlW091KHolrkghgHJkt2wORN2BGkjBhwrTKwIqSk/LAWxp00uzCAUlBx4DXh9JJTof13ZjDoGZGtSZ46U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FHmyR6iB; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41K6IHZa128561;
-	Tue, 20 Feb 2024 00:18:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708409897;
-	bh=1Ww2tKra2g8SI/rOHyEKtVJHw2cqSJMM6b5DyVtND4U=;
-	h=From:Date:Subject:References:In-Reply-To:To:CC;
-	b=FHmyR6iBSX45l9QEjIRzpFp6FQb4CRqC8krWUuc7x/gC+j36rc2/qxB4FujLhGOAi
-	 EonVUsO/W6oAz/pBMCnH+OGoc0lHGiFMMhLNufHU8Kkpo/fdlqL3MJyxHQhQMv/VPp
-	 9SSAnwoYl6w3Stt3HHE90ok3iNXcG9Gj0XsYWPxg=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41K6IHXg017884
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 20 Feb 2024 00:18:17 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 20
- Feb 2024 00:18:17 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 20 Feb 2024 00:18:17 -0600
-Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41K6IGql120967;
-	Tue, 20 Feb 2024 00:18:17 -0600
-From: Jai Luthra <j-luthra@ti.com>
-Date: Tue, 20 Feb 2024 11:48:05 +0530
-Subject: [PATCH v2 4/4] arm64: dts: ti: Enable overlays for SK-AM62P
+	s=arc-20240116; t=1708410076; c=relaxed/simple;
+	bh=UxozkFqYq+6YuffM6H+3Z55846NPBPLLV9n15Cq2Fi4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=KajT7MYY/7DRwX+9nj2CYurFSvJAR5eB7zUlBX/nsdvDnWGLJB13uUjywFET6YSDk7EfvFSjTlIDSlDKIxr/LhU73SlwswGxx51SkoUDNJ+b8tt7vLcyxR6V4SDslT+ZdmQd4vZ3G9qRHAXK3ARuWAKD7/uGQ5loEReetZCrq3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
+Received: from localhost.localdomain (unknown [219.141.250.2])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id B0A9F6026522A;
+	Tue, 20 Feb 2024 14:20:37 +0800 (CST)
+X-MD-Sfrom: zeming@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From: Li zeming <zeming@nfschina.com>
+To: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Li zeming <zeming@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?libfs:=20Remove=20unnecessary=20=E2=80=980?= =?UTF-8?q?=E2=80=99=20values=20from=20ret?=
+Date: Tue, 20 Feb 2024 14:20:30 +0800
+Message-Id: <20240220062030.114203-1-zeming@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240220-am62p_csi-v2-4-3e71d9945571@ti.com>
-References: <20240220-am62p_csi-v2-0-3e71d9945571@ti.com>
-In-Reply-To: <20240220-am62p_csi-v2-0-3e71d9945571@ti.com>
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Andrew Davis <afd@ti.com>,
-        Bryan Brattlof <bb@ti.com>, Dhruva Gole <d-gole@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>,
-        Devarsh
- Thakkar <devarsht@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>,
-        Jai Luthra
-	<j-luthra@ti.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1928; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=mOxmtY9st1BCh5hTsuJ9O39rltM8En2NwBJnC+c2x4g=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBl1EQhPPxTSTZCUdaFG3RfCLyvSt17Tz6qj9Q9m
- etSQMA5YWSJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZdREIQAKCRBD3pH5JJpx
- Rb7uEADFjRww152PNobZpfle3BZoqucli51S+f4tir2m0U+ybPgiZvGD2vtIUkMNMarJGUdJanQ
- 7rebIGOo6w20p8H/XnMo5j543RSjpLxDGl254/bL6BnEM0ySiGhXprRLyE/HxabsDgRhVaaModc
- 2czNW4QeLBgVD1/DPeDB/6A9LVClBLJl5ELE+wVF0AP5w3o/kWbxqWgY4YYCVglUNkdrCv06Zu9
- T7RMGlwqiYFQFdwrlOa+gKs431z/aFbdqit6jC0/04gmfAxlaMZ2seG2QFmA05rskXeMZjCAkQ+
- fLLvI+njY7O/A6atovwVMxELg3+iWdWqYPOMaIZvbptiZ+O0pcY0Qn9kkW7caJJ7YOvPWcUvxYN
- 6uXHOmJJS1/uXPtMbbWHLQEzHACPMNxak5Dz0EmDtBe7/MKxyPEctZMjiZ2XBR6ny1oqUH18g6K
- K5vltWjGeFiCv8wbZdopg7nbNfcwROlgvLUgmk0WbmX9H9VKAyiLxz+nAtVvl4aGS4z5753GyRY
- +rdW732qwFaMXapONFI66TUOd7p+DEfu7O/1mjoNNYwEyS+lj2eRgAuuEvRalQUkSmWs1fHEZtI
- lpcrMcV057YFRCxlyoxFX9TNG/fbNn0VzczOwjYCWdQEaKvPO8ymcA3ZFMfqu9b1o8O9Hk/cSrM
- VHM0w9bV4vLxfnA==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Enable symbols so that overlays can be applied on the base DTB for
-SK-AM62P.
+ret is assigned first, so it does not need to initialize the assignment.
 
-Also compile-test known-to-work camera sensor overlays for OV5640 and
-IMX219.
-
-Reviewed-by: Vaishnav Achath <vaishnav.a@ti.com>
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
+Signed-off-by: Li zeming <zeming@nfschina.com>
 ---
- arch/arm64/boot/dts/ti/Makefile | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/libfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index d601c52ab181..9843b7656725 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -116,6 +116,12 @@ k3-am62a7-sk-csi2-ov5640-dtbs := k3-am62a7-sk.dtb \
- k3-am62a7-sk-csi2-tevi-ov5640-dtbs := k3-am62a7-sk.dtb \
- 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
- k3-am62a7-sk-hdmi-audio-dtbs := k3-am62a7-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
-+k3-am62p5-sk-csi2-imx219-dtbs := k3-am62p5-sk.dtb \
-+	k3-am62x-sk-csi2-imx219.dtbo
-+k3-am62p5-sk-csi2-ov5640-dtbs := k3-am62p5-sk.dtb \
-+	k3-am62x-sk-csi2-ov5640.dtbo
-+k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
-+	k3-am62x-sk-csi2-tevi-ov5640.dtbo
- k3-am642-evm-icssg1-dualemac-dtbs := \
- 	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
- k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
-@@ -142,6 +148,9 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am62a7-sk-csi2-imx219.dtb \
- 	k3-am62a7-sk-csi2-ov5640.dtb \
- 	k3-am62a7-sk-hdmi-audio.dtb \
-+	k3-am62p5-sk-csi2-imx219.dtb \
-+	k3-am62p5-sk-csi2-ov5640.dtb \
-+	k3-am62p5-sk-csi2-tevi-ov5640.dtb \
- 	k3-am642-evm-icssg1-dualemac.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
-@@ -156,6 +165,7 @@ DTC_FLAGS_k3-am625-beagleplay += -@
- DTC_FLAGS_k3-am625-sk += -@
- DTC_FLAGS_k3-am62-lp-sk += -@
- DTC_FLAGS_k3-am62a7-sk += -@
-+DTC_FLAGS_k3-am62p5-sk += -@
- DTC_FLAGS_k3-am642-evm += -@
- DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
-
+diff --git a/fs/libfs.c b/fs/libfs.c
+index eec6031b01554..6fb8244b259e8 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -1752,7 +1752,7 @@ static int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
+ 	const struct inode *dir = READ_ONCE(dentry->d_inode);
+ 	struct super_block *sb = dentry->d_sb;
+ 	const struct unicode_map *um = sb->s_encoding;
+-	int ret = 0;
++	int ret;
+ 
+ 	if (!dir || !IS_CASEFOLDED(dir))
+ 		return 0;
 -- 
-2.43.0
+2.18.2
 
 
