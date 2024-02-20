@@ -1,209 +1,260 @@
-Return-Path: <linux-kernel+bounces-73178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F385A85BEBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA7D485BEC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:29:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F1301F2525E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:28:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5834F1F252F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466CE6BB38;
-	Tue, 20 Feb 2024 14:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AFF6FB9D;
+	Tue, 20 Feb 2024 14:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="OSY0egNP"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJgEeFBh"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AA833D2
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327276DCE4;
+	Tue, 20 Feb 2024 14:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708439312; cv=none; b=bnCEMHBkyawsvi4KyorGsmGi06sG0b5+FnzA5ZiCZzuT5n8ccOpRDuOYx54Q2pNAps6zniz2fzmCTcPnLUgkxasKLbZUW6HhOJaJbO3fYUq4jmky76Biei+axiDxN9CwFJzxUhj1lc9VhXTKd2/Qxsb3sUnNRg2DLrYpd9c38rU=
+	t=1708439325; cv=none; b=aPAVWis+Ad3W6ZFKzHiB33B/5rTTW3kLgBwXhV5N/bcW+vfSi2jXitZGW9gQVK/NJtUWovJe7+tzK4JMmzWpJol2cvj9RXG/L/NnCskTbIibUJW1vmzrbK3zV2zgfM1druaY1Dy7txjsf2Tm3m6Pukka3jOGdQf6cC4wfHRE30I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708439312; c=relaxed/simple;
-	bh=MzWOsEg0JyR/mxwiNq/7yMqDNjKh9bp94ctzwd6K/xY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gROs0NZObvkDEEYTpncS9wmNl77x6zcNFWmd1NZU1B9aHbHgb/l9u7W0bQ+yRhb3BhHhMV30StJ6BRl2cR9Zhw6Muh05HG/HzY8oWxtLd7/ng1tXvNv0DBbXMQcpl/KQWwBn5V5rXgId27ma3Q08DVIpMFIBOCwUuzO1e7OBr+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=OSY0egNP; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412698cdd77so10568485e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:28:28 -0800 (PST)
+	s=arc-20240116; t=1708439325; c=relaxed/simple;
+	bh=FL3M7xKJ14hnC6urx1eoKV1vZUT3l8eiXsraM73jfXA=;
+	h=Content-Type:Mime-Version:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=bQ2oQ0Vy8UzEIuP14j/3M3MsGxhgJcnj2GlZa9Mqg3Qiz7B8SBvA99oud5N+3QSuKqnf4CjUx3D06ecI4s91JOOplzd/one86bx2Xn9ClXC/dsqvVxYnTV6VRUE2KR6UJ02TEuoYeclJtE8hFQzrosU0GGIiR5wfn/0BAnHuUiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jJgEeFBh; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3e706f50beso312150566b.0;
+        Tue, 20 Feb 2024 06:28:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708439307; x=1709044107; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XfU0HjeFsG8DYeTFKiZ75ZrgNxasxEcw52Jxbh8n3a8=;
-        b=OSY0egNPShjqG3zA2SaPo0QzWPCw1aJ1Kkrc54gneingLQkOGGzG2UZvm+Jv96TEQR
-         bOnsA/XhOfii+gAto8ZT5yLhKxJ8VDPxLmGnAIk6IHZtxdfjSBJLy0/o5pYSxZrA+duj
-         kc3Yh0s0/5lc6aUTK8uSAixiYhwSoSlaZoSzDIv1FDMAuHhBoXzEvWeNQkaGkBi9OQpe
-         5+ELrKizDqY7YmuV8TFwZlZJpW5FCRbZY8V36Ny2aG9+6pLAtaBfZLaIrIQ+19EQHErO
-         BzIay7evCp/l6Wto8+GxRFSb23ZT/xflRTU9YNBqWtaeQIyjtZfO/DPFlrtf9Hh3pIc0
-         NVew==
+        d=gmail.com; s=20230601; t=1708439321; x=1709044121; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vz5RzTNhpTPMTVMz3nxEsmiIaAzAhCmMLP53qUjHq3g=;
+        b=jJgEeFBhxVfMx46rd78x/YQUO+MtlbFzkg1HZUIq19ko/BiQAcQVyYTJ+z5PlksNc1
+         5+z+9it+iesgjksJ0RGALBycLkj/LbYeJNDZ2ZYa0xXAsddeBXueG0XqAgmO3Ta5lnck
+         Fc7A/ou4t7R5zu8nT+H851UA0mSGISjFxjFdpx23ZTEPyhP8tjGJGHGvaDmzH9LdnTRy
+         v5Vh3K/m5FHo//JokUTRGWGMcUYwYXnGY3mKJewgiuCVJjy0fUprLJUKPhMQZlxAVmrC
+         HPliNBrmXis0oMCNNFjkcszQKyXW0opwsWWwcSWKkIY8/iIB2PsbVfLlt8RTrg3eb3+x
+         /yHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708439307; x=1709044107;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XfU0HjeFsG8DYeTFKiZ75ZrgNxasxEcw52Jxbh8n3a8=;
-        b=QGM49aM4NRlgNOaEnrv3Pt8ieswNMGEs+pr1/HZtK3k7jTv1neTgCzWoh36U8Fo3Qh
-         D1im9wtVcKsR7KNWDhWGCgxEpvZj5I7QbLdE6AFYnT9eGZOl+NuXIcCp2+WcOkLMlWwa
-         cC97FTJGvEBobNwlIsHJIlGfX+fBySePcKz0e/2P8xgGJlVP2Np1G+UL4usgb9Ig96d+
-         /sTUcOD7GZZY+v0OtI0Im/6uWS78Cvmq4TgrC1K9EcvvLCPvEkcNaMN08HyKD2kWPXbH
-         Z9h+kHD39uVuua+d6bWT2MVmzj/y9w73Fb8U0nsYAIuutnTZ0q/0FjW3xT+Hvyk1O7cG
-         JPtg==
-X-Forwarded-Encrypted: i=1; AJvYcCXV5531yALRZMxJgBOgAoPsjz5DK6rSW8MJTVE6jyfX7AzZLszOrbILdT0T0oq3nVzpn5vQrupLWKbqa4s4vJciMq+bJpQ67rChtoL+
-X-Gm-Message-State: AOJu0YyYSn2QTNq5KV2q/ZeuzDVxCRbMzqLIgrNFY/jhQOdTNpCAVeuH
-	e4OZxyfbcL8pLc6/gGUYxU5p0H5m5Ucx7uEY2wBqeeKzh7aTdYxgkpY3IY0pzCM=
-X-Google-Smtp-Source: AGHT+IGxF48jyXEAnABhhXx5nHyta6YTjGe/ylJuVPWhY34q5T+h15XspvG+07uFBdgpUA0ggHMo4g==
-X-Received: by 2002:a05:600c:3516:b0:412:568b:50b5 with SMTP id h22-20020a05600c351600b00412568b50b5mr8779049wmq.14.1708439307518;
-        Tue, 20 Feb 2024 06:28:27 -0800 (PST)
-Received: from airbuntu ([87.127.96.170])
-        by smtp.gmail.com with ESMTPSA id iv6-20020a05600c548600b004103e15441dsm15246471wmb.6.2024.02.20.06.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 06:28:27 -0800 (PST)
-Date: Tue, 20 Feb 2024 14:28:25 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] sched: cpufreq: Rename map_util_perf to
- apply_dvfs_headroom
-Message-ID: <20240220142825.odzabxo3tnkhiepa@airbuntu>
-References: <20240205022006.2229877-1-qyousef@layalina.io>
- <CAKfTPtBoapJtwD3DByd06CE07MD3eGhfJVyZ01cRLyKLO8fJ7w@mail.gmail.com>
- <20240220135745.h5mlvutle6wn6eim@airbuntu>
- <CAKfTPtDC0w-gdb15pmCDr7tS9gmTeT4qAugTSviO+g9KebNvzA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1708439321; x=1709044121;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vz5RzTNhpTPMTVMz3nxEsmiIaAzAhCmMLP53qUjHq3g=;
+        b=V2eORr3AmKHBQU3XA/oCt61bovkOXx7IDMk6Pjm71L679UfPgtKSvvl6O+/VnFK9sp
+         79RWXtduSztAFeT5bNcWm/ZEV2i4oldbB39Tg06U2RubP9ifvKUhprZKhdZjxy9Rj9ul
+         hm+Uk9ie4zrhhjZKqsT7QWKkUGrpFYrMsV5LpduVB451eSsKPNLj7fQjA7F3e9M56JWf
+         38T70DS9Nd0j2S59ZgVZUk+7bNoMJv2vW5Yg0REvPrTCWeJKyhSE1oFoTLan59Pd0ZBe
+         0GA877Sbsmlr1CMJ7nz6eiSLgG79sOpvxQRdEBhQGWU1KUL4VIGzB8IXk6jXg2CDHx1S
+         Yp8w==
+X-Forwarded-Encrypted: i=1; AJvYcCWlCu88GLelYDd8dNpAkS+9Zz9bc/NjsbzcikyKzsFBnJQBKnyvUbk5GW5RcTiJe6M/mNP8HuRMRCSesOjHiuIjiP15kLx0GT+l73yYA4hfGIQ1RvpbqeCvwrB/Op3Fuh3QuRtRfgVlp5s0WTyr09XPaphZKX0dmiwAUxHQlIvsMrU=
+X-Gm-Message-State: AOJu0YzbKOG+1OSbU+v0XGJAeEPm8i5ohH/Ft2pmMzYuFDcVIW1VAMvE
+	Sr42f7IV9WquYbFgqpfhoQCRtu95CJK2N2053ZEDOdPWX3qr3Viz
+X-Google-Smtp-Source: AGHT+IFqSZIGLTjK5nMNqJ0mC/A+H31d6ZqUqt7xA4Zv5XlbR7MTAcjYaOiWvzrP3SvxWDabVUin/A==
+X-Received: by 2002:a17:906:b0c:b0:a3e:5b7f:6d31 with SMTP id u12-20020a1709060b0c00b00a3e5b7f6d31mr4677754ejg.5.1708439320970;
+        Tue, 20 Feb 2024 06:28:40 -0800 (PST)
+Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id vi10-20020a170907d40a00b00a3e7713dcbesm2523386ejc.39.2024.02.20.06.28.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 06:28:40 -0800 (PST)
+Content-Type: multipart/signed;
+ boundary=54d881cc30ca662a73cfdacbec92cecca394f1f83ef4012a7b29e0247a47;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDC0w-gdb15pmCDr7tS9gmTeT4qAugTSviO+g9KebNvzA@mail.gmail.com>
+Mime-Version: 1.0
+Date: Tue, 20 Feb 2024 15:28:39 +0100
+Message-Id: <CZ9Z70HO2C7J.398BRNM8NBIG1@gmail.com>
+Cc: "Alexandre Torgue" <alexandre.torgue@foss.st.com>, "Jose Abreu"
+ <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>, "Thierry Reding" <treding@nvidia.com>
+Subject: Re: [PATCH net-next v3 3/3] net: stmmac: Configure AXI on Tegra234
+ MGBE
+From: "Thierry Reding" <thierry.reding@gmail.com>
+To: "Serge Semin" <fancer.lancer@gmail.com>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240219-stmmac-axi-config-v3-0-fca7f046e6ee@nvidia.com>
+ <20240219-stmmac-axi-config-v3-3-fca7f046e6ee@nvidia.com>
+ <xne2i6jwqaptsrd2hjdahxbscysgtj7iabqendyjb75fnrjc5z@js7n7qngtzym>
+In-Reply-To: <xne2i6jwqaptsrd2hjdahxbscysgtj7iabqendyjb75fnrjc5z@js7n7qngtzym>
 
-On 02/20/24 15:22, Vincent Guittot wrote:
-> On Tue, 20 Feb 2024 at 14:57, Qais Yousef <qyousef@layalina.io> wrote:
-> >
-> > On 02/14/24 08:32, Vincent Guittot wrote:
-> > > On Mon, 5 Feb 2024 at 03:20, Qais Yousef <qyousef@layalina.io> wrote:
-> > > >
-> > > > We are providing headroom for the utilization to grow until the next
-> > > > decision point to pick the next frequency. Give the function a better
-> > > > name and give it some documentation. It is not really mapping anything.
-> > >
-> > > The renaming makes sense.
-> > >
-> > > >
-> > > > Also move it to sched.h. This function relies on updating util signal
-> > >
-> > > I don't see the benefit of moving it the sched.h as it is only used by
-> > > cpufreq_schedutil()
-> >
-> > Hehe what's for me the reason to move it for you it's the reason not to :-)
-> >
-> > (I believe you meant cpufreq_schedutil.c)
-> >
-> > It doesn't make sense outside of schedutil, does it? I can't see it being
-> > suitable for consumption by other governors for example as it is not generic
-> > enough.
-> >
-> > And the headroom definition needs to evolve. And the tight coupling to util
-> > which is a scheduler internal metric will make it hard once it's part of
-> > cpufreq. The headroom IMO is a property of the governor.
-> 
-> In this case make it part of cpufreq_schedutil.c if this is the
-> governor that can use it. I don't like sched.h because It gives the
-> impression that scheduler can play with it whereas it's a property of
-> the cpufreq governor
+--54d881cc30ca662a73cfdacbec92cecca394f1f83ef4012a7b29e0247a47
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Okay will do
-
-Thanks!
-
-> 
+On Mon Feb 19, 2024 at 7:32 PM CET, Serge Semin wrote:
+> On Mon, Feb 19, 2024 at 05:46:06PM +0100, Thierry Reding wrote:
+> > From: Thierry Reding <treding@nvidia.com>
+> >=20
+> > Allow the device to use bursts and increase the maximum number of
+> > outstanding requests to improve performance. Measurements show an
+> > increase in throughput of around 5x on a 1 Gbps link.
+> >=20
+> > Signed-off-by: Thierry Reding <treding@nvidia.com>
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >=20
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c b/driver=
+s/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+> > index bab57d1675df..b6bfa48f279d 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+> > @@ -199,6 +199,12 @@ static void mgbe_uphy_lane_bringup_serdes_down(str=
+uct net_device *ndev, void *mg
+> >  	writel(value, mgbe->xpcs + XPCS_WRAP_UPHY_RX_CONTROL);
+> >  }
+> > =20
+> > +static const struct stmmac_axi tegra234_mgbe_axi =3D {
+> > +	.axi_wr_osr_lmt =3D 63,
+> > +	.axi_rd_osr_lmt =3D 63,
+> > +	.axi_blen =3D { 256, },
+> > +};
+> > +
+> >  static int tegra_mgbe_probe(struct platform_device *pdev)
+> >  {
+> >  	struct plat_stmmacenet_data *plat;
+> > @@ -284,6 +290,9 @@ static int tegra_mgbe_probe(struct platform_device =
+*pdev)
+> >  	if (err < 0)
+> >  		goto disable_clks;
+> > =20
+> > +	/* setup default AXI configuration */
+> > +	res.axi =3D &tegra234_mgbe_axi;
+> > +
+> >  	plat =3D devm_stmmac_probe_config_dt(pdev, &res);
+> >  	if (IS_ERR(plat)) {
+> >  		err =3D PTR_ERR(plat);
+>
+> Let's get back to the v2 discussion:
+>
+> On Mon Feb 5, 2024 at 1:44 AM CET, Serge Semin wrote:
+> > The entire series can be converted to just a few lines of change:
+> >     plat =3D devm_stmmac_probe_config_dt(pdev, res.mac);
+> >     if (IS_ERR(plat)) {
+> >             err =3D PTR_ERR(plat);
+> >             goto disable_clks;
+> >     }
+> > +
+> > +   if (IS_ERR_OR_NULL(plat->axi)) {
+> > +           plat->axi =3D devm_kzalloc(&pdev->dev, sizeof(*axi), GFP_KE=
+RNEL);
+> > +           if (!plat->axi) {
+> > +                   ret =3D -ENOMEM;
+> > +                   goto disable_clks;
+> > +           }
+> > +   } /* else memset plat->axi with zeros if you wish */
+> > +
+> > +   plat->axi->axi_wr_osr_lmt =3D 63;
+> > +   plat->axi->axi_rd_osr_lmt =3D 63;
+> > +   plat->axi->axi_blen[0] =3D 256;
+> > =20
+> >     plat->has_xgmac =3D 1;
+> >     plat->flags |=3D STMMAC_FLAG_TSO_EN;
+> >     plat->pmt =3D 1;
 > >
-> > We can defer the moving for now if you insist. But I think it's inevitable?
-> >
-> > >
-> > >
-> > > > appropriately to give a headroom to grow. This is more of a scheduler
-> > > > functionality than cpufreq. Move it to sched.h where all the other util
-> > > > handling code belongs.
-> > > >
-> > > > Signed-off-by: Qais Yousef <qyousef@layalina.io>
-> > > > ---
-> > > >  include/linux/sched/cpufreq.h    |  5 -----
-> > > >  kernel/sched/cpufreq_schedutil.c |  2 +-
-> > > >  kernel/sched/sched.h             | 17 +++++++++++++++++
-> > > >  3 files changed, 18 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-> > > > index bdd31ab93bc5..d01755d3142f 100644
-> > > > --- a/include/linux/sched/cpufreq.h
-> > > > +++ b/include/linux/sched/cpufreq.h
-> > > > @@ -28,11 +28,6 @@ static inline unsigned long map_util_freq(unsigned long util,
-> > > >  {
-> > > >         return freq * util / cap;
-> > > >  }
-> > > > -
-> > > > -static inline unsigned long map_util_perf(unsigned long util)
-> > > > -{
-> > > > -       return util + (util >> 2);
-> > > > -}
-> > > >  #endif /* CONFIG_CPU_FREQ */
-> > > >
-> > > >  #endif /* _LINUX_SCHED_CPUFREQ_H */
-> > > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > > index 95c3c097083e..abbd1ddb0359 100644
-> > > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > > @@ -179,7 +179,7 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
-> > > >                                  unsigned long max)
-> > > >  {
-> > > >         /* Add dvfs headroom to actual utilization */
-> > > > -       actual = map_util_perf(actual);
-> > > > +       actual = apply_dvfs_headroom(actual);
-> > > >         /* Actually we don't need to target the max performance */
-> > > >         if (actual < max)
-> > > >                 max = actual;
-> > > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > > > index e58a54bda77d..0da3425200b1 100644
-> > > > --- a/kernel/sched/sched.h
-> > > > +++ b/kernel/sched/sched.h
-> > > > @@ -3002,6 +3002,23 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
-> > > >                                  unsigned long min,
-> > > >                                  unsigned long max);
-> > > >
-> > > > +/*
-> > > > + * DVFS decision are made at discrete points. If CPU stays busy, the util will
-> > > > + * continue to grow, which means it could need to run at a higher frequency
-> > > > + * before the next decision point was reached. IOW, we can't follow the util as
-> > > > + * it grows immediately, but there's a delay before we issue a request to go to
-> > > > + * higher frequency. The headroom caters for this delay so the system continues
-> > > > + * to run at adequate performance point.
-> > > > + *
-> > > > + * This function provides enough headroom to provide adequate performance
-> > > > + * assuming the CPU continues to be busy.
-> > > > + *
-> > > > + * At the moment it is a constant multiplication with 1.25.
-> > > > + */
-> > > > +static inline unsigned long apply_dvfs_headroom(unsigned long util)
-> > > > +{
-> > > > +       return util + (util >> 2);
-> > > > +}
-> > > >
-> > > >  /*
-> > > >   * Verify the fitness of task @p to run on @cpu taking into account the
-> > > > --
-> > > > 2.34.1
-> > > >
+> > Please don't overcomplicate the already overcomplicated driver with a
+> > functionality which can be reached by the default one. In this case
+> > the easiest way is to let the generic code work and then
+> > override/replace/fix/etc the retrieved values. Thus there won't be
+> > need in adding the redundant functionality and keep the generic
+> > DT-platform code a bit simpler to read.
+>
+> You responded with:
+>
+> On Tue, Feb 13, 2024 at 04:51:34PM +0100, Thierry Reding wrote:
+> > I'm not sure I understand how this is overcomplicating things. The code
+> > is pretty much unchanged, except that the AXI configuration can now hav=
+e
+> > driver-specified defaults before the DT is parsed. Perhaps I need to ad=
+d
+> > comments to make that a bit clearer?
+> >=20
+> > While your version is certainly simpler it has the drawback that it no
+> > longer allows the platform defaults to be overridden in device tree. I
+> > would prefer if the defaults can be derived from the compatible string
+> > but if need be for those defaults to still be overridable from device
+> > tree.
+>
+> Currently available functionality is easier to read and understand: by
+> default the data is retrieved from the DT, if no AXI DT-node found you
+> can allocate/create your own AXI-configs, if there is AXI DT-node you
+> can fix it up in whatever way your wish. Thus the default behavior is
+> straightforward. You on the contrary suggest to add an additional
+> field to the resources structure which would need to be merged in with
+> the data retrieved from DT. It makes the stmmac_axi_setup() method and
+> the entire logic more complex and thus harder to comprehend.
+
+I suppose that's subjective. Being able to let the driver provide
+defaults that can then be overridden by values from DT doesn't seem like
+a very exotic (or complicated) feature to me. We do that elsewhere all
+the time. Do the comments that I added in this version not sufficiently
+explain what's going on?
+
+> The driver is already overwhelmed with flags and private/platform data
+> fixing the code here and there (see plat_stmmacenet_data, it's a
+> madness). So please justify in more details why do you need one more
+> complexity added instead of:
+> 1. overriding the AXI-configs retrieved from DT,
+
+Again, overriding the AXI configs read from DT doesn't keep the current
+default behaviour of DT being the final authority. That's a policy that
+should remain intact. This patch (series) is about allowing the driver
+to override the AXI defaults with something that's sensible based on
+the compatible string. The current defaults, for example, cause the GBE
+on Tegra devices to run at around 100 Mbps even on a 1 Gbps link.
+
+> 2. updating DT on your platform
+
+That's one possibility and was in fact the first variant I used, but it
+has a few drawbacks. For example, it means that I need to create the AXI
+node just to make the device functional, but if possible it's better to
+derive all necessary information from the compatible string. Having this
+in a separate AXI configuration node is duplicating information that's
+already implied by the compatible string.
+
+Also, on Tegra we have a few instances of this device that are all
+configured the same way. Since the AXI configuration node is supposed to
+be a child of the Ethernet controller node, we end up having to
+duplicate even more information.
+
+Thierry
+
+--54d881cc30ca662a73cfdacbec92cecca394f1f83ef4012a7b29e0247a47
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXUtxgACgkQ3SOs138+
+s6FwXw/+NI5f4NQaxXMdNTZw4i9JMgVZR8IurQ/Weei3I0HDz7t17hwB+g3eRjuk
+6XhD92hL3YpUuV6Ii96Wfb0JrtL5j651COCXyaRxaGU/vRvtYJvwEmpRLKEds35H
+6oARkoy40FoDUKKbnsrVT81ERAKSZgVNyAIFWM3byS4ez3R6Kp+Lf9BiRjkVlvbo
+KWdb1KfGC+EOCv2WIVFZA2R4OH1H4AmOp2cJa/PWha3+FW66aj9Xdgena7wu4KiJ
+R/Q+gmFK3uPG6pBO3O2+HF1SkI8ECAW73rX90qzw/3Ie0i5yPaqPo8yxmLI29AhM
+mPY7vq8hGnCTKiYwvy4je86ajKD/zrjiaxCNlgl155dk3Q+2iYNgDXcFlIb0au9Q
+AK6Mu8AAxrVkp14t94gpkZvb5EnUKYQO1OtZKiv+jmKXYyoaESSlmw9kvmySifJY
+T6aNUw91fFA5eiRu59oHnjbz2WIt+/yLTgJyVZURT+4E8Ajvs6v4kLVvv5hGp5d7
+E5gU8XQGnWcCFlDT0ojxQXV55arCHXuP85ijD+sqFJhjBAcysNBRgEHLH0lHs6/W
+NmO8VFLECjL0932LLbhiZV4XrP9ou4wSP4Hz576nGLMlJRmNAlOepaOO8XYFyOuc
+J/afiFERL2IogN5FYu075zt3Tg2/4jXPJMOJE1BQMPNwPAirrbo=
+=1yTl
+-----END PGP SIGNATURE-----
+
+--54d881cc30ca662a73cfdacbec92cecca394f1f83ef4012a7b29e0247a47--
 
