@@ -1,417 +1,278 @@
-Return-Path: <linux-kernel+bounces-73068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CB685BD0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:21:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECAA885BD1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:23:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5033B1F225B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:21:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66BBC1F22896
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392BA6A320;
-	Tue, 20 Feb 2024 13:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176C46A32D;
+	Tue, 20 Feb 2024 13:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yZJ0Lt2q"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NZ+qSxDm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E217D6A033
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435253; cv=none; b=Y4SgbhxrCb8pN4mKvVu1rEyljiAhpA9hcF+TedtucXAllJo3D7Jw2AdRiqPB+mj5RcRVEuxARzsHcfOgS4/11ac+YeogtF0o9YsxjVzO77nSst2hZIDYP6H4hDZnq4uNS4eq6pskQm5SeZai6PiJ9FEqcKYoUhmlknIsyJKCQKs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435253; c=relaxed/simple;
-	bh=AzES946XJIoeKOfWXh7Y99KFaeGFmJOweba4tNi0w1o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XSTVB2o8DzYv92tToZk8kqy84XZcnTbXy/goLmtE1OSBFfXTBogCtmM0zBuRaedq+v33UiRPTQ0ThcxwwaO2Qz1oGJhGgH1yAl5cHd9/pueB6MP19XqcL8H3eDvIaSqejKokoOa1ByrKo912ZkYRCl/q/Xu+9IeTRwCTRrG1h90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yZJ0Lt2q; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c031c24fbeso4437304b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:20:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708435249; x=1709040049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WP+3iL6xb/RVVeTHHQMqfvj9HZcG1WEGgQ50AkstGdo=;
-        b=yZJ0Lt2qQVvGSmPGS22BJivIJAiOlBtO52bVhSuW2bvEOvNyHTwYQdsFP9IlXsURnl
-         fIqTRPpbGMrpB2/+gOMD7L904dqOMiT1sOrvtDHSTOdwY1qVdxEgtcrQjOQdyFSVwcUE
-         QmlMhkRFZWaCEdWLBkTPzqNoY5A6FxasXqCxsYxMjJhOI68F2F8s8CHrL7ZU/4jmyiMY
-         8JAso2u/2WtPfMMf9fa8EvuEgOJpp4KcwzAyD10f55eJOdxb+POMYFSqxPi1uFaeYuOU
-         x8ALytAXjM8kDOc1yo6+90YIv2cCRGBqgmGQtXe064RABlvNBuc17zfUzWkt95yA75In
-         DhaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708435249; x=1709040049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WP+3iL6xb/RVVeTHHQMqfvj9HZcG1WEGgQ50AkstGdo=;
-        b=fClJgVN+KtbxWckvVQhTtN0pMFCQ1exL6KaFCuX5BZD6NrDKKzD5kQfZdg4vhIk1ON
-         YuU4/9k89xImy9TbOpW+Wsfpj8uIi7At8Foagkdd1qCyQNBFoooJxJI7V5kDetmDG7mj
-         cbLcllq4/SA0UgvYgDULzN6j8tBhqOMrZal9Jxd1lgXMmCe7SkK3fG3efg5P/yK1ujZ5
-         kP0igFyayNFkYYigh50R9GGJBEtmvTeNbBpk2s2p3G56I4Hv9b2h4mgaJNvW5QEuFkv4
-         sVwye3a9+6yQV0+/6B4B0a6xDO66l1+ZtEtkV5tkB3AHblR50bc4HNbUuWHaikhaE+eq
-         v1WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWd1Fkf8SbM86JwUNv2G3e7LFfMXF0SNxHfervv9jMphKbFbzNWcmUj+4RPifP+GBH0+zyWF3V39Uh24QjtmE0Keay9jANDWuhRPTLj
-X-Gm-Message-State: AOJu0YyUhRd9MQ9eMDwv2+W+ZX2maAUXm3XpNpyWyI5yxSwcEPreI8qc
-	GIZFghRUxs2JWFEianQ2/yeFrOxuRblm/xTqMKsKFs/3ax1nCwK+DLSqVvGJOJsWUZYFXWOgkIE
-	xkeGthQpiQCkU3UnWCGK8UPzTU5L4GyDd7VQOgw==
-X-Google-Smtp-Source: AGHT+IH6YHYON/cS3zVfm4L6/D3K+zW0MCNLmnL1KIAGoMwmU2wJPkMMTzZ+P1kUiag2Po5m+zZ30FhRHWlUGNOiv+s=
-X-Received: by 2002:aca:d0f:0:b0:3c0:4ac4:d7f1 with SMTP id
- 15-20020aca0d0f000000b003c04ac4d7f1mr12737522oin.35.1708435248949; Tue, 20
- Feb 2024 05:20:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5A36A00F;
+	Tue, 20 Feb 2024 13:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708435402; cv=fail; b=tOpLnohpQo7gdZWsqbzQ4PYESfClXvxQFbe9hHRF07w2Z78fKLPHGyz1Cl6UeZk9zv+B8h/8mb1Zv/4sR6U8BaLV89JqRKgjqTCIHxhbCfp+f+iwtRUgWi3mL3VKUDHPh1xU8RgxvyHWsLY+Xui3s0Q8nQK1bCdN5eNB19GfZKY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708435402; c=relaxed/simple;
+	bh=D7m3FIwIADlHTwugEVYbqyr7CycmTEkGPHu9IBChQqI=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=jG9VM3OAHFUMpN/N3TjvRza+930XJuXL1G2nGBRA8mCrhXZzHQh0n6RfxO7ev7iKOfnobgBu1geCVfy29vGuyuPn0hGXRdG8UxvhFB/NiRej0eRP5pxSrpkzy9PPx7MivYd4g/SkIJt2VW+Wen9uAKkrOWoIT0NwvDv68gW+G7k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NZ+qSxDm; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708435401; x=1739971401;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=D7m3FIwIADlHTwugEVYbqyr7CycmTEkGPHu9IBChQqI=;
+  b=NZ+qSxDmZ4Aym7CKvWr4qMHacVC4ZsntgoaHBxQte3bslDb285iKLCEc
+   DuJjwXhcesY02z89KHzaulua8M5GU/8mTn/pldWrGME2wPf3ZVBIXbzQo
+   RlXj5iqnM1vVe6WTb/MpDyc6NCR0WBMNPssesJTOMQELEslxx3dE7eED/
+   rzabdcoYZv7bxLXC8qPIYFkUxrSRKRu2PzLL3wbVmP8kRMbuk13sv4OCg
+   3XkKm+KBOsVlMJnc7YcWYeEZkyOH7M5o6i0sijzrnqsEmsW3WW0xaGqss
+   uI3IwB3a4mOzpNV/win1MYTaFTU+/iE2ACpiNCEoIPNS30DPiJtj7avnL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2669740"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="2669740"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:23:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="5132974"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 05:23:19 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 05:23:18 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 05:23:18 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 05:23:18 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 20 Feb 2024 05:23:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JfZLMAqWDdRh4mrl5v1e0XHL3tNk4xeI6mxmHX2HpxQ8kv6LfrkGSFmQXdcdC/RSH5kKfUFwaBIak9DNBZuFlEac0TYuyQg/JZDi5rjOBD9whqR90fNqPAKwMz51KGXOSKtsMKmk1R/clx567LkHx71tPApbLYGu1O7tBTR1Y2i+JagpPcsm9FDQKY4GoggrZnHgwDlj1bnZKg6DGexuvr9tGAeL+IpqYva7grpmwFEZ49Ru9UngDlBO70DkTxoCbObYcQO71tfwtucROSu31VsMeJnfgsY6l0H4cba9rG+GXYq0Ms68rrMI9o+bj1QohRf9qCJdfQeyHVF1M340MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tuG0kkttTqPcFtZdGOQr9nnieaXZXz7Nm0ar/w8i56I=;
+ b=Z9O8pXNdRvvb3i/IM5uFPG4nwdQ1GZmqk7Sb2zb0DdEZ2hBrSUknA9cDRmrJ7MMzpmMCeIUFHtPLM+1MoALwIwcYNz1fD7NsaohcP2+OhdzXEIHUub6tkOuI8JpIH8Xt6jrhIE7SZDjtGE5prJudduFKMEcwVHjGa8jPTbEPlkxmNnJ1eDGyaYUD3H0Ju8V5AsjNZXmpVn+nGCuYAhXgdZvMrbjUx4CbuXOcqqON9mcTlNFRtsXOYTYe1IajxZhXiPv/ODgFQgn6MF/oZS9XOPhFBCNlquvS++Irj+0pmDY1TVtvHMwU6Vf3aJACJtf+FrTLAh1392UqDl5SeTQBNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by BN9PR11MB5227.namprd11.prod.outlook.com (2603:10b6:408:134::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 13:23:16 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::5d67:24d8:8c3d:acba]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::5d67:24d8:8c3d:acba%5]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 13:23:16 +0000
+Message-ID: <119db925-4472-4070-adb3-767f2bd00726@intel.com>
+Date: Tue, 20 Feb 2024 21:23:01 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 10/27] KVM: x86: Refine xsave-managed guest
+ register/MSR reset handling
+To: Chao Gao <chao.gao@intel.com>
+CC: <seanjc@google.com>, <pbonzini@redhat.com>, <dave.hansen@intel.com>,
+	<x86@kernel.org>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<peterz@infradead.org>, <rick.p.edgecombe@intel.com>, <mlevitsk@redhat.com>,
+	<john.allen@amd.com>
+References: <20240219074733.122080-1-weijiang.yang@intel.com>
+ <20240219074733.122080-11-weijiang.yang@intel.com>
+ <ZdQWu3D3Jku1iAvd@chao-email>
+Content-Language: en-US
+From: "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <ZdQWu3D3Jku1iAvd@chao-email>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0135.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::15) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219204238.356942-1-peter.griffin@linaro.org>
- <20240219204238.356942-2-peter.griffin@linaro.org> <CAPLW+4nOq_62rBhwRUf0RW0zTiGa+-Zpt+FLcTa87biX8Nq-BA@mail.gmail.com>
-In-Reply-To: <CAPLW+4nOq_62rBhwRUf0RW0zTiGa+-Zpt+FLcTa87biX8Nq-BA@mail.gmail.com>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 20 Feb 2024 13:20:37 +0000
-Message-ID: <CADrjBPrMC4Zh1yOzfPZ81bfnkz5BG9MktPpgny9r3F0x8mekxw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] soc: samsung: exynos-pmu: Add regmap support for
- SoCs that protect PMU regs
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, linux@roeck-us.net, 
-	wim@linux-watchdog.org, alim.akhtar@samsung.com, jaewon02.kim@samsung.com, 
-	alexey.klimov@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
-	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
-	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|BN9PR11MB5227:EE_
+X-MS-Office365-Filtering-Correlation-Id: 31b65aa5-ef86-4a60-0ab8-08dc321718b0
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xF/aGGl0DZperwXSZKGN8ZCv+qNo2yCk8iTrtP/aRHmAEVXYmQpIh2al5FhVAJbRJC3Qla67a2dP9wLkcQh7dwnCKhzb5XR/5tj9ppdZrdSBgZT5msSiYhjql+cL8B+NqZ4zDg5PWjMMXviEYVt/UEymTRsO2wNUtE9XidJpMZGJgQvi/W3hp2Gjfqr60N37eo1l0uxis6QyPbmkL48vOgvJvOtOOPSnRZtiIhd9fv+ib54aP7WSXD53/huRTOlcccj0CU5kJg82it1nPtkJ8r+/WnnwGnsHja1yyxBmctAVLIWgTTloecffRCp+avLW40jMCs1Dc0/UzMDcwNNxX1asZfQBin/GOy7/dQasoN3PXNCWywbLzCu3ty26J3cIEKGxbCx9PkTrc9h2zWlSjlH+fcVZG30jbLwGY4T7PKKLclG/pV87BWHF7XJsCtU6Jr/kR2ID5fqj1larPQRrDHIr24wUd2j4Oy6Y9RGVUlV10DrhAPZExDRWv9p6e9s5CUCmMMk6f89JHTf77Igm3p5aVHHEMYlq13RjvbJoa84=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QjFtVllyZDFubzQ4N3QvMmtCVHd6TnFBWnhpenZYbmIrTEc3SFIxcmk4Qzl6?=
+ =?utf-8?B?RTVmOWFKNXRIbmlWRWtvN0YyZ3NodFQ4RXBuYU5rVXlGckh0UkpGekVIWlJ5?=
+ =?utf-8?B?Z3NCUndQMUJDZ0dPTW9ZSVVScjFJdlVkTDRSaHQ5THBFaW5oV2Q2VmZaNEJS?=
+ =?utf-8?B?Vko3TGcwVENUekRXRU1KZ3hGZ0RWam5BOW44c3h1Tm5JamtrYWwvdmRWMFJl?=
+ =?utf-8?B?YklJRWxNTVNBOXVjTGJqTjgwUDI1YmcwczZWemxKUTZVdFFsR2tTaDJUTEdq?=
+ =?utf-8?B?WjVGZGFZS20vY0ZuZWp1YTVIZUdUTzBJWTFVOVR6L1JtYkpaUGtKK3k4VkUv?=
+ =?utf-8?B?Y1QyZ3l2YlJNVXdGelZSbTZNNTlnWk1RQmVrbnlNQ2EveUpjZ3QrS3ZGOHdD?=
+ =?utf-8?B?MGd5S2JHWEsyZHRtZnVTNUYyVytZRURWU2d6OWFvd3BtL3V2eGV6d3FMei8y?=
+ =?utf-8?B?NjF0QXFqQ3UwYy9RbS9udEMvQzVXOGlFYzBOc1AxNy9ZNmExcjZXRFp3ektF?=
+ =?utf-8?B?MWJIMnJ6eWcwQkdQelN3YkZETjBObFVBV3FxWkx3QmJ3bEhQcmY4ZDJmRnEx?=
+ =?utf-8?B?eU5nNmhHd0ozcTdaRUxWSkdSQ3p4K28ybmZKMkZEQWVNcDdwVFo4em9YVk1m?=
+ =?utf-8?B?bW1tOFJyQzBsczByOVlzdDJpTVY3Mi83NkRKOU5XeXV5YVZ5TGFRZkVIbFo1?=
+ =?utf-8?B?VnZWeTkrS1hoUEMyUkRTMmcrZHZybWFjNGY3L0t2cXRrb205VVIwNUpzM20y?=
+ =?utf-8?B?UjRjS1IvOExBUWVIMXdlelRBUGJQQmVOSVpZbjgyUmlvZVNhL25QOXNLVWcv?=
+ =?utf-8?B?RTlZenFnc2FEc3ZkaTZWd2xwcVZPTzNBZEM0YWZ4akFWR1NqdHd0QklYTUJX?=
+ =?utf-8?B?WThheUJjS2F2YTR1R2ZvcDdOaGMxSnJ1SzcvNG9OdTNFTTl4dXY5c1pXemZI?=
+ =?utf-8?B?SUpxY1lmcDRkQW5FNW9UT2FjZ0tZZzA5UkdFUmxyY3prRjQ1NmFxNncxY2V1?=
+ =?utf-8?B?VWZIdmpTVFpXWDBjK1BwT0RobkZzYnZXWTRCS2hvZDJNRW5QSlhJdmoyL1Nl?=
+ =?utf-8?B?dkVTMlI2Nlk0ZXJSdTlTK3dsQXpjQjVmZ2crSWd0VWdDaVphV2VPTUJZakgr?=
+ =?utf-8?B?bERvRC9GS3JuNnZsUmwvbVhVYjRBcWdJQnNpbjFpNkNCRGlkK1Y4M2tRcnlK?=
+ =?utf-8?B?bFlpOTczTTVHWXpwR3JUMVJNNjlCVEtzazNiRHhlZy8wWVFZNHgraVFOcHl4?=
+ =?utf-8?B?U3FHZ1dGeWQxMnV3emg2cDN0dURPVVp1SkVMZFdYeDNhWThDQVpLNjZnaE9Z?=
+ =?utf-8?B?MlR5UEx3cDMxWDN5MkNzKzZpYTVBVjhzZUxjV3BROEZ4V1pKN2VYUFpRbXZS?=
+ =?utf-8?B?OERlUGZHeHFZRGw3S3cySzI1RG8yam4wWTNmWS9jN1VOdkxTclNjSVBiWXA2?=
+ =?utf-8?B?MEhOemw4UnFoVFZjZHJOWHkxTnZ3WTl2VU5YaEowaDNhODlDMkpoS0dGcjNO?=
+ =?utf-8?B?YUZFSkJheHNrU3djc3dUWW40b0IxN2xkSVUrTXlGZDZlQUg3bEY3dzIwYkdX?=
+ =?utf-8?B?azlKSS9nUTF6VWk0cFpUNDl2U0pzSXU1YW1vdUtPZEF6aHJ5SVdReU4zWno3?=
+ =?utf-8?B?Qm9XcWYzRHBMOFJNNjFUekdlU0dQTUxsRUZyTEs1S1lZa21aZ0lDZ1JJM09r?=
+ =?utf-8?B?emM0RzFBSDhJYkgwemkvL2hBM1JIM0ZQOEZzTFUxZVgwYk4xUTljYVhTcDl1?=
+ =?utf-8?B?ekpTUzdIMXRKWGc3MEgxeVlPb3FTSkxZWmhHb2NyRVVxbXljSFlBY2p1MENQ?=
+ =?utf-8?B?WWpGN1RaOW9UL3h0WU9HTGY3VTh4ZXFadFRpUWhXTGtIM285cXNpS3AvcFFY?=
+ =?utf-8?B?WDdlN1Rsc3l6RXpoakkzWU45OWlvTUhMNVFuWE0yY0hRbU9DL3RrdGlybGpo?=
+ =?utf-8?B?Q0tmS3UzV1AydGxnY2pWaHRtWk5uMWhrdHJRV3gyNHFnOW1WNW1YUkFoSDZE?=
+ =?utf-8?B?WEtnclphS1M5N1JTc1VmeUZ2bDNhS3B0bVNDL2crTUxmbTZlSVZncGs1MVhI?=
+ =?utf-8?B?U1N5NzJTcHdCL3FDbTRDWUdkeDN3Q0gyUzgvcFFLQy9MN1g4OU42c2dhMGZR?=
+ =?utf-8?B?MHcwNHdsSm1jYTlMQmRmVEQ5Rkw2NE96OTNJU09YaGxGaWh3eThPU1U2NDRj?=
+ =?utf-8?B?ZEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31b65aa5-ef86-4a60-0ab8-08dc321718b0
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 13:23:16.1016
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bYKvXN4GVGErljlw4zcQvyu/kY43bXt5EFao7Kn35WdIuOXtBIzJxIwRkSLcRf+jm9NLG9XzFYo3mXrqwSiZcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5227
+X-OriginatorOrg: intel.com
 
-Hi Sam,
+On 2/20/2024 11:04 AM, Chao Gao wrote:
+> On Sun, Feb 18, 2024 at 11:47:16PM -0800, Yang Weijiang wrote:
+>> Tweak the code a bit to facilitate resetting more xstate components in
+>> the future, e.g., CET's xstate-managed MSRs.
+>>
+>> No functional change intended.
+> Strictly speaking, there is a functional change. in the previous logic, if
+> either of BNDCSR or BNDREGS state is not supported (kvm_mpx_supported() will
+> return false), KVM won't reset either of them.
+> Since this gets changed, I vote
+> to drop 'No functional change ..'
 
-On Mon, 19 Feb 2024 at 23:06, Sam Protsenko <semen.protsenko@linaro.org> wr=
-ote:
+Yes, I'll remove it since existing logic is slightly changed.
+
+>> Suggested-by: Chao Gao <chao.gao@intel.com>
+>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>> ---
+>> arch/x86/kvm/x86.c | 30 +++++++++++++++++++++++++++---
+>> 1 file changed, 27 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 10847e1cc413..5a9c07751c0e 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -12217,11 +12217,27 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+>> 		static_branch_dec(&kvm_has_noapic_vcpu);
+>> }
+>>
+>> +#define XSTATE_NEED_RESET_MASK	(XFEATURE_MASK_BNDREGS | \
+>> +				 XFEATURE_MASK_BNDCSR)
+>> +
+>> +static bool kvm_vcpu_has_xstate(unsigned long xfeature)
+> kvm_vcpu_has_xstate is a misnomer because it doesn't take a vCPU.
+
+True, I'll change it, thanks!
+
+>> +{
+>> +	switch (xfeature) {
+>> +	case XFEATURE_MASK_BNDREGS:
+>> +	case XFEATURE_MASK_BNDCSR:
+>> +		return kvm_cpu_cap_has(X86_FEATURE_MPX);
+>> +	default:
+>> +		return false;
+>> +	}
+>> +}
+>> +
+>> void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>> {
+>> 	struct kvm_cpuid_entry2 *cpuid_0x1;
+>> 	unsigned long old_cr0 = kvm_read_cr0(vcpu);
+>> +	DECLARE_BITMAP(reset_mask, 64);
+>> 	unsigned long new_cr0;
+>> +	unsigned int i;
+>>
+>> 	/*
+>> 	 * Several of the "set" flows, e.g. ->set_cr0(), read other registers
+>> @@ -12274,7 +12290,12 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>> 	kvm_async_pf_hash_reset(vcpu);
+>> 	vcpu->arch.apf.halted = false;
+>>
+>> -	if (vcpu->arch.guest_fpu.fpstate && kvm_mpx_supported()) {
+>> +	bitmap_from_u64(reset_mask, (kvm_caps.supported_xcr0 |
+>> +				     kvm_caps.supported_xss) &
+>> +				    XSTATE_NEED_RESET_MASK);
+>> +
+>> +	if (vcpu->arch.guest_fpu.fpstate &&
+>> +	    !bitmap_empty(reset_mask, XFEATURE_MAX)) {
+>> 		struct fpstate *fpstate = vcpu->arch.guest_fpu.fpstate;
+>>
+>> 		/*
+>> @@ -12284,8 +12305,11 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>> 		if (init_event)
+>> 			kvm_put_guest_fpu(vcpu);
+>>
+>> -		fpstate_clear_xstate_component(fpstate, XFEATURE_BNDREGS);
+>> -		fpstate_clear_xstate_component(fpstate, XFEATURE_BNDCSR);
+>> +		for_each_set_bit(i, reset_mask, XFEATURE_MAX) {
+>> +			if (!kvm_vcpu_has_xstate(i))
+>> +				continue;
+> The kvm_vcpu_has_xstate() check is superfluous because @i is derived from
+> kvm_caps.supported_xcr0/xss, which already guarantees that all unsupported
+> xfeatures are filtered out.
+
+Yeah, at least currently I can skip the check for CET/MPX feaures, will remove it, thanks!
+
 >
-> On Mon, Feb 19, 2024 at 2:42=E2=80=AFPM Peter Griffin <peter.griffin@lina=
-ro.org> wrote:
-> >
-> > Some Exynos based SoCs like Tensor gs101 protect the PMU registers for
-> > security hardening reasons so that they are only write accessible in el=
-3
-> > via an SMC call.
-> >
-> > As most Exynos drivers that need to write PMU registers currently obtai=
-n a
-> > regmap via syscon (phys, pinctrl, watchdog). Support for the above usec=
-ase
-> > is implemented in this driver using a custom regmap similar to syscon t=
-o
-> > handle the SMC call. Platforms that don't secure PMU registers, get a m=
-mio
-> > regmap like before. As regmaps abstract out the underlying register acc=
-ess
-> > changes to the leaf drivers are minimal.
-> >
-> > A new API exynos_get_pmu_regmap_by_phandle() is provided for leaf drive=
-rs
-> > that currently use syscon_regmap_lookup_by_phandle(). This also handles
-> > deferred probing.
-> >
-> > Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > Tested-by: Alexey Klimov <alexey.klimov@linaro.org>
-> > Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > ---
-> > Changes since v4:
-> >  - Use same argument names as in struct regmap_config
-> >  - Remove inline keyword and rely on compiler
-> >  - Update kerneldoc wording
-> >  - property -> propname argument rename
-> >  - reverse Xmas tree
-> >  - Only call of_node_put() when of_parse_phandle is called
-> >  - Collect tags
-> >
-> > Changes since v3:
-> >  - Fix PMUALIVE_MASK
-> >  - Add TENSOR_ prefix
-> >  - clear SET_BITS bits on each loop iteration
-> >  - change set_bit to set_bits in func name
-> >  - Fix some alignment
-> >  - Add missing return on dev_err_probe
-> >  - Reduce indentation in loop
-> >
-> > Changes since v2
-> >  - Add select REGMAP to Kconfig
-> >  - Add constant for SET/CLEAR bits
-> >  - Replace kerneldoc with one line comment
-> >  - Fix kerneldoc for EXPORT_SYMBOL_GPL funcs
-> >  - remove superfluous extern keyword
-> >  - dev_err_probe() on probe error
-> >  - shorten regmcfg name
-> >  - no compatibles inside probe, use match data
-> >  - don't mix declarations with/without initializations
-> >  - tensor_sec_reg_read() use mmio to avoid access restrictions
-> >  - Collect up Reviewed-by
-> >  - const for regmap_config structs
-> > ---
-> >  drivers/soc/samsung/Kconfig            |   1 +
-> >  drivers/soc/samsung/exynos-pmu.c       | 235 ++++++++++++++++++++++++-
-> >  drivers/soc/samsung/exynos-pmu.h       |   1 +
-> >  include/linux/soc/samsung/exynos-pmu.h |  11 +-
-> >  4 files changed, 245 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
-> > index 27ec99af77e3..1a5dfdc978dc 100644
-> > --- a/drivers/soc/samsung/Kconfig
-> > +++ b/drivers/soc/samsung/Kconfig
-> > @@ -42,6 +42,7 @@ config EXYNOS_PMU
-> >         depends on ARCH_EXYNOS || ((ARM || ARM64) && COMPILE_TEST)
-> >         select EXYNOS_PMU_ARM_DRIVERS if ARM && ARCH_EXYNOS
-> >         select MFD_CORE
-> > +       select REGMAP_MMIO
-> >
-> >  # There is no need to enable these drivers for ARMv8
-> >  config EXYNOS_PMU_ARM_DRIVERS
-> > diff --git a/drivers/soc/samsung/exynos-pmu.c b/drivers/soc/samsung/exy=
-nos-pmu.c
-> > index 250537d7cfd6..d6ae8025fdb4 100644
-> > --- a/drivers/soc/samsung/exynos-pmu.c
-> > +++ b/drivers/soc/samsung/exynos-pmu.c
-> > @@ -5,6 +5,7 @@
-> >  //
-> >  // Exynos - CPU PMU(Power Management Unit) support
-> >
-> > +#include <linux/arm-smccc.h>
-> >  #include <linux/of.h>
-> >  #include <linux/of_address.h>
-> >  #include <linux/mfd/core.h>
-> > @@ -12,19 +13,134 @@
-> >  #include <linux/of_platform.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/delay.h>
-> > +#include <linux/regmap.h>
-> >
-> >  #include <linux/soc/samsung/exynos-regs-pmu.h>
-> >  #include <linux/soc/samsung/exynos-pmu.h>
-> >
-> >  #include "exynos-pmu.h"
-> >
-> > +#define PMUALIVE_MASK                  GENMASK(13, 0)
-> > +#define TENSOR_SET_BITS                        (BIT(15) | BIT(14))
-> > +#define TENSOR_CLR_BITS                        BIT(15)
-> > +#define TENSOR_SMC_PMU_SEC_REG         0x82000504
-> > +#define TENSOR_PMUREG_READ             0
-> > +#define TENSOR_PMUREG_WRITE            1
-> > +#define TENSOR_PMUREG_RMW              2
-> > +
-> >  struct exynos_pmu_context {
-> >         struct device *dev;
-> >         const struct exynos_pmu_data *pmu_data;
-> > +       struct regmap *pmureg;
-> >  };
-> >
-> >  void __iomem *pmu_base_addr;
-> >  static struct exynos_pmu_context *pmu_context;
-> > +/* forward declaration */
-> > +static struct platform_driver exynos_pmu_driver;
-> > +
-> > +/*
-> > + * Tensor SoCs are configured so that PMU_ALIVE registers can only be =
-written
-> > + * from EL3, but are still read accessible. As Linux needs to write so=
-me of
-> > + * these registers, the following functions are provided and exposed v=
-ia
-> > + * regmap.
-> > + *
-> > + * Note: This SMC interface is known to be implemented on gs101 and de=
-rivative
-> > + * SoCs.
-> > + */
-> > +
-> > +/* Write to a protected PMU register. */
-> > +static int tensor_sec_reg_write(void *context, unsigned int reg,
-> > +                               unsigned int val)
-> > +{
-> > +       struct arm_smccc_res res;
-> > +       unsigned long pmu_base =3D (unsigned long)context;
-> > +
-> > +       arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG, pmu_base + reg,
-> > +                     TENSOR_PMUREG_WRITE, val, 0, 0, 0, 0, &res);
-> > +
-> > +       /* returns -EINVAL if access isn't allowed or 0 */
-> > +       if (res.a0)
-> > +               pr_warn("%s(): SMC failed: %d\n", __func__, (int)res.a0=
-);
-> > +
-> > +       return (int)res.a0;
-> > +}
-> > +
-> > +/* Read/Modify/Write a protected PMU register. */
-> > +static int tensor_sec_reg_rmw(void *context, unsigned int reg,
-> > +                             unsigned int mask, unsigned int val)
-> > +{
-> > +       struct arm_smccc_res res;
-> > +       unsigned long pmu_base =3D (unsigned long)context;
-> > +
-> > +       arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG, pmu_base + reg,
-> > +                     TENSOR_PMUREG_RMW, mask, val, 0, 0, 0, &res);
-> > +
-> > +       /* returns -EINVAL if access isn't allowed or 0 */
-> > +       if (res.a0)
-> > +               pr_warn("%s(): SMC failed: %d\n", __func__, (int)res.a0=
-);
-> > +
-> > +       return (int)res.a0;
-> > +}
-> > +
-> > +/*
-> > + * Read a protected PMU register. All PMU registers can be read by Lin=
-ux.
-> > + * Note: The SMC read register is not used, as only registers that can=
- be
-> > + * written are readable via SMC.
-> > + */
-> > +static int tensor_sec_reg_read(void *context, unsigned int reg,
-> > +                              unsigned int *val)
-> > +{
-> > +       *val =3D pmu_raw_readl(reg);
-> > +       return 0;
-> > +}
-> > +
-> > +/*
-> > + * For SoCs that have set/clear bit hardware this function can be used=
- when
-> > + * the PMU register will be accessed by multiple masters.
-> > + *
-> > + * For example, to set bits 13:8 in PMU reg offset 0x3e80
-> > + * tensor_set_bits_atomic(ctx, 0x3e80, 0x3f00, 0x3f00);
-> > + *
-> > + * Set bit 8, and clear bits 13:9 PMU reg offset 0x3e80
-> > + * tensor_set_bits_atomic(0x3e80, 0x100, 0x3f00);
-> > + */
-> > +static int tensor_set_bits_atomic(void *ctx, unsigned int offset, u32 =
-val,
-> > +                                 u32 mask)
-> > +{
-> > +       int ret;
-> > +       unsigned int i;
-> > +
-> > +       for (i =3D 0; i < 32; i++) {
-> > +               if (!(mask & BIT(i)))
-> > +                       continue;
-> > +
-> > +               offset &=3D ~TENSOR_SET_BITS;
-> > +
-> > +               if (val & BIT(i))
-> > +                       offset |=3D TENSOR_SET_BITS;
-> > +               else
-> > +                       offset |=3D TENSOR_CLR_BITS;
-> > +
-> > +               ret =3D tensor_sec_reg_write(ctx, offset, i);
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +       return ret;
-> > +}
-> > +
-> > +static int tensor_sec_update_bits(void *ctx, unsigned int reg,
-> > +                                 unsigned int mask, unsigned int val)
-> > +{
-> > +       /*
-> > +        * Use atomic operations for PMU_ALIVE registers (offset 0~0x3F=
-FF)
-> > +        * as the target registers can be accessed by multiple masters.
-> > +        */
-> > +       if (reg > PMUALIVE_MASK)
-> > +               return tensor_sec_reg_rmw(ctx, reg, mask, val);
-> > +
-> > +       return tensor_set_bits_atomic(ctx, reg, val, mask);
-> > +}
-> >
-> >  void pmu_raw_writel(u32 val, u32 offset)
-> >  {
-> > @@ -75,11 +191,41 @@ void exynos_sys_powerdown_conf(enum sys_powerdown =
-mode)
-> >  #define exynos_pmu_data_arm_ptr(data)  NULL
-> >  #endif
-> >
-> > +static const struct regmap_config regmap_smccfg =3D {
-> > +       .name =3D "pmu_regs",
-> > +       .reg_bits =3D 32,
-> > +       .reg_stride =3D 4,
-> > +       .val_bits =3D 32,
-> > +       .fast_io =3D true,
-> > +       .use_single_read =3D true,
-> > +       .use_single_write =3D true,
-> > +       .reg_read =3D tensor_sec_reg_read,
-> > +       .reg_write =3D tensor_sec_reg_write,
-> > +       .reg_update_bits =3D tensor_sec_update_bits,
-> > +};
-> > +
-> > +static const struct regmap_config regmap_mmiocfg =3D {
-> > +       .name =3D "pmu_regs",
-> > +       .reg_bits =3D 32,
-> > +       .reg_stride =3D 4,
-> > +       .val_bits =3D 32,
-> > +       .fast_io =3D true,
-> > +       .use_single_read =3D true,
-> > +       .use_single_write =3D true,
-> > +};
-> > +
-> > +static const struct exynos_pmu_data gs101_pmu_data =3D {
-> > +       .pmu_secure =3D true
-> > +};
-> > +
-> >  /*
-> >   * PMU platform driver and devicetree bindings.
-> >   */
-> >  static const struct of_device_id exynos_pmu_of_device_ids[] =3D {
-> >         {
-> > +               .compatible =3D "google,gs101-pmu",
-> > +               .data =3D &gs101_pmu_data,
-> > +       }, {
-> >                 .compatible =3D "samsung,exynos3250-pmu",
-> >                 .data =3D exynos_pmu_data_arm_ptr(exynos3250_pmu_data),
-> >         }, {
-> > @@ -113,19 +259,75 @@ static const struct mfd_cell exynos_pmu_devs[] =
-=3D {
-> >         { .name =3D "exynos-clkout", },
-> >  };
-> >
-> > +/**
-> > + * exynos_get_pmu_regmap() - Obtain pmureg regmap
-> > + *
-> > + * Find the pmureg regmap previously configured in probe() and return =
-regmap
-> > + * pointer.
-> > + *
-> > + * Return: A pointer to regmap if found or ERR_PTR error value.
-> > + */
-> >  struct regmap *exynos_get_pmu_regmap(void)
-> >  {
-> >         struct device_node *np =3D of_find_matching_node(NULL,
-> >                                                       exynos_pmu_of_dev=
-ice_ids);
-> >         if (np)
-> > -               return syscon_node_to_regmap(np);
-> > +               return exynos_get_pmu_regmap_by_phandle(np, NULL);
-> >         return ERR_PTR(-ENODEV);
-> >  }
-> >  EXPORT_SYMBOL_GPL(exynos_get_pmu_regmap);
-> >
-> > +/**
-> > + * exynos_get_pmu_regmap_by_phandle() - Obtain pmureg regmap via phand=
-le
-> > + * @np: Device node holding PMU phandle property
-> > + * @property: Name of property holding phandle value
+> I recommend dropping this check. w/ this change,
 >
-> This doesn't match the actual param name.
+> Reviewed-by: Chao Gao <chao.gao@intel.com>
+>
+>> +			fpstate_clear_xstate_component(fpstate, i);
+>> +		}
+>>
+>> 		if (init_event)
+>> 			kvm_load_guest_fpu(vcpu);
+>> -- 
+>> 2.43.0
+>>
 
-Doh, I missed the kerneldoc comment in the renaming from property ->
-propname. I will send a v6 in a moment with this fixed
-
-Peter.
 
