@@ -1,319 +1,240 @@
-Return-Path: <linux-kernel+bounces-73372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C4F85C197
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:40:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2683885C199
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F155B24358
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:40:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82951F2666C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D20768E0;
-	Tue, 20 Feb 2024 16:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB9F7640E;
+	Tue, 20 Feb 2024 16:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="dX+SBhFd"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="PVzEZ+jf"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2066.outbound.protection.outlook.com [40.107.6.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B5D69D01
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708447201; cv=none; b=edK6t8L+O+0lSouKdPpx+sb/ea2FpDW4KTGwIaH6SWP3P6lM/JHh8+36AosKqWxgvtoWORX2Ry9wEx0ES+JNl8UDEe+4kcQe5MpUAHRNSGB3tuC28xGZOoVNVdWOPdIpycNAaxGl7yZT4jCplUvA4Bb1LKMJrURZAVzdgQe94Fo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708447201; c=relaxed/simple;
-	bh=GZBQZRTBlrdcFzCAbk88GbH0iGu6hZl7vqBRoEcr7dQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ou2aQFIGo8RU+WQ+IK7EKThmuXWMjQWsenT2XFCmQkzTascMy5FgazHnIBi36+KcJ5xaADdxyDYZTSOUXuqFTnriuB8TvHrW5BPEvFLdJ/O4q2ZJ2JBHSDSnJROIAwWKcGapu3Dk7jgjEGixIuCh4mQEpX8fG9gMo1o9nQGZHF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=dX+SBhFd; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d2509c66daso4536691fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1708447198; x=1709051998; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7Jx/g2F04nwFnHGFZmO2AEQi8r5RKzzWTGuYmKXn7Lg=;
-        b=dX+SBhFdc/bBY1qGRQxWgn1DrhYn7MwUKZrKjKs/86Ahk2UY7/cJxjiQcgXejyDMBx
-         T5qKURBA5gTpnAR1K7dJRS8OFb8KxvB/uwxh3rdxFbH89cdQsuemc1y22b/EdHXMcJct
-         0RTooelr2tPDhmUwNnQDRW4g/mHbEhsZLXqNL9oMmnScfoY9Ajo2wGpDOfXYNwb23/+t
-         WY8t2U5ydzItamNefDKdddJFGg9Si7VI1HjwJSsHiP1XbjATHdfC0AMsBb2frrTqD9j6
-         cV2qQepx7A5cn80dY5zLK3drCWZloGvaNwOjvvTJ7DiPj91+Oj0EGlee64Q5jvn+XLSB
-         Vq8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708447198; x=1709051998;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Jx/g2F04nwFnHGFZmO2AEQi8r5RKzzWTGuYmKXn7Lg=;
-        b=WxMC0x3j3fFCRPZziECqNJ73hiNaMLE9hpoVlJOSpk78VY7jxVt3zWfexD+qjQRJsU
-         YiHP7BGwy8Zt3BhbE9QDnva7TwyzmLlyCXA3h8V908ydjMVif6blts2+LQ99upcW8dm8
-         YU88zm1QAIibg9v2cNTt/CWG8igIe2zXxsQW2bod3/GtiW1wZ1qWo9CupvqoIOyKeGI9
-         89A+TFCjO9t2BYyT5wibiqDqyxCdG2bmj754+lUQHc8UfE02hRmLO1YfF8xWomZ1nHLg
-         3iooLfePA6UiKszxUXBdEd2WUav88cZsWjMsEisv4YVqVOJbJCQF4f6QyICorn5nfVXn
-         WdTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuaDmnF1SCwSowWR9o9VMa8v0ue8yf248WZ7y9jweuKLwf4dZH5Xvs/Ql6724HMrDEVSl7Inm+sLauFZ3iBYVzt4ByvZMA3QXd6i6i
-X-Gm-Message-State: AOJu0Yw9Vdg4FpJmv21csMrV0xHBiokzaLv7qi6P/4mYDd0CSyJvO8Bs
-	AKTujAVxwiZ8ppL5BgQIPd3Mzqv2i6ieIbZDBkvrtnw4nq4y1NK3LhUe/QmFLIVm6N9jW6DUIlP
-	xd+V95v92+eiez4NyVOsCDyUkU2lJlVxb5GEy2w==
-X-Google-Smtp-Source: AGHT+IFB9znm/aAh02NlSHtCnRt8v0sejhM55uWmIksi2dFX9t4vpt8MQMfP61LS+XuEU8uCxpHxx9+dioUbZN2Tz4c=
-X-Received: by 2002:a2e:bc09:0:b0:2d2:38b6:661b with SMTP id
- b9-20020a2ebc09000000b002d238b6661bmr5231051ljf.33.1708447197605; Tue, 20 Feb
- 2024 08:39:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294D32E84E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708447250; cv=fail; b=rGgK+WB26oUtTImWLoqU4APmqNHpZbGgbog6Gyhk7ETWEX5ZMIQCf5UasaAhwsZzgLtixtDELir/kCCCOYa1Rm5QcRqrU8bi1Dj9iOjLjWBlJPBlbQKjgJBRw/XTwiNEP95BhqtkoZ7EyqgGEXCXDak/14WZqKTa33vrluDy1g4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708447250; c=relaxed/simple;
+	bh=5/SRf8WpWB4aa+3ju7yEbjjoFKYdbhuRHP+2Mne37po=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=OGcSIErtOzBFcPPn6NojOjEDa3zwurHDqbXbmxS70nEuHJIFCva5tEVJZWwJ6rb+GBB9RRzs2F1v0gderDyqdC3LDbJuOWOEYje7866xSJj6u5HZkWGkEo64R4deXIgdqzYlrsUdmG7bJ7eFfIGVjDlua7tRO6o6wpeCJ78X2cg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=PVzEZ+jf; arc=fail smtp.client-ip=40.107.6.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fB7gyDjOt18ISZwn3PrhpTd+oiaseLkEU1RN5HJpWC6BB9zA/LnDW7Ty0/6VljifigSVvRTSztRd4iVjjJORwX5W7WSybPJU0cJp14OV4+rKWz7HnqT1Vvuk/0QFpPTD1ExZ+GxWRokGZgO+QW9pKQ5s4T0eMTfh2mO0uNkc5cUYLTePRqdVsBugp4ekh7NrkefCBjf9L00rSWvAKwkj+9SRaX9sVDMe/Fc6mitxU9jQbifW8SMQcC2zbGul0U2gUTFArWIvjKrCIBYNzb7vL/yd4loExujM1ZpVsUI5s06QNUaagbGS6zOGzbnEN5ebmVyRkzqxVW3eRUXAyugQ8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uivvf5m7PIdxxKMliH9cXjrJ4d0g6Rf8rr128P0lgrU=;
+ b=Iq0nczl6baGjh5TRlpLq2cqeLinX8yglrJUw9iDhb5hH4KLB7XOguAeKZzPEW2xyha1FSe86hL34YZJIwV6jri18YxEJF9BExc6f/Sa/UHxYpUgwU3yBvVyNawzUkjbMWIuYB6f3cejiBE3+v8tRwNv8B4J0HW+FyqxvKrjSUDCLrJAo1Pz/A+WfzUPh3u3sfcA9H90jbQ2dPXtoeeyjRAALg2mbABEavJYysFaYsRMTAJO+n7W1IaTlMo80KFE0SBqkteUiC4PkgVrZ1sh471wUbNeHvszdqDcwrNmxg7ABrL7/yC3UXikhYl2XGbf2f+I0tnU89uZ9BN2lQYb85A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uivvf5m7PIdxxKMliH9cXjrJ4d0g6Rf8rr128P0lgrU=;
+ b=PVzEZ+jfpxcAbV9qqUAdAAXIKernLASH25heBfxlsvhx/q0WfZO6tnAuqleDsgpld+qdDRSfPbk5LdZZ8hAaI+9QnE2cz8kZ1V1VL/Qj5cJCD5P7wyoZ3+/aNpq6ojHnH+M/dmFiMdOkmED6ZYon706xeuC4G3CBLrC0eyIlqd0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AS8PR04MB8247.eurprd04.prod.outlook.com (2603:10a6:20b:3f2::13)
+ by DU0PR04MB9467.eurprd04.prod.outlook.com (2603:10a6:10:35b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Tue, 20 Feb
+ 2024 16:40:44 +0000
+Received: from AS8PR04MB8247.eurprd04.prod.outlook.com
+ ([fe80::1a09:3c2:866a:8b2b]) by AS8PR04MB8247.eurprd04.prod.outlook.com
+ ([fe80::1a09:3c2:866a:8b2b%5]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 16:40:44 +0000
+From: "Daniel Baluta (OSS)" <daniel.baluta@oss.nxp.com>
+To: shawnguo@kernel.org
+Cc: aisheng.dong@nxp.com,
+	kernel@pengutronix.de,
+	f.fainelli@gmail.com,
+	kuba@kernel.org,
+	abel.vesa@linaro.org,
+	haibo.chen@nxp.com,
+	peng.fan@nxp.com,
+	shengjiu.wang@nxp.com,
+	Frank.Li@nxp.com,
+	laurentiu.palcu@nxp.com,
+	mirela.rabulea@nxp.com,
+	linux-kernel@vger.kernel.org,
+	Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH] MAINTAINERS: Use a proper mailinglist for NXP i.MX development
+Date: Tue, 20 Feb 2024 18:40:05 +0200
+Message-Id: <20240220164005.1345603-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AS4P251CA0021.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d3::11) To AS8PR04MB8247.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3f2::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220060718.823229-1-apatel@ventanamicro.com>
- <20240220060718.823229-8-apatel@ventanamicro.com> <87cysrfj32.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87cysrfj32.fsf@all.your.base.are.belong.to.us>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Tue, 20 Feb 2024 22:09:46 +0530
-Message-ID: <CAK9=C2Umyc5KpZSQiAVxRA8NNqj3yuvqX4d8pMnc21jQjwZkWg@mail.gmail.com>
-Subject: Re: [PATCH v13 07/13] irqchip/riscv-imsic: Add device MSI domain
- support for platform devices
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
-	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8247:EE_|DU0PR04MB9467:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99543da9-e486-44f5-594e-08dc3232aec0
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	IBbZBqVuDCnowJKFK3BQ4b+gXa0AZRu2seZ9/Ylk+QQvQoDvHBmELCrNFp1FMIwiG8/tg7xspKumMWmc1XfZFhPYz439TJ6EIxP7/s7ybUg7J7nPNZiJceFlws3TVoxyqE+ebB+B97vBJ+64mB4AXbWAdEmvOlJum1g3ppP9fCcHRgt0KaEu2i9WkCqG06IuAZ+viugswv1DNcDCC3z48aN3UcYc7AtWidHog9+xA8ANp+H5wwbQqxD1TbRKn0W+JIn97+2jUWKaSY+WiKCbTTva8UOBPfwJaul3de3iyk2IdcigNiChT1QLmC+4Qj8Kky9Ot+xs29IGx4gRzV+jYmcJ2GBxS06AJZN5YbEoVRwqSh6u1IMk/kxnH7tY9PXi94fNBK5RPJQljlYd7q3FUNPG36v8+V6+ecEVMnBlE+d9aEBRmhcO6fCzm/s2BCB3gtkrExBLwAuvXDlX7Wi7RqAsHtAztAqLGrsGzJt8KbguNm8pBjnJE3IgMxOEIqVyh2+kp0WrdTELmje7mkQsYBQXB4R1b97hSeBCyDnJGwUUlslGhrhPAIJobNlsVkLq24lO70yRBlGUUglMpZjBanxtOeTQA4+BBgLo0HguSVY=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8247.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?qt+KStBEbip4adHododWJrmv77LBtB+sDrCA2WT/X3t+YqMOyYqA3/JNt6RY?=
+ =?us-ascii?Q?8LFEBJUWEZoKaK+qclOrKY+K3BvTfswnWcbP8MmZVkeeYbYISeiJgDRi/kIj?=
+ =?us-ascii?Q?8Rpgq/YhKmzbBp0Aj+6ctE9QyMXaM+QFLlAvVwQwyFNMC2qi7Tok0gM+1VdY?=
+ =?us-ascii?Q?Mio4+nMkttRJcN0pI/zFTJMfc+PysynHH1BXlYELIl0Z1GkFp0JsZQcqL3KU?=
+ =?us-ascii?Q?W/6VM95oJNsyHr2ypnxuqGPoJnwzx55u8QTKGH721eycOdhb6/InajPjvW/7?=
+ =?us-ascii?Q?I04I8Ejd2vQOcEKBxHQBmyrttQZuQLGsWEamrgQcsbNM2X7b0/KjuQFe8n1+?=
+ =?us-ascii?Q?GLCHy6DkPEy2tBwoAg+tnVM/17fmjt0A05X0HUJ2Ow+gnor23N2qsJUwzPev?=
+ =?us-ascii?Q?saJRmGe7jv4cWTjYfrsz7doxNU/jgN68tKr0r1ydKqrO2F+1Q01jMJ6wF8pj?=
+ =?us-ascii?Q?8+m1GykAl/XVSe9TCDhmlJ5wAsWHt/i8XToAYNsDDCJl1nrAbbuf4RxaHYfn?=
+ =?us-ascii?Q?H5Uerb2u957vgaP1uXQYJ+cCpGtMVa5bTBFhprVCPlukqneT5HqExts1pcuv?=
+ =?us-ascii?Q?XEpW7lRWjfImhJGcfXLdUjIusl1eyTPqPCCCBuAH+42zuv7Wy2ddOQMhPY6J?=
+ =?us-ascii?Q?DpjCKtnOYNyQXfhJk9nmsAIDTrcHXGDZtpYjPslUUdCkZ2J9t5xNrlXaWdtH?=
+ =?us-ascii?Q?b0M3RKX7hF5Jiy2sDBMqWjSSH0OIMKTV5ptJmNoCB6E2OODPxJAw2X+ykjb1?=
+ =?us-ascii?Q?0WXdQs93Fooix5vmVAQnlv+OQAaUIp/ctCu5MF0cxP/c6IkEI+eGruAoJD2/?=
+ =?us-ascii?Q?febnti7Nr7l8+qo9czJXDOCojivkHQh5/lbmJxzGC4HzO1p/P7leegT8AmMq?=
+ =?us-ascii?Q?Y6Rzkmf3ZhFDnhHz2cOu7ZUgs2JAkiIsci3UAiiNXZOEhC4qsqEnriDNqXvF?=
+ =?us-ascii?Q?0Xk/nUBm95sbI8GcL9TGh74McmpZEEKrT74oRNRrc5jGF4yvzXqyRF/nYfFo?=
+ =?us-ascii?Q?/RmDuqnsl5oTQCxli6uNzRNo2o7VnpVOWxguRF1dEtJrMjtq9kv2kZrc6P0p?=
+ =?us-ascii?Q?kutT1B8O4o0pZqscqRGdr9lA0QI7g3GM4qkDh1bjDuCI3RChCXcqNTarKDaT?=
+ =?us-ascii?Q?7VCpClr0bb6Oxngp2T6xSCgH4EjATLR5qNaSALmde8CaWlPdDPb2vA9ijUN6?=
+ =?us-ascii?Q?TpoBF2JBp0nu97cNyezxu1Mtq60+/fgVmnxYdFn2xCKbXF7JMCJmQJcKGGXN?=
+ =?us-ascii?Q?SAoRaAMxlGfh2AvU6wKLcuekSad1V+nEfrgkamI4kVu/DcEfCwnqzd12uI2K?=
+ =?us-ascii?Q?drfRDjkQjv0Mhyj1Hgef37YVKcrq2+bAcVkigjDYce3sULOJC0e2PCpjsB9T?=
+ =?us-ascii?Q?bWrR1u/UXjOP34mmPqi5pw001qN/Eem7wLQPwGjupEU9zc8o7q8Xoi1+UohE?=
+ =?us-ascii?Q?tJrD9VZPmnXq+j18QehgvJuyTKqunWMUzludvbMD2NriSwwtnPKtBzTuecvY?=
+ =?us-ascii?Q?D/CfnvV3TRsbiHhOoOL3ANM80dMYw4ls+C5BeycQ6M91XEc3lnpok73VwhLR?=
+ =?us-ascii?Q?j0ZNjavD8uh4H5VIMq9+HLJ4g+tmR5wWR5h+La5V?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99543da9-e486-44f5-594e-08dc3232aec0
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8247.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 16:40:44.5762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l7qP8E5GxEKheOI8e5inh0a4cGEaY51fgrz8wpg0tRU+1pAgBkxrFJlS7y4Q2aNd5D6//eckHykDQTNeGlWecw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9467
 
-On Tue, Feb 20, 2024 at 5:23=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
-org> wrote:
->
-> Anup Patel <apatel@ventanamicro.com> writes:
->
-> > The Linux platform MSI support allows per-device MSI domains so let
-> > us add a platform irqchip driver for RISC-V IMSIC which provides a
-> > base IRQ domain with MSI parent support for platform device domains.
-> >
-> > This driver assumes that the IMSIC state is already initialized by
-> > the IMSIC early driver.
-> >
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  drivers/irqchip/Makefile                   |   2 +-
-> >  drivers/irqchip/irq-riscv-imsic-platform.c | 346 +++++++++++++++++++++
-> >  drivers/irqchip/irq-riscv-imsic-state.h    |   1 +
-> >  3 files changed, 348 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/irqchip/irq-riscv-imsic-platform.c
-> >
-> > diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-> > index d714724387ce..abca445a3229 100644
-> > --- a/drivers/irqchip/Makefile
-> > +++ b/drivers/irqchip/Makefile
-> > @@ -95,7 +95,7 @@ obj-$(CONFIG_QCOM_MPM)                      +=3D irq-=
-qcom-mpm.o
-> >  obj-$(CONFIG_CSKY_MPINTC)            +=3D irq-csky-mpintc.o
-> >  obj-$(CONFIG_CSKY_APB_INTC)          +=3D irq-csky-apb-intc.o
-> >  obj-$(CONFIG_RISCV_INTC)             +=3D irq-riscv-intc.o
-> > -obj-$(CONFIG_RISCV_IMSIC)            +=3D irq-riscv-imsic-state.o irq-=
-riscv-imsic-early.o
-> > +obj-$(CONFIG_RISCV_IMSIC)            +=3D irq-riscv-imsic-state.o irq-=
-riscv-imsic-early.o irq-riscv-imsic-platform.o
-> >  obj-$(CONFIG_SIFIVE_PLIC)            +=3D irq-sifive-plic.o
-> >  obj-$(CONFIG_IMX_IRQSTEER)           +=3D irq-imx-irqsteer.o
-> >  obj-$(CONFIG_IMX_INTMUX)             +=3D irq-imx-intmux.o
-> > diff --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqch=
-ip/irq-riscv-imsic-platform.c
-> > new file mode 100644
-> > index 000000000000..7ee44c493dbc
-> > --- /dev/null
-> > +++ b/drivers/irqchip/irq-riscv-imsic-platform.c
-> > @@ -0,0 +1,346 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
-> > + * Copyright (C) 2022 Ventana Micro Systems Inc.
-> > + */
-> > +
-> > +#define pr_fmt(fmt) "riscv-imsic: " fmt
-> > +#include <linux/bitmap.h>
-> > +#include <linux/cpu.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/irq.h>
-> > +#include <linux/irqchip.h>
-> > +#include <linux/irqdomain.h>
-> > +#include <linux/module.h>
-> > +#include <linux/msi.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/spinlock.h>
-> > +#include <linux/smp.h>
-> > +
-> > +#include "irq-riscv-imsic-state.h"
-> > +
-> > +static bool imsic_cpu_page_phys(unsigned int cpu, unsigned int guest_i=
-ndex,
-> > +                             phys_addr_t *out_msi_pa)
-> > +{
-> > +     struct imsic_global_config *global;
-> > +     struct imsic_local_config *local;
-> > +
-> > +     global =3D &imsic->global;
-> > +     local =3D per_cpu_ptr(global->local, cpu);
-> > +
-> > +     if (BIT(global->guest_index_bits) <=3D guest_index)
-> > +             return false;
-> > +
-> > +     if (out_msi_pa)
-> > +             *out_msi_pa =3D local->msi_pa +
-> > +                           (guest_index * IMSIC_MMIO_PAGE_SZ);
-> > +
-> > +     return true;
-> > +}
-> > +
-> > +static void imsic_irq_mask(struct irq_data *d)
-> > +{
-> > +     imsic_vector_mask(irq_data_get_irq_chip_data(d));
-> > +}
-> > +
-> > +static void imsic_irq_unmask(struct irq_data *d)
-> > +{
-> > +     imsic_vector_unmask(irq_data_get_irq_chip_data(d));
-> > +}
-> > +
-> > +static int imsic_irq_retrigger(struct irq_data *d)
-> > +{
-> > +     struct imsic_vector *vec =3D irq_data_get_irq_chip_data(d);
-> > +     struct imsic_local_config *local;
-> > +
-> > +     if (WARN_ON(vec =3D=3D NULL))
->
-> Checkpatch: use !vec
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
-Okay, I will update.
+So far we used an internal linux-imx@nxp.com email address to
+gather all patches related to NXP i.MX development.
 
->
-> > +             return -ENOENT;
-> > +
-> > +     local =3D per_cpu_ptr(imsic->global.local, vec->cpu);
-> > +     writel_relaxed(vec->local_id, local->msi_va);
-> > +     return 0;
-> > +}
-> > +
-> > +static void imsic_irq_compose_vector_msg(struct imsic_vector *vec, str=
-uct msi_msg *msg)
-> > +{
-> > +     phys_addr_t msi_addr;
-> > +
-> > +     if (WARN_ON(vec =3D=3D NULL))
->
-> Checkpatch: use !vec
+Let's switch to an open mailing list that provides ability
+for people from the community to subscribe and also have
+a proper archive.
 
-Okay, I will update.
+List interface at: https://lists.linux.dev.
+Archive is at: https://lore.kernel.org/imx/
 
->
-> > +             return;
-> > +
-> > +     if (WARN_ON(!imsic_cpu_page_phys(vec->cpu, 0, &msi_addr)))
-> > +             return;
-> > +
-> > +     msg->address_hi =3D upper_32_bits(msi_addr);
-> > +     msg->address_lo =3D lower_32_bits(msi_addr);
-> > +     msg->data =3D vec->local_id;
-> > +}
-> > +
-> > +static void imsic_irq_compose_msg(struct irq_data *d, struct msi_msg *=
-msg)
-> > +{
-> > +     imsic_irq_compose_vector_msg(irq_data_get_irq_chip_data(d), msg);
-> > +}
-> > +
-> > +#ifdef CONFIG_SMP
-> > +static void imsic_msi_update_msg(struct irq_data *d, struct imsic_vect=
-or *vec)
-> > +{
-> > +     struct msi_msg msg[2] =3D { [1] =3D { }, };
-> > +
-> > +     imsic_irq_compose_vector_msg(vec, msg);
-> > +     irq_data_get_irq_chip(d)->irq_write_msi_msg(d, msg);
-> > +}
-> > +
-> > +static int imsic_irq_set_affinity(struct irq_data *d, const struct cpu=
-mask *mask_val,
-> > +                               bool force)
-> > +{
-> > +     struct imsic_vector *old_vec, *new_vec;
-> > +     struct irq_data *pd =3D d->parent_data;
-> > +
-> > +     old_vec =3D irq_data_get_irq_chip_data(pd);
-> > +     if (WARN_ON(old_vec =3D=3D NULL))
->
-> Checkpatch: use !old_vec
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
 
-Okay, I will update.
+Shawn, can you please pick this up via your tree?
 
->
-> > +             return -ENOENT;
-> > +
-> > +     /* If old vector cpu belongs to the target cpumask then do nothin=
-g */
-> > +     if (cpumask_test_cpu(old_vec->cpu, mask_val))
-> > +             return IRQ_SET_MASK_OK_DONE;
-> > +
-> > +     /* If move is already in-flight then return failure */
-> > +     if (imsic_vector_get_move(old_vec))
-> > +             return -EBUSY;
-> > +
-> > +     /* Get a new vector on the desired set of CPUs */
-> > +     new_vec =3D imsic_vector_alloc(old_vec->hwirq, mask_val);
-> > +     if (!new_vec)
-> > +             return -ENOSPC;
-> > +
-> > +     /* Point device to the new vector */
-> > +     imsic_msi_update_msg(d, new_vec);
-> > +
-> > +     /* Update irq descriptors with the new vector */
-> > +     pd->chip_data =3D new_vec;
-> > +
-> > +     /* Update effective affinity of parent irq data */
-> > +     irq_data_update_effective_affinity(pd, cpumask_of(new_vec->cpu));
-> > +
-> > +     /* Move state of the old vector to the new vector */
-> > +     imsic_vector_move(old_vec, new_vec);
-> > +
-> > +     return IRQ_SET_MASK_OK_DONE;
-> > +}
-> > +#endif
-> > +
-> > +static struct irq_chip imsic_irq_base_chip =3D {
-> > +     .name                   =3D "IMSIC",
-> > +     .irq_mask               =3D imsic_irq_mask,
-> > +     .irq_unmask             =3D imsic_irq_unmask,
-> > +     .irq_retrigger          =3D imsic_irq_retrigger,
-> > +     .irq_compose_msi_msg    =3D imsic_irq_compose_msg,
-> > +     .flags                  =3D IRQCHIP_SKIP_SET_WAKE |
-> > +                               IRQCHIP_MASK_ON_SUSPEND,
-> > +};
-> > +
-> > +static int imsic_irq_domain_alloc(struct irq_domain *domain, unsigned =
-int virq,
-> > +                               unsigned int nr_irqs, void *args)
-> > +{
-> > +     struct imsic_vector *vec;
-> > +
-> > +     /* Legacy-MSI or multi-MSI not supported yet. */
-> > +     if (nr_irqs > 1)
-> > +             return -ENOTSUPP;
->
-> Checkpatch: WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUP=
-P
+ MAINTAINERS | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Okay, I will update.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..3db382dc8f7b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2156,7 +2156,7 @@ M:	Shawn Guo <shawnguo@kernel.org>
+ M:	Sascha Hauer <s.hauer@pengutronix.de>
+ R:	Pengutronix Kernel Team <kernel@pengutronix.de>
+ R:	Fabio Estevam <festevam@gmail.com>
+-R:	NXP Linux Team <linux-imx@nxp.com>
++R:	NXP Linux Team <imx@lists.linux.dev>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
+@@ -8489,7 +8489,7 @@ FREESCALE IMX / MXC FEC DRIVER
+ M:	Wei Fang <wei.fang@nxp.com>
+ R:	Shenwei Wang <shenwei.wang@nxp.com>
+ R:	Clark Wang <xiaoning.wang@nxp.com>
+-R:	NXP Linux Team <linux-imx@nxp.com>
++R:	NXP Linux Team <imx@lists.linux.dev>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/fsl,fec.yaml
+@@ -8524,7 +8524,7 @@ F:	drivers/i2c/busses/i2c-imx.c
+ FREESCALE IMX LPI2C DRIVER
+ M:	Dong Aisheng <aisheng.dong@nxp.com>
+ L:	linux-i2c@vger.kernel.org
+-L:	linux-imx@nxp.com
++L:	imx@lists.linux.dev
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+ F:	drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -15704,7 +15704,7 @@ F:	drivers/iio/gyro/fxas21002c_spi.c
+ NXP i.MX 7D/6SX/6UL/93 AND VF610 ADC DRIVER
+ M:	Haibo Chen <haibo.chen@nxp.com>
+ L:	linux-iio@vger.kernel.org
+-L:	linux-imx@nxp.com
++L:	imx@lists.linux.dev
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/iio/adc/fsl,imx7d-adc.yaml
+ F:	Documentation/devicetree/bindings/iio/adc/fsl,vf610-adc.yaml
+@@ -15741,7 +15741,7 @@ F:	drivers/gpu/drm/imx/dcss/
+ NXP i.MX 8QXP ADC DRIVER
+ M:	Cai Huoqing <cai.huoqing@linux.dev>
+ M:	Haibo Chen <haibo.chen@nxp.com>
+-L:	linux-imx@nxp.com
++L:	imx@lists.linux.dev
+ L:	linux-iio@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+@@ -15749,7 +15749,7 @@ F:	drivers/iio/adc/imx8qxp-adc.c
+ 
+ NXP i.MX 8QXP/8QM JPEG V4L2 DRIVER
+ M:	Mirela Rabulea <mirela.rabulea@nxp.com>
+-R:	NXP Linux Team <linux-imx@nxp.com>
++R:	NXP Linux Team <imx@lists.linux.dev>
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+@@ -15759,7 +15759,7 @@ NXP i.MX CLOCK DRIVERS
+ M:	Abel Vesa <abelvesa@kernel.org>
+ R:	Peng Fan <peng.fan@nxp.com>
+ L:	linux-clk@vger.kernel.org
+-L:	linux-imx@nxp.com
++L:	imx@lists.linux.dev
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git clk/imx
+ F:	Documentation/devicetree/bindings/clock/imx*
+@@ -19630,7 +19630,7 @@ F:	drivers/mmc/host/sdhci-of-at91.c
+ 
+ SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) NXP i.MX DRIVER
+ M:	Haibo Chen <haibo.chen@nxp.com>
+-L:	linux-imx@nxp.com
++L:	imx@lists.linux.dev
+ L:	linux-mmc@vger.kernel.org
+ S:	Maintained
+ F:	drivers/mmc/host/sdhci-esdhc-imx.c
+-- 
+2.25.1
 
-Regards,
-Anup
 
