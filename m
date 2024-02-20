@@ -1,116 +1,178 @@
-Return-Path: <linux-kernel+bounces-72169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C6ED85B045
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5110785B04F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:15:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E816F1F2269C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:13:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAEA21F2284C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC13411CA1;
-	Tue, 20 Feb 2024 01:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FBF13ACC;
+	Tue, 20 Feb 2024 01:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azThkOh+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qzvkrcv7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6D3FC19;
-	Tue, 20 Feb 2024 01:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73BBFC19;
+	Tue, 20 Feb 2024 01:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708391604; cv=none; b=ZYJrP3ar+EtMBUFdEYywQA9nsZ9r0n7IkeBVfXEeS6tJmcWvKmVit9JbXuNkrsaEsDiK2VOutOsXKizpdUvyrIynk3C3kv32SotqaU8/leTwHmoJSnW2rjuhrARbj+Jp74PXYt8G4qymx9Nyge1unRvrhPE7M/JCwWow3E8GoRA=
+	t=1708391709; cv=none; b=mGqlclNeekNfK+M24D/iVq40cJpTdQRPCfT6IsT7tOHSm7dl/BVstFQxLjzVUBAk5aGps7fq41ixOj4l1XcEZ+wT+/QKW7X9nPF8A+laMJC7vKDWOgxhSOPz1UhLXl/dbwSNvM7haaQsmIosP1APDykmROgQNill/czVsHvkX94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708391604; c=relaxed/simple;
-	bh=1OOQqs9gGIXShrtHtgrk0GR+vwo9fMIkwu5VM+GuMys=;
+	s=arc-20240116; t=1708391709; c=relaxed/simple;
+	bh=gRlACvq18RgH3+fWPOxkkUfB0U8xAoHtppyL5FDnKuE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HvqYTutO8m6iiw5fkS9IoJWmcQYM3A0ZZaqItCm/qvvXIdePvKSRYykzS+5KCLIRcCcB5Q0a+OKmMQf8jQz78fLMAn+3eXVpjF5nfng8iJxplJLjfYR+Jo4Xq1pUgTElilEMaQb89rSp9vvy2pc3JB5p5F4xneJPElZ1EjsAijg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azThkOh+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9689FC433F1;
-	Tue, 20 Feb 2024 01:13:23 +0000 (UTC)
+	 To:Cc:Content-Type; b=fxlVAzp+fIp8B2aYzsKia1+WDjE6JtcGqZK41+8DX6SP/4UsjTmCGKN9TTdQL3PdkSQ3mbXgj38ScNfiFejbdrLXZZqVMvCsCnWf1/G5EA/NXcCQ8w6v48NW4FjPRPvTxrAPrCnH2fp8oe0+AmcSVox1xW8+FIgL9BtMv5hMn7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qzvkrcv7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC46FC433A6;
+	Tue, 20 Feb 2024 01:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708391603;
-	bh=1OOQqs9gGIXShrtHtgrk0GR+vwo9fMIkwu5VM+GuMys=;
+	s=k20201202; t=1708391708;
+	bh=gRlACvq18RgH3+fWPOxkkUfB0U8xAoHtppyL5FDnKuE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=azThkOh+4ID7iBbpzd1V5Wp4tUfENPWQ2pzbvUXmD8WiMz6wXRp/BkhVpv2wuk0m7
-	 +m4cD03Io2mm0+2rDv588oA9Rs5FwcHpkDgz2VQMRm77eNkRRy3A3PhoJP+lOkGTWl
-	 /BAZXyb9we+C76KKVBOakfjKpXBYRfRLBp3SMyExBTiNGqY3P5z39qfLwb2kwPqxew
-	 9/j/r2zuA2OjAd1hBR1teJaoYE8xLDT3XNskHnmVyN0GdfimHXal/1R12o5w4x0to2
-	 qApMHYjeGuLoefTwvV2YmWhejJCe6uU1VWDkDge5WgiAzXMU9uBbYyxnX2UCdRtmki
-	 Ualrcw7+6BqmQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a293f2280c7so687078666b.1;
-        Mon, 19 Feb 2024 17:13:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWzpfqTkrXytClPZmK830GYjaMYpHV7JzdyXXdXZdYYYDt4HX6W7DB9aUNRJFZrIxrE9/hr/rdLdJ4PUc5X+iVxTmlrkUO39qii5g==
-X-Gm-Message-State: AOJu0YzCDbbnWuiPVhJnEGMoXyHkO/ej45IOraLKFqfN8wVAqs1J3rnQ
-	3jJ5B3vwHguXnJaLe9PMSE0izjyg2IF1CHhMRjPf0hHwkPZDcOr/WsEbQhE/JunYPOBua1yk0hO
-	8xI6xeoXDZpKefpYLpOhK2EjGWjs=
-X-Google-Smtp-Source: AGHT+IE7PxUhN1XOXgivV1Cc2EzKxF/mEBfoR8lYdOioedLl7MprCPMe/OT1IaKwNhEcdnS3m5Y3bH0S5S8Q0MuR4j4=
-X-Received: by 2002:a17:906:f258:b0:a3e:d20a:f1d9 with SMTP id
- gy24-20020a170906f25800b00a3ed20af1d9mr1620905ejb.11.1708391602008; Mon, 19
- Feb 2024 17:13:22 -0800 (PST)
+	b=qzvkrcv7Y6I/ApWX7O7vOPeBl1rJSUDc4Vbe5uqu0wtQVVOHV/aPwJ7HNkQHvzjiK
+	 XQhP6w+uf0UDZX2nqSSmIiE2RRZkD58a2qZn5dwMdth+hKUvBKNP6jZDsFJ4stLfcS
+	 3MxIkpG1V4NeydmpQoaBkHmYEYEH9QTw0cOVARWFpXCI0LLO5NPKklYdNPMaUXLrM1
+	 PCBgyIa6IKDFCpVxvHmQU6RxNmAqthmk4RzPhcjDN13CvL9e3wND51/apSaZ9dU1jO
+	 TUl7ZcwQuD8rCzf4bt1N7R8g5cz4mMZOA9zVkh/uT0swvABuLhhKdIprcpC9rlEsB8
+	 cO0WmxPRmqdIQ==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563d32ee33aso5062171a12.2;
+        Mon, 19 Feb 2024 17:15:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXzBB4rXCYfRfoQ9FYhw4dM2IpANRNARQvrCg4Fzamr0vNa/ktlgykAvjrMmel90elAEG+W+vrA4JA/u2zgqytFNGl3gdyQCEWnmxlig/XrsM0BD7pxZ/THJQUdFrMDLx7cXp7xlInxEJd++eerhiCYpvfHCydG75OskoMQrnUFADEhRQ==
+X-Gm-Message-State: AOJu0Yx9/r9kpIoci5M5pgw+3tQQj9zRD/H3LakrbjuGiPHlgPmyvc8n
+	/5teL4OMaDxVGdIOOtBxUyirq3WtZSYtJCGa5fd6P3++9Lj3pbYiwKKBkKGTttRBisK+KfvX79h
+	77Kn2ofi33mAur+4bdoLPHSSB22s=
+X-Google-Smtp-Source: AGHT+IH4+9JBZnMWglIVAMrZKsqHw7pO9w1Rp9U87EJpKCF7PoBPr3pPgDcO6TDGwO0E8MKi2ReWPMx/pZWLWjuSas4=
+X-Received: by 2002:aa7:d0d5:0:b0:564:a1e2:edd2 with SMTP id
+ u21-20020aa7d0d5000000b00564a1e2edd2mr1785583edo.9.1708391707015; Mon, 19 Feb
+ 2024 17:15:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219153939.75719-1-anna-maria@linutronix.de> <20240219153939.75719-11-anna-maria@linutronix.de>
-In-Reply-To: <20240219153939.75719-11-anna-maria@linutronix.de>
+References: <cover.1708223519.git.unicorn_wang@outlook.com> <aaad6e257a44e312cfbeb5a8ce84b8975cdc461e.1708223519.git.unicorn_wang@outlook.com>
+In-Reply-To: <aaad6e257a44e312cfbeb5a8ce84b8975cdc461e.1708223519.git.unicorn_wang@outlook.com>
 From: Guo Ren <guoren@kernel.org>
-Date: Tue, 20 Feb 2024 09:13:10 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRtNJUw6rr0w2xR5gNMw6ab8diTq-h-bX8HcaX5qbmoVQ@mail.gmail.com>
-Message-ID: <CAJF2gTRtNJUw6rr0w2xR5gNMw6ab8diTq-h-bX8HcaX5qbmoVQ@mail.gmail.com>
-Subject: Re: [PATCH 10/10] csky/vdso: Use generic union vdso_data_store
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	linux-csky@vger.kernel.org
+Date: Tue, 20 Feb 2024 09:14:55 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTAz1p-hXF5YCz0Hz5c+QMuSv6BGNbwpYW6Nvez0N7g6g@mail.gmail.com>
+Message-ID: <CAJF2gTTAz1p-hXF5YCz0Hz5c+QMuSv6BGNbwpYW6Nvez0N7g6g@mail.gmail.com>
+Subject: Re: [PATCH v10 1/5] dt-bindings: clock: sophgo: add pll clocks for SG2042
+To: Chen Wang <unicornxw@gmail.com>
+Cc: aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, 
+	palmer@dabbelt.com, paul.walmsley@sifive.com, richardcochran@gmail.com, 
+	robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com, 
+	xiaoguang.xing@sophgo.com, jszhang@kernel.org, inochiama@outlook.com, 
+	samuel.holland@sifive.com, Chen Wang <unicorn_wang@outlook.com>, 
+	Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 11:40=E2=80=AFPM Anna-Maria Behnsen
-<anna-maria@linutronix.de> wrote:
+On Sun, Feb 18, 2024 at 10:51=E2=80=AFAM Chen Wang <unicornxw@gmail.com> wr=
+ote:
 >
-> There is already a generic union definition for vdso_data_store in vdso
-> datapage header.
+> From: Chen Wang <unicorn_wang@outlook.com>
 >
-> Use this definition to prevent code duplication.
+> Add bindings for the pll clocks for Sophgo SG2042.
 >
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: linux-csky@vger.kernel.org
+> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  arch/csky/kernel/vdso.c | 10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
+>  .../bindings/clock/sophgo,sg2042-pll.yaml     | 45 +++++++++++++++++++
+>  include/dt-bindings/clock/sophgo,sg2042-pll.h | 14 ++++++
+>  2 files changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042=
+-pll.yaml
+>  create mode 100644 include/dt-bindings/clock/sophgo,sg2042-pll.h
 >
-> diff --git a/arch/csky/kernel/vdso.c b/arch/csky/kernel/vdso.c
-> index e74a2504d331..2ca886e4a458 100644
-> --- a/arch/csky/kernel/vdso.c
-> +++ b/arch/csky/kernel/vdso.c
-> @@ -15,14 +15,8 @@ extern char vdso_start[], vdso_end[];
->  static unsigned int vdso_pages;
->  static struct page **vdso_pagelist;
->
-> -/*
-> - * The vDSO data page.
-> - */
-> -static union {
-> -       struct vdso_data        data;
-> -       u8                      page[PAGE_SIZE];
-> -} vdso_data_store __page_aligned_data;
-> -struct vdso_data *vdso_data =3D &vdso_data_store.data;
-> +static union vdso_data_store vdso_data_store __page_aligned_data;
-> +struct vdso_data *vdso_data =3D vdso_data_store.data;
->
->  static int __init vdso_init(void)
->  {
+> diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.ya=
+ml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
+> new file mode 100644
+> index 000000000000..b9af733e8a73
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-pll.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/sophgo,sg2042-pll.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sophgo SG2042 PLL Clock Generator
+> +
+> +maintainers:
+> +  - Chen Wang <unicorn_wang@outlook.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: sophgo,sg2042-pll
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Oscillator(Clock Generation IC) for Main/Fixed PLL =
+(25 MHz)
+> +      - description: Oscillator(Clock Generation IC) for DDR PLL 0 (25 M=
+Hz)
+> +      - description: Oscillator(Clock Generation IC) for DDR PLL 1 (25 M=
+Hz)
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +    description:
+> +      See <dt-bindings/clock/sophgo,sg2042-pll.h> for valid indices.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    clock-controller@10000000 {
+> +      compatible =3D "sophgo,sg2042-pll";
+> +      reg =3D <0x10000000 0x10000>;
+> +      clocks =3D <&cgi_main>, <&cgi_dpll0>, <&cgi_dpll1>;
+> +      #clock-cells =3D <1>;
+> +    };
+> diff --git a/include/dt-bindings/clock/sophgo,sg2042-pll.h b/include/dt-b=
+indings/clock/sophgo,sg2042-pll.h
+> new file mode 100644
+> index 000000000000..2d519b3bf51c
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/sophgo,sg2042-pll.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+> +/*
+> + * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_SOPHGO_SG2042_PLL_H__
+> +#define __DT_BINDINGS_SOPHGO_SG2042_PLL_H__
+> +
+> +#define MPLL_CLK                       0
+> +#define FPLL_CLK                       1
+> +#define DPLL0_CLK                      2
+> +#define DPLL1_CLK                      3
+> +
+> +#endif /* __DT_BINDINGS_SOPHGO_SG2042_PLL_H__ */
 > --
-> 2.39.2
+> 2.25.1
 >
-
-Acked-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Guo Ren <guoren@kernel.org>
 
 --=20
 Best Regards
