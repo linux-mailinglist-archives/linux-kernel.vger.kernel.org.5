@@ -1,93 +1,186 @@
-Return-Path: <linux-kernel+bounces-73213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 845E085BF6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:06:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F4585BF70
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2A5728105B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:06:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF9B2833F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7567573162;
-	Tue, 20 Feb 2024 15:06:05 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7776F53C
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2965745C6;
+	Tue, 20 Feb 2024 15:07:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68E467E91;
+	Tue, 20 Feb 2024 15:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708441565; cv=none; b=osuxDOsI+aeeJi+2fLGl/w9wpxYxo4nlGdbM8eo34bS2PY7XzUVn7tS/fWrADXgaGrpHMWzEO2sfCGBddQI+MqQBa6xvbbu4l6MbBSlD4G+2wNsylnT/bvTuwEdFDoB5iP6u4UlMD4xECOFzrt+S3wxckf2KJ6iiUOmuBHmpHZU=
+	t=1708441662; cv=none; b=tRn0QuAIO4YSbXY0u2Zf99MCeOYuKYn2i7o7ac0N+ZMR3+cxU45fbFDJBAYVfYqioZgCvdiPjiX/eChh4kk3jiRw/CcYjR5thxFMynbOac+FBI40bpIqvkf+SDlbWTMmwhoy7mAcZljE2zLqVlryshm5cwTIEMkiwD/PVCik3Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708441565; c=relaxed/simple;
-	bh=QGSpzD8IrL2IL2FVOH+KRPNBrRVxL+/XdPkqbD0Yrgs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=NHrXTp0IfrScE6vpK0ZjavqFCIw29Ylv2TYxT1fqN+uJOUzy6bnMZdCGvWaTcMIwyf/vRvim+6yMNrLkmuqzltC/+QUumaFthi75Cb0bz9FdWB13MNKJp6sk095X6OmG/aB6tqUEDrMk09o7gZK9BG/ZfbuljzZyRzUkMTjf4ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3651a2610d8so33552065ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:06:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708441563; x=1709046363;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+yTxsOwUhHvJATauDuWZBUQRT5fbxREug4NmWnZkrzE=;
-        b=okz8VKUWMbZdrsqyZFBaBuASbdoCCKtONqlQ6NZq4JmzPFspV32lS3RDr7DIIwWBOq
-         uG0ugidOVUVb0zL/tfXvxyEe4QK/9FdSiSnScmOQvGWOZ5rzGc6M7W6yrvM6T5hNM4XQ
-         4KWc/REb2AK3ipSwfV+y9+Ke+X2M1gGaCkkEjVyQTxL6gN3nJQdcFbKpH7VxNaQjOI76
-         oH8szcU6kGAGSnfLxjYyN/3I9nSUC4SUYX2P3DIWge6X3HRCcd8P977AauWl1ujoe5G3
-         qkk6OCF8x5bzZ4NkoN7WSUAoxCKfK327+Lk+xk4ZBLOBYn+YYGkrvAaRmhkplD0ruFvO
-         y/wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWHJzRJeGvolGTG+CexEq6S62igxRCNi8u7mdraIFDPI8JIEiMsekBDHHsnbQdL4fGEzp8UeNHe2OXlg/NLV3+Ur/2A5lWuSvr8UnFZ
-X-Gm-Message-State: AOJu0YwMkw+vosSMW2ts4NDIfe8HGY1YS4lFtC9+yMW60kOxbkeORaG8
-	Bc59Nyg4TsHhb1HJtEA3HauuFZJC6hxZV02VsesFRbXPfnmmmU02PjcK0J3VKZgR3743RQT+Hg3
-	ecqXrvfv2h2JzZUD8Xx9HGAo4AcLPbyPk2cVI/Ojt5lNka4ov/Ybwajs=
-X-Google-Smtp-Source: AGHT+IFdqJve6wJsxc9By8rzEOYNew2XImrd8r7hRr7EXK4O0t9yzUL8Ic/2bOauglDK4zzjRVPIP13b8gmSQayyuKpXBAYVt79z
+	s=arc-20240116; t=1708441662; c=relaxed/simple;
+	bh=I2jhKDuObvGJdDaIlPFqcuRI52gRZjbpYQq0Xx/YBXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TT4NX5jXhPAaE5pja9OkJyY71sgrKMGhBRxlhBzsne+eKlZR1AJvUXcwJ2CJ71AzLH8vZ2V6m2xgVh5AunPGQ93xKcowqsTmdzJF+uKcXEf21I1J2dWuj6elwxyfHWeiH1xHxXaVRNfPKDEX3dPjzthH2cTRs9JsWRD5cRcvmTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07B3FFEC;
+	Tue, 20 Feb 2024 07:08:18 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85EA93F73F;
+	Tue, 20 Feb 2024 07:07:36 -0800 (PST)
+Date: Tue, 20 Feb 2024 15:07:34 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, sudeep.holla@arm.com,
+	andersson@kernel.org, konrad.dybcio@linaro.org,
+	jassisinghbrar@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	quic_rgottimu@quicinc.com, quic_kshivnan@quicinc.com,
+	conor+dt@kernel.org, Amir Vajid <avajid@quicinc.com>
+Subject: Re: [RFC 4/7] soc: qcom: Utilize qcom scmi vendor protocol for bus
+ dvfs
+Message-ID: <ZdTANrUZuN_UZW9j@pluto>
+References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
+ <20240117173458.2312669-5-quic_sibis@quicinc.com>
+ <CAA8EJpr8qLZ8Y7PjU05ZoxSHWOf=q-KtM+s-tnR5X2t96rFWhw@mail.gmail.com>
+ <0adaa065-3883-ebfe-8259-05ebdbd821eb@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d91:b0:365:88b:3fba with SMTP id
- h17-20020a056e021d9100b00365088b3fbamr794506ila.1.1708441562919; Tue, 20 Feb
- 2024 07:06:02 -0800 (PST)
-Date: Tue, 20 Feb 2024 07:06:02 -0800
-In-Reply-To: <000000000000bdf37505f1a7fc09@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a3b2a0611d18c03@google.com>
-Subject: Re: [syzbot] [ntfs3?] kernel panic: stack is corrupted in run_unpack_ex
-From: syzbot <syzbot+ba698041fcdf4d0214bb@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, axboe@kernel.dk, 
-	brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk, 
-	yuran.pereira@hotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0adaa065-3883-ebfe-8259-05ebdbd821eb@quicinc.com>
 
-syzbot suspects this issue was fixed by commit:
+On Mon, Feb 12, 2024 at 03:54:27PM +0530, Sibi Sankar wrote:
+> 
+> 
+> On 1/18/24 02:11, Dmitry Baryshkov wrote:
+> > On Wed, 17 Jan 2024 at 19:36, Sibi Sankar <quic_sibis@quicinc.com> wrote:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Hi,
 
-    fs: Block writes to mounted block devices
+I'll comment this patch fully, just a remark down below about this
+mail-thread.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149d61e8180000
-start commit:   41c03ba9beea Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8cdb1e7bec4b955a
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba698041fcdf4d0214bb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e43f56480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fbabea480000
+> > > 
+> > > From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+> > > 
+> > > This patch introduces a client driver that interacts with the SCMI QCOM
+> > 
+> > git grep This.patch Documentation/process/
+> > 
+> > > vendor protocol and passes on the required tuneables to start various
+> > > features running on the SCMI controller.
+> > 
+> > Is there any word about the 'memlat'? No. Unless one  reads into the
+> > patch, one can not come up with the idea of what is being introduced.
+> 
+> ack, will fix it in the re-spin.
+> 
+> > 
+> > > 
+> > > Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+> > > Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
+> > > Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
+> > > Co-developed-by: Amir Vajid <avajid@quicinc.com>
+> > > Signed-off-by: Amir Vajid <avajid@quicinc.com>
+> > > Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > > ---
+> > >   drivers/soc/qcom/Kconfig            |  10 +
+> > >   drivers/soc/qcom/Makefile           |   1 +
+> > >   drivers/soc/qcom/qcom_scmi_client.c | 486 ++++++++++++++++++++++++++++
+> > 
+> > Should it go to drivers/firmware/arm_scmi instead? Or maybe to drivers/devfreq?
+> 
+> I don't think it should go into arm_scmi unless Sudeep wants it there.
+> As for drivers/devfreq, I would have moved it there if this driver
+> benfitted being classified as a devfreq device. We can't use any of
+> the available governors on it and the tuneables appear way too custom.
+> These are the reasons why I placed it in drivers/soc/qcom instead.
+> 
 
-If the result looks correct, please mark the issue as fixed by replying with:
+I think we used to host a couple of generic SCMI driver related to
+standard protocols but they have been moved out of driver/firmware/arm_scmi
+into the related subsystem...not sure if Sudeep thinks otherwise but I
+suppose we want to host only SCMI drivers that are clearly lacking a
+place where to stay...
 
-#syz fix: fs: Block writes to mounted block devices
+> > 
+> > >   3 files changed, 497 insertions(+)
+> > >   create mode 100644 drivers/soc/qcom/qcom_scmi_client.c
+ 
+ [snip]
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > > +static int configure_cpucp_mon(struct scmi_memlat_info *info, int memory_index, int monitor_index)
+> > > +{
+> > > +       const struct qcom_scmi_vendor_ops *ops = info->ops;
+> > > +       struct scmi_memory_info *memory = info->memory[memory_index];
+> > > +       struct scmi_monitor_info *monitor = memory->monitor[monitor_index];
+> > > +       struct scalar_param_msg scalar_msg;
+> > > +       struct map_param_msg map_msg;
+> > > +       struct node_msg msg;
+> > > +       int ret;
+> > > +       int i;
+> > > +
+> > > +       msg.cpumask = monitor->mask;
+> > > +       msg.hw_type = memory->hw_type;
+> > > +       msg.mon_type = monitor->mon_type;
+> > > +       msg.mon_idx = monitor->mon_idx;
+> > > +       strscpy(msg.mon_name, monitor->mon_name, sizeof(msg.mon_name));
+> > > +       ret = ops->set_param(info->ph, &msg, MEMLAT_ALGO_STR, MEMLAT_SET_MONITOR, sizeof(msg));
+> > > +       if (ret < 0) {
+> > > +               pr_err("Failed to configure monitor %s\n", monitor->mon_name);
+> > > +               return ret;
+> > > +       }
+> > > +
+> > > +       scalar_msg.hw_type = memory->hw_type;
+> > > +       scalar_msg.mon_idx = monitor->mon_idx;
+> > > +       scalar_msg.val = monitor->ipm_ceil;
+> > > +       ret = ops->set_param(info->ph, &scalar_msg, MEMLAT_ALGO_STR, MEMLAT_IPM_CEIL,
+> > > +                            sizeof(scalar_msg));
+> > > +       if (ret < 0) {
+> > > +               pr_err("Failed to set ipm ceil for %s\n", monitor->mon_name);
+> > > +               return ret;
+> > > +       }
+> > > +
+> > > +       map_msg.hw_type = memory->hw_type;
+> > > +       map_msg.mon_idx = monitor->mon_idx;
+> > > +       map_msg.nr_rows = monitor->freq_map_len;
+> > > +       for (i = 0; i < monitor->freq_map_len; i++) {
+> > > +               map_msg.tbl[i].v1 = monitor->freq_map[i].cpufreq_mhz;
+> > > +               map_msg.tbl[i].v2 = monitor->freq_map[i].memfreq_khz / 1000;
+> > > +       }
+> > 
+> > So this table goes 1:1 to the firmware? Is it going to be the same for
+> > all versions of the SoC? If so, it might be better to turn it into the
+> > static data inside the driver. If it doesn't change, there is no need
+> > to put it to DT.
+> 
+> The table does go directly to the firmware but obviously varies across
+> SoCs. Also since it's a SCMI client driver we don't have a way to
+> distinguish between SoCs based on compatibles. So it made more sense to
+> move it to the device tree instead.
+> 
+
+Well, the SCMI fw running the server DOES know where it is running right ?
+
+So, if you have multiple fixed config tables to feed into the firmware
+that vary based on the SoC you are running on, you could add an SCMI command
+to your QCOM SCMI vendor protocol and expose a related operation in ops to get
+the actual SoC model, so that you can embed the tableS in the driver here (as
+suggested) and then choose at runtime which one to use based on the reported
+platform...this is clearly config stuff (sa said by others) so it just
+does not belong to DT descriptions. 
+
+Thanks,
+Cristian
 
