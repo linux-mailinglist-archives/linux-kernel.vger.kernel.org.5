@@ -1,278 +1,221 @@
-Return-Path: <linux-kernel+bounces-73069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECAA885BD1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:23:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A6685BD20
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66BBC1F22896
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:23:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489701C2201E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176C46A32D;
-	Tue, 20 Feb 2024 13:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NZ+qSxDm"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5A36A00F;
-	Tue, 20 Feb 2024 13:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435402; cv=fail; b=tOpLnohpQo7gdZWsqbzQ4PYESfClXvxQFbe9hHRF07w2Z78fKLPHGyz1Cl6UeZk9zv+B8h/8mb1Zv/4sR6U8BaLV89JqRKgjqTCIHxhbCfp+f+iwtRUgWi3mL3VKUDHPh1xU8RgxvyHWsLY+Xui3s0Q8nQK1bCdN5eNB19GfZKY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435402; c=relaxed/simple;
-	bh=D7m3FIwIADlHTwugEVYbqyr7CycmTEkGPHu9IBChQqI=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jG9VM3OAHFUMpN/N3TjvRza+930XJuXL1G2nGBRA8mCrhXZzHQh0n6RfxO7ev7iKOfnobgBu1geCVfy29vGuyuPn0hGXRdG8UxvhFB/NiRej0eRP5pxSrpkzy9PPx7MivYd4g/SkIJt2VW+Wen9uAKkrOWoIT0NwvDv68gW+G7k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NZ+qSxDm; arc=fail smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708435401; x=1739971401;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=D7m3FIwIADlHTwugEVYbqyr7CycmTEkGPHu9IBChQqI=;
-  b=NZ+qSxDmZ4Aym7CKvWr4qMHacVC4ZsntgoaHBxQte3bslDb285iKLCEc
-   DuJjwXhcesY02z89KHzaulua8M5GU/8mTn/pldWrGME2wPf3ZVBIXbzQo
-   RlXj5iqnM1vVe6WTb/MpDyc6NCR0WBMNPssesJTOMQELEslxx3dE7eED/
-   rzabdcoYZv7bxLXC8qPIYFkUxrSRKRu2PzLL3wbVmP8kRMbuk13sv4OCg
-   3XkKm+KBOsVlMJnc7YcWYeEZkyOH7M5o6i0sijzrnqsEmsW3WW0xaGqss
-   uI3IwB3a4mOzpNV/win1MYTaFTU+/iE2ACpiNCEoIPNS30DPiJtj7avnL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2669740"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="2669740"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:23:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="5132974"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 05:23:19 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 05:23:18 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 05:23:18 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 05:23:18 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 20 Feb 2024 05:23:18 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JfZLMAqWDdRh4mrl5v1e0XHL3tNk4xeI6mxmHX2HpxQ8kv6LfrkGSFmQXdcdC/RSH5kKfUFwaBIak9DNBZuFlEac0TYuyQg/JZDi5rjOBD9whqR90fNqPAKwMz51KGXOSKtsMKmk1R/clx567LkHx71tPApbLYGu1O7tBTR1Y2i+JagpPcsm9FDQKY4GoggrZnHgwDlj1bnZKg6DGexuvr9tGAeL+IpqYva7grpmwFEZ49Ru9UngDlBO70DkTxoCbObYcQO71tfwtucROSu31VsMeJnfgsY6l0H4cba9rG+GXYq0Ms68rrMI9o+bj1QohRf9qCJdfQeyHVF1M340MQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tuG0kkttTqPcFtZdGOQr9nnieaXZXz7Nm0ar/w8i56I=;
- b=Z9O8pXNdRvvb3i/IM5uFPG4nwdQ1GZmqk7Sb2zb0DdEZ2hBrSUknA9cDRmrJ7MMzpmMCeIUFHtPLM+1MoALwIwcYNz1fD7NsaohcP2+OhdzXEIHUub6tkOuI8JpIH8Xt6jrhIE7SZDjtGE5prJudduFKMEcwVHjGa8jPTbEPlkxmNnJ1eDGyaYUD3H0Ju8V5AsjNZXmpVn+nGCuYAhXgdZvMrbjUx4CbuXOcqqON9mcTlNFRtsXOYTYe1IajxZhXiPv/ODgFQgn6MF/oZS9XOPhFBCNlquvS++Irj+0pmDY1TVtvHMwU6Vf3aJACJtf+FrTLAh1392UqDl5SeTQBNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by BN9PR11MB5227.namprd11.prod.outlook.com (2603:10b6:408:134::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 13:23:16 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::5d67:24d8:8c3d:acba]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::5d67:24d8:8c3d:acba%5]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 13:23:16 +0000
-Message-ID: <119db925-4472-4070-adb3-767f2bd00726@intel.com>
-Date: Tue, 20 Feb 2024 21:23:01 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 10/27] KVM: x86: Refine xsave-managed guest
- register/MSR reset handling
-To: Chao Gao <chao.gao@intel.com>
-CC: <seanjc@google.com>, <pbonzini@redhat.com>, <dave.hansen@intel.com>,
-	<x86@kernel.org>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<peterz@infradead.org>, <rick.p.edgecombe@intel.com>, <mlevitsk@redhat.com>,
-	<john.allen@amd.com>
-References: <20240219074733.122080-1-weijiang.yang@intel.com>
- <20240219074733.122080-11-weijiang.yang@intel.com>
- <ZdQWu3D3Jku1iAvd@chao-email>
-Content-Language: en-US
-From: "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <ZdQWu3D3Jku1iAvd@chao-email>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR01CA0135.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::15) To PH0PR11MB4965.namprd11.prod.outlook.com
- (2603:10b6:510:34::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47556A32D;
+	Tue, 20 Feb 2024 13:26:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE4F96A00F;
+	Tue, 20 Feb 2024 13:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708435609; cv=none; b=CXT6YcI1JeGKTaTZw0hSTosEOBhyb9dZL4RJGo+de7NtaM5JzLa4Xl20AFEoFa1eME+XxL9iqpyQDjGhpVsshGN8zEZjyMq4sqMjJpti8qXCXmBipBS0WC6qy8nT87oe86iVq6FIm7f25gLHTlvt3tH5GTVX2l1fVeIw6Kv7leM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708435609; c=relaxed/simple;
+	bh=1gXn0GrJBmEJMZAt2/PxNJ4nlOduqIj5XfvUP5zfb6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qo9iiSMZ+rthZDpD1fIWqp3B7jGun2Jc2PWqFZqyjtmBowzzrRrIjJ9xHxMYBspT3qKVO7KJYzZGJaJgpJzBmNmEA+xXnqzJeK4vQxwmY5/rcnB014qR6ZbPuddvfN6HQIwcpvqC5pI1jOhT05KzeumQ0aArF2u0aEXx0kGSZok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1647EFEC;
+	Tue, 20 Feb 2024 05:27:26 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F09743F73F;
+	Tue, 20 Feb 2024 05:26:41 -0800 (PST)
+Date: Tue, 20 Feb 2024 13:26:38 +0000
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+	yuzenghui@huawei.com, pcc@google.com, steven.price@arm.com,
+	anshuman.khandual@arm.com, eugenis@google.com, kcc@google.com,
+	hyesoo.yu@samsung.com, rppt@kernel.org, akpm@linux-foundation.org,
+	peterz@infradead.org, konrad.wilk@oracle.com, willy@infradead.org,
+	jgross@suse.com, hch@lst.de, geert@linux-m68k.org,
+	vitaly.wool@konsulko.com, ddstreet@ieee.org, sjenning@redhat.com,
+	hughd@google.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: arm64 MTE tag storage reuse - alternatives to MIGRATE_CMA
+Message-ID: <ZdSojvNyaqli2rWE@raptor>
+References: <ZdSMbjGf2Fj98diT@raptor>
+ <70d77490-9036-48ac-afc9-4b976433070d@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|BN9PR11MB5227:EE_
-X-MS-Office365-Filtering-Correlation-Id: 31b65aa5-ef86-4a60-0ab8-08dc321718b0
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xF/aGGl0DZperwXSZKGN8ZCv+qNo2yCk8iTrtP/aRHmAEVXYmQpIh2al5FhVAJbRJC3Qla67a2dP9wLkcQh7dwnCKhzb5XR/5tj9ppdZrdSBgZT5msSiYhjql+cL8B+NqZ4zDg5PWjMMXviEYVt/UEymTRsO2wNUtE9XidJpMZGJgQvi/W3hp2Gjfqr60N37eo1l0uxis6QyPbmkL48vOgvJvOtOOPSnRZtiIhd9fv+ib54aP7WSXD53/huRTOlcccj0CU5kJg82it1nPtkJ8r+/WnnwGnsHja1yyxBmctAVLIWgTTloecffRCp+avLW40jMCs1Dc0/UzMDcwNNxX1asZfQBin/GOy7/dQasoN3PXNCWywbLzCu3ty26J3cIEKGxbCx9PkTrc9h2zWlSjlH+fcVZG30jbLwGY4T7PKKLclG/pV87BWHF7XJsCtU6Jr/kR2ID5fqj1larPQRrDHIr24wUd2j4Oy6Y9RGVUlV10DrhAPZExDRWv9p6e9s5CUCmMMk6f89JHTf77Igm3p5aVHHEMYlq13RjvbJoa84=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QjFtVllyZDFubzQ4N3QvMmtCVHd6TnFBWnhpenZYbmIrTEc3SFIxcmk4Qzl6?=
- =?utf-8?B?RTVmOWFKNXRIbmlWRWtvN0YyZ3NodFQ4RXBuYU5rVXlGckh0UkpGekVIWlJ5?=
- =?utf-8?B?Z3NCUndQMUJDZ0dPTW9ZSVVScjFJdlVkTDRSaHQ5THBFaW5oV2Q2VmZaNEJS?=
- =?utf-8?B?Vko3TGcwVENUekRXRU1KZ3hGZ0RWam5BOW44c3h1Tm5JamtrYWwvdmRWMFJl?=
- =?utf-8?B?YklJRWxNTVNBOXVjTGJqTjgwUDI1YmcwczZWemxKUTZVdFFsR2tTaDJUTEdq?=
- =?utf-8?B?WjVGZGFZS20vY0ZuZWp1YTVIZUdUTzBJWTFVOVR6L1JtYkpaUGtKK3k4VkUv?=
- =?utf-8?B?Y1QyZ3l2YlJNVXdGelZSbTZNNTlnWk1RQmVrbnlNQ2EveUpjZ3QrS3ZGOHdD?=
- =?utf-8?B?MGd5S2JHWEsyZHRtZnVTNUYyVytZRURWU2d6OWFvd3BtL3V2eGV6d3FMei8y?=
- =?utf-8?B?NjF0QXFqQ3UwYy9RbS9udEMvQzVXOGlFYzBOc1AxNy9ZNmExcjZXRFp3ektF?=
- =?utf-8?B?MWJIMnJ6eWcwQkdQelN3YkZETjBObFVBV3FxWkx3QmJ3bEhQcmY4ZDJmRnEx?=
- =?utf-8?B?eU5nNmhHd0ozcTdaRUxWSkdSQ3p4K28ybmZKMkZEQWVNcDdwVFo4em9YVk1m?=
- =?utf-8?B?bW1tOFJyQzBsczByOVlzdDJpTVY3Mi83NkRKOU5XeXV5YVZ5TGFRZkVIbFo1?=
- =?utf-8?B?VnZWeTkrS1hoUEMyUkRTMmcrZHZybWFjNGY3L0t2cXRrb205VVIwNUpzM20y?=
- =?utf-8?B?UjRjS1IvOExBUWVIMXdlelRBUGJQQmVOSVpZbjgyUmlvZVNhL25QOXNLVWcv?=
- =?utf-8?B?RTlZenFnc2FEc3ZkaTZWd2xwcVZPTzNBZEM0YWZ4akFWR1NqdHd0QklYTUJX?=
- =?utf-8?B?WThheUJjS2F2YTR1R2ZvcDdOaGMxSnJ1SzcvNG9OdTNFTTl4dXY5c1pXemZI?=
- =?utf-8?B?SUpxY1lmcDRkQW5FNW9UT2FjZ0tZZzA5UkdFUmxyY3prRjQ1NmFxNncxY2V1?=
- =?utf-8?B?VWZIdmpTVFpXWDBjK1BwT0RobkZzYnZXWTRCS2hvZDJNRW5QSlhJdmoyL1Nl?=
- =?utf-8?B?dkVTMlI2Nlk0ZXJSdTlTK3dsQXpjQjVmZ2crSWd0VWdDaVphV2VPTUJZakgr?=
- =?utf-8?B?bERvRC9GS3JuNnZsUmwvbVhVYjRBcWdJQnNpbjFpNkNCRGlkK1Y4M2tRcnlK?=
- =?utf-8?B?bFlpOTczTTVHWXpwR3JUMVJNNjlCVEtzazNiRHhlZy8wWVFZNHgraVFOcHl4?=
- =?utf-8?B?U3FHZ1dGeWQxMnV3emg2cDN0dURPVVp1SkVMZFdYeDNhWThDQVpLNjZnaE9Z?=
- =?utf-8?B?MlR5UEx3cDMxWDN5MkNzKzZpYTVBVjhzZUxjV3BROEZ4V1pKN2VYUFpRbXZS?=
- =?utf-8?B?OERlUGZHeHFZRGw3S3cySzI1RG8yam4wWTNmWS9jN1VOdkxTclNjSVBiWXA2?=
- =?utf-8?B?MEhOemw4UnFoVFZjZHJOWHkxTnZ3WTl2VU5YaEowaDNhODlDMkpoS0dGcjNO?=
- =?utf-8?B?YUZFSkJheHNrU3djc3dUWW40b0IxN2xkSVUrTXlGZDZlQUg3bEY3dzIwYkdX?=
- =?utf-8?B?azlKSS9nUTF6VWk0cFpUNDl2U0pzSXU1YW1vdUtPZEF6aHJ5SVdReU4zWno3?=
- =?utf-8?B?Qm9XcWYzRHBMOFJNNjFUekdlU0dQTUxsRUZyTEs1S1lZa21aZ0lDZ1JJM09r?=
- =?utf-8?B?emM0RzFBSDhJYkgwemkvL2hBM1JIM0ZQOEZzTFUxZVgwYk4xUTljYVhTcDl1?=
- =?utf-8?B?ekpTUzdIMXRKWGc3MEgxeVlPb3FTSkxZWmhHb2NyRVVxbXljSFlBY2p1MENQ?=
- =?utf-8?B?WWpGN1RaOW9UL3h0WU9HTGY3VTh4ZXFadFRpUWhXTGtIM285cXNpS3AvcFFY?=
- =?utf-8?B?WDdlN1Rsc3l6RXpoakkzWU45OWlvTUhMNVFuWE0yY0hRbU9DL3RrdGlybGpo?=
- =?utf-8?B?Q0tmS3UzV1AydGxnY2pWaHRtWk5uMWhrdHJRV3gyNHFnOW1WNW1YUkFoSDZE?=
- =?utf-8?B?WEtnclphS1M5N1JTc1VmeUZ2bDNhS3B0bVNDL2crTUxmbTZlSVZncGs1MVhI?=
- =?utf-8?B?U1N5NzJTcHdCL3FDbTRDWUdkeDN3Q0gyUzgvcFFLQy9MN1g4OU42c2dhMGZR?=
- =?utf-8?B?MHcwNHdsSm1jYTlMQmRmVEQ5Rkw2NE96OTNJU09YaGxGaWh3eThPU1U2NDRj?=
- =?utf-8?B?ZEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31b65aa5-ef86-4a60-0ab8-08dc321718b0
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 13:23:16.1016
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bYKvXN4GVGErljlw4zcQvyu/kY43bXt5EFao7Kn35WdIuOXtBIzJxIwRkSLcRf+jm9NLG9XzFYo3mXrqwSiZcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5227
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70d77490-9036-48ac-afc9-4b976433070d@redhat.com>
 
-On 2/20/2024 11:04 AM, Chao Gao wrote:
-> On Sun, Feb 18, 2024 at 11:47:16PM -0800, Yang Weijiang wrote:
->> Tweak the code a bit to facilitate resetting more xstate components in
->> the future, e.g., CET's xstate-managed MSRs.
->>
->> No functional change intended.
-> Strictly speaking, there is a functional change. in the previous logic, if
-> either of BNDCSR or BNDREGS state is not supported (kvm_mpx_supported() will
-> return false), KVM won't reset either of them.
-> Since this gets changed, I vote
-> to drop 'No functional change ..'
+Hi David,
 
-Yes, I'll remove it since existing logic is slightly changed.
+On Tue, Feb 20, 2024 at 01:05:42PM +0100, David Hildenbrand wrote:
+> On 20.02.24 12:26, Alexandru Elisei wrote:
+> > Hello,
+> > 
+> 
+> Hi!
+> 
+> > This is a request to discuss alternatives to the current approach for
+> > reusing the MTE tag storage memory for data allocations [1]. Each iteration
+> > of the series uncovered new issues, the latest being that memory allocation
+> > is being performed in atomic contexts [2]; I would like to start a
+> > discussion regarding possible alternative, which would integrate better
+> > with the memory management code.
+> > 
+> > This is a high level overview of the current approach:
+> > 
+> >   * Tag storage pages are put on the MIGRATE_CMA lists, meaning they can be
+> >     used for data allocations like (almost) any other page in the system.
+> > 
+> >   * When a page is allocated as tagged, the corresponding tag storage is
+> >     also allocated.
+> > 
+> >   * There's a static relationship between a page and the location in memory
+> >     where its tags are stored. Because of this, if the corresponding tag
+> >     storage is used for data, the tag storage page is migrated.
+> > 
+> > Although this is the most generic approach because tag storage pages are
+> > treated like normal pages, it has some disadvantages:
+> > 
+> >   * HW KASAN (MTE in the kernel) cannot be used. The kernel allocates memory
+> >     in atomic context, where migration is not possible.
+> > 
+> >   * Tag storage pages cannot be themselves tagged, and this means that all
+> >     CMA pages, even those which aren't tag storage, cannot be used for
+> >     tagged allocations.
+> > 
+> >   * Page migration is costly, and a process that uses MTE can experience
+> >     measurable slowdowns if the tag storage it requires is in use for data.
+> >     There might be ways to reduce this cost (by reducing the likelihood that
+> >     tag storage pages are allocated), but it cannot be completely
+> >     eliminated.
+> > 
+> >   * Worse yet, a userspace process can use a tag storage page in such a way
+> >     that migration is effectively impossible [3],[4].  A malicious process
+> >     can make use of this to prevent the allocation of tag storage for other
+> >     processes in the system, leading to a degraded experience for the
+> >     affected processes. Worst case scenario, progress becomes impossible for
+> >     those processes.
+> > 
+> > One alternative approach I'm looking at right now is cleancache. Cleancache
+> > was removed in v5.17 (commit 0a4ee518185e) because the only backend, the
+> > tmem driver, had been removed earlier (in v5.3, commit 814bbf49dcd0).
+> > 
+> > With this approach, MTE tag storage would be implemented as a driver
+> > backend for cleancache. When a tag storage page is needed for storing tags,
+> > the page would simply be dropped from the cache (cleancache_get_page()
+> > returns -1).
+> 
+> With large folios in place, we'd likely want to investigate not working on
+> individual pages, but on (possibly large) folios instead.
 
->> Suggested-by: Chao Gao <chao.gao@intel.com>
->> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
->> ---
->> arch/x86/kvm/x86.c | 30 +++++++++++++++++++++++++++---
->> 1 file changed, 27 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 10847e1cc413..5a9c07751c0e 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -12217,11 +12217,27 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
->> 		static_branch_dec(&kvm_has_noapic_vcpu);
->> }
->>
->> +#define XSTATE_NEED_RESET_MASK	(XFEATURE_MASK_BNDREGS | \
->> +				 XFEATURE_MASK_BNDCSR)
->> +
->> +static bool kvm_vcpu_has_xstate(unsigned long xfeature)
-> kvm_vcpu_has_xstate is a misnomer because it doesn't take a vCPU.
+Yes, that would be interesting. Since the backend has no way of controlling
+what tag storage page will be needed for tags, and subsequently dropped
+from the cache, we would have to figure out what to do if one of the pages
+that is part of a large folio is dropped. The easiest solution that I can
+see is to remove the entire folio from the cleancache, but that would mean
+also dropping the rest of the pages from the folio unnecessarily.
 
-True, I'll change it, thanks!
+> 
+> > 
+> > I believe this is a very good fit for tag storage reuse, because it allows
+> > tag storage to be allocated even in atomic contexts, which enables MTE in
+> > the kernel. As a bonus, all of the changes to MM from the current approach
+> > wouldn't be needed, as tag storage allocation can be handled entirely in
+> > set_ptes_at(), copy_*highpage() or arch_swap_restore().
+> > 
+> > Is this a viable approach that would be upstreamable? Are there other
+> > solutions that I haven't considered? I'm very much open to any alternatives
+> > that would make tag storage reuse viable.
+> 
+> As raised recently, I had similar ideas with something like virtio-mem in
+> the past (wanted to call it virtio-tmem back then), but didn't have time to
+> look into it yet.
+> 
+> I considered both, using special device memory as "cleancache" backend, and
+> using it as backend storage for something similar to zswap. We would not
+> need a memmap/"struct page" for that special device memory, which reduces
+> memory overhead and makes "adding more memory" a more reliable operation.
 
->> +{
->> +	switch (xfeature) {
->> +	case XFEATURE_MASK_BNDREGS:
->> +	case XFEATURE_MASK_BNDCSR:
->> +		return kvm_cpu_cap_has(X86_FEATURE_MPX);
->> +	default:
->> +		return false;
->> +	}
->> +}
->> +
->> void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->> {
->> 	struct kvm_cpuid_entry2 *cpuid_0x1;
->> 	unsigned long old_cr0 = kvm_read_cr0(vcpu);
->> +	DECLARE_BITMAP(reset_mask, 64);
->> 	unsigned long new_cr0;
->> +	unsigned int i;
->>
->> 	/*
->> 	 * Several of the "set" flows, e.g. ->set_cr0(), read other registers
->> @@ -12274,7 +12290,12 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->> 	kvm_async_pf_hash_reset(vcpu);
->> 	vcpu->arch.apf.halted = false;
->>
->> -	if (vcpu->arch.guest_fpu.fpstate && kvm_mpx_supported()) {
->> +	bitmap_from_u64(reset_mask, (kvm_caps.supported_xcr0 |
->> +				     kvm_caps.supported_xss) &
->> +				    XSTATE_NEED_RESET_MASK);
->> +
->> +	if (vcpu->arch.guest_fpu.fpstate &&
->> +	    !bitmap_empty(reset_mask, XFEATURE_MAX)) {
->> 		struct fpstate *fpstate = vcpu->arch.guest_fpu.fpstate;
->>
->> 		/*
->> @@ -12284,8 +12305,11 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->> 		if (init_event)
->> 			kvm_put_guest_fpu(vcpu);
->>
->> -		fpstate_clear_xstate_component(fpstate, XFEATURE_BNDREGS);
->> -		fpstate_clear_xstate_component(fpstate, XFEATURE_BNDCSR);
->> +		for_each_set_bit(i, reset_mask, XFEATURE_MAX) {
->> +			if (!kvm_vcpu_has_xstate(i))
->> +				continue;
-> The kvm_vcpu_has_xstate() check is superfluous because @i is derived from
-> kvm_caps.supported_xcr0/xss, which already guarantees that all unsupported
-> xfeatures are filtered out.
+Hm... this might not work with tag storage memory, the kernel needs to
+perform cache maintenance on the memory when it transitions to and from
+storing tags and storing data, so the memory must be mapped by the kernel.
 
-Yeah, at least currently I can skip the check for CET/MPX feaures, will remove it, thanks!
+> 
+> Using it as "cleancache" backend does make some things a lot easier.
+> 
+> The idea would be to provide a variable amount of additional memory to a VM,
+> that can be reclaimed easily and reliably on demand.
+> 
+> The details are a bit more involved, but in essence, imagine a special
+> physical memory region that is provided by a the hypervisor via a device to
+> the VM. A virtio device "owns" that region and the driver manages it, based
+> on requests from the hypervisor.
+> 
+> Similar to virtio-mem, there are ways for the hypervisor to request changes
+> to the memory consumption of a device (setting the requested size). So when
+> requested to consume less, clean pagecache pages can be dropped and the
+> memory can be handed back to the hypervisor.
+> 
+> Of course, likely we would want to consider using "slower" memory in the
+> hypervisor to back such a device.
 
->
-> I recommend dropping this check. w/ this change,
->
-> Reviewed-by: Chao Gao <chao.gao@intel.com>
->
->> +			fpstate_clear_xstate_component(fpstate, i);
->> +		}
->>
->> 		if (init_event)
->> 			kvm_load_guest_fpu(vcpu);
->> -- 
->> 2.43.0
->>
+I'm not sure how useful that will be with tag storage reuse. KVM must
+assume that **all** the memory that the guest uses is tagged and it needs
+tag storage allocated (it's a known architectural limitation), so that will
+leave even less tag storage memory to distribute between the host and the
+guest(s).
 
+Adding to that, at the moment Android is going to be the major (only?) user
+of tag storage reuse, and as far as I know pKVM is more restrictive with
+regards to the emulated devices and the memory that is shared between
+guests and the host.
+
+> 
+> I also thought about better integrating memory reclaim in the hypervisor,
+> similar to "MADV_FREE" semantic way. One idea I had was that the memory
+> provided by the device might have "special" semantics (as if the memory is
+> always marked MADV_FREE), whereby the hypervisor could reclaim+discard any
+> memory in that region any time, and the driver would have ways to get
+> notified about that, or detect that reclaim happened.
+> 
+> I learned that there are cases where data that is significantly larger than
+> main memory might be read repeatedly. As long as there is free memory in the
+> hypervisor, it could be used as a cache for clean pagecache pages. In
+> contrast to memory ballonning + virtio-mem, that memory can be easily and
+> reliably reclaimed. And reclaiming that memory cannot really hurt the VM, it
+> would only affect performance.
+> 
+> Long story short: what I had in mind would require similar hooks (again).
+> 
+> In contrast to tmem, with arm64 MTE we could get an actual supported
+> cleancache backend fairly easily. I recall that tmem was abandoned in XEN
+> and never really reached production quality.
+
+Yes, that was also my impression after reading commit 814bbf49dcd0 ("xen:
+remove tmem driver").
+
+Thanks,
+Alex
+
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
 
