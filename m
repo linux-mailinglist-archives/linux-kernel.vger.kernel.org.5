@@ -1,265 +1,176 @@
-Return-Path: <linux-kernel+bounces-73129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B4985BDF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:58:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B202C85BDF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:58:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B875FB25F5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:58:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29D021F23319
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BAD6A8C6;
-	Tue, 20 Feb 2024 13:58:33 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248A26A8D2;
+	Tue, 20 Feb 2024 13:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="YD0GOg8o"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F3B5F875;
-	Tue, 20 Feb 2024 13:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E5D6A33E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708437513; cv=none; b=RlRdQ7k5CiDKTMztOLnVKXasHo3XCVHvMVRBOdz5CzYrajtX6KhI0pfs18hSQsoXTGLHlXrTf+Tv30+xVyTHScZhxJEO3v15JvD+ylfeFhYk11doMBajEPG119aMz3f/HKyihQNQ6C7CplOE+ytYHwbRffjX7IEJmagrEyGY+Ag=
+	t=1708437513; cv=none; b=NoBe3bStychrYSMGdfv4J/WpRtF8mRxa1SvlL36qgvNVDTXODxOxPO20hwU5Hugw5RfL0pZmfJwgRH6pu6s8Jn8vz3kbOw6Hnl7ZB74lJuGz8hzZzMHAboUGG98U7sw2E9Ejoua1081nbSrxUGdfvgM7VMW+3w22WvmFZSxuYio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708437513; c=relaxed/simple;
-	bh=2jZ1Zn0GEruFDEKcPjM7bIQpXDdfiaGStAVOT5f5KoA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Vlc4SqojyjfkklmAXNfa0MzMNp37prDOWpzCfEMf+4qJhhHLDEe1+lUfpxYxe51cznQ19ADAoih0JN0Ce/d624YbI+6pZaLpzkzSyubd21crwIHUrHvkgd5+aOddSS0ahjGOrTGhMZAtz6TGmK+bG7n/hMhRnnvo8FKUfYdL+to=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TfLVr44Qwz6K6LW;
-	Tue, 20 Feb 2024 21:54:28 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 49F37140B30;
-	Tue, 20 Feb 2024 21:58:28 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 20 Feb
- 2024 13:58:27 +0000
-Date: Tue, 20 Feb 2024 13:58:26 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <shiju.jose@huawei.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
-	<dave.jiang@intel.com>, <alison.schofield@intel.com>,
-	<vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-	<linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
-	<Yazen.Ghannam@amd.com>, <rientjes@google.com>, <jiaqiyan@google.com>,
-	<tony.luck@intel.com>, <Jon.Grimm@amd.com>, <dave.hansen@linux.intel.com>,
-	<rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
-	<james.morse@arm.com>, <jthoughton@google.com>, <somasundaram.a@hpe.com>,
-	<erdemaktas@google.com>, <pgonda@google.com>, <duenwen@google.com>,
-	<mike.malvestuto@intel.com>, <gthelen@google.com>,
-	<wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
-	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
-	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
-	<linuxarm@huawei.com>
-Subject: Re: [RFC PATCH v6 10/12] ACPICA: ACPI 6.5: Add support for RAS2
- table
-Message-ID: <20240220135826.000005e9@Huawei.com>
-In-Reply-To: <20240215111455.1462-11-shiju.jose@huawei.com>
-References: <20240215111455.1462-1-shiju.jose@huawei.com>
-	<20240215111455.1462-11-shiju.jose@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	bh=BoxnzxQC/c4gl7Bj8WGMe/ITa9TT35V3+eTrZOEVWfc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MltTRBJK0s+rHFcYWkIha+4oSJLL/VQNuKDKOrL2ns4Tk+96yUzjIv4ASxifuNPgtA9w0zHHm3D2mp7T9mq3TXRfJGasJ3CMy4+P+ZkvY7nn/1kwazdgAWRdXLNGCCMMOlmYS9HvuzeBVhW34iaAijPIwZFNcaURozpFbsiy518=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=YD0GOg8o; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-412698ac6f9so9901265e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708437510; x=1709042310; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QRfMYkyP1Z8eQDMkqJr/zSgdS64E6BSeGEZqSZMFz+o=;
+        b=YD0GOg8omvZH0YAFiB0lZoS5Pk/WphVe3goM9ertu+ISo3zjnENaG1oezF661Xg1Ae
+         kAz3ygg+FNF775NS3mRzuENGMg0GCIqQtNTB3JBO+G0QQY1ZPWPZ57MDJxRWhJFIpL4X
+         r1WGOR6/zeu8mRSSmmEWWL+LSXB4m2HcI4eyDb+6fCCN0PX5e1Stuj4qeas0xvKfGNSO
+         an7s55X1PxuXL3z4IdFdaUZKazSX1o8BG+hfcNg5R6Jqjk4u7wT+BZXC9bJ2Euf4kjQd
+         7768UVc8dW45Js6yRtFD+FuFFkHZBvDcgyQY1yJut7pPVS1V1cHiBOpYeq2qtjPhxWZH
+         5l3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708437510; x=1709042310;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QRfMYkyP1Z8eQDMkqJr/zSgdS64E6BSeGEZqSZMFz+o=;
+        b=Tww6MxGqznmL7qZ3okD7aGIViohgIx7J0MPgPGgM0qIt2JRZ8U7SP9/kVVO1jpVKyg
+         A2vTa9ucUw4SOTmpl5OVS+KByjj4+Md2c4zHhuRx5MCl9aGzWAcE+9TqpB8RS0aC8WQq
+         zqJsJZ6LBW6TiU0QyttPGXpj2Rqtk7hlCAEKYBYTeM6HIKWYIBR021fav7mayI1C1UhG
+         jyHaycLiRweclkTetgvqOW/zRJESEWyIgUEtaW15q2aIezbva55sEgaJaaWTw1pzMEX2
+         ZZ/wbXwxMxZQmGRRYrvrGYxZmZihK/+rTQ31ajUX52afBPC0ON+6f1F7ZBazWp01BEsC
+         5UMg==
+X-Forwarded-Encrypted: i=1; AJvYcCU617bX5FZYCKdGMGntvyoHXbLLbnxty8UTV7f1jvZPVY0VPpc/SMT4xFiPcqdnTVIeb81mRJAUYbWl+q30FaTNTx2iM/gkgWT3hWLg
+X-Gm-Message-State: AOJu0YzJRND+2fm4NwiSZCtmZmlqMxPPf505fycjlfY3KsSIknY+s+J6
+	ipMqk4QZJHF5j4wrwbM1y8cOVonb0sXeWb4KREHNBzFJqGpNRe1CpmpE6UUnlYc=
+X-Google-Smtp-Source: AGHT+IH6ma22oVCmGr3xQps11+oZUP5InQd+J+z6fviZUJ0QQXUGMMdCcf/RyGerWxqnEX1lzMyVXQ==
+X-Received: by 2002:a05:600c:35d3:b0:412:6c39:1ddc with SMTP id r19-20020a05600c35d300b004126c391ddcmr2880917wmq.17.1708437509860;
+        Tue, 20 Feb 2024 05:58:29 -0800 (PST)
+Received: from airbuntu ([87.127.96.170])
+        by smtp.gmail.com with ESMTPSA id x11-20020a5d444b000000b0033b7ce8b496sm13678266wrr.108.2024.02.20.05.58.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 05:58:29 -0800 (PST)
+Date: Tue, 20 Feb 2024 13:58:28 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] sched: cpufreq: Rename map_util_perf to
+ apply_dvfs_headroom
+Message-ID: <20240220135828.t4dhy5tmfrsrzn6y@airbuntu>
+References: <20240205022006.2229877-1-qyousef@layalina.io>
+ <CAJZ5v0g68atmQAbKFdm1bhp_Uvw6+C9SnJp9jZK0vEHA4mX7bw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0g68atmQAbKFdm1bhp_Uvw6+C9SnJp9jZK0vEHA4mX7bw@mail.gmail.com>
 
-On Thu, 15 Feb 2024 19:14:52 +0800
-<shiju.jose@huawei.com> wrote:
-
-> From: Shiju Jose <shiju.jose@huawei.com>
+On 02/12/24 16:54, Rafael J. Wysocki wrote:
+> On Mon, Feb 5, 2024 at 3:20 AM Qais Yousef <qyousef@layalina.io> wrote:
+> >
+> > We are providing headroom for the utilization to grow until the next
+> > decision point to pick the next frequency. Give the function a better
+> > name and give it some documentation. It is not really mapping anything.
+> >
+> > Also move it to sched.h. This function relies on updating util signal
+> > appropriately to give a headroom to grow. This is more of a scheduler
+> > functionality than cpufreq. Move it to sched.h where all the other util
+> > handling code belongs.
+> >
+> > Signed-off-by: Qais Yousef <qyousef@layalina.io>
+> > ---
+> >  include/linux/sched/cpufreq.h    |  5 -----
+> >  kernel/sched/cpufreq_schedutil.c |  2 +-
+> >  kernel/sched/sched.h             | 17 +++++++++++++++++
+> >  3 files changed, 18 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
+> > index bdd31ab93bc5..d01755d3142f 100644
+> > --- a/include/linux/sched/cpufreq.h
+> > +++ b/include/linux/sched/cpufreq.h
+> > @@ -28,11 +28,6 @@ static inline unsigned long map_util_freq(unsigned long util,
+> >  {
+> >         return freq * util / cap;
+> >  }
+> > -
+> > -static inline unsigned long map_util_perf(unsigned long util)
+> > -{
+> > -       return util + (util >> 2);
+> > -}
+> >  #endif /* CONFIG_CPU_FREQ */
+> >
+> >  #endif /* _LINUX_SCHED_CPUFREQ_H */
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 95c3c097083e..abbd1ddb0359 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -179,7 +179,7 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
+> >                                  unsigned long max)
+> >  {
+> >         /* Add dvfs headroom to actual utilization */
+> > -       actual = map_util_perf(actual);
+> > +       actual = apply_dvfs_headroom(actual);
+> >         /* Actually we don't need to target the max performance */
+> >         if (actual < max)
+> >                 max = actual;
+> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > index e58a54bda77d..0da3425200b1 100644
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -3002,6 +3002,23 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
+> >                                  unsigned long min,
+> >                                  unsigned long max);
+> >
+> > +/*
+> > + * DVFS decision are made at discrete points. If CPU stays busy, the util will
+> > + * continue to grow, which means it could need to run at a higher frequency
+> > + * before the next decision point was reached. IOW, we can't follow the util as
+> > + * it grows immediately, but there's a delay before we issue a request to go to
+> > + * higher frequency. The headroom caters for this delay so the system continues
+> > + * to run at adequate performance point.
+> > + *
+> > + * This function provides enough headroom to provide adequate performance
+> > + * assuming the CPU continues to be busy.
+> > + *
+> > + * At the moment it is a constant multiplication with 1.25.
+> > + */
+> > +static inline unsigned long apply_dvfs_headroom(unsigned long util)
+> > +{
+> > +       return util + (util >> 2);
+> > +}
+> >
+> >  /*
+> >   * Verify the fitness of task @p to run on @cpu taking into account the
+> > --
 > 
-> Add support for ACPI RAS2 feature table(RAS2) defined in the ACPI 6.5
-> Specification & upwards revision, section 5.2.21.
+> This touches sched.h, so I'd prefer it to go in via tip and
 > 
-> The RAS2 table provides interfaces for platform RAS features. RAS2 offers
-> the same services as RASF, but is more scalable than the latter.
-> RAS2 supports independent RAS controls and capabilities for a given RAS
-> feature for multiple instances of the same component in a given system.
-> The platform can support either RAS2 or RASF but not both.
-> 
-> Link: https://github.com/acpica/acpica/pull/899
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-It merged in October.  Rafael, can we get this into the kernel version
-so we don't have a dependency in this patch set?
-
-Thanks,
-
-Jonathan
-
-
-
-> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-> ---
->  include/acpi/actbl2.h | 137 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 137 insertions(+)
-> 
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 9775384d61c6..15c271657f9f 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -47,6 +47,7 @@
->  #define ACPI_SIG_PPTT           "PPTT"	/* Processor Properties Topology Table */
->  #define ACPI_SIG_PRMT           "PRMT"	/* Platform Runtime Mechanism Table */
->  #define ACPI_SIG_RASF           "RASF"	/* RAS Feature table */
-> +#define ACPI_SIG_RAS2           "RAS2"	/* RAS2 Feature table */
->  #define ACPI_SIG_RGRT           "RGRT"	/* Regulatory Graphics Resource Table */
->  #define ACPI_SIG_RHCT           "RHCT"	/* RISC-V Hart Capabilities Table */
->  #define ACPI_SIG_SBST           "SBST"	/* Smart Battery Specification Table */
-> @@ -2751,6 +2752,142 @@ enum acpi_rasf_status {
->  #define ACPI_RASF_ERROR                 (1<<2)
->  #define ACPI_RASF_STATUS                (0x1F<<3)
->  
-> +/*******************************************************************************
-> + *
-> + * RAS2 - RAS2 Feature Table (ACPI 6.5)
-> + *        Version 2
-> + *
-> + *
-> + ******************************************************************************/
-> +
-> +struct acpi_table_ras2 {
-> +	struct acpi_table_header header;        /* Common ACPI table header */
-> +	u16 reserved;
-> +	u16 num_pcc_descs;
-> +};
-> +
-> +/*
-> + * RAS2 Platform Communication Channel Descriptor
-> + */
-> +
-> +struct acpi_ras2_pcc_desc {
-> +	u8 channel_id;
-> +	u16 reserved;
-> +	u8 feature_type;
-> +	u32 instance;
-> +};
-> +
-> +/*
-> + * RAS2 Platform Communication Channel Shared Memory Region
-> + */
-> +
-> +struct acpi_ras2_shared_memory {
-> +	u32 signature;
-> +	u16 command;
-> +	u16 status;
-> +	u16 version;
-> +	u8 features[16];
-> +	u8 set_capabilities[16];
-> +	u16 num_parameter_blocks;
-> +	u32 set_capabilities_status;
-> +};
-> +
-> +/* RAS2 Parameter Block Structure Header */
-> +
-> +struct acpi_ras2_parameter_block {
-> +	u16 type;
-> +	u16 version;
-> +	u16 length;
-> +};
-> +
-> +/*
-> + * RAS2 Parameter Block Structure for PATROL_SCRUB
-> + */
-> +
-> +struct acpi_ras2_patrol_scrub_parameter {
-> +	struct acpi_ras2_parameter_block header;
-> +	u16 patrol_scrub_command;
-> +	u64 requested_address_range[2];
-> +	u64 actual_address_range[2];
-> +	u32 flags;
-> +	u32 scrub_params_out;
-> +	u32 scrub_params_in;
-> +};
-> +
-> +/* Masks for Flags field above */
-> +
-> +#define ACPI_RAS2_SCRUBBER_RUNNING      1
-> +
-> +/*
-> + * RAS2 Parameter Block Structure for LA2PA_TRANSLATION
-> + */
-> +
-> +struct acpi_ras2_la2pa_translation_parameter {
-> +	struct acpi_ras2_parameter_block header;
-> +	u16 addr_translation_command;
-> +	u64 sub_instance_id;
-> +	u64 logical_address;
-> +	u64 physical_address;
-> +	u32 status;
-> +};
-> +
-> +/* Channel Commands */
-> +
-> +enum acpi_ras2_commands {
-> +	ACPI_RAS2_EXECUTE_RAS2_COMMAND = 1
-> +};
-> +
-> +/* Platform RAS2 Features */
-> +
-> +enum acpi_ras2_features {
-> +	ACPI_RAS2_PATROL_SCRUB_SUPPORTED = 0,
-> +	ACPI_RAS2_LA2PA_TRANSLATION = 1
-> +};
-> +
-> +/* RAS2 Patrol Scrub Commands */
-> +
-> +enum acpi_ras2_patrol_scrub_commands {
-> +	ACPI_RAS2_GET_PATROL_PARAMETERS = 1,
-> +	ACPI_RAS2_START_PATROL_SCRUBBER = 2,
-> +	ACPI_RAS2_STOP_PATROL_SCRUBBER = 3
-> +};
-> +
-> +/* RAS2 LA2PA Translation Commands */
-> +
-> +enum acpi_ras2_la2pa_translation_commands {
-> +	ACPI_RAS2_GET_LA2PA_TRANSLATION = 1
-> +};
-> +
-> +/* RAS2 LA2PA Translation Status values */
-> +
-> +enum acpi_ras2_la2pa_translation_status {
-> +	ACPI_RAS2_LA2PA_TRANSLATION_SUCCESS = 0,
-> +	ACPI_RAS2_LA2PA_TRANSLATION_FAIL = 1
-> +};
-> +
-> +/* Channel Command flags */
-> +
-> +#define ACPI_RAS2_GENERATE_SCI          (1<<15)
-> +
-> +/* Status values */
-> +
-> +enum acpi_ras2_status {
-> +	ACPI_RAS2_SUCCESS = 0,
-> +	ACPI_RAS2_NOT_VALID  = 1,
-> +	ACPI_RAS2_NOT_SUPPORTED = 2,
-> +	ACPI_RAS2_BUSY = 3,
-> +	ACPI_RAS2_FAILED = 4,
-> +	ACPI_RAS2_ABORTED = 5,
-> +	ACPI_RAS2_INVALID_DATA = 6
-> +};
-> +
-> +/* Status flags */
-> +
-> +#define ACPI_RAS2_COMMAND_COMPLETE      (1)
-> +#define ACPI_RAS2_SCI_DOORBELL          (1<<1)
-> +#define ACPI_RAS2_ERROR                 (1<<2)
-> +#define ACPI_RAS2_STATUS                (0x1F<<3)
-> +
->  /*******************************************************************************
->   *
->   * RGRT - Regulatory Graphics Resource Table
-
+Thanks
 
