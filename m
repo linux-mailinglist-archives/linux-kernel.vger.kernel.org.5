@@ -1,118 +1,198 @@
-Return-Path: <linux-kernel+bounces-72480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6F985B408
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:31:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C6C85B407
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D8F11C22E36
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:31:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76A3D1F2456C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9583D5B673;
-	Tue, 20 Feb 2024 07:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678D95B5BE;
+	Tue, 20 Feb 2024 07:30:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=northern.tech header.i=@northern.tech header.b="ZEkcR4lx"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fmVP63GF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF155B662
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9494A5B5BA
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708414256; cv=none; b=qlQmew5RHPWcODkQ5nCnLVxxKfg6NEQFIXVKTWJzkbh9Z7YRmu6EBZcgRysuZvGD9/fV8e0aku+4olBmORvDvp8/BYhD/e14oK+acPvtqTwv0PuJw3xi8YPYQl/oOzOA2KhSBpwWn2V9VcEww/4bNF1xyigYNHj3/WhmHBe5gB0=
+	t=1708414250; cv=none; b=kS4jRJvD7ggwRULeJJCMFeydPCxOu9GhVoYp/PulNwAde30P5E611DbAIVYuV6BNmw1R4xaEJME5MhLDF36rMImAdLZnE7sUK1zI2GESyL/Stli6ItHBHf4CLWVndAm+8GFCReCjoybE4M+PyG1NEfQC100mkhyh5PN04gxjQfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708414256; c=relaxed/simple;
-	bh=byQMZB6yOsK2F8J7yVXxve/DOqrouOKGfoytBZdyRDE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LRsHReiOdrh/TAoxptiBgTvzYd3HEp9L5/WEB1p3ztui4mq0ob/CVCMLR6jRhPGWwBDUIW+70xPylyA24diNiPWumXnIctnDOUUigzQGcKyNt3yyXR30RVbT0guXvfXNJEYj4Fu277HwB5kp5XbvSczQGErVoy69HA8pe8sLTTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=northern.tech; spf=pass smtp.mailfrom=northern.tech; dkim=pass (2048-bit key) header.d=northern.tech header.i=@northern.tech header.b=ZEkcR4lx; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=northern.tech
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=northern.tech
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512c4442095so470411e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:30:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=northern.tech; s=google; t=1708414253; x=1709019053; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=byQMZB6yOsK2F8J7yVXxve/DOqrouOKGfoytBZdyRDE=;
-        b=ZEkcR4lxUb6wmBERb7hsD7dFMyDl2SnIYvPxg3R1gRtaYESYhEY2w5AV31ZgllqPA+
-         ybmPWL/HBf4zqLSTPkwGrmkEk4LX/LcNNs65oKDqhbl+G6R19GAFCVF3caVyqWOc5Lj7
-         UYorIkCp/pT1oWlGJ9Yab0cnm6Iw1jYHdfnrs/2DKGKwv3No+9CUaP0FI+Iqb8RxzMAK
-         jGyD8p/ClAeT71Fvbp/QgbbJlU4LGTcOpSWCxoleVnWbiY8gwZb1QuhP9apIT2B0YRXz
-         lSj5YD6zoPG5pL4WaGJB+Mfm+XPl0YDJMP111jdSS1dVcPtMNP/jKJYOUCUjtmFj9p2b
-         PsmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708414253; x=1709019053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=byQMZB6yOsK2F8J7yVXxve/DOqrouOKGfoytBZdyRDE=;
-        b=Cm7quXv1G0GR8GHVC7Lyglod5/Yn5iN1GXVeJrGnIWJyT4vQtW5GGAzjtstz12OPNg
-         3p1HwlNR8945nLUHtxSeXek5ewN2W3rBT5ewDIkuMHJzG/UwZuZIWKxMX7GE/ARDwHEg
-         MCvupCQf43TVEd3aBJ3+zjWkuQHd8b5QKHmG8R4BpEwzmqUeT5Ge90B34IV1I1ouqZ7a
-         gs0IYpE58Oyd48Kwe+jtrCyoN8D/vEeDKlVjSka9WyDlaD616GmWc+uKoXzM5Gt7rjkx
-         pU7nomHu6cFjLsNo2IHQ1HhQ24R82WyzgwOJ8i8EoI0wqlJh61uXkPJDtsUEG953nhFt
-         52yg==
-X-Forwarded-Encrypted: i=1; AJvYcCWI5uSWY96LE5jr6nMOvsT5taAntSRfqirZwtTR5BWitb5jqwkwRx/1anqc2AVOM+PAOMwf8a8glecBgdguKQycuhW7JkayooXjFOBX
-X-Gm-Message-State: AOJu0Ywb3efJtfFsrAw1Cx/RaSVbK5AkNUT/fzQFg9oq1Gr/2Fv/0UHP
-	r01eFDG3fXUmZkN80mWh3V2IKOkueI5ESecXzbx2SA5+u3tnGBUrzGPeVc5TCovI95/G4RasknY
-	BeHD2zFXjIlCP/utR+KVoInxSxEZI+FN5wXCZ0ugBAVi7PxfKyli244YPSupWgfUYTZZBXdUsn3
-	eLilzy/dtd5TdtYY53EJTGlxv78Q==
-X-Google-Smtp-Source: AGHT+IFOKYH09y5iol3m1TkiUV+SqBmVC7mMi+48KfGZJAWBq1cqVKXihViQz4dI6LGklctgAdCdlEkS8tRTzXNnAjo=
-X-Received: by 2002:ac2:4e0b:0:b0:512:b3f9:6ef3 with SMTP id
- e11-20020ac24e0b000000b00512b3f96ef3mr3610667lfr.47.1708414253207; Mon, 19
- Feb 2024 23:30:53 -0800 (PST)
+	s=arc-20240116; t=1708414250; c=relaxed/simple;
+	bh=OXGYwlEcvKSUcy2Rn7wKI35ffz8WjMg3NS9M274cDBk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SI5/j5GTZCD4+18Pf6gvsWPIX7razdF3ILWmAb6GP1k9o5edz6WjjqQyuFlUhZJfXz5nHXP7OocCScHxb5jELgjsaxu4qE9W6OLUBdT2xsVP4LDXG1CId7vwBGjjVC36v8qpGNSRciZE+5sK11RV7ZsFqoHl7cQof/Bqy3xAh98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fmVP63GF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 295DEC433F1;
+	Tue, 20 Feb 2024 07:30:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708414250;
+	bh=OXGYwlEcvKSUcy2Rn7wKI35ffz8WjMg3NS9M274cDBk=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=fmVP63GFYSZHSKWN5LDO/SlxUIB4eeyGvmf6n9OzQyvUKCrghxkUdaWEkcunV8FKU
+	 3wme0jcNiIVelsPo8KPbDgquH4XtPw4e8W5AnHm7cTMtI+Szxf8be37I9t/x1hJUEl
+	 mfAIfnMEciWPIw9RBbTrH9UvTpJa++4aREfmPYYbNSfPrtbS8xfJCEHu6LJbpMvsPY
+	 u31AD3Harai+DtetK25epW78qBcxQij+oCoNqxhkYJFLaYxuStcC+TWoIhs6AKPq4+
+	 GnjI1+V7pjqwjf2/Fk0Vj57b4aO3eTmBmd5H8tJzwrSATQaJb6Mez+iYCaYSk11wG5
+	 nKYWa67hK9D1A==
+Message-ID: <bded9fde-9541-465d-86f8-292249226cc9@kernel.org>
+Date: Tue, 20 Feb 2024 15:30:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209112807.1345164-2-ole.orhagen@northern.tech> <CACRpkda=b-uZmSfqRLkkC6Lp-JbSoi+YZpwhVn9-RMOPxiXszA@mail.gmail.com>
-In-Reply-To: <CACRpkda=b-uZmSfqRLkkC6Lp-JbSoi+YZpwhVn9-RMOPxiXszA@mail.gmail.com>
-From: Ole Orhagen <ole.orhagen@northern.tech>
-Date: Tue, 20 Feb 2024 08:30:42 +0100
-Message-ID: <CAD5A3CvRNpAibArAZg11TdfKP62V9Eeb9ccUhiQwWLiGKgk+Sw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ARM: dts: vexpress: Set stdout-path to serial0 in the
- chosen node
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, ole@orhagen.no, 
-	kristian.amlie@northern.tech, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Andre Przywara <andre.przywara@arm.com>, 
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>, Shawn Guo <shawnguo@kernel.org>, 
-	Peter Rosin <peda@axentia.se>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH 2/3 v2] f2fs: use BLKS_PER_SEG, BLKS_PER_SEC,
+ and SEGS_PER_SEC
+Content-Language: en-US
+To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20240207005105.3744811-1-jaegeuk@kernel.org>
+ <20240207005105.3744811-2-jaegeuk@kernel.org> <ZcpfF9UJz8bNW6ge@google.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZcpfF9UJz8bNW6ge@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 9, 2024 at 2:02=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
-org> wrote:
->
-> On Fri, Feb 9, 2024 at 12:29=E2=80=AFPM Ole P. Orhagen
-> <ole.orhagen@northern.tech> wrote:
->
-> > Specify v2m_serial0 as the device for boot console output through the
-> > stdout-path in the chosen node.
-> >
-> > Signed-off-by: Ole P. Orhagen <ole.orhagen@northern.tech>
->
-> It's also the right way to do it.
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Sudeep: are you queueing Vexpress DTS changes or do you want me
-> to handle it with other Versatile-ish ARM DTS stuff?
->
-> Yours,
-> Linus Walleij
+On 2024/2/13 2:10, Jaegeuk Kim wrote:
 
+How do you think of appending below diff which cleans up missing
+parts?
 
-Is there anything else I need to do here, or can I consider this a
-valid handoff and forget about it?
+---
+  fs/f2fs/f2fs.h    |  2 +-
+  fs/f2fs/file.c    |  4 ++--
+  fs/f2fs/segment.c |  4 ++--
+  fs/f2fs/segment.h | 22 +++++++++++-----------
+  fs/f2fs/super.c   |  2 +-
+  5 files changed, 17 insertions(+), 17 deletions(-)
 
-Yours,
-Ole P.
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index c4488e12c56e..fc9328655de8 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3491,7 +3491,7 @@ static inline __le32 *get_dnode_addr(struct inode *inode,
+  		sizeof((f2fs_inode)->field))			\
+  		<= (F2FS_OLD_ATTRIBUTE_SIZE + (extra_isize)))	\
+
+-#define __is_large_section(sbi)		((sbi)->segs_per_sec > 1)
++#define __is_large_section(sbi)		(SEGS_PER_SEC(sbi) > 1)
+
+  #define __is_meta_io(fio) (PAGE_TYPE_OF_BIO((fio)->type) == META)
+
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 20a26bb5b889..ef43d33278ea 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -2997,8 +2997,8 @@ static int f2fs_ioc_flush_device(struct file *filp, unsigned long arg)
+
+  	if (!f2fs_is_multi_device(sbi) || sbi->s_ndevs - 1 <= range.dev_num ||
+  			__is_large_section(sbi)) {
+-		f2fs_warn(sbi, "Can't flush %u in %d for segs_per_sec %u != 1",
+-			  range.dev_num, sbi->s_ndevs, sbi->segs_per_sec);
++		f2fs_warn(sbi, "Can't flush %u in %d for SEGS_PER_SEC %u != 1",
++			  range.dev_num, sbi->s_ndevs, SEGS_PER_SEC(sbi));
+  		return -EINVAL;
+  	}
+
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 97ac733ceffe..b59e29608ae7 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2750,7 +2750,7 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+  	if (f2fs_need_rand_seg(sbi))
+  		return get_random_u32_below(MAIN_SECS(sbi) * SEGS_PER_SEC(sbi));
+
+-	/* if segs_per_sec is large than 1, we need to keep original policy. */
++	/* if SEGS_PER_SEC() is large than 1, we need to keep original policy. */
+  	if (__is_large_section(sbi))
+  		return curseg->segno;
+
+@@ -3498,7 +3498,7 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+  	 */
+  	if (segment_full) {
+  		if (type == CURSEG_COLD_DATA_PINNED &&
+-		    !((curseg->segno + 1) % sbi->segs_per_sec))
++		    !((curseg->segno + 1) % SEGS_PER_SEC(sbi)))
+  			goto skip_new_segment;
+
+  		if (from_gc) {
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index cb982af765c3..63f278210654 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -48,21 +48,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+
+  #define IS_CURSEC(sbi, secno)						\
+  	(((secno) == CURSEG_I(sbi, CURSEG_HOT_DATA)->segno /		\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_WARM_DATA)->segno /		\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_DATA)->segno /		\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_HOT_NODE)->segno /		\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_WARM_NODE)->segno /		\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_NODE)->segno /		\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_DATA_PINNED)->segno /	\
+-	  (sbi)->segs_per_sec) ||	\
++	  SEGS_PER_SEC(sbi)) ||	\
+  	 ((secno) == CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC)->segno /	\
+-	  (sbi)->segs_per_sec))
++	  SEGS_PER_SEC(sbi)))
+
+  #define MAIN_BLKADDR(sbi)						\
+  	(SM_I(sbi) ? SM_I(sbi)->main_blkaddr : 				\
+@@ -93,7 +93,7 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+  #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
+  	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
+  #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
+-	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & ((sbi)->blocks_per_seg - 1))
++	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
+
+  #define GET_SEGNO(sbi, blk_addr)					\
+  	((!__is_valid_data_blkaddr(blk_addr) ||			\
+@@ -101,9 +101,9 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+  	NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi),			\
+  		GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
+  #define GET_SEC_FROM_SEG(sbi, segno)				\
+-	(((segno) == -1) ? -1 : (segno) / (sbi)->segs_per_sec)
++	(((segno) == -1) ? -1 : (segno) / SEGS_PER_SEC(sbi))
+  #define GET_SEG_FROM_SEC(sbi, secno)				\
+-	((secno) * (sbi)->segs_per_sec)
++	((secno) * SEGS_PER_SEC(sbi))
+  #define GET_ZONE_FROM_SEC(sbi, secno)				\
+  	(((secno) == -1) ? -1 : (secno) / (sbi)->secs_per_zone)
+  #define GET_ZONE_FROM_SEG(sbi, segno)				\
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 2a8b6cfaf683..9d2c680a61f5 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -4723,7 +4723,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+  			.reason = CP_DISCARD,
+  			.trim_start = 0,
+  			.trim_end = MAIN_SEGS(sbi) - 1,
+-			.trim_minlen = sbi->blocks_per_seg,
++			.trim_minlen = BLKS_PER_SEG(sbi),
+  		};
+  		f2fs_write_checkpoint(sbi, &cpc);
+  	}
+-- 
+2.40.1
+
 
