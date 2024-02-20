@@ -1,78 +1,101 @@
-Return-Path: <linux-kernel+bounces-73065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D9085BD02
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:19:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285B585BD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82E632867BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:19:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC1BEB20CB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96EB6A343;
-	Tue, 20 Feb 2024 13:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D1A6A323;
+	Tue, 20 Feb 2024 13:20:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/ezfS8Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a9yd/bEW"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397C469DE4;
-	Tue, 20 Feb 2024 13:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC5069E0E;
+	Tue, 20 Feb 2024 13:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435128; cv=none; b=HA0DYSLoj2NgJrSl6vGbzYgqvO4tEUkPLj0jTOdAmzzR845kOWv0lQ51xKrMLm1EDRjJA+rj3BIqlpREaSbdyO7nOmNMCwb2fSk1LuD8dvYQBAHwNTxQNn0vBxUZOr7fvzbLLfkJzVktFwnzuKLJE0ShTBSsZys+WB/3Ki16Aoo=
+	t=1708435218; cv=none; b=CJM58faPrVqamDLLfXrmtakZBzSszjH2lmTA0J6rw9yjrZeptd41jxTcXhaBI+5dhQQ8sFkzhE78oTC/H4iK03Vj4dCrHLDmCy5jMUFjtLoX79BHZOKhiML9kxOmYVeSPe/qbddKXcwy5uss16Nb1GdmqjySA6TEt1EoG4myWXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435128; c=relaxed/simple;
-	bh=RZZk0PE0TiY7k+x5DBdvarX9mRIKYJiIQkRfbPjIlbw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AwUPqdcpcThz72IB7QEzb+HiXlsI6Dh5gCC+jwL6OMNQakYQgCirfBTVoi1WC10bR+vQguzeYtLYkenmmCaiJhT8WB3m+lE8D3uTJC80qjphegp+Zh2xqbCcUUSdQYtw9DPxnYB4suz/Ih6TtoNlg3eKFxQQDuhvwdt3znKWvkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/ezfS8Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F78C433F1;
-	Tue, 20 Feb 2024 13:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708435127;
-	bh=RZZk0PE0TiY7k+x5DBdvarX9mRIKYJiIQkRfbPjIlbw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V/ezfS8QpHqQymbTzuh8+/2ORCPdvgXTC8pBg0PQL7ijM5+4ScTS3/lVUXCZhAitq
-	 JIs3Hz5pToRl9TbqMy8zv0uG/dzFhxwwBKEP5zGBge6D3rVrXGokcR/7hAfZYY3Hq0
-	 HbwkJ/alhGyXsvNNwtvYl6yoM+0yVX6rgcKh8K08utKyEBspi/ibqgib2HwtjDYhmy
-	 mAW1ZMWEgIefdfGc/ZuBPhWqtIkAwnkvqhGpOG6vbIWJCxFOPoz6B4T6clvOQoKDn8
-	 k2Xeq4WixppjT91HaUTwfKkZNJMimrc5gvZ0IHrn6zsKeYfNIJID1qIScVdx2h2FOO
-	 7e2h4bmLGr4PQ==
-Date: Tue, 20 Feb 2024 13:18:44 +0000
-From: Simon Horman <horms@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net/dummy: Move stats allocation to core
-Message-ID: <20240220131844.GJ40273@kernel.org>
-References: <20240219134328.1066787-1-leitao@debian.org>
+	s=arc-20240116; t=1708435218; c=relaxed/simple;
+	bh=Fv9dyTtBP1/Lsb3Vbk1dXhdsNHDyoT8aBphxxfwrw5g=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
+	 Content-Type; b=VQOOylyAqqPk4715NmhpWS3fCX0lNDKFECuG6J61dSLC4OQj3/134801N39Kxj5glI4Z4HXpKUHQDDrSLwPvbEDyKOwBRf8G1v0OB0zetxqqORiIIGFfQ6zJeOqyoxlgp6ybnpAw1hbs4qU/xeI3J13UVA2yNbE34V5DBDwgDC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a9yd/bEW; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso4547509b3a.2;
+        Tue, 20 Feb 2024 05:20:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708435216; x=1709040016; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:in-reply-to
+         :message-id:cc:to:from:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fv9dyTtBP1/Lsb3Vbk1dXhdsNHDyoT8aBphxxfwrw5g=;
+        b=a9yd/bEWSl0IuucSu6giuHN/9vZGAxVOUV2GcETb4H48YrJ8VmufF+kxq6JO8VR8ZA
+         SnYdJpT+CKTjoaOm1DAyBY6rO+vQicV/33XbZo07qOjZhegZ7IOqcGSDh2tZANOU3s2p
+         TeNfeR/PtaP6edtN1sCtxxt8bC4WBSjHJ3CGYGvWXkPh6LfAQrQEuobDorvKJZCdpjOj
+         jS9AQ5RjIn8tXZP5jrQQZ9lM4jS9/tMG/SB3/t66JV9sjLtbsk61TFvRcB2vnbIGvY9x
+         8jYR05FWwpKTc0qkb3NuMNTclGDjnsoWgssjeKnp4w+2dw6X0ir4Y2T+0/gALXlTMNSy
+         Ne6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708435216; x=1709040016;
+        h=content-transfer-encoding:mime-version:subject:in-reply-to
+         :message-id:cc:to:from:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Fv9dyTtBP1/Lsb3Vbk1dXhdsNHDyoT8aBphxxfwrw5g=;
+        b=bnJhuNLUTaOk454y9dl/dFt2Vm6ap4+PMTE/icYYAhdt10VQ2IYUDd8upwvMN1CTNQ
+         uq0+PsapWtUuyKyUST/8kFEDuWDVvjaD9IuQwUO/iX4ZrtwLCvuODNSLNGhuKop5QoHI
+         46dqH7ErKPq4BUXyg+rehaOsqOVowBmcXmFKjpW7fzwaLADoUXRc+kqcvUNXu52pinyH
+         gQdKNmKnYziGLGRNcfjCh5PCYIBjHgXpv0MonY39RMnKVC70Kg2eJg2dtKJaY86omLpB
+         GUb9fIvktUMOJGGMUARKVL8TW6meTKp6a4xGllpZPwR6scc8Ts/WrViWcYCea0FbtAuA
+         3E3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWDCUtCuCwBnt9dBEHvvr5Nspbo1ry7vo09qE8DyictzDDemdI4y3DO/nYuWLKCDuOZsYBSVEDVr3PaGxc6pXeU18b6CIO9wfMau2s6abdgyh4OLcxqMVkden3LUiWrTfY6L7ignsY+c3V9bd+KBMLdxJB3hmPESZlyIw366APQzZtTOs/VJ6b4WFS34w==
+X-Gm-Message-State: AOJu0YznzKyordTamNNfxBdb8MGNHug7pJgzjeGzBPR+S5AXgYQ5q+aQ
+	4LUNdiFlzkW4UGBxFQncs+9QqsOHohFe+SQeWWe/uUrlVlZ4UvoU
+X-Google-Smtp-Source: AGHT+IEttk5iim0fojrJRidnAlSwPBQzCi5OkRgaS40jpL4zi8P4DwPAw/dTd8vJAIb7P1GvllVmgQ==
+X-Received: by 2002:a05:6a00:1b42:b0:6e4:5a01:1b4 with SMTP id o2-20020a056a001b4200b006e45a0101b4mr5402527pfv.8.1708435216508;
+        Tue, 20 Feb 2024 05:20:16 -0800 (PST)
+Received: from [127.0.0.1] ([106.221.238.187])
+        by smtp.gmail.com with ESMTPSA id n12-20020a63ee4c000000b005dc4b562f6csm6515293pgk.3.2024.02.20.05.20.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 05:20:15 -0800 (PST)
+Date: Tue, 20 Feb 2024 18:50:09 +0530 (GMT+05:30)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: mpdesouza@suse.com
+Cc: jikos@kernel.org, joe.lawrence@redhat.com, jpoimboe@kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	live-patching@vger.kernel.org, mbenes@suse.cz, pmladek@suse.com,
+	shresthprasad7@gmail.com, shuah@kernel.org,
+	skhan@linuxfoundation.org, zhangwarden@gmail.com
+Message-ID: <6fcd7da4-f7c1-4f2c-9214-70ec77443572@gmail.com>
+In-Reply-To: <20240220120024.28694-1-mpdesouza@suse.com>
+Subject: Re: [PATCH]     Fix implicit cast warning in test_klp_state.c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219134328.1066787-1-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Correlation-ID: <6fcd7da4-f7c1-4f2c-9214-70ec77443572@gmail.com>
 
-On Mon, Feb 19, 2024 at 05:43:28AM -0800, Breno Leitao wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-> convert veth & vrf"), stats allocation could be done on net core instead
-> of this driver.
-> 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
-> 
-> Move dummy driver to leverage the core allocation.
-> 
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+>What compiler version and architecture? Are you >compiling using flags like W=1?
+>I would advise you to always add more information >about how the problem
+>manifests, and what you are executing. This can >help to nail down the issue quicker.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+I'll keep that in mind. I'm on an x86_64 system with gcc version 13.2.1 20230801.
 
+I'm using the command `make -j15 -C tools/testing/selftests` with no additional flags.
+
+Regards,
+Shresth
 
