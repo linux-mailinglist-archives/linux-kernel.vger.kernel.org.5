@@ -1,143 +1,173 @@
-Return-Path: <linux-kernel+bounces-72157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0986E85B029
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:59:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C710685B02B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:01:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86A9B281802
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:59:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 017911C22861
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B0A10785;
-	Tue, 20 Feb 2024 00:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47073107A8;
+	Tue, 20 Feb 2024 01:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="N96PZDa4"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="kFH28boZ"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31511523E;
-	Tue, 20 Feb 2024 00:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28778F5A;
+	Tue, 20 Feb 2024 01:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708390785; cv=none; b=utldTriHMkb56z9YZbbnwF9w/Bgq/b8kp55vADWpypEsCghqj1wuA9PaXcv6GEE6zZya3HCHJJt6yjcBfEVx0Lot4XHOWE/BpSUaHUJgktQJfHkNkw/vD8B0cIl7Pxo/MtXS+EJTwuxcvq/E2jUTrCj4F2Dwg8HkQKqjCPhxQfI=
+	t=1708390887; cv=none; b=ZMA+hl76BXm9VRtwKJUEUpxapSkURvCUdRPQEhkPGzxGUsH4lEA42ARJHgG5s52GWC0zJste9/ZwsxTa0a5eqLhHEYh+TpeXtOGBFc4+eeTI2YwwMh7QLjKl2KsIgaAjR9jRPgagde0CmGdd61MZPvKIpSIOf05US0NuX+4QRKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708390785; c=relaxed/simple;
-	bh=G3cayVQtI2p/f+MLern2VJrT9ZieS6kNRzoeSncEHak=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=cwM2urVDrr6G4PcNr/TO3UZf2n56jocm3wqY4H1pWsC1OpfpdBiu6RIHb2Ao7ngtVh/NqZxM1NHTRz3ZSU1Qy+ipQQGhSugUE+vhI1Jcccb76nqr3UpQ5wJ/MH0jDJhAUDg9JKZa5OFexjDdxKEiSbcgMVIP6otOe4/Kg4HRPyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=N96PZDa4; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708390772; x=1708995572; i=w_armin@gmx.de;
-	bh=G3cayVQtI2p/f+MLern2VJrT9ZieS6kNRzoeSncEHak=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=N96PZDa4Jm4cUWuFaNH8dgI0lw2CEQInwhrSZSyXuOMZZkQk5f5AvdE1pZZkNIOL
-	 XtISAaUWtKMLLr4Nj92yEydjoNu0qf7pSewiVkBDzcXE4JVLumy9yp79lWNOVlgu7
-	 57KM0jb+3cw1tbV/v8wCeLA/ASzwX1wd06BP5JleqNqyyvUVvhdQlAuBAQMwhGcDc
-	 sdlW8xbQJi4k48csHUf4641qJmZsvCI1mk3MonwIW3g7n3/3rlQeMa9hXXb0uRSpD
-	 cDLxjGDS7gjVCDm94V8kcsUDvCSKTsX/aW0DsdroB9sHJBq5sMr40v4r5PAcFHKIw
-	 Qife/LS5tDcWgPO7gg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFsUv-1rj3IR1qUp-00HLYM; Tue, 20
- Feb 2024 01:59:32 +0100
-Message-ID: <dcb7c031-b920-4774-a1a9-fed8813390d0@gmx.de>
-Date: Tue, 20 Feb 2024 01:59:31 +0100
+	s=arc-20240116; t=1708390887; c=relaxed/simple;
+	bh=3aq2fG9f3nGwD78W3+sZWhZmMz+P5W0q49/GZ7VZqtE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=N1IuYQv0F6V1z4HeGFR8UAnZ28hje/rOq9aDWGD6ohFY3wYR5wUcnvbb15BOnp9/e3EOs4B5tHIKCb9jaVZInUcCE3D4xH6eLD26Ic0oS6mSu3Zj3IoaTbKCOD03cmLE2zceuxxYdh2QYE88+hS4FW28+2VChTjZqcgHAum3z6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=kFH28boZ; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708390880;
+	bh=/QnbAA4UFZibDJNMm9t2mwl+yycC9dhq5zbaE88Sa8E=;
+	h=Date:From:To:Cc:Subject:From;
+	b=kFH28boZbH/wdO38XVlkSkKOGuR9vjhV5pMfL3m5+i5IsvOu8QMcU+oEe/1kuCXbt
+	 XBDyme+LFyfbsmtwGZHClqJT6GFzwQo5SxOZXhet4hBtcKbPDroy657+AS49KEW9K5
+	 0d66ISl+V6v53Hwab6HHbv/daW8iiJ9D6pXjSf5YkYXHO7NiS2q0pdWulMD40dTjEk
+	 FObd86f1crvR+Y4TW+MweoHbBNqz/5hFHFvc7y+Exq37daupeJzoP1TN6UaMLvh7Lz
+	 ya+TvCgURGUcQnQL594ilm8Bb+sldFLuTRKmW6yb9JywpmuncSMYD4Uoo7gj8TmHBS
+	 RXg7we2mr6FoA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tf1Ll30c1z4wby;
+	Tue, 20 Feb 2024 12:01:19 +1100 (AEDT)
+Date: Tue, 20 Feb 2024 12:01:17 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>
+Cc: Christoph Hellwig <hch@lst.de>, Linus Walleij
+ <linus.walleij@linaro.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the mmc tree with the block tree
+Message-ID: <20240220120117.15188a66@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] platform/x86: wmi: Check if event data is not NULL
-From: Armin Wolf <W_Armin@gmx.de>
-To: corentin.chary@gmail.com, luke@ljones.dev
-Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240219115919.16526-1-W_Armin@gmx.de>
- <20240219115919.16526-3-W_Armin@gmx.de>
-Content-Language: en-US
-In-Reply-To: <20240219115919.16526-3-W_Armin@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:sqkIpJjdLNN2Xz06dHyvYiwdLRxSaaC+nOOYYDBNIAH1UdJXlcm
- Fyt2eRQfFqI2DetR+q4c9kAThnCMkh01nMYeDsAYuCTSIOUS3dV3RI4ypOKqOMLI0Q+CMYI
- x2NHFPhZiCCJ3IXz7Lbb1Zt04T0ZZJs1eNDx4lsm5oWTLy1LSbZNvf1auaoT1PaS+NFDpGE
- 3c4+oJRk4+q1v0yRRiKpw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7SqeUlqk4VA=;5AV9YYWdZnzubOew+N7PFf4aHg0
- J7yzM9cs5VDxDlai0ldqt+5ikA4E0W89YMXYDYQjn64sVUhdimzn9Y1MK+bLc/zhK/211jLPj
- rinsblAyQvGJ/ukE547b7KsIIMxbSvthzsClprk+1KsPUKqPwZQRn5yBjBJcJ8/Y/8lJtgP/L
- CCx5htxJvpIWjKIGVZiM+ou+jNpSY9H/f1+s78Xrl2GW8OB+JDHkqAbSfDadqI/Cc2Fl8SKQV
- BcovcHNkbl8qc6XsIDVYSnZyTbrtGzT2uoNtxgBZwCtWodVdTcPW2Y21V4XddkuTk8bmyEdrI
- IxYCBxtgHFUY+dh5rPoXK5Id4wPn9nqBc6LU9fIuiVVEAVxQlvPbB7Fh/NMNOVGi1c6/FTjue
- 6rILcjje5Ah8y5OKjShxC2NlcRHBLcZlUcQEFke1Hd8LcKR58VVWfzOvEX6f+PNQiXTR/9vsR
- z+wuBCguwwXXkMSg7pymuEaibbDUJmDpoCHZkrNXy6Ldecyy8M1PLGJPXdooJjoH66X1DvI03
- v2TZcjpt2jSZOIwFI7o0qWTUY+wzuif4zE+LZvYH32cZ/S6UzWEN13+0FmUrezOGmCCGzD9Cd
- cY3gH6+KUoJRb2OOvYH3rjWroPwGTBx3ejbbbsLjTPhMVo+Mu+PHqc7ocCmEIevRLa5nX00BH
- XGPNTPAupE0nN8mgCuTq3of4Al81bdhvXbJ312lohcGk52c8M5AkFQD0UHmZt0CKQUb93jY9I
- +B5mkNlnlGnReoyyGwRlN90ZPT7YWPhbi/rz3zMGeHlHVsBcFH1eueYWYeLGpyCuz5NRkC4oQ
- bmG7PkRJldvdWOAbYdBXF2K56+w79jYnPkGHT5i3LY0Wo=
+Content-Type: multipart/signed; boundary="Sig_/e0IN+NzY_zOnSLZlol0gDPe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Am 19.02.24 um 12:59 schrieb Armin Wolf:
+--Sig_/e0IN+NzY_zOnSLZlol0gDPe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> WMI event drivers which do not have no_notify_data set expect
-> that each WMI event contains valid data. Evaluating _WED however
-> might return no data, which can cause issues with such drivers.
->
-> Fix this by validating that evaluating _WED did return data.
->
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
->   drivers/platform/x86/wmi.c | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index 8fb90b726f50..d0fe8153f803 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -1210,6 +1210,7 @@ static void wmi_notify_driver(struct wmi_block *wblock)
->   {
->   	struct wmi_driver *driver = drv_to_wdrv(wblock->dev.dev.driver);
->   	struct acpi_buffer data = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	union acpi_object *obj = NULL;
->   	acpi_status status;
->
->   	if (!driver->no_notify_data) {
-> @@ -1218,12 +1219,18 @@ static void wmi_notify_driver(struct wmi_block *wblock)
->   			dev_warn(&wblock->dev.dev, "Failed to get event data\n");
->   			return;
->   		}
-> +
-> +		obj = data.pointer;
-> +		if (!obj) {
-> +			dev_warn(&wblock->dev.dev, "Event contains not event data\n");
+Hi all,
 
-I just noticed that this should have been "Event contains no event data\n". Should i send
-another patch?
+Today's linux-next merge of the mmc tree got a conflict in:
 
-Armin Wolf
+  drivers/mmc/core/queue.c
 
-> +			return;
-> +		}
->   	}
->
->   	if (driver->notify)
-> -		driver->notify(&wblock->dev, data.pointer);
-> +		driver->notify(&wblock->dev, obj);
->
-> -	kfree(data.pointer);
-> +	kfree(obj);
->   }
->
->   static int wmi_notify_device(struct device *dev, void *data)
-> --
-> 2.39.2
->
->
+between commit:
+
+  616f87661792 ("mmc: pass queue_limits to blk_mq_alloc_disk")
+
+from the block tree and commit:
+
+  069279d6fef5 ("mmc: core Drop BLK_BOUNCE_HIGH")
+
+from the mmc tree.
+
+I fixed it up (I think - see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/mmc/core/queue.c
+index 2ae60d208cdf,316415588a77..000000000000
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@@ -343,50 -341,10 +343,47 @@@ static const struct blk_mq_ops mmc_mq_o
+  	.timeout	=3D mmc_mq_timed_out,
+  };
+ =20
+ -static void mmc_setup_queue(struct mmc_queue *mq, struct mmc_card *card)
+ +static struct gendisk *mmc_alloc_disk(struct mmc_queue *mq,
+ +		struct mmc_card *card)
+  {
+  	struct mmc_host *host =3D card->host;
+ -	unsigned block_size =3D 512;
+ +	struct queue_limits lim =3D { };
+ +	struct gendisk *disk;
+ +
+ +	if (mmc_can_erase(card))
+ +		mmc_queue_setup_discard(card, &lim);
+ +
+- 	if (!mmc_dev(host)->dma_mask || !*mmc_dev(host)->dma_mask)
+- 		lim.bounce =3D BLK_BOUNCE_HIGH;
+-=20
+ +	lim.max_hw_sectors =3D min(host->max_blk_count, host->max_req_size / 512=
+);
+ +
+ +	if (mmc_card_mmc(card) && card->ext_csd.data_sector_size)
+ +		lim.logical_block_size =3D card->ext_csd.data_sector_size;
+ +	else
+ +		lim.logical_block_size =3D 512;
+ +
+ +	WARN_ON_ONCE(lim.logical_block_size !=3D 512 &&
+ +		     lim.logical_block_size !=3D 4096);
+ +
+ +	/*
+ +	 * Setting a virt_boundary implicity sets a max_segment_size, so try
+ +	 * to set the hardware one here.
+ +	 */
+ +	if (host->can_dma_map_merge) {
+ +		lim.virt_boundary_mask =3D dma_get_merge_boundary(mmc_dev(host));
+ +		lim.max_segments =3D MMC_DMA_MAP_MERGE_SEGMENTS;
+ +	} else {
+ +		lim.max_segment_size =3D
+ +			round_down(host->max_seg_size, lim.logical_block_size);
+ +		lim.max_segments =3D host->max_segs;
+ +	}
+ +
+ +	disk =3D blk_mq_alloc_disk(&mq->tag_set, &lim, mq);
+ +	if (IS_ERR(disk))
+ +		return disk;
+ +	mq->queue =3D disk->queue;
+ +
+ +	if (mmc_host_is_spi(host) && host->use_spi_crc)
+ +		blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, mq->queue);
+ +	blk_queue_rq_timeout(mq->queue, 60 * HZ);
+ =20
+  	blk_queue_flag_set(QUEUE_FLAG_NONROT, mq->queue);
+  	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, mq->queue);
+
+--Sig_/e0IN+NzY_zOnSLZlol0gDPe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXT+d0ACgkQAVBC80lX
+0GwSfQgAgVC/E7k+USeeFPFDDx//0VWoqW9KH5gnJil7zZdGqOrmxKhCkJYwa2g6
+5OpHhSoqi4YH3A1du6ZrjzSRU2kVxuV0GPh2lcMqEB0nGTgsFHOaPvcm/3JZg7n9
+JRMIYTRUT0K4UBL5ei+t3NQwokBul4bj2a4gRnlW6/9MxMZ2ETTZ+YqDsVHLLm/q
+hXsTpg7MTmpWehWOwjOSjDdfSoglAcbBeg9JbWupwxpP8I+9EsP5j7FA5+FGG4Iw
+gy8swEZA97/WrcvJia8ZRo+1+u4YyoSGFec+73TEPm8nxVaxYfEy0fkouB7FlAGG
+PdVvbT3ahsBfKd6PyfQ7BcOXiAVlgQ==
+=j7sO
+-----END PGP SIGNATURE-----
+
+--Sig_/e0IN+NzY_zOnSLZlol0gDPe--
 
