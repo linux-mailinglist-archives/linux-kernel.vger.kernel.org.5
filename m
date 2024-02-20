@@ -1,126 +1,90 @@
-Return-Path: <linux-kernel+bounces-72244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5051885B117
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:06:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEE3385B116
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B8382822C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:06:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F296B1C23D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F12342A8C;
-	Tue, 20 Feb 2024 03:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DDD41C66;
+	Tue, 20 Feb 2024 03:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IroqynKE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gSpg7uwO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09B42E63B;
-	Tue, 20 Feb 2024 03:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C539937149
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708398388; cv=none; b=gl5W3mqLwIXN49LHzEURFoZsKSTfyLaHMSh2BBQUXh20zKzvlYsE0uRTe910h7N6sfcb5OGcXG8j92H2O/RGiDq9kYeYEHSznA5FaNLs/EHbt1SbjiovWsptTcmuFQ6U0da/PQU8UVtvfhjKnCXv5DimybyJotZlrHvLF5FuaYY=
+	t=1708398321; cv=none; b=fgTBx6N0+c4kdOFXUFahGoVmNGMstq95+3DVa5mOsSjcM0Km1ZJvPyaMRu/+kHpx9ZGa04Tl2b+59CVJw9RT+u7TrijgEw2cpuaquHodE04NE3sTl6w27f1fSJe7axYExieiuivs7uFghtVExlqv9IK01xfSiB3obRW+cN4ltAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708398388; c=relaxed/simple;
-	bh=sxcoThFXCwxz9XD07S+k0pMDrGjzfOvzTwbN/tn5kak=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fWupJrxzhV/aHMtGMcCrXe6uLw+TEaaauzJRLLEQB/3yfNnXGMNsnY/H3jAPSnJqjN9Wi6mlS6EYKlfydQkTZWtr1ITk7ED7BJNMI/1zUL2US44YMAhP1aCgzJAlr04lKxsw/vCMRs9h7Tpq1i2p0/YegT54M29UgW15ou+m1Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IroqynKE; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708398387; x=1739934387;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sxcoThFXCwxz9XD07S+k0pMDrGjzfOvzTwbN/tn5kak=;
-  b=IroqynKEq5enuZJQum9VLYXlWXTqzh8n0gAubp8grt+57csZNQOpoLNg
-   9dz6xYQJA6lrGZqLwR9XMLbpQL75yiW0pR0t69fw8VBvN5T77gQ0OxfFX
-   3dihAR8GqKj4cRci3NILgrQWekIDQiC7X0M6NU16RBubhXYrvnyyge9Wl
-   wROGvtyzKxx3IUScUny9/4WlsBJh/Q69gDzDzMHCEds9WUD7vhDZXNOyR
-   NZNIvhBqIcXin5Vmqmug7vgIRpNnZpnPANVUBoDBNLR/xWF5ew9XOR6aE
-   kY+HdWSr/nhlV1SCmrlLoL6R01tQYgfK5KP1r6OoyM8PEG0SJDf9aD8zZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2629215"
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="2629215"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 19:06:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="42141634"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa001.jf.intel.com with ESMTP; 19 Feb 2024 19:06:24 -0800
-Date: Tue, 20 Feb 2024 11:02:31 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 1/4] KVM: Always flush async #PF workqueue when vCPU is
- being destroyed
-Message-ID: <ZdQWRy6z3N1MFoiX@yilunxu-OptiPlex-7050>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-2-seanjc@google.com>
- <ZdNerMaewrcrwBlL@yilunxu-OptiPlex-7050>
- <ZdN4_ENRMqeBIBkn@google.com>
+	s=arc-20240116; t=1708398321; c=relaxed/simple;
+	bh=+tfAXhVtTC6pq1OPn+yGAci7jdJF3j4hCVF062HVva0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=pXgesiZ2P9LtfALTwPxPRlsPWwrFmtcliDuV2qkP9CdLP61fKppcPt0VWVxwb1kXyz8t7TYBHijBEPmIff/vXgP8YZj1bZc+1UURzO9Sggu0zRCXCaqlmNb1kRWVt767tbDTjKHWWFMPh/PCAOA2OI+aQUhjaMoqHTOMmSjYMF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gSpg7uwO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA17C433F1;
+	Tue, 20 Feb 2024 03:05:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708398321;
+	bh=+tfAXhVtTC6pq1OPn+yGAci7jdJF3j4hCVF062HVva0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gSpg7uwOorEiTlSFPMn3bmd8RFy5X0sV6DprT3cF9kcqvlRe5BoKC7zSftTxXS0BT
+	 rEqkikktHOQCA9EWHU32J4ukeENAu8eVkqc/sypeyVaC7rweKUTkPp1mpXP6A6UwWj
+	 uOQC9DW7y16TPsp1bCzorFMxCPlTIW5TXck3cqQc=
+Date: Mon, 19 Feb 2024 19:05:20 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Byungchul Park <byungchul@sk.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com
+Subject: Re: [PATCH v4] sched/numa, mm: do not try to migrate memory to
+ memoryless nodes
+Message-Id: <20240219190520.b5e373273ec743aacbad263b@linux-foundation.org>
+In-Reply-To: <20240220015343.GD65758@system.software.com>
+References: <20240219041920.1183-1-byungchul@sk.com>
+	<87o7ccrghz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<20240219174508.bc6256248a163c3ab9a58369@linux-foundation.org>
+	<20240220015343.GD65758@system.software.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdN4_ENRMqeBIBkn@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 07:51:24AM -0800, Sean Christopherson wrote:
-> On Mon, Feb 19, 2024, Xu Yilun wrote:
-> > >  void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> > > @@ -114,7 +132,6 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> > >  #else
-> > >  		if (cancel_work_sync(&work->work)) {
-> > >  			mmput(work->mm);
-> > > -			kvm_put_kvm(vcpu->kvm); /* == work->vcpu->kvm */
-> > >  			kmem_cache_free(async_pf_cache, work);
-> > >  		}
-> > >  #endif
-> > > @@ -126,7 +143,18 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> > >  			list_first_entry(&vcpu->async_pf.done,
-> > >  					 typeof(*work), link);
-> > >  		list_del(&work->link);
-> > > -		kmem_cache_free(async_pf_cache, work);
-> > > +
-> > > +		spin_unlock(&vcpu->async_pf.lock);
-> > > +
-> > > +		/*
-> > > +		 * The async #PF is "done", but KVM must wait for the work item
-> > > +		 * itself, i.e. async_pf_execute(), to run to completion.  If
-> > > +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
-> > > +		 * (the module) can be run after the last call to module_put(),
-> > > +		 * i.e. after the last reference to the last vCPU's file is put.
-> > > +		 */
-> > > +		kvm_flush_and_free_async_pf_work(work);
+On Tue, 20 Feb 2024 10:53:43 +0900 Byungchul Park <byungchul@sk.com> wrote:
+
+> > > IIUC, you will use patch as fix to the issue in
+> > > 
+> > > https://lore.kernel.org/lkml/20240216111502.79759-1-byungchul@sk.com/
+> > > 
+> > > If so, we need the Fixes: tag to make it land in -stable properly.
 > > 
-> > I have a new concern when I re-visit this patchset.
-> > 
-> > Form kvm_check_async_pf_completion(), I see async_pf.queue is always a
-> > superset of async_pf.done (except wake-all work, which is not within
-> > concern).  And done work would be skipped from sync (cancel_work_sync()) by:
-> > 
-> >                 if (!work->vcpu)
-> >                         continue;
-> > 
-> > But now with this patch we also sync done works, how about we just sync all
-> > queued work instead.
+> > Yes, this changelog is missing rather a lot of important information.
 > 
-> Hmm, IIUC, I think we can simply revert commit 22583f0d9c85 ("KVM: async_pf: avoid
-> recursive flushing of work items").
+> This is not the root cause fix any more but just optimization.
 
-Ah, yes. This also make me clear about the history of the confusing spin_lock.
-Reverting is good to me.
+It would have been helpful to have told us this in the changelog :(
 
-Thanks,
-Yilun
+> That's
+> why I didn't add Fixes: tag and cc stable@vger.kernel.org in here.
+> 
+> Instead, I added Fixes: tag and cc'ed stable@vger.kernel.org in the real
+> fix patch. check the following link please:
+> 
+> https://lore.kernel.org/lkml/20240216111502.79759-1-byungchul@sk.com/
+
+But doesn't this patch "sched/numa, mm: do not try to migrate memory to
+memoryless nodes" also fix the bug?  Do we truly need both?
 
