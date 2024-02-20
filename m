@@ -1,116 +1,105 @@
-Return-Path: <linux-kernel+bounces-72540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2730485B4F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:23:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6296B85B4F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5F31280F67
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:23:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0363DB2120C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223A25C900;
-	Tue, 20 Feb 2024 08:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F2C25C8E1;
+	Tue, 20 Feb 2024 08:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n/YeIefq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D9M93ogO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AEA41215;
-	Tue, 20 Feb 2024 08:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE46A5C022;
+	Tue, 20 Feb 2024 08:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708417406; cv=none; b=K1/JZvmVI8g+zjvhKio+jIZXLtkd9klvcfJMAgJ/tEFCY9YP49XCeZclPZ+7pVJABr1qu3tc9W/Am+tUoZsDW9ItJrr6Yx/LEYZ4IVpWnyRCSzTGR67RQhhPnegJ5U8DU0ih0AUo7sVRVDDSLfImqn56gUEpbyhk0UbCRFLsKOo=
+	t=1708417484; cv=none; b=Eyl66Fisabfm8hNhyBvYoSW8cS52mA6oHsvW0cq7EBjr0MdmqwcZ7yU5/6ZyEIkjNiKzZeSfHxjxujySX8G3Au4evv5Rny1lXMinEkbX7I3B3oNNe6AXfda31kFNF9BGrjf2KS8ucT3a0n+f1LhR46oGBxlE5yJyJZxXnHBsXaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708417406; c=relaxed/simple;
-	bh=Nf/BMUVPzmrkw7nlEkpvKgeiXFDPdOK5C8QKwBwv4oc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kAlW/9EcTwszJYMrSZ5xAu2q7rdwMo367kkAtxrEwWvSefNSLhIdhKYBY/Imdcnc/wedB3nHFcHcGOy+TV3xrGZKHXWSFbZWWKbaoY2Z5UFblAj44nt7XHUk7X0SwTL5ptrwDY9jScoew4jNvgv+0mMox7KgEsoOGGiMfeR7rfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n/YeIefq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6940C433F1;
-	Tue, 20 Feb 2024 08:23:25 +0000 (UTC)
+	s=arc-20240116; t=1708417484; c=relaxed/simple;
+	bh=3hVYHf7Y4dd6cy7p1+tAVMfMvbeuxapCRgGgam5sYQc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LUokyuR2sWt7diwOgiABaIGIdMjlTR+95gZllz5yVf3LWGm7mkyZ8lqwmgXpndM0cr6HdY+KBLPcev/kYJOYCv1HdE7mmiSsRAALRh1TZytJSwyZUZweuk7Q8rNf8DdFBsEyrpWq+r/n+E7FvljmyyH42zTo+VtNnRjJQ7JjBSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D9M93ogO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE73C433C7;
+	Tue, 20 Feb 2024 08:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708417405;
-	bh=Nf/BMUVPzmrkw7nlEkpvKgeiXFDPdOK5C8QKwBwv4oc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n/YeIefq+zuvaG5nrm8GRps/2GdfpASMSkFwHM/hyIti5vHcnsPfnsLGVxSVcSFTd
-	 H25HSCjIfoKY/oL/2O+LYXzXuEtue9baI2VNgyw+6+Gp3uH1GLvVhN54oRgeM+P2JB
-	 REcBPZLikFNjPxTGF1Tyrrp3BixcXRDjxPxKToZ6E41D3fxfPk0lXfIAigElJH1Gbf
-	 NDqreEp+ql/mwKRNcR1bKSOXftdCxg2qPSffRRLv9oAABd3PKvqJmh0odU/ZGA1EOH
-	 j8u4t9bN/2axzAtYqTRg3QcUNElTyfi3w03Pa6cL5O1Qg+I/xIFd7CmjPdvo5uoNJv
-	 xjfnwBBjeOZsQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rcLPQ-000000002WT-0bsS;
-	Tue, 20 Feb 2024 09:23:24 +0100
-Date: Tue, 20 Feb 2024 09:23:24 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH] PCI: dwc: Use the correct sleep function in wait_for_link
-Message-ID: <ZdRhfCXejhrKQLPC@hovoldconsulting.com>
-References: <20240215170258.GA1292702@bhelgaas>
- <a12217ec-ce63-4312-a412-9a5c8d1d92fe@linaro.org>
+	s=k20201202; t=1708417484;
+	bh=3hVYHf7Y4dd6cy7p1+tAVMfMvbeuxapCRgGgam5sYQc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=D9M93ogOKn3KBccye1S4fOuvNKvmKo0j2HvsvZQkA7VQAdWkIi0go7PFCbqyBZP9l
+	 7rWt75MK73lSg+Z/g+BVVIA0llRqZmcxMuzp4ppa/wHiihrUxOpDRPVi8RkCdrJnX7
+	 5I7TdRuraVqxyCjoB00sZRtjs6IxdU4/o7zPFBjQn5jJshenkgBfA36ZTkY4bNwZvr
+	 unQ0N2gWQE9WXk6QLa19CMzFFqbeFtmWDWj3gSRG/8ULNHFCtivRB5w5dyrogeh1vy
+	 WpxKCU0N9biDkOxn6OnjJ5WfrP21cY4BSk5vaWf5Tt+oKr/YYTWY/xiX4xG84FDe8A
+	 TJ2dxuGDkglVw==
+From: Christian Brauner <brauner@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Jan Kara <jack@suse.cz>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andi Kleen <ak@linux.intel.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev,
+	Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] fs/select: rework stack allocation hack for clang
+Date: Tue, 20 Feb 2024 09:24:35 +0100
+Message-ID: <20240220-geortet-nordlicht-0abe19f356e7@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240216202352.2492798-1-arnd@kernel.org>
+References: <20240216202352.2492798-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a12217ec-ce63-4312-a412-9a5c8d1d92fe@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1298; i=brauner@kernel.org; h=from:subject:message-id; bh=3hVYHf7Y4dd6cy7p1+tAVMfMvbeuxapCRgGgam5sYQc=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaReSTyiUHLVcH3Gk4+8t2Zf/8FT5b7yRfvGCYUZS4LYT j6tfPjaoqOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiv5QZ/rs3Os//opi96M5a /r3lVRfTX259334n77+m9u5faXaf7tsz/E/rb3RdyqJcc5hnibL6M6EW+TclKTsTElZftp3D+pJ hLRcA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 06:46:55PM +0100, Konrad Dybcio wrote:
-> On 15.02.2024 18:02, Bjorn Helgaas wrote:
-> > On Thu, Feb 15, 2024 at 02:35:13PM +0100, Alexander Lobakin wrote:
-> >> From: Konrad Dybcio <konrad.dybcio@linaro.org>
-> >> Date: Thu, 15 Feb 2024 11:39:31 +0100
-> >>
-> >>> According to [1], msleep should be used for large sleeps, such as the
-> >>> 100-ish ms one in this function. Comply with the guide and use it.
-> >>>
-> >>> [1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
-> >>>
-> >>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> >>> ---
-> >>> Tested on Qualcomm SC8280XP CRD
-> >>> ---
-> >>>  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
-> >>>  drivers/pci/controller/dwc/pcie-designware.h | 3 +--
-> >>>  2 files changed, 2 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> >>> index 250cf7f40b85..abce6afceb91 100644
-> >>> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> >>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> >>> @@ -655,7 +655,7 @@ int dw_pcie_wait_for_link(struct dw_pcie *pci)
-> >>>  		if (dw_pcie_link_up(pci))
-> >>>  			break;
-> >>>  
-> >>> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
-> >>> +		msleep(LINK_WAIT_MSLEEP_MAX);
-> >>
-> >> Just use fsleep(LINK_WAIT_USLEEP_MAX) and let the kernel decide which
-> >> function to pick.
+On Fri, 16 Feb 2024 21:23:34 +0100, Arnd Bergmann wrote:
+> A while ago, we changed the way that select() and poll() preallocate
+> a temporary buffer just under the size of the static warning limit of
+> 1024 bytes, as clang was frequently going slightly above that limit.
 > 
-> IMO, fsleep only makes sense when the argument is variable.. This way, we
-> can save on bothering the compiler or adding an unnecessary branch
+> The warnings have recently returned and I took another look. As it turns
+> out, clang is not actually inherently worse at reserving stack space,
+> it just happens to inline do_select() into core_sys_select(), while gcc
+> never inlines it.
+> 
+> [...]
 
-I fully agree. Using fsleep() with a constant just looks sloppy (e.g.
-with that hardcoded usleep range) and hides what is really going on for
-no good reason.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Johan
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] fs/select: rework stack allocation hack for clang
+      https://git.kernel.org/vfs/vfs/c/f3dd8c812c24
 
