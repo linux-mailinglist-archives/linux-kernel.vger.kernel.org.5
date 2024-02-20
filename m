@@ -1,104 +1,116 @@
-Return-Path: <linux-kernel+bounces-72610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC0B485B610
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:55:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88D9785B60E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9315D1F21C4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:55:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 117A1B2395E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E63605C1;
-	Tue, 20 Feb 2024 08:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CD85F465;
+	Tue, 20 Feb 2024 08:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qw5uSkdd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IzLVuyGZ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gVZVDs3D"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF6360248;
-	Tue, 20 Feb 2024 08:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DE2627F3
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419158; cv=none; b=eZd8P7iTSRhTzKb9YHl83FMgx/5vkShWybPRBJyr98XHYm5tP51eiPHHFYO1l/DJqMYP43tH1mUalNAKmU4PcQUAiT9mWrchZct9f5o1AH4PVn/tyiUQqo7UvJu7FqBLJ6D8it/TcIK6cNmGxTpek6N6PaWJDKDCBdqZAb5SxRQ=
+	t=1708419149; cv=none; b=oloceh/FUk8CK9jeUklkeFpqlc0m3hzlT6HF4mFJBh8K4/ZLbwPgoPeME+uhrwDVpU5QjTcADumS3WBGv6esB3R4gvKgNt1yddGQx7WlWdy5L82ewJJJFWLC6cdAgMskubeHcT3ZmRbrc+Ck/OICeKtRE+cJLOnGp7t/dYFXmoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419158; c=relaxed/simple;
-	bh=QLdKpqnQtaw4bNC6ST5UoKxOOL2ZodRO76dCPvxflkU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rfAfPnAiufodwpMV5pjm67tc049piq8Q6PWF/eFweFcY0ET5R/LE/nAGCsZ4LRVCXNPZlPF5Nhp/osX47EKOMGpXXVZ989ATLUHy+uG6e5TjGtslwjN12r9skcMDR2DNu+2jHgXEqiAYgu+2erjumqLnwSXyhKDohKj/ABE9tCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qw5uSkdd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3982CC433F1;
-	Tue, 20 Feb 2024 08:52:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708419158;
-	bh=QLdKpqnQtaw4bNC6ST5UoKxOOL2ZodRO76dCPvxflkU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qw5uSkddgFp7ii7BtDxjrnnCjlyvoMR1vfTxD/hsRnIseDduzv1HdQ3uprAlGCMos
-	 BMkRahvb5jv4gvOV36YCXTiTfX4PhTVXE1dq97ChOHpz82Inc9y7AYBZSU6aY4wp04
-	 IXHq9Z1Wt+63ijonOPYoVJywduuvbpplQLHHYFV8WpvAm9Ul8UXcfq2JN59z8lh8xu
-	 b8Saw32dvles3IfxyaZdd6pCUwGBJ0zknWfKQ0xo+qId598ReU5RXScy9zyGNSOJob
-	 a/eDCVBj7x6JVwmpwPY9ABD/G47G7NoiRtfiCpHzB+KkvNzadSp1KpavqCixPCLWsv
-	 /4ZHG9jKI2byA==
-From: Christian Brauner <brauner@kernel.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Markus Suvanto <markus.suvanto@gmail.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Daniil Dulov <d.dulov@aladdin.ru>,
-	linux-afs@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] afs: Miscellaneous fixes
-Date: Tue, 20 Feb 2024 09:51:55 +0100
-Message-ID: <20240220-mietfrei-kopfnicken-bec5325cc06e@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240219143906.138346-1-dhowells@redhat.com>
-References: <20240219143906.138346-1-dhowells@redhat.com>
+	s=arc-20240116; t=1708419149; c=relaxed/simple;
+	bh=/G+9zo4wU1/IoJJgwk4k1gXyHPeaOE6m1As2PizN0ok=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=VAZ4ECUVJVM93+K2OrJWOlqcduMUDnUmBpMF9fqeRq3ITZnnJQexRk1ebJytUCT1BCrbXfFZRKyHSz7ADE32EDtwHIfoSutcfYTO1FJBcK3MVf8IVxvWIkH6pLKx9Rpa+Vzj2IBx4iPmHO05XS12Umxo4g3vbUJkLl8w1Mejftg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IzLVuyGZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gVZVDs3D; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708419145;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WRJ6q+w6PWpmy1zIT6leu3Z5s7/O2Fle24NL27shHS0=;
+	b=IzLVuyGZR+3MMByVPrc0qDiSJ9LPePvFUId3+fMVczmxkwoJC4Pmp+HxhnHe1mjMRA9d16
+	MK3rauiN6/y7dLiS4a8tWIpdn+s+PdOV2Ao/fbM352GUtnqxCzqdPVnzhKvottAgfS5Jpv
+	+sVfL/oXqHzQkv+f+1mnDG+xkngje+BkLgKfpvO2KJGeLSwOTwSgRD9do8Lu6YBTGA7bNz
+	7TRo+XRf3wcD4WhKQIf4sI/b/Z+0DsqQmEzwb96PoxiemIppwqIz1eMik2LYgNEJAVWx8y
+	T2BZHto4opPMZ4UVNm50BDN2J0jDMcHXKfpdsD78k8OpbUshVZjlCVBC2+5Iuw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708419145;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WRJ6q+w6PWpmy1zIT6leu3Z5s7/O2Fle24NL27shHS0=;
+	b=gVZVDs3DqBXIydK1NNlQDSB1Z0oouZ4f/SeqnfAykhrMEH+KNNVdoATlwV+T6JYu6LBfba
+	XCebOD4yIVZGWOAw==
+To: linux-kernel@vger.kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v1a] riscv/vdso: Use generic union vdso_data_store
+Date: Tue, 20 Feb 2024 09:52:12 +0100
+Message-Id: <20240220085212.6547-1-anna-maria@linutronix.de>
+In-Reply-To: <20240219153939.75719-7-anna-maria@linutronix.de>
+References: <20240219153939.75719-7-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1360; i=brauner@kernel.org; h=from:subject:message-id; bh=QLdKpqnQtaw4bNC6ST5UoKxOOL2ZodRO76dCPvxflkU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaReyQjo0Gnh7t3BvklFY3681RJ1t/Nq4oHzG/zV9rGp7 F5eVPCuo5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCLuPYwM21098kzE7TwDO2YU /1/CpOCacGYGC0emY/Sk7xUsaRdSGRkO+PNMr3P6eoU3a+XJj/u9/n2bmSMUKm1YWhXjuvz6fDY uAA==
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-On Mon, 19 Feb 2024 14:39:01 +0000, David Howells wrote:
-> Here are some fixes for afs, if you could take them?
-> 
->  (1) Fix searching for the AFS fileserver record for an incoming callback
->      in a mixed IPv4/IPv6 environment.
-> 
->  (2) Fix the size of a buffer in afs_update_volume_status() to avoid
->      overrunning it and use snprintf() as well.
-> 
-> [...]
+There is already a generic union definition for vdso_data_store in vdso
+datapage header.
 
-vfs.fixes means that these things will go in this week. Let me know if
-this is not what you intended! :)
+Use this definition to prevent code duplication.
 
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-riscv@lists.infradead.org
 ---
+ arch/riscv/kernel/vdso.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-Applied to the vfs.fixes branch of the vfs/vfs.git tree.
-Patches in the vfs.fixes branch should appear in linux-next soon.
+diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
+index 2cf76218a5bd..98315b98256d 100644
+--- a/arch/riscv/kernel/vdso.c
++++ b/arch/riscv/kernel/vdso.c
+@@ -30,14 +30,8 @@ enum rv_vdso_map {
+ 
+ #define VVAR_SIZE  (VVAR_NR_PAGES << PAGE_SHIFT)
+ 
+-/*
+- * The vDSO data page.
+- */
+-static union {
+-	struct vdso_data	data;
+-	u8			page[PAGE_SIZE];
+-} vdso_data_store __page_aligned_data;
+-struct vdso_data *vdso_data = &vdso_data_store.data;
++static union vdso_data_store vdso_data_store __page_aligned_data;
++struct vdso_data *vdso_data = vdso_data_store.data;
+ 
+ struct __vdso_info {
+ 	const char *name;
+-- 
+2.39.2
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.fixes
-
-[1/2] afs: Fix ignored callbacks over ipv4
-      https://git.kernel.org/vfs/vfs/c/bfacaf71a148
-[2/2] afs: Increase buffer size in afs_update_volume_status()
-      https://git.kernel.org/vfs/vfs/c/6ea38e2aeb72
 
