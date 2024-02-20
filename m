@@ -1,69 +1,49 @@
-Return-Path: <linux-kernel+bounces-72852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAAA285B982
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:50:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA1585B987
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5494284DC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:50:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FAE8B22035
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10B1657AA;
-	Tue, 20 Feb 2024 10:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2343065BD7;
+	Tue, 20 Feb 2024 10:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pWxHRG1w"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QYWLhnon"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFC436AF9;
-	Tue, 20 Feb 2024 10:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A3236AF9;
+	Tue, 20 Feb 2024 10:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708426219; cv=none; b=A+NVphEVpjYRti9z6sRKXB36P3hIa4wlKq2jOin2EUr0W+8nuEINo/H9IrtIy5UCZv50TZ44jvwTW5pZ8AWFpT1JgTbsfL6M/IroleH7cG9KDy6U6z18TfqKJSpUi0G6shlKgkBE817ExPMcqRxO0nlnCSIa1i2LQDehDmkAE+Y=
+	t=1708426226; cv=none; b=p3ytY28ceY1qG5vxbwvi1gEI19xxbkGCsn9VcgHfoZFo0SjYxNDY6uM0yoYVio9HF3GmtHMOqrZuNJuIS3ZMeex27ETNgqRCPkaiCdziHmG2w2CimixQ9eEHUbMid7RxiHHhFLYlvOM6KTxXC+PeMJOtJMofivvkGcc48vZHaNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708426219; c=relaxed/simple;
-	bh=PVebVozWoa/PAo9loZJChZrJxtFO7WgfreChaECuNbw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NfQHJpNIS31aFOLcoDGP4IVPfBSvC1HiClGDGOpq8AQ7MTfde4whJ2gtkwZZ0siPy+DYmJoI73xWTX8tWujoS/oYAJZQ172gSTXbiqDd3T5cLR42DVYQl+5UjMRGwdYxMl9rtQrGLxwFKoup9YpxqDodjhyvOrH7FqpO0ujdR4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pWxHRG1w; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41KAoBuV034941;
-	Tue, 20 Feb 2024 04:50:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708426211;
-	bh=QXZ73JTTX/zdchsdeR2TnxIpFTrtTuU8Uz9+cq87qCM=;
-	h=From:To:CC:Subject:Date;
-	b=pWxHRG1wyswFo4QItfHfdlZrR34o5fCdh3Koum+NrKy9AQbbNGaFBh8NKUtStKmKs
-	 z32qugNScMDpoFoosKRcy3ctBLwXNBdFzHTqkOhUpTYRq3JimxMcOTIlw1t3yqRd22
-	 A5cvu7JS2mIGcY6UhZGfHdKc06q0wITK+AmyQDPg=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41KAoBrC009179
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 20 Feb 2024 04:50:11 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 20
- Feb 2024 04:50:11 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 20 Feb 2024 04:50:11 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41KAo7Rd101122;
-	Tue, 20 Feb 2024 04:50:08 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-j721e-evm-pcie0-ep: Extend overlay for PCIE1 in EP Mode
-Date: Tue, 20 Feb 2024 16:20:06 +0530
-Message-ID: <20240220105006.1056824-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708426226; c=relaxed/simple;
+	bh=PF3C2v2bJ8nOZbjCxBoQV+JB9F2kpYzfYk9jt5xt52I=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Tm6NPfwGDnjTSXcmslWZXmTIZTnJSjqBComvGfo09MLUHUqyMmAUaszfvoA7zr8dr7f/Ra4XHH1gF9inrCj9Ajaag3+3NxQOC8RvCoCNXdyv52z2+TTMCzFp0bU1CUp/3fE3/iXZKjX2ogPzw8dqWi+1ixatD2t8EP1q46PdFR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QYWLhnon; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 34ACEC43394;
+	Tue, 20 Feb 2024 10:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708426226;
+	bh=PF3C2v2bJ8nOZbjCxBoQV+JB9F2kpYzfYk9jt5xt52I=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=QYWLhnonhFmbIT2D5/1l9kNRAy4/Gnnu8D0clpuOnNGm2meiyWNMMwx8MJCMWLB34
+	 Ge9ILEn6bteGG/95raX58jfc/WFdQp8kTd8zbKkJLBPrtEDooEvMWZ1e3jvm2rrnik
+	 HKtzEhsdwO6w8pePszLDHyEZT+l8xCpinvsKzNAdx+MMoiR55sNYBCDe2EjlqHnTYw
+	 nZrKOVfIKsEfhDJclsjZbnO2U71zeRGTlL7OAO03wTm2qBz22rPNoh6hOY7J4XUY6s
+	 8r5fZg/tk6QlFI2x1t9jlHJ2beTFVzwtwDeFe5Pm2FZV0P0mpDQZbp7RLUv53xsAKE
+	 UfpUDSb5p3xnQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19051C04E32;
+	Tue, 20 Feb 2024 10:50:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,118 +51,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Subject: Re: [PATCH][next] net: tcp: Remove redundant initialization of variable
+ len
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170842622609.26465.2350331717695265318.git-patchwork-notify@kernel.org>
+Date: Tue, 20 Feb 2024 10:50:26 +0000
+References: <20240216125443.2107244-1-colin.i.king@gmail.com>
+In-Reply-To: <20240216125443.2107244-1-colin.i.king@gmail.com>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Update the existing overlay which configures PCIE0 instance of PCIe on
-J721E-EVM in Endpoint mode of operation, in order to configure PCIE1
-instance of PCIe as well in Endpoint mode of operation. Hence, change the
-name of the overlay to reflect its updated functionality.
+Hello:
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Hello,
+On Fri, 16 Feb 2024 12:54:43 +0000 you wrote:
+> The variable len being initialized with a value that is never read, an
+> if statement is initializing it in both paths of the if statement.
+> The initialization is redundant and can be removed.
+> 
+> Cleans up clang scan build warning:
+> net/ipv4/tcp_ao.c:512:11: warning: Value stored to 'len' during its
+> initialization is never read [deadcode.DeadStores]
+> 
+> [...]
 
-This patch is based on linux-next tagged next-20240220.
+Here is the summary with links:
+  - [next] net: tcp: Remove redundant initialization of variable len
+    https://git.kernel.org/netdev/net-next/c/465c1abcb644
 
-Regards,
-Siddharth.
-
- arch/arm64/boot/dts/ti/Makefile               |  8 ++---
- ....dtso => k3-j721e-evm-pcie0-pcie1-ep.dtso} | 30 +++++++++++++++++--
- 2 files changed, 32 insertions(+), 6 deletions(-)
- rename arch/arm64/boot/dts/ti/{k3-j721e-evm-pcie0-ep.dtso => k3-j721e-evm-pcie0-pcie1-ep.dtso} (60%)
-
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index d601c52ab181..c7c9508e3980 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -75,7 +75,7 @@ k3-j721e-evm-dtbs := k3-j721e-common-proc-board.dtb k3-j721e-evm-quad-port-eth-e
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-beagleboneai64.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-gesi-exp-board.dtbo
--dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-pcie0-ep.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-pcie0-pcie1-ep.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk-csi2-dual-imx219.dtbo
- 
-@@ -126,8 +126,8 @@ k3-am68-sk-base-board-csi2-dual-imx219-dtbs := k3-am68-sk-base-board.dtb \
- 	k3-j721e-sk-csi2-dual-imx219.dtbo
- k3-am69-sk-csi2-dual-imx219-dtbs := k3-am69-sk.dtb \
- 	k3-j721e-sk-csi2-dual-imx219.dtbo
--k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
--	k3-j721e-evm-pcie0-ep.dtbo
-+k3-j721e-evm-pcie0-pcie1-ep-dtbs := k3-j721e-common-proc-board.dtb \
-+	k3-j721e-evm-pcie0-pcie1-ep.dtbo
- k3-j721e-sk-csi2-dual-imx219-dtbs := k3-j721e-sk.dtb \
- 	k3-j721e-sk-csi2-dual-imx219.dtbo
- k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
-@@ -147,7 +147,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
- 	k3-am68-sk-base-board-csi2-dual-imx219-dtbs \
- 	k3-am69-sk-csi2-dual-imx219-dtbs \
--	k3-j721e-evm-pcie0-ep.dtb \
-+	k3-j721e-evm-pcie0-pcie1-ep.dtb \
- 	k3-j721e-sk-csi2-dual-imx219-dtbs \
- 	k3-j721s2-evm-pcie1-ep.dtb
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso b/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-pcie1-ep.dtso
-similarity index 60%
-rename from arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso
-rename to arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-pcie1-ep.dtso
-index 4062709d6579..5eaf304e3102 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-pcie1-ep.dtso
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only OR MIT
- /**
-- * DT Overlay for enabling PCIE0 instance in Endpoint Configuration with the
-- * J7 common processor board.
-+ * DT Overlay for enabling PCIE0 and PCIE1 instances in Endpoint Configuration
-+ * with the J7 common processor board.
-  *
-  * J7 Common Processor Board Product Link: https://www.ti.com/tool/J721EXCPXEVM
-  *
-@@ -24,6 +24,10 @@ &pcie0_rc {
- 	status = "disabled";
- };
- 
-+&pcie1_rc {
-+	status = "disabled";
-+};
-+
- &cbass_main {
- 	#address-cells = <2>;
- 	#size-cells = <2>;
-@@ -50,4 +54,26 @@ pcie0_ep: pcie-ep@2900000 {
- 		phys = <&serdes0_pcie_link>;
- 		phy-names = "pcie-phy";
- 	};
-+
-+	pcie1_ep: pcie-ep@2910000 {
-+		compatible = "ti,j721e-pcie-ep";
-+		reg = <0x00 0x02910000 0x00 0x1000>,
-+		      <0x00 0x02917000 0x00 0x400>,
-+		      <0x00 0x0d800000 0x00 0x00800000>,
-+		      <0x00 0x18000000 0x00 0x08000000>;
-+		reg-names = "intd_cfg", "user_cfg", "reg", "mem";
-+		interrupt-names = "link_state";
-+		interrupts = <GIC_SPI 330 IRQ_TYPE_EDGE_RISING>;
-+		ti,syscon-pcie-ctrl = <&scm_conf 0x4074>;
-+		max-link-speed = <3>;
-+		num-lanes = <2>;
-+		power-domains = <&k3_pds 240 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 240 1>;
-+		clock-names = "fck";
-+		max-functions = /bits/ 8 <6>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
-+		dma-coherent;
-+		phys = <&serdes1_pcie_link>;
-+		phy-names = "pcie-phy";
-+	};
- };
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
