@@ -1,115 +1,79 @@
-Return-Path: <linux-kernel+bounces-72186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C2D585B097
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7A085B098
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC7C91C22517
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:43:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB3401C22120
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055F4376E4;
-	Tue, 20 Feb 2024 01:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCDD3F9FA;
+	Tue, 20 Feb 2024 01:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d4wEozJN"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="UcaOvXfG"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2139.outbound.protection.outlook.com [40.107.255.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F638466;
-	Tue, 20 Feb 2024 01:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3448A2F48
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.139
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708393383; cv=fail; b=i/CpD9NhfYfNj94fvgzH3/bxwLBXUHxChXn4eSCzGW8bpFCMOoKVbvRKWHTxVzFTNor2vbmfXYZJ7TKzveY79nl1PovSbUkhXuHrZ5dK0IO994RS11EuCTHuYp+9L16VdzB8QjPxZ2qNL5mxrp6st+5BjyuazizXADZ55ezEMN8=
+	t=1708393384; cv=fail; b=PtngNJO2KfDois7OdVpBdLFqR5CQ81VglvEtcqu/kWPJCD4lEr8hDuiWCglYJCXiS/OYZvC7cQB9/wSeCD5w1bL6+vW2z9M5JxBDjrlwsqFK7OFwXbbtgLbG9bNS6jfVGAPgvmJ0otkk3c+at5BzBGrYZtnRPdm8SHjvU5zo3+I=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708393383; c=relaxed/simple;
-	bh=gHqnvWspFUizUV4CrkmjPEUwPsz0LGHT01C/vJ80ZNc=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=NFB/Z12r8StD+4bOG+XozFE20jrVblac/bnbOy7SElBZTNV3KmZtNBpku6IUrjOXoyEK+vcKbVGcWIStJAri8bZTCpoNF/X+qtgr1cQ2/nH87HYfHtmaAjb/ZeWM2PBuO22w343psgrgwQTqiATfD468m3p9e9HxSggVbiklIhs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d4wEozJN; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708393381; x=1739929381;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=gHqnvWspFUizUV4CrkmjPEUwPsz0LGHT01C/vJ80ZNc=;
-  b=d4wEozJNc0U5RWd3Y4UxMU5/WOGNfGup8WxunU18jY4oAseWZ8KMptNX
-   lAHMZo+T0WpYFPPvIeMYc212KtBT22n5Lw6l7wlhlPb8OR8r3FeMtQkWv
-   fvOSHZMoTyb4sH2H6HUS2+zdV1RF/DwDgkm6j5g226vd3Zw3qDsqW6lvO
-   kOX3oyyHGXQQVDR/666hYhB2HvAwi5CXr54aN7gwy0wejRx0b9qI7f2iH
-   d4IBHFdHmym9Jiexef5CjQ3JB9p9Nv67S0ZVKJuphB7KtSbdZrVZXznqJ
-   PfTbO3nxo+Db7lg+Wy+TuHIkSe92gH0Q6JLroZC5oszPpX7q2SnreDmcR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2935269"
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="2935269"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 17:43:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="4606473"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 17:43:00 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 17:42:59 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 17:42:59 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 17:42:59 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 19 Feb 2024 17:42:59 -0800
+	s=arc-20240116; t=1708393384; c=relaxed/simple;
+	bh=LV/Pdc/iszQR3LgVHy7+nnwK62EWjMRG+7HCUSE7COA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=t23fEVu90Us7mwsiKq3sIkFkFWR0DptNbXWflVOXDdXwdSmHeLhzjH8rVe4IhO2vN5ix+rUVvqMwA3OVSZ6bb24tA5EQ5pDVLSw4kqJz7EUu8aa4/7+ZQZ/QNV3hPN160Do7ULpdV4YkWRR7a00DgblFtKjE+WpXSnI12SYzddw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=UcaOvXfG; arc=fail smtp.client-ip=40.107.255.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VY5COqGVT9ASKF1qS1ZlXU7WjTT94EUb+Wu/Kn8bJH5DHPGkSBYzmMmPFT55e0ybg4fY5SU4ldUbR01RAmL9wEZyDqIWzBzNv1nOdKNCXVaRzWLkCPWPOM17rgcCn+ovyOBUfpMAsXiohRQjJFMD1jIG/22glMYT95zzZAGrOfq0aOGFT67wcc7RtYtqzXjpKO6ptq2owv39ysDz5sbJIRXxTKE36K3VshiROo2MC2XUDonKT9SmjF487/+FzMhDATZG9GTZefGvZzWlkmAVyb7eCYsHOKbl28wFj0sWRY8HvVUJIum9AZ7Ri8YWnDQH0adY4KXEOjIGwhFJlN2TbA==
+ b=bfNceUZehVszPWthZvCEDbUje6A1QfE4/pEb/wb2Zy42/vd/lZcqeMWTUITHIcC7QlLHFTxkA7RZzZ7QmiDgR3Cb6P5L2cd27IgDMOIUL3wPBeaTmNgGOSXkz1LNOAi/4Xnd6KUf5OvYWIXJb9/Fsi6hw/jx1n0FMakui6CdYWOdXDbbGxOMAnLlQWz+pfC3dyqqCGiagXChfJllo/lu9T0VpKEjEGciv0tvYwD/iqDnEwzCO7UycmdYMCRKpqrKfGjecg3I+f3WbJcjsbr/axVq12zwGgW47LtQA26F3rjnQk1otGcFgvz+JftEwukiSwOEXOjpUH/lKroT3aM6ag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BKDOtxCsmtqe+9+Kgp1e7dY6B0azLl796AQgbJNMn+s=;
- b=JoQTsMp9IT0p/EAP+T1fPHTPr+SzA/0HcOV73aauhQrpdKmaAyTA7ujgy34VeubMtFOHYIzTjBKVizecN6WNG+JoipZebuiG5+ATtV5OQTpKehhTOGi8rLafhpBtqxudf/Al26q3/6bTJs6wd9TZmIPI8i1BMLGS8J/wscLL75ADugWtqkBPuKn0reiosNOg5yMPORnWFKIySBHakWUBvK8QtPc7BOkI9mOkmLiUrDEiGJ7fY8ouELl+/hplIn9kKWtUzwRmshYvDtoaRj1CcBVtPgTDmvTDTAndcTyyfwF9k5/ZR3NGtc0i09FrtaK+yqoTXCY613/OZwNWYe1YZw==
+ bh=ThDB/ADrVL/M7r/iNqp+OJD6jCzvEKav8Vp/xvlj/HQ=;
+ b=HnXgsCAB24DCpP7OBvW9XPFz5JTeweaus6vztX5zBaU4EE8jGLnsckjda3lvFYWc5Wae6CzkYi1HOPdAXP98EdQ+zg9fbxxVIIXQRq195gw42mNuLnAcrZpPVXP/xQiYlIDs6k9arXIK/BJ7jqFxc0r95KKYpLyRSluEkg0tFfl5/x28xr6YVGG92bE7OwKtcrwVYI7H2imJhu87FIIMjdeWEb7WsouMUC+8zq9wywhmcJZt9lv1BYv2bgB7opBlNH81IjG4hRgECvx1fHeG/5yVeXVXXJYS8PabkHim6ej3MtZDX+cbqc3OgjRTBiUYgxKSrHTAxKV3ahhf+SY7Kg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ThDB/ADrVL/M7r/iNqp+OJD6jCzvEKav8Vp/xvlj/HQ=;
+ b=UcaOvXfGcYm4ZD2J8ViP4J2x9SeTtZgiIWKi7f7MRRLMFm1nAESyuzW4HxZEAtU1JPnyAGIuMkHil8jt8oUaJ6w9DJBc2YQVK5zSBLG8iwYY0ouoGzefwDxTK4/fF9xywI1R6o9trnX+qlyM7FBoDyFQRx2AEBvzPVLAu/wWfg0=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB7141.namprd11.prod.outlook.com (2603:10b6:510:22f::14)
- by BL1PR11MB5351.namprd11.prod.outlook.com (2603:10b6:208:318::5) with
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+Received: from SI2PR02MB5612.apcprd02.prod.outlook.com (2603:1096:4:1ab::12)
+ by SI6PR02MB8312.apcprd02.prod.outlook.com (2603:1096:4:21d::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 01:42:57 +0000
-Received: from PH8PR11MB7141.namprd11.prod.outlook.com
- ([fe80::40e:3440:595c:9041]) by PH8PR11MB7141.namprd11.prod.outlook.com
- ([fe80::40e:3440:595c:9041%6]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 01:42:57 +0000
-Message-ID: <30dee686-894b-40fb-8e4c-5f3f1922600f@intel.com>
-Date: Tue, 20 Feb 2024 09:42:50 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmaengine: idxd: Ensure safe user copy of completion
- record
-To: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>, "Dave
- Jiang" <dave.jiang@intel.com>
-CC: <dmaengine@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-	Tony Zhu <tony.zhu@intel.com>
-References: <20240209191412.1050270-1-fenghua.yu@intel.com>
- <4237a933-0f61-417f-bbb6-ce5954b304d4@intel.com>
- <5012d165-e726-e3c7-2a5a-02745dd44f3e@intel.com>
-Content-Language: en-US
-From: Lijun Pan <lijun.pan@intel.com>
-In-Reply-To: <5012d165-e726-e3c7-2a5a-02745dd44f3e@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ 2024 01:42:59 +0000
+Received: from SI2PR02MB5612.apcprd02.prod.outlook.com
+ ([fe80::5002:785e:e85c:37b8]) by SI2PR02MB5612.apcprd02.prod.outlook.com
+ ([fe80::5002:785e:e85c:37b8%3]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 01:42:58 +0000
+Message-ID: <7c648dac-3198-3dba-0a96-34798cfdbd99@oppo.com>
+Date: Tue, 20 Feb 2024 09:42:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] mm/rmap: support folio_referenced to control if
+ try_lock in rmap_walk
+To: akpm@linux-foundation.org, david@redhat.com, osalvador@suse.de,
+ willy@infradead.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, tkjos@google.com,
+ surenb@google.com, gregkh@google.com, v-songbaohua@oppo.com
+References: <20240219141703.3851-1-lipeifeng@oppo.com>
+ <20240219141703.3851-2-lipeifeng@oppo.com>
+From: =?UTF-8?B?5p2O5Z+56ZSL?= <lipeifeng@oppo.com>
+In-Reply-To: <20240219141703.3851-2-lipeifeng@oppo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0003.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::20) To PH8PR11MB7141.namprd11.prod.outlook.com
- (2603:10b6:510:22f::14)
+X-ClientProxiedBy: TYCP286CA0351.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:405:7c::20) To SI2PR02MB5612.apcprd02.prod.outlook.com
+ (2603:1096:4:1ab::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -117,139 +81,238 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB7141:EE_|BL1PR11MB5351:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d27d664-1ec9-4b5c-10d1-08dc31b54371
+X-MS-TrafficTypeDiagnostic: SI2PR02MB5612:EE_|SI6PR02MB8312:EE_
+X-MS-Office365-Filtering-Correlation-Id: acb35d46-b306-49b4-c8e9-08dc31b5443b
+X-LD-Processed: f1905eb1-c353-41c5-9516-62b4a54b5ee6,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QIp6kLi0MQj4v3k4xSrKhjN4tnyP3lQy4sQ5qZs2XJGLhZTJU71GOxeGX3SocVECisB1pGCkUMPNn93Y5A4v7GEtOeQv59OyNGT4chGLBqtdmfe+6pTE46hruOUKkFpy0RICY8HAJ7u1tPtah0kdbm5okpd2kKzxz1XflFRu5qMIYCaVcUqAHKIkppAFxnVmLBTAMB0V1BzTwQ0Fzk/OsPtdFgUh3MvgUfz/m8uX5MkIxyL/e8BZc8slPIk01qOmMW82FvSF8nDL8hTgfFgDEY0DQDBRT28uF6d7gwHXLo3D3o7GOAbr/B1zF4o+z2gyGoVNC+pixoBzR7l1RUX2+Zt3ijPyrEWEirwVBeJxFbnQfMtRRBtRwQ1Il/B5OQ3l2UM5oUzYSP0xqWwTh1PkvmXZQmr4qnr97QJ8zyA0srBsGhdoCCbdYrxk4PzpcjXgXHcpZDfeba7KhBB82/yZZHF2bMUX0ltGXu1+UK8nldunYEo+9T2ldmYgqdcPB1uZaE0cFkJYMZ6P7ynpuCrgI3YB+GChev5Ak1YYQKN8Bzg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB7141.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	xBvHf6q27C6wj53oMGVyLOHVwN54sKbFGX2FzLt7ecvw8oyNqemj6BBCq195SWsfnV7oBXa4aMfXx/RNWHqTKErFSFVpLvHnz8fQQoQsRUPy1RD64Pru37qtu/a6d6YSs0H8GTIDw8Szhi0fekp2Obs9hxkejlG20OJiT/WJDTRHQIoFGSeaQhqHeQH1ZF/tWOeFB64EeNU3TjZTqeK3RyhZLCEfLRX/PF7nf6hgdL/7IwGsoV4mMW5kyG5GxCXBw/0Plrg/tt+EKRaoyzWBl5LAcbcKDnxjFYHCi0kghLaZNPQ8fE6AAC1U/a3nP7M6RZR++trzDG7zs159K5C0x3rIlbSx6I31KXhI5uXIlgU24VR8gJOufcwWo+voqLIn5RcMtZvBuYKY4g3hG9M+9Y5pveY4tO9G1lG7cOe7+I+t5VE7cY/nE5XhWLkHuvnryduno7J/j+q7BbQYEeIN/kkGMalfvhsfUhs95heXkB6WHUBWPaLuHQqiVUCDkViyPVsGW2E0F4So5CsfhoMRiyYML7H8Hqd6mwpbkkmWWr0=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR02MB5612.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDltaTZCSDhGVk16eDVXV2c1TlVZRUtPbUx1aFlCb2I2azIrM21ZblczWFdS?=
- =?utf-8?B?QXFBeUppOXp5dDNWbExIcllYNnV4cTY1YVJZaVZ4U3dMWlk2QXMzVndLNUZv?=
- =?utf-8?B?RjlQTEZQM1hUMjNNNTVwMndIMjFxbnFwTENjNVJIVS9PdTVoTk1VUnN4ZzF0?=
- =?utf-8?B?WDB2M3dHRXdxVExEMnNyd0psdEgzblRnMnBxNnJTc1VJZldZdWx4QytzN0NJ?=
- =?utf-8?B?SExNNFhPTTZYR3JkNUNIS3NzNmN5R2c1UGdWNVpvQnFQSVFDcGNLTlhIR1ZL?=
- =?utf-8?B?TWxPOElReHhTVXRSNnJJRFYrM0R2TS9OZXd2b1o1bXJnMk5iRXFhbWV2U2Q2?=
- =?utf-8?B?VkJCTlUwY0FOK2haRytlK3piamJCbVdocjd3alBvU2UwSFJNVHBTYnBIeVZx?=
- =?utf-8?B?dWJtcDVQUlBQS3pubWtScVhvOERqWWtUeHJsVWloWXVJaCtncyt4NUl3UW1O?=
- =?utf-8?B?aXhxV2dCWlVSMnBBWW1DMU1HYndCNnpQWDU1REhUV3JGRERTcHlBNXBhL2Ez?=
- =?utf-8?B?QUZYWVhpRUpjSDVySWpwTlRjdTB3elUwTU1QL2RYcVN3OEZtQnVGZHhqTytF?=
- =?utf-8?B?UVV0UmhuY0dPZTdxWDVoVHorZW9jTGtORDVoVmNOQ256c29OMFZGTUU1UTMy?=
- =?utf-8?B?NGhGSGZMWGtPR3BLbnZRaHN2SmhLWTJKdFVaQ2pGdTUrUldycjlHSElmYklI?=
- =?utf-8?B?NEttek9yRnFLOTF4d3g0Y01NZldDWlM1dG9IeHRkVFprOGRRUXFIbTRXRURz?=
- =?utf-8?B?eUd5V2VIMkpvZmZ6S2JEVjdsc0pGVUlsOURUc0dFODdkVFpNZU1rNFVTaEhx?=
- =?utf-8?B?WjZUVDdvVHNmc01qZXY4YTRwRVZYK3ZNa21oaWhWTlJIYnJGN2hHUGcxTzkv?=
- =?utf-8?B?L2YzMWJHNWduWFMrWjY1aU96TkRoOHdCb2txZU1iQko5UTVFVEtXdkJWTVdJ?=
- =?utf-8?B?bnFVTStkVUszYk5neU5pTlI5WldmZDJVRjVyeHZPMDhYYzNrVmxLQldoVUUv?=
- =?utf-8?B?Y20xdGUwcnAwa0V1azBLaENINndHNDYxZEI0UEcyVE9ycTNBV25Rb2VFSnBj?=
- =?utf-8?B?TEcwRnpNSWR3QWNuZ21YTmt5ZWFIU3FPcXplUVV0OXJ1K0RsUU9TcnhLbzNM?=
- =?utf-8?B?ZEZKVWZKM2piT09kdjA3Slc1TFFRQzNEaFNIY0JZZFhjdnlBY29ZaU5qS1NJ?=
- =?utf-8?B?dHVhR3VEeDFjN29FbzZaZTEveHBZdXUycDVFQ2J3Q1BSTTF0ZG94TUU2VjB0?=
- =?utf-8?B?SXNMVTQrbk1jZ2w4c3lOMHJ2eEZjOVRDa1pXZ3FuV3ZXTy9yMkswanpPUkVn?=
- =?utf-8?B?b2dzeDVjTytoSXgzVStucncrNDliZUh1dGNNdzNYa1JOTHpjNThwa0djM1Aw?=
- =?utf-8?B?N2grS04wVmgyWS9NYkFIVkFtSXpnVXM3RGwzNVc3TUk3U3JkdW1JNXJhcUY2?=
- =?utf-8?B?MnlnMnlVa09qbnlOajJVaFFDNHFBcGVDMjI4cGpVUGJjSHdnZHpqaTNuak9u?=
- =?utf-8?B?dHJmaW1TbEM4YVlKRklTd1BZSHpZdnFoV3hKMDE3aWxkcjYwUnJVRTkxZG50?=
- =?utf-8?B?MEFaZTE2MFpxOXNMVVdmQmdYcWQ2UDN3K3hpcVI0bkl6anFrZURBaERJSVpZ?=
- =?utf-8?B?Rm8rLzYzRlRXMCtVdGt1Z1EzSnJRcnoyQ3BRaUhueTdxN21CaHFwVngrMnZj?=
- =?utf-8?B?S0pMQnJ0V0lEK0lUSEQwSEhyaUt3ZVBwTHoycHFaT1JIaDROamozclZBcTI4?=
- =?utf-8?B?M253VlFHWGhIZWQ4M0RydjhOSDFyUXFHTnhsRWJVTTBPK3JISGdrMzBXRGdU?=
- =?utf-8?B?WEJTL2tMVzI4Nm9mUmlTRFhMc1ZiOHc0Q0VKc0F3SlFWNFFrZTNqenBtV2dL?=
- =?utf-8?B?c2RlcFdmUkdueTRIZ3BSN1Yza1B3di8xc2NSSnJPRFhPSC9hZEwwSXltQjhk?=
- =?utf-8?B?OHlXaTFLM1JoKzhuSVpPZzRkOUlvOUNUSjlOR0NkVmtzUUhDL0dha3hFOW5N?=
- =?utf-8?B?b1BxRXVCOU45UDBCK2xJUzlaMExrdEUveGlDQkxqNWRTNkI4bGQyTE84NFFU?=
- =?utf-8?B?czlVYng0ckppNWQrOGU0dHNRNEdiYUtNSXBqM1RZNnFwVndSWVhQcjNQdjBw?=
- =?utf-8?Q?LIIrF4mALG/thPS7jU94X1Owc?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d27d664-1ec9-4b5c-10d1-08dc31b54371
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB7141.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OXcrVkU0UDd2SXlZTHNibmZJaEtOc2VDcWdDcW04UVhSOTNGNXp3cEUzMHdX?=
+ =?utf-8?B?QmlzS2FJUXF2Vk11MkxGQlZPMUQzMDI2bDRraHl2WTYvR1A5QzdrZzdWVWpY?=
+ =?utf-8?B?RXdVT1VFZjZZWW1yYjhOSElyYlFldGd4SUhvSlprNTI1MGhRdmx6d0VWL281?=
+ =?utf-8?B?c3RhMTFiRFdFVGpYSmpHcTNCM2lWaFlJUGduK29wZlc2TTZsMWVrV1BiSDZo?=
+ =?utf-8?B?RTB0b0J0MDEvR2xEem1keGN3d2g0UFlNUXQ1azJJbURSTDR4RXRGcklUVnF5?=
+ =?utf-8?B?bjhYWFpjaTVvL2toYlFHMzhUY0NTYllRSXpTaGZ3UWRDdTQ0RzVLR0FxcWJ6?=
+ =?utf-8?B?aUNVRW44bXYrNG9iZThOVlIrV2p1TFllSDAzZkY1SGhOTFNxWTFUY3B4bVZE?=
+ =?utf-8?B?WGhraHNROEttVmhqMkMvQk1xdzZrcGZIeUltTzRST2hzR0tBQlY2UEhYZ3R2?=
+ =?utf-8?B?dlZzbklRODNtdnpvTy80NzFhU3N6UDlxR1JlRFVjVm55VFFIeVNsUitFSklv?=
+ =?utf-8?B?bzdNcDJyTE5jbW1PbTF6c3JaelFpZ0x0Z2J6UkpQMHlkeVJxVjJtMG5QMjdT?=
+ =?utf-8?B?eU1MeTh1QVNBazh0SVdJZmdacnkxeG9DZG1IRnhJaklCSDZyZ0I2NitFQTds?=
+ =?utf-8?B?dmlOYm80eGVqR3hjWnYwT0pRWjh0MGRDM0wzVyt0V0ozSU02QldMUkFWbzQw?=
+ =?utf-8?B?L0Y4OWowZ2R0T2JsNEhUWjBBb1dHMWxXM3A5TlRXSTdPMzYzMjlhajlFWk90?=
+ =?utf-8?B?UzN4WkFLOFNoYWFaamNaajZSZHdEOTdrNGFnT2E5dzRpTUV5OExHbUdmU2ZH?=
+ =?utf-8?B?NzNlNlI1YnkyOFdLVCtlWks1TVBUbkJsN1QxSDVGTE8zTjduM01sMW1SZnBz?=
+ =?utf-8?B?bVd2eFlUVzdVR1djYlREa0wxY0JmMHdBdlhUUHNrM1d0dUwxZy9hbU1NT0ZH?=
+ =?utf-8?B?VnZ6T20ybGRVZ2pHVWV4SS84UFFLWWRHK21lV1lwQUpTem9tTUpQMUp4NmZ1?=
+ =?utf-8?B?aHFyekxTKzNoREEyeC9LUWV2bFJPc2p2VUtBa3d0RDcyMVBzaGtoK0w4akNt?=
+ =?utf-8?B?K1ZxL01xZzMydHExQm9ubVV0NGR1OGdZTm5JdWY2Z0paRGo2TTVQQlZmMXIv?=
+ =?utf-8?B?LzNzdHZLenpBWmFHS0ZBN0pnc1VHdXFjdWRWaStENzBDUmNwazQzbENyQkFZ?=
+ =?utf-8?B?TUdsNGJUTS9sQkcyTFkvSUV2Sm9sZGxrVEt3TkNOUTBrWXVSaEV1Vmtxc3lH?=
+ =?utf-8?B?UXd6cU05enZQbmpseFFqOXArdUxaQUk2Z242UjNMMzRyVkpHL3JIcHNuVmhO?=
+ =?utf-8?B?d0w5SWRTVStLcGM4TjNpVGN2a0M5cGgrcGx6TFVuSm9PTkVySHlWangvbTZQ?=
+ =?utf-8?B?dzFhQmJRRkZCRGgvaFVUbUs1SU9yRlBTY3laOE0wS2JHSnJaYktEUzdwbmtE?=
+ =?utf-8?B?NTh0OUEzbGF2YkQyMHVBMElJbUx6bFFERmw5WWQyL09yOFB6N1MwSmVZNVMr?=
+ =?utf-8?B?NStjVmJhSHVJNUtxRXNIenFhNndFLytBTzZVOTBmNDJ5dndwRDQ2bmNOSk1M?=
+ =?utf-8?B?cnR3R0lUczE3Y3BVV2xUcXRSOFVSMU0rTXpxZDR6NzdPNG5FU2JFSVljUldy?=
+ =?utf-8?B?U0ErQ2ttVjlSZ2pZRGdxa0pzVGdPblF4c240bGpXWTl1WXBNbmlYOWplaG00?=
+ =?utf-8?B?K0V4NXJrNzFyRnJKcDVSZk4zbi9HMnhXSzNObDBCV0k1cFZtTXA5TTNEbk5m?=
+ =?utf-8?B?UXI5Vm4vUWNVOWFsVGNhVFZmeVBEakZOem1hQmpneExVY3djTXE2MWdHUU1j?=
+ =?utf-8?B?cTVQNzJtVE84OTc1Z2ozRnNmRWgwaWVzdVRxYTQxQXBNbE9BdWdyT1FZd1Ev?=
+ =?utf-8?B?elA5VXpWRlNUQTNUL1F0OENFOTc5eitHV0p0K0srbm56SlB2V25wREJrYjJY?=
+ =?utf-8?B?ekxXZFhuQWxxNFhMa3VQSnVSekltUlJaZjVrTjVvWGN4akw1TUJPUnlPZVdR?=
+ =?utf-8?B?Tmc3b1lnT1dkcW5aKys3UWV2QklzKytjUGc3V3pkYU5tUzF4UXRWcm9WcXpu?=
+ =?utf-8?B?NTlkNnBlSUtnYnJNMnJBcW1LdFRDYWZHUVVXV05XS0NCM0RJbVBrU096RUpy?=
+ =?utf-8?Q?2+6VSdywx5mGlM+ZE8GKG5Q1P?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: acb35d46-b306-49b4-c8e9-08dc31b5443b
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR02MB5612.apcprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 01:42:57.3175
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 01:42:58.5542
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1oPm+wgZeFFcbUyVm0ch+lAwBsVMoX+LU0UbrW1G+nBKLdWitmdnl9zJ6pcWX/JoRxM71CX4VbAHDMI2gGT4tw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5351
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2Pnkp6+684244x6AjcUdjaCL/rFdK5Zgrx81/18d8orqeUY862noop/YZYsKTrSfA2v4hmnwOzLUo3ArL2NDjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI6PR02MB8312
+
+add more experts from Linux and Google.
 
 
-
-On 2/10/2024 8:20 AM, Fenghua Yu wrote:
-> Hi, Lijun,
-> 
-> On 2/9/24 13:53, Lijun Pan wrote:
->>
->>
->> On 2/10/2024 3:14 AM, Fenghua Yu wrote:
->>> If CONFIG_HARDENED_USERCOPY is enabled, copying completion record from
->>> event log cache to user triggers a kernel bug.
-> 
-> ...
-> 
->>> Fixes: c2f156bf168f ("dmaengine: idxd: create kmem cache for event 
->>> log fault items")
->>> Reported-by: Tony Zhu <tony.zhu@intel.com>
->>> Tested-by: Tony Zhu <tony.zhu@intel.com>
->>> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
->>
->> Reviewed-by: Lijun Pan <lijun.pan@intel.com>
->>
->>> ---
->>>   drivers/dma/idxd/init.c | 15 ++++++++++++---
->>>   1 file changed, 12 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
->>> index 14df1f1347a8..4954adc6bb60 100644
->>> --- a/drivers/dma/idxd/init.c
->>> +++ b/drivers/dma/idxd/init.c
->>> @@ -343,7 +343,9 @@ static void idxd_cleanup_internals(struct 
->>> idxd_device *idxd)
->>>   static int idxd_init_evl(struct idxd_device *idxd)
->>>   {
->>>       struct device *dev = &idxd->pdev->dev;
->>> +    unsigned int evl_cache_size;
->>>       struct idxd_evl *evl;
->>> +    const char *idxd_name;
->>>       if (idxd->hw.gen_cap.evl_support == 0)
->>>           return 0;
->>> @@ -355,9 +357,16 @@ static int idxd_init_evl(struct idxd_device *idxd)
->>>       spin_lock_init(&evl->lock);
->>>       evl->size = IDXD_EVL_SIZE_MIN;
->>> -    idxd->evl_cache = kmem_cache_create(dev_name(idxd_confdev(idxd)),
->>> -                        sizeof(struct idxd_evl_fault) + 
->>> evl_ent_size(idxd),
->>> -                        0, 0, NULL);
->>> +    idxd_name = dev_name(idxd_confdev(idxd));
->>> +    evl_cache_size = sizeof(struct idxd_evl_fault) + 
->>> evl_ent_size(idxd);
->>> +    /*
->>> +     * Since completion record in evl_cache will be copied to user
->>> +     * when handling completion record page fault, need to create
->>> +     * the cache suitable for user copy.
->>> +     */
->>
->> Maybe briefly compare kmem_cache_create() with 
->> kmem_cache_create_usercopy() and add up to the above comments. If you 
->> think it too verbose, then forget about it.
-> 
-> It's improper to add comment to compare the two functions here because:
-> 1. When people look into this code in init.c, they have no idea why 
-> compare the functions here when only kmem_cache_create_usercopy() is 
-> used. The comparison is only meaningful in this patch's context and has 
-> been explained in the patch commit message.
-> 
-> 2. Comparison or any details of the function can be found easily in the 
-> function implementation. No need to add more details on top of the 
-> current comment which covers enough info (i.e. why call this function) 
-> already.
-> 
-> Given the above reasons, I will keep the current comment and patch 
-> without change.
-> 
-
-
-That's fine.
-
-Lijun
+在 2024/2/19 22:17, lipeifeng@oppo.com 写道:
+> From: lipeifeng <lipeifeng@oppo.com>
+>
+> The patch to support folio_referenced to control the bevavior
+> of walk_rmap, which for some thread to hold the lock in rmap_walk
+> instead of try_lock when using folio_referenced.
+>
+> Signed-off-by: lipeifeng <lipeifeng@oppo.com>
+> ---
+>   include/linux/rmap.h |  5 +++--
+>   mm/rmap.c            |  5 +++--
+>   mm/vmscan.c          | 16 ++++++++++++++--
+>   3 files changed, 20 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index b7944a8..846b261 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -623,7 +623,8 @@ static inline int folio_try_share_anon_rmap_pmd(struct folio *folio,
+>    * Called from mm/vmscan.c to handle paging out
+>    */
+>   int folio_referenced(struct folio *, int is_locked,
+> -			struct mem_cgroup *memcg, unsigned long *vm_flags);
+> +			struct mem_cgroup *memcg, unsigned long *vm_flags,
+> +			unsigned int rw_try_lock);
+>   
+>   void try_to_migrate(struct folio *folio, enum ttu_flags flags);
+>   void try_to_unmap(struct folio *, enum ttu_flags flags);
+> @@ -739,7 +740,7 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
+>   
+>   static inline int folio_referenced(struct folio *folio, int is_locked,
+>   				  struct mem_cgroup *memcg,
+> -				  unsigned long *vm_flags)
+> +				  unsigned long *vm_flags, unsigned int rw_try_lock)
+>   {
+>   	*vm_flags = 0;
+>   	return 0;
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index f5d43ed..15d1fba 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -952,6 +952,7 @@ static bool invalid_folio_referenced_vma(struct vm_area_struct *vma, void *arg)
+>    * @is_locked: Caller holds lock on the folio.
+>    * @memcg: target memory cgroup
+>    * @vm_flags: A combination of all the vma->vm_flags which referenced the folio.
+> + * @rw_try_lock: if try_lock in rmap_walk
+>    *
+>    * Quick test_and_clear_referenced for all mappings of a folio,
+>    *
+> @@ -959,7 +960,7 @@ static bool invalid_folio_referenced_vma(struct vm_area_struct *vma, void *arg)
+>    * the function bailed out due to rmap lock contention.
+>    */
+>   int folio_referenced(struct folio *folio, int is_locked,
+> -		     struct mem_cgroup *memcg, unsigned long *vm_flags)
+> +		     struct mem_cgroup *memcg, unsigned long *vm_flags, unsigned int rw_try_lock)
+>   {
+>   	int we_locked = 0;
+>   	struct folio_referenced_arg pra = {
+> @@ -970,7 +971,7 @@ int folio_referenced(struct folio *folio, int is_locked,
+>   		.rmap_one = folio_referenced_one,
+>   		.arg = (void *)&pra,
+>   		.anon_lock = folio_lock_anon_vma_read,
+> -		.try_lock = true,
+> +		.try_lock = rw_try_lock ? true : false,
+>   		.invalid_vma = invalid_folio_referenced_vma,
+>   	};
+>   
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4f9c854..0296d48 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -136,6 +136,9 @@ struct scan_control {
+>   	/* Always discard instead of demoting to lower tier memory */
+>   	unsigned int no_demotion:1;
+>   
+> +	/* if try_lock in rmap_walk */
+> +	unsigned int rw_try_lock:1;
+> +
+>   	/* Allocation order */
+>   	s8 order;
+>   
+> @@ -827,7 +830,7 @@ static enum folio_references folio_check_references(struct folio *folio,
+>   	unsigned long vm_flags;
+>   
+>   	referenced_ptes = folio_referenced(folio, 1, sc->target_mem_cgroup,
+> -					   &vm_flags);
+> +					   &vm_flags, sc->rw_try_lock);
+>   	referenced_folio = folio_test_clear_referenced(folio);
+>   
+>   	/*
+> @@ -1501,6 +1504,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>   	struct scan_control sc = {
+>   		.gfp_mask = GFP_KERNEL,
+>   		.may_unmap = 1,
+> +		.rw_try_lock = 1,
+>   	};
+>   	struct reclaim_stat stat;
+>   	unsigned int nr_reclaimed;
+> @@ -2038,7 +2042,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
+>   
+>   		/* Referenced or rmap lock contention: rotate */
+>   		if (folio_referenced(folio, 0, sc->target_mem_cgroup,
+> -				     &vm_flags) != 0) {
+> +				     &vm_flags, sc->rw_try_lock) != 0) {
+>   			/*
+>   			 * Identify referenced, file-backed active folios and
+>   			 * give them one more trip around the active list. So
+> @@ -2096,6 +2100,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
+>   		.may_unmap = 1,
+>   		.may_swap = 1,
+>   		.no_demotion = 1,
+> +		.rw_try_lock = 1,
+>   	};
+>   
+>   	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, false);
+> @@ -5442,6 +5447,7 @@ static ssize_t lru_gen_seq_write(struct file *file, const char __user *src,
+>   		.may_swap = true,
+>   		.reclaim_idx = MAX_NR_ZONES - 1,
+>   		.gfp_mask = GFP_KERNEL,
+> +		.rw_try_lock = 1,
+>   	};
+>   
+>   	buf = kvmalloc(len + 1, GFP_KERNEL);
+> @@ -6414,6 +6420,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>   		.may_writepage = !laptop_mode,
+>   		.may_unmap = 1,
+>   		.may_swap = 1,
+> +		.rw_try_lock = 1,
+>   	};
+>   
+>   	/*
+> @@ -6459,6 +6466,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+>   		.may_unmap = 1,
+>   		.reclaim_idx = MAX_NR_ZONES - 1,
+>   		.may_swap = !noswap,
+> +		.rw_try_lock = 1,
+>   	};
+>   
+>   	WARN_ON_ONCE(!current->reclaim_state);
+> @@ -6503,6 +6511,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>   		.may_unmap = 1,
+>   		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+>   		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+> +		.rw_try_lock = 1,
+>   	};
+>   	/*
+>   	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+> @@ -6764,6 +6773,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+>   		.gfp_mask = GFP_KERNEL,
+>   		.order = order,
+>   		.may_unmap = 1,
+> +		.rw_try_lock = 1,
+>   	};
+>   
+>   	set_task_reclaim_state(current, &sc.reclaim_state);
+> @@ -7223,6 +7233,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+>   		.may_unmap = 1,
+>   		.may_swap = 1,
+>   		.hibernation_mode = 1,
+> +		.rw_try_lock = 1,
+>   	};
+>   	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+>   	unsigned long nr_reclaimed;
+> @@ -7381,6 +7392,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+>   		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
+>   		.may_swap = 1,
+>   		.reclaim_idx = gfp_zone(gfp_mask),
+> +		.rw_try_lock = 1,
+>   	};
+>   	unsigned long pflags;
+>   
 
