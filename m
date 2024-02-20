@@ -1,70 +1,72 @@
-Return-Path: <linux-kernel+bounces-72703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11AE885B7A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:36:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5268585B7B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F2F61C22508
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:36:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 039BA1F2751C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64E96088A;
-	Tue, 20 Feb 2024 09:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3D95FDDD;
+	Tue, 20 Feb 2024 09:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cCLwgIeV";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OrKtuVM5"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="TOKTE1Z+"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58865FDAE;
-	Tue, 20 Feb 2024 09:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA14604A9
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708421750; cv=none; b=hbSqRxyxRlupRmR7xIHZwaQfe3sx8jjljpJtJZLTue5d2EMn6PdCq9QEO07xsgK0xvK3+R7WmDnq+w/fMgBscD6ivdzFmS36TZM1D06jeUuvj8d85iq/mVtFuqDC+YHeUdyPNb6VNIEisfzRcbkLQPP54vvzoBd/igtSDuq4umo=
+	t=1708421847; cv=none; b=N3lJ8Kv/BnOB97ObOPx/opB6L6eVXx2SRXVSbbK9IbryYM4VVVSbdxWR5saUSoWmr00ynvbY5Abc/NuWkaWkn0MytGj7FBF+9pUKezS9MoR6U5/A9P25ppN5OJukhGnp86KsyzIcRWD2IKDRd1nAhoFHsX1FGaJOo8cpE0O0bF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708421750; c=relaxed/simple;
-	bh=KqF6uxKdacXplU8Vz1sWgc9oRiAGeMKimEFB9Pys8ZY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HhYrNMlpOKBXw7dqelZZ5ieglGhZxF1vZKnn+2sTvtayWzf9bPldKQJBdzCEnjbLql9h+f0UiOt5EbuzvLsItyMQvlNGzQncYjeGGsEai3pBVKD/kmXCFADpDow8ACF5REpTOt7luFMZzju2655EZgdov4pciDLvAQKkpbfZM/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cCLwgIeV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OrKtuVM5; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708421746;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qMQgNxW/cq/W95W6944hYW0g2WX+zW1/CtYeKCgciio=;
-	b=cCLwgIeVqk4CouvgCnTPalK72eB/TqNV+rcqZKi6Ty6+dSv9T3Y/NAgPG2522nRuY/tDEN
-	Lf/1TIRYn7YE/IbOrGaA5JltxJnzsSfdcwCXhPDlxxjsBRKe1uqbFVGNpa3XIGPVbbOrrT
-	gTSHZymZCXWEmI0fqbfMSbt1Clud/UllJflFtwc2RbZlq9wxsfiFi3pCDlDliXWpiXYPMs
-	ygBf7TsBGhhk1YMmn/RZV0akQ6yS4c/JRA3IicgsaS3R1vpsQV5D7wmUv7LlJbhbPiYGaX
-	TN6gflLlkdc611Xe6p8vEcSKk1dxclpf4+NikcliEABItbEktKtZH98KNvsWqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708421746;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qMQgNxW/cq/W95W6944hYW0g2WX+zW1/CtYeKCgciio=;
-	b=OrKtuVM5z5R2D1L6JMmFtnZECQzcxYfqQM8regq0BxlYfBaFai9vdE41U1mrkjSj3F6yV4
-	OC6dgfeJgjmh0XCA==
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
- pmladek@suse.com, akpm@linux-foundation.org, kernelfans@gmail.com,
- liusong@linux.alibaba.com, deller@gmx.de, npiggin@gmail.com,
- jan.kiszka@siemens.com, kbingham@kernel.org
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- kvm@vger.kernel.org, Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCHv8 2/2] watchdog/softlockup: report the most frequent
- interrupts
-In-Reply-To: <20240219161920.15752-3-yaoma@linux.alibaba.com>
-References: <20240219161920.15752-1-yaoma@linux.alibaba.com>
- <20240219161920.15752-3-yaoma@linux.alibaba.com>
-Date: Tue, 20 Feb 2024 10:35:45 +0100
-Message-ID: <87le7fiiku.ffs@tglx>
+	s=arc-20240116; t=1708421847; c=relaxed/simple;
+	bh=3GkUx8kt7uH7DqzdrQJS7/KlRvFDbWyEP6MIyZfTg2k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GjqSLEAwGaC4F8e7eaIWHiMFDwYMmcAgHIeK07HxHe0tJbcL3x+ch8CTW4J2Ah1G+NMIgWgQlOv3VoAczcAlC9qRzSfHrHYujnD8uRWDqJUi3ssTLdwvNr/rsueGSQYj3IijamrAf5ZX3GI8sLEnMn1/TKtIVCGPlvTvN8miC+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=TOKTE1Z+; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: a253937ecfd311ee9e680517dc993faa-20240220
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Cpm4Z8YcqW1pU8FkfVmKvD7vvfltD+VL86sKjFeu79Q=;
+	b=TOKTE1Z+2mfZmeeF7x8+N/3z++RoqEyuTiMseAGR2zCsHwacViFUIxa4LUqj00sghdFhlE6suWRuh68pefGc9J0MEIcsNfKfSGZg+Z1J9mw/SUeFnwRNA1qqgoLIc6nq3OGYeu9PWAxJly0HfEK1BWMA92tmYaVcAOwb9DGlRHs=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:a5cdefed-c24b-4598-99c1-40d00dcb5b7f,IP:0,U
+	RL:25,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:25
+X-CID-META: VersionHash:6f543d0,CLOUDID:9461808f-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: a253937ecfd311ee9e680517dc993faa-20240220
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 233379116; Tue, 20 Feb 2024 17:37:16 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 20 Feb 2024 17:37:12 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 20 Feb 2024 17:37:12 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	<dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	"Hsiao Chien Sung" <shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH v3 0/1] Filter modes according to hardware capability
+Date: Tue, 20 Feb 2024 17:37:10 +0800
+Message-ID: <20240220093711.20546-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,21 +74,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--4.759200-8.000000
+X-TMASE-MatchedRID: ATi5SS6xZln8rQJMqxBG8BlckvO1m+JccuFRT+prg4ZGL0g1nVmkYZgC
+	Mlq+sZ+fOyZ2mg3CStONpw2JbH/pLNm0JHSAKf2wA9lly13c/gFKPIx+MJF9o5soi2XrUn/J8m+
+	hzBStansUGm4zriL0oQtuKBGekqUpnH7sbImOEBSNfc3Pw1BhgWBA1CBIH/I6EO0lIp72XzxQi5
+	Kp9S4aVP1xKjgX1cLXC0qYZTpU9PeK4SmSDNGOLF6OHnj3Ynoi2s3WaI3nzqlJmt82E/eyBQGH0
+	CAFIQWsmb5gmylW+PbGS+seVPx64j6Qrn3xh/cy
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--4.759200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	1182ACC9B0C5F753CD224FFF2226C5525ADE82CBFF4FA67B9CCCA626148E760C2000:8
+X-MTK: N
 
-On Tue, Feb 20 2024 at 00:19, Bitao Hu wrote:
->  arch/mips/dec/setup.c                |   2 +-
->  arch/parisc/kernel/smp.c             |   2 +-
->  arch/powerpc/kvm/book3s_hv_rm_xics.c |   2 +-
->  include/linux/irqdesc.h              |   9 ++-
->  include/linux/kernel_stat.h          |   4 +
->  kernel/irq/internals.h               |   2 +-
->  kernel/irq/irqdesc.c                 |  34 ++++++--
->  kernel/irq/proc.c                    |   9 +--
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-This really wants to be split into two patches. Interrupt infrastructure
-first and then the actual usage site in the watchdog code.
+This series is based on mediatek-drm-next branch of
+kernel/git/chunkuang.hu/linux.git.
 
-Thanks,
+Changes in v3:
+- Add more information to the comment
 
-        tglx
+Changes in v2:
+- Refined the filtering formula
+- Add the .mode_valid hook to the hardware that causes the limitation
+
+Hsiao Chien Sung (1):
+  drm/mediatek: Filter modes according to hardware capability
+
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  4 ++
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c     | 65 +++++++++++++++++++
+ .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 17 +++++
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 17 +++++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  1 +
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   | 12 ++++
+ 6 files changed, 116 insertions(+)
+
+--
+2.18.0
+
 
