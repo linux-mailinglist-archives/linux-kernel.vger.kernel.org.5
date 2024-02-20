@@ -1,191 +1,215 @@
-Return-Path: <linux-kernel+bounces-73005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FA8285BBEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5525B85BBF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D2A281B75
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:23:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 102CA281F11
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE7769301;
-	Tue, 20 Feb 2024 12:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102D0692F3;
+	Tue, 20 Feb 2024 12:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mZa37MV8"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AOVx3Nz6"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2725B1F9;
-	Tue, 20 Feb 2024 12:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE035A4DE;
+	Tue, 20 Feb 2024 12:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431781; cv=none; b=GusdRHCNSsnHSEX6OhHCc32fk4vPSeLO2Mk5PQEg0LlzjNAWzmYm10jeY7rjQdyKFFIziRopGXH/UIjIFVLkQUMp5SRUpiSifQ7O307DLydtv6HH1zfFbXLxbHYsWIuTPIWKPpf74SjibPWThqbR7pWm4Np8gdLMIz+VkGf0fDU=
+	t=1708431854; cv=none; b=izuVizCIjUStwWb2QEgHmbrbz8aYLYzyAt/AXE2f0Oles04YDqP9sLAatmAvELnmJ8EWXa3AKDH3l4V1vlO2Xdioe27J6qVqeNnA2d6kmGmn2tVqq4Xrcv9jpMHjeu5+St1bTPUxbCkY7e4h2FRMd/PJd4OSUDJJE1qVEZQuuUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431781; c=relaxed/simple;
-	bh=xqTSVgfznTksrbz5QT8iopPyYXLCy7wv5bGIEH4MSb4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pWF9dMJI5CPkLfZ/GsmILiXqvR72I73FIQfSVSFlJiXINh2DDMApocsFF6hQtBqYKGmMEr7rTCLyi2YhZK0Aom+3H2L59OfSjBOKvfHeYYo3tYH1PRw76e8PkQ4cEU6cwCadqeaCaNEPQIjRs9zzD/aGc/+55WB8VG4rIM7BlTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mZa37MV8; arc=none smtp.client-ip=209.85.208.172
+	s=arc-20240116; t=1708431854; c=relaxed/simple;
+	bh=MOe1ntfyBbrujcdxdVf3xapPEj8+VoAILYJkCVcv2U4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Op/zrv0egxt9J2WGYwQKODFMzxkrQ9zkmESOC+PWxonEK/H1Ghu/p4M1ilthypDfzWQR7LNg8mV51hppBLTzGIXa5y9RvYJlsEbW23u+d0sIYdfGx8ZRBWKgiRkWorj57gsNyC1G2glSk/f9ZQMw7WMoE9TKpxxsK9blyuws4f0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AOVx3Nz6; arc=none smtp.client-ip=209.85.208.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d23d301452so23902261fa.1;
-        Tue, 20 Feb 2024 04:22:59 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0cdbd67f0so75979401fa.3;
+        Tue, 20 Feb 2024 04:24:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708431777; x=1709036577; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9QwagbwsopEqnSDcxYcEzfKPag+Slzzzgw7BDLAReYI=;
-        b=mZa37MV8dXtcpzxexmWiNeacxxRmFSphd1O8jqdjxAobwJ6h7WsPusbHKi7zWa9keq
-         K2RpsK2XWYk5kRG6SMaSwXXuouZkMqsh26VZ3qrrnxBcQGeakTY9EtAsZK8P8TwljfbI
-         FS7X+Ynl3x5LVm5FXkPLwacYdRdh8NROK+qyR/BTQflhGi1YQG0WJpdMPzdwlfDuWFtV
-         +6rFIX+z3rZLITJbFOavXPfOXTWEYEqswi7UyiQg+NCkeL5dPvOFKrcn4l6uejHuJR/u
-         XaYZ1SLaEFEgkur+TP0EXKydiE0r9j4bk7LhbZmdM91ItxxyGfssJ8cQA5hc4HTJpCaC
-         P/Ug==
+        d=gmail.com; s=20230601; t=1708431850; x=1709036650; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7xVIgRYq2zX1M+4Lj3mROKuit32dmjgTDliMwakaDVo=;
+        b=AOVx3Nz6NAJXCSfD10GKjtUHj6tflP3upMQdvpSpJjnJZ2PnTqhVrPe7F56y+kuXol
+         x279J/VSI61UpCwSjU1vT1X2k06tQQp9FJaYOFGaN3aMPxP1dkx3VZ+/fmshZhdti0Al
+         M0YDBOmsvews66Ps6jdHzy2oay1G2NKFqxtIErDpUk6gkzxXD7vuNZl1FfWIQ5jOQ24S
+         Y+GylhIEwgtdJxDdG7v/Z5rQk7HGiXTky5i6g9ld71GodN8pFMZxCnyYaFmH+JZ2c0Cf
+         kDTpfzebGP01s/9Pf6eYoupiQhkcoFcJChC+ry47klLLy2nsCISsGlEjA/z1vITdVUUf
+         iynQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708431777; x=1709036577;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9QwagbwsopEqnSDcxYcEzfKPag+Slzzzgw7BDLAReYI=;
-        b=c5hNk+UR1L8ViyClWRjN+K/jhvhNvDhfC2Vu1HWtngqsKlFvX0MTdRInp/ctoUyRLd
-         SzIZ0fJUAD4ImxA0bT/L8HwW+BiU+iO7y/N9hWmPZcemvnXUzQpc6GlM1cA5OKDuAHA6
-         znuS3mDHXou6t/KKnacWt/ZrZpooVzaZsQzeGzyAX80VTh8aVzR3aMbC8D/wCVimw4x/
-         A2ViTBNRsaoSHBx/r+RfMTcR/P+JznFfJvXde+SxXWgXzQhSqx7NEp3V2S5Zp1UfPS3i
-         IQdW4hkK5iLijjR6GaEifm18RK0+dN718y9PgmowKqVOzsc2PAaNqZEgGD1C1rkc/sBO
-         w0oQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+7g0dreECzsgD/L2ze0jHUiNw/LPgnvzRSB17XiBUAnQdVPVN4gScAYV48KJBp8xxvxH48qw33HegC4zMBMcCOxrqbfQ1gh3HK0ZW7sFWlp/OzNTEu9eN1zyGwDRJLIUgxmg2QB6EU3DT6XhnOpMP0jCRVghrSkxvzwSVBOKBHQ==
-X-Gm-Message-State: AOJu0YwxOkIwBVSBDXnSOzwfmKdDEiYF9nFkiU9L+8lkI4lVMujyEAv6
-	gwQYn1mhoamQMBEmg4JbfWHW6LbiFTEABbmYcGnu52ygPvJhA3yz/tnmzi8270HUNIrUuXuS0Rk
-	eDcyHpimr2ccm5/X72gZX5qa86Js=
-X-Google-Smtp-Source: AGHT+IGXmsc5+QDVXYHuToO9jG/rogV7vVtEygW/qf5y8ysTBc+VvU2gsXLZr7JFxuoJCvMlUp3juBNxPPSSzGwknq8=
-X-Received: by 2002:a2e:b0d8:0:b0:2d0:ca39:5fb8 with SMTP id
- g24-20020a2eb0d8000000b002d0ca395fb8mr8934370ljl.53.1708431777125; Tue, 20
- Feb 2024 04:22:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708431850; x=1709036650;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7xVIgRYq2zX1M+4Lj3mROKuit32dmjgTDliMwakaDVo=;
+        b=mZ6kLPrghzTfBn4Mk1yLzIOIvAXwEiK8OdRxRlmm0DDST0Ei2Ri4dCW/u1O2tarpbc
+         /xOZvesLGnr+LyyxDBleAFSWsPl/H/CURpv/VIsMjShCM30TRiCDvCH6UsCyx/EYcSIB
+         iQfqGhr+PylA3Xpsca/rCTFBLh6OGs6MOM7yIvX2IUV4xls2r6TTMCHF/6qJwJ7IC5lQ
+         cH+gMQ/yaLGYev7LX4VoAMQcOpf6FW0TwUA3BrTaS7J4QQYnoQxJ7/mRTMYqRVo/RhF0
+         mzT7c35BFk7B2MFLQ0opnp4niVrT1/AVsO6mctoswytjSVm+zI5FSUkYNAQmIRmRizs7
+         3GfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUUxtBgr9vwCbElLCgRhELUkIO62X/KN5rHCa+lZhPDdBof4XR+FmPtC6v6o/YeJbCxygqAuaf8k/kvQ21ftqUELnRYtdRofS8euRj9QGs6Z1gR359hI0jGwoHZrDtOAa9MSy/F
+X-Gm-Message-State: AOJu0YxXqJ4ins6gxubX4vF2chHwDrImjFcVeGnQFLHem3hNZXBizRjN
+	QEz/xelbUixoTn4/do5s5YBVrwJ/+iuhp5xvNZcdEqws+6hpVsi7
+X-Google-Smtp-Source: AGHT+IH0+M4gsIzfcGOa2EqDm7y/fIdjp0DpuJYVAj/0Y6VXOddx4unexLgLZwBdJo/LhWVn7WTRog==
+X-Received: by 2002:a2e:97d7:0:b0:2d2:3085:c3ad with SMTP id m23-20020a2e97d7000000b002d23085c3admr5097897ljj.31.1708431850166;
+        Tue, 20 Feb 2024 04:24:10 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id n22-20020a2e86d6000000b002d0acb57c89sm1468992ljj.64.2024.02.20.04.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 04:24:09 -0800 (PST)
+Date: Tue, 20 Feb 2024 15:24:06 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Jesper Nilsson <jesper.nilsson@axis.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel@axis.com
+Subject: Re: [PATCH v2] net: stmmac: mmc_core: Drop interrupt registers from
+ stats
+Message-ID: <sz3jfyimap4thkhxg76nrv6m2lyk5rwnsve5xxghqt7e5uo6lg@wkxcwsdhp44v>
+References: <20240220-stmmac_stats-v2-1-0a78863bec70@axis.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219-realtek-reset-v4-0-858b82a29503@gmail.com>
- <20240219-realtek-reset-v4-3-858b82a29503@gmail.com> <lvt7su5mmf7b3w4gbxd6vlt25klsyziuuaznfzjy7d4oxz46qx@4dzc4cgmfkbc>
-In-Reply-To: <lvt7su5mmf7b3w4gbxd6vlt25klsyziuuaznfzjy7d4oxz46qx@4dzc4cgmfkbc>
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Tue, 20 Feb 2024 09:22:44 -0300
-Message-ID: <CAJq09z5ak_S3iFnGw+rw0JQwoxf=x69=Ync3Xg5AQ0hx_tsGXg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 3/3] net: dsa: realtek: support reset controller
-To: =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Andrew Lunn <andrew@lunn.ch>, 
-	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220-stmmac_stats-v2-1-0a78863bec70@axis.com>
 
-Hi Alvin,
+Hi Jesper
 
-> On Mon, Feb 19, 2024 at 08:44:42PM -0300, Luiz Angelo Daros de Luca wrote:
-> > +void rtl83xx_reset_assert(struct realtek_priv *priv)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = reset_control_assert(priv->reset_ctl);
-> > +     if (!ret)
-> > +             return;
->
-> If priv->reset_ctl is NULL - i.e. if no DT property is specified - then
-> this will always return early and the GPIO will not be asserted.
+On Tue, Feb 20, 2024 at 01:00:22PM +0100, Jesper Nilsson wrote:
+> The MMC IPC interrupt status and interrupt mask registers are
+> of little use as Ethernet statistics, but incrementing counters
+> based on the current interrupt and interrupt mask registers
+> makes them actively misleading.
+> 
+> For example, if the interrupt mask is set to 0x08420842,
+> the current code will increment by that amount each iteration,
+> leading to the following sequence of nonsense:
+> 
+> mmc_rx_ipc_intr_mask: 969816526
+> mmc_rx_ipc_intr_mask: 1108361744
+> 
+> These registers have been included in the Ethernet statistics
+> since the first version of MMC back in 2011 (commit 1c901a46d57).
+> That commit also mentions the MMC interrupts as
+> "something to add later (if actually useful)".
+> 
+> If the registers are actually useful, they should probably
+> be part of the Ethernet register dump instead of statistics,
+> but for now, drop the counters for mmc_rx_ipc_intr and
+> mmc_rx_ipc_intr_mask completely.
+> 
+> Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
 
-I made a mistake. I should be
+Thank you very much! Definitely:
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-if (ret) {
-          dev_warn...
-}
+One more statistics-related clean-up you may find useful:
 
-not returning on error (as you suggested below).
+net: stmmac: mmc: Discard double Rx CRC errors counter read
+    
+DW XGMAC MMC Rx CRC errors counter is read twice in a row. It's redundant
+to do so, because unlikely the counter has changed since the first read
+much while up to date statistics can be retrieved on the next MMC-read
+operation. In that matter Rx CRC errors counter is no different from the
+other counters, which are read just once in the same callback. So most
+likely the second Rx CRC errors counter read has been added by mistake.
+Let's discard it then.
+    
+Fixes: b6cdf09f51c2 ("net: stmmac: xgmac: Implement MMC counters")
 
-I was sure I was doing just that... I was surprised to see it as it
-is.  I'll recheck my branch with all the integrated changes. It passed
-my tests as when reset is missed, it normally does not matter. Thanks
-for the catch.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+index 8597c6abae8d..759a83100f11 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+@@ -467,8 +467,6 @@ static void dwxgmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
+                             &mmc->mmc_rx_multicastframe_g);
+        dwxgmac_read_mmc_reg(mmcaddr, MMC_XGMAC_RX_CRC_ERR,
+                             &mmc->mmc_rx_crc_error);
+-       dwxgmac_read_mmc_reg(mmcaddr, MMC_XGMAC_RX_CRC_ERR,
+-                            &mmc->mmc_rx_crc_error);
+        mmc->mmc_rx_run_error += readl(mmcaddr + MMC_XGMAC_RX_RUNT_ERR);
+        mmc->mmc_rx_jabber_error += readl(mmcaddr + MMC_XGMAC_RX_JABBER_ERR);
+        mmc->mmc_rx_undersize_g += readl(mmcaddr + MMC_XGMAC_RX_UNDER);
 
->
-> > +
-> > +     dev_warn(priv->dev,
-> > +              "Failed to assert the switch reset control: %pe\n",
-> > +              ERR_PTR(ret));
->
-> You only log an error if the reset controller assert fails, but not if
-> the GPIO assert fails. Why the unequal treatment?
+-Serge(y)
 
-Because it does not return a value. There is no way to tell if it failed.
-
->
-> I suggest keeping it simple:
->
-> void rtl83xx_reset_assert(struct realtek_priv *priv)
-> {
->   int ret;
->
->   ret = reset_control_assert(priv->reset_ctl);
->   if (ret)
->     dev_warn(priv->dev, "failed to assert reset control: %d\n", ret);
->
->   ret = gpiod_set_value(priv->reset, false);
->   if (ret)
->     dev_warn(priv->dev, "failed to assert reset GPIO: %d\n", ret);
-> }
->
-> or even drop the warnings altogether.
->
-> > +
-> > +     gpiod_set_value(priv->reset, true);
-> > +}
-> > +
-> > +void rtl83xx_reset_deassert(struct realtek_priv *priv)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = reset_control_deassert(priv->reset_ctl);
-> > +     if (!ret)
-> > +             return;
-> > +
-> > +     dev_warn(priv->dev,
-> > +              "Failed to deassert the switch reset control: %pe\n",
-> > +              ERR_PTR(ret));
-> > +
-> > +     gpiod_set_value(priv->reset, false);
-> > +}
->
-> Same comments apply to this function. Just deassert both.
->
-> > +
-> >  MODULE_AUTHOR("Luiz Angelo Daros de Luca <luizluca@gmail.com>");
-> >  MODULE_AUTHOR("Linus Walleij <linus.walleij@linaro.org>");
-> >  MODULE_DESCRIPTION("Realtek DSA switches common module");
-> > diff --git a/drivers/net/dsa/realtek/rtl83xx.h b/drivers/net/dsa/realtek/rtl83xx.h
-> > index 0ddff33df6b0..c8a0ff8fd75e 100644
-> > --- a/drivers/net/dsa/realtek/rtl83xx.h
-> > +++ b/drivers/net/dsa/realtek/rtl83xx.h
-> > @@ -18,5 +18,7 @@ int rtl83xx_register_switch(struct realtek_priv *priv);
-> >  void rtl83xx_unregister_switch(struct realtek_priv *priv);
-> >  void rtl83xx_shutdown(struct realtek_priv *priv);
-> >  void rtl83xx_remove(struct realtek_priv *priv);
-> > +void rtl83xx_reset_assert(struct realtek_priv *priv);
-> > +void rtl83xx_reset_deassert(struct realtek_priv *priv);
-> >
-> >  #endif /* _RTL83XX_H */
-> >
-> > --
-> > 2.43.0
-> >
-
-Regards,
-
-Luiz
+> ---
+> Changes in v2:
+> - Drop the misleading registers completely
+> - Link to v1: https://lore.kernel.org/r/20240216-stmmac_stats-v1-1-7065fa4613f8@axis.com
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/mmc.h            | 3 ---
+>  drivers/net/ethernet/stmicro/stmmac/mmc_core.c       | 3 ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 2 --
+>  3 files changed, 8 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc.h b/drivers/net/ethernet/stmicro/stmmac/mmc.h
+> index a0c05925883e..8cfba817491b 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/mmc.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/mmc.h
+> @@ -78,9 +78,6 @@ struct stmmac_counters {
+>  	unsigned int mmc_rx_fifo_overflow;
+>  	unsigned int mmc_rx_vlan_frames_gb;
+>  	unsigned int mmc_rx_watchdog_error;
+> -	/* IPC */
+> -	unsigned int mmc_rx_ipc_intr_mask;
+> -	unsigned int mmc_rx_ipc_intr;
+>  	/* IPv4 */
+>  	unsigned int mmc_rx_ipv4_gd;
+>  	unsigned int mmc_rx_ipv4_hderr;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> index 6a7c1d325c46..ab3b7770f62d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> @@ -279,9 +279,6 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
+>  	mmc->mmc_rx_fifo_overflow += readl(mmcaddr + MMC_RX_FIFO_OVERFLOW);
+>  	mmc->mmc_rx_vlan_frames_gb += readl(mmcaddr + MMC_RX_VLAN_FRAMES_GB);
+>  	mmc->mmc_rx_watchdog_error += readl(mmcaddr + MMC_RX_WATCHDOG_ERROR);
+> -	/* IPC */
+> -	mmc->mmc_rx_ipc_intr_mask += readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
+> -	mmc->mmc_rx_ipc_intr += readl(mmcaddr + MMC_RX_IPC_INTR);
+>  	/* IPv4 */
+>  	mmc->mmc_rx_ipv4_gd += readl(mmcaddr + MMC_RX_IPV4_GD);
+>  	mmc->mmc_rx_ipv4_hderr += readl(mmcaddr + MMC_RX_IPV4_HDERR);
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> index f628411ae4ae..28accdc98282 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> @@ -236,8 +236,6 @@ static const struct stmmac_stats stmmac_mmc[] = {
+>  	STMMAC_MMC_STAT(mmc_rx_fifo_overflow),
+>  	STMMAC_MMC_STAT(mmc_rx_vlan_frames_gb),
+>  	STMMAC_MMC_STAT(mmc_rx_watchdog_error),
+> -	STMMAC_MMC_STAT(mmc_rx_ipc_intr_mask),
+> -	STMMAC_MMC_STAT(mmc_rx_ipc_intr),
+>  	STMMAC_MMC_STAT(mmc_rx_ipv4_gd),
+>  	STMMAC_MMC_STAT(mmc_rx_ipv4_hderr),
+>  	STMMAC_MMC_STAT(mmc_rx_ipv4_nopay),
+> 
+> ---
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> change-id: 20240216-stmmac_stats-e3561d460d0e
+> 
+> Best regards,
+> -- 
+> 
+> /^JN - Jesper Nilsson
+> -- 
+>                Jesper Nilsson -- jesper.nilsson@axis.com
+> 
+> 
 
