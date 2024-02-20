@@ -1,205 +1,144 @@
-Return-Path: <linux-kernel+bounces-72958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADFFB85BB1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:56:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7931B85BB27
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:57:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D18521C2173C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:56:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01E79B270EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65C167C58;
-	Tue, 20 Feb 2024 11:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4510C67C74;
+	Tue, 20 Feb 2024 11:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efAxrePN"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="4xbaCJOa"
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E2F67A1E;
-	Tue, 20 Feb 2024 11:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6587F67C4E;
+	Tue, 20 Feb 2024 11:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708430193; cv=none; b=YE/txpnYXLVu5wJrazUjoXl8xpdKHGh8q/xOiEpYpkw+L6zbtROwkXhUjEmoa+QtM8LOpBJm8Xp8w5kjiSHJQTtTdfX8uQwOB38XELcleDRoFDKxv5e5MMEjpY++UyikMJ6s5UYlOjS203IXB7oUuAkN8vWFvSlLluGWDfnyVA4=
+	t=1708430249; cv=none; b=jml5pmye5EHh7Wg6PTWaQNTyEpWCnVwi07Vc4xJCKrmnAd4ZmO2eCXYqD2ilseE46ITayym16uusv9BXomsA3tkkjQqRGE9yhcGEvesIW1iNij9wbsMCPYVUn0WAeRUIOKEo4qGDEou/5VrhT/u7l2OscGQ4VwMOv5np336Iikg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708430193; c=relaxed/simple;
-	bh=DHyNac6pqvpgWDifETaFskO4ADR2Iy/NxbY88RBFutQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bO3IgNBZb63XBtp+y8w+qxqTvmo5D1tX+J1xE4lY0nIGVXG97uSsvpSPCY8usV3t5KQNzGNCPbaXgkCYjg6MxoeX1CRj7N9zwjDhm64XRpFtbQkuaVo9H/HH4zkLT/SRxY0LTKdvAU0phfWB5tlhUhXI3A3BYMg+pQHW+02hyEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=efAxrePN; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512b29f82d1so2942268e87.1;
-        Tue, 20 Feb 2024 03:56:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708430189; x=1709034989; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=foNRqD08lE8m6cwZRG5heeFxF4dvoAE7BS0q7pzI9rg=;
-        b=efAxrePN/YwnaHdxIe98K8SORbooHer7ONC2dvUfWO98DR9DElxx625kzkQVa3epKB
-         7+iOLDZQ1BxTTfr5fOJHIIEZvjOPoqDAwW3qAmyd2hIpsr+drL+aKsVIWqH4DN3vf3tl
-         mM48PvT9rhvpALWXOIQzB5aRmtoljkn5AJxigKiGOAu0SitwsxhQKR9pYE+1xGzlfU88
-         cAbDmX1uxL+dlLTLURwwma8t90JSVpTAIgBIAW2/2ukq5Rml4x4tVy2rU1UlQoe4NiPp
-         sxGjdsKBjMQ/hdpoJY2o/FH5OrqjMNvln/Uylo655vB5RuuzRGaDfeHZU49lul4z2+9p
-         jq8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708430189; x=1709034989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=foNRqD08lE8m6cwZRG5heeFxF4dvoAE7BS0q7pzI9rg=;
-        b=Wvaqno9vkt/jSj9uRQLFlDT/6pqPhnUqB6blZxggwXJ2uFjpHsQhl7I5jxginFMXka
-         34qgsyZAsAFwFofXMfETfDoEfwWrzXiGXNSZhXO5w4HtkXJ5ZfsmJVdnt+17oIMAOzMN
-         BvixaiJq3HuSQPxwHBY7ogB76CabkwBSWqNrB6Z8zyPiDhBCbnR841ScHG7GcmabUJLe
-         znUKIzRC0o+VIUNyDFLUZEPCdUbiuLBBj8beOX8ZlPWR8VM+2I9wdsAJuehJyRjER+9L
-         PWfjIuC1knVnOopZdMrG//3/MBMW6uKqxQKn/6sZmUmt8HxN9HxHlR1GBSITlK7lJzk9
-         MqfA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKPjTPj1bBbtkRfrnF+MY5YxrAfonk0RjAv3bVvolmjx3/F6yXnNn5xt5Bm/eK66TKAdrDOU16BjKOLxKRHzoX38Ud/f3GEPEIWW5tpygThBkzULWQEXyHTcbpYSmI5ISVN/GnhfO6CmQ=
-X-Gm-Message-State: AOJu0YydGQEZs+g4jrV8ZpP0L/R8QXySSlBWN6QmIA72ojYc3C5FJBsC
-	3irZKMlrSfll5qf5oYIw8v1BMmr0FxWMQ7VUS+UUF2H4aaZq6s9eeycXWMNcRiJAtRAzRP1dMxq
-	jFc23gD3XlU8RRsP/NLFH/VCa+R4=
-X-Google-Smtp-Source: AGHT+IEmhfalQ3QRFY1wEpyvoluzT6iLzF14pjVu2I1tXPKM32xK85UIwaB3SZZz+BaPx4WRiAqOi+Ehg6AMRiUzExM=
-X-Received: by 2002:a05:6512:239f:b0:512:b90e:ab3a with SMTP id
- c31-20020a056512239f00b00512b90eab3amr3470779lfv.23.1708430188983; Tue, 20
- Feb 2024 03:56:28 -0800 (PST)
+	s=arc-20240116; t=1708430249; c=relaxed/simple;
+	bh=RMDhUfhGZeArDSgF3ihV+uEwJ9e6YTGsJuPN6ZlFYfo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=g7r1fguv8zfqBlBo31YpZBpj4NMOf1RR8HGDfsHT7qj8i3X4SyHOIO/VyywfM8zr/NJ3NPWyiM/qeYCa1bbwCSRZkpKCFvqsGb6QEzngFAzAxaEmj5TMTcqWbHhz8SD3qky01wv95HWstaKY241/6YVqQjWJnzHCddZa3Bz/vks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=4xbaCJOa; arc=none smtp.client-ip=194.87.146.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.trvn.ru (Postfix) with ESMTPSA id AA1EF40387;
+	Tue, 20 Feb 2024 16:57:17 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+	t=1708430238; bh=RMDhUfhGZeArDSgF3ihV+uEwJ9e6YTGsJuPN6ZlFYfo=;
+	h=From:Subject:Date:To:Cc:From;
+	b=4xbaCJOaovGOd/+tOZYgcpLOjpmu7qofuJpWg/BQ/2OUzYVgDpoGPrTKUeZ3tDhAU
+	 0mgybVFk54nlnXw1ivfHPW5jYi3CoFyeQdE46Zn+k+7gDuwqSKvwp6cOhCrKw9vFMI
+	 3mVdhWOfrW6LV/gQNQKWrdPEcXap0QH9pjZJzlw/6g/LFfwP6uHh/umJCZvdRKMcGq
+	 A+oGcmLQqtCGroRrf2yOjZB7rtmJ2dQDQG4qAjk5tr4IR43AcuZgDZdhF1UE9GkFcb
+	 SqaMxJiXnCZqFYBlWaD7JpSgKW8hexV+CIkdp68IC2VVkytTitqgrZYCAjzq9+gn7/
+	 oH4gwpEeMcHtA==
+From: Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH v3 0/3] power: supply: Acer Aspire 1 embedded controller
+Date: Tue, 20 Feb 2024 16:57:11 +0500
+Message-Id: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220114536.513494-1-zhaoyang.huang@unisoc.com>
-In-Reply-To: <20240220114536.513494-1-zhaoyang.huang@unisoc.com>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Tue, 20 Feb 2024 19:56:17 +0800
-Message-ID: <CAGWkznGW4xUyhxySajAHginW9wz3GNB_iV5FUEkGD5h__YVUTw@mail.gmail.com>
-Subject: Re: [PATCHv2 2/2] block: adjust CFS request expire time
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJeT1GUC/1XMQQ6CMBCF4auYWVvTGZQGV97DuBiGUboB0mKjI
+ dzdQmLE5XvJ/00QNXiNcN5NEDT56Psuj2K/A2m5e6jxTd5AlgokWxqOgw+KRsWUddGQsCA7ghw
+ MQe/+tWLXW96tj2Mf3qudcHm/jNsyCY01NVeKQuSsdZcxpO4QnrAgiTYh0l9IORQ+Vidly47lF
+ 87z/AFsS4Mh2wAAAA==
+To: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org, 
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>
+Cc: linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ Nikita Travkin <nikita@trvn.ru>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2172; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=RMDhUfhGZeArDSgF3ihV+uEwJ9e6YTGsJuPN6ZlFYfo=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBl1JOaHlnQv5HkaeWvoA8Eb7/agVmUR11TCkWGZ
+ z0AJuWPbAiJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZdSTmgAKCRBDHOzuKBm/
+ dSaHD/4vK0CrKhObBMgsUN4WbMEmOT31itMTdjzS9oWl5rROkXvarhv/AKED12zI+CcmOl2pDsS
+ iSJREUYk3q0KccBWNna1quTVNBSqiLWwBUENZJprbu3mb9b5qWiPGNkENJsXFpkW2LExTvSO+pW
+ T5+C9oQY81iwZ63t34zQS/0ZE9XMUkCP+n/DD3UrwL+6ma0mfRs22GNZG1gsufuWR6UTV79tgfO
+ 7aWIrzgwtNU2PKRDIn9rWaoWDa7xGnayobdnc8KXck/1fKo42Y0ug3DpODpqsNyfOwO+R289xgv
+ pbg2zOXN01FWpEJ5ebhlp+eTMY9cEHvATUOtrr3jVRCkFxApAA92xlQ3OgAr0q7sasGA/g8Megy
+ lkQQiCqW3ohfUEcaI1APVT45R+t3agJPOeMLBEP1EI8QVp+LR5xRecRbg7axNxp6qqTnOz+hMMc
+ ME0I1UtDGGu4Wr1K4fibi6CVtEyt7t2Z7X3otZxjitJUAjRU6ejEdyYcgmWMPa3Zp9HkkaiCLJg
+ ciAVyxxfuvbnht1NBoD+DNaFFnr2cT32ZXv8f3i9ccnMMmaZloIJy65i6NFfvtcZebcZtTebjks
+ ltHRpCED+rE9qRGd0GdTiI+rtKyHUEm+gbiK9RvPmv4W0ME1GvhJTwlFuzpMFJJKGTT8YksDYEd
+ tvnjjMbJtPzpiFg==
+X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
+ fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 
-Patchv2 make the adjustment work as a CFS's over-preempted guard which
-only take effect for READ
+The laptop contains an embedded controller that provides a set of
+features:
 
-On Tue, Feb 20, 2024 at 7:46=E2=80=AFPM zhaoyang.huang
-<zhaoyang.huang@unisoc.com> wrote:
->
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->
-> According to current policy, CFS's may suffer involuntary IO-latency by
-> being preempted by RT/DL tasks or IRQ since they possess the privilege fo=
-r
-> both of CPU and IO scheduler. This commit introduce an approximate and
-> light method to decrease these affection by adjusting the expire time
-> via the CFS's proportion among the whole cpu active time.
-> The average utilization of cpu's run queue could reflect the historical
-> active proportion of different types of task that can be proved valid for
-> this goal from belowing three perspective,
->
-> 1. All types of sched class's load(util) are tracked and calculated in th=
-e
-> same way(using a geometric series which known as PELT)
-> 2. Keep the legacy policy by NOT adjusting rq's position in fifo_list
-> but only make changes over expire_time.
-> 3. The fixed expire time(hundreds of ms) is in the same range of cpu
-> avg_load's account series(the utilization will be decayed to 0.5 in 32ms)
->
-> TaskA
-> sched in
-> |
-> |
-> |
-> submit_bio
-> |
-> |
-> |
-> fifo_time =3D jiffies + expire
-> (insert_request)
->
-> TaskB
-> sched in
-> |
-> |
-> vfs_xxx
-> |
-> |preempted by RT,DL,IRQ
-> |\
-> | This period time is unfair to TaskB's IO request, should be adjust
-> |/
-> |
-> submit_bio
-> |
-> |
-> |
-> fifo_time =3D jiffies + expire * CFS_PROPORTION(rq)
-> (insert_request)
->
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
-> change of v2: introduce direction and threshold to make the hack working
-> as a guard for CFS's over-preempted.
-> ---
-> ---
->  block/mq-deadline.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-> index f958e79277b8..b5aa544d69a3 100644
-> --- a/block/mq-deadline.c
-> +++ b/block/mq-deadline.c
-> @@ -54,6 +54,7 @@ enum dd_prio {
->
->  enum { DD_PRIO_COUNT =3D 3 };
->
-> +#define CFS_PROP_THRESHOLD 60
->  /*
->   * I/O statistics per I/O priority. It is fine if these counters overflo=
-w.
->   * What matters is that these counters are at least as wide as
-> @@ -802,6 +803,7 @@ static void dd_insert_request(struct blk_mq_hw_ctx *h=
-ctx, struct request *rq,
->         u8 ioprio_class =3D IOPRIO_PRIO_CLASS(ioprio);
->         struct dd_per_prio *per_prio;
->         enum dd_prio prio;
-> +       int fifo_expire;
->
->         lockdep_assert_held(&dd->lock);
->
-> @@ -839,8 +841,20 @@ static void dd_insert_request(struct blk_mq_hw_ctx *=
-hctx, struct request *rq,
->
->                 /*
->                  * set expire time and add to fifo list
-> +                * The expire time is adjusted when current CFS task is
-> +                * over-preempted by RT/DL/IRQ which is calculated by the
-> +                * proportion of CFS's activation among whole cpu time du=
-ring
-> +                * last several dozen's ms.Whearas, this would NOT affect=
- the
-> +                * rq's position in fifo_list but only take effect when t=
-his
-> +                * rq is checked for its expire time when at head.
->                  */
-> -               rq->fifo_time =3D jiffies + dd->fifo_expire[data_dir];
-> +               fifo_expire =3D dd->fifo_expire[data_dir];
-> +               if (data_dir =3D=3D DD_READ &&
-> +                       (cfs_prop_by_util(current, 100) < CFS_PROP_THRESH=
-OLD))
-> +                       fifo_expire =3D cfs_prop_by_util(current, dd->fif=
-o_expire[data_dir]);
-> +
-> +               rq->fifo_time =3D jiffies + fifo_expire;
-> +
->                 insert_before =3D &per_prio->fifo_list[data_dir];
->  #ifdef CONFIG_BLK_DEV_ZONED
->                 /*
-> --
-> 2.25.1
->
+- Battery and charger monitoring
+- USB Type-C DP alt mode HPD monitoring
+- Lid status detection
+- Small amount of keyboard configuration*
+
+[*] The keyboard is handled by the same EC but it has a dedicated i2c
+bus and is already enabled. This port only provides fn key behavior
+configuration.
+
+Unfortunately, while all this functionality is implemented in ACPI, it's
+currently not possible to use ACPI to boot Linux on such Qualcomm
+devices. Thus this series implements and enables a new driver that
+provides support for the EC features.
+
+The EC would be one of the last pieces to get almost full support for the
+Acer Aspire 1 laptop in the upstream Linux kernel.
+
+This series is similar to the EC driver for Lenovo Yoga C630, proposed
+in [1] but seemingly never followed up...
+
+[1] https://lore.kernel.org/all/20230205152809.2233436-1-dmitry.baryshkov@linaro.org/
+
+Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+---
+Changes in v3:
+- Supress warning on few no-op events.
+- Invert the fn key behavior (Rob, Conor)
+- Link to v2: https://lore.kernel.org/r/20231212-aspire1-ec-v2-0-ca495ea0a7ac@trvn.ru
+
+Changes in v2:
+- Drop incorrectly allowed reg in the ec connector binding (Krzysztof)
+- Minor style changes (Konrad)
+- Link to v1: https://lore.kernel.org/r/20231207-aspire1-ec-v1-0-ba9e1c227007@trvn.ru
+
+---
+Nikita Travkin (3):
+      dt-bindings: power: supply: Add Acer Aspire 1 EC
+      power: supply: Add Acer Aspire 1 embedded controller driver
+      arm64: dts: qcom: acer-aspire1: Add embedded controller
+
+ .../bindings/power/supply/acer,aspire1-ec.yaml     |  69 ++++
+ arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts   |  40 +-
+ drivers/power/supply/Kconfig                       |  14 +
+ drivers/power/supply/Makefile                      |   1 +
+ drivers/power/supply/acer-aspire1-ec.c             | 453 +++++++++++++++++++++
+ 5 files changed, 576 insertions(+), 1 deletion(-)
+---
+base-commit: 2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e
+change-id: 20231206-aspire1-ec-6b3d2cac1a72
+
+Best regards,
+-- 
+Nikita Travkin <nikita@trvn.ru>
+
 
