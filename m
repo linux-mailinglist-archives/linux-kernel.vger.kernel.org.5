@@ -1,202 +1,376 @@
-Return-Path: <linux-kernel+bounces-72165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5BA85B03D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:07:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD62285B03F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E288FB21F74
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:07:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39A4CB22317
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAECA12B76;
-	Tue, 20 Feb 2024 01:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39DA1095B;
+	Tue, 20 Feb 2024 01:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fu6RS80W"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WeEdUPYJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AE733F1
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF5BF9F8;
+	Tue, 20 Feb 2024 01:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708391253; cv=none; b=CNffYl2SVAWwgnf5quX3EMoafaCud8xoKdWsKYnGMW1HYFOsfZniAubOJogPWtPriv3QHWCW+3USM3rOzPynD3evIHvBzpfw3XGQz+sq9Eir5Yn4TZiNJiQ16/5x6mriHXaGAjnMwCh0q7q/Otd9XeW9b9TJcgqY1JDm4fHaC9k=
+	t=1708391468; cv=none; b=goIsY0Oi6C4k+Hi+priGYm2eDt9WrhBo3OtCskZ9D82DuyE2B4sx2CGsrboLepL+uwaFmGBgL/VuIWo0caNPMoXCL5Q+nzxdahwThbBbdWBQlP4xv6cct7vCgN5/GPn3fV9r2/5OIQXs578yNW2dEgfIBY76BII9hXO7jzJ52fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708391253; c=relaxed/simple;
-	bh=W7mIHh5rHh4vdMHkIbDHj/R9F9JPJqAdn6+RySJC+54=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MagTybFa+8EWsMgEI7buhYXfMXLCQg/NKZGO1R1WI7Z56VeAL8ZldyxPbnZ3OWUSPgg66mocZHcHyuR5drdrL/QplwNRvyiv56XXdI8m0aZyq1xabtF1MeV4lIkKfOw4W782DNObJsPPZYkFAzqazlSfD+K11u88VKC8W/Uz9kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fu6RS80W; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708391249;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bN+xRkF6So+ejO9INBzpCuxH/ICgnLXLsxP9bDXIKL0=;
-	b=Fu6RS80WmslDDQ7v0GGycpqDwQbWTmAB71bvdgfE7RzDz3/d0mxnvXHb542qW3jjLc70Tm
-	33spFYVkJLUAKnT6cKzVXVjCm/fNg1FHFt1UFaxguDZTG7exui1tn5n3FHAGKZz+riYsY7
-	LgFDlwp2909aHdn92wbG5ZfabzEpLHY=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-210-v085uBDUMDO7-YIGYCkf2w-1; Mon, 19 Feb 2024 20:07:27 -0500
-X-MC-Unique: v085uBDUMDO7-YIGYCkf2w-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d243193975so7715781fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:07:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708391246; x=1708996046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bN+xRkF6So+ejO9INBzpCuxH/ICgnLXLsxP9bDXIKL0=;
-        b=mu09AhGCPUiaLXkSzv3c3XmT+A9M67vcsyF47p8qwd39fGl5XmRZDkbROBZ8BpK99Y
-         rPsOgmyD7zCV1gaecbS2WvrrMmA2gcTS0d1nt4BAIGoeTkSJAx/DS/sWwBO+k9y69B7D
-         NYq7dKImyIq+f3103/DjNLTLQ5BVO00omk58589+bDKIub8aNxqpm6e6B2IetddhKm8V
-         lkY8cLqjQmwzUM8PQ4MNycj6DAnHoCI4Qpq+ZK/Fa7QsUBXRRahv7Yrh09QsXObHT2zX
-         eJ9fF1yT63KSU22XEos2TWsEWC8e5SmGxN0qDTMbOqjlnf7vDMHTOT/8ZtNDtcKwbxt8
-         019g==
-X-Forwarded-Encrypted: i=1; AJvYcCUZDCoPENRuP0fTi7HonXH4jzhgQ6ET35WrC/uWrjm+hDwRG5VeGpBPpUVBCRqGD8qySWJYANsDR1EAwEsA9mNhPjw8D7sl1dWJOtMf
-X-Gm-Message-State: AOJu0YzcPOyM9mWHzHduecVcfUeB4RfnhzJMRRjbV2A0hinN8Hzm0M89
-	rn2RQBoQcK/EA+hY62yh1FYH/du3UHFy7fuCe4S19VvKiwSyCvlwqFApGA4DSs4IKxl/NZooXDG
-	RJ897fo4gVxjcxmICM6EJxbwzmI+PSrEfGlYdCkhuBnd14LRNqM+u0xo2eh5IVPK7KdA6gywmTF
-	j04Nv2xjTbQNtDjD2MlhJbcZRMDNoRMGm9fb3/
-X-Received: by 2002:a2e:3e1a:0:b0:2d2:39a5:d190 with SMTP id l26-20020a2e3e1a000000b002d239a5d190mr3791521lja.1.1708391246130;
-        Mon, 19 Feb 2024 17:07:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG1kIyPveHUOVWMZmCgVFi1xnalj/6PCfA0yBeOAHEpQlJnohIRvG+RGA4f3rHPjY22pVoOoBYS1nqilt7dOXQ=
-X-Received: by 2002:a2e:3e1a:0:b0:2d2:39a5:d190 with SMTP id
- l26-20020a2e3e1a000000b002d239a5d190mr3791512lja.1.1708391245809; Mon, 19 Feb
- 2024 17:07:25 -0800 (PST)
+	s=arc-20240116; t=1708391468; c=relaxed/simple;
+	bh=zbwGqBLzRD3fZTXy/MlmyAoiH93kbhAQ+M07A+hLbNU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LirGH95nDekrcsn93Kh6WM99g9AnSEO9DFxoN/SD5+zcsYyeDjHiXjuLCCD11PbMVvjWhnOZoc9p3dFxAneOWs/Hthq2Ff0xMuIsjjYtgJ8li0e5MOx/h2l5XxnntwM0JXA8VCjwbZYK5o7a6dOiDfM24xD1tKjvrAIona1WJdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WeEdUPYJ; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708391465; x=1739927465;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=zbwGqBLzRD3fZTXy/MlmyAoiH93kbhAQ+M07A+hLbNU=;
+  b=WeEdUPYJo+OSHrWu4M57Ijc8PIUbrij6xvH+ITlQYqfc7dsqotFYkq8U
+   1VubpMFrdJHrizVqWHQO4W1niOuvqz9+ZA/Btuzngbx+kYflZueNtw+Nd
+   wV6SFcqRRSFK/tV9vifVE2Z0vOvhuBhxPdH/b7FkKAzApUeAVxl6LuUys
+   pWJuA92GCIqniNPVe8FJUKzwv2O7P9TJkkhsYK1xmqQN3u/YmGFZAyCov
+   /3wggZ9BQXvQSoMoGq8UEHdUtgY0/nEGM4Ze3pglgPUl0zeILMgU2/YYg
+   idIjXx21Zgucem51jFFIwNG+YdX+zT37Dkj2B4irnhR7vRXiJ5cBk8ayp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="6250887"
+X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
+   d="scan'208";a="6250887"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 17:11:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
+   d="scan'208";a="27788054"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 17:10:59 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: Kairui Song <kasong@tencent.com>,  linux-mm@kvack.org,  Andrew Morton
+ <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Minchan Kim
+ <minchan@kernel.org>,  Barry Song <v-songbaohua@oppo.com>,  Yu Zhao
+ <yuzhao@google.com>,  SeongJae Park <sj@kernel.org>,  David Hildenbrand
+ <david@redhat.com>,  Hugh Dickins <hughd@google.com>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Michal Hocko
+ <mhocko@suse.com>,  Yosry Ahmed <yosryahmed@google.com>,  Aaron Lu
+ <aaron.lu@intel.com>,  stable@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mm/swap: fix race when skipping swapcache
+In-Reply-To: <CAGsJ_4xX+K=f_4g2c7NcpYqWH0_bvQshxgz_YoDscqeHwWpM0w@mail.gmail.com>
+	(Barry Song's message of "Tue, 20 Feb 2024 11:10:03 +1300")
+References: <20240219082040.7495-1-ryncsn@gmail.com>
+	<CAGsJ_4xX+K=f_4g2c7NcpYqWH0_bvQshxgz_YoDscqeHwWpM0w@mail.gmail.com>
+Date: Tue, 20 Feb 2024 09:09:03 +0800
+Message-ID: <87frxoq6vk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213152414.3703-1-n.zhandarovich@fintech.ru>
-In-Reply-To: <20240213152414.3703-1-n.zhandarovich@fintech.ru>
-From: Alexander Aring <aahringo@redhat.com>
-Date: Mon, 19 Feb 2024 20:07:14 -0500
-Message-ID: <CAK-6q+j52utmO8K_h=3LqDYmXqsqFC6MKRPUM+q=1Q30c7nEMg@mail.gmail.com>
-Subject: Re: [PATCH wpan] mac802154: fix uninit-value issue in ieee802154_header_create()
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Alexander Aring <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	linux-wpan@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Barry Song <21cnbao@gmail.com> writes:
 
-On Tue, Feb 13, 2024 at 10:24=E2=80=AFAM Nikita Zhandarovich
-<n.zhandarovich@fintech.ru> wrote:
+> On Mon, Feb 19, 2024 at 9:21=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wr=
+ote:
+>>
+>> From: Kairui Song <kasong@tencent.com>
+>>
+>> When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
+>> swapin the same entry at the same time, they get different pages (A, B).
+>> Before one thread (T0) finishes the swapin and installs page (A)
+>> to the PTE, another thread (T1) could finish swapin of page (B),
+>> swap_free the entry, then swap out the possibly modified page
+>> reusing the same entry. It breaks the pte_same check in (T0) because
+>> PTE value is unchanged, causing ABA problem. Thread (T0) will
+>> install a stalled page (A) into the PTE and cause data corruption.
+>>
+>> One possible callstack is like this:
+>>
+>> CPU0                                 CPU1
+>> ----                                 ----
+>> do_swap_page()                       do_swap_page() with same entry
+>> <direct swapin path>                 <direct swapin path>
+>> <alloc page A>                       <alloc page B>
+>> swap_read_folio() <- read to page A  swap_read_folio() <- read to page B
+>> <slow on later locks or interrupt>   <finished swapin first>
+>> ..                                  set_pte_at()
+>>                                      swap_free() <- entry is free
+>>                                      <write to page B, now page A stalle=
+d>
+>>                                      <swap out page B to same swap entry>
+>> pte_same() <- Check pass, PTE seems
+>>               unchanged, but page A
+>>               is stalled!
+>> swap_free() <- page B content lost!
+>> set_pte_at() <- staled page A installed!
+>>
+>> And besides, for ZRAM, swap_free() allows the swap device to discard
+>> the entry content, so even if page (B) is not modified, if
+>> swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+>> it may also cause data loss.
+>>
+>> To fix this, reuse swapcache_prepare which will pin the swap entry using
+>> the cache flag, and allow only one thread to swap it in, also prevent
+>> any parallel code from putting the entry in the cache. Release the pin
+>> after PT unlocked.
+>>
+>> Racers just loop and wait since it's a rare and very short event.
+>> A schedule_timeout_uninterruptible(1) call is added to avoid repeated
+>> page faults wasting too much CPU, causing livelock or adding too much
+>> noise to perf statistics. A similar livelock issue was described in
+>> commit 029c4628b2eb ("mm: swap: get rid of livelock in swapin readahead")
+>>
+>> Reproducer:
+>>
+>> This race issue can be triggered easily using a well constructed
+>> reproducer and patched brd (with a delay in read path) [1]:
+>>
+>> With latest 6.8 mainline, race caused data loss can be observed easily:
+>> $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+>>   Polulating 32MB of memory region...
+>>   Keep swapping out...
+>>   Starting round 0...
+>>   Spawning 65536 workers...
+>>   32746 workers spawned, wait for done...
+>>   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+>>   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+>>   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+>>   Round 0 Failed, 15 data loss!
+>>
+>> This reproducer spawns multiple threads sharing the same memory region
+>> using a small swap device. Every two threads updates mapped pages one by
+>> one in opposite direction trying to create a race, with one dedicated
+>> thread keep swapping out the data out using madvise.
+>>
+>> The reproducer created a reproduce rate of about once every 5 minutes,
+>> so the race should be totally possible in production.
+>>
+>> After this patch, I ran the reproducer for over a few hundred rounds
+>> and no data loss observed.
+>>
+>> Performance overhead is minimal, microbenchmark swapin 10G from 32G
+>> zram:
+>>
+>> Before:     10934698 us
+>> After:      11157121 us
+>> Cached:     13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+>>
+>> Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronous=
+ device")
+>> Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress=
+-race [1]
+>> Reported-by: "Huang, Ying" <ying.huang@intel.com>
+>> Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.ccr=
+corp.intel.com/
+>> Signed-off-by: Kairui Song <kasong@tencent.com>
+>> Cc: stable@vger.kernel.org
+>>
+>> ---
+>> V3: https://lore.kernel.org/all/20240216095105.14502-1-ryncsn@gmail.com/
+>> Update from V3:
+>> - Use schedule_timeout_uninterruptible(1) for now instead of schedule() =
+to
+>>   prevent the busy faulting task holds CPU and livelocks [Huang, Ying]
+>>
+>> V2: https://lore.kernel.org/all/20240206182559.32264-1-ryncsn@gmail.com/
+>> Update from V2:
+>> - Add a schedule() if raced to prevent repeated page faults wasting CPU
+>>   and add noise to perf statistics.
+>> - Use a bool to state the special case instead of reusing existing
+>>   variables fixing error handling [Minchan Kim].
+>>
+>> V1: https://lore.kernel.org/all/20240205110959.4021-1-ryncsn@gmail.com/
+>> Update from V1:
+>> - Add some words on ZRAM case, it will discard swap content on swap_free
+>>   so the race window is a bit different but cure is the same. [Barry Son=
+g]
+>> - Update comments make it cleaner [Huang, Ying]
+>> - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJae Par=
+k]
+>> - Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO
+>>   instead of "direct swapin path" [Yu Zhao]
+>> - Update commit message.
+>> - Collect Review and Acks.
+>>
+>>  include/linux/swap.h |  5 +++++
+>>  mm/memory.c          | 20 ++++++++++++++++++++
+>>  mm/swap.h            |  5 +++++
+>>  mm/swapfile.c        | 13 +++++++++++++
+>>  4 files changed, 43 insertions(+)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 4db00ddad261..8d28f6091a32 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
+>>         return 0;
+>>  }
+>>
+>> +static inline int swapcache_prepare(swp_entry_t swp)
+>> +{
+>> +       return 0;
+>> +}
+>> +
+>>  static inline void swap_free(swp_entry_t swp)
+>>  {
+>>  }
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 7e1f4849463a..a99f5e7be9a5 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -3799,6 +3799,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>         struct page *page;
+>>         struct swap_info_struct *si =3D NULL;
+>>         rmap_t rmap_flags =3D RMAP_NONE;
+>> +       bool need_clear_cache =3D false;
+>>         bool exclusive =3D false;
+>>         swp_entry_t entry;
+>>         pte_t pte;
+>> @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>         if (!folio) {
+>>                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>>                     __swap_count(entry) =3D=3D 1) {
+>> +                       /*
+>> +                        * Prevent parallel swapin from proceeding with
+>> +                        * the cache flag. Otherwise, another thread may
+>> +                        * finish swapin first, free the entry, and swap=
+out
+>> +                        * reusing the same entry. It's undetectable as
+>> +                        * pte_same() returns true due to entry reuse.
+>> +                        */
+>> +                       if (swapcache_prepare(entry)) {
+>> +                               /* Relax a bit to prevent rapid repeated=
+ page faults */
+>> +                               schedule_timeout_uninterruptible(1);
 >
-> Syzkaller with KMSAN reported [1] a problem with uninitialized value
-> access in ieee802154_header_create().
+> Not a ideal model, imaging two tasks,
 >
-> The issue arises from a weird combination of cb->secen =3D=3D 1 and
-> cb->secen_override =3D=3D 0, while other required security parameters
-> are not found enabled in mac802154_set_header_security().
+> task A  - low priority running on a LITTLE core
+> task B - high priority and have real-time requirements such as audio,
+>               graphics running on a big core.
 >
+> The original code will make B win even if it is a bit later than A as its=
+ CPU is
+> much faster to finish swap_read_folio for example from zRAM. task B's
+> swap-in can finish very soon.
+>
+> With the patch, B will wait a tick and its real-time performance will be
+> negatively affected from time to time once low priority and high priority
+> tasks fault in the same PTE and high priority tasks are a bit later than
+> low priority tasks. This is a kind of priority inversion.
+>
+> When we support large folio swap-in, things can get worse. For example,
+> to swap-in 16 or even more pages in one do_swap_page, the chance for
+> task A and task B located in the same range of 16 PTEs will increase
+> though they are not located in the same PTE.
+>
+> Please consider this is not a blocker for this patch. But I will put the =
+problem
+> in my list and run some real tests on Android phones later.
 
-In case of cb->secen is 1 and cb->secen_override is 0
-mac802154_set_header_security() should depend on the
-ieee802154_llsec_params params.
+Yes.  This may hurt performance.  But this is necessary to solve a
+livelock problem similar as commit 029c4628b2eb ("mm: swap: get rid of
+livelock in swapin readahead").  Please consider that too.
 
-As [0] WPAN_SECURITY_DEFAULT signals this behaviour.
+--
+Best Regards,
+Huang, Ying
 
-> Ideally such case is expected to be caught by starting check at the
-> beginning of mac802154_set_header_security():
+>> +                               goto out;
+>> +                       }
+>> +                       need_clear_cache =3D true;
+>> +
+>>                         /* skip swapcache */
+>>                         folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, =
+0,
+>>                                                 vma, vmf->address, false=
+);
+>> @@ -4117,6 +4132,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>         if (vmf->pte)
+>>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
+>>  out:
+>> +       /* Clear the swap cache pin for direct swapin after PTL unlock */
+>> +       if (need_clear_cache)
+>> +               swapcache_clear(si, entry);
+>>         if (si)
+>>                 put_swap_device(si);
+>>         return ret;
+>> @@ -4131,6 +4149,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>                 folio_unlock(swapcache);
+>>                 folio_put(swapcache);
+>>         }
+>> +       if (need_clear_cache)
+>> +               swapcache_clear(si, entry);
+>>         if (si)
+>>                 put_swap_device(si);
+>>         return ret;
+>> diff --git a/mm/swap.h b/mm/swap.h
+>> index 758c46ca671e..fc2f6ade7f80 100644
+>> --- a/mm/swap.h
+>> +++ b/mm/swap.h
+>> @@ -41,6 +41,7 @@ void __delete_from_swap_cache(struct folio *folio,
+>>  void delete_from_swap_cache(struct folio *folio);
+>>  void clear_shadow_from_swap_cache(int type, unsigned long begin,
+>>                                   unsigned long end);
+>> +void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+>>  struct folio *swap_cache_get_folio(swp_entry_t entry,
+>>                 struct vm_area_struct *vma, unsigned long addr);
+>>  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+>> @@ -97,6 +98,10 @@ static inline int swap_writepage(struct page *p, stru=
+ct writeback_control *wbc)
+>>         return 0;
+>>  }
+>>
+>> +static inline void swapcache_clear(struct swap_info_struct *si, swp_ent=
+ry_t entry)
+>> +{
+>> +}
+>> +
+>>  static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
+>>                 struct vm_area_struct *vma, unsigned long addr)
+>>  {
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 556ff7347d5f..746aa9da5302 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -3365,6 +3365,19 @@ int swapcache_prepare(swp_entry_t entry)
+>>         return __swap_duplicate(entry, SWAP_HAS_CACHE);
+>>  }
+>>
+>> +void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
+>> +{
+>> +       struct swap_cluster_info *ci;
+>> +       unsigned long offset =3D swp_offset(entry);
+>> +       unsigned char usage;
+>> +
+>> +       ci =3D lock_cluster_or_swap_info(si, offset);
+>> +       usage =3D __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
+>> +       unlock_cluster_or_swap_info(si, ci);
+>> +       if (!usage)
+>> +               free_swap_slot(entry);
+>> +}
+>> +
+>>  struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+>>  {
+>>         return swap_type_to_swap_info(swp_type(entry));
+>> --
+>> 2.43.0
+>>
+>>
 >
->         if (!params.enabled && cb->secen_override && cb->secen)
->                 return -EINVAL;
->
-> However, since secen_override is zero, the function in question
-> passes this check and returns with success early, without having
-> set values to ieee802154_sechdr fields such as key_id_mode. This in
-> turn leads to uninitialized access of such values in
-> ieee802154_hdr_push_sechdr() and other places.
->
-> Fix this problem by only checking for secen value and presence of
-> security parameters (and ignoring secen_override). Exit early with
-> error if necessary requirements are not met.
->
-> [1]
-> BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/hea=
-der_ops.c:54 [inline]
-> BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee80215=
-4/header_ops.c:108
->  ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
->  ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
->  ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
->  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
->  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
->  ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg net/socket.c:745 [inline]
->  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
->  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
->  __sys_sendmsg net/socket.c:2667 [inline]
->  __do_sys_sendmsg net/socket.c:2676 [inline]
->  __se_sys_sendmsg net/socket.c:2674 [inline]
->  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
->
-> Local variable hdr created at:
->  ieee802154_header_create+0x4e/0xc00 net/mac802154/iface.c:360
->  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
->  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
->
-> Fixes: f30be4d53cad ("mac802154: integrate llsec with wpan devices")
-> Reported-and-tested-by: syzbot+60a66d44892b66b56545@syzkaller.appspotmail=
-com
-> Closes: https://syzkaller.appspot.com/bug?extid=3D60a66d44892b66b56545
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-> ---
-> P.S. Link to previous similar discussion:
-> https://lore.kernel.org/all/tencent_1C04CA8D66ADC45608D89687B4020B2A8706@=
-qq.com/
-> P.P.S. This issue may affect stable versions, at least up to 6.1.
->
->  net/mac802154/iface.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
-> index c0e2da5072be..ad799d349625 100644
-> --- a/net/mac802154/iface.c
-> +++ b/net/mac802154/iface.c
-> @@ -328,7 +328,7 @@ static int mac802154_set_header_security(struct ieee8=
-02154_sub_if_data *sdata,
->
->         mac802154_llsec_get_params(&sdata->sec, &params);
->
-> -       if (!params.enabled && cb->secen_override && cb->secen)
-> +       if (!params.enabled && cb->secen)
->                 return -EINVAL;
->         if (!params.enabled ||
->             (cb->secen_override && !cb->secen) ||
->
-
-I think there is just a missing check if (!cb->secen_override) then
-use whatever mac802154_llsec_get_params() says and ignore
-secen_enabled.
-
-Also I think that we don't init those socket parameters to any value
-at [1] so it's completely random what values are at socket creation.
-
-- Alex
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/net/ieee802154/socket.c?h=3Dv6.8-rc5#n911
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/net/ieee802154/socket.c?h=3Dv6.8-rc5#n474
-
+> Thanks
+> Barry
 
