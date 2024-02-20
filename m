@@ -1,240 +1,226 @@
-Return-Path: <linux-kernel+bounces-73505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A659885C397
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:27:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C615985C39E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:27:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01146B21C0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:27:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 543CE1F219D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A80778661;
-	Tue, 20 Feb 2024 18:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D8A82881;
+	Tue, 20 Feb 2024 18:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pb3cT5AP"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IxxD5z05";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EGjwc1aS";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IxxD5z05";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EGjwc1aS"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339886BB3C;
-	Tue, 20 Feb 2024 18:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8380C81AC4;
+	Tue, 20 Feb 2024 18:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708453624; cv=none; b=XomIHZgwSiFs/P4bWDHGJ2qkd6HKCV1/eoYhb3dDFydRsjoUmP25cZx3RmPptxePKr4nkWEXz6Ct2BcFWcBQ4uwpINzbbs1WY5id3vtnWUCJZx860qKpYrKBklXjTle/3iq+OaS1FwwSUyhOj0FCQF5PTcqEhnSq/TqIqflkxTI=
+	t=1708453651; cv=none; b=LDRdB0B3i8xrtyVkyNVlvEs+iRzmf6v9cN37UpfoNXLBenlWccRcfCyW3apiGLaWOX8V/XO9ZkZgZzCNcXLI3wsPoyKTPQxqye/QGUERNt05IayJuno4g312xOXsEacfKM/ht5uunK12g1CL1L+9UQoKMHV8i7s3s5HIiiS8uXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708453624; c=relaxed/simple;
-	bh=cO4ujRper6/Km3zY4aCT4SkVOMMMSTDm9agYKouiuA8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Egl5Jh5fDEcK2iB5UTSu0BT/jDCOdRY8iUf/qlzz/kkavxySli7nDxSmoAJD7hKU3oiF2kVMm5y+5qwjH9fXj7Y2lqlFn1b02tS832bVoFnp/Geg+02cInxf+/Blb2a2GrDj2ciCncLTlxw2Lsdgl6ncW28HdeWoKz5yek4OyzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pb3cT5AP; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AB6F71C0002;
-	Tue, 20 Feb 2024 18:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708453619;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1708453651; c=relaxed/simple;
+	bh=OJkratr22VFfCbpm7Y4TEVF5H+VxTfzYWK8qM7R7Bmw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RF3v84y5WsS4nTojCsEIxsCHX6PTybJZ28PzSx15RVjv+bQNOR9tE8RsihATFPdM+OUo14AsKyMgGnLMSHyluU9yAxkbYsZV6889YwNc0Lw4lzSa7wgjNBGsjuwDyJGSCWrZVK+a4CFVREXjL4oL+wciFp+MZcEhm6ISLNOPWcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IxxD5z05; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EGjwc1aS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IxxD5z05; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EGjwc1aS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 279D421FDD;
+	Tue, 20 Feb 2024 18:27:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708453647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kB0cvcURRPKKf25KZPEQvVjQACHIFe4QsdVW+tao6hM=;
-	b=pb3cT5APvCDwUMCs6rkAssdwUJSu1o3vDArTlIdrEpWEqbUiYhk6JFvdA46gc2Uhn3f0dX
-	NEAKKOipxEDnMILY8SbAoeVA2W+kE9aN8AbHUvK/Axmisa4ays3YGF9zS0qlpqFhqHtpZM
-	5yRckL7eH9585zQTvHBOJzvHEGPa+ia+xLlpN53bLb+J9P2DHEdtM2juT1ScfM2wSNricV
-	DJ+3kYQGfCLY6X6Q8dAbna6ppg1gSS7M+yTfccJwQ1HkBQIppKos+BzECIvh1qOYUPbCtg
-	C0j9Kj8ZFoFism6isEbsaH5NLAAkgOwOWvoqYCI8d4COzKkTjgcSkT6zLLskMw==
-Date: Tue, 20 Feb 2024 19:26:57 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Kent Gibson <warthog618@gmail.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij
- <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip
- device is removed
-Message-ID: <20240220192657.3dd9480c@bootlin.com>
-In-Reply-To: <20240220142959.GA244726@rigel>
-References: <20240220111019.133697-1-herve.codina@bootlin.com>
-	<20240220111019.133697-3-herve.codina@bootlin.com>
-	<20240220142959.GA244726@rigel>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	bh=ZilpvBzNJyAotgmhs4yPhtveHoML0rb6UBsNzTh2fy0=;
+	b=IxxD5z05As9iwNt64pXwo9uMrmiMPOx8LkjV0Fqt9JDJTqgYJsDWFpdeeOZ6naB/Yats4r
+	j/dPrszvU95YLT0h9IkQS+uuBZiA3xuxqNBxE9MX7vilfRnf/estNQhT+NL6Sn4IguNupc
+	ro8ag87CYBCPjZh9LLlOn3yXWmPIcRU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708453647;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZilpvBzNJyAotgmhs4yPhtveHoML0rb6UBsNzTh2fy0=;
+	b=EGjwc1aSk9FAHIhSFQeC/OSVGYAmMzA+6CUGwcOr3GWEprXkm1AzuTEWFhTlt3mVD0WADw
+	zit1C1mKEB3w86Dw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708453647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZilpvBzNJyAotgmhs4yPhtveHoML0rb6UBsNzTh2fy0=;
+	b=IxxD5z05As9iwNt64pXwo9uMrmiMPOx8LkjV0Fqt9JDJTqgYJsDWFpdeeOZ6naB/Yats4r
+	j/dPrszvU95YLT0h9IkQS+uuBZiA3xuxqNBxE9MX7vilfRnf/estNQhT+NL6Sn4IguNupc
+	ro8ag87CYBCPjZh9LLlOn3yXWmPIcRU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708453647;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZilpvBzNJyAotgmhs4yPhtveHoML0rb6UBsNzTh2fy0=;
+	b=EGjwc1aSk9FAHIhSFQeC/OSVGYAmMzA+6CUGwcOr3GWEprXkm1AzuTEWFhTlt3mVD0WADw
+	zit1C1mKEB3w86Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 895C6139D0;
+	Tue, 20 Feb 2024 18:27:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zQTVIA7v1GUGcgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 20 Feb 2024 18:27:26 +0000
+Message-ID: <e017b7bc-d747-46e6-a89d-4ce558ed79b0@suse.cz>
+Date: Tue, 20 Feb 2024 19:27:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Michal Hocko <mhocko@suse.com>,
+ akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+ mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+ liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+References: <Zc3X8XlnrZmh2mgN@tiehlicka>
+ <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
+ <Zc4_i_ED6qjGDmhR@tiehlicka>
+ <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+ <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+ <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+ <20240215180742.34470209@gandalf.local.home>
+ <20240215181648.67170ed5@gandalf.local.home>
+ <20240215182729.659f3f1c@gandalf.local.home>
+ <mi5zw42r6c2yfg7fr2pfhfff6hudwizybwydosmdiwsml7vqna@a5iu6ksb2ltk>
+ <CAJuCfpEARb8t8pc8WVZYB=yPk6G_kYGmJTMOdgiMHaYYKW3fUA@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAJuCfpEARb8t8pc8WVZYB=yPk6G_kYGmJTMOdgiMHaYYKW3fUA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IxxD5z05;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EGjwc1aS
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[74];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[goodmis.org,suse.com,linux-foundation.org,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com,I-love.SAKURA.ne.jp];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 279D421FDD
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spam-Flag: NO
 
-Hi Kent,
-
-On Tue, 20 Feb 2024 22:29:59 +0800
-Kent Gibson <warthog618@gmail.com> wrote:
-
-> On Tue, Feb 20, 2024 at 12:10:18PM +0100, Herve Codina wrote:
-> > When gpio chip device is removed while some related gpio are used by the
-> > user-space, the following warning can appear:
-> >   remove_proc_entry: removing non-empty directory 'irq/233', leaking at least 'gpiomon'
-> >   WARNING: CPU: 2 PID: 72 at fs/proc/generic.c:717 remove_proc_entry+0x190/0x19c
-> >   ...
-> >   Call trace:
-> >     remove_proc_entry+0x190/0x19c
-> >     unregister_irq_proc+0xd0/0x104
-> >     free_desc+0x4c/0xc4
-> >     irq_free_descs+0x6c/0x90
-> >     irq_dispose_mapping+0x104/0x14c
-> >     gpiochip_irqchip_remove+0xcc/0x1a4
-> >     gpiochip_remove+0x48/0x100
-> >   ...
-> >
-> > Indeed, the gpio cdev uses an IRQ but this IRQ is not released when the
-> > gpio chip device is removed.
-> >
-> > Release IRQs used in the device removal notifier functions.
-> > Also move one of these function definition in order to avoid a forward
-> > declaration (move after the edge_detector_stop() definition).
-> >
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> >  drivers/gpio/gpiolib-cdev.c | 33 ++++++++++++++++++++++-----------
-> >  1 file changed, 22 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> > index 2a88736629ef..aec4a4c8490a 100644
-> > --- a/drivers/gpio/gpiolib-cdev.c
-> > +++ b/drivers/gpio/gpiolib-cdev.c
-> > @@ -688,17 +688,6 @@ static void line_set_debounce_period(struct line *line,
-> >  	 GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE | \
-> >  	 GPIO_V2_LINE_EDGE_FLAGS)
-> >
-> > -static int linereq_unregistered_notify(struct notifier_block *nb,
-> > -				       unsigned long action, void *data)
-> > -{
-> > -	struct linereq *lr = container_of(nb, struct linereq,
-> > -					  device_unregistered_nb);
-> > -
-> > -	wake_up_poll(&lr->wait, EPOLLIN | EPOLLERR);
-> > -
-> > -	return NOTIFY_OK;
-> > -}
-> > -
-> >  static void linereq_put_event(struct linereq *lr,
-> >  			      struct gpio_v2_line_event *le)
-> >  {
-> > @@ -1189,6 +1178,23 @@ static int edge_detector_update(struct line *line,
-> >  	return edge_detector_setup(line, lc, line_idx, edflags);
-> >  }
-> >
-> > +static int linereq_unregistered_notify(struct notifier_block *nb,
-> > +				       unsigned long action, void *data)
-> > +{
-> > +	struct linereq *lr = container_of(nb, struct linereq,
-> > +					  device_unregistered_nb);
-> > +	int i;
-> > +
-> > +	for (i = 0; i < lr->num_lines; i++) {
-> > +		if (lr->lines[i].desc)
-> > +			edge_detector_stop(&lr->lines[i]);
-> > +	}
-> > +  
+On 2/19/24 18:17, Suren Baghdasaryan wrote:
+> On Thu, Feb 15, 2024 at 3:56 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+>>
+>> On Thu, Feb 15, 2024 at 06:27:29PM -0500, Steven Rostedt wrote:
+>> > All this, and we are still worried about 4k for useful debugging :-/
 > 
-> Firstly, the re-ordering in the previous patch creates a race,
-> as the NULLing of the gdev->chip serves to numb the cdev ioctls, so
-> there is now a window between the notifier being called and that numbing,
-> during which userspace may call linereq_set_config() and re-request
-> the irq.
+> I was planning to refactor this function to print one record at a time
+> with a smaller buffer but after discussing with Kent, he has plans to
+> reuse this function and having the report in one buffer is needed for
+> that.
 
-Well in my previous patch, if gdev->chip need to NULL before the call to 
-gcdev_unregister(), this can be done.
-I did modification that leads to the following sequence:
---- 8< ---
-	...
-        gcdev_unregister(gdev);
+We are printing to console, AFAICS all the code involved uses plain printk()
+I think it would be way easier to have a function using printk() for this
+use case than the seq_buf which is more suitable for /proc and friends. Then
+all concerns about buffers would be gone. It wouldn't be that much of a code
+duplication?
 
-        gpiochip_free_hogs(gc);
-        /* Numb the device, cancelling all outstanding operations */
-        gdev->chip = NULL;
-        gpiochip_irqchip_remove(gc);
-        acpi_gpiochip_remove(gc);
-        of_gpiochip_remove(gc);
-        gpiochip_remove_pin_ranges(gc);
-	...
---- 8< ---
-
-I can call gcdev_unregister() right after gdev->chip = NULL.
-The needed things is to have free_irq() (from the gcdev_unregister()) called
-before calling gpiochip_irqchip_remove().
-
-And so, why not:
---- 8< ---
-	...
-        gpiochip_free_hogs(gc);
-        /* Numb the device, cancelling all outstanding operations */
-        gdev->chip = NULL;
-	gcdev_unregister(gdev);
-        gpiochip_irqchip_remove(gc);
-        acpi_gpiochip_remove(gc);
-        of_gpiochip_remove(gc);
-        gpiochip_remove_pin_ranges(gc);
-	...
---- 8< ---
-
+>> Every additional 4k still needs justification. And whether we burn a
+>> reserve on this will have no observable effect on user output in
+>> remotely normal situations; if this allocation ever fails, we've already
+>> been in an OOM situation for awhile and we've already printed out this
+>> report many times, with less memory pressure where the allocation would
+>> have succeeded.
 > 
-> There is also a race here with linereq_set_config().  That can be prevented
-> by holding the lr->config_mutex - assuming the notifier is not being called
-> from atomic context.
+> I'm not sure this claim will always be true, specifically in the case
+> of low-end devices with relatively low amounts of reserves and in the
 
-I missed that one and indeed, I probably can take the mutex. With the mutex
-holded, no more race condition with linereq_set_config() and so the IRQ cannot
-be re-requested.
+That's right, GFP_ATOMIC failures can easily happen without prior OOMs.
+Consider a system where userspace allocations fill the memory as they
+usually do, up to high watermark. Then a burst of packets is received and
+handled by GFP_ATOMIC allocations that deplete the reserves and can't cause
+OOMs (OOM is when we fail to reclaim anything, but we are allocating from a
+context that can't reclaim), so the very first report would be an GFP_ATOMIC
+failure and now it can't allocate that buffer for printing.
 
+I'm sure more such scenarios exist, Cc: Tetsuo who I recall was an expert on
+this topic.
+
+> presence of a possible quick memory usage spike. We should also
+> consider a case when panic_on_oom is set. All we get is one OOM
+> report, so we get only one chance to capture this report. In any case,
+> I don't yet have data to prove or disprove this claim but it will be
+> interesting to test it with data from the field once the feature is
+> deployed.
 > 
-> You also have a race with the line being freed that could pull the
-> lr out from under you, so a use after free problem.
+> For now I think with Vlastimil's __GFP_NOWARN suggestion the code
+> becomes safe and the only risk is to lose this report. If we get cases
+> with reports missing this data, we can easily change to reserved
+> memory.
 
-I probably missed something but I don't see this use after free.
-Can you give me some details/pointers ?
-
-
-> I'd rather live with the warning :(.
-> Fixing that requires rethinking the lifecycle management for the
-> linereq/lineevent.
-
-Well, currently the warning is a big one with a dump_stack included.
-It will be interesting to have it fixed.
-
-The need to fix it is to have free_irq() called before
-gpiochip_irqchip_remove();
-
-Is there really no way to have this correct sequence without rethinking all
-the lifecycle management ?
-
-Also, after the warning related to the IRQ, the following one is present:
---- 8< ---
-[ 9593.527961] gpio gpiochip9: REMOVING GPIOCHIP WITH GPIOS STILL REQUESTED
-[ 9593.535602] ------------[ cut here ]------------
-[ 9593.540244] WARNING: CPU: 0 PID: 309 at drivers/gpio/gpiolib.c:2352 gpiod_free.part.0+0x20/0x48
-..
-[ 9593.725016] Call trace:
-[ 9593.727468]  gpiod_free.part.0+0x20/0x48
-[ 9593.731404]  gpiod_free+0x14/0x24
-[ 9593.734728]  lineevent_free+0x40/0x74
-[ 9593.738402]  lineevent_release+0x14/0x24
-[ 9593.742335]  __fput+0x70/0x2bc
-[ 9593.745403]  __fput_sync+0x50/0x5c
-[ 9593.748817]  __arm64_sys_close+0x38/0x7c
-[ 9593.752751]  invoke_syscall+0x48/0x114
-..
-[ 9593.815299] ---[ end trace 0000000000000000 ]---
-[ 9593.820616] hotplug-manager dock-hotplug-manager: remove overlay 0 (ovcs id 1)
-gpiomon: error waiting for events: No such device
-# 
---- 8< ---
-
-Best regards,
-Hervé
 
