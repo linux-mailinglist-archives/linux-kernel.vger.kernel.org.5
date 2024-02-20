@@ -1,212 +1,228 @@
-Return-Path: <linux-kernel+bounces-73149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5331485BE2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:09:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA36E85BE31
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C689B223B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:09:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F85AB235E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D576BB20;
-	Tue, 20 Feb 2024 14:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D9016BFAA;
+	Tue, 20 Feb 2024 14:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Ko5dDD+x"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2071.outbound.protection.outlook.com [40.92.107.71])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ez1E/1Gj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E37369D0D;
-	Tue, 20 Feb 2024 14:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708438020; cv=fail; b=j4+avhGIYVBUJXFrRJpqlVpIJucD1Qx/VDwxNhPVuZ39WKNjkJlxz5FNYmc83rPa/RTWowRbw19BATVGOEV65fEVjhOKOWVGsfYZj9jxjiQcck3CE+TO5eVdwUKQv0FNBQpTHjaRx70pYWKbTEwMQcI+qQHKQjHHCDgtEpd88ww=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708438020; c=relaxed/simple;
-	bh=4mLskrfR+uaiNfeTrMMg5bcnIT4OHOgm1y2941aBHNY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Sf/cbfqNzdYSiyyBIBg2G+0N49EbrrQuUiBdv6+E0QS668irkDRV56BH5zn0DSalGAG4oSwQf1aXU8yK60xyq53upZ+C8Jz//x+N1GcN7Sv1JwgNCRPX0a4ar7NCM+TxJ5C0Rq0rTPJ9QQS7QDwkxOF7DzrTMthNE8egTpHoeOc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Ko5dDD+x; arc=fail smtp.client-ip=40.92.107.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B8rLCYhv2M0yoTw2zU6eSevhkQEZrtv8dMGKQ8QdrgzSTT6baqK9WdKfKnBe92uwF7yThqqqs2hPtX+bKKgE1GdVnafp+gTWVSjsXNjhHQlYqYFOUpZZjKoSS6zmSTY5u4/yXqAu/6bsnziacuKcGa1rb3g6yYbyuKp3jywasNBp4viZOYagKMOCXbiZwVrTfBn1qqY37l6an5Dnq4WbZPD6vPnj2WbEu/l5MqIvPlvKFePq122j6jqQS6Jnn+ITabSRvknTz5Qy2jJoFavJ4J93MkULTfseHEOnrXcQKNZpnsvcnkEsobd4wF9lM4TGy15bKmJQDf3kumbua5vzSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oXXWqHHfB/J9gTzI6qfC5SyY8Kcp+ZSokUn6VRBhFUA=;
- b=MnHA+k6qkB1GpfqKsmRLZi6N9Rcr+FeRHBeLkR4XoUtkeGD4JS5sJALO89+++N2GcKDBPcO/LUp6s/KF6D+kwtgWJqaRFP9wVu8tH7glkJRGYTtd5aO1A9HCP1vS0w8GsGClJ+rUC84AOSRs4YNPvYFXkDB8B+KBrWojxjrN6lzkczFFft691N0l5wn8H0ZxMEXwQxlYdn45nLuJsSmewfMt6ndaJI1Y1Bdpok9EHAW82hlMi7HiTLotbBB31/a86D/XS3lnZ7jZxiSCi2bhIyKQD0sPXQZS6BbpiCqiQH7BKBJVHLAFYvMBY3SEFF/0uJ9Bp5w9tbxlln/C9aJ7fQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oXXWqHHfB/J9gTzI6qfC5SyY8Kcp+ZSokUn6VRBhFUA=;
- b=Ko5dDD+xXCKW0CTfUGXtsiDqEgdZD3b5a/5QE+xE9OJn5Ag4Rt7icrR3CDw/1ypZoHDlTX1lN17J6ann1wjgYRYKRcw6oMea0OvNjjvGVe9yapyQ0EBCBkDac3xjpGVBMNqiXYIU5FxkejHJ0LzowO0N9X4sBxgqfKYQOE0gCKbms6/yggvpz3kHJkiZSNNC56X26nfEW5bVh55Dy0sRVE2TbQiSe6Rp+woWP7q83GwLypCm8qAdPfTKcaPj2/Ed7vnQV2B5ZuN2F4TIx9kuaAlQlzwbJFNWaA6NwOKvboRRyHuN9CVwHk7VRJzK9WIAXCf8OybzdbwhlwHFWRTZbg==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by KL1PR0601MB4308.apcprd06.prod.outlook.com (2603:1096:820:6c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 14:06:51 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 14:06:51 +0000
-Message-ID:
- <SEZPR06MB6959456E59D84C15F0C1B88396502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Tue, 20 Feb 2024 22:06:45 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 1/5] dt-bindings: clock: histb-clock: Add missing
- common clock and Hi3798MV200 specific clock definition
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
- <20240217-clk-mv200-v2-1-b782e4eb66f7@outlook.com>
- <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [tn8y/u+QRvkIZNpt7l6pj8o2Au1Bn+ProamVa+PVLSRKYBUFms3Ncg7e0t8YKq3P]
-X-ClientProxiedBy: TYCP301CA0064.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:405:7d::16) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <e83e3faf-3ff0-4467-8408-b08e54ac773c@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB176BB48
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708438050; cv=none; b=hSVQ49UIGKJYyUsMQLCIn/htohd1jummJJzfxIWG8Z0BfWj4IWo2DwojfRjTgdMfI2Xl7onwWOoCJtRkqvc0UI5eF8+kGp1XpIo17+woJhn67kqyRTi9hY/r5k3ZuUZT22jFJpPial/kLT75mRQxlqtT2w/kIQ96Nht2XJLQ4AY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708438050; c=relaxed/simple;
+	bh=E/1SUYF3tv2F1OGwxNLmQh08FWlc1Ijdbb/2R+O4kIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fFXakuugxMEQ3ObLB2Fl6MbTYUmN+yo1k4f3Rbmm2NQ2nC0g8h5tr2HOv+nz9ig8Ph5BijZB46kgf1DNAIL9akypxwc2jqm8ONWT3B5K+3hQ5+RRjTYD86BLTMlnmiFSvdgugB2eIzgWbcBMKF8rfWUao/kxkRxqQoj7DZXQQh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ez1E/1Gj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708438047;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=TfSiB4xU3Pf2ASAqrc35eYDgyfR8LdcSqcXXHY4DB94=;
+	b=ez1E/1Gju9rzyoj5NYPFTypNLH1jtrgMesZ2yo6KZxD1wpvWxWqanxk8i1NVQTh7mEwUmF
+	O6VHgIzJRkMgYrP8nvfrx0HoP6E19OrS2EAuhZKqhqA9H6X6TKPtDwIr6eDLJfpXEsj31I
+	5+eqyJMwU++3J3zWk8po/mQVsWS9664=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-34-OYBXdJclP2WePdi5BQlCTw-1; Tue, 20 Feb 2024 09:07:25 -0500
+X-MC-Unique: OYBXdJclP2WePdi5BQlCTw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4125670e7d1so14165595e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:07:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708438045; x=1709042845;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TfSiB4xU3Pf2ASAqrc35eYDgyfR8LdcSqcXXHY4DB94=;
+        b=ms1YhRWYGkB8ub4bHYvxo2moqlnH6PXWPhOtsBq121aZuYEDgKLW1V9NXmsQRucRgV
+         9lYnK55fclG0pxwpaTUyiYzqzcH1A6FT9opcCIqETq1pXItWOiuT1PPiRwtOF3lq+ssz
+         FYfPH5fX1Ea8c6atzPC+OvZxObxQrDEOyI1Ol37luCKdaGMnDz0PsvOHaktRx4SAfumV
+         o/QDx+l/CHri1Ze9Ag+9XLz7N4KviyrIqt8aBLGmBp1oKiQM3RjoxPG0Du00NUur5OQS
+         vUc4kmvoERCTkCpfxtyCt8/fr4ou9KDwwjbzuZ7iHKZXicHGLkTI8titLQXmvxkrFT/J
+         XPjg==
+X-Forwarded-Encrypted: i=1; AJvYcCXjg/q+GDRUNzPDaXk8gDPGeKfZspEqL1tGm17gp/bxWDzM7DkhXWnPaIrAiH6V4JIWY5/BikLIGxSZq/B2IjI+a0G4zt1sWe0MApOh
+X-Gm-Message-State: AOJu0Yyb6CSP2FQI4D6PPYl20MbUudYZcqXzm6eXQteCYWiJ9ARg+PZs
+	vM2K5itCTwPcCi9io2fFq1GZX3SiB6KZFkeCKMJRy1vbm9jMOz54lyovmMerk0Wojg94zHuJ/9D
+	YbUCo4ik1oPAfEgGColvvW3OEE9chsaGO7kBVXi6q20pwICtexxW2YZsiPd/gdQ==
+X-Received: by 2002:a05:600c:1d1a:b0:411:db41:687c with SMTP id l26-20020a05600c1d1a00b00411db41687cmr15038516wms.13.1708438044725;
+        Tue, 20 Feb 2024 06:07:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHlgR4p8fQNVJMnd6Ba7hnMrikj+Cav2h5yCFAosFZH5KGSXqMEspMFvnQvfnQxH3EKo9l5vg==
+X-Received: by 2002:a05:600c:1d1a:b0:411:db41:687c with SMTP id l26-20020a05600c1d1a00b00411db41687cmr15038492wms.13.1708438044298;
+        Tue, 20 Feb 2024 06:07:24 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb? (p200300cbc72abc009a2d8a48ef5196fb.dip0.t-ipconnect.de. [2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb])
+        by smtp.gmail.com with ESMTPSA id js21-20020a05600c565500b0040fdb244485sm14558144wmb.40.2024.02.20.06.07.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 06:07:23 -0800 (PST)
+Message-ID: <e0b7c884-4345-44b1-b8c0-2711a28a980e@redhat.com>
+Date: Tue, 20 Feb 2024 15:07:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|KL1PR0601MB4308:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7cc4acd-8b23-46b4-a279-08dc321d2f5b
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	RttOD51mK8tJsXHB8WnThFmYIVydte+ExoqjzqZ+5H93lPmY0ydls6MdRHL9qW1nZWRXd5A1MT6W8pFDhoSJHTEii6fdJ/FOYXSzkqcg0wAwJUNrQ27a00qcXfk6Elo2V4hC9zgcCbjtS/Z8MPyXKumSXkbus33ZErr6FzeDuufiQ6ouplk5hqdpJSTmZmUfTSblymkn9Q4ntAF29yq3L8CR56g8rbDFQUJ7v1dWMMG18wTfWnB5Wj6hBKrG1m4qB4ZVu4pznO67se8osrlg36vUXMiq4MWNiR/9xMoND/rmn2SumeWDFdKE2CoR6Tdf5KMLUYTcP5QnX87txIKeTIl/v14ggvRL8kIFb6Q4bduFWWbDxvl54fknL0ucCLn5gzL+oyVnrhuIFTDFAATTFHjx/wdm0PCnngEuoXA1YcAwez5lP7x60Ejfu5xqkLDyxzT3aPTSu1Haw5yvDpHqeWvOVrlp1R/wI0Skc3nlPg9GYirDRWOVQ6TcDD/6LEUhIHBOZdB2eOL1VYYPkcd2DAvsWhXMIAjEVvnTzrPgaIo/PBO/Yqi/z5ITSYJ1qzeZ
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NVJ0MHAzRGh5RmpaNWlIUWs1MmdmYnJHRHNQRkJuTVBFTTMrZkQ4ZzNUd0pt?=
- =?utf-8?B?MlBFdm9TZ0NTWkxEZEdMdXhiRFhlZURLV2E1eThZaGljMWhDajdpT0w4TWR1?=
- =?utf-8?B?TEZPMFA2MFFCWG9LcWpEVEtJM0tCQnFrcVFpYWc2RW1vd3puYnYxRG9Kdis3?=
- =?utf-8?B?WVl2YlVwSW1obmZkQWFkOEJBZVNCQzF2eStOU3ZSRDFvZTBYbmJsektZdUs5?=
- =?utf-8?B?YVUrYXNuRGVoWjRYNnBjZnYwbE94ZFoxTkx2QjB2MzlmZ20rQldIS1I1ZTNu?=
- =?utf-8?B?VFNxRzd2WklYNnR2Uk1iQk02M1FzSi80b1drMFhxR2JyekYvR2E0UlVmaFpz?=
- =?utf-8?B?bWlyd1o3dkZka214c3YzdUlrUWhPQWZ1ZFNYcy9vVzgvb1Bzckx1clNHU3ZH?=
- =?utf-8?B?R2tXOURnSG1uajhyWWE4VU1ud09selZRa09NTFp6cTNaeHJjUUtseTZSTE8x?=
- =?utf-8?B?cDI1d0JzNk1NdVpFVWhHRUljT3o4MSs1T0U3d3RKUWcyM2hDWDA4V3FXd2Nw?=
- =?utf-8?B?VFlmQ2RPNDZkYlp0TjVoSm54ZVZ4amU1ZGZjWm9reDFEdWwyb3pTZUFCSHl0?=
- =?utf-8?B?V0hoMWsyeWFuaGZRS1RoMFY0QWYwakRlT3pTQUI0VTBnRHMvK09LcE1LYVVu?=
- =?utf-8?B?NkxiY0p3Qk5UbkhXYkx5Q0d0MmRpSlhWcWdUOEpGK2RJNEJ0UFRDUGx1UGYw?=
- =?utf-8?B?SlRpWWZvdi9KRU54VVJRM2Y1ajRpTC9wUTlhaEtFRHhXcVU0NFZNU2xjNzdz?=
- =?utf-8?B?NFJrNHIranVOVTFYeXdGRVJBNHNMbkErMWlxYXppVkhiYW5kcHpWZTVLL25u?=
- =?utf-8?B?YlhaUXZselduRnRQV1VCY3JVV2NpVmpwVk80L1pLaHovckt4RUpUS1l2dTNa?=
- =?utf-8?B?a3dHVTloT1ZHZ2JVNmtodm13aFgyb1g0blpiZWtMYURQLzJHZUtoQ3pjODFT?=
- =?utf-8?B?bWdKL29wQUlzRDRTeHBWaFJuVldVbHVtUGlsYkh6TWplakg5WUt4WU0xQlJL?=
- =?utf-8?B?YlJGKzE1WndweE5Jd1FyNmtlRnJaRC9QV0xhMmR3M3FnVW5RWHNGQUgvN3B5?=
- =?utf-8?B?d05SSHgwSXZvTEpDdVVERy9mV0pMSHFNZDc0am1VRDVzTmZXdEl3TVNyNEZm?=
- =?utf-8?B?eFZMWmZ4d3VGOXBoWXBjUmJJLzB1alhjZ1Z6K05Rb21rV05UUHRqMmd6VUps?=
- =?utf-8?B?NVdYOEhQb3lXSUtIeFFWYis3cDkwM284MnRST0ZZd0kwT0E4anJMeExRUjhL?=
- =?utf-8?B?dEhKK0hJYWs2MEdJMndRK0NSV3dqTUZDS3c3aU40WDVXclRTYVNFSGFCNjdY?=
- =?utf-8?B?SFNxK1JROW0ySXZvekF6OVB0SmU1V2hTT1BjNzFkd0F5U29MQ0YyRW5iR0hx?=
- =?utf-8?B?VHhHQU5ZblRkRnc2OHNqaVlLbkFrNE1vdE1MeVpQWCtmMlA2bUxJODBMMVpY?=
- =?utf-8?B?VnJwaWJ0RnBWQml4cEdCcUJKZ3ZMb3hRSVdlb2tIZnFLTEllVGFUZWRpcDhz?=
- =?utf-8?B?dnBieXhNaGpsbXo4bEd2WXlHcGFwZjd3eGo3bHhWWkIvNXJRcjhkRVpNeVNv?=
- =?utf-8?B?UEdOZnRFSXRXUk9LVHVRMHdYVi8vSmF1WnZWNmNXNXA3OUlGM2plckhsZUd4?=
- =?utf-8?B?eDRDN3JUTjlpVnMvTUNxY0p2SCt0NFhFZUNhV2ZzYXlzaTdzb3VwZDJYWG04?=
- =?utf-8?B?aUZUbW5Ba2VGcGVCQWF3NDEyZUpsd3hhLzZlNk4ydTFQU2hDTGZhemhhcE1v?=
- =?utf-8?Q?pMaFGkHSzBHuLPKgFMg9Zuf7KEmU+LsM8b+5nWq?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7cc4acd-8b23-46b4-a279-08dc321d2f5b
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 14:06:51.1248
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4308
+User-Agent: Mozilla Thunderbird
+Subject: Re: arm64 MTE tag storage reuse - alternatives to MIGRATE_CMA
+Content-Language: en-US
+To: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+ maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+ yuzenghui@huawei.com, pcc@google.com, steven.price@arm.com,
+ anshuman.khandual@arm.com, eugenis@google.com, kcc@google.com,
+ hyesoo.yu@samsung.com, rppt@kernel.org, akpm@linux-foundation.org,
+ peterz@infradead.org, konrad.wilk@oracle.com, willy@infradead.org,
+ jgross@suse.com, hch@lst.de, geert@linux-m68k.org, vitaly.wool@konsulko.com,
+ ddstreet@ieee.org, sjenning@redhat.com, hughd@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <ZdSMbjGf2Fj98diT@raptor>
+ <70d77490-9036-48ac-afc9-4b976433070d@redhat.com> <ZdSojvNyaqli2rWE@raptor>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZdSojvNyaqli2rWE@raptor>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2/20/2024 6:10 PM, Krzysztof Kozlowski wrote:
-> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
->> From: Yang Xiwen <forbidden405@outlook.com>
 >>
->> According to the datasheet, some clocks are missing, add their
->> definitions first.
+>> With large folios in place, we'd likely want to investigate not working on
+>> individual pages, but on (possibly large) folios instead.
+> 
+> Yes, that would be interesting. Since the backend has no way of controlling
+> what tag storage page will be needed for tags, and subsequently dropped
+> from the cache, we would have to figure out what to do if one of the pages
+> that is part of a large folio is dropped. The easiest solution that I can
+> see is to remove the entire folio from the cleancache, but that would mean
+> also dropping the rest of the pages from the folio unnecessarily.
+
+Right, but likely that won't be an issue. Things get interesting when 
+thinking about an efficient allocation approach.
+
+> 
 >>
->> Some aliases for hi3798mv200 are also introduced.
+>>>
+>>> I believe this is a very good fit for tag storage reuse, because it allows
+>>> tag storage to be allocated even in atomic contexts, which enables MTE in
+>>> the kernel. As a bonus, all of the changes to MM from the current approach
+>>> wouldn't be needed, as tag storage allocation can be handled entirely in
+>>> set_ptes_at(), copy_*highpage() or arch_swap_restore().
+>>>
+>>> Is this a viable approach that would be upstreamable? Are there other
+>>> solutions that I haven't considered? I'm very much open to any alternatives
+>>> that would make tag storage reuse viable.
 >>
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->> ---
->>   include/dt-bindings/clock/histb-clock.h | 21 +++++++++++++++++++++
->>   1 file changed, 21 insertions(+)
+>> As raised recently, I had similar ideas with something like virtio-mem in
+>> the past (wanted to call it virtio-tmem back then), but didn't have time to
+>> look into it yet.
 >>
->> diff --git a/include/dt-bindings/clock/histb-clock.h b/include/dt-bindings/clock/histb-clock.h
->> index e64e5770ada6..68a53053586a 100644
->> --- a/include/dt-bindings/clock/histb-clock.h
->> +++ b/include/dt-bindings/clock/histb-clock.h
->> @@ -58,6 +58,27 @@
->>   #define HISTB_USB3_UTMI_CLK1		48
->>   #define HISTB_USB3_PIPE_CLK1		49
->>   #define HISTB_USB3_SUSPEND_CLK1		50
->> +#define HISTB_SDIO1_BIU_CLK		51
->> +#define HISTB_SDIO1_CIU_CLK		52
->> +#define HISTB_SDIO1_DRV_CLK		53
->> +#define HISTB_SDIO1_SAMPLE_CLK		54
->> +#define HISTB_ETH0_PHY_CLK		55
->> +#define HISTB_ETH1_PHY_CLK		56
->> +#define HISTB_WDG0_CLK			57
->> +#define HISTB_USB2_UTMI0_CLK		HISTB_USB2_UTMI_CLK
-> Why? It's anyway placed oddly, the entries are ordered by number/value.
+>> I considered both, using special device memory as "cleancache" backend, and
+>> using it as backend storage for something similar to zswap. We would not
+>> need a memmap/"struct page" for that special device memory, which reduces
+>> memory overhead and makes "adding more memory" a more reliable operation.
+> 
+> Hm... this might not work with tag storage memory, the kernel needs to
+> perform cache maintenance on the memory when it transitions to and from
+> storing tags and storing data, so the memory must be mapped by the kernel.
 
+The direct map will definitely be required I think (copy in/out data). 
+But memmap for tag memory will likely not be required. Of course, it 
+depends how to manage tag storage. Likely we have to store some 
+metadata, hopefully we can avoid the full memmap and just use something 
+else.
 
-So this is somewhat broken at the beginning. It named after 
-histb-clock.h but actually they are all clocks for Hi3798CV200 SoC. For 
-Hi3798MV200(also a HiSTB SoC), there is one additional UTMI clock.
+[...]
 
+>> Similar to virtio-mem, there are ways for the hypervisor to request changes
+>> to the memory consumption of a device (setting the requested size). So when
+>> requested to consume less, clean pagecache pages can be dropped and the
+>> memory can be handed back to the hypervisor.
+>>
+>> Of course, likely we would want to consider using "slower" memory in the
+>> hypervisor to back such a device.
+> 
+> I'm not sure how useful that will be with tag storage reuse. KVM must
+> assume that **all** the memory that the guest uses is tagged and it needs
+> tag storage allocated (it's a known architectural limitation), so that will
+> leave even less tag storage memory to distribute between the host and the
+> guest(s).
 
-What solution do you prefer? rename UTMI_CLK to UTMI0_CLK, add UTMI1_CLK 
-after it and increment all the indexes after it? Then the diff would be 
-very ugly.
+Yes, I don't think this applies to tag storage.
 
+> 
+> Adding to that, at the moment Android is going to be the major (only?) user
+> of tag storage reuse, and as far as I know pKVM is more restrictive with
+> regards to the emulated devices and the memory that is shared between
+> guests and the host.
 
->
->> +#define HISTB_USB2_UTMI1_CLK		58
->> +#define HISTB_USB3_REF_CLK		59
->> +#define HISTB_USB3_GM_CLK		60
->> +#define HISTB_USB3_GS_CLK		61
->> +
->> +/* Hi3798MV200 specific clocks */
->> +
->> +// reuse clocks of histb
-> Don't mix comment styles.
->
->> +#define HI3798MV200_GMAC_CLK		HISTB_ETH0_MAC_CLK
->> +#define HI3798MV200_GMACIF_CLK		HISTB_ETH0_MACIF_CLK
->> +#define HI3798MV200_FEMAC_CLK		HISTB_ETH1_MAC_CLK
->> +#define HI3798MV200_FEMACIF_CLK		HISTB_ETH1_MACIF_CLK
->> +#define HI3798MV200_FEPHY_CLK		HISTB_ETH1_PHY_CLK
-> I don't understand what do you want to achieve here. Clock IDs start
-> from 0 or 1.
->
->
->
-> Best regards,
-> Krzysztof
->
+Right, what I described here does not have overlap with tag storage 
+besides requiring similar (cleancache) hooks.
 
 -- 
-Regards,
-Yang Xiwen
+Cheers,
+
+David / dhildenb
 
 
