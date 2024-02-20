@@ -1,162 +1,99 @@
-Return-Path: <linux-kernel+bounces-73080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3284B85BD47
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4486085BD42
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE4FF2859C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:36:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B700C2845A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF686A35C;
-	Tue, 20 Feb 2024 13:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4219F6A33D;
+	Tue, 20 Feb 2024 13:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SeIyDTBF"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aVVHgztb";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5gi5BJKH"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB1C6A331
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1DC6A03B;
+	Tue, 20 Feb 2024 13:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436150; cv=none; b=Vjnsg0Pfa4F5N0IX1dJI2AIoWOiQSUUCMCtUdpSC8+Hl3aTXMfAfrA/l9ksEppsRdVFbAKeJagsu2BvC8GcbE0osyCbi5z8tXx94P3FDKM3YJoN35TxYbzQGvBIget4h1UvGKC3H4OUE+f259tccCH3KFyao/gKsBFVSFTK5RqQ=
+	t=1708436140; cv=none; b=EaDBMMTdBK/zNSWghN6CaFL3hOFr/uFfz7Gu4c8Vpqmpz94yfSDNI1+2WrS3ofFSTjOhfWJ/P4jfDG+k9uE3JXzabumYw/ZjyWucnaLsmM1Sr9aQR55jDf5By/DUBKd57Jd2S2sji9HbVngvj6tYv14gHL09vNBEbxqJk03C0rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708436150; c=relaxed/simple;
-	bh=uP9yFWGRb+3k9SdvwFsut4JNqwQGECYNGZVyusotfXA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XXjJXseX6/reVa2wPOG7TigFOVS9Ix9Ojax9qZ8g7o0fofPXQYl+dvYUXbz5m47nZLQjteC09aVO4m5V63GneFuOACnqFwHs35wDie5a7MymZ3ThRgbTj0p0eIAIfGDfUNPcGA1sVgPVONtGOTjLdWeGJLrkQY/Hxl+8zWqP+tQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SeIyDTBF; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60821e8d625so23657227b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:35:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708436147; x=1709040947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=80bDR9xsJVYz/T1iI+xnPV8UhHBUEFxKf9UJFof0JFA=;
-        b=SeIyDTBFpArYr0K/IB/aSKXP/XL8oL/z41ipI4fIwcxu84apF8LgPhF0jYn29ye4z+
-         KsEyCPyIE9+pSGSzZ1ybMcS2p1xvoFPS4zPKVyVw8v6WMVFtplPREUgIvPhpDECfMl7Y
-         AiZAn2FrMZoBkLgqrqjGfNfKn8RRu7VF7YLpmUIIbwCIZiLHxf7gnIczhPDejV3ZV+KZ
-         zpTi2ZUpo4+EsGjlxRg8jiYRY8d8/ypTAvlf8/Iky0EaVPQCs6mG9bd1CSC6yDpXlX38
-         dC32vn77lngrpKO+7SpQlEYjrwhYXZjyW7YGYZdLpSY6M4D1i/bdYF9vgbNQmCr+HeTO
-         gJUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708436147; x=1709040947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=80bDR9xsJVYz/T1iI+xnPV8UhHBUEFxKf9UJFof0JFA=;
-        b=lsGVFC8iUBFQas1R1lwPFRKIfRo5MfDlsIB2cY5+A0jKKi+MOZx+PJDryyenmww6Gh
-         4CbHg8mujnIj8hmpel4+bE/RrNS2yQE8hMBrPJOAO7g5GCJFPKLpOx5oIi906SGVPoew
-         UgDv+GSeidIgsusrLdFtQIRWnUvrYGgA43oHlKsDlH0PzBI1lQExcP+Vfwa16hkQkQ9S
-         7orcAWXy9HEjv/vAYIlpfE9k1zWQLAUZLjQGxWNQZilxE+y3A0Nm8l1ySkPhMOLPUG00
-         5NmBUsy/ocFaL9pPnZU7qASpeEquHXcFJZbemVPwlN8xA59sCDDh86qw9y/ycKTzNXnA
-         S7Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCVdoMDFT0wGW8r1D7zAC81zKeDrbn/mXkrlGe/3w9Tg7dVGMG7avUP8zHpvPWXnzuelIi+7LIKYKXVnKswuf2BP/7UwiQYHHJ+IqPma
-X-Gm-Message-State: AOJu0YyixW1ZXuiXPNlSY033HHADUxFrq7MphrPVRqsTiiVBlhElgFvu
-	CnL6xHyrr5yQvHmO6OQx/3ZoqFJeRlulkfsxmJqVoGB7oxf9vinnSkO7az/oJ6HgU6xifB3l3ew
-	vFhUwLvEqGfgLFCtPW4gJ3YnwkcifbJv6++kDWw==
-X-Google-Smtp-Source: AGHT+IFblLCJUAfvYsxAzrxnfj6+lmkywotENdKnj1jtMtxOZ6aZ30kx1UQMoBV7aylB0LH/E8+wrC1HtazKHPBbsVw=
-X-Received: by 2002:a81:7994:0:b0:607:7e73:fce1 with SMTP id
- u142-20020a817994000000b006077e73fce1mr16601552ywc.26.1708436146800; Tue, 20
- Feb 2024 05:35:46 -0800 (PST)
+	s=arc-20240116; t=1708436140; c=relaxed/simple;
+	bh=abTPl2u526Jg1CsFRDvVGDsu86nkuIcHywwC1yofwjI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=hN47zeA827Gr13XOFdB0nELZWkQAa03CDv5eo5ZrKtScsbAUoGr6IB5vq5Jezd+RWNFPASHAw4Mz67Q65sO/HWbs6efVX58CNaxry2pixxkjEpubhX4y98rT23AdhwSPB91isUnbbapNNJAIo7HTLD/Vv6dH9Q4pWq9rhFj1SjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aVVHgztb; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5gi5BJKH; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708436137;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LxDrWUoqTF4UCOljm+/CQR8VV7wFryZe0gkav5P0KMk=;
+	b=aVVHgztb0p2AuL7Y//VQvDZYfGZpXQN5XWAcU8UBDLmGuuETChzmXxLmq5h5ScgwFHze7S
+	Qrbsh+puub63PQj4UbpCR45FNa6xbU4Htl+DfH8tEgeaP7w7kXFOMM+RfLgQ6e4+PNFGaB
+	Q3KaF1ce77yqiwkNitCdX/QZSHpUOhWKeeGFnpV/K1p+kEB2Jz+P8N0ni980o9883Wp7bm
+	qWzLleftZ7h+m920QAYEEuWBD3wTd2m8qpRTNrrVe7whar0/kLfTzf68DS+lRE7j0+hf3o
+	uTpC+D08M49/FMfib/WWMXMz73OUCnDvjoQQlyJnygpS7/Pehj0sYTqxx7Rrew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708436137;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LxDrWUoqTF4UCOljm+/CQR8VV7wFryZe0gkav5P0KMk=;
+	b=5gi5BJKHwq+Hpu0n4anP6RYba/28i4acUk2Iqiwo1Rx6puv3PfE5WN6+88/uq/aFjix3jx
+	geSB/GUV9HTRSGAQ==
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Atish
+ Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>,
+ Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan
+ <saravanak@google.com>, Anup Patel <anup@brainfault.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Anup Patel
+ <apatel@ventanamicro.com>
+Subject: Re: [PATCH v13 08/13] irqchip/riscv-imsic: Add device MSI domain
+ support for PCI devices
+In-Reply-To: <20240220060718.823229-9-apatel@ventanamicro.com>
+References: <20240220060718.823229-1-apatel@ventanamicro.com>
+ <20240220060718.823229-9-apatel@ventanamicro.com>
+Date: Tue, 20 Feb 2024 14:35:36 +0100
+Message-ID: <8734tni7h3.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217150228.5788-2-johan+linaro@kernel.org>
- <c95f5ff3-8dad-4302-9384-92a9b83f7bdc@web.de> <ZdRTx2lmHBVlcLub@hovoldconsulting.com>
- <1afc87c-2c1f-df10-a0c8-2a267d44122@inria.fr> <CAA8EJppH9ey97yKFUccNLHhMKs3eUS55+rY0tXm_a6KGp9jtug@mail.gmail.com>
- <4938592e-3f7c-c1ae-dce3-fd1ca363296@inria.fr>
-In-Reply-To: <4938592e-3f7c-c1ae-dce3-fd1ca363296@inria.fr>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 20 Feb 2024 15:35:35 +0200
-Message-ID: <CAA8EJpq88ZKLFBuAvDuDSMD_DkPpMmBDZG_kQyUrSs-Noqm2SQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] drm/bridge: aux-hpd: fix OF node leaks
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Johan Hovold <johan@kernel.org>, Markus Elfring <Markus.Elfring@web.de>, 
-	Johan Hovold <johan+linaro@kernel.org>, freedreno@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Vinod Koul <vkoul@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Kuogee Hsieh <quic_khsieh@quicinc.com>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Rob Clark <robdclark@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, 20 Feb 2024 at 14:56, Julia Lawall <julia.lawall@inria.fr> wrote:
->
->
->
-> On Tue, 20 Feb 2024, Dmitry Baryshkov wrote:
->
-> > On Tue, 20 Feb 2024 at 13:52, Julia Lawall <julia.lawall@inria.fr> wrot=
-e:
-> > >
-> > >
-> > >
-> > > On Tue, 20 Feb 2024, Johan Hovold wrote:
-> > >
-> > > > On Mon, Feb 19, 2024 at 06:48:30PM +0100, Markus Elfring wrote:
-> > > > > > The two device node references taken during allocation need to =
-be
-> > > > > > dropped when the auxiliary device is freed.
-> > > > > =E2=80=A6
-> > > > > > +++ b/drivers/gpu/drm/bridge/aux-hpd-bridge.c
-> > > > > =E2=80=A6
-> > > > > > @@ -74,6 +75,8 @@ struct device *drm_dp_hpd_bridge_register(str=
-uct device *parent,
-> > > > > >
-> > > > > >   ret =3D auxiliary_device_init(adev);
-> > > > > >   if (ret) {
-> > > > > > +         of_node_put(adev->dev.platform_data);
-> > > > > > +         of_node_put(adev->dev.of_node);
-> > > > > >           ida_free(&drm_aux_hpd_bridge_ida, adev->id);
-> > > > > >           kfree(adev);
-> > > > > >           return ERR_PTR(ret);
-> > > > >
-> > > > > The last two statements are also used in a previous if branch.
-> > > > > https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/gpu/drm/=
-bridge/aux-hpd-bridge.c#L63
-> > > > >
-> > > > > How do you think about to avoid such a bit of duplicate source co=
-de
-> > > > > by adding a label here?
-> > > >
-> > > > No, the current code is fine and what you are suggesting is in any =
-case
-> > > > unrelated to this fix.
-> > > >
-> > > > If this function ever grows a third error path like that, I too wou=
-ld
-> > > > consider it however.
-> > >
-> > > I guess these of_node_puts can all go away shortly with cleanup anywa=
-y?
-> >
-> > I'm not sure about it. Those are long-living variables, so they are
-> > not a subject of cleanup.h, are they?
->
-> OK, I didn't look at this code in detail, but cleanup would just call
-> of_node_put, not actually free the data.
+On Tue, Feb 20 2024 at 11:37, Anup Patel wrote:
+>  static bool imsic_init_dev_msi_info(struct device *dev,
+>  				    struct irq_domain *domain,
+>  				    struct irq_domain *real_parent,
+> @@ -218,6 +241,7 @@ static bool imsic_init_dev_msi_info(struct device *dev,
+>  
+>  	/* MSI parent domain specific settings */
+>  	switch (real_parent->bus_token) {
+> +	case DOMAIN_BUS_PCI_MSI:
 
-Yes. The nodes should be put either in case of the failure or (if
-everything goes fine) at the device unregistration.
+	case DOMAIN_BUS_PCI_DEVICE_MSIX:
 
---=20
-With best wishes
-Dmitry
+?
+
+Thanks,
+
+        tglx
 
