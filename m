@@ -1,165 +1,171 @@
-Return-Path: <linux-kernel+bounces-73227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C56C85BF94
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:13:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96AAC85BF84
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D655F1F21D89
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:13:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 369E6B22038
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59017768F8;
-	Tue, 20 Feb 2024 15:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D369074E35;
+	Tue, 20 Feb 2024 15:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SeB/23qB"
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RuCOz0bV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E4176415
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B30274E17
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708441909; cv=none; b=rsYbg5IQPaqzKDcw3b/NXH5/sGanjySuM2mawQyHnKS3I8oAhM6AR9qW8b1OvoMTgVn/aUgCLhg3Lku7CizYJzuuJYwuI0sRp/0hDq2xiW0kDI3yGCylb+j8IcWVO2zqL9wnAj7E5eAmjXFLvnwdE7MthzPKZcijOFLJjKkCWvI=
+	t=1708441843; cv=none; b=fn9bevkPF7tJajIpn8YrCflckDrpB1PfTjwoEig9OcpCTaNBeCDbh2D19HOnEM9Xh5hAgPDA6FGlTdJMVUWuIMPWpwaiOopKLfIcushjOlpJijPz5qKregUSTbp0QcS6vMS68n6aFu2TzbprTv1wGDMIWq1Eb6JCM9sPvneFibo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708441909; c=relaxed/simple;
-	bh=iAbfp5RMm6S0VsTLeL0qLihHKZbBLamOM0a8x66sOYk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qe6wi1L7P14TOowR6ZHzfYQFBE1uN6ixvAblIoTDhH7nh48lQaFivwhytnCMk0dtvUYuziQZ4GTE4s8tDcwDY93RXVpj87Jkm81VlBziWD6F5GaLHzZtMZFwePXpxN+4lCh5Bp6bJs5S53QC312ggDtspky04tHnvW1EGcEaeNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SeB/23qB; arc=none smtp.client-ip=209.85.128.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-40f01cf71ceso32331395e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708441906; x=1709046706; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7oP8Hepk3ownDnPLORI/cfTnoWlrJNhVmX40NRmmOs=;
-        b=SeB/23qBiLQHIBwyrSbXj4AWgF3imIC5u4XC3L4VZjuNXwlzggVXLl0n9FvmRH0ALC
-         WJpeQIfqU45qhciXLALfD7O8mwOkM2mQygj1QrTTYNQTtKt6XUSI6tVeocrCZCmMVj4m
-         1LhJDDTxL+KMmkIG/ndedDTfMdWUuKwgPu15M7ovN/7RPpgXeBwbw8DtoQ7B6ILA7BZE
-         pym8pIgq+9sQKJJK6Dy3A0BMd2vZaHcO+OsOcGRRu+tDuQNmicsHT+wF06hE93UYIi94
-         irlp7VjGU5l10dAvKXrkA6+JWO2qOlIrEHc0fJgR2DqPOAjF1n0ojaLuwI+Lls5Uiot2
-         nHzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708441906; x=1709046706;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7oP8Hepk3ownDnPLORI/cfTnoWlrJNhVmX40NRmmOs=;
-        b=v+IVTmH03VPMLZLsSQLI8/Yyw2V7KRqQ1i92wTBdBonuiBPR35YDj1MiB40jp0yQEk
-         uq8H6/kn6wXHVQqvbDOn/60N95Yu8ANwEgLSLA8RPNpgxhiMeyiblbCdg5/jhZifU1zj
-         ZSm/vUnHWJ2Zj1EsbusBOCNEgFiP25hgRVOSQ1saY+x/taAruLjtWooYoixLiT41qHN8
-         XILxGwW+Tm//D073SasfZtLGt4L5GRHD+d01/gtw34Yr39CpKD09Qg8IwAD9DHDisOKG
-         n9CWjqV+//S4ajr/bDfR/NplktoRcNbIpiIfgAP/LilBi+Ann1Uq2eDNrMCrhfkBmYFb
-         wwAw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXQEHhgqJGvHFeO8fw83M4lGOeNWm4zZylUfBbvei6YdmrbcBrz5X1gfcgrreco4hjgu2AM4NPiob4JJZDKz92PZgISvDN+imHHmNx
-X-Gm-Message-State: AOJu0YwNYNiU2+okfiJkz+JBqNfZt1ikt53UjAZoEUGlimDqOhsQ7tSw
-	Z88VEq+ZRI1ufxNd2TuH/vpuuMAXIF4NU6tk7Yyb+Vg8H75tsS7UDHJkVIQVLDpNH3YXokxEXWj
-	+c0JzDxE1LUQCDL6HNcyfPkpgeA==
-X-Google-Smtp-Source: AGHT+IGB7BTGnDb3ZkCnAAs2rfcGHOBnu1LEeWRHD3gtXF/mQBI/OcbxgBVpxOTVwd/bVPF2OExz8lYc9i55R+XvxE0=
-X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
- (user=sebastianene job=sendgmr) by 2002:a05:600c:a:b0:411:ea5e:6142 with SMTP
- id g10-20020a05600c000a00b00411ea5e6142mr115684wmc.2.1708441906396; Tue, 20
- Feb 2024 07:11:46 -0800 (PST)
-Date: Tue, 20 Feb 2024 15:10:35 +0000
-In-Reply-To: <20240220151035.327199-1-sebastianene@google.com>
+	s=arc-20240116; t=1708441843; c=relaxed/simple;
+	bh=gq82WFa6IDYKiSGDJkwUkXHp2KiwHIz0de8K52yYK3Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UkCTR6+rnGfz8uBCfWomtFGst7/R/kDVtJp8xaKTTWU+wkqYRN3daVkgC+zNxgJXHAihIoJgKnM3XMm6pfojHg96iO8/GrGrr1cffazt+elaRR3L/H5o4CTw6ND+FnUvVLMmXpfd0WkU7woDQZkvw0upvosIVQ4BuV65V7Mr0ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RuCOz0bV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C84C433C7;
+	Tue, 20 Feb 2024 15:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708441842;
+	bh=gq82WFa6IDYKiSGDJkwUkXHp2KiwHIz0de8K52yYK3Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RuCOz0bVQTkDORMbxMRelpJRa2dDOyb8VhgF0LHY9h4/5+ZKSUsufcCuH+IfKZZ84
+	 RCvreHuC87YqQN2A918ySqI7RerdPT/P+OaN8SPE4W5ZdeEUp65emWz/3sYXDvo91B
+	 mlw46zXpYEHTzXyXaO/NwUQ3G15kACtXMRwVVTJ2KFIU+KRZrHXWsxIHRhsjcBnYGl
+	 Z7p+wNWTfJpJf9oQyvjKVzD1YZ1a1UFwo6f6oBCZDA+PlMI8i6lmNiSuGv8E308Dr7
+	 6qR54sRuUwwmSJcYKilMV3CJOG4+wxiDu8EgxB9GPn52v/Kj5R94XJR7IStqSLvY7J
+	 kVHgKciRF+VYQ==
+Date: Tue, 20 Feb 2024 16:10:40 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10a] timers: Move marking timer bases idle into
+ tick_nohz_stop_tick()
+Message-ID: <ZdTA8N7TkGG66Ay6@lothringen>
+References: <20240115143743.27827-4-anna-maria@linutronix.de>
+ <20240219085236.10624-1-anna-maria@linutronix.de>
+ <ZdPYEzno3KqIPo4S@localhost.localdomain>
+ <878r3f5s3w.fsf@somnus>
+ <ZdSQBD_ZpWvH5SoZ@localhost.localdomain>
+ <87zfvv4a45.fsf@somnus>
+ <ZdScXhIS_G1cjaWG@localhost.localdomain>
+ <87ttm344me.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240220151035.327199-1-sebastianene@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240220151035.327199-7-sebastianene@google.com>
-Subject: [PATCH v6 6/6] KVM: arm64: Expose guest stage-2 pagetable config to debugfs
-From: Sebastian Ene <sebastianene@google.com>
-To: catalin.marinas@arm.com, gshan@redhat.com, james.morse@arm.com, 
-	mark.rutland@arm.com, maz@kernel.org, oliver.upton@linux.dev, 
-	rananta@google.com, ricarkol@google.com, ryan.roberts@arm.com, 
-	shahuang@redhat.com, suzuki.poulose@arm.com, will@kernel.org, 
-	yuzenghui@huawei.com
-Cc: kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, kernel-team@android.com, vdonnefort@google.com, 
-	Sebastian Ene <sebastianene@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87ttm344me.fsf@somnus>
 
-Make the start level and the IPA bits properties available in the
-virtual machine debugfs directory. Make sure that the KVM structure
-doesn't disappear behind our back and keep a reference to the KVM struct
-while these files are opened.
+On Tue, Feb 20, 2024 at 03:00:57PM +0100, Anna-Maria Behnsen wrote:
+> Frederic Weisbecker <frederic@kernel.org> writes:
+> 
+> > Le Tue, Feb 20, 2024 at 01:02:18PM +0100, Anna-Maria Behnsen a écrit :
+> >> Frederic Weisbecker <frederic@kernel.org> writes:
+> >> 
+> >> > Le Tue, Feb 20, 2024 at 11:48:19AM +0100, Anna-Maria Behnsen a écrit :
+> >> >> Frederic Weisbecker <frederic@kernel.org> writes:
+> >> >> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> >> >> index 01fb50c1b17e..b93f0e6f273f 100644
+> >> >> --- a/kernel/time/tick-sched.c
+> >> >> +++ b/kernel/time/tick-sched.c
+> >> >> @@ -895,21 +895,6 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+> >> >>  	/* Make sure we won't be trying to stop it twice in a row. */
+> >> >>  	ts->timer_expires_base = 0;
+> >> >>  
+> >> >> -	/*
+> >> >> -	 * If this CPU is the one which updates jiffies, then give up
+> >> >> -	 * the assignment and let it be taken by the CPU which runs
+> >> >> -	 * the tick timer next, which might be this CPU as well. If we
+> >> >> -	 * don't drop this here, the jiffies might be stale and
+> >> >> -	 * do_timer() never gets invoked. Keep track of the fact that it
+> >> >> -	 * was the one which had the do_timer() duty last.
+> >> >> -	 */
+> >> >> -	if (cpu == tick_do_timer_cpu) {
+> >> >> -		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+> >> >> -		ts->do_timer_last = 1;
+> >> >> -	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
+> >> >> -		ts->do_timer_last = 0;
+> >> >> -	}
+> >> >> -
+> >> >>  	/* Skip reprogram of event if it's not changed */
+> >> >>  	if (ts->tick_stopped && (expires == ts->next_tick)) {
+> >> >>  		/* Sanity check: make sure clockevent is actually programmed */
+> >> >
+> >> > That should work but then you lose the optimization that resets
+> >> > ts->do_timer_last even if the next timer hasn't changed.
+> >> >
+> >> 
+> >> Beside of this optimization thing, I see onther problem. But I'm not
+> >> sure, if I understood it correctly: When the CPU drops the
+> >> tick_do_timer_cpu assignment and stops the tick, it is possible, that
+> >> this CPU nevertheless executes tick_sched_do_timer() and then reassigns
+> >> to tick_do_timer_cpu?
+> >
+> > Yes but in this case a timer interrupt has executed and ts->next_tick
+> > is cleared, so the above skip reprogramm branch is not taken.
+> >
+> 
+> Yes... So I need to change it without dropping the
+> optimization. Otherwise someone might complain about it.
+> 
+> Two possible solutions:
+> 
+> a) split out this if/else thing for dropping the tick_do_timer_cpu
+>    assignment into a separate function and call it:
+>    - before the return in the skip reprogramm branch
+>    - and after the if clause which contains stopping the tick (where it
+>      is executed in the current proposal)
+> 
+> b) Take my current proposal and add before the return in the skip
+>    reprogramm branch the following lines:
+> 
+>    if (tick_do_timer_cpu != TICK_DO_TIMER_NONE)
+>    	ts->do_timer_last = 0;
+> 
+>    as the first part of the tick_do_timer_cpu/last logic shouldn't be
+>    required (because then also ts->next_tick is already cleared).
+> 
+> What do you prefere? Or do you prefere something else?
 
-Signed-off-by: Sebastian Ene <sebastianene@google.com>
----
- arch/arm64/kvm/ptdump.c | 50 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+Wouldn't the following work? If timer_idle is false, then the tick isn't
+even stopped and there is nothing to do? So you can early return.
 
-diff --git a/arch/arm64/kvm/ptdump.c b/arch/arm64/kvm/ptdump.c
-index 2c4e0c122d23..a68a22592e97 100644
---- a/arch/arm64/kvm/ptdump.c
-+++ b/arch/arm64/kvm/ptdump.c
-@@ -213,8 +213,58 @@ static const struct file_operations kvm_ptdump_guest_fops = {
- 	.release	= kvm_ptdump_guest_close,
- };
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index fdd57f1af1d7..1b2984acafbd 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -924,6 +924,9 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 		expires = ts->timer_expires;
+ 	}
  
-+static int kvm_pgtable_debugfs_show(struct seq_file *m, void *)
-+{
-+	const struct file *file = m->file;
-+	struct kvm_pgtable *pgtable = m->private;
++	if (!timer_idle)
++		return;
 +
-+	if (!strcmp(file_dentry(file)->d_iname, "ipa_range"))
-+		seq_printf(m, "%2u\n", pgtable->ia_bits);
-+	else if (!strcmp(file_dentry(file)->d_iname, "stage2_levels"))
-+		seq_printf(m, "%1d\n", pgtable->start_level);
-+	return 0;
-+}
-+
-+static int kvm_pgtable_debugfs_open(struct inode *m, struct file *file)
-+{
-+	struct kvm *kvm = m->i_private;
-+	struct kvm_s2_mmu *mmu;
-+	struct kvm_pgtable *pgtable;
-+	int ret;
-+
-+	if (!kvm_get_kvm_safe(kvm))
-+		return -ENOENT;
-+
-+	mmu = &kvm->arch.mmu;
-+	pgtable = mmu->pgt;
-+
-+	ret = single_open(file, kvm_pgtable_debugfs_show, pgtable);
-+	if (ret < 0)
-+		kvm_put_kvm(kvm);
-+	return ret;
-+}
-+
-+static int kvm_pgtable_debugfs_close(struct inode *m, struct file *file)
-+{
-+	struct kvm *kvm = m->i_private;
-+
-+	kvm_put_kvm(kvm);
-+	return single_release(m, file);
-+}
-+
-+static const struct file_operations kvm_pgtable_debugfs_fops = {
-+	.open		= kvm_pgtable_debugfs_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= kvm_pgtable_debugfs_close,
-+};
-+
- void kvm_ptdump_guest_register(struct kvm *kvm)
- {
- 	debugfs_create_file("stage2_page_tables", 0400, kvm->debugfs_dentry,
- 			    kvm, &kvm_ptdump_guest_fops);
-+	debugfs_create_file("ipa_range", 0400, kvm->debugfs_dentry, kvm,
-+			    &kvm_pgtable_debugfs_fops);
-+	debugfs_create_file("stage2_levels", 0400, kvm->debugfs_dentry,
-+			    kvm, &kvm_pgtable_debugfs_fops);
- }
--- 
-2.44.0.rc0.258.g7320e95886-goog
-
+ 	/*
+ 	 * If this CPU is the one which updates jiffies, then give up
+ 	 * the assignment and let it be taken by the CPU which runs
 
