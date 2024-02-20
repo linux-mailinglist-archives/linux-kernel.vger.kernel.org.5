@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-72571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33F7385B55A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:36:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80ED485B55B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58DE81C210DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:36:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F1F281DD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F60C5D75A;
-	Tue, 20 Feb 2024 08:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AB35D90B;
+	Tue, 20 Feb 2024 08:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r+bCQ0Ie"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rAKHZuPU"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7525D464
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A545D484
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708418191; cv=none; b=Jp0OankRUIiQ/L/4mKgD3A3iQgHlUf0X8JLJDpH7h2601CKh59h8W/rzED+QndnsNq0edgHDm0RU9/WQNA3R2Fz4V9HiCcBGizNFjUmd9XpaBpul5r6B70v9Wb9cZYuEDNhnSZ51M98x1MglkgSJbv+kNA5NCq1+/uSR+DIowEw=
+	t=1708418192; cv=none; b=jzahJ8MepehO+PZrd5EJKk/2ahHcE/4ae79SBW7YN6hMpJITJgkKRUhdRTHJU9FwyDYjQ5zHFfV22b0SCsjGCNvDCLlVVd2rFiEa9NqMYDIyq8i5CPx5qUEF66joeqMIEXX+4ck6yBW5AXRjS0Bvss0PB9G96cU+lwpLOKljjaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708418191; c=relaxed/simple;
-	bh=6Gz51bBXN6Q8boWrX2GQVXiS/ekJ2yeDalfCuLeQcy0=;
+	s=arc-20240116; t=1708418192; c=relaxed/simple;
+	bh=h4aoiZFCXudIevMl0A7g8PBQbZQmaC+2h4xWUS34kOg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BETeOmx3narAS3s8NYgNQKJ14Bg7pOIxiFBqVyfkprVWnHf2191iaS54oXpA/aCwF+ouBmBfJObJKqAwoTrH/IIeKboSRK8+SPYAEqYo1/PkNQPdZVVfyly8nEcuu4N5gnrDyoiCcB1z2DbT5f2qZYZHoc/fJhGFdDbE8nKsGMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r+bCQ0Ie; arc=none smtp.client-ip=209.85.208.180
+	 In-Reply-To:To:Cc; b=tBwDubSCFwAsGFtRXCAnt711V5Z2mS7SmaLc59DyE700l8ktJG1GcYAO5E3VnUV5aNiWdTPa2eCMqIDtO2moT9gpNJB31UCz/hKcX4L1DxlPAAHxaYhQpU86EkVuWDXcDspfrBykqOBarjq14Sl+C+TNYDbNzJONs7jP2xApDiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rAKHZuPU; arc=none smtp.client-ip=209.85.208.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d220e39907so50657061fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:36:29 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d241ff062cso18374551fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708418188; x=1709022988; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708418189; x=1709022989; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SZGKzH/426CN3opzPjYcCV0wzHXep85KgnBvxUchGh8=;
-        b=r+bCQ0Ieb9atk9w1QNme+6RsGpRgEFD8Gcz4hHHMH72vNqqRga+/ns+Ra16j9z8U9T
-         DodDTE3SXgjeZnhm6Fny+dKPVgD9CY+2dexvj1Y1RCUS5P6hFnhyc/jrBumzw1Tfr/xr
-         lfv/bNfeqRZr22W1qLDUif4X0KPDnkFW1vWxUHuAlvuXK+tvcEFEIss1zvQfHLeoJsa9
-         lTqsSguobYLLPojvtJx7PwDVKA+hR3Rc/0EeBtb7wwd/R+lMxSjrwiSeYUIugQJPD371
-         yHrZLps0/FM5KNAnpY1lSd/vHsICdgJ/0+5W0s8oBm4CxmLqxd3ReGH2xV7AEsYIt0+r
-         XCfQ==
+        bh=0x3UN1/hSlN2X5bdmRGWv4D2ePFNha6T0KTmRcIOERc=;
+        b=rAKHZuPUsjDzDKbMWBdsdarYLdjfLEaw5ngwqqzEZcJu1EaZA53zBv0vOwQwT/N478
+         BZoaftHqfGEvAb49E8ViCfr/5YhkI4kT4pjbtMcKXyZhwaaVUEkVec8QPHgn6OhyUeop
+         Vhh+624u4B4uMJbnBIKaAolXvFuaIcOCC1sYtmeIEh/ZHSD3hWIZ7ts3YLnYQwjYLdzj
+         MsugCnWia3kC6C14KEyhIWCyzYTyerG48NTXjXFf5xkMkOZMHUNVmFruTBb8WkUjsJGh
+         W7tFT0ADZXwRX54LXDvyIQI9k7Otqt0fCmR4fyltxd43ZnMVKTCiz66azFjLwBxXdBYt
+         2byw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708418188; x=1709022988;
+        d=1e100.net; s=20230601; t=1708418189; x=1709022989;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SZGKzH/426CN3opzPjYcCV0wzHXep85KgnBvxUchGh8=;
-        b=ncOF3Q7ZVWPhf/tQCOwlTdDLpc4dRrn1tVjhxWpTBObeGruG4QKQQYDsDawHx13144
-         FVWjvIEpdhgVclMFWpbk/XgMyVsIV42YqwYWexqv4r1+WhpBJUVfZhsMZAc9E0KfZ4/Q
-         nK4P6rbEF8Wzii0T5E4T2WGYPFQfEgQOMnCmry8if8/JhH1hWjd9SKYQHv9snUNDgCgx
-         xmW/VLDPON7ZZOpGAbuQctMmQlyYpgRnjOozanGAXgLG3V+mwAuOVz5X0cTMRlPfWOgY
-         slnrx4Ll5SJx8pckcT7dzESWSBJKirIkkQOOPe8YTePp8b6qxTDkZBvOHryiY26p5KZb
-         /Jew==
-X-Gm-Message-State: AOJu0YzF60NjbH+aAD0N789Aks8n3gfZRJqfwyXLqRiQREgvaUC7SRzS
-	8NsC1IEEq/wcZQEHlXpZY2Pd1OeMq9MUOikMuo0nsDCmnzjnw5lCIGjpkhIWAfs=
-X-Google-Smtp-Source: AGHT+IGBglYYVqTTbg9LEcR3IzHE27rB4USlrxalsneTmdX7jGssr7/St4LulJKZdu3Jz9GEXsn2Sg==
-X-Received: by 2002:a2e:3318:0:b0:2d2:426b:455c with SMTP id d24-20020a2e3318000000b002d2426b455cmr3262023ljc.0.1708418187964;
-        Tue, 20 Feb 2024 00:36:27 -0800 (PST)
+        bh=0x3UN1/hSlN2X5bdmRGWv4D2ePFNha6T0KTmRcIOERc=;
+        b=RY1eZnGqUQgk3gJTQ/zX7WzV6IPbMmv3LDNhCZZBbsfetjjPYGfg5ZTf0dxT1UPjex
+         i7ayGdPjnk/1m3W9NbUxFc0hmAmfyiHOQoC5tNMkwNjJdKjW7lsBfr0Kk4HUOmtFsWAO
+         rZDV1f3MMksG2Dw02kMbcVRfNUlevlOxb/r0K73hg7wER4CUdTH1MK2vC0hjnREEuJuH
+         MXoP8bovu0SpQW5bAFJ1sUiY35+ZJBjA1HxaiqNxHG1nUSkiJBlV7MEW0ve0x6cJ4a2Y
+         YZwlrjo1ZUfpfDM4etzCGDPKo9kWtMLCjw08c9/G32ojOEy71WwqcMDpMY/mYucXReos
+         K5Pw==
+X-Gm-Message-State: AOJu0YxUZHFfNSsazTZcFP4NUwstx1nY0mVJn7QzY2umH4fZ7G7uZokC
+	Q9GzjlWp0lS0AR+ydz2h1CfRodA83/WDoEUx25MktPBAl2faYrRotb8k54ugYZ4=
+X-Google-Smtp-Source: AGHT+IF867X7wicD/0oa1lFq1WdKSaHCDVDSDl8tlzE9PS+fooQaoF6Cl07iQZ/izJ10SLPuOjEjhg==
+X-Received: by 2002:a2e:8716:0:b0:2d2:39dc:ada1 with SMTP id m22-20020a2e8716000000b002d239dcada1mr2978992lji.15.1708418188869;
+        Tue, 20 Feb 2024 00:36:28 -0800 (PST)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id k1-20020a2e2401000000b002d2468d3bacsm195317ljk.9.2024.02.20.00.36.27
+        by smtp.gmail.com with ESMTPSA id k1-20020a2e2401000000b002d2468d3bacsm195317ljk.9.2024.02.20.00.36.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 00:36:27 -0800 (PST)
+        Tue, 20 Feb 2024 00:36:28 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 20 Feb 2024 09:36:26 +0100
-Subject: [PATCH 3/5] regulator: lp8788-buck: Fully convert to GPIO
- descriptors
+Date: Tue, 20 Feb 2024 09:36:27 +0100
+Subject: [PATCH 4/5] regulator: max8997: Convert to GPIO descriptors
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +76,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240220-descriptors-regulators-v1-3-097f608694be@linaro.org>
+Message-Id: <20240220-descriptors-regulators-v1-4-097f608694be@linaro.org>
 References: <20240220-descriptors-regulators-v1-0-097f608694be@linaro.org>
 In-Reply-To: <20240220-descriptors-regulators-v1-0-097f608694be@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
@@ -86,209 +85,176 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.4
 
-This converts the LP8788 BUCK regulator driver to use GPIO
-descriptors.
-
-BUCK1 can use one DVS GPIO and BUCK2 can use two DVS GPIOS,
-and no more so just hardcode two GPIO descriptors into
-the per-DVS state containers.
-
-Obtain the descriptors from each regulators subdevice.
-
-As there are no in-tree users, board files need to populate
-descriptor tables for the buck regulator devices when
-they want to use this driver. BUCK1 need a GPIO descriptor
-at index 0 and BUCK2 needs two GPIO descriptors at
-indices 0 and 1.
+This rewrites the max8997 regulator driver to fetch the dvs
+regulators as descriptors. This will likely mostly come from
+the device tree since there are no in-tree users of the platform
+data, but supplying GPIO descriptor tables from board files is
+also possible if needed.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/regulator/lp8788-buck.c | 64 +++++++++++++++++------------------------
- include/linux/mfd/lp8788.h      |  9 ++----
- 2 files changed, 28 insertions(+), 45 deletions(-)
+ drivers/regulator/max8997-regulator.c | 85 +++++++++++------------------------
+ include/linux/mfd/max8997.h           |  1 -
+ 2 files changed, 25 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/regulator/lp8788-buck.c b/drivers/regulator/lp8788-buck.c
-index e97ade09dede..712eaa6ff8ab 100644
---- a/drivers/regulator/lp8788-buck.c
-+++ b/drivers/regulator/lp8788-buck.c
-@@ -13,7 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/regulator/driver.h>
- #include <linux/mfd/lp8788.h>
+diff --git a/drivers/regulator/max8997-regulator.c b/drivers/regulator/max8997-regulator.c
+index 0b38eaa73597..5f201ee9a5b8 100644
+--- a/drivers/regulator/max8997-regulator.c
++++ b/drivers/regulator/max8997-regulator.c
+@@ -9,8 +9,7 @@
+ 
+ #include <linux/bug.h>
+ #include <linux/err.h>
 -#include <linux/gpio.h>
+-#include <linux/of_gpio.h>
 +#include <linux/gpio/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -32,7 +31,7 @@ struct max8997_data {
+ 	u8 buck1_vol[8];
+ 	u8 buck2_vol[8];
+ 	u8 buck5_vol[8];
+-	int buck125_gpios[3];
++	struct gpio_desc *buck125_gpiods[3];
+ 	int buck125_gpioindex;
+ 	bool ignore_gpiodvs_side_effect;
  
- /* register address */
- #define LP8788_EN_BUCK			0x0C
-@@ -69,8 +69,8 @@
- #define BUCK_FPWM_SHIFT(x)		(x)
+@@ -52,9 +51,9 @@ static inline void max8997_set_gpio(struct max8997_data *max8997)
+ 	int set2 = ((max8997->buck125_gpioindex) >> 1) & 0x1;
+ 	int set1 = ((max8997->buck125_gpioindex) >> 2) & 0x1;
  
- enum lp8788_dvs_state {
--	DVS_LOW  = GPIOF_OUT_INIT_LOW,
--	DVS_HIGH = GPIOF_OUT_INIT_HIGH,
-+	DVS_LOW  = 0,
-+	DVS_HIGH = 1,
- };
- 
- enum lp8788_dvs_mode {
-@@ -89,6 +89,8 @@ struct lp8788_buck {
- 	struct lp8788 *lp;
- 	struct regulator_dev *regulator;
- 	void *dvs;
-+	struct gpio_desc *gpio1;
-+	struct gpio_desc *gpio2; /* Only used on BUCK2 */
- };
- 
- /* BUCK 1 ~ 4 voltage ranges */
-@@ -106,8 +108,7 @@ static void lp8788_buck1_set_dvs(struct lp8788_buck *buck)
- 		return;
- 
- 	pinstate = dvs->vsel == DVS_SEL_V0 ? DVS_LOW : DVS_HIGH;
--	if (gpio_is_valid(dvs->gpio))
--		gpio_set_value(dvs->gpio, pinstate);
-+	gpiod_set_value(buck->gpio1, pinstate);
+-	gpio_set_value(max8997->buck125_gpios[0], set1);
+-	gpio_set_value(max8997->buck125_gpios[1], set2);
+-	gpio_set_value(max8997->buck125_gpios[2], set3);
++	gpiod_set_value(max8997->buck125_gpiods[0], set1);
++	gpiod_set_value(max8997->buck125_gpiods[1], set2);
++	gpiod_set_value(max8997->buck125_gpiods[2], set3);
  }
  
- static void lp8788_buck2_set_dvs(struct lp8788_buck *buck)
-@@ -139,11 +140,8 @@ static void lp8788_buck2_set_dvs(struct lp8788_buck *buck)
- 		return;
- 	}
+ struct voltage_map_desc {
+@@ -873,31 +872,13 @@ static struct regulator_desc regulators[] = {
+ };
  
--	if (gpio_is_valid(dvs->gpio[0]))
--		gpio_set_value(dvs->gpio[0], pin1);
+ #ifdef CONFIG_OF
+-static int max8997_pmic_dt_parse_dvs_gpio(struct platform_device *pdev,
+-			struct max8997_platform_data *pdata,
+-			struct device_node *pmic_np)
+-{
+-	int i, gpio;
 -
--	if (gpio_is_valid(dvs->gpio[1]))
--		gpio_set_value(dvs->gpio[1], pin2);
-+	gpiod_set_value(buck->gpio1, pin1);
-+	gpiod_set_value(buck->gpio2, pin2);
- }
- 
- static void lp8788_set_dvs(struct lp8788_buck *buck, enum lp8788_buck_id id)
-@@ -202,19 +200,13 @@ static u8 lp8788_select_buck_vout_addr(struct lp8788_buck *buck,
- 					enum lp8788_buck_id id)
+-	for (i = 0; i < 3; i++) {
+-		gpio = of_get_named_gpio(pmic_np,
+-					"max8997,pmic-buck125-dvs-gpios", i);
+-		if (!gpio_is_valid(gpio)) {
+-			dev_err(&pdev->dev, "invalid gpio[%d]: %d\n", i, gpio);
+-			return -EINVAL;
+-		}
+-		pdata->buck125_gpios[i] = gpio;
+-	}
+-	return 0;
+-}
+-
+ static int max8997_pmic_dt_parse_pdata(struct platform_device *pdev,
+ 					struct max8997_platform_data *pdata)
  {
- 	enum lp8788_dvs_mode mode = lp8788_get_buck_dvs_ctrl_mode(buck, id);
--	struct lp8788_buck1_dvs *b1_dvs;
--	struct lp8788_buck2_dvs *b2_dvs;
- 	u8 val, idx, addr;
- 	int pin1, pin2;
+ 	struct max8997_dev *iodev = dev_get_drvdata(pdev->dev.parent);
+ 	struct device_node *pmic_np, *regulators_np, *reg_np;
+ 	struct max8997_regulator_data *rdata;
+-	unsigned int i, dvs_voltage_nr = 1, ret;
++	unsigned int i, dvs_voltage_nr = 1;
  
- 	switch (id) {
- 	case BUCK1:
- 		if (mode == EXTPIN) {
--			b1_dvs = (struct lp8788_buck1_dvs *)buck->dvs;
--			if (!b1_dvs)
--				goto err;
+ 	pmic_np = iodev->dev->of_node;
+ 	if (!pmic_np) {
+@@ -949,10 +930,6 @@ static int max8997_pmic_dt_parse_pdata(struct platform_device *pdev,
+ 
+ 	if (pdata->buck1_gpiodvs || pdata->buck2_gpiodvs ||
+ 						pdata->buck5_gpiodvs) {
+-		ret = max8997_pmic_dt_parse_dvs_gpio(pdev, pdata, pmic_np);
+-		if (ret)
+-			return -EINVAL;
 -
--			idx = gpio_get_value(b1_dvs->gpio) ? 1 : 0;
-+			idx = gpiod_get_value(buck->gpio1);
- 		} else {
- 			lp8788_read_byte(buck->lp, LP8788_BUCK_DVS_SEL, &val);
- 			idx = (val & LP8788_BUCK1_DVS_M) >> LP8788_BUCK1_DVS_S;
-@@ -223,12 +215,8 @@ static u8 lp8788_select_buck_vout_addr(struct lp8788_buck *buck,
- 		break;
- 	case BUCK2:
- 		if (mode == EXTPIN) {
--			b2_dvs = (struct lp8788_buck2_dvs *)buck->dvs;
--			if (!b2_dvs)
--				goto err;
--
--			pin1 = gpio_get_value(b2_dvs->gpio[0]);
--			pin2 = gpio_get_value(b2_dvs->gpio[1]);
-+			pin1 = gpiod_get_value(buck->gpio1);
-+			pin2 = gpiod_get_value(buck->gpio2);
+ 		if (of_property_read_u32(pmic_np,
+ 				"max8997,pmic-buck125-default-dvs-idx",
+ 				&pdata->buck125_default_idx)) {
+@@ -1039,7 +1016,6 @@ static int max8997_pmic_probe(struct platform_device *pdev)
+ 	max8997->buck1_gpiodvs = pdata->buck1_gpiodvs;
+ 	max8997->buck2_gpiodvs = pdata->buck2_gpiodvs;
+ 	max8997->buck5_gpiodvs = pdata->buck5_gpiodvs;
+-	memcpy(max8997->buck125_gpios, pdata->buck125_gpios, sizeof(int) * 3);
+ 	max8997->ignore_gpiodvs_side_effect = pdata->ignore_gpiodvs_side_effect;
  
- 			if (pin1 == PIN_LOW && pin2 == PIN_LOW)
- 				idx = 0;
-@@ -424,28 +412,28 @@ static int lp8788_dvs_gpio_request(struct platform_device *pdev,
- 				enum lp8788_buck_id id)
- {
- 	struct lp8788_platform_data *pdata = buck->lp->pdata;
--	char *b1_name = "LP8788_B1_DVS";
--	char *b2_name[] = { "LP8788_B2_DVS1", "LP8788_B2_DVS2" };
--	int i, gpio, ret;
-+	struct device *dev = &pdev->dev;
+ 	nr_dvs = (pdata->buck1_gpiodvs || pdata->buck2_gpiodvs ||
+@@ -1110,38 +1086,27 @@ static int max8997_pmic_probe(struct platform_device *pdev)
+ 	 */
+ 	if (pdata->buck1_gpiodvs || pdata->buck2_gpiodvs ||
+ 			pdata->buck5_gpiodvs) {
++		const char *gpio_names[3] = {"MAX8997 SET1", "MAX8997 SET2", "MAX8997 SET3"};
  
- 	switch (id) {
- 	case BUCK1:
--		gpio = pdata->buck1_dvs->gpio;
--		ret = devm_gpio_request_one(&pdev->dev, gpio, DVS_LOW,
--					    b1_name);
+-		if (!gpio_is_valid(pdata->buck125_gpios[0]) ||
+-				!gpio_is_valid(pdata->buck125_gpios[1]) ||
+-				!gpio_is_valid(pdata->buck125_gpios[2])) {
+-			dev_err(&pdev->dev, "GPIO NOT VALID\n");
+-			return -EINVAL;
+-		}
++		for (i = 0; i < 3; i++) {
++			enum gpiod_flags flags;
+ 
+-		ret = devm_gpio_request(&pdev->dev, pdata->buck125_gpios[0],
+-					"MAX8997 SET1");
 -		if (ret)
 -			return ret;
-+		buck->gpio1 = devm_gpiod_get(dev, "dvs", GPIOD_OUT_LOW);
-+		if (IS_ERR(buck->gpio1))
-+			return PTR_ERR(buck->gpio1);
-+		gpiod_set_consumer_name(buck->gpio1, "LP8788_B1_DVS");
- 
- 		buck->dvs = pdata->buck1_dvs;
- 		break;
- 	case BUCK2:
--		for (i = 0; i < LP8788_NUM_BUCK2_DVS; i++) {
--			gpio = pdata->buck2_dvs->gpio[i];
--			ret = devm_gpio_request_one(&pdev->dev, gpio,
--						    DVS_LOW, b2_name[i]);
--			if (ret)
--				return ret;
--		}
-+		buck->gpio1 = devm_gpiod_get_index(dev, "dvs", 0, GPIOD_OUT_LOW);
-+		if (IS_ERR(buck->gpio1))
-+			return PTR_ERR(buck->gpio1);
-+		gpiod_set_consumer_name(buck->gpio1, "LP8788_B2_DVS1");
+-
+-		ret = devm_gpio_request(&pdev->dev, pdata->buck125_gpios[1],
+-					"MAX8997 SET2");
+-		if (ret)
+-			return ret;
+-
+-		ret = devm_gpio_request(&pdev->dev, pdata->buck125_gpios[2],
+-				"MAX8997 SET3");
+-		if (ret)
+-			return ret;
+-
+-		gpio_direction_output(pdata->buck125_gpios[0],
+-				(max8997->buck125_gpioindex >> 2)
+-				& 0x1); /* SET1 */
+-		gpio_direction_output(pdata->buck125_gpios[1],
+-				(max8997->buck125_gpioindex >> 1)
+-				& 0x1); /* SET2 */
+-		gpio_direction_output(pdata->buck125_gpios[2],
+-				(max8997->buck125_gpioindex >> 0)
+-				& 0x1); /* SET3 */
++			if (max8997->buck125_gpioindex & BIT(2 - i))
++				flags = GPIOD_OUT_HIGH;
++			else
++				flags = GPIOD_OUT_LOW;
 +
-+		buck->gpio2 = devm_gpiod_get_index(dev, "dvs", 1, GPIOD_OUT_LOW);
-+		if (IS_ERR(buck->gpio1))
-+			return PTR_ERR(buck->gpio1);
-+		gpiod_set_consumer_name(buck->gpio1, "LP8788_B2_DVS2");
-+
- 		buck->dvs = pdata->buck2_dvs;
- 		break;
- 	default:
-diff --git a/include/linux/mfd/lp8788.h b/include/linux/mfd/lp8788.h
-index 3d5c480d58ea..51b47966a04d 100644
---- a/include/linux/mfd/lp8788.h
-+++ b/include/linux/mfd/lp8788.h
-@@ -10,7 +10,6 @@
- #ifndef __MFD_LP8788_H__
- #define __MFD_LP8788_H__
++			max8997->buck125_gpiods[i] = devm_gpiod_get_index(iodev->dev,
++									  "max8997,pmic-buck125-dvs",
++									  i,
++									  flags);
++			if (IS_ERR(max8997->buck125_gpiods[i])) {
++				ret = PTR_ERR(max8997->buck125_gpiods[i]);
++				return dev_err_probe(iodev->dev, ret, "cant get GPIO %d (%d)\n",
++						     i, ret);
++			}
++			gpiod_set_consumer_name(max8997->buck125_gpiods[i], gpio_names[i]);
++		}
+ 	}
  
--#include <linux/gpio.h>
- #include <linux/irqdomain.h>
- #include <linux/pwm.h>
- #include <linux/regmap.h>
-@@ -159,21 +158,17 @@ struct lp8788;
- 
- /*
-  * lp8788_buck1_dvs
-- * @gpio         : gpio pin number for dvs control
-  * @vsel         : dvs selector for buck v1 register
-  */
- struct lp8788_buck1_dvs {
--	int gpio;
- 	enum lp8788_dvs_sel vsel;
- };
- 
- /*
-  * lp8788_buck2_dvs
-- * @gpio         : two gpio pin numbers are used for dvs
-  * @vsel         : dvs selector for buck v2 register
-  */
- struct lp8788_buck2_dvs {
--	int gpio[LP8788_NUM_BUCK2_DVS];
- 	enum lp8788_dvs_sel vsel;
- };
- 
-@@ -268,8 +263,8 @@ struct lp8788_vib_platform_data {
-  * @buck_data    : regulator initial data for buck
-  * @dldo_data    : regulator initial data for digital ldo
-  * @aldo_data    : regulator initial data for analog ldo
-- * @buck1_dvs    : gpio configurations for buck1 dvs
-- * @buck2_dvs    : gpio configurations for buck2 dvs
-+ * @buck1_dvs    : configurations for buck1 dvs
-+ * @buck2_dvs    : configurations for buck2 dvs
-  * @chg_pdata    : platform data for charger driver
-  * @alarm_sel    : rtc alarm selection (1 or 2)
-  * @bl_pdata     : configurable data for backlight driver
+ 	/* DVS-GPIO disabled */
+diff --git a/include/linux/mfd/max8997.h b/include/linux/mfd/max8997.h
+index 6193905abbb5..5c2cc1103437 100644
+--- a/include/linux/mfd/max8997.h
++++ b/include/linux/mfd/max8997.h
+@@ -178,7 +178,6 @@ struct max8997_platform_data {
+ 	 *
+ 	 */
+ 	bool ignore_gpiodvs_side_effect;
+-	int buck125_gpios[3]; /* GPIO of [0]SET1, [1]SET2, [2]SET3 */
+ 	int buck125_default_idx; /* Default value of SET1, 2, 3 */
+ 	unsigned int buck1_voltage[8]; /* buckx_voltage in uV */
+ 	bool buck1_gpiodvs;
 
 -- 
 2.34.1
