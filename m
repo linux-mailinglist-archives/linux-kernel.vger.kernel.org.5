@@ -1,205 +1,134 @@
-Return-Path: <linux-kernel+bounces-73555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0EA85C41E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:58:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B14485C422
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75473283425
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:58:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65DC01C22CDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0004F134CE0;
-	Tue, 20 Feb 2024 18:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF002133987;
+	Tue, 20 Feb 2024 18:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iRal7+Tj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="EbicfXdI"
+Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367ED12EBEC;
-	Tue, 20 Feb 2024 18:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A9A6763EB
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708455507; cv=none; b=m6K/qAKm7qP4nmE7rvM0oKQ2ZCQ4ZwDtN5P4l4JaRXGtzjsJNaizhBJ49RSUROms7z0TWoIYLkh3MQPyEovnuNKl+lE9CvKBIfBOP+Xxfy96IRuDbH+DF+bJMWSmc+Xdkgj95Y9dgGZlgmtAzQ7TjpYtgKF8iOsbI5XcWI5/TDU=
+	t=1708455519; cv=none; b=mLg5EiOZa09F2o9xqTjkyyB8C7ZzAMSpQLe5dDWtLyYY0svcYO24nMxOyMKcRXJ7RBX/jj4Ml7XGXPIZM2qMn9oV7ai7L1xhSBVXp2sX8zqkw4ZaU0d+bUekE4eJt9sYWp/2C8wfdeYXfJsIiyanPNDPymzXMgUMp8vG9I6REQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708455507; c=relaxed/simple;
-	bh=4CW+LXiG5f6KUnfcKWM4ar6fdeuFp263jPQ98dKh8To=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZPTlK/nHTobypjOTv25YH8u93nyNJj+zhgAIN+NKgG9ztc65odNzREUGrnc1kU9wrCn28g2OlShQlEqPfq+QdCP3UZUZH7/Zte/iQuaM7aD8+HqhTHPLhbo7VXnYXF0IckVzScp/jZyp/4AMtt30MA4m7wrcmme2rYhtlWpcNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iRal7+Tj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8244EC433F1;
-	Tue, 20 Feb 2024 18:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708455506;
-	bh=4CW+LXiG5f6KUnfcKWM4ar6fdeuFp263jPQ98dKh8To=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iRal7+Tjf7Yw6mzcb2bExp2WfEpXtJymsOzpnLJOxdxE3uQJ76YtQptlT33ndySIQ
-	 QbSlyCDhONv7jXWK7ZMb3JDD0HHrdgswSU9QNtCz7eYLN4beruUcNGHptKIbUVILDB
-	 AzO4g1N4Rsi8NV3/ZqwEnff5khPHFHzUqeyJZ1TnNrHopXdEfJ9EwtiJz4GUiZOIr4
-	 mNy7F4xsrsfmDvFIq4FfiYf0FV0ievwNv3Ncc8cJD5JAPcsiv4QkqlsdYL/2iXA5Nf
-	 s7SeYrZK0dB901IfHMeaqcbYCZtx1cJkBu4Iicwgb6MlLepMijBLMZ/7UBJL5Ljrhp
-	 0KXMtRKOd5K6A==
-Date: Tue, 20 Feb 2024 18:58:21 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Michael Riesch <michael.riesch@wolfvision.net>
-Cc: Mehdi Djait <mehdi.djait.k@gmail.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 04/14] media: dt-bindings: media: rockchip,px30-vip:
- allow for different variants
-Message-ID: <20240220-catchy-cupcake-e600e5af7650@spud>
-References: <20240220-v6-8-topic-rk3568-vicap-v1-0-2680a1fa640b@wolfvision.net>
- <20240220-v6-8-topic-rk3568-vicap-v1-4-2680a1fa640b@wolfvision.net>
+	s=arc-20240116; t=1708455519; c=relaxed/simple;
+	bh=8WzmXc4hkm/h23fftetZwBYuo4crh0kh/mv9qH7713g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gkyC2DoTxtZt0H4QZ6hbNBEgq5q+v8NEEPl3/fuXIvw5Do7tgc2l6/GkDct/bV++INDldu4SWsFNjERyW31IrI+mEkONYYsrU7rth0XnXb5yL3pVmRlRN0TmjdZQxjedOX2HtV+n5nxQpPSM0Stx4HAmqU6zKuPuCqsRU5/uWsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=EbicfXdI; arc=none smtp.client-ip=80.12.242.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id cVJ3rZRzMFu9DcVK5ruPxD; Tue, 20 Feb 2024 19:58:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1708455515;
+	bh=bhyTkozSilaOI3wTa7vDeTF3frYTM4nImhWGYnX59p0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=EbicfXdI+a3tOLKcNT4u8AXMI7rRi5z4CZFujYjmHCy5vrdHE5yv95ghh07lElXDp
+	 2DxvgFn7gJyTUAYse4z9umzGRzh0h52oaUk9UDtgMaPotThmucxgjguOg/hHSNQP8R
+	 50eV2NEjKcYEIHljl/V9JoyKWR8dp2Yijpst9X//fyaM465h9din2Mxll7QLkR1w2v
+	 7fs5wltDKP5VyjfPV4r7wA5uoz095fplA5olLFzWtd10b+CNJUJOSuNGuII9Q9MgZp
+	 efneR4zRosgVOd4qCAdTs8LpdSjuS6TVEBv8EkRJa8RbA4/iwGq6Tv1x1ip46zqsP7
+	 SE0UlUYX5ro1A==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 20 Feb 2024 19:58:35 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <521e55d5-37e2-41b3-9ed7-0986d503087c@wanadoo.fr>
+Date: Tue, 20 Feb 2024 19:58:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y+i2VP3O5QfWvvRS"
-Content-Disposition: inline
-In-Reply-To: <20240220-v6-8-topic-rk3568-vicap-v1-4-2680a1fa640b@wolfvision.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/xe/guc: Remove usage of the deprecated
+ ida_simple_xx() API
+Content-Language: en-MW
+To: Lucas De Marchi <lucas.demarchi@intel.com>,
+ Oded Gabbay <ogabbay@kernel.org>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+References: <d6a9ec9dc426fca372eaa1423a83632bd743c5d9.1705244938.git.christophe.jaillet@wanadoo.fr>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <d6a9ec9dc426fca372eaa1423a83632bd743c5d9.1705244938.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
---y+i2VP3O5QfWvvRS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hey,
-
-On Tue, Feb 20, 2024 at 10:39:14AM +0100, Michael Riesch wrote:
-> Move the documentation of clocks and resets to a allOf: structure in order
-> to allow for different variants of the IP block.
->=20
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+Le 14/01/2024 à 16:09, Christophe JAILLET a écrit :
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
+> 
+> Note that the upper limit of ida_simple_get() is exclusive, but the one of
+> ida_alloc_max() is inclusive. So a -1 has been added when needed.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  .../bindings/media/rockchip,px30-vip.yaml          | 58 ++++++++++++++--=
-------
->  1 file changed, 37 insertions(+), 21 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/media/rockchip,px30-vip.ya=
-ml b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
-> index 675a1ea47210..7168f166798c 100644
-> --- a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
-> +++ b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
-> @@ -24,32 +24,16 @@ properties:
->    interrupts:
->      maxItems: 1
-> =20
-> -  clocks:
-> -    items:
-> -      - description: ACLK
-> -      - description: HCLK
-> -      - description: PCLK
-> -
-> -  clock-names:
-> -    items:
-> -      - const: aclk
-> -      - const: hclk
-> -      - const: pclk
-> +  clocks: true
-> +
-> +  clock-names: true
+>   drivers/gpu/drm/xe/xe_guc_submit.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xe/xe_guc_submit.c b/drivers/gpu/drm/xe/xe_guc_submit.c
+> index 21ac68e3246f..11ffacd1dd58 100644
+> --- a/drivers/gpu/drm/xe/xe_guc_submit.c
+> +++ b/drivers/gpu/drm/xe/xe_guc_submit.c
+> @@ -311,7 +311,7 @@ static void __release_guc_id(struct xe_guc *guc, struct xe_exec_queue *q, u32 xa
+>   				      q->guc->id - GUC_ID_START_MLRC,
+>   				      order_base_2(q->width));
+>   	else
+> -		ida_simple_remove(&guc->submission_state.guc_ids, q->guc->id);
+> +		ida_free(&guc->submission_state.guc_ids, q->guc->id);
+>   }
+>   
+>   static int alloc_guc_id(struct xe_guc *guc, struct xe_exec_queue *q)
+> @@ -335,8 +335,8 @@ static int alloc_guc_id(struct xe_guc *guc, struct xe_exec_queue *q)
+>   		ret = bitmap_find_free_region(bitmap, GUC_ID_NUMBER_MLRC,
+>   					      order_base_2(q->width));
+>   	} else {
+> -		ret = ida_simple_get(&guc->submission_state.guc_ids, 0,
+> -				     GUC_ID_NUMBER_SLRC, GFP_NOWAIT);
+> +		ret = ida_alloc_max(&guc->submission_state.guc_ids,
+> +				    GUC_ID_NUMBER_SLRC - 1, GFP_NOWAIT);
+>   	}
+>   	if (ret < 0)
+>   		return ret;
 
-This is, unfortunately, not how we like multiple soc support to be
-handled. Instead, the widest constraints are added at the top level
-and constrained by the allOf. If none of the names etc are shared, at
-least the widest constraints for minItems and maxItems should be able to
-be here.
+Hi,
 
-That said, this patch should be squashed with the patch that actually
-adds the other device to the binding.
+gentle reminder.
 
-Cheers,
-Conor.
+All patches to remove the ida_simple API have been sent.
+And Matthew Wilcox seems happy with the on going work. (see [1])
 
-> =20
->    iommus:
->      maxItems: 1
-> =20
-> -  resets:
-> -    items:
-> -      - description: AXI
-> -      - description: AHB
-> -      - description: PCLK IN
-> +  resets: true
-> =20
-> -  reset-names:
-> -    items:
-> -      - const: axi
-> -      - const: ahb
-> -      - const: pclkin
-> +  reset-names: true
-> =20
->    power-domains:
->      maxItems: 1
-> @@ -85,6 +69,38 @@ required:
->    - clocks
->    - ports
-> =20
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: rockchip,px30-vip
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: ACLK
-> +            - description: HCLK
-> +            - description: PCLK
-> +
-> +        clock-names:
-> +          items:
-> +            - const: aclk
-> +            - const: hclk
-> +            - const: pclk
-> +
-> +        resets:
-> +          items:
-> +            - description: AXI
-> +            - description: AHB
-> +            - description: PCLK IN
-> +
-> +        reset-names:
-> +          items:
-> +            - const: axi
-> +            - const: ahb
-> +            - const: pclkin
-> +
->  additionalProperties: false
-> =20
->  examples:
->=20
-> --=20
-> 2.30.2
->=20
+Based on next-20240220
+$git grep ida_simple_get | wc -l
+36
 
---y+i2VP3O5QfWvvRS
-Content-Type: application/pgp-signature; name="signature.asc"
+https://elixir.bootlin.com/linux/v6.8-rc3/A/ident/ida_simple_get
+50
 
------BEGIN PGP SIGNATURE-----
+https://elixir.bootlin.com/linux/v6.7.4/A/ident/ida_simple_get
+81
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdT2TQAKCRB4tDGHoIJi
-0tZhAQDtcuqCE1tbyiZKmF78dkxlm/na01H9RkqI8fZC7+braQD/U7aIEwSULwcM
-axi2QjcgExsgOX/i6A0txpW/TSVrcAo=
-=V7Gm
------END PGP SIGNATURE-----
+Thanks
+CJ
 
---y+i2VP3O5QfWvvRS--
+[1]: https://lore.kernel.org/all/ZaqruGVz734zjxrZ@casper.infradead.org/
 
