@@ -1,196 +1,198 @@
-Return-Path: <linux-kernel+bounces-73701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D1AB85C620
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:54:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD6985C622
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA051C2154A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:54:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5797B1F23C5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DED151CCC;
-	Tue, 20 Feb 2024 20:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F148151CCB;
+	Tue, 20 Feb 2024 20:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="P2HhyoOz"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=kunbus.com header.i=@kunbus.com header.b="NZ7nhA/j"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2102.outbound.protection.outlook.com [40.107.8.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57151509A5
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708462466; cv=none; b=ZiQI3N8g24Ir87ArxVOOoJYNcugNzrJcYsGvb4vi0QwuwfM3xY0gD+eL+igjusBrBNgfLiTcDKEyfnX0wh0pjeQiS/mI5/yViwFTs2EsXGRZJ7pxEPKHWqufR9Ik7WtHvU2j+kK1rv8AwQjnwYlhmEo+P5oLI1J+TXvrZNc365I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708462466; c=relaxed/simple;
-	bh=Yi0rtUqZLJm2S6u03a6Dmkff761MDSWQIxTDSQNuYdE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hvCwlixradsKhttoXMNBtxPnVRoZEp2obzIcpdHiRK/Ap6S7/Uw2JIObk/bqTBnEP3WRfb9kkLw3ghCl2WnRXkn4dOUs9qMJncXI9NrQuIHxfmPbiE+7fi2d4kq1EEBAondXzCcYAzyRYJUlg1OH4NlEwTiwjw/H2+Z13deP7nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=P2HhyoOz; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-511ac32fe38so9073559e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:54:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708462462; x=1709067262; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jyh9FR/LCnL9UHf/YvsJlGBxSygyQQc/DzYerA/eUFA=;
-        b=P2HhyoOzqDJnE/Y9Kp4LbRwJniYfxSYfnuKrMCkUjU7WJTvr9S+LS+/wJSUhqRXiFB
-         Tt6YhgakC0FwtiO38IQF7jExcdNUwVBRtbi4o5moscJax1HnT1tybfnc4AUIy5JSSMnQ
-         C4BZ/uIkIWXgKkVI4fJi5D5RbI4INhnU8nZK3EFyzOmwqWYcTmPghry8dzdS+YJmW4+N
-         3M7VwYawEO+u5oiBoC2ev0ouFnIWeBGt+fb0/wBqzT/Po4RjNOf9KqVt6P8jX4gN0Ioj
-         W/vuoi8SeoF6B9G6A3r1ig0HtoFALXKogb3OvOnI2poUqkdVPDwv42gkK1p8GW2YngVI
-         yQjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708462462; x=1709067262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jyh9FR/LCnL9UHf/YvsJlGBxSygyQQc/DzYerA/eUFA=;
-        b=ZFJA8MW1i85KT17LD+AVrFFDQIqr+nm6EwmPXJ1ixgUxfKcel2VXJRNL4KVjnwERIu
-         V4RF9j4GYOYOuW77WTLOxg21h+M3Jyi7VTQ6pce1hxVr6jwqG4MfirodAdqJ1ghJoSjT
-         BxOPncuf3EuW+SrgPqQoHBHQS244DzKiXzvemfR/1BK/YJMLJdA2fblPG/Sq6BSpnHAP
-         Q8CQnzRkvAObcFBNao6cS/2X8rjsvVS2WffjwsDzJkzizqmQAf4lN+6uUakVNQijdfGI
-         1npFUlunFwi2wnbZ9PcUB2BtcIm1JWlTJPcbJGSRkPhWNG0CPL+P1fuwApVNTw0UIzlN
-         64kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWs0Td77ebs3fpZODC2XY0kmYkLv94IZJSGPycnQPMJH+hAkLau3fCHhmmj0tbmCxUVmZpA7nVOkg68ovYgtzxA7HynIPXBReVeFhmO
-X-Gm-Message-State: AOJu0YxFeKL6mfd6Q8IOJO8PJlsq1NOEBGt+aH8ci1uP5oYFMtcPnyPE
-	PzyBADBqIetxymuTAk7Ggy0ZWnLiTsRayUUw8jd+ije3nFSYKGgmoCktwpgDstPo9hOz3zd4ck+
-	SvMaZv5KJvmuuRPuutfTq1tqBXYX7f2SpZ81Sz3N3QQPoisnHcwo=
-X-Google-Smtp-Source: AGHT+IHZqlcVgt+ktb4ViHXtjGE0NSdsEiIKRla1wDkZQzzWbmG1Zgv7ZNzPVhE7Wq2SOamQcI56TcuJ7km+1hUpqHA=
-X-Received: by 2002:a05:6512:1321:b0:512:bd65:860a with SMTP id
- x33-20020a056512132100b00512bd65860amr5309051lfu.5.1708462462005; Tue, 20 Feb
- 2024 12:54:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1C0612D7;
+	Tue, 20 Feb 2024 20:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.102
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708462494; cv=fail; b=YH9nujofKcqm4CO2lfNwzu8zwbjHiJi15oe9AQJMxzTY9m1Yh1uuspU5DnWzu8zywCAJC3erTAJu2thlTiW2ityakAgtPl4cH5fbgyQ7Uu8dgYIA/6guu2xI9g7ehxT4NRH7yjXLXvV1KptKSzKbnOmhgoIEF2A3NWOAuQ5u4HY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708462494; c=relaxed/simple;
+	bh=qkbXwoFMWgtvjuDYoo3cnVt2VFn5qjmYmHBLxsB5LIc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mzuAuFo/dye/AIADqLncYiyACSSpniRg6n1VMwi/YgDH3vy2tAJF/ldQPFUmoZBUJcXCjKMVvbuiyUlVne7/I7/RCo9qCa2ApJ9jgyz1ptRs3hAx1vH+cLfa+DWx8/jfcLsKfwSMuehsHZA1G6ararPPeH+Mg8TCAiC4VoO73cc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kunbus.com; spf=pass smtp.mailfrom=kunbus.com; dkim=pass (1024-bit key) header.d=kunbus.com header.i=@kunbus.com header.b=NZ7nhA/j; arc=fail smtp.client-ip=40.107.8.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kunbus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kunbus.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MnoyNAhbnewsS3uB/KrYzAkJNHL/F+HAsjFPzZ4kwIaiKtc9QbXTp+TgtG5VisSTcARCsvAnQWDGtwczc4hwZPc0R9FKQerIIKxeBgkrGahoZrc+ZrxwSYcLFc+0bqZ+TxyLXyULqHgOqqpB+KmGt6AjmT4MM/iPwKSJsCSeSaDoisMrGleZcWPAdqPjfhGzPLf38QhQVN96+ui7SB2jfRzK7f9czdSK1HiK7HMjN8ChOJFqW9iC7qdYcBbP/nK1JWfWb9de0Bh6bYNcXCPf+bK81U6O+XbMkCIywN0/x897AmFHpgdoCF+HgpwR6BCBByrxM4mNvJseJNE9zY7DzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q3v2aNl/WA9kBdZgc4EffaOTYv2FQ0HK3dn3wo9MB7U=;
+ b=W6d6HW2oS5ZlPAiOJXtQvhy12Y28KrShHrwCAmCV3RNSXrxKOtrugqJeGvFjz8c0HV8chvLssdZdeUrWloMSnddJi+SLTG7ZXETegmyXeAAm+Q0VEHbjcJ7SHZhSC48KoVLAtSMt7uQjt64HJzxGQJiLyTMuxo8+cOS9bAFPDqTSfNIk09YI/6I1WAym0dmxR8SZTHnRmBo2d9+iI3Bd9pTphIvT1290FIIW0IwS4D2wnNFpoxijvTxbzX9hkez10hBP244saQgDWiKmjFYZNgGDjZ/tkg7i8XsbWzBz+hI7bE05ecLrZqv4xA3iQclcAJQo5e9WIFz+R/SlkzhQ1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
+ dkim=pass header.d=kunbus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q3v2aNl/WA9kBdZgc4EffaOTYv2FQ0HK3dn3wo9MB7U=;
+ b=NZ7nhA/jChaurxUbn8At+NkUcXhxHYR+jHmCPomAYHfM0+VKHR1dkQdGvhq1S07PHAANlYasiU19HS4zKC+bQyrybVe2BgLDVssDA6IE695lsYDO5VP5Xr7GjQs4iZB6ze+t5u+j3v2/O1Pv80+sMHukUZ3SoG90AT9vLjK0+vA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kunbus.com;
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM (2603:10a6:803:4e::14)
+ by PR3P193MB0764.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:33::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 20:54:48 +0000
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::83c6:a213:7935:ae6f]) by VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::83c6:a213:7935:ae6f%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 20:54:48 +0000
+Message-ID: <91f600ef-867b-4523-89be-1c0ba34f8a4c@kunbus.com>
+Date: Tue, 20 Feb 2024 21:54:45 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
+Content-Language: en-US
+To: Alexander Steffen <Alexander.Steffen@infineon.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>,
+ "Daniel P. Smith" <dpsmith@apertussolutions.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Sasha Levin <sashal@kernel.org>,
+ linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ross Philipson <ross.philipson@oracle.com>,
+ Kanth Ghatraju <kanth.ghatraju@oracle.com>, Peter Huewe <peterhuewe@gmx.de>
+References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
+ <20240131170824.6183-2-dpsmith@apertussolutions.com>
+ <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
+ <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
+ <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
+From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+In-Reply-To: <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0166.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b4::18) To VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:803:4e::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
-In-Reply-To: <20240220094344.17556-1-mitrutzceclan@gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 20 Feb 2024 14:54:10 -0600
-Message-ID: <CAMknhBEZ7Y1Yx=wJGnfvYWGKPLas3pbCyY+sN8vrBzdkYO-A4w@mail.gmail.com>
-Subject: Re: [PATCH v13 1/3] dt-bindings: adc: add AD7173
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org, 
-	linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, 
-	Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Michael Walle <michael@walle.cc>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu <chiaen_wu@richtek.com>, 
-	Niklas Schnelle <schnelle@linux.ibm.com>, =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>, 
-	Mike Looijmans <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, 
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Ceclan Dumitru <dumitru.ceclan@analog.com>, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0413:EE_|PR3P193MB0764:EE_
+X-MS-Office365-Filtering-Correlation-Id: 134f3d96-ffa1-469b-0c75-08dc32562d03
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	vZiVEBRq+j6N8wdDC4knNmq6D/iARcu55CVQmgVuGovl3ea1hLLeJRE+6IuI7mxsgetRFOUJ0uNL+XHaw63MLSGiCG94GzuX6Gh5Ev4bZ4pMyUu2ZHzjTbgtWBJgPDBMj4CpUZVpFj/z1p/DAcWZdHEo7n9+Fy2PiKZpB1jRchgtp1cb2xN3kORcHHkAqJhMJNLfyR7J7lp2vpxnqCBNsPuIuXdnjYPHZuTww1a6aRIm3ivsacakugl3YZKWTB45f/cJ2uC7/wkeR6WqyBhC8/qqGvEiEfFXeE94rx00726UQf2Vte/MjyLxf9EoRgPSEIJHgH6uf9jSgbp/tcyw6rKpCAvAtNUw8AcRYPOWaqkvESSihR9CPrK7PjMI9Lrmg2tAWkTjdbKBAiG99cNmKkVeyKE96GfgSCGCA5no85PDhNRvGUk75hS6jqlnFYoA4PiUBOuiFGW4q3eI32VbULQD6niIeBNHmnyOyvVBeNsueF6MNoL0xZ1WIiEp57F0tBbEpqFxrugdRVH9W4Gl/shWCJfrlTpMXkYmtRsWKTzTKPz54789KaLOgdqAr5qz
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0413.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OTc0cFBQd29WUVBVTGNNSCt6MnJOWU95Uk1PSlpBZURzNkJ1c0t6MjNEVmJy?=
+ =?utf-8?B?eEduL2FkNnR3SGM5TXM4ckYrTC9ldUxVUUxDL2Y5N0tTV29CbnppUnJKNUs4?=
+ =?utf-8?B?bUJTb3VZc1dMSitKYzIza2NiemIxZUdsWkNyQ1VsckQrQy8wNnlSTFhZMnpD?=
+ =?utf-8?B?VXFJN2J2UGY3QnQ5SndtZVloN3FKZ0hVUythMml6bmgzdnA5ZXRGWUZCQ3I4?=
+ =?utf-8?B?bGxVRmRRSHl4WWViNGcrcGhYc1M0K09wSms0cnJyUWRSNUdISmFXUFc3cHpk?=
+ =?utf-8?B?OWcxVEl3MmlPajRqRmRnMVdLRTAxL29sMXRrc2FJc1lTd0tvajN0S2VvdDlv?=
+ =?utf-8?B?d1JqeUxrTUpsTlJCUmpFemExcWdwWHIwNGNsNmxoL0JVZ3RrYTU4NTlwRFpH?=
+ =?utf-8?B?RHdkbTBaZGxxVjJyemxibjVXYlg4bEs1T3haNHpUSURhZGFCRDZTbjA3NGg1?=
+ =?utf-8?B?anlaVlBORXF3RTA1UnRZMno3ZTdGZER1Sm1yZkhORkcxS2ltZSt0TGYwSWZk?=
+ =?utf-8?B?Z2xkSEErVkxYVmRvS0M4d1p0bnJKMXNRdVhhVFFIakZVQnJNaHhqVDRFeEN2?=
+ =?utf-8?B?RzBWbEJXZXJ6QnhXZXVyNW9mbGxiRlNFSUZHaWx3b1FUMk1XUDIvT0tHMEps?=
+ =?utf-8?B?OVhlVElxcjRneVhSUGlpeHBGNHJoamJreEg5TG93YnhtZTBWOWJrM3BGVExX?=
+ =?utf-8?B?dGhoY3lwTHNmcklXTWRPVXEzRFVNVXlsYndubk9nU0FFSDZsWERDMS9WZ0Z5?=
+ =?utf-8?B?VVVJenlwQzhFbEpCd0JLVnVWOVRnUzZVWXRCbkx0eXgya0JPRmxnK3Bhbjhx?=
+ =?utf-8?B?dWFNdWt4dkU4YkFRYXg4dnlMRUlTS1l4R1dVYTRwUjNEOEY5RTQ0M3ZTMVVp?=
+ =?utf-8?B?UVdIcEtKR3NhMFRMcGdVUEpnUTF4RmJjc0dzc1VSQ080cExVUlRMdEp2M3Zj?=
+ =?utf-8?B?ZzAyeVNNWk5MYjRSRFFJNUR5QVc4NEhwZ0huZGFsckFiM3FJZFNKeWxkdmJR?=
+ =?utf-8?B?cG5SOUs4VzRaS2FaNVk4ZlRhZmFzQW1rdVFyM05Lck8veHJFRllnZnppb0ty?=
+ =?utf-8?B?eU51ZitzQ0FWcG1mZ2h6TDlSSTFwcU8yaU1BMk8vb3FTTzVxT1pKMjR1UXV5?=
+ =?utf-8?B?dXd4aVJ6bUIzWG93aHBxa0gzcE9wLy9sYUNTa2Y1dXU3dGh1bkFZUk1tZjVD?=
+ =?utf-8?B?UVpVZ2tUa01seWE3ZXZaUUllalJaVkx4N0o1LzZVbW96NEFwWE0zc05tZ0xi?=
+ =?utf-8?B?VWcxOGgweFpSelVTRXBUSWRtZDF0T21CNGxXS2ZRZVh5VTlyZDBMSWxUb3lv?=
+ =?utf-8?B?Y20rRnM2NHA0bHZhcE96RURDQTJQVkp1UVphcW5jdFp2MnRpVnZBWkVqMGRk?=
+ =?utf-8?B?Nnl4dk4vTThOQWl6VE9qQTNvdFdvNXk2cGFubzdZd01BNXc3Z0VHK29VamZ4?=
+ =?utf-8?B?dFRRem8rQXFNTlVJZmFpTEZteHA5Qm54TmcwVzdRUkVuRGwyd2lYL1V6cURR?=
+ =?utf-8?B?dzRsS2d3M2x2Wllaak1vUnZSYm9VdzRHZGZNV0VOTERJK1dpN1RnSUpFWmZo?=
+ =?utf-8?B?NGwrRFZ4Smh1UTZ1T0UyWG1PdTFYdGU3Rm5qZi9acisrMlBUV0JrSWJaa1ZY?=
+ =?utf-8?B?SE93WWdxb1ZNSmdOZjJGT2F6ZTY0RWJKWXV6eC92bGpFV3FsNk1kM2pGTGNv?=
+ =?utf-8?B?VVdicWx5YWNCVDltMWdjbHlyYnBRNTI0MW9VNG55VXBERTdvcFhKUDl0VW1m?=
+ =?utf-8?B?SHA2QnU4cGlCTnFSckJTbXNGWHZUUkNPWUtCNkhVQVNXWmdsaGdqNXhFVTZD?=
+ =?utf-8?B?YkhIZ1pOVFlscGQ3V0xPa1kwTjFXc1R4SEJiMGdqOTc2cW0zYW84d3VCZTRQ?=
+ =?utf-8?B?SVlEN3J0cDNaQmV3cEt1NUpLR1QrNzF0dUt4Z3RndlU1b0gyZ0VKWXVHNVlP?=
+ =?utf-8?B?REE4aE5nSWp0ekhZSGljZzIwdU1mb21qaU5xbEx3bGx0UkhVbUpQd2FrT3dv?=
+ =?utf-8?B?K3pydjhXWmZzR0FkazlwNVdRUng5VTZiUnMxS3NVMUlzaFIzZ3dTKzdCRjg2?=
+ =?utf-8?B?LzBXckRKMXZFalRURWlmbVpKbjc4SGFCTFJ4RGxxU2g3TDVJQXEycHlaeXBo?=
+ =?utf-8?B?RUh0NEtXWXJNMWlqb3hZd0toRXBxYk5BMStDdG44YmVmTzYwYUtOOGF2N0U2?=
+ =?utf-8?B?LzBuRm1TQ2ptUjk3VDQvdGJMM01meTBMK0hBRlloSGxDL1pmVkEyMTA0VnFG?=
+ =?utf-8?B?MDNseDNFa01wczkxUzhlcmgvU3NBPT0=?=
+X-OriginatorOrg: kunbus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 134f3d96-ffa1-469b-0c75-08dc32562d03
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 20:54:48.5151
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OwcINVKhUbsHwn14o2ieXSHIiy6FVZKIWLy5v8nnAwCOq83X7ow6VXfbASEKyyRUB9MlggWAbeJuzKMMj/ygKQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P193MB0764
 
-On Tue, Feb 20, 2024 at 3:43=E2=80=AFAM Dumitru Ceclan <mitrutzceclan@gmail=
-com> wrote:
->
+Hi,
 
-..
+On 20.02.24 19:42, Alexander Steffen wrote:
+> ATTENTION: This e-mail is from an external sender. Please check attachments and links before opening e.g. with mouseover.
+> 
+> 
+> On 02.02.2024 04:08, Lino Sanfilippo wrote:
+>> On 01.02.24 23:21, Jarkko Sakkinen wrote:
+>>
+>>>
+>>> On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
+>>>> Commit 933bfc5ad213 introduced the use of a locality counter to control when a
+>>>> locality request is allowed to be sent to the TPM. In the commit, the counter
+>>>> is indiscriminately decremented. Thus creating a situation for an integer
+>>>> underflow of the counter.
+>>>
+>>> What is the sequence of events that leads to this triggering the
+>>> underflow? This information should be represent in the commit message.
+>>>
+>>
+>> AFAIU this is:
+>>
+>> 1. We start with a locality_counter of 0 and then we call tpm_tis_request_locality()
+>> for the first time, but since a locality is (unexpectedly) already active
+>> check_locality() and consequently __tpm_tis_request_locality() return "true".
+> 
+> check_locality() returns true, but __tpm_tis_request_locality() returns
+> the requested locality. Currently, this is always 0, so the check for
+> !ret will always correctly indicate success and increment the
+> locality_count.
+> 
 
-> +
-> +  avdd-supply:
-> +    description: Avdd supply, can be used as reference for conversion.
-> +                 This supply is referenced to AVSS, voltage specified he=
-re
-> +                 represens (AVDD - AVSS).
+Will the TPM TIS CORE ever (have to) request another locality than 0? Maybe the best would
+be to hardcode TPM_ACCESS(0) and get rid of all the locality parameters that are
+passed from one function to another.
+But this is rather code optimization and not really required to fix the reported bug.
 
-The datasheets call this AVDD1, not AVDD. Would be nice to use the
-correct name to avoid ambiguity.
+As I already wrote in a former comment, the actual bug fix would IMHO simply be to
+make sure that no localities are held at the beginning of tpm_tis_core_init():
 
-Also check spelling `represents` above and below.
+for (i = 0; i <= MAX_LOCALITY; i++)
+	__tpm_tis_relinquish_locality(priv, i);
 
-> +
-> +  avdd2-supply:
-> +    description: Avdd2 supply, used as the input to the internal voltage=
- regulator.
-> +                 This supply is referenced to AVSS, voltage specified he=
-re
-> +                 represens (AVDD2 - AVSS).
-> +
-> +  iovdd-supply:
-> +    description: iovdd supply, used for the chip digital interface.
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description: |
+before wait_startup() should be sufficient.
 
-Don't need `|` here.
-
-> +      Optional external clock source. Can include one clock source: exte=
-rnal
-> +      clock or external crystal.
-> +
-> +  clock-names:
-> +    enum:
-> +      - ext-clk
-> +      - xtal
-> +
-> +  '#clock-cells':
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^channel@[0-9a-f]$":
-> +    type: object
-> +    $ref: adc.yaml
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 15
-
-Parts ending in -2 only have four channels.
-
-> +
-> +      diff-channels:
-> +        items:
-> +          minimum: 0
-> +          maximum: 31
-> +
-
-Are we missing `bipolar: true` here? (since we have
-unevaluatedProperties: false)
-
-> +      adi,reference-select:
-> +        description: |
-> +          Select the reference source to use when converting on
-> +          the specific channel. Valid values are:
-> +          vref       : REF+  /REF=E2=88=92
-> +          vref2      : REF2+ /REF2=E2=88=92
-> +          refout-avss: REFOUT/AVSS (Internal reference)
-> +          avdd       : AVDD  /AVSS
-> +
-> +          External reference ref2 only available on ad7173-8.
-> +          If not specified, internal reference used.
-> +        $ref: /schemas/types.yaml#/definitions/string
-> +        enum:
-> +          - vref
-> +          - vref2
-> +          - refout-avss
-> +          - avdd
-> +        default: refout-avss
-> +
-> +    required:
-> +      - reg
-> +      - diff-channels
-> +
-> +required:
-> +  - compatible
-> +  - reg
-
-Aren't the various power supplies supposed to be required?
-
-- avdd-supply
-- avdd2-supply
-- iovdd-supply
+Regards,
+Lino
 
