@@ -1,204 +1,138 @@
-Return-Path: <linux-kernel+bounces-72831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 449F885B91A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:31:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA2585B91B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C2011F272AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61E871F21404
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED62612FE;
-	Tue, 20 Feb 2024 10:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132A361683;
+	Tue, 20 Feb 2024 10:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dv53lCXn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K795hQUr"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54766374C6;
-	Tue, 20 Feb 2024 10:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C623EA88
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708425042; cv=none; b=svf13cZ485JEfvox6Sty/jtMQTJpnJk6ReTvvXJrK3nsrWEgBkRrVATbVSylltki3e4W4EZgbXilHdtcmSRpcy6Hi3K88FE6qYhlOt4xuEdbsmMHecVrlXjU/t90iv+uVDm1DepL2px1YZTIjU191VvGs7gIJ+TNjRhJK1dFins=
+	t=1708425064; cv=none; b=OOPQ5qxaEJ8DUCdh7jDecgjs/bj/YNEOa42edzrJI/PujsT+QGNWKDJ8sSbuVuhxhCsy4uVFKEYQW8A+fsYRIj/+t9kCpI/yX22eCknAcubFsd/kQ6XKTAcnXR7JNByWHDesaBslDnQdair5ulqe5TjGulli0re9+Qv/MbJVUbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708425042; c=relaxed/simple;
-	bh=rDg/9pQz+JjJErUCeBdP4AE5y1aHUaEqxtVxVjDTBi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sjwdvPULu7F8IMtSDbol9PWhciFkrJydt7NfJ3e687331IHvAWflQaO1+zAttu42S6r0HE6heVJ8p/m5KqPpIs8xQ+QPHJGFZn7PQQDy0QK6ux1nDFcsBpN9szyg4D3O+U8x+3OcGrQQA81mTNy6bji0cxX41LIu8A8cawYiPZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dv53lCXn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29965C433F1;
-	Tue, 20 Feb 2024 10:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708425041;
-	bh=rDg/9pQz+JjJErUCeBdP4AE5y1aHUaEqxtVxVjDTBi0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dv53lCXnUxAP5BUjIySykbuaNTQICqKsTGSDQF5bW3u7Cr+yRuZcvocze4Ikb9735
-	 OmZ7vuyGPLaOIK9URG/85iZrOPUHhu441cQBZ4LYqviNRoFjJY4A1UvToClldVWpdZ
-	 WgUaGuvfKPRL0ZXOQB/sa/C4QRbrlUX5zGSVPsU3+38Q+XNke9VSAYAt/TPV5GELzn
-	 L/ju7NOORRvHekikdXfgrCAPpVRFbL0OcFUt+669NBF0PJv7dffBQun7e0a1rxMuZ2
-	 OOadaojb0lQUEj7e19sUrNYpqbH75wyAbt18H1D12MTzaSXyN82rpvaYpqFs+fWFsQ
-	 qZPHw3iW0X/3Q==
-Date: Tue, 20 Feb 2024 12:30:01 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Alexander Graf <graf@amazon.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-mm@kvack.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org,
-	linux-doc@vger.kernel.org, x86@kernel.org,
-	Eric Biederman <ebiederm@xmission.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>,
-	James Gowans <jgowans@amazon.com>,
-	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
-	arnd@arndb.de, pbonzini@redhat.com, madvenka@linux.microsoft.com,
-	Anthony Yznaga <anthony.yznaga@oracle.com>,
-	Usama Arif <usama.arif@bytedance.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v3 09/17] x86: Add KHO support
-Message-ID: <ZdR_KQSIrPuEh5G5@kernel.org>
-References: <20240117144704.602-1-graf@amazon.com>
- <20240117144704.602-10-graf@amazon.com>
+	s=arc-20240116; t=1708425064; c=relaxed/simple;
+	bh=4ka26MKTb2gAfNP6PWHyqiItjIFpe0PWywv9rC9J+GY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EIlFm9uSIe2SqSeGDxw0YEpgfo801d9jQn7thCwNB05MGbDI3CVNfJAp4vo6jNDfruOudyxybwV+QGiNc0ISvWlt8mPFiUoegSpPO+cA9/FEeGuH5yVdf7zRn3YwQjU+fmSItn/aEPytgllKGEq0rwo2/43gdQM/pMhalDLGbfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K795hQUr; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4cbc49dacc2so1002562e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:31:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708425061; x=1709029861; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HIp91kw+zH2bWJFkkeSlk/Ch+KTOQUCDIw5fmR7h+Tc=;
+        b=K795hQUrezWnH+SJ83hKk6Tdoj5ImdAilvLlQ1M60YX8YWteidf1Nzrb1WOakhXoil
+         Lc7LkVfaXQWqouk0i8R8Bw3Rg/OUAVaCEiPEQqgSiIwkuC3lxRbLIBxRR2TIonpRS/J9
+         6e/PXARKKO90mJk1bXVd/WKrNEdiUTLjK37NKrqeGVm/JhXEHCcjaSGPH7GnO8OzWMvM
+         iVA37fXDP59m0rd+uSS2jxljyUygGR5nx2mbYp2I0F42+pH7eypLN0qj+aW62Zu+JOHT
+         ej663Wh8FZxd2ZgTgvgx7P1igRVN6zy63jAvLCq9dCR37vuLwPZRdJI29vfo08Ic75yK
+         oaOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708425061; x=1709029861;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HIp91kw+zH2bWJFkkeSlk/Ch+KTOQUCDIw5fmR7h+Tc=;
+        b=Cskl4CKZ8za2Y0RhB59zrMrkbwgl5bvn7LXFmUWtp3TTUrmb5It2578plCFDF5cBJT
+         65XPs9pbUAKhkmafd8iHD6XJT8zeceyIesocndUZzr6YjVlxM8r1eqr2gcEWaBajtH6Z
+         7ktoWPCrAWcAHLlCS49G/XPRr6a990WeveEyo43NlUnCOQshiL+xVFJplB2wnVpC5X1j
+         qCfQGRe+FeXvIv5cLDAoHnOeZyWp1+QHNEUZag3hM8uwZW0fOCuXfm3NfHumZuX1SGqp
+         W2wDn9UpG7XX7Eb036lqMwJ1Uv0LaH2QWLXJ7cu2RGDbvNPNssAExiEb1ENee+Dx93OD
+         BuSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWxA2mNFsQDBmyadEKnW8er0kMBETVcm2nqdj1HV2xKCDli+qa2DiALPX4In74+zN3Y9b82DoNIH9URATtsKDBEVrzsaeHIpzIPKUQc
+X-Gm-Message-State: AOJu0YyeqHovIN7C40iHeTTDsVH2w08wn57WQqmQ3g+Ve4qaNTv+kKYF
+	z3smBG2qgEyALV3ri0uV2+Ppmz3M4Q6vBM5i/GjFp1ep5sZm7Ktjup2jr3U5/LefrByZRFRqFa2
+	JcfS33CSSifgddFj2FXctvCjmE3MIKvfLwRZIYQ==
+X-Google-Smtp-Source: AGHT+IGysc0UmXmPnthjzbU7YPIZ9HektmfceOwdP9++ToUAMtvh7ubmq2V4CELGPXIvh6F4I8e8i12+OzE29ejs2dY=
+X-Received: by 2002:a1f:6603:0:b0:4c9:6628:be66 with SMTP id
+ a3-20020a1f6603000000b004c96628be66mr4749965vkc.5.1708425061512; Tue, 20 Feb
+ 2024 02:31:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117144704.602-10-graf@amazon.com>
+References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
+ <86edd84wer.wl-maz@kernel.org> <86cyss4rl7.wl-maz@kernel.org>
+ <a7d8e529-9a44-3f88-50ef-d87b80515c36@huawei.com> <86a5nw4gp3.wl-maz@kernel.org>
+In-Reply-To: <86a5nw4gp3.wl-maz@kernel.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 20 Feb 2024 16:00:50 +0530
+Message-ID: <CA+G9fYtWqf1h3w1nkjJGXjYis7Zx5pNxN=EvmfFpMxgktW70Xw@mail.gmail.com>
+Subject: Re: next-20240219: arm64: boot failed - gic_of_init
+To: Marc Zyngier <maz@kernel.org>
+Cc: Zenghui Yu <yuzenghui@huawei.com>, open list <linux-kernel@vger.kernel.org>, 
+	Linux ARM <linux-arm-kernel@lists.infradead.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Alex,
+On Mon, 19 Feb 2024 at 20:57, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Mon, 19 Feb 2024 14:46:46 +0000,
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+> >
+> > On 2024/2/19 19:32, Marc Zyngier wrote:
+> > > For what it is worth, I've just tested both defconfig and my own
+> > > configuration with both 4k (kvmtool, QEMU+KVM and on SynQuacer) and
+> > > 16k (kvmtool), without any obvious problem.
+> >
+> > I had a quick test on top of next-20240219 with defconfig.  I can
+> > reproduce it with QEMU parameter '-cpu max -accel tcg', but things are
+> > fine with '-cpu max,lpa2=off -accel tcg'.
+> >
+> > Bisection shows that the problem happens when we start putting the
+> > latest arm64 and kvmarm changes together.  The following hack fixes the
+> > problem for me (but I **only** write it for kernel built with defconfig
+> > with ARM64_4K_PAGES=y atm).
+> >
+> > I can investigate it further tomorrow (as it's too late now ;-) ).  Or
+> > maybe Marc or Catalin can help fix it with a proper approach.
+> >
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index 4f7662008ede..babdc3f4721b 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -2798,6 +2798,7 @@ static const struct arm64_cpu_capabilities
+> > arm64_features[] = {
+> > |             .sign = FTR_SIGNED,
+> > |             .field_pos = ID_AA64MMFR0_EL1_TGRAN4_SHIFT,
+> > |             .min_field_value = ID_AA64MMFR0_EL1_TGRAN4_52_BIT,
+> > |+            .max_field_value = BIT(ID_AA64MMFR0_EL1_TGRAN4_WIDTH - 1) - 1,
+> > | #else
+> > |             .sign = FTR_UNSIGNED,
+> > |             .field_pos = ID_AA64MMFR0_EL1_TGRAN16_SHIFT,
+>
+> I've posted my take on this at [1], which hopefully matches what you
+> were aiming at.
 
-On Wed, Jan 17, 2024 at 02:46:56PM +0000, Alexander Graf wrote:
-> We now have all bits in place to support KHO kexecs. This patch adds
-> awareness of KHO in the kexec file as well as boot path for x86 and
-> adds the respective kconfig option to the architecture so that it can
-> use KHO successfully.
-> 
-> In addition, it enlightens it decompression code with KHO so that its
-> KASLR location finder only considers memory regions that are not already
-> occupied by KHO memory.
-> 
-> Signed-off-by: Alexander Graf <graf@amazon.com>
-> 
-> ---
-> 
-> v1 -> v2:
-> 
->   - Change kconfig option to ARCH_SUPPORTS_KEXEC_KHO
->   - s/kho_reserve_mem/kho_reserve_previous_mem/g
->   - s/kho_reserve/kho_reserve_scratch/g
-> ---
->  arch/x86/Kconfig                      |  3 ++
->  arch/x86/boot/compressed/kaslr.c      | 55 +++++++++++++++++++++++++++
->  arch/x86/include/uapi/asm/bootparam.h | 15 +++++++-
->  arch/x86/kernel/e820.c                |  9 +++++
->  arch/x86/kernel/kexec-bzimage64.c     | 39 +++++++++++++++++++
->  arch/x86/kernel/setup.c               | 46 ++++++++++++++++++++++
->  arch/x86/mm/init_32.c                 |  7 ++++
->  arch/x86/mm/init_64.c                 |  7 ++++
->  8 files changed, 180 insertions(+), 1 deletion(-)
+This patch [1] applied on Linux next-20240219 and tested and the boot
+test passed.
+I have validated today's Linux next-20240220 and the boot test passed.
 
-..
+> Thanks,
+>
+>         M.
+>
+> [1] https://lore.kernel.org/all/86bk8c4gyh.wl-maz@kernel.org/
 
-> @@ -987,8 +1013,26 @@ void __init setup_arch(char **cmdline_p)
->  	cleanup_highmap();
->  
->  	memblock_set_current_limit(ISA_END_ADDRESS);
-> +
->  	e820__memblock_setup();
->  
-> +	/*
-> +	 * We can resize memblocks at this point, let's dump all KHO
-> +	 * reservations in and switch from scratch-only to normal allocations
-> +	 */
-> +	kho_reserve_previous_mem();
-> +
-> +	/* Allocations now skip scratch mem, return low 1M to the pool */
-> +	if (is_kho_boot()) {
-> +		u64 i;
-> +		phys_addr_t base, end;
-> +
-> +		__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,
-> +				     MEMBLOCK_SCRATCH, &base, &end, NULL)
-> +			if (end <= ISA_END_ADDRESS)
-> +				memblock_clear_scratch(base, end - base);
-> +	}
-
-You had to mark lower 16M as MEMBLOCK_SCRATCH because at this point the
-mapping of the physical memory is not ready yet and page tables only cover
-lower 16M and the memory mapped in kexec::init_pgtable(). Hence the call
-for memblock_set_current_limit(ISA_END_ADDRESS) slightly above, which
-essentially makes scratch mem reserved by KHO unusable for allocations.
-
-I'd suggest to move kho_reserve_previous_mem() earlier, probably even right
-next to kho_populate().
-kho_populate() already does memblock_add(scratch) and at that point it's
-the only physical memory that memblock knows of, so if it'll have to
-allocate, the allocations will end up there.
-
-Also, there are no kernel allocations before e820__memblock_setup(), so the
-only memory that might need to be allocated is for memblock_double_array()
-and that will be discarded later anyway.
-
-With this, it seems that MEMBLOCK_SCRATCH is not needed, as the scratch
-memory is anyway the only usable memory up to e820__memblock_setup().
-
->  	/*
->  	 * Needs to run after memblock setup because it needs the physical
->  	 * memory size.
-> @@ -1104,6 +1148,8 @@ void __init setup_arch(char **cmdline_p)
->  	 */
->  	arch_reserve_crashkernel();
->  
-> +	kho_reserve_scratch();
-> +
->  	memblock_find_dma_reserve();
->  
->  	if (!early_xdbc_setup_hardware())
-> diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-> index b63403d7179d..6c3810afed04 100644
-> --- a/arch/x86/mm/init_32.c
-> +++ b/arch/x86/mm/init_32.c
-> @@ -20,6 +20,7 @@
->  #include <linux/smp.h>
->  #include <linux/init.h>
->  #include <linux/highmem.h>
-> +#include <linux/kexec.h>
->  #include <linux/pagemap.h>
->  #include <linux/pci.h>
->  #include <linux/pfn.h>
-> @@ -738,6 +739,12 @@ void __init mem_init(void)
->  	after_bootmem = 1;
->  	x86_init.hyper.init_after_bootmem();
->  
-> +	/*
-> +	 * Now that all KHO pages are marked as reserved, let's flip them back
-> +	 * to normal pages with accurate refcount.
-> +	 */
-> +	kho_populate_refcount();
-
-This should go to mm_core_init(), there's nothing architecture specific
-there.
-
-> +
->  	/*
->  	 * Check boundaries twice: Some fundamental inconsistencies can
->  	 * be detected at build time already.
-
--- 
-Sincerely yours,
-Mike.
+- Naresh
 
