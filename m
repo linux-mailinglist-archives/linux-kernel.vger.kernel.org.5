@@ -1,99 +1,381 @@
-Return-Path: <linux-kernel+bounces-73734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8579885CA2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:45:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDB0885CA33
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E86B282BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:45:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53C2EB21D09
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3F4152DF6;
-	Tue, 20 Feb 2024 21:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F08B152DE9;
+	Tue, 20 Feb 2024 21:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ggk/O8Es"
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lWwxld4e"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2173151CF9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DDB151CEA
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708465511; cv=none; b=cktdpRDllVckVnM7YUkPHujnNdHesd62SJdGcENEbR1zGV4DlgBR9aDnbVtaofIaeIKTd8axamCqCmcT93h0b4a4gCTp1Fb7RKSUlWLYeXZSCG9BViReGOnZAoQOzTnstySYX0+zPhf9jLH40Ns5Ng6rEasqKaais6HncLAy3OA=
+	t=1708465563; cv=none; b=niO76bRJwyBafJetwnY0dT+8Ig5vIgEFwVmxVO7DmFIYIr0a7MytRs+9mUwPSejxvVBROOPau0chjRBc3lfDZWSBbGjykSoSigiSVA1vfBb+1D7Sm+cfn9Y2hlK2KEu9E5ozoTLXxVgkJUj8du7g5DWb5gdgOx6uvNo8pN8+IUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708465511; c=relaxed/simple;
-	bh=UEui0s6V28sWMfEUHl6LqMaOVpgoXIEPXXvPPkx8reM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ihFG8cchPYS+abogNCIqveyK4GSzuToCT2cY0Ypbtk5+aS0VBB0py4ycXULdFx7+P8nMzCl/nvnkK2YyRB/M218GgrsVWJHcyvRjg6H9z/1h1AShoEixnwOITvtp3x45F04x1g9PVJuyLTqVC5rB6z2HYfLJV7XnBoX1MzLwYiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ggk/O8Es; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-363acc3bbd8so5519315ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:45:09 -0800 (PST)
+	s=arc-20240116; t=1708465563; c=relaxed/simple;
+	bh=eiMM/uI3YwCporpUQgYFZ1FqYmJ6e3TvgkTC4YyjgRY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=pYGKPBdvT/ynW3VG6aE4rIk8SjQq/tvgEoG0E9TWYpyPSXt+bD6/GwkSCQW3LxUA0qmzhUf6c1d4vaZjDjTHbAoEVUmn85Q++zZqMOof57MPFbiGn7uTHp+xAFWyraAx6MjGGdH1YsfmIu5O8C0gakVdeG7s2xxlBvzROCGg1Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--souravpanda.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lWwxld4e; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--souravpanda.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64b659a9cso10456030276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:46:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1708465509; x=1709070309; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UEui0s6V28sWMfEUHl6LqMaOVpgoXIEPXXvPPkx8reM=;
-        b=Ggk/O8EsqmjD8rehAeUDCfHRpdpF/h9el0RD39rocyV7hof7fa7tJ7Z3gQLUiSdkZR
-         MMKU9MN9niMlaZhDr0KZEjN5tsOR6az9vFLfuH7UYpNccZKFkbsWQlRLLNarWOUfD+MB
-         JMelWZUbKAcUE+/qEIDmbN+oJHkDN7+uE5Xl0=
+        d=google.com; s=20230601; t=1708465560; x=1709070360; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V01TnE5q7SHBZ8jNobegTNpx6Z7xiHdfszo2NROYfag=;
+        b=lWwxld4eq7H/ha/LYqrmPufcw9pbi7vU+W9acJeI4a22g+vkP8SSCDAXODOeHWtg2P
+         1xAJXsHqwQyt0tl3s+Sr7Iw0P0trsFIashOs16YwsqdHG92DvfFS7RbWcRQxKEfxK/s8
+         s+SU2RBKsPY8feNwi9K5cnkW+PiEJD8vkUndMcPXU/IV8V9bzFv8y8npw9reKk0mzTLd
+         Utyv6Jay9PclnBqat+8XVjNUpbrYE+chYSFspg0jkdk8OU4RJc9+LlZYlHUybtPKXcmn
+         cwADWGDOsS91YcnYBkG1+cMDv5SXX3hR7ZzbwTm4PgujRz2TDRyR+KoNTwdKoqc1jmhy
+         n51A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708465509; x=1709070309;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UEui0s6V28sWMfEUHl6LqMaOVpgoXIEPXXvPPkx8reM=;
-        b=DRa/5V86hdnpxLrX4WP/QMBFjyAZmR/S6YJ/L90+eB+qfVgOH4NpxStDaiubXkjVR2
-         lvMzYQ0Z+ZC2625w4VoNPdWDykxZ/syMebldHn4yHxQxwH4/fzmK9Fcv6GA3gsUlendq
-         VJenW6DBTANno3Zyu7X0ffotFQJwHxdel7hG4kSfpy1BSiHlLnFfe/jJ6zSt/mznR7Er
-         qd/yzjxkx0Ix1geyXz9ek3IsDUsFe1ZykQqMCD5fXsFRbfqbkwANP3CfkBLMOorDlnOt
-         byx0LkmevnaLDJMxnyjxxz3p4rTec7JWTL2TaHw8M4d6Hp3qvei95whuBkUfI7+jP8ML
-         LqdA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyFwVMlG7nx+NfP352EWxe+R5VcuPRQSsmKiij9nVmBLXmiaE8VcQDONBNlsuIwnKH05j2RaNe+3ya9vVdrMTNnZBetuCalGQf4lTQ
-X-Gm-Message-State: AOJu0YzHZAn6gB/hkIsa+gDH7gBLnRjvQK48Kn7ruaT08uBeRzZ7EsqA
-	NSSk6XeLo8iRgkqYnXBh+Sd9YWAxZjliSbap+muOs/DWKB0rOi003bJViy6eclo=
-X-Google-Smtp-Source: AGHT+IFOVgf4hVeQjVESSY+ggbpz68BsoWauoggn89sDMwFWL/rPxd3AtWFF6ezQRMu04/Di9Qho2w==
-X-Received: by 2002:a6b:c844:0:b0:7c7:224e:ae90 with SMTP id y65-20020a6bc844000000b007c7224eae90mr12163072iof.0.1708465509026;
-        Tue, 20 Feb 2024 13:45:09 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id i22-20020a02c616000000b00474415415a8sm94935jan.100.2024.02.20.13.45.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 13:45:08 -0800 (PST)
-Message-ID: <663c539b-deb2-4cb0-8e9c-325bc841b9a1@linuxfoundation.org>
-Date: Tue, 20 Feb 2024 14:45:08 -0700
+        d=1e100.net; s=20230601; t=1708465560; x=1709070360;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V01TnE5q7SHBZ8jNobegTNpx6Z7xiHdfszo2NROYfag=;
+        b=CsVXcXI+DzB+57zaKlhTQUXSGdq7DwwIkBYF9tPfkWtkIviv/VQXW4AwOwa4jSw/8E
+         WYMSgk53lRonLgRQoZAil7ea17OGPtbTHfc6p2TiBIERqnqdRGoL4R3dCrK+i8Ueqsru
+         +bT31axw7ai3exUIerNcav4xLYObu//+Fz/kq/IyYilCZ1SQhQDm9cWfUXFr0r9+Ban9
+         8tqkRbEWwFxG8uYyxKJ3RUWSAeZG16AvmgS4P8jYF5B+JPm+EwHTDC9M55N8LtoJuUEu
+         pUZORNAnNG9whFzrWO4BzoJSbX+PETNYyobVwEa41dxG7UWlayW7VlPerAVwAsyb2BNk
+         mzag==
+X-Forwarded-Encrypted: i=1; AJvYcCUNhpYUHzU8E+RM+zG6wq9sRdh2RCHlAau59TUC/U3q70glZoYUAXtHtwghX11bWcUS+Cl70p5BUZGDQOXoxk7QZzkf0i7b2t/EUwRs
+X-Gm-Message-State: AOJu0YwDSb4n5bWxyx7k/uzHHXKZvqunyHh/zl1mgPfgqT3acX80MCPU
+	/pTxDvnOvWB3/OdYH7IoV8G8WhNyEB8Aq/Fruq97SUIG/RZJBMKxL/RgSI8j8BYJ3pgr5a18y50
+	BHhWuxmBCfKRW3Xf3g4Yxsw==
+X-Google-Smtp-Source: AGHT+IH4H1DQSgpPoUZE2eyOpZm0nIku1G5H6MYamCUomiBfTKrC+pL+XA4Rdc4IJs0x5KdY2LRkekHD7/JwALiSXw==
+X-Received: from souravpanda.svl.corp.google.com ([2620:15c:2a3:200:908a:1ef7:e79e:3cf5])
+ (user=souravpanda job=sendgmr) by 2002:a25:dbc6:0:b0:dc6:e5d3:5f03 with SMTP
+ id g189-20020a25dbc6000000b00dc6e5d35f03mr4066041ybf.4.1708465559994; Tue, 20
+ Feb 2024 13:45:59 -0800 (PST)
+Date: Tue, 20 Feb 2024 13:45:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Spelling correction patch
-Content-Language: en-US
-To: prabhav kumar <pvkumar5749404@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240217074353.19445-1-pvkumar5749404@gmail.com>
- <e2b42c87-f87e-4d09-b17f-82ed4002e989@linuxfoundation.org>
- <CAH8oh8U84MGb+9g5013NHcBcO=9sQzpBFEm_-7sD1eu7JmTUbQ@mail.gmail.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <CAH8oh8U84MGb+9g5013NHcBcO=9sQzpBFEm_-7sD1eu7JmTUbQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240220214558.3377482-1-souravpanda@google.com>
+Subject: [PATCH v9 0/1] mm: report per-page metadata information
+From: Sourav Panda <souravpanda@google.com>
+To: corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org, 
+	akpm@linux-foundation.org, mike.kravetz@oracle.com, muchun.song@linux.dev, 
+	rppt@kernel.org, david@redhat.com, rdunlap@infradead.org, 
+	chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, souravpanda@google.com, 
+	tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, hannes@cmpxchg.org, 
+	shakeelb@google.com, kirill.shutemov@linux.intel.com, 
+	wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz, 
+	Liam.Howlett@Oracle.com, surenb@google.com, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	willy@infradead.org, weixugc@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/20/24 14:38, prabhav kumar wrote:
-> I had missed some names from the get_maintainer.pl <http://get_maintainer.pl> , Will update and send a v2 with proper change log and a summary.
-> Thanks,
-> Prabhav
+Changelog:
+v9: 	- Quick Fix:
+		- In fs/proc/meminfo.c, replaced tabs with spaces for
+		  consistent userspace parsing.
+	- Patch is ready to be taken in.
+v8:
+	- Addressed Powerpc (Power8 LE) boot failure.
+	  	- In __populate_section_memmap instead of calling
+		  mod_node_page_state (unavaialable at boot for
+		  powerpc), we call mod_node_early_perpage_metadata.
+		  This was a helper function that was introduced
+		  for arm, to combat this exact problem.
+		- Since __populate_section_memmap is tagged with
+		  __meminit, we also had to modify the tag of
+		  mod_node_early_perpage_metadata from __init to
+		  __meminit.
+	- Naming Changes:
+	  	- In /proc/meminfo PageMetadata --> Memmap
+		- In /proc/vmstat  nr_page_metadata --> nr_memmap
+		- In /proc/vmstat  nr_page_metadata_boot -->
+		  nr_memmap_boot
+	- Addressed clarifications requested by Andrew Morton.
+	  	- Updated the commit log to include utility or
+		  potential usage for userspace.
+	- Declined changing  placement of metrics after attempting:
+		- No changes in /proc/meminfo since it cannot be moved
+		  to the end anyway. This is because we have also
+		  hugetlb_report_meminfo() and arch_report_meminfo().
+	- Rebased to version 6, patchlevel 8.
+v7:
+	- Addressed comments from David Rientjes
+                - For exporting PageMetadata to /proc/meminfo,
+                  utilize global_node_page_state_pages for item
+                  NR_PAGE_METADATA. This is instead of iterating
+                  over nodes and accumulating the output of
+                  node_page_state.
+v6:
+	- Interface changes
+	  	- Added per-node nr_page_metadata and
+		  nr_page_metadata_boot fields that are exported
+		  in /sys/devices/system/node/nodeN/vmstat
+		- nr_page_metadata exclusively tracks buddy
+		  allocations while nr_page_metadata_boot
+		  exclusively tracks memblock allocations.
+		- Modified PageMetadata in /proc/meminfo to only
+		  include buddy allocations so that it is
+		  comparable against MemTotal in /proc/meminfo
+		- Removed the PageMetadata field added in
+		  /sys/devices/system/node/nodeN/meminfo
+	- Addressed bugs reported by the kernel test bot.
+	  	- All occurences of __mod_node_page_state have
+		  been replaced by mod_node_page_state.
+	- Addressed comments from Muchun Song.
+	  	- Removed page meta data accouting from
+		  mm/hugetlb.c. When CONFIG_SPARSEMEM_VMEMMAP
+		  is disabled struct pages should not be returned
+		  to buddy.
+	- Modified the cover letter with the results and analysis
+		- From when memory_hotplug.memmap_on_memory is
+		  alternated between 0 and 1.
+		- To account for the new interface changes.
+
+v5:
+	- Addressed comments from Muchun Song.
+		- Fixed errors introduced in v4 when
+		  CONFIG_SPARSEMEM_VMEMMAP is disabled by testing
+		  against FLATMEM and SPARSEMEM memory models.
+		- Handled the condition wherein the allocation of
+		  walk.reuse_page fails, by moving NR_PAGE_METADATA
+		  update into the clause if( walk.reuse_page ).
+		- Removed the usage of DIV_ROUND_UP from
+		  alloc_vmemmap_page_list since "end - start" is
+		  always a multiple of PAGE_SIZE.
+		- Modified alloc_vmemmap_page_list to update
+		  NR_PAGE_METADATA once instead of every loop.
+v4:
+	- Addressed comment from Matthew Wilcox.
+		- Used __node_stat_sub_folio and __node_stat_add_folio
+		  instead of __mod_node_page_state in mm/hugetlb.c.
+		- Used page_pgdat wherever possible in the entire patch.
+		- Used DIV_ROUND_UP() wherever possible in the entire
+		  patch.
+v3:
+	- Addressed one comment from Matthew Wilcox.
+	  	- In free_page_ext, page_pgdat() is now extracted
+		  prior to freeing the memory.
+v2:
+	- Fixed the three bugs reported by kernel test robot.
+	- Enhanced the commit message as recommended by David Hildenbrand.
+	- Addressed comments from Matthew Wilcox:
+	  	- Simplified alloc_vmemmap_page_list() and
+		  free_page_ext() as recommended.
+		- Used the appropriate comment style in mm/vmstat.c.
+		- Replaced writeout_early_perpage_metadata() with
+		  store_early_perpage_metadata() to reduce ambiguity
+		  with what swap does.
+	- Addressed comments from Mike Rapoport:
+	  	- Simplified the loop in alloc_vmemmap_page_list().
+		- Could NOT address a comment to move
+		  store_early_perpage_metadata() near where nodes
+		  and page allocator are initialized.
+		- Included the vmalloc()ed page_ext in accounting
+		  within free_page_ext().
+		- Made early_perpage_metadata[MAX_NUMNODES] static.
 
 
-No top post please. Review kernel submission guidelines
-on how to respond to review comments.
+Previous approaches and discussions
+-----------------------------------
+V8:
+https://lore.kernel.org/all/20240214225741.403783-1-souravpanda@google.com
+V7:
+https://lore.kernel.org/all/20240129224204.1812062-1-souravpanda@google.com
+V6:
+https://lore.kernel.org/all/20231205223118.3575485-1-souravpanda@google.com
+v5:
+https://lore.kernel.org/all/20231101230816.1459373-1-souravpanda@google.com
+v4:
+https://lore.kernel.org/all/20231031223846.827173-1-souravpanda@google.com
+v3:
+https://lore.kernel.org/all/20231031174459.459480-1-souravpanda@google.com
+v2:
+https://lore.kernel.org/all/20231018005548.3505662-1-souravpanda@google.com
+v1:
+https://lore.kernel.org/r/20230913173000.4016218-2-souravpanda@google.com
 
-thanks,
--- Shuah
+Hi!
+
+This patch adds two new per-node fields, namely nr_memmap and
+nr_memmap_boot to /sys/devices/system/node/nodeN/vmstat and a
+global Memmap field to /proc/meminfo. This information can be
+used by users to see how much memory is being used by per-page
+metadata, which can vary depending on build configuration, machine
+architecture, and system use.
+
+Per-page metadata is the amount of memory that Linux needs in order to
+manage memory at the page granularity. The majority of such memory is
+used by "struct page" and "page_ext" data structures.
+
+
+Background
+----------
+
+Kernel overhead observability is missing some of the largest
+allocations during runtime, including vmemmap (struct pages) and
+page_ext. This patch aims to address this problem by exporting a
+new metric Memmap.
+
+On the contrary, the kernel does provide observibility for boot memory
+allocations. For example, the metric reserved_pages depicts the pages
+allocated by the bootmem allocator. This can be simply calculated as
+present_pages - managed_pages, which are both exported in /proc/zoneinfo.
+The metric reserved_pages is primarily composed of struct pages and
+page_ext.
+
+What about the struct pages (allocated by bootmem allocator) that are
+free'd during hugetlbfs allocations and then allocated by buddy-allocator
+once hugtlbfs pages are free'd?
+
+/proc/meminfo MemTotal changes: MemTotal does not include memblock
+allocations but includes buddy allocations. However, during runtime
+memblock allocations can be shifted into buddy allocations, and therefore
+become part of MemTotal.
+
+Once the struct pages get allocated by buddy allocator, we lose track of
+these struct page allocations overhead accounting. Therefore, we must
+export new metrics. nr_memmap and nr_memmap_boot exclusively track the
+struct page and page ext allocations made by the buddy allocator and
+memblock allocator, respectively for each node. Memmap in /proc/meminfo
+would report the struct page and page ext allocations made by the buddy
+allocator.
+
+Results and analysis
+--------------------
+
+Memory model: Sparsemem-vmemmap
+$ echo 1 > /proc/sys/vm/hugetlb_optimize_vmemmap
+
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       32919124 kB
+$ cat /proc/meminfo | grep Memmap
+	Memmap:		   65536 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot 65536
+$ cat /sys/devices/system/node/node1/vmstat | grep "nr_memmap"
+        nr_memmap 8192
+	nr_memmap_boot 65536
+
+AFTER HUGTLBFS RESERVATION
+$ echo 512 > /proc/sys/vm/nr_hugepages
+
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       32935508 kB
+$ cat /proc/meminfo | grep Memmap
+	Memmap:      67584 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8448
+	nr_memmap_boot  63488
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8448
+	nr_memmap_boot  63488
+
+
+AFTER FREEING HUGTLBFS RESERVATION
+$ echo 0 > /proc/sys/vm/nr_hugepages
+
+$ cat /proc/meminfo | grep MemTotal
+        MemTotal:       32935508 kB
+$ cat /proc/meminfo | grep Memmap
+        Memmap:      81920 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+        nr_memmap 10240
+	nr_memmap_boot  63488
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+        nr_memmap 10240
+	nr_memmap_boot  63488
+
+------------------------
+
+Memory Hotplug with memory_hotplug.memmap_on_memory=1
+
+BEFORE HOTADD
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       32919124 kB
+$ cat /proc/meminfo | grep Memmap
+	Memmap:      65536 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot  65536
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot  65536
+
+AFTER HOTADDING 1GB
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       33951316 kB
+$ cat /proc/meminfo | grep Memmap
+	Memmap:      83968 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 12800
+	nr_memmap_boot 65536
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot 65536
+
+--------------------------
+
+Memory Hotplug with memory_hotplug.memmap_on_memory=0
+
+BEFORE HOTADD
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       32919124 kB
+$ cat /proc/meminfo | grep Memmap
+	Memmap:      65536 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot 65536
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot 65536
+
+AFTER HOTADDING 1GB
+$ cat /proc/meminfo | grep MemTotal
+	MemTotal:       33967700 kB
+$ cat /proc/meminfo | grep Memmap
+	Memmap:      83968 kB
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 12800
+	nr_memmap_boot 65536
+$ cat /sys/devices/system/node/node0/vmstat | grep "nr_memmap"
+	nr_memmap 8192
+	nr_memmap_boot 65536
+
+Sourav Panda (1):
+  mm: report per-page metadata information
+
+ Documentation/filesystems/proc.rst |  3 +++
+ fs/proc/meminfo.c                  |  4 ++++
+ include/linux/mmzone.h             |  4 ++++
+ include/linux/vmstat.h             |  4 ++++
+ mm/hugetlb_vmemmap.c               | 17 ++++++++++++----
+ mm/mm_init.c                       |  3 +++
+ mm/page_alloc.c                    |  1 +
+ mm/page_ext.c                      | 32 +++++++++++++++++++++---------
+ mm/sparse-vmemmap.c                |  8 ++++++++
+ mm/sparse.c                        |  7 ++++++-
+ mm/vmstat.c                        | 26 +++++++++++++++++++++++-
+ 11 files changed, 94 insertions(+), 15 deletions(-)
+
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
