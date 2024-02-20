@@ -1,93 +1,83 @@
-Return-Path: <linux-kernel+bounces-73478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63CEC85C322
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:57:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A3CF85C32B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:58:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE25E1F24F8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:57:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B07A7B25638
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6EC77653;
-	Tue, 20 Feb 2024 17:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA38B78B44;
+	Tue, 20 Feb 2024 17:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CJr/Pn8O"
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IzMPy4z+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64F676C98
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264A3768E4;
+	Tue, 20 Feb 2024 17:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708451861; cv=none; b=pV01YLSH11rsjqIcxJzjQteV9ukzzibyC2clLgrfI6oXVI5fa20JSlYFxHxI9W5COYWMoGCgp568fW78DmCsqsCiVQfcQi9YhXKiynd0u60SypgT0UyZbkQmy0+X3OZqP3x8ae/B8lyTKPJ72sWZVBn3mG1cUCaSmrO0fmcku04=
+	t=1708451871; cv=none; b=IiZWxn2xFbtV+b6GVWQ3aAtYqQoItTVKVQPF5KGcQvipXUexuU+9C6iCvKf2UqsalyPzgl2qvhbgzny/tcSPzl5Llj/3eiDqVF8AL3x5eriCtgP31JYqnm/3gM3Ke2XEwSoCRMzL9ihQlzU7mCOXXOZAp5ZrlKAqXcw8oCUKmB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708451861; c=relaxed/simple;
-	bh=JM53lWnvE6SqliDKSCYuchF19mgSxwrFWeot9zR3M7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iuNB9nqXKd0644ldP4uNI4Sst4UjMWlm3cExZku95Fgof6bToKLXvGZ1nYa+iLJPX++o4Cfq5tRRB2VYyTonaBpJA44vv9TOptQrD1qnPOsH1ekDXZ+RFZ3A9/lo3XBY7JIKU9+Q0IkUUzQK5ttE0eZGqXTtnViYvh7ph2ga9O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CJr/Pn8O; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 20 Feb 2024 09:57:31 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708451858;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W3c+aRtUD1dd66eZygChyjJvf2ILxG0fQE6zxgpa+Vs=;
-	b=CJr/Pn8OsUzShpXOWyY9n1E8x3uhRIUVyFuj4PioBFQdigtbTVv8LZqg5dPoBjZT7oKM/Z
-	L27+oV2rljPnloaZKVVIjDH1GZPUDkN+ZrHAwWO0umLSqGJ1VOO/T9d6XrjJAqCnMTDQTq
-	JZVtv59QXm/iWpRtA63UlQ3OHYKJSY0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Zenghui Yu <zenghui.yu@linux.dev>, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 01/10] KVM: arm64: vgic: Store LPIs in an xarray
-Message-ID: <ZdToC9apbWmDaugn@linux.dev>
-References: <20240216184153.2714504-1-oliver.upton@linux.dev>
- <20240216184153.2714504-2-oliver.upton@linux.dev>
- <f6a4587c-1db1-d477-5e6c-93dd603a11ec@linux.dev>
- <86wmqz2gm5.wl-maz@kernel.org>
- <ZdTkp3MnffZwJkyf@linux.dev>
- <86v86j2f9o.wl-maz@kernel.org>
+	s=arc-20240116; t=1708451871; c=relaxed/simple;
+	bh=qtwbn4UPn2z9JflxF9F9+oogdoTrqWdb0O9YF4n1ZFs=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YD5t0p9JLNfyJ8kecT/0YwKEa3c0xTMbyw3lcgywf992RHIYgFovs4bMv6Mr/1aJuHtNxwAYcYEpOj92gsXmgyf5lbw5bGWN6VXnnjkdTLT+0UvND1Zy+onuaUMVJvl1dC3J2A/vdQiIg6YbIzaFtW6uGCdm5uIhOvHDHPpShYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IzMPy4z+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9EBC43601;
+	Tue, 20 Feb 2024 17:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708451870;
+	bh=qtwbn4UPn2z9JflxF9F9+oogdoTrqWdb0O9YF4n1ZFs=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=IzMPy4z+vtvxETZ1uV3xZei5PSMnNB9fh6OWOyNpJSL0QRi8jhcf2BRkjhnfuumFZ
+	 dlnVqkaJGjf8Y0j+HXgqz16k1kFbdGsoZ207b9w0+lMt18gj+HCZCENnxsbHkmrCJ+
+	 ooHjlh+W0JxEGKpLQJ1mTOcj/mG7mMhQqUpM3tZldFass3ECVlArcnI9rnJvBqIf/Q
+	 A6VGvKk3w1Een9ODstz1FpoOPjzpyg/uOaDgwhxSjzxdcXAgJCQPSVxicZjIOxBcGZ
+	 Z3HCRtAkY6zT/VMdaTHdThc/mXgpStxZ+ZG5D2NP+6NejnSD5zl7FVhr6qGsOIKnHH
+	 3Qu9QLYRf8Oqw==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] arm64: dts: qcom: replace underscores in node names
+Date: Tue, 20 Feb 2024 11:57:40 -0600
+Message-ID: <170845186086.159943.10821539995515301290.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213145124.342514-1-krzysztof.kozlowski@linaro.org>
+References: <20240213145124.342514-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86v86j2f9o.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 05:53:55PM +0000, Marc Zyngier wrote:
-> On Tue, 20 Feb 2024 17:43:03 +0000, Oliver Upton <oliver.upton@linux.dev> wrote:
-> > I think we can get into here both from contexts w/ interrupts disabled
-> > or enabled. irqfd_wakeup() expects to be called w/ interrupts disabled.
-> > 
-> > All the more reason to use irqsave() / irqrestore() flavors of all of
-> > this, and a reminder to go check all callsites that implicitly take the
-> > xa_lock.
+
+On Tue, 13 Feb 2024 15:51:24 +0100, Krzysztof Kozlowski wrote:
+> Underscores should not be used in node names (dtc with W=2 warns about
+> them), so replace them with hyphens.
 > 
-> Sounds good. Maybe you can also update the locking order
-> "documentation" to include the xa_lock? I expect that it will
-> ultimately replace lpi_list_lock.
+> 
 
-Yep, I got to the point of deleting the lpi_list_lock on the full
-series, which is where I update the documentation. I really didn't want
-people to know I'm adding yet another layer of locking in the interim...
+Applied, thanks!
 
-Anyways, I think there's sufficient feedback to justify a respin. I'll
-make sure the documentation is updated w/ the xa_lock for the stuff I'm
-trying to land in 6.9.
+[1/1] arm64: dts: qcom: replace underscores in node names
+      commit: 408e177651614977032e66091ebd26f9b948e64b
 
+Best regards,
 -- 
-Thanks,
-Oliver
+Bjorn Andersson <andersson@kernel.org>
 
