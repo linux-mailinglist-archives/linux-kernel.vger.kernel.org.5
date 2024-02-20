@@ -1,292 +1,167 @@
-Return-Path: <linux-kernel+bounces-73495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8212685C37E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A027485C380
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0F41F22011
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:16:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12AA51F22014
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24A577A04;
-	Tue, 20 Feb 2024 18:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED14578B42;
+	Tue, 20 Feb 2024 18:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DwltjPfA"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2060.outbound.protection.outlook.com [40.92.41.60])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BMe4b31x"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF65762EC;
-	Tue, 20 Feb 2024 18:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.41.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708452957; cv=fail; b=IdDGWIaCKJa0CO8JqffoAQ+GzDBtwjNz2oDw2LWzvHMZjOgrhqoBjkaJWGRbGiCUdSGr2sBXaI/h03/QQ9etAqVBG1WbBvTxGP3jhEJq0pIWeubZ5QA2AG194drz8piy1jEhj11l8qWS1LkMJFjLisCXeFhZjFAdl/0N5bmM8xs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708452957; c=relaxed/simple;
-	bh=0O9/e+MtHSH1azjh10/K9lxu2fjkEfst4wjFacfPkDc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Vak6NEx99a67k9VLGhMY9DLtphj1IXTa/iAIXSVURi0ayqrryKiPZUeh1m2omzD8+yvdAt3O3RXK8EzsHCq1bVpwupat135udRWZyto6GCnWAp1yYbcfAo00dfUBaWh55lz4uahx5XEFwoBraaTjRhoQdQVgdnysN5SCgAblSjU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=DwltjPfA; arc=fail smtp.client-ip=40.92.41.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A803cdgNAmCq0Mvi0ZkIRfiEDUxO7PCK4/3QLf3yKMW47knXhdIIhniUsOHBqc5l86hnz4q1wc+hnAavy4+wiPBjWji4sdssc0nzNWBthsuD4ANrvybtsNylVUfa7TyYTaHng6Cz03sCuCYPb3zdx3VtjKB8WoKwf4howpgvGQLyNnE3QrGvFcrNkUMkYCvWlOHLbNed1aUZUCuuLegRHV4rSuoA+wYBajxICN548CAWBvWwLWERAUH92Xcf3zK96kkAjqeTvEA2B30J22tQ6x2NKAEt49jk8WSHj13qgozUsFna4ibUrw0iBXLjs5wQEskU5wglOrp6MT+smve9iw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VWy486X8Q4Fi7xosa0Ws16Ne6l8DRaJm2Mei90RFiig=;
- b=e+V3qDkuruAb/oAn+S6DeK2Ro3rEvPGt06yelBJ5kIbBDhQJrnqKfdqidbEz00X0FgywiwtLBMzd1eud85ejxmh7u0NrtiuFmOOVTixUtllEPb3yKrjTzGcj/BQ3HGpsv6aijmZpoWe9UjdTQLkAtvV9UQmTactA+XBt+YyfIiuqYHbb9hbbYGlDhQaHT8Al4+RQro776nW4gAjQT8OY971O6UzU2BrsZK4kE/+64Ly7BFA43zSDpTMu3Jst1z016cad3OvrgaGQgzskmi5gFrjyk9txYSLFZZKxKZ4LtUFTFpc1AsTLkJTJmtZfXS/1SWyHfv+Un64QJmD59zPurA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VWy486X8Q4Fi7xosa0Ws16Ne6l8DRaJm2Mei90RFiig=;
- b=DwltjPfABaxr3qshkZubJwrBsOUNuDlm+pxAgHJzORzwB45nZTqS0kcLPwyFjNwmbWaKlGa2J51FaCH0MucbXi706RUbmlPHNPdLrNgao3xLH/jPI2XLDR/EMFh6Is9Moni1MfjzZnQTX3JLF5E91QNXtaNKvOxcC3Cyf1lz3aXWSwn2Ix0NvCLPtzIuaaMYI1GdSxCVFkDXEbt6Iq6ipojZ1R82JnwrMFZw+ax2CAIt+acL7t1G0Wz2BGqFZ1CfrD8fFJtsp6kiOPY2JTORq49MWJIoAjvHCKFmG5q82mWA6GUMo99+M1+Dx0MUopCtMgk81DdzrWAYpRi32FkWBw==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by SJ2PR02MB10121.namprd02.prod.outlook.com (2603:10b6:a03:558::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 18:15:53 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 18:15:53 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Boqun Feng <boqun.feng@gmail.com>, Saurabh Singh Sengar
-	<ssengar@linux.microsoft.com>
-CC: "haiyangz@microsoft.com" <haiyangz@microsoft.com>, "wei.liu@kernel.org"
-	<wei.liu@kernel.org>, "decui@microsoft.com" <decui@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [PATCH 1/1] Drivers: hv: vmbus: Calculate ring buffer size for
- more efficient use of memory
-Thread-Topic: [PATCH 1/1] Drivers: hv: vmbus: Calculate ring buffer size for
- more efficient use of memory
-Thread-Index: AQHaXkS5EPrFeM+bCUuIdPJ7ndDWZrESz/SAgAC4IYCAAAQbgA==
-Date: Tue, 20 Feb 2024 18:15:52 +0000
-Message-ID:
- <SN6PR02MB4157CF4A309971B21296D465D4502@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240213061959.782110-1-mhklinux@outlook.com>
- <20240220063007.GA17584@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZdThZUUmGhY2shrX@boqun-archlinux>
-In-Reply-To: <ZdThZUUmGhY2shrX@boqun-archlinux>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [BvSbcq3l4S6OPaaf6fYz/ZKSptrCQj0o]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ2PR02MB10121:EE_
-x-ms-office365-filtering-correlation-id: 58409dff-ba0b-49e1-aaff-08dc323ff98e
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- nDWEOs44dY7M5FMssyCv59/dyepj56p3qCSAoTx057T7vuYoS4HynOWJyMOda2CY5WL8epNVVcUzw8nX5D+QUhFibKm96gEmcHGetZrrQpxq/M6Pd4XokZyJMMDp/wr3E6cGJ5UnXgC7k/p+mCeAy5ExGWslxLcdck2qqXol/xjwObdNwx0fCvMtc/qr6rdDfNv/O511cxZMt1rFsPtRPuuYmVP+X6VUyu0TI06lWdXxm6h5taGDBWlXQR68LO1vYd5V/bBsStthITHCdLkd8dVOmw2yNsjxrWetRFHN9SZ+IbjaidIyqbxtSNB4FnE0jEs0LbMG9M7z0wqOLZQuHpOiHUw3k8OjTmJLcUTGfPN+012URTjPRvmq1hHD4fEF0TnROI3dmHjUugEI+6umbCrMvJcIPuRvWkCxm5VMP5hGk5w4ZC7k4VHhurP/i5oUgugaBy5gmXUJtyQU8ieEePPdlnyMQlamemRcNGJwQrpumWj0ZRxBDxjbKDfatyyEe9oshfRnvnXH+Vc6emk7FrMuxKe3i4d1mUsGCZ7VEdSpykMzC48i/M0h2QC18ybw
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?EuEWnoe3axsNIQpvJIRE2ryDyF3+nJmBJpXiqFHJaR/a6G3yYpAOiZ6Cw6Yy?=
- =?us-ascii?Q?g2QtVu6gqLTKXDxMO/yOgSBWEKs0BS2G0mL9t26gpcdrUaF5Q3ndJON8Mj1k?=
- =?us-ascii?Q?MqOBTWo3WBy3ceIXcwNj38uAl3tmoc4YQqa3C7AG1+2lOtnzFGH6InuDJ2mh?=
- =?us-ascii?Q?uG1L73KqodJ+fPf4XE7N/cRVO8WWG3d8SyshHE0kdPteuA5QRSsYYt21YQm5?=
- =?us-ascii?Q?6xTB8bD+xW8OAhlFQ8gErhs/pgd3vqLSc54Q48abqip/v4R/3GPV1ZfizTUp?=
- =?us-ascii?Q?ExrAVGQf2+uho50Pp5S61YHDgkGZzwDN8eQL1c7IabRiXpBuS5wZQr8RyCDo?=
- =?us-ascii?Q?QGT2K9OK2XnWV73cIJ6R5mXpanm4QGF91OgAr7hqt4fLdMmEy6IOpz3JBIIM?=
- =?us-ascii?Q?H78OsCviJ4wX/x4MsW0ndwZtsuEizCmVrpRlCXJLqQpLVgKn1qUTVRB46TPb?=
- =?us-ascii?Q?j+8MaXFYcqe7EpEzSl5uXwq5EQJSpi0J2lcc08o/WI1PwvtVwVTr71mXiDGh?=
- =?us-ascii?Q?Az1jp8PufpuZc5tFUmQDVSici0oT+hIx1UR5LX/IET1ZWoyp4JsOka9SKetr?=
- =?us-ascii?Q?xipblWYZ5yqrHZtJ0AJMBvzVyOQoXsR0P5QZQZeinsyPAjyEEGD+ksNXo8PI?=
- =?us-ascii?Q?CzzHcawfQALn9FK7dUFR2+0VkGFlLqtZRbIjGdcr1BuLijh0/7iREwRy48Fr?=
- =?us-ascii?Q?Q59H6GDrImdL8/QeVoCtgOqQGy6jydbhv3sT4uH0T6FKrp9ntUwficswZkUQ?=
- =?us-ascii?Q?1TQn5FU1GmKJ/tl6VI2pEjGTaebBLwbkBEQW6Q6orrAYGwuoPApVG+byzpJX?=
- =?us-ascii?Q?F7VTn6JHe+5rYboTQXFrYEt8GC4+5UDm81LjQCf+llhRe/J07fIMGEP9B9As?=
- =?us-ascii?Q?YtGxg/19pA+mJTzwxVWIdBsFG9S4KGsWHd3p4yQ2TqYWWvXBuZ0Gy9RKNfqF?=
- =?us-ascii?Q?JItPhypEDFxVvv/+SNjruZsnYmjeQBVA9PFMD06kBUUvQsH1mQkeaTeIWi/z?=
- =?us-ascii?Q?5ei6uUbsnDaQEHleFPyanTmLkyaXGlcB1WqR0fiACTdVgwiCBcFL60Yjsf0O?=
- =?us-ascii?Q?FR01krbqFTz5z06eX+XNgkS/HK2SGfZKLqXLltCHuNZ9GnZAcv+eWT3zHF8J?=
- =?us-ascii?Q?gHojZ4LtwUi8G/LS/cFlpQT6j5v7L8eZugkH5YiB/DIfq8tbsqFlw9uaNT/v?=
- =?us-ascii?Q?7JVO8XsoHgwPZx3wR24a3sLFOhN43JOLqk1dRg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDAB7764C
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:16:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708453003; cv=none; b=LSvAJv8eWTKHfVJPpwUAT5hunAVrQ3OgI3DzeF0/DnznGK+/f9NIjSz5O3M221YhdIBYsVkFMJ6SsC4tUJIhL+TpEu/+Gt/jDR4N3EXw63v6F5uxQIqbZKT9UMnEtOIb9W0tpMAIGgyMHp2rXIWsjN8OV745ZnzpL9eRj8zIffM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708453003; c=relaxed/simple;
+	bh=T0fFyQqP3q1hcE58aNQAcgzp0b58SdF4NddGLCl6Icg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kW4/WCgCNg/t6oyOIES0vBmLtNVM9zuJGYzSdYr1LErdLOrhRgyNd+pU8h436Fl/Foz5H1VJczygnLwq8lQsSTlsrfoiSIvwUNHMUi2+VPhGc8353sJg/DXF3S7YdQmqtz5hO2L4ggNht9GuqVQx9INULhsgL3K1Uzd6qcUrsT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BMe4b31x; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708452991;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CW58BqIo2kgSoOSF3BI1+OlNiG172/cSBqsJI7jUnGU=;
+	b=BMe4b31xP6z2uv/GtpE5A6vZTmZ9jjttQu80iaWaWDZ9h8bK7iSURvi9a16SnRbZf3V1dq
+	E4iO5jqzjd4iXVq+r8m5o+G7CCCKxrCrwkseefXoKpf8LFM6q8FehQxRrw7QS5FHdV6bmu
+	rF6XUJo6fbspVXfIgBrCa0vtUJRkbAQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-455-y86hmdgcNhiDYFGaVg-rVw-1; Tue, 20 Feb 2024 13:16:28 -0500
+X-MC-Unique: y86hmdgcNhiDYFGaVg-rVw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D93E811E79;
+	Tue, 20 Feb 2024 18:16:28 +0000 (UTC)
+Received: from [10.22.9.202] (unknown [10.22.9.202])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 10B29492BC6;
+	Tue, 20 Feb 2024 18:16:27 +0000 (UTC)
+Message-ID: <03c1eb2e-4eae-49be-94cb-b90894cc00a9@redhat.com>
+Date: Tue, 20 Feb 2024 13:16:26 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58409dff-ba0b-49e1-aaff-08dc323ff98e
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 18:15:53.0454
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR02MB10121
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] locking/osq_lock: Optimize osq_lock performance using
+ per-NUMA
+Content-Language: en-US
+To: Guo Hui <guohui@uniontech.com>, peterz@infradead.org, mingo@redhat.com,
+ will@kernel.org, boqun.feng@gmail.com, David.Laight@ACULAB.COM
+Cc: linux-kernel@vger.kernel.org
+References: <20240220073058.6435-1-guohui@uniontech.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240220073058.6435-1-guohui@uniontech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-From: Boqun Feng <boqun.feng@gmail.com> Sent: Tuesday, February 20, 2024 9:=
-29 AM
->=20
-> On Mon, Feb 19, 2024 at 10:30:07PM -0800, Saurabh Singh Sengar wrote:
-> > On Mon, Feb 12, 2024 at 10:19:59PM -0800, mhkelley58@gmail.com wrote:
-> > > From: Michael Kelley <mhklinux@outlook.com>
-> > >
-> > > The VMBUS_RING_SIZE macro adds space for a ring buffer header to the
-> > > requested ring buffer size.  The header size is always 1 page, and so
-> > > its size varies based on the PAGE_SIZE for which the kernel is built.
-> > > If the requested ring buffer size is a large power-of-2 size and the =
-header
-> > > size is small, the resulting size is inefficient in its use of memory=
-.
-> > > For example, a 512 Kbyte ring buffer with a 4 Kbyte page size results=
- in
-> > > a 516 Kbyte allocation, which is rounded to up 1 Mbyte by the memory
-> > > allocator, and wastes 508 Kbytes of memory.
-> > >
-> > > In such situations, the exact size of the ring buffer isn't that impo=
-rtant,
-> > > and it's OK to allocate the 4 Kbyte header at the beginning of the 51=
-2
-> > > Kbytes, leaving the ring buffer itself with just 508 Kbytes. The memo=
-ry
-> > > allocation can be 512 Kbytes instead of 1 Mbyte and nothing is wasted=
-.
-> > >
-> > > Update VMBUS_RING_SIZE to implement this approach for "large" ring bu=
-ffer
-> > > sizes.  "Large" is somewhat arbitrarily defined as 8 times the size o=
-f
-> > > the ring buffer header (which is of size PAGE_SIZE).  For example, fo=
-r
-> > > 4 Kbyte PAGE_SIZE, ring buffers of 32 Kbytes and larger use the first
-> > > 4 Kbytes as the ring buffer header.  For 64 Kbyte PAGE_SIZE, ring buf=
-fers
-> > > of 512 Kbytes and larger use the first 64 Kbytes as the ring buffer
-> > > header.  In both cases, smaller sizes add space for the header so
-> > > the ring size isn't reduced too much by using part of the space for
-> > > the header.  For example, with a 64 Kbyte page size, we don't want
-> > > a 128 Kbyte ring buffer to be reduced to 64 Kbytes by allocating half
-> > > of the space for the header.  In such a case, the memory allocation
-> > > is less efficient, but it's the best that can be done.
-> > >
-> > > Fixes: c1135c7fd0e9 ("Drivers: hv: vmbus: Introduce types of GPADL")
-> > > Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-> > > ---
-> > >  include/linux/hyperv.h | 22 +++++++++++++++++++++-
-> > >  1 file changed, 21 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-> > > index 2b00faf98017..6ef0557b4bff 100644
-> > > --- a/include/linux/hyperv.h
-> > > +++ b/include/linux/hyperv.h
-> > > @@ -164,8 +164,28 @@ struct hv_ring_buffer {
-> > >  	u8 buffer[];
-> > >  } __packed;
-> > >
-> > > +
-> > > +/*
-> > > + * If the requested ring buffer size is at least 8 times the size of=
- the
-> > > + * header, steal space from the ring buffer for the header. Otherwis=
-e, add
-> > > + * space for the header so that is doesn't take too much of the ring=
- buffer
-> > > + * space.
-> > > + *
-> > > + * The factor of 8 is somewhat arbitrary. The goal is to prevent add=
-ing a
-> > > + * relatively small header (4 Kbytes on x86) to a large-ish power-of=
--2 ring
-> > > + * buffer size (such as 128 Kbytes) and so end up making a nearly tw=
-ice as
-> > > + * large allocation that will be almost half wasted. As a contrastin=
-g example,
-> > > + * on ARM64 with 64 Kbyte page size, we don't want to take 64 Kbytes=
- for the
-> > > + * header from a 128 Kbyte allocation, leaving only 64 Kbytes for th=
-e ring.
-> > > + * In this latter case, we must add 64 Kbytes for the header and not=
- worry
-> > > + * about what's wasted.
-> > > + */
-> > > +#define VMBUS_HEADER_ADJ(payload_sz) \
-> > > +	((payload_sz) >=3D  8 * sizeof(struct hv_ring_buffer) ? \
-> > > +	0 : sizeof(struct hv_ring_buffer))
-> > > +
-> > >  /* Calculate the proper size of a ringbuffer, it must be page-aligne=
-d */
-> > > -#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring=
-_buffer) + \
-> > > +#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(VMBUS_HEADER_ADJ(payl=
-oad_sz) + \
-> > >  					       (payload_sz))
->=20
-> I generally see the point of this patch, however, it changes the
-> semantics of VMBUS_RING_SIZE() (similiar as Saurabh mentioned below),
-> before VMBUS_RING_SIZE() will give you a ring buffer size which has at
-> least "payload_sz" bytes, but after the change, you may not get "enough"
-> bytes for the vmbus ring buffer.
 
-Storvsc and netvsc were previously not using VMBUS_RING_SIZE(),
-so space for the ring buffer header was already being "stolen" from
-the specified ring size.  But if this new version of VMBUS_RING_SIZE()
-still allows the ring buffer header space to be "stolen" from the
-large-ish ring buffers, I don't see that as a problem.  The ring buffer
-sizes have always been a swag value for the low-speed devices with
-small ring buffers.  For the high-speed devices (netvsc and storvsc)
-the ring buffer sizes have been somewhat determined by perf
-measurements, but the ring buffers are much bigger, so stealing
-a little bit of space doesn't have any noticeable effect.  Even with
-the perf measurements, the sizes aren't very exact. Performance
-just isn't sensitive to the size of the ring buffer except at a gross level=
-.
+On 2/20/24 02:30, Guo Hui wrote:
+> After extensive testing of osq_lock,
+> we found that the performance of osq_lock is closely related to
+> the distance between NUMA nodes.The greater the distance
+> between NUMA nodes,the more serious the performance degradation of
+> osq_lock.When a group of processes that need to compete for
+> the same lock are on the same NUMA node,the performance of osq_lock
+> is the best.when the group of processes is distributed on
+> different NUMA nodes,as the distance between NUMA nodes increases,
+> the performance of osq_lock becomes worse.
+>
+> This patch uses the following solutions to improve performance:
+> Divide the osq_lock linked list according to NUMA nodes.
+> Each NUMA node corresponds to an osq linked list.
+> Each CPU is added to the linked list corresponding to
+> its respective NUMA node.When the last CPU of
+> the NUMA node releases osq_lock,osq_lock is passed to
+> the next NUMA node.
+>
+> As shown in the figure below, the last osq_node1 on NUMA0 passes the lock
+> to the first node (osq_node3) of the next NUMA1 node.
+>
+> -----------------------------------------------------------
+> |            NUMA0           |            NUMA1           |
+> |----------------------------|----------------------------|
+> |  osq_node0 ---> osq_node1 -|-> osq_node3 ---> osq_node4 |
+> -----------------------------|-----------------------------
+>
+> Set an atomic type global variable osq_lock_node to
+> record the NUMA node number that can currently obtain
+> the osq_lock lock.When the osq_lock_node value is
+> a certain node number,the CPU on the node obtains
+> the osq_lock lock in turn,and the CPUs on
+> other NUMA nodes poll wait.
+>
+> This solution greatly reduces the performance degradation caused
+> by communication between CPUs on different NUMA nodes.
+>
+> The effect on the 96-core 4-NUMA ARM64 platform is as follows:
+> System Benchmarks Partial Index       with patch  without patch  promote
+> File Copy 1024 bufsize 2000 maxblocks   2060.8      980.3        +110.22%
+> File Copy 256 bufsize 500 maxblocks     1346.5      601.9        +123.71%
+> File Copy 4096 bufsize 8000 maxblocks   4229.9      2216.1       +90.87%
+>
+> The effect on the 128-core 8-NUMA X86_64 platform is as follows:
+> System Benchmarks Partial Index       with patch  without patch  promote
+> File Copy 1024 bufsize 2000 maxblocks   841.1       553.7        +51.91%
+> File Copy 256 bufsize 500 maxblocks     517.4       339.8        +52.27%
+> File Copy 4096 bufsize 8000 maxblocks   2058.4      1392.8       +47.79%
+That is similar in idea to the numa-aware qspinlock patch series.
+> Signed-off-by: Guo Hui <guohui@uniontech.com>
+> ---
+>   include/linux/osq_lock.h  | 20 +++++++++++--
+>   kernel/locking/osq_lock.c | 60 +++++++++++++++++++++++++++++++++------
+>   2 files changed, 69 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/osq_lock.h b/include/linux/osq_lock.h
+> index ea8fb31379e3..c016c1cf5e8b 100644
+> --- a/include/linux/osq_lock.h
+> +++ b/include/linux/osq_lock.h
+> @@ -2,6 +2,8 @@
+>   #ifndef __LINUX_OSQ_LOCK_H
+>   #define __LINUX_OSQ_LOCK_H
+>   
+> +#include <linux/nodemask.h>
+> +
+>   /*
+>    * An MCS like lock especially tailored for optimistic spinning for sleeping
+>    * lock implementations (mutex, rwsem, etc).
+> @@ -11,8 +13,9 @@ struct optimistic_spin_queue {
+>   	/*
+>   	 * Stores an encoded value of the CPU # of the tail node in the queue.
+>   	 * If the queue is empty, then it's set to OSQ_UNLOCKED_VAL.
+> +	 * The actual number of NUMA nodes is generally not greater than 32.
+>   	 */
+> -	atomic_t tail;
+> +	atomic_t tail[32];
 
->=20
-> One cause of the waste memory is using alloc_pages() to get physical
-> continuous, however, after a quick look into GPADL, looks like it also
-> supports uncontinuous pages. Maybe that's the longer-term solution?
+That is a no-go. You are increasing the size of a mutex/rwsem by 128 
+bytes. If you want to enable this numa-awareness, you have to do it in a 
+way without increasing the size of optimistic_spin_queue. My suggestion 
+is to queue optimistic_spin_node in a numa-aware way in osq_lock.c 
+without touching optimistic_spin_queue.
 
-Yes, that seems like a desirable long-term solution.  While the GPADL
-code handles vmalloc memory correctly (because the netvsc send and
-receive buffers are vmalloc memory), hv_ringbuffer_init() assumes
-physically contiguous memory.  It would need to use vmalloc_to_page()
-in building the pages_wraparound array instead of just indexing into
-the struct page array.  But that's an easy fix.  Another problem is the
-uio_hv_generic.c driver, where hv_uio_ring_mmap() assumes a physically
-contiguous ring. Maybe there's a straightforward way to fix it as well,
-but it isn't immediately obvious to me.
+Cheers,
+Longman
 
-Using vmalloc memory for ring buffers has another benefit as well.
-Today, adding a new NIC to a VM that has been running for a while
-could fail because of not being able to allocate 1 Mbyte contiguous
-memory for the ring buffers used by each VMBus channel.  There
-could be plenty of memory available, but fragmentation could prevent
-getting 1 Mbyte contiguous.  Using vmalloc'ed ring buffers would
-solve this problem.
-
-Michael
-
->=20
-> Regards,
-> Boqun
->=20
-> > >
-> > >  struct hv_ring_buffer_info {
-> >
-> > Thanks for the patch.
-> > It's worth noting that this will affect the size of ringbuffer calculat=
-ion for
-> > some of the drivers: netvsc, storvsc_drv, hid-hyperv, and hyperv-keyboa=
-rd.c.
-> > It will be nice to have this comment added in commit for future referen=
-ce.
-> >
-> > Looks a good improvement to me,
-> > Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> >
-> > > --
-> > > 2.25.1
-> > >
 
