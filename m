@@ -1,144 +1,133 @@
-Return-Path: <linux-kernel+bounces-72277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 501B285B187
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:40:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2623285B193
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:42:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7BE1281E9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:40:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB9BEB209EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F07B47F4B;
-	Tue, 20 Feb 2024 03:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A6351C3B;
+	Tue, 20 Feb 2024 03:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="XEH3dvn2"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bv35xI68"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA41B4C610
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CF94A3F;
+	Tue, 20 Feb 2024 03:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708400400; cv=none; b=uPEQBmXhF1y/vsB4Azn0IxEKEhRchLUrlLKG4WJ+WZRt8nHm58Rdnx8vTPp+JK8nOnK2ozYYwgaK8Y1tZleh92vJ+wxVESlbDLSEwQdrcguyw1DRv1d6aVLqRzxU2FgHP19+Xvsv/mrGOd/N0k1pVF+/SMhUns50lH5pXlDtQhM=
+	t=1708400548; cv=none; b=OwcvChHxJmHePZVK5kCZjUaA6W1Sh/eKR4nZHTQ/6Lcpvw2gUBT7GinKoIT9/xHZ7bdbOIIcCqZkuYJzcA9Zv65kLWcQVMJEeFnxpoNl7h4Dly05SshlJ1piquHN47IO7KQExkS7bWp7oGUQ0WI5YKu2N6JTVpxj0HML9fXKhyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708400400; c=relaxed/simple;
-	bh=yOKGA8wab/Ee/bmU7v/Q9RlZRsEjbjN+OuIsJAHhMJc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BBcna4n+mjV35jxuPg7mc9T4daX/01mMJZ24UlrtVwlcXhr++vBeEDosUyZOcV5QzkFLBuGJqDsoYklGKyyql4uHDlxL3fLA2zckBh7P3HYVUiX5U89te2pFIHoTkLcIEuuMbdCL7Ie1TLmZOHo9hsh6JLoAnOwufdIdFrIkLNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=XEH3dvn2; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dc139ed11fso2499455ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:39:58 -0800 (PST)
+	s=arc-20240116; t=1708400548; c=relaxed/simple;
+	bh=fbYtNy7kXIiPTIQYAblSw6Gig2Ph+K8EsXx9oUctBO4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rdDnTV5DXl5Fk4UZSTFLLxo4mRyOukCnvp0VW7QtFrHF8VX8ZwhUruHmO324vtqHbs3T7pZ2PlpYFpPAm73LnAbvsAgh1JAf26/gB55ZJxtkvyikekgSPOHhrHXF626sLJMaSWGCg6JGyRX4FCro9AfZ9umeNOC49EAV9CymPlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bv35xI68; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d220e39907so48363891fa.1;
+        Mon, 19 Feb 2024 19:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708400398; x=1709005198; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=61gdFIOyAEtp7pfCHFQh+Fc/gqgVzNiO4CpvePAyVXw=;
-        b=XEH3dvn2pyH9j/S3WIMYsYramXGUDwDF4/ForYALcYwrSi0DYKi8Dozn295l+a5kSV
-         KoUAKCInuykmN2GPY52KsUuChoSUVXkZWWxu5Fst6ZjddOCAsu0wGLO6xdmOA20XbFnN
-         0//gzBxGoK1UfGUADANBy6oWYdcb9jxjNxw7OWJdjK3UtFSNSoVrqm4waiEsoK1FzQir
-         DzqbeX1mfm3riJuiYsfy9+8SReLlo03OpB2xfk2WfeIvQJu2lC7ydhZxX2wz4pJQjL4c
-         xs1K288WRBMA59YBGqsiB/aQWp0hIMEG0vsHYPhoIXEKWHiO1zDa91U+hpj6HiqpsHqk
-         ljnQ==
+        d=gmail.com; s=20230601; t=1708400544; x=1709005344; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6YBW0iFVBOwdaYNTEi3AnGx7giAdQn2LsYMgaIrZ6FM=;
+        b=Bv35xI68MHxt8KmvwMX/obWTv+LgmqmubsK4R1Ng4FJaK+3SmZHdvQIAYTTDYfQXe1
+         vSN6JEgfbqmSl1aJfrsONiIJn6w8nW5K95OdJhmPunPYnvwLQ7N21OQLuCo4irfUxDi5
+         n1wfZ1Pl3/RZuQWt7Yx93Ix6shfty7+psKMk2BaSZYsVk0HUjwhrn/v3qqvnG0hZcDXW
+         NwtXmLfPEn/aeEGjeaCZu1IwGjhFuvbzOutLsMunJywpnAWBk6zw+elRtf/9qoexBkAG
+         UOEL9JPfpU9+Ra0PE8pum/CJ6CHkp07xrw1+vr01Wvj3Ff8OGjTRIC0+3hQbYnFtwjsp
+         5XxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708400398; x=1709005198;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=61gdFIOyAEtp7pfCHFQh+Fc/gqgVzNiO4CpvePAyVXw=;
-        b=fQRyAStMJYIdr+MVHghpE8WWbj0KPMNwmZaCisF5LFL/yEYbXSD82bmlxvfgZiQkiN
-         VszOAOLNZUaDZs3y348w9Chf6wRBfoRxmLTAdFC9+aCo9Lt8IqI6GWqxjlRPIlqMRACi
-         cNqUH3sMhslD673ECEv4lpOpaliPFIZBLofb+T45tKSysfihnBi/AxnLkbmmrO9OMpqq
-         k3KLuzu7J24+ykbSU72SgME0YCTZhJg5iL19nxKiDnYrDjXGoRdLEGjKPw7x7xMfYkgP
-         2cihjbfXb4FzjKQOTBXWnYsII8luaRfwKzrLsQ4jr2Jpf/kmO0Ua/iW+vYaebNevZ/Rb
-         L9wA==
-X-Forwarded-Encrypted: i=1; AJvYcCWPmCUsO+wEN5JHE2IIPnN5LPPm5uJOwMNRCWdVRML/C6TepZjosxwYvo2wvUkejfaqJlOfXzHbJn28rdx1NO/r0CSIno7yo1RP1ImP
-X-Gm-Message-State: AOJu0YyxM+6JW0CFZ+hLI72qDEjOJ8D3YCGdvXxXvq2dg+TH754FZtXA
-	Hiq26QKpVCqZzWebXZ9Z+oSsVjhtIgIBkgQP7wnSICK6Z3wrQUdVFPKIU0sIbcc=
-X-Google-Smtp-Source: AGHT+IE2sqpkSGfsSyNt6OWk0KJ2ruc4yfEQBvhsEdatEOo2TxXHxnvqxWaQkQEoRQvOPY4CQbPr4A==
-X-Received: by 2002:a17:903:24f:b0:1d9:4106:b8b5 with SMTP id j15-20020a170903024f00b001d94106b8b5mr17488773plh.11.1708400398198;
-        Mon, 19 Feb 2024 19:39:58 -0800 (PST)
-Received: from [10.254.101.216] ([139.177.225.227])
-        by smtp.gmail.com with ESMTPSA id jx3-20020a170903138300b001d752c4f36asm5153333plb.78.2024.02.19.19.39.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 19:39:57 -0800 (PST)
-Message-ID: <d99989d0-e2d6-490a-8f60-c08b98b12896@bytedance.com>
-Date: Tue, 20 Feb 2024 11:39:39 +0800
+        d=1e100.net; s=20230601; t=1708400544; x=1709005344;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6YBW0iFVBOwdaYNTEi3AnGx7giAdQn2LsYMgaIrZ6FM=;
+        b=wMubXbKK+YiBvCugirp82EpyT3YN2HCPMRB3RHGVUpr5Zc3cKPtPDA6QuZSSGiUm/4
+         sJ5dNRo9pELuWPo1ElzB3oZvjYcSE0rrLziCOb+f19uBXdWfbBeEVqr062SNU0z6e4Yy
+         xxVxTCuBBG/LrHj0f/v2qOaVlOuYONq898WVq3jfnPIWTtfYhi8xDmRckoNqQDl5QDEY
+         9C88qmgL2KzhJYg99sGpyWYGZxqPJ2NEb9iefggIexlhmN/hQckX1iUzG8uPpyFZPGei
+         cOGlsI63H3e+0zmTvyEpMslwKXE4v7HyUZlYivoeiGLcE4qOQUVcr+i5WWaM5sXNN3R0
+         ylug==
+X-Forwarded-Encrypted: i=1; AJvYcCXBas6E1Dk/KD09YHo1xcbo3E2Q8wPJS0elRmq31B2C37JBdYvkU5asWrAink9WETiJySqOIfpvXG5/6f4XzgHud/dG54D/bg36SUGscj1DWH0hkeZBTIB0iJM44i+Lp4enC5T5
+X-Gm-Message-State: AOJu0YyrB4dEwQRetGxDG2pyb7bCehbEfJcoqnBDhnZwyt5Nvj62yCb+
+	GMAjk7WfRRgfnEOxtaFitHY9bRir5Pm9FOkllJPirZQgACNbefK7D+AkppD/SQCFloSnfZ2Usb1
+	AZSh3zedgJvakPjBbkdFQlSxGOCM=
+X-Google-Smtp-Source: AGHT+IFUdqhJ1ck10sT6eDa/vnx33reMzjJD6WE2mtMnQZK5BEREIDmnyv1I2drdG4Do2HdBONDamROPOk/Xcek4N0c=
+X-Received: by 2002:a2e:9816:0:b0:2d2:42ce:3e5b with SMTP id
+ a22-20020a2e9816000000b002d242ce3e5bmr2429934ljj.8.1708400544242; Mon, 19 Feb
+ 2024 19:42:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: Re: [linus:master] [sched/eevdf] 2227a957e1:
- BUG:kernel_NULL_pointer_dereference,address
-Content-Language: en-US
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
- kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
- lkp@intel.com, linux-kernel@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>, aubrey.li@linux.intel.com,
- Honglei Wang <wanghonglei@didichuxing.com>, Aaron Lu <aaron.lu@intel.com>
-References: <202401301012.2ed95df0-oliver.sang@intel.com>
- <23cbb613-c8a2-4f07-b83b-fa3104bef642@bytedance.com>
- <8b21e697-c9b9-49aa-a7ad-e88a5d7f9c92@antgroup.com>
- <5f8f4222-a706-45b1-8eb2-fd4553cc57d8@bytedance.com>
- <ZdNLCYnJzPM2Ih2j@chenyu5-mobl2>
-From: Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <ZdNLCYnJzPM2Ih2j@chenyu5-mobl2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240219082040.7495-1-ryncsn@gmail.com> <20240219173147.3f4b50b7c9ae554008f50b66@linux-foundation.org>
+In-Reply-To: <20240219173147.3f4b50b7c9ae554008f50b66@linux-foundation.org>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Tue, 20 Feb 2024 11:42:07 +0800
+Message-ID: <CAMgjq7DgBOJhDJStwGuD+C6-FNYZBp-cu6M_HAgRry3gBSf7GA@mail.gmail.com>
+Subject: Re: [PATCH v4] mm/swap: fix race when skipping swapcache
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, "Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
+	Minchan Kim <minchan@kernel.org>, Barry Song <v-songbaohua@oppo.com>, Yu Zhao <yuzhao@google.com>, 
+	SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, Aaron Lu <aaron.lu@intel.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Chen,
+On Tue, Feb 20, 2024 at 9:31=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Mon, 19 Feb 2024 16:20:40 +0800 Kairui Song <ryncsn@gmail.com> wrote:
+>
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
+> > swapin the same entry at the same time, they get different pages (A, B)=
+.
+> > Before one thread (T0) finishes the swapin and installs page (A)
+> > to the PTE, another thread (T1) could finish swapin of page (B),
+> > swap_free the entry, then swap out the possibly modified page
+> > reusing the same entry. It breaks the pte_same check in (T0) because
+> > PTE value is unchanged, causing ABA problem. Thread (T0) will
+> > install a stalled page (A) into the PTE and cause data corruption.
+> >
+> > @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >       if (!folio) {
+> >               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+> >                   __swap_count(entry) =3D=3D 1) {
+> > +                     /*
+> > +                      * Prevent parallel swapin from proceeding with
+> > +                      * the cache flag. Otherwise, another thread may
+> > +                      * finish swapin first, free the entry, and swapo=
+ut
+> > +                      * reusing the same entry. It's undetectable as
+> > +                      * pte_same() returns true due to entry reuse.
+> > +                      */
+> > +                     if (swapcache_prepare(entry)) {
+> > +                             /* Relax a bit to prevent rapid repeated =
+page faults */
+> > +                             schedule_timeout_uninterruptible(1);
+>
+> Well this is unpleasant.  How often can we expect this to occur?
+>
 
-On 2/19/24 8:35 PM, Chen Yu Wrote:
-> On 2024-01-31 at 20:28:19 +0800, Abel Wu wrote:
->> On 1/31/24 8:10 PM, Tiwei Bie Wrote:
->>> On 1/30/24 6:13 PM, Abel Wu wrote:
->>>> On 1/30/24 3:24 PM, kernel test robot Wrote:
->>>>>
->>>>> [  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 0000002c
->>>>> [  512.080897][ T8305] #PF: supervisor read access in kernel mode
->>>>> [  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
->>>>> [  512.082337][ T8305] *pde = 00000000
->>>>> [  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
->>>>> [  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        W        N 6.7.0-rc1-00006-g2227a957e1d5 #1 819e6d1a8b887f5f97adb4aed77d98b15504c836
->>>>> [  512.084986][ T8305] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
->>>>> [ 512.086203][ T8305] EIP: set_next_entity (fair.c:?)
->>>>
->>>> There was actually a NULL-test in pick_eevdf() before this commit,
->>>> but I removed it by intent as I found it impossible to be NULL after
->>>> examining 'all' the cases.
->>>>
->>>> Also cc Tiwei who once proposed to add this check back.
->>>> https://lore.kernel.org/all/20231208112100.18141-1-tiwei.btw@antgroup.com/
->>>
->>> Thanks for cc'ing me. That's the case I worried about and why I thought
->>> it might be worthwhile to add the sanity check back. I just sent out a
->>> new version of the above patch with updated commit log and error message.
->>
->> I assuming the real problem is why it *can* be NULL at first place.
->> IMHO the NULL check with a fallback selection doesn't solve this, but
->> it indeed avoids kernel panic which is absolutely important.
-> 
-> I tried to reproduce this issue locally but with no luck. It might
+The chance is very low, using the current mainline kernel and ZRAM,
+even with threads set to race on purpose using the reproducer I
+provides, for 647132 page faults it occured 1528 times (~0.2%).
 
-Me either, with a x86 machine. Staring at the dmesg provided by Oliver,
-I guess the bug is arch-specific.
-
-> be related to lkp's environment so I'm thinking of adding the following
-> change into lkp's test repo to help narrow down: when the pick_eevdf() finds
-> an NULL candidate, print the whole rb-tree, including each entity's vruntime,
-> min_vruntime, deadline, etc. So we can figure out why we failed to find a proper
-> entity, thoughts?
-
-It helps, but not in all ways IMHO. There might be someone else manipulating
-the rbtree under improper locking, and if it is the case, the time of debug
-could be late.
-
+If I run MySQL and sysbench with 128 threads and 16G buffer pool, with
+6G cgroup limit and 32G ZRAM, it occured 1372 times for 40 min,
+109930201 page faults in total (~0.001%).
 
