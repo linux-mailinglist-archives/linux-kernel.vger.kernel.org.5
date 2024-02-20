@@ -1,72 +1,70 @@
-Return-Path: <linux-kernel+bounces-72609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88D9785B60E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:54:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6D485B619
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 117A1B2395E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:54:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D29A1C21455
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:55:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CD85F465;
-	Tue, 20 Feb 2024 08:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87585F84E;
+	Tue, 20 Feb 2024 08:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IzLVuyGZ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gVZVDs3D"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="agU7DtJt"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DE2627F3
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB8B5F47B;
+	Tue, 20 Feb 2024 08:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419149; cv=none; b=oloceh/FUk8CK9jeUklkeFpqlc0m3hzlT6HF4mFJBh8K4/ZLbwPgoPeME+uhrwDVpU5QjTcADumS3WBGv6esB3R4gvKgNt1yddGQx7WlWdy5L82ewJJJFWLC6cdAgMskubeHcT3ZmRbrc+Ck/OICeKtRE+cJLOnGp7t/dYFXmoQ=
+	t=1708419171; cv=none; b=t3RUdGTz1ewVYxPvtkrXQUCsA42dC/yt2FjrwTSWAqHFPASt7SCyvLCcnH60BGrjrNr67CIYRFM/UOXQn1Ky2MBHANM6ula4oe6Mglro++dq/sJBgem02lyHpWMFdO5cFlpE9MVOovcfL85Ysqv6PGq+4hYNjFbhTggkAcGBWZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419149; c=relaxed/simple;
-	bh=/G+9zo4wU1/IoJJgwk4k1gXyHPeaOE6m1As2PizN0ok=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VAZ4ECUVJVM93+K2OrJWOlqcduMUDnUmBpMF9fqeRq3ITZnnJQexRk1ebJytUCT1BCrbXfFZRKyHSz7ADE32EDtwHIfoSutcfYTO1FJBcK3MVf8IVxvWIkH6pLKx9Rpa+Vzj2IBx4iPmHO05XS12Umxo4g3vbUJkLl8w1Mejftg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IzLVuyGZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gVZVDs3D; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708419145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WRJ6q+w6PWpmy1zIT6leu3Z5s7/O2Fle24NL27shHS0=;
-	b=IzLVuyGZR+3MMByVPrc0qDiSJ9LPePvFUId3+fMVczmxkwoJC4Pmp+HxhnHe1mjMRA9d16
-	MK3rauiN6/y7dLiS4a8tWIpdn+s+PdOV2Ao/fbM352GUtnqxCzqdPVnzhKvottAgfS5Jpv
-	+sVfL/oXqHzQkv+f+1mnDG+xkngje+BkLgKfpvO2KJGeLSwOTwSgRD9do8Lu6YBTGA7bNz
-	7TRo+XRf3wcD4WhKQIf4sI/b/Z+0DsqQmEzwb96PoxiemIppwqIz1eMik2LYgNEJAVWx8y
-	T2BZHto4opPMZ4UVNm50BDN2J0jDMcHXKfpdsD78k8OpbUshVZjlCVBC2+5Iuw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708419145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WRJ6q+w6PWpmy1zIT6leu3Z5s7/O2Fle24NL27shHS0=;
-	b=gVZVDs3DqBXIydK1NNlQDSB1Z0oouZ4f/SeqnfAykhrMEH+KNNVdoATlwV+T6JYu6LBfba
-	XCebOD4yIVZGWOAw==
-To: linux-kernel@vger.kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH v1a] riscv/vdso: Use generic union vdso_data_store
-Date: Tue, 20 Feb 2024 09:52:12 +0100
-Message-Id: <20240220085212.6547-1-anna-maria@linutronix.de>
-In-Reply-To: <20240219153939.75719-7-anna-maria@linutronix.de>
-References: <20240219153939.75719-7-anna-maria@linutronix.de>
+	s=arc-20240116; t=1708419171; c=relaxed/simple;
+	bh=GJYdAbM7ewpjFdjHz6ASYR5VJQe0AeyNeMR8SotvnjM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k+30sM2GIdFoW4HgisvDinpj2JecY3mPZ6pifInhMoiqwK3ZrEoJJKERa4BxtGa2OEQMivqHmZuGt4ZJVmEIL9jTp+USU3foKQs2T0hP8vYhfgXOJo2irYde8LaPPalo9LftPF/B0VNNb808uT9VCooxgj/c0YtmIBN2b/s46qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=agU7DtJt; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708419167;
+	bh=GJYdAbM7ewpjFdjHz6ASYR5VJQe0AeyNeMR8SotvnjM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=agU7DtJtNyjiDYeOcxIKd0T+lvhUMiG8t991Z/M4d+omokWz5meUew8yNVUG8wbgA
+	 6wODkWyARKHOBCjerxxUEZl4TM4uuMV5v2UURHfnrN6T0uR5iI7hvPieoKSufGXFJK
+	 Q5zhMZL6Dbvj07p1qvSfDpXb1gQ8nbIWP9ZBUsribkldyNxFH3436/V8aAy9DD4FIT
+	 plbjxC49tNUljgps8Cq9GOUPjS/X5Gtl6dIHchiB4JxsUz2Wp9VQHzuhA4QJWcurcw
+	 4eUV9+xQpklWiriJMG4z6Xcwjb2NIykZINb2ftjOJR6aFp29EO6bzyA+yFTqla6P4r
+	 Gm1iVHLpzxSdg==
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DB6B73782080;
+	Tue, 20 Feb 2024 08:52:43 +0000 (UTC)
+From: Eugen Hristev <eugen.hristev@collabora.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	eugen.hristev@collabora.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	krisman@suse.de
+Subject: [PATCH v12 0/8] Cache insensitive cleanup for ext4/f2fs
+Date: Tue, 20 Feb 2024 10:52:27 +0200
+Message-Id: <20240220085235.71132-1-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,42 +73,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is already a generic union definition for vdso_data_store in vdso
-datapage header.
+Hello,
 
-Use this definition to prevent code duplication.
+I am trying to respin the series here :
+https://www.spinics.net/lists/linux-ext4/msg85081.html
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org
----
- arch/riscv/kernel/vdso.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+I resent some of the v9 patches and got some reviews from Gabriel,
+I did changes as requested and here is v12.
 
-diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-index 2cf76218a5bd..98315b98256d 100644
---- a/arch/riscv/kernel/vdso.c
-+++ b/arch/riscv/kernel/vdso.c
-@@ -30,14 +30,8 @@ enum rv_vdso_map {
- 
- #define VVAR_SIZE  (VVAR_NR_PAGES << PAGE_SHIFT)
- 
--/*
-- * The vDSO data page.
-- */
--static union {
--	struct vdso_data	data;
--	u8			page[PAGE_SIZE];
--} vdso_data_store __page_aligned_data;
--struct vdso_data *vdso_data = &vdso_data_store.data;
-+static union vdso_data_store vdso_data_store __page_aligned_data;
-+struct vdso_data *vdso_data = vdso_data_store.data;
- 
- struct __vdso_info {
- 	const char *name;
+Changes in v12:
+- revert to v10 comparison with propagating the error code from utf comparison
+
+Changes in v11:
+- revert to the original v9 implementation for the comparison helper.
+
+Changes in v10:
+- reworked a bit the comparison helper to improve performance by
+first performing the exact lookup.
+
+
+* Original commit letter
+
+The case-insensitive implementations in f2fs and ext4 have quite a bit
+of duplicated code.  This series simplifies the ext4 version, with the
+goal of extracting ext4_ci_compare into a helper library that can be
+used by both filesystems.  It also reduces the clutter from many
+codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+the codeflow now.
+
+While there, I noticed we can leverage the utf8 functions to detect
+encoded names that are corrupted in the filesystem. Therefore, it also
+adds an ext4 error on that scenario, to mark the filesystem as
+corrupted.
+
+This series survived passes of xfstests -g quick.
+
+
+Gabriel Krisman Bertazi (8):
+  ext4: Simplify the handling of cached insensitive names
+  f2fs: Simplify the handling of cached insensitive names
+  libfs: Introduce case-insensitive string comparison helper
+  ext4: Reuse generic_ci_match for ci comparisons
+  f2fs: Reuse generic_ci_match for ci comparisons
+  ext4: Log error when lookup of encoded dentry fails
+  ext4: Move CONFIG_UNICODE defguards into the code flow
+  f2fs: Move CONFIG_UNICODE defguards into the code flow
+
+ fs/ext4/crypto.c   |  19 ++-----
+ fs/ext4/ext4.h     |  35 +++++++-----
+ fs/ext4/namei.c    | 129 ++++++++++++++++-----------------------------
+ fs/ext4/super.c    |   4 +-
+ fs/f2fs/dir.c      | 105 +++++++++++-------------------------
+ fs/f2fs/f2fs.h     |  17 +++++-
+ fs/f2fs/namei.c    |  10 ++--
+ fs/f2fs/recovery.c |   5 +-
+ fs/f2fs/super.c    |   8 +--
+ fs/libfs.c         |  85 +++++++++++++++++++++++++++++
+ include/linux/fs.h |   4 ++
+ 11 files changed, 216 insertions(+), 205 deletions(-)
+
 -- 
-2.39.2
+2.34.1
 
 
