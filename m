@@ -1,142 +1,91 @@
-Return-Path: <linux-kernel+bounces-72969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64CEB85BB48
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:00:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9101E85BB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE8FDB222A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:00:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B0251F2377E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DFD664D1;
-	Tue, 20 Feb 2024 12:00:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cZ6XEF1a";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cZ6XEF1a"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9918C67E74;
+	Tue, 20 Feb 2024 12:00:42 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506EF67E63;
-	Tue, 20 Feb 2024 12:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C053D67C4A
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708430432; cv=none; b=dtRSdgQFYl9sdbR7HkXOE6OgBG9bE1qW5UQBOYQ7rocWUjOxpB6diJ/1WAyADVzHYPkQtXUsWJTj7XRiQehodizXrDGmT0rOYfmeV8JwPwv5OszxR5cPCL61AjLymIz/vJyWnUUCVaHt1Dqfu+ubcuK8xyebF5qExQ1B1SFSU6o=
+	t=1708430442; cv=none; b=PfTn1S8l01AOSzGqK4sYv/0tDfqmy4Loo53zo4wRzF495RWp8vpVLe8IWNY2Agn1cUZrrlUs3CU33lAagHfWx5SktY75rpeRJAoOkb7Z5VP63fQc49WCaXlZ9mIc38+KWrMS1coE/cEZC8+U1yubLhxZo/k97qp9Uif2W+Xg2dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708430432; c=relaxed/simple;
-	bh=abZNTJqU/RwPnT5tL8Obzy2HHmE8IgkqkqmA1yvAeWg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f4wNX1RjdyO9lJk3naXIYf6W/mH5mwFCLYcvuuWeDIymJfEtFh2KSxcsEXhCyyuuOKIeJ5/vCe3p4epdxljJle/W4PKkRaS6SVLN2LeglHxqamRzjkuBH7aV5QH/aQDRju4jdIY06HTGQPrwryT8qkbTxCey5d8HwF1l5gOBquI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cZ6XEF1a; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cZ6XEF1a; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BBC21FD36;
-	Tue, 20 Feb 2024 12:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708430428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hWg7vA4kQ2xBQZqdvKR+2gxwgUjfjH7eu84AEYENqzQ=;
-	b=cZ6XEF1a9N4uGzeGUvAaziS0DfNuTNXdkD4XFkrX+pZszFIhzqo28MRGBGaqhkXDBNSi7E
-	QCv2FZNY15CMJRvsUU5V1f/8h+OueqDUmgxpxaHWKxrCljGhpG+YpSczVQ30VqCjkhhEst
-	tytQfr6Hr1bERCanR9xKnIqY2GlrD64=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708430428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hWg7vA4kQ2xBQZqdvKR+2gxwgUjfjH7eu84AEYENqzQ=;
-	b=cZ6XEF1a9N4uGzeGUvAaziS0DfNuTNXdkD4XFkrX+pZszFIhzqo28MRGBGaqhkXDBNSi7E
-	QCv2FZNY15CMJRvsUU5V1f/8h+OueqDUmgxpxaHWKxrCljGhpG+YpSczVQ30VqCjkhhEst
-	tytQfr6Hr1bERCanR9xKnIqY2GlrD64=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DA5771358A;
-	Tue, 20 Feb 2024 12:00:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id gaQZKFuU1GVoDQAAn2gu4w
-	(envelope-from <mpdesouza@suse.com>); Tue, 20 Feb 2024 12:00:27 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Shresth Prasad <shresthprasad7@gmail.com>
-Cc: zhangwarden@gmail.com,
-	jikos@kernel.org,
-	joe.lawrence@redhat.com,
-	jpoimboe@kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	live-patching@vger.kernel.org,
-	mbenes@suse.cz,
-	mpdesouza@suse.com,
-	pmladek@suse.com,
-	shuah@kernel.org,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH]     Fix implicit cast warning in test_klp_state.c
-Date: Tue, 20 Feb 2024 09:00:24 -0300
-Message-ID: <20240220120024.28694-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <4dc04319-8f4c-4159-a6c8-6b106a15305e@gmail.com>
-References: 
+	s=arc-20240116; t=1708430442; c=relaxed/simple;
+	bh=57atmjnT3zY+ix2E9a1R6TZ4Gq7SHSA9gEfN7Dycg+I=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=mVEkv2Twn74g7ryN673lXALvDDo4HbZvmenpyINcC0065Ua1Pas0vMrvgFQwD62mXaDV302PKRC9GxRC3WE2kVhe1CM+XyafJlADuZYU6pWRYqGC2MN0sVg3bZ6IWPtPd/1gsLET/18pl9ncklZrY7tL5mVqH3Fyb64cC0XVwgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36512fcf643so29329355ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:00:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708430440; x=1709035240;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FHTqvrBQLRZu2h8dv+dbNHkkGj/MJnDanZcc3PLe1mk=;
+        b=dIUlXGI6VtTH3vUB1A4GnktIOvjP4qeIph15q+OZiwrdQv9aTwxvPvG5JcQZqKHC6G
+         2ymGzcHttOemoPAIMAqnENZHM+WHRQGXRk4NIffw0+ZpcuRqbIFKJX19RmZHvE8ocr2L
+         x+9hBpn6Be2jIFR0MFY98obE4wIfd0D8AfiJOG0CU+wncBY8qhuXgZbSCDci6woe/5UK
+         k7vslujuNyLu6bnLe7BuCYb7rpqAtgz+NFXh33dX0wmNzIJ4cpfHlYSGpLDy/WmpaWSk
+         IVIyo+JSUBpGdwyV9g914+24wlop3TwDMsfrjsf16ug6ETcn+qJpgn+2JAZM7WgPfIpe
+         MdQQ==
+X-Gm-Message-State: AOJu0YwSHSuxZCHSers1QagS+VCy/ZWDg3JMvr/XP00NeoMyF1vgkgpD
+	9yQCaBf+WCg3lNAwlPAIXvUH0MTCrRm2WIPJU5BM6zUyin9B7H0VvxRPhuCvwhOXpY5v7kc1A68
+	Tt1YrxjEeVWV/XJzOqF4JC3P2Qw4q/kSqZWF+9lYsY1t54h60HYOm9bOWZg==
+X-Google-Smtp-Source: AGHT+IF/sAAmJUP68OLjrCzU/AjT/wU8FhRBnwBxXUA2pYnJfpRLAmVyK+8AuM0m6hSz/+/B1Z26AP23JeIBor+Tk4X7HrWdw4TB
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: ***
-X-Spam-Score: 3.70
-X-Spamd-Result: default: False [3.70 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[30.69%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[gmail.com,kernel.org,redhat.com,lists.linuxfoundation.org,vger.kernel.org,suse.cz,suse.com,linuxfoundation.org];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+X-Received: by 2002:a05:6e02:154f:b0:363:9d58:8052 with SMTP id
+ j15-20020a056e02154f00b003639d588052mr1194452ilu.2.1708430439929; Tue, 20 Feb
+ 2024 04:00:39 -0800 (PST)
+Date: Tue, 20 Feb 2024 04:00:39 -0800
+In-Reply-To: <0000000000002cf4690610660f71@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007edeaa0611cef5cc@google.com>
+Subject: Re: [syzbot] [PATCH net] netlink: Fix kernel-infoleak in __skb_datagram_iter()
+From: syzbot <syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 20 Feb 2024 17:23:49 +0530 (GMT+05:30) Shresth Prasad <shresthprasad7@gmail.com> wrote:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-> Looking at the function definition now, I do see that the function returns a struct pointer but for me the compiler still complains about an implicit conversion from int to struct pointer.
-> 
-> Is there any particular reason why this might be happening? I couldn't quite figure it out myself as I am very new to working with the kernel.
+***
 
-What compiler version and architecture? Are you compiling using flags like W=1?
-I would advise you to always add more information about how the problem
-manifests, and what you are executing. This can help to nail down the issue
-quicker.
+Subject: [PATCH net] netlink: Fix kernel-infoleak in __skb_datagram_iter()
+Author: ryasuoka@redhat.com
 
-Thanks,
-  Marcos
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
 
-> 
-> Regards,
-> Shresth
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index eb086b06d60d..8277399d19b3 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -167,7 +167,7 @@ static inline u32 netlink_group_mask(u32 group)
+ static struct sk_buff *netlink_to_full_skb(const struct sk_buff *skb,
+                                           gfp_t gfp_mask)
+ {
+-       unsigned int len = skb_end_offset(skb);
++       unsigned int len = skb->len;
+        struct sk_buff *new;
+
+        new = alloc_skb(len, gfp_mask);
+
 
