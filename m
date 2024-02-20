@@ -1,202 +1,206 @@
-Return-Path: <linux-kernel+bounces-72779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C51085B89D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:09:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA69885B8A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D042C1F231FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:09:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF1851C22AA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57F8612C6;
-	Tue, 20 Feb 2024 10:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IgqeYzQW"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E398160DF8;
-	Tue, 20 Feb 2024 10:08:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B441612CE;
+	Tue, 20 Feb 2024 10:09:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0E760EF3
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708423734; cv=none; b=mRYwA5UumPAtr9o4JGW5FPPw4Y3Jdg/3RmLqFA+5XgitbeXPit8VdW3UgKzEZKvTXdrZrZAfofiIy1yjkhtSUBJRmXEZqClDP68GWR+KolJjifeBTkDrspW7E27ltaVjd0NHu7ofCSwELTz/NCq/FTEZkcwqYmgjjy21wyEPIZQ=
+	t=1708423795; cv=none; b=F8kPnvwYBE1B0LzcWKv+gpxOLOfNWW3/2g4Jp6zZ/yyc67sZxgAUVy9D0mMBIABcaA4mexTE4iImZlqPxiaMpCdfTqZ1i8IeXdil3YjZKUyfWWgTmu0XFxHMD/EDI2xq7X71QpDVc2eR/DvtPtoyjA+HyeKhuq3GRO81DMB/eR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708423734; c=relaxed/simple;
-	bh=1ByA3kK6RWJbrZmHJUtWkMoTeNhDRWt/cJphNfAdUSY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d34qE1gpQcpwTreK1SzvsMvLB3nWfvTExtWPNGFXMZd2qgNZjWFJDvPW0bj1O2sspBQYhph0brYYUZbRVe9uTyJA4g+5wYCXDnFDF6/4WqsKhjoJd18gBZAvjlW94TcyisB4Fw77TLAyZyoHnno04Pt1wIFumLO7fE/bzB+iC3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IgqeYzQW; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512cba0f953so85367e87.2;
-        Tue, 20 Feb 2024 02:08:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708423724; x=1709028524; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+toL7F0kapuzeBLcfc5DcPeiTKIyw1Qh60DwqayzqDU=;
-        b=IgqeYzQW4Z2zLlPhFH0IXtBkADGJVBLaTGQzWfmNrB+i0x82epR4+KaY8e3LBSBy+i
-         0D6xYg/SHH5x6R/RwzJWqfuhTWtyyV6rz15MszxM1RsdZacVyU2L9iwmjjYjNIPssYmS
-         jLr6l+UORekuXyjo7Kk3KK3sT6qKA8yPY3efDXRQDOgjNP0QFEpjqW6yFeRjx6bMNiVn
-         BkGse1iGrY6XdBVjfyZgkIw9L4iTTBip5nIEcJ9+ecdiMQY5sLB0GtPpLQU8j3BsYoxJ
-         tvh0YC8rEzcgQ/aZ1vzDzVtv5rfSK55dnMgaKM+8QhOYLoIM14EMBM/RZ26fb6+qHvC1
-         oRzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708423724; x=1709028524;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+toL7F0kapuzeBLcfc5DcPeiTKIyw1Qh60DwqayzqDU=;
-        b=NnWxhr+sh7V8mU2FW16MiT8fZyJ+Z7GNx4V4mLSFlkIwfdwHj6kos84cpJjANzPHho
-         Z9i3Aq+D+aDK7sQVDZEm7UpilfCUisif5qVtXddd9Lg8RU0hD63NMKmfKWI/n83Lfiij
-         4it0pFeegFLVU27AOVfdXbkwOtSgy6gIvuqBMURdhI/vcJ5xWMXZZtFv/AjqzrHsnqe1
-         gaf6pGcfq4n8UQhQFGbZcpw90UBRSARjQyNl3g8ftHqkPYQBikz09aT+2yN0mphp5H6n
-         FSIx6vSkTr9W7UsD6QY5OnwRevmdYH1mQne9mHUMKVGvp8RILZsWhwUKWSttHXpI2MT3
-         Jp1w==
-X-Forwarded-Encrypted: i=1; AJvYcCWYJCteWLp5CsaQPyVerT8N4NfaTB6705lN9Mya36qeJbHAse4odeYL4X2Ky2izHWYXvAbt3ZOyOeq87gd3XZEw6l6XsnTpVqPdzVGjVnIwttndmFU8I89Am6t74ymZk0xGvSHR
-X-Gm-Message-State: AOJu0YwjokZqYdQm5Hqu5lZ14gnaQxXJqdSOMNLA3/kpMJskx1ydBd35
-	HtmxFb8xskh2KLJdWnp6bPpCYur7o99/bFChEIR/TJIaF6UiZ3N2
-X-Google-Smtp-Source: AGHT+IHRIUgCBvBMs2u9VD5mm0TT4sdm+ubatW6v+3YvFEbj6ODVK8F0sTO+qhcrQUMf2MsZ309twA==
-X-Received: by 2002:a05:6512:39d1:b0:512:c2e7:27a3 with SMTP id k17-20020a05651239d100b00512c2e727a3mr1510368lfu.33.1708423724417;
-        Tue, 20 Feb 2024 02:08:44 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id t17-20020a195f11000000b0051181cbea91sm1262744lfb.228.2024.02.20.02.08.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 02:08:43 -0800 (PST)
-Date: Tue, 20 Feb 2024 13:08:40 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Piotr Wejman <piotrwejman90@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: stmmac: fix rx queue priority assignment
-Message-ID: <nniukwj6oil7hbr2aefvlwicw362h7gotrudarozre35dk3ugm@wjsosr7p27li>
-References: <20240219102405.32015-1-piotrwejman90@gmail.com>
+	s=arc-20240116; t=1708423795; c=relaxed/simple;
+	bh=A2eOSnPIv2BnCL8/8a9vmmcXJ7iPeW5lcw5+Fy9dzjo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=o2m6OLoXLhJWtH6tt1r+t/8gUI3JUWfbJwVcQkPXrq8Rsn29RVNBf5s8HlUa8A0UqVyoKR9LsDSkl408bTDJtUCWR9te8JIRr3JZSoZoFAihfr95mWHtO6XaU3RSVVk/54JKpUqU1SCzkp+W9iXCCAV+f/yP+49ZT3igjEhhiPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79B05FEC;
+	Tue, 20 Feb 2024 02:10:27 -0800 (PST)
+Received: from e127643.broadband (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 236ED3F762;
+	Tue, 20 Feb 2024 02:09:42 -0800 (PST)
+From: James Clark <james.clark@arm.com>
+To: coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	maz@kernel.org,
+	suzuki.poulose@arm.com,
+	acme@kernel.org,
+	oliver.upton@linux.dev,
+	broonie@kernel.org
+Cc: James Clark <james.clark@arm.com>,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mike Leach <mike.leach@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Helge Deller <deller@gmx.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Fuad Tabba <tabba@google.com>,
+	Jing Zhang <jingzhangos@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/7] kvm/coresight: Support exclude guest and exclude host
+Date: Tue, 20 Feb 2024 10:09:10 +0000
+Message-Id: <20240220100924.2761706-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219102405.32015-1-piotrwejman90@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 19, 2024 at 11:24:05AM +0100, Piotr Wejman wrote:
-> The driver should ensure that same priority is not mapped to multiple
-> rx queues. Currently dwmac4_rx_queue_priority function is adding
-> priorities for a queue without clearing them from others.
-> 
-> From DesignWare Cores Ethernet Quality-of-Service
-> Databook, section 17.1.29 MAC_RxQ_Ctrl2:
-> "[...]The software must ensure that the content of this field is
-> mutually exclusive to the PSRQ fields for other queues, that is,
-> the same priority is not mapped to multiple Rx queues[...]"
-> 
-> After this patch, dwmac4_rx_queue_priority function will:
-> - assign desired priorities to a queue
-> - remove those priorities from all other queues
-> The write sequence of CTRL2 and CTRL3 registers is done in the way to
-> ensure this order.
-> 
+This is a combination of the RFC for nVHE here [1] and v3 of VHE version
+here [2]. After a few of the review comments it seemed much simpler for
+both versions to use the same interface and be in the same patchset.
 
-Thanks for the fix. The change in general seems good. The same is
-applicable for the DW XGMAC too. Could you please apply it to
-dwxgmac2_rx_queue_prio()?
+FEAT_TRF is a Coresight feature that allows trace capture to be
+completely filtered at different exception levels, unlike the existing
+TRCVICTLR controls which may still emit target addresses of branches,
+even if the following trace is filtered.
 
-> Also, the PSRQn field contains the mask of priorities and not only one
-> priority. Rename "prio" argument to "prio_mask".
+Without FEAT_TRF, it was possible to start a trace session on a host and
+also collect trace from the guest as TRCVICTLR was never programmed to
+exclude guests (and it could still emit target addresses even if it
+was).
 
-Please move this to a separate patch applied on top of the main change
-described above. Also in order to be done coherently the renaming
-should be extended onto all the Tx/Rx queue prio parts in the
-driver:
-0. dwmac4_core.c
-   +-> dwmac4_rx_queue_priority()
-   +-> dwmac4_tx_queue_priority()
-1. dwxgmac2_core.c
-   +-> dwxgmac2_rx_queue_prio()
-   +-> dwxgmac2_tx_queue_prio()
-2. hwif.h
-   +-> stmmac_ops::rx_queue_prio
-   +-> stmmac_ops::tx_queue_prio
-3. stmmac.h
-   +-> stmmac_rxq_cfg::prio
-   +-> stmmac_txq_cfg::prio
-4. stmmac_main.c:
-   +-> stmmac_mac_config_rx_queues_prio()::prio
-   +-> stmmac_mac_config_tx_queues_prio()::prio
+With FEAT_TRF, the current behavior of trace in guests exists depends on
+whether nVHE or VHE are being used. Both of the examples below are from
+the host's point of view, as Coresight isn't accessible from guests.
+This patchset is only relevant to when FEAT_TRF exists, otherwise there
+is no change.
 
-* Hope I listed all of them.
+  nVHE/pKVM:
 
--Serge(y)
+  Because the host and the guest are both using TRFCR_EL1, trace will be
+  generated in guests depending on the same filter rules the host is
+  using. For example if the host is tracing userspace only, then guest
+  userspace trace will also be collected.
 
-> 
-> Signed-off-by: Piotr Wejman <piotrwejman90@gmail.com>
-> ---
->  .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 36 +++++++++++++------
->  1 file changed, 26 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-> index 6b6d0de09619..6acc8bad794e 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-> @@ -89,22 +89,38 @@ static void dwmac4_rx_queue_enable(struct mac_device_info *hw,
->  }
->  
->  static void dwmac4_rx_queue_priority(struct mac_device_info *hw,
-> -				     u32 prio, u32 queue)
-> +				     u32 prio_mask, u32 queue)
->  {
->  	void __iomem *ioaddr = hw->pcsr;
-> -	u32 base_register;
-> -	u32 value;
-> +	u32 clear_mask = 0;
-> +	u32 ctrl2, ctrl3;
-> +	int i;
->  
-> -	base_register = (queue < 4) ? GMAC_RXQ_CTRL2 : GMAC_RXQ_CTRL3;
-> -	if (queue >= 4)
-> -		queue -= 4;
-> +	ctrl2 = readl(ioaddr + GMAC_RXQ_CTRL2);
-> +	ctrl3 = readl(ioaddr + GMAC_RXQ_CTRL3);
->  
-> -	value = readl(ioaddr + base_register);
-> +	for (i = 0; i < 4; i++)
-> +		clear_mask |= ((prio_mask << GMAC_RXQCTRL_PSRQX_SHIFT(i)) &
-> +						GMAC_RXQCTRL_PSRQX_MASK(i));
->  
-> -	value &= ~GMAC_RXQCTRL_PSRQX_MASK(queue);
-> -	value |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
-> +	ctrl2 &= ~clear_mask;
-> +	ctrl3 &= ~clear_mask;
-> +
-> +	if (queue < 4) {
-> +		ctrl2 |= (prio_mask << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
->  						GMAC_RXQCTRL_PSRQX_MASK(queue);
-> -	writel(value, ioaddr + base_register);
-> +
-> +		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
-> +		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
-> +	} else {
-> +		queue -= 4;
-> +
-> +		ctrl3 |= (prio_mask << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
-> +						GMAC_RXQCTRL_PSRQX_MASK(queue);
-> +
-> +		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
-> +		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
-> +	}
->  }
->  
->  static void dwmac4_tx_queue_priority(struct mac_device_info *hw,
-> -- 
-> 2.25.1
-> 
-> 
+  (This is further limited by whether TRBE is used because an issue
+  with TRBE means that it's completely disabled in nVHE guests, but it's
+  possible to have other tracing components.)
+
+  VHE:
+
+  With VHE, the host filters will be in TRFCR_EL2, but the filters in
+  TRFCR_EL1 will be active when the guest is running. Because we don't
+  write to TRFCR_EL1, guest trace will be completely disabled.
+
+With this change, the guest filtering rules from the Perf session are
+now honored for both nVHE and VHE modes. This is done by either writing
+to TRFCR_EL12 at the start of the Perf session and doing nothing else
+further, or caching the guest value and writing it at guest switch for
+nVHE. In pKVM, trace is now be disabled for both protected and
+unprotected guests.
+
+---
+
+Changes since V4 [3]:
+  * Remove all V3 changes that made it work in pKVM and just disable
+    trace there instead
+  * Restore PMU host/hyp state sharing back to how it was
+    (kvm_pmu_update_vcpu_events())
+  * Simplify some of the duplication in the comments and function docs
+  * Add a WARN_ON_ONCE() if kvm_etm_set_guest_trfcr() is called when
+    the trace filtering feature doesn't exist.
+  * Split sysreg change into a tools update followed by the new register
+    addition
+
+Changes since V3:
+  * Create a new shared area to store the host state instead of copying
+    it before each VCPU run
+  * Drop commit that moved SPE and trace registers from host_debug_state
+    into the kvm sysregs array because the guest values were never used 
+  * Document kvm_etm_set_guest_trfcr()
+  * Guard kvm_etm_set_guest_trfcr() with a feature check
+  * Drop Mark B and Suzuki's review tags on the sysreg patch because it
+    turned out that broke the Perf build and needed some unconventional
+    changes to fix it (as in: to update the tools copy of the headers in
+    the same commit as the kernel changes)
+
+Changes since V2:
+
+  * Add a new iflag to signify presence of FEAT_TRF and keep the
+    existing TRBE iflag. This fixes the issue where TRBLIMITR_EL1 was
+    being accessed even if TRBE didn't exist
+  * Reword a commit message
+
+Changes since V1:
+
+  * Squashed all the arm64/tools/sysreg changes into the first commit
+  * Add a new commit to move SPE and TRBE regs into the kvm sysreg array
+  * Add a comment above the TRFCR global that it's per host CPU rather
+    than vcpu
+
+Changes since nVHE RFC [1]:
+
+ * Re-write just in terms of the register value to be written for the
+   host and the guest. This removes some logic from the hyp code and
+   a value of kvm_vcpu_arch:trfcr_el1 = 0 no longer means "don't
+   restore".
+ * Remove all the conditional compilation and new files.
+ * Change the kvm_etm_update_vcpu_events macro to a function.
+ * Re-use DEBUG_STATE_SAVE_TRFCR so iflags don't need to be expanded
+   anymore.
+ * Expand the cover letter.
+
+Changes since VHE v3 [2]:
+
+ * Use the same interface as nVHE mode so TRFCR_EL12 is now written by
+   kvm.
+
+[1]: https://lore.kernel.org/kvmarm/20230804101317.460697-1-james.clark@arm.com/
+[2]: https://lore.kernel.org/kvmarm/20230905102117.2011094-1-james.clark@arm.com/
+[3]: https://lore.kernel.org/linux-arm-kernel/20240104162714.1062610-1-james.clark@arm.com/
+
+James Clark (7):
+  arm64: KVM: Fix renamed function in comment
+  arm64/sysreg/tools: Update tools copy of sysreg.h
+  arm64/sysreg/tools: Move TRFCR definitions to sysreg
+  arm64: KVM: Add iflag for FEAT_TRF
+  arm64: KVM: Add interface to set guest value for TRFCR register
+  arm64: KVM: Write TRFCR value on guest switch with nVHE
+  coresight: Pass guest TRFCR value to KVM
+
+ arch/arm64/include/asm/kvm_host.h             |   7 +-
+ arch/arm64/include/asm/sysreg.h               |  12 -
+ arch/arm64/kernel/image-vars.h                |   1 +
+ arch/arm64/kvm/debug.c                        |  50 ++-
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c            |  53 ++-
+ arch/arm64/kvm/hyp/nvhe/setup.c               |   2 +-
+ arch/arm64/tools/sysreg                       |  41 ++
+ .../coresight/coresight-etm4x-core.c          |  42 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h |   2 +-
+ drivers/hwtracing/coresight/coresight-priv.h  |   3 +
+ tools/arch/arm64/include/asm/sysreg.h         | 375 +++++++++++++++++-
+ tools/include/linux/kasan-tags.h              |  15 +
+ 12 files changed, 541 insertions(+), 62 deletions(-)
+ create mode 100644 tools/include/linux/kasan-tags.h
+
+-- 
+2.34.1
+
 
