@@ -1,229 +1,282 @@
-Return-Path: <linux-kernel+bounces-73285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D442985C07A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:01:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12A7185C07D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89EF1282F0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCCE12842E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBF3762F4;
-	Tue, 20 Feb 2024 16:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003CC762FC;
+	Tue, 20 Feb 2024 16:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pea0UwZZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFsFSM+o"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B04D4627EA
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DE0762E6
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444855; cv=none; b=Ck4d7z0IbMzn7oDPMBcVg2W86YJzehNjTHKJNqkGsJCt6eggmjEbUgTHMqI8UBKmDJZbMrqYBdsax6N70jIpS9ds2QV/k52SthCHwlAWOFhIJ38jDiT5o5zYmZ61jzDieE7dgkDjzrRv8+WlDuA4igS6Z7jr/mbotS8DMj+ZuqM=
+	t=1708444895; cv=none; b=GWk38/JabDmQC9dTFZiaEZ2k2PxfzhXvIqQwC9etDhVEcDUP37w2sU0Iemt+NK93pCwTmw3JG86zQNoyXHL8C55yGROCZaXwlrdGJyKKA258lGr2ye/sub8rMF4DsLUVl9I0Ck0YEiLtSXVSmW+hrpQHP8l/qlno+6RQ5t4nK84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444855; c=relaxed/simple;
-	bh=58Yq+DlLEiw/EdQtkmWnfFsFe/Wyo753CNdHE3r7ECs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JzPjiyzTJmdN8sukqUPmLNOU7TBqzrlhkiUXmPzMYXxkPn4UXW4cQnJZutaBDa2jt1slQqj2RI15Hf8AHfUIhs7F3qsIVhTcAm3PQNl/D6WFe4+tPF0G/AKqcczvjrRrLuErcuxE2++PEXddRefySS1iioQfTcXTWlqSr7ISWfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pea0UwZZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708444852;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=g4mEwAdj0x7DFTgxY0lxnUz1xrAvDXtow8KFa1ik1G0=;
-	b=Pea0UwZZg28sKMq28bZKtRNwiGwmERHnoF8XFA1AaElLpNVQjWyAXt7tQYjooG/TBT5gW1
-	WBHJE9NFeHEfQa9PFAQ+JJ9b/zlKmSqqD8wsNPS/F49hQRWUxUpBYUhJaO/yQJ8NOod17t
-	CtbYwEU7M0WYnDFZFso4GG3/WIeDYFE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-568-aL_84ie5PkCmyUYTmXpZgA-1; Tue, 20 Feb 2024 11:00:50 -0500
-X-MC-Unique: aL_84ie5PkCmyUYTmXpZgA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40f01cf71ceso32665605e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:00:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708444849; x=1709049649;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g4mEwAdj0x7DFTgxY0lxnUz1xrAvDXtow8KFa1ik1G0=;
-        b=FJw3qMYDyF5qBsTxBHUD35c/UpAN8FlxmK6uo6+c0VIpA3PEazfIbseIZW+cDXBF9j
-         Y7HkKYxm7TXMbCYQJsBbR9m9vp44PoS11WONsgjRJ5CXkdG/dQ/qLOlV69pxMn3dzNOE
-         A+XnSwDTnbCFNHKpTHWAB42h+69yXoYJ+ZIoGpgazPQCA6zGRaGjW3cFykBsAu8D2hXy
-         2D+uUnvmlbDdzeDzVwetimampXl+UXh16wWJgQPowW1+jkogrf7FiMZzTj03mL6zrxwf
-         pi//si/C5C6vwWuE5vyg9hnLYRYKPC/bYzNqMr/zvF9ddse+GqApryBrV0+VOXCAckAW
-         kYgA==
-X-Forwarded-Encrypted: i=1; AJvYcCVCnKfTaXUl9gYd1U+5bnmRms79Vd1w8V0ZTbbuUb3Br9qImwRIEDTcCs135k6zqqAXvbgxRNky3vi4S6ytX1z6m52OoMMELBFxRaWT
-X-Gm-Message-State: AOJu0YwHfdLBJiRSOUZhPwZa9CgoeZWUyl1adc1gwrAs2xupSBrjeKfT
-	v8eH5MTLiRkgaU03/Rm2I2lQMtLexoDO+mIOWoTUl7WhCKV8L2h96Qy3zoNuoJW1WGjeeZbP3w2
-	RHLiRVmA/OWfSf208T33uGsxDMmfDlJzWB7uCOGnnT7ivTk5D6WnpZMAkH2ZjTA==
-X-Received: by 2002:adf:e789:0:b0:33d:3490:6e08 with SMTP id n9-20020adfe789000000b0033d34906e08mr6293973wrm.11.1708444849245;
-        Tue, 20 Feb 2024 08:00:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IETMv30tXpt104WDqL+90K75a3vhPfXt8C2vL8iFnSoPtmWjYLzXsoZ4vnyg3dPQHcatCAMJA==
-X-Received: by 2002:adf:e789:0:b0:33d:3490:6e08 with SMTP id n9-20020adfe789000000b0033d34906e08mr6293947wrm.11.1708444848839;
-        Tue, 20 Feb 2024 08:00:48 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb? (p200300cbc72abc009a2d8a48ef5196fb.dip0.t-ipconnect.de. [2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb])
-        by smtp.gmail.com with ESMTPSA id x11-20020a5d444b000000b0033b7ce8b496sm13990642wrr.108.2024.02.20.08.00.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 08:00:48 -0800 (PST)
-Message-ID: <b5bc883a-8a8a-4f07-a6ff-b1bd02ffc99d@redhat.com>
-Date: Tue, 20 Feb 2024 17:00:46 +0100
+	s=arc-20240116; t=1708444895; c=relaxed/simple;
+	bh=9eI7Z2gXF17tNcwqrpCqMe+krArtY6LVWgTijcsr1n0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tu7kKMG4NG3FTx4KZHpBhqtqRwj764amliZ1QctXU47crl0iOawvoHO0DmtEyXifII30Q57CX2mY6I6BIKYYdbbjsfmbCT3TSp/kDFtN0+XE2lMIPrxWYqwAfChyP1LKtlpbU1SyxR/UvgIraaVluUse2wLqM79B4xUecNUsi4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFsFSM+o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 778C0C433F1;
+	Tue, 20 Feb 2024 16:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708444894;
+	bh=9eI7Z2gXF17tNcwqrpCqMe+krArtY6LVWgTijcsr1n0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XFsFSM+ojOugaot+qWGkYDgAaob5fArA0It0qNGUlHwbXHUdVYY24volivAFE6CDu
+	 P+rLqJbBWrEitHiiNLxUObDD1kY6KuDFTKgPKBr/MsvWP6uOmtDaxNpyZ8qun5zQa/
+	 8xsQ2y2GLHtzYlxZowW4+Flg3CoEjy3Qk4bljwVKbv9ZzBuAf/euK31JiJ73xl36mq
+	 bnBcIBugGpOMddZiVOe8I0qp4LSNR87MMcoDNrv9MdGwODVbeQvl96yCzLip25dXJ8
+	 BfXYf2Sk+JgXvZOoaKRW+j4CtzZeG3C833Y2s0NzWV8hOGa+AHN7EgODvZjlES/pcX
+	 pvn3FrKK4akPg==
+From: Oded Gabbay <ogabbay@kernel.org>
+To: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Cc: Ohad Sharabi <osharabi@habana.ai>
+Subject: [PATCH 01/13] accel/habanalabs/gaudi2: use single function to compare FW versions
+Date: Tue, 20 Feb 2024 18:01:17 +0200
+Message-Id: <20240220160129.909714-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 09/24] x86/resctrl: Use __set_bit()/__clear_bit()
- instead of open coding
-Content-Language: en-US
-To: James Morse <james.morse@arm.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
- Reinette Chatre <reinette.chatre@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
- Babu Moger <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com,
- D Scott Phillips OS <scott@os.amperecomputing.com>,
- carl@os.amperecomputing.com, lcherian@marvell.com,
- bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
- baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
- Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
- dfustini@baylibre.com, amitsinght@marvell.com
-References: <20240213184438.16675-1-james.morse@arm.com>
- <20240213184438.16675-10-james.morse@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240213184438.16675-10-james.morse@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 13.02.24 19:44, James Morse wrote:
-> The resctrl CLOSID allocator uses a single 32bit word to track which
-> CLOSID are free. The setting and clearing of bits is open coded.
-> 
-> Convert the existing open coded bit manipulations of closid_free_map
-> to use __set_bit() and friends. These don't need to be atomic as this
-> list is protected by the mutex.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Tested-by: Peter Newman <peternewman@google.com>
-> Tested-by: Babu Moger <babu.moger@amd.com>
-> Tested-by: Carl Worth <carl@os.amperecomputing.com> # arm64
-> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Reviewed-by: Babu Moger <babu.moger@amd.com>
-> ---
-> Changes since v6:
->   * Use the __ inatomic helpers and add lockdep_assert_held() annotations to
->     document how this is safe.
->   * Fixed a resctrl_closid_is_free()/closid_allocated() rename in the commit
->     message.
->   * Use RESCTRL_RESERVED_CLOSID to improve readability.
-> 
-> Changes since v7:
->   * Removed paragraph explaining why this should be done now due to badword
->     'subsequent'.
->   * Changed a comment to refer to RESCTRL_RESERVED_CLOSID.
-> ---
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c | 18 ++++++++++++------
->   1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index dcffd1c4a476..bc6e0f83c847 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -111,7 +111,7 @@ void rdt_staged_configs_clear(void)
->    * - Our choices on how to configure each resource become progressively more
->    *   limited as the number of resources grows.
->    */
+From: Ohad Sharabi <osharabi@habana.ai>
 
-That comment talks about "free CLOSIDs in a single integer". Once could 
-think about rephrasing that to "free CLOSIDs in a simple bitmap."
+Currently, the code contains 2 types of FW version comparison functions:
+- hl_is_fw_sw_ver_[below/equal_or_greater]()
+- gaudi2 specific function of the type
+  gaudi2_is_fw_ver_[below/above]x_y_z()
 
-> -static int closid_free_map;
-> +static unsigned long closid_free_map;
->   static int closid_free_map_len;
->   
->   int closids_supported(void)
-> @@ -130,8 +130,8 @@ static void closid_init(void)
->   
->   	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
+Moreover, some functions use the inner FW version which should be only
+stage during development but not version dependencies.
 
-Now that we use "unsigned long", I was wondering for a second if we 
-should use "proper" bitmap functions here like
+Finally, some tests are done to deprecated FW version to which LKD
+should hold no compatibility.
 
-	bitmap_fill(closid_free_map, rdt_min_closid);
+This commit aligns all APIs to a single function that just compares the
+version and return an integers indicator (similar in some way to
+strcmp()).
 
-and converting the alloc path (replace ffs() in closid_alloc()):
+In addition, this generic function now considers also the sub-minor FW
+version and also remove dead code resulting in deprecated FW versions
+compatibility.
 
-	closid = find_first_bit(closid_free_map, closid_free_map_len);
-	if (closid == closid_free_map_len)
-		return -ENOSPC;
-	__clear_bit(closid, &closid_free_map);
+Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/accel/habanalabs/common/firmware_if.c | 25 ++++++++
+ drivers/accel/habanalabs/common/habanalabs.h  | 20 +------
+ drivers/accel/habanalabs/gaudi2/gaudi2.c      | 57 +++----------------
+ 3 files changed, 34 insertions(+), 68 deletions(-)
 
-(would get rid of the closid-- in closid_alloc())
-
-Just a thought, so
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
+diff --git a/drivers/accel/habanalabs/common/firmware_if.c b/drivers/accel/habanalabs/common/firmware_if.c
+index 3558a6a8e192..e7dcf2fe6552 100644
+--- a/drivers/accel/habanalabs/common/firmware_if.c
++++ b/drivers/accel/habanalabs/common/firmware_if.c
+@@ -40,6 +40,31 @@ static char *comms_sts_str_arr[COMMS_STS_INVLD_LAST] = {
+ 	[COMMS_STS_TIMEOUT_ERR] = __stringify(COMMS_STS_TIMEOUT_ERR),
+ };
+ 
++/**
++ * hl_fw_version_cmp() - compares the FW version to a specific version
++ *
++ * @hdev: pointer to hl_device structure
++ * @major: major number of a reference version
++ * @minor: minor number of a reference version
++ * @subminor: sub-minor number of a reference version
++ *
++ * Return 1 if FW version greater than the reference version, -1 if it's
++ *         smaller and 0 if versions are identical.
++ */
++int hl_fw_version_cmp(struct hl_device *hdev, u32 major, u32 minor, u32 subminor)
++{
++	if (hdev->fw_sw_major_ver != major)
++		return (hdev->fw_sw_major_ver > major) ? 1 : -1;
++
++	if (hdev->fw_sw_minor_ver != minor)
++		return (hdev->fw_sw_minor_ver > minor) ? 1 : -1;
++
++	if (hdev->fw_sw_sub_minor_ver != subminor)
++		return (hdev->fw_sw_sub_minor_ver > subminor) ? 1 : -1;
++
++	return 0;
++}
++
+ static char *extract_fw_ver_from_str(const char *fw_str)
+ {
+ 	char *str, *fw_ver, *whitespace;
+diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
+index 7397ce86b7f0..634a470efe27 100644
+--- a/drivers/accel/habanalabs/common/habanalabs.h
++++ b/drivers/accel/habanalabs/common/habanalabs.h
+@@ -3600,25 +3600,6 @@ struct hl_ioctl_desc {
+ 	hl_ioctl_t *func;
+ };
+ 
+-static inline bool hl_is_fw_sw_ver_below(struct hl_device *hdev, u32 fw_sw_major, u32 fw_sw_minor)
+-{
+-	if (hdev->fw_sw_major_ver < fw_sw_major)
+-		return true;
+-	if (hdev->fw_sw_major_ver > fw_sw_major)
+-		return false;
+-	if (hdev->fw_sw_minor_ver < fw_sw_minor)
+-		return true;
+-	return false;
+-}
+-
+-static inline bool hl_is_fw_sw_ver_equal_or_greater(struct hl_device *hdev, u32 fw_sw_major,
+-							u32 fw_sw_minor)
+-{
+-	return (hdev->fw_sw_major_ver > fw_sw_major ||
+-			(hdev->fw_sw_major_ver == fw_sw_major &&
+-					hdev->fw_sw_minor_ver >= fw_sw_minor));
+-}
+-
+ /*
+  * Kernel module functions that can be accessed by entire module
+  */
+@@ -3923,6 +3904,7 @@ void hl_mmu_dr_flush(struct hl_ctx *ctx);
+ int hl_mmu_dr_init(struct hl_device *hdev);
+ void hl_mmu_dr_fini(struct hl_device *hdev);
+ 
++int hl_fw_version_cmp(struct hl_device *hdev, u32 major, u32 minor, u32 subminor);
+ int hl_fw_load_fw_to_device(struct hl_device *hdev, const char *fw_name,
+ 				void __iomem *dst, u32 src_offset, u32 size);
+ int hl_fw_send_pci_access_msg(struct hl_device *hdev, u32 opcode, u64 value);
+diff --git a/drivers/accel/habanalabs/gaudi2/gaudi2.c b/drivers/accel/habanalabs/gaudi2/gaudi2.c
+index 1f061209ae21..4a0917aa4dd7 100644
+--- a/drivers/accel/habanalabs/gaudi2/gaudi2.c
++++ b/drivers/accel/habanalabs/gaudi2/gaudi2.c
+@@ -2601,6 +2601,8 @@ static int gaudi2_set_fixed_properties(struct hl_device *hdev)
+ 
+ 	prop->hbw_flush_reg = mmPCIE_WRAP_SPECIAL_GLBL_SPARE_0;
+ 
++	prop->supports_advanced_cpucp_rc = true;
++
+ 	return 0;
+ 
+ free_qprops:
+@@ -3308,8 +3310,6 @@ static int gaudi2_late_init(struct hl_device *hdev)
+ 	struct gaudi2_device *gaudi2 = hdev->asic_specific;
+ 	int rc;
+ 
+-	hdev->asic_prop.supports_advanced_cpucp_rc = true;
+-
+ 	rc = hl_fw_send_pci_access_msg(hdev, CPUCP_PACKET_ENABLE_PCI_ACCESS,
+ 					gaudi2->virt_msix_db_dma_addr);
+ 	if (rc) {
+@@ -3783,7 +3783,7 @@ static int gaudi2_sw_init(struct hl_device *hdev)
+ 	prop->supports_compute_reset = true;
+ 
+ 	/* Event queue sanity check added in FW version 1.11 */
+-	if (hl_is_fw_sw_ver_below(hdev, 1, 11))
++	if (hl_fw_version_cmp(hdev, 1, 11, 0) < 0)
+ 		hdev->event_queue.check_eqe_index = false;
+ 	else
+ 		hdev->event_queue.check_eqe_index = true;
+@@ -6314,26 +6314,6 @@ static void gaudi2_execute_hard_reset(struct hl_device *hdev)
+ 	WREG32(mmPSOC_RESET_CONF_SW_ALL_RST, 1);
+ }
+ 
+-static int gaudi2_get_soft_rst_done_indication(struct hl_device *hdev, u32 poll_timeout_us)
+-{
+-	int i, rc = 0;
+-	u32 reg_val;
+-
+-	for (i = 0 ; i < GAUDI2_RESET_POLL_CNT ; i++)
+-		rc = hl_poll_timeout(
+-			hdev,
+-			mmCPU_RST_STATUS_TO_HOST,
+-			reg_val,
+-			reg_val == CPU_RST_STATUS_SOFT_RST_DONE,
+-			1000,
+-			poll_timeout_us);
+-
+-	if (rc)
+-		dev_err(hdev->dev, "Timeout while waiting for FW to complete soft reset (0x%x)\n",
+-				reg_val);
+-	return rc;
+-}
+-
+ /**
+  * gaudi2_execute_soft_reset - execute soft reset by driver/FW
+  *
+@@ -6346,23 +6326,8 @@ static int gaudi2_get_soft_rst_done_indication(struct hl_device *hdev, u32 poll_
+ static int gaudi2_execute_soft_reset(struct hl_device *hdev, bool driver_performs_reset,
+ 						u32 poll_timeout_us)
+ {
+-	int rc;
+-
+-	if (!driver_performs_reset) {
+-		if (hl_is_fw_sw_ver_below(hdev, 1, 10)) {
+-			/* set SP to indicate reset request sent to FW */
+-			WREG32(mmCPU_RST_STATUS_TO_HOST, CPU_RST_STATUS_NA);
+-
+-			WREG32(mmGIC_HOST_SOFT_RST_IRQ_POLL_REG,
+-				gaudi2_irq_map_table[GAUDI2_EVENT_CPU_SOFT_RESET].cpu_id);
+-
+-			/* wait for f/w response */
+-			rc = gaudi2_get_soft_rst_done_indication(hdev, poll_timeout_us);
+-		} else {
+-			rc = hl_fw_send_soft_reset(hdev);
+-		}
+-		return rc;
+-	}
++	if (!driver_performs_reset)
++		return hl_fw_send_soft_reset(hdev);
+ 
+ 	/* Block access to engines, QMANs and SM during reset, these
+ 	 * RRs will be reconfigured after soft reset.
+@@ -7914,7 +7879,7 @@ static bool gaudi2_handle_ecc_event(struct hl_device *hdev, u16 event_type,
+ 	bool has_block_id = false;
+ 	u16 block_id;
+ 
+-	if (!hl_is_fw_sw_ver_below(hdev, 1, 12))
++	if (hl_fw_version_cmp(hdev, 1, 12, 0) >= 0)
+ 		has_block_id = true;
+ 
+ 	ecc_address = le64_to_cpu(ecc_data->ecc_address);
+@@ -8165,13 +8130,7 @@ static void gaudi2_ack_module_razwi_event_handler(struct hl_device *hdev,
+ 		}
+ 
+ 		hbw_rtr_id = gaudi2_tpc_initiator_hbw_rtr_id[module_idx];
+-
+-		if (hl_is_fw_sw_ver_below(hdev, 1, 9) &&
+-				!hdev->asic_prop.fw_security_enabled &&
+-				((module_idx == 0) || (module_idx == 1)))
+-			lbw_rtr_id = DCORE0_RTR0;
+-		else
+-			lbw_rtr_id = gaudi2_tpc_initiator_lbw_rtr_id[module_idx];
++		lbw_rtr_id = gaudi2_tpc_initiator_lbw_rtr_id[module_idx];
+ 		break;
+ 	case RAZWI_MME:
+ 		sprintf(initiator_name, "MME_%u", module_idx);
+@@ -10080,7 +10039,7 @@ static void gaudi2_handle_eqe(struct hl_device *hdev, struct hl_eq_entry *eq_ent
+ 		error_count = gaudi2_handle_pcie_drain(hdev, &eq_entry->pcie_drain_ind_data);
+ 		reset_flags |= HL_DRV_RESET_FW_FATAL_ERR;
+ 		event_mask |= HL_NOTIFIER_EVENT_GENERAL_HW_ERR;
+-		if (hl_is_fw_sw_ver_equal_or_greater(hdev, 1, 13))
++		if (hl_fw_version_cmp(hdev, 1, 13, 0) >= 0)
+ 			is_critical = true;
+ 		break;
+ 
 -- 
-Cheers,
-
-David / dhildenb
+2.34.1
 
 
