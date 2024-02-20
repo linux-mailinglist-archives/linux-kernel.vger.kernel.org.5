@@ -1,143 +1,252 @@
-Return-Path: <linux-kernel+bounces-73368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF32D85C186
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:35:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B72885C160
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF97D1C218FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:35:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA4C41F252E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ACF7640C;
-	Tue, 20 Feb 2024 16:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB949763EF;
+	Tue, 20 Feb 2024 16:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="OOWj5tjy"
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fmOmE77y"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2532599
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.177.23.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E964D762FF
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446917; cv=none; b=d6ShIxC1AyXWcR7+jrrIUSBigwQrrcj1Um2zS8y6Kr+/8Wt10yUZfSHE5cKDuM2/78aiW5lgXapxNxohkPfwfd3GdmhZ112XqJ3jF8sWbjY5le/Gb5P7GMtgbKKLwnNWZDt1vJd6yEGQZxqLw7EVZUrmu8Z8vi0p5gdXDkCLgbw=
+	t=1708446432; cv=none; b=M+EOdvZB/46OfqREyfCfW7I5fNhFeLvFZa1xyFQWlQFX8nwg7KfEGfq63mK+lornMy9oSx/SevrKtsyuLyLEc7nedmqK8uiCXOMmF/p471tg9Q/TTeEJSg7m7iUSVfh7xWwRpxzhZfUG4EOqVuLYO43hYAS4hkiI6nVVeze7nDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708446917; c=relaxed/simple;
-	bh=aS+TZc5AZuwu8ESRLu2x/0AcbnndqSOVq6MhbZymxZg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MQtwzzJrRKwK0BNZS6U9k1wjS7Vks3NKr2GAHjIMW78GgH754QCcyn6CQU9Rv2Rm2N1P6vVLYkI0mLsSk/Kp872II8A06Hqa5SXig3x595R0ioGQjjYabVO1KmP1ymnmnEsHoq5d4VLhmkQRxzQ2tksX94MzOLiqob/D7X5T330=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz; spf=pass smtp.mailfrom=ixit.cz; dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b=OOWj5tjy; arc=none smtp.client-ip=89.177.23.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from [10.0.0.200] (unknown [10.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 32F20164DD1;
-	Tue, 20 Feb 2024 17:26:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1708446367;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=+PMw8eY5qmLGgnQucJsUVL59BT4Q6LYWu7fuwSVf89o=;
-	b=OOWj5tjyZF95EywhrFJrQoLX4nY2dHJQmbldcGj8rJXshBnfxzOynkUpHVqk0F1qf6cWOQ
-	N/s1AB8d27TM7dzwed3NhUQ2BURLk1hdIeknwSd/JnwtyIHrdS+Kf6lyRQwSIadRsXK5uX
-	JDM3MPRanFuXw5bpFFUtM9dvF6MlN0E=
-Message-ID: <214888b3-5837-4599-b4ed-089e8c30e825@ixit.cz>
-Date: Tue, 20 Feb 2024 17:26:06 +0100
+	s=arc-20240116; t=1708446432; c=relaxed/simple;
+	bh=mGTXaZNNbdb3/xwmUtLv4oUiJfbUgvqfyphMUdqUELc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r6vN4oxDZOiJET497T/3RQ6zLx5ftmDTxo45rKrmefR0EHaEJ+Tz6SrdsaatmyRt6NKN4IJcFNcEn1cL5haLttVFDqRjXtBzhFw8bhLIK/OVKArzck1VeIU8Agw6bL4Gvj9g4ZftOtvPJtILnfe0yzHw1Lm2NrVJR8jKfL9SXdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fmOmE77y; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512b42b6697so2725101e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:27:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708446428; x=1709051228; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0GoTG41kI5OtRvDaPRyIcuGxljet2n6lqDoeB3uJInM=;
+        b=fmOmE77yS5cRJFsKGPq0Al5o0OIXcUcikH/4x+wkMF0c80nmpwD9HNC8Lh1uyUJJ64
+         4Uxy2HLY8bC8Ag1yHWqSzclexzEPs0MIjspvXFFvvZeK9yyTQ9YlE0mWKDep4gZTAwmL
+         7IOMM+MGq0e6RTDV01szTKUC7miHYjiKwWMkTfFZ73kkrD7Osn99ZuExO8u2mE/6LKqT
+         gtGJcebKWgAXK6xtr/oG/XCaCJmxE6BhHqeDpy4gSQJaJ1Hls9flaU299s+/YtJuTxpM
+         AkEYclEgw9m1Ja2jBRtuG/bBcEa1FMtKrIUlfgMfFSXuv7aaUyNzSzZf7A48zDRK/pGq
+         Ff2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708446428; x=1709051228;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0GoTG41kI5OtRvDaPRyIcuGxljet2n6lqDoeB3uJInM=;
+        b=OEHQPwbB8v+shP/NY/4UaHIl1jhjqkFYjyXA0r6+6ZGmYVQFFc2uiMUAL6+35Nr4l2
+         Gtdf+gKXG/qaidKciYhzhen4RCDy/TOxO4KBQpgHzyeSSDa0+9GhPvbJxIm/42WIuwrd
+         YdYbkpx9z11ECkkwegUuVvHff+9c5nwuaBVL2/SaNb21mh4xcLFpdIBLCFN9bAYidXIr
+         Q1HarrPOfC83go6X/n2NrQckLz5v6hqFi7yBvhiBAa/jrncRXgqI1N8rE6qOfKw8ODq/
+         LDV2hCG+kOVOhURU7L7ceU20cx7KS/hR3Ay8GwwD3VA1esqFYXAYbIGV4os60cE6AYTS
+         nBSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWju7zxnRgczy7C0qa/iS2Km462vnOD7zU9bwBn+/hzy/ZFmD9F1vvGiPFEYCCSeU/VrYfgHqqIE30zx8NWo0NYebcSfez32sAP1Yp1
+X-Gm-Message-State: AOJu0YwnUEEzubdw0FasuuLFis/m4vm4/0LDSYDrur2wmPqHY3ZmbHhL
+	7mZ5V+y+2TvzA95fgX9RxqL1AUrHJisCuhuvVEs0Eowao3lrSQ0tmdJI0GE4GFnjYSAbCEGH2Ly
+	eXbf+5xnTh5rU58rj4HpcJTN/yyvSkMdBQ8/6Ig==
+X-Google-Smtp-Source: AGHT+IEFePdHyB4lIz2wmU3Z2bj7F0YcGOkBh0oWxNDx7e4zJcf1y7GqHGBsRQjK+NcqyJXVqdo1IBFokFWvAC+Y484=
+X-Received: by 2002:ac2:4885:0:b0:512:be41:146f with SMTP id
+ x5-20020ac24885000000b00512be41146fmr2514899lfc.68.1708446427913; Tue, 20 Feb
+ 2024 08:27:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v2 01/10] x86/Kconfig: enable X86_X2APIC by default and
- improve help text
-To: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Cc: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- linux-kernel@vger.kernel.org, mingo@redhat.com, rdunlap@infradead.org,
- tglx@linutronix.de, x86@kernel.org, yinghai@kernel.org
-References: <20220911084711.13694-2-mat.jonczyk@o2.pl>
- <d6a06044-4137-46d7-a755-050846d8988c@ixit.cz>
- <332bd358-95cc-4343-bff8-cc6e8c62ff89@o2.pl>
-Content-Language: en-US
-From: David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- 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
-In-Reply-To: <332bd358-95cc-4343-bff8-cc6e8c62ff89@o2.pl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231027000525.1278806-1-tina.zhang@intel.com> <20231027000525.1278806-6-tina.zhang@intel.com>
+In-Reply-To: <20231027000525.1278806-6-tina.zhang@intel.com>
+From: Zhangfei Gao <zhangfei.gao@linaro.org>
+Date: Wed, 21 Feb 2024 00:26:56 +0800
+Message-ID: <CABQgh9GWcqUeBkHQCpj5tzu6FnEgpOp3KOQ6s9c0X0KU7Ov1qw@mail.gmail.com>
+Subject: Re: [PATCH v10 5/6] iommu: Support mm PASID 1:n with sva domains
+To: Tina Zhang <tina.zhang@intel.com>
+Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>, 
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>, Nicolin Chen <nicolinc@nvidia.com>, 
+	Michael Shavit <mshavit@google.com>, Vasant Hegde <vasant.hegde@amd.com>, 
+	Jason Gunthorpe <jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Sure, thank you a lot!
+Hi, Tina
 
-David
+On Fri, 27 Oct 2023 at 08:06, Tina Zhang <tina.zhang@intel.com> wrote:
+>
+> Each mm bound to devices gets a PASID and corresponding sva domains
+> allocated in iommu_sva_bind_device(), which are referenced by iommu_mm
+> field of the mm. The PASID is released in __mmdrop(), while a sva domain
+> is released when no one is using it (the reference count is decremented
+> in iommu_sva_unbind_device()). However, although sva domains and their
+> PASID are separate objects such that their own life cycles could be
+> handled independently, an enqcmd use case may require releasing the
+> PASID in releasing the mm (i.e., once a PASID is allocated for a mm, it
+> will be permanently used by the mm and won't be released until the end
+> of mm) and only allows to drop the PASID after the sva domains are
+> released. To this end, mmgrab() is called in iommu_sva_domain_alloc() to
+> increment the mm reference count and mmdrop() is invoked in
+> iommu_domain_free() to decrement the mm reference count.
+>
+> Since the required info of PASID and sva domains is kept in struct
+> iommu_mm_data of a mm, use mm->iommu_mm field instead of the old pasid
+> field in mm struct. The sva domain list is protected by iommu_sva_lock.
+>
+> Besides, this patch removes mm_pasid_init(), as with the introduced
+> iommu_mm structure, initializing mm pasid in mm_init() is unnecessary.
+>
+> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/iommu/iommu-sva.c | 92 +++++++++++++++++++++++----------------
+>  include/linux/iommu.h     | 23 ++++++++--
+>  2 files changed, 74 insertions(+), 41 deletions(-)
+>
+> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
+> index 4a2f5699747f..5175e8d85247 100644
+> --- a/drivers/iommu/iommu-sva.c
+> +++ b/drivers/iommu/iommu-sva.c
+> @@ -12,32 +12,42 @@
+>  static DEFINE_MUTEX(iommu_sva_lock);
+>
+>  /* Allocate a PASID for the mm within range (inclusive) */
+> -static int iommu_sva_alloc_pasid(struct mm_struct *mm, struct device *dev)
+> +static struct iommu_mm_data *iommu_alloc_mm_data(struct mm_struct *mm, struct device *dev)
+>  {
+> +       struct iommu_mm_data *iommu_mm;
+>         ioasid_t pasid;
+> -       int ret = 0;
+> +
+> +       lockdep_assert_held(&iommu_sva_lock);
+>
+>         if (!arch_pgtable_dma_compat(mm))
+> -               return -EBUSY;
+> +               return ERR_PTR(-EBUSY);
+>
+> -       mutex_lock(&iommu_sva_lock);
+> +       iommu_mm = mm->iommu_mm;
+>         /* Is a PASID already associated with this mm? */
+> -       if (mm_valid_pasid(mm)) {
+> -               if (mm->pasid >= dev->iommu->max_pasids)
+> -                       ret = -EOVERFLOW;
+> -               goto out;
+> +       if (iommu_mm) {
+> +               if (iommu_mm->pasid >= dev->iommu->max_pasids)
+> +                       return ERR_PTR(-EOVERFLOW);
+> +               return iommu_mm;
+>         }
+>
+> +       iommu_mm = kzalloc(sizeof(struct iommu_mm_data), GFP_KERNEL);
+> +       if (!iommu_mm)
+> +               return ERR_PTR(-ENOMEM);
+> +
+>         pasid = iommu_alloc_global_pasid(dev);
+>         if (pasid == IOMMU_PASID_INVALID) {
+> -               ret = -ENOSPC;
+> -               goto out;
+> +               kfree(iommu_mm);
+> +               return ERR_PTR(-ENOSPC);
+>         }
+> -       mm->pasid = pasid;
+> -       ret = 0;
+> -out:
+> -       mutex_unlock(&iommu_sva_lock);
+> -       return ret;
+> +       iommu_mm->pasid = pasid;
+> +       INIT_LIST_HEAD(&iommu_mm->sva_domains);
+> +       /*
+> +        * Make sure the write to mm->iommu_mm is not reordered in front of
+> +        * initialization to iommu_mm fields. If it does, readers may see a
+> +        * valid iommu_mm with uninitialized values.
+> +        */
+> +       smp_store_release(&mm->iommu_mm, iommu_mm);
+> +       return iommu_mm;
+>  }
+>
+>  /**
+> @@ -58,31 +68,33 @@ static int iommu_sva_alloc_pasid(struct mm_struct *mm, struct device *dev)
+>   */
+>  struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm)
+>  {
+> +       struct iommu_mm_data *iommu_mm;
+>         struct iommu_domain *domain;
+>         struct iommu_sva *handle;
+>         int ret;
+>
+> +       mutex_lock(&iommu_sva_lock);
+> +
+>         /* Allocate mm->pasid if necessary. */
+> -       ret = iommu_sva_alloc_pasid(mm, dev);
+> -       if (ret)
+> -               return ERR_PTR(ret);
+> +       iommu_mm = iommu_alloc_mm_data(mm, dev);
+> +       if (IS_ERR(iommu_mm)) {
+> +               ret = PTR_ERR(iommu_mm);
+> +               goto out_unlock;
+> +       }
+>
+>         handle = kzalloc(sizeof(*handle), GFP_KERNEL);
+> -       if (!handle)
+> -               return ERR_PTR(-ENOMEM);
+> -
+> -       mutex_lock(&iommu_sva_lock);
+> -       /* Search for an existing domain. */
+> -       domain = iommu_get_domain_for_dev_pasid(dev, mm->pasid,
+> -                                               IOMMU_DOMAIN_SVA);
+> -       if (IS_ERR(domain)) {
+> -               ret = PTR_ERR(domain);
+> +       if (!handle) {
+> +               ret = -ENOMEM;
+>                 goto out_unlock;
+>         }
+>
+> -       if (domain) {
+> -               domain->users++;
+> -               goto out;
 
-On 15/02/2024 22:10, Mateusz Jończyk wrote:
-> W dniu 2.02.2024 o 15:08, David Heidelberg pisze:
->> Hello Mat,
->>
->> any chance you would incorporate feedback and respin the series or/and at least X2APIC parts?
->> For recent HW it becoming really necessary to have this option enabled.
->>
->> Thank you
->> David
->>
-> Hello,
->
-> OK, I'll rebase, update and send the X2APIC patch. Can't give you an ETA though.
->
-> I have mostly gave up kernel development, but you keep me motivated.
->
-> Greetings,
->
-> Mateusz
->
--- 
-David Heidelberg
+Our multi bind test case broke since 6.8-rc1.
+The test case can use same domain & pasid, return different handle,
+6.7 simply  domain->users ++ and return.
 
+> +       /* Search for an existing domain. */
+> +       list_for_each_entry(domain, &mm->iommu_mm->sva_domains, next) {
+> +               ret = iommu_attach_device_pasid(domain, dev, iommu_mm->pasid);
+
+Now iommu_attach_device_pasid return BUSY since the same pasid.
+And then iommu_sva_bind_device attach ret=-16
+
+> +               if (!ret) {
+
+Simply tried if (!ret || ret == -EBUSY)
+The test passes, but report waring
+WARNING: CPU: 12 PID: 2992 at drivers/iommu/iommu.c:3591
+iommu_detach_device_pasid+0xa4/0xd0
+
+Will check more tomorrow.
+
+> +                       domain->users++;
+> +                       goto out;
+> +               }
+>         }
+>
+
+Thanks
 
