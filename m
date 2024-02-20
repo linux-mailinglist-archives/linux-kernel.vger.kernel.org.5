@@ -1,179 +1,226 @@
-Return-Path: <linux-kernel+bounces-72482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8431E85B40D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:33:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6D6885B413
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 350CC281358
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:33:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EADAB1C237F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD33E5A783;
-	Tue, 20 Feb 2024 07:33:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51395A4E5;
+	Tue, 20 Feb 2024 07:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSe83qHl"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q6A95PPJ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955052D79D
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A64E3D69;
+	Tue, 20 Feb 2024 07:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708414428; cv=none; b=VkBF0homiKkwQ5Kw+s+NN/OwNyhr/38IaIj/bBhk0tDnA3CLnOxQd4UwYcO6HThRlkbrqeQo7SpS7DUqwRefmiYZYoXLmwQcb3p0mkYJ0rlG86Emo8mOpFrlW2pKbHmxR04qWZKtt/9l5Rgfjsq3JhU6NyIWTmAS/+5nYNmVg90=
+	t=1708414611; cv=none; b=L0hONE478cgtPixTOf3LAyjrdoK0KjlwYNR3A1cllZJm3m9hMtmDkWG+2LHKIr9KPunAue2vq+FbXTwTEgO4R50THtkb3zkcmFiYyy+sETrCMgrRukCa4CNH1TbDPEMmsroIi+tnmF71xPv1bASc/TCD/PjZXF61IyzY22DfDXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708414428; c=relaxed/simple;
-	bh=gXDvV6ZXXMBqmPgURlBl8TrIV2CHccnufrRAQwQy6GE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XWK3hRmfmVVlnv6+ANjr88r4pYnEKln5fzoUo/TaLJAGyoWbVK2IUtrhr7qLuhf/VRjzeXE8Sen5GJaRoBq/akY2GVQvHTjYqW3PNkoO2RJlnDUrI1g/lVUAB/RWLkKG7+jcGAxKutj1TG7/bV+rMBEQGBrO+iEQROc7SOP9rtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSe83qHl; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2999329dfe7so1657306a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:33:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708414426; x=1709019226; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zsenoJ7EMCFSDYF3hHTZ5Kjc4dQDNAVYOwwzOKqMxdA=;
-        b=kSe83qHlChxhxvOM8k1RmbibxbDZXqcORdNablyxGLPjMihyKNZeeTRNZQu0s65HB6
-         LXnulA5xbbAx/vnz+OgbkRIenRCp03JiRuI9J4E0WzQBhCAse/bh/IXy2xilvIiQrCa1
-         DoVXhFV9Mqrohrw+kl98IahUyqE+3iRI/J+F0WEoVNuepGsV8PVxDd4bgxfwm4jiWopk
-         iB0h2Ab3Eg9WagnVvReO3kF1wEMgswGIgiT4oGi38kqCNZamsujq5pDxOzZP2rkfg3Or
-         3etXxDRBuiS6d1PUmq0SADAetZajM0QOCvZoSohPIgv6mc4uxU2X+DOamO9/ptSEqa1y
-         +Kiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708414426; x=1709019226;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zsenoJ7EMCFSDYF3hHTZ5Kjc4dQDNAVYOwwzOKqMxdA=;
-        b=P5+TYrVPH6tuJHmTcSouePa47vVusj87+3x/jEKQ83zkXFhWuo3QHGBV8+uS2sVmu1
-         tubZ9MaNrt57QzxtLsQMg2Bnu3x90K/Kdgv7+6c90Gqi6tHWMor86n17t3dar+rdgRqp
-         JDL2xjYrqmbROde8DG2kU0akBVTzQaYiMaig10fJo4pfoYXZU3ZW2RoSgpzAKmDh4c1M
-         M8cY7ttHt6im/jaAKkRtqfoJ8FHHb4b3aodLC2se05+SsBOR0LCrLg63Y2K2aBt5MP/c
-         5shl4qyY+BAAJC/ALiEvgNOOHvytQc0D4M8/LM7Zv5hrQwzkVtMxJAmqQe8PFQ10Ph9/
-         0t1A==
-X-Forwarded-Encrypted: i=1; AJvYcCU4mf4oO4t5lU5MgqaBpk4md7tqlEe4zYFJ1l7lGvsb/LhuNp24/Y6oouEu48h8GzMgES7Xq23wDh4Oo9yew2xyJm/Vw3Ln8+oW+VAq
-X-Gm-Message-State: AOJu0YxQDctDCcgEi6qBOjJNGrFFuUDcmyTlCZP2qLiOy6i6UxoluynB
-	oDLt9n23el6snOkTkAyVfNZkza8Tf02o9O7heTS2f6915MX1fY+2FrLLY4GFWhTlu4RPIt7QHsa
-	/7jt9wu9SPT2JmaiwYkdF1/UQt3Q=
-X-Google-Smtp-Source: AGHT+IHMNUIQRPRFIANoPeiBmbYLMsMQLt+tkvba7nY6cjzK43sPcjINZKOlh+h5FJ1Km+jgg9teAQRd8mKNVFDoOuQ=
-X-Received: by 2002:a17:90a:b014:b0:299:6e88:7b6a with SMTP id
- x20-20020a17090ab01400b002996e887b6amr6036719pjq.36.1708414425900; Mon, 19
- Feb 2024 23:33:45 -0800 (PST)
+	s=arc-20240116; t=1708414611; c=relaxed/simple;
+	bh=mFSD/wFGr7jkZ9Vc1opThnXPxIp9JYkLSf/lZISocp4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BBp0sQ5pmjpcMvnK2JqnXPpPR0yi7gy0eQ2gU4oDNoIEeIUBih1apoYs/Ch7n6wQY+eLE5Kw7VTRHfGZBue6X6qW8/AcP7Y1oBlvjWwWKU1suP0NbUrVDimZUiKcSBrm3NGXVkBhPcGBHuttHEYAmPVmO4Z41fHOog4Ne2Afb5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q6A95PPJ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708414607;
+	bh=mFSD/wFGr7jkZ9Vc1opThnXPxIp9JYkLSf/lZISocp4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Q6A95PPJBIUtHUCT2w7izYRmIV2+dv1xuwysXTdFcO1C5vMnTjfQ/RS4p2ehZvAHw
+	 N44F1r0HL3GDdqcfbhwDwni1HtKy0rfgis5dKJ2Jhetv4rB9ug0PyMVYkydhWHUeOo
+	 eUd7GHy5td1IY3uY673aSys/XKFTI+FwhIta/TAN6+ygQURwb8e8FLZwKpVYeetBih
+	 sL5LAAdDqczBL0u9hDcBB2mVK5bofxismA848yszTtdyT7PwmMC8uW+jAqNl65j6yc
+	 cm6Kcshdk74TjG86xVTQAxCExKF+wOFP59h2HGKZy5i5eFu0YwTNJZeW7TMA5cRlhy
+	 YRc105s7+QKLw==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8BB1E37804B2;
+	Tue, 20 Feb 2024 07:36:43 +0000 (UTC)
+Message-ID: <fb32fc72-5434-4852-b7e9-f63fc03a8248@collabora.com>
+Date: Tue, 20 Feb 2024 09:36:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216180559.208276-1-tj@kernel.org> <20240216180559.208276-17-tj@kernel.org>
-In-Reply-To: <20240216180559.208276-17-tj@kernel.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Tue, 20 Feb 2024 15:33:34 +0800
-Message-ID: <CAJhGHyBR6up3o9Svxn=uL2a0rRcu-q3BR8TgdpLykR6iTZ3Aew@mail.gmail.com>
-Subject: Re: [PATCH 16/17] workqueue: Allow cancel_work_sync() and
- disable_work() from atomic contexts on BH work items
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 3/8] libfs: Introduce case-insensitive string
+ comparison helper
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
+References: <20240215042654.359210-1-eugen.hristev@collabora.com>
+ <20240215042654.359210-4-eugen.hristev@collabora.com>
+ <87zfw0bd6y.fsf@mailhost.krisman.be>
+ <50d2afaa-fd7e-4772-ac84-24e8994bfba8@collabora.com>
+ <87msrwbj18.fsf@mailhost.krisman.be>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <87msrwbj18.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello, Tejun
+On 2/19/24 16:55, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
+> 
+>> On 2/16/24 18:12, Gabriel Krisman Bertazi wrote:
+>>> Eugen Hristev <eugen.hristev@collabora.com> writes:
+>>>
+>>>> From: Gabriel Krisman Bertazi <krisman@collabora.com>
+>>>>
+>>>> generic_ci_match can be used by case-insensitive filesystems to compare
+>>>> strings under lookup with dirents in a case-insensitive way.  This
+>>>> function is currently reimplemented by each filesystem supporting
+>>>> casefolding, so this reduces code duplication in filesystem-specific
+>>>> code.
+>>>>
+>>>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>>>> [eugen.hristev@collabora.com: rework to first test the exact match]
+>>>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+>>>> ---
+>>>>  fs/libfs.c         | 80 ++++++++++++++++++++++++++++++++++++++++++++++
+>>>>  include/linux/fs.h |  4 +++
+>>>>  2 files changed, 84 insertions(+)
+>>>>
+>>>> diff --git a/fs/libfs.c b/fs/libfs.c
+>>>> index bb18884ff20e..82871fa1b066 100644
+>>>> --- a/fs/libfs.c
+>>>> +++ b/fs/libfs.c
+>>>> @@ -1773,6 +1773,86 @@ static const struct dentry_operations generic_ci_dentry_ops = {
+>>>>  	.d_hash = generic_ci_d_hash,
+>>>>  	.d_compare = generic_ci_d_compare,
+>>>>  };
+>>>> +
+>>>> +/**
+>>>> + * generic_ci_match() - Match a name (case-insensitively) with a dirent.
+>>>> + * This is a filesystem helper for comparison with directory entries.
+>>>> + * generic_ci_d_compare should be used in VFS' ->d_compare instead.
+>>>> + *
+>>>> + * @parent: Inode of the parent of the dirent under comparison
+>>>> + * @name: name under lookup.
+>>>> + * @folded_name: Optional pre-folded name under lookup
+>>>> + * @de_name: Dirent name.
+>>>> + * @de_name_len: dirent name length.
+>>>> + *
+>>>> + *
+>>>
+>>> Since this need a respin, mind dropping the extra empty line here?
+>>>
+>>>> + * Test whether a case-insensitive directory entry matches the filename
+>>>> + * being searched.  If @folded_name is provided, it is used instead of
+>>>> + * recalculating the casefold of @name.
+>>>> + *
+>>>> + * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
+>>>> + * < 0 on error.
+>>>> + */
+>>>> +int generic_ci_match(const struct inode *parent,
+>>>> +		     const struct qstr *name,
+>>>> +		     const struct qstr *folded_name,
+>>>> +		     const u8 *de_name, u32 de_name_len)
+>>>> +{
+>>>> +	const struct super_block *sb = parent->i_sb;
+>>>> +	const struct unicode_map *um = sb->s_encoding;
+>>>> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
+>>>> +	struct qstr dirent = QSTR_INIT(de_name, de_name_len);
+>>>> +	int res;
+>>>> +
+>>>> +	if (IS_ENCRYPTED(parent)) {
+>>>> +		const struct fscrypt_str encrypted_name =
+>>>> +			FSTR_INIT((u8 *) de_name, de_name_len);
+>>>> +
+>>>> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
+>>>> +			return -EINVAL;
+>>>> +
+>>>> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
+>>>> +		if (!decrypted_name.name)
+>>>> +			return -ENOMEM;
+>>>> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
+>>>> +						&decrypted_name);
+>>>> +		if (res < 0)
+>>>> +			goto out;
+>>>> +		dirent.name = decrypted_name.name;
+>>>> +		dirent.len = decrypted_name.len;
+>>>> +	}
+>>>> +
+>>>> +	/*
+>>>> +	 * Attempt a case-sensitive match first. It is cheaper and
+>>>> +	 * should cover most lookups, including all the sane
+>>>> +	 * applications that expect a case-sensitive filesystem.
+>>>> +	 *
+>>>
+>>>
+>>>> +	 * This comparison is safe under RCU because the caller
+>>>> +	 * guarantees the consistency between str and len. See
+>>>> +	 * __d_lookup_rcu_op_compare() for details.
+>>>> +	 */
+>>>
+>>> This paragraph doesn't really make sense here.  It is originally from
+>>> the d_compare hook, which can be called under RCU, but there is no RCU
+>>> here.  Also, here we are comparing the dirent with the
+>>> name-under-lookup, name which is already safe.
+>>>
+>>>
+>>>> +	if (folded_name->name) {
+>>>> +		if (dirent.len == folded_name->len &&
+>>>> +		    !memcmp(folded_name->name, dirent.name, dirent.len)) {
+>>>> +			res = 1;
+>>>> +			goto out;
+>>>> +		}
+>>>> +		res = !utf8_strncasecmp_folded(um, folded_name, &dirent);
+>>>
+>>> Hmm, second thought on this.  This will ignore errors from utf8_strncasecmp*,
+>>> which CAN happen for the first time here, if the dirent itself is
+>>> corrupted on disk (exactly why we have patch 6).  Yes, ext4_match will drop the
+>>> error, but we want to propagate it from here, such that the warning on
+>>> patch 6 can trigger.
+>>>
+>>> This is why I did that match dance on the original submission.  Sorry
+>>> for suggesting it.  We really want to get the error from utf8 and
+>>> propagate it if it is negative. basically:
+>>>
+>>>         res > 0: match
+>>>         res == 0: no match.
+>>>         res < 0: propagate error and let the caller handle it
+>>
+>> In that case I will revert to the original v9 implementation and send a v11 to
+>> handle that.
+> 
+> Please, note that the memcmp optimization is still valid. On match, we
+> know the name is valid utf8.  It is just a matter of propagating the
+> error code from utf8 to the caller if we need to call it.
+> 
 
-On Sat, Feb 17, 2024 at 2:06=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 
-> @@ -4072,7 +4070,32 @@ static bool __flush_work(struct work_struct *work,=
- bool from_cancel)
->         if (!pool)
->                 return false;
->
-> -       wait_for_completion(&barr.done);
-> +       if ((pool->flags & POOL_BH) && from_cancel) {
+Okay, I am changing it.
 
-pool pointer might be invalid here, please check POOL_BH before
-rcu_read_unlock()
-or move rcu_read_unlock() here, or use "*work_data_bits(work) & WORK_OFFQ_B=
-H".
+By the way, is this supposed to work like this on case-insensitive directories ?
 
-> +               /*
-> +                * We're flushing a BH work item which is being canceled.=
- It
-> +                * must have been executing during start_flush_work() and=
- can't
-> +                * currently be queued. If @work is still executing, we k=
-now it
-> +                * is running in the BH context and thus can be busy-wait=
-ed.
-> +                *
-> +                * On RT, prevent a live lock when current preempted soft
-> +                * interrupt processing or prevents ksoftirqd from runnin=
-g by
-> +                * keeping flipping BH. If the tasklet runs on a differen=
-t CPU
-> +                * then this has no effect other than doing the BH
-> +                * disable/enable dance for nothing. This is copied from
-> +                * kernel/softirq.c::tasklet_unlock_spin_wait().
-> +                */
-
-s/tasklet/BH work/g
-
-Although the comment is copied from kernel/softirq.c, but I can't
-envision what the scenario is when the current task
-"prevents ksoftirqd from running by keeping flipping BH"
-since the @work is still executing or the tasklet is running.
+user@debian-rockchip-rock5b-rk3588:~$ ls -la /media/CI_dir/*cuc
+ls: cannot access '/media/CI_dir/*cuc': No such file or directory
+user@debian-rockchip-rock5b-rk3588:~$ ls -la /media/CI_dir/*CUC
+-rw-r--r-- 1 root root 0 Feb 12 17:47 /media/CI_dir/CUC
+user@debian-rockchip-rock5b-rk3588:~$ ls -la /media/CI_dir/cuc
+-rw-r--r-- 1 root root 0 Feb 12 17:47 /media/CI_dir/cuc
+user@debian-rockchip-rock5b-rk3588:~$
 
 
-> +               while (!try_wait_for_completion(&barr.done)) {
-> +                       if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> +                               local_bh_disable();
-> +                               local_bh_enable();
-> +                       } else {
-> +                               cpu_relax();
-> +                       }
-> +               }
-> +       } else {
-> +               wait_for_completion(&barr.done);
-> +       }
-> +
->         destroy_work_on_stack(&barr.work);
->         return true;
->  }
-> @@ -4090,6 +4113,7 @@ static bool __flush_work(struct work_struct *work, =
-bool from_cancel)
->   */
->  bool flush_work(struct work_struct *work)
->  {
-> +       might_sleep();
->         return __flush_work(work, false);
->  }
->  EXPORT_SYMBOL_GPL(flush_work);
-> @@ -4179,6 +4203,11 @@ static bool __cancel_work_sync(struct work_struct =
-*work, u32 cflags)
->
->         ret =3D __cancel_work(work, cflags | WORK_CANCEL_DISABLE);
->
-> +       if (*work_data_bits(work) & WORK_OFFQ_BH)
-> +               WARN_ON_ONCE(in_hardirq());
+basically wildcards don't work.
 
-When !PREEMPT_RT, this check is sufficient.
-
-But when PREEMP_RT, it should be only in the contexts that allow
-local_bh_disable() for synching a BH work, although I'm not sure
-what check code is proper.
-
-In PREEMPT_RT, local_bh_disable() is disallowed in not only hardirq
-context but also !preemptible() context (I'm not sure about it).
-
-__local_bh_disable_ip() (PREEMP_RT version) doesn't contain
-full check except for "WARN_ON_ONCE(in_hardirq())" either.
-
-Since the check is just for debugging, I'm OK with the current check.
-
-Thanks
-Lai
+Thanks,
+Eugen
 
