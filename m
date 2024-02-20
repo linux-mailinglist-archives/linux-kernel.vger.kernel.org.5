@@ -1,167 +1,232 @@
-Return-Path: <linux-kernel+bounces-72687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7DE485B744
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:25:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B30285B745
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:25:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D5351F2394B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:25:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F3231C2470F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B535F84F;
-	Tue, 20 Feb 2024 09:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0775F576;
+	Tue, 20 Feb 2024 09:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ebWh/gym"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2062.outbound.protection.outlook.com [40.92.107.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="2rHicCFt"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018B65D499;
-	Tue, 20 Feb 2024 09:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708421112; cv=fail; b=gDFxGkT83aZkqSW2FTxdduLPlBGmYcBPsk55WPsWRnyzvSA7EUxjE+8esaVK5h29UMvmZy9DgUvojys+ONwPC3qCyLmTS2yo5CQDRWTJSlHGyReGTgToNgKrFNwyByO0Qs1bcg10WW19TEJOgxojm0nsZeqh4he/FXDAcqTYPvA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708421112; c=relaxed/simple;
-	bh=5zAR/ASjrjKrs+6Kez6z+UzgKCd5UoQNTTQfPJA1cEA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=gz/R7QZJiyW87wWlK2T9UlwkDHBqvGSGDxl1TkfZUBupqkpPzdrF5S/m589Nezz+SrQB9QnWLKwdCSGbnMeOr0Yhb8rAx2vOjOWttgZkxuPlEF2Jfk/HWOZHPcDE8onoCdc4ine6GWRhMcyKfcCnvRJ8X+YfHzZye6b8KqG1U6I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ebWh/gym; arc=fail smtp.client-ip=40.92.107.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SO6YkG76uB1azRvT+2FExTlG8svVNqN5/aJc+CG87jV3sA0fh86FjaK06TXbBiR6E2j0ryAd7dHHclB8hCPgHqElZPt+xfa4X4AX/PYU5B1HCSNb3ezoFR4G0PA+HV+UhbvzBkL0u5Bv2fJYarvdnc9ufr1ogHpcHM9EMt8j1HDlEYcM1n/Ucm8ul0Shg/2BWCn6ic1/CI+DUjT4ZS01DW0iKSgyj3r3jvWod52YWl+hTwm3BIyjR8EtTRFeeN6WiLPcQrhoqfCy3hBhiSBxbZjm/7dnVDUPuaZ+OcM30+kxpUO27cQdkw1EnwI1ZMazWMIuF6F2k6KDfE0+4XVjMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CMAjvnf5/2THGdBm2IkBS8NVUiNOoadku4YwMbaen8Y=;
- b=ZHGp978TezxYi0DmlsMTwWaa5ccKfbIdTkamBjVbWpuM40YVfWqwyYNFCb9keXE4t0qM5d5NmrCebf3LdR3mebhlr7BwnxYlt7z9UDi7POJrsR/VXiMDgyuxC2v42e600GCbAk5O76Q+6CGKr+EgCLUCsZaVQwpVKOFcypCsJStrmuhDpW0ey/rQ5xf1DD0pd4upHnAMbGz8BEljpM+4k34+QeZR1Qp6scC9pNKnaRgxr8qRMo2iCf2COdVHzCrMNtA4kX3Bn8twHHNpHiAnqjWphjZsI5hR4EpWRpkVLdKZzPLFUjBUS5jtblRG1s5QH6D+7mD/fwohDnt0A0RuwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CMAjvnf5/2THGdBm2IkBS8NVUiNOoadku4YwMbaen8Y=;
- b=ebWh/gym9s7cuRAWpV4BxVvmMQ2lsdl8F9axvAW9WCIYJI4a1VGaSnM7S1YR9N52yc2WCmZ/wxpgNCS25qRG84ZRtsoUpOlog1b19UO1ZQoVtnI/SAzo/DiNZjBjVdjdUEENuWw+wKNaT7aw4zukIyg+kh8FHrGqzB9Dlyi6fvfzAICELtgKmbxez2LR4Qj0QrMQDRx1clqvLmpJkcOO7W5dHxpJ6IB/NldtVHFDnXYMgOSYz79+uzhMi5P2ZGrE72W5kXiBHcgBE9OYvrks+nSm2MLLsCEpvDC/K7QNz02m8LD92s5Xoo+6iIeI569O+UAvOmfq5jjvaPj68BX14g==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by SEYPR06MB5791.apcprd06.prod.outlook.com (2603:1096:101:b3::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.32; Tue, 20 Feb
- 2024 09:25:05 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 09:25:05 +0000
-Message-ID:
- <SEZPR06MB6959EB3E02967ECDB986AE5696502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Tue, 20 Feb 2024 17:25:00 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 5/5] dt-bindings: phy: hisi-inno-usb2: add
- compatible of hisilicon,hi3798mv200-usb2-phy
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Jiancheng Xue <xuejiancheng@hisilicon.com>, Shawn Guo
- <shawn.guo@linaro.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
- David Yang <mmyangfl@gmail.com>
-References: <20240220-inno-phy-v3-0-893cdf8633b4@outlook.com>
- <20240220-inno-phy-v3-5-893cdf8633b4@outlook.com>
- <d69b3fd0-2799-4cf7-90fd-d22e6c24bdc3@linaro.org>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <d69b3fd0-2799-4cf7-90fd-d22e6c24bdc3@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [EI7S5TZzg3qzN3JRCCz+mQ1vG1YuV4PCnHlxPwQBsQyc/rN7HyQHboAoZhiEKn8Q]
-X-ClientProxiedBy: TYCP286CA0203.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:385::16) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <c91c82b0-c4b2-4a6c-9f1e-911b4abc67b2@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5261B5F56F
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708421115; cv=none; b=aevRc14oCV8mTPxyvS7VZXjK/8TTxmoDRdUTOYcmpR9vHwYhwEFqf0thCCkE+FTO8DPESTRaMFC3jm9eo2YES1o22OUQA7XLkYancRks8liSxC67iFNsE+GJlnYWxXKEXa+cSYvYBzk+mrKUayvpS0Yfszp3fDKAoji94ita3R0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708421115; c=relaxed/simple;
+	bh=iXJSQdjCNbAzNTAvMY4ePsKzKY6yOP+dZp93tuToy2w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kg26RoMBtuOcPKXgC9YipFprIM7Zf1B71SjSaRR6DHU/umgG95eYmecgESn5JrId+4M21NUOcJGQL6zc14miqld/XILr3UYbgXIpFHK0h+a4UzpDvHM2zOWA4EF0zB/QnF5WFZGs2mvnv9zxbG8SeBrpXdebTdpuOrQ0SpQG+gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2rHicCFt; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7cedcea89a0so3298006241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708421112; x=1709025912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hxinpuFSBaFvXX5xQuAmA+vkm04C27dYdOWo8WKCrM4=;
+        b=2rHicCFtfJPV6o6/7MUHRQa2JqzuufE5QgCenp2bIBo+38q85K1/Z3kwCFl39Txz1Y
+         b0BkWyTHMaDx5S+Rz7UGRbzui5fzS17RceYMyKAjprNjsCaGv/lIUUmiIz+KiIx1VAK9
+         YetvpBqLcEWLsoZ1YM/b+DNWtsSpQucQg3SWKtwAvrt37rF/JtjXkoiWvFUjLoGSvA0J
+         jESrwICkAjzl/l2yLj5ikHjzVilt0SUcoernd3xh2smR9IaoZzSwb3RfHiTPM19HiFYf
+         OyAZ0geXJt+P76L+35/RhSi8ZhwPLntusq0zpiLZtK3ACZTTH5sZ7kbQtZ3l2DdipLHp
+         CsDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708421112; x=1709025912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hxinpuFSBaFvXX5xQuAmA+vkm04C27dYdOWo8WKCrM4=;
+        b=I/pvDJCE4VlXHhCCNXdYDX9zMZ7BFIddHXUwdLrFK8Y63XYqBy/zfPm5ZBhXqqVwqO
+         KZfZ2EmuxYb0Kn9n3HmfHWQUrAHJhWF66QCXAOQkVBtJr6criTs5Q+mDff/MiGZG7w28
+         xj7G+Xl8bj5aZju/mZOz2zRGLBFE9Eck9RI+f2Va+zmp2DXOW1GeuxVLX+dlPX/Em55h
+         ASR7SvaPZfhoVn4GEGBd4OkWf9/ZoLsAgf8LuWcf9ZpCuopLegHSl9zNGcEc1vBFfAxL
+         E7ij4b4TaiMS+gAuF6+AGkGqJ5u18wABBjvWUlZqI1LBff0T3nugCyTC5n9fSyuq7FYw
+         XAKA==
+X-Forwarded-Encrypted: i=1; AJvYcCU1PqOB/r4H1MiEDKgvyWB5IT28e+jU0ytnHRjEmCYyxuicQCKTqY6vE+oQUqFRxK8zYMZ/2L68EfS8dJxdQzLOVV9qjo2FgqH8xpG9
+X-Gm-Message-State: AOJu0YzCYSKdCIgK0TxqlCOhgBVhVquFSenUgy3WQ+0WdlqFhkfI2jI1
+	/A1Ue11XFPmfA26egV7A3nolv53kvZtqGhlEF0x3/m+1wPVdzmqSZl0WsCiYY0SAuDHiWeqUHMZ
+	N70To2AJQCVGgjOmJ0Fo+nD8tM9I9vPH7w9e3
+X-Google-Smtp-Source: AGHT+IG0tVK9XPTSpubD6g26R2W1vq1GU6qjIvbNaR5mf3rPT7kTHE11B9Du7+MXw4vja7rDKJIOpizKNl5iYY0UEz4=
+X-Received: by 2002:a67:f9c9:0:b0:470:492d:672e with SMTP id
+ c9-20020a67f9c9000000b00470492d672emr5455750vsq.9.1708421112024; Tue, 20 Feb
+ 2024 01:25:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEYPR06MB5791:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15565e33-4092-47c7-605b-08dc31f5d27d
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	mK5b7BA+AUy8ae1UO3kRk/gP624kQ81uBQN2SnGTNXYfBH7uskRNy2MwTyRf3gv7i5qz/bz9jeS5II2inuaLOZD7eCt2t1ieDeOwkAvcsF46HGkFrkjJNQ/SnpqsSpsqZscGnYF5eEIcbo4mYUDleyQcHs0moVG8RQz7ZwoXN9Wl6MEvfW5x5H0T7GjZ4DMsi4U4z190m6OFiHy/Q8sqf8fqe1u4k5VWPVJaDhqngrcd0nu7m7LY5uUxDTBvSdiQdpauRUY3KS89cznc/oSVuzwjfcPrdsNVSgpAaQ5cSPfcegBD4aexsNCH/QITHM6pz0deI8ued0rnLsFGPt0+el/ylbjfe6ok83e4woIY9EbhERRdjaXFnjMe5TZBhkfMlmU5URsYNr1UPBFc8t70LkOYTROYwLfdn+har1NhpMQxxeKG1hy4JdWsM8zUa074Hek89eU3jr6eOoa+ACtHWBWRap/BU16YIMhuWSsVUbazIkakW97/9CoHcCfhWHFLUlachO2Rf15gmi3tLkRvzm+cL5rFClGB1/gJj4iwQ7p9nv8lf+OyyUB6z+684Fhz
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ek92aEcvcEQ4bjA1eHRDY3kydjFUQ1ZTbythL1ZQU0pZL3VPVnB5YzJKN0t6?=
- =?utf-8?B?c3hlN2psekQrTHFxbTF1VkI3WnRPV3BGTGtFWTY0UEpZMWdTM0liZUkxTldt?=
- =?utf-8?B?NmpMSHFoL2JmTjJDZGNVb2ViNk1ESGhMN1d5SmJ5ekt3T3RrWE5uLzNYUWR2?=
- =?utf-8?B?YmVEVGhFRkFjUUdZeUlGa3dvZkFJd0hHT29nZlJMaE1xYmFSMVVlZm85WExq?=
- =?utf-8?B?ZDR5cEVlL2NSSWh1WHlCaExuQjBhTDhReHdRbkFIQ25xVVVLcHhqOG44cDFF?=
- =?utf-8?B?OFo4ZG9jUTN2NHhaekR6c3Y2RnZ0eDVjTVE1cWJBWVpFejV5QmtKN2hRTVVT?=
- =?utf-8?B?Mm9nQ3c4aXBRWVVWQjh5Zis5SGRsZkphT1JxdHBtdURndng5blFvcHE5VjFz?=
- =?utf-8?B?QUhtQ1hFai9ZUzdHZXphcU8xNEF3dm5PUFdXUTA3Y0RYTWpaSmZkQzF2c0FD?=
- =?utf-8?B?cWx3Rm5MTnRWOFJXNjlRbWZid25pQXNHSnBueXNDeGxHWEJhV29VK013RjI3?=
- =?utf-8?B?NjhZUVpQVVNmbEhaWFFYMGxOWFcyQVFKQmNsamRCcEdZSG1zanZoZkkvOGNk?=
- =?utf-8?B?eUdTUEhIMldoZ2l5S1BncGVZbGZMdDlWSEJzY0liM3ljbXdyY0JMVEY4d2JK?=
- =?utf-8?B?WjU4ZzVwU1dJR0FOR0pNQnJxUU9WZVZUMkMzeUdocm1IeDV3b1p1YzdDSy9Y?=
- =?utf-8?B?OXlBZmRLSEx1NTQ0SDJiUFF3MXNIbW1UakN2d2FSbGU0ZjBNcE5UTkh4cDQr?=
- =?utf-8?B?Q1NLWmMxa1RjN2dlSU5rM0JTajgraEdRVWU5bXpuNHl5YUl4WUpKYWovQWhy?=
- =?utf-8?B?ajBYLytpbHU0eFFaTllDdmhBQ3Boa0g2dThGTElTTDM1emUvcFNsaUR5c1dn?=
- =?utf-8?B?S1FHZDk5UEJjcG0zdzZyTmFLanh3bGExUjZoTlYvWklLZ1UzekJNeTM2R3Zk?=
- =?utf-8?B?T1dTVXhhU3QwdnZDcExVWVhNQnYxRHRqQ1YxdmpYWERyeG1Jbm1abWJ0SXRa?=
- =?utf-8?B?WDI2UVZEb2ZXb2pqcjVHS1lJRWIvakpkNkpYQTMzckFpTUEzKzdRaXE1ZHZq?=
- =?utf-8?B?UGI0cEJiQUN4Nmo5NHI3TGlFZDNnMXpIQksxdE1hdGhpL2pXVUwxeHNrcytL?=
- =?utf-8?B?QzNtWEJJaC9Da2hwYUwxbyt3UTg4V2M4T2krdnpBNkxqY3hjSnVCNEdicW43?=
- =?utf-8?B?dlg2VCtBaWM1NFAyeGVDZXZLWElid1RhUXlVa3RMRHZibU1rV3VRMGxGMU9s?=
- =?utf-8?B?ME9WeVoxdGE5QVlvNEtQZWhOQXNwa0owZTEwYmE0d0lQY0l1UFlEaWVZdkcr?=
- =?utf-8?B?bHZBU1YrdHNSNzFpellYNFhPWDUxVHFDQjJ2cjZ1QjBEdjFLWHFyWkppZEQw?=
- =?utf-8?B?TVh6ZDEvNFRDREFmSjRDNnZ5Wkx3UnFaZEFmMDBVQktSMEswL29TTnhLU2tC?=
- =?utf-8?B?SmF5UEVscFhwbG5rMkRZelRJUkVzT3d2dHd2TysvSGR3V0NtQW9MNDB6Qm5j?=
- =?utf-8?B?ckNiS1Q1eFE0UmJkVkxIVUt1dDZuSUpvTmRpN29VZTVoSjMrVkZaNlk0NTR5?=
- =?utf-8?B?SGx3T1puVzVMWjBDYVNtb2crTTlNYWx6RnJUYVIyVXJFQzVDVmZhaHNzdXV0?=
- =?utf-8?B?Q1dqZ25aSEcrQVB4YTRMQ2h6OXd2cUw1VEY0NnBmbTFmQnFzMHNaRmY2VllQ?=
- =?utf-8?B?cWtkSStoNEg1UzZUMFowMWhWSzdNaVMveDl5ZWorQk9BTm1NZ3BhbWxPejg1?=
- =?utf-8?Q?PzxnN6WpF+kzMmf8Dlc2sLgcUntPXY1Y5OLutmy?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15565e33-4092-47c7-605b-08dc31f5d27d
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 09:25:05.0120
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5791
+References: <20240219-arc-for-list-v1-0-d98cd92c760b@google.com>
+ <20240219-arc-for-list-v1-1-d98cd92c760b@google.com> <ZdQ6RRYtvazV7WPR@boqun-archlinux>
+In-Reply-To: <ZdQ6RRYtvazV7WPR@boqun-archlinux>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Tue, 20 Feb 2024 10:25:00 +0100
+Message-ID: <CAH5fLghxArdT-Ah=0JWvo7NfSELLDJ7+FmMOr=TQ+4gKewPGfg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rust: sync: add `ArcBorrow::from_raw`
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/20/2024 4:18 PM, Krzysztof Kozlowski wrote:
-> On 19/02/2024 22:28, Yang Xiwen via B4 Relay wrote:
->>   
->>     resets:
->> -    maxItems: 1
->> +    minItems: 1
->> +    maxItems: 2
->> +
->> +  reset-names:
->> +    items:
->> +      - const: port
->> +      - const: test
-> Why old device now gets two resets? You need to constrain it per variant.
-I only make reset-names mandatory for mv200. For other models, this 
-property is not allowed. I'll add constraint for resets too in next version.
+On Tue, Feb 20, 2024 at 6:36=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
 >
-> Best regards,
-> Krzysztof
+> On Mon, Feb 19, 2024 at 02:54:11PM +0000, Alice Ryhl wrote:
+> > Allows access to a value in an `Arc` that is currently held as a raw
+> > pointer due to use of `Arc::into_raw`, without destroying or otherwise
+> > consuming that raw pointer.
+> >
+> > This is a dependency of the linked list that Rust Binder uses. The
+> > linked list uses this method when iterating over the linked list.
+> >
+> > Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> > ---
+> >  rust/kernel/sync/arc.rs | 72 ++++++++++++++++++++++++++++++++++++-----=
+--------
+> >  1 file changed, 54 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+> > index 7d4c4bf58388..a5314df409e7 100644
+> > --- a/rust/kernel/sync/arc.rs
+> > +++ b/rust/kernel/sync/arc.rs
+> > @@ -232,27 +232,13 @@ pub fn into_raw(self) -> *const T {
+> >      /// `ptr` must have been returned by a previous call to [`Arc::int=
+o_raw`]. Additionally, it
+> >      /// must not be called more than once for each previous call to [`=
+Arc::into_raw`].
+> >      pub unsafe fn from_raw(ptr: *const T) -> Self {
+> > -        let refcount_layout =3D Layout::new::<bindings::refcount_t>();
+> > -        // SAFETY: The caller guarantees that the pointer is valid.
+> > -        let val_layout =3D Layout::for_value(unsafe { &*ptr });
+> > -        // SAFETY: We're computing the layout of a real struct that ex=
+isted when compiling this
+> > -        // binary, so its layout is not so large that it can trigger a=
+rithmetic overflow.
+> > -        let val_offset =3D unsafe { refcount_layout.extend(val_layout)=
+unwrap_unchecked().1 };
+> > -
+> > -        // Pointer casts leave the metadata unchanged. This is okay be=
+cause the metadata of `T` and
+> > -        // `ArcInner<T>` is the same since `ArcInner` is a struct with=
+ `T` as its last field.
+> > -        //
+> > -        // This is documented at:
+> > -        // <https://doc.rust-lang.org/std/ptr/trait.Pointee.html>.
+> > -        let ptr =3D ptr as *const ArcInner<T>;
+> > -
+> > -        // SAFETY: The pointer is in-bounds of an allocation both befo=
+re and after offsetting the
+> > -        // pointer, since it originates from a previous call to `Arc::=
+into_raw` and is still valid.
+> > -        let ptr =3D unsafe { ptr.byte_sub(val_offset) };
+> > +        // SAFETY: The pointer returned by `into_raw` points at the `d=
+ata` field of an
+> > +        // `ArcInner<T>`, as promised by the caller.
+> > +        let ptr =3D unsafe { raw_to_inner_ptr(ptr) };
+> >
+> >          // SAFETY: By the safety requirements we know that `ptr` came =
+from `Arc::into_raw`, so the
+> >          // reference count held then will be owned by the new `Arc` ob=
+ject.
+> > -        unsafe { Self::from_inner(NonNull::new_unchecked(ptr.cast_mut(=
+))) }
+> > +        unsafe { Self::from_inner(ptr) }
+> >      }
+> >
+> >      /// Returns an [`ArcBorrow`] from the given [`Arc`].
+> > @@ -273,6 +259,35 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
+> >      }
+> >  }
+> >
+> > +/// Converts a pointer to the contents of an [`Arc`] into a pointer to=
+ the [`ArcInner`].
+> > +///
+> > +/// # Safety
+> > +///
+> > +/// The provided pointer must point the `data` field of an `ArcInner<T=
+>` value.
+> > +unsafe fn raw_to_inner_ptr<T: ?Sized>(ptr: *const T) -> NonNull<ArcInn=
+er<T>> {
 >
+> Nit: put this into an `impl<T:?Sized> ArcInner<T>` block maybe?
+>
+> > +    let refcount_layout =3D Layout::new::<bindings::refcount_t>();
+> > +    // SAFETY: The caller guarantees that the pointer is valid.
+> > +    let val_layout =3D Layout::for_value(unsafe { &*ptr });
+> > +    // SAFETY: We're computing the layout of a real struct that existe=
+d when compiling this
+> > +    // binary, so its layout is not so large that it can trigger arith=
+metic overflow.
+> > +    let val_offset =3D unsafe { refcount_layout.extend(val_layout).unw=
+rap_unchecked().1 };
+> > +
+> > +    // Pointer casts leave the metadata unchanged. This is okay becaus=
+e the metadata of `T` and
+> > +    // `ArcInner<T>` is the same since `ArcInner` is a struct with `T`=
+ as its last field.
+> > +    //
+> > +    // This is documented at:
+> > +    // <https://doc.rust-lang.org/std/ptr/trait.Pointee.html>.
+> > +    let ptr =3D ptr as *const ArcInner<T>;
+> > +
+> > +    // SAFETY: The pointer is in-bounds of an allocation both before a=
+nd after offsetting the
+> > +    // pointer, since it originates from a previous call to `Arc::into=
+_raw` and is still valid.
+>
+> "since it originate from a previous call to `Arc::into_raw`" is the
+> safety requirement of `Arc::from_raw`, since the safety requirement of
+> `raw_to_inner_ptr` is different, so I think we should say "since the
+> function safety requirement guarantees `ptr` points to `data` field,
+> which is exactly `val_offset` away from the beginning of `ArcInner<T>`".
+> Thoughts?
+>
+> BTW, in fat pointer cases, by "must point the `data` field of an
+> `ArcInner<T>` value", it means both the address and the metadata should
+> be the same as the original object in `ArcInner<T>`, right? In other
+> words, the following code should not be safe, i.e. the
+> raw_to_inner_ptr() safety requirement is not satisfied.
+>
+>         let x: Arc<[u8]> // assume x.len() =3D=3D 4
+>
+>         let y =3D &(x[0..1]) as *const [u8] // y has the same address of
+>                                           // the `data` field of `x`.
+>
+>         let inner =3D unsafe { raw_to_inner_ptr(y) };
+>         // ^^^ the safety requirement is not satisfied???
+>
+> This may not be important since the users of `raw_to_inner_ptr` all have
+> stronger safey guarantees ("`ptr` must come from `Arc::into_raw()`"),
+> and `raw_to_inner_ptr` is not a pub function, but I just wonder whether
+> we need to improve the current safety requirements, or "point" means
+> both address and metadata for fat pointers?
 
--- 
-Regards,
-Yang Xiwen
+I mean, really, the same problem arises for Sized pointers where the
+pointer points at the first field of a struct.
 
+We may have to take inspiration from the std Arc::from_raw. It says
+that the pointee must have the same size and alignment as what was
+used when you called Arc::into_raw, and then it further says that if
+the pointer type is not exactly the same, then you are effectively
+performing a transmute.
+
+Alice
 
