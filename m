@@ -1,157 +1,131 @@
-Return-Path: <linux-kernel+bounces-72679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA4685B725
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:19:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF31185B72A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 877A71F25E54
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:19:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25B71C239ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DD85FB91;
-	Tue, 20 Feb 2024 09:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B795F55D;
+	Tue, 20 Feb 2024 09:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c3bxW6jq"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A6DDn2AL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A815F475
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3454F5F475;
+	Tue, 20 Feb 2024 09:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708420761; cv=none; b=hxn2K7M9r2S8qc4WBjt0htfNFFhTM1Y4JGKIeqqtvUfpNjD89o+voI1RqUzuZihWz7lV+CzIZTkPmCtp8/Z5xVBKfZWPbx6RPVTaepH8txEt4R9L/JJ63sASxm/ywHUgBdG2NQUCUuxZUymrX6ZBG///WMmLl6g1WacdSAri0sE=
+	t=1708420794; cv=none; b=EzybEhdXoqUuag1ICc8B17nM2A4+aaBnQ3PQi5QkvjnetYZjzGjotMlrTBZ2P87QiH/oSdQrENNdE/Q4YRwoDx0s2bqun+fbsMN88t1nXzOSDdKwBkPFzsWyREY1+k9wSCk9s0kArGafINVAMQJSWL2R5cqwIzoiWT+UMfwX0f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708420761; c=relaxed/simple;
-	bh=vHDeoeY6rVvgUPwaKy4miw3a+/4Wz+3FToMeykblxHw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WAoltXnM+t+eeljhIXJytr2nDwbEpf1/x8XSQEQN9xveioR5jBew9eM9j0DpLdKmPv8dW/s/HeJNaQSbQVf0KsOtI8xDV+4XpD7TeJXmDfCBBdnoZQMivrmV2gi4CXj/15xkrpBjr/0TlxqyDm9nPOt+iX2o72QKQVujxEBaaoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c3bxW6jq; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60866ce76dfso2683687b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:19:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708420759; x=1709025559; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0gsEdTOg81nU4mrHxMiAVDV5UIPBJ/nXolBaH3QcjCw=;
-        b=c3bxW6jqw/kJ3PpXF2122zK1p8MtJvA6fxW/+qJw2S9Lhif/orfomP8Zk+5wG3/IQI
-         /vM+PaaRHxMh/IxTwo4eZ7XXLBTYHMf0f1uND5TnYU41GRIfh2ByH3GedqP/TwM+8XUm
-         D1yPHa8Eb2f0cqDwhJR4L6mhE7tUEACF1/MEbX0RTchrEH3Yo7I49UW9BIeuUV9Oj8jf
-         JbNs3CBV9Pyu7hVt0/x9pq7OEtZVNkzetoVUwu8QbBHD3SCUGbWzQpYY/sD4Ujf6PTmq
-         z9e8FudIrGU00xLVGFzFJ/enPynhVrELmpX/cvEdqzrAnK9vGPfcjkFkMg5JMpIhtP8r
-         kAiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708420759; x=1709025559;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0gsEdTOg81nU4mrHxMiAVDV5UIPBJ/nXolBaH3QcjCw=;
-        b=sOrDUK/EBaP6eRIqpol2C2IhZyfj3tvamOkFzbO7dGEcowumxKHIpEmG7ikANcEITU
-         RmXwWII3rj1aWqySqtreeQBcJYLm4zDDqofLmdwojWs6t/My8YAc2N+SElqvPCdp0Bmx
-         A/EvyiXaUPIDQYE2BrS4zXQ0xEz+0CiHlT7hZ5QEiIuwPPnlKNq/CKhk7NJ67s1801Vc
-         zheoZJywW1YMG/90uFZdf19RF2B/96ODL7q0FEXiSIF1tYipZvo3U6N2IBDx3TuultsA
-         dVO8bfblEbBBxM7W0bTuFX8vG46WRwouNEBrd8qyjpedbhPqI/guPCWeqTzATWzDlc0t
-         rZRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWv7vpQl0rMRq2OYYJB3D4LZQlgeQr7aJ0LaXzuT1AWBF4jsa0LCnzZrLjTq5GrEIIq6bWXR+diXphkt3e5osxJXbsNNnkq/o7L49Ic
-X-Gm-Message-State: AOJu0YzOEiFgaCBVw2ggf64xToRYRHtgdNosozt3jW+o/AenxxPdd5Lo
-	rO/FP2rkrUpLS6wQI3SuzB3B1z3LKszADKFB8JCGhvo+3OO8coRSzutrQlAR36wFNgUPq/MHKZj
-	IGtec3oeNizHcmep2P0/3e+TMiL5JX+y9nqZX0FXOSv/Up8tO
-X-Google-Smtp-Source: AGHT+IGPqn0qOwME5A5LSEqJGUhcBrK5loyFtiw5abc2EMucdzkO4malL/Si43SjYjBl925JQ1d2/Vm0i+Z9o5EXBFk=
-X-Received: by 2002:a25:2f52:0:b0:dcb:de9b:175 with SMTP id
- v79-20020a252f52000000b00dcbde9b0175mr13753374ybv.6.1708420759119; Tue, 20
- Feb 2024 01:19:19 -0800 (PST)
+	s=arc-20240116; t=1708420794; c=relaxed/simple;
+	bh=d8WOTCkwaJsZ5K1w3UM9/CSindAuhapffgUY4/QPevk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Cu9dmZtNIaD7yf2aYF6G09KI9bSObFNvX+vswPKQxJQC3kcH/h1NoIHC0s4q52ZMheyLP9IC9C+8DWrDdrHvJuR/jHiq/z38KLM3tYu7Y24LwhHFtY7Wv4xHdol2iXVc4bckY48SbrIKmY3/pjCwfGBcUypA01VBn7rpQwqycuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A6DDn2AL; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708420793; x=1739956793;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=d8WOTCkwaJsZ5K1w3UM9/CSindAuhapffgUY4/QPevk=;
+  b=A6DDn2ALVzEVFqUlQ167YI2JNNJke1ddFqkG6zUDR0m9GBw4/8OokGXe
+   1ybDUgfpYmbHBG2qbh1szmvZ2LJ94PpL/lGmLQD4CxvEIYe7i/I6+/dIq
+   iYBOY4gltp43PVERT6w29UzaChp6SjMDyBkdZR+XwyLJ9frdFlm+eFg34
+   bXkuTcvsHglsI2I5PsODW+dpE1K1VV2NjKKX+T3UIW1rLBmN0GcA8Vn3G
+   LQyI7BN2blNovm1iyCSOJtZFlB++05RTomkQWaeWRcLAsE5ZyskAKGnqG
+   +AiN+i6FWM3ZQI/LyN0wAYuihYuNoLZ8lVxnCoy0GX13RAjAxdgaCvlDs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2640277"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="2640277"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 01:19:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="913041935"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="913041935"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.249.21])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 01:19:50 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 20 Feb 2024 11:19:44 +0200 (EET)
+To: Armin Wolf <W_Armin@gmx.de>
+cc: corentin.chary@gmail.com, luke@ljones.dev, 
+    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/5] platform/x86: wmi: Check if event data is not
+ NULL
+In-Reply-To: <dcb7c031-b920-4774-a1a9-fed8813390d0@gmx.de>
+Message-ID: <954e9d5e-4800-aba9-4678-44584baaea05@linux.intel.com>
+References: <20240219115919.16526-1-W_Armin@gmx.de> <20240219115919.16526-3-W_Armin@gmx.de> <dcb7c031-b920-4774-a1a9-fed8813390d0@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205115721.1195336-1-quic_jingyw@quicinc.com>
- <20240205115721.1195336-6-quic_jingyw@quicinc.com> <CAA8EJpr7tHXZHcH1Sbcy0-MCZfMxKBjaPXGdpg3cqyyFjTZOeA@mail.gmail.com>
- <9685991e-6577-4f96-a17f-b0a65d8d1260@quicinc.com>
-In-Reply-To: <9685991e-6577-4f96-a17f-b0a65d8d1260@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 20 Feb 2024 11:19:08 +0200
-Message-ID: <CAA8EJpqVQEktHuD5sYsRMiytPS+XfoHzVTBUuKqeavL4yW72Sg@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/6] arm64: dts: qcom: add base AIM500 dtsi
-To: Jingyi Wang <quic_jingyw@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	kernel@quicinc.com, Tingwei Zhang <quic_tingweiz@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, 20 Feb 2024 at 11:17, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
->
-> Hi Dmitry,
->
-> On 2/5/2024 10:23 PM, Dmitry Baryshkov wrote:
-> > On Mon, 5 Feb 2024 at 14:00, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
-> >>
-> >> Introduce aim500 board dtsi.
-> >
-> > So, is it a board or a module?
-> >
-> aim500 is a module, will fix the descrption.
->
-> >>
-> >> AIM500 Series is a highly optimized family of modules designed to
-> >> support AIoT and Generative AI applications based on sm8650p with
-> >> PMIC and bluetooth functions etc.
-> >>
-> >> Co-developed-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
-> >> Signed-off-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
-> >> Signed-off-by: Jingyi Wang <quic_jingyw@quicinc.com>
-> >> ---
-> >>  arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi | 409 +++++++++++++++++++
-> >>  1 file changed, 409 insertions(+)
-> >>  create mode 100644 arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
-> >>
-> >> diff --git a/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
-> >> new file mode 100644
-> >> index 000000000000..cb857da8653b
-> >> --- /dev/null
-> >> +++ b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
-> >> @@ -0,0 +1,409 @@
-> >> +// SPDX-License-Identifier: BSD-3-Clause
-> >> +/*
-> >> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
-> >> + */
-> >> +
-> >> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> >> +#include "sm8650p.dtsi"
-> >> +#include "pm8550.dtsi"
-> >> +#include "pm8550b.dtsi"
-> >> +#define PMK8550VE_SID 8
-> >> +#include "pm8550ve.dtsi"
-> >> +#include "pm8550vs.dtsi"
-> >> +#include "pmk8550.dtsi"
-> >> +
-> >> +/ {
-> >> +       aliases {
-> >> +               serial1 = &uart14;
-> >> +       };
-> >> +
-> >> +       vph_pwr: vph-pwr-regulator { };
-> >
-> > Is this regulator a part of the module or a part of the carrier board?
-> > If the latter is true, this must go to the carrier board DT file.
-> >
->
-> the vph_pwr regulator is defined in the aim500-aiot carrier board and used
-> in aim500 module.
+On Tue, 20 Feb 2024, Armin Wolf wrote:
 
-If it is defined in the carrier board, then please move it and
-corresponding supply entries to the carrier board dts. Other devices
-using the SoM can have different power tree.
+> Am 19.02.24 um 12:59 schrieb Armin Wolf:
+> 
+> > WMI event drivers which do not have no_notify_data set expect
+> > that each WMI event contains valid data. Evaluating _WED however
+> > might return no data, which can cause issues with such drivers.
+> > 
+> > Fix this by validating that evaluating _WED did return data.
+> > 
+> > Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> > ---
+> >   drivers/platform/x86/wmi.c | 11 +++++++++--
+> >   1 file changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> > index 8fb90b726f50..d0fe8153f803 100644
+> > --- a/drivers/platform/x86/wmi.c
+> > +++ b/drivers/platform/x86/wmi.c
+> > @@ -1210,6 +1210,7 @@ static void wmi_notify_driver(struct wmi_block
+> > *wblock)
+> >   {
+> >   	struct wmi_driver *driver = drv_to_wdrv(wblock->dev.dev.driver);
+> >   	struct acpi_buffer data = { ACPI_ALLOCATE_BUFFER, NULL };
+> > +	union acpi_object *obj = NULL;
+> >   	acpi_status status;
+> > 
+> >   	if (!driver->no_notify_data) {
+> > @@ -1218,12 +1219,18 @@ static void wmi_notify_driver(struct wmi_block
+> > *wblock)
+> >   			dev_warn(&wblock->dev.dev, "Failed to get event
+> > data\n");
+> >   			return;
+> >   		}
+> > +
+> > +		obj = data.pointer;
+> > +		if (!obj) {
+> > +			dev_warn(&wblock->dev.dev, "Event contains not event
+> > data\n");
+> 
+> I just noticed that this should have been "Event contains no event data\n".
+> Should i send
+> another patch?
 
-While we are at it, could you please rename the node to regulator-vph-pwr?
+Hi Armin,
 
+As I was doing some history manipulation anyway as is, I tweaked it 
+directly in the history. While doing the conflict resolution because of 
+that small change I realized the wording got corrected in the latter patch 
+anyway so it was quite harmless but it's now correct in both commits in 
+review-ilpo branch.
 
 -- 
-With best wishes
-Dmitry
+ i.
+
 
