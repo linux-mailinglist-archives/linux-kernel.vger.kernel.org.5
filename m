@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-72722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F11585B7F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:45:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E7885B7EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B949CB222A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:45:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FFEF283966
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09D167C7D;
-	Tue, 20 Feb 2024 09:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC5B67C59;
+	Tue, 20 Feb 2024 09:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="zPLna+m8"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2110.outbound.protection.outlook.com [40.107.7.110])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="xi5Ov/s6"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2090.outbound.protection.outlook.com [40.107.8.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663D567A0E;
-	Tue, 20 Feb 2024 09:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A8667756;
+	Tue, 20 Feb 2024 09:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.90
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422031; cv=fail; b=OxztmvBOrHV5VE9Zq9tyPOA2tTanKrENQ2wVPd1l3e8Qt4lXbPnH0oUtvWd5pdbb8JLUqfjccTmUFvJCN8FgtyRwA5R4ntFZajG/0WaekQ9ATg9cT6maZJehugNEGOXpmGzsuhwaAQtpCy2MJijNqMKJKUHlk34xeR519ZtWFfM=
+	t=1708422030; cv=fail; b=pGOLvKtiEmK0XVcEDS6KmaCnDsjGpxBnhRqmbadOZ+ZTX6Dt6Utc6V9ghx0geHrrnjqWGcwtb5Gyj32A7Rs33ogmWoEhqf/FB/Jx3y0W7ILDgy0bj8oTMMEeHGNKES9ccdsaWc1dpS4d0np+wPx5TjmcEWycjUqsbsuwAzGbers=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422031; c=relaxed/simple;
-	bh=P9Qxsw9kjyeE5rbxicA+k/0vkgilDJms8XWxah2XXTE=;
+	s=arc-20240116; t=1708422030; c=relaxed/simple;
+	bh=RKZXPNXHmUaOg5wL+hV6LweGPMEPN+5I6UNCMOLdLas=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=r0YyvrTpXfPKDWdcdp29g4UFTefc46b5x6B7HIH7T7wrPSjlUr95uUtW4MV8SvnEuSV9dl6HnI6xgNKaWvHUPn5KAYF5l105fvQ/UJh0gduaAmMXuA+BebPQ6ZtyaTMYLHRsrXEesnW/CrneJNXxK685f4S8Wzkbyh0IVdaXyTs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=zPLna+m8; arc=fail smtp.client-ip=40.107.7.110
+	 To:Cc:MIME-Version; b=TRxSSi3udb07QdZHZLwyXhUr3GntWOjtRL9lB81xQRnRDqicUAQu/wumaqeTzQU2HeZE604c2dmZ3qu4rpQSaRAVCRCyRwslxNMqraC2K1pgnL7TpfNBH4yvQnJ2garUS09QxCuwafofLd6Z8r3bdeDq0EGgjrUCw5hF1rbRPJQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=xi5Ov/s6; arc=fail smtp.client-ip=40.107.8.90
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ro07HGmIRACpjYnQVCKpNfKFfcDFLJMYTQpP0y1itk7/oXpbfbAsPFaLgPvOwqgMndZZ8Pdgm2RTvfLBRpamsZbQYdlyb1tDWi5DUOIFnX5lqxYBigNzuHbbsVdGpTIpqhnQJC+NnJkiO4LA4k550UO5NUATQ6/pgZxKwpm6RAE9AgAvxeOTlyq/mQ6nOfSJ3TAfK7tGMzRYzrzTbZAfkBpsL3xGkA2SKyb/q+7KphjExGA9mKNIQEg9NWr6hyKijaAEhyiWLL6TjM494k4bpL0ggfX+kLdMlLsuE6fzgnpq42B81Fx9XIL1FcO6F8tMqrtH8Ndg518rK7C7MYJOMA==
+ b=bGL/JCN0L6WcnI5q6/sQlj8rY2fNbhxLF8xd0EkIxAm8dLfc/q6PYqH3lITmBwd1elMCGl4pMBz88dTaK68ih2U1hrbrCqtpS4linKhUR7e7p+AMgLE84MXrklWkEk1h32rFa1o2CBFyVLcknImnqKiHIZ9V8qEkwvr+T7icecW4DAQ1k26n+52448rlKo+Sqz1e/BI/9huCifv7MskaicDslmza7IdaK92bS3ypYeQNRNyeWydMUki+FPOvRymbAoZ3CU7b+RbmS27fjXb4dqXrbLNbkgmZ+L+42dkDraEiZQxDzrYM+hIQ3HEDMvBe+OMgeUWgbEXfFQ2YLuen8A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8qfr+Qy7s3fqAc7HhNtMhVOBc72tDs9HdCFnwzWlVIo=;
- b=hEwnL10364e3IG8ydvgHNxm9RVT0ZXpaoDdfsIwJ4+OgHYQVueCSsfE+QbgjvJpy+SM8A3nIoWAunVCusAK4N8o+JxBJZH7FbP9xbkK+LGIInpsdiqdpA71TO1/kqdufleIy+Beqoi0QZw1l50lMoeTDQga9A+lmo1DdR4tGMzgVVM4rnwdRM+dvVKafX9Rvar+cQ/pMgQun7c9ZOnln64MW6C1OadO1Q+2RvXWNQRI1FLIRaLSfDN8kZHqx/hf6ErdA/L0G6VirhvQbaINBPl2xMA0KcDnO6g4QuwqDm4As8oNyRgcWeCNfa+JWV1r4sZMdQ0aATlIEcaDTdJ2lTw==
+ bh=lFBNepf4pT5Z+UVSMHeI4wc9QqXpHqSP5xxqc77jhS0=;
+ b=QRlt/fhtbDgz78p/bmH0ldVCKgbFIyyvhZ1gwVxJAZfNK5FI04CSYg/1HgZetjHJx1YNwsjqswggL5P8wFJ0FlRhfjQplKzf+IZ4gLuyZ0+KksEGVFF+n07mjBeSjQ4VLi4uEuXJAm4Kzja7vZ8d3oU0rFOMnxfHk1G9Ewf6T0abbo8D8b2BhFnbNiUX4WYGysRg+zVNiPHdkxWYo0iZkYZU9C9sq4wJLoApLN2sozWIs3s31iyQqgz4JRb97iigGk1H6vwSTKUFYb5ZTFy51wWoD9bV7IktqhQiT+1ZvWcYkOtlVTVG1vz2Ojef5z1o5bTxAv2ZISQC0RlUL5ZvPA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wolfvision.net; dmarc=pass action=none
  header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8qfr+Qy7s3fqAc7HhNtMhVOBc72tDs9HdCFnwzWlVIo=;
- b=zPLna+m8YTm7dm+EwBDidriWN91AT2T47ZuIlhhkPPsVYbW5YAfLW7FYL/ztbjFOZlYNZF14fJzYyTxv7E/d8HrgqQbX8V35Q+Q0ufUuB5uZxhmHNWKNs4IzJQSwNQ2NGyVZYgeaexuGHodoS/FbeKMA6fur2TRX1/lZcmCxaN0=
+ bh=lFBNepf4pT5Z+UVSMHeI4wc9QqXpHqSP5xxqc77jhS0=;
+ b=xi5Ov/s6+Azv0UPA+/YcD3D/zthHoLbw1kzctYxyYjjEviTYgAJOIqsbVcU1TyplyiJ7x5RWMKkwj2yODtVud1RlgnBAJjoQzchg59ax1dKhTdM+csOOLcOOr6ziRNXyNTnfPyPP8u1kkCAHPu6CuACi2hUk9kPmI9Kp5nhvxgE=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wolfvision.net;
 Received: from DU0PR08MB9155.eurprd08.prod.outlook.com (2603:10a6:10:416::5)
- by GV1PR08MB7681.eurprd08.prod.outlook.com (2603:10a6:150:60::21) with
+ by DB4PR08MB9357.eurprd08.prod.outlook.com (2603:10a6:10:3f3::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.32; Tue, 20 Feb
- 2024 09:40:22 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 09:40:24 +0000
 Received: from DU0PR08MB9155.eurprd08.prod.outlook.com
  ([fe80::7409:db60:8209:c9f4]) by DU0PR08MB9155.eurprd08.prod.outlook.com
  ([fe80::7409:db60:8209:c9f4%6]) with mapi id 15.20.7270.043; Tue, 20 Feb 2024
- 09:40:22 +0000
+ 09:40:24 +0000
 From: Michael Riesch <michael.riesch@wolfvision.net>
-Date: Tue, 20 Feb 2024 10:39:23 +0100
-Subject: [PATCH 13/14] media: rockchip: cif: add support for rk3568 vicap
+Date: Tue, 20 Feb 2024 10:39:24 +0100
+Subject: [PATCH 14/14] arm64: dts: rockchip: add vicap node to rk356x
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240220-v6-8-topic-rk3568-vicap-v1-13-2680a1fa640b@wolfvision.net>
+Message-Id: <20240220-v6-8-topic-rk3568-vicap-v1-14-2680a1fa640b@wolfvision.net>
 References: <20240220-v6-8-topic-rk3568-vicap-v1-0-2680a1fa640b@wolfvision.net>
 In-Reply-To: <20240220-v6-8-topic-rk3568-vicap-v1-0-2680a1fa640b@wolfvision.net>
 To: Mehdi Djait <mehdi.djait.k@gmail.com>, 
@@ -78,11 +78,11 @@ Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
  linux-rockchip@lists.infradead.org, 
  Michael Riesch <michael.riesch@wolfvision.net>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708421995; l=10682;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708421995; l=2396;
  i=michael.riesch@wolfvision.net; s=20230803; h=from:subject:message-id;
- bh=P9Qxsw9kjyeE5rbxicA+k/0vkgilDJms8XWxah2XXTE=;
- b=AdirQIj9JolCGpJ3i/cVeTkZRxGso9vf0xUn8Q+zjsuocZy/Fu0BOCXFy3Wtedfi+kye5grBs
- Jq66aqW0oeDDUBmolBvR6oJconbVU25f+EkswsYTAmOA3ilWVm5LQKf
+ bh=RKZXPNXHmUaOg5wL+hV6LweGPMEPN+5I6UNCMOLdLas=;
+ b=J8OtPxGHxTeFBcoWvj2EBzbRwi1DObzht3jj3cSjTISl1PYORzE+Y0n5WAK+yZElkPJmUAARN
+ ivdndc10u4/BsiCucaFKJdTxkt1ptSSoOTD1kaSslea4UXFGiE474ah
 X-Developer-Key: i=michael.riesch@wolfvision.net; a=ed25519;
  pk=9ral3sulLe95bLcbaiNXTgUTRiBayRBEFZ5OVIEHp+0=
 X-ClientProxiedBy: VI1PR04CA0128.eurprd04.prod.outlook.com
@@ -95,380 +95,137 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR08MB9155:EE_|GV1PR08MB7681:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a5f7d57-60ad-4390-f70c-08dc31f7f55b
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9155:EE_|DB4PR08MB9357:EE_
+X-MS-Office365-Filtering-Correlation-Id: c1a1c8d8-93aa-4b0d-51c3-08dc31f7f6c7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	N+Vgm2EOxCYGT0zLYarKoqGeWqi09v0GRPvMBaL3ZIag6b5YZqwNcf57OfFFEx8NTPzNz0Gl1AwA11NrlP20WcP/mvtunlXToqQ977PX07iuxEDXw2mfEYGaTuuT4UV5xDBYS+GdSI/DRbBkGK38wk5P5d+I8vP7j02dKgKOIOUea2Ipee3FhaWRtWOReTwAltPKZgcYQi5MFME2QFm+cZ629MrAUv+dqScA/tj3BXV3QIvcb0PL3DFUTmVdiD6GSPlk8BTEj2X5yTQR3Jnx3m1p8EuWWVy+/mCy7or3qD+IonJkDoLp9wEvWSK5OZ/b8/OesC2PqvrDfw8+p0H2yBEooLYB81Mq1kEF8BD5uz9IzUxXMulRoXMFHurAJj/fGsKJ7knBZTCdv4l7WV3IUFSxDENEEKrzbi4ZGW3UJc+ybApH1xZ4nBX6CMSSXcSzdqNH8P/l/ozEPXQZGvvqMzT2SQ0+cTdFsysjrGTLFDoKd8r/MEd/fhMIdtpqL5U8FsK2xkiscx/GkFE3RGgucgAQgnQyyNyJtyExuQDkj6j7HxyYL0b8C2VmnzXSEK336IxhDdzxcbMjk1aSvBi8Yj7iPzZR2qYpVp5uM9QsMnrF228tB/J/l06RLnZ2fhyEFtceQXE+ya/41a0npUTiCg==
+	fp7OkyOO7SX8TTu90S8JA5ZOfQkQUk4fQ2kviKXxAWjDdb/lZV5ul1yFuYjqE8r7lugzh35dVVfDPEUntk49GdLFpDJ6yBIgxF6QXfRtX/rHxBSK/cPwi85/3pabG6gbxWqXgcWAy0N2iig2GJhmY+8wegTUP1SFk9WFoZyaB9WsfusfuedebXXXpDfLvnd85oxVrqtGJKKdGSy3RENK4RCNu5I68UNrmiar10Xe5eXPrVKSzrSWDr56n0QN1ccjY4W67Flr5zPQVxNxDm6yY7Ynor0S6XTzRfP/URsEMlkvFD2bITp65nJ4oUPK/u52MHCeljFx7/x5VZNdI8TfFb5C9CdPNhtwWqzk4Liypatq4ZRheHqpr8bMKyVdAL78fWPNpXQ0CIDpeJFVxX3WeVT12ybqPuLBF0Iaajz2CqTL418RjBI75rzQ3QkUd10GEBJhU64ebL1FM19nQLZKxar+Xv2fnDzx8jMQfJLMuj+XIX97oGDadeZ32rqTaztUnJ4/sGpr4IgHHiy1q+GgAx1By4h0hdSUbxWYe9QBsplGFxlb9a8pLmv7eH5f/U6lDda9e9ME6/nUsVMYmA8BKz94skWi2uU1Y9SvAEy3/kfxOUQLF0rIZygM/uUrqXA8
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9155.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011)(38350700005);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9155.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005)(921011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Vm9PeVkrWGNhK0diYjlBc0FrbVEzWDY5VTNTTFkwN29OaDNEWldmVmdJQ05v?=
- =?utf-8?B?WVBMbTMzZEdNSkdReE1BSXFaNmlKS0tDZW12bm5IVzgxOUZKT0djM1RPNjcv?=
- =?utf-8?B?TWhFbEJVeDZtMnNlUnF1L1YzSW5zZHY1TllXQTRaNndweVh3TklVcTZsN0xr?=
- =?utf-8?B?cGhSTnhsb2RJNUtPbjRGbzhnQWRDU2Fpc1R0QkkxM0J6OExHL1g4WFd2cnor?=
- =?utf-8?B?REdxQ2ZLd3VFVWtsa042R3BBNTU1OFRVbFhRRUtkUWF3OGpYQzQ3OFVSZUF6?=
- =?utf-8?B?UEM3WTh6ZENrZU5JeVZuNjNGQ3lFN3NvSUhSWjYzVGlZSUppRlFQa21sdUxL?=
- =?utf-8?B?VUZiZGQvNWkwWGVUaGxja0YvRXpyNUE0ZTd2eENDUTB6dXMwSS9lWWxYeExQ?=
- =?utf-8?B?M1VmQkZDd1oxUVZGdEU4TzRQTllGM2dRSnEwT1Rqb1BxTHVpRVFmeHlRbDhP?=
- =?utf-8?B?U2FZRE54dTVQWjBvR1VNLzlhVTFSc0lKRmZJNm93R0lod0NWVldsNGU4aWtI?=
- =?utf-8?B?QTA2MEpVSHJOaXpLNE92a1dxVGgrbXUrRG45WVlRNEZ6amxWYUNmNW9zcUdF?=
- =?utf-8?B?bGFwYTdJTGRud3gyRkhpVWVMdHM5ZW1TMXFaV1BMc0lxUHZnVUVjUDhoc3VF?=
- =?utf-8?B?REZwcTlPTG15V05WaG03Q3dObmlsSU80OUtTVGlYVWF1dXF3amlvNGV2dE9R?=
- =?utf-8?B?dTZoZjNjaDVNOG0yUTc5QzQzOFNPK2g5Y2VNc2I0SlBJYkZWM3hZRnNWVmNr?=
- =?utf-8?B?UU5WQ0hOQzZiQjRrTHVTSUwwTzNZRzdJMWw0NlZPY01yNjNMeUdieFNZSU9H?=
- =?utf-8?B?NytQNGkrUmpzYzkrRDRoZkthdmhVb2E3aXZPZUhvSGVtdVRtOENtTUYyN0Mv?=
- =?utf-8?B?SDVwc2dZZXBCSG1MSUhRVWhGVlNTRXFoSFNFc0Q4dk9EdDNoOTBtMkJBcVZ1?=
- =?utf-8?B?bkQzZ2U0L3RxV3UrRGFubzVWOEx6QklQQTZTZkhlWUZDcTBNNldrWmRjZm5Z?=
- =?utf-8?B?MC9wY1podXlEd2Jab29EWnBDSktZM1BtQWE2RXFrbVBTSk50UkQ2K0x2YWlq?=
- =?utf-8?B?UEQxL0p5aU5WL2xrR2NRU3NvSTFZODhnOWtmSVBmSWRFMHpoOTZ4ZlZ2aCt5?=
- =?utf-8?B?ckptS1N4a0Jkb1JNMzZsbzZxU1dZMys3Q2t4NmttY0U5bTJRVnpPS0pyYlJi?=
- =?utf-8?B?NmtPR0NrYXR1Z0tMdlVSaW90Q0RRVUljWHlLWFM1UmtkRW9RV0l1YmEvU0xz?=
- =?utf-8?B?WFM3NmpZeVd6UXE1WVU3cDBMNFFNSTlWR2o4VEFZYXJXMFVSUDQyTlBGRmxu?=
- =?utf-8?B?cTJiT0t1bVhJbnJsTEVCZ3BqWCtub0h5VFJXdmc0aUVrbVdUdTBweWlLNlps?=
- =?utf-8?B?MnlNSlZEb2ZNZllVYVBVdExnRFRGbHJNL29vUC9aTHpoN3o4cnNsM0xrZFUz?=
- =?utf-8?B?cmFxeGZhY3hyM2VEcGpURG85Y0luU1ovdU4wdnNxaVdxSkxVWHZQbEVzN3dp?=
- =?utf-8?B?ZGVrLzkyU1R3STRLYm54Ti9Ic2doK3FxSmpjQ0x4b2ZqSFYxVFNpdUZ3MTJL?=
- =?utf-8?B?RFk2YTd4alhISFBpZXA3SHY1amJLbHBvdmN2dmljN3JOMXlCc1ByaW5KQXlZ?=
- =?utf-8?B?UHlRclFkVnNlaUZraFpqVmNSaWpWSm1rVFdVeEh4VVNzREZvK1l4SHZRRXky?=
- =?utf-8?B?QUxyRHJmTEFYcE14ZkloMTV6K1lGYjBSdThwNDBWeWN3T0JkK1lCZERPRytY?=
- =?utf-8?B?RUhVN2xtS3BYZHFsczBPRmpJbXZmcjZXQmdybmZHdy9sdkxzQUZMc0pGZmFY?=
- =?utf-8?B?VEpZcHJJZTJRY0ZXcHdmcTl4aWIwaXg2cmtEVm5LbzZuTEt1cFJXNzhzcDRY?=
- =?utf-8?B?K0g3NXh4cEJIQWtnelFVdmljSnE0Y1o4RFgySm9tSjhRbEpuWDlpR3lJbWhR?=
- =?utf-8?B?MGUrUDFYczhiZGs1WEtMRVkrM2pQSEFtSDJnWnJLSjlES05QMHIrTXlQekVT?=
- =?utf-8?B?Mjk2VTNMbHUxb3ZTaExreDF5dzg0NUtMOWFjMFpQalpSM3psakFicHhvVzFU?=
- =?utf-8?B?WUk0M3pCYU1sMUlWYWFaN0tIeUMyWG80amw1WlFobW8rWjRUZUVHU2dUMlFG?=
- =?utf-8?B?TjNpWHRrU2Nsb2lxUCtSaUJIZ3E1NlpXRlRYSTRLN09GOXFsOHhXUUEvY2Q3?=
- =?utf-8?B?enc9PQ==?=
+	=?utf-8?B?WGYyYUJIOUZFeGxsanR1a0EyMklYSEIvRDh4bk0wZWc0dGJrWGFRODdueGdT?=
+ =?utf-8?B?azE2TCtzY20rdU1IT2wxcWU2cmFVRE9ld0IwNUY0RGZQYkNaYXdWQUxRTnlp?=
+ =?utf-8?B?aVdlaU5tRm9QUERsdm9aS2EzK2VpZXRCU1Ric0J3bG9PeWFkeVR6T3ozaGVk?=
+ =?utf-8?B?T3hSTUI4TUhNaEVNazU2ZXZINXFEalF3SExWQUFnaTV0QW5yUGV5Z0VXaDBQ?=
+ =?utf-8?B?UFgzOGk0SE5yTHhCYU1jdEJhSS9Ua05aY0dCdUVwWE1JMStLZHlLdTFUVCt5?=
+ =?utf-8?B?dlppRWRTd2p0Q2sra09GckZXQlBVQ2xKTThPc0NNc3BlM2RTOWRlK0hXdU8r?=
+ =?utf-8?B?THpsenZKOGVJTmM4K2pES3AzM0FlVFV2RFpHdisyV1RTTzc5dWtJRDNLUFhN?=
+ =?utf-8?B?ZGcyYkFaTnN3RnFJdm9oemk2ZVcyRktqVzR2TWpZWlJHYjJ5ZjB6Z0Z2c1JH?=
+ =?utf-8?B?aDFpMVU4clNTTHRMMGNTSzRxTTFJcVd5ZXlNbysvYWxJdVpURk95V0pObkcv?=
+ =?utf-8?B?ZGhCSVNQRC9VdnNBUFRDeVdQcHRxVGdWZHdBZDNpdFdvb3lhQ1ArTnBFNG9O?=
+ =?utf-8?B?MXhaTS83K1pGbVJsTWJlRUYzSTlFdVVjMG5lZ21WTUdSeUdxYmFPS1V5eWo0?=
+ =?utf-8?B?U0VuTmlicVl5ZTRlZWwwbHBJQUVoOWRNdi8vSndLV2l4dXdHdzhvMzdUNUlZ?=
+ =?utf-8?B?MUMxVEx1N0xJSllHdUxWMjRUMUpUaU8yVWx1TUs4dkpZK2IwRlErNmo2dFJX?=
+ =?utf-8?B?S3greWFscTFmN2dBQW1QbGlPeXBHWG12Mnlna2tuV0FDeXIybGFQNjR4ZVlE?=
+ =?utf-8?B?aUlTaWRHVkFWM2VDMkp3K0VKbzhMY2JNS01SblJINVN2UGQxN0wweFhUSGV3?=
+ =?utf-8?B?eldwNnpMd2VIQ2xPNi8zYXovMFl1L09sYWNYQkp5ZUNmYkF1SUZmbG8renRG?=
+ =?utf-8?B?UGtLaTYvVmN4Q1R3NmZhaVdyOWJJUWc5MnduUW5iVVlIeXBmS2pYb3lFbW1C?=
+ =?utf-8?B?aGg3ZWIrTGF3bURGSWh3VTA4UXM1N0pvZUUrL3d6WWxsemhHd1hEZU9sU3Yz?=
+ =?utf-8?B?NVNrRzY0KzlxNnRNdHJ2a0hac3drR0lFc1g5SlVxNmVzWjdROFVEVlBBazJB?=
+ =?utf-8?B?STAybHVnQ3E5bzFTTXBoOUJSUnVweHgyRWpFRTBpUTQ1T2wvVGFjbzRMNHhz?=
+ =?utf-8?B?OGt4ZXZEQ0hERXE3b20xemZEaUtyS2pUL0M5TVlaWmEvejNFZk8waStFdFB4?=
+ =?utf-8?B?VTBhMnRESjFPVkU1SHozd1lrRGhmbXgrTFdWWWFic1QzSVlmeXphQjY4NWx2?=
+ =?utf-8?B?bHZFdWJMRWZCZGozQ2pnakFwMS9NdFd3VHZkbmZvTWVub2VzUklFU0NxcmQw?=
+ =?utf-8?B?VE5RQXhMZlpDWDUzYTVuT1lRTEVqQlJFSksxQ0dpK3p5Y2JtaHlweWwvZTcr?=
+ =?utf-8?B?VDNlTEw4dmlyc2dOT3EzdFVqWXRad1kvTHkwbnJVSnRwWVU0QXZpalNFSlVT?=
+ =?utf-8?B?YnJ1VkQvaG1WSHo5QkRDZEc3ZWFndTQ2N0ZSdThjMEJwNjRpbHllU3dwcWIx?=
+ =?utf-8?B?eGxhdG1wb0VDZitNcUc4bDQ4T3BSbWx5RXhLVGtzdmJmSWt1c1BlUit2Ulhy?=
+ =?utf-8?B?SWFrRWhIOGVsVVljZFYrK1ZJck8rdU9aWGFhQVMyLzBZYzF3SkEvOTlKS01K?=
+ =?utf-8?B?eHhuRE1kOWx2K1NLS2RRdjI1Q09PL3M5eEszNWpsejNiVGFqb0kwZ2FENnJE?=
+ =?utf-8?B?SUVTR2hrVVJMS2VocWQySi9CT2dNUTUrUXJ3aWV4OWY3UkJ5Z1hZbXNWZVlr?=
+ =?utf-8?B?VE1LZFFXK2FRTE1RVFJWaFpKMkthRkxSdk1OdlI2SVl2MHVkVFVxMTgvNFo5?=
+ =?utf-8?B?QlJ3bjl1QWpISWc2aWtJZ2pxV1Rka2RsdXhBL1NrYm0zNW1hNm52NE5QdUFn?=
+ =?utf-8?B?NGx1Wk9qdnRQTHp5Z1dVY05pMEhIa0JyaldzUFFZWHZlQmhLWUwrQzhTS0FW?=
+ =?utf-8?B?NVF1N1IzdmR5T0kyN0I4dzNKLzQzUDI3bk40RS9rQ29hTHQ5L00rK3J6L3Bo?=
+ =?utf-8?B?NDJVOURBazM2eWRCb0M3UUZSWlJiU25UbDNLalp0SGtwcEVOSDJJMjFUR3lU?=
+ =?utf-8?B?R1EwMUNFYTExblBabms2NURQOWJXVUZhRlV2eFByNStHOFZqbm5UU21jWS9H?=
+ =?utf-8?B?alE9PQ==?=
 X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a5f7d57-60ad-4390-f70c-08dc31f7f55b
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1a1c8d8-93aa-4b0d-51c3-08dc31f7f6c7
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9155.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 09:40:22.3631
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 09:40:24.7551
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DHrLfHlV9CNgV9LPTEcx5Baj9LiA3U3syKCSn6PyMH88L8WgzC2JIU752qI+PTVLqg75bmEhLqEF4/AvwGEjkIRz3Qy4KURSoYXnxWJGUOE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR08MB7681
+X-MS-Exchange-CrossTenant-UserPrincipalName: VRbhh20BwTEcBxxN+ZAG9DuFwFUqp9Lm7U/Yte/d0ZzbGkb5lTFkt0RBTLBLzvcv6aJ14m0fmWeqD3Nm5xpvHLnZVzO7LlwAkgrdnCUshQE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB4PR08MB9357
 
-Add support for the Rockchip RK3568 video capture (VICAP) block.
+Add the device tree node for the RK356x Video Capture (VICAP)
+block.
 
 Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
 ---
- drivers/media/platform/rockchip/cif/cif-capture.c |   6 +
- drivers/media/platform/rockchip/cif/cif-dev.c     | 247 ++++++++++++++++++++++
- drivers/media/platform/rockchip/cif/cif-regs.h    |   9 +
- 3 files changed, 262 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi | 45 ++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/media/platform/rockchip/cif/cif-capture.c b/drivers/media/platform/rockchip/cif/cif-capture.c
-index dd5c45f28cdd..d0e8f3b49d38 100644
---- a/drivers/media/platform/rockchip/cif/cif-capture.c
-+++ b/drivers/media/platform/rockchip/cif/cif-capture.c
-@@ -340,6 +340,7 @@ static int cif_stream_start(struct cif_stream *stream)
- 	u32 val, fmt_type, xfer_mode = 0;
- 	struct cif_device *cif_dev = stream->cifdev;
- 	struct cif_remote *remote_info = &cif_dev->remote;
-+	struct v4l2_mbus_config_parallel *parallel;
- 	int ret;
- 	u32 input_mode;
+diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+index c19c0f1b3778..ad61afd84c12 100644
+--- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+@@ -6,6 +6,7 @@
+ #include <dt-bindings/clock/rk3568-cru.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/media/rockchip-cif.h>
+ #include <dt-bindings/phy/phy.h>
+ #include <dt-bindings/pinctrl/rockchip.h>
+ #include <dt-bindings/power/rk3568-power.h>
+@@ -593,6 +594,50 @@ gpu: gpu@fde60000 {
+ 		status = "disabled";
+ 	};
  
-@@ -351,6 +352,11 @@ static int cif_stream_start(struct cif_stream *stream)
- 		      CIF_FORMAT_INPUT_MODE_NTSC :
- 		      CIF_FORMAT_INPUT_MODE_PAL;
- 
-+	parallel = &cif_dev->vep.bus.parallel;
-+	if ((parallel->bus_width == 16) &&
-+	    (parallel->flags & V4L2_MBUS_PCLK_SAMPLE_DUALEDGE))
-+		xfer_mode |= CIF_FORMAT_BT1120_CLOCK_DOUBLE_EDGES;
++	vicap: video-capture@fdfe0000 {
++		compatible = "rockchip,rk3568-vicap";
++		reg = <0x0 0xfdfe0000 0x0 0x200>;
++		interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
++		assigned-clocks = <&cru DCLK_VICAP>;
++		assigned-clock-rates = <300000000>;
++		clocks = <&cru ACLK_VICAP>, <&cru HCLK_VICAP>,
++			 <&cru DCLK_VICAP>, <&cru ICLK_VICAP_G>;
++		clock-names = "aclk", "hclk", "dclk", "iclk";
++		iommus = <&vicap_mmu>;
++		power-domains = <&power RK3568_PD_VI>;
++		resets = <&cru SRST_A_VICAP>, <&cru SRST_H_VICAP>,
++			 <&cru SRST_D_VICAP>, <&cru SRST_P_VICAP>,
++			 <&cru SRST_I_VICAP>;
++		reset-names = "arst", "hrst", "drst", "prst", "irst";
++		rockchip,grf = <&grf>;
++		status = "disabled";
 +
- 	val = input_mode | stream->cif_fmt_out->fmt_val |
- 	      stream->cif_fmt_in->dvp_fmt_val | xfer_mode;
- 	cif_write(cif_dev, CIF_FOR, val);
-diff --git a/drivers/media/platform/rockchip/cif/cif-dev.c b/drivers/media/platform/rockchip/cif/cif-dev.c
-index 929ea39dd832..3b895b496c45 100644
---- a/drivers/media/platform/rockchip/cif/cif-dev.c
-+++ b/drivers/media/platform/rockchip/cif/cif-dev.c
-@@ -302,11 +302,258 @@ static const struct cif_match_data px30_cif_match_data = {
- 	},
- };
- 
-+static const struct cif_input_fmt rk3568_in_fmts[] = {
-+	{
-+		.mbus_code	= MEDIA_BUS_FMT_YUYV8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YUYV,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YUYV8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YUYV,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YVYU8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YVYU,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YVYU8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YVYU,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_UYVY8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_UYVY,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_UYVY8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_UYVY,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_VYUY8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_VYUY,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_VYUY8_2X8,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_VYUY,
-+		.fmt_type	= CIF_FMT_TYPE_YUV,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YUYV8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YUYV |
-+				  CIF_FORMAT_INPUT_MODE_BT1120 |
-+				  CIF_FORMAT_BT1120_TRANSMIT_PROGRESS,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YUYV8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YUYV |
-+				  CIF_FORMAT_INPUT_MODE_BT1120,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YVYU8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YVYU |
-+				  CIF_FORMAT_INPUT_MODE_BT1120 |
-+				  CIF_FORMAT_BT1120_TRANSMIT_PROGRESS,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_YVYU8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YVYU |
-+				  CIF_FORMAT_INPUT_MODE_BT1120,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_UYVY8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YUYV |
-+				  CIF_FORMAT_INPUT_MODE_BT1120 |
-+				  CIF_FORMAT_BT1120_YC_SWAP |
-+				  CIF_FORMAT_BT1120_TRANSMIT_PROGRESS,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_UYVY8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YUYV |
-+				  CIF_FORMAT_BT1120_YC_SWAP |
-+				  CIF_FORMAT_INPUT_MODE_BT1120,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_VYUY8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YVYU |
-+				  CIF_FORMAT_INPUT_MODE_BT1120 |
-+				  CIF_FORMAT_BT1120_YC_SWAP |
-+				  CIF_FORMAT_BT1120_TRANSMIT_PROGRESS,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_VYUY8_1X16,
-+		.dvp_fmt_val	= CIF_FORMAT_YUV_INPUT_422 |
-+				  CIF_FORMAT_YUV_INPUT_ORDER_YVYU |
-+				  CIF_FORMAT_BT1120_YC_SWAP |
-+				  CIF_FORMAT_INPUT_MODE_BT1120,
-+		.field		= V4L2_FIELD_INTERLACED,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SBGGR8_1X8,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_8,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SGBRG8_1X8,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_8,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SGRBG8_1X8,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_8,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SRGGB8_1X8,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_8,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SBGGR10_1X10,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_10,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SGBRG10_1X10,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_10,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SGRBG10_1X10,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_10,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SRGGB10_1X10,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_10,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SBGGR12_1X12,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_12,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SGBRG12_1X12,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_12,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SGRBG12_1X12,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_12,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_SRGGB12_1X12,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_12,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_RGB888_1X24,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_Y8_1X8,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_8,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_Y10_1X10,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_10,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	}, {
-+		.mbus_code	= MEDIA_BUS_FMT_Y12_1X12,
-+		.dvp_fmt_val	= CIF_FORMAT_INPUT_MODE_RAW |
-+				  CIF_FORMAT_RAW_DATA_WIDTH_12,
-+		.fmt_type	= CIF_FMT_TYPE_RAW,
-+		.field		= V4L2_FIELD_NONE,
-+	},
-+};
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
 +
-+static struct clk_bulk_data rk3568_cif_clks[] = {
-+	{ .id = "aclk", },
-+	{ .id = "hclk", },
-+	{ .id = "dclk", },
-+	{ .id = "iclk", },
-+};
++			vicap_dvp: port@MEDIA_ROCKCHIP_CIF_DVP {
++				reg = <MEDIA_ROCKCHIP_CIF_DVP>;
++			};
 +
-+static void rk3568_grf_dvp_setup(struct cif_device *cif_dev)
-+{
-+	u32 con1 = RK3568_GRF_WRITE_ENABLE(RK3568_GRF_VI_CON1_CIF_DATAPATH);
++			vicap_mipi: port@MEDIA_ROCKCHIP_CIF_MIPI {
++				reg = <MEDIA_ROCKCHIP_CIF_MIPI>;
++			};
++		};
++	};
 +
-+	if (cif_dev->vep.bus.parallel.flags & V4L2_MBUS_PCLK_SAMPLE_DUALEDGE)
-+		con1 |= RK3568_GRF_VI_CON1_CIF_DATAPATH;
++	vicap_mmu: iommu@fdfe0800 {
++		compatible = "rockchip,rk3568-iommu";
++		reg = <0x0 0xfdfe0800 0x0 0x100>;
++		interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru ACLK_VICAP>, <&cru HCLK_VICAP>;
++		clock-names = "aclk", "iface";
++		#iommu-cells = <0>;
++		power-domains = <&power RK3568_PD_VI>;
++		rockchip,disable-mmu-reset;
++		status = "disabled";
++	};
 +
-+	regmap_write(cif_dev->grf, RK3568_GRF_VI_CON1, con1);
-+}
-+
-+static const struct cif_match_data rk3568_cif_match_data = {
-+	.clks = rk3568_cif_clks,
-+	.clks_num = ARRAY_SIZE(rk3568_cif_clks),
-+	.grf_dvp_setup = rk3568_grf_dvp_setup,
-+	.in_fmts = rk3568_in_fmts,
-+	.in_fmts_num = ARRAY_SIZE(rk3568_in_fmts),
-+	.has_scaler = false,
-+	.regs = {
-+		[CIF_CTRL] = 0x00,
-+		[CIF_INTEN] = 0x04,
-+		[CIF_INTSTAT] = 0x08,
-+		[CIF_FOR] = 0x0c,
-+		[CIF_LINE_NUM_ADDR] = 0x2c,
-+		[CIF_FRM0_ADDR_Y] = 0x14,
-+		[CIF_FRM0_ADDR_UV] = 0x18,
-+		[CIF_FRM1_ADDR_Y] = 0x1c,
-+		[CIF_FRM1_ADDR_UV] = 0x20,
-+		[CIF_VIR_LINE_WIDTH] = 0x24,
-+		[CIF_SET_SIZE] = 0x28,
-+		[CIF_FRAME_STATUS] = 0x3c,
-+		[CIF_LAST_LINE] = 0x44,
-+		[CIF_LAST_PIX] = 0x48,
-+	},
-+};
-+
- static const struct of_device_id cif_plat_of_match[] = {
- 	{
- 		.compatible = "rockchip,px30-vip",
- 		.data = &px30_cif_match_data,
- 	},
-+	{
-+		.compatible = "rockchip,rk3568-vicap",
-+		.data = &rk3568_cif_match_data,
-+	},
- 	{},
- };
- 
-diff --git a/drivers/media/platform/rockchip/cif/cif-regs.h b/drivers/media/platform/rockchip/cif/cif-regs.h
-index 2ce756fde204..261bc71240f2 100644
---- a/drivers/media/platform/rockchip/cif/cif-regs.h
-+++ b/drivers/media/platform/rockchip/cif/cif-regs.h
-@@ -117,4 +117,13 @@ enum cif_register {
- #define CIF_CROP_Y_SHIFT			16
- #define CIF_CROP_X_SHIFT			0
- 
-+/* GRF register offsets */
-+#define RK3568_GRF_VI_CON0			0x340
-+#define RK3568_GRF_VI_CON1			0x344
-+#define RK3568_GRF_VI_STATUS0			0x348
-+
-+#define RK3568_GRF_VI_CON1_CIF_DATAPATH		BIT(9)
-+
-+#define RK3568_GRF_WRITE_ENABLE(x)		((x) << 16)
-+
- #endif
+ 	vpu: video-codec@fdea0400 {
+ 		compatible = "rockchip,rk3568-vpu";
+ 		reg = <0x0 0xfdea0000 0x0 0x800>;
 
 -- 
 2.30.2
