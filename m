@@ -1,91 +1,112 @@
-Return-Path: <linux-kernel+bounces-73002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C48985BBE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:22:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE9185BBE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:22:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 581D42810DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:22:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D6D11F228FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B435467E70;
-	Tue, 20 Feb 2024 12:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FE0692E4;
+	Tue, 20 Feb 2024 12:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xiaomi-corp-partner-google-com.20230601.gappssmtp.com header.i=@xiaomi-corp-partner-google-com.20230601.gappssmtp.com header.b="ATGfQp1j"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O20B2+OK"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7C8692E2
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070015B1F8
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431711; cv=none; b=FeL0vcDHdTv+kijMmZu/r/4c8cfSN2+WA4MD/mJzfX1+eoqHeCBtu6QcyLOcKEa+cIM8PxLB+wZ/COtOTfsKIk/oDKsymdfLFYbeANvQvqsmJrm8DOG42W1d98xldnMNwUQ9wZVOPzkslBtb29wZssVaiYv/22gm6TXdF0LAEfw=
+	t=1708431767; cv=none; b=MqlXAagqM7kniXJF33LlXzLpJ9quFhfdujV4ua/7Yz4+ZHY8gH/fEOl3ay2lGbwjSxQmJDBPKfKP1rl5Owq745zA2gVVneYTv3Ovj5XqJfWs+qVmbY1LdPnOmldL41NAUMHn/wGgLFHBOLCRV29HhoLPf3XyrtukYBF4pvkcuAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431711; c=relaxed/simple;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LEvKtdJ033WgpFXRN/EMs3YmrgngP88PqapBGnHpfVYej084ixjphBPQs7ahk9M9LXItRc1tGxpytBYMMguGW6u6LkTBNrYsRYoXWjAQKaj/ESsxQpeo+rwLQBUeN4RNgL0DXlM7rqmBfUoy0QUdUDpNiVsNRNajQWvW+XNg0/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xiaomi.corp-partner.google.com; spf=pass smtp.mailfrom=xiaomi.corp-partner.google.com; dkim=pass (2048-bit key) header.d=xiaomi-corp-partner-google-com.20230601.gappssmtp.com header.i=@xiaomi-corp-partner-google-com.20230601.gappssmtp.com header.b=ATGfQp1j; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xiaomi.corp-partner.google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xiaomi.corp-partner.google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d8aadc624dso41802985ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:21:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=xiaomi-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1708431709; x=1709036509; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=ATGfQp1j6nsUaPADra405TggI8fCauqshIeoa5E6g8nm0ML5gBfaA0gv06cGxK/taC
-         oVii/JW4C7JSQwua2mVtnnv8mBJWO8ou+eKCz2IXplnu97gfurH9A49H4theq3osd8uz
-         noGnuIZq7nUL1OSvScN1GQxjTE60+Z3DYlobElpimSiXbvvmBnm1oegnGCU1CCUf992P
-         uU2zCUxnhKARPW+gN/qzEjGszHWRV276W9ZsRqbIKM77Xe7QDE3Zpy82d6QoXh2TxFo0
-         XyzehuXIBbKOleDTF4JtpCxUd+RY70X0LFkmb/OrNVAWUPZvdX3FP2+8RIWbAKJfEXZP
-         Pmrg==
+	s=arc-20240116; t=1708431767; c=relaxed/simple;
+	bh=1f11NDJPNaBatEI6pO3kjUS1wCUWc9exdxFhhlFAAj0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qQy0sG0VV83LBb0cLozdIVLv9egG3WmpqBwm/NadyNbu3n6hC9Bf758XRjD+Ra+vds2wdWD7iR4qnkNpjSA2UTaKRMjilaubBb4PcCDcXgBVNb/6kcBl241UX1NU7cE83EhoZX4HiBmVvQ7i5lCB7xppw8nCy9apWptjDbwXkx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O20B2+OK; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708431764;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nryE0QvpwIF+GBr6vQnaZDO8tVOPi12/n3SsPAdoTf4=;
+	b=O20B2+OKWbXLNuJTime8yz71RYHAPzJZjXWtTrSu4qAlbf6+ieXgxcAIONBVl+tBCqf+Cy
+	d54dUx7vZ6AizcAZ0b0ldJWHDimGUI+v4Ud1ml0xcVhEg8g+H3De22f3Tdp7Pf8a5QUsz4
+	KNuf/ILOARv4QXUqArzS3hdV3rO8IUg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-SDIgkkBVPyKnz52EzcJHzQ-1; Tue, 20 Feb 2024 07:22:43 -0500
+X-MC-Unique: SDIgkkBVPyKnz52EzcJHzQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-410e83001cbso29593515e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:22:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708431709; x=1709036509;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708431762; x=1709036562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=b5fSFZ3KnCLlho1GOA57CWUliisumwoD/i7tAq4OWWp4YlJo/VHPtIKX0LUAeAQLi6
-         ExYASYefa6X7xO27vGu7Pcx2VDZgj0EPe+n08Z71kY34F3zqfDAE0gWMicAE7itZdkej
-         XoGts+LQ5aerEakTvAACDV1qeOzusBLT0ey03C7NI9Q9X0/x/Lj2onqdZZ6U/OwDwZBs
-         K10MktBkpLMW/i6A44kTbZ2nXH98gngt5Xq6j1GIDavnnym0pWUibhzdkvPVhfEyXktf
-         hQmmHIS73GuotbnTziMbNTIwaEiKOyLrHapIghz7r+cQ5UVOjTzpiyqDPhejTqe2zUNb
-         KQgw==
-X-Forwarded-Encrypted: i=1; AJvYcCXXdJ0IlaJcEq/rnNBkithvOYUgk3Euprhimrp1q26wHGZlcJlgBzjw6Cs+kE3GcR644B7EhlTknpvRmZwyXHUkj/Uj7aLkzrmTETb8
-X-Gm-Message-State: AOJu0YywaI+y+9147dXr/E+SbSC6P4kzoNo6RhY7MZjUq0ACm95LRHHM
-	PzPz8ipWNt1Q7+b/9QEWBNK+WJEFM2v9C0TGODc69T+br1heBhRLQBfeTR0z3sk=
-X-Google-Smtp-Source: AGHT+IGmprxaQeCnOL0HyVU03s58a9g8YZAdjSMv67qLw4iHHXYIvZxZaL+4+8SK0zS+ItVOCov8aQ==
-X-Received: by 2002:a17:902:d503:b0:1db:e6f6:e28e with SMTP id b3-20020a170902d50300b001dbe6f6e28emr8004991plg.38.1708431708947;
-        Tue, 20 Feb 2024 04:21:48 -0800 (PST)
-Received: from xuyingfeng-OptiPlex-7080.mioffice.cn ([2408:8607:1b00:8:b27b:25ff:fe2a:187f])
-        by smtp.gmail.com with ESMTPSA id lw8-20020a1709032ac800b001d54b763995sm6104213plb.129.2024.02.20.04.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 04:21:48 -0800 (PST)
-From: Rumeng Wang <wangrumeng@xiaomi.corp-partner.google.com>
-To: djakov@kernel.org
-Cc: fengqi@xiaomi.com,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	tkjos@google.com,
-	wangrumeng@xiaomi.corp-partner.google.com,
-	xuyingfeng@xiaomi.com
-Subject: [PATCH] interconnect:Replace mutex with rt_mutex for icc_bw_lock
-Date: Tue, 20 Feb 2024 20:21:42 +0800
-Message-ID: <20240220122142.31756-1-wangrumeng@xiaomi.corp-partner.google.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <4c3f9f52-cd56-4d20-a44d-bfca0b2e3b7e@kernel.org>
-References: <4c3f9f52-cd56-4d20-a44d-bfca0b2e3b7e@kernel.org>
+        bh=nryE0QvpwIF+GBr6vQnaZDO8tVOPi12/n3SsPAdoTf4=;
+        b=EVdrkilGoNtgtU4N4pFSL3VD+AFGKKAmC6+qmDmSvwQDZI1Nj0Lxf9ZHBov5HvNp6U
+         y4YA8CRMjPDSwDklVFzKHG2ckuQmzltoSvM7jS2jf2SoOQD2TrYFOkzV9wQYdzxo2HNN
+         nUC0yuf+yuLG2kLG77Kcrc4IXqud1lD4XsBPqQ7MQXyZWBMSjUCbscjVFUYzdGca5S6W
+         evD35mFspbNQbzPL0Gn8ovfbJC8tR5WpIqb1K01W82FUnCjQsYGEAFpA2N9cADg5q4Tb
+         UkdeGp0nnEPvcGL0ZGmHqzoO5I5LqLgvN7wEDvv/YBAzPIYFCw+QZeCIMw2VxwvkwC09
+         21mA==
+X-Gm-Message-State: AOJu0Ywl0a6b/7RPS9VvimKYwUzTOfmK4bFemvzNrpspRq+gPmx8OcWv
+	AyGzdQzdnc2nPcWG5tlxHMw9zysKtjkU6CXZbgj6CRUpiFnE6KB3c4ONHDsS85+bDrix+MvLIqG
+	9eUGCx0z37ZhgF27FjY2R4eeCNwA3AGqHHbIyNHEpxjmiqiNjv0Es3dxMrUshA0t+MqaN2jG7ZR
+	gEPMCql8GxjB6WfdVmSBvXkI97nmX2O5/eL4iK
+X-Received: by 2002:a05:600c:35c4:b0:411:e145:bfad with SMTP id r4-20020a05600c35c400b00411e145bfadmr10448442wmq.40.1708431762463;
+        Tue, 20 Feb 2024 04:22:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFvnATC39HsxnxsVPrX2vePi3o4k+bGJVrQJVVrIuj4lKaYfDwJip1nNryMKhpbiQwD04oJARcbUxMwnO4L7xA=
+X-Received: by 2002:a05:600c:35c4:b0:411:e145:bfad with SMTP id
+ r4-20020a05600c35c400b00411e145bfadmr10448417wmq.40.1708431762136; Tue, 20
+ Feb 2024 04:22:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240131230902.1867092-1-pbonzini@redhat.com> <2b5e6d68-007e-48bd-be61-9a354be2ccbf@intel.com>
+ <CABgObfa_7ZAq1Kb9G=ehkzHfc5if3wnFi-kj3MZLE3oYLrArdQ@mail.gmail.com>
+ <CABgObfbetwO=4whrCE+cFfCPJa0nsK=h6sQAaoamJH=UqaJqTg@mail.gmail.com>
+ <CABgObfbUcG5NyKhLOnihWKNVM0OZ7zb9R=ADzq7mjbyOCg3tUw@mail.gmail.com> <eefbce80-18c5-42e7-8cde-3a352d5811de@intel.com>
+In-Reply-To: <eefbce80-18c5-42e7-8cde-3a352d5811de@intel.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 20 Feb 2024 13:22:29 +0100
+Message-ID: <CABgObfY=3msvJ2M-gHMqawcoaW5CDVDVxCO0jWi+6wrcrsEtAw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] x86/cpu: fix invalid MTRR mask values for SEV or TME
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	Zixi Chen <zixchen@redhat.com>, Adam Dunlap <acdunlap@google.com>, 
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	Kai Huang <kai.huang@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, x86@kernel.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Feb 13, 2024 at 11:02=E2=80=AFPM Dave Hansen <dave.hansen@intel.com=
+> wrote:
+> Your patches make things a wee bit worse in the meantime, but they pale
+> in comparison to the random spaghetti that we've already got.  Also, we
+> probably need the early TME stuff regardless.
+>
+> I think I'll probably suck it up, apply them, then fix them up along
+> with the greater mess.
+>
+> Anybody have any better ideas?
+
+Ping, in the end are we applying these patches for either 6.8 or 6.9?
+
+Paolo
 
 
