@@ -1,112 +1,95 @@
-Return-Path: <linux-kernel+bounces-73424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36A5F85C269
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:19:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C8385C2A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:29:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D5B91C2263A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:19:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4802E1F21CDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EEF7866A;
-	Tue, 20 Feb 2024 17:19:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZylNuoqF"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4967976C9A;
+	Tue, 20 Feb 2024 17:28:53 +0000 (UTC)
+Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C504576C94;
-	Tue, 20 Feb 2024 17:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9406BB3C;
+	Tue, 20 Feb 2024 17:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.239.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449545; cv=none; b=E+ooGkgIpjS+lQxjFLp2AflP6XXQ49LDle9JjL+7cW8rK5HgLw2mk9/TUwSDyePW9B7zyUxv1f4cRFEOyrGnXmxah1QApdTbATOxg4FU2gAsKy7KfXtg1wdRyATDdzsu/s6y04mt7usOXEuFl/ZjOYuKpkko70QyTY2L6G/Xl8o=
+	t=1708450132; cv=none; b=D9zIjlEJQipfjU3KHJk6JTO6dCUt9a5trvr4IoofzLWm0f6MmETRXGyO5s8nf1cRfzWvKhlZAPv5mBIncacXOY4srM9ma8RC+tbQYKS9O6X7pMd/dIwiyNHzkUyC0IB0NMh59s76J5IkG3CqGnqDMD/u02QQO9fZHVc8Zb/EBvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449545; c=relaxed/simple;
-	bh=qY/gICxbLEkSnEgQyrbs+LyV/tRdFeA2GPaxJlaMch0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cfZt53oHgweBJDrD/+YyuRLiUQW+NZS9rBK/Lh9nP7qRYFVIn9plhXfHMRoQcnVP05XT6a8xO8EABCCJcWCJp5Zd2pYej1CclVMy265Jg2I8Zwvp/7MicaROtNs3shMqSGg8OXHspH6AvKvigmA4vNJ4ORk9kU0u0APBgg+QpR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZylNuoqF; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 20 Feb 2024 12:18:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708449541;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TFBMvCwRxxn7Ubei4id/yHwyn/BDb0WjYtVEnoOd25s=;
-	b=ZylNuoqF0WKUPQen8SuTjXEKNDhM2Ex2wqwBoEJf60+6TaajmwkB70wpiPVQXYu+eoYCUR
-	sUKS2cANH7nSCOlWQUjFI+HMnkIwXo0ZHXqsAjV+pF8AwlJ/TOPjGDnpbzkNBHPzZ7uLrX
-	c3XpOWsBmNaK+l1P89corGdUgfBt0Rw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, david@redhat.com, 
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
-	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
-	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
-	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-Message-ID: <qnpkravlw4d5zic4djpku6ffghargekkohsolrnus3bvwipa7g@lfbucg3r4zbz>
-References: <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
- <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
- <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
- <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
- <20240215180742.34470209@gandalf.local.home>
- <20240215181648.67170ed5@gandalf.local.home>
- <20240215182729.659f3f1c@gandalf.local.home>
- <mi5zw42r6c2yfg7fr2pfhfff6hudwizybwydosmdiwsml7vqna@a5iu6ksb2ltk>
- <CAJuCfpEARb8t8pc8WVZYB=yPk6G_kYGmJTMOdgiMHaYYKW3fUA@mail.gmail.com>
- <ZdTSAWwNng9rmKtg@tiehlicka>
+	s=arc-20240116; t=1708450132; c=relaxed/simple;
+	bh=oKDLccZyHEGW2g0OCb7bDldgHeaDewYT0IdMlFRFtLc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QvAEGgkxhChCEVEVDxFjRV9Y97oU5EXk5gD8Pay5KY+BRvg6/hQokoHzbMYFlMd+/nRNA+p4JZ4BuQjIU7OwFQMutKbjCcHEO+X2U6tY6oUhOy/0HykD9NciYxVIqPHbbF44Y2TvnQKc0tf4CUnpMH+OdZ56+AK1ZGpAIy6tuC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org; spf=pass smtp.mailfrom=enpas.org; arc=none smtp.client-ip=46.38.239.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by mail.enpas.org (Postfix) with ESMTPSA id 041CAFFE54;
+	Tue, 20 Feb 2024 17:20:04 +0000 (UTC)
+Message-ID: <dd1c1536-f36b-4615-97b7-7f6ea4b5e5a9@enpas.org>
+Date: Wed, 21 Feb 2024 02:20:02 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdTSAWwNng9rmKtg@tiehlicka>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] HID: nintendo: Don't fail on setting baud rate
+Content-Language: en-US
+To: "Daniel J . Ogorchock" <djogorchock@gmail.com>,
+ Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240115145000.12777-1-max@enpas.org>
+From: Max Staudt <max@enpas.org>
+In-Reply-To: <20240115145000.12777-1-max@enpas.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 20, 2024 at 05:23:29PM +0100, Michal Hocko wrote:
-> On Mon 19-02-24 09:17:36, Suren Baghdasaryan wrote:
-> [...]
-> > For now I think with Vlastimil's __GFP_NOWARN suggestion the code
-> > becomes safe and the only risk is to lose this report. If we get cases
-> > with reports missing this data, we can easily change to reserved
-> > memory.
-> 
-> This is not just about missing part of the oom report. This is annoying
-> but not earth shattering. Eating into very small reserves (that might be
-> the only usable memory while the system is struggling in OOM situation)
-> could cause functional problems that would be non trivial to test for.
-> All that for debugging purposes is just lame. If you want to reuse the code
-> for a different purpose then abstract it and allocate the buffer when you
-> can afford that and use preallocated on when in OOM situation.
-> 
-> We have always went extra mile to avoid potentially disruptive
-> operations from the oom handling code and I do not see any good reason
-> to diverge from that principle.
+Ping :)
 
-Michal, I gave you the logic between dedicated reserves and system
-reserves. Please stop repeating these vague what-ifs.
+Do you think this patch could be upstreamed to widen the controller support?
+
+
+Thank you for looking at this!
+
+Max
+
+
+
+
+On 1/15/24 23:50, Max Staudt wrote:
+> Some third-party controllers can't change the baud rate.
+> 
+> We can still use the gamepad as-is, so let's do that.
+> 
+> Signed-off-by: Max Staudt <max@enpas.org>
+> ---
+>   drivers/hid/hid-nintendo.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
+> index 997c3a1adaca..8cba0612c3ae 100644
+> --- a/drivers/hid/hid-nintendo.c
+> +++ b/drivers/hid/hid-nintendo.c
+> @@ -2164,8 +2164,11 @@ static int joycon_init(struct hid_device *hdev)
+>   		/* set baudrate for improved latency */
+>   		ret = joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ);
+>   		if (ret) {
+> +			/*
+> +			 * We can function with the default baudrate.
+> +			 * Provide a warning, and continue on.
+> +			 */
+>   			hid_err(hdev, "Failed to set baudrate; ret=%d\n", ret);
+> -			goto out_unlock;
+>   		}
+>   		/* handshake */
+>   		ret = joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
+
 
