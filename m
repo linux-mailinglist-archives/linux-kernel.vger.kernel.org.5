@@ -1,211 +1,81 @@
-Return-Path: <linux-kernel+bounces-72333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9545B85B21C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C8785B21D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD38283BF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:08:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB2DC2819D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCF456B7E;
-	Tue, 20 Feb 2024 05:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GO/vQvx9"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E679356B6E;
+	Tue, 20 Feb 2024 05:09:44 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79145481B3;
-	Tue, 20 Feb 2024 05:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1241E484;
+	Tue, 20 Feb 2024 05:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708405699; cv=none; b=l6h1NatCkCAWqNIwKsaPsZQpJ1zGnYwtyZ+kHULBc+Ny1Xrv9MbKgJ6Eyn99eNXpNlXsHpnFcp8Vief55yY9jLjSVT5fh++6f2hRbi3cQ6hrml78a9MjmPITWCfspuXEYIUMbfI1IFUcrK7LarV9Q82Ag1YcHaC6F92IUCCLfVQ=
+	t=1708405784; cv=none; b=S6V+Ybk1JKVM+Pna+WsVwSfXewWFkkJ9C4/EI2ToNSRB9c3ZH5yuoQIlV4U2qypnVXHRvFcZHKJ3xuobp4EZoJ+jpAMPUQqw2onS5Sjs89yisgQfllTWJmJPINu9niUBy1FGWHlkpp46KPtMWZm/p4uIS7eUI6+0hFP2BCRSlOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708405699; c=relaxed/simple;
-	bh=OOQts34tAdzeELzHw+Ngbf4pg4xCendhnsfyqCJ9JAc=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=MkMUUU7uU+olz8E1rF7/ywYwz7kx2Z9osuFgSA/BXZUwoomK49zUIcxOFB8fIGr2Ovh//81cXrbVI8pagSWHCCUgmaOSNCs1a6yr8Dlzj7aaZZoQSxLq4rJJna7bu1ooVQ2CroIpKOV6rQrBGlpbACKHeEPPSEyY8RkhcWcijA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GO/vQvx9; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K4kSDM024893;
-	Tue, 20 Feb 2024 05:07:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=MhtlekRsepEl
-	CIsKwt+ETmTkwwxR1cINhfvJXfVw7aU=; b=GO/vQvx9SXK9PrwyrPdfLbcOwIni
-	lA9MXRxuS6GRGBo/DIQtGgGCxWE4P30cLD0iqU0N44f312Ic1LphWfh4U7x1Igho
-	LqQ7JEBgIIWwR/PzbbOTbe+DuBpNU6p4Eym4DTlQHNKAtqMhgmrxMN8u/rhb7hNC
-	MR1v3j9MlLWkjGaq8N7nED3+6SwEN0gZIoDnYuJPywmcajaLBAhCtJikWwfZphwn
-	S1Kotu8NKnQHFq0wR9SCks4acE/WUwymoKBFQR4m6SxDO/hRXJKwfbbURfRN8zpt
-	wtbyH7zSHOBzRRlar/fStSCxW9p09p13TUMhYNuyASfYTuiBYLUv9qAkHA==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcnbd80x4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:07:53 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41K56ZaB032676;
-	Tue, 20 Feb 2024 05:07:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3wanvkbfmx-1;
-	Tue, 20 Feb 2024 05:07:48 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41K57mlP000910;
-	Tue, 20 Feb 2024 05:07:48 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 41K57mPg000907;
-	Tue, 20 Feb 2024 05:07:48 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
-	id 454B15013A6; Tue, 20 Feb 2024 10:37:47 +0530 (+0530)
-From: Sneh Shah <quic_snehshah@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com,
-        Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH net-next v5] net: stmmac: dwmac-qcom-ethqos: Add support for 2.5G SGMII
-Date: Tue, 20 Feb 2024 10:37:35 +0530
-Message-Id: <20240220050735.29507-1-quic_snehshah@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gxu3sjaCAaaVmTgWOtimBZ76QZLeF7Zl
-X-Proofpoint-ORIG-GUID: gxu3sjaCAaaVmTgWOtimBZ76QZLeF7Zl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_04,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
- priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402200034
+	s=arc-20240116; t=1708405784; c=relaxed/simple;
+	bh=qE3m4ey1wSd/5GJq68ttthesLt1zRidR9UVACQubuzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U6jckSd80o0tqng2SE4w7C44nps5JM3XWKHUv8rG1YEbhGUQ1oKreHPew0jVSK1XkztCcW6TcF69JxzS3m1qph378FbxmB/zgbXLU4ViV7Z9ev+kJIB3iagyKLzuwuI18vMk4n08Tm597Wp0eF2KmAf7SgxL3aclaDnkIRw+qqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rcINT-00FWkr-7C; Tue, 20 Feb 2024 13:09:12 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 20 Feb 2024 13:09:25 +0800
+Date: Tue, 20 Feb 2024 13:09:25 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, davem@davemloft.net, hannes@cmpxchg.org,
+	linux-crypto@vger.kernel.org, linux-mm@kvack.org, nphamcs@gmail.com,
+	yosryahmed@google.com, zhouchengming@bytedance.com,
+	chriscli@google.com, chrisl@kernel.org, ddstreet@ieee.org,
+	linux-kernel@vger.kernel.org, sjenning@redhat.com,
+	vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>,
+	Yang Shen <shenyang39@huawei.com>,
+	Zhou Wang <wangzhou1@hisilicon.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>
+Subject: Re: [PATCH v4 1/3] crypto: introduce crypto_acomp_get_alg_flags to
+ expose algorithm flags
+Message-ID: <ZdQ0Bfw82Uzsv7cK@gondor.apana.org.au>
+References: <20240220025545.194886-1-21cnbao@gmail.com>
+ <20240220025545.194886-2-21cnbao@gmail.com>
+ <ZdQm7n6Jc3tqsg1F@gondor.apana.org.au>
+ <CAGsJ_4yP1Z4xAy5DEiaPB14YsOSYuYa80C-UY6SC2_eT7vhK9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4yP1Z4xAy5DEiaPB14YsOSYuYa80C-UY6SC2_eT7vhK9g@mail.gmail.com>
 
-Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
-mode for 1G/100M/10M speed.
-Added changes to configure serdes phy and mac based on link speed.
-Changing serdes phy speed involves multiple register writes for
-serdes block. To avoid redundant write operations only update serdes
-phy when new speed is different.
-For 2500 speed MAC PCS autoneg needs to disabled. Added changes to
-disable MAC PCS autoneg if ANE parameter is not set.
+On Tue, Feb 20, 2024 at 06:05:16PM +1300, Barry Song wrote:
+> 
+> So it could be something like:
+> if data is short, acomp driver works by polling; if data is
+> long, acomp driver works by sleeping and waiting.
 
-Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
----
-v5 changelog:
-- Updated commit message with more details on MAC PCS autoneg disable
-v4 changelog:
-- Made cosmetic changes
-v3 changelog:
-- updated commit message
----
-v2 changelog:
-- updated stmmac_pcs_ane to support autoneg disable
-- Update serdes speed to 1000 for 100M and 10M also---
----
- .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 +++++++++++++++++++
- .../net/ethernet/stmicro/stmmac/stmmac_pcs.h  |  2 ++
- 2 files changed, 28 insertions(+)
+This sort of logic is specific to each piece of hardware and
+should go into the driver.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 31631e3f89d0..6bbdbb7bef44 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -106,6 +106,7 @@ struct qcom_ethqos {
- 	struct clk *link_clk;
- 	struct phy *serdes_phy;
- 	unsigned int speed;
-+	int serdes_speed;
- 	phy_interface_t phy_mode;
- 
- 	const struct ethqos_emac_por *por;
-@@ -606,19 +607,39 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
-  */
- static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
- {
-+	struct net_device *dev = platform_get_drvdata(ethqos->pdev);
-+	struct stmmac_priv *priv = netdev_priv(dev);
- 	int val;
- 
- 	val = readl(ethqos->mac_base + MAC_CTRL_REG);
- 
- 	switch (ethqos->speed) {
-+	case SPEED_2500:
-+		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-+		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-+			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-+			      RGMII_IO_MACRO_CONFIG2);
-+		if (ethqos->serdes_speed != SPEED_2500)
-+			phy_set_speed(ethqos->serdes_phy, SPEED_2500);
-+		ethqos->serdes_speed = SPEED_2500;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 0, 0, 0);
-+		break;
- 	case SPEED_1000:
- 		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
- 		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
- 			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
- 			      RGMII_IO_MACRO_CONFIG2);
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, SPEED_1000);
-+		ethqos->serdes_speed = SPEED_1000;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
- 		break;
- 	case SPEED_100:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, SPEED_1000);
-+		ethqos->serdes_speed = SPEED_1000;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
- 		break;
- 	case SPEED_10:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
-@@ -627,6 +648,10 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
- 			      FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR,
- 					 SGMII_10M_RX_CLK_DVDR),
- 			      RGMII_IO_MACRO_CONFIG);
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-+		ethqos->serdes_speed = SPEED_1000;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
- 		break;
- 	}
- 
-@@ -799,6 +824,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 				     "Failed to get serdes phy\n");
- 
- 	ethqos->speed = SPEED_1000;
-+	ethqos->serdes_speed = SPEED_1000;
- 	ethqos_update_link_clk(ethqos, SPEED_1000);
- 	ethqos_set_func_clk_en(ethqos);
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-index aefc121464b5..13a30e6df4c1 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-@@ -110,6 +110,8 @@ static inline void dwmac_ctrl_ane(void __iomem *ioaddr, u32 reg, bool ane,
- 	/* Enable and restart the Auto-Negotiation */
- 	if (ane)
- 		value |= GMAC_AN_CTRL_ANE | GMAC_AN_CTRL_RAN;
-+	else
-+		value &= ~GMAC_AN_CTRL_ANE;
- 
- 	/* In case of MAC-2-MAC connection, block is configured to operate
- 	 * according to MAC conf register.
+There is no reason why an async driver cannot return synchronously.
+The API fully supports this mode of operation.
+
+Cheers,
 -- 
-2.17.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
