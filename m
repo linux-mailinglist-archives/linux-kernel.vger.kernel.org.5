@@ -1,169 +1,99 @@
-Return-Path: <linux-kernel+bounces-72448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD7385B39A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:05:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D0185B3A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C4F8B228A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:05:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 812881F23C51
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1118B5B200;
-	Tue, 20 Feb 2024 07:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A475A109;
+	Tue, 20 Feb 2024 07:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zi6tPaWa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wo3wzRZB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5031F5A7BF
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10805A0EC
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708412641; cv=none; b=PzJgwhlJQ+a+wSlDpyql5bxWpfHkaDNdXs8pnsRZKZXDsc9IkLqd7XskJxcF38vhXkPaUB7vfJ3HRI5r5dGdL2JPyfbsiPz/HDKthqfUFTOhnr9wExJF65AKMcpcJKyw0NQE9RpL4h4mXUnOasK9f3ocXaV3WsHOtHk+B3+/SqI=
+	t=1708412860; cv=none; b=WXFWOwjq5xrVoo2oskul4XvzS9/vvOIFmI3wEP3opmACGxkzDwNnXmh1BMGm++e40UxlAYnUbDbgj/c9wMh/+cEwapqlDdjcQnZbAr2YNzNRjSYunYlU60aDCRAEJRQ3GBN1Z6NnkbTs9fyAwJREYFqN/iItfmGb0nAvMV1buWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708412641; c=relaxed/simple;
-	bh=PMQoz8O5HTzQHK/8qIlXhgJEFRcEgbpMwCdJThDc+fw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Z+by43Ip2Pm/jvBRnksY93J9U8WNIesaRRASb7crtoVbXONFhcMymIRuD4A5Ww3vS6s/5WobgmmU7vD6OxxiQkosSzhsRd2f9MIvpGRFgXXZJVNGMyognNqdrsu/25glfbTC4AI30zwGFkF/tFNALwsSB2/+4yv/fIviv1mh2CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zi6tPaWa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61638C433C7;
-	Tue, 20 Feb 2024 07:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708412640;
-	bh=PMQoz8O5HTzQHK/8qIlXhgJEFRcEgbpMwCdJThDc+fw=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=Zi6tPaWauef5T/Nrx1WvQcsey8zBCfJYKhuNwG4sQVYWSgEn4RyMBl1F2VIw/qSHc
-	 TPvDCayTZeuLIBnW9CapdThhB5qgi9Wx6l+ub9jpClL9IhO0+nfGkGNAldSOLlk+SY
-	 Vu3n1T/jP9+re25D1PeOen5sX+lktNX7f6TBb/7jS7jFGiu+NwvldGNnBTijzy+wRl
-	 gLwNabtb+XH6AJmMeHNnZxc/cKi000RPpKfksdoi2faTxZucxAHLA9pR/JdiPLZceV
-	 PfZHT0G47zBC4gTe3NArvuVNU5Qj2TQKOMJXj+LjpIj5QYaC9uLIRxskAB5sEKsFi1
-	 L/CbHRRFRQOCw==
-Message-ID: <b599bfe5-1c4d-4750-b0d6-a086e1c8a34c@kernel.org>
-Date: Tue, 20 Feb 2024 12:33:51 +0530
+	s=arc-20240116; t=1708412860; c=relaxed/simple;
+	bh=eFwrMZYBaKC0PtuKqGOOAfW+iaAOQo8Z2d/tXJG/FRo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UlPGgsOZonrHGGDRWAndyJfPdRfNj9jgqFdCtBiLlrVRrbUb1gyt/JsU9GSjAsYEmAioG7IJbG1MuOeqWbHte4ZV/v0OAG4UKptnVZMWDJ0s2LtuoKee4CaeZpS2m3R/6tZkP7dUnRkVuEa6OA/pYr93Rj0d40D0OpzmAmCID4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wo3wzRZB; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708412858; x=1739948858;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=eFwrMZYBaKC0PtuKqGOOAfW+iaAOQo8Z2d/tXJG/FRo=;
+  b=Wo3wzRZBsWB6OedgLQDlfXVWVteERHThyZnfBewO1Oy6hCrUcijmym++
+   UmxeZ8FwB44m2riB48XETbUOIiEqzhNLJsp7EoQtDPk5xDpAoi9gT+UNx
+   bjm15n5rjXiaPmT6k5qPRxba/upl5GOVfw/kQgQEJoDZDez1kzpLF3WWk
+   CuLs7V63OMqEH0ONOCYL+HwMMzgBTEWJpjxTn704Hqwz6JVPQDFllsO94
+   ejG7kmyNqHJbhh9TS+ky/xvWAzO7pzjhIxkBhdhm/BRlCvJfDBtiAaHzN
+   H8lyIm+jx9OzXyRoLQVuoxnhmdHXAZgjwaNugRF62HTHk3ZNSWmhaKkMB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="13913872"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="13913872"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 23:07:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="827116919"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="827116919"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 19 Feb 2024 23:07:36 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rcKE1-0004Ig-1E;
+	Tue, 20 Feb 2024 07:07:33 +0000
+Date: Tue, 20 Feb 2024 15:07:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: WARNING: modpost: vmlinux: section mismatch in reference:
+ tracing_gen_ctx+0x64 (section: .text.unlikely) -> initcall_level_names
+ (section: .init.data)
+Message-ID: <202402201428.BGNv6253-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local variable
-Content-Language: en-US
-From: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Donet Tom <donettom@linux.ibm.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
- Mel Gorman <mgorman@suse.de>, Ben Widawsky <ben.widawsky@intel.com>,
- Feng Tang <feng.tang@intel.com>, Michal Hocko <mhocko@kernel.org>,
- Andrea Arcangeli <aarcange@redhat.com>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Matthew Wilcox <willy@infradead.org>, Mike Kravetz
- <mike.kravetz@oracle.com>, Vlastimil Babka <vbabka@suse.cz>,
- Dan Williams <dan.j.williams@intel.com>, Hugh Dickins <hughd@google.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>,
- Suren Baghdasaryan <surenb@google.com>
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
- <20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
- <63a0f7c4-3c3f-4097-9a24-d1e3fc7b6030@linux.ibm.com>
- <20240219172130.82a16c1ebecbf8ba86a8987d@linux-foundation.org>
- <21f343fa-84a7-4539-91e2-6fc963dbfb62@kernel.org>
- <87frxnps8w.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <7097ff95-6077-4744-a770-b90d224c0c9b@kernel.org>
-In-Reply-To: <7097ff95-6077-4744-a770-b90d224c0c9b@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2/20/24 12:02 PM, Aneesh Kumar K.V wrote:
-> On 2/20/24 11:55 AM, Huang, Ying wrote:
->> "Aneesh Kumar K.V" <aneesh.kumar@kernel.org> writes:
->>
->>> On 2/20/24 6:51 AM, Andrew Morton wrote:
->>>> On Mon, 19 Feb 2024 14:04:23 +0530 Donet Tom <donettom@linux.ibm.com> wrote:
->>>>
->>>>>>> --- a/mm/mempolicy.c
->>>>>>> +++ b/mm/mempolicy.c
->>>>>>> @@ -2526,7 +2526,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->>>>>>>   		if (node_isset(curnid, pol->nodes))
->>>>>>>   			goto out;
->>>>>>>   		z = first_zones_zonelist(
->>>>>>> -				node_zonelist(numa_node_id(), GFP_HIGHUSER),
->>>>>>> +				node_zonelist(thisnid, GFP_HIGHUSER),
->>>>>>>   				gfp_zone(GFP_HIGHUSER),
->>>>>>>   				&pol->nodes);
->>>>>>>   		polnid = zone_to_nid(z->zone);
->>>>>> 	int thisnid = cpu_to_node(thiscpu);
->>>>>>
->>>>>> Is there any dofference between numa_node_id() and
->>>>>> cpu_to_node(raw_smp_processor_id())?  And it it explicable that we're
->>>>>> using one here and not the other?
->>>>>
->>>>> Hi Andrew
->>>>>
->>>>> Both numa_node_id() and cpu_to_node(raw_smp_processor_id()) return the current execution node id,
->>>>> Since the current execution node is already fetched at the beginning (thisnid) we can reuse it instead of getting it again.
->>>>
->>>> Sure, but mine was a broader thought: why do we have both?  Is one
->>>> preferable and if so why?
->>>
->>> IIUC these are two helpers to fetch current numa node id. and either of them can be used based on need. The default implementation shows the details.
->>> (One small difference is numa_node_id() can use optimized per cpu reader because it is fetching the per cpu variable of the currently running cpu.)
->>>
->>> #ifndef numa_node_id
->>> /* Returns the number of the current Node. */
->>> static inline int numa_node_id(void)
->>> {
->>> 	return raw_cpu_read(numa_node);
->>> }
->>> #endif
->>>
->>> #ifndef cpu_to_node
->>> static inline int cpu_to_node(int cpu)
->>> {
->>> 	return per_cpu(numa_node, cpu);
->>> }
->>> #endif
->>>
->>> In mpol_misplaced function, we need the cpu details because we are using that in other place (should_numa_migreate_memory()). So it makes it easy
->>> to use cpu_to_node(thiscpu) instead of numa_node_id(). 
->>
->> IIUC, numa_node_id() is faster than cpu_to_node(thiscpu), even if we
->> have thiscpu already.  cpu_to_node() is mainly used to get the node of
->> NOT current CPU.  So, IMHO, we should only use numa_node_id() in this
->> function.
->>
-> 
-> This change?
-> 
-> modified   mm/mempolicy.c
-> @@ -2502,8 +2502,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->  	pgoff_t ilx;
->  	struct zoneref *z;
->  	int curnid = folio_nid(folio);
-> -	int thiscpu = raw_smp_processor_id();
-> -	int thisnid = cpu_to_node(thiscpu);
-> +	int thisnid = numa_node_id();
->  	int polnid = NUMA_NO_NODE;
->  	int ret = NUMA_NO_NODE;
->  
-> @@ -2573,7 +2572,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->  		polnid = thisnid;
->  
->  		if (!should_numa_migrate_memory(current, folio, curnid,
-> -						thiscpu))
-> +						raw_smp_processor_id()))
->  			goto out;
->  	}
->  
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b401b621758e46812da61fa58a67c3fd8d91de0d
+commit: 481461f5109919babbb393d6f68002936b8e2493 linux/export.h: make <linux/export.h> independent of CONFIG_MODULES
+date:   7 months ago
+config: xtensa-buildonly-randconfig-r002-20230515 (https://download.01.org/0day-ci/archive/20240220/202402201428.BGNv6253-lkp@intel.com/config)
+compiler: xtensa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240220/202402201428.BGNv6253-lkp@intel.com/reproduce)
 
-One of the problem with the above change will be the need to make sure smp processor id remaining stable, which
-I am not sure we want in this function. With that we can end up with processor id not related to the numa node id
-we are using. 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402201428.BGNv6253-lkp@intel.com/
 
--aneesh
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
+WARNING: modpost: missing MODULE_DESCRIPTION() in vmlinux.o
+WARNING: modpost: vmlinux: section mismatch in reference: put_page+0x78 (section: .text.unlikely) -> initcall_level_names (section: .init.data)
+>> WARNING: modpost: vmlinux: section mismatch in reference: tracing_gen_ctx+0x64 (section: .text.unlikely) -> initcall_level_names (section: .init.data)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
