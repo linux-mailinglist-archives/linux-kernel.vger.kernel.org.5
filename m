@@ -1,181 +1,224 @@
-Return-Path: <linux-kernel+bounces-72662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B4485B6D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:12:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB1FB85B6DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:13:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F32C2897AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:12:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 214B2B21C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243FE60EDF;
-	Tue, 20 Feb 2024 09:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6435627EE;
+	Tue, 20 Feb 2024 09:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="L3121SCD"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2063.outbound.protection.outlook.com [40.107.94.63])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CztYE3oQ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B9460DF7;
-	Tue, 20 Feb 2024 09:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708420144; cv=fail; b=iKw3HqijDtXNLinKR0wo129iZQ7C/vdh0ga2KnAhOFW5wbyP1axkw6ggQSTqD4+PyWVjhcqkbDF3JVvI4nVnoRi5TD/R6bd1aPujOHceFzH4omfdwMZLCJjbE2RqWvax7gFd4Ms4Df6FPXkSoh+CEyai7WCrICpIi/Yx/NfKRM4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708420144; c=relaxed/simple;
-	bh=HVTtgz1XaeBzGTBR5ZwJ1Q3P+Qtm3Ikv3kpaPMlzyRE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=SaJ3ScP9fFWydDBoXY74cd/N2AjqEIPoDzEpAHWOQNciS5cll0qcqTiR2EHxomynvGVa9kOhFKjc0u2o1gfYMfh7UWwbsDC7gXgJiF1bcE8j5hl3emTj3n/L42MfZ89h3PBdL+MAa1QKunwNn3+tn4EU0T5lqPhFmyxU5qcFztY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=L3121SCD; arc=fail smtp.client-ip=40.107.94.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lylgvfe8vuqDRhPiz6+vKi1jqC4Z25ZeIFpmVajTmA90ECQEI08hHvehpt06DNYeBaQlZ/cW20zKXTbtcvQQ8eXEpFLoJpi+M+A5IbkI2GSxpLWfdTLjiH9lmPFB7zrlupBg5rWzkt2msyQEnPYq1Wg9Ioz2CdmVf9+S+sn/IMsMoUONjcl5m9cjB1Y+hF9LPbiLHZ3U17h2LyHZQzCWR5wWPdq+WSsrCekEH67WgVLHXfOglN/9CpJUq+URwnDPLsoiV9OHQH6vojeAxRMB50eKPp68oNzew/JM6Dm8B9uQO9rBa0JFly74klMqp81Ik1Hw6Hd/xl9JL2nTJn3oGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HVTtgz1XaeBzGTBR5ZwJ1Q3P+Qtm3Ikv3kpaPMlzyRE=;
- b=NvkIGrgyk2Bk1xVF0ujFx1h/0cjnHQ0qgzK/vtMBWf7kDU/sD9G+9nVWBPkLsllYFovA+4RbG3Mn/ooLvCg0P4fl3VGdv/FFhNgbc8ZV0tEGyxZbgg51lUwGb3buREv5AxybedYmc/FiNh3WjFUtrDUAf4VYDO8JcrfX2RF4cyBwp0D3PHRGimnxrFmJ8NGLrW3C1zQio+QQaDXmYggJb9LYCP3Xwy+vQP/b1BKNdkzpi6086XBZNRJp1BknJJ1BRZJVA5aWKjkXHuNSadwtDAfQiFPIaQ+Ot/cNEzOaoOPeuyJHFzTGQNHWovwoElt9M6b7K0jNF79SfA4JLreQ9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HVTtgz1XaeBzGTBR5ZwJ1Q3P+Qtm3Ikv3kpaPMlzyRE=;
- b=L3121SCDwrBdykMlI7qDoI/uGzeDj2Y3wQPU3a7p8TP+qLo2hZQPt4GtDFQHY1iWtiO3RlmazZm8QVFrpXYep7pLNyqW1QeM5B15GVJd9DXy+vD8bBoGlt2inLAkWeZf7q8RiOHXWVhhLVauJI/QUeffvvQ6o9+3f7Sg4Fp0Xeal/pupMsTR2E2Hl7Im7FrfN6Q/hQICYwOu5ZWZr2pvEcbSvrdIZ9GQdu5FKp0XFSA+Kj5Lk7eKLPhtMB9Mtozi1TarqwlclhbSCJfhGDmrKeuuQQ7BqzBEg2W2GFBpSZ3aKszPBLi8c4adwNPwcHQGC4ZcU3upaSsaYsDnzJaKKw==
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
- by IA1PR12MB8189.namprd12.prod.outlook.com (2603:10b6:208:3f0::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.20; Tue, 20 Feb
- 2024 09:08:58 +0000
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.016; Tue, 20 Feb 2024
- 09:08:58 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: Zhi Wang <zhiw@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
-	"maz@kernel.org" <maz@kernel.org>, "oliver.upton@linux.dev"
-	<oliver.upton@linux.dev>, "james.morse@arm.com" <james.morse@arm.com>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, "yuzenghui@huawei.com"
-	<yuzenghui@huawei.com>, "reinette.chatre@intel.com"
-	<reinette.chatre@intel.com>, "surenb@google.com" <surenb@google.com>,
-	"stefanha@redhat.com" <stefanha@redhat.com>, "brauner@kernel.org"
-	<brauner@kernel.org>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"will@kernel.org" <will@kernel.org>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"yi.l.liu@intel.com" <yi.l.liu@intel.com>, "ardb@kernel.org"
-	<ardb@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"andreyknvl@gmail.com" <andreyknvl@gmail.com>, "wangjinchao@xfusion.com"
-	<wangjinchao@xfusion.com>, "gshan@redhat.com" <gshan@redhat.com>,
-	"shahuang@redhat.com" <shahuang@redhat.com>, "ricarkol@google.com"
-	<ricarkol@google.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"lpieralisi@kernel.org" <lpieralisi@kernel.org>, "rananta@google.com"
-	<rananta@google.com>, "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-	"david@redhat.com" <david@redhat.com>, "linus.walleij@linaro.org"
-	<linus.walleij@linaro.org>, "bhe@redhat.com" <bhe@redhat.com>
-CC: Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>, Kirti
- Wankhede <kwankhede@nvidia.com>, "Tarun Gupta (SW-GPU)"
-	<targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy Currid
-	<ACurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John Hubbard
-	<jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, Matt Ochs
-	<mochs@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v8 2/4] mm: introduce new flag to indicate wc safe
-Thread-Topic: [PATCH v8 2/4] mm: introduce new flag to indicate wc safe
-Thread-Index: AQHaY86qDQVcMVySRkSmtPnSJvq8YrES5W+AgAAGuiSAAAS3AIAAADHI
-Date: Tue, 20 Feb 2024 09:08:58 +0000
-Message-ID:
- <SA1PR12MB7199E64F383B1C3FFAAFA224B0502@SA1PR12MB7199.namprd12.prod.outlook.com>
-References: <20240220072926.6466-1-ankita@nvidia.com>
- <20240220072926.6466-3-ankita@nvidia.com>
- <bc5cdc2e-50d8-435a-8f9d-a0053a99598d@nvidia.com>
- <SA1PR12MB71992963218C5753F346B3D7B0502@SA1PR12MB7199.namprd12.prod.outlook.com>
- <b8630236-a081-489e-86aa-efbb39d3d9fa@nvidia.com>
-In-Reply-To: <b8630236-a081-489e-86aa-efbb39d3d9fa@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|IA1PR12MB8189:EE_
-x-ms-office365-filtering-correlation-id: b63eff18-5520-4854-e7aa-08dc31f39276
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- xwh8ZgQbV0jnjuXVH1MgvyF1HGek9/LG9ronj8+u4zMgi4sBSvnCCxT5/kB3RVMahaeKDSIZ8x3Er8o4OwzM5xmSWfRr9YnAUZDTUwks+3u0m1tnMa8FYM5cUSdBr2jRlREx31E76Rl2oNxzqiO3M36/oqUI89wDQaf0CqWGy9l1Da59LIWEyxNM16YDRVASD5WT402RVS5/i1+YgUhShzFFgZtQDG6raQ6Dyn46BAXT0ff0V8ScWC+/HPk/298XL5A3FL8r0OOWkUAaFIgPqyAPZ6i/rBMKIrvIRAJPFbNQNzBhSFCXuGYt+5jpgz1thfKO5E4uHDhQ0thpsrpxaiZDl4/JdLFdBc8Bix+ka7wjHEeMExvKYoQoD5+gOh1wims5XhfVzWi7FvjHiXKr+ac+VHbn6llSr+B0hr8nmzELvOC2HjPiKAAqPW3axfExjZsik4U5C9r9XnmY7QdSfM/UBaK6yUTN6El/8tcGZkE8UCg0m/jP2zYEYGz0m7avrUlBEvsiqVmQhj7gDmKEbY88HZwYEiTHkomgELpl3v693YEIhAbILSYPMggItTh+WyrfGDoNoN+h1jT/a2umPcRyLyIt1ek8+CZRpBm5ZGkAS5NIJNQo24rm/XhJgsN4sy1amT2F94AQGpXqiBqZ0Q==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009)(921011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?K9extAav0tNrazX+jlkWLX8cEpFExJ9QFSuiQMf3NwbNLZj5jH6eQRPhun?=
- =?iso-8859-1?Q?r4mFD6OoNB/lCF/s5ogJ2C+iP+wVwkBHUYJBPnlibUEZ+5XeKHwYErqJ5q?=
- =?iso-8859-1?Q?inzkd8nK3V6yp0rAjQ1NHG/9NHFdltbIBOue8z81Lpdh2QmuPxOuX5H0J6?=
- =?iso-8859-1?Q?E9Td616oBWEV5uoB5yji+g/y4bIioAMmypfGgRkExoPzkK5mGQIJ1v+uah?=
- =?iso-8859-1?Q?LISGcwK96iF7qucRTwbEnqxzoed/WcaW0yjeLhnPSrfGzQ/KN3D/E6WyHR?=
- =?iso-8859-1?Q?xNl4rk7DMnjaA9lpxIRfiaJNW1yr0sYyuumCXiY7JLHmmqJ44ebHQipSKc?=
- =?iso-8859-1?Q?WI4Ijt4qP2+XpEIH2psgAqSnboh9S67QRVu4stqTDGSrDdrANxNxYcm7Re?=
- =?iso-8859-1?Q?gLzcFe/NhBNfZL8vPgsyD2OmfrVnCbf6g0zc4g9uCrXBTwvgg0JLCVGzMG?=
- =?iso-8859-1?Q?LRLd31IC8u8r67G4ikgmsMTi9/32c23O+ZdT3RwB9dH9C+jODH8WKAfex6?=
- =?iso-8859-1?Q?p4KcFxYJFa/hACBUCuItKSzTnnsD/PvMcIpuVuMi3AEQAlXg3jmq5dHTog?=
- =?iso-8859-1?Q?eSndWK+qt6bU/6oUxt26l34vsE1VV/84nUkm67OmBW6XNGE2ngHS2+M6Ba?=
- =?iso-8859-1?Q?HHPrmUVu3Hb1biaXYA8FNKyMm6eVkduRBXQrMdLP0jjvMP4Sj3klZMrKx7?=
- =?iso-8859-1?Q?dGJWGRlQmbbSjcttUXcJdU6rd3EI6dtxLPHGvAOoGPfZ0mGlytsQlf/tkE?=
- =?iso-8859-1?Q?zm+dR6P5ux3zmmmau6cy66j08aaop0M2pQ+CAht6e6ax/uRp/d6gvAoRNZ?=
- =?iso-8859-1?Q?eAj1k6x3tQ5bAVED9HpDSaJioX/o6So7g395yN4amyaP2yd2KbFNeQof/x?=
- =?iso-8859-1?Q?0MnQwMRcmcHEf647DAPcgnUa5B6+JFPntxxJ5jTWY+RwrvJusgfi/+BvV3?=
- =?iso-8859-1?Q?eG+IsPQdTjK2UDoiFyfiqRCM/Gh8k31v5iOypu2EznA3efV+7HMsUlx3E9?=
- =?iso-8859-1?Q?mfgRJ4/uHvWqs1J2EzdN1Ko3oW8SGWd/wGcI7+FeiXlqTfGxa3T4P+6UWK?=
- =?iso-8859-1?Q?CSECJFrsmn+mMQ575Wri9vhvBiB4WqU0uljjI8sBQCRNq0HH1oMyZKezUL?=
- =?iso-8859-1?Q?YsN+n/1Lb3WQ+G5GkyYb0uILf5wQFROsuRiag7IQWcgKdzCkrgOdyqCu3D?=
- =?iso-8859-1?Q?J5DPJsdKU+vynGMKXKX0xUMtMBXKQtDWArcvnsUo5xn5Rwk1+lQEWY795c?=
- =?iso-8859-1?Q?k0fQCmSiCiN95aHlf4QfBkNRghgFryGLRp5nieLIQZgbK5CPS+jxCLOPK2?=
- =?iso-8859-1?Q?HyT8qCXadIEYMXo6OonhW8GvIp6iWWl7FGe/z0XT2UBq2dqiKQA0f/RlYB?=
- =?iso-8859-1?Q?jdR7AHXU7udkXl8tysMwHKDfDOS94hMw/jm5mZzefuqIfc7CiLJum1Js4r?=
- =?iso-8859-1?Q?eOVE6ygkPDPp2/NyW11PtN4a/yni1Gg3P3pVZKMDh7zyhuDyFrs95sysZH?=
- =?iso-8859-1?Q?EjJdUZhJwD+sUg+nvRNb86Dhu2J6UWKvKSPq1UKuwSPo/dU/PsFdqaQpHU?=
- =?iso-8859-1?Q?0ma49mhsyk3Hp+BpxPF5deTGPGUVX3ixnCbGVhL8uafVCP5usKDGYt1kU5?=
- =?iso-8859-1?Q?CPv3rOqUIY8Tc=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7864361679;
+	Tue, 20 Feb 2024 09:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708420192; cv=none; b=RmvY09JERpFfKrkrYK/of7U4kY4Bhb2rIPVJWPsxzCnemchi3DHnN+DhhndiACIoiwnD+ovOACFFlGRVpYewfmCebJpn5++Pgu9j6IVMXQCA1xorSBLCMgY+ER/1nSJkudkX1Bb4wGkugDs/DWEm8KPcdQ58vm6juvnLAcpMUWg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708420192; c=relaxed/simple;
+	bh=kZSC0u0xCH+EKw5Y92fp6j3/7Gmt8o5bJD51LkXnVA0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=p2wwLiCoQlM+ugdV3jmeNnBARWtMgFsifaDPqi/+pNHliDTJ9jKAtbuMcK/IMwbS/quyoN413FmQ6wxBzDUPQ0gdKqjav8BWEoqd6hQgpjMLexH6xy+x6DxnkCAVn7O4Inh4iWvl10V/gXD/zqfmU/1KH2gnWj86HfnIsRwbVjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CztYE3oQ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K5lXJp027921;
+	Tue, 20 Feb 2024 09:09:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ceg/10uJLVK7KePIXERAX4S+Ja/3uZvZWDLNQNnL+/E=; b=Cz
+	tYE3oQf6Cg6R8YFVlDN1TBrHZCwGbewXZKo2WRnHPcDCeEKB1h7J0oSMaKuRhwfx
+	bXLS1SDfhKPK6mILebEeYXE8PE7v1pdg/a37JrvSjPAPU6Yj7o6oIa9QwNIksGy7
+	HYsqiQeh5I9QH2I4a/VDITSNhGmjBsTfGH2pJ2vy8xq3GakSNYydww3sL19ahxWx
+	XWGLOJbu6kjEyl3Sh+s5wZUU7KS7Rv7OTpDf4IooAW4Sgn8dciCtcGP/JwkChH2n
+	nO5rRxTJJBo0FJTuGGPO6AK9XSJZPVXJWk6N/1idoLQfVD3VAqVyjtP/7gqWJqOv
+	+EjNPcJplxRbyiKRiIng==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcnbd8f4u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 09:09:47 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41K99kMb004818
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 09:09:46 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 01:09:37 -0800
+Message-ID: <4184207f-14d6-352a-b6db-6423757d46e6@quicinc.com>
+Date: Tue, 20 Feb 2024 14:39:23 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b63eff18-5520-4854-e7aa-08dc31f39276
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 09:08:58.3343
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IUNk7ynX+46ORB+w8mDQUhWuYkEiVsZU/D0D4UyZQ6DbZ/Ob3rFTkiojIgHtNsbY71bTMZyS/O1/44hdD+rvfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8189
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v11 1/4] firmware: qcom: scm: provide a read-modify-write
+ function
+To: Bjorn Andersson <andersson@kernel.org>
+CC: <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>
+References: <1704727654-13999-1-git-send-email-quic_mojha@quicinc.com>
+ <1704727654-13999-2-git-send-email-quic_mojha@quicinc.com>
+ <jyfpwd3jiwwqgbap3vk7uzhumqaj2rt2udiakink7rgxk4k5le@hqclapr7wizu>
+Content-Language: en-US
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <jyfpwd3jiwwqgbap3vk7uzhumqaj2rt2udiakink7rgxk4k5le@hqclapr7wizu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mVOt-obVES4UF5ylrp4ipc6c1T2dSrcA
+X-Proofpoint-ORIG-GUID: mVOt-obVES4UF5ylrp4ipc6c1T2dSrcA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
+ priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402200065
 
->>>> To safely use VFIO in KVM the platform must guarantee full safety in t=
-he=0A=
->>>> guest where no action taken against a MMIO mapping can trigger an=0A=
->>>> uncontained failure. We belive that most VFIO PCI platforms support th=
-is=0A=
->>>=0A=
->>> A nit, let's use passive voice in the patch comment. Also belive is mos=
-tly=0A=
->>> a typo.=0A=
->>=0A=
->> Sure, will do.=0A=
->Also patch 4 has the same nit. It should be fixed as well.=0A=
-=0A=
-Yes.=
+
+
+On 2/17/2024 12:09 AM, Bjorn Andersson wrote:
+> On Mon, Jan 08, 2024 at 08:57:31PM +0530, Mukesh Ojha wrote:
+>> It was realized by Srinivas K. that there is a need of
+> 
+> "need" is a strong word for this functionality, unless there's some use
+> case that I'm missing.
+
+I would rather say as below,
+
+""
+It is possible that different bits of a secure register is used
+for different purpose and currently, there is no such available
+function from SCM driver to do that; one similar usage was pointed
+by Srinivas K. inside pinctrl-msm where interrupt configuration
+register lying in secure region and written via read-modify-write operation.
+
+Export qcom_scm_io_rmw() to do read-modify-write operation on secure 
+register and reuse it wherever applicable.
+
+
+""
+> 
+>> read-modify-write scm exported function so that it can
+>> be used by multiple clients.
+>>
+>> Let's introduce qcom_scm_io_rmw() which masks out the bits
+>> and write the passed value to that bit-offset.
+>>
+>> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # IPQ9574 and IPQ5332
+>> ---
+>>   drivers/firmware/qcom/qcom_scm.c       | 26 ++++++++++++++++++++++++++
+>>   include/linux/firmware/qcom/qcom_scm.h |  1 +
+>>   2 files changed, 27 insertions(+)
+>>
+>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+>> index 520de9b5633a..25549178a30f 100644
+>> --- a/drivers/firmware/qcom/qcom_scm.c
+>> +++ b/drivers/firmware/qcom/qcom_scm.c
+>> @@ -19,6 +19,7 @@
+>>   #include <linux/of_irq.h>
+>>   #include <linux/of_platform.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/spinlock.h>
+>>   #include <linux/reset-controller.h>
+>>   #include <linux/types.h>
+>>   
+>> @@ -41,6 +42,8 @@ struct qcom_scm {
+>>   	int scm_vote_count;
+>>   
+>>   	u64 dload_mode_addr;
+>> +	/* Atomic context only */
+>> +	spinlock_t lock;
+>>   };
+>>   
+>>   struct qcom_scm_current_perm_info {
+>> @@ -481,6 +484,28 @@ static int qcom_scm_disable_sdi(void)
+>>   	return ret ? : res.result[0];
+>>   }
+>>   
+>> +int qcom_scm_io_rmw(phys_addr_t addr, unsigned int mask, unsigned int val)
+>> +{
+>> +	unsigned int old, new;
+>> +	int ret;
+>> +
+>> +	if (!__scm)
+>> +		return -EINVAL;
+>> +
+>> +	spin_lock(&__scm->lock);
+> 
+> Please express that this lock is just for create mutual exclusion
+> between rmw operations, nothing else.
+> 
+> Also please make a statement why this is desirable and/or needed.
+
+Sure.
+
+However, i was thinking of reusing existing scm_query_lock with rename
+which is used only during boot up in __get_convention() .
+
+-Mukesh
+> 
+> Regards,
+> Bjorn
+> 
+>> +	ret = qcom_scm_io_readl(addr, &old);
+>> +	if (ret)
+>> +		goto unlock;
+>> +
+>> +	new = (old & ~mask) | (val & mask);
+>> +
+>> +	ret = qcom_scm_io_writel(addr, new);
+>> +unlock:
+>> +	spin_unlock(&__scm->lock);
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(qcom_scm_io_rmw);
+>> +
+>>   static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+>>   {
+>>   	struct qcom_scm_desc desc = {
+>> @@ -1824,6 +1849,7 @@ static int qcom_scm_probe(struct platform_device *pdev)
+>>   		return ret;
+>>   
+>>   	mutex_init(&scm->scm_bw_lock);
+>> +	spin_lock_init(&scm->lock);
+>>   
+>>   	scm->path = devm_of_icc_get(&pdev->dev, NULL);
+>>   	if (IS_ERR(scm->path))
+>> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
+>> index ccaf28846054..3a8bb2e603b3 100644
+>> --- a/include/linux/firmware/qcom/qcom_scm.h
+>> +++ b/include/linux/firmware/qcom/qcom_scm.h
+>> @@ -82,6 +82,7 @@ bool qcom_scm_pas_supported(u32 peripheral);
+>>   
+>>   int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val);
+>>   int qcom_scm_io_writel(phys_addr_t addr, unsigned int val);
+>> +int qcom_scm_io_rmw(phys_addr_t addr, unsigned int mask, unsigned int val);
+>>   
+>>   bool qcom_scm_restore_sec_cfg_available(void);
+>>   int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
+>> -- 
+>> 2.7.4
+>>
 
