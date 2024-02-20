@@ -1,198 +1,321 @@
-Return-Path: <linux-kernel+bounces-72479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C6C85B407
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:31:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2AE85B415
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:37:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76A3D1F2456C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E0D1F230FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678D95B5BE;
-	Tue, 20 Feb 2024 07:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fmVP63GF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1185E5A4FF;
+	Tue, 20 Feb 2024 07:37:44 +0000 (UTC)
+Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.155.80.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9494A5B5BA
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B6257302
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.80.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708414250; cv=none; b=kS4jRJvD7ggwRULeJJCMFeydPCxOu9GhVoYp/PulNwAde30P5E611DbAIVYuV6BNmw1R4xaEJME5MhLDF36rMImAdLZnE7sUK1zI2GESyL/Stli6ItHBHf4CLWVndAm+8GFCReCjoybE4M+PyG1NEfQC100mkhyh5PN04gxjQfQ=
+	t=1708414663; cv=none; b=T2u+KLdz3sQlfyEjsrBR2eUVZyVxZoKnWJ4yprFXvb/BVSCaEZ6Nfa439hmn3M9a8WU1y5dJOAlRFMi67y3iv22k+gUwDXUDCvHajS20c+2/vvxjqoBcyM68/PaKVq/ue4Fbp3oE4I48CGeHtLpQ5TISoxkOcD+15XRIbBF7xeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708414250; c=relaxed/simple;
-	bh=OXGYwlEcvKSUcy2Rn7wKI35ffz8WjMg3NS9M274cDBk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SI5/j5GTZCD4+18Pf6gvsWPIX7razdF3ILWmAb6GP1k9o5edz6WjjqQyuFlUhZJfXz5nHXP7OocCScHxb5jELgjsaxu4qE9W6OLUBdT2xsVP4LDXG1CId7vwBGjjVC36v8qpGNSRciZE+5sK11RV7ZsFqoHl7cQof/Bqy3xAh98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fmVP63GF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 295DEC433F1;
-	Tue, 20 Feb 2024 07:30:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708414250;
-	bh=OXGYwlEcvKSUcy2Rn7wKI35ffz8WjMg3NS9M274cDBk=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=fmVP63GFYSZHSKWN5LDO/SlxUIB4eeyGvmf6n9OzQyvUKCrghxkUdaWEkcunV8FKU
-	 3wme0jcNiIVelsPo8KPbDgquH4XtPw4e8W5AnHm7cTMtI+Szxf8be37I9t/x1hJUEl
-	 mfAIfnMEciWPIw9RBbTrH9UvTpJa++4aREfmPYYbNSfPrtbS8xfJCEHu6LJbpMvsPY
-	 u31AD3Harai+DtetK25epW78qBcxQij+oCoNqxhkYJFLaYxuStcC+TWoIhs6AKPq4+
-	 GnjI1+V7pjqwjf2/Fk0Vj57b4aO3eTmBmd5H8tJzwrSATQaJb6Mez+iYCaYSk11wG5
-	 nKYWa67hK9D1A==
-Message-ID: <bded9fde-9541-465d-86f8-292249226cc9@kernel.org>
-Date: Tue, 20 Feb 2024 15:30:46 +0800
+	s=arc-20240116; t=1708414663; c=relaxed/simple;
+	bh=ohz7ZLiLPRyOowTuERYt0dFvN8eBmr4esXel573GWl4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tv0MTxhWTxJkxuXt3X/OC4wUgl8kxgaIw1W3ZbHnvP1oRn8NsJOxHPw3uJPRMKgwqIxR9dIF7u6V8OBTp513u9Ai2PY/aQb4aw9M3vIMVvMtb4xjY0qk4tzdT0oSed2i+MiQRwiWdzVq/WaJdnd3CVipL00V5FS3JatgnuXIXtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=43.155.80.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtp79t1708414262tqhppdrf
+X-QQ-Originating-IP: TJT6PEsZ/mcoC1NdJoNe1JOwIhM7ywu+pPUF3RJA56A=
+Received: from localhost.localdomain ( [125.76.217.162])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 20 Feb 2024 15:31:00 +0800 (CST)
+X-QQ-SSF: 01400000000000D0I000000A0000000
+X-QQ-FEAT: 5q30pvLz2ifZqeXFFACOvOMFaBUd68FKh2OQ6Vhtgk5xC4IHC6ZW2fd99mVYL
+	vamEp9UFP/mlRLG8s2ESkRsfjUPT2PgEkae+d/+mpWl8lUeaKYv7U+6kIIbLzYOAeVbltFY
+	fziZU/dPbuhGy8M5no6HVjriwEaTNJk7AfoTN7oBK+opKmVG8u3Zvq763iaOGpmuLRQtxkT
+	4wkkOEGxv6SZTqZovsOYJkLhZa5xQHVQ5tolCJpIA5fW1apWeZhO2TR++F43YbwBcqn5Bxg
+	Osyo6jDT32TDd4rswnY/AGs+OCO+nlxPW9mSy0dMgFlolZoYx1cdUi9HAVRgvWuBXhPSTYa
+	VKe4k7ejXDfkVZx2Y0Hy7F5iCbcaletApe1vb58cm6zgnt8HAOvwhndzaz/93kVsmHF199K
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 7601370966241811881
+From: Guo Hui <guohui@uniontech.com>
+To: peterz@infradead.org,
+	mingo@redhat.com,
+	will@kernel.org,
+	longman@redhat.com,
+	boqun.feng@gmail.com,
+	David.Laight@ACULAB.COM
+Cc: linux-kernel@vger.kernel.org,
+	Guo Hui <guohui@uniontech.com>
+Subject: [PATCH] locking/osq_lock: Optimize osq_lock performance using per-NUMA
+Date: Tue, 20 Feb 2024 15:30:58 +0800
+Message-Id: <20240220073058.6435-1-guohui@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH 2/3 v2] f2fs: use BLKS_PER_SEG, BLKS_PER_SEC,
- and SEGS_PER_SEC
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240207005105.3744811-1-jaegeuk@kernel.org>
- <20240207005105.3744811-2-jaegeuk@kernel.org> <ZcpfF9UJz8bNW6ge@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZcpfF9UJz8bNW6ge@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-0
 
-On 2024/2/13 2:10, Jaegeuk Kim wrote:
+After extensive testing of osq_lock,
+we found that the performance of osq_lock is closely related to
+the distance between NUMA nodes.The greater the distance
+between NUMA nodes,the more serious the performance degradation of
+osq_lock.When a group of processes that need to compete for
+the same lock are on the same NUMA node,the performance of osq_lock
+is the best.when the group of processes is distributed on
+different NUMA nodes,as the distance between NUMA nodes increases,
+the performance of osq_lock becomes worse.
 
-How do you think of appending below diff which cleans up missing
-parts?
+This patch uses the following solutions to improve performance:
+Divide the osq_lock linked list according to NUMA nodes.
+Each NUMA node corresponds to an osq linked list.
+Each CPU is added to the linked list corresponding to
+its respective NUMA node.When the last CPU of
+the NUMA node releases osq_lock,osq_lock is passed to
+the next NUMA node.
 
+As shown in the figure below, the last osq_node1 on NUMA0 passes the lock
+to the first node (osq_node3) of the next NUMA1 node.
+
+-----------------------------------------------------------
+|            NUMA0           |            NUMA1           |
+|----------------------------|----------------------------|
+|  osq_node0 ---> osq_node1 -|-> osq_node3 ---> osq_node4 |
+-----------------------------|-----------------------------
+
+Set an atomic type global variable osq_lock_node to
+record the NUMA node number that can currently obtain
+the osq_lock lock.When the osq_lock_node value is
+a certain node number,the CPU on the node obtains
+the osq_lock lock in turn,and the CPUs on
+other NUMA nodes poll wait.
+
+This solution greatly reduces the performance degradation caused
+by communication between CPUs on different NUMA nodes.
+
+The effect on the 96-core 4-NUMA ARM64 platform is as follows:
+System Benchmarks Partial Index       with patch  without patch  promote
+File Copy 1024 bufsize 2000 maxblocks   2060.8      980.3        +110.22%
+File Copy 256 bufsize 500 maxblocks     1346.5      601.9        +123.71%
+File Copy 4096 bufsize 8000 maxblocks   4229.9      2216.1       +90.87%
+
+The effect on the 128-core 8-NUMA X86_64 platform is as follows:
+System Benchmarks Partial Index       with patch  without patch  promote
+File Copy 1024 bufsize 2000 maxblocks   841.1       553.7        +51.91%
+File Copy 256 bufsize 500 maxblocks     517.4       339.8        +52.27%
+File Copy 4096 bufsize 8000 maxblocks   2058.4      1392.8       +47.79%
+
+Signed-off-by: Guo Hui <guohui@uniontech.com>
 ---
-  fs/f2fs/f2fs.h    |  2 +-
-  fs/f2fs/file.c    |  4 ++--
-  fs/f2fs/segment.c |  4 ++--
-  fs/f2fs/segment.h | 22 +++++++++++-----------
-  fs/f2fs/super.c   |  2 +-
-  5 files changed, 17 insertions(+), 17 deletions(-)
+ include/linux/osq_lock.h  | 20 +++++++++++--
+ kernel/locking/osq_lock.c | 60 +++++++++++++++++++++++++++++++++------
+ 2 files changed, 69 insertions(+), 11 deletions(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index c4488e12c56e..fc9328655de8 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3491,7 +3491,7 @@ static inline __le32 *get_dnode_addr(struct inode *inode,
-  		sizeof((f2fs_inode)->field))			\
-  		<= (F2FS_OLD_ATTRIBUTE_SIZE + (extra_isize)))	\
-
--#define __is_large_section(sbi)		((sbi)->segs_per_sec > 1)
-+#define __is_large_section(sbi)		(SEGS_PER_SEC(sbi) > 1)
-
-  #define __is_meta_io(fio) (PAGE_TYPE_OF_BIO((fio)->type) == META)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 20a26bb5b889..ef43d33278ea 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2997,8 +2997,8 @@ static int f2fs_ioc_flush_device(struct file *filp, unsigned long arg)
-
-  	if (!f2fs_is_multi_device(sbi) || sbi->s_ndevs - 1 <= range.dev_num ||
-  			__is_large_section(sbi)) {
--		f2fs_warn(sbi, "Can't flush %u in %d for segs_per_sec %u != 1",
--			  range.dev_num, sbi->s_ndevs, sbi->segs_per_sec);
-+		f2fs_warn(sbi, "Can't flush %u in %d for SEGS_PER_SEC %u != 1",
-+			  range.dev_num, sbi->s_ndevs, SEGS_PER_SEC(sbi));
-  		return -EINVAL;
-  	}
-
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 97ac733ceffe..b59e29608ae7 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2750,7 +2750,7 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
-  	if (f2fs_need_rand_seg(sbi))
-  		return get_random_u32_below(MAIN_SECS(sbi) * SEGS_PER_SEC(sbi));
-
--	/* if segs_per_sec is large than 1, we need to keep original policy. */
-+	/* if SEGS_PER_SEC() is large than 1, we need to keep original policy. */
-  	if (__is_large_section(sbi))
-  		return curseg->segno;
-
-@@ -3498,7 +3498,7 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
-  	 */
-  	if (segment_full) {
-  		if (type == CURSEG_COLD_DATA_PINNED &&
--		    !((curseg->segno + 1) % sbi->segs_per_sec))
-+		    !((curseg->segno + 1) % SEGS_PER_SEC(sbi)))
-  			goto skip_new_segment;
-
-  		if (from_gc) {
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index cb982af765c3..63f278210654 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -48,21 +48,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
-
-  #define IS_CURSEC(sbi, secno)						\
-  	(((secno) == CURSEG_I(sbi, CURSEG_HOT_DATA)->segno /		\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_WARM_DATA)->segno /		\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_DATA)->segno /		\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_HOT_NODE)->segno /		\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_WARM_NODE)->segno /		\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_NODE)->segno /		\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_DATA_PINNED)->segno /	\
--	  (sbi)->segs_per_sec) ||	\
-+	  SEGS_PER_SEC(sbi)) ||	\
-  	 ((secno) == CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC)->segno /	\
--	  (sbi)->segs_per_sec))
-+	  SEGS_PER_SEC(sbi)))
-
-  #define MAIN_BLKADDR(sbi)						\
-  	(SM_I(sbi) ? SM_I(sbi)->main_blkaddr : 				\
-@@ -93,7 +93,7 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
-  #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
-  	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
-  #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
--	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & ((sbi)->blocks_per_seg - 1))
-+	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
-
-  #define GET_SEGNO(sbi, blk_addr)					\
-  	((!__is_valid_data_blkaddr(blk_addr) ||			\
-@@ -101,9 +101,9 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
-  	NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi),			\
-  		GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
-  #define GET_SEC_FROM_SEG(sbi, segno)				\
--	(((segno) == -1) ? -1 : (segno) / (sbi)->segs_per_sec)
-+	(((segno) == -1) ? -1 : (segno) / SEGS_PER_SEC(sbi))
-  #define GET_SEG_FROM_SEC(sbi, secno)				\
--	((secno) * (sbi)->segs_per_sec)
-+	((secno) * SEGS_PER_SEC(sbi))
-  #define GET_ZONE_FROM_SEC(sbi, secno)				\
-  	(((secno) == -1) ? -1 : (secno) / (sbi)->secs_per_zone)
-  #define GET_ZONE_FROM_SEG(sbi, segno)				\
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 2a8b6cfaf683..9d2c680a61f5 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4723,7 +4723,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
-  			.reason = CP_DISCARD,
-  			.trim_start = 0,
-  			.trim_end = MAIN_SEGS(sbi) - 1,
--			.trim_minlen = sbi->blocks_per_seg,
-+			.trim_minlen = BLKS_PER_SEG(sbi),
-  		};
-  		f2fs_write_checkpoint(sbi, &cpc);
-  	}
+diff --git a/include/linux/osq_lock.h b/include/linux/osq_lock.h
+index ea8fb31379e3..c016c1cf5e8b 100644
+--- a/include/linux/osq_lock.h
++++ b/include/linux/osq_lock.h
+@@ -2,6 +2,8 @@
+ #ifndef __LINUX_OSQ_LOCK_H
+ #define __LINUX_OSQ_LOCK_H
+ 
++#include <linux/nodemask.h>
++
+ /*
+  * An MCS like lock especially tailored for optimistic spinning for sleeping
+  * lock implementations (mutex, rwsem, etc).
+@@ -11,8 +13,9 @@ struct optimistic_spin_queue {
+ 	/*
+ 	 * Stores an encoded value of the CPU # of the tail node in the queue.
+ 	 * If the queue is empty, then it's set to OSQ_UNLOCKED_VAL.
++	 * The actual number of NUMA nodes is generally not greater than 32.
+ 	 */
+-	atomic_t tail;
++	atomic_t tail[32];
+ };
+ 
+ #define OSQ_UNLOCKED_VAL (0)
+@@ -22,7 +25,11 @@ struct optimistic_spin_queue {
+ 
+ static inline void osq_lock_init(struct optimistic_spin_queue *lock)
+ {
+-	atomic_set(&lock->tail, OSQ_UNLOCKED_VAL);
++	int node;
++
++	for_each_online_node(node) {
++		atomic_set(&lock->tail[node], OSQ_UNLOCKED_VAL);
++	}
+ }
+ 
+ extern bool osq_lock(struct optimistic_spin_queue *lock);
+@@ -30,7 +37,14 @@ extern void osq_unlock(struct optimistic_spin_queue *lock);
+ 
+ static inline bool osq_is_locked(struct optimistic_spin_queue *lock)
+ {
+-	return atomic_read(&lock->tail) != OSQ_UNLOCKED_VAL;
++	int node;
++
++	for_each_online_node(node) {
++		if (atomic_read(&lock->tail[node]) != OSQ_UNLOCKED_VAL)
++			return true;
++	}
++
++	return false;
+ }
+ 
+ #endif
+diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
+index 75a6f6133866..7147050671a3 100644
+--- a/kernel/locking/osq_lock.c
++++ b/kernel/locking/osq_lock.c
+@@ -2,6 +2,7 @@
+ #include <linux/percpu.h>
+ #include <linux/sched.h>
+ #include <linux/osq_lock.h>
++#include <linux/topology.h>
+ 
+ /*
+  * An MCS like lock especially tailored for optimistic spinning for sleeping
+@@ -16,6 +17,7 @@ struct optimistic_spin_node {
+ 	struct optimistic_spin_node *next, *prev;
+ 	int locked; /* 1 if lock acquired */
+ 	int cpu; /* encoded CPU # + 1 value */
++	int node;
+ };
+ 
+ static DEFINE_PER_CPU_SHARED_ALIGNED(struct optimistic_spin_node, osq_node);
+@@ -58,8 +60,8 @@ osq_wait_next(struct optimistic_spin_queue *lock,
+ 	int curr = encode_cpu(smp_processor_id());
+ 
+ 	for (;;) {
+-		if (atomic_read(&lock->tail) == curr &&
+-		    atomic_cmpxchg_acquire(&lock->tail, curr, old_cpu) == curr) {
++		if (atomic_read(&lock->tail[node->node]) == curr &&
++		    atomic_cmpxchg_acquire(&lock->tail[node->node], curr, old_cpu) == curr) {
+ 			/*
+ 			 * We were the last queued, we moved @lock back. @prev
+ 			 * will now observe @lock and will complete its
+@@ -90,6 +92,21 @@ osq_wait_next(struct optimistic_spin_queue *lock,
+ 	}
+ }
+ 
++static atomic_t osq_numa_node = ATOMIC_INIT(-1);
++
++/*
++ * The value of osq_numa_node is -1 or wait for the value of osq_numa_node
++ * to change to the NUMA node number where the current CPU is located.
++ */
++static void osq_wait_numa_node(struct optimistic_spin_node *node)
++{
++	int  old_node;
++
++	while (!need_resched() && (old_node = atomic_cmpxchg_acquire(&osq_numa_node, -1,
++					node->node)) != -1 && node->node != old_node)
++		cpu_relax();
++}
++
+ bool osq_lock(struct optimistic_spin_queue *lock)
+ {
+ 	struct optimistic_spin_node *node = this_cpu_ptr(&osq_node);
+@@ -100,6 +117,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+ 	node->locked = 0;
+ 	node->next = NULL;
+ 	node->cpu = curr;
++	node->node = cpu_to_node(smp_processor_id());
+ 
+ 	/*
+ 	 * We need both ACQUIRE (pairs with corresponding RELEASE in
+@@ -107,9 +125,11 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+ 	 * the node fields we just initialised) semantics when updating
+ 	 * the lock tail.
+ 	 */
+-	old = atomic_xchg(&lock->tail, curr);
+-	if (old == OSQ_UNLOCKED_VAL)
++	old = atomic_xchg(&lock->tail[node->node], curr);
++	if (old == OSQ_UNLOCKED_VAL) {
++		osq_wait_numa_node(node);
+ 		return true;
++	}
+ 
+ 	prev = decode_cpu(old);
+ 	node->prev = prev;
+@@ -144,8 +164,10 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+ 	 * polling, be careful.
+ 	 */
+ 	if (smp_cond_load_relaxed(&node->locked, VAL || need_resched() ||
+-				  vcpu_is_preempted(node_cpu(node->prev))))
++				  vcpu_is_preempted(node_cpu(node->prev)))) {
++		osq_wait_numa_node(node);
+ 		return true;
++	}
+ 
+ 	/* unqueue */
+ 	/*
+@@ -170,8 +192,10 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+ 		 * in which case we should observe @node->locked becoming
+ 		 * true.
+ 		 */
+-		if (smp_load_acquire(&node->locked))
++		if (smp_load_acquire(&node->locked)) {
++			osq_wait_numa_node(node);
+ 			return true;
++		}
+ 
+ 		cpu_relax();
+ 
+@@ -207,6 +231,22 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+ 	return false;
+ }
+ 
++static void set_osq_numa_node(struct optimistic_spin_queue *lock)
++{
++	int curr_node = cpu_to_node(smp_processor_id());
++	int node = curr_node;
++	int num_nodes = num_online_nodes();
++
++	do {
++		node = (node + 1) % num_nodes;
++		if (node == curr_node) {
++			atomic_set(&osq_numa_node, -1);
++			return;
++		}
++	} while (atomic_read(&lock->tail[node]) == OSQ_UNLOCKED_VAL);
++	atomic_set(&osq_numa_node, node);
++}
++
+ void osq_unlock(struct optimistic_spin_queue *lock)
+ {
+ 	struct optimistic_spin_node *node, *next;
+@@ -215,9 +255,11 @@ void osq_unlock(struct optimistic_spin_queue *lock)
+ 	/*
+ 	 * Fast path for the uncontended case.
+ 	 */
+-	if (likely(atomic_cmpxchg_release(&lock->tail, curr,
+-					  OSQ_UNLOCKED_VAL) == curr))
++	if (likely(atomic_cmpxchg_release(&lock->tail[cpu_to_node(smp_processor_id())], curr,
++					  OSQ_UNLOCKED_VAL) == curr)) {
++		set_osq_numa_node(lock);
+ 		return;
++	}
+ 
+ 	/*
+ 	 * Second most likely case.
+@@ -232,4 +274,6 @@ void osq_unlock(struct optimistic_spin_queue *lock)
+ 	next = osq_wait_next(lock, node, OSQ_UNLOCKED_VAL);
+ 	if (next)
+ 		WRITE_ONCE(next->locked, 1);
++	else
++		set_osq_numa_node(lock);
+ }
 -- 
-2.40.1
+2.20.1
 
 
