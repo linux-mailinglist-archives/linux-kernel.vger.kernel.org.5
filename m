@@ -1,205 +1,136 @@
-Return-Path: <linux-kernel+bounces-73838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAF685CC4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:54:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4B685CC4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 228D01C2089E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:54:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F171F23CEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68CCC1552EB;
-	Tue, 20 Feb 2024 23:54:03 +0000 (UTC)
-Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7961552E4;
+	Tue, 20 Feb 2024 23:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOpTa8eH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC771509BC
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0632C1B1;
+	Tue, 20 Feb 2024 23:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708473242; cv=none; b=TYpHy6gFoYAnM/ZkEoudxBdvzUk78Bv0iDtq7gObVvsKs/7EzOwgf2+qqohjovmL54BIrsZvMfvCLKVB8xdyC02F2ylThMJeUXorOxT3/g9MOoeP3NaBt6tyFxuXvKhHUok9d4nwUNna9EIBER7wzyXoyIs9maVI/M3x84txutM=
+	t=1708473332; cv=none; b=dG9qKl+iGUgyjECwHnXgQDlQyqEdh4k8IauWCO/hIKeELMSCx0pBAZHWqDDx5TrKA2fcukCY6wOvIPOwX5EDrRVfqRFwI6JWCgQO0YRDBhUHVGjXa4ZiPezDhj2IRUwtXYqp8lLUh5EjRygPv7nKfHk2sLvpke7Di8q9KHRB064=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708473242; c=relaxed/simple;
-	bh=pv9M6nCH7P1FRo4VitsRtyecMjGHuwFYfQImuvaTZJ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jKJnAii64QxIOnENUVF71hc799xm0daaum7+JsEpRI/hCAEMjZDrpTPv0pjdVzX7Pm33eJOPV6EMZA2qrjj9XbMINJIegxSo08jaRfWmYDKx4CFIJEEQvRCy2UF4HD0j05HRKQn9HjnXtWa1zVmIfLHHbMM/9bwp8jUjkdoVBko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
-Date: Tue, 20 Feb 2024 18:54:16 -0500
-From: "dalias@libc.org" <dalias@libc.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-	"musl@lists.openwall.com" <musl@lists.openwall.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"broonie@kernel.org" <broonie@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"sorear@fastmail.com" <sorear@fastmail.com>
-Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
- in userspace
-Message-ID: <20240220235415.GP4163@brightrain.aerifal.cx>
-References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
- <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
- <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
- <20240220185714.GO4163@brightrain.aerifal.cx>
- <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+	s=arc-20240116; t=1708473332; c=relaxed/simple;
+	bh=pxMSv6jAyvYB/3P8lPP0YmoEDtMkNQ0qpAnwOIXPqOQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aki+HXwh+oxfwiDchQrLgNkcfDUG+JuP4q5rlPrLHWrYwhTrWMf6BSf1m7b3N9BV8Jm3I7Z5oWl7iCzBrAqV6kOUAqAa6rrltL35plxdWmGT8GN1KTqkqlR3jDToXEHO7i7k94WVMPdztVfMTyvT+xWL5PZMVo3kTZ+y9Mt6JaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOpTa8eH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D884C433F1;
+	Tue, 20 Feb 2024 23:55:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708473331;
+	bh=pxMSv6jAyvYB/3P8lPP0YmoEDtMkNQ0qpAnwOIXPqOQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OOpTa8eHu85Il3VQM6AN5fQV/X/C2vZnrC182k7nHLPpADaKz/ZL/f/5LiHDdu0dF
+	 iR0ushZ7TbHyg4zhSgZmXECCB9tIVNAf2yBBYHiCRBfJh/Y2FoFu1pTZ/H21qP+K8c
+	 BDR1Ab4KHBhsdDRh/n1zjscLUnEp87Q6HJTyQhJvVssI7+yhz+rfcWre1brJzi2S2K
+	 j1Ms4SLvhEZx1GWELZbPunnkEND6OkBOkGrFNfu3bbcF6O9R9d9ubbr8r2aJ0gutGE
+	 iyBlTBLBqOiBVrHvI9GTRFGuYVD8nd9Wr7tzjJLt4JKz03aujz1DATVTy/jqTdFpqv
+	 STQgIHG49uAEw==
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	stable@vger.kernel.org,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Matthew W Carlis <mattc@purestorage.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: [PATCH] PCI/DPC: Request DPC only if also requesting AER
+Date: Tue, 20 Feb 2024 17:55:20 -0600
+Message-Id: <20240220235520.1514548-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 11:30:22PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2024-02-20 at 13:57 -0500, Rich Felker wrote:
-> > On Tue, Feb 20, 2024 at 06:41:05PM +0000, Edgecombe, Rick P wrote:
-> > > Hmm, could the shadow stack underflow onto the real stack then? Not
-> > > sure how bad that is. INCSSP (incrementing the SSP register on x86)
-> > > loops are not rare so it seems like something that could happen.
-> > 
-> > Shadow stack underflow should fault on attempt to access
-> > non-shadow-stack memory as shadow-stack, no?
-> 
-> Maybe I'm misunderstanding. I thought the proposal included allowing
-> shadow stack access to convert normal address ranges to shadow stack,
-> and normal writes to convert shadow stack to normal.
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-As I understood the original discussion of the proposal on IRC, it was
-only one-way (from shadow to normal). Unless I'm missing something,
-making it one-way is necessary to catch situations where the shadow
-stack would become compromised.
+When booting with "pci=noaer", we don't request control of AER, but we
+previously *did* request control of DPC, as in the dmesg log attached at
+the bugzilla below:
 
-> > > Shadow stacks currently have automatic guard gaps to try to prevent
-> > > one
-> > > thread from overflowing onto another thread's shadow stack. This
-> > > would
-> > > somewhat opens that up, as the stack guard gaps are usually
-> > > maintained
-> > > by userspace for new threads. It would have to be thought through
-> > > if
-> > > these could still be enforced with checking at additional spots.
-> > 
-> > I would think the existing guard pages would already do that if a
-> > thread's shadow stack is contiguous with its own data stack.
-> 
-> The difference is that the kernel provides the guard gaps, where this
-> would rely on userspace to do it. It is not a showstopper either.
-> 
-> I think my biggest question on this is how does it change the
-> capability for two threads to share a shadow stack. It might require
-> some special rules around the syscall that writes restore tokens. So
-> I'm not sure. It probably needs a POC.
+  Command line: ... pci=noaer
+  acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI EDR HPX-Type3]
+  acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME PCIeCapability LTR DPC]
 
-Why would they be sharing a shadow stack?
+That's illegal per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, which
+says:
 
-> > From the musl side, I have always looked at the entirely of shadow
-> > stack stuff with very heavy skepticism, and anything that breaks
-> > existing interface contracts, introduced places where apps can get
-> > auto-killed because a late resource allocation fails, or requires
-> > applications to code around the existence of something that should be
-> > an implementation detail, is a non-starter. To even consider shadow
-> > stack support, it must truely be fully non-breaking.
-> 
-> The manual assembly stack switching and JIT code in the apps needs to
-> be updated. I don't think there is a way around it.
+  If the operating system sets this bit [OSC_PCI_EXPRESS_DPC_CONTROL], it
+  must also set bit 7 of the Support field (indicating support for Error
+  Disconnect Recover notifications) and bits 3 and 4 of the Control field
+  (requesting control of PCI Express Advanced Error Reporting and the PCI
+  Express Capability Structure).
 
-Indeed, I'm not talking about programs with JIT/manual stack-switching
-asm, just anything using existing APIs for control of stack --
-pthread_setstack, makecontext, sigaltstack, etc.
+Request DPC control only if we have also requested AER control.
 
-> I agree though that the late allocation failures are not great. Mark is
-> working on clone3 support which should allow moving the shadow stack
-> allocation to happen in userspace with the normal stack. Even for riscv
-> though, doesn't it need to update a new register in stack switching?
+Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218491#c12
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: <stable@vger.kernel.org>	# v5.7+
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Matthew W Carlis <mattc@purestorage.com>
+Cc: Keith Busch <kbusch@kernel.org>
+Cc: Lukas Wunner <lukas@wunner.de>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+---
+ drivers/acpi/pci_root.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-If clone is called with signals masked, it's probably not necessary
-for the kernel to set the shadow stack register as part of clone3.
+diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+index 58b89b8d950e..1c16965427b3 100644
+--- a/drivers/acpi/pci_root.c
++++ b/drivers/acpi/pci_root.c
+@@ -518,17 +518,19 @@ static u32 calculate_control(void)
+ 	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
+ 		control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
+ 
+-	if (pci_aer_available())
++	if (pci_aer_available()) {
+ 		control |= OSC_PCI_EXPRESS_AER_CONTROL;
+ 
+-	/*
+-	 * Per the Downstream Port Containment Related Enhancements ECN to
+-	 * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
+-	 * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
+-	 * and EDR.
+-	 */
+-	if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
+-		control |= OSC_PCI_EXPRESS_DPC_CONTROL;
++		/*
++		 * Per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, the
++		 * OS can request DPC control only if it has advertised
++		 * OSC_PCI_EDR_SUPPORT and requested both
++		 * OSC_PCI_EXPRESS_CAPABILITY_CONTROL and
++		 * OSC_PCI_EXPRESS_AER_CONTROL.
++		 */
++		if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
++			control |= OSC_PCI_EXPRESS_DPC_CONTROL;
++	}
+ 
+ 	return control;
+ }
+-- 
+2.34.1
 
-> BTW, x86 shadow stack has a mode where the shadow stack is writable
-> with a special instruction (WRSS). It enables the SSP to be set
-> arbitrarily by writing restore tokens. We discussed this as an option
-> to make the existing longjmp() and signal stuff work more transparently
-> for glibc.
-> 
-> > 
-> > > > _Without_ doing this, sigaltstack cannot be used to recover from
-> > > > stack
-> > > > overflows if the shadow stack limit is reached first, and
-> > > > makecontext
-> > > > cannot be supported without memory leaks and unreportable error
-> > > > conditions.
-> > > 
-> > > FWIW, I think the makecontext() shadow stack leaking is a bad idea.
-> > > I
-> > > would prefer the existing makecontext() interface just didn't
-> > > support
-> > > shadow stack, rather than the leaking solution glibc does today.
-> > 
-> > AIUI the proposal by Stefan makes it non-leaking because it's just
-> > using normal memory that reverts to normal usage on any
-> > non-shadow-stack access.
-> > 
-> 
-> Right, but does it break any existing apps anyway (because of small
-> ucontext stack sizes)?
-> 
-> BTW, when I talk about "not supporting" I don't mean the app should
-> crash. I mean it should instead run normally, just without shadow stack
-> enabled. Not sure if that was clear. Since shadow stack is not
-> essential for an application to function, it is only security hardening
-> on top.
-> 
-> Although determining if an application supports shadow stack has turned
-> out to be difficult in practice. Handling dlopen() is especially hard.
-
-One reasonable thing to do, that might be preferable to overengineered
-solutions, is to disable shadow-stack process-wide if an interface
-incompatible with it is used (sigaltstack, pthread_create with an
-attribute setup using pthread_attr_setstack, makecontext, etc.), as
-well as if an incompatible library is is dlopened. This is much more
-acceptable than continuing to run with shadow stacks managed sloppily
-by the kernel and async killing the process on OOM, and is probably
-*more compatible* with apps than changing the minimum stack size
-requirements out from under them.
-
-The place where it's really needed to be able to allocate the shadow
-stack synchronously under userspace control, in order to harden normal
-applications that aren't doing funny things, is in pthread_create
-without a caller-provided stack.
-
-Rich
 
