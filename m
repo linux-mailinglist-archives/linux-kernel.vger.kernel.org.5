@@ -1,173 +1,108 @@
-Return-Path: <linux-kernel+bounces-72743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D261685B83B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:52:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777D285B83C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D4441F26C66
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:52:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FAB8B291DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5214657B1;
-	Tue, 20 Feb 2024 09:50:52 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD6B657B8;
+	Tue, 20 Feb 2024 09:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IjsUhLVg";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nPZxbWcN"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8456519F
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057226166E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:50:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422652; cv=none; b=fSJlMtCS/dXkQD+7CZ5QnFlsjm5WtxpjwkJpXxbZpQy0r0FKBokzQzMXRU1oASHXDzuO3p29fC7/M3MUx4mYb2Fw6V0QLqk9/9n6ttm3KQ8EXwM6e6de19WMt2vFNuLgpblh3v+UDJcZQMSEEKI34whIF1mlGHpKxZBar0VAJhs=
+	t=1708422652; cv=none; b=TM0Ya3wU352WjTkn0IOuVcfSW2Y2S0RknnAGSJQL7R9NVciQn75TZGFnUS6CSPli07anFNMe15YfGA2YQ0rtr1SapcOTtc/L71g9CWJBfCEYROMajCismfRgw4N+yutGehTLHPxQpUVhZx2diDkzbEuEAZ6nam9Cha9Mx0rxmE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708422652; c=relaxed/simple;
-	bh=9+eDLJGVj0rPWuMO/mm0uNuc+/jQe54CqNb8DB1nKcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aOaMQVYB8sP4USiescSKDi4uwqHzYYhfyuq2V1zcZ8Sg9sSPDd6d9H7AVPfWdHk45WAWDQs/AulSm//J0mB44M0t4kep9njrk72mZnEM2SECjg2NQneuh82Nn9VTfauUPeoscZjIctmjOVi4OBvYoq0FBHIRwfRYUtrLpAFJZvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rcMlr-00070T-Q0; Tue, 20 Feb 2024 10:50:39 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rcMlr-001onX-2z; Tue, 20 Feb 2024 10:50:39 +0100
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rcMlr-00HNa0-00;
-	Tue, 20 Feb 2024 10:50:39 +0100
-Date: Tue, 20 Feb 2024 10:50:38 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Michael Walle <michael@walle.cc>, srinivas.kandagatla@linaro.org,
-	gregkh@linuxfoundation.org, rafal@milecki.pl,
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [RFC PATCH] nvmem: core: add sysfs cell write support
-Message-ID: <20240220095038.2betrguygehvwodz@pengutronix.de>
-References: <20240215211401.1201004-1-m.felsch@pengutronix.de>
- <CZ6DFL6061FS.2WMDPMSSBXX8S@walle.cc>
- <20240216100750.zxl4wncbgpulr2cc@pengutronix.de>
- <20240219120414.32395299@xps-13>
- <20240219115358.xui5fpoisvsubdyb@pengutronix.de>
- <CZ938PEUZ1JQ.2DJE7C03HI9OO@walle.cc>
- <20240220101811.6ae23f2e@xps-13>
+	bh=6uL3PtxMqVgWbjldzCkLF9nagygKfjjFl81KBs8RfWM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=h5z8rVTEIL3az78gcXfI+oVF1tmZgacGB8lkhJBGhCdG/SmrnGBD04uOmM21ERTVZqOf3Axh6ATwHvcYBnCh0qAY0ddQCao67Po5YrYSdFAbft3tUrdFwfXs8gV0NBeeW5h3UqDU/Qmb/J2+veSCnnXbodysmOa8buMfg5+2AoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IjsUhLVg; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nPZxbWcN; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708422649;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ce2PU+R+JYCOoRGSJQxTM3NSkVh6mPPXni2mzU33aI=;
+	b=IjsUhLVghFuZEVYQ1zE07oVcuQONTsQYuhHdLprETrNxABJURW2p4p4LaLbJBBPB+mbiBP
+	sez8E4G78+c9Tq6NADHU5RnNJzwidEtTLku2QlfzEC8eXoE11FSUwVOKR7OefY5NINpXQE
+	A9zSzysxsb/SjqCxCTf7nziPVBdn8nclivP5g423OEPEKaHYnXDum+HtiPdsJow+CdGBKO
+	Ki8Mr3nwIXWEBEmsmZhGbMFs756qUuVvFwtaFiNR64yPqQyMkyK8AsnP31JwTSHwQg6Vxl
+	3aW/wUJWLauyZTXYFUYL4pepFFOYaif29KeiAFsnh0A8Glrbl+mnALjO9DSQuA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708422649;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ce2PU+R+JYCOoRGSJQxTM3NSkVh6mPPXni2mzU33aI=;
+	b=nPZxbWcN7lQapNrhnn8vWhnqUdcWPeY274NdfjYtV3cYsjaCxuR24F/ZkUy4MjyWl64uU3
+	6BwEJ4k6bRb3M2DA==
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Vincenzo Frascino
+ <vincenzo.frascino@arm.com>
+Subject: Re: [PATCH 00/10] vdso: Misc cleanups and prevent code duplication
+In-Reply-To: <202402191625.BAD1F3CE6@keescook>
+References: <20240219153939.75719-1-anna-maria@linutronix.de>
+ <202402191625.BAD1F3CE6@keescook>
+Date: Tue, 20 Feb 2024 10:50:48 +0100
+Message-ID: <87bk8b5urr.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220101811.6ae23f2e@xps-13>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 
-Hi Miquel, Michael,
+Kees Cook <keescook@chromium.org> writes:
 
-On 24-02-20, Miquel Raynal wrote:
-> Hi,
-> 
-> michael@walle.cc wrote on Mon, 19 Feb 2024 14:26:16 +0100:
-> 
-> > On Mon Feb 19, 2024 at 12:53 PM CET, Marco Felsch wrote:
-> > > On 24-02-19, Miquel Raynal wrote:  
-> > > > Hi Marco,
-> > > > 
-> > > > m.felsch@pengutronix.de wrote on Fri, 16 Feb 2024 11:07:50 +0100:
-> > > >   
-> > > > > Hi Michael,
-> > > > > 
-> > > > > On 24-02-16, Michael Walle wrote:  
-> > > > > > Hi,
-> > > > > > 
-> > > > > > On Thu Feb 15, 2024 at 10:14 PM CET, Marco Felsch wrote:    
-> > > > > > > @@ -432,6 +466,7 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
-> > > > > > >  	struct bin_attribute **cells_attrs, *attrs;
-> > > > > > >  	struct nvmem_cell_entry *entry;
-> > > > > > >  	unsigned int ncells = 0, i = 0;
-> > > > > > > +	umode_t mode;
-> > > > > > >  	int ret = 0;
-> > > > > > >  
-> > > > > > >  	mutex_lock(&nvmem_mutex);
-> > > > > > > @@ -456,15 +491,18 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
-> > > > > > >  		goto unlock_mutex;
-> > > > > > >  	}
-> > > > > > >  
-> > > > > > > +	mode = nvmem_bin_attr_get_umode(nvmem);
-> > > > > > > +
-> > > > > > >  	/* Initialize each attribute to take the name and size of the cell */
-> > > > > > >  	list_for_each_entry(entry, &nvmem->cells, node) {
-> > > > > > >  		sysfs_bin_attr_init(&attrs[i]);
-> > > > > > >  		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
-> > > > > > >  						    "%s@%x", entry->name,
-> > > > > > >  						    entry->offset);
-> > > > > > > -		attrs[i].attr.mode = 0444;    
-> > > > > > 
-> > > > > > cells are not writable if there is a read post process hook, see
-> > > > > > __nvmem_cell_entry_write().
-> > > > > > 
-> > > > > > if (entry->read_post_processing)
-> > > > > > 	mode &= ~0222;    
-> > > > > 
-> > > > > good point, thanks for the hint :) I will add this and send a non-rfc
-> > > > > version if write-support is something you would like to have.  
-> > > > 
-> > > > I like the idea but, what about mtd devices (and soon maybe UBI
-> > > > devices)? This may only work on EEPROM-like devices I guess, where each
-> > > > area is fully independent and where no erasure is actually expected.  
-> > >
-> > > For MTD I would say that you need to ensure that you need to align the
-> > > cells correctly. The cell-write should handle the page erase/write cycle
-> > > properly. E.g. an SPI-NOR need to align the cells to erase-page size or
-> > > the nvmem-cell-write need to read-copy-update the cells if they are not
-> > > erase-paged aligned.
-> > >
-> > > Regarding UBI(FS) I'm not sure if this is required at all since you have
-> > > an filesystem. IMHO nvmem-cells are very lowelevel and are not made for
-> > > filesystem backed backends.
-> 
-> I'm really talking about UBI, not UBIFS. UBI is just like MTD but
-> handles wear leveling. There is a pending series for enabling nvmem
-> cells on top of UBI.
+> On Mon, Feb 19, 2024 at 04:39:29PM +0100, Anna-Maria Behnsen wrote:
+>> Hi,
+>> 
+>> the vdso related cleanup queue contains two parts:
+>> 
+>> - Patch 1-3: Misc cleanups related to a comment, a superfluous header
+>> 	     include and ifdeffery
+>> 
+>> - Patch 4-10: The union vdso_data_store is defined in seven
+>>   	      architectures. Make this union available in a generic vdso
+>>   	      header file to prevent code duplication and fix the
+>>   	      architectures one by one to use the generic vdso_data_store.
+>> 
+>> Thanks,
+>> 
+>> 	Anna-Maria
+>
+> I do love a good clean-up! Thanks for this, I looked through all the
+> patches and they seem correct to me;
 
-Cells on-top of a wear leveling device? Interesting, the cell-api is
-very lowlevel which means the specified cell will be at the exact same
-place on the hardware device as specified in the dts. How do you know
-that with wear leveling underneath the cell-api?
+Thank you! I had a mistake in there and already posted a new version for
+this single patch - I forgot to update this patch before posting...
 
-> > > That beeing said: I have no problem if we provide write support for
-> > > EEPROMs only and adapt it later on to cover spi-nor/nand devices as
-> > > well.  
-> > 
-> > Agreed. Honestly, I don't know how much sense this makes for MTD
-> > devices. First, the operation itself, seems really dangerous, as
-> > you'll have to delete the whole sector. Second, during initial
-> > provisioning, I don't think it will make much sense to use the sysfs
-> > cells because you cannot combine multiple writes into one. You'll
-> > always end up with unnecessary erases.
-> 
-> One cell per erase block would be an immense waste.
+> removed definitions are all
+> identical, and __page_aligned_data is kept where needed.
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> -Kees
 
-Agree.
+Thanks,
 
-> Read-copy-update would probably work but would as well be very
-> sub-optimal. I guess we could live with it, but as for now there has
-> not been any real request for it, I'd also advise to keep this feature
-> out of the mtd world in general.
+	Anna-Maria
 
-SPI-NORs are very typical for storing production-data as well but as I
-said this is another story. I'm fine with limiting it to EEPROMs since
-this is my use-case :)
-
-Regards,
-  Marco
 
