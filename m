@@ -1,56 +1,99 @@
-Return-Path: <linux-kernel+bounces-73595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A152C85C4CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:28:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D62085C4D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3F38B24BB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:28:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 809251C2114F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F771350DD;
-	Tue, 20 Feb 2024 19:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA2714A0BF;
+	Tue, 20 Feb 2024 19:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hEn65obD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="KNjFKIBi"
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB031350F9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708457320; cv=none; b=MRVoLGvaBeJMYWgyX8YQn/1tmlZXU/13teI/SAGsRRj9eGqGsphia+1mCDoCayKflK44NjraqCJxdD6GxDN0rynig66nh74QTJ+kaeaY8g/rX9XdRFyzoZ43AG/DzjH+ccLfdPxD71I2l/I24LA7nYbFN0tL21FJQ00avt2T8b0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708457320; c=relaxed/simple;
-	bh=GgHPsKP/KDWmbPi0gZPidVAvCOO4T1cg3APQN8kxwHk=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D35D176C89;
+	Tue, 20 Feb 2024 19:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708457466; cv=pass; b=D/B8bCd7W3mXuxGGTVBfLDexc2amfjamFpNXMf8gil7lFzbYXSiBkx18j/s3baF1quQ4OKJIrTRchtZwo6+u+L/UGIYdXDjNyS3rupeaKmoWlMPZbfbwKUx7HVd90BmPnoaVJXWk6OGZRecOxyTJgz4QuEc5svOGACDhg1Zqxs0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708457466; c=relaxed/simple;
+	bh=9gTTjqDg18ZUiHwCjaFkNhYzwUuJi+Ezvidoxxkkl2k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VTmm7ZDgsfHkBzenOyQNQKRze3pRBpkiADLnsQ4RD2+PivCAS93XLNZzKdIlv5XbgDTJN1Pi3+IWRf9qPRnbvMvXcMbNHrcjymvgR5UWnQprN7c0g5tBUoHfMxHgNRFFI64mEZ6/dQP49zIsyuHuFHxnjB9nc+3tlQRvgVen1Oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hEn65obD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18890C43399;
-	Tue, 20 Feb 2024 19:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708457320;
-	bh=GgHPsKP/KDWmbPi0gZPidVAvCOO4T1cg3APQN8kxwHk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hEn65obDAFwyjg4gBWp3EqoeOOyEz0sRVMfumY5huJ9A5SvB/4HV1xEwLC93fPe1E
-	 ScC8K0bISEHtgN/Be9OtkhZOE6S8eHZe7Kfo89DboRiP94lrdEFVsl4jMuom+fxX+5
-	 PczYtSCo+Z/XkjoqE7Kj0CSHt15+ay5sOoA8PkeM8sWIEo5cSrEtOzlIhkgeL6/N/5
-	 2ZtX0ToPGTKdErNrGLWUd63AHLoU95F+h4e5U2h8bFy/B1RQEPuh3zcY+t50i6Gb5s
-	 q3myi1XPKHSa48BySMXV7wlwoU0yQMhnp2emQez9j2KLbnOVGgp9+nLPOusR44KVQV
-	 NEORBk7Abp30A==
-Date: Tue, 20 Feb 2024 11:28:38 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	Sheng Yong <shengyong@oppo.com>
-Subject: Re: [PATCH] f2fs: support compress extension update via sysfs
- interface
-Message-ID: <ZdT9ZmbCqMNk2nU4@google.com>
-References: <20240207062546.3083870-1-chao@kernel.org>
- <ZcQbRzyvb8MNeOMB@google.com>
- <74933d5b-449e-4061-9571-799acbc42b43@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q8z8uOZLiYouypnmCnv9r+Vu0ASiI6UCWnqYP/hH+12P5keu2+jbCCg0XvEFhBAPPlHabniIp4YmO+/pCDpmWMPZt3+NMX3+8Ftvr71JJXDjtnr9LEpXzhUQEWmpolo4E/u26q/7Cdrbx38fVd8M2voCdaFwy0j96rRWv2a1pQI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=KNjFKIBi; arc=pass smtp.client-ip=185.185.170.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (80-248-247-191.cust.suomicom.net [80.248.247.191])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4TfTz24Tssz49PxK;
+	Tue, 20 Feb 2024 21:30:54 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+	t=1708457455;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6WODeMuYaOON1SJQVtQ5IEATkKOVm+utZXtQv9Iw1EA=;
+	b=KNjFKIBiJJgUe4Do+ZujeyokXjlbxMHjT7N3GhuDL/KaEwhf1L7KfqHXnZ9OSuqPeV8ha6
+	6KbxNaOCR4OdtxVxyo+S6dc3JGFZxpyZcZrEyT7xBZzj3U62pcJ8Fi1YIjhT40JZJNEM6n
+	1r9kKvjW68vxnn9+Bfx+7xRSWHRFVBFlG1SpXfz8VlVvS1mR+po54g81EgLIae2qtQlq5K
+	G3i0jePGDk1IcUPw64W0G5aRNbI5yyJuzXe1+FI5pXzorcLofAA4yuKw397V4AcP+hGLwY
+	K1TrBTx6fGqu5ofGW0DUPIFDS/GNljWmqz7rwHnNTreSFG63ql6DOsaBLliR+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=lahtoruutu; t=1708457455;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6WODeMuYaOON1SJQVtQ5IEATkKOVm+utZXtQv9Iw1EA=;
+	b=U1YCeSP7W4LM1J6E/Zu9UZ/tDVqp2liNJxvdG3Z6YVmpNXWQnN8wPWThgdzBSPLzR52ZTj
+	pUwA5sMkVvlHpONd4/8U2WMR86qkkVu8dTpe+wxydZtNiI75cayhl0HwzCCVfj1ZNB5dRZ
+	FdAE/Jtmz582eIj+y0Xtb53BHIjMSVeTqcZ2X45ryMugHUzxPCaT7vsyrTFLtXJix9s/Cb
+	UTeYZ+Ol37juM2cYiPH5fgJ0Z6HCDBIvD3upoEvu4vlPKgRjfFw4VpYZuKJ3yfDN8xiTLl
+	ZRxpf5oniCf4MwQKhZweVTL/NVtJ3wLvXUp/bzomsZklbpE0zsOVAHRcFRvvgQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1708457455; a=rsa-sha256;
+	cv=none;
+	b=XyJhVY18mh4COcbe10bCzqqUomBCAwlYqQMPLLJg6n9GNj+3sZIudna2ZTxzsweY8i0qEP
+	7Psm/C2yc/cgL0xXGh0y0y8awyJi1dCIoXHfcIZ76yCvsws6i0SCa/ph9dzK6GE+ofgA6o
+	EuwX9Im0Lohe0ak/khwf1JJR+epxXdFnWd9r9RIdM4CNz583GGfhtyp3HcEgZH2aMdA17T
+	4zuMrbePx22g4nps7d11oKvaqtPIxlCy21AJJju6FyiPxDgdfnS76+8oywgldaygMoVkMd
+	k9xc51eJxFCWGsIxc96IFP+T7mMonhu+MEL2RexOtlxXOdIyelqAn80tmbL4Ww==
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 1FB1D634C93;
+	Tue, 20 Feb 2024 21:30:54 +0200 (EET)
+Date: Tue, 20 Feb 2024 19:30:53 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Mehdi Djait <mehdi.djait.k@gmail.com>
+Cc: mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	conor+dt@kernel.org, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+	maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com,
+	michael.riesch@wolfvision.net, laurent.pinchart@ideasonboard.com,
+	Mehdi Djait <mehdi.djait@bootlin.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [RESEND Patch v13 1/3] media: dt-bindings: media: add bindings
+ for Rockchip CIF
+Message-ID: <ZdT97Szv3yYG9Xbb@valkosipuli.retiisi.eu>
+References: <cover.1707677804.git.mehdi.djait.k@gmail.com>
+ <13deb8c5cb58e08c1b47decd112b51e8e0b6c4dc.1707677804.git.mehdi.djait.k@gmail.com>
+ <Zcta6hhSio67ahKs@valkosipuli.retiisi.eu>
+ <ZdTbilKCsMFcjz64@mehdi-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,317 +102,151 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <74933d5b-449e-4061-9571-799acbc42b43@kernel.org>
+In-Reply-To: <ZdTbilKCsMFcjz64@mehdi-archlinux>
 
-On 02/19, Chao Yu wrote:
-> On 2024/2/8 8:07, Jaegeuk Kim wrote:
-> > On 02/07, Chao Yu wrote:
-> > > Introduce /sys/fs/f2fs/<disk>/compress_extension to support
-> > > adding/deleting compress extension via sysfs interface, in
-> > > comparison to mount option, it's more easy to use and less
-> > > authority issue for applications.
+Hi Mehdi,
+
+On Tue, Feb 20, 2024 at 06:04:10PM +0100, Mehdi Djait wrote:
+> Hi Sakari,
+> 
+> Thank you for the review.
+
+You're welcome!
+
+> 
+> On Tue, Feb 13, 2024 at 12:04:58PM +0000, Sakari Ailus wrote:
+> > Hi Mehdi,
+> > 
+> > Thanks for the patchset.
+> > 
+> > On Sun, Feb 11, 2024 at 08:03:30PM +0100, Mehdi Djait wrote:
+> > > From: Mehdi Djait <mehdi.djait@bootlin.com>
 > > > 
-> > > Usage:
-> > > - Query: cat /sys/fs/f2fs/<disk>/compress_extension
-> > > - Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
-> > > - Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
-> > > - [c] means add/del compress extension
-> > > - [n] means add/del nocompress extension
+> > > Add a documentation for the Rockchip Camera Interface binding.
 > > > 
-> > > Signed-off-by: Sheng Yong <shengyong@oppo.com>
-> > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > > Reviewed-by: Michael Riesch <michael.riesch@wolfvision.net>
+> > > Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> > > Signed-off-by: Mehdi Djait <mehdi.djait.k@gmail.com>
 > > > ---
-> > >   Documentation/ABI/testing/sysfs-fs-f2fs | 10 ++++
-> > >   Documentation/filesystems/f2fs.rst      |  6 ++-
-> > >   fs/f2fs/compress.c                      | 61 +++++++++++++++++++++++
-> > >   fs/f2fs/f2fs.h                          |  4 +-
-> > >   fs/f2fs/sysfs.c                         | 65 +++++++++++++++++++++++--
-> > >   5 files changed, 139 insertions(+), 7 deletions(-)
+> > >  .../bindings/media/rockchip,px30-vip.yaml     | 123 ++++++++++++++++++
+> > >  1 file changed, 123 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
 > > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-> > > index 48c135e24eb5..1f2cc0913e45 100644
-> > > --- a/Documentation/ABI/testing/sysfs-fs-f2fs
-> > > +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-> > > @@ -762,3 +762,13 @@ Date:		November 2023
-> > >   Contact:	"Chao Yu" <chao@kernel.org>
-> > >   Description:	It controls to enable/disable IO aware feature for background discard.
-> > >   		By default, the value is 1 which indicates IO aware is on.
+> > > diff --git a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > new file mode 100644
+> > > index 000000000000..6af4a9b6774a
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > @@ -0,0 +1,123 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/media/rockchip,px30-vip.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > > +
-> > > +What:		/sys/fs/f2fs/<disk>/compress_extension
-> > > +Date:		October 2023
-> > > +Contact:	"Chao Yu" <chao@kernel.org>
-> > > +Description:	Used to control configure [|no]compress_extension list:
-> > > +		- Query: cat /sys/fs/f2fs/<disk>/compress_extension
-> > > +		- Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
-> > > +		- Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
-> > > +		- [c] means add/del compress extension
-> > > +		- [n] means add/del nocompress extension
-> > > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> > > index 32cbfa864f38..c82a8fd7316b 100644
-> > > --- a/Documentation/filesystems/f2fs.rst
-> > > +++ b/Documentation/filesystems/f2fs.rst
-> > > @@ -821,17 +821,19 @@ Compression implementation
-> > >     all logical blocks in cluster contain valid data and compress ratio of
-> > >     cluster data is lower than specified threshold.
-> > > -- To enable compression on regular inode, there are four ways:
-> > > +- To enable compression on regular inode, there are five ways:
-> > >     * chattr +c file
-> > >     * chattr +c dir; touch dir/file
-> > >     * mount w/ -o compress_extension=ext; touch file.ext
-> > >     * mount w/ -o compress_extension=*; touch any_file
-> > > +  * echo '[c]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
-> > > -- To disable compression on regular inode, there are two ways:
-> > > +- To disable compression on regular inode, there are three ways:
-> > >     * chattr -c file
-> > >     * mount w/ -o nocompress_extension=ext; touch file.ext
-> > > +  * echo '[n]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
-> > >   - Priority in between FS_COMPR_FL, FS_NOCOMP_FS, extensions:
-> > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > > index 3dc488ce882b..a5257882c772 100644
-> > > --- a/fs/f2fs/compress.c
-> > > +++ b/fs/f2fs/compress.c
-> > > @@ -20,6 +20,67 @@
-> > >   #include "segment.h"
-> > >   #include <trace/events/f2fs.h>
-> > > +static int is_compress_extension_exist(struct f2fs_sb_info *sbi,
-> > > +				unsigned char (*ext)[F2FS_EXTENSION_LEN],
-> > > +				int ext_cnt, unsigned char *new_ext)
-> > > +{
-> > > +	int i;
+> > > +title: Rockchip Camera Interface (CIF)
 > > > +
-> > > +	for (i = 0; i < ext_cnt; i++) {
-> > > +		if (!strcasecmp(new_ext, ext[i]))
-> > > +			return i;
-> > > +	}
-> > > +	return -1;
-> > > +}
+> > > +maintainers:
+> > > +  - Mehdi Djait <mehdi.djait@bootlin.com>
 > > > +
-> > > +int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
-> > > +				unsigned char *new_ext, bool is_ext, bool set)
-> > > +{
-> > > +	unsigned char (*ext)[F2FS_EXTENSION_LEN];
-> > > +	unsigned char *ext_cnt;
+> > > +description:
+> > > +  CIF is a camera interface present on some Rockchip SoCs. It receives the data
+> > > +  from Camera sensor or CCIR656 encoder and transfers it into system main memory
+> > > +  by AXI bus.
 > > > +
-> > > +	if (is_ext) {
-> > > +		ext = F2FS_OPTION(sbi).extensions;
-> > > +		ext_cnt = &F2FS_OPTION(sbi).compress_ext_cnt;
-> > > +	} else {
-> > > +		ext = F2FS_OPTION(sbi).noextensions;
-> > > +		ext_cnt = &F2FS_OPTION(sbi).nocompress_ext_cnt;
-> > > +	}
+> > > +properties:
+> > > +  compatible:
+> > > +    const: rockchip,px30-vip
 > > > +
-> > > +	if (set) {
-> > > +		if (*ext_cnt >= COMPRESS_EXT_NUM)
-> > > +			return -EINVAL;
+> > > +  reg:
+> > > +    maxItems: 1
 > > > +
-> > > +		if (is_compress_extension_exist(sbi,
-> > > +					F2FS_OPTION(sbi).extensions,
-> > > +					F2FS_OPTION(sbi).compress_ext_cnt,
-> > > +					new_ext) >= 0)
-> > > +			return -EEXIST;
+> > > +  interrupts:
+> > > +    maxItems: 1
 > > > +
-> > > +		if (is_compress_extension_exist(sbi,
-> > > +					F2FS_OPTION(sbi).noextensions,
-> > > +					F2FS_OPTION(sbi).nocompress_ext_cnt,
-> > > +					new_ext) >= 0)
-> > > +			return -EEXIST;
+> > > +  clocks:
+> > > +    items:
+> > > +      - description: ACLK
+> > > +      - description: HCLK
+> > > +      - description: PCLK
 > > > +
-> > > +		strcpy(ext[*ext_cnt], new_ext);
-> > > +		(*ext_cnt)++;
-> > > +	} else {
-> > > +		int pos = is_compress_extension_exist(sbi, ext,
-> > > +						*ext_cnt, new_ext);
-> > > +		if (pos < 0)
-> > > +			return -ENOENT;
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: aclk
+> > > +      - const: hclk
+> > > +      - const: pclk
 > > > +
-> > > +		if (pos < *ext_cnt - 1)
-> > > +			memmove(ext + pos, ext + pos + 1,
-> > > +				F2FS_EXTENSION_LEN * (*ext_cnt - pos - 1));
-> > > +		memset(ext + *ext_cnt - 1, 0, F2FS_EXTENSION_LEN);
-> > > +		(*ext_cnt)--;
-> > > +	}
+> > > +  resets:
+> > > +    items:
+> > > +      - description: AXI
+> > > +      - description: AHB
+> > > +      - description: PCLK IN
 > > > +
-> > > +	return 0;
-> > > +}
+> > > +  reset-names:
+> > > +    items:
+> > > +      - const: axi
+> > > +      - const: ahb
+> > > +      - const: pclkin
 > > > +
-> > >   static struct kmem_cache *cic_entry_slab;
-> > >   static struct kmem_cache *dic_entry_slab;
-> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > > index c5e7460d1a0a..d44e2c43d8ab 100644
-> > > --- a/fs/f2fs/f2fs.h
-> > > +++ b/fs/f2fs/f2fs.h
-> > > @@ -186,7 +186,7 @@ struct f2fs_mount_info {
-> > >   	unsigned char compress_level;		/* compress level */
-> > >   	bool compress_chksum;			/* compressed data chksum */
-> > >   	unsigned char compress_ext_cnt;		/* extension count */
-> > > -	unsigned char nocompress_ext_cnt;		/* nocompress extension count */
-> > > +	unsigned char nocompress_ext_cnt;	/* nocompress extension count */
-> > >   	int compress_mode;			/* compression mode */
-> > >   	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
-> > >   	unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
-> > > @@ -4273,6 +4273,8 @@ static inline bool f2fs_post_read_required(struct inode *inode)
-> > >    * compress.c
-> > >    */
-> > >   #ifdef CONFIG_F2FS_FS_COMPRESSION
-> > > +int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
-> > > +				unsigned char *new_ext, bool is_ext, bool set);
-> > >   bool f2fs_is_compressed_page(struct page *page);
-> > >   struct page *f2fs_compress_control_page(struct page *page);
-> > >   int f2fs_prepare_compress_overwrite(struct inode *inode,
-> > > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > > index a7ec55c7bb20..a8f05a02e202 100644
-> > > --- a/fs/f2fs/sysfs.c
-> > > +++ b/fs/f2fs/sysfs.c
-> > > @@ -39,6 +39,7 @@ enum {
-> > >   	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
-> > >   	CPRC_INFO,	/* struct ckpt_req_control */
-> > >   	ATGC_INFO,	/* struct atgc_management */
-> > > +	MOUNT_INFO,	/* struct f2fs_mount_info */
-> > >   };
-> > >   static const char *gc_mode_names[MAX_GC_MODE] = {
-> > > @@ -89,6 +90,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
-> > >   		return (unsigned char *)&sbi->cprc_info;
-> > >   	else if (struct_type == ATGC_INFO)
-> > >   		return (unsigned char *)&sbi->am;
-> > > +	else if (struct_type == MOUNT_INFO)
-> > > +		return (unsigned char *)&F2FS_OPTION(sbi);
-> > >   	return NULL;
-> > >   }
-> > > @@ -358,6 +361,25 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
-> > >   	if (!strcmp(a->attr.name, "compr_new_inode"))
-> > >   		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
+> > > +  power-domains:
+> > > +    maxItems: 1
 > > > +
-> > > +	if (!strcmp(a->attr.name, "compress_extension")) {
-> > > +		int len = 0, i;
+> > > +  ports:
+> > > +    $ref: /schemas/graph.yaml#/properties/ports
 > > > +
-> > > +		f2fs_down_read(&sbi->sb_lock);
-> > > +		len += scnprintf(buf + len, PAGE_SIZE - len,
-> > > +						"compress extension:\n");
-> > > +		for (i = 0; i < F2FS_OPTION(sbi).compress_ext_cnt; i++)
-> > > +			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
-> > > +					F2FS_OPTION(sbi).extensions[i]);
+> > > +    properties:
+> > > +      port@0:
+> > > +        $ref: /schemas/graph.yaml#/$defs/port-base
+> > > +        unevaluatedProperties: false
+> > > +        description: input port on the parallel interface
 > > > +
-> > > +		len += scnprintf(buf + len, PAGE_SIZE - len,
-> > > +						"nocompress extension:\n");
-> > > +		for (i = 0; i < F2FS_OPTION(sbi).nocompress_ext_cnt; i++)
-> > > +			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
-> > > +					F2FS_OPTION(sbi).noextensions[i]);
+> > > +        properties:
+> > > +          endpoint:
+> > > +            $ref: video-interfaces.yaml#
+> > > +            unevaluatedProperties: false
+> > > +
+> > > +            properties:
+> > > +              bus-type:
+> > > +                enum: [5, 6]
+> > > +
+> > > +            required:
+> > > +              - bus-type
 > > 
-> > I don't think this is acceptable in sysfs.
-> 
-> It looks block layer output similar string:
-> 
-> cat /sys/block/<dev>/queue/scheduler
-> mq-deadline kyber [bfq] none
-> 
-> Or, can we add extension entries into /sys/fs/f2fs/<dev>/compress_extensions/
-> directory? like feature entries in /sys/fs/f2fs/<dev>/feature_list/.
-> 
-> e.g.
-> 
-> ls /sys/fs/f2fs/<dev>/compress_extensions/
-> so dex
-> 
-> Show enable/disable to indicate current extension is in
-> compress_extension/nocompress_extension array.
-> 
-> cat /sys/fs/f2fs/<dev>/compress_extensions/so
-> enable
-> 
-> cat /sys/fs/f2fs/<dev>/compress_extensions/dex
-> disable
-
-How about adding all the file extentions in a separate entries and eash showing
-the hot/cold/compression information together?
-
-> 
-> Thanks,
-> 
+> > What about the vsync-active, hsync-active and data-active properties?
+> > Aren't they relevant for this device? Are there default values? This should
+> > be part of the bindings for the device, shouldn't it?
 > > 
-> > > +		f2fs_up_read(&sbi->sb_lock);
-> > > +		return len;
-> > > +	}
-> > >   #endif
-> > >   	if (!strcmp(a->attr.name, "gc_segment_mode"))
-> > > @@ -446,6 +468,35 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
-> > >   		return ret ? ret : count;
-> > >   	}
-> > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> > > +	if (!strcmp(a->attr.name, "compress_extension")) {
-> > > +		char *name = strim((char *)buf);
-> > > +		bool set = true, cmpr;
-> > > +
-> > > +		if (!strncmp(name, "[c]", 3))
-> > > +			cmpr = true;
-> > > +		else if (!strncmp(name, "[n]", 3))
-> > > +			cmpr = false;
-> > > +		else
-> > > +			return -EINVAL;
-> > > +
-> > > +		name += 3;
-> > > +
-> > > +		if (*name == '!') {
-> > > +			name++;
-> > > +			set = false;
-> > > +		}
-> > > +
-> > > +		if (!strlen(name) || strlen(name) >= F2FS_EXTENSION_LEN)
-> > > +			return -EINVAL;
-> > > +
-> > > +		f2fs_down_write(&sbi->sb_lock);
-> > > +		ret = f2fs_update_compress_extension(sbi, name, cmpr, set);
-> > > +		f2fs_up_write(&sbi->sb_lock);
-> > > +		return ret ? ret : count;
-> > > +	}
-> > > +#endif
-> > > +
-> > >   	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
-> > >   		const char *name = strim((char *)buf);
-> > >   		struct ckpt_req_control *cprc = &sbi->cprc_info;
-> > > @@ -785,15 +836,16 @@ static ssize_t f2fs_sbi_store(struct f2fs_attr *a,
-> > >   			const char *buf, size_t count)
-> > >   {
-> > >   	ssize_t ret;
-> > > -	bool gc_entry = (!strcmp(a->attr.name, "gc_urgent") ||
-> > > -					a->struct_type == GC_THREAD);
-> > > +	bool need_lock = (!strcmp(a->attr.name, "gc_urgent") ||
-> > > +					a->struct_type == GC_THREAD ||
-> > > +					a->struct_type == MOUNT_INFO);
-> > > -	if (gc_entry) {
-> > > +	if (need_lock) {
-> > >   		if (!down_read_trylock(&sbi->sb->s_umount))
-> > >   			return -EAGAIN;
-> > >   	}
-> > >   	ret = __sbi_store(a, sbi, buf, count);
-> > > -	if (gc_entry)
-> > > +	if (need_lock)
-> > >   		up_read(&sbi->sb->s_umount);
-> > >   	return ret;
-> > > @@ -942,6 +994,9 @@ static struct f2fs_attr f2fs_attr_##name = __ATTR(name, 0444, name##_show, NULL)
-> > >   #define ATGC_INFO_RW_ATTR(name, elname)				\
-> > >   	F2FS_RW_ATTR(ATGC_INFO, atgc_management, name, elname)
-> > > +#define MOUNT_INFO_RW_ATTR(name, elname)			\
-> > > +	F2FS_RW_ATTR(MOUNT_INFO, f2fs_mount_info, name, elname)
-> > > +
-> > >   /* GC_THREAD ATTR */
-> > >   GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
-> > >   GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
-> > > @@ -1008,6 +1063,7 @@ F2FS_SBI_GENERAL_RW_ATTR(compr_saved_block);
-> > >   F2FS_SBI_GENERAL_RW_ATTR(compr_new_inode);
-> > >   F2FS_SBI_GENERAL_RW_ATTR(compress_percent);
-> > >   F2FS_SBI_GENERAL_RW_ATTR(compress_watermark);
-> > > +MOUNT_INFO_RW_ATTR(compress_extension, extensions);
-> > >   #endif
-> > >   /* atomic write */
-> > >   F2FS_SBI_GENERAL_RO_ATTR(current_atomic_write);
-> > > @@ -1181,6 +1237,7 @@ static struct attribute *f2fs_attrs[] = {
-> > >   	ATTR_LIST(compr_new_inode),
-> > >   	ATTR_LIST(compress_percent),
-> > >   	ATTR_LIST(compress_watermark),
-> > > +	ATTR_LIST(compress_extension),
-> > >   #endif
-> > >   	/* For ATGC */
-> > >   	ATTR_LIST(atgc_candidate_ratio),
-> > > -- 
-> > > 2.40.1
+> 
+> From what I gathered from the Rockchip PX30 TRM and the other
+> available documents from Rockchip, I will add the following:
+> 
+> diff --git a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> index 6af4a9b6774a..6920b0cb0507 100644
+> --- a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> +++ b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> @@ -69,6 +69,14 @@ properties:
+>                bus-type:
+>                  enum: [5, 6]
+>  
+> +              hsync-active:
+> +                enum: [0, 1]
+> +                default: 1
+> +
+> +              vsync-active:
+> +                enum: [0, 1]
+> +                default: 0
+
+I'd use the same default for both, whether it's 0 or 1.
+
+> +
+> 
+> @dt-maintainers, @Conor does this warrant a drop of the reviewed-by tags
+> in the V14 ?
+> 
+
+-- 
+Regards,
+
+Sakari Ailus
 
