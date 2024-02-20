@@ -1,398 +1,166 @@
-Return-Path: <linux-kernel+bounces-73674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32AC685C5BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:25:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5594285C5BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:25:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55C0B1C221F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:25:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0722B2857E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13A5150986;
-	Tue, 20 Feb 2024 20:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F56314AD11;
+	Tue, 20 Feb 2024 20:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZH8migIR"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h4AaXhcj"
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD92214F9C9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F8814A4E6
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708460611; cv=none; b=siGS1/2ADtFvNljUfXQMnFn1YT4WjUV53UGTNr9Wb1BdezscUjx8cvAB9NIKmD8pMI6VmqT99x0T+l2Lx296AkF+FPX+DFq2qz+oUI1IlVcYBdQjskA2rE2hhaaQHgzb3Sejc5grVMo3Yb+G79cI0XoWN4ccjKqhaNdfbYQhObM=
+	t=1708460735; cv=none; b=cXpUyEgpxxRzcw2pfGDfAy6NT45O/AqTQjfc7gpM9PyBr8IIs5S4hrZYvHcJ/uaKYG/lP+TbAZ5PIFVqfR4MaNZBhHZyQuspJ9e3nMcV2WtFvsZIrnp10tSZCfiHJjxeKEG5T7vJ8rSAvpsZuR8KJs3XQzns5UISx+qflNae24k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708460611; c=relaxed/simple;
-	bh=ccTAR8GzSCDWXW0/WIZvXFB3XJOO/H5kh/tczds8Vvw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=quy0GqIL6Ehhtrh6+pWf30Ka9dvszMy3UD1pSvyVoC4xdIl2vdovtaWGvE+Kbu8v/WG0aB6ArNzG0NkN36/Ud0q3S4GZwgjoJKw0Lvq3oTqRrvrIq3fU7VJhZaSJpg6avKXFfhLhF2QuRnM6aRp2GPbYC2mcQFklxqfbNs4bA2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZH8migIR; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60810a74e2eso63376587b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:23:29 -0800 (PST)
+	s=arc-20240116; t=1708460735; c=relaxed/simple;
+	bh=Yjw4CQZg24TKMtDrtR8nHj5ynpIP/Mmr+w0gohlWeZo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ILKa13PagdfVWraeqFJBjwPhT+y1SMJwkdkoiR093HohupjJTJOGEGM8UFmywSPpkGnYWq8hgmg7xVJQilHzgPCEqrwPq7Od6uY8qWCgez/hG1WERzI9y/VdJZHSPivFj9RFRyLNEfaM6MQGEwswpNF4FU0UapCYzgMaXDuHZ6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h4AaXhcj; arc=none smtp.client-ip=209.85.214.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-1d746ce7d13so40141325ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:25:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708460609; x=1709065409; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iZjxidu+JFmCthSlYk9Bx3D9eTqyNowu6l339iQEnac=;
-        b=ZH8migIR+tJ8xmkaw830LOHR1KpmVbQibIbzK3lsK/hOWWCQoCSUt5+0MLMBWQBqpZ
-         P/3Q4n+IKOD6qYp/1SgVLRbrvkjtyvUKplPKglmG3aEOj8Wcu8kMO9z3fyEq3Hb1clKE
-         4SVnK3g5ZtODx5QBWFQdJIs6uP934XMaPVMkSS8XF8poZ7dyoUyE7+GaUgulT7l1AYwG
-         a5Yr15FtZ3js1yqKEmQcbnuisriGyjRNtce9UR1TdLGk+hLsp4vn4UA3EtxztwGxBTue
-         u0J5k5AKdncq2Cz0HF9iECrvCz7YZFUcjvKhJuPtWLLNNyGPRk1FLxcQj6CPPcJIE7rJ
-         1CBw==
+        d=gmail.com; s=20230601; t=1708460733; x=1709065533; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5xdhZJ9DhrvAcXGwq0nzlagkVpHv12NVQ7HVU66ltWM=;
+        b=h4AaXhcjXwN3GvfMBpt7z7XhEAzgs7fuUgW4ppcQLzA+2bNgQXKtH4yoVpk6GQIs4y
+         sRnGISTKUdcRZc/XL/4sreaWLbJleQmQ6S+8QH9UBZkndBNghhSLu6mI2Oor4sFonz9c
+         FS/+hnwa2bBSky14wT/4WyzAxqi856a2MdZDpu+lMNFL8H7CIB+thNtTjAR4ezHpshb3
+         jbwafLyvOziGoFPOnzgPdiciFwM2RUnAb44RYlfzN4TwBUKMaPpnHwEHKsl2hGdIHwIv
+         IYJA8s/9DgfYxYrmCQvAOmjJc/ZQPPpNKV38qoRuM6A2WK+pweme1tcmS5sxK5xbOPW1
+         X0Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708460609; x=1709065409;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iZjxidu+JFmCthSlYk9Bx3D9eTqyNowu6l339iQEnac=;
-        b=iR1tWfyR7KBEI6j7z5veqCKvA9JTXDFef8K+5yzt913zUL9XCOVfm1P1gHTJNmDc67
-         ryvC/+A7wk3iqTCmm6+N8kvxr9KAih0GPU82o24BAz9KyIVXN8sTJT4+unsZ0ioO575m
-         8kmANwzfWbI5jvdVs3X/ghggJW2uIsyrghuH5LHIVmR9NAkeU9YrJ+g/5ASheUg3N6ch
-         +JypNWQTq60pdGehIsIFL6cz1HlMOqK2XgXkNB8mbaNyzKomuEQVGIIiGYoM9cKmmMEc
-         ErVvpYDx0vSywZUH+adMOvvjwlhkJXnwndj0uHKGVg9/QcSo9tGcuDw7EZ9Qel1HbWV0
-         dVOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUo/HvF7zuwQd0WKVWXSTH5aLTzJ7SW1A19jtdE+MYOr3gRfa65tLJcpPaMkCH4Vt+HpuHHbc7VOUzxtLQq7Lg4gsAADM96GPqy70US
-X-Gm-Message-State: AOJu0YwobM3GQHalJSIcSPLE3lh1e50/vpbzBFd9Isk1BaYrpYxsAnRG
-	5pYr3I3pLRL7Q0ELTihPJxYiAkJKf2XWSc17QR3fJMWotUHX7IkoCyoSsP95A7jU8nWuU7PorVs
-	ZNGPlBcfpjvwxQRvwtQ==
-X-Google-Smtp-Source: AGHT+IE987VjqfU9C9aQ3pwSaMP6OTjNB6LiyuAyjrfstMXyEZkEEbgfvJtsI6mFo47pSUhNbAmltIEQwXmwsopz
-X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a05:690c:fd0:b0:608:dae:a0c2 with SMTP
- id dg16-20020a05690c0fd000b006080daea0c2mr2896583ywb.3.1708460608985; Tue, 20
- Feb 2024 12:23:28 -0800 (PST)
-Date: Tue, 20 Feb 2024 20:23:10 +0000
-In-Reply-To: <20240220202310.2489614-1-vdonnefort@google.com>
+        d=1e100.net; s=20230601; t=1708460733; x=1709065533;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5xdhZJ9DhrvAcXGwq0nzlagkVpHv12NVQ7HVU66ltWM=;
+        b=YYEfEo1GNjxAEgf9jvVorThIQclO4nKMQfOy27xKYO5wq2SP/zkVBU7zMsTwBabcnJ
+         0JBoKq0go+f+QHPwQfCoy40OR0S9u7HD/el6MFh3MazrzDgUdRCxIWopuYGkdPZgwc+t
+         iBPHNc34WzFm1DAw/70f93+nAHea3TlYJXotVF8q2JpmAsXoI+x/4JhBLs70nrcdlkx4
+         4TG6bfRHSEHr3dLDFPYiZVJtWWYG79rgqlzq0ylkQpycjwhnywIcL5fL1LALmyh1T2Ri
+         y8vtfalMye7jTwjXceiNeLjfEYlm/UFxt6B6OAcuRh5moHqmSmEBxdfp0Yti5QmOsd+0
+         dccA==
+X-Gm-Message-State: AOJu0Yzvn9nCmNiRP2Bqf23PJIT385VcdTf9LacRCeltQtQUSFQE8lAu
+	xGnmeiHAwRmYQJSGEWflcs4CtAR+7jum3Ur8Cu86f5KYBvSYj60=
+X-Google-Smtp-Source: AGHT+IG5oDu0VthkmfK5qe+5KaMyp+DKjw7HA8sYTjEb/1xCwf3PSGKEt9Uo5htIB5nWDb1IErXfdg==
+X-Received: by 2002:a17:902:ec89:b0:1db:aa46:4923 with SMTP id x9-20020a170902ec8900b001dbaa464923mr15547816plg.40.1708460733597;
+        Tue, 20 Feb 2024 12:25:33 -0800 (PST)
+Received: from fedora.mshome.net (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
+        by smtp.gmail.com with ESMTPSA id je13-20020a170903264d00b001db40c0ed33sm6696678plb.61.2024.02.20.12.25.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 12:25:33 -0800 (PST)
+From: Gregory Price <gourry.memverge@gmail.com>
+X-Google-Original-From: Gregory Price <gregory.price@memverge.com>
+To: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+	ying.huang@intel.com,
+	hannes@cmpxchg.org,
+	dan.j.williams@intel.com,
+	dave.jiang@intel.com,
+	Gregory Price <gregory.price@memverge.com>
+Subject: [RCF 0/1] mm/mempolicy: weighted interleave system default weights
+Date: Tue, 20 Feb 2024 15:25:28 -0500
+Message-Id: <20240220202529.2365-1-gregory.price@memverge.com>
+X-Mailer: git-send-email 2.39.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240220202310.2489614-1-vdonnefort@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240220202310.2489614-7-vdonnefort@google.com>
-Subject: [PATCH v18 6/6] ring-buffer/selftest: Add ring-buffer mapping test
-From: Vincent Donnefort <vdonnefort@google.com>
-To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com, 
-	Vincent Donnefort <vdonnefort@google.com>, Shuah Khan <shuah@kernel.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-This test maps a ring-buffer and validate the meta-page after reset and
-after emitting few events.
+Weighted interleave added a sysfs interface for users to change
+the interleave weights based on user input - with a default value
+of `1` until reasonable system default code could be agreed upon.
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+This RFC series will suggest and solicit ideas for how to generate
+these system defaults, and lay out some challenges in generating them.
 
-diff --git a/tools/testing/selftests/ring-buffer/Makefile b/tools/testing/selftests/ring-buffer/Makefile
-new file mode 100644
-index 000000000000..627c5fa6d1ab
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wl,-no-as-needed -Wall
-+CFLAGS += $(KHDR_INCLUDES)
-+CFLAGS += -D_GNU_SOURCE
-+
-+TEST_GEN_PROGS = map_test
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/ring-buffer/config b/tools/testing/selftests/ring-buffer/config
-new file mode 100644
-index 000000000000..d936f8f00e78
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/config
-@@ -0,0 +1,2 @@
-+CONFIG_FTRACE=y
-+CONFIG_TRACER_SNAPSHOT=y
-diff --git a/tools/testing/selftests/ring-buffer/map_test.c b/tools/testing/selftests/ring-buffer/map_test.c
-new file mode 100644
-index 000000000000..56c44b29d998
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/map_test.c
-@@ -0,0 +1,273 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ring-buffer memory mapping tests
-+ *
-+ * Copyright (c) 2024 Vincent Donnefort <vdonnefort@google.com>
-+ */
-+#include <fcntl.h>
-+#include <sched.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+
-+#include <linux/trace_mmap.h>
-+
-+#include <sys/mman.h>
-+#include <sys/ioctl.h>
-+
-+#include "../user_events/user_events_selftests.h" /* share tracefs setup */
-+#include "../kselftest_harness.h"
-+
-+#define TRACEFS_ROOT "/sys/kernel/tracing"
-+
-+static int __tracefs_write(const char *path, const char *value)
-+{
-+	int fd, ret;
-+
-+	fd = open(path, O_WRONLY | O_TRUNC);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = write(fd, value, strlen(value));
-+
-+	close(fd);
-+
-+	return ret == -1 ? -errno : 0;
-+}
-+
-+static int __tracefs_write_int(const char *path, int value)
-+{
-+	char *str;
-+	int ret;
-+
-+	if (asprintf(&str, "%d", value) < 0)
-+		return -1;
-+
-+	ret = __tracefs_write(path, str);
-+
-+	free(str);
-+
-+	return ret;
-+}
-+
-+#define tracefs_write_int(path, value) \
-+	ASSERT_EQ(__tracefs_write_int((path), (value)), 0)
-+
-+#define tracefs_write(path, value) \
-+	ASSERT_EQ(__tracefs_write((path), (value)), 0)
-+
-+static int tracefs_reset(void)
-+{
-+	if (__tracefs_write_int(TRACEFS_ROOT"/tracing_on", 0))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/trace", ""))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/set_event", ""))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/current_tracer", "nop"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+struct tracefs_cpu_map_desc {
-+	struct trace_buffer_meta	*meta;
-+	void				*data;
-+	int				cpu_fd;
-+};
-+
-+int tracefs_cpu_map(struct tracefs_cpu_map_desc *desc, int cpu)
-+{
-+	unsigned long meta_len, data_len;
-+	int page_size = getpagesize();
-+	char *cpu_path;
-+	void *map;
-+
-+	if (asprintf(&cpu_path,
-+		     TRACEFS_ROOT"/per_cpu/cpu%d/trace_pipe_raw",
-+		     cpu) < 0)
-+		return -ENOMEM;
-+
-+	desc->cpu_fd = open(cpu_path, O_RDONLY | O_NONBLOCK);
-+	free(cpu_path);
-+	if (desc->cpu_fd < 0)
-+		return -ENODEV;
-+
-+	map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, desc->cpu_fd, 0);
-+	if (map == MAP_FAILED)
-+		return -errno;
-+
-+	desc->meta = (struct trace_buffer_meta *)map;
-+
-+	meta_len = desc->meta->meta_page_size;
-+	data_len = desc->meta->subbuf_size * desc->meta->nr_subbufs;
-+
-+	map = mmap(NULL, data_len, PROT_READ, MAP_SHARED, desc->cpu_fd, meta_len);
-+	if (map == MAP_FAILED) {
-+		munmap(desc->meta, desc->meta->meta_page_size);
-+		return -EINVAL;
-+	}
-+
-+	desc->data = map;
-+
-+	return 0;
-+}
-+
-+void tracefs_cpu_unmap(struct tracefs_cpu_map_desc *desc)
-+{
-+	munmap(desc->data, desc->meta->subbuf_size * desc->meta->nr_subbufs);
-+	munmap(desc->meta, desc->meta->meta_page_size);
-+	close(desc->cpu_fd);
-+}
-+
-+FIXTURE(map) {
-+	struct tracefs_cpu_map_desc	map_desc;
-+	bool				umount;
-+};
-+
-+FIXTURE_VARIANT(map) {
-+	int	subbuf_size;
-+};
-+
-+FIXTURE_VARIANT_ADD(map, subbuf_size_4k) {
-+	.subbuf_size = 4,
-+};
-+
-+FIXTURE_VARIANT_ADD(map, subbuf_size_8k) {
-+	.subbuf_size = 8,
-+};
-+
-+FIXTURE_SETUP(map)
-+{
-+	int cpu = sched_getcpu();
-+	cpu_set_t cpu_mask;
-+	bool fail, umount;
-+	char *message;
-+
-+	if (!tracefs_enabled(&message, &fail, &umount)) {
-+		if (fail) {
-+			TH_LOG("Tracefs setup failed: %s", message);
-+			ASSERT_FALSE(fail);
-+		}
-+		SKIP(return, "Skipping: %s", message);
-+	}
-+
-+	self->umount = umount;
-+
-+	ASSERT_GE(cpu, 0);
-+
-+	ASSERT_EQ(tracefs_reset(), 0);
-+
-+	tracefs_write_int(TRACEFS_ROOT"/buffer_subbuf_size_kb", variant->subbuf_size);
-+
-+	ASSERT_EQ(tracefs_cpu_map(&self->map_desc, cpu), 0);
-+
-+	/*
-+	 * Ensure generated events will be found on this very same ring-buffer.
-+	 */
-+	CPU_ZERO(&cpu_mask);
-+	CPU_SET(cpu, &cpu_mask);
-+	ASSERT_EQ(sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask), 0);
-+}
-+
-+FIXTURE_TEARDOWN(map)
-+{
-+	tracefs_reset();
-+
-+	if (self->umount)
-+		tracefs_unmount();
-+
-+	tracefs_cpu_unmap(&self->map_desc);
-+}
-+
-+TEST_F(map, meta_page_check)
-+{
-+	struct tracefs_cpu_map_desc *desc = &self->map_desc;
-+	int cnt = 0;
-+
-+	ASSERT_EQ(desc->meta->entries, 0);
-+	ASSERT_EQ(desc->meta->overrun, 0);
-+	ASSERT_EQ(desc->meta->read, 0);
-+
-+	ASSERT_EQ(desc->meta->reader.id, 0);
-+	ASSERT_EQ(desc->meta->reader.read, 0);
-+
-+	ASSERT_EQ(ioctl(desc->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-+	ASSERT_EQ(desc->meta->reader.id, 0);
-+
-+	tracefs_write_int(TRACEFS_ROOT"/tracing_on", 1);
-+	for (int i = 0; i < 16; i++)
-+		tracefs_write_int(TRACEFS_ROOT"/trace_marker", i);
-+again:
-+	ASSERT_EQ(ioctl(desc->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-+
-+	ASSERT_EQ(desc->meta->entries, 16);
-+	ASSERT_EQ(desc->meta->overrun, 0);
-+	ASSERT_EQ(desc->meta->read, 16);
-+
-+	ASSERT_EQ(desc->meta->reader.id, 1);
-+
-+	if (!(cnt++))
-+		goto again;
-+}
-+
-+FIXTURE(snapshot) {
-+	bool	umount;
-+};
-+
-+FIXTURE_SETUP(snapshot)
-+{
-+	bool fail, umount;
-+	struct stat sb;
-+	char *message;
-+
-+	if (stat(TRACEFS_ROOT"/snapshot", &sb))
-+		SKIP(return, "Skipping: %s", "snapshot not available");
-+
-+	if (!tracefs_enabled(&message, &fail, &umount)) {
-+		if (fail) {
-+			TH_LOG("Tracefs setup failed: %s", message);
-+			ASSERT_FALSE(fail);
-+		}
-+		SKIP(return, "Skipping: %s", message);
-+	}
-+
-+	self->umount = umount;
-+}
-+
-+FIXTURE_TEARDOWN(snapshot)
-+{
-+	__tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+			"!snapshot");
-+	tracefs_reset();
-+
-+	if (self->umount)
-+		tracefs_unmount();
-+}
-+
-+TEST_F(snapshot, excludes_map)
-+{
-+	struct tracefs_cpu_map_desc map_desc;
-+	int cpu = sched_getcpu();
-+
-+	ASSERT_GE(cpu, 0);
-+	tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+		      "snapshot");
-+	ASSERT_EQ(tracefs_cpu_map(&map_desc, cpu), -EBUSY);
-+}
-+
-+TEST_F(snapshot, excluded_by_map)
-+{
-+	struct tracefs_cpu_map_desc map_desc;
-+	int cpu = sched_getcpu();
-+
-+	ASSERT_EQ(tracefs_cpu_map(&map_desc, cpu), 0);
-+
-+	ASSERT_EQ(__tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+				  "snapshot"), -EBUSY);
-+	ASSERT_EQ(__tracefs_write(TRACEFS_ROOT"/snapshot",
-+				  "1"), -EBUSY);
-+}
-+
-+TEST_HARNESS_MAIN
+Future work on the CXL driver (drivers/cxl) will introduce additional
+code which registers HMAT information for hotplug memory provided
+by CXL devices. This RFC does not presently provide that integration,
+but will after it is upstream.
+
+
+Interfaces introduced:
+- mempolicy_set_node_perf
+  Called when HMAT data for a node is reported to the system
+
+Integration points:
+- node_set_perf_attrs - for reporting bandwidth info to mempolicy
+- get_il_weight and weighted interleave allocation interfaces to
+  provide system defaults when applying weighted interleave.
+
+New data in mempolicy:
+- node_bw_table - cached bandwidth information about each node
+- default_iw_table - the system default interleave weights
+
+
+Note that because there are now multiple tables (default and sysfs),
+the allocators fetch each weight individually, rather than via memcpy.
+This means if weights change at runtime (extremely unlikely), the
+allocators may temporarily see an "incorrect distribution" while the
+system is being reweighted. This is not harmful (simply inaccurate)
+and a result of providing a clean way to revert to the system default.
+
+
+v1: Simple GCD reduction of basic bandwidth distribution.
+
+Approach:
+- whenever new coordinates are reported, recalculate all weights
+- cache each node's min(read, write) bandwidth
+- calculate the percentage each node's bandwidth is of the whole
+- use GCD to reduce all percentages down to the minimum possible
+
+The approach is simple and fast, and operates well under reasonably
+well if the numbers reported by HMAT for each node happen to land
+on easily reducable percentages.  For example, a system presenting
+88% of its bandwidth on DRAM and 11% of its bandwidth on CXL (floored
+for simplicity) will end up with default weights of (8:1), which is
+a preferably small number assigned in each weight.
+
+The downside of this approach is that it is susceptible to prime and
+co-prime numbers keeping interleave weights large (e.g. 89:11 vs 8:1).
+We prefer finer grained interleaves to prevent large swaths of
+contiguous memory from landing on the same device.
+
+Additionally, this also hides the fact that multi-socket systems
+experience chokepoints across sockets.  For example a 2-socket
+system with 200GB/s on each socket from DDR does not mean a given
+socket has an aggregate of 400GB/s of bandwidth.  Interconnects between
+sockets provide less aggregate bandwidth than the DDR they provide
+access to (e.g. 3 UPI lanes vs 8 DDR channels).
+
+So this approach will reduce multi-socket interleave weights to (1:1)
+by default if all sockets provide the same bandwidth.
+
+Signed-off-by: Gregory Price <gregory.price@memverge.com>
+
+Gregory Price (1):
+  mm/mempolicy: introduce system default interleave weights
+
+ drivers/acpi/numa/hmat.c  |   1 +
+ drivers/base/node.c       |   7 +++
+ include/linux/mempolicy.h |   4 ++
+ mm/mempolicy.c            | 129 ++++++++++++++++++++++++++++++--------
+ 4 files changed, 116 insertions(+), 25 deletions(-)
+
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+2.39.1
 
 
