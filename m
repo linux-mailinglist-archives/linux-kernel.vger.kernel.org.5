@@ -1,52 +1,60 @@
-Return-Path: <linux-kernel+bounces-73557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B9385C425
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:59:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1026585C42B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:59:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F13C1C22AB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:59:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 900DA1F234D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B7214A0A6;
-	Tue, 20 Feb 2024 18:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791D3134CEF;
+	Tue, 20 Feb 2024 18:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="H/6M5JY9"
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24FD133422
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.17
+	dkim=pass (1024-bit key) header.d=infineon.com header.i=@infineon.com header.b="ATJl2TiW"
+Received: from smtp11.infineon.com (smtp11.infineon.com [217.10.52.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B667762E4;
+	Tue, 20 Feb 2024 18:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.52.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708455521; cv=none; b=GSr4mtJPCteMj17iZcAQ4cpePgIM25/Jk/0s4mbVLbCdeQS2Id/haH48C9O8C3Phk4SqgTr2bHf1qPW66TbsjKpGBWDx6J4FGlki3DyZ2kjd8kCdBITRBTXfUolrRd+SvAjr//pbM6O194lY5P0wpwjzysG2FwI1qaRk8A8rtB8=
+	t=1708455543; cv=none; b=MFIdKFQDSDuI/W4qaxBNyLPMuwPgItIU8nUoNYXjYq1TD3Ahk8w4T9frjXqpH5jpRKVWK1RH+wp5rg9xvuCJ3lJ3DCw+Pcm0R7snpZP6lO4F9z6bOYioG/Hi55O5hKkTCeuG0KeZVoz3U10pt3YSWEL2oJ4SWKsUQqQOpQJ3qAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708455521; c=relaxed/simple;
-	bh=by8PmY2ufAq3SGeKZ+PLlVmXW34TOU5dA1iB5kE/QUM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ATkEx5DCqIPplH588gNhTH45woPfFrDT58TJ3of+e6t0DMOh5dCCi1bP3nCF6z11o3qUB/X7C9ilBNHldzLaOZTNkiFFsj7+LZGncJA8WvUTLZlTJ5gCxz8tsW8cBaWNKFdSqd8Qh8iBWqER26irLZEcFrEIl4gI7L1GU+V3Y+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=H/6M5JY9; arc=none smtp.client-ip=80.12.242.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id cVJ3rZRzMFu9DcVJ3ruPo6; Tue, 20 Feb 2024 19:57:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1708455451;
-	bh=daZFahQciOHpTM7VwhnLEorjs5D5n32nr+8z2el/iK0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=H/6M5JY9CSQ8dxpBh77WZrxS5x7ShH4za52WPDolW67z4NwsGMAFE1WZ3KOzKnKiq
-	 hI7j0vd6a2Ie4oS2Ov19zcAnVyt0jxkrsM0+3azF5JmKH1stAQ8mGkxmoP7+1gzHvR
-	 Agb0M5divQSWVHAAgke73IM1FM22Qgj//XAXMKyNUy/9EaXrc6O0tcF5GgPnLDpTCg
-	 PetAyjGaZF9OJkwm5Syf3ocCnSVxvqFv/VDgvODJ3VvNVUUUTcNP8HLYkE0RQ6g7Sz
-	 /pc8k8emcdDMnPL3tPyQDd4wWM//Ej7K4EPpV4M/WPkYrvt5FsvKtA/xb0Ur0Cm9Xx
-	 NA7qPYIiykbug==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 20 Feb 2024 19:57:31 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <994d0c38-6307-4da0-8e9d-c70972372149@wanadoo.fr>
-Date: Tue, 20 Feb 2024 19:57:29 +0100
+	s=arc-20240116; t=1708455543; c=relaxed/simple;
+	bh=nQhCy9Z6IkfDzhaAFtGmFDQQ4coSnEEVrK1GWZy5cT4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VLTGrqC22F2lBbNpxw/ZhkZtwJr3CHyNF+R4MbGDPkpeSzIqY89EF+CmEmyeY+WU6LvcOlEP8pFqlP6Zd3jCv/x7W4XejyImdVYyhe3js0LM3MviK+jkPH3cWz3RXNMHEdmCDTjnY9+Tkev9q9Q0P0Ix5Xw3GXZGRKBPyrKisyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infineon.com; spf=pass smtp.mailfrom=infineon.com; dkim=pass (1024-bit key) header.d=infineon.com header.i=@infineon.com header.b=ATJl2TiW; arc=none smtp.client-ip=217.10.52.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infineon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infineon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1708455542; x=1739991542;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=nQhCy9Z6IkfDzhaAFtGmFDQQ4coSnEEVrK1GWZy5cT4=;
+  b=ATJl2TiWdVdj7T+fspC0OdqdDoDUwUSW6/lLQrMvQNZzE8whscezHQub
+   pss9jGlKlrdD9++C3Sc0b2jzvgIgxZ1BdOaDi6eeTGfVrAB3PCeXKmEeJ
+   vNWDL33dLm8TeRQmGV18HAhvDFcr40JX1e3g8rF5K7CwT4BUTihfaTvhr
+   U=;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="48972462"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705359600"; 
+   d="scan'208";a="48972462"
+Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
+  by smtp11.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:57:51 +0100
+Received: from MUCSE844.infineon.com (172.23.7.73) by MUCSE812.infineon.com
+ (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 19:57:50 +0100
+Received: from [10.165.32.120] (10.165.32.120) by MUCSE844.infineon.com
+ (172.23.7.73) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 19:57:49 +0100
+Message-ID: <33838539-62ec-43d0-8223-b3d5df4bf8f6@infineon.com>
+Date: Tue, 20 Feb 2024 19:57:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,80 +62,121 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] intel_th: Remove usage of the deprecated ida_simple_xx()
- API
-Content-Language: en-MW
-To: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <9c092dc6db15984d98732510bb052bb00683489b.1705005258.git.christophe.jaillet@wanadoo.fr>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <9c092dc6db15984d98732510bb052bb00683489b.1705005258.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 3/3] tpm: make locality request return value consistent
+To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, Jarkko Sakkinen
+	<jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	<linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Ross Philipson <ross.philipson@oracle.com>, Peter Huewe
+	<peterhuewe@gmx.de>
+References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
+ <20240131170824.6183-4-dpsmith@apertussolutions.com>
+ <CYU3XUGOX6QT.1GL070ONNPBWQ@suppilovahvero>
+ <80d95a08-a1c1-44a7-959c-8bff14254608@apertussolutions.com>
+From: Alexander Steffen <Alexander.Steffen@infineon.com>
+In-Reply-To: <80d95a08-a1c1-44a7-959c-8bff14254608@apertussolutions.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MUCSE820.infineon.com (172.23.29.46) To
+ MUCSE844.infineon.com (172.23.7.73)
 
-Le 11/01/2024 à 21:34, Christophe JAILLET a écrit :
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
+On 19.02.2024 21:29, Daniel P. Smith wrote:
+> On 2/1/24 17:49, Jarkko Sakkinen wrote:
+>> On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
+>>> The function tpm_tis_request_locality() is expected to return the 
+>>> locality
+>>> value that was requested, or a negative error code upon failure. If 
+>>> it is called
+>>> while locality_count of struct tis_data is non-zero, no actual 
+>>> locality request
+>>> will be sent. Because the ret variable is initially set to 0, the
+>>> locality_count will still get increased, and the function will return 
+>>> 0. For a
+>>> caller, this would indicate that locality 0 was successfully 
+>>> requested and not
+>>> the state changes just mentioned.
+>>>
+>>> Additionally, the function __tpm_tis_request_locality() provides 
+>>> inconsistent
+>>> error codes. It will provide either a failed IO write or a -1 should 
+>>> it have
+>>> timed out waiting for locality request to succeed.
+>>>
+>>> This commit changes __tpm_tis_request_locality() to return valid 
+>>> negative error
+>>> codes to reflect the reason it fails. It then adjusts the return 
+>>> value check in
+>>> tpm_tis_request_locality() to check for a non-negative return value 
+>>> before
+>>> incrementing locality_cout. In addition, the initial value of the ret 
+>>> value is
+>>> set to a negative error to ensure the check does not pass if
+>>> __tpm_tis_request_locality() is not called.
+>>
+>> This is way way too abtract explanation and since I don't honestly
+>> understand what I'm reading, the code changes look bunch of arbitrary
+>> changes with no sound logic as a whole.
 > 
-> This is less verbose.
+> In more simpler terms, the interface is inconsistent with its return
+> values. To be specific, here are the sources for the possible values
+> tpm_tis_request_locality() will return:
+> 1. 0 - 4: _tpm_tis_request_locality() was able to set the locality
+> 2. 0: a locality already open, no locality request made
+> 3. -1: if timeout happens in __tpm_tis_request_locality()
+> 4. -EINVAL: unlikely, return by IO write for incorrect sized write
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   drivers/hwtracing/intel_th/core.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+> As can easily be seen, tpm_tis_request_locality() will return 0 for both
+> a successful(1) and non-successful request(2). And to be explicit for
+> (2), if tpm_tis_request_locality is called for a non-zero locality and
+> the locality counter is not zero, it will return 0. Thus, making the
+> value 0 reflect as success when locality 0 is successfully requested and
+> as failure when a locality is requested with a locality already open.
+
+There is a potential problem here, but I think it is slightly different 
+from what you describe: Currently, the kernel uses only locality 0, so 
+case 1 and 2 are indistinguishable for the caller. Getting a return 
+value of 0 simply means that the requested locality is now active. The 
+callers don't care whether it had already been active before or not, so 
+it is not a problem that the callers cannot distinguish case 1 and 2, 
+and a return value of 0 always indicates "success".
+
+It might only become a problem once you make the kernel use localities 
+!= 0. Then a caller can get either 0 as the return value (if the 
+locality was already active before) or the requested locality, and both 
+values mean "success". In practice, this shouldn't cause any problems as 
+far as I can tell, because all existing callers either check only for 
+failures (negative return values), e.g. 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/char/tpm/tpm_tis_core.c?h=v6.8-rc5#n1214, 
+or explicitly request locality 0 and check for a return value of 0, e.g. 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/char/tpm/tpm_tis_core.c?h=v6.8-rc5#n750. 
+There is no caller that would be confused by case 2 because it requests 
+an arbitrary locality and always expects that locality to be returned in 
+order to indiciate "success".
+
+Still, such an inconsistency is not nice and should be fixed, but if I 
+read your patch correctly, this is not what it does: In 
+tpm_tis_request_locality(), you initialize ret with -EBUSY. For 
+locality_count != 0, you never assign to ret again and therefore return 
+-EBUSY, even though the locality is active and can be used. The correct 
+fix would be to initialize ret with l, so that no error is returned in 
+such cases.
+
+> As for failures, correct me if I am wrong, but if a function is
+> returning negative error codes, it should not be using a hard coded -1
+> as a generic error code. As I note, it is unlikely for the -EINVAL to be
+> delivered, but the code path is still available should something in the
+> future change the backing call logic.
 > 
-> diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
-> index cc7f879bb175..86c8efecd7c2 100644
-> --- a/drivers/hwtracing/intel_th/core.c
-> +++ b/drivers/hwtracing/intel_th/core.c
-> @@ -871,7 +871,7 @@ intel_th_alloc(struct device *dev, const struct intel_th_drvdata *drvdata,
->   	if (!th)
->   		return ERR_PTR(-ENOMEM);
->   
-> -	th->id = ida_simple_get(&intel_th_ida, 0, 0, GFP_KERNEL);
-> +	th->id = ida_alloc(&intel_th_ida, GFP_KERNEL);
->   	if (th->id < 0) {
->   		err = th->id;
->   		goto err_alloc;
-> @@ -931,7 +931,7 @@ intel_th_alloc(struct device *dev, const struct intel_th_drvdata *drvdata,
->   			    "intel_th/output");
->   
->   err_ida:
-> -	ida_simple_remove(&intel_th_ida, th->id);
-> +	ida_free(&intel_th_ida, th->id);
->   
->   err_alloc:
->   	kfree(th);
-> @@ -964,7 +964,7 @@ void intel_th_free(struct intel_th *th)
->   	__unregister_chrdev(th->major, 0, TH_POSSIBLE_OUTPUTS,
->   			    "intel_th/output");
->   
-> -	ida_simple_remove(&intel_th_ida, th->id);
-> +	ida_free(&intel_th_ida, th->id);
->   
->   	kfree(th);
->   }
-
-Hi,
-
-gentle reminder.
-
-All patches to remove the ida_simple API have been sent.
-And Matthew Wilcox seems happy with the on going work. (see [1])
-
-Based on next-20240220
-$git grep ida_simple_get | wc -l
-36
-
-https://elixir.bootlin.com/linux/v6.8-rc3/A/ident/ida_simple_get
-50
-
-https://elixir.bootlin.com/linux/v6.7.4/A/ident/ida_simple_get
-81
-
-Thanks
-CJ
-
-[1]: https://lore.kernel.org/all/ZaqruGVz734zjxrZ@casper.infradead.org/
-
+> After this change, the possible return values for
+> tpm_tis_request_locality() become:
+> 1. 0 - 4: the locality that was successfully requested
+> 2. -EBUSY: tpm busy, unable to request locality
+> 3. -EINVAL: invalid parameter
+> 
+> With this more consistent interface, I updated the return value checks
+> at the call sites to check for negative error as the means to catch
+> failures.
+> 
+> v/r,
+> dps
+>
 
