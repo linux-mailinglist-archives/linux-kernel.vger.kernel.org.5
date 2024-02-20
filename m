@@ -1,127 +1,112 @@
-Return-Path: <linux-kernel+bounces-72516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B35785B4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8A4B85B4A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FDC12827E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:12:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 654E728289D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E515C8E0;
-	Tue, 20 Feb 2024 08:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56CE5C903;
+	Tue, 20 Feb 2024 08:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="kdqW2l0L";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jXqLLpIS"
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g+nggSxm"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE34C5C5EF;
-	Tue, 20 Feb 2024 08:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F965C5EC
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708416737; cv=none; b=e8YubkOUc57L0qvAFtdkVTXSJRQaSua6q1jzYRRpt5QZ7a6nkvVmecNPbDBpYHZGwr99qyeyz2EwDsyCEKr0o5+DnqGf4ysLV5yUxYKyjPxNsm8Qabx5r/7t20dlUlNQnxTsu+hsta8+RFH0nmnfv23NSIaGpMKg4HBIEaJeKQU=
+	t=1708416739; cv=none; b=YahD4WEHXOp8pvZUTb6wofmwyWGGD27JCiwlM3iT4OYhpNxi9bLi5s3zbeATWGsYWLwjqKkhRnrgUPObxM1AUM/E+MJCYB7mxEvoSUuqTiIZ+teLC8HgnZUzQs5EE1IB1wFccuvCLlp7mX71Q4mtA7dMcFDnrV+q0SUPCH/Tz3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708416737; c=relaxed/simple;
-	bh=6fhWeR1skHIaeVT56IgW7/ZRjTOHRdJQKKLKOdXi/44=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=s3AP3Kun/cYF2FAYJqsn33P3l50gvjB61Ayf+EKICxvMO9K+1cV182w0jJ+HYKB/azmpkoyzv4vX+544Vu0d/OhEUwL49gfSVMuiNNrSodAU1amOJWI36X/kx3hDShi8fJQebmwdtVMjIFM+wTbBHlM7r6fTx3XxGqF/Ecu/nKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=kdqW2l0L; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jXqLLpIS; arc=none smtp.client-ip=64.147.123.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 4485C320030E;
-	Tue, 20 Feb 2024 03:12:13 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 20 Feb 2024 03:12:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1708416732; x=1708503132; bh=g86RjqfeIk
-	2lRMsjMG7R0Z/s1eUewX0ypn7zMKPtPqI=; b=kdqW2l0Lc++8tT/GjBVik33QGN
-	e2PFW5lEGTQza7J9d17OGfQ6d3/VVptas0D2fv8EyY76DRizj68Io4qM3zAVceBB
-	cCqMEqlNvrpIB++E+N7XoLl4N5kJeUzoteM12HY9RPWVZ9/z12F3gq54RUtL4B5o
-	rKi2u09+610i5/6WcBr6CSlH4IvYubOvA36YPkhMAlEBAtJGQCRb1w140FDHRuWk
-	Jf+zAOu6rSquKZfTLklAV0mWWQR3nuM1xWVk2vJhbhhZi3OQK/HPUAs1Y4s8McQ4
-	TIfHf9948RVmQmxvI/Taru9FR81jYUfb/P9y5geMyoYFCRvr2bCpqGEm/H+w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708416732; x=1708503132; bh=g86RjqfeIk2lRMsjMG7R0Z/s1eUe
-	wX0ypn7zMKPtPqI=; b=jXqLLpIS0CkK2gAg23OyzdabR2hyYGs+OkeYGw1JNsPA
-	BjS+6ja4HS4w8stEX8RSvEnvVh9qDDLpkAuk4Y+o//iyfc+MQqSXfR0veeZA+MKZ
-	gSyN5lic5E5X6j+aUT22jm1JbsXbaO3kM/rYHPj2004tL/Vw4GVu55DxYTszs40c
-	mPg238JDaaLStUeFY+ylWjcmxp6LNt5i1RDhCDsBvwejsvx2mZ+5BYRHLvUHQM/5
-	eWJZRl/8J7Id9dvHrABCqgp2ZCpVf3B3be5lWVuldSR9pDplp/8n8gQ9d+FEmH1h
-	Q3z6ZlBXpMe0gef228xhW/GqmXsRHOEGCDL1JQ95HQ==
-X-ME-Sender: <xms:3F7UZQ3Ep8tV3mn_tyP6sd-cGLrnVksGUkBnd6CRAklUjE1xMr4lPg>
-    <xme:3F7UZbFDhLouqjhWwwnNct9pT9BOQSmr5kaI2LdkycEnVzvRoLJwlfk7MmvoOy4rZ
-    WExLeJChgMgI_oELRk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdelgdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:3F7UZY4wrhvlN0vfsmYjtHJwsIOjDlo7RVwtgF4LSHS9T_UvCl_4BA>
-    <xmx:3F7UZZ2slXQjUiICjN91hlV0KGr8x17uC2_Fi98Ry4Gb6134N2I5tQ>
-    <xmx:3F7UZTFRz59Vv4xEWcsbQIfyYo-7qKKahXR2hCtQbqbzIHgZDC_N0Q>
-    <xmx:3F7UZTEuaXMZKp-AE2gpgBms1oH4ARs4ikFOt7LCTmwOaQephVo4zw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 818BAB6008D; Tue, 20 Feb 2024 03:12:12 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1708416739; c=relaxed/simple;
+	bh=/rabM4Ojv3qXPABWhPOzcXvWzcE1bpcBe1707Z9xKgg=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=VdD7HBzFQXiw1nQeYsUYd5hboBG7Q/tZTeCn/8oaz+Cm+FngrS/Qo3sJPcKoaE2uULGdeAXQ+UuDgoGY2z9R6/ddgjL7hkkrdYtn7JtLsWOtsAza6QsaxRIOUkisnclnOgQjntvKTwiNujptKKJrkhKMOid4U5dmLVMCzFRF/Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--raychi.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g+nggSxm; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--raychi.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so6911642276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:12:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708416736; x=1709021536; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7NyTQc14Zf/h2SqeLHUekdRb34OTt1i2UvuEmj+OuFE=;
+        b=g+nggSxmQkbCXvjQQMjfd+GJrhqjetnwR3vH3J7tBDV3Mki9t9r4v1QDZnCPz5OK88
+         kG6dQSYSd73EVxG6bae7vMB7ZAP+fbZanubSs/NaF8qvgLPygjoSgLLS+ZUhO+TC3zy6
+         lvYQcIoD1oYrhwiyo6s2bNb9OQ8/J7BgLzwxBN/iFSoax/63sS82m6waRJSSYe26oOp0
+         c6DlUqQYAQEllT78ObvQYJg7nN5+WCor/I4P62AVuztaruIblbXmezvm6tTFkJlwmnzL
+         DKyZW8x2J1vf+gOCdsx8h7krEexg/qz7i0R7bc9C29X9FUOcw8j4Qzg6iR+kmJ0iYi3x
+         JpDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708416736; x=1709021536;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7NyTQc14Zf/h2SqeLHUekdRb34OTt1i2UvuEmj+OuFE=;
+        b=r8uyVOXMfoj1xkbV/1wT9e2IllauyDcXDRlDeotzN7jNqRUpYvtlJxrl6KQDFfk9/J
+         bazAUnvk3gLxYBhUFpPpnIQMuLgNxfkMQULLX6NRd9NH6w8LhUKpIHltxtPd81DBzO4d
+         XZ55GXD1gE0qDEl2Wo3XwUESL6dXmWhaPxiHaK3I2yCWLV35wR0WIO2wqOS6hI45BEHt
+         vC5w4sT7wK6ffjdIXTYedpP0m0jMmYg4IQOMIgANDM7qCmKAsSK2U+LhCgkUV2Bda++b
+         StPA7JFk/EKiLFtd8pLWY/QnKActsMeJDzHZA746+WkKPNM8cOAAOZska3YCUqine1hX
+         Q/BA==
+X-Forwarded-Encrypted: i=1; AJvYcCWxbrrK3b0RU/DJ8RW7sFVpnXrToKZKpv6dPeUYjhfNAFIBE7X1xk+zncxvsZUpAyvRp8FgEHfZeWH0ZD/R+0ICq5yw1X8w/os6dQjy
+X-Gm-Message-State: AOJu0YzaWyb+tnyysgIIUTgGIgI2kqM/TB7ZO+lNqevsi79qpTHepICZ
+	ubN3JFb5To68KojppsRawlB/EZidzAqJKt4ZSLdDvis3chXgqKacURC/+/qK6rUA3I6N8+ukTQm
+	ljQ==
+X-Google-Smtp-Source: AGHT+IHNQS6LSHevRMTxDokV0cAYaI5EkrQn4V1Y4tZL0I+ejqlFuzOyBy3AA2eQbWjAGfgyiPZewI6v+oY=
+X-Received: from raychi-p620lin01.ntc.corp.google.com ([2401:fa00:fc:202:d899:e5b8:ba5f:3c9])
+ (user=raychi job=sendgmr) by 2002:a25:abec:0:b0:dcc:94b7:a7a3 with SMTP id
+ v99-20020a25abec000000b00dcc94b7a7a3mr495450ybi.12.1708416736722; Tue, 20 Feb
+ 2024 00:12:16 -0800 (PST)
+Date: Tue, 20 Feb 2024 16:12:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-Id: <726459a9-c549-4fec-9a4d-61ae1da04f0a@app.fastmail.com>
-In-Reply-To: <20240220080624.GQ40273@kernel.org>
-References: <20240219100506.648089-1-arnd@kernel.org>
- <20240219100506.648089-2-arnd@kernel.org> <20240220080624.GQ40273@kernel.org>
-Date: Tue, 20 Feb 2024 09:11:51 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Simon Horman" <horms@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Saeed Mahameed" <saeedm@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>,
- "Zhu Yanjun" <yanjun.zhu@linux.dev>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Yevgeny Kliteynik" <kliteyn@nvidia.com>,
- "Alex Vesker" <valex@nvidia.com>, "Hamdan Igbaria" <hamdani@nvidia.com>,
- Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] [v2] net/mlx5: fix possible stack overflows
-Content-Type: text/plain
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240220081205.135063-1-raychi@google.com>
+Subject: [PATCH] usb: dwc3: gadget: remove warning during kernel boot
+From: Ray Chi <raychi@google.com>
+To: Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org, 
+	quic_uaggarwa@quicinc.com
+Cc: albertccwang@google.com, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Ray Chi <raychi@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 20, 2024, at 09:06, Simon Horman wrote:
-> On Mon, Feb 19, 2024 at 11:04:56AM +0100, Arnd Bergmann wrote:
+The dwc3->gadget_driver is not initialized during the dwc3 probe
+process. This leads to a warning when the runtime power management (PM)
+attempts to suspend the gadget using dwc3_gadget_suspend().
 
-> Hi Arnd,
->
-> With patch 1/2 in place this code goes on as:
->
-> 	switch (action->action_type) {
-> 	case DR_ACTION_TYP_DROP:
-> 		memset(buff, 0, sizeof(buff));
->
-> buff is now a char * rather than an array of char.
-> siceof(buff) doesn't seem right here anymore.
->
-> Flagged by Coccinelle.
+This patch adds a check to prevent the warning.
 
-Rihgt, that would be bad. It sounds like we won't use patch 1/2
-after all though, so I think it's going to be fine after all.
-If the mlx5 maintainers still want both patches, I'll rework
-it to use the fixed size.
+Cc: stable@vger.kernel.org
+Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend")
+Signed-off-by: Ray Chi <raychi@google.com>
+---
+ drivers/usb/dwc3/gadget.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-     Arnd
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 28f49400f3e8..de987cffe1ec 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -4708,6 +4708,9 @@ int dwc3_gadget_suspend(struct dwc3 *dwc)
+ 	unsigned long flags;
+ 	int ret;
+ 
++	if (!dwc->gadget_driver)
++		return 0;
++
+ 	ret = dwc3_gadget_soft_disconnect(dwc);
+ 	if (ret)
+ 		goto err;
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
