@@ -1,131 +1,274 @@
-Return-Path: <linux-kernel+bounces-73630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B9385C54C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:59:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C90285C554
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA65E1C218D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:59:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FC6E1C21919
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407F314A0BE;
-	Tue, 20 Feb 2024 19:59:00 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C08F14A4D8
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED9314AD00;
+	Tue, 20 Feb 2024 19:59:24 +0000 (UTC)
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA3076C9C;
+	Tue, 20 Feb 2024 19:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708459139; cv=none; b=r61wrCjXaSPQLhQ/ijEfQD3NC8rAnn9dv1PuWikI9rHlHnD577NH1APw9ZuHSzMiANDkKERqyAusLUWS7dLsE5wnpElcMCLJ9AACAACIE9ITw4OfgVjr7w3HRGNHm6RUYI08J9D9/YcGuTax9T/ik0Uh6w2MJBFaVPKRR8BXWpE=
+	t=1708459163; cv=none; b=Jc+WI7OdsLxprygrQrGQI1ktCxotW8F4+3+d4isX2F3qe3aUWI7onEqQOaQnzpTm0rOrk6PPejLlY3BN1a95YC2M6zAu37IbetKmoAgCDHnT21aLnAbtxeKozsBnca9z5BEZJeik5LAuu9488lMcV0t70ezmXqAFvDg9IGiSP9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708459139; c=relaxed/simple;
-	bh=+i8JjHVQkwYG6aYw9uGp8s+ZPKM0ZgZC8abIOEX9pzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kULGkSV7KeF5ABU6q1WpCbxvUS+QcTeCXvnC6Jp7kGqtI6GZ3VtWws0N+M/eQss85XSlJ85QJF4+yBysBviGmJxsxfpx5uzf4p+BSnETQyslSPEqX3UgD37mmPRa3p2yKBy3nK0JM8+smrVODmUf1Bti/GsVydHv8tC+BK9eqxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C06FFEC;
-	Tue, 20 Feb 2024 11:59:36 -0800 (PST)
-Received: from [172.20.10.9] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9C333F73F;
-	Tue, 20 Feb 2024 11:58:51 -0800 (PST)
-Message-ID: <9cb2b8c6-aac8-4130-8558-6646817689e0@arm.com>
-Date: Tue, 20 Feb 2024 20:58:49 +0100
+	s=arc-20240116; t=1708459163; c=relaxed/simple;
+	bh=gTFvzomr2SRYgEzay2hZVATAf6NMiZMviM+Vp+HoWxw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J6zf/em8jAVd52GqZPgdAdTZ/5Uq/QhxHH6a5uYVvW2GkO/Vx/z1JtAVigozBHWpCAxYxqeim/SCTVJyjPPZRSw6fhESBWhsO3V6jwGi16fD65cWZdbfvbJoQLygQ0l+4djFVV1oEfTtZHFNMyTTQKr9XWSUgxyXa5PXPYiZ1H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59a134e29d2so427376eaf.0;
+        Tue, 20 Feb 2024 11:59:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708459161; x=1709063961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c+V6DSEmqeSEaDPjDjO9NLLJHviZ8vUVb/gdG26wrMI=;
+        b=XyuhrIqC8IaKysFUubsuGrJso66nYb/0Y0hPTBMMXISh62JzNM23sNC313lf9CosPj
+         pJPXzYNPzyqtzZuVEiNp3y+m7EX2pP46WQ3dqe5sem3lVUZwxWa95cHOt1PuRw4fm5Qj
+         1FYkfGjTzrma6LirRgFDQ784brNnHIkWdMUrJ1tuRVh/10YsVGLXBkDSjzHRvChI7/sg
+         gTZYB69d490grMaMb5oE5gTlYnF63ipGxiXnlQ8FDy3Ll/tqnaWmSomtS3T/l5obsALP
+         nePUBW2S770d1wq9LXOyKH8HNwczCvMtFxOh370bH3b2fUXNWH80vR8e9//GXdFYudQj
+         iBRg==
+X-Forwarded-Encrypted: i=1; AJvYcCWGqSHlaySd72VpGEhZENfm8VcphDtAaD2SbbLj9egnYA4Qti6sFUxpoVfP3/QfKp9iZkw5jB2L6ZCDHPyI9j6xW7BVIK/xjWHmmahzT+Ol/G90FaLACooUBZygVhzb938VzgtYJ26UwMbFWwkGJpOjmjk+OQxnzt8cVS2ymSfTILO1avbdP2OlcB9FQ2KqXCVhy+FT28vTHTTPgb6wh6yihlihd9RHbNxfOMHEPXAzA7rTnWATReeUlaT5DxxIKd+4BhDizQ061CDhtL6goZUzxavAVmc7rGPLn+AvOHsIsCY7beE83lJbr4HEABtnQgt+e4srDDikQxIKSrGg9XdCj8tpKiyonvcH2r1vYRtO
+X-Gm-Message-State: AOJu0YwMm7rfUEa5Xy7tdCwB3Gl+CyigAtGcfAeTccVyx0LzAgQzr6+o
+	WWl892gB2LwuC0ihisoNMcqXEOVfbAEHWemixUOsa0qArewj+fn9D5GNCMTRYZgf1CQCH70cS0P
+	ovzXs/978Retn4i0rGJaUP0gXIEc=
+X-Google-Smtp-Source: AGHT+IFEVWcuOTZaUbB0YtEa95vMeA6CLZt+FHpk+AcHJ2Mh/Pssv0ffdkJ0b+NvBNH99Q+SN4zocbYW2Cype01NQz0=
+X-Received: by 2002:a05:6820:1f8c:b0:59f:f650:61bb with SMTP id
+ eq12-20020a0568201f8c00b0059ff65061bbmr3732586oob.0.1708459161081; Tue, 20
+ Feb 2024 11:59:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 12/18] arm64/mm: Wire up PTE_CONT for user mappings
-Content-Language: en-GB
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- David Hildenbrand <david@redhat.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-13-ryan.roberts@arm.com> <Zc9UQy-mtYAzNWm2@arm.com>
- <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com> <ZdNxSRR9MgvtMVao@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZdNxSRR9MgvtMVao@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+ <ZdSMk93c1I6x973h@shell.armlinux.org.uk> <ZdTBtt0oR6Q1RcAB@shell.armlinux.org.uk>
+ <20240220162406.00005b59@Huawei.com>
+In-Reply-To: <20240220162406.00005b59@Huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 20 Feb 2024 20:59:09 +0100
+Message-ID: <CAJZ5v0i0c3bg8E9yuRk00VAEW5isZ4N-mbnhRuTR8aiFLXo1_A@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from acpi_processor_get_info()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 19/02/2024 15:18, Catalin Marinas wrote:
-> On Fri, Feb 16, 2024 at 12:53:43PM +0000, Ryan Roberts wrote:
->> On 16/02/2024 12:25, Catalin Marinas wrote:
->>> On Thu, Feb 15, 2024 at 10:31:59AM +0000, Ryan Roberts wrote:
->>>> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
->>>> +{
->>>> +	/*
->>>> +	 * Gather access/dirty bits, which may be populated in any of the ptes
->>>> +	 * of the contig range. We may not be holding the PTL, so any contiguous
->>>> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
->>>> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
->>>> +	 * in the range are valid and have CONT_PTE set, that all pfns are
->>>> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
->>>> +	 * If we find a pte that is not consistent, then we must be racing with
->>>> +	 * an update so start again. If the target pte does not have CONT_PTE
->>>> +	 * set then that is considered consistent on its own because it is not
->>>> +	 * part of a contpte range.
->>>> +*/
-> [...]
->>> After writing the comments above, I think I figured out that the whole
->>> point of this loop is to check that the ptes in the contig range are
->>> still consistent and the only variation allowed is the dirty/young
->>> state to be passed to the orig_pte returned. The original pte may have
->>> been updated by the time this loop finishes but I don't think it
->>> matters, it wouldn't be any different than reading a single pte and
->>> returning it while it is being updated.
->>
->> Correct. The pte can be updated at any time, before after or during the reads.
->> That was always the case. But now we have to cope with a whole contpte block
->> being repainted while we are reading it. So we are just checking to make sure
->> that all the ptes that we read from the contpte block are consistent with
->> eachother and therefore we can trust that the access/dirty bits we gathered are
->> consistent.
-> 
-> I've been thinking a bit more about this - do any of the callers of
-> ptep_get_lockless() check the dirty/access bits? The only one that seems
-> to care is ptdump but in that case I'd rather see the raw bits for
-> debugging rather than propagating the dirty/access bits to the rest in
-> the contig range.
-> 
-> So with some clearer documentation on the requirements, I think we don't
-> need an arm64-specific ptep_get_lockless() (unless I missed something).
+On Tue, Feb 20, 2024 at 5:24=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Tue, 20 Feb 2024 15:13:58 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+>
+> > On Tue, Feb 20, 2024 at 11:27:15AM +0000, Russell King (Oracle) wrote:
+> > > On Thu, Feb 15, 2024 at 08:22:29PM +0100, Rafael J. Wysocki wrote:
+> > > > On Wed, Jan 31, 2024 at 5:50=E2=80=AFPM Russell King <rmk+kernel@ar=
+mlinux.org.uk> wrote:
+> > > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_pr=
+ocessor.c
+> > > > > index cf7c1cca69dd..a68c475cdea5 100644
+> > > > > --- a/drivers/acpi/acpi_processor.c
+> > > > > +++ b/drivers/acpi/acpi_processor.c
+> > > > > @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct ac=
+pi_device *device)
+> > > > >                         cpufreq_add_device("acpi-cpufreq");
+> > > > >         }
+> > > > >
+> > > > > +       /*
+> > > > > +        * Register CPUs that are present. get_cpu_device() is us=
+ed to skip
+> > > > > +        * duplicate CPU descriptions from firmware.
+> > > > > +        */
+> > > > > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id)=
+ &&
+> > > > > +           !get_cpu_device(pr->id)) {
+> > > > > +               int ret =3D arch_register_cpu(pr->id);
+> > > > > +
+> > > > > +               if (ret)
+> > > > > +                       return ret;
+> > > > > +       }
+> > > > > +
+> > > > >         /*
+> > > > >          *  Extra Processor objects may be enumerated on MP syste=
+ms with
+> > > > >          *  less than the max # of CPUs. They should be ignored _=
+iff
+> > > >
+> > > > This is interesting, because right below there is the following cod=
+e:
+> > > >
+> > > >     if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> > > >         int ret =3D acpi_processor_hotadd_init(pr);
+> > > >
+> > > >         if (ret)
+> > > >             return ret;
+> > > >     }
+> > > >
+> > > > and acpi_processor_hotadd_init() essentially calls arch_register_cp=
+u()
+> > > > with some extra things around it (more about that below).
+> > > >
+> > > > I do realize that acpi_processor_hotadd_init() is defined under
+> > > > CONFIG_ACPI_HOTPLUG_CPU, so for the sake of the argument let's
+> > > > consider an architecture where CONFIG_ACPI_HOTPLUG_CPU is set.
+> > > >
+> > > > So why are the two conditionals that almost contradict each other b=
+oth
+> > > > needed?  It looks like the new code could be combined with
+> > > > acpi_processor_hotadd_init() to do the right thing in all cases.
+> > > >
+> > > > Now, acpi_processor_hotadd_init() does some extra things that look
+> > > > like they should be done by the new code too.
+> > > >
+> > > > 1. It checks invalid_phys_cpuid() which appears to be a good idea t=
+o me.
+> > > >
+> > > > 2. It uses locking around arch_register_cpu() which doesn't seem
+> > > > unreasonable either.
+> > > >
+> > > > 3. It calls acpi_map_cpu() and I'm not sure why this is not done by
+> > > > the new code.
+> > > >
+> > > > The only thing that can be dropped from it is the _STA check AFAICS=
+,
+> > > > because acpi_processor_add() won't even be called if the CPU is not
+> > > > present (and not enabled after the first patch).
+> > > >
+> > > > So why does the code not do 1 - 3 above?
+> > >
+> > > Honestly, I'm out of my depth with this and can't answer your
+> > > questions - and I really don't want to try fiddling with this code
+> > > because it's just too icky (even in its current form in mainline)
+> > > to be understandable to anyone who hasn't gained a detailed knowledge
+> > > of this code.
+> > >
+> > > It's going to require a lot of analysis - how acpi_map_cpuid() behave=
+s
+> > > in all circumstances, what this means for invalid_logical_cpuid() and
+> > > invalid_phys_cpuid(), what paths will be taken in each case. This cod=
+e
+> > > is already just too hairy for someone who isn't an experienced ACPI
+> > > hacker to be able to follow and I don't see an obvious way to make it
+> > > more readable.
+> > >
+> > > James' additions make it even more complex and less readable.
+> >
+> > As an illustration of the problems I'm having here, I was just writing
+> > a reply to this with a suggestion of transforming this code ultimately
+> > to:
+> >
+> >       if (!get_cpu_device(pr->id)) {
+> >               int ret;
+> >
+> >               if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id)=
+)
+> >                       ret =3D acpi_processor_make_enabled(pr);
+> >               else
+> >                       ret =3D acpi_processor_make_present(pr);
+> >
+> >               if (ret)
+> >                       return ret;
+> >       }
+> >
+> > (acpi_processor_make_present() would be acpi_processor_hotadd_init()
+> > and acpi_processor_make_enabled() would be arch_register_cpu() at this
+> > point.)
+> >
+> > Then I realised that's a bad idea - because we really need to check
+> > that pr->id is valid before calling get_cpu_device() on it, so this
+> > won't work. That leaves us with:
+> >
+> >       int ret;
+> >
+> >       if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> >               /* x86 et.al. path */
+> >               ret =3D acpi_processor_make_present(pr);
+> >       } else if (!get_cpu_device(pr->id)) {
+> >               /* Arm64 path */
+> >               ret =3D acpi_processor_make_enabled(pr);
+> >       } else {
+> >               ret =3D 0;
+> >       }
+> >
+> >       if (ret)
+> >               return ret;
+> >
+> > Now, the next transformation would be to move !get_cpu_device(pr->id)
+> > into acpi_processor_make_enabled() which would eliminate one of those
+> > if() legs.
+> >
+> > Now, if we want to somehow make the call to arch_regster_cpu() common
+> > in these two paths, the next question is what are the _precise_
+> > semantics of acpi_map_cpu(), particularly with respect to it
+> > modifying pr->id. Is it guaranteed to always give the same result
+> > for the same processor described in ACPI? What acpi_map_cpu() anyway,
+> > I can find no documentation for it.
+> >
+> > Then there's the question whether calling acpi_unmap_cpu() should be
+> > done on the failure path if arch_register_cpu() fails, which is done
+> > for the x86 path but not the Arm64 path. Should it be done for the
+> > Arm64 path? I've no idea, but as Arm64 doesn't implement either of
+> > these two functions, I guess they could be stubbed out and thus be
+> > no-ops - but then we open a hole where if pr->id is invalid, we
+> > end up passing that invalid value to arch_register_cpu() which I'm
+> > quite sure will explode with a negative CPU number.
+> >
+> > So, to my mind, what you're effectively asking for is a total rewrite
+> > of all the code in and called by acpi_processor_get_info()... and that
+> > is not something I am willing to do (because it's too far outside of
+> > my knowledge area.)
+> >
+> > As I said in my reply to patch 1, I think your comments on patch 2
+> > make Arm64 vcpu hotplug unachievable in a reasonable time frame, and
+> > certainly outside the bounds of what I can do to progress this.
+> >
+> > So, at this point I'm going to stand down from further participation
+> > with this patch set as I believe I've reached the limit of what I can
+> > do to progress it.
+> >
+>
+> Thanks for your hard work on this Russell - we have moved forwards.
+>
+> Short of anyone else stepping up I'll pick this up with
+> the help of some my colleagues. As such I'm keen on getting patch
+> 1 upstream ASAP so that we can exclude the need for some of the
+> other workarounds from earlier versions of this series (the ones
+> dropped before now).
 
-We've discussed similar at [1]. And I've posted an RFC series to convert all
-ptep_get_lockless() to ptep_get_lockless_norecency() at [2]. The current spec
-for ptep_get_lockless() is that it includes the access and dirty bits. So we
-can't just read the single pte - if there is a tlb eviction followed by
-re-population for the block, the access/dirty bits could move and that will
-break pte_same() comparisons which are used in places.
+Applied (as 6.9 material).
 
-So the previous conclusion was that we are ok to put this arm64-specific
-ptep_get_lockless() in for now, but look to simplify by migrating to
-ptep_get_lockless_norecency() in future. Are you ok with that approach?
+> We will need a little time to get up to speed on the current status
+> and discussion points Russell raises above.
 
-[1]
-https://lore.kernel.org/linux-mm/a91cfe1c-289e-4828-8cfc-be34eb69a71b@redhat.com/
-[2] https://lore.kernel.org/linux-mm/20240215121756.2734131-1-ryan.roberts@arm.com/
+Sure.
 
-Thanks,
-Ryan
+I'm planning to send comments for some other patches in the series this wee=
+k.
 
+Thanks!
 
