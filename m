@@ -1,108 +1,111 @@
-Return-Path: <linux-kernel+bounces-72759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89AAC85B863
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:58:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC6B85B860
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4582B285F23
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:58:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A650C28785E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC80362158;
-	Tue, 20 Feb 2024 09:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8059A60DF8;
+	Tue, 20 Feb 2024 09:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EFDKxKR7"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bDYiEGut"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68D360EC5
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D1D5D725;
+	Tue, 20 Feb 2024 09:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708423030; cv=none; b=EL8lcmVrESqKWL17A4+XEH6uw9+617ThU/veFIwe497vRJZYoFoVhiTkFBQOrNvv6hi7Mo1RIQE7i8cCbB6NG/LLqZToE1aN4flTEqo7yj7Znv5Bz98n3yvuLwRtyZYQu/7NCUOCNlK5nCeiBXVHr3ClXz6joDpokW+44ueQ7O0=
+	t=1708423019; cv=none; b=LFvXAlIN1mu/83hwVGBrQzM1CRbmBEfuvx5YMcwfysE5W0teSjYBtya6Ng4Yk9sSE3uAxwy2LT/2uf2mkpD1K2S5z7nPGKpdcDbkSQadVo0WG6g3fUsoLfbAnkH+FErmBNv/nplsPwMvqlxYcCKEdS8Gh41P4+PBIUkGvXsWoow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708423030; c=relaxed/simple;
-	bh=5i6IUnS3HBED35I/Esul/eXWCBL7mQMHTbaMIBPY3/I=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=XRed4CWGUWLLO0S7WNfT5X/Q18HtRIP+4uRO/jae7ET6dvovJQT5wA6+B0cC0dv8hrKNPhIpvHERkHeDjXZd0wi+PD4aUbsQwNphRqU87ENgwDH/atTtgMDV3EDgYFVvpparFjpke3wC6tB/K+rp3TCgtIucwtW33w7lrSDnFO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rohitner.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EFDKxKR7; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rohitner.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so5074440276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:57:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708423027; x=1709027827; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tsP9YAs3ATUDlmKMnOUj5SyinmDzqfFQjHSuoj373s0=;
-        b=EFDKxKR7D4dtUIB7j/QVOZychSCpZUP0V7KNJiVwvDdJwi/Hoxx0TVnJUQ+ECoU//n
-         Z8mcScSdvHPqqFOSpibOh5l3v2iKE8Xesop9jIL77tM95Z2Rl9LfqQwXfSH2ySdagqYI
-         EM581J0scyOA8wR7Mc0BX25P0SvqChLAzad5fzS7rE02aobncF6RfwF81Lzvj0Zkq4V2
-         N+eZIRDyv3HVCmEjKXraVE1k9B01CfAscK9Sveli8AjeLTiNARH+WJicvBjA4Rbqdeod
-         0d7yEFWe5YZBntyv0naRPIIGPw6up2LmJztkDdRISfBPhvSGErxWLennWPHHpPS8ootu
-         SugA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708423027; x=1709027827;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tsP9YAs3ATUDlmKMnOUj5SyinmDzqfFQjHSuoj373s0=;
-        b=Yn63LryKnkRb0fxMftlVKvb0jmt8ikluGpLLbc4e1szSCHXlrYNxiOpAgsRpbieQlG
-         JV0YxYq3aioSsEnCZ0QuUsPCrK7ZtLo/zqNxE0V1zKjkIl316PSTzVrHqqcDjxsSHEb8
-         19oqi/zYVVG0+ALbjiEDKDO9PHdn0bfzKXSrwS7rZf+ILgbW1WZPg3nLLDgvRJsW+u2/
-         TuYyaheYPj45ddVLk+A8hb5Agi6IZMz4Fcc4INPktq1aMF02q0Uhpte+SOUA5xSuHNKK
-         hZ3OTMJuZz++V8v/RqDH3zSmmDSklx/ewgrjL+/C1Mh9cIpxf362OllFsjQvWmXxSFky
-         QoDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCjhcJk+cetaGFf4kqhaRgh6LOgM/OkcF7aVkGdmXBHFkrVpbLSUu5gAZLD+RYn2gSBCIfZpObXZ+ucQmJcQ8FY44mcF4In36RmLvF
-X-Gm-Message-State: AOJu0YyOQSsfWY+9ZUwVzA2XdMEHilOKC//DEc2P//I6Tqg9zBHmp3o7
-	gulEbxaIVkDjpno7cbhoOMpzR0ETkmNIOF8L6oq6WA1to6QwAtXEFTiNab3fU9G+jkqhMVzQ1dC
-	/TIomBpIyGw==
-X-Google-Smtp-Source: AGHT+IGWHnoKqIgrolTQgf5G9nztGiC237V0zeGlvpymEJ4Z2eYkitdQni1bkFaWyx8oCaZUqO6kFe8y2fm/cw==
-X-Received: from rohitner.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:413])
- (user=rohitner job=sendgmr) by 2002:a05:6902:1547:b0:dc7:3189:4e75 with SMTP
- id r7-20020a056902154700b00dc731894e75mr552327ybu.3.1708423027641; Tue, 20
- Feb 2024 01:57:07 -0800 (PST)
-Date: Tue, 20 Feb 2024 01:56:37 -0800
+	s=arc-20240116; t=1708423019; c=relaxed/simple;
+	bh=ndWAmyMkyCe7p03x/9HHbHy76rgNeM5CEFriO4AjFT4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uDo/yDCGq+7DMl1P0VTmOsUqqyf6QA4udWn+YQbp8z2X8G/fvOyG13yjqLjlASqrCzy3qV15HIgOiCER/v/YMQ+fBqNoh/5PjcEG8kQyTCACnESprq7lOlCdeTU2YLKQreRwma9esmxwILeRiWptaLxU3ivL9wcLBy+dYBUiP4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bDYiEGut; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED29C43390;
+	Tue, 20 Feb 2024 09:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708423019;
+	bh=ndWAmyMkyCe7p03x/9HHbHy76rgNeM5CEFriO4AjFT4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bDYiEGuttiQVberspseQVpB4Jch8Z2ZrWiIOeyuRcCuXGLIRFXR275xuUlcX94Rzs
+	 2/dyIVxOvyxpZIPwZdNu23hhgP9dZDWhSjr9qzCf2iQoOehtppGlBXg73XU43rKEh0
+	 yoiwQLvMhLXPwFvfwW93oJvFme797H7Hkmvd5C30LUVn74wIU4Nhr0vtFk2QK8+fxj
+	 XEUmBXgmsdvLP6hABt/noHrUNTGW3thG6vySSeZFw+ZATCYgTBA50t8VTxWRnmMzuY
+	 cu1XWeh8zFpfjxAsFiZUdQUuVJFRE/G2yRBQ38s8jZ2hSZBkW7+/oJUSKq1E1aLIwu
+	 VLyL1riVTmHNw==
+Date: Tue, 20 Feb 2024 10:56:53 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Chuck Lever <cel@kernel.org>
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, hughd@google.com, 
+	akpm@linux-foundation.org, Liam.Howlett@oracle.com, oliver.sang@intel.com, 
+	feng.tang@intel.com, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Subject: Re: [PATCH v2 1/6] libfs: Re-arrange locking in offset_iterate_dir()
+Message-ID: <20240220-ortsrand-initialen-43550ee746ed@brauner>
+References: <170820083431.6328.16233178852085891453.stgit@91.116.238.104.host.secureserver.net>
+ <170820142021.6328.15047865406275957018.stgit@91.116.238.104.host.secureserver.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240220095637.2900067-1-rohitner@google.com>
-Subject: [PATCH] scsi: ufs: core: Fix mcq mac configuration
-From: Rohit Ner <rohitner@google.com>
-To: Can Guo <quic_cang@quicinc.com>, Bean Huo <beanhuo@micron.com>, 
-	Bart Van Assche <bvanassche@acm.org>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Avri Altman <avri.altman@wdc.com>, "Bao D. Nguyen" <quic_nguyenb@quicinc.com>, 
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Rohit Ner <rohitner@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <170820142021.6328.15047865406275957018.stgit@91.116.238.104.host.secureserver.net>
 
-As per JEDEC Standard No. 223E Section 5.9.2,
-the max # active commands value programmed by the host sw
-in MCQConfig.MAC should be one less than the actual value.
+On Sat, Feb 17, 2024 at 03:23:40PM -0500, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> Liam and Matthew say that once the RCU read lock is released,
+> xa_state is not safe to re-use for the next xas_find() call. But the
+> RCU read lock must be released on each loop iteration so that
+> dput(), which might_sleep(), can be called safely.
 
-Signed-off-by: Rohit Ner <rohitner@google.com>
----
- drivers/ufs/core/ufs-mcq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Fwiw, functions like this:
 
-diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
-index 0787456c2b89..c873fd823942 100644
---- a/drivers/ufs/core/ufs-mcq.c
-+++ b/drivers/ufs/core/ufs-mcq.c
-@@ -94,7 +94,7 @@ void ufshcd_mcq_config_mac(struct ufs_hba *hba, u32 max_active_cmds)
- 
- 	val = ufshcd_readl(hba, REG_UFS_MCQ_CFG);
- 	val &= ~MCQ_CFG_MAC_MASK;
--	val |= FIELD_PREP(MCQ_CFG_MAC_MASK, max_active_cmds);
-+	val |= FIELD_PREP(MCQ_CFG_MAC_MASK, max_active_cmds - 1);
- 	ufshcd_writel(hba, val, REG_UFS_MCQ_CFG);
- }
- EXPORT_SYMBOL_GPL(ufshcd_mcq_config_mac);
--- 
-2.44.0.rc0.258.g7320e95886-goog
+static struct dentry *offset_find_next(struct xa_state *xas)
+{
+        struct dentry *child, *found = NULL;
 
+        rcu_read_lock();
+        child = xas_next_entry(xas, U32_MAX);
+        if (!child)
+                goto out;
+        spin_lock(&child->d_lock);
+        if (simple_positive(child))
+                found = dget_dlock(child);
+        spin_unlock(&child->d_lock);
+out:
+        rcu_read_unlock();
+        return found;
+}
+
+should use the new guard feature going forward imho. IOW, in the future such
+helpers should be written as:
+
+static struct dentry *offset_find_next(struct xa_state *xas)
+{
+        struct dentry *child, *found = NULL;
+
+	guard(rcu)();
+        child = xas_next_entry(xas, U32_MAX);
+        if (!child)
+		return NULL;
+        spin_lock(&child->d_lock);
+        if (simple_positive(child))
+                found = dget_dlock(child);
+        spin_unlock(&child->d_lock);
+        return found;
+}
+
+which allows you to eliminate the goto and to have the guarantee that the rcu
+lock is released when you return. This also works for other locks btw.
 
