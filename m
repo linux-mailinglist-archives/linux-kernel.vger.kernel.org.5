@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-73715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4760685C7A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:15:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D8785C7AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF0E6283AD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:15:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 711FE1F26037
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09D5151CEF;
-	Tue, 20 Feb 2024 21:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D281152DED;
+	Tue, 20 Feb 2024 21:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fGNiCvBQ"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFDIPs8k"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7229E76C9C;
-	Tue, 20 Feb 2024 21:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16C2151CD8;
+	Tue, 20 Feb 2024 21:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708463702; cv=none; b=BeqBPp8fzd/IpjbksITNsSLrMa/5r28K3aqv25YDpKdeutf0iJHuUMta7zHejI3TQVrhO2Rp/jZ0ds93TuiUNTHkDCPDWBffMnhtgOWh1oZ7SD2dfI27rhGWWWFEX3YD7gbW2CWJaKRD+A0kXjcbw2VbSCZyLvt2/WgbQ1s0WH4=
+	t=1708463703; cv=none; b=s2JBotVfW7Sauyu2Tr5q90F3GKPkAmYgGCIZ1HxVdtYAwQT8EWpnPGgVx+khHS4ctKr6G8MXqwLC/btC+sM4qj17MmQi/49/7d2tlXvwOJqfhlsIcxu8pHvS8wxDcdHbh5WAjbm5Sr72Eg2d40ybVXrJz/m26K/HK6BrcI0YaR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708463702; c=relaxed/simple;
-	bh=DiomlbMoz3C6LjGZH4FFhHtNHPdnMrqXUhRAwWtZwBo=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=VrzDczts5h1hbsXVPWrFciHBT9ZVpAy/wW6CAuYIdhjFRJoqVg2GPuFgQLFvEwKqhtPik2rZgMjrV6HjaQYsS4knqLwbDfQLnYfaJVSp1skmQhK4jbRZHfQEN3d/sXYvC2R36XoLX4quOMfyfRMFzESUGIm4Uv0h6qh7j+dHJ+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fGNiCvBQ; arc=none smtp.client-ip=209.85.208.179
+	s=arc-20240116; t=1708463703; c=relaxed/simple;
+	bh=YAdBiDoe8/IZ+rByvKGy+92HAzwV14CR2j87H09rlQs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=rvFjk/r0rZK1Oh1Ahv2zK382LOhN2C0zE3ZMJ456M1SNLvQgoKPfQy+N5HCHOmvyR9+MtyS9uviCesk+eAprgjCAeJBz7/sFk6suXAzTkyib1AgFnur7vK0e7cx6KKET++a9kVku3qpkX8iNcLIqMaoGadCktPkA+pX977SEINk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFDIPs8k; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d204e102a9so76536181fa.0;
-        Tue, 20 Feb 2024 13:15:00 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-564f1876a2fso182468a12.3;
+        Tue, 20 Feb 2024 13:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708463698; x=1709068498; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pS4KxtoWOPzkzcC9M2HY0NXw+lpEMhNeKnYkJuLKH58=;
-        b=fGNiCvBQDBsUcnZ059epNqcL7aa5K6+lVkZHexJQOEYFQu5u5A/SvN+6lpMunXZdqL
-         hIlK7hAtviaUl/fH5vikMFxKjxvWbopHKQ9FD4w6mbrXnTvlhe6YQEhV1n4BwkONBoET
-         9wwUJ0gkyxbzY4ombTpJDQjAC61QqbBwhLoNzrUt82Xv1G8b94SprRrEk6Woskrb4pp6
-         Hvi6vKD7zgsgKIjG1KnwwttT4OSnskP88cDGC+a20K5ZAPNPfrWT7c3szY0CPPboMDb4
-         8r/1W/NY5EKy8uWvTqtLYXf+M35mRSUBmWMrXJmUlhYH+R7xb/U27gFpu66Gd5ELTBib
-         kfxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708463698; x=1709068498;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1708463699; x=1709068499; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pS4KxtoWOPzkzcC9M2HY0NXw+lpEMhNeKnYkJuLKH58=;
-        b=bMvdJ8HFFjQNwzfnK+xgt5jJpcm5EVUm26QOmrsc8E311s1nfy/ZsATTyaTUnbU5PX
-         T3XC2pHnt8dpXGWgjcaJQfpRitVpHWnSSUWFB++aZpZQ2WfqeDhLE+OotcQbBGARQTiK
-         tBEwLgy0yst1Jf15nsDrKegjce/XGPg70+JzWn5u9aE4vuiBL4EaO3rJaX2AZF29jk0y
-         D3cJ4BWykYBp89z+N4Ss9ceDmjrT9BehNYpH98AS1rhvvAq3FlJbFOZHrMBARF1iv519
-         JWGM5Pp8ep/G+IeO1gFA5fPithdwH9JS9WXb8d4rIm7HDSQAtAOEsBEd8KWHte6gyTHo
-         E5UA==
-X-Forwarded-Encrypted: i=1; AJvYcCU3TK2o9zcVYhKH40s4bBYTlc6+Ic/zKCipI00/Scc87UHL1utO/Ftew3XeZgzlA3MMGnev08pPjy2QuRY+uBRmqTnzbEc87IMFEQfadtQaRox90yu8dZxrtKNid9OOU82wiky/tpRlr690kTy1z9fkOnAdkRDOBYEEMis3Wrh8JHnvDw==
-X-Gm-Message-State: AOJu0Yz+iXltK4swHaM+b9VwLWIZht8O+9cBGko8zdGhrHx2kiJcu+Nu
-	8xc9iod58SaR9yvnWbTlmRq0Bll22USgHeeKKbKO1htrxEPQlvh8ST4up+yptSyNKw==
-X-Google-Smtp-Source: AGHT+IGb22ufiQzQHvKZLn4xzUpaqi++TL9Us/DsUJOm5s9sgZTjNFEES/MLIlc4+RvFHred6PV/Mg==
-X-Received: by 2002:a05:651c:548:b0:2d2:2cc0:34af with SMTP id q8-20020a05651c054800b002d22cc034afmr7769024ljp.32.1708463697742;
-        Tue, 20 Feb 2024 13:14:57 -0800 (PST)
+        bh=bysFB8VOUQG0rzhFX0FiWlnp+/R7B0ro194OzpL/Ots=;
+        b=dFDIPs8kMh7zW5TezWJD9/piGlTVWvbdCj+dXP4vA6O7byI2I6gUmbBlgPJ1J8L2qU
+         cyJYbnQ3htxyw3Z7hepiMGZzRiF7uDZ3aGpqr8euY88QlLCsR4kWyFrO6fOFeFnMtJA/
+         LeOz0EE/YnE3cTS2G9gY8ux1B3w8ndqtqIaLdDSWIdfaxNd/NHUW2kB+akHkyg3Rp5Q5
+         3WVIduZsqGARjTV2hQXcqVi0PGYPFtdH4JIURb6kj2OvqWrlW7o+IiXvknOKuhGQO+Dt
+         8gBlN8fd4l3rNr+w6n7+jXVMXEso9EhEyjTZKVSDbARX7tEDq6DGjWZ5v4nNO8cRL4gW
+         0cHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708463699; x=1709068499;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bysFB8VOUQG0rzhFX0FiWlnp+/R7B0ro194OzpL/Ots=;
+        b=iYHKVKUMeJSyqiPoewVpzWOwA3OZZGYnjPrXlP5insjoazD6kqDvsEj6BC3ucOZF1s
+         poNqG0Irja/0H+KwMzEPLWQ9IxQoV4i+GZxZ5mk9do7PlD9W8fOcq5R76f4K04JCKMgz
+         dZFPbsbD2mHDyLnL7HWebGw2LTzysRQmq+jEAhDZtNLD/oqNK8QMMzSCErT6MbQftGro
+         JNmSumvngCw25RQFI/7e/QrxxAm5HbVPK382S0D9rWv7apsuGsxc5I7FiIpBKUI4Cyo7
+         7VhxIE7ADRKUHcSTk92aqdjrDuUjj29tTMkdV12rGRrKSwuf9qCfGkwbi65o0ahErg0f
+         U9nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJl+cpd4+OtACrz2ctjrKSMn+26AYiIH4h2A8FHlmXNTkLvbUEgoOobWCEpT85tuCk7P3TNXRjTGsEVN/b9FrsQUAgyJQf3AZhEjlgtklM9yZzYCpr0RIWHnW7D++PaUY7+5IdRK1B1fHkyREckBh/B0znYkq/7OkaqgTAybZQ4QDxeA==
+X-Gm-Message-State: AOJu0Yy2k3BU1gCOh2tbJSdDDXM2S4K7iH3juiFNY+icUbaQ1r28aII6
+	ZpgOgljGWCZhhcOjkNsg0g/3+RzglTaHPuknrWrumuyjyM1jh7i0Dad5apeEEaTn4g==
+X-Google-Smtp-Source: AGHT+IGSPLCsLihF242E3zFQ9jIuA+UjxTaFXWPkdjKz6Ly4l5wpe3Ds8j7TmwBJQQmsFZWkGT6hmw==
+X-Received: by 2002:a05:6402:1b1a:b0:561:4460:6726 with SMTP id by26-20020a0564021b1a00b0056144606726mr11742594edb.26.1708463699172;
+        Tue, 20 Feb 2024 13:14:59 -0800 (PST)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-d60d-797f-077b-a805.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:d60d:797f:77b:a805])
-        by smtp.gmail.com with ESMTPSA id fj21-20020a0564022b9500b00564da28dfe2sm538137edb.19.2024.02.20.13.14.56
+        by smtp.gmail.com with ESMTPSA id fj21-20020a0564022b9500b00564da28dfe2sm538137edb.19.2024.02.20.13.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 13:14:57 -0800 (PST)
+        Tue, 20 Feb 2024 13:14:58 -0800 (PST)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH 0/4] iio: humidity: hdc3020: add power and reset management
-Date: Tue, 20 Feb 2024 22:14:54 +0100
-Message-Id: <20240220-hdc3020-pm-v1-0-d8e60dbe79e9@gmail.com>
+Date: Tue, 20 Feb 2024 22:14:55 +0100
+Subject: [PATCH 1/4] iio: humidity: hdc3020: Add Makefile, Kconfig and
+ MAINTAINERS entry
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAE4W1WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDI0Nz3YyUZGMDIwPdglxdQ3NzSwvjlFTj5MQkJaCGgqLUtMwKsGHRsbW
- 1AHHE8C1cAAAA
+Message-Id: <20240220-hdc3020-pm-v1-1-d8e60dbe79e9@gmail.com>
+References: <20240220-hdc3020-pm-v1-0-d8e60dbe79e9@gmail.com>
+In-Reply-To: <20240220-hdc3020-pm-v1-0-d8e60dbe79e9@gmail.com>
 To: Jonathan Cameron <jic23@kernel.org>, 
  Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, 
  Rob Herring <robh+dt@kernel.org>, 
@@ -89,60 +91,86 @@ Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  devicetree@vger.kernel.org, 
  Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.14-dev-8b532
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708463696; l=2127;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708463696; l=2533;
  i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=DiomlbMoz3C6LjGZH4FFhHtNHPdnMrqXUhRAwWtZwBo=;
- b=fX2JLYzSPtRMilwqfz8C/EUlHWnAQWsTo9Qa6XKBO43Pkgc63IfrUaTRhGiBp9iRySOqUv4Wc
- MhSXWfYGzhbA2+Npm3XiAgN5IvhUdS5vX5QC4lztif79c9T2BHSphnt
+ bh=3a3IuUcHgpMvkEUVjsKil8/rhpG6FeILz6O7U1hUYAU=;
+ b=gGUgj8fQzp3mrh6qVNaD4Mp8ODKE+0ZKjE/fJH6Je6P8LXHjsET6x4VCxYTdkNa05X76EBG4g
+ By3Wp7P6h3XD0c9mAuxBq5ZhYf+S4UJtRlzvliB6DiaPGqvoy7NdxI2
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-This series adds power management for the hdc3020 humidity and
-temperature sensor as well as control over the reset signal the device
-provides.
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-The hdc3020 carries out measurements automatically, which is not
-necessary in low-power modes. Furthermore, if the low-power
-configuration turns off the device, proper initialization is required to
-account for the setup times and initial status register value.
+Something when wrong when applying the original patch and only the
+c file made it in.  Here the rest of the changes are applied.
 
-This device provides an active low reset signal that must be handled if
-connected. This signal can be used by the driver to keep the device
-under minimal power consumption during low-power modes if the power
-supply stays active.
-
-This series requires the last additions to the driver to handle events
-[1] as well as the fix to include the entries in the Makefile and
-Kconfig files [2]. There is still no branch where everything is
-included. Therefore, iio/testing has been used as basis and the fix has
-been added to the series as it has been applied to iio/fixes-togreg to
-make code testing and validation possible.
-
-[1] https://lore.kernel.org/linux-iio/20240214085350.19382-1-dima.fedrau@gmail.com/
-[2] https://lore.kernel.org/linux-iio/20240121135123.71506-1-jic23@kernel.org/
-
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Fixes: c9180b8e39be ("iio: humidity: Add driver for ti HDC302x humidity sensors")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Li peiyu <579lpy@gmail.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
-Javier Carrasco (3):
-      iio: humidity: hdc3020: add power management
-      dt-bindings: iio: humidity: hdc3020: add reset-gpios
-      iio: humidity: hdc3020: add reset management
+ MAINTAINERS                   |  8 ++++++++
+ drivers/iio/humidity/Kconfig  | 12 ++++++++++++
+ drivers/iio/humidity/Makefile |  1 +
+ 3 files changed, 21 insertions(+)
 
-Jonathan Cameron (1):
-      iio: humidity: hdc3020: Add Makefile, Kconfig and MAINTAINERS entry
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6add3fde252d..fde7456438b1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22023,6 +22023,14 @@ F:	Documentation/devicetree/bindings/media/i2c/ti,ds90*
+ F:	drivers/media/i2c/ds90*
+ F:	include/media/i2c/ds90*
+ 
++TI HDC302X HUMIDITY DRIVER
++M:	Javier Carrasco <javier.carrasco.cruz@gmail.com>
++M:	Li peiyu <579lpy@gmail.com>
++L:	linux-iio@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
++F:	drivers/iio/humidity/hdc3020.c
++
+ TI ICSSG ETHERNET DRIVER (ICSSG)
+ R:	MD Danish Anwar <danishanwar@ti.com>
+ R:	Roger Quadros <rogerq@kernel.org>
+diff --git a/drivers/iio/humidity/Kconfig b/drivers/iio/humidity/Kconfig
+index 2de5494e7c22..b15b7a3b66d5 100644
+--- a/drivers/iio/humidity/Kconfig
++++ b/drivers/iio/humidity/Kconfig
+@@ -48,6 +48,18 @@ config HDC2010
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called hdc2010.
+ 
++config HDC3020
++	tristate "TI HDC3020 relative humidity and temperature sensor"
++	depends on I2C
++	select CRC8
++	help
++	  Say yes here to build support for the Texas Instruments
++	  HDC3020, HDC3021 and HDC3022 relative humidity and temperature
++	  sensors.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called hdc3020.
++
+ config HID_SENSOR_HUMIDITY
+ 	tristate "HID Environmental humidity sensor"
+ 	depends on HID_SENSOR_HUB
+diff --git a/drivers/iio/humidity/Makefile b/drivers/iio/humidity/Makefile
+index f19ff3de97c5..5fbeef299f61 100644
+--- a/drivers/iio/humidity/Makefile
++++ b/drivers/iio/humidity/Makefile
+@@ -7,6 +7,7 @@ obj-$(CONFIG_AM2315) += am2315.o
+ obj-$(CONFIG_DHT11) += dht11.o
+ obj-$(CONFIG_HDC100X) += hdc100x.o
+ obj-$(CONFIG_HDC2010) += hdc2010.o
++obj-$(CONFIG_HDC3020) += hdc3020.o
+ obj-$(CONFIG_HID_SENSOR_HUMIDITY) += hid-sensor-humidity.o
+ 
+ hts221-y := hts221_core.o \
 
- .../bindings/iio/humidity/ti,hdc3020.yaml          |  5 ++
- MAINTAINERS                                        |  8 ++
- drivers/iio/humidity/Kconfig                       | 12 +++
- drivers/iio/humidity/Makefile                      |  1 +
- drivers/iio/humidity/hdc3020.c                     | 97 ++++++++++++++++++----
- 5 files changed, 107 insertions(+), 16 deletions(-)
----
-base-commit: 3cc5ebd3a2d6247aeba81873d6b040d5d87f7db1
-change-id: 20240217-hdc3020-pm-177983de3cab
-
-Best regards,
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+2.40.1
 
 
