@@ -1,115 +1,122 @@
-Return-Path: <linux-kernel+bounces-73563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99DDB85C435
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:02:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D1E485C43B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53C0E283AB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:02:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C23131F241BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57DE13341C;
-	Tue, 20 Feb 2024 19:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF5712FF62;
+	Tue, 20 Feb 2024 19:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Ob0OLPq9"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ukPV0cIf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256976A01C;
-	Tue, 20 Feb 2024 19:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA94578B51;
+	Tue, 20 Feb 2024 19:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708455769; cv=none; b=id4r+GTSaQun7X3rRAntscTYVirc2WFL13TYoLKMwOs/P2lF512FxVCcCtfXbiIKNz2TUbCczY6xXZn4Vtlvw8CeSoLofcpefu7ztyE4wehVz4Kou683G5pZbq6SVcWRlB50VGJxuMJVlMbknvku+ssQ/XD6o3uUMddsLskdgX0=
+	t=1708455857; cv=none; b=TvU3aThvg/F237/os9jK2fTJ7n7JPJM7YXtJuHVYQjJAXqwrCx77yjK4+a08Trex1mnkl2czATI8C5ITLmvjaQtz65/wQFyp+I9e3nN6ed4Yw9OYV/l5rDpQoGX/4FrxoraYvXLA0LpSwGQuCJ8QeryEuDAlUDsfaMoACogrLy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708455769; c=relaxed/simple;
-	bh=0wMgfcHkV+wa3PtUAYHIw6wHNN7TD9iunGuwyjtWmRo=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=OYuPUIN/sKs56Pr9l99i1Myj3efEqwUfJqwP6nzYb0yq0w3JofWKOZswaNxayZstW6yD0p0b/o7TwsoKtillgSXtWD00Sgk/NM5y79EBW9WGH0Q0LTb4wCrjk4FMCLsKqC2FLnV9xs9eoDRyVIv2a+nMiWPuFwaJsZPRTFjIUuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Ob0OLPq9; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1708455752; bh=u7KHD7RG1W+C5tk/BT6KiPSWci7A42fZiVpBZLG4M2Q=;
-	h=From:To:Cc:Subject:Date;
-	b=Ob0OLPq9XFKCzbeaXKVjHV8blgDS3ddNJujPtWrDr5FB+7hGAeuLRjXwI2H9GVUiz
-	 mURadnzhjer/EHqm7VZnwblxN4luPE+KfVE1quFlrFosi4Y1jhmyu8AA7Uf9J2ojPp
-	 cSJCDridODME6QSqWAiHEmXFGsTuuvsSDUyf92K0=
-Received: from cyy-pc.lan ([240e:379:2240:ef00:159c:db93:bdcd:c9c6])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 87A7667; Wed, 21 Feb 2024 03:02:07 +0800
-X-QQ-mid: xmsmtpt1708455727tbv094zbu
-Message-ID: <tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com>
-X-QQ-XMAILINFO: NYdHd+5EbUy1IztpfkAF9XOfYQ2NVGTyri3rjQSIy/snEhaonuY3QLUJufgv6v
-	 i0sVwFO2yVlC0yzQLvN5XohOm2ODbp+JZWvB0sReiCQU9AHq8wVnqtGq6dDYUCWEDunbiLR6QcKY
-	 JrSJuMWeWtOtcTzVtPFIGPeMGujjltZoBzE1/jfe7MEhEpg31EL9cpryD6B5pqzdJLSLWw2f8xMv
-	 cwEfocgIzTMScbXZNItQv11F9yGw5xGZp5Jin8ZiED4IgcFnzo+zD2yisTSqVdyAkT2OZSlaxaGA
-	 vdaciIrghLbTCm1opuuAQAyEXNLSxcfJApzsxr5rtipTVBtuNOiGKgPvxnzjr+8Tyzj6T/BHtuXW
-	 d1YRwWDfK39GiLIike7/gSDwecJCJ7ZAMzXhrEw6Pp3bmrp3nYVEJF5lLv/BiQ8RPWHTENz0mEG0
-	 V17rYYCpBeIVPjUwoJNeilvfQ8bitThMobmE3Te3ZWOrI04OGkTLygc5cjxxxQDlVYNSMM+cEHve
-	 iVx+P5N4d/uXufURiD1ZnS5gvZZVARZLldNDaaxiqWb/jE0e7qVZuS+xg30PqVi+itKaA/rRgm93
-	 E2j4Zc/CPCL78E8pyjij/7baNbu0v7eHjolhFgE5UDE82K15E/eHvTlWT9aWytqDeQoyriD+rdfL
-	 J/feLH60fE6PuUR1uwSNrTOuANgmTj73Ldv8PGVTj4tO+JgCcH7yMIv4OD8CY3/dgqU/VWlHJp2G
-	 JE9vqgjq4m+kS69Hhd8Yj0IZIevXDTNAwc3kQ087UF5SbYpUa5ZkSMmZrnawYu4/31yNTcKaE1fi
-	 5ksrhME0UajffWdSVHvHABXd/YuT+3eBQMBSrxUli1wtxLplB37Nrq2Sz5/+9dqUQnHwxNhasySH
-	 7+89ze/GCe2V5V67pMOtERtNyMBW45jwMij5MD0M23PvwULpni115jxI6aZER8CQcT2gazI4FLEY
-	 MhmiXySCUt+bKcr9osQEbVBJGEKHsj+Mrg5einmD1g2kR1ddqL3oAB+mVyveK2CnHQsRG2mPUoWG
-	 VHnK2IxT78Lya67o6P
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Rob Herring <robh+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [RFC PATCH 0/1] riscv: dts: Allow BUILTIN_DTB for all socs
-Date: Wed, 21 Feb 2024 03:01:53 +0800
-X-OQ-MSGID: <20240220190153.3390862-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708455857; c=relaxed/simple;
+	bh=bo2nHAeqd0NORabbrx7IJ4Cql2j0t4M6YbDm1ZBPCRI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Z/Dx2JITN90JqHNnfdMmvRmqq5iUVYmu8iYA9gcr2nBMls4Ob0knLJhzmZ8jnxc7dCG0MKoHDh8gbj0t0aMnPU8cahOoAB0QP8eXKNfOsr47Fsyy0ZUKRZfd7nHhRJQD+48YVeYMnPrdLwZGauWJWz9jGzDVXpZgxM+ZZUMT2tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ukPV0cIf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5202EC433C7;
+	Tue, 20 Feb 2024 19:04:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708455856;
+	bh=bo2nHAeqd0NORabbrx7IJ4Cql2j0t4M6YbDm1ZBPCRI=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=ukPV0cIfs9S85rpn7vR8ZhA8m2SRA0UnASsufZ1ij2Od2J9alMS/+4R5eI6iQeasZ
+	 GLvBgI1g6r2UViQFAdmQOoIT3SaK6FjRdXHK2pyy3JM+Wu/KmXvSqPWvGYbnFwLbIe
+	 8Ny1fkmI3Z5DY9JkJybT8rBGD7g8hbDXP8ACOIbv35qFTi9rkuZxI7zlnjHZ86ZRO8
+	 w2GXO5NgBJYuXmi+//JWws/AusmJV5ZTp8Aem+7MTxPQrlp8tNDtJp74UNmpVVKXHq
+	 Wn+gY5jhHbFvNyfbtGl8gg9978tvNA/UiDwUSY+4ZNHF5Yv6xKJD40vdjgxNNToChW
+	 O+Euhl4hVYarA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 20 Feb 2024 21:04:12 +0200
+Message-Id: <CZA51ZEVD7KW.3R3QBO7CGX1SC@kernel.org>
+Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Kanth Ghatraju"
+ <kanth.ghatraju@oracle.com>, "Peter Huewe" <peterhuewe@gmx.de>
+Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Alexander Steffen" <Alexander.Steffen@infineon.com>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>, "Daniel P. Smith"
+ <dpsmith@apertussolutions.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Sasha
+ Levin" <sashal@kernel.org>, <linux-integrity@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
+ <20240131170824.6183-2-dpsmith@apertussolutions.com>
+ <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
+ <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
+ <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
+In-Reply-To: <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
 
-The BUILTIN_DTB kernel feature on RISC-V only works on K210 SoC only. This
-patch moved this configuration to entire riscv.
+On Tue Feb 20, 2024 at 8:42 PM EET, Alexander Steffen wrote:
+> On 02.02.2024 04:08, Lino Sanfilippo wrote:
+> > On 01.02.24 23:21, Jarkko Sakkinen wrote:
+> >=20
+> >>
+> >> On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
+> >>> Commit 933bfc5ad213 introduced the use of a locality counter to contr=
+ol when a
+> >>> locality request is allowed to be sent to the TPM. In the commit, the=
+ counter
+> >>> is indiscriminately decremented. Thus creating a situation for an int=
+eger
+> >>> underflow of the counter.
+> >>
+> >> What is the sequence of events that leads to this triggering the
+> >> underflow? This information should be represent in the commit message.
+> >>
+> >=20
+> > AFAIU this is:
+> >=20
+> > 1. We start with a locality_counter of 0 and then we call tpm_tis_reque=
+st_locality()
+> > for the first time, but since a locality is (unexpectedly) already acti=
+ve
+> > check_locality() and consequently __tpm_tis_request_locality() return "=
+true".
+>
+> check_locality() returns true, but __tpm_tis_request_locality() returns=
+=20
+> the requested locality. Currently, this is always 0, so the check for=20
+> !ret will always correctly indicate success and increment the=20
+> locality_count.
+>
+> But since theoretically a locality !=3D 0 could be requested, the correct=
+=20
+> fix would be to check for something like ret >=3D 0 or ret =3D=3D l inste=
+ad of=20
+> !ret. Then the counter will also be incremented correctly for localities=
+=20
+> !=3D 0, and no underflow will happen later on. Therefore, explicitly=20
+> checking for an underflow is unnecessary and hides the real problem.
 
-Although BUILTIN_DTB is not a good choice for most platforms, it is likely
-to be a debug feature when some bootloader will always override something
-like the memory node in the device tree to adjust the memory size from SPD
-or configuration resistor, which makes it hard to do some debugging. As an
-example, some platforms with numa like sg2042 only support sv39 will fail
-to boot when there is no ZONE_HIGHMEM patch with 128G memory. If we want
-a kernel without this patch to boot, we need to write the memory nodes 
-in the DT manually.
+Good point.
 
-Also, changing DT on some platforms is not easy. For Milk-V Pioneer, the
-boot procedure is ZSBL -> OpenSBI -> LinuxBoot -> Linux. If DT gets
-changed, OpenSBI or LinuxBoot may refuse to boot. And there is some bug on
-LinuxBoot now which does not consume --dtb argument on kexec and always
-uses DT from memory. So I would like to do debugging on DT using
-BUILTIN_DTB, which makes it very simple, I can even install the kernel in
-the distro's way and provide a kernel package for other users to test.
+I think that the check should contain info-level klog message of the
+event together with the check against the underflow. I think this is
+very useful info for live systems.
 
-Yangyu Chen (1):
-  riscv: dts: Allow BUILTIN_DTB for all socs
+BR, Jarkko
 
- arch/riscv/Kconfig                  | 16 ++++++++++++++-
- arch/riscv/Kconfig.socs             | 32 -----------------------------
- arch/riscv/boot/dts/Makefile        |  2 +-
- arch/riscv/boot/dts/canaan/Makefile |  2 --
- 4 files changed, 16 insertions(+), 36 deletions(-)
 
--- 
-2.43.0
 
 
