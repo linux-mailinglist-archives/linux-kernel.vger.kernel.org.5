@@ -1,188 +1,244 @@
-Return-Path: <linux-kernel+bounces-73000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D0485BBDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:21:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA73585BBE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BE1C1C2195B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:21:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2242F1F21AC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA3C67E8C;
-	Tue, 20 Feb 2024 12:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4183692E2;
+	Tue, 20 Feb 2024 12:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cziAa188"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dYHiVoau"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8B567E76;
-	Tue, 20 Feb 2024 12:21:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7225B1F8;
+	Tue, 20 Feb 2024 12:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431675; cv=none; b=bDxon9W+k2YKynO0/mVDlJ84IojYCc0dIvMen9UosUBh5Ppp61LEbhcfFGSisSujnW5DHPRO39XT0Wv+kkf+UYLiubdraRuzMzSR0i+9m8m1LX4XqGbWGOaCnpVQr3h0Nv0HesHSg8YMKUFn0wEz7DksCkHJr6WGxKOk0YwHuXg=
+	t=1708431746; cv=none; b=RvZSDgJI9DgBTqjwiUWuQx8c8SyXVGDQ2ezJks27u4lV9bwgsVKEL+aSSzv5XpldNlPUJLs/C7BR/EYCqIlePVzomQ+/+PcfeXXBShP14cXV2qh3al+lqUtZ342m+v9RRF7+xB67ZQ17fDAZPcgZK2XspQM7ASKy3lSr3PZ89eI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431675; c=relaxed/simple;
-	bh=jV03GKfaPISem9za3Whs0Xc2NpK5afZ4kewZC3epk98=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QRtLA8tcpfPAsGSKIhLxLKjsFXS1d493O3IA+/j0cbDCkBAAMuOJpXz2QvZDsLizmGO7cbVijuJoR8XQIgl0I/YPBPr6B5jEpbMcuD32TkTr0zV+TXjJhpMfjohmgTAKm+dc4NWD8NoABZWFR1s8Co8Bv4GwIUupE0ytkz5dBPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cziAa188; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C71BBC433F1;
-	Tue, 20 Feb 2024 12:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708431674;
-	bh=jV03GKfaPISem9za3Whs0Xc2NpK5afZ4kewZC3epk98=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cziAa1884tUKYj/oG8oWpobatz95huFTEsocTtFryUfPMNk0dBnW99+7ceeiv4P81
-	 +QfVIcLde0P6FkNqbuBOcErf/6T5q72XSK6OkM7mn8kplaWIaahuAyZLqn4Pi1VoJd
-	 u44VIuTCDHNbvLp6vkkYWALYzYxiOJcqqyE0FoMvv8ZFP8A03EprTOhgHVouyNbZij
-	 s61RWM4gGhaLBzTkLPAK2YkwOB625VirQDb714AkZHhF854/7dos9AEyO+qPP6PgkZ
-	 71emIScEs6bYH9ezmMYm15fYahRwgf3iVV/DfI66Y0bHAPOebWTndru4ZXZZjmfzMG
-	 anrc9g+6GnRRQ==
-Date: Tue, 20 Feb 2024 12:21:03 +0000
-From: Will Deacon <will@kernel.org>
-To: ankita@nvidia.com
-Cc: jgg@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
-	james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
-	reinette.chatre@intel.com, surenb@google.com, stefanha@redhat.com,
-	brauner@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-	alex.williamson@redhat.com, kevin.tian@intel.com,
-	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
-	andreyknvl@gmail.com, wangjinchao@xfusion.com, gshan@redhat.com,
-	shahuang@redhat.com, ricarkol@google.com, linux-mm@kvack.org,
-	lpieralisi@kernel.org, rananta@google.com, ryan.roberts@arm.com,
-	david@redhat.com, linus.walleij@linaro.org, bhe@redhat.com,
-	aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-	targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-	apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-	kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 1/4] kvm: arm64: introduce new flag for non-cacheable
- IO memory
-Message-ID: <20240220122103.GB5613@willie-the-truck>
-References: <20240220072926.6466-1-ankita@nvidia.com>
- <20240220072926.6466-2-ankita@nvidia.com>
+	s=arc-20240116; t=1708431746; c=relaxed/simple;
+	bh=InDHKtmK2AtUmds74XuVyGWa4Kq1lt972r024xFyyPY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HCoSik0xeeDqnAGTmgaYjELAEUKEGLkwgwJsyypgvahmQ3UJMe4amgH8+ba+WEhlcXOnHoEs8suCygaH+KECX8Cic3/dDb+sqvjkFiSTyb4FDRmM0T9gMDM4quq2QpvIsgy89CTFP7j1bnVATbYQOYUCGdjmnwW4e9r6H5fxK80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dYHiVoau; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KBe1qL030653;
+	Tue, 20 Feb 2024 12:21:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=379Srn1tGEaDvceo1XrilJx6GCtEIxn4M0Q0q4VP4Mw=; b=dY
+	HiVoauIcBhnBW8SellHUd6j95dWA+0KfkP2GeUTalqAGLbljfeFRBZQPfbdJAytO
+	NFVBDM4Tsd7V2AzsMwpYsVptWiSJQCOt2ZM36hbiils+6/agZ2mwLh293R37M4bp
+	DmDJUdXDZNpTSaYGpsk8vLgkZ4nbmb0cqKJKjCcmCqUnVuUh4QfuYAurDH9TFo8Y
+	wXt/2fcSJ3ecnlpSxcRlzkX973QMMFQLN0ziCvdWrHMDiAxSXA3T2Lr2BFA4Glma
+	cDwkz8XN5Zw+qNIJU9n0rM+wurK4M2epzmX5OOF2efb81VLdsA/Vc90dPJe1Rb1u
+	qqYs0lc7Q2MDLWPOA5Aw==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct3eg7yk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 12:21:22 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KCLLmR029113
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 12:21:21 GMT
+Received: from [10.216.16.129] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 04:21:15 -0800
+Message-ID: <439c89ec-3702-4b4a-5e02-b18cc99b8ba3@quicinc.com>
+Date: Tue, 20 Feb 2024 17:51:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220072926.6466-2-ankita@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 2/5] drivers: mtd: nand: Add qpic_common API file
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
+        <broonie@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+ <4cb0144c-303b-4b91-bf88-0a7d7412afe1@linaro.org>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <4cb0144c-303b-4b91-bf88-0a7d7412afe1@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5UIVdpcamgOu-7yVNLkwt275vMMlNqui
+X-Proofpoint-GUID: 5UIVdpcamgOu-7yVNLkwt275vMMlNqui
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ spamscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402200088
 
-On Tue, Feb 20, 2024 at 12:59:23PM +0530, ankita@nvidia.com wrote:
-> From: Ankit Agrawal <ankita@nvidia.com>
-> 
-> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
-> (i.e. it is not RAM) with DEVICE_nGnRE memory attributes; this setting
-> overrides (as per the ARM architecture [1]) any device MMIO mapping
-> present at stage 1, resulting in a set-up whereby a guest operating
-> system cannot determine device MMIO mapping memory attributes on its
-> own but it is always overridden by the KVM stage 2 default.
-> 
-> This set-up does not allow guest operating systems to select device
-> memory attributes independently from KVM stage-2 mappings
-> (refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
-> which turns out to be an issue in that guest operating systems
-> (e.g. Linux) may request to map devices MMIO regions with memory
-> attributes that guarantee better performance (e.g. gathering
-> attribute - that for some devices can generate larger PCIe memory
-> writes TLPs) and specific operations (e.g. unaligned transactions)
-> such as the NormalNC memory type.
-> 
-> The default device stage 2 mapping was chosen in KVM for ARM64 since
-> it was considered safer (i.e. it would not allow guests to trigger
-> uncontained failures ultimately crashing the machine) but this
-> turned out to be asynchronous (SError) defeating the purpose.
-> 
-> Failures containability is a property of the platform and is independent
-> from the memory type used for MMIO device memory mappings.
-> 
-> Actually, DEVICE_nGnRE memory type is even more problematic than
-> Normal-NC memory type in terms of faults containability in that e.g.
-> aborts triggered on DEVICE_nGnRE loads cannot be made, architecturally,
-> synchronous (i.e. that would imply that the processor should issue at
-> most 1 load transaction at a time - it cannot pipeline them - otherwise
-> the synchronous abort semantics would break the no-speculation attribute
-> attached to DEVICE_XXX memory).
-> 
-> This means that regardless of the combined stage1+stage2 mappings a
-> platform is safe if and only if device transactions cannot trigger
-> uncontained failures and that in turn relies on platform capabilities
-> and the device type being assigned (i.e. PCIe AER/DPC error containment
-> and RAS architecture[3]); therefore the default KVM device stage 2
-> memory attributes play no role in making device assignment safer
-> for a given platform (if the platform design adheres to design
-> guidelines outlined in [3]) and therefore can be relaxed.
-> 
-> For all these reasons, relax the KVM stage 2 device memory attributes
-> from DEVICE_nGnRE to Normal-NC.
-> 
-> The NormalNC was chosen over a different Normal memory type default
-> at stage-2 (e.g. Normal Write-through) to avoid cache allocation/snooping.
-> 
-> Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
-> trigger any issue on guest device reclaim use cases either (i.e. device
-> MMIO unmap followed by a device reset) at least for PCIe devices, in that
-> in PCIe a device reset is architected and carried out through PCI config
-> space transactions that are naturally ordered with respect to MMIO
-> transactions according to the PCI ordering rules.
-> 
-> Having Normal-NC S2 default puts guests in control (thanks to
-> stage1+stage2 combined memory attributes rules [1]) of device MMIO
-> regions memory mappings, according to the rules described in [1]
-> and summarized here ([(S1) - stage1], [(S2) - stage 2]):
-> 
-> S1           |  S2           | Result
-> NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
-> NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
-> NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
-> DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
-> 
-> It is worth noting that currently, to map devices MMIO space to user
-> space in a device pass-through use case the VFIO framework applies memory
-> attributes derived from pgprot_noncached() settings applied to VMAs, which
-> result in device-nGnRnE memory attributes for the stage-1 VMM mappings.
-> 
-> This means that a userspace mapping for device MMIO space carried
-> out with the current VFIO framework and a guest OS mapping for the same
-> MMIO space may result in a mismatched alias as described in [2].
-> 
-> Defaulting KVM device stage-2 mappings to Normal-NC attributes does not
-> change anything in this respect, in that the mismatched aliases would
-> only affect (refer to [2] for a detailed explanation) ordering between
-> the userspace and GuestOS mappings resulting stream of transactions
-> (i.e. it does not cause loss of property for either stream of
-> transactions on its own), which is harmless given that the userspace
-> and GuestOS access to the device is carried out through independent
-> transactions streams.
-> 
-> A Normal-NC flag is not present today. So add a new kvm_pgtable_prot
-> (KVM_PGTABLE_PROT_NORMAL_NC) flag for it, along with its
-> corresponding PTE value 0x5 (0b101) determined from [1].
-> 
-> Lastly, adapt the stage2 PTE property setter function
-> (stage2_set_prot_attr) to handle the NormalNC attribute.
-> 
-> [1] section D8.5.5 - DDI0487J_a_a-profile_architecture_reference_manual.pdf
-> [2] section B2.8 - DDI0487J_a_a-profile_architecture_reference_manual.pdf
-> [3] sections 1.7.7.3/1.8.5.2/appendix C - DEN0029H_SBSA_7.1.pdf
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-> ---
->  arch/arm64/include/asm/kvm_pgtable.h |  2 ++
->  arch/arm64/include/asm/memory.h      |  2 ++
->  arch/arm64/kvm/hyp/pgtable.c         | 24 +++++++++++++++++++-----
->  3 files changed, 23 insertions(+), 5 deletions(-)
 
-Acked-by: Will Deacon <will@kernel.org>
 
-Will
+On 2/15/2024 11:25 PM, Konrad Dybcio wrote:
+> On 15.02.2024 14:48, Md Sadre Alam wrote:
+>> Add qpic_common.c file which hold all the common
+>> qpic APIs which will be used by both qpic raw nand
+>> driver and qpic spi nand driver.
+>>
+>> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+>> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+>> ---
+> 
+> IIUC this is mostly moving code around?
+> 
+> I do however have some suggestions..
+Ok
+> 
+>>   drivers/mtd/nand/Makefile            |    1 +
+>>   drivers/mtd/nand/qpic_common.c       |  786 +++++++++++++++++
+>>   drivers/mtd/nand/raw/qcom_nandc.c    | 1226 +-------------------------
+>>   include/linux/mtd/nand-qpic-common.h |  488 ++++++++++
+>>   4 files changed, 1291 insertions(+), 1210 deletions(-)
+>>   create mode 100644 drivers/mtd/nand/qpic_common.c
+>>   create mode 100644 include/linux/mtd/nand-qpic-common.h
+>>
+>> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+>> index 19e1291ac4d5..131707a41293 100644
+>> --- a/drivers/mtd/nand/Makefile
+>> +++ b/drivers/mtd/nand/Makefile
+>> @@ -12,3 +12,4 @@ nandcore-$(CONFIG_MTD_NAND_ECC) += ecc.o
+>>   nandcore-$(CONFIG_MTD_NAND_ECC_SW_HAMMING) += ecc-sw-hamming.o
+>>   nandcore-$(CONFIG_MTD_NAND_ECC_SW_BCH) += ecc-sw-bch.o
+>>   nandcore-$(CONFIG_MTD_NAND_ECC_MXIC) += ecc-mxic.o
+>> +obj-y += qpic_common.o
+>> diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
+>> new file mode 100644
+>> index 000000000000..4d74ba888028
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/qpic_common.c
+>> @@ -0,0 +1,786 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * QPIC Controller common API file.
+>> + * Copyright (C) 2023  Qualcomm Inc.
+>> + * Authors:	Md sadre Alam           <quic_mdalam@quicinc.com>
+>> + *		Sricharan R             <quic_srichara@quicinc.com>
+>> + *		Varadarajan Narayanan	<quic_varada@quicinc.com>
+>> + *
+>> + */
+>> +
+>> +#include <linux/mtd/nand-qpic-common.h>
+>> +
+>> +struct qcom_nand_controller *
+>> +get_qcom_nand_controller(struct nand_chip *chip)
+>> +{
+>> +	return container_of(chip->controller, struct qcom_nand_controller,
+>> +			    controller);
+>> +}
+>> +EXPORT_SYMBOL(get_qcom_nand_controller);
+> 
+> #define to_qcom_nand_controller()?
+Ok
+> 
+>> +
+>> +/*
+>> + * Helper to prepare DMA descriptors for configuring registers
+>> + * before reading a NAND page.
+>> + */
+> 
+> Can you convert these to kerneldoc instead?
+Ok
+> 
+>> +void config_nand_page_read(struct nand_chip *chip)
+>> +{
+>> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>> +
+>> +	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+>> +	if (!nandc->props->qpic_v2)
+> 
+> This is not going to scale going forward.. please include a version
+> enum instead.
+Ok
+> 
+> [...]
+> 
+>> +
+>> +int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
+>> +		      int reg_off, const void *vaddr, int size,
+>> +			     bool flow_control)
+>> +{
+>> +	struct desc_info *desc;
+>> +	struct dma_async_tx_descriptor *dma_desc;
+>> +	struct scatterlist *sgl;
+>> +	struct dma_slave_config slave_conf;
+>> +	struct qcom_adm_peripheral_config periph_conf = {};
+>> +	enum dma_transfer_direction dir_eng;
+>> +	int ret;
+> 
+> Revertse-christmas-tree, please
+Ok
+> 
+>> +
+>> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+>> +	if (!desc)
+>> +		return -ENOMEM;
+>> +
+>> +	sgl = &desc->adm_sgl;
+>> +
+>> +	sg_init_one(sgl, vaddr, size);
+>> +
+>> +	if (read) {
+>> +		dir_eng = DMA_DEV_TO_MEM;
+>> +		desc->dir = DMA_FROM_DEVICE;
+>> +	} else {
+>> +		dir_eng = DMA_MEM_TO_DEV;
+>> +		desc->dir = DMA_TO_DEVICE;
+>> +	}
+>> +
+>> +	ret = dma_map_sg(nandc->dev, sgl, 1, desc->dir);
+>> +	if (ret == 0) {
+> 
+> if (!ret)
+Ok
+> 
+>> +		ret = -ENOMEM;
+>> +		goto err;
+>> +	}
+>> +
+>> +	memset(&slave_conf, 0x00, sizeof(slave_conf));
+> 
+> Just zero-initialize it (= { 0 }) at declaration time
+Ok
+> 
+> Konrad
+> 
+
+Thanks for reviewing , I will fix all the comments in next patch.
+
+Regards,
+Alam.
 
