@@ -1,256 +1,225 @@
-Return-Path: <linux-kernel+bounces-72241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72DB85B114
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:04:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 527BC85B115
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:05:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BF6028222F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:04:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CBD21C212E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015A242A8C;
-	Tue, 20 Feb 2024 03:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JcIyGNwz"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE94151033;
+	Tue, 20 Feb 2024 03:05:08 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9372E63B;
-	Tue, 20 Feb 2024 03:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708398289; cv=fail; b=snaQx3tZY0Hh1Qhoa2wzCLRitWg9pUWn58DF1O+ARwYIBdnLaRti1F4EF9IVV5Og1EOa6uH89hMUa8UMT1oMF+lY3CnDq8YSJMq7Ah0zmplLOFvThMk8NmIYZKUa2UmkkzpZgAQC74DCjaxibZ4+mHg5+mZZ4WnPn2z8Adonw4o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708398289; c=relaxed/simple;
-	bh=h/kO9D01xeF2iBjxXhIKF5W8/N4tv3b275u0DU/BtEE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=CcwWTCbByTNLSfr/fcuVC9FuzTzo7qKmjeJYu/rx2EBUMi//hMRykLQW3wSN1gLf4X4WZeNioRtrMn0xTlT4QodbQHwX9MfhF08rbfoxthD1clxY/rR9xKQ0faSBioQhSkZsqc72A2yGsGDc+BA3AeUBusJH7g/Yb0K9ZZ4+rzw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JcIyGNwz; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708398284; x=1739934284;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=h/kO9D01xeF2iBjxXhIKF5W8/N4tv3b275u0DU/BtEE=;
-  b=JcIyGNwzEhqM1TxzI0G6uJA9u6afubyrfFFp5fsaRv1rR8NwsFdmqCqa
-   tECkYz6U83rp0kPqZDCqxAJOlwf1R6IyK5D3lQlVAhKUaHevG9zuA6X5g
-   qcWgny7JrUVl4aVUC3JYx5A9VvfTBxdlXckX8xfElKkn+5X5vQn8utLSn
-   BE6EJrgRnAa+UfSFTAEMs/XwUAf3l2EQsZpqFwyrKXqwAixliDSah2FGt
-   Tr/MDVjgSKopHlbZ3JYU7++bFrPAZw5+Xkp/RGBdX60j7LRGyAd9y504i
-   ox7TKBcehHBApHcERsmlyDM1arhdWeXYE2CHg1XnigZXQaohuXlErQn3r
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2350570"
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="2350570"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 19:04:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="9258229"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 19:04:40 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 19:04:39 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 19:04:39 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 19 Feb 2024 19:04:39 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FPPm/Hz03IoLQtCqnlW2ikfoF0jrIriucPQ5ZPiC/5z19n82qtEm/gH9Zap9IwzCIBvDyJ1qEBJ1r7UYWaExa5jaxt02TwvdVbuBFKkchCLep1wALxjIO7slu7A2B2GhPhYr3vHQsUbZLJ4IfwMVDzKRoTxADZPscBkFs35zp/yPN5U7znr7P+R2BOliGOVg/HrGHbOXX5ctdttfCh4h/BmjS3K/o3I1eYWfNaIyZsI7PKYDJeamGTrbEq0iUY5qzkyA026vJXz4ja88DfvttKfjZxzDhlZjIEvmSPbrGRQIJdcVW2c49b+OlYFNfjPg0t4E4QjDlXxtTa4/AjPTEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lso5vk1p3zW+Nd1bI6sFE4GKlqTIOgt3Y3r+zqlLxsg=;
- b=FWzkUbz4Y2k4/++jYVl/wJfp+IAAidyix80pXCjVmI5Z9MZ1tO792Rd7AWcu/z6B9wzHc78qozIOZ+oKAp9L/1CHVj1sPjmVcMGDEKXRMcWmZN4oTaOhPLfojPTebiumF/QqrM8BGpVh7Wf6Ed70NqjjVB4cc8wfQB1sD8dP26Npd30DfNjBa+ioeLP+XZ7fDXimQXsaCl4i8PHtCETMyJRDgV6sfv7wmoJCZFVDRjnzsvP4A5nWX9q/bj5PPcgL7lnPYBxj41jlEuvIG8O/worLsAnQVAe1P7ZCmMuBWNXAlPptaGq5LXic+wPmm/HsAFTyab8vmqVC9JtQvFyuYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by DM4PR11MB5408.namprd11.prod.outlook.com (2603:10b6:5:397::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 03:04:37 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::9846:6ceb:7600:b0ab]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::9846:6ceb:7600:b0ab%7]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 03:04:36 +0000
-Date: Tue, 20 Feb 2024 11:04:27 +0800
-From: Chao Gao <chao.gao@intel.com>
-To: Yang Weijiang <weijiang.yang@intel.com>
-CC: <seanjc@google.com>, <pbonzini@redhat.com>, <dave.hansen@intel.com>,
-	<x86@kernel.org>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<peterz@infradead.org>, <rick.p.edgecombe@intel.com>, <mlevitsk@redhat.com>,
-	<john.allen@amd.com>
-Subject: Re: [PATCH v10 10/27] KVM: x86: Refine xsave-managed guest
- register/MSR reset handling
-Message-ID: <ZdQWu3D3Jku1iAvd@chao-email>
-References: <20240219074733.122080-1-weijiang.yang@intel.com>
- <20240219074733.122080-11-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240219074733.122080-11-weijiang.yang@intel.com>
-X-ClientProxiedBy: SG2PR03CA0125.apcprd03.prod.outlook.com
- (2603:1096:4:91::29) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D44482C8
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708398308; cv=none; b=Az8ci5gf95YB75ajy/OOrggVKEVfcLwdZXZXZ9KVRzRUw/dIdHb46T8U7OjayUzUXi/aoPCyPEaeyxTlyyOnnpUEb+rNlI2QSvr88+Bth7zKVd1wckSMm95DtVPw+Yg0iIjeSF32SHb7v1u63U27mcfcA50bbwf4hRx3RZOrqc0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708398308; c=relaxed/simple;
+	bh=otP/z4vqGd9MF21P1rofwqvlaYtd2JX6/yfLvFt23zw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=pdcNBnkfQiR3ctq/gI17sZDaKKkH+lZdTZT1sSAtGJeorCPn+c1ugDX9+I4cpS9wPakp1Z4tSe1mOkwBzCa4UArki5gi2sDxkLRSj4em3TBCABvZSA5bmcliu/WxbZpIf1jz6mypMoc3Aahd7t4/N8qEtR7yuR9U0PkUb5VpyeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c414467bc2so422787139f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:05:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708398306; x=1709003106;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CL6V1V6OYxBcznfQ2MY8gKZwdi7G15Kucj26wfcg0wc=;
+        b=oVyFwO4mvCXmzR4LXRWHS+9dL1oKC4YLPzNvaiudjydSHEREgpoG8wa8FP/zgXgY7H
+         vY/dj5sUv9ocRg45GzN06JlP/798zQLPZL3zyn/QRqUW574LUbLHwAetXkv+f80QR6ZT
+         Gp/MMY39stqiDU0WWlkE3Nqj/odNXHC9NC4HYx8FybE95YVL6iTJNTgr3mKXNmsLU61V
+         2cRPVIf7vdVxJIFEOjG11evCOC5HZRNGudPDLvYhiVupaW5XsIofWJcSC8dEBYD4JXdZ
+         48weRx4pJrQ2b73HEDWhVPHzueEdJc+vSdUBQQBZ9oWSpR3HxhZNAThO/3R1jnUHh3T4
+         xG/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUbBUBXzMz8m2EaTn3iLNJGgfq/pQUp3Os4vz3rPTfwMakNtCvX2W8YsTWdYr9xqZqf1djFkgnrhvE/seW9Z476qzfW/H+IDwOlebU3
+X-Gm-Message-State: AOJu0Yy52waNfuYUgd9w6mbMKqANvkHEgEcbRA98LtWv90ETeSQS1lxT
+	rRu3LVsdxsUP12+a5gyZ2QCtSkfD1f8CHOU40OKCfCS2DGAqnMo+y6hSCTHf5mChAdBXWCe5o9S
+	wQ5R1KEDsqc3VtAoI3mfwR12SkhzWk3s0XnZK+yG4DUEacADFjPZco1g=
+X-Google-Smtp-Source: AGHT+IEHsD1GdxWwUWmI3IEwRGZM2lZlQ1oJTfyGiQBnz4nqsQrUwgBGafqCSw2RhsG1tVaVCb/34v/u8s2c5RcbSvIODBvoaUkH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|DM4PR11MB5408:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07f743db-61f6-476c-fa0b-08dc31c0abba
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RISmSFg0EZIL6wIyJH01x+196sqNLnEr4DP1vL0nT1Wt/hESde/DgOu0XAkkpRrsume0LYwPNxUda+fUbkOjc3sGf21Yzfeji4ocaiRZ0vtRyT3yJG5krdsX9gnYcu0fZcS4OGuBG20GVImcXcMgLTUzG8CBMFDQW2u5MSK0cj7a4WY2cSQrvrpJ6u6lYxP698zy8P3mmoj6GUGgtBC275IIo8JzqVGrdftOZUwtAYMwyZip7bQvEMzrk1UTKl1mwRTpTakD+mtcAe42tQAGIlTVnjikZsupr5vqH0NjAVmGT/bJ42atLuxvkpDBIFrOgIPV5KAmFIfKL/ENkFAvgyUBpM+YgSQbmP2SCXyv6UusBt/5iocmc17oH7IOwXuMwiDKNYSlFNrriB5oKKAd4xYNYgNIJc4PGIDvWd5oovxm3nINHpSROo7vWt+WSjVrRUqsiAyYR5CrZtd8ZCULPVzebxq/OdRPXTvT3MvdQ3tG/lhqIJEI05B4KdT+i/eje2cMx/xBIpuVkaS2ZoT0Y4NZGuKg+qR7sHJtBn8HvAY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GBqF/FsjWZbMWkZPZ8EC8n9jqD8cUs5FzK+Pt+6Jfl8BuQWuq+8kRcCaHACa?=
- =?us-ascii?Q?E15xnzYWCgCLlDTOnOR0et4CgAkW9nONNfLrFtR9gVXLiQK1FIhGGdlQOwkf?=
- =?us-ascii?Q?phox+NvwcOqxJwbHT1WlNEDvTpHDlJzMiFDZegwllPUtNX9/9xlttYlOTqb7?=
- =?us-ascii?Q?UBiEaHRjsRO9+iMW4pGy6pI1gPjqYL7irrGNKFkqgrQUrCjXl4TNl8Hy072l?=
- =?us-ascii?Q?nF5XhbzFan9nmlb/UOSWO8UFcIPVmL+VEZXy2p9W0RUwhJ/TqkSzU04VA11D?=
- =?us-ascii?Q?YYAJqxnHwYqh/m93HWL8DyMqH4x5mmmkinud4zzzu73MgPidejxoAgGKO+Ap?=
- =?us-ascii?Q?ut8ewpfCJzKc2qhGTZ0ziYhAhj54ByldLez4JI86QW+eoEgg0FcpLgrEEI2J?=
- =?us-ascii?Q?ZnoVXX6a8lb4Qnhbfqon4CwI1UdtE0Tjtgp0LdZvc4mi0rclBSNpD1C5cWez?=
- =?us-ascii?Q?uJFtoGYHFSpwiiq82gNE6koNhCVIdZF0cWG25h92dLNDIR3uvwFb5nQVPw5U?=
- =?us-ascii?Q?Pv0MzjGjeRhC2hjJhZvUgCANio+VPeoMyvOSE8KzoJ9SUiEqEAZmTX5g2vrx?=
- =?us-ascii?Q?eudEMUBM0LuIjFKAYyGonTpakqLDbioRMpSKsmVlIamyuKrYvPtiobtvYYYH?=
- =?us-ascii?Q?rvjmB+UyPIn1jG/PaZubo7uyzXa9UTmmak9A8eYmpbX9UGffFaez93GmQYSj?=
- =?us-ascii?Q?jomOWomht6DILpYDdqPfIOXQ/U6u5AmLeQtgq4IQa56KoBz6JGoI9AdzuiqU?=
- =?us-ascii?Q?V7LcVteOydjT+MP3ngtIBByNQflLDUt2BYE22o5XzFqzu5aIQljk/fi3GS82?=
- =?us-ascii?Q?y4LI9PLlnD5GFz0H9fY8MuahZk+zrbYLqQcOe3V3klkRPXzQP4I55g8iOe6W?=
- =?us-ascii?Q?yFqdoU789vkiJLYx203ZVpJDoQO96VtBPaASFQmumXxY2Sd3w/J+dZO4qHtO?=
- =?us-ascii?Q?fDfu1ughf940BhYtu180ZdhAyfQOaYB8FqW5ABCT0V0pKA04S98jNYBbljI6?=
- =?us-ascii?Q?4mZ/yqh3G3xnM8BaPK9Spzvjg1d6xg6T8elBUPsv9AX9/jkrprnILGskoqCG?=
- =?us-ascii?Q?lIItK9sVempTdBtqgnLZsA00jaziz8dCB5VnJueEQbyhx2lhnKuNiaxkuQP2?=
- =?us-ascii?Q?g92trwKBBpxl8QSG/2vkrmnwUCSEvx/m2sDW1fPKd5gfNbHYPjNIAjtqLCNn?=
- =?us-ascii?Q?vFki8Xxp3eGhMjW0p8ZgJyIYR6MiFzjkKV32rqE3+ouL+gvEX1BgPZdUow29?=
- =?us-ascii?Q?XM9ySCLtAKcPao2JqDSBLStLLJm99gtqie8gWShvSk8Cb89dZnsc2swtk0gh?=
- =?us-ascii?Q?HQr5ivZFb/AcAVPUv/HV0gXk80sy8SqeWxZXEeXgxrFm0ms39Ttup40XHL2e?=
- =?us-ascii?Q?vP/LztXHwafxH2YoZ3oCHNERB1QnZ2BHYAgy8+1VVxHETUvf8wezjYYgh9i0?=
- =?us-ascii?Q?+SnSiVsotLWSRGzGfDUFnGMjU6thTzar82EK36v4hPLlkZA2DToukARHO7JO?=
- =?us-ascii?Q?7zz+/XF7Cy8jlWJK5vSex6XRQvRyxFKhisiuuus38buR8VEOFrCUkaUqcRi5?=
- =?us-ascii?Q?wU4KBi0qDEvT0lQauCTuLHkiy9SxeKDUnDbt5Pif?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07f743db-61f6-476c-fa0b-08dc31c0abba
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 03:04:36.7743
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T7WVEpzgj1WTEl7b2USL+D9N9qXBr0gpSxhDmfDswe3i3W0GZZK4Nhngnk9rCKURKkF7FgQlx5QjPmdaNAzhRg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5408
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6638:4114:b0:474:3936:723f with SMTP id
+ ay20-20020a056638411400b004743936723fmr10461jab.5.1708398305929; Mon, 19 Feb
+ 2024 19:05:05 -0800 (PST)
+Date: Mon, 19 Feb 2024 19:05:05 -0800
+In-Reply-To: <tencent_8712375DDCDDA9995CCFA38DF325920DFF07@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000028ef720611c77a54@google.com>
+Subject: Re: [syzbot] [jfs?] KASAN: slab-use-after-free Read in jfs_syncpt
+From: syzbot <syzbot+c244f4a09ca85dd2ebc1@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Feb 18, 2024 at 11:47:16PM -0800, Yang Weijiang wrote:
->Tweak the code a bit to facilitate resetting more xstate components in
->the future, e.g., CET's xstate-managed MSRs.
->
+Hello,
 
->No functional change intended.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in jfs_lazycommit
 
-Strictly speaking, there is a functional change. in the previous logic, if
-either of BNDCSR or BNDREGS state is not supported (kvm_mpx_supported() will
-return false), KVM won't reset either of them. Since this gets changed, I vote
-to drop 'No functional change ..'
+==================================================================
+BUG: KASAN: slab-use-after-free in jfs_lazycommit+0xa54/0xb60 fs/jfs/jfs_txnmgr.c:2741
+Read of size 4 at addr ffff888043198894 by task jfsCommit/132
 
->
->Suggested-by: Chao Gao <chao.gao@intel.com>
->Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
->---
-> arch/x86/kvm/x86.c | 30 +++++++++++++++++++++++++++---
-> 1 file changed, 27 insertions(+), 3 deletions(-)
->
->diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->index 10847e1cc413..5a9c07751c0e 100644
->--- a/arch/x86/kvm/x86.c
->+++ b/arch/x86/kvm/x86.c
->@@ -12217,11 +12217,27 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
-> 		static_branch_dec(&kvm_has_noapic_vcpu);
-> }
-> 
->+#define XSTATE_NEED_RESET_MASK	(XFEATURE_MASK_BNDREGS | \
->+				 XFEATURE_MASK_BNDCSR)
->+
->+static bool kvm_vcpu_has_xstate(unsigned long xfeature)
+CPU: 2 PID: 132 Comm: jfsCommit Not tainted 6.8.0-rc5-syzkaller-gb401b621758e-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ jfs_lazycommit+0xa54/0xb60 fs/jfs/jfs_txnmgr.c:2741
+ kthread+0x2c6/0x3b0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+ </TASK>
 
-kvm_vcpu_has_xstate is a misnomer because it doesn't take a vCPU.
+Allocated by task 5671:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
+ __kasan_kmalloc+0xaa/0xb0 mm/kasan/common.c:389
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ jfs_fill_super+0xe5/0xd40 fs/jfs/super.c:495
+ mount_bdev+0x1e3/0x2d0 fs/super.c:1663
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:662
+ vfs_get_tree+0x8f/0x380 fs/super.c:1784
+ do_new_mount fs/namespace.c:3352 [inline]
+ path_mount+0x14ea/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
 
->+{
->+	switch (xfeature) {
->+	case XFEATURE_MASK_BNDREGS:
->+	case XFEATURE_MASK_BNDCSR:
->+		return kvm_cpu_cap_has(X86_FEATURE_MPX);
->+	default:
->+		return false;
->+	}
->+}
->+
-> void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> {
-> 	struct kvm_cpuid_entry2 *cpuid_0x1;
-> 	unsigned long old_cr0 = kvm_read_cr0(vcpu);
->+	DECLARE_BITMAP(reset_mask, 64);
-> 	unsigned long new_cr0;
->+	unsigned int i;
-> 
-> 	/*
-> 	 * Several of the "set" flows, e.g. ->set_cr0(), read other registers
->@@ -12274,7 +12290,12 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> 	kvm_async_pf_hash_reset(vcpu);
-> 	vcpu->arch.apf.halted = false;
-> 
->-	if (vcpu->arch.guest_fpu.fpstate && kvm_mpx_supported()) {
->+	bitmap_from_u64(reset_mask, (kvm_caps.supported_xcr0 |
->+				     kvm_caps.supported_xss) &
->+				    XSTATE_NEED_RESET_MASK);
->+
->+	if (vcpu->arch.guest_fpu.fpstate &&
->+	    !bitmap_empty(reset_mask, XFEATURE_MAX)) {
-> 		struct fpstate *fpstate = vcpu->arch.guest_fpu.fpstate;
-> 
-> 		/*
->@@ -12284,8 +12305,11 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> 		if (init_event)
-> 			kvm_put_guest_fpu(vcpu);
-> 
->-		fpstate_clear_xstate_component(fpstate, XFEATURE_BNDREGS);
->-		fpstate_clear_xstate_component(fpstate, XFEATURE_BNDCSR);
->+		for_each_set_bit(i, reset_mask, XFEATURE_MAX) {
->+			if (!kvm_vcpu_has_xstate(i))
->+				continue;
+Freed by task 5422:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
+ poison_slab_object mm/kasan/common.c:241 [inline]
+ __kasan_slab_free+0x121/0x1c0 mm/kasan/common.c:257
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2121 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kfree+0x124/0x370 mm/slub.c:4409
+ generic_shutdown_super+0x159/0x3d0 fs/super.c:646
+ kill_block_super+0x3b/0x90 fs/super.c:1680
+ deactivate_locked_super+0xbe/0x1a0 fs/super.c:477
+ deactivate_super+0xde/0x100 fs/super.c:510
+ cleanup_mnt+0x222/0x450 fs/namespace.c:1267
+ task_work_run+0x14f/0x250 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:108 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
+ syscall_exit_to_user_mode+0x281/0x2b0 kernel/entry/common.c:212
+ do_syscall_64+0xe5/0x270 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
 
-The kvm_vcpu_has_xstate() check is superfluous because @i is derived from
-kvm_caps.supported_xcr0/xss, which already guarantees that all unsupported
-xfeatures are filtered out.
+The buggy address belongs to the object at ffff888043198800
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 148 bytes inside of
+ freed 512-byte region [ffff888043198800, ffff888043198a00)
 
-I recommend dropping this check. w/ this change,
+The buggy address belongs to the physical page:
+page:ffffea00010c6600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x43198
+head:ffffea00010c6600 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888014c42c80 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 5416, tgid 5416 (syz-executor.2), ts 82216613876, free_ts 60094503130
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3311
+ __alloc_pages+0x22f/0x2440 mm/page_alloc.c:4567
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2190 [inline]
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0xcc/0x3a0 mm/slub.c:2407
+ ___slab_alloc+0x4af/0x19a0 mm/slub.c:3540
+ __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3625
+ __slab_alloc_node mm/slub.c:3678 [inline]
+ slab_alloc_node mm/slub.c:3850 [inline]
+ __do_kmalloc_node mm/slub.c:3980 [inline]
+ __kmalloc+0x3b8/0x440 mm/slub.c:3994
+ kmalloc include/linux/slab.h:594 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ fib6_info_alloc+0x40/0x100 net/ipv6/ip6_fib.c:155
+ ip6_route_info_create+0x337/0x1b70 net/ipv6/route.c:3749
+ ip6_route_add+0x26/0x150 net/ipv6/route.c:3843
+ addrconf_add_mroute+0x1de/0x350 net/ipv6/addrconf.c:2501
+ addrconf_add_dev+0x14e/0x1c0 net/ipv6/addrconf.c:2519
+ inet6_addr_add+0x1a8/0xbe0 net/ipv6/addrconf.c:2965
+ inet6_rtm_newaddr+0x11de/0x1ab0 net/ipv6/addrconf.c:4976
+ rtnetlink_rcv_msg+0x3c7/0xe10 net/core/rtnetlink.c:6618
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2543
+page last free pid 5173 tgid 5168 stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1140 [inline]
+ free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2346
+ free_unref_page+0x33/0x3c0 mm/page_alloc.c:2486
+ release_pages+0x51f/0x14f0 mm/swap.c:1008
+ tlb_batch_pages_flush+0x9a/0x190 mm/mmu_gather.c:98
+ tlb_flush_mmu_free mm/mmu_gather.c:293 [inline]
+ tlb_flush_mmu mm/mmu_gather.c:300 [inline]
+ tlb_finish_mmu+0x14b/0x700 mm/mmu_gather.c:392
+ exit_mmap+0x3da/0xb50 mm/mmap.c:3292
+ __mmput+0x12a/0x4d0 kernel/fork.c:1343
+ mmput+0x62/0x70 kernel/fork.c:1365
+ exit_mm kernel/exit.c:569 [inline]
+ do_exit+0x9a5/0x2ad0 kernel/exit.c:858
+ do_group_exit+0xd4/0x2a0 kernel/exit.c:1020
+ get_signal+0x23b9/0x2790 kernel/signal.c:2893
+ arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
+ syscall_exit_to_user_mode+0x156/0x2b0 kernel/entry/common.c:212
+ do_syscall_64+0xe5/0x270 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
 
-Reviewed-by: Chao Gao <chao.gao@intel.com>
+Memory state around the buggy address:
+ ffff888043198780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888043198800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888043198880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                         ^
+ ffff888043198900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888043198980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
->+			fpstate_clear_xstate_component(fpstate, i);
->+		}
-> 
-> 		if (init_event)
-> 			kvm_load_guest_fpu(vcpu);
->-- 
->2.43.0
->
+
+Tested on:
+
+commit:         b401b621 Linux 6.8-rc5
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16850158180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c6a2287897dfeb9a
+dashboard link: https://syzkaller.appspot.com/bug?extid=c244f4a09ca85dd2ebc1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1699e1d0180000
+
 
