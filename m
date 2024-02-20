@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-73425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD2585C26D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:20:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F89785C270
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 376641C2245B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:20:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03E5A281DED
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3141476C8D;
-	Tue, 20 Feb 2024 17:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094A47762F;
+	Tue, 20 Feb 2024 17:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qlaWNrQP"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2047.outbound.protection.outlook.com [40.107.212.47])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="i2yNorKf"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD7A76C60;
-	Tue, 20 Feb 2024 17:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBE27641C;
+	Tue, 20 Feb 2024 17:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449564; cv=fail; b=bXRBteYCyp6vgfJtCWIIKZYH81xhVyO4uqVKmeLIQ6pMShmttLqi4MZFBAcpzF1AcxkLWHzmEX6EdNZadyVsO5ZZK05akvX9wznq7/mtbYio0wmn48t0aevP2G6I/kjgWMG83+EKjVcW/Vz6kMxGFrQUP1O3zfXdwC1SApInqo8=
+	t=1708449588; cv=fail; b=hdmxY8Xo9Zaltw6lpXdQqJzDBvOfg49+Hpkn+y5lWp6o4Tsr5/JuyanMzLuItPEaDxhMsYFycYf46posg5kDvycux36kFPyrPecDvukkJ2aysOgxbctN3fdOBgqkFroeEvueri4UsVxgZAHOX3p7YMIXXIbAsjvRsyqIfKndg4o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449564; c=relaxed/simple;
-	bh=DMDI8E7jslPzeTepHfsONRA+jbDaJcCbAS1heHxM5Cc=;
+	s=arc-20240116; t=1708449588; c=relaxed/simple;
+	bh=YM/LTpdMLdNFjAxSHp97qp3qUMedeEe0S2mJuD1PbH8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q1WgVDOsmLuI+dZDNC3aJMH8/jhCTwF9ygffRPNatjv6VnAGJwOR7hM9CpEy/pLfPjygMJK2AU2mwKJhVeGr/0mhseezxITjm/PinxZtJZL71GDlLICgkoXZEUf2DCKUFB/Lr3U3ESj/b329ZCJ1/7nZr1NrQzq/KpLGBoVCUus=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=qlaWNrQP; arc=fail smtp.client-ip=40.107.212.47
+	 MIME-Version:Content-Type; b=h+QZp9ydzyLoHi7jy88NLMdD/L/OdE7GuA6slbirO9fs/PI4EwIwLEec07pp5ghAjv4IivMMb40p9QLCc1VKnng9RJdOIhW1CD+T/Po/W/0XW+GtUYkvcKkFNxUgF/R6TGSQGy8JTM8hlhTiOILmqdmIOsIZBvJEimQT4Qh9Kqo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=i2yNorKf; arc=fail smtp.client-ip=40.107.236.40
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=axx25BCMz7AkcwC6doYX7FJieFsv8qO0QTNLAV/1hY5sy1f1eLMb47QldoabvS4p45HicWZ+CXaEO99syP2hwZyV6heK4FVwQGW3bIDPACPkXH9fGSP9bYzPsM5atLtGqoGLG+UaXCmnA+0Qzsl1oaA7FxzSGcxXi9Oim3cly1RUpWoGEOcn/i9brlSe2QsNhB7xVmF6K4YxMwkFROVfXNLd8FnuZ0Gx2TpLm+F3B3cEYNypxJmmljixuy6jezqHlrr0R0aZQpBwtjBOk69oKFKZ+n/uqol+NINmQtVPjwVY2+mh+etOKiht+Bo3ZfXjaEzdnX24vimafTq90wx56Q==
+ b=KeF/cO/cpMWWeYyIPeqKIL4VuYeJ/ghxm1LiFNmfkoitPgHfyDvXsmaj8SthF/4CseruqUqyDVJ/6OvX3THFAgY4qtc6/YesuzgqfTQtnC6+Vl9+stmowVXEfrIunE63u/4S5TnsXZGp+VdUOBssjqiDCdonuG8PEj5gi0siiSVyiAzli3OqA2iZZMy70mIvnBQQ0ngoejz4I8iGoApbxcrOLEBHzuj3ViIdOyVCvXdyradQLSfVixiVIhoYzeebkR/YzcEi4y/mGrx/Fb8ribVnAL9OqCnVPIW5IF2EV/8o4DUWeHnaHrRwFQKnX6bvULMHLl51ySQPbeMkRUZavA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WGCVtOeKyckm5h/RRBMlLdaF8ZUAoTg3nZ3RDW0iOgM=;
- b=hOMP6Ox3K1JpoUsZuZxDecVcL6Dn62m9uaVYChSE/yQEAjiiazzeN/oZbMk8DL22ppwbi1qK5Eifi+++rWJGeXS1Q0RU4RyCBBe4A4KViYI/2S4YWmIoe05IRI5ebW01mt+IhIKb035qKa2kxq8ZonZ8dy1bvXSkl5GelMVxBvoHsQaADrlGrQdiyHhXLiUASdFA91KkioutvA0clGg0sYDFNOwLgSZCyPukbjDwYdCvFlXUf6iaaxPoregHy/a/kzsj8DHpy+0WcnsZeuCWoVBgNK9YNbKxBHPOpUlf422cxI5+spLVc1MtmFpWI/NngpjbCROBZXx6r6nK/1Mz9g==
+ bh=vc3/OhSnWCgw/Tp922CJ/tCJQsW336Sp0VQltfMY5sY=;
+ b=P7c1EJpEvI6O8Gl2aJ8c7ILY7ZKO/6Iq1gPi8ZQnXOX+vn3SjSFfD4olJsQkHpsModMuXxKpM9k5JpJXcPBH1UipBU75GBvuoqHtSKuCGeoLFxXYj+zFQ0DfJnMAZFqTH9KLbmjVaTOUnm8bKEkoYA1ViZaNsIRMtG+H5HiRirZBXuVDJfOKEg0J43+/fqp3w41iKpcoa+/DjJqCTKI4P02nyQp1rXh9SPcgNPBkihFtsnYzu3CusLtc7LFfsAV2dadm2K9012VANVIzv0mHO4bgGw01wGXqP7Afmnngcfn0WTkJmNQRPFpmSY3hXTdgnRn6IzeWseZP7ySBYF8ahg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WGCVtOeKyckm5h/RRBMlLdaF8ZUAoTg3nZ3RDW0iOgM=;
- b=qlaWNrQPqoSaH5HIdU4IV7ACGKcVeH3+s19vkdQaAcnRiZ5T6DGFjnTTrLI1htefhs6W8wHJndbgEaq8aredGpHJQf3ySZwPoFCIhjSgqGXsjc6jjc/P9D93237oSsRm39fXbHgXxfkwlbtUE0HrsOgO3wUFNIm3UfAVK+GldhQ=
+ bh=vc3/OhSnWCgw/Tp922CJ/tCJQsW336Sp0VQltfMY5sY=;
+ b=i2yNorKfEBr+0ib1FdDRWZY9gY58G9XbYKITaZpISibNkrFbH+J2KRrm2ZBM2arr+9hrU/CXKbZPvz1rQEErpzm2vm0vKfiDhh3qGgBeJwuSeJLvVjXP6xnPhtMtqREC4Ph6YgDpsivGvIDr6YMHLC73jNXUTNJukMOa2bTq2hs=
 Received: from PH8PR15CA0024.namprd15.prod.outlook.com (2603:10b6:510:2d2::9)
- by SN7PR12MB6715.namprd12.prod.outlook.com (2603:10b6:806:271::19) with
+ by PH0PR12MB7958.namprd12.prod.outlook.com (2603:10b6:510:285::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.21; Tue, 20 Feb
- 2024 17:19:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.20; Tue, 20 Feb
+ 2024 17:19:42 +0000
 Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
- (2603:10b6:510:2d2:cafe::8d) by PH8PR15CA0024.outlook.office365.com
+ (2603:10b6:510:2d2:cafe::24) by PH8PR15CA0024.outlook.office365.com
  (2603:10b6:510:2d2::9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.40 via Frontend
- Transport; Tue, 20 Feb 2024 17:19:19 +0000
+ Transport; Tue, 20 Feb 2024 17:19:42 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -64,30 +64,28 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Tue, 20 Feb 2024 17:19:19 +0000
+ 15.20.7292.25 via Frontend Transport; Tue, 20 Feb 2024 17:19:41 +0000
 Received: from BLR5CG134614W.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 20 Feb
- 2024 11:19:11 -0600
+ 2024 11:19:34 -0600
 From: K Prateek Nayak <kprateek.nayak@amd.com>
 To: <linux-kernel@vger.kernel.org>
 CC: "Gautham R. Shenoy" <gautham.shenoy@amd.com>, K Prateek Nayak
-	<kprateek.nayak@amd.com>, Michael Ellerman <mpe@ellerman.id.au>, "Nicholas
- Piggin" <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Aneesh Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
-	<naveen.n.rao@linux.ibm.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
-	"Daniel Lezcano" <daniel.lezcano@linaro.org>, Ingo Molnar <mingo@redhat.com>,
-	"Peter Zijlstra" <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
-	"Vincent Guittot" <vincent.guittot@linaro.org>, Dietmar Eggemann
+	<kprateek.nayak@amd.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "Rich
+ Felker" <dalias@libc.org>, John Paul Adrian Glaubitz
+	<glaubitz@physik.fu-berlin.de>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
 	<dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben Segall
 	<bsegall@google.com>, Mel Gorman <mgorman@suse.de>, "Daniel Bristot de
  Oliveira" <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
-	Andrew Donnellan <ajd@linux.ibm.com>, Nicholas Miehlbradt
-	<nicholas@linux.ibm.com>, <linuxppc-dev@lists.ozlabs.org>,
-	<linux-pm@vger.kernel.org>
-Subject: [RFC PATCH 08/14] powerpc/thread_info: Introduce TIF_NOTIFY_IPI flag
-Date: Tue, 20 Feb 2024 22:44:51 +0530
-Message-ID: <20240220171457.703-9-kprateek.nayak@amd.com>
+	Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>,
+	<linux-sh@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [RFC PATCH 09/14] sh/thread_info: Introduce TIF_NOTIFY_IPI flag
+Date: Tue, 20 Feb 2024 22:44:52 +0530
+Message-ID: <20240220171457.703-10-kprateek.nayak@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240220171457.703-1-kprateek.nayak@amd.com>
 References: <20240220171457.703-1-kprateek.nayak@amd.com>
@@ -103,39 +101,37 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|SN7PR12MB6715:EE_
-X-MS-Office365-Filtering-Correlation-Id: 298d8946-e44d-453c-b049-08dc323812b2
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|PH0PR12MB7958:EE_
+X-MS-Office365-Filtering-Correlation-Id: de553326-5489-4601-27d7-08dc32382036
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	3wZ5JscQM9q5Ne+uB84OH9BSDDwHT8EoBCAAmB/PEJ26NITdQw8Gh5yMxJFplRTQawoRpsl9dfjTWU/jrTZCW715UW6m2Q21snXndMAapBfuQOq2EDV+al8Pv0RT0Mp7COcEJORb1JRWPkNIshNXPELXkXYy6BuM8U21YGERABMvlpdQzv9B+rvV8EGFmvmalU6PFN1PCsH2BaC4oRR2+LJh2zKv5JHjJUFs77nwDtyLBsEiLX6dL/k09MLjpmxonFxGGniOt7EQjXrvlO/jDWA72G3x34I0+ooOorpvHEc4/kXVrwjr4xTu9eQmiV/NqIpzGTB+DgCFlM1njOTpL/uBkdUdiny8bZqvVOC1jKl0UnBXrlqL+Mpu1KrIzwfCrBlhyPDc4wGoL77KykIV/+c+pWj8muBJXAN+TOGnVDoSwuNU+ECfTDLeEJRwogVNGA004HauY6I5F9RP7f2kqI7qGabAfdFeAOt81ZRstu1cwCAUBDaGcxdu6HZ0VFB0+v4RcaLiEw9D3h55z7DGmjVbZKzDKfImVu6gFI/oIpfa/GN/TfHTypSHx4o9dhSBexcZIhkn6Wvg6BKB+gkDmF8Nwe+B3CItRSOgZnIW9KiaSrmt5I3AsZp+0FUThyKe0cdUow8+BW5ZNpidvYC30zdT7rQJz6FPDqTlp/yEbZk=
+	ayclTJLhpxzbtafcpJ7mkNgERCWyXJWHq02pSQ7B8sFboQfua624O6xtIaqiQcoX27V/yv+zwmnMPQZBHjrhVY7SK/FsM2ePzwGohMXz1aXAFodELLUmq3U4QWCtDzf5VC+kv1KbviaBYBUqp1BMwJUnM6rqgyTh/5tvw0NEUPRQwwtDV4baU4xEaDLFo7/IOTAPvzqmkqsMs+OqJiVUEmJuvCqsfQtkTig79QMyVT2hP/69HTPjNhXZjIokik9XlNMF6TSQjKpcuG5XL0ZBV6P+WeprKjPtSj5c/6SmfnItclDdCLs5mXf0xcRzoxxO+PdMeao7vG9U9NvI0iNaVHRFWf7CtmO7VXVejvbP+oUXIygJvQwn9J4/RT85gSRjfMQeDv1ki+3v+HQdEo48YvBEEZLIyq81f629dXggjizPn5hf4JA+DnwRZGjYHKblcvot+lIaGXco4bO/IEeK7YJDWg07friHazUiyS2lYvmiuVxYeDl3tB2Vwgo9VO59X7+PUTY2qPqB14U8lHhMqiluE9PKgqs3o/BLJKZ6U2RLJ2bZillB0utSRNa4lxTafzqG8B+2C2Qipyn21SirKaU/hOkS65/6vRO6wBDQBdiP9c30LPQbFEDEjJR5YgIB/ct56HSUfgf3NKuLWXRMdK7HlS936YW+pTMWKBxKrtw=
 X-Forefront-Antispam-Report:
 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 17:19:19.2088
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 17:19:41.9120
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 298d8946-e44d-453c-b049-08dc323812b2
+X-MS-Exchange-CrossTenant-Network-Message-Id: de553326-5489-4601-27d7-08dc32382036
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	SA2PEPF000015C6.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6715
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7958
 
-Add support for TIF_NOTIFY_IPI on PowerPC. With TIF_NOTIFY_IPI, a sender
+Add support for TIF_NOTIFY_IPI on SuperH. With TIF_NOTIFY_IPI, a sender
 sending an IPI to an idle CPU in TIF_POLLING mode will set the
 TIF_NOTIFY_IPI flag in the target's idle tasks's thread_info to pull the
 CPU out of idle, as opposed to setting TIF_NEED_RESCHED previously. This
 avoids spurious calls to schedule_idle() in cases where an IPI does not
 necessarily wake up a task on the idle CPU.
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -148,37 +144,37 @@ Cc: Ben Segall <bsegall@google.com>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
 Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Andrew Donnellan <ajd@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Nicholas Miehlbradt <nicholas@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-sh@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-pm@vger.kernel.org
 Signed-off-by: K Prateek Nayak <kprateek.nayak@amd.com>
 ---
- arch/powerpc/include/asm/thread_info.h | 2 ++
+ arch/sh/include/asm/thread_info.h | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/thread_info.h b/arch/powerpc/include/asm/thread_info.h
-index bf5dde1a4114..b48db55192e0 100644
---- a/arch/powerpc/include/asm/thread_info.h
-+++ b/arch/powerpc/include/asm/thread_info.h
-@@ -103,6 +103,7 @@ void arch_setup_new_exec(void);
- #define TIF_PATCH_PENDING	6	/* pending live patching update */
- #define TIF_SYSCALL_AUDIT	7	/* syscall auditing active */
- #define TIF_SINGLESTEP		8	/* singlestepping active */
+diff --git a/arch/sh/include/asm/thread_info.h b/arch/sh/include/asm/thread_info.h
+index 9f19a682d315..8cd9d2a5361b 100644
+--- a/arch/sh/include/asm/thread_info.h
++++ b/arch/sh/include/asm/thread_info.h
+@@ -106,6 +106,7 @@ extern void init_thread_xstate(void);
+ #define TIF_SECCOMP		6	/* secure computing */
+ #define TIF_NOTIFY_RESUME	7	/* callback before returning to user */
+ #define TIF_SYSCALL_TRACEPOINT	8	/* for ftrace syscall instrumentation */
 +#define TIF_NOTIFY_IPI		9	/* Pending IPI on TIF_POLLLING idle CPU */
- #define TIF_SECCOMP		10	/* secure computing */
- #define TIF_RESTOREALL		11	/* Restore all regs (implies NOERROR) */
- #define TIF_NOERROR		12	/* Force successful syscall return */
-@@ -129,6 +130,7 @@ void arch_setup_new_exec(void);
- #define _TIF_PATCH_PENDING	(1<<TIF_PATCH_PENDING)
- #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
- #define _TIF_SINGLESTEP		(1<<TIF_SINGLESTEP)
-+#define _TIF_NOTIFY_IPI		(1<<TIF_NOTIFY_IPI)
- #define _TIF_SECCOMP		(1<<TIF_SECCOMP)
- #define _TIF_RESTOREALL		(1<<TIF_RESTOREALL)
- #define _TIF_NOERROR		(1<<TIF_NOERROR)
+ #define TIF_POLLING_NRFLAG	17	/* true if poll_idle() is polling TIF_NEED_RESCHED */
+ #define TIF_MEMDIE		18	/* is terminating due to OOM killer */
+ 
+@@ -118,6 +119,7 @@ extern void init_thread_xstate(void);
+ #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+ #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+ #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
++#define _TIF_NOTIFY_IPI		(1 << TIF_NOTIFY_IPI)
+ #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
+ 
+ /* work to do in syscall trace */
 -- 
 2.34.1
 
