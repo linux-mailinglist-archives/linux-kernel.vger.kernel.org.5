@@ -1,152 +1,120 @@
-Return-Path: <linux-kernel+bounces-72992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573F785BB9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:16:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BDD685BBA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11A9A284DEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:16:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5985E284869
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4983867E6E;
-	Tue, 20 Feb 2024 12:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F2E67E70;
+	Tue, 20 Feb 2024 12:16:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjeB14b8"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k+i4EtAa"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10DC67A0F;
-	Tue, 20 Feb 2024 12:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000B167A0F;
+	Tue, 20 Feb 2024 12:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431358; cv=none; b=PKpE2rtKRuyL7C4FtOgHQyUi2OeMXWb4zaKYhDjreABOlXNEBBp3cQ8DouxZQ63EOnrMPqW4HwCoCahiPbHUtifW1HTYAjcGZcfWOSOIT+d/eEPJXsS5yBSRZ9/1Xj9UtpsUtnO8jnhWI45uD5XoVIQg6jxjCrZe0S8pu+SWg1s=
+	t=1708431400; cv=none; b=HSWzLD7h6XPyrSukPbSWC5170e33KjOtZNXrRqrh/uDNKA8dW30IBawKXPNmBF1ePsJ1pU4HSkhbplEleZkqwcseTxktdAKkkgHWYuEc4wLNus4EqYDTVE334cO6oynaWaBnsXa+JPxII/khnLgsHTM/aw3SUAzzcOnnL+fxLqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431358; c=relaxed/simple;
-	bh=NFKIpWFlrcLcgm96+Riat3ntN8g+TKcG0bqfTPRK4F8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=G+HKH84JQo4598EaN2UlVQrNyPuO+Cbz8jxvhZhPs8PjNXtUXE9KhJnobOaAm4dMI5aFARXWlnvsycOF7YJfwlAQb0XN6NpyY8h6ITkbjbJTBqsG84gzYSA7a1lmo78ylPVdCL39rn7lVsHCf+PB5STZ59JHPz2FyUIQ+jgToZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjeB14b8; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4126aa42402so10646695e9.0;
-        Tue, 20 Feb 2024 04:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708431355; x=1709036155; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1kHmAH30WGxy5AZqgJqTBRqpGld5Izrqx3fcp2YhQqw=;
-        b=hjeB14b87dnr13bbW/fyC0anOOQ2VbHDbOtLUbtzj5Cmb/vdMLJdkA6694mwxqfKxw
-         qBZDF4lUmoCGMcKLKfqL9a0O7e5vrtxrTiD9G9qOe1yhaoeqdsKUsrXkTkMKD6GiSmcb
-         PbUB6F05jBymkFDIoZg9Q8O+O1HmnMu/4wiOpbYCI/Wq+hH2Q8T2+uV1QpTb00GkHcCb
-         tKNW0/67dXUOSjPoKVXLN3exQQvN8LWuIxGyWEm3wM7DbRLrmAkAbguOeNmkWRhVhYqQ
-         J/YLFPaOw272P9RhLwikN3Mzyw7sNRWFc14XmMplN+p1w+TOQKlL9MJiIMfFD1uJlhJE
-         cOyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708431355; x=1709036155;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1kHmAH30WGxy5AZqgJqTBRqpGld5Izrqx3fcp2YhQqw=;
-        b=kkyHJsigsTrp2QH0YJJVtukK52Nsoq7x+ePb9GAa/ON4QtJiS7+qROi7ZhdwSHaRPp
-         qlKjBrvcCvYNz5rNtqpB0Gy3QDM4xT3RXRoRiEBFP1xVM2WXu4YwMzGgnG2BX8L4z31c
-         xA5DnuB/pIAxf4NY9q4TkQJy/9PN8GpUekfNYr9DbOG9JkgZ6+Mxlm321+EwL6P5Tb2P
-         CoqJW0YwZTiTgIsPjhxcaAClJug5XpkQEK1LQOY19yWrdS7S79wjkzRmeDOwvIzd6QXY
-         vfSUG1Ii4UermQ8ntrI8Zh/4VKML9aCzA3obFv5MKpYhnnN1MryWj0mwrYpKKJI3z8wW
-         Y2Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqcLVEkIEem6eSBQ4gTRN33y01ok4X3JLzu0X41hEBCPCDuZjAgOvp7910qrIhMtNVRm9ZR06Iq6AHNhUdKVkdZNHy1t0aOERtzo6GAoJVmgo/12ISxqQFeYk1cxNYUNoe6GxhPkEF/19hdWcS3ZV7GJYUEH1jhUTzRsHnNE5FRb37500vIFSS1z7tPu8CNWd7b8xL6hY1ANZCgQNqDQI=
-X-Gm-Message-State: AOJu0YzNTv88pwG51w1p+fd7UGIFLqWnO6Vmr5cuSEcR3ySFV1poRdgs
-	q8vD19XvvmkCFFLWu3wo92VXE1bRoYNj1WoX92Pem41DxjQu6DyW
-X-Google-Smtp-Source: AGHT+IH8LNEn6d2zlOk1KelrI39dl9uZ+tjiwqV5GG6X14RQwC+tUIx7y4JAcJ/RsWA+Kk8zORUWpg==
-X-Received: by 2002:a05:600c:45d2:b0:412:1e2:e237 with SMTP id s18-20020a05600c45d200b0041201e2e237mr10899429wmo.20.1708431355061;
-        Tue, 20 Feb 2024 04:15:55 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id ck4-20020a5d5e84000000b0033d3f0eee9dsm7984801wrb.27.2024.02.20.04.15.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 04:15:54 -0800 (PST)
-Message-ID: <9edfd3481a317ada51be03fa9da824edbcede9c0.camel@gmail.com>
-Subject: Re: [PATCH v13 3/3] iio: adc: ad7173: add AD7173 driver
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Ceclan Dumitru <mitrutzceclan@gmail.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org, 
- linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Jonathan
- Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>,  Michael Walle <michael@walle.cc>, Andy Shevchenko
- <andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>,  ChiaEn Wu
- <chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
- =?ISO-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>, Mike Looijmans
- <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>, David Lechner <dlechner@baylibre.com>, Ceclan
- Dumitru <dumitru.ceclan@analog.com>,  linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
-Date: Tue, 20 Feb 2024 13:15:53 +0100
-In-Reply-To: <3bc2c1c6-726a-4751-ae81-4d8336619025@gmail.com>
-References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
-	 <20240220094344.17556-3-mitrutzceclan@gmail.com>
-	 <6af326b1bf24faea652b4549ff5db24b96ee80c5.camel@gmail.com>
-	 <3bc2c1c6-726a-4751-ae81-4d8336619025@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1708431400; c=relaxed/simple;
+	bh=xxe7xXR5ViJ5P3nkZGEWWSAnOaRJH0LbxjktoljLWLM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k0BeQFDOVf3r9XR+0gUL1BNAQmSYy/jJTZrFOGEhSLGVaKPHHVimWx1NadbZBS5EDjusn/Ut+licmghTj7RYJQfalYumU39+u5EEf+gxflXjh7EE+UVuIAvu4KWV0MVMos5/t3fJ4e2Kfz2GItyrmODs+BlJi9kuUZzmOsXTnCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=k+i4EtAa; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KAweER007356;
+	Tue, 20 Feb 2024 12:16:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=AO32al+Us7Zr/WvVNVqK8EIUSqXn1K1PdLFIuOU3tXs=; b=k+
+	i4EtAadU3l2YApB/YDUl9KqyPlgkngnST7tx5736pUq6kjXvBXuduvpLSYSlQwVw
+	yH3KDtq4H1b3dOL1c02mFs6dVMYAzJykDq4+SWRuwhxQUtUJguuEzV4pgZggakcS
+	LFxupIAevkajN4hbo628RHPXWZOd7mhlxJI5xiVRD0u4HjAVpTPj0YYCJIR9iihm
+	+dqC0RSNf0pAQqzAPX55VZ652qpfCvw/PRFkFHq+ptV7GAVodlFEVUyW4LYt5DDD
+	hudbyTS2ZJ5wzNiE8pG2VuTYSqklozHfkCf/q3YPSCBa6GmwR+lyXo2G+8qaowxC
+	NYx+mqFLj11MUWcEEpKQ==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wctmtr5du-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 12:16:27 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KCGPFR018880
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 12:16:26 GMT
+Received: from [10.216.16.129] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 04:16:19 -0800
+Message-ID: <8bc1f81e-3f41-a1a4-69cc-2cc1ecd112af@quicinc.com>
+Date: Tue, 20 Feb 2024 17:46:15 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 5/5] arm64: dts: qcom: ipq9574: Disable eMMC node
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+CC: <andersson@kernel.org>, <broonie@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-6-quic_mdalam@quicinc.com>
+ <CAA8EJpqV=w38TqjfTp6OurAwHjR87PpmQTs2jUo6O7vF1-T-WQ@mail.gmail.com>
+ <584a5308-c73d-4559-bb61-21d07cd63d6c@linaro.org>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <584a5308-c73d-4559-bb61-21d07cd63d6c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 0owUN9JrF2nGv8lGvUMjMvU4ZMm1fcva
+X-Proofpoint-GUID: 0owUN9JrF2nGv8lGvUMjMvU4ZMm1fcva
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=604 spamscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402200088
 
-On Tue, 2024-02-20 at 13:25 +0200, Ceclan Dumitru wrote:
->=20
->=20
-> On 2/20/24 12:38, Nuno S=C3=A1 wrote:
-> > On Tue, 2024-02-20 at 11:43 +0200, Dumitru Ceclan wrote:
->=20
-> ...
->=20
-> >=20
-> > > +};
-> > >=20
-> > > +	indio_dev->name =3D st->info->name;
-> > > +	indio_dev->modes =3D INDIO_DIRECT_MODE;
-> > > +	indio_dev->info =3D &ad7173_info;
-> > > +
-> > > +	spi->mode =3D SPI_MODE_3;
-> > > +
-> >=20
-> > I don't think we need the above. We should just enforce it to SPI_CPOL|=
- SPI_CPHA
-> > in
-> > the bindings [2].
-> >=20
-> > [2]:
-> > https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree=
-/bindings/iio/imu/adi,adis16475.yaml#L45
->=20
-> Rob Herring V1:
->=20
-> """
-> > +=C2=A0 required:
-> > +=C2=A0=C2=A0=C2=A0 - compatible
-> > +=C2=A0=C2=A0=C2=A0 - reg
-> > +=C2=A0=C2=A0=C2=A0 - interrupts
-> > +=C2=A0=C2=A0=C2=A0 - spi-cpol
-> > +=C2=A0=C2=A0=C2=A0 - spi-cpha
->=20
-> If the device(s) are not configurable, then you shouldn't need these 2
-> properties. The driver can hardcode the correct setting.
-> """
->=20
-> ref:
-> https://lore.kernel.org/linux-iio/20230810205107.GA1136590-robh@kernel.or=
-g/
->=20
 
-I see. I thought it was the other way around... Then, the other thing is th=
-at I think
-you should call spi_setup() after hardcoding the mode.
 
-- Nuno S=C3=A1
+On 2/15/2024 11:28 PM, Konrad Dybcio wrote:
+> On 15.02.2024 16:00, Dmitry Baryshkov wrote:
+>> On Thu, 15 Feb 2024 at 15:49, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
+>>>
+>>> Disable eMMC node for rdp433, since rdp433 default boot mode
+>>> is norplusnand.
+>>
+>> Are they exclusive?
+> 
+> Even if they're not, having access to the eMMC/sdcard would still
+> be nice..
+
+   GPIO are shared b/w eMMC and NAND so we can't keep both.
+> 
+> Konrad
 
