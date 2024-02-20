@@ -1,177 +1,251 @@
-Return-Path: <linux-kernel+bounces-73029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18BBD85BC53
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:39:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F5185BC5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:40:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E2321F24333
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:39:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB18C285E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C37169974;
-	Tue, 20 Feb 2024 12:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hMKPEY0B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="deho5djI";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hMKPEY0B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="deho5djI"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87DE6A036;
+	Tue, 20 Feb 2024 12:39:30 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C6C482FA;
-	Tue, 20 Feb 2024 12:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4ADF657C4;
+	Tue, 20 Feb 2024 12:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708432749; cv=none; b=ZsQr19jZnexN5x3DyFnbCL8DJmYT1HJO1i+5dBIj6XBiTL4/nFrY8EbSV8t62AD5RTvSe1Rt3tyUuA4enXNiDJV7g+qx18khMSbAWi0nrZ+wiho8SuxVpjzkg4aD8bFeGseqxUWe739bb8xaW9cWaM3kqF8gnhTY0Rvj84FR6DE=
+	t=1708432770; cv=none; b=XIibA1GNrdBHddIkWPxvAcFNz96bUfke10UkNkuAgWz4AQ8f0fzd+2HDih+r42gThGNnYGkWRXKep4UlQMoD30NYueCeaP+5vffGsD7UdPrx8VyEYobOCOzJZl8w8AeoxyeTsc2IceKyKtiXoo2S9J7dOIbWBBPsMKlJYWrIlDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708432749; c=relaxed/simple;
-	bh=v9niZvFxoxDsNa48gJ+crQZJYJbsm2uY1lw8ejLcKjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aFm36BaIJgCgwS8oW2X75CJdxDZyWwUCrD+UWdSFnMQLceB/SI6peRN4GF02d8BBX1f/6Ptzrtivpjq4dEfYIoExQy+/1Cm2MQgNFc00EY+c5KhYpKP1MJZuq5A/8hGNyAI4+X3a5/xPGrOPuG82M9NvPMTiFM6CPozzWBn46hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hMKPEY0B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=deho5djI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hMKPEY0B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=deho5djI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A835E2207A;
-	Tue, 20 Feb 2024 12:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708432745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qVPRzXm5b8XqYXERsjzN5otP0G5DHkxP74ScWIa4OZA=;
-	b=hMKPEY0BvU4HM/T78Wkf+bOqlpsOlC2pLpwBJFmsw6jjy9PwvBaEW2NdhPRcCd8dY5DmzW
-	CazCrehqwpv5dotrWQubx7hL0h37lltDA066/fIkBHLUVLxVeYEkptMevH3y4kUSstybnk
-	YnDB4+XRxmglKES2BvQfyKOESnIusIM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708432745;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qVPRzXm5b8XqYXERsjzN5otP0G5DHkxP74ScWIa4OZA=;
-	b=deho5djI1FbNMFwU7ToyCHQwCmm7WQpGI9k3Saoold7z7pnrRAZumZIa6ixUmvOUX24Jkd
-	FDBaWs1ok/Z/fbBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708432745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qVPRzXm5b8XqYXERsjzN5otP0G5DHkxP74ScWIa4OZA=;
-	b=hMKPEY0BvU4HM/T78Wkf+bOqlpsOlC2pLpwBJFmsw6jjy9PwvBaEW2NdhPRcCd8dY5DmzW
-	CazCrehqwpv5dotrWQubx7hL0h37lltDA066/fIkBHLUVLxVeYEkptMevH3y4kUSstybnk
-	YnDB4+XRxmglKES2BvQfyKOESnIusIM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708432745;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qVPRzXm5b8XqYXERsjzN5otP0G5DHkxP74ScWIa4OZA=;
-	b=deho5djI1FbNMFwU7ToyCHQwCmm7WQpGI9k3Saoold7z7pnrRAZumZIa6ixUmvOUX24Jkd
-	FDBaWs1ok/Z/fbBw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A6001358A;
-	Tue, 20 Feb 2024 12:39:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Od6lJWmd1GVKFgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 20 Feb 2024 12:39:05 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 486BEA0807; Tue, 20 Feb 2024 13:39:05 +0100 (CET)
-Date: Tue, 20 Feb 2024 13:39:05 +0100
-From: Jan Kara <jack@suse.cz>
-To: Daniel Gomez <da.gomez@samsung.com>
-Cc: Hugh Dickins <hughd@google.com>,
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"jack@suse.cz" <jack@suse.cz>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"dagmcr@gmail.com" <dagmcr@gmail.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"willy@infradead.org" <willy@infradead.org>,
-	"hch@infradead.org" <hch@infradead.org>,
-	"mcgrof@kernel.org" <mcgrof@kernel.org>,
-	Pankaj Raghav <p.raghav@samsung.com>,
-	"gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 0/9] shmem: fix llseek in hugepages
-Message-ID: <20240220123905.qdjn2x3dtryklibl@quack3>
-References: <20240209142901.126894-1-da.gomez@samsung.com>
- <CGME20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b@eucas1p1.samsung.com>
- <25i3n46nanffixvzdby6jwxgboi64qnleixz33dposwuwmzj7p@6yvgyakozars>
- <e3602f54-b333-7c8c-0031-6a14b32a3990@google.com>
- <r3ws3x36uaiv6ycuk23nvpe2cn2oyzkk56af2bjlczfzmkfmuv@72otrsbffped>
+	s=arc-20240116; t=1708432770; c=relaxed/simple;
+	bh=N34O3pudop+pKbhAnYHcokmzPaG4OYBsYjjNSgGGsCs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qLTcvFU72qfRKmKKYkTzYJX3lsUoKAPi9GQWX5fAJRGVS2mzgmW4Uy8nRUJhq8R+dyVJce2XjvwK7FElPlEFryUdMGybZ/AGOTU/erccLaHLMbIx+MdII348mXdesgToK6fdJbkbh+P6Keg7bGbGkOIZtYR9CVynueMzZ1O3ltQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TfJm54fYvz67l0C;
+	Tue, 20 Feb 2024 20:35:49 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3F78F14163B;
+	Tue, 20 Feb 2024 20:39:24 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 20 Feb
+ 2024 12:39:23 +0000
+Date: Tue, 20 Feb 2024 12:39:22 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <shiju.jose@huawei.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
+	<dave.jiang@intel.com>, <alison.schofield@intel.com>,
+	<vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+	<linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
+	<Yazen.Ghannam@amd.com>, <rientjes@google.com>, <jiaqiyan@google.com>,
+	<tony.luck@intel.com>, <Jon.Grimm@amd.com>, <dave.hansen@linux.intel.com>,
+	<rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+	<james.morse@arm.com>, <jthoughton@google.com>, <somasundaram.a@hpe.com>,
+	<erdemaktas@google.com>, <pgonda@google.com>, <duenwen@google.com>,
+	<mike.malvestuto@intel.com>, <gthelen@google.com>,
+	<wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
+	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
+	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
+	<linuxarm@huawei.com>
+Subject: Re: [RFC PATCH v6 06/12] memory: scrub: Add scrub subsystem driver
+ supports configuring memory scrubs in the system
+Message-ID: <20240220123922.00007142@Huawei.com>
+In-Reply-To: <20240215111455.1462-7-shiju.jose@huawei.com>
+References: <20240215111455.1462-1-shiju.jose@huawei.com>
+	<20240215111455.1462-7-shiju.jose@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <r3ws3x36uaiv6ycuk23nvpe2cn2oyzkk56af2bjlczfzmkfmuv@72otrsbffped>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[google.com,zeniv.linux.org.uk,kernel.org,suse.cz,linux-foundation.org,gmail.com,vger.kernel.org,kvack.org,infradead.org,samsung.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[40.24%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue 20-02-24 10:26:48, Daniel Gomez wrote:
-> On Mon, Feb 19, 2024 at 02:15:47AM -0800, Hugh Dickins wrote:
-> I'm uncertain when we may want to be more elastic. In the case of XFS with iomap
-> and support for large folios, for instance, we are 'less' elastic than here. So,
-> what exactly is the rationale behind wanting shmem to be 'more elastic'?
-
-Well, but if you allocated space in larger chunks - as is the case with
-ext4 and bigalloc feature, you will be similarly 'elastic' as tmpfs with
-large folio support... So simply the granularity of allocation of
-underlying space is what matters here. And for tmpfs the underlying space
-happens to be the page cache.
-
-> If we ever move shmem to large folios [1], and we use them in an oportunistic way,
-> then we are going to be more elastic in the default path.
+> From: Shiju Jose <shiju.jose@huawei.com>
 > 
-> [1] https://lore.kernel.org/all/20230919135536.2165715-1-da.gomez@samsung.com
+> Add scrub driver supports configuring the memory scrubs in the system.
+> The scrub driver provides the interface for registering the scrub devices
+> and supports configuring memory scrubs in the system.
+> Driver exposes the sysfs scrub control attributes to the user in
+> /sys/class/scrub/scrubX/regionN/
 > 
-> In addition, I think that having this block granularity can benefit quota
-> support and the reclaim path. For example, in the generic/100 fstest, around
-> ~26M of data are reported as 1G of used disk when using tmpfs with huge pages.
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+Hi Shiju,
 
-And I'd argue this is a desirable thing. If 1G worth of pages is attached
-to the inode, then quota should be accounting 1G usage even though you've
-written just 26MB of data to the file. Quota is about constraining used
-resources, not about "how much did I write to the file".
+A few minor things inline.  Given I reviewed this internally I don't
+have that much to add!
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jonathan
+
+> ---
+>  .../ABI/testing/sysfs-class-scrub-configure   |  91 +++++
+>  drivers/memory/Kconfig                        |   1 +
+>  drivers/memory/Makefile                       |   1 +
+>  drivers/memory/scrub/Kconfig                  |  11 +
+>  drivers/memory/scrub/Makefile                 |   6 +
+>  drivers/memory/scrub/memory-scrub.c           | 367 ++++++++++++++++++
+>  include/memory/memory-scrub.h                 |  78 ++++
+>  7 files changed, 555 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
+>  create mode 100644 drivers/memory/scrub/Kconfig
+>  create mode 100644 drivers/memory/scrub/Makefile
+>  create mode 100755 drivers/memory/scrub/memory-scrub.c
+>  create mode 100755 include/memory/memory-scrub.h
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-scrub-configure b/Documentation/ABI/testing/sysfs-class-scrub-configure
+> new file mode 100644
+> index 000000000000..d2d422b667cf
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-scrub-configure
+
+> +What:		/sys/class/scrub/scrubX/regionN/rate_available
+> +Date:		January 2024
+> +KernelVersion:	6.8
+> +Contact:	linux-kernel@vger.kernel.org
+> +Description:
+> +		(RO) Supported range for the scrub rate)
+> +		by the scrubber for a memory region.
+> +		The unit of the scrub rate vary depends on the scrub.
+Not good to have a unit that is dependent on scrub. We need to figure
+out how to either define that, or provide an interface to expose it
+to userspace and make it a userspace tool problem.
+
+
+
+> diff --git a/drivers/memory/scrub/memory-scrub.c b/drivers/memory/scrub/memory-scrub.c
+> new file mode 100755
+> index 000000000000..a160b7a047e4
+> --- /dev/null
+
+> +SCRUB_ATTR_RW(addr_base);
+> +SCRUB_ATTR_RW(addr_size);
+> +SCRUB_ATTR_RW(enable);
+> +SCRUB_ATTR_RW(enable_background_scrub);
+> +SCRUB_ATTR_RW(rate);
+> +SCRUB_ATTR_RO(rate_available);
+> +
+> +static struct attribute *scrub_attrs[] = {
+> +	&dev_attr_addr_base.attr,
+> +	&dev_attr_addr_size.attr,
+> +	&dev_attr_enable.attr,
+> +	&dev_attr_enable_background_scrub.attr,
+> +	&dev_attr_rate.attr,
+> +	&dev_attr_rate_available.attr,
+> +	NULL,
+no comma
+> +};
+> +
+> +static struct device *
+> +scrub_device_register(struct device *dev, const char *name, void *drvdata,
+> +		      const struct scrub_ops *ops,
+> +		      int region_id,
+> +		      struct attribute_group *attr_group)
+> +{
+> +	struct scrub_device *scrub_dev;
+> +	struct device *hdev;
+> +	int err;
+> +
+> +	scrub_dev = kzalloc(sizeof(*scrub_dev), GFP_KERNEL);
+> +	if (!scrub_dev)
+> +		return ERR_PTR(-ENOMEM);
+> +	hdev = &scrub_dev->dev;
+> +
+> +	scrub_dev->id = ida_alloc(&scrub_ida, GFP_KERNEL);
+> +	if (scrub_dev->id < 0) {
+> +		kfree(scrub_dev);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	snprintf((char *)scrub_dev->region_name, SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH,
+> +		 "region%d", region_id);
+> +	if (attr_group) {
+
+I'd like a comment on this. Not immediately obvious what this parameter is to me,
+or when we would and wouldn't have one.
+
+> +		attr_group->name = (char *)scrub_dev->region_name;
+> +		scrub_dev->groups[0] = attr_group;
+> +		scrub_dev->region_id = region_id;
+> +	} else {
+> +		scrub_dev->group.name = (char *)scrub_dev->region_name;
+
+In both paths, drop out of if / else
+
+> +		scrub_dev->group.attrs = scrub_attrs;
+> +		scrub_dev->group.is_visible = scrub_attr_visible;
+> +		scrub_dev->groups[0] = &scrub_dev->group;
+> +		scrub_dev->ops = ops;
+> +		scrub_dev->region_id = region_id;
+Set in both paths, so drop out of the if / else;
+> +	}
+> +
+> +	hdev->groups = scrub_dev->groups;
+> +	hdev->class = &scrub_class;
+> +	hdev->parent = dev;
+> +	dev_set_drvdata(hdev, drvdata);
+> +	dev_set_name(hdev, SCRUB_ID_FORMAT, scrub_dev->id);
+> +	snprintf(scrub_dev->name, SCRUB_DEV_MAX_NAME_LENGTH, "%s", name);
+> +	err = device_register(hdev);
+> +	if (err) {
+> +		put_device(hdev);
+> +		return ERR_PTR(err);
+> +	}
+> +
+> +	return hdev;
+> +}
+> +
+> +static void devm_scrub_release(void *dev)
+> +{
+> +	struct device *hdev = dev;
+> +
+> +	device_unregister(hdev);
+
+Trivial but local variable doesn't really add anything.
+	deivce_unregister(dev);
+is pretty clear on types!
+
+> +}
+
+
+
+> diff --git a/include/memory/memory-scrub.h b/include/memory/memory-scrub.h
+> new file mode 100755
+> index 000000000000..3d7054e98b9a
+> --- /dev/null
+> +++ b/include/memory/memory-scrub.h
+> @@ -0,0 +1,78 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Memory scrub controller driver support to configure
+> + * the controls of the memory scrub and enable.
+> + *
+> + * Copyright (c) 2023 HiSilicon Limited.
+> + */
+> +
+> +#ifndef __MEMORY_SCRUB_H
+> +#define __MEMORY_SCRUB_H
+> +
+> +#include <linux/types.h>
+> +
+> +enum scrub_types {
+> +	scrub_common,
+> +	scrub_max,
+No comma on a terminating entry like this.
+> +};
+
 
