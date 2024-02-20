@@ -1,221 +1,130 @@
-Return-Path: <linux-kernel+bounces-73060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6926285BCF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:15:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8968285BCF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:16:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EBC2283D0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:15:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 290561F23763
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99076A00F;
-	Tue, 20 Feb 2024 13:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E03C6A32B;
+	Tue, 20 Feb 2024 13:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q+dVKl8L"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="JZUUgBhi"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527C26A030;
-	Tue, 20 Feb 2024 13:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446B26A02D
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708434920; cv=none; b=FFR0ieS/foREuzcct4evMW4AC/Oqd0sYCWlOfcWjsUJ0xX5f7hi3wArkc3v+tFVQvPH1LKxPvtaHZlLDJTaAwCiKCmVEYqgfsqNT1xD4KtCql+mEE5ZwUU2hsc68XtL2ovYGmTWmx1J8NGBa4cbQ/rB8ztTKAtruMsEz09Mrisk=
+	t=1708434961; cv=none; b=Qfxznyf/p2NcyQWjTAFo7ROTuwu3XZdYO6d+KN5aINL1P44NZd8+cxoipYoXl67HKpjdMj81UtSyqLz25W1tZB2IVfTQHukztBMVFU/rLbTnXCMBFLa0uVVaJ1D0DI59VoxWohwnVhSj8LHa7evl40B9SCmA9eLvVS+YNrpQsaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708434920; c=relaxed/simple;
-	bh=is7X7bYYLaNl4Xd9u1Jgp8nNiOY1JjyfGPu5LdGB1Mo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sDsvQNXe+ra/ItAjyXVvMpaWS2ejvo8RMa9lt9Jiy6h9S6N9jMSZUbQKTTKoWA7wcgbxiaZrJBIaFWOvJtHuPrDu6xdrV8nbc1o+IUug/14S6w0cUEamJrPqBdB8XsqHQO6neDE403R63CCXmhem50u6rhWQy+CE83o0DymllSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q+dVKl8L; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708434918; x=1739970918;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=is7X7bYYLaNl4Xd9u1Jgp8nNiOY1JjyfGPu5LdGB1Mo=;
-  b=Q+dVKl8L7XCWwcFZOlcjdjQTaoGVbAzrqNXLejJjvHDP6ZGAi3GmJ9u2
-   kGxOGxYT/k1E1po26qoAiedd9C2D85cqJd84gXgxUtRYzslX1cYSZlGsm
-   2+7h9py4R/lshgFbnpw4hCmUEPhqjMDsxAwySHHcui+BplSx4cxQJqeyJ
-   T8iSLEPVHdvkYluOnMW2ot1KR9Ab+DLfVPwKfNDdv/zOdhCLhC67Z68PB
-   2Kl9WJIXAU8LOiiKcdA7yF0ERUzAmiJYzR9DrHOEpf4GL6KwysctpaTIP
-   4ZP2WZ84qjZWc9IK/+sjjFrtfoC38UFijZKQKsvdNMZaKX0MfRLiDDdRP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2660634"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="2660634"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:15:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="5131033"
-Received: from jmuniak-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.4.63])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:15:15 -0800
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH 3/3] selftests/resctrl: Move cleanups out of individual tests
-Date: Tue, 20 Feb 2024 14:14:34 +0100
-Message-ID: <63b9763211c2954f0ef517a817b3bf0c482df8cd.1708434017.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1708434017.git.maciej.wieczor-retman@intel.com>
-References: <cover.1708434017.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1708434961; c=relaxed/simple;
+	bh=IqjOTROjMQYB67bxRQ6W3keFDzFkSXSEKRuI3JlJhrA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j73LFy61f+z9A8DIWxawwaQqcfFMfVhx2SdwLRuxuGjlaiZJY2G1bC9GicUGvotz0GIZwusJMNp/I2rUAk9jFDvrHuIAKLumDABy1mIrHaRsdU2hDxvv1jNl5NM/KkQPPEAtgfRYMTn8BapWYShkPbNjSQbmh+K94UN6izp6sAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=JZUUgBhi; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3651b948db6so7082845ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:16:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1708434959; x=1709039759; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IqjOTROjMQYB67bxRQ6W3keFDzFkSXSEKRuI3JlJhrA=;
+        b=JZUUgBhi4CmBa1e9THLSmdnIzP7xi0o/Ie8KGr+O2WSNgAXLwU8tb/ZZn4YaJH19Ay
+         I3kkZo5//m4bX9l0vVMOcgza+ysWKnlsOeQJwv5vfQSqG0WqlifwtVXpzMLAc3kd5Xdu
+         pskliOHc4z92llrsRYaKIC8GOKZM6+UCGVm63w3V8dz11HqYjJYs9yQw/eBp7MRX3oM3
+         o3lpiMDbDfyoOprh4cOmIfOqe7Yd360f68GcezPfqMgkpaKHcW8kn+g9/0wigM24Jxt5
+         97/kLgE4n4kgwHKRxoabUC4ck3pDpwUiSBzl7t8PAq8ybhgkBOYWRiUoGXdCkPK/tzbu
+         +/nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708434959; x=1709039759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IqjOTROjMQYB67bxRQ6W3keFDzFkSXSEKRuI3JlJhrA=;
+        b=eAdzkeVDJnJ2f0NBW01lfF3G/kAuNc4YdScXnuRYSxDAOvtNPKsFnSUqdgz3BtTxqb
+         6hSsmxFQ/C30jZ0nRTq/ngR8Uk5ECLPrOunYNXeulY3pu0MbV8CdibRXbwZvZ6k2xh5/
+         N43BRZrJghQfTfbe40V4ndDV4ImgwKy6OhjyIk0ma7uOpRoKXQbPOhQxmg+A8kOVj0nq
+         odrupQJ75jgZBg3sEPdwMj4hOAY3uQZUnQmgo4ToHgMLgUGPPl014oReG/AmFdzvQwid
+         fWfx81LV4IpMlXkQ1iiIP17aLdvtIitQ5HFVatd7rUSWTHX9K7gf4D8CHHNwxEzBV01p
+         lGlw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMMs1VCuPfV9kQVlw3d3wvFVobwx4R1Z0Zbgd32xKEWpOAsCRQMPCtVC1WWYXp5uZzklclwgL1wdryJ1Ue3NPvkihMjDDRSez/xt2g
+X-Gm-Message-State: AOJu0YxmuIP9+JbErYObhmaJ3h1+XPXawxIjSjgKlphDEP5DOAZK5a61
+	FTKz2IOULI2EksApHhgMcYX9ltCbB+TP0LLe7BwoBed7sx4qHCfxYQhet+VqFtaZHZe9GGe6VOk
+	c6JJuJp74A2L1IMe0dgHu1pUsaQ3E4UA4xWhXJQ==
+X-Google-Smtp-Source: AGHT+IGBHyxhOfx+rHBkUEIb+UN9EusJtSraJpbfRqOa1twSLXdPbfjomfAe1MpQwps5BmFOHpbz4M0jqq6MI7Pf8d0=
+X-Received: by 2002:a92:cf0f:0:b0:365:1785:88f6 with SMTP id
+ c15-20020a92cf0f000000b00365178588f6mr10945548ilo.3.1708434959388; Tue, 20
+ Feb 2024 05:15:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240220060718.823229-1-apatel@ventanamicro.com>
+ <20240220060718.823229-7-apatel@ventanamicro.com> <87a5nvfj2s.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87a5nvfj2s.fsf@all.your.base.are.belong.to.us>
+From: Anup Patel <anup@brainfault.org>
+Date: Tue, 20 Feb 2024 18:45:47 +0530
+Message-ID: <CAAhSdy187H0E1-V4uhrik42qHoZrk-w499YWFzR13EWX-Wyu=g@mail.gmail.com>
+Subject: Re: [PATCH v13 06/13] irqchip: Add RISC-V incoming MSI controller
+ early driver
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org, 
+	Atish Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Every test calls its cleanup function at the end of it's test function.
-After the cleanup function pointer is added to the test framework this
-can be simplified to executing the callback function at the end of the
-generic test running function.
+On Tue, Feb 20, 2024 at 5:23=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+org> wrote:
+>
+> Anup Patel <apatel@ventanamicro.com> writes:
+>
+> > The RISC-V advanced interrupt architecture (AIA) specification
+> > defines a new MSI controller called incoming message signalled
+> > interrupt controller (IMSIC) which manages MSI on per-HART (or
+> > per-CPU) basis. It also supports IPIs as software injected MSIs.
+> > (For more details refer https://github.com/riscv/riscv-aia)
+> >
+> > Let us add an early irqchip driver for RISC-V IMSIC which sets
+> > up the IMSIC state and provide IPIs.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+>
+> This patch has a couple of checkpatch issues:
+>
+> CHECK: Alignment should match open parenthesis
+> CHECK: Please don't use multiple blank lines
+> CHECK: Please use a blank line after function/struct/union/enum declarati=
+ons
+> CHECK: Unnecessary parentheses around 'global->nr_guest_ids < IMSIC_MIN_I=
+D'
+> CHECK: Unnecessary parentheses around 'global->nr_guest_ids >=3D IMSIC_MA=
+X_ID'
+> CHECK: Unnecessary parentheses around 'global->nr_ids < IMSIC_MIN_ID'
+> CHECK: Unnecessary parentheses around 'global->nr_ids >=3D IMSIC_MAX_ID'
+> CHECK: Unnecessary parentheses around global->local
+> CHECK: Unnecessary parentheses around imsic->lpriv
+> CHECK: extern prototypes should be avoided in .h files
+>
 
-Make test cleanup functions static and call them from the end of
-run_single_test() from the resctrl_test's cleanup function pointer.
+Okay, I will address these in the next revision.
 
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
----
- tools/testing/selftests/resctrl/cat_test.c      | 4 +---
- tools/testing/selftests/resctrl/cmt_test.c      | 3 +--
- tools/testing/selftests/resctrl/mba_test.c      | 4 +---
- tools/testing/selftests/resctrl/mbm_test.c      | 4 +---
- tools/testing/selftests/resctrl/resctrl.h       | 4 ----
- tools/testing/selftests/resctrl/resctrl_tests.c | 2 ++
- 6 files changed, 6 insertions(+), 15 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 2d2f69d3e5b7..ad5ebce65c07 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -128,7 +128,7 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
- 	return fail;
- }
- 
--void cat_test_cleanup(void)
-+static void cat_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -289,8 +289,6 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- 	ret = check_results(&param, test->resource,
- 			    cache_total_size, full_cache_mask, start_mask);
- out:
--	cat_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-index 32ddee87e43d..c477f3c9635f 100644
---- a/tools/testing/selftests/resctrl/cmt_test.c
-+++ b/tools/testing/selftests/resctrl/cmt_test.c
-@@ -91,7 +91,7 @@ static int check_results(struct resctrl_val_param *param, size_t span, int no_of
- 				 MAX_DIFF, MAX_DIFF_PERCENT, runs - 1, true);
- }
- 
--void cmt_test_cleanup(void)
-+static void cmt_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -161,7 +161,6 @@ static int cmt_run_test(const struct resctrl_test *test, const struct user_param
- 		ksft_print_msg("Intel CMT may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
- 
- out:
--	cmt_test_cleanup();
- 	free(span_str);
- 
- 	return ret;
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index 7cc4067ce930..e4cd484941ec 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -137,7 +137,7 @@ static int check_results(void)
- 	return show_mba_info(bw_imc, bw_resc);
- }
- 
--void mba_test_cleanup(void)
-+static void mba_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -163,8 +163,6 @@ static int mba_run_test(const struct resctrl_test *test, const struct user_param
- 	ret = check_results();
- 
- out:
--	mba_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 071e2d3808a7..405edd7df816 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -105,7 +105,7 @@ static int mbm_setup(const struct resctrl_test *test,
- 	return ret;
- }
- 
--void mbm_test_cleanup(void)
-+static void mbm_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -133,8 +133,6 @@ static int mbm_run_test(const struct resctrl_test *test, const struct user_param
- 		ksft_print_msg("Intel MBM may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
- 
- out:
--	mbm_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 79b45cbeb628..c2a74e11a65e 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -156,8 +156,6 @@ int resctrl_val(const struct resctrl_test *test,
- 		const char * const *benchmark_cmd,
- 		struct resctrl_val_param *param);
- void tests_cleanup(void);
--void mbm_test_cleanup(void);
--void mba_test_cleanup(void);
- unsigned long create_bit_mask(unsigned int start, unsigned int len);
- unsigned int count_contiguous_bits(unsigned long val, unsigned int *start);
- int get_full_cbm(const char *cache_type, unsigned long *mask);
-@@ -166,9 +164,7 @@ int get_cache_size(int cpu_no, const char *cache_type, unsigned long *cache_size
- void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
- int signal_handler_register(void);
- void signal_handler_unregister(void);
--void cat_test_cleanup(void);
- unsigned int count_bits(unsigned long n);
--void cmt_test_cleanup(void);
- 
- void perf_event_attr_initialize(struct perf_event_attr *pea, __u64 config);
- void perf_event_initialize_read_format(struct perf_event_read *pe_read);
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index b17f7401892c..e01937e798ee 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -142,6 +142,8 @@ static void run_single_test(const struct resctrl_test *test, const struct user_p
- 	}
- 
- 	ret = test->run_test(test, uparams);
-+	if (test->cleanup)
-+		test->cleanup();
- 	ksft_test_result(!ret, "%s: test\n", test->name);
- 
- cleanup:
--- 
-2.43.2
-
+Regards,
+Anup
 
