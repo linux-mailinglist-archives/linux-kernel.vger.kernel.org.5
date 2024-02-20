@@ -1,144 +1,277 @@
-Return-Path: <linux-kernel+bounces-72868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD5E85B9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:01:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B0D85B9D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C59283F1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:01:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F9071F2430E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B77664CF5;
-	Tue, 20 Feb 2024 11:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GGfAHDPX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8F665BD9;
+	Tue, 20 Feb 2024 11:03:05 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C33604A9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490AF629FD;
+	Tue, 20 Feb 2024 11:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708426899; cv=none; b=dsgD2MbyV+cibyl20N2RcMNiFfFir27Oot3T57VSFBztAdAlXi8pbMZvS3uqC8QwEiIwVENk7Idc8GWWByTQ2P9bCwX87PNzvLl77qNhtda7zJLXmzpclMMYpfYpVLoqTG3sA1PIzev8dmFDSUeOwVQ0lJQ4M+BJJ8FS6e1s7QI=
+	t=1708426984; cv=none; b=alUaowNew/1adYUnakUVtIkiMrKhoAHUjSIWPo4QrHuRapU8D0IuK8F3L31TJeCUaCizcJBS8bHZrOCpK14KNvbLs4NSTmO1dQgFmnkl5dtCOnykSqaK9L78shD8qgxgnE7iw1DDqkDBE9cyVh9Ek4EW++Lbx01jI6BKWclXGa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708426899; c=relaxed/simple;
-	bh=BZIY99CfCnRkSo2P+adAlO3zZixCMpjO82LAqwFoICo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YbH/06aHpjIn+kjZiiWPRvbYgI0lwRyZ67ogCV7M7aanP/2VNr44pCXWtjMzc0T7bgfnpJ14b02WcIgnXSY9baD5I9sU8guFBzXWwcHx6q62n4X/z4LBDM+El6jfIrm5jVveKZkRDbJuThi/5M2n5Xca1XPtmTuG9/5D0iBT7E0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GGfAHDPX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708426897;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YApau1FxyR+cDTI8ZV4SeuS97RoxId3RVP36y1FGLzQ=;
-	b=GGfAHDPXDaMFjSsAtKkPz0EWualj8D1H+jxXwp5sO+5U9t76HfduPv7UsbSPp2WV3PTMN2
-	6IgJxWWtPRlA5Osob9etRwCoLDUwZyUkQWpxSP2C6DakqQ6jAupTx1hWeccyc3hMTWQazL
-	E3iWSoZQb2ahYtt7HvBx45Fy3I7p4OU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-544-gjfv-SoVOOygvW9oZEmTeg-1; Tue,
- 20 Feb 2024 06:01:33 -0500
-X-MC-Unique: gjfv-SoVOOygvW9oZEmTeg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E4B92806408;
-	Tue, 20 Feb 2024 11:01:33 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.160])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 8AEBE492BD7;
-	Tue, 20 Feb 2024 11:01:31 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 20 Feb 2024 12:00:14 +0100 (CET)
-Date: Tue, 20 Feb 2024 12:00:12 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
- PIDFD_THREAD
-Message-ID: <20240220110012.GB7783@redhat.com>
-References: <20240210-chihuahua-hinzog-3945b6abd44a@brauner>
- <20240210165133.GD27557@redhat.com>
- <20240214123655.GB16265@redhat.com>
- <20240216-albern-aufwiegen-1de327c7dafd@brauner>
- <20240216130625.GA8723@redhat.com>
- <20240216-ohnedies-improvisieren-58edcc102b6a@brauner>
- <20240216181214.GA10393@redhat.com>
- <20240220-einwurf-depesche-d8682be0370c@brauner>
- <20240220090255.GA7783@redhat.com>
- <20240220-pragmatisch-parzelle-8a1d10a94fae@brauner>
+	s=arc-20240116; t=1708426984; c=relaxed/simple;
+	bh=zuvLddHIXbqnQ9+Zwy+M4L650QAJdwFPOIroz3/ec9o=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nu4GqVASipKVT2vbxDbHJOfYlP6ZeGns2H4Ex5uaO5/VE+11tiXNtufkG67pDgpLk23cDrFfK7z+Ei7IxZY9xjTUBZaneep471oNrfZG0bX0j7OxFhB56kBZ2pX4YlH0iWVS/AvDBd+HKVzkogg2b5vGgekLx4kF3hQE9oSw5lM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TfGcM5KXGz6K6QG;
+	Tue, 20 Feb 2024 18:58:59 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 18AFD140B54;
+	Tue, 20 Feb 2024 19:02:59 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 20 Feb
+ 2024 11:02:58 +0000
+Date: Tue, 20 Feb 2024 11:02:56 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <shiju.jose@huawei.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
+	<dave.jiang@intel.com>, <alison.schofield@intel.com>,
+	<vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+	<linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
+	<Yazen.Ghannam@amd.com>, <rientjes@google.com>, <jiaqiyan@google.com>,
+	<tony.luck@intel.com>, <Jon.Grimm@amd.com>, <dave.hansen@linux.intel.com>,
+	<rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+	<james.morse@arm.com>, <jthoughton@google.com>, <somasundaram.a@hpe.com>,
+	<erdemaktas@google.com>, <pgonda@google.com>, <duenwen@google.com>,
+	<mike.malvestuto@intel.com>, <gthelen@google.com>,
+	<wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
+	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
+	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
+	<linuxarm@huawei.com>
+Subject: Re: [RFC PATCH v6 01/12] cxl/mbox: Add GET_SUPPORTED_FEATURES
+ mailbox command
+Message-ID: <20240220110256.00001586@Huawei.com>
+In-Reply-To: <20240215111455.1462-2-shiju.jose@huawei.com>
+References: <20240215111455.1462-1-shiju.jose@huawei.com>
+	<20240215111455.1462-2-shiju.jose@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220-pragmatisch-parzelle-8a1d10a94fae@brauner>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 02/20, Christian Brauner wrote:
->
-> On Tue, Feb 20, 2024 at 10:02:56AM +0100, Oleg Nesterov wrote:
-> >
-> > Ah. IIRC criu uses this hack to restore the pending (arbitrary) signals
-> > collected at dump time.
-> >
-> > I was a bit surprise sys_pidfd_send_signal() allows this hack too, I don't
->
-> I think that we simply mirrored the restrictions in the other system
-> calls.
->
-> > think that criu uses pidfd at restore time, but I do not know.
->
-> Hm, I just checked and it doesn't use pidfd_send_signal(). It uses
-> pidfds but only for pid reuse detection for RPC clients.
+On Thu, 15 Feb 2024 19:14:43 +0800
+<shiju.jose@huawei.com> wrote:
 
-But perhaps something else already uses pidfd_send_signal() with info != NULL
-or with info->si_code == SI_USER, we can't know. Please see below.
+> From: Shiju Jose <shiju.jose@huawei.com>
+>=20
+> Add support for GET_SUPPORTED_FEATURES mailbox command.
+>=20
+> CXL spec 3.1 section 8.2.9.6 describes optional device specific features.
+> CXL devices supports features with changeable attributes.
+> Get Supported Features retrieves the list of supported device specific
+> features. The settings of a feature can be retrieved using Get Feature
+> and optionally modified using Set Feature.
+>=20
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+Hi Shiju,
 
-> So right now si_code is blocked for >= 0 and for SI_TKILL. If we were to
-> simply ensure that si_code can't be < 0 then this amounts to effectively
-> blocking @info from being filled in by userspace at all. Because 0 is a
-> valid value.
+Some comment inline.
 
-I'am afraid I misunderstand you again... 0 == SI_USER is not a valid value
-when siginfo != NULL.
+Mostly just naming suggestions. Actual functionality looks good to me.
 
-Perhaps we can kill the "task_pid(current) != pid" check and just return
-EPERM if "kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL", I don't think
-anobody needs pidfd_send_send_signal() to signal yourself. See below.
 
-> +       /* Currently unused. */
-> +       if (info)
-> +               return -EINVAL;
+> ---
+>  drivers/cxl/core/mbox.c | 23 +++++++++++++++
+>  drivers/cxl/cxlmem.h    | 62 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 85 insertions(+)
+>=20
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 27166a411705..191f51f3df0e 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -1290,6 +1290,29 @@ int cxl_set_timestamp(struct cxl_memdev_state *mds)
+>  }
+>  EXPORT_SYMBOL_NS_GPL(cxl_set_timestamp, CXL);
+> =20
+> +int cxl_get_supported_features(struct cxl_memdev_state *mds,
+> +						struct cxl_mbox_get_supp_feats_in *pi,
+> +						void *feats_out)
 
-Well, to me this looks like the unnecessary restriction... And why?
+Odd indent.  Align the later lines with s of struct
 
-But whatever we do,
+Comments on input types in header below.
 
-> -               /* Only allow sending arbitrary signals to yourself. */
-> -               ret = -EPERM;
-> -               if ((task_pid(current) != pid) &&
-> -                   (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
-> -                       goto err;
 
-Can I suggest to fix this check in your tree (add type > PIDTYPE_TGID as
-we discussed) first, then do other changes on top?
+> +{
+> +	struct cxl_mbox_cmd mbox_cmd;
+> +	int rc;
+> +
+> +	mbox_cmd =3D (struct cxl_mbox_cmd) {
+> +		.opcode =3D CXL_MBOX_OP_GET_SUPPORTED_FEATURES,
+> +		.size_in =3D sizeof(*pi),
+> +		.payload_in =3D pi,
+> +		.size_out =3D le32_to_cpu(pi->count),
+> +		.payload_out =3D feats_out,
+> +		.min_out =3D sizeof(struct cxl_mbox_get_supp_feats_out),
+feats_out should be typed, in which case this becomes
+sizeof(*feats_out)
 
-This way we can revert the next change(s) if we get regressions reports
-without re-introducing the security problem.
+> +	};
+> +	rc =3D cxl_internal_send_cmd(mds, &mbox_cmd);
+> +	if (rc < 0)
+> +		return rc;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_get_supported_features, CXL);
+> +
+>  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+>  		       struct cxl_region *cxlr)
+>  {
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index 5303d6942b88..23e4d98b9bae 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -529,6 +529,7 @@ enum cxl_opcode {
+>  	CXL_MBOX_OP_SET_TIMESTAMP	=3D 0x0301,
+>  	CXL_MBOX_OP_GET_SUPPORTED_LOGS	=3D 0x0400,
+>  	CXL_MBOX_OP_GET_LOG		=3D 0x0401,
+> +	CXL_MBOX_OP_GET_SUPPORTED_FEATURES	=3D 0x0500,
+>  	CXL_MBOX_OP_IDENTIFY		=3D 0x4000,
+>  	CXL_MBOX_OP_GET_PARTITION_INFO	=3D 0x4100,
+>  	CXL_MBOX_OP_SET_PARTITION_INFO	=3D 0x4101,
+> @@ -698,6 +699,64 @@ struct cxl_mbox_set_timestamp_in {
+> =20
+>  } __packed;
+> =20
+> +/* Get Supported Features CXL 3.1 Spec 8.2.9.6.1 */
+> +/*
+> + * Get Supported Features input payload
+> + * CXL rev 3.1 section 8.2.9.6.1 Table 8-95
+> + */
+> +struct cxl_mbox_get_supp_feats_in {
+> +	__le32 count;
+> +	__le16 start_index;
+> +	u16 reserved;
 
-Oleg.
+=46rom a local style point of view using a u16 for reserved is
+a new style choice - best to avoid that - most common option looks to
+be
+
+	u8 rsvd[2];
+
+> +} __packed;
+> +
+> +/*
+> + * Get Supported Features Supported Feature Entry
+> + * CXL rev 3.1 section 8.2.9.6.1 Table 8-97
+> + */
+> +/* Supported Feature Entry : Payload out attribute flags */
+> +#define CXL_FEAT_ENTRY_FLAG_CHANGABLE	BIT(0)
+> +#define CXL_FEAT_ENTRY_FLAG_DEEPEST_RESET_PERSISTENCE_MASK	GENMASK(3, 1)
+> +#define CXL_FEAT_ENTRY_FLAG_PERSIST_ACROSS_FIRMWARE_UPDATE	BIT(4)
+> +#define CXL_FEAT_ENTRY_FLAG_SUPPORT_DEFAULT_SELECTION	BIT(5)
+> +#define CXL_FEAT_ENTRY_FLAG_SUPPORT_SAVED_SELECTION	BIT(6)
+> +
+> +enum cxl_feat_attr_value_persistence {
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_NONE,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_CXL_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_HOT_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_WARM_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_COLD_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_MAX
+> +};
+> +
+> +#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_ACROSS_FW_UPDATE_MASK	BIT(4)
+Not sure there is benefit in defining mask for single bit fields.
+Or if there is don't define the value above.
+> +#define CXL_FEAT_ENTRY_FLAG_PERSIST_ACROSS_FIRMWARE_UPDATE	BIT(4)
+
+Either is probably fine, just not both!
+
+> +#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_DEFAULT_SEL_SUPPORT_MASK	BIT(5)
+> +#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_SAVED_SEL_SUPPORT_MASK	BIT(6)
+> +
+> +struct cxl_mbox_supp_feat_entry {
+> +	uuid_t uuid;
+> +	__le16 feat_index;
+
+Given it's in a feat entry, could drop 'feat' as redundant info.
+
+	__le16 index;
+	__le16 get_size;
+etc
+
+> +	__le16 get_feat_size;
+> +	__le16 set_feat_size;
+> +	__le32 attr_flags;
+> +	u8 get_feat_version;
+> +	u8 set_feat_version;
+> +	__le16 set_feat_effects;
+> +	u8 rsvd[18];
+> +}  __packed;
+> +
+> +/*
+> + * Get Supported Features output payload
+> + * CXL rev 3.1 section 8.2.9.6.1 Table 8-96
+> + */
+> +struct cxl_mbox_get_supp_feats_out {
+> +	__le16 entries;
+> +	__le16 nsuppfeats_dev;
+Probably don't need the _dev postfix.  Command being sent to a device
+so that doesn't add much.
+
+I looked at naming in similar cases.  For mailbox clear we have nr_recs,
+so perhaps nr_supported ?
+
+> +	u32 reserved;
+	u8 rsvd[4];
+as above - match the local syle.
+> +	struct cxl_mbox_supp_feat_entry feat_entries[];
+> +} __packed;
+> +
+>  /* Get Poison List  CXL 3.0 Spec 8.2.9.8.4.1 */
+>  struct cxl_mbox_poison_in {
+>  	__le64 offset;
+> @@ -829,6 +888,9 @@ void cxl_event_trace_record(const struct cxl_memdev *=
+cxlmd,
+>  			    enum cxl_event_type event_type,
+>  			    const uuid_t *uuid, union cxl_event *evt);
+>  int cxl_set_timestamp(struct cxl_memdev_state *mds);
+> +int cxl_get_supported_features(struct cxl_memdev_state *mds,
+> +			       struct cxl_mbox_get_supp_feats_in *pi,
+> +			       void *feats_out);
+
+
+Don't use a void * for that output data.  It should be a
+struct cxl_mbox_get_supp_feats_out *
+
+For the input, the other similar functions are providing parameters
+directly, not wrapped up in a structure.  Easy enough to do that here
+as well as we only need
+u32 count, u16 start_index
+instead of pi
+
+
+>  int cxl_poison_state_init(struct cxl_memdev_state *mds);
+>  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+>  		       struct cxl_region *cxlr);
 
 
