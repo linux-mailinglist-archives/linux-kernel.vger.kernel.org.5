@@ -1,147 +1,199 @@
-Return-Path: <linux-kernel+bounces-73804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC9E385CBC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:07:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E15985CBCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:08:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8A612859F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:07:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 556E0285F5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3196815444C;
-	Tue, 20 Feb 2024 23:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE70154449;
+	Tue, 20 Feb 2024 23:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aMgSqsC4"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dm+CWoFC"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5A7154430
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EED154425
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708470452; cv=none; b=BFKcb44cYJWFqMiepCx+dDOlLrJMKQiWooJjPqZk62SXQn4S1Ad709YE3osIqNTJdsD5xDJtcQnAZH78Z+6V2UDBQxMe7cTHHVKpsIzxvs8FzIS2jA34cOLdIseAJVXoZdr2MdOXGVS/y9G3buIkZOXpfkOjoIT3nGuujw9EyoQ=
+	t=1708470490; cv=none; b=NC2xx/6sUGOelkUCThVdspu7EmaBTPoxDYev26hJRlDoL7TtQJIrzbpTyLxefSkrrLcSmlcJWb4vwWH49V81nz0QoQRsK41HHo+xYH7CGUvV5tGXM3Vi2XtvlX4s07G8lx3DXkrnb7eG2RdInnHAa6KEmwEZxPIBbHnHKJwTmdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708470452; c=relaxed/simple;
-	bh=fHKOmlZcwTyigCc1C09h+brUzug3zaeOVrozq4hbx2M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZOzXIc32DQeL1UZ0CpkPL52gDEyLR0tnfK5LMaxbvYqaRYhLyZWhJZRcTzdXAGnn/x7dTJ2nA6ouSamLa0oOK3gpOFwK3dDPBvqEVMmqCZVXs9+sMHm7WWF5YOMM/T6PHykriQLZ9J9QWdTbvVRs+pOMcuSvHiEPGrNH+IVa8yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aMgSqsC4; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7c49c979b5dso98629039f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:07:30 -0800 (PST)
+	s=arc-20240116; t=1708470490; c=relaxed/simple;
+	bh=ph4a2df0VI65NePySmrE3vWJDqYEA8i+KxjYQ0+xJSA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RNCrRsDkHD+01064uwM7TWSNYyNd4fzhxIL6lHX3/vQxMfTybNIPQqMlk1kcNwXwal1F4KwRQrEKLPdMOz8q3HifxOflrg/KVsr6xEc2c7j6Gn6Zrxt3cOwCDOge2qikEeHR9q5F4UBBYNk5xhIriFe3a/EiBKG5fZ2BmO1RkT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dm+CWoFC; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6087396e405so6702707b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:08:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1708470449; x=1709075249; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9x2CUPvUFUUko+dVNH1Y/5ad8W+x8zRKELcvKfDncbs=;
-        b=aMgSqsC4jeQx6Cf0PWKk3p850ojupYtLxAg9Nf3C/yq8BRp+O3Z0XE+OYBm6pc5mmk
-         D8uvxuNtiPoM+1EwdxtpSWa2NkQOMNoGXS8vdUyYbMF95ABbyvWbco18/oymczgU0X82
-         GK1HkDH+BeZSN/RRmu7pZtjbYwvkxxjYWMBuk=
+        d=linaro.org; s=google; t=1708470488; x=1709075288; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JMa4Xpq2gA3A1LeF8lVok8xN9ReJjb3LesYcCiypUgg=;
+        b=dm+CWoFCrdWsWNX26MHFbEWWvi1wBc+7Pqe3cIqUIVnuASnImXkHwEHI3Xu7qTszd8
+         PekAgvAVXccj+iPTCFGFU//Nq9rTzdpRkrW5kG2GabFSg0vhKhHsqrN4czl9p0abE4n+
+         6RBKdFOp4B1Ja3676o3vt3svnuUvO+F1MKw9ntjC2ck3XGTiDrWitk9vv6zEnp4SwjGw
+         +uH9R6LYhPIj0mKsxrgzrAxeXb/28GkQyh96duTtIbo7EBf91mpmpUUYso7+DCbyYXY4
+         /vTZdAUktdW57L47VazehjwpFF04w9jSaYmF8pK70PVt3CHroC+KR6hdfj8931AN9viD
+         oS/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708470449; x=1709075249;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9x2CUPvUFUUko+dVNH1Y/5ad8W+x8zRKELcvKfDncbs=;
-        b=iWqxNGHpM/ZmO8P7DS+D25ePQQixCbTpYoJ0Kxi0YuYFrkWztM2OkKgOk1/OuTFK/Z
-         Q0Y/xG5eXfB1ourT9+eenkTsd9gcNAJ6ssAkORidA2hB/0NWE92+KzGi+IbOKDMAC2b3
-         qy8JnMJcVmLnv5Oe5Zk2yMqHThQI79hC9MjxSO+ti/rUMJVdQOV0DXWxqU0hL++JIgT6
-         Un3pkroaOWdZFrYCWeKgwE7FaRq/HP5ty34RIa15aEtoUYKZb2xH4DgAEOVo4Vj0x4cD
-         ab+n3jXqmj90eDaidCX9bsmaLv9KoQzTXbWU5WBMD2JJIFhO2D6aDpmQH25mJTHiRFno
-         t7PA==
-X-Gm-Message-State: AOJu0YxwPPpxZdTlOvsUGOVNFK/EZdlCMyaL6jKdHud0mU7RM2cqWYMP
-	dzfKICBsewthIiyZwAh4npQMf+mXcdjzkQ1v7/60X56NtEl/8vlzhD8KDIAtqUg=
-X-Google-Smtp-Source: AGHT+IF8qVAf6CmBpwXsy1pUXIlHU919CQ+KUf6sP/gKuYif37kpL2xFgo35WqEMwBcV6ZKD8DuBcQ==
-X-Received: by 2002:a05:6602:1d47:b0:7c4:655:6e05 with SMTP id hi7-20020a0566021d4700b007c406556e05mr15344624iob.2.1708470449710;
-        Tue, 20 Feb 2024 15:07:29 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id t125-20020a6bc383000000b007c4926ebed8sm2649012iof.40.2024.02.20.15.07.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 15:07:29 -0800 (PST)
-Message-ID: <bd0abacb-e0d5-40f5-b786-6021f6d8bd2e@linuxfoundation.org>
-Date: Tue, 20 Feb 2024 16:07:28 -0700
+        d=1e100.net; s=20230601; t=1708470488; x=1709075288;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JMa4Xpq2gA3A1LeF8lVok8xN9ReJjb3LesYcCiypUgg=;
+        b=Q+ftocQVZ1+aDXIQEPYqWJPsHzUZtGYNiccPr4QMaKVFPhpvU2OjvnG0t3+GQ9i7EK
+         nj6xtwrD4/GUIkzXbSOIsL00SEIG3yLQgE2gPNtmWU8j7ewncCi/h93EPbLxr/177RJu
+         e4qjCo4PCM8tPmuf2wxH+fuRKJOoY+e+cvAYBESVYCpC0dtkPL7RTgiLscIReq+Xzare
+         waCF5KbmpmV148sPgpXvv/yiwKHnOUa9meF3rwNLlFaSCUJrmiOfYvLYvVV0UgyVfArI
+         bZKpg+CGySE/9hy9eRLq+Oe6yz3hY5mz3NHuDctgVANYWEc4yAZ7KnWxfOjia9oxvKoy
+         vMCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUE3PDpn6DzlWPs+ymdpgcyBEErrb11pVDffZa4naF6rhc8jAigPonJsI9SvrgMPMaUGGPbXTLzpNN8g3UfhSKqjO3CNk5GhSdquVm9
+X-Gm-Message-State: AOJu0YzaXKEEiv80DdYw1rxSH7W4Bx3T4qlan4SWCbrxs4LqL5sdwgV0
+	gKCHJRiZHGWoG2ZhTcQEHn/BR0AFLKHW2hW3VJhGCLuW+7z9kDjBIZ/5bBkicB9Wv5wThbWqw1G
+	L9wgUsonHsLTOG0FAGjJjCrjfLN9XvOa99jjiPg==
+X-Google-Smtp-Source: AGHT+IG3a3isXkLnhLjbaA3WAfu3COn5KIElhpETaOROfN3a/zrBXCsfeHPjiW3NbxHm8CHzA7JRzyjBs0Q6pVYoj00=
+X-Received: by 2002:a0d:d514:0:b0:607:cc6a:e1e5 with SMTP id
+ x20-20020a0dd514000000b00607cc6ae1e5mr11574717ywd.2.1708470488239; Tue, 20
+ Feb 2024 15:08:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Linux 6.8-rc5
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Guenter Roeck <linux@roeck-us.net>, David Gow <davidgow@google.com>,
- Brendan Higgins <brendan.higgins@linux.dev>, Rae Moar <rmoar@google.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Matthew Auld <matthew.auld@intel.com>,
- Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- kselftest list <linux-kselftest@vger.kernel.org>,
- KUnit Development <kunit-dev@googlegroups.com>,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <CAHk-=wi8vZD7EXZfob-yhfDERyfzWxzMOzG9FsOuaKU-v6+PHA@mail.gmail.com>
- <538327ff-8d34-41d5-a9ae-1a334744f5ae@roeck-us.net>
- <CAHk-=wj6xj_cGmsQK7g=hSfRZZNo-njC+u_1v3dE8fPZtjCBOg@mail.gmail.com>
- <CAHk-=wgJMOquDO5f8ShH1f4rzZwzApNVCw643m5-Yj+BfsFstA@mail.gmail.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <CAHk-=wgJMOquDO5f8ShH1f4rzZwzApNVCw643m5-Yj+BfsFstA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240208-fd-dpu-debug-timeout-v2-1-9f907f1bdd87@linaro.org>
+ <1cb90bff-ce5b-c6d1-a3df-24f6306f833a@quicinc.com> <CAA8EJpotiHKT_NYphDs0-vhpvsybgTW281XDYbteUx8qOX=v4g@mail.gmail.com>
+ <63bba15b-6d8d-5ba8-d99d-8cd2dd763262@quicinc.com> <CAA8EJpqHmVBry9FyJ6HRB+qdVcVNN3Q7rHZz1daZL1Sz6yeZ=A@mail.gmail.com>
+ <69d152d2-6a25-9ff4-ce6b-c4790247a661@quicinc.com> <CAA8EJpo3XynBrm0S_BA_SxGOw963WQT9jh=YvLcT1N24FyEUsw@mail.gmail.com>
+ <09928fb7-c5c3-7a36-1ce2-9f4012507d06@quicinc.com>
+In-Reply-To: <09928fb7-c5c3-7a36-1ce2-9f4012507d06@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 21 Feb 2024 01:07:56 +0200
+Message-ID: <CAA8EJpqEE2QjN5K=_FmUPRNGcXCnCcumJeJ6ShKbT3WHYaUp-g@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/dpu: make "vblank timeout" more useful
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/20/24 13:16, Linus Torvalds wrote:
-> On Tue, 20 Feb 2024 at 11:57, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> It turns out that that commit is buggy for another reason, but it's
->> hidden by the fact that apparently KUNIT_ASSERT_FALSE_MSG() doesn't
->> check the format string.
-> 
-> The fix for that is this:
-> 
->    --- a/include/kunit/test.h
->    +++ b/include/kunit/test.h
->    @@ -579,7 +579,7 @@ void __printf(2, 3) kunit_log_append(struct
-> string_stream *log, const char *fmt,
-> 
->     void __noreturn __kunit_abort(struct kunit *test);
-> 
->    -void __kunit_do_failed_assertion(struct kunit *test,
->    +void __printf(6,7) __kunit_do_failed_assertion(struct kunit *test,
->                                   const struct kunit_loc *loc,
->                                   enum kunit_assert_type type,
->                                   const struct kunit_assert *assert,
-> 
-> but that causes a *lot* of noise (not just in drm_buddy_test.c), so
-> I'm not going to apply that fix as-is. Clearly there's a lot of
-> incorrect format parameters that have never been checked.
-> 
-> Instead adding Shuah and the KUnit people to the participants, and
-> hoping that they will fix this up and we can get the format fixes for
-> KUnit in the 6.9 timeframe.
-> 
+On Wed, 21 Feb 2024 at 01:04, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 2/20/2024 2:42 PM, Dmitry Baryshkov wrote:
+> > On Wed, 21 Feb 2024 at 00:40, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2/19/2024 3:52 AM, Dmitry Baryshkov wrote:
+> >>> On Wed, 14 Feb 2024 at 22:36, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2/14/2024 11:20 AM, Dmitry Baryshkov wrote:
+> >>>>> On Wed, 14 Feb 2024 at 20:02, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2/8/2024 6:50 AM, Dmitry Baryshkov wrote:
+> >>>>>>> We have several reports of vblank timeout messages. However after some
+> >>>>>>> debugging it was found that there might be different causes to that.
+> >>>>>>> To allow us to identify the DPU block that gets stuck, include the
+> >>>>>>> actual CTL_FLUSH value into the timeout message and trigger the devcore
+> >>>>>>> snapshot capture.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >>>>>>> ---
+> >>>>>>> Changes in v2:
+> >>>>>>> - Added a call to msm_disp_snapshot_state() to trigger devcore dump
+> >>>>>>>       (Abhinav)
+> >>>>>>> - Link to v1: https://lore.kernel.org/r/20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org
+> >>>>>>> ---
+> >>>>>>>      drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 3 ++-
+> >>>>>>>      1 file changed, 2 insertions(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> >>>>>>> index d0f56c5c4cce..a8d6165b3c0a 100644
+> >>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> >>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> >>>>>>> @@ -489,7 +489,8 @@ static int dpu_encoder_phys_vid_wait_for_commit_done(
+> >>>>>>>                  (hw_ctl->ops.get_flush_register(hw_ctl) == 0),
+> >>>>>>>                  msecs_to_jiffies(50));
+> >>>>>>>          if (ret <= 0) {
+> >>>>>>> -             DPU_ERROR("vblank timeout\n");
+> >>>>>>> +             DPU_ERROR("vblank timeout: %x\n", hw_ctl->ops.get_flush_register(hw_ctl));
+> >>>>>>> +             msm_disp_snapshot_state(phys_enc->parent->dev);
+> >>>>>>
+> >>>>>>
+> >>>>>> There is no rate limiting in this piece of code unfortunately. So this
+> >>>>>> will flood the number of snapshots.
+> >>>>>
+> >>>>> Well... Yes and no. The devcoredump will destroy other snapshots if
+> >>>>> there is a pending one. So only the console will be flooded and only
+> >>>>> in case when MSM_DISP_SNAPSHOT_DUMP_IN_CONSOLE is enabled.
+> >>>>>
+> >>>>
+> >>>> Yes, true but at the same time this makes it hard to capture a good dump
+> >>>> as potentially every vblank you could timeout so this destroy/create
+> >>>> cycle wont end.
+> >>>
+> >>> Excuse me, maybe I miss something. On the first timeout the snapshot
+> >>> is created. It is held by the kernel until it is fully read out from
+> >>> the userspace. Other snapshots will not interfere with this snapshot.
+> >>>
+> >>
+> >> For every new snapshot a new devcoredump device will be created which
+> >> should remain till it has been read. But now this will be created every
+> >> blank. IMO, this is really too much data for no reason.
+> >
+> > No-no-no. If there is a devcoredump for a device, the next one will
+> > not be created. See dev_coredumpm().
+> > So all the snapshots will be created and then destroyed immediately.
+> >
+>
+> hmm ... I have certainly seen devcd_count go higher than one (but not
+> more than 2). I am wondering whether this was because of some race
+> condition of the previous destroy / new create.
+>
+> But anyway, this part is clear now. thanks.
+>
+> >>
+> >> Subsequent vblank timeouts are not going to give any new information
+> >> compared to the existing snapshot of the first vblank timeout thats why
+> >> we should just create the snapshot when the first error happens and stop.
+> >>
+> >> For other frame done timeouts, infact subsequent timeouts without any
+> >> sort of recovery in between are quite misleading because hardware was
+> >> already not able to fetch the previous frame so it will most likely not
+> >> fetch the next one either till it has recovered. Typically thats why
+> >> these vblank timeouts happen in a flurry as the hardware never really
+> >> recovered from the first timeout.
+> >>
+> >>> Or are you worried that snapshotting takes time, so taking a snapshot
+> >>> will also interfere with the vblank timings for the next vblank?
+> >>>
+> >>
+> >> Yes this is another point.
+> >
+>
+> snapshots will still be captured every vblank timeout and reading
+> through the entire DPU reg space every vblank timeout is certainly
+> something we can avoid.
 
-We will take care of this for 6.9
+Ack.
 
-> Side note: when I apply the above patch, the suggestions gcc spews out
-> look invalid. Gcc seems to suggest turning a a format string of '%d"
-> to "%ld" for a size_t variable. That's wrong. It should be "%zu".
-> 
-> A 'size_t' can in fact be 'unsigned int' on some platforms (not just
-> in theory), so %ld is really incorrect not just from a sign
-> perspective.
-> 
-> Anyway, I guess I will commit the immediate drm_buddy_test.c fix to
-> get rid of the build issue, but the KUnit message format string issue
-> will have to be a "let's get this fixed up _later_" issue.
-> 
->                Linus
-
-Thank you.
-
--- Shuah
-
+-- 
+With best wishes
+Dmitry
 
