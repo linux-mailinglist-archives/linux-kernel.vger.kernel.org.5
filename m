@@ -1,134 +1,148 @@
-Return-Path: <linux-kernel+bounces-73608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16F485C505
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:43:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 086FA85C516
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 866B5287372
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094131C22457
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5309E14A4F2;
-	Tue, 20 Feb 2024 19:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x3NUHv+Y"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2ECD14A4D2;
+	Tue, 20 Feb 2024 19:44:34 +0000 (UTC)
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D04336135
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:42:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E6F6A8D5
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708458171; cv=none; b=gmRuT3n8D7DtMpoauk4Z4RoigA2nuyGAVpDm0TN6CnXv9IqhxZvxECkD+tGVZR5St754G7mFEVEwJDOf1hPSN2kpY6Tb/X01DU65DvpjcYYOXefBb69a8jDMDpVvHdmiRKBhtfZWbBXrmH7FXREvXKtxlyelFpbMh8o86f1EnyI=
+	t=1708458274; cv=none; b=HNMrUTrlSaZk6Bd0RFzAf5vfHudRpmnm1Ze0H+vIK4dXPQa8n3Pvr0vcLNL3NpSiJ9GlYv0UhACFkaJh7vOY7vXgjej1T7QWjctYX4FFaDx+RoX2r5Zyve8FcOZf5RXU8hEQ8i2CYnHu3Gs22o2nElJHDA/3Kmp+/bsjljOAFOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708458171; c=relaxed/simple;
-	bh=QWkFrEkzqGLs/fYUGukOscI15ZpBZW3mTKO1W6b7TVM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RC8nLJRYp6lnm5RtmHfAz1QyagMyHxB0IvbdMhqGqdcexuAkXTxkQtmA+8nQEO9JrnOnagd9H79U77cVbli7QSX73nZyhtR6riXcXPvRr2ZAcW7p1S3bbRZylYGHCdlhSM2eOlh4lEvYjsvDo4PrdOAfCqm+7R5oDiEYCT6uf2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x3NUHv+Y; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-411d9e901dcso14785e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:42:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708458167; x=1709062967; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7s18ZG9gNKC9uT7R7r7LhtOPq8sUOZ+fxeck077+80w=;
-        b=x3NUHv+YiGbITA9O44l/u70MINCo6vTef9MgMy7kqc1B5JCVOlcbTBYKvGoqQzQwak
-         K5mjS+y3HWWP3S34bqtM3/B2jh8TtzbvF+yHVOkJZ4h3N0ojzxLmKInlvnslRhLz3IvY
-         2KQGq5MYLWRJmqnQI6V+L/OG+eY51T3zg9t5NqhjR4G0tzxd6eMnHgBzeP6Pd5s5pRhp
-         6a/NgH3yRw51PIKBcEIYL88En2cDojMKZx8TGJRKKVIVB/S3i3KRENnil1RflsMGSTpF
-         6v/fc+6t6oldy1EiAOqtwmhuAMUHJAvegspK1ir0tEAbogX+zOor8Qo+X77Ps3fWOK/V
-         BRoQ==
+	s=arc-20240116; t=1708458274; c=relaxed/simple;
+	bh=egCrOOr50znuDik3a84ddfinZziKeyqdeCwPLOkPRHY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lgcFsoelzF8iez43c47CLZvbO/1XimWaAwHz21wts5ePNZsHqnG6FF5QGVBX1BPxOMg4dVllyQsdsA+cdWTQJ2lV+xipL98GhKuRwnTOICcm5r5vqXAvXbbukvA+AZ0TbtskTgsbZBOpGuiOvOQAg6QInPWrhY2jd4fi6V/2WWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7876f2a2e62so94751585a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:44:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708458167; x=1709062967;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7s18ZG9gNKC9uT7R7r7LhtOPq8sUOZ+fxeck077+80w=;
-        b=ejqpj01+pfXLySS4+uLFeWFtzu4+Rb/FZeJIs/fHxaMQLdWbdMCPfKtGRB3XaS88WB
-         iJpRkY6GapyRw9tye4uI/y/USvCcLe/7ytZAfngRRLIsWbo9ZYWKFyVpyMPuevbP4Gez
-         rqJV3AtTTvwoet9fipsfisc7NzjgtQSO1w93P/+D2+BpHcqCJyPMCKNxvMJfSuGrDw2Y
-         i+GGUasYqfj/4zF9e7g/CwdtGSk+tjO9HTsMRkNCt/viCNXk0BQ7mC8mcq4+P0yTQItt
-         wKkqLP1N/VgF6H0yCLVlfNVH4hu7qfv6BOIv1h7osgW4Gh/1Q0Bz4u/3/cckmG6t0fFT
-         GmGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ2IJU5x19YmWIRryOfdXQwdsfTyFDVmqf3SBw1rFVnu3VRj/94HkJQAygR6Ll1kCB3W1aDWmQ+0Dko7JH7Zv0byTX+uSsJN6pq5i0
-X-Gm-Message-State: AOJu0YxHUth3eMRPclLyFGKurb9fmH9v2ov9z67V8CecVEUbsG9n73Nu
-	+N7PFW2+sF3f21p0FAGFQzty303myY+FFjFm5C0t/JChuZVvihMQ91jVFxQO0A==
-X-Google-Smtp-Source: AGHT+IFDuo+kJoH4p7MCeEqXZhInLzEs/29YVgqwTAcQKleXtoZoSakL+Du4Fy5tc8aQCpvtH4nYlA==
-X-Received: by 2002:a05:600c:1e20:b0:412:730e:5a82 with SMTP id ay32-20020a05600c1e2000b00412730e5a82mr6425wmb.1.1708458166723;
-        Tue, 20 Feb 2024 11:42:46 -0800 (PST)
-Received: from localhost ([2a02:168:96c5:1:cba0:1b55:6833:859e])
-        by smtp.gmail.com with ESMTPSA id p17-20020a05600c469100b004120b4c57c9sm15840571wmo.4.2024.02.20.11.42.46
+        d=1e100.net; s=20230601; t=1708458271; x=1709063071;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tf7nxv/yoeRZAIg/mVYOoRIe0Oc63BJnhI64NvPgd3U=;
+        b=LbBX+hYblUZfSeu32q/M4Rzz05R9cw0ruddz8AforqKewmL2A4bXF7PevPu47O8dHQ
+         LhH+SAinLkDBfy4Pd0JXRyYJN4V+MvyiYz+oKtbrPCmdTM9InciN9JSWAiAVAnTKov28
+         XAFY6itU6cRpAPLQ9Lv6p2BkLrg7Z83iuYTQDEoVRytGr0x2B0UW8qkVKfuFQsOeGp3O
+         io949UZdUz5bcReJsCrO2wsLrmnt4U9Kc1zOxMKtjkRN+79C27YgXyAVv3e9VmV+5l+C
+         OBo5FraX6ZTsGfNMtp2zGvBIDY2dsqfefGSBvzcVuaeFgfe8jXE5DQVmje3yeX77/GZj
+         oM7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWX8JhTyxbeRqYko8P8zu31cF9hP0b9quL4ETwvVah2HbbNmKM6PPxdnSJCz+3JaoUyhH9jzevIR7gcUd6PSG8KKbkLaL6R1Vq00hyX
+X-Gm-Message-State: AOJu0YyuB9alUKyDJWQ+XGdE5pdd8/WOMylL4esRMhLrS6Yzgny5lbg5
+	uvgCid0oc1EFhZVf6so0QsfEq+Q35snbio2xXP0O5bI+RiEu8LuQ6ug5pCkU9w==
+X-Google-Smtp-Source: AGHT+IEegqxXmIvsjTN0+qK/zSYbjr1IoWgnZe1NVExgdR7HP3eQ5gheVb9ulNmXqL4KYReh+e0t+w==
+X-Received: by 2002:a05:620a:201c:b0:787:6c11:7d76 with SMTP id c28-20020a05620a201c00b007876c117d76mr6064988qka.10.1708458271439;
+        Tue, 20 Feb 2024 11:44:31 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id x1-20020ae9f801000000b007873c82f0easm2905146qkh.113.2024.02.20.11.44.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 11:42:46 -0800 (PST)
-From: Jann Horn <jannh@google.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jann Horn <jannh@google.com>
-Subject: [PATCH] net: ethtool: avoid rebuilds on UTS_RELEASE change
-Date: Tue, 20 Feb 2024 20:42:44 +0100
-Message-ID: <20240220194244.2056384-1-jannh@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+        Tue, 20 Feb 2024 11:44:30 -0800 (PST)
+Date: Tue, 20 Feb 2024 14:44:29 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev, msnitzer@redhat.com, ignat@cloudflare.com,
+	damien.lemoal@wdc.com, bob.liu@oracle.com, houtao1@huawei.com,
+	peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org,
+	allen.lkml@gmail.com, kernel-team@meta.com,
+	Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH 8/8] dm-verity: Convert from tasklet to BH workqueue
+Message-ID: <ZdUBHQQEN5-9AHBe@redhat.com>
+References: <20240130091300.2968534-1-tj@kernel.org>
+ <20240130091300.2968534-9-tj@kernel.org>
+ <c2539f87-b4fe-ac7d-64d9-cbf8db929c7@redhat.com>
+ <Zbq8cE3Y2ZL6dl8r@slm.duckdns.org>
+ <CAHk-=wjMz_1mb+WJsPhfp5VBNrM=o8f-x2=6UW2eK5n4DHff9g@mail.gmail.com>
+ <ZbrgCPEolPJNfg1x@slm.duckdns.org>
+ <ZbrjhJFMttj8lh3X@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbrjhJFMttj8lh3X@redhat.com>
 
-Currently, when you switch between branches or something like that and
-rebuild, net/ethtool/ioctl.c has to be built again because it depends
-on UTS_RELEASE.
+On Wed, Jan 31 2024 at  7:19P -0500,
+Mike Snitzer <snitzer@kernel.org> wrote:
 
-By instead referencing a string variable stored in another object file,
-this can be avoided.
+> On Wed, Jan 31 2024 at  7:04P -0500,
+> Tejun Heo <tj@kernel.org> wrote:
+> 
+> > Hello, Linus.
+> > 
+> > On Wed, Jan 31, 2024 at 03:19:01PM -0800, Linus Torvalds wrote:
+> > > On Wed, 31 Jan 2024 at 13:32, Tejun Heo <tj@kernel.org> wrote:
+> > > >
+> > > > I don't know, so just did the dumb thing. If the caller always guarantees
+> > > > that the work items are never queued at the same time, reusing is fine.
+> > > 
+> > > So the reason I thought it would be a good cleanup to introduce that
+> > > "atomic" workqueue thing (now "bh") was that this case literally has a
+> > > switch between "use tasklets' or "use workqueues".
+> > > 
+> > > So it's not even about "reusing" the workqueue, it's literally a
+> > > matter of making it always just use workqueues, and the switch then
+> > > becomes just *which* workqueue to use - system or bh.
+> > 
+> > Yeah, that's how the dm-crypt got converted. The patch just before this one.
+> > This one probably can be converted the same way. I don't see the work item
+> > being re-initialized. It probably is better to initialize the work item
+> > together with the enclosing struct and then just queue it when needed.
+> 
+> Sounds good.
+>  
+> > Mikulas, I couldn't decide what to do with the "try_verify_in_tasklet"
+> > option and just decided to do the minimal thing hoping that someone more
+> > familiar with the code can take over the actual conversion. How much of user
+> > interface commitment is that? Should it be renamed or would it be better to
+> > leave it be?
+> 
+> cryptsetup did add support for it, so I think it worthwhile to
+> preserve the option; but it'd be fine to have it just be a backward
+> compatible alias for a more appropriately named option?
 
-Signed-off-by: Jann Horn <jannh@google.com>
----
-(alternatively we could also use the utsname info from the current UTS
-namespace, but that'd be a bit of a behavior change, and I wanted to
-keep this change a no-op)
+Hey Tejun,
 
- net/ethtool/ioctl.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I'm not sure where things stand with the 6.9 workqueue changes to add
+BH workqueue.  I had a look at your various branches and I'm not
+seeing where you might have staged any conversion patches (like this
+dm-verity one).
 
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 7519b0818b91..575642b3070e 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -26,12 +26,12 @@
- #include <linux/sched/signal.h>
- #include <linux/net.h>
- #include <linux/pm_runtime.h>
-+#include <linux/utsname.h>
- #include <net/devlink.h>
- #include <net/ipv6.h>
- #include <net/xdp_sock_drv.h>
- #include <net/flow_offload.h>
- #include <linux/ethtool_netlink.h>
--#include <generated/utsrelease.h>
- #include "common.h"
- 
- /* State held across locks and calls for commands which have devlink fallback */
-@@ -713,7 +713,8 @@ ethtool_get_drvinfo(struct net_device *dev, struct ethtool_devlink_compat *rsp)
- 	struct device *parent = dev->dev.parent;
- 
- 	rsp->info.cmd = ETHTOOL_GDRVINFO;
--	strscpy(rsp->info.version, UTS_RELEASE, sizeof(rsp->info.version));
-+	strscpy(rsp->info.version, init_uts_ns.name.release,
-+		sizeof(rsp->info.version));
- 	if (ops->get_drvinfo) {
- 		ops->get_drvinfo(dev, &rsp->info);
- 		if (!rsp->info.bus_info[0] && parent)
--- 
-2.44.0.rc0.258.g7320e95886-goog
+I just staged various unrelated dm-verity and dm-crypt 6.8 fixes from
+Mikulas that I'll be sending to Linus later this week (for v6.8-rc6).
+Those changes required rebasing 'dm-6.9' because of conflicts, here is
+the dm-6.9 branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/log/?h=dm-6.9
 
+So we'll definitely need to rebase your changes on dm-6.9 to convert
+dm-crypt and dm-verity over to your BH workqueue.  Are you OK with
+doing that or would you prefer I merge some 6.9 workqueue branch that
+you have into dm-6.9? And then Mikulas and I work to make the required
+DM target conversion changes?
+
+However you'd like to do it: please let me know where you have the
+latest 6.9 code the adds BH workqueue (and if you have DM target
+conversion code that reflects your latest).
+
+Thanks,
+Mike
 
