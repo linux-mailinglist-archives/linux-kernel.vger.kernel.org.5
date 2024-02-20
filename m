@@ -1,135 +1,127 @@
-Return-Path: <linux-kernel+bounces-73155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5626985BE40
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:11:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B3C85BE43
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 899D81C20E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:11:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 227FCB25891
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570B16A8DB;
-	Tue, 20 Feb 2024 14:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306066BB36;
+	Tue, 20 Feb 2024 14:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I9M8KbcQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ry3Zr4Ap"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2528B6A8A7;
-	Tue, 20 Feb 2024 14:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BF76A8B7;
+	Tue, 20 Feb 2024 14:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708438173; cv=none; b=eZt/ve24Fqw0JBKDFy12qUc3p+aWT2AHvXfKSMJ1YmOgGMAYn8l3biF6RVYD4rsEk3BsIjVnwmbegNdcjar/wiHULnecN+LVCZ0LVbue/e7OuTOTYaM77+vg6kkl+1Ppe3U9CJAVIVw7NXe/puSMTQKzczOPSETqtaPZf9ocSyU=
+	t=1708438191; cv=none; b=bliZazsGZ7wM//FslOPH6kFVdtm2DaflvGWY9ezABz1ALTwbVCmjY0fGFMdzSg7EUE2zPbRrBZi2s8gbDhGyaBCh3pqxyS5ZJfMR3ZBBFgFDx0+o8RTbX2vT6y//dsCj+8VjIOlWj9iX/5R4ONXlXg17l9WXc8FVd0Qa+zFYfNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708438173; c=relaxed/simple;
-	bh=j/YnzyTz1wKrobyyvYpo/CHxXfXEWCwp2tQdOVkqBKY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BqnG+ji8GQFNURhnyGwkAluBqYd6pLeK96VT8IQxFZugVhM0dLLkGiEIIjznwivV9nYvuA+7wYQAT1CJOwU5+rsI1x4OfEXXK5u3YbNEIMGVKOeqP0qAVrMPPbGGLbcgkGL8dcmYHqOxO8/Udz/qym1+WYPFowpnj4m6SGbW+d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I9M8KbcQ; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708438172; x=1739974172;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=j/YnzyTz1wKrobyyvYpo/CHxXfXEWCwp2tQdOVkqBKY=;
-  b=I9M8KbcQOrkPXijljq6tTd0mJXit3xZhlmAhgTgANIv7lCbUyHEuAbzx
-   rU/3yUj/zOazDwjIqCK2QcobOQ6dNkbM8wU6ZTPZpSJZn/bwPsLjFY1D1
-   /vfuVIBGqeTA8hYrK16MYnX7HLzDJFZuGkCTzyDSWiWKEplRNXEGig2cm
-   WjREuGIrzZ8vmaAhAvgaFra3i8khlsbxFcogF+U8xzzfG+sMjyN38gTj2
-   AfPU3zMWR8JtjfAfIDRVh02pXiNiilTlfU/vXX6cIDaj7ZWDZDS32rn/T
-   a0Wb9b4FIJ/8z7FgcMHGHK1MdM5vrn2po+REUvFgG2cAQd/9pqpX7feWh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="6358970"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="6358970"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 06:09:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="913082208"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="913082208"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 06:09:29 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rcQoI-000000066IQ-2xbo;
-	Tue, 20 Feb 2024 16:09:26 +0200
-Date: Tue, 20 Feb 2024 16:09:26 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
-	linus.walleij@linaro.org, semen.protsenko@linaro.org,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: iio: pressure: Fixes BMP38x and BMP390 SPI
- support
-Message-ID: <ZdSyljwOyxIY7Gvb@smile.fi.intel.com>
-References: <20240219191359.18367-1-vassilisamir@gmail.com>
+	s=arc-20240116; t=1708438191; c=relaxed/simple;
+	bh=UZr5OabjzFWqGwIW7vStjE8DV5p1pvPSmY1ncmhIDTo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fq0qnfNM4cxqJ+dlWFjz+VHirKswLfcPHghaJL3hiY+vMiD7hsOfz4HPgcRXQL6R9LAYzUWapNWoKrZyP4Dkga6GK/4X6jyq+4fyhQIT0LnVmuaAu6o+ZkEuZPENQbe7ZwH5OrPsLpi+uQMOpvIJRZMxwedb8qp1HqKXouNMeiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ry3Zr4Ap; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d23d301452so25489291fa.1;
+        Tue, 20 Feb 2024 06:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708438187; x=1709042987; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W5ygzhg0Sp16WJIhUiXNrHEdpZ3tx3asQbWo9oNNCcI=;
+        b=Ry3Zr4ApBaRKfQGBz8hP/yEg2SQ0n3+1vUNszruT65mpoZfM5ajyrMnTp4nIPWPiEK
+         +uPKSU7yPGP+onLwd6R6F+FmblVtt4Sb3AGeABaMiW1fpf/1xbcNcDyEpEU+QnInjZ7Q
+         STRwT/GfquxGth8rduF8bPkH8FzKYxrMefLzk/8B7/tq7fgRjWNQSp1fKTO9JLTHRWcc
+         KBYlxyrkAASfzVRqcJvDQJbWSwjNOeNNTr6oHvAaFZv7dpdd3j0ibUua3DJ9/YNBJZBA
+         Ox9+8ujNdYysWZ+kTC7tDRUOpp+Enp78rCzMbOOJLq9lJ7XzcCIH/6MNslWaMdWqQFAW
+         pfqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708438187; x=1709042987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W5ygzhg0Sp16WJIhUiXNrHEdpZ3tx3asQbWo9oNNCcI=;
+        b=hTbNjvqXZc/J79SwXw6svF7eWPxEpKens/0NXIj0gME62BoDfpyMmwuuqzDJgh3SOw
+         offbcWF3vNnkze6Yy8Ix3/H7ipAU68kdRNEPIXGp4HpZ80lPVSlM1Cap7rgg4BSYJuLu
+         x0bsqv0vkX/g8eVoP8ecTeUhi3czaIBf6gK0y9tQFJ+NdY3l+pFLx7Q30RVH6IehsGZF
+         TWpq6KeF38J2/pnFpT4EYgVVY8uoyiKaGBF0y7xOXnK3wF3s6zY/sptREGD7Sr9EdvwV
+         FJ1iIaUTRwQIChiDnxCcXtHuEoM93Ar1V7Y+7f9nMc/1YI52gIgzLZZkk8uvMwX17sbo
+         pBYw==
+X-Forwarded-Encrypted: i=1; AJvYcCV8870AU7toJCo+MS3kevHTreY25e2uEbieQOWyhdcDJ/qlrsPxhUUD2hbnkCSaQ5DiucQ+jbjkdr5b39aK4RL6dWH2uUi018F3kPWg7TpfYd6u3azJjAGUuXeCM4UtHhrAUqBuchu0qjo=
+X-Gm-Message-State: AOJu0YzKAiWx8EnSjO9jsLqgAto7IwKmEMjDjhtC1N+tx1xaHukV3CkQ
+	eMKlqbq83pHdmJjWBeUDyyP9D6vXC+ggNWTbv52FzgzLfKTowXD3W7yRnzZZn+sXZ+qPFRisaNI
+	dweO/96HQWAtJUnjFLOrTQwZgTCeG0DIOxq8kCA==
+X-Google-Smtp-Source: AGHT+IEJNfoUUiWQ+3bprvylADBP1/jWjR+Wzkz/4OBZl7mhVSDLu56YSan4b9juc2tTL65lxLIu/LJM13ARjFgq/p0=
+X-Received: by 2002:a05:651c:545:b0:2d2:25bf:d80a with SMTP id
+ q5-20020a05651c054500b002d225bfd80amr7687442ljp.5.1708438187387; Tue, 20 Feb
+ 2024 06:09:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219191359.18367-1-vassilisamir@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240208144224.438146-1-r.smirnov@omp.ru> <5abcb44deb604258aff4cd02c3ca90a3@omp.ru>
+In-Reply-To: <5abcb44deb604258aff4cd02c3ca90a3@omp.ru>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Tue, 20 Feb 2024 23:09:30 +0900
+Message-ID: <CAKFNMomWkZeK+CzX6R0S+9UB0tCN2WBd9A0iiUcqJcji+LFsvg@mail.gmail.com>
+Subject: Re: [PATCH 5.10/5.15/6.1 0/1] nilfs2: fix WARNING in nilfs_dat_prepare_end()
+To: "stable@vger.kernel.org" <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Roman Smirnov <r.smirnov@omp.ru>, 
+	"linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alexey Khoroshilov <khoroshilov@ispras.ru>, 
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Karina Yankevich <k.yankevich@omp.ru>, Andrey Rusalin <a.rusalin@omp.ru>, Sergey Yudin <s.yudin@omp.ru>, 
+	Valentin Perevozchikov <v.perevozchikov@omp.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 08:13:59PM +0100, Vasileios Amoiridis wrote:
-> According to the datasheet of BMP38x and BMP390 devices, for an SPI
-> read operation the first byte that is returned needs to be dropped,
-> and the rest of the bytes are the actual data returned from the
-> sensor.
+On Tue, Feb 20, 2024 at 5:44=E2=80=AFPM Roman Smirnov wrote:
+>
+> On Thu, 8 Feb 2024 17:42:41 +0300, Roman Smirnov wrote:
+> > Syzkaller reports WARNING in nilfs_dat_prepare_end() in 5.10, 5.15 and =
+6.1
+> > stable releases. The problem has been fixed in upstream:
+> > https://syzkaller.appspot.com/bug?extid=3D5d5d25f90f195a3cfcb4
+> >
+> > The problem can also be fixed in versions 5.10, 5.15 and 6.1 by the
+> > following patch.
+> >
+> > Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+> >
+> > Link: https://syzkaller.appspot.com/bug?extid=3D325e6b0a1e7cf9035cc0
+> > Link: https://syzkaller.appspot.com/bug?extid=3Dbebf30d67ea2569f0fd3
+> >
+> > Ryusuke Konishi (1):
+> >  nilfs2: replace WARN_ONs for invalid DAT metadata block requests
+> >
+> >  fs/nilfs2/dat.c | 27 +++++++++++++++++----------
+> >  1 file changed, 17 insertions(+), 10 deletions(-)
+>
+> Sorry to bother you, do you have any comments on the patch?
 
-..
+Hi Greg,
 
->  #include <linux/spi/spi.h>
->  #include <linux/err.h>
->  #include <linux/regmap.h>
-> +#include <linux/bits.h>
+As a side note, this commit handles certain metadata corruptions
+better if they are detected, rather than just killing WARN_ONs, and
+prevents an internal error code (ENOENT) from propagating
+inappropriately to userland.
 
-I see that it's unsorted, but try to squeeze a new header to the better place
-where more will be kept sorted. With given context, it should go before all
-others, but it might be even better location.
+So, in retrospect, I think it was worth backporting to stable trees.
 
-..
+I have checked the source code of each of the target stable trees, and
+they are safe to apply.
 
-> +static int bmp380_regmap_spi_read(void *context, const void *reg,
-> +				  size_t reg_size, void *val, size_t val_size)
-> +{
-> +	struct spi_device *spi = to_spi_device(context);
-> +	u8 rx_buf[4];
-> +	ssize_t status;
-> +
-> +	/*
-> +	 * Maximum number of consecutive bytes read for a temperature or
-> +	 * pressure measurement is 3.
-> +	 */
-> +	if (val_size > 3)
-> +		return -EINVAL;
-> +	/*
-> +	 * According to the BMP3xx datasheets, for a basic SPI read opertion,
-> +	 * the first byte needs to be dropped and the rest are the requested
-> +	 * data.
-> +	 */
-> +	status = spi_write_then_read(spi, reg, 1, rx_buf, val_size + 1);
-> +	if (status)
-> +		return status;
-
-> +	memcpy(val, rx_buf + 1, val_size);
-
-Okay, endianess is defined in the regmap_bus below...
-
-> +	return 0;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Ryusuke Konishi
 
