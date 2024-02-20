@@ -1,1209 +1,212 @@
-Return-Path: <linux-kernel+bounces-73139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF0E685BE0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:05:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5331485BE2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:09:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E31291C21F11
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:05:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C689B223B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543FE6A35E;
-	Tue, 20 Feb 2024 14:05:20 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D576BB20;
+	Tue, 20 Feb 2024 14:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Ko5dDD+x"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2071.outbound.protection.outlook.com [40.92.107.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564876A8D4;
-	Tue, 20 Feb 2024 14:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708437918; cv=none; b=DG+8zk0ztO7IX7ccLdBzbe8KemNA30zcit50+oFq0jMI3PCJIqjEGpVLRJuAmkKJ3NaunF8XlouPUbZwK/BLdZrp5rfrNm00g/wr6wQnnwrPSQ493deRbpm9vQCH8lF2sflkUPHkoc3v08RrqojTDHtJuWb3Dn5qgT1IeMMdCUY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708437918; c=relaxed/simple;
-	bh=F9pzETl/mMWPwnyWWigPWUyeCONvpbY3d4PzzsKo2ps=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=PEbOdnl3r7ZzUF2jMaWs7ZN6JtdrBPru4nN2gYF11uy5QdfeHCTYW3Khot9lY+AYm8yZOJrOrxC/w+j7cxdnJ2TAuB2Z9F+O8vsBr3p56jIPgIlpD/TDBBjfW2ZKIsJnmO2KcLz9oUQM8/XyfqJiuxxcjCYPq/6vrH2OjZj1Yzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B528DC433B1;
-	Tue, 20 Feb 2024 14:05:17 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rcQlz-0000000267k-2eh1;
-	Tue, 20 Feb 2024 09:07:03 -0500
-Message-ID: <20240220140703.497966629@goodmis.org>
-User-Agent: quilt/0.67
-Date: Tue, 20 Feb 2024 09:06:16 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Tim Chen <tim.c.chen@linux.intel.com>,
- Vincent Donnefort <vdonnefort@google.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Mete Durlu <meted@linux.ibm.com>
-Subject: [PATCH v4 3/3] tracing: Move saved_cmdline code into trace_sched_switch.c
-References: <20240220140613.782679360@goodmis.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E37369D0D;
+	Tue, 20 Feb 2024 14:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708438020; cv=fail; b=j4+avhGIYVBUJXFrRJpqlVpIJucD1Qx/VDwxNhPVuZ39WKNjkJlxz5FNYmc83rPa/RTWowRbw19BATVGOEV65fEVjhOKOWVGsfYZj9jxjiQcck3CE+TO5eVdwUKQv0FNBQpTHjaRx70pYWKbTEwMQcI+qQHKQjHHCDgtEpd88ww=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708438020; c=relaxed/simple;
+	bh=4mLskrfR+uaiNfeTrMMg5bcnIT4OHOgm1y2941aBHNY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Sf/cbfqNzdYSiyyBIBg2G+0N49EbrrQuUiBdv6+E0QS668irkDRV56BH5zn0DSalGAG4oSwQf1aXU8yK60xyq53upZ+C8Jz//x+N1GcN7Sv1JwgNCRPX0a4ar7NCM+TxJ5C0Rq0rTPJ9QQS7QDwkxOF7DzrTMthNE8egTpHoeOc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Ko5dDD+x; arc=fail smtp.client-ip=40.92.107.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8rLCYhv2M0yoTw2zU6eSevhkQEZrtv8dMGKQ8QdrgzSTT6baqK9WdKfKnBe92uwF7yThqqqs2hPtX+bKKgE1GdVnafp+gTWVSjsXNjhHQlYqYFOUpZZjKoSS6zmSTY5u4/yXqAu/6bsnziacuKcGa1rb3g6yYbyuKp3jywasNBp4viZOYagKMOCXbiZwVrTfBn1qqY37l6an5Dnq4WbZPD6vPnj2WbEu/l5MqIvPlvKFePq122j6jqQS6Jnn+ITabSRvknTz5Qy2jJoFavJ4J93MkULTfseHEOnrXcQKNZpnsvcnkEsobd4wF9lM4TGy15bKmJQDf3kumbua5vzSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oXXWqHHfB/J9gTzI6qfC5SyY8Kcp+ZSokUn6VRBhFUA=;
+ b=MnHA+k6qkB1GpfqKsmRLZi6N9Rcr+FeRHBeLkR4XoUtkeGD4JS5sJALO89+++N2GcKDBPcO/LUp6s/KF6D+kwtgWJqaRFP9wVu8tH7glkJRGYTtd5aO1A9HCP1vS0w8GsGClJ+rUC84AOSRs4YNPvYFXkDB8B+KBrWojxjrN6lzkczFFft691N0l5wn8H0ZxMEXwQxlYdn45nLuJsSmewfMt6ndaJI1Y1Bdpok9EHAW82hlMi7HiTLotbBB31/a86D/XS3lnZ7jZxiSCi2bhIyKQD0sPXQZS6BbpiCqiQH7BKBJVHLAFYvMBY3SEFF/0uJ9Bp5w9tbxlln/C9aJ7fQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oXXWqHHfB/J9gTzI6qfC5SyY8Kcp+ZSokUn6VRBhFUA=;
+ b=Ko5dDD+xXCKW0CTfUGXtsiDqEgdZD3b5a/5QE+xE9OJn5Ag4Rt7icrR3CDw/1ypZoHDlTX1lN17J6ann1wjgYRYKRcw6oMea0OvNjjvGVe9yapyQ0EBCBkDac3xjpGVBMNqiXYIU5FxkejHJ0LzowO0N9X4sBxgqfKYQOE0gCKbms6/yggvpz3kHJkiZSNNC56X26nfEW5bVh55Dy0sRVE2TbQiSe6Rp+woWP7q83GwLypCm8qAdPfTKcaPj2/Ed7vnQV2B5ZuN2F4TIx9kuaAlQlzwbJFNWaA6NwOKvboRRyHuN9CVwHk7VRJzK9WIAXCf8OybzdbwhlwHFWRTZbg==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by KL1PR0601MB4308.apcprd06.prod.outlook.com (2603:1096:820:6c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 14:06:51 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 14:06:51 +0000
+Message-ID:
+ <SEZPR06MB6959456E59D84C15F0C1B88396502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Tue, 20 Feb 2024 22:06:45 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 1/5] dt-bindings: clock: histb-clock: Add missing
+ common clock and Hi3798MV200 specific clock definition
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
+ <20240217-clk-mv200-v2-1-b782e4eb66f7@outlook.com>
+ <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [tn8y/u+QRvkIZNpt7l6pj8o2Au1Bn+ProamVa+PVLSRKYBUFms3Ncg7e0t8YKq3P]
+X-ClientProxiedBy: TYCP301CA0064.JPNP301.PROD.OUTLOOK.COM
+ (2603:1096:405:7d::16) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <e83e3faf-3ff0-4467-8408-b08e54ac773c@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|KL1PR0601MB4308:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7cc4acd-8b23-46b4-a279-08dc321d2f5b
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	RttOD51mK8tJsXHB8WnThFmYIVydte+ExoqjzqZ+5H93lPmY0ydls6MdRHL9qW1nZWRXd5A1MT6W8pFDhoSJHTEii6fdJ/FOYXSzkqcg0wAwJUNrQ27a00qcXfk6Elo2V4hC9zgcCbjtS/Z8MPyXKumSXkbus33ZErr6FzeDuufiQ6ouplk5hqdpJSTmZmUfTSblymkn9Q4ntAF29yq3L8CR56g8rbDFQUJ7v1dWMMG18wTfWnB5Wj6hBKrG1m4qB4ZVu4pznO67se8osrlg36vUXMiq4MWNiR/9xMoND/rmn2SumeWDFdKE2CoR6Tdf5KMLUYTcP5QnX87txIKeTIl/v14ggvRL8kIFb6Q4bduFWWbDxvl54fknL0ucCLn5gzL+oyVnrhuIFTDFAATTFHjx/wdm0PCnngEuoXA1YcAwez5lP7x60Ejfu5xqkLDyxzT3aPTSu1Haw5yvDpHqeWvOVrlp1R/wI0Skc3nlPg9GYirDRWOVQ6TcDD/6LEUhIHBOZdB2eOL1VYYPkcd2DAvsWhXMIAjEVvnTzrPgaIo/PBO/Yqi/z5ITSYJ1qzeZ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NVJ0MHAzRGh5RmpaNWlIUWs1MmdmYnJHRHNQRkJuTVBFTTMrZkQ4ZzNUd0pt?=
+ =?utf-8?B?MlBFdm9TZ0NTWkxEZEdMdXhiRFhlZURLV2E1eThZaGljMWhDajdpT0w4TWR1?=
+ =?utf-8?B?TEZPMFA2MFFCWG9LcWpEVEtJM0tCQnFrcVFpYWc2RW1vd3puYnYxRG9Kdis3?=
+ =?utf-8?B?WVl2YlVwSW1obmZkQWFkOEJBZVNCQzF2eStOU3ZSRDFvZTBYbmJsektZdUs5?=
+ =?utf-8?B?YVUrYXNuRGVoWjRYNnBjZnYwbE94ZFoxTkx2QjB2MzlmZ20rQldIS1I1ZTNu?=
+ =?utf-8?B?VFNxRzd2WklYNnR2Uk1iQk02M1FzSi80b1drMFhxR2JyekYvR2E0UlVmaFpz?=
+ =?utf-8?B?bWlyd1o3dkZka214c3YzdUlrUWhPQWZ1ZFNYcy9vVzgvb1Bzckx1clNHU3ZH?=
+ =?utf-8?B?R2tXOURnSG1uajhyWWE4VU1ud09selZRa09NTFp6cTNaeHJjUUtseTZSTE8x?=
+ =?utf-8?B?cDI1d0JzNk1NdVpFVWhHRUljT3o4MSs1T0U3d3RKUWcyM2hDWDA4V3FXd2Nw?=
+ =?utf-8?B?VFlmQ2RPNDZkYlp0TjVoSm54ZVZ4amU1ZGZjWm9reDFEdWwyb3pTZUFCSHl0?=
+ =?utf-8?B?V0hoMWsyeWFuaGZRS1RoMFY0QWYwakRlT3pTQUI0VTBnRHMvK09LcE1LYVVu?=
+ =?utf-8?B?NkxiY0p3Qk5UbkhXYkx5Q0d0MmRpSlhWcWdUOEpGK2RJNEJ0UFRDUGx1UGYw?=
+ =?utf-8?B?SlRpWWZvdi9KRU54VVJRM2Y1ajRpTC9wUTlhaEtFRHhXcVU0NFZNU2xjNzdz?=
+ =?utf-8?B?NFJrNHIranVOVTFYeXdGRVJBNHNMbkErMWlxYXppVkhiYW5kcHpWZTVLL25u?=
+ =?utf-8?B?YlhaUXZselduRnRQV1VCY3JVV2NpVmpwVk80L1pLaHovckt4RUpUS1l2dTNa?=
+ =?utf-8?B?a3dHVTloT1ZHZ2JVNmtodm13aFgyb1g0blpiZWtMYURQLzJHZUtoQ3pjODFT?=
+ =?utf-8?B?bWdKL29wQUlzRDRTeHBWaFJuVldVbHVtUGlsYkh6TWplakg5WUt4WU0xQlJL?=
+ =?utf-8?B?YlJGKzE1WndweE5Jd1FyNmtlRnJaRC9QV0xhMmR3M3FnVW5RWHNGQUgvN3B5?=
+ =?utf-8?B?d05SSHgwSXZvTEpDdVVERy9mV0pMSHFNZDc0am1VRDVzTmZXdEl3TVNyNEZm?=
+ =?utf-8?B?eFZMWmZ4d3VGOXBoWXBjUmJJLzB1alhjZ1Z6K05Rb21rV05UUHRqMmd6VUps?=
+ =?utf-8?B?NVdYOEhQb3lXSUtIeFFWYis3cDkwM284MnRST0ZZd0kwT0E4anJMeExRUjhL?=
+ =?utf-8?B?dEhKK0hJYWs2MEdJMndRK0NSV3dqTUZDS3c3aU40WDVXclRTYVNFSGFCNjdY?=
+ =?utf-8?B?SFNxK1JROW0ySXZvekF6OVB0SmU1V2hTT1BjNzFkd0F5U29MQ0YyRW5iR0hx?=
+ =?utf-8?B?VHhHQU5ZblRkRnc2OHNqaVlLbkFrNE1vdE1MeVpQWCtmMlA2bUxJODBMMVpY?=
+ =?utf-8?B?VnJwaWJ0RnBWQml4cEdCcUJKZ3ZMb3hRSVdlb2tIZnFLTEllVGFUZWRpcDhz?=
+ =?utf-8?B?dnBieXhNaGpsbXo4bEd2WXlHcGFwZjd3eGo3bHhWWkIvNXJRcjhkRVpNeVNv?=
+ =?utf-8?B?UEdOZnRFSXRXUk9LVHVRMHdYVi8vSmF1WnZWNmNXNXA3OUlGM2plckhsZUd4?=
+ =?utf-8?B?eDRDN3JUTjlpVnMvTUNxY0p2SCt0NFhFZUNhV2ZzYXlzaTdzb3VwZDJYWG04?=
+ =?utf-8?B?aUZUbW5Ba2VGcGVCQWF3NDEyZUpsd3hhLzZlNk4ydTFQU2hDTGZhemhhcE1v?=
+ =?utf-8?Q?pMaFGkHSzBHuLPKgFMg9Zuf7KEmU+LsM8b+5nWq?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7cc4acd-8b23-46b4-a279-08dc321d2f5b
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 14:06:51.1248
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4308
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 2/20/2024 6:10 PM, Krzysztof Kozlowski wrote:
+> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
+>>
+>> According to the datasheet, some clocks are missing, add their
+>> definitions first.
+>>
+>> Some aliases for hi3798mv200 are also introduced.
+>>
+>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+>> ---
+>>   include/dt-bindings/clock/histb-clock.h | 21 +++++++++++++++++++++
+>>   1 file changed, 21 insertions(+)
+>>
+>> diff --git a/include/dt-bindings/clock/histb-clock.h b/include/dt-bindings/clock/histb-clock.h
+>> index e64e5770ada6..68a53053586a 100644
+>> --- a/include/dt-bindings/clock/histb-clock.h
+>> +++ b/include/dt-bindings/clock/histb-clock.h
+>> @@ -58,6 +58,27 @@
+>>   #define HISTB_USB3_UTMI_CLK1		48
+>>   #define HISTB_USB3_PIPE_CLK1		49
+>>   #define HISTB_USB3_SUSPEND_CLK1		50
+>> +#define HISTB_SDIO1_BIU_CLK		51
+>> +#define HISTB_SDIO1_CIU_CLK		52
+>> +#define HISTB_SDIO1_DRV_CLK		53
+>> +#define HISTB_SDIO1_SAMPLE_CLK		54
+>> +#define HISTB_ETH0_PHY_CLK		55
+>> +#define HISTB_ETH1_PHY_CLK		56
+>> +#define HISTB_WDG0_CLK			57
+>> +#define HISTB_USB2_UTMI0_CLK		HISTB_USB2_UTMI_CLK
+> Why? It's anyway placed oddly, the entries are ordered by number/value.
 
-The code that handles saved_cmdlines is split between the trace.c file and
-the trace_sched_switch.c. There's some history to this. The
-trace_sched_switch.c was originally created to handle the sched_switch
-tracer that was deprecated due to sched_switch trace event making it
-obsolete. But that file did not get deleted as it had some code to help
-with saved_cmdlines. But trace.c has grown tremendously since then. Just
-move all the saved_cmdlines code into trace_sched_switch.c as that's the
-only reason that file still exists, and trace.c has gotten too big.
 
-No functional changes.
+So this is somewhat broken at the beginning. It named after 
+histb-clock.h but actually they are all clocks for Hi3798CV200 SoC. For 
+Hi3798MV200(also a HiSTB SoC), there is one additional UTMI clock.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace.c              | 515 +-----------------------------
- kernel/trace/trace.h              |  10 +
- kernel/trace/trace_sched_switch.c | 515 ++++++++++++++++++++++++++++++
- 3 files changed, 528 insertions(+), 512 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 06c593fc93d0..50fab999e72e 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -39,7 +39,6 @@
- #include <linux/ctype.h>
- #include <linux/init.h>
- #include <linux/panic_notifier.h>
--#include <linux/kmemleak.h>
- #include <linux/poll.h>
- #include <linux/nmi.h>
- #include <linux/fs.h>
-@@ -105,7 +104,7 @@ dummy_set_flag(struct trace_array *tr, u32 old_flags, u32 bit, int set)
-  * tracing is active, only save the comm when a trace event
-  * occurred.
-  */
--static DEFINE_PER_CPU(bool, trace_taskinfo_save);
-+DEFINE_PER_CPU(bool, trace_taskinfo_save);
- 
- /*
-  * Kill all tracing for good (never come back).
-@@ -2299,96 +2298,6 @@ void tracing_reset_all_online_cpus(void)
- 	mutex_unlock(&trace_types_lock);
- }
- 
--/*
-- * The tgid_map array maps from pid to tgid; i.e. the value stored at index i
-- * is the tgid last observed corresponding to pid=i.
-- */
--static int *tgid_map;
--
--/* The maximum valid index into tgid_map. */
--static size_t tgid_map_max;
--
--#define SAVED_CMDLINES_DEFAULT 128
--#define NO_CMDLINE_MAP UINT_MAX
--/*
-- * Preemption must be disabled before acquiring trace_cmdline_lock.
-- * The various trace_arrays' max_lock must be acquired in a context
-- * where interrupt is disabled.
-- */
--static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
--struct saved_cmdlines_buffer {
--	unsigned map_pid_to_cmdline[PID_MAX_DEFAULT+1];
--	unsigned *map_cmdline_to_pid;
--	unsigned cmdline_num;
--	int cmdline_idx;
--	char saved_cmdlines[];
--};
--static struct saved_cmdlines_buffer *savedcmd;
--
--/* Holds the size of a cmdline and pid element */
--#define SAVED_CMDLINE_MAP_ELEMENT_SIZE(s)			\
--	(TASK_COMM_LEN + sizeof((s)->map_cmdline_to_pid[0]))
--
--static inline char *get_saved_cmdlines(int idx)
--{
--	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
--}
--
--static inline void set_cmdline(int idx, const char *cmdline)
--{
--	strncpy(get_saved_cmdlines(idx), cmdline, TASK_COMM_LEN);
--}
--
--static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
--{
--	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
--
--	kmemleak_free(s);
--	free_pages((unsigned long)s, order);
--}
--
--static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
--{
--	struct saved_cmdlines_buffer *s;
--	struct page *page;
--	int orig_size, size;
--	int order;
--
--	/* Figure out how much is needed to hold the given number of cmdlines */
--	orig_size = sizeof(*s) + val * SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
--	order = get_order(orig_size);
--	size = 1 << (order + PAGE_SHIFT);
--	page = alloc_pages(GFP_KERNEL, order);
--	if (!page)
--		return NULL;
--
--	s = page_address(page);
--	kmemleak_alloc(s, size, 1, GFP_KERNEL);
--	memset(s, 0, sizeof(*s));
--
--	/* Round up to actual allocation */
--	val = (size - sizeof(*s)) / SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
--	s->cmdline_num = val;
--
--	/* Place map_cmdline_to_pid array right after saved_cmdlines */
--	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
--
--	s->cmdline_idx = 0;
--	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
--	       sizeof(s->map_pid_to_cmdline));
--	memset(s->map_cmdline_to_pid, NO_CMDLINE_MAP,
--	       val * sizeof(*s->map_cmdline_to_pid));
--
--	return s;
--}
--
--static int trace_create_savedcmd(void)
--{
--	savedcmd = allocate_cmdlines_buffer(SAVED_CMDLINES_DEFAULT);
--
--	return savedcmd ? 0 : -ENOMEM;
--}
--
- int is_tracing_stopped(void)
- {
- 	return global_trace.stop_count;
-@@ -2481,201 +2390,6 @@ void tracing_stop(void)
- 	return tracing_stop_tr(&global_trace);
- }
- 
--static int trace_save_cmdline(struct task_struct *tsk)
--{
--	unsigned tpid, idx;
--
--	/* treat recording of idle task as a success */
--	if (!tsk->pid)
--		return 1;
--
--	tpid = tsk->pid & (PID_MAX_DEFAULT - 1);
--
--	/*
--	 * It's not the end of the world if we don't get
--	 * the lock, but we also don't want to spin
--	 * nor do we want to disable interrupts,
--	 * so if we miss here, then better luck next time.
--	 *
--	 * This is called within the scheduler and wake up, so interrupts
--	 * had better been disabled and run queue lock been held.
--	 */
--	lockdep_assert_preemption_disabled();
--	if (!arch_spin_trylock(&trace_cmdline_lock))
--		return 0;
--
--	idx = savedcmd->map_pid_to_cmdline[tpid];
--	if (idx == NO_CMDLINE_MAP) {
--		idx = (savedcmd->cmdline_idx + 1) % savedcmd->cmdline_num;
--
--		savedcmd->map_pid_to_cmdline[tpid] = idx;
--		savedcmd->cmdline_idx = idx;
--	}
--
--	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
--	set_cmdline(idx, tsk->comm);
--
--	arch_spin_unlock(&trace_cmdline_lock);
--
--	return 1;
--}
--
--static void __trace_find_cmdline(int pid, char comm[])
--{
--	unsigned map;
--	int tpid;
--
--	if (!pid) {
--		strcpy(comm, "<idle>");
--		return;
--	}
--
--	if (WARN_ON_ONCE(pid < 0)) {
--		strcpy(comm, "<XXX>");
--		return;
--	}
--
--	tpid = pid & (PID_MAX_DEFAULT - 1);
--	map = savedcmd->map_pid_to_cmdline[tpid];
--	if (map != NO_CMDLINE_MAP) {
--		tpid = savedcmd->map_cmdline_to_pid[map];
--		if (tpid == pid) {
--			strscpy(comm, get_saved_cmdlines(map), TASK_COMM_LEN);
--			return;
--		}
--	}
--	strcpy(comm, "<...>");
--}
--
--void trace_find_cmdline(int pid, char comm[])
--{
--	preempt_disable();
--	arch_spin_lock(&trace_cmdline_lock);
--
--	__trace_find_cmdline(pid, comm);
--
--	arch_spin_unlock(&trace_cmdline_lock);
--	preempt_enable();
--}
--
--static int *trace_find_tgid_ptr(int pid)
--{
--	/*
--	 * Pairs with the smp_store_release in set_tracer_flag() to ensure that
--	 * if we observe a non-NULL tgid_map then we also observe the correct
--	 * tgid_map_max.
--	 */
--	int *map = smp_load_acquire(&tgid_map);
--
--	if (unlikely(!map || pid > tgid_map_max))
--		return NULL;
--
--	return &map[pid];
--}
--
--int trace_find_tgid(int pid)
--{
--	int *ptr = trace_find_tgid_ptr(pid);
--
--	return ptr ? *ptr : 0;
--}
--
--static int trace_save_tgid(struct task_struct *tsk)
--{
--	int *ptr;
--
--	/* treat recording of idle task as a success */
--	if (!tsk->pid)
--		return 1;
--
--	ptr = trace_find_tgid_ptr(tsk->pid);
--	if (!ptr)
--		return 0;
--
--	*ptr = tsk->tgid;
--	return 1;
--}
--
--static bool tracing_record_taskinfo_skip(int flags)
--{
--	if (unlikely(!(flags & (TRACE_RECORD_CMDLINE | TRACE_RECORD_TGID))))
--		return true;
--	if (!__this_cpu_read(trace_taskinfo_save))
--		return true;
--	return false;
--}
--
--/**
-- * tracing_record_taskinfo - record the task info of a task
-- *
-- * @task:  task to record
-- * @flags: TRACE_RECORD_CMDLINE for recording comm
-- *         TRACE_RECORD_TGID for recording tgid
-- */
--void tracing_record_taskinfo(struct task_struct *task, int flags)
--{
--	bool done;
--
--	if (tracing_record_taskinfo_skip(flags))
--		return;
--
--	/*
--	 * Record as much task information as possible. If some fail, continue
--	 * to try to record the others.
--	 */
--	done = !(flags & TRACE_RECORD_CMDLINE) || trace_save_cmdline(task);
--	done &= !(flags & TRACE_RECORD_TGID) || trace_save_tgid(task);
--
--	/* If recording any information failed, retry again soon. */
--	if (!done)
--		return;
--
--	__this_cpu_write(trace_taskinfo_save, false);
--}
--
--/**
-- * tracing_record_taskinfo_sched_switch - record task info for sched_switch
-- *
-- * @prev: previous task during sched_switch
-- * @next: next task during sched_switch
-- * @flags: TRACE_RECORD_CMDLINE for recording comm
-- *         TRACE_RECORD_TGID for recording tgid
-- */
--void tracing_record_taskinfo_sched_switch(struct task_struct *prev,
--					  struct task_struct *next, int flags)
--{
--	bool done;
--
--	if (tracing_record_taskinfo_skip(flags))
--		return;
--
--	/*
--	 * Record as much task information as possible. If some fail, continue
--	 * to try to record the others.
--	 */
--	done  = !(flags & TRACE_RECORD_CMDLINE) || trace_save_cmdline(prev);
--	done &= !(flags & TRACE_RECORD_CMDLINE) || trace_save_cmdline(next);
--	done &= !(flags & TRACE_RECORD_TGID) || trace_save_tgid(prev);
--	done &= !(flags & TRACE_RECORD_TGID) || trace_save_tgid(next);
--
--	/* If recording any information failed, retry again soon. */
--	if (!done)
--		return;
--
--	__this_cpu_write(trace_taskinfo_save, false);
--}
--
--/* Helpers to record a specific task information */
--void tracing_record_cmdline(struct task_struct *task)
--{
--	tracing_record_taskinfo(task, TRACE_RECORD_CMDLINE);
--}
--
--void tracing_record_tgid(struct task_struct *task)
--{
--	tracing_record_taskinfo(task, TRACE_RECORD_TGID);
--}
--
- /*
-  * Several functions return TRACE_TYPE_PARTIAL_LINE if the trace_seq
-  * overflowed, and TRACE_TYPE_HANDLED otherwise. This helper function
-@@ -5432,29 +5146,6 @@ int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set)
- 	return 0;
- }
- 
--static int trace_alloc_tgid_map(void)
--{
--	int *map;
--
--	if (tgid_map)
--		return 0;
--
--	tgid_map_max = pid_max;
--	map = kvcalloc(tgid_map_max + 1, sizeof(*tgid_map),
--		       GFP_KERNEL);
--	if (!map)
--		return -ENOMEM;
--
--	/*
--	 * Pairs with smp_load_acquire() in
--	 * trace_find_tgid_ptr() to ensure that if it observes
--	 * the tgid_map we just allocated then it also observes
--	 * the corresponding tgid_map_max value.
--	 */
--	smp_store_release(&tgid_map, map);
--	return 0;
--}
--
- int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
- {
- 	if ((mask == TRACE_ITER_RECORD_TGID) ||
-@@ -5479,6 +5170,7 @@ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
- 		trace_event_enable_cmd_record(enabled);
- 
- 	if (mask == TRACE_ITER_RECORD_TGID) {
-+
- 		if (trace_alloc_tgid_map() < 0) {
- 			tr->trace_flags &= ~TRACE_ITER_RECORD_TGID;
- 			return -ENOMEM;
-@@ -5924,207 +5616,6 @@ static const struct file_operations tracing_readme_fops = {
- 	.llseek		= generic_file_llseek,
- };
- 
--static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
--{
--	int pid = ++(*pos);
--
--	return trace_find_tgid_ptr(pid);
--}
--
--static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
--{
--	int pid = *pos;
--
--	return trace_find_tgid_ptr(pid);
--}
--
--static void saved_tgids_stop(struct seq_file *m, void *v)
--{
--}
--
--static int saved_tgids_show(struct seq_file *m, void *v)
--{
--	int *entry = (int *)v;
--	int pid = entry - tgid_map;
--	int tgid = *entry;
--
--	if (tgid == 0)
--		return SEQ_SKIP;
--
--	seq_printf(m, "%d %d\n", pid, tgid);
--	return 0;
--}
--
--static const struct seq_operations tracing_saved_tgids_seq_ops = {
--	.start		= saved_tgids_start,
--	.stop		= saved_tgids_stop,
--	.next		= saved_tgids_next,
--	.show		= saved_tgids_show,
--};
--
--static int tracing_saved_tgids_open(struct inode *inode, struct file *filp)
--{
--	int ret;
--
--	ret = tracing_check_open_get_tr(NULL);
--	if (ret)
--		return ret;
--
--	return seq_open(filp, &tracing_saved_tgids_seq_ops);
--}
--
--
--static const struct file_operations tracing_saved_tgids_fops = {
--	.open		= tracing_saved_tgids_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= seq_release,
--};
--
--static void *saved_cmdlines_next(struct seq_file *m, void *v, loff_t *pos)
--{
--	unsigned int *ptr = v;
--
--	if (*pos || m->count)
--		ptr++;
--
--	(*pos)++;
--
--	for (; ptr < &savedcmd->map_cmdline_to_pid[savedcmd->cmdline_num];
--	     ptr++) {
--		if (*ptr == -1 || *ptr == NO_CMDLINE_MAP)
--			continue;
--
--		return ptr;
--	}
--
--	return NULL;
--}
--
--static void *saved_cmdlines_start(struct seq_file *m, loff_t *pos)
--{
--	void *v;
--	loff_t l = 0;
--
--	preempt_disable();
--	arch_spin_lock(&trace_cmdline_lock);
--
--	v = &savedcmd->map_cmdline_to_pid[0];
--	while (l <= *pos) {
--		v = saved_cmdlines_next(m, v, &l);
--		if (!v)
--			return NULL;
--	}
--
--	return v;
--}
--
--static void saved_cmdlines_stop(struct seq_file *m, void *v)
--{
--	arch_spin_unlock(&trace_cmdline_lock);
--	preempt_enable();
--}
--
--static int saved_cmdlines_show(struct seq_file *m, void *v)
--{
--	char buf[TASK_COMM_LEN];
--	unsigned int *pid = v;
--
--	__trace_find_cmdline(*pid, buf);
--	seq_printf(m, "%d %s\n", *pid, buf);
--	return 0;
--}
--
--static const struct seq_operations tracing_saved_cmdlines_seq_ops = {
--	.start		= saved_cmdlines_start,
--	.next		= saved_cmdlines_next,
--	.stop		= saved_cmdlines_stop,
--	.show		= saved_cmdlines_show,
--};
--
--static int tracing_saved_cmdlines_open(struct inode *inode, struct file *filp)
--{
--	int ret;
--
--	ret = tracing_check_open_get_tr(NULL);
--	if (ret)
--		return ret;
--
--	return seq_open(filp, &tracing_saved_cmdlines_seq_ops);
--}
--
--static const struct file_operations tracing_saved_cmdlines_fops = {
--	.open		= tracing_saved_cmdlines_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= seq_release,
--};
--
--static ssize_t
--tracing_saved_cmdlines_size_read(struct file *filp, char __user *ubuf,
--				 size_t cnt, loff_t *ppos)
--{
--	char buf[64];
--	int r;
--
--	preempt_disable();
--	arch_spin_lock(&trace_cmdline_lock);
--	r = scnprintf(buf, sizeof(buf), "%u\n", savedcmd->cmdline_num);
--	arch_spin_unlock(&trace_cmdline_lock);
--	preempt_enable();
--
--	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
--}
--
--static int tracing_resize_saved_cmdlines(unsigned int val)
--{
--	struct saved_cmdlines_buffer *s, *savedcmd_temp;
--
--	s = allocate_cmdlines_buffer(val);
--	if (!s)
--		return -ENOMEM;
--
--	preempt_disable();
--	arch_spin_lock(&trace_cmdline_lock);
--	savedcmd_temp = savedcmd;
--	savedcmd = s;
--	arch_spin_unlock(&trace_cmdline_lock);
--	preempt_enable();
--	free_saved_cmdlines_buffer(savedcmd_temp);
--
--	return 0;
--}
--
--static ssize_t
--tracing_saved_cmdlines_size_write(struct file *filp, const char __user *ubuf,
--				  size_t cnt, loff_t *ppos)
--{
--	unsigned long val;
--	int ret;
--
--	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
--	if (ret)
--		return ret;
--
--	/* must have at least 1 entry or less than PID_MAX_DEFAULT */
--	if (!val || val > PID_MAX_DEFAULT)
--		return -EINVAL;
--
--	ret = tracing_resize_saved_cmdlines((unsigned int)val);
--	if (ret < 0)
--		return ret;
--
--	*ppos += cnt;
--
--	return cnt;
--}
--
--static const struct file_operations tracing_saved_cmdlines_size_fops = {
--	.open		= tracing_open_generic,
--	.read		= tracing_saved_cmdlines_size_read,
--	.write		= tracing_saved_cmdlines_size_write,
--};
--
- #ifdef CONFIG_TRACE_EVAL_MAP_FILE
- static union trace_eval_map_item *
- update_eval_map(union trace_eval_map_item *ptr)
-@@ -10693,7 +10184,7 @@ __init static int tracer_alloc_buffers(void)
- out_free_pipe_cpumask:
- 	free_cpumask_var(global_trace.pipe_cpumask);
- out_free_savedcmd:
--	free_saved_cmdlines_buffer(savedcmd);
-+	trace_free_saved_cmdlines_buffer();
- out_free_temp_buffer:
- 	ring_buffer_free(temp_buffer);
- out_rm_hp_state:
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 00f873910c5d..e4f0714d7a49 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1375,6 +1375,16 @@ static inline void trace_buffer_unlock_commit(struct trace_array *tr,
- 	trace_buffer_unlock_commit_regs(tr, buffer, event, trace_ctx, NULL);
- }
- 
-+DECLARE_PER_CPU(bool, trace_taskinfo_save);
-+int trace_save_cmdline(struct task_struct *tsk);
-+int trace_create_savedcmd(void);
-+int trace_alloc_tgid_map(void);
-+void trace_free_saved_cmdlines_buffer(void);
-+
-+extern const struct file_operations tracing_saved_cmdlines_fops;
-+extern const struct file_operations tracing_saved_tgids_fops;
-+extern const struct file_operations tracing_saved_cmdlines_size_fops;
-+
- DECLARE_PER_CPU(struct ring_buffer_event *, trace_buffered_event);
- DECLARE_PER_CPU(int, trace_buffered_event_cnt);
- void trace_buffered_event_disable(void);
-diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
-index c9ffdcfe622e..8a407adb0e1c 100644
---- a/kernel/trace/trace_sched_switch.c
-+++ b/kernel/trace/trace_sched_switch.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/kallsyms.h>
- #include <linux/uaccess.h>
-+#include <linux/kmemleak.h>
- #include <linux/ftrace.h>
- #include <trace/events/sched.h>
- 
-@@ -148,3 +149,517 @@ void tracing_stop_tgid_record(void)
- {
- 	tracing_stop_sched_switch(RECORD_TGID);
- }
-+
-+/*
-+ * The tgid_map array maps from pid to tgid; i.e. the value stored at index i
-+ * is the tgid last observed corresponding to pid=i.
-+ */
-+static int *tgid_map;
-+
-+/* The maximum valid index into tgid_map. */
-+static size_t tgid_map_max;
-+
-+#define SAVED_CMDLINES_DEFAULT 128
-+#define NO_CMDLINE_MAP UINT_MAX
-+/*
-+ * Preemption must be disabled before acquiring trace_cmdline_lock.
-+ * The various trace_arrays' max_lock must be acquired in a context
-+ * where interrupt is disabled.
-+ */
-+static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
-+struct saved_cmdlines_buffer {
-+	unsigned map_pid_to_cmdline[PID_MAX_DEFAULT+1];
-+	unsigned *map_cmdline_to_pid;
-+	unsigned cmdline_num;
-+	int cmdline_idx;
-+	char saved_cmdlines[];
-+};
-+static struct saved_cmdlines_buffer *savedcmd;
-+
-+/* Holds the size of a cmdline and pid element */
-+#define SAVED_CMDLINE_MAP_ELEMENT_SIZE(s)			\
-+	(TASK_COMM_LEN + sizeof((s)->map_cmdline_to_pid[0]))
-+
-+static inline char *get_saved_cmdlines(int idx)
-+{
-+	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
-+}
-+
-+static inline void set_cmdline(int idx, const char *cmdline)
-+{
-+	strncpy(get_saved_cmdlines(idx), cmdline, TASK_COMM_LEN);
-+}
-+
-+static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
-+{
-+	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
-+
-+	kmemleak_free(s);
-+	free_pages((unsigned long)s, order);
-+}
-+
-+static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
-+{
-+	struct saved_cmdlines_buffer *s;
-+	struct page *page;
-+	int orig_size, size;
-+	int order;
-+
-+	/* Figure out how much is needed to hold the given number of cmdlines */
-+	orig_size = sizeof(*s) + val * SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
-+	order = get_order(orig_size);
-+	size = 1 << (order + PAGE_SHIFT);
-+	page = alloc_pages(GFP_KERNEL, order);
-+	if (!page)
-+		return NULL;
-+
-+	s = page_address(page);
-+	kmemleak_alloc(s, size, 1, GFP_KERNEL);
-+	memset(s, 0, sizeof(*s));
-+
-+	/* Round up to actual allocation */
-+	val = (size - sizeof(*s)) / SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
-+	s->cmdline_num = val;
-+
-+	/* Place map_cmdline_to_pid array right after saved_cmdlines */
-+	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
-+
-+	s->cmdline_idx = 0;
-+	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
-+	       sizeof(s->map_pid_to_cmdline));
-+	memset(s->map_cmdline_to_pid, NO_CMDLINE_MAP,
-+	       val * sizeof(*s->map_cmdline_to_pid));
-+
-+	return s;
-+}
-+
-+int trace_create_savedcmd(void)
-+{
-+	savedcmd = allocate_cmdlines_buffer(SAVED_CMDLINES_DEFAULT);
-+
-+	return savedcmd ? 0 : -ENOMEM;
-+}
-+
-+int trace_save_cmdline(struct task_struct *tsk)
-+{
-+	unsigned tpid, idx;
-+
-+	/* treat recording of idle task as a success */
-+	if (!tsk->pid)
-+		return 1;
-+
-+	tpid = tsk->pid & (PID_MAX_DEFAULT - 1);
-+
-+	/*
-+	 * It's not the end of the world if we don't get
-+	 * the lock, but we also don't want to spin
-+	 * nor do we want to disable interrupts,
-+	 * so if we miss here, then better luck next time.
-+	 *
-+	 * This is called within the scheduler and wake up, so interrupts
-+	 * had better been disabled and run queue lock been held.
-+	 */
-+	lockdep_assert_preemption_disabled();
-+	if (!arch_spin_trylock(&trace_cmdline_lock))
-+		return 0;
-+
-+	idx = savedcmd->map_pid_to_cmdline[tpid];
-+	if (idx == NO_CMDLINE_MAP) {
-+		idx = (savedcmd->cmdline_idx + 1) % savedcmd->cmdline_num;
-+
-+		savedcmd->map_pid_to_cmdline[tpid] = idx;
-+		savedcmd->cmdline_idx = idx;
-+	}
-+
-+	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
-+	set_cmdline(idx, tsk->comm);
-+
-+	arch_spin_unlock(&trace_cmdline_lock);
-+
-+	return 1;
-+}
-+
-+static void __trace_find_cmdline(int pid, char comm[])
-+{
-+	unsigned map;
-+	int tpid;
-+
-+	if (!pid) {
-+		strcpy(comm, "<idle>");
-+		return;
-+	}
-+
-+	if (WARN_ON_ONCE(pid < 0)) {
-+		strcpy(comm, "<XXX>");
-+		return;
-+	}
-+
-+	tpid = pid & (PID_MAX_DEFAULT - 1);
-+	map = savedcmd->map_pid_to_cmdline[tpid];
-+	if (map != NO_CMDLINE_MAP) {
-+		tpid = savedcmd->map_cmdline_to_pid[map];
-+		if (tpid == pid) {
-+			strscpy(comm, get_saved_cmdlines(map), TASK_COMM_LEN);
-+			return;
-+		}
-+	}
-+	strcpy(comm, "<...>");
-+}
-+
-+void trace_find_cmdline(int pid, char comm[])
-+{
-+	preempt_disable();
-+	arch_spin_lock(&trace_cmdline_lock);
-+
-+	__trace_find_cmdline(pid, comm);
-+
-+	arch_spin_unlock(&trace_cmdline_lock);
-+	preempt_enable();
-+}
-+
-+static int *trace_find_tgid_ptr(int pid)
-+{
-+	/*
-+	 * Pairs with the smp_store_release in set_tracer_flag() to ensure that
-+	 * if we observe a non-NULL tgid_map then we also observe the correct
-+	 * tgid_map_max.
-+	 */
-+	int *map = smp_load_acquire(&tgid_map);
-+
-+	if (unlikely(!map || pid > tgid_map_max))
-+		return NULL;
-+
-+	return &map[pid];
-+}
-+
-+int trace_find_tgid(int pid)
-+{
-+	int *ptr = trace_find_tgid_ptr(pid);
-+
-+	return ptr ? *ptr : 0;
-+}
-+
-+static int trace_save_tgid(struct task_struct *tsk)
-+{
-+	int *ptr;
-+
-+	/* treat recording of idle task as a success */
-+	if (!tsk->pid)
-+		return 1;
-+
-+	ptr = trace_find_tgid_ptr(tsk->pid);
-+	if (!ptr)
-+		return 0;
-+
-+	*ptr = tsk->tgid;
-+	return 1;
-+}
-+
-+static bool tracing_record_taskinfo_skip(int flags)
-+{
-+	if (unlikely(!(flags & (TRACE_RECORD_CMDLINE | TRACE_RECORD_TGID))))
-+		return true;
-+	if (!__this_cpu_read(trace_taskinfo_save))
-+		return true;
-+	return false;
-+}
-+
-+/**
-+ * tracing_record_taskinfo - record the task info of a task
-+ *
-+ * @task:  task to record
-+ * @flags: TRACE_RECORD_CMDLINE for recording comm
-+ *         TRACE_RECORD_TGID for recording tgid
-+ */
-+void tracing_record_taskinfo(struct task_struct *task, int flags)
-+{
-+	bool done;
-+
-+	if (tracing_record_taskinfo_skip(flags))
-+		return;
-+
-+	/*
-+	 * Record as much task information as possible. If some fail, continue
-+	 * to try to record the others.
-+	 */
-+	done = !(flags & TRACE_RECORD_CMDLINE) || trace_save_cmdline(task);
-+	done &= !(flags & TRACE_RECORD_TGID) || trace_save_tgid(task);
-+
-+	/* If recording any information failed, retry again soon. */
-+	if (!done)
-+		return;
-+
-+	__this_cpu_write(trace_taskinfo_save, false);
-+}
-+
-+/**
-+ * tracing_record_taskinfo_sched_switch - record task info for sched_switch
-+ *
-+ * @prev: previous task during sched_switch
-+ * @next: next task during sched_switch
-+ * @flags: TRACE_RECORD_CMDLINE for recording comm
-+ *         TRACE_RECORD_TGID for recording tgid
-+ */
-+void tracing_record_taskinfo_sched_switch(struct task_struct *prev,
-+					  struct task_struct *next, int flags)
-+{
-+	bool done;
-+
-+	if (tracing_record_taskinfo_skip(flags))
-+		return;
-+
-+	/*
-+	 * Record as much task information as possible. If some fail, continue
-+	 * to try to record the others.
-+	 */
-+	done  = !(flags & TRACE_RECORD_CMDLINE) || trace_save_cmdline(prev);
-+	done &= !(flags & TRACE_RECORD_CMDLINE) || trace_save_cmdline(next);
-+	done &= !(flags & TRACE_RECORD_TGID) || trace_save_tgid(prev);
-+	done &= !(flags & TRACE_RECORD_TGID) || trace_save_tgid(next);
-+
-+	/* If recording any information failed, retry again soon. */
-+	if (!done)
-+		return;
-+
-+	__this_cpu_write(trace_taskinfo_save, false);
-+}
-+
-+/* Helpers to record a specific task information */
-+void tracing_record_cmdline(struct task_struct *task)
-+{
-+	tracing_record_taskinfo(task, TRACE_RECORD_CMDLINE);
-+}
-+
-+void tracing_record_tgid(struct task_struct *task)
-+{
-+	tracing_record_taskinfo(task, TRACE_RECORD_TGID);
-+}
-+
-+int trace_alloc_tgid_map(void)
-+{
-+	int *map;
-+
-+	if (tgid_map)
-+		return 0;
-+
-+	tgid_map_max = pid_max;
-+	map = kvcalloc(tgid_map_max + 1, sizeof(*tgid_map),
-+		       GFP_KERNEL);
-+	if (!map)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Pairs with smp_load_acquire() in
-+	 * trace_find_tgid_ptr() to ensure that if it observes
-+	 * the tgid_map we just allocated then it also observes
-+	 * the corresponding tgid_map_max value.
-+	 */
-+	smp_store_release(&tgid_map, map);
-+	return 0;
-+}
-+
-+static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	int pid = ++(*pos);
-+
-+	return trace_find_tgid_ptr(pid);
-+}
-+
-+static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
-+{
-+	int pid = *pos;
-+
-+	return trace_find_tgid_ptr(pid);
-+}
-+
-+static void saved_tgids_stop(struct seq_file *m, void *v)
-+{
-+}
-+
-+static int saved_tgids_show(struct seq_file *m, void *v)
-+{
-+	int *entry = (int *)v;
-+	int pid = entry - tgid_map;
-+	int tgid = *entry;
-+
-+	if (tgid == 0)
-+		return SEQ_SKIP;
-+
-+	seq_printf(m, "%d %d\n", pid, tgid);
-+	return 0;
-+}
-+
-+static const struct seq_operations tracing_saved_tgids_seq_ops = {
-+	.start		= saved_tgids_start,
-+	.stop		= saved_tgids_stop,
-+	.next		= saved_tgids_next,
-+	.show		= saved_tgids_show,
-+};
-+
-+static int tracing_saved_tgids_open(struct inode *inode, struct file *filp)
-+{
-+	int ret;
-+
-+	ret = tracing_check_open_get_tr(NULL);
-+	if (ret)
-+		return ret;
-+
-+	return seq_open(filp, &tracing_saved_tgids_seq_ops);
-+}
-+
-+
-+const struct file_operations tracing_saved_tgids_fops = {
-+	.open		= tracing_saved_tgids_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= seq_release,
-+};
-+
-+static void *saved_cmdlines_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	unsigned int *ptr = v;
-+
-+	if (*pos || m->count)
-+		ptr++;
-+
-+	(*pos)++;
-+
-+	for (; ptr < &savedcmd->map_cmdline_to_pid[savedcmd->cmdline_num];
-+	     ptr++) {
-+		if (*ptr == -1 || *ptr == NO_CMDLINE_MAP)
-+			continue;
-+
-+		return ptr;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *saved_cmdlines_start(struct seq_file *m, loff_t *pos)
-+{
-+	void *v;
-+	loff_t l = 0;
-+
-+	preempt_disable();
-+	arch_spin_lock(&trace_cmdline_lock);
-+
-+	v = &savedcmd->map_cmdline_to_pid[0];
-+	while (l <= *pos) {
-+		v = saved_cmdlines_next(m, v, &l);
-+		if (!v)
-+			return NULL;
-+	}
-+
-+	return v;
-+}
-+
-+static void saved_cmdlines_stop(struct seq_file *m, void *v)
-+{
-+	arch_spin_unlock(&trace_cmdline_lock);
-+	preempt_enable();
-+}
-+
-+static int saved_cmdlines_show(struct seq_file *m, void *v)
-+{
-+	char buf[TASK_COMM_LEN];
-+	unsigned int *pid = v;
-+
-+	__trace_find_cmdline(*pid, buf);
-+	seq_printf(m, "%d %s\n", *pid, buf);
-+	return 0;
-+}
-+
-+static const struct seq_operations tracing_saved_cmdlines_seq_ops = {
-+	.start		= saved_cmdlines_start,
-+	.next		= saved_cmdlines_next,
-+	.stop		= saved_cmdlines_stop,
-+	.show		= saved_cmdlines_show,
-+};
-+
-+static int tracing_saved_cmdlines_open(struct inode *inode, struct file *filp)
-+{
-+	int ret;
-+
-+	ret = tracing_check_open_get_tr(NULL);
-+	if (ret)
-+		return ret;
-+
-+	return seq_open(filp, &tracing_saved_cmdlines_seq_ops);
-+}
-+
-+const struct file_operations tracing_saved_cmdlines_fops = {
-+	.open		= tracing_saved_cmdlines_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= seq_release,
-+};
-+
-+static ssize_t
-+tracing_saved_cmdlines_size_read(struct file *filp, char __user *ubuf,
-+				 size_t cnt, loff_t *ppos)
-+{
-+	char buf[64];
-+	int r;
-+
-+	preempt_disable();
-+	arch_spin_lock(&trace_cmdline_lock);
-+	r = scnprintf(buf, sizeof(buf), "%u\n", savedcmd->cmdline_num);
-+	arch_spin_unlock(&trace_cmdline_lock);
-+	preempt_enable();
-+
-+	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
-+}
-+
-+void trace_free_saved_cmdlines_buffer(void)
-+{
-+	free_saved_cmdlines_buffer(savedcmd);
-+}
-+
-+static int tracing_resize_saved_cmdlines(unsigned int val)
-+{
-+	struct saved_cmdlines_buffer *s, *savedcmd_temp;
-+
-+	s = allocate_cmdlines_buffer(val);
-+	if (!s)
-+		return -ENOMEM;
-+
-+	preempt_disable();
-+	arch_spin_lock(&trace_cmdline_lock);
-+	savedcmd_temp = savedcmd;
-+	savedcmd = s;
-+	arch_spin_unlock(&trace_cmdline_lock);
-+	preempt_enable();
-+	free_saved_cmdlines_buffer(savedcmd_temp);
-+
-+	return 0;
-+}
-+
-+static ssize_t
-+tracing_saved_cmdlines_size_write(struct file *filp, const char __user *ubuf,
-+				  size_t cnt, loff_t *ppos)
-+{
-+	unsigned long val;
-+	int ret;
-+
-+	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	/* must have at least 1 entry or less than PID_MAX_DEFAULT */
-+	if (!val || val > PID_MAX_DEFAULT)
-+		return -EINVAL;
-+
-+	ret = tracing_resize_saved_cmdlines((unsigned int)val);
-+	if (ret < 0)
-+		return ret;
-+
-+	*ppos += cnt;
-+
-+	return cnt;
-+}
-+
-+const struct file_operations tracing_saved_cmdlines_size_fops = {
-+	.open		= tracing_open_generic,
-+	.read		= tracing_saved_cmdlines_size_read,
-+	.write		= tracing_saved_cmdlines_size_write,
-+};
+What solution do you prefer? rename UTMI_CLK to UTMI0_CLK, add UTMI1_CLK 
+after it and increment all the indexes after it? Then the diff would be 
+very ugly.
+
+
+>
+>> +#define HISTB_USB2_UTMI1_CLK		58
+>> +#define HISTB_USB3_REF_CLK		59
+>> +#define HISTB_USB3_GM_CLK		60
+>> +#define HISTB_USB3_GS_CLK		61
+>> +
+>> +/* Hi3798MV200 specific clocks */
+>> +
+>> +// reuse clocks of histb
+> Don't mix comment styles.
+>
+>> +#define HI3798MV200_GMAC_CLK		HISTB_ETH0_MAC_CLK
+>> +#define HI3798MV200_GMACIF_CLK		HISTB_ETH0_MACIF_CLK
+>> +#define HI3798MV200_FEMAC_CLK		HISTB_ETH1_MAC_CLK
+>> +#define HI3798MV200_FEMACIF_CLK		HISTB_ETH1_MACIF_CLK
+>> +#define HI3798MV200_FEPHY_CLK		HISTB_ETH1_PHY_CLK
+> I don't understand what do you want to achieve here. Clock IDs start
+> from 0 or 1.
+>
+>
+>
+> Best regards,
+> Krzysztof
+>
+
 -- 
-2.43.0
-
+Regards,
+Yang Xiwen
 
 
