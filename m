@@ -1,245 +1,161 @@
-Return-Path: <linux-kernel+bounces-73491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEDAE85C366
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:11:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4676485C36F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BCD628521E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:11:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA55D1F21F13
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:12:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C1377F35;
-	Tue, 20 Feb 2024 18:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A4178B4E;
+	Tue, 20 Feb 2024 18:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JnCTH31E"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I0AbwjYf"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A7D77A05
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9AA77652
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708452693; cv=none; b=WaZFgYYuuaNLFJ+2Heebd7u9y7L2HDVw7FO9qflOqjTrKUt+odcjgzv41OGQbG6Vp/Oc8apijD+npCCEo/9VojTyp+NnuBYdJrIVQj/92HDt5rvVzYoDBFdbbfQ8U7btXPlrATE9qw9jEjfu20N8xMU91O+HHTac1z4GOkzH154=
+	t=1708452727; cv=none; b=NxicmujlrgrYSxwSceXPCjqVDLhnf5JYM/0bxiXktgLEiomn90d1WRZecwBpb6qvENMVpRGBkHwrMJw+u9Be86MUb5aIMUXDnlKsJvePaOCf8cvR3tSC+uk558B69v6rLczuYgS06HsM5LeHYS9VdHLrRdpkm3cb9TRlBF0zsm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708452693; c=relaxed/simple;
-	bh=Jcmd41pe+U9XHcdmhUbtas9UdvHEuh0spYTQz8UpyUA=;
+	s=arc-20240116; t=1708452727; c=relaxed/simple;
+	bh=rjveohCfD9DoiAvzq+saEkgFPozVXBVhdv/x0A4BBfw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eNQed4hV1M0YK4DVCi2MXfpvdGLZnquSXMq/f2ah90M0j1aKY7cO60NWWaUe0uURrhg7dIye0pOhOUDyqj73jgDr2GW7Xl72uimLtlWowjc/WAbb77cxHW6FdWizd2I7YsyCBu2ZqYKpcSoX0KE7yw4w5S6GQa9GB3F7GLM8Z1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JnCTH31E; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42e0b1b11bbso11441cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:11:30 -0800 (PST)
+	 To:Cc:Content-Type; b=czrHrUMg2EezDRI9JFqUuX9Nq1/9/yuGfNIYFGn42wWnYl4iTLjQArjmXBUU+M/+RBT4Qw8rE1fB7kyOvUhqmrVBqNSi043B7+ze1iUhKDkf18wOSdevbvKDHTs2GpglxnVknLqsYovjKKPya7axAjXO4oxEAmdGg2VkS3Cii8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=I0AbwjYf; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso5687306276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:12:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708452689; x=1709057489; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708452725; x=1709057525; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jcmd41pe+U9XHcdmhUbtas9UdvHEuh0spYTQz8UpyUA=;
-        b=JnCTH31EW1sErmYLpxyI1r06n03jtH0v16CcFYA4HlEB2SvVmqKkP5plx9WzzjGpIX
-         3ttdyplZ+z5+oI2cUvK5i06SsOoigA6yf1v/oRlcKyrY4xPCItfVfWvwxVpoPHD5IR1J
-         +r+KShOntd5uvqu7+SgJFUnyA2bNKCqrdutV6WO4dcuqyA4eX4LRqledHbs0vVw9N0Y5
-         igVVW79Qj3hlkN8UrzGHzR1SIZj2uAd9uoXtX/PJklOgInRTJqflrf1GvU5VsyI1SN27
-         TG2CXBfRKzVU1TWPC3mS6t570juzqzj4bgcuX++iT6t/iraGVEBVeWdL0d2W7a4bY+Qq
-         A6yQ==
+        bh=HMSzyoiSjnYCnePo8ENrWusi8lV7YAbt8CP9L8ksezU=;
+        b=I0AbwjYfcDTA541kvjowtyYwZzKJQGneLQsdx0crP9BdJ9irNzap9srVvFZHe+n7HZ
+         gmLo46SeHTsl71FvGUeDhZsF8efx6nZRdJGlQjS48j3CYJMfDiVB7dN+RS0JIVRtzcmA
+         CtFXaBEnDOs3r9BSISgAfRznbROR9iVGpSYX1KVlylyQ11xazWhx+eu5rt5v5pfumih8
+         aLZbqmzySBHXVBm2TARjnDLk1tFWHsMNe2/PSFFl+wM64xRxR6tYbHccpYKYg0+b+JYv
+         2fF4MMhEh496x6E6WfpxrGx5KOBTZ6iPdYu+uelOfi7+qAzY5L3wXaFXYOl5q0qbNsr5
+         82Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708452689; x=1709057489;
+        d=1e100.net; s=20230601; t=1708452725; x=1709057525;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jcmd41pe+U9XHcdmhUbtas9UdvHEuh0spYTQz8UpyUA=;
-        b=Qh5DkBlcYLEOPZgl/0ELFctJ1o3IROhk/QAMP55NpuBSCHgRyU48O2kiBTgo48qaax
-         ktunQ75kfTbQEER4MH2WIqGoiW+dqfmmSyooYlYbmg3QSjp1xOJe/IiM8/ZsQ5HQvp4S
-         NYnyQwcOBMEUJxLk5Srbkt14YNmBZmqvEF/RDnLPHtQWC5o/8QBzFf5Gyh/SxSNmo+JW
-         Aa5EdpIFRWmvx2TDhwhxmQZuPsjaZmCap1Jt40i3mmOwkvIFYZydYIjq5+6gfw0rDwif
-         kSQ8QGaHwCw421MOaczPXjlkIeHI9MBHqvXPR/3Awoyff7HaLzNPbFKH3Lg2zRrCl5yV
-         Y15w==
-X-Forwarded-Encrypted: i=1; AJvYcCVr8B63qKwq9ZY2jBsJCYvOm93oIBEDo8B599zh3pj4q8z4myiSVBgN9OEpmnRsSKBGJpLnt9JROHOhtIH3XxkJWM4V/qmid2me1a2N
-X-Gm-Message-State: AOJu0Yy4lm8Z7mb2SL0DNiLD9oTF4FE2OZ65TWlBckqXfSQ0I6rtV+FX
-	AoUd8LyD42MDG9X+243iqMsv25G9lS1SRCsoTqa73B2opZiCs3MdKoh0rnjTVbNn80KMu8cuFyc
-	MeRmZwIbNfjfJADRcMFhIh4++8WWofjgMvpm5
-X-Google-Smtp-Source: AGHT+IGlg76R0nwEA2yY2wzV4IpwOT43FMC0yb3BteA2LG3l1hE4F8w2kpfFd2vla/JQ/eQi1ZteqYfyjDx2MHlp56g=
-X-Received: by 2002:a05:622a:14cd:b0:42d:fe28:38e5 with SMTP id
- u13-20020a05622a14cd00b0042dfe2838e5mr607470qtx.20.1708452689417; Tue, 20 Feb
- 2024 10:11:29 -0800 (PST)
+        bh=HMSzyoiSjnYCnePo8ENrWusi8lV7YAbt8CP9L8ksezU=;
+        b=FBukBzwk6sI1zn2XE1Tz7ROeCMIMQJvjE7C16PftWFD6A1y0uIHr8SGck0yEJFreY8
+         zd6Ae/fPnyDvn+hDjAUXm0cvQGQQmwqFziYKxX+4rIPxQheKPSpHW9dS5ePbzEQZ5+b2
+         yG83D2hz81Jwxq/0O34ZhiGW6oxlbmA6Waqgp2M1l5W7w4TZw0OLZRFiVIozhNNjBQSM
+         hO7jkuvn8aqISqCp3iS6ctb+2q27pG0NCYxel7R2Yvi5MZvUzO0vd+V0nFIw5u/6fTh3
+         EI6R4rnncgeb9aIypBVAX8yqhY2EQG2DEIBSjiPdp1awduXahzV5zYxy9bJeVvuouUO/
+         7bmA==
+X-Forwarded-Encrypted: i=1; AJvYcCWdGMrlhO3rAovT0lcf/r6mpuvwUPHtKDZO7/YtCuGAAOEHx7ZJ3H2YBskmngvLThFXEKwiMIz591BSniuWMpKZThdcU8aV1Sw+TZpA
+X-Gm-Message-State: AOJu0Yzi/9ngQ8ptI+5atStuKP8LO2SOSMnsZsoCSfjGT8sE2l5gBCDe
+	f8seTd7974P9ZKpGrzKmnR50IenBjFiSA4G4Ef9HHZV6T1+9+ZwUo9TqH8PbmiCetG9PfMUje6R
+	Ns9PAZLbFVz6aorfJp3YZZFPX7kLJrqeffV0m2A==
+X-Google-Smtp-Source: AGHT+IFsAA0lKvQyArywji1QvO8GzVrKQIsgi7vwTu+7xayCOaldYPKMZ3USNT1VRYNim9WqHs2PSU1hSI0+O4KEIvA=
+X-Received: by 2002:a25:c7d0:0:b0:dc3:7041:b81b with SMTP id
+ w199-20020a25c7d0000000b00dc37041b81bmr16520405ybe.36.1708452724211; Tue, 20
+ Feb 2024 10:12:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201005720.235639-1-babu.moger@amd.com> <cover.1705688538.git.babu.moger@amd.com>
- <7c26af23-fa1e-4e01-8088-8fbd9be3d6f3@intel.com> <431d6ac4-53cb-2f73-3cda-22616df2f96a@amd.com>
- <4bb63a78-0d0d-47bc-ad65-558af8bc5519@intel.com> <51c60991-eb10-40e8-b3ab-676b92b0c662@amd.com>
- <CALPaoChhKJiMAueFtgCTc7ffO++S5DJCySmxqf9ZDmhR9RQapw@mail.gmail.com> <1a8c1cd6-a1ce-47a2-bc87-d4cccc84519b@arm.com>
-In-Reply-To: <1a8c1cd6-a1ce-47a2-bc87-d4cccc84519b@arm.com>
-From: Peter Newman <peternewman@google.com>
-Date: Tue, 20 Feb 2024 10:11:18 -0800
-Message-ID: <CALPaoCgNLtA7E2tgQZ6gmbZ=OF0nE0Lbi=1C7oR3F0wM4YRbjw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
- Monitoring Counters (ABMC)
-To: James Morse <james.morse@arm.com>
-Cc: babu.moger@amd.com, Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net, 
-	fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
-	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
-	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
-	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
-	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
-	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
-	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
-	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eranian@google.com
+References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-10-brgl@bgdev.pl>
+ <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk> <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
+ <8e392aed-b5f7-486b-b5c0-5568e13796ec@sirena.org.uk> <CAMRc=MeAXEyV47nDO_WPQqEQxSYFWTrwVPAtLghkfONj56FGVA@mail.gmail.com>
+ <CAA8EJppzkuH=YTAHuJ3Og2RLHB93PSas004UDvpqepYbGepVPg@mail.gmail.com> <CAMRc=MfXkG1bqGrtFWpoZo3fTY49TvU3sHOnX-zc2kjUiRfp3w@mail.gmail.com>
+In-Reply-To: <CAMRc=MfXkG1bqGrtFWpoZo3fTY49TvU3sHOnX-zc2kjUiRfp3w@mail.gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 20 Feb 2024 20:11:53 +0200
+Message-ID: <CAA8EJpoY_2uNLXtC+xB9cOV5Tc5Bn5mEtJTf+sniWrN9HoEx4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Mark Brown <broonie@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi James,
-
-On Tue, Feb 20, 2024 at 7:21=E2=80=AFAM James Morse <james.morse@arm.com> w=
+On Tue, 20 Feb 2024 at 19:53, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> On Tue, Feb 20, 2024 at 5:30=E2=80=AFPM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Tue, 20 Feb 2024 at 13:16, Bartosz Golaszewski <brgl@bgdev.pl> wrote=
+:
+> > >
+> > > On Mon, Feb 19, 2024 at 8:59=E2=80=AFPM Mark Brown <broonie@kernel.or=
+g> wrote:
+> > > >
+> > > > On Mon, Feb 19, 2024 at 07:48:20PM +0100, Bartosz Golaszewski wrote=
+:
+> > > > > On Mon, Feb 19, 2024 at 7:03=E2=80=AFPM Mark Brown <broonie@kerne=
+l.org> wrote:
+> > > > > > On Fri, Feb 16, 2024 at 09:32:06PM +0100, Bartosz Golaszewski w=
 rote:
-> On 16/02/2024 20:18, Peter Newman wrote:
-> > On Thu, Feb 8, 2024 at 9:29=E2=80=AFAM Moger, Babu <babu.moger@amd.com>=
- wrote:
-> >> On 2/5/24 16:38, Reinette Chatre wrote:
-> >>> You have made it clear on several occasions that you do not intend to=
- support
-> >>> domain level assignment. That may be ok but the interface you create =
-should
-> >>> not prevent future support of domain level assignment.
-> >>>
-> >>> If my point is not clear, could you please share how this interface i=
-s able to
-> >>> support domain level assignment in the future?
-> >>>
-> >>> I am starting to think that we need a file similar to the schemata fi=
-le
-> >>> for group and domain level monitor configurations.
-> >>
-> >> Something like this?
-> >>
-> >> By default
-> >> #cat /sys/fs/resctrl/monitor_state
-> >> default:0=3Dtotal=3Dassign,local=3Dassign;1=3Dtotal=3Dassign,local=3Da=
-ssign
-> >>
-> >> With ABMC,
-> >> #cat /sys/fs/resctrl/monitor_state
-> >> ABMC:0=3Dtotal=3Dunassign,local=3Dunassign;1=3Dtotal=3Dunassign,local=
-=3Dunassign
+> > > >
+> > > > > > > +                     vreg_pmu_aon_0p59: ldo1 {
+> > > > > > > +                             regulator-name =3D "vreg_pmu_ao=
+n_0p59";
+> > > > > > > +                             regulator-min-microvolt =3D <54=
+0000>;
+> > > > > > > +                             regulator-max-microvolt =3D <84=
+0000>;
+> > > > > > > +                     };
+> > > >
+> > > > > > That's a *very* wide voltage range for a supply that's got a na=
+me ending
+> > >
+> > > Because it's an error, it should have been 640000. Thanks for spottin=
+g it.
 > >
-> > The benefit from all the string parsing in this interface is only
-> > halving the number of monitor_state sysfs writes we'd need compared to
-> > creating a separate file for mbm_local and mbm_total. Given that our
-> > use case is to assign the 32 assignable counters to read the bandwidth
-> > of ~256 monitoring groups, this isn't a substantial gain to help us. I
-> > think you should just focus on providing the necessary control
-> > granularity without trying to consolidate writes in this interface. I
-> > will propose an additional interface below to optimize our use case.
+> > According to the datasheet, VDD08_PMU_AON_O goes up to 0.85V then down
+> > to 0.59V, which is the working voltage.
 > >
-> > Whether mbm_total and mbm_local are combined in the group directories
-> > or not, I don't see why you wouldn't just repeat the same file
-> > interface in the domain directories for a user needing finer-grained
-> > controls.
 >
-> I don't follow why this has to be done globally. resctrl allows CLOSID to=
- have different
-> configurations for different purposes between different domains (as long =
-as tasks are
-> pinned to CPUs). It feels a bit odd that these counters can't be consider=
-ed as per-domain too.
-
-Assigning to all domains at once would allow us to better parallelize
-the resulting IPIs when we do need to iterate a small set of monitors
-over a large list of groups.
-
-
-> > I prototyped and tested the following additional interface for the
-> > large-scale, batch use case that we're primarily concerned about:
+> Hmm indeed this is what figure 3.4 says but table 3-2 says the maximum is=
+ 0.64V.
+>
+> > VDD08_PMU_RFA_CMN is normally at 0.8V, but goes to 0.4V during sleep.
 > >
-> > info/L3_MON/mbm_{local,total}_bytes_assigned
-> >
-> > Writing a whitespace-delimited list of mongroup directory paths does
 >
-> | mkdir /sys/fs/resctrl/my\ group
->
-> string parsing in the kernel is rarely fun!
+> Again figure 3.4 and table 3-2 disagree unless I'm missing something.
 
-Hopefully restricting to a newline-delimited list will keep this fun
-and easy then.
+I suspect that the table you have mentioned provides normal working
+conditions for the PMU, while power-up and sleep might be outside of
+'normal' conditions.
 
-Otherwise if referring to many groups in a single write isn't a viable
-path forward, I'll still need to find a way to address the
-fs/syscall/IPI overhead of measuring the bandwidth of a large number
-of groups.
+I suppose that these outputs are underspecified in the datasheet. I
+think we can omit the values here.
 
->
->
-> > the following:
-> > 1. unassign all monitors for the given counter
-> > 2. assigns a monitor to each mongroup referenced in the write
-> > 3. batches per-domain register updates resulting from the assignments
-> > into a single IPI for each domain
-> >
-> > This interface allows us to do less sysfs writes and IPIs on systems
-> > with more assignable monitoring resources, rather than doing more.
-> >
-> > The reference to a mongroup when reading/writing the above node is the
-> > resctrl-root-relative path to the monitoring group. There is probably
-> > a more concise way to refer to the groups, but my prototype used
-> > kernfs_walk_and_get() to locate each rdtgroup struct.
->
-> If this file were re-used for finding where the monitors were currently a=
-llocated, using
-> the name would be a natural fit for building a path to un-assign one grou=
-p.
->
->
-> > I would also like to add that in the software-ABMC prototype I made,
-> > because it's based on assignment of a small number of RMIDs,
-> > assignment results in all counters being assigned at once. On
-> > implementations where per-counter assignments aren't possible,
-> > assignment through such a resource would be allowed to assign more
-> > resources than explicitly requested.
-> >
-> > This would allow an implementation only capable of global assignment
->
-> Do we know if this exists? Given the configurations have to be different =
-for a domain, I'd
-> be surprised if counter configuration is somehow distributed between doma=
-ins.
-
-It's currently only a proposal[1] for mitigating the context switch
-overhead cost of soft RMIDs. I'm looking at the other alternative
-first, though.
-
-
-> > to assign resources to all groups when a non-empty string is written
-> > to the proposed file nodes, and all resources to be unassigned when an
-> > empty string is written. Reading back from the file nodes would tell
-> > the user how much was actually assigned.
->
-> What do you mean by 'how much', is this allow to fail early? That feels a=
- bit
-> counter-intuitive. As this starts with a reset, if the number of counters=
- is known - it
-> should be easy for user-space to know it can only write X tokens into tha=
-t file.
-
-I was referring to the operation assigning more groups than requested
-if the implementation is only capable of a master enable/disable for
-all monitoring: reading back would indicate that all monitoring groups
-are in the assigned list.
-
-There would otherwise be an interface telling the user how many
-monitors can be assigned, so there's no reason to expect this
-operation to fail, short of the user doing something silly like
-deleting a group while it's concurrently being assigned.
-
--Peter
-
-[1] https://lore.kernel.org/lkml/CALPaoCiRD6j_Rp7ffew+PtGTF4rWDORwbuRQqH2i-=
-cY5SvWQBg@mail.gmail.com/
+--=20
+With best wishes
+Dmitry
 
