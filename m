@@ -1,376 +1,117 @@
-Return-Path: <linux-kernel+bounces-72363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C10385B277
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:51:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0700185B279
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21A9D28398C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:51:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 960C9B21BED
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6840C56B96;
-	Tue, 20 Feb 2024 05:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C079757313;
+	Tue, 20 Feb 2024 05:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NxGRRoQa"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jnPYsscA"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F5C56B8E
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0BAB535C6;
+	Tue, 20 Feb 2024 05:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708408263; cv=none; b=QwcN/OD70XEc1LHCjGGIgsfU6+Wa60vHQvijNIvc7uof+hlfPdSyES15hWv7WK1Wq9MXuA2bCyp8upaovvvcs0uCRr475n81Ujvj5tHBSqPe0QQzyNPn0QUTjuaVwB6KuTh+YmsX50Q8+r/cwY0ueaA+aoJZ9f7s/+RV6bex580=
+	t=1708408363; cv=none; b=uCeUbbnJWJU5tcn34KiTDCpq/UOQYp/4Lo/Y8+qCdH9AlyhVaWLlUGlqSdiG8Jfi0KbXo+R3644eyfTqH6dEG8X7wkPicb6Xc7KKPWIsrw6K5ZffY0cxmYGt7i3xivL7aZkEENPmgbl3gFssoafMrFr4DmlCOr6PI3DufkQJnVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708408263; c=relaxed/simple;
-	bh=lhPuxd6BYzafkuTT1IR/6EgKzo8kkyO0OBKd6rJ6owQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rIXftSBlj8IGat/8k6mNTEethg2Pe8WODQbdUqmrzdnumPFKepm4vDgbWqg2DI0Jrl2wbtHLmJful1opTdoMvcZiTqwQkQ2/kQCV0mmFPFUa6DQhXyZW0yV1IKu8oW8j+SkSsHpz4HWLm3vHZ72Mgi9kmX+tB7MEJGZMyCeoC9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NxGRRoQa; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <bbef7014-5059-405d-a27a-a379431a3fcf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708408258;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hrfIUp4wGAUT7mkfd8XNVbiekj62+EhmP33i8I/rY00=;
-	b=NxGRRoQavEl6cB4OriwEs+WMtFLopatTbDsPZ/kMqE4MNqRbKX+edvaqQHsIibNoiCtzSt
-	ZQD9B1IoZaf5P+2yATL5C4XwfkW8iDPdhRKf2YOA7OC0+Z/qTUDALiTA8H9uG+79HKXKkB
-	Dmo/R3Nw6BG9Tv6meNCtmam1/7HQ/m4=
-Date: Tue, 20 Feb 2024 13:50:47 +0800
+	s=arc-20240116; t=1708408363; c=relaxed/simple;
+	bh=sf6cHFogLC3iWJUeEjZ1tPh41/rXPEDXAcBw4W0tigE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nTaAgdUIUlD/yLVyoJdfTXciqrnUOu46O9xdWtexCLNLCD6wj99xdr3TzAXtp9HESA3mlLL/0hrMQOPCruitMpBScdEASTSehKjsJ13K8tMuS5ZsEVJkYH30BwpVWwc1WnNwFinSJXuROs5VIyQ9AOu03B2QkQ0iXeBxk7j3XZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jnPYsscA; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d73066880eso48797385ad.3;
+        Mon, 19 Feb 2024 21:52:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708408361; x=1709013161; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M+eLh40wqn/+mK2E6bNVySX3D/F3rcpuKtT1oXgjrJc=;
+        b=jnPYsscAlMMOM5RkAOgs+eEQBQrWqL/uPhQSvG0OgXJA1fqtQNraGn8HLKlFhn2YNl
+         zD/77pZsjf9dB+jeumzgSudTK7CY340XJmQVSpGgsPokDaWcmXclg2rtst8QOhMqalBu
+         ePp/exiW9wg/0QDmXZpGv/1kUscI1OF1SaZSFteNdZliRQWO2BTSKrRSBZY5bNrdANcK
+         kmts4GnwC3H7nm/VdqkGjrE47w7GNbgS9jd9dJ+QDOFH1uq0txSNCjCqMqbOJ86feOYh
+         PBSugtE7LawSn4iBmFYDA1ikTwkTlv+J+fEHkIwg4L7TOcmG6gBV0tqL5luuwkuMne6C
+         n3ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708408361; x=1709013161;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M+eLh40wqn/+mK2E6bNVySX3D/F3rcpuKtT1oXgjrJc=;
+        b=iD5zBL2YDgvhPxcDEkyGK+A9lbXJa3QAIAnT1M/CatNjAETnZup/7024nR91mPPDVJ
+         2idASWmZOlCibp3gF+crVOG0LE3msCTnvfEbAIYFim9/YqMiod3xtM4HmOPLfsE4fqKx
+         BIfA0n53M4qCngYpA/yiLYncEwItPEy9steaqzcL3eQu0iIQh82mf6Nd7+OsUXozqB9k
+         5e/AW7V//NeyqTLvwfLGm+CSIC9wlq/uu8PXbfRvnI6XSyv48+PS/EfIYN2/5JADeV6V
+         LP9XmBCeFxS5nHd9sH+7PQLlSFOg/fultVhhigE7x9WplzGYIECISQUsnK3zIVvfHTXV
+         SKsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2hrbFsc6ykRjwTsqj7C9ckTP7zxV9nmWJ4S6g/c1A0EEajnRUEVnqcwf16HVw7PInqCs5g2foX2dqTrbpFiMxC4RS3MBltm6WMYwGUr1608IuvxgEHNY98ejC2sO4NS0JCACmLULdYvneIA4zPINY4Q==
+X-Gm-Message-State: AOJu0YzyOgUP+Xr8xBNwBw2S7QBOKYVKtNCl/OzMeHzYFAP/rHMXaL4y
+	EbFolU5sjCTALPwq5Ev2IiZvpqQGi4ZbC/nXTAUtiXwDUvFdf5K4
+X-Google-Smtp-Source: AGHT+IFcxjVomKnuPCfORbFriPLght8Su35SJ1dGpgiKYxDSobtRy+5zXqQv67WgT1eaYRFtnX+E9A==
+X-Received: by 2002:a17:902:eb8f:b0:1db:b36c:715f with SMTP id q15-20020a170902eb8f00b001dbb36c715fmr14133321plg.24.1708408360855;
+        Mon, 19 Feb 2024 21:52:40 -0800 (PST)
+Received: from localhost.localdomain ([110.46.146.116])
+        by smtp.gmail.com with ESMTPSA id c6-20020a170902c1c600b001d717e644e2sm5306488plc.247.2024.02.19.21.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 21:52:40 -0800 (PST)
+From: SungHwan Jung <onenowy@gmail.com>
+To: "Lee, Chun-Yi" <jlee@suse.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: SungHwan Jung <onenowy@gmail.com>,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: acer-wmi: Add support for Acer PH16-71
+Date: Tue, 20 Feb 2024 14:52:31 +0900
+Message-ID: <20240220055231.6451-1-onenowy@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] net/mlx5: pre-initialize sprintf buffers
-To: Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
- Alex Vesker <valex@nvidia.com>, Erez Shitrit <erezsh@nvidia.com>,
- Hamdan Igbaria <hamdani@nvidia.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240219100506.648089-1-arnd@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240219100506.648089-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2024/2/19 18:04, Arnd Bergmann 写道:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The debugfs files always in this driver all use an extra round-trip
-> through an snprintf() before getting put into a mlx5dr_dbg_dump_buff()
-> rather than the normal seq_printf().
-> 
-> Zhu Yanjun noticed that the buffers are not initialized before being
-> filled or reused and requested them to always be zeroed as a
-> preparation for having more reused between the buffers.
+Add Acer Predator PH16-71 to Acer_quirks with predator_v4
+to support mode button and fan speed sensor.
 
-I think that you are the first to find this.
+Signed-off-by: SungHwan Jung <onenowy@gmail.com>
+---
+ drivers/platform/x86/acer-wmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Thanks,
-Zhu Yanjun
-
-> 
-> Requested-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   .../mellanox/mlx5/core/steering/dr_dbg.c      | 35 +++++++++++++++++++
->   1 file changed, 35 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-> index 64f4cc284aea..be7a8481d7d2 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-> @@ -217,6 +217,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   
->   	switch (action->action_type) {
->   	case DR_ACTION_TYP_DROP:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx\n",
->   			       DR_DUMP_REC_TYPE_ACTION_DROP, action_id,
-> @@ -229,6 +230,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_FT:
-> +		memset(buff, 0, sizeof(buff));
->   		if (action->dest_tbl->is_fw_tbl)
->   			ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   				       "%d,0x%llx,0x%llx,0x%x,0x%x\n",
-> @@ -250,6 +252,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_CTR:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_CTR, action_id, rule_id,
-> @@ -262,6 +265,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_TAG:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_TAG, action_id, rule_id,
-> @@ -283,6 +287,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   
->   		ptrn_arg = !action->rewrite->single_action_opt && ptrn && arg;
->   
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x,%d,0x%x,0x%x,0x%x",
->   			       DR_DUMP_REC_TYPE_ACTION_MODIFY_HDR, action_id,
-> @@ -300,6 +305,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   
->   		if (ptrn_arg) {
->   			for (i = 0; i < action->rewrite->num_of_actions; i++) {
-> +				memset(buff, 0, sizeof(buff));
->   				ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   					       ",0x%016llx",
->   					       be64_to_cpu(((__be64 *)rewrite_data)[i]));
-> @@ -321,6 +327,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   		break;
->   	}
->   	case DR_ACTION_TYP_VPORT:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_VPORT, action_id, rule_id,
-> @@ -333,6 +340,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_TNL_L2_TO_L2:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx\n",
->   			       DR_DUMP_REC_TYPE_ACTION_DECAP_L2, action_id,
-> @@ -345,6 +353,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_TNL_L3_TO_L2:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_DECAP_L3, action_id,
-> @@ -360,6 +369,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_L2_TO_TNL_L2:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_ENCAP_L2, action_id,
-> @@ -372,6 +382,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_L2_TO_TNL_L3:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_ENCAP_L3, action_id,
-> @@ -384,6 +395,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_POP_VLAN:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx\n",
->   			       DR_DUMP_REC_TYPE_ACTION_POP_VLAN, action_id,
-> @@ -396,6 +408,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_PUSH_VLAN:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_PUSH_VLAN, action_id,
-> @@ -408,6 +421,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_INSERT_HDR:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x,0x%x,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_INSERT_HDR, action_id,
-> @@ -422,6 +436,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_REMOVE_HDR:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x,0x%x,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_REMOVE_HDR, action_id,
-> @@ -436,6 +451,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   			return ret;
->   		break;
->   	case DR_ACTION_TYP_SAMPLER:
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x,0x%x,0x%x,0x%llx,0x%llx\n",
->   			       DR_DUMP_REC_TYPE_ACTION_SAMPLER, action_id,
-> @@ -468,6 +484,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
->   				DR_DBG_PTR_TO_ID(action->range->miss_tbl_action->dest_tbl->tbl);
->   		}
->   
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,0x%llx,0x%x,0x%llx,0x%x,0x%llx,0x%x\n",
->   			       DR_DUMP_REC_TYPE_ACTION_MATCH_RANGE, action_id,
-> @@ -507,6 +524,7 @@ dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
->   	dr_dump_hex_print(hw_ste_dump, (char *)mlx5dr_ste_get_hw_ste(ste),
->   			  DR_STE_SIZE_REDUCED);
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx,%s\n", mem_rec_type,
->   		       dr_dump_icm_to_idx(mlx5dr_ste_get_icm_addr(ste)),
-> @@ -554,6 +572,7 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
->   
->   	format_ver = rule->matcher->tbl->dmn->info.caps.sw_format_ver;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx\n", DR_DUMP_REC_TYPE_RULE,
->   		       rule_id, DR_DBG_PTR_TO_ID(rule->matcher));
-> @@ -593,6 +612,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
->   	char dump[DR_HEX_SIZE];
->   	int ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH, "%d,0x%llx,",
->   		       DR_DUMP_REC_TYPE_MATCHER_MASK, matcher_id);
->   	if (ret < 0)
-> @@ -602,6 +622,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
->   	if (ret)
->   		return ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	if (criteria & DR_MATCHER_CRITERIA_OUTER) {
->   		dr_dump_hex_print(dump, (char *)&mask->outer, sizeof(mask->outer));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-> @@ -617,6 +638,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
->   	if (ret)
->   		return ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	if (criteria & DR_MATCHER_CRITERIA_INNER) {
->   		dr_dump_hex_print(dump, (char *)&mask->inner, sizeof(mask->inner));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-> @@ -632,6 +654,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
->   	if (ret)
->   		return ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	if (criteria & DR_MATCHER_CRITERIA_MISC) {
->   		dr_dump_hex_print(dump, (char *)&mask->misc, sizeof(mask->misc));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-> @@ -647,6 +670,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
->   	if (ret)
->   		return ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	if (criteria & DR_MATCHER_CRITERIA_MISC2) {
->   		dr_dump_hex_print(dump, (char *)&mask->misc2, sizeof(mask->misc2));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-> @@ -662,6 +686,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
->   	if (ret)
->   		return ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	if (criteria & DR_MATCHER_CRITERIA_MISC3) {
->   		dr_dump_hex_print(dump, (char *)&mask->misc3, sizeof(mask->misc3));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-> @@ -687,6 +712,7 @@ dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
->   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
->   	int ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,%d,%d,0x%x\n",
->   		       DR_DUMP_REC_TYPE_MATCHER_BUILDER, matcher_id, index,
-> @@ -716,6 +742,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
->   
->   	s_icm_addr = mlx5dr_icm_pool_get_chunk_icm_addr(matcher_rx_tx->s_htbl->chunk);
->   	e_icm_addr = mlx5dr_icm_pool_get_chunk_icm_addr(matcher_rx_tx->e_anchor->chunk);
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx,%d,0x%llx,0x%llx\n",
->   		       rec_type, DR_DBG_PTR_TO_ID(matcher_rx_tx),
-> @@ -752,6 +779,7 @@ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
->   
->   	matcher_id = DR_DBG_PTR_TO_ID(matcher);
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx,%d\n", DR_DUMP_REC_TYPE_MATCHER,
->   		       matcher_id, DR_DBG_PTR_TO_ID(matcher->tbl),
-> @@ -816,6 +844,7 @@ dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
->   			   DR_DUMP_REC_TYPE_TABLE_TX;
->   
->   	s_icm_addr = mlx5dr_icm_pool_get_chunk_icm_addr(table_rx_tx->s_anchor->chunk);
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx\n", rec_type, table_id,
->   		       dr_dump_icm_to_idx(s_icm_addr));
-> @@ -836,6 +865,7 @@ static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
->   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
->   	int ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx,%d,%d\n", DR_DUMP_REC_TYPE_TABLE,
->   		       DR_DBG_PTR_TO_ID(table), DR_DBG_PTR_TO_ID(table->dmn),
-> @@ -887,6 +917,7 @@ dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
->   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
->   	int ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%llx,0x%x,0x%x\n",
->   		       DR_DUMP_REC_TYPE_DOMAIN_SEND_RING,
-> @@ -911,6 +942,7 @@ dr_dump_domain_info_flex_parser(struct seq_file *file,
->   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
->   	int ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,%s,0x%x\n",
->   		       DR_DUMP_REC_TYPE_DOMAIN_INFO_FLEX_PARSER, domain_id,
-> @@ -937,6 +969,7 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
->   	xa_for_each(&caps->vports.vports_caps_xa, vports_num, vport_caps)
->   		; /* count the number of vports in xarray */
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,0x%x,0x%llx,0x%llx,0x%x,%lu,%d\n",
->   		       DR_DUMP_REC_TYPE_DOMAIN_INFO_CAPS, domain_id, caps->gvmi,
-> @@ -952,6 +985,7 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
->   	xa_for_each(&caps->vports.vports_caps_xa, i, vport_caps) {
->   		vport_caps = xa_load(&caps->vports.vports_caps_xa, i);
->   
-> +		memset(buff, 0, sizeof(buff));
->   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   			       "%d,0x%llx,%lu,0x%x,0x%llx,0x%llx\n",
->   			       DR_DUMP_REC_TYPE_DOMAIN_INFO_VPORT,
-> @@ -1012,6 +1046,7 @@ dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
->   	u64 domain_id = DR_DBG_PTR_TO_ID(dmn);
->   	int ret;
->   
-> +	memset(buff, 0, sizeof(buff));
->   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
->   		       "%d,0x%llx,%d,0%x,%d,%u.%u.%u,%s,%d,%u,%u,%u\n",
->   		       DR_DUMP_REC_TYPE_DOMAIN,
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 88b826e88ebd..771b0ce34c8f 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -584,6 +584,15 @@ static const struct dmi_system_id acer_quirks[] __initconst = {
+ 		},
+ 		.driver_data = &quirk_acer_predator_v4,
+ 	},
++	{
++		.callback = dmi_matched,
++		.ident = "Acer Predator PH16-71",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Predator PH16-71"),
++		},
++		.driver_data = &quirk_acer_predator_v4,
++	},
+ 	{
+ 		.callback = set_force_caps,
+ 		.ident = "Acer Aspire Switch 10E SW3-016",
+-- 
+2.43.2
 
 
