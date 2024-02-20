@@ -1,163 +1,132 @@
-Return-Path: <linux-kernel+bounces-73752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A2385CA7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:12:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D97C85CA84
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:13:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED19B22004
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:12:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEACB1C21371
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B2B152E05;
-	Tue, 20 Feb 2024 22:12:24 +0000 (UTC)
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3A4152E18;
+	Tue, 20 Feb 2024 22:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OKRBQRgy"
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620CF41AAC
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EDB152DEA;
+	Tue, 20 Feb 2024 22:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708467144; cv=none; b=MEAErkVRGBr+fHKm5LSOHI38PG27cr4IWs18tu4YFe6DIc6uOcr78clG0gL9V6utbeQQ9Fuj8hX4xJ8/y/7GXlE/tBOqp4f5DAPX/9b68JA9SThKx0ZVCK30yer4RIo3aRVWGCvALKzAzh2x3HEh7D8SW+zRVr5sJcT80g0UO0g=
+	t=1708467183; cv=none; b=kPPoZ/v/1T89t1StAkY2L+lrJJiPCY/JnoXG1e8yvCFfm060BxV212GFoY4gM978PXpbquf1vibVMPL4ytGRg/tdVocYjYt/k5QnHYVcs9iKXh450oCcVbTVLuwdQib6egitGcEmc01fAz/VUUDhLwccGQwhdQGnHg8BtZoRk8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708467144; c=relaxed/simple;
-	bh=jhOQFc9APgBspPIxG9I1BX/ftsAh5rGUbYwZn98o1VQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EAFv0jQ0MP+QZoA970szKapddU/AvtyfVr/jwRxr4kaMsPP+R4xVCPAFO/9hC7K+WTqcSpJkTqgkFcSkuoH5/RxN9rmgiNiTqTIttX2KK9gM1ivT22m7rDi9qtdzxsElZLBYJ4RkE107dOHYMX24MXjg78q4mCSKtsoFTBPf0MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
-	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-	id 19a140a6-d03d-11ee-b3cf-005056bd6ce9;
-	Wed, 21 Feb 2024 00:12:14 +0200 (EET)
-From: andy.shevchenko@gmail.com
-Date: Wed, 21 Feb 2024 00:12:13 +0200
-To: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Cc: linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Borislav Petkov <bp@suse.de>,
-	Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries
- returned from _PRT
-Message-ID: <ZdUjvUG3aUgGCwBs@surfacebook.localdomain>
-References: <20231226124254.66102-1-mat.jonczyk@o2.pl>
+	s=arc-20240116; t=1708467183; c=relaxed/simple;
+	bh=NMnvtcFQbtH5ja7Aet4YcIxkr6TQTCFMy2RG04JdvTk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=frmnfStjg11vhm/eFSiusxPMv9F9LJqHw0SwKgCr4xXUe3N1Ee7QMKv4I/hObcv1ngaPGhNKLCplHlxVdaCf5/4VtY6sfk3mp9wiBShPaqAwbAHygfJiPeKkDIuC63R1fkYdu9ndYa39U2dSjECsXrMYLjKokgjyg6J26SXO2ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OKRBQRgy; arc=none smtp.client-ip=209.85.218.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-a3d484a58f6so795979566b.3;
+        Tue, 20 Feb 2024 14:13:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708467180; x=1709071980; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tbrC1YiirDZo5WRjo6LZPZ9F6/4YXywYDLbK8hkWWzs=;
+        b=OKRBQRgydpfgGkqkaDNnTHko/ZrYOMdZTXzt4nsOxecdgjZ3eFu5C+xTqwIQjUMwcF
+         NFivwIGKSg/kKmbF7RdpVj9FKvphKDVr9wzB2if1W0k993ct1rhpxV8FmPnzPyqMKwiN
+         DkMVNLmiqyjdLGD2ZbQ6nQEQ8yM38J4NJQDAd/nbnN8id9wWFF73b8BLHInUPNu3ISjf
+         tLBCYfC+3Dlmi0toUECRuyVS9YrAYc9qCUQoQEYaU9Sm3rzQBI8YETnkNK5H0SnPtD9a
+         zX4hokkP0FDib9PD0WQvZD5pOUwkzE6WNRnoU3ImDJddUX3//g5q/Aizr9MM2f45LILP
+         /YUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708467180; x=1709071980;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tbrC1YiirDZo5WRjo6LZPZ9F6/4YXywYDLbK8hkWWzs=;
+        b=YZng+MoEt0NDvEHruuwvS2lONTD6/s+2/rALcS47qB+DGoa6NgECXvMyQx6Q2wEGxR
+         WOlM1SC9KnDyE1YGuKTXbk3sPJcWBmGxNRGbBjAbES/NKYlZAd8gu2t+LyP+PyyTxQ6l
+         XiIWXIxCmqbY+Tkr/xH7zwjREzPbvFjVza1/5T3cvP9WqnI/KPerFRNmzRC6qQlSs7hg
+         zzaDDlifYsv9BGMlEWuE/X7cvQgJZjqCBvCorha7UUnVnu0/AjKSKoxA/+BF6zfPGFwH
+         tm/mn4mI1qEWLPQUOCO49tUVJgaB77HwbblRbsEQmsvRiQ6CJXmwk4EalOztR3hTxS+K
+         oGyw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiKf1S9J3qootWee0ltBu2/oeji5b7KzEZpWCNXYKV8HjjvK7bmjN0QXrwNZzKHkR+bgKm8o0mr8SjmC/MHGvaIUNsL3or1j7TjR6IxuKUTOQ+RkLexRXlqkZjK+3DzNPJ
+X-Gm-Message-State: AOJu0YzMUviVn61fxBNr8JG/FBRrBOaFcvbfMcr/BgBvpHfKbFNVIDnr
+	VFV9XgCDj3QdniO+96sJE94IhvWlh7jWoqdXj07ijgE8ksBQ7yYpIJtDoM5z869p0IST0iYn+T8
+	yBcEBvjyzzGt/GvImfCBVg1h3mIo=
+X-Google-Smtp-Source: AGHT+IG/biI47FZn+VFGVms1qWr/aUkDXB7nT+6FF1bd6JWckaYWVARNruzbSaQG94R0zQqOV3R6Hpk7/bMaG5oOyZk=
+X-Received: by 2002:a17:906:b24c:b0:a3f:1cd:69bc with SMTP id
+ ce12-20020a170906b24c00b00a3f01cd69bcmr2102892ejb.15.1708467179708; Tue, 20
+ Feb 2024 14:12:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231226124254.66102-1-mat.jonczyk@o2.pl>
+References: <20240201125225.72796-1-puranjay12@gmail.com>
+In-Reply-To: <20240201125225.72796-1-puranjay12@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 20 Feb 2024 23:12:23 +0100
+Message-ID: <CAP01T77ttCeO_joYWqYxjyj_AdHEX34rk31H5y6voNJQz_dXFQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/2] bpf, arm64: Support Exceptions
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Tue, Dec 26, 2023 at 01:42:54PM +0100, Mateusz Jończyk kirjoitti:
-> On some platforms, the ACPI _PRT function returns duplicate interrupt
-> routing entries. Linux uses the first matching entry, but sometimes the
-> second matching entry contains the correct interrupt vector.
-> 
-> As a debugging aid, print a warning to dmesg if duplicate interrupt
-> routing entries are present. This way, we could check how many models
-> are affected.
-> 
-> This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
-> SMBus controller. This controller is nonfunctional unless its interrupt
-> usage is disabled (using the "disable_features=0x10" module parameter).
-> 
-> After investigation, it turned out that the driver was using an
-> incorrect interrupt vector: in lspci output for this device there was:
->         Interrupt: pin B routed to IRQ 19
-> but after running i2cdetect (without using any i2c-i801 module
-> parameters) the following was logged to dmesg:
-> 
->         [...]
->         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
->         i801_smbus 0000:00:1f.3: Transaction timeout
->         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
->         i801_smbus 0000:00:1f.3: Transaction timeout
->         irq 17: nobody cared (try booting with the "irqpoll" option)
-> 
-> Existence of duplicate entries in a table returned by the _PRT method
-> was confirmed by disassembling the ACPI DSDT table.
-> 
-> Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
-> Manager), which is neither of the two vectors returned by _PRT.
-> As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
-> working under Windows. It appears that Windows has reconfigured the
-> chipset independently to use another interrupt vector for the device.
-> This is possible, according to the chipset datasheet [1], page 436 for
-> example (PIRQ[n]_ROUT—PIRQ[A,B,C,D] Routing Control Register).
+On Thu, 1 Feb 2024 at 13:52, Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> Changes in V2->V3:
+> V2: https://lore.kernel.org/all/20230917000045.56377-1-puranjay12@gmail.com/
+> - Use unwinder from stacktrace.c rather than open coding the unwind logic.
+> - Fix a bug in the prologue related to BPF_FP (Xu Kuohai)
+>
+> Changes in V1->V2:
+> V1: https://lore.kernel.org/all/20230912233942.6734-1-puranjay12@gmail.com/
+> - Remove exceptions from DENYLIST.aarch64 as they are supported now.
+>
+> The base support for exceptions was merged with [1] and it was enabled for
+> x86-64.
+>
+> This patch set enables the support on ARM64, all sefltests are passing:
+>
+> # ./test_progs -a exceptions
+> #74/1    exceptions/exception_throw_always_1:OK
+> [...]
 
-> [1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf
-> 
+I think this looks ok, would be nice if it received acks from arm64 experts.
 
-Can you convert this to be a Link tag?
+If you have cycles to spare, please also look into
+https://lore.kernel.org/bpf/20240201042109.1150490-1-memxor@gmail.com
+and let me know how architecture independent the cleanup code right
+now in the x86 JIT should be made so that we can do the
+same for arm64 as well later. That would be required to complete the
+support for cleanups.
 
-Link: ...URL... # [1]
-Signed-off-by: ...
+I guess we just need bpf_frame_spilled_caller_reg_off to be arch
+specific and lift the rest out into the BPF core.
+I will make that change in v2 in any case.
 
-> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Jean Delvare <jdelvare@suse.de>
-
-Please, move these (Cc lines) down after --- cutter line.
-
-> Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
-> Previously-tested-by: Jean Delvare <jdelvare@suse.de>
-
-This shouldn't be in the commit message, just use the comment block
-(after --- line) for this.
-
-..
-
->  	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->  	struct acpi_pci_routing_table *entry;
->  	acpi_handle handle = NULL;
-> +	struct acpi_prt_entry *match = NULL;
-> +	const char *match_int_source = NULL;
-
-Can you preserve reversed xmas tree ordering?
-
-..
-
->  	while (entry && (entry->length > 0)) {
-> -		if (!acpi_pci_irq_check_entry(handle, dev, pin,
-> -						 entry, entry_ptr))
-> -			break;
-> +		struct acpi_prt_entry *curr;
-> +
-> +		if (!acpi_pci_irq_check_entry(handle, dev, pin, entry, &curr)) {
-
-> +			if (!match) {
-
-Why not positive condition?
-
-> +				match = curr;
-> +				match_int_source = entry->source;
-> +			} else {
-> +				dev_warn(&dev->dev, FW_BUG
-> +				       "ACPI _PRT returned duplicate IRQ routing entries for INT%c: %s[%d] and %s[%d]\n",
-> +				       pin_name(curr->pin),
-> +				       match_int_source, match->index,
-> +				       entry->source, curr->index);
-> +				/* We use the first matching entry nonetheless,
-> +				 * for compatibility with older kernels.
-> +				 */
-> +			}
-> +		}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Just a note but based on our off-list discussion for supporting this
+stuff on riscv as well (where a lot of registers would have to be
+saved on entry),
+the hidden subprog trampoline could be a way to avoid that. They can
+be pushed by this subprog before entry into bpf_throw, and since the
+BPF program does not touch the extra callee-saved registers, they
+should be what the kernel had originally upon entry into the BPF
+program itself. The same could be done on arm64 and x86, but the
+returns would be diminishing. It would be nice to quantify how much
+this saves in terms of costs of pushing extra registers, before doing
+this.
 
