@@ -1,166 +1,155 @@
-Return-Path: <linux-kernel+bounces-73204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C0D685BF41
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:00:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6460385BF54
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00AFE28215C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:00:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47175B23DC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E7974299;
-	Tue, 20 Feb 2024 14:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C578762E0;
+	Tue, 20 Feb 2024 15:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="1MHaQJL8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KvYwjIm3";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="1MHaQJL8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KvYwjIm3"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="znmVRaGS"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B962B67E91;
-	Tue, 20 Feb 2024 14:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05B474E3E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708441189; cv=none; b=QDT2xJgRECCIp3P0Cf1eOVDMGwKV98+ZczTw9sush0Ne5/oGy8ngDEwANy42OADlNnhaz2XvjrQxiTLAc4Y7Ag/C9k5s0gaFecVeDvFSnAAdZaNjg/08rl6ja7v88AocgjvERQYklh6KUSz7ZZav6qm9DAN0TBLkXgKy0V6wp8c=
+	t=1708441203; cv=none; b=lduAQxiFyqZI3Sr5fh/42Fb9HFtoA1PTEe8sI0Ubqy5tKfHMuA8oF2cyG+jCIqrq2Qu6I1dULDkGlFLHU81V7qIiAQ8DYcmhboyzXK9bTq4IfZD60+T8EgWR2IUN27Rz2gCzYIMXG98IQRIlGudL4ACToDvu6V2lkxXZWMl7z4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708441189; c=relaxed/simple;
-	bh=+6dpGBqTRme9HOoPA5CvCblwTs/y4BuSqvP6fWdqjs8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Mpx13h8f2j9sH0PUjpnPY38TQTTDuvilrMK83fEc6epMJMgTNQ22fQJ8c1bmsV5xwWzERTlcgs3KHmZlRDP/9fX4lrngXaDRo+DgvsCxfaaBg5oqNh9SSjLNCA/Q4e/GE++eFgS0u4hnPiBMNLOFAGizGEPG2LZ7SrwxZ146Hl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=1MHaQJL8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KvYwjIm3; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=1MHaQJL8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KvYwjIm3; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C43111F898;
-	Tue, 20 Feb 2024 14:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708441185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mvro3zekXoZ0IqphOQMb6DozUfJPZwilwfAcT3oRVog=;
-	b=1MHaQJL8i7D8jEJnULlFdqwVhl0mVJmTxyTAfnOT33B3Ex2QuFyhxl/cqxfxLO5aYih85i
-	7nflvsvX6whA4y8pu7ig/SCRzXkTON+G+OEOHDN11Za0LtUBpvU0LQ742MdGbVvgtkqrnr
-	3eOSj79u8cjfnuTj/hh5AQSc4GhghBo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708441185;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mvro3zekXoZ0IqphOQMb6DozUfJPZwilwfAcT3oRVog=;
-	b=KvYwjIm34gjCXKk+/Khnf2ICGcGzqO8Mmy5RtPzBxH3pdVakyzgegMS4uu4Gjt7GLDZfY3
-	7/2yo2ZijfeAGtBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708441185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mvro3zekXoZ0IqphOQMb6DozUfJPZwilwfAcT3oRVog=;
-	b=1MHaQJL8i7D8jEJnULlFdqwVhl0mVJmTxyTAfnOT33B3Ex2QuFyhxl/cqxfxLO5aYih85i
-	7nflvsvX6whA4y8pu7ig/SCRzXkTON+G+OEOHDN11Za0LtUBpvU0LQ742MdGbVvgtkqrnr
-	3eOSj79u8cjfnuTj/hh5AQSc4GhghBo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708441185;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mvro3zekXoZ0IqphOQMb6DozUfJPZwilwfAcT3oRVog=;
-	b=KvYwjIm34gjCXKk+/Khnf2ICGcGzqO8Mmy5RtPzBxH3pdVakyzgegMS4uu4Gjt7GLDZfY3
-	7/2yo2ZijfeAGtBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7FD76139D0;
-	Tue, 20 Feb 2024 14:59:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pBv1GGG+1GU4PwAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 20 Feb 2024 14:59:45 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v10 3/8] libfs: Introduce case-insensitive string
- comparison helper
-In-Reply-To: <fb32fc72-5434-4852-b7e9-f63fc03a8248@collabora.com> (Eugen
-	Hristev's message of "Tue, 20 Feb 2024 09:36:40 +0200")
-Organization: SUSE
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
-	<20240215042654.359210-4-eugen.hristev@collabora.com>
-	<87zfw0bd6y.fsf@mailhost.krisman.be>
-	<50d2afaa-fd7e-4772-ac84-24e8994bfba8@collabora.com>
-	<87msrwbj18.fsf@mailhost.krisman.be>
-	<fb32fc72-5434-4852-b7e9-f63fc03a8248@collabora.com>
-Date: Tue, 20 Feb 2024 09:59:44 -0500
-Message-ID: <871q97b2qn.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708441203; c=relaxed/simple;
+	bh=RkjU3Ub4ClpkOSSOEN84+hu/XY6PSH0IWTUar1yt9s8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pf1weQFFkaJYawTplTwa0nQ5wONqULK9N8YxJQd9N3KNaljZlO55qObMrW8byl5mJxjzNe752cV+khjEaXpStvZbq1SIXh2nXFRk0GwMLV/qbLZRLKMwBP93GhsHD13Iznpg3CRUTsspWdLh6mhy5pWt6VBAsiiiGY+lgGUJ/ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=znmVRaGS; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33ce8cbf465so2728543f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708441199; x=1709045999; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OJN21V1bop2AoQQK03hl+NSFZtBSAxp4abYemrkmzIE=;
+        b=znmVRaGSJ6JJlCDRmvJMD0FoWz4wH7Io0JTJVv1GpGtNarkmgou1jwAvuzZmOo5MCI
+         HCd8PBeBjeLbGtcijb43T+SdLsYkQw3q6BcNXCWO9rmQlHHxaUzul+kB/L+84LaS5xBl
+         gsvTH1G8EwlkLnA0Af+vFZiILbyuAw1t2WJGmOjsElm6NaJL35wEJMffdMBwYe/SZfEu
+         2n29Fq94TWG15u/qBUD/ivGqc3RW/zBAKaslQCHLVQ89+i83h2qu2TpXRjb39a3XE5bD
+         W9abNXLuCGLXTP3hJrROU//oxwC0oRBladnYYXehiP+ihZVOxVkhtnHqLSFS+pmB9zUo
+         frKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708441199; x=1709045999;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OJN21V1bop2AoQQK03hl+NSFZtBSAxp4abYemrkmzIE=;
+        b=wdyvpO7QG6kIbboxvDwo5vnamWYfJ/wh6PVOzE+iRgfz4jC3mhRFeeAntqsMXFVdhk
+         XeHMv2HAIvLsjKQjDz6l+NUqfhzkSxwXdnHlzpQWiKOv2DfeEU+XvwSdhXrt6JY/8Or2
+         BDaryoosleBXaMj8KfL07cNL/GmS1DE9wZbcupcQ7QtFpJiqLjdhs+BjkxLXjVyo8AZK
+         iLkuPlmP1p5OOnbvMpnUxpvufEDB3eal/ifeh1D78SmDJwOdQN+r2EhnhQ7HIESVRzzl
+         8fe4lpAEVlps0EiuNjqW8jiu+9miU1Ftao14kb9ymu5wowj9aEejeE1/BVWnJQ5GkEPZ
+         W7tQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVtpH6fj3LHoiQ5RBgGH6L1Bs0nI1jspXYUA/9H4hw3TJ7aX/KvEOEQjUgT1GQexr8OW/t7YbjekOav8fxKESlZzyxVu5JMeoJ2SoGv
+X-Gm-Message-State: AOJu0YzzMelts8saJWayDHzaU5V6Q6p0DLVKNmSxLN/48QqEpnrJ3PCh
+	R2CcV49sjrp403e1Z/+u4Av9RysZtq6PiCj0Igrj9f2fM103Qw6osaRVB6XMgFY=
+X-Google-Smtp-Source: AGHT+IF9tJG6cYo5kMgHAyXSW6LLub4Cy4QdsaVLmULHXyA1+3Ik6b0caALozs4YQUihhJTnKqZHLg==
+X-Received: by 2002:a5d:64a7:0:b0:33d:ed4:5c86 with SMTP id m7-20020a5d64a7000000b0033d0ed45c86mr13698111wrp.63.1708441199370;
+        Tue, 20 Feb 2024 06:59:59 -0800 (PST)
+Received: from vingu-book.. ([2a01:e0a:f:6020:8deb:bfb9:b028:6d5c])
+        by smtp.gmail.com with ESMTPSA id v4-20020a5d6784000000b0033d39626c27sm9304405wru.76.2024.02.20.06.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 06:59:58 -0800 (PST)
+From: Vincent Guittot <vincent.guittot@linaro.org>
+To: linux@armlinux.org.uk,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	sudeep.holla@arm.com,
+	rafael@kernel.org,
+	viresh.kumar@linaro.org,
+	agross@kernel.org,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	lukasz.luba@arm.com,
+	rui.zhang@intel.com,
+	mhiramat@kernel.org,
+	daniel.lezcano@linaro.org,
+	amit.kachhap@gmail.com,
+	corbet@lwn.net,
+	gregkh@linuxfoundation.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v5 3/5] thermal/cpufreq: Remove arch_update_thermal_pressure()
+Date: Tue, 20 Feb 2024 15:59:45 +0100
+Message-Id: <20240220145947.1107937-4-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240220145947.1107937-1-vincent.guittot@linaro.org>
+References: <20240220145947.1107937-1-vincent.guittot@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.90 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 HAS_ORG_HEADER(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.80)[84.80%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[collabora.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.90
+Content-Transfer-Encoding: 8bit
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+arch_update_thermal_pressure() aims to update fast changing signal which
+should be averaged using PELT filtering before being provided to the
+scheduler which can't make smart use of fast changing signal.
+cpufreq now provides the maximum freq_qos pressure on the capacity to the
+scheduler, which includes cpufreq cooling device. Remove the call to
+arch_update_thermal_pressure() in cpufreq cooling device as this is
+handled by cpufreq_get_pressure().
 
-> Okay, I am changing it.
->
-> By the way, is this supposed to work like this on case-insensitive directories ?
->
-> user@debian-rockchip-rock5b-rk3588:~$ ls -la /media/CI_dir/*cuc
-> ls: cannot access '/media/CI_dir/*cuc': No such file or directory
-> user@debian-rockchip-rock5b-rk3588:~$ ls -la /media/CI_dir/*CUC
-> -rw-r--r-- 1 root root 0 Feb 12 17:47 /media/CI_dir/CUC
-> user@debian-rockchip-rock5b-rk3588:~$ ls -la /media/CI_dir/cuc
-> -rw-r--r-- 1 root root 0 Feb 12 17:47 /media/CI_dir/cuc
-> user@debian-rockchip-rock5b-rk3588:~$
->
->
-> basically wildcards don't work.
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/thermal/cpufreq_cooling.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Yes, at least from a kernel point of view.  Your shell does wildcards in
-userspace, probably by doing getdents and then comparing with possible
-matches.  Since the shell itself is not case-insensitive aware, its
-comparison is case-sensitive, and you get these apparent weird
-semantics.
-
-Not ideal from a user point of view.  But not a kernel bug.  If it
-pushes people away from using case-insensitive directories in their
-day-to-day work and leave it to only be used by Windows compatibility
-layers, maybe that's a win? :)
-
+diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+index e2cc7bd30862..e77d3b44903e 100644
+--- a/drivers/thermal/cpufreq_cooling.c
++++ b/drivers/thermal/cpufreq_cooling.c
+@@ -448,7 +448,6 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
+ 				 unsigned long state)
+ {
+ 	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
+-	struct cpumask *cpus;
+ 	unsigned int frequency;
+ 	int ret;
+ 
+@@ -465,8 +464,6 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
+ 	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
+ 	if (ret >= 0) {
+ 		cpufreq_cdev->cpufreq_state = state;
+-		cpus = cpufreq_cdev->policy->related_cpus;
+-		arch_update_thermal_pressure(cpus, frequency);
+ 		ret = 0;
+ 	}
+ 
 -- 
-Gabriel Krisman Bertazi
+2.34.1
+
 
