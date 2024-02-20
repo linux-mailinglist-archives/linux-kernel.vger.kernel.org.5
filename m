@@ -1,201 +1,417 @@
-Return-Path: <linux-kernel+bounces-72600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD60385B5D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:50:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2F785B5D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 336D0B214B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:50:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BABF1C23D30
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09045D743;
-	Tue, 20 Feb 2024 08:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3CC5F57C;
+	Tue, 20 Feb 2024 08:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KHH24exD"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UsTGgmlS"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4166F5D75D
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBAA5F492;
+	Tue, 20 Feb 2024 08:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419015; cv=none; b=iLlN6sxfE+g0OJFhkcs47gk5RDMknt6d7K3a6uSOSbcYd8T3FysSDbqfspjH4De9HCKEcAB0pBoJ+AlMFBz2W5VCp9x/3dZ7LLl/XjPZAVqOF+zbg75IKQOXVHaZtguepBJs8+KLLD9UVHieuytsZsu4yX7vFFgNFXFuga46xoo=
+	t=1708419018; cv=none; b=GP3Mu1QW0tiqUZHzPA3AWZ3SifhhDhSRdjSCDNyoSrZ44+GKTXcOLdeBDNbAfOjdL3m0OmOIGwVdmAs9jh4YCRhRmMSG4yt0bfC0VsxI+fszKZNEQQv1TbQOd8QyRQtgSwjNkk4Go/4uCzj4JSUJuuB77drUvEb3moKOwSXC4Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419015; c=relaxed/simple;
-	bh=8wTnZeiZa5BwRGEKVPQRxlrFT+qy83N5pV5Kf9bmFtM=;
+	s=arc-20240116; t=1708419018; c=relaxed/simple;
+	bh=Cd1y/rChrSDGUSk0PfL9IEV+460/jQJCxZCP3pTca4M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tW4MRBD1ATUkgVKqsPjeW80WHSRH7Com44CyD3h9AwzpafGFzY89ygiUfUR+cxN9klaOgfoUD245mP7V5ZQv4llmdyz/X3fKufL5jR/k6Wq7Kh7ch80E6awXE/Sb7EKgI5spovvd8JfnG8BN2y/14vOLIyrIWDkF2iJoa26Q0eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KHH24exD; arc=none smtp.client-ip=209.85.167.48
+	 To:Cc:Content-Type; b=tKbUP8wVrZQJb8hO6QJZaFc86peJXqePQoO3A//dl76yTx0wgp/85LxUaTf3mqfqNk2uIA1XTUobr9/c4p+JvqE0rSV7KZd1gtQx6xn1tRgPDpkYfxLvk/7qhpVqj7DtwtKKNDAtpfB5wZX5oAkRS8IIKPtKUbTKD6k7g9mIIwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UsTGgmlS; arc=none smtp.client-ip=209.85.161.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5112bd13a4fso6705110e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:50:12 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-59d78deb469so3284430eaf.1;
+        Tue, 20 Feb 2024 00:50:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708419011; x=1709023811; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708419015; x=1709023815; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t15t0QA8PUUprA9RZMeoEMSHHE4KRxpyRH362kM2s2k=;
-        b=KHH24exDGScJw4t0k9Dx/YF8PAOXfF1GSwVh/JqzJie5ZLS5bHHeIBvVyYCRl50FR7
-         265CQEu8+01TeUR59pHDzkYP3C+R//g0xTUEFZWEgWQ20uzvpPB5h+4+JuRyNZI2tYBc
-         Z0aHfGYjWK6BvCVtbO+5cQFAKjifAKtKa5MUSc2JRD2AoBzWMS+nI3+s0xMzfcdCtBnd
-         GIO+PAhsk8/9wqDTycgCw1G6ElOVkkbVqDEPfDe11anV89I+VYuhXySZT/WgqhryjsYh
-         0WUznxZqYfKb4Bwkp3fY74H9MvbqfqNKg5hsdCf5FE0UYo9LbiZ2RwicoUrzxPIONqfP
-         rLcA==
+        bh=ISjtOW1rVch6OpIclD9zs0LraDCkma/k5yMSLlAqjcE=;
+        b=UsTGgmlSSA0DYglBvmeLVMOnVpAEhQIBpB2Ot5BBcIjqD+BivBkEyEu5sqdE1RJHN2
+         K3qVH/EJvRbQE7G6Q2ImVPG+XQ6WyRTCiNLpjA9b9Y1hZ5fg5qHT11m4lTlEa3fIJmDs
+         tvtYnn7XohFXa1E/Fd3XjD6nmgE6FZWoN+NQ8c3KBypBmQ7bNhn5nssvRe8tUXh3J/9S
+         Y3KFj4CcyYuq7X0rZ+wafTFHS/pgutBz/UGiWYypcGOwmO2N6KuO8LmGjDq1dK5KBxdt
+         Dzkc7uKuMnS4A+CaXocrPpnO7T4+y5Ol2eJapCst7PfOq5l2HMTyJuQR7ibl5T29X7oq
+         QVlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708419011; x=1709023811;
+        d=1e100.net; s=20230601; t=1708419015; x=1709023815;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t15t0QA8PUUprA9RZMeoEMSHHE4KRxpyRH362kM2s2k=;
-        b=kXv/WrvFQBAn0zqJ9RzSfjYfsFk2Il3C6DEAGm3mf/F34lR0vjEpXEcqYxpdr9k1ee
-         3XW3RdQBTFPFvQfT1Udahc1wyieXx2hZm9DKo/LQao5L6Bg7UvOSqdVLkdQp+MI150Nx
-         5L4keM+8XxMuTvGQzy3njLrDiHhsBbfo0nJG6Y84bPx0Fo21aoXqK0JpOUewO48rz2HJ
-         qONBRuZP/mJ1+R9xkHf+k1UCV5JHKmjvUct9RQnTwVQ0suJ9obbffB9nhwO3Dw91PBda
-         7fk9qGXPTxC40IOtUVUS7m/EYjH6FDn39MvrL91PXQhhDBXggtEQEss7ZZOjIFCee0t1
-         GUEg==
-X-Forwarded-Encrypted: i=1; AJvYcCVivMx2olgbMPwkF/zyVp5bssTU6csUnjEPM5Men1JwCXMwl5QhG3hyRDHF0lKXbdOyEjhVh7eXfpPlohYqeMWl8DjRdsx1cHey8g+7
-X-Gm-Message-State: AOJu0Yy16xEAY/wc4hyOIhzEuefMqlEjfNwa/NIFNYHOKvx1TkfHBvei
-	R0gqaFfm1pZwVM0VRgB4/umAXfYVH2WIe5wRfQoajlS/hBDpzlJrUtTyk2c+EV8rmviiFJyYb+T
-	HFzJUAN9cL8SKAufPnd/h+VdGRw==
-X-Google-Smtp-Source: AGHT+IGSrY3qaVh89MY2zmF9/3vB9Lqtwk0TAXP32s03QoePEzUbbI6OHGKgOJkgEt4RI1ZdDfVfxT7iFF2pb/OSiL0=
-X-Received: by 2002:ac2:4a81:0:b0:512:bead:d1a0 with SMTP id
- l1-20020ac24a81000000b00512beadd1a0mr759189lfp.14.1708419011168; Tue, 20 Feb
- 2024 00:50:11 -0800 (PST)
+        bh=ISjtOW1rVch6OpIclD9zs0LraDCkma/k5yMSLlAqjcE=;
+        b=k8wKNZwqw9MuIdA/tCN0uEFT0Liwd/n+SFaCWPHQjMFc+t7fIMj2OmMyWSmLmWFO4x
+         D/oAEOl+ceY/EPhh9iGDazh4q+UKffjVKQn73e6pW9XiC0RvG/WYw1UKQd2zdWXSiKj5
+         mW6CeEuRV4fPQF7HejuZHf/404t4PB/qVXQwOlucjYGMzHvxjc2bzFXJh4bD//V8146c
+         quMKr1J0sXsO/rclt8RkHeF83xAnhYN/FjjQthULyaGUUVo4DdedSh5j0dyLe3Gnnyij
+         Y3AgfSaNVbmchPtKIntV0ttKZGK2wbtzoL7FuP+UQLjCXzwnAspf8BVWSKvNSIG49nbH
+         xBmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEfJ0RckReySpRhE4Ccf0xGP02qBuqUTv3oicpvLFpybktPlWV43nfkm2WGSUfQGBi7QUlfAX0CoeOoYTk123ZcyKUdJoOnGJ+XAwmZJMoO8ggOhofUh67iWaJb8sBCGy7pL+U5/MCdA==
+X-Gm-Message-State: AOJu0YyOV2VKBN6qsoyJLyQifacy0SWuTI7JCPFpfWleF1PPY1hy+Js5
+	g7kMWnvI0jFlRoGJ+2DrOkHWvKbqhiRZ99XviSAYU08ZjdKIprecG9zqqjXr5bqSh8hLXXTa+me
+	kntuAiAZR9CgKrCoCTcTYwlMXxsU=
+X-Google-Smtp-Source: AGHT+IHUeUUD1us0WTBbLO42YcQrKgDTE54WFKhsrE0OQVLIDgt8TfmP4k04V7d7sglhDpBt3cEXJn747PW1XMCZ73U=
+X-Received: by 2002:a4a:a8cc:0:b0:59f:8464:b004 with SMTP id
+ r12-20020a4aa8cc000000b0059f8464b004mr11975539oom.0.1708419014633; Tue, 20
+ Feb 2024 00:50:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219031911.10372-1-fangzheng.zhang@unisoc.com>
- <20240219031911.10372-3-fangzheng.zhang@unisoc.com> <ZdLX51r1mOEZKUje@casper.infradead.org>
- <CA+kNDJ+C2b520afauSWbfNK=S1XiNHR_zF32_K-3Rf7R6m3n5Q@mail.gmail.com> <4591b2b3-398f-402e-b21d-55b244f05a2e@suse.cz>
-In-Reply-To: <4591b2b3-398f-402e-b21d-55b244f05a2e@suse.cz>
-From: zhang fangzheng <fangzheng.zhang1003@gmail.com>
-Date: Tue, 20 Feb 2024 16:49:59 +0800
-Message-ID: <CA+kNDJLCEdeQsaaLggxbUzF4mAqk_ZLKe=o3cnRkZO8_EKhoSQ@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] Documentation: filesystems: introduce
- proc/slabinfo to users
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>, Fangzheng Zhang <fangzheng.zhang@unisoc.com>, 
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Greg KH <gregkh@linuxfoundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, tkjos@google.com, 
-	Yuming Han <yuming.han@unisoc.com>, Chunyan Zhang <zhang.lyra@gmail.com>
+References: <20240212121729.1086718-1-qiujingbao.dlmu@gmail.com> <20240212121729.1086718-3-qiujingbao.dlmu@gmail.com>
+In-Reply-To: <20240212121729.1086718-3-qiujingbao.dlmu@gmail.com>
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Date: Tue, 20 Feb 2024 16:50:03 +0800
+Message-ID: <CAJRtX8TKfSf9BxTKrrDmOp=7aXOYXKgZ89PF7En_UvYOTkfi+g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pwm: sophgo: add pwm support for Sophgo CV1800 SoC
+To: u.kleine-koenig@pengutronix.de, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	dlan@gentoo.org, inochiama@outlook.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 4:09=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 2/19/24 07:23, zhang fangzheng wrote:
-> > On Mon, Feb 19, 2024 at 12:24=E2=80=AFPM Matthew Wilcox <willy@infradea=
-d.org> wrote:
-> >>
-> >> On Mon, Feb 19, 2024 at 11:19:11AM +0800, Fangzheng Zhang wrote:
-> >> > +Note, <slabreclaim> comes from the collected results in the file
-> >> > +/sys/kernel/slab/$cache/reclaim_account. Next, we will mark /proc/s=
-labinfo
-> >> > +as deprecated and recommend the use of either sysfs directly or
-> >> > +use of the "slabinfo" tool that we have been providing in linux/too=
-ls/mm.
-> >>
-> >> Wait, so you're going to all of the trouble of changing the format of
-> >> slabinfo (with the associated costs of updating every tool that curren=
-tly
-> >> parses it), only to recommend that we stop using it and start using
-> >> tools/mm/slabinfo instead?
-> >>
->
-> Hi,
->
-> > The initial purpose was to obtain the type of each slab through
-> > a simple command 'cat proc/slabinfo'. So here, my intention is not to
-> > update all slabinfo-related tools for the time being, but to modify
-> > the version number of proc/slabinfo and further display the results
-> > of using the command.
->
-> I'm not sure you understand the concern. There are existing consumers of
-> /proc/slabinfo, that might become broken by patch 1/2. We don't even know
-> them all, they might not be all opensource etc. So we can't even make sur=
-e
-> all of them are updated. What can happen after patch 1/2:
-> - they keep working and ignore the new column (good)
-> - they include a version check and notice a new unsupported version and
-> refuse to work
-> - confused by the new column they start throwing error, or report wrong
-> stats (that's worse)
->
-I generally understand your concerns about modifying patch 1/2.
+Hi Uwe,
 
-But judging from my modifications, this worry does not seem to be valid.
-Because the =E2=80=9C/proc/slabinfo=E2=80=9D is not used in related slabinf=
-o debugging tools
-(such as tools/mm/slabinfo), but "/sys/kernel/slab/<slab_name>/" (in
-Documentation/mm/slub.rst) or "/ sys/kernel/debug/slab" (in
-tools/mm/slabinfo.c).
+Gentle ping. Could you share some comments on this patch?
 
-Furthermore, the current modification only involves optimizing the output
-of proc/slabinfo, and does not modify the  struct slabinfo or struct kmem_c=
-ache.
-So there is no need to adapt other modifications.
+Best regards,
+Jingbao Qiu
 
-> >> How about we simply do nothing?
+On Mon, Feb 12, 2024 at 8:17=E2=80=AFPM Jingbao Qiu <qiujingbao.dlmu@gmail.=
+com> wrote:
 >
-> Agreed wrt modifying /proc/slabinfo
+> Implement the PWM driver for CV1800.
 >
-> > The note here means what changes will occur after
-> > we modify the version number of proc/slabinfo to 2.2.
-> > As for the replacement of tools/mm/slabinfo (that inspired
-> > by Christoph=E2=80=99s suggestions), it will be implemented in the next=
- version
-> > or even the later version.
+> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> ---
+>  drivers/pwm/Kconfig      |  10 ++
+>  drivers/pwm/Makefile     |   1 +
+>  drivers/pwm/pwm-cv1800.c | 248 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 259 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-cv1800.c
 >
-> So what is your motivation for all this in the first place? You have some
-> monitoring tool that relies on /proc/slabinfo and want to distinguish
-> reclaimable caches? So you can change it to parse the /sys directories. I=
-s
-> it more work? Yes, but you only have to do that once per boot, because
-> unlike the object/memory stats in /proc/slabinfo, the reclaimable flag wi=
-ll
-> not change for a cache.
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 4b956d661755..455f07af94f7 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -186,6 +186,16 @@ config PWM_CROS_EC
+>           PWM driver for exposing a PWM attached to the ChromeOS Embedded
+>           Controller.
 >
-The situation as you mentioned is very suitable for my current needs.
-My original intention is just to get an intuitive slab screen through a
-simple =E2=80=98cat proc/slabinfo=E2=80=99 command. As for the description =
-"<slabreclaim>
-comes from the collected results in the file
-/sys/kernel/slab/$cache/reclaim_account"
-may not be appropriate. Here I want to express that the column <slabreclaim=
-> has
-the same effect as traversing "/sys/kernel/slab/$ cache/reclaim_account".
-
-> Would tools/mm/slabinfo almost work for you, but you're missing something=
-?
-> Then send patches for that in the first place. Changing /proc/slabinfo (a=
-nd
-> breaking other consumers) for a quick and easy fix with a different solut=
-ion
-> planned for the future is simply not feasible.
->
-Using the slabinfo tool to parse /sys/kernel/slab/$cache/reclaim_account
-is what I think about optimizing future tools during the discussion.
-It will not affect the current patch 1/2, and patch 2/2 is mainly to
-supplement the output examples of proc/slabinfo.
-
-If the community is willing to accept it, I will only modify
-patch 1/2 to implement it.
-
-Thanks very much!
-
-> HTH,
-> Vlastimil
->
-> > Thanks!
+> +config PWM_CV1800
+> +       tristate "Sophgo CV1800 PWM driver"
+> +       depends on ARCH_SOPHGO || COMPILE_TEST
+> +       help
+> +         Generic PWM framework driver for the Sophgo CV1800 series
+> +         SoCs.
+> +
+> +         To compile this driver as a module, build the dependecies
+> +         as modules, this will be called pwm-cv1800.
+> +
+>  config PWM_DWC_CORE
+>         tristate
+>         depends on HAS_IOMEM
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index c5ec9e168ee7..6c3c4a07a316 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_PWM_CLK)         +=3D pwm-clk.o
+>  obj-$(CONFIG_PWM_CLPS711X)     +=3D pwm-clps711x.o
+>  obj-$(CONFIG_PWM_CRC)          +=3D pwm-crc.o
+>  obj-$(CONFIG_PWM_CROS_EC)      +=3D pwm-cros-ec.o
+> +obj-$(CONFIG_PWM_CV1800)       +=3D pwm-cv1800.o
+>  obj-$(CONFIG_PWM_DWC_CORE)     +=3D pwm-dwc-core.o
+>  obj-$(CONFIG_PWM_DWC)          +=3D pwm-dwc.o
+>  obj-$(CONFIG_PWM_EP93XX)       +=3D pwm-ep93xx.o
+> diff --git a/drivers/pwm/pwm-cv1800.c b/drivers/pwm/pwm-cv1800.c
+> new file mode 100644
+> index 000000000000..3d7f2ff3a6c2
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-cv1800.c
+> @@ -0,0 +1,248 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * pwm-cv1800.c: PWM driver for Sophgo cv1800
+> + *
+> + * Author: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> + *
+> + * Limitations:
+> + * - It output low when PWM channel disabled.
+> + * - This pwm device supports dynamic loading of PWM parameters. When PW=
+MSTART
+> + *   is written from 0 to 1, the register value (HLPERIODn, PERIODn) wil=
+l be
+> + *   temporarily stored inside the PWM. If you want to dynamically chang=
+e the
+> + *   waveform during PWM output, after writing the new value to HLPERIOD=
+n and
+> + *   PERIODn, write 1 and then 0 to PWMUPDATE[n] to make the new value e=
+ffective.
+> + * - Supports up to Rate/2 output, and the lowest is about Rate/(2^30-1)=
+.
+> + * - By setting HLPERIODn to 0, can produce 100% duty cycle.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +
+> +#define PWM_CV1800_HLPERIOD_BASE       0x00
+> +#define PWM_CV1800_PERIOD_BASE         0x04
+> +#define PWM_CV1800_PWM_CV1800_POLARITY 0x40
+> +#define PWM_CV1800_START               0x44
+> +#define PWM_CV1800_DONE                0x48
+> +#define PWM_CV1800_UPDATE              0x4c
+> +#define PWM_CV1800_OE                  0xd0
+> +#define PWM_CV1800_HLPERIOD_SHIFT      0x08
+> +#define PWM_CV1800_PERIOD_SHIFT        0x08
+> +
+> +#define PWM_CV1800_HLPERIOD(n)         \
+> +       (PWM_CV1800_HLPERIOD_BASE + ((n) * PWM_CV1800_HLPERIOD_SHIFT))
+> +#define PWM_CV1800_PERIOD(n)           \
+> +       (PWM_CV1800_PERIOD_BASE + ((n) * PWM_CV1800_PERIOD_SHIFT))
+> +
+> +#define PWM_CV1800_UPDATE_MASK(n) (BIT(0) << (n))
+> +#define PWM_CV1800_OE_MASK(n)     (BIT(0) << (n))
+> +#define PWM_CV1800_START_MASK(n)  (BIT(0) << (n))
+> +
+> +#define PWM_CV1800_MAXPERIOD      (BIT(30) - 1)
+> +#define PWM_CV1800_MINPERIOD      BIT(1)
+> +#define PWM_CV1800_MINHLPERIOD    BIT(0)
+> +#define PWM_CV1800_PERIOD_RESET   BIT(1)
+> +#define PWM_CV1800_HLPERIOD_RESET BIT(0)
+> +#define PWM_CV1800_REG_DISABLE    0x0U
+> +#define PWM_CV1800_REG_ENABLE(n)  (BIT(0) << (n))
+> +
+> +struct cv1800_pwm {
+> +       struct pwm_chip chip;
+> +       struct regmap *map;
+> +       struct clk *clk;
+> +       unsigned long clk_rate;
+> +};
+> +
+> +static const struct regmap_config cv1800_pwm_regmap_config =3D {
+> +       .reg_bits =3D 32,
+> +       .val_bits =3D 32,
+> +       .reg_stride =3D 4,
+> +};
+> +
+> +static inline struct cv1800_pwm *to_cv1800_pwm_dev(struct pwm_chip *chip=
+)
+> +{
+> +       return container_of(chip, struct cv1800_pwm, chip);
+> +}
+> +
+> +static int cv1800_pwm_enable(struct pwm_chip *chip, struct pwm_device *p=
+wm,
+> +                            bool enable)
+> +{
+> +       struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
+> +       u32 pwm_enable;
+> +
+> +       regmap_read(priv->map, PWM_CV1800_START, &pwm_enable);
+> +       pwm_enable &=3D PWM_CV1800_START_MASK(pwm->hwpwm);
+> +
+> +       /*
+> +        * If the parameters are changed during runtime, Register needs
+> +        * to be updated to take effect.
+> +        */
+> +       if (pwm_enable && enable) {
+> +               regmap_update_bits(priv->map, PWM_CV1800_UPDATE,
+> +                                  PWM_CV1800_UPDATE_MASK(pwm->hwpwm),
+> +                                  PWM_CV1800_REG_ENABLE(pwm->hwpwm));
+> +               regmap_update_bits(priv->map, PWM_CV1800_UPDATE,
+> +                                  PWM_CV1800_UPDATE_MASK(pwm->hwpwm),
+> +                                  PWM_CV1800_REG_DISABLE);
+> +       } else if (!pwm_enable && enable) {
+> +               regmap_update_bits(priv->map, PWM_CV1800_OE,
+> +                                  PWM_CV1800_OE_MASK(pwm->hwpwm),
+> +                                  PWM_CV1800_REG_ENABLE(pwm->hwpwm));
+> +               regmap_update_bits(priv->map, PWM_CV1800_START,
+> +                                  PWM_CV1800_START_MASK(pwm->hwpwm),
+> +                                  PWM_CV1800_REG_ENABLE(pwm->hwpwm));
+> +       } else if (pwm_enable && !enable) {
+> +               regmap_update_bits(priv->map, PWM_CV1800_OE,
+> +                                  PWM_CV1800_OE_MASK(pwm->hwpwm),
+> +                                  PWM_CV1800_REG_DISABLE);
+> +               regmap_update_bits(priv->map, PWM_CV1800_START,
+> +                                  PWM_CV1800_START_MASK(pwm->hwpwm),
+> +                                  PWM_CV1800_REG_DISABLE);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int cv1800_pwm_apply(struct pwm_chip *chip, struct pwm_device *pw=
+m,
+> +                           const struct pwm_state *state)
+> +{
+> +       struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
+> +       u32 period_val, hlperiod_val;
+> +       u64 tem;
+> +
+> +       if (state->polarity !=3D PWM_POLARITY_NORMAL)
+> +               return -EINVAL;
+> +
+> +       tem =3D mul_u64_u64_div_u64(state->period, priv->clk_rate, NSEC_P=
+ER_SEC);
+> +       if (tem > PWM_CV1800_MAXPERIOD || tem < PWM_CV1800_MINPERIOD)
+> +               return -EINVAL;
+> +       period_val =3D (u32)tem;
+> +
+> +       tem =3D mul_u64_u64_div_u64(state->period - state->duty_cycle,
+> +                                 priv->clk_rate, NSEC_PER_SEC);
+> +       if (tem > period_val)
+> +               return -EINVAL;
+> +       hlperiod_val =3D (u32)tem;
+> +
+> +       regmap_write(priv->map, PWM_CV1800_PERIOD(pwm->hwpwm), period_val=
+);
+> +       regmap_write(priv->map, PWM_CV1800_HLPERIOD(pwm->hwpwm), hlperiod=
+_val);
+> +
+> +       cv1800_pwm_enable(chip, pwm, state->enabled);
+> +
+> +       return 0;
+> +}
+> +
+> +static int cv1800_pwm_get_state(struct pwm_chip *chip, struct pwm_device=
+ *pwm,
+> +                               struct pwm_state *state)
+> +{
+> +       struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
+> +       u32 period_val, hlperiod_val;
+> +       u64 period_ns =3D 0;
+> +       u64 duty_ns =3D 0;
+> +       u32 enable =3D 0;
+> +
+> +       regmap_read(priv->map, PWM_CV1800_PERIOD(pwm->hwpwm), &period_val=
+);
+> +       regmap_read(priv->map, PWM_CV1800_HLPERIOD(pwm->hwpwm), &hlperiod=
+_val);
+> +
+> +       if (period_val !=3D PWM_CV1800_PERIOD_RESET ||
+> +           hlperiod_val !=3D PWM_CV1800_HLPERIOD_RESET) {
+> +               period_ns =3D DIV_ROUND_UP_ULL(period_val * NSEC_PER_SEC,=
+ priv->clk_rate);
+> +               duty_ns =3D DIV_ROUND_UP_ULL(hlperiod_val * period_ns, pe=
+riod_val);
+> +
+> +               regmap_read(priv->map, PWM_CV1800_START, &enable);
+> +
+> +               enable &=3D PWM_CV1800_START_MASK(pwm->hwpwm);
+> +       }
+> +
+> +       state->period =3D period_ns;
+> +       state->duty_cycle =3D duty_ns;
+> +       state->enabled =3D enable;
+> +       state->polarity =3D PWM_POLARITY_NORMAL;
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct pwm_ops cv1800_pwm_ops =3D {
+> +       .apply =3D cv1800_pwm_apply,
+> +       .get_state =3D cv1800_pwm_get_state,
+> +};
+> +
+> +static void devm_clk_rate_exclusive_put(void *data)
+> +{
+> +       struct clk *clk =3D data;
+> +
+> +       clk_rate_exclusive_put(clk);
+> +}
+> +
+> +static int cv1800_pwm_probe(struct platform_device *pdev)
+> +{
+> +       struct device *dev =3D &pdev->dev;
+> +       struct cv1800_pwm *priv;
+> +       void __iomem *base;
+> +       int ret;
+> +
+> +       priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+> +
+> +       base =3D devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(base))
+> +               return PTR_ERR(base);
+> +
+> +       priv->map =3D devm_regmap_init_mmio(&pdev->dev, base,
+> +                                         &cv1800_pwm_regmap_config);
+> +       if (IS_ERR(priv->map))
+> +               return PTR_ERR(priv->map);
+> +
+> +       priv->clk =3D devm_clk_get_enabled(&pdev->dev, NULL);
+> +       if (IS_ERR(priv->clk))
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(priv->clk),
+> +                                    "clk not found\n");
+> +
+> +       ret =3D clk_rate_exclusive_get(priv->clk);
+> +       if (ret)
+> +               return dev_err_probe(&pdev->dev, ret,
+> +                                    "failed to get exclusive rate\n");
+> +
+> +       ret =3D devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclus=
+ive_put,
+> +                                      priv->clk);
+> +       if (ret) {
+> +               clk_rate_exclusive_put(priv->clk);
+> +               return ret;
+> +       }
+> +
+> +       priv->clk_rate =3D clk_get_rate(priv->clk);
+> +       if (!priv->clk_rate)
+> +               return dev_err_probe(&pdev->dev, -EINVAL,
+> +                                    "Invalid clock rate: %lu\n", priv->c=
+lk_rate);
+> +
+> +       priv->chip.dev =3D dev;
+> +       priv->chip.ops =3D &cv1800_pwm_ops;
+> +       priv->chip.npwm =3D 4;
+> +       priv->chip.atomic =3D true;
+> +
+> +       return devm_pwmchip_add(dev, &priv->chip);
+> +}
+> +
+> +static const struct of_device_id cv1800_pwm_dt_ids[] =3D {
+> +       { .compatible =3D "sophgo,cv1800-pwm" },
+> +       {},
+> +};
+> +MODULE_DEVICE_TABLE(of, cv1800_pwm_dt_ids);
+> +
+> +static struct platform_driver cv1800_pwm_driver =3D {
+> +       .driver =3D {
+> +               .name =3D "cv1800-pwm",
+> +               .of_match_table =3D cv1800_pwm_dt_ids,
+> +       },
+> +       .probe =3D cv1800_pwm_probe,
+> +};
+> +module_platform_driver(cv1800_pwm_driver);
+> +
+> +MODULE_AUTHOR("Jingbao Qiu");
+> +MODULE_DESCRIPTION("Sophgo cv1800 PWM Driver");
+> +MODULE_LICENSE("GPL");
+> --
+> 2.25.1
 >
 
