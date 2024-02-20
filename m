@@ -1,99 +1,91 @@
-Return-Path: <linux-kernel+bounces-72775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D173A85B895
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:08:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B203885B894
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 237A2B27C35
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:07:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE11D1C216C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769DE62160;
-	Tue, 20 Feb 2024 10:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A87360ED3;
+	Tue, 20 Feb 2024 10:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RJtwup74"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="zwcJ9Awi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9584960881
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C3660861;
+	Tue, 20 Feb 2024 10:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708423626; cv=none; b=Sb+rlRuufDOOuQFe86uDMFiN2gLeaiDyDsxh5avvxfGEsfx9zGatsZd0sFFROsA1yDiLBMSM54kiHTSrU+a522lHGbPY25fOkEajqXHsGOqfHhTh+b98IZfnteLHJ5pK3cuRXVWkLQB4zngdtVeQvxwser1oCInHw9gllN+JmBI=
+	t=1708423663; cv=none; b=NHbzkXaUlk28KaI+j2tPXkSysEIqUhIuwHGLMLGf3Nec6FR0sg6nL+seT9YbtPgAF8lcoLetOl0mLBKYIyP+RYT7XzhV+g/Ed4v6xkClUeY/VbWZiVNHgmUOHEd0bp1cA1dU+trTwIqe9d/n4ioz7B0egPXwOYmXZEHGBG8Nn88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708423626; c=relaxed/simple;
-	bh=vfsBzlvDSKZlgnd0dC5lHTjvH7sh9tVzDUOPiFEh3K4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e3KkhfuhtHXDVfHTOPOa8K3swg8RGs9F1ZCdxE1g6gJDtLGc4dmUmglbZKAb4fMTNuJjxMlLZhvL1t+k4V935+mU0/W3axArOJO0zK83lnjIWS2daVU/9dWJqQ2QAfdEyx+TFSClfCIpozCy1jZfXxChwcmOdMjvWYWJ+dWXa8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RJtwup74; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7EACEC000D;
-	Tue, 20 Feb 2024 10:07:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708423622;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vfsBzlvDSKZlgnd0dC5lHTjvH7sh9tVzDUOPiFEh3K4=;
-	b=RJtwup7441NP8SZ24w+gxrC99nCEvg7FFQzXF8A2z2zUzN+evmbndKm73xMnqJpzucoaMh
-	UzN3yjA/dL0nMh3Rw0+EIfmE85b5/5vzqJPBXVpPTXDbF4I2JTdEIYvBW4psJHh8yShPCg
-	+FEeqwtCb8ZaTtjwzfZBm8l9ZHlLx0/1Q78nTvqcVmEPVnN0ef00u8Jv5JEVumzZERAqA1
-	OunMaR2AD+LpGZKRddLdN+4cYzJqpqGOaOpA5w8cnXm7feDEvApoo9mIsnBrpvASmdVA7N
-	3XMIlNqSeiYAhc2IT4zhIDzK4kJkpGyyFx6Ive9z+WZUjv4d0nBvsgnbuvbS6Q==
-Date: Tue, 20 Feb 2024 11:07:01 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: Michael Walle <michael@walle.cc>, srinivas.kandagatla@linaro.org,
- gregkh@linuxfoundation.org, rafal@milecki.pl, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de
-Subject: Re: [RFC PATCH] nvmem: core: add sysfs cell write support
-Message-ID: <20240220110701.5ac88fed@xps-13>
-In-Reply-To: <20240220095038.2betrguygehvwodz@pengutronix.de>
-References: <20240215211401.1201004-1-m.felsch@pengutronix.de>
-	<CZ6DFL6061FS.2WMDPMSSBXX8S@walle.cc>
-	<20240216100750.zxl4wncbgpulr2cc@pengutronix.de>
-	<20240219120414.32395299@xps-13>
-	<20240219115358.xui5fpoisvsubdyb@pengutronix.de>
-	<CZ938PEUZ1JQ.2DJE7C03HI9OO@walle.cc>
-	<20240220101811.6ae23f2e@xps-13>
-	<20240220095038.2betrguygehvwodz@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708423663; c=relaxed/simple;
+	bh=RaPKTKboa8gxjYiGIH9BrKC6Nz2Z5V07v5yrPMrw7do=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fVlcxvMLDs+e57vR1nGmn1ouoBkQqsXsyQyKS6Zx88wPbtdt0lOwXg6aCEsM8vRwv3mIxZ7mjVEnhtbalw0iLKNriq32xyO09nUyqLUaOxDhw8YLItYA0PjMoE4yH0Atwt/yl0BeO/S4sr7XClurm+wx+qYocVHQvzkUDmJzDP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=zwcJ9Awi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 712B5C433C7;
+	Tue, 20 Feb 2024 10:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708423663;
+	bh=RaPKTKboa8gxjYiGIH9BrKC6Nz2Z5V07v5yrPMrw7do=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=zwcJ9AwiPEbFJ7O9Y7XT1v8ZaFdscmDO3msqjEazxqF/Rib6Jj4YujIIHoOE0izBc
+	 1daiUz5eNCz8LBUxQB3VngCkgAVv7JnhmxztniMXKmqZmkewHdyEo8JvxjEicAFcRt
+	 6kAlFh1Kj4+W+k7THF1H/orF0oUZgWOczHJFC6n4=
+Date: Tue, 20 Feb 2024 11:07:38 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, security@kernel.org,
+	linux@leemhuis.info, Kees Cook <keescook@chromium.org>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v5] Documentation: Document the Linux Kernel CVE process
+Message-ID: <2024022042-raisin-catalyst-2fae@gregkh>
+References: <2024021731-essence-sadness-28fd@gregkh>
+ <1a26d598-0063-447a-a79b-16315d2899ca@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a26d598-0063-447a-a79b-16315d2899ca@oracle.com>
 
-Hi Marco,
+On Tue, Feb 20, 2024 at 11:03:17AM +0100, Vegard Nossum wrote:
+> 
+> On 17/02/2024 13:55, Greg Kroah-Hartman wrote:
+> > +A list of all assigned CVEs for the Linux kernel can be found in the
+> > +archives of the linux-cve mailing list, as seen on
+> > +https://lore.kernel.org/linux-cve-announce/.  To get notice of the
+> > +assigned CVEs, please `subscribe
+> > +<https://subspace.kernel.org/subscribing.html>`_ to that mailing list.
+> 
+> Is the list open to discussion as well? (e.g. impact, analysis, etc.)
 
-> > > > Regarding UBI(FS) I'm not sure if this is required at all since you=
- have
-> > > > an filesystem. IMHO nvmem-cells are very lowelevel and are not made=
- for
-> > > > filesystem backed backends. =20
-> >=20
-> > I'm really talking about UBI, not UBIFS. UBI is just like MTD but
-> > handles wear leveling. There is a pending series for enabling nvmem
-> > cells on top of UBI. =20
->=20
-> Cells on-top of a wear leveling device? Interesting, the cell-api is
-> very lowlevel which means the specified cell will be at the exact same
-> place on the hardware device as specified in the dts. How do you know
-> that with wear leveling underneath the cell-api?
+It's read-only, sorry.
 
-https://lore.kernel.org/lkml/cover.1702952891.git.daniel@makrotopia.org/
+> Or is this meant to be purely as a log of assignments?
 
-I haven't tested it though.
+Yes.
 
-Thanks,
-Miqu=C3=A8l
+> What sort of content is (not) welcome? Should this be mentioned in the doc?
+
+As it's not able to be posted to, not much to mention :)
+
+If you wish to discuss something about it, follow the reply-to that is
+set for a message there.
+
+thanks,
+
+greg k-h
 
