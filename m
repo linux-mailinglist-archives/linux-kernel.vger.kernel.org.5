@@ -1,116 +1,119 @@
-Return-Path: <linux-kernel+bounces-73573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0989F85C462
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4920285C464
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:12:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 387801C22AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:11:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EC6A1C20C82
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1936137C2B;
-	Tue, 20 Feb 2024 19:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3B3133983;
+	Tue, 20 Feb 2024 19:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STAoQTDO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lR3tcSEM"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A66412838D;
-	Tue, 20 Feb 2024 19:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0D37602B
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708456244; cv=none; b=bdBFCtNObWt5c9Gel4/nIOvf6TGJ8kOzkVbLj/rCvT8C5U6G3GsLAgeZutSZm/gIGVO1bh5Ft4lS4PijyYdRwWM7gWwPcRtf51t+BQK7OEAxHCKV2hthNbLF9l7Y+a+9IiQ9hMYkrpfaTBw/LBgNvQKxNz/wfAwGq7rGWSmN784=
+	t=1708456329; cv=none; b=gGLwBwZKwtVSzFN7PLDwpCuk10BM48aV+TMMrfJ9pcm/a1e/f/OzPkcLLNtPjjT+DBDV2tUuUiXexaujiOahrLHk4bSRMYHZgbmWNcxU52s+yaxJHOWo7vA4WT7zxTBDF9N5RbVM8VC9EozkcyZR7JeuwKUs7W7YnWTUseKBQW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708456244; c=relaxed/simple;
-	bh=EFe3zrWR0LWM1ZcyrsqjHTnnESZFaVS5VCYSop5F4Uc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mHUYN2HbadX2c+VtS8Rt9TipR34oYZgI9IN6dnvwBbbLsnvwWwiSHlKrfeSSTLYo+fD9F23SAyTBNSF3LxX/i8S7BNhVU7icdjFucfAgn0JfroeCeeuR0zz7ywkkH/bvm1gt+oqNhWJVfNXxQyRBusl1eO2+NxGdhKEFiVFjoPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STAoQTDO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00A23C433C7;
-	Tue, 20 Feb 2024 19:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708456243;
-	bh=EFe3zrWR0LWM1ZcyrsqjHTnnESZFaVS5VCYSop5F4Uc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=STAoQTDOpl9BLSR1MZMUXajWDDxXaE72uD0vlU/+O/v1Jm3Y+5jz2QdLWDNQmovnI
-	 Rz0JrLOjKJrUw6ux+KxWzOTkp9MrOqj2VhuUEt6TQdMvb6InRbptZWHzKrOS/KKNzk
-	 bg/qJ2s1qSexFpZCJFUZno3h0TrwnU9mawV6a6IeuKtYiWsT0ntYGbdg3MiSvRVE76
-	 OwMWaGbbXkiAPmlwdNngC9AF1mR5YAeHiaTJeLXBfDw4Wo005H26gTXIn7K2R1lylG
-	 A0z5HqW9BUXFVKcRwXLkqe2T5MMoQDj0CIVJgNVLlGzWqdtiW/PfTs+W/1GhTUBy62
-	 hXXLnqPVa8zGg==
-Date: Tue, 20 Feb 2024 19:10:37 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Alex Soo <yuklin.soo@starfivetech.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	Jianlong Huang <jianlong.huang@starfivetech.com>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Drew Fustini <drew@beagleboard.org>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [RFC PATCH v2 1/6] dt-bindings: pinctrl: starfive: Add JH8100
- pinctrl
-Message-ID: <20240220-bottling-reverence-e0ee08f48ccc@spud>
-References: <20240220064246.467216-1-yuklin.soo@starfivetech.com>
- <20240220064246.467216-2-yuklin.soo@starfivetech.com>
- <1a11cee2-2ef1-4ce0-8cc1-63c6cc97863f@linaro.org>
+	s=arc-20240116; t=1708456329; c=relaxed/simple;
+	bh=UV5OpmpTeat3ITv1BlNGoqwicB3qNORaSpRz3WR/B0Y=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Qhh7FYEEzJ18mHK0ihxXhvYopjULDN1hgFszFECzoukIIBRa1KrEqDJIo5zw56Kl6DGF1W7liidD+cBysfqWRCxvaD8lM7vcWRu8uLXjSYAzGtvQ3j9DBDpvDJ91JfihAbEeqBVDzyru87tDoMxAndJ5cJHWOot6g0OJu3fjA1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lR3tcSEM; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60770007e52so62620597b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:12:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708456327; x=1709061127; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bU90kCEdhdXywfoVlc2lzAzGm8wFNOTBAuo+9ULMyJM=;
+        b=lR3tcSEM91+atxZwb2pJMWNRJ1q2Lh3XLxNPB+gEXJNZ8Uf9QgW52wmFiQCpYmGRRM
+         ZdOkNcgMxNbn3Z5e9qpuQF4p1oR4Y8crpqBzf+pV5oZFbk3fSefICN+R2YdB0fuYbWOK
+         ZiTNhXP5pNJFfrBMMD6uvPdK/TIEqhplETjk42fF5u4INIE/UPfpf2nBXXUAi23v1as0
+         +zoPJNTnGxojplmoH29ULDdT/MlmVuUs0BEVbt++owflZzkuxV8bVbyb8cGYRW7fqZrG
+         dLpATMY30Xqr7RTl9sLaobjeDdyVSr839KKCl+HVE+ETZA/SuiePB+h9pOrXEyesMDed
+         y0hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708456327; x=1709061127;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bU90kCEdhdXywfoVlc2lzAzGm8wFNOTBAuo+9ULMyJM=;
+        b=MBnhfQiAx4n41BmhKafavwhoW3OgGTFUhQL0VGj2KDctIBKYroyqJN9zyrUEWsmauM
+         hSCrKe9VZ/2F0LUuq4P1sjAROqx+0PrLpUsoTbhhxxgo7nsEXMMmMTilLDwm7cL5PvtU
+         JkfbIAS6sIgRSzhriGS6Vbw2mYFIrnsLrXU7pu229nGilK7uh6fadxWk9U6D6AVKqT5M
+         atDWbhjir7LK+T6lRkkPypkka/BKrBEWj1B1m6FhQwXY6M/HmoNFliMXTZ87Lwe5pwOZ
+         Xx09dWvOBXZWjXK0qp/pYT7aSoVBHUFMcgh7vm2eq2EnOwjrHs4EgcWtb8gilot6TEmW
+         C94A==
+X-Forwarded-Encrypted: i=1; AJvYcCU0UCOh69Ho52VpQ6UcUUSzJ0z/nsYnW3e6FXsoMO2yag2IVaHcAOgW9ph0t2PhwEO5I7b/O1BDRhVrY5AxlQ6pdBEc7vTsnJRMUz9a
+X-Gm-Message-State: AOJu0YyoJS32/btWWs4/KIGvqN964AqTBSg3pa46crrdtU0tmgttaws4
+	n4CI3WJ/dQIsOPqGmEFqwZtWfbgwx01yWahhLsHfxVUIayUCfkxfMPavmgByfLhSQvuh7qKfs5G
+	KhLoauw==
+X-Google-Smtp-Source: AGHT+IFgWEyzh6gqAlMtSgK/wXXqU4pIoql4Z5IpkPLY2RoDnc1t6RBLCmFcVpYqnlcf+nvulgO8DKFOkeQR
+X-Received: from dhavale-desktop.mtv.corp.google.com ([2620:15c:211:201:e64d:5a86:7ce2:3f59])
+ (user=dhavale job=sendgmr) by 2002:a81:fe07:0:b0:608:22c7:1269 with SMTP id
+ j7-20020a81fe07000000b0060822c71269mr1506123ywn.0.1708456326859; Tue, 20 Feb
+ 2024 11:12:06 -0800 (PST)
+Date: Tue, 20 Feb 2024 11:11:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tADB2NrbVw9jbyhp"
-Content-Disposition: inline
-In-Reply-To: <1a11cee2-2ef1-4ce0-8cc1-63c6cc97863f@linaro.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240220191114.3272126-1-dhavale@google.com>
+Subject: [PATCH v1] erofs: fix refcount on the metabuf used for inode lookup
+From: Sandeep Dhavale <dhavale@google.com>
+To: Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>
+Cc: quic_wenjieli@quicinc.com, Sandeep Dhavale <dhavale@google.com>, stable@vger.kernel.org, 
+	kernel-team@android.com, linux-erofs@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
+we do not assign the target metabuf. This causes the caller
+erofs_namei()'s erofs_put_metabuf() at the end to be not effective
+leaving the refcount on the page.
+As the page from metabuf (buf->page) is never put, such page cannot be
+migrated or reclaimed. Fix it now by putting the metabuf from
+previous loop and assigning the current metabuf to target before
+returning so caller erofs_namei() can do the final put as it was
+intended.
 
---tADB2NrbVw9jbyhp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+---
+ fs/erofs/namei.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-On Tue, Feb 20, 2024 at 09:11:43AM +0100, Krzysztof Kozlowski wrote:
-> On 20/02/2024 07:42, Alex Soo wrote:
-> > Add documentation and header file for JH8100 pinctrl driver.
-> >=20
-> > Signed-off-by: Alex Soo <yuklin.soo@starfivetech.com>
-> > ---
->=20
->=20
-> RFC? Why isn't this patch ready for review?
+diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
+index d4f631d39f0f..bfe1c926436b 100644
+--- a/fs/erofs/namei.c
++++ b/fs/erofs/namei.c
+@@ -132,7 +132,10 @@ static void *erofs_find_target_block(struct erofs_buf *target,
+ 
+ 			if (!diff) {
+ 				*_ndirents = 0;
+-				goto out;
++				if (!IS_ERR(candidate))
++					erofs_put_metabuf(target);
++				*target = buf;
++				return de;
+ 			} else if (diff > 0) {
+ 				head = mid + 1;
+ 				startprfx = matched;
+-- 
+2.44.0.rc0.258.g7320e95886-goog
 
-The TL;DR is that Emil and I didn't want to apply the dts patches to
-support a platform that hadn't actually been taped out yet.=20
-For an SoC in that state, at least the bindings for, clock and pinctrl
-could be subject to changes before tapeou. I think putting RFC on those
-patches is a good idea, but of course the rationale should be mentioned.
-
-Cheers,
-Conor.
-
---tADB2NrbVw9jbyhp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdT5LQAKCRB4tDGHoIJi
-0q4/AP9aepRkgGMwUZFmvYfa5PLBEmZ95b0tJEUr42AOOQptlQEAvcfTGWd32hy5
-EqoPPciZYk30PuQQ68mEvIHOaYAqnwE=
-=gvQL
------END PGP SIGNATURE-----
-
---tADB2NrbVw9jbyhp--
 
