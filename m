@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-72905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D324985BA82
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:26:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12C4585BA8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:27:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EB34282AC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:26:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD8BA1F25FA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D4F664DB;
-	Tue, 20 Feb 2024 11:26:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EA7664C6;
-	Tue, 20 Feb 2024 11:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0190C66B4F;
+	Tue, 20 Feb 2024 11:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5juAYSU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D14664AD;
+	Tue, 20 Feb 2024 11:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708428409; cv=none; b=clYSJxp+VXa4n2zgJtQB1gyRZNgVG3wKSOnANhe2YOXpFFCh6BzPyQSC6nD0iwrb0wqZ4EGUzXYUL4Ra/ZMEkVoMgQU4GhAAM74VQ0iWaJl3PXsu0Dp/ziAdyJdGqOE1E+7SxK50nrQ7dBKm2C1bo+rzDX0MFlEg2V/2JgLynLM=
+	t=1708428421; cv=none; b=lhgsQ+zt7ACnA2sg0UUcGx6Gw3mS+kTf/XfH1YKmn12+Wy4CH8wi2pqhWaoDKAOdQ79fkg7JBEq2svZQ8/8yEcwYmCaANJ56Xi9VUGnm/PmrnOEBXvKSF3u/H0iTF6sq0/CIOY9kZ4cP8cK46BCGFLK8Z33vz5V38b3Sd/5xYoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708428409; c=relaxed/simple;
-	bh=SkQ/sTEoMINt2E/gNw7cKAVDKtuqBdyfXNZsFkvtik4=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=MkHluWVa8WBitNfELFrvpm8+MtocfwdVDw4NAPLcAq0rRLM/IU6VOYTl+TfOvyXbTRgF9PInCr+9e8PMGqX10PdLBJonBVHLo0aLsNr9amq1wBj9J6oGRmQxVkqaht0Lf0fwYY2kXZrvHPeGTMjT8YmPwz5tb0gq6fFn6rzKEGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4F9BFEC;
-	Tue, 20 Feb 2024 03:27:25 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE4513F762;
-	Tue, 20 Feb 2024 03:26:41 -0800 (PST)
-Date: Tue, 20 Feb 2024 11:26:38 +0000
-From: Alexandru Elisei <alexandru.elisei@arm.com>
-To: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, pcc@google.com, steven.price@arm.com,
-	anshuman.khandual@arm.com, david@redhat.com, eugenis@google.com,
-	kcc@google.com, hyesoo.yu@samsung.com, rppt@kernel.org,
-	akpm@linux-foundation.org, peterz@infradead.org,
-	konrad.wilk@oracle.com, willy@infradead.org, jgross@suse.com,
-	hch@lst.de, geert@linux-m68k.org, vitaly.wool@konsulko.com,
-	ddstreet@ieee.org, sjenning@redhat.com, hughd@google.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: arm64 MTE tag storage reuse - alternatives to MIGRATE_CMA
-Message-ID: <ZdSMbjGf2Fj98diT@raptor>
+	s=arc-20240116; t=1708428421; c=relaxed/simple;
+	bh=VddnBpFylmssPBNR8LxVy9HNAItc6vmZJuhEvw0a1cc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hkK3ol7fiS83/xXDRbRdozrmkfsDhwVEbvKyypV7dYLxm8fUL6ysXr2yHbEuwFS+iK/9bPmNyp6tYeS7pawsK830H2zUM1jYZUz5IsgyUHOEpGyV4v6RegGaZELjAbDITXx+iQ68p703OQdX8Tuc4tjYuyPxoZXk0bPB1KoDSJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r5juAYSU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0BF5C433C7;
+	Tue, 20 Feb 2024 11:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708428420;
+	bh=VddnBpFylmssPBNR8LxVy9HNAItc6vmZJuhEvw0a1cc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r5juAYSUvCxKuNFb30xnBGP17AeDgQUJFn90heG7na3+4GVGkGHv+uzoBqj9ng/t+
+	 EFpWosEYzWejLzvTu1Bjvd4u5MAlivbrRnLRMjMfuVHGn0lk6E5xGLqRZs6afOtc8c
+	 SYeeknMVdh8Ikld407i7xVPx2i0/h6I2pLkXnOgloW9j9ZrZa/OkqaAfpbGDOZjNpJ
+	 726ZtnhyNIwlhqnaH68sGapgpXtajy8uqaA7IHDbJGyFupXqg/fdqFU9YA2D8CGGvs
+	 JXtfLbRWHbGtx5EOJuo+kL+Wh1rV5LD7kN3bAl4LuNNiiS6AWwXNixXdTwbJAnTXyp
+	 H2SE4ozHo1jxw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rcOH5-000000005Em-1y3j;
+	Tue, 20 Feb 2024 12:26:59 +0100
+Date: Tue, 20 Feb 2024 12:26:59 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Johan Hovold <johan+linaro@kernel.org>, freedreno@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Vinod Koul <vkoul@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Kuogee Hsieh <quic_khsieh@quicinc.com>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Rob Clark <robdclark@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 3/6] soc: qcom: pmic_glink_altmode: fix drm bridge
+ use-after-free
+Message-ID: <ZdSMg63b4ZGYhUXO@hovoldconsulting.com>
+References: <20240217150228.5788-4-johan+linaro@kernel.org>
+ <9ff4221a-7083-4cb1-abde-1690f655da8d@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9ff4221a-7083-4cb1-abde-1690f655da8d@web.de>
 
-Hello,
+On Tue, Feb 20, 2024 at 11:55:57AM +0100, Markus Elfring wrote:
+> …
+> > Specifically, the dp-hpd bridge is currently registered before all
+> > resources have been acquired which means that it can also be
+> > deregistered on probe deferrals.
+> >
+> > In the meantime there is a race window where the new aux bridge driver
+> > (or PHY driver previously) may have looked up the dp-hpd bridge and
+> > stored a (non-reference-counted) pointer to the bridge which is about to
+> > be deallocated.
+> …
+> > +++ b/drivers/soc/qcom/pmic_glink_altmode.c
+> …
+> > @@ -454,7 +454,7 @@ static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
+> >  		alt_port->index = port;
+> >  		INIT_WORK(&alt_port->work, pmic_glink_altmode_worker);
+> >
+> > -		alt_port->bridge = drm_dp_hpd_bridge_register(dev, to_of_node(fwnode));
+> > +		alt_port->bridge = devm_drm_dp_hpd_bridge_alloc(dev, to_of_node(fwnode));
+> >  		if (IS_ERR(alt_port->bridge)) {
+> >  			fwnode_handle_put(fwnode);
+> >  			return PTR_ERR(alt_port->bridge);
+> …
+> 
+> The function call “fwnode_handle_put(fwnode)” is used in multiple if branches.
+> https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/soc/qcom/pmic_glink_altmode.c#L435
+> 
+> I suggest to add a jump target so that a bit of exception handling
+> can be better reused at the end of this function implementation.
 
-This is a request to discuss alternatives to the current approach for
-reusing the MTE tag storage memory for data allocations [1]. Each iteration
-of the series uncovered new issues, the latest being that memory allocation
-is being performed in atomic contexts [2]; I would like to start a
-discussion regarding possible alternative, which would integrate better
-with the memory management code.
+Markus, as people have told you repeatedly, just stop with these
+comments. You're not helping, in fact, you are actively harmful to the
+kernel community as you are wasting people's time.
 
-This is a high level overview of the current approach:
-
- * Tag storage pages are put on the MIGRATE_CMA lists, meaning they can be
-   used for data allocations like (almost) any other page in the system.
-
- * When a page is allocated as tagged, the corresponding tag storage is
-   also allocated.
-
- * There's a static relationship between a page and the location in memory
-   where its tags are stored. Because of this, if the corresponding tag
-   storage is used for data, the tag storage page is migrated.
-
-Although this is the most generic approach because tag storage pages are
-treated like normal pages, it has some disadvantages:
-
- * HW KASAN (MTE in the kernel) cannot be used. The kernel allocates memory
-   in atomic context, where migration is not possible.
-
- * Tag storage pages cannot be themselves tagged, and this means that all
-   CMA pages, even those which aren't tag storage, cannot be used for
-   tagged allocations.
-
- * Page migration is costly, and a process that uses MTE can experience
-   measurable slowdowns if the tag storage it requires is in use for data.
-   There might be ways to reduce this cost (by reducing the likelihood that
-   tag storage pages are allocated), but it cannot be completely
-   eliminated.
-
- * Worse yet, a userspace process can use a tag storage page in such a way
-   that migration is effectively impossible [3],[4].  A malicious process
-   can make use of this to prevent the allocation of tag storage for other
-   processes in the system, leading to a degraded experience for the
-   affected processes. Worst case scenario, progress becomes impossible for
-   those processes.
-
-One alternative approach I'm looking at right now is cleancache. Cleancache
-was removed in v5.17 (commit 0a4ee518185e) because the only backend, the
-tmem driver, had been removed earlier (in v5.3, commit 814bbf49dcd0).
-
-With this approach, MTE tag storage would be implemented as a driver
-backend for cleancache. When a tag storage page is needed for storing tags,
-the page would simply be dropped from the cache (cleancache_get_page()
-returns -1).
-
-I believe this is a very good fit for tag storage reuse, because it allows
-tag storage to be allocated even in atomic contexts, which enables MTE in
-the kernel. As a bonus, all of the changes to MM from the current approach
-wouldn't be needed, as tag storage allocation can be handled entirely in
-set_ptes_at(), copy_*highpage() or arch_swap_restore().
-
-Is this a viable approach that would be upstreamable? Are there other
-solutions that I haven't considered? I'm very much open to any alternatives
-that would make tag storage reuse viable.
-
-[1] https://lore.kernel.org/all/20240125164256.4147-1-alexandru.elisei@arm.com/
-[2] https://lore.kernel.org/all/CAMn1gO7M51QtxPxkRO3ogH1zasd2-vErWqoPTqGoPiEvr8Pvcw@mail.gmail.com/
-[3] https://lore.kernel.org/linux-trace-kernel/4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com/
-[4] https://lore.kernel.org/linux-trace-kernel/92833873-cd70-44b0-9f34-f4ac11b9e498@redhat.com/
-
-Thanks,
-Alex
+Johan
 
