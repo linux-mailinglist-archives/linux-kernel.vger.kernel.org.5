@@ -1,312 +1,158 @@
-Return-Path: <linux-kernel+bounces-73546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 132B685C3F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD4AB85C3F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36C751C22ACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:50:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C3D01C22074
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94DA12BE85;
-	Tue, 20 Feb 2024 18:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6025212E1D8;
+	Tue, 20 Feb 2024 18:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h2np8Ppa"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kBQ2caJo"
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2447B76052
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F487602B
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708455011; cv=none; b=FOFCNZAgOQkZEyk8uiub/jmqYYO3TE2DrsfUsaihQ+rIr/zjgKZl3eHYyHf070e55vVHiwiJ3tlVMW0kWNYzKn9k+IVxkmsUtb+9gkhzum0NknpdJWvENjOkHyDS04Npu8w39kFiS5oqWx9jgSNbPXq/US0D8VJGgQy8RhE5x6E=
+	t=1708455108; cv=none; b=k0f+0voaaUsCUaWZe24p3BhKrKx8/xK+JwKIbX5KRXD+85GV82NPvqa4Bo9FHieOTgJfZh3EohMfsgbTAYpcRbgk/dE9S4pjE7YPWuTuxA1MoWEZFNzb31oMzdY2CO1NlGqzr9q+eUe6Qvq2lt218D2hvTQESHyWTaJ2vzhAJmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708455011; c=relaxed/simple;
-	bh=yIdFUy3VNDtB987lnxaVH6G/W+iVUKX2zFVi0ddGiDE=;
+	s=arc-20240116; t=1708455108; c=relaxed/simple;
+	bh=B/Y907SBVrsllYy6qByqNQHwt7IG5OvmGpDMhx82aEA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IRByEnDw2ke0c4c0HDIq7QY48jHiAtSzIRkVxDJxRtdTx0Ru33b07j8OMRmOAS+VdChJzJ34ySxPFZv9sbbdTg4wjHEh1S/TLXcuJ7/TtE7Dtpv0f/pIfa2+ar5Z8R3IK9RKhCLqxQvHaPbRYcHANXdZtnkQVXqiLM3YTE8k1zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h2np8Ppa; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso5730920276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:50:08 -0800 (PST)
+	 To:Cc:Content-Type; b=JT6i9Xk7y8McpHn9YVfyIooI7LBZ/fELwHWdD5Dxn4W7OjjiY9UMBHJPuxtuUdzEpRYn2Y0WlH3GmxsuA7DTwQMgt9hytzSc8ksQXhucZyQNTmLIjp5S1Odzo1shuH28brqKDyIerkxRerl/ghf4aFmAN+RrHXiI/aFCSU1e7fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kBQ2caJo; arc=none smtp.client-ip=209.85.217.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-47063d4b17cso1028571137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:51:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708455008; x=1709059808; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yRXnEtWmyWxcSqdR8eHmZ6LBceGmV3VoaDOluytk4Xg=;
-        b=h2np8PpakuStvpfG2WeW2/x85DSV34/XYgjsc3mmV4ruXUrvddMWkzco0MZjER+E1H
-         y3NANfgoXWnqGVm6W4DXQ6IefmDhf5u+Xj/Fi5+2BSQ6tlodjkzzclH766NN6y8GKi1x
-         VzA11+6HnJWxa0R93rkR/Czpre6asPgRY+n/txWTV6zJyBUnWUwkunjsaNxznVMbo0pS
-         zRzSKAySJVF8AP5MkItsxYM+AfHeOdGL3c/teVLWGtJ6GIxisDuMRj+mpKKK5W1e6Y3C
-         79fG8sxIOuttDx6/DQRJWkIZqXvsH5gIuG2IxNUB3k3BM3GqWwHLugVOwj70r1RI2guv
-         DpGw==
+        d=google.com; s=20230601; t=1708455106; x=1709059906; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B/Y907SBVrsllYy6qByqNQHwt7IG5OvmGpDMhx82aEA=;
+        b=kBQ2caJoz/ymTu4hy4NudQGQhwOO2iEJD4Dm0eTF4QTw38NBBxcqqUR0hWriq9inPi
+         E40vS0yViJwyeIl+nDi2bL1EdMukUNkDqnmsOe8GiBR8YX6gKdIygeZuTmumM571mEdv
+         BKssl7Uq/efLhTfLRjfdZK5vr8eMbqFHGJ1w/r7Tu7GbHxCEPaI25IhGLGuiXuxZKPJ5
+         UwNlV5zI0IeQsifreISbR76Xm2fa1Bwqwq/9WZS5NvTKOF8UOJEuyqVdkbmYawqtOKKb
+         tE8xy7UlfRShFyc/zzZubu+IJrUUZFQkepsE/sZCsMppsdW33JUfBZaopdPULM4Fk45H
+         f7vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708455008; x=1709059808;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yRXnEtWmyWxcSqdR8eHmZ6LBceGmV3VoaDOluytk4Xg=;
-        b=r8Qn/JbHc7XINp6j5FHciEJW43OCX41LJtNtHZ2l6ZdIKZDnMdYjVmRP8Dn/U679XD
-         Eid8Gk7OhTx08ovGJU06fyvtzzImtRFgK/HNwCmcyc4zZcVXS0UplhE6FGXJhoTCXrxr
-         EuIo75+F8jgMDj6fE6Egc0vTdxOskUQ0atcM2Ro0oNrJywGGlWQhGB9v1mFhlVQJnIET
-         l/JQY3AiY6jloPQVgVdvmOK4zrPP6WdoY6+YRJbcMTyEl/92dNBIejv0XyYmmD2kYyiq
-         50M4/TEa2mbNxyu38u913sKg8LzYvHV4WkyYqUPbfPXuUtK91edno3DWWJSXqXcE23IN
-         g4Uw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJFhcWe2UN+1curyJLW3uA7s8j+HnDqHeBt5abymx3VU7ZtETphKREZ3GA7hzE8N+kz6Fnp5gbVob8++d6VBvAXLVPYBVNFNYwLBMd
-X-Gm-Message-State: AOJu0YwFf9T4q6RVI7XKRR9GkQ7aNojCCk3ptipkJgwUGHWdZ7F53Goq
-	lrj/HA6/3fGSgV7z1Vl3AoeyK3hJinQva9J2kL0A5NTHofT/LjIqjSXCHZarkA9sVc0gJxBr/fa
-	bNOXso+GRpxdUzt7m1WoI5n6t/6eKu4qFjvrDVw==
-X-Google-Smtp-Source: AGHT+IHfzdOSi2N+M382qbcFbtC0kxzFdORlzSBvrutFk2HVJP66VyvKWw2NTQeQmT7rsxSCNRtZBfmXNaK+RFZmtsw=
-X-Received: by 2002:a5b:b03:0:b0:dc7:1a9a:11da with SMTP id
- z3-20020a5b0b03000000b00dc71a9a11damr16767205ybp.38.1708455008038; Tue, 20
- Feb 2024 10:50:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708455106; x=1709059906;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B/Y907SBVrsllYy6qByqNQHwt7IG5OvmGpDMhx82aEA=;
+        b=DrmuPoh5AEwSrgVSpLTkYEEHQIgXv51x48xD9P3Id5cplLQqRALpjiKu1WN/4hltWD
+         Tw6IR+MsMd0sNp9lDYOz9ViRBnzsqeVzRod+6C99CwUpZ0wcWJa5MtBOk6IC71V8gOea
+         NmZft2pvWJkrxQGAr08sR6j+UgovpyMwIjLVmIk+zpnT9ryWvR3NzmcdPIbOJyjLU0wu
+         NsvLPb9P+6BU+Xvo00UwLG7tkiF1dhLOH/Pi0vEZwgIkngmRo+b0WhhEw16lj5+XbCvQ
+         gyJgoy0f6FhCPZszAB+CKfZPjHQFYsbD/Gb++uKFH7/XRt/fGZqQDmtYJkIAbCbfTL+U
+         tHBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXn4h1BKxoBrW31rjzRS1jVLwdlKher1C6p/yM6aREiPfrrQPIBibH8zqoQXnTjzSTxXqqO3lH+XdjNuXxFSXgqc/ipZoZCKwwr0KvV
+X-Gm-Message-State: AOJu0Yxyf032s7WsQhNQKgnOvw3mtzLOsXjQ7LRbNjFvEhHlBn4/bgBV
+	LwFoka4wnnlsw5ZH2HKbaNHn0MeWwm7KCgV38OgGu+0ODmNwlKQm9ifp7ZZuX7xYUFUOd/oNlbq
+	KaM7KnJjh2M5uKS7rfsAWFfQG7Fpjr6BPIV61
+X-Google-Smtp-Source: AGHT+IFHzuL7PAZHpU0n+2ypxN9ERpiX5mLfFdtADHU+PKGjyMPtDiVJEcCfRQjX0yyY7/Q65ionVkALzA1P/jMzi1Q=
+X-Received: by 2002:a05:6102:1608:b0:470:5718:23a7 with SMTP id
+ cu8-20020a056102160800b00470571823a7mr5778068vsb.7.1708455105738; Tue, 20 Feb
+ 2024 10:51:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215190834.3222812-1-quic_abhinavk@quicinc.com>
-In-Reply-To: <20240215190834.3222812-1-quic_abhinavk@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 20 Feb 2024 20:49:56 +0200
-Message-ID: <CAA8EJppQquHgSgCrxKZHPHk248Pxg7Q8mvmmjbcpUxpreQkcuA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: dri-devel@lists.freedesktop.org, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, robdclark@gmail.com, 
-	freedreno@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
-	ville.syrjala@linux.intel.com, quic_jesszhan@quicinc.com, 
-	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
+References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
+ <CA+fCnZeNsUV4_92A9DMg=yqyS_y_JTABguyQyNMpm6JPKVxruw@mail.gmail.com>
+ <CABXGCsPerqj=zXJ0pUCnZ29JGmZFSvH6DB22r2uKio61c1bVkw@mail.gmail.com>
+ <CANpmjNMn+ULqbSGQ6uOa0JDhw=2my5TtBK4Y+xyBES_iaG_SEA@mail.gmail.com>
+ <CABXGCsM9BSD+SYFkvkYxmcrZL+aUfUb_M-rjNJhzb2cYHQr5ww@mail.gmail.com>
+ <CANpmjNNXKiM0j4mR-Rr2KALhgz87=QjCOomEymNMWjtos=Z3Ug@mail.gmail.com>
+ <CANpmjNOnbNw2fRL3_depaAgt81p-VpHh5_O_26kyxofjECgsFQ@mail.gmail.com>
+ <CABXGCsPB-KEbE+SfymVmqfiomFVngFL2Je81Qyhw1F5_aZX-TQ@mail.gmail.com>
+ <CABXGCsO5dcEuorLAXR3CFzDVyAWNk4_YfqCh=UJddfzpWF7hNg@mail.gmail.com>
+ <CANpmjNPsdM2HrRFgEHYxX1seT2fbOFDuO6Ci-qF3X2y=9_PD1A@mail.gmail.com>
+ <91c50335-e7b6-4ae1-9dad-a0c990b52021@suse.cz> <20240219152836.11d36709c594e66fe3037f2d@linux-foundation.org>
+ <7e31accb-db01-486f-afb8-18a3f5402d00@suse.cz> <CABXGCsOHswLa5rd_Q7kHDHESb=BtqB+F=LV7Wvv+qoRxrqCboA@mail.gmail.com>
+ <20240220093011.bf84486d704c3814079c2aa0@linux-foundation.org> <96c51d35-15ce-42d0-b81b-7e76044e1f2b@suse.cz>
+In-Reply-To: <96c51d35-15ce-42d0-b81b-7e76044e1f2b@suse.cz>
+From: Marco Elver <elver@google.com>
+Date: Tue, 20 Feb 2024 19:51:07 +0100
+Message-ID: <CANpmjNMObiX5X721DERccn16aMW+WMPz+wvLKv=UdaQi3XOMwA@mail.gmail.com>
+Subject: Re: regression/bisected commit 773688a6cb24b0b3c2ba40354d883348a2befa38
+ make my system completely unusable under high load
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, Andrey Konovalov <andreyknvl@gmail.com>, glider@google.com, 
+	dvyukov@google.com, eugenis@google.com, Oscar Salvador <osalvador@suse.de>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux Memory Management List <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 15 Feb 2024 at 21:08, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+On Tue, 20 Feb 2024 at 19:16, Vlastimil Babka <vbabka@suse.cz> wrote:
 >
-> intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
-> Lets move this to drm_dp_helper to achieve this.
->
-> changes in v2:
->         - rebased on top of drm-tip
->
-> Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> On 2/20/24 18:30, Andrew Morton wrote:
+> > On Tue, 20 Feb 2024 10:37:03 +0500 Mikhail Gavrilov <mikhail.v.gavrilov=
+@gmail.com> wrote:
+> >
+> >> On Tue, Feb 20, 2024 at 4:50=E2=80=AFAM Vlastimil Babka <vbabka@suse.c=
+z> wrote:
+> >> > >
+> >> > > I'm all confused.
+> >> > >
+> >> > > 4434a56ec209 ("stackdepot: make fast paths lock-less again") was
+> >> > > mainlined for v6.8-rc3.
+> >> >
+> >> > Uh sorry, I just trusted the info that it's not merged and didn't ve=
+rify
+> >> > it myself. Yeah, I can see it is there.
+> >> >
+> >>
+> >> Wait, I am talk about these two patches which is not merged yet:
+> >> [PATCH v2 1/2] stackdepot: use variable size records for non-evictable=
+ entries
+> >> [PATCH v2 2/2] kasan: revert eviction of stack traces in generic mode
+> >> https://lore.kernel.org/linux-mm/20240129100708.39460-1-elver@google.c=
+om/
+> >
+> > A can move those into the 6.8-rc hotfixes queue, and it appears a
+> > cc:stable will not be required.
+> >
+> > However I'm not seeing anything in the changelogs to indicate that
+> > we're fixing a dramatic performance regression, nor why that
+> > regressions is occurring.
 
-v1 had an explicit comment before the ack:
+It's primarily fixing a regression of memory usage overhead for
+stackdepot users in general. Performance is mostly fixed, but patch
+2/2 ("kasan: revert eviction of stack traces in generic mode") also
+helps with KASAN performance because entries that were being
+repeatedly evicted-then-reallocated are just allocated once and with
+increasing system uptime the slow path will be taken much less.
 
->    From my side, with the promise of the size fixup.
+> We also seem have an unhappy bot with the 2/2 patch :/ although it's not =
+yet
+> clear if it's a genuine issue.
+>
+> https://lore.kernel.org/all/202402201506.b7e4b9b6-oliver.sang@intel.com/
 
-However I observe neither a second patch removing the size argument
-nor it being dropped as a part of this patch.
+While it would be nice if 6.8 would not regress over 6.7 (performance
+is mostly fixed, memory usage is not), waiting for confirmation what
+the rcutorture issue from the bot is about might be good.
 
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
->  drivers/gpu/drm/i915/display/intel_dp.c | 71 +---------------------
->  include/drm/display/drm_dp_helper.h     |  3 +
->  3 files changed, 83 insertions(+), 69 deletions(-)
->
-> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
-> index 8d6ce46471ae..6c91f400ecb1 100644
-> --- a/drivers/gpu/drm/display/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
-> @@ -2913,6 +2913,84 @@ void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc)
->  }
->  EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
->
-> +/**
-> + * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
-> + * @vsc: vsc sdp initialized according to its purpose as defined in
-> + *       table 2-118 - table 2-120 in DP 1.4a specification
-> + * @sdp: valid handle to the generic dp_sdp which will be packed
-> + * @size: valid size of the passed sdp handle
-> + *
-> + * Returns length of sdp on success and error code on failure
-> + */
-> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> +                           struct dp_sdp *sdp, size_t size)
-> +{
-> +       size_t length = sizeof(struct dp_sdp);
-> +
-> +       if (size < length)
-> +               return -ENOSPC;
-> +
-> +       memset(sdp, 0, size);
-> +
-> +       /*
-> +        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
-> +        * VSC SDP Header Bytes
-> +        */
-> +       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
-> +       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
-> +       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
-> +       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
-> +
-> +       if (vsc->revision == 0x6) {
-> +               sdp->db[0] = 1;
-> +               sdp->db[3] = 1;
-> +       }
-> +
-> +       /*
-> +        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
-> +        * Format as per DP 1.4a spec and DP 2.0 respectively.
-> +        */
-> +       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
-> +               goto out;
-> +
-> +       /* VSC SDP Payload for DB16 through DB18 */
-> +       /* Pixel Encoding and Colorimetry Formats  */
-> +       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
-> +       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
-> +
-> +       switch (vsc->bpc) {
-> +       case 6:
-> +               /* 6bpc: 0x0 */
-> +               break;
-> +       case 8:
-> +               sdp->db[17] = 0x1; /* DB17[3:0] */
-> +               break;
-> +       case 10:
-> +               sdp->db[17] = 0x2;
-> +               break;
-> +       case 12:
-> +               sdp->db[17] = 0x3;
-> +               break;
-> +       case 16:
-> +               sdp->db[17] = 0x4;
-> +               break;
-> +       default:
-> +               WARN(1, "Missing case %d\n", vsc->bpc);
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* Dynamic Range and Component Bit Depth */
-> +       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
-> +               sdp->db[17] |= 0x80;  /* DB17[7] */
-> +
-> +       /* Content Type */
-> +       sdp->db[18] = vsc->content_type & 0x7;
-> +
-> +out:
-> +       return length;
-> +}
-> +EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
-> +
->  /**
->   * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
->   * @dpcd: DisplayPort configuration data
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 217196196e50..a9458df475e2 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -4089,73 +4089,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
->         return false;
->  }
->
-> -static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> -                                    struct dp_sdp *sdp, size_t size)
-> -{
-> -       size_t length = sizeof(struct dp_sdp);
-> -
-> -       if (size < length)
-> -               return -ENOSPC;
-> -
-> -       memset(sdp, 0, size);
-> -
-> -       /*
-> -        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
-> -        * VSC SDP Header Bytes
-> -        */
-> -       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
-> -       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
-> -       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
-> -       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
-> -
-> -       if (vsc->revision == 0x6) {
-> -               sdp->db[0] = 1;
-> -               sdp->db[3] = 1;
-> -       }
-> -
-> -       /*
-> -        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
-> -        * Format as per DP 1.4a spec and DP 2.0 respectively.
-> -        */
-> -       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
-> -               goto out;
-> -
-> -       /* VSC SDP Payload for DB16 through DB18 */
-> -       /* Pixel Encoding and Colorimetry Formats  */
-> -       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
-> -       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
-> -
-> -       switch (vsc->bpc) {
-> -       case 6:
-> -               /* 6bpc: 0x0 */
-> -               break;
-> -       case 8:
-> -               sdp->db[17] = 0x1; /* DB17[3:0] */
-> -               break;
-> -       case 10:
-> -               sdp->db[17] = 0x2;
-> -               break;
-> -       case 12:
-> -               sdp->db[17] = 0x3;
-> -               break;
-> -       case 16:
-> -               sdp->db[17] = 0x4;
-> -               break;
-> -       default:
-> -               MISSING_CASE(vsc->bpc);
-> -               break;
-> -       }
-> -       /* Dynamic Range and Component Bit Depth */
-> -       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
-> -               sdp->db[17] |= 0x80;  /* DB17[7] */
-> -
-> -       /* Content Type */
-> -       sdp->db[18] = vsc->content_type & 0x7;
-> -
-> -out:
-> -       return length;
-> -}
-> -
->  static ssize_t
->  intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
->                                          const struct hdmi_drm_infoframe *drm_infoframe,
-> @@ -4248,8 +4181,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
->
->         switch (type) {
->         case DP_SDP_VSC:
-> -               len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
-> -                                           sizeof(sdp));
-> +               len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
-> +                                         sizeof(sdp));
->                 break;
->         case HDMI_PACKET_TYPE_GAMUT_METADATA:
->                 len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
-> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-> index d02014a87f12..8474504d4c88 100644
-> --- a/include/drm/display/drm_dp_helper.h
-> +++ b/include/drm/display/drm_dp_helper.h
-> @@ -812,4 +812,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
->                        int bpp_x16, unsigned long flags);
->  int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
->
-> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> +                           struct dp_sdp *sdp, size_t size);
-> +
->  #endif /* _DRM_DP_HELPER_H_ */
-> --
-> 2.34.1
->
+Mikhail: since you are testing mainline, in about 4 weeks the fixes
+should then reach 6.9-rc in the next merge window. Until then, if it's
+not too difficult for you, you can apply those 2 patches in your own
+tree.
 
-
--- 
-With best wishes
-Dmitry
+Thanks,
+-- Marco
 
