@@ -1,62 +1,38 @@
-Return-Path: <linux-kernel+bounces-72824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4783685B906
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:28:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863BB85B917
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D1641C222E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:28:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C67FB24115
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF1141C9D;
-	Tue, 20 Feb 2024 10:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Aq+LnfDV"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1087F627ED;
+	Tue, 20 Feb 2024 10:28:32 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8373760EE3;
-	Tue, 20 Feb 2024 10:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7BE62160;
+	Tue, 20 Feb 2024 10:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424906; cv=none; b=p7uOzub7JFRZQIJi9e5QBP9KlmfJ4Vva7Syur6wz1An1RLyCJFAEsKvOeHgxVWytxo8tdfn8mZ8qfsKZLeFrbi8iNji+raCFS1zdKz/2TRzm8lGbk4xJ53MEHCIfjOXn1jwsmij3Q6MVp/UuHAmk/iHl0FLge9pHfCiI9biTPmE=
+	t=1708424911; cv=none; b=h3iUP0HTgdP5vI4vbCiD5X5MJAhGJqX/SirAgXAvooLDjUL53TwslWPc+Hp4uu8oLZoTSDDdG2o3c4iT81V92JzHkd6l7bfjB5PvGZy/Av1dBU+POg7CsshMLRDhU2F35C5rspqV6VpultCFK0L/mFm7xsSkKbxa6EGJLt8KNQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424906; c=relaxed/simple;
-	bh=l7otL2gscSgJ64bCvC033YalS/+yUmZ93WpIuL3Dwu4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IkXodb0sjJdyThHd/xi4p87c9x2kP6ni5YkpYqFdwapnAZhER6u9kvXuTZZtJJEJHhssxZI+r0/dZyMS8OUKqSkthQqX31UtXYQknv0VkXDn+iEGB0DpfBkzQIoM7ImtJl/sQKWFbMWhmQXb43uez8nSUT5bS7Je3n3YX26J0XE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Aq+LnfDV; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KABgW2026869;
-	Tue, 20 Feb 2024 10:28:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=DD8EzjWrMUK+IIZqpHAfw0rT3BUw8IO2gwpFPRrgBD8=; b=Aq
-	+LnfDVuhHMQHv2uBCF6Kjaqsz4Z5xjSyuQCxYW67mbszq0MPv2KIjqT1SJtdhv4y
-	uwML35qc/tVHEhW24L0OEPZGmMiEinZ82ePiBoXTmy9FYcLehe2qizVjL/Ery60y
-	MPkBRyvrO0s6co2mZqHzuyQFWXQjDB21mi1u+WlAcpxX3QDgznhgLSHBXnIf9YEQ
-	YndZSZWWg5rgSEWbwZulztcHWrXg114kWSfRsTct/4YJz/ZpY7u5iat78hcJZNFd
-	VhAZQThFqhQOVgYqOjTKbyWsC+U6HvCglp44CR8oyYRQNlw3FpGXFNXzEpDW7KaX
-	u7fShwMwCQ9p97/nLr9A==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct3d015j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 10:28:20 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KASJjM022610
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 10:28:19 GMT
-Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 02:28:13 -0800
-Message-ID: <374902c2-b1c4-42bd-aa34-fbb188b8428a@quicinc.com>
-Date: Tue, 20 Feb 2024 18:28:10 +0800
+	s=arc-20240116; t=1708424911; c=relaxed/simple;
+	bh=+jA3L3roeJSQbJVRsbeM0J3q8pHDGsa0x+hbU6bzk10=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pK7kD5ajzkpSorss2EYj1l6l34LcFQVJ3QwBaiGlItj8EVLjMo4lizY4pZ/KiWgNDtSZQv284bg2T4atoEXDQwKvJsA6/QrvdjZIAKmRX9k8tRPwWHzK3hjl+8rOvdA14ynqNKkNxixMNPhO3ZF9Bup7QTW7pXabihmbfFsNX28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rcNMP-0003kF-LL; Tue, 20 Feb 2024 11:28:25 +0100
+Message-ID: <78075db2-4d1f-4b94-8814-24666a8518a2@leemhuis.info>
+Date: Tue, 20 Feb 2024 11:28:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,189 +40,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/6] arm64: dts: qcom: add base AIM500 dtsi
-Content-Language: en-US
-To: Jingyi Wang <quic_jingyw@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <kernel@quicinc.com>, Tingwei Zhang <quic_tingweiz@quicinc.com>
-References: <20240205115721.1195336-1-quic_jingyw@quicinc.com>
- <20240205115721.1195336-6-quic_jingyw@quicinc.com>
- <CAA8EJpr7tHXZHcH1Sbcy0-MCZfMxKBjaPXGdpg3cqyyFjTZOeA@mail.gmail.com>
- <9685991e-6577-4f96-a17f-b0a65d8d1260@quicinc.com>
- <CAA8EJpqVQEktHuD5sYsRMiytPS+XfoHzVTBUuKqeavL4yW72Sg@mail.gmail.com>
- <37f1cede-6d70-4443-be8e-ef12266531a0@quicinc.com>
-From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
-In-Reply-To: <37f1cede-6d70-4443-be8e-ef12266531a0@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: qeGl04L0-GnX52yBAdRy_jMqx_1w1xgd
-X-Proofpoint-GUID: qeGl04L0-GnX52yBAdRy_jMqx_1w1xgd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200075
+Subject: Re: [PATCH v1] docs: new text on bisecting which also covers bug
+ validation
+Content-Language: en-US, de-DE
+To: Jonathan Corbet <corbet@lwn.net>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
+ <petr@tesarici.cz>
+Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
+ Nathan Chancellor <nathan@kernel.org>
+References: <bf1d2eba0d291ff583e01b5985a0dec248eaf27a.1708072870.git.linux@leemhuis.info>
+ <20240216204140.2ecbceec@meshulam.tesarici.cz>
+ <62ea7097-256c-4331-b937-778444125a06@leemhuis.info>
+ <87a5nwm7bv.fsf@meer.lwn.net>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <87a5nwm7bv.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1708424910;2d8c1209;
+X-HE-SMSGID: 1rcNMP-0003kF-LL
 
-
-
-On 2/20/2024 6:06 PM, Jingyi Wang wrote:
-> Hi Dmitry,
+On 19.02.24 23:12, Jonathan Corbet wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> writes:
 > 
-> On 2/20/2024 5:19 PM, Dmitry Baryshkov wrote:
->> On Tue, 20 Feb 2024 at 11:17, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
->>>
->>> Hi Dmitry,
->>>
->>> On 2/5/2024 10:23 PM, Dmitry Baryshkov wrote:
->>>> On Mon, 5 Feb 2024 at 14:00, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
->>>>>
->>>>> Introduce aim500 board dtsi.
->>>>
->>>> So, is it a board or a module?
->>>>
->>> aim500 is a module, will fix the descrption.
->>>
->>>>>
->>>>> AIM500 Series is a highly optimized family of modules designed to
->>>>> support AIoT and Generative AI applications based on sm8650p with
->>>>> PMIC and bluetooth functions etc.
->>>>>
->>>>> Co-developed-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
->>>>> Signed-off-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
->>>>> Signed-off-by: Jingyi Wang <quic_jingyw@quicinc.com>
->>>>> ---
->>>>>   arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi | 409 +++++++++++++++++++
->>>>>   1 file changed, 409 insertions(+)
->>>>>   create mode 100644 arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>>>> new file mode 100644
->>>>> index 000000000000..cb857da8653b
->>>>> --- /dev/null
->>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>>>> @@ -0,0 +1,409 @@
->>>>> +// SPDX-License-Identifier: BSD-3-Clause
->>>>> +/*
->>>>> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
->>>>> + */
->>>>> +
->>>>> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->>>>> +#include "sm8650p.dtsi"
->>>>> +#include "pm8550.dtsi"
->>>>> +#include "pm8550b.dtsi"
->>>>> +#define PMK8550VE_SID 8
->>>>> +#include "pm8550ve.dtsi"
->>>>> +#include "pm8550vs.dtsi"
->>>>> +#include "pmk8550.dtsi"
->>>>> +
->>>>> +/ {
->>>>> +       aliases {
->>>>> +               serial1 = &uart14;
->>>>> +       };
->>>>> +
->>>>> +       vph_pwr: vph-pwr-regulator { };
->>>>
->>>> Is this regulator a part of the module or a part of the carrier board?
->>>> If the latter is true, this must go to the carrier board DT file.
->>>>
->>>
->>> the vph_pwr regulator is defined in the aim500-aiot carrier board and used
->>> in aim500 module.
+>> On 16.02.24 20:41, Petr Tesařík wrote:
+>>> Is this because you want to keep it readable if the target audience
+>>> reads the source text of the documentation? Otherwise, the .. include
+>>> directive does not make a difference after rendering to HTML. AFAIK.
 >>
->> If it is defined in the carrier board, then please move it and
->> corresponding supply entries to the carrier board dts. Other devices
->> using the SoM can have different power tree.
->>
->> While we are at it, could you please rename the node to regulator-vph-pwr?
->>
->>
-> will rename the node and move it to sm8650p-aim500-aiot.dts
-
-Shall we have the VPH_PWR implementation inside the board dts file, and 
-have the supply entries which used the VPH_PWR inside the SOM.dtsi file?
-
-The VPH_PWR is an input IO of SOM. And the corresponding supply entries 
-is inside the SOM hardware design as well.
-
-The VPH_PWR as a fixed regulator implementation is the board design, it 
-can be changed to other design from different boards.
-
-Here is a simple diagram to show the hardware description of the VPH_PWR 
-related design:
-
-+------------------------------------------------------+ 
- 
-
-|                 Board                                | 
- 
-
-|                                                      | 
- 
-
-|           +-----------------+                        | 
- 
-
-|power----->| Fixed regulator-----------+              | 
- 
-
-|           +-----------------+         |              | 
- 
-
-|                                       |              | 
- 
-
-|                                       v VPH_PWR      | 
- 
-
-|                  +------|----------------------+     | 
- 
-
-|                  |      |    SOM       |       |     | 
- 
-
-|                  |      |              |       |     | 
- 
-
-|                  |      vVPH_PWR       vVPM_PWR|     | 
- 
-
-|                  |  +------+       +------+    |     | 
- 
-
-|                  |  | pmic1|       |pmic2 |    |     | 
- 
-
-|                  |  +------+       +------+    |     | 
- 
-
-|                  |                             |     | 
- 
-
-|                  +-----------------------------+     | 
- 
-
-+------------------------------------------------------+ 
- 
-
-
-
+>> It less that I want that, it's more that I got the impression that both
+>> Jonathan and most of the kernel development community wants the source
+>> text to be readable; not totally sure, but I think that's the right
+>> thing to do, too.
 > 
-> Thanks,
-> Jingyi
+> As a general rule, yes.  To harp on this one more time, I do think we
+> could create sections of the manual (a "tutorials" book, say) with a
+> different set of priorities.
 
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+Partly answered to that elsewhere in the thread:
+https://lore.kernel.org/linux-doc/2c5a82e1-31f0-4908-80b7-00b3b0257d59@leemhuis.info/
+
+> In the documentation session at the last kernel summit, I got some
+> pretty clear feedback that plain-text readability could be made
+> secondary to getting the best rendered output, at least in some cases.
+
+For the record: I didn't feel any constrains while writing and would not
+know how to improve the "rendered output", except maybe by adding a
+image or two. But even then I'd say that's not worth abandoning
+plain-text readability.
+
+> Tutorials seems like a good example of such a case, where we could focus
+> on good web output without, as you say, creating potential maintenance
+> troubles going forward.
+
+It's just a gut feeling, but to me "split the text into smaller parts so
+those can be included in different documents" sounds like a much bigger
+maintenance nightmare than "keeping some sections in sync that two or
+three files (which most likely will be rarely changed!) use in parallel".
+
+But I fear our docs translators might have a different opinion.
+
+Ciao, Thorsten
 
