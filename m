@@ -1,167 +1,120 @@
-Return-Path: <linux-kernel+bounces-73713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0051D85C785
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:13:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D96785C79C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:14:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E821B214D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:13:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EFDC1C21F7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3FA151CE3;
-	Tue, 20 Feb 2024 21:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520BA151CEC;
+	Tue, 20 Feb 2024 21:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EG3j6/I9"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iOexJ3/A"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FF2133987
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A8876C9C
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708463617; cv=none; b=SAH+tcCgy9GPplr4ATw4kk5redPe5NVu/eeO0n3NqjEwsitLo6LpE0/iJag0G82YWyqgIpyfdjvqXMx9Sxdh4k3zNh9d557N051RoJvDU+eE8iK2qUhmjn9S51CsuBUdsfkKuGGbQ55zoVDXTdlOvD/GK1unna89aB92RDCDHMY=
+	t=1708463676; cv=none; b=Eawudm5Ta+LV97N0daA4xP+MvGmyVFF+tyMPTmteA2kzL7AMuNYj7+CLcmmyjLPg+a+g4xk/1LK0Es37AoFTJk0imPe90/PGzTnaD7Ka3a6q3hEr8NYkPK6slLB5vtOGnnf2PCk0xExyqc+olI22zRTi7UPPZ8C1YpuUKADGy3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708463617; c=relaxed/simple;
-	bh=mWs5E7X9FqqKixvWnOWdMsVW4SYoh7sLP2BfN7RgoR4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lcmd9hXGOdgkw3tn7r81cpKsUplxe3jl3b/CT1G0bDUuO/vx+nAytF6mRe9439rsGHhSguS4Hkf3NV75YCsJ+wct9YnaxqwWzp4t6rTGUKR74FUH/kGC5XFPZZDdk+9THJw8pmObKOvc1EDHlucatXvuXNmJBAS7QvgANHIEN5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EG3j6/I9; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7872614af89so507133885a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:13:34 -0800 (PST)
+	s=arc-20240116; t=1708463676; c=relaxed/simple;
+	bh=uG1gfpoRfXRgKuEHJKltjR7JrRYIjqvRvSia55JVwcs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FRRf/V+TXaczHSAwPRtn6VTl035qR9Kex0VKtfmHbss3c7IGwRfIi6q6IZraRKijbvMI4tTb/YozvFJ45+zy6JahEQ9CYTuu6ZrgOKeHHuS6YDC45NkNjUIzpUEt3I+2CCWAiliCDLcGtK+Kydx/iYHXaj1diZM2RQKnxMGu58w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iOexJ3/A; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dbd32cff0bso24638165ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:14:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708463613; x=1709068413; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708463674; x=1709068474; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LFUM0XDK0ZVTj4kCTskFg/BdpgZIKaoWZSjy/zINkgc=;
-        b=EG3j6/I9Z5Jm4bWXTV2g1jHigwYYQROjjcSxntOaQrErUExWYCS98lGNVOdmw4Gy0J
-         qoPO4LFT5w7rG3NiXbY4eNmlYtuCM34XJmsIQyEUspvbY16fST2ppN5We/PnJEDaBhqc
-         uVpveO1qD3KjD64uzp+411zJcD+yP6qGXwCDA=
+        bh=A93PgWbW04e3vN6J7sWJkkLxGXflBHffLu+zmG4+tnw=;
+        b=iOexJ3/AcbWSsRyM4/wpeKprHMDp8PMEmas7s1l3Jy5hwRa8fa3wcpH/FMQnZCmfEh
+         W7xPxPFjrHKji0Hnirr2hlvAkllz8VzSGnhLpRsMqphBQ+05cv/nxoiXor7MFOEsUotW
+         5Vtcj2wc7GDnk/ReoHrXrau3g4pC1RiOoF/32XF4TEICk49/0aXAMpnoxn/irI7mYjkK
+         wCqrGzgdih4NK/5VxdS+Mu3gNASeINRkIXrJHlDFwv4NQJPzvK2a8+ro3GWDSOY7I8j7
+         +CJH5hhS8T+I3XyfPF5R2lETltgrWHsm+fCYPdudv1U8S86elcIeYqHpdEKCVqtsPAxr
+         iMow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708463613; x=1709068413;
+        d=1e100.net; s=20230601; t=1708463674; x=1709068474;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LFUM0XDK0ZVTj4kCTskFg/BdpgZIKaoWZSjy/zINkgc=;
-        b=DVd5VauH/aq7C8m2qbdj8EFIRflbk8p+y0F3i3Wn4+6NRvTzY0U7JaFeTVl6K9ihXp
-         lXKjeneOy8aqEzceTj7R7y7E15N9kAHHeLjSJT9OHitnKNYkIOfZhEZrVvraDjB8ws5m
-         EMZINnZAYiXQg/0BglMybiwwgC2cKOmeRfpbwTJDjdftCgSCL1YA/f5CS5GaHSplzv3v
-         0mHxwEIPsBDl/BYFyagNTmE4JOc/u7r/rSdeUCKCIBS9ayFfkvmf3l0NmcT7GYG0H/Gj
-         cXmtwO0/4qZpfie7khy2XTnP0eRIO83hnmYCEyxHl5FmIXfHCPmmKjA8kOKPOwSQ/nH0
-         F6LA==
-X-Gm-Message-State: AOJu0Ywj1mhkZqFwJxcXjBCMUT3fkDe1amphrBLbjRdpIMZx2T0xbC9R
-	5qs15Mo69AAHp3Z554ceNuCM+RkK09OBBcrKbWXRX4ko4HKCagGZiag8fNyPPUmE3O9AmA8uIPU
-	=
-X-Google-Smtp-Source: AGHT+IGb3TRgQ5pvEKeyUOQD9tS5jn+SqfoEY02pd04BL8Wl35Z1DguYO4ZJspag7M1nm0GQDt/d2Q==
-X-Received: by 2002:a05:620a:e8b:b0:787:38a4:7bdd with SMTP id w11-20020a05620a0e8b00b0078738a47bddmr22892813qkm.2.1708463613174;
-        Tue, 20 Feb 2024 13:13:33 -0800 (PST)
-Received: from kramasub2.cros.corp.google.com ([100.107.108.189])
-        by smtp.gmail.com with ESMTPSA id c1-20020a05620a134100b0078726621376sm3701207qkl.118.2024.02.20.13.13.31
+        bh=A93PgWbW04e3vN6J7sWJkkLxGXflBHffLu+zmG4+tnw=;
+        b=FzDXR4NcUWm74KOlbv7A7un8Zglk5PX5Kw8ls8ttS0xtKs0KI9SrvwPRh22T9JeOLo
+         DymMSLyuZ94eQ1xIDiQe7K8xHfhZOLbmJVaDLWQAP3T5CHZ6H8fvHyTzM2ybVdQdnI07
+         psccrwTmMn4YgmNxqdWMqW+r/AY4YNcdM/LE/xVmjbtsyUs71gzeQwF/2+8tJ2e8UFxq
+         oDqLA1saZJ5jqTBrMVEmJLbB5oEXARY4HouTRHb6ido8oRGMWC+5Me2Ar8hVBP+E0RnA
+         GC6IC5LSfPeoB7IGDu1x2f8NnzT8AZh8I8Pnlr5dMhfjn3ery2S9lcl0ypNn8FPrzAS+
+         LxTg==
+X-Gm-Message-State: AOJu0YybNzxlir7bbv9nJmeCqJIl2R4ETnYzT7LJfkzIXG6nLRD0MmV6
+	VJZxMJnTfqAPg+qDijud0SbAVnrzoU26VqtHtVJSv2zdNarSakIG
+X-Google-Smtp-Source: AGHT+IE6ebYcpcwYiCnw5UjZZZdDHNYjoNj1345Sq6+8t74K/RzBNOqe0SBDuOW/qJb9WGGzGdBVnw==
+X-Received: by 2002:a17:903:8ce:b0:1db:cca9:f751 with SMTP id lk14-20020a17090308ce00b001dbcca9f751mr10541302plb.59.1708463674378;
+        Tue, 20 Feb 2024 13:14:34 -0800 (PST)
+Received: from localhost.localdomain ([116.73.143.161])
+        by smtp.gmail.com with ESMTPSA id jj12-20020a170903048c00b001dba50577ddsm6733481plb.121.2024.02.20.13.14.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 13:13:32 -0800 (PST)
-From: Karthikeyan Ramasubramanian <kramasub@chromium.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Karthikeyan Ramasubramanian <kramasub@chromium.org>,
-	stable@vger.kernel.org,
-	Jani Nikula <jani.nikula@intel.com>,
-	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org
-Subject: [PATCH v1] drivers/i915/intel_bios: Fix parsing backlight BDB data
-Date: Tue, 20 Feb 2024 14:12:57 -0700
-Message-ID: <20240220141256.v1.1.I0690aa3e96a83a43b3fc33f50395d334b2981826@changeid>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+        Tue, 20 Feb 2024 13:14:33 -0800 (PST)
+From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+To: suzuki.poulose@arm.com,
+	mike.leach@linaro.org,
+	james.clark@arm.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Subject: [PATCH] Spelling correction patch
+Date: Wed, 21 Feb 2024 02:44:24 +0530
+Message-Id: <20240220211424.6005-1-pvkumar5749404@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Starting BDB version 239, hdr_dpcd_refresh_timeout is introduced to
-backlight BDB data. Commit 700034566d68 ("drm/i915/bios: Define more BDB
-contents") updated the backlight BDB data accordingly. This broke the
-parsing of backlight BDB data in VBT for versions 236 - 238 (both
-inclusive) and hence the backlight controls are not responding on units
-with the concerned BDB version.
-
-backlight_control information has been present in backlight BDB data
-from at least BDB version 191 onwards, if not before. Hence this patch
-extracts the backlight_control information if the block size of
-backlight BDB is >= version 191 backlight BDB block size.
-Tested on Chromebooks using Jasperlake SoC (reports bdb->version = 236).
-Tested on Chromebooks using Raptorlake SoC (reports bdb->version = 251).
-
-Fixes: 700034566d68 ("drm/i915/bios: Define more BDB contents")
-Cc: stable@vger.kernel.org
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
 ---
+ Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc | 2 +-
+ Documentation/ABI/testing/sysfs-bus-cxl                   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- drivers/gpu/drm/i915/display/intel_bios.c     | 22 +++++--------------
- drivers/gpu/drm/i915/display/intel_vbt_defs.h |  2 --
- 2 files changed, 6 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_bios.c b/drivers/gpu/drm/i915/display/intel_bios.c
-index aa169b0055e97..4ec50903b9e64 100644
---- a/drivers/gpu/drm/i915/display/intel_bios.c
-+++ b/drivers/gpu/drm/i915/display/intel_bios.c
-@@ -1041,23 +1041,13 @@ parse_lfp_backlight(struct drm_i915_private *i915,
+diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+index 96aafa66b4a5..339cec3b2f1a 100644
+--- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
++++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+@@ -97,7 +97,7 @@ Date:		August 2023
+ KernelVersion:	6.7
+ Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
+ Description:	(Read) Shows all supported Coresight TMC-ETR buffer modes available
+-		for the users to configure explicitly. This file is avaialble only
++		for the users to configure explicitly. This file is available only
+ 		for TMC ETR devices.
  
- 	panel->vbt.backlight.type = INTEL_BACKLIGHT_DISPLAY_DDI;
- 	panel->vbt.backlight.controller = 0;
--	if (i915->display.vbt.version >= 191) {
--		size_t exp_size;
-+	if (i915->display.vbt.version >= 191 &&
-+	    get_blocksize(backlight_data) >= EXP_BDB_LFP_BL_DATA_SIZE_REV_191) {
-+		const struct lfp_backlight_control_method *method;
+ What:		/sys/bus/coresight/devices/<memory_map>.tmc/buf_mode_preferred
+diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+index fff2581b8033..bbf6de5a4ca1 100644
+--- a/Documentation/ABI/testing/sysfs-bus-cxl
++++ b/Documentation/ABI/testing/sysfs-bus-cxl
+@@ -224,7 +224,7 @@ Description:
+ 		decoding a Host Physical Address range. Note that this number
+ 		may be elevated without any regionX objects active or even
+ 		enumerated, as this may be due to decoders established by
+-		platform firwmare or a previous kernel (kexec).
++		platform firmware or a previous kernel (kexec).
  
--		if (i915->display.vbt.version >= 236)
--			exp_size = sizeof(struct bdb_lfp_backlight_data);
--		else if (i915->display.vbt.version >= 234)
--			exp_size = EXP_BDB_LFP_BL_DATA_SIZE_REV_234;
--		else
--			exp_size = EXP_BDB_LFP_BL_DATA_SIZE_REV_191;
--
--		if (get_blocksize(backlight_data) >= exp_size) {
--			const struct lfp_backlight_control_method *method;
--
--			method = &backlight_data->backlight_control[panel_type];
--			panel->vbt.backlight.type = method->type;
--			panel->vbt.backlight.controller = method->controller;
--		}
-+		method = &backlight_data->backlight_control[panel_type];
-+		panel->vbt.backlight.type = method->type;
-+		panel->vbt.backlight.controller = method->controller;
- 	}
  
- 	panel->vbt.backlight.pwm_freq_hz = entry->pwm_freq_hz;
-diff --git a/drivers/gpu/drm/i915/display/intel_vbt_defs.h b/drivers/gpu/drm/i915/display/intel_vbt_defs.h
-index a9f44abfc9fc2..aeea5635a37ff 100644
---- a/drivers/gpu/drm/i915/display/intel_vbt_defs.h
-+++ b/drivers/gpu/drm/i915/display/intel_vbt_defs.h
-@@ -899,8 +899,6 @@ struct lfp_brightness_level {
- 
- #define EXP_BDB_LFP_BL_DATA_SIZE_REV_191 \
- 	offsetof(struct bdb_lfp_backlight_data, brightness_level)
--#define EXP_BDB_LFP_BL_DATA_SIZE_REV_234 \
--	offsetof(struct bdb_lfp_backlight_data, brightness_precision_bits)
- 
- struct bdb_lfp_backlight_data {
- 	u8 entry_size;
+ What:		/sys/bus/cxl/devices/decoderX.Y
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+2.34.1
 
 
