@@ -1,117 +1,129 @@
-Return-Path: <linux-kernel+bounces-73452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2617385C2C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3400D85C2CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB379B2244E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:35:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8ED6B22AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384D677626;
-	Tue, 20 Feb 2024 17:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA44D77621;
+	Tue, 20 Feb 2024 17:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BK9kqvzO"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="NMO8NtBn"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E4B6BB3C;
-	Tue, 20 Feb 2024 17:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5D476C9C;
+	Tue, 20 Feb 2024 17:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708450489; cv=none; b=uAxXXC2xwMcI+/RlDZ4chBDb8Gr78U9eM2n7fnd2l2w2C/K9ydBxlJPpQT5OiWmrsSHkOlHJjV8+m5RD7nAQE2h87H6X1VlyasYvQmlv560gaByKd/yILligAf0NYN+j7IB50TboXvIV1mph5sZucsrkFr2PvJPowAoR6YNlaYo=
+	t=1708450595; cv=none; b=Fecn16lq1PbIcfIo+Uy6zOas08rqhU9J3PbUIQhfj+tS9Up+zNPlImqTnc2V7KHvtkvmCqpD9A+o2qy8wOzuAWb6v82+r/d5v8mcYIrmumIsheIa63dAj51typJBzMaHt8ke/VaNJ6VsRfBfVgv9c0QYewHYn+EsRRjjmAo05jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708450489; c=relaxed/simple;
-	bh=jvxP9y+fUaenjIbkE3NPIqpxAJvHGIsnTHgQLaNrJGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d1OOJPH2YZlhrLowSYeVdLbx8WvuJVGT1R939h+dkjk6jmhhNqv2/GtYtAVOMe9+TFCyRBzL1o7peWpILf/yFMhQW5a+tkdbzIv5cDyQeKQcDW1gjEl83Ed/fSZoJQyhadkrn9EeRuzDiUe9KHy+WD4ANLvAJPOZSgbQQqgt3Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BK9kqvzO; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dc1ff3ba1aso5614495ad.3;
-        Tue, 20 Feb 2024 09:34:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708450487; x=1709055287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g0gLcb+UZQZKvdtR+xNRyRYfChy0U5BQPT68m+rMTnQ=;
-        b=BK9kqvzOV17jowApQUroz/NpSlnl5KNAJ82N64uJGtoGYCXYscqkkKnv6GlnXv9jtC
-         OblHE944j6Nayc/XWkMnANWIUT1MolsgBAV51bCfA7ajS043k4UW3L+1WXow9hp9NTLM
-         e3PrzUfRx6V260pQ03dcpRlMCsU5/WnWmahVr3M4P5FE81Pt8OUAeK3kWYMNqK+3ucvo
-         Om+95vf8WNQ7iPw8jpkr21LX7lZRtyavR6wpgn69uBPqEEJFJBkzRIRLEC34TIQGqgSv
-         YhcdoC3XkL8p8ut5aOZRv/73UXUgQFSyzcKYjMd7uXTKkmSk46HdnJwvAT07UywqX8kt
-         Zqxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708450487; x=1709055287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g0gLcb+UZQZKvdtR+xNRyRYfChy0U5BQPT68m+rMTnQ=;
-        b=gZI8cbEHnIwvylgwFbWQbVV6JA/VMzG+NhAhcZSH6uhuG0JAsbqLZOZfJrFukXvt+6
-         xWtcIXsT2uyzFxUkuhUQxB1oZUmhoo01kT1QbjON0SOHLQZuwp6S2H+ozgC6QF9MZrtc
-         O1a3hJeWRYQd83piqV4c+wC6zEZz6MXIQUMd0rMadEjaTeVCXxj2lPhjqAGPDhePB4Vr
-         IFgtCFE0qgF1q40InAgXhkEWc7+BFgzCTx7ksaJgANunwX38CUiCovHnfCNeDHFc8Yzw
-         08WahFfbp74dpAr88SgWHIxP192pWFfviuGA7mxjU845dVTIJggW9msnejbGEJI7c8oZ
-         Tg9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWbo08YXDL029pOqHUyHNAzhfyySWACkCZMPAgD+DsTJcq+29WNykfoj2ULX5MV11Ea+Axm3N/oGHYg1ihb9op+/xQcZIqbs5IsxUsrpbQuaVoKLLGfensyVdN2ce797AZ3u0vY9ANEBfD32g==
-X-Gm-Message-State: AOJu0YzMkZpj7nvsChyrc3M9WP5o1wBLQqC68k88TnGb20/l4KeZ1p12
-	fC8U2fn4hMRYgVT6QmVNyZr8kUYvsUx7MBBPJaTyGhobVdVfXDT/PWdjOVnKleY=
-X-Google-Smtp-Source: AGHT+IFWZ6D5sKzLckyDo+c4DpeZng9yQSbbwRxo4VXbopwXEM5SxqojmMb0zvmEoniSNOz/L5MSUw==
-X-Received: by 2002:a17:902:ab94:b0:1db:d843:7246 with SMTP id f20-20020a170902ab9400b001dbd8437246mr6872177plr.51.1708450487274;
-        Tue, 20 Feb 2024 09:34:47 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id jb12-20020a170903258c00b001d9c1d8a401sm6468490plb.191.2024.02.20.09.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 09:34:46 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 20 Feb 2024 07:34:45 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org,
-	hcochran@kernelspring.com, mszeredi@redhat.com, axboe@kernel.dk,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] mm: correct calculation of cgroup wb's bg_thresh in
- wb_over_bg_thresh
-Message-ID: <ZdTitdV_1awPhfkQ@slm.duckdns.org>
-References: <20240123183332.876854-1-shikemeng@huaweicloud.com>
- <20240123183332.876854-3-shikemeng@huaweicloud.com>
- <ZbAk8HfnzHoSSFWC@slm.duckdns.org>
- <a747dc7d-f24a-08bd-d969-d3fb35e151b7@huaweicloud.com>
- <ZbgR5-yOn7f5MtcD@slm.duckdns.org>
- <ad794d74-5f58-2fed-5a04-2c50c8594723@huaweicloud.com>
- <ZcUsOb_fyvYr-zZ-@slm.duckdns.org>
- <6505a0c5-5e22-3b25-65f5-2b44e885785d@huaweicloud.com>
+	s=arc-20240116; t=1708450595; c=relaxed/simple;
+	bh=cmTEJiha2tFDubjqRfGi+KdNyZivDUyjm8JbT+qL5uo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Fd7yUt1K1RV4WwWm8rav8eZkBsjhBJopH3XV0mOxV2S5b9SeTYb1IL8SXoz3LJEo6KmFyX6vEAOoJMg+mAiWrNOjn0oTI9Be1knAAUiV3LEC2R4vZF33QAciOwDIQraK2ld0+Ou5qLzrjPr8O+XYP/uRx6O9ZKNmLSv7sB7JIKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=NMO8NtBn; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 3789F100322;
+	Tue, 20 Feb 2024 20:36:22 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3789F100322
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1708450582;
+	bh=CT2QMXS2awc1UaugLcYawqtrm8RuYnHBK31jT43QizI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=NMO8NtBn7IkhhTHIh+4qe3rb8AJgePA80AUDKl2Jh0f9msCkzvOsYcsI+orVuKYw3
+	 KkLezKeEuOlsZzYNQC788a1Lg/g7HHZxF4VTu5Ic6f/RF2zobGj0JpUBj5H+k+aE0b
+	 c0WwZ+scGjZcW4Na2zSk2Rir4nWJWLiGiamhMCaHIa3KHh3Ivjv/ZRoyBGIgwe7VwO
+	 jqIsOmbFPWRpsESeF0mxOq2Cu71rHvsb+TfEOcl8jdN0He0SBwzf60QcyXy0Q1HVWk
+	 CpeSnvelkUGEDXQYp1IVVzXLNxH9+nRQVWgo5EtfrxRChM2ikxbUzDuaaI3jx58ZlS
+	 vKQr3zKgkpMfg==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 20 Feb 2024 20:36:22 +0300 (MSK)
+Received: from [172.28.64.15] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 20 Feb 2024 20:36:21 +0300
+Message-ID: <a25ff51d-d328-43d8-98af-91598c1ef23d@salutedevices.com>
+Date: Tue, 20 Feb 2024 20:34:52 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6505a0c5-5e22-3b25-65f5-2b44e885785d@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: allow to skip clk_core_req_round_rate_nolock()
+To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+	<sboyd@kernel.org>, <linux-clk@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <kernel@salutedevices.com>
+References: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com>
+Content-Language: en-US
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183586 [Feb 20 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/20 16:18:00 #23712592
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Hello,
+Please take a look at this patch.
 
-On Sun, Feb 18, 2024 at 10:35:41AM +0800, Kemeng Shi wrote:
-> Hi Tejun, sorry for the late reply as I was on vacation these days.
-> I agree that visibility is poor so I have to add some printks to debug.
-> Actually, I have added per wb stats to improve the visibility as we
-> only have per bdi stats (/sys/kernel/debug/bdi/xxx:x/stats) now. And I
-> plan to submit it in a new series.
-> I'd like to add a script to improve visibility more but I can't ensure
-> the time to do it. I would submit the monitoring script with the per wb
-> stats if the time problem does not bother you.
-
-It has had poor visiblity for many many years, I don't think we're in any
-hurry.
-
-Thanks.
+On 1/26/24 23:14, Jan Dakinevich wrote:
+> Calling of clk_core_req_round_rate_nolock() can be time-consuming in a
+> case of deep hierarchy with multiple dividers/parents. But if the clock
+> already has exactly the same rate as desired, there is no need to
+> determine how it could be rounded.
+> 
+> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+> ---
+>   drivers/clk/clk.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index 2253c154a824..04f0ddced932 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -2423,6 +2423,12 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
+>   	if (!core)
+>   		return 0;
+>   
+> +	/* skip calculation of rounded rate if the clock already has exactly
+> +	 * the same rate as desired
+> +	 */
+> +	if (req_rate == clk_core_get_rate_nolock(core))
+> +		return 0;
+> +
+>   	rate = clk_core_req_round_rate_nolock(core, req_rate);
+>   
+>   	/* bail early if nothing to do */
 
 -- 
-tejun
+Best regards
+Jan Dakinevich
 
