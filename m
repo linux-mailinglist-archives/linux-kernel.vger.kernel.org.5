@@ -1,175 +1,170 @@
-Return-Path: <linux-kernel+bounces-72763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3362E85B870
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:01:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA6F285B872
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2AD6284300
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:01:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C5A51F23518
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCDE60DF8;
-	Tue, 20 Feb 2024 10:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 681D660BBA;
+	Tue, 20 Feb 2024 10:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F3fSdRfB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UNrJPI4S";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F3fSdRfB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UNrJPI4S"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JScQNfoG"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4195D725;
-	Tue, 20 Feb 2024 10:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BEA95D745
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708423256; cv=none; b=ryfG6jazOY8SS9GJ8xxHVGkecxZAvVOU1N6drxE4xilGYS/pOFTXdEro6StN+nPT0zuPuDZMOQ2C4ku4mtf6ZPMkJscBWQslY3lujPg5ibDbKtmJfjNYGs5+C3naUHU7ybKOVt2v5/MNTWJt22B0BkKtMI9S0ht+AnfsIO+gFqk=
+	t=1708423294; cv=none; b=V4vXd2Cjgk6y77wkCZGzy1B1f1vhABGQjleNnvRXnQC3EmzLyDvcOE7JbMV9HHeTOEL1MoRNohHlXiUHyhmyj6ytbAq7sSFkipJ6nanoPQNcNyigqVDm67yOISMSCpDleG5+6uR8RrTWPN7YePyhX1P2lsFK6aEugCmjo9YOgT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708423256; c=relaxed/simple;
-	bh=YTi/aO2DKVDheV5Y5cpS66CFzB3oXSzsrt96DZOCW7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sjg1JtjRLlbpF3MJD6e7TRIT7Q1QlYNNAuDVHtzU2zHQ7dQBL8B/pVIt25Vi+NFPERhYSwMa/CnkDba/BAECVlGaxJybyXTxTh5Fn2anKZP16NLfoaEEdNex872UsViG1kWtc6sbH6eyYxH/XxJWftPupZPLj9jNUe/XuTCFH5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F3fSdRfB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UNrJPI4S; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F3fSdRfB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UNrJPI4S; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0B8EE1F867;
-	Tue, 20 Feb 2024 10:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708423253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1708423294; c=relaxed/simple;
+	bh=z9GZDpHK4nEBZTaVpDGBn7u07katCtHDDqS3OYKIwJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fmrm6QZ2BN8XgCj/pYqgaN5ReHl2vUWMplZSiUch/RY9QJz6lQqpbeTnncrzD6u1Go55RMxUwiMcUiFgk5aBa/3kcRVZX1UKT8iqbT8xDTCAG+qSylWuywKLUw4dxJHBt8yux6K1grlWTx3Jq8CLB4hTip0jPp0TAOc5j/9VdjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JScQNfoG; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 47CEF20015;
+	Tue, 20 Feb 2024 10:01:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708423290;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3WLQmR6MxvKLiMYg1hRU/njfnb6/TPnqY3GDfUW2pNg=;
-	b=F3fSdRfBUhmVBWxOQMwJH1ycbQw2jgi/lLSKMhSk7pGofNgaunQCvSyyyJKKDrNfy59tOa
-	0k4KGFn7s7MA1fqYB20cJiLKTRnvrP0yF1NAEL++MydDGxFAdEFxrWB2qP9FYCobKeqnku
-	BB4vKApSeoK6vqmg9sBsh4xmCCqARsQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708423253;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3WLQmR6MxvKLiMYg1hRU/njfnb6/TPnqY3GDfUW2pNg=;
-	b=UNrJPI4Sh03bTChsAI/c6H4MlFs2a0Iz9o6YI8AkqBEHdhoZGcwEHHRlwxH0OvqfBuJ53x
-	xd+djClGy+knSjCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708423253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3WLQmR6MxvKLiMYg1hRU/njfnb6/TPnqY3GDfUW2pNg=;
-	b=F3fSdRfBUhmVBWxOQMwJH1ycbQw2jgi/lLSKMhSk7pGofNgaunQCvSyyyJKKDrNfy59tOa
-	0k4KGFn7s7MA1fqYB20cJiLKTRnvrP0yF1NAEL++MydDGxFAdEFxrWB2qP9FYCobKeqnku
-	BB4vKApSeoK6vqmg9sBsh4xmCCqARsQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708423253;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3WLQmR6MxvKLiMYg1hRU/njfnb6/TPnqY3GDfUW2pNg=;
-	b=UNrJPI4Sh03bTChsAI/c6H4MlFs2a0Iz9o6YI8AkqBEHdhoZGcwEHHRlwxH0OvqfBuJ53x
-	xd+djClGy+knSjCA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id ECA5E1358A;
-	Tue, 20 Feb 2024 10:00:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id q1xsOVR41GWkbwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 20 Feb 2024 10:00:52 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 8853BA0807; Tue, 20 Feb 2024 11:00:52 +0100 (CET)
-Date: Tue, 20 Feb 2024 11:00:52 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+7d5fa8eb99155f439221@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, apparmor-owner@lists.ubuntu.com,
-	apparmor@lists.ubuntu.com, axboe@kernel.dk, brauner@kernel.org,
-	jack@suse.cz, jmorris@namei.org, john.johansen@canonical.com,
-	john@apparmor.net, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, paul@paul-moore.com,
-	serge@hallyn.com, syzkaller-bugs@googlegroups.com, terrelln@fb.com,
-	tytso@mit.edu
-Subject: Re: [syzbot] [apparmor?] [ext4?] general protection fault in
- common_perm_cond
-Message-ID: <20240220100052.gbuy6dopqql7m7yl@quack3>
-References: <000000000000ae0abc0600e0d534@google.com>
- <000000000000af682a0611c9a06f@google.com>
+	bh=vLJjwyWcAA92P8/mQkEbJc7X1g1TkiGOhieOujelkek=;
+	b=JScQNfoGuwPh8Gycp9Jpo1bd6uRBdCwt/WKZNDRY7e0EmTjtWumU/Yx97kLCbNEaDK5pX+
+	pZwKsKvwpVc8lUCbhFU4E6d1/vp4WLOOfjgFITNityg37EtyDYp110ov3AKj3RSVQt81r7
+	Ui4YT40hStXZXm2WIMVgt+Mg361jvx++g5j4mqcl+LI3yoW0S7E5GiWr6GUk/PPLvlr73h
+	5ngIgQDodDQwGjtVdBMNggpB7Lpb1yHaD2p6qIrMHpaNZSyv9UvLHuWHT1Eh2jmPiJRYDL
+	zjUor/AtVDNL/6zT5hQPGfqD4Yo1ItaLpUaTU/kbpN5LbcGLAZkgj8EMco6+Pw==
+Date: Tue, 20 Feb 2024 11:01:28 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
+ <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
+ <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
+ kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
+ <dregan@broadcom.com>, Dan Carpenter <dan.carpenter@linaro.org>,
+ linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v5 11/12] mtd: rawnand: brcmnand: exec_op helper
+ functions return type fixes
+Message-ID: <20240220110128.3cadbcc2@xps-13>
+In-Reply-To: <20240207202257.271784-12-william.zhang@broadcom.com>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+	<20240207202257.271784-12-william.zhang@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000af682a0611c9a06f@google.com>
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=F3fSdRfB;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UNrJPI4S
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLrqdkzci5prbpfh8ttufrg9xb)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[44.04%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=6769a69bd0e144b4];
-	 TAGGED_RCPT(0.00)[7d5fa8eb99155f439221];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 1.49
-X-Rspamd-Queue-Id: 0B8EE1F867
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On Mon 19-02-24 21:39:02, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1644f22c180000
-> start commit:   b6e6cc1f78c7 Merge tag 'x86_urgent_for_6.5_rc2' of git://g..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6769a69bd0e144b4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7d5fa8eb99155f439221
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137b16dca80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14153b7ca80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+Hi,
 
-Makes sense.
- 
-#syz fix: fs: Block writes to mounted block devices
+william.zhang@broadcom.com wrote on Wed,  7 Feb 2024 12:22:56 -0800:
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> From: David Regan <dregan@broadcom.com>
+>=20
+> fix return type for exec_op reset and status detect helper functions
+
+Please make a correct sentence (Fic, detect?, '.').
+
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/1024=
+23.html
+> Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+> Signed-off-by: David Regan <dregan@broadcom.com>
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: William Zhang <william.zhang@broadcom.com>
+>=20
+> ---
+>=20
+> Changes in v5: None
+> Changes in v4:
+> - Fix the commit id in the fixes tag
+>=20
+> Changes in v3: None
+> Changes in v2:
+> - Added to patch series
+>=20
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/=
+raw/brcmnand/brcmnand.c
+> index 8c1489ff7bd6..7ce2b267676f 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> @@ -625,7 +625,7 @@ enum {
+>  /* Only for v7.2 */
+>  #define	ACC_CONTROL_ECC_EXT_SHIFT		13
+> =20
+> -static u8 brcmnand_status(struct brcmnand_host *host);
+> +static int brcmnand_status(struct brcmnand_host *host);
+> =20
+>  static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctr=
+l)
+>  {
+> @@ -1749,7 +1749,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
+>  				 INTFC_FLASH_STATUS;
+>  }
+> =20
+> -static u8 brcmnand_status(struct brcmnand_host *host)
+> +static int brcmnand_status(struct brcmnand_host *host)
+>  {
+>  	struct nand_chip *chip =3D &host->chip;
+>  	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> @@ -1760,7 +1760,7 @@ static u8 brcmnand_status(struct brcmnand_host *hos=
+t)
+>  	return brcmnand_waitfunc(chip);
+>  }
+> =20
+> -static u8 brcmnand_reset(struct brcmnand_host *host)
+> +static int brcmnand_reset(struct brcmnand_host *host)
+>  {
+>  	struct nand_chip *chip =3D &host->chip;
+> =20
+> @@ -2492,11 +2492,14 @@ static int brcmnand_exec_op(struct nand_chip *chi=
+p,
+> =20
+>  	if (brcmnand_op_is_status(op)) {
+>  		status =3D op->instrs[1].ctx.data.buf.in;
+> -		*status =3D brcmnand_status(host);
+> +		ret =3D brcmnand_status(host);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		*status =3D ret & 0xFF;
+> =20
+>  		return 0;
+> -	}
+> -	else if (brcmnand_op_is_reset(op)) {
+> +	} else if (brcmnand_op_is_reset(op)) {
+
+This is another change, please make it in another patch. Also while you
+are at it, there are probably other checkpatch warnings that can be
+fixed, if you want.
+
+>  		ret =3D brcmnand_reset(host);
+>  		if (ret < 0)
+>  			return ret;
+
+
+Thanks,
+Miqu=C3=A8l
 
