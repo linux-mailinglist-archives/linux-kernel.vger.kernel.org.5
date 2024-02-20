@@ -1,113 +1,113 @@
-Return-Path: <linux-kernel+bounces-72938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDFB385BAE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:47:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6D585BAE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EFA3B23632
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:47:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B7791F260DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A95B67A0F;
-	Tue, 20 Feb 2024 11:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70E367A0E;
+	Tue, 20 Feb 2024 11:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RwjJmyhd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dos4Vqu9"
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51EFF6775E
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D03867756
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708429657; cv=none; b=WS5eGW3PyuUvE/lQTJf+OP5BIZk+zqor0pzNK5wl7iYuUEi7QTmUkRhEQB1U4+MkH0mzb6hdtqaX9BH9vTwFSDVCdW/UYcptX+HjMH/fOK0RI+OQb8q8XCT14Uc8tht6Y0XJtXAPUoVcLezb0Nk/DGY/wH1SIuUISUCz1j82Qco=
+	t=1708429723; cv=none; b=XMX6d1r+WY9U7a+JqT7c0xUQn+dHHG1M4rvTuHfLpmrDB1IcQCquUSLwALnU0wSA2iAjf/S1eR5aKH8x2+L16i5eG0XOnKTQK/vVDn/iQn45mx8HNy4TfXdHThVp85WkEjuBCE8uEw80psARD2Nd3rylRDOXZwLOX/nBwUN7HIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708429657; c=relaxed/simple;
-	bh=X+ZqMf3IK+JD8CFxWrUuIKFK5IZbu0of21KCXRE6D6E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RpO9dNMgvoATohoTHoBAjVzKtkMQn7JtNwtO26gCUdLEsg61xA4TekN5/Svmp26ZvLZTUh5FKAtiT/VfkDaW8zeuTGV7rhVTxmw+vjGGWw/YcTZIefXuLBJ1yyvUCWqwOCsw6WT4o2hX8BlYoEqA8jTE6LTROEqpTGQgCSXbLK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RwjJmyhd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1E44C433F1;
-	Tue, 20 Feb 2024 11:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708429656;
-	bh=X+ZqMf3IK+JD8CFxWrUuIKFK5IZbu0of21KCXRE6D6E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RwjJmyhd5MtZxLjlIfA020w2JgutNuOVi8JavflhXQNUkW0ASaEuMKPPVU2U3bT/u
-	 8R1bvicYO0Neszs6orB53+I4QoLqgl+6HBZqi7+FgNLMh8C6FEwIc2b+R5wsPBTZQ+
-	 HkJgcOeUBQxNE4q4cfnmKCLdNx2Opo++bTU+XwEGp/AwmP8Tk5QDzE4Ytpt8DtBK0E
-	 ccL11a69TCSM+WO4jpotUS/hGns6oRHhd7q3WkkJaT//VOcI50khmBT8ZcdFIZwcPX
-	 GyOtLEVbBHD+FJQR+8BYnMAEkA+ZHM9kIjJcEI7fk90gdhm33w+EF2FTwtYRN4B+Wr
-	 HyK7x+FjSb5gA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rcOb0-004u3X-H5;
-	Tue, 20 Feb 2024 11:47:34 +0000
-From: Marc Zyngier <maz@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Biju Das <biju.das.jz@bp.renesas.com>
-Subject: [PATCH] genirq/irqdomain: Don't call ops->select for DOMAIN_BUS_ANY tokens
-Date: Tue, 20 Feb 2024 11:47:31 +0000
-Message-Id: <20240220114731.1898534-1-maz@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708429723; c=relaxed/simple;
+	bh=1paBppa9kXyF4t6jx2dx0KVwu75oULYWFXwh3w7uJhk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=agVRc5nBOmvd15vlAsw9bDD8GBbPqnTgHEJYtPvhFIfU1V/NvlfvYmqG/DxOmKxzkyqXsq4vx/UlqPGh5D5HuhlemAYSIKyIRhVfpDX4TXXnU/vM1Ao/V0LWkRlkX+ynoGMByATKv+kDL3XBeVPlKHfeLd2tBihWzqMl5AgicpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dos4Vqu9; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4cc13005119so432385e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708429720; x=1709034520; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1paBppa9kXyF4t6jx2dx0KVwu75oULYWFXwh3w7uJhk=;
+        b=dos4Vqu9qn1f0VZfm4KPRbnXV0MZFq0GNdHNLRUhrd+n16n3FUa99zLSdVXrFTYPUJ
+         nwIJxPXtoKQrbOG1EHw1KEpW644cYGjEMl+uUtONDhzsgu+CJf/XmP6pf4Hdw3Dq3lAK
+         4S2bpy1W6Q9pwDFKcLfVehmBsOGwQg2kZQeMRpbGtqPu/vMsJn8M5NuTCqP0r0xNxDkr
+         uCg0E7Ylb+lnb3me3oS3tyBaKN5oGLhtUZKfBOv0dJA0udAkg7XzR34DlvBY68L/QfGQ
+         +371+/c4772e3tTNTIJe68YZlTnn8447RxavBjr/pXZenubkO7BQPkjPHHk4voFugvXb
+         JunQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708429720; x=1709034520;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1paBppa9kXyF4t6jx2dx0KVwu75oULYWFXwh3w7uJhk=;
+        b=t7VUI8GIjbs5biHQnmMYEsbgWpIAJWQejMPQxw9rE2TyMhym9FO2gEZbHDo5GeQ/Fe
+         QQ6WJ2skjNTg+SiF799LFWlz01Ryr+s9SwyIaxOcJqm/EJ5PxmudrVirBXkFYYMkyp40
+         00Ex2pk1xAoUWoKSImJz8YQLXxtt3VWpI5jHO1fJa8svtsx4JXuCeTECmL5WKF6A+bst
+         xAHtPvUoVc0ywYC4niyvhg/+1Xf0Tk0RqtOxlvVpY8CW0XiZHVuMdt23/WVFVgG4+oIW
+         zj/uQ3bfAE+XlkruorvcBGsztJd8b147n3whwfHHKDPLOfvp7IkBzv5Y8CvOALeTuqdw
+         ukcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX9Y6iz4dvu1fE8vTbXbjQq8YzwBh+Zq4/RM7hyBT12kkJvPqmWeG1xabdfuXeBDu9xQvAuAzgSbQZEv4m/56sQtsrlUK4YYDwLn25b
+X-Gm-Message-State: AOJu0YyKof4ejgzC4qLBH2/cAnmLOdqbpF+uID1CmYq8dVvy34hJY+lO
+	iUO4getRrEn2RaAyvw5eboYKneKK9+0LlMkyzJnu9Yc+H2LKDaAmgiQ5JNUv92vFAA14xBVntn5
+	Afd/vPMnh6qM5Mb78kAwNy1fUeJzR0fI/WdUeFA==
+X-Google-Smtp-Source: AGHT+IGSt+7LYikhDFYx0cLtpCAuzEqPHpTuVYE+MOnTWdXCL9GlyvAMZDlwfESCgNKoolfZRtNBCXYNBKzP3Qf2Hvs=
+X-Received: by 2002:a1f:c743:0:b0:4cd:510f:4137 with SMTP id
+ x64-20020a1fc743000000b004cd510f4137mr3182381vkf.16.1708429720382; Tue, 20
+ Feb 2024 03:48:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, dmitry.baryshkov@linaro.org, biju.das.jz@bp.renesas.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20240220045230.2852640-1-swboyd@chromium.org>
+In-Reply-To: <20240220045230.2852640-1-swboyd@chromium.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 20 Feb 2024 12:48:29 +0100
+Message-ID: <CAMRc=MfqOxOO3DXhvQ4W2THGc0vzkTTGWeoyDrzG6JWZB3Ao7w@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: Add ChromeOS EC GPIO driver
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, devicetree@vger.kernel.org, 
+	chrome-platform@lists.linux.dev, Douglas Anderson <dianders@chromium.org>, 
+	Pin-yen Lin <treapking@chromium.org>, linux-gpio@vger.kernel.org, 
+	Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>, 
+	Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Users of the IRQCHIP_PLATFORM_DRIVER_{BEGIN,END} helpers rely
-on a fwspec containing only the fwnode (and crucially a number
-of parameters set to 0) together with a DOMAIN_BUS_ANY token
-to check whether a parent irqchip has probed and registered
-a domain.
+On Tue, Feb 20, 2024 at 5:52=E2=80=AFAM Stephen Boyd <swboyd@chromium.org> =
+wrote:
+>
+> The ChromeOS embedded controller (EC) supports setting the state of
+> GPIOs when the system is unlocked, and getting the state of GPIOs in all
+> cases. The GPIOs are on the EC itself, so the EC acts similar to a GPIO
+> expander. Add a driver to get and set the GPIOs on the EC through the
+> host command interface.
+>
+> Cc: Lee Jones <lee@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: <linux-gpio@vger.kernel.org>
+> Cc: <chrome-platform@lists.linux.dev>
+> Cc: Pin-yen Lin <treapking@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>
 
-Since de1ff306dcf4 ("genirq/irqdomain: Remove the param count
-restriction from select()"), we call ops->select unconditionally,
-meaning that irqchips implementing select now need to handle
-ANY as a match.
+Applied, thanks!
 
-Instead of adding more esoteric checks to the individual drivers,
-add that condition to irq_find_matching_fwspec(), and let it
-handle the corner case, as per the comment in the function.
-
-This restores the functionnality of the above helpers.
-
-Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reported-by: Biju Das <biju.das.jz@bp.renesas.com>
-Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction from select()")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org
----
- kernel/irq/irqdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index aeb41655d6de..3dd1c871e091 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -449,7 +449,7 @@ struct irq_domain *irq_find_matching_fwspec(struct irq_fwspec *fwspec,
- 	 */
- 	mutex_lock(&irq_domain_mutex);
- 	list_for_each_entry(h, &irq_domain_list, link) {
--		if (h->ops->select)
-+		if (h->ops->select && bus_token != DOMAIN_BUS_ANY)
- 			rc = h->ops->select(h, fwspec, bus_token);
- 		else if (h->ops->match)
- 			rc = h->ops->match(h, to_of_node(fwnode), bus_token);
--- 
-2.39.2
-
+Bart
 
