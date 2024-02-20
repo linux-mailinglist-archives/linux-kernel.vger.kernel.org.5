@@ -1,171 +1,223 @@
-Return-Path: <linux-kernel+bounces-72370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A60485B284
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:57:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D72C985B285
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 412C028385B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:57:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 072201C215E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8708458135;
-	Tue, 20 Feb 2024 05:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9362257337;
+	Tue, 20 Feb 2024 05:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZxiwAwk6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OwwJKwhj"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2076.outbound.protection.outlook.com [40.107.244.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB10857872;
-	Tue, 20 Feb 2024 05:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708408640; cv=none; b=cWNduBsgyc7MyEdGCWcWEHLr/KGHluS8PoZhfcKjyHOtUd2OmXIbkvuX+v6v//tZv+0LpY1KqhrVKb1eokjy2SGhGTfsTO3GsexW4S3L93ZA5F/xs9951e+ozHpMFSRHmylh8NCP3xJSIbJM7JimPWZk5hviZTrhG+Q2/LkBGOI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708408640; c=relaxed/simple;
-	bh=WvokzzLHQxAh7hjD95ixAi7uyIoGuo8fqr2T3mjV6Ns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M4ZL8zS62G4GA0MbiCXzOujq/jwZuCwy6REjOIMItnWGpAdQfaynXPzO3ODqUnkvtj6qfAjPowrKxOdO3RkcdQmeo7aXulY4m3BDGKscz3E028j7NeKNztV8V23kZ0IdO1BeIE+ZZpXjyLdue/A0qbodvoJDpkqsRE0mJhFT0UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZxiwAwk6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3123C433C7;
-	Tue, 20 Feb 2024 05:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708408640;
-	bh=WvokzzLHQxAh7hjD95ixAi7uyIoGuo8fqr2T3mjV6Ns=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZxiwAwk6veKOA6h7hDm2XNyIDzTaiwW1xAiSaTZjB4d2j4h3oKGqu4z7ajkM8Sp1z
-	 Jcvl6Yr4sHE9xMi1+Qf7RwC/gORwG0seQEH0PDSMcQ7njuOMYI9KiavlK97j/go4/H
-	 tNpCb5Fq9aHrcNQPkE3Nv9PYiLt5CybzlwawtwCm+kMZ7Nfxq3ehgp2oDygH6QV3Du
-	 3siNAoFwPLsCoR32yG/Vgg6aq5gw0T4zQPIo5DxK9ZhjR6wVckMt+QT1bDd9f8b5h2
-	 D6hs8p8gMZCJo31RI6D1iP9fqauX2zm9rqOVbO/18mc5eCkaJ2Et1p9D5ZbYmnVtSS
-	 HBkjqPZjpZ9Yw==
-Date: Mon, 19 Feb 2024 21:57:18 -0800
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-tip-commits@vger.kernel.org, x86@kernel.org
-Subject: [PATCH] x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
-Message-ID: <20240220055718.turlqf2rfp36zsd5@treble>
-References: <20231010171020.462211-4-david.kaplan@amd.com>
- <170774721951.398.8999401565129728535.tip-bot2@tip-bot2>
- <20240215032049.GA3944823@dev-arch.thelio-3990X>
- <20240215155349.GBZc4zjaHn8hj6xOq3@fat_crate.local>
- <20240216054235.ecpwuni2f3yphhuc@treble>
- <20240216212745.GAZc_TURO0t35GjTQM@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B120558AA1;
+	Tue, 20 Feb 2024 05:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708408667; cv=fail; b=pmB67Us71G7MX+0eE8W+B3NTZdRWrhVoXqCnRgJTuUyXf1G6iCfrgm+fXyZWMy/g9jxXveKr9R7OdhbHv2zSZy0Rxo1uueJGViFD/W0nR7v9fVJ6PDcNEshcazTHUttR/qnhH0efS6vIdpAr/qZgHQVFj48124+LNuQ1jyPsQgE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708408667; c=relaxed/simple;
+	bh=A9YrH7UEH7TMAX6zCppcXIUVV/3uzKemVqS6oWFAhGk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=E+B9mQsJYhKy/Oc5y45jWLkramPu1PShaQC+lCF6kBwo5rqmqLldpurWkYPxH9KzfosvJiNCun9gg37bmUPm0WXPX9CWxn8RnkY4l538P1W6ulDEA4CQ275q5hm+H3uTLtDmn+2lUqn/eaKbFOnZJX+mZCBtOAZeA8bjxBwGSZo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OwwJKwhj; arc=fail smtp.client-ip=40.107.244.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F91pXiA08bTDC9oIeH50knkTNA/yPSSjGqcWXXJttRDbdL5ZDjPCeYSiw6KyY0W0GswfXJKRFLRYZVclaVcT3bAGY4GVRKynh12gRU3QXKxqR/WXnKsBIrjwdbRcnp21rkPB39jgDkt/bJvhJKgHKQdAptCW4S9Iy+wlbr/yt5J56Jsy6KpZB/qMlO5p7dNiVK//q+6nkB0ZIEAy6w6TRhL/GeYZbylOVbDwc2ooFreIfuqc4lqHf0tk5Cg7RuWKHTZWuTClLgRytbW8/HIRXwWOa70ry/nFBPxsW94P5/CrNqom+J3Xl+zkHOOC3avfwFH0OnCvivFpjmt20U6oAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7jFzjfg1YMEWSieFPMaDbQCdD/1kz7jvAzkjqQiIIkY=;
+ b=S04HXG5ijR7xs4CayP3s8Q0/OPXxF6g2DzivCXqkHEXRWJBdMPs6LR/HmUZAIZgUPPpLoesROYVuVISmaTmWATWeurdLyU5dOPFidsbDF/qZrrE8OmA2yZOAa6WdA8Z8+9koMcRPS2Hv1j2M58wyewwCFVo+sEec2eZGEDJzo0v3hKZfcQT/i5s6M1ZfJ6OCIhcugDIOWVpyolxnOAYwOKSD3rMtk5KOhHgWzhACLaXC7qPbmHIusTkn1J1d5IKQqhp2CDSnB5fe4gXguHcRwtPHH79oo+o4pLMrhOBYOsOhS1h7g382kgKZ93mZoXgtj2eigtfXpVNgcLE1oHWYuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7jFzjfg1YMEWSieFPMaDbQCdD/1kz7jvAzkjqQiIIkY=;
+ b=OwwJKwhj1bDuXlFkALyf+dKC+NRRTRiRF6K2AtECpooGEjD5aAuP/eE5s4Xd5mOy0f/O3HiQUie0dkZiKW2LQ1xOsB1Nkkl2kDABD2tNULTKNpZZE3Tz5kob2qiSxO5JAor8LoXRRDGakO5L5uLwpOPjwzSeDI8kcGp1X5yzTGI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
+ by BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.20; Tue, 20 Feb
+ 2024 05:57:41 +0000
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::57a8:313:6bf6:ccb3]) by DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::57a8:313:6bf6:ccb3%3]) with mapi id 15.20.7316.018; Tue, 20 Feb 2024
+ 05:57:41 +0000
+Message-ID: <465d1076-163c-4933-a9b5-e4e8736f5748@amd.com>
+Date: Tue, 20 Feb 2024 11:27:30 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: SOF: amd: fix soundwire dependencies
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Kai Vehmanen
+ <kai.vehmanen@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240219093900.644574-1-arnd@kernel.org>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+In-Reply-To: <20240219093900.644574-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0057.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:22::32) To DM6PR12MB4123.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::23)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240216212745.GAZc_TURO0t35GjTQM@fat_crate.local>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4123:EE_|BL1PR12MB5874:EE_
+X-MS-Office365-Filtering-Correlation-Id: e9578477-6c2a-48a4-ed16-08dc31d8d990
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	e4oo9+TNkgVgFw3gd6lV/bEXUV/4LWFI6x8WjVFC5HI1b5KgCY3PACwdCSqX1ZPfHYogSc5ghyuIzGC6g8IhOlfopQMh6OPa1kGgnaKCRFJPCzuocA8ohqw9wfE2pU47pi2YIsHL3/WvxhsDInmNeObDRFWEsCVFQbhtySvYnTllDHfsut7oxUxHUjrBmMEw1cyGhXE3bOczDWFc+tH1ieGd1gNtvEN9bsVmMH/y3SwzjlZLTk/B8nmFhMEgEZoQAY2spcHLz0hjBewL8t5jP4JZ0lPIZF0AvbmR5gPufzlVXX1PJi6GgtMg1cIxO+r4OZtphfhv6s1+KFUmvl/f494MgPbx0dqaxn63uRF5rMS59R8USVMIjJFmsPJ0djFfoVJM16hsbUte2HZdKGJhlGlmHJXjL2B5/1WGPhqWF2Xr4hDjLZJr5PQCESp3UG7vsEN8pDmylSZqXoMFiG+FSeNGEZvFbvV8h3oMgSLnR1lAWAx00uKeJym6nNPh6ej58Atn9GAy/sVKBzpJk8F+aNb62tRI4T+dAIj974FU3LY=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4123.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TjV3SjlkZnQzcUJGUWU2YjZjYUM0SnN3M09VZmdOaDBUQ2RFVDEwM0xOVks0?=
+ =?utf-8?B?QVptR05iUTRud1hpMTZEQmN6ZEZUdC9TUTNnRnVXN0cyUXBLWm84RXlVbGY2?=
+ =?utf-8?B?b1YrZ0plVmFHcWt3YjM1Q2srQ3dEWnkvd3prNkpRemgrZGYxaUd5ZGFWSTYx?=
+ =?utf-8?B?OG9jdWlSNnkvbzJqYnpCUXhVR1JsNnV2S2s4MlN6MzBWbWpTSzkrd1hkcGg4?=
+ =?utf-8?B?NVpEdW43aThFWlRPSEhlRUNsREpJYUdjMGFoQ1VZQ0xWeXZJS280cGtOQnVl?=
+ =?utf-8?B?ZHBwcGk2TEw1SHE4Rm1iaU1Qdk1CYWY4UGI3d3BXNEpiZEdncGIxYVo1VHBU?=
+ =?utf-8?B?TkdIUlllMmpxVHZFNmJldkkzUm5WanpiUFBMMi9RVy9FYW40RTR4cHFzb1RU?=
+ =?utf-8?B?SGNqSDMrWGtTQWVCSHpTY1M5ak8vMGdmTGU5M1N2YjMxWk5tbnZxR1JGaisz?=
+ =?utf-8?B?Z2hna3RYZGNhY1pGbG84SVJ6VkJSYy9GaHhNRUtBUXdRaHhYOHRPRGNlU1NM?=
+ =?utf-8?B?OHRJMXdUVFlrL1p1ZVV4VFMxR2ZxRTBFbk9wZUVwMHZhZXdnd0lLZkgxTUYr?=
+ =?utf-8?B?b1ozaXZEL1VEQkxiaDJ2MW9xUTV4a0NWdGRRbmJFZ3dMa0pMdWpPN085M3g1?=
+ =?utf-8?B?WUJFY21helBLaGQ4ZEFDb0RwUVI4R2FKbk9jVUZ4b0NUS1U3dk1ROTZGSm9K?=
+ =?utf-8?B?ak9BQmVwZDZXNFZaYmpUOHgvZlhXdnc0QzdOYnhrOGJGV1VpbTNTYjluZ05H?=
+ =?utf-8?B?U1lGMjNOZXFqRE9ORldyRGFHQUcxYnNoMXVydUZpMzgwbWdjVy9XN2NQNzI2?=
+ =?utf-8?B?K0MzeEdFb25MVU5TVFI4TDQybHNUOXJ1cm5NTnJZWUhzUnhJZmdmR2V3ajk2?=
+ =?utf-8?B?c2ZOTTlscW5tNmlPMDVCZ0t1N3NnSGlXTzlnNTM1WW9SWUx6YUl1VXZCL2F6?=
+ =?utf-8?B?RFNqcVo5czZDMUZkRTYzY3pibmxDQ0thdnJWVXBTK3pEN2dIUWxiT0hZUCsy?=
+ =?utf-8?B?U0lqWFFwc293WXRGcE9nNFNOWldpU2FUQUpRZkhJNHprR2FJVWh1M2ZXVGJo?=
+ =?utf-8?B?YTdXbDBVNmQ3aTdoMExjSnlsbnVnbkkwVHZZQTU1ODltSndHY1ZDYzNuRFJE?=
+ =?utf-8?B?NkM0cnVEY1lBNk9lUFlSRjg2ZWZQWFJERHpDN0VBd0czalpEYUYzcTJsSlJl?=
+ =?utf-8?B?UEs2UDJCZ29mUEpNWWgrbFZlMGg4cXdMdG82S2djUTVBNDFnd1RrUnV3QWJm?=
+ =?utf-8?B?MGYvek9mOENmMGZiV1lDeVpMeDY4STRiYkZoNHM0WkJrSXJSdnVrQUk1ZVMw?=
+ =?utf-8?B?YWhSVFVQeHdEczhJeHlGMlZBYlBVN0tYajZNL1N1Tld0K0ZXSHlGSU9Wb2lh?=
+ =?utf-8?B?Z1ZDZFRrWW0renQ5ekY2Ym5pak1rNGR1WENvNmoyenpuQVRxRVp6ODRUdFNV?=
+ =?utf-8?B?bmRaakRsTEQ5RVFGcUZsanlGQ1FBdXlFdkl4ajg0Vll0aEtWTGtNZmJHT3V4?=
+ =?utf-8?B?QkdERTg1R2NETGkwZTR1T002eW00YUFKVm9wVmYxQklBdlVUdnJxNDJPd2VQ?=
+ =?utf-8?B?RnVxV0lXMWR3SnZHSlpDQ2VkcHZVNnZnRzdHeDhaYThIaU5Xekkrc0tjUXZx?=
+ =?utf-8?B?VWxZQVl0R2NJQjlOVGJqdzFxZTVnam81cFZyNXBHUk1Ld096Q2dGMndjY2hl?=
+ =?utf-8?B?dEw5amVDS1Y5OG52YXFabE9PSzEvaDZwZnFCbER0YXUvbytheGxRZmVCaU9z?=
+ =?utf-8?B?aGZwNlQ5Yi9hdTFma3U4TGdPQXFhUjZKWjUyUVBMT2VHYmpmazl1ZnN6SGJm?=
+ =?utf-8?B?SWVzUys3SFR6Kzh6dzNYa1IwdlJZZURLaUk0aFNLR1ZpQzV5SkxjaHFMbnlQ?=
+ =?utf-8?B?MHpWdWV5Q3p5S0NFYzhrNXkwN2grYzAzQ2kvakJiVXRXOENqRG9TUFhjWExC?=
+ =?utf-8?B?bXlSNXQ1d24zN2xnK04wUnd0ejIrSXAvZWczM04wb0Q2NElCTTB4a21sU0hk?=
+ =?utf-8?B?OHdEYTBMWFZ3VVJ0b0tCSGp2WG5xYmYxWXVZTWhkUDZIM29RNEVMWFlUMGZV?=
+ =?utf-8?B?MnRyUlFISUNsTTJUZUx1ZmdBRTJNSHY2RTN4UjBCVEh5bldqRXh0S3RQRmYx?=
+ =?utf-8?Q?1YI2WAoPmi1uLlUnu8x3bnDSp?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9578477-6c2a-48a4-ed16-08dc31d8d990
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 05:57:41.6066
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lro8EO66BZVHxEZ9ujGc+Dt2p290s5dzdhaQQpc8V2Ud+/+uUJ5AuEFhuclx+H9lKG8Nq4KmiOJZanMI0BkszQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5874
 
-For CONFIG_RETHUNK kernels, objtool annotates all the function return
-sites so they can be patched during boot.  By design, after
-apply_returns() is called, all tail-calls to the compiler-generated
-default return thunk (__x86_return_thunk) should be patched out and
-replaced with whatever's needed for any mitigations (or lack thereof).
+On 19/02/24 15:08, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The soundwire-amd driver has a bit of a layering violation requiring
+> the SOF driver to directly call into its exported symbols rather than
+> through an abstraction.
+>
+> The SND_SOC_SOF_AMD_SOUNDWIRE Kconfig symbol tries to deal with the
+> dependency by selecting SOUNDWIRE_AMD in a complicated set of conditions,
+> but gets it wrong for a configuration involving SND_SOC_SOF_AMD_COMMON=y,
+> SND_SOC_SOF_AMD_ACP63=m, and SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE=m
+> SOUNDWIRE_AMD=m, which results in a link failure:
+>
+> ld.lld: error: undefined symbol: sdw_amd_get_slave_info
+>>>> referenced by acp-common.c
+> ld.lld: error: undefined symbol: amd_sdw_scan_controller
+> ld.lld: error: undefined symbol: sdw_amd_probe
+> ld.lld: error: undefined symbol: sdw_amd_exit
+>>>> referenced by acp.c
+>>>>               sound/soc/sof/amd/acp.o:(amd_sof_acp_remove) in archive vmlinux.a
+> In essence, the SND_SOC_SOF_AMD_COMMON option cannot be built-in when
+> trying to link against a modular SOUNDWIRE_AMD driver.
+>
+> Since CONFIG_SOUNDWIRE_AMD is a user-visible option, it really should
+> never be selected by another driver in the first place, so replace the
+> extra complexity with a normal Kconfig dependency in SND_SOC_SOF_AMD_SOUNDWIRE,
+> plus a top-level check that forbids any of the AMD SOF drivers from being
+> built-in with CONFIG_SOUNDWIRE_AMD=m.
+>
+> In normal configs, they should all either be built-in or all loadable
+> modules anyway, so this simplification does not limit any real usecases.
 
-With the following commit
-
-  4461438a8405 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
-
-a runtime check was added to do a WARN_ONCE() if the default return
-thunk ever gets executed after alternatives have been applied.  This
-warning is a sanity check to make sure objtool and apply_returns() are
-doing their job.
-
-As Nathan reported, that check found something:
-
-  Unpatched return thunk in use. This should not happen!
-  WARNING: CPU: 0 PID: 1 at arch/x86/kernel/cpu/bugs.c:2856 __warn_thunk+0x27/0x40
-  Modules linked in:
-  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.7.0-01738-g4461438a8405-dirty #1
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-  RIP: 0010:__warn_thunk+0x27/0x40
-  Code: 90 90 90 80 3d 22 20 c3 01 00 74 05 e9 32 a5 eb 00 55 c6 05 13 20 c3 01 01 48 89 e5 90 48 c7 c7 80 80 50 89 e8 6a c4 03 00 90 <0f> 0b 90 90 5d e9 0f a5 eb 00 cc cc cc cc cc cc cc cc cc cc cc cc
-  RSP: 0018:ffff8ba9c0013e10 EFLAGS: 00010286
-  RAX: 0000000000000000 RBX: ffffffff89afba70 RCX: 0000000000000000
-  RDX: 0000000000000000 RSI: 00000000ffffdfff RDI: 0000000000000001
-  RBP: ffff8ba9c0013e10 R08: 00000000ffffdfff R09: ffff8ba9c0013c88
-  R10: 0000000000000001 R11: ffffffff89856ae0 R12: 0000000000000000
-  R13: ffff88c101126ac0 R14: ffff8ba9c0013e78 R15: 0000000000000000
-  FS:  0000000000000000(0000) GS:ffff88c11f000000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: ffff88c119601000 CR3: 0000000018e2c000 CR4: 0000000000350ef0
-  Call Trace:
-   <TASK>
-   ? show_regs+0x60/0x70
-   ? __warn+0x84/0x150
-   ? __warn_thunk+0x27/0x40
-   ? report_bug+0x16d/0x1a0
-   ? console_unlock+0x4f/0xe0
-   ? handle_bug+0x43/0x80
-   ? exc_invalid_op+0x18/0x70
-   ? asm_exc_invalid_op+0x1b/0x20
-   ? ia32_binfmt_init+0x40/0x40
-   ? __warn_thunk+0x27/0x40
-   warn_thunk_thunk+0x16/0x30
-   do_one_initcall+0x59/0x230
-   kernel_init_freeable+0x1a4/0x2e0
-   ? __pfx_kernel_init+0x10/0x10
-   kernel_init+0x15/0x1b0
-   ret_from_fork+0x38/0x60
-   ? __pfx_kernel_init+0x10/0x10
-   ret_from_fork_asm+0x1b/0x30
-   </TASK>
-
-Boris debugged to find that the unpatched return site was in
-init_vdso_image_64(), and its translation unit wasn't being analyzed by
-objtool, so it never got annotated.  So it got ignored by
-apply_returns().
-
-This is only a minor issue, as this function is only called during boot.
-Still, objtool needs full visibility to the kernel.  Fix it by enabling
-objtool on vdso-image-{32,64}.o.
-
-Note this problem can only be seen with !CONFIG_X86_KERNEL_IBT, as that
-requires objtool to run individually on all translation units rather on
-vmlinux.o.
-
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Debugged-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- arch/x86/entry/vdso/Makefile | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index b1b8dd1608f7..4ee59121b905 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -34,8 +34,12 @@ obj-y					+= vma.o extable.o
- KASAN_SANITIZE_vma.o			:= y
- UBSAN_SANITIZE_vma.o			:= y
- KCSAN_SANITIZE_vma.o			:= y
--OBJECT_FILES_NON_STANDARD_vma.o		:= n
--OBJECT_FILES_NON_STANDARD_extable.o	:= n
-+
-+OBJECT_FILES_NON_STANDARD_extable.o		:= n
-+OBJECT_FILES_NON_STANDARD_vdso-image-32.o 	:= n
-+OBJECT_FILES_NON_STANDARD_vdso-image-64.o 	:= n
-+OBJECT_FILES_NON_STANDARD_vdso32-setup.o	:= n
-+OBJECT_FILES_NON_STANDARD_vma.o			:= n
- 
- # vDSO images to build
- vdso_img-$(VDSO64-y)		+= 64
-@@ -43,7 +47,6 @@ vdso_img-$(VDSOX32-y)		+= x32
- vdso_img-$(VDSO32-y)		+= 32
- 
- obj-$(VDSO32-y)				 += vdso32-setup.o
--OBJECT_FILES_NON_STANDARD_vdso32-setup.o := n
- 
- vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
- vobjs32 := $(foreach F,$(vobjs32-y),$(obj)/$F)
--- 
-2.43.0
+Tested this patch. SOUNWIRE_AMD flag is not selected by default causing
+AMD SOF driver for ACP 6.3 platform is build without enabling SoundWire.
+>
+> Fixes: d948218424bf ("ASoC: SOF: amd: add code for invoking soundwire manager helper functions")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  sound/soc/sof/amd/Kconfig | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/sof/amd/Kconfig b/sound/soc/sof/amd/Kconfig
+> index c3bbe6c70fb2..2729c6eb3feb 100644
+> --- a/sound/soc/sof/amd/Kconfig
+> +++ b/sound/soc/sof/amd/Kconfig
+> @@ -6,6 +6,7 @@
+>  
+>  config SND_SOC_SOF_AMD_TOPLEVEL
+>  	tristate "SOF support for AMD audio DSPs"
+> +	depends on SOUNDWIRE_AMD || !SOUNDWIRE_AMD
+>  	depends on X86 || COMPILE_TEST
+>  	help
+>  	  This adds support for Sound Open Firmware for AMD platforms.
+> @@ -62,15 +63,14 @@ config SND_SOC_SOF_ACP_PROBES
+>  
+>  config SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE
+>  	tristate
+> -	select SOUNDWIRE_AMD if SND_SOC_SOF_AMD_SOUNDWIRE != n
+>  	select SND_AMD_SOUNDWIRE_ACPI if ACPI
+>  
+>  config SND_SOC_SOF_AMD_SOUNDWIRE
+>  	tristate "SOF support for SoundWire based AMD platforms"
+>  	default SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE
+>  	depends on SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE
+> -	depends on ACPI && SOUNDWIRE
+> -	depends on !(SOUNDWIRE=m && SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE=y)
+> +	depends on ACPI
+> +	depends on SOUNDWIRE_AMD
+>  	help
+>  	  This adds support for SoundWire with Sound Open Firmware
+>  	  for AMD platforms.
 
 
