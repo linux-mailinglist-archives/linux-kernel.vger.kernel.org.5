@@ -1,126 +1,152 @@
-Return-Path: <linux-kernel+bounces-72275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5F385B184
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:36:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF2E285B186
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:39:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CB58B217F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:36:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E18F1F21B97
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F65051009;
-	Tue, 20 Feb 2024 03:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB66482D0;
+	Tue, 20 Feb 2024 03:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="lvw5rR0n"
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ZY0niVGy"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E74A481B3;
-	Tue, 20 Feb 2024 03:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D09833CF1;
+	Tue, 20 Feb 2024 03:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708400193; cv=none; b=O1FGLSjZBG/Eddq2YUfRT7SZ8dYxW3MpfoOejz0DTFhw58yREymPjp/4S1YIakM8LO9pw1I7A7QMQVxjAEGHyf0wU23Xpt70twjoiz8lAWfjQG0G1Gw14OZWfH481lSoUY0fKYRS+Chr32gghFzOgvJg3adEw3UbeGXFPC8XFNY=
+	t=1708400364; cv=none; b=h9j1fy+RV+74ayz2YWP5oPXXz8MUNDw5Ovyp98xLR49RM7FQoiBQWTpHzdTLtqfxWONLJNtImA6HhMvJpJVu2j0B5rwG+5caEwtRFAOKNpUnxmLqN10NMNbBLS658Q8PfmBHND2BMoDxe9FzaQ8c2k4jb/lJND+Qb5vWKjluwmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708400193; c=relaxed/simple;
-	bh=aShSRLt3GevXA1Qx62ev9VFaOPlhkE/c4BBllw9Klyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=frhOjJLnGhZfE63jOzgnu1tx7LxvJ1NoTi4EDRGq7c+1lT+pWgASbxkVmYXe7SnPr1V1j96fWral5Ljsg90zcbCCgjAmeb05PiqhK2U64b8yvarRz/rPuY/21TTKjFYv41smVwiAuDwPVTAPxkA1nLkXAVijAVhbXRPpo+UgTCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=lvw5rR0n; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708400182; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=R/VW+J0LluQWcqmcYIaT+iX59/8UWwxw0zPEseH7/1A=;
-	b=lvw5rR0nMV6BCpc2t3XXBrlKqbWk+WjYzGO2FrdY4o1GAN44lcWIpGTT1NVtKLEpNydcGcC12t/2W37HCH3MeSI0yUdN/YRaTQW54k8jWppOuiuIasdliJkmnE4z6xGDmLhpNnfxi+iJMo4+p80tugyDHW0sfaz3fPrFhbARNhk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W0v7u33_1708400180;
-Received: from 30.221.128.233(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W0v7u33_1708400180)
-          by smtp.aliyun-inc.com;
-          Tue, 20 Feb 2024 11:36:21 +0800
-Message-ID: <58f36cb7-7427-4ed7-9a8e-baaacdd774cb@linux.alibaba.com>
-Date: Tue, 20 Feb 2024 11:36:20 +0800
+	s=arc-20240116; t=1708400364; c=relaxed/simple;
+	bh=7Y2sELjhel+6UxDpWMq0yReaC59tBmcYHAmG1877bbU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=E8ICyvuzEBjtVt+DmMzMm1hfsSHYCjJVLvP71Pb70yUk6REjOPYqczSrDgD9FnPjpVVDjN9/WoOD465zisX/9PxT/tVHia4W6SdvWYklC2Wegfc3xb0Y49OLJIDSp32vHN3XcsVdcAWyU/i5CMWjVonTbeqdA6/ViZWUegBc3E0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ZY0niVGy; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708400360;
+	bh=pcOAcbKO6ZfnI423BMyfLs6/TkEfSl8q4nsCTKKF2sk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ZY0niVGyjPW6TKiUMTjTm6asv4znW2vuz0lGHcu7cEZWkbYNj3x7QGOXZ+IIwhtul
+	 6D+w8H9TFo7q7zjE6XvGAq1nc3pWN0AtNfHpQM+lXaBlWrFA2cZR7U24z3cj39R8K+
+	 rzPU4U6QFv9famAKXky293jt3ZKDerlHgYKgFRGx/IfVGICjuN2Z9cV+/3OGE8HvwW
+	 4QZOWAOg8Se17tNfIOjvjIP3+u6/IAz1ssY32W4sJRB6JEdPgINAq4/nRYnN5l2zzQ
+	 broXmxyuBZS9Bbvm2WKnwuxeUIrj8SV536xL9YlrIjt6GNhzaGTzUB1r+kjm5TYCd8
+	 6oM4US9o//DXQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tf4s36R6jz4wc1;
+	Tue, 20 Feb 2024 14:39:19 +1100 (AEDT)
+Date: Tue, 20 Feb 2024 14:39:19 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Greg KH <greg@kroah.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Heikki Krogerus
+ <heikki.krogerus@linux.intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Xu Yang <xu.yang_2@nxp.com>
+Subject: linux-next: manual merge of the usb tree with the usb.current tree
+Message-ID: <20240220143919.40257e7b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 14/15] net/smc: introduce loopback-ism DMB data
- copy control
-To: Wenjia Zhang <wenjia@linux.ibm.com>, wintera@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, jaka@linux.ibm.com, Gerd Bayer <gbayer@linux.ibm.com>
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <20240111120036.109903-15-guwen@linux.alibaba.com>
- <b3b71f26-239f-49c9-98e8-7eba2c4ecf69@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <b3b71f26-239f-49c9-98e8-7eba2c4ecf69@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/vjSNruKW=5aAeRpaXByyGmo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/vjSNruKW=5aAeRpaXByyGmo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2024/2/16 22:25, Wenjia Zhang wrote:
-> 
-> 
-> On 11.01.24 13:00, Wen Gu wrote:
->> This provides a way to {get|set} whether loopback-ism device supports
->> merging sndbuf with peer DMB to eliminate data copies between them.
->>
->> echo 0 > /sys/devices/virtual/smc/loopback-ism/dmb_copy # support
->> echo 1 > /sys/devices/virtual/smc/loopback-ism/dmb_copy # not support
->>
-> Besides the same confusing as Niklas already mentioned, the name of the option looks not clear enough to what it means. 
-> What about:
-> echo 1 > /sys/devices/virtual/smc/loopback-ism/nocopy_support # merge mode
-> echo 0 > /sys/devices/virtual/smc/loopback-ism/nocopy_support # copy mode
->
+Today's linux-next merge of the usb tree got a conflict in:
 
-OK, if we decide to keep the knobs, I will improve the name. Thanks!
+  drivers/usb/roles/class.c
 
->> The settings take effect after re-activating loopback-ism by:
->>
->> echo 0 > /sys/devices/virtual/smc/loopback-ism/active
->> echo 1 > /sys/devices/virtual/smc/loopback-ism/active
->>
->> After this, the link group related to loopback-ism will be flushed and
->> the sndbufs of subsequent connections will be merged or not merged with
->> peer DMB.
->>
->> The motivation of this control is that the bandwidth will be highly
->> improved when sndbuf and DMB are merged, but when virtually contiguous
->> DMB is provided and merged with sndbuf, it will be concurrently accessed
->> on Tx and Rx, then there will be a bottleneck caused by lock contention
->> of find_vmap_area when there are many CPUs and CONFIG_HARDENED_USERCOPY
->> is set (see link below). So an option is provided.
->>
->> Link: https://lore.kernel.org/all/238e63cd-e0e8-4fbf-852f-bc4d5bc35d5a@linux.alibaba.com/
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
-> We tried some simple workloads, and the performance of the no-copy case was remarkable. Thus, we're wondering if it is 
-> necessary to have the tunable setting in this loopback case? Or rather, why do we need the copy option? Is that because 
-> of the bottleneck caused by using the combination of the no-copy and virtually contiguours DMA? Or at least let no-copy 
-> as the default one.
+between commit:
 
-Yes, it is because the bottleneck caused by using the combination of the no-copy
-and virtual-DMB. If we have to use virtual-DMB and CONFIG_HARDENED_USERCOPY is
-set, then we may be forced to use copy mode in many CPUs environment, to get the
-good latency performance (the bandwidth performance still drop because of copy mode).
+  b787a3e78175 ("usb: roles: don't get/set_role() when usb_role_switch is u=
+nregistered")
 
-But if we agree that physical-DMB is acceptable (it costs 1 physical buffer per conn side
-in loopback-ism no-copy mode, same as what sndbuf costs when using s390 ISM), then
-there is no such performance issue and the two knobs can be removed. (see also the reply
-for 13/15 patch [1]).
+from the usb.current tree and commit:
 
-[1] https://lore.kernel.org/netdev/442061eb-107a-421d-bc2e-13c8defb0f7b@linux.alibaba.com/
+  9a270ec7bfb0 ("usb: roles: Link the switch to its connector")
 
-Thanks!
+from the usb tree.
+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/usb/roles/class.c
+index 70165dd86b5d,4ad03c93c17f..000000000000
+--- a/drivers/usb/roles/class.c
++++ b/drivers/usb/roles/class.c
+@@@ -361,8 -379,12 +388,14 @@@ usb_role_switch_register(struct device=20
+  		return ERR_PTR(ret);
+  	}
+ =20
++ 	if (dev_fwnode(&sw->dev)) {
++ 		ret =3D component_add(&sw->dev, &connector_ops);
++ 		if (ret)
++ 			dev_warn(&sw->dev, "failed to add component\n");
++ 	}
++=20
+ +	sw->registered =3D true;
+ +
+  	/* TODO: Symlinks for the host port and the device controller. */
+ =20
+  	return sw;
+@@@ -377,10 -399,11 +410,12 @@@ EXPORT_SYMBOL_GPL(usb_role_switch_regis
+   */
+  void usb_role_switch_unregister(struct usb_role_switch *sw)
+  {
+- 	if (!IS_ERR_OR_NULL(sw)) {
+- 		sw->registered =3D false;
+- 		device_unregister(&sw->dev);
+- 	}
++ 	if (IS_ERR_OR_NULL(sw))
++ 		return;
+++	sw->registered =3D false;
++ 	if (dev_fwnode(&sw->dev))
++ 		component_del(&sw->dev, &connector_ops);
++ 	device_unregister(&sw->dev);
+  }
+  EXPORT_SYMBOL_GPL(usb_role_switch_unregister);
+ =20
+
+--Sig_/vjSNruKW=5aAeRpaXByyGmo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXUHucACgkQAVBC80lX
+0GynJggAgp2c1SBbsndc4wTiwdd2na4docb9SNOcYSCZaHqGzrUtJEVqhvBF0G7M
+O11/zmiEjFRFluIRCuFKWvdijXPBTgjHuRf6ulLz7wYNEu/3jUmLN9RH7f30U6EI
+HEqEuNF2tsZygAZC0+lVJqDqh0z1EAZnk/i3Bq5NzjmjIt9IXdurpQsyNX4iWpjD
+RatLKmYTq7iSQaxQF4Jg1uvqpYUn/GExpah0wXsgWMPcvPI7/T3gsij1LlG5Vg1n
+mVV939/96K5ztHkPFHtLOmvILkMJYB2LcAVNwlko3f2Tfx7VUqxu8BlpetAZw28C
+Pdpe1KtKTapHMMC+g+3Qmac5cvpqFg==
+=dl5s
+-----END PGP SIGNATURE-----
+
+--Sig_/vjSNruKW=5aAeRpaXByyGmo--
 
