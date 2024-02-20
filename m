@@ -1,165 +1,157 @@
-Return-Path: <linux-kernel+bounces-72678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B38885B71F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:19:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA4685B725
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98369B221A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 877A71F25E54
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739B85F49E;
-	Tue, 20 Feb 2024 09:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DD85FB91;
+	Tue, 20 Feb 2024 09:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Y0/EgpDA"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c3bxW6jq"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D145F48B
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A815F475
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708420702; cv=none; b=mExRpfx0I18w15yRAgu/d5mwrnJqi2FFfYnptu8QtxAYRYRpnyN4vsAl4VtBQM+KKTsm4kLUVbTxLrouZpMvVs9AHbF+BOq5QzyBIV87MX42kLBNS4fM1nNlbQlLdISyhpV01zVC0pKML4hxqUuFSychu4wKII1q+ljlPWp9AG0=
+	t=1708420761; cv=none; b=hxn2K7M9r2S8qc4WBjt0htfNFFhTM1Y4JGKIeqqtvUfpNjD89o+voI1RqUzuZihWz7lV+CzIZTkPmCtp8/Z5xVBKfZWPbx6RPVTaepH8txEt4R9L/JJ63sASxm/ywHUgBdG2NQUCUuxZUymrX6ZBG///WMmLl6g1WacdSAri0sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708420702; c=relaxed/simple;
-	bh=jyLisBBsUsR2S+kPcIwoLOu5UYzsXpqRAZDHmhO3JZI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GPpXU+REXxJ3c8A2FdVVzC6EHHz6OBqidHqWX31wPGjoGVC2/jogo7GX8ESDllBTnGw0l8BpAfPZfUXzldeCPcP5HrZmUMaHD+X/LVe9vO1fI5xMao6ML2fXVAq7/PtcR1OIcrKxh45pQso2buSd9BYxb9NS0eAqPgV0zm3a5Og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Y0/EgpDA; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 44C7AC0002;
-	Tue, 20 Feb 2024 09:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708420692;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4JPIFRzlGA21yLmZ0slFed1Pl8wlBq4KTEtX5lFQVNQ=;
-	b=Y0/EgpDAoWnQiXAIoL9STSqLvFb0muwWJHYQpvzL2vtdA4T/Duf3fmT6Qy9vFS+JjJ5des
-	ev/vklnf4aUY0v16XxuUIzXkW7NDQM2lKRcZzkCWtS3VSmSPTkvTpyISkCct/wzha9UAm3
-	+WMO2HNdo6ELlxlDI6hH2bjZGdwlMm4WcbcB+732/4l+NvvCrOLaWNa5A94TdslvAsrLRc
-	DX7+6VdXHHIxApYtp4HhkI8CBdU5SF8Ks4WxM2auql6Z2CCdSLcbxie4zb4y0Vkos2lc+v
-	N7PTPa5BL8PQgg4fHhOlB2FZNqsJ8f8nTWnvS4LaydguNZ+E6iPW6uayFoYsGw==
-Date: Tue, 20 Feb 2024 10:18:11 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Michael Walle" <michael@walle.cc>
-Cc: "Marco Felsch" <m.felsch@pengutronix.de>,
- <srinivas.kandagatla@linaro.org>, <gregkh@linuxfoundation.org>,
- <rafal@milecki.pl>, <linux-kernel@vger.kernel.org>, <kernel@pengutronix.de>
-Subject: Re: [RFC PATCH] nvmem: core: add sysfs cell write support
-Message-ID: <20240220101811.6ae23f2e@xps-13>
-In-Reply-To: <CZ938PEUZ1JQ.2DJE7C03HI9OO@walle.cc>
-References: <20240215211401.1201004-1-m.felsch@pengutronix.de>
-	<CZ6DFL6061FS.2WMDPMSSBXX8S@walle.cc>
-	<20240216100750.zxl4wncbgpulr2cc@pengutronix.de>
-	<20240219120414.32395299@xps-13>
-	<20240219115358.xui5fpoisvsubdyb@pengutronix.de>
-	<CZ938PEUZ1JQ.2DJE7C03HI9OO@walle.cc>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708420761; c=relaxed/simple;
+	bh=vHDeoeY6rVvgUPwaKy4miw3a+/4Wz+3FToMeykblxHw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WAoltXnM+t+eeljhIXJytr2nDwbEpf1/x8XSQEQN9xveioR5jBew9eM9j0DpLdKmPv8dW/s/HeJNaQSbQVf0KsOtI8xDV+4XpD7TeJXmDfCBBdnoZQMivrmV2gi4CXj/15xkrpBjr/0TlxqyDm9nPOt+iX2o72QKQVujxEBaaoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c3bxW6jq; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60866ce76dfso2683687b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708420759; x=1709025559; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0gsEdTOg81nU4mrHxMiAVDV5UIPBJ/nXolBaH3QcjCw=;
+        b=c3bxW6jqw/kJ3PpXF2122zK1p8MtJvA6fxW/+qJw2S9Lhif/orfomP8Zk+5wG3/IQI
+         /vM+PaaRHxMh/IxTwo4eZ7XXLBTYHMf0f1uND5TnYU41GRIfh2ByH3GedqP/TwM+8XUm
+         D1yPHa8Eb2f0cqDwhJR4L6mhE7tUEACF1/MEbX0RTchrEH3Yo7I49UW9BIeuUV9Oj8jf
+         JbNs3CBV9Pyu7hVt0/x9pq7OEtZVNkzetoVUwu8QbBHD3SCUGbWzQpYY/sD4Ujf6PTmq
+         z9e8FudIrGU00xLVGFzFJ/enPynhVrELmpX/cvEdqzrAnK9vGPfcjkFkMg5JMpIhtP8r
+         kAiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708420759; x=1709025559;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0gsEdTOg81nU4mrHxMiAVDV5UIPBJ/nXolBaH3QcjCw=;
+        b=sOrDUK/EBaP6eRIqpol2C2IhZyfj3tvamOkFzbO7dGEcowumxKHIpEmG7ikANcEITU
+         RmXwWII3rj1aWqySqtreeQBcJYLm4zDDqofLmdwojWs6t/My8YAc2N+SElqvPCdp0Bmx
+         A/EvyiXaUPIDQYE2BrS4zXQ0xEz+0CiHlT7hZ5QEiIuwPPnlKNq/CKhk7NJ67s1801Vc
+         zheoZJywW1YMG/90uFZdf19RF2B/96ODL7q0FEXiSIF1tYipZvo3U6N2IBDx3TuultsA
+         dVO8bfblEbBBxM7W0bTuFX8vG46WRwouNEBrd8qyjpedbhPqI/guPCWeqTzATWzDlc0t
+         rZRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWv7vpQl0rMRq2OYYJB3D4LZQlgeQr7aJ0LaXzuT1AWBF4jsa0LCnzZrLjTq5GrEIIq6bWXR+diXphkt3e5osxJXbsNNnkq/o7L49Ic
+X-Gm-Message-State: AOJu0YzOEiFgaCBVw2ggf64xToRYRHtgdNosozt3jW+o/AenxxPdd5Lo
+	rO/FP2rkrUpLS6wQI3SuzB3B1z3LKszADKFB8JCGhvo+3OO8coRSzutrQlAR36wFNgUPq/MHKZj
+	IGtec3oeNizHcmep2P0/3e+TMiL5JX+y9nqZX0FXOSv/Up8tO
+X-Google-Smtp-Source: AGHT+IGPqn0qOwME5A5LSEqJGUhcBrK5loyFtiw5abc2EMucdzkO4malL/Si43SjYjBl925JQ1d2/Vm0i+Z9o5EXBFk=
+X-Received: by 2002:a25:2f52:0:b0:dcb:de9b:175 with SMTP id
+ v79-20020a252f52000000b00dcbde9b0175mr13753374ybv.6.1708420759119; Tue, 20
+ Feb 2024 01:19:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+References: <20240205115721.1195336-1-quic_jingyw@quicinc.com>
+ <20240205115721.1195336-6-quic_jingyw@quicinc.com> <CAA8EJpr7tHXZHcH1Sbcy0-MCZfMxKBjaPXGdpg3cqyyFjTZOeA@mail.gmail.com>
+ <9685991e-6577-4f96-a17f-b0a65d8d1260@quicinc.com>
+In-Reply-To: <9685991e-6577-4f96-a17f-b0a65d8d1260@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 20 Feb 2024 11:19:08 +0200
+Message-ID: <CAA8EJpqVQEktHuD5sYsRMiytPS+XfoHzVTBUuKqeavL4yW72Sg@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/6] arm64: dts: qcom: add base AIM500 dtsi
+To: Jingyi Wang <quic_jingyw@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	kernel@quicinc.com, Tingwei Zhang <quic_tingweiz@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
-
-michael@walle.cc wrote on Mon, 19 Feb 2024 14:26:16 +0100:
-
-> On Mon Feb 19, 2024 at 12:53 PM CET, Marco Felsch wrote:
-> > On 24-02-19, Miquel Raynal wrote: =20
-> > > Hi Marco,
-> > >=20
-> > > m.felsch@pengutronix.de wrote on Fri, 16 Feb 2024 11:07:50 +0100:
-> > >  =20
-> > > > Hi Michael,
-> > > >=20
-> > > > On 24-02-16, Michael Walle wrote: =20
-> > > > > Hi,
-> > > > >=20
-> > > > > On Thu Feb 15, 2024 at 10:14 PM CET, Marco Felsch wrote:   =20
-> > > > > > @@ -432,6 +466,7 @@ static int nvmem_populate_sysfs_cells(struc=
-t nvmem_device *nvmem)
-> > > > > >  	struct bin_attribute **cells_attrs, *attrs;
-> > > > > >  	struct nvmem_cell_entry *entry;
-> > > > > >  	unsigned int ncells =3D 0, i =3D 0;
-> > > > > > +	umode_t mode;
-> > > > > >  	int ret =3D 0;
-> > > > > > =20
-> > > > > >  	mutex_lock(&nvmem_mutex);
-> > > > > > @@ -456,15 +491,18 @@ static int nvmem_populate_sysfs_cells(str=
-uct nvmem_device *nvmem)
-> > > > > >  		goto unlock_mutex;
-> > > > > >  	}
-> > > > > > =20
-> > > > > > +	mode =3D nvmem_bin_attr_get_umode(nvmem);
-> > > > > > +
-> > > > > >  	/* Initialize each attribute to take the name and size of the=
- cell */
-> > > > > >  	list_for_each_entry(entry, &nvmem->cells, node) {
-> > > > > >  		sysfs_bin_attr_init(&attrs[i]);
-> > > > > >  		attrs[i].attr.name =3D devm_kasprintf(&nvmem->dev, GFP_KERNE=
-L,
-> > > > > >  						    "%s@%x", entry->name,
-> > > > > >  						    entry->offset);
-> > > > > > -		attrs[i].attr.mode =3D 0444;   =20
-> > > > >=20
-> > > > > cells are not writable if there is a read post process hook, see
-> > > > > __nvmem_cell_entry_write().
-> > > > >=20
-> > > > > if (entry->read_post_processing)
-> > > > > 	mode &=3D ~0222;   =20
-> > > >=20
-> > > > good point, thanks for the hint :) I will add this and send a non-r=
-fc
-> > > > version if write-support is something you would like to have. =20
-> > >=20
-> > > I like the idea but, what about mtd devices (and soon maybe UBI
-> > > devices)? This may only work on EEPROM-like devices I guess, where ea=
-ch
-> > > area is fully independent and where no erasure is actually expected. =
-=20
+On Tue, 20 Feb 2024 at 11:17, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
+>
+> Hi Dmitry,
+>
+> On 2/5/2024 10:23 PM, Dmitry Baryshkov wrote:
+> > On Mon, 5 Feb 2024 at 14:00, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
+> >>
+> >> Introduce aim500 board dtsi.
 > >
-> > For MTD I would say that you need to ensure that you need to align the
-> > cells correctly. The cell-write should handle the page erase/write cycle
-> > properly. E.g. an SPI-NOR need to align the cells to erase-page size or
-> > the nvmem-cell-write need to read-copy-update the cells if they are not
-> > erase-paged aligned.
+> > So, is it a board or a module?
 > >
-> > Regarding UBI(FS) I'm not sure if this is required at all since you have
-> > an filesystem. IMHO nvmem-cells are very lowelevel and are not made for
-> > filesystem backed backends.
+> aim500 is a module, will fix the descrption.
+>
+> >>
+> >> AIM500 Series is a highly optimized family of modules designed to
+> >> support AIoT and Generative AI applications based on sm8650p with
+> >> PMIC and bluetooth functions etc.
+> >>
+> >> Co-developed-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
+> >> Signed-off-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
+> >> Signed-off-by: Jingyi Wang <quic_jingyw@quicinc.com>
+> >> ---
+> >>  arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi | 409 +++++++++++++++++++
+> >>  1 file changed, 409 insertions(+)
+> >>  create mode 100644 arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
+> >>
+> >> diff --git a/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
+> >> new file mode 100644
+> >> index 000000000000..cb857da8653b
+> >> --- /dev/null
+> >> +++ b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
+> >> @@ -0,0 +1,409 @@
+> >> +// SPDX-License-Identifier: BSD-3-Clause
+> >> +/*
+> >> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+> >> + */
+> >> +
+> >> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> >> +#include "sm8650p.dtsi"
+> >> +#include "pm8550.dtsi"
+> >> +#include "pm8550b.dtsi"
+> >> +#define PMK8550VE_SID 8
+> >> +#include "pm8550ve.dtsi"
+> >> +#include "pm8550vs.dtsi"
+> >> +#include "pmk8550.dtsi"
+> >> +
+> >> +/ {
+> >> +       aliases {
+> >> +               serial1 = &uart14;
+> >> +       };
+> >> +
+> >> +       vph_pwr: vph-pwr-regulator { };
+> >
+> > Is this regulator a part of the module or a part of the carrier board?
+> > If the latter is true, this must go to the carrier board DT file.
+> >
+>
+> the vph_pwr regulator is defined in the aim500-aiot carrier board and used
+> in aim500 module.
 
-I'm really talking about UBI, not UBIFS. UBI is just like MTD but
-handles wear leveling. There is a pending series for enabling nvmem
-cells on top of UBI.
+If it is defined in the carrier board, then please move it and
+corresponding supply entries to the carrier board dts. Other devices
+using the SoM can have different power tree.
 
-> > That beeing said: I have no problem if we provide write support for
-> > EEPROMs only and adapt it later on to cover spi-nor/nand devices as
-> > well. =20
->=20
-> Agreed. Honestly, I don't know how much sense this makes for MTD
-> devices. First, the operation itself, seems really dangerous, as
-> you'll have to delete the whole sector. Second, during initial
-> provisioning, I don't think it will make much sense to use the sysfs
-> cells because you cannot combine multiple writes into one. You'll
-> always end up with unnecessary erases.
+While we are at it, could you please rename the node to regulator-vph-pwr?
 
-One cell per erase block would be an immense waste.
-Read-copy-update would probably work but would as well be very
-sub-optimal. I guess we could live with it, but as for now there has
-not been any real request for it, I'd also advise to keep this feature
-out of the mtd world in general.
 
-Thanks,
-Miqu=C3=A8l
+-- 
+With best wishes
+Dmitry
 
