@@ -1,163 +1,205 @@
-Return-Path: <linux-kernel+bounces-73837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D627F85CC40
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:49:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBAF685CC4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DE32B22619
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:49:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 228D01C2089E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64661552E3;
-	Tue, 20 Feb 2024 23:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="EOBeukuU"
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2083.outbound.protection.outlook.com [40.107.105.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68CCC1552EB;
+	Tue, 20 Feb 2024 23:54:03 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE8876414;
-	Tue, 20 Feb 2024 23:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708472977; cv=fail; b=XAhKYdLqupOuvDsg+N1BuURLOXgGPQkwvC1h2Olyi1p+ZjxlFU+y2kaTsl/5OaNwBHAmaZyjp4WGVQQi9hA0NVREX90wEQUOPPfdKU+GnUnZtdrC0pajGSLfAj3XYa3RW/ED5lAB6/Vv1eAzqmKj3ldRg/pmqYEFRQ8zV+Q1dL8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708472977; c=relaxed/simple;
-	bh=lg4cWZ8lF3pcWIuD1AEvCesPM+D+wNC3Yb1XXdkPey4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=BfQMR0AmWwYkEjgmC5ZjmGFmSDL8E50VFV+wfTGgGTK3ViRXEcqK1Z3CkCJxQIkPmq8s/V4R+BjwaPs6z4v/Uj0rEZghlvw2flBitZrxd39P/hbBEwS8sfxXkhlYRXmVKUwrLOk2NhRdZabE+dQqqdJcChDLXSvZQfpOK9UnreM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=EOBeukuU; arc=fail smtp.client-ip=40.107.105.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Piru8LjRHIEPXqrVriIYKjHg1AznYTAAcsxJi7hXVCblpup9dr5ikW+qA0CT3B1IMI1fxOjOljFsAJxZnqXclXGifN+DbIxvDtbpGOgMWftzMEKZ3ft+gYHKC+L9kU1ID7KYMF3MOoNyUMympipNQ3W3vNIcMHgN9ZLOVLaBE409i2Oeuhnh2jzJGPK5l+JRugODWzFi4DJ55HQW+cXiuF0u1oVL4yPjwS4fYdDQIcjG45L4rq/N+PV1Lxjbi6PQ5sX7GcDpeNFa6C0lwhiEJMNFUKwwfPF7gQbjNmCccW3evaEQNNN3NMhmLRxY4gOxSQlhfMoKT3Tv9ai3fwcPNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OfVJya0Tlw+FZOsVAzdRK/eEv8F8WbqzS3B5KTd35LE=;
- b=ibyeD0ucHlrOv51/8KJ0YBnxcYhbSEwR6e145SLHPyM4H30LqczqX2CVl7dpHFnObUq+Aahy5vI2Xju10Gz0BS/xG8N+Sm6OaOIM8Bm/JEV5RYxeXwJhJGuXSrkkMSyQV/CSTu+MnjlzGKgKH9mW6HVrfiXT4QChRN9aXt4N2vOxkngs0N+dk7axez91OiGhFCSIUWCv1LkXKM6vfkfDDE467Pkl2Gkcl7vvkacI3k7mSubN42jZiAZxEr8tOY6FkZSKhF/0CN7HgaDBBPrTyqp5kt65jZDzg2siysxhSEI/u/rV2dCvJ/vALCnyM+e8lEaHjiQ0ot0DX+7vZrO0hQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OfVJya0Tlw+FZOsVAzdRK/eEv8F8WbqzS3B5KTd35LE=;
- b=EOBeukuUaNWWpw/Rm0sqH36TX8kVFFwhNfISFXsOAA5CTvLUEdjAv2i4F05h/9M+ISSfaVGn9nnmSKHacBmn07fMCyu+YOgC9Fglz6gXqhhH1KCdezm+1CpjYTCZWgwvyg0rsE/XhF0jhg1vsbyuqmpz9AdZ1muocYW7k0qakaA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB7374.eurprd04.prod.outlook.com (2603:10a6:800:1ac::11)
- by AM9PR04MB8210.eurprd04.prod.outlook.com (2603:10a6:20b:3e7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.37; Tue, 20 Feb
- 2024 23:49:33 +0000
-Received: from VE1PR04MB7374.eurprd04.prod.outlook.com
- ([fe80::62cb:e6bf:a1ad:ba34]) by VE1PR04MB7374.eurprd04.prod.outlook.com
- ([fe80::62cb:e6bf:a1ad:ba34%7]) with mapi id 15.20.7292.029; Tue, 20 Feb 2024
- 23:49:33 +0000
-Date: Wed, 21 Feb 2024 01:49:30 +0200
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
-To: Sean Anderson <sean.anderson@seco.com>
-Cc: zachary.goldstein@concurrent-rt.com, Shawn Guo <shawnguo@kernel.org>,
-	Madalin Bucur <madalin.bucur@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] arm64: ls1046ardb: Replace XGMII with 10GBASE-R phy mode
-Message-ID: <20240220234930.cl3b7yqk3cl6b6bc@skbuf>
-References: <20240220145037.kf3avnykjif24kkr@skbuf>
- <191b4477-7b4b-47eb-bb3e-0e4d08b3b32e@seco.com>
- <20240220223706.o7wc5r57omkmgtgh@skbuf>
- <e39c811e-ad9d-4e90-8710-629b822944e0@seco.com>
- <20240220230656.cefvrh6avji2elrd@skbuf>
- <bce5cff4-c1a5-4d71-b6cd-a89c55a628ba@seco.com>
- <20240220234526.fkifmrt63qjcpz7v@skbuf>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220234526.fkifmrt63qjcpz7v@skbuf>
-X-ClientProxiedBy: VI1PR10CA0095.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:803:28::24) To VE1PR04MB7374.eurprd04.prod.outlook.com
- (2603:10a6:800:1ac::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC771509BC
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708473242; cv=none; b=TYpHy6gFoYAnM/ZkEoudxBdvzUk78Bv0iDtq7gObVvsKs/7EzOwgf2+qqohjovmL54BIrsZvMfvCLKVB8xdyC02F2ylThMJeUXorOxT3/g9MOoeP3NaBt6tyFxuXvKhHUok9d4nwUNna9EIBER7wzyXoyIs9maVI/M3x84txutM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708473242; c=relaxed/simple;
+	bh=pv9M6nCH7P1FRo4VitsRtyecMjGHuwFYfQImuvaTZJ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jKJnAii64QxIOnENUVF71hc799xm0daaum7+JsEpRI/hCAEMjZDrpTPv0pjdVzX7Pm33eJOPV6EMZA2qrjj9XbMINJIegxSo08jaRfWmYDKx4CFIJEEQvRCy2UF4HD0j05HRKQn9HjnXtWa1zVmIfLHHbMM/9bwp8jUjkdoVBko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
+Date: Tue, 20 Feb 2024 18:54:16 -0500
+From: "dalias@libc.org" <dalias@libc.org>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <20240220235415.GP4163@brightrain.aerifal.cx>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
+ <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
+ <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7374:EE_|AM9PR04MB8210:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5fdaa1ec-970c-44b2-d987-08dc326e9666
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
- 71DLoETE5BijO1RCMWO0Q23He6mNPenldQBsRjMeEmnhsYuo8Drx/B4F8HrBttSruDsZ4nIjwpnVpfwrtYqo5PyyCcLhWltVn3dcaqoNawAMwh+8lvRHEpi/QVm9xLu3WfVoEf8ZfP7JiuAByi9BDQ9wxTucQI+9rYzqX/eROtp0wHliaxdV4xOGCYUw7rclTBBJjoA8sEGP8iRE9Ln8qCa0GS7vFyLVcG/ycOmXikK2dmd5q2nM1ielxCvdXMS8Lt4O+Sn28RBQ5Cf2aJff5MWd6J9K5nn7Fp7pgHjK7aqgg17j5irUDXnpYKpYMY9n+YpRO2p2fmFl535zNOI+KQzUj1zUyOyKNWCxYadC7bb/MHSfrIP7p6CAWCIPfUbfNelLKFmJvUPbwsE7w82+4uo1QK+Ecn46ZUMJRUmNVZaIwXhBoIeQ4V1OETTMhqIBlJ7zcZVVQmiwGTa57jjAprbLUqOTiuXti21X0GY45MElLHP6z28OTfX8ozXSXuBUuaFPranlaFe8JhFYap34Jw==
-X-Forefront-Antispam-Report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB7374.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
- =?us-ascii?Q?4g6LrPup/z6opSvcKBRmrRNWFst1Vy5bvHWBosnhjZI/xSH7mm3ZJt1IWpJx?=
- =?us-ascii?Q?XRUHlY1CM/2qT+hSYfXlqbcfbMDKFHQtS1sftV3Y5l5U/mS9pGSpO2y58BhT?=
- =?us-ascii?Q?bnlBHEJRKXADcL53xgaPBhvtAAoDO1g8YjRJv1q1jhTHk6M4WGEQyl2FPDTZ?=
- =?us-ascii?Q?YMF8vOAhVp6vZHU2JEPE1CBOSNF6+Y1XFnlBDoJRxaS2br028FDn6ppxfU0b?=
- =?us-ascii?Q?VYMzibMbsLwOpPPAD15YhomIgkCKx4ewL41pSNaqMneK53nuTGOK8dBeuojt?=
- =?us-ascii?Q?AxK6PoMDzaSdEDJrFnXl1B+DCEMGmVKsn+aj9yz0MEAFoe00autC9HGfdFcO?=
- =?us-ascii?Q?JuWfriFN2yYZJ2tOqmJIijk1G/Wu1q5NieVSSLpzausC7j4p2aq93+EiYqGV?=
- =?us-ascii?Q?apnO1JFTb6x20BA7BZPTjt8ZpA11c9Jge3yQEAj1a7LD5LB6ZifDPruRpMgd?=
- =?us-ascii?Q?xJcHdzcwu2xuRPKHpUEDQeSwBQYiGGW7cv76dXi6i+0rGlx5YlTGp/4K8m0x?=
- =?us-ascii?Q?KXatA0LI4syu2KQemH5KQSTpIYuhhQ2TYovlIIqXW8XVk57KmTCjthKBkpXr?=
- =?us-ascii?Q?321zZAPcaxX/nMgRZYvXSdYdK+Nclc2qSxUjEIY0G1dUOzCh4KgHZfqABoBG?=
- =?us-ascii?Q?ZFRqEQIHSoL2ax/L2v9JCA6j/SRlwBkfod5Cz7PKl9ctdJ05sCxM3zc8ctHx?=
- =?us-ascii?Q?rTv3yTCAUtCUXwL4YgKltIglMULBAFnZer1zJop/jvbEl6He3bOhUb9MzLoP?=
- =?us-ascii?Q?OPVwEeh8xnvSDSkw2AMCozVIGvKIfkDWn7Qd4gFNtxZAndQHlXXDwg9N0vVu?=
- =?us-ascii?Q?6oWsUkj7SBJujQRNQrWDo8Pdqi/zFwvZcYw/Cr9q17y15cLhwrUyg8tGwGoK?=
- =?us-ascii?Q?XGTUv/DUslvcPvisBeXKc7Bk3Qcij0Axgghho848L7/73dHDAM1oz54QRDPZ?=
- =?us-ascii?Q?4S8p5ffSPfyd8wQWb57zz0MJN46WdB/c1MVdAh8QMADEMfcJb4379Q7K/y69?=
- =?us-ascii?Q?ZjzS7x3Z/WIZRJ3EB808JbHdu2ynVa0SbIK29HLFQGxUF14RjfmI8A9jKbLN?=
- =?us-ascii?Q?OhReXuIu4rLNSAFqbbAYBc9RSKxEJznckJWUbzAUSA1KXGi5KIBzfhKaby8o?=
- =?us-ascii?Q?7ULe1RlDEoGtjDhcGE7RC6cdCXhi5wsYrO6qGNeeSyrCTEipup3FZ1xYCWSM?=
- =?us-ascii?Q?efdHkyuhLdx3Df9XgpUFj33qGrLGKIElzaFuRO10s0TXU9GDIzI8s4JvSPfA?=
- =?us-ascii?Q?CQPC68OKVQjGl+vpUY0bRrK/LMpJ993qCiMXRKy5E5PG54QK/Hyhs6OVCquy?=
- =?us-ascii?Q?amitrVeLTjMcDXQvTHiVhqqsspXGF1NAfVIPX1TF20ep4N8+zbnVp5BfbZ4d?=
- =?us-ascii?Q?ick2Uik5JP3BpI6XI5epfVbVaYxOSUZ/1SDfxGbraup6yXban8BR3/KFpDr0?=
- =?us-ascii?Q?zjVcFOjvfYLF7ZJ1dAFp5m5i7Rvcat411DHPQWZcr/RnFZhRKTigiwxafry/?=
- =?us-ascii?Q?h70ext6zIqZYJ/Gxr3kCmdPUTNjPnnlGcOlkThgQ/uO+j2UN0ydVAFSHlVX4?=
- =?us-ascii?Q?4Jv8y+0bKItGRvRVXjzFPKXaUcZPimRn+vdaBYd67NbSNwlBML70N2fyNO9M?=
- =?us-ascii?Q?U4w1OjZw54VPqgqC+oBmiRc=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fdaa1ec-970c-44b2-d987-08dc326e9666
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB7374.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 23:49:33.1986
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U+Ak42nAZ27MGwBeugXKQQ/IyKq8IL1jDEeZd0nEegGOUN1DGuvlZwf/so5AO+mpBoD14mTW+29wGKI6+g8msg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8210
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, Feb 21, 2024 at 01:45:26AM +0200, Vladimir Oltean wrote:
-> On Tue, Feb 20, 2024 at 06:17:02PM -0500, Sean Anderson wrote:
-> > On 2/20/24 18:06, Vladimir Oltean wrote:
-> > > So how did the other Layerscape devices with the same SerDes, PCS and
-> > > mEMAC manage to get by and support QSGMII without listing all possible
-> > > PCSes in pcs-handle-names? :-/ DPAA2 has the exact same situation with
-> > > the QSGMII PCS situated on the internal bus of another DPMAC.
+On Tue, Feb 20, 2024 at 11:30:22PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2024-02-20 at 13:57 -0500, Rich Felker wrote:
+> > On Tue, Feb 20, 2024 at 06:41:05PM +0000, Edgecombe, Rick P wrote:
+> > > Hmm, could the shadow stack underflow onto the real stack then? Not
+> > > sure how bad that is. INCSSP (incrementing the SSP register on x86)
+> > > loops are not rare so it seems like something that could happen.
 > > 
-> > I'm not familiar with them.
+> > Shadow stack underflow should fault on attempt to access
+> > non-shadow-stack memory as shadow-stack, no?
 > 
-> Take the LS1088A-RDB.
+> Maybe I'm misunderstanding. I thought the proposal included allowing
+> shadow stack access to convert normal address ranges to shadow stack,
+> and normal writes to convert shadow stack to normal.
 
-Ah, wait a minute, why am I explaining the LS1088A-RDB to you? You've
-submitted patches on its SerDes/PCS integration, you even said you
-tested the QSGMII ports:
-https://lore.kernel.org/linux-arm-kernel/20230321201313.2507539-14-sean.anderson@seco.com/
+As I understood the original discussion of the proposal on IRC, it was
+only one-way (from shadow to normal). Unless I'm missing something,
+making it one-way is necessary to catch situations where the shadow
+stack would become compromised.
+
+> > > Shadow stacks currently have automatic guard gaps to try to prevent
+> > > one
+> > > thread from overflowing onto another thread's shadow stack. This
+> > > would
+> > > somewhat opens that up, as the stack guard gaps are usually
+> > > maintained
+> > > by userspace for new threads. It would have to be thought through
+> > > if
+> > > these could still be enforced with checking at additional spots.
+> > 
+> > I would think the existing guard pages would already do that if a
+> > thread's shadow stack is contiguous with its own data stack.
+> 
+> The difference is that the kernel provides the guard gaps, where this
+> would rely on userspace to do it. It is not a showstopper either.
+> 
+> I think my biggest question on this is how does it change the
+> capability for two threads to share a shadow stack. It might require
+> some special rules around the syscall that writes restore tokens. So
+> I'm not sure. It probably needs a POC.
+
+Why would they be sharing a shadow stack?
+
+> > From the musl side, I have always looked at the entirely of shadow
+> > stack stuff with very heavy skepticism, and anything that breaks
+> > existing interface contracts, introduced places where apps can get
+> > auto-killed because a late resource allocation fails, or requires
+> > applications to code around the existence of something that should be
+> > an implementation detail, is a non-starter. To even consider shadow
+> > stack support, it must truely be fully non-breaking.
+> 
+> The manual assembly stack switching and JIT code in the apps needs to
+> be updated. I don't think there is a way around it.
+
+Indeed, I'm not talking about programs with JIT/manual stack-switching
+asm, just anything using existing APIs for control of stack --
+pthread_setstack, makecontext, sigaltstack, etc.
+
+> I agree though that the late allocation failures are not great. Mark is
+> working on clone3 support which should allow moving the shadow stack
+> allocation to happen in userspace with the normal stack. Even for riscv
+> though, doesn't it need to update a new register in stack switching?
+
+If clone is called with signals masked, it's probably not necessary
+for the kernel to set the shadow stack register as part of clone3.
+
+> BTW, x86 shadow stack has a mode where the shadow stack is writable
+> with a special instruction (WRSS). It enables the SSP to be set
+> arbitrarily by writing restore tokens. We discussed this as an option
+> to make the existing longjmp() and signal stuff work more transparently
+> for glibc.
+> 
+> > 
+> > > > _Without_ doing this, sigaltstack cannot be used to recover from
+> > > > stack
+> > > > overflows if the shadow stack limit is reached first, and
+> > > > makecontext
+> > > > cannot be supported without memory leaks and unreportable error
+> > > > conditions.
+> > > 
+> > > FWIW, I think the makecontext() shadow stack leaking is a bad idea.
+> > > I
+> > > would prefer the existing makecontext() interface just didn't
+> > > support
+> > > shadow stack, rather than the leaking solution glibc does today.
+> > 
+> > AIUI the proposal by Stefan makes it non-leaking because it's just
+> > using normal memory that reverts to normal usage on any
+> > non-shadow-stack access.
+> > 
+> 
+> Right, but does it break any existing apps anyway (because of small
+> ucontext stack sizes)?
+> 
+> BTW, when I talk about "not supporting" I don't mean the app should
+> crash. I mean it should instead run normally, just without shadow stack
+> enabled. Not sure if that was clear. Since shadow stack is not
+> essential for an application to function, it is only security hardening
+> on top.
+> 
+> Although determining if an application supports shadow stack has turned
+> out to be difficult in practice. Handling dlopen() is especially hard.
+
+One reasonable thing to do, that might be preferable to overengineered
+solutions, is to disable shadow-stack process-wide if an interface
+incompatible with it is used (sigaltstack, pthread_create with an
+attribute setup using pthread_attr_setstack, makecontext, etc.), as
+well as if an incompatible library is is dlopened. This is much more
+acceptable than continuing to run with shadow stacks managed sloppily
+by the kernel and async killing the process on OOM, and is probably
+*more compatible* with apps than changing the minimum stack size
+requirements out from under them.
+
+The place where it's really needed to be able to allocate the shadow
+stack synchronously under userspace control, in order to harden normal
+applications that aren't doing funny things, is in pthread_create
+without a caller-provided stack.
+
+Rich
 
