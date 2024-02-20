@@ -1,124 +1,200 @@
-Return-Path: <linux-kernel+bounces-73740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE40385CA4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:02:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D933D85CA50
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67E64282D98
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6729B1F23408
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3F8152DF6;
-	Tue, 20 Feb 2024 22:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913E11534E0;
+	Tue, 20 Feb 2024 22:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZYnkq1wc"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TebnZ0Od"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE31C1509BC
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6307152DFF;
+	Tue, 20 Feb 2024 22:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708466560; cv=none; b=mcCHvEPDCMayjCR3UdK+9MI/JDuckPT/pbzzSt43z5soyxj9P7cBAnJmTtkP1TFUBBBTNQGmMbK8/BqP1mygX3B9hzEHKxatIEsB8rUu6kDGMmWG5qhl3pfgvGvaWkAnN4edrkbt+3j3UVEpjgQTAqhIBEaRmxnofHiPI55GIUo=
+	t=1708466562; cv=none; b=KEToXokXdkq5l9JiCmqG/d6VeCyj0uOKBjSTC9Jx/cW6Ptd10z84Wv3zbuD0ZIyiKCp6UBtLGJBZNtzP05Zr0n9+f1ZoFUpqLaVhMdzSORK24yU/ZW6elpk3+2Hf3Sr3CAYhwZd48oFwvAofQx2aE/TH3l21I3VeOT91/8xn+pU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708466560; c=relaxed/simple;
-	bh=7PluGDCDtKu4/hPc6/QUsqMWDX/isTVfpEnm7NW272o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JKJcPzVvjC1VU2oofR03DBLDlqlliqXXkqfPrmDj6hE46iamrcXr6XiFMwiP7Imp5aXTe60S17Ojcx/WQeETsAaLS+E/xvGQHFlU1K1fn/sKntE5iwgfJQ+mHXqrakjyPtzDffbzXktUph8ykGbvcpRpD9bTCvXa2rFbqI3m6T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZYnkq1wc; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso334621266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1708466557; x=1709071357; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=slEeVSXDAFhjTmrDFJ456REWzWzhVL5Yf7o/aFavGTM=;
-        b=ZYnkq1wcWJ/t6r6rBi4f3taQDGswEXi6GVTvqhdK++RgsjSwCnUPowMQKL3TtstBXU
-         1xp7JyYE7pbpZFrXl9LU1MGXUa9n657ZTjOianiQ50VbwxjA9t7NQf+naXkP9aKBcFle
-         IaPT+42FSCcgUOw5MIvQSq4X9sa7s7UhBtv3Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708466557; x=1709071357;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=slEeVSXDAFhjTmrDFJ456REWzWzhVL5Yf7o/aFavGTM=;
-        b=c8aVTAuPUzSH4ymt5nY0+t/JW8eefCDHFRknPV5Cfh2gwF+haqetAKI2dBnpeCUCTU
-         GoEj7CS6lNiMndzBpNQvMY92mHGYDetXg/0forfDMCaW2/d8Japc4aRxi7O44YXmcefd
-         JL910xqWyYIibHUHQX/6WEEboy6UGxMjxQTlG2Qd1JMbJnWEjuFD4Da197h9r+ZcqZ9d
-         K6jydUVaafvB+sM0MHC55KfBs6S3iDRG2YxcRSCJSu7oO0xLj+Rfs+YqMQ/tlH/o9n79
-         bga78V/6IQsKUlFggZe88ROHRwQBz2ImlLgnIOSNZg/+KcCZlSvVOuClzPjY3nSRfBze
-         o1Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCVCkNjX3RocmQLHPS20PymDIboMUI18H0ssbBI+NHAM4K8ZxIOB5zpZAvT7S2q0y/HZu5KtIUQ8xrGl3/ciVWaIhtkK8Au8F1tIlili
-X-Gm-Message-State: AOJu0Yz2FzYWNFqRQt0cSMDXLIs4q4+u95UVGk5//UqQkXiktybJjMTL
-	9O0lJsjCoPH0Sn9ZktqCFVrZXV7cmEzZJ9+KT9dRLbReUdzy1Mw8qLyZR7gWaBP+4F6zs8iqbBV
-	q3IzUdw==
-X-Google-Smtp-Source: AGHT+IGm7BchUWt439ghNLZyUw/I7p1Wm3rTFIHYBpWOgpBU1xAx4Vlr3K6QU6sCLG1AVns6WNPxIw==
-X-Received: by 2002:a17:907:7ea9:b0:a3e:b57f:2b8a with SMTP id qb41-20020a1709077ea900b00a3eb57f2b8amr6412888ejc.10.1708466556774;
-        Tue, 20 Feb 2024 14:02:36 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id lc26-20020a170906dffa00b00a3e7cb91865sm2785428ejc.121.2024.02.20.14.02.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 14:02:36 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56454c695e6so4541252a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:02:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU5ohOY91SKAfI5CcxWmSQJbkRs1iyEgAqRd6cZCf5uJd1Sr62/yiELqyR3dM3pukIF542on9AVJw0R0an/fIWY4b9cqgc5O9yZ2DQa
-X-Received: by 2002:a05:6402:2cd:b0:564:e568:d1f7 with SMTP id
- b13-20020a05640202cd00b00564e568d1f7mr1009612edx.6.1708466555950; Tue, 20 Feb
- 2024 14:02:35 -0800 (PST)
+	s=arc-20240116; t=1708466562; c=relaxed/simple;
+	bh=oJby7EduJlcAAHFPkg3SVRpnuGfP2qzVNHnuUtdsF7k=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=l6iqHz3A3c2P6e2zLet80hwBDsbne1g+wGhhR0BXIj8f9O8Kg4bkf6L/gPJ++1c1GVvhCadRkxyeMNfzToi4FXCicovOrk4IZT5StQBr3dOI9lUFaYAUQFQFMNaIEY75kqNM6Y1vQvy+Tj7ouUFF8axAeDVpYlL+6I7tBNKnVLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TebnZ0Od; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8454C43390;
+	Tue, 20 Feb 2024 22:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708466562;
+	bh=oJby7EduJlcAAHFPkg3SVRpnuGfP2qzVNHnuUtdsF7k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=TebnZ0OdLnRIHR9anB+uo/sSFYhpPL09Ix4MZBBBbuKbHoWF300KlOgVLXvm9yUi8
+	 ojZZxxzAYO+Bkb3YGky8d7wDQsuzAU08t3SlvVdoKzlUEjOsgU2/25odXLaQTvr5ap
+	 h6D+jQtr0K4AkK/lgmx6cw5xqGYbGI6GixqbTBk0pgIkWDEYezegzdI/ktF9WWcOwK
+	 QAlbarZIIbc3x4riY0tan0fcCTe/TOzKiJGUziEgZCvmewFL6tDvbJ6wnbzY1i7D2G
+	 qkukkzfMfPS4DSD43MYdX/Y7Wf/eNb+kijNlOj0BWG2IX95DcMPURdgjBv90lwWwxT
+	 CEaX2hKQ43+4g==
+Date: Tue, 20 Feb 2024 16:02:40 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	quic_krichai@quicinc.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: Add D3 support for PCI bridges in DT based
+ platforms
+Message-ID: <20240220220240.GA1507934@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=wi8vZD7EXZfob-yhfDERyfzWxzMOzG9FsOuaKU-v6+PHA@mail.gmail.com>
- <538327ff-8d34-41d5-a9ae-1a334744f5ae@roeck-us.net> <CAHk-=wj6xj_cGmsQK7g=hSfRZZNo-njC+u_1v3dE8fPZtjCBOg@mail.gmail.com>
- <2374eaeb-fa34-44b9-a945-2cd871aacf7b@roeck-us.net>
-In-Reply-To: <2374eaeb-fa34-44b9-a945-2cd871aacf7b@roeck-us.net>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 20 Feb 2024 14:02:19 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgaaFFoc12yqoQVcQEHN4rYTxTzd7uKgFG6Y0XzJbxpAA@mail.gmail.com>
-Message-ID: <CAHk-=wgaaFFoc12yqoQVcQEHN4rYTxTzd7uKgFG6Y0XzJbxpAA@mail.gmail.com>
-Subject: Re: Linux 6.8-rc5
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Matthew Auld <matthew.auld@intel.com>, 
-	Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214-pcie-qcom-bridge-v3-1-3a713bbc1fd7@linaro.org>
 
-On Tue, 20 Feb 2024 at 13:48, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Turns out it wasn't this code, but
->
-> > Now, the __moddi3() is a *bit* more reasonable, because I assume it comes from
-> >
-> >                  int slot = i % 3;
->
-> this code.
+On Wed, Feb 14, 2024 at 05:16:09PM +0530, Manivannan Sadhasivam wrote:
+> Currently, PCI core will enable D3 support for PCI bridges only when the
+> following conditions are met:
 
-Yeah. It's still the kernel doing silly things for no good reason, but
-a compiler can certainly do a small-constant 64-bit unsigned division
-without actually going to the expense of actually doing a full divide.
+Whenever I read "D3", I first have to figure out whether we're talking
+about D3hot or D3cold.  Please save me the effort :)
 
-For example, in this case, because 1**32 mod 3 is 1, you can literally
-just add the high bits together with the low bits (with carry), and do
-a 32-bit modulus.
+> 1. Platform is ACPI based
+> 2. Thunderbolt controller is used
+> 3. pcie_port_pm=force passed in cmdline
 
-And in fact, you can then turn that 32-bit modulus into a multiply
-instead, avoiding doing any expensive divide at all.
+Are these joined by "AND" or "OR"?  I guess probably "OR"?
 
-And gcc knows to do all this. I *suspect* that the failing
-architectures end up not having a 32x32->64 multiply, or maybe they
-just don't have a very good machine description, and that's why gcc
-failed on them and just ended up doing the stupid thing.
+"... all the following conditions are met" or "... one of the
+following conditions is met" would clarify this.
 
-Regardless, our kernel code was just not good.  It should be fixed now.
+> While options 1 and 2 do not apply to most of the DT based platforms,
+> option 3 will make the life harder for distro maintainers. Due to this,
+> runtime PM is also not getting enabled for the bridges.
+> 
+> To fix this, let's make use of the "supports-d3" property [1] in the bridge
+> DT nodes to enable D3 support for the capable bridges. This will also allow
+> the capable bridges to support runtime PM, thereby conserving power.
 
-           Linus
+Looks like "supports-d3" was added by
+https://github.com/devicetree-org/dt-schema/commit/4548397d7522.
+The commit log mentions "platform specific ways", which suggests maybe
+this is D3cold, since D3hot should be supported via PMCSR without any
+help from the platform.
+
+So I *guess* this really means "platform provides some non-architected
+way to put devices in D3cold and bring them back to D0"?
+
+> Ideally, D3 support should be enabled by default for the more recent PCI
+> bridges, but we do not have a sane way to detect them.
+> 
+> [1] https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/pci/pci-pci-bridge.yaml#L31
+
+This link won't remain accurate as lines are added/removed.  The
+kernel.org cgit allows specific commits
+(https://git.kernel.org/linus/0dd3ee311255) or line references at
+specific commits or tags
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v6.0#n94)
+
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+> This patch is tested on Qcom SM8450 based development board with an out-of-tree
+> DT patch.
+> 
+> NOTE: I will submit the DT patches adding this property for applicable bridges
+> in Qcom SoCs separately.
+> 
+> Changes in v3:
+> - Fixed kdoc, used of_property_present() and dev_of_node() (Lukas)
+> - Link to v2: https://lore.kernel.org/r/20240214-pcie-qcom-bridge-v2-1-9dd6dbb1b817@linaro.org
+> 
+> Changes in v2:
+> - Switched to DT based approach as suggested by Lukas.
+> - Link to v1: https://lore.kernel.org/r/20240202-pcie-qcom-bridge-v1-0-46d7789836c0@linaro.org
+> ---
+>  drivers/pci/of.c  | 12 ++++++++++++
+>  drivers/pci/pci.c |  3 +++
+>  drivers/pci/pci.h |  6 ++++++
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index 51e3dd0ea5ab..24b0107802af 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -786,3 +786,15 @@ u32 of_pci_get_slot_power_limit(struct device_node *node,
+>  	return slot_power_limit_mw;
+>  }
+>  EXPORT_SYMBOL_GPL(of_pci_get_slot_power_limit);
+> +
+> +/**
+> + * of_pci_bridge_d3 - Check if the bridge is supporting D3 states or not
+> + *
+> + * @node: device tree node of the bridge
+> + *
+> + * Return: %true if the bridge is supporting D3 states, %false otherwise.
+> + */
+> +bool of_pci_bridge_d3(struct device_node *node)
+> +{
+> +	return of_property_present(node, "supports-d3");
+> +}
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index d8f11a078924..8678fba092bb 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1142,6 +1142,9 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+>  	if (pci_use_mid_pm())
+>  		return false;
+>  
+> +	if (dev_of_node(&dev->dev))
+> +		return of_pci_bridge_d3(dev->dev.of_node);
+> +
+>  	return acpi_pci_bridge_d3(dev);
+>  }
+>  
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 2336a8d1edab..10387461b1fe 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -635,6 +635,7 @@ int of_pci_get_max_link_speed(struct device_node *node);
+>  u32 of_pci_get_slot_power_limit(struct device_node *node,
+>  				u8 *slot_power_limit_value,
+>  				u8 *slot_power_limit_scale);
+> +bool of_pci_bridge_d3(struct device_node *node);
+>  int pci_set_of_node(struct pci_dev *dev);
+>  void pci_release_of_node(struct pci_dev *dev);
+>  void pci_set_bus_of_node(struct pci_bus *bus);
+> @@ -673,6 +674,11 @@ of_pci_get_slot_power_limit(struct device_node *node,
+>  	return 0;
+>  }
+>  
+> +static inline bool of_pci_bridge_d3(struct device_node *node)
+> +{
+> +	return false;
+> +}
+> +
+>  static inline int pci_set_of_node(struct pci_dev *dev) { return 0; }
+>  static inline void pci_release_of_node(struct pci_dev *dev) { }
+>  static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
+> 
+> ---
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> change-id: 20240131-pcie-qcom-bridge-b6802a9770a3
+> 
+> Best regards,
+> -- 
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
 
