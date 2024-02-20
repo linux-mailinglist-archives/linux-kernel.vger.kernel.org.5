@@ -1,80 +1,92 @@
-Return-Path: <linux-kernel+bounces-72664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7857685B6D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:13:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B310585B6E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5C7C1F21810
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:13:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00E6C281E53
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3994F612D7;
-	Tue, 20 Feb 2024 09:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CAB6350F;
+	Tue, 20 Feb 2024 09:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IHIAHm2i"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LgthCB5A";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="V5CqyRa8";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LgthCB5A";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="V5CqyRa8"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3885FB93
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF09C627FF;
+	Tue, 20 Feb 2024 09:10:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708420187; cv=none; b=t0p0ycDIvp8aLQfK2qgUtoa6IedxbdcW0a+b584Puq7qM5OBDxKwKK2qfQWTBLJPeUrLFLSZ/twhTKcRmLh/suil1K1KcRG9OduLKb+Vq7QOpcVftFPB9jSycx9mYQRUY8EJ7FxtHXy8D7Mx6kE5WVednk1Az1eDmWNMjuMo6VQ=
+	t=1708420216; cv=none; b=D5msM/sX+P/vxL7NjdZcRDkTkacPtXgXkgieLO/j0PYhCY68hWRsJJ4Oev39OXoWJKKE27GHBKD3d9sdRKgnY+cjnbENy3/VIHE46l8GMGkNfT1iV5ZwZM0wJ3ZzGtk9MZTz2JJu82yHSNQBDRULI4+t/uR0pFpiiGHeOA7hR+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708420187; c=relaxed/simple;
-	bh=iBDWGDV0zPhBcBSJ5xAuwrcwqoC42vEH3/Vd0rAbGyU=;
+	s=arc-20240116; t=1708420216; c=relaxed/simple;
+	bh=L2f7mmDjQ55CMiT4j+EvhgL2QDdg7W+zVB6CmKBTVMI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OG7obv6haD4AXx+1A6IKm3rHQiI9LYEQimC2jfBY0rG4gPOD1NsoXyP+V0cQanuzcBAB3i6J83/A+UWNNjpJiRPEwzRvjWX22xAimdpiHVGkxoOfzcUrbFzKqwQDZaS3/tkMmSjF3P/DgYQbDdD3e5oR/WDM08Z+I6snzSK6oVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IHIAHm2i; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708420184;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 In-Reply-To:Content-Type; b=VgpvvIAZIR7pob32s09DPKdpp1cGoSh/qXIt9Rj5GWqUbsv7nRUDu9KwwKFYAU17R0Sgja5FjK/ozcJAvqQWXaPQS/IBpBDdis9y7zg539QFARnKiqbDjkBBRlz/PBJpBP16wR3j0mDu7gDWukcztAopJ6MsBRVe4DYbsiiZnmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LgthCB5A; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=V5CqyRa8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LgthCB5A; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=V5CqyRa8; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DDE461FD7D;
+	Tue, 20 Feb 2024 09:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708420210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=6DQPV7gTixXT9lbsSTfg24G8z4KqnnNWdVLghcppC70=;
-	b=IHIAHm2imSxu0QbY35ZPsp9ScPNRzSoCQlKieljuRTcwP2sXtpvLtkLrF309te9iiNCCID
-	Dq2LXwmkD1u3MFG+4mRFwM2mMQnoMZIM1Y0Mm8iqvUh6XPUXi8mE1LX+Hr10JjIUIjTxxq
-	lKtXIheR4aNXorm91Y+THEr9Gg2cO3A=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-473-4s6ls3_gNySoCSU0-CXc8w-1; Tue, 20 Feb 2024 04:09:42 -0500
-X-MC-Unique: 4s6ls3_gNySoCSU0-CXc8w-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d22ff0aad9so21576231fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:09:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708420181; x=1709024981;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6DQPV7gTixXT9lbsSTfg24G8z4KqnnNWdVLghcppC70=;
-        b=XzrguiEScH62BBXony4ESbshgPC/QoK+jCNzbewBQQ5tF5dmcGWQ257Fs9Rpc4fNX+
-         96jECrrnu5XCiM+UumHKBx3BwgEhrrAzFfKaS9WsD9+DolO0pTnqEsjLZycNENRi91F8
-         l48w6hHzbcO5zpWAx6nKmlPbNJA0jZUzoE32/l/GQuK9h5i7E0k8nqsRZThqauS2r74y
-         p6dI0J5K5bddMykkMIN/BeY7kUUBZYfj+eVRX5ndGq4IlRMsvfgTtliask5F/nWH5WNJ
-         eadvNmGLVK/gEzgVQHOABiOqL4hbOGbMh0SHTKdqJyh7kx7bc6MXyM+AKC//ofM1wW+K
-         YOJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVBlO83CnROtegT743fZVMDJkkpmTPKfBLF8TwoBFkQxXRJOZL0AZvuVSR34PcjXRGfSRv/SkfaJwvn4+Ffzo6xQ6JUWaXKpfMhkCN8
-X-Gm-Message-State: AOJu0YyYnwYSQKmQJqehMnvVtm7Xu5Yn1Ph1y4AUVTJZM1IjEjmj5O6n
-	56laqP7BBMUm2PiLx2UpOZ1l4G8q9qTVYs2U6h0uuOZoMHv6DR5IPOHacgh8MedyDYufsZTKB3o
-	X5vxAJrPGY9DiCt30Gv4P5emkjCpgmQOhdX7k90sG1lNW4UuJhFsGSC5TK7CUbw==
-X-Received: by 2002:a2e:a60a:0:b0:2d2:38ff:8b6 with SMTP id v10-20020a2ea60a000000b002d238ff08b6mr3691698ljp.49.1708420180898;
-        Tue, 20 Feb 2024 01:09:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHHABIk1a0k5EBdoExcCHSujw9chAr43I+gdXVO+4U9ghBJ/k4hE6kUQo6nb46/AZyyWrELCQ==
-X-Received: by 2002:a2e:a60a:0:b0:2d2:38ff:8b6 with SMTP id v10-20020a2ea60a000000b002d238ff08b6mr3691658ljp.49.1708420180463;
-        Tue, 20 Feb 2024 01:09:40 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb? (p200300cbc72abc009a2d8a48ef5196fb.dip0.t-ipconnect.de. [2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb])
-        by smtp.gmail.com with ESMTPSA id bj4-20020a0560001e0400b0033b68556c38sm13191661wrb.70.2024.02.20.01.09.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 01:09:40 -0800 (PST)
-Message-ID: <6ca94bf1-68b4-4a81-8cd0-d86683e0b12c@redhat.com>
-Date: Tue, 20 Feb 2024 10:09:37 +0100
+	bh=kPdL6CVcTlIemwxkK73Uuqptr350RyQ/02hpnd+rggQ=;
+	b=LgthCB5A/eYLygBGFmWlYirXnF6g3/JoEcFLc8peWYz4y6ISH9+b1/bUtZMdppwkXBKBF8
+	OrqRpi/8IXnUlqFrsh7Xu/uHlwV53fGrpipNTGLhjGNL8NfqFA99ez3MbEX8IydUKkhQLM
+	0GvG9RUBMZG4koVoRslRnQ6nTtW+HgQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708420210;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kPdL6CVcTlIemwxkK73Uuqptr350RyQ/02hpnd+rggQ=;
+	b=V5CqyRa8BjP726Kq5SZ1R08eKjnSST1FmlpRHrKBJ7YOSK63ONw0NCnBgG8CDwDrMkuu9I
+	hqBNDQihI5qAzjAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708420210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kPdL6CVcTlIemwxkK73Uuqptr350RyQ/02hpnd+rggQ=;
+	b=LgthCB5A/eYLygBGFmWlYirXnF6g3/JoEcFLc8peWYz4y6ISH9+b1/bUtZMdppwkXBKBF8
+	OrqRpi/8IXnUlqFrsh7Xu/uHlwV53fGrpipNTGLhjGNL8NfqFA99ez3MbEX8IydUKkhQLM
+	0GvG9RUBMZG4koVoRslRnQ6nTtW+HgQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708420210;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kPdL6CVcTlIemwxkK73Uuqptr350RyQ/02hpnd+rggQ=;
+	b=V5CqyRa8BjP726Kq5SZ1R08eKjnSST1FmlpRHrKBJ7YOSK63ONw0NCnBgG8CDwDrMkuu9I
+	hqBNDQihI5qAzjAg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 69D09139EF;
+	Tue, 20 Feb 2024 09:10:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id QAVhGHJs1GX7YgAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Tue, 20 Feb 2024 09:10:10 +0000
+Message-ID: <929a159f-f6dd-49d3-b6b5-70ab7450ab19@suse.de>
+Date: Tue, 20 Feb 2024 10:10:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,120 +94,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/4] mm: introduce new flag to indicate wc safe
+Subject: Re: [PATCH] sparc: Fix undefined reference to fb_is_primary_device
 Content-Language: en-US
-To: Ankit Agrawal <ankita@nvidia.com>, Zhi Wang <zhiw@nvidia.com>,
- Jason Gunthorpe <jgg@nvidia.com>, "maz@kernel.org" <maz@kernel.org>,
- "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
- "james.morse@arm.com" <james.morse@arm.com>,
- "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
- "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
- "reinette.chatre@intel.com" <reinette.chatre@intel.com>,
- "surenb@google.com" <surenb@google.com>,
- "stefanha@redhat.com" <stefanha@redhat.com>,
- "brauner@kernel.org" <brauner@kernel.org>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "will@kernel.org" <will@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
- "kevin.tian@intel.com" <kevin.tian@intel.com>,
- "yi.l.liu@intel.com" <yi.l.liu@intel.com>, "ardb@kernel.org"
- <ardb@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
- "wangjinchao@xfusion.com" <wangjinchao@xfusion.com>,
- "gshan@redhat.com" <gshan@redhat.com>,
- "shahuang@redhat.com" <shahuang@redhat.com>,
- "ricarkol@google.com" <ricarkol@google.com>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
- "rananta@google.com" <rananta@google.com>,
- "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
- "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- "bhe@redhat.com" <bhe@redhat.com>
-Cc: Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
- Kirti Wankhede <kwankhede@nvidia.com>,
- "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
- Vikram Sethi <vsethi@nvidia.com>, Andy Currid <ACurrid@nvidia.com>,
- Alistair Popple <apopple@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
- Dan Williams <danw@nvidia.com>,
- "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
- Matt Ochs <mochs@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240220072926.6466-1-ankita@nvidia.com>
- <20240220072926.6466-3-ankita@nvidia.com>
- <bc5cdc2e-50d8-435a-8f9d-a0053a99598d@nvidia.com>
- <SA1PR12MB71992963218C5753F346B3D7B0502@SA1PR12MB7199.namprd12.prod.outlook.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <SA1PR12MB71992963218C5753F346B3D7B0502@SA1PR12MB7199.namprd12.prod.outlook.com>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+ Andreas Larsson <andreas@gaisler.com>, Arnd Bergmann <arnd@arndb.de>,
+ "David S. Miller" <davem@davemloft.net>, Helge Deller <deller@gmx.de>,
+ sparclinux@vger.kernel.org
+References: <20240220003433.3316148-1-javierm@redhat.com>
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20240220003433.3316148-1-javierm@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=LgthCB5A;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=V5CqyRa8
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-6.50 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,intel.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[intel.com,lists.linux.dev,gaisler.com,arndb.de,davemloft.net,gmx.de,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -6.50
+X-Rspamd-Queue-Id: DDE461FD7D
+X-Spam-Flag: NO
 
-On 20.02.24 09:51, Ankit Agrawal wrote:
->>> To safely use VFIO in KVM the platform must guarantee full safety in the
->>> guest where no action taken against a MMIO mapping can trigger an
->>> uncontained failure. We belive that most VFIO PCI platforms support this
->>
->> A nit, let's use passive voice in the patch comment. Also belive is mostly
->> a typo.
-> 
-> Sure, will do.
-> 
+Hi
 
-s/we expect/the expectation is that/
-s/We belive/The assumption is/
+Am 20.02.24 um 01:34 schrieb Javier Martinez Canillas:
+> Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
+> symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
+> have fbcon/VT and DRM fbdev emulation, but without support for any legacy
+> fbdev driver.
+>
+> Unfortunately, it missed to change a CONFIG_FB in arch/sparc/Makefile and
+> that leads to the following linking error in some sparc64 configurations:
+>
+>     sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_registered':
+>>> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
+> Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
+>
+> I don't have a sparc64 toolchain to test this patch, but I'm pretty sure
+> that this is the correct fix for the linking error reported by the robot.
+>
+>   arch/sparc/video/Makefile | 2 +-
 
-If it's just that, likely no need to resend. Maintainers usually can fix 
-that up when applying (otherwise, they'll let you know :) ).
+I think you also have to fix arch/sparc/Makefile.
+
+Best regards
+Thomas
+
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
+> index 6baddbd58e4d..d4d83f1702c6 100644
+> --- a/arch/sparc/video/Makefile
+> +++ b/arch/sparc/video/Makefile
+> @@ -1,3 +1,3 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   
+> -obj-$(CONFIG_FB) += fbdev.o
+> +obj-$(CONFIG_FB_CORE) += fbdev.o
 
 -- 
-Cheers,
-
-David / dhildenb
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
 
 
