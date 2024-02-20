@@ -1,143 +1,376 @@
-Return-Path: <linux-kernel+bounces-72362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A78F85B273
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:49:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C10385B277
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC051C21369
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:49:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21A9D28398C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE0A57320;
-	Tue, 20 Feb 2024 05:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6840C56B96;
+	Tue, 20 Feb 2024 05:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aduYe9JK"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NxGRRoQa"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4AD45942;
-	Tue, 20 Feb 2024 05:49:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F5C56B8E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 05:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708408150; cv=none; b=MvlDosZQaMUWvAoBwiPNdqAsMOysVSIInpapcJaT1F8Ig3D/gQNsrvBWrQySs+vXx7fnuCW6jd21L4appkjUGQRGD41Hj46jXE5z3BovAQYrOBu5f7dybKSnm9GLhgG/3/A9twG+e7hh2iO3sVXGObVPOYJf0d/W8AR5KU7q8Sg=
+	t=1708408263; cv=none; b=QwcN/OD70XEc1LHCjGGIgsfU6+Wa60vHQvijNIvc7uof+hlfPdSyES15hWv7WK1Wq9MXuA2bCyp8upaovvvcs0uCRr475n81Ujvj5tHBSqPe0QQzyNPn0QUTjuaVwB6KuTh+YmsX50Q8+r/cwY0ueaA+aoJZ9f7s/+RV6bex580=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708408150; c=relaxed/simple;
-	bh=yEyXcMjJfCC4sirxjRTolR1gpd9nzLskW++Kz50YlZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Y/blRpzfeKZlyusX6BENOFhDSTaqsUeONDJFnqXkckTtt0ygDz4fHRDOw2WINdU3z9yVwh8S2eqjV/BZAix6I7EHWTtO6NyLZ19+TlHKqxsJQaZI7tilDPj37TR02vXwlAb8ZrfG8us3gFhFn64tKZASwhwRRGNp3QX59MGZ0U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aduYe9JK; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K4SYH6030421;
-	Tue, 20 Feb 2024 05:48:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=6iLzWXnZbSKEXQ4L81Zd+B5q/JwdxAsNq6BxDPHyTPE=; b=ad
-	uYe9JKVV9w9rzk9nBstl6ZyWGxO656xnVgWHx/rTqlPztEhQYfqqoxb9PmqZJKCF
-	OK6P0+wPFSaAeh+gDLfGGncNUSlHCFzYfq1wvwO2Ybw9pVkGj9YvJMY4v0wbfFW9
-	OO0kXeDso73M5IUTRSQxMtwQYE8uPvtyOGhioCZX8qkXQQrW9beblyQCK4ebbRrR
-	G99kGiMb5HWRnJztEIfLW1++ZFtotBho+3jXnGviGdxop67uRlal7NDajxjEEFqZ
-	N/rLdzoKATmsRlg2UGvimIEcjRLuPyv1xfwj0ykKndjyhgcnjXaQ1HjAaId2b+E8
-	rPIkGh1+qw/AkJS7gdNA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wckv9g80w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:48:46 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41K5mjqF013268
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:48:45 GMT
-Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 19 Feb
- 2024 21:48:42 -0800
-Message-ID: <dc16acc1-6ad1-4a81-8eeb-aadaf837ff2c@quicinc.com>
-Date: Tue, 20 Feb 2024 11:18:39 +0530
+	s=arc-20240116; t=1708408263; c=relaxed/simple;
+	bh=lhPuxd6BYzafkuTT1IR/6EgKzo8kkyO0OBKd6rJ6owQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rIXftSBlj8IGat/8k6mNTEethg2Pe8WODQbdUqmrzdnumPFKepm4vDgbWqg2DI0Jrl2wbtHLmJful1opTdoMvcZiTqwQkQ2/kQCV0mmFPFUa6DQhXyZW0yV1IKu8oW8j+SkSsHpz4HWLm3vHZ72Mgi9kmX+tB7MEJGZMyCeoC9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NxGRRoQa; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <bbef7014-5059-405d-a27a-a379431a3fcf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708408258;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hrfIUp4wGAUT7mkfd8XNVbiekj62+EhmP33i8I/rY00=;
+	b=NxGRRoQavEl6cB4OriwEs+WMtFLopatTbDsPZ/kMqE4MNqRbKX+edvaqQHsIibNoiCtzSt
+	ZQD9B1IoZaf5P+2yATL5C4XwfkW8iDPdhRKf2YOA7OC0+Z/qTUDALiTA8H9uG+79HKXKkB
+	Dmo/R3Nw6BG9Tv6meNCtmam1/7HQ/m4=
+Date: Tue, 20 Feb 2024 13:50:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware/psci: Move psci_init_system_suspend() to
- late_initcall()
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-CC: Mark Rutland <mark.rutland@arm.com>, <andersson@kernel.org>,
-        <ulf.hansson@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-pm@vger.kernel.org>, <quic_lsrao@quicinc.com>,
-        <stable@vger.kernel.org>
-References: <20240219-suspend_ops_late_init-v1-1-6330ca9597fa@quicinc.com>
- <ZdOP5oAwZvEhNAsn@lpieralisi>
-Content-Language: en-US
-From: "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
-In-Reply-To: <ZdOP5oAwZvEhNAsn@lpieralisi>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: l7mW_oF9zN_5fAmK4DoZu7ghd3zl5fUE
-X-Proofpoint-GUID: l7mW_oF9zN_5fAmK4DoZu7ghd3zl5fUE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_04,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 adultscore=0
- mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200040
+Subject: Re: [PATCH 1/2] net/mlx5: pre-initialize sprintf buffers
+To: Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
+ Alex Vesker <valex@nvidia.com>, Erez Shitrit <erezsh@nvidia.com>,
+ Hamdan Igbaria <hamdani@nvidia.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240219100506.648089-1-arnd@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240219100506.648089-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 2/19/2024 10:59 PM, Lorenzo Pieralisi wrote:
-> On Mon, Feb 19, 2024 at 03:02:04PM +0530, Maulik Shah wrote:
->> psci_init_system_suspend() invokes suspend_set_ops() very early during
->> bootup even before kernel command line for mem_sleep_default is setup.
->> This leads to kernel command line mem_sleep_default=s2idle not working
->> as mem_sleep_current gets changed to deep via suspend_set_ops() and never
->> changes back to s2idle.
->>
->> Move psci_init_system_suspend() to late_initcall() to make sure kernel
->> command line mem_sleep_default=s2idle sets up s2idle as default suspend
->> mode.
+在 2024/2/19 18:04, Arnd Bergmann 写道:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Why can't we fix it the other way around, namely enforce
-> mem_sleep_current according to the mem_sleep_default command line
-> even if suspend_set_ops() was already called ?
-
-yes, this may be fixed other way also and i did not implement other way 
-since mem_sleep_default_setup() only update mem_sleep_default and to 
-avoid this race, it needs to also need to update mem_sleep_current along
-with it. Below change also resolves the issue.
-
---- a/kernel/power/suspend.c
-+++ b/kernel/power/suspend.c
-@@ -192,6 +192,7 @@ static int __init mem_sleep_default_setup(char *str)
-                 if (mem_sleep_labels[state] &&
-                     !strcmp(str, mem_sleep_labels[state])) {
-                         mem_sleep_default = state;
-+                       mem_sleep_current = state;
-                         break;
-                 }
-
-however it may be erasing thin line between mem_sleep_default v/s 
-mem_sleep_current as both gets updated while set up of mem_sleep_default.
-
-if this change looks Ok, i can send v2 with it.
-
+> The debugfs files always in this driver all use an extra round-trip
+> through an snprintf() before getting put into a mlx5dr_dbg_dump_buff()
+> rather than the normal seq_printf().
 > 
-> Just asking, I am not super keen on using initcalls ordering, it
-> looks fragile to me.
+> Zhu Yanjun noticed that the buffers are not initialized before being
+> filled or reused and requested them to always be zeroed as a
+> preparation for having more reused between the buffers.
 
-i agree with above.
+I think that you are the first to find this.
 
 Thanks,
-Maulik
+Zhu Yanjun
+
+> 
+> Requested-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   .../mellanox/mlx5/core/steering/dr_dbg.c      | 35 +++++++++++++++++++
+>   1 file changed, 35 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
+> index 64f4cc284aea..be7a8481d7d2 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
+> @@ -217,6 +217,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   
+>   	switch (action->action_type) {
+>   	case DR_ACTION_TYP_DROP:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_DROP, action_id,
+> @@ -229,6 +230,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_FT:
+> +		memset(buff, 0, sizeof(buff));
+>   		if (action->dest_tbl->is_fw_tbl)
+>   			ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   				       "%d,0x%llx,0x%llx,0x%x,0x%x\n",
+> @@ -250,6 +252,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_CTR:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_CTR, action_id, rule_id,
+> @@ -262,6 +265,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_TAG:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_TAG, action_id, rule_id,
+> @@ -283,6 +287,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   
+>   		ptrn_arg = !action->rewrite->single_action_opt && ptrn && arg;
+>   
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x,%d,0x%x,0x%x,0x%x",
+>   			       DR_DUMP_REC_TYPE_ACTION_MODIFY_HDR, action_id,
+> @@ -300,6 +305,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   
+>   		if (ptrn_arg) {
+>   			for (i = 0; i < action->rewrite->num_of_actions; i++) {
+> +				memset(buff, 0, sizeof(buff));
+>   				ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   					       ",0x%016llx",
+>   					       be64_to_cpu(((__be64 *)rewrite_data)[i]));
+> @@ -321,6 +327,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   		break;
+>   	}
+>   	case DR_ACTION_TYP_VPORT:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_VPORT, action_id, rule_id,
+> @@ -333,6 +340,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_TNL_L2_TO_L2:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_DECAP_L2, action_id,
+> @@ -345,6 +353,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_TNL_L3_TO_L2:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_DECAP_L3, action_id,
+> @@ -360,6 +369,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_L2_TO_TNL_L2:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_ENCAP_L2, action_id,
+> @@ -372,6 +382,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_L2_TO_TNL_L3:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_ENCAP_L3, action_id,
+> @@ -384,6 +395,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_POP_VLAN:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_POP_VLAN, action_id,
+> @@ -396,6 +408,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_PUSH_VLAN:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_PUSH_VLAN, action_id,
+> @@ -408,6 +421,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_INSERT_HDR:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x,0x%x,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_INSERT_HDR, action_id,
+> @@ -422,6 +436,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_REMOVE_HDR:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x,0x%x,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_REMOVE_HDR, action_id,
+> @@ -436,6 +451,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   			return ret;
+>   		break;
+>   	case DR_ACTION_TYP_SAMPLER:
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x,0x%x,0x%x,0x%llx,0x%llx\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_SAMPLER, action_id,
+> @@ -468,6 +484,7 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+>   				DR_DBG_PTR_TO_ID(action->range->miss_tbl_action->dest_tbl->tbl);
+>   		}
+>   
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,0x%llx,0x%x,0x%llx,0x%x,0x%llx,0x%x\n",
+>   			       DR_DUMP_REC_TYPE_ACTION_MATCH_RANGE, action_id,
+> @@ -507,6 +524,7 @@ dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
+>   	dr_dump_hex_print(hw_ste_dump, (char *)mlx5dr_ste_get_hw_ste(ste),
+>   			  DR_STE_SIZE_REDUCED);
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx,%s\n", mem_rec_type,
+>   		       dr_dump_icm_to_idx(mlx5dr_ste_get_icm_addr(ste)),
+> @@ -554,6 +572,7 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
+>   
+>   	format_ver = rule->matcher->tbl->dmn->info.caps.sw_format_ver;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx\n", DR_DUMP_REC_TYPE_RULE,
+>   		       rule_id, DR_DBG_PTR_TO_ID(rule->matcher));
+> @@ -593,6 +612,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+>   	char dump[DR_HEX_SIZE];
+>   	int ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH, "%d,0x%llx,",
+>   		       DR_DUMP_REC_TYPE_MATCHER_MASK, matcher_id);
+>   	if (ret < 0)
+> @@ -602,6 +622,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+>   	if (ret)
+>   		return ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	if (criteria & DR_MATCHER_CRITERIA_OUTER) {
+>   		dr_dump_hex_print(dump, (char *)&mask->outer, sizeof(mask->outer));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+> @@ -617,6 +638,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+>   	if (ret)
+>   		return ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	if (criteria & DR_MATCHER_CRITERIA_INNER) {
+>   		dr_dump_hex_print(dump, (char *)&mask->inner, sizeof(mask->inner));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+> @@ -632,6 +654,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+>   	if (ret)
+>   		return ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	if (criteria & DR_MATCHER_CRITERIA_MISC) {
+>   		dr_dump_hex_print(dump, (char *)&mask->misc, sizeof(mask->misc));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+> @@ -647,6 +670,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+>   	if (ret)
+>   		return ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	if (criteria & DR_MATCHER_CRITERIA_MISC2) {
+>   		dr_dump_hex_print(dump, (char *)&mask->misc2, sizeof(mask->misc2));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+> @@ -662,6 +686,7 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+>   	if (ret)
+>   		return ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	if (criteria & DR_MATCHER_CRITERIA_MISC3) {
+>   		dr_dump_hex_print(dump, (char *)&mask->misc3, sizeof(mask->misc3));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+> @@ -687,6 +712,7 @@ dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
+>   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+>   	int ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,%d,%d,0x%x\n",
+>   		       DR_DUMP_REC_TYPE_MATCHER_BUILDER, matcher_id, index,
+> @@ -716,6 +742,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
+>   
+>   	s_icm_addr = mlx5dr_icm_pool_get_chunk_icm_addr(matcher_rx_tx->s_htbl->chunk);
+>   	e_icm_addr = mlx5dr_icm_pool_get_chunk_icm_addr(matcher_rx_tx->e_anchor->chunk);
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx,%d,0x%llx,0x%llx\n",
+>   		       rec_type, DR_DBG_PTR_TO_ID(matcher_rx_tx),
+> @@ -752,6 +779,7 @@ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
+>   
+>   	matcher_id = DR_DBG_PTR_TO_ID(matcher);
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx,%d\n", DR_DUMP_REC_TYPE_MATCHER,
+>   		       matcher_id, DR_DBG_PTR_TO_ID(matcher->tbl),
+> @@ -816,6 +844,7 @@ dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
+>   			   DR_DUMP_REC_TYPE_TABLE_TX;
+>   
+>   	s_icm_addr = mlx5dr_icm_pool_get_chunk_icm_addr(table_rx_tx->s_anchor->chunk);
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx\n", rec_type, table_id,
+>   		       dr_dump_icm_to_idx(s_icm_addr));
+> @@ -836,6 +865,7 @@ static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
+>   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+>   	int ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx,%d,%d\n", DR_DUMP_REC_TYPE_TABLE,
+>   		       DR_DBG_PTR_TO_ID(table), DR_DBG_PTR_TO_ID(table->dmn),
+> @@ -887,6 +917,7 @@ dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
+>   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+>   	int ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%llx,0x%x,0x%x\n",
+>   		       DR_DUMP_REC_TYPE_DOMAIN_SEND_RING,
+> @@ -911,6 +942,7 @@ dr_dump_domain_info_flex_parser(struct seq_file *file,
+>   	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+>   	int ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,%s,0x%x\n",
+>   		       DR_DUMP_REC_TYPE_DOMAIN_INFO_FLEX_PARSER, domain_id,
+> @@ -937,6 +969,7 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
+>   	xa_for_each(&caps->vports.vports_caps_xa, vports_num, vport_caps)
+>   		; /* count the number of vports in xarray */
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,0x%x,0x%llx,0x%llx,0x%x,%lu,%d\n",
+>   		       DR_DUMP_REC_TYPE_DOMAIN_INFO_CAPS, domain_id, caps->gvmi,
+> @@ -952,6 +985,7 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
+>   	xa_for_each(&caps->vports.vports_caps_xa, i, vport_caps) {
+>   		vport_caps = xa_load(&caps->vports.vports_caps_xa, i);
+>   
+> +		memset(buff, 0, sizeof(buff));
+>   		ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   			       "%d,0x%llx,%lu,0x%x,0x%llx,0x%llx\n",
+>   			       DR_DUMP_REC_TYPE_DOMAIN_INFO_VPORT,
+> @@ -1012,6 +1046,7 @@ dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
+>   	u64 domain_id = DR_DBG_PTR_TO_ID(dmn);
+>   	int ret;
+>   
+> +	memset(buff, 0, sizeof(buff));
+>   	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+>   		       "%d,0x%llx,%d,0%x,%d,%u.%u.%u,%s,%d,%u,%u,%u\n",
+>   		       DR_DUMP_REC_TYPE_DOMAIN,
+
 
