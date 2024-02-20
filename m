@@ -1,109 +1,150 @@
-Return-Path: <linux-kernel+bounces-73471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBCF685C306
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:53:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C481885C310
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFA0F1C2329A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:53:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB226B23262
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DE677644;
-	Tue, 20 Feb 2024 17:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A7878B53;
+	Tue, 20 Feb 2024 17:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uyot1PdL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dqDmFqmf"
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F5976C89;
-	Tue, 20 Feb 2024 17:53:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C1C7764E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708451621; cv=none; b=DPd9vt58KTok0o/NhdUpiGbYW0nKKMLIF8X/Od0fqlmLLzKJaGgdf5BzPXAvV0TiH6r/IHPNdO3rHWeNyxminuCSAOFT/G06Z022cvcPK8bmfTtLENA5f7e9SjhqJuNm4+KwoOHyxu5I7x7KkOhrioe6FSAf6RfsSORJFWk8SKE=
+	t=1708451641; cv=none; b=D8MYufxsxIeEP217TBbg9378190jE4M7aT+C7oIYTYYChDETRLF9yxxik5STlqBIYhDAGr96kuVMNC8J/LDhQWcy/oT/gWocLnR1UTw3zTuH6PLd5cfL/VB/RN64hGs3GlZtglrNPqrHO6JxTQGMGc3wOesur0D1c4jU3Gf7iCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708451621; c=relaxed/simple;
-	bh=E0sF9V+OeFQ8gtlLiSNo8lKG76q/a1Bsao7zpK30erA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gJi1oRn45jpaveTVaiAf/3XjBFmT4Dp3RexWetdai8UslysPwciX8gbZ24UTyoGAqLQuBeZaFlobP1rhMu/9Q9swo4042JzSxMjB1kRhMs59jbKW6SDgSJdh0CWVJISelvQNwvYoHXO/cCV1AZf7435UWfc8MWTPHPF38jQdgZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uyot1PdL; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708451620; x=1739987620;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=E0sF9V+OeFQ8gtlLiSNo8lKG76q/a1Bsao7zpK30erA=;
-  b=Uyot1PdLZDUtyCXvb54rz1OiQ5NSssZHBpH7rMDoxEC37JcL8XasVtCl
-   nZj/j16LPI+BAKw17BOT5n5lQrSzZOu6dxEB9EKKIPBi1NtHcZFMUuqzr
-   5zgqpRrn7cmcgY1ewQxv+WpiLW+g/g/3MLEgmRStS6+NvaQM3Kfy5poFT
-   hJH51s2VaIkZVfZcOzFpe1P7cB1ET0s/Dre6XkdsVgZrPEC9V2Vnm9AhH
-   geKhZrMAFxv7UqM4lMpExdbwwpKG5Tabxzq0VN1SBZMaLgYepD5F8acaw
-   +24vohXWbcsRUp9OTif7QdDrIYmugkzCbk3Y0OFx+4LPVfy1F/JS5ikAA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="20007003"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="20007003"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 09:53:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="936486300"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="936486300"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Feb 2024 09:53:36 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id DE0A139A; Tue, 20 Feb 2024 19:53:34 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v2 1/1] driver core: Drop unneeded 'extern' keyword in fwnode.h
-Date: Tue, 20 Feb 2024 19:52:53 +0200
-Message-ID: <20240220175333.3242277-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1708451641; c=relaxed/simple;
+	bh=d38oaY+K+spNFRP/qOIWiTuNObZ5xOckG4uBJUP/Mnw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pL10BaAffLdRyZDrBqV0uZYVxWx+91Puw3rAhRPFE+pM+BkKHDzhiS3sAWkHyn+AQTV9L5SrsABjSgaGOknGF9cx6AMaqkXSer7c6XhC+lkSNbCh7HybuMdH2sUYWCpyp6xkghV1CDj0lNWc3wExQD+mfR7lO9mlLl+WNvPnkwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dqDmFqmf; arc=none smtp.client-ip=209.85.217.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4706beefb70so685274137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708451638; x=1709056438; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4DriMqP4qiEsOx9DUXcwZZJ3R+6NkNBQrlsXuZW2fRw=;
+        b=dqDmFqmf/boXSO3XLftzEpiYyOHCamaX0F53wcY4GQpiuQW/2vzcNdtROqhIDlmaNi
+         41o8Nq1nyOrvoLTIL/A3cIMQYXmTq2Cjxsvyk3NK7hnVBlMFTjhSAGVAurwdgztdwqeW
+         jVt2HdNK35jY7M80Pawdx8zCXwTpkxi3BoUuVDYfpb+UCAn6zAOXbk1Rfe/IksHmfhmQ
+         oXt/2Ch2k7erVEf5RIDIoaIW8yY1cCjQYXfObTdvxtwV8chIeWUY5YmCQak9EDtS7KxH
+         haS60yiEvpExLTaT/E7j/g0EV7s1tdqQxtTdRgSV6FL8RIUCHzQTPmYA/1Xdy57iHOop
+         P2gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708451638; x=1709056438;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4DriMqP4qiEsOx9DUXcwZZJ3R+6NkNBQrlsXuZW2fRw=;
+        b=QcuclFg1EyG76UsEy1l4OJcj+4nm/hXKL3yubpJkJJkE13DgHDEiLXx82aJGi8X6XN
+         vkmMc2gnOgXh0gw/xA+aYmygL48WPsdW1N6V8F17gH347vIZR7m05IrVhAVjGB1x0zQo
+         70la4yq1dPMYFLVeDSLH97bJhsELCX9J6laJsKbsyd46CLQtVcuZ9zGHEIwiokxKw3/s
+         Fq4mq/yQJg5Hyo84K2e67jpehrcTwJlL2M6yScujeFIZzGAdI9vb8txeQHPuRcFB0H8j
+         kVxtMN+5+ijtyzCmnOFwGa5CwrYcvUvGgFzcVmbm3avt6peiawyWs+ijaHHmPvfQiEo0
+         ZlGg==
+X-Forwarded-Encrypted: i=1; AJvYcCViUYLySeOd9wbaW/lryT4GtT5bCn+Nsi4ECpdGsq06ppr943tl6R9gDpVh0N14j18ieb/IwZmXyAkXV47YDcjXmp4qp3MQ9TINVhkY
+X-Gm-Message-State: AOJu0YyjSXs3YfWgCzEa8cKxogYxz9GV1amuRLJ1VwaMvRJxdMbph4fn
+	85wktB65nGbHaU2SEYRqMx5T5xlfa+iyjQwqb8LUAivW9FddRO+VJ0TbleQb6BMEfqgkFpP+iaR
+	D3m6QFirVXXvPb+8d8xvEo5EYPCxdKvmfif7zWg==
+X-Google-Smtp-Source: AGHT+IEAXD4s0vfCLOf3dGv178kSWMvcITercQToZ5Xpgu/ylirbyvBE31sO5fq4v2ZZE2g252F6KNSh/laLzVqmd+s=
+X-Received: by 2002:a05:6102:2436:b0:470:51da:3adc with SMTP id
+ l22-20020a056102243600b0047051da3adcmr4445513vsi.10.1708451638124; Tue, 20
+ Feb 2024 09:53:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-10-brgl@bgdev.pl>
+ <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk> <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
+ <8e392aed-b5f7-486b-b5c0-5568e13796ec@sirena.org.uk> <CAMRc=MeAXEyV47nDO_WPQqEQxSYFWTrwVPAtLghkfONj56FGVA@mail.gmail.com>
+ <CAA8EJppzkuH=YTAHuJ3Og2RLHB93PSas004UDvpqepYbGepVPg@mail.gmail.com>
+In-Reply-To: <CAA8EJppzkuH=YTAHuJ3Og2RLHB93PSas004UDvpqepYbGepVPg@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 20 Feb 2024 18:53:46 +0100
+Message-ID: <CAMRc=MfXkG1bqGrtFWpoZo3fTY49TvU3sHOnX-zc2kjUiRfp3w@mail.gmail.com>
+Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We do not use 'extern' keyword with functions. Remove the last one
-mistakenly added to fwnode.h.
+On Tue, Feb 20, 2024 at 5:30=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Tue, 20 Feb 2024 at 13:16, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> > On Mon, Feb 19, 2024 at 8:59=E2=80=AFPM Mark Brown <broonie@kernel.org>=
+ wrote:
+> > >
+> > > On Mon, Feb 19, 2024 at 07:48:20PM +0100, Bartosz Golaszewski wrote:
+> > > > On Mon, Feb 19, 2024 at 7:03=E2=80=AFPM Mark Brown <broonie@kernel.=
+org> wrote:
+> > > > > On Fri, Feb 16, 2024 at 09:32:06PM +0100, Bartosz Golaszewski wro=
+te:
+> > >
+> > > > > > +                     vreg_pmu_aon_0p59: ldo1 {
+> > > > > > +                             regulator-name =3D "vreg_pmu_aon_=
+0p59";
+> > > > > > +                             regulator-min-microvolt =3D <5400=
+00>;
+> > > > > > +                             regulator-max-microvolt =3D <8400=
+00>;
+> > > > > > +                     };
+> > >
+> > > > > That's a *very* wide voltage range for a supply that's got a name=
+ ending
+> >
+> > Because it's an error, it should have been 640000. Thanks for spotting =
+it.
+>
+> According to the datasheet, VDD08_PMU_AON_O goes up to 0.85V then down
+> to 0.59V, which is the working voltage.
+>
 
-Fixes: 19d0f5f6bff8 ("driver core: Add fw_devlink.strict kernel param")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed a couple of typos in the Subject
- include/linux/fwnode.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hmm indeed this is what figure 3.4 says but table 3-2 says the maximum is 0=
+64V.
 
-diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-index 2a72f55d26eb..2d23a14857c7 100644
---- a/include/linux/fwnode.h
-+++ b/include/linux/fwnode.h
-@@ -209,9 +209,9 @@ static inline void fwnode_dev_initialized(struct fwnode_handle *fwnode,
- 		fwnode->flags &= ~FWNODE_FLAG_INITIALIZED;
- }
- 
--extern bool fw_devlink_is_strict(void);
- int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
- void fwnode_links_purge(struct fwnode_handle *fwnode);
- void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
-+bool fw_devlink_is_strict(void);
- 
- #endif
--- 
-2.43.0.rc1.1.gbec44491f096
+> VDD08_PMU_RFA_CMN is normally at 0.8V, but goes to 0.4V during sleep.
+>
 
+Again figure 3.4 and table 3-2 disagree unless I'm missing something.
+
+Bart
+
+[snip]
 
