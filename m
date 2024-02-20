@@ -1,321 +1,179 @@
-Return-Path: <linux-kernel+bounces-72484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2AE85B415
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:37:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8431E85B40D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E0D1F230FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:37:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 350CC281358
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1185E5A4FF;
-	Tue, 20 Feb 2024 07:37:44 +0000 (UTC)
-Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.155.80.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD33E5A783;
+	Tue, 20 Feb 2024 07:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSe83qHl"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B6257302
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.80.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955052D79D
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708414663; cv=none; b=T2u+KLdz3sQlfyEjsrBR2eUVZyVxZoKnWJ4yprFXvb/BVSCaEZ6Nfa439hmn3M9a8WU1y5dJOAlRFMi67y3iv22k+gUwDXUDCvHajS20c+2/vvxjqoBcyM68/PaKVq/ue4Fbp3oE4I48CGeHtLpQ5TISoxkOcD+15XRIbBF7xeY=
+	t=1708414428; cv=none; b=VkBF0homiKkwQ5Kw+s+NN/OwNyhr/38IaIj/bBhk0tDnA3CLnOxQd4UwYcO6HThRlkbrqeQo7SpS7DUqwRefmiYZYoXLmwQcb3p0mkYJ0rlG86Emo8mOpFrlW2pKbHmxR04qWZKtt/9l5Rgfjsq3JhU6NyIWTmAS/+5nYNmVg90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708414663; c=relaxed/simple;
-	bh=ohz7ZLiLPRyOowTuERYt0dFvN8eBmr4esXel573GWl4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tv0MTxhWTxJkxuXt3X/OC4wUgl8kxgaIw1W3ZbHnvP1oRn8NsJOxHPw3uJPRMKgwqIxR9dIF7u6V8OBTp513u9Ai2PY/aQb4aw9M3vIMVvMtb4xjY0qk4tzdT0oSed2i+MiQRwiWdzVq/WaJdnd3CVipL00V5FS3JatgnuXIXtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=43.155.80.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtp79t1708414262tqhppdrf
-X-QQ-Originating-IP: TJT6PEsZ/mcoC1NdJoNe1JOwIhM7ywu+pPUF3RJA56A=
-Received: from localhost.localdomain ( [125.76.217.162])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 20 Feb 2024 15:31:00 +0800 (CST)
-X-QQ-SSF: 01400000000000D0I000000A0000000
-X-QQ-FEAT: 5q30pvLz2ifZqeXFFACOvOMFaBUd68FKh2OQ6Vhtgk5xC4IHC6ZW2fd99mVYL
-	vamEp9UFP/mlRLG8s2ESkRsfjUPT2PgEkae+d/+mpWl8lUeaKYv7U+6kIIbLzYOAeVbltFY
-	fziZU/dPbuhGy8M5no6HVjriwEaTNJk7AfoTN7oBK+opKmVG8u3Zvq763iaOGpmuLRQtxkT
-	4wkkOEGxv6SZTqZovsOYJkLhZa5xQHVQ5tolCJpIA5fW1apWeZhO2TR++F43YbwBcqn5Bxg
-	Osyo6jDT32TDd4rswnY/AGs+OCO+nlxPW9mSy0dMgFlolZoYx1cdUi9HAVRgvWuBXhPSTYa
-	VKe4k7ejXDfkVZx2Y0Hy7F5iCbcaletApe1vb58cm6zgnt8HAOvwhndzaz/93kVsmHF199K
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 7601370966241811881
-From: Guo Hui <guohui@uniontech.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	will@kernel.org,
-	longman@redhat.com,
-	boqun.feng@gmail.com,
-	David.Laight@ACULAB.COM
-Cc: linux-kernel@vger.kernel.org,
-	Guo Hui <guohui@uniontech.com>
-Subject: [PATCH] locking/osq_lock: Optimize osq_lock performance using per-NUMA
-Date: Tue, 20 Feb 2024 15:30:58 +0800
-Message-Id: <20240220073058.6435-1-guohui@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+	s=arc-20240116; t=1708414428; c=relaxed/simple;
+	bh=gXDvV6ZXXMBqmPgURlBl8TrIV2CHccnufrRAQwQy6GE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XWK3hRmfmVVlnv6+ANjr88r4pYnEKln5fzoUo/TaLJAGyoWbVK2IUtrhr7qLuhf/VRjzeXE8Sen5GJaRoBq/akY2GVQvHTjYqW3PNkoO2RJlnDUrI1g/lVUAB/RWLkKG7+jcGAxKutj1TG7/bV+rMBEQGBrO+iEQROc7SOP9rtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSe83qHl; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2999329dfe7so1657306a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:33:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708414426; x=1709019226; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zsenoJ7EMCFSDYF3hHTZ5Kjc4dQDNAVYOwwzOKqMxdA=;
+        b=kSe83qHlChxhxvOM8k1RmbibxbDZXqcORdNablyxGLPjMihyKNZeeTRNZQu0s65HB6
+         LXnulA5xbbAx/vnz+OgbkRIenRCp03JiRuI9J4E0WzQBhCAse/bh/IXy2xilvIiQrCa1
+         DoVXhFV9Mqrohrw+kl98IahUyqE+3iRI/J+F0WEoVNuepGsV8PVxDd4bgxfwm4jiWopk
+         iB0h2Ab3Eg9WagnVvReO3kF1wEMgswGIgiT4oGi38kqCNZamsujq5pDxOzZP2rkfg3Or
+         3etXxDRBuiS6d1PUmq0SADAetZajM0QOCvZoSohPIgv6mc4uxU2X+DOamO9/ptSEqa1y
+         +Kiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708414426; x=1709019226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zsenoJ7EMCFSDYF3hHTZ5Kjc4dQDNAVYOwwzOKqMxdA=;
+        b=P5+TYrVPH6tuJHmTcSouePa47vVusj87+3x/jEKQ83zkXFhWuo3QHGBV8+uS2sVmu1
+         tubZ9MaNrt57QzxtLsQMg2Bnu3x90K/Kdgv7+6c90Gqi6tHWMor86n17t3dar+rdgRqp
+         JDL2xjYrqmbROde8DG2kU0akBVTzQaYiMaig10fJo4pfoYXZU3ZW2RoSgpzAKmDh4c1M
+         M8cY7ttHt6im/jaAKkRtqfoJ8FHHb4b3aodLC2se05+SsBOR0LCrLg63Y2K2aBt5MP/c
+         5shl4qyY+BAAJC/ALiEvgNOOHvytQc0D4M8/LM7Zv5hrQwzkVtMxJAmqQe8PFQ10Ph9/
+         0t1A==
+X-Forwarded-Encrypted: i=1; AJvYcCU4mf4oO4t5lU5MgqaBpk4md7tqlEe4zYFJ1l7lGvsb/LhuNp24/Y6oouEu48h8GzMgES7Xq23wDh4Oo9yew2xyJm/Vw3Ln8+oW+VAq
+X-Gm-Message-State: AOJu0YxQDctDCcgEi6qBOjJNGrFFuUDcmyTlCZP2qLiOy6i6UxoluynB
+	oDLt9n23el6snOkTkAyVfNZkza8Tf02o9O7heTS2f6915MX1fY+2FrLLY4GFWhTlu4RPIt7QHsa
+	/7jt9wu9SPT2JmaiwYkdF1/UQt3Q=
+X-Google-Smtp-Source: AGHT+IHMNUIQRPRFIANoPeiBmbYLMsMQLt+tkvba7nY6cjzK43sPcjINZKOlh+h5FJ1Km+jgg9teAQRd8mKNVFDoOuQ=
+X-Received: by 2002:a17:90a:b014:b0:299:6e88:7b6a with SMTP id
+ x20-20020a17090ab01400b002996e887b6amr6036719pjq.36.1708414425900; Mon, 19
+ Feb 2024 23:33:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-0
+References: <20240216180559.208276-1-tj@kernel.org> <20240216180559.208276-17-tj@kernel.org>
+In-Reply-To: <20240216180559.208276-17-tj@kernel.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Tue, 20 Feb 2024 15:33:34 +0800
+Message-ID: <CAJhGHyBR6up3o9Svxn=uL2a0rRcu-q3BR8TgdpLykR6iTZ3Aew@mail.gmail.com>
+Subject: Re: [PATCH 16/17] workqueue: Allow cancel_work_sync() and
+ disable_work() from atomic contexts on BH work items
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	allen.lkml@gmail.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-After extensive testing of osq_lock,
-we found that the performance of osq_lock is closely related to
-the distance between NUMA nodes.The greater the distance
-between NUMA nodes,the more serious the performance degradation of
-osq_lock.When a group of processes that need to compete for
-the same lock are on the same NUMA node,the performance of osq_lock
-is the best.when the group of processes is distributed on
-different NUMA nodes,as the distance between NUMA nodes increases,
-the performance of osq_lock becomes worse.
+Hello, Tejun
 
-This patch uses the following solutions to improve performance:
-Divide the osq_lock linked list according to NUMA nodes.
-Each NUMA node corresponds to an osq linked list.
-Each CPU is added to the linked list corresponding to
-its respective NUMA node.When the last CPU of
-the NUMA node releases osq_lock,osq_lock is passed to
-the next NUMA node.
+On Sat, Feb 17, 2024 at 2:06=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 
-As shown in the figure below, the last osq_node1 on NUMA0 passes the lock
-to the first node (osq_node3) of the next NUMA1 node.
+> @@ -4072,7 +4070,32 @@ static bool __flush_work(struct work_struct *work,=
+ bool from_cancel)
+>         if (!pool)
+>                 return false;
+>
+> -       wait_for_completion(&barr.done);
+> +       if ((pool->flags & POOL_BH) && from_cancel) {
 
------------------------------------------------------------
-|            NUMA0           |            NUMA1           |
-|----------------------------|----------------------------|
-|  osq_node0 ---> osq_node1 -|-> osq_node3 ---> osq_node4 |
------------------------------|-----------------------------
+pool pointer might be invalid here, please check POOL_BH before
+rcu_read_unlock()
+or move rcu_read_unlock() here, or use "*work_data_bits(work) & WORK_OFFQ_B=
+H".
 
-Set an atomic type global variable osq_lock_node to
-record the NUMA node number that can currently obtain
-the osq_lock lock.When the osq_lock_node value is
-a certain node number,the CPU on the node obtains
-the osq_lock lock in turn,and the CPUs on
-other NUMA nodes poll wait.
+> +               /*
+> +                * We're flushing a BH work item which is being canceled.=
+ It
+> +                * must have been executing during start_flush_work() and=
+ can't
+> +                * currently be queued. If @work is still executing, we k=
+now it
+> +                * is running in the BH context and thus can be busy-wait=
+ed.
+> +                *
+> +                * On RT, prevent a live lock when current preempted soft
+> +                * interrupt processing or prevents ksoftirqd from runnin=
+g by
+> +                * keeping flipping BH. If the tasklet runs on a differen=
+t CPU
+> +                * then this has no effect other than doing the BH
+> +                * disable/enable dance for nothing. This is copied from
+> +                * kernel/softirq.c::tasklet_unlock_spin_wait().
+> +                */
 
-This solution greatly reduces the performance degradation caused
-by communication between CPUs on different NUMA nodes.
+s/tasklet/BH work/g
 
-The effect on the 96-core 4-NUMA ARM64 platform is as follows:
-System Benchmarks Partial Index       with patch  without patch  promote
-File Copy 1024 bufsize 2000 maxblocks   2060.8      980.3        +110.22%
-File Copy 256 bufsize 500 maxblocks     1346.5      601.9        +123.71%
-File Copy 4096 bufsize 8000 maxblocks   4229.9      2216.1       +90.87%
+Although the comment is copied from kernel/softirq.c, but I can't
+envision what the scenario is when the current task
+"prevents ksoftirqd from running by keeping flipping BH"
+since the @work is still executing or the tasklet is running.
 
-The effect on the 128-core 8-NUMA X86_64 platform is as follows:
-System Benchmarks Partial Index       with patch  without patch  promote
-File Copy 1024 bufsize 2000 maxblocks   841.1       553.7        +51.91%
-File Copy 256 bufsize 500 maxblocks     517.4       339.8        +52.27%
-File Copy 4096 bufsize 8000 maxblocks   2058.4      1392.8       +47.79%
 
-Signed-off-by: Guo Hui <guohui@uniontech.com>
----
- include/linux/osq_lock.h  | 20 +++++++++++--
- kernel/locking/osq_lock.c | 60 +++++++++++++++++++++++++++++++++------
- 2 files changed, 69 insertions(+), 11 deletions(-)
+> +               while (!try_wait_for_completion(&barr.done)) {
+> +                       if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> +                               local_bh_disable();
+> +                               local_bh_enable();
+> +                       } else {
+> +                               cpu_relax();
+> +                       }
+> +               }
+> +       } else {
+> +               wait_for_completion(&barr.done);
+> +       }
+> +
+>         destroy_work_on_stack(&barr.work);
+>         return true;
+>  }
+> @@ -4090,6 +4113,7 @@ static bool __flush_work(struct work_struct *work, =
+bool from_cancel)
+>   */
+>  bool flush_work(struct work_struct *work)
+>  {
+> +       might_sleep();
+>         return __flush_work(work, false);
+>  }
+>  EXPORT_SYMBOL_GPL(flush_work);
+> @@ -4179,6 +4203,11 @@ static bool __cancel_work_sync(struct work_struct =
+*work, u32 cflags)
+>
+>         ret =3D __cancel_work(work, cflags | WORK_CANCEL_DISABLE);
+>
+> +       if (*work_data_bits(work) & WORK_OFFQ_BH)
+> +               WARN_ON_ONCE(in_hardirq());
 
-diff --git a/include/linux/osq_lock.h b/include/linux/osq_lock.h
-index ea8fb31379e3..c016c1cf5e8b 100644
---- a/include/linux/osq_lock.h
-+++ b/include/linux/osq_lock.h
-@@ -2,6 +2,8 @@
- #ifndef __LINUX_OSQ_LOCK_H
- #define __LINUX_OSQ_LOCK_H
- 
-+#include <linux/nodemask.h>
-+
- /*
-  * An MCS like lock especially tailored for optimistic spinning for sleeping
-  * lock implementations (mutex, rwsem, etc).
-@@ -11,8 +13,9 @@ struct optimistic_spin_queue {
- 	/*
- 	 * Stores an encoded value of the CPU # of the tail node in the queue.
- 	 * If the queue is empty, then it's set to OSQ_UNLOCKED_VAL.
-+	 * The actual number of NUMA nodes is generally not greater than 32.
- 	 */
--	atomic_t tail;
-+	atomic_t tail[32];
- };
- 
- #define OSQ_UNLOCKED_VAL (0)
-@@ -22,7 +25,11 @@ struct optimistic_spin_queue {
- 
- static inline void osq_lock_init(struct optimistic_spin_queue *lock)
- {
--	atomic_set(&lock->tail, OSQ_UNLOCKED_VAL);
-+	int node;
-+
-+	for_each_online_node(node) {
-+		atomic_set(&lock->tail[node], OSQ_UNLOCKED_VAL);
-+	}
- }
- 
- extern bool osq_lock(struct optimistic_spin_queue *lock);
-@@ -30,7 +37,14 @@ extern void osq_unlock(struct optimistic_spin_queue *lock);
- 
- static inline bool osq_is_locked(struct optimistic_spin_queue *lock)
- {
--	return atomic_read(&lock->tail) != OSQ_UNLOCKED_VAL;
-+	int node;
-+
-+	for_each_online_node(node) {
-+		if (atomic_read(&lock->tail[node]) != OSQ_UNLOCKED_VAL)
-+			return true;
-+	}
-+
-+	return false;
- }
- 
- #endif
-diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-index 75a6f6133866..7147050671a3 100644
---- a/kernel/locking/osq_lock.c
-+++ b/kernel/locking/osq_lock.c
-@@ -2,6 +2,7 @@
- #include <linux/percpu.h>
- #include <linux/sched.h>
- #include <linux/osq_lock.h>
-+#include <linux/topology.h>
- 
- /*
-  * An MCS like lock especially tailored for optimistic spinning for sleeping
-@@ -16,6 +17,7 @@ struct optimistic_spin_node {
- 	struct optimistic_spin_node *next, *prev;
- 	int locked; /* 1 if lock acquired */
- 	int cpu; /* encoded CPU # + 1 value */
-+	int node;
- };
- 
- static DEFINE_PER_CPU_SHARED_ALIGNED(struct optimistic_spin_node, osq_node);
-@@ -58,8 +60,8 @@ osq_wait_next(struct optimistic_spin_queue *lock,
- 	int curr = encode_cpu(smp_processor_id());
- 
- 	for (;;) {
--		if (atomic_read(&lock->tail) == curr &&
--		    atomic_cmpxchg_acquire(&lock->tail, curr, old_cpu) == curr) {
-+		if (atomic_read(&lock->tail[node->node]) == curr &&
-+		    atomic_cmpxchg_acquire(&lock->tail[node->node], curr, old_cpu) == curr) {
- 			/*
- 			 * We were the last queued, we moved @lock back. @prev
- 			 * will now observe @lock and will complete its
-@@ -90,6 +92,21 @@ osq_wait_next(struct optimistic_spin_queue *lock,
- 	}
- }
- 
-+static atomic_t osq_numa_node = ATOMIC_INIT(-1);
-+
-+/*
-+ * The value of osq_numa_node is -1 or wait for the value of osq_numa_node
-+ * to change to the NUMA node number where the current CPU is located.
-+ */
-+static void osq_wait_numa_node(struct optimistic_spin_node *node)
-+{
-+	int  old_node;
-+
-+	while (!need_resched() && (old_node = atomic_cmpxchg_acquire(&osq_numa_node, -1,
-+					node->node)) != -1 && node->node != old_node)
-+		cpu_relax();
-+}
-+
- bool osq_lock(struct optimistic_spin_queue *lock)
- {
- 	struct optimistic_spin_node *node = this_cpu_ptr(&osq_node);
-@@ -100,6 +117,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 	node->locked = 0;
- 	node->next = NULL;
- 	node->cpu = curr;
-+	node->node = cpu_to_node(smp_processor_id());
- 
- 	/*
- 	 * We need both ACQUIRE (pairs with corresponding RELEASE in
-@@ -107,9 +125,11 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 	 * the node fields we just initialised) semantics when updating
- 	 * the lock tail.
- 	 */
--	old = atomic_xchg(&lock->tail, curr);
--	if (old == OSQ_UNLOCKED_VAL)
-+	old = atomic_xchg(&lock->tail[node->node], curr);
-+	if (old == OSQ_UNLOCKED_VAL) {
-+		osq_wait_numa_node(node);
- 		return true;
-+	}
- 
- 	prev = decode_cpu(old);
- 	node->prev = prev;
-@@ -144,8 +164,10 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 	 * polling, be careful.
- 	 */
- 	if (smp_cond_load_relaxed(&node->locked, VAL || need_resched() ||
--				  vcpu_is_preempted(node_cpu(node->prev))))
-+				  vcpu_is_preempted(node_cpu(node->prev)))) {
-+		osq_wait_numa_node(node);
- 		return true;
-+	}
- 
- 	/* unqueue */
- 	/*
-@@ -170,8 +192,10 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 		 * in which case we should observe @node->locked becoming
- 		 * true.
- 		 */
--		if (smp_load_acquire(&node->locked))
-+		if (smp_load_acquire(&node->locked)) {
-+			osq_wait_numa_node(node);
- 			return true;
-+		}
- 
- 		cpu_relax();
- 
-@@ -207,6 +231,22 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 	return false;
- }
- 
-+static void set_osq_numa_node(struct optimistic_spin_queue *lock)
-+{
-+	int curr_node = cpu_to_node(smp_processor_id());
-+	int node = curr_node;
-+	int num_nodes = num_online_nodes();
-+
-+	do {
-+		node = (node + 1) % num_nodes;
-+		if (node == curr_node) {
-+			atomic_set(&osq_numa_node, -1);
-+			return;
-+		}
-+	} while (atomic_read(&lock->tail[node]) == OSQ_UNLOCKED_VAL);
-+	atomic_set(&osq_numa_node, node);
-+}
-+
- void osq_unlock(struct optimistic_spin_queue *lock)
- {
- 	struct optimistic_spin_node *node, *next;
-@@ -215,9 +255,11 @@ void osq_unlock(struct optimistic_spin_queue *lock)
- 	/*
- 	 * Fast path for the uncontended case.
- 	 */
--	if (likely(atomic_cmpxchg_release(&lock->tail, curr,
--					  OSQ_UNLOCKED_VAL) == curr))
-+	if (likely(atomic_cmpxchg_release(&lock->tail[cpu_to_node(smp_processor_id())], curr,
-+					  OSQ_UNLOCKED_VAL) == curr)) {
-+		set_osq_numa_node(lock);
- 		return;
-+	}
- 
- 	/*
- 	 * Second most likely case.
-@@ -232,4 +274,6 @@ void osq_unlock(struct optimistic_spin_queue *lock)
- 	next = osq_wait_next(lock, node, OSQ_UNLOCKED_VAL);
- 	if (next)
- 		WRITE_ONCE(next->locked, 1);
-+	else
-+		set_osq_numa_node(lock);
- }
--- 
-2.20.1
+When !PREEMPT_RT, this check is sufficient.
 
+But when PREEMP_RT, it should be only in the contexts that allow
+local_bh_disable() for synching a BH work, although I'm not sure
+what check code is proper.
+
+In PREEMPT_RT, local_bh_disable() is disallowed in not only hardirq
+context but also !preemptible() context (I'm not sure about it).
+
+__local_bh_disable_ip() (PREEMP_RT version) doesn't contain
+full check except for "WARN_ON_ONCE(in_hardirq())" either.
+
+Since the check is just for debugging, I'm OK with the current check.
+
+Thanks
+Lai
 
