@@ -1,140 +1,128 @@
-Return-Path: <linux-kernel+bounces-73011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7950D85BC11
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:27:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85D885BC18
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 189631F2323A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:27:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30852B21574
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317EA67E92;
-	Tue, 20 Feb 2024 12:27:27 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C4C69310;
+	Tue, 20 Feb 2024 12:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WmnFB2hD"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B2667C71
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB52965BDF
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708432046; cv=none; b=MlSBLWjx6uv4lMhRDasoqcdOUWlxSFNgEffwqRCj/n3rBx74UxxZSqP9rHQExEZLp1KQgDq+A/txDePs6LoGkSX9rI7ePzt4v5Zxjj4uZgTc3Zz8s4pVhqfMqYiJFIBRGM7Yw6+0NLE1u/JR2h2vw+y59lwgFvZJXUvSA+cQadM=
+	t=1708432100; cv=none; b=I6bSzrf0IFttvhkoXyyQabebk3wd0lCi9K9+Y8f2AfHOp278kZS49/vre8Ot4/86yMzFt27lHSDCXjbYI3VAjAom/Yil9e8EDoqFBK0PEKXVvcKBmgUxAxWevwULdkMG4X9pupo9FpL4fS8zSCMseeFWBhXTa4QqB7CNGL7geOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708432046; c=relaxed/simple;
-	bh=71ZA9CBF48Rq8EQ+Tvb9rXsWDLMMNDTL1iz93c3jvkc=;
-	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=AzLzp/4hcxckLKq65nAKtr2NjrnZxc+tPfU9GOu3F3OnK4flC9eNxSXD0DJtXCI5BA+Daq//7FYapC8IyXTB+vSqTlVMZ1n4B3/wu5niftP46L5W6QN4oGFx/7ju5IO8TjU13L4CSkZoPLIjvhxNRNqMWgCulxUB/Tayxom46Bk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TfJZC5L5Gz4f3jXP
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:27:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id AD51C1A0172
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:27:20 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBGkmtRlQcBmEg--.23538S3;
-	Tue, 20 Feb 2024 20:27:17 +0800 (CST)
-Subject: Re: ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function
- kallsyms_lookup_name: .text+0x90): relocation R_RISCV_PCREL_HI20 out of
- range: -524416 is not in [-524288, 524287]; references kallsyms_seqs_of_names
-From: "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-To: kernel test robot <lkp@intel.com>, Zhen Lei <thunder.leizhen@huawei.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>
-References: <202402061302.HkByW9x0-lkp@intel.com>
- <bd30f81c-9e6a-578e-d496-6b7f355a3b79@huaweicloud.com>
-Message-ID: <efdec661-628f-2f6e-cd3e-c66a915d3aa2@huaweicloud.com>
-Date: Tue, 20 Feb 2024 20:27:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+	s=arc-20240116; t=1708432100; c=relaxed/simple;
+	bh=wPnG6nFFhE1KXRQew0WPOM+BFz12P1OHBgjn5zkIuBc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CuCerM6njBMtVNVEiAI0w8eAimZcCOBhdb4PiWw+xznwN8lEdlin7gd7ifFGtniR/QCLwMnb+Yqf5kxFYBHwjIPHuxDN9f58nRkoz+fNWQRb9oRy88qXDsgvRlJDKJBdLY2ppJm11dAnWtdNKehiiK8ISoCOs4cgtQFUINz7uZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WmnFB2hD; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33ce8cbf465so2616004f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:28:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708432097; x=1709036897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V9qG4b6c5lyMFAiTHXW/5OlVUvW7PY3GsXWkR2Bvbu8=;
+        b=WmnFB2hDCEzzxU7yaU0XUigE3oeH4SKRxoR935w4thtKtl0Ui351bpgeuRhA77vlwe
+         FY+1JsZj5APoVRMbgKz5DjxU8+chzXN4qT91orsVOdxNh0uNrIZwy/h/+2+FCCOz4Mdu
+         2O+XPuYhv+q4hT3HDPWONpthF+eBHFqNZWo/vFt+tVvJvFqsN+X6nKl5xSlWl8OpzOxT
+         SuFsM2uKY63xIlagYrm86AVtaFRgnJNOpLWwCZuEQuwU8WN4+FeBd7od3C5n91pGF57s
+         gtOb5tr5fknXiM+ty4BTz2GyCkd4Gk1TbUWXB3gkbr3OBQjcJ0CP5G4LMP7OYEmObuiO
+         wd6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708432097; x=1709036897;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V9qG4b6c5lyMFAiTHXW/5OlVUvW7PY3GsXWkR2Bvbu8=;
+        b=AgZcSyeCBgZ+ImT+0T1xTcusEO3vWhffwBlzKe6EW2+Tt9k2lPbkg4VmjWrUELKQsU
+         MRPCxQCuSF/nJWr2YkAb8qV1Ax8ZCahtYOZyuKK0Vc59g4hwuakDShsgsz4qXhAZuqr/
+         yV97vwEjYWL474qKlJTRd5cUHEuh5R57p+LcfBgUIyN8M1bB0YziFqWcveekvswgm8Jg
+         XZcmkqj7iAHj4yoZ9iveyYoeayLbstjKOw/RavrRuZx8QJ4aX+ImuQn+/pwRcvM+40pu
+         0orhjj/B8Uj5K/0WQJKfRA+7Hs4d+UY89BhmMuA9v14nceCaWp42ZfIRrtLb8ptJEm6D
+         Dh3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXP8OT/y+0uQBWItXTQCd5UYpEL1gWt19i8/+EH8cEBq16wYGx7i2Oufei8Ib9s+rqerdkEM0MU9UeLet3h+aRrBLm9JY+ZoG2cIRFV
+X-Gm-Message-State: AOJu0YzIJmqKv3SP6sOXcnGMAZtB65sEzCsNMCTs9rF2LXsW+w/fV9br
+	zgJaNYKpSXcoMi9MAw3kdOycSSfdJ3uwahhMLDqCIrsQHzrpOF82
+X-Google-Smtp-Source: AGHT+IG4fgfE9ye3xhSDlApiASY7j0fNVeto1j+SruihzZ4Wnz1CKMuEevC3Y9CnNE4hym+oxXP+hA==
+X-Received: by 2002:a05:6000:1143:b0:33d:2071:9b85 with SMTP id d3-20020a056000114300b0033d20719b85mr7553222wrx.19.1708432096738;
+        Tue, 20 Feb 2024 04:28:16 -0800 (PST)
+Received: from Ubuntu22.myguest.virtualbox.org ([46.121.140.152])
+        by smtp.gmail.com with ESMTPSA id co18-20020a0560000a1200b0033d4c3b0beesm7346720wrb.19.2024.02.20.04.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 04:28:16 -0800 (PST)
+Received: by Ubuntu22.myguest.virtualbox.org (sSMTP sendmail emulation); Tue, 20 Feb 2024 14:28:13 +0200
+From: Meir Elisha <meir6264@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>,
+	Yang Yingliang <yangyingliang@huawei.com>
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Meir Elisha <meir6264@gmail.com>
+Subject: [PATCH v3] Staging: rtl8723bs: Remove unnecessary braces in rtw_update_ht_cap
+Date: Tue, 20 Feb 2024 14:28:02 +0200
+Message-Id: <20240220122802.12561-1-meir6264@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <bd30f81c-9e6a-578e-d496-6b7f355a3b79@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBXKBGkmtRlQcBmEg--.23538S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF48Wr15Kw4DAryDtw45GFg_yoW5WFy5pF
-	4DJa90yF4kKr1Syws7K398Ca45tw4DJa1fGa4DJr1UZrWDZr10va4Igw45AF9Fkrn2krWr
-	Zrs2qa4SkFyUZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
 
+Remove braces from single statement blocks to improve coding style.
 
+Signed-off-by: Meir Elisha <meir6264@gmail.com>
+---
+Changes in v3: subject and description changed
+Changes in v2: none
 
-On 2024/2/18 10:08, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2024/2/6 13:19, kernel test robot wrote:
->> Hi Zhen,
->>
->> FYI, the error/warning still remains.
-> 
-> I'm trying to reproduce it. But I'm having a little trouble getting
-> the environment ready.
+ drivers/staging/rtl8723bs/core/rtw_mlme.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Sorry, I tried but it was not reproduced. I made the following two changes
-to the steps in the 'reproduce' link:
-1. Put linux and lkp-tests in two directories of the same level. Because:
-   $ git fetch --no-tags linus master
-   error: RPC failed; HTTP 403 curl 22 The requested URL returned error: 403
-   fatal: error reading section header 'acknowledgments'
-2. Compiler was specified by following the prompts.
-   COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-17 ~/lkp-tests/kbuild/make.cross W=1 O=build_dir ARCH=riscv olddefconfig
-   COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-17 ~/lkp-tests/kbuild/make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Image is finally generated, so there should be no problem with the above steps being adjusted:
-$ ls build_dir/arch/riscv/boot/
-dts  Image  loader  loader.bin  loader.lds  loader.o
-
-By the way, all the symbols to be reported "relocation R_RISCV_PCREL_HI20 out of range" is
-generated by the tool kallsyms (scripts/kallsyms.c). So, it seems that the tool kallsyms
-have not been executed. And this error is not caused by my patches.
-
-> 
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
->> commit: 60443c88f3a89fd303a9e8c0e84895910675c316 kallsyms: Improve the performance of kallsyms_lookup_name()
->> date:   1 year, 3 months ago
->> config: riscv-randconfig-r064-20240120 (https://download.01.org/0day-ci/archive/20240206/202402061302.HkByW9x0-lkp@intel.com/config)
->> compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
->> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240206/202402061302.HkByW9x0-lkp@intel.com/reproduce)
->>
->> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->> the same patch/commit), kindly add following tags
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: https://lore.kernel.org/oe-kbuild-all/202402061302.HkByW9x0-lkp@intel.com/
->>
->> All errors (new ones prefixed by >>):
->>
->>>> ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_lookup_name: .text+0x90): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_seqs_of_names
->>    >>> referenced by kallsyms.c
->>    >>> defined in vmlinux.a(kernel/kallsyms.o)
->>
-> 
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+index b221913733fb..5568215b35bd 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+@@ -1548,9 +1548,9 @@ void _rtw_join_timeout_handler(struct timer_list *t)
+ 				int do_join_r;
+ 
+ 				do_join_r = rtw_do_join(adapter);
+-				if (do_join_r != _SUCCESS) {
++				if (do_join_r != _SUCCESS)
+ 					continue;
+-				}
++
+ 				break;
+ 			} else {
+ 				rtw_indicate_disconnect(adapter);
+@@ -2432,9 +2432,8 @@ void rtw_update_ht_cap(struct adapter *padapter, u8 *pie, uint ie_len, u8 channe
+ 		return;
+ 
+ 	/* maybe needs check if ap supports rx ampdu. */
+-	if (!(phtpriv->ampdu_enable) && pregistrypriv->ampdu_enable == 1) {
++	if (!(phtpriv->ampdu_enable) && pregistrypriv->ampdu_enable == 1)
+ 		phtpriv->ampdu_enable = true;
+-	}
+ 
+ 	/* check Max Rx A-MPDU Size */
+ 	len = 0;
 -- 
-Regards,
-  Zhen Lei
+2.34.1
 
 
