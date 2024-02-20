@@ -1,151 +1,114 @@
-Return-Path: <linux-kernel+bounces-73793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E0885CB46
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:59:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D153585CB48
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E810E1F22B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:59:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BFA62843F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FFDE154BEE;
-	Tue, 20 Feb 2024 22:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C5615443B;
+	Tue, 20 Feb 2024 22:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gdzK+hfx"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Gj1c8hCc"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA8F154BE3
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16164154427
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708469929; cv=none; b=DjzUFbabT5g1fkfnTPNkEihex7D+iiBxPj31cYK6egEyj+UIIOVo38ZYCpl5fTwDLf0oU0RP5BhTQO9w+JphoT/eLHDKy5W5sJXnsn2ZUv+I441jdBjHWOyqhK/KIHQVHo3woHbTOVIRyJbed5dn03eAX3uDtkitLPIYV5QvU/Y=
+	t=1708469955; cv=none; b=JlEXHrKKwVeN3zc5gP++mb+mgh03lxZa6hk5rw920ua+O9/F9YU6q/9pB8NOGW6tgsRYlyt/1nveIUzYvhYgydA89FipNQMlQ0/U5U/d1RxyxicsXufXNGpLSK5U7wowcRJKboLVBsKEP+glyQC1R/V6by6PIoUpjBm2VkLO4/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708469929; c=relaxed/simple;
-	bh=2KMavfot7dn/jSlYRp4vCD7QcIkkOuyAV9KqDkyaykQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=UsAcGGhE9jsBTx8n2+PJkiyZY5dDPo/chvAbUtquAetEqrgeb1/ydz72DFYE/A1QlxdhIyPFKEngvotcPxuifKGt/lEq4z5Mbzo+rT6lom+eXUn1HNQHQaaz2OPJTC/eKiFWIlXnbp7+x77eiCK/F4fTrEQ4gpI8O1b03vC1PX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gdzK+hfx; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a36126ee41eso799099666b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:58:47 -0800 (PST)
+	s=arc-20240116; t=1708469955; c=relaxed/simple;
+	bh=r0q7C3BTXQWVoAF7et7PmO58LjUv8JMMw/dJkBUXwvM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cs+/gNjcJVHzUf6enDHyB0NVytysLXedvUiPeHVGvVGGevXsP5DiHE/8cHoypbXjOzbiQn8AoakkZuI7Kou0kcPCsYlpOOi3Lsxd4dOKZAe52VLvJEa8K6NYEMYIM14LCW+ec5nI0qxQZqVQzRvASMafo/YHoQw3824GGOWRh7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Gj1c8hCc; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c00a2cbcf6so44427139f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:59:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708469926; x=1709074726; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TUcIEfTpYZcXd0dHJfdR5ASrz4snMW6xTMGC+3CDi/Q=;
-        b=gdzK+hfxp3w//WJXkZf0jhXFjBXCszr82lsBlru4jGHjsZixGxF/FMG39fjEoQlR6p
-         JbcZ70CSIK1KcZKxcp6kTnh6LMmENu8Hq5a0smyGD01m1qiNs3MT1QkXiTmqBIR8vhv0
-         PajGMh8NmCv/TDVCjLxi7eOxeFnXqt7SWRXzwphZ9QOz2/5/hqFMU20XQ1kO3+TIGuQc
-         Gt8zK0K4MT1UyvvPqnB7lREYMs8yBjJnt56ckAQUjB/AFvk8dCMZllJ2pncaaSUdohlZ
-         tAhQFZiRzGVRkpz08R/Y4TJfAIUjY9CmRA0T8ZBXwNtrDH17/ZBYAiQJrgWYwqxuDHxv
-         271A==
+        d=linuxfoundation.org; s=google; t=1708469953; x=1709074753; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8K9aXU3q/65GO6Sm64RSpJezMgpW/RCj7oX3cxUfRkg=;
+        b=Gj1c8hCcYSd4okPF+vUnyV3bJ5FryzBylMcTH5n6+MGQiBOxOc5VTjkpqZ+ex1Vido
+         3AtQ4Kxvgt7naVBRIagjV+wMsve3jGBnMHsYEUHhUClCGshddZSvK77PD+Y0NJpn8s6t
+         d0ntAoMmVCHB4qfFwbnniFSXMuKyzVHxhIf/o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708469926; x=1709074726;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TUcIEfTpYZcXd0dHJfdR5ASrz4snMW6xTMGC+3CDi/Q=;
-        b=YVssxHeIgGqWnN8TGdbG/An6NObLefgSYACncMGeRWAZXEFI99367wrPpWIf214+BW
-         2fakaPNFEK+YZ+imTihXsOntlabARcvdmzKiTXeWBJexJndjZS9l9IgAq0bdmf3iVZDL
-         yRXIFpFwI1rvRz7m+d9C3yGSi8O0OU+rDsRpgwcc5p0Pq3cq0QyBi5PbWnBxnVS9CpHs
-         V/f5iZFJP3AcDGfmqqR4Tt4h9cRoGr777vYVhA0yUDTlLsP1OkjBLu4Ia4pQKK5Ncmpj
-         cAcbsmhYBzTclAMadAKMOXDaMyDejstKWmccPCHfIMXbd90+qV0WhrGof42pkrlxQ7ix
-         c0RA==
-X-Forwarded-Encrypted: i=1; AJvYcCUifXE9Lek7DlgqWQlXYNxXSozHEPFx/z5grryNiwFTlC85xxBgPvBjGWkd+WlkWyX0XuxB8avXfp47RujSpQ6m75QwEq4nJ7ohVWj0
-X-Gm-Message-State: AOJu0Yw6YBnKsU5H+zYHVFUHbiKfKaCiDUF2KFeJa1joMlZFgbvCKWCW
-	P89y8iDMrXAyWIx3vFg8Ak/wdaJRj8xcv17KBCH5eXfE7HJfH2HGO1UkiKVXKYk=
-X-Google-Smtp-Source: AGHT+IF2fSCulCys+V0r+zufqoHv/4IUYP8LW9DrBLQfm3rB+JxNdqLqcpFaKpM80DQhAG7gS+CJaA==
-X-Received: by 2002:a17:906:e2cb:b0:a3f:175b:ea91 with SMTP id gr11-20020a170906e2cb00b00a3f175bea91mr1274492ejb.13.1708469925781;
-        Tue, 20 Feb 2024 14:58:45 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id tb5-20020a1709078b8500b00a3d599f47c2sm4417614ejc.18.2024.02.20.14.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 14:58:45 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 20 Feb 2024 23:58:45 +0100
-Subject: [PATCH] mmc: sh_mmcif: sg_miter does not need to be atomic
+        d=1e100.net; s=20230601; t=1708469953; x=1709074753;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8K9aXU3q/65GO6Sm64RSpJezMgpW/RCj7oX3cxUfRkg=;
+        b=bdcXnpfshZfcscSKu9YJh3UQryG9lmLYkhnF1m7fYn5shN+vKuRDRYqHYEKyqt21CC
+         R7/WU9TH6FEuAIlPgHpgg9wZNBWPw4E5okFb918jffb9BjeACsk1/W1DLo/DPqS+6yXy
+         HGTU24kxk36uGiKektmQBRRZhtucoqflTF6IlGhwbzdSFsfAPAEplC7zNoFkrWC4L6HV
+         zBMM2tff/QExG87N24A1DBmkZ2O7nqMz+FauWZXbOQ8uNQ4Vb17VI+R9rOxJIHHUJ68z
+         WieLE5TkAJIZbyO9FC8WsdbUt+un7i5pWGxr31PWkFAwWOtZv7FvTuN6yGY5XC1PF64s
+         xQKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJ6SBpa6ncYJOK+Dor7ADiuvkxXlQFIqf7iE4DDQzQIZe3Xs9dvsQpzqm3D5LMO946qFJ3ISLbLaSswDw5B2yzo5S3ewdQvc6XwkxT
+X-Gm-Message-State: AOJu0YwwVaMxLIeLC+M7fBgD60LmpNjUot0978nOIX/NBJgn3gkxB/iP
+	/nAho0tqhfvM7qlj9jflIWWWGdeheAGTkiOAqgHPHIpCRLCkvVb5ScX8dPkU9wWEmwPadqI7K37
+	+
+X-Google-Smtp-Source: AGHT+IHZpeFeP6L7Ans4kMahbW2XFNoZzvvWR3gSQCybe4GM0oe5Uc1SPG4SLL1RTSnn2zX+eOQezw==
+X-Received: by 2002:a05:6602:2cd6:b0:7c4:9e06:b9c8 with SMTP id j22-20020a0566022cd600b007c49e06b9c8mr15482650iow.2.1708469953307;
+        Tue, 20 Feb 2024 14:59:13 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id b7-20020a5edc07000000b007c45ab3dc34sm2483821iok.29.2024.02.20.14.59.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 14:59:12 -0800 (PST)
+Message-ID: <cbd29a01-d8db-4052-9d95-1e5357b0c10a@linuxfoundation.org>
+Date: Tue, 20 Feb 2024 15:59:11 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240220-fix-sh-mmcif-v1-1-b9d08a787c1f@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAKQu1WUC/x2MQQqAIBAAvxJ7bkHFkPpKdChdcw9aKEQg/j3pO
- AwzFQplpgLLUCHTw4Wv1EGOA9iwp5OQXWdQQmmhlEDPL5aAMVr2qGcrHRlhp8NAT+5M3f+7dWv
- tA64RybheAAAA
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: Move KTAP bash helpers to selftests common
+ folder
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Laura Nao <laura.nao@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Miguel Ojeda <ojeda@kernel.org>,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, kernel@collabora.com,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240102141528.169947-1-laura.nao@collabora.com>
+ <5b14aa28-a239-4204-a8ce-8d37f19b724b@notapiano>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <5b14aa28-a239-4204-a8ce-8d37f19b724b@notapiano>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-All the sglist iterations happen in the *threaded* interrupt handler
-and that context is not atomic, so don't request an atomic
-sglist miter. Using an atomic miter results in "BUG: scheduling while
-atomic" splats.
+On 2/12/24 08:01, Nícolas F. R. A. Prado wrote:
+> On Tue, Jan 02, 2024 at 03:15:28PM +0100, Laura Nao wrote:
+>> Move bash helpers for outputting in KTAP format to the common selftests
+>> folder. This allows kselftests other than the dt one to source the file
+>> and make use of the helper functions.
+>> Define pass, fail and skip codes in the same file too.
+>>
+>> Signed-off-by: Laura Nao <laura.nao@collabora.com>
+>> ---
+> 
+> Hi Shuah, any thoughts on this patch?
+> 
+> It's gotten Rob's ack, so I take this will be merged through your tree.
+> 
+> Thanks,
+> Nícolas
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Fixes: 27b57277d9ba ("mmc: sh_mmcif: Use sg_miter for PIO")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Hi Geert, it'd be great if you could test this!
----
- drivers/mmc/host/sh_mmcif.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Applied to next for Linux 6.9-rc1
 
-diff --git a/drivers/mmc/host/sh_mmcif.c b/drivers/mmc/host/sh_mmcif.c
-index 1ef6e153e5a3..669555b5e8fa 100644
---- a/drivers/mmc/host/sh_mmcif.c
-+++ b/drivers/mmc/host/sh_mmcif.c
-@@ -607,7 +607,7 @@ static void sh_mmcif_single_read(struct sh_mmcif_host *host,
- 			   BLOCK_SIZE_MASK) + 3;
- 
- 	sg_miter_start(&host->sg_miter, data->sg, data->sg_len,
--		       SG_MITER_ATOMIC | SG_MITER_TO_SG);
-+		       SG_MITER_TO_SG);
- 
- 	host->wait_for = MMCIF_WAIT_FOR_READ;
- 
-@@ -662,7 +662,7 @@ static void sh_mmcif_multi_read(struct sh_mmcif_host *host,
- 		BLOCK_SIZE_MASK;
- 
- 	sg_miter_start(&host->sg_miter, data->sg, data->sg_len,
--		       SG_MITER_ATOMIC | SG_MITER_TO_SG);
-+		       SG_MITER_TO_SG);
- 
- 	host->wait_for = MMCIF_WAIT_FOR_MREAD;
- 
-@@ -710,7 +710,7 @@ static void sh_mmcif_single_write(struct sh_mmcif_host *host,
- 			   BLOCK_SIZE_MASK) + 3;
- 
- 	sg_miter_start(&host->sg_miter, data->sg, data->sg_len,
--		       SG_MITER_ATOMIC | SG_MITER_FROM_SG);
-+		       SG_MITER_FROM_SG);
- 
- 	host->wait_for = MMCIF_WAIT_FOR_WRITE;
- 
-@@ -765,7 +765,7 @@ static void sh_mmcif_multi_write(struct sh_mmcif_host *host,
- 		BLOCK_SIZE_MASK;
- 
- 	sg_miter_start(&host->sg_miter, data->sg, data->sg_len,
--		       SG_MITER_ATOMIC | SG_MITER_FROM_SG);
-+		       SG_MITER_FROM_SG);
- 
- 	host->wait_for = MMCIF_WAIT_FOR_MWRITE;
- 
-
----
-base-commit: 2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e
-change-id: 20240220-fix-sh-mmcif-49c1de70c5b7
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
-
+thanks,
+-- Shuah
 
