@@ -1,161 +1,144 @@
-Return-Path: <linux-kernel+bounces-73336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4D1E85C124
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:23:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C47BC85C126
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C1842831A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:23:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA0DB1C21ED3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DEA79957;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D33F78B79;
 	Tue, 20 Feb 2024 16:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QIRKyTj8"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hnH3DEK1"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FDE76408;
-	Tue, 20 Feb 2024 16:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDDF79922
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446040; cv=none; b=GomqaNvUapRm6vccni10ZzboKHZ2ABZXw33YY8bb2rbt2RFRLNtMjz6pDF44AMMiNKxSGsp5QYdp6LYSUSOTuoOK1JoXE7eaZQKDzrEvte8BGZbftPJKYCNoQkOTOpxb7FIirbpJWFNpfeHR6hW5GujHuZkzjnm5b5wARA0IelM=
+	t=1708446040; cv=none; b=sMrGffp713ovIr761dygD2zNucC0r9rNpUIe2yqYSfDfiR/uDjMDsRfFxgcC4uYzZ8iZmq70hpyT62aFdA/2whWpUVlBRUs8wvcn6nA1f2fA2ei6QVGQEqP4MT0mIYplF1SLwJL+CE+w9oxX/5EcJ8TNpArDGLkOQYw5PaldX08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708446040; c=relaxed/simple;
-	bh=8YQv7aLTPzzKaJ7jlQ5Sre4GQB/b020Pt6fSgtcM+TE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HGjOrXBGhdwMo5p4715CRlUoPoRVED6XpHlPnfAC2QYeVDaE6Q5G3KJ5kSJDEiqwfAYLKqm2nzdNJpFcUbaYxxQ4CwP9GVEiLhdZlvIT097MqBJWU74xuYAAhzg/qhMqxtwe9RZC3Rd5xmq+C7kgHnDEJTgrwAIM5xHITiIcGdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QIRKyTj8; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 02E04240004;
-	Tue, 20 Feb 2024 16:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708446035;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pXos02wI1NevLoKIn6UfDZ/DT2LVCxm0HsQrNIoS9qw=;
-	b=QIRKyTj8c5fpAGiYJiASyDw9WoF4XtF3FZAOmveqKKYIkasIzidfU3JLHPT8/T0CCqli53
-	s5q+RtSlnAko+igLmKgeVSTe1InW/gAuXXU6osKRWw1D7zjFLjZHBCsaYtt9+iiS2RFNkc
-	XDKrd29uZEvN5CINymsS4Zn1pCw6dvf4VEEW4od3YFhqEvnJdoY62vYj9KMssIr2j5Q0VC
-	NLn6VW/lc6vmI0E+Q3QLLYHwztna+ZFZZ5xVZu3W6WRINwqrbiZcyt94wPc9OIGpg/Qgqk
-	JLLZ0DGExukFlycsPkRXfSLuH+CuGkTrEhhBx0F5FwkovvFw9jfH21NzYhyOUg==
-Date: Tue, 20 Feb 2024 17:20:33 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Rahul Rameshbabu <rrameshbabu@nvidia.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Richard Cochran
- <richardcochran@gmail.com>, Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
- Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
- <claudiu.beznea@tuxon.dev>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
- Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
- <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH RFC net-next v8 04/13] net: Change the API of PHY
- default timestamp to MAC
-Message-ID: <20240220172033.556f321f@kmaincent-XPS-13-7390>
-In-Reply-To: <ZdN9pPf3wXwE/9nX@shell.armlinux.org.uk>
-References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
-	<20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
-	<87jzn4gtlv.fsf@nvidia.com>
-	<20240219142936.62112d34@kmaincent-XPS-13-7390>
-	<ZdN9pPf3wXwE/9nX@shell.armlinux.org.uk>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	bh=tkQx8P4cA4yFykrMvurCrO/U9EcQdI6W6X9CrUgTWAE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=KpZ+1vXdiXPM8h4ow7HNxtf5ziJoJP+78knMB/BSQU7YyhjsYEob8umRdySdQVYeXFwCgrwQRMTuJqNZHFo1VniDSij1feJk9cZIFxNFnqiiBxXdDqGefotb1qeWdqsxYbVEb46QdvqiFGXpGefzjZSXfcGg2Kf4OOB7Ojk0GL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hnH3DEK1; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1db90f7b92bso52075275ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:20:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708446038; x=1709050838; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gaBNvIG1XlI7Rma4r4ZehqM6i4uIMsjEXoMFyCXLWog=;
+        b=hnH3DEK1TlZ9XwRPa83LdjKnfEDz6mvX3uvbNOKk5vlHxAcF/xGUsoDiW2kmphZJ8P
+         sSzYna9rcvjRU0qhgID4aqNAZCnYGaS7rkjVN74ZngY/yBpmP8AlzeLd7pY1SaEAIjuI
+         9xov93twffL7EOgDT1w8w9DHfjjiuHWQ4Pq1IzsCXV8iN8Ka/2MxdYq/TUU4/r1vZktI
+         YxIc5uaLt+QDWpwjB/5/5VM3dRkP7AL0S/Jdde+HuZFCJj/j3wJKppg6jTdT4bEzSnq1
+         DYB5xhRw4vik1jyn9upwPoZ/PsVFyfq+IxzVOtp7WOMrF7+wd+PDFjNftoT07ZP2HVTi
+         Ra5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708446038; x=1709050838;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gaBNvIG1XlI7Rma4r4ZehqM6i4uIMsjEXoMFyCXLWog=;
+        b=ppf/1nL9NEqdGLT7fb1nR0H8WgiqWOqAPUfZ4U0iUGt9OCTb48zJypTH0Lg4I1ZWJG
+         Lf807nekLZWPCMDZiwCVUn6CnqwQcailQRSl2FGaoPhZbPGyFqH6cKSM8sxmL0wFeK4W
+         XEJb/FhrFRvrHtAgwpepHzuR76IN/ZTWJqLsZ6d02MUNbH9pW35hisKTB39IMP8sCRte
+         qP1gELx4ndJGHCHVx3NtuS6NTvmE7gEkM7Ipgfau1aWS9BgpD+ItPpuXHOtgQjc6819P
+         DCgY0qXpEsD/kMLw+WLkzG3071kZNeSLrEV21KtZBxiOfhaZVyn1Mdt+SN6eW5g8LITJ
+         kd9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWlYZ/JXg0NYwsgjTx5/w7ei7SJADZhiQ+kzlRVNWRbjsXf8UDCcS5mVIB0zJgHUnMfCZg/Ma80CwWzEUZTLb/ydZJewmSvOqi4pAKj
+X-Gm-Message-State: AOJu0YxIRM7UoXA1hpuBK8pq9wyMEUUTSKFb4pHFwjx8KIr769luHYaR
+	wy3q/pgVi/9EEmLlBvUyLwE/Ki82shiB+i87a/0KMqw/gD0bTXIeUqchcRT1rIFQ6ZMs3sPmvma
+	a0Q==
+X-Google-Smtp-Source: AGHT+IHQi9e4VsipuZL3tTtt6H5NilJ+ksQWV/bXRNHygHBVBXjwpN+pFq6S26zUER6fkq27ZHG9pHuUsUo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e74d:b0:1db:e494:4b51 with SMTP id
+ p13-20020a170902e74d00b001dbe4944b51mr268101plf.4.1708446038280; Tue, 20 Feb
+ 2024 08:20:38 -0800 (PST)
+Date: Tue, 20 Feb 2024 08:20:36 -0800
+In-Reply-To: <Zc5MRqmspThUoB+n@AUS-L1-JOHALLEN.amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Mime-Version: 1.0
+References: <20231010200220.897953-1-john.allen@amd.com> <20231010200220.897953-7-john.allen@amd.com>
+ <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
+ <ZUQvNIE9iU5TqJfw@google.com> <c077e005c64aa82c7eaf4252f322c4ca29a2d0af.camel@redhat.com>
+ <Zc5MRqmspThUoB+n@AUS-L1-JOHALLEN.amd.com>
+Message-ID: <ZdTRVNt5GWXEKL8h@google.com>
+Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for hypervisor kernel
+From: Sean Christopherson <seanjc@google.com>
+To: John Allen <john.allen@amd.com>
+Cc: mlevitsk@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pbonzini@redhat.com, weijiang.yang@intel.com, rick.p.edgecombe@intel.com, 
+	x86@kernel.org, thomas.lendacky@amd.com, bp@alien8.de
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, 19 Feb 2024 16:11:16 +0000
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+On Thu, Feb 15, 2024, John Allen wrote:
+> On Tue, Nov 07, 2023 at 08:20:52PM +0200, Maxim Levitsky wrote:
+> > On Thu, 2023-11-02 at 16:22 -0700, Sean Christopherson wrote:
+> > > On Thu, Nov 02, 2023, Maxim Levitsky wrote:
+> > > > On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
+> > > > > @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
+> > > > >  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
+> > > > >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
+> > > > >  	}
+> > > > > +
+> > > > > +	if (kvm_caps.supported_xss)
+> > > > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
+> > > > 
+> > > > This is not just a virtualization hole. This allows the guest to set MSR_IA32_XSS
+> > > > to whatever value it wants, and thus it might allow XSAVES to access some host msrs
+> > > > that guest must not be able to access.
+> > > > 
+> > > > AMD might not yet have such msrs, but on Intel side I do see various components
+> > > > like 'HDC State', 'HWP state' and such.
+> > > 
+> > > The approach AMD has taken with SEV-ES+ is to have ucode context switch everything
+> > > that the guest can access.  So, in theory, if/when AMD adds more XCR0/XSS-based
+> > > features, that state will also be context switched.
+> > > 
+> > > Don't get me wrong, I hate this with a passion, but it's not *quite* fatally unsafe,
+> > > just horrific.
+> > > 
+> > > > I understand that this is needed so that #VC handler could read this msr, and
+> > > > trying to read it will cause another #VC which is probably not allowed (I
+> > > > don't know this detail of SEV-ES)
+> > > > 
+> > > > I guess #VC handler should instead use a kernel cached value of this msr
+> > > > instead, or at least KVM should only allow reads and not writes to it.
+> > > 
+> > > Nope, doesn't work.  In addition to automatically context switching state, SEV-ES
+> > > also encrypts the guest state, i.e. KVM *can't* correctly virtualize XSS (or XCR0)
+> > > for the guest, because KVM *can't* load the guest's desired value into hardware.
+> > > 
+> > > The guest can do #VMGEXIT (a.k.a. VMMCALL) all it wants to request a certain XSS
+> > > or XCR0, and there's not a damn thing KVM can do to service the request.
+> > > 
+> > 
+> > Ah, I understand now. Everything makes sense, and yes, this is really ugly.
+> 
+> Hi Maxim and Sean,
+> 
+> It looks as though there are some broad changes that will need to happen
+> over the long term WRT to SEV-ES/SEV-SNP. In the short term, how would
+> you suggest I proceed with the SVM shstk series? Can we omit the SEV-ES
+> changes for now with an additional patch that disallows guest shstk when
+> SEV-ES is enabled? Subsequently, when we have a proper solution for the
+> concerns discussed here, we could submit another series for SEV-ES
+> support.
 
-> On Mon, Feb 19, 2024 at 02:29:36PM +0100, K=C3=B6ry Maincent wrote:
-> > On Fri, 16 Feb 2024 10:09:36 -0800
-> > Rahul Rameshbabu <rrameshbabu@nvidia.com> wrote:
-> >  =20
-> > > On Fri, 16 Feb, 2024 16:52:22 +0100 Kory Maincent
-> > > <kory.maincent@bootlin.com> wrote: =20
-> > > > Change the API to select MAC default time stamping instead of the P=
-HY.
-> > > > Indeed the PHY is closer to the wire therefore theoretically it has=
- less
-> > > > delay than the MAC timestamping but the reality is different. Due to
-> > > > lower time stamping clock frequency, latency in the MDIO bus and no=
- PHC
-> > > > hardware synchronization between different PHY, the PHY PTP is often
-> > > > less precise than the MAC. The exception is for PHY designed specia=
-lly
-> > > > for PTP case but these devices are not very widespread. For not
-> > > > breaking the compatibility default_timestamp flag has been introduc=
-ed
-> > > > in phy_device that is set by the phy driver to know we are using the
-> > > > old API behavior.
-> > > >
-> > > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > > > ---   =20
-> > >=20
-> > > Overall, I agree with the motivation and reasoning behind the patch. =
-It
-> > > takes dedicated effort to build a good phy timestamping mechanism, so
-> > > this approach is good. I do have a question though. In this patch if =
-we
-> > > set the phy as the default timestamp mechanism, does that mean for ev=
-en
-> > > non-PTP applications, the phy will be used for timestamping when
-> > > hardware timestamping is enabled? If so, I think this might need some
-> > > thought because there are timing applications in general when a
-> > > timestamp closest to the MAC layer would be best. =20
-> >=20
-> > This patch comes from a request from Russell due to incompatibility bet=
-ween
-> > MAC and PHY timestamping when both were supported.
-> > https://lore.kernel.org/netdev/Y%2F4DZIDm1d74MuFJ@shell.armlinux.org.uk/
-> >=20
-> > His point was adding PTP support to a PHY driver would select timestamp
-> > from it by default even if we had a better timestamp with the MAC which=
- is
-> > often the case. This is an unwanted behavior.
-> > https://lore.kernel.org/netdev/Y%2F6Cxf6EAAg22GOL@shell.armlinux.org.uk/
-> >=20
-> > In fact, with the new support of NDOs hwtstamp and the
-> > dev_get/set_hwtstamp_phylib functions, alongside this series which make
-> > timestamp selectable, changing the default timestamp may be not necessa=
-ry
-> > anymore.
-> >=20
-> > Russell any thought about it?  =20
->=20
-> My position remains: in the case of Marvell PP2 network driver with a
-> Marvell PHY, when we add PTP support for the Marvell PHYs (I have
-> patches for it for years) then we must _not_ regress the existing
-> setup where the PP2 timestamps are the default.
-
-Yes, that's what I thought.
-About the Marvell PHYs PTP support I have a few fixes on it, but we will
-talk about it when this series gets merged.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+The SEV-ES mess was already addressed by commit a26b7cd22546 ("KVM: SEV: Do not
+intercept accesses to MSR_IA32_XSS for SEV-ES guests").  Or is there more that's
+needed for shadow stacks?
 
