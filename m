@@ -1,112 +1,180 @@
-Return-Path: <linux-kernel+bounces-72223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64AF785B0F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:45:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910EA85B0F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF65BB226BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:45:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DE57284BBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F3D36102;
-	Tue, 20 Feb 2024 02:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001AC405EC;
+	Tue, 20 Feb 2024 02:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZkIVs5tG"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sVuqROMi"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECE02C1B9;
-	Tue, 20 Feb 2024 02:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450EB2E405;
+	Tue, 20 Feb 2024 02:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708397127; cv=none; b=agtaWy4XMX4Bzrhsz0fp6SgYlR6SSRvlFV384JqufQZ/pvnOb8DR5mu1Y3xgbvfhdXdIKXqdrj5lgMT3VbLX2jeWq61zSTppQ/kR/NI1UBlW7nYAapk27BGkhVIr1k2MVOJBP6jCSGoo+uT+8vN1455AV/stHBo8cs4eDDqyX7c=
+	t=1708397289; cv=none; b=p+/+47ZuGVG+jbN9n8WiwRKJyQYYQpcZ0+gz8ezoalf6IG8A0m1drvM3TS4eHDadryq0M95CxIwFscU2fawT7AkhVDDm0XqhvLvMQ274LBgdHpPILbDVGEkDMwvbhKdPJJsMxmQn727Fy0ySkMCWF4axCC1MDcA9NM7kRsuLJjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708397127; c=relaxed/simple;
-	bh=BgI8KUUZGcJShWv42a+S7WU6a7VTrR2A3Zt6fAujEFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EAI5T1ZGjJWAgk/sBCTBtsRTTXXcLSvCcGpdHlbE8NYJy2gJEM1AzN60YvNMuqrR+v86by7Do1CkOqaA+24eZDKf8yiQ8m6lje2Mngu2XXF1F18gD15Xlhv0FFeUxsdJvuHUgQ7TTqcZdknuFCkMTZUwI25BGqfbSsax/98D0DM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZkIVs5tG; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708397121; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=epsRxanowU+Rvzj769kG7rng4wSLzPgisiNp8zQ07Ng=;
-	b=ZkIVs5tGRFpppVsmALZXF27NoJ9/Ezzs32Sii20jvWdKDKD5UOPqiuOM+Rk0AOSYQ9CKIGSoumvcqFNktl8d5Xs3ay9Z2KREsR9Ob/pWhBNA7PcgiN0XoKGhwtrPMWjzv2DbltBUzG5mkghuYL2LsVaxjBJxrnWMyFVuQcXGW8g=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0W0v2plx_1708397119;
-Received: from 30.221.128.233(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W0v2plx_1708397119)
-          by smtp.aliyun-inc.com;
-          Tue, 20 Feb 2024 10:45:21 +0800
-Message-ID: <cac6192e-85d8-4289-b5af-bc8143e76004@linux.alibaba.com>
-Date: Tue, 20 Feb 2024 10:45:19 +0800
+	s=arc-20240116; t=1708397289; c=relaxed/simple;
+	bh=gW8PiThJNQZ5FS6YlG6JbBxKrlbLQJE1IW//TvIJxPw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DgCZAsjw2FvIeI+6I3oMgAkSTVn0zXkTeh5anoHqhxUIpm6Dm0t+3gDnzLbZbZf8l1nUV/o2dTh5CA/nTcwVPyOy4NuQxRJwr/98hbl1UgR0YY6voLHFjIgYF8Z9OrgmdT0WtPgcX9bqXZqTIvlOeM6M5Ibrhx7EL1VsijafhIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sVuqROMi; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708397282;
+	bh=Z4i2HgUFZGcYAnFlUo70X5l7wimYk9KDMghPc8ouFB0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=sVuqROMiVrTxIczX4g1b2YhlfT9Y1oa/RcBKuXd1AY6eHRELs8EGsfq+sDYJce7rp
+	 go7p24EFHF/oYrTzLOojgEsPdeU7JGuX0Cd0L2QqBhUrCf9rJnuxsZDHnntOJAvQWU
+	 PIiDgq5+rhUYQTIWWWI1cN6OFzcBqSPU3hSAGCQo0/k/FXBcX28YZQVUEqilF9D2rr
+	 CljuIvaRPGeoRzFZT8MqxX0opl+SqCN7ZPD17GkMIsZ2Ok2vOtu+PbQftJZ4v4gHrM
+	 CP0CiasxhIyVCT/jxOHDLCOmrd7k/zWg2fFl6iZGLwIV6qKjd6nlf0pkRuciOWXkVk
+	 BXfjkcA+b9mGQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tf3js5dmBz4wc7;
+	Tue, 20 Feb 2024 13:48:01 +1100 (AEDT)
+Date: Tue, 20 Feb 2024 13:48:00 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>
+Cc: KVM <kvm@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Paul Durrant <pdurrant@amazon.com>
+Subject: linux-next: manual merge of the kvm-x86 tree with the kvm tree
+Message-ID: <20240220134800.40efe653@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 09/15] net/smc: introduce loopback-ism statistics
- attributes
-To: Wenjia Zhang <wenjia@linux.ibm.com>, wintera@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <20240111120036.109903-10-guwen@linux.alibaba.com>
- <417a1b7c-4136-4f96-a614-9fd976dc884d@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <417a1b7c-4136-4f96-a614-9fd976dc884d@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/A144DtVpcjR0fVyttz24FeA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/A144DtVpcjR0fVyttz24FeA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2024/2/16 22:24, Wenjia Zhang wrote:
-> 
-> 
-> On 11.01.24 13:00, Wen Gu wrote:
->> This introduces some statistics attributes of loopback-ism. They can be
->> read from /sys/devices/virtual/smc/loopback-ism/{xfer_tytes|dmbs_cnt}.
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
->>   net/smc/smc_loopback.c | 74 ++++++++++++++++++++++++++++++++++++++++++
->>   net/smc/smc_loopback.h | 22 +++++++++++++
->>   2 files changed, 96 insertions(+)
->>
-> 
-> I've read the comments from Jiri and your answer. I can understand your thought. However, from the perspective of the 
-> end user, it makes more sense to integetrate the stats info into 'smcd stats'. Otherwise, it would make users confused 
-> to find out with which tool to check which statisic infornation. Sure, some improvement of the smc-tools is also needed
+Today's linux-next merge of the kvm-x86 tree got a conflict in:
 
-Thank you Wenjia.
+  include/uapi/linux/kvm.h
 
-Let's draw an analogy with RDMA devices, which is used in SMC-R. If we want
-to check the RNIC status or statistics, we may use rdma statistic command, or
-ibv_devinfo command, or check file under /sys/class/infiniband/mlx5_0. These
-provide details or attributes related to *devices*.
+between commit:
 
-Since s390 ISM can be used out of SMC, I guess it also has its own way (other
-than smc-tools) to check the statistic?
+  bcac0477277e ("KVM: x86: move x86-specific structs to uapi/asm/kvm.h")
 
-What we can see in smcr stats or smcd stats command is about statistic or
-status of SMC *protocol* layer, such as DMB status, Tx/Rx, connections, fallbacks.
+from the kvm tree and commits:
 
-If we put the underlying devices's statistics into smc-tools, should we also
-put RNIC statistics or s390 ISM statistics into smcr stat or smcd stat? and
-for each futures device that can be used by SMC-R/SMC-D, should we update them
-into smcr stat and smcd stat? And the attributes of each devices may be different,
-should we add entries in smcd stat for each of them?
+  01a871852b11 ("KVM: x86/xen: allow shared_info to be mapped by fixed HVA")
+  3a0c9c41959d ("KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA")
 
-After considering the above things, I believe that the details of the underlying
-device should not be exposed to smc(smc-tools). What do you think?
+from the kvm-x86 tree.
 
-Thanks!
+I fixed it up (I used the former version of this file and applied the
+following fix up patch) and can carry the fix as necessary. This is now
+fixed as far as linux-next is concerned, but any non trivial conflicts
+should be mentioned to your upstream maintainer when your tree is
+submitted for merging.  You may also want to consider cooperating with
+the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 20 Feb 2024 13:44:11 +1100
+Subject: [PATCH] fixup for code moving to arch/x86/include/uapi/asm/kvm.h
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/x86/include/uapi/asm/kvm.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kv=
+m.h
+index 0ad6bda1fc39..ad29984d5e39 100644
+--- a/arch/x86/include/uapi/asm/kvm.h
++++ b/arch/x86/include/uapi/asm/kvm.h
+@@ -549,6 +549,7 @@ struct kvm_x86_mce {
+ #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+ #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
+ #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
++#define KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA	(1 << 8)
+=20
+ struct kvm_xen_hvm_config {
+ 	__u32 flags;
+@@ -567,9 +568,10 @@ struct kvm_xen_hvm_attr {
+ 		__u8 long_mode;
+ 		__u8 vector;
+ 		__u8 runstate_update_flag;
+-		struct {
++		union {
+ 			__u64 gfn;
+ #define KVM_XEN_INVALID_GFN ((__u64)-1)
++			__u64 hva;
+ 		} shared_info;
+ 		struct {
+ 			__u32 send_port;
+@@ -611,6 +613,8 @@ struct kvm_xen_hvm_attr {
+ #define KVM_XEN_ATTR_TYPE_XEN_VERSION		0x4
+ /* Available with KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLA=
+G */
+ #define KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG	0x5
++/* Available with KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA */
++#define KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA	0x6
+=20
+ struct kvm_xen_vcpu_attr {
+ 	__u16 type;
+@@ -618,6 +622,7 @@ struct kvm_xen_vcpu_attr {
+ 	union {
+ 		__u64 gpa;
+ #define KVM_XEN_INVALID_GPA ((__u64)-1)
++		__u64 hva;
+ 		__u64 pad[8];
+ 		struct {
+ 			__u64 state;
+@@ -648,6 +653,8 @@ struct kvm_xen_vcpu_attr {
+ #define KVM_XEN_VCPU_ATTR_TYPE_VCPU_ID		0x6
+ #define KVM_XEN_VCPU_ATTR_TYPE_TIMER		0x7
+ #define KVM_XEN_VCPU_ATTR_TYPE_UPCALL_VECTOR	0x8
++/* Available with KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA */
++#define KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO_HVA	0x9
+=20
+ /* Secure Encrypted Virtualization command */
+ enum sev_cmd_id {
+--=20
+2.43.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/A144DtVpcjR0fVyttz24FeA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXUEuAACgkQAVBC80lX
+0Gzk5gf/ZqyZKU4mrYdDzO3ayPcqIfP0uGNR0Y9blW43TEkmk1AbzT5bzIPpOFZZ
+4vX2y2LfrfZkeo5pK1uiknq50Z8RwX3yyeYVM1W5/az/z8BHzsEuVbonw3vTjI2v
+3Ompv+y2Vs83d31ZCWqmNnuMhL95gDeiZJkr8uPs+wZ8UmHxzf12u7v6nTaeQXj9
+oosPhKo95u8ThiW4xHmkpDx6sRbX5l/kzaIUAj7r9GyX5zGbe2M75UHVPZe+dY2K
+7sLHKU+ccvEb8XdG7afg426byR8YmTdmGukYz8NM6xQQbwVTzcWsmeuK24UQXTpg
+5hIv1dpGhPos3I5s1Pk4gcKpvY67GA==
+=JsQc
+-----END PGP SIGNATURE-----
+
+--Sig_/A144DtVpcjR0fVyttz24FeA--
 
