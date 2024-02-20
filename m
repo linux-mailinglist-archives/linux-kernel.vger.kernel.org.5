@@ -1,119 +1,156 @@
-Return-Path: <linux-kernel+bounces-73433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A4AF85C282
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:22:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6723E85C285
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4288328294F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:22:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 987D71C2250F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B2C77658;
-	Tue, 20 Feb 2024 17:21:43 +0000 (UTC)
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6784476C8E;
+	Tue, 20 Feb 2024 17:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q8su+0gu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ACDC77626;
-	Tue, 20 Feb 2024 17:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC1B2599;
+	Tue, 20 Feb 2024 17:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449702; cv=none; b=Ga5CSM2k5xwranlZl+YJmESnqyx48h0o8U+jMal1UnpHt9GMjMstHBRrIq+YK1gv+477RogPX4Juxkq+AOYgMuY58TxTfrWlNv++UBuvpqQuGU8JHfj0MwXSjfW69P5bOzRstya1Ibt4WpZAPGFxn8qTV22S2xeiQtGq8HBzUsc=
+	t=1708449813; cv=none; b=hNp+gRuO85/crxGnooHtvpNOvzmZzXop+o8x7bhlIZeggFTExFCVEeQfXa/itXMww3RBWswybwjwgbdr0cjh1vOGDqV2lAC4vXYUT9vNOyzXhw1nWiItVg2Ea3P6znqDvOmV/1WYro0x9CHZUukOoeAj0jlwxmq3wXOU3EAl8UM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449702; c=relaxed/simple;
-	bh=mPo+l7s6R2Mn5HzTebtRduD2jfu/x8K/datW8X5vC90=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q2+OpkUeas4pb8Dt/N4dct68D7PguvkyP2VOMx/sqsztDCcfjNBkfblko2CQ5bVLWJXU4DUQ0Nun/l3hPk/K/SVNoTbS14YzQ7EdCTgfOD+p4rZcZQwruOfa5Kose2kWoISvI4pI/vC2J3MmHinz37U+jxf4uChFLGEU3KRZzd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e0f803d9dfso2903171b3a.0;
-        Tue, 20 Feb 2024 09:21:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708449699; x=1709054499;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q2yUIPD7foX8u6Xdbasilcg/3p8ULKCtlmQtBTHBRrU=;
-        b=e/kosMAp12J+yiF6DGKXrEZV1tkuDDqC0SOtLxOfO8mgIOy4Dz7r1qSEZf6oupFoF/
-         02wKYY1lxGnKrC9NpVd2zzHiStrEUWWy8hAlh97ijzqcm1+YplTxMGAfAeiMgv5xEpHq
-         SPawy8MzbgG+TfY79r8xaHzNpjnbmxKeU9LPCK6+yzzrfxc1aUdVKTkdUTn4je2JbUDz
-         7c1iiXh4VBkKu6yx7bkYDPGLfSLfW+rJUGkqxONBzpi81tMPQZQ5qddBdoWPX9RpwgwX
-         8kwexL3MwdrXzI+VyoT8+RsprOIh7c/naz4/E7Et4lERLjdRSu0ovUY/gPB9IaKXsPGv
-         j1wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWByMh4C5ZiEkgqW2yRsoX+fRY/iXFnHgIYxgfo2SKz0/Nkp+gLYk7vJiwE0iCzcFEgciuISwTO4TmAsJC/f4ZuXG13o6IiWnH5ZG5lr9bjkb5ioe7UDcmXbVxsyRXX1m2VwLQPAXx/FA==
-X-Gm-Message-State: AOJu0YxU1vWtfGQeD/WGaUwHy3D96lxG0nyLkpPdtCGWRqz11iqGp4N/
-	7GaqVIbhnzFbpE4s+5lEVYd41AoccsBVzZ21VAzgOlxeqSB+rLk8
-X-Google-Smtp-Source: AGHT+IE779i2QADDo/XfAUyVbShxQgDbClnCbfoX2CDYqxGWSdXQL6WKX7naG+PPOPmDkKWQE36Vow==
-X-Received: by 2002:a05:6a00:1897:b0:6e4:864a:9f68 with SMTP id x23-20020a056a00189700b006e4864a9f68mr1190636pfh.5.1708449699227;
-        Tue, 20 Feb 2024 09:21:39 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:455a:b76d:46a7:7189? ([2620:0:1000:8411:455a:b76d:46a7:7189])
-        by smtp.gmail.com with ESMTPSA id d5-20020aa78685000000b006e2301e702fsm6824989pfo.125.2024.02.20.09.21.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 09:21:38 -0800 (PST)
-Message-ID: <1920a2f6-e398-47af-a5d7-9dad9c70e03d@acm.org>
-Date: Tue, 20 Feb 2024 09:21:37 -0800
+	s=arc-20240116; t=1708449813; c=relaxed/simple;
+	bh=dmMWWCPUJrt43ZgfiKC2edIWPknjOvRFAVs6CZ9C13g=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=hl7SEURC5H3BpywXiIGNXnjHrfsMEMvaEj29/XCLFJDuUTddi92J5zIPl8U2pb14dwR41oSZ5Tm6NNrr2ITyPYz7TusIitrRefLTodotUHHR2lvoUBzZqoev2q3o10nwyANgmsGjwgAMyeFgOnH4HkWLA8sTnoptDD/W1zoMJfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q8su+0gu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0DCAC433C7;
+	Tue, 20 Feb 2024 17:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708449813;
+	bh=dmMWWCPUJrt43ZgfiKC2edIWPknjOvRFAVs6CZ9C13g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Q8su+0gueaLh5W/I5BSWsIJUm433FvHhhf5wJ7T0cSL1w2yEb7cnZhOY9AMBFepCX
+	 KB9EZ+9km9AoPGWz8wcNlSO5ZsRndsX8+Jti+Jtt6ekVR+FK3Vn6C9i69gKld1n3N2
+	 PwIDvnecraaCIBXYD/QXr2XCmBvg6RMIyGKRe9q82+qLwRfzAvgnrkQ5UJR43ilSIv
+	 wIK7x3f3AfcfXaaGs4PenJFim1oCy/xXkh5+GpLj1y9C82n8ns04Tg4XRMLVse+3us
+	 wmBq94FO85R7LumuCDqiEh6aR0YJy36WSxxnGB5eyszXvZ/tqgwyT6+yLxfkBXYoit
+	 AvU0Kr0jpNKnQ==
+Date: Tue, 20 Feb 2024 11:23:31 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: bhelgaas@google.com, macro@orcam.me.uk, ajayagarwal@google.com,
+	ilpo.jarvinen@linux.intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, hkallweit1@gmail.com,
+	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
+	mmaddireddy@nvidia.com, sagar.tv@gmail.com,
+	"David E. Box" <david.e.box@linux.intel.com>
+Subject: Re: [PATCH V3] PCI/ASPM: Update saved buffers with latest ASPM
+Message-ID: <20240220172331.GA1495757@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: ufs: core: Fix setup_xfer_req invocation
-Content-Language: en-US
-To: Rohit Ner <rohitner@google.com>, Can Guo <quic_cang@quicinc.com>,
- Bean Huo <beanhuo@micron.com>, Stanley Chu <stanley.chu@mediatek.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240220090805.2886914-1-rohitner@google.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240220090805.2886914-1-rohitner@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108124248.1552420-1-vidyas@nvidia.com>
 
-On 2/20/24 01:08, Rohit Ner wrote:
-> Allow variant callback to setup transfers without
-> restricting the transfers to use legacy doorbell
+[+cc David]
+
+On Mon, Jan 08, 2024 at 06:12:48PM +0530, Vidya Sagar wrote:
+> Many PCIe device drivers save the configuration state of their respective
+> devices during probe and restore the same when their 'slot_reset' hook
+> is called through PCIe Error Recovery Handler.
 > 
-> Signed-off-by: Rohit Ner <rohitner@google.com>
+> If the system has a change in ASPM policy after the driver's probe is
+> called and before error event occurred, 'slot_reset' hook restores the
+> PCIe configuration state to what it was at the time of probe but not with
+> what it was just before the occurrence of the error event.
+> This effectively leads to a mismatch in the ASPM configuration between
+> the device and its upstream parent device.
+> 
+> Update the saved configuration state of the device with the latest info
+> whenever there is a change w.r.t ASPM policy.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+
+This overlaps with David's patches that are currently queued for v6.9:
+https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=be00f078ad2a
+
+Can you rebase this to apply on top of those (this is the pci/aspm
+branch)?
+
 > ---
->   drivers/ufs/core/ufshcd.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+> V3:
+> * Addressed sathyanarayanan.kuppuswamy's review comments
 > 
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index d77b25b79ae3..91e483dd3974 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -2280,6 +2280,9 @@ void ufshcd_send_command(struct ufs_hba *hba, unsigned int task_tag,
->   		ufshcd_clk_scaling_start_busy(hba);
->   	if (unlikely(ufshcd_should_inform_monitor(hba, lrbp)))
->   		ufshcd_start_monitor(hba, lrbp);
-> +	if (hba->vops && hba->vops->setup_xfer_req)
-> +		hba->vops->setup_xfer_req(hba, lrbp->task_tag,
-> +						!!lrbp->cmd);
->   
->   	if (is_mcq_enabled(hba)) {
->   		int utrd_size = sizeof(struct utp_transfer_req_desc);
-> @@ -2293,9 +2296,6 @@ void ufshcd_send_command(struct ufs_hba *hba, unsigned int task_tag,
->   		spin_unlock(&hwq->sq_lock);
->   	} else {
->   		spin_lock_irqsave(&hba->outstanding_lock, flags);
-> -		if (hba->vops && hba->vops->setup_xfer_req)
-> -			hba->vops->setup_xfer_req(hba, lrbp->task_tag,
-> -						  !!lrbp->cmd);
->   		__set_bit(lrbp->task_tag, &hba->outstanding_reqs);
->   		ufshcd_writel(hba, 1 << lrbp->task_tag,
->   			      REG_UTP_TRANSFER_REQ_DOOR_BELL);
-
-UFS controllers that are compliant with the JEDEC UFSHCI specification do
-not need the .setup_xfer_req() callback so I think a better motivation is
-needed to make this change.
-
-Thanks,
-
-Bart.
+> V2:
+> * Rebased on top of the tree code
+> * Addressed Bjorn's review comments
+> 
+>  drivers/pci/pcie/aspm.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 67b13f26ba7c..1b4f03044ce2 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -138,16 +138,34 @@ static int policy_to_clkpm_state(struct pcie_link_state *link)
+>  	return 0;
+>  }
+>  
+> +static void pci_save_aspm_state(struct pci_dev *dev)
+> +{
+> +	struct pci_cap_saved_state *save_state;
+> +	u16 *cap;
+> +
+> +	if (!pci_is_pcie(dev))
+> +		return;
+> +
+> +	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
+> +	if (!save_state)
+> +		return;
+> +
+> +	cap = (u16 *)&save_state->cap.data[0];
+> +	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &cap[1]);
+> +}
+> +
+>  static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
+>  {
+>  	struct pci_dev *child;
+>  	struct pci_bus *linkbus = link->pdev->subordinate;
+>  	u32 val = enable ? PCI_EXP_LNKCTL_CLKREQ_EN : 0;
+>  
+> -	list_for_each_entry(child, &linkbus->devices, bus_list)
+> +	list_for_each_entry(child, &linkbus->devices, bus_list) {
+>  		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
+>  						   PCI_EXP_LNKCTL_CLKREQ_EN,
+>  						   val);
+> +		pci_save_aspm_state(child);
+> +	}
+>  	link->clkpm_enabled = !!enable;
+>  }
+>  
+> @@ -767,6 +785,10 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+>  		pcie_config_aspm_dev(parent, upstream);
+>  
+>  	link->aspm_enabled = state;
+> +
+> +	/* Update latest ASPM configuration in saved context */
+> +	pci_save_aspm_state(link->downstream);
+> +	pci_save_aspm_state(parent);
+>  }
+>  
+>  static void pcie_config_aspm_path(struct pcie_link_state *link)
+> -- 
+> 2.25.1
+> 
 
