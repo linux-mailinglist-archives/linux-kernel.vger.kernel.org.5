@@ -1,174 +1,120 @@
-Return-Path: <linux-kernel+bounces-72976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A42AF85BB5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:04:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32CE85BB60
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:05:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D71B81C20B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:04:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72D941F224FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FCE67C5C;
-	Tue, 20 Feb 2024 12:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AE767C68;
+	Tue, 20 Feb 2024 12:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fgQBv/nX"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R4Hc1qUh"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2208D67C49;
-	Tue, 20 Feb 2024 12:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A52E67C45;
+	Tue, 20 Feb 2024 12:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708430681; cv=none; b=hA6VJNt/9xx0QHLIHDkwXNDlBE1Ygg4QPKNmi+r0tkRBRvyPaz9dyffPt3XbQc9H8IX19kv2QzRcgDtTm1oW5dfk4BKPG6WHXl16tyUd5esDDKyy+c4JiTirU+Gp+MZgtIHbg8TgJj1rdlCm0MYEGsPA5ArT8SyeljODOgghHoA=
+	t=1708430749; cv=none; b=KL25dQLxrK9kfa+zyeJOBccPJgcNc4yINBJa5f6c2LhwdnLMs2n235HEJYuwqGxf8NpPY8/Q8/t/sb0lxWL9XxWC0HUc6YblXPAUvjUoeCWRvfDHeHlWJsWI7QDRhUE1m5m1nwkMFKjNjw14PVtJ/jEoRuoEVot5y7Iq80OcOSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708430681; c=relaxed/simple;
-	bh=NMxXY8qLWUFDFPDwVo2AoNEULzAuOWuCJ+7a6zWgKP4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WVIgBw3pm3O9bHlRiMTqZ2iFaP+OY7rJ6s6I0oxqEZvJyUp+sqIwEMW/KGmV8mC658LupZh7/ypOZW4DHOEvEp9vbzlXYF4MnmeMZDcUsSM6IHwmv7DEqj/JfP1y3ZY1DbkP5uofXH78pEqlFzV2hlWeUtKmqiL5lZoESgWlGx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fgQBv/nX; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so3768241a12.3;
-        Tue, 20 Feb 2024 04:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708430679; x=1709035479; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zDBRaKbHpejHAGpTHH0nWNbFRLIF5jgQi6ysnBvVmt0=;
-        b=fgQBv/nX1orVhX9DcNsIROKrM4zk3urJHmTp36jCg2NIgMfM32iV/rTXya4UoFAI86
-         isGtDRetRXJklJyzWXUZ3YjWWmqOqUSTanGRvxPoOuZOdLiRJAAcok8cqn/msrjsd2S6
-         o0gcvGO02CLdE0yEe0UiskT7fq05JPw/dIvd7eoKUNzyVGx10hyTH5W9k93L7RJlTk4R
-         3uKqApT2u6Eh+yY+0GfxyflQFImYn9Y+BlRKg2VR7HT2npHWo2JXlklrfwdOenNwMkZw
-         gqAAwGOj+wGq3YAIgLdGzqGVK7hqT3H2tXSR5XV7WKiUyzRmHpMuKlKkg2M+C+Og8V1f
-         ijgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708430679; x=1709035479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zDBRaKbHpejHAGpTHH0nWNbFRLIF5jgQi6ysnBvVmt0=;
-        b=PtJpnQvoxbnUl4+bKwlGsNQya6MWwaFItErpJ6rMio8sGmZcLigTXUUt1Rsz1n3Y63
-         gg7Hn0LwC3c021hONCnWVaBm33UM1ujaCyQy/Em9wRsTNJRQWy2AdcDCIYiPabyQxLyh
-         zhIZKN7s6nQiD5MJ+oulvBgB/s8ct6pucPICi8XDlZqa61gq7wClyBkaffDcs8FVTZxE
-         KJv7lp3BtUgwh7JZybWSva/yKpJHm5qXRETlhUQorYs8FKllQjpy44b2Aiob1uCuJL7W
-         uHd/Xm2XfVP5zNHGV5amxnEyCxQDYgt5vt52DUwpn2yrKBCSESY0EvLVE0qlWPLGl0dd
-         sX6A==
-X-Forwarded-Encrypted: i=1; AJvYcCXeiHx5nVA7eeX+K8Gesq6oTqwtxDTSgRlgjBfOxTeXI5HvZLjsmeOaLftrMKISLiO+rLPksZrOVykeLrrS793LCq/IPVicTyr8F0pdBNbFepopo5S9dijI275L7JJquW0olQ7Ho0jo09YyeXD+OeA=
-X-Gm-Message-State: AOJu0YwvkoXp0NLMxRXlNsZwNPD7hhTd/ZjGbmfqZRm99X3H1hTcW3DC
-	M7Anehzid3vVbPVmKIc6tkz53HIF1las842UefbUlMGI+LzDte5qrlmigN1IFRhfIEVhwFMYMqK
-	8giH4uWQh7tjhDvVXnx1iM7yfDvA=
-X-Google-Smtp-Source: AGHT+IE+xNffM8hIAHyiibi9RnqLVskBkXY85ndUTCPz4ZsN3JK4L6DHi+NGk+WmCf5wE0DfCBLkrrwZHjEe0ZaCeyY=
-X-Received: by 2002:a05:6a21:8183:b0:19e:9143:2ab5 with SMTP id
- pd3-20020a056a21818300b0019e91432ab5mr9769195pzb.25.1708430669536; Tue, 20
- Feb 2024 04:04:29 -0800 (PST)
+	s=arc-20240116; t=1708430749; c=relaxed/simple;
+	bh=wdIDmsU+dJoSVKx5I1I9cfvLupOEZXA4trMgoJ34j0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bTBJKng690S4gnlPHfk2WqC5TIRKkzDBgxI+kCWxsOiGNiqXHuhxYK+BfL/lGL8O4e5Oz0GRefVcLrDKZCey6e0pvojjxZJy3INDabG7hZB5CAblFsNy4NA51kigC1O1gykiS4CVikrhCb4HkhJgbaxYUD2SNCS+nq3eagFYQSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R4Hc1qUh; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K89mOx014360;
+	Tue, 20 Feb 2024 12:05:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=uaotM+TMfu6Ag+7mzcFHA7Okom4KyPPm/SNRIsJyHi4=; b=R4
+	Hc1qUhB0HCQSah9EPrtfDxHShgjeAKd2s+RqqKer31LFnurj7HG5PwhP6AT9ZtNd
+	pGkI1piGPOc8MO/mgjQEUxL6dAh5EJ8SuLqmrriNTJ2l+pIDSgXSe79NYeP4Wzfg
+	asGJOxFqoOVET7xNBMI/SpS9JmCR/vnQEYPQuvmLoyDEjVyzcEUeVrMKSFIDA+wC
+	ElzCHcHodMqS/XlCE/FZRuprDkTfsmSQ5RSuuzqESIiMmpIwfoPu0eU/lPx81fVo
+	5ZFJH7mpvobQPWVg23aDN8PkE2qx4KHlTQtFXxtnxZdM3m4T/kLuaLP3lS1TBNvG
+	08GHCTEUEFwWdewmvqPQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcravgfdm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 12:05:34 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KC5Xxo002018
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 12:05:33 GMT
+Received: from [10.216.16.129] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 04:05:27 -0800
+Message-ID: <48ab25f4-fc8e-f420-924d-bbae797048b2@quicinc.com>
+Date: Tue, 20 Feb 2024 17:35:23 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6be2558b8462fc08095c24c9257563ab5f3ae013.1708001398.git.geert+renesas@glider.be>
- <kycepdxukfsww3tnxoo5hoiuo3vcgpqqmynokzhtl4vodgm6zc@ih4uhw7gz4jh>
- <CAMuHMdVf7ophCwKt-n_N-LBHV4+t14Gjb4d1O0T8FDk_9xMFtA@mail.gmail.com>
- <CAHCN7xJ65RP8TO7cS0p5DwE6zru5NEF0_JA+8siT_OpSeLD7pA@mail.gmail.com>
- <CAHCN7x+EnSU8qk5dBFco=0vkeknGq18qEN7vFmZs0_q83T_3+w@mail.gmail.com>
- <CAHCN7xKffJ29zyjoJVAcy3b_d=-zkFzbL=URj4yWJWzYvRdB_Q@mail.gmail.com>
- <TYCPR01MB11269CBE8429A31DE5002A5A5864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <nzrkujogauvn262ucxippwidyub6ikcohcjpbpn4hzj7rymctm@4owntgrmcquf>
- <TYCPR01MB11269CBAA20275E11D9AD6500864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <wxwad77x2mxhhwdsbgiytzn6x54t4sywodjhzefwldo277njiz@ru7z54wxgelu>
- <CAHCN7xJi-6W6x+OJmkNwOX45SM4WHD5zkN42ZOp8ZxFnp3YL5w@mail.gmail.com>
- <1ff513b9-d4fd-4663-b46b-bb9662e3881c@imgtec.com> <CAHCN7xJ0TTS_-PA3Ox_RCpfyHJFk-s=-zs8W1Zm3dQTUAoqbpg@mail.gmail.com>
- <CAK4VdL3o+oS3hqwATb8wbv=qOVojWz270r0bUhaBJOw6+tKbxg@mail.gmail.com>
-In-Reply-To: <CAK4VdL3o+oS3hqwATb8wbv=qOVojWz270r0bUhaBJOw6+tKbxg@mail.gmail.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Tue, 20 Feb 2024 06:04:17 -0600
-Message-ID: <CAHCN7xKk5N99eAN0HJHU9ppbPWJpE1cv1Xz2cg1nLtJLW8Y6UA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-To: Erico Nunes <nunes.erico@gmail.com>
-Cc: Matt Coster <Matt.Coster@imgtec.com>, Maxime Ripard <mripard@kernel.org>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Frank Binns <Frank.Binns@imgtec.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sarah Walker <Sarah.Walker@imgtec.com>, Javier Martinez Canillas <javierm@redhat.com>, Nishanth Menon <nm@ti.com>, 
-	Marek Vasut <marek.vasut@mailbox.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 1/5] spi: dt-bindings: add binding doc for spi-qpic-snand
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-2-quic_mdalam@quicinc.com>
+ <ab55fcde-f3ee-426c-ae24-2e76ffb20a2b@sirena.org.uk>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <ab55fcde-f3ee-426c-ae24-2e76ffb20a2b@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 7K83zaQ7nw6AGb3krlCnT41vnav1Acx3
+X-Proofpoint-ORIG-GUID: 7K83zaQ7nw6AGb3krlCnT41vnav1Acx3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=781 suspectscore=0 spamscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402200087
 
-On Tue, Feb 20, 2024 at 5:55=E2=80=AFAM Erico Nunes <nunes.erico@gmail.com>=
- wrote:
->
-> Hi,
->
-> On Mon, Feb 19, 2024 at 9:38=E2=80=AFPM Adam Ford <aford173@gmail.com> wr=
-ote:
-> > /usr/share/vulkan/explicit_layer.d/VkLayer_MESA_overlay.json
-> > ERROR:            loader_validate_instance_extensions: Instance
-> > extension VK_KHR_wayland_surface not supported by available ICDs or
-> > enabled layers.
-> > Failed to create Vulkan instance.
-> >
-> > I have tried running in X.org mode instead of Wayland, but I get a
-> > different set of errors:
-> >
-> > [ 11102.013] (II) Loading /usr/lib/xorg/modules/libfbdevhw.so
-> > [ 11102.014] (II) Module fbdevhw: vendor=3D"X.Org Foundation"
-> > [ 11102.014]    compiled for 1.21.1.7, module version =3D 0.0.2
-> > [ 11102.014]    ABI class: X.Org Video Driver, version 25.2
-> > [ 11102.015] (II) FBDEV(0): using default device
-> > [ 11102.016] (II) modeset(G0): using drv /dev/dri/card1
-> > [ 11102.016] (EE)
-> > Fatal server error:
-> > or all framebuffer devices
-> > [ 11102.016] (EE)
-> > [ 11102.017] (EE)
-> > Please consult the The X.Org Foundation support at http://wiki.x.org  f=
-or help.
->
->
-> The wayland and xcb extensions are not really supported at the moment
-> in Mesa for powervr, so this kind of use case does not really work
-> yet. For a first test, indeed the Sascha Willems triangle with
-> -DUSE_D2D_WSI=3DON is probably best.
->
-> One thing I can add is that most Wayland compositors use OpenGL for
-> rendering and will only expose linux dmabuf capability if accelerated
-> OpenGL support is found by the compositor. So even if you manage to
-> hack some WSI functionality to be exposed by the Vulkan driver, it
-> still won't work out of the box with regular compositors since there
-> is no zink/OpenGL support yet. There is some experimental Vulkan
-> renderer support in some compositors but last time I tried they hit
-> other limitations due to the early state of powervr Vulkan in Mesa.
 
-If I disable the GUI, do you think it would render via kms/drm?  I was
-having issues starting Ubuntu with X11.
 
->
-> I did some work related to this and managed to run a Vulkan triangle
-> with Wayland and a modified compositor so far. So at least we could
-> get the client side out of the way soon. But that depends on a Mesa
-> development branch from Imagination which is being heavily reworked,
-> so we need to wait for that rework to make its way into upstream Mesa
-> before making progress on that work being upstreamed.
+On 2/15/2024 7:52 PM, Mark Brown wrote:
+> On Thu, Feb 15, 2024 at 07:18:52PM +0530, Md Sadre Alam wrote:
+> 
+>> +  clocks:
+>> +    minItems: 2
+>> +    maxItems: 3
+>> +
+>> +  clock-names:
+>> +    minItems: 2
+>> +    maxItems: 3
+> 
+> The driver requests the clocks by name but this does not document the
+> expected set of names.  The driver also unconditionally requests all
+> three clocks so won't work with only two clocks.
 
-OK.  I won't spend any more time on it.  I knew the driver was in its
-infancy, but I didn't realize how much.
-
-I'll likely push my existing device tree changes to the Geert's
-Renesas tree so the GPU node can be added which should make this
-easier in the future.  I can push my tweak via gitlab, adding
-DEF_CONFIG("renesas,r8a774a1-gpu", "renesas,du-r8a774a1"), if you
-think that would be accepted.
-
-adam
->
->
-> Erico
+Thanks for reviewing, Will document the clock name in next patch.
+By mistake i have given minItems = 2 and maxItems = 3 , will fix
+this in next patch.
 
