@@ -1,233 +1,293 @@
-Return-Path: <linux-kernel+bounces-72247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AACEF85B121
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:09:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AC885B124
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9646F1C21D47
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:09:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2881C22532
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:09:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E99B433CB;
-	Tue, 20 Feb 2024 03:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="edAMSc4Y"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3E2433CB;
+	Tue, 20 Feb 2024 03:09:22 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A94B3EA64;
-	Tue, 20 Feb 2024 03:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCFD524B8;
+	Tue, 20 Feb 2024 03:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708398549; cv=none; b=O3WgTdc5czApTsGryWhO9YJfzMd+kw43pTVUPt0yTkgrN341HpkIp1GSPH7k//bmOpevsL1BBAj4g8OjLipyo58I6jEBBNqSB/J/VPhhFuoT5hQiQ/hqgryvfA9QoYIshZCBkiHXXjNQxs3DSdbtPhxos2vSkmmbIJJq+yia5kI=
+	t=1708398562; cv=none; b=SOgCcOYQEELDBnumLHd4AgLETXSwW/OaF7hqYMeivCS7jsPm7ng2DBzbEPCa9uB7/B0CHfQ1tI57thpWwoD+LXXtLVCx9E3yexJ2qEnqRFF2bHKH5B6IkZYMyOuvPeBpOYLzOS+tIfzUV+oZ3p6bFgqbK+4KTEjtiDJs24k5Q1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708398549; c=relaxed/simple;
-	bh=jF9yyA2sxGXqIZo+yklQ1iTLf7X16ewH9pEH6J9E1xk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Kg53pgwGMS+1bXcPvPrLv170ZSCqZYNC9xYcZKrYMernch4ZF61del7COq0UjUHvJT7bjoyabT5lP9peDqjbZyZwF+vuxANu+RAVQucgmN9n4rrb+k0p5aSlHDWeqOVXYEGk+2I+uz353H8jthpJWPM+EqB+3hP6VrMcKakLX4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=edAMSc4Y; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-21e9589d4ffso1042837fac.1;
-        Mon, 19 Feb 2024 19:09:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708398547; x=1709003347; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RkgZ0brSHMcJ6vLWoNuANGTzYAm5g8JP8scMBBfVgfg=;
-        b=edAMSc4YP7DfkMSd3Edevtm8s10nBlfRQn/o+A/qHdUDtR7IzUi9tnSzLrpo7/2cnp
-         ZX+R7LAfOQQ8p6apqgeftDc9Aq5rPBVgehsCBMOl61tdWFuwDGSUAO1XFvEVAWK6gUcR
-         hofq3iXtRP9y7EUapPIdO9gnmFGqGdRwLEnizvWC4g8syhWtJSZFJ8WBgXsB8IRQ+YBu
-         sf0oxY4DEW3Du4udghhCURUWgT2Xdm2yccxKnw6TzRxuAc6fjyecVu6lKyfBNzXeOB6t
-         z/f8nEpJ0PKMwD/AfQmUcNAph+JBItheCgK19MoET2Xa81nT3BokPUxKdx3CcYZBN2F+
-         bLWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708398547; x=1709003347;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RkgZ0brSHMcJ6vLWoNuANGTzYAm5g8JP8scMBBfVgfg=;
-        b=D+iyoHIMigtsuR6DJ4uimSKp3O6zVtAriFR/MhvrLZ3HpGspIzexLc/QJS9Pj8OlgJ
-         gBgJJpb6vft7/7y8G5xb0j8P4cxj2HAO9SUiBzFH+ip75Pf8RbNWGQlsXVhKLgPoUPol
-         h1Fy2fs0h846HidX0ax0TLAkyk1PbLnZ6q4bmHzJOkocXiINsDg82BGDb8WKympxiu8+
-         UXvQrOhYu0RyEudCK5CzO+uy3lQ3/TxN/LpAXfiHJeesy2PiGUi8QfZtTxNE7oMJUwET
-         H2TfwQkko00+SqOvWillCCvCtDF7iXWsIXD7ndbfYZUx063FVacsn1YH33DYEdYmeNQG
-         eg8w==
-X-Forwarded-Encrypted: i=1; AJvYcCXgE2ID/efujdYehl89Yvpj4tCYskqtnu+JEEpP3b6e+zRIuxljVOdqQV8e52nKx8GQ+bFyMGLHAEnTSwGOIbDOxa05lwHrKy09hRNAgzqwtUA+nT9v+TL1E8H+lhY8mcIzHMgY+p6ulWPEURyxFoo8/bwJNxlh1eFa2lwyomADjNG1Dg==
-X-Gm-Message-State: AOJu0YysTCqI20GlRYJGvssrTbftTHVfapNM710miytyPYUXJGHa57Vw
-	O3iKHDkfgyY5O0UP1hjYLBHuOpFCUUK72IVZw4nlSyoChOcCAldi
-X-Google-Smtp-Source: AGHT+IF/5/Qao1ubBVUJqn7zPUt32ZBx86tloI6CxK0c4cOMuM6NlgnTRnOp4KPXJ4JSjWe/pvWQOA==
-X-Received: by 2002:a05:6870:1656:b0:21e:5fe2:2143 with SMTP id c22-20020a056870165600b0021e5fe22143mr9914011oae.58.1708398547247;
-        Mon, 19 Feb 2024 19:09:07 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id pf7-20020a0568717b0700b0021eb31be7b6sm1149713oac.14.2024.02.19.19.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 19:09:07 -0800 (PST)
-From: Chen Wang <unicornxw@gmail.com>
-To: aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com,
-	conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	mturquette@baylibre.com,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	richardcochran@gmail.com,
-	robh+dt@kernel.org,
-	sboyd@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	guoren@kernel.org,
-	jszhang@kernel.org,
-	inochiama@outlook.com,
-	samuel.holland@sifive.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v11 2/5] dt-bindings: clock: sophgo: add RP gate clocks for SG2042
-Date: Tue, 20 Feb 2024 11:08:59 +0800
-Message-Id: <49faf8ff209673e27338d4b83948ade86b3c66e4.1708397315.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1708397315.git.unicorn_wang@outlook.com>
-References: <cover.1708397315.git.unicorn_wang@outlook.com>
+	s=arc-20240116; t=1708398562; c=relaxed/simple;
+	bh=yBsgM+sIUq10lZUQwkyMIv8az/ZvECypyV+q4wGM93w=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=eQS8awPZHxGshQCHlEprYdUT91YE9N4Umz2vDTrMr8nUH6JIGkUoQ67Uj+PBXGVgLKY3scQcgrm3QZfuGRc7ZlFI8FuyE6LbSNPjq2BjqGNisHORB69/doUOLUINk0UTawGhX+EM8qRMixKECrmnLp/ut3uvTqpTcq1jwk9QmIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Tf4B93Wdnz4f3kFK;
+	Tue, 20 Feb 2024 11:09:05 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 6AAC41A0BB2;
+	Tue, 20 Feb 2024 11:09:10 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBHSF9Rlk6w+Eg--.52537S3;
+	Tue, 20 Feb 2024 11:09:08 +0800 (CST)
+Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
+To: Benjamin Marzinski <bmarzins@redhat.com>,
+ Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Song Liu <song@kernel.org>, mpatocka@redhat.com, heinzm@redhat.com,
+ xni@redhat.com, blazej.kucman@linux.intel.com, agk@redhat.com,
+ snitzer@kernel.org, dm-devel@lists.linux.dev, jbrassow@f14.redhat.com,
+ neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org,
+ linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <CAPhsuW7u1UKHCDOBDhD7DzOVtkGemDz_QnJ4DUq_kSN-Q3G66Q@mail.gmail.com>
+ <Zc72uQln4bXothru@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+ <b969c17d-3330-49c9-fb32-60156325949e@huaweicloud.com>
+ <ZdN8USOlyKRLVNgj@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <dafd3e61-a033-4c4b-bcf6-70ccd0f4ff63@huaweicloud.com>
+Date: Tue, 20 Feb 2024 11:09:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <ZdN8USOlyKRLVNgj@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHGBHSF9Rlk6w+Eg--.52537S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr18JFWDXr1fGr1UArWrKrg_yoW3tr1fpF
+	ZxGFySyryUJr93G3sFva1jqFy5t3Z5try5Xr97Jw1fArn0vrn3Jr47JFyrWFyUCryUCr1j
+	qF1Utr9rWr1jyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-From: Chen Wang <unicorn_wang@outlook.com>
+Hi,
 
-Add bindings for the gate clocks of RP subsystem for Sophgo SG2042.
+在 2024/02/20 0:05, Benjamin Marzinski 写道:
+> On Sun, Feb 18, 2024 at 09:24:31AM +0800, Yu Kuai wrote:
+>> Hi,
+>>
+>> 在 2024/02/16 13:46, Benjamin Marzinski 写道:
+>>> On Thu, Feb 15, 2024 at 02:24:34PM -0800, Song Liu wrote:
+>>>> On Thu, Feb 1, 2024 at 1:30 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>>
+>>>> [...]
+>>>>>
+>>>>> [1] https://lore.kernel.org/all/CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com/
+>>>>>
+>>>>> Yu Kuai (14):
+>>>>>     md: don't ignore suspended array in md_check_recovery()
+>>>>>     md: don't ignore read-only array in md_check_recovery()
+>>>>>     md: make sure md_do_sync() will set MD_RECOVERY_DONE
+>>>>>     md: don't register sync_thread for reshape directly
+>>>>>     md: don't suspend the array for interrupted reshape
+>>>>>     md: fix missing release of 'active_io' for flush
+>>>>
+>>>> Applied 1/14-5/14 to md-6.8 branch (6/14 was applied earlier).
+>>>>
+>>>> Thanks,
+>>>> Song
+>>>
+>>> I'm still seeing new failures that I can't reproduce in the 6.6 kernel,
+>>> specifically:
+>>>
+>>> lvconvert-raid-reshape-stripes-load-reload.sh
+>>> lvconvert-repair-raid.sh
+>>>
+>>> with lvconvert-raid-reshape-stripes-load-reload.sh Patch 12/14
+>>> ("md/raid456: fix a deadlock for dm-raid456 while io concurrent with
+>>> reshape") is changing a hang to a corruption. The issues is that we
+>>> can't simply fail IO that crosses the reshape position. I assume that
+>>> the correct thing to do is have dm-raid reissue it after the suspend,
+>>> when the reshape can make progress again. Perhaps something like this,
+>>> only less naive (although this patch does make the test pass for me).
+>>> Heinz, any thoughts on this? Otherwise, I'll look into this a little
+>>> more and post a RFC patch.
+>>
+>> Does the corruption looks like below?
+> 
+> There isn't a kernel stack trace.  The test
+> lvconvert-raid-reshape-stripes-load-reload.sh does some IO to a
+> filesytem on top of a raid device, and then starts a reshape, and
+> repeatedly suspends the device. After all that, it runs fsck to see if
+> the filesystem is clean, and on runs where I see "dm-raid456: io failed
+> across reshape position while reshape can't make progress" I see
+> filesystem errors:
+> 
+> ------------------------------------------------------------------
+> [ 0:25.219] fsck from util-linux 2.39.2
+> [ 0:25.224] e2fsck 1.47.0 (5-Feb-2023)
+> [ 0:25.232] Warning: skipping journal recovery because doing a read-only
+> filesystem check.
+> [ 0:25.233] Pass 1: Checking inodes, blocks, and sizes
+> [ 0:25.233] Pass 2: Checking directory structure
+> [ 0:25.234] Pass 3: Checking directory connectivity
+> [ 0:25.234] Pass 4: Checking reference counts
+> [ 0:25.234] Pass 5: Checking group summary information
+> [ 0:25.234] Feature orphan_present is set but orphan file is clean.
+> [ 0:25.235] Clear? no
+> [ 0:25.235]
+> [ 0:25.235]
+> [ 0:25.235] /tmp/LVMTEST35943.Iuo9Ro5tCY/dev/mapper/LVMTEST35943vg-LV1:
+> ********** WARNING: Filesystem still has errors **********
+> [ 0:25.235]
+> [ 0:25.235] /tmp/LVMTEST35943.Iuo9Ro5tCY/dev/mapper/LVMTEST35943vg-LV1:
+> 13/2560 files (0.0% non-contiguous), 5973/10240 blocks
+> ------------------------------------------------------------------
+> 
+> O.k. corruption is too strong a word. Lets just call it a filesystem
+> that got a write error, and now is in an unclean state according to
+> fsck. I'm pretty sure that this is recoverable.
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../bindings/clock/sophgo,sg2042-rpgate.yaml  | 43 ++++++++++++++
- .../dt-bindings/clock/sophgo,sg2042-rpgate.h  | 58 +++++++++++++++++++
- 2 files changed, 101 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
- create mode 100644 include/dt-bindings/clock/sophgo,sg2042-rpgate.h
+Yes, I thought this can be acceptable because everything should be good
+again once reshape continues.
 
-diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
-new file mode 100644
-index 000000000000..9d4b55e2b12f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/sophgo,sg2042-rpgate.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sophgo SG2042 Gate Clock Generator for RP(riscv processors) subsystem
-+
-+maintainers:
-+  - Chen Wang <unicorn_wang@outlook.com>
-+
-+properties:
-+  compatible:
-+    const: sophgo,sg2042-rpgate
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Gate clock for RP subsystem
-+
-+  '#clock-cells':
-+    const: 1
-+    description:
-+      See <dt-bindings/clock/sophgo,sg2042-rpgate.h> for valid indices.
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    clock-controller@10000000 {
-+      compatible = "sophgo,sg2042-rpgate";
-+      reg = <0x10000000 0x10000>;
-+      clocks = <&clkgen 85>;
-+      #clock-cells = <1>;
-+    };
-diff --git a/include/dt-bindings/clock/sophgo,sg2042-rpgate.h b/include/dt-bindings/clock/sophgo,sg2042-rpgate.h
-new file mode 100644
-index 000000000000..8b4522d5f559
---- /dev/null
-+++ b/include/dt-bindings/clock/sophgo,sg2042-rpgate.h
-@@ -0,0 +1,58 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
-+ */
-+
-+#ifndef __DT_BINDINGS_SOPHGO_SG2042_RPGATE_H__
-+#define __DT_BINDINGS_SOPHGO_SG2042_RPGATE_H__
-+
-+#define GATE_CLK_RXU0			0
-+#define GATE_CLK_RXU1			1
-+#define GATE_CLK_RXU2			2
-+#define GATE_CLK_RXU3			3
-+#define GATE_CLK_RXU4			4
-+#define GATE_CLK_RXU5			5
-+#define GATE_CLK_RXU6			6
-+#define GATE_CLK_RXU7			7
-+#define GATE_CLK_RXU8			8
-+#define GATE_CLK_RXU9			9
-+#define GATE_CLK_RXU10			10
-+#define GATE_CLK_RXU11			11
-+#define GATE_CLK_RXU12			12
-+#define GATE_CLK_RXU13			13
-+#define GATE_CLK_RXU14			14
-+#define GATE_CLK_RXU15			15
-+#define GATE_CLK_RXU16			16
-+#define GATE_CLK_RXU17			17
-+#define GATE_CLK_RXU18			18
-+#define GATE_CLK_RXU19			19
-+#define GATE_CLK_RXU20			20
-+#define GATE_CLK_RXU21			21
-+#define GATE_CLK_RXU22			22
-+#define GATE_CLK_RXU23			23
-+#define GATE_CLK_RXU24			24
-+#define GATE_CLK_RXU25			25
-+#define GATE_CLK_RXU26			26
-+#define GATE_CLK_RXU27			27
-+#define GATE_CLK_RXU28			28
-+#define GATE_CLK_RXU29			29
-+#define GATE_CLK_RXU30			30
-+#define GATE_CLK_RXU31			31
-+#define GATE_CLK_MP0			32
-+#define GATE_CLK_MP1			33
-+#define GATE_CLK_MP2			34
-+#define GATE_CLK_MP3			35
-+#define GATE_CLK_MP4			36
-+#define GATE_CLK_MP5			37
-+#define GATE_CLK_MP6			38
-+#define GATE_CLK_MP7			39
-+#define GATE_CLK_MP8			40
-+#define GATE_CLK_MP9			41
-+#define GATE_CLK_MP10			42
-+#define GATE_CLK_MP11			43
-+#define GATE_CLK_MP12			44
-+#define GATE_CLK_MP13			45
-+#define GATE_CLK_MP14			46
-+#define GATE_CLK_MP15			47
-+
-+#endif /* __DT_BINDINGS_SOPHGO_SG2042_RPGATE_H__ */
--- 
-2.25.1
+> 
+>> [12504.959682] BUG bio-296 (Not tainted): Object already free
+>> [12504.960239]
+>> -----------------------------------------------------------------------------
+>> [12504.960239]
+>> [12504.961209] Allocated in mempool_alloc+0xe8/0x270 age=30 cpu=1 pid=203288
+>> [12504.961905]  kmem_cache_alloc+0x36a/0x3b0
+>> [12504.962324]  mempool_alloc+0xe8/0x270
+>> [12504.962712]  bio_alloc_bioset+0x3b5/0x920
+>> [12504.963129]  bio_alloc_clone+0x3e/0x160
+>> [12504.963533]  alloc_io+0x3d/0x1f0
+>> [12504.963876]  dm_submit_bio+0x12f/0xa30
+>> [12504.964267]  __submit_bio+0x9c/0xe0
+>> [12504.964639]  submit_bio_noacct_nocheck+0x25a/0x570
+>> [12504.965136]  submit_bio_wait+0xc2/0x160
+>> [12504.965535]  blkdev_issue_zeroout+0x19b/0x2e0
+>> [12504.965991]  ext4_init_inode_table+0x246/0x560
+>> [12504.966462]  ext4_lazyinit_thread+0x750/0xbe0
+>> [12504.966922]  kthread+0x1b4/0x1f0
+>>
+>> I assum that this is a dm problem and I'm still trying to debug it.
+>> Can you explain more why IO that crosses the reshape position can't
+>> fail directly?
+> 
+> Maybe I'm missing something here, but if the filesystem is trying to
+> write out data to the device, and we fail that IO, why would that not
+> cause problems, whatever we call it?
+
+And the root cause is the logical in raid456:
+
+Reshape will reconstruct data, and data accross reshape position can't
+be reachable until reshape make progress.
+
+The point is that before c467e97f079f, data could be corrupted sliently,
+because c467e97f079f fix that IO across reshape position is submitted
+directly.
+
+I'm not sure yet how to completely fix this, we can let the IO wait for
+reshape(in the upper layer, wait in raid456 will deadlock) to make
+progress instead of fail it directly, however, continue the reshape
+relies on user, and this way IO may wait forever.
+
+Thanks,
+Kuai
+> 
+> [ 0:18.792] 3,6342,47220996156,-;dm-raid456: io failed across reshape
+> position while reshape can't make progress
+> [ 0:18.792] 3,6343,47220996182,-;Aborting journal on device dm-39-8.
+> [ 0:18.792] 3,6344,47221411730,-;dm-raid456: io failed across reshape
+> position while reshape can't make progress
+> [ 0:18.792] 3,6345,47221411746,-;Buffer I/O error on dev dm-39, logical
+> block 740, lost sync page write
+> [ 0:18.792] 3,6346,47221416194,-;JBD2: I/O error when updating journal
+> superblock for dm-39-8.
+> 
+> Does this test not fail for you? Or does it simply also fail in the 6.6
+> kernel.
+
+Yes, this test failed as well. And it also fail in 6.6.
+> 
+> -Ben
+>   
+>> Thanks,
+>> Kuai
+>>
+>>>
+>>> =========================================================
+>>> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+>>> index ed8c28952b14..ff481d494b04 100644
+>>> --- a/drivers/md/dm-raid.c
+>>> +++ b/drivers/md/dm-raid.c
+>>> @@ -3345,6 +3345,14 @@ static int raid_map(struct dm_target *ti, struct bio *bio)
+>>>    	return DM_MAPIO_SUBMITTED;
+>>>    }
+>>> +static int raid_end_io(struct dm_target *ti, struct bio *bio,
+>>> +		       blk_status_t *error)
+>>> +{
+>>> +	if (*error != BLK_STS_IOERR || !dm_noflush_suspending(ti))
+>>> +		return DM_ENDIO_DONE;
+>>> +	return DM_ENDIO_REQUEUE;
+>>> +}
+>>
+>>> +
+>>>    /* Return sync state string for @state */
+>>>    enum sync_state { st_frozen, st_reshape, st_resync, st_check, st_repair, st_recover, st_idle };
+>>>    static const char *sync_str(enum sync_state state)
+>>> @@ -4100,6 +4108,7 @@ static struct target_type raid_target = {
+>>>    	.ctr = raid_ctr,
+>>>    	.dtr = raid_dtr,
+>>>    	.map = raid_map,
+>>> +	.end_io = raid_end_io,
+>>>    	.status = raid_status,
+>>>    	.message = raid_message,
+>>>    	.iterate_devices = raid_iterate_devices,
+>>> =========================================================
+>>>>
+>>>>
+>>>>>     md: export helpers to stop sync_thread
+>>>>>     md: export helper md_is_rdwr()
+>>>>>     dm-raid: really frozen sync_thread during suspend
+>>>>>     md/dm-raid: don't call md_reap_sync_thread() directly
+>>>>>     dm-raid: add a new helper prepare_suspend() in md_personality
+>>>>>     md/raid456: fix a deadlock for dm-raid456 while io concurrent with
+>>>>>       reshape
+>>>>>     dm-raid: fix lockdep waring in "pers->hot_add_disk"
+>>>>>     dm-raid: remove mddev_suspend/resume()
+>>>>>
+>>>>>    drivers/md/dm-raid.c |  78 +++++++++++++++++++--------
+>>>>>    drivers/md/md.c      | 126 +++++++++++++++++++++++++++++--------------
+>>>>>    drivers/md/md.h      |  16 ++++++
+>>>>>    drivers/md/raid10.c  |  16 +-----
+>>>>>    drivers/md/raid5.c   |  61 +++++++++++----------
+>>>>>    5 files changed, 192 insertions(+), 105 deletions(-)
+>>>>>
+>>>>> --
+>>>>> 2.39.2
+>>>>>
+>>>>>
+>>>
+>>> .
+>>>
+> 
+> .
+> 
 
 
