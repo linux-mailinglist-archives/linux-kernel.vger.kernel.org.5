@@ -1,137 +1,188 @@
-Return-Path: <linux-kernel+bounces-72999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D537B85BBD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:21:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66D0485BBDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:21:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B32F1F21E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:21:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BE1C1C2195B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9175D67E8A;
-	Tue, 20 Feb 2024 12:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA3C67E8C;
+	Tue, 20 Feb 2024 12:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iuWRcKSh"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cziAa188"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355A165BCD;
-	Tue, 20 Feb 2024 12:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8B567E76;
+	Tue, 20 Feb 2024 12:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431657; cv=none; b=hy9gOirjqMVZj46oXVf0/FJo55ZIvFHd84G33hsaRhV/PDlwz53C3iel0nMJqnNgELCoz5eOqNKyZZT53n2JwVo06Kye41nyI6u0OGv4rR4rHtKBfyLV3NcvaCzfmCUq3ZrR9yvf3bLlgFRiQCMN3fBRu2qc9ua1n5N0dOxRDVY=
+	t=1708431675; cv=none; b=bDxon9W+k2YKynO0/mVDlJ84IojYCc0dIvMen9UosUBh5Ppp61LEbhcfFGSisSujnW5DHPRO39XT0Wv+kkf+UYLiubdraRuzMzSR0i+9m8m1LX4XqGbWGOaCnpVQr3h0Nv0HesHSg8YMKUFn0wEz7DksCkHJr6WGxKOk0YwHuXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431657; c=relaxed/simple;
-	bh=AR1J82QzcekaL9KNDGEHl7j5+lUCFPMNjibpDdXhUEo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Tu4KIITOvBk7iE4BS1rDDHFOyyVyZxDWQwbSuFHQ3pZ33Y/okgTpdHmc9VE+9oU4pTy8VcaYXp0q6IyOL4kPdeM4tTtdK6thHBkAD+93iKvNd/BlnH9AcwCQwxwrcWJ8P3j2Gjl9F/CAwk4+KSLUhpvNFJ3JhvhcOMvJJjxAhVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iuWRcKSh; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512a9ae6c02so3297705e87.2;
-        Tue, 20 Feb 2024 04:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708431654; x=1709036454; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PDi18Ie+s81peNgcU4/hAGc3IXSIdDCsGyhzUSlE3Gg=;
-        b=iuWRcKShFI0qai7rpkXlrHmTvsz97x5pS+QDEEQ4OgAqYT0WuOXqrqH9QddDljlz03
-         9pb1Oy03JDc9si95cEei9pzrKRgN3CE7VSRPnTkIhcov7WjWYrEMQBdf5VaUDpEUoX55
-         YWFt8e2p+xwmLVmc2jxyDoRTPVtqqbE7ZwIjMj//UW3v/v3uyxQh0J4Q9k6GSq0J78EG
-         RsDF1HdLCL0cB1WmYD3bXXfMbqis8hasAoJkQjiCFnS6cSLgEG5BXIIgXhzxajXPtc0s
-         6IG7s12ziZQrLvtpi8SO+0tOG4bsVifVcOE49wrMJYwGdoQ62Kbqf4eHssPYPjCw16D6
-         TeoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708431654; x=1709036454;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PDi18Ie+s81peNgcU4/hAGc3IXSIdDCsGyhzUSlE3Gg=;
-        b=wLMQOJXSx+md5EtIPHPj+rwgIm+z54J6YeIKzW1K8gqv4Idc0gIz/fXOWeTcabkZGS
-         k4ILwFEDpVe1MUsdOmg1l2WBXJxM1u81U6QKS6dyO9Rn2I7KzniP+cl4Vsea+YGlet0u
-         GVtzCi75RAdDEHx2ngAKm8YoynHSJn1IvRv7JuZqFHxNBr3EwEO7Si+SEv1B7D76hR2y
-         ULOURBswrahmcmHv9LQ6I66QggKQze8pbxmbV8kpeZRasVZEjXxI3dF4uBlVGZ72suAd
-         4xE/UfHhVodxCkRb0JlDcQRLg7pvuZ3Xy95r0mS5fWfqd83uV/UDMqCka80AuerhFP6r
-         X8JA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJHWsOgJD3OJCxtb+NDdwYFL/OnbXGNes+t9RpORVMwG0r3RqDbbx72HkXnWB2te1ym2c+RVs8k1AZhRABafgJprnBpPVFlWB0KT0MHSKVQ6NP/yoc9x5VkyjreRt2TyUPxmVD27+A7OzfjceSFowW8NyhB59eskoc6HQO156uzBiqw6/wcrN93nVg9tN7DUa/p7LPpwuyOc3iFS9C+9Y=
-X-Gm-Message-State: AOJu0YyDsto35oB1VC+xMvPOWqDXFSiiSJD+mDBm67nMHN0rJ/u5ASfR
-	JBhCpijS4+YzZRobJOt9DsVZVdJW25mecnGRd4oM7QS9aoXD5W6s
-X-Google-Smtp-Source: AGHT+IGPwxdHUo/dctJ2Ngn2KMm46rbjC+bLYnQpfVfi/08A3miFjRBAzS2SnNRqxZvw1VG03rAsYg==
-X-Received: by 2002:ac2:4e6b:0:b0:511:763f:7d40 with SMTP id y11-20020ac24e6b000000b00511763f7d40mr8407631lfs.35.1708431653979;
-        Tue, 20 Feb 2024 04:20:53 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id lj8-20020a170907188800b00a3dd52e758bsm3885807ejc.100.2024.02.20.04.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 04:20:53 -0800 (PST)
-Message-ID: <fc49f36bf1df931f7c67dd195aa74636eb479e64.camel@gmail.com>
-Subject: Re: [PATCH v13 3/3] iio: adc: ad7173: add AD7173 driver
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org, 
- linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Jonathan
- Cameron <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>,  Michael Walle <michael@walle.cc>, Andy Shevchenko
- <andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>,  ChiaEn Wu
- <chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
- =?ISO-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>, Mike Looijmans
- <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>, David Lechner <dlechner@baylibre.com>, Ceclan
- Dumitru <dumitru.ceclan@analog.com>,  linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
-Date: Tue, 20 Feb 2024 13:20:52 +0100
-In-Reply-To: <20240220094344.17556-3-mitrutzceclan@gmail.com>
-References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
-	 <20240220094344.17556-3-mitrutzceclan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1708431675; c=relaxed/simple;
+	bh=jV03GKfaPISem9za3Whs0Xc2NpK5afZ4kewZC3epk98=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QRtLA8tcpfPAsGSKIhLxLKjsFXS1d493O3IA+/j0cbDCkBAAMuOJpXz2QvZDsLizmGO7cbVijuJoR8XQIgl0I/YPBPr6B5jEpbMcuD32TkTr0zV+TXjJhpMfjohmgTAKm+dc4NWD8NoABZWFR1s8Co8Bv4GwIUupE0ytkz5dBPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cziAa188; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C71BBC433F1;
+	Tue, 20 Feb 2024 12:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708431674;
+	bh=jV03GKfaPISem9za3Whs0Xc2NpK5afZ4kewZC3epk98=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cziAa1884tUKYj/oG8oWpobatz95huFTEsocTtFryUfPMNk0dBnW99+7ceeiv4P81
+	 +QfVIcLde0P6FkNqbuBOcErf/6T5q72XSK6OkM7mn8kplaWIaahuAyZLqn4Pi1VoJd
+	 u44VIuTCDHNbvLp6vkkYWALYzYxiOJcqqyE0FoMvv8ZFP8A03EprTOhgHVouyNbZij
+	 s61RWM4gGhaLBzTkLPAK2YkwOB625VirQDb714AkZHhF854/7dos9AEyO+qPP6PgkZ
+	 71emIScEs6bYH9ezmMYm15fYahRwgf3iVV/DfI66Y0bHAPOebWTndru4ZXZZjmfzMG
+	 anrc9g+6GnRRQ==
+Date: Tue, 20 Feb 2024 12:21:03 +0000
+From: Will Deacon <will@kernel.org>
+To: ankita@nvidia.com
+Cc: jgg@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
+	james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+	reinette.chatre@intel.com, surenb@google.com, stefanha@redhat.com,
+	brauner@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+	alex.williamson@redhat.com, kevin.tian@intel.com,
+	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
+	andreyknvl@gmail.com, wangjinchao@xfusion.com, gshan@redhat.com,
+	shahuang@redhat.com, ricarkol@google.com, linux-mm@kvack.org,
+	lpieralisi@kernel.org, rananta@google.com, ryan.roberts@arm.com,
+	david@redhat.com, linus.walleij@linaro.org, bhe@redhat.com,
+	aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+	targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+	apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+	kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 1/4] kvm: arm64: introduce new flag for non-cacheable
+ IO memory
+Message-ID: <20240220122103.GB5613@willie-the-truck>
+References: <20240220072926.6466-1-ankita@nvidia.com>
+ <20240220072926.6466-2-ankita@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220072926.6466-2-ankita@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue, 2024-02-20 at 11:43 +0200, Dumitru Ceclan wrote:
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel
-> applications or higher speed multiplexed applications. The Sigma-Delta
-> ADC is intended primarily for measurement of signals close to DC but also
-> delivers outstanding performance with input bandwidths out to ~10kHz.
->=20
-> Reviewed-by: Andy Shevchenko <andy@kernel.org> # for changes up until V12
-> Reviewed-by: Michael Walle <michael@walle.cc> # for gpio-regmap
-> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+On Tue, Feb 20, 2024 at 12:59:23PM +0530, ankita@nvidia.com wrote:
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
+> (i.e. it is not RAM) with DEVICE_nGnRE memory attributes; this setting
+> overrides (as per the ARM architecture [1]) any device MMIO mapping
+> present at stage 1, resulting in a set-up whereby a guest operating
+> system cannot determine device MMIO mapping memory attributes on its
+> own but it is always overridden by the KVM stage 2 default.
+> 
+> This set-up does not allow guest operating systems to select device
+> memory attributes independently from KVM stage-2 mappings
+> (refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
+> which turns out to be an issue in that guest operating systems
+> (e.g. Linux) may request to map devices MMIO regions with memory
+> attributes that guarantee better performance (e.g. gathering
+> attribute - that for some devices can generate larger PCIe memory
+> writes TLPs) and specific operations (e.g. unaligned transactions)
+> such as the NormalNC memory type.
+> 
+> The default device stage 2 mapping was chosen in KVM for ARM64 since
+> it was considered safer (i.e. it would not allow guests to trigger
+> uncontained failures ultimately crashing the machine) but this
+> turned out to be asynchronous (SError) defeating the purpose.
+> 
+> Failures containability is a property of the platform and is independent
+> from the memory type used for MMIO device memory mappings.
+> 
+> Actually, DEVICE_nGnRE memory type is even more problematic than
+> Normal-NC memory type in terms of faults containability in that e.g.
+> aborts triggered on DEVICE_nGnRE loads cannot be made, architecturally,
+> synchronous (i.e. that would imply that the processor should issue at
+> most 1 load transaction at a time - it cannot pipeline them - otherwise
+> the synchronous abort semantics would break the no-speculation attribute
+> attached to DEVICE_XXX memory).
+> 
+> This means that regardless of the combined stage1+stage2 mappings a
+> platform is safe if and only if device transactions cannot trigger
+> uncontained failures and that in turn relies on platform capabilities
+> and the device type being assigned (i.e. PCIe AER/DPC error containment
+> and RAS architecture[3]); therefore the default KVM device stage 2
+> memory attributes play no role in making device assignment safer
+> for a given platform (if the platform design adheres to design
+> guidelines outlined in [3]) and therefore can be relaxed.
+> 
+> For all these reasons, relax the KVM stage 2 device memory attributes
+> from DEVICE_nGnRE to Normal-NC.
+> 
+> The NormalNC was chosen over a different Normal memory type default
+> at stage-2 (e.g. Normal Write-through) to avoid cache allocation/snooping.
+> 
+> Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
+> trigger any issue on guest device reclaim use cases either (i.e. device
+> MMIO unmap followed by a device reset) at least for PCIe devices, in that
+> in PCIe a device reset is architected and carried out through PCI config
+> space transactions that are naturally ordered with respect to MMIO
+> transactions according to the PCI ordering rules.
+> 
+> Having Normal-NC S2 default puts guests in control (thanks to
+> stage1+stage2 combined memory attributes rules [1]) of device MMIO
+> regions memory mappings, according to the rules described in [1]
+> and summarized here ([(S1) - stage1], [(S2) - stage 2]):
+> 
+> S1           |  S2           | Result
+> NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
+> NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
+> NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
+> DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
+> 
+> It is worth noting that currently, to map devices MMIO space to user
+> space in a device pass-through use case the VFIO framework applies memory
+> attributes derived from pgprot_noncached() settings applied to VMAs, which
+> result in device-nGnRnE memory attributes for the stage-1 VMM mappings.
+> 
+> This means that a userspace mapping for device MMIO space carried
+> out with the current VFIO framework and a guest OS mapping for the same
+> MMIO space may result in a mismatched alias as described in [2].
+> 
+> Defaulting KVM device stage-2 mappings to Normal-NC attributes does not
+> change anything in this respect, in that the mismatched aliases would
+> only affect (refer to [2] for a detailed explanation) ordering between
+> the userspace and GuestOS mappings resulting stream of transactions
+> (i.e. it does not cause loss of property for either stream of
+> transactions on its own), which is harmless given that the userspace
+> and GuestOS access to the device is carried out through independent
+> transactions streams.
+> 
+> A Normal-NC flag is not present today. So add a new kvm_pgtable_prot
+> (KVM_PGTABLE_PROT_NORMAL_NC) flag for it, along with its
+> corresponding PTE value 0x5 (0b101) determined from [1].
+> 
+> Lastly, adapt the stage2 PTE property setter function
+> (stage2_set_prot_attr) to handle the NormalNC attribute.
+> 
+> [1] section D8.5.5 - DDI0487J_a_a-profile_architecture_reference_manual.pdf
+> [2] section B2.8 - DDI0487J_a_a-profile_architecture_reference_manual.pdf
+> [3] sections 1.7.7.3/1.8.5.2/appendix C - DEN0029H_SBSA_7.1.pdf
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
 > ---
+>  arch/arm64/include/asm/kvm_pgtable.h |  2 ++
+>  arch/arm64/include/asm/memory.h      |  2 ++
+>  arch/arm64/kvm/hyp/pgtable.c         | 24 +++++++++++++++++++-----
+>  3 files changed, 23 insertions(+), 5 deletions(-)
 
-Another thing that caught my attention
+Acked-by: Will Deacon <will@kernel.org>
 
-..
-
->=20
-> +static int ad7173_register_clk_provider(struct iio_dev *indio_dev)
-> +{
-> +	struct ad7173_state *st =3D iio_priv(indio_dev);
-> +	struct device *dev =3D indio_dev->dev.parent;
-> +	struct fwnode_handle *fw_node =3D dev_fwnode(dev);
-> +	struct clk_init_data init =3D {};
-> +	int ret;
-> +
-> +	if (!fw_node)
-> +		return 0;
-
-I think that better than the above check (do we really have any case where =
-fw_node is
-NULL?) is to have:
-
-if (!IS_ENABLED(CONFIG_COMMON_CLK))
-	return 0;
-
-- Nuno S=C3=A1
-
-
+Will
 
