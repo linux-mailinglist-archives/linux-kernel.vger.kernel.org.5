@@ -1,74 +1,84 @@
-Return-Path: <linux-kernel+bounces-73043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7D7185BC9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:54:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A166485BCA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A182B21693
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:54:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5746C1F239F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143FE69E06;
-	Tue, 20 Feb 2024 12:54:21 +0000 (UTC)
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C5769E14;
+	Tue, 20 Feb 2024 12:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDL51/xP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FD25D8E0;
-	Tue, 20 Feb 2024 12:54:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15505CDED;
+	Tue, 20 Feb 2024 12:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708433660; cv=none; b=EWcImIKJ7lIy+KxQX+VyHmoiYcyCz3MJPVq9bwWw8GIsHhp7R1krYB3Pi+QHMeXgTaUXBXKgRAxDZ4ZXP5//6oNTQhfPRA/UL8n8eZjwFLuHp0wmQnVJPywr/bxB0B5V0WBBfwQAD2592E2dycLRGizPxqBP54/IMJ7Vywie3Tw=
+	t=1708433773; cv=none; b=j3cXAN6v2OCtfGk21bnKE3xXsuC1+418DcASR6W4d2kqyIxnbWboKVdI/w2JpY+yWEBAYKWQhgbOLqCDIF7kCCaAKOIcbHs5MjFaLBcAbn7zkrUUjRJZzRu+gLwO+//TmiI6W0dSw/dm73uBEQfi6EBEFy1QeGmjT6xxOQPjAYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708433660; c=relaxed/simple;
-	bh=entqg/P13xXezXypx1Ml6MjY9tYUqQQAJjKH5cS0sxE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=EUSaAdoQtgJwLCeeUSKdlbkqYvYZ6BRAx65Dl1sIktqdsmntzYf9bF2RHD4PsxpjJwuHwVUX5rn0DFwczLEcQVNwGYTp4DQuzzfWLGMRx2Bi9jI9cU9oENT47WL8PjK6jR9E8SvRwQzZ+I14Yppi0NBpJrpaKPJd9lHzBqRzX70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TfK9N0vp6z4wnr;
-	Tue, 20 Feb 2024 23:54:16 +1100 (AEDT)
-From: Michael Ellerman <patch-notifications@ellerman.id.au>
-To: linux-api@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Peter Bergner <bergner@linux.ibm.com>
-Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>, Szabolcs Nagy <szabolcs.nagy@arm.com>, Nick Piggin <npiggin@au1.ibm.com>, Arnd Bergmann <arnd@kernel.org>
-In-Reply-To: <a406b535-dc55-4856-8ae9-5a063644a1af@linux.ibm.com>
-References: <a406b535-dc55-4856-8ae9-5a063644a1af@linux.ibm.com>
-Subject: Re: [PATCH v2] uapi/auxvec: Define AT_HWCAP3 and AT_HWCAP4 aux vector, entries
-Message-Id: <170843363898.1291121.4882822831062369983.b4-ty@ellerman.id.au>
-Date: Tue, 20 Feb 2024 23:53:58 +1100
+	s=arc-20240116; t=1708433773; c=relaxed/simple;
+	bh=Q5BWa8LkWf902AxVTsQ/Vk7boyDKv6MiQY5w+ZXdYKc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FI2hloyk6ZxqFhChm2qJA0pRgaghn0ZuVXgG60lyFzs+t6+OkwUi2F5k28oYqwNqKyDZDeJnWhRh93kfgywbqhFr6oXL0t14HdK22I68fcVUuZC4/V7UPyFiiUKiB5XoZhrMQdfKIXJKED81oj45KAS+mPbtNGE0bZmpVMLJgvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NDL51/xP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90FE2C433C7;
+	Tue, 20 Feb 2024 12:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708433773;
+	bh=Q5BWa8LkWf902AxVTsQ/Vk7boyDKv6MiQY5w+ZXdYKc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NDL51/xP6pc6UuWIIrE/ULokhaA0Vsu3/GWwd+ew91wGsc1nIk9kL/zCarULtlWWk
+	 n8oXykLkk1lkVXPdj28ctAzMV3NjQq12HaTujBx4w5zB+Nl4HBaCCz65guDc+uGA6n
+	 BNp3HCFt8zpK5YVEoZV05JTsAK/3s1Nkn0bsertTXPh0yzb5mx80ghJdLuKmrP/ThN
+	 NFsQi7M1r663rsSy7vyAcU9/4hamPARjn0qnQQOa/KUVf7/nFACL8E5oaJ+76oAPQ7
+	 zFUqw71sreswoZq5sS/mbllizqCcdsXgJFzjVbFryODclY7YAY7+8vFZ7hYxh3W1en
+	 cuQlAhiLsdg1g==
+Date: Tue, 20 Feb 2024 12:56:08 +0000
+From: Simon Horman <horms@kernel.org>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ariel Elior <aelior@marvell.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, linux-usb@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net-next v4 1/9] net: usb: r8152: Use linkmode helpers
+ for EEE
+Message-ID: <20240220125608.GG40273@kernel.org>
+References: <20240218-keee-u32-cleanup-v4-0-71f13b7c3e60@lunn.ch>
+ <20240218-keee-u32-cleanup-v4-1-71f13b7c3e60@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218-keee-u32-cleanup-v4-1-71f13b7c3e60@lunn.ch>
 
-On Wed, 14 Feb 2024 16:34:06 -0600, Peter Bergner wrote:
-> Changes from v1:
-> - Add Acked-by lines.
+On Sun, Feb 18, 2024 at 11:06:58AM -0600, Andrew Lunn wrote:
+> Make use of the existing linkmode helpers for converting PHY EEE
+> register values into links modes, now that ethtool_keee uses link
+> modes, rather than u32 values.
 > 
-> The powerpc toolchain keeps a copy of the HWCAP bit masks in our TCB for fast
-> access by the __builtin_cpu_supports built-in function.  The TCB space for
-> the HWCAP entries - which are created in pairs - is an ABI extension, so
-> waiting to create the space for HWCAP3 and HWCAP4 until we need them is
-> problematical.  Define AT_HWCAP3 and AT_HWCAP4 in the generic uapi header
-> so they can be used in glibc to reserve space in the powerpc TCB for their
-> future use.
+> Rework determining if EEE is active to make is similar as to how
+> phylib decides, and make use of a phylib helper to validate if EEE is
+> valid in for the current link mode. This then requires that PHYLIB is
+> selected.
 > 
-> [...]
+> Signed-off-by: Andrew Lunn <andrew@lunn.ch>
 
-Applied to powerpc/next.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-[1/1] uapi/auxvec: Define AT_HWCAP3 and AT_HWCAP4 aux vector, entries
-      https://git.kernel.org/powerpc/c/3281366a8e79a512956382885091565db1036b64
-
-cheers
 
