@@ -1,146 +1,151 @@
-Return-Path: <linux-kernel+bounces-72752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9137885B853
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:55:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B92385B855
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD17283038
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07752285FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC71560DEC;
-	Tue, 20 Feb 2024 09:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C07A60BBD;
+	Tue, 20 Feb 2024 09:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="lDdHorO+"
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JTQerJQF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08DF65BA4
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23355FDA2
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422857; cv=none; b=C+jPoL/0FJbr6qhS1+biYC7ehl1GD3iqgXPl/p1uUKXU8qKOmH+1uvrwZZzyoxqWKCdHvmBRBAmdi3AvgVgPuu1QPLmtoyGgUCskzBECvP+s6HSZySKalaVc8vwKshtm5D7ctbKjSvTZI5amOjxWM6wGn3zduu8VosvyuE3rg5Y=
+	t=1708422880; cv=none; b=oWGDSYcnQjr4jGwqp6ZI9+LU8bcapLFHxHGxPyHjdp/02SsKGWpCLvCQc9XYvjkTVfPsatOoLv9aynEV80G+//XB0Tg0sXYlU/1xQWCA8WqZPdbCh1xvJcJYqEf/P4Spmjl7D2qGRr2AYCvztpz4jqSqNIeeQUHYyT4PI32PJK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422857; c=relaxed/simple;
-	bh=4xzN47cfbSqo2a8NkyQa4EL2L6QY3ra7B9pOZIDIlz8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qDos0pMxF1qOlWRk09HxK+7DKzTjKyBaJB8ucI3qHrLtrlvgyzIk6xRTTt4Hkm8BJ4FiCOC7UD/Dx4WE6OcxMFlALpQoJXOVY5dFTvTdETI+Mm76SKkk/Ecr2Vn7mqM6ByhOgQQKJRAHHn9jmDgvsYFRaBo2OlYc9JFQdVIgb+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=lDdHorO+; arc=none smtp.client-ip=209.85.222.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7d5c257452dso2031652241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708422853; x=1709027653; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4xzN47cfbSqo2a8NkyQa4EL2L6QY3ra7B9pOZIDIlz8=;
-        b=lDdHorO+lkfPQMdArhhqvsmZumn00lMM9ChBwlJTyrdXR9C1SW+jGrC1BOqtVsRcz4
-         a9sEehk7uszhNFjO5ej8c0DGoE0opL7XrHI3Xa+mZQ6Gg87x0MHM232QA0Ce6rycKRUL
-         3k0h+R/wF6BnPS4Moc4tk+q4mdo2QuMWaPnNcvAUh9WmcxBcR5aAZwOmVzvrmypu6lLK
-         dLP6ao+K/EGrSAX8nrf48cTADgeWYG1Hj59ZP8VL+QS31aW27QAe+EY4Xs7HfZAcCLZa
-         uZfw1lN3B9owYyOBbOBXuZFzrSePGTmXIGsnU5ETPY9SEUyjLdV1TDKM7mEETMix3YYL
-         PnGQ==
+	s=arc-20240116; t=1708422880; c=relaxed/simple;
+	bh=peQw3BQe60+8GuD9nJijD6XR4JghW7VvoUyslLSQVK0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I1r0k4pcY/rexk/p07+5zXMz6SL2MQi09PvtPb9TCtgodpvmJbrrZVMfedgD+DdLiwtW9SUp+R5bJ2SthtEHdAbA5EvE/VUBrJH2PDKUztuiqkP8/rR397ApW6MmR1QJVcgS3dm5pkr23RdCGwb4v63JxC3uw7i2A4TJxn23/U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JTQerJQF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708422877;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=EYsCgQEb9/Kdo66E4LvnbORIVEe0BX1Dio1aMiZdh0w=;
+	b=JTQerJQFGDtWI3mqtUin0IZ9cr5ERwgshaupc6TZ79hTPsIjicH17SqXc5nqxP18lSXp7c
+	/KAN8Iu7UDYA2xTFWqraOZIku/mto1/20wzpj37zIMUTIEWOpqnz0g89u3+snctIVJLz4R
+	F0EMZGfYv2vRnpfXK4JKUiFHasLVkWg=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-499-XRJElkKuNBC4wFyI3TZ0QQ-1; Tue, 20 Feb 2024 04:54:35 -0500
+X-MC-Unique: XRJElkKuNBC4wFyI3TZ0QQ-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5113b77ff80so3652476e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:54:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422853; x=1709027653;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4xzN47cfbSqo2a8NkyQa4EL2L6QY3ra7B9pOZIDIlz8=;
-        b=ZAfhUcrt/ajTY+iLBbEV8AEiHSNkHP2AweiuUpoMz/Xvnv4xa3ZSItmKupuq7iLNFt
-         wbL7TDdciCLg6s8mbel8Hhfgq52taY0ij+J0AlqNtS7GKiiLgM3UDb354bFMzC3NXs6v
-         8K5YCUYo3KWfCdhPSOuZf5Hz/3l3f3ddUGKOSWYqphPD34gJr7q+GOBVVimL/BGYr5xI
-         6g6if7XzEK+Duo+DChUHDsdZNzgcvXO46ZfzNkPWK2CIC5/UBGMJdAHYZG+4owc81xju
-         pBWN5oT15bmGI8DpGOPaZ6NrQkXQOWW91SstgVNcN3n+CEwC6AUlUfQapNjH5TE5/v5a
-         IQFw==
-X-Forwarded-Encrypted: i=1; AJvYcCW3qLx2yCXBW6Gz1612bM+2MR+wPAUpCwJdmEmNJQ7LSGQj5LgWpyxNerBRPmOWOpKiHZP4TPiryh4tlCPHHpRZpnrL8a9klDOvI60Q
-X-Gm-Message-State: AOJu0Yy/2aFtVLpjDH2w4eBugFcOspgG6QmuZufeLTvf2JLSiCM7PO2S
-	7SC0ej1GXCx6NVq6TWroSLKFet1SGadw571YUwNxJJi/SYyiYoITnV3kpFa0Qypdefed3lHW+da
-	iJp8fWyGOzDIxITDX/ThJ5lMrSqB7nawynxhNBA==
-X-Google-Smtp-Source: AGHT+IGg0Yy/XoNbR6IfOmnx5l8zqnMeE76L60nsYWm8H5+Bhua/gwybe1nMinRutBrrSD8nrquPZ/DI8Do5B76kNsk=
-X-Received: by 2002:a67:fb56:0:b0:470:397f:157b with SMTP id
- e22-20020a67fb56000000b00470397f157bmr4981944vsr.12.1708422853472; Tue, 20
- Feb 2024 01:54:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708422871; x=1709027671;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EYsCgQEb9/Kdo66E4LvnbORIVEe0BX1Dio1aMiZdh0w=;
+        b=Y8lmDttfWOy4dYMk939ZDviWy1I/yhzmEEoHMJOSRVrzow2MVfo1nVLa4hki0D0TI8
+         AhwSg9jzOlwyBI1p9L81A/sCZjPoVjPDt2O+erTxnUTPFetRLCSvNle2ZRRE80ZKWV9e
+         Gda7ARryh16ID5+qwOLlwo2zRhET+gjvcd4gavC6UdMXAJPkxILv/QUQRzaG27ExU8wj
+         jBDzGblsuzpevapa9414SIM5BsIzZ+bVSXDgqyS93QChZHZhmcp79PUmqmoPVk529v1f
+         AsVxVGqDnaoFUxw9WboFHnFx2OhlJlKKCCaL5UxajqpYbKdRlozFEP0U1Ysjov/I+cz1
+         AGyw==
+X-Gm-Message-State: AOJu0Yy/o5yyMKfIxZQ4M9EJpLswJ0gwfqbbJoX1Uho7XuKPOMpxdtb7
+	2kSPVMcE4EtH4e/yud3ThATP0MWGVsonZqi0F5g1YTnBmbwT1ou1zIQ4g1zO6hhmJeMOcaImS5T
+	GW0aUPzTJNusKXgvkHlx0+QGQLABkbAYRcLnAQiOYQHbZyY63VsR+64D+WD+5lChEIQbQh9Ew7+
+	LZ/VoK+lK/tbqS0r3NV8kE/1PsMI41qAvH7qHKNmTFDlSk
+X-Received: by 2002:a05:6512:5d2:b0:511:a819:2c5d with SMTP id o18-20020a05651205d200b00511a8192c5dmr8362476lfo.28.1708422871400;
+        Tue, 20 Feb 2024 01:54:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG8fRzgqIWa5YVdSnomCIS6IrRbiiN2cG7VrVXeWQpTvBhTw4p6B+zLzNoWj2miSn7fcrbEVg==
+X-Received: by 2002:a05:6512:5d2:b0:511:a819:2c5d with SMTP id o18-20020a05651205d200b00511a8192c5dmr8362454lfo.28.1708422871002;
+        Tue, 20 Feb 2024 01:54:31 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id h7-20020a05600c314700b004126170a23csm8120499wmo.7.2024.02.20.01.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 01:54:30 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>,
+	oe-kbuild-all@lists.linux.dev,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Andreas Larsson <andreas@gaisler.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Helge Deller <deller@gmx.de>,
+	sparclinux@vger.kernel.org
+Subject: [PATCH v2] sparc: Fix undefined reference to fb_is_primary_device
+Date: Tue, 20 Feb 2024 10:54:12 +0100
+Message-ID: <20240220095428.3341195-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205182810.58382-1-brgl@bgdev.pl> <20240205182810.58382-9-brgl@bgdev.pl>
- <yu5uhamdlygti3jo73ipy3gxhcmgxrm5g6imgqg6ksleim4ton@npvzlex2j4xi>
-In-Reply-To: <yu5uhamdlygti3jo73ipy3gxhcmgxrm5g6imgqg6ksleim4ton@npvzlex2j4xi>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 20 Feb 2024 10:54:02 +0100
-Message-ID: <CAMRc=Mctm-cyYPpu-Vb+fr1cWJPUW49shaa9HEXYp+rkF_CHUw@mail.gmail.com>
-Subject: Re: [PATCH v7 08/12] firmware: qcom: qseecom: convert to using the TZ allocator
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Elliot Berman <quic_eberman@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 18, 2024 at 4:08=E2=80=AFAM Bjorn Andersson <andersson@kernel.o=
-rg> wrote:
->
-> On Mon, Feb 05, 2024 at 07:28:06PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Drop the DMA mapping operations from qcom_scm_qseecom_app_send() and
-> > convert all users of it in the qseecom module to using the TZ allocator
-> > for creating SCM call buffers.
->
-> This reads as if this is removal of duplication, now that we have the TZ
-> allocation. But wasn't there something about you not being able to mix
-> and match shmbridge and non-shmbridge allocations in the interface, so
-> this transition is actually required? Or did I get that wrong and this
-> just reduction in duplication?
->
+Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
+symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
+have fbcon/VT and DRM fbdev emulation, but without support for any legacy
+fbdev driver.
 
-What is the question exactly? Yes it is required because once we
-enable SHM bridge, "normal" memory will no longer be accepted for SCM
-calls.
+Unfortunately, it missed to change the CONFIG_FB in arch/sparc makefiles,
+which leads to the following linking error in some sparc64 configurations:
 
-> > Together with using the cleanup macros,
-> > it has the added benefit of a significant code shrink.
->
-> That is true, but the move to using cleanup macros at the same time as
-> changing the implementation makes it unnecessarily hard to reason about
-> this patch.
->
-> This patch would be much better if split in two.
->
+   sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_registered':
+>> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
 
-I disagree. If we have a better interface in place, then let's use it
-right away, otherwise it's just useless churn.
+Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
 
-> > As this is
-> > largely a module separate from the SCM driver, let's use a separate
-> > memory pool.
-> >
->
-> This module is effectively used to read and write EFI variables today.
-> Is that worth statically removing 256kb of DDR for? Is this done solely
-> because it logically makes sense, or did you choose this for a reason?
->
+I don't have a sparc64 toolchain to test this patch, but I'm pretty sure
+that this is the correct fix for the linking error reported by the robot.
 
-Well, it will stop working (with SHM bridge enabled) if we don't. We
-can possibly release the pool once we know we'll no longer need to
-access EFI variables but I'm not sure if that makes sense? Or maybe
-remove the pool after some time of driver inactivity and create a new
-one when it's needed again?
+Changes in v2:
+- Add collected tags.
+- Also fix arch/sparc/Makefile (Thomas Zimmermann).
 
-Bart
+ arch/sparc/Makefile       | 2 +-
+ arch/sparc/video/Makefile | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-[snip]
+diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
+index 5f6035936131..2a03daa68f28 100644
+--- a/arch/sparc/Makefile
++++ b/arch/sparc/Makefile
+@@ -60,7 +60,7 @@ libs-y                 += arch/sparc/prom/
+ libs-y                 += arch/sparc/lib/
+ 
+ drivers-$(CONFIG_PM) += arch/sparc/power/
+-drivers-$(CONFIG_FB) += arch/sparc/video/
++drivers-$(CONFIG_FB_CORE) += arch/sparc/video/
+ 
+ boot := arch/sparc/boot
+ 
+diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
+index 6baddbd58e4d..d4d83f1702c6 100644
+--- a/arch/sparc/video/Makefile
++++ b/arch/sparc/video/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+-obj-$(CONFIG_FB) += fbdev.o
++obj-$(CONFIG_FB_CORE) += fbdev.o
+-- 
+2.43.0
+
 
