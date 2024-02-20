@@ -1,132 +1,131 @@
-Return-Path: <linux-kernel+bounces-72149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F11085B006
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:29:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D3485B00D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:34:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 251CD282C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:29:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B028B210EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718BC186F;
-	Tue, 20 Feb 2024 00:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E5E4A26;
+	Tue, 20 Feb 2024 00:34:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j8uvtFpw"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Cy+7QID1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C828415B1
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06364185B
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708388966; cv=none; b=EuoVM2lnd0TS1vbo9SbVSRYKgAqskO/JCPD++SNw+Hul/S9SVOjD5BvKKSu9IXvpvHFwuI8yUt513ryz58bp/7OiSWBqZvLvvbIswiyiimi9ab0GzZXB9O8e0Ut+42Yh69M57l51HjPBg6xeP5e1+H6QspmfoE0mpMiMSBfOt+c=
+	t=1708389286; cv=none; b=rzDvPg/DDtYf6l9rN/mtAJR2AVO29jTZUlK+KmmCbHYSxOkUN+Uy+NFMp27xAzkhILiXRLpPk9OJv5h+Kv3bGB02c+L8h2ZIZaoRs3QP5d1/YwRJ74J9xb99vM98JNmJ83lqJaXf0lbNkfeSwVh7QPKqlZwofmcMnzFCQtFKEeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708388966; c=relaxed/simple;
-	bh=183g6vtbcZ2b2MRFPH32KglvjXRItRCSep4zZ+9EpJM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b7xD/9RkvoQE1oTlZBJjTLQOhKkYCNXUDt90U4N8cY9+BtwFotv5TbwL3MbyhE/iteh/Nm6EGz+I3PCkEor/KR8o1gsIhCqN+aVB/ItKYsqIqZG7UMSuDCcpkT2SsfESV0CZCllZkMOKtU/c+K6E9DkaoHUGAyWXki76YGgf/HE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j8uvtFpw; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 20 Feb 2024 09:29:14 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708388962;
+	s=arc-20240116; t=1708389286; c=relaxed/simple;
+	bh=twysEfuQ4T/0w/2qh6F2Tm91ScgbJMClrcyBk8mU50U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Veac6j5rpPzd8/0SW5HlXYMvzxuStaFAH3J+G+SUgv0qZKA1BsfjJ1Pe8uBlPbNiWHNN60FSqV1dTEwAPSAeeKIIEFtF/iw8MRuykxoEGXb/llH9yYRr7TDdIEf57LhHyAbgM2YMx8T1Qu/nbmFy+15ZeyGYyhjmj/FmEApKyI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cy+7QID1; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708389283;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rYuTBsJkK+AK+LNE5sjpfw0BQt+vbyg0B6ux0rgRMjs=;
-	b=j8uvtFpwxAr72QZh5GM/HSk2IRsS1PuaeTOYAPj4KqGK3VGUKculE9G0tz2LXcMUTrcNIK
-	kWh8UT4674eYs33gxDvHfs2KSw6MvoglCdl5OqtWFoOBdbt+MdhoQ/mXKuDnPfGV+bwzeL
-	4ryqHETlIO2kWEwXoxnIQvgJmK1xShs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Itaru Kitayama <itaru.kitayama@linux.dev>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: skseofh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-	ryan.roberts@arm.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: add early fixmap initialization flag
-Message-ID: <ZdPyWkOlUan5AI9r@vm3>
-References: <20240217140326.2367186-1-skseofh@gmail.com>
- <ZdMx-svsHgrfguxX@FVFF77S0Q05N>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=uJszGoDmcJ/e3cfaUrhP/NITyUlid6+ei0fLVW+ftlI=;
+	b=Cy+7QID1hKJgbw06GAFxHFEsANhHN4lh2u2ziDe7GLxeLc3QC6eW23/4JFhNkYlSlJPMSc
+	M6lylbR3VvJIK2GhWB0lFV4Ec939KI96tfIcBFlp1b5GaL++u3+d+gIej6ZfERIIcjKKXw
+	7biA+r2Adt4Si/rODxw8SUuzM09Gi0E=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-127-dn5L_tJ4MfybouTfh8BNvA-1; Mon, 19 Feb 2024 19:34:42 -0500
+X-MC-Unique: dn5L_tJ4MfybouTfh8BNvA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-410e83001cbso27064605e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:34:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708389280; x=1708994080;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uJszGoDmcJ/e3cfaUrhP/NITyUlid6+ei0fLVW+ftlI=;
+        b=n3ISU2I6Z20NVNtZI438hVCRhka7xaMFBTTW/Xno59lL62u2c7NJkVKNZ0IYjBUnrw
+         yZ1i/0qcYo0tw0T+0J0BFBegWWPwv5kwtAQBNK8swlMnFSyYgxgTwn+tWEkfMou3Lobu
+         ic84ehn4hCiV/mPv0GuQ3l2VAu5dnj2J7nB+4D4/+x6pvztUN4DlwgNPo2+wOyv4JL/8
+         I/Yc+UuT7D+AUG8zI4dekXIik2uaRqloboN9Fd2QGCrQ6C4ZRkCdq0ikR5mU7g476xKE
+         puN79zXK3bq1mC14zLwlCZCE59b3ZbTpef2WA5MOS2/3LtT3y1c8iZDu1KXzscIf2/oz
+         YBKQ==
+X-Gm-Message-State: AOJu0Yy/0oEFCrRtU9PQyjiO2v+lMEBMSRwmtx0+JxOppI1EhVMiwYcs
+	J40Wy+/FWJqP8dGh3HA30gN2xkETKBNWuUJXN7g/opgUAGwt4nWM3fB527yKe5EoWD9VqxdVpVc
+	zjLxUDInfgIj66upRJJ5nDenXxq4jBZTOha+rVY0kVq51oG1sZwoJHX0A+KXbjpPgAHiFLPYaDv
+	QxXFNhDe11dtGBdJjo1Vvt+8brNXNrEDJfya69xCGxRLE7
+X-Received: by 2002:a05:600c:198f:b0:412:6d41:920d with SMTP id t15-20020a05600c198f00b004126d41920dmr434597wmq.38.1708389280354;
+        Mon, 19 Feb 2024 16:34:40 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGscKC/h+165pWPIQGiFVK1k+j+cPntLp690DOup1A66feMphWpMObuy7g/A9wibrQFwsUJhA==
+X-Received: by 2002:a05:600c:198f:b0:412:6d41:920d with SMTP id t15-20020a05600c198f00b004126d41920dmr434581wmq.38.1708389279984;
+        Mon, 19 Feb 2024 16:34:39 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id l12-20020a05600c4f0c00b004122b7a680dsm12803198wmq.21.2024.02.19.16.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 16:34:39 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>,
+	oe-kbuild-all@lists.linux.dev,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Helge Deller <deller@gmx.de>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	sparclinux@vger.kernel.org
+Subject: [PATCH] sparc: Fix undefined reference to fb_is_primary_device
+Date: Tue, 20 Feb 2024 01:34:30 +0100
+Message-ID: <20240220003433.3316148-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdMx-svsHgrfguxX@FVFF77S0Q05N>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 19, 2024 at 10:48:26AM +0000, Mark Rutland wrote:
-> On Sat, Feb 17, 2024 at 11:03:26PM +0900, skseofh@gmail.com wrote:
-> > From: Daero Lee <skseofh@gmail.com>
-> > 
-> > early_fixmap_init may be called multiple times. Since there is no
-> > change in the page table after early fixmap initialization, an
-> > initialization flag was added.
-> 
-> Why is that better?
-> 
-> We call early_fixmap_init() in two places:
-> 
-> * early_fdt_map()
-> * setup_arch()
-> 
-> ... and to get to setup_arch() we *must* have gone through early_fdt_map(),
-> since __primary_switched() calls that before going to setup_arch().
-> 
-> So AFAICT we can remove the second call to early_fixmap_init() in setup_arch(),
-> and rely on the earlier one in early_fdt_map().
+Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
+symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
+have fbcon/VT and DRM fbdev emulation, but without support for any legacy
+fbdev driver.
 
-Removing the second call makes the code base a bit harder to understand
-as the functions related to DT and ACPI setup are not separated cleanly.
-I prefer calling the early_fixmap_init() in setup_arch() as well.
+Unfortunately, it missed to change a CONFIG_FB in arch/sparc/Makefile and
+that leads to the following linking error in some sparc64 configurations:
 
-Itaru.
+   sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_registered':
+>> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
 
-> 
-> Mark.
-> 
-> > 
-> > Signed-off-by: Daero Lee <skseofh@gmail.com>
-> > ---
-> >  arch/arm64/mm/fixmap.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/arm64/mm/fixmap.c b/arch/arm64/mm/fixmap.c
-> > index c0a3301203bd..fbdd5f30f3a1 100644
-> > --- a/arch/arm64/mm/fixmap.c
-> > +++ b/arch/arm64/mm/fixmap.c
-> > @@ -32,6 +32,8 @@ static pte_t bm_pte[NR_BM_PTE_TABLES][PTRS_PER_PTE] __page_aligned_bss;
-> >  static pmd_t bm_pmd[PTRS_PER_PMD] __page_aligned_bss __maybe_unused;
-> >  static pud_t bm_pud[PTRS_PER_PUD] __page_aligned_bss __maybe_unused;
-> >  
-> > +static int early_fixmap_initialized __initdata;
-> > +
-> >  static inline pte_t *fixmap_pte(unsigned long addr)
-> >  {
-> >  	return &bm_pte[BM_PTE_TABLE_IDX(addr)][pte_index(addr)];
-> > @@ -100,10 +102,15 @@ void __init early_fixmap_init(void)
-> >  	unsigned long addr = FIXADDR_TOT_START;
-> >  	unsigned long end = FIXADDR_TOP;
-> >  
-> > +	if (early_fixmap_initialized)
-> > +		return;
-> > +
-> >  	pgd_t *pgdp = pgd_offset_k(addr);
-> >  	p4d_t *p4dp = p4d_offset(pgdp, addr);
-> >  
-> >  	early_fixmap_init_pud(p4dp, addr, end);
-> > +
-> > +	early_fixmap_initialized = 1;
-> >  }
-> >  
-> >  /*
-> > -- 
-> > 2.25.1
-> > 
+Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
+
+I don't have a sparc64 toolchain to test this patch, but I'm pretty sure
+that this is the correct fix for the linking error reported by the robot.
+
+ arch/sparc/video/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
+index 6baddbd58e4d..d4d83f1702c6 100644
+--- a/arch/sparc/video/Makefile
++++ b/arch/sparc/video/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+-obj-$(CONFIG_FB) += fbdev.o
++obj-$(CONFIG_FB_CORE) += fbdev.o
+-- 
+2.43.0
+
 
