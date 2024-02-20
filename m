@@ -1,201 +1,144 @@
-Return-Path: <linux-kernel+bounces-72955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2751485BB14
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC2085BB1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 784CCB236F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:55:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8882B26A60
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417D267C46;
-	Tue, 20 Feb 2024 11:55:45 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD4367A1A
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1754B66B52;
+	Tue, 20 Feb 2024 11:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iQUs7WiY"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC11D67E67
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708430144; cv=none; b=oRLVz4qNZQRq+4RsaGcjFznVqvUp+mi1hA8646DpVWVHKBfJ2cLJZXz0b3zr9B+PerDLgdTUginCaUlOALhKi4vxwN6JW7WEdvPVv0H43MGBPhAraHhWIQQs1b2ZKQ78ROpaij7sPp1UJZD4MtwR+6hx8HB4Lg3kpXPiolr/tvg=
+	t=1708430154; cv=none; b=DstKme3RIYgA4okfGcnhJK2jowe9GC/eWiRbWYhCjt/tftpYLzSQxIS0rzHW/xbYUCF8IfWdyY3AiJ8jFje5PvER+nAss3oBj2xXuXPToZE5ik6aTsqfOUJK/ZGkWSmNYK2sBTIVYQ5Q+mOBSnqtQ7JxvkUQHu96O/rgCaZ73l4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708430144; c=relaxed/simple;
-	bh=iyps2MSntJU+TM6ZHqBgvov246vG4jGhQZQGmhn7v4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pEoewZOfjhSOG1RUxcMnYkDVPCtH5E/FQb8WXy651Ipg9g/3Z8IRA5wzAj/y3+Fs2rw8y7KTB4MbgagNjbj6DiXakQYcxroWb5Edzfyrn12gouO6N4gKtIUutZ6geBwlWs8U8drLW1hzTPJCSfywDbMXbpEtdiQ+Dbm5upSI4CU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D15ABFEC;
-	Tue, 20 Feb 2024 03:56:20 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.26.173])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B38453F762;
-	Tue, 20 Feb 2024 03:55:40 -0800 (PST)
-Date: Tue, 20 Feb 2024 11:55:30 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Itaru Kitayama <itaru.kitayama@linux.dev>
-Cc: skseofh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-	ryan.roberts@arm.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: add early fixmap initialization flag
-Message-ID: <ZdSTMgxcWYsT9ECs@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240217140326.2367186-1-skseofh@gmail.com>
- <ZdMx-svsHgrfguxX@FVFF77S0Q05N>
- <ZdPyWkOlUan5AI9r@vm3>
+	s=arc-20240116; t=1708430154; c=relaxed/simple;
+	bh=eRbFyA1HvnTiPA/WeNSsg+LGCPcb7wlEk3IxlkbWnAI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ajmMKNWEQ4xf70NGt1pf3WMUfsWqMUljZCyQ6kIHj4ObGyPqwGdK5OpPOS+7seNjrGcd+Fz2+SF1BTKkNLTyUT8txsCdHSW7ZcsH9G2H6ilS1XDdwk0ioJ9qrY0uuQdW9JRlzvVYlL/6iLlR564WAolfNyXE/tUyNvmrIJTuY8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iQUs7WiY; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso5199195276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:55:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708430152; x=1709034952; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uumLRt54NCf1C2r2Jw813VJ80gZwOfopdqyWnHS9j/Y=;
+        b=iQUs7WiYRjzGkvUHMWXgnimq2PfuGVqXsXx1Wq+uIY5+jjT1HCeHKFV45dDyEn7XIB
+         n4+z4z+b00r9QuOZEi+vm+eQy/KyEt5eF1ePUbWMfn8gwY/jHy+HlPX6mM1TYoOE+tj9
+         5Ggoge+2oxr3yFaQE0hyPX+beq2WcgdOy0QEGxfQsnJ3N5DsDFHCUpSBT6RVjak5GsS9
+         wYx46u9WxPVlXbmWxMMPtpN03FwMVdzEnYzRr7wNnkDjkIsUZQPtGKGLWbM8xDHO1I7W
+         AwhAZNQaEgO09cJxGLmTeYx81DY2fLc/EaPgloi/igK70jCCp4EAB0n09SCFLFE023pY
+         vIyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708430152; x=1709034952;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uumLRt54NCf1C2r2Jw813VJ80gZwOfopdqyWnHS9j/Y=;
+        b=O/jM6TrpdUeHWvpGsy+x/ZPMAQokIH0fjMLBnXxzVuHPXE2Itx42gtiNPqScYJLGTF
+         WGYfUK0nhMcDaa5KOa3Yp23eyVpNvJynnCWg4Q9JICv6nFa/4a5oK6Y+i06iIssOGLH8
+         VYdbxHSJephTP8/LMsQx4qPSw3acNQnISTQudlVopk1imkV/cx0n64qOUrh9p0fkz+Iz
+         5VY+zF8yt6Bf4dJoqLWSp1bJBqqu+S1VXbxFCNNUnpH6GWQShofO6mBCIuKhc+S+Iwd6
+         UUFplLOIzqaxE5urrhg4XPn+LyWom7zSCB7+gJyysqRwA3Vur3MlU3PofuxdzX19Yp1P
+         X8Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCWlvfvdsACeu6exQD/tzkAES4swj4xns9bIGQ9M+dy4XPQy8BpnlfCZUg1CYUOLWmUG1GUnDcoQd108Divax12ELl0GPGK8UxjNO6Ap
+X-Gm-Message-State: AOJu0YzmbGU6ejnyUnfh4prJmh+K7T+McJ0W7MYZl934Ko7KCl3yxBEq
+	L4cngWx9XHQQ8a17PQHpEHHe5l1uR/SN6cn1dWVHnQEmbgCl21lis+9d4lRi7wPe85C74vQ/D7Y
+	jgTF+xZ/tu2FLQYNqtdNtgsTC2AICkZppG0z7oQ==
+X-Google-Smtp-Source: AGHT+IExpvpD8AgXA3aIHbCHCE4RqNcFOBxn35EoCinO8Hpk+aekmgbnXIo/496q/fTFdU86koAVpAivWwXL7BwqeFo=
+X-Received: by 2002:a25:8d0d:0:b0:dcb:ef22:3869 with SMTP id
+ n13-20020a258d0d000000b00dcbef223869mr12986540ybl.16.1708430151780; Tue, 20
+ Feb 2024 03:55:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdPyWkOlUan5AI9r@vm3>
+References: <20240217150228.5788-2-johan+linaro@kernel.org>
+ <c95f5ff3-8dad-4302-9384-92a9b83f7bdc@web.de> <ZdRTx2lmHBVlcLub@hovoldconsulting.com>
+ <1afc87c-2c1f-df10-a0c8-2a267d44122@inria.fr>
+In-Reply-To: <1afc87c-2c1f-df10-a0c8-2a267d44122@inria.fr>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 20 Feb 2024 13:55:40 +0200
+Message-ID: <CAA8EJppH9ey97yKFUccNLHhMKs3eUS55+rY0tXm_a6KGp9jtug@mail.gmail.com>
+Subject: Re: [PATCH 1/6] drm/bridge: aux-hpd: fix OF node leaks
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Johan Hovold <johan@kernel.org>, Markus Elfring <Markus.Elfring@web.de>, 
+	Johan Hovold <johan+linaro@kernel.org>, freedreno@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Vinod Koul <vkoul@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Rob Clark <robdclark@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 09:29:14AM +0900, Itaru Kitayama wrote:
-> On Mon, Feb 19, 2024 at 10:48:26AM +0000, Mark Rutland wrote:
-> > On Sat, Feb 17, 2024 at 11:03:26PM +0900, skseofh@gmail.com wrote:
-> > > From: Daero Lee <skseofh@gmail.com>
-> > > 
-> > > early_fixmap_init may be called multiple times. Since there is no
-> > > change in the page table after early fixmap initialization, an
-> > > initialization flag was added.
-> > 
-> > Why is that better?
-> > 
-> > We call early_fixmap_init() in two places:
-> > 
-> > * early_fdt_map()
-> > * setup_arch()
-> > 
-> > ... and to get to setup_arch() we *must* have gone through early_fdt_map(),
-> > since __primary_switched() calls that before going to setup_arch().
-> > 
-> > So AFAICT we can remove the second call to early_fixmap_init() in setup_arch(),
-> > and rely on the earlier one in early_fdt_map().
-> 
-> Removing the second call makes the code base a bit harder to understand
-> as the functions related to DT and ACPI setup are not separated cleanly.
-> I prefer calling the early_fixmap_init() in setup_arch() as well.
+On Tue, 20 Feb 2024 at 13:52, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Tue, 20 Feb 2024, Johan Hovold wrote:
+>
+> > On Mon, Feb 19, 2024 at 06:48:30PM +0100, Markus Elfring wrote:
+> > > > The two device node references taken during allocation need to be
+> > > > dropped when the auxiliary device is freed.
+> > > =E2=80=A6
+> > > > +++ b/drivers/gpu/drm/bridge/aux-hpd-bridge.c
+> > > =E2=80=A6
+> > > > @@ -74,6 +75,8 @@ struct device *drm_dp_hpd_bridge_register(struct =
+device *parent,
+> > > >
+> > > >   ret =3D auxiliary_device_init(adev);
+> > > >   if (ret) {
+> > > > +         of_node_put(adev->dev.platform_data);
+> > > > +         of_node_put(adev->dev.of_node);
+> > > >           ida_free(&drm_aux_hpd_bridge_ida, adev->id);
+> > > >           kfree(adev);
+> > > >           return ERR_PTR(ret);
+> > >
+> > > The last two statements are also used in a previous if branch.
+> > > https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/gpu/drm/brid=
+ge/aux-hpd-bridge.c#L63
+> > >
+> > > How do you think about to avoid such a bit of duplicate source code
+> > > by adding a label here?
+> >
+> > No, the current code is fine and what you are suggesting is in any case
+> > unrelated to this fix.
+> >
+> > If this function ever grows a third error path like that, I too would
+> > consider it however.
+>
+> I guess these of_node_puts can all go away shortly with cleanup anyway?
 
-I appreciate what you're saying here, but I don't think that it's better to
-keep the second call in setup_arch().
+I'm not sure about it. Those are long-living variables, so they are
+not a subject of cleanup.h, are they?
 
-We rely on having a (stub) DT in order to find UEFI and ACPI tables, so the DT
-and ACPI setup can never be truly separated. We always need to map that DT in
-order to find the UEFI+ACPI tables, and in order to do that we must initialize
-the fixmap first.
 
-I don't think there's any good reason to keep a redundant call in setup_arch();
-that's just misleading and potentially problematic if we ever change
-early_fixmap_init() so that it's not idempotent.
-
-I agree it's somewhat a layering violation for  early_fdt_map() to be
-responsible for initialising the fixmap, so how about we just pull that out,
-e.g. as below?
-
-Mark.
-
----->8----
-From 5f07f9c1d352f760fa7aba97f1b4f42d9cb99496 Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Tue, 20 Feb 2024 11:09:17 +0000
-Subject: [PATCH] arm64: clean up fixmap initalization
-
-Currently we have redundant initialization of the fixmap, first in
-early_fdt_map(), and then again in setup_arch() before we call
-early_ioremap_init(). This redundant initialization isn't harmful, as
-early_fixmap_init() happens to be idempotent, but it's redundant and
-potentially confusing.
-
-We need to call early_fixmap_init() before we map the FDT and before we
-call early_ioremap_init(). Ideally we'd place early_fixmap_init() and
-early_ioremap_init() in the same caller as early_ioremap_init() is
-somewhat coupled with the fixmap code.
-
-Clean this up by moving the calls to early_fixmap_init() and
-early_ioremap_init() into a new early_mappings_init() function, and
-calling this once in __primary_switched() before we call
-early_fdt_map(). This means we initialize the fixmap once, and keep
-early_fixmap_init() and early_ioremap_init() together.
-
-This is a cleanup, not a fix, and does not need to be backported to
-stable kernels.
-
-Reported-by: Daero Lee <skseofh@gmail.com>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Itaru Kitayama <itaru.kitayama@linux.dev>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/setup.h |  1 +
- arch/arm64/kernel/head.S       |  2 ++
- arch/arm64/kernel/setup.c      | 11 ++++++-----
- 3 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/include/asm/setup.h b/arch/arm64/include/asm/setup.h
-index 2e4d7da74fb87..c8ba018bcc09f 100644
---- a/arch/arm64/include/asm/setup.h
-+++ b/arch/arm64/include/asm/setup.h
-@@ -9,6 +9,7 @@
- 
- void *get_early_fdt_ptr(void);
- void early_fdt_map(u64 dt_phys);
-+void early_mappings_init(void);
- 
- /*
-  * These two variables are used in the head.S file.
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index cab7f91949d8f..c60c5454c5704 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -510,6 +510,8 @@ SYM_FUNC_START_LOCAL(__primary_switched)
- #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- 	bl	kasan_early_init
- #endif
-+	bl	early_mappings_init
-+
- 	mov	x0, x21				// pass FDT address in x0
- 	bl	early_fdt_map			// Try mapping the FDT early
- 	mov	x0, x20				// pass the full boot status
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 42c690bb2d608..7a539534ced78 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -176,8 +176,6 @@ void __init *get_early_fdt_ptr(void)
- asmlinkage void __init early_fdt_map(u64 dt_phys)
- {
- 	int fdt_size;
--
--	early_fixmap_init();
- 	early_fdt_ptr = fixmap_remap_fdt(dt_phys, &fdt_size, PAGE_KERNEL);
- }
- 
-@@ -290,6 +288,12 @@ u64 cpu_logical_map(unsigned int cpu)
- 	return __cpu_logical_map[cpu];
- }
- 
-+asmlinkage void __init early_mappings_init(void)
-+{
-+	early_fixmap_init();
-+	early_ioremap_init();
-+}
-+
- void __init __no_sanitize_address setup_arch(char **cmdline_p)
- {
- 	setup_initial_init_mm(_stext, _etext, _edata, _end);
-@@ -305,9 +309,6 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	 */
- 	arm64_use_ng_mappings = kaslr_requires_kpti();
- 
--	early_fixmap_init();
--	early_ioremap_init();
--
- 	setup_machine_fdt(__fdt_pointer);
- 
- 	/*
--- 
-2.30.2
-
+--=20
+With best wishes
+Dmitry
 
