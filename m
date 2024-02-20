@@ -1,147 +1,121 @@
-Return-Path: <linux-kernel+bounces-73095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB1B285BD96
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:49:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218F085BDA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80496286417
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:49:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 543581C21295
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9F06BB48;
-	Tue, 20 Feb 2024 13:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7355A6A355;
+	Tue, 20 Feb 2024 13:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kzgo/kMY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UIbJoLjV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AA06A8A2;
-	Tue, 20 Feb 2024 13:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51FB26A33D;
+	Tue, 20 Feb 2024 13:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436933; cv=none; b=qk4R1MkPq3EP5Z8v1TKQjOvO/YKlOqWARYtlYhF8YWa7FPsCmHhEcGSGdNgHfWlKV5W4Lg2oFfjdN8/64sCegeo2TgyLpEUM8QRGnTrALmhhzi+yj1GTOrP4fSFV2oOK4nk2+42hJgLW3sN8/tbjf0GwILHlIRZeXtc3YNwWxH4=
+	t=1708436964; cv=none; b=AgTvMLNRq6vjExJlOurF+rO+hudUuX77HuVibM+W4eTPQXUIwcjrEzuk8indlYf7CMokSZYwnp0Y2Q1K2olYKmqK/jse+XDjKkeg2GFQBJkQ8dh+joetUhLyIxZAlJz/E5S+F8t6qieFWPRDBcuje2Etcs6njLN498TVrBMsFpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708436933; c=relaxed/simple;
-	bh=YC8rgxMYsXiObwoLfeP5CLE6j1/Tcmi0OcU5mPnZIww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EuLz/4X7Nmaj9TpWE/FQndyhcEZTMQ3v9qR+Ge5Y+M0UlQvGvTJczOu3fYtkXBm9Wdcad9DV7oPvlxXJGhOmPHngE7H7bdK0Uu313HPHQUFR9cTOSqGzRErgQlfyF/03khxFGRwbUd/Sw5AtIXHey9EevXDC9+4jkquGLIUV9a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kzgo/kMY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FBDC433C7;
-	Tue, 20 Feb 2024 13:48:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708436933;
-	bh=YC8rgxMYsXiObwoLfeP5CLE6j1/Tcmi0OcU5mPnZIww=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kzgo/kMY6kB8e16x373X+nZBYRtZPWjbszF/D10p4CrIs0z1D+/0cZouLeQB91n2j
-	 Gqy/BbAgiAHBMGPwPdGFVDf+u3kZgkwlW08V2RE/dLN2F4bEnxEmLXXZ8E4BV/si12
-	 1Bqf7tscKk+MgaQXW3tGv0Igcn2yO1AEvI58V7Bq/D2AQ0jY9LZh3udQPlnEwFC0hD
-	 CbHrl3JULRp6TrqbQH9VQcyAjoG4CJtWq9LkjxSDf9EoE9wqjWcD+fSFJwgPEcZvgL
-	 EW9IyDQgJPN1weelAN2llqQOZ9zLb5reAZvuQWF+aeLgGbd2BcvleXJ5gFGLeJBJiB
-	 0jDjiI4KxrkVw==
-Date: Tue, 20 Feb 2024 13:48:42 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
- the QCA6391
-Message-ID: <f72723f3-f5c5-4c16-a257-e5f57c4f9e73@sirena.org.uk>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-10-brgl@bgdev.pl>
- <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk>
- <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
- <8e392aed-b5f7-486b-b5c0-5568e13796ec@sirena.org.uk>
- <CAMRc=MeAXEyV47nDO_WPQqEQxSYFWTrwVPAtLghkfONj56FGVA@mail.gmail.com>
- <5a3f5e1b-8162-4619-a10b-d4711afe533b@sirena.org.uk>
- <CAMRc=MdTub4u0dm5PgTQPnYPuR=SRnh=ympEZqo_UyrQDrQw6w@mail.gmail.com>
+	s=arc-20240116; t=1708436964; c=relaxed/simple;
+	bh=Ry+oD2aeuZyQ8lyL2bZUi5BX0g4Xx7EQvo1e3TAbr5I=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=bZ715y9vvNBIRx2MSUbljDwfDsBWXI9cgY7dVDyoSuJFdr7eF0l66ZwHKyuv9Z4n3Vk3+Sj/2OmY/c5yieV9ewDaCYPgUMT/OddbG67H14yqSiQgybP0hM7OMnUWPi0ihgJO3XLIrGCYVXCmKSp6AYHxOCqp1ejZhnMOWAmDncc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UIbJoLjV; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708436963; x=1739972963;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Ry+oD2aeuZyQ8lyL2bZUi5BX0g4Xx7EQvo1e3TAbr5I=;
+  b=UIbJoLjVjDTpeyUpxqpnIJvR9ehj/PFG2YqFBYHTw4MNNP/LEtF+pxZc
+   ugQ09kJ2deJlr4y6PFdpGNnuAfQfu9d7PbuWnCHiRP59yN2prrDBPyRas
+   DZobRPOWwgZ2IxNVJcNZnzJOuqKwPiBNPcOC1aBPSUjsrkrLd536zAPES
+   ehNFNL62o7o6yEIylj3uW8308x9DxZSj2TYUvKYmw4kcJyWvlvmO1p5f6
+   YjTem/IZApjVhiGSRh6N+2CXvXSm7dTqB2eVLgmAESFaRg3gVsgLKh+Pq
+   a2jy6uZn7xuHmhU0oFwugi9P8Rxu4KqM3RbXuTOk2qg83tNRJ3g2SD5iT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="24995632"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="24995632"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:49:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="4940842"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.249.21])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 05:49:21 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 20 Feb 2024 15:49:16 +0200 (EET)
+To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+cc: Fenghua Yu <fenghua.yu@intel.com>, 
+    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
+    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 3/3] selftests/resctrl: Move cleanups out of individual
+ tests
+In-Reply-To: <63b9763211c2954f0ef517a817b3bf0c482df8cd.1708434017.git.maciej.wieczor-retman@intel.com>
+Message-ID: <f08dafda-c8a5-324a-464c-5b84d779c4ad@linux.intel.com>
+References: <cover.1708434017.git.maciej.wieczor-retman@intel.com> <63b9763211c2954f0ef517a817b3bf0c482df8cd.1708434017.git.maciej.wieczor-retman@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TzIdp7BUtsKYDYnZ"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MdTub4u0dm5PgTQPnYPuR=SRnh=ympEZqo_UyrQDrQw6w@mail.gmail.com>
-X-Cookie: E = MC ** 2 +- 3db
+Content-Type: text/plain; charset=US-ASCII
+
+On Tue, 20 Feb 2024, Maciej Wieczor-Retman wrote:
+
+> Every test calls its cleanup function at the end of it's test function.
+> After the cleanup function pointer is added to the test framework this
+> can be simplified to executing the callback function at the end of the
+> generic test running function.
+> 
+> Make test cleanup functions static and call them from the end of
+> run_single_test() from the resctrl_test's cleanup function pointer.
+> 
+> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+> ---
+>  tools/testing/selftests/resctrl/cat_test.c      | 4 +---
+>  tools/testing/selftests/resctrl/cmt_test.c      | 3 +--
+>  tools/testing/selftests/resctrl/mba_test.c      | 4 +---
+>  tools/testing/selftests/resctrl/mbm_test.c      | 4 +---
+>  tools/testing/selftests/resctrl/resctrl.h       | 4 ----
+>  tools/testing/selftests/resctrl/resctrl_tests.c | 2 ++
+>  6 files changed, 6 insertions(+), 15 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+> index 2d2f69d3e5b7..ad5ebce65c07 100644
+> --- a/tools/testing/selftests/resctrl/cat_test.c
+> +++ b/tools/testing/selftests/resctrl/cat_test.c
+> @@ -128,7 +128,7 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
+>  	return fail;
+>  }
+>  
+> -void cat_test_cleanup(void)
+> +static void cat_test_cleanup(void)
+>  {
+>  	remove(RESULT_FILE_NAME);
+>  }
+> @@ -289,8 +289,6 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
+>  	ret = check_results(&param, test->resource,
+>  			    cache_total_size, full_cache_mask, start_mask);
+>  out:
+> -	cat_test_cleanup();
+> -
+
+Any goto out can now become return ret; and the out label be then removed.
 
 
---TzIdp7BUtsKYDYnZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-- 
+ i.
 
-On Tue, Feb 20, 2024 at 02:38:33PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Feb 20, 2024 at 2:31=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
-rote:
-> > On Tue, Feb 20, 2024 at 12:16:10PM +0100, Bartosz Golaszewski wrote:
-
-> > > And what do you mean by there not being any consumers? The WLAN and BT
-> > > *are* the consumers.
-
-> > There are no drivers that bind to the regulators and vary the voltages
-> > at runtime.
-
-> Even with the above misunderstanding clarified: so what? DT is the
-> representation of hardware. There's nothing that obligates us to model
-> DT sources in drivers 1:1.
-
-It is generally a bad sign if there is a voltage range specified on a
-regulator that's not got any indication that the voltage is going to be
-actively managed, especially in situations like with several of the
-supplies the DT was specifying where there are clear indications that
-the supply is intended to be fixed voltage (or cases where every single
-supply has a voltage range which would be highly unusual).  Looking at
-the consumers might provide an explanation for such unusual and likely
-incorrect constraints, and the lack of any consumers in conjunction with=20
-other warning signs reenforces those warning signs.
-
---TzIdp7BUtsKYDYnZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXUrboACgkQJNaLcl1U
-h9AUegf4sL0ibn2WhQVo2jE/mB56ayVY4daCFJmLey10o3xzG6j5CHdfj7ZENBPk
-kozPN2BW9C/e0Er+hMKCtTgvm7nJUfVKNcxMd73sXUj44E9Bx57GVOwlBzREZd0w
-O1taO3DNZOTQqwGEaYjjeX9Rac+LU0m0+s/PHv5SbgO7ZlvvHUX0u2sEhyM4Sopl
-NZ1NA+cK9TLOo3ZZjtH5EF8sXMtvRaZr01MwXp+2fljFIkJLx84wdv1oVmOR0I8r
-vobnh7aFX0dyCHgCD1cWqm/QqR0Um0Fc9utXOXTByvvR6L4VlYZvCXnmgvw9Hn1O
-4UdINenyan4K1XpHuoZicZYZbwpU
-=v6IJ
------END PGP SIGNATURE-----
-
---TzIdp7BUtsKYDYnZ--
 
