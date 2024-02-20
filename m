@@ -1,430 +1,296 @@
-Return-Path: <linux-kernel+bounces-72294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA0185B1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:52:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1532185B1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EFBE1C21668
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:52:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C05F02827C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD8056B86;
-	Tue, 20 Feb 2024 03:51:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BA856759;
+	Tue, 20 Feb 2024 03:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kIuiB9lI"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EI+SvDv3"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B9F5823B
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF81B51037;
+	Tue, 20 Feb 2024 03:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708401098; cv=none; b=XCQTMjWSitffbw4Pb9J3ZpSlZvXhrr+Qbeg9Sxt3FFnQC14VyGyPOWxpWIct2/lfL1MnbTEElkghAK0fooG43sdWmOPylskV/9qmP0tOnARkF2ff58TlqKZ9kRTr+Kt703YP8uto9Ll+2wem9+ZqyElabhbVD8/b6CZFPzeDLPw=
+	t=1708401131; cv=none; b=frF8CXnNz1Yo8nqkPeDRSb8vT3qYfSCa8m93AeNjJm+LrGW7rRPb0Et67iuDdeagDtbVkw5uTqy/5T1JhYz8dWAuwwiRv4waCi9fvVZ7xIdxmSZxPkSzncibTa/ZSnM6ebUeEbEtvRG3bv3QZC2PwvPbW3WAEGUtmVXdjpz3syk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708401098; c=relaxed/simple;
-	bh=C3elKZgirtX7W4quQAT+pcAU39WJO4TotIfoaieEyx0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FKr1kqQpWVbQXzAT4NL2WdX0LnIa/06xBiusTM/qBOQcLzq60ro4VZonP3EJGOQdW8+Bi2fhIAMhdIn/eP3gpbEpzQxfi6GDABWa1GMZeS+aX+hIiiH92UhO3Rk+N32o4JmwyOATLaERfDLZNx0XuCyMHvi2EVdg4aj1GqShWLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=kIuiB9lI; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c03d6e5e56so5188419b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:51:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708401096; x=1709005896; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XIatRLdxp59gkCuXn1TM1+7Ffjtt7PxZsUax3x716A4=;
-        b=kIuiB9lIdHcAmrh7dG0Vq56nvrYZrneaKgR4OHzLsAQPDFu3vxmqzAxcnPso9PebQz
-         n/CzyF6z2BalvIVT/7AWV48xhbKfvu9t3pCRnXEaet61okgalvSpI2ORv/FGVHiRzeLz
-         +P0zujx+U6xiWpDy3w7WV8dAccKJ6UDcTWA28AVokRLkqrWuyQrvMC0a0tTKXjkKZCPB
-         KPSnVeQmN6DoLSIkeRQQ13v08S1W+TTujUK0b9O2jD7RXJ4Lj8ulpD60JI24uQ1FCikU
-         Xwbv3WsoPFD47cAgraO6uB90i7nk/FmEyKIO3UsY8an/awj9QzVOgq1nfneA077E2/4F
-         QqOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708401096; x=1709005896;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XIatRLdxp59gkCuXn1TM1+7Ffjtt7PxZsUax3x716A4=;
-        b=LbOH9qvkIxxO7hLwoJsgqux1E5nNQ4CYA709roGHVXAFex+cNq/aEn2is8r7E4ifes
-         +TtNBAiNxLAPEpPVc+n6HjqLrIwpxiymQIPmavaRKxD0lSZ0r8pybO7gCE00UJs1/Auu
-         PhJjjaOu91XORZ4MvWzf3rY5dfLvt9f4NpaTUZ4dWsgDat59S84z3rdsSL8DblMlX8wC
-         0JW62WeeiqCwrzOHsVXL8e9QTdIQC3Zr02tW72mkB+PVeHIePSLoj2EV9GaoviVM5PdE
-         5hh9opUQ7UMBrBhB3+snZ3HViNsQdFRWT2+DJvaqD6bmCdFrwydj76qr7PTWYd+9pZWo
-         Ubwg==
-X-Forwarded-Encrypted: i=1; AJvYcCV23RJbMnzuVweQ/OwaMcU4YDy0XAiHSQ62hfqALRqdYuQYJdThRk0FNJl5WxergtxDKoopaabsK+jVkW23UZvOBs8bKYyk57HguQj0
-X-Gm-Message-State: AOJu0YwRsbSaRBIPcXVhy/qKW9LPZWy30kEuyV+f4xRBQxs98bIKMy4t
-	+2p6UyiizBS911pWMgj5bVuhEMaCtcqdGmu5YF11neq0L0XDJwgEgpB/ZJD/zvI=
-X-Google-Smtp-Source: AGHT+IGR3ZiUXeeQYK4PiqThY08Xd9MG8AmFv61MNQVpDP2MDd+C2I7YVN1xqhHQa/R/QyD8+ZbFGQ==
-X-Received: by 2002:a05:6808:1646:b0:3c1:3427:fef3 with SMTP id az6-20020a056808164600b003c13427fef3mr18759661oib.48.1708401095822;
-        Mon, 19 Feb 2024 19:51:35 -0800 (PST)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id jz7-20020a170903430700b001d94678a76csm5131723plb.117.2024.02.19.19.51.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 19:51:35 -0800 (PST)
-From: Menglong Dong <dongmenglong.8@bytedance.com>
-To: andrii@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com,
-	thinker.li@gmail.com,
-	dongmenglong.8@bytedance.com,
-	zhoufeng.zf@bytedance.com,
-	davemarchevsky@fb.com,
-	dxu@dxuuu.xyz,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH bpf-next 5/5] selftests/bpf: add test cases for multiple attach of tracing program
-Date: Tue, 20 Feb 2024 11:51:05 +0800
-Message-Id: <20240220035105.34626-6-dongmenglong.8@bytedance.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
-References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+	s=arc-20240116; t=1708401131; c=relaxed/simple;
+	bh=0aZtum7GpJTK5e070oGcznr1ZLszEjCXaTCDzai2tQ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c5ANijdoTE3XrnjsxdVOKjDvVZLa/giLBAdMlJ6mbKSVMFY6y/gKAKNBZfhr9WLy4km+MCVVTNeOFLBKS7HmwlSXPX9bNVENwOwM04cDa2O5+pw47htEn7yaJocOMH0sVghFBXSN2wYNOHqUcQqg/792GKpTsRku/4Q8hfCVt+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EI+SvDv3; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708401124; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=fU4Qo0bzDFl5Fs696AJax4gvvhphfr2U/1MPyEfkvTM=;
+	b=EI+SvDv3MNO1zYrvt6pCD7d+MG1b0g/8LmvsQ3JqicwNPnzN27fE7d5JBDYl3xpvC2zmmO1ifTNn9EnBY50Eo5M4GVvv4nGlZmTplQsoht0MCz+ZFKiBE56iuGQHc9G/lZfaCDGkCgA7NKFx/FP6uulQ0PzBKAdIHfzF4p03Ky4=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W0vCOJs_1708401122;
+Received: from 30.221.128.233(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W0vCOJs_1708401122)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Feb 2024 11:52:04 +0800
+Message-ID: <375c613e-a7ee-4ef0-8d41-3f87ae8cccea@linux.alibaba.com>
+Date: Tue, 20 Feb 2024 11:52:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
+ SMC-D
+To: Wenjia Zhang <wenjia@linux.ibm.com>, wintera@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, jaka@linux.ibm.com, Gerd Bayer <gbayer@linux.ibm.com>
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240111120036.109903-1-guwen@linux.alibaba.com>
+ <76b53c2d-5596-44da-b759-e5e94571d401@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <76b53c2d-5596-44da-b759-e5e94571d401@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-In this commit, we add the testcases for multiple attaching of tracing,
-include FENTRY, FEXIT, MODIFY_RETURN.
 
-Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  49 ++++++
- .../bpf/prog_tests/tracing_multi_attach.c     | 155 ++++++++++++++++++
- .../selftests/bpf/progs/tracing_multi_test.c  |  72 ++++++++
- 3 files changed, 276 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_multi_attach.c
- create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_test.c
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 66787e99ba1b..237eeb7daa07 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -98,12 +98,61 @@ bpf_testmod_test_struct_arg_8(u64 a, void *b, short c, int d, void *e,
- 	return bpf_testmod_test_struct_arg_result;
- }
- 
-+noinline int
-+bpf_testmod_test_struct_arg_9(struct bpf_testmod_struct_arg_2 a,
-+			      struct bpf_testmod_struct_arg_1 b) {
-+	bpf_testmod_test_struct_arg_result = a.a + a.b  + b.a;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_struct_arg_10(int a, struct bpf_testmod_struct_arg_2 b) {
-+	bpf_testmod_test_struct_arg_result = a + b.a + b.b;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline struct bpf_testmod_struct_arg_2 *
-+bpf_testmod_test_struct_arg_11(int a, struct bpf_testmod_struct_arg_2 b, int c) {
-+	bpf_testmod_test_struct_arg_result = a + b.a + b.b + c;
-+	return (void *)bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_struct_arg_12(int a, struct bpf_testmod_struct_arg_2 b, int *c) {
-+	bpf_testmod_test_struct_arg_result = a + b.a + b.b + *c;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
- noinline int
- bpf_testmod_test_arg_ptr_to_struct(struct bpf_testmod_struct_arg_1 *a) {
- 	bpf_testmod_test_struct_arg_result = a->a;
- 	return bpf_testmod_test_struct_arg_result;
- }
- 
-+noinline int
-+bpf_testmod_test_arg_ptr_1(struct bpf_testmod_struct_arg_1 *a) {
-+	bpf_testmod_test_struct_arg_result = a->a;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_arg_ptr_2(struct bpf_testmod_struct_arg_2 *a) {
-+	bpf_testmod_test_struct_arg_result = a->a + a->b;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_arg_ptr_3(int a, struct bpf_testmod_struct_arg_2 *b) {
-+	bpf_testmod_test_struct_arg_result = a + b->a + b->b;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_arg_ptr_4(struct bpf_testmod_struct_arg_2 *a, int b) {
-+	bpf_testmod_test_struct_arg_result = a->a + a->b + b;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
- __bpf_kfunc void
- bpf_testmod_test_mod_kfunc(int i)
- {
-diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_multi_attach.c b/tools/testing/selftests/bpf/prog_tests/tracing_multi_attach.c
-new file mode 100644
-index 000000000000..6162d41cca9e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tracing_multi_attach.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Bytedance. */
-+
-+#include <test_progs.h>
-+#include "tracing_multi_test.skel.h"
-+
-+struct test_item {
-+	char *prog;
-+	char *target;
-+	int attach_type;
-+	bool success;
-+	int link_fd;
-+};
-+
-+static struct test_item test_items[] = {
-+	{
-+		.prog = "fentry_test1", .target = "bpf_testmod_test_struct_arg_9",
-+		.attach_type = BPF_TRACE_FENTRY, .success = true,
-+	},
-+	{
-+		.prog = "fentry_test1", .target = "bpf_testmod_test_struct_arg_1",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test1", .target = "bpf_testmod_test_struct_arg_2",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test1", .target = "bpf_testmod_test_arg_ptr_2",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test2", .target = "bpf_testmod_test_struct_arg_2",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test2", .target = "bpf_testmod_test_struct_arg_10",
-+		.attach_type = BPF_TRACE_FENTRY, .success = true,
-+	},
-+	{
-+		.prog = "fentry_test2", .target = "bpf_testmod_test_struct_arg_9",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test2", .target = "bpf_testmod_test_arg_ptr_3",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test3", .target = "bpf_testmod_test_arg_ptr_3",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fentry_test3", .target = "bpf_testmod_test_arg_ptr_4",
-+		.attach_type = BPF_TRACE_FENTRY, .success = true,
-+	},
-+	{
-+		.prog = "fentry_test4", .target = "bpf_testmod_test_struct_arg_4",
-+		.attach_type = BPF_TRACE_FENTRY, .success = true,
-+	},
-+	{
-+		.prog = "fentry_test4", .target = "bpf_testmod_test_struct_arg_2",
-+		.attach_type = BPF_TRACE_FENTRY, .success = true,
-+	},
-+	{
-+		.prog = "fentry_test4", .target = "bpf_testmod_test_struct_arg_12",
-+		.attach_type = BPF_TRACE_FENTRY, .success = false,
-+	},
-+	{
-+		.prog = "fexit_test1", .target = "bpf_testmod_test_struct_arg_2",
-+		.attach_type = BPF_TRACE_FEXIT, .success = true,
-+	},
-+	{
-+		.prog = "fexit_test1", .target = "bpf_testmod_test_struct_arg_3",
-+		.attach_type = BPF_TRACE_FEXIT, .success = true,
-+	},
-+	{
-+		.prog = "fexit_test1", .target = "bpf_testmod_test_struct_arg_4",
-+		.attach_type = BPF_TRACE_FEXIT, .success = false,
-+	},
-+	{
-+		.prog = "fexit_test2", .target = "bpf_testmod_test_struct_arg_10",
-+		.attach_type = BPF_TRACE_FEXIT, .success = false,
-+	},
-+	{
-+		.prog = "fexit_test2", .target = "bpf_testmod_test_struct_arg_11",
-+		.attach_type = BPF_TRACE_FEXIT, .success = false,
-+	},
-+	{
-+		.prog = "fexit_test2", .target = "bpf_testmod_test_struct_arg_12",
-+		.attach_type = BPF_TRACE_FEXIT, .success = true,
-+	},
-+	{
-+		.prog = "fmod_ret_test1", .target = "bpf_modify_return_test2",
-+		.attach_type = BPF_MODIFY_RETURN, .success = true,
-+	},
-+};
-+
-+static int do_test_item(struct tracing_multi_test *skel, struct test_item *item)
-+{
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+	struct bpf_program *prog;
-+	int err, btf_fd = 0, btf_type_id;
-+
-+	err = libbpf_find_kernel_btf_id(item->target, item->attach_type,
-+					&btf_fd, &btf_type_id);
-+	if (!ASSERT_OK(err, "find_vmlinux_btf_id"))
-+		return -1;
-+
-+	link_opts.target_btf_id = btf_type_id;
-+	prog = bpf_object__find_program_by_name(skel->obj, item->prog);
-+	if (!ASSERT_OK_PTR(prog, "find_program_by_name"))
-+		return -1;
-+
-+	err = bpf_link_create(bpf_program__fd(prog), btf_fd, item->attach_type,
-+			      &link_opts);
-+	item->link_fd = err;
-+	if (item->success) {
-+		if (!ASSERT_GE(err, 0, "link_create"))
-+			return -1;
-+	} else {
-+		if (!ASSERT_LT(err, 0, "link_create"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+void test_tracing_multi_attach(void)
-+{
-+	struct tracing_multi_test *skel;
-+	int i = 0, err, fd;
-+
-+	skel = tracing_multi_test__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "tracing_multi_test__open_and_load"))
-+		return;
-+
-+	err = tracing_multi_test__attach(skel);
-+	if (!ASSERT_OK(err, "tracing_multi_test__attach"))
-+		goto destroy_skel;
-+
-+	for (; i < ARRAY_SIZE(test_items); i++) {
-+		if (do_test_item(skel, &test_items[i]))
-+			break;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(test_items); i++) {
-+		fd = test_items[i].link_fd;
-+		if (fd >= 0)
-+			close(fd);
-+	}
-+
-+	tracing_multi_test__detach(skel);
-+destroy_skel:
-+	tracing_multi_test__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/tracing_multi_test.c b/tools/testing/selftests/bpf/progs/tracing_multi_test.c
-new file mode 100644
-index 000000000000..f1ca8b64ed16
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tracing_multi_test.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 ByteDance */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct bpf_testmod_struct_arg_1 {
-+	int a;
-+};
-+struct bpf_testmod_struct_arg_2 {
-+	long a;
-+	long b;
-+};
-+
-+__u64 fentry_test1_result = 0;
-+SEC("fentry/bpf_testmod_test_struct_arg_1")
-+int BPF_PROG2(fentry_test1, struct bpf_testmod_struct_arg_2, a)
-+{
-+	fentry_test1_result = a.a + a.b;
-+	return 0;
-+}
-+
-+__u64 fentry_test2_result = 0;
-+SEC("fentry/bpf_testmod_test_struct_arg_2")
-+int BPF_PROG2(fentry_test2, int, a, struct bpf_testmod_struct_arg_2, b)
-+{
-+	fentry_test2_result = a + b.a + b.b;
-+	return 0;
-+}
-+
-+__u64 fentry_test3_result = 0;
-+SEC("fentry/bpf_testmod_test_arg_ptr_2")
-+int BPF_PROG(fentry_test3, struct bpf_testmod_struct_arg_2 *a)
-+{
-+	fentry_test3_result = a->a + a->b;
-+	return 0;
-+}
-+
-+__u64 fentry_test4_result = 0;
-+SEC("fentry/bpf_testmod_test_struct_arg_1")
-+int BPF_PROG2(fentry_test4, struct bpf_testmod_struct_arg_2, a, int, b,
-+	      int, c)
-+{
-+	fentry_test3_result = c;
-+	return 0;
-+}
-+
-+__u64 fexit_test1_result = 0;
-+SEC("fexit/bpf_testmod_test_struct_arg_1")
-+int BPF_PROG2(fexit_test1, struct bpf_testmod_struct_arg_2, a, int, b,
-+	      int, c, int, retval)
-+{
-+	fexit_test1_result = retval;
-+	return 0;
-+}
-+
-+__u64 fexit_test2_result = 0;
-+SEC("fexit/bpf_testmod_test_struct_arg_2")
-+int BPF_PROG2(fexit_test2, int, a, struct bpf_testmod_struct_arg_2, b,
-+	      int, c, int, retval)
-+{
-+	fexit_test2_result = a + b.a + b.b + retval;
-+	return 0;
-+}
-+
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test1, int a, int *b)
-+{
-+	return 0;
-+}
--- 
-2.39.2
+On 2024/2/16 22:09, Wenjia Zhang wrote:
+> 
+> 
+> On 11.01.24 13:00, Wen Gu wrote:
+>> This patch set acts as the second part of the new version of [1] (The first
+>> part can be referred from [2]), the updated things of this version are listed
+>> at the end.
+>>
+>> # Background
+>>
+>> SMC-D is now used in IBM z with ISM function to optimize network interconnect
+>> for intra-CPC communications. Inspired by this, we try to make SMC-D available
+>> on the non-s390 architecture through a software-implemented virtual ISM device,
+>> that is the loopback-ism device here, to accelerate inter-process or
+>> inter-containers communication within the same OS instance.
+>>
+>> # Design
+>>
+>> This patch set includes 3 parts:
+>>
+>>   - Patch #1-#2: some prepare work for loopback-ism.
+>>   - Patch #3-#9: implement loopback-ism device.
+>>   - Patch #10-#15: memory copy optimization for loopback scenario.
+>>
+>> The loopback-ism device is designed as a ISMv2 device and not be limited to
+>> a specific net namespace, ends of both inter-process connection (1/1' in diagram
+>> below) or inter-container connection (2/2' in diagram below) can find the same
+>> available loopback-ism and choose it during the CLC handshake.
+>>
+>>   Container 1 (ns1)                              Container 2 (ns2)
+>>   +-----------------------------------------+    +-------------------------+
+>>   | +-------+      +-------+      +-------+ |    |        +-------+        |
+>>   | | App A |      | App B |      | App C | |    |        | App D |<-+     |
+>>   | +-------+      +---^---+      +-------+ |    |        +-------+  |(2') |
+>>   |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|     |
+>>   |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+ |
+>>   |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  | |
+>>   +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+-+
+>>                |   |           |                                  |
+>>   Kernel       |   |           |                                  |
+>>   +----+-------v---+-----------v----------------------------------+---+----+
+>>   |    |                            TCP                               |    |
+>>   |    |                                                              |    |
+>>   |    +--------------------------------------------------------------+    |
+>>   |                                                                        |
+>>   |                           +--------------+                             |
+>>   |                           | smc loopback |                             |
+>>   +---------------------------+--------------+-----------------------------+
+>>
+>> loopback-ism device creates DMBs (shared memory) for each connection peer.
+>> Since data transfer occurs within the same kernel, the sndbuf of each peer
+>> is only a descriptor and point to the same memory region as peer DMB, so that
+>> the data copy from sndbuf to peer DMB can be avoided in loopback-ism case.
+>>
+>>   Container 1 (ns1)                              Container 2 (ns2)
+>>   +-----------------------------------------+    +-------------------------+
+>>   | +-------+                               |    |        +-------+        |
+>>   | | App C |-----+                         |    |        | App D |        |
+>>   | +-------+     |                         |    |        +-^-----+        |
+>>   |               |                         |    |          |              |
+>>   |           (2) |                         |    |     (2') |              |
+>>   |               |                         |    |          |              |
+>>   +---------------|-------------------------+    +----------|--------------+
+>>                   |                                         |
+>>   Kernel          |                                         |
+>>   +---------------|-----------------------------------------|--------------+
+>>   | +--------+ +--v-----+                           +--------+ +--------+  |
+>>   | |dmb_desc| |snd_desc|                           |dmb_desc| |snd_desc|  |
+>>   | +-----|--+ +--|-----+                           +-----|--+ +--------+  |
+>>   | +-----|--+    |                                 +-----|--+             |
+>>   | | DMB C  |    +---------------------------------| DMB D  |             |
+>>   | +--------+                                      +--------+             |
+>>   |                                                                        |
+>>   |                           +--------------+                             |
+>>   |                           | smc loopback |                             |
+>>   +---------------------------+--------------+-----------------------------+
+>>
+>> # Benchmark Test
+>>
+>>   * Test environments:
+>>        - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
+>>        - SMC sndbuf/DMB size 1MB.
+>>        - /sys/devices/virtual/smc/loopback-ism/dmb_copy is set to default 0,
+>>          which means sndbuf and DMB are merged and no data copied between them.
+>>        - /sys/devices/virtual/smc/loopback-ism/dmb_type is set to default 0,
+>>          which means DMB is physically contiguous buffer.
+>>
+>>   * Test object:
+>>        - TCP: run on TCP loopback.
+>>        - SMC lo: run on SMC loopback device.
+>>
+>> 1. ipc-benchmark (see [3])
+>>
+>>   - ./<foo> -c 1000000 -s 100
+>>
+>>                              TCP                  SMC-lo
+>> Message
+>> rate (msg/s)              80636                  149515(+85.42%)
+>>
+>> 2. sockperf
+>>
+>>   - serv: <smc_run> taskset -c <cpu> sockperf sr --tcp
+>>   - clnt: <smc_run> taskset -c <cpu> sockperf { tp | pp } --tcp --msg-size={ 64000 for tp | 14 for pp } -i 127.0.0.1 
+>> -t 30
+>>
+>>                              TCP                  SMC-lo
+>> Bandwidth(MBps)         4909.36                 8197.57(+66.98%)
+>> Latency(us)               6.098                   3.383(-44.52%)
+>>
+>> 3. nginx/wrk
+>>
+>>   - serv: <smc_run> nginx
+>>   - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
+>>
+>>                             TCP                   SMC-lo
+>> Requests/s           181685.74                246447.77(+35.65%)
+>>
+>> 4. redis-benchmark
+>>
+>>   - serv: <smc_run> redis-server
+>>   - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -c 200 -d 1024
+>>
+>>                             TCP                   SMC-lo
+>> GET(Requests/s)       85855.34                118553.64(+38.09%)
+>> SET(Requests/s)       86824.40                125944.58(+45.06%)
+>>
+>>
+>> Change log:
+>>
+>> v1->RFC:
+>> - Patch #9: merge rx_bytes and tx_bytes as xfer_bytes statistics:
+>>    /sys/devices/virtual/smc/loopback-ism/xfer_bytes
+>> - Patch #10: add support_dmb_nocopy operation to check if SMC-D device supports
+>>    merging sndbuf with peer DMB.
+>> - Patch #13 & #14: introduce loopback-ism device control of DMB memory type and
+>>    control of whether to merge sndbuf and DMB. They can be respectively set by:
+>>    /sys/devices/virtual/smc/loopback-ism/dmb_type
+>>    /sys/devices/virtual/smc/loopback-ism/dmb_copy
+>>    The motivation for these two control is that a performance bottleneck was
+>>    found when using vzalloced DMB and sndbuf is merged with DMB, and there are
+>>    many CPUs and CONFIG_HARDENED_USERCOPY is set [4]. The bottleneck is caused
+>>    by the lock contention in vmap_area_lock [5] which is involved in memcpy_from_msg()
+>>    or memcpy_to_msg(). Currently, Uladzislau Rezki is working on mitigating the
+>>    vmap lock contention [6]. It has significant effects, but using virtual memory
+>>    still has additional overhead compared to using physical memory.
+>>    So this new version provides controls of dmb_type and dmb_copy to suit
+>>    different scenarios.
+>> - Some minor changes and comments improvements.
+>>
+>> RFC->old version([1]):
+>> Link: https://lore.kernel.org/netdev/1702214654-32069-1-git-send-email-guwen@linux.alibaba.com/
+>> - Patch #1: improve the loopback-ism dump, it shows as follows now:
+>>    # smcd d
+>>    FID  Type  PCI-ID        PCHID  InUse  #LGs  PNET-ID
+>>    0000 0     loopback-ism  ffff   No        0
+>> - Patch #3: introduce the smc_ism_set_v2_capable() helper and set
+>>    smc_ism_v2_capable when ISMv2 or virtual ISM is registered,
+>>    regardless of whether there is already a device in smcd device list.
+>> - Patch #3: loopback-ism will be added into /sys/devices/virtual/smc/loopback-ism/.
+>> - Patch #8: introduce the runtime switch /sys/devices/virtual/smc/loopback-ism/active
+>>    to activate or deactivate the loopback-ism.
+>> - Patch #9: introduce the statistics of loopback-ism by
+>>    /sys/devices/virtual/smc/loopback-ism/{{tx|rx}_tytes|dmbs_cnt}.
+>> - Some minor changes and comments improvements.
+>>
+>> [1] https://lore.kernel.org/netdev/1695568613-125057-1-git-send-email-guwen@linux.alibaba.com/
+>> [2] https://lore.kernel.org/netdev/20231219142616.80697-1-guwen@linux.alibaba.com/
+>> [3] https://github.com/goldsborough/ipc-bench
+>> [4] https://lore.kernel.org/all/3189e342-c38f-6076-b730-19a6efd732a5@linux.alibaba.com/
+>> [5] https://lore.kernel.org/all/238e63cd-e0e8-4fbf-852f-bc4d5bc35d5a@linux.alibaba.com/
+>> [6] https://lore.kernel.org/all/20240102184633.748113-1-urezki@gmail.com/
+>>
+>> Wen Gu (15):
+>>    net/smc: improve SMC-D device dump for virtual ISM
+>>    net/smc: decouple specialized struct from SMC-D DMB registration
+>>    net/smc: introduce virtual ISM device loopback-ism
+>>    net/smc: implement ID-related operations of loopback-ism
+>>    net/smc: implement some unsupported operations of loopback-ism
+>>    net/smc: implement DMB-related operations of loopback-ism
+>>    net/smc: register loopback-ism into SMC-D device list
+>>    net/smc: introduce loopback-ism runtime switch
+>>    net/smc: introduce loopback-ism statistics attributes
+>>    net/smc: add operations to merge sndbuf with peer DMB
+>>    net/smc: attach or detach ghost sndbuf to peer DMB
+>>    net/smc: adapt cursor update when sndbuf and peer DMB are merged
+>>    net/smc: introduce loopback-ism DMB type control
+>>    net/smc: introduce loopback-ism DMB data copy control
+>>    net/smc: implement DMB-merged operations of loopback-ism
+>>
+>>   drivers/s390/net/ism_drv.c |   2 +-
+>>   include/net/smc.h          |   7 +-
+>>   net/smc/Kconfig            |  13 +
+>>   net/smc/Makefile           |   2 +-
+>>   net/smc/af_smc.c           |  28 +-
+>>   net/smc/smc_cdc.c          |  58 ++-
+>>   net/smc/smc_cdc.h          |   1 +
+>>   net/smc/smc_core.c         |  61 +++-
+>>   net/smc/smc_core.h         |   1 +
+>>   net/smc/smc_ism.c          |  71 +++-
+>>   net/smc/smc_ism.h          |   5 +
+>>   net/smc/smc_loopback.c     | 718 +++++++++++++++++++++++++++++++++++++
+>>   net/smc/smc_loopback.h     |  88 +++++
+>>   13 files changed, 1026 insertions(+), 29 deletions(-)
+>>   create mode 100644 net/smc/smc_loopback.c
+>>   create mode 100644 net/smc/smc_loopback.h
+>>
+> Hi Wen,
+> 
+> Thank you for the patience again!
+> 
+> You can find the comments under the corresponding patches respectively.
+> About the file hierarchy in sysfs and the names, we still have some thoughts. We need to investigate a bit more time on it.
+> 
 
+Hi Wenjia and Gerd,
+
+Thank you very much!
+
+I answered each comment you left. You can find my thoughts about sysfs and
+knobs there. Looking forward to your further reply. Thanks!
+
+Best regards,
+Wen Gu
+
+> Thanks,
+> Gerd & Wenjia
 
