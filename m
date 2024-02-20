@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-73255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A193A85C01B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:37:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930BF85C01E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:37:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FBA2284DEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:37:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D1AB284E24
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B5376C81;
-	Tue, 20 Feb 2024 15:36:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062E277622;
+	Tue, 20 Feb 2024 15:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kTqAR25f"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bYsQRekN"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28E1762C1;
-	Tue, 20 Feb 2024 15:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8691A76C68;
+	Tue, 20 Feb 2024 15:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708443363; cv=none; b=R0cO1Z1WUAW7RwDDxQ2OeOHuyLhD2QJNmxSyFHmtK1g2W1tu8b9sFKCYZ5VpKGYjgXD02exe4xGAvM+P9KypXWaeUDOihXxz8Xlo7pCVGMH6Qke/74/vWtBxvRN6mYgv87xuVUmSCROOxphx4HEMQhsZYygPDiFqEkBqtXGLBto=
+	t=1708443365; cv=none; b=jfjXeE8T+10NEKBdFUn4qTHBGwobmv3WH2XgU+r4w75yRna4MyHevysaB96uL0R4biUOSUWybXlT+afadq6Iqq+Sb+k52hZPSlIiOj/J2dBjkxCFkkt8nuUgHgZuow2pFGBpYMVi0V+GxNnbL6XV8VZhGkgydthMBdBZrJxTW8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708443363; c=relaxed/simple;
-	bh=lL9tEj72B8RLSGVKGJnXqHrnROs1OMlmSlpmLn/ellk=;
+	s=arc-20240116; t=1708443365; c=relaxed/simple;
+	bh=IiDK8yjRUxAAf2eafMvrRy3vAP1cD3YZP0awk3yNZro=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MBTPNhUEUpAjuBPpZT2DTU6n5QxExUr9pgkPvJX83wYuyHrzqbeQVSuGcppMceU9KomN02ePremnEBXhoRU+jF5JjIpcuabKp2jje8kX/QTkjBq3iP/mKY88PN20pTJHXowEHCRj+sOmLdh2tAGt1tY78U2LCkc1/Ds6DHkHwqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kTqAR25f; arc=none smtp.client-ip=209.85.218.43
+	 MIME-Version; b=QMSyGj2e/kcOeV8afhoHnFGFxxIs631KMkdtWESZNefxBI3X+NvnfNsWfmvvV8b6Z+KG2+f1cUWvXJCRhwoUW9p7tEXKKOSSejt6BiGbTdfT4ezO7Y8vf9vPo7XFbYrEMQQYbevfzZP8oR36soy0nZbSqCOsB2Hrz3Zyi99Ci0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bYsQRekN; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso976900066b.0;
-        Tue, 20 Feb 2024 07:36:01 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3e8c1e4aa7so247033166b.2;
+        Tue, 20 Feb 2024 07:36:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708443360; x=1709048160; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708443362; x=1709048162; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6wlAJ3HOeN+i9mwkmiHE0QT6wa1Z9g6FI4uNkE/zgM8=;
-        b=kTqAR25ffcg+gyYO1uYasAd1ngFZxToWo+jE9VEm0+RP8JGl63dKbsJKexDPYKG74T
-         dj33VKV0T2PhTwICCNiWm1TJUq23NA8qX2SMZ6nBCvX+oqPY5OYdSLBXLdKymPgeH0lb
-         Twzshfqsgd82kc3GlfjJ5AvHaHZqD90lH+9Rv77g794bEZsEfcdrglIMLTZQAIX3G5BG
-         JSkOmzDnRg7nRPkJ9heD3Bj3CIKfkPseUj0XzFMI/iYa4Z6E3Uv1v3wWrUqGsobb6oXM
-         uf+dgLTzeloiD5o2CjEp/a6pwQpIUjhVL2KIjbDnggRCZ981XbOB7uO8pmW0tklSdtLa
-         be/Q==
+        bh=sSirVdQH3Tykgt6W5khgr86vPv5b/vVw8tafLC16Tz8=;
+        b=bYsQRekNegqaLcx5k2y/G9jVKd55Pp4MnUD+lErY0k23fkE9LJ6nufjgiz2P7oYrYa
+         873AAP3Vnp0GOpR+YLd/S2m6ZCbuVRa+N5I2eSMZImlUxZ4qG0vVYz268Y37fYuhWWjY
+         fjmqVX49eTV7HUACwwcF6flMjVhIpv8CyqsiJV3n2POR6gOxCRRZVVNaMs7gHnfK7Vg+
+         jZSaofI7PCkz+HZjvAGfktvGmeVnsgNBzwxOQStKBkqQwZT8SIgDMSUCHWuKukUovUbI
+         BbEf/b5GjE0eXrSqEbVwwQ7PWuGShTwNwHp7p5br7PtVIOjH2ZJsBCZN/JYRoyBXJhVB
+         MPLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708443360; x=1709048160;
+        d=1e100.net; s=20230601; t=1708443362; x=1709048162;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6wlAJ3HOeN+i9mwkmiHE0QT6wa1Z9g6FI4uNkE/zgM8=;
-        b=qfLov3+xtxWORa62ZbgVzSiVFK3hfxp9GmSPECYz65ZG0WTej4PlBPr2mYJJ033XVO
-         wESAdGeMH/ytPiJvQzUqBwbibE9nIq3wwqhBsoq3FzeE8zdD/zpX7L+laWd1UHolUsMX
-         9PnVPvvwNawhq4H9oL3YYsPHfwmXd8f4tbzb3G1hSsotym6dZAoWHgpEvQrFnHocwQjo
-         kFZrLqtMNkG81ZIDumyfL08nSBcHIYPSzjnu95jaXGIcp/jzvRlrkmRicBoxVI2xKyH3
-         58pMp6tdVaQVpWDBYDh4mZxSSsW6dO8bjzO7Br+TcjK6UpN0n1T2nIqTmUgCBZCiXH2s
-         Cr7g==
-X-Forwarded-Encrypted: i=1; AJvYcCU0OxMBCDnZ0PxRggrjKGnDf0TUDFFwKm/4iFAc8HWbzhz63iSbGN+BpG0tDsh4ZKmYkOPU2/sdzj7ML8fQfhoNAnXOz9/PoLCTI7lWMdnmXfSiZ1tX6bgHrzzYyrz3rlVqHhDTFOW/bJp7P3tHfxsr+CAI/o9fakQSwRF77a9sCt9KEw==
-X-Gm-Message-State: AOJu0YxrvpRN+Gu71As4bb+Gb/n4rvcYm9Vfy4zp3yWt5iNaYHD+EHBa
-	hrVwHiJlMuCYtQQD97eMQT8j4kqaabML98ieT1ixd94fK5S8Jm/F
-X-Google-Smtp-Source: AGHT+IEaEVLVkF6Ocqna7U7WUPQHf22hyEVx9loZfFpXuZ8kcIk2TziFTViujCaF6lqxII4o1vR26A==
-X-Received: by 2002:a17:906:2786:b0:a3f:1cd:69a5 with SMTP id j6-20020a170906278600b00a3f01cd69a5mr1739507ejc.5.1708443360224;
-        Tue, 20 Feb 2024 07:36:00 -0800 (PST)
+        bh=sSirVdQH3Tykgt6W5khgr86vPv5b/vVw8tafLC16Tz8=;
+        b=erhYpvcRVJfQPVyv/6dTf1ihO1C0zbqeQ64JpY0dHCBOv0wQMnSk0cyVBSvCMxMgFb
+         igxSqgwkM2tLGuBNmmO6qVPkCHKi/LTK4wkuoJVAuBFCwvOp1SjOXjgDtBnKOiJxgSO3
+         JOEHyYrvOM1mixALRXaZxHi+yEEoZ8zVc5cvku/qrztgpiJcDFxJQGDnu/zthrx9MRyb
+         8eUMQ9aYLZkqyNGE+LbFpzzB7BOqReVVocOtmdbn4acYnhmmLIL3C3saqUDLjQfvX5Rt
+         c19mDjXprLcgbxsNTJAMy6O97v1ziZbpnYQfckhxzcx4b424Fvwdt3vAlOjCG8ITM0bZ
+         QteQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqNx4yvio74leN/N8JVxFqtFwc6j7nLSs03QmPx0a+8uVWqenBbPm3GJN4aKRp2KK9XO1rhu6WbR+mpr/ZHEmnE3jOcBx0UYG6ZvILk9+xh30WOkZUmlZcS1Yqt2fAhwuzTihMr22zlB6f8ZF8wwXuhKMQP6Sl3HApmUtRZSqO2dbUmw==
+X-Gm-Message-State: AOJu0YzGswmT3+QdFWB1S7mZPQVybW/Q7GWftUK0VhGuppZwQmkUsFJA
+	TND3sMromm8IvoOoEkDUHdXaXEkZecPhIwZrZ2XH1AbxmmFYXDTYyJiHeGbSI35RurRa
+X-Google-Smtp-Source: AGHT+IHRV+GuDs3DqGt4SME+xZgCY62LQ+Goz0qze+WwzKZBwCPcFmieVPunxTRVi7O1WAixQyzshg==
+X-Received: by 2002:a17:906:7f1a:b0:a3f:c10:4355 with SMTP id d26-20020a1709067f1a00b00a3f0c104355mr1275849ejr.26.1708443361447;
+        Tue, 20 Feb 2024 07:36:01 -0800 (PST)
 Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id r22-20020a170906281600b00a3d777aa8fesm4039024ejc.69.2024.02.20.07.35.58
+        by smtp.gmail.com with ESMTPSA id r22-20020a170906281600b00a3d777aa8fesm4039024ejc.69.2024.02.20.07.36.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 07:35:59 -0800 (PST)
+        Tue, 20 Feb 2024 07:36:01 -0800 (PST)
 From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 To: 
 Cc: Lars-Peter Clausen <lars@metafoo.de>,
@@ -77,11 +77,10 @@ Cc: Lars-Peter Clausen <lars@metafoo.de>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Ceclan Dumitru <dumitru.ceclan@analog.com>,
-	Dumitru Ceclan <mitrutzceclan@gmail.com>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v5 1/5] dt-bindings: iio: hmc425a: add conditional GPIO array size constraints
-Date: Tue, 20 Feb 2024 17:34:50 +0200
-Message-ID: <20240220153553.2432-3-mitrutzceclan@gmail.com>
+	Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: [PATCH v5 4/5] iio: amplifiers: hmc425a: use pointers in match table
+Date: Tue, 20 Feb 2024 17:34:51 +0200
+Message-ID: <20240220153553.2432-4-mitrutzceclan@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240220153553.2432-1-mitrutzceclan@gmail.com>
 References: <20240220153553.2432-1-mitrutzceclan@gmail.com>
@@ -93,64 +92,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ADRF5740 and HMC540S have a 4 bit parallel interface.
-Update ctrl-gpios description and min/maxItems values depending on the
-matched compatible to correctly reflect the hardware properties.
+Change the match table to use pointers instead of device ids.
+Remove type from state as it is not used anymore.
 
-Fixes: 79f2ff6461e7 ("dt-bindings: iio: hmc425a: add entry for ADRF5740 Attenuator")
-Fixes: 20f87a9a26be ("dt-bindings: iio: hmc425a: add entry for HMC540S")
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 ---
- .../bindings/iio/amplifiers/adi,hmc425a.yaml  | 33 +++++++++++++++++--
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ drivers/iio/amplifiers/hmc425a.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml b/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
-index 67de9d4e3a1d..a434cb8ddcc9 100644
---- a/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
-+++ b/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
-@@ -33,11 +33,38 @@ properties:
+diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/hmc425a.c
+index 13e018a59637..77872e2dfdfe 100644
+--- a/drivers/iio/amplifiers/hmc425a.c
++++ b/drivers/iio/amplifiers/hmc425a.c
+@@ -41,15 +41,14 @@ struct hmc425a_chip_info {
  
-   ctrl-gpios:
-     description:
--      Must contain an array of 6 GPIO specifiers, referring to the GPIO pins
--      connected to the control pins V1-V6.
--    minItems: 6
-+      Must contain an array of GPIO specifiers, referring to the GPIO pins
-+      connected to the control pins.
-+        ADRF5740  - 4 GPIO connected to D2-D5
-+        HMC540S   - 4 GPIO connected to V1-V4
-+        HMC425A   - 6 GPIO connected to V1-V6
-+    minItems: 1
-     maxItems: 6
+ struct hmc425a_state {
+ 	struct	mutex lock; /* protect sensor state */
+-	struct	hmc425a_chip_info *chip_info;
++	const struct	hmc425a_chip_info *chip_info;
+ 	struct	gpio_descs *gpios;
+-	enum	hmc425a_type type;
+ 	u32	gain;
+ };
  
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: adi,hmc425a
-+    then:
-+      properties:
-+        ctrl-gpios:
-+          minItems: 6
-+          maxItems: 6
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            anyOf:
-+              - const: adi,adrf5740
-+              - const: adi,hmc540s
-+    then:
-+      properties:
-+        ctrl-gpios:
-+          minItems: 4
-+          maxItems: 4
+ static int gain_dB_to_code(struct hmc425a_state *st, int val, int val2, int *code)
+ {
+-	struct hmc425a_chip_info *inf = st->chip_info;
++	const struct hmc425a_chip_info *inf = st->chip_info;
+ 	int gain;
+ 
+ 	if (val < 0)
+@@ -205,15 +204,6 @@ static const struct iio_chan_spec hmc425a_channels[] = {
+ 	HMC425A_CHAN(0),
+ };
+ 
+-/* Match table for of_platform binding */
+-static const struct of_device_id hmc425a_of_match[] = {
+-	{ .compatible = "adi,hmc425a", .data = (void *)ID_HMC425A },
+-	{ .compatible = "adi,hmc540s", .data = (void *)ID_HMC540S },
+-	{ .compatible = "adi,adrf5740", .data = (void *)ID_ADRF5740 },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, hmc425a_of_match);
+-
+ static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
+ 	[ID_HMC425A] = {
+ 		.name = "hmc425a",
+@@ -261,9 +251,8 @@ static int hmc425a_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	st = iio_priv(indio_dev);
+-	st->type = (uintptr_t)device_get_match_data(&pdev->dev);
+ 
+-	st->chip_info = &hmc425a_chip_info_tbl[st->type];
++	st->chip_info = device_get_match_data(&pdev->dev);
+ 	indio_dev->num_channels = st->chip_info->num_channels;
+ 	indio_dev->channels = st->chip_info->channels;
+ 	indio_dev->name = st->chip_info->name;
+@@ -295,6 +284,18 @@ static int hmc425a_probe(struct platform_device *pdev)
+ 	return devm_iio_device_register(&pdev->dev, indio_dev);
+ }
+ 
++/* Match table for of_platform binding */
++static const struct of_device_id hmc425a_of_match[] = {
++	{ .compatible = "adi,hmc425a",
++	  .data = &hmc425a_chip_info_tbl[ID_HMC425A]},
++	{ .compatible = "adi,hmc540s",
++	  .data = &hmc425a_chip_info_tbl[ID_HMC540S]},
++	{ .compatible = "adi,adrf5740",
++	  .data = &hmc425a_chip_info_tbl[ID_ADRF5740]},
++	{}
++};
++MODULE_DEVICE_TABLE(of, hmc425a_of_match);
 +
- required:
-   - compatible
-   - ctrl-gpios
+ static struct platform_driver hmc425a_driver = {
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
 -- 
 2.42.0
 
