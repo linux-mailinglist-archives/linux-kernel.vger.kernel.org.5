@@ -1,209 +1,125 @@
-Return-Path: <linux-kernel+bounces-72455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D71D85B3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:13:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C9385B3B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:16:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0B4A1F24214
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:13:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 967461C224FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5936D5A780;
-	Tue, 20 Feb 2024 07:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD24A5A4E2;
+	Tue, 20 Feb 2024 07:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gGD2tCA1"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kWA+ZmhB"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DA02D79D;
-	Tue, 20 Feb 2024 07:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0772E414;
+	Tue, 20 Feb 2024 07:16:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708413207; cv=none; b=apUiZyO8VEQBA7p9QahNZlBu4LesZbjo2sCgUBG0iyRNdsQl1KkZJ6ddklzRFYVZFkMUN5fMwKBSw2AQmJeMkb6+ooyAbGdkfZnBewXv7puxL4IHtQIePBTdcxmYKy9JUFWQpyV2U/hbLAvLmgNdQhTl9lwYY3VOLx4oQvwKhUI=
+	t=1708413371; cv=none; b=HNX3DjHzNe9msufQrBO9WHz3ae0a7uaQvklSCRkvU6OStbxW03ZriicSSpIvJjNVYV26CmGmzhDjDbTNb8s6S69cVXkRlXtQevkRi7bLpUrdLqGH5SIAsyei4+mILxUoyNcnCGjR/MKOFmyqs5iR5mUlSL6svN5IrwlGCN4jKiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708413207; c=relaxed/simple;
-	bh=A0boLwLblavqe/cHPOM/gNgcEK/SXPYRkW4EUOY/Lng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ksU4aw7YJ/CbNwXa7JuYKS78MC9SfQ9bs/AEj00qUw1EWqdydKBLYW/VN3XaPFDJWkEbPUYxJL/e7Oeh1o0/IU2XGPos3gj94uz0jY5+UOXIXx5P5H+q2UaXegxs+lDfUmCmA4wtB4SYwBGpzNE2ebBru45UxvUxEoC52+CkJ20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gGD2tCA1; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41K62vJq024757;
-	Tue, 20 Feb 2024 07:13:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=j4VxHQFYcFBNB7oDKLQRRi47zN0dSg9mJIy1fi2ZhwA=;
- b=gGD2tCA1xPLN9mKLq1YcGN2gFn2heO0+LNK7LLoX0Ymtm+6NjONDCxREBfZq6GrkA+AV
- Bq7XyigjgTxEXkhJOhtLTZt26A5VZ7U3ekIXrBqcPI+oQiKAubUqQqsW55F5TpSsftGZ
- GAtHbfLD0F/wNa425Tuxwu6bXaIkCQjqlXl8nkmWkAiA97cCw4scYDwiBD5NnD9Ipc/X
- lmnkE6KaZIFxDi3KVFZ9MsDXUOTIjPjFQoK+EZAOaZPBnpsPs32lVVmPIHVSSW+hIEtz
- +81HE898IPK/nkbZ7gEf3WgKTx6JP8pQ5oWkcnFxlyXWRahx+7jGRXVIvkssw2Zd6XSj kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wcpf7sjg5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 07:13:04 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41K6FUKx032580;
-	Tue, 20 Feb 2024 07:13:03 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wcpf7sjfu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 07:13:03 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41K6ifYt014343;
-	Tue, 20 Feb 2024 07:13:02 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9u2e1uu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 07:13:01 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41K7CuCt35258846
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 20 Feb 2024 07:12:58 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 493572004D;
-	Tue, 20 Feb 2024 07:12:56 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6864720040;
-	Tue, 20 Feb 2024 07:12:52 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 20 Feb 2024 07:12:52 +0000 (GMT)
-Date: Tue, 20 Feb 2024 12:42:50 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
-        nilay@linux.ibm.com, ritesh.list@gmail.com
-Subject: Re: [PATCH v4 09/11] scsi: scsi_debug: Atomic write support
-Message-ID: <ZdRQ8mPGRVidvjQI@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240219130109.341523-1-john.g.garry@oracle.com>
- <20240219130109.341523-10-john.g.garry@oracle.com>
+	s=arc-20240116; t=1708413371; c=relaxed/simple;
+	bh=cu/T1BOs7iJNYFJOKO7j3SL4H6llYux4Y5Jm+sXsTL4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eqIc88PGczjo9tKtzSmCxY7wwKZ4ds5MqfFVbextZGYepvVn75GON6WjZnfs7cdchVJVnb/ho2MMMvC7CMQQGefPmhsiuPTKnIgKiGTGlD3sB63EXu/RVd5pVlZtDdKy1DrpChT2WmuUYdvxgk9S5+Ir4zQo6bHvmC9Clh2lwCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kWA+ZmhB; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708413365; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=aRVK0RBqvwU9ESK4wUCOXJ5JGHcyUKkaoM4QJ3fPRkU=;
+	b=kWA+ZmhB9lo4K/EAOIii30ukVBvjUbQWy+Jvm3l7T3FJYZvcYARr1rVOPZixaFA6y8WnkNybUM2QkZZXxa0G13uR4ogobpgi7vWWA58f7VtCuP/OrrGWtxQTtFdyi8sqFJ7mp1Mkko6MG56dHe0eyWNOodmUIyT1ZZLlrAxp+8o=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W0w0R3Y_1708413363;
+Received: from 30.221.148.206(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0w0R3Y_1708413363)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Feb 2024 15:16:05 +0800
+Message-ID: <e1c747a9-64b7-471b-8fb8-093b8f080490@linux.alibaba.com>
+Date: Tue, 20 Feb 2024 15:16:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219130109.341523-10-john.g.garry@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nFEswPML7UDUeZc6IcJW6G9J9Ms5rekK
-X-Proofpoint-GUID: rG-L3TMM-_MNtREwhvieoiF2hLiR4_1f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402200050
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC nf-next v5 0/2] netfilter: bpf: support prog update
+Content-Language: en-US
+To: Pablo Neira Ayuso <pablo@netfilter.org>, Quentin Deslandes <qde@naccy.de>
+Cc: kadlec@netfilter.org, fw@strlen.de, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org
+References: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+ <70114fff-43bd-4e27-9abf-45345624042c@naccy.de> <ZcztLZPiz+FkF8kF@calendula>
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <ZcztLZPiz+FkF8kF@calendula>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 01:01:07PM +0000, John Garry wrote:
-> Add initial support for atomic writes.
-> 
-> As is standard method, feed device properties via modules param, those
-> being:
-> - atomic_max_size_blks
-> - atomic_alignment_blks
-> - atomic_granularity_blks
-> - atomic_max_size_with_boundary_blks
-> - atomic_max_boundary_blks
-> 
-> These just match sbc4r22 section 6.6.4 - Block limits VPD page.
-> 
-> We just support ATOMIC WRITE (16).
-> 
-> The major change in the driver is how we lock the device for RW accesses.
-> 
-> Currently the driver uses a per-device lock for accessing device metadata
-> and "media" data (calls to do_device_access()) atomically for the duration
-> of the whole read/write command.
-> 
-> This should not suit verifying atomic writes. Reason being that currently
-> all reads/writes are atomic, so using atomic writes does not prove
-> anything.
-> 
-> Change device access model to basis that regular writes only atomic on a
-> per-sector basis, while reads and atomic writes are fully atomic.
-> 
-> As mentioned, since accessing metadata and device media is atomic,
-> continue to have regular writes involving metadata - like discard or PI -
-> as atomic. We can improve this later.
-> 
-> Currently we only support model where overlapping going reads or writes
-> wait for current access to complete before commencing an atomic write.
-> This is described in 4.29.3.2 section of the SBC. However, we simplify,
-> things and wait for all accesses to complete (when issuing an atomic
-> write).
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
 
-<snip>
 
-> +#define DEF_ATOMIC_WR 0
+On 2/15/24 12:41 AM, Pablo Neira Ayuso wrote:
+> On Wed, Feb 14, 2024 at 05:10:46PM +0100, Quentin Deslandes wrote:
+>> On 2024-01-02 07:11, D. Wythe wrote:
+>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>
+>>> This patches attempt to implements updating of progs within
+>>> bpf netfilter link, allowing user update their ebpf netfilter
+>>> prog in hot update manner.
+>>>
+>>> Besides, a corresponding test case has been added to verify
+>>> whether the update works.
+>>> --
+>>> v1:
+>>> 1. remove unnecessary context, access the prog directly via rcu.
+>>> 2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
+>>> 3. check the dead flag during the update.
+>>> --
+>>> v1->v2:
+>>> 1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
+>>> --
+>>> v2->v3:
+>>> 1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
+>>> --
+>>> v3->v4:
+>>> 1. remove mutex for link update, as it is unnecessary and can be replaced
+>>> by atomic operations.
+>>> --
+>>> v4->v5:
+>>> 1. fix error retval check on cmpxhcg
+>>>
+>>> D. Wythe (2):
+>>>    netfilter: bpf: support prog update
+>>>    selftests/bpf: Add netfilter link prog update test
+>>>
+>>>   net/netfilter/nf_bpf_link.c                        | 50 ++++++++-----
+>>>   .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
+>>>   .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
+>>>   3 files changed, 141 insertions(+), 16 deletions(-)
+>>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+>>>   create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+>>>
+>> It seems this patch has been forgotten, hopefully this answer
+>> will give it more visibility.
+>>
+>> I've applied this change on 6.8.0-rc4 and tested BPF_LINK_UPDATE
+>> with bpfilter and everything seems alright.
+> Just post it without RFC tag.
 
-<snip>
+Glad to know that, I will send a formal version soon.
 
-> +static unsigned int sdebug_atomic_wr = DEF_ATOMIC_WR;
+D. Wythe
 
-<snip>
 
-> +MODULE_PARM_DESC(atomic_write, "enable ATOMIC WRITE support, support WRITE ATOMIC(16) (def=1)");
-Hi John,
 
-The default value here seems to be 0 and not 1. Got me a bit confused
-while testing :) 
 
-Regards,
-ojaswin
 
->  MODULE_PARM_DESC(lowest_aligned, "lowest aligned lba (def=0)");
->  MODULE_PARM_DESC(lun_format, "LUN format: 0->peripheral (def); 1 --> flat address method");
->  MODULE_PARM_DESC(max_luns, "number of LUNs per target to simulate(def=1)");
-> @@ -6260,6 +6575,11 @@ MODULE_PARM_DESC(unmap_alignment, "lowest aligned thin provisioning lba (def=0)"
->  MODULE_PARM_DESC(unmap_granularity, "thin provisioning granularity in blocks (def=1)");
->  MODULE_PARM_DESC(unmap_max_blocks, "max # of blocks can be unmapped in one cmd (def=0xffffffff)");
->  MODULE_PARM_DESC(unmap_max_desc, "max # of ranges that can be unmapped in one cmd (def=256)");
-> +MODULE_PARM_DESC(atomic_wr_max_length, "max # of blocks can be atomically written in one cmd (def=8192)");
-> +MODULE_PARM_DESC(atomic_wr_align, "minimum alignment of atomic write in blocks (def=2)");
-> +MODULE_PARM_DESC(atomic_wr_gran, "minimum granularity of atomic write in blocks (def=2)");
-> +MODULE_PARM_DESC(atomic_wr_max_length_bndry, "max # of blocks can be atomically written in one cmd with boundary set (def=8192)");
-> +MODULE_PARM_DESC(atomic_wr_max_bndry, "max # boundaries per atomic write (def=128)");
->  MODULE_PARM_DESC(uuid_ctl,
->  		 "1->use uuid for lu name, 0->don't, 2->all use same (def=0)");
->  MODULE_PARM_DESC(virtual_gb, "virtual gigabyte (GiB) size (def=0 -> use dev_size_mb)");
-> @@ -7406,6 +7726,7 @@ static int __init scsi_debug_init(void)
->  			return -EINVAL;
->  		}
->  	}
-> +
->  	xa_init_flags(per_store_ap, XA_FLAGS_ALLOC | XA_FLAGS_LOCK_IRQ);
->  	if (want_store) {
->  		idx = sdebug_add_store();
-> @@ -7613,7 +7934,9 @@ static int sdebug_add_store(void)
->  			map_region(sip, 0, 2);
->  	}
->  
-> -	rwlock_init(&sip->macc_lck);
-> +	rwlock_init(&sip->macc_data_lck);
-> +	rwlock_init(&sip->macc_meta_lck);
-> +	rwlock_init(&sip->macc_sector_lck);
->  	return (int)n_idx;
->  err:
->  	sdebug_erase_store((int)n_idx, sip);
-> -- 
-> 2.31.1
-> 
+
 
