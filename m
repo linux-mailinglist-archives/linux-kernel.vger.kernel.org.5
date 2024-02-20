@@ -1,129 +1,169 @@
-Return-Path: <linux-kernel+bounces-73278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A251685C064
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:54:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D51EF85C069
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:55:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 429B01F22991
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:54:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90BCF2860D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9FD762E0;
-	Tue, 20 Feb 2024 15:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4EB762FC;
+	Tue, 20 Feb 2024 15:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CStDWttW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Lx75ninb"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p2EhsI2l"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AD776033
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117BE76058
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444453; cv=none; b=nxKcox47OG+BcsbEC9jcsPiW/RMhr8H6CXS70lc+0lyLbjEsHz5HPPuxq2lb1k2KiLhyZ3q45DZaw4Fe1K/akmbDFccHHi8Tuu838nV/Sa30yQQL60gV5Rs8HNjT52YdjL+UgoG5jalOTu+MNoIe5KMqBNI4tDPoS+8MAwnPgUg=
+	t=1708444545; cv=none; b=Vdh/swyA/AUzH30aeqVi+3P7tIsWiwS7WwqrrSwmadHfdCiEfkzo0smYlZ1w93OXhznhtthPypFpG1ge3EIHEro+FNQb79eG3RxyU4R+puM4AJiG1Bsn0BymtkZr0KS9alWIGUerlZA1EvsbyZUxCoDzuw1NRBZ7iKiCDxHZ23Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444453; c=relaxed/simple;
-	bh=12zW48ePexZ0k+y2CYm6y/WG/nHpA+YjLh0HmgwcExY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=POtdTa+swuw5QdiQXH0khUkMh8JLx7Fi5i6DCZXUwlGjAzSBU2/XPiYGOLvaPg8xpwAEOS7jo//xnWI5ymZpdaaS7tuDvC0V84H4oc98hLeI719pUSdn50AMpwDSA+sLG9J/HrbWC1lvf8ah5k0e1TrD3QaPFebHQQEqeaTiE7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CStDWttW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Lx75ninb; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708444450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IxZf+GSRiuJn0QynLFhu7uKPGCPz3hSj1LX5ayl6vRs=;
-	b=CStDWttWR/onVKZm1927ofC1lS+PrG4n+0gUY9RNk4JBwHvGuxC4z1GBFtUZCAQ1L2BN1z
-	CFLcvtjBEKYWpKLSijjM03GQJziFBB5sHukR4ua3wSqO6TlGTdz7Wl9bWbtcMgd/npqRFD
-	cFQaH180A78K0XltTlbWBVVMc4WU7/tJo4TPvml9d6BcGcYCJcg7O+oZGh9B+JbmtkFSmb
-	69zXBXlb/qVmN5of3tuz3BwuW/OSyvC58z1BHLDbOVHtIGlM1LISKeUzZUeBG+8J1Cy/7K
-	mquCNvyNjwCy0C4omZUe1xFLpPEmIjx9ye0Z8HxF106IXVKOevxIiHZ9dtOopw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708444450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IxZf+GSRiuJn0QynLFhu7uKPGCPz3hSj1LX5ayl6vRs=;
-	b=Lx75ninblEBiACICOlD1GKkm6rCtTyj3Fp0hnQiVFMHTmj4AvvyDsjavwX6bp93cAhUnjI
-	77DUlyiYXiHmiLDw==
-To: James Morse <james.morse@arm.com>, David Hildenbrand <david@redhat.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-Cc: Fenghua Yu <fenghua.yu@intel.com>, Reinette Chatre
- <reinette.chatre@intel.com>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>, Babu Moger
- <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com, D Scott
- Phillips OS <scott@os.amperecomputing.com>, carl@os.amperecomputing.com,
- lcherian@marvell.com, bobo.shaobowang@huawei.com,
- tan.shaopeng@fujitsu.com, baolin.wang@linux.alibaba.com, Jamie Iles
- <quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
- peternewman@google.com, dfustini@baylibre.com, amitsinght@marvell.com
-Subject: Re: [PATCH v9 02/24] x86/resctrl: kfree() rmid_ptrs from
- resctrl_exit()
-In-Reply-To: <59ebda21-6164-4dff-9ba8-956d5a715048@arm.com>
-References: <20240213184438.16675-1-james.morse@arm.com>
- <20240213184438.16675-3-james.morse@arm.com>
- <52f81c45-efa7-42c7-86f4-fc1084b1d57a@redhat.com>
- <59ebda21-6164-4dff-9ba8-956d5a715048@arm.com>
-Date: Tue, 20 Feb 2024 16:54:10 +0100
-Message-ID: <87v86jgmhp.ffs@tglx>
+	s=arc-20240116; t=1708444545; c=relaxed/simple;
+	bh=Kz0GA9Y94W0SFhelWwox2nUv5tXBxEbev4X5jMa+djk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Content-Type; b=Vp+ykVdIr5eeaL3T8s4SMPEnWiGX1DCtmz5g1Li4maJw78HMcdGW9oO5HyTjgAyrDZR2ybXurPYmYfxa2z3IbN6f3bMhJHYEkZ2SM/+jbhAnR3Yj+qmiiYvHXs9m4YCp+2TwBqAWvdHFEakZp0nUXS69l8eJUG8zfSudFzNTi/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p2EhsI2l; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ffee6fcdc1so72519537b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:55:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708444543; x=1709049343; darn=vger.kernel.org;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nkZ1YNi4HdlEBdTOsrosj2I/p2QRJpg3Qe1Xk4lNWF0=;
+        b=p2EhsI2lVDdB7akSjITmV+58d9qTKwuMEdrSp3830ZiHSdU0mDJR+gTOMen74z130I
+         R3iz4/oR8riFKKW7Eqeu06w77IeKsZC0d+W5tJD1PJSNQCl0+cP+uhMDc/w7DRefN2ne
+         aQW3r8DfSGG1ZLO4NutXsF0wdIdY0QvVSRJWyjf6Go4P4gZRQH01amUDHTVfmMJhd/BW
+         rhi1bD9k+EYoXy6/LTbqW8I2LRS0DmlN6E00DuLWi/9v5DVOLfA/XHBECVhYvZfGAs0Q
+         0Q4jtgtN6XONO37Tlus7+J4PnzB2v7eUspOwU3r12hMZZJ0HR4dyzziUpyxEM9D1R7bN
+         4NJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708444543; x=1709049343;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nkZ1YNi4HdlEBdTOsrosj2I/p2QRJpg3Qe1Xk4lNWF0=;
+        b=WDRM4QcKzFuJbzbvsNtOnW1m++apEALklzJ/fpvspT3yEGaMFQmQEeHIb0w6ORDPjR
+         IFlaTTMcTH+btSsmwcuGb5FXDigRjE51zERZ0yfXp7aUWcq/723h7w96FxQwRvhu71sh
+         SNHukJeqZw79x7432nZcNj8lFCGDFJsp9ZFpsH3fTpLfq++H1ccHrLQdAEdJ8rCd6bsT
+         hN1pOuEs7a/FX/mudKMiE6f0kf3WqgF6UfjldhwUXSAW8Q+rh3AIyGciaAqwv+RGu3PB
+         RgmoInt6HgAWkA9H/nfV55gEDbaiAmZTygyiiHwg1f/oEL1n7snbNXWroZbcLDRg5Pdj
+         DnjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUr17q/RpUzD08l+GQHkVuOO3TjiM4+VwcQ1YUbMNnXDmpfo6lYQBODS03vNT7vsIxt4qUDQHuqT/3w89piVyPuvW63TbrrK5VgPhiL
+X-Gm-Message-State: AOJu0YzRQBrtxVkq8z6MibCkFYq8sush6CFB/QGTETYjAm7rJAz6wIeg
+	3z5aGRjiS2AypKBeF6/FvSy1lmgyAgvMhRfq2jLf3YFyfrQb5tfv3huUs+IOITJaGrcfuQTNfAG
+	vFQ==
+X-Google-Smtp-Source: AGHT+IF1JkxDWJLA5wtljU6ntRBClVsQ/F9GLWL8bomcPlRftmO9ep/YZ1ByFg2cif0LNqgTe/Rychu4wWM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ee0a:0:b0:608:66be:2f71 with SMTP id
+ l10-20020a81ee0a000000b0060866be2f71mr302250ywm.9.1708444543193; Tue, 20 Feb
+ 2024 07:55:43 -0800 (PST)
+Date: Tue, 20 Feb 2024 07:55:13 -0800
+In-Reply-To: <20240215152916.1158-1-paul@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240215152916.1158-1-paul@xen.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <170838297541.2281798.7838961694439257911.b4-ty@google.com>
+Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info handling
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
+	David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Paul Durrant <paul@xen.org>
+Content-Type: text/plain; charset="utf-8"
 
-On Tue, Feb 20 2024 at 15:46, James Morse wrote:
-> On 20/02/2024 15:27, David Hildenbrand wrote:
->> On 13.02.24 19:44, James Morse wrote:
->>> +static void __exit dom_data_exit(void)
->>> +{
->>> +=C2=A0=C2=A0=C2=A0 mutex_lock(&rdtgroup_mutex);
->>> +
->>> +=C2=A0=C2=A0=C2=A0 kfree(rmid_ptrs);
->>> +=C2=A0=C2=A0=C2=A0 rmid_ptrs =3D NULL;
->>> +
->>> +=C2=A0=C2=A0=C2=A0 mutex_unlock(&rdtgroup_mutex);
->>=20
->> Just curious: is grabbing that mutex really required?
->>=20
->> Against which race are we trying to protect ourselves?
->
-> Not a race, but its to protect against having to think about memory order=
-ing!
->
->> I suspect this mutex is not required here: if we could racing with someo=
-ne else, likely
->> freeing that memory would not be safe either.
->
-> All the accesses to that variable take the mutex, its necessary to take t=
-he mutex to
-> ensure the most recently stored values are seen. In this case the array v=
-alues don't
-> matter, but rmid_ptrs is written under the mutex too.
-> There is almost certainly a control dependency that means the CPU calling=
- dom_data_exit()
-> will see the value of rmid_ptrs from dom_data_init() - but its much simpl=
-er to check that
-> all accesses take the mutex.
->
-> With MPAM this code can be invoked from an error IRQ signalled by the har=
-dware, so it
-> could happen anytime.
+On Thu, 15 Feb 2024 15:28:55 +0000, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
+> 
+> This series contains a new patch from Sean added since v12 [1]:
+> 
+> * KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+> 
+> This frees up the function name kvm_is_error_gpa() such that it can then be
+> re-defined in:
+> 
+> [...]
 
-Which does not work because you can't acquire a mutex from hard
-interrupt context.
+*sigh*
 
-Thanks,
+I forgot to hit "send" on this yesterday.  But lucky for me, that worked out in
+my favor as I needed to rebase on top of kvm/kvm-uapi to avoid pointless conflicts
+in the uapi headeres.
 
-        tglx
+So....
+
+Applied to kvm-x86 xen, minus 18 and 19 (trylock stuff) and 21 (locking cleanup
+that we're doing elsewhere).
+
+Paul and David, please take (another) look at the end result to make sure you don't
+object to any of my tweaks and that I didn't botch anything.
+
+s390 folks, I'm applying/pushing now to get it into -next asap, but I'll make
+sure to get acks/reviews on patch 08/21 before I do anything else with this
+branch/series.
+
+Thanks!
+
+[01/21] KVM: pfncache: Add a map helper function
+        https://github.com/kvm-x86/linux/commit/f39b80e3ff12
+[02/21] KVM: pfncache: remove unnecessary exports
+        https://github.com/kvm-x86/linux/commit/41496fffc0e1
+[03/21] KVM: x86/xen: mark guest pages dirty with the pfncache lock held
+        https://github.com/kvm-x86/linux/commit/4438355ec6e1
+[04/21] KVM: pfncache: add a mark-dirty helper
+        https://github.com/kvm-x86/linux/commit/78b74638eb6d
+[05/21] KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+        https://github.com/kvm-x86/linux/commit/a4bff3df5147
+[06/21] KVM: pfncache: stop open-coding offset_in_page()
+        https://github.com/kvm-x86/linux/commit/53e63e953e14
+[07/21] KVM: pfncache: include page offset in uhva and use it consistently
+        https://github.com/kvm-x86/linux/commit/406c10962a4c
+[08/21] KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+        https://github.com/kvm-x86/linux/commit/9e7325acb3dc
+[09/21] KVM: pfncache: allow a cache to be activated with a fixed (userspace) HVA
+        https://github.com/kvm-x86/linux/commit/721f5b0dda78
+[10/21] KVM: x86/xen: separate initialization of shared_info cache and content
+        https://github.com/kvm-x86/linux/commit/c01c55a34f28
+[11/21] KVM: x86/xen: re-initialize shared_info if guest (32/64-bit) mode is set
+        https://github.com/kvm-x86/linux/commit/21b99e4d6db6
+[12/21] KVM: x86/xen: allow shared_info to be mapped by fixed HVA
+        https://github.com/kvm-x86/linux/commit/10dcbfc46724
+[13/21] KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
+        https://github.com/kvm-x86/linux/commit/16877dd45f98
+[14/21] KVM: selftests: map Xen's shared_info page using HVA rather than GFN
+        https://github.com/kvm-x86/linux/commit/95c27ed8619b
+[15/21] KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
+        https://github.com/kvm-x86/linux/commit/5359bf19a3f0
+[16/21] KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+        https://github.com/kvm-x86/linux/commit/49668ce7e1ae
+[17/21] KVM: x86/xen: split up kvm_xen_set_evtchn_fast()
+        (not applied)
+[18/21] KVM: x86/xen: don't block on pfncache locks in kvm_xen_set_evtchn_fast()
+        (not applied)
+[19/21] KVM: pfncache: check the need for invalidation under read lock first
+        https://github.com/kvm-x86/linux/commit/21dadfcd665e
+[20/21] KVM: x86/xen: allow vcpu_info content to be 'safely' copied
+        https://github.com/kvm-x86/linux/commit/dadeabc3b6fa
+[21/21] KVM: pfncache: rework __kvm_gpc_refresh() to fix locking issues
+        (not applied)
+
+--
+https://github.com/kvm-x86/linux/tree/next
 
