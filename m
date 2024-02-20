@@ -1,208 +1,227 @@
-Return-Path: <linux-kernel+bounces-73273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF0C85C04C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A543B85C050
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:49:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA2FC1F21AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:47:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D1B71F21BD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13EC762FA;
-	Tue, 20 Feb 2024 15:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9701762E5;
+	Tue, 20 Feb 2024 15:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="hQSLZ/6u"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ur5pEL28"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ECA76059
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B12A7603E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444057; cv=none; b=SaUuHc7ox78mRIy4Q9mgk1zq6I+1E3OxhFCJMxrJcjEF89s2w4lfLXoBTLH70iRAfMqcQKRGsVctxwHTuCto+/2O5hH7Qb3n8WfFk9r6Ft137Li81t1smGKJuOWOFPvp6WTt07ioNwm5hCXPm08wm6DFqJ+QkjCoOjNkfc1BMKw=
+	t=1708444144; cv=none; b=MQMzcSR/drtCTGmsluIqYson/FHJX0Zc7kadljGuEYcZBV4uVgHO7rsyDhE+9AOGhxjb6yvX3bA6i3JRW6jWVgWobQNNcWB4rlmzeOvoZ2ES7NXdFVP+Q+RRBDJLT4U86htX8MI9psEMdAsFf0jbM8I37HwGM2EVlHqJHraYEOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444057; c=relaxed/simple;
-	bh=o1q2KJLC/ep+5zlyk1aEauwIRlmL3BolEXOX/8vFivQ=;
+	s=arc-20240116; t=1708444144; c=relaxed/simple;
+	bh=w9Qk2axkaAfF+tNTNqJZFb8AUy/zwkV+ozPjqf4dEtA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HlTyrB1uJkLnlmQs/k0Vm3hdbUgTwIFcZbtd9aDdjtn4D2DNm/mR4nAr7w7a/8JP+aQ8dkuONYikC7gqqCtZZvmKE1TATqRUDJg3BBC7XQYnaZEpl/JS0J8l1/Wvp/BdKjF+qILvVlVD3OYcGXSz3LPfLjdH7inav8wiotB8VIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=hQSLZ/6u; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so684502866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:47:35 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=TgR2YgWx4PYF+CVr7raMV7xGQ0QTtjd6kg2sTG+eS9TyQZE3Pi7D+BHbn9ySkC5c0YcnZpQaZAgQiKCbS4vRgbxMzQhVMGUFm9iEB5XILBhGpjow9hEfi0FYcsfCPjPtnfsOIiGobBnFFdg/WYwjes8qx3zN9oFkorFi3wUha2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ur5pEL28; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4127188dd5cso2893395e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:49:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708444053; x=1709048853; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OmKeO3SrUAnQUQ1qjk/xcUWMJTT3mFCsw1UFgof0hBk=;
-        b=hQSLZ/6udvv6kQi3vbWHNRXwkOBlYjCDojw2J7oyRDMmYwAFfrmQnlruus5+b/kqqB
-         i5O5DQ/siqMPLJKK9Of8X2ok5JI3TtpARmRqcv0t7Tuvo8yAjhaR45ThcAA040U1XTLa
-         9LPP95D+L4eVppavmCd1NzVuzOJRChBhqEdJgOhkx57uacUlu/IwDCkGYkhCZ6qswNp8
-         frpxLWNJjpCsd3OztBPbaoBogEB6ZUClP0bP6CttKMhDliUhseUkhDvIkuPMwYxLj/nv
-         cnj/sejOb0CjcN95BlmNj3iLTwh8i1FBjqq7DKpHUQHyh+lszBvwHjNk0GRBpkdM59X5
-         8WIQ==
+        d=gmail.com; s=20230601; t=1708444141; x=1709048941; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uMFcSVHz9V9r/oLxZZFJKd2VWyIsZ98dBb86ZS79p2Y=;
+        b=Ur5pEL28y60KVoveZSb6ui53Va7+zIuG7M2KLQo5uKLwgYv/Z/G/1b53z4SOA6e4qz
+         LmhGYF/6Qfyd56Nvv3qzgxZ8Wr9AHwAeISTLL8EeQvNevqkLMRVun6AJnjWosXKjoVf1
+         e+s+gp7PvI9xjiOi2QOf4CZNUDqmbLJ7ptvdPVbvocNNpKKnrwB+QU/pU0V2G/ziDt1U
+         8JaUb8ylOAhAGUK1WcJ7vmxi4OH4/L58BHtPYyRvE2qYJNptbM7jJm9pDePhXtM9sAh4
+         k8Gvz/VGn3IDHUiYlFaQNTGF6R1Vimipxse0XoeGu8qzNbnFffRFlRrytRs/CtCmqIU9
+         0VNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708444053; x=1709048853;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OmKeO3SrUAnQUQ1qjk/xcUWMJTT3mFCsw1UFgof0hBk=;
-        b=fvoGz9YbrnfX2oEXbwAP7U5467D66LHO61O9X1cVtMbVJmuRmRZoPhLgH7Nq2/uHSP
-         wUrdo50FQFYRja4NEPDYlvePfnZ3LrQ6HiMwd0JVpcK+ZSMnSJJ9YzA9wL9CrnVGsz5h
-         494csw+hWTpu6zV9jOxeDtCSepGfXiZ7l3WEZAIurOFe572y4PU7KKKcG/63DMf48CIH
-         3i6RiEm3tbw4voClz2mxL3d+mNUTqaNhGa25sTBv4QfBsEOqrno6a17jWrsytcgLuLGX
-         c3W+QRll4rUoM80Wxb2VndVHYBhcDnEtWfGvX3fTedL/FoOJc3MgJ5ipNNgIwpvvb66j
-         9Enw==
-X-Forwarded-Encrypted: i=1; AJvYcCWK7+FMRX18sOquv4iU4IVlZezUvkAJF57EL7Y9ETj2ZYlx6zJR8ChVCBEtum5aUJ0vWZAREUfAkOBIM4VoUHvNJiUDVil68SVakwpF
-X-Gm-Message-State: AOJu0YyY01w/Kq/9Cy9+99PL4HDmnSi7ZAcqKOghcJqixr2rE6XypSsp
-	BT/UO006QcJGDj27uSyGTKzRxpzVvg+OwLzFNdDjrnej4ttoz99+Ea64dSuxvF4=
-X-Google-Smtp-Source: AGHT+IFJoZqvRJziJG7H9sCCpZIDcUZbowJ7Y/gZQF2SG2Kzgj6U4NrCRzOQs7IpjwKWe5lLfODFxw==
-X-Received: by 2002:a17:906:2319:b0:a3e:ce5a:bba5 with SMTP id l25-20020a170906231900b00a3ece5abba5mr2919988eja.60.1708444053565;
-        Tue, 20 Feb 2024 07:47:33 -0800 (PST)
-Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
-        by smtp.gmail.com with ESMTPSA id r16-20020a1709067fd000b00a3e88f99cf1sm2398776ejs.149.2024.02.20.07.47.32
+        d=1e100.net; s=20230601; t=1708444141; x=1709048941;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uMFcSVHz9V9r/oLxZZFJKd2VWyIsZ98dBb86ZS79p2Y=;
+        b=sZhQkMfBhiAYC+ILQeNNazYj9UoP7gWDxXOVx0hYIxd83Brr7DmBSi8fCty0tMkPnF
+         nUxpHV3oUuG2DdeVvf6foXGkAtBaZUkogGFcjJjl2RVUp5qLjqTIIa8wrwtnyOWszezL
+         8NqALd5CsQr+1rCFwq7hSL1CQxV+7G4DSfRy+75Pepvf26PkPbKOGQCHOKQjdgLMUBra
+         uPeeEZEao1PDmC+wpeeF6R3BY5/jDv3npXHn/Xf2CLuRln8ci3+XfBSB4FyP57+Y3Y4o
+         ++IQgTpIgelpRh667hxKl5tp1gVZYQTU4PMQ5kv6mUVCqVnqriTAavsNCbF/zw/O4Hgd
+         3ouQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJnpGRkzm0bv2GeMb9CXMXK9PdrV0BWypNc95FS54qu5epuiVVgDJs5xD8wrKuEDI5oJ1MmUb8uC7gr1FJlO8SvfH9Y6nkD+ONC6Ka
+X-Gm-Message-State: AOJu0YxJKR5NSqRKbc9SPyk29hCfbvaHXr3BxHf8gNmxYlPGGncywXwt
+	l26v3g52VslqCKY604LtpT0mfb88MDA65m9FNNRnPF+g8V3DTUVZJo7nvaLB
+X-Google-Smtp-Source: AGHT+IGcn/T3IfR/b/9lnTVpStfQx0j2sYtUtQdfPOp2jnNd7ftwdK+zPs40A6zMrCFcmcx7DBWVOA==
+X-Received: by 2002:a5d:590e:0:b0:33d:3f2a:63a9 with SMTP id v14-20020a5d590e000000b0033d3f2a63a9mr4782565wrd.22.1708444140409;
+        Tue, 20 Feb 2024 07:49:00 -0800 (PST)
+Received: from andrea ([31.189.39.37])
+        by smtp.gmail.com with ESMTPSA id p8-20020a5d68c8000000b0033b2799815csm13903469wrw.86.2024.02.20.07.48.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 07:47:33 -0800 (PST)
-Date: Tue, 20 Feb 2024 15:47:31 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Hongyan Xia <hongyan.xia2@arm.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Morten Rasmussen <morten.rasmussen@arm.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Christian Loehle <christian.loehle@arm.com>,
-	linux-kernel@vger.kernel.org, David Dai <davidai@google.com>,
-	Saravana Kannan <saravanak@google.com>
-Subject: Re: [RFC PATCH v2 0/7] uclamp sum aggregation
-Message-ID: <20240220154731.ujnbaa65djmiroco@airbuntu>
-References: <cover.1706792708.git.hongyan.xia2@arm.com>
- <20240206152054.k3uskf3rhd4icmzt@airbuntu>
- <1cc2b8c4-ea0e-4e98-a1a3-2916cccb1ab1@arm.com>
+        Tue, 20 Feb 2024 07:48:59 -0800 (PST)
+Date: Tue, 20 Feb 2024 16:48:55 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: "conrad.r.cole" <conrad.r.cole@proton.me>
+Cc: "paulmck@linux.ibm.com" <paulmck@linux.ibm.com>,
+	"me@marcoelver.com" <me@marcoelver.com>,
+	"boehm@acm.org" <boehm@acm.org>,
+	"fpikus@gmail.com" <fpikus@gmail.com>,
+	"mingo@kernel.org" <mingo@kernel.org>,
+	"akiyks@gmail.com" <akiyks@gmail.com>,
+	"stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+	linux-kernel@vger.kernel.org
+Subject: Re: LKMM/RCU UNLOCK+LOCK pair Semantics Inquiry
+Message-ID: <ZdTJ5808Mn7ehLEo@andrea>
+References: <PCmEIB6oZbT2Wa4tScglap6aRpw3PI5sAw8vTAjxFiI33RDyi0i71AGCr0pEtHRWbFcyhv_M1U7L5jVLYBxDQ5Rk2DuplpFpA3BXcQshnnI=@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1cc2b8c4-ea0e-4e98-a1a3-2916cccb1ab1@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <PCmEIB6oZbT2Wa4tScglap6aRpw3PI5sAw8vTAjxFiI33RDyi0i71AGCr0pEtHRWbFcyhv_M1U7L5jVLYBxDQ5Rk2DuplpFpA3BXcQshnnI=@proton.me>
 
-On 02/06/24 17:32, Hongyan Xia wrote:
-> On 06/02/2024 15:20, Qais Yousef wrote:
-> > On 02/01/24 13:11, Hongyan Xia wrote:
-> > 
-> > > [1]: https://lore.kernel.org/all/20230331014356.1033759-1-davidai@google.com/
-> > 
-> > Their solution is not acceptable for the same reason yours isn't. Saravana and
-> > David know this and we discussed at LPC. uclamp hints are limits and should not
-> > be summed.
+(Dropping my long-dead @AS address and adding the Linux kernel mailing list)
+
+> The example below seems a bit counterintuitive from my perspective. Why does the assert statement below not trigger when the memory barrier in thread 2 is included? How is it possible for Thread 2 to load a value of 0 for y, shouldn't the smp_mb__after_unlock_lock() act as a full memory barrier between the store to y by Thread 1 and the load by Thread 2?
+
+[...]
+
+>     Thread 1              Thread 2                        Thread 3
+>     --------              --------                        --------
+>     y = 1;                spin_lock(&l);                  x = 1;
+>     spin_unlock(&l);      smp_mb__after_unlock_lock();    smp_mb();
+>                           r1 = y;                         r3 = y;
+>                           r2 = x;
+>     
 > 
-> Uclamp is a performance hint and nothing in its definition says it can't be
+>     assert(r1 == 0 || r2 != 0 || r3 != 0);
 
-That's the major problem here. The definition says it can't be summed because
-they're limits. So if two tasks boosted to 1024, then their combined
-performance limit is 2048? Or if 4 tasks are capped to 512, then the combined
-limits is 2048? You're changing the behavior. If not, please help me understand
-how not. You're treating them as 'bandwidth' hints.
+This test does not seem to be well-formed, due to the Unmatched lock operation;
+you can check that by using the formal (upstream) LKMM:
 
-> summed. Clearly whether a uclamp approach should be taken should be
-> determined by how well it works as a hint, not by how we calculate it. I
-> would not say I want to reject max aggregation simply because it throws away
-> all other uclamp values except the max. It's because I have real evaluation
-> results showing sum aggregation works as a much better hint.
+$ cat conrad0.litmus
+C conrad0
 
-It is easy to get numbers that shows improvements. That doesn't necessarily
-mean it is correct.
+{}
 
-> 
-> > > [2]: https://android.googlesource.com/kernel/gs/+/refs/heads/android-gs-raviole-5.10-android12-d1/drivers/soc/google/vh/kernel/sched/fair.c#510
-> > 
-> > I think I clarified several times so far that this is not related to uclamp.
-> > Could you please refrain from referring to it again in the future? This is
-> > misleading and neither helps your cause nor its cause. The fact that you're
-> > relating to it makes me very worried as both links demonstrate lack of
-> > understanding/confusion of what uclamp is supposed to be.
-> 
-> The intention of the code is irrelevant. What I'm talking about is what
+P0(int *y, spinlock_t *l)
+{
+	WRITE_ONCE(*y, 1);
+	spin_unlock(l);
+}
 
-It is relevant.
+P1(int *y, int *x, spinlock_t *l)
+{
+	int r1;
+	int r2;
 
-1. You failed to get consent on using this an example.
-2. You failed to demonstrate the purpose of the code and why it was
-   actually added. I don't think you know the full details anyway.
-3. You're using a hack that is problematic and needs to be deleted as a proof
-   of something good that _we do not want_.
-4. How do you know it works as you think it is? You're making wrong assumptions
-   that are misleading and quite frankly annoying.
+	spin_lock(l);
+	smp_mb__after_unlock_lock();
+	r1 = READ_ONCE(*y);
+	r2 = READ_ONCE(*x);
+}
 
-Generally we don't want to discuss this in this venue. So for the last time
-please stop bringing it up altogether and let's focus on the problems you are
-seeing and trying to fix and leave other people's code out of the discussion.
+P2(int *x, int *y)
+{
+	int r3;
 
-> effect the code actually has. The fact that you keep thinking I don't
-> understand what the code does even after me explaining "I know what the
-> intention of the code is, I'm just talking about the actual effect of the
-> code" is an even more worrying sign.
-> 
-> > Again, this solution is not acceptable and you're moving things in the wrong
-> > direction. We don't want to redesign what uclamp means, but fix some corner
-> > cases. And you're doing the former not the latter.
-> 
-> I'm saying max aggregation is not effective and proposing a more effective
-> implementation. In fact, you have sent a series that removes max
-> aggregation. Clearly that does not count as fixing corner cases but is
-> actually a redesign, and I don't understand why you are allowed to do such
-> things and I am not. Also, when something becomes harder and harder to fix,
-> a redesign that solves all the problems is clearly justified.
+	WRITE_ONCE(*x, 1);
+	smp_mb();
+	r3 = READ_ONCE(*y);
+}
 
-I don't have issues with max aggregation removal. I actually would love to see
-it gone. But summing uclamp values changes the meaning of uclamp hints. Which
-is my number 1 concern.
+forall (1:r1=0 \/ ~1:r2=0 \/ ~2:r3=0)
 
-And you're lumping too many problems to max aggregations. It was brought up
-several times that overutilized definition being tied to misfit is not fit for
-purpose anymore. This needs to be fixed. feec() fails to distribute fairly when
-capacities are equal. This is a known old problem. This needs fixing. energy
-computation needs to evolve to deal with a number of new realities. This needs
-fixing. Load balancer can't correct bad decision at wake up in aligned way with
-feec(), this needs fixing. Adding a new signal is not the right way to fix
-these problems. And the only issue with max-aggregation in practice is the fact
-it is not effective in restricting power use for uclamp_max. It has also the
-minor problem of boosting unnecessarily for the duration of enqueue of the
-task. The correct behavior we want and other vendors has expressed to me in the
-past is to apply the boost/cap only when required; ie the task is running. The
-hardware can cope with this. And this is tied to how cpufreq governor works and
-if there are hardware limitations that makes this hard to achieve, then it is
-up to the governor to decide this, not the scheduler. We already have util_avg
-and util_est. I really don't think we need another addition. We just need to
-fix issues else where and improve the interface with the cpufreq governor to
-honour the performance limits the tasks have so that we can get rid off
-max-aggregation.
+$ herd7 -conf linux-kernel.cfg conrad0.litmus
+Test conrad0 Required
+States 8
+1:r1=0; 1:r2=0; 2:r3=0;
+1:r1=0; 1:r2=0; 2:r3=1;
+1:r1=0; 1:r2=1; 2:r3=0;
+1:r1=0; 1:r2=1; 2:r3=1;
+1:r1=1; 1:r2=0; 2:r3=0;
+1:r1=1; 1:r2=0; 2:r3=1;
+1:r1=1; 1:r2=1; 2:r3=0;
+1:r1=1; 1:r2=1; 2:r3=1;
+No
+Witnesses
+Positive: 7 Negative: 1
+Flag unmatched-unlock
+Condition forall (1:r1=0 \/ not (1:r2=0) \/ not (2:r3=0))
+Observation conrad0 Sometimes 7 1
+Time conrad0 0.01
+Hash=95ed1bbf05f8df26070ce4a3cc0968a3
 
-> 
-> What I can summarize from sum aggregation is:
-> 
-> Pros:
-> 1. A more effective implementation, proven by evaluation numbers
-> 2. Consuming the same or even less power in benchmarks
-> 3. 350 lines of code in total, less than half of max aggregation
-> 4. This series shows the entirety and effectiveness of sum aggregation, at
-> this very moment, today. Max aggregation needs further filtering and load
-> balancing patches which we have not seen yet.
-> 5. Resolves the drawbacks from max aggregation (which you might say is the
-> same as 4)
-> 6. Significantly reduces uclamp overhead, no bucket operations
-> 
-> Cons:
-> 1. should not be summed (although the scheduler used to sum up utilization
-> and util_est sums up a processed PELT signal today)
-> 2. Under-utilization case (which is a problem GROUP_THROTTLE also has, and
-> can be worked around. Please, I know the intention of GROUP_THROTTLE, I'm
-> just talking about its actual effects).
-> 
-> I don't see why the things I listed above is in the wrong direction.
+(cf. the flag "unmatched-unlock" above).  Here is a well-formed variant of the
+previous test together with the corresponding result:
+
+$ cat conrad.litmus
+C conrad
+
+{}
+
+P0(int *y, spinlock_t *l)
+{
+	spin_lock(l);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(l);
+}
+
+P1(int *y, int *x, spinlock_t *l)
+{
+	int r1;
+	int r2;
+
+	spin_lock(l);
+	smp_mb__after_unlock_lock();
+	r1 = READ_ONCE(*y);
+	r2 = READ_ONCE(*x);
+	spin_unlock(l);
+}
+
+P2(int *x, int *y)
+{
+	int r3;
+
+	WRITE_ONCE(*x, 1);
+	smp_mb();
+	r3 = READ_ONCE(*y);
+}
+
+forall (1:r1=0 \/ ~1:r2=0 \/ ~2:r3=0)
+
+$ herd7 -conf linux-kernel.cfg conrad.litmus
+Test conrad Required
+States 7
+1:r1=0; 1:r2=0; 2:r3=0;
+1:r1=0; 1:r2=0; 2:r3=1;
+1:r1=0; 1:r2=1; 2:r3=0;
+1:r1=0; 1:r2=1; 2:r3=1;
+1:r1=1; 1:r2=0; 2:r3=1;
+1:r1=1; 1:r2=1; 2:r3=0;
+1:r1=1; 1:r2=1; 2:r3=1;
+Ok
+Witnesses
+Positive: 7 Negative: 0
+Condition forall (1:r1=0 \/ not (1:r2=0) \/ not (2:r3=0))
+Observation conrad Always 7 0
+Time conrad 0.01
+Hash=4611aa988bb39b8c0a27e0ed5f43044e
+
+So the "assert" can indeed _not_ trigger (aka, fail) according to the model.  In
+other words, the state "not (1:r1=0) /\ 1:r2=0 /\ 2:r3=0" is forbidden; such state
+becomes allowed upon removal of the barrier (that "acts as a full barrier").
+
+  Andrea
 
