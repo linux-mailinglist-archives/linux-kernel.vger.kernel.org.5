@@ -1,242 +1,174 @@
-Return-Path: <linux-kernel+bounces-73229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327B085BF9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:14:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC1685BFAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C391B2143D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:14:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E079D1C20EEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81A674E2B;
-	Tue, 20 Feb 2024 15:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FFD7602A;
+	Tue, 20 Feb 2024 15:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Xy5iv0Wr"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BpakPrzQ"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D75376020;
-	Tue, 20 Feb 2024 15:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BF0664CF
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708442057; cv=none; b=CnBlQdVFUqyL+VOhxwF/dd/K7b9aUgVcNOl0NIFY6Oo00ZPiKnpK3jvquHdgisU5kksRSLMUfuYZS/ORznq9dY07RRXFBYF8VDIYkw8QoJKzTFkJU4c4hkcU64qUqZo/Mp6DbZ6+WXhTPMxQ7/nHBWNqcxOMOebLVOLEt6PTQ28=
+	t=1708442220; cv=none; b=bVOe8vfugjLUagH66/ZrrYrIKW3MHnSQjoC11pt9L1XNPxwMUYQrOgp45WVhwhc/ruJB/jitr/lmyPZTcG2HfInet8T2KljJlDf0aOfkfrHCJ4ITnsj5a6FVPZGois8GaCPb6GkbRFgG+BEOF/euUOUxEL3itnRVJP00+Z71xUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708442057; c=relaxed/simple;
-	bh=EerVHanUz2tefY83Hs9lDDnTHX9i7fSD2ZbOIE+Yu88=;
+	s=arc-20240116; t=1708442220; c=relaxed/simple;
+	bh=oKHdoiFZ3PscTMXufpdRXrc/0hmFVJlyAuvTku/UtCg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjgmYzBoJ1KrSLSAEyP8cJzx51Q6ZPS9NSwT1j2zxdZeoB2PY51VIRlYPGoijTc2cckRZwh0Fd1FWWmigEmla4KO3udTFC8qlCvTRLMemxygb65FLyJn98cRDzMXRUiDpVxF6hMvEZ9C3qKL7y25YT07oHN9NjgbrjJLhPZAB1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Xy5iv0Wr; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=qgc8OUZCtZPjwVAIjMqiHy7ikwaI1Mbu1Mp1IdFRzDs=; b=Xy5iv0WrTLeAO0Yk5KZRnMdKyj
-	P5Il3QQ+baeCRbUTHw+M2pQGpzCvY2kVMWyp3dXDSELRc5Ju3nfd11YBuUEHjVI4tFW2/xraLQejU
-	8tft/vHldbP7aGpknVnTEenRzyIrR0qgmIZkTDpzWNYBWSARs/hgaqJkstanzehwL6LPfJLIeqFLo
-	gUb/82YcOQPZlEGA8PE5OTomL+YF+FqTubxG54uf45edRw2uSwN7RfBx+Du1NGHDAZjqfMWrmpglo
-	yS8bLYhbsuhKYbVHwDGhCbqZMUPo3WgWbTMTAIMeCbEX6XIBN4y0pMZBZKVgW6FRGfRXxX28yVi92
-	FpAy11Fw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45522)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rcRoq-00033P-2v;
-	Tue, 20 Feb 2024 15:14:05 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rcRok-0000xX-ST; Tue, 20 Feb 2024 15:13:58 +0000
-Date: Tue, 20 Feb 2024 15:13:58 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <ZdTBtt0oR6Q1RcAB@shell.armlinux.org.uk>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
- <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
- <ZdSMk93c1I6x973h@shell.armlinux.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EcJ6cNtC5D3KjjdfKV0wrschf83PBgOmcN7zWhvbeAFQwDDwhGCb6TEz0zKvI/FwIor/lfV3vnZnmgk70d/fu74KZHtXHBYz25zMOIbPhbmBRlUD5vtqtHvJ6mw70CR+cHGFQG9E2baTzbBzX5B+E3UcTFmsxOCVrkFYowFZ8fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BpakPrzQ; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d220e39907so56767591fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:16:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1708442216; x=1709047016; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5aXWCAcAEOs7KIPz5lYBFVbb8nJbXgzCW+tcDzwHJuo=;
+        b=BpakPrzQkX/2bZI3DFQaSIRSvErBXvf3iEtcHuw8kSJpcZofwsPeABqos0Yh+xtgf2
+         Ch9VRhLPkZGvzRtTpdqRgPwBHGAf3c498l0HxW6EzCMh4M5c9mgSKAosah77buPN+uPN
+         o+uZxV9RCcOCxAezYbepkFIxAkDqCY79xdEi9yuLEYt0fk6eR9JnHbKK9kToXK/Lssqa
+         CLD5VgLc7piYeZXhahNz6/Vgt4QPzn0i+hXpISTjeByCbNHQkM69/OtXfUU6W6pMGfQT
+         DHuCpq/ELCSO/Lf7f6gZ8xVKXVfdhWDdS1VUvYK6NXZq8n9UIkSEo4f4Gk6JiBCsyGEF
+         xzLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708442216; x=1709047016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5aXWCAcAEOs7KIPz5lYBFVbb8nJbXgzCW+tcDzwHJuo=;
+        b=saHsapXGqHn8O7eebx83xE0izFT2Bd5C434tqb9V5G5+OiFxNukFcNFQxT+vIorJPv
+         B6EZhuWkNKmhXCS522MCSpkVGfxWcjjlG7nZHcbODHOn8GmksYTZJ4g8fV1jWpAjPi5F
+         th6gZmU7X5BdSg6elwFmi3i3CXgOWVumZwDctIywuO6B4+kHWPK+jDq1ayGQqX3bYxD5
+         sIYkLmc0wtC6DxXsfgCN0fFrm4JwiRebG9gLebe0zIULfnkEd3Qp/EnzexVF5d46VfvS
+         wAbrkpBKN38BKsZNvdDeEpDxdbY/FIcV+djtPG3ItWFSVQvBFvHrDZxA7zb3NMqGpUen
+         buHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXExAde8hyv6gvasOoeQUkyXon5MmqRNvNFeRzWXotWisPHjk7P5UMpYILd7S7TayNbRNhVYzHOHUno0WhDiivT7hkVJ+T7mznBaIHo
+X-Gm-Message-State: AOJu0YxVf04MbUeg0s+BpL5dXw94IyIkSjJzdA20l/0lX4p2sldf4Q+P
+	Ge5JihDSTKK134FJwVWb9/61TSm2Lko+2QKRR+OeWaLzIC+a49B99mC48y6kFjc=
+X-Google-Smtp-Source: AGHT+IEPUrNBkOBD8eEgtSBpZj/2SoRw8ss67vQboeNWJS0Y/ibwBIyTcJ4l7FTjsjFjZFSfyp29Ow==
+X-Received: by 2002:a05:651c:4ce:b0:2d2:3f06:5343 with SMTP id e14-20020a05651c04ce00b002d23f065343mr5596453lji.10.1708442216024;
+        Tue, 20 Feb 2024 07:16:56 -0800 (PST)
+Received: from alley (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id p14-20020aa7cc8e000000b005648cab22fcsm1614800edt.1.2024.02.20.07.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 07:16:55 -0800 (PST)
+Date: Tue, 20 Feb 2024 16:16:54 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 06/26] printk: nbcon: Ensure ownership release
+ on failed emit
+Message-ID: <ZdTCZqhZww8_WgSU@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-7-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdSMk93c1I6x973h@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240218185726.1994771-7-john.ogness@linutronix.de>
 
-On Tue, Feb 20, 2024 at 11:27:15AM +0000, Russell King (Oracle) wrote:
-> On Thu, Feb 15, 2024 at 08:22:29PM +0100, Rafael J. Wysocki wrote:
-> > On Wed, Jan 31, 2024 at 5:50 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> > > index cf7c1cca69dd..a68c475cdea5 100644
-> > > --- a/drivers/acpi/acpi_processor.c
-> > > +++ b/drivers/acpi/acpi_processor.c
-> > > @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> > >                         cpufreq_add_device("acpi-cpufreq");
-> > >         }
-> > >
-> > > +       /*
-> > > +        * Register CPUs that are present. get_cpu_device() is used to skip
-> > > +        * duplicate CPU descriptions from firmware.
-> > > +        */
-> > > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> > > +           !get_cpu_device(pr->id)) {
-> > > +               int ret = arch_register_cpu(pr->id);
-> > > +
-> > > +               if (ret)
-> > > +                       return ret;
-> > > +       }
-> > > +
-> > >         /*
-> > >          *  Extra Processor objects may be enumerated on MP systems with
-> > >          *  less than the max # of CPUs. They should be ignored _iff
-> > 
-> > This is interesting, because right below there is the following code:
-> > 
-> >     if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> >         int ret = acpi_processor_hotadd_init(pr);
-> > 
-> >         if (ret)
-> >             return ret;
-> >     }
-> > 
-> > and acpi_processor_hotadd_init() essentially calls arch_register_cpu()
-> > with some extra things around it (more about that below).
-> > 
-> > I do realize that acpi_processor_hotadd_init() is defined under
-> > CONFIG_ACPI_HOTPLUG_CPU, so for the sake of the argument let's
-> > consider an architecture where CONFIG_ACPI_HOTPLUG_CPU is set.
-> > 
-> > So why are the two conditionals that almost contradict each other both
-> > needed?  It looks like the new code could be combined with
-> > acpi_processor_hotadd_init() to do the right thing in all cases.
-> > 
-> > Now, acpi_processor_hotadd_init() does some extra things that look
-> > like they should be done by the new code too.
-> > 
-> > 1. It checks invalid_phys_cpuid() which appears to be a good idea to me.
-> > 
-> > 2. It uses locking around arch_register_cpu() which doesn't seem
-> > unreasonable either.
-> > 
-> > 3. It calls acpi_map_cpu() and I'm not sure why this is not done by
-> > the new code.
-> > 
-> > The only thing that can be dropped from it is the _STA check AFAICS,
-> > because acpi_processor_add() won't even be called if the CPU is not
-> > present (and not enabled after the first patch).
-> > 
-> > So why does the code not do 1 - 3 above?
+On Sun 2024-02-18 20:03:06, John Ogness wrote:
+> Until now it was assumed that ownership has been lost when the
+> write_atomic() callback fails. And nbcon_emit_next_record()
+> directly returned false. However, if nbcon_emit_next_record()
+> returns false, the context must no longer have ownership.
 > 
-> Honestly, I'm out of my depth with this and can't answer your
-> questions - and I really don't want to try fiddling with this code
-> because it's just too icky (even in its current form in mainline)
-> to be understandable to anyone who hasn't gained a detailed knowledge
-> of this code.
+> The semantics for the callbacks could be specified such that
+> if they return false, they must have released ownership. But
+> in practice those semantics seem odd since the ownership was
+> acquired outside of the callback.
 > 
-> It's going to require a lot of analysis - how acpi_map_cpuid() behaves
-> in all circumstances, what this means for invalid_logical_cpuid() and
-> invalid_phys_cpuid(), what paths will be taken in each case. This code
-> is already just too hairy for someone who isn't an experienced ACPI
-> hacker to be able to follow and I don't see an obvious way to make it
-> more readable.
-> 
-> James' additions make it even more complex and less readable.
+> Ensure ownership has been released before reporting failure by
+> explicitly attempting a release. If the current context is not
+> the owner, the release has no effect.
 
-As an illustration of the problems I'm having here, I was just writing
-a reply to this with a suggestion of transforming this code ultimately
-to:
+Hmm, the new semantic is not ideal either. And I think that it is
+even worse. The function still releases the owership even though
+it has been acquired by the caller. In addition, it causes
+a double unlock in a valid case. I know that the 2nd
+nbcon_context_release() is a NOP but...
 
-	if (!get_cpu_device(pr->id)) {
-		int ret;
+I would personally solve this by adding a comment into the code
+and moving the check, see below.
 
-		if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id))
-			ret = acpi_processor_make_enabled(pr);
-		else
-			ret = acpi_processor_make_present(pr);
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> @@ -891,17 +891,18 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
+>  	nbcon_state_read(con, &cur);
+>  	wctxt->unsafe_takeover = cur.unsafe_takeover;
+>  
+> -	if (con->write_atomic) {
+> +	if (con->write_atomic)
+>  		done = con->write_atomic(con, wctxt);
+> -	} else {
 
-		if (ret)
-			return ret;
+	This code path does not create a bad semantic. The semantic is
+	as it is because the context might lose the ownership in "any"
+	nested function.
+
+	Well, it might deserve a comment, something like:
+
+		/*
+		 * nbcon_emit_next_record() should never be called for legacy
+		 * consoles. Handle it as if write_atomic() have lost
+		 * the ownership and try to continue.
+		 */
+> -		nbcon_context_release(ctxt);
+> -		WARN_ON_ONCE(1);
+> -		done = false;
+> -	}
+>  
+> -	/* If not done, the emit was aborted. */
+> -	if (!done)
+> +	if (!done) {
+> +		/*
+> +		 * The emit was aborted, probably due to a loss of ownership.
+> +		 * Ensure ownership was lost or released before reporting the
+> +		 * loss.
+> +		 */
+
+Is there a valid reason when con->write_atomic() would return false
+and still own the context?
+
+If not, then this would hide bugs and cause double unlock in
+the valid case.
+
+> +		nbcon_context_release(ctxt);
+>  		return false;
+
+Even better solution might be to do the check at the beginning of
+the function. It might look like:
+
+	  if (WARN_ON_ONCE(!con->write_atomic)) {
+		/*
+		 * This function should never be called for legacy consoles.
+		 * Handle it as if write_atomic() have lost the ownership
+		 * and try to continue.
+		 */
+		nbcon_context_release(ctxt);
+		return false;
 	}
 
-(acpi_processor_make_present() would be acpi_processor_hotadd_init()
-and acpi_processor_make_enabled() would be arch_register_cpu() at this
-point.)
 
-Then I realised that's a bad idea - because we really need to check
-that pr->id is valid before calling get_cpu_device() on it, so this
-won't work. That leaves us with:
-
-	int ret;
-
-	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-		/* x86 et.al. path */
-		ret = acpi_processor_make_present(pr);
-	} else if (!get_cpu_device(pr->id)) {
-		/* Arm64 path */
-		ret = acpi_processor_make_enabled(pr);
-	} else {
-		ret = 0;
-	}
-
-	if (ret)
-		return ret;
-
-Now, the next transformation would be to move !get_cpu_device(pr->id)
-into acpi_processor_make_enabled() which would eliminate one of those
-if() legs.
-
-Now, if we want to somehow make the call to arch_regster_cpu() common
-in these two paths, the next question is what are the _precise_
-semantics of acpi_map_cpu(), particularly with respect to it
-modifying pr->id. Is it guaranteed to always give the same result
-for the same processor described in ACPI? What acpi_map_cpu() anyway,
-I can find no documentation for it.
-
-Then there's the question whether calling acpi_unmap_cpu() should be
-done on the failure path if arch_register_cpu() fails, which is done
-for the x86 path but not the Arm64 path. Should it be done for the
-Arm64 path? I've no idea, but as Arm64 doesn't implement either of
-these two functions, I guess they could be stubbed out and thus be
-no-ops - but then we open a hole where if pr->id is invalid, we
-end up passing that invalid value to arch_register_cpu() which I'm
-quite sure will explode with a negative CPU number.
-
-So, to my mind, what you're effectively asking for is a total rewrite
-of all the code in and called by acpi_processor_get_info()... and that
-is not something I am willing to do (because it's too far outside of
-my knowledge area.)
-
-As I said in my reply to patch 1, I think your comments on patch 2
-make Arm64 vcpu hotplug unachievable in a reasonable time frame, and
-certainly outside the bounds of what I can do to progress this.
-
-So, at this point I'm going to stand down from further participation
-with this patch set as I believe I've reached the limit of what I can
-do to progress it.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Best Regards,
+Petr
 
