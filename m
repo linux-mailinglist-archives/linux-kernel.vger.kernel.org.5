@@ -1,205 +1,202 @@
-Return-Path: <linux-kernel+bounces-72164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45F085B038
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:03:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5BA85B03D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8D2C1C2238B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:03:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E288FB21F74
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FF43D0CE;
-	Tue, 20 Feb 2024 01:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAECA12B76;
+	Tue, 20 Feb 2024 01:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4ngIHsI/";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0pQJiAja"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fu6RS80W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28FDE1E4B9;
-	Tue, 20 Feb 2024 01:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AE733F1
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708390933; cv=none; b=OIt6zsMFx6diXcjuPeGs+wsV9bmKdmqXdudtDRZUT1poaaB8vLlDo2QOGDnfnQKUzdsp43p/uybCNEzwAJcEQze/y+OiA4muB2GyVkBqTFIMzBV4Ab3lHeOLqWQtTEwgiwQ1tIHCa1VQTtNPgwi3KZc0mo85uHqwlfXQGPZNXv8=
+	t=1708391253; cv=none; b=CNffYl2SVAWwgnf5quX3EMoafaCud8xoKdWsKYnGMW1HYFOsfZniAubOJogPWtPriv3QHWCW+3USM3rOzPynD3evIHvBzpfw3XGQz+sq9Eir5Yn4TZiNJiQ16/5x6mriHXaGAjnMwCh0q7q/Otd9XeW9b9TJcgqY1JDm4fHaC9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708390933; c=relaxed/simple;
-	bh=ItdoPLpGx6piTWvrxHODqmv30kLP3Gxe0J2Nz70hda4=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=KF7YQvfoQdSq975ugxoEr7rZUGi9I97KugYuO68/3XjV1jK1qM5LyGNAaGIeNruiLfIL5lIppU1vlK/GJvbNS7cfRB7eM/PnVPEkHTV5rGdgxKWW8dMrn+HfVtFDv0EZVTGTO5quw5GNaww5aacrcNxBpKkuT+DUesk7Y5pPuDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4ngIHsI/; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0pQJiAja; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 20 Feb 2024 01:02:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708390928;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=5HueHOvF9wc6rlDxHIpz6MwKLt9Wh96gKmMB8KfdNr4=;
-	b=4ngIHsI/V5+uA3+K0cMw8/knCeXjE+YlZDvJ5KjuuqBkWgEBwkxGUURmoQB7IqpD1dTi74
-	W/gxITVoembrV/3BANQbJ3XUBF+1pfO8z02QBVjdvlGg9wdqc2vL5CLmsc977uedxI1PkZ
-	GbsuEZ6CxLvGr7+Wc/zQe8ZFZYgfKoCMUiY6lleMg0Ka2NX/M+zeL3Nfq204BIZDVNTrrG
-	dvFTzbIaRfjaaQmk2Lp3YSYBstDA3UtB+Gj2LzqpLPSXK1lOOlLot1gNV1eg7axexE1xgf
-	Gr5VJtcrb8iZj3/3UiiRxd4l6nKNFOS4YMw+CV2ot7iPSjd1JBjAlULX9e0KeA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708390928;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=5HueHOvF9wc6rlDxHIpz6MwKLt9Wh96gKmMB8KfdNr4=;
-	b=0pQJiAjaSWDEE7zktsf9/bMHpAiNqmm+qA8/uCIXfQ+VeKktnl71Be8Ki3IHdH7ZXQBqS3
-	vGozIiWoIJ7XV2Cw==
-From: "tip-bot2 for Pawan Gupta" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/bugs: Add asm helpers for executing VERW
-Cc: Alyssa Milburn <alyssa.milburn@intel.com>,
- Andrew Cooper <andrew.cooper3@citrix.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1708391253; c=relaxed/simple;
+	bh=W7mIHh5rHh4vdMHkIbDHj/R9F9JPJqAdn6+RySJC+54=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MagTybFa+8EWsMgEI7buhYXfMXLCQg/NKZGO1R1WI7Z56VeAL8ZldyxPbnZ3OWUSPgg66mocZHcHyuR5drdrL/QplwNRvyiv56XXdI8m0aZyq1xabtF1MeV4lIkKfOw4W782DNObJsPPZYkFAzqazlSfD+K11u88VKC8W/Uz9kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fu6RS80W; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708391249;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bN+xRkF6So+ejO9INBzpCuxH/ICgnLXLsxP9bDXIKL0=;
+	b=Fu6RS80WmslDDQ7v0GGycpqDwQbWTmAB71bvdgfE7RzDz3/d0mxnvXHb542qW3jjLc70Tm
+	33spFYVkJLUAKnT6cKzVXVjCm/fNg1FHFt1UFaxguDZTG7exui1tn5n3FHAGKZz+riYsY7
+	LgFDlwp2909aHdn92wbG5ZfabzEpLHY=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-210-v085uBDUMDO7-YIGYCkf2w-1; Mon, 19 Feb 2024 20:07:27 -0500
+X-MC-Unique: v085uBDUMDO7-YIGYCkf2w-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d243193975so7715781fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:07:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708391246; x=1708996046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bN+xRkF6So+ejO9INBzpCuxH/ICgnLXLsxP9bDXIKL0=;
+        b=mu09AhGCPUiaLXkSzv3c3XmT+A9M67vcsyF47p8qwd39fGl5XmRZDkbROBZ8BpK99Y
+         rPsOgmyD7zCV1gaecbS2WvrrMmA2gcTS0d1nt4BAIGoeTkSJAx/DS/sWwBO+k9y69B7D
+         NYq7dKImyIq+f3103/DjNLTLQ5BVO00omk58589+bDKIub8aNxqpm6e6B2IetddhKm8V
+         lkY8cLqjQmwzUM8PQ4MNycj6DAnHoCI4Qpq+ZK/Fa7QsUBXRRahv7Yrh09QsXObHT2zX
+         eJ9fF1yT63KSU22XEos2TWsEWC8e5SmGxN0qDTMbOqjlnf7vDMHTOT/8ZtNDtcKwbxt8
+         019g==
+X-Forwarded-Encrypted: i=1; AJvYcCUZDCoPENRuP0fTi7HonXH4jzhgQ6ET35WrC/uWrjm+hDwRG5VeGpBPpUVBCRqGD8qySWJYANsDR1EAwEsA9mNhPjw8D7sl1dWJOtMf
+X-Gm-Message-State: AOJu0YzcPOyM9mWHzHduecVcfUeB4RfnhzJMRRjbV2A0hinN8Hzm0M89
+	rn2RQBoQcK/EA+hY62yh1FYH/du3UHFy7fuCe4S19VvKiwSyCvlwqFApGA4DSs4IKxl/NZooXDG
+	RJ897fo4gVxjcxmICM6EJxbwzmI+PSrEfGlYdCkhuBnd14LRNqM+u0xo2eh5IVPK7KdA6gywmTF
+	j04Nv2xjTbQNtDjD2MlhJbcZRMDNoRMGm9fb3/
+X-Received: by 2002:a2e:3e1a:0:b0:2d2:39a5:d190 with SMTP id l26-20020a2e3e1a000000b002d239a5d190mr3791521lja.1.1708391246130;
+        Mon, 19 Feb 2024 17:07:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG1kIyPveHUOVWMZmCgVFi1xnalj/6PCfA0yBeOAHEpQlJnohIRvG+RGA4f3rHPjY22pVoOoBYS1nqilt7dOXQ=
+X-Received: by 2002:a2e:3e1a:0:b0:2d2:39a5:d190 with SMTP id
+ l26-20020a2e3e1a000000b002d239a5d190mr3791512lja.1.1708391245809; Mon, 19 Feb
+ 2024 17:07:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170839092792.398.3678407222202963581.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240213152414.3703-1-n.zhandarovich@fintech.ru>
+In-Reply-To: <20240213152414.3703-1-n.zhandarovich@fintech.ru>
+From: Alexander Aring <aahringo@redhat.com>
+Date: Mon, 19 Feb 2024 20:07:14 -0500
+Message-ID: <CAK-6q+j52utmO8K_h=3LqDYmXqsqFC6MKRPUM+q=1Q30c7nEMg@mail.gmail.com>
+Subject: Re: [PATCH wpan] mac802154: fix uninit-value issue in ieee802154_header_create()
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Cc: Alexander Aring <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	linux-wpan@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     baf8361e54550a48a7087b603313ad013cc13386
-Gitweb:        https://git.kernel.org/tip/baf8361e54550a48a7087b603313ad013cc13386
-Author:        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-AuthorDate:    Tue, 13 Feb 2024 18:21:35 -08:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Mon, 19 Feb 2024 16:31:33 -08:00
+On Tue, Feb 13, 2024 at 10:24=E2=80=AFAM Nikita Zhandarovich
+<n.zhandarovich@fintech.ru> wrote:
+>
+> Syzkaller with KMSAN reported [1] a problem with uninitialized value
+> access in ieee802154_header_create().
+>
+> The issue arises from a weird combination of cb->secen =3D=3D 1 and
+> cb->secen_override =3D=3D 0, while other required security parameters
+> are not found enabled in mac802154_set_header_security().
+>
 
-x86/bugs: Add asm helpers for executing VERW
+In case of cb->secen is 1 and cb->secen_override is 0
+mac802154_set_header_security() should depend on the
+ieee802154_llsec_params params.
 
-MDS mitigation requires clearing the CPU buffers before returning to
-user. This needs to be done late in the exit-to-user path. Current
-location of VERW leaves a possibility of kernel data ending up in CPU
-buffers for memory accesses done after VERW such as:
+As [0] WPAN_SECURITY_DEFAULT signals this behaviour.
 
-  1. Kernel data accessed by an NMI between VERW and return-to-user can
-     remain in CPU buffers since NMI returning to kernel does not
-     execute VERW to clear CPU buffers.
-  2. Alyssa reported that after VERW is executed,
-     CONFIG_GCC_PLUGIN_STACKLEAK=y scrubs the stack used by a system
-     call. Memory accesses during stack scrubbing can move kernel stack
-     contents into CPU buffers.
-  3. When caller saved registers are restored after a return from
-     function executing VERW, the kernel stack accesses can remain in
-     CPU buffers(since they occur after VERW).
+> Ideally such case is expected to be caught by starting check at the
+> beginning of mac802154_set_header_security():
+>
+>         if (!params.enabled && cb->secen_override && cb->secen)
+>                 return -EINVAL;
+>
+> However, since secen_override is zero, the function in question
+> passes this check and returns with success early, without having
+> set values to ieee802154_sechdr fields such as key_id_mode. This in
+> turn leads to uninitialized access of such values in
+> ieee802154_hdr_push_sechdr() and other places.
+>
+> Fix this problem by only checking for secen value and presence of
+> security parameters (and ignoring secen_override). Exit early with
+> error if necessary requirements are not met.
+>
+> [1]
+> BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/hea=
+der_ops.c:54 [inline]
+> BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee80215=
+4/header_ops.c:108
+>  ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
+>  ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
+>  ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
+>  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
+>  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
+>  ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
+>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>  __sock_sendmsg net/socket.c:745 [inline]
+>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
+>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
+>  __sys_sendmsg net/socket.c:2667 [inline]
+>  __do_sys_sendmsg net/socket.c:2676 [inline]
+>  __se_sys_sendmsg net/socket.c:2674 [inline]
+>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+>
+> Local variable hdr created at:
+>  ieee802154_header_create+0x4e/0xc00 net/mac802154/iface.c:360
+>  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
+>  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
+>
+> Fixes: f30be4d53cad ("mac802154: integrate llsec with wpan devices")
+> Reported-and-tested-by: syzbot+60a66d44892b66b56545@syzkaller.appspotmail=
+com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D60a66d44892b66b56545
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> ---
+> P.S. Link to previous similar discussion:
+> https://lore.kernel.org/all/tencent_1C04CA8D66ADC45608D89687B4020B2A8706@=
+qq.com/
+> P.P.S. This issue may affect stable versions, at least up to 6.1.
+>
+>  net/mac802154/iface.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
+> index c0e2da5072be..ad799d349625 100644
+> --- a/net/mac802154/iface.c
+> +++ b/net/mac802154/iface.c
+> @@ -328,7 +328,7 @@ static int mac802154_set_header_security(struct ieee8=
+02154_sub_if_data *sdata,
+>
+>         mac802154_llsec_get_params(&sdata->sec, &params);
+>
+> -       if (!params.enabled && cb->secen_override && cb->secen)
+> +       if (!params.enabled && cb->secen)
+>                 return -EINVAL;
+>         if (!params.enabled ||
+>             (cb->secen_override && !cb->secen) ||
+>
 
-To fix this VERW needs to be moved very late in exit-to-user path.
+I think there is just a missing check if (!cb->secen_override) then
+use whatever mac802154_llsec_get_params() says and ignore
+secen_enabled.
 
-In preparation for moving VERW to entry/exit asm code, create macros
-that can be used in asm. Also make VERW patching depend on a new feature
-flag X86_FEATURE_CLEAR_CPU_BUF.
+Also I think that we don't init those socket parameters to any value
+at [1] so it's completely random what values are at socket creation.
 
-Reported-by: Alyssa Milburn <alyssa.milburn@intel.com>
-Suggested-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/20240213-delay-verw-v8-1-a6216d83edb7%40linux.intel.com
----
- arch/x86/entry/entry.S               | 23 +++++++++++++++++++++++
- arch/x86/include/asm/cpufeatures.h   |  2 +-
- arch/x86/include/asm/nospec-branch.h | 13 +++++++++++++
- 3 files changed, 37 insertions(+), 1 deletion(-)
+- Alex
 
-diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
-index 8c8d38f..0033790 100644
---- a/arch/x86/entry/entry.S
-+++ b/arch/x86/entry/entry.S
-@@ -6,6 +6,9 @@
- #include <linux/export.h>
- #include <linux/linkage.h>
- #include <asm/msr-index.h>
-+#include <asm/unwind_hints.h>
-+#include <asm/segment.h>
-+#include <asm/cache.h>
- 
- .pushsection .noinstr.text, "ax"
- 
-@@ -20,3 +23,23 @@ SYM_FUNC_END(entry_ibpb)
- EXPORT_SYMBOL_GPL(entry_ibpb);
- 
- .popsection
-+
-+/*
-+ * Define the VERW operand that is disguised as entry code so that
-+ * it can be referenced with KPTI enabled. This ensure VERW can be
-+ * used late in exit-to-user path after page tables are switched.
-+ */
-+.pushsection .entry.text, "ax"
-+
-+.align L1_CACHE_BYTES, 0xcc
-+SYM_CODE_START_NOALIGN(mds_verw_sel)
-+	UNWIND_HINT_UNDEFINED
-+	ANNOTATE_NOENDBR
-+	.word __KERNEL_DS
-+.align L1_CACHE_BYTES, 0xcc
-+SYM_CODE_END(mds_verw_sel);
-+/* For KVM */
-+EXPORT_SYMBOL_GPL(mds_verw_sel);
-+
-+.popsection
-+
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index fdf723b..2b62cdd 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -95,7 +95,7 @@
- #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
- #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
- #define X86_FEATURE_AMD_LBR_V2		( 3*32+17) /* AMD Last Branch Record Extension Version 2 */
--/* FREE, was #define X86_FEATURE_LFENCE_RDTSC		( 3*32+18) "" LFENCE synchronizes RDTSC */
-+#define X86_FEATURE_CLEAR_CPU_BUF	( 3*32+18) /* "" Clear CPU buffers using VERW */
- #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
- #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
- #define X86_FEATURE_ALWAYS		( 3*32+21) /* "" Always-present feature */
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 262e655..077083e 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -315,6 +315,17 @@
- #endif
- .endm
- 
-+/*
-+ * Macro to execute VERW instruction that mitigate transient data sampling
-+ * attacks such as MDS. On affected systems a microcode update overloaded VERW
-+ * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
-+ *
-+ * Note: Only the memory operand variant of VERW clears the CPU buffers.
-+ */
-+.macro CLEAR_CPU_BUFFERS
-+	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
-+.endm
-+
- #else /* __ASSEMBLY__ */
- 
- #define ANNOTATE_RETPOLINE_SAFE					\
-@@ -536,6 +547,8 @@ DECLARE_STATIC_KEY_FALSE(switch_mm_cond_l1d_flush);
- 
- DECLARE_STATIC_KEY_FALSE(mmio_stale_data_clear);
- 
-+extern u16 mds_verw_sel;
-+
- #include <asm/segment.h>
- 
- /**
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/net/ieee802154/socket.c?h=3Dv6.8-rc5#n911
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/net/ieee802154/socket.c?h=3Dv6.8-rc5#n474
+
 
