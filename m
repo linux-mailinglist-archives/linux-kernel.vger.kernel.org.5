@@ -1,420 +1,174 @@
-Return-Path: <linux-kernel+bounces-72812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F071585B8E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C95885B8EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:21:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48DCD1F2192C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:21:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1136A1F22ADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA8B626B2;
-	Tue, 20 Feb 2024 10:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99E2612CD;
+	Tue, 20 Feb 2024 10:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="WA7+WW0N"
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02olkn2085.outbound.protection.outlook.com [40.92.44.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lpyJa0+2"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0916612C6;
-	Tue, 20 Feb 2024 10:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.44.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424467; cv=fail; b=j+xqW2lmgIP0zYbcg3jKRw4JoVwZEcThXtfhqgP68HLskcuwbKVDCjBkcJCJQ8uCua7Xal8K7NvcCatrFRHSgP2yoNCh5AZmimDCbph37XUxIKtbyrlRWcfUTnkXhpBE2Ie5TkDlH+PQRl3XiZNDBUUSKVK+XDUtLGzpQKSNxMk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424467; c=relaxed/simple;
-	bh=XXV6nMc8o7eCFYU7MSxbIzJnKa2S0VdxWQTsb2i7PhE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=SwJHEDVZt+XXm4f0MHSHWRkdVEg01mk1s7/4FEy7GhWGnSw4IsinzUGbxzKWt4Ew52EQNhd7Oa1wgWDbHs8jBXHOEvQOOMvG6bWQO/y5UIwwLHxPv6Je86f+J3fZehnQdkDFHT0wTfOO4PrPwIJ9WPkEQzZMryrZE/kU49ORKd4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=WA7+WW0N; arc=fail smtp.client-ip=40.92.44.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QB+8+d+kT7xWxPIjF0D2OFwEa+oJkyrQU9kwLqP5G6Mf1rNElg5kCtY/2KV0dYfIWwU4/8Kdmz6TewPlLLVhL2ra2FrX/L1NLuXPWKoaZ2SeyWxKp1Fgs3EXM9jLlh2LqPuWzl0C+8HqFbPZk0ji2dqsMeVohvLz/o0gJSBOKDjCRF+apX6UeUets52xmwrMD085p4wmR0CJARP9rg3ERhMyLKPnvzvopY/Dq5QE/zDjcvcXbB+e9ay7Zwg0iHyD4p8pZWVl9eBqkt2mM80+sUnMSwaZawrvpSxbLuOB9Kbb5oCHAZx13AXX2tlzeRQDPga9VXIRAeh4a4Ucwmyd0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zn82jgskJdQbI2YTFjPDsz/iYp5K+2/rTbV3KNO0tHs=;
- b=mKaOyXkwNuB8Y78Oo3yoO1oeQKB2shyRXyHsA4WRCKx5p87RFUBR0Ye5IR6j1VPzWbqjhT8gZ+PQOgjRxbadkyNDFJsOnbQZBwa98ChhwmOAB3UGa1ykHtCZRCoPjn7NaRiKRBglpULAiRqbgj3rbKgqkPMDSpQG4CccOAJidwHRXR0vn7AHU5QVIt5f11ac89G43XE0m75jOqe8DbBAD1h43cIzk8wPO7mRw5zipYAifAVSV4AJnmlHHv2vwJyzMgdyJDQu1peXe3NnLI8Ax1SerB8eKfu8QTuPzP5O+C8ASinb0l1MaQIyZTmASE9EuGZ0CuPTCaFI/NqTRtJaiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zn82jgskJdQbI2YTFjPDsz/iYp5K+2/rTbV3KNO0tHs=;
- b=WA7+WW0NtYSeDj8lJ5SbesEPVkSgde25XMRjzMVTSwhEWICD9ctdYQwV3GyfmIwpmJBkwzCaOR7Lf4UfhMN0GWPiEpaAYtrV3hSFkx/VkXKOGriObiC3tuF+aBPvEPNjctbLrtfr7cx5jyN1lq1BTocxfHRae02pMRx9lnLid1Fp2jfg+Opn6ESsrSL3i63isg2MDPyZzGuE59pX8XmDYhjqjtwwQ+9Hf6sLjvLpnrgJrNpEdZ0qPKzkmQ9roiLauPaiQShmCaFghzlN+PAhmeHzJYhjnI8EKd9R/+gV0xyzcRGrXrytfpzwZ1qSts84SDYw14g9Zz/6f4ybQ/C0ww==
-Received: from PH7PR20MB4962.namprd20.prod.outlook.com (2603:10b6:510:1fa::6)
- by MW4PR20MB5156.namprd20.prod.outlook.com (2603:10b6:303:1ea::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Tue, 20 Feb
- 2024 10:21:03 +0000
-Received: from PH7PR20MB4962.namprd20.prod.outlook.com
- ([fe80::4719:8c68:6f:34ff]) by PH7PR20MB4962.namprd20.prod.outlook.com
- ([fe80::4719:8c68:6f:34ff%6]) with mapi id 15.20.7292.033; Tue, 20 Feb 2024
- 10:21:03 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Inochi Amaoto <inochiama@outlook.com>
-Cc: Chen Wang <unicorn_wang@outlook.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	dlan@gentoo.org,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
-Date: Tue, 20 Feb 2024 18:20:31 +0800
-Message-ID:
- <PH7PR20MB4962E0305A1F4442012C721BBB502@PH7PR20MB4962.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <PH7PR20MB49624130A5D0B71599D76358BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
-References: <PH7PR20MB49624130A5D0B71599D76358BB502@PH7PR20MB4962.namprd20.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [xhYwH5W1ZUv8tffS6PV8774XUKoe9YY/wEnaoy6V9cw=]
-X-ClientProxiedBy: SI2PR01CA0030.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::15) To PH7PR20MB4962.namprd20.prod.outlook.com
- (2603:10b6:510:1fa::6)
-X-Microsoft-Original-Message-ID:
- <20240220102032.870200-4-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECBA612C4
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708424513; cv=none; b=Z20XIJJGdLwgq4lZvyIDqew5Yb5c7rUjiIxX3J2liKJDgmqbF94QZZIfJg2ute7/tsb1PYR5OHq70/3zYgOKx2dF7Uti1LgW8I+DOuBW7tQJub3Yrr561nFXLSQFvS/q8m3TQrWLkBrj/ASrEyT7XXvg77eND7N3Tkwna+dwYGw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708424513; c=relaxed/simple;
+	bh=l+6vL/HseUJabxznTVBBygKWClRYouXRDDHpHVunfw0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=E7pj5BBee2vGQftE0sN4l8YTM6zBS1JGFLWTcKhHiaN4XtWJafQ86jIrmCiuF1t97XoXRwZf08hZvoOnRJi8pg9at2tD9WXLrrt6+lqY6otYIPEuXckoGtqj8atPxAAnrsGZiwwLXHv2NLhOS3pLA2ahtWTljTfGjfppebT4JGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lpyJa0+2; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c029beb8efso156663439f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:21:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708424510; x=1709029310; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wWLyKGf2OzPwpyR/7I3wALj0gwUBfV+6YeWACxu9X0c=;
+        b=lpyJa0+2Ipgrt5yIuOBZis3vbJHUU0/+/kB4PTXhEtmnLfPtgNVvndApTU9FwXeDfo
+         RwHjtppbx+Ks5tsCyRW/E/g/pZ7UD5N2xxaZRAgMvqfCmeHCBkrQAU9kmiCr2wF4LS3R
+         7yraxGHlpAv+oG4eWsMZ+CZhnm3ltXtU6PRgfd/yyPzbclp5O5F7B9GQ31L55cTjjlz8
+         Hw/brPmOSx4PD05lfSycQzbJGOydQXORDUDVOomVcKXCD2nDiL47B7L/Uks/l2mS+bcz
+         PW7tfqtOn8sIM2xtZM6z/K5MSRhRTtQ2Eqoxu3wmJ+3qCjKJh7Gz+H0ce4jftUNQfGYX
+         t33g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708424510; x=1709029310;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wWLyKGf2OzPwpyR/7I3wALj0gwUBfV+6YeWACxu9X0c=;
+        b=j6DSKAiF7O2j/8j8/QdXtKVYm8+NjWaC+Bk4y5q2qhDzM5mkywqfEOfegWicZuGxf5
+         6i4lqhwBSH+lfQKcuarhoujB7Na6RHfDPqMroStOatoiKgZA4qJhKAmjjzy3qLYbYECu
+         oNhq2RRDAW2NiaKrtefciwKqUhHHg1mr1sXDZsu+VBZn9xm0uYRGji5PgpwhPoZe9FpD
+         RrTeBrwAbO7En9bSEY2t7xoVlVtrx71QFbCqdTizuL7+rh7TNeSRlH57Bf9KEARs9nvf
+         t9P2VmcqvdTeU306DllIrA+Pg5pgNmPJRWiux8JHJdK+eE9fmJ6HEwrmdKkwkymPSyLr
+         46JA==
+X-Forwarded-Encrypted: i=1; AJvYcCWgsw8zC/Fe1JuH/R4oNj1HSB+M9v9UFp0mPyFBO5SGDHf397bGjKuvdAf1dk2wSEt+mruNp/zgrN7T4cP2YMhAH3O8FubQyhTQ0vYs
+X-Gm-Message-State: AOJu0YyfB3MavWL3DNIkR7sm+S1InKmdCPuoxBHfELnVHYquUMZYk128
+	bshxeYEKHYJV5kImWZKp+lSLQIealyEz8AAt3AVHAlaNZhNlU0z4ybfonhzos0OQiJg9jCJheSu
+	6
+X-Google-Smtp-Source: AGHT+IFWbdSsycDqURd5EafZbMqOilJJcmry8aAuOk/pc6GoMhmHtYsNyadnbBjlZIy1WrR3n7X8nQ==
+X-Received: by 2002:a5d:938c:0:b0:7c7:29ee:f399 with SMTP id c12-20020a5d938c000000b007c729eef399mr6700246iol.2.1708424510507;
+        Tue, 20 Feb 2024 02:21:50 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id gw22-20020a0566381ef600b004741cd2bcbdsm1447525jab.156.2024.02.20.02.21.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 02:21:50 -0800 (PST)
+Message-ID: <c0b6dd69-c52f-4da3-8eda-d6eeb544cb25@linaro.org>
+Date: Tue, 20 Feb 2024 11:21:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR20MB4962:EE_|MW4PR20MB5156:EE_
-X-MS-Office365-Filtering-Correlation-Id: add84bab-e65a-4496-31a3-08dc31fda414
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fU/RaIwDfJ8FLtVmdK+b2a088Lkya5BX2LGajqcZz+QyIomnofXEunCRFBye0dlQeas1LA1TQhbwLRTKINm4OHj0gF/DQo8UamAMVe7yKl93/p/LQ3eX5Tnm4v8+reRK7TMb5uv235qCAbGpRijIxpNDo+Eess3bNc+6YAY1VIkC/Df3jYd6wKerQeoISAhBOhDcwClt4gWOFKVmph3RxZ5ZmKqi1uhJXRcmhD82MKxQv6mWVMmWKA+v6oClXc3Hg81nx7fxJ/jYo71F44H+0ZAZu5Zg0MwOpVk3oHtFo45vQFo+z5ZbPlR5M3nXu+MO/KMedXllnMFCiPdCYAMG90y4hWbzoq/+Gk79VuqUJs7C05sWCkmk8JI7LdtU0kBGPdY8l2fDcJrCDYLopwaP42Zpno+sbKQYprJIUrDaeNX0UV8QqhMu8MpSat1zNeBppzbSqNcfkcRrjNlay0j+XZN4hImY4z/BAFdct6AU7oWxWSImSaM/yiiGQUnKihe4SLIfydr1Ae5KA6ewc0rrtMVYTQA5nFfNizDss3mE9prowHZxD1wjgde8GRSU7eNQkt5HGt1nhhr0DrLiKBGu/Ms4qPYc+cBgWqsWi3q77RsD8/xY++b9wLfZVZ7rB1wH
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EnCOtqR8gM3cF6xLXjTku5zZAfJa4qVO3zP3waaexAYHjS7+5PvY0GJuwC+q?=
- =?us-ascii?Q?VkZhsKbQhGfTIMLqaRj5CdGW1whhMWAIUNwGk6F4fBl59103VsBab6IL3dzM?=
- =?us-ascii?Q?9LyCnGKhWxWBL8HAe4dwO0VAQRWYU1l+Zb0efWgYLRDCiX7s/cLphsFz7Usu?=
- =?us-ascii?Q?cIcZxyR8DdUi48ZhAEdXFD0Ers6/J5lYvSF0JL3sil0X+Q9bhDdj1ifzLDDw?=
- =?us-ascii?Q?3xoMY+USBu217pPO6E39OrbDNil+mnFvwSGlMDT+8Gng415jb9ZVkqbDiquR?=
- =?us-ascii?Q?LItZpM83vPhq1FJo3I8VFtZ6A/PHm/Cxs9paRIbz6dAfxhrgxyujIB9pCQ4E?=
- =?us-ascii?Q?f82UqWAOSEqqKVJM1ezh3+hmRpFOKpfQGDKN8WmQtOR5VtM4Ke3HkuV7niqH?=
- =?us-ascii?Q?IR952o1GxzhRSy/oz2ntJ/OJWYyB1qvtMa4AQ4LadVLXTI6GuNK+l/zV7M3F?=
- =?us-ascii?Q?GCjh3DUks43qlqfNxzY09cFrorE6oN5f37g9zJwHcbDZmOKg8utH1Duq0q6A?=
- =?us-ascii?Q?BFFDjoNKBUshYAUV29TcCOH/ZW7bYlLiyExHogUyHCXnekrqYn8JUfVBiwVD?=
- =?us-ascii?Q?vxxRrBXm1RT/ZGduzYaFyjVQZ2etl3Iw1GXcT5aZSQgIZbennHXtg77v2eBp?=
- =?us-ascii?Q?7XN/XHlKyX9CBqyVjCBUHTEKPK0fmAujX8H7PafYlpzqdEyrYf/exN47972t?=
- =?us-ascii?Q?IATTjWMZxJLZwvBYZq768re3iusbdEmWho3sD0vbQwMf/eftHgg6rerc9M+/?=
- =?us-ascii?Q?+yhArRlMrnGzEDoXwmIutce8y3eBxSdhepv9VjnlZmuPR81FkoqBGIH+0j9p?=
- =?us-ascii?Q?ygCuP8KqAiU4ABpJ/9ObiS/TXcRwekX/iSC7aY28GZb5JBhPKooqOGtsVzjQ?=
- =?us-ascii?Q?VHQyRrj0Q5aWliR3uUfn+X3O0pc9OsKj2CSdB2XL/WNAjh1yHJbnnCkS+Jkj?=
- =?us-ascii?Q?t/WptdBYtsPNO6zRVGQGtmBDPisMxemq5Em3uH2whsusMDqzSXq2Uv3Y9L/6?=
- =?us-ascii?Q?WWI5sp9nSa8/Hc3dQbvsiUXLQx6tO6GgFgzgDJapCiaiJOiPh0yBfqXnZ73y?=
- =?us-ascii?Q?bQXeqlXq6zkNgExsZrqW4rXCrAUj8X8LzWO1xGmrFLagwHNTfROJiKLec1+i?=
- =?us-ascii?Q?SgeuErPKQ9B1WixvXWfJcRnbQRIQAKWbvMr07TEHxpEveH3oqA2WhVah8MSf?=
- =?us-ascii?Q?EeGmjgvjpppK4Fwt5G83YYasvXKTeSG7cgxmigkOKdjJ+3IOCHJkGau1f8Ne?=
- =?us-ascii?Q?cRSC6aMH0I3rldQlyNAO?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: add84bab-e65a-4496-31a3-08dc31fda414
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR20MB4962.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 10:21:03.2379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR20MB5156
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/4] w1: Convert to platform remove callback returning
+ void
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+ Rob Herring <robh@kernel.org>
+References: <cover.1708340114.git.u.kleine-koenig@pengutronix.de>
+ <jodslbkntas5fzftwl4llynbvcw5p4pmup3t46euifpvzo36m7@yvlfqcmbkiux>
+ <3eb8e209-3d86-41a3-b65c-58f0f24ad6b7@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <3eb8e209-3d86-41a3-b65c-58f0f24ad6b7@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Sophgo CV18XX/SG200X use DW AXI CORE with a multiplexer for remapping
-its request lines. The multiplexer supports at most 8 request lines.
+On 20/02/2024 11:19, Krzysztof Kozlowski wrote:
+> On 19/02/2024 21:25, Uwe Kleine-König wrote:
+>> Hello,
+>>
+>> On Mon, Feb 19, 2024 at 11:59:26AM +0100, Uwe Kleine-König wrote:
+>>> this series converts all drivers below drivers/w1 to struct
+>>> platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+>>> Provide a remove callback that returns no value") for an extended
+>>> explanation and the eventual goal.
+>>>
+>>> All four conversations are trivial, because their .remove() callbacks
+>>> returned zero unconditionally. 
+>>>
+>>> There are no interdependencies between these patches, so they could be
+>>> picked up individually. However I'd expect them to go in all together
+>>> via Krzysztof's tree.
+>>
+>> This series hit a corner case in my patch sending scripts (because the
+>> maintainer entry title has a ' which I failed to properly quote). I'll
+>> try to resend the patches that didn't hit the mailing list.
+> 
+> I don't know what you are referring to. I don't think I ever received
+> your patchset and from another patchset - linked here, but not marked as
+> resend? - I got only two patches.
+> 
+> Please make a proper submission. Don't attach your patchsets to some
+> other threads. If this is resend, add proper "RESEND PATCH" prefix.
+> 
 
-Add driver for Sophgo CV18XX/SG200X DMA multiplexer.
+I think I got the rest of patches here, although this is still oddly
+threaded.
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
----
- drivers/dma/Kconfig         |   9 ++
- drivers/dma/Makefile        |   1 +
- drivers/dma/cv1800-dmamux.c | 232 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 242 insertions(+)
- create mode 100644 drivers/dma/cv1800-dmamux.c
-
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index e928f2ca0f1e..5220b4eba3a4 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -546,6 +546,15 @@ config PLX_DMA
- 	  These are exposed via extra functions on the switch's
- 	  upstream port. Each function exposes one DMA channel.
-
-+config SOPHGO_CV1800_DMAMUX
-+	tristate "Sophgo CV1800/SG2000 series SoC DMA multiplexer support"
-+	depends on MFD_SYSCON
-+	depends on ARCH_SOPHGO
-+	help
-+	  Support for the DMA multiplexer on Sophgo CV1800/SG2000
-+	  series SoCs.
-+	  Say Y here if your board have this soc.
-+
- config STE_DMA40
- 	bool "ST-Ericsson DMA40 support"
- 	depends on ARCH_U8500
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index dfd40d14e408..7465f249ee47 100644
---- a/drivers/dma/Makefile
-+++ b/drivers/dma/Makefile
-@@ -67,6 +67,7 @@ obj-$(CONFIG_PPC_BESTCOMM) += bestcomm/
- obj-$(CONFIG_PXA_DMA) += pxa_dma.o
- obj-$(CONFIG_RENESAS_DMA) += sh/
- obj-$(CONFIG_SF_PDMA) += sf-pdma/
-+obj-$(CONFIG_SOPHGO_CV1800_DMAMUX) += cv1800-dmamux.o
- obj-$(CONFIG_STE_DMA40) += ste_dma40.o ste_dma40_ll.o
- obj-$(CONFIG_STM32_DMA) += stm32-dma.o
- obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
-diff --git a/drivers/dma/cv1800-dmamux.c b/drivers/dma/cv1800-dmamux.c
-new file mode 100644
-index 000000000000..b41c39f2e338
---- /dev/null
-+++ b/drivers/dma/cv1800-dmamux.c
-@@ -0,0 +1,232 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/module.h>
-+#include <linux/of_dma.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/spinlock.h>
-+#include <linux/mfd/syscon.h>
-+
-+#include <soc/sophgo/cv1800-sysctl.h>
-+#include <dt-bindings/dma/cv1800-dma.h>
-+
-+#define DMAMUX_NCELLS			3
-+#define MAX_DMA_MAPPING_ID		DMA_SPI_NOR1
-+#define MAX_DMA_CPU_ID			DMA_CPU_C906_1
-+#define MAX_DMA_CH_ID			7
-+
-+#define DMAMUX_INTMUX_REGISTER_LEN	4
-+#define DMAMUX_NR_CH_PER_REGISTER	4
-+#define DMAMUX_BIT_PER_CH		8
-+#define DMAMUX_CH_MASk			GENMASK(5, 0)
-+#define DMAMUX_INT_BIT_PER_CPU		10
-+#define DMAMUX_CH_UPDATE_BIT		BIT(31)
-+
-+#define DMAMUX_CH_SET(chid, val) \
-+	(((val) << ((chid) * DMAMUX_BIT_PER_CH)) | DMAMUX_CH_UPDATE_BIT)
-+#define DMAMUX_CH_MASK(chid) \
-+	DMAMUX_CH_SET(chid, DMAMUX_CH_MASk)
-+
-+#define DMAMUX_INT_BIT(chid, cpuid) \
-+	BIT((cpuid) * DMAMUX_INT_BIT_PER_CPU + (chid))
-+#define DMAMUX_INTEN_BIT(cpuid) \
-+	DMAMUX_INT_BIT(8, cpuid)
-+#define DMAMUX_INT_CH_BIT(chid, cpuid) \
-+	(DMAMUX_INT_BIT(chid, cpuid) | DMAMUX_INTEN_BIT(cpuid))
-+#define DMAMUX_INT_MASK(chid) \
-+	(DMAMUX_INT_BIT(chid, DMA_CPU_A53) | \
-+	 DMAMUX_INT_BIT(chid, DMA_CPU_C906_0) | \
-+	 DMAMUX_INT_BIT(chid, DMA_CPU_C906_1))
-+#define DMAMUX_INT_CH_MASK(chid, cpuid) \
-+	(DMAMUX_INT_MASK(chid) | DMAMUX_INTEN_BIT(cpuid))
-+
-+struct cv1800_dmamux_data {
-+	struct dma_router	dmarouter;
-+	struct regmap		*regmap;
-+	spinlock_t		lock;
-+	DECLARE_BITMAP(used_chans, MAX_DMA_CH_ID);
-+	DECLARE_BITMAP(mapped_peripherals, MAX_DMA_MAPPING_ID);
-+};
-+
-+struct cv1800_dmamux_map {
-+	unsigned int channel;
-+	unsigned int peripheral;
-+	unsigned int cpu;
-+};
-+
-+static void cv1800_dmamux_free(struct device *dev, void *route_data)
-+{
-+	struct cv1800_dmamux_data *dmamux = dev_get_drvdata(dev);
-+	struct cv1800_dmamux_map *map = route_data;
-+	u32 regoff = map->channel % DMAMUX_NR_CH_PER_REGISTER;
-+	u32 regpos = map->channel / DMAMUX_NR_CH_PER_REGISTER;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dmamux->lock, flags);
-+
-+	regmap_update_bits(dmamux->regmap,
-+			   regpos + CV1800_SDMA_DMA_CHANNEL_REMAP0,
-+			   DMAMUX_CH_MASK(regoff),
-+			   DMAMUX_CH_UPDATE_BIT);
-+
-+	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
-+			   DMAMUX_INT_CH_MASK(map->channel, map->cpu),
-+			   DMAMUX_INTEN_BIT(map->cpu));
-+
-+	clear_bit(map->channel, dmamux->used_chans);
-+	clear_bit(map->peripheral, dmamux->mapped_peripherals);
-+
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+
-+	kfree(map);
-+}
-+
-+static void *cv1800_dmamux_route_allocate(struct of_phandle_args *dma_spec,
-+					  struct of_dma *ofdma)
-+{
-+	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
-+	struct cv1800_dmamux_data *dmamux = platform_get_drvdata(pdev);
-+	struct cv1800_dmamux_map *map;
-+	unsigned long flags;
-+	unsigned int chid, devid, cpuid;
-+	u32 regoff, regpos;
-+
-+	if (dma_spec->args_count != DMAMUX_NCELLS) {
-+		dev_err(&pdev->dev, "invalid number of dma mux args\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	chid = dma_spec->args[0];
-+	devid = dma_spec->args[1];
-+	cpuid = dma_spec->args[2];
-+	dma_spec->args_count -= 2;
-+
-+	if (chid > MAX_DMA_CH_ID) {
-+		dev_err(&pdev->dev, "invalid channel id: %u\n", chid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (devid > MAX_DMA_MAPPING_ID) {
-+		dev_err(&pdev->dev, "invalid device id: %u\n", devid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cpuid > MAX_DMA_CPU_ID) {
-+		dev_err(&pdev->dev, "invalid cpu id: %u\n", cpuid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
-+	if (!dma_spec->np) {
-+		dev_err(&pdev->dev, "can't get dma master\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	map = kzalloc(sizeof(*map), GFP_KERNEL);
-+	if (!map)
-+		return ERR_PTR(-ENOMEM);
-+
-+	map->channel = chid;
-+	map->peripheral = devid;
-+	map->cpu = cpuid;
-+
-+	regoff = chid % DMAMUX_NR_CH_PER_REGISTER;
-+	regpos = chid / DMAMUX_NR_CH_PER_REGISTER;
-+
-+	spin_lock_irqsave(&dmamux->lock, flags);
-+
-+	if (test_and_set_bit(devid, dmamux->mapped_peripherals)) {
-+		dev_err(&pdev->dev, "already used device mapping: %u\n", devid);
-+		goto failed;
-+	}
-+
-+	if (test_and_set_bit(chid, dmamux->used_chans)) {
-+		clear_bit(devid, dmamux->mapped_peripherals);
-+		dev_err(&pdev->dev, "already used channel id: %u\n", chid);
-+		goto failed;
-+	}
-+
-+	regmap_set_bits(dmamux->regmap,
-+			regpos + CV1800_SDMA_DMA_CHANNEL_REMAP0,
-+			DMAMUX_CH_SET(regoff, devid));
-+
-+	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
-+			   DMAMUX_INT_CH_MASK(chid, cpuid),
-+			   DMAMUX_INT_CH_BIT(chid, cpuid));
-+
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+
-+	dev_info(&pdev->dev, "register channel %u for req %u (cpu %u)\n",
-+		 chid, devid, cpuid);
-+
-+	return map;
-+
-+failed:
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+	dev_err(&pdev->dev, "already used channel id: %u\n", chid);
-+	return ERR_PTR(-EBUSY);
-+}
-+
-+static int cv1800_dmamux_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *mux_node = dev->of_node;
-+	struct cv1800_dmamux_data *data;
-+	struct device *parent = dev->parent;
-+	struct device_node *dma_master;
-+	struct regmap *map = NULL;
-+
-+	if (!parent)
-+		return -ENODEV;
-+
-+	map = device_node_to_regmap(parent->of_node);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	dma_master = of_parse_phandle(mux_node, "dma-masters", 0);
-+	if (!dma_master) {
-+		dev_err(dev, "invalid dma-requests property\n");
-+		return -ENODEV;
-+	}
-+	of_node_put(dma_master);
-+
-+	data = devm_kmalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&data->lock);
-+	data->regmap = map;
-+	data->dmarouter.dev = dev;
-+	data->dmarouter.route_free = cv1800_dmamux_free;
-+
-+	platform_set_drvdata(pdev, data);
-+
-+	return of_dma_router_register(mux_node,
-+				      cv1800_dmamux_route_allocate,
-+				      &data->dmarouter);
-+}
-+
-+static const struct of_device_id cv1800_dmamux_ids[] = {
-+	{ .compatible = "sophgo,cv1800-dmamux", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, cv1800_dmamux_ids);
-+
-+static struct platform_driver cv1800_dmamux_driver = {
-+	.driver = {
-+		.name = "fsl-raideng",
-+		.of_match_table = cv1800_dmamux_ids,
-+	},
-+	.probe = cv1800_dmamux_probe,
-+};
-+module_platform_driver(cv1800_dmamux_driver);
-+
-+MODULE_AUTHOR("Inochi Amaoto <inochiama@outlook.com>");
-+MODULE_DESCRIPTION("Sophgo CV1800/SG2000 Series Soc DMAMUX driver");
-+MODULE_LICENSE("GPL");
---
-2.43.2
+Best regards,
+Krzysztof
 
 
