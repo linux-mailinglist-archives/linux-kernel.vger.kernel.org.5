@@ -1,235 +1,113 @@
-Return-Path: <linux-kernel+bounces-72675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45EE285B70F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:18:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8704385B719
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:18:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68CE11C24122
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:18:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26D941F25946
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECEC5F49B;
-	Tue, 20 Feb 2024 09:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F62B60B83;
+	Tue, 20 Feb 2024 09:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DXdJVTNd"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fXlFU53k"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7D7482D1;
-	Tue, 20 Feb 2024 09:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6FB6026A;
+	Tue, 20 Feb 2024 09:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708420650; cv=none; b=Lh8qKkTJiKsrCjv1QPGKg65y6O7KSVAm7r2Z2K+Om/vo1I78KQzBml+TAyjNNBucIjmAsCOwpyFhEDzeJn5/FQCLsqtdtq9BUmp2Ocv9SFZQTtOhz9Ez7XSFec2IBHOleR4UWkFwWZWBM3TtuMO2SGoNbavptDsJjLcxpdglnkg=
+	t=1708420662; cv=none; b=P48tCuD91ILpBZwp/RxB1L9511bHc8uW0/P/scxoCZzNGg4fZmuryKLo+Q4covjveFTCC3RzIHQRgPiQfQV7ReGyjzry+CrT8uOYLR0Myh2qGuuE6PgKbF2BT14A42XvaLG2JdCnfI6YIMyF2vIP8i4BzJQH50kp3vGyFdoThiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708420650; c=relaxed/simple;
-	bh=OpVDXGdwnO7ThSle8DqmEJO/1F2fU3O04+8aMmj69JA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=S0TGDmSpkSDJqrxoq5B1TW3KP8svh/e9HnNeJQHA9PlKJULOoWlZo/1JkKk0irz5Ze7UYDOjgu1rWTEp88Jl0tPDTXepFMoCB5mWtzjb+rEgk6zu9nvPxKIyWwYJT1CVdHcnAj+iSh5eeYZybMeVExMKu7qQuz6JgVUyjaNs064=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DXdJVTNd; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K6xCqF025678;
-	Tue, 20 Feb 2024 09:17:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=u/nDscEgr3PQKZPl5jkaOnMAm17XyF+XZVEyKYKfXqk=; b=DX
-	dJVTNd2heTBF3BKFhAZUFss0VkdE8QxdKKAUgavtY4dUzzl0mhxpymfpM4kR7XwL
-	lm2d4ZLMLWP9NCJfaSYLjYtDSPuOYMEsv7XR5D2AzgTIR4sxmuOVCg/NcE/KD7u9
-	2OnH5lCSpzRH69q6Iti9/NO6sofpzXVuC9YB7WTQcwPjriuxOVkP+0oUIbbKlXdt
-	YSmnliwggqWp+MALp4gS/GAXJ3BPW4MTKo2cYdPhwl2XdyY3SDDNa6pT5MJAeGai
-	gWqrTvrsJFsLQ46n8JIcHDbf2MPuVJ0q/xiKQl/TKECaJgTA8zYwD9ju30IJnAXZ
-	aHtLGOJZjtuyAUyJ2kIw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcn15rghy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 09:17:25 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41K9H5XT017572
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 09:17:05 GMT
-Received: from [10.233.21.53] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 01:16:59 -0800
-Message-ID: <9685991e-6577-4f96-a17f-b0a65d8d1260@quicinc.com>
-Date: Tue, 20 Feb 2024 17:16:57 +0800
+	s=arc-20240116; t=1708420662; c=relaxed/simple;
+	bh=Y4+kw5fSFQQlDkOZRhwRC0+QUSv5CfeWWx9wRZnsPNA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=dbrUeza8ImDyirRv55eAHvzgzrpkhFOho2xx4KFbxg90TlWNYNNcWDkhn9TUx3Em3YMSFATEAnlCsbolIO+W1ZsxTrMYW5aRdgvNIMnE9M4ZgBzxnyNcgH/QUbTQ65/tiQgSGh/hiYXYQRtvlHJYJfYP8Dj13I6hIKUSukrda8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fXlFU53k; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4126ac0c32eso8689645e9.1;
+        Tue, 20 Feb 2024 01:17:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708420658; x=1709025458; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yZrwGhtv9s0VvylEijnGbReSc1OyaTC/p8gufQFjhr0=;
+        b=fXlFU53kI8ptXEVD3AlWhtLcMUkCnJnchwSfZe9zRwet872/UjdccJ6QDHTIhRUPa6
+         S4TyZqsnlsmsi85Ikdc8eAM5oDLshfKkKBQntOpnkLNPXQ4hbrALz8XpL36OGaf12yGO
+         LympI4qKW7vbB52v3OjNBF9KfBahR/c2nvxYp/OVZXHBouxCqbQg6N1IBU8ZYv3aK2Wy
+         P+1PRmJg0DFYAduZphio3drkXbnEdzZTBhEG4KAvcycmb6V9vlIEncyqa1n2+Zoj6U9f
+         gOWwgCyX4THi+WQ1AiFi3FAFKNA2eRxUMJ4OF8SfqKmqPzsp7qC9DUNedf0yX2k4aAOc
+         t6jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708420658; x=1709025458;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yZrwGhtv9s0VvylEijnGbReSc1OyaTC/p8gufQFjhr0=;
+        b=MTpl6Gq/UjkUlziKE+tgWl4RuLYI9BvRWxzwAFwL7kvpTd1Oteh1JAMWyo9AT3IpBo
+         rMmF5H4YH0+I1gm8uMorUrkO5xhaXywwB9Qa0RMG/PZ17Z7ByNs8fDVmu2+WMhYYTQAW
+         TDYJNDvqpgjBDrHUcK71yODaORCWTsdw0vHmwZQbRyXCnIpmhr/5UQZN6dNRKTs0w2EU
+         Egds5ZzCaymICI5ebd7ZC4DyCfo4tv+EKWbg6TrxMXqwOSIS1hfv8RHsWY+1oiBt5Yzg
+         UU35NRrB55Dc7vyAWWL2jXIoC2v3PMHrAUcrs+VG57TDLnFOvnVGqRqV3WatD2gks8m0
+         eSYA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTy/5MvmefyAN5ThNdC0nmCSiSisW7DSPRGtp/j7Yzb6ujDf2LWulkH9G3GWxK8IYbD92w5lM9u3KapFsCiLPkWO30O0Z70HO1aqf0LkjVA6Qq+F7D2zOhSviEzduUtaoqhnzI
+X-Gm-Message-State: AOJu0Yw0e6AIH9IfynhaFDC8SiCW1hVsxx0ISt93S4sg2mT8rlZoKKXZ
+	CfGLo3mI8f5eQHdqeIJHFUyQoxa+FM1nqcoeU19h2keqOhVo2rk/
+X-Google-Smtp-Source: AGHT+IFheKiyGbQ/0yz9kwl8fvcJsLXeq6xjON82DDfxSrN5tD+ZPojaj04MFISzpmZU5qn/ENxqRg==
+X-Received: by 2002:a05:600c:4a29:b0:412:f24:5732 with SMTP id c41-20020a05600c4a2900b004120f245732mr11426030wmp.37.1708420658575;
+        Tue, 20 Feb 2024 01:17:38 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id m12-20020a5d4a0c000000b0033b60bad2fcsm12748356wrq.113.2024.02.20.01.17.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 01:17:38 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Bryan Whitehead <bryan.whitehead@microchip.com>,
+	UNGLinuxDriver@microchip.com,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: microchip: lan743x: Fix spelling mistake "erro" -> "error"
+Date: Tue, 20 Feb 2024 09:17:37 +0000
+Message-Id: <20240220091737.2676984-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/6] arm64: dts: qcom: add base AIM500 dtsi
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <kernel@quicinc.com>, Tingwei Zhang <quic_tingweiz@quicinc.com>
-References: <20240205115721.1195336-1-quic_jingyw@quicinc.com>
- <20240205115721.1195336-6-quic_jingyw@quicinc.com>
- <CAA8EJpr7tHXZHcH1Sbcy0-MCZfMxKBjaPXGdpg3cqyyFjTZOeA@mail.gmail.com>
-From: Jingyi Wang <quic_jingyw@quicinc.com>
-In-Reply-To: <CAA8EJpr7tHXZHcH1Sbcy0-MCZfMxKBjaPXGdpg3cqyyFjTZOeA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: K1UCLmE-9T9o54i-Nk4aBbabbtm7ZamE
-X-Proofpoint-GUID: K1UCLmE-9T9o54i-Nk4aBbabbtm7ZamE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- phishscore=0 suspectscore=0 bulkscore=0 adultscore=0 spamscore=0
- mlxscore=0 lowpriorityscore=0 mlxlogscore=999 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200066
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Dmitry,
+There is a spelling mistake in a netif_err message. Fix it.
 
-On 2/5/2024 10:23 PM, Dmitry Baryshkov wrote:
-> On Mon, 5 Feb 2024 at 14:00, Jingyi Wang <quic_jingyw@quicinc.com> wrote:
->>
->> Introduce aim500 board dtsi.
-> 
-> So, is it a board or a module?
-> 
-aim500 is a module, will fix the descrption.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>
->> AIM500 Series is a highly optimized family of modules designed to
->> support AIoT and Generative AI applications based on sm8650p with
->> PMIC and bluetooth functions etc.
->>
->> Co-developed-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
->> Signed-off-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
->> Signed-off-by: Jingyi Wang <quic_jingyw@quicinc.com>
->> ---
->>  arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi | 409 +++++++++++++++++++
->>  1 file changed, 409 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->> new file mode 100644
->> index 000000000000..cb857da8653b
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->> @@ -0,0 +1,409 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
->> + */
->> +
->> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->> +#include "sm8650p.dtsi"
->> +#include "pm8550.dtsi"
->> +#include "pm8550b.dtsi"
->> +#define PMK8550VE_SID 8
->> +#include "pm8550ve.dtsi"
->> +#include "pm8550vs.dtsi"
->> +#include "pmk8550.dtsi"
->> +
->> +/ {
->> +       aliases {
->> +               serial1 = &uart14;
->> +       };
->> +
->> +       vph_pwr: vph-pwr-regulator { };
-> 
-> Is this regulator a part of the module or a part of the carrier board?
-> If the latter is true, this must go to the carrier board DT file.
-> 
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 45e209a7d083..bd8aa83b47e5 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1196,7 +1196,7 @@ static int lan743x_sgmii_config(struct lan743x_adapter *adapter)
+ 	ret = lan743x_is_sgmii_2_5G_mode(adapter, &status);
+ 	if (ret < 0) {
+ 		netif_err(adapter, drv, adapter->netdev,
+-			  "erro %d SGMII get mode failed\n", ret);
++			  "error %d SGMII get mode failed\n", ret);
+ 		return ret;
+ 	}
+ 
+-- 
+2.39.2
 
-the vph_pwr regulator is defined in the aim500-aiot carrier board and used
-in aim500 module.
-
->> +};
->> +
->> +&apps_rsc {
->> +       regulators-0 {
->> +               compatible = "qcom,pm8550-rpmh-regulators";
->> +
->> +               vdd-bob1-supply = <&vph_pwr>;
->> +               vdd-bob2-supply = <&vph_pwr>;
->> +               vdd-l2-l13-l14-supply = <&vreg_bob1>;
->> +               vdd-l3-supply = <&vreg_s1c_1p2>;
->> +               vdd-l5-l16-supply = <&vreg_bob1>;
->> +               vdd-l6-l7-supply = <&vreg_bob1>;
->> +               vdd-l8-l9-supply = <&vreg_bob1>;
->> +               vdd-l11-supply = <&vreg_s1c_1p2>;
->> +               vdd-l12-supply = <&vreg_s6c_1p8>;
->> +               vdd-l15-supply = <&vreg_s6c_1p8>;
->> +               vdd-l17-supply = <&vreg_bob2>;
->> +
->> +               qcom,pmic-id = "b";
-> 
-> [skipped]
-> 
->> +
->> +&qupv3_id_1 {
->> +       status = "okay";
->> +};
-> 
-> No GPI node being enabled?
-> 
-will drop this node for there is no client under that.
->> +
->> +&tlmm {
->> +       bt_default: bt-default-state {
->> +               bt-en-pins {
->> +                       pins = "gpio17";
->> +                       function = "gpio";
->> +                       drive-strength = <16>;
->> +                       bias-disable;
->> +               };
->> +
->> +               sw-ctrl-pins {
->> +                       pins = "gpio18";
->> +                       function = "gpio";
->> +                       bias-pull-down;
->> +               };
->> +       };
->> +};
->> +
->> +&uart14 {
->> +       status = "okay";
->> +
->> +       bluetooth {
->> +               compatible = "qcom,wcn7850-bt";
->> +
->> +               clocks = <&rpmhcc RPMH_RF_CLK1>;
->> +
->> +               vddio-supply = <&vreg_l3c_1p2>;
->> +               vddaon-supply = <&vreg_l15b_1p8>;
->> +               vdddig-supply = <&vreg_s3c_0p9>;
->> +               vddrfa0p8-supply = <&vreg_s3c_0p9>;
->> +               vddrfa1p2-supply = <&vreg_s1c_1p2>;
->> +               vddrfa1p9-supply = <&vreg_s6c_1p8>;
->> +
->> +               max-speed = <3200000>;
->> +
->> +               enable-gpios = <&tlmm 17 GPIO_ACTIVE_HIGH>;
->> +               swctrl-gpios = <&tlmm 18 GPIO_ACTIVE_HIGH>;
->> +
->> +               pinctrl-0 = <&bt_default>;
->> +               pinctrl-names = "default";
->> +       };
->> +};
->> --
->> 2.25.1
->>
->>
-> 
-> 
-Thanks,
-Jingyi
 
