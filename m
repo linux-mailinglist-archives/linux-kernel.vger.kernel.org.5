@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-72697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9870485B77A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:30:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68ED085B77E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1E31C24910
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:30:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E141C24BB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C4264CCF;
-	Tue, 20 Feb 2024 09:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C35651BE;
+	Tue, 20 Feb 2024 09:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="ttiucm6u"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="YgpesD7J"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA2263410;
-	Tue, 20 Feb 2024 09:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B469164CD0;
+	Tue, 20 Feb 2024 09:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708421320; cv=none; b=Vo096vDu+wS0uP01dpdFynfbn5vZ12/7ol/o5Jc99+/rp9RXssxB+HcVR2ZQMh3vbmNuVPKdLsXwaiMq1c2lr96S/SsPUr8uwgo6TIShkeOzXDpcHQw/WG6do5r5ZO+EJIznEXPBXVc7RaU1RnoLYMronZLfYhKMInKuAmzjK78=
+	t=1708421322; cv=none; b=iCU+nTrz0M+jbPwiS2kj5R54K+Tdue6PZFBBmLim5s67KBmDeTZcNLJ/kNvuXlZrkyHE4IiIgxKki0QLLiJST+vkFw6ZRN2B5ZHNnrcs1niej49GwB+lCM714klBUwckkPHoYI7zs8Kvv8ub1GcNkvjJeFFMOBH2esd44wWA9eM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708421320; c=relaxed/simple;
-	bh=7/nlcTXjn6fmMKJ6B7TxNKPbpJTYZY5Sd+dT6NQXmgI=;
+	s=arc-20240116; t=1708421322; c=relaxed/simple;
+	bh=kKxMnPSqYT9qIUkqI4fHrZWKiMHCC/3+G1YH1yVFWls=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qGK26k5RlLFhqjipqegO005gRd77II2wK8MWkwsyDa2pcWEJ4pgEY2UT3Ug7YRDC1IgfFoKG9exysFMoECOIEHws8XweqOlzWjpRBvdK+/vRdxTmvMnCSp9fIbTLPKkbOYhMRnOOZwaFxzIXpt+x87bueqSNBIinp3uf5CNa6qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=ttiucm6u; arc=none smtp.client-ip=213.167.242.64
+	 MIME-Version; b=qG3oSZMSrlTpmHctAYWwUoLyUfdcBuiarg8Z7qQoqUNazRxtqpMznW86dbkeK8r/qezJ9WGUQs+SnjkV+q+sW0B65/GHdIhj4RgIvneEGNajjI0Y9y6VJN1xXxx5LVC/+jtInwg+RILLrsQXoqfjC8F09m1S/qXjdGB51r0Kjb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=YgpesD7J; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from umang.jain (unknown [103.86.18.159])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id AF1931593;
-	Tue, 20 Feb 2024 10:28:28 +0100 (CET)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CC2B613AC;
+	Tue, 20 Feb 2024 10:28:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708421310;
-	bh=7/nlcTXjn6fmMKJ6B7TxNKPbpJTYZY5Sd+dT6NQXmgI=;
+	s=mail; t=1708421312;
+	bh=kKxMnPSqYT9qIUkqI4fHrZWKiMHCC/3+G1YH1yVFWls=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ttiucm6uWkPdAzg00xsrPDHowYPf5Vmm0N0DbC+ogiKfoqo8tCJJItrF1qpgpAibi
-	 gJWSZ2FQKfFmxIf00Qr27Ii5f8HPmlXQsMzMna+BvqfgAP6D9oQpkbTtOX3ToFPP/H
-	 d1JfUhpdX9zdX7kaT0LbMXWo3HIBgizWaD4DmQTM=
+	b=YgpesD7JrKzfT8j/4eHuZlPLZr/jZfqCymfkGvlHAaEIWkUuqa4kcvvAJezCAnwGc
+	 QxUYvkdKLdUSQ/a412tplw38oTRTZnKrdu4Syo4tl38CgJYON9H8opTWW/DdjUEaL9
+	 CTBFvvh8fHtbbGlDAfotGfnhs4Ag7ubAIHF/+pmg=
 From: Umang Jain <umang.jain@ideasonboard.com>
 To: linux-media@vger.kernel.org
 Cc: Kieran Bingham <kieran.bingham@ideasonboard.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	open list <linux-kernel@vger.kernel.org>,
 	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Matthias Fend <matthias.fend@emfend.at>,
 	Umang Jain <umang.jain@ideasonboard.com>
-Subject: [PATCH v3 4/5] media: imx335: Refactor power sequence to set controls
-Date: Tue, 20 Feb 2024 14:58:20 +0530
-Message-ID: <20240220092821.1993-5-umang.jain@ideasonboard.com>
+Subject: [PATCH v3 5/5] media: imx335: Add support for test pattern generator
+Date: Tue, 20 Feb 2024 14:58:21 +0530
+Message-ID: <20240220092821.1993-6-umang.jain@ideasonboard.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240220092821.1993-1-umang.jain@ideasonboard.com>
 References: <20240220092821.1993-1-umang.jain@ideasonboard.com>
@@ -61,89 +62,165 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Additional controls might require the sensor to be powered up
-to set the control value. Currently, only the exposure control
-powers up the sensor.
+From: Matthias Fend <matthias.fend@emfend.at>
 
-Move the power up sequence out of the switch-case block.
-In a subsequent patch, test pattern control will be added that
-needs the sensor to be powered up. Hence, refactor the power
-sequence to be present outside the switch-case block.
+Add support for the sensor's test pattern generator.
 
-The VBLANK control is also moved out of the switch-case in order
-to be handled early on, to propagate the changes to other controls.
-
+Signed-off-by: Matthias Fend <matthias.fend@emfend.at>
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 ---
- drivers/media/i2c/imx335.c | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
+ drivers/media/i2c/imx335.c | 102 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 101 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 27f850a5b9b7..e2445b94cf91 100644
+index e2445b94cf91..dab6d080bc4c 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -527,26 +527,31 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
- 	u32 exposure;
- 	int ret;
+@@ -45,6 +45,21 @@
+ /* Group hold register */
+ #define IMX335_REG_HOLD		0x3001
  
--	switch (ctrl->id) {
--	case V4L2_CID_VBLANK:
-+	/* Propagate change of current control to all related controls */
-+	if (ctrl->id == V4L2_CID_VBLANK) {
- 		imx335->vblank = imx335->vblank_ctrl->val;
- 
- 		dev_dbg(imx335->dev, "Received vblank %u, new lpfr %u\n",
- 			imx335->vblank,
- 			imx335->vblank + imx335->cur_mode->height);
- 
--		ret = __v4l2_ctrl_modify_range(imx335->exp_ctrl,
--					       IMX335_EXPOSURE_MIN,
--					       imx335->vblank +
--					       imx335->cur_mode->height -
--					       IMX335_EXPOSURE_OFFSET,
--					       1, IMX335_EXPOSURE_DEFAULT);
--		break;
--	case V4L2_CID_EXPOSURE:
--		/* Set controls only if sensor is in power on state */
--		if (!pm_runtime_get_if_in_use(imx335->dev))
--			return 0;
-+		return __v4l2_ctrl_modify_range(imx335->exp_ctrl,
-+						IMX335_EXPOSURE_MIN,
-+						imx335->vblank +
-+						imx335->cur_mode->height -
-+						IMX335_EXPOSURE_OFFSET,
-+						1, IMX335_EXPOSURE_DEFAULT);
-+	}
++/* Test pattern generator */
++#define IMX335_REG_TPG		0x329e
++#define IMX335_TPG_ALL_000	0
++#define IMX335_TPG_ALL_FFF	1
++#define IMX335_TPG_ALL_555	2
++#define IMX335_TPG_ALL_AAA	3
++#define IMX335_TPG_TOG_555_AAA	4
++#define IMX335_TPG_TOG_AAA_555	5
++#define IMX335_TPG_TOG_000_555	6
++#define IMX335_TPG_TOG_555_000	7
++#define IMX335_TPG_TOG_000_FFF	8
++#define IMX335_TPG_TOG_FFF_000	9
++#define IMX335_TPG_H_COLOR_BARS 10
++#define IMX335_TPG_V_COLOR_BARS 11
 +
-+	/*
-+	 * Applying V4L2 control value only happens
-+	 * when power is up for streaming.
-+	 */
-+	if (pm_runtime_get_if_in_use(imx335->dev) == 0)
-+		return 0;
+ /* Input clock rate */
+ #define IMX335_INCLK_RATE	24000000
  
-+	switch (ctrl->id) {
-+	case V4L2_CID_EXPOSURE:
- 		exposure = ctrl->val;
- 		analog_gain = imx335->again_ctrl->val;
+@@ -162,6 +177,38 @@ struct imx335 {
+ 	u32 cur_mbus_code;
+ };
  
-@@ -555,14 +560,14 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
- 
- 		ret = imx335_update_exp_gain(imx335, exposure, analog_gain);
- 
--		pm_runtime_put(imx335->dev);
--
- 		break;
- 	default:
- 		dev_err(imx335->dev, "Invalid control %d\n", ctrl->id);
- 		ret = -EINVAL;
- 	}
- 
-+	pm_runtime_put(imx335->dev);
++static const char * const imx335_tpg_menu[] = {
++	"Disabled",
++	"All 000h",
++	"All FFFh",
++	"All 555h",
++	"All AAAh",
++	"Toggle 555/AAAh",
++	"Toggle AAA/555h",
++	"Toggle 000/555h",
++	"Toggle 555/000h",
++	"Toggle 000/FFFh",
++	"Toggle FFF/000h",
++	"Horizontal color bars",
++	"Vertical color bars",
++};
 +
++static const int imx335_tpg_val[] = {
++	IMX335_TPG_ALL_000,
++	IMX335_TPG_ALL_000,
++	IMX335_TPG_ALL_FFF,
++	IMX335_TPG_ALL_555,
++	IMX335_TPG_ALL_AAA,
++	IMX335_TPG_TOG_555_AAA,
++	IMX335_TPG_TOG_AAA_555,
++	IMX335_TPG_TOG_000_555,
++	IMX335_TPG_TOG_555_000,
++	IMX335_TPG_TOG_000_FFF,
++	IMX335_TPG_TOG_FFF_000,
++	IMX335_TPG_H_COLOR_BARS,
++	IMX335_TPG_V_COLOR_BARS,
++};
++
+ /* Sensor mode registers */
+ static const struct imx335_reg mode_2592x1940_regs[] = {
+ 	{0x3000, 0x01},
+@@ -507,6 +554,49 @@ static int imx335_update_exp_gain(struct imx335 *imx335, u32 exposure, u32 gain)
  	return ret;
  }
  
++static int imx335_update_test_pattern(struct imx335 *imx335, u32 pattern_index)
++{
++	int ret;
++
++	if (pattern_index >= ARRAY_SIZE(imx335_tpg_val))
++		return -EINVAL;
++
++	if (pattern_index) {
++		const struct imx335_reg tpg_enable_regs[] = {
++			{ 0x3148, 0x10 },
++			{ 0x3280, 0x00 },
++			{ 0x329c, 0x01 },
++			{ 0x32a0, 0x11 },
++			{ 0x3302, 0x00 },
++			{ 0x3303, 0x00 },
++			{ 0x336c, 0x00 },
++		};
++
++		ret = imx335_write_reg(imx335, IMX335_REG_TPG, 1,
++				       imx335_tpg_val[pattern_index]);
++		if (ret)
++			return ret;
++
++		ret = imx335_write_regs(imx335, tpg_enable_regs,
++					ARRAY_SIZE(tpg_enable_regs));
++	} else {
++		const struct imx335_reg tpg_disable_regs[] = {
++			{ 0x3148, 0x00 },
++			{ 0x3280, 0x01 },
++			{ 0x329c, 0x00 },
++			{ 0x32a0, 0x10 },
++			{ 0x3302, 0x32 },
++			{ 0x3303, 0x00 },
++			{ 0x336c, 0x01 },
++		};
++
++		ret = imx335_write_regs(imx335, tpg_disable_regs,
++					ARRAY_SIZE(tpg_disable_regs));
++	}
++
++	return ret;
++}
++
+ /**
+  * imx335_set_ctrl() - Set subdevice control
+  * @ctrl: pointer to v4l2_ctrl structure
+@@ -560,6 +650,10 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
+ 
+ 		ret = imx335_update_exp_gain(imx335, exposure, analog_gain);
+ 
++		break;
++	case V4L2_CID_TEST_PATTERN:
++		ret = imx335_update_test_pattern(imx335, ctrl->val);
++
+ 		break;
+ 	default:
+ 		dev_err(imx335->dev, "Invalid control %d\n", ctrl->id);
+@@ -1117,7 +1211,7 @@ static int imx335_init_controls(struct imx335 *imx335)
+ 	u32 lpfr;
+ 	int ret;
+ 
+-	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 6);
++	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1151,6 +1245,12 @@ static int imx335_init_controls(struct imx335 *imx335)
+ 						mode->vblank_max,
+ 						1, mode->vblank);
+ 
++	v4l2_ctrl_new_std_menu_items(ctrl_hdlr,
++				     &imx335_ctrl_ops,
++				     V4L2_CID_TEST_PATTERN,
++				     ARRAY_SIZE(imx335_tpg_menu) - 1,
++				     0, 0, imx335_tpg_menu);
++
+ 	/* Read only controls */
+ 	imx335->pclk_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
+ 					      &imx335_ctrl_ops,
 -- 
 2.43.0
 
