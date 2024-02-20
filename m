@@ -1,76 +1,73 @@
-Return-Path: <linux-kernel+bounces-72859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD5885B99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:53:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E445C85B9A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E4E1F24114
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:53:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A15552857F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EDF65BB0;
-	Tue, 20 Feb 2024 10:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA290657CD;
+	Tue, 20 Feb 2024 10:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TU7e7pDP"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MV5SHB88"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DDF664A9;
-	Tue, 20 Feb 2024 10:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6CF664B6
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708426403; cv=none; b=C93xxsU9Gq5wEgYZFBs14wgnxL25TY/J/2+lk7iRqX41s/r86M5dXsfnU854XnJj/22u+NmjfENIoTZikQKOc/ihfk1pB4Rz/ySu76dvrdXp1JuxqA4t8NKCkQ5RW9eeseeH5jMhW8tCjqSy9WV19THvuMFxPf3PZ0I3Naxivyc=
+	t=1708426408; cv=none; b=QqHhmT9YzB93oL9gpbKJ7idHuOjlpscLDT6DjAYGLS1f+L1CMKnp/0RN6whFubcSaddCzI0/mTe/7zbWD7WPoD2cawnDW2q6CsgTNVt3DRQ0gQnTD06vYsumEc6ByachIizzYy1WNzH2+kssTcTt+YXn7Fphh+lMjox4UD1iDf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708426403; c=relaxed/simple;
-	bh=WcrPPnFdIaTswNzGGLNCjpYeRfDUJLHsrVeXfxJS7Wk=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=YTThp2efe7emMzZsHqJ+aDVRGQGQfnTC3T8ouv6S+fLj90pkGN6NfS4tWT34bQVXFso4Q0CN+8Mhy8358EmKHPHVjypY25rCdVsP+B0XIAXdmsOAwnb/M/T4Nc8ZpsiwpUGPh6yvZdy2MWUzYJz5F5y0mErrnphBcoOcPRwKjLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TU7e7pDP; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3394bec856fso3600667f8f.0;
-        Tue, 20 Feb 2024 02:53:21 -0800 (PST)
+	s=arc-20240116; t=1708426408; c=relaxed/simple;
+	bh=8vi6GmLWUFu13gK8croE2S4F5cWVZeaaePrUfRm5924=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zi5iTAHAesw3cxsJpSRX5+QJgCp/SpzAPg19J3pbWUYo0JorIBAYCG3ClVWJareV4bDJIBl2rZEwM+KMC2BbxwFyj23J/Os3zIHtOL7eVF9jDoNinRUrLmx96rjCCiAUQG8WncZ8Y7sZtRBJosJfKdPNVT87lVknvw6s5cQJCTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MV5SHB88; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d09cf00214so57047881fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:53:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708426400; x=1709031200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Kk7TVBPE2HlTc1l9Sm4itMeOxxlwuSodhj0pqtVmHM=;
-        b=TU7e7pDP24TYuKARhHMIpwW55U49f5b5/PudxMBWTvNeKd9OHCk583W8CUl61O0loj
-         trxrqBIP32qju7gLSNWU1J83hO3wW+EadX28rggK7yR6wha4AdiGn/T/D4j/Po1r2AjM
-         h7FzLqBwei0ShQBtIfqolWxi3/X7p7j1TcJ0BaePblskZTihqaZcPEBt4Ely4wHyBkxD
-         /z79p9HHYgVseW5Uq3HXmqSIiIyicxOK+tMxM6QvDVGihInDVI01G4E3T55QFrO9y/eC
-         NfIzAUbsVvN5CqObIR+AxeNlHJ9G5ScKqDWr2p7+IaQsef0y2OYqirBb5lKJUetYdqH2
-         HD4w==
+        d=linaro.org; s=google; t=1708426405; x=1709031205; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8vi6GmLWUFu13gK8croE2S4F5cWVZeaaePrUfRm5924=;
+        b=MV5SHB88xAxe0hPoZKkkkxb66tVTWvjnFGrvE/bsMJ+lYDgglOg8gmNAEmxewMwg6C
+         w83CpvmJCDvx9/MeUk/qgoVA2xmYZKikjvuB2hX57dUyxkRsVsMpbv5R3ycESIfdqqOd
+         pIF2FEjfuahANLaoStX6dthVl7SpO4UgG4+5FpgKOh6J8GPbYrxwtY1BjGaLJkmfTo+s
+         OziDrJrwNE2KUZTqi+dF0RZy39ZDSEvr2hFwNmwHWDCz7UqnprLGK8kx/MopXAKEnpQ/
+         Fy7p7JKsLlbITkYI+hWiyHQyG3olgHoxcD1PSAzIPkhpHp878NYP0ldhuvQqb0DvxfMu
+         rErg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708426400; x=1709031200;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Kk7TVBPE2HlTc1l9Sm4itMeOxxlwuSodhj0pqtVmHM=;
-        b=c2s7dfBOs93FR7GsgDlri+6XLVdl4l4ktDiAsjAHAz3+hhTma0V3na8GAx2ppJQXWg
-         6aLOUgESIaGVr03sJhfMWmcMEaAxROwOvC5TPkJdO6sDwjNy75sYouE/LgDB4119qqmS
-         RwU9PX5JS8Hh02MCtacAeGLmyBrq+zWN6h3I0x0SaiIl19EzFsNNpcj7VqzIv4vvejEw
-         uZ+iFDnOpU4F1vPPWRbF2WAW/BW6glXzVwSThtQiLEFT5ADXkHfTUZ2zUnpy5M5MPW32
-         93lP5Cff8Ww6C0vqshr3Ov+jonw4fKnEzqH43j0lYkJMBOBn/31HeGSiNJHQCCJ33NP4
-         I66g==
-X-Forwarded-Encrypted: i=1; AJvYcCWQx7LrfKPoA2JHEgQG7YCgaK5BBXEOl3oWE37zHUPwJ42hYjflTYAAlFNplejujq035HqRM2sf48v6Wi50M4eOWOE2bgxpyOW/fF3C9ZKyeOtfFEvp76gktOOA7rhbv6oQtE9MAjAkm/yokAsUgTGWgQ199jfL42m+dwCQbKHjYomg5HGFDcEHQwx1YiauEKm+Do2n1/IaiMuJNBc6P9y8y0LNCYXF6/j7l1EKQRv2OljDxZT9yvvv0Q==
-X-Gm-Message-State: AOJu0Yw8oXJDhpl/MLOGjFGVWm0YJGKw5AQON4vdvntSeOf9hj+69q65
-	7cB7ahmXljegQJrkgXH+TpqHnMpVZXycNhhkvGGz/CdES3l2QcaQ
-X-Google-Smtp-Source: AGHT+IH7465FJ5bRclP1AsBPW6J2ByerjfrQoZxMhpklVxMUbyc5bzfafg2vxzaK3n/7AH+GNoFpcw==
-X-Received: by 2002:a5d:5345:0:b0:33d:1bd1:8ae2 with SMTP id t5-20020a5d5345000000b0033d1bd18ae2mr9759369wrv.19.1708426400183;
-        Tue, 20 Feb 2024 02:53:20 -0800 (PST)
-Received: from [192.168.10.18] (54-240-197-233.amazon.com. [54.240.197.233])
-        by smtp.gmail.com with ESMTPSA id h5-20020a05600016c500b0033d60cba289sm3750737wrf.68.2024.02.20.02.53.18
+        d=1e100.net; s=20230601; t=1708426405; x=1709031205;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8vi6GmLWUFu13gK8croE2S4F5cWVZeaaePrUfRm5924=;
+        b=k4xHybt9N+nB7O+q+FoNzEHh+ay/7PduDezgqZpMdxR+FOxLgEv2rDurjpjw60RhU+
+         VrgJ+3KbslAexCDc3pRsiEdUd9yHo44ccTswQ8BhvZrQxh74MuetXpEN1oFtkm5JUgbU
+         zaGsnIbtvPWzna3frcou/SgjbEFabGY+JxDp97nHluVyCgYFrSnCMdwdiASDXgtW6+BB
+         0AfZsGBq1xpi3xyyzEg9360dPbq7T1CcqYDQONBH0VeimeLleck6moGvxNwf0LwncfWm
+         BkQRhJPXD2d3HCvYy/P8AuTGtruu309c3ShcnEsivOVBXDpzNkjppt1UsHucrt85M5iy
+         m8xA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKcmd0jo0QOeo2vUb4uz280LMzAYMt69bWHaviTL/w9R29ZLUzUmHWCHVwctPrAozaYF8ZUgIGenr45p40UlwQciNR0etvpljWXyds
+X-Gm-Message-State: AOJu0YyzEZgPcPvubizOQG0yE9PXKm8n3Ejtz/MA2jgWMruAlg7PbVvD
+	RsLH1sBbFDlrUjl+c5AfCJhOIIcHup+YtORtGRWFpfqnTjQ0uPjt3t/587DRW/o=
+X-Google-Smtp-Source: AGHT+IGj/7AXoisMK+BCkKwotSzF6x35dkD2gVUI9ij4ByeXOMxpFwLG6GP50Kx7b4hnuJNfmyQRUg==
+X-Received: by 2002:a2e:be9d:0:b0:2d2:2aec:108f with SMTP id a29-20020a2ebe9d000000b002d22aec108fmr6573949ljr.47.1708426405349;
+        Tue, 20 Feb 2024 02:53:25 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id z17-20020a1c4c11000000b004127057d6b9sm1013957wmf.35.2024.02.20.02.53.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 02:53:19 -0800 (PST)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <0ba3a87b-7596-466c-9415-7af28c95dd1e@xen.org>
-Date: Tue, 20 Feb 2024 10:53:18 +0000
+        Tue, 20 Feb 2024 02:53:24 -0800 (PST)
+Message-ID: <8c1f0a4f-8a8b-41e7-b7f1-4c5a38ec7c1a@linaro.org>
+Date: Tue, 20 Feb 2024 11:53:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,93 +75,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info
- handling
+Subject: Re: [PATCH 07/16] clk: samsung: Pass actual clock controller base
+ address to CPU_CLK()
 Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240215152916.1158-1-paul@xen.org> <ZdPQ_AcbTYMtArFJ@google.com>
- <f85098ba-b56e-455a-9b73-909d71cf0b51@xen.org>
-Organization: Xen Project
-In-Reply-To: <f85098ba-b56e-455a-9b73-909d71cf0b51@xen.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Sam Protsenko <semen.protsenko@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Chanwoo Choi <cw00.choi@samsung.com>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240216223245.12273-1-semen.protsenko@linaro.org>
+ <20240216223245.12273-8-semen.protsenko@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240216223245.12273-8-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 20/02/2024 09:14, Paul Durrant wrote:
-> On 19/02/2024 22:06, Sean Christopherson wrote:
->> On Thu, Feb 15, 2024, Paul Durrant wrote:
->>> David Woodhouse (1):
->>>    KVM: pfncache: rework __kvm_gpc_refresh() to fix locking issues
->>>
->>> Paul Durrant (19):
->>>    KVM: pfncache: Add a map helper function
->>>    KVM: pfncache: remove unnecessary exports
->>>    KVM: x86/xen: mark guest pages dirty with the pfncache lock held
->>>    KVM: pfncache: add a mark-dirty helper
->>>    KVM: pfncache: remove KVM_GUEST_USES_PFN usage
->>>    KVM: pfncache: stop open-coding offset_in_page()
->>>    KVM: pfncache: include page offset in uhva and use it consistently
->>>    KVM: pfncache: allow a cache to be activated with a fixed (userspace)
->>>      HVA
->>>    KVM: x86/xen: separate initialization of shared_info cache and 
->>> content
->>>    KVM: x86/xen: re-initialize shared_info if guest (32/64-bit) mode is
->>>      set
->>>    KVM: x86/xen: allow shared_info to be mapped by fixed HVA
->>>    KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
->>>    KVM: selftests: map Xen's shared_info page using HVA rather than GFN
->>>    KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
->>>    KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA
->>>      capability
->>>    KVM: x86/xen: split up kvm_xen_set_evtchn_fast()
->>>    KVM: x86/xen: don't block on pfncache locks in
->>>      kvm_xen_set_evtchn_fast()
->>>    KVM: pfncache: check the need for invalidation under read lock first
->>>    KVM: x86/xen: allow vcpu_info content to be 'safely' copied
->>>
->>> Sean Christopherson (1):
->>>    KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
->>>
->>>   Documentation/virt/kvm/api.rst                |  53 ++-
->>>   arch/s390/kvm/diag.c                          |   2 +-
->>>   arch/s390/kvm/gaccess.c                       |  14 +-
->>>   arch/s390/kvm/kvm-s390.c                      |   4 +-
->>>   arch/s390/kvm/priv.c                          |   4 +-
->>>   arch/s390/kvm/sigp.c                          |   2 +-
->>>   arch/x86/kvm/x86.c                            |   7 +-
->>>   arch/x86/kvm/xen.c                            | 361 +++++++++++------
->>>   include/linux/kvm_host.h                      |  49 ++-
->>>   include/linux/kvm_types.h                     |   8 -
->>>   include/uapi/linux/kvm.h                      |   9 +-
->>>   .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++-
->>>   virt/kvm/pfncache.c                           | 382 ++++++++++--------
->>>   13 files changed, 591 insertions(+), 363 deletions(-)
->>
->> Except for the read_trylock() patch, just a few nits that I can fixup 
->> when
->> applying, though I'll defeinitely want your eyeballs on the end result 
->> as they
->> tweaks aren't _that_ trivial.
->>
->> Running tests now, if all goes well I'll push to kvm-x86 within the hour.
-> 
-> Oh, I read this last and you already made the changes :-) I'll check 
-> kvm-x86. Thanks.
-> 
+On 16/02/2024 23:32, Sam Protsenko wrote:
+> The documentation for struct exynos_cpuclk says .ctrl_base field should
+> contain the controller base address. But in reality all Exynos clock
+> drivers are passing CPU_SRC register address via CPU_CLK() macro, which
+> in turn gets assigned to mentioned .ctrl_base field. Because CPU_SRC
+> address usually already has 0x200 offset from controller's base, all
+> other register offsets in clk-cpu.c (like DIVs and MUXes) are specified
+> as offsets from CPU_SRC offset, and not from controller's base. That
+> makes things confusing and not consistent with register offsets provided
+> in Exynis clock drivers, also breaking the contract for .ctrl_base field
 
-I checked the patches you amended. All LGTM and my tests are fine too.
+Typo: Exynos
+
+> as described in struct exynos_cpuclk doc. Rework all register offsets in
+> clk-cpu.c to be actual offsets from controller's base, and fix offsets
+> provided to CPU_CLK() macro in all Exynos clock drivers.
+
+Change is fine and makes sense on devices having separate CPU clock
+controller. That's not the case for:
+1. Exynos3250: dedicated CPU clock controller space, but we merged it
+into one driver/binding.
+2. Exynos4 and 5250: no obvious dedicated CPU clock controller, but
+register layout suggests that there is such, just not explicit.
+
+In all these cases you provide not the correct offset against explicit
+or implicit CPU base, but from main clock controller base.
+
+Mention it briefly in above commit msg.
+
+
+Best regards,
+Krzysztof
+
 
