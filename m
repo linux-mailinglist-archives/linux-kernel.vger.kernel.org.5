@@ -1,139 +1,149 @@
-Return-Path: <linux-kernel+bounces-72221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D283185B0EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 244B385B0F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33922284D7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD07F284AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7142E3E1;
-	Tue, 20 Feb 2024 02:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F65C2E631;
+	Tue, 20 Feb 2024 02:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YB6NFOq7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="W6wxobJN"
+Received: from out203-205-251-27.mail.qq.com (out203-205-251-27.mail.qq.com [203.205.251.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA258C04;
-	Tue, 20 Feb 2024 02:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5932E400
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708396749; cv=none; b=k1EAe3TTLxCG8TWOlPipgX4McivJf+Y/Csbd3OWF0P7EjzEoRW7nruwhVoXmykBiIPwsYhNlptBzwclge7jVVe3ZUpINrKXe1WQ5ee57NxM2mqM98Q7aq4aP/3HlFuUYzLUp2+XckyIeUaDWZSXqMv36IlaBxbqmsK/8hjHDMzU=
+	t=1708397262; cv=none; b=EJvWNNeYidpudiOP6G/7ltzWWs/1bUMz0eoM13vhkSJ8zQzsHrRQSN4oxOB2Y4CZGYLhlZ6K0cIsPXt18PQPnolQ8xwvoF/GjmqwWr3f1TVNzowSeXZ2RJQBS0pxCBHB0I5KgjZr5SqSmErMHglQJsgSXcD6YamK5Q9sR5HuKeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708396749; c=relaxed/simple;
-	bh=IMwzauYZetrMijGUdyA3fsIO45z89hM65VuA1iwSV/s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r7JzoGLADWYHkhf+PFpSgAE7Xea2rtcGfBYgZIJ9v3vm8/vOsbZfg9svoS1/pYBb8JU0Db+lPvH797aJxxAT3vMyfBgQJYzDSnzCGTtqe3v5OgFXBdznKMgJ4TRae+Nw86UfWfXPGHLT0BJVq0Gu7QOGATF/shg7QPxrgWeTg2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YB6NFOq7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C98C433F1;
-	Tue, 20 Feb 2024 02:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708396748;
-	bh=IMwzauYZetrMijGUdyA3fsIO45z89hM65VuA1iwSV/s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YB6NFOq76aBrk1UjP07/9OTebNduLf+HeewS19UjQ16nt8QoxeiQhyW8vrJMGwxDN
-	 wF4BoSSpTb1418jqu29RqMJACKjPDmd045ibXmEppdhRjcR0GiZ/UJUrROONjoJV+8
-	 UAuTHquJ9kkq+/FAuuLjcip0UOTGfHqC/4GPhCOTar28LXFqX+c4NgGD0sngUkUNPW
-	 tLA1+XwXHVMASPoJRiva6tIBUDDHTdEPYn0GntilA8MdJBhrtng/WvMpGi6jyTZYVg
-	 fsp+y4gjM3PA9Xgh55LBrGmLVRAILHITbuQx/x/XkJDj/JlO4mRGwLGitqnStBCDR8
-	 Vb3EOsri+ab7w==
-Message-ID: <2247088a-aed0-4120-93a5-cf52a829db26@kernel.org>
-Date: Tue, 20 Feb 2024 10:39:03 +0800
+	s=arc-20240116; t=1708397262; c=relaxed/simple;
+	bh=WZhDQHVt/eFOTGy+6AFVtF1k0oHT7nXaK5YloFAu6TA=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=uVhjdjsNs15u9LjpJoHQgznDzbjaKqYM28lxwLwFksfeNJa7Rpd+DZywUp3VITLPDGGhLoSroKARAwwyhVoExxiGnFX6LKlJLUtshu7wsduTWGL/Gwvqae/tkiiEVOBTzDPBFAKctwavwb/JS2jGpc8sLxew15x84MPEgoF7UO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=W6wxobJN; arc=none smtp.client-ip=203.205.251.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708397251; bh=5e0DqTGLAWCNHVUq2rJGy4hwpnKW2PqcQIQ2kpU6bKQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=W6wxobJNh7Y3I8JgyZDo/jXXYEVutz/JKvNINxHGph2i92W8IokfIORTdA6YRJGC3
+	 ywHIdbDb1QBeI5NUMKXGe4dJzj8Qm+0SA6t4H6MxbOKiw7BZYGVlsy8PO3Exn9AXJs
+	 9YUVoskkrG+F6hNH8DTVolOPKaEaq8g5PeR3UYeI=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 9CAA2661; Tue, 20 Feb 2024 10:39:10 +0800
+X-QQ-mid: xmsmtpt1708396750tbameql70
+Message-ID: <tencent_8712375DDCDDA9995CCFA38DF325920DFF07@qq.com>
+X-QQ-XMAILINFO: NioaTWkRhWwaqtUXUk0vapS/NBHwpJaO0zjwvvdYm8Qqnj0E8hSsN+36AKrv9s
+	 b8RqgpzXVzIH0Qwd4Lt6C1v04eqefETnFz4MXsxUmEUqKFUnmKssnVkKEXilD0s9b/oW3qDq+5+g
+	 KVeGYXRNiTHOWO9wW5U5W6sPmI18Ir26YDN1QM7GWTZJQspVTzfvmK/gsOPw7KSz967TS/OKQZzV
+	 hfh7I2rq4rx9HG6iR1o/AdNSBc/marc8aA4uSKNygvCXbpldZg2CW0ZLZBrKXBe9yCf7fj1NVKH1
+	 3DrMOoVm5vx5MDRs3avVbV4krMY3cL6+RThOECrWcSjb9Kr6jdpQpBJFrUXbzU+Y20SRxgxtio5W
+	 KGx/vUZc6/qUzL/wa3LyijMpeS8BhIeM0nuhCJdC+1i5XVosKF70l2EVmVPw9unoATzBKgz67UlR
+	 ffK0Jgdv+/alj39u/NcUIlN30LZUj5rchmwaRPJ9pWtSCnEUi/P4hGon/e/2iS1Rq8zYG1lUSC1T
+	 bLLH0Z8V7fyzb9Q2yDscQ6LPP094R9SNexySfCrgrvmIESmb2bsuTHP9CSmxdP6i0QE4P7OduloR
+	 /7C6aNhTlsH8kj4cuN4e6qddTl1GYbMKp0bdFlHGtQXa8uzW+oNaxe4t42hEN1jGMK4Fa0OkE2g6
+	 a1/aQbZi2wnQsTm3Hc6BnFbGMu6xj6wARDB5VblbRaEIxmZnJw86Z+UwjNOpTqhVLY78poYGBkUV
+	 VZE5yt9hAypGYN6M8a5yTn8MWenOCQkKKcAZ25eKKW+/C1hkMx5OzG65St5iM/mRrlSYhIT2ethF
+	 JE16f/0p+srnlHSelDa/N/SJWfWHji+niEhqlU9QtSaECdrFSaXQLAktYt3loUeSRompB3+4LgiQ
+	 71xIqG8t9mHJCLPudIQ86NgZUoI2jvLjHNY3QAmltuNDSUTj1j7TY=
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c244f4a09ca85dd2ebc1@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] KASAN: slab-use-after-free Read in jfs_syncpt
+Date: Tue, 20 Feb 2024 10:39:11 +0800
+X-OQ-MSGID: <20240220023910.2011462-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000003d021006119cbf46@google.com>
+References: <0000000000003d021006119cbf46@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [regression 6.1.y] f2fs: invalid zstd compress level: 6
-Content-Language: en-US
-To: Salvatore Bonaccorso <carnil@debian.org>
-Cc: Dhya <dhya@picorealm.net>, 1063422@bugs.debian.org,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- regressions@lists.linux.dev
-References: <170736382774.1975.1861975122613668970.reportbug@tsuga.picorealm.net>
- <ZcU3VCrt9VOpuFUq@eldamar.lan>
- <6d14ea70-ac1c-46f2-af1d-ba34ea0165aa@kernel.org>
- <ZdOx73kckFXADcol@eldamar.lan>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZdOx73kckFXADcol@eldamar.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/20 3:54, Salvatore Bonaccorso wrote:
-> Hi,
-> 
-> On Mon, Feb 19, 2024 at 10:35:13AM +0800, Chao Yu wrote:
->> On 2024/2/9 4:19, Salvatore Bonaccorso wrote:
->>> Hi Jaegeuk Kim, Chao Yu,
->>>
->>> In Debian the following regression was reported after a Dhya updated
->>> to 6.1.76:
->>>
->>> On Wed, Feb 07, 2024 at 10:43:47PM -0500, Dhya wrote:
->>>> Package: src:linux
->>>> Version: 6.1.76-1
->>>> Severity: critical
->>>> Justification: breaks the whole system
->>>>
->>>> Dear Maintainer,
->>>>
->>>> After upgrade to linux-image-6.1.0-18-amd64 6.1.76-1 F2FS filesystem
->>>> fails to mount rw.  Message in the boot journal:
->>>>
->>>>     kernel: F2FS-fs (nvme0n1p6): invalid zstd compress level: 6
->>>>
->>>> There was recently an f2fs patch to the 6.1 kernel tree which might be
->>>> related: https://www.spinics.net/lists/stable-commits/msg329957.html
->>>>
->>>> Was able to recover the system by doing:
->>>>
->>>> sudo mount -o remount,rw,relatime,lazytime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,extent_cache,mode=adaptive,active_logs=6,alloc_mode=default,checkpoint_merge,fsync_mode=posix,compress_algorithm=lz4,compress_log_size=2,compress_mode=fs,atgc,discard_unit=block,memory=normal /dev/nvme0n1p6 /
->>>>
->>>> under the running bad 6.1.0-18-amd64 kernel, then editing
->>>> /etc/default/grub:
->>>>
->>>>     GRUB_DEFAULT="Advanced options for Debian GNU/Linux>Debian GNU/Linux, with Linux 6.1.0-17-amd64"
->>>>
->>>> and running 'update-grub' and rebooting to boot the 6.1.0-17-amd64
->>>> kernel.
->>>
->>> The issue is easily reproducible by:
->>>
->>> # dd if=/dev/zero of=test.img count=100 bs=1M
->>> # mkfs.f2fs -f -O compression,extra_attr ./test.img
->>> # mount -t f2fs -o compress_algorithm=zstd:6,compress_chksum,atgc,gc_merge,lazytime ./test.img /mnt
->>>
->>> resulting in
->>>
->>> [   60.789982] F2FS-fs (loop0): invalid zstd compress level: 6
->>
->> Hi Salvatore,
->>
->> Can you please try below fixes:
->>
->> [PATCH 6.1] f2fs: add helper to check compression level
->> https://lore.kernel.org/linux-f2fs-devel/20240212160530.1017205-1-chao@kernel.org
-> 
-> Confirmed that this fixes the reported issue as it was reported to us
-> in Debian in https://bugs.debian.org/1063422 . Thanks a lot!
-> (note just tested with the first commit as it landed in 6.1.78 to
-> confirm the immediate regression).
-> 
-> #regzbot fixed-by: cf3d57ad6ff8b566deba3544b9ad3384781fb604
+please test uaf in jfs_syncpt
 
-Hi,
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Thank you for confirmation.
+diff --git a/fs/jfs/jfs_incore.h b/fs/jfs/jfs_incore.h
+index dd4264aa9bed..15955dd86bfd 100644
+--- a/fs/jfs/jfs_incore.h
++++ b/fs/jfs/jfs_incore.h
+@@ -197,6 +197,7 @@ struct jfs_sb_info {
+ 	kgid_t		gid;		/* gid to override on-disk gid */
+ 	uint		umask;		/* umask to override on-disk umask */
+ 	uint		minblks_trim;	/* minimum blocks, for online trim */
++	struct mutex log_mutex;
+ };
+ 
+ /* jfs_sb_info commit_state */
+diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+index be17e3c43582..bd30b93e435c 100644
+--- a/fs/jfs/jfs_txnmgr.c
++++ b/fs/jfs/jfs_txnmgr.c
+@@ -2665,6 +2665,9 @@ static void txLazyCommit(struct tblock * tblk)
+ 
+ 	log = (struct jfs_log *) JFS_SBI(tblk->sb)->log;
+ 
++	if (!log)
++		return;
++
+ 	spin_lock_irq(&log->gclock);	// LOGGC_LOCK
+ 
+ 	tblk->flag |= tblkGC_COMMITTED;
+@@ -2730,7 +2733,9 @@ int jfs_lazycommit(void *arg)
+ 				list_del(&tblk->cqueue);
+ 
+ 				LAZY_UNLOCK(flags);
++				mutex_lock(&sbi->log_mutex);
+ 				txLazyCommit(tblk);
++				mutex_unlock(&sbi->log_mutex);
+ 				LAZY_LOCK(flags);
+ 
+ 				sbi->commit_state &= ~IN_LAZYCOMMIT;
+diff --git a/fs/jfs/jfs_umount.c b/fs/jfs/jfs_umount.c
+index 8ec43f53f686..04788cf3a471 100644
+--- a/fs/jfs/jfs_umount.c
++++ b/fs/jfs/jfs_umount.c
+@@ -51,6 +51,7 @@ int jfs_umount(struct super_block *sb)
+ 	 *
+ 	 * if mounted read-write and log based recovery was enabled
+ 	 */
++	mutex_lock(&sbi->log_mutex);
+ 	if ((log = sbi->log))
+ 		/*
+ 		 * Wait for outstanding transactions to be written to log:
+@@ -113,6 +114,7 @@ int jfs_umount(struct super_block *sb)
+ 		 */
+ 		rc = lmLogClose(sb);
+ 	}
++	mutex_unlock(&sbi->log_mutex);
+ 	jfs_info("UnMount JFS Complete: rc = %d", rc);
+ 	return rc;
+ }
+diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+index 8d8e556bd610..cf291bdd094f 100644
+--- a/fs/jfs/super.c
++++ b/fs/jfs/super.c
+@@ -504,6 +504,7 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sbi->uid = INVALID_UID;
+ 	sbi->gid = INVALID_GID;
+ 	sbi->umask = -1;
++	mutex_init(&sbi->log_mutex);
+ 
+ 	/* initialize the mount flag and determine the default error handler */
+ 	flag = JFS_ERR_REMOUNT_RO;
 
-Thanks,
-
-> 
-> Regards,
-> Salvatore
 
