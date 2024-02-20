@@ -1,106 +1,167 @@
-Return-Path: <linux-kernel+bounces-73075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2472C85BD2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:31:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1980C85BD35
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55AF71C21ECB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:31:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9BCD286DE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CF96A335;
-	Tue, 20 Feb 2024 13:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790926A35E;
+	Tue, 20 Feb 2024 13:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XToTX1ep"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fCdvBwJ5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6803169E05;
-	Tue, 20 Feb 2024 13:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A24482FA;
+	Tue, 20 Feb 2024 13:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435850; cv=none; b=epSSoGrTzVf8ryFUI3+hJ89RdU6eB5RWY+GbKec4RNSVReTLZS/ssRAZDOAKTLsX8XKYD4OJ+81d25+0oYZj2sOYANXorJZSjx2w6QRCw/OsgDa2MO3HQlavcA5wdB9OWf1bICmQXn/2YoScKXapb+k8O1K3dz5lnPG4rsJVTyg=
+	t=1708435896; cv=none; b=rybErF8g4CkykPPfXF0iH8CweThjayXN+sU6YW2Yw70lgsFQ5C7dtthqawFMhRgEN8Nv5jnzx1uk7q7kPh1NZXKiQO1gpfCgeWldK8M73W7iIccsAKv92Z6qSpkAr5daSVw2FmOvjygLzIn9J9iCnu5sMA46EFryx6S2/8opk4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435850; c=relaxed/simple;
-	bh=bbj3y4eCKYu8edd6s/J1h95MOajslQplxsNHJioQ1vU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gmHiB+wBBo/2tKddl8186HEFZfne59d8KkqUMgckoATZJ5Tguftqe4oD+XSr3bhgcJvPlqNr/Y9kHHp4b7xLUfRKvJI0LnSBizqbF3zY2hHNjK9/4dCm2yZVBjD9WPfJJkweurzDG3jT5HiGngavq1ry1TFHDZIH0+O2FTlQmQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XToTX1ep; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40BB3C433C7;
-	Tue, 20 Feb 2024 13:30:48 +0000 (UTC)
+	s=arc-20240116; t=1708435896; c=relaxed/simple;
+	bh=Om4nwbIVaGL4qkTV+9XeVJq/OQVsY234eiAuH2YW+nA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UWy3iEk1/trh9YC4xQNo1I8REKCgcucBwh6oKz8LTJK/cYjauPsb0Yl9gCgEf9qmiD8+nVdjqy0R9FzgqaUYy9RVedF8tc/JomMAw2pCCUVnz18KU+dlkNOHg5vn9UQmTts0XuYm/+sU2d+tzRx/DUiHpgZ6vHkP1IUjBU47kR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fCdvBwJ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6216C433F1;
+	Tue, 20 Feb 2024 13:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708435850;
-	bh=bbj3y4eCKYu8edd6s/J1h95MOajslQplxsNHJioQ1vU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=XToTX1eptrMh9lpJtc2USXtSKsvQujFLqzzEhMdpwRr7eUFM5itRkHD06hj7xu4ti
-	 RPxSSa4/xepD/sb7FAZ0x+UVyFrX0qCqgdqGXwSJ03OWvNzKc1EULIiYIegV9jtRfw
-	 llJxjPtKdRhIyw41ZPYZh/Ye6ash7u+UcF1s/zS3erOZUrmk9dLc92v5LjuUt0SarU
-	 zBOyTipEXpWFAJn1ejP52l9secKfeM1OWrniTFl5THR39w29gqI4dED1lZOA8Rdse3
-	 YVsXT5w+dNQjcxJtHiSbyRhFxBzMi8tG/PYO9izPVej4RQeqcyn2mCUx/HvJHz0x+I
-	 Me60PVRFCgc9A==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Michael Walle <mwalle@kernel.org>,  Miquel
- Raynal <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  Rob Herring <robh+dt@kernel.org>,
-  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>,  linux-mtd@lists.infradead.org,  Yazan Shhady
- <yazan.shhady@solid-run.com>,  Rob Herring <robh@kernel.org>,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7] dt-bindings: mtd: spi-nor: add optional interrupts
- property
-In-Reply-To: <741c19b8-55f5-4f3f-8391-10fc2758e687@solid-run.com> (Josua
-	Mayer's message of "Tue, 20 Feb 2024 13:31:14 +0100")
-References: <20240219-mtd-flash-interrupt-binding-v7-1-206e30a656fa@solid-run.com>
-	<mafs08r3f8h16.fsf@kernel.org>
-	<741c19b8-55f5-4f3f-8391-10fc2758e687@solid-run.com>
-Date: Tue, 20 Feb 2024 14:30:46 +0100
-Message-ID: <mafs034tn8dq1.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=k20201202; t=1708435896;
+	bh=Om4nwbIVaGL4qkTV+9XeVJq/OQVsY234eiAuH2YW+nA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fCdvBwJ5g4P6QCqmo1jWb+twkXRB9GwNdPKu+6MMASAH79965qHZD0Lb53JKBWrBo
+	 AYAxQPNBQWSXDGupFhdKQ8xuMy7Tr0aisE2OiPHTyLXgSh6cYNkkEi8e9I2nxhrt+B
+	 cG/FoxwOPcckd8n699VEJnUiCmBJtwEDyFiGv6AMhQuQsqhgWoMnpDfYIrb+BPFVkv
+	 KUaoNRnP2s2EQIVLlRbkHTtMU/CO+jDpAkVOztMbQDCEsQdXqWtyuKORe1JTiVor4K
+	 tYnDdmXiE6o3CKmABeogdmMXU9db4lIIl8r71H0YoZ1s+0bh5wKp+9QbjIkO0vy5Z7
+	 Vxy1qGz+v569A==
+Date: Tue, 20 Feb 2024 13:31:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+Message-ID: <5a3f5e1b-8162-4619-a10b-d4711afe533b@sirena.org.uk>
+References: <20240216203215.40870-1-brgl@bgdev.pl>
+ <20240216203215.40870-10-brgl@bgdev.pl>
+ <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk>
+ <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
+ <8e392aed-b5f7-486b-b5c0-5568e13796ec@sirena.org.uk>
+ <CAMRc=MeAXEyV47nDO_WPQqEQxSYFWTrwVPAtLghkfONj56FGVA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WgMc8yUhf91ALlog"
+Content-Disposition: inline
+In-Reply-To: <CAMRc=MeAXEyV47nDO_WPQqEQxSYFWTrwVPAtLghkfONj56FGVA@mail.gmail.com>
+X-Cookie: E = MC ** 2 +- 3db
 
-On Tue, Feb 20 2024, Josua Mayer wrote:
 
-> Am 20.02.24 um 13:19 schrieb Pratyush Yadav:
->> On Mon, Feb 19 2024, Josua Mayer wrote:
->>
->>> Some spi flash memories have an interrupt signal which can be used for
->>> signalling on-chip events such as busy status or ecc errors to the host.
->>>
->>> Add binding for "interrupts" property so that boards wiring this signal
->>> may describe the connection.
->>>
->>> Signed-off-by: Josua Mayer <josua@solid-run.com>
->>> Acked-by: Rob Herring <robh@kernel.org>
->> Acked-by: Pratyush Yadav <pratyush@kernel.org>
->>
->> BTW, I don't see any support in SPI NOR for handling these interrupts.
->> Do you plan to add them in a later patchset?
-> No current plans, I have little knowledge how spi-nor works in the kernel.
->> If not, what do you get by
->> describing them?
-> Foremost I get to submit a correct device-tree (describes hardware)
-> to the kernel, without maintainers getting all over me for introducing
-> new dtbs_check errors.
->
-> And I really do prefer submitting a complete device-tree so that all
-> knowledge I have gained reading private schematics is readily
-> available the next time someone works on it.
+--WgMc8yUhf91ALlog
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fair enough. I guessed as much but thanks for the confirmation!
+On Tue, Feb 20, 2024 at 12:16:10PM +0100, Bartosz Golaszewski wrote:
+> On Mon, Feb 19, 2024 at 8:59=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
+rote:
+> > On Mon, Feb 19, 2024 at 07:48:20PM +0100, Bartosz Golaszewski wrote:
 
-[...]
+> > > No, the users don't request any regulators (or rather: software
+> > > representations thereof) because - as per the cover letter - no
+> > > regulators are created by the PMU driver. This is what is physically
+> > > on the board - as the schematics and the datasheet define it. I took
 
--- 
-Regards,
-Pratyush Yadav
+> > The above makes no sense.  How can constraints be "what is physically on
+> > the board", particularly variable constrants when there isn't even a
+> > consumer?  What values are you taking from which documentation?
+
+> The operating conditions for PMU outputs. I took them from a
+> confidential datasheet. There's a table for input constraints and
+> possible output values.
+
+That sounds like you're just putting the maximum range of voltages that
+the PMU can output in there.  This is a fundamental misunderstanding of
+what the constraints are for, the constraints exist to specify what is
+safe on a specific board which will in essentially all cases be much
+more restricted.  The regulator driver should describe whatever the PMU
+can support by itself, the constraints whatever is actually safe and
+functional on the specific board.
+
+> And what do you mean by there not being any consumers? The WLAN and BT
+> *are* the consumers.
+
+There are no drivers that bind to the regulators and vary the voltages
+at runtime.
+
+> > > the values from the docs verbatim. In C, we create a power sequencing
+> > > provider which doesn't use the regulator framework at all.
+
+> > For something that doesn't use the regulator framework at all what
+> > appears to be a provider in patch 16 ("power: pwrseq: add a driver for
+> > the QCA6390 PMU module") seems to have a lot of regualtor API calls?
+
+> This driver is a power sequencing *provider* but also a regulator
+> *consumer*. It gets regulators from the host and exposes a power
+> sequencer to *its* consumers (WLAN and BT). On DT it exposes
+> regulators (LDO outputs of the PMU) but we don't instantiate them in
+> C.
+
+Right, which sounds a lot like being a user of the regualtor framework.
+
+--WgMc8yUhf91ALlog
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXUqa0ACgkQJNaLcl1U
+h9B24wf+Lz2wjf7I6W3InKvWNmGf3yUaGumEqSnMFkL3stpkvgqYLbA8ReYHbIUT
+79XKO978Mxiz1EmV4P5JJlLodwosB8KwgRLoP9jJBJuUmza9tplD5bE7e7T0+aQy
+HhywB2qi8aAR11BzU3hSdONfTa32ME+bcqKqAmRf3LORwIYvgdMDmqmuaqUToQfe
+m/9kN5kWczPASPOUb7WfF+78lEvBZmRZZNQ+gaYiMgIkY8vrxWgQjeLASfIIMPwt
+v72d6hMS/cdZEVFON8Lz7La1SJdqpFl4jjIiehjedX9tHoSddFDUbowQaUspH7zh
+8LY9xVabmnUn+13LLE2JwgbELkPl+g==
+=taRx
+-----END PGP SIGNATURE-----
+
+--WgMc8yUhf91ALlog--
 
