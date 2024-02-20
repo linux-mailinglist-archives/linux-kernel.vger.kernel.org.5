@@ -1,260 +1,270 @@
-Return-Path: <linux-kernel+bounces-73268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1090B85C03B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:43:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C6F85C06F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB8F22852CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:43:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBACC1F22E25
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544A776056;
-	Tue, 20 Feb 2024 15:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389F7762E5;
+	Tue, 20 Feb 2024 15:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iyPLV/XB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GR8WiPMh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D0274E19
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E452C6AA
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708443818; cv=none; b=KV2WB2zwSUUZ7Ey/U3qnhsqDsoTt09E1vig4p13CntPt8nvE2WuOUb1CApAAS8hRazKKnUVAHKUHb/GlKTmF5lpUTMCEMG3tnEe5mit41Xkdg7Bfqq2Ab/aChaaZJtLiL1skwQGYqx+2lTLtfFnbozAK9MC3qYRPB91kUA/TJ60=
+	t=1708444627; cv=none; b=NeZf8UPu2sCBx2Ugkp+f48ymJwA+VtRXTm3SJb6ufj0X759ILl2OmEUIcys52IkTJJVnDfOXMjQLzVaZbzyl5NR9uL+g29JU0rZRea+hoByCJbazYRrAAJQqBrCsjX/5DjUd/YfyuA47BlLymya1oP7cwfAOg87Pvd7w3DadJ74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708443818; c=relaxed/simple;
-	bh=ALpc9yArLvXly3V2x6JdafNbXSM1XGqMCykDOh1mLdk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Mu1k3QjTtAniVOhib2yxJQBu/YdP4dBkJKTAwlR168hgIuJmFFR5x2fat4us1wuGFAtC9/iDJMlcqdZfOQzZOBHYJLW5alnNZJXSAnZt9jIejBk8Y8Xh/kHm6uUqrq4ugIjkWwBk3GeO5GIdU0L6Txjs2YpgjvIXZX44bV9p3rE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iyPLV/XB; arc=none smtp.client-ip=198.175.65.17
+	s=arc-20240116; t=1708444627; c=relaxed/simple;
+	bh=Bwe1QO9l+GtxBba7WsuK9HJ8YAbX9q8YPkmY27vB80Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jP4tnmCW0YFDiCnPC5Do3aJQqai9ivixSZdBoQnz2IEB4jBIk+DbFlqBdXC9CvP45fDxl6TGyhMrZ+Pf4NpzBOWoLIUTZJmCEAWRohKi8HovGYTk2td9kmnv6+FcUoW2DycvglEEQxIV7Bf7UnqHSEw4KaDksDe9p2fAL27/3Rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GR8WiPMh; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708443817; x=1739979817;
-  h=date:from:to:cc:subject:message-id;
-  bh=ALpc9yArLvXly3V2x6JdafNbXSM1XGqMCykDOh1mLdk=;
-  b=iyPLV/XBp+Sc4TE0BaMbvP2XeL8Py7shlGSW2FKzLncamIaPdEoFESHs
-   45lN7W2BYpR1RErIljPZO6yT+cfH/2wSmyi2bgDKdf96gKD25Y3UndrBZ
-   L788YRk7uxQy4Lxr6FdCfDApCcwfg4aJefdDBVhAtYCJnpPHftpb3Z4YA
-   NzQ6aP62Qtc9cRNsPRdKcag9+d6Q0t7P+8+DLMNQyFJEL+OqNYYAyrQI+
-   ebfByzbkgfRn/5R6ETbo4LzM5mmcMrEBj2q86Xd1imqIKARrAcPA/5I7u
-   tkqWeX1U/gziLvQp47vxysRieffn2rLtXPmkv/POUNzawo/S4IDiw8nBz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2677614"
+  t=1708444625; x=1739980625;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Bwe1QO9l+GtxBba7WsuK9HJ8YAbX9q8YPkmY27vB80Y=;
+  b=GR8WiPMhdvXciysfDoSyvQOBWpiA06Wu5Autjl0I6mk+afLzAgkRoyR4
+   2J3eVHxSHQfyLIgsLQymqK4PxshvZWekHNnVIbSJaUhmQAXxDFpy/xrW1
+   einXgoV/tE7AGK5tbP4uFTalDXjvtmV11y8/jii0olup7yg8FlYmlJZIm
+   gLOKz7okF9ylAqu0X6XuKtT3SP1VjL+g2MKsDnHzkR7RrBEfTjz5ZazhH
+   yfXjIq3PqLp2uqm/YEWjXAx1PxUcTN/9tyFdWkvV8oW4V66V5/a5en/By
+   q/uJdlU4uUEAyLilE1uSIIIf4z5HMlyKp/NCkA0RdB1CMw6GZJcctn149
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2417188"
 X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="2677614"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 07:43:36 -0800
+   d="scan'208";a="2417188"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 07:57:04 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="4771384"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 20 Feb 2024 07:43:35 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rcSHL-0004ci-2u;
-	Tue, 20 Feb 2024 15:43:31 +0000
-Date: Tue, 20 Feb 2024 23:42:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:irq/urgent] BUILD SUCCESS
- db744ddd59be798c2627efbfc71f707f5a935a40
-Message-ID: <202402202328.ga7e0GRv-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+   d="scan'208";a="42307590"
+Received: from feng-clx.sh.intel.com ([10.239.159.50])
+  by orviesa001.jf.intel.com with ESMTP; 20 Feb 2024 07:57:01 -0800
+From: Feng Tang <feng.tang@intel.com>
+To: John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	paulmck@kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <longman@redhat.com>,
+	linux-kernel@vger.kernel.org
+Cc: Feng Tang <feng.tang@intel.com>,
+	Jin Wang <jin1.wang@intel.com>
+Subject: [PATCH v4] clocksource: Scale the max retry number of watchdog read according to CPU numbers
+Date: Tue, 20 Feb 2024 23:43:02 +0800
+Message-Id: <20240220154302.848412-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
-branch HEAD: db744ddd59be798c2627efbfc71f707f5a935a40  PCI/MSI: Prevent MSI hardware interrupt number truncation
+There was a bug on one 8-socket server that the TSC is wrongly marked
+as 'unstable' and disabled during boot time (reproduce rate is about
+every 120 rounds of reboot tests), with log:
 
-elapsed time: 1454m
+    clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
+    wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
+    tsc: Marking TSC unstable due to clocksource watchdog
+    TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+    sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
+    clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
+    clocksource: Switched to clocksource hpet
 
-configs tested: 172
-configs skipped: 3
+The reason is for platform with lots of CPU, there are sporadic big or
+huge read latency of read watchog/clocksource during boot or when system
+is under stress work load, and the frequency and maximum value of the
+latency goes up with the increasing of CPU numbers. Current code already
+has logic to detect and filter such high latency case by reading 3 times
+of watchdog, and check the 2 deltas. Due to the randomness of the
+latency, there is a low possibility situation that the first delta
+(latency) is big, but the second delta is small and looks valid, which
+can escape from the check, and there is a 'max_cswd_read_retries' for
+retrying that check covering this case, whose default value is only 2
+and may be not enough for machines with huge number of CPUs.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So scale and enlarge the max retry number according to CPU number to
+better filter those latency noise for large systems, which has been
+verified fine in 4 days reboot test on the 8-socket machine.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                   randconfig-001-20240220   gcc  
-arc                   randconfig-002-20240220   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                        multi_v7_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm                   randconfig-002-20240220   gcc  
-arm                   randconfig-003-20240220   gcc  
-arm                   randconfig-004-20240220   gcc  
-arm                         wpcm450_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240220   gcc  
-csky                  randconfig-002-20240220   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240220   gcc  
-i386         buildonly-randconfig-002-20240220   gcc  
-i386         buildonly-randconfig-003-20240220   clang
-i386         buildonly-randconfig-004-20240220   clang
-i386         buildonly-randconfig-005-20240220   gcc  
-i386         buildonly-randconfig-006-20240220   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240220   gcc  
-i386                  randconfig-002-20240220   gcc  
-i386                  randconfig-003-20240220   clang
-i386                  randconfig-004-20240220   clang
-i386                  randconfig-005-20240220   gcc  
-i386                  randconfig-006-20240220   clang
-i386                  randconfig-011-20240220   clang
-i386                  randconfig-012-20240220   gcc  
-i386                  randconfig-013-20240220   gcc  
-i386                  randconfig-014-20240220   clang
-i386                  randconfig-015-20240220   clang
-i386                  randconfig-016-20240220   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch                 loongson3_defconfig   gcc  
-loongarch             randconfig-001-20240220   gcc  
-loongarch             randconfig-002-20240220   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                            mac_defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-m68k                           sun3_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                           ip27_defconfig   gcc  
-mips                     loongson1c_defconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-mips                           rs90_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240220   gcc  
-nios2                 randconfig-002-20240220   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240220   gcc  
-parisc                randconfig-002-20240220   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      arches_defconfig   gcc  
-powerpc                    ge_imp3a_defconfig   gcc  
-powerpc                 mpc8313_rdb_defconfig   gcc  
-powerpc                         ps3_defconfig   gcc  
-powerpc               randconfig-001-20240220   gcc  
-powerpc64             randconfig-001-20240220   gcc  
-powerpc64             randconfig-002-20240220   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240220   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                          r7785rp_defconfig   gcc  
-sh                    randconfig-001-20240220   gcc  
-sh                    randconfig-002-20240220   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                           se7343_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240220   gcc  
-sparc64               randconfig-002-20240220   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                    randconfig-001-20240220   gcc  
-um                    randconfig-002-20240220   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240220   clang
-x86_64       buildonly-randconfig-002-20240220   clang
-x86_64       buildonly-randconfig-004-20240220   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-004-20240220   clang
-x86_64                randconfig-005-20240220   clang
-x86_64                randconfig-012-20240220   clang
-x86_64                randconfig-013-20240220   clang
-x86_64                randconfig-015-20240220   clang
-x86_64                randconfig-071-20240220   clang
-x86_64                randconfig-072-20240220   clang
-x86_64                randconfig-073-20240220   clang
-x86_64                randconfig-074-20240220   clang
-x86_64                randconfig-075-20240220   clang
-x86_64                randconfig-076-20240220   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                  cadence_csp_defconfig   gcc  
-xtensa                randconfig-001-20240220   gcc  
-xtensa                randconfig-002-20240220   gcc  
+Also as suggested by Thomas, remove parameter 'max_cswd_read_retries'
+which was originally introduced to cover this.
 
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+Tested-by: Jin Wang <jin1.wang@intel.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Waiman Long <longman@redhat.com>
+---
+ 
+Hi Paul, Waiman,
+
+I keep your 'Tested-by' and 'Reviewed-by' tag for v3, as I think the
+core logic of the patch isn't changed. Please let me know if you
+think otherwise. thanks!
+
+Changelog:
+
+    since v3:
+      * Remove clocksource's module parameter 'max_cswd_read_retries' (Thomas)
+      * Use "ilog4" instead of ilog2 for max retry calculation, and
+        may be adjusted later (Paul)
+
+    since v2:
+      * Fix the unexported symbol of helper function being used by
+        kernel module issue (Waiman)
+
+    since v1:
+      * Add santity check for user input value of 'max_cswd_read_retries'
+        and a helper function for getting max retry nubmer (Paul)
+      * Apply the same logic to watchdog test code (Waiman)
+
+
+ Documentation/admin-guide/kernel-parameters.txt  |  6 ------
+ include/linux/clocksource.h                      |  1 -
+ kernel/time/clocksource-wdtest.c                 | 13 +++++++------
+ kernel/time/clocksource.c                        | 16 +++++++++++-----
+ .../testing/selftests/rcutorture/bin/torture.sh  |  2 +-
+ 5 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25680d0..763e96dcf8b1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -679,12 +679,6 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
+ 
+-	clocksource.max_cswd_read_retries= [KNL]
+-			Number of clocksource_watchdog() retries due to
+-			external delays before the clock will be marked
+-			unstable.  Defaults to two retries, that is,
+-			three attempts to read the clock under test.
+-
+ 	clocksource.verify_n_cpus= [KNL]
+ 			Limit the number of CPUs checked for clocksources
+ 			marked with CLOCK_SOURCE_VERIFY_PERCPU that
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 1d42d4b17327..b93f18270b5c 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -291,7 +291,6 @@ static inline void timer_probe(void) {}
+ #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
+ 	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
+ 
+-extern ulong max_cswd_read_retries;
+ void clocksource_verify_percpu(struct clocksource *cs);
+ 
+ #endif /* _LINUX_CLOCKSOURCE_H */
+diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+index df922f49d171..d1025f956fab 100644
+--- a/kernel/time/clocksource-wdtest.c
++++ b/kernel/time/clocksource-wdtest.c
+@@ -105,7 +105,7 @@ static int wdtest_func(void *arg)
+ {
+ 	unsigned long j1, j2;
+ 	char *s;
+-	int i;
++	int i, max_retries;
+ 
+ 	schedule_timeout_uninterruptible(holdoff * HZ);
+ 
+@@ -139,18 +139,19 @@ static int wdtest_func(void *arg)
+ 	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
+ 
+ 	/* Verify tsc-like stability with various numbers of errors injected. */
+-	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
+-		if (i <= 1 && i < max_cswd_read_retries)
++	max_retries = ilog2(num_online_cpus()) / 2 + 1;
++	for (i = 0; i <= max_retries + 1; i++) {
++		if (i <= 1 && i < max_retries)
+ 			s = "";
+-		else if (i <= max_cswd_read_retries)
++		else if (i <= max_retries)
+ 			s = ", expect message";
+ 		else
+ 			s = ", expect clock skew";
+-		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
++		pr_info("--- Watchdog with %dx error injection, %d retries%s.\n", i, max_retries, s);
+ 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
+ 		schedule_timeout_uninterruptible(2 * HZ);
+ 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
+-		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
++		WARN_ON_ONCE((i <= max_retries) !=
+ 			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
+ 		wdtest_ktime_clocksource_reset();
+ 	}
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index 3052b1f1168e..9def0e39f43a 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -210,9 +210,6 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
+ 
+-ulong max_cswd_read_retries = 2;
+-module_param(max_cswd_read_retries, ulong, 0644);
+-EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+ static int verify_n_cpus = 8;
+ module_param(verify_n_cpus, int, 0644);
+ 
+@@ -227,8 +224,17 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+ 	unsigned int nretries;
+ 	u64 wd_end, wd_end2, wd_delta;
+ 	int64_t wd_delay, wd_seq_delay;
++	int max_retries;
+ 
+-	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
++	/*
++	 * When system is in boot phase or under heavy workload, there could
++	 * be random big latency during clocksource/watchdog read, so add
++	 * some retry to filter the noise latency. As the latency's frequency
++	 * and maximum value goes up with the CPU numbers relatively, chose
++	 * the max retry number according to CPU numbers.
++	 */
++	max_retries = ilog2(num_online_cpus()) / 2 + 1;
++	for (nretries = 0; nretries <= max_retries; nretries++) {
+ 		local_irq_disable();
+ 		*wdnow = watchdog->read(watchdog);
+ 		*csnow = cs->read(cs);
+@@ -240,7 +246,7 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+ 		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
+ 					      watchdog->shift);
+ 		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+-			if (nretries > 1 || nretries >= max_cswd_read_retries) {
++			if (nretries > 1 || nretries >= max_retries) {
+ 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+ 					smp_processor_id(), watchdog->name, nretries);
+ 			}
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index d5a0d8a33c27..bbac5f4b03d0 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -567,7 +567,7 @@ then
+ 	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
+ 	torture_set "clocksourcewd-1" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
+ 
+-	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 clocksource.max_cswd_read_retries=1 tsc=watchdog"
++	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
+ 	torture_set "clocksourcewd-2" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
+ 
+ 	# In case our work is already done...
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
