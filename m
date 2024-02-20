@@ -1,198 +1,248 @@
-Return-Path: <linux-kernel+bounces-72732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3DE685B817
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:49:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 380B385B81C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:49:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D74401C22AC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:49:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9C091F219A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A021C664CE;
-	Tue, 20 Feb 2024 09:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8756773D;
+	Tue, 20 Feb 2024 09:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ln48aDRN"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IeBqHjf4"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD03664C8
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D0D56774E
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422255; cv=none; b=LMIWi5hw/Uc1GGcpWSIBL5AKRJ5ii+X5rntC+qZJi7B/0a01JqdxOsfsv0k8oOj2K9eYmQVp6h0PUb3C/FM4RNIz64BJYtxJrcsNT7I2VHVuZwhIagOvTbDPrgFs6b5ccowTqgteulX6OH9zM71oqGD1gddSeTPAeHz3yVYvMO0=
+	t=1708422352; cv=none; b=ldM+58xKBD+WbcB6nm2nYFMVEtZA0zXMTpI9K2oXz+PxNfl/qgu5OqMzqPHrr7vw19gm8TV7Z+kyR4xhzEhArzu0SOCsLOITowHSpEvBQHWiZgTF0wcUwvp4XoCx/sXZi73Y805WJeeermdRcC4D9bDkvmWi7OQvzg8zdrbxpwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422255; c=relaxed/simple;
-	bh=aWhU4KZf1+PKiqK9VJ0RJ6lM36mMOZnFCnjB/9WAvpg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F1PzmCv6k5xuqB8qYIeV1vH2CwnXCx6miFqfXZNQlyhOjOfm900O/T7Ad4cM4hO6Ynn2Tsu1Otayjsve1ffMHmFkJNyrdx7ffjfwQR5gDyS9LAxJciTozQaQ5MYSC87fa4YJSkuyPjJmlQ7r0yF6wLbTykYB+saRIuuCU6gtT9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ln48aDRN; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33d2b354c72so1947002f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:44:13 -0800 (PST)
+	s=arc-20240116; t=1708422352; c=relaxed/simple;
+	bh=jm0SHe88cAJSq1CGFZHc3TOVj/G24rDIuiTnAF/JZto=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mpLL97PyxmF3dEHlxLng/fid05HPQFdg6w/tuXv4+hnFOvMUMNIuWnzZF+w65C/SzofwCfIeg3f2UB8i/vva4oEXNzlpLURjfMCtUCYwvpokspm3+BzC5tciI5aWY9qN4QtU6n0TD38JfYyKSd8624HYAAHuzUa9RCXbqQYJ7VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IeBqHjf4; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512be87a0f3so1508618e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:45:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708422252; x=1709027052; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D8j+SDown3N+zroKUPSdflj3MV2aNmedcuEvRrakCIg=;
-        b=ln48aDRNMJFpYGRcON+IhB/zkM3BihLcDs73QN3qXjvqw2LRnJLD+WK5Js+iUBYYI4
-         HRKeFmIZjVrzoovr9wOMrz31vmmQiNuy5am5fcAAvhwAACKBXDWigW+fXzZc5GLrUSfr
-         FAmEewYNdqSxjYC0x86wJqYPcFn/aOj42pm2rqCkPE8cYgk7yKrlp5GtHqDae72jGRMY
-         mx85f4qxp2OOB+fWp6lw5r+HBQHE5T0kWs6QGaMn4SBBR1Iq4alnzooe7pZZ1VjOG5Vk
-         lGNAT8w+ptFqSuNmTvUBRfrsfuc2y2KNNmIo+2MdErertTwu95moa5/fotnmWqFe+Oeb
-         whlA==
+        d=gmail.com; s=20230601; t=1708422349; x=1709027149; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BHyj07uLVXJcBsbcgmGTKkOhm7lqfKjgr9KR/k4BgLc=;
+        b=IeBqHjf4DtQz+WytM2BIas3K8ctfy9EUHm5psIVzYivt5NGlgA2cOBZwgoAp3LcwnK
+         3OlaOPdyK7S0hWnTyMqPbId2uOggEq12XSFR0fUESffiCZ4yBHDRHHBcu7z/ihj0YaYE
+         9VErHL0awy9IrAoMojHbq+c5Wqa+FAogcqG0t+UokkDFTfhiTsoy3NSceKwf92gR4QwK
+         YcPvr6AcbeF0C+HuCJlc+R3iIcwOtbsDXnVbn00MN7lt5zsQd2pbEE85ph9X7uSM39Jb
+         k93lnzOx5TMzn2ZaPgQh9CTFJNIN2mmTj/bvp6E38ZHHa9pPMrGEfpvHviUKQ65iK5nv
+         OgRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422252; x=1709027052;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D8j+SDown3N+zroKUPSdflj3MV2aNmedcuEvRrakCIg=;
-        b=fYsm06NzGEEGu+WSA0axyL1+oP5J03hhQuyhpHd8flppDYXg+4F116VLhwOCtbTAYT
-         CwUZoRWNdbKEamRrieTfMP+BpqWAfw5R/7s+WOhgHCKw05YhwgxMV5VtYPty1M0X39AM
-         QqoQBapyOS+DOae6uh+fHxIqOW4/kMcLnwOmamVNH/uLTnbZMr1ONgSSJteZ2M7B08ed
-         tSVRID60yl9kWwTa2MqjlRyvmK5d4Pv1DeLBxnSfyUZHQ4/T7lCTuK4rV9EZ7RuOlbjm
-         03dxfgsDPmStgL8TYk9Jmw7ZYb8AiLPrTwgYHbfhi+e+sSKH1ufv5I6VI5vd47n3ML1W
-         gMnw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqlRFwNWw3OllTD5oE+1nEBxWZrscMhgUGOrtJy+t0IFPmrxaZYj31cEQ9pdMm8THYScCywp15p9E3Uoc6PH6UsWPoEsaj1uil6BnD
-X-Gm-Message-State: AOJu0Yxb6CmU83aJE3h+eWdA8PfB9vOMC7mMNrf8ItTBY8bvN8xmKQlp
-	Lg0Bp/omjnYg1edTcSPY+Kc2ZCzfRNnrz+lV85YEEBdd0kFVVzXewVLAjeVm6Yc=
-X-Google-Smtp-Source: AGHT+IH6tp1ol5hK5ImAhfZxZUSkeYbVTKI95ja152exvbYjcEZqQNq1oYeBTyzx6FQgmA4cCgCrNg==
-X-Received: by 2002:a05:6000:1203:b0:33d:1d8a:7d2 with SMTP id e3-20020a056000120300b0033d1d8a07d2mr7673889wrx.16.1708422252302;
-        Tue, 20 Feb 2024 01:44:12 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id i13-20020a5d55cd000000b0033b198efbedsm12779204wrw.15.2024.02.20.01.44.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 01:44:11 -0800 (PST)
-Message-ID: <984ba853-a87f-4689-8cdc-60e7f07a37f4@linaro.org>
-Date: Tue, 20 Feb 2024 10:44:10 +0100
+        d=1e100.net; s=20230601; t=1708422349; x=1709027149;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BHyj07uLVXJcBsbcgmGTKkOhm7lqfKjgr9KR/k4BgLc=;
+        b=SyKMhDVaQEhdDA4A8WkTOkYEKPN9Iq2NZ5+Gpr2WvhaMM3eAFaaRZomNgnI6mN+fNY
+         fBXnmOa9OHv8CGUI5R6ZiiVsPnrUAzRpMwKTAi10Re73n7G+/8Oa59/64aW8x3z8qBZF
+         3qTMMb7GXoGIwULm9W+c/ySQi1Dkgc83VnXjWNzr4OwiWjIgOUJTACmEFMawFNJ6zHA8
+         Q1lgNi9FPhstlzLYgJ65HF1i4jxlS9XezhEFd6JC6EQD8sCSdOYKg8GgueZ53xtbk+Mw
+         pbkDVAbv1hCO8cqr0DtSi2aw7ytGzmAQ7wfGD+0DhPQbXh5dvz99lr6hKDHYkEgMZnuD
+         eBQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWppKSUTXv2Ldht+62rwl7J3DsKzw3YruAK+KUOqY6tlV3CzBBuMFdp7BOjEEtsNj6VPBoyh12MJyTpr5hCcn5zWE9TjYxBjNflcjq5
+X-Gm-Message-State: AOJu0YyZQzBJolBk0X57DusSS5c4IP4VXikWuKphdw5NJrQqn3f2Omwx
+	Fuok73ozWATdjdfKAgAFx8ipQMCl/YFyfrwWvmIG3Q0pgawkSRhzgwrYBpIZIzCklFkf5+M06E4
+	YJs0pfA4N0rNqaw1V1TO1oEsPFA==
+X-Google-Smtp-Source: AGHT+IHl4ezSlLgTZQs5G2nw2vQKKtig2O/6ZkTZZp3VSK8CfuOTB+Xb9h8iRXkVtYqOSdN+f+5Lmpd0MaiReG88BDE=
+X-Received: by 2002:a05:6512:3f1e:b0:512:c8e0:5a27 with SMTP id
+ y30-20020a0565123f1e00b00512c8e05a27mr841605lfa.39.1708422348495; Tue, 20 Feb
+ 2024 01:45:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/6] arm64: dts: qcom: add base AIM500 dtsi
-Content-Language: en-US
-To: Jingyi Wang <quic_jingyw@quicinc.com>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: kernel@quicinc.com, Tingwei Zhang <quic_tingweiz@quicinc.com>
-References: <20240205115721.1195336-1-quic_jingyw@quicinc.com>
- <20240205115721.1195336-6-quic_jingyw@quicinc.com>
- <a429f2ab-8c6d-477c-8abc-51243523064c@linaro.org>
- <37ba0703-6a15-48d5-bb07-71d0fa1c5b2c@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <37ba0703-6a15-48d5-bb07-71d0fa1c5b2c@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240219031911.10372-1-fangzheng.zhang@unisoc.com>
+ <20240219031911.10372-3-fangzheng.zhang@unisoc.com> <ZdLX51r1mOEZKUje@casper.infradead.org>
+ <CA+kNDJ+C2b520afauSWbfNK=S1XiNHR_zF32_K-3Rf7R6m3n5Q@mail.gmail.com>
+ <4591b2b3-398f-402e-b21d-55b244f05a2e@suse.cz> <CA+kNDJLCEdeQsaaLggxbUzF4mAqk_ZLKe=o3cnRkZO8_EKhoSQ@mail.gmail.com>
+ <60edefec-0a78-4c23-bfb6-17ebf326c61a@suse.cz>
+In-Reply-To: <60edefec-0a78-4c23-bfb6-17ebf326c61a@suse.cz>
+From: zhang fangzheng <fangzheng.zhang1003@gmail.com>
+Date: Tue, 20 Feb 2024 17:45:36 +0800
+Message-ID: <CA+kNDJKVz18zm4F8fBVjDveLAdP49ZZUrBrAosq5ng1wYHaFgQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] Documentation: filesystems: introduce
+ proc/slabinfo to users
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>, Fangzheng Zhang <fangzheng.zhang@unisoc.com>, 
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Greg KH <gregkh@linuxfoundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, tkjos@google.com, 
+	Yuming Han <yuming.han@unisoc.com>, Chunyan Zhang <zhang.lyra@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 20/02/2024 10:11, Jingyi Wang wrote:
-> Hi Krzysztof,
-> 
-> On 2/5/2024 8:35 PM, Krzysztof Kozlowski wrote:
->> On 05/02/2024 12:57, Jingyi Wang wrote:
->>> Introduce aim500 board dtsi.
->>>
->>> AIM500 Series is a highly optimized family of modules designed to
->>> support AIoT and Generative AI applications based on sm8650p with
->>> PMIC and bluetooth functions etc.
->>>
->>> Co-developed-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
->>> Signed-off-by: Tingwei Zhang <quic_tingweiz@quicinc.com>
->>> Signed-off-by: Jingyi Wang <quic_jingyw@quicinc.com>
->>> ---
->>>  arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi | 409 +++++++++++++++++++
->>>  1 file changed, 409 insertions(+)
->>>  create mode 100644 arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>> new file mode 100644
->>> index 000000000000..cb857da8653b
->>> --- /dev/null
->>> +++ b/arch/arm64/boot/dts/qcom/sm8650p-aim500.dtsi
->>> @@ -0,0 +1,409 @@
->>> +// SPDX-License-Identifier: BSD-3-Clause
->>> +/*
->>> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
->>> + */
->>> +
->>> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->>> +#include "sm8650p.dtsi"
->>> +#include "pm8550.dtsi"
->>> +#include "pm8550b.dtsi"
->>> +#define PMK8550VE_SID 8
->>> +#include "pm8550ve.dtsi"
->>> +#include "pm8550vs.dtsi"
->>> +#include "pmk8550.dtsi"
->>> +
->>> +/ {
->>> +	aliases {
->>> +		serial1 = &uart14;
->>> +	};
->>> +
->>> +	vph_pwr: vph-pwr-regulator { };
->>
->> What is this? Why is it needed?
->>
->>
->> Best regards,
->> Krzysztof
->>
-> vph_pwr is the power supply which differs from board design, it is defined in sm8650p-aim500-aiot.dts,
-> and it is used in the sm8650p-aim500.dts for regulator supply, so we leave the node here.
+On Tue, Feb 20, 2024 at 5:21=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/20/24 09:49, zhang fangzheng wrote:
+> > On Mon, Feb 19, 2024 at 4:09=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >>
+> >> On 2/19/24 07:23, zhang fangzheng wrote:
+> >> > On Mon, Feb 19, 2024 at 12:24=E2=80=AFPM Matthew Wilcox <willy@infra=
+dead.org> wrote:
+> >> >>
+> >> >> On Mon, Feb 19, 2024 at 11:19:11AM +0800, Fangzheng Zhang wrote:
+> >> >> > +Note, <slabreclaim> comes from the collected results in the file
+> >> >> > +/sys/kernel/slab/$cache/reclaim_account. Next, we will mark /pro=
+c/slabinfo
+> >> >> > +as deprecated and recommend the use of either sysfs directly or
+> >> >> > +use of the "slabinfo" tool that we have been providing in linux/=
+tools/mm.
+> >> >>
+> >> >> Wait, so you're going to all of the trouble of changing the format =
+of
+> >> >> slabinfo (with the associated costs of updating every tool that cur=
+rently
+> >> >> parses it), only to recommend that we stop using it and start using
+> >> >> tools/mm/slabinfo instead?
+> >> >>
+> >>
+> >> Hi,
+> >>
+> >> > The initial purpose was to obtain the type of each slab through
+> >> > a simple command 'cat proc/slabinfo'. So here, my intention is not t=
+o
+> >> > update all slabinfo-related tools for the time being, but to modify
+> >> > the version number of proc/slabinfo and further display the results
+> >> > of using the command.
+> >>
+> >> I'm not sure you understand the concern. There are existing consumers =
+of
+> >> /proc/slabinfo, that might become broken by patch 1/2. We don't even k=
+now
+> >> them all, they might not be all opensource etc. So we can't even make =
+sure
+> >> all of them are updated. What can happen after patch 1/2:
+> >> - they keep working and ignore the new column (good)
+> >> - they include a version check and notice a new unsupported version an=
+d
+> >> refuse to work
+> >> - confused by the new column they start throwing error, or report wron=
+g
+> >> stats (that's worse)
+> >>
+> > I generally understand your concerns about modifying patch 1/2.
+> >
+> > But judging from my modifications, this worry does not seem to be valid=
+.
+> > Because the =E2=80=9C/proc/slabinfo=E2=80=9D is not used in related sla=
+binfo debugging tools
+> > (such as tools/mm/slabinfo),
+>
+> Hi,
+>
+> we are not concerned about slabinfo debugging tools that are part of kern=
+el
+> source tree, but about those outside, including those created privately a=
+nd
+> we don't even know they exist.
+>
+For your concerns, I think the supplementary introduction that new
+output results
+of slabinfo v2.2  in patch 2/2 will be necessary. This can help them
+optimize their tools
+more quickly to adapt to proc/slabinfo. Is this more friendly?
 
-How an empty, unused node is a power supply?
-
-Best regards,
-Krzysztof
-
+> > but "/sys/kernel/slab/<slab_name>/" (in
+> > Documentation/mm/slub.rst) or "/ sys/kernel/debug/slab" (in
+> > tools/mm/slabinfo.c).
+> >
+> > Furthermore, the current modification only involves optimizing the outp=
+ut
+> > of proc/slabinfo,
+>
+> It's not "only", the output of /proc/slabinfo is what those tools consume=
+,
+> so that's what concerns us the most.
+>
+> > and does not modify the  struct slabinfo or struct kmem_cache.
+> > So there is no need to adapt other modifications.
+>
+> These on the other hand are internal details of the kernel which we can
+> modify as much we want
+>
+> >> >> How about we simply do nothing?
+> >>
+> >> Agreed wrt modifying /proc/slabinfo
+> >>
+> >> > The note here means what changes will occur after
+> >> > we modify the version number of proc/slabinfo to 2.2.
+> >> > As for the replacement of tools/mm/slabinfo (that inspired
+> >> > by Christoph=E2=80=99s suggestions), it will be implemented in the n=
+ext version
+> >> > or even the later version.
+> >>
+> >> So what is your motivation for all this in the first place? You have s=
+ome
+> >> monitoring tool that relies on /proc/slabinfo and want to distinguish
+> >> reclaimable caches? So you can change it to parse the /sys directories=
+ Is
+> >> it more work? Yes, but you only have to do that once per boot, because
+> >> unlike the object/memory stats in /proc/slabinfo, the reclaimable flag=
+ will
+> >> not change for a cache.
+> >>
+> > The situation as you mentioned is very suitable for my current needs.
+> > My original intention is just to get an intuitive slab screen through a
+> > simple =E2=80=98cat proc/slabinfo=E2=80=99 command. As for the descript=
+ion "<slabreclaim>
+>
+> That would be nice, but again we must be careful about existing consumers=
+ of
+> /proc/slabinfo so we can't always have nice things.
+>
+> > comes from the collected results in the file
+> > /sys/kernel/slab/$cache/reclaim_account"
+> > may not be appropriate. Here I want to express that the column <slabrec=
+laim> has
+> > the same effect as traversing "/sys/kernel/slab/$ cache/reclaim_account=
+".
+> >
+> >> Would tools/mm/slabinfo almost work for you, but you're missing someth=
+ing?
+> >> Then send patches for that in the first place. Changing /proc/slabinfo=
+ (and
+> >> breaking other consumers) for a quick and easy fix with a different so=
+lution
+> >> planned for the future is simply not feasible.
+> >>
+> > Using the slabinfo tool to parse /sys/kernel/slab/$cache/reclaim_accoun=
+t
+> > is what I think about optimizing future tools during the discussion.
+> > It will not affect the current patch 1/2, and patch 2/2 is mainly to
+> > supplement the output examples of proc/slabinfo.
+> >
+> > If the community is willing to accept it, I will only modify
+> > patch 1/2 to implement it.
+> >
+> > Thanks very much!
+> >
+> >> HTH,
+> >> Vlastimil
+> >>
+> >> > Thanks!
+> >>
+>
 
