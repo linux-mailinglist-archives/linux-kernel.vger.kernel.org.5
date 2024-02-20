@@ -1,133 +1,157 @@
-Return-Path: <linux-kernel+bounces-73548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8452E85C3FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:52:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B4285C400
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:53:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C091C22ADB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:52:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B407F1F22AEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F5912FB38;
-	Tue, 20 Feb 2024 18:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F8E13667B;
+	Tue, 20 Feb 2024 18:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OeNPi9sX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GI/w2cbf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD867867A;
-	Tue, 20 Feb 2024 18:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF71D1350C0
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708455164; cv=none; b=LNPevMSDbVAgGQqKW0xMjKKKVxRFFUer5sh+gUWqAuH32flEboYSRNj1/Dxn0pSfbTnyvOQHiVqZnSh5wreWZb8z/hHIrqC4XL2diCLdBNcPLfeYXT5KSMY9QMWW6AKxvaKoa5gL/f4zK5P2Zd+ShQClkKRO6NyjYz8H8FgYN/k=
+	t=1708455168; cv=none; b=G7zuj5/XUkIH4Or/UdjrJSSImL6a2LUnBTVGo3NXRaSyYRKVbJJPFV1NwZhikUGh0r6Wd1/saSLIU7LKYcNcrcucy8M7psWRV1a2Kf1lixIV+y5/XHXWeKZ/4y7ni4WcKlLKyMuCHXpzQUAPZWUdW92GCrbkbmhYz3tip2II0WE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708455164; c=relaxed/simple;
-	bh=hIyvGKECNml8BOk3Zh1T6U7K5fqanwk9IvN5YMXzbIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xp0B9SV3tGioXM+TGBXC2qLv5btI/TlXhEcdQb4GsSK7TNJ9y4v9gchrwhwAozUZAJw9yGwN2YiZ0fF/p0TrinwlPkMckeObmtS7CqvlYdvzJ4hJXhL3YAkU8r6OSJJ4F+Vz0ThrChYjzXoQZVxBDv8ZXQJd10dz6YjCE0kfdOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OeNPi9sX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90FBEC433C7;
-	Tue, 20 Feb 2024 18:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708455164;
-	bh=hIyvGKECNml8BOk3Zh1T6U7K5fqanwk9IvN5YMXzbIQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OeNPi9sXybX+V1U26X7t5BRpgQ6ca6bckj/2dKyfdOYKyEBOjZWRIevkTFQZWrFTe
-	 FlaefYoUwRCw9A4+vyKiRL6NzRMVO0ZVE800T/M2q24cFVsYtULdz/UYozjVGxEcVH
-	 /a8AVPi/OVA91z8z2GLMvzuF2Ug++UFHTn2YavxgF4PQgrK0w/OPyFoyRaqFVboJ31
-	 d8kYUP2SlgMU+MzKpYhJ2fYfUm6eFGJ0N++kFliphJsPGpXI7jsD7XzIAwC2EPmkMX
-	 h84J9NmoGUJcqdTJUVFtj9cPBhZAdei9RLxnWZXpbIYUwuAXmiOCYzlXlSXbrFt5JZ
-	 UiMM3itax2/xA==
-Date: Tue, 20 Feb 2024 18:52:37 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-	linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu <chiaen_wu@richtek.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-	Mike Looijmans <mike.looijmans@topic.nl>,
-	Haibo Chen <haibo.chen@nxp.com>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	David Lechner <dlechner@baylibre.com>,
-	Ceclan Dumitru <dumitru.ceclan@analog.com>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v13 1/3] dt-bindings: adc: add AD7173
-Message-ID: <20240220-outmost-flavoring-b2593160de91@spud>
-References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
+	s=arc-20240116; t=1708455168; c=relaxed/simple;
+	bh=jVGlv+puRHszhkwzwsU0lyp/wfAVHZq/GVIMR/loB8o=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=PQk3h8GzYLgEPadpNSmtOiIx1ugZGBlXuryCBF7n/Dzn6X/9RbN19MPfyPXetwh9u68DAvd6iIn+DQlwwT14eqLCoq4xf9NFeS8ajtpjRc6QYeoSw0wQ4kA3+hiVaQQenzlN0fB/zwe7zw2/m7mP37fA6rgVuVNRUuVziYghFkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GI/w2cbf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708455165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P2wYttr5YYkjy1PbxuIXEie9EtBh3ZDzD6Qej/FpcCQ=;
+	b=GI/w2cbfWz7sKdDIkuyJdlHc0eph7LBjEfvovem6/7AXMB7TvR6fawsrUZ0hn8LtjZlv9w
+	FpGiLRmdXFrSjwBaJxoQx78MuPNt1zn8q/44BphB3+WAdXs6YpkW4Jzw/TsvcC2SBV7B3V
+	r0BjS3ptm/Kjl/YRZOZ5doRimijW2hw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-350-g2orAwwTOmKlrqpKxLWZ0Q-1; Tue,
+ 20 Feb 2024 13:52:39 -0500
+X-MC-Unique: g2orAwwTOmKlrqpKxLWZ0Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BA8ED38212C1;
+	Tue, 20 Feb 2024 18:52:38 +0000 (UTC)
+Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 96EC210800;
+	Tue, 20 Feb 2024 18:52:38 +0000 (UTC)
+Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
+	id 7D8CE30C1B8F; Tue, 20 Feb 2024 18:52:38 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id 7A3253FB4E;
+	Tue, 20 Feb 2024 19:52:38 +0100 (CET)
+Date: Tue, 20 Feb 2024 19:52:38 +0100 (CET)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: =?ISO-8859-15?Q?Simone_Wei=DF?= <simone.weiss@elektrobit.com>
+cc: lukas.bulwahn@gmail.com, simone.p.weiss@posteo.net, 
+    Kai Tomerius <kai.tomerius@elektrobit.com>, 
+    Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+    dm-devel@lists.linux.dev, Song Liu <song@kernel.org>, 
+    Yu Kuai <yukuai3@huawei.com>, linux-raid@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFQ] dm-integrity: Add a lazy commit mode for journal
+In-Reply-To: <20240209192542.449367-1-simone.weiss@elektrobit.com>
+Message-ID: <8a485b9-6dbb-78c-9a84-ed3ba65d9cb3@redhat.com>
+References: <20240209192542.449367-1-simone.weiss@elektrobit.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vLHcLCfBcKKsyixC"
-Content-Disposition: inline
-In-Reply-To: <20240220094344.17556-1-mitrutzceclan@gmail.com>
+Content-Type: multipart/mixed; BOUNDARY="185210117-1528542385-1708454829=:2837266"
+Content-ID: <19bdaab-220-364a-26ef-b7e1f6447b7a@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--185210117-1528542385-1708454829=:2837266
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <31b6218e-52d4-9728-16-da4e5e2dce77@redhat.com>
 
 
---vLHcLCfBcKKsyixC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Feb 20, 2024 at 11:43:38AM +0200, Dumitru Ceclan wrote:
+On Fri, 9 Feb 2024, Simone Weiﬂ wrote:
 
-> +  interrupts:
-> +    minItems: 1
-> +    description: |
+> Extend the dm-integrity driver to omit writing unused journal data sectors.
+> Instead of filling up the whole journal section, mark the last used
+> sector with a special commit ID. The commit ID still uses the same base value,
+> but section number and sector number are inverted. At replay when commit IDs
+> are analyzed this special commit ID is detected as end of valid data for this
+> section. The main goal is to prolong the live times of e.g. eMMCs by avoiding
+> to write the whole journal data sectors.
+> 
+> The change is right now to be seen as experimental and gets applied if
+> CONFIG_DMINT_LAZY_COMMIT is set to y. Note please that this is NOT
+> planned for a final version of the changes. I would make it configurable
+> via flags passed e.g. via dmsetup and stored in the superblock.
+> 
+> Architectural Limitations:
+> - A dm-integrity partition, that was previously used with lazy commit,
+>  can't be replayed with a dm-integrity driver not using lazy commit.
+> - A dm-integrity driver that uses lazy commit is expected
+>  to be able to cope with a partition that was created and used without
+>  lazy commit.
+> - With dm-integrity lazy commit, a partially written journal (e.g. due to a
+>  power cut) can cause a tag mismatch during replay if the journal entry marking
+>  the end of the journal section is missing. Due to lazy commit, older journal
+>  entries are not erased and might be processed if they have the same commit ID
+>  as adjacent newer journal entries.
 
-> +
-> +  interrupt-names:
-> +    minItems: 1
-> +    items:
-> +      - const: rdy
-> +      - const: err
+Hi
 
-I noticed that for minItems == 1, the rdy interrupt is required and err
-is the optional one.
+I was thinking about it and I think that this problem is a showstopper.
 
-With that in mind, you can simplify the interrupts description so that
-it describes the interrupts separately:
+Suppose that a journal section contains these commit IDs:
 
-  interrupts:
-    minItems:
-    items:
-      - description:
-          Ready: multiplexed with SPI data out. While SPI CS is low,
-          can be used to indicate the completion of a conversion.
+	2	2	2	2(EOF)	3	3	3	3
 
-      - description:
-          Error: The three error bits in the status register (ADC_ERROR, CRC_ERROR,
-          and REG_ERROR) are OR'ed, inverted, and mapped to the ERROR pin. Therefore,
-          the ERROR pin indicates that an error has occurred.
+The IDs "3" are left over from previous iterations. The IDs "2" contain 
+the current data. And now, the journal rolls over and we attempt to write 
+all 8 pages with the ID "3". However, a power failure happens and we only 
+write 4 pages with the ID "3". So, the journal will look like:
 
-Otherwise, I think everything has been sorted out?
+	3(new)	3(new)	3(new)	3(new)	3(old)	3(old)	3(old)	3(old)
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+After a reboot, the journal-replay logic will falsely believe that the 
+whole journal section is consistent and it will attempt to replay it.
 
-Cheers,
-Conor.
+This could be fixed by having always increasing commit IDs - the commit 
+IDs have 8 bytes, so we can assume that they never roll-over and it would 
+prevent us from mixing old IDs into the current transaction.
 
---vLHcLCfBcKKsyixC
-Content-Type: application/pgp-signature; name="signature.asc"
+Mikulas
 
------BEGIN PGP SIGNATURE-----
+>  If dm-integrity detects bad sections while
+>  replaying the journal, keep track about those sections and try to at least
+>  replay older, good sections.
+>  This is based on the assumption that most likely the newest
+>  section(s) will be damaged, which might have been only partially written
+>  due to a sudden reset. Previously, the whole journal would be cleared in
+>  such a case.
+> 
+> Signed-off-by: Simone Weiﬂ <simone.weiss@elektrobit.com>
+> Signed-off-by: Kai Tomerius <kai.tomerius@elektrobit.com>
+--185210117-1528542385-1708454829=:2837266--
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdT09QAKCRB4tDGHoIJi
-0pbnAPwOogZk7FYWbEiQymCF9QbGN2aePmxNXySm/bbh5Ae6MwD7BBgqXRFfmPWm
-pUBnH3bEbmLCIOA+mYKHA5Nq/zsZ5gw=
-=b/7e
------END PGP SIGNATURE-----
-
---vLHcLCfBcKKsyixC--
 
