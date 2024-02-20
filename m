@@ -1,108 +1,50 @@
-Return-Path: <linux-kernel+bounces-72310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC7C85B1D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6358785B1DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:10:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8B3E282AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:10:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CD9B283235
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D5155787;
-	Tue, 20 Feb 2024 04:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBZYbQva"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63024535D0;
-	Tue, 20 Feb 2024 04:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7E656B81;
+	Tue, 20 Feb 2024 04:10:07 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1491342A88
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708402204; cv=none; b=pYGwrV7tdbTWNUCJAJhR0mnteWAVCJwZCdrXIZcD8lXopEmwhu+PTwfVzDdcvo2YJYx39eQ5irslLqewR9NjSldbj7H85qReWotzNXcQpSTcBCSpZwuyS7RIsBV/7OeySDJJ0Li1YpNmeJWcK60Kgrhr7puAdb0RggIBL+rHEbI=
+	t=1708402207; cv=none; b=ZHgn9ZWLbKaicgu1Q99ATFUML8w+F3fBTyxCkb6fAjWzIQX9AFfEo9mXel1hdc0LXC4/CQlflCWW7mLPvotoUZGW2fRfyF68I52bdAMZ7be2HQGADpyfg6+5pT2ZWRZEFnS/Fl6eAtf1nLWpgEJRDAFV6Zdnvv3HrRhMRa3PBSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708402204; c=relaxed/simple;
-	bh=woxjKC7WFFEoqeaxhQsKmXCBIwq3jzFBV0fzqaCLZYU=;
+	s=arc-20240116; t=1708402207; c=relaxed/simple;
+	bh=CfhveA0iY0NhZM89I34YYfDGZgjwYYXWOT9zcfo1vks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B80OVMIXbtFRpNKaYvxgmoFISaEjPkhrBzVo6a9E2hvtVNId4xS2Rqi3vkDPnrLTLa5Ts/rPvtv7LmWJDZyeVRm+gmjIDHIzSnfR2oHjim/z9omqI53XkFqWlBC/84m+NTRICtL9lQwqcWe247/+Cb6S8XqkI1iFnIzCkOwSRGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBZYbQva; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78726494b46so310225885a.1;
-        Mon, 19 Feb 2024 20:10:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708402202; x=1709007002; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8kHuAqO5ZD/hbBfrYMNHXsD8jQOPncxvEGQ69fY7+c8=;
-        b=TBZYbQva6dItkpiAD1+wGs52fR0yBHdd5KxgNAsmBLu4fp2LhxkCT1O1n2Uk/nI99K
-         jkGK0Q2n9VTH7/wE8EAHv7CHkgnbfq7uQmssfYr5S4Zo72EGABwmP22bFY4zRCnJJYn4
-         qgJLJSdYVYNSsfvAFDy1d6ilpdyOULDSUghG6yAGSFrShm4/85SxEuG+5Wat+82zvR16
-         fR2jLThsa2XuQwZTTSUZ1YzTY6aHtC/wspRiGGpdRGLyBX56EbL67QxANU3wbiGxcvE/
-         eD05wIkbF3LDt5/RYtu49/veLsxK4LHHSOrn5hYQe/9DftAkCW5VkBp1WNKTotEmytQj
-         0XAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708402202; x=1709007002;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8kHuAqO5ZD/hbBfrYMNHXsD8jQOPncxvEGQ69fY7+c8=;
-        b=O0OPVOr6Zbc/zSlR4bv4p7rgGfzUY99ldG/irLDxzXYdgT+FPgspNMaNyRDf5f03EJ
-         XpmVJ+XvLRA/AOpqv9drP1Q3CltrK7QYwRueM1z/viPYxEW+8z7xIt7TGqfUbkOUda45
-         jp1gjlpovbB/F0JNvuB0DclleTPDLVF791Wihp+fdyd3Yt8suWx1TfJx67oG90O87wLs
-         OtP8Qy9TKAPBHo8r4D/ki+UM4BgUl7RHVUFOyogfhuE2WWFEC3EVEmmYsFSRIw3bhhLc
-         EV8+sWIzE640/7vRxhNwXFIUtHmrQzC418a4x7N4BJ3ncke7Q+NOEMPhZ27F2pb3MaTZ
-         3BsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXJtlhHJ2PssMAkX7qa3F5c7PGgp1PqRzwzACYIouJihRt4HUThUbastDNItQTyNt6/Ge178BDP1/l9oPpf0eEi4OkEADW2nTO5M+ZCHCMNMb4yBVEPyFXF6s6t0UeaV4duX1xnbSOkhCKo2FG4pzW620KQ3OBju3YUy2Io5ZG
-X-Gm-Message-State: AOJu0YxRDymx/3xTAmhFKUBn0RcxGt+MwVEsBDRT0u7I1kxVHAxuQ+8o
-	qokmv645y2PbPe9/WwMrdPdXrGF7wh+mCtv3N8DJusH+gMfJGojL
-X-Google-Smtp-Source: AGHT+IERdjvmhxqnhucMie6TcjrVdkmnqQIy27KFcGREGVCQ4OzGqN6ssTZl9j+rNHEZmsGfz1treA==
-X-Received: by 2002:a05:620a:219d:b0:787:5c2d:2b88 with SMTP id g29-20020a05620a219d00b007875c2d2b88mr7047376qka.59.1708402202133;
-        Mon, 19 Feb 2024 20:10:02 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id y11-20020a05620a0e0b00b00785d538aebdsm3043906qkm.95.2024.02.19.20.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 20:10:01 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 356B327C005B;
-	Mon, 19 Feb 2024 23:10:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 19 Feb 2024 23:10:01 -0500
-X-ME-Sender: <xms:GCbUZdv9w8YYxuqFlNjzaCXABcgUSNxtBtyot25QKNl3ZzdIKjlHXQ>
-    <xme:GCbUZWf0X--Wr04TafEfPCjR9UYeOxsgxKrFAVwx9x76i0pmZOhEQyPE2L1UuGc67
-    NawBl1yQwhU0GZlCw>
-X-ME-Received: <xmr:GCbUZQzyw7k1d8SDJykTqnB-R0cBXUX1EQ3-N9o0lIPLndSGLsU-sxkZlRd0GQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdelgdeikecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
-    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:GSbUZUND2PO12M7hLsbU3pw_bniUk5wsm8Scnaj4EwireH4i1GnkNQ>
-    <xmx:GSbUZd-ZincE3FfTIyT0q72gjCyCqFK7xywKbxrHlRHEyXKL58LBlA>
-    <xmx:GSbUZUV6vChuXxaiTOpGLDdj9Ir6KkyZA8ScOckvM4YffRb3fH96Yg>
-    <xmx:GSbUZWNmW9iHCqr0cs9juiXhhF_F7K3vk3Lr8_1QFlzD6pdI3JWwUQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 19 Feb 2024 23:10:00 -0500 (EST)
-Date: Mon, 19 Feb 2024 20:09:44 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-arm-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Oliver Smith-Denny <osde@linux.microsoft.com>
-Subject: Re: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
-Message-ID: <ZdQmCEepdOE2R7gS@boqun-archlinux>
-References: <20240215225116.3435953-1-boqun.feng@gmail.com>
- <2024021718-dwindling-oval-8183@gregkh>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eZ0GRD25sKGjc+UpLfPsOfZmSDlp6SRYNMhs8/Yg5x+sa87fvlAbLTh2EyLFSkIzIU8ZNxqwqK0Q2uJgfIbNhYhb13TlvAsCHRtugRqyMe97N78hM99ROGODRF6KcWRxHyIYIn1XO2aJHr0VI8eampcJ59kWyf1RDmgbckloxMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-e6-65d4261705ab
+Date: Tue, 20 Feb 2024 13:09:54 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Huang, Ying" <ying.huang@intel.com>, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com
+Subject: Re: [PATCH v4] sched/numa, mm: do not try to migrate memory to
+ memoryless nodes
+Message-ID: <20240220040954.GJ65758@system.software.com>
+References: <20240219041920.1183-1-byungchul@sk.com>
+ <87o7ccrghz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20240219174508.bc6256248a163c3ab9a58369@linux-foundation.org>
+ <20240220023304.GF65758@system.software.com>
+ <20240219192841.f1ed44b8c85073511227721c@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -111,39 +53,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024021718-dwindling-oval-8183@gregkh>
+In-Reply-To: <20240219192841.f1ed44b8c85073511227721c@linux-foundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsXC9ZZnoa642pVUg7urTSzmrF/DZnHp8VU2
+	i+kvG1ksnk7Yymxxt38qi8XlXXPYLO6t+c9qMfndM0aLSwcWMFkc7z3AZLGv4wGTRceRb8wW
+	W49+Z7c4OWsyiwOfx5p5axg9WvbdYvdYsKnUY/MKLY/Fe14yeWz6NInd4861PWweJ2b8ZvF4
+	v+8qm8fm09UenzfJBXBHcdmkpOZklqUW6dslcGV8/HOUvaCHv6Ll+GWmBsZ73F2MnBwSAiYS
+	6zressPYXb2tYDaLgKrE2t9zWEFsNgF1iRs3fjKD2CICuhKrnu8Cs5kFrjNJXP9XCGILC0RJ
+	zFjyhRHE5hWwkJhw8D/QHC4OIYGZTBIPlq2HSghKnJz5hAWiWUvixr+XTF2MHEC2tMTyfxwg
+	YU4Bb4mew71gN4gKKEsc2HacCWSOhEA7u8TMt9vYIA6VlDi44gbLBEaBWUjGzkIydhbC2AWM
+	zKsYhTLzynITM3NM9DIq8zIr9JLzczcxAiNrWe2f6B2Mny4EH2IU4GBU4uF9EHc5VYg1say4
+	MvcQowQHs5IIr3vThVQh3pTEyqrUovz4otKc1OJDjNIcLErivEbfylOEBNITS1KzU1MLUotg
+	skwcnFINjJN5GZ9drtmaWqM/5dsGqZ9a0+TnfLa4/D3jleZds96WJ7nP5jUFiYrvXvdww52v
+	AcHdGqL57x9ULrrm5W46/Vz8zAkrN/f8kVQV0xZSrJdevFPlp8nxX2n7NpqppwX3b55invjX
+	S7ZG0V5czPTm0gsKxb0M9/731wu8YWZidrxwNsNIYcchPiWW4oxEQy3mouJEAGKkjlCoAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsXC5WfdrCuudiXV4P1FTYs569ewWVx6fJXN
+	YvrLRhaLpxO2Mlvc7Z/KYnF47klWi8u75rBZ3Fvzn9Vi8rtnjBaXDixgsjjee4DJYl/HAyaL
+	jiPfmC22Hv3ObnFy1mQWB36PNfPWMHq07LvF7rFgU6nH5hVaHov3vGTy2PRpErvHnWt72DxO
+	zPjN4vF+31U2j8UvPjB5bD5d7fF5k1wATxSXTUpqTmZZapG+XQJXxsc/R9kLevgrWo5fZmpg
+	vMfdxcjJISFgItHV28oOYrMIqEqs/T2HFcRmE1CXuHHjJzOILSKgK7Hq+S4wm1ngOpPE9X+F
+	ILawQJTEjCVfGEFsXgELiQkH/wPN4eIQEpjJJPFg2XqohKDEyZlPWCCatSRu/HvJ1MXIAWRL
+	Syz/xwES5hTwlug53At2g6iAssSBbceZJjDyzkLSPQtJ9yyE7gWMzKsYRTLzynITM3NM9Yqz
+	MyrzMiv0kvNzNzEC42RZ7Z+JOxi/XHY/xCjAwajEw/sg7nKqEGtiWXFl7iFGCQ5mJRFe96YL
+	qUK8KYmVValF+fFFpTmpxYcYpTlYlMR5vcJTE4QE0hNLUrNTUwtSi2CyTBycUg2M6SXKccfe
+	6hTtemrhd9W/4thHk20r9JfeLly156f9p1Nt3XIfzjf9T9a5sn637fyJZmZJHbZz787jUXC8
+	UWuy+/pW+1VHzaU1dVPm/dz68+fsIxfjObZ/PZDJunFd/vNDGe7nj1R23PzyUfkuQ9X12mnJ
+	fK0lT4pN3TfPeurCa1b6KSya/0z4ciWW4oxEQy3mouJEAP79fmiPAgAA
+X-CFilter-Loop: Reflected
 
-On Sat, Feb 17, 2024 at 08:49:32AM +0100, Greg KH wrote:
-> On Thu, Feb 15, 2024 at 02:51:06PM -0800, Boqun Feng wrote:
-> > Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
-> > a trouble with the following firmware memory region setup:
-> > 
-> > 	[..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
-> > 	[..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
-> > 
-> > , on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
-> > range will be omitted from the the linear map due to 64k round-up. And
-> > a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
-> > 
-> > 	[...] Unable to handle kernel paging request at virtual address ffff0000dfd80000
-> > 
-> > To fix this, add ACPI_MEMORY_NVS into the linear map.
-> > 
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > Cc: stable@vger.kernel.org # 5.15+
+On Mon, Feb 19, 2024 at 07:28:41PM -0800, Andrew Morton wrote:
+> On Tue, 20 Feb 2024 11:33:04 +0900 Byungchul Park <byungchul@sk.com> wrote:
 > 
-> What commit id does this fix?  Can you include that as well?
+> > > Yes, this changelog is missing rather a lot of important information.
+> > > 
+> > > I pulled together the below, please check.
+> > 
+> > To make it more clear, I need to explain it more. I posted the following
+> > two patches while resolving the oops issue. However, two are going on
+> > for different purposes.
+> > 
+> > 1) https://lkml.kernel.org/r/20240219041920.1183-1-byungchul@sk.com
+> > 
+> >    I started this patch as the fix for the oops. However, I found the
+> >    root cause comes from using -1 as an array index. So let the root 
+> >    cause fix go with another thread, 2). Nevertheless, 1) is still
+> >    necessary as a *reasonable optimization* but not the real fix any
+> >    more.
 > 
+> Well I altered this patch's changelog to tell readers that it is an
+> optimization.  But one does wonder why it isn't simply a bugfix. 
+> Attempting to migrate to a memoryless node is clearly as error. 
 
-It should be 7aff79e297ee ("Drivers: hv: Enable Hyper-V code to be built
-on ARM64"), but as Ard mentioned earlier, this could be fixed at the VM
-firmware, and Oliver is working on that. Should the situation change, I
-will send a V2 with more information and include the commit id.
+I agree with what Oscar Salvador said:
 
-Regards,
-Boqun
+   "As this is not a bug fix but an optimization, as we will fail anyways
+   in migrate_misplaced_folio() when migrate_balanced_pgdat() notices
+   that we do not have any memory on that node."
 
-> thanks,
+   https://lore.kernel.org/lkml/ZdG1yO29WTyRiw8Q@localhost.localdomain/
+   
+So assuming all the related code works correctly, the migration will
+safely fail even without this optimization patch.
+
+	Byungchul
+
+> Presumably the called code handles it somehow, but in what fashion and
+> at what cost?
 > 
-> greg k-h
+> > 2) https://lkml.kernel.org/r/20240216111502.79759-1-byungchul@sk.com
+> > 
+> >    I found the root cause of the oops comes from using -1 as an array
+> >    index. So moved all the oops message, Fixes: tag, and cc stable to
+> >    here. Long story short, 2) is the *real fix* for the oops.
+> > 
 
