@@ -1,459 +1,252 @@
-Return-Path: <linux-kernel+bounces-72367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E8D385B27D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:54:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A03385B280
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 06:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93B32B2193A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:54:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14F01C216BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58FD58217;
-	Tue, 20 Feb 2024 05:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hMbSiDmu"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9004757334;
+	Tue, 20 Feb 2024 05:55:59 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2131.outbound.protection.partner.outlook.cn [139.219.146.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D1B58200;
-	Tue, 20 Feb 2024 05:54:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708408487; cv=none; b=OEFvjcer4eGxp/H1d97Hb7bsScu8kUSgTWPMEo8NcNlcjA2L+CdOPBUqSVcGOnBI2PC/3B4WzL3IQiUilBkWg1qiNCoyzpWco7U50dOh5ePXCZsFmWgkvAQYmNho1WhDfOg3InQxX+3UIsRPXUNQrilIRwYeAj03ozZFj2uckU4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708408487; c=relaxed/simple;
-	bh=yThFl3xhuE6nYYkl+bTelAkbIDCajCurRGz+/0klV1o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NSlA8FPPQAh42wV6RLjBkcJZIXiHygHcTjc5l0gH7FNitLdB2WwQfp7UO87y4y2kkutc6aLmhUDm9ZaLkkm9qAgy/YV9tro6PrhUasYLQiOuvzEVUHoO1PKGJzuJtNj5NAsE5tUOBYF2LMBEHtyi2ZdildlDABbdGKfCpalDZZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hMbSiDmu; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41K5JLXD032030;
-	Tue, 20 Feb 2024 05:54:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Y/OMi0zjJgBDslNSN6f1HvOXmDJncwSvGpQAEIUQTpA=; b=hM
-	bSiDmuErnqa69mqtjtT+4LCqGef9AGj30+ojhacVi2Dba1R9outAqG3vzCtRwdo7
-	ZAFKuVO55qpapbgbKvbu5Lful9Fslg6LK+bRnO21groK0rgUMPSVzZIzUvhOB4IJ
-	UokV1vm78Vqa464HpG1VIuGKOIZpUTuxiMsiOjXvxPLoqAdpDucSqIS4FtTYBtZS
-	RdztlrJ4SWiLIORZYLWgc/e+L6E1NcSh+H5mqhjlwAtjaNAA4R+7RPQZ/rQk2R0c
-	t/AAD9ztvRZ9rP0gAEA5n+pErM6/jgQuz706GV1op6KEdsb0s3twjNolkoT5CcXm
-	IAZ7bFSoV655Fr+EVcpA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wcnt60212-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:54:40 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41K5sdgE010299
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 05:54:39 GMT
-Received: from [10.214.197.177] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 19 Feb
- 2024 21:54:36 -0800
-Message-ID: <82ad6010-c70f-4d7f-af83-d9be208dc4b0@quicinc.com>
-Date: Tue, 20 Feb 2024 11:24:33 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0952A2030B;
+	Tue, 20 Feb 2024 05:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.131
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708408558; cv=fail; b=d5F1JYKfNwCWrogRTorgR0LGm6xhUnggtnJbQosywupW4W9mZB2yuSLSCcQSVbX8pN9ee9YKIQAAx/N5kdXPqfEvhjEV1l3t30bH7ja7mxIwWWoMkcCXe+HXEzyzirXzH/IURriUnqGe8dzE5H0LsNMkC8TvElE7SBYkZVPMLdA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708408558; c=relaxed/simple;
+	bh=fX1oFQXpwc2aJiOZR6Aag/utcG2ZR5XMpOo2bBYYlSo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IsKNaMaEt8tK9Eu1Dwf1DHVDqCL0rUhvNK3ogZA/gXEx9RiKWWnx8fc2qDIi/jt5uiZsJtq3iMuvkSRDsFcZjgQ6dPgSkKdxxChPVD94FbwEFu8KK7/35wApVTmrLaW8WIfYnkymq35+CYk2SikIuUAbguWoLcoqhqDtex+0+p0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ISiA+7ZHc4/td96C4PTorn+oDISs5w6I0Nyu9cqTdQKp7gwCSjyaasxb75oOP142xt++JO/MxXhGpVzd8qMZ5Ewloe5EKpK077xVB064tF3F47Bb3rkSO0HyBSivJ/gUhEIZ5kIH/4rvDhDvdrhIRFxWtNqH1BhtrFBnuMdjWEJjhCGXfUXHiEHD+VRZTmy7MaLu0P2YF3RIs80QdY8K/vn8iYN5kItbfCkEsmQSsoEgUlyqMg/4rsMdd5zNsZVnN/r7oc+KAq5PGf4jd760NrBrjdWzz4xGAoTEvSQ1pQwviV90OW7/XEjKav+O96MY1+fDprU/uiqgkdZkGrRi9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fX1oFQXpwc2aJiOZR6Aag/utcG2ZR5XMpOo2bBYYlSo=;
+ b=LXja7truWU5yyiVJzYXwPyQLVIDmwNWkZuafeaDPVi9wabqTvFim7WKUOnswaELIMwjqfJg/xV+Vr/wrZSYCSC9DmKAjMGOiTKGSZSklep2ChWiOfgYlKOKiKKX3lrN2476rzUMivyi9PfMAXSCdwT0UlHzys9ktVd4PHVJS/uvUXDUt6+Bj5R7NRu52qZNAzg/SRvAjUIQA1Q0eg6iUh9Vg1MTu0+aemXJHdhv5XwGeMhy0b3fpZUsvDn5TOOENYOvscvxGITbkhfIGb2xZyGJJHDVx0dNfp+ZezzKolYZhfrw1gEPIXytdc87/PYpltbX4XAzQ/vBr9zm2d+YPKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from ZQ0PR01MB1302.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:1b::9) by ZQ0PR01MB1061.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:d::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.46; Tue, 20 Feb
+ 2024 05:55:43 +0000
+Received: from ZQ0PR01MB1302.CHNPR01.prod.partner.outlook.cn
+ ([fe80::9d68:58f1:62cc:f1d3]) by
+ ZQ0PR01MB1302.CHNPR01.prod.partner.outlook.cn ([fe80::9d68:58f1:62cc:f1d3%4])
+ with mapi id 15.20.7270.047; Tue, 20 Feb 2024 05:55:42 +0000
+From: Yuklin Soo <yuklin.soo@starfivetech.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Hal Feng
+	<hal.feng@starfivetech.com>, Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Jianlong Huang <jianlong.huang@starfivetech.com>, Emil Renner Berthing
+	<kernel@esmil.dk>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Drew
+ Fustini <drew@beagleboard.org>, "linux-gpio@vger.kernel.org"
+	<linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Subject: RE: [RFC PATCH 2/6] pinctrl: starfive: jh8100: add pinctrl driver for
+ sys_east domain
+Thread-Topic: [RFC PATCH 2/6] pinctrl: starfive: jh8100: add pinctrl driver
+ for sys_east domain
+Thread-Index: AQHaUXlDs3sBux2SdEKzIvaJBY27p7ES24CQ
+Date: Tue, 20 Feb 2024 05:55:42 +0000
+Message-ID:
+ <ZQ0PR01MB130267FBE0BFB694C2554605F650A@ZQ0PR01MB1302.CHNPR01.prod.partner.outlook.cn>
+References: <20231221083622.3445726-1-yuklin.soo@starfivetech.com>
+ <20231221083622.3445726-3-yuklin.soo@starfivetech.com>
+ <CACRpkdagPYfSq91dXOTJ9d8VjCMMG2AN3L9-Qxdw3C8tki09EQ@mail.gmail.com>
+In-Reply-To:
+ <CACRpkdagPYfSq91dXOTJ9d8VjCMMG2AN3L9-Qxdw3C8tki09EQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: ZQ0PR01MB1302:EE_|ZQ0PR01MB1061:EE_
+x-ms-office365-filtering-correlation-id: 565d5cfb-1410-4657-15c2-08dc31d89304
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ GftklZYvXiVhH3B/NkPVJBkm8Vu/VS3TLGGe8eXDiuNZWj4Kux7fyMpyZhc5OIjZxoBhj0ZbV2wH10l3WzymQM75gNN5iB1x7ikBgBFo2ALs0ChigarY3vXl+xIg66DTtGOI1INpF8tzlkcnxyosejmt8Iio2MPOkHtgeB5+B+0ofIBn7d7is0plRZJrE/iGAQ428eOG06CfZBr5OgX+rUq6xqQQAHSaK4R5jo3gG16ZKpMN82MR1z9gzJ4SNH17PsFgBKIL30a4UWc2XDElnTPg64dHS2WCaQYo6dmlDZk9LqY5PbqQTXF1pLFRSoUg4gtPmp9iEBPTJrm/KfONrOM68lIYgKJaFPGi06HWSbGyP74esbw2PUL/iuDExtYkGZJqaal4KEnp5sldABpHefR2MTHrjEPXkA6gTWYUypS/XsbdH6TvTRJerUyOuQRb25VWU5d274nBSyFWXEgHSK/SqK1x1Vtqb3XdDGy6vFqkprolKWQepyWaMceQOFLdDYFKvNF/9s+RBrcpwCRGLq3TTdueFJ9nwuvc5VVfJBDGhzCeqqFWK2cd9/uy7CSS
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1302.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?bHFFSEh5dkNhemJQU0Z5emFxaCtkdVdKUmFHdG42QlJ1aHV0azNObDd3VzRn?=
+ =?utf-8?B?M0VKN3VBcjd2bDJSZ3o5M3JMTFBaWnM1ZXV1OWY4WjJNN1E4SjZROGtFWkFQ?=
+ =?utf-8?B?bUNxV0ZMT09Wc25zUm51RVN6cnAxTnVGUlNkbXhIdE5IWURuM1lnZzhPM2NK?=
+ =?utf-8?B?NkhGaDgvNXA2SnhLdi8zb1dsMmhHREVUQS9NRnFPdEVoczM0WjlybDRjK1Qr?=
+ =?utf-8?B?TUI1TnJwMDN5ZG1wTWxuVWtJTEsxVEZiSWhOSFVvNW5EcGNPSXFPN2V1blVO?=
+ =?utf-8?B?dkNzZUxxZ0x6cGY3MHcxb1RQRzg0TEJRbEVYazlPdzVYRHA3TkF6V0ZVbnlz?=
+ =?utf-8?B?SElGTGhBRjA2NWtaelZENEpENWFuNER6SHBNTm5oWUpiTVpmYXpIdTdrL1RC?=
+ =?utf-8?B?dDRHOFQ3NXdjaDdVazNIZXNFVTBsa3JpOGxabngwRU1NdjhPajlTQVJLcmkz?=
+ =?utf-8?B?UFZOSDBLSXlwUUJYdkwyL3ZOV2VNMi83dG1XNTM4RnFyd3Q5ZFpseU1VQTZK?=
+ =?utf-8?B?VWlub3RuY25nSXMzOVVGYzVZdk9kRHFVOWVMbGY4d0t6ZTVLWURMMXRONlBG?=
+ =?utf-8?B?WGxSTUZObm1wVElaazBWY3hYSnBjVWdLMDF1TERaWlQ2OHlkRGxLVzIvRi92?=
+ =?utf-8?B?WkVVNkMrdXdYTlJpQ3NjOXRlOEtJdzdoVDJMcHJvN1RrRXIwVGpJYkEzcURI?=
+ =?utf-8?B?TnJQSG9MY3QzaVZMeURqNW90eGxXcGxESEhBQlYzUmI2a1Q0NFVlRDA2OWYx?=
+ =?utf-8?B?eUtsVDZETGZwS2N5UGJXZkVDYTdadHA0bm9lQzhPbHREdlNJeHJrcVFUdTFX?=
+ =?utf-8?B?MFpNdkp2YTkraW1WM1F3eHZCOFhPb2p1Z252K3Noa3ZHdjc5alQxNEt1MGJV?=
+ =?utf-8?B?aGtKNlI2MzFlSFRRL085MnVkakNLRm9Jb0tPU3ZNWDdrV2dzWDFNQjFlR3U5?=
+ =?utf-8?B?S2JveThlb2lHZHFnSTVrVnhBN0cwelhRcGlScG1zbWdtWlVJWkJRNUhDSVBS?=
+ =?utf-8?B?dGJMeXZ5V20waVhubGx4dm4wUSsrQWo3V3c5QnpqZTcxbzlWU0xzU2U1Q1Qv?=
+ =?utf-8?B?czNwREdPeGVQaHovbVFiazRxdFVtM2NJS0RzcjJzNVZ1Wm1PVTZuRzdCbEdt?=
+ =?utf-8?B?bGcwUjd6ZGtHK2RTQ0RIemx3dDBpU3NtYnBCdS9TcUR0U3NLWUtPNFg1d0VM?=
+ =?utf-8?B?d2s1aUZkc3hUWStCUktEbjhGaXRhZmlSSDFYNE8ra21yYkxOWFVqK09nTU9K?=
+ =?utf-8?B?ejZ0MlNoUmhoZzgwKzFWNW1VWUdaeHZucG1sem1MT2NQVHpHTW1lNnVrWU1t?=
+ =?utf-8?B?cEdmcTVlcnlTeVdsZHE3THdYQVFWTDdmR2Z2U3Ztd24ycnlaUXNaa1JDSmV3?=
+ =?utf-8?B?SmZVOG9sajZNZmp2V3BjK3BUbk5YWHdhNWE3S3VMdEkzYWVtN0JteCtvL0E2?=
+ =?utf-8?B?WHN6UGVZTERhODd4NmxiVXBrUGxaWm1HRXA3YWwzNFVTOThEK1pHZnRLNVZT?=
+ =?utf-8?B?bzh5RS9Ba1cxUlBhS0ptazhGTUNjcUJWNEh5aFp4c1pNYTRYNVVCN2xBRHlV?=
+ =?utf-8?B?Z0diMTkwRWZZQ0pVcG5lSXlQSTFCZWJCenhnNHFRcXVmTmVtdHVHMGhnMkRF?=
+ =?utf-8?B?bEZQRklmamVRY1pqVUVaMmxDbFpMYmFiOE9xanZ6b1NaNG05MVJJa2NRSlBy?=
+ =?utf-8?B?UXplN0hEemJKcXBZS0xwZG94dm8xNUlpNlhEbkNUc0dDd2g4dnNGZTc0TWRO?=
+ =?utf-8?B?cW4zNkJjeUxrdzhYRUpQZndXNlZIU25mVGNTcGNqVkNORDlIMUxKMExqa3pO?=
+ =?utf-8?B?dDh5ckJ2Q292b2tzdkRYY0pDL3hKYnQzVnBmazgxVXZDN2kwL0lHWkJzbzVD?=
+ =?utf-8?B?c2JibHJ0WEhHV3MzOGJkd3VhMUpVYmNDZVFxbWFkUTNCUWtPRnJORHJaaFVE?=
+ =?utf-8?B?a21ZTU5LWmFsVmhQRUV3Wmp6Szlyc3dtZGZ6ZktReWRTSzRYR2trV2J2VHB4?=
+ =?utf-8?B?SytaOVF3dFJuZkdYVHZQQno0elFYVVRBL0RQYjE4M0ZseXR6dEFDM29USDQv?=
+ =?utf-8?B?TDdiU21TVk9ETWNNUXVkMi9POW8xd2IwWFNleW5ySi9oYld5NFNwa1dhVVM5?=
+ =?utf-8?B?SFhFbFp3WTJLSW1FV1BJY2RCOERzVkgySmJDTzhrTXZUMVV4Sy8yd0xHQmcx?=
+ =?utf-8?B?aXBzb2hxVVVjKzFmaS9DcUhMNWRBTU5XRkRxMWNpdGh4WlQ1Q3k0dVFVN2tD?=
+ =?utf-8?B?bG1aVW4zenlxSFFsdXBZclR6SHFBPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware: qcom_scm: Introduce batching of hyp assign
- calls
-Content-Language: en-GB
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski@linaro.org>, <luzmaximilian@gmail.com>,
-        <bartosz.golaszewski@linaro.org>, <quic_gurus@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_guptap@quicinc.com>, <quic_pkondeti@quicinc.com>,
-        <quic_pheragu@quicinc.com>
-References: <20240209112536.2262967-1-quic_dibasing@quicinc.com>
- <7fhl7uvhl26whumcl3f5hxflczws67lg3yq4gb5fyrig2ziux6@chft6orl6xne>
-From: Dibakar Singh <quic_dibasing@quicinc.com>
-In-Reply-To: <7fhl7uvhl26whumcl3f5hxflczws67lg3yq4gb5fyrig2ziux6@chft6orl6xne>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Rf11BU14TbisynYCPV-pwXtjREvmsTzI
-X-Proofpoint-GUID: Rf11BU14TbisynYCPV-pwXtjREvmsTzI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_04,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 bulkscore=0
- suspectscore=0 spamscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200039
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1302.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 565d5cfb-1410-4657-15c2-08dc31d89304
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 05:55:42.8883
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wXoPMe/i54QtM/52SJJqkgv8AmZykgqCBqVMpV7kGny8UeOcOfGZfFvq2gpQlPkjrogRyecwdJppECarqiotA9POvJzy8bGX1EtzL9N7Xzc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1061
 
-
-
-On 09-Feb-24 11:36 PM, Elliot Berman wrote:
-> On Fri, Feb 09, 2024 at 04:55:36PM +0530, Dibakar Singh wrote:
->> Expose an API qcom_scm_assign_table to allow client drivers to batch
->> multiple memory regions in a single hyp assign call.
->>
->> In the existing situation, if our goal is to process an sg_table and
->> transfer its ownership from the current VM to a different VM, we have a
->> couple of strategies. The first strategy involves processing the entire
->> sg_table at once and then transferring the ownership. However, this
->> method may have an adverse impact on the system because during an SMC
->> call, the NS interrupts are disabled, and this delay could be
->> significant when dealing with large sg_tables. To address this issue, we
->> can adopt a second strategy, which involves processing each sg_list in
->> the sg_table individually and reassigning memory ownership. Although
->> this method is slower and potentially impacts performance, it will not
->> keep the NS interrupts disabled for an extended period.
->>
->> A more efficient strategy is to process the sg_table in batches. This
->> approach addresses both scenarios by involving memory processing in
->> batches, thus avoiding prolonged NS interrupt disablement for longer
->> duration when dealing with large sg_tables. Moreover, since we process
->> in batches, this method is faster compared to processing each item
->> individually. The observations on testing both the approaches for
->> performance is as follows:
->>
->> Allocation Size/            256MB            512MB            1024MB
->> Algorithm Used           ===========      ===========      ============
->>
->> Processing each sg_list   73708(us)        149289(us)       266964(us)
->> in sg_table one by one
->>
->> Processing sg_table in    46925(us)         92691(us)       176893(us)
->> batches
->>
->> This implementation serves as a wrapper around the helper function
->> __qcom_scm_assign_mem, which takes an sg_list and processes it in
->> batches. We’ve set the limit to a minimum of 32 sg_list in a batch or a
->> total batch size of 512 pages. The selection of these numbers is
->> heuristic, based on the test runs conducted. Opting for a smaller number
->> would compromise performance, while a larger number would result in
->> non-secure interrupts being disabled for an extended duration.
->>
->> Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
->> Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
->> Signed-off-by: Dibakar Singh <quic_dibasing@quicinc.com>
->> ---
->>   drivers/firmware/qcom/qcom_scm.c       | 211 +++++++++++++++++++++++++
->>   include/linux/firmware/qcom/qcom_scm.h |   7 +
->>   2 files changed, 218 insertions(+)
->>
->> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
->> index 520de9b5633a..038b96503d65 100644
->> --- a/drivers/firmware/qcom/qcom_scm.c
->> +++ b/drivers/firmware/qcom/qcom_scm.c
->> @@ -21,6 +21,8 @@
->>   #include <linux/platform_device.h>
->>   #include <linux/reset-controller.h>
->>   #include <linux/types.h>
->> +#include <linux/scatterlist.h>
->> +#include <linux/slab.h>
->>   
->>   #include "qcom_scm.h"
->>   
->> @@ -1048,6 +1050,215 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->>   }
->>   EXPORT_SYMBOL_GPL(qcom_scm_assign_mem);
->>   
->> +/**
->> + * qcom_scm_assign_mem_batch() - Make a secure call to reassign memory
->> + *				   ownership of several memory regions
->> + * @mem_regions:    A buffer describing the set of memory regions that need to
->> + *		    be reassigned
->> + * @nr_mem_regions: The number of memory regions that need to be reassigned
->> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
->> + *		    owners
->> + * @src_sz:	    The size of the srcvms buffer (in bytes)
->> + * @destvms:	    A buffer populated with the new owners and corresponding
->> + *		    permission flags.
->> + * @dest_sz:	    The size of the destvms buffer (in bytes)
->> + *
->> + * Return negative errno on failure, 0 on success.
->> + */
->> +static int qcom_scm_assign_mem_batch(struct qcom_scm_mem_map_info *mem_regions,
->> +				     size_t nr_mem_regions, u32 *srcvms,
->> +				     size_t src_sz,
->> +				     struct qcom_scm_current_perm_info *destvms,
->> +				     size_t dest_sz)
->> +{
->> +	dma_addr_t mem_dma_addr;
->> +	size_t mem_regions_sz;
->> +	int ret = 0, i;
->> +
->> +	for (i = 0; i < nr_mem_regions; i++) {
->> +		mem_regions[i].mem_addr = cpu_to_le64(mem_regions[i].mem_addr);
->> +		mem_regions[i].mem_size = cpu_to_le64(mem_regions[i].mem_size);
->> +	}
->> +
->> +	mem_regions_sz = nr_mem_regions * sizeof(*mem_regions);
->> +	mem_dma_addr = dma_map_single(__scm->dev, mem_regions, mem_regions_sz,
->> +				      DMA_TO_DEVICE);
->> +	if (dma_mapping_error(__scm->dev, mem_dma_addr)) {
->> +		dev_err(__scm->dev, "mem_dma_addr mapping failed\n");
->> +		return -ENOMEM;
->> +	}
->> +
->> +	ret = __qcom_scm_assign_mem(__scm->dev, virt_to_phys(mem_regions),
->> +				    mem_regions_sz, virt_to_phys(srcvms), src_sz,
->> +				    virt_to_phys(destvms), dest_sz);
->> +
->> +	dma_unmap_single(__scm->dev, mem_dma_addr, mem_regions_sz, DMA_TO_DEVICE);
->> +	return ret;
->> +}
->> +
->> +/**
->> + * qcom_scm_prepare_mem_batch() - Prepare batches of memory regions
->> + * @sg_table:       A scatter list whose memory needs to be reassigned
->> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
->> + *		    owners
->> + * @nr_src:	    The number of the src_vms buffer
->> + * @destvms:	    A buffer populated with he vmid(s) for the new owners
->> + * @destvms_perms:  A buffer populated with the permission flags of new owners
->> + * @nr_dest:	    The number of the destvms
->> + * @last_sgl:	    Denotes to the last scatter list element. Used in case of rollback
->> + * @roll_back:	    Identifies whether we are executing rollback in case of failure
->> + *
->> + * Return negative errno on failure, 0 on success.
->> + */
->> +static int qcom_scm_prepare_mem_batch(struct sg_table *table,
->> +				      u32 *srcvms, int nr_src,
->> +				      int *destvms, int *destvms_perms,
->> +				      int nr_dest,
->> +				      struct scatterlist *last_sgl, bool roll_back)
->> +{
->> +	struct qcom_scm_current_perm_info *destvms_cp;
->> +	struct qcom_scm_mem_map_info *mem_regions_buf;
->> +	struct scatterlist *curr_sgl = table->sgl;
->> +	dma_addr_t source_dma_addr, dest_dma_addr;
->> +	size_t batch_iterator;
->> +	size_t batch_start = 0;
->> +	size_t destvms_cp_sz;
->> +	size_t srcvms_cp_sz;
->> +	size_t batch_size;
->> +	u32 *srcvms_cp;
->> +	int ret = 0;
->> +	int i;
->> +
->> +	if (!table || !table->sgl || !srcvms || !nr_src ||
->> +	    !destvms || !destvms_perms || !nr_dest || !table->nents)
->> +		return -EINVAL;
->> +
->> +	srcvms_cp_sz = sizeof(*srcvms_cp) * nr_src;
->> +	srcvms_cp = kmemdup(srcvms, srcvms_cp_sz, GFP_KERNEL);
->> +	if (!srcvms_cp)
->> +		return -ENOMEM;
->> +
->> +	for (i = 0; i < nr_src; i++)
->> +		srcvms_cp[i] = cpu_to_le32(srcvms_cp[i]);
->> +
->> +	source_dma_addr = dma_map_single(__scm->dev, srcvms_cp,
->> +					 srcvms_cp_sz, DMA_TO_DEVICE);
-> 
-> Please use the new tzmem allocator:
-> 
-> https://lore.kernel.org/all/20240205182810.58382-1-brgl@bgdev.pl/
-
-Noted, I will use this allocator in V2 patch.
-
-> 
->> +
->> +	if (dma_mapping_error(__scm->dev, source_dma_addr)) {
->> +		ret = -ENOMEM;
->> +		goto out_free_source;
->> +	}
->> +
->> +	destvms_cp_sz = sizeof(*destvms_cp) * nr_dest;
->> +	destvms_cp = kzalloc(destvms_cp_sz, GFP_KERNEL);
->> +
->> +	if (!destvms_cp) {
->> +		ret = -ENOMEM;
->> +		goto out_unmap_source;
->> +	}
->> +
->> +	for (i = 0; i < nr_dest; i++) {
->> +		destvms_cp[i].vmid = cpu_to_le32(destvms[i]);
->> +		destvms_cp[i].perm = cpu_to_le32(destvms_perms[i]);
->> +		destvms_cp[i].ctx = 0;
->> +		destvms_cp[i].ctx_size = 0;
->> +	}
->> +
->> +	dest_dma_addr = dma_map_single(__scm->dev, destvms_cp,
->> +				       destvms_cp_sz, DMA_TO_DEVICE);
->> +	if (dma_mapping_error(__scm->dev, dest_dma_addr)) {
->> +		ret = -ENOMEM;
->> +		goto out_free_dest;
->> +	}
->> +
->> +	mem_regions_buf = kcalloc(QCOM_SCM_MAX_BATCH_SECTION, sizeof(*mem_regions_buf),
->> +				  GFP_KERNEL);
->> +	if (!mem_regions_buf)
->> +		return -ENOMEM;
->> +
->> +	while (batch_start < table->nents) {
->> +		batch_size = 0;
->> +		batch_iterator = 0;
->> +
->> +		do {
->> +			mem_regions_buf[batch_iterator].mem_addr = page_to_phys(sg_page(curr_sgl));
->> +			mem_regions_buf[batch_iterator].mem_size = curr_sgl->length;
->> +			batch_size += curr_sgl->length;
->> +			batch_iterator++;
->> +			if (roll_back && curr_sgl == last_sgl)
->> +				break;
->> +			curr_sgl = sg_next(curr_sgl);
->> +		} while (curr_sgl && batch_iterator < QCOM_SCM_MAX_BATCH_SECTION &&
->> +				curr_sgl->length + batch_size < QCOM_SCM_MAX_BATCH_SIZE);
->> +
->> +		batch_start += batch_iterator;
->> +
->> +		ret = qcom_scm_assign_mem_batch(mem_regions_buf, batch_iterator,
->> +						srcvms_cp, srcvms_cp_sz, destvms_cp, destvms_cp_sz);
->> +
->> +		if (ret) {
->> +			dev_info(__scm->dev, "Failed to assign memory protection, ret = %d\n", ret);
->> +			last_sgl = curr_sgl;
->> +			ret = -EADDRNOTAVAIL;
-> 
-> Probably should not be changing the ret value.
-
-We are adjusting the return value here because we have already printed 
-the failed return value earlier. Our goal is to ensure that clients 
-invoking this API consistently receive the same failed values, without 
-needing to worry about the precise details of the failure.
-
-> 
-> What happens to the memory that has been assigned so far? How do we
-> reclaim that?
-
-We’ve already added rollback functionality in qcom_scm_assign_table that 
-allows batches to be rolled back to the HLOS if there’s a failure.
-
-> 
->> +			break;
->> +		}
->> +		if (roll_back && curr_sgl == last_sgl)
->> +			break;
->> +	}
->> +	kfree(mem_regions_buf);
->> +
->> +	dma_unmap_single(__scm->dev, dest_dma_addr,
->> +			 destvms_cp_sz, DMA_TO_DEVICE);
->> +
->> +out_free_dest:
->> +	kfree(destvms_cp);
->> +out_unmap_source:
->> +	dma_unmap_single(__scm->dev, source_dma_addr,
->> +			 srcvms_cp_sz, DMA_TO_DEVICE);
->> +out_free_source:
->> +	kfree(srcvms_cp);
->> +	return ret;
->> +}
->> +
->> +/**
->> + * qcom_scm_assign_table() - Make a call to prepare batches of memory regions
->> + *			     and reassign memory ownership of several memory regions at once
->> + * @sg_table:       A scatter list whose memory needs to be reassigned
->> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
->> + *		    owners
->> + * @nr_src:	    The number of the src_vms buffer
->> + * @destvms:	    A buffer populated with he vmid(s) for the new owners
->> + * @destvms_perms:  A buffer populated with the permission flags of new owners
->> + * @nr_dest:	    The number of the destvms
->> + *
->> + * Return negative errno on failure, 0 on success.
->> + */
->> +int qcom_scm_assign_table(struct sg_table *table,
->> +			  u32 *srcvms, int nr_src,
->> +			  int *destvms, int *destvms_perms,
->> +			  int nr_dest)
->> +{
->> +	struct scatterlist *last_sgl = NULL;
->> +	int rb_ret = 0;
->> +	u32 new_dests;
->> +	int new_perms;
->> +	int ret = 0;
->> +
->> +	ret = qcom_scm_prepare_mem_batch(table, srcvms, nr_src,
->> +					 destvms, destvms_perms, nr_dest, last_sgl, false);
->> +
->> +	if (!ret)
->> +		goto out;
->> +	new_dests = QCOM_SCM_VMID_HLOS;
-> 
-> We have the original srcvms. Will it always be HLOS? If so, then do we
-> need to pass srcvms at all?
-
-No, srcvms can be VMs other than HLOS. However, this API does not expect 
-clients to provide srcvms permissions. As a result, when such 
-permissions are absent, we proceed by assigning the previously processed 
-batches to HLOS.
-
-> 
->> +	new_perms = QCOM_SCM_PERM_EXEC | QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ;
->> +	rb_ret = qcom_scm_prepare_mem_batch(table, destvms, nr_dest, &new_dests,
->> +					    &new_perms, nr_src, last_sgl, true);
->> +	WARN_ON_ONCE(rb_ret);
->> +out:
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(qcom_scm_assign_table);
-> 
-> Who uses this function?
-
-https://lore.kernel.org/all/cover.1700544802.git.quic_vjitta@quicinc.com/
-
-This patch responsible for extending qcom secure heap support which will 
-be the user of this API. In the current implementation, we use 
-qcom_scm_assign_mem and iterate over each sg_list in the sg_table 
-individually to secure the memory. Going forward, we will replace this 
-approach with our API.
-
-> 
->> +
->>   /**
->>    * qcom_scm_ocmem_lock_available() - is OCMEM lock/unlock interface available
->>    */
->> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
->> index ccaf28846054..abd675c7ef49 100644
->> --- a/include/linux/firmware/qcom/qcom_scm.h
->> +++ b/include/linux/firmware/qcom/qcom_scm.h
->> @@ -8,6 +8,7 @@
->>   #include <linux/err.h>
->>   #include <linux/types.h>
->>   #include <linux/cpumask.h>
->> +#include <linux/scatterlist.h>
->>   
->>   #include <dt-bindings/firmware/qcom,scm.h>
->>   
->> @@ -15,6 +16,8 @@
->>   #define QCOM_SCM_CPU_PWR_DOWN_L2_ON	0x0
->>   #define QCOM_SCM_CPU_PWR_DOWN_L2_OFF	0x1
->>   #define QCOM_SCM_HDCP_MAX_REQ_CNT	5
->> +#define QCOM_SCM_MAX_BATCH_SECTION	32
->> +#define QCOM_SCM_MAX_BATCH_SIZE		SZ_2M
->>   
->>   struct qcom_scm_hdcp_req {
->>   	u32 addr;
->> @@ -93,6 +96,10 @@ int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
->>   int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz, u64 *src,
->>   			const struct qcom_scm_vmperm *newvm,
->>   			unsigned int dest_cnt);
->> +int qcom_scm_assign_table(struct sg_table *table,
->> +			  u32 *srcvms, int nr_src,
->> +			  int *destvms, int *destvms_perms,
->> +			  int nr_dest);
->>   
->>   bool qcom_scm_ocmem_lock_available(void);
->>   int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset, u32 size,
->> -- 
->> 2.34.1
->>
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGludXMgV2FsbGVpaiA8
+bGludXMud2FsbGVpakBsaW5hcm8ub3JnPg0KPiBTZW50OiBTdW5kYXksIEphbnVhcnkgMjgsIDIw
+MjQgNzozMyBBTQ0KPiBUbzogWXVrbGluIFNvbyA8eXVrbGluLnNvb0BzdGFyZml2ZXRlY2guY29t
+Pg0KPiBDYzogQmFydG9zeiBHb2xhc3pld3NraSA8YmFydG9zei5nb2xhc3pld3NraUBsaW5hcm8u
+b3JnPjsgSGFsIEZlbmcNCj4gPGhhbC5mZW5nQHN0YXJmaXZldGVjaC5jb20+OyBMZXlmb29uIFRh
+biA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNoLmNvbT47DQo+IEppYW5sb25nIEh1YW5nIDxqaWFu
+bG9uZy5odWFuZ0BzdGFyZml2ZXRlY2guY29tPjsgRW1pbCBSZW5uZXIgQmVydGhpbmcNCj4gPGtl
+cm5lbEBlc21pbC5kaz47IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+OyBLcnp5c3p0b2Yg
+S296bG93c2tpDQo+IDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc+OyBDb25vciBE
+b29sZXkgPGNvbm9yK2R0QGtlcm5lbC5vcmc+Ow0KPiBEcmV3IEZ1c3RpbmkgPGRyZXdAYmVhZ2xl
+Ym9hcmQub3JnPjsgbGludXgtZ3Bpb0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxA
+dmdlci5rZXJuZWwub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+IHJp
+c2N2QGxpc3RzLmluZnJhZGVhZC5vcmc7IFBhdWwgV2FsbXNsZXkgPHBhdWwud2FsbXNsZXlAc2lm
+aXZlLmNvbT47DQo+IFBhbG1lciBEYWJiZWx0IDxwYWxtZXJAZGFiYmVsdC5jb20+OyBBbGJlcnQg
+T3UNCj4gPGFvdUBlZWNzLmJlcmtlbGV5LmVkdT4NCj4gU3ViamVjdDogUmU6IFtSRkMgUEFUQ0gg
+Mi82XSBwaW5jdHJsOiBzdGFyZml2ZTogamg4MTAwOiBhZGQgcGluY3RybCBkcml2ZXIgZm9yDQo+
+IHN5c19lYXN0IGRvbWFpbg0KPiANCj4gSGkgQWxleCwNCj4gDQo+IHRoYW5rcyBmb3IgeW91ciBw
+YXRjaCENCj4gDQo+IE9uIFRodSwgRGVjIDIxLCAyMDIzIGF0IDk6MzbigK9BTSBBbGV4IFNvbyA8
+eXVrbGluLnNvb0BzdGFyZml2ZXRlY2guY29tPg0KPiB3cm90ZToNCj4gDQo+ID4gQWRkIHBpbmN0
+cmwgZHJpdmVyIGZvciBzeXNfZWFzdCBkb21haW4uDQo+IA0KPiBUaGlzIGNvbW1pdCBtZXNzYWdl
+IGlzIHdyb25nLCBpdCBhbHNvIGNvbnRhaW5zIHRoZSBtYWluIGRyaXZlciBmb3Igamg4MTAwLg0K
+PiBQbGVhc2UgYWRkIHNvbWUgcHJvcGVyIHN1YmplY3QgYW5kIGNvbW1pdCBtZXNzYWdlLg0KDQpX
+aWxsIGNoYW5nZSB0aGUgY29tbWl0IGxvZyB0byAiYWRkIG1haW4gYW5kIHN5c19lYXN0IGRyaXZl
+ciIgdG8gaW5kaWNhdGUgdGhlIGNvbW1pdCBvZiBib3RoIG1haW4gYW5kIHN5cy1lYXN0IGRyaXZl
+ci4NCg0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbGV4IFNvbyA8eXVrbGluLnNvb0BzdGFyZml2
+ZXRlY2guY29tPg0KPiA+IFJldmlld2VkLWJ5OiBMZXkgRm9vbiBUYW4gPGxleWZvb24udGFuQHN0
+YXJmaXZldGVjaC5jb20+DQo+ICguLi4pDQo+ID4gKyNkZWZpbmUgcGluX3RvX2h3aXJxKHNmcCkg
+KCgoc2ZwKS0+d2FrZXVwX2dwaW8pIC0gKChzZnApLT5nYy5iYXNlKSkNCj4gDQo+IFBsZWFzZSBk
+byBub3QgcmVmZXJlbmNlIGdjLmJhc2UgbGlrZSB0aGlzLCBpdCBpcyBhIGdwaW8gaW50ZXJuYWwg
+ZGV0YWlsLg0KPiANCj4gQWxzbywgdHVybiB0aGlzIGludG8gYSBzdGF0aWMgaW5saW5lIGZ1bmN0
+aW9uLCB0aGUgbWFjcm8gaXMgaGFyZCB0byByZWFkLg0KDQpUaGUgcGluX3RvX2h3aXJxIG1hY3Jv
+IHdpbGwgYmUgY29udmVydGVkIHRvIHRvIGEgc3RhdGljIGlubGluZSBmdW5jdGlvbiB0byBoaWRl
+IGdwaW8NCmludGVybmFsIGRldGFpbCwgYW5kIGZvciBlYXNpZXIgY29kZSByZWFkYWJpbGl0eS4N
+Cg0KPiANCj4gPiArLyogcGFkIGNvbnRyb2wgYml0cyAqLw0KPiA+ICsjZGVmaW5lIEpIODEwMF9Q
+QURDRkdfUE9TICAgICAgQklUKDcpDQo+ID4gKyNkZWZpbmUgSkg4MTAwX1BBRENGR19TTVQgICAg
+ICBCSVQoNikNCj4gPiArI2RlZmluZSBKSDgxMDBfUEFEQ0ZHX1NMRVcgICAgIEJJVCg1KQ0KPiA+
+ICsjZGVmaW5lIEpIODEwMF9QQURDRkdfUEQgICAgICAgQklUKDQpDQo+ID4gKyNkZWZpbmUgSkg4
+MTAwX1BBRENGR19QVSAgICAgICBCSVQoMykNCj4gPiArI2RlZmluZSBKSDgxMDBfUEFEQ0ZHX0JJ
+QVMgICAgIChKSDgxMDBfUEFEQ0ZHX1BEIHwNCj4gSkg4MTAwX1BBRENGR19QVSkNCj4gDQo+IEpI
+ODEwMF9QQURDRkdfQklBU19NQVNLDQoNCldpbGwgY2hhbmdlIHRvICJKSDgxMDBfUEFEQ0ZHX0JJ
+QVNfTUFTSyIgaW4gbmV4dCB2ZXJzaW9uLg0KDQo+IA0KPiA+ICsjZGVmaW5lIEpIODEwMF9QQURD
+RkdfRFNfTUFTSyAgR0VOTUFTSygyLCAxKQ0KPiA+ICsjZGVmaW5lIEpIODEwMF9QQURDRkdfRFNf
+Mk1BICAgKDBVIDw8IDEpDQo+ID4gKyNkZWZpbmUgSkg4MTAwX1BBRENGR19EU180TUEgICBCSVQo
+MSkNCj4gPiArI2RlZmluZSBKSDgxMDBfUEFEQ0ZHX0RTXzhNQSAgICgyVSA8PCAxKQ0KPiA+ICsj
+ZGVmaW5lIEpIODEwMF9QQURDRkdfRFNfMTJNQSAgKDNVIDw8IDEpDQo+IA0KPiBQbGVhc2UgdXNl
+ICgxVSA8PCAxKSBmb3IgNE1BLCB0aGlzIGxvb2tzIHdlaXJkIG90aGVyd2lzZS4NCg0KV2lsbCBj
+aGFuZ2UgdG8gIigxVSA8PCAxKSIgZm9yIDRNQSBpbiBuZXh0IHZlcnNpb24uDQoNCj4gDQo+ID4g
+K3N0YXRpYyBjb25zdCBzdHJ1Y3QgcGluY29uZl9vcHMgamg4MTAwX3BpbmNvbmZfb3BzID0gew0K
+PiA+ICsgICAgICAgLnBpbl9jb25maWdfZ2V0ICAgICAgICAgPSBqaDgxMDBfcGluY29uZl9nZXQs
+DQo+ID4gKyAgICAgICAucGluX2NvbmZpZ19ncm91cF9nZXQgICA9IGpoODEwMF9waW5jb25mX2dy
+b3VwX2dldCwNCj4gPiArICAgICAgIC5waW5fY29uZmlnX2dyb3VwX3NldCAgID0gamg4MTAwX3Bp
+bmNvbmZfZ3JvdXBfc2V0LA0KPiA+ICsgICAgICAgLnBpbl9jb25maWdfZGJnX3Nob3cgICAgPSBq
+aDgxMDBfcGluY29uZl9kYmdfc2hvdywNCj4gPiArICAgICAgIC5pc19nZW5lcmljICAgICAgICAg
+ICAgID0gdHJ1ZSwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgamg4MTAwX2dwaW9f
+cmVxdWVzdChzdHJ1Y3QgZ3Bpb19jaGlwICpnYywgdW5zaWduZWQgaW50DQo+ID4gK2dwaW8pIHsN
+Cj4gPiArICAgICAgIHJldHVybiBwaW5jdHJsX2dwaW9fcmVxdWVzdChnYywgZ3Bpbyk7IH0NCj4g
+PiArDQo+ID4gK3N0YXRpYyB2b2lkIGpoODEwMF9ncGlvX2ZyZWUoc3RydWN0IGdwaW9fY2hpcCAq
+Z2MsIHVuc2lnbmVkIGludCBncGlvKQ0KPiA+ICt7DQo+ID4gKyAgICAgICBwaW5jdHJsX2dwaW9f
+ZnJlZShnYywgZ3Bpbyk7DQo+ID4gK30NCj4gDQo+IFNraXAgb25lIGxldmVsIG9mIGluZGlyZWN0
+aW9uLCBqdXN0IGFkZCBwaW5jdHJsX2dwaW9fcmVxdWVzdC9mcmVlIGRpcmVjdGx5IGludG8NCj4g
+dGhlIHZ0YWJsZS4NCg0KVGhpcyB3aWxsIGJlIGZpeGVkIGluIG5leHQgdmVyc2lvbi4NCg0KPiAN
+Cj4gPiArc3RhdGljIGludCBqaDgxMDBfZ3Bpb19zZXRfY29uZmlnKHN0cnVjdCBncGlvX2NoaXAg
+KmdjLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBpbnQg
+Z3BpbywgdW5zaWduZWQgbG9uZw0KPiA+ICtjb25maWcpIHsNCj4gPiArICAgICAgIHN0cnVjdCBq
+aDgxMDBfcGluY3RybCAqc2ZwID0gY29udGFpbmVyX29mKGdjLA0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIHN0cnVjdCBqaDgxMDBfcGluY3RybCwgZ2MpOw0KPiA+ICsgICAgICAgdTMyIGFy
+ZyA9IHBpbmNvbmZfdG9fY29uZmlnX2FyZ3VtZW50KGNvbmZpZyk7DQo+IA0KPiBQbGVhc2UgZG9u
+J3QgcmVpbXBsZW1lbnQgLnNldF9jb25maWcsIGp1c3QgY2FsbCBpbnRvIHRoZSBwaW5jdHJsIGJh
+Y2tlbmQgdXNpbmcNCj4gDQo+IC5zZXRfY29uZmlnID0gZ3Bpb2NoaXBfZ2VuZXJpY19jb25maWcN
+Cg0KV2lsbCByZXBsYWNlICJqaDgxMDBfZ3Bpb19zZXRfY29uZmlnIiBieSAiZ3Bpb2NoaXBfZ2Vu
+ZXJpY19jb25maWciIGluIG5leHQgdmVyc2lvbi4NCg0KPiANCj4gPiArc3RhdGljIGludCBqaDgx
+MDBfZ3Bpb19hZGRfcGluX3JhbmdlcyhzdHJ1Y3QgZ3Bpb19jaGlwICpnYykgew0KPiA+ICsgICAg
+ICAgc3RydWN0IGpoODEwMF9waW5jdHJsICpzZnAgPSBjb250YWluZXJfb2YoZ2MsDQo+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGpoODEwMF9waW5jdHJsLCBnYyk7DQo+ID4gKw0K
+PiA+ICsgICAgICAgc2ZwLT5ncGlvcy5uYW1lID0gc2ZwLT5nYy5sYWJlbDsNCj4gPiArICAgICAg
+IHNmcC0+Z3Bpb3MuYmFzZSA9IHNmcC0+Z2MuYmFzZTsNCj4gPiArICAgICAgIHNmcC0+Z3Bpb3Mu
+cGluX2Jhc2UgPSAwOw0KPiA+ICsgICAgICAgc2ZwLT5ncGlvcy5ucGlucyA9IHNmcC0+Z2Mubmdw
+aW87DQo+ID4gKyAgICAgICBzZnAtPmdwaW9zLmdjID0gJnNmcC0+Z2M7DQo+ID4gKyAgICAgICBw
+aW5jdHJsX2FkZF9ncGlvX3JhbmdlKHNmcC0+cGN0bCwgJnNmcC0+Z3Bpb3MpOw0KPiA+ICsgICAg
+ICAgcmV0dXJuIDA7DQo+ID4gK30NCj4gDQo+IFdoeSBhcmUgeW91IG5vdCBwdXR0aW5nIHRoZSBy
+YW5nZXMgaW50byB0aGUgZGV2aWNlIHRyZWUgd2hlcmUgdGhlIEdQSU8gY29yZQ0KPiB3aWxsIGFk
+ZCB0aGVtIGZvciB5b3U/DQoNCldpbGwgcmVtb3ZlIHRoZSBqaDgxMDBfZ3Bpb19hZGRfcGluX3Jh
+bmdlcyBmdW5jdGlvbiBhbmQgdXNlIGdwaW8tcmFuZ2VzIGluIGRldmljZSB0cmVlIHRvDQpwcm92
+aWRlIGluZm9ybWF0aW9uIGZvciBHUElPIGNvcmUgdG8gYWRkIHBpbiByYW5nZSBmb3IgZWFjaCBw
+aW4gY29udHJvbGxlci4NCg0KPiANCj4gPiArICAgICAgIGlmIChpbmZvLT5pcnFfcmVnKSB7DQo+
+ID4gKyAgICAgICAgICAgICAgIGpoODEwMF9pcnFfY2hpcC5uYW1lID0gc2ZwLT5nYy5sYWJlbDsN
+Cj4gDQo+IFRoYXQncyBub3QgaW1tdXRhYmxlLiBUaGUgc3RydWN0IHNob3VsZCBiZSBjb25zdC4N
+Cj4gWW91IGhhdmUgdG8gdXNlIC5pcnFfcHJpbnRfY2hpcCBpbiB0aGUgaXJxX2NoaXAuDQoNClRo
+ZSBzdHJ1Y3QgaXJxX2NoaXAgd2lsbCBiZSB1c2VkIGFzIGEgY29uc3RhbnQgZGF0YSBzdHJ1Y3R1
+cmUuIA0KV2lsbCBhZGQgYW4gaXJxX3ByaW50X2NoaXAgZnVuY3Rpb24gdG8gZGlzcGxheSBpcnFj
+aGlwIG5hbWUgdG8gdXNlciBzcGFjZS4NCg0KPiANCj4gPiArICAgICAgICAgICAgICAgZ3Bpb19p
+cnFfY2hpcF9zZXRfY2hpcCgmc2ZwLT5nYy5pcnEsDQo+ID4gKyAmamg4MTAwX2lycV9jaGlwKTsN
+Cj4gDQo+IFVzZSB0aGUgY29udmVudGlvbjoNCj4gDQo+IHN0cnVjdCBncGlvX2lycV9jaGlwICpn
+aXJxOw0KPiANCj4gZ2lycSA9ICZjaGlwLT5pcnE7DQo+IGdwaW9faXJxX2NoaXBfc2V0X2NoaXAo
+Z2lycSwgJm5ta19pcnFfY2hpcCk7DQo+IA0KPiAuLi4gYW5kIHVzZSBnaXJxLT4gaW4gdGhlIHJl
+c3Qgb2YgdGhlIGFzc2lnbm1lbnRzLg0KDQpnaXJxIHdpbGwgYmUgdXNlZCB0byByZXByZXNlbnQg
+R1BJTyBpbnRlcnJ1cHQgY29udHJvbGxlci4NCg0KPiANCj4gPiArICAgICAgICAgICAgICAgZGV2
+X2luZm8oZGV2LCAiU3RhckZpdmUgR1BJTyBjaGlwIHJlZ2lzdGVyZWQgJWQNCj4gPiArIEdQSU9z
+XG4iLCBzZnAtPmdjLm5ncGlvKTsNCj4gDQo+IFN0YXJGaXZlIEpIODEwMCAoYmUgcHJlY2lzZSkN
+Cg0KIlN0YXJGaXZlIEdQSU8iIHdpbGwgYmUgY2hhbmdlZCB0byAiU3RhckZpdmUgSkg4MTAwIEdQ
+SU8iLg0KDQo+IA0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0K
 
