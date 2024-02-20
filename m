@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-73292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9AB85C090
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:02:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 821E085C091
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF7BD286595
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5AD61C221AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DCB76C74;
-	Tue, 20 Feb 2024 16:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF5176C99;
+	Tue, 20 Feb 2024 16:01:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEXRpdpG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZBDBLFMJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A354763E2
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018D876C85
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444903; cv=none; b=Qz7RRWycfoejB8u1eE9jL62Np0Mv2zBtt3nr3qjXWIwsHrLKxlI9Ih0CUVM87l+oD2sY9+AxRdNOsCIRKklqwipQsDU84BbCqdnFwh3HHQG5dWbXlUz8b1QUMtL/+/NtXTscvHhx1BQLVuTAH/RsNhGtaMP55eAU27Udls4zC4I=
+	t=1708444905; cv=none; b=fA51vr0rU/CCZOlLUJ6zcdeM7yHIE0lIQQz+e6xQr/qPwEh61wjuY+0wTdfZDUEQc84hJGyFnEdScRMlfn1NxZEE3FLgzZtmpvD7FmJdmFQCrwSjJ3wdXsptTxL1T/pIQDj7mBymPyrlMijlPtYlsVve5wmuJskrfnIlxeVZ2ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444903; c=relaxed/simple;
-	bh=kXLVhT3LdweT4J+K9+WVLoauc3wapckO+u2vZBKTH68=;
+	s=arc-20240116; t=1708444905; c=relaxed/simple;
+	bh=b5/Z55R6exEVvxby5IEzYsTksFcDh5Hf4EvWs+jygLE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JCdgveNe47OByLlxoTGLS/ajEsPYk6Mt6xeWC5KDcyi+R8K9PatxhgL2c+oxxJ/QoZMQeOrNKSkiy5z8Yy1Tpmlc33EnK9Q0qPkpAW1xoHWs8KrAL0DWRb3nPUifMSTrabMOKZQXXgHQqVpnebM3vLH7Qt0yATldrJrbL/EuiDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEXRpdpG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3ADBC43399;
-	Tue, 20 Feb 2024 16:01:41 +0000 (UTC)
+	 MIME-Version; b=eVJc2sh8RsY/S0hJiWZqUj9/MDO3DEqLcS3kgZ7WmYgVywWHZXAXcreK/qTCsjivWFZ9sS+pDa30s43u61aUtp9UMuX4wnOI09Gcf2BQYHGB8mqrvvnjVlnMCo2Y8Y7PLchxf9xWwVvIeaBkKQhqMpt5tDzGQ3V8XwCmAqGQwIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZBDBLFMJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66C26C433F1;
+	Tue, 20 Feb 2024 16:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708444902;
-	bh=kXLVhT3LdweT4J+K9+WVLoauc3wapckO+u2vZBKTH68=;
+	s=k20201202; t=1708444904;
+	bh=b5/Z55R6exEVvxby5IEzYsTksFcDh5Hf4EvWs+jygLE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NEXRpdpGH6MwA92FWbpu3Y3VQUFDBGgA4ilODS2marXJyfiJ4FT1OqQBbkNPifnSR
-	 u1ztKFlbnfZfDdofPn+hDNBM/Uxrrfg9KognQYKMXKsBMuXgjdWaeKmUBoc3q32u/b
-	 bomZwwROb6UODcN6H2KpMVkinuW+2ZqmwpiJsb69LY7e3D57peVRoToXBliILggDjg
-	 g5DKJB+YSCzjEM6EgZoatMot49EVAAtvisAv3fSYB/n+4WZe58oG2yQ6Z8v+7XX6jJ
-	 MxTpSA2jbyQMBwjByjf1SHjpej8ySkraSpaOlLBDwv1VyPebU5XrCUukEp/veJsBDm
-	 F5b3pFS0hhkUw==
+	b=ZBDBLFMJS2BrT4mZnHrA0+stJiohHRBo8uvCXXLWgZZpml4V1WpIb9mTyfFdsrZat
+	 h0EbCrgQEQx8Vdv0WzJnhGb3mEzEQhO0c0GU673ydgB0vL2B+YTda54pHQR6GNrzVk
+	 u+Qj/ex22frAV++VsRXP3wrZFRLfanliSpWaZlko64CI1XkU9G/HJGh5d444G2XZep
+	 4+rLCdx9XWggoaC72hMhvxH1KZvrppTZ26WKIRAmAO2IaNbCalvrpj7vyDspZyDE5g
+	 UzCSJkyCKL+51Egomc7/b16KNEmLR6QuXcyyqCL+6XVxECRylZNcRMfKyjnU3E0Fhm
+	 cyzfbR4Ymtvzg==
 From: Oded Gabbay <ogabbay@kernel.org>
 To: dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Cc: Avri Kehat <akehat@habana.ai>
-Subject: [PATCH 06/13] accel/habanalabs: fix debugfs files permissions
-Date: Tue, 20 Feb 2024 18:01:22 +0200
-Message-Id: <20240220160129.909714-6-ogabbay@kernel.org>
+Cc: Tal Risin <trisin@habana.ai>
+Subject: [PATCH 07/13] accel/habanalabs: initialize maybe-uninitialized variables
+Date: Tue, 20 Feb 2024 18:01:23 +0200
+Message-Id: <20240220160129.909714-7-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240220160129.909714-1-ogabbay@kernel.org>
 References: <20240220160129.909714-1-ogabbay@kernel.org>
@@ -58,79 +58,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Avri Kehat <akehat@habana.ai>
+From: Tal Risin <trisin@habana.ai>
 
-debugfs files are created with permissions that don't align
-with the access requirements.
+Prevent static analysis warning.
 
-Signed-off-by: Avri Kehat <akehat@habana.ai>
+Signed-off-by: Tal Risin <trisin@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/accel/habanalabs/common/debugfs.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/accel/habanalabs/common/debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/accel/habanalabs/common/debugfs.c b/drivers/accel/habanalabs/common/debugfs.c
-index 01f071d52570..ab0fe74b49d0 100644
+index ab0fe74b49d0..b1c88d1837d9 100644
 --- a/drivers/accel/habanalabs/common/debugfs.c
 +++ b/drivers/accel/habanalabs/common/debugfs.c
-@@ -1643,19 +1643,19 @@ static void add_files_to_device(struct hl_device *hdev, struct hl_dbg_device_ent
- 				&hl_data64b_fops);
+@@ -484,7 +484,7 @@ static ssize_t mmu_asid_va_write(struct file *file, const char __user *buf,
+ 	struct hl_debugfs_entry *entry = s->private;
+ 	struct hl_dbg_device_entry *dev_entry = entry->dev_entry;
+ 	struct hl_device *hdev = dev_entry->hdev;
+-	char kbuf[MMU_KBUF_SIZE];
++	char kbuf[MMU_KBUF_SIZE] = {0};
+ 	char *c;
+ 	ssize_t rc;
  
- 	debugfs_create_file("set_power_state",
--				0200,
-+				0644,
- 				root,
- 				dev_entry,
- 				&hl_power_fops);
+@@ -546,7 +546,7 @@ static ssize_t mmu_ack_error_value_write(struct file *file,
+ 	struct hl_debugfs_entry *entry = s->private;
+ 	struct hl_dbg_device_entry *dev_entry = entry->dev_entry;
+ 	struct hl_device *hdev = dev_entry->hdev;
+-	char kbuf[MMU_KBUF_SIZE];
++	char kbuf[MMU_KBUF_SIZE] = {0};
+ 	ssize_t rc;
  
- 	debugfs_create_file("device",
--				0200,
-+				0644,
- 				root,
- 				dev_entry,
- 				&hl_device_fops);
- 
- 	debugfs_create_file("clk_gate",
--				0200,
-+				0644,
- 				root,
- 				dev_entry,
- 				&hl_clk_gate_fops);
-@@ -1667,13 +1667,13 @@ static void add_files_to_device(struct hl_device *hdev, struct hl_dbg_device_ent
- 				&hl_stop_on_err_fops);
- 
- 	debugfs_create_file("dump_security_violations",
--				0644,
-+				0400,
- 				root,
- 				dev_entry,
- 				&hl_security_violations_fops);
- 
- 	debugfs_create_file("dump_razwi_events",
--				0644,
-+				0400,
- 				root,
- 				dev_entry,
- 				&hl_razwi_check_fops);
-@@ -1706,7 +1706,7 @@ static void add_files_to_device(struct hl_device *hdev, struct hl_dbg_device_ent
- 				&hdev->reset_info.skip_reset_on_timeout);
- 
- 	debugfs_create_file("state_dump",
--				0600,
-+				0644,
- 				root,
- 				dev_entry,
- 				&hl_state_dump_fops);
-@@ -1724,7 +1724,7 @@ static void add_files_to_device(struct hl_device *hdev, struct hl_dbg_device_ent
- 
- 	for (i = 0, entry = dev_entry->entry_arr ; i < count ; i++, entry++) {
- 		debugfs_create_file(hl_debugfs_list[i].name,
--					0444,
-+					0644,
- 					root,
- 					entry,
- 					&hl_debugfs_fops);
+ 	if (count > sizeof(kbuf) - 1)
 -- 
 2.34.1
 
