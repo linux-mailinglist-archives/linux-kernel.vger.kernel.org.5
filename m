@@ -1,169 +1,106 @@
-Return-Path: <linux-kernel+bounces-73279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51EF85C069
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:55:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C807985C072
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90BCF2860D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:55:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34377B227AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4EB762FC;
-	Tue, 20 Feb 2024 15:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB06762FB;
+	Tue, 20 Feb 2024 15:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p2EhsI2l"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="syRCmvD4"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117BE76058
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA2E2C6AA;
+	Tue, 20 Feb 2024 15:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444545; cv=none; b=Vdh/swyA/AUzH30aeqVi+3P7tIsWiwS7WwqrrSwmadHfdCiEfkzo0smYlZ1w93OXhznhtthPypFpG1ge3EIHEro+FNQb79eG3RxyU4R+puM4AJiG1Bsn0BymtkZr0KS9alWIGUerlZA1EvsbyZUxCoDzuw1NRBZ7iKiCDxHZ23Q=
+	t=1708444686; cv=none; b=LfzGGCSuHOpfKGOTfq5sTJzeWU64Kj7/O3wqoLCOJGf7HX36ke3GpiIoRowi+tdE3r1FeEYfmSx1cRYSJonjobk/4dgot+aTc51lNzgfLbDW4hZZaqt8awMDB6z+DuLQ4CNkkwM2KHjYndbbsjAnHWJRLoSKvlMH37oIx2z5Xmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444545; c=relaxed/simple;
-	bh=Kz0GA9Y94W0SFhelWwox2nUv5tXBxEbev4X5jMa+djk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=Vp+ykVdIr5eeaL3T8s4SMPEnWiGX1DCtmz5g1Li4maJw78HMcdGW9oO5HyTjgAyrDZR2ybXurPYmYfxa2z3IbN6f3bMhJHYEkZ2SM/+jbhAnR3Yj+qmiiYvHXs9m4YCp+2TwBqAWvdHFEakZp0nUXS69l8eJUG8zfSudFzNTi/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p2EhsI2l; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ffee6fcdc1so72519537b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708444543; x=1709049343; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nkZ1YNi4HdlEBdTOsrosj2I/p2QRJpg3Qe1Xk4lNWF0=;
-        b=p2EhsI2lVDdB7akSjITmV+58d9qTKwuMEdrSp3830ZiHSdU0mDJR+gTOMen74z130I
-         R3iz4/oR8riFKKW7Eqeu06w77IeKsZC0d+W5tJD1PJSNQCl0+cP+uhMDc/w7DRefN2ne
-         aQW3r8DfSGG1ZLO4NutXsF0wdIdY0QvVSRJWyjf6Go4P4gZRQH01amUDHTVfmMJhd/BW
-         rhi1bD9k+EYoXy6/LTbqW8I2LRS0DmlN6E00DuLWi/9v5DVOLfA/XHBECVhYvZfGAs0Q
-         0Q4jtgtN6XONO37Tlus7+J4PnzB2v7eUspOwU3r12hMZZJ0HR4dyzziUpyxEM9D1R7bN
-         4NJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708444543; x=1709049343;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nkZ1YNi4HdlEBdTOsrosj2I/p2QRJpg3Qe1Xk4lNWF0=;
-        b=WDRM4QcKzFuJbzbvsNtOnW1m++apEALklzJ/fpvspT3yEGaMFQmQEeHIb0w6ORDPjR
-         IFlaTTMcTH+btSsmwcuGb5FXDigRjE51zERZ0yfXp7aUWcq/723h7w96FxQwRvhu71sh
-         SNHukJeqZw79x7432nZcNj8lFCGDFJsp9ZFpsH3fTpLfq++H1ccHrLQdAEdJ8rCd6bsT
-         hN1pOuEs7a/FX/mudKMiE6f0kf3WqgF6UfjldhwUXSAW8Q+rh3AIyGciaAqwv+RGu3PB
-         RgmoInt6HgAWkA9H/nfV55gEDbaiAmZTygyiiHwg1f/oEL1n7snbNXWroZbcLDRg5Pdj
-         DnjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUr17q/RpUzD08l+GQHkVuOO3TjiM4+VwcQ1YUbMNnXDmpfo6lYQBODS03vNT7vsIxt4qUDQHuqT/3w89piVyPuvW63TbrrK5VgPhiL
-X-Gm-Message-State: AOJu0YzRQBrtxVkq8z6MibCkFYq8sush6CFB/QGTETYjAm7rJAz6wIeg
-	3z5aGRjiS2AypKBeF6/FvSy1lmgyAgvMhRfq2jLf3YFyfrQb5tfv3huUs+IOITJaGrcfuQTNfAG
-	vFQ==
-X-Google-Smtp-Source: AGHT+IF1JkxDWJLA5wtljU6ntRBClVsQ/F9GLWL8bomcPlRftmO9ep/YZ1ByFg2cif0LNqgTe/Rychu4wWM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ee0a:0:b0:608:66be:2f71 with SMTP id
- l10-20020a81ee0a000000b0060866be2f71mr302250ywm.9.1708444543193; Tue, 20 Feb
- 2024 07:55:43 -0800 (PST)
-Date: Tue, 20 Feb 2024 07:55:13 -0800
-In-Reply-To: <20240215152916.1158-1-paul@xen.org>
+	s=arc-20240116; t=1708444686; c=relaxed/simple;
+	bh=yq4KqATKZFE+VTP/iWx4g38Aw5kVGcwploKvDpU/75s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MIFVm5capSoNxYlV+SE4kmGp6Cvt7PhCYi5bj8Qxd98UBkuyKMLZwMZX+MsnwiewkEv9a/O8JaWxYtthId0oeVHk+41FqGtpQhG1Yo9dpJZO7MkBDH5elcOWk3ZN+j7qJTEaXLYLebt5S01AHBzxIKcKC3H8Z8pw4yulT19DOrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=syRCmvD4; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=mI1b9Q0kx3oUZdIsTb9IBVZQkaj5tsf2alf0sxnBr9M=; b=syRCmvD47wyu0rUyixcp9yoKyA
+	qdONj9K4Rzz2hDuaXqqZn8NT7DBUDIWu/PBf18fWNF901s0X7Yrzqh2gARcmBr+02kDjG83ZsgagS
+	Hlh2q808aSzUXDxop873uxYXsNyNVPgjtLC3aweTi3Bo1nozvcTT4gNF2m204sTeV9riKx8cd1Qc1
+	YdtSar9x0RLFPvsz7T1zxCSsLj2Xj+OACQ20HcePr0nACNFNTSfGaViYueJb3Ff93bNFuGrorvopX
+	ZnoTfe8mgpaaUMic6hYw8YO06sTnZgxYWp6kLhQjm2XqCLN27669YsnI8hpWF6IR9frA0GRov2GYu
+	jTwJBBHA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rcSVN-0000000FKkA-0Y5T;
+	Tue, 20 Feb 2024 15:58:01 +0000
+Message-ID: <325b813a-9afe-4822-bd0a-b661ed863b20@infradead.org>
+Date: Tue, 20 Feb 2024 07:57:59 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240215152916.1158-1-paul@xen.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <170838297541.2281798.7838961694439257911.b4-ty@google.com>
-Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info handling
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
-	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Paul Durrant <paul@xen.org>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tipc: fixup kerneldoc comment for struct tipc_node
+Content-Language: en-US
+To: Peter Griffin <peter.griffin@linaro.org>, jmaloy@redhat.com,
+ ying.xue@windriver.com, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com
+Cc: netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org, kernel-team@android.com
+References: <20240220122436.485112-1-peter.griffin@linaro.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240220122436.485112-1-peter.griffin@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 15 Feb 2024 15:28:55 +0000, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
+
+
+On 2/20/24 04:24, Peter Griffin wrote:
+> Fixes the following warnings
 > 
-> This series contains a new patch from Sean added since v12 [1]:
+> linux/net/tipc/node.c:150: warning: Excess struct member 'inputq' description in 'tipc_node'
+> linux/net/tipc/node.c:150: warning: Excess struct member 'namedq' description in 'tipc_node'
 > 
-> * KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+
+i.e., same as
+https://lore.kernel.org/lkml/20240112050010.25626-1-rdunlap@infradead.org/
+
+from Jan. 11, 2024....
+
+Thanks.
+
+> ---
+>  net/tipc/node.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> This frees up the function name kvm_is_error_gpa() such that it can then be
-> re-defined in:
-> 
-> [...]
+> diff --git a/net/tipc/node.c b/net/tipc/node.c
+> index 3105abe97bb9..c1e890a82434 100644
+> --- a/net/tipc/node.c
+> +++ b/net/tipc/node.c
+> @@ -86,8 +86,6 @@ struct tipc_bclink_entry {
+>   * @lock: rwlock governing access to structure
+>   * @net: the applicable net namespace
+>   * @hash: links to adjacent nodes in unsorted hash chain
+> - * @inputq: pointer to input queue containing messages for msg event
+> - * @namedq: pointer to name table input queue with name table messages
+>   * @active_links: bearer ids of active links, used as index into links[] array
+>   * @links: array containing references to all links to node
+>   * @bc_entry: broadcast link entry
 
-*sigh*
-
-I forgot to hit "send" on this yesterday.  But lucky for me, that worked out in
-my favor as I needed to rebase on top of kvm/kvm-uapi to avoid pointless conflicts
-in the uapi headeres.
-
-So....
-
-Applied to kvm-x86 xen, minus 18 and 19 (trylock stuff) and 21 (locking cleanup
-that we're doing elsewhere).
-
-Paul and David, please take (another) look at the end result to make sure you don't
-object to any of my tweaks and that I didn't botch anything.
-
-s390 folks, I'm applying/pushing now to get it into -next asap, but I'll make
-sure to get acks/reviews on patch 08/21 before I do anything else with this
-branch/series.
-
-Thanks!
-
-[01/21] KVM: pfncache: Add a map helper function
-        https://github.com/kvm-x86/linux/commit/f39b80e3ff12
-[02/21] KVM: pfncache: remove unnecessary exports
-        https://github.com/kvm-x86/linux/commit/41496fffc0e1
-[03/21] KVM: x86/xen: mark guest pages dirty with the pfncache lock held
-        https://github.com/kvm-x86/linux/commit/4438355ec6e1
-[04/21] KVM: pfncache: add a mark-dirty helper
-        https://github.com/kvm-x86/linux/commit/78b74638eb6d
-[05/21] KVM: pfncache: remove KVM_GUEST_USES_PFN usage
-        https://github.com/kvm-x86/linux/commit/a4bff3df5147
-[06/21] KVM: pfncache: stop open-coding offset_in_page()
-        https://github.com/kvm-x86/linux/commit/53e63e953e14
-[07/21] KVM: pfncache: include page offset in uhva and use it consistently
-        https://github.com/kvm-x86/linux/commit/406c10962a4c
-[08/21] KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
-        https://github.com/kvm-x86/linux/commit/9e7325acb3dc
-[09/21] KVM: pfncache: allow a cache to be activated with a fixed (userspace) HVA
-        https://github.com/kvm-x86/linux/commit/721f5b0dda78
-[10/21] KVM: x86/xen: separate initialization of shared_info cache and content
-        https://github.com/kvm-x86/linux/commit/c01c55a34f28
-[11/21] KVM: x86/xen: re-initialize shared_info if guest (32/64-bit) mode is set
-        https://github.com/kvm-x86/linux/commit/21b99e4d6db6
-[12/21] KVM: x86/xen: allow shared_info to be mapped by fixed HVA
-        https://github.com/kvm-x86/linux/commit/10dcbfc46724
-[13/21] KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
-        https://github.com/kvm-x86/linux/commit/16877dd45f98
-[14/21] KVM: selftests: map Xen's shared_info page using HVA rather than GFN
-        https://github.com/kvm-x86/linux/commit/95c27ed8619b
-[15/21] KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
-        https://github.com/kvm-x86/linux/commit/5359bf19a3f0
-[16/21] KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
-        https://github.com/kvm-x86/linux/commit/49668ce7e1ae
-[17/21] KVM: x86/xen: split up kvm_xen_set_evtchn_fast()
-        (not applied)
-[18/21] KVM: x86/xen: don't block on pfncache locks in kvm_xen_set_evtchn_fast()
-        (not applied)
-[19/21] KVM: pfncache: check the need for invalidation under read lock first
-        https://github.com/kvm-x86/linux/commit/21dadfcd665e
-[20/21] KVM: x86/xen: allow vcpu_info content to be 'safely' copied
-        https://github.com/kvm-x86/linux/commit/dadeabc3b6fa
-[21/21] KVM: pfncache: rework __kvm_gpc_refresh() to fix locking issues
-        (not applied)
-
---
-https://github.com/kvm-x86/linux/tree/next
+-- 
+#Randy
 
