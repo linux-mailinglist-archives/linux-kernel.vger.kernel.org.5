@@ -1,144 +1,203 @@
-Return-Path: <linux-kernel+bounces-73337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47BC85C126
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:23:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D8785C13C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:25:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA0DB1C21ED3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:23:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0625E1F22808
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D33F78B79;
-	Tue, 20 Feb 2024 16:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1903876C61;
+	Tue, 20 Feb 2024 16:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hnH3DEK1"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="jUxzYI4v"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2079.outbound.protection.outlook.com [40.107.249.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDDF79922
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446040; cv=none; b=sMrGffp713ovIr761dygD2zNucC0r9rNpUIe2yqYSfDfiR/uDjMDsRfFxgcC4uYzZ8iZmq70hpyT62aFdA/2whWpUVlBRUs8wvcn6nA1f2fA2ei6QVGQEqP4MT0mIYplF1SLwJL+CE+w9oxX/5EcJ8TNpArDGLkOQYw5PaldX08=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708446040; c=relaxed/simple;
-	bh=tkQx8P4cA4yFykrMvurCrO/U9EcQdI6W6X9CrUgTWAE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KpZ+1vXdiXPM8h4ow7HNxtf5ziJoJP+78knMB/BSQU7YyhjsYEob8umRdySdQVYeXFwCgrwQRMTuJqNZHFo1VniDSij1feJk9cZIFxNFnqiiBxXdDqGefotb1qeWdqsxYbVEb46QdvqiFGXpGefzjZSXfcGg2Kf4OOB7Ojk0GL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hnH3DEK1; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1db90f7b92bso52075275ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708446038; x=1709050838; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gaBNvIG1XlI7Rma4r4ZehqM6i4uIMsjEXoMFyCXLWog=;
-        b=hnH3DEK1TlZ9XwRPa83LdjKnfEDz6mvX3uvbNOKk5vlHxAcF/xGUsoDiW2kmphZJ8P
-         sSzYna9rcvjRU0qhgID4aqNAZCnYGaS7rkjVN74ZngY/yBpmP8AlzeLd7pY1SaEAIjuI
-         9xov93twffL7EOgDT1w8w9DHfjjiuHWQ4Pq1IzsCXV8iN8Ka/2MxdYq/TUU4/r1vZktI
-         YxIc5uaLt+QDWpwjB/5/5VM3dRkP7AL0S/Jdde+HuZFCJj/j3wJKppg6jTdT4bEzSnq1
-         DYB5xhRw4vik1jyn9upwPoZ/PsVFyfq+IxzVOtp7WOMrF7+wd+PDFjNftoT07ZP2HVTi
-         Ra5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708446038; x=1709050838;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gaBNvIG1XlI7Rma4r4ZehqM6i4uIMsjEXoMFyCXLWog=;
-        b=ppf/1nL9NEqdGLT7fb1nR0H8WgiqWOqAPUfZ4U0iUGt9OCTb48zJypTH0Lg4I1ZWJG
-         Lf807nekLZWPCMDZiwCVUn6CnqwQcailQRSl2FGaoPhZbPGyFqH6cKSM8sxmL0wFeK4W
-         XEJb/FhrFRvrHtAgwpepHzuR76IN/ZTWJqLsZ6d02MUNbH9pW35hisKTB39IMP8sCRte
-         qP1gELx4ndJGHCHVx3NtuS6NTvmE7gEkM7Ipgfau1aWS9BgpD+ItPpuXHOtgQjc6819P
-         DCgY0qXpEsD/kMLw+WLkzG3071kZNeSLrEV21KtZBxiOfhaZVyn1Mdt+SN6eW5g8LITJ
-         kd9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWlYZ/JXg0NYwsgjTx5/w7ei7SJADZhiQ+kzlRVNWRbjsXf8UDCcS5mVIB0zJgHUnMfCZg/Ma80CwWzEUZTLb/ydZJewmSvOqi4pAKj
-X-Gm-Message-State: AOJu0YxIRM7UoXA1hpuBK8pq9wyMEUUTSKFb4pHFwjx8KIr769luHYaR
-	wy3q/pgVi/9EEmLlBvUyLwE/Ki82shiB+i87a/0KMqw/gD0bTXIeUqchcRT1rIFQ6ZMs3sPmvma
-	a0Q==
-X-Google-Smtp-Source: AGHT+IHQi9e4VsipuZL3tTtt6H5NilJ+ksQWV/bXRNHygHBVBXjwpN+pFq6S26zUER6fkq27ZHG9pHuUsUo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e74d:b0:1db:e494:4b51 with SMTP id
- p13-20020a170902e74d00b001dbe4944b51mr268101plf.4.1708446038280; Tue, 20 Feb
- 2024 08:20:38 -0800 (PST)
-Date: Tue, 20 Feb 2024 08:20:36 -0800
-In-Reply-To: <Zc5MRqmspThUoB+n@AUS-L1-JOHALLEN.amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4DC76414;
+	Tue, 20 Feb 2024 16:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708446102; cv=fail; b=MMi2qdf86LGJNUr+cvuEo/J0WW6ZNbbyw+JX2DBPL5g4wOvGbZVlL3TgqnUQv4k7Nh3KWgBfGwOsi6rY/cgad8AatzdwKS1MLK+EueUkmyyboyP5Np1/2Ra0aphNQKNugagD7f6X9r2GPHkEoGcWAG5r3vuFa0AFisOrCyJa41M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708446102; c=relaxed/simple;
+	bh=jlpxR3c0uFnpuSs4Ti7ah8uLgDw4Zlt5sLYdmbQaRSY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Jge+hjBK5YhNZCAcmGvOjFCaeEi6u6db+6cQYB4bCtAic/jW+4jQjImQ7XBhlFx7V8IL9TDiltpsMfVOZTcu6xdlPd9ZpgwfeFshpUV10xo2QIuh8OAhlwhVUAGyn2WYISEHklMudSD6IOwuzb2NF27uSzIy4PwxQ9qc7p/HH6Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=jUxzYI4v; arc=fail smtp.client-ip=40.107.249.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fK1GnFb5pwWvdGOJKlcppEfuNuMUZ69FUEz2scvNVHXGjWH9wjsiTJtFfKMQNpSYSwqNnDf2FYwv1lJ7JcdjKmyUmOP3mj3zP7Ba5d45yhngwOZZYcWMx3usrHfMGxEl0xjJTzB7UcxPdp89yRaugUC0jeut0rMCX2I5WD4Rv3AzAZJgK4baAAHgW9sRqDLWC6XB2Kcb5NCM1QcjWnELAqcULUCD4aNfPLCVJx2OEDLoqOaYkhzrHBnceYFKiTbxlHkPfJjJF8ZXN6sCX5AAoxghuEUBg0B1ehcyOz3CEaulW0X+DLVCq5Woza3rluRdoCLLz3TuVrJO5iGyKk4Rsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9GM3Duel1ZjHQynd8B9Di0Xz7JBg7rYa4e01eZVKTwU=;
+ b=HtSAzMkPYW1AdNo8Nvr9FeDmXT6D4NthnM4hQS0ZMa1OFcb2YkiuwwhKZLADGa00BA48tZShNOEmj6VhK6oFwxfTp9Xptf7ypTMwXT8YgmdtlOL3AQSJ8BJV8+yqxxpil/qSNuCGzFjJmCbd9N4mc8unTdj8G7WovYLdcDz/XfhlBPdG5STlnF2pYq03Wa+/tB9tkWvIZa77gJdoLQSzEwJyflYHNsYu/AV1hxRmp1KBb6FOOG02MDHU/5SUUU1WE/bsRkTqunohNFRmbp0lB98NXwInVgJ7FN8BKmJvudLr3uefn2adlQeSuYMT2YDNQpp2KfChWROoH/rEqud1kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9GM3Duel1ZjHQynd8B9Di0Xz7JBg7rYa4e01eZVKTwU=;
+ b=jUxzYI4vP723Ej7TR/eF0uTTgNO8wlnsq7YgwFcvaQ89mySDnWRgZrP9FXc8t6uB1DGrTUghd66Kpn49RwL8AR3aPKFZhtbubyxSCqRW+Hub4tzhvTDrOWMkLLPAdyP7O8ZZNA2dKmNfl23SOKfgqCEjK6W3DOjPY41Cxrtg8N4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by VE1PR04MB7295.eurprd04.prod.outlook.com (2603:10a6:800:1ac::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
+ 2024 16:21:37 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 16:21:37 +0000
+Date: Tue, 20 Feb 2024 11:21:28 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Niklas Cassel <cassel@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
+	hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	robh@kernel.org, s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v10 00/14] PCI: imx6: Clean up and add imx95 pci support
+Message-ID: <ZdTRiB9JdQSvBwKn@lizhi-Precision-Tower-5810>
+References: <20240205173335.1120469-1-Frank.Li@nxp.com>
+ <ZdNvsdao8jbB/52L@lizhi-Precision-Tower-5810>
+ <20240219161208.GE3281@thinkpad>
+ <ZdN/OyNpw0Xa7qXG@lizhi-Precision-Tower-5810>
+ <ZdR2FRQ9Fe8hhK9I@x1-carbon>
+ <ZdR6EUOv6hzLEmUa@lpieralisi>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdR6EUOv6hzLEmUa@lpieralisi>
+X-ClientProxiedBy: SJ0PR13CA0099.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c5::14) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231010200220.897953-1-john.allen@amd.com> <20231010200220.897953-7-john.allen@amd.com>
- <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
- <ZUQvNIE9iU5TqJfw@google.com> <c077e005c64aa82c7eaf4252f322c4ca29a2d0af.camel@redhat.com>
- <Zc5MRqmspThUoB+n@AUS-L1-JOHALLEN.amd.com>
-Message-ID: <ZdTRVNt5GWXEKL8h@google.com>
-Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for hypervisor kernel
-From: Sean Christopherson <seanjc@google.com>
-To: John Allen <john.allen@amd.com>
-Cc: mlevitsk@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	pbonzini@redhat.com, weijiang.yang@intel.com, rick.p.edgecombe@intel.com, 
-	x86@kernel.org, thomas.lendacky@amd.com, bp@alien8.de
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VE1PR04MB7295:EE_
+X-MS-Office365-Filtering-Correlation-Id: 04878f5f-9911-4f61-3c43-08dc32300346
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HMl4Ksj+OuJL7wB7MGayak3oclqRKxPQmm2iiH87LKAispUO3ZzR1bSjdoe0KYKogD1hv4KN8f3eNwkWZ27HUbRAyw09VCjVu0RwgJvwugJHtm01TySVCQiPwFQ6S6Uk1GxJ/LAw3BSvE5web/mczymlHSYvHmpl9VEl6nE9ZotyoCx+Spvkc/b2eu4B/JoQ5dmsyyGryV+EV8yN845+Irzcv2cHm+7AZrKlVDGAZMavi+o3wZmH+lRzozOQvDz/nvM5RlQ4QvPYEeM4DLpQoT+ZRl90D79Cl6IbqDOpXQR0FVnGiFJZVAhShHCiuxNdSLwMPPrnNyPrkacQy9Gz/QZFOZytbfibdgdfBLDXW6XWG3NArj5dkXOwXcuDpyu0eXyOupzvItsgS/BJK0GNcWIcZOf4Aq4Mq45S6VpBWlQ3mAbgv7DIpkhy6M7ZyWcvtHXaAzbUc6FxFMu/Hvq9RIcqPHDX/b8dSyO0wOiACFxGqUZ9TiHW9npsn6V4TY2y/SkiQcxaN94td6kMxRn1vBTmcMm17KEH0f9sk/vyCgL2w77SY2fhz3F/iJNT0F21L2OlntwJ6OV34RD1syv0SWvOCMSFllq2suaFS66aB/g=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?aQQuFkXLJ/AALZfVRwkLE0swZVhRNqJ8g/DlIqvfJA+zJxes9Z4bNoX57GH9?=
+ =?us-ascii?Q?z8FHUcK6OYA/TrdXTryxpAsioli75+3rG7ZCUD68Rt9UN7Mo2lIjSYYjNrFx?=
+ =?us-ascii?Q?LfecQbNsbutWYBE+Ta9q6LQvv3x/jNuZAWSjvqwB0GqzAuFBwKeEAe8gUxYR?=
+ =?us-ascii?Q?ztiGA0/BDvq89zx8+1CTYix2MPi9ZV6+pIX2QTG3CGf6co7z9f+gRZQFSAsH?=
+ =?us-ascii?Q?pGctvVeiuFEQ1jUpZa+59E/eU0RmzN5EnT5UwBYH8Frm0U3HB5HklBHdbILi?=
+ =?us-ascii?Q?8Ds7HXTYlFqwCR5nIekaPe9n8KtraBz90p5D0sQfuNArRiK13ful9fsERz3Z?=
+ =?us-ascii?Q?tQdFvzIcnHpxmfdXGYT1g0+SBEx9sIK3LuvryTSVCtKqRbKh6fKJsDPoBdMT?=
+ =?us-ascii?Q?VPz3sFXKHBMraf8dpws4EmXoGocn6Dbfjwr2iR0xSRGcKUMD8iHlfmYFFwiw?=
+ =?us-ascii?Q?82FdZC5iXj+0J2pFZaIU7NQEMXB16nN0EBnhD/8MsgOJxPHZe1w8uNxBJUV0?=
+ =?us-ascii?Q?tKpPC5Ww0WB3w8u6D3uPJjd3+J2g31S9qOJTxNrZfzYuNXPEbgAAUDYflWCx?=
+ =?us-ascii?Q?GRsVS1aMXmtDJm81+gKruczPmmT/WQNWdICwcFhw2ZPzGEIed8MDNmRcZTJf?=
+ =?us-ascii?Q?1AKrx/u7FvBsVmp0H2yJvO+96ZsFwaHJ8J5EcXWDmSdhOwlOaNxdINj84FD9?=
+ =?us-ascii?Q?rbTtsjhSFPYc84OjPUob/IP31aoY6qN1oqtbbX/l0t4ehrrDQdb5pQF1nU1M?=
+ =?us-ascii?Q?W88sLub6AlWoUw/pIvbxoO5WKeP452n64LznOHU3YU8Yg5VdsZaBnFf4oRk5?=
+ =?us-ascii?Q?jTTWrQxcCWmsbwVHmcvG8vxUe8wcA09MXZdj52YNVPxJbOv6wTDYP0TfYUo4?=
+ =?us-ascii?Q?y27V17czfIqCSKLg3oZFFJ9wSgXVLC9MTEU6TY19/C9AdVWPFTA50E3NhkdQ?=
+ =?us-ascii?Q?nIge19MeWMyokBPJHFBdeeafVeDCY6gCD+Hpgenr6OZ7ykBX0F4Ke0evI/WL?=
+ =?us-ascii?Q?qH46GRzqxYY9XMvQ0ZZBZel3weDXdGhM8d2vw/8/Y1DJubHku15ZvYHFjoKn?=
+ =?us-ascii?Q?W+OuwdxNuQgUODeAHm3THPZ1RTbDHhQaE7gXPJhoZTQdmJ+I99t4TbArn8c1?=
+ =?us-ascii?Q?KS1IrAMmYZqOcUaH/Y7go3Gy3igLDpaWPh12Wq7oBiCl7sKibMkkvYekKKn0?=
+ =?us-ascii?Q?rKZxmdBiBmARLelkD6VRPszyMpHxJ6g6b309gm2XcxNbbGZI3XRu+Clu+r8F?=
+ =?us-ascii?Q?w4vsqHkEpI7oYSlQbK5O23+E9rajs9eUnTuORW/Zs/YN6ylCDY7rggXTzsdP?=
+ =?us-ascii?Q?QoDhC9RnQ1Vi9+1bld6isfBDGGL892wZ+UziNZd6n37felHrT0J2TXFVZ1jl?=
+ =?us-ascii?Q?76FGfb6t2Zyh1VxOQMu+u3V5gs/6N4HAKHk4PDn6dmPufy/zASzYEK0kjIzg?=
+ =?us-ascii?Q?YTQ4bG96F+mc3XkqKtgTZbZvhMikrvv50Hl1/JOLLDdjLkBqEUHQP41JoxA4?=
+ =?us-ascii?Q?2v6a9w0thXA53QR3Vu41g8eSjVs4zY0OjCSnBU5e0+n/0mmA0ZnyMPDLlsHl?=
+ =?us-ascii?Q?sW3zAFPfet+U0eBjX+qubT5IDioMDXJUY9vO+KPo?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04878f5f-9911-4f61-3c43-08dc32300346
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 16:21:37.6049
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ghOKRiVT477Q5GhazuFfjOzgfDYv7kteRh6sYEeueqB1FqQoIr1LQcYs8Q84yh4ZiypYJmbkrla8d0kSXcsMFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7295
 
-On Thu, Feb 15, 2024, John Allen wrote:
-> On Tue, Nov 07, 2023 at 08:20:52PM +0200, Maxim Levitsky wrote:
-> > On Thu, 2023-11-02 at 16:22 -0700, Sean Christopherson wrote:
-> > > On Thu, Nov 02, 2023, Maxim Levitsky wrote:
-> > > > On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
-> > > > > @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
-> > > > >  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
-> > > > >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-> > > > >  	}
-> > > > > +
-> > > > > +	if (kvm_caps.supported_xss)
-> > > > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
+On Tue, Feb 20, 2024 at 11:08:17AM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Feb 20, 2024 at 10:51:17AM +0100, Niklas Cassel wrote:
+> > On Mon, Feb 19, 2024 at 11:18:03AM -0500, Frank Li wrote:
+> > > On Mon, Feb 19, 2024 at 09:42:08PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Mon, Feb 19, 2024 at 10:11:45AM -0500, Frank Li wrote:
+> > > > > On Mon, Feb 05, 2024 at 12:33:21PM -0500, Frank Li wrote:
+> > > > > > first 6 patches use drvdata: flags to simplify some switch-case code.
+> > > > > > Improve maintaince and easy to read code.
+> > > > > > 
+> > > > > 
+> > > > > @Lorenzo Pieralisi:
+> > > > > 
+> > > > > 	Do you have chance to look other patches?
+> > > > > 	Mani's apply EP side change. 
 > > > > 
-> > > > This is not just a virtualization hole. This allows the guest to set MSR_IA32_XSS
-> > > > to whatever value it wants, and thus it might allow XSAVES to access some host msrs
-> > > > that guest must not be able to access.
+> > > > Even though the controller is for the endpoint, it is still a controller
+> > > > driver. So all the patches should go through Lorenzo.
 > > > > 
-> > > > AMD might not yet have such msrs, but on Intel side I do see various components
-> > > > like 'HDC State', 'HWP state' and such.
+> > > > I only merge patches under drivers/pci/endpoint. Hope this clarifies.
 > > > 
-> > > The approach AMD has taken with SEV-ES+ is to have ucode context switch everything
-> > > that the guest can access.  So, in theory, if/when AMD adds more XCR0/XSS-based
-> > > features, that state will also be context switched.
-> > > 
-> > > Don't get me wrong, I hate this with a passion, but it's not *quite* fatally unsafe,
-> > > just horrific.
-> > > 
-> > > > I understand that this is needed so that #VC handler could read this msr, and
-> > > > trying to read it will cause another #VC which is probably not allowed (I
-> > > > don't know this detail of SEV-ES)
-> > > > 
-> > > > I guess #VC handler should instead use a kernel cached value of this msr
-> > > > instead, or at least KVM should only allow reads and not writes to it.
-> > > 
-> > > Nope, doesn't work.  In addition to automatically context switching state, SEV-ES
-> > > also encrypts the guest state, i.e. KVM *can't* correctly virtualize XSS (or XCR0)
-> > > for the guest, because KVM *can't* load the guest's desired value into hardware.
-> > > 
-> > > The guest can do #VMGEXIT (a.k.a. VMMCALL) all it wants to request a certain XSS
-> > > or XCR0, and there's not a damn thing KVM can do to service the request.
-> > > 
+> > > Sorry. It confused everyone. My means was that Mani applied Niklas Cassel's
+> > > patches, which cause my 14th patch build failure.
 > > 
-> > Ah, I understand now. Everything makes sense, and yes, this is really ugly.
+> > Hello Frank,
+> > 
+> > Patch 14, which adds this:
+> > 
+> > +static const struct pci_epc_features imx95_pcie_epc_features = {
+> > +       .msi_capable = true,
+> > +       .bar_fixed_size[1] = SZ_64K,
+> > +       .align = SZ_4K,
+> > +};
+> > 
+> > 
+> > Should, after rebasing on Mani's pci/endpoint branch, instead look like this:
+> > 
+> > +static const struct pci_epc_features imx95_pcie_epc_features = {
+> > +       .msi_capable = true,
+> > +       .bar[BAR_1] = { .type = BAR_FIXED, .fixed_size = SZ_64K, },
+> > +       .align = SZ_4K,
+> > +};
+> > 
+> > 
+> > > 
+> > > I asked if I need update my 14th patch or applied 1-13 only. 
+> > 
+> > I see, you want the maintainers to apply 1-13, and simply drop patch 14
+> > instead of you sending out a rebased series.
+> > 
+> > I assume that the maintainers will be fine with your suggested approach.
 > 
-> Hi Maxim and Sean,
-> 
-> It looks as though there are some broad changes that will need to happen
-> over the long term WRT to SEV-ES/SEV-SNP. In the short term, how would
-> you suggest I proceed with the SVM shstk series? Can we omit the SEV-ES
-> changes for now with an additional patch that disallows guest shstk when
-> SEV-ES is enabled? Subsequently, when we have a proper solution for the
-> concerns discussed here, we could submit another series for SEV-ES
-> support.
+> If patch 14 has no dependencies on 1-13 yes; if it does we need to
+> coordinate the merge between branches in the PCI tree.
 
-The SEV-ES mess was already addressed by commit a26b7cd22546 ("KVM: SEV: Do not
-intercept accesses to MSR_IA32_XSS for SEV-ES guests").  Or is there more that's
-needed for shadow stacks?
+Keep it easy. I rebase to linux-pci/endpoint and v11 patch sent out.
+https://lore.kernel.org/imx/20240220161924.3871774-1-Frank.Li@nxp.com/T/#t
+
+Frank
+
+> 
+> Lorenzo
 
