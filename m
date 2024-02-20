@@ -1,186 +1,111 @@
-Return-Path: <linux-kernel+bounces-73234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D32A685BFC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:23:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA5D85BFCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04A381C2132E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:23:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7581F282A36
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5431276045;
-	Tue, 20 Feb 2024 15:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BA1762F4;
+	Tue, 20 Feb 2024 15:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cN1hqKbR";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yif0f2/O"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WVOSjA5T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9907602A
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282CB762C0
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708442611; cv=none; b=Qh3Wx8+T6RJfZgcwln1hP4lNutgkuXOzxcxGmA2HM8SGaX/1LA0ZsWzxwwmsblB6nOeFmJN5PcEhp3L42G1s2R8GHreyxwgNJ4XjryFXRjv0HEiARTG5q7j6zjKP2BDQggIJHpJF2xUJEnaV5NE0A7dRgG+kVZaQ6dbd0OIpI+M=
+	t=1708442668; cv=none; b=Rqvk/2qlKOJFv1mG4Iqk8EA+kwCljfYQ4qLQi7Sx1vJq0u5R+C+N2Q4ZGM4Z3p77wmUm4BF/XPSi9j0h5lOzPix9Kz6QT4jRgQWaxivR+GSb0KhsfU4yaNrLIE6PPkW6l96nGxMVJ9PTc+12JfFMpodIi8dF0IUfxTtg3OlbHaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708442611; c=relaxed/simple;
-	bh=6apxUbGLRVIk0SDI4FWJUp5S+jZ7Hbs/WvC5d8Ksefk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Bt4yeNwemAlpgSS1GK/jzlUHyvGhCULUlJ3GyJC9pfUPSjnTpx/vIqiBoKk2J8mC5RdzVO0tRH5Yzlp5fVgObVmzrAWMLFXzjhL4/ezQ78ChJTHgC8gnZHKWIhp3ZWEoWkEju9fY1mW+ahrT45QmOryuxT5PgcmHT/5p4Afuo/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cN1hqKbR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yif0f2/O; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708442607;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHbKRWsO5idm1ujga/8RloD02Jyiz2PKPbh0KQHrpd8=;
-	b=cN1hqKbR23ffB/4E9W0AIAlD8SEtSjIN9k028dhDBJp3ZZfqKXpe/N5MXvbT5GZyLC6hZe
-	o7JCbtrork2DtcTU8QR9PH9V/aVT/YNP8/sngqIQ0A5fRcUtviOFDf5icbEc9s/7QP50zw
-	kEf7TlDSrs7IxIxsmURVxETo750msptugiQTpWR6PzEZZWBMxkSo8e0CM5EQhNYYQj6j+F
-	Bo/LNFps5RFBWS0Olznkm5DQaS1KCNEeCxOxLOLQ2PifTjgfVUKgSX3BpkTTSd5lG2EF86
-	LtES79LdTwvbLka/i7nFkeQf47FCaVYDnpM9B2BZ8oJjWcnTcDwlk3hkxgXnjg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708442607;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHbKRWsO5idm1ujga/8RloD02Jyiz2PKPbh0KQHrpd8=;
-	b=yif0f2/OncJbvGkUgZadf0pwxVxKMqaIHgaHQxLmQakKOh+uU27NyvnXB/i7HeE8z4Xyqz
-	zTsyFfnTjfCsm5Bw==
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
- <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
- "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
- Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
- <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
- Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10a] timers: Move marking timer bases idle into
- tick_nohz_stop_tick()
-In-Reply-To: <ZdTA8N7TkGG66Ay6@lothringen>
-References: <20240115143743.27827-4-anna-maria@linutronix.de>
- <20240219085236.10624-1-anna-maria@linutronix.de>
- <ZdPYEzno3KqIPo4S@localhost.localdomain> <878r3f5s3w.fsf@somnus>
- <ZdSQBD_ZpWvH5SoZ@localhost.localdomain> <87zfvv4a45.fsf@somnus>
- <ZdScXhIS_G1cjaWG@localhost.localdomain> <87ttm344me.fsf@somnus>
- <ZdTA8N7TkGG66Ay6@lothringen>
-Date: Tue, 20 Feb 2024 16:23:26 +0100
-Message-ID: <87o7cb40sx.fsf@somnus>
+	s=arc-20240116; t=1708442668; c=relaxed/simple;
+	bh=I39SMvyeoy5GuZYooWccYn7jsz0Je7bnyUlzPSNDv9s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RT7f5CB1cvsdPM9XjpWJWHarF18u/H+xoxgaAtAk4/v5JE/rm1MAqDY0zOSxD/qtMN32m1RbVc/Bg1PzHMsHotKAFI5GqDkqqhj+FuESrecJedYSMHyGB1oG8dWcfuccSOyQwPC0VlxfxABRRphGRnHO5M2Sp0SulBahDrdJRXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WVOSjA5T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7230BC433F1;
+	Tue, 20 Feb 2024 15:24:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708442667;
+	bh=I39SMvyeoy5GuZYooWccYn7jsz0Je7bnyUlzPSNDv9s=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=WVOSjA5TaQlyoXDrybiLMrdo/Zi6dJ4asvUVFKQutpuJqICOLFstsc4lh/bxXrxZu
+	 Mq1TBm8hPMTu2Lg2tv0ndWyBdkCi3n7Dw/5W6c1brEJr67GOaFJe71u1duVnUdxn2e
+	 3HQjzbIMMevewJjPoQBqqG5pCYda5fg0lF3r+ouocihRuG+7M+f4L/k79hf25m56oo
+	 BN2kSjsMwsJKrmxIH7BAuNK0Et9Q3K0q+m8RxtzeC4DM7rPCAeGNN5nuBTZ3RjNWuq
+	 shdgQnzLa6wO0dTU+tePCNokj+4lPSn6If6GmsK0DfK4Vd8WoMUQquMDDF7SMEEW8S
+	 9/bJ++fe+LJxQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2244BCE109C; Tue, 20 Feb 2024 07:24:27 -0800 (PST)
+Date: Tue, 20 Feb 2024 07:24:27 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Feng Tang <feng.tang@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Jin Wang <jin1.wang@intel.com>
+Subject: Re: [PATCH v3] clocksource: Scale the max retry number of watchdog
+ read according to CPU numbers
+Message-ID: <0b7833a4-75f3-43ba-9d87-6f83cf4faa5a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240129134505.961208-1-feng.tang@intel.com>
+ <87msrwadvu.ffs@tglx>
+ <ZdNnjdNTjtvpbGH0@feng-clx.sh.intel.com>
+ <388686b2-5305-43d1-8edf-19ba66d52727@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <388686b2-5305-43d1-8edf-19ba66d52727@redhat.com>
 
-Frederic Weisbecker <frederic@kernel.org> writes:
+On Mon, Feb 19, 2024 at 09:20:31PM -0500, Waiman Long wrote:
+> 
+> On 2/19/24 09:37, Feng Tang wrote:
+> > Hi Thomas,
+> > 
+> > On Mon, Feb 19, 2024 at 12:32:05PM +0100, Thomas Gleixner wrote:
+> > > On Mon, Jan 29 2024 at 21:45, Feng Tang wrote:
+> > > > +static inline long clocksource_max_watchdog_read_retries(void)
+> > > > +{
+> > > > +	long max_retries = max_cswd_read_retries;
+> > > > +
+> > > > +	if (max_cswd_read_retries <= 0) {
+> > > > +		/* santity check for user input value */
+> > > > +		if (max_cswd_read_retries != -1)
+> > > > +			pr_warn_once("max_cswd_read_retries was set with an invalid number: %ld\n",
+> > > > +				max_cswd_read_retries);
+> > > > +
+> > > > +		max_retries = ilog2(num_online_cpus()) + 1;
+> > > I'm getting tired of these knobs and the horrors behind them. Why not
+> > > simply doing the obvious:
+> > > 
+> > >         retries = ilog2(num_online_cpus()) + 1;
+> > > 
+> > > and remove the knob alltogether?
+> > Thanks for the suggestion! Yes, this makes sense to me. IIUC, the
+> > 'max_cswd_read_retries' was introduced mainly to cover different
+> > platforms' requirement, which could now be covered by the new
+> > self-adaptive number.
+> > 
+> > If there is no concern from other developers, I will send a new
+> > version in this direction.
+> 
+> I see no problem simplifying it.
 
-> On Tue, Feb 20, 2024 at 03:00:57PM +0100, Anna-Maria Behnsen wrote:
->> Frederic Weisbecker <frederic@kernel.org> writes:
->>=20
->> > Le Tue, Feb 20, 2024 at 01:02:18PM +0100, Anna-Maria Behnsen a =C3=A9c=
-rit :
->> >> Frederic Weisbecker <frederic@kernel.org> writes:
->> >>=20
->> >> > Le Tue, Feb 20, 2024 at 11:48:19AM +0100, Anna-Maria Behnsen a =C3=
-=A9crit :
->> >> >> Frederic Weisbecker <frederic@kernel.org> writes:
->> >> >> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
->> >> >> index 01fb50c1b17e..b93f0e6f273f 100644
->> >> >> --- a/kernel/time/tick-sched.c
->> >> >> +++ b/kernel/time/tick-sched.c
->> >> >> @@ -895,21 +895,6 @@ static void tick_nohz_stop_tick(struct tick_s=
-ched *ts, int cpu)
->> >> >>  	/* Make sure we won't be trying to stop it twice in a row. */
->> >> >>  	ts->timer_expires_base =3D 0;
->> >> >>=20=20
->> >> >> -	/*
->> >> >> -	 * If this CPU is the one which updates jiffies, then give up
->> >> >> -	 * the assignment and let it be taken by the CPU which runs
->> >> >> -	 * the tick timer next, which might be this CPU as well. If we
->> >> >> -	 * don't drop this here, the jiffies might be stale and
->> >> >> -	 * do_timer() never gets invoked. Keep track of the fact that it
->> >> >> -	 * was the one which had the do_timer() duty last.
->> >> >> -	 */
->> >> >> -	if (cpu =3D=3D tick_do_timer_cpu) {
->> >> >> -		tick_do_timer_cpu =3D TICK_DO_TIMER_NONE;
->> >> >> -		ts->do_timer_last =3D 1;
->> >> >> -	} else if (tick_do_timer_cpu !=3D TICK_DO_TIMER_NONE) {
->> >> >> -		ts->do_timer_last =3D 0;
->> >> >> -	}
->> >> >> -
->> >> >>  	/* Skip reprogram of event if it's not changed */
->> >> >>  	if (ts->tick_stopped && (expires =3D=3D ts->next_tick)) {
->> >> >>  		/* Sanity check: make sure clockevent is actually programmed */
->> >> >
->> >> > That should work but then you lose the optimization that resets
->> >> > ts->do_timer_last even if the next timer hasn't changed.
->> >> >
->> >>=20
->> >> Beside of this optimization thing, I see onther problem. But I'm not
->> >> sure, if I understood it correctly: When the CPU drops the
->> >> tick_do_timer_cpu assignment and stops the tick, it is possible, that
->> >> this CPU nevertheless executes tick_sched_do_timer() and then reassig=
-ns
->> >> to tick_do_timer_cpu?
->> >
->> > Yes but in this case a timer interrupt has executed and ts->next_tick
->> > is cleared, so the above skip reprogramm branch is not taken.
->> >
->>=20
->> Yes... So I need to change it without dropping the
->> optimization. Otherwise someone might complain about it.
->>=20
->> Two possible solutions:
->>=20
->> a) split out this if/else thing for dropping the tick_do_timer_cpu
->>    assignment into a separate function and call it:
->>    - before the return in the skip reprogramm branch
->>    - and after the if clause which contains stopping the tick (where it
->>      is executed in the current proposal)
->>=20
->> b) Take my current proposal and add before the return in the skip
->>    reprogramm branch the following lines:
->>=20
->>    if (tick_do_timer_cpu !=3D TICK_DO_TIMER_NONE)
->>    	ts->do_timer_last =3D 0;
->>=20
->>    as the first part of the tick_do_timer_cpu/last logic shouldn't be
->>    required (because then also ts->next_tick is already cleared).
->>=20
->> What do you prefere? Or do you prefere something else?
->
-> Wouldn't the following work? If timer_idle is false, then the tick isn't
-> even stopped and there is nothing to do? So you can early return.
->
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index fdd57f1af1d7..1b2984acafbd 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -924,6 +924,9 @@ static void tick_nohz_stop_tick(struct tick_sched *ts=
-, int cpu)
->  		expires =3D ts->timer_expires;
->  	}
->=20=20
-> +	if (!timer_idle)
-> +		return;
-> +
->  	/*
->  	 * If this CPU is the one which updates jiffies, then give up
->  	 * the assignment and let it be taken by the CPU which runs
+My guess is that we will eventually end up with something like this:
 
-Yes... And then I can drop the if (!timer_idle) thing inside
-!ts->tick_stopped branch.
+	retries = ilog2(num_online_cpus()) / 2 + 1;
 
+but I am not at all opposed to starting without the division by 2.
+
+							Thanx, Paul
 
