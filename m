@@ -1,73 +1,77 @@
-Return-Path: <linux-kernel+bounces-72300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4833785B1C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:57:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD29E85B1C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03F9B28245D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:57:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD26E1C2138D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9B053819;
-	Tue, 20 Feb 2024 03:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D7353E3B;
+	Tue, 20 Feb 2024 03:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EcoeHB97"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="L60vt8Mn"
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878E056B6C;
-	Tue, 20 Feb 2024 03:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A05056B6C;
+	Tue, 20 Feb 2024 03:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708401469; cv=none; b=lafRqAEEFSLUs3rbnJiTySiIV4yUPxQ5PliXbbUkviSpqbOa1bACNJftwkhEmxuAcl2Az/7pIJuPyenTfqB+7+TZSXY4lYQvasmLHLl2TYlIp5Mz5J1mJ6uAfjVJsZcHkzVEdcQDcn6+dRL9iUtKqrK61JB9REA/KezJIxOJ/Z8=
+	t=1708401492; cv=none; b=NPrvWAP/ldwbBWOUXRyb3lGIvg+H64eyjuv4xV86xuWoGBFvKeKVXd5ekYEwmNfTw7upW0UeU6o9Zx5PAzJiIH5A1bVlWtjh6cBT6U0v8z/enxkHHWcEPNEKJcOMfbXbfkeJuvWzvUQJ8z/NMxoP7LlgxMcIbA2nGKevuschaR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708401469; c=relaxed/simple;
-	bh=d1B5na/ZbDwQeLGWjNDp5QwA1KGrsRmm2DlVOOe+DRE=;
+	s=arc-20240116; t=1708401492; c=relaxed/simple;
+	bh=xY21TrYgRf9Tcfctkax8mubEdKgrpRSLNOmgJbgOMwM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aYv7cAFVso8HFXhyG3o/wtvF/QD68RqQVRPjeo+ZGk+qGk4z/+5Xp54OimUcqpN8tN8IBTGIldEEaUpI/Jb5fsMXjt3vzrLDi8ridRdeyv4ZgiH05y6H2TzZKexwFixgLmq3I98li785XU72gaUsD1GfTjvsiGZoE1TQycYzcdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=EcoeHB97; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=AyjgT5ZKTAavsnOuzLYsbac/mJgW4eKNZR/FG5IsoXcpOD2UXHnWYUXMpOcNgN2XDHP5qjRPkXgvQIcD+0aVGwpWEEyLvisJ3BHFnUiuhTYFWt5xdUNNUBF6AAi1vnKmWjPRJoLyr40+bUSmAGiTbWABCDKUJpYS3V7I3oXj05U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=L60vt8Mn; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41K3vg9h103029;
-	Mon, 19 Feb 2024 21:57:42 -0600
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41K3w23R103060;
+	Mon, 19 Feb 2024 21:58:02 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708401462;
-	bh=Ng66aocc/WRYVytTbvZAXniHkI5XGrCluYb7Fj/bk4g=;
+	s=ti-com-17Q1; t=1708401482;
+	bh=Stc6ty4USFcruP8JZ92a6Oznf8p4/NzSisP+mOwvfGo=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=EcoeHB97h0og0fk8GZSzAHmW8l9s9jg+EnxKA2/kK046nZ0C/OVmf4finYeBKR7Pv
-	 jJJrN3piVjX4OMDzmoA9Xl/UPISauT6WQeXg6Mqt0Jru6RtxWvWPKEHMKSwwd31Qag
-	 Jhh1nhqnxJUcbE412CTsVNOnESylWl0Gm4XwZgIU=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41K3vfLe031548
+	b=L60vt8MnTZE/j6BY+y3VL125SagW7YFIhIaYAsgQOx4M4basxt8WTMXhub7T87Cki
+	 luCKxeP4YJR2EqhG2pH5+GXbIh/hdZwIY87zBCLUUKBLtDx+omfb17go2impFodW+l
+	 WJ/N6yZjRFD0FXJ736+MQSYpifPsZVdtumoIY2oc=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41K3w21w128680
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 19 Feb 2024 21:57:41 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 19 Feb 2024 21:58:02 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
- Feb 2024 21:57:41 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 21:58:02 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 19 Feb 2024 21:57:41 -0600
+ Frontend Transport; Mon, 19 Feb 2024 21:58:02 -0600
 Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41K3vcQI059769;
-	Mon, 19 Feb 2024 21:57:39 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41K3vwaG060012;
+	Mon, 19 Feb 2024 21:57:58 -0600
 From: Vignesh Raghavendra <vigneshr@ti.com>
-To: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bhavya
- Kapoor <b-kapoor@ti.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 0/4] arm64: dts: ti: Modify pinmux for wkup_uart0 and mcu_uart0
-Date: Tue, 20 Feb 2024 09:27:36 +0530
-Message-ID: <170834878954.3471454.4988713452460973346.b4-ty@ti.com>
+To: Nishanth Menon <nm@ti.com>, MD Danish Anwar <danishanwar@ti.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, Andrew Lunn <andrew@lunn.ch>,
+        Conor
+ Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>
+Subject: Re: [PATCH v5 0/3] Add AM64x ICSSG Ethernet support
+Date: Tue, 20 Feb 2024 09:27:56 +0530
+Message-ID: <170834878955.3471454.4379641943483865314.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240214105846.1096733-1-b-kapoor@ti.com>
-References: <20240214105846.1096733-1-b-kapoor@ti.com>
+In-Reply-To: <20240215103036.2825096-1-danishanwar@ti.com>
+References: <20240215103036.2825096-1-danishanwar@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,31 +82,30 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Bhavya Kapoor,
+Hi MD Danish Anwar,
 
-On Wed, 14 Feb 2024 16:28:42 +0530, Bhavya Kapoor wrote:
-> WKUP_PADCONFIG registers for wkup_uart0 and mcu_uart0 lies under
-> wkup_pmx2 for J7200. Thus, modify pinmux for both of them. Also,
-> remove the redundant clock-frequency property from mcu_uart0 node.
+On Thu, 15 Feb 2024 16:00:33 +0530, MD Danish Anwar wrote:
+> This series adds support for ICSSG ethernet on AM64x.
+> This series is based on the latest next-20240214 linux-next.
 > 
-> Only Tx and Rx Signal lines for wkup_uart0 are brought out on
-> J721S2 Common Proc Board and J784S4 EVM, but CTS and RTS signal lines
-> are not brought out. Thus, remove pinmux for CTS and RTS signal lines
-> for wkup_uart0 in J721S2 and J784S4.
+> AM64x EVM has three ethernet ports. One is dedicated to CPSW and one is
+> dedicated to ICSSG1. The remaining port is muxed between CPSW and ICSSG1
+> ICSSG1 ports. The ICSSG1 node is added in the k3-am642-evm.dts. By default
+> the muxed port is used by CPSW so 2nd ICSSG1 port is disabled in the
+> k3-am642-evm.dts. But overlay k3-am642-evm-icssg1-dualemac.dtso can be
+> applied to use muxed port as ICSSG1.
 > 
 > [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/4] arm64: dts: ti: k3-j7200-common-proc-board: Modify Pinmux for wkup_uart0 and mcu_uart0
-      commit: 566feddd2ba5e29d9ccab36d6508592ae563f275
-[2/4] arm64: dts: ti: k3-j7200-common-proc-board: Remove clock-frequency from mcu_uart0
-      commit: 0fa8b0e2083d333e4854b9767fb893f924e70ae5
-[3/4] arm64: dts: ti: k3-j721s2-common-proc-board: Remove Pinmux for CTS and RTS in wkup_uart0
-      commit: 28e5b74d524050008edf415f20a3e38907b8f176
-[4/4] arm64: dts: ti: k3-j784s4-evm: Remove Pinmux for CTS and RTS in wkup_uart0
-      commit: d29a6cf980572d8cf7b63935716fca663e2610f0
+[1/3] arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
+      commit: d4e8c8ad5d14ad51ed8813442d81c43019fd669d
+[2/3] arm64: dts: ti: k3-am642-evm: add ICSSG1 Ethernet support
+      commit: efb32a10a10d92f4bc3380106bd3b003ea790aa3
+[3/3] arm64: dts: ti: k3-am642-evm: add overlay for ICSSG1 2nd port
+      commit: ae0aba1218a0c67f144706c48502f534b2756491
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
