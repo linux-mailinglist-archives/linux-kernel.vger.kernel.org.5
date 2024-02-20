@@ -1,121 +1,124 @@
-Return-Path: <linux-kernel+bounces-72587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B18A85B599
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2759B85B59C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A448B24573
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:41:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A39ABB249FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854415D904;
-	Tue, 20 Feb 2024 08:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B9D5D46F;
+	Tue, 20 Feb 2024 08:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Uf/b7tkA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pHbtdwNw"
-Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NcO0biqs"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA175D473;
-	Tue, 20 Feb 2024 08:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D785CDF5
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708418475; cv=none; b=Kc5d22EhESEqJJLTaW0M6M+fV4zKSUWK1bfy/3qT28tif6ESsZtn9FSCur248X1zfwejxIEq/RgLtWt/i/G8gQ2q2mi6cZEyJt6NfY5OqAsQNSenICCADloo2isEhxqKxMckZaxoF+tcNh2pjgwFLPf2DNAvoFXJNGvGO5uVIUY=
+	t=1708418494; cv=none; b=MC8XdYiDujXz2+HtooftSjrBbsY4ka7QPbqftLH4EqCrxLo39AgPfjZqVTidfcEEOcKI69JytcOOd/6Kvi0LnYfIOY4+CNw7enonH24jYq/DNwh4tQyTa2DZmqQIvmlY3tFCFfLwV2t4GhUYPBlpA+VCWLMKYYJkOY4WwwE8kzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708418475; c=relaxed/simple;
-	bh=aDDymV6LEztxPD2Auh3QLl09iq6XKr3D3yY7CqwO8Es=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=uC4DyP9SsO92Vl2YYJ7IL679En4/Cg1O25i0RN3RSmniR9FNxGmeqBkXsRP1qZ9SDNtuVPobzGLnatPNZnqHKruKyegHjyodDsXfOcrmh4r792FOFVdtGP7fffJd38WlkDFF9TF0o03nXkZOrd80iqsyLmNtWI6dsB77oNUTbXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Uf/b7tkA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pHbtdwNw; arc=none smtp.client-ip=64.147.123.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id A92C21C00082;
-	Tue, 20 Feb 2024 03:41:12 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 20 Feb 2024 03:41:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1708418472; x=1708504872; bh=wXfeXdPi78
-	lk9EdJVz4SqcfJXJZWVAOw2kytIQNAzT0=; b=Uf/b7tkAq4epPR56tQyD7SAITT
-	+8jMynBiZtK4UOtgEcaqG9FdicdnBhzXibJwQT4hqNgESke+cNdsI9QQ/w+6b/4m
-	sC6fYJgmZB37BD7Q/ssrwU3IRAtuSrxuHcSjCl9oLpd8PT6FrQ/MSScexSq6IAOy
-	ufvMrVgylRS8jqL/0iliX+xsuN8z6KtFDcV01p0J9wNsbI3T954+lFM5Opfy7MQ+
-	XD1WUwKHOjy+sMOwQekkIhtHlemQiueyjnEo7ibUeO8wHKSIA36kT/TzYqzdXHtU
-	W56cuoKYMJZyGNfCZKkzZjDr7CvsaAtSOHEqVnwCMxgqwl1hS8MVB7zyds+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708418472; x=1708504872; bh=wXfeXdPi78lk9EdJVz4SqcfJXJZW
-	VAOw2kytIQNAzT0=; b=pHbtdwNwuzwai5yuQznBWyV9DcSP2CseIcRODRHo8Tz+
-	THU3OpCtMOD7BrCcmwKdnKGfjFMgC4ZSgd7iftmLAFbtjRDe8LGXYdpctohyd4UN
-	Q3IPFCD7GSUzMwXxtFiJTAl4Vz4CveH4C/cXfUs3BtqzCLdkym2OIfd2sK68ABTd
-	ZPNKeMzGqV4P3z2nVzvorjQFTevJVPM/XDxoTJYf/GViczcOqDqw7UkYBI/rzGYz
-	N3XuXrj8BMiyJLUyPgN5jo++xr1nTAn35DXcNoKj/gXoR04upT7GqEr+TWQmrH8L
-	i2drCXQQ8RkqUY3KDkeUpB6T07OtD3Y7w8zWyCyclQ==
-X-ME-Sender: <xms:p2XUZed7OsyNQvGsgvOrzezQpIx1UkR_ruzNz8iblCneiWneEXl1Xg>
-    <xme:p2XUZYNnIlO2pxfyG6h_dRIEzJSYjywB32c-J_p0na_2JqKgoPBe9Pea9Zj6mdXqX
-    RTeQk83vP4rFggt2JI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdelgdduvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:p2XUZfgcykzOnvqhGuVg-Aj-dUlFdg1kQJpfe_WJKuziARciV4UfZw>
-    <xmx:p2XUZb-RmFGEzh2fB0Wam7vUtOKssYUYKrGS8QTUF7byT537UH7tyw>
-    <xmx:p2XUZatsPwugfbhlLOe8A3WPm9B_1VFoGTrjoH7vPET8ok6MTALayA>
-    <xmx:qGXUZYAzmmv0H_K1n_DH26bbAjtrC5t0d_Bg-Yu86zsgEVCvSNs8NilA_QY>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C1C18B6008D; Tue, 20 Feb 2024 03:41:11 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1708418494; c=relaxed/simple;
+	bh=9ekC5HPUrNoy1GRhN2rh+bxhzXxfKFqMFqA2kvueEWI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LqWYnndqOu3FB4vbzlv7MrFJ92FIBZ7VlpW0EKqtOcF/IDeMJqGX5iJg6KhzKcUkc2bAVioeWw8mZRPJwyAOrao4K143V9M7sPtKwiTUO/nKqowcWHuU+BwCq7B/m2PN1UIF59O29jo0MmSpf+/E8a6p3o0EioWAIDnlwMkKRbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NcO0biqs; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso4885692276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:41:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708418492; x=1709023292; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3dFgumD1yW7PVeRFLqgU/aWZ41UsZ2fN0lPKRULxgCQ=;
+        b=NcO0biqsEW4dHVNnDhtCyWagLTGXbJ5qy6N+NIrYT80hhK7T71IuPAIOvc5YL/lPjr
+         Zl7npLToWb27NRhfBYJxQ7BbQ0x7ayrCVc1tuvnjGCCDdN9B5EIBCAW7gXxFkVDiUCkG
+         TOnYsm9dv4yhgIdMi+XGaHAk2vyqGzS0J+JLcPqN6U1m8fk3h2gvo8Obbv3wC5QtVoWT
+         /cCSLqHFx+sz9GSUDpvQed5KkzWQg5OoN/lpFZnSg7Yh2a0RbDzCb3LNwYsc1blCxa7C
+         YVveebZHEH1uwencX3ZuIaLOTipmd5xu2+H03NA/Lzv4wPlbmLYs9I2enMrgDSl0L9VI
+         OCvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708418492; x=1709023292;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3dFgumD1yW7PVeRFLqgU/aWZ41UsZ2fN0lPKRULxgCQ=;
+        b=W/XxBYntwnYWVgsq/bekGhQ22VNwN95JQfEieOCbjchO+ty58nZ1kiv05fYiNMq07T
+         KZ6XknpdYHNmDQTp4TsB6TgoE9eO3Hj89kJ5pUw6Uyzar7zztz6z8Tr4jrl+eiHzJN+3
+         /HJq2z3wB9Sa7qt/cD9978qHXdDlpchjSFYdMFL0kMCCRFlHwsPPdyE7/kJEX+pJ3TiA
+         aHnAy9qi5cSx8N6NCpea7S1bU5wrtio0AIOMii+amjlY/PvEuquc9g8itIfs93XV9PO/
+         G8cozwUMSAW9SYNYU4kF1mT8urKhFfJJOea1G/e/MS/IxE8yUi1KAOxBPC4hwtK1Km4d
+         /gcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXZXrAWHF3QcSRFgzKg4OYNyK4IdY4Bgz3/ZuOhQGpgL9rd9cvH1QKB7qDFV16MjCjP63UxCB3624g+UGpJAqTQTj7CiagHyIfiKWsB
+X-Gm-Message-State: AOJu0Yx8dPGPt+r3HXkap+fYK145aR6CCctGKgh5ZZMirYtn33KXrDhu
+	bJ2eKVhrJOad10uRre+BIeAvxlfzdCD/joVnoo2sUCmiuPTO8AnXNZiPHG56X03pyyPHjhxLxzG
+	tknWDEFqxoXr6waFTIZdybyupb8Lp76HhLQOqUw==
+X-Google-Smtp-Source: AGHT+IGkyNRR+Ep1c+zqGzNk1FdvaWZCNuQOs62IuTTBhudvJEy8KFTcyFT+jHplQ6yoG8h4Pf4T4W+DiwE1IXhV5T0=
+X-Received: by 2002:a25:e0d5:0:b0:dc2:470b:887e with SMTP id
+ x204-20020a25e0d5000000b00dc2470b887emr14147504ybg.21.1708418492204; Tue, 20
+ Feb 2024 00:41:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <476ca8e4-b0c8-4be2-ad65-8430c7f4acc9@app.fastmail.com>
-In-Reply-To: <20240220003433.3316148-1-javierm@redhat.com>
-References: <20240220003433.3316148-1-javierm@redhat.com>
-Date: Tue, 20 Feb 2024 09:40:50 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Javier Martinez Canillas" <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: "kernel test robot" <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
- "Andreas Larsson" <andreas@gaisler.com>,
- "David S . Miller" <davem@davemloft.net>, "Helge Deller" <deller@gmx.de>,
- "Thomas Zimmermann" <tzimmermann@suse.de>, sparclinux@vger.kernel.org
-Subject: Re: [PATCH] sparc: Fix undefined reference to fb_is_primary_device
-Content-Type: text/plain
+References: <20240219172514.203750-1-emil.renner.berthing@canonical.com>
+In-Reply-To: <20240219172514.203750-1-emil.renner.berthing@canonical.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 20 Feb 2024 09:41:21 +0100
+Message-ID: <CACRpkdaS3oEyQjuHK2LVKKGws8CEdgzhWVGEfjJPY+a0ndt0-w@mail.gmail.com>
+Subject: Re: [PATCH v1] gpiolib: Handle no pin_ranges in gpiochip_generic_config()
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Jisheng Zhang <jszhang@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024, at 01:34, Javier Martinez Canillas wrote:
-> Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
-> symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
-> have fbcon/VT and DRM fbdev emulation, but without support for any legacy
-> fbdev driver.
->
-> Unfortunately, it missed to change a CONFIG_FB in arch/sparc/Makefile and
-> that leads to the following linking error in some sparc64 configurations:
->
->    sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function 
-> `fbcon_fb_registered':
->>> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
->
-> Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and 
-> FB_CORE symbols")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+On Mon, Feb 19, 2024 at 6:25=E2=80=AFPM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
 
-Acked-by; Arnd Bergmann <arnd@arndb.de>
+> Similar to gpiochip_generic_request() and gpiochip_generic_free() the
+> gpiochip_generic_config() function needs to handle the case where there
+> are no pinctrl pins mapped to the GPIOs, usually through the gpio-ranges
+> device tree property.
+>
+> Commit f34fd6ee1be8 ("gpio: dwapb: Use generic request, free and
+> set_config") set the .set_config callback to gpiochip_generic_config()
+> in the dwapb GPIO driver so the GPIO API can set pinctrl configuration
+> for the corresponding pins. Most boards using the dwapb driver do not
+> set the gpio-ranges device tree property though, and in this case
+> gpiochip_generic_config() would return -EPROPE_DEFER rather than the
+> previous -ENOTSUPP return value. This in turn makes
+> gpio_set_config_with_argument_optional() fail and propagate the error to
+> any driver requesting GPIOs.
+>
+> Fixes: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback fo=
+r GPIO chips")
+> Reported-by: Jisheng Zhang <jszhang@kernel.org>
+> Closes: https://lore.kernel.org/linux-gpio/ZdC_g3U4l0CJIWzh@xhacker/
+> Tested-by: Jisheng Zhang <jszhang@kernel.org>
+> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+> I didn't add your rb since I don't think
+>   if (IS_ENABLED(CONFIG_PINCTRL) && list_empty(&gc->gpiodev->pin_ranges))
+> will work when the pin_ranges member is only there then when
+> CONFIG_PINCTRL is defined and it seemed like your rb was on the
+> condition that I used that.
+
+I was wrong about that!
+
+Yours,
+Linus Walleij
 
