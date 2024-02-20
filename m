@@ -1,219 +1,107 @@
-Return-Path: <linux-kernel+bounces-73321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7BC85C0F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:16:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28CE485C0F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 665811F241DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:16:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D99E7284643
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6CD5763E0;
-	Tue, 20 Feb 2024 16:16:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BBB763F9;
+	Tue, 20 Feb 2024 16:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ATNcN9Nf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="wQzC2tsk"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8A1762C5
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2A976056
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708445805; cv=none; b=A5YYqKfAoVPRD1qUtjWPuRGuoF59Gf8NszEkNy+4y7oaWn7SK/hBCYHrOTEYDHVsZ+pUKQEKOkgislQUj+6/24DzG5yJ9TVTAjwQsTk0wKyBiA2u9JFTXyDqq4MaMBh7F0tTFg+MvG0lqy84mN+SzBQZHQnYrafRe99/neqAeKc=
+	t=1708445901; cv=none; b=rm0sRZs5EfecP4vruVRNvRGvj8Qr+Vmh2sISiM0vl1dDMzB0zfPghpDyoHubcu60nuIoe/v62u5vK/QdzPiKnU2FkWXiky1hVByn6utwmPoQDCqhEuedw3PF7+9NfyFi1t3E0GVlo+a2eLbw/uAZpOs82R2Nc35h/KIVEGS9JnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708445805; c=relaxed/simple;
-	bh=fNl6lyUOgKohGJ/1RBxQXDRKPck/JiqdyAkP4q6KSXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pfGloYOQbGqxjzI6ICzSrFkRe4jYXqlxUtcq/cONckreFoq5ubugARwWeiXd9d6Ejo3pixmgzoPk1Mlzc+BziRagRd2dnCiphVATWfIK+JAhz6kCDcfHjvFDYAr2Axxstc3Ec6QGtKWiW2ueCECWKyoh2Lq9YWXLdteutoU9MO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ATNcN9Nf; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708445802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=IOkv4G8oqZhiLY6yORFNZFfraVFQ5rLm5lw21cNN9CU=;
-	b=ATNcN9NfNP2MUt6FNRVvyKsY6asf/w0hVLq61iTn7AJ6U9xLruf3rjJZ238SBiBjfR6BGo
-	LznxVxkW93YypBE057B1/s9Nq3NsQDMHkJDISR7MonpMs8moBxIXhyd7Q/sa/ZsssHyzQn
-	f4hfbl6s0XEdZlRgro7TqAbo7P8FvJE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-652-j_RJqUKnMDyeQHDdi-K6lw-1; Tue, 20 Feb 2024 11:16:29 -0500
-X-MC-Unique: j_RJqUKnMDyeQHDdi-K6lw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-412557adc00so19163045e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:16:29 -0800 (PST)
+	s=arc-20240116; t=1708445901; c=relaxed/simple;
+	bh=L6sT39TG9iv6n5WF6EkqkYT75IXBf9GOciPgjE2xBOU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=RAM8uQzE+Lo7c4++5ripdpWYJB3a2xTJ5ndUdkbgyXNu8+ueaTBm1OJGJv0MGdXNPMiDMhJoR5Dju3sKfdRE5LIWLSqVlKDLYFhpxkGjn/AvRHbICWR1oH12hT23IYOdf921M6kGNQrdhLSiG+7MewhqI56HTEANdq5rdQIXXCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wQzC2tsk; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b269686aso8438158276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:18:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708445899; x=1709050699; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S01UQlrgYNJvFJj+ZTGEynd8ASfgdRjDb+KMqQ76eBA=;
+        b=wQzC2tsk0lTdICO11YX2GUWOXpjSInSvDMQ6HvgnFJH9H4Ey72qatRJxApGzKlWZgJ
+         pGN7uFXd2z61Gnbws2IEHNG9eh4TK2Rq2KF6cZGtD2TDB/uDDv/X3bqRpWugxMKuGUah
+         CzuTbqdkcw0jt3M+YC07KAJ5fcYrzqNrmOHjVTkqzb+xQouwtcOwjHLn1qh8cPLwS36E
+         L88JCU1tXWvn8I50Zt85o2ZiFGZvX2sGecXNkssYj2nSuYlwdtw6EIGe6nOCsjp7OK/Z
+         7BZi3fZotVlDkVch1tGD7iIza11vutUEkcQuQ48+wQkYVKcnTK66JOrBgveKAIezKYmZ
+         R06Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708445788; x=1709050588;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IOkv4G8oqZhiLY6yORFNZFfraVFQ5rLm5lw21cNN9CU=;
-        b=Tt1f7EzTNtljgGSIUavcbueBL1ZHTrkY0rSVsbNK/bOFHucDfiJwrKEv1l2hYxbmaX
-         EYLu8dSFV1BquuV0yQuYai3++O9fDA50FF8V4xCDRhqD0fNj7bPdlsSV+S5t6L/QcBYk
-         cyw6MjxTtDxymVQhoGJRXcb7l7VoQpn1Ud432FNEAzlroA9RfuKMfbdLh32wS7qNgbNs
-         VMm6m+mha78VTkYy+kjG2ay6hOgpLboFUQisyL8nsZiYI4qJA4JWBX5qT3SFo4H/jhAz
-         n/I/goZgs3qWkfubhmbLszi9PDQ6hQhDqOYyOgtTY9htikC8GXUE1YKZFGhJ6kdFqS2B
-         UYzg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKtgdF7GnpUUkbwXX3oiR/Xxe6jYTGydDW4uWO3S6/W0VBR2VRkUYaEnaQsbOYK/bEjg6fijzkmksn86Fbujcz8E+XY9RChIhGFvgD
-X-Gm-Message-State: AOJu0Yw0yZ1C64ZNRgmG/e3NwiB4B6lWaPEWrbAFuq5txW42ux+ptbbx
-	UgCiOxmlHWvmAQzJbxVnKQ0CNx/EtOtJs0fvYAQS2qtNDWwa1pQGFnufrOLrXQ1/lxOTmHo3oRr
-	0JGrAJ+ykaiQTOot/X815bIjRTuiNloxjQKI8Ryh5GZuZpG57v+AM8iidw855eA==
-X-Received: by 2002:a05:6000:1f04:b0:33d:546e:7882 with SMTP id bv4-20020a0560001f0400b0033d546e7882mr5566183wrb.17.1708445788590;
-        Tue, 20 Feb 2024 08:16:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE9Y0Ardhjv47GyzTLmmnojFiLZn6wDAH1Folf0gVJQvKZR5tcZV+zJu/yF7l1A4ow5gGYRLg==
-X-Received: by 2002:a05:6000:1f04:b0:33d:546e:7882 with SMTP id bv4-20020a0560001f0400b0033d546e7882mr5566152wrb.17.1708445788167;
-        Tue, 20 Feb 2024 08:16:28 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb? (p200300cbc72abc009a2d8a48ef5196fb.dip0.t-ipconnect.de. [2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb])
-        by smtp.gmail.com with ESMTPSA id m17-20020a5d4a11000000b0033cf4e47496sm13852574wrq.51.2024.02.20.08.16.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 08:16:27 -0800 (PST)
-Message-ID: <b10d52ba-4a8d-43bd-96c1-cde848bec143@redhat.com>
-Date: Tue, 20 Feb 2024 17:16:26 +0100
+        d=1e100.net; s=20230601; t=1708445899; x=1709050699;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S01UQlrgYNJvFJj+ZTGEynd8ASfgdRjDb+KMqQ76eBA=;
+        b=dG4AZfiAn+S5ctnDCsVYIoKw4rBmXe5ewOgTBOQttK1nEfxrlr2GzbclOR6xEuDkKe
+         HXj2Ywd5sx9i0/ndyIGfhl47UZHhkNXcU/X9OWJFJVFWcu9VM0jaXVxJyw0AnvKGjoxY
+         ASGN6iEQfgKMsABPB31wBrLvJBomNocuG+5LFDtTmS1juhPO8D7lfIDPNUBrbM0uUJMK
+         QtwcsKvSTyfxPL9+Kqrg4sm3WN3uB5MioRFeJLWssZaNcMV0yLkey+Ep351ILe5BcrWI
+         Q9AaANWN+Ez89+QVJcsEgWZ5lLBR5cNPCBijXWydKhfGwUDYCRcfWv2Un738JGUIA0cZ
+         gY9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUe8fYxWmy2yPdNLPSHfXzwh7iMOQ1Km77/V3jDGJJ5jf4qFWKpw275Q6Bx/snQHBqOe7fVLcC8kUV27e+nzF/AoU6/ohN5oETuQM9l
+X-Gm-Message-State: AOJu0Yy4Rt81d10udMX322NQ+HEvupJiHdW1Vq8GLdkVU4BRVfruerph
+	LywHLDHbt2Qb+ykFEVu+SN2l3DAyOcFkdZ4OKO8Uwluc5KLESRksjdsF6UUgJEfJNTrbbj0sWp/
+	pFw==
+X-Google-Smtp-Source: AGHT+IGQJNh30pNFUgfjDUxGFIU4BwxfHFn7Htyq/Tp3042C2P5MuaZm5+eAyS+98IWp3gYFcBVKnd9pFiY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1001:b0:dcc:79ab:e522 with SMTP id
+ w1-20020a056902100100b00dcc79abe522mr641223ybt.11.1708445899208; Tue, 20 Feb
+ 2024 08:18:19 -0800 (PST)
+Date: Tue, 20 Feb 2024 08:18:17 -0800
+In-Reply-To: <20240219175735.33171-1-nsaenz@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: arm64 MTE tag storage reuse - alternatives to MIGRATE_CMA
-Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
- maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, pcc@google.com, steven.price@arm.com,
- anshuman.khandual@arm.com, eugenis@google.com, kcc@google.com,
- hyesoo.yu@samsung.com, rppt@kernel.org, akpm@linux-foundation.org,
- peterz@infradead.org, konrad.wilk@oracle.com, willy@infradead.org,
- jgross@suse.com, hch@lst.de, geert@linux-m68k.org, vitaly.wool@konsulko.com,
- ddstreet@ieee.org, sjenning@redhat.com, hughd@google.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <ZdSMbjGf2Fj98diT@raptor>
- <70d77490-9036-48ac-afc9-4b976433070d@redhat.com> <ZdSojvNyaqli2rWE@raptor>
- <e0b7c884-4345-44b1-b8c0-2711a28a980e@redhat.com> <ZdTNOq9BoOoKo8bZ@raptor>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZdTNOq9BoOoKo8bZ@raptor>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240219175735.33171-1-nsaenz@amazon.com>
+Message-ID: <ZdTQyb23KJEYqbcw@google.com>
+Subject: Re: [RFC] cputime: Introduce option to force full dynticks accounting
+ on NOHZ & NOHZ_IDLE CPUs
+From: Sean Christopherson <seanjc@google.com>
+To: Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc: frederic@kernel.org, paulmck@kernel.org, jalliste@amazon.co.uk, 
+	mhiramat@kernel.org, akpm@linux-foundation.org, pmladek@suse.com, 
+	rdunlap@infradead.org, tsi@tuyoix.net, nphamcs@gmail.com, 
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	pbonzini@redhat.com
+Content-Type: text/plain; charset="us-ascii"
 
->>>>> I believe this is a very good fit for tag storage reuse, because it allows
->>>>> tag storage to be allocated even in atomic contexts, which enables MTE in
->>>>> the kernel. As a bonus, all of the changes to MM from the current approach
->>>>> wouldn't be needed, as tag storage allocation can be handled entirely in
->>>>> set_ptes_at(), copy_*highpage() or arch_swap_restore().
->>>>>
->>>>> Is this a viable approach that would be upstreamable? Are there other
->>>>> solutions that I haven't considered? I'm very much open to any alternatives
->>>>> that would make tag storage reuse viable.
->>>>
->>>> As raised recently, I had similar ideas with something like virtio-mem in
->>>> the past (wanted to call it virtio-tmem back then), but didn't have time to
->>>> look into it yet.
->>>>
->>>> I considered both, using special device memory as "cleancache" backend, and
->>>> using it as backend storage for something similar to zswap. We would not
->>>> need a memmap/"struct page" for that special device memory, which reduces
->>>> memory overhead and makes "adding more memory" a more reliable operation.
->>>
->>> Hm... this might not work with tag storage memory, the kernel needs to
->>> perform cache maintenance on the memory when it transitions to and from
->>> storing tags and storing data, so the memory must be mapped by the kernel.
->>
->> The direct map will definitely be required I think (copy in/out data). But
->> memmap for tag memory will likely not be required. Of course, it depends how
->> to manage tag storage. Likely we have to store some metadata, hopefully we
->> can avoid the full memmap and just use something else.
-> 
-> So I guess instead of ZONE_DEVICE I should try to use arch_add_memory()
-> directly? That has the limitation that it cannot be used by a driver
-> (symbol not exported to modules).
-You can certainly start with something simple, and we can work on 
-removing that memmap allocation later.
+On Mon, Feb 19, 2024, Nicolas Saenz Julienne wrote:
+> Under certain extreme conditions, the tick-based cputime accounting may
+> produce inaccurate data. For instance, guest CPU usage is sensitive to
+> interrupts firing right before the tick's expiration. This forces the
+> guest into kernel context, and has that time slice wrongly accounted as
+> system time. This issue is exacerbated if the interrupt source is in
+> sync with the tick, significantly skewing usage metrics towards system
+> time.
 
-Maybe we have to expose new primitives in the context of such drivers. 
-arch_add_memory() likely also doesn't do what you need.
+..
 
-I recall that we had a way of only messing with the direct map.
+> NOTE: This wasn't tested in depth, and it's mostly intended to highlight
+> the issue we're trying to solve. Also ccing KVM folks, since it's
+> relevant to guest CPU usage accounting.
 
-Last time I worked with that was in the context of memtrace
-(arch/powerpc/platforms/powernv/memtrace.c)
+How bad is the synchronization issue on upstream kernels?  We tried to address
+that in commit 160457140187 ("KVM: x86: Defer vtime accounting 'til after IRQ handling").
 
-There, we call arch_create_linear_mapping()/arch_remove_linear_mapping().
-
-.. and now my memory comes back: we never finished factoring out 
-arch_create_linear_mapping/arch_remove_linear_mapping so they would be 
-available on all architectures.
-
-
-Your driver will be very arm64 specific, so doing it in an arm64-special 
-way might be good enough initially. For example, the arm64-core could 
-detect that special memory region and just statically prepare the direct 
-map and not expose the memory to the buddy/allocate a memmap. Similar to 
-how we handle the crashkernel/kexec IIRC (we likely do not have a direct 
-map for that, though; ).
-
-[I was also wondering if we could simply dynamically map/unmap when 
-required so you can just avoid creating the entire direct map; might bot 
-be the best approach performance-wise, though]
-
-There are a bunch of details to be sorted out, but I don't consider the 
-directmap/memmap side of things a big problem.
-
--- 
-Cheers,
-
-David / dhildenb
-
+I don't expect it to be foolproof, but it'd be good to know if there's a blatant
+flaw and/or easily closed hole.
 
