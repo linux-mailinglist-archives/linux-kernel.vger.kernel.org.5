@@ -1,165 +1,343 @@
-Return-Path: <linux-kernel+bounces-72795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FB1885B8BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:15:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF86585B8BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2141A285F36
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:15:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37B341F2483F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886E8612C8;
-	Tue, 20 Feb 2024 10:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF5660EF2;
+	Tue, 20 Feb 2024 10:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="jhj7zE4G"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2058.outbound.protection.outlook.com [40.92.107.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DBCEu6Yl"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C5060EC1;
-	Tue, 20 Feb 2024 10:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424048; cv=fail; b=JyX++BL67yxzby/UqsZkhgo8HfpmWY9yoQeCqpPcyhLgbQ82WwybCk2LfT8wUlS5US9bXF2JhPitpeMT40RuqQfhdCqF/389l+qyNW8bRT6VA3Dpgg0wVAltSE4o65k4osrrWJTPWQbwDCIhyUjK7jibeubNZzEDfKP/M8HTZSU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424048; c=relaxed/simple;
-	bh=0i7kkpGNdQx0vkXNsyHc8xRlboQroYvz5+vqc1dD/kI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GnA0iIdl0qqX53PfvP7f4YNqhOmrex+lt5xNVyDlCo39aorWCZ1x6R6UDOV7LWGZvpESHMFEd9CEuuSKHNqpRezoxBYTrd8zHmL6rA0tPFTlDZipuQjf2yG69R+fcVDcyf0asTfAgFnhTRRYCGc+kTZj7ZoYlIUcuPr7QXNIrbo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=jhj7zE4G; arc=fail smtp.client-ip=40.92.107.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hKUQyJiphswAO+yFbNw/GPmLpBnkVuv0ktTFGNCerPVZHDXe14pydpRhYBNkh6CLIMIOAr3x9e3zpRvQF9cFAB9bIcvVqzvmaGE/ZTGZs/5Xha4O6l5eKnijmRt0/DPkjctSWffufGkUeAvAH/UZItl5H6CO3H61pValCMkd5RtrpNhd+7aeA02E5WvfOwoDEz2Nh4+3eKNORpQbXbQh7R6l6Jmdm19EAUCHw2SdnfjYN5cS1BEV0rBNsibzs4nC2KeWhG/eiQrwSJPLvp/OaJRPAgqR8lHiVscuKpEwuL+M24tueJRaFcEW9VsZk1cldEOUrKS5Kz1pNqxsU1prag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WKyhmbPAgzh+1NEwGMLrxsSGfv/M2LT7vjcE44UOZ44=;
- b=chsH7Tc4fOufGFbFEFcLlT5PRE1bvttDvo4NEgfxIsBt/PjIN7OSJO6yb/cRe9j0ino6g82VpmB0fVKAODbn3d6sqVJ+7mts6+k2xq/Xg1oorSEjITjdj7N3097fkQ/a7JNxZL4zp6dilgwRYrGdefBoQdYXtPoRzZ0HylGhOiI9CIIncedOux2MY52JOmlj3KfGV0IBDkyneO4zo/AZI+7Q7nbMxSFaOhFBqTNjugh9UxLEb0jTdUqBuBNeo6O2HJF/klhjDEVgFK6B2iERP2KG1bucpWxxjIfPLCFxNeVorYlF7miRJKqFMCoQOWdUE6c/lfchdt0f5s0Z2d2ntg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WKyhmbPAgzh+1NEwGMLrxsSGfv/M2LT7vjcE44UOZ44=;
- b=jhj7zE4GEEaapiGvLkKLCAAX/eGr6sdrFgaUc0y6BJYMkodo0wDXYNcl+BoSY9QHt7ilIZ+ixgK+tAmwiQ5AsAk24qEuI0zwn2LKc7vi/RN5mjnkIlY3FUiN/0K7sMzfY4MUSGi9VwRldL3e2tHeBtd/VBKAhRFMzfmO63H5BCHePxVKqLmmrc0913nAfq2ZbecYsrQek/du1lSXGO5aHWrkTUyR583YS6GDusDJklnhSxDYQMPR/EDmiX0gfehMxC8ZGv33zONgc5zql7wz8SjnycMfcq/y1vOV2wkQBdyRm7SqAZ1jaglJSIrja7bSgGZl1LUPYluhdeMTtPbhig==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by SEZPR06MB5574.apcprd06.prod.outlook.com (2603:1096:101:cb::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
- 2024 10:14:03 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 10:14:02 +0000
-Message-ID:
- <SEZPR06MB6959E45F52C87C08320B7E7A96502@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Tue, 20 Feb 2024 18:14:01 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 2/5] clk: hisilicon: add CRG driver for Hi3798MV200
- SoC
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
- <20240217-clk-mv200-v2-2-b782e4eb66f7@outlook.com>
- <31188f64-7c6b-4279-a2d7-8b5133b1d485@linaro.org>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <31188f64-7c6b-4279-a2d7-8b5133b1d485@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [YbseZggY6QaIAkbH79uPfvj+Mhzq+y9yCKsrPQqRmzY+ciBBFXw+8Qi5MRFOpJJX]
-X-ClientProxiedBy: TYCP286CA0188.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:382::17) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <bdd10f7d-827d-4a6a-acb7-61dbf523411c@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9235360DF0
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708424091; cv=none; b=G7SbHrZEtgZN2M97w5gwFpWay97FYi93hOFS2i/S09kJ+2LfskVADjQ8fazm6AuR5BjhsSdcr1YrY0gj6PVsoXvy+x1lPLphkkDcs5nEOlIKWKU1AmXY0Y55y9jBDNuM3JnTQBUK9rk8ZD8zbXYjv4tdsqxmW74QDD8v2iOPcp4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708424091; c=relaxed/simple;
+	bh=7YIkIrO3MaHffyN0m8OVMVyl9H01uIv19UQydyCXah8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tkN0l5M4OqQ8gm/GG2lPBS2bW+jaBWe5yVE116AMll78qVlNXfDf9MYu+i7V5RcxlE7N9ESbCD1JfR7+LitK8/8fr3UNm3RUe64wgv0g8/ANIPjr6NWLxMBCDCYrv6CaddSgH98oFgNlJIwcoTj2gVw8b9vxft32gugf7zteH2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DBCEu6Yl; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33d32f74833so1489484f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:14:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708424088; x=1709028888; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=COiGTCffwAg01Jdjn+XjVIppc9Nqd/qPCKW+vjHD9lE=;
+        b=DBCEu6Yldofz1jG975yZKh7lk8LRkLMLfHuJtRRhLRKiHzdK2DuHAIzGohRrKGHdTh
+         88s9PHfWzIUZUisAoT1UzpOyNridWbs6aSwk+yTqR0J/oFO6mLaeu3GODubEUrtY3hd3
+         IyDU/emdGgRVBsYr2yvsCqRKkVqIU8KYx3U+70Z/sP0475Q88x724xedwSAAd4+CwMEk
+         xf5B6z78IbW6dVatJWmba7gr/RZ7h3uxNSv3weLt6Xah5c2lmrIywjkltT8Y43NaGU11
+         DA8Xxj1mXtJXWzn7g803l6ppYHAjm9MS0KBTRVv9FpSpPyb6O4NQoB6/3hh69eJbmdUX
+         L8fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708424088; x=1709028888;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=COiGTCffwAg01Jdjn+XjVIppc9Nqd/qPCKW+vjHD9lE=;
+        b=u1edlZbeZQmVWS4TJc0y/S0Cf3Egtg3ROzYCNfxyT0ICh1cadKdd0xvXFjfwCuM919
+         jRF33XZIzBzDbPw0tHXSOKrN+65ic5gJ3ZHg27WQAvp+0vgdNtWKr6G4eL3rwbkTVwSc
+         h6cf/aPXwASbl6wumadsLHLTI8d/eAa0LNpRnKQw/Bzw9ckm/gXGXqTegLVsP3KDnK63
+         Y8Bf9YKgu/e1N69ycKNTM0yY7ZysDSxD6lhaxQ5oJPK66xqRvZTmVJPRQeZ+YLSuWkRf
+         A2dxRv0FlN8USw3wn3o4JWLcCerrxwqcZS15wccOinRcL3VuX6vlNqEpYYHbSyKBUzwh
+         qBEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlI5BlL/O0XRjeZM+KJicxxrevm62nPhYcLYiBIbGxL5N/DUejmHHmcItleabsNK4biPCKtcu/1Pmu1BLASmUs5tC9kSB6Xoh415Cc
+X-Gm-Message-State: AOJu0YxwSlQRocgB5uAe19VBTtZFfl2KIKL84WlYSMP3ElpFleqpCggv
+	JsGTHM9C0rlcQQC/kJBtQNAU64PHWIRgwHHPmCySFL8dLuuE8eQ6F5vzOFk/qyI=
+X-Google-Smtp-Source: AGHT+IEv7K+Hul3kxYgB6AvHJTUIQnJws0ganlYk1E66M6/hye118SvQKZr4glclkdqIHWQJI6nstA==
+X-Received: by 2002:adf:f645:0:b0:33d:1d94:cd58 with SMTP id x5-20020adff645000000b0033d1d94cd58mr7246159wrp.31.1708424087941;
+        Tue, 20 Feb 2024 02:14:47 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id v4-20020a5d6784000000b0033d39626c27sm8491785wru.76.2024.02.20.02.14.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 02:14:47 -0800 (PST)
+Message-ID: <32d0a9c5-6c4b-4d85-bcbe-6192c63ba5fc@linaro.org>
+Date: Tue, 20 Feb 2024 11:14:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEZPR06MB5574:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ab090e3-0079-4da5-e097-08dc31fca9a1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yzvafQpGYdWcOMHExSAL2YP/vwQU+w+Zwrjd8V6EUrxadb+mmyOabBp4LdCBNMJxbnWmqPMAgBVmsGrgN9IpdXlSvmO4rUQIPResZG5c23MAbx/DfiYToDkXdXYb/rrmM/uLV7RYA0lRYvAMey1PctRkNaCYVaRplH8O+lMAIBgulkvlGalQ3p4lIgvkqBtBxPNSWEz7zwn4cwZq06oG3MqwK2HsAPn29JZV0w/glAAz5PhjawYh4h8RAa0eacnmKHqxjtXy8G3GC3IWUkOgsdXiHPTA/inSbjfsi6ltvj8o9iDv/R2U3d6M9mk7Ld/OE4kxtXwB1/nL1w4jvBKTTiV5PgYk+4Z1ZcLzVNpGe5MjI7LZxdWGKtaV/1yBFkcIzrjioMjI4g5krdMCjPH4SwlCX8zPcIFIDQiNYA5Y+fHJUOnVgY5e3mkWn3E2wm2/mrcahfZq5dA4Zw6T8Fm8t36MOAadYvGBf9r/hjyE2ItfgEaYWzvLg6/bC58qLBhNqVzZhr89G99rM1X8yAd4poWSt4LfsfgmARmXCxTyrHbAJRs36wbBKhPOZWqmIthN
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MVF0N1Y3Mmdyd0ZZaEU2THNVaGF1cXBRSkIxeEw4eUh4NzlESGw1SURUUkVp?=
- =?utf-8?B?T2poRDhjakxvejl3Q3BRUmc1eTdCRXVZU0ZTRFRpV2d4SmtiTVRpOVJnSmg5?=
- =?utf-8?B?NjR2RWR1ek9jYVZjR2xsdVBNbEZVTXo3Tk5ieGJtV0Q3MlpFdXYrR1VXVVRo?=
- =?utf-8?B?WEhZaTcvL3hEcG13SFRDVVhwMXl0TzNwQmlFL1lmT3JCME5IVlQ3UWE2Y3U3?=
- =?utf-8?B?NjJSdE00OENvTUlEbml2cSs4YXlxTnpFcHNoMk0rTytMRVExY3YvakpRalAr?=
- =?utf-8?B?MWY2ak1sdHB2ZVpuS0RzMjh3a2VZRkhVOUhVUWtSdUpFOTIzeG5xMkVRWnVu?=
- =?utf-8?B?R0UzVXd4N0RJUEhKcWg3V01rRUpGa0U2aEU1b0dNbkxZQ3JZa3FNbkZXRHd4?=
- =?utf-8?B?TENwdnA4TUVhcnlhanA5RXluRTh3UEJpWXY2N2hZZU12TVlSNk5WaXhjckFa?=
- =?utf-8?B?anlJR0YrWmxSUGxoSmtrdEJvWUJuNUhTcVIvYlFIYjBrLzN3Z0REeFlPcWpi?=
- =?utf-8?B?eFErODFJR3M1bUYvTU50aC9IV3VwMzhqdFZqOGNUYit0OWNkQWhiVmpzOE5Q?=
- =?utf-8?B?dnFiWTh6NnpKRlJQbVVpeXFHSlYvdDlDZFZkMHpESVUvei9DbmNkNmJSUW9w?=
- =?utf-8?B?NEdGVXF5RDNFbEhTR3FldVJEYit1Q1B6Zzd6ZEFJUHY0Z3NlZjJEVEVHdUNl?=
- =?utf-8?B?aHRybktQUkZ2anQ2amRhTW9iSko2WTFXMVlXQmZWSUJZQWRvMDFXUXBNcUt5?=
- =?utf-8?B?K1dZWk5mUllvQVQ3c0p1aHp4Y3VQc2V5M2xuOVJjdDVpWEl2K05jcU9mTTRS?=
- =?utf-8?B?dUhxUkd3b3pzYjNJWXRQaGlOYUlHTG5SNithb25tYnBEN0k5SGd4aGcvUVZp?=
- =?utf-8?B?T0lpcGVpbWxFNXZweVpYeG1OMDVvVzZNUWRycERCY2NHamtNckNJYUJLamtV?=
- =?utf-8?B?Nm5QalNvdGNzYW15eXg3ckZHWGNyT0hQeUJrMnRuZXJSdmNWdjMzamJOSmRo?=
- =?utf-8?B?WGtCb1RSTGJOb1RJbzZLV3ZiVitJTUJMNDk5b0E0b2R3YWtDT2JyYmNyQXJo?=
- =?utf-8?B?WUl1ZHFvVS9PZjNoZm5obHd2VXh5aVZLVGdZWkhPMms3d281WGNyeG9IdSs1?=
- =?utf-8?B?dUxVOWNNcnF1UzYwMVo0ZGpZUU94OXRiaHZYRVF5dGhrYzlLazFQd0Iyb1BY?=
- =?utf-8?B?Q3dwTnhwOUM3T1p1K0VncTc5bVY2eVBoNWJtWEluWjk2NjA5RnVTbHJ4ZHAv?=
- =?utf-8?B?L0g3dThyY2VUcWFwU0Q1OUU2b2FCRWZ4NFJBTVhVUVVhVzNoUjJFeXJjWmVD?=
- =?utf-8?B?YVc5UFN5RFAzNlVMUnNzbE9PREJGVEFFSmU3SkNzMEozdTlMYm5SWGEySjJs?=
- =?utf-8?B?UTJZSyttYkw5OE5PVzlMeFdFbjEzSENOa1VoeE1IUEtuOFU2WFl4UFpTWm9k?=
- =?utf-8?B?bTFvQ0hCVkpkNmZ4Tk1TYUpXdUdndm03a0FGT1pYK0QyTmhHZExVdDZoRm9J?=
- =?utf-8?B?SC9UZ0lFcnpydGNlUlBiZ1hGdkF1RE95RlhvRFBsd1JremY3YjVGNXBPSWh2?=
- =?utf-8?B?eUV4TjJJNkg5RmwvVVhkdVFpYnBYSWVKeVJhNXF1YXg3RGVJVE0xSTlHOVdx?=
- =?utf-8?B?MG1yelo2Q2JnbHY2RUFtbjVmM0Y1Mjk1TC9pUXhHOTQ0R0IzQVB2NzNWNzdq?=
- =?utf-8?B?bllkY2VVYVpzR1dnaCs2UXVnLzdPVmpHQ1ljRXkwVGt1WDJyNmNsbmpCM3M1?=
- =?utf-8?Q?IHyfMwSA397VbGDAR88eFWdwQWwoUwXPyajL3fy?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ab090e3-0079-4da5-e097-08dc31fca9a1
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 10:14:02.8537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5574
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 3/5] dt-bindings: clock: merge all hisilicon clock
+ bindings to hisilicon,clock-reset-generator
+Content-Language: en-US
+To: forbidden405@outlook.com, Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
+ <20240217-clk-mv200-v2-3-b782e4eb66f7@outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240217-clk-mv200-v2-3-b782e4eb66f7@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2/20/2024 6:11 PM, Krzysztof Kozlowski wrote:
-> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
->> +
->> +static const struct hisi_crg_funcs hi3798mv200_sysctrl_funcs = {
->> +	.register_clks = hi3798mv200_sysctrl_clk_register,
->> +	.unregister_clks = hi3798mv200_sysctrl_clk_unregister,
->> +};
->> +
->> +static const struct of_device_id hi3798mv200_crg_match_table[] = {
->> +	{ .compatible = "hisilicon,hi3798mv200-crg",
->> +		.data = &hi3798mv200_crg_funcs },
->> +	{ .compatible = "hisilicon,hi3798mv200-sysctrl",
->> +		.data = &hi3798mv200_sysctrl_funcs },
-> These are undocumented compatibles. Run checkpatch or properly order
-> your patchset.
-It's in patch 5. You mean binding patch first and then driver?
->
-> Best regards,
-> Krzysztof
->
+On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+> 
+> We don't need so many separated and duplicated dt-binding files. Merge
+> them all and convert them to YAML.
 
--- 
-Regards,
-Yang Xiwen
+What was exactly duplicated? You created unspecific, lose binding...
+
+Why this is RFC? RFC means we should not review.
+
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> ---
+>  .../devicetree/bindings/clock/hi3660-clock.txt     |  47 -------
+>  .../devicetree/bindings/clock/hi3670-clock.txt     |  43 -------
+>  .../devicetree/bindings/clock/hi6220-clock.txt     |  52 --------
+>  .../devicetree/bindings/clock/hisi-crg.txt         |  50 --------
+>  .../clock/hisilicon,clock-reset-generator.yaml     | 139 +++++++++++++++++++++
+>  .../clock/hisilicon,hi3559av100-clock.yaml         |  59 ---------
+>  6 files changed, 139 insertions(+), 251 deletions(-)
+> 
+
+
+> diff --git a/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml b/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+> new file mode 100644
+> index 000000000000..d37cd892473e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+> @@ -0,0 +1,139 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/hisilicon,clock-reset-generator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hisilicon SOC Clock and Reset Generator (CRG) module
+> +
+> +maintainers:
+> +  - Yang Xiwen <forbidden405@foxmail.com>
+> +
+> +description: |
+> +  Hisilicon SOC clock control module which supports the clocks, resets and
+> +  power domains on various SoCs.
+> +
+> +properties:
+> +  compatible:
+> +    minItems: 1
+
+No, it does not work like that. Compatibles are fixed, not fluid. It's
+quite a hint that your merging is wrong approach.
+
+
+> +    items:
+> +      - enum:
+> +          - hisilicon,hi3559av100-clock
+> +          - hisilicon,hi3559av100-shub-clock
+> +          - hisilicon,hi3660-crgctrl
+> +          - hisilicon,hi3660-pctrl
+> +          - hisilicon,hi3660-pmuctrl
+> +          - hisilicon,hi3660-sctrl
+> +          - hisilicon,hi3660-iomcu
+> +          - hisilicon,hi3660-stub-clk
+> +          - hisilicon,hi3670-crgctrl
+> +          - hisilicon,hi3670-pctrl
+> +          - hisilicon,hi3670-pmuctrl
+> +          - hisilicon,hi3670-sctrl
+> +          - hisilicon,hi3670-iomcu
+> +          - hisilicon,hi3670-media1-crg
+> +          - hisilicon,hi3670-media2-crg
+> +          - hisilicon,hi6220-acpu-sctrl
+> +          - hisilicon,hi6220-aoctrl
+> +          - hisilicon,hi6220-sysctrl
+> +          - hisilicon,hi6220-mediactrl
+> +          - hisilicon,hi6220-pmctrl
+> +          - hisilicon,hi6220-stub-clk
+> +          - hisilicon,hi3516cv300-crg
+> +          - hisilicon,hi3516cv300-sysctrl
+> +          - hisilicon,hi3519-crg
+> +          - hisilicon,hi3798cv200-crg
+> +          - hisilicon,hi3798cv200-sysctrl
+> +      - const: syscon
+> +      - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    enum: [1, 2]
+> +    description: |
+
+Previous bindings has only 2. Your patch is difficult to review and
+understand.
+
+> +      First cell is reset request register offset.
+> +      Second cell is bit offset in reset request register.
+
+All of these are reset controllers? I doubt.
+
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 1
+
+All of these have children? No, sorry, but this merging does not make
+any sense.
+
+> +
+> +  mboxes:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: |
+> +      Phandle to the mailbox for sending msg to MCU
+> +      (See ../mailbox/hisilicon,hi3660-mailbox.txt for more info)
+> +
+> +  mbox-names:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    description: |
+> +      Names of the mailboxes.
+> +
+> +  hisilicon,hi6220-clk-sram:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: |
+> +      Phandle to the syscon managing the SoC internal sram
+> +      the driver needs using the sram to pass parameters for frequency change.
+> +
+> +  reset-controller:
+> +    type: object
+> +    description: |
+> +      Reset controller for Hi3798CV200 GMAC module
+> +
+> +required:
+> +  - compatible
+> +  - '#clock-cells'
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          not:
+> +            contains:
+> +              enum:
+> +                - hisilicon,hi3798cv200-crg
+> +    then:
+> +      properties:
+> +        reset-controller: false
+> +  - oneOf:
+> +      - required:
+> +          - hisilicon,hi6220-clk-sram
+> +      - required:
+> +          - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/hi3559av100-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        clock-controller@12010000 {
+> +            compatible = "hisilicon,hi3559av100-clock";
+> +            #clock-cells = <1>;
+> +            #reset-cells = <2>;
+> +            reg = <0x0 0x12010000 0x0 0x10000>;
+> +        };
+> +    };
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/hi3660-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        clock-controller@fff35000 {
+> +            compatible = "hisilicon,hi3660-crgctrl", "syscon";
+> +            reg = <0x0 0xfff35000 0x0 0x1000>;
+> +            #clock-cells = <1>;
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml b/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+> deleted file mode 100644
+> index 3ceb29cec704..000000000000
+> --- a/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+> +++ /dev/null
+> @@ -1,59 +0,0 @@
+> -# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> -%YAML 1.2
+> ----
+> -$id: http://devicetree.org/schemas/clock/hisilicon,hi3559av100-clock.yaml#
+> -$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+NAK, not related patch.
+
+Please split all your patches into logical chunks.
+
+Please read submitting-patches *BEFORE SENDING* further submissions.
+
+Best regards,
+Krzysztof
 
 
