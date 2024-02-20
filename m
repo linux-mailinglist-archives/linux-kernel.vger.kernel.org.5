@@ -1,79 +1,115 @@
-Return-Path: <linux-kernel+bounces-72187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7A085B098
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:43:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8B985B09A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:44:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB3401C22120
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2575282FEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCDD3F9FA;
-	Tue, 20 Feb 2024 01:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD4C53819;
+	Tue, 20 Feb 2024 01:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="UcaOvXfG"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2139.outbound.protection.outlook.com [40.107.255.139])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CWH9M3Px"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3448A2F48
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A44D535A6;
+	Tue, 20 Feb 2024 01:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708393384; cv=fail; b=PtngNJO2KfDois7OdVpBdLFqR5CQ81VglvEtcqu/kWPJCD4lEr8hDuiWCglYJCXiS/OYZvC7cQB9/wSeCD5w1bL6+vW2z9M5JxBDjrlwsqFK7OFwXbbtgLbG9bNS6jfVGAPgvmJ0otkk3c+at5BzBGrYZtnRPdm8SHjvU5zo3+I=
+	t=1708393437; cv=fail; b=sucis+jYiVjeiwJ9/Cf/lZ9djX2hH4sAGujzNxV5I9pxsJHnjDd3lQdLT7cVPW1Srp09iN590FUiGmAQjGO6lpwAw0sLuNQlW/T831RvEhcDzftCZiYvnDAgKQ99+XolHsJk/+IDGYrHnWrfNxvNYkvisfo2QqvbsCc3k76B0kg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708393384; c=relaxed/simple;
-	bh=LV/Pdc/iszQR3LgVHy7+nnwK62EWjMRG+7HCUSE7COA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=t23fEVu90Us7mwsiKq3sIkFkFWR0DptNbXWflVOXDdXwdSmHeLhzjH8rVe4IhO2vN5ix+rUVvqMwA3OVSZ6bb24tA5EQ5pDVLSw4kqJz7EUu8aa4/7+ZQZ/QNV3hPN160Do7ULpdV4YkWRR7a00DgblFtKjE+WpXSnI12SYzddw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=UcaOvXfG; arc=fail smtp.client-ip=40.107.255.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+	s=arc-20240116; t=1708393437; c=relaxed/simple;
+	bh=tDDdS1nxbz5KUfGaqUVL5kSg/6e4L7UgRBazCk1SWhU=;
+	h=Message-ID:Date:Subject:From:To:CC:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jhTAIkk2vQzwEiCn1KaqY1/B1pehc2aFq9/vznDgEusHRQTq1pvIp0mwSeE/sFKIVnd34x/xMcgssuVRUx3GrZp+fnebB3G717Pl6ACHML61yIonXJtUlz1oacHEcW3LBQNG8/paMCGstimSPH7jdauNlYffZaOXo2LbgW0s6z8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CWH9M3Px; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708393436; x=1739929436;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=tDDdS1nxbz5KUfGaqUVL5kSg/6e4L7UgRBazCk1SWhU=;
+  b=CWH9M3PxAFwtDrwpM5NM5gJ5bD1rJzQPKIKgWaBly4O3fITfK8XmABWt
+   JOauuP7/4a+pMaPdC4TLREJE9mcxwCwCoIoCT+um4DgXaXiU5eWfa3ouz
+   K8ZBXFypwIyjsHjMnnVJ5uP7e4FXBD5lLVL9EeB6RbgrKu9I0sBmlY33p
+   Ft+oYy8nv92hnInVxOS15h5XAr06YPFnKbe/q5bAHPXcEGNoW6ORzK/+B
+   RbbvxtKQE+Q4xHEh3V9/6pJbT6ySbnYJTfCPDv7U11ggsAXW46CriPWVJ
+   kToASJnZHlJ1olaFarhJCjzuqXw2N3moi94jIuw1K3Xg82E4eD5voH2I1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="13032007"
+X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
+   d="scan'208";a="13032007"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 17:43:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="912975349"
+X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
+   d="scan'208";a="912975349"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 17:43:55 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 17:43:54 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 17:43:54 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 17:43:54 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 19 Feb 2024 17:43:45 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bfNceUZehVszPWthZvCEDbUje6A1QfE4/pEb/wb2Zy42/vd/lZcqeMWTUITHIcC7QlLHFTxkA7RZzZ7QmiDgR3Cb6P5L2cd27IgDMOIUL3wPBeaTmNgGOSXkz1LNOAi/4Xnd6KUf5OvYWIXJb9/Fsi6hw/jx1n0FMakui6CdYWOdXDbbGxOMAnLlQWz+pfC3dyqqCGiagXChfJllo/lu9T0VpKEjEGciv0tvYwD/iqDnEwzCO7UycmdYMCRKpqrKfGjecg3I+f3WbJcjsbr/axVq12zwGgW47LtQA26F3rjnQk1otGcFgvz+JftEwukiSwOEXOjpUH/lKroT3aM6ag==
+ b=Z8hazGXPRpUJEr9SsMTILykL2ep8jczP1Cxj/01zcvj291UVonMnYlz3v7jmsL1TUl3bxEC//rr3kue6pWDU45FxzsFqdBCuTH7rdk3IYBOrIDQDUlnnOwuIpo403byWSaJYq8JWvHcNJ5tShyomkggkmUwoq2rBUz96QQ4+J8ObIvdMZTALSq8nKhf4BAYNrAZSFx19uCa8D2Jjk7HjMGWEeu6SPlKzmrQ0JROz150FV6iIgxrPLFRYa2ZhSJkK27W4wFXtjoq0/gO8LfMkhpcx6J/gel6T3Ih8LdNd7u5sWUDRjwnqQ+YQF/9IF9Q9UymPOIOgJtxxb8eYJD71EA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ThDB/ADrVL/M7r/iNqp+OJD6jCzvEKav8Vp/xvlj/HQ=;
- b=HnXgsCAB24DCpP7OBvW9XPFz5JTeweaus6vztX5zBaU4EE8jGLnsckjda3lvFYWc5Wae6CzkYi1HOPdAXP98EdQ+zg9fbxxVIIXQRq195gw42mNuLnAcrZpPVXP/xQiYlIDs6k9arXIK/BJ7jqFxc0r95KKYpLyRSluEkg0tFfl5/x28xr6YVGG92bE7OwKtcrwVYI7H2imJhu87FIIMjdeWEb7WsouMUC+8zq9wywhmcJZt9lv1BYv2bgB7opBlNH81IjG4hRgECvx1fHeG/5yVeXVXXJYS8PabkHim6ej3MtZDX+cbqc3OgjRTBiUYgxKSrHTAxKV3ahhf+SY7Kg==
+ bh=yhX9yC/FT6O2uvoztiGJugZkz/SfDgD+aIifB743uw0=;
+ b=HYSVoL8wryOzrgeA7taK2CkfdhCCrLoo3mUtCggID30YSlsWEy5Ul8rXfs20TyRMOqfc4sfCQqzSsJYjzNWp0waXKIfK43GJYlNdPjj2HJwKlrzR40GZcktoVFkV1IPTMXF0mLVN6O+HpSMfov5pUiFFXxUyLBEC6mQi/r3n8via0EkK+n1YHMNXku/qZS5trun7XFQrVbSmBut4mGyEAr1aLZxseiUvo5sy7Le3fVCYyDJmEfpllTGwOSjCqYXxjgr/f5V6Kc/psG0ydiCJq3sAOdNZBi7V1O50uJmJPrjcQAxwa/cWwq1FARZ6J1D11KzmjqtpUSalg/NKPSGn+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ThDB/ADrVL/M7r/iNqp+OJD6jCzvEKav8Vp/xvlj/HQ=;
- b=UcaOvXfGcYm4ZD2J8ViP4J2x9SeTtZgiIWKi7f7MRRLMFm1nAESyuzW4HxZEAtU1JPnyAGIuMkHil8jt8oUaJ6w9DJBc2YQVK5zSBLG8iwYY0ouoGzefwDxTK4/fF9xywI1R6o9trnX+qlyM7FBoDyFQRx2AEBvzPVLAu/wWfg0=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oppo.com;
-Received: from SI2PR02MB5612.apcprd02.prod.outlook.com (2603:1096:4:1ab::12)
- by SI6PR02MB8312.apcprd02.prod.outlook.com (2603:1096:4:21d::7) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB7141.namprd11.prod.outlook.com (2603:10b6:510:22f::14)
+ by BL1PR11MB5351.namprd11.prod.outlook.com (2603:10b6:208:318::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 01:42:59 +0000
-Received: from SI2PR02MB5612.apcprd02.prod.outlook.com
- ([fe80::5002:785e:e85c:37b8]) by SI2PR02MB5612.apcprd02.prod.outlook.com
- ([fe80::5002:785e:e85c:37b8%3]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 01:42:58 +0000
-Message-ID: <7c648dac-3198-3dba-0a96-34798cfdbd99@oppo.com>
-Date: Tue, 20 Feb 2024 09:42:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] mm/rmap: support folio_referenced to control if
- try_lock in rmap_walk
-To: akpm@linux-foundation.org, david@redhat.com, osalvador@suse.de,
- willy@infradead.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, tkjos@google.com,
- surenb@google.com, gregkh@google.com, v-songbaohua@oppo.com
-References: <20240219141703.3851-1-lipeifeng@oppo.com>
- <20240219141703.3851-2-lipeifeng@oppo.com>
-From: =?UTF-8?B?5p2O5Z+56ZSL?= <lipeifeng@oppo.com>
-In-Reply-To: <20240219141703.3851-2-lipeifeng@oppo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ 2024 01:43:43 +0000
+Received: from PH8PR11MB7141.namprd11.prod.outlook.com
+ ([fe80::40e:3440:595c:9041]) by PH8PR11MB7141.namprd11.prod.outlook.com
+ ([fe80::40e:3440:595c:9041%6]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 01:43:43 +0000
+Message-ID: <b606216c-dae9-4bd9-a1a8-91bce67c211b@intel.com>
+Date: Tue, 20 Feb 2024 09:43:40 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmaengine: idxd: Ensure safe user copy of completion
+ record
+Content-Language: en-US
+From: Lijun Pan <lijun.pan@intel.com>
+To: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>, "Dave
+ Jiang" <dave.jiang@intel.com>
+CC: <dmaengine@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+	Tony Zhu <tony.zhu@intel.com>
+References: <20240209191412.1050270-1-fenghua.yu@intel.com>
+ <4237a933-0f61-417f-bbb6-ce5954b304d4@intel.com>
+In-Reply-To: <4237a933-0f61-417f-bbb6-ce5954b304d4@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYCP286CA0351.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:405:7c::20) To SI2PR02MB5612.apcprd02.prod.outlook.com
- (2603:1096:4:1ab::12)
+X-ClientProxiedBy: SI1PR02CA0003.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::20) To PH8PR11MB7141.namprd11.prod.outlook.com
+ (2603:10b6:510:22f::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,238 +117,155 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SI2PR02MB5612:EE_|SI6PR02MB8312:EE_
-X-MS-Office365-Filtering-Correlation-Id: acb35d46-b306-49b4-c8e9-08dc31b5443b
-X-LD-Processed: f1905eb1-c353-41c5-9516-62b4a54b5ee6,ExtAddr
+X-MS-TrafficTypeDiagnostic: PH8PR11MB7141:EE_|BL1PR11MB5351:EE_
+X-MS-Office365-Filtering-Correlation-Id: 378442f8-1e88-4c1c-e5fb-08dc31b55f0e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xBvHf6q27C6wj53oMGVyLOHVwN54sKbFGX2FzLt7ecvw8oyNqemj6BBCq195SWsfnV7oBXa4aMfXx/RNWHqTKErFSFVpLvHnz8fQQoQsRUPy1RD64Pru37qtu/a6d6YSs0H8GTIDw8Szhi0fekp2Obs9hxkejlG20OJiT/WJDTRHQIoFGSeaQhqHeQH1ZF/tWOeFB64EeNU3TjZTqeK3RyhZLCEfLRX/PF7nf6hgdL/7IwGsoV4mMW5kyG5GxCXBw/0Plrg/tt+EKRaoyzWBl5LAcbcKDnxjFYHCi0kghLaZNPQ8fE6AAC1U/a3nP7M6RZR++trzDG7zs159K5C0x3rIlbSx6I31KXhI5uXIlgU24VR8gJOufcwWo+voqLIn5RcMtZvBuYKY4g3hG9M+9Y5pveY4tO9G1lG7cOe7+I+t5VE7cY/nE5XhWLkHuvnryduno7J/j+q7BbQYEeIN/kkGMalfvhsfUhs95heXkB6WHUBWPaLuHQqiVUCDkViyPVsGW2E0F4So5CsfhoMRiyYML7H8Hqd6mwpbkkmWWr0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR02MB5612.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 1YCAHUGxJnek3tYUirx1CCsysjBqh/9EQYfs76USzAIbD+c5xYb8iFyTNZjx756Q+VMt2OvMmLsT8JBhPcRM08h9+Av1YddEfnOV6mRvnPU3Y8DsPaB++oQVlMPp1PnJLOrHlkoBhVJg6EWkfeqhPEnMXh4Qj+4L3mTgW6pkJA3YK49O/UoIQ6obn/+SHvQrhTMvk+/V09tcqe7ijuE0ZXYLzZMPk7R3YH/3+BuYjTLNi39f3CC2uewzlWNXtlzwekGLYtBzuntThjuAnD/CkHsEI9ZuwLroI658plsnjcoHUWZACzCmHRpJUdzjLhOUOPzQzR6LZgXfstsVbF5Iwpcrxtzb9Sh4rm7vGao1x87ig6BGCfmbgFJ029ZCZLwMiEY1WOFS0i/hFhuvAjxw7hqbhrIaW+x6ddZRsvqKFDHmDg5A8j7DlN/8SopAOh/NSA2w0/RGBPMN4jeM+F9EAu8fdpd2Jp6G1Aqth8jdBsUZXRaJRIV2bjyDs/sRhgXNJ4ZHJPT25VA/gA6VA43iAqQGAs6Xv6CT+3Cu4DDYU6Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB7141.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OXcrVkU0UDd2SXlZTHNibmZJaEtOc2VDcWdDcW04UVhSOTNGNXp3cEUzMHdX?=
- =?utf-8?B?QmlzS2FJUXF2Vk11MkxGQlZPMUQzMDI2bDRraHl2WTYvR1A5QzdrZzdWVWpY?=
- =?utf-8?B?RXdVT1VFZjZZWW1yYjhOSElyYlFldGd4SUhvSlprNTI1MGhRdmx6d0VWL281?=
- =?utf-8?B?c3RhMTFiRFdFVGpYSmpHcTNCM2lWaFlJUGduK29wZlc2TTZsMWVrV1BiSDZo?=
- =?utf-8?B?RTB0b0J0MDEvR2xEem1keGN3d2g0UFlNUXQ1azJJbURSTDR4RXRGcklUVnF5?=
- =?utf-8?B?bjhYWFpjaTVvL2toYlFHMzhUY0NTYllRSXpTaGZ3UWRDdTQ0RzVLR0FxcWJ6?=
- =?utf-8?B?aUNVRW44bXYrNG9iZThOVlIrV2p1TFllSDAzZkY1SGhOTFNxWTFUY3B4bVZE?=
- =?utf-8?B?WGhraHNROEttVmhqMkMvQk1xdzZrcGZIeUltTzRST2hzR0tBQlY2UEhYZ3R2?=
- =?utf-8?B?dlZzbklRODNtdnpvTy80NzFhU3N6UDlxR1JlRFVjVm55VFFIeVNsUitFSklv?=
- =?utf-8?B?bzdNcDJyTE5jbW1PbTF6c3JaelFpZ0x0Z2J6UkpQMHlkeVJxVjJtMG5QMjdT?=
- =?utf-8?B?eU1MeTh1QVNBazh0SVdJZmdacnkxeG9DZG1IRnhJaklCSDZyZ0I2NitFQTds?=
- =?utf-8?B?dmlOYm80eGVqR3hjWnYwT0pRWjh0MGRDM0wzVyt0V0ozSU02QldMUkFWbzQw?=
- =?utf-8?B?L0Y4OWowZ2R0T2JsNEhUWjBBb1dHMWxXM3A5TlRXSTdPMzYzMjlhajlFWk90?=
- =?utf-8?B?UzN4WkFLOFNoYWFaamNaajZSZHdEOTdrNGFnT2E5dzRpTUV5OExHbUdmU2ZH?=
- =?utf-8?B?NzNlNlI1YnkyOFdLVCtlWks1TVBUbkJsN1QxSDVGTE8zTjduM01sMW1SZnBz?=
- =?utf-8?B?bVd2eFlUVzdVR1djYlREa0wxY0JmMHdBdlhUUHNrM1d0dUwxZy9hbU1NT0ZH?=
- =?utf-8?B?VnZ6T20ybGRVZ2pHVWV4SS84UFFLWWRHK21lV1lwQUpTem9tTUpQMUp4NmZ1?=
- =?utf-8?B?aHFyekxTKzNoREEyeC9LUWV2bFJPc2p2VUtBa3d0RDcyMVBzaGtoK0w4akNt?=
- =?utf-8?B?K1ZxL01xZzMydHExQm9ubVV0NGR1OGdZTm5JdWY2Z0paRGo2TTVQQlZmMXIv?=
- =?utf-8?B?LzNzdHZLenpBWmFHS0ZBN0pnc1VHdXFjdWRWaStENzBDUmNwazQzbENyQkFZ?=
- =?utf-8?B?TUdsNGJUTS9sQkcyTFkvSUV2Sm9sZGxrVEt3TkNOUTBrWXVSaEV1Vmtxc3lH?=
- =?utf-8?B?UXd6cU05enZQbmpseFFqOXArdUxaQUk2Z242UjNMMzRyVkpHL3JIcHNuVmhO?=
- =?utf-8?B?d0w5SWRTVStLcGM4TjNpVGN2a0M5cGgrcGx6TFVuSm9PTkVySHlWangvbTZQ?=
- =?utf-8?B?dzFhQmJRRkZCRGgvaFVUbUs1SU9yRlBTY3laOE0wS2JHSnJaYktEUzdwbmtE?=
- =?utf-8?B?NTh0OUEzbGF2YkQyMHVBMElJbUx6bFFERmw5WWQyL09yOFB6N1MwSmVZNVMr?=
- =?utf-8?B?NStjVmJhSHVJNUtxRXNIenFhNndFLytBTzZVOTBmNDJ5dndwRDQ2bmNOSk1M?=
- =?utf-8?B?cnR3R0lUczE3Y3BVV2xUcXRSOFVSMU0rTXpxZDR6NzdPNG5FU2JFSVljUldy?=
- =?utf-8?B?U0ErQ2ttVjlSZ2pZRGdxa0pzVGdPblF4c240bGpXWTl1WXBNbmlYOWplaG00?=
- =?utf-8?B?K0V4NXJrNzFyRnJKcDVSZk4zbi9HMnhXSzNObDBCV0k1cFZtTXA5TTNEbk5m?=
- =?utf-8?B?UXI5Vm4vUWNVOWFsVGNhVFZmeVBEakZOem1hQmpneExVY3djTXE2MWdHUU1j?=
- =?utf-8?B?cTVQNzJtVE84OTc1Z2ozRnNmRWgwaWVzdVRxYTQxQXBNbE9BdWdyT1FZd1Ev?=
- =?utf-8?B?elA5VXpWRlNUQTNUL1F0OENFOTc5eitHV0p0K0srbm56SlB2V25wREJrYjJY?=
- =?utf-8?B?ekxXZFhuQWxxNFhMa3VQSnVSekltUlJaZjVrTjVvWGN4akw1TUJPUnlPZVdR?=
- =?utf-8?B?Tmc3b1lnT1dkcW5aKys3UWV2QklzKytjUGc3V3pkYU5tUzF4UXRWcm9WcXpu?=
- =?utf-8?B?NTlkNnBlSUtnYnJNMnJBcW1LdFRDYWZHUVVXV05XS0NCM0RJbVBrU096RUpy?=
- =?utf-8?Q?2+6VSdywx5mGlM+ZE8GKG5Q1P?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: acb35d46-b306-49b4-c8e9-08dc31b5443b
-X-MS-Exchange-CrossTenant-AuthSource: SI2PR02MB5612.apcprd02.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGUxaERyT3NyQzRHZHBKd3dCbUdDcUZQRzZZN0RORTlVaGgrMXdTUUQxblRj?=
+ =?utf-8?B?dXd3UnNXbE5GT2JXMTJrUkJBTGhnOWs0WDFlcnd5NDNmV2ZTK3p0NzlzcDBY?=
+ =?utf-8?B?ejAwRmtKM3NYWmg5NUNVbUdxaE9WY0JjMXA3Tm0rWmNLbkl4SHpZQVpGUGZF?=
+ =?utf-8?B?dWdtZE1kNlZ4NEF5VFJ5a2h0ZTM1aS9PeE53dlRtUmFsUk1MWG92NUEwQ3Rm?=
+ =?utf-8?B?QW4zaTJXL3RiRlp2Q0UrVHlkVGowSDlPUWxaeE1YVXlhZDdZSVoxREVMd0hU?=
+ =?utf-8?B?bitVT0pjRWwraVVqUlUva3VYZkhzbEFOelhlYW9lMGx1S2pUbjZpRkFVYjN1?=
+ =?utf-8?B?blFQblBCK2JjblRUMGRXaEVlTDhyTzA4YzY0anJkdzU5REFtS0h1OTljc2R4?=
+ =?utf-8?B?aHVnWi8rOWhYeVFabnl3b2h1NVhGaklkZ3lQa1BNMkRXMEZhbmxBTlVJcFNk?=
+ =?utf-8?B?VlprV3JiNzBVRlh2cytvaVFtZWxKa0hQQlRENHRzK1VRdDJJeTJUZFdHR29O?=
+ =?utf-8?B?R3RzRlN5NjljWUc0b1VhMDFNY1htbWh0dHBXQ1M3aTZlcXlsZDhmdy9QbE5D?=
+ =?utf-8?B?VHZkTmxEUWx3MTl3QmFidG1qaVVDZG5scXRKVjRLd2J5NlBlYjJBRGFsV1ZM?=
+ =?utf-8?B?a3YzSms3RUNzRUR4SjkySUJaUThhaVNnZytqRmtjNWpNNTNHUHFWNnFWOVpt?=
+ =?utf-8?B?b1ZQZ3p4Q3F5akJjdXk4MVlLZ3hINi80TXlBN1VMNFZDeTdRRlpwb2NQeXg5?=
+ =?utf-8?B?OTRQZ3d1bGpoNVV0dEFzMlAwR0RaM2dUWlpJc1N5c3JVZy9hMGVQY09PMHJW?=
+ =?utf-8?B?Zkc2czdmcCsrUGVDampuQXczRm9WMTlubUVIc2N6WTdob3NmSFJVWlI1RmJS?=
+ =?utf-8?B?RVFySldGZ3JDcEtuTFBLSXhVa0x5NFUxT1BYZkxtUUZwQnRtZ2N4N2owbitH?=
+ =?utf-8?B?RUN4N3dkV1pWV090TVRMbkxlbzJPUkNSQnRncGVmTDB0RFdFYU8rU3hweUZG?=
+ =?utf-8?B?SElhd3NxQS96LzltNEtpQWgvUGx4cG1MV2VHZ0xZYnAzYjBudms4SnVyb1N3?=
+ =?utf-8?B?REpoeDVhVm9TNzgxSEN3Zy9vSWhvZ2tmZG85LzlBM3hua2NXZEIrVmhCKzNt?=
+ =?utf-8?B?Y3BVQnl5bkhKZHpkTzJTWGhPY0lDOE5NdDVMMkZ6L3B1V3FVTE9lRGUyNkdR?=
+ =?utf-8?B?N20rVnpVRkhoNWxqZHFiUUhCUm8xdjVQcWZqSWx2YVdCMXFpWjNuVGd6ejk3?=
+ =?utf-8?B?dGRjL01RaThLV3MwY3djblBIUEs4Rmw2aWhKNXpLcTN1SVcxS1JqOU9RTklV?=
+ =?utf-8?B?a0RvU1hwUjQvb0gwcmJmNmxLekpuUERpTVBVYXlBTThObnRyVVROdUx5MFQx?=
+ =?utf-8?B?TmFoNm9CRUNqMlJlZEtocUdTREpaTkJaWEY5OVcxZDhyeFRkNnlEbXdIL0Vs?=
+ =?utf-8?B?UndVVjhWSytsWXRWd0JVeGV3dUtRdmxoUlRoT1RmdjJwdG9rT0JXN00wUytq?=
+ =?utf-8?B?cWFrWTQ5T2NGS2p5cVc3Wjd2ZndqTWdGSHl1cnhVZEdKVmlkUjhET2xnaThj?=
+ =?utf-8?B?MU5sUXFoT0VnUStBSFNBYzIwYVVwRTZWVGN1bDVVcmowdFJ4NEQ4UVpUU0Vz?=
+ =?utf-8?B?WUpHR0JYdXRhYWFmcGRlbkRZQnZTbHZ1VDVYZkNRS0Jpa3U0NURCZ2pIMExH?=
+ =?utf-8?B?elNyQjZiNkNMTlBFcmFtdjFOaHArNzlnTkVLTlExL2c0c080Qms0ODAvcytM?=
+ =?utf-8?B?M205c1FiOXN0UktkMHdXNStPMVhlN3Nad2hjMTRSSCtkZlBIQk9FUVkrd1Jv?=
+ =?utf-8?B?QUx5aFJUTnJITWxXQW1YWGowcXExT0VoM0NSUFNmUWowS0tCTDBiaDQvcnNL?=
+ =?utf-8?B?OHpBaW15b3dtdndoeDFCcVdHbTZpZVN2T3RuRVhiTjdsSmUrd256TzRyaXlt?=
+ =?utf-8?B?am9vcHdzYU83a3lUdk9hOEwrTzdrbzUwQk9MdjFWNk9YTEp2dEdidHErSkZU?=
+ =?utf-8?B?YzYxTG1xZTNyWXFDQ2NibWVyYUVLMnlXTUl2VUlUSGM2N2tzRWQ3OVUrVlhK?=
+ =?utf-8?B?bE50U0JYeWZUYjB0ekFaVVNtNitaUjFYbm5BRjEzaVFxeWFCU1phVTJBOHVu?=
+ =?utf-8?Q?7zEMe3lvhaOjqM6GEN/ydXnsy?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 378442f8-1e88-4c1c-e5fb-08dc31b55f0e
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB7141.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 01:42:58.5542
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 01:43:43.6170
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2Pnkp6+684244x6AjcUdjaCL/rFdK5Zgrx81/18d8orqeUY862noop/YZYsKTrSfA2v4hmnwOzLUo3ArL2NDjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI6PR02MB8312
+X-MS-Exchange-CrossTenant-UserPrincipalName: ol5R/K7r5fPoWx8+8vWIUF4ExMjqduUVJ7PDmStTwD5j/18rDX97kcUX5w8qdqZhoJ81N0w02Kh/sTCLaavdgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5351
+X-OriginatorOrg: intel.com
 
-add more experts from Linux and Google.
 
 
-在 2024/2/19 22:17, lipeifeng@oppo.com 写道:
-> From: lipeifeng <lipeifeng@oppo.com>
->
-> The patch to support folio_referenced to control the bevavior
-> of walk_rmap, which for some thread to hold the lock in rmap_walk
-> instead of try_lock when using folio_referenced.
->
-> Signed-off-by: lipeifeng <lipeifeng@oppo.com>
-> ---
->   include/linux/rmap.h |  5 +++--
->   mm/rmap.c            |  5 +++--
->   mm/vmscan.c          | 16 ++++++++++++++--
->   3 files changed, 20 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index b7944a8..846b261 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -623,7 +623,8 @@ static inline int folio_try_share_anon_rmap_pmd(struct folio *folio,
->    * Called from mm/vmscan.c to handle paging out
->    */
->   int folio_referenced(struct folio *, int is_locked,
-> -			struct mem_cgroup *memcg, unsigned long *vm_flags);
-> +			struct mem_cgroup *memcg, unsigned long *vm_flags,
-> +			unsigned int rw_try_lock);
->   
->   void try_to_migrate(struct folio *folio, enum ttu_flags flags);
->   void try_to_unmap(struct folio *, enum ttu_flags flags);
-> @@ -739,7 +740,7 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
->   
->   static inline int folio_referenced(struct folio *folio, int is_locked,
->   				  struct mem_cgroup *memcg,
-> -				  unsigned long *vm_flags)
-> +				  unsigned long *vm_flags, unsigned int rw_try_lock)
->   {
->   	*vm_flags = 0;
->   	return 0;
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index f5d43ed..15d1fba 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -952,6 +952,7 @@ static bool invalid_folio_referenced_vma(struct vm_area_struct *vma, void *arg)
->    * @is_locked: Caller holds lock on the folio.
->    * @memcg: target memory cgroup
->    * @vm_flags: A combination of all the vma->vm_flags which referenced the folio.
-> + * @rw_try_lock: if try_lock in rmap_walk
->    *
->    * Quick test_and_clear_referenced for all mappings of a folio,
->    *
-> @@ -959,7 +960,7 @@ static bool invalid_folio_referenced_vma(struct vm_area_struct *vma, void *arg)
->    * the function bailed out due to rmap lock contention.
->    */
->   int folio_referenced(struct folio *folio, int is_locked,
-> -		     struct mem_cgroup *memcg, unsigned long *vm_flags)
-> +		     struct mem_cgroup *memcg, unsigned long *vm_flags, unsigned int rw_try_lock)
->   {
->   	int we_locked = 0;
->   	struct folio_referenced_arg pra = {
-> @@ -970,7 +971,7 @@ int folio_referenced(struct folio *folio, int is_locked,
->   		.rmap_one = folio_referenced_one,
->   		.arg = (void *)&pra,
->   		.anon_lock = folio_lock_anon_vma_read,
-> -		.try_lock = true,
-> +		.try_lock = rw_try_lock ? true : false,
->   		.invalid_vma = invalid_folio_referenced_vma,
->   	};
->   
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 4f9c854..0296d48 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -136,6 +136,9 @@ struct scan_control {
->   	/* Always discard instead of demoting to lower tier memory */
->   	unsigned int no_demotion:1;
->   
-> +	/* if try_lock in rmap_walk */
-> +	unsigned int rw_try_lock:1;
-> +
->   	/* Allocation order */
->   	s8 order;
->   
-> @@ -827,7 +830,7 @@ static enum folio_references folio_check_references(struct folio *folio,
->   	unsigned long vm_flags;
->   
->   	referenced_ptes = folio_referenced(folio, 1, sc->target_mem_cgroup,
-> -					   &vm_flags);
-> +					   &vm_flags, sc->rw_try_lock);
->   	referenced_folio = folio_test_clear_referenced(folio);
->   
->   	/*
-> @@ -1501,6 +1504,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
->   	struct scan_control sc = {
->   		.gfp_mask = GFP_KERNEL,
->   		.may_unmap = 1,
-> +		.rw_try_lock = 1,
->   	};
->   	struct reclaim_stat stat;
->   	unsigned int nr_reclaimed;
-> @@ -2038,7 +2042,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->   
->   		/* Referenced or rmap lock contention: rotate */
->   		if (folio_referenced(folio, 0, sc->target_mem_cgroup,
-> -				     &vm_flags) != 0) {
-> +				     &vm_flags, sc->rw_try_lock) != 0) {
->   			/*
->   			 * Identify referenced, file-backed active folios and
->   			 * give them one more trip around the active list. So
-> @@ -2096,6 +2100,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
->   		.may_unmap = 1,
->   		.may_swap = 1,
->   		.no_demotion = 1,
-> +		.rw_try_lock = 1,
->   	};
->   
->   	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, false);
-> @@ -5442,6 +5447,7 @@ static ssize_t lru_gen_seq_write(struct file *file, const char __user *src,
->   		.may_swap = true,
->   		.reclaim_idx = MAX_NR_ZONES - 1,
->   		.gfp_mask = GFP_KERNEL,
-> +		.rw_try_lock = 1,
->   	};
->   
->   	buf = kvmalloc(len + 1, GFP_KERNEL);
-> @@ -6414,6 +6420,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->   		.may_writepage = !laptop_mode,
->   		.may_unmap = 1,
->   		.may_swap = 1,
-> +		.rw_try_lock = 1,
->   	};
->   
->   	/*
-> @@ -6459,6 +6466,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
->   		.may_unmap = 1,
->   		.reclaim_idx = MAX_NR_ZONES - 1,
->   		.may_swap = !noswap,
-> +		.rw_try_lock = 1,
->   	};
->   
->   	WARN_ON_ONCE(!current->reclaim_state);
-> @@ -6503,6 +6511,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->   		.may_unmap = 1,
->   		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
->   		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-> +		.rw_try_lock = 1,
->   	};
->   	/*
->   	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
-> @@ -6764,6 +6773,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
->   		.gfp_mask = GFP_KERNEL,
->   		.order = order,
->   		.may_unmap = 1,
-> +		.rw_try_lock = 1,
->   	};
->   
->   	set_task_reclaim_state(current, &sc.reclaim_state);
-> @@ -7223,6 +7233,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
->   		.may_unmap = 1,
->   		.may_swap = 1,
->   		.hibernation_mode = 1,
-> +		.rw_try_lock = 1,
->   	};
->   	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
->   	unsigned long nr_reclaimed;
-> @@ -7381,6 +7392,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
->   		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
->   		.may_swap = 1,
->   		.reclaim_idx = gfp_zone(gfp_mask),
-> +		.rw_try_lock = 1,
->   	};
->   	unsigned long pflags;
->   
+On 2/10/2024 5:53 AM, Lijun Pan wrote:
+> 
+> 
+> On 2/10/2024 3:14 AM, Fenghua Yu wrote:
+>> If CONFIG_HARDENED_USERCOPY is enabled, copying completion record from
+>> event log cache to user triggers a kernel bug.
+>>
+>> [ 1987.159822] usercopy: Kernel memory exposure attempt detected from 
+>> SLUB object 'dsa0' (offset 74, size 31)!
+>> [ 1987.170845] ------------[ cut here ]------------
+>> [ 1987.176086] kernel BUG at mm/usercopy.c:102!
+>> [ 1987.180946] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+>> [ 1987.186866] CPU: 17 PID: 528 Comm: kworker/17:1 Not tainted 
+>> 6.8.0-rc2+ #5
+>> [ 1987.194537] Hardware name: Intel Corporation AvenueCity/AvenueCity, 
+>> BIOS BHSDCRB1.86B.2492.D03.2307181620 07/18/2023
+>> [ 1987.206405] Workqueue: wq0.0 idxd_evl_fault_work [idxd]
+>> [ 1987.212338] RIP: 0010:usercopy_abort+0x72/0x90
+>> [ 1987.217381] Code: 58 65 9c 50 48 c7 c2 17 85 61 9c 57 48 c7 c7 98 
+>> fd 6b 9c 48 0f 44 d6 48 c7 c6 b3 08 62 9c 4c 89 d1 49 0f 44 f3 e8 1e 
+>> 2e d5 ff <0f> 0b 49 c7 c1 9e 42 61 9c 4c 89 cf 4d 89 c8 eb a9 66 66 2e 
+>> 0f 1f
+>> [ 1987.238505] RSP: 0018:ff62f5cf20607d60 EFLAGS: 00010246
+>> [ 1987.244423] RAX: 000000000000005f RBX: 000000000000001f RCX: 
+>> 0000000000000000
+>> [ 1987.252480] RDX: 0000000000000000 RSI: ffffffff9c61429e RDI: 
+>> 00000000ffffffff
+>> [ 1987.260538] RBP: ff62f5cf20607d78 R08: ff2a6a89ef3fffe8 R09: 
+>> 00000000fffeffff
+>> [ 1987.268595] R10: ff2a6a89eed00000 R11: 0000000000000003 R12: 
+>> ff2a66934849c89a
+>> [ 1987.276652] R13: 0000000000000001 R14: ff2a66934849c8b9 R15: 
+>> ff2a66934849c899
+>> [ 1987.284710] FS:  0000000000000000(0000) GS:ff2a66b22fe40000(0000) 
+>> knlGS:0000000000000000
+>> [ 1987.293850] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 1987.300355] CR2: 00007fe291a37000 CR3: 000000010fbd4005 CR4: 
+>> 0000000000f71ef0
+>> [ 1987.308413] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+>> 0000000000000000
+>> [ 1987.316470] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 
+>> 0000000000000400
+>> [ 1987.324527] PKRU: 55555554
+>> [ 1987.327622] Call Trace:
+>> [ 1987.330424]  <TASK>
+>> [ 1987.332826]  ? show_regs+0x6e/0x80
+>> [ 1987.336703]  ? die+0x3c/0xa0
+>> [ 1987.339988]  ? do_trap+0xd4/0xf0
+>> [ 1987.343662]  ? do_error_trap+0x75/0xa0
+>> [ 1987.347922]  ? usercopy_abort+0x72/0x90
+>> [ 1987.352277]  ? exc_invalid_op+0x57/0x80
+>> [ 1987.356634]  ? usercopy_abort+0x72/0x90
+>> [ 1987.360988]  ? asm_exc_invalid_op+0x1f/0x30
+>> [ 1987.365734]  ? usercopy_abort+0x72/0x90
+>> [ 1987.370088]  __check_heap_object+0xb7/0xd0
+>> [ 1987.374739]  __check_object_size+0x175/0x2d0
+>> [ 1987.379588]  idxd_copy_cr+0xa9/0x130 [idxd]
+>> [ 1987.384341]  idxd_evl_fault_work+0x127/0x390 [idxd]
+>> [ 1987.389878]  process_one_work+0x13e/0x300
+>> [ 1987.394435]  ? __pfx_worker_thread+0x10/0x10
+>> [ 1987.399284]  worker_thread+0x2f7/0x420
+>> [ 1987.403544]  ? _raw_spin_unlock_irqrestore+0x2b/0x50
+>> [ 1987.409171]  ? __pfx_worker_thread+0x10/0x10
+>> [ 1987.414019]  kthread+0x107/0x140
+>> [ 1987.417693]  ? __pfx_kthread+0x10/0x10
+>> [ 1987.421954]  ret_from_fork+0x3d/0x60
+>> [ 1987.426019]  ? __pfx_kthread+0x10/0x10
+>> [ 1987.430281]  ret_from_fork_asm+0x1b/0x30
+>> [ 1987.434744]  </TASK>
+>>
+>> The issue arises because event log cache is created using
+>> kmem_cache_create() which is not suitable for user copy.
+>>
+>> Fix the issue by creating event log cache with
+>> kmem_cache_create_usercopy(), ensuring safe user copy.
+> s/, ensuring/ to ensure
+
+It is not a big deal if you really want keep original wording.
+
+Lijun
+
+> 
+> 
+> 
+>>
+>> Fixes: c2f156bf168f ("dmaengine: idxd: create kmem cache for event log 
+>> fault items")
+>> Reported-by: Tony Zhu <tony.zhu@intel.com>
+>> Tested-by: Tony Zhu <tony.zhu@intel.com>
+>> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> 
+> Reviewed-by: Lijun Pan <lijun.pan@intel.com>
+> 
 
