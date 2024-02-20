@@ -1,285 +1,194 @@
-Return-Path: <linux-kernel+bounces-73620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD5CD85C534
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:52:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7734185C536
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CB371C21919
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:52:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E315DB2567D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0B114D43B;
-	Tue, 20 Feb 2024 19:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC0414A4D8;
+	Tue, 20 Feb 2024 19:52:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CHdaNa0y"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OBd8j4zH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0648014A4F4;
-	Tue, 20 Feb 2024 19:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708458697; cv=none; b=hv8nG5Q0Lo1ChHBxujXMO19MQuOmWdGLgLUpw/tt5koY8MzUV2Y/PNL31g0XQymK4TrguICQX7SAKWZE6eamTrRsLs3vYhz2pgwOGrIPhFvFGDNEPS7Ml45raL7R87CzS/DY8brIsmv2KZjGb+DkJ1GPkxwGrMDXpfYm1ouZVlU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708458697; c=relaxed/simple;
-	bh=qm4J52zhk5u0MtOFjSjMJaCZJdPHiRD6eD1ZnGm+OIY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J2XFSkXntTSR2nAr2+Qh+PBWAduAaM5aaMnCiFH55z35hFOe2erGtGXXx3CUoG91Z/dnqGpiMFUmojVYGVlmxUZHoprNnpb/0O9hP66JMrS9Fi48vAjNG23jQpKdMloIruyrIN3/SA+l4kClTcGzGOITokM56rTuGeHnD+gu5GQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CHdaNa0y; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d22b8c6e0dso44297291fa.2;
-        Tue, 20 Feb 2024 11:51:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708458694; x=1709063494; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jh2L6RcGiFdKCx7zZiu22h0FVnPxtlYVoTMnMq0TsIY=;
-        b=CHdaNa0yR9+h484haJUUQBi5AbzmS1u9pwNzwmQXfGQZ3uonhe9Zv5hsCRK2eGvtiH
-         OCwXQY4L6/OA/yCQAeR2uxW4HyHVVVzI8LRzz7VooTwl+2oIPV+HlqiYO3ilwPmPfaHx
-         WQIVMTF2C1Cd0NDrxlyNvCZMUYGBFxuKipmb783rRzcYWEnIs29Q1b3n+iWhfqVE2tqV
-         AM8+0GwSe+fp6Mfp1oIzYpqQQJCeFXNBVJVx6P082EdLYdT36Q4gBxwDhhE/qObHdZn8
-         T0stanRsqrrlajxdbp5QfspgHbNSLgR7pN/IcaMRbCCby8RZj/FM5UuhtDdOwwfS2Gno
-         og7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708458694; x=1709063494;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jh2L6RcGiFdKCx7zZiu22h0FVnPxtlYVoTMnMq0TsIY=;
-        b=FKo53wLRddiGpY4K95FfnfkPFb8CSLxK5GZa8pnNm4aTY2SrxBjbmJ6DbXyuw5EXsO
-         H4HGL3rSZPzl2JZAKlXgRlZhra50dcxJp8fpkLU6hmkeJjLijUykEIGwUioFIwStHndq
-         p7Z5QCe7uXs9LRQy0Lg7Qlsj1TF6nrwaAD/PI4QiY8c6/phh0K7jnk5lmSELWxAW3o9q
-         B3QlZcakak1q2EbW3GFUchhs/XlOVUbA74uaj5srHd5YCh9McIhUKy+qjePx6IKZKEp7
-         7OjCNB14evr5clr+UyB7kF5dD0FnPPbH+o2WZ8jxBli4uFuONS+e0RMPcUn3FTQTeysO
-         O2CA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQzNpGkNAfCDRty2Dzup1d9WUz+bA7HwjILayHPqJWyRaPYgFJ/hiuJzy9lxt9MngAZMstpEzBe3qraY8gvZJghiOUC+sEUF/v5FLwhIBHNpVTrXmo5cglYUAlzR0uEZ9MXvA+
-X-Gm-Message-State: AOJu0YwSzzFCYwRuyv1x1R9loIj+LK12thovZn+N1E66xA90tWjlQj6r
-	pYKa1vSQ232JYoQ8q5Bz3TwiiYk57Ke5SXkwHfLLpt6Z3oToM0yD
-X-Google-Smtp-Source: AGHT+IE0uB67JIW5GgBoh+sWq5kdhOomUj2tauYSPRIJ1xo33wjPZfkuNU9PbDI3HaFeWna9el6yvw==
-X-Received: by 2002:a05:651c:102c:b0:2d2:3a60:e6bb with SMTP id w12-20020a05651c102c00b002d23a60e6bbmr4288545ljm.52.1708458694171;
-        Tue, 20 Feb 2024 11:51:34 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id fs14-20020a05600c3f8e00b00411a595d56bsm15494853wmb.14.2024.02.20.11.51.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 11:51:33 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Robert Marko <robimarko@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH v2 3/3] net: phy: bcm7xxx: rework phy_driver table to new multiple PHY ID format
-Date: Tue, 20 Feb 2024 20:50:50 +0100
-Message-ID: <20240220195103.15809-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240220195103.15809-1-ansuelsmth@gmail.com>
-References: <20240220195103.15809-1-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E2DD768F1;
+	Tue, 20 Feb 2024 19:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708458740; cv=fail; b=WZaj7Ui+X+cFK34HT5ZmqByUnsjqo6iW8w61/FYsWHPactKNlYLonuvb210mqKJsukxoJ2qEsHOQ0TidKfmOAXvW0SyM1wQqjbHbIDiMzQVYMOENCt0vs6JzzANU7wZ2ccPz4DfJugd6rcybpgj6oWCbeHUExudjHgO4ZctDpto=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708458740; c=relaxed/simple;
+	bh=FaSuLXgdfpHAZiQoXLU44BoFSGwVxvLlPh6Gwmgukv8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=asPOTWoFY+jDaBpBCYNaBOS74/ufJYyAKNZqW2kXWERe1DUz1rv4mmKwRe89LPqvgzNQQflxgOR2nNxL/qBlfz305TCQsBdsqryXUbfzF1L9IYdePHAXlTf9SPEfull72pcvzrd7FjuVXulqRVhKwqNdknbxJdpTj6O2GtWv7ZM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OBd8j4zH; arc=fail smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708458738; x=1739994738;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=FaSuLXgdfpHAZiQoXLU44BoFSGwVxvLlPh6Gwmgukv8=;
+  b=OBd8j4zHW+Qa8ordfDFRisx6RgR1Alju05pIAaBViAPIitRfdJQ2TIFk
+   0XV/btCJqBoetnuP9vdB+MXWYJTXkUcSVr4iUCkvuGbYs8kTJsbYZgkr5
+   Ik4LxlqozvSA4Obl5+Pye3ePL4cUKUZShFYxU8cmR1qsZqTZIi0R/W7GC
+   whCtcZnEHOf+bJ97IkClVZKQyPTrbjNXK6GBYcKOfyZQX4JjnWKmQFx+y
+   fpeZ4hIl7uF+kTyCVEYCpwHKv304KNDWaPTsJhxxvIfjh7U3wYO1QzuLz
+   ra307yLhhqMu3afHCFhMnWxpkGMJJrLhGTs+dwXAxsE5Qj8mPKLg30FUq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2446123"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="2446123"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 11:52:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="4839950"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 11:52:17 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 11:52:16 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 11:52:16 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 20 Feb 2024 11:52:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AQ4YKwgCutqc1UD2yUG36jUYnsmwEL1sU9xH2HNrZBlgjhp6hd7bwkrghZRBhh9ez9CEret8QnyDz9JrCClShLvmqUameNQgz1Cm54ckQ2VAWymBafWxCV60EVGZTItfgIvA7ax/+QIZ+JnSUhTMjOo9ouaU9wrCDjAWsstyyunmQEGYq9j+dL1m3sJjcceuDSCzPE9yUlwH0cLfANpkkKkR1jSq4QBNLIvM/5/YV2BODUmIHskm30aFv9IUQaPrv7eJsdCNVnuqcXzjwM0GPB6XVrgZVUy9eQoCLIZB0pRv8i00kLgED+Ty5aigtPYuvNBt7Guso/Kn8w6kGIPFKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=juUvTMfUyNHjHDsKRcgUufB4/TyeMDnE6b/hRpMYoZo=;
+ b=MqeKeaFNmB0DefinS0aK0EvCkcNPV8EFMBpTKXvd4S9Zj09PwQXasRz1P6UsDCCPKjBQ3g92sqwVjO4AGBkhbkv5fi/hsf/d/LZ4mH4fBPmNo4xqK/HQ4+yPD23C3mxsIfKLlxQc0EXmk+4A1S3Q2fj4vpuxlhL+x0sZv5ZzOOPQ75Yl1nLCQBcFX47IEvNb+EJrsoq/fr3wnSS0uSek2Pxp3pa+A8uQCASm0HquS6yfepvK6MJ1SjhQ6ObFllxroHBms27yWfl6eg6OlC4Kge0wI/LHTNRZB0wPJwMbtShfkGeNBDTt7Dti2F52NqKuAoO4/Tiq/KUv/kpb1owYYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH7PR11MB7605.namprd11.prod.outlook.com (2603:10b6:510:277::5)
+ by DS0PR11MB7767.namprd11.prod.outlook.com (2603:10b6:8:138::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
+ 2024 19:52:13 +0000
+Received: from PH7PR11MB7605.namprd11.prod.outlook.com
+ ([fe80::c138:faf0:9fa7:8a03]) by PH7PR11MB7605.namprd11.prod.outlook.com
+ ([fe80::c138:faf0:9fa7:8a03%7]) with mapi id 15.20.7270.036; Tue, 20 Feb 2024
+ 19:52:13 +0000
+From: "Winkler, Tomas" <tomas.winkler@intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: "Usyskin, Alexander" <alexander.usyskin@intel.com>, "Lubart, Vitaly"
+	<vitaly.lubart@intel.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>
+Subject: RE: [char-misc-next] mei: gsc_proxy: match component when GSC is on
+ different bus
+Thread-Topic: [char-misc-next] mei: gsc_proxy: match component when GSC is on
+ different bus
+Thread-Index: AQHaXOsIdX3xgemJDE646gGDbr+G7rERhiWAgAAYpIA=
+Date: Tue, 20 Feb 2024 19:52:13 +0000
+Message-ID: <PH7PR11MB7605656F961FC6D31106BD47E5502@PH7PR11MB7605.namprd11.prod.outlook.com>
+References: <20240211130408.3478-1-tomas.winkler@intel.com>
+ <2024021927-study-schilling-9dfa@gregkh>
+In-Reply-To: <2024021927-study-schilling-9dfa@gregkh>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB7605:EE_|DS0PR11MB7767:EE_
+x-ms-office365-filtering-correlation-id: 652ce5c0-750a-4684-4aaa-08dc324d6f10
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W4k2w3XO4J5hnqU1r9+HLbeXFEB70YEGJHygSbmD9SPCAb2kaoh2SZhFYyxRBuPYdyPntJa0Vm8OehuqUVgUlTBxgFSlzlww/vABCeMV7PiAWgC5Q3EYXZtMf/fqBBDg3dGHSli4jH5Mc/OPfJsHjVAWT/9b3sTSbvynG5tZaZofaATFQ6u9K8jqBxMGxQlg8SjU70Eq+OAI9iCwkXHNWgI7REJE+JK3oMEEijL9zSRj92/orot6tdMMY/0Ki1NUsKsYimCp1cUXtArkvUAd6TYZxzb1hErXyUO1N+RfNHzQAby6QGhKNAPw85FAlHJM4uuOK6FgZgGmbbtZzL5H5zJYVR5H9BfW8kmMDyjao0vlRe2UcW6pNoJXH2BwFfAPbkiWkd5+acF90P/6W+oyKZeAmgaBt06s0OdnIe7wc9y8mSN3GTwvmBMtjgzRBpbV167+QKJ0XmM1/E7QtTByUAqiiDQQ2stQUz6hdO2FdLvJ/PClxRPK6p/fmdKlyXt3zi4bU5VLZml0/iZDI1K6ngyOmfNfiWyqE75ObdRSoTSctvbnYmFyvKRxWBRKLuPlCiZZdIHsdoZ/Xm0BZyv0VqXf5hD79W349jnTAaGXXV/AxTHsFRmy83S96XlRiDFa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB7605.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0+OVxdsZsBeIpmNB258+6PTFIkqCalbBDzpcQWV3P0te0p6zPqt03zdglFm1?=
+ =?us-ascii?Q?XHeP1KAxbKiVrZfR/v9zP8Il2aJ8Vq7rXmQDKtktphTpQDMs+K7Ov5VTt9w3?=
+ =?us-ascii?Q?2zeNpljZW793xKP6rxt4yW5a7li9D62bkJnXrBnU0WE9EySrf3VjDCmD4u8N?=
+ =?us-ascii?Q?DisMPNndxySqaQ3isk+ttCjqMdgdJE5LBd3w4tVh5vbvmTcN1w5paZ6odCI5?=
+ =?us-ascii?Q?KHay9+I7zyr13ZImwqthDdj8JhNOInMTAcZbuL7V/2gdDA4YmNVS2/gofoHg?=
+ =?us-ascii?Q?/GfjrHn/i6XikZV5G7u1gTUA8KP8VcM1UvdK85pAN5P0Yvp/VX2TiMTDO8B3?=
+ =?us-ascii?Q?igfHvFEL10bBd3yhhlT6JNYZGZReqzQWuqG/9ZTPqP6oQMwPOTLKcn+3IZSl?=
+ =?us-ascii?Q?4pOzDPUdTvUcwcbWIjny2FMosUmTVtQms1v91FxpFuTu0vbc2bFBqqVyGn2d?=
+ =?us-ascii?Q?OjMeTlolfvTAwdvoR6DRykzxaG8WHTGQ8A0N+4ylk3HCvZf+yrs2NUavryP6?=
+ =?us-ascii?Q?2BZAHP11yMBpRVrWMhyBkN3Gw4qzvDnz+OriAuCCl7FG6DIwElppC0E1Y4Za?=
+ =?us-ascii?Q?7bFkZlikNs6sv5idMD47qywn8uaiyryLum4yb76h+JSPiprT4gOqN00tWPI3?=
+ =?us-ascii?Q?iwYInHXA7onGB984GarFJQXCPiRPvhkND8IRWfT3PsEfL6Dh/sE3c761iv4/?=
+ =?us-ascii?Q?mVDriA5z5I/EnKWhnGs1sC6br5uiF+5N+yFav3jWswchvsvvfNLQJbGu2cXp?=
+ =?us-ascii?Q?di7eJY8LwAZnG6KyxdOJ+Xk01xLRehgv3sAPy/0UFaJomxSNm0vZde01IqsB?=
+ =?us-ascii?Q?IE551LG2PvG+KYPP6p8BRTIwLVUcuMvNVjt15NaNsJsaOtz9FXGoeRW9nSVe?=
+ =?us-ascii?Q?ugNcVHyLhOAPtF4+K9OWBcVFrhEhxypbhRMmffOAIVdIKdMLvQJqy1RHxtKh?=
+ =?us-ascii?Q?d+Eqh2uM1yvQ6wv7HXSO+0HlNAqlTXH192zf+wUInbY9PfyaplNwcaYdmugz?=
+ =?us-ascii?Q?C+deH4y7KfG9iLI2ALnW0xlLGlOVdfoe5e+0hoBPNUjTQyYUiKwx/VoJtEvV?=
+ =?us-ascii?Q?2fIf35F95yKQa+NeVkVA/TXyZBUxqfsgXSHan5TwmyypEoMRQn48dj7ZtIuK?=
+ =?us-ascii?Q?7arfrFoxCqhZgEeyfOu0Fl1wBgE5e7O+DLA0lge1hENdtCYvdxmFvkEdwJuH?=
+ =?us-ascii?Q?YK3UFuLyaGZmuGNG1JoPDpSTsq+mjCHRdRb3EJeILsjRbstMl8mhseHjVhZb?=
+ =?us-ascii?Q?btTL+FLBnxqrjHFTOgRcAW6tq0oViBq4MCrUXK8kqgcurxS9Q3GGwU3ofChA?=
+ =?us-ascii?Q?TLYsR4fr8EFa4m9H6dn92sChSRwHO2e2N7VQ/eQ52sIy7Y/Wf7BrjuvbnFkk?=
+ =?us-ascii?Q?n96XDMFS7FHeTqOcZ6q2gvqJglT2Hn0QKtykCc2MR6b6xrTTnqGl4R5QShmy?=
+ =?us-ascii?Q?wkOw8wM/V9vM0WKwURkcXafp5ILbO69UTL17zSITciZdjPOgesmW+XO/UeSo?=
+ =?us-ascii?Q?j22yTf3ZFoVPuKLzcibGxgC3fcqxUoc7DnEK4dBUvjqGNE6x3yOgWue+77rI?=
+ =?us-ascii?Q?DCAVaxh+JuSXOtwNwf6/xnAPjiJFuts8wB3kGEgU?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7605.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 652ce5c0-750a-4684-4aaa-08dc324d6f10
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 19:52:13.6819
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mxc65w9O/2HSmGm7aPwR0lU4gIlRPrDReovpbKkM8thMFFZw8nGGNU7ouAkoDmHHrGgJPNWSblXT8eLXalH1yQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7767
+X-OriginatorOrg: intel.com
 
-Rework bcm7xxx PHY driver table to new multiple PHY format
-implementation to reduce code duplication and final size of the compiled
-module.
+>=20
+> On Sun, Feb 11, 2024 at 03:04:08PM +0200, Tomas Winkler wrote:
+> > From: Alexander Usyskin <alexander.usyskin@intel.com>
+> >
+> > On Arrow Lake S systems, MEI is no longer strictly connected to bus 0,
+> > while graphics remain exclusively on bus 0. Adapt the component
+> > matching logic to accommodate this change:
+> >
+> > Original behavior: Required both MEI and graphics to be on the same
+> > bus 0.
+> >
+> > New behavior: Only enforces graphics to be on bus 0 (integrated),
+> > allowing MEI to reside on any bus.
+> > This ensures compatibility with Arrow Lake S and maintains
+> > functionality for the legacy systems.
+> >
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+>=20
+> What commit id does this fix?  How far back in stable kernels should it g=
+o?
+Should be backported together with 'mei: me: add arrow lake point S DID'
+And 1dd924f6885b ("mei: gsc_proxy: add gsc proxy driver")
+I will send v2
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/phy/bcm7xxx.c | 140 ++++++++++++++++++++++----------------
- 1 file changed, 82 insertions(+), 58 deletions(-)
-
-diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
-index 97638ba7ae85..6ff09c92f7fa 100644
---- a/drivers/net/phy/bcm7xxx.c
-+++ b/drivers/net/phy/bcm7xxx.c
-@@ -845,16 +845,6 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
- 	.phy_id		= (_oui),					\
- 	.phy_id_mask	= 0xfffffff0,					\
- 	.name		= _name,					\
--	/* PHY_GBIT_FEATURES */						\
--	.flags		= PHY_IS_INTERNAL,				\
--	.config_init	= bcm7xxx_28nm_config_init,			\
--	.resume		= bcm7xxx_28nm_resume,				\
--	.get_tunable	= bcm7xxx_28nm_get_tunable,			\
--	.set_tunable	= bcm7xxx_28nm_set_tunable,			\
--	.get_sset_count	= bcm_phy_get_sset_count,			\
--	.get_strings	= bcm_phy_get_strings,				\
--	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
--	.probe		= bcm7xxx_28nm_probe,				\
- }
- 
- #define BCM7XXX_28NM_EPHY(_oui, _name)					\
-@@ -862,16 +852,6 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
- 	.phy_id		= (_oui),					\
- 	.phy_id_mask	= 0xfffffff0,					\
- 	.name		= _name,					\
--	/* PHY_BASIC_FEATURES */					\
--	.flags		= PHY_IS_INTERNAL,				\
--	.config_init	= bcm7xxx_28nm_ephy_config_init,		\
--	.resume		= bcm7xxx_28nm_ephy_resume,			\
--	.get_sset_count	= bcm_phy_get_sset_count,			\
--	.get_strings	= bcm_phy_get_strings,				\
--	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
--	.probe		= bcm7xxx_28nm_probe,				\
--	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
--	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
- }
- 
- #define BCM7XXX_40NM_EPHY(_oui, _name)					\
-@@ -879,12 +859,6 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
- 	.phy_id         = (_oui),					\
- 	.phy_id_mask    = 0xfffffff0,					\
- 	.name           = _name,					\
--	/* PHY_BASIC_FEATURES */					\
--	.flags          = PHY_IS_INTERNAL,				\
--	.soft_reset	= genphy_soft_reset,				\
--	.config_init    = bcm7xxx_config_init,				\
--	.suspend        = bcm7xxx_suspend,				\
--	.resume         = bcm7xxx_config_init,				\
- }
- 
- #define BCM7XXX_16NM_EPHY(_oui, _name)					\
-@@ -892,41 +866,91 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
- 	.phy_id		= (_oui),					\
- 	.phy_id_mask	= 0xfffffff0,					\
- 	.name		= _name,					\
--	/* PHY_BASIC_FEATURES */					\
--	.flags		= PHY_IS_INTERNAL,				\
--	.get_sset_count	= bcm_phy_get_sset_count,			\
--	.get_strings	= bcm_phy_get_strings,				\
--	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
--	.probe		= bcm7xxx_28nm_probe,				\
--	.config_init	= bcm7xxx_16nm_ephy_config_init,		\
--	.config_aneg	= genphy_config_aneg,				\
--	.read_status	= genphy_read_status,				\
--	.resume		= bcm7xxx_16nm_ephy_resume,			\
- }
- 
- static struct phy_driver bcm7xxx_driver[] = {
--	BCM7XXX_28NM_EPHY(PHY_ID_BCM72113, "Broadcom BCM72113"),
--	BCM7XXX_28NM_EPHY(PHY_ID_BCM72116, "Broadcom BCM72116"),
--	BCM7XXX_16NM_EPHY(PHY_ID_BCM72165, "Broadcom BCM72165"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7250, "Broadcom BCM7250"),
--	BCM7XXX_28NM_EPHY(PHY_ID_BCM7255, "Broadcom BCM7255"),
--	BCM7XXX_28NM_EPHY(PHY_ID_BCM7260, "Broadcom BCM7260"),
--	BCM7XXX_28NM_EPHY(PHY_ID_BCM7268, "Broadcom BCM7268"),
--	BCM7XXX_28NM_EPHY(PHY_ID_BCM7271, "Broadcom BCM7271"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7278, "Broadcom BCM7278"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7364, "Broadcom BCM7364"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7366, "Broadcom BCM7366"),
--	BCM7XXX_16NM_EPHY(PHY_ID_BCM74165, "Broadcom BCM74165"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM74371, "Broadcom BCM74371"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7439, "Broadcom BCM7439"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7439_2, "Broadcom BCM7439 (2)"),
--	BCM7XXX_28NM_GPHY(PHY_ID_BCM7445, "Broadcom BCM7445"),
--	BCM7XXX_40NM_EPHY(PHY_ID_BCM7346, "Broadcom BCM7346"),
--	BCM7XXX_40NM_EPHY(PHY_ID_BCM7362, "Broadcom BCM7362"),
--	BCM7XXX_40NM_EPHY(PHY_ID_BCM7425, "Broadcom BCM7425"),
--	BCM7XXX_40NM_EPHY(PHY_ID_BCM7429, "Broadcom BCM7429"),
--	BCM7XXX_40NM_EPHY(PHY_ID_BCM7435, "Broadcom BCM7435"),
--	BCM7XXX_16NM_EPHY(PHY_ID_BCM7712, "Broadcom BCM7712"),
-+{
-+	.name		= "Broadcom BCM7XXX 16NM EPHY",
-+	.ids		= (struct phy_driver_id []){
-+		BCM7XXX_16NM_EPHY(PHY_ID_BCM72165, "Broadcom BCM72165"),
-+		BCM7XXX_16NM_EPHY(PHY_ID_BCM74165, "Broadcom BCM74165"),
-+		BCM7XXX_16NM_EPHY(PHY_ID_BCM7712, "Broadcom BCM7712"),
-+	},
-+	.ids_count	= 3,
-+	/* PHY_BASIC_FEATURES */
-+	.flags		= PHY_IS_INTERNAL,
-+	.get_sset_count	= bcm_phy_get_sset_count,
-+	.get_strings	= bcm_phy_get_strings,
-+	.get_stats	= bcm7xxx_28nm_get_phy_stats,
-+	.probe		= bcm7xxx_28nm_probe,
-+	.config_init	= bcm7xxx_16nm_ephy_config_init,
-+	.config_aneg	= genphy_config_aneg,
-+	.read_status	= genphy_read_status,
-+	.resume		= bcm7xxx_16nm_ephy_resume,
-+},
-+{
-+	.name		= "Broadcom BCM7XXX 28NM GPHY",
-+	.ids		= (struct phy_driver_id []){
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7250, "Broadcom BCM7250"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7278, "Broadcom BCM7278"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7364, "Broadcom BCM7364"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7366, "Broadcom BCM7366"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM74371, "Broadcom BCM74371"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7439, "Broadcom BCM7439"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7439_2, "Broadcom BCM7439 (2)"),
-+		BCM7XXX_28NM_GPHY(PHY_ID_BCM7445, "Broadcom BCM7445"),
-+	},
-+	.ids_count	= 8,
-+	/* PHY_GBIT_FEATURES */
-+	.flags		= PHY_IS_INTERNAL,
-+	.config_init	= bcm7xxx_28nm_config_init,
-+	.resume		= bcm7xxx_28nm_resume,
-+	.get_tunable	= bcm7xxx_28nm_get_tunable,
-+	.set_tunable	= bcm7xxx_28nm_set_tunable,
-+	.get_sset_count	= bcm_phy_get_sset_count,
-+	.get_strings	= bcm_phy_get_strings,
-+	.get_stats	= bcm7xxx_28nm_get_phy_stats,
-+	.probe		= bcm7xxx_28nm_probe,
-+},
-+{
-+	.name		= "Broadcom BCM7XXX 28NM EPHY",
-+	.ids		= (struct phy_driver_id []){
-+		BCM7XXX_28NM_EPHY(PHY_ID_BCM72113, "Broadcom BCM72113"),
-+		BCM7XXX_28NM_EPHY(PHY_ID_BCM72116, "Broadcom BCM72116"),
-+		BCM7XXX_28NM_EPHY(PHY_ID_BCM7255, "Broadcom BCM7255"),
-+		BCM7XXX_28NM_EPHY(PHY_ID_BCM7260, "Broadcom BCM7260"),
-+		BCM7XXX_28NM_EPHY(PHY_ID_BCM7268, "Broadcom BCM7268"),
-+		BCM7XXX_28NM_EPHY(PHY_ID_BCM7271, "Broadcom BCM7271"),
-+	},
-+	.ids_count	= 6,
-+	/* PHY_BASIC_FEATURES */
-+	.flags		= PHY_IS_INTERNAL,
-+	.config_init	= bcm7xxx_28nm_ephy_config_init,
-+	.resume		= bcm7xxx_28nm_ephy_resume,
-+	.get_sset_count	= bcm_phy_get_sset_count,
-+	.get_strings	= bcm_phy_get_strings,
-+	.get_stats	= bcm7xxx_28nm_get_phy_stats,
-+	.probe		= bcm7xxx_28nm_probe,
-+	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,
-+	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,
-+},
-+{
-+	.name		= "Broadcom BCM7XXX 40NM EPHY",
-+	.ids		= (struct phy_driver_id []){
-+		BCM7XXX_40NM_EPHY(PHY_ID_BCM7346, "Broadcom BCM7346"),
-+		BCM7XXX_40NM_EPHY(PHY_ID_BCM7362, "Broadcom BCM7362"),
-+		BCM7XXX_40NM_EPHY(PHY_ID_BCM7425, "Broadcom BCM7425"),
-+		BCM7XXX_40NM_EPHY(PHY_ID_BCM7429, "Broadcom BCM7429"),
-+		BCM7XXX_40NM_EPHY(PHY_ID_BCM7435, "Broadcom BCM7435"),
-+	},
-+	.ids_count	= 5,
-+	/* PHY_BASIC_FEATURES */
-+	.flags          = PHY_IS_INTERNAL,
-+	.soft_reset	= genphy_soft_reset,
-+	.config_init    = bcm7xxx_config_init,
-+	.suspend        = bcm7xxx_suspend,
-+	.resume         = bcm7xxx_config_init,
-+},
- };
- 
- static struct mdio_device_id __maybe_unused bcm7xxx_tbl[] = {
--- 
-2.43.0
+Thanks
+Tomas
 
 
