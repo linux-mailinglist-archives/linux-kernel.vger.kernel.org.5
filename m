@@ -1,75 +1,81 @@
-Return-Path: <linux-kernel+bounces-72911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263D685BAA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:34:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C05385BAA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BDE51C21730
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:34:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0BD91F22306
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E113966B4D;
-	Tue, 20 Feb 2024 11:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C50467A01;
+	Tue, 20 Feb 2024 11:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Dnza6CPq"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="JY3TL8T6"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDA6664D9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5A5657D7
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708428855; cv=none; b=FVQJ0NTaDNPn5R61/60Wzms1UYqgrwgIWo5esBCFvsKH7347T17o6qinfKslH1ZR6UrrUO2Vv8NmTGmEZsHwdNFgh+OVp/sldPedwXNLVcI18raOhKBaD2Vks2qBZnK6FD8lAfrZMWfIO3R/JLq/0w3aD44WoPz/h4LcLCAluO0=
+	t=1708428856; cv=none; b=XePM0/mntOzMaMTk1pWwu5SKST1SwCH3h9EmfiuSXfD5AN2Km9rPJAaDnk5lV/uxBYRN5L09Em0kwnLQn58w+yV5PvJsfkoL54Kj5LI9H1j/y84fms5UsZKru5Vwqjei/cIiKaHMSXD1RnkORHz7bB3QB/NByhh9qErLDyYp2p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708428855; c=relaxed/simple;
-	bh=aqLKz7ll/vFXZER5pb0xG/NOCiZwX9kGU18zx+/eers=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uJi/EdeO76LbGlgRVW3Sh4VIYmnl1IIzaGZPLIj3ci3WnzUFJRnfgPuXe4AJg3tgoSxanOlY3KZf/ijG1ZoZ5zSWfRYzFAJL3A3octuh9vQYgYrg5N4rW9T6QT28Sfg+lpx6j6/T/5OHn6/qpHgRtR8fCIbcqUFxIzUHKtl8+Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=Dnza6CPq; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: f1b38770cfe311eea2298b7352fd921d-20240220
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=+QxxzZLK77uop3c9oawidI46vMLzFAmM3R/Jc/f/t6g=;
-	b=Dnza6CPqJjywHPFra5TqQTJQ1LeG6/ImxaeVwOUAh7wP87eFzF4Tz3anfYMVuNjphik1hM59YfOkGPsPflxDu7r9J4yZNydDuIhJe4uaCkteKxra66Ih4M7/gRVwvbUcsNt+92DN3FK9yCA/GpR5LZ3Qrt8Spgwaj+oafP8Tk/w=;
-X-CID-CACHE: Type:Local,Time:202402201927+08,HitQuantity:1
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:0ad5cc61-dd10-45ff-ad85-603d6cc5703b,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:c25a1a84-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: f1b38770cfe311eea2298b7352fd921d-20240220
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-	(envelope-from <haibo.li@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1033553566; Tue, 20 Feb 2024 19:34:01 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 20 Feb 2024 19:33:59 +0800
-Received: from mszsdtlt102.gcn.mediatek.inc (10.16.4.142) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 20 Feb 2024 19:33:59 +0800
-From: Haibo Li <haibo.li@mediatek.com>
-To: <linux-kernel@vger.kernel.org>
-CC: Russell King <linux@armlinux.org.uk>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <keescook@chromium.org>, 'Russell King '
-	<rmk+kernel@armlinux.org.uk>, Haibo Li <haibo.li@mediatek.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<xiaoming.yu@mediatek.com>
-Subject: [PATCH] arm:dump the stack usage after stack overflows
-Date: Tue, 20 Feb 2024 19:33:41 +0800
-Message-ID: <20240220113341.24523-1-haibo.li@mediatek.com>
-X-Mailer: git-send-email 2.34.3
+	s=arc-20240116; t=1708428856; c=relaxed/simple;
+	bh=wpwueLBxQ8g7CUCfsdr3qWaKkli08BlyZt5JJx5mm44=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z0zITqtcIm8L4cWWB5O2SuHyqwH75fbwYB+5G0w2LxKlmz+Z+E5YNZgwBmHhUfGzp5S9zHI3Kyjn9QQ2yapKnV4a5T1ufnvONQy7I0hvoLvqbwMVmvXEsVpUIQCV2zlc7OWnZ3BCnDMPj72WHHIaE3FS9oROjvwa7aHZHza+YGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=JY3TL8T6; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412718a8ea7so562605e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:34:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708428853; x=1709033653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=z3Pvq3RdfRBYI8uAK+HiNG4SvbmBg/H4jDL+WIUGvTg=;
+        b=JY3TL8T6o5kXF3AWKRtemKT3kWNyEr9MsBv20xU0ab+XgBFQfi/7jWFxu3lBe76vCD
+         Q0MM1IcSjNTmldkfCKIk+tnE9maiw/lYszVPAhZnW1SpHVMVVycGI8ZzOZ03g0uAhwXP
+         aLgMFHqGUvtzWkABiIxZ4G28Z83d54jnROk+Cr4ykALbAHPxwk6muM4DX2hzdnhi3bhG
+         1rvvJMFqkiRp1V23nl5VJSNp+JHGd2vPxL8By7VGGxg2bvNeNDuxlvt+qheOBY0KeJcw
+         EnOVpSeXQLDE1M33h4r8tATV52BpCzkW8mWjG2CyFFQcoQET5wj2j5z8Rb/28Ym1kkt/
+         rzlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708428853; x=1709033653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z3Pvq3RdfRBYI8uAK+HiNG4SvbmBg/H4jDL+WIUGvTg=;
+        b=tgI5mlPi8Q05Ubv1SkAVpzTselNpxDGXSaFEZg9sBCCL2a6dLYYK5GLZZvCOHjKe5t
+         zkCgUddBJr3qo+ObOJQc/Xvgy/Q+XkDJWZnksBs35GMcfA4iEd34KIxg7IjOjVcRvCgj
+         s3I1wp4nQj5l+qAOXFvcU129GxclUO/8Qt+l6NJHkMNo3a72/5WZ4iBGN8tmf2WBrEvx
+         Lly+ip/a1bsRIKU9vElsP4bpDyEDBqDkGr0XPqMXxxrlDbgBYaUntb8jUxDjPIpZZEiq
+         zp8tjtmmXOSeosCHFUCjzCzs/KLP8BP+Ykd8fTpcacAkMPglTaQxFBSujH/16LoxfHlx
+         tSjQ==
+X-Gm-Message-State: AOJu0YxM8oSYYyx/WiJjc4QTLKKk7NGcA4FEKH5lqw2xGrkyEkgIJYPp
+	kT9PMJ5D4Dj1MhVEnlaBBKLtrEtT6tXQ/oTsed6EkVD0Ud6cZAvC+Nu2omJCeYg=
+X-Google-Smtp-Source: AGHT+IGw3UcTIT75fBKm4X2nkb9oIu2VZFCfSYXoNynHzrGBcjbo7mcmn9zo6bBaGcO1zeNFNAaYPg==
+X-Received: by 2002:a05:6000:1843:b0:33d:4fca:a47f with SMTP id c3-20020a056000184300b0033d4fcaa47fmr3907939wri.18.1708428853091;
+        Tue, 20 Feb 2024 03:34:13 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:c6ce:c6a0:43ac:8f8e])
+        by smtp.gmail.com with ESMTPSA id bn28-20020a056000061c00b0033d6fe3f6absm1063006wrb.62.2024.02.20.03.34.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 03:34:12 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Patrice Chotard <patrice.chotard@foss.st.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v3] serial: st-asc: don't get/put GPIOs in atomic context
+Date: Tue, 20 Feb 2024 12:34:10 +0100
+Message-Id: <20240220113410.16613-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,110 +83,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--5.259300-8.000000
-X-TMASE-MatchedRID: 8+gsAlLbNEF+7Gr2hULRCqKa0xB73sAA+XUEs7n10vKJPgzJn7/hAGb6
-	PphVtfZgGeqWAcGRXwp6n3hIvN5dLfJMF6pylZNWvbFZsqMF9Y+7nrAU9KQxUWHZ+cd7VyKXDZ/
-	b5zl6q6ZvvvRcuB/rD3QeHo/CecVW4En2Lqvhr2JIcJTn2HkqsRQc4z1hNYyAIGcJoOzI5aejxY
-	yRBa/qJcFwgTvxipFa9xS3mVzWUuCgZHIBpyeFpsZXc7x4uVfJF6jjf600DUaQhh+9h/pw1sXZP
-	5r1GmcmftwZ3X11IV0=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--5.259300-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	0DD9B401C1862381109C0AAE87F93DB93AFC9C71464106ED3F9A0360F3580B692000:8
-X-MTK: N
 
-With the help of vmap stack,it is able to detect stack overflow.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-To make it easy to debug stack overflow,dump the stack usage of
-each frame by walking the stack.
+Since commit 1f2bcb8c8ccd ("gpio: protect the descriptor label with
+SRCU") gpiod_set_consumer_name() calls synchronize_srcu() which led to
+a "sleeping in atomic context" smatch warning.
 
-After this patch,the log after stack overflows like below:
+This function (along with gpiod_get/put() and all other GPIO APIs apart
+from gpiod_get/set_value() and gpiod_direction_input/output()) should
+have never been called with a spinlock taken. We're only fixing this now
+as GPIOLIB has been rebuilt to use SRCU for access serialization which
+uncovered this problem.
 
-Insufficient stack space to handle exception!
-Task stack:     [0xf4a70000..0xf4a72000]
-IRQ stack:      [0xf0800000..0xf0802000]
-Overflow stack: [0x818c1000..0x818c2000]
-Depth   usage   size   Location
-  0      8232     96   _prb_read_valid
-  1      8136     24   prb_read_valid
-  2      8112    200   printk_get_next_message
-  3      7912    104   console_flush_all
-  4      7808     64   console_unlock
-  5      7744     40   vprintk_emit
-  6      7704     16   vprintk_default
-  7      7688     32   _printk
-  8      7656   1048   do_circle_loop
-  9      6608   1048   do_circle_loop
- 10      5560   1048   do_circle_loop
- 11      4512   1048   do_circle_loop
- 12      3464   1048   do_circle_loop
- 13      2416   1048   do_circle_loop
- 14      1368   1048   do_circle_loop
- 15       320      8   stack_ovf_selftest
- 16       312     24   param_attr_store
- 17       288     40   kernfs_fop_write_iter
- 18       248    112   vfs_write
- 19       136     48   ksys_write
------    -----  -----   ------
-Internal error: kernel stack overflow: 0 [#1] SMP ARM
-..
+Move the calls to gpiod_get/put() outside the spinlock critical section.
 
-Signed-off-by: Haibo Li <haibo.li@mediatek.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/linux-gpio/deee1438-efc1-47c4-8d80-0ab2cf01d60a@moroto.mountain/
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- arch/arm/kernel/traps.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+v2 -> v3:
+- we only need to change the GPIO configuration for RTS in certain situations
+  so use a separate variable for storing that information; if we don't then we
+  may end up putting the descriptor when setting a different option
+- I dropped Linus tag as the code change significantly
 
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 3bad79db5d6e..641ca68b44ba 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -921,6 +921,33 @@ static int __init allocate_overflow_stacks(void)
- }
- early_initcall(allocate_overflow_stacks);
- 
-+static void dump_stack_usage(struct pt_regs *regs)
-+{
-+	struct stackframe frame;
-+	unsigned int depth = 0;
-+	unsigned long prev_pc;
-+	unsigned long prev_sp;
-+	unsigned long stack_high = (unsigned long)current->stack + THREAD_SIZE;
-+
-+	arm_get_current_stackframe(regs, &frame);
-+	pr_emerg("Depth   usage   size   Location\n");
-+	while (1) {
-+		prev_pc = frame.pc;
-+		prev_sp = frame.sp;
-+#if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
-+		//meet the requirement of frame_pointer_check
-+		if (frame.sp < (unsigned long)current->stack)
-+			frame.sp = (unsigned long)current->stack + 4;
-+#endif
-+		if (unwind_frame(&frame) < 0)
-+			break;
-+		pr_emerg("%3d     %5ld  %5ld   %ps\n",
-+			 depth++, stack_high - prev_sp,
-+			 frame.sp - prev_sp, (void *)prev_pc);
-+	}
-+	pr_emerg("-----    -----  -----   ------\n");
-+}
-+
- asmlinkage void handle_bad_stack(struct pt_regs *regs)
+v1 -> v2:
+- initialize the 'manual_rts' variable to false as we don't always get to
+  the place where it's set
+
+ drivers/tty/serial/st-asc.c | 40 ++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/tty/serial/st-asc.c b/drivers/tty/serial/st-asc.c
+index bbb5595d7e24..a23e59551848 100644
+--- a/drivers/tty/serial/st-asc.c
++++ b/drivers/tty/serial/st-asc.c
+@@ -465,6 +465,7 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+ 			    const struct ktermios *old)
  {
- 	unsigned long tsk_stk = (unsigned long)current->stack;
-@@ -940,6 +967,7 @@ asmlinkage void handle_bad_stack(struct pt_regs *regs)
- #endif
- 	pr_emerg("Overflow stack: [0x%08lx..0x%08lx]\n",
- 		 ovf_stk - OVERFLOW_STACK_SIZE, ovf_stk);
-+	dump_stack_usage(regs);
+ 	struct asc_port *ascport = to_asc_port(port);
++	bool manual_rts, toggle_rts = false;
+ 	struct gpio_desc *gpiod;
+ 	unsigned int baud;
+ 	u32 ctrl_val;
+@@ -518,25 +519,13 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
  
- 	die("kernel stack overflow", regs, 0);
+ 		/* If flow-control selected, stop handling RTS manually */
+ 		if (ascport->rts) {
+-			devm_gpiod_put(port->dev, ascport->rts);
+-			ascport->rts = NULL;
+-
+-			pinctrl_select_state(ascport->pinctrl,
+-					     ascport->states[DEFAULT]);
++			toggle_rts = true;
++			manual_rts = false;
+ 		}
+ 	} else {
+ 		/* If flow-control disabled, it's safe to handle RTS manually */
+-		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL]) {
+-			pinctrl_select_state(ascport->pinctrl,
+-					     ascport->states[NO_HW_FLOWCTRL]);
+-
+-			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
+-			if (!IS_ERR(gpiod)) {
+-				gpiod_set_consumer_name(gpiod,
+-						port->dev->of_node->name);
+-				ascport->rts = gpiod;
+-			}
+-		}
++		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL])
++			manual_rts = toggle_rts = true;
+ 	}
+ 
+ 	if ((baud < 19200) && !ascport->force_m1) {
+@@ -595,6 +584,25 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	asc_out(port, ASC_CTL, (ctrl_val | ASC_CTL_RUN));
+ 
+ 	uart_port_unlock_irqrestore(port, flags);
++
++	if (toggle_rts) {
++		if (manual_rts) {
++			pinctrl_select_state(ascport->pinctrl,
++					     ascport->states[NO_HW_FLOWCTRL]);
++
++			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
++			if (!IS_ERR(gpiod)) {
++				gpiod_set_consumer_name(gpiod,
++							port->dev->of_node->name);
++				ascport->rts = gpiod;
++			}
++		} else {
++				devm_gpiod_put(port->dev, ascport->rts);
++				ascport->rts = NULL;
++				pinctrl_select_state(ascport->pinctrl,
++						     ascport->states[DEFAULT]);
++		}
++	}
  }
+ 
+ static const char *asc_type(struct uart_port *port)
 -- 
-2.18.0
+2.40.1
 
 
