@@ -1,115 +1,132 @@
-Return-Path: <linux-kernel+bounces-72215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEE2485B0E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:27:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8EC85B0E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CE1D1C234CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:27:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D190F1C22DA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3E545944;
-	Tue, 20 Feb 2024 02:26:57 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331CD44C9E;
+	Tue, 20 Feb 2024 02:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ltWv/YZq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB7A44C76
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7132D1E88A;
+	Tue, 20 Feb 2024 02:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708396017; cv=none; b=hsLxjduHV9uhJ4NNQ8n5n1B6B6BUtMK5o4Oi4jTJ55U0y2/j0ulrIhlHQseVsnK2lPbTWG7Zs78HRUElzpwMVYImwJ0y+6EgSjEetlSxFDv95ahxGyHcjiIOfKhGy/dSm1MJ392wBRh+KBELRBzZ5+2RYaPkOYvwJAXYGsgS17Q=
+	t=1708396090; cv=none; b=igjkzqW/GHKnNFfRkXwumAvNcDqaKAxdf0dxbmh4BlnNrikuqBfD7uB/Na6W98E8uH3FX3nWV9mi59IlzIM208PFw9YlqiyDV5K5FBkKQSNSxz0ETYf+DoMd+nmNgA/KUwDSyGNZdSWoHS5bMCVnkjCzZ8iW/i7KOKvYlgvlMbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708396017; c=relaxed/simple;
-	bh=8T3tY7oj4cWPmMLru07PWyLzhA0TZeU9DdNfBVxiI2k=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=S/uwLys+j2utgrABEf+oOKA+xs3E5PHbyFE7LnBtTnpkDRg+4UMCxrSskDYZiy03TiCTYiPdLmFq3W/RfXxcV2mfzC6jJJ/2pIyLO+jCcNlkHBywbTH1fiTlD131nqNaWTgng+4HrSyq0tsycBvvgFMDoiSCv/hTgxsDdJ+lzoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tf3C11Y4Qz1h08w;
-	Tue, 20 Feb 2024 10:24:45 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id AAC471402DE;
-	Tue, 20 Feb 2024 10:26:52 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 10:26:51 +0800
-Subject: Re: next-20240219: arm64: boot failed - gic_of_init
-To: Marc Zyngier <maz@kernel.org>
-CC: Naresh Kamboju <naresh.kamboju@linaro.org>, open list
-	<linux-kernel@vger.kernel.org>, Linux ARM
-	<linux-arm-kernel@lists.infradead.org>, <lkft-triage@lists.linaro.org>, Linux
- Regressions <regressions@lists.linux.dev>, Catalin Marinas
-	<catalin.marinas@arm.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter
-	<dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>
-References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
- <86edd84wer.wl-maz@kernel.org> <86cyss4rl7.wl-maz@kernel.org>
- <a7d8e529-9a44-3f88-50ef-d87b80515c36@huawei.com>
- <86a5nw4gp3.wl-maz@kernel.org>
-From: Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <f3bd274b-2644-ce5c-315d-36a492814d13@huawei.com>
-Date: Tue, 20 Feb 2024 10:26:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+	s=arc-20240116; t=1708396090; c=relaxed/simple;
+	bh=g19aHEmjFQ5tSUUNdPZtI2asKF0wN+dEKgAolGDccIo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=jfsZ3t3U7XDQd5pVUENC2vGMFSbc3SjolkKCWIp7rDn9ln7gAFArB137TbQlD9LNq+/V/PmQDtT68cbsIxZDTiI5sjR3NA1QVTrdN10k+tJbYOAFO7W9Vog85JJ14prIDVpO5bsgVhiT6rJX8N1X3UcPOTz40mpYSXMX7DF1ing=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ltWv/YZq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB511C433F1;
+	Tue, 20 Feb 2024 02:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708396090;
+	bh=g19aHEmjFQ5tSUUNdPZtI2asKF0wN+dEKgAolGDccIo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ltWv/YZqIm7Ia0akbwKFqWLV83KaIHAYNaIacwP1NBARaD8lrJCVtwtg0c68+w24W
+	 jOKItH+DtztnP7owYaHqcDtXAK17W5jcR83LJ7h6pTn7cDNLqu4ofWGkLZ8zvlo8oS
+	 5j4V0FS5Q/0Ui5x/QbbdkrdBv6g9SHDMbxV1l7FQ=
+Date: Mon, 19 Feb 2024 18:28:08 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: willy@infradead.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, gost.dev@samsung.com, p.raghav@samsung.com,
+ da.gomez@samsung.com, kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH] test_xarray: fix soft lockup for advanced-api tests
+Message-Id: <20240219182808.726500bf3546b49ac05d98d4@linux-foundation.org>
+In-Reply-To: <20240216194329.840555-1-mcgrof@kernel.org>
+References: <20240216194329.840555-1-mcgrof@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <86a5nw4gp3.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600007.china.huawei.com (7.193.23.208)
 
-On 2024/2/19 23:27, Marc Zyngier wrote:
-> On Mon, 19 Feb 2024 14:46:46 +0000,
-> Zenghui Yu <yuzenghui@huawei.com> wrote:
->>
->> On 2024/2/19 19:32, Marc Zyngier wrote:
->>> For what it is worth, I've just tested both defconfig and my own
->>> configuration with both 4k (kvmtool, QEMU+KVM and on SynQuacer) and
->>> 16k (kvmtool), without any obvious problem.
->>
->> I had a quick test on top of next-20240219 with defconfig.  I can
->> reproduce it with QEMU parameter '-cpu max -accel tcg', but things are
->> fine with '-cpu max,lpa2=off -accel tcg'.
->>
->> Bisection shows that the problem happens when we start putting the
->> latest arm64 and kvmarm changes together.  The following hack fixes the
->> problem for me (but I **only** write it for kernel built with defconfig
->> with ARM64_4K_PAGES=y atm).
->>
->> I can investigate it further tomorrow (as it's too late now ;-) ).  Or
->> maybe Marc or Catalin can help fix it with a proper approach.
->>
->> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->> index 4f7662008ede..babdc3f4721b 100644
->> --- a/arch/arm64/kernel/cpufeature.c
->> +++ b/arch/arm64/kernel/cpufeature.c
->> @@ -2798,6 +2798,7 @@ static const struct arm64_cpu_capabilities
->> arm64_features[] = {
->> | 		.sign = FTR_SIGNED,
->> | 		.field_pos = ID_AA64MMFR0_EL1_TGRAN4_SHIFT,
->> | 		.min_field_value = ID_AA64MMFR0_EL1_TGRAN4_52_BIT,
->> |+		.max_field_value = BIT(ID_AA64MMFR0_EL1_TGRAN4_WIDTH - 1) - 1,
->> | #else
->> | 		.sign = FTR_UNSIGNED,
->> | 		.field_pos = ID_AA64MMFR0_EL1_TGRAN16_SHIFT,
+On Fri, 16 Feb 2024 11:43:29 -0800 Luis Chamberlain <mcgrof@kernel.org> wrote:
+
+> The new adanced API tests
+
+So this is a fix against the mm-unstable series "test_xarray: advanced
+API multi-index tests", v2.
+
+> want to vet the xarray API is doing what it
+> promises by manually iterating over a set of possible indexes on its
+> own, and using a query operation which holds the RCU lock and then
+> releases it. So it is not using the helper loop options which xarray
+> provides on purpose. Any loop which iterates over 1 million entries
+> (which is possible with order 20, so emulating say a 4 GiB block size)
+> to just to rcu lock and unlock will eventually end up triggering a soft
+> lockup on systems which don't preempt, and have lock provin and RCU
+> prooving enabled.
 > 
-> I've posted my take on this at [1], which hopefully matches what you
-> were aiming at.
+> xarray users already use XA_CHECK_SCHED for loops which may take a long
+> time, in our case we don't want to RCU unlock and lock as the caller
+> does that already, but rather just force a schedule every XA_CHECK_SCHED
+> iterations since the test is trying to not trust and rather test that
+> xarray is doing the right thing.
 > 
-> [1] https://lore.kernel.org/all/86bk8c4gyh.wl-maz@kernel.org/
+> [0] https://lkml.kernel.org/r/202402071613.70f28243-lkp@intel.com
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
 
-Yup, this looks good to me.
+As the above links shows, this should be
 
-Thanks,
-Zenghui
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202402071613.70f28243-lkp@intel.com
+
+> --- a/lib/test_xarray.c
+> +++ b/lib/test_xarray.c
+> @@ -781,6 +781,7 @@ static noinline void *test_get_entry(struct xarray *xa, unsigned long index)
+>  {
+>  	XA_STATE(xas, xa, index);
+>  	void *p;
+> +	static unsigned int i = 0;
+
+I don't think this needs static storage.
+
+PetPeeve: it is unexpected that `i' has unsigned type.  Can a more
+communicative identifier be used?
+
+
+I shall queue your patch as a fixup patch against
+test_xarray-add-tests-for-advanced-multi-index-use and shall add the
+below on top.  Pleae check.
+
+--- a/lib/test_xarray.c~test_xarray-fix-soft-lockup-for-advanced-api-tests-fix
++++ a/lib/test_xarray.c
+@@ -728,7 +728,7 @@ static noinline void *test_get_entry(str
+ {
+ 	XA_STATE(xas, xa, index);
+ 	void *p;
+-	static unsigned int i = 0;
++	unsigned int loops = 0;
+ 
+ 	rcu_read_lock();
+ repeat:
+@@ -746,7 +746,7 @@ repeat:
+ 	 * APIs won't be stupid, proper page cache APIs loop over the proper
+ 	 * order so when using a larger order we skip shared entries.
+ 	 */
+-	if (++i % XA_CHECK_SCHED == 0)
++	if (++loops % XA_CHECK_SCHED == 0)
+ 		schedule();
+ 
+ 	return p;
+_
+
 
