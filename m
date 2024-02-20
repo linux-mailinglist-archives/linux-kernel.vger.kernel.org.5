@@ -1,163 +1,120 @@
-Return-Path: <linux-kernel+bounces-73585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D6485C48A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:21:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8853785C48B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CA7828375E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:21:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 918D81C212FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677F5137C51;
-	Tue, 20 Feb 2024 19:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B671E13667B;
+	Tue, 20 Feb 2024 19:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="avH2Kmj6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k+/TeDAw"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FBA5612D7;
-	Tue, 20 Feb 2024 19:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DA8612D7
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708456868; cv=none; b=iWbdHBrKqrFQZZrGJwnLBnTWk5qVQ2aDXyQDkswU7/Hk+dPq2X7LZpFMe1DCfVDvVYWeqgPqrMjAZ0MpcDICPlHLGDef4viSnKk/RIF5v3L8+bCPQmkGLap0q772hQQwEXahXEuHo3Yps9o9+Ul6Fhh9TV5sC9ygT5whLkk+68c=
+	t=1708456920; cv=none; b=HSGzH70oHYgB0irtyl+/8GLJitkx8DQx8Gg50BouiWqXB2gDdVNB9IaVakf14JOe8sgsfoQNVFERzDp+F8/QVMaa8J58zW12JE2BQUu6qk48zo4db2PbmvTEEG7c154HBjkOsTTVtENB2S3FNcqeSXOYV1hucE0ttMMAHkJJ+6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708456868; c=relaxed/simple;
-	bh=/8B+SVqWi9/8HEqD87v2d6g2SFTWC7Ca3KdPMEZ4hJA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PVJ3+Rr+aVTqtkVtlFllYHrNYmklUeZtLeq+1QIRkDI7EBwn7omcpWVyHH03gFrMatfP9OuKrkxNnNgV6kKjq93UugnALm/mj+jK9fzd+QyKt1+zMGnWVZOU6GuqxD3Lbct1xzKHSovBvLe/AwKZ7rug9JOiIdhOCcWZvKMMDCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=avH2Kmj6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C468C433F1;
-	Tue, 20 Feb 2024 19:21:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708456868;
-	bh=/8B+SVqWi9/8HEqD87v2d6g2SFTWC7Ca3KdPMEZ4hJA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=avH2Kmj6V6pPV3DJYLy/6Q6Fd8qpMmAZnbeSs6qPatt2gZe4JKwM9xm9ttLszoNkB
-	 9i4jdv+jycnTa7sHbthKxGgaT0jpiDsrGp/epBZQ7YvDqAzp2Mt97GcbXzN7/eKG+u
-	 BmAdO32WMEtMlKvrmDdTDxuAO8sXnGdiOZea2GRhniwwh9+9blCYB7KlxP5Cx6lVkj
-	 bVaq+vnjJwv4G7+e5ESyZooi67F4ghdUGfFy3XCSef93zHAwuIi62lKMYjuWTa0TYZ
-	 21HWhEl3eBL8AVemu1ZbKIPItCpEdXtHA7bsGYd+KUrHMpCa0ZZ/I2l8z9WMsIBU8x
-	 uW8uMD1xBonwQ==
-Date: Tue, 20 Feb 2024 19:21:03 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: antoniu.miclaus@analog.com, alexandre.belloni@bootlin.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-Subject: Re: [PATCH v7 2/2] dt-bindings: rtc: add max313xx RTCs
-Message-ID: <20240220-unified-payback-13b0964c8c29@spud>
-References: <20240219221827.3821415-1-chris.packham@alliedtelesis.co.nz>
- <20240219221827.3821415-3-chris.packham@alliedtelesis.co.nz>
+	s=arc-20240116; t=1708456920; c=relaxed/simple;
+	bh=TVoc7U+OlQVfHRvbnJMLWXD8zvvPQlQiEeYw9Wi+WtY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kZiV3DwQBw18kABNZuJBdDpF++Behb/f0mtxBaaP6ZHtEPs0VQcd2gM4Gr3ZU20/8vym03dBhStKdkt7OiFvn79J4m9gcZhxEP8TFzBcr5O/d0vso/GupOuMT/fDpqgqd+RXSA5uqUie1vUOK0tGkxnfTg6KFVuqHG0D2AYJd+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k+/TeDAw; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-411d9e901dcso11485e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708456916; x=1709061716; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sKIxyGvpgjhbt9c9GjpSxI7ejf61TndiqXinC1SQAmM=;
+        b=k+/TeDAw1tyq2DpyQqh4uyWA4QmQTh8wdQnoVBWQEGgu3Wi/6vNRtzWrZ7SDKDgJ5o
+         c8xBRIOZ4JysOS49gSPF15Ou+6et4LOasGzbjadXCmEEDKqI74Hm7rmCmLWRXrjmd9Hi
+         +wfefLT9c4wWkUaHzTnWH6mKHuq8At5lCAQPhenCdcyhralS6qraRTP2OD9RtlFh+wEz
+         4IMyFnfSnNRINz2ypz96N/jDBptJS1KMbzvzuOgqU4UcRdMZml8tbmE9cXCfX8PnwAKI
+         bTSS31xKpfrnpqLPU722Rd1wgOJz+ux42CXABqNy6B7FiTh6L+cBXg6EXluYvxXf3uYU
+         GbTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708456916; x=1709061716;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sKIxyGvpgjhbt9c9GjpSxI7ejf61TndiqXinC1SQAmM=;
+        b=hL5qJi358X4gxex/8o8ZuURtgqd+IN10w6ZhaeenTXUoZGrobEYzMO47Mav9sjU6vZ
+         D4R5qOqaCtjznxqMo2IUfX4Gr/9xWTTmMcuHbgn6tuUqBxUs5vTuH/1xgJoa0YeYVv7d
+         wzBxK82LSi7d8ZzEraUUKPUXmlIDasq18A0krSyAprR3O0QuxzEPVyrUmoOFVaQDVWG6
+         38yFDuBJFmwOVpw/uYg98PnnaniWX+l5+ZPlUvb2AC7t1kIHWiVLI1COV+nHlQ5AzjGU
+         8ZFkdEdyqsaSAtgoPtCnCn7OkbZbi1I3ArYO/HKCQKkW8QRvUMsGx49xT5yDh98SvR5L
+         MoQw==
+X-Forwarded-Encrypted: i=1; AJvYcCXh8STUdzOHPvS8ZhOK7WrG18JN6wAgWCImiis7f20JJsoFDPjUuK812EF2bVeapzpxQOFhSL1tQ8tOkUp6gs2wgyvjUAKoDT4OjJHy
+X-Gm-Message-State: AOJu0YxjWuzj5/aTLSH3Qz8pLq8cHmdBdChr/ZibmGGmOeAZJBhH1wqP
+	sRiPZGDjHh8lf2IjHH2+K2OWZMY4W6ZJZ/b2W1vkh6ofYD22TIIBxakaTSRtYw==
+X-Google-Smtp-Source: AGHT+IGZKDFS2LMVokdOt4RPUiUiOKYTUXdr3WQbMI3rHVMJLlZRdGxCkLP3ECcHpvMM33NfTSRCVg==
+X-Received: by 2002:a05:600c:384c:b0:412:70cd:2607 with SMTP id s12-20020a05600c384c00b0041270cd2607mr10384wmr.3.1708456916436;
+        Tue, 20 Feb 2024 11:21:56 -0800 (PST)
+Received: from localhost ([2a02:168:96c5:1:cba0:1b55:6833:859e])
+        by smtp.gmail.com with ESMTPSA id t18-20020a05600c451200b0040fd1629443sm15864760wmo.18.2024.02.20.11.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 11:21:55 -0800 (PST)
+From: Jann Horn <jannh@google.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	Jann Horn <jannh@google.com>
+Subject: [PATCH 0/3] avoid unnecessary recompilations in x86 boot code
+Date: Tue, 20 Feb 2024 20:21:41 +0100
+Message-ID: <20240220192144.2050167-1-jannh@google.com>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Lr0x75LRIzBUufR/"
-Content-Disposition: inline
-In-Reply-To: <20240219221827.3821415-3-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
+
+It's been bugging me that every time I rebuild the kernel, kaslr.o and
+misc.o get rebuilt just because they pull in one or two things from some
+headers that change on every build. So this series moves them into a
+separate file that should be faster to build.
+
+This doesn't seem to actually make a difference in terms of wall clock
+time, I think because these compiler invocations run in parallel with
+kernel compression; but when I tested with an earlier version of this
+patch series, I saw something like a 500ms reduction in CPU time used.
+
+Not exactly a major win, and I guess CPU time isn't really the metric
+that matters here, but still, I think this makes sense as a cleanup?
 
 
---Lr0x75LRIzBUufR/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Jann Horn (3):
+  x86/boot: fix KASLR hashing to use full input
+  x86/boot: avoid recompiling misc.c for incremental rebuilds
+  x86/boot: avoid recompiling kaslr.c for incremental rebuilds
 
-Hey Chris,
+ arch/x86/boot/compressed/Makefile       |  4 ++--
+ arch/x86/boot/compressed/dynamic_vars.c | 17 +++++++++++++++
+ arch/x86/boot/compressed/dynamic_vars.h | 14 ++++++++++++
+ arch/x86/boot/compressed/kaslr.c        | 29 +++++++++++++++----------
+ arch/x86/boot/compressed/misc.c         |  6 ++---
+ 5 files changed, 53 insertions(+), 17 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/dynamic_vars.c
+ create mode 100644 arch/x86/boot/compressed/dynamic_vars.h
 
-On Tue, Feb 20, 2024 at 11:18:24AM +1300, Chris Packham wrote:
-> From: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
->=20
-> Add devicetree binding documentation for Analog Devices MAX313XX RTCs.
-> This combines the new models with the existing max31335 binding.
->=20
-> Signed-off-by: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
-> Signed-off-by: Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
->  .../devicetree/bindings/rtc/adi,max31335.yaml |  70 --------
->  .../devicetree/bindings/rtc/adi,max313xx.yaml | 167 ++++++++++++++++++
+-- 
+2.44.0.rc0.258.g7320e95886-goog
 
-There's no need to do this rename. Having the filename matching one of
-the compatibles is our preference.
-
-In addition, it makes it difficult to see what your actual additions are
-here. Fortunately, applying the patch locally allows me to use colour
-moved and all that jazz, so I can see that the underlying changes to the
-file actually look pretty good.
-
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        rtc@68 {
-> +            reg =3D <0x68>;
-> +            compatible =3D "adi,max31329";
-> +            clocks =3D <&clkin>;
-> +            interrupt-parent =3D <&gpio>;
-> +            interrupts =3D <26 IRQ_TYPE_EDGE_FALLING>;
-> +            aux-voltage-chargeable =3D <1>;
-> +            trickle-resistor-ohms =3D <6000>;
-> +            adi,tc-diode =3D "schottky";
-> +        };
-> +    };
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        rtc@68 {
-> +            compatible =3D "adi,max31335";
-> +            reg =3D <0x68>;
-> +            pinctrl-0 =3D <&rtc_nint_pins>;
-> +            interrupts-extended =3D <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
-> +            aux-voltage-chargeable =3D <1>;
-> +            trickle-resistor-ohms =3D <6000>;
-> +            adi,tc-diode =3D "schottky";
-> +        };
-> +    };
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        rtc@68 {
-> +            reg =3D <0x68>;
-> +            compatible =3D "adi,max31331";
-> +            #clock-cells =3D <0>;
-> +        };
-> +    };
-
-The one thing I do want the comment on is the number of examples.
-I don't really see what we gain from having 3 - I'd roll the clock
-provider example into with one of the other ones I think.
-
-Cheers,
-Conor.
-
---Lr0x75LRIzBUufR/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdT7ngAKCRB4tDGHoIJi
-0gcVAQCUm3UGEM+Z/9EWoRiY+5d63k/n2Hnz9XUiLW/AZJehEwEArBjG41/eCY1Z
-LV4ymimhjQsiORRNpOuiTwJItdYREgY=
-=hOoo
------END PGP SIGNATURE-----
-
---Lr0x75LRIzBUufR/--
 
