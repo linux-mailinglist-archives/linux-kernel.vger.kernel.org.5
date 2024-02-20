@@ -1,80 +1,79 @@
-Return-Path: <linux-kernel+bounces-73647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8570785C571
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:05:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB64485C572
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88491C20FB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:05:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17934B24199
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F2114F9D6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B2B14F9E1;
 	Tue, 20 Feb 2024 20:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="isjk5MMK";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qhx13rg5"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R2/dHB3z";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GKYi36CV"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D01B14D438;
-	Tue, 20 Feb 2024 20:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E765314D44A;
+	Tue, 20 Feb 2024 20:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708459475; cv=none; b=kEAb3HVU/q018ZOYe0G2s2gIzHqKNs2GZQErXMNGcY2sEztfg+9DK0CwCKO70aLBzzOdohf8xoolXlqxJAuWbL0OWB3bJk5kN7dETSLOwLQ/UF7bxklFkIf2PMflT1Wf3sGzLM83/PAhBTCFkpkiM1/h7zWeTP6HdRz2awsJ5sM=
+	t=1708459475; cv=none; b=rLIlLTuTxSmw9stdVzsbXpnmZORlz5U2/lRH1x1+Xem4yPxoySYUCLtT0w3TZERgrUpRM7ZdnObYsVCn0fS9dWxh0SOhtPNq1qQQfFeWPdXSnNg/ueXCftm9AudpARXIQcmzXo+bxZtZx/shGWml9Zg5Va51IazqIHkUTbnyfBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708459475; c=relaxed/simple;
-	bh=KEDsLXYcoyRDbxR0FZqnM+1PrPd3XchfuAYflXjBMzA=;
+	bh=eEoqsfwjMP7shFa4kXo0PsUew5lxMiJtKf43SuYBnXU=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=g5brHx05x6Ijuf2f3XTy3urbcOuu7V0RbABOd/xjnGTEuXue4R5jChuO1qbhPt5Vy/Cn/ngCkmIm4I6xVT+fxkiSTeH82iYdVLq9/mMPWdeGejhBObePCVMahivRvCcR+XycImvUMI4jvsSspz6kKGHlLC9XSKRCpiVmmzLwBHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=isjk5MMK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qhx13rg5; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=MnntzAAxi/RJviOVJcVKEU+dZh3/RAsagLJPYybD2h12NUYYWsIveaJylhZYUtdBdhuxIFG5RBTBSwMDQZWfJfm+3kJNfo2Yv+oqPa0nOTseQ8R0c4QbUf8zb1OHf/Ui5dOEVX/GKpgQDxoy0YU91fdOX7HpJFYOItabYYmoXAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R2/dHB3z; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GKYi36CV; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 20 Feb 2024 20:04:30 -0000
+Date: Tue, 20 Feb 2024 20:04:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708459471;
+	s=2020; t=1708459472;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NpLzDQM4p8MzYemt/5BaaxZB7bvUITLVj+nxe5abCSc=;
-	b=isjk5MMKuRwO2dOxEDqg0/aVi4tt3HrKOJQR8Zs1ra6+HkEfzLsrT2JncyX0m087F6QdTg
-	KKtTRqRG6RHI4rXMqEsCxa9ROJ69XNS0EiQqgWCp1aV8FsVv46eaY3nAIsR+mEf3jJvh47
-	2Cv1xepOVHYB9qmtBDlGL666PcuoKqnwlnJw2q6DQtiJRpQ1aGmYgJI2DdD0NQB0oGOE/y
-	q4kx+5Tl8DB5pPr7BZfvTXN8kt+cck2HC+yCAchqqStyCHVP79+U5c11bkzk3rZQTtOTm/
-	B22yl6sSH9w+ne9KtbLUvTcq6OvrCFJsrdqeWzBGO2JTmnsJkkw9dm+uEwqh3g==
+	bh=RIBUMm6O87L0p27q8995FI6EXw/DkNExRcvosaiWqiY=;
+	b=R2/dHB3zEnqAmfhe03HDL6UiFKhuvLPaA5aG+Pb7XtiUpP7l9xAVYC5FJul9hDEzABdmWM
+	viS37m4bczW5xscEBChEpsIWxTHe0veo6GTxX/kZl/uM+gjuuogY1yk+6Je1+q/s5rPPK6
+	S6hXIDxh/0qbjRnPF653O5Txcr+7YMX5zMqQHRaAO/TdPuEsZ0k/ilmBlF4kGMYOrKM4V8
+	lBHzskFGEN1I6dBzg6XlbRFGn5K1CP4hmIkqw+UUoTbHTP2FSsQuB9XXv9jFLeV+kbRJZe
+	2tu4jKLO+XpZPGTORoX7Mjj4/Ew9qPl9VBxccSvhxelsjWWHaUtPYqQDOhKu7A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708459471;
+	s=2020e; t=1708459472;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NpLzDQM4p8MzYemt/5BaaxZB7bvUITLVj+nxe5abCSc=;
-	b=qhx13rg5RI2RUQFDNARM0O083Y+AQJ7TUhUSWHapC3UN+qvyu+NOo/UeNfrNEE1nH49fMc
-	oNWfAvlUpLi3i+DQ==
+	bh=RIBUMm6O87L0p27q8995FI6EXw/DkNExRcvosaiWqiY=;
+	b=GKYi36CVnaMDf6+iWqVxEhFjR4rQKzATNKzBTRAUb0wiJJdua7beVA6x4+louGgRy4WkBO
+	9sGy/iycR0VVdCBQ==
 From: "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] vdso/ARM: Make union vdso_data_store available for
- all architectures
+Subject: [tip: timers/core] csky/vdso: Remove superfluous ifdeffery
 Cc: "Anna-Maria Behnsen" <anna-maria@linutronix.de>,
  Thomas Gleixner <tglx@linutronix.de>,
  Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Kees Cook <keescook@chromium.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240219153939.75719-5-anna-maria@linutronix.de>
-References: <20240219153939.75719-5-anna-maria@linutronix.de>
+ Kees Cook <keescook@chromium.org>, Guo Ren <guoren@kernel.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240219153939.75719-4-anna-maria@linutronix.de>
+References: <20240219153939.75719-4-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170845947061.398.18124310641714961312.tip-bot2@tip-bot2>
+Message-ID: <170845947148.398.9186363038131049493.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -84,146 +83,60 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     a0d2fcd62ac2d3749ff48e30635fe8ea184f0a97
-Gitweb:        https://git.kernel.org/tip/a0d2fcd62ac2d3749ff48e30635fe8ea184f0a97
+Commit-ID:     4eb0833d7de058735a424f1f783126c60a346b34
+Gitweb:        https://git.kernel.org/tip/4eb0833d7de058735a424f1f783126c60a346b34
 Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
-AuthorDate:    Mon, 19 Feb 2024 16:39:33 +01:00
+AuthorDate:    Mon, 19 Feb 2024 16:39:32 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 20 Feb 2024 20:56:00 +01:00
 
-vdso/ARM: Make union vdso_data_store available for all architectures
+csky/vdso: Remove superfluous ifdeffery
 
-The vDSO data page "union vdso_data_store" is defined in an ARM specific
-header file and also defined in several other places.
-
-Move the definition from the ARM header file into the generic vdso datapage
-header to make it also usable for others and to prevent code duplication.
+CSKY selects GENERIC_TIME_VSYSCALL. GENERIC_TIME_VSYSCALL dependent
+ifdeffery is superfluous. Clean it up.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20240219153939.75719-5-anna-maria@linutronix.de
+Acked-by: Guo Ren <guoren@kernel.org>
+Link: https://lore.kernel.org/r/20240219153939.75719-4-anna-maria@linutronix.de
 
 ---
- arch/arm/include/asm/elf.h           |  1 -
- arch/arm/include/asm/vdso_datapage.h | 26 --------------------------
- arch/arm/kernel/asm-offsets.c        |  4 +++-
- arch/arm/kernel/vdso.c               |  4 ----
- include/vdso/datapage.h              | 10 ++++++++++
- 5 files changed, 13 insertions(+), 32 deletions(-)
- delete mode 100644 arch/arm/include/asm/vdso_datapage.h
+ arch/csky/include/asm/vdso.h | 5 -----
+ arch/csky/kernel/vdso.c      | 4 ----
+ 2 files changed, 9 deletions(-)
 
-diff --git a/arch/arm/include/asm/elf.h b/arch/arm/include/asm/elf.h
-index d681016..9f21e17 100644
---- a/arch/arm/include/asm/elf.h
-+++ b/arch/arm/include/asm/elf.h
-@@ -4,7 +4,6 @@
+diff --git a/arch/csky/include/asm/vdso.h b/arch/csky/include/asm/vdso.h
+index bdce581..181a15e 100644
+--- a/arch/csky/include/asm/vdso.h
++++ b/arch/csky/include/asm/vdso.h
+@@ -5,11 +5,6 @@
  
- #include <asm/auxvec.h>
- #include <asm/hwcap.h>
--#include <asm/vdso_datapage.h>
+ #include <linux/types.h>
  
- /*
-  * ELF register definitions..
-diff --git a/arch/arm/include/asm/vdso_datapage.h b/arch/arm/include/asm/vdso_datapage.h
-deleted file mode 100644
-index bef68f5..0000000
---- a/arch/arm/include/asm/vdso_datapage.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Adapted from arm64 version.
-- *
-- * Copyright (C) 2012 ARM Limited
-- */
--#ifndef __ASM_VDSO_DATAPAGE_H
--#define __ASM_VDSO_DATAPAGE_H
--
--#ifdef __KERNEL__
--
--#ifndef __ASSEMBLY__
--
--#include <vdso/datapage.h>
--#include <asm/page.h>
--
--union vdso_data_store {
--	struct vdso_data	data[CS_BASES];
--	u8			page[PAGE_SIZE];
+-#ifndef GENERIC_TIME_VSYSCALL
+-struct vdso_data {
 -};
+-#endif
 -
--#endif /* !__ASSEMBLY__ */
--
--#endif /* __KERNEL__ */
--
--#endif /* __ASM_VDSO_DATAPAGE_H */
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index 219cbc7..4915662 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -21,10 +21,12 @@
- #include <asm/mpu.h>
- #include <asm/procinfo.h>
- #include <asm/suspend.h>
--#include <asm/vdso_datapage.h>
- #include <asm/hardware/cache-l2x0.h>
- #include <linux/kbuild.h>
- #include <linux/arm-smccc.h>
-+
-+#include <vdso/datapage.h>
-+
- #include "signal.h"
- 
  /*
-diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
-index f297d66..d499ad4 100644
---- a/arch/arm/kernel/vdso.c
-+++ b/arch/arm/kernel/vdso.c
-@@ -21,7 +21,6 @@
- #include <asm/cacheflush.h>
+  * The VDSO symbols are mapped into Linux so we can just use regular symbol
+  * addressing to get their offsets in userspace.  The symbols are mapped at an
+diff --git a/arch/csky/kernel/vdso.c b/arch/csky/kernel/vdso.c
+index 16c20d6..e74a250 100644
+--- a/arch/csky/kernel/vdso.c
++++ b/arch/csky/kernel/vdso.c
+@@ -8,11 +8,7 @@
+ #include <linux/slab.h>
+ 
  #include <asm/page.h>
- #include <asm/vdso.h>
--#include <asm/vdso_datapage.h>
- #include <clocksource/arm_arch_timer.h>
- #include <vdso/helpers.h>
- #include <vdso/vsyscall.h>
-@@ -35,9 +34,6 @@ extern char vdso_start[], vdso_end[];
- /* Total number of pages needed for the data and text portions of the VDSO. */
- unsigned int vdso_total_pages __ro_after_init;
+-#ifdef GENERIC_TIME_VSYSCALL
+ #include <vdso/datapage.h>
+-#else
+-#include <asm/vdso.h>
+-#endif
  
--/*
-- * The VDSO data page.
-- */
- static union vdso_data_store vdso_data_store __page_aligned_data;
- struct vdso_data *vdso_data = vdso_data_store.data;
+ extern char vdso_start[], vdso_end[];
  
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index 73eb622..7ba4437 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -19,6 +19,8 @@
- #include <vdso/time32.h>
- #include <vdso/time64.h>
- 
-+#include <asm/page.h>
-+
- #ifdef CONFIG_ARCH_HAS_VDSO_DATA
- #include <asm/vdso/data.h>
- #else
-@@ -121,6 +123,14 @@ struct vdso_data {
- extern struct vdso_data _vdso_data[CS_BASES] __attribute__((visibility("hidden")));
- extern struct vdso_data _timens_data[CS_BASES] __attribute__((visibility("hidden")));
- 
-+/**
-+ * union vdso_data_store - Generic vDSO data page
-+ */
-+union vdso_data_store {
-+	struct vdso_data	data[CS_BASES];
-+	u8			page[PAGE_SIZE];
-+};
-+
- /*
-  * The generic vDSO implementation requires that gettimeofday.h
-  * provides:
 
