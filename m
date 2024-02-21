@@ -1,115 +1,96 @@
-Return-Path: <linux-kernel+bounces-74309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A0CD85D29D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6589285D2D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5313FB23E85
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:33:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E011B21AFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF913C493;
-	Wed, 21 Feb 2024 08:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD40F3CF49;
+	Wed, 21 Feb 2024 08:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="R7Z6pgaU"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bioarchlinux.org header.i=@bioarchlinux.org header.b="sQR0zNoP"
+Received: from bioarchlinux.org (bioarchlinux.org [194.169.181.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F303BB37
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF773B793;
+	Wed, 21 Feb 2024 08:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.169.181.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708504378; cv=none; b=MJy4WOx/JBpz1hqxRFCuQg1oCsrC05XFVd8Xh9dZZP0SryFScr4aJS8obHbirPUGT7SBJYtFIcTvFGgonvgJbRP2Q87wSdb4DR5ruZmoBGwEfUQ0Nzz2N9k/X8gGPC7iPfFDLF6tfJBUcB+oyxdGmi5AEZ+GKZQtE81gBYWbxrg=
+	t=1708505411; cv=none; b=kuJxJGqH0Nz3rVJU9kgtsCy2GnCSX+UvgtV0n2vBRsUcakQ2pilQN2IbJU24dFZRfVDUL5SfOCnji473A/d/T/pc0spPgBlzi23/NnjBwtNarXY9MMtAmA2LsQ7PuCVIlM0CABITk5E2il8cRLa1fDMswR/6w6+a2yuCSjaTrRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708504378; c=relaxed/simple;
-	bh=B7JSsIhz2lakrY2mDFlX5ma7aLC+4cAGzWTKeazAoD4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LilI3dG2H5uYjjXFM3tSTYksqB2NAF0aO6tAkYxsiiqfaTxdBG7L3A9bp1lNLerGIvqlb5cn3G5kvSFRSee7So85VTEHcYiCShiGALMV9hO1vRWVEBs7MQRKgXK9fFjmu+WxakwBzM/8kFkSyAQtoDWvEFsh/a81NjNeqpRF3y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=R7Z6pgaU; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3101A1C0004;
-	Wed, 21 Feb 2024 08:32:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708504371;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/O0u/zSlutQp0nOXmYUgakHqJLFyHa3N/CYJjeJxzeQ=;
-	b=R7Z6pgaUldd207hxJfJcnQjh7VprZyrgdZVVzOZbB6x0vAOMbdbRMX70JpaxQ7WoBajaQm
-	GyQ72uUlXd41adHhmdtHzkbKyw6AWW/T2PeaENr5cakObB4lGeT1M35rZA+6oU1bbUQY2H
-	7YtJ77mRjJrMrzz5wHkcsNfCqmbZECiWhG1yrzYj/lfeau3OEhcbW+IZWcY6tCcZZ1bd06
-	iGdbOaIWKAXaU9OGQRS565owEAesrfHayisjP7Q1a/s26fLVd67YNq9zjKiiwSHuhLWYy8
-	gU28y8/BHUnUp+BIOdmhxiTQfcgbjutC3eECAUvNtDpv0nGQbYypfRN8VPShHg==
-Date: Wed, 21 Feb 2024 09:32:47 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: William Zhang <william.zhang@broadcom.com>, Linux MTD List
- <linux-mtd@lists.infradead.org>, Linux ARM List
- <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
- <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
- kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
- anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
- <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
- <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>
-Subject: Re: [PATCH v5 11/12] mtd: rawnand: brcmnand: exec_op helper
- functions return type fixes
-Message-ID: <20240221093247.5297f1f3@xps-13>
-In-Reply-To: <f6e61482-b51a-4970-9257-8db7975148fa@moroto.mountain>
-References: <20240207202257.271784-1-william.zhang@broadcom.com>
-	<20240207202257.271784-12-william.zhang@broadcom.com>
-	<20240220110240.1ad5b995@xps-13>
-	<f6e61482-b51a-4970-9257-8db7975148fa@moroto.mountain>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708505411; c=relaxed/simple;
+	bh=u9RZVNHmoguHW4+QAiRhir6A/moENxliS29YW2DJD5s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XljLXH5UqlOAS6400SV6xJtaOcU1UT7wgJTDIBpPAy2jAkqrt54VUlCC1xI4jAomvo5NTs+mpLOap9dqW+5Vds1eprY6KjbVPAJDCRwE5p6QFKV+t+d0SyNjfyYF3cp+kjhuCcRzjJ7lVJ620AtrBz30Z2lnrvzGqKtDMLgrgrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bioarchlinux.org; spf=pass smtp.mailfrom=bioarchlinux.org; dkim=pass (2048-bit key) header.d=bioarchlinux.org header.i=@bioarchlinux.org header.b=sQR0zNoP; arc=none smtp.client-ip=194.169.181.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bioarchlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bioarchlinux.org
+DKIM-Signature: a=rsa-sha256; bh=d0060id0R0zVW8i2sFEopZ4wmRxTFwkqlvBcU/pCIlk=;
+ c=relaxed/relaxed; d=bioarchlinux.org;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@bioarchlinux.org; s=default; t=1708504470; v=1; x=1708936470;
+ b=sQR0zNoPQAMEeU9zmwwgCCAfYshgfuHPqBos7n64iv4ib0aH9rQQLcJkDNNlereocX4kQo54
+ L6LnPS9zls7XefjIvL54cu4njwExbHrDc/EHY3jmck78t4coQnNMNor6aQyS+N4xCj3NyOUl5/E
+ 6qf0k0d4dhwKU317wT99L2sjt8rNHwJavsFO4Qpetb0jm9AFe49z6mmt2ls7sM4uYPF0ViTu4JI
+ SYIfmWzFIu99IGHphlm9QpPPaLy3c83MB/1Kxk01RosXkgTV3TCkvkN3RVR4yyjipEf0YxEAkxu
+ zDc9Xy6PYQYZT3U8IiLFAa7sBCDFm3XYhqDDvEpAJNGnA==
+Received: by bioarchlinux.org (envelope-sender <kuoi@bioarchlinux.org>) with
+ ESMTPS id 74a676f5; Wed, 21 Feb 2024 08:34:30 +0000
+From: Guoyi Zhang <kuoi@bioarchlinux.org>
+To: sre@kernel.org,
+	wens@csie.org,
+	hdegoede@redhat.com
+Cc: Guoyi Zhang <kuoi@bioarchlinux.org>,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] power: supply: axp288_fuel_gauge: Deny ROCK Pi X
+Date: Wed, 21 Feb 2024 16:34:25 +0800
+Message-ID: <20240221083425.440108-1-kuoi@bioarchlinux.org>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-Hi,
+The ROCK Pi X is a single board computer without batteries using the
+AXP288 PMIC where the EFI code does not disable the charger part of 
+the PMIC causing us to report a discharging battery with a continuously
+consumed battery charge to userspace.
 
-dan.carpenter@linaro.org wrote on Wed, 21 Feb 2024 09:16:31 +0300:
+Add it to the deny-list to avoid the bogus battery status reporting.
 
-> On Tue, Feb 20, 2024 at 11:02:40AM +0100, Miquel Raynal wrote:
-> >=20
-> > william.zhang@broadcom.com wrote on Wed,  7 Feb 2024 12:22:56 -0800:
-> >  =20
-> > > From: David Regan <dregan@broadcom.com>
-> > >=20
-> > > fix return type for exec_op reset and status detect helper functions
-> > >=20
-> > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/=
-102423.html
-> > > Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
-> > > Signed-off-by: David Regan <dregan@broadcom.com>
-> > > Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> > > Reviewed-by: William Zhang <william.zhang@broadcom.com> =20
-> >=20
-> > By the way, a Cc: stable tag might be useful as otherwise you may leak
-> > an error code in a status value (which is a bug). And move this patch
-> > first in your series so we're sure it does not conflict with any of the
-> > other patches and can be backported more easily. =20
->=20
-> The original commit 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op
-> implementation") is not in stable so we should be okay on this.
+Signed-off-by: Guoyi Zhang <kuoi@bioarchlinux.org>
+---
+ drivers/power/supply/axp288_fuel_gauge.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Right.
+diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
+index 3be6f3b10..8f67f5d0d 100644
+--- a/drivers/power/supply/axp288_fuel_gauge.c
++++ b/drivers/power/supply/axp288_fuel_gauge.c
+@@ -599,6 +599,14 @@ static const struct dmi_system_id axp288_quirks[] = {
+ 		},
+ 		.driver_data = NULL,
+ 	},
++	{
++		/* Radxa ROCK Pi X Single Board Computer */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "ROCK Pi X"),
++			DMI_MATCH(DMI_BOARD_VENDOR, "Radxa"),
++		},
++		.driver_data = (void *)AXP288_QUIRK_NO_BATTERY,
++	},
+ 	{
+ 		/*
+ 		 * Various Ace PC/Meegopad/MinisForum/Wintel Mini-PCs/HDMI-sticks
+-- 
+2.43.2
 
-However please send again this patch quickly so I can queue it up
-before the rest of the series.
-
-Thanks,
-Miqu=C3=A8l
 
