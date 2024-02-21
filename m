@@ -1,233 +1,290 @@
-Return-Path: <linux-kernel+bounces-73863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225F185CCBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7920285CCBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:35:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBFEB283D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:32:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25548282EF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B2A17F3;
-	Wed, 21 Feb 2024 00:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CA91396;
+	Wed, 21 Feb 2024 00:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ki3mi+OK"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O3aqnR4h"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5186615BB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1CC382
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708475516; cv=none; b=XB2aMNRuYP/WJPxR5pepO36Mx/d+ALsPBhCs/TtZMzbv7TxexUqAfra24Ke8/zeuQYyeOskiWHFDN+mgbJ9f+mkvgJIt+cx0FxaIN7zC933myXRWR+xp2S8wAnz1IyO1CQAA2N5K+YpIZLySDGIntNME9YZXKvlwoPYMYAGW0EA=
+	t=1708475734; cv=none; b=Ul4v4p0XFB23icV8MxejeXHSSmiCKx1YgXILpdEl6/lL/V9SDIre7yLdaSbVVHdpRr0Aa6Mon1N4ZDU/sLZxoYm8RpdLqyI9ZTXKRE01V0OU313FmMxRFUd6azweRWh3s/6CvRIEBHpae0c4CukGuNn6bT9sA66uxUNS4Tgc/pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708475516; c=relaxed/simple;
-	bh=oEfNL4tE07y7w1Cmhhj91MRxhD+otlhB/ycPnq17d8Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TSD8FCU64DljH63/vbkOXUxkIIlB9odEAcRKH//7OxJY7SX3nAp2zmhQN0Wo9xVn53fSgHWkW2gJCNYlUnYa0hKHet8iw9ZAEsVcH2VbcJ9N+3xxSnE/Ss+mf5SQ0JT+YBm9GYj3xHet7wRImK6h2nq7tu7ag8vJ4g8l1Hi02sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ki3mi+OK; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42e2507c6e1so57501cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:31:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708475512; x=1709080312; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HY1MEqwVBFNvgQus62YTgnAdchYfLB+wlYNRdSj4IDg=;
-        b=Ki3mi+OKEiq5jt7jPTdHx8f8Ssx/6cs985OyOJ3rIC2W3WBL25RMpw+J5H42U1VGJf
-         EY5hbctdtH6ypq95BLakeinFueRf7XXdtGV5L1viUxgmE+eUQVI2GPn0/E3bsrHeqq/9
-         LAx+ZNKlbAqeWIZsECrHAwtBHPvqF6nXweGAqxgv6s0Ou2jVfXa7JunwlZMAcdz60jU7
-         ZRiAj9ouITgrv2HscDKFI/3yfE3c7RyCb5Jp6d/8JUxFgG6CK1mZDJdpZsVaOquvWn1R
-         BvA9bL03Y1D3ZIY0+PofOIeVZEk2cI+1YrrII26oRTLQbsIoWRoQJ0aMO7BJu2WPWEoP
-         acFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708475512; x=1709080312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HY1MEqwVBFNvgQus62YTgnAdchYfLB+wlYNRdSj4IDg=;
-        b=AN35CcNGVUghM2Yx17JrzCR6R6yIlK0HBQ91i/1RSQgZCFhX+sykuBc9Zk1ChP0gEz
-         3Tzd1iORuO1K4hPDUeeFS1sG4ehnf1XL0qOo1QS4njibWrDVDq12NiNa0LjbEfmpmM5h
-         paKFvBLR7mhHzsZdxXdChcIsiZt2SV7puHXw3VKiWUnN5vmx4bZi+Ogb3KzhRqVsA8ms
-         FGWdx6d/ykS84okVO2xixeZbJifz/Q+0wUYjWmY+S4qFcakaALfXkM7gdTcMtoSOGdZ6
-         q2jLHmQvA1RaA7kdUIYGDRkXuMFtP7Ahv/a8vk0SrjOCmQwOInViywBhVWxjAR4MFnpm
-         JXYw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHbLYS41ZtwE2YdOE05m4BJWUYgvFcJ1K4DI6SBMq8vGCRhCBB5os1UkoiPtgUFvPKIAw+qgdc2XoLJIZqr/W2R/Nnm/46FTQO5Sc2
-X-Gm-Message-State: AOJu0YwboVSKEx7tYn5VKvTg7hfmSqEeKjKYh7EZT1MjuO4z9Eq0tpJT
-	u78x4weQNmTFmoGritP+XtiFKnzzFFECP8tEOibzZUDw567Ilmq6icj3Kji79j0f10swev94KJL
-	XYnW5/uSE+ZJTPWzOm123NRd3U8pKa731SCRx
-X-Google-Smtp-Source: AGHT+IHs1lgFcCWQVw2AN7L05dXovmHCo9vKz+rDhTMW/KOTmTLGal8gv6AfgRcHOi7DW6r0HcEsbvf4zkKE5DJEkuQ=
-X-Received: by 2002:ac8:744e:0:b0:42e:3233:4924 with SMTP id
- h14-20020ac8744e000000b0042e32334924mr98006qtr.26.1708475512008; Tue, 20 Feb
- 2024 16:31:52 -0800 (PST)
+	s=arc-20240116; t=1708475734; c=relaxed/simple;
+	bh=9aGkgXtJR1/nVfpEGfeAe+MMVQUE8yVMG2PkPxV5iAY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tBKzrhZburCRBt1zX7fG1aDDtjgvOrZ9k67nAU/lY8M8dveGxB8FVsfbGfrVt5m22XmxLh2urmbzWARJISh7vBlFwmToYMLxvZfw/9kfxYD4GhqU6KM5Rq45dUZbvSfOL2ODpLjYmGnAwMNfdng28o2P0SFKtOE22oBlZO9ERAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O3aqnR4h; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708475732; x=1740011732;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9aGkgXtJR1/nVfpEGfeAe+MMVQUE8yVMG2PkPxV5iAY=;
+  b=O3aqnR4hv6GLL5rN7ntwJ2XTD1lrp+EWZXzuEsrfkc8FzXIOsd2o3F4s
+   s+DD0/18/H4rqx3E2MJSB9biix5numYxMETPSixuLP2luX4k9diewmXS+
+   wEFQilgYM9cfRA5LrJOdWA2A8U+EIIYiSYBdJEbJ/Ty38DF4D3N7lNAEd
+   1IhrKJIJo+S8QLWetf6oYFyekC5ytSSCp8szFIJQCJJiKhwECJqII0D8H
+   ladCqzV5l0LD/qulO6F7gdi/Xg6Tk2tFKgJKzivWy4p6ddIfL7G2oOEbb
+   7qJ5SVe79IKkhs+K+Q9zGHdUUIgv7q9pjCi2eQWialXNFqyOCH4bXlJTp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2753779"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="2753779"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 16:34:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="9583468"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 16:34:21 -0800
+Date: Tue, 20 Feb 2024 16:34:20 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: "Chatre, Reinette" <reinette.chatre@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>, James Morse <james.morse@arm.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yu, Fenghua" <fenghua.yu@intel.com>,
+	Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+	Babu Moger <Babu.Moger@amd.com>,
+	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	"carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+	"lcherian@marvell.com" <lcherian@marvell.com>,
+	"bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+	"tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
+	"baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+	Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>,
+	"peternewman@google.com" <peternewman@google.com>,
+	"dfustini@baylibre.com" <dfustini@baylibre.com>,
+	"amitsinght@marvell.com" <amitsinght@marvell.com>,
+	David Hildenbrand <david@redhat.com>
+Subject: [PATCH] x86/resctrl: Fix WARN in get_domain_from_cpu()
+Message-ID: <ZdVFDIJmctsNaGd2@agluck-desk3>
+References: <20240213184438.16675-1-james.morse@arm.com>
+ <20240217105543.GAZdCQr_nosDP4tGuO@fat_crate.local>
+ <87zfvwieli.ffs@tglx>
+ <ZdUSwOM9UUNpw84Y@agluck-desk3>
+ <d409c32d-0f9a-4773-bc25-9d39de3c9e9b@intel.com>
+ <SJ1PR11MB6083A759748EAF62EDF21D0FFC502@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130174126.688486-1-herve.codina@bootlin.com> <20231130174126.688486-2-herve.codina@bootlin.com>
-In-Reply-To: <20231130174126.688486-2-herve.codina@bootlin.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 16:31:13 -0800
-Message-ID: <CAGETcx9uP86EHyKJNifBMd23oCsA+KpMa+e36wJEEnHDve+Avg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] driver core: Introduce device_link_wait_removal()
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
-	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, 
-	Steen Hegelund <steen.hegelund@microchip.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083A759748EAF62EDF21D0FFC502@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-On Thu, Nov 30, 2023 at 9:41=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
-com> wrote:
->
-> The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> introduces a workqueue to release the consumer and supplier devices used
-> in the devlink.
-> In the job queued, devices are release and in turn, when all the
-> references to these devices are dropped, the release function of the
-> device itself is called.
->
-> Nothing is present to provide some synchronisation with this workqueue
-> in order to ensure that all ongoing releasing operations are done and
-> so, some other operations can be started safely.
->
-> For instance, in the following sequence:
->   1) of_platform_depopulate()
->   2) of_overlay_remove()
->
-> During the step 1, devices are released and related devlinks are removed
-> (jobs pushed in the workqueue).
-> During the step 2, OF nodes are destroyed but, without any
-> synchronisation with devlink removal jobs, of_overlay_remove() can raise
-> warnings related to missing of_node_put():
->   ERROR: memory leak, expected refcount 1 instead of 2
->
-> Indeed, the missing of_node_put() call is going to be done, too late,
-> from the workqueue job execution.
->
-> Introduce device_link_wait_removal() to offer a way to synchronize
-> operations waiting for the end of devlink removals (i.e. end of
-> workqueue jobs).
-> Also, as a flushing operation is done on the workqueue, the workqueue
-> used is moved from a system-wide workqueue to a local one.
+reset_all_ctrls() and resctrl_arch_update_domains() use
+on_each_cpu_mask() to call rdt_ctrl_update() on potentially
+one CPU from each domain.
 
-Thanks for the bug report and fix. Sorry again about the delay in
-reviewing the changes.
+But this means rdt_ctrl_update() needs to figure out which domain
+to apply changes to. Doing so requires a search of all domains
+in a resource, which can only be done safely if cpus_lock is
+held. Both callers do hold this lock, but there isn't a way
+for a function called on another CPU via IPI to verify this.
 
-Please add Fixes tag for 80dd33cf72d1.
+Fix by adding the target domain to the msr_param structure and
+calling for each domain separately using smp_call_function_single()
 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  drivers/base/core.c    | 26 +++++++++++++++++++++++---
->  include/linux/device.h |  1 +
->  2 files changed, 24 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index ac026187ac6a..2e102a77758c 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
->  static void __fw_devlink_link_to_consumers(struct device *dev);
->  static bool fw_devlink_drv_reg_done;
->  static bool fw_devlink_best_effort;
-> +static struct workqueue_struct *fw_devlink_wq;
->
->  /**
->   * __fwnode_link_add - Create a link between two fwnode_handles.
-> @@ -530,12 +531,26 @@ static void devlink_dev_release(struct device *dev)
->         /*
->          * It may take a while to complete this work because of the SRCU
->          * synchronization in device_link_release_fn() and if the consume=
-r or
-> -        * supplier devices get deleted when it runs, so put it into the =
-"long"
-> -        * workqueue.
-> +        * supplier devices get deleted when it runs, so put it into the
-> +        * dedicated workqueue.
->          */
-> -       queue_work(system_long_wq, &link->rm_work);
-> +       queue_work(fw_devlink_wq, &link->rm_work);
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-This has nothing to do with fw_devlink. fw_devlink is just triggering
-the issue in device links. You can hit this bug without fw_devlink too.
-So call this device_link_wq since it's consistent with device_link_* APIs.
+---
+Either apply on top of tip x86/cache:
 
->  }
->
-> +/**
-> + * device_link_wait_removal - Wait for ongoing devlink removal jobs to t=
-erminate
-> + */
-> +void device_link_wait_removal(void)
-> +{
-> +       /*
-> +        * devlink removal jobs are queued in the dedicated work queue.
-> +        * To be sure that all removal jobs are terminated, ensure that a=
-ny
-> +        * scheduled work has run to completion.
-> +        */
-> +       drain_workqueue(fw_devlink_wq);
+ fb700810d30b ("x86/resctrl: Separate arch and fs resctrl locks")
 
-Is there a reason this needs to be drain_workqueu() instead of
-flush_workqueue(). Drain is a stronger guarantee than we need in this
-case. All we are trying to make sure is that all the device link
-remove work queued so far have completed.
+or merge this into that commit.
+---
+ arch/x86/kernel/cpu/resctrl/internal.h    |  1 +
+ arch/x86/kernel/cpu/resctrl/core.c        | 10 +----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 50 +++++------------------
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 14 ++-----
+ 4 files changed, 16 insertions(+), 59 deletions(-)
 
-> +}
-> +EXPORT_SYMBOL_GPL(device_link_wait_removal);
-> +
->  static struct class devlink_class =3D {
->         .name =3D "devlink",
->         .dev_groups =3D devlink_groups,
-> @@ -4085,9 +4100,14 @@ int __init devices_init(void)
->         sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_kobj);
->         if (!sysfs_dev_char_kobj)
->                 goto char_kobj_err;
-> +       fw_devlink_wq =3D alloc_workqueue("fw_devlink_wq", 0, 0);
-> +       if (!fw_devlink_wq)
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index c99f26ebe7a6..c30d7697b431 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -383,6 +383,7 @@ static inline struct rdt_hw_domain *resctrl_to_arch_dom(struct rdt_domain *r)
+  */
+ struct msr_param {
+ 	struct rdt_resource	*res;
++	struct rdt_domain	*dom;
+ 	u32			low;
+ 	u32			high;
+ };
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 8a4ef4f5bddc..8d8b8abcda98 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -390,16 +390,8 @@ void rdt_ctrl_update(void *arg)
+ 	struct msr_param *m = arg;
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(m->res);
+ 	struct rdt_resource *r = m->res;
+-	int cpu = smp_processor_id();
+-	struct rdt_domain *d;
+ 
+-	d = get_domain_from_cpu(cpu, r);
+-	if (d) {
+-		hw_res->msr_update(d, m, r);
+-		return;
+-	}
+-	pr_warn_once("cpu %d not found in any domain for resource %s\n",
+-		     cpu, r->name);
++	hw_res->msr_update(m->dom, m, r);
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index 7997b47743a2..aed702d06314 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -272,22 +272,6 @@ static u32 get_config_index(u32 closid, enum resctrl_conf_type type)
+ 	}
+ }
+ 
+-static bool apply_config(struct rdt_hw_domain *hw_dom,
+-			 struct resctrl_staged_config *cfg, u32 idx,
+-			 cpumask_var_t cpu_mask)
+-{
+-	struct rdt_domain *dom = &hw_dom->d_resctrl;
+-
+-	if (cfg->new_ctrl != hw_dom->ctrl_val[idx]) {
+-		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
+-		hw_dom->ctrl_val[idx] = cfg->new_ctrl;
+-
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
+ 			    u32 closid, enum resctrl_conf_type t, u32 cfg_val)
+ {
+@@ -315,17 +299,13 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 	struct rdt_hw_domain *hw_dom;
+ 	struct msr_param msr_param;
+ 	enum resctrl_conf_type t;
+-	cpumask_var_t cpu_mask;
+ 	struct rdt_domain *d;
++	int cpu;
+ 	u32 idx;
+ 
+ 	/* Walking r->domains, ensure it can't race with cpuhp */
+ 	lockdep_assert_cpus_held();
+ 
+-	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+-		return -ENOMEM;
+-
+-	msr_param.res = NULL;
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		hw_dom = resctrl_to_arch_dom(d);
+ 		for (t = 0; t < CDP_NUM_TYPES; t++) {
+@@ -334,29 +314,19 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 				continue;
+ 
+ 			idx = get_config_index(closid, t);
+-			if (!apply_config(hw_dom, cfg, idx, cpu_mask))
++			if (cfg->new_ctrl == hw_dom->ctrl_val[idx])
+ 				continue;
+-
+-			if (!msr_param.res) {
+-				msr_param.low = idx;
+-				msr_param.high = msr_param.low + 1;
+-				msr_param.res = r;
+-			} else {
+-				msr_param.low = min(msr_param.low, idx);
+-				msr_param.high = max(msr_param.high, idx + 1);
+-			}
++			hw_dom->ctrl_val[idx] = cfg->new_ctrl;
++			cpu = cpumask_any(&d->cpu_mask);
++
++			msr_param.low = idx;
++			msr_param.high = msr_param.low + 1;
++			msr_param.res = r;
++			msr_param.dom = d;
++			smp_call_function_single(cpu, rdt_ctrl_update, &msr_param, 1);
+ 		}
+ 	}
+ 
+-	if (cpumask_empty(cpu_mask))
+-		goto done;
+-
+-	/* Update resource control msr on all the CPUs. */
+-	on_each_cpu_mask(cpu_mask, rdt_ctrl_update, &msr_param, 1);
+-
+-done:
+-	free_cpumask_var(cpu_mask);
+-
+ 	return 0;
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 011e17efb1a6..da4f13db4161 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -2813,16 +2813,13 @@ static int reset_all_ctrls(struct rdt_resource *r)
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+ 	struct rdt_hw_domain *hw_dom;
+ 	struct msr_param msr_param;
+-	cpumask_var_t cpu_mask;
+ 	struct rdt_domain *d;
++	int cpu;
+ 	int i;
+ 
+ 	/* Walking r->domains, ensure it can't race with cpuhp */
+ 	lockdep_assert_cpus_held();
+ 
+-	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+-		return -ENOMEM;
+-
+ 	msr_param.res = r;
+ 	msr_param.low = 0;
+ 	msr_param.high = hw_res->num_closid;
+@@ -2834,17 +2831,14 @@ static int reset_all_ctrls(struct rdt_resource *r)
+ 	 */
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		hw_dom = resctrl_to_arch_dom(d);
+-		cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
++		cpu = cpumask_any(&d->cpu_mask);
+ 
+ 		for (i = 0; i < hw_res->num_closid; i++)
+ 			hw_dom->ctrl_val[i] = r->default_ctrl;
++		msr_param.dom = d;
++		smp_call_function_single(cpu, rdt_ctrl_update, &msr_param, 1);
+ 	}
+ 
+-	/* Update CBM on all the CPUs in cpu_mask */
+-	on_each_cpu_mask(cpu_mask, rdt_ctrl_update, &msr_param, 1);
+-
+-	free_cpumask_var(cpu_mask);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.43.0
 
-Fix the name appropriately here too please.
-
-Thanks,
-Saravana
-
-
-> +               goto wq_err;
->
->         return 0;
->
-> + wq_err:
-> +       kobject_put(sysfs_dev_char_kobj);
->   char_kobj_err:
->         kobject_put(sysfs_dev_block_kobj);
->   block_kobj_err:
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 2b093e62907a..c26f4b3df2bd 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -1250,6 +1250,7 @@ void device_link_del(struct device_link *link);
->  void device_link_remove(void *consumer, struct device *supplier);
->  void device_links_supplier_sync_state_pause(void);
->  void device_links_supplier_sync_state_resume(void);
-> +void device_link_wait_removal(void);
->
->  /* Create alias, so I can be autoloaded. */
->  #define MODULE_ALIAS_CHARDEV(major,minor) \
-> --
-> 2.42.0
->
->
 
