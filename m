@@ -1,87 +1,162 @@
-Return-Path: <linux-kernel+bounces-74508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47C285D546
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:15:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357D185D547
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:15:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C391C229E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:15:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC76A282A2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E015E3D577;
-	Wed, 21 Feb 2024 10:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16CD3D984;
+	Wed, 21 Feb 2024 10:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4sDG00bU"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="unjQKVka";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="y6j3qvVZ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="unjQKVka";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="y6j3qvVZ"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D691F3D39A;
-	Wed, 21 Feb 2024 10:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF733C493;
+	Wed, 21 Feb 2024 10:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510514; cv=none; b=L3it+AT5hcy3pS6yIrVr8Pwton5Rk4aHybxpaZYh7oIUdclnuK1q+5wDphdGnNjy3fiisanG9ahh9zQeUr3/tXDLv8YzrBYSvHoWgPrM6UpZqRbloz/eZJXnVsnP7kJ7GlyhoYRH1WWTcOcizHO4VK6HTHn0XeweoNS4fN3H19U=
+	t=1708510538; cv=none; b=fN2GUONedA1vHNQQecyMlYcjsD2gQp5tMIfyO8yCW7KBUCWHp73tgQE6hKtDPMir7w6AzbTXk3N1tcd0yAbCuJLYd/LNHSNeU7N/DJWdsH6cDmB1qufcn5MLMK74eiHi6wab+BpV6qsOqskmQIYZRH6tb++YyoI7ovWuxzDuGcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510514; c=relaxed/simple;
-	bh=/OBK/vPgAEGePwGQU9P8QRYiaWDf258P929gH0+KqMA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fBFhMXBMKwXYtyKW83Xj2a8/sZTmmbCoHIBs2hHU2AkD7Mzn/aN4o72QqRuwNBAHLu4FlY/ZetJrut7IqcWwh7HkRsc72sTOGt5p4XBzQXGFwPhRQLAGU1cg0HiLh7mE429EfvF4Qr2RYvTRpefrfKccvp2Okz86OdXlfZHzIfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4sDG00bU; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708510511;
-	bh=/OBK/vPgAEGePwGQU9P8QRYiaWDf258P929gH0+KqMA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=4sDG00bUo4bLREuLVu8MVnI8BgzUcOe14r2DO+FerX22OHmUS71JMJilatztYGiss
-	 5J8/ZIlVXu/7ZzjnsvR3ovj05O8pNxHb3CdkwSL+DgrId3FtbQaSm/9qr0FW621Z0s
-	 kKRTLPF/9HudJR1ydgNAgB8t1R4ZdbBJdR+ECsDACnV1LGooEfA+Z8/wEHeqqyzgrc
-	 Aj8FY/LtbG3DzCO7cRAOmCM78zvf2YANdkBf177BRL0um2kn8A5Cp0v+j8yWE73g7x
-	 gWFp09E+wpESw+eBksRFCshNiEAb1y0E3IMYWHHZIKI5pAszABWlNvaxQ1PcQ+8RqQ
-	 pksGJHs+w79aQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	s=arc-20240116; t=1708510538; c=relaxed/simple;
+	bh=FFhzB5J0U7oDf1Def7V0K2KK57vojCXFuzsSXD8TFBM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Vm9qNo3+A+lWUJNl9ypB9VOYReCjaXGzBSd0od0RhPY4k5rqqGRYgB57M6INCrFFwbeTpoYtpZxVGgqlDbd8FRIrA/d6aBwjhX4OynUTnTEr26qr5WrOA2CcZFri463PB0+4kMKBMGjS7/5h62YTPwzHLuSNcHbg++VJHh03ivo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=unjQKVka; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=y6j3qvVZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=unjQKVka; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=y6j3qvVZ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4C25C37820C9;
-	Wed, 21 Feb 2024 10:15:10 +0000 (UTC)
-Message-ID: <d5535a86-17d6-40c1-ae8e-df9fc0425866@collabora.com>
-Date: Wed, 21 Feb 2024 11:15:09 +0100
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A81731FB4C;
+	Wed, 21 Feb 2024 10:15:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708510534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YnEpfxCF7g+UuoIAlRYfvXg3wCMzx5yNP4QWoEWyTKc=;
+	b=unjQKVkaMfH6X9pDCO/+Q+i5tb6iPxxIGdXg5MpX/quYRXylOl3gFK07m5BrSOYN9qp1rs
+	H43x/7IXDkreY6nf1fw3Fba4fih+jKN9diNc9StoNvKTQ7AtkVmyXtYgHLtaAuMZceczuR
+	5XVjar+lYYTttSJFVQGBoa1MfgwJO0Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708510534;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YnEpfxCF7g+UuoIAlRYfvXg3wCMzx5yNP4QWoEWyTKc=;
+	b=y6j3qvVZNBxZYXlwPRbQ0cvtYXK0pnPnmicK81HuSDyQ61dedLe23K413zxGLCwNG0Kazx
+	xXDPj+E+VzJK6IBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708510534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YnEpfxCF7g+UuoIAlRYfvXg3wCMzx5yNP4QWoEWyTKc=;
+	b=unjQKVkaMfH6X9pDCO/+Q+i5tb6iPxxIGdXg5MpX/quYRXylOl3gFK07m5BrSOYN9qp1rs
+	H43x/7IXDkreY6nf1fw3Fba4fih+jKN9diNc9StoNvKTQ7AtkVmyXtYgHLtaAuMZceczuR
+	5XVjar+lYYTttSJFVQGBoa1MfgwJO0Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708510534;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YnEpfxCF7g+UuoIAlRYfvXg3wCMzx5yNP4QWoEWyTKc=;
+	b=y6j3qvVZNBxZYXlwPRbQ0cvtYXK0pnPnmicK81HuSDyQ61dedLe23K413zxGLCwNG0Kazx
+	xXDPj+E+VzJK6IBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6B91513A69;
+	Wed, 21 Feb 2024 10:15:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id GCCbGEbN1WXdQgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 21 Feb 2024 10:15:34 +0000
+Date: Wed, 21 Feb 2024 11:15:34 +0100
+Message-ID: <87edd66s3d.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alexandru Gagniuc <alexandru.gagniuc@hp.com>
+Cc: linux-sound@vger.kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-kernel@vger.kernel.org,
+	eniac-xw.zhang@hp.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LED For HP mt440
+In-Reply-To: <20240220175812.782687-1-alexandru.gagniuc@hp.com>
+References: <87frxteoil.wl-tiwai@suse.de>
+	<20240220175812.782687-1-alexandru.gagniuc@hp.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: mediatek: mt7981: add watchdog & WiFi
- controllers
-Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240221085547.27840-1-zajec5@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240221085547.27840-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=unjQKVka;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=y6j3qvVZ
+X-Spamd-Result: default: False [-0.02 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.71)[83.51%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.02
+X-Rspamd-Queue-Id: A81731FB4C
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Il 21/02/24 09:55, Rafał Miłecki ha scritto:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Tue, 20 Feb 2024 18:58:12 +0100,
+Alexandru Gagniuc wrote:
 > 
-> MT7981 (Filogic 820) is a low cost version of MT7986 (Filogic 830) with
-> the same watchdog controller. It also comes with on-SoC 802.11ax
-> wireless.
+> From: Eniac Zhang <eniac-xw.zhang@hp.com>
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> The HP mt440 Thin Client uses an ALC236 codec and needs the
+> ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF quirk to make the mute and
+> micmute LEDs work.
+> 
+> There are two variants of the USB-C PD chip on this device. Each uses
+> a different BIOS and board ID, hence the two entries.
+> 
+> Signed-off-by: Eniac Zhang <eniac-xw.zhang@hp.com>
+> Signed-off-by: Alexandru Gagniuc <alexandru.gagniuc@hp.com>
+> Cc: <stable@vger.kernel.org>
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Thanks, applied now.
+
+But at the next time, don't hang on the existing thread when
+submitting a new patch.
 
 
+Takashi
 
