@@ -1,134 +1,157 @@
-Return-Path: <linux-kernel+bounces-74946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B204685E058
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:54:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F160685E05A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:55:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67F4E1F252D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:54:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B03F1F25315
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04BB7FBC8;
-	Wed, 21 Feb 2024 14:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 615CA7FBBC;
+	Wed, 21 Feb 2024 14:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VEkUQiPu"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I3KNEwLF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACFA7F7F0
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6E51FDB
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708527286; cv=none; b=XLz0Orzgq6QNTl8oTzZnX5cDRTJ8kWv0HIvkgzZsVJJZA2pQyITx+njzxjgOaqUSWrJs3PpGqI+9izSInAnb6XpxpopJVT3QmHcHM8wAHfMhDQCbHrmgD78LCs9eQxPtHCGpO5RxrswnpOW0y8OQ3DBvq5M4cm414xMX9FtEWL8=
+	t=1708527312; cv=none; b=iDM4aLYiIQa5NT+pqxUg3b8MAgdTd9vpFLknUZPtd7KQEYl+gMvonRTwBifl7rBrd0DWdnIAXZICjQOqZQ7p/KsPJmYksfUbQd8+toO4/hF+Ov/7UnRXCepowIjR2deTLFvHi0nE82TE4pJ2X/l+8kaaJlca6abSkDeNA5fW5eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708527286; c=relaxed/simple;
-	bh=d605qvE8oJLHFh8wYpuXeD8Ss2JHKYc9jQTlWWU/2bI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PXWaF+IJIzcbVYRHu+TB93tyyc78GbNLPy/+1SGtLoxheb9qqcrrecvsgTrKMt00P3JmY8mVNApWlF8WzBObrnSXWdkHQuHfQ8HNrhVWlT60ReZOEDnKOddBtGpfY/5A9mIwIE7vpzjoLs4yaHh9cuo9fO1yN+Q99mgOjSUjBfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VEkUQiPu; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso1173210766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:54:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708527281; x=1709132081; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PwDrSDwbjDuhxc0snjMmTqWQWr4yGG/YePGvnYIgDzA=;
-        b=VEkUQiPuRTysHhqswZ0Unv01p4biFu22CZMoufZ12rNK2Aofk3L6Pm1+GqyS9YyFlE
-         ghwh+rIlsf1L2Ek4khEIWz/bC2mRCoy8uT4dPVaruQZbbwLv/UUwjGexH1DMoHU/h/hY
-         VyApC0OubwFJTskhwJYnGI8AFxnc+ERG9xuPVHcGQUa30aJlaAk0s2Y0ZLnJInuMyPa7
-         WJm0Wq2NWl0iUOpG8qCBmDCQVnH8fkdIm80UaXggsZUhSL+UD6kh1WNyrIe1tDlWxPU6
-         aWwEV+Nshtwd2JDrXOP0422nec9J+ZZvw6jupXRrvoZBraD37YzQf6mexQ97m5SLHqWL
-         YTaQ==
+	s=arc-20240116; t=1708527312; c=relaxed/simple;
+	bh=FwmvhBN+OFHNRJGqCtuBa9zQ5OmMKVp5IfgUrr6yEdo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pR/hsH3purXAzclxtcSEY9P367LicFPoXquDlN44tsGnFYskv3teMvHi61wBBTs4KJ4+kvEJ3yluWRwqUvYYXQ6iI38FUda4k+I3v5Tn4120mlSqWxlheBq/kFKHe5jy9VtTp/6hcMsQ1saZriqlFO8IM58ZFaAbIh/SoruwAAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I3KNEwLF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708527308;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nTOuhxSpIJojNYD3JH02I0hRbkAGahRwskglZbkisY0=;
+	b=I3KNEwLFm7i/3LB4v6oNe3nDtItmKAFBRE2jpNRSC3YbPY2l4RgyhlWJLGyEoo4xABdOOX
+	n9esy3pJaZ/wmIK8f5dsnM5WDUQqp6TbsQygQdIt3rfl+nlZIANUwaA5YZdbuCCBNL+pJX
+	wd8TPhkWAOcQ3pOOEfJUVq81Uprs30M=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-445-XhUVWENyNeW-3qLvpUWKOw-1; Wed, 21 Feb 2024 09:55:07 -0500
+X-MC-Unique: XhUVWENyNeW-3qLvpUWKOw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-410e83001cbso36023065e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:55:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708527281; x=1709132081;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PwDrSDwbjDuhxc0snjMmTqWQWr4yGG/YePGvnYIgDzA=;
-        b=rJhY2eUAKtTWB3JVdGpk59O1nblFobchQmHQCNeu13YbQ6OHyTvProhMtkIR/zeqz9
-         cEtIPR09gVQAxkLnZKdNte1pG3C6OvDtqcWHTIsPo4DEhY4Eyhmg9+lsU3MWivfcmJe/
-         Og8XwLHiv4GuQMwvlAscQ4Gjvk8AlljGkG9LYDPz0HdIpKxYpM62FEX2rWiAZbtgx2RI
-         awxiNa19g85GI7Y4GuwKwVvJgpr9uhw8PPu9EWMCjqBRYvzY39hQSYqjhuDr4bcGFqnH
-         KU0OPTDyjxlvZPy2Gpumtg9LvJb6IZh4cAETJ72eGYxnLRoxd5aLlLqjWeSwfNTE895N
-         +TUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzKmFjCw2P8YNUP+zqEyPDJKxxPUqQ8xJ3UxZMbA8LzfX+JAAtW5lbJebaDCFlX1KKetdyXiJiFgFOgNEdoRjCp5ml7jd6GdUZMgsH
-X-Gm-Message-State: AOJu0Yxvs6i85WitHcpDjz8X2o4QNlbHbvxVvY1c6SDuZXpF2up5IoZx
-	SswNd6bFZuwtHAlWkhuGbDn7BddpZMUPE+k0bRRjboJI0dFh4dRp695EHT5zi4E=
-X-Google-Smtp-Source: AGHT+IFa0ka2O3YAMzNW85WaQJjneiiknkL9slfUTJVV+TJHkqkF2wZ1NixE8hX5BSi21jsQvB7kdQ==
-X-Received: by 2002:a17:906:fa87:b0:a3e:c6de:e5ae with SMTP id lt7-20020a170906fa8700b00a3ec6dee5aemr7804788ejb.0.1708527281343;
-        Wed, 21 Feb 2024 06:54:41 -0800 (PST)
-Received: from linaro.org ([188.24.162.93])
-        by smtp.gmail.com with ESMTPSA id mn6-20020a1709077b0600b00a3e12ded9b7sm4755684ejc.169.2024.02.21.06.54.39
+        d=1e100.net; s=20230601; t=1708527306; x=1709132106;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nTOuhxSpIJojNYD3JH02I0hRbkAGahRwskglZbkisY0=;
+        b=PN+hMx+EMm78+EZ7pn1YA71DVeVJSnC8btliUt7uvx6mS3JSTtmJ1UYJxIHdbeVjmu
+         ATd9tPRToQK6y/MUtvn7ElMhUYWFqwSXss+ArKNdmf2A1RI2aa5kwvQ1ZZWrxw3770i6
+         q1bwN8vKpxTiBAy1ATG5HcuTgOLo6cH3oONvRawI/ainYYzJHKFAZ6orZUr/9WqU7t0I
+         7UlrcmIvpAHcVSSbXHBIOXj/R3UBTnOiX49mg315SUiT3PtGq7BldXZsVX+eedrJ9MUe
+         JTWvpZV+ldFf2cqTm7C2u0OMhJCQNb2VGki8m8KQSykC2mpREKPLpNBgLkwT5fHdMkBU
+         kbtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVvEnCv1ZSqfX5g7ejEVgJlmGYdgbUZ8fF/9364NZbGfPvUAa8ACkJibhX5laPmk56/fgKIr65kSUtAaSDv4gVSDsex0j9QexVs17sF
+X-Gm-Message-State: AOJu0YytdVMAjVP+I+AR7mwINcPynMT/NumgZ8zfNLYiRX0jxn3uKeIE
+	QJMjxhgb4gmDUbHPgRuY9guP9amrKvBtSyXpciEmQQKR7N21L7KaQ/hQAjKEuluh16h97lC1EpO
+	nfhPVRLICuwRcIJ51InkxW1rbLXVUhW5dwLxkN05rp64HsFLwGw1l7H7RjJ4otQ==
+X-Received: by 2002:a05:600c:4f41:b0:412:7585:313a with SMTP id m1-20020a05600c4f4100b004127585313amr1607472wmq.25.1708527306039;
+        Wed, 21 Feb 2024 06:55:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHwWllrJI3rhUE60OMvarIYpuTx3QfeNjJIGgv47dBj78w9h3HWwQiK7cG5GEBbqeMO6xEYPQ==
+X-Received: by 2002:a05:600c:4f41:b0:412:7585:313a with SMTP id m1-20020a05600c4f4100b004127585313amr1607456wmq.25.1708527305701;
+        Wed, 21 Feb 2024 06:55:05 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id o33-20020a05600c512100b00410add3af79sm2889094wms.23.2024.02.21.06.55.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 06:54:40 -0800 (PST)
-Date: Wed, 21 Feb 2024 16:54:39 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: Add SMB2360 pmic dtsi
-Message-ID: <ZdYOr6/8dupbMdbF@linaro.org>
-References: <20240221-x1e80100-dts-smb2360-v2-0-037d183cc021@linaro.org>
- <20240221-x1e80100-dts-smb2360-v2-2-037d183cc021@linaro.org>
- <bc45229c-6412-4fd5-ba8e-28b293d7864b@linaro.org>
+        Wed, 21 Feb 2024 06:55:05 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ linux-kernel@vger.kernel.org
+Cc: Enric Balletbo i Serra <eballetbo@redhat.com>, Maxime Ripard
+ <mripard@redhat.com>, Erico Nunes <nunes.erico@gmail.com>, Brian Masney
+ <bmasney@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Bjorn Andersson
+ <quic_bjorande@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Konrad Dybcio
+ <konrad.dybcio@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Will Deacon <will@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading
+ compressed FW support
+In-Reply-To: <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
+References: <20240221141350.3740488-1-javierm@redhat.com>
+ <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
+Date: Wed, 21 Feb 2024 15:55:04 +0100
+Message-ID: <87a5ntj29j.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc45229c-6412-4fd5-ba8e-28b293d7864b@linaro.org>
+Content-Type: text/plain
 
-On 24-02-21 15:41:41, Konrad Dybcio wrote:
-> On 21.02.2024 15:38, Abel Vesa wrote:
-> > Add nodes for SMB2360 with the eUSB2 repeater nodes.
-> > 
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/smb2360.dtsi | 51 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/smb2360.dtsi b/arch/arm64/boot/dts/qcom/smb2360.dtsi
-> > new file mode 100644
-> > index 000000000000..8d7bdb56e6fe
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/qcom/smb2360.dtsi
-> > @@ -0,0 +1,51 @@
-> > +// SPDX-License-Identifier: BSD-3-Clause
-> > +/*
-> > + * Copyright (c) 2023, Linaro Limited
-> > + */
-> > +
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> > +#include <dt-bindings/spmi/spmi.h>
-> > +
-> > +/ {
-> > +};
-> > +
-> > +&spmi_bus1 {
-> > +	smb2360h: pmic@7 {
-> 
-> Hm, I'm not 100% sure about bringing in this letter-suffix notation..
-> 
-> But then, is there anything better? What are they called in schematics?
-> SMB2360_n, perhaps?
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 
+> On 21/02/2024 15:13, Javier Martinez Canillas wrote:
+>> These options are needed by some Linux distributions (e.g: Fedora), so
+>
+> How ZRAM is needed? Why Fedora cannot boot without it? Debian, which I
+> use on my arm64 boards, does not have any problem.
+>
 
-Yeah, just realized that this is wrong. I need to do something like
-sc8280xp-pmics.dtsi.
+I haven't used Debian in ages so I don't know why is not a problem there.
 
-There are different sources of information for the suffix, some of them 
-use smb2360k, some of them use smb2360_0. Will go with the second.
+But Fedora is using zram by default and if is not enabled in the kernel,
+the boot is delayed considerably due the systemd zram-generator.
 
-> 
-> konrad
+> I kind of repeat comments from similar patch earlier:
+> https://lore.kernel.org/all/fe1e74a2-e933-7cd9-f740-86d871076191@linaro.org/
+>
+
+Ah! I forgot that posted the same change for exynos_defconfig some time
+ago and I see that you nacked. Now I understand why all my Exynos boards
+are in a drawer.
+
+> About XFS: I don't think it is needed to boot anything.
+>
+
+How are you supposed to mount a XFS rootfs without at least have support
+for it as a module?
+
+> This is a defconfig, not a distro config. Please don't make it distro.
+>
+
+It seems that's a Debian distro config though, since you brought Debian as
+an example.
+
+> I will gladly support things needed by systemd or equivalent, but not
+> unusual filesystems needed by distro.
+>
+
+Fair. But then you should probably remove all the other filesystems that are
+already in the defconfig then?
+
+$ grep "_FS=" arch/arm64/configs/defconfig | wc -l
+15
+
+Or it is OK to have support for btrfs, overlayfs, even plan9 fs but XFS is
+where you draw the line??
+
+> Best regards,
+> Krzysztof
+>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
