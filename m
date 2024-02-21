@@ -1,114 +1,122 @@
-Return-Path: <linux-kernel+bounces-75077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F31F85E2A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:08:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F14A85E2A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 200BB1F25776
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:08:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0751C230A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D23A81722;
-	Wed, 21 Feb 2024 16:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7472A81213;
+	Wed, 21 Feb 2024 16:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pTK8jozu"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HztFuJxs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693217CF0F;
-	Wed, 21 Feb 2024 16:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B907CF0F;
+	Wed, 21 Feb 2024 16:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708531725; cv=none; b=L6gckjtGF/gPJrGToby9VZZqlJ3ftZUEpHEk5LAyGroMUChc4SEOHK+vd5GgAZEctE9bqWsoUeTS+/k+m5or0zL3oK5iy63DwhkpWk0AQTEr0hwfcrzAFXgNUC491JFa1IZ7PL1tnykZ9i7lDYZL7naWtzjrvTJbbVDv6RDZaDM=
+	t=1708531735; cv=none; b=TkzBE3EqZCzHSTeUSoqq1Ejiax5s2vX8d03KnniS6csm7BoWu6SNCVrgXefLvIPiVm7+OZ8tChYoK1GmTGeLKT07TBvJAqIa+ffK0ln63untxf/0AZ+pViKJ2Uhn61eZP5TSiEjJqtw3ncFloghHKHYQkO164IfwUsNIqIIK9RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708531725; c=relaxed/simple;
-	bh=agprbSGbPZoCczSp1znYQDm8799YwPtnW91lWAItujs=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=aWCktr9xKenW+qd/MGpP3uXqIpMCB+8pb947m+JoOWBw2r9dJ9XFVN0krswwSNQrFWCpl/TUQy7ORMYpG/7fg6HsxIJDvLxpfDw14jFtxi0877Dwm1W7iysv4KqsWwljVZM5G0ZmYhHHWLQ0cZdnTUHHLvvcsRvwlXh0QDnFz+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pTK8jozu; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4DC042000E;
-	Wed, 21 Feb 2024 16:08:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708531721;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=agprbSGbPZoCczSp1znYQDm8799YwPtnW91lWAItujs=;
-	b=pTK8jozu8k4/WDxcqFSdFKy72Usic303GcMiSwr16cFPMLB4CKL+kvRqhMFRfQo20IP6fZ
-	2ndTzp11Lb7NnUbXTjPeRhb0M91Ac1ooojzwkzLBam7yCAbuuM00hravHyre2SQGe8MDYx
-	9hE6/hKfkS03iSNnDUZWl8v6D0oq93X7HAf2K/ma1dKUY9ocLQgfcOOjjxR1QTxYPk01DZ
-	eaLTkDn6on9itqPDS9x4WV85Ihm8dH71JsOo6ZXxGIppwx+pbPrM0wEkX+nQt2+AjTgBuT
-	dG8xIa35ZuCAV9Lchrb/RjhQ5hoNN7AcCXqyRiuj2Da/Q7fgps/2SxZRlArYeA==
+	s=arc-20240116; t=1708531735; c=relaxed/simple;
+	bh=65OECqX9KxYAQydC9rm3J5R8qN/iq04mlYabKZdFS5I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j0EwwPQpD6BD6oikbl9HCVMpMuf7bv3HTJmIiiWUfLpG1k674Eej+yKb+njhdUdo/rmO+6fi0l7bztEd3+4y49CvgM+y4ZuwFCIwV4jA94d7VuYCGiqAB94yr9KHsxOR69KWe2QOumMlyq3J+Lwp8HcjMDPFouPmrZ1zyD8+O+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HztFuJxs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91373C433F1;
+	Wed, 21 Feb 2024 16:08:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708531735;
+	bh=65OECqX9KxYAQydC9rm3J5R8qN/iq04mlYabKZdFS5I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HztFuJxseaQk0aYkeyC7H7JT1tB8CxESXcerSlvmnFx+KJKuYku4PjG3rzuYuv5MS
+	 MHXznbwvVe1NKXst5Wr63JMcZEBYmHTm32SM/eF3avlfczRZKJ4RG5RN9yv/mTH47d
+	 /bsQS9JfHR5yiPndbtTYqvl5zKkCz6GRm5bn16K4JZU03tfOaoHoHC29i9kiSs/2F2
+	 ndM8ukJ5RLlTdp78vxD+E6pQ6x0MdNLqvqNU6goGHySWyxwxDcIxcXnYoS3PZymCt7
+	 DpMUJBMFkPUzNky8TA5IZ91yqyTG+t+5PofaFWh58ItJKV0yV/PePTQq6ii07Q/l4N
+	 bl03CPNN8bziQ==
+Date: Wed, 21 Feb 2024 16:08:50 +0000
+From: Will Deacon <will@kernel.org>
+To: "ni.liqiang" <niliqiang.io@gmail.com>
+Cc: danielmentz@google.com, iommu@lists.linux.dev, jin.qi@zte.com.cn,
+	joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, robin.murphy@arm.com,
+	ni.liqiang@zte.com.cn
+Subject: Re: [PATCH] drivers/iommu: Ensure that the queue base address is
+ successfully written during SMMU initialization.
+Message-ID: <20240221160849.GB7362@willie-the-truck>
+References: <20240219091709.GA4105@willie-the-truck>
+ <20240221152629.3656-1-niliqiang.io@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 21 Feb 2024 17:08:40 +0100
-Message-Id: <CZAVY4NPY4H6.1KJI4UPRUM21C@bootlin.com>
-Subject: Re: [PATCH v6 05/13] dt-bindings: pinctrl: mobileye,eyeq5-pinctrl:
- add bindings
-Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, "Philipp Zabel"
- <p.zabel@pengutronix.de>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, <linux-mips@vger.kernel.org>,
- <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>, "Rob Herring"
- <robh@kernel.org>
-To: "Linus Walleij" <linus.walleij@linaro.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240212-mbly-clk-v6-0-c46fa1f93839@bootlin.com>
- <20240212-mbly-clk-v6-5-c46fa1f93839@bootlin.com>
- <CACRpkdYNe=2w10uB1mUgs2Lgg1TRiSF=bOa45OH5Lcz6+G6FEg@mail.gmail.com>
-In-Reply-To: <CACRpkdYNe=2w10uB1mUgs2Lgg1TRiSF=bOa45OH5Lcz6+G6FEg@mail.gmail.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221152629.3656-1-niliqiang.io@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Hello,
-
-On Wed Feb 21, 2024 at 2:38 PM CET, Linus Walleij wrote:
-> On Mon, Feb 12, 2024 at 2:44=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
-tlin.com> wrote:
->
-> > Add dt-schema type bindings for the Mobileye EyeQ5 pin controller.
+On Wed, Feb 21, 2024 at 11:26:29PM +0800, ni.liqiang wrote:
+> >>  The SMMU registers are accessed using Device-nGnRE attributes. It is
+> >> my understanding that, for Device-nGnRE, the Arm architecture requires
+> >> that writes to the same peripheral arrive at the endpoint in program
+> >> order.
 > >
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> I tried to just apply the pin control patches to the pin control tree, bu=
-t I
-> can't because of all collisions in MAINTAINERS.
->
-> If you move all MAINTAINERS business to the SoC-wide patch I can
-> apply the pin control stuff directly, but maybe you wanna keep the
-> series together and merge on an all-or-nothing basis?
+> > Yup, that's correct. The "nR" part means "non-Reordering", so something
+> > else is going on here.
+> 
+> Yes, the SMMU registers are accessed using Device-nGnRE attributes. 
+> 
+> One additional point to note is: in cases where there is a failure writing
+> to the CMDQ base address register, the testing environment was a
+> multi-die, multi-socket server. This issue has not been observed on a
+> single-die server. I apologize for omitting this information in my initial
+> patch submission. 
 
-I'm all in for making the series slimmer over time. MAINTAINERS changes
-will be moved.
+Uh-oh, smells like a hardware issue ;p
+I wonder if Device-nGnRnE behaves any differently?
 
-Thanks,
+> Over the past few days, I have referenced the kernel source code and
+> ported the SMMU register initialization process. Through multiple stress
+> tests, I have attempted to reproduce the CMDQ base address register write
+> failure issue. The summarized results of my experiments are as follows:
+> 1. When testing with one CPU core bound using taskset, the initialization
+> process was executed 300,000 times without encountering the CMDQ base
+> address register write failure issue. However, when not binding CPU using
+> taskset, the issue was reproduced around 1,000 iterations into the test.
+> 2. Without CPU binding, I inserted a memory barrier between accesses to
+> the CMDQ_BASE register and CMDQEN register, similar to the modification
+> made in the patch. After executing the initialization process 300,000
+> times, the CMDQ base address register write failure issue did not occur.
+> 
+> Based on these observations and joint analysis with CMN colleagues, we
+> speculate that in the SMMU register initialization process, if the CPU
+> core changes, and these CPUs are located on different dies, the underlying
+> 4 CCG ports are utilized to perform die-to-die accesses. However, in our
+> current strategy, these 4 CCG ports cannot guarantee ordering, resulting
+> in the completion of CMDQEN writing before the completion of CMDQ base
+> address writing.
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+(Disclaimer: I don't know what a CCG port is)
 
-------------------------------------------------------------------------
+Hmmm. The part that doesn't make sense to me here is that migrating between
+CPUs implies context-switching, and we have a DSB on that path in
+__switch_to(). So why would adding barriers to the driver help? Maybe it
+just changes the timing?
 
+> From the analysis above, it seems that modifying the die-to-die access
+> strategy to achieve ordering of Device-nGnRE memory might be a better
+> solution compared to adding a memory barrier?
+
+I'm not sure what you're proposing, but I don't think Linux should be
+changed to accomodate this.
+
+Will
 
