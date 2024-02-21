@@ -1,233 +1,119 @@
-Return-Path: <linux-kernel+bounces-75550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED09385EB0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:37:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CD3785EB0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BCFD28AB5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:37:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 332321F27F38
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B4212C80B;
-	Wed, 21 Feb 2024 21:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692F012E1D3;
+	Wed, 21 Feb 2024 21:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D0FOyXkc"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="TvKM5Qjm"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1D912BEAA
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C5E12DDA1
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708550998; cv=none; b=JRHnhaLsXHtU/A55QPu/II8+KZ4xL5r2qOtxgAW5T8/y32jDYjj1N/lMrTC90XJVuvkL5b+yhcskJurDwlrT/Hh/szHPLotKcQK8MJg/hg+2hh5XC3dcEgFWN0W8rLuNjcsi39cWked2o4tEhrwTGvNmZADdgj8p3S8iW4LBi10=
+	t=1708551078; cv=none; b=bmkA3MvMYTMZWzyU/6DAukbRfyyffva27uWslvvlNtX3fFul6ZZ3Y9m2I+1rHJyIPgtEFvS0d+hxm17BNTkGQbH7dicokrc83zesh4+wYVnehpZXHaiWPwDP8zNquSxAoufe+QgWKFE3wDc6Tiko+0w6WEUZAbvG0IORgv91WNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708550998; c=relaxed/simple;
-	bh=jhbT5Cr5KxXONXs4T6cwnDbtOKqKVBRtP9a65KT+oaM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YzedvxynxA2q992kFTScLjF9QfO838B/4lw7h2PqggjiT6Gz8GR4tB1wpUzphb0bErKrxIsc71Ho42NazzybmI8ukJfsIy33ZmMnUobXyXq0IAffNZBhszVMTu3NoQkoKQE5FXIDlR6W3s2wygVbTN2krKfooJMkaL3wipOGThc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D0FOyXkc; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c00128de31so202247639f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:29:56 -0800 (PST)
+	s=arc-20240116; t=1708551078; c=relaxed/simple;
+	bh=gFsioKErNguGb0UXfpCehO3mOIaCj+gYffuxZggc6lc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KbaF2rCs4sC8dGm2pKQ0N778AIG+sRlOo9Nc2yPRHK4A6bQOVWK4I9PM7QF1Zbkud2aqT9s7H5BQJTZlvQj6CCpKTQ7QdWr3UdzLjRtX1/bapBSvZZfNkcEguTIoRnnfeaB4e4GDG/pG5BwFvOjaVAmBkvnxIjuTeOkJDCgfKm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=TvKM5Qjm; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a4516ec46so2209541cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:31:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708550996; x=1709155796; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fHJzWSZbaUVkrjgtkdycbYKuoIbcz4QqReZXQuIUTd8=;
-        b=D0FOyXkcN99A8U2pypJobo/iI1rVmSj6DKFobDqrZr7YyzHGpvKpwcRQGEIDw6EbPC
-         +T4++/maF4JeYetwSfFO1/M/uhMW1BA3g7/eQWpodAJUFczLM1SgEa/ggFfvp+ENwyEU
-         0UvCXNhbjPVfWedQ2lVqe+3tPm0k0dQq/2hEQJZlmUS9fOuiy9CKIKwPDyU0Bxi7qK4/
-         INhd6nuqer6EPWnAx+EQrbhjntKaiU84ERlIbiNO3i1oV7jrKMNXvYOznFFw1IAURQig
-         UVDg6rHDUUQfu57sr5rpsWUSd0oP3nArNmCYR/OK43USKT7O5o2cfmCLOM4gtI4sGOJ7
-         XrfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708550996; x=1709155796;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708551076; x=1709155876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fHJzWSZbaUVkrjgtkdycbYKuoIbcz4QqReZXQuIUTd8=;
-        b=gZ4t/aoGzMRtRKUEhFOehyy7sKWZW34rT61VyYrCaVBusI1CteIqb8MMj6R/SEzE4B
-         xSm6QgyTt8OD43SJjBQcLu1NpUbKEbhrmKeDm/SYWPKu0DRaghzdt9SJSh+5jCmHKgLz
-         wGPmOvElTxmNzm4NnoiJAqm+TVWlzUE+Sj/Yk0zP+GkIrG5rSnmSQNscpA0T7+cBA7jU
-         hHYRMgN4NKMKbYG57j+vR+mEtB1rwmRp+gzJy/06ZCF4/CQBDWLfwjmc4vQcJ2uNXAc6
-         b1qr9TgOo+Rl9PP1Rf5yh8gkfNpzt8f8A0dtYgHqtfgZRQH9RIzmS7c800ugLuhyQhhO
-         Noig==
-X-Forwarded-Encrypted: i=1; AJvYcCU+QdgW55RXWAYrFE5zkhAJMewGjswq1gyaef2tZKvgvGIQNoSDf+K+2wpRPd7xpTkNji4bF787axfUoa5TL3u8YnPfdLqtQsy6sltO
-X-Gm-Message-State: AOJu0YzP9BB70dqFrXhSalvZ6iEg0+rtMA9yNpM+UJtWeB9uWrFn39L0
-	IeUHeg+hBNEupfsuk/a16QbPRkhZnZ+buVYwKjWagTdPot8NJIP5Pe4Y3rsbaw==
-X-Google-Smtp-Source: AGHT+IH3xGOF+O0PatOjKRFVOXKn3+X8AKF5AtBxottFnw4acxjqjkkOFdnbYMdTb0txcBwNyBSoFw==
-X-Received: by 2002:a05:6602:3fd1:b0:7c7:397c:6690 with SMTP id fc17-20020a0566023fd100b007c7397c6690mr17957645iob.17.1708550995732;
-        Wed, 21 Feb 2024 13:29:55 -0800 (PST)
-Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id h21-20020a02c735000000b004742bbf11c0sm1712244jao.120.2024.02.21.13.29.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 13:29:54 -0800 (PST)
-Date: Wed, 21 Feb 2024 21:29:52 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: David Gow <davidgow@google.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Kees Cook <keescook@chromium.org>,
-	=?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Florian Westphal <fw@strlen.de>,
-	Cassio Neri <cassio.neri@gmail.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Arthur Grillo <arthur.grillo@usp.br>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Daniel Latypov <dlatypov@google.com>,
-	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	intel-xe@lists.freedesktop.org, linux-rtc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 7/9] drm: tests: Fix invalid printf format specifiers in
- KUnit tests
-Message-ID: <20240221212952.bqw4rdz2i2yf3now@google.com>
-References: <20240221092728.1281499-1-davidgow@google.com>
- <20240221092728.1281499-8-davidgow@google.com>
+        bh=gFsioKErNguGb0UXfpCehO3mOIaCj+gYffuxZggc6lc=;
+        b=TvKM5QjmE9xrfDQJ0zweQnLEld1ypTjdep3yzcgaY30WwpzHdpmS5OdggDnbCVaKgl
+         1JI/zHkJI7W6/zh4E+3JMqzlHbFQqqjxdhIdIhzoFfy9vEkG0Ut4sFjJAWQIxQfVcLLI
+         ugE17rbvStlLf4KlWm7GZ4w0Y23sSuKIgk/Gp0ewW1tpB1IW3EUUNBOK2S0IvZMhQBAV
+         Fljy92n/Wd4jpdvCPDYvSWZFTUCreb0Gt1ia9PFfu8yiO4DmpffOnJASQG1dxoO8YQMc
+         KUK3XFt3/8JyqXNqZ/Q+U1IaLjSKpwN+bGASvPMOF6g+KRYRa0s4joCrPuQI+G3jREI1
+         +i+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708551076; x=1709155876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gFsioKErNguGb0UXfpCehO3mOIaCj+gYffuxZggc6lc=;
+        b=u8NUCoRNFozYdGl1ieBC+7ra6Ukmxsn+WSckvuRWGtGZw9ZKYFIF9XzrX2XaOgNpnA
+         KdFYHvBDnaTMU2v0gkTmxOo5D+RnJ9hKKgjLG5mUxqr8LAtMvBmHz+RlGsKtv/x5EAhN
+         zdjv51JXsC3gDPY0b5/LC0qFei41OoHHRNBP5MZA/i9quTBkrxRlj68a9t7C9sBOQ/hR
+         YnGBQQ9FB+79bq5oUAuEjoNSc5xenY573zzbrigUX0J7tPKgbel8pXMH1zNYNiY0c7k8
+         w3eVfQtIgAJoS6NS8o7hm6lNloz0xPzDJtMZfAjH2RJrbvQvHVDM+pdzZiX+sK9mfFQN
+         b0mA==
+X-Forwarded-Encrypted: i=1; AJvYcCVy/ZIrT0vLMxmeuRDr/jhEz4Rlkq7vNCTiuidc84me7kpTpio1KgjL5GQHewqcqOM7Nh9jnqLRAqcyNnDNxScGTLdSA77nX8sjEdsh
+X-Gm-Message-State: AOJu0Yxu6jWIOMPoEpbBiR3OTE/MEMnhsaRLrcoRfYbG6SjoNtIiTgwD
+	0lyBL4SqVQNBk2TD0NkhlJgy7R7bHYsRjrn1HCrxrkgua5rlLyEdlwKfoOozFsRSsX6TSPZ5UYz
+	DImrrdK6e8DDUqNKATpcrVB/gwx6LFol47lgNgA==
+X-Google-Smtp-Source: AGHT+IFO5Z7BsmHAefImdCXlOf9v/A1DymY9rKzrFG6F8X6fIh9MpYHyGC/yHJX92pP0BH/FzDecR0AIIxui9aAjnNM=
+X-Received: by 2002:ac8:570f:0:b0:42c:78fd:e4fa with SMTP id
+ 15-20020ac8570f000000b0042c78fde4famr1316065qtw.32.1708551075946; Wed, 21 Feb
+ 2024 13:31:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221092728.1281499-8-davidgow@google.com>
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-8-surenb@google.com>
+In-Reply-To: <20240221194052.927623-8-surenb@google.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Wed, 21 Feb 2024 16:30:39 -0500
+Message-ID: <CA+CK2bDOiV8xwig1pDdTVjkO4KhK+jJ0wXAtNon1ZXQGviih4A@mail.gmail.com>
+Subject: Re: [PATCH v4 07/36] mm: introduce slabobj_ext to support slab object extensions
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Feb 21, 2024 at 2:41=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> Currently slab pages can store only vectors of obj_cgroup pointers in
+> page->memcg_data. Introduce slabobj_ext structure to allow more data
+> to be stored for each slab object. Wrap obj_cgroup into slabobj_ext
+> to support current functionality while allowing to extend slabobj_ext
+> in the future.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-On Wed, Feb 21, 2024 at 05:27:20PM +0800, David Gow wrote:
-> The drm_buddy_test's alloc_contiguous test used a u64 for the page size,
-> which was then updated to be an 'unsigned long' to avoid 64-bit
-> multiplication division helpers.
->
-> However, the variable is logged by some KUNIT_ASSERT_EQ_MSG() using the
-> '%d' or '%llu' format specifiers, the former of which is always wrong,
-> and the latter is no longer correct now that ps is no longer a u64. Fix
-> these to all use '%lu'.
->
-> Also, drm_mm_test calls KUNIT_FAIL() with an empty string as the
-> message. gcc warns if a printf format string is empty (apparently), so
-
-clang does too; under -Wformat-zero-length
-
-> give these some more detailed error messages, which should be more
-> useful anyway.
->
-> Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
-> Fixes: fca7526b7d89 ("drm/tests/drm_buddy: fix build failure on 32-bit targets")
-> Fixes: fc8d29e298cf ("drm: selftest: convert drm_mm selftest to KUnit")
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-> ---
->  drivers/gpu/drm/tests/drm_buddy_test.c | 14 +++++++-------
->  drivers/gpu/drm/tests/drm_mm_test.c    |  6 +++---
->  2 files changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
-> index 8a464f7f4c61..3dbfa3078449 100644
-> --- a/drivers/gpu/drm/tests/drm_buddy_test.c
-> +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
-> @@ -55,30 +55,30 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
->  		KUNIT_ASSERT_FALSE_MSG(test,
->  				       drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							      ps, ps, list, 0),
-> -				       "buddy_alloc hit an error size=%d\n",
-> +				       "buddy_alloc hit an error size=%lu\n",
->  				       ps);
->  	} while (++i < n_pages);
->
->  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							   3 * ps, ps, &allocated,
->  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
-> -			       "buddy_alloc didn't error size=%d\n", 3 * ps);
-> +			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
->
->  	drm_buddy_free_list(&mm, &middle);
->  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							   3 * ps, ps, &allocated,
->  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
-> -			       "buddy_alloc didn't error size=%llu\n", 3 * ps);
-> +			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
->  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							   2 * ps, ps, &allocated,
->  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
-> -			       "buddy_alloc didn't error size=%llu\n", 2 * ps);
-> +			       "buddy_alloc didn't error size=%lu\n", 2 * ps);
->
->  	drm_buddy_free_list(&mm, &right);
->  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							   3 * ps, ps, &allocated,
->  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
-> -			       "buddy_alloc didn't error size=%llu\n", 3 * ps);
-> +			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
->  	/*
->  	 * At this point we should have enough contiguous space for 2 blocks,
->  	 * however they are never buddies (since we freed middle and right) so
-> @@ -87,13 +87,13 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
->  	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							    2 * ps, ps, &allocated,
->  							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
-> -			       "buddy_alloc hit an error size=%d\n", 2 * ps);
-> +			       "buddy_alloc hit an error size=%lu\n", 2 * ps);
->
->  	drm_buddy_free_list(&mm, &left);
->  	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
->  							    3 * ps, ps, &allocated,
->  							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
-> -			       "buddy_alloc hit an error size=%d\n", 3 * ps);
-> +			       "buddy_alloc hit an error size=%lu\n", 3 * ps);
->
->  	total = 0;
->  	list_for_each_entry(block, &allocated, link)
-> diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
-> index 1eb0c304f960..f37c0d765865 100644
-> --- a/drivers/gpu/drm/tests/drm_mm_test.c
-> +++ b/drivers/gpu/drm/tests/drm_mm_test.c
-> @@ -157,7 +157,7 @@ static void drm_test_mm_init(struct kunit *test)
->
->  	/* After creation, it should all be one massive hole */
->  	if (!assert_one_hole(test, &mm, 0, size)) {
-> -		KUNIT_FAIL(test, "");
-> +		KUNIT_FAIL(test, "mm not one hole on creation");
->  		goto out;
->  	}
->
-> @@ -171,14 +171,14 @@ static void drm_test_mm_init(struct kunit *test)
->
->  	/* After filling the range entirely, there should be no holes */
->  	if (!assert_no_holes(test, &mm)) {
-> -		KUNIT_FAIL(test, "");
-> +		KUNIT_FAIL(test, "mm has holes when filled");
->  		goto out;
->  	}
->
->  	/* And then after emptying it again, the massive hole should be back */
->  	drm_mm_remove_node(&tmp);
->  	if (!assert_one_hole(test, &mm, 0, size)) {
-> -		KUNIT_FAIL(test, "");
-> +		KUNIT_FAIL(test, "mm does not have single hole after emptying");
->  		goto out;
->  	}
->
-> --
-> 2.44.0.rc0.258.g7320e95886-goog
->
-
-Thanks
-Justin
+Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
