@@ -1,223 +1,209 @@
-Return-Path: <linux-kernel+bounces-74329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B153785D2DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:51:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C39C85D2F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:00:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D03081C2287A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:51:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD8B4B22CF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD903CF52;
-	Wed, 21 Feb 2024 08:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF03A3D0C0;
+	Wed, 21 Feb 2024 09:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RAIbUh6v"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="gEGdeNEd"
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D5A3B793;
-	Wed, 21 Feb 2024 08:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487BF3CF72
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708505504; cv=none; b=Ul2kZSw0edmbRtFpGVNwaXgTGD0td83a+wIbXSW1KM3ZAAM9Er1Q/Y/qKwT2TisnpBjbC5+eYMuBnZW+VcfX0WYsZGASDGAJRg9K9tqvdXEqpbfF0yZtUNh9XKbgxq2kb0h5cnO69AjmCJ2PMRq2SruLiGQQdT4PW4hOCg00dCk=
+	t=1708506042; cv=none; b=cC95Zji5n+jEnlWg6eHH2V8WDr5Yuwmz2FTfi3Ij+aTsEgDq1EGFrZbk50cP+5wHW8JGeecpxgDz7/M4df40hFGyg6a03Di0JlWsWY0/nNbbY3xkmvCN1jlc0cV3GKmsvItiU2XF68Zh6twOW7jsQ66dfdaA/pmJN0kRnZGi3mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708505504; c=relaxed/simple;
-	bh=U2xKP1+FG6hj5j28nPiVq6aHy746t6BeNF5UKoKkyV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dtggKT19aFmdAkU2EjX7avjsNWpdLy9Mw2xIQzAAy0ZJpErLjMx/3+Z6SunwVibIWFRDVSb2gyJPwDWUg9MYophUavRlr3d82zTuodpdGnpV2PlM1axjVVcNHk9zfkrqR7ugDI3eo889s0wliyWcbZy+9ZJwfVB+HxSukqqzGeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RAIbUh6v; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 27C72FF80B;
-	Wed, 21 Feb 2024 08:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708505499;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ewzG+Or2vfRP7XY3UgnYiV6tCm6wiDunEr+A5LjqZBQ=;
-	b=RAIbUh6vKDDmDDi8DhhbecTdObckBkSaotTDLNFMSD82+GpZQdPnFTyNUG+9KoWw2eerM/
-	/KzfjFYFy8tJWWuB07pnVGxNJ+s7e+5WemC2q958COberQ25Lbhhl908SPRWIMHpI2GRJ8
-	IqHX/pUtpRBLIVh54jA5WgWfBa4BGHCnhA2bBv42Mx+85G98nHILJQqlxSvSxzlndZVKNX
-	cIAErcPer/aV9iFka3EthukZq8c+/WRF7QmAT3LvE7fCSl08mXL3I4nn/lUEjjEFBjZqDh
-	Wg9rAYmFU+VleC4c0cRVHniAv+vguQ2qrYH1Djvive0dYkFjWQWZ1nnkcX9z8g==
-Date: Wed, 21 Feb 2024 09:51:37 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Wolfram Sang
- <wsa@kernel.org>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, Android Kernel Team
- <kernel-team@android.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Fix links to supplier
- when created from phandles
-Message-ID: <20240221095137.616d2aaa@bootlin.com>
-In-Reply-To: <CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
-References: <20240220111044.133776-1-herve.codina@bootlin.com>
-	<20240220111044.133776-3-herve.codina@bootlin.com>
-	<CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1708506042; c=relaxed/simple;
+	bh=lOk/Sj21EXxCRmBe+YSmEWfqFcljKsQ0DRuxtfgqqT0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=s92lYTg1Pp11zczyhGDHzAFYayfA+VRZa8maWIUPtVI7e40N2n0vBHt/hIWg14SzPxBPnINEKw9LcFCPVtQydlrO+D+ssu+PCl6Iyn0QiXQvaLWikuRrYCwuMgVgW8aaKQ53q+BVtfxQNwyN+ZXcOgkiVWGbrIBnzLCtj+uP+ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=gEGdeNEd; arc=none smtp.client-ip=212.227.17.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=valentinobst.de;
+	s=s1-ionos; t=1708506030; x=1709110830; i=kernel@valentinobst.de;
+	bh=lOk/Sj21EXxCRmBe+YSmEWfqFcljKsQ0DRuxtfgqqT0=;
+	h=X-UI-Sender-Class:From:Date:Subject:To:Cc;
+	b=gEGdeNEdnMF8XKOrjBbVFcFz8tB7/dKO+hCk8n4MeBxU+pBTLNmEY4K75BA2tttk
+	 gtbQMFJuPNoUzlnbUTXqEeYnbQ51B+K56zgrZQa3CaUeSPuCz3hxWmfUPsJ+EpjlW
+	 zXK3MFjmybz74et4o6Snf3WkIuiZHBk3devfZ4lsT5Z7xmPBxOKnIusdPXX/iZYbX
+	 pSRzc/Saa6jkAzYezvbJAPsIBFovozXdhSxjO2491Qmro0MFHD7p9DjJGp14StJ7I
+	 wM8jorlnyecylKWKVmZP7n6pMeQnYo1RKgEwIomKiqsgcpcMA/2AeLln3Fy+eA7Xm
+	 yGPi+0dzx8j0CB9m/g==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from [192.168.2.229] ([79.233.63.110]) by mrelayeu.kundenserver.de
+ (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1N6KQZ-1qs7DZ2vsH-016j74; Wed, 21 Feb 2024 09:54:04 +0100
+From: Valentin Obst <kernel@valentinobst.de>
+Date: Wed, 21 Feb 2024 09:53:37 +0100
+Subject: [PATCH] x86/tools: fix line number reported for malformed lines
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20240221-x86-insn-decoder-line-fix-v1-1-47cd5a1718c6@valentinobst.de>
+X-B4-Tracking: v=1; b=H4sIABC61WUC/x2MwQqDMBAFf0X27EKyFlP6K+JBzYtdKKskIIL47
+ 4YeZ2DmooKsKPRpLso4tOhmFXzb0PKdbAVrrEzi5OVEPJ/vntWKccSyRWT+qYGTnhxmnwQ+dJI
+ S1X7PqPr/Hsb7fgBrqPPNawAAAA==
+To: Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>
+Cc: Andreas Hindborg <a.hindborg@samsung.com>, 
+ John Baublitz <john.m.baublitz@gmail.com>, 
+ David Rheinsberg <david@readahead.eu>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "H. Peter Anvin" <hpa@zytor.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+ Miguel Ojeda <ojeda@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+ =?utf-8?q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
+ Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
+ x86@kernel.org, Valentin Obst <kernel@valentinobst.de>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708505639; l=4033;
+ i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
+ bh=6jeuUZIWEEM6MczBBiqjTLcxOXq2Iex7vvCz0nnWibU=;
+ b=vXw4UH3+h4Qo0u+jiIR3NzJr4RQ9SMlFuITEcLk/vPHJsi6whbcvNbyijjDj9XN0DjBIYg/FV
+ lTfVcXooyCEDOAQGIQIh1dkqZwedw7Vykc53VahcxLmO3k1TzO3oxEi
+X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
+ pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
+X-Provags-ID: V03:K1:8CQzPJdQOevycA67JGlkGzRtIoqyGOvtDOELvrhAlxXlRmeumAw
+ cyMmaQAENoJQGOAzF5Pv8KuiJJO4FjsxaaMSo0Ix69jlCjZ1JMVGJSy8M5zvJe0BY1gZIgK
+ VjGeMniG37PWoh8uMaDSBy/tZ8/S6Ib0uLef55V5Y2CUFFVfCg9Excxkvk4CpbUEZqhXNWR
+ nv9Lh8Lb9a1HBI9YRKFwg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:BlQJO2SEwwM=;giTIobp/tT9baZQjNYx+KP3oR6G
+ BKjF31uEjg5Uv1fyIwznEnBu+8XXRq3NDOvZS3btIqZvof2KY/FX68Dtzqt5t2ymgdUmJA2G1
+ jV2nkbdHbeXSrTYnTBbMP1Qx1JCGyg7Fyh+6+L7epc8quLv+nwsayV3R+ij0JY54K6awOthMb
+ kbzMHUkvuU4jtAy/Mw/o1JufpYcTNA4GY6ywLounjl11FwgYgAEwvYRdiZiw0+UdmCBJVRFKP
+ IXpfULIavtVKTU7gMOCLlc2K2ujb1oFBw117auc7/1ln8G7XsWS/VWmjBOews1CtLKa8CxxtV
+ IqkRf5hd5X/9NyKTc625iObWD2sc6J6Zt2Qe+6pOmEqah0gBqschqEugXd2siCCWmZ+zMzgBu
+ viD5nX2vtqZkck6x4XGf4BjoLGIFZjrQEjknVcmTIwdVaQQrDsurQs9nlTWHxDloNFpXI2obg
+ uzxJrB+EEzJeWWvXMbxY0Wzo6yMnLv8B4tz0alU407RJRgXsTkJS2cCgrRx7xnGZtBqJdDrpc
+ SjkdtBcjGGQU6Isy3qxoSgD+rYbpORl5TGYODEYrGoUJlJQhd8uJovgJxRqfqNI0EmSseapg9
+ QCyKUcQoaPcMKokSccIyNDSoTvBeoTpHq7HQj6BFAlRo+Txo4ZUkfB8K2qiAcohTEpLWcS+vk
+ 3Nd45+BXeDb922Uph/r9jwAzjwxvVEqSNgVs4+YfV9Ew4lcNqcv6/0DcJpDer6SYifJLPBtN3
+ G2sPwW7+rc3yYmvqv2aeca7nXyyanr3D2Fl9E27ihoIURWCuts3JrI=
 
-Hi Saravana,
+While debugging the `X86_DECODER_SELFTEST` failure first reported in [1],
+we noticed that the line numbers reported by the `insn_decoder_test` tool
+do not correspond to the line in the output of `objdump_reformat.awk` that
+was causing the failure:
 
-On Tue, 20 Feb 2024 18:40:40 -0800
-Saravana Kannan <saravanak@google.com> wrote:
+  # TEST    posttest
+    llvm-objdump -d -j .text ./vmlinux | \
+    awk -f ./arch/x86/tools/objdump_reformat.awk | \
+    arch/x86/tools/insn_decoder_test -y -v
+  arch/x86/tools/insn_decoder_test: error: malformed line 1657116:
+  68db0
 
-> On Tue, Feb 20, 2024 at 3:10 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> >
-> > Since commit 1a50d9403fb9 ("treewide: Fix probing of devices in DT
-> > overlays"), when using device-tree overlays, the FWNODE_FLAG_NOT_DEVICE
-> > is set on each overlay nodes. This flag is cleared when a struct device
-> > is actually created for the DT node.
-> > Also, when a device is created, the device DT node is parsed for known
-> > phandle and devlinks consumer/supplier links are created between the
-> > device (consumer) and the devices referenced by phandles (suppliers).
-> > As these supplier device can have a struct device not already created,
-> > the FWNODE_FLAG_NOT_DEVICE can be set for suppliers and leads the
-> > devlink supplier point to the device's parent instead of the device
-> > itself.
-> >
-> > Avoid this situation clearing the supplier FWNODE_FLAG_NOT_DEVICE just
-> > before the devlink creation if a device is supposed to be created and
-> > handled later in the process.
-> >
-> > Fixes: 1a50d9403fb9 ("treewide: Fix probing of devices in DT overlays")
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> >  drivers/of/property.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index 641a40cf5cf3..ff5cac477dbe 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1097,6 +1097,7 @@ static void of_link_to_phandle(struct device_node *con_np,
-> >                               struct device_node *sup_np)
-> >  {
-> >         struct device_node *tmp_np = of_node_get(sup_np);
-> > +       struct fwnode_handle *sup_fwnode;
-> >
-> >         /* Check that sup_np and its ancestors are available. */
-> >         while (tmp_np) {
-> > @@ -1113,7 +1114,20 @@ static void of_link_to_phandle(struct device_node *con_np,
-> >                 tmp_np = of_get_next_parent(tmp_np);
-> >         }
-> >
-> > -       fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np));
-> > +       /*
-> > +        * In case of overlays, the fwnode are added with FWNODE_FLAG_NOT_DEVICE
-> > +        * flag set. A node can have a phandle that references an other node
-> > +        * added by the overlay.
-> > +        * Clear the supplier's FWNODE_FLAG_NOT_DEVICE so that fw_devlink links
-> > +        * to this supplier instead of linking to its parent.
-> > +        */
-> > +       sup_fwnode = of_fwnode_handle(sup_np);
-> > +       if (sup_fwnode->flags & FWNODE_FLAG_NOT_DEVICE) {
-> > +               if (of_property_present(sup_np, "compatible") &&
-> > +                   of_device_is_available(sup_np))
-> > +                       sup_fwnode->flags &= ~FWNODE_FLAG_NOT_DEVICE;
-> > +       }
-> > +       fwnode_link_add(of_fwnode_handle(con_np), sup_fwnode);  
-> 
-> Nack.
-> 
-> of_link_to_phandle() doesn't care about any of the fwnode flags. It
-> just creates links between the consumer and supplier nodes. Don't add
-> more intelligence into it please. Also, "compatible" doesn't really
-> guarantee device creation and you can have devices created out of
-> nodes with no compatible property. I finally managed to get away from
-> looking for the "compatible" property. So, let's not add back a
-> dependency on that property please.
-> 
-> Can you please give a real example where you are hitting this? I have
-> some thoughts on solutions, but I want to understand the issue fully
-> before I make suggestions.
-> 
+  $ llvm-objdump -d -j .text ./vmlinux | \
+  awk -f ./arch/x86/tools/objdump_reformat.awk > objdump_reformat.txt
+  $ head -n `echo 1657116+2 | bc` objdump_reformat.txt | tail -n 5
+  ffffffff815430b1        41 8b 47 1c             movl
+  ffffffff815430b5        89 c1                   movl
+  ffffffff815430b7        81 c9 00 40 00 00       orl
+  ffffffff815430bd        41 89 4e 18             movl
+  ffffffff815430c1        a8 40                   testb
 
-I detected the issue with this overlay:
---- 8< ---
-&{/}
-{
-	reg_dock_sys_3v3: regulator-dock-sys-3v3 {
-		compatible = "regulator-fixed";
-		regulator-name = "DOCK_SYS_3V3";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		gpios = <&tca6424_dock_1 5 GPIO_ACTIVE_HIGH>; // DOCK_SYS3V3_EN
-		enable-active-high;
-		regulator-always-on;
-	};
-};
+These lines are perfectly fine. The reason is that the line count reported
+by the tool only includes instruction lines, i.e., it does not count symbo=
+l
+lines.
 
-&i2c5 {
-	tca6424_dock_1: gpio@22 {
-		compatible = "ti,tca6424";
-		reg = <0x22>;
-		gpio-controller;
-		#gpio-cells = <2>;
-		interrupt-parent = <&gpio4>;
-		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
-		interrupt-controller;
-		#interrupt-cells = <2>;
-		vcc-supply = <&reg_dock_ctrl_3v3>;
-	};
-};
---- 8< ---
+Add a new variable to count the combined (insn+symbol) line count and
+report this in the error message. With this patch, the line reported by th=
+e
+tool is the line causing the failure (long line wrapped at 75 chars):
 
-The regulator uses a gpio.
-The supplier for the regulator was not the gpio chip (gpio@22) but the i2c bus.
+  # TEST    posttest
+    llvm-objdump -d -j .text ./vmlinux | \
+    awk -f ./arch/x86/tools/objdump_reformat.awk | \
+    arch/x86/tools/insn_decoder_test -y -v
+  arch/x86/tools/insn_decoder_test: error: malformed line 1699686:
+  68db0
 
-I first tried to clear always the flag in of_link_to_phandle() without any check
-to a "compatible" string and in that case, I broke pinctrl.
+  $ head -n ` echo 1699686+2 | bc` objdump_reformat.txt | tail -n 5
+  ffffffff81568dac        c3                      retq
+  <_RNvXsP_NtCs7qddEHlz8fK_4core3fmtRINtNtNtNtB7_4iter8adapters5chain5Chai=
+n
+  INtNtBA_7flatten7FlattenINtNtB7_6option8IntoIterNtNtB7_4char11EscapeDebu=
+g
+  EEINtB1a_7FlatMapNtNtNtB7_3str4iter5CharsB1T_NtB2D_23CharEscapeDebugCont=
+i
+  nueEENtB5_5Debug3fmtB7_>:ffffffff81568db0
+  ffffffff81568dad        0f 1f 00                nopl
+  ffffffff81568db0        f3 0f 1e fa             endbr64
+  ffffffff81568db4        41 56                   pushq
 
-All devices were waiting for the pinctrl they used (child of pinctrl device
-node) even if the pinctrl driver was bound to the device.
+[In this case the line causing the failure is interpreted as two lines by
+the tool (due to its length, but this is fixed by [1, 2]), and the second
+line is reported. Still the spatial closeness between the reported line an=
+d
+the line causing the failure would have made debugging a lot easier.]
 
-For pinctrl, the DT structure looks like the following:
---- 8< ---
-{
-	...
-	pinctrl@1234 {
-		reg = <1234>;
-		compatible = "vendor,chip";
+[1]: https://lore.kernel.org/lkml/Y9ES4UKl%2F+DtvAVS@gmail.com/T/
+[2]: https://lore.kernel.org/rust-for-linux/20231119180145.157455-1-sergio=
+collado@gmail.com/
 
-		pinctrl_some_device: grp {
-			fsl,pins = < ... >;
-		};
-	};
+Signed-off-by: Valentin Obst <kernel@valentinobst.de>
+=2D--
+ arch/x86/tools/insn_decoder_test.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-	some_device@4567 {
-		compablile = "foo,bar";
-		reg = <4567>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_some_device>;
-		...
-	};
-};
---- 8< ---
-		
-In that case the link related to pinctrl for some_device needs to be to the
-'pinctrl_some_device' node parent (i.e. the pinctrl@1234 node).
+diff --git a/arch/x86/tools/insn_decoder_test.c b/arch/x86/tools/insn_deco=
+der_test.c
+index 472540aeabc2..727017a3c3c7 100644
+=2D-- a/arch/x86/tools/insn_decoder_test.c
++++ b/arch/x86/tools/insn_decoder_test.c
+@@ -114,6 +114,7 @@ int main(int argc, char **argv)
+ 	unsigned char insn_buff[16];
+ 	struct insn insn;
+ 	int insns =3D 0;
++	int lines =3D 0;
+ 	int warnings =3D 0;
 
+ 	parse_args(argc, argv);
+@@ -123,6 +124,8 @@ int main(int argc, char **argv)
+ 		int nb =3D 0, ret;
+ 		unsigned int b;
+
++		lines++;
++
+ 		if (line[0] =3D=3D '<') {
+ 			/* Symbol line */
+ 			strcpy(sym, line);
+@@ -134,12 +137,12 @@ int main(int argc, char **argv)
+ 		strcpy(copy, line);
+ 		tab1 =3D strchr(copy, '\t');
+ 		if (!tab1)
+-			malformed_line(line, insns);
++			malformed_line(line, lines);
+ 		s =3D tab1 + 1;
+ 		s +=3D strspn(s, " ");
+ 		tab2 =3D strchr(s, '\t');
+ 		if (!tab2)
+-			malformed_line(line, insns);
++			malformed_line(line, lines);
+ 		*tab2 =3D '\0';	/* Characters beyond tab2 aren't examined */
+ 		while (s < tab2) {
+ 			if (sscanf(s, "%x", &b) =3D=3D 1) {
+
+=2D--
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240221-x86-insn-decoder-line-fix-7b1f2e1732ff
 
 Best regards,
-Hervé
+=2D-
+Valentin Obst <kernel@valentinobst.de>
+
 
