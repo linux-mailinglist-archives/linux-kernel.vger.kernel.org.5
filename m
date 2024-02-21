@@ -1,216 +1,162 @@
-Return-Path: <linux-kernel+bounces-74073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA3F85CFA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:30:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E1085CFA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:30:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F17F81F22829
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:30:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2B5628456B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BE239AFC;
-	Wed, 21 Feb 2024 05:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BDF39FC0;
+	Wed, 21 Feb 2024 05:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dq6CsAdf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="YQRRiEU7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950B5A35
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708493404; cv=fail; b=qyN8Y8WeQuRH9OwDhPXdukl1FYoDtiatStaOYBZgL8r1jWGzFxN8jFNsgDuqKdruUzRW5Ou/B0JhgYgtSw/QfWZjxs7o5uZAIWNV5TKWNIwhr0JImr+Bt/tz59CMU//j0a7toq2d1XtYtaUVYFdVyH3QVH+6KAPKnp2g/vproAo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708493404; c=relaxed/simple;
-	bh=I+H4pbKRHHRs+CZMOnvKU0zVSWx+QSEfgQNVM7O0ZDg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=rQk1LbDkdGXWTylKuwXRk85pwcL6UOgvs5YqDexTG+TYZZDDRiTBN5BecH2BBRA+pSXjy4YEwOp+74DEHOz7JXqEcMyEY+eJjeMkn0Vo1UWvID6u302Hm1kbHrE/fnwzfZdeoEocS8A7lRRYVbAaLFiER7s5XZT21kw3jvP2hEM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dq6CsAdf; arc=fail smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708493403; x=1740029403;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=I+H4pbKRHHRs+CZMOnvKU0zVSWx+QSEfgQNVM7O0ZDg=;
-  b=dq6CsAdfAawoyeHYXoadszFVdQGO4LkdtlsjA5HlIQQ3uMNh7j9fSzOf
-   LHp2HkrMrJvXE79qyvNAHHN8pF1OdfWRw1ApqoxoGQo80bEs6Wc6Zi2sC
-   /U3VPlRvWMzChFBziTd+AqKJg1H1bfAaQN5b6wcbOKy7QXodk5RWxZ7la
-   5WjySIQEp8BMeCaQf9gD+b8EnzNySYv/+wIHC/25wwJqkrJgdIsZ9Nhtd
-   XXyQF72RF9NQG6Dr+VBsf0teLVRvXXtrTAhhfsNLINEFPq+OiScOcQTfZ
-   6IP5Xl+HzSeHJxGhxGEh8gCMRGJxqEoEYXO4cCiJR46EB6lmAQKvOsR+w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2748003"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="2748003"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 21:30:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="5382776"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 21:30:01 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 21:30:00 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 21:30:00 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 20 Feb 2024 21:30:00 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sgl2AwVke+yY4Oaax7COCzU4K8v2zbx4JWoYAr328KHujO8k6k4TSTY3NW1pgXLrnu79VGYUGLgv0bKQ5O1Sy77/4aJLIhS0LUnE9gqlxMTAuUNQX5SsBnXL6h+ZGhVZFVXWyy3DfHw1+cNAN4hsYT8AxJQ5HLMRmkIeGzNQUQN3xjjjLQPqx8dvKLBxZKvv/EnnXS4YRGYiIoH/XeyZ3SUqrO+bbdU4BDiW0aAvnO6TIyGH6SzmJslfDMe2oamo9blWrGxOl9+Bqj0Fumbq3DmfZUzaz01oTaH2nDSjS1qB6wExbwFI4YZ2cnsDRzPdDVJ/pPDyCFEJFy0h2BfcdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aC5iu6/WQk+A/iM/mDv5D9xD77ayHdW7BMEQ2bMxI4Q=;
- b=alTRW9B79qCR9yr+iwpYngkUE1Uy36qSgj98YGb+yRSjtbPjFlMGSe2pzU9UiVvpbiMPdKnIwlpDP4C78xnEPNxPv7dWMVN7MLyk0xe0NXJcG+I/PRS+SOQ5O7jdm2b+omF/N1rFqZLC8NcDE17G0NnGbBM8GcNSa2F8VN1rUcDjDHlnkdCcg7fjw3V0mnaY/MjTuVFQKEcXlc4bKVgpp1nNyWtVwv1nIS1aixZ/FMuwj+6EOmfGFx4iOfJtN/3zEWCyNwpNXXTkY936FKpUuV8UGEkPeT3lmMBb3xU8uD1QIvVXOqBeDwW/V7I2dG2YySybdOMfu3vFqx6cDZDv+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by IA1PR11MB7318.namprd11.prod.outlook.com (2603:10b6:208:426::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.32; Wed, 21 Feb
- 2024 05:29:58 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::9f32:ce50:1914:e954]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::9f32:ce50:1914:e954%7]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
- 05:29:58 +0000
-Date: Tue, 20 Feb 2024 23:29:54 -0600
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-CC: Jani Nikula <jani.nikula@linux.intel.com>, Arnd Bergmann
-	<arnd@kernel.org>, Oded Gabbay <ogabbay@kernel.org>, Thomas
- =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, "Maarten
- Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Dave Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi
-	<rodrigo.vivi@intel.com>, Matt Roper <matthew.d.roper@intel.com>, "Matthew
- Brost" <matthew.brost@intel.com>, Riana Tauro <riana.tauro@intel.com>,
-	"Daniele Ceraolo Spurio" <daniele.ceraolospurio@intel.com>,
-	<intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>, Stephen Rothwell <sfr@rothwell.id.au>
-Subject: Re: Re: [PATCH] drm/xe: skip building debugfs code for
- CONFIG_DEBUG_FS=n
-Message-ID: <ngu6vq5izal6suyr57p4vlxnrn4kxyii4ewdktxvw7k3uezlcz@6oevav3wpcjh>
-References: <20240213134817.3347574-1-arnd@kernel.org>
- <877cj88lck.fsf@intel.com>
- <17209419-093b-4674-8b43-06c92312ef61@app.fastmail.com>
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <17209419-093b-4674-8b43-06c92312ef61@app.fastmail.com>
-X-ClientProxiedBy: SJ0PR03CA0338.namprd03.prod.outlook.com
- (2603:10b6:a03:39c::13) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CC239AF1;
+	Wed, 21 Feb 2024 05:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708493417; cv=none; b=Y3d0ecVKFoYzCjO1JZIjbh9Ui1xNq6HspWgoLry3eXgCjNeuOQEAVxPMP+LS11lXXRvCjyKAS7JadzjC2Kp/19NoRrBIYntqJ4+RCqd2RFgoQz9Q1jbIpopOwbopIPVroRqMMpt0KdBApkHFNOkmEyHltRxYBax37tMIdTT7Hsk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708493417; c=relaxed/simple;
+	bh=TstZ7gaQL4APdokx0BRsi7KY401fTHJY/C9qmxVNOTw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KiN/3LQV+0RvnjTUlFvQ8hiH8VEikuQtedTx/DUvdYHwaQl6Lj/BOWBFLMdouH/rlp/PR1untttQ88PslZ7GjraQEsOy7KOoscbOhOFbODHDIBT0dWQQXXg5K5ihMOgza/XGtXi1Dk3fBKEZXMkR6l6L4jvoRBx9fgf32jTYjpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=YQRRiEU7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708493412;
+	bh=UbR/3icVfa2qWzkdtDgQIqP2aGsp+IED1sx6TLj5ukQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YQRRiEU7EdcvhiGdkXVJCAxnr2N2XMWwpqJbdYp3ZKQT0HZCQT7Cwyg2Q2We+5+2R
+	 aRH1dzcfjkvc0VC5f98JTyQHeuFTkJiWXxV88FQZlftb2gbZQRCKZhWV/EriMHwTGL
+	 p8EfuLLi6V8lfdRLEOpAQ28n+31MKMElU+niyrjKTpqL00aaso0ABDK9pmrVczSHyC
+	 z7XVonLjGhtyTH3CTBHRhZStkJYtThvlZ+Qg7mbXXR1GAv3NJxcioigxGBJh01iivB
+	 D+HNHMsr0ogIoIaAED6sQ4qFjZDC92ir7Knb3nusjEnU8jvgyPrbAcoVcDKtV+7UU4
+	 sUMub4df/6OrQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TflGW4S5Kz4wc4;
+	Wed, 21 Feb 2024 16:30:11 +1100 (AEDT)
+Date: Wed, 21 Feb 2024 16:30:10 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>, ARM
+ <linux-arm-kernel@lists.infradead.org>
+Cc: Rob Herring <robh@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
+Message-ID: <20240221163010.5f81813a@canb.auug.org.au>
+In-Reply-To: <20240221092826.748e70c4@canb.auug.org.au>
+References: <20240221092826.748e70c4@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|IA1PR11MB7318:EE_
-X-MS-Office365-Filtering-Correlation-Id: de1e3478-cc4c-4107-8a7a-08dc329e24df
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3RP8zVNYnmT+MnN6r1vLovY9fs1TKDX1UX6A27LWNWih9E/1gAEHln9ds+cetRN1nGOx2qBgZfa9lKnWz/R60Hyhs+idnMGAHnkoXqr7cVuFnvQLBoRRPhpRQEdZvSXc25557xwZZuuVMlTm0tGDzU1ZNKaQNl4ierC+6Yvsr+A6lhEq+cx3eW+1ZPSlnt4Bj3itFyi1vrs/ayaZULds7AHQjkBpqKaS5G3F2YHquf4cho1UEOhfJmnZiXm4b7zN0RuuC+zMDU3Xn0M6vo6M9SejvRJVbbG8oP40hRc6iW8lD4o6fL0iENQafnXDH57ZZNsrDdiEb3UO4OlERoJ7pmAuiN94d4aSTSDz2kES3SyjihS7EvUKn6pDEGgcAdEZoYpfkjIeLBeUx1Z0d/kLrBMUwWozb8HWsJaE9fL3JFafDVu6kMSBvFGv5t09L5+ZvxUXv6i8GqZeuJCtOcmnarX38yPGW9RPgW2E3h1OsbIqqzCcLVNRNhI2ApDaZ++TlRrAArplJwaNwQOrTPzsgA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dYM+ilssFElxHFJz/EUjheRCnhvIBdtpOQJFlutj/DAK9D9BRLpIV4IXBO4g?=
- =?us-ascii?Q?dRkSOVfzFdSgoniYANhBCywVsgtmaQORPFuYfTZP/bZ6Q9dgsZl97kT3KEPo?=
- =?us-ascii?Q?XRgAbOjsnZmFH+NV/066waTF/CvT23Hnu80S4+I995BImOnVb5ZanFnsPYlO?=
- =?us-ascii?Q?oYNbOjPxu3TBLAvrKXBM8JEl2+XCNpeMp1HvwQTYkQ7d16fIIxmi6HknJutN?=
- =?us-ascii?Q?iemS5lp0WFnmv/0esxdWsgCImrO+9FgSU5G9d6NtjEivgH8zOeEArtvsiP/S?=
- =?us-ascii?Q?jo8hO3dj7wLit8g6jAKYoh7CNEyIbP7cT5+7aSqoiPutNgnxG+nqqtxocREN?=
- =?us-ascii?Q?bUkqiHVefFMkAQPiR2NZBOP2qzgITxEXji437X+hrhCCoPoQ2wyPBbhsFMgy?=
- =?us-ascii?Q?zAqdI5jc/VsfdRVdBUsJyPHCbwAZ5RPUixnoHu19xiLJFsqQ6wn46DKmNIny?=
- =?us-ascii?Q?3HaG0tMF4T3A/PZRP2Z6Tc3YOEaTMUGZCMWyh6MDo1vIxjjozk2rrylbptks?=
- =?us-ascii?Q?cJTiSS0JcsEN24BHfw6z11VGigz8ud3N0eRqgjX/1WjTITfqVWPCnOTwePWu?=
- =?us-ascii?Q?0yduZzlL5dTOhyBinXp1G6hXVyBvTPREf9a8e9cPlQ3STZnu3bGHP0XwRgFE?=
- =?us-ascii?Q?qT4ENGVvCZ8fLaZU9q1G0nDjB4LTziloMKaSEdA+2N3iLevR25oGVC7lA77e?=
- =?us-ascii?Q?skqg4d1oSRATCqTerHUO35u6IAKb1zX86Rib5j3Xusm1wShgZh11UOX7Dkbp?=
- =?us-ascii?Q?CvCErZLzLnQyIsoFRUT1gzmmTrQ0NW0P0u81KNvwRSHNZXy+ZTbtQcnnAx/N?=
- =?us-ascii?Q?27f5xK28FQ9ERd+Gt7/n07VK9O0GqfHsZe0/lV+9xBSsquMSi3OZFr/Hmz+i?=
- =?us-ascii?Q?8YXXoK2YqNcG5PGn4uj+q825vEr2U8nrH1pjV9agM0HURRHrQUmh7nE/Djij?=
- =?us-ascii?Q?Y1yQ3xoqfWrDBosVzvnV8rL4puxAkANy+G8ko5l3kCFLPXNuqBe4OiVAb2M/?=
- =?us-ascii?Q?SsDjFKW2iP0KpX1fHTpmvxG1JcQNjh105tzZiu1S4y56FXL6/qH/c4S/Sz12?=
- =?us-ascii?Q?q99616CB5YxzcyDVtC4uH+AkdcID4rTZNs+a2+9qWVe72fsIz4jrXj8e9Nxz?=
- =?us-ascii?Q?7uAhmMlAOZx0X6XpjsM0gPHWKwZMQgqF0zAyV0wg54sGWrX4J/aLQ+VE/3GL?=
- =?us-ascii?Q?WGdZCDP2dljzLZ+Cu5TDTeJTn/+IxjQ3zqBmFGQNXCMVkb1vI3NXdcpePtOY?=
- =?us-ascii?Q?fUB01bAOc5XNo4SXZXsaVujzwX+wAFSGElYc4oxWoCmDxIf8rtok/DoQRKSH?=
- =?us-ascii?Q?hVG/YIAJ17VI96rr0JsrsvhXGuONFi49VCkPt0WqDZo7cZ5G7ucTwfw/EdXe?=
- =?us-ascii?Q?O99gv3/VsEGWm/DsSSioq/6Mu6acge2dpMB0vNo8Vhh4mO/qYvKAf0Z7vPo0?=
- =?us-ascii?Q?LlEK9vULuDlR+xi6hDq06vdAlG2wP6GC5uA/CtY6BSg0Tz1GGh3Zk0BQ5q9R?=
- =?us-ascii?Q?nPNsfnFNyWGrNTSpnGXHr3W1cMc5xyaL5VTHg5SKq61ma1JBi9XQ3wTz6Ets?=
- =?us-ascii?Q?5APGH2JjedtfYYBKMTEVYk6UqT1t0HrKjNyGjh8KJr9PtYa4bCYcWwFh5M52?=
- =?us-ascii?Q?iw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: de1e3478-cc4c-4107-8a7a-08dc329e24df
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 05:29:58.6202
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 06DlL/u3Gr9QI136sy5+C+D3XxMn6yO+irj4YhgdoL+7FIcoSVgfERlzuf10AdJkivixjySzLYpAfQMiJeY8Fps4RlJab1X08Rc6ZXTrmYQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7318
-X-OriginatorOrg: intel.com
+Content-Type: multipart/signed; boundary="Sig_/rq22gDeMu4XxzAZPnY.wJux";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-+Stephen
+--Sig_/rq22gDeMu4XxzAZPnY.wJux
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 03:58:54PM +0100, Arnd Bergmann wrote:
->On Tue, Feb 13, 2024, at 15:55, Jani Nikula wrote:
->> On Tue, 13 Feb 2024, Arnd Bergmann <arnd@kernel.org> wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> Some of the debugfs functions are stubbed out in these configurations,
->>> so trying to build the .c file with the definition fails:
->>>
->>> In file included from include/uapi/linux/posix_types.h:5,
->>>                  from drivers/gpu/drm/i915/display/intel_pipe_crc.c:27:
->>> drivers/gpu/drm/i915/display/intel_pipe_crc.c: At top level:
->>> include/linux/stddef.h:8:16: error: expected identifier or '(' before 'void'
->>>     8 | #define NULL ((void *)0)
->>>       |                ^~~~
->>> drivers/gpu/drm/i915/display/intel_pipe_crc.c:549:20: note: in expansion of macro 'intel_crtc_get_crc_sources'
->>>   549 | const char *const *intel_crtc_get_crc_sources(struct drm_crtc *crtc,
->>>       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>>
->>> Stop trying to build them by making the Makefile entries conditional,
->>> same as for the i915 driver.
->>
->> Already fixed by commit 439987f6f471 ("drm/xe: don't build debugfs files
->> when CONFIG_DEBUG_FS=n") in drm-xe-next.
->>
->> Maybe that needs to be picked up for -fixes?
+Hi all,
+
+On Wed, 21 Feb 2024 09:28:26 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
->I made sure that this still happens in linux-next today, but
->it does not seem to contain 439987f6f471.
+> After merging the arm-soc-fixes tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+>=20
+> arch/arm/boot/dts/renesas/r8a7790-lager.dts:444.11-458.5: Warning (interr=
+upt_provider): /i2c-mux4/pmic@58: Missing '#interrupt-cells' in interrupt p=
+rovider
+> arch/arm/boot/dts/renesas/r8a7790-lager.dtb: Warning (interrupt_map): Fai=
+led prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7792-blanche.dts:376.10-392.4: Warning (inte=
+rrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in i=
+nterrupt provider
+> arch/arm/boot/dts/renesas/r8a7792-blanche.dtb: Warning (interrupt_map): F=
+ailed prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7790-stout.dts:344.10-362.4: Warning (interr=
+upt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in int=
+errupt provider
+> arch/arm/boot/dts/renesas/r8a7790-stout.dtb: Warning (interrupt_map): Fai=
+led prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7791-koelsch.dts:816.10-830.4: Warning (inte=
+rrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in i=
+nterrupt provider
+> arch/arm/boot/dts/renesas/r8a7791-koelsch.dtb: Warning (interrupt_map): F=
+ailed prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7791-porter.dts:410.10-420.4: Warning (inter=
+rupt_provider): /soc/i2c@e60b0000/pmic@5a: Missing '#interrupt-cells' in in=
+terrupt provider
+> arch/arm/boot/dts/renesas/r8a7791-porter.dtb: Warning (interrupt_map): Fa=
+iled prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7794-alt.dts:450.10-464.4: Warning (interrup=
+t_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in inter=
+rupt provider
+> arch/arm/boot/dts/renesas/r8a7794-alt.dtb: Warning (interrupt_map): Faile=
+d prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7794-silk.dts:436.10-454.4: Warning (interru=
+pt_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in inte=
+rrupt provider
+> arch/arm/boot/dts/renesas/r8a7794-silk.dtb: Warning (interrupt_map): Fail=
+ed prerequisite 'interrupt_provider'
+> arch/arm/boot/dts/renesas/r8a7793-gose.dts:756.10-770.4: Warning (interru=
+pt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in inte=
+rrupt provider
+> arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_map): Fail=
+ed prerequisite 'interrupt_provider'
+>=20
+> Introduced/exposed by commit
+>=20
+>   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
+>=20
+> I guess you missed some :-(
 
-Looking at https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e
-it seems we still don't have drm-xe-next branch in linux-next.
+Also these from the arm64 defconfig build:
 
-Stephen, could you please add it? Or do I have to do something on my end
-before that?  This is the branch:
+arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interrupt_=
+provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cells' i=
+n interrupt provider
+arch/arm64/boot/dts/freescale/imx8dxp-tqma8xdp-mba8xx.dtb: Warning (interru=
+pt_map): Failed prerequisite 'interrupt_provider'
+arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interrupt_=
+provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cells' i=
+n interrupt provider
+arch/arm64/boot/dts/freescale/imx8qxp-tqma8xqp-mba8xx.dtb: Warning (interru=
+pt_map): Failed prerequisite 'interrupt_provider'
 
-https://gitlab.freedesktop.org/drm/xe/kernel drm-xe-next
+--=20
+Cheers,
+Stephen Rothwell
 
-thanks
-Lucas De Marchi
+--Sig_/rq22gDeMu4XxzAZPnY.wJux
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXVimIACgkQAVBC80lX
+0GwTxAf+Mn967p1+Zv8P/ni3TvTIy2wD89SdrJFpGzqCzmdpENiXwYGvIhcmudwb
+7QRTjPUVBxge6ZtSRtA3u/NcrO99TlmXkR2S0a73k1q8ZbhTAlRzp1cOE0+xXUb3
+IgYADZbmNdzVXfnwa4IFnUmVdVIb6yYAVqiMu2Q+UV9GGxC1iznIK3Vs442lDEXS
+dC3+r2nNgztXYnvoPXd6Hhnzu74e24usEwd3SSu/SgAh4HabQm2Ol5d9uwl/He3J
+ZWwR3WOAgge67TiFj1CBRvq/+vraRu6qj2S70CAJ1mvit9Yc5MhVqX0AM0TjqeiD
+dWc7VXPvgEEwN2CfQWR2QgVLLFxOLw==
+=deZB
+-----END PGP SIGNATURE-----
 
->
->     Arnd
+--Sig_/rq22gDeMu4XxzAZPnY.wJux--
 
