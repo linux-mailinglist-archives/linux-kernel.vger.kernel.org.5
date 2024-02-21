@@ -1,226 +1,214 @@
-Return-Path: <linux-kernel+bounces-75348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76B4185E707
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:14:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 077D985E710
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:16:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AD48289BE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:14:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F4511C24F57
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:16:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0037F85C6A;
-	Wed, 21 Feb 2024 19:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0670E85C6A;
+	Wed, 21 Feb 2024 19:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IjDpZctr"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="A/+Y4Q36";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="X32Sfdff"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB12079DD6
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708542857; cv=none; b=Uk60Ip+tz1NMJvgr92gIgkwBUcM31DutMrkvwaoHY2R9PmdIYT24solxTuyYsUMSpD9X0tDs/24s3Gxk0YZ+eZe2KdXEf2GEyCgWXBFcIxYIh2uiyXglQdD5w7K4Vb92jbRcsD3QwfH+ZGd+/31oc/WPGc23cYAhNN2qN4NpT7k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708542857; c=relaxed/simple;
-	bh=KkkY3nuQd+sOhx++7XXiy7s4+Qho5xeZFSRciAdv1R4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gz9CZO3c188Ew2R3A9/+UnRreEYG6l9OQVn3xusfD7zVpiLVeklmAufKEVGlXhDVO6QPsFOL91AoQsaIUQ81S02yL1ZI0eaMje9ofyJUv0ANcQnxX3vDw+a/Ea/Kbr/BpXU7lhSiB7kXHJj5Y2Xh9aqT2uFTmntsASXcj+sDb98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IjDpZctr; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bc32b0fdadso344105439f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:14:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328681097B;
+	Wed, 21 Feb 2024 19:15:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708542953; cv=fail; b=F1GzGaThwoQhzcR+YZRjxuwi30lFRcESrkjKwqwC3NgMbcVvND133T6JTuIRC9CtKsNaFRtsbSTHV1pSdr4jMBhvOpYDjQnqP+4kj4rmQ2ufagckJDmmPmrQl2EqzDLNyR5fV6abgo/wjHBo09W8666Xh9FOncVHOQI+WFMMKE0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708542953; c=relaxed/simple;
+	bh=7Rl4HqLnUY6i+QVOWzNOQ57BnHsmdJXjlX+Sb2FXe7Q=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=kd0yjquIeDN3O1+xhkDOFcEb+kZTD5sWh67jAFXIYw4DlmeJNtNpAV2TjPEDwHZF/aMvC/hExRxv0xdZIGyPbB8keXNZ2nby2rcyZziU+rz3IUX0AOhsDEZc/VloNAwLieWNjlIfCrOiKSJUTkpAffzInd4Vx0FgfCr+t8/f2CU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=A/+Y4Q36; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=X32Sfdff; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41LJFClX012122;
+	Wed, 21 Feb 2024 19:15:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=VDwreWdq2w4NecpdR1NOLmJ4fota0eDzaX1C2D58K9s=;
+ b=A/+Y4Q36Hw8GN++QhoPfyhS4agdWmYhDNyHqJLu1Q4Q3tamEYAt3p4A6RlhfIqqeQDFy
+ ARfhGTDRzidUMyY9BlxdfiZFxNgaYC5vUM3Y25ECwTKwwnZtFao5NefPCFHxNUQ6bJ/F
+ nJOvF18yJ1UDwx0ew54pLimAO1S+I1f/9IWvgdVRRPjHCSxciqY5i2ei8DksV7wGlsgK
+ AgDDIdsd+NCaxdiL0pR0fTzi7YKah4av/vfR8r9aKVVKfmKSeKqDDHD+6+Bq5O8e8rsf
+ /b7t7o49qyr5tdiXuHaYgzKfr1JK/+I/ed1MgN1hTrzELijq0EFKwoubA+FwkKV5kFI5 og== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wd5fw2avt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 Feb 2024 19:15:41 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41LI8pH7032526;
+	Wed, 21 Feb 2024 19:15:39 GMT
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak89ggqv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 Feb 2024 19:15:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EQ/umACDrFBB/8/4WahdvxOMwkN0mNBLoD7G1qhz28ep+I5FKRxbACWjmWPFvT5FX5AW2DPVaiGZYdmkKoL3Uswu/V4vRCS8o0iQWr4LUDqUqoae3i9c8lJgxSY9tDADVsHgBszL5tn0oGDLBGu5UoaGDurueBxItBbX50jRPbWbUdlzsL1xWxfgZJ9q8WWTmFE+2V+IITQGTA/GUHBOIAT/s5Lw5AiQqzhoMGXtJwkOHqsK23EmO221Q3hSTCQq+F8BX2l1cRh+STSwqZS1TP3uY0baky0DDSMr2vvKMfQtEUlr6eyg3EtUHQeCVOfCPkJVe7QCSrX1muSzMJ4Ezw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VDwreWdq2w4NecpdR1NOLmJ4fota0eDzaX1C2D58K9s=;
+ b=IHRUXJbz7+nYMgs+ykWenZj3m82zcbfZUXjNOYO1AJz0r7uMnzUwR+Bx4SZ3rFTVXSW+dvGwuh+pmnCOGSXOPdDDrayQi6hZpn66U27qiNwzk/f+L3ekqwk2OvMI3D08R2RfW4iuIqSOAAQ1PRAvBZg7dQtjOnlV+dJvSTwu3dP8If8AFoKQxlxaRupGBr8lL2mOx8zG3RBBQ8HIYvLq4oyY1jCfbuhujWlQslirsYZzO6i/WFsq9zukOKC+2nqMY3RMUlKbX9uu8dkMsrPcvi94Vq2B3PQgi5viHZ0JF7dgI39EMR6eZX716gjzXJeaTQNp+E4wl+3EbZs6b72eFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708542854; x=1709147654; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F8zo1lAc255qtifgNzkIgJxhJdd7u+u9JZEwC1bq2rM=;
-        b=IjDpZctrpM1zPlyIS14ToJNSbiBK/kmVUlJXMA3Ue7snI8jU/xWnNDHLPRcqLTcA7e
-         WsDv3dZmXLpp6JKYSnJdYc7ot36asREBK4Mnxp55TztJ/2Lf3NysdAM5BbsIiiFTN8mj
-         DcNsQpsIpUaxih2ArMdhVJxEdQXM+uWXvyVjo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708542854; x=1709147654;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F8zo1lAc255qtifgNzkIgJxhJdd7u+u9JZEwC1bq2rM=;
-        b=oxBKqU0jK7mdqwQhMCBO+h0w/8RZkLaEtJqznLCY10YffIoAwXTnSjRtmzwRI0aTEg
-         tGEof/p3eLJUrFr19eRrI8x/t9E62vkAaa4p44MKO2Q2JwL+dBTzE0imTOK7Aal/TGr+
-         Ld38Phc8zQh/yLMa87aIUn2nTXlobyTucFduvmwzkBW+unwCNscXA8xgKxCPejh0NcMI
-         jd1FQQXa467aY7R1B6rGvvgnvVllIxbSOcVabRY6CeU/MxnsGcH8HoTiVHSZJZRQod8O
-         c8w5zBYuwknrGsoA3lXrEJ8mB+JLnmXxRqhK10TJ0RHf9YmpONuWk5LBzSo0dsoN7N0Z
-         HxDg==
-X-Forwarded-Encrypted: i=1; AJvYcCVuR5N0NH3mGzK21yTuBzmveBNujkOvY0LPdP362IX6hsj1hItJObk3Qg0X/FO5G9/u63FnCdpuKY15XaAC2Jsvd6iWoMGgoKMw3vOT
-X-Gm-Message-State: AOJu0YxmobOnjCbuiWXd+BFK7zTrkQp5byxrWscOY5ooPIH27Ji4rrPM
-	pL11uVMkvqiqIAkkmP7JwcssIOHSJVt0RueabUBcEC5vtilvdVmfHDulMU4YlSoZNIfShYggAfU
-	=
-X-Google-Smtp-Source: AGHT+IFe6kiWbZW0h5n9v9hgmN46vZNuLBrbQZ0k9xGnJtql/CBhynZKD+fF5/hyYxlbaLjYE4SkGA==
-X-Received: by 2002:a05:6e02:12e6:b0:365:32db:ca6d with SMTP id l6-20020a056e0212e600b0036532dbca6dmr10729260iln.22.1708542853903;
-        Wed, 21 Feb 2024 11:14:13 -0800 (PST)
-Received: from localhost (147.220.222.35.bc.googleusercontent.com. [35.222.220.147])
-        by smtp.gmail.com with UTF8SMTPSA id t41-20020a05663834a900b004716652f89asm2812188jal.130.2024.02.21.11.14.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 11:14:13 -0800 (PST)
-Date: Wed, 21 Feb 2024 19:14:12 +0000
-From: Matthias Kaehlcke <mka@chromium.org>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Helen Koike <helen.koike@collabora.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	Matthias Kaehlcke <matthias@kaehlcke.net>
-Subject: Re: [PATCH v4 1/8] usb: misc: onboard_hub: rename to onboard_dev
-Message-ID: <ZdZLhMIEQ_dwG8_m@google.com>
-References: <20240220-onboard_xvf3500-v4-0-dc1617cc5dd4@wolfvision.net>
- <20240220-onboard_xvf3500-v4-1-dc1617cc5dd4@wolfvision.net>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VDwreWdq2w4NecpdR1NOLmJ4fota0eDzaX1C2D58K9s=;
+ b=X32SfdffOuRSODqxNnkJqlWcKz4AXjawzZkCginD8C/Bu8epsioQL8HGuEaE3o8wLeO3jQk+ZcCjDbe63FC9PMTmMHtPT4W1HWQXbmno2doaErGkUtjR9VF5vLpW0X5ZgZaMcnX/e1zxlfv4BZM2iBWew4fxIi0XmMm4ZCzPz64=
+Received: from SJ0PR10MB4752.namprd10.prod.outlook.com (2603:10b6:a03:2d7::19)
+ by BLAPR10MB5234.namprd10.prod.outlook.com (2603:10b6:208:30c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.21; Wed, 21 Feb
+ 2024 19:15:37 +0000
+Received: from SJ0PR10MB4752.namprd10.prod.outlook.com
+ ([fe80::1e9b:c7cf:d15b:c41c]) by SJ0PR10MB4752.namprd10.prod.outlook.com
+ ([fe80::1e9b:c7cf:d15b:c41c%4]) with mapi id 15.20.7292.036; Wed, 21 Feb 2024
+ 19:15:37 +0000
+Message-ID: <c9b3466c-7972-47c0-b590-9c1012b53a82@oracle.com>
+Date: Wed, 21 Feb 2024 11:15:35 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system;
+ successfully bisected
+Content-Language: en-US
+To: Mateusz Kusiak <mateusz.kusiak@linux.intel.com>,
+        Dan Moulding <dan@danm.net>
+Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, regressions@lists.linux.dev,
+        song@kernel.org, stable@vger.kernel.org
+References: <20240123005700.9302-1-dan@danm.net>
+ <20240220230658.11069-1-dan@danm.net>
+ <f32cd478-a905-4e98-a46c-0612bc10c38e@oracle.com>
+ <2b5daa31-af66-4297-932b-d2fd341b63e6@linux.intel.com>
+From: junxiao.bi@oracle.com
+In-Reply-To: <2b5daa31-af66-4297-932b-d2fd341b63e6@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR08CA0024.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::37) To SJ0PR10MB4752.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d7::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240220-onboard_xvf3500-v4-1-dc1617cc5dd4@wolfvision.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4752:EE_|BLAPR10MB5234:EE_
+X-MS-Office365-Filtering-Correlation-Id: 396490bf-a0fc-467b-1264-08dc33117c06
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	a8++ly+2YYmhAC5yIxWDVwNsWoNSHbRAD3O/ybsgFkzlUjb5Y+SdyJQEumfOt4Yf+XJKDjVYowKn2jEG6VzJJEYegDwjU0FzAYy4XnJrKazmd3VTNNEvnfrIR86MD2amrOZAJhmOEqOBR06M+JM/BLd6n3jKZ87a+c9S5AiA3a3yiIwkyAeDgXfY1koigBKdPI6il9U8p8y+P4bRtsT8JUOg7YI1S7st6l1atCn8G21zsrXZfSzh4q42ocL4RHAv1epRSmj1RC2CC4eiIMVaPnlqErAOW0xJlPfphAjSl4XwyseKHV1GY1HS8zLEyGHolROFYHRv+65Op78rp8Sq5qqd0BpqHvZyIWnlSpZitG3q1Z+Hfai629R8YONfOoNGleYne08JVSnR6kBxLJ4CT5FiaT6U5vWhNX9RmOCGP+GZtUd0yztuwdvPBWT4ZYO7bJh4rbczSQaUIxgTS3GknOoQtd/Hm8ROiDrpDTs6V4fkI/pTWizAILSc2AEYUkKSLUjmtQ/v3qA6I1iE0PdXNg==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4752.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?Q0I4ZnlKMkpOWU1saGQ1TXoza3RFa2tWUVUyeDZSREZqSU9uWjl2THZnVng1?=
+ =?utf-8?B?VGVGUWs5cTNEUHRud1R3UFhKWTNneUpkMDBDY1ByWkcrSEptVEpHam14QVJh?=
+ =?utf-8?B?bFpsanIybkk3YndqWmlwTzBVdzRyZndNYy9FdC9UQ1ZMSEpFNW9CQUNUU1Jr?=
+ =?utf-8?B?c2d3bjh2VzRVMk9MamdIL09rVzBrblBaV3ZxMFhaUGNEaDBoMTRwNUhxREwy?=
+ =?utf-8?B?UkNCRkNVbHFYRTNrTjVCWnlNekZNRmU1ZVhNL0N4cWJ6ZFlOSlJrKzZ0MTdW?=
+ =?utf-8?B?NHhNUjZlZy8rR081UDRBN1pGRTVLVjRQaWEzbUs3Q1dBbzNheVJpSmNIbFBT?=
+ =?utf-8?B?WG5YaHQ3ODcvakpCRUpDbGlJYWhMZXFmSUhmWUF5NjQ2eWhwRXhERHVrTjB5?=
+ =?utf-8?B?RFArM3F4OUlWZHNoK2JlNW00SFZzRnF6RzRGMGt4NFR2ajZJVXVXd1k2ZFZ2?=
+ =?utf-8?B?bGFhbEZxTlpTN0xpQ1c2Q29jSHhuWHVJeURGcExYYVZzK0lSSTVpZmVZNExT?=
+ =?utf-8?B?MEM3MmwzUXBFSlc2R0JrOUhJb1BLRlhaYW04ejdZVWppM3B5emRBM00zVXo4?=
+ =?utf-8?B?bldtc0NuaFIyUUVSeHBJSDROOW53M2V0aG5zSDkxZ1hWcGptM0x5bHljSDEw?=
+ =?utf-8?B?V25rcFRnTnMxcVVveWxOMGlnbGdmU3JZRmc3Rkl1V0JFV1kxdnZFVTlKbVlI?=
+ =?utf-8?B?TG1CT1Z5a3Jyem9rc0g3aW9ndTJVQldwaUxWUjFzbWFXQ2d1b0d5S1djMUFX?=
+ =?utf-8?B?bHlpdWdaaHVPd1FiMHV6T1ZFL3VWMzhJUnlIdjVoT01xQmI2QXI0SWNnV0s1?=
+ =?utf-8?B?a3dER0Exd2pOOXEwMFNOOXB5VFFhRThyL3BCSUZuTk5CUzE4SjVtL1MzWWJx?=
+ =?utf-8?B?bFZiOVJEZnhZbFZXL1FsUzU3djNmSTg2eDJJMlFZeW96ajEzdHJVblpiVk1m?=
+ =?utf-8?B?OVM3WVBCeHkyc1pROE9OUlBPZkpRWTdqK3pwTCtVZlFqWTN0WHZjak0xbGxk?=
+ =?utf-8?B?eExadFU2Z2c0bi9ycFZkVzJiNVR4RytQWFFSeS9PREdoKzgvNlpvZnVpdGt6?=
+ =?utf-8?B?Yk84cWxydnZzN21VYklXa2FWVDRoWWMzNmc0MEU3Y2pYdnNwcnJNeDBPVHhG?=
+ =?utf-8?B?dGo4RVV6dzFmQ05ZWXBndGF2dVRhREI4NXU0d2N1WDBKMitJY3YwOTV0ZVMr?=
+ =?utf-8?B?R2tKVFlWdUNzUmgvSDB3enk3NTlRRDNRTlA3LzhBU2xVQjJPaWUzdkxNV3cv?=
+ =?utf-8?B?bWg3NFo0b0k2SXdqSkhvZElwM0RWUVdGQ1M1dGc2RUlveFFpSUowVjRBQTVy?=
+ =?utf-8?B?b25uMlBxdW1WVm9sYVNoMEdudzNVSWkwT1poYVpQWG50QWFwUWJaam1qQnJW?=
+ =?utf-8?B?T2tFYWNaWWZKdlZYaXhMUEVsSlBPcVFaSTl3NWxkSGdkamhDcE9lbm1qOGo1?=
+ =?utf-8?B?TnpRWXcvanZsSmN5V3FKWHNkc1R3WWxFYjhLQTFOdXUwbGEvVXRWb3UyWmR1?=
+ =?utf-8?B?MDhvNHlsUXJSSlB2QUV2dDhuV21xNW1ObDR4RTBSYW1LY0FOb3k5bVh3RW5Z?=
+ =?utf-8?B?bVhudUsva213MmZWT241WDNQdTdlWTV3SG1PanhxZGNSRERqYnRMaW8vNThm?=
+ =?utf-8?B?eGM1K1VPNm9wcjhZaXRqenlxQk0vQ1BxTXZDNmxydjdJWVFQaVpjZCtzV3Bh?=
+ =?utf-8?B?SHhSOGJ0aHJvWkNNWnhvdXZLYlJRMldJbnN4cG1UOW81R1UrRmY5WVVJUDF5?=
+ =?utf-8?B?QzJvcEc4U20wWWhaZjZYc0w3anIvZkgzTVhZMXEzbno1Um9PK2hNQ05WbGVO?=
+ =?utf-8?B?SE8rclN3bG5udXozZ1c0TlBFQ0FiZ0QycjdZUmRESmxSaTdxR3o0TSs1NHJ6?=
+ =?utf-8?B?WkhKNnJwZ0wwd1RmUWdwM0lSQkFFL1hGYUVXcDBYKzU0OTBtUmFzdnphZUMv?=
+ =?utf-8?B?OFd6VFN4UExYUjltYm16azZWR1RMYU9Vdkh5bVlxUDhMOUhKWU5PQndjTTl5?=
+ =?utf-8?B?enFvQjNtUkNqMzlXU1drUTRRc29CQnJBYWVWOXdqVWlUY2xQSUV3Wjh5ZVBt?=
+ =?utf-8?B?K3FGODdyTGlqQzI3My95K3ZyYlFEc3Q5VUhWVkpPdzkrWFJSeEJUZlZ3UlpQ?=
+ =?utf-8?Q?tIPOOZR8HRHPKyPyo/naS+yM+?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	fjNh04JIq5RIhIJGO7zWLQ5PjyOoednv+oOPpbBwlQTVXForIhHIcIC7TlWWQyO5sH4tYOkAdaXL9weOcBgo8t2Zcd9o5/RKUn8insFmjF7zJTIBOKJ+2iet8Gkm7/2n1mbJhZ/l2f3KNcWUyiyo0wPgSS6BKNJUT5Ju446VjYU3QNfurJa8+hwgy/sFtKPgg3zpE45Zub1s7kfKvDVNN5i3vOFb8m2lw9am4EtrvTXXylyXWy6NbL36nBYlnKPt9YXPKuzyGkXz8n9AgRf8QRsAMjFMRYp02mP4C0O80a++JSfMrK+yQAF5xcmucyApCn32kiVhXfreW0ug18s+ZVkIEIxejajTXCruoiGSM3aRcKiVqxrkfeniotlN87w1QqWFts0InUmnEspdh1SHsfzarC8hgW+h/kmyLrg/3tEU4HucFZvLhR7z9HbEHoOJvqHLWf7IodW5/iEogFXE9agrGqJkFtJa4AXzwYoq2lx+gr0ElWfjm8RX32U7G5zZ2n4Nz8QcllRoQ54WffXXqhqTJyaRHrm7HpE/ZHY9YOowlm/aQros38sdLfgbfMY5fKx7km3Y5jlLwkZ0J+06L4++FmiK0G7FgMPb6AA7xLc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 396490bf-a0fc-467b-1264-08dc33117c06
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4752.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 19:15:37.0211
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1ieyWhqAS7dXMDQx71clVxPduxWp0+Q0Gxtd9St77sSI1x7fB99581UrnN01vlTz2D4aw6OpZgW+SWX8CvaqoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5234
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_06,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402210149
+X-Proofpoint-GUID: tJJmCJknyKsTqVo80g8Bg1PbZCfthfht
+X-Proofpoint-ORIG-GUID: tJJmCJknyKsTqVo80g8Bg1PbZCfthfht
 
-On Tue, Feb 20, 2024 at 03:05:45PM +0100, Javier Carrasco wrote:
-> This patch prepares onboad_hub to support non-hub devices by renaming
-> the driver files and their content, the headers and their references.
-> 
-> The comments and descriptions have been slightly modified to keep
-> coherence and account for the specific cases that only affect onboard
-> hubs (e.g. peer-hub).
-> 
-> The "hub" variables in functions where "dev" (and similar names) variables
-> already exist have been renamed to onboard_dev for clarity, which adds a
-> few lines in cases where more than 80 characters are used.
-> 
-> No new functionality has been added.
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
-> ---
->  ...-usb-hub => sysfs-bus-platform-onboard-usb-dev} |   4 +-
->  MAINTAINERS                                        |   4 +-
->  drivers/usb/core/Makefile                          |   4 +-
->  drivers/usb/core/hub.c                             |   8 +-
->  drivers/usb/core/hub.h                             |   2 +-
->  drivers/usb/misc/Kconfig                           |  16 +-
->  drivers/usb/misc/Makefile                          |   2 +-
->  drivers/usb/misc/onboard_usb_dev.c                 | 518 +++++++++++++++++++++
->  .../misc/{onboard_usb_hub.h => onboard_usb_dev.h}  |  28 +-
->  ...ard_usb_hub_pdevs.c => onboard_usb_dev_pdevs.c} |  47 +-
->  drivers/usb/misc/onboard_usb_hub.c                 | 501 --------------------
->  include/linux/usb/onboard_dev.h                    |  18 +
->  include/linux/usb/onboard_hub.h                    |  18 -
->  13 files changed, 594 insertions(+), 576 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub b/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-dev
-> similarity index 67%
-> rename from Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
-> rename to Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-dev
-> index 42deb0552065..cd31f76362e7 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
-> +++ b/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-dev
-> @@ -4,5 +4,5 @@ KernelVersion:	5.20
->  Contact:	Matthias Kaehlcke <matthias@kaehlcke.net>
->  		linux-usb@vger.kernel.org
->  Description:
-> -		(RW) Controls whether the USB hub remains always powered
-> -		during system suspend or not.
-> \ No newline at end of file
-> +		(RW) Controls whether the USB device remains always powered
-> +		during system suspend or not.
-
-With patch "[2/8] usb: misc: onboard_dev: add support for non-hub devices"
-this attribute isn't honed for non-hub devices. With that I'd say leave
-the existing comment unchanged, but add a note that this attribute only
-exists for hubs. That will also require a change in the patch mentioned
-above to omit the creation of the attribute for non-hub devices.
-
-> diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
-> new file mode 100644
-> index 000000000000..2103af2cb2a6
-> --- /dev/null
-> +++ b/drivers/usb/misc/onboard_usb_dev.c
+On 2/21/24 6:50 AM, Mateusz Kusiak wrote:
+> On 21.02.2024 00:15, junxiao.bi@oracle.com wrote:
+>>
+>> The thing is we can't reproduce this issue at all. If you can 
+>> generate a vmcore when the hung happened, then we can review which 
+>> processes are stuck.
+>>
+> Hi,
+> don't know if that be any of help, but I run below scenario with SATA 
+> and NVMe drives. For me, the issue is reproducible on NVMe drives only.
 >
-> ...
+> Scenario:
+> 1. Create R5D3 with native metadata
+>     # mdadm -CR /dev/md/vol -l5 -n3 /dev/nvme[0-2]n1 --assume-clean
+> 2. Create FS on the array
+>     # mkfs.ext4 /dev/md/vol -F
+> 3. Remove single member drive via "--incremental --fail"
+>     # mdadm -If nvme0n1
 >
-> +/*
-> + * Returns the onboard_dev platform device that is associated with the USB
-> + * device passed as parameter.
-> + */
-> +static struct onboard_dev *_find_onboard_dev(struct device *dev)
-> +{
-> +	struct platform_device *pdev;
-> +	struct device_node *np;
-> +	struct onboard_dev *onboard_dev;
-> +
-> +	pdev = of_find_device_by_node(dev->of_node);
-> +	if (!pdev) {
-> +		np = of_parse_phandle(dev->of_node, "peer-hub", 0);
-> +		if (!np) {
-> +			dev_err(dev, "failed to find device node for peer hub\n");
-> +			return ERR_PTR(-EINVAL);
-> +		}
-> +
-> +		pdev = of_find_device_by_node(np);
-> +		of_node_put(np);
-> +
-> +		if (!pdev)
-> +			return ERR_PTR(-ENODEV);
-> +	}
-> +
-> +	onboard_dev = dev_get_drvdata(&pdev->dev);
-> +	put_device(&pdev->dev);
-> +
-> +	/*
-> +	 * The presence of drvdata ('hub') indicates that the platform driver
+> The result is almost instant.
 
-drop "('hub')"
+This is not the same issue that Dan reported, it looks like another 
+regression that Yu Kuai fixed , can you please try this patch?
 
-> diff --git a/drivers/usb/misc/onboard_usb_hub_pdevs.c b/drivers/usb/misc/onboard_usb_dev_pdevs.c
-> similarity index 69%
-> rename from drivers/usb/misc/onboard_usb_hub_pdevs.c
-> rename to drivers/usb/misc/onboard_usb_dev_pdevs.c
-> index ed22a18f4ab7..ca56f67393f1 100644
-> --- a/drivers/usb/misc/onboard_usb_hub_pdevs.c
-> +++ b/drivers/usb/misc/onboard_usb_dev_pdevs.c
+https://lore.kernel.org/lkml/95f2e08e-2daf-e298-e696-42ebfa7b9bbf@huaweicloud.com/
+
+Thanks,
+
+Junxiao.
+
 >
-> ...
->
->  /**
-> - * onboard_hub_create_pdevs -- create platform devices for onboard USB hubs
-> - * @parent_hub	: parent hub to scan for connected onboard hubs
-> - * @pdev_list	: list of onboard hub platform devices owned by the parent hub
-> + * onboard_dev_create_pdevs -- create platform devices for onboard USB devices
-> + * @parent_hub	: parent hub to scan for connected onboard devices
-> + * @pdev_list	: list of onboard platform devices owned by the parent hub
->   *
-> - * Creates a platform device for each supported onboard hub that is connected to
-> - * the given parent hub. The platform device is in charge of initializing the
-> - * hub (enable regulators, take the hub out of reset, ...) and can optionally
-> - * control whether the hub remains powered during system suspend or not.
-> + * Creates a platform device for each supported onboard device that is connected
-> + * to the given parent hub. The platform device is in charge of initializing the
-> + * device (enable regulators, take the device out of reset, ...) and can
-> + * optionally control whether the device remains powered during system suspend
-> + * or not.
-
-The last part isn't/won't be true for non-hub devices. Please change it to
-something like ". For onboard hubs the platform device can optionally control ..."
-
+> Thanks,
+> Mateusz
 
