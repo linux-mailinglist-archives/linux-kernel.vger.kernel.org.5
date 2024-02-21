@@ -1,177 +1,126 @@
-Return-Path: <linux-kernel+bounces-74808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 963DD85DB00
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:36:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2715B85DB0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EFD02821BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55A081C230E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A47C7993D;
-	Wed, 21 Feb 2024 13:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC497C099;
+	Wed, 21 Feb 2024 13:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="q6oTz0rC"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="be4nUlCE"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7646A8D6
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:35:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60317C082
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708522541; cv=none; b=Obo9gm40QU4gCqwlHiD7oKH+rhadrUoVZ5V57M4083M0MW4i4ByIp9cqtTKIeyq9CnZPF28ghs15O2+XujVS/9CJ85RqxAPzKXv5dmPcAEEZNkZNiKftG5626ommF5CJThqI+yhrSxfo5Ingd2jf5F2uew9ZEpH8OGaJJtAYHHk=
+	t=1708522567; cv=none; b=YD/I7DesfRVhrKRpoV+UvNCQzvYb5r3T6yev2ScsEzKuKNVAS4FP/hGhDO6TnAgXm7HbcxCQX6RZZvpfheqIW3Cikf4z9c9d0H15spTV00V8gyGLkOJaZ7lWMzPC1wqt/ijMqC8jlOJXGo/xJDcgQHE3yef91dnrMR1p5QP9Rmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708522541; c=relaxed/simple;
-	bh=bW3BcyOo3zOnh0jsWjwvNDury7C7SRom46TGw5ILpoQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CjDxE2xEEtnFEl5WB6znGgCZqbM8gQOQz+Aff/t7h36n2wKJKPS7u04ZdDs3LOwFGWeNRwS68DPJ2aQaj6//gDYVAdt13fgNtvubLYtKygupd3iP/K/c3VegYrTRfHfT66q12KdeyzZY75DezjmQ4hoLR70HJnsK106heoprlmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=q6oTz0rC; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5645960cd56so4806040a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:35:39 -0800 (PST)
+	s=arc-20240116; t=1708522567; c=relaxed/simple;
+	bh=ulH7hnX2Ka/tGtvJe1+k7ag+F+iUxmyXMwzC4BFf4Qs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wd3Nt+Ebi0Qb2p0lk7gjM15lfQa5Ss9gR8hRwHpX0vaIh+aiRGRtxJC5yb6vjQyjmMqDbLOrjhmnC2E0vMhjjLpMfgqWDwhzCQayQA/aHgskps1CioxopZEw5e4NCsfLl+PeG38bBRcnlWUyFVQ8Oo6zk8xAnfkSDOAXa+qJpDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=be4nUlCE; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d208d0b282so88550051fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:36:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1708522538; x=1709127338; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M85MKNxHpEwF31wKePTUoYXDesnkz6TsPaxXuG5yiJk=;
-        b=q6oTz0rCssN3AQmE/IAWE65Jb2ML4ZrxtmR/MCtu3ETsrEeKGBuib/bduTJhBTVNgQ
-         cqALLEDQ6SiDrK3qhoMSQWQ1UWe3uPzeM51774MSh3DPNRxJWVlgzQEqY8Jb8CSdJn2I
-         X35TEMn+QS0voS0xAVCcZ+kQSM3mqOdLDhMFSUYNQeP4QMC95DcwC6B4576Opt1ZPLAZ
-         sseEfI/bPZSjB0gIMknQNNwcUJQnJy3ym0OzCSsvTrTsCodK8Fbik+k/puqwiDEoZDqe
-         HOZj6Qn4D2bcsl1TJQxHXN1CjjWgE68OgTHhAMJZI7NV34kOBQdHN8ILg1Ml7KUrwdj/
-         zDKA==
+        d=ventanamicro.com; s=google; t=1708522564; x=1709127364; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZa1EUK27qQ8Ow9XjJUdv9AmKUGFVXbnGB6joJ/bp7Q=;
+        b=be4nUlCEObteBzdd/JkodxVu/bQP3WStHVl6wQDW6xunOPPW8Ax0CPUOVbtNglusH/
+         XACgZI+NpCQx/dxW+nPWVpttDVo9fYHs0OeSoGpaTezaQ91cNeFyX/mQEryqdci0OYct
+         Cq2T6qvKm2gQCH3Lmq6ittUp9qwgXhsgeBx1AJn/RKSMGDlUe9uMq1rAQ2ViwscKb+GM
+         63IswkfGzCT1lMp9NLtY8VoupaSURUTVarPxYQR49e/ukp06owAmO4ZCwpmqHZ1yhzrU
+         s1wO2GqFK0nd1ABxG5rRlp+AgucctbuMV1k7g1Jkr8aFPXJqx5U5z4rRD1k0gZN/Ypop
+         TS4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708522538; x=1709127338;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M85MKNxHpEwF31wKePTUoYXDesnkz6TsPaxXuG5yiJk=;
-        b=pITjE8SjFB/yFfB39jSy4LzW9eb6RuMbxR7hPdxrOibBhxj+J492y6nRKMZAk5S+0Q
-         yDVbOSpG3QRuCdtwsb0TXHjNqslFkyMxSYQu4aTmQ2pFgb8QD2k9VLgK+nIemYqpV8qH
-         CW8ah800IFws5jv/zx3Xz3TECZIH1h/XdFa+RYaZooHTZYbg3VpBln9wPRLBdH7/0S6o
-         lT6IjwukV2yLowpnigSN9yiFYc5/nfEBISp7tR3UWHathCkSM7BRJckgqz4RfgpvpoYz
-         RX21eYI7pxmCc2sekl3TG3cTzY1d6KC4jRFHYmJEqHUH/aXvPyT1oB21gIKxBPN8/tw8
-         ORPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPhPs6AiuFs01jTPzjg595n0DULPE1msNka4wQY63lT0BuDYNrzIJPD16THRWM9GcDFc/5RoDO1pnNGCxjKkMtsi/wxY+vnyKx/6iG
-X-Gm-Message-State: AOJu0YyOsoqZf73tCJd1/qbKC0SIg61Ua+f7Lz54TdRyTvX4aFpZjFb9
-	8/POUaDRX5Fp0MFgw1IMpBjfmDX3AbiAiKf5Ypz4cqwNI/4wEp5tj21/IIMHZOg=
-X-Google-Smtp-Source: AGHT+IFjTAniUsouIQiZg5/1w3zu99rfqHzwO1yDcSTT+S18LBkfM8M18UxyzOt56YfOrmlo+CFdnQ==
-X-Received: by 2002:a17:906:16da:b0:a3e:7dbe:298b with SMTP id t26-20020a17090616da00b00a3e7dbe298bmr6580101ejd.24.1708522537598;
-        Wed, 21 Feb 2024 05:35:37 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.20])
-        by smtp.gmail.com with ESMTPSA id g16-20020a170906c19000b00a3cee88ddc7sm5044547ejz.147.2024.02.21.05.35.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 05:35:37 -0800 (PST)
-Message-ID: <1a3c9ec5-69b9-4f55-bdf6-628fcf2b0268@tuxon.dev>
-Date: Wed, 21 Feb 2024 15:35:35 +0200
+        d=1e100.net; s=20230601; t=1708522564; x=1709127364;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iZa1EUK27qQ8Ow9XjJUdv9AmKUGFVXbnGB6joJ/bp7Q=;
+        b=J8lBqf8p1NdffBycd9r+Poj9Em7fGnsRWTgWOuqi03u6VNu6n/tXtUyT9dCAEsBjuz
+         KUDO41I/Q/HB7flW1za4aYJaaxa4PsgfoWm2QzX9DL0bNaL2dHb/zR6AMA60+ZtJc9dS
+         wbYko3IbNj9duqHpo9EN2MlJUAO3L9h5rrbIF6Ux1D1XUm90GdSm7+qaMt3dXwM9la2G
+         5PLRzwjPib0fWuDgQGqk5W1ZrYPQ/LPClyTBw2HX0iPvuudgFyYGXWtAVRnQz4mh/FT1
+         7lCq9X68Dth8eRq2vPdrXTc4nO0g+xX9qyoP1laCRu8YTNPK2ExCoL0aqZKhe7rsl+Xx
+         zmYg==
+X-Forwarded-Encrypted: i=1; AJvYcCUlNRTXgLTbb70nMIylau8RPgv3e74xXVS0c49FLRs2MBOWbO7WF+F1Ee6mY2vQbIhrCdJPrR6SokApYRd0AkTEcKo1wQHv4gk/k8Ls
+X-Gm-Message-State: AOJu0YysbIDuA5oNcTevJYdazTZB/RPGGXJaZsrtYaRLMxzEIzJC33Yz
+	/Oa9RXLv4bpU1a5s6Yczh9dqj/to73LItxQV7BuNmUC2LCuWb1GW1sWATUlk7QzsiiSm+8ndlDQ
+	SaOhTXGuoUPhUZmTewXYxRcXoMrMMtbWOlFbtpg==
+X-Google-Smtp-Source: AGHT+IH8PbfqK4LbbkaSU1nojq4bUVMOQpkZmRdtlm1F7WODSQlRTVfG1+cQD421y+B/I3PNrpXgs8sPl3SY+UGKWfs=
+X-Received: by 2002:a2e:86d0:0:b0:2d2:3d1c:148f with SMTP id
+ n16-20020a2e86d0000000b002d23d1c148fmr5452288ljj.42.1708522563808; Wed, 21
+ Feb 2024 05:36:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/17] clk: renesas: r9a08g045: Add support for power
- domains
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- magnus.damm@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
- <20240208124300.2740313-11-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdUn6j8aZ+7iahrovWC8oWLiijqH=+cUDjYwdL3tWiuhDg@mail.gmail.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdUn6j8aZ+7iahrovWC8oWLiijqH=+cUDjYwdL3tWiuhDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240220060718.823229-1-apatel@ventanamicro.com>
+ <20240220060718.823229-3-apatel@ventanamicro.com> <87frxnigxk.ffs@tglx>
+In-Reply-To: <87frxnigxk.ffs@tglx>
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Wed, 21 Feb 2024 19:05:52 +0530
+Message-ID: <CAK9=C2VFksO054kVVHkrBRyZqte8Q4Gpup97VhLBRDCbOyQdqQ@mail.gmail.com>
+Subject: Re: [PATCH v13 02/13] irqchip/sifive-plic: Improve locking safety by
+ using irqsave/irqrestore
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
+	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
+	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi, Geert,
+On Tue, Feb 20, 2024 at 3:41=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Tue, Feb 20 2024 at 11:37, Anup Patel wrote:
+> > Now that PLIC driver is probed as a regular platform driver, the lock
+> > dependency validator complains about the safety of handler->enable_lock
+> > usage:
+> >
+> > [    0.956775]  Possible interrupt unsafe locking scenario:
+> >
+> > [    0.956998]        CPU0                    CPU1
+> > [    0.957247]        ----                    ----
+> > [    0.957439]   lock(&handler->enable_lock);
+> > [    0.957607]                                local_irq_disable();
+> > [    0.957793]                                lock(&irq_desc_lock_class=
+);
+> > [    0.958021]                                lock(&handler->enable_loc=
+k);
+> > [    0.958246]   <Interrupt>
+> > [    0.958342]     lock(&irq_desc_lock_class);
+> > [    0.958501]
+> >                 *** DEADLOCK ***
+> >
+> > To address above, let's use raw_spin_lock_irqsave/unlock_irqrestore()
+> > instead of raw_spin_lock/unlock().
+>
+> s/let's//
 
-On 16.02.2024 16:10, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Thu, Feb 8, 2024 at 1:44 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Instantiate power domains for the currently enabled IPs of R9A08G045 SoC.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Thanks for your patch!
-> 
->> --- a/drivers/clk/renesas/r9a08g045-cpg.c
->> +++ b/drivers/clk/renesas/r9a08g045-cpg.c
->> @@ -240,6 +240,28 @@ static const unsigned int r9a08g045_crit_mod_clks[] __initconst = {
->>         MOD_CLK_BASE + R9A08G045_DMAC_ACLK,
->>  };
->>
->> +static const struct rzg2l_cpg_pm_domain_init_data r9a08g045_pm_domains[] = {
->> +       DEF_PD("always-on",     R9A08G045_PD_ALWAYS_ON, 0, 0,
->> +                               RZG2L_PD_F_PARENT | RZG2L_PD_F_ALWAYS_ON),
->> +       DEF_PD("gic",           R9A08G045_PD_GIC, MSTOP(ACPU, BIT(3)), PWRDN(IP1, 2),
-> 
-> My docs document only bit 0 of the CPG_BUS_ACPU_MSTOP register.
+Okay, I will update.
 
-Indeed, mine, too. I took as reference the table "Registers for Module
-Standby Mode". I asked for clarifications. The TF-A software also uses
-BIT(3) for setting this.
-
-> 
->> +                               RZG2L_PD_F_ALWAYS_ON),
->> +       DEF_PD("ia55",          R9A08G045_PD_IA55, MSTOP(PERI_CPU, BIT(13)), PWRDN(IP1, 3),
->> +                               RZG2L_PD_F_ALWAYS_ON),
->> +       DEF_PD("dmac",          R9A08G045_PD_DMAC, MSTOP(REG1, GENMASK(3, 0)), 0,
->> +                               RZG2L_PD_F_ALWAYS_ON),
->> +       DEF_PD("ddr",           R9A08G045_PD_DDR, MSTOP(PERI_DDR, BIT(1)), PWRDN(IP2, 0),
-> 
-> Only BIT(1)? My docs suggest GENMASK(1, 0).
-
-I wanted to keep PHY separated but there's no reason for doing that,
-AFAICT. I'll update it.
-
-> 
->> +                               RZG2L_PD_F_ALWAYS_ON),
->> +       DEF_PD("tzcddr",        R9A08G045_PD_TZCDDR, MSTOP(TZCDDR, GENMASK(2, 0)),
->> +                               PWRDN(IP2, 1), RZG2L_PD_F_ALWAYS_ON),
->> +       DEF_PD("otfde_ddr",     R9A08G045_PD_OTFDE_DDR, 0, PWRDN(IP2, 2), RZG2L_PD_F_ALWAYS_ON),
-> 
-> MSTOP(PERI_CPU2, BIT(2))?
-
-OK.
-
-Thank you,
-Claudiu Beznea
-
-> 
->> +       DEF_PD("sdhi0",         R9A08G045_PD_SDHI0, MSTOP(PERI_COM, BIT(0)), PWRDN(IP1, 13), 0),
->> +       DEF_PD("sdhi1",         R9A08G045_PD_SDHI1, MSTOP(PERI_COM, BIT(1)), PWRDN(IP1, 14), 0),
->> +       DEF_PD("sdhi2",         R9A08G045_PD_SDHI2, MSTOP(PERI_COM, BIT(11)), PWRDN(IP1, 15), 0),
->> +       DEF_PD("eth0",          R9A08G045_PD_ETHER0, MSTOP(PERI_COM, BIT(2)), PWRDN(IP1, 11), 0),
->> +       DEF_PD("eth1",          R9A08G045_PD_ETHER1, MSTOP(PERI_COM, BIT(3)), PWRDN(IP1, 12), 0),
->> +       DEF_PD("scif0",         R9A08G045_PD_SCIF0, MSTOP(MCPU2, BIT(1)), 0, 0),
->> +};
->> +
-> 
-> The rest LGTM.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Regards,
+Anup
 
