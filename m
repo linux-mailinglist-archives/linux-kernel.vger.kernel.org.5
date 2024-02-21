@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-74228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6658B85D156
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:28:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FE685D159
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D9471C238A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:28:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4EB11F233BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41DB3D965;
-	Wed, 21 Feb 2024 07:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8781E3DB97;
+	Wed, 21 Feb 2024 07:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DIxWWSNp"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zhhp9cGt"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D33C3D56E
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BD63D981
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708500386; cv=none; b=GyaNsjvh29XbZylvKgQGlx7/utffG2TfO4jijeNziyAuUON5hMY385HpqyLWEgnJOhCcXDKbGtPH4bOQDGYTxeU6GniaWF3EJ1mKKzk8rV9hmwFMOzbHbNYiYrF1eonlLaFDpRhUse6njRQZSsxiyZ2UyWu2PH1xJ3PtRfDDr9c=
+	t=1708500391; cv=none; b=kcGqYZ51pq/g3FL9nMxfHyatD1+G/yD8qnXhZvdOvhLaGG/DJDXySO9XelfzmHxC4vCRVxcMaikW5I31urXARJ/1j8biRN9vT7Nmlf8RFvNMLvwFs6WVf4tkwiMEL6Z3xR5x/eMgjuZyn4ifGM2iurZz9/+opMoP3XNvwdD+BdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708500386; c=relaxed/simple;
-	bh=M3SuqSqPQHRRDSx0L7lAp5b3EfogWfgqYBhfsqO8LBM=;
+	s=arc-20240116; t=1708500391; c=relaxed/simple;
+	bh=2AzZkBo6nO7k/QxOvuRxl5TYVHdGaDzdj6X96G9LMJ8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ya0hXheJJH/FkzskhGdvF/IdFsRAsTaqD04j8cz3YILyeEu9fbWY9UjGOT09QFo2NJSspuRjkl+k0sNyAcQdIyHAA01bn5uWQGh/jUV/uj0MZX3CXnxd1sxUTKkpHifNKdUoXB4Ecwfsa+tmW6kxnQsbEE1wM0yOLuGfFuUE/tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DIxWWSNp; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=dKURJihUsr+ArU6sAMH2M51x1j/9Ym08fgnZFKpaWhUNxBTZZYBThUCkyTuSGi4tPSwJHCf488f0Gy17MJJOuIY6d0Vcydie9J0Ixz5aR+ua1K39jVqIoBdoCzHjDLNyG+YVjCYEou5k4kPbcL2ZTipylgBzq67e7xc51Xb+rjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Zhhp9cGt; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e4560664b5so266242b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:26:25 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so5889184276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:26:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708500385; x=1709105185; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1708500389; x=1709105189; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pih8sW3nLr8uR7cM0/SKyhPbmHZuIiN96AmunLzN/Xw=;
-        b=DIxWWSNperUegeHmk0cqBQZvMH9DSPkSmScAcv+5AMSuD/JESzqTXvCpwk8yChNPNv
-         E1OehFTMW7afK5/kKA2fA77k7AKcqTgxQzG7OH2dpJE6x37F5DcEyaXVH/WFRhzJbpud
-         N8+I4LLPrWvbG8jftCY0dx3iURAQEUHXAuNPU=
+        bh=GIt47AOQhqYwbSmwly9ATjjcEw5hYcM2BxlkkvG0BKw=;
+        b=Zhhp9cGtT8EacIFW/Hvx/TsFs1EbJeMSv8KiI3iWxkQSG70AF26aGmWL4r7KVgmrmd
+         5jwEhKBYVUA0bCr/vOJowXubVdcfFKs1tvbtbe1bStoJmL6K6OiBBUCXKDBK9puFwxV3
+         sHInUY9g7e7rXZGej5T+CWlgP+MdhLhOFvycg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708500385; x=1709105185;
+        d=1e100.net; s=20230601; t=1708500389; x=1709105189;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pih8sW3nLr8uR7cM0/SKyhPbmHZuIiN96AmunLzN/Xw=;
-        b=N15ofql2FInv2Vaci83J6H06b+EXNNowrXIRBzLJ4z1yqRQ2HJxe1QFb0XGRhPZw4a
-         C91pM1EjJaWrcmkGqBMGdwXRgMaDyvCxVNv5KMcwEw+yxz684zp1Q0pTZKGpTaef3VQg
-         V8vnl7P5RGrwnAQ9Dg/IYy8gZAvIhEfShFH1HQIQarmmblQzc3wNnWE1Eu8pPonqHELU
-         vpMpz2F0SmIZAnYVw+R5142STHOAPyMSP1DjkVcr1FFnxbL3D+RQ8hWtUIZSxoSAhsVp
-         qyj5ajyPUlHsl8aS07uNONWvoxU08OMUIXVYkLgFSi78bi9CouocTZsKmxhEVPKlBYME
-         oMyA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2ufqT4l2W3HlDgTvobjzNdDpWunKq5QX2KRerCqWIveJOsuSkhz7JhcQYeJ9Gs4tQlGchN2KQFjTujjUbED3eOUkPD9DvG01fzeFT
-X-Gm-Message-State: AOJu0YzjoXtMDQG0m+DP+z6xz2WDuql/T6Z8Os3Rx+N3l3W+6grczKsO
-	XkW0fBVZpcUbojOgKaccYO1qNmRV8uprMmSQcyfhSqU4sROMuPt2uO+XMSxlWA==
-X-Google-Smtp-Source: AGHT+IHyypm/T0rwoWlLJexgzLRY5m4jjHnGc2zjD25rHsn1YoHjqJ8mJQow4Yfp2IIZNcTX4qemYQ==
-X-Received: by 2002:aa7:81d1:0:b0:6e1:4a02:6217 with SMTP id c17-20020aa781d1000000b006e14a026217mr14102447pfn.22.1708500384849;
-        Tue, 20 Feb 2024 23:26:24 -0800 (PST)
+        bh=GIt47AOQhqYwbSmwly9ATjjcEw5hYcM2BxlkkvG0BKw=;
+        b=i39BX6aVmBsYqqhq8sq/NHsxYCD+8oST7Y/5KW6cJq9B0LoYDEr+h44lc5Nwj14UbT
+         TFV7WlrThm+ksm1GcHQiwXIKU+/K3gao/2v2URPAadNX5JOyP0r5ITjJojoXHHhXPRbz
+         R2QXQ43046Cw5Dv2cudXf1pRFNRe/IcOL0X7c0TYQwxSUeqd4jF+DzuMSR55/HziXA6W
+         AynEnxtWkzZ/aQD3kfYwmk9eD8f8D0g549xMpT2RTfgvz+I+v2fFXMXHT8xrP8vpT1sK
+         pwcJmoVJuXnaJKuP16DJEaBBrwuDO21oFU+EJqW1zgILjDlGHDqZZG0mu0T3SXqiPnwM
+         0GjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAyW2uYhVmiYTIwO7hTLhguP7M3XOUjxCnVx7o2D1Ye4ZApo23VGMCkyD8Phfk9osulM9lDJiZ6zyc2ycNAbHiklUgtRhsgTEyBdzx
+X-Gm-Message-State: AOJu0YyA5Ltvd0zGEHslA22WY3vu9xSBZznyoqMhp5KD01MSryiRIuYj
+	5Xxdn2/lkafpguG++Zbf4eXmeEdX2VMdMq7SiVLM2kNiayMek5lKj3eC1wVmHQ==
+X-Google-Smtp-Source: AGHT+IGIrXAFDvR+ce91/wX0UHTroMBo0ZdjQol8T7e9MNCa0XfG7X3z0mt0451t7GSOcS9P/JFR8w==
+X-Received: by 2002:a25:fe03:0:b0:dcd:990a:c02a with SMTP id k3-20020a25fe03000000b00dcd990ac02amr14224034ybe.63.1708500388968;
+        Tue, 20 Feb 2024 23:26:28 -0800 (PST)
 Received: from localhost ([2401:fa00:8f:203:b417:5d09:c226:a19c])
-        by smtp.gmail.com with UTF8SMTPSA id v184-20020a6389c1000000b005bdbe9a597fsm7933795pgd.57.2024.02.20.23.26.22
+        by smtp.gmail.com with UTF8SMTPSA id i73-20020a636d4c000000b005b458aa0541sm7776854pgc.15.2024.02.20.23.26.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 23:26:24 -0800 (PST)
+        Tue, 20 Feb 2024 23:26:28 -0800 (PST)
 From: David Stevens <stevensd@chromium.org>
 X-Google-Original-From: David Stevens <stevensd@google.com>
 To: Sean Christopherson <seanjc@google.com>
@@ -74,9 +74,9 @@ Cc: Yu Zhang <yu.c.zhang@linux.intel.com>,
 	linux-kernel@vger.kernel.org,
 	kvm@vger.kernel.org,
 	David Stevens <stevensd@chromium.org>
-Subject: [PATCH v10 6/8] KVM: x86: Migrate to __kvm_follow_pfn
-Date: Wed, 21 Feb 2024 16:25:25 +0900
-Message-ID: <20240221072528.2702048-8-stevensd@google.com>
+Subject: [PATCH v10 6/8] KVM: x86: Migrate to kvm_follow_pfn()
+Date: Wed, 21 Feb 2024 16:25:26 +0900
+Message-ID: <20240221072528.2702048-9-stevensd@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 In-Reply-To: <20240221072528.2702048-1-stevensd@google.com>
 References: <20240221072528.2702048-1-stevensd@google.com>
@@ -90,17 +90,17 @@ Content-Transfer-Encoding: 8bit
 
 From: David Stevens <stevensd@chromium.org>
 
-Migrate functions which need access to is_refcounted_page to
-__kvm_follow_pfn. The functions which need this are __kvm_faultin_pfn
-and reexecute_instruction. The former requires replacing the async
-in/out parameter with FOLL_NOWAIT parameter and the KVM_PFN_ERR_NEEDS_IO
-return value. Handling non-refcounted pages is complicated, so it will
-be done in a followup. The latter is a straightforward refactor.
+Migrate functions which need to be able to map non-refcounted struct
+pages to kvm_follow_pfn(). These functions are kvm_faultin_pfn() and
+reexecute_instruction(). The former requires replacing the async in/out
+parameter with FOLL_NOWAIT parameter and the KVM_PFN_ERR_NEEDS_IO return
+value (actually handling non-refcounted pages is complicated, so it will
+be done in a followup). The latter is a straightforward refactor.
 
 APIC related callers do not need to migrate because KVM controls the
 memslot, so it will always be regular memory. Prefetch related callers
-do not need to be migrated because atomic gfn_to_pfn calls can never
-make it to hva_to_pfn_remapped.
+do not need to be migrated because atomic gfn_to_pfn() calls can never
+make it to hva_to_pfn_remapped().
 
 Signed-off-by: David Stevens <stevensd@chromium.org>
 Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
