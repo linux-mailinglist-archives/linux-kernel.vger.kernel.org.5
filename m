@@ -1,103 +1,93 @@
-Return-Path: <linux-kernel+bounces-75604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB2C85EBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:31:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0963185EBD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69C84284F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:31:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B377A1F23846
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9693C461;
-	Wed, 21 Feb 2024 22:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE7B84FA5;
+	Wed, 21 Feb 2024 22:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="txGPLxMt"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AaoCCqzN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029D112A166;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAE269318;
 	Wed, 21 Feb 2024 22:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708554640; cv=none; b=Z9NAylI/8LjSp1fbQ2IXixqtFT2G79gEBT1zDfgIGa3HX+LHMhBRd7PTsFaR/SikkVqeaRB/ZY7WK38UclslFHEbLRyAKYTt3rb4GrMDpMyRgcb+y1Q+J7uHPUQpJDg/E6kgIMfCBq6+h3jlQUJ8fW+SJkycvf8M0Q0loZhm7hE=
+	t=1708554630; cv=none; b=sAHvN4u4m9hniESHZs88LJuMHiE1athXGzxeSrcneJI1KsZ0q+bhkGi81ecuX8FdjIm0lmYT8eOiliPNFUKKsYuN0BjhPJlm+tQiTxJOlzjb3kNLtaLgd6PgDlvRFU0SU49p+imek8fq1mnkZ+gFgkfVLqV/GjKqZipiK4uagik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708554640; c=relaxed/simple;
-	bh=bdS2FtnKbYxNW7PTSlxKVXVXWf6E45YksDvwx67f+vg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=V4ARh/x1HfvluGuuOw0+5/NepsLFQotbo7VsYx74AzjBgqleNp/FMJenjx2M0PFf559Xw9I1c7RhODdn/JcgxQgeUfcetzfFVMzTbEWJzXW5Gt2Fxjo0tVDgBHbpHPflbzwOTciZ3pX+GVxOhUF07LW5kj5WYmnjDX/OnL9doow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=txGPLxMt; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708554627;
-	bh=gh7laZzC56uFD3fUawV8vNFQ6cB/qxDm6SbST2hms60=;
-	h=Date:From:To:Cc:Subject:From;
-	b=txGPLxMt/jqcaEme21KUI7A+PMHMNAhU6CkN/jDmuWHS0zAY4tMUwKnwviZLsZ4is
-	 qIpeChfjC35tk+pW3+8SJxteCT0V24ZiCu/Hq+pk/GHZ4Zy/RL8GQXcZZvDwkIMxYm
-	 Hq4vUJpq7q7fRM+DGU/P9UUE4diH4Hcdj7G/AoGrj880imSvpXo/p2t39fGyi25hTl
-	 YS8vz4xTUmCfThxueqfVWSnknQn8FqqDB/7J0EXDUUNrR2qGU175ops5wECROY6nv6
-	 nBs0oC0PlIgSbUC1KyV42V+c4rsGuRgh1kCfeJrteaL35smHgyFqUTbxnbrsX98tRQ
-	 SPqpl3Z2PDinA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tg9vl0Krjz4wcF;
-	Thu, 22 Feb 2024 09:30:26 +1100 (AEDT)
-Date: Thu, 22 Feb 2024 09:30:25 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Greg KH <greg@kroah.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the risc-v-fixes tree
-Message-ID: <20240222093025.5f9d9ad5@canb.auug.org.au>
+	s=arc-20240116; t=1708554630; c=relaxed/simple;
+	bh=OT7EOi/ourfNVtCJMunc3Vcywb1aP07ZDVjFhX6VFOI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Mw+gRrh+mSV5D2Fjc5rorllKgyT9P+7xEsRXkE3dQpN8cbzCqO8qQ+WPLWs4d1OmBQaKff1d3bPt3mdViR76yBoZGm56Vt/BD/BbrmAez9+TBOyayY8rBxp9nogjK01X6JUWA7+es9q67McRJBfRvn0+aGR5QYoPC0YETkncAik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AaoCCqzN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 35E49C433A6;
+	Wed, 21 Feb 2024 22:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708554629;
+	bh=OT7EOi/ourfNVtCJMunc3Vcywb1aP07ZDVjFhX6VFOI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=AaoCCqzNI/fZmqRVXFGH6nfYvlCKzDu/oi16Ru3I4J3K87KKsb/Gw7iRw3R0/nEd/
+	 GnrE3Cv9EF7HjiOZvQOQr3cBCH/qMiJVNrjeeoXEiqX32VqtUDcHOK2Qdw76MAVLos
+	 FBzGS0BFL7pviE2d2Nie27Gma/lSXFQs/F4BOhfgnYd2J2aZLMgzcbVTeNSdLECyuD
+	 CiTFupC73iF00Hw7hMnj65TYZpvx6DQxIYQIFwB2qC8cHimWGpop1E1/OEMrUluw2M
+	 fLtgQZK9pMhWqlPASUmEhO0vHIt06DXG/Lt4P09SnFjkHZYbQzyx3cy8L7PhwliR+Q
+	 P4Hw1ek4HJPug==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A50BC00446;
+	Wed, 21 Feb 2024 22:30:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ChZT8gv=IAY_ctlKzVP5U2M";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH ver.2] gtp: fix use-after-free and null-ptr-deref in
+ gtp_genl_dump_pdp()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170855462910.28356.12191334633977961990.git-patchwork-notify@kernel.org>
+Date: Wed, 21 Feb 2024 22:30:29 +0000
+References: <20240214162733.34214-1-kovalev@altlinux.org>
+In-Reply-To: <20240214162733.34214-1-kovalev@altlinux.org>
+To: None <kovalev@altlinux.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com,
+ pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, nickel@altlinux.org,
+ oficerovas@altlinux.org, dutyrok@altlinux.org, stable@vger.kernel.org
 
---Sig_/ChZT8gv=IAY_ctlKzVP5U2M
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-The following commit is also in the tty.current tree as a different commit
-(but the same patch):
+On Wed, 14 Feb 2024 19:27:33 +0300 you wrote:
+> From: Vasiliy Kovalev <kovalev@altlinux.org>
+> 
+> The gtp_net_ops pernet operations structure for the subsystem must be
+> registered before registering the generic netlink family.
+> 
+> Syzkaller hit 'general protection fault in gtp_genl_dump_pdp' bug:
+> 
+> [...]
 
-  481860974faa ("tty: hvc: Don't enable the RISC-V SBI console by default")
+Here is the summary with links:
+  - [ver.2] gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()
+    https://git.kernel.org/netdev/net/c/136cfaca2256
 
-This is commit
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  8b79d4e99407 ("tty: hvc: Don't enable the RISC-V SBI console by default")
 
-in the tty-current tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ChZT8gv=IAY_ctlKzVP5U2M
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXWeYEACgkQAVBC80lX
-0GzCaAf9EtdjZ8KatCxNJ6rWg349gp95tf+2+8mfOObGuSDZ5LdFEj2kssg9BImd
-a0YMHKEpL73SjVdvCtiNJrH8pqxOstKYAWU3BVjlUxWgAxRCefV40DdRAJp/uNgF
-rJyqV6mH0IBEnLngmz44KrTyJqXMnvyLrFVbpOn7Zbcq7LkTgrmOa9n2nuYhBFSU
-NOopSesQvM52rUcsfOgmk11uqfmLHKJVfIY/u2MeLEnnJok5q7MPx1VBC0XzIjS4
-Iv3bsuItgHvtQ5BGea80oSQiNkaDHJjQ0D6QHDuZpJ7ai0Z7r0e5mgIBuuucFee1
-zGN/kseChuRwwFhU182eTkSARn430Q==
-=u13X
------END PGP SIGNATURE-----
-
---Sig_/ChZT8gv=IAY_ctlKzVP5U2M--
 
