@@ -1,380 +1,257 @@
-Return-Path: <linux-kernel+bounces-75079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D388585E2AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:14:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71E7E85E2E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:18:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F086E1C2303E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:14:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951741C245AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D0D81721;
-	Wed, 21 Feb 2024 16:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E9F81759;
+	Wed, 21 Feb 2024 16:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QyEFEWg4"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CsQXC7qO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D77D6994A;
-	Wed, 21 Feb 2024 16:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382D26994A;
+	Wed, 21 Feb 2024 16:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708532047; cv=none; b=OlpKm+uKT3/y9BsptAsIRu77k+Bg2svvZugG8w+MjZ6Hkylm3HssESDXiYxuY9OZ5HqnCtgv7o3ZJpV0rWyhBX7zWWpUCRtZ1qrzHvyumdWB2w/ahjLyUOjAavvsro0FNZW5VZ6KSoplBz7i1IsF4aFvrhUQQ/BGj8NOVoNlZrQ=
+	t=1708532288; cv=none; b=dz6uVdB7lI46DjQO6YMW6KT31PcvwSaTAz+iqIx8Yw0KMJUGksjWGEcUShvMBiSBTSlxYU2PUEA7z9xcVQR68ERtKHhjRGAB4He1NyOIfIcwhmUpm2erxrHPYMkLTE8ud0GOjZXDWNPHp/GLVkRsw2NKEhMqnRnBeIaPLqtGvaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708532047; c=relaxed/simple;
-	bh=JHBed4HhRS/+miDeC1Vba8uHd/woC+WKGVjOOcm9Eoc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OxhT/oiaCH0TW2Yzo0cq447gTi0vhWztuCqZZxuMwg6SoDksRgfZ69alz1uEC0Z3nCC7jMPC0f30YpofiUWwVnN0lJq6P5yOvf667nZSmEkGV+gFmE52cyIu0qexG7YGDRw8pthmIsBc2RYd6TiBQRIdDkxWNcAP5J+KOdkIKRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QyEFEWg4; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708532042;
-	bh=JHBed4HhRS/+miDeC1Vba8uHd/woC+WKGVjOOcm9Eoc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QyEFEWg4iOj696uNgzJEjM7VVBBxs5TR8MhbBa8yDqmZLFylpV17ZC0v+v3V1T7eL
-	 pP9udLVigJOnISA+mi+rJ4g8a+h5shEq/PPyk46PGcQ0Md91kcwNlstwT6y0Rg+ObK
-	 BLIlnYBBWgEsHvj7P3H1+88kWgNH1/234/bRn+hxbMm89EtVU7tnkXDn6w9flCNiQ3
-	 PnnxudmewEbTwgpv8sghHFxNCpba4YwuosgP666VBzEWGNhMHaT0efTJn4vzRMIVwp
-	 EM1loMtnW8am0K6rs3rzjdzSTAcmVnwwiP+ut2tL412oBvJqzwXypJWOaMf7XSMtxR
-	 GbBeI+CJg8v2w==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: alarumbe)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9FB2F3781FE6;
-	Wed, 21 Feb 2024 16:14:01 +0000 (UTC)
-From: =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Steven Price <steven.price@arm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: kernel@collabora.com,
-	=?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-doc@vger.kernel.org
-Subject: [PATCH] drm/panfrost: Replace fdinfo's profiling debugfs knob with sysfs
-Date: Wed, 21 Feb 2024 16:12:32 +0000
-Message-ID: <20240221161237.2478193-1-adrian.larumbe@collabora.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708532288; c=relaxed/simple;
+	bh=BOE7ZLv14uGTlO6KAsv6/doL9GayurXClMerkYD0HBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T4vz5TlBLlrba7LXPaQ5GLoD+1eFmnzRfat4UaI4KuMh8Osq0D6hrIChXygxKeT1lFQLZUT5ykJ0BFlr5DyYMS8euwr4oXV26JZrJ7LpAkzs4VB7hB2gUUk2WHUT0T7D+ObF1y1+0nvZqmnWhyVrnzaVzB7ZV4gpigMwVTvRpmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CsQXC7qO; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708532287; x=1740068287;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BOE7ZLv14uGTlO6KAsv6/doL9GayurXClMerkYD0HBg=;
+  b=CsQXC7qOTfRXkppOUhzCfOJqGH80ywuHsZ5vFMxr5RwaSrH8PCYtdIli
+   809kjJTatsyhkFnxvZs0MjKYv4qdNfk0licjwD5rJi+yKlN6jAcnefAfj
+   BkaRl692EYg1pXot/XtK1ItoQs316KyRnPfe/YcWPVEfmEO/vnBin2Tje
+   zzz4v18oBHf+eGvpuDzEzQpYoIpqYQgJTSlpqi61iySmlAH/B6fVo8zrV
+   YPoMzycKUzNrgnegxhth9lFpLBgDtuB7QFxHQY6CItPaGnJ9xmBLGpQkZ
+   RSHNx4oH6IY5YRRPIE2igjEqGqIi2O7X4JcNQP0ns2t7a6gFV8a2QsvJm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="3183909"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="3183909"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 08:18:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="5344100"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa008.fm.intel.com with ESMTP; 21 Feb 2024 08:18:04 -0800
+Date: Thu, 22 Feb 2024 00:14:08 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: matthew.gerlach@linux.intel.com
+Cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com,
+	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fpga: dfl: afu: support Rev 2 of DFL Port feature
+Message-ID: <ZdYhUK5yFFlhVV62@yilunxu-OptiPlex-7050>
+References: <20240125233715.861883-1-matthew.gerlach@linux.intel.com>
+ <ZbjHl8ptQG5FdHvC@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401300948590.112016@sj-4150-psse-sw-opae-dev2>
+ <Zbnd8W1ciTKeoKc4@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401311610020.112016@sj-4150-psse-sw-opae-dev2>
+ <ZcBIjcFJjGKf0qcO@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2402051600190.122158@sj-4150-psse-sw-opae-dev2>
+ <ZdF4JvYQQL8irnbW@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2402201658400.191484@sj-4150-psse-sw-opae-dev2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2402201658400.191484@sj-4150-psse-sw-opae-dev2>
 
-Debugfs isn't always available in production builds that try to squeeze
-every single byte out of the kernel image, but we still need a way to
-toggle the timestamp and cycle counter registers so that jobs can be
-profiled for fdinfo's drm engine and cycle calculations.
+On Tue, Feb 20, 2024 at 05:49:04PM -0800, matthew.gerlach@linux.intel.com wrote:
+> 
+> 
+> On Sun, 18 Feb 2024, Xu Yilun wrote:
+> 
+> > On Wed, Feb 07, 2024 at 08:40:55AM -0800, matthew.gerlach@linux.intel.com wrote:
+> > > 
+> > > 
+> > > On Mon, 5 Feb 2024, Xu Yilun wrote:
+> > > 
+> > > > On Wed, Jan 31, 2024 at 04:26:27PM -0800, matthew.gerlach@linux.intel.com wrote:
+> > > > > 
+> > > > > 
+> > > > > On Wed, 31 Jan 2024, Xu Yilun wrote:
+> > > > > 
+> > > > > > On Tue, Jan 30, 2024 at 10:00:16AM -0800, matthew.gerlach@linux.intel.com wrote:
+> > > > > > > 
+> > > > > > > 
+> > > > > > > On Tue, 30 Jan 2024, Xu Yilun wrote:
+> > > > > > > 
+> > > > > > > > On Thu, Jan 25, 2024 at 03:37:15PM -0800, Matthew Gerlach wrote:
+> > > > > > > > > Revision 2 of the Device Feature List (DFL) Port feature
+> > > > > > > > > adds support for connecting the contents of the port to
+> > > > > > > > > multiple PCIe Physical Functions (PF).
+> > > > > > > > > 
+> > > > > > > > > This new functionality requires changing the port reset
+> > > > > > > > > behavior during FPGA and software initialization from
+> > > > > > > > > revision 1 of the port feature. With revision 1, the initial
+> > > > > > > > > state of the logic inside the port was not guaranteed to
+> > > > > > > > > be valid until a port reset was performed by software during
+> > > > > > > > > driver initialization. With revision 2, the initial state
+> > > > > > > > > of the logic inside the port is guaranteed to be valid,
+> > > > > > > > > and a port reset is not required during driver initialization.
+> > > > > > > > > 
+> > > > > > > > > This change in port reset behavior avoids a potential race
+> > > > > > > > > condition during PCI enumeration when a port is connected to
+> > > > > > > > > multiple PFs. Problems can occur if the driver attached to
+> > > > > > > > > the PF managing the port asserts reset in its probe function
+> > > > > > > > > when a driver attached to another PF accesses the port in its
+> > > > > > > > > own probe function. The potential problems include failed or hung
+> > > > > > > > 
+> > > > > > > > Only racing during probe functions? I assume any time port_reset()
+> > > > > > > > would fail TLPs for the other PF. And port_reset() could be triggered
+> > > > > > > > at runtime by ioctl().
+> > > > > > > 
+> > > > > > > Yes, a port_reset() triggered by ioctl could result in failed TLP for the
+> > > > > > > other PFs. The user space SW performing the ioctl needs to ensure all PFs
+> > > > > > > involved are properly quiesced before the port_reset is performed.
+> > > > > > 
+> > > > > > How would user get an insight into other PF drivers to know everything
+> > > > > > is quiesced?  I mean do we need driver level management for this?
+> > > > > 
+> > > > > Since this is an FPGA, the number of other PFs and the drivers bound to
+> > > > > those PFs depends on the FPGA image. There would also be user space software
+> > > > > stacks involved with the other PFs as well. The user would have to ensure
+> > > > > all the SW stacks and drivers are quiesced as appropriate for the FPGA
+> > > > 
+> > > > User may not know everything about the device, they only get part of the
+> > > > controls that drivers grant. This is still true for vfio + userspace
+> > > > drivers.
+> > > 
+> > > A user performing a port reset would have to know the impact to the specific
+> > > FPGA image being run in order to ensure all SW stacks are ready for the
+> > > reset.
+> > 
+> > We are not going to change the logic of the whole driver model just
+> > because the device is backed up by an FPGA image.  The *driver* should be
+> > fully responsible for matched devices.  A HW reset unaware to the
+> > device driver is not wanted.  Assuming that the userspace could control
+> > every access to device makes no sense.
+> > 
+> > For your case, there is no garantee userspace could block every access
+> > to "other PF" initiated by "other PF" driver.  There is also no
+> > notification to "other PF" driver that userspace is doing reset to
+> > "other PF" via "management PF" interface.  "other PF" driver just break
+> > on reset.
+> 
+> Hi Yilun,
+> 
+> I think this conversation has gotten a little off track. This patch only
+> changes the port reset behavior at driver initialization for revision 2 of
+> the port IP. The behavior and the requirements of port reset during run time
+> have not changed. The existing implementation requires the user performing
+> the port reset to ensure appropriate SW was quiesced. This patch does not
+> change this requirement.
 
-Drop the debugfs knob and replace it with a sysfs file that accomplishes
-the same functionality, and document its ABI in a separate file.
+You are actually adding support to the new devices behavior defined by
+revision 2.  Previously the user requires the management PF driver to do port
+reset, and this only affects some logic in the PF itself and the impact could
+be handled inside the driver.  The current PF driver doesn't actually do anything
+because it (or any kernel component) never touches the disabled logic, and the
+user accessing of the mmapped but disabled logic won't cause system issues.
 
-Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
----
- .../testing/sysfs-driver-panfrost-profiling   | 10 +++
- Documentation/gpu/panfrost.rst                |  9 +++
- drivers/gpu/drm/panfrost/Makefile             |  5 +-
- drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ------
- drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 ----
- drivers/gpu/drm/panfrost/panfrost_device.h    |  5 +-
- drivers/gpu/drm/panfrost/panfrost_drv.c       | 14 ++--
- drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
- drivers/gpu/drm/panfrost/panfrost_sysfs.c     | 74 +++++++++++++++++++
- drivers/gpu/drm/panfrost/panfrost_sysfs.h     | 15 ++++
- 10 files changed, 124 insertions(+), 45 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
- delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
- delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
- create mode 100644 drivers/gpu/drm/panfrost/panfrost_sysfs.c
- create mode 100644 drivers/gpu/drm/panfrost/panfrost_sysfs.h
+But the new management PF does port reset and affect other PFs, and may
+cause disorder in other drivers. so you need extra code to support the
+behavior.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
-new file mode 100644
-index 000000000000..ce54069714f3
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
-@@ -0,0 +1,10 @@
-+What:		/sys/bus/.../drivers/panfrost/.../drm/../profiling/status
-+Date:		February 2024
-+KernelVersion:	6.8.0
-+Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
-+Description:
-+                Get/set drm fdinfo's engine and cycles profiling status.
-+                Valid values are:
-+		0: Disable fdinfo job profiling sources. This disables both the GPU's
-+                timestamp and cycle counter registers.
-+		1: Enable the above.
-diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfrost.rst
-index b80e41f4b2c5..be4ac282ef63 100644
---- a/Documentation/gpu/panfrost.rst
-+++ b/Documentation/gpu/panfrost.rst
-@@ -38,3 +38,12 @@ the currently possible format options:
- 
- Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
- `drm-curfreq-` values convey the current operating frequency for that engine.
-+
-+Users must bear in mind that engine and cycle sampling are disabled by default,
-+because of power saving concerns. `fdinfo` users and benchmark applications which
-+query the fdinfo file must make sure to toggle the job profiling status of the
-+driver by writing into the appropriate sysfs node::
-+
-+    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/drm/card1/profiling
-+
-+Where `N` is either `0` or `1`, depending on the desired enablement status.
-diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost/Makefile
-index 2c01c1e7523e..6e718595d8a6 100644
---- a/drivers/gpu/drm/panfrost/Makefile
-+++ b/drivers/gpu/drm/panfrost/Makefile
-@@ -10,8 +10,7 @@ panfrost-y := \
- 	panfrost_job.o \
- 	panfrost_mmu.o \
- 	panfrost_perfcnt.o \
--	panfrost_dump.o
--
--panfrost-$(CONFIG_DEBUG_FS) += panfrost_debugfs.o
-+	panfrost_dump.o \
-+	panfrost_sysfs.o
- 
- obj-$(CONFIG_DRM_PANFROST) += panfrost.o
-diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
-deleted file mode 100644
-index 72d4286a6bf7..000000000000
---- a/drivers/gpu/drm/panfrost/panfrost_debugfs.c
-+++ /dev/null
-@@ -1,21 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright 2023 Collabora ltd. */
--/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
--
--#include <linux/debugfs.h>
--#include <linux/platform_device.h>
--#include <drm/drm_debugfs.h>
--#include <drm/drm_file.h>
--#include <drm/panfrost_drm.h>
--
--#include "panfrost_device.h"
--#include "panfrost_gpu.h"
--#include "panfrost_debugfs.h"
--
--void panfrost_debugfs_init(struct drm_minor *minor)
--{
--	struct drm_device *dev = minor->dev;
--	struct panfrost_device *pfdev = platform_get_drvdata(to_platform_device(dev->dev));
--
--	debugfs_create_atomic_t("profile", 0600, minor->debugfs_root, &pfdev->profile_mode);
--}
-diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
-deleted file mode 100644
-index c5af5f35877f..000000000000
---- a/drivers/gpu/drm/panfrost/panfrost_debugfs.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * Copyright 2023 Collabora ltd.
-- * Copyright 2023 Amazon.com, Inc. or its affiliates.
-- */
--
--#ifndef PANFROST_DEBUGFS_H
--#define PANFROST_DEBUGFS_H
--
--#ifdef CONFIG_DEBUG_FS
--void panfrost_debugfs_init(struct drm_minor *minor);
--#endif
--
--#endif  /* PANFROST_DEBUGFS_H */
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-index 62f7e3527385..56c8e5551335 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-@@ -130,7 +130,10 @@ struct panfrost_device {
- 	struct list_head scheduled_jobs;
- 
- 	struct panfrost_perfcnt *perfcnt;
--	atomic_t profile_mode;
-+	struct kobj_profiling {
-+		struct kobject base;
-+		atomic_t profile_mode;
-+	} profiling;
- 
- 	struct mutex sched_lock;
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index a926d71e8131..6db1ea453514 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -20,7 +20,7 @@
- #include "panfrost_job.h"
- #include "panfrost_gpu.h"
- #include "panfrost_perfcnt.h"
--#include "panfrost_debugfs.h"
-+#include "panfrost_sysfs.h"
- 
- static bool unstable_ioctls;
- module_param_unsafe(unstable_ioctls, bool, 0600);
-@@ -600,10 +600,6 @@ static const struct drm_driver panfrost_drm_driver = {
- 
- 	.gem_create_object	= panfrost_gem_create_object,
- 	.gem_prime_import_sg_table = panfrost_gem_prime_import_sg_table,
--
--#ifdef CONFIG_DEBUG_FS
--	.debugfs_init		= panfrost_debugfs_init,
--#endif
- };
- 
- static int panfrost_probe(struct platform_device *pdev)
-@@ -663,8 +659,14 @@ static int panfrost_probe(struct platform_device *pdev)
- 	if (err)
- 		goto err_out2;
- 
-+	err = panfrost_sysfs_init(pfdev);
-+	if (err)
-+		goto err_out3;
-+
- 	return 0;
- 
-+err_out3:
-+	panfrost_gem_shrinker_cleanup(ddev);
- err_out2:
- 	drm_dev_unregister(ddev);
- err_out1:
-@@ -681,6 +683,8 @@ static void panfrost_remove(struct platform_device *pdev)
- 	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
- 	struct drm_device *ddev = pfdev->ddev;
- 
-+	panfrost_sysfs_cleanup(pfdev);
-+
- 	drm_dev_unregister(ddev);
- 	panfrost_gem_shrinker_cleanup(ddev);
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-index 0c2dbf6ef2a5..49413dfda2ea 100644
---- a/drivers/gpu/drm/panfrost/panfrost_job.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-@@ -243,7 +243,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
- 	subslot = panfrost_enqueue_job(pfdev, js, job);
- 	/* Don't queue the job if a reset is in progress */
- 	if (!atomic_read(&pfdev->reset.pending)) {
--		if (atomic_read(&pfdev->profile_mode)) {
-+		if (atomic_read(&pfdev->profiling.profile_mode)) {
- 			panfrost_cycle_counter_get(pfdev);
- 			job->is_profiled = true;
- 			job->start_time = ktime_get();
-diff --git a/drivers/gpu/drm/panfrost/panfrost_sysfs.c b/drivers/gpu/drm/panfrost/panfrost_sysfs.c
-new file mode 100644
-index 000000000000..072d3bf349d2
---- /dev/null
-+++ b/drivers/gpu/drm/panfrost/panfrost_sysfs.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright 2023 Collabora ltd. */
-+/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
-+
-+#include <linux/platform_device.h>
-+#include <drm/drm_file.h>
-+#include <drm/panfrost_drm.h>
-+
-+#include "panfrost_device.h"
-+#include "panfrost_gpu.h"
-+#include "panfrost_sysfs.h"
-+
-+static ssize_t
-+profiling_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	atomic_t *profile_mode =
-+		&container_of(kobj, struct {
-+			struct kobject base;
-+			atomic_t profile_mode; },
-+			base)->profile_mode;
-+
-+	return sysfs_emit(buf, "%d\n", atomic_read(profile_mode));
-+}
-+
-+static ssize_t
-+profiling_store(struct kobject *kobj, struct kobj_attribute *attr,
-+	       const char *buf, size_t count)
-+{
-+	atomic_t *profile_mode =
-+		&container_of(kobj, struct {
-+			struct kobject base;
-+			atomic_t profile_mode; },
-+			base)->profile_mode;
-+	int err, value;
-+
-+	err = kstrtoint(buf, 0, &value);
-+	if (err)
-+		return err;
-+
-+	atomic_set(profile_mode, !!value);
-+
-+	return count;
-+}
-+
-+static const struct kobj_attribute profiling_status =
-+__ATTR(status, 0644, profiling_show, profiling_store);
-+
-+static const struct kobj_type kobj_profile_type = {
-+	.sysfs_ops = &kobj_sysfs_ops,
-+};
-+
-+int panfrost_sysfs_init(struct panfrost_device *pfdev)
-+{
-+	struct device *kdev = pfdev->ddev->primary->kdev;
-+	int err;
-+
-+	kobject_init(&pfdev->profiling.base, &kobj_profile_type);
-+
-+	err = kobject_add(&pfdev->profiling.base, &kdev->kobj, "%s", "profiling");
-+	if (err)
-+		return err;
-+
-+	err = sysfs_create_file(&pfdev->profiling.base, &profiling_status.attr);
-+	if (err)
-+		kobject_del(&pfdev->profiling.base);
-+
-+	return err;
-+}
-+
-+void panfrost_sysfs_cleanup(struct panfrost_device *pfdev)
-+{
-+	sysfs_remove_file(&pfdev->profiling.base, &profiling_status.attr);
-+	kobject_del(&pfdev->profiling.base);
-+}
-diff --git a/drivers/gpu/drm/panfrost/panfrost_sysfs.h b/drivers/gpu/drm/panfrost/panfrost_sysfs.h
-new file mode 100644
-index 000000000000..5fc9c8c1091a
---- /dev/null
-+++ b/drivers/gpu/drm/panfrost/panfrost_sysfs.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright 2023 Collabora ltd.
-+ * Copyright 2023 Amazon.com, Inc. or its affiliates.
-+ */
-+
-+#ifndef PANFROST_SYSFS_H
-+#define PANFROST_SYSFS_H
-+
-+struct panfrost_device;
-+
-+int panfrost_sysfs_init(struct panfrost_device *pfdev);
-+void panfrost_sysfs_cleanup(struct panfrost_device *pfdev);
-+
-+#endif  /* PANFROST_SYSFS_H */
--- 
-2.43.0
+This patch does make some progress, as you said, "With revision 2,the
+initial state of the logic inside the port is guaranteed to be valid, and
+a port reset is not required during driver initialization".  But it
+should not be the only patch to enable the new port reset behavior.
 
+> 
+> > 
+> > > 
+> > > > 
+> > > > > image. I don't think the driver performing the port_reset() can know all the
+> > > > 
+> > > > Other PF drivers should know their own components. They should be aware
+> > > > that their devices are being reset.
+> > > 
+> > > The other PF drivers depend on the actual FPGA image being run.
+> > > 
+> > > > 
+> > > > > components to be able to provide any meaningful management.
+> > > > 
+> > > > If the reset provider and reset consumer are not in the same driver,
+> > > > they should interact with each other. IIRC, some reset controller class
+> > > > works for this purpose.
+> > > 
+> > > The other PFs in many cases can present as standard devices with existing
+> > > drivers like virtio-net or virtio-blk. It does not seem desireable to have
+> > > to change existing drivers for a particular FPGA implementation
+> > 
+> > If you have to use a specific method for reset, it is not a standard virtio
+> > pci device, and you have to make some change.
+> 
+> From the perspective of the PCI PF/VF implementing the virtio or other
+> standard device, the pci endpoint is completely compliant to the standard,
+> and no driver changes should be required. As mentioned above, this patch
+> does nothing to change any of this behavior. Consider a port reset that is
+> part of a partial configuration flow. The virtio endpoint can become
+> something completely different with a completely different driver. This
+
+Then how could the virtio driver stop and remove itself to avoid crashing the
+kernel, and how could the new driver be probed.  If the answer is still
+userspace responsible for everything, that's not good to me.
+
+Thanks,
+Yilun
+
+> patch does not affect this flow either.
+> 
+> Thanks,
+> Matthew
+> 
+> > 
+> > Thanks,
+> > Yilun
+> > 
+> > > 
+> > > Thanks,
+> > > Matthew
+> > > > 
+> > > > Thanks,
+> > > > Yilun
+> > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > Matthew
+> > > > > 
+> > > > > > 
+> > > > > > Thanks,
+> > > > > > Yilun
+> > > > > > 
+> > > > > > > 
+> > > > > > > Do you want me to update the commit message with this information?
+> > > > > > > 
+> > > > > > > Thanks,
+> > > > > > > Matthew
+> > > > > > 
+> > > > > > 
+> > > > 
+> > > > 
+> > 
 
