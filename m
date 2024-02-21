@@ -1,201 +1,192 @@
-Return-Path: <linux-kernel+bounces-75028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B22F85E1E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC0D85E1E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7997BB23E82
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:51:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D23D5B2326F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF0980C02;
-	Wed, 21 Feb 2024 15:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CB1811E0;
+	Wed, 21 Feb 2024 15:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YxgtkgOM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="U0AjhVBP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ARCCDyO9"
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DAF80BFE
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA0980C1F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708530688; cv=none; b=Omx6R7nmrbJ/3xNEjPcRsQBYiGsS9KfHpB+P/mOYZSMu8/6XvYhGzxA7ZVWnYc+TkA7BH65NWBLh4Q9tRkU1jMEU1H1ZDiC1rnKHmvyLUF5nZEARQa9U6ncdpq5lCeHoVlnj/QbkKC1Q2sNrdurNXZl3GcIWJT0ahDwEAIfBWtE=
+	t=1708530729; cv=none; b=BzkWPivUuX8TkZuvkzGxHptj1QguN2fSQW8Ll1wst7Qez9qKKgd8FvdQM5i4J/onlXG7v8YEXqQpcKEcLi1Y5IhZRDYb3qPrTU1owJZTCJG1HGJVaugU1cTQSUi0AD68FrpMoZMqXn5s3JDFqJvsZJYwYDIyrP5aBFiDGul74Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708530688; c=relaxed/simple;
-	bh=6vxZNRAJfKX7NUOsWuC6BFl9z7Yjfzkpmb7xxziVVMI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NYBdFdGSIibvcTf1dJ2WJ8lBwZhnujMXnIxpDyG+wb6c7DVJ1JkdEl/s+9QtpmyA9eO1yrNWGQWHbqypzdWGQAEkKelnIGCuUhx6moKsMOMJ4foyzp0lg7KwRBh92VNwb4W1Lnr0WtwQh8buZzPxzG6pHpRjcjm8EDu2SksbhBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YxgtkgOM; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708530685;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6vxZNRAJfKX7NUOsWuC6BFl9z7Yjfzkpmb7xxziVVMI=;
-	b=YxgtkgOMSYtzcA7BHbPYPootbVlne92biLmeep8RGzXJoBAHg21YS9TnIXRHWTavQMvPEf
-	MqewBPOmdEU0pF6TEMQnDBToZdbYspPj6XE4TDWmtF+6o10Go0OnX048ZKFkS/ViLsheCm
-	r5BgLNte3e89ONf6tXjf/JO36SDSQoY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589--VWZnVdfPKaXmwophUaHOA-1; Wed, 21 Feb 2024 10:51:23 -0500
-X-MC-Unique: -VWZnVdfPKaXmwophUaHOA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41256ffe281so20118535e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:51:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708530682; x=1709135482;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6vxZNRAJfKX7NUOsWuC6BFl9z7Yjfzkpmb7xxziVVMI=;
-        b=VnQu5S08ksJB7Qn8N7t3IRw2F6UZxptOJrXycDIBhBBk9ma1HoYFlPzoSDL/+Z9gyM
-         yMGhzfpOlS/Y618J7tYrL68X4uCBLbJbpKozuVD0gkjl++jR25efJ5b/k9xP3kWHip6A
-         IotMdYYVQE8VWpJ7sq5XwWhNRy22NbkkuvqrJ2M2yitIISxHD9KIqNID9ISeqLeRZkrX
-         vtpOo7Sz9AlLSacgbH5vjkkSle1vtNMTFUEPvmSNMu0awaduqJimw3sPfUGIMp5+hjNc
-         fpEnrd/rbzTozl2O2KalZqdFXZ+iYspeF5Gz8KKqsSBtUM89+Vsf4ECc1OClvGHinTqN
-         6xPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXtVXN7FoPkOY/JLLukuJx5CfAxIfzmr6E3/T9jqp3xmfewXssrefaeQJB0TR8djBWHGAJ8iCeiXrvFjGlSdVvxVNPP9xh+jPVi5nvJ
-X-Gm-Message-State: AOJu0Yw7s1auk8HXMvPNrb57Te90T7LxzDNRc/s8R4jS1KQX/M5O3oc2
-	S9Kk6ImxKGkRCLZYZ/yxiY/Ik6eBkRR00pCu7GMFuyukqBIXVaz6m1gKjddNr+3WdrqUrUIBCBo
-	0LM3gJXWktkkPiYvlqDjoglIMMeEqqlcKocekqtuGZQn4thv/3gBm3cZw8TFGeA==
-X-Received: by 2002:a05:600c:1c1d:b0:412:5757:e87e with SMTP id j29-20020a05600c1c1d00b004125757e87emr9066312wms.31.1708530682781;
-        Wed, 21 Feb 2024 07:51:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHpCSFLJg+1H78+yjZdUWj+YwI9fWV5IfpbTSIOPq4OG2i4jHssWZwbBB/QKhIcmcEyNkvmiA==
-X-Received: by 2002:a05:600c:1c1d:b0:412:5757:e87e with SMTP id j29-20020a05600c1c1d00b004125757e87emr9066297wms.31.1708530682419;
-        Wed, 21 Feb 2024 07:51:22 -0800 (PST)
-Received: from localhost ([2a01:e0a:b25:f902::ff])
-        by smtp.gmail.com with ESMTPSA id b7-20020adfe647000000b0033b406bc689sm17487652wrn.75.2024.02.21.07.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 07:51:21 -0800 (PST)
-Date: Wed, 21 Feb 2024 16:51:20 +0100
-From: Maxime Ripard <mripard@redhat.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, linux-kernel@vger.kernel.org, 
-	Enric Balletbo i Serra <eballetbo@redhat.com>, Erico Nunes <nunes.erico@gmail.com>, 
-	Brian Masney <bmasney@redhat.com>, Bjorn Andersson <quic_bjorande@quicinc.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading
- compressed FW support
-Message-ID: <724jnhrbs6r4q6whynr3aon5w7mhfvetlgcnts4nukvtxbuium@mrjv6apjqk7r>
-References: <20240221141350.3740488-1-javierm@redhat.com>
- <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
- <6scz7iti3tzzrd4ph3gnuc2pvkcbtuuicgfgujh3pa3c34kdkt@bhfa4xbxeu7t>
- <cb8bf006-57df-494e-80f3-947582ec71f1@linaro.org>
- <fy3wffb2jwv4veo3golfn5olri77clxywbuwuokese7sbobixd@mird5k66cl2w>
- <56625c21-1b34-479b-b5b2-4c4d8b7a11b3@app.fastmail.com>
+	s=arc-20240116; t=1708530729; c=relaxed/simple;
+	bh=rQmpyHEDfBCAE14U6pAgMeOsLNXeFl8eCY13ffT3wJs=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=oDlL0JVNibWuwWQpZTR6YYgHkb6Pl/EP2W/pGmuqxai3LpQYQ2YNDF3A/MetgJbBgnNhqgtoLF77NMP7P5LyZovN+yI9GBx5bkXatlaQnlJBjDBNmLoUq7QWNWToeSC9wbJd13NT3qc+Zisc2zRvnlweLvNoFu6AnPPM/gf4rGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=U0AjhVBP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ARCCDyO9; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 22AEB32009F4;
+	Wed, 21 Feb 2024 10:51:58 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 21 Feb 2024 10:51:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1708530717;
+	 x=1708617117; bh=gVu1iI5vdx9XToGEy4tfJPs0uFj04KlwRACeTsBwi+k=; b=
+	U0AjhVBPYH0d3c2Xs3nzmoYNEESQlxSQVJVV+6wGIimUNHLBLBuuIANw4g2PAnqF
+	RZwvds/nPFaQbaI0HNp/SPhoiPjx/qEXBGKoxI82t4t2XrZaVRcrexrLt1Bj36zr
+	ra/bFA6iZ+b6Qbw/tDzBJsJ6dyf1nM4ZP8woBKVrm50/iPtB7KTArK7hr4G64BJf
+	30TA1hjAQHBziLYFkcj1PtzGLJDKqncMfWJsrFI4GW2lHzvuF6BoPOBiBnHTljzO
+	VjLGcdAzsE4YSHaP+05JPFqNoHOdMrdVNO9mTi8LtlyUZTGOHgSsI7GWniyciPQH
+	kBmf5DpPPDMGwpggeaH/xw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708530717; x=
+	1708617117; bh=gVu1iI5vdx9XToGEy4tfJPs0uFj04KlwRACeTsBwi+k=; b=A
+	RCCDyO9Ws/OjxYAJaB5XYuGLjqbC3+KECAZNSEanu6luWAxv7wMOB/BMprheLN6g
+	y+jU98831ShlHXtb1M87JprIxQN/35KmleYshkHl3YIWA5fduNdDIoJYcDGgR4zj
+	Pn6dEXf91Z0+Rv07sZbwFMPdlYfVvXfqNV96LckSpiNN6txgD9IpvGrMOrvjeJkr
+	g8fFA6lZBXxGkIb5oLGwvGSlJmbOXLJGt9cbgpdxhdRIQ+ZzVheRsSu8+dbcBrrV
+	NOBoFHfTRDzBSvU/edZVUHgOqEKyyc7Gb88XQi/+LLymZnWGSHqgmmCupkszXHkm
+	5PH6sGEfYsMvZRh56Zk2A==
+X-ME-Sender: <xms:GxzWZaGqZ9QRBIAPBQ02N2zq1jHKtJjHXF4q8YJnZ5iHTahCukU6IA>
+    <xme:GxzWZbVo0sW2Lzk5gM9OTUMHWnPhp5TghH5tSI83x3_wWlU5mgT2YduFA0TOxrvk-
+    Qx4Bgiwku0k3_gBm9k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedvgdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:HBzWZUKL5bjW7Cww8j_PCzYWSswEPiy1v3wsjs0PdIAfSSHoEMdMBw>
+    <xmx:HBzWZUEDldZ3veiExkPMYUntaSg7UqjGvQyHUiRv9Gu61hN56ddJSw>
+    <xmx:HBzWZQWNjtgK1Jbk7L6YNAB_2k-eJp5A_UC5qYo-GDeMPt4LciHqHw>
+    <xmx:HRzWZRsvItpu3oVcJFAxMh3MVz0bZhIcd2QTupPcwC6w-Z29iX_ahg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D5BD9B6008D; Wed, 21 Feb 2024 10:51:55 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b7rp77zy3dqc2xbd"
-Content-Disposition: inline
-In-Reply-To: <56625c21-1b34-479b-b5b2-4c4d8b7a11b3@app.fastmail.com>
-
-
---b7rp77zy3dqc2xbd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-Id: <30b01c65-12f2-4ee0-81d5-c7a2da2c36b4@app.fastmail.com>
+In-Reply-To: <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
+References: <20240220081527.23408-1-liuyuntao12@huawei.com>
+ <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
+ <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
+Date: Wed, 21 Feb 2024 16:51:26 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Yuntao Liu" <liuyuntao12@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "Russell King" <linux@armlinux.org.uk>, "Andrew Davis" <afd@ti.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Jonathan Corbet" <corbet@lwn.net>, "Mike Rapoport" <rppt@kernel.org>,
+ "Eric DeVolder" <eric.devolder@oracle.com>, "Rob Herring" <robh@kernel.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>
+Subject: Re: [PATCH -next] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 04:41:38PM +0100, Arnd Bergmann wrote:
-> On Wed, Feb 21, 2024, at 16:24, Maxime Ripard wrote:
-> > On Wed, Feb 21, 2024 at 04:10:12PM +0100, Krzysztof Kozlowski wrote:
-> >> On 21/02/2024 15:48, Maxime Ripard wrote:
-> >> > On Wed, Feb 21, 2024 at 03:22:38PM +0100, Krzysztof Kozlowski wrote:
-> >> >> On 21/02/2024 15:13, Javier Martinez Canillas wrote:
-> >> >>> These options are needed by some Linux distributions (e.g: Fedora)=
-, so
-> >> >>
-> >> >> How ZRAM is needed? Why Fedora cannot boot without it? Debian, whic=
-h I
-> >> >> use on my arm64 boards, does not have any problem.
-> >> >=20
-> >> > Is it relevant in any way?
-> >>=20
-> >> Yes, because it is justification why we are doing it. Each commit is
-> >> supposed to explain "why" and the explanation here is not enough.
-> >
-> > There's a why though: it makes Fedora boot. It might not be enough for
-> > you, but that's a different story. So, if it's not enough, please state
-> > exactly what you expect from that patch description so Javier can
-> > provide it.
->=20
-> It's definitely enough for me. It makes a lot of sense to have
-> a defconfig that boots common and popular distros.
->=20
-> I don't use ZRAM either, but I can see that being useful to
-> avoid swapping to SD cards or eMMC when that is the only
-> available swap device.
->=20
-> >> >> I kind of repeat comments from similar patch earlier:
-> >> >> https://lore.kernel.org/all/fe1e74a2-e933-7cd9-f740-86d871076191@li=
-naro.org/
-> >> >>
-> >> >> About XFS: I don't think it is needed to boot anything.
-> >> >=20
-> >> > Just like 9P_FS, NFS or UBIFS.
-> >>=20
-> >> NFS is often used on targets, e.g. my board farm, but also by other pe=
-ople.
-> >>=20
-> >> UBIFS was added recently because one device was using it - you needed
-> >> it. 9P_FS looks unnecessary.
-> >
-> > So all we need is one person or use case to require it? Sounds like
-> > we've checked that mark here.
->=20
-> I think we want all of the above. We can probably drop ext2 since
-> we already need ext4, but that is a different question.
->=20
-> >> I was working in distro so trust me - they do stuff differently
-> >> and they not need XFS in our defconfig for anything.
-> >
-> > Sure, but you're not just arguing for XFS there.
-> >
-> > What I really don't get is this: this makes the life of people easier.
-> >
-> > Being able to test an upstream kernel quickly when you have a bug in a
-> > downstream distro is super valuable for any distro developper. And on
-> > the long run, if we don't make the switch from a kernel distro to a
-> > mainline kernel relatively easy, we're the ones that will lose out.
-> > Because people just won't bother, or be frustrated and thus super
-> > reluctant to do that work.
->=20
-> We had previously discussed adding config fragments for common
-> distros the way we have kvm_guest.config, but if the Javier's
-> patch is all that is actually needed for Fedora, that seems better
-> to me than the added complexity of fragments.
+On Tue, Feb 20, 2024, at 10:53, liuyuntao (F) wrote:
+> =E5=9C=A8 2024/2/20 16:40, Arnd Bergmann =E5=86=99=E9=81=93:
+>> On Tue, Feb 20, 2024, at 09:15, Yuntao Liu wrote:
+> #
+> # ARM discards the .data section because it disallows r/w data in the
+> # decompressor. So move our .data to .data.efistub and .bss to .bss.ef=
+istub,
+> # which are preserved explicitly by the decompressor linker script.
+> #
+> STUBCOPY_FLAGS-$(CONFIG_ARM)	+=3D --rename-section .data=3D.data.efist=
+ub	\
+> 				   --rename-section .bss=3D.bss.efistub,load,alloc
+>
+> ---
+>
+> I think that .data.efistub represents the entire .data section, the sa=
+me=20
+> applies to .bss as well,
+>
+> so i move all .data and .bss into the stub here.
+>
 
-Oh, right. Fragments would be a great tool to reconcile the need for
-minimal boot time and supporting reasonable use-cases.
+Ok, I see.=20
 
-I guess it's even more of a struggle with the single arm64 defconfig vs
-the minimal vs batteries included defconfig setup we had for arm.
+>>=20
+>> I guess this prevents discarding any function that has a reference
+>> from pv_table or ex_table, even if there are no other references,
+>> right?
+>
+> Indeed so, if not keep ex_table,  the compilation process will result =
+in
+>
+> an error:
+>
+>      no __ex_table in file: vmlinux
+>
+>      Failed to sort kernel tables
 
-Maxime
+Sure, and without the ex_table contents, it would not be able
+to recover from a failed uaccess either.
 
---b7rp77zy3dqc2xbd
-Content-Type: application/pgp-signature; name="signature.asc"
+> and if not keep pv_table, It can be compiled successfully, but the QEM=
+U=20
+> boots will fail.
 
------BEGIN PGP SIGNATURE-----
+Right. The pv_table isn't technically necessary since it can
+be disabled.  I think it was originally introduced in order
+to avoid performance regressions when we introduced multiplatform
+kernels that can run at arbitrary physical addresses rather than
+having it as a build-time constant.
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdYb+AAKCRDj7w1vZxhR
-xfneAP9jK3qR96b/wB2KMaKgrfj0X3cPayFrngbz47ysnllt7QEA1vqkfXuQyvem
-rL+P/babebxH6r64YEa6nGgy/UEjDgw=
-=XUC6
------END PGP SIGNATURE-----
+I don't know how much difference that actually makes for performance,
+so turning it into a normal runtime lookup may or may not be
+a good compromise when building with HAVE_LD_DEAD_CODE_DATA_ELIMINATION.
 
---b7rp77zy3dqc2xbd--
+I have given your patch some build testing with random
+configurations in my build setup and it seems to work
+fine with gcc/binutils, but unfortunately I came across
+a link failure using clang/lld:
 
+ld.lld: error: ./arch/arm/kernel/vmlinux.lds:35: ( expected, but got }
+>>>  __vectors_lma =3D .; OVERLAY 0xffff0000 : AT(__vectors_lma) { .vect=
+ors { KEEP(*(.vectors)) } .vectors.bhb.loop8 { KEEP(*(.vectors.bhb.loop8=
+)) } .vectors.bhb.bpiall { KEEP(*(.vectors.bhb.bpiall)) } } __vectors_st=
+art =3D LOADADDR(.vectors); __vectors_end =3D LOADADDR(.vectors) + SIZEO=
+F(.vectors); __vectors_bhb_loop8_start =3D LOADADDR(.vectors.bhb.loop8);=
+ __vectors_bhb_loop8_end =3D LOADADDR(.vectors.bhb.loop8) + SIZEOF(.vect=
+ors.bhb.loop8); __vectors_bhb_bpiall_start =3D LOADADDR(.vectors.bhb.bpi=
+all); __vectors_bhb_bpiall_end =3D LOADADDR(.vectors.bhb.bpiall) + SIZEO=
+F(.vectors.bhb.bpiall); . =3D __vectors_lma + SIZEOF(.vectors) + SIZEOF(=
+vectors.bhb.loop8) + SIZEOF(.vectors.bhb.bpiall); __stubs_lma =3D .; .s=
+tubs ADDR(.vectors) + 0x1000 : AT(__stubs_lma) { *(.stubs) } __stubs_sta=
+rt =3D LOADADDR(.stubs); __stubs_end =3D LOADADDR(.stubs) + SIZEOF(.stub=
+s); . =3D __stubs_lma + SIZEOF(.stubs); PROVIDE(vector_fiq_offset =3D ve=
+ctor_fiq - ADDR(.vectors));
+>>>                                                                     =
+                      ^
+
+I don't immediately see what the problem is here, I hope you
+can address it before you send a v2.
+
+     Arnd
 
