@@ -1,313 +1,176 @@
-Return-Path: <linux-kernel+bounces-73935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA1285CDBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:09:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCFB85CDC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9698A1F25DC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:09:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F6DFB21550
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A86566A;
-	Wed, 21 Feb 2024 02:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F17613A;
+	Wed, 21 Feb 2024 02:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HY0K8rZ1"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Fh5Q7uaR"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57BD4432
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA864C99
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708481377; cv=none; b=n6sGWz6rplfTpK5/E9l+b0jwWWAUyjiCo6qElbTM0l3eJl3BOGqICrob5jb1bbiY3oZYOol4hwczg89oGi+WXGGcHvgFLrYKovq/Bn79f0SEd7r/oJKANT/ddz01GZy9QR2VrhZdYNxLGeUf4vqqcuDD+1YbwRPlC09B2o6BKtA=
+	t=1708481427; cv=none; b=GlfkcFntAGX6RaXxyQa0+9I154RCfjYjZsa8Jomwwl57ZEp0Y5iaUXpPVvWqYwmXK3L6wiY/zVwXPpYc3SWiPo5335Sdf9K05Nd16NDXsmcz49hqICFs6BZIuZqAgZc1aUupQZdVjP8yLp5OiVgJ5899kKgohaaOZG4dkKDJjck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708481377; c=relaxed/simple;
-	bh=szYKJrGmDp93JCS78nmQ3szqAsbuBjTO7gxM7SgdWmQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CnLAviv0Mo4NxV90oxUNn12+y2dUgZRoU0Mogo1Mm6vltgknro7Z5FnbLOFyrDctG2STDhmoGAkKPnkQ57dbVODr8f8WlLyAnPcT43iYFwsVYKA5MIYVH6hR4hVgHy1jQT59793AyDsPYbEHzCPRu8aI69UBw8wChQ7+Gh4Vz38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HY0K8rZ1; arc=none smtp.client-ip=209.85.160.170
+	s=arc-20240116; t=1708481427; c=relaxed/simple;
+	bh=j41BACY3bbl0dJLSj+GBS3NKl9wXXB4Sfy90HrTAWok=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Fp0ubp5ZdiznfU82/avSaRvYksHeVCQdVAX+Oid2WY03bLiuyeCTw/rYpNHElqnB3GFBkqdtvHGOp5bepuXQcQ6GQjU8R37gZBg4NPntk1WKeyfjjM/ybpWtkauqNptdcEbs2Ekrp0hFK4Nuw8AYIGKfe/y+9cCMWqmFMmI08mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Fh5Q7uaR; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42e2507c6e1so76091cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:09:35 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-602dae507caso100431957b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:10:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708481374; x=1709086174; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b1VM94YAF3zp4otk2Hvp6TAgshqoTETLzdYzzpGhRoQ=;
-        b=HY0K8rZ16BKUCkNrGRh25BQfCw/ungo8PB0CmJqjdvjJjHlZbphrZcC1Lq22TJX08r
-         fmjTGLo3TxbXJPjjpWdTYXF/Me7Gs3dTbxHK1X4/lYXXJS3tyDH0Y8dbnjNhVx1SrVGy
-         uxyCpVA/wiYk/4fF2vDZ+TiuIVmZc3kYmHA4EnMmDWiHAFTcrXmOj34zUbtqvLiICTbc
-         jyLkmOzju8eYaO4mR+R/b77xbljtXTf82bi1UOW9NG11dC/OBa39Axo3TgcqcNANhZG5
-         wVWuXEtpcUeeb8hcb5PgbR+GpDFUREHHLLXJ49tjlrJy4ofCgQ+u3N69oHbVCTc+Xt3u
-         QMrw==
+        d=google.com; s=20230601; t=1708481425; x=1709086225; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gKDDhVDI/caWn5TUGufa5pdgsoyIgpZ0Gl6DWfyCRzw=;
+        b=Fh5Q7uaRUFyhtMNW/LtWAS/w+WBOcLEMJXBhLKAuHPSYjInNYEhTUihpZ2yiFyAZHn
+         HWQ4+EmST8/QVPjIgViS91TZ1aOp9x7m67izw+IuDv0gSQcRajNu4gAmDgRzi697Xa19
+         sHI10FUJS0qQO3+UDNad5Sg3Pff2zduqlGMkNs7zfk8LKvpe00olcm96sUxTsyTZxBEd
+         He2KSJzmtiQliVd8ndpOUiAGKFRzZ+F7NACHg76fzqdxzEOVqT5UVCrBF/F3zzrRrSkn
+         90cXg+VB/XEmQpWXbHRBiF3Uv1/VyIuqSER+FBmsXBEJ5QpgikyQ3Gjuo94dY9DkKzqm
+         yBnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708481374; x=1709086174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b1VM94YAF3zp4otk2Hvp6TAgshqoTETLzdYzzpGhRoQ=;
-        b=iQY/uUaz5A0sGK8Z05zV6vMg0XLTyA28Ya476824MxCGKOE0MCV66w//mVCrPO4KvE
-         +nasa6qdNPgFxFvNTUDNlP5CNum09sSpSP9LP1CYCIHjVuemENoTr0d0mTsSp6VKliYY
-         2sHrRTqHfu4BHA565B/5yCJz536Pw6HGcjSc8PiCqZQAUNZoOOFpWD35Cc6wLtfsh79R
-         0RUN+h4pc6n/5KM81vQb2Z5Y7GV/b3TZHAEY2b+LdpuZHbyW9fhyAbJZbcQ8VcZzd5eA
-         ZRsO6kvq+8bVZhvIvs0ygXdPGbVF5olZBjtJsNZrNTK7tU9FYbxzt2/EfEHv0YI53s9u
-         QbDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWIm2auye0446Dcn/npttlbZOlYi3iDP8YMAAakbXNIrKF667Fvxa2F5aAT99bKVbd1y+BgXfUxvuo0SbyJoYELqMb9GOoG9DHelrni
-X-Gm-Message-State: AOJu0YwifwQSF5EhDH+PcJcUUhNrKqwiZN6e+6ZfmlHlOZmUugVhKubP
-	kqhAoQozvMLBY9mWvjWNQ6b+b4dz7ae7TJwlaay1DeIjtBwz3ZAiLsYzO5Vp9eLZKgY4tbURfj0
-	YPpPQMM83bSvqKcH6Tg8/j5Z2Re78zC3TmKB98cxnbvI/vnpgNgDq
-X-Google-Smtp-Source: AGHT+IE4zvEttWNpeKE0T11pIYvLpTo0R5aTyHAaiaUj8r7KFCsvEi0g+mE8WZ8l+OXrqb7mhsiveLrF+6Sag++iVlY=
-X-Received: by 2002:ac8:7643:0:b0:42e:1260:c4e6 with SMTP id
- i3-20020ac87643000000b0042e1260c4e6mr137559qtr.10.1708481374445; Tue, 20 Feb
- 2024 18:09:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708481425; x=1709086225;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gKDDhVDI/caWn5TUGufa5pdgsoyIgpZ0Gl6DWfyCRzw=;
+        b=O2sxRwco8RUZY/he6D4j5qk28dVefdtKpSn8eaH0HKY3qkjrxBwL+ACyWTdoiqN02p
+         Z+KI9Qc+mYJ+Gb1ZU/PYUPXcF+/SbG9it+pZyb70VemkxNxZ4Eutj9PdOW7As7W/BdTS
+         brE8VbapT8OZOzCjkdkexyg4mUV9pjPF00J6S6rWBx8pT9sBMztkP5gDuxdZOmpLdEtb
+         z8/t+l4uXknqralFfhQw523kdwAOLig5FsGs3JAB0Hu3CvLzhAkkbgoXQEl0uSgswXhq
+         IxMxcA5MCnDMNcM+/svJnbi3x2KmIaL1iPJzF89+a5eQajQOOmqps8wIqcZK0p9vvXpV
+         nkvw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0YKUGaTR6CFJK5YIchUytf3tsxiXo6c7++b0Z3Vn93bWghosvrQi+uajR1doCz8UR2A+Rp3Vk1+3Quhb56tD74x9CFZ2EzXH0WtJt
+X-Gm-Message-State: AOJu0YzuEuQ3mgcNNMZIh+9XgCsG/41LF8kqYq5DHMc70WdqCHWNTecI
+	YwrKKYX90rGAY1pSrxnmqrmOJed16dfvU1ibiFsa7ZKb1Jjnfr647TQCRaSNiIPbCOfqloWWtQg
+	pKg==
+X-Google-Smtp-Source: AGHT+IH9tDjvnpoECriK92ZpQJXMS185w6jocKSNJWnIH+QG97spJ9w+fd4S7cImLl0dsTHDcu1hSiv3D5k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:494c:0:b0:608:72fe:b8a1 with SMTP id
+ w73-20020a81494c000000b0060872feb8a1mr495006ywa.4.1708481425305; Tue, 20 Feb
+ 2024 18:10:25 -0800 (PST)
+Date: Tue, 20 Feb 2024 18:10:23 -0800
+In-Reply-To: <ZdRMwdkz1enYIgBM@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240220161002.2983334-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240220161002.2983334-1-andriy.shevchenko@linux.intel.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 18:08:56 -0800
-Message-ID: <CAGETcx8hzYzjKWPz4ACgS=XrVXqg46QHB4hTpP5bDTY9=WFK+Q@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] driver core: Move fw_devlink stuff to where it belongs
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240209222858.396696-1-seanjc@google.com> <20240209222858.396696-4-seanjc@google.com>
+ <ZdLOjuCP2pDjhsJl@yzhao56-desk.sh.intel.com> <ZdOvttFKP1VVgrsA@google.com> <ZdRMwdkz1enYIgBM@yzhao56-desk.sh.intel.com>
+Message-ID: <ZdVbj1F_7UlX_eAy@google.com>
+Subject: Re: [PATCH v4 3/4] KVM: x86/mmu: Move slot checks from
+ __kvm_faultin_pfn() to kvm_faultin_pfn()
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Friedrich Weber <f.weber@proxmox.com>, Kai Huang <kai.huang@intel.com>, 
+	Yuan Yao <yuan.yao@linux.intel.com>, Xu Yilun <yilun.xu@linux.intel.com>, 
+	Yu Zhang <yu.c.zhang@linux.intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Fuad Tabba <tabba@google.com>, Michael Roth <michael.roth@amd.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Feb 20, 2024 at 8:10=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> A few APIs that belong specifically to the fw_devlink APIs
-> - are exposed to others without need
-> - prevents device property code to be cleaned up in the future
->
-> Resolve this mess by moving fw_devlink code to where it belongs
-> and hide from others.
->
-> Fixes: b5d3e2fbcb10 ("device property: Add fwnode_is_ancestor_of() and fw=
-node_get_next_parent_dev()")
-> Fixes: 372a67c0c5ef ("driver core: Add fwnode_to_dev() to look up device =
-from fwnode")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/base/core.c      | 58 ++++++++++++++++++++++++++++++++++++++++
->  drivers/base/property.c  | 56 --------------------------------------
->  include/linux/fwnode.h   |  1 -
->  include/linux/property.h |  2 --
->  4 files changed, 58 insertions(+), 59 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 9828da9b933c..35ccd8bb2c9b 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -1871,6 +1871,7 @@ static void fw_devlink_unblock_consumers(struct dev=
-ice *dev)
->         device_links_write_unlock();
->  }
->
-> +#define get_dev_from_fwnode(fwnode)    get_device((fwnode)->dev)
->
->  static bool fwnode_init_without_drv(struct fwnode_handle *fwnode)
->  {
-> @@ -1901,6 +1902,63 @@ static bool fwnode_ancestor_init_without_drv(struc=
-t fwnode_handle *fwnode)
->         return false;
->  }
->
-> +/**
-> + * fwnode_is_ancestor_of - Test if @ancestor is ancestor of @child
-> + * @ancestor: Firmware which is tested for being an ancestor
-> + * @child: Firmware which is tested for being the child
-> + *
-> + * A node is considered an ancestor of itself too.
-> + *
-> + * Return: true if @ancestor is an ancestor of @child. Otherwise, return=
-s false.
-> + */
-> +static bool fwnode_is_ancestor_of(const struct fwnode_handle *ancestor,
-> +                                 const struct fwnode_handle *child)
-> +{
-> +       struct fwnode_handle *parent;
-> +
-> +       if (IS_ERR_OR_NULL(ancestor))
-> +               return false;
-> +
-> +       if (child =3D=3D ancestor)
-> +               return true;
-> +
-> +       fwnode_for_each_parent_node(child, parent) {
-> +               if (parent =3D=3D ancestor) {
-> +                       fwnode_handle_put(parent);
-> +                       return true;
-> +               }
-> +       }
-> +       return false;
-> +}
-> +
-> +/**
-> + * fwnode_get_next_parent_dev - Find device of closest ancestor fwnode
-> + * @fwnode: firmware node
-> + *
-> + * Given a firmware node (@fwnode), this function finds its closest ance=
-stor
-> + * firmware node that has a corresponding struct device and returns that=
- struct
-> + * device.
-> + *
-> + * The caller is responsible for calling put_device() on the returned de=
-vice
-> + * pointer.
-> + *
-> + * Return: a pointer to the device of the @fwnode's closest ancestor.
-> + */
-> +static struct device *fwnode_get_next_parent_dev(const struct fwnode_han=
-dle *fwnode)
-> +{
-> +       struct fwnode_handle *parent;
-> +       struct device *dev;
-> +
-> +       fwnode_for_each_parent_node(fwnode, parent) {
-> +               dev =3D get_dev_from_fwnode(parent);
-> +               if (dev) {
-> +                       fwnode_handle_put(parent);
-> +                       return dev;
-> +               }
-> +       }
-> +       return NULL;
-> +}
-> +
->  /**
->   * __fw_devlink_relax_cycles - Relax and mark dependency cycles.
->   * @con: Potential consumer device.
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index a1b01ab42052..afa1bf2b3c5a 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -699,34 +699,6 @@ struct fwnode_handle *fwnode_get_next_parent(struct =
-fwnode_handle *fwnode)
->  }
->  EXPORT_SYMBOL_GPL(fwnode_get_next_parent);
->
-> -/**
-> - * fwnode_get_next_parent_dev - Find device of closest ancestor fwnode
-> - * @fwnode: firmware node
-> - *
-> - * Given a firmware node (@fwnode), this function finds its closest ance=
-stor
-> - * firmware node that has a corresponding struct device and returns that=
- struct
-> - * device.
-> - *
-> - * The caller is responsible for calling put_device() on the returned de=
-vice
-> - * pointer.
-> - *
-> - * Return: a pointer to the device of the @fwnode's closest ancestor.
-> - */
-> -struct device *fwnode_get_next_parent_dev(const struct fwnode_handle *fw=
-node)
-> -{
-> -       struct fwnode_handle *parent;
-> -       struct device *dev;
-> -
-> -       fwnode_for_each_parent_node(fwnode, parent) {
-> -               dev =3D get_dev_from_fwnode(parent);
-> -               if (dev) {
-> -                       fwnode_handle_put(parent);
-> -                       return dev;
-> -               }
-> -       }
-> -       return NULL;
-> -}
-> -
->  /**
->   * fwnode_count_parents - Return the number of parents a node has
->   * @fwnode: The node the parents of which are to be counted
-> @@ -773,34 +745,6 @@ struct fwnode_handle *fwnode_get_nth_parent(struct f=
-wnode_handle *fwnode,
->  }
->  EXPORT_SYMBOL_GPL(fwnode_get_nth_parent);
->
-> -/**
-> - * fwnode_is_ancestor_of - Test if @ancestor is ancestor of @child
-> - * @ancestor: Firmware which is tested for being an ancestor
-> - * @child: Firmware which is tested for being the child
-> - *
-> - * A node is considered an ancestor of itself too.
-> - *
-> - * Return: true if @ancestor is an ancestor of @child. Otherwise, return=
-s false.
-> - */
-> -bool fwnode_is_ancestor_of(const struct fwnode_handle *ancestor, const s=
-truct fwnode_handle *child)
-> -{
-> -       struct fwnode_handle *parent;
-> -
-> -       if (IS_ERR_OR_NULL(ancestor))
-> -               return false;
-> -
-> -       if (child =3D=3D ancestor)
-> -               return true;
-> -
-> -       fwnode_for_each_parent_node(child, parent) {
-> -               if (parent =3D=3D ancestor) {
-> -                       fwnode_handle_put(parent);
-> -                       return true;
-> -               }
-> -       }
-> -       return false;
-> -}
-> -
->  /**
->   * fwnode_get_next_child_node - Return the next child node handle for a =
-node
->   * @fwnode: Firmware node to find the next child node for.
-> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> index 0428942093a7..4228c45d5ccc 100644
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -193,7 +193,6 @@ struct fwnode_operations {
->                 if (fwnode_has_op(fwnode, op))                          \
->                         (fwnode)->ops->op(fwnode, ## __VA_ARGS__);      \
->         } while (false)
-> -#define get_dev_from_fwnode(fwnode)    get_device((fwnode)->dev)
->
->  static inline void fwnode_init(struct fwnode_handle *fwnode,
->                                const struct fwnode_operations *ops)
-> diff --git a/include/linux/property.h b/include/linux/property.h
-> index 07fbebc73243..1f0135e24d00 100644
-> --- a/include/linux/property.h
-> +++ b/include/linux/property.h
-> @@ -150,11 +150,9 @@ struct fwnode_handle *fwnode_get_next_parent(struct =
-fwnode_handle *fwnode);
->         for (parent =3D fwnode_get_parent(fwnode); parent;        \
->              parent =3D fwnode_get_next_parent(parent))
->
-> -struct device *fwnode_get_next_parent_dev(const struct fwnode_handle *fw=
-node);
->  unsigned int fwnode_count_parents(const struct fwnode_handle *fwn);
->  struct fwnode_handle *fwnode_get_nth_parent(struct fwnode_handle *fwn,
->                                             unsigned int depth);
-> -bool fwnode_is_ancestor_of(const struct fwnode_handle *ancestor, const s=
-truct fwnode_handle *child);
+On Tue, Feb 20, 2024, Yan Zhao wrote:
+> On Mon, Feb 19, 2024 at 11:44:54AM -0800, Sean Christopherson wrote:
+> > If KVM is using TDP, but L1 is using shadow paging for L2, then routing through
+> > kvm_handle_noslot_fault() will incorrectly cache the gfn as MMIO, and create an
+> > MMIO SPTE.  Creating an MMIO SPTE is ok, but only because kvm_mmu_page_role.guest_mode
+> > ensure KVM uses different roots for L1 vs. L2.  But mmio_gfn will remain valid,
+> > and could (quite theoretically) cause KVM to incorrectly treat an L1 access to
+> > the private TSS or identity mapped page tables as MMIO.
+> Why would KVM treat L1 access to the private TSS and identity mapped page
+> tables as MMIO even though mmio_gfn is valid?
 
-The rest of the functions here are related to parents and children of
-a fwnode. So, why is this function considered to be in the wrong
-place?
+Because KVM doesn't need to take an EPT Violation or Misconfig to trigger emulation,
+those just happen to be (by far) the most common ways KVM gets into the emulator
+on modern CPUs.
 
--Saravana
+> It looks that (for Intel platform) EPT for L1 will only install normal SPTEs
+> (non-MMIO SPTEs) for the two private slots, so there would not have EPT
+> misconfiguration and would not go to emulation path incorrectly.
+> Am I missing something?
 
->  struct fwnode_handle *fwnode_get_next_child_node(
->         const struct fwnode_handle *fwnode, struct fwnode_handle *child);
->  struct fwnode_handle *fwnode_get_next_available_child_node(
+..
+
+> > --
+> > Subject: [PATCH] KVM: x86/mmu: Don't force emulation of L2 accesses to
+> >  non-APIC internal slots
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c | 17 +++++++++++++----
+> >  1 file changed, 13 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 488f522f09c6..4ce824cec5b9 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4341,8 +4341,18 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+> >  	if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
+> >  		return RET_PF_RETRY;
+> >  
+> > -	if (!kvm_is_visible_memslot(slot)) {
+> > -		/* Don't expose private memslots to L2. */
+> > +	if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT) {
+> > +		/*
+> > +		 * Don't map L1's APIC access page into L2, KVM doesn't support
+> > +		 * using APICv/AVIC to accelerate L2 accesses to L1's APIC,
+> > +		 * i.e. the access needs to be emulated.  Emulating access to
+> > +		 * L1's APIC is also correct if L1 is accelerating L2's own
+> > +		 * virtual APIC, but for some reason L1 also maps _L1's_ APIC
+> > +		 * into L2.  Note, vcpu_is_mmio_gpa() always treats access to
+> > +		 * the APIC as MMIO.  Allow an MMIO SPTE to be created, as KVM
+> > +		 * uses different roots for L1 vs. L2, i.e. there is no danger
+> > +		 * of breaking APICv/AVIC for L1.
+> > +		 */
+> >  		if (is_guest_mode(vcpu)) {
+> >  			fault->slot = NULL;
+> >  			fault->pfn = KVM_PFN_NOSLOT;
+> Checking fault->is_private before calling kvm_handle_noslot_fault()?
+
+Ya, the actual series will perform that check, this slots in halfway through.
+
+> And do we need a centralized check of fault->is_private in kvm_mmu_do_page_fault()
+> before returning RET_PF_EMULATE?
+
+Oof, yes.
+
+> > @@ -4355,8 +4365,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+> >  		 * MMIO SPTE.  That way the cache doesn't need to be purged
+> >  		 * when the AVIC is re-enabled.
+> >  		 */
+> > -		if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
+> > -		    !kvm_apicv_activated(vcpu->kvm))
+> > +		if (!kvm_apicv_activated(vcpu->kvm))
+> >  			return RET_PF_EMULATE;
+> Otherwise, here also needs a checking of fault->is_private?
+> Maybe also for where RET_PF_EMULATE is returned when page_fault_handle_page_track()
+> is true (though I know it's always false for TDX).
+
+Ya, and practically speaking it should always be false for functional setups
+(software-protected VMs don't yet play nice with shadow paging or any form of
+emulation), but it's easy enough to guard against RET_PF_EMULATE in
+kvm_mmu_do_page_fault().
+
+I'm going to post _just_ patch 1 as v5 so that it can land in 6.8 (assuming I
+don't screw it up again).
+
+I'll post a separate series to tackle the refactor and is_private cleanups and
+fixes as that has ballooned to 17 patches :-/
 
