@@ -1,150 +1,183 @@
-Return-Path: <linux-kernel+bounces-74833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A22C85DCDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:58:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971C985DCE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA848B25559
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:58:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50B50283727
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C46979DAB;
-	Wed, 21 Feb 2024 13:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oxmkNcwB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCC27C097;
+	Wed, 21 Feb 2024 13:59:10 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF3276C99;
-	Wed, 21 Feb 2024 13:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEAF79DAE
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708523926; cv=none; b=IKsIRd5BdlNJa6sEmuDa2Ttqa6shMGKhVqL3/8rGbSrmWI7DIGs0A5jCG4CZZY7rcm/ireWlkk2PAVTdsB+wT9B04y/6shjs0ShXlugQorW/MHFbzEThEbpoVpL+cuuchfyFAX405Z+kC/Kbmi1anpo2sFQ+1rvOjV/PJdGKuYk=
+	t=1708523949; cv=none; b=OG8+f9wBTGL8Z/Ene1UAWuKNM0oeyTeyobjy4D5tPl09DxaXzmpu9A4zdeE7k4cWGY5KeSK37sFMSEgKKoGrmkGJbAabsZbDw4q4Xlfrdh+4Mgbw28zCJrXTljtPuxP6/Bkm7ZjYAzkWkRyaW069YSdSdEUfJYzxRcLEleCUPbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708523926; c=relaxed/simple;
-	bh=teJ7pXqSdAToziyul/1Ti6hujfnZZLjYbygcA9TNKKY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o8T6cTUgS62kyUk3JvNrqz0hdcT2yNh0bA3BLLWeaf3MeF1FpSnMUz/EVjSX5cVp/P73tsGyZJTHxcuBV6VrYtYhZnI1rkT14PoSo+7ikEym8zLdRUZr/D2qDcbZ1eqQwTnXbjg0zpVxmQZsUFj6BLu9WA2UZXmPSE5BWTLNMp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oxmkNcwB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5094BC43390;
-	Wed, 21 Feb 2024 13:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708523926;
-	bh=teJ7pXqSdAToziyul/1Ti6hujfnZZLjYbygcA9TNKKY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=oxmkNcwBkogUNWxz7hT4gEUhGP6mgJZ8kA+PtDJrJo8CoEizH6Ra0pAZuB5Euy4tE
-	 +IxQ5GTrc19sHG+ji/uxbW8RGv51o+YD+yhYicWbDmjUZT+2dwDA9k/T4gOXY7I/DQ
-	 QOMwQ972mkUR32OQKjIqdZGZVSsOvaj+WUWAY2jieVaxi/vDIlmiN/RwU70LDWHrVR
-	 qkfWkb3xHzoGkmeALpAVm/kRA0W1FgDDNaAMjiqzvaYXj6c7yykb53NPQhxiXpSK8H
-	 J+uJIJcK8j+l24jkwwTL3N0r2lYvlLREvFSUCPIlgxKHYlL8TR6Bjp2RslhFBagWex
-	 yhg4TAw2Cu9fg==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d2531294faso11559121fa.2;
-        Wed, 21 Feb 2024 05:58:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVk4YmcG5/PK7zpDezLdBQqX2a7Y9pQsnvwm+zF8eRHXm1OpuUUhueen82rpFGpdYuky/lAoFMZJRZLABAxudqt6eBahy8EAlPFqy0cQNWfGpDUukVBbtEaOAhD0zIy1AiNc8+RLhx8Ng==
-X-Gm-Message-State: AOJu0YwoLV7vWESBYYostnEHtxZkd2oIycFAB7EDs+VVv28Q5gCCpsQQ
-	ENmBl5S9TbgXM/ly+5Nn3ovuJ1SzVVfi8I5DCKYBGC4fy3ObQy96tfEJn3p8H7H+bVkKUtk9T6/
-	kOZ3iDn0kPYXw5uOXyGFISbCHuQ==
-X-Google-Smtp-Source: AGHT+IFfYxwetv16vXXURQANSHDR29q5IWSpQmkFIROiXUwQeOWA0DE7B9LbakxxZJ8ILroSEqQpC1Cf4DxsVtHzHhY=
-X-Received: by 2002:a05:651c:9:b0:2d2:555f:b4ae with SMTP id
- n9-20020a05651c000900b002d2555fb4aemr1169907lja.51.1708523924540; Wed, 21 Feb
- 2024 05:58:44 -0800 (PST)
+	s=arc-20240116; t=1708523949; c=relaxed/simple;
+	bh=SPoiOVe9t7+lJy32KOx/8m4/OcgmeATJO9xiMhnNQl8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dRGqshdgs6mRaZ2q8VBbtBC7FV1ph7kFIDmRwbGB6J2ATxXhmDoMK1nn+Qczk1iylblwHKh8+3OYJwS0ZHXOVfotccYoiOR+Zopt/BSJKvACXSW2nNnsev9YCqO4jUlSZIjykLBhk9ki+f3dihuAlkAWcZN2B0zKVRC/I4prVng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rcn7W-0000Lo-VY; Wed, 21 Feb 2024 14:58:46 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rcn7U-0023E5-1L; Wed, 21 Feb 2024 14:58:44 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rcn7T-000AN8-35;
+	Wed, 21 Feb 2024 14:58:43 +0100
+Message-ID: <338419fd10ffcc62b135d924f766d66af8186346.camel@pengutronix.de>
+Subject: Re: [PATCH v3 14/18] phy: cadence-torrent: add suspend and resume
+ support
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Thomas Richard <thomas.richard@bootlin.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Andy
+ Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, Haojian
+ Zhuang <haojian.zhuang@linaro.org>,  Vignesh R <vigneshr@ti.com>, Aaro
+ Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+ Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod
+ Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof
+ =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Rob Herring <robh@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com,  thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Date: Wed, 21 Feb 2024 14:58:43 +0100
+In-Reply-To: <113b7f2e-1313-4ebf-a403-e5fcae8f01ca@bootlin.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+	 <20240102-j7200-pcie-s2r-v3-14-5c2e4a3fac1f@bootlin.com>
+	 <c105bfa8567f9e76731f2b018f4ca3176357204d.camel@pengutronix.de>
+	 <113b7f2e-1313-4ebf-a403-e5fcae8f01ca@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221092826.748e70c4@canb.auug.org.au> <20240221163010.5f81813a@canb.auug.org.au>
-In-Reply-To: <20240221163010.5f81813a@canb.auug.org.au>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 21 Feb 2024 06:58:32 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+2ri0JsmuU184YGj=p53jSxn+8EZq_FuBbMjsVyNLvtw@mail.gmail.com>
-Message-ID: <CAL_Jsq+2ri0JsmuU184YGj=p53jSxn+8EZq_FuBbMjsVyNLvtw@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>, 
-	ARM <linux-arm-kernel@lists.infradead.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Tue, Feb 20, 2024 at 10:30=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote:
+On Mi, 2024-02-21 at 14:41 +0100, Thomas Richard wrote:
+> On 2/21/24 14:09, Philipp Zabel wrote:
+> > On Do, 2024-02-15 at 16:17 +0100, Thomas Richard wrote:
+> > > Add suspend and resume support.
+> > >=20
+> > > The already_configured flag is cleared during the suspend stage to fo=
+rce
+> > > the PHY initialization during the resume stage.
+> > >=20
+> > > Based on the work of Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > >=20
+> > > Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+> > > ---
+> > >  drivers/phy/cadence/phy-cadence-torrent.c | 54 +++++++++++++++++++++=
+++++++++++
+> > >  1 file changed, 54 insertions(+)
+> > >=20
+> > > diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/=
+cadence/phy-cadence-torrent.c
+> > > index 52cadca4c07b..f8945a11e7ca 100644
+> > > --- a/drivers/phy/cadence/phy-cadence-torrent.c
+> > > +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+> > > @@ -3005,6 +3005,59 @@ static void cdns_torrent_phy_remove(struct pla=
+tform_device *pdev)
+> > >  	cdns_torrent_clk_cleanup(cdns_phy);
+> > >  }
+> > > =20
+> > > +static int cdns_torrent_phy_suspend_noirq(struct device *dev)
+> > > +{
+> > > +	struct cdns_torrent_phy *cdns_phy =3D dev_get_drvdata(dev);
+> > > +	int i;
+> > > +
+> > > +	reset_control_assert(cdns_phy->phy_rst);
+> > > +	reset_control_assert(cdns_phy->apb_rst);
+> > > +	for (i =3D 0; i < cdns_phy->nsubnodes; i++)
+> > > +		reset_control_assert(cdns_phy->phys[i].lnk_rst);
+> > > +
+> > > +	if (cdns_phy->already_configured)
+> > > +		cdns_phy->already_configured =3D 0;
+> > > +	else
+> > > +		clk_disable_unprepare(cdns_phy->clk);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int cdns_torrent_phy_resume_noirq(struct device *dev)
+> > > +{
+> > > +	struct cdns_torrent_phy *cdns_phy =3D dev_get_drvdata(dev);
+> > > +	int node =3D cdns_phy->nsubnodes;
+> > > +	int ret, i;
+> > > +
+> > > +	ret =3D cdns_torrent_clk(cdns_phy);
+> > > +	if (ret)
+> > > +		goto clk_cleanup;
+> > > +
+> > > +	/* Enable APB */
+> > > +	reset_control_deassert(cdns_phy->apb_rst);
+> > > +
+> > > +	if (cdns_phy->nsubnodes > 1) {
+> > > +		ret =3D cdns_torrent_phy_configure_multilink(cdns_phy);
+> > > +		if (ret)
+> > > +			goto put_lnk_rst;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +
+> > > +put_lnk_rst:
+> > > +	for (i =3D 0; i < node; i++)
+> > > +		reset_control_assert(cdns_phy->phys[i].lnk_rst);
+> >=20
+> > The same cleanup is found in probe. Would it be cleaner to move this
+> > into cdns_torrent_phy_configure_multilink() instead of duplicating it
+> > here?
+>=20
+> Hello Philipp,
+>=20
+> Yes I could, but from my point of view, it would not be cleaner.
+> This cleanup is called from many places in the probe:
+> -
+> https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/phy/cadence/phy-=
+cadence-torrent.c#L2948
+> -
+> https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/phy/cadence/phy-=
+cadence-torrent.c#L2954
+> -
+> https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/phy/cadence/phy-=
+cadence-torrent.c#L2960
 >
-> Hi all,
->
-> On Wed, 21 Feb 2024 09:28:26 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the arm-soc-fixes tree, today's linux-next build (arm
-> > multi_v7_defconfig) produced this warning:
-> >
-> > arch/arm/boot/dts/renesas/r8a7790-lager.dts:444.11-458.5: Warning (inte=
-rrupt_provider): /i2c-mux4/pmic@58: Missing '#interrupt-cells' in interrupt=
- provider
-> > arch/arm/boot/dts/renesas/r8a7790-lager.dtb: Warning (interrupt_map): F=
-ailed prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7792-blanche.dts:376.10-392.4: Warning (in=
-terrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in=
- interrupt provider
-> > arch/arm/boot/dts/renesas/r8a7792-blanche.dtb: Warning (interrupt_map):=
- Failed prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7790-stout.dts:344.10-362.4: Warning (inte=
-rrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in i=
-nterrupt provider
-> > arch/arm/boot/dts/renesas/r8a7790-stout.dtb: Warning (interrupt_map): F=
-ailed prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7791-koelsch.dts:816.10-830.4: Warning (in=
-terrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in=
- interrupt provider
-> > arch/arm/boot/dts/renesas/r8a7791-koelsch.dtb: Warning (interrupt_map):=
- Failed prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7791-porter.dts:410.10-420.4: Warning (int=
-errupt_provider): /soc/i2c@e60b0000/pmic@5a: Missing '#interrupt-cells' in =
-interrupt provider
-> > arch/arm/boot/dts/renesas/r8a7791-porter.dtb: Warning (interrupt_map): =
-Failed prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7794-alt.dts:450.10-464.4: Warning (interr=
-upt_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in int=
-errupt provider
-> > arch/arm/boot/dts/renesas/r8a7794-alt.dtb: Warning (interrupt_map): Fai=
-led prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7794-silk.dts:436.10-454.4: Warning (inter=
-rupt_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in in=
-terrupt provider
-> > arch/arm/boot/dts/renesas/r8a7794-silk.dtb: Warning (interrupt_map): Fa=
-iled prerequisite 'interrupt_provider'
-> > arch/arm/boot/dts/renesas/r8a7793-gose.dts:756.10-770.4: Warning (inter=
-rupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in in=
-terrupt provider
-> > arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_map): Fa=
-iled prerequisite 'interrupt_provider'
-> >
-> > Introduced/exposed by commit
-> >
-> >   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
-> >
-> > I guess you missed some :-(
->
-> Also these from the arm64 defconfig build:
->
-> arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interrup=
-t_provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cells'=
- in interrupt provider
-> arch/arm64/boot/dts/freescale/imx8dxp-tqma8xdp-mba8xx.dtb: Warning (inter=
-rupt_map): Failed prerequisite 'interrupt_provider'
-> arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interrup=
-t_provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cells'=
- in interrupt provider
-> arch/arm64/boot/dts/freescale/imx8qxp-tqma8xqp-mba8xx.dtb: Warning (inter=
-rupt_map): Failed prerequisite 'interrupt_provider'
+> If I add this cleanup in cdns_torrent_phy_configure_multilink(), yes I
+> could remove it from cdns_torrent_phy_resume_noirq(), but I should keep
+> it in the probe. And I should modify the probe to jump to clk_cleanup if
+> cdns_torrent_phy_configure_multilink() fails.
 
-Looks like a new platform in next.
+I see it now. If it can't be consolidated, it's not useful to move it
+around.
 
-Alexander, Can you fix these?
-
-Rob
+>=20
+regards
+Philipp
 
