@@ -1,129 +1,133 @@
-Return-Path: <linux-kernel+bounces-74880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 255F385DE9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C19385DF4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9B7F1F245F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:20:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C193A1F21BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B592E7E780;
-	Wed, 21 Feb 2024 14:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6467C6C0;
+	Wed, 21 Feb 2024 14:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BH3RU58z"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="a6Z0xQtB"
+Received: from out203-205-221-192.mail.qq.com (out203-205-221-192.mail.qq.com [203.205.221.192])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A4A69D38;
-	Wed, 21 Feb 2024 14:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C744C62;
+	Wed, 21 Feb 2024 14:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.192
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708525173; cv=none; b=s7ySvEIystER1Exlmf7nlxhO7zqogkvTYkVF0bXduOEv8q4nYgDjljihpuZanuvIAwqVUCfQlmHxhIRarxBnOYSHJdOKeXtO+kJIpvWBVpuNemFezceCgjN7g+Fa3HZdg4W1OHZf3rxW3ilWasLWFIUbTg0lWvZdxRhIQpnWA9c=
+	t=1708525592; cv=none; b=RqPX1asokhiRl0S34IzWCIiKYno0zVryM9H2BL5Ij8fgA7DuqDz5J8z5jgszKVoOqVrn18X0MJuj63YVTvGaIyQPt9LPDaHivgv99Bxdhz5s3wiPpcBKcF89ro87zp6PdIqiVEXnbG0D19qxaAoNFqelqEV2/perfNKmS8VnSBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708525173; c=relaxed/simple;
-	bh=7wFKTVlWizL57RttcaVLGrwRB1DayJIhODEBnM4Uul8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qu53vKhUD7q0rP+F1rk6XZ9xzUEhDWZe0P+BPAIjW8RDbUKJHHg8B5vOHfBxrgOZX9V4sxqLct62hRmO3ew40ndCdtnGz9UjD0IcMFapzU7PZmYgLpwQ9PAyZJKZ3jdDIpByagp2ZSPxoGcptHAi8gdMprfh32D0dJrZf2TSBXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BH3RU58z; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 334A660005;
-	Wed, 21 Feb 2024 14:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708525167;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=djgIwKG8h1E1vBHOq7Yx/ZY0Ehwdq+Fa2OAPhHy5Bg0=;
-	b=BH3RU58z7cr7I5bVawgKgfnYC5GysBok+JTGHq7LVbJ85EirfpHA2o2XLzRR+7UrXVwEfR
-	/wZa6tcSK+DMxgMWmUsnNDaOR0N1r8YgkoRdYceug+1Yk4JmUTFRDvRCA3/cymZ9XpUHr/
-	vd1WaoQ4pQTMeRzCHOJKwuvBlu9/+rOifdvv6q5fqfzwFEr1d5o71iFGgd3kc3AOzFnAO1
-	A1snWfe4kw4sZl4URubjBTzCzQTc4uqweCPYbYIuoPmUagYG9LKMcqiXTtnvElDi8wKgo0
-	I0H6nXBonAHEME2N7LD4uGH31cYGjo3LmMOeUpuFAYUSps2nLsFC7ihsE8gNUA==
-Message-ID: <b0220b02-5058-42ec-ba06-251caa4813dc@bootlin.com>
-Date: Wed, 21 Feb 2024 15:19:14 +0100
+	s=arc-20240116; t=1708525592; c=relaxed/simple;
+	bh=v11Pc7CIFtiDJvtTdFEr5KXDbTe1sppjg1bvGaMcSho=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=OsTodSaHXhyT8t2XlcGbOdMEi3fO4zVjFREu9pDag7TC2gcH9Y/MYnVSPBbalF9YoLH8304RDja96fioK42crz9TUGarywvyhprlq3xlqjpMIyEahLf1mbujkNKhyYfgc2sczJBcBzba0JTc9yrAyvha9SpOOnyw+Y4iJz2gz5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=a6Z0xQtB; arc=none smtp.client-ip=203.205.221.192
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708525581; bh=pj6LoP7IKnvmbi/dGc8hKKjxVKAxUr0Pi1wWsmEFVu4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=a6Z0xQtBUzux2mkhM+3ZTBkc7GG9xTbe5w9a3P5Qj9eONYB9lhI+lZ/8y/Xfi10We
+	 qC6QKRn0J675XN+M7FRePWYQjtl3gFQuh4XGUkXL7lTKCVGc/wkjvKJMi08Mh7kVZ9
+	 M2MHha0CiKjnwuMDuJsIXwyEl7LofK3onaR3rf7M=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 50418A1B; Wed, 21 Feb 2024 22:20:04 +0800
+X-QQ-mid: xmsmtpt1708525204t0xgoj2qr
+Message-ID: <tencent_941B48254CBA00BB4933069E391B6E4B5408@qq.com>
+X-QQ-XMAILINFO: M3ziZXKDk+iOt7Y7H7kR7VuOyouwPtJP/BqzCiDi509G429y8WTRXNEwOEy1HQ
+	 KNti5PBaUD73kBsZTMmNaElFH/FiHZ8JaXm+T+38IpASlsWsBNyeBArNa0Pr9w04+SKoRbN8beoy
+	 23SB0wvVYLyQLj6gla93Y5kiUbMbv7jXhifKWb6o5zAZe0Df9dhrmcfq29TyvPfz9uyaR//JS8q/
+	 WNEB/BotOa/knSUCMDx2B4PX+01xpCsrdA8an0jr8Ien++5gph+y/FMQnTZu0wRYt463ZHjvj+A+
+	 4DIbuzCmwlMRS/KF63NEa+5bbh1K6jvCNxYlVJqavgUGa2yge7kHc4gbsb4kNng6xd+78e08Z4QI
+	 ZL++SU+WugkOqsPYHguh4yae5/rpUx8ZMgjIppocoljZEpVBlbgd81cbDl88EaciZeJ/iJyS7UNV
+	 r0l/AxBa41EJbikFa8R/HTaBis4EHY8BTWSXep2UQmwvOTijwhRK+fCVQetq9TiwVqAj8p4ky32i
+	 K3a1ase94OZEsUrCxVyRmXvvLeaTxggMKL+z0ZwS1lBNWM4g72RTyriOr8mKCX4QOchd/auaOk4V
+	 AqYX46h4esToenJvpwS3vsKhUsIxOh5j7ytb6iUhrX+GTdCXrsFIKnS2dr/UdFYHrzp69rKAI3ny
+	 8IFy7aXOxMuppn94MNIc6HLgmaJMMn5+MJNPn0qNnc20m6iRhAAZJcsU0Q/lI4B6mrEzvLhaE/st
+	 ZJEpe8P58ktoFFCsC6uhDxo9D88FpBoaRo8F9RvOLZssOFRZVBGDhbiefKCQfcjgf26KBEPDyx3C
+	 ZrryfrzthXJ+lBmlAXevgjnkfrYIU5+YGxNKkK2qLXXQC7SgTB+niI00IUuB3amn4uHHHIpkR2bs
+	 fzCgWRjzOCVh+N9KheWwLoENBaZN1hLFlmY2RPwXDGTGHQ7P00VcA=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com
+Cc: hverkuil-cisco@xs4all.nl,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	mchehab@kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] media/cec/core: fix task hung in cec_claim_log_addrs
+Date: Wed, 21 Feb 2024 22:20:05 +0800
+X-OQ-MSGID: <20240221142004.159200-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000006d96200611de3986@google.com>
+References: <0000000000006d96200611de3986@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/18] pinctrl: pinctrl-single: remove dead code in
- suspend() and resume() callbacks
-Content-Language: en-US
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
- Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-2-5c2e4a3fac1f@bootlin.com>
- <Zc4tedAhqYX3bQcw@smile.fi.intel.com>
- <78add459-a96a-46c6-83ff-e2657d4d3db4@bootlin.com>
- <Zc96dSff5Y-dufrJ@smile.fi.intel.com>
- <a2c3c5b9-79a3-4793-892c-b1ab79b71c7d@bootlin.com>
- <ZdX28EJ9LtDWfVmH@smile.fi.intel.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <ZdX28EJ9LtDWfVmH@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-On 2/21/24 14:13, Andy Shevchenko wrote:
-> On Wed, Feb 21, 2024 at 12:01:43PM +0100, Thomas Richard wrote:
->> On 2/16/24 16:08, Andy Shevchenko wrote:
->>> On Fri, Feb 16, 2024 at 08:59:47AM +0100, Thomas Richard wrote:
->>>> On 2/15/24 16:27, Andy Shevchenko wrote:
->>>>> On Thu, Feb 15, 2024 at 04:17:47PM +0100, Thomas Richard wrote:
->>>>>> No need to check the pointer returned by platform_get_drvdata(), as
->>>>>> platform_set_drvdata() is called during the probe.
->>>>>
->>>>> This patch should go _after_ the next one, otherwise the commit message doesn't
->>>>> tell full story and the code change bring a potential regression.
->>>>
->>>> Hello Andy,
->>>>
->>>> I'm ok to move this patch after the next one.
->>>> But for my understanding, could you explain me why changing the order is
->>>> important in this case ?
->>>
->>> Old PM calls obviously can be called in different circumstances and these
->>> checks are important.
->>>
->>> Just squash these two patches to avoid additional churn and we are done.
->>
->> You mean invert the order instead of squash.
-> 
-> Either would work, but see how much churn in terms of changing just changed
-> lines it adds.
+After unlocking adap->lock in cec_claim_log_addrs(), cec_claim_log_addrs() may
+re-enter, causing this issue to occur.
 
-OK thanks.
+In the thread function cec_config_thread_func() adap->lock is also used, so there
+is no need to unlock adap->lock in cec_claim_log_addrs(), and then use adap->lock
+in cec_config_thread_func() to protect.
 
-I'll squash the two patches. And I'll add a comment which explains that
-I dropped some dead code.
+Reported-and-tested-by: syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ drivers/media/cec/core/cec-adap.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Regards,
-
+diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+index 5741adf09a2e..21b3ff504524 100644
+--- a/drivers/media/cec/core/cec-adap.c
++++ b/drivers/media/cec/core/cec-adap.c
+@@ -1436,7 +1436,6 @@ static int cec_config_thread_func(void *arg)
+ 	int err;
+ 	int i, j;
+ 
+-	mutex_lock(&adap->lock);
+ 	dprintk(1, "physical address: %x.%x.%x.%x, claim %d logical addresses\n",
+ 		cec_phys_addr_exp(adap->phys_addr), las->num_log_addrs);
+ 	las->log_addr_mask = 0;
+@@ -1565,7 +1564,6 @@ static int cec_config_thread_func(void *arg)
+ 	}
+ 	adap->kthread_config = NULL;
+ 	complete(&adap->config_completion);
+-	mutex_unlock(&adap->lock);
+ 	call_void_op(adap, configured);
+ 	return 0;
+ 
+@@ -1577,7 +1575,6 @@ static int cec_config_thread_func(void *arg)
+ 	adap->must_reconfigure = false;
+ 	adap->kthread_config = NULL;
+ 	complete(&adap->config_completion);
+-	mutex_unlock(&adap->lock);
+ 	return 0;
+ }
+ 
+@@ -1602,9 +1599,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+ 		adap->kthread_config = NULL;
+ 		adap->is_configuring = false;
+ 	} else if (block) {
+-		mutex_unlock(&adap->lock);
+ 		wait_for_completion(&adap->config_completion);
+-		mutex_lock(&adap->lock);
+ 	}
+ }
+ 
 -- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.43.0
 
 
