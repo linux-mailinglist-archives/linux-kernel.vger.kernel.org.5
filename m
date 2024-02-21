@@ -1,74 +1,82 @@
-Return-Path: <linux-kernel+bounces-74261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF9085D1BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:50:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5EBD85D1C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EED01F26AEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:50:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5601C1F26C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F32E3BB2E;
-	Wed, 21 Feb 2024 07:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DC63B2BB;
+	Wed, 21 Feb 2024 07:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dNq1alFL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="na7ZfenU"
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355473BB24;
-	Wed, 21 Feb 2024 07:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A5F3AC26;
+	Wed, 21 Feb 2024 07:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708501805; cv=none; b=OfijhhLnQHmLs/U5ZMhQL2oeGnluqtp2m+ahOJ8mgoxY5f7VJBx/Fp9VDAlwhLxy8BTHN5RyVC4hG4EhsZVKTGIl0cCp4hN6svc4EUDH2UGRR03Trikv6zddTFPNgEVvr2XWwjHig75UeaDNVPRud9Si/ovXDwdHiBhEp3QZwMQ=
+	t=1708501863; cv=none; b=fkVzDIFlzAjgsV45toAOKpWmIdiGSx33t41DKO4bNGD9HXFmc+sO+zW9VGvnC98VNkLXlFU5ME09ALGO08NtCr8okb+LkjOzEC2eGTnUkRm7eiwllFlGVjoPKER2AfQTzHzL7gdR7onkPtp2E6hHDKCXssXmLGPXl/GgdUvILnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708501805; c=relaxed/simple;
-	bh=BfDQZ0zpRdNfmhg0jDTuQpE46xClKwDJrSeLkbBaq4s=;
+	s=arc-20240116; t=1708501863; c=relaxed/simple;
+	bh=WMEVPRk/cMv9MwbUdnJDZQNfMyeamxwLXtEaC9Nkglg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=egITI06A4SzeqQNOxgjvJYb9TgSAlIsFQMl2ZO3kCwhWSIg1W/dF5DPReEYLs1lONwXKdQYn9Fg6/STeHm2bEUwwQrNvdls9dfBE1Ao6yjmIHgxNxQ1myPIVc3BrdI+Zg9/Me5lZGrgRB2S03xZ62U8EhCsiDiZyWXpDWkLGWn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dNq1alFL; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708501804; x=1740037804;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BfDQZ0zpRdNfmhg0jDTuQpE46xClKwDJrSeLkbBaq4s=;
-  b=dNq1alFLw7opu9NdLnUmeGYjSC2oHVVRXcLCWzpP/zQHj12zzeXXKmNS
-   9SX4VBIfAH604SWfC7M6lQvvUDkrsX9Zfa/H89gfKdZfHF8N/ef1jWdFa
-   pqFuu+IAlvo243u4yThiIh/X/8ZVHxUejiq1HbT9Uwt27J6jI/m0vzW7Z
-   ctGznpSJ5l4uB0Nb2mWsDXqCj/CTny9Jz4odSwt878hZGcTJLl8X56Ol+
-   ThT4iu3ROslO0xoSZkON2C1RPghMft0+pLt8jmChY5NKSGUyf0OwEGXKv
-   DEEIvnuT7zj8hmA6my55LGmY3FY4ylXTSBXrSGhrVmT2kW8bx0ryzcSYF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2785481"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="2785481"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 23:50:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="5199242"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 23:50:01 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 6AD2E11F855;
-	Wed, 21 Feb 2024 09:49:58 +0200 (EET)
-Date: Wed, 21 Feb 2024 07:49:58 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v2 1/1] driver core: Drop unneeded 'extern' keyword in
- fwnode.h
-Message-ID: <ZdWrJhHmQm-WdRWQ@kekkonen.localdomain>
-References: <20240220175333.3242277-1-andriy.shevchenko@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HIGARl/pLUIzwjXiio2HPoVZB64md/HnHa5LHNkG6je6xElBv5ZBG3W4xYyOvVHH4TxOozji3jOgAclv/4v/xGnlKFJStYejM6JWEayo0xPQR8lQH/JSVR+mI/sSqLrczrjxCq2+bp/h9WhSTWhZJUiJT4qKFDuTgdGmxTdHmZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=na7ZfenU; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bd72353d9fso4722303b6e.3;
+        Tue, 20 Feb 2024 23:51:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708501861; x=1709106661; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5WxYfPd5VUxR2AqwN/E1W/Qk2rLQTXMyaj5oNoN/9CA=;
+        b=na7ZfenURI5j8c6yWx2v3wV7UjEFr03fWdPvu9cekMaPFsG68tbWsJSxep2vx9/uzl
+         AQcT+I0feD2LyVME9Wmgw+FArgdO5+bq6R23wjVqaFKRjqiklNQcoCkgOI/RwUpueZ9L
+         GqpnSGrFNWMuOxDmquDNEtsu3haAPr6tI/+jM1cusOb8fD5ewJZcOJ4UAvXlBKaqufiU
+         ZYwS+pJptDkQ6bkB4ums5/ScFo677xQjEm5KQQLFwX7+A4IQUYD38wxH3jTlj1GWzOd0
+         mNTylBkpHtJ83dYNuCu1RGT55gFv7XrSgzyqTlb3QCOaghHIj/R2M3S6xaD3/8zFAcuK
+         j2IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708501861; x=1709106661;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5WxYfPd5VUxR2AqwN/E1W/Qk2rLQTXMyaj5oNoN/9CA=;
+        b=SdxeWKKqrHp62L3QLrLPQ/sbNs89nsGNGFC3wzJV63TB31upiyVLZenlEDCiLr2v1f
+         bGGHxSZjYIXKYTItKIZQv0TzhIWRf0q5FYlXervDb/1PH2mE7pJkPbtzBvbPJ1L+nbqS
+         TGRB6Tb32xrPm7SEbIT7v4JtzDwrgItpGqsozEp2PkRYFMd8MFyasBQDSHoRwMOGdgIv
+         DaFMMrC56DoZQw0DE8N2aAMQjbU+To1WZFolnk9UWM4fqo3tBAJJIQZ0mExJGnzNAzIj
+         zAzmg2ZqB6DRi+ZGbHaxZL4BW7qQOqqcga5dPYtIhMvBjnk3VY1L5IpPorzlJGkCHXCG
+         /VFA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQf9dowa4Uwkaw+tTpok78BCxdtUsrFJ3rvb93zomyPPXcup2CRN+ceP630heFed5NAh+Tv3MD5R6MR1+18qIGhHNVUP2H6uGBMQ3klxW3sFlZipqTyj+0Izxr8BDEv5w83oQ5
+X-Gm-Message-State: AOJu0YxVX0//VGbEvHE9Tr74HWjq6OOxX4g4HVZ0kZ5bkzsHdxph3wJI
+	Fdidu3D0mZQ51t22G1FW2/4cm4dBDLLK6st2RRdUYNpIaqnwzdyi
+X-Google-Smtp-Source: AGHT+IEaot28fIQDjxTt1GFRY6aRRqnZycO4q4j9ERdRvkVxi8anzShk1jhdOtBwPQcD8Hi7xxnpxA==
+X-Received: by 2002:a05:6808:220c:b0:3bf:f4bb:7630 with SMTP id bd12-20020a056808220c00b003bff4bb7630mr23413978oib.45.1708501861356;
+        Tue, 20 Feb 2024 23:51:01 -0800 (PST)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id by41-20020a056a0205a900b005dc4ce8d2a4sm6745749pgb.58.2024.02.20.23.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 23:51:00 -0800 (PST)
+Date: Wed, 21 Feb 2024 15:50:55 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
+	manjunath.b.patil@oracle.com
+Subject: Re: [PATCH net-next v5] bonding: rate-limit bonding driver inspect
+ messages
+Message-ID: <ZdWrXyQTfF_bMPCA@Laptop-X1>
+References: <20240221050809.4372-1-praveen.kannoju@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,17 +85,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240220175333.3242277-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240221050809.4372-1-praveen.kannoju@oracle.com>
 
-On Tue, Feb 20, 2024 at 07:52:53PM +0200, Andy Shevchenko wrote:
-> We do not use 'extern' keyword with functions. Remove the last one
-> mistakenly added to fwnode.h.
+On Wed, Feb 21, 2024 at 10:38:09AM +0530, Praveen Kumar Kannoju wrote:
+> Through the routine bond_mii_monitor(), bonding driver inspects and commits
+> the slave state changes. During the times when slave state change and
+> failure in aqcuiring rtnl lock happen at the same time, the routine
+> bond_mii_monitor() reschedules itself to come around after 1 msec to commit
+> the new state.
 > 
-> Fixes: 19d0f5f6bff8 ("driver core: Add fw_devlink.strict kernel param")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> During this, it executes the routine bond_miimon_inspect() to re-inspect
+> the state chane and prints the corresponding slave state on to the console.
+> Hence we do see a message at every 1 msec till the rtnl lock is acquired
+> and state chage is committed.
+> 
+> This patch doesn't change how bond functions. It only simply limits this
+> kind of log flood.
+> 
+> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+> ---
+> v5:
+>   - Redundant indentation addressed.
+> v4: https://lore.kernel.org/all/20240220050437.5623-1-praveen.kannoju@oracle.com/
+>   - Rectification in the patch subject and versioning details.
+> v3: https://lore.kernel.org/lkml/20240219133721.4567-1-praveen.kannoju@oracle.com/
+>   - Commit message is modified to provide summary of the issue, because of
+>     which rate-limiting the bonding driver messages is needed.
+> v2: https://lore.kernel.org/lkml/20240215172554.4211-1-praveen.kannoju@oracle.com/
+>   - Use exising net_ratelimit() instead of introducing new rate-limit
+>     parameter.
+> v1: https://lore.kernel.org/lkml/20240214044245.33170-1-praveen.kannoju@oracle.com/
+> ---
+>  drivers/net/bonding/bond_main.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index 4e0600c..c8482cd 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -2609,12 +2609,12 @@ static int bond_miimon_inspect(struct bonding *bond)
+>  			bond_propose_link_state(slave, BOND_LINK_FAIL);
+>  			commit++;
+>  			slave->delay = bond->params.downdelay;
+> -			if (slave->delay) {
+> +			if (slave->delay && net_ratelimit()) {
+>  				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
+>  					   (BOND_MODE(bond) ==
+> -					    BOND_MODE_ACTIVEBACKUP) ?
+> -					    (bond_is_active_slave(slave) ?
+> -					     "active " : "backup ") : "",
+> +					   BOND_MODE_ACTIVEBACKUP) ?
+> +					   (bond_is_active_slave(slave) ?
+> +					   "active " : "backup ") : "",
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Why these lines changed?
 
--- 
-Sakari Ailus
+Hangbin
 
