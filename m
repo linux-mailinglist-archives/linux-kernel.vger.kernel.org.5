@@ -1,127 +1,102 @@
-Return-Path: <linux-kernel+bounces-73886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C96485CD20
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:52:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EBA185CD1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46D33B221A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:52:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7C481F235FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417A8882D;
-	Wed, 21 Feb 2024 00:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3223C29;
+	Wed, 21 Feb 2024 00:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J7USTkxr"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pkZkIFWJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C0C6FBE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBA96FC3;
 	Wed, 21 Feb 2024 00:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476710; cv=none; b=G70z3ExGM1bX0n3PrvQdG5q5XOjBH+tCTJhD5F6pblwnYaFthvXbXqDFbmfOc4ErIuebnPpblipHtoeiTPbYFkRm/WzojMJUn/h29dhkvplk2fj0Tpw05s5wczgwWNTu8N41GjZODl6mdCyds9Q79NW5Si8l6djHHphkjR+MbvQ=
+	t=1708476709; cv=none; b=koF5rhXcFkdGCxjI2c9udzyFzwxEo/y+Tx3xPHnity4Sf9UVxvcsyCZeQ4rpAf3H7UCQzcIQmjaOwP3fgokBM5yXXWRf6NWNtLpsVILjQmtVwAdcIuNQBEsJJ0OR9cX3qS+OeAu+L19Ww0eBKtGDvflOLHtI9v8UpXjiat4RCAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476710; c=relaxed/simple;
-	bh=MieXVm22ma551iVFmKtgUAOJPGMkvDbr5o0lgBA3X8M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fmfl4VOaLuYtYH6ZHqr11iDUSSrchBmA1gfxyWaC1G/78AcX/rn6IAfe3dGzyShgCsDW34IQJbwvHGTv4sNHWl3vz+diygWcA5LM6gAqEUaw4zPGP5tWJhvJOWCAQw9kTZZ/EiZyq0XpFm6eMIoL8ElaWOYtFMJuLsTxIeNET0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J7USTkxr; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d8da50bffaso30966745ad.2;
-        Tue, 20 Feb 2024 16:51:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708476708; x=1709081508; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B0SlzYf9q4r5oo3cnCmgPLBf9yL53UG8nb29+3uRtXs=;
-        b=J7USTkxr/V0zCXI/6QuqmR4yBLA7UTlue+U6jYfCGfz8FOTFbXnN5ddjTflQL98o7n
-         Ej24WbK7Q9mxP0IFjgmFAyAkjtjLFkuVK71IrQE459mBQur1Vsc8pA9Qn3ujZLmVt6QQ
-         OMEdn8dP64qTXbHakZRRqU8m4Feyv5txGSnwnohsnjEnWL6DMo86V5z+E2+6WMPaIhQP
-         PWg5b6+G6n1O5dXCwZd67ulI2UTTr4O/ps2fvv/Jf/IY+nkeknXXqfxph0k0TuGe+wqT
-         Ms5w6J5NWjwap0/xqQif8vVuqX9php8F0vHDzyxCA8pOL3z1WqSFoLzgOrwHNPgTd6iA
-         cLeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708476708; x=1709081508;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0SlzYf9q4r5oo3cnCmgPLBf9yL53UG8nb29+3uRtXs=;
-        b=i3pBjz1FA/sBxcf1yzegSxFIvIn1buj/T9XvERJHlfPzkDM4fYFGsaJ1HfKKgYMkNP
-         cLNfI/mUciMml1KzgobsrnrgF+HJXOQKOc+kxBge/eWzfsTM3vjD7vieUHqAnHuuRoqR
-         LAFdJNYJqDTFkJetwIyjbE71e5SL/yioKpfaUIuQAsU5CgX5MOedb8VrYzlCK3x5Ua6a
-         AK9VUZmiD252Bn/1XKe4G2cVR5uXr4KnErkpV0Lix9t+i6+f3dTmruOXv1eHXV3FiAhe
-         99g4p/p0ryu8annH1e9D01a+cLYkLRU6E6cChDKO2IDPeZYG6ECOx29XpkJdK1cyGqJ/
-         OlFg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrrmtvuayv/ZL0aE/89lZ7lSt1dU7F/WHKnB3sInL2bL2/hJmKbRna7Ir0W6hh1PH+fVPGjDEjZZxYidODH7SqViFtf4ztXSSTXBlPxsHIhZjGVt/TRygiEuJ967Jbq4CJcY8Prxj9+HWnLudlq2AANyI6nUm6P9CdNVrYjnMNUfvy++c=
-X-Gm-Message-State: AOJu0YxWbAZUSm1pbFSI8Ch3VzUZHP/5LHWAmzBnUrhS7/ya12o1ys1n
-	ww0lu9gx0JOwhZJPfvny44U5yG3ONhJ61hZnoEzaKuRVP49ZBweF
-X-Google-Smtp-Source: AGHT+IHpWBNu8g6t7YfE+qIGbFSW1RZzQSg9X2TrRyMpgRBhzWoeu63O8KOYi+IXdOVYZh0DRmDQOg==
-X-Received: by 2002:a17:902:c084:b0:1dc:20f2:77bb with SMTP id j4-20020a170902c08400b001dc20f277bbmr2027961pld.29.1708476708315;
-        Tue, 20 Feb 2024 16:51:48 -0800 (PST)
-Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id w16-20020a1709029a9000b001db7ee44ff9sm6790232plp.263.2024.02.20.16.51.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 16:51:47 -0800 (PST)
-Message-ID: <9c0f9285-4418-4ae9-9f72-ea74bfcf92cc@gmail.com>
-Date: Wed, 21 Feb 2024 08:51:43 +0800
+	s=arc-20240116; t=1708476709; c=relaxed/simple;
+	bh=Ncr8WgFBMmxONPdwFz/Fb8hFz7H28QbV5ZY6jMhjEYM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=VP2gFLBjC2dj0hX5nofoVVycqBBzFKoVdvetJyOYaH+T63wn66nzX6aBUfxRIhqOCM6IzC4vWAovHr/LOi+/sFT7BcnI9MLvu9VhPf6PaFZiMaR0TNnRHUBFIjn119DSzZkOkL+aHDMC53NAHsDSGRsPTsGHZ7pjwaAFjbyNeXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pkZkIFWJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F8BC433F1;
+	Wed, 21 Feb 2024 00:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708476708;
+	bh=Ncr8WgFBMmxONPdwFz/Fb8hFz7H28QbV5ZY6jMhjEYM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=pkZkIFWJrVR7bo//86y2c2Kn134q5TqKjcMMuBLimZR6x8tLtjOaA7TfjeZrmYfDw
+	 7EQL48GphdVQprRVKhyWZjxEow8XNe2TbzkcmVzaIlZO+udwjgf2nei9ix1sI6Jn2P
+	 7Wi8EaI10oaZmUHP/lQ3DyHbecbPqd7L54ILynIdZWx8S3Ow6Qmr3Wp7M/UsNB1Unb
+	 ydSWIdLrTcZfslvVTUC0DkoJT942Fg2tGww6DPnJxK9jUBJS0XQOZ12tBoW4MPqV0l
+	 e5eXJSQSmG6HU0USdQkxUfepIBE6iujQV9TK3fNWCKeiAo1/+iQlohkcWC3zd/N+1+
+	 mojqpvCWPTEvg==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ Colin Ian King <colin.i.king@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240216134918.2108262-1-colin.i.king@gmail.com>
+References: <20240216134918.2108262-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next] regulator: core: Remove redundant assignment to
+ variable possible_uV
+Message-Id: <170847670760.72396.11946631659826067398.b4-ty@kernel.org>
+Date: Wed, 21 Feb 2024 00:51:47 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/4] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
- driver
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linus.walleij@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- ychuang3@nuvoton.com, schung@nuvoton.com
-References: <20240220004159.1580108-1-ychuang570808@gmail.com>
- <20240220004159.1580108-5-ychuang570808@gmail.com>
- <b40f5b2d-d41f-47fa-8aae-30290e0d2737@linaro.org>
-Content-Language: en-US
-From: Jacky Huang <ychuang570808@gmail.com>
-In-Reply-To: <b40f5b2d-d41f-47fa-8aae-30290e0d2737@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-Dear Krzysztof,
+On Fri, 16 Feb 2024 13:49:18 +0000, Colin Ian King wrote:
+> The variable possible_uV being assigned a value that is never read, the
+> control flow via the following goto statement takes a path where the
+> variable is not accessed. The assignment is redundant and can be removed.
+> 
+> Cleans up clang scan build warning:
+> drivers/regulator/core.c:3935:3: warning: Value stored to 'possible_uV'
+> is never read [deadcode.DeadStores]
+> 
+> [...]
 
+Applied to
 
-On 2024/2/20 下午 04:28, Krzysztof Kozlowski wrote:
-> On 20/02/2024 01:41, Jacky Huang wrote:
->> From: Jacky Huang <ychuang3@nuvoton.com>
->>
->> Add common pinctrl and GPIO driver for Nuvoton MA35 series SoC, and
->> add support for ma35d1 pinctrl.
->>
->> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
->> ---
->>   drivers/pinctrl/nuvoton/Kconfig          |   19 +
->>   drivers/pinctrl/nuvoton/Makefile         |    2 +
->>   drivers/pinctrl/nuvoton/pinctrl-ma35.c   | 1211 +++++++++++++++
->>   drivers/pinctrl/nuvoton/pinctrl-ma35.h   |   51 +
->>   drivers/pinctrl/nuvoton/pinctrl-ma35d1.c | 1797 ++++++++++++++++++++++
->>   5 files changed, 3080 insertions(+)
->>   create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.c
->>   create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.h
->>   create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
-> Driver cannot depend on DTS, so please reorganize patchset so DTS is not
-> in the middle or even split the DTS to separate patchset.
->
-> Best regards,
-> Krzysztof
->
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-Thank you for your explanation. In the next version, I will adjust the 
-order and move the DTS to the end of this patchset. Best Regards, Jacky 
-Huang
+Thanks!
+
+[1/1] regulator: core: Remove redundant assignment to variable possible_uV
+      commit: 055100d1a3b27ce154b3e3041d3cef24778821b3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
