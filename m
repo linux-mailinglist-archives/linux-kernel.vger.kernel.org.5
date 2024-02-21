@@ -1,128 +1,98 @@
-Return-Path: <linux-kernel+bounces-74805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0348085DAEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:35:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31CAF85DAF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B944B24E84
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:35:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7098B2649B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F15507C0A4;
-	Wed, 21 Feb 2024 13:35:04 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751E17E110;
+	Wed, 21 Feb 2024 13:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lt2mz48L"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC327B3EA
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:35:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA15D7C0AB;
+	Wed, 21 Feb 2024 13:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708522504; cv=none; b=Up+ovXPRcWervmiNpUUpq9DjmUm1cBlY9MNeDZ90y8H1HXpEaJj9GutGjSp9fj18cF87aE6K3BYhbOTz9wV5gKkXi5FOJKWjgixtML9G/Abo+y+iVlaralEkx3o+DdbAcXpny5t8CWs0KP8oxPOoAm71Hq1XPqf6BdZc6/X4rUw=
+	t=1708522512; cv=none; b=Z8Ya05FGcG9HCWfxcKGQxzv3kZvzoAreC/OfaiwCk/669tbShWkpctxqsRe8I9+q5zD7OcqvA0ITZhfFn3A8mYRpb5MbHMjJ50eIyVF2/rVojmEFlK9o0p0JKYLKlpKrlBJrCYl1ttelq1X3IOZRHc2oDgBb7yvIhfTVIig5ZHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708522504; c=relaxed/simple;
-	bh=zqql2sXx3i2yN008ue+WEu6k8Gl5CMT7NyPCC0UJ8ns=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jyJOcU8IlrzB4Qj19vPUTnhnJN8T6YGVVXTpWUO2Zw78xubtsigPOdMFM9SUk2wY5GM9Pt1lfKdta5quIfiY4S5KEX3F5NrxapeuZVOpvND8oVXtLXn75pPlC84TKi7S7PdnEXE0upHuiTWFHOosiGQ3usNEFgi5TVS5aOV+Te0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rcmkJ-0004t7-E2; Wed, 21 Feb 2024 14:34:47 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rcmkH-0023Bm-UM; Wed, 21 Feb 2024 14:34:45 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rcmkH-0009YG-2o;
-	Wed, 21 Feb 2024 14:34:45 +0100
-Message-ID: <1cf19cf23ffd88d9ffb673e8f382f3b1d24545bb.camel@pengutronix.de>
-Subject: Re: [PATCH v2 20/20] media: venus: pm_helpers: Use reset_bulk API
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, Stanimir Varbanov
- <stanimir.k.varbanov@gmail.com>, Vikash Garodia
- <quic_vgarodia@quicinc.com>,  Bryan O'Donoghue
- <bryan.odonoghue@linaro.org>, Andy Gross <agross@kernel.org>, Bjorn
- Andersson <andersson@kernel.org>,  Mauro Carvalho Chehab
- <mchehab@kernel.org>, Dikshita Agarwal <quic_dikshita@quicinc.com>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, Stanimir Varbanov
-	 <stanimir.varbanov@linaro.org>, Mauro Carvalho Chehab
-	 <mchehab+huawei@kernel.org>, linux-media@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Wed, 21 Feb 2024 14:34:45 +0100
-In-Reply-To: <ad20b872-0b50-4a16-b342-582d2f33eeca@linaro.org>
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
-	 <20230911-topic-mars-v2-20-3dac84b88c4b@linaro.org>
-	 <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
-	 <ad20b872-0b50-4a16-b342-582d2f33eeca@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1708522512; c=relaxed/simple;
+	bh=/FBo0ozbi+S85/NktGeytrIewY4O5ONTH6BoqeYAxEI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JKctPFgS0R/GgEdQ8M07Z2O29mxE4CuN1thscENYOXAmt/bE+uDotW10NvV+RL5fBcOH+TObsX5L+d+cg4UyuIf+618Rbs4PDqpXdgzSKxfBJ28FkUXER8uarhVn5zGR36rCQLkz04pJ74MosT7FkRiksUs0zQURvqfG+HSoTQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lt2mz48L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E674DC43390;
+	Wed, 21 Feb 2024 13:35:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708522512;
+	bh=/FBo0ozbi+S85/NktGeytrIewY4O5ONTH6BoqeYAxEI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lt2mz48L0rt0L66CkuuxnJBgz3sOD7V0uVBw+UC/IPOvW+O+L1H7rHkugZ52MNFW/
+	 jzoh1IDFm4T/xYbPbUVPpshfXC+UiSEjadWrgRt/3lW3LgtBo3hIoVDQKgseMRKVQp
+	 wXuplVJfDMq1ZPob3vQih9HCEFFprNz2rwmdZN1kA+x4Fipb9h4iOQ6Kw89Inf/NLB
+	 BgoR/s0LcScg8mZOij4LYDwU9X/3jR2RyAwf5R+sZbpWiGH11bMQCJyvSm0kf7ehRw
+	 Wtmh+rLcEkWIftulgV6B86lfdKi6pSk+dOHfdoHEThXMOYu1l+Xdbcg1DfreiFGBNL
+	 ScTpgVr8uA7Cg==
+Date: Wed, 21 Feb 2024 14:35:08 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <20240221-hocken-jagdbeute-695072475027@brauner>
+References: <20240216-ohnedies-improvisieren-58edcc102b6a@brauner>
+ <20240216181214.GA10393@redhat.com>
+ <20240220-einwurf-depesche-d8682be0370c@brauner>
+ <20240220090255.GA7783@redhat.com>
+ <20240220-pragmatisch-parzelle-8a1d10a94fae@brauner>
+ <20240220110012.GB7783@redhat.com>
+ <20240220-anlegen-feinmechaniker-3c2cfcc3ec01@brauner>
+ <20240220162201.GD7783@redhat.com>
+ <20240221-zapfhahn-pulsschlag-e8f9d919c350@brauner>
+ <20240221125525.GA16773@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240221125525.GA16773@redhat.com>
 
-On Mi, 2024-02-14 at 22:20 +0100, Konrad Dybcio wrote:
-> On 14.02.2024 14:31, Philipp Zabel wrote:
-> > Hi Konrad,
-> >=20
-> > On Fr, 2024-02-09 at 22:10 +0100, Konrad Dybcio wrote:
-> > > All of the resets are toggled together. Use the bulk api to save on s=
-ome
-> > > code complexity.
-> > >=20
-> > > The delay between resets is now correctly determined by the reset
-> > > framework.
-> >=20
-> > If this is a recent change, could you reference the commit?
->=20
-> It's a series that recently landed in -next [1]
+On Wed, Feb 21, 2024 at 01:55:26PM +0100, Oleg Nesterov wrote:
+> On 02/21, Christian Brauner wrote:
+> >
+> > On Tue, Feb 20, 2024 at 05:22:02PM +0100, Oleg Nesterov wrote:
+> > >
+> > > > > > +       /* Currently unused. */
+> > > > > > +       if (info)
+> > > > > > +               return -EINVAL;
+> > > > >
+> > > > > Well, to me this looks like the unnecessary restriction... And why?
+> > > >
+> > > > Because right now we aren't sure that it's used
+> > >
+> > > Yes, but...
+> > >
+> > > > and we aren't sure what use-cases are there.
+> > >
+> > > the same use-cases as for rt_sigqueueinfo() ?
+> >
+> > Specifically for pidfd_send_signal() I mean. To me it seems very
+> > unlikely that anyone would be opening a pidfd to itself
+> 
+> Ah, with this, I do agree. And that is why (I think) we can remove
+> the "task_pid(current) != pid" check in the "info != NULL" branch.
 
-Missing link?
-
-> [...]
->=20
-> >=20
-> > Since VIDC_RESETS_NUM_MAX is only 2, I don't think a separate
-> > allocation is worth it.
->=20
-> It's 2 today, anyway. I wanted to keep it flexible
-
-If this is expected to grow, fine.
-
-> [...]
->=20
-> > > +	ret =3D reset_control_bulk_reset(res->resets_num, core->resets);
-> > > +	if (ret)
-> > > +		dev_err(core->dev, "Failed to toggle resets: %d\n", ret);
-> > > =20
-> > > -err:
-> > >  	return ret;
-> >=20
-> > Could be simplified to:
-> >=20
-> > 	return reset_control_bulk_reset(res->resets_num, core-
-> > > resets);
->=20
-> I intentionally kept the if (ret) to print a specific error message
-> in case the call fails, this driver doesn't go a good job of telling
-> the user/developer what went wrong.
-
-Oh, ok.
-
-regards
-Philipp
+Ok, so let's try that. :)
 
