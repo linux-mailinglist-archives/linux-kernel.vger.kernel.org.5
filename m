@@ -1,112 +1,134 @@
-Return-Path: <linux-kernel+bounces-73875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 437BB85CCE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:47:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD1985CCEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:48:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA743285446
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:47:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BE921C21DA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4771320E3;
-	Wed, 21 Feb 2024 00:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6479D20E3;
+	Wed, 21 Feb 2024 00:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jk36ZSl5"
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yojhpeu0"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260F917D2;
-	Wed, 21 Feb 2024 00:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA374694
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476443; cv=none; b=E/Z509EVkxSqRs1lmCQqsyo+eStis9IvgHnpgpFiSQFjBRTAc+BcbHNBlEPAokp33LAhN+BYufLzwePrsHXAbuNu/QNdwly0eIvXd+aRz7wHW/5OpmgAs511oVfqXYa0ktVA77RE3jhrXnrtZ4M+vc8vRD8wRd2gMaIz9ig5VIs=
+	t=1708476493; cv=none; b=jlguDeFvnNpujAOs1Q/RaSg6OgfgIvHOIgFztPs862cUQW20s59l4GhtesRVM1XyZA4uC4P6F5rVyNnMsRdd1Qa/VrLPiaZh9rsbdF3KEMEZkJITaHKEmQFt12d1EviuUWHRt7VVsUykSr0CBQER8vUYfg5TfV0ewojFGnQ3u/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476443; c=relaxed/simple;
-	bh=BGYJY3y3cB5MC3o3E10OWDMAwxuaz24DAxY4Svu1vWs=;
+	s=arc-20240116; t=1708476493; c=relaxed/simple;
+	bh=TAyHqIh7nSfAdd9tVNUMVeUz7n0RsJ5mQARd3J5Z7o4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jo12uVJ6eaxpUIIZxLUiUDDKAX0exncTAlxKfPcK/3WelJexCRyRhsjNejOJM4aEOszZak49wQgn3AkE4OJkvaufg3sueMok9plY3XtmfWtjt7iDHhLodormKpkk1C0Jy9zfsRe/VHuNgNWN5Wj7Etvs7Yt5A3jdbDc2sao+vXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jk36ZSl5; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-470455b5352so443113137.2;
-        Tue, 20 Feb 2024 16:47:21 -0800 (PST)
+	 To:Cc:Content-Type; b=ZpFrFUc8jtE+5WjzLCBobFXRa5XUanlhdLacgS5oscgAed7A6kxTZOWyHCiHJmYxLRqgnzWAj9TvV4fshjuiq5L0pSMigAHp9VvH98Q9bFA/C3AzU0j1a3Pcw/8WovabN2V6/1dSlv/U6Tp20Zu7meRcwjuVDail4PL/AUManms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yojhpeu0; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dbcf58b05cso48315ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:48:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708476441; x=1709081241; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C6otgqaNPx6Pkm4SppOQT9QY0t3YG7FEfi10dYninQQ=;
-        b=Jk36ZSl58E4kAZNioNGLvMLubZJSXZ8ff49pt+IsmxXNArwqju5k5119iQUoRBOXQD
-         uead6s7O/0C26BCTjF866YpoV/L19CZby1oG6vfaMpZ2Np2ShuoQQX9KbNmWUiLJ4eiG
-         SrjNnW75iuQ4wqoj8XKNRiS6QjNYQAludaMxqWOsrkx5ufu4pqQ0+BaSPUupHPCFpUR/
-         t3IQo8EVZw0o/MIo9f7kDpdMb92aAUKQn0+00VQKJZT5CjGEUX1GYkYH6FCuNpTI5AUw
-         lARG9JtTdIM53iHqo7mIKL6oFl7nA2+cQB7kn46AkVGxePC6ZG6TymTmlr5jJHPV5cD/
-         FiVg==
+        d=google.com; s=20230601; t=1708476491; x=1709081291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ugbs7Jg6VHvaoDcjZWVoK1eM0qfrHvcJKgPX5ZJOhD4=;
+        b=yojhpeu0pFuyYppauTLZdFtb8sig8N2k9kllzwMQEgYr8+tYpqK0w1f4mZSbmadL6J
+         fSsYu2DF3duD39sfN3pWRn3QEuxpJN5mx6M8pFHmm4iCnzfCqoOibeZDBsdlsAJ21daF
+         RBGvrF8EwmcDQH3/8Mi+IXjuWZ8W3W3Ld/CPa5V6Ge5FxUuV9MjS12HOl8mVlmiHKbRE
+         7TvEzm+DBFazxRgoAnDa03eHXfEU0mhYE6jKxa/GIanmNYxWwVdD3oGj8s8wKj3lsE0d
+         z0zrUFM1GIdNjWz3M1lDWaCkGjobIxf2emMFFK7seedyfhTw/SIMdAOOOPrdswXxNlDa
+         vl2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708476441; x=1709081241;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C6otgqaNPx6Pkm4SppOQT9QY0t3YG7FEfi10dYninQQ=;
-        b=kqQsABX9nJk/b3KqhDnDbjEgtm8ccnzb19ZAJyi8S20FCLCbMpqAyKAFr8UZ85aoYZ
-         mLdlC4WpHJzlO2ICV7SYV/FTqxQRvZjfy3viF4W9bDjCsdJoCLuEGbBW4UfKBJ01P/Jd
-         ZzNHrvaB/GhafK2hCnOVpHymQjQgZhj4O9fQidGCS7055mGCVY6NUmRkBKWZWnrGMcM+
-         GeXhLT7zhRor5Gqqj1JiXDUxbShQvUir0he6MvaO/fh1cAlTuJfbndzMS8CecYKY9QDU
-         /z5xfFRoPGTxkwzxflQ4Vl6xiRL+G5MLMd4FkzCZSJUE46XYydjvxy5sZxb0bZiH8AKd
-         xH5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWA0EeE0yuRrkh4zdCVYM/z/4yrn9RSCSdsDm1p/TrFd1kXGthfChUu1R7kVHOyXdrIpiafgsc6a16v1vPluyNyHX3unP6hYu3N/UrR
-X-Gm-Message-State: AOJu0YyE1SNIKUdagFX3WQsUKV42MLkUic3rVBRlL9wX3OssSWim4Qu4
-	/HiLqRH/2sXLS5STiNzadRIYM1xZk/2PUUUPBrA8evtaeRBWMDhktEhOwU0TamuRkRzcvVoidKj
-	uZA5ieVhIFoIk1OsJf9KNr6sNkOw=
-X-Google-Smtp-Source: AGHT+IFPYDz0VDhOsDd3s7oO0IBGc0nELsAax2YuwRcJFyZHcHUa7dCHDWdIV6juN44G49l/soy6ajEoJ2v4HXi+oEg=
-X-Received: by 2002:a67:fc50:0:b0:470:3a99:fdd5 with SMTP id
- p16-20020a67fc50000000b004703a99fdd5mr10113811vsq.14.1708476441187; Tue, 20
- Feb 2024 16:47:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708476491; x=1709081291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ugbs7Jg6VHvaoDcjZWVoK1eM0qfrHvcJKgPX5ZJOhD4=;
+        b=Clwh6j693oiSZo2ObzSsZZmZN18HmuRQ4KvMTMuPCkSerxStUjSsog28DqziupyCQj
+         Hc3o4K1cUjTodqVyR1+2SG3WIqoBfdgQbjGHrEkin9JvKkpEvrydc6hCUjZMpZWhe0tE
+         kMR/Df9vK2BwmLFjIr0LfTLwi4PaAvQtpq4XPoRgD2IR1K+ljrj2p2UCxYSmCQlpqhI1
+         oe3HrnG68vGZufvn6MO2fNhVEzQG1cYLq0ZX93i7VkklCbWiwN17mPgNNBH8FT1OpbHB
+         2YqRyO4NoC72qgKLmlEAtc2tG6rb0SCNzptPq2f6mQoDBhIOFeNhKnIP1HopGs/brVJw
+         kOGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqyhlf01Yfvc1Ae5q+C0ZpAQU+GmeXh//+bkrDT1o0mOqzh9/ofvlh32T3nm628HKCu7rRp5yZI/YyYHdZ5rDftaOtoYKaV8blG4yz
+X-Gm-Message-State: AOJu0YzYTV7oQKbp+p4ghjNVvqxHQ54pf4t8oFbjwja+Y24rII8uCY3X
+	Q7Jo41IgP1wW6OaE6HIQXRphs/0aK0wTS1bq7Y/o6B6sBE8W1fRp/FmRqeiDbv3jE1RadmQsdeK
+	94xyNQFH6jWP92REsQGYRiOjIVhlJVtfh2RSy
+X-Google-Smtp-Source: AGHT+IGmomN+J320UJO3BPdb9kM8qujnyRAtdlS/NC9QqErQiwpvTPMbYWYYmX0JdfQqBKahJXCssDuKBj64fFUkwww=
+X-Received: by 2002:a17:902:7207:b0:1db:de7a:9122 with SMTP id
+ ba7-20020a170902720700b001dbde7a9122mr104606plb.4.1708476491323; Tue, 20 Feb
+ 2024 16:48:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220205637.572693592@linuxfoundation.org>
-In-Reply-To: <20240220205637.572693592@linuxfoundation.org>
-From: Allen <allen.lkml@gmail.com>
-Date: Tue, 20 Feb 2024 16:46:58 -0800
-Message-ID: <CAOMdWSJVOR9QcBdSVnWzkuFz6MK_xbQ+yZKx_ZoYpzvKNUOAgw@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/331] 6.6.18-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20240207011803.2637531-1-saravanak@google.com> <20240207011803.2637531-4-saravanak@google.com>
+In-Reply-To: <20240207011803.2637531-4-saravanak@google.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 20 Feb 2024 16:47:35 -0800
+Message-ID: <CAGETcx9eiLvRU6XXsyWWcm+eu+5-m2fQgkcs2t1Dq1vXQ1q7CQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] of: property: Add in-ports/out-ports support to of_graph_get_port_parent()
+To: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Saravana Kannan <saravanak@google.com>, 
+	stable <stable@vger.kernel.org>
+Cc: Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> This is the start of the stable review cycle for the 6.6.18 release.
-> There are 331 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Feb 6, 2024 at 5:18=E2=80=AFPM Saravana Kannan <saravanak@google.co=
+m> wrote:
 >
-> Responses should be made by Thu, 22 Feb 2024 20:55:45 +0000.
-> Anything received after that time might be too late.
+> Similar to the existing "ports" node name, coresight device tree bindings
+> have added "in-ports" and "out-ports" as standard node names for a
+> collection of ports.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.18-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> Add support for these name to of_graph_get_port_parent() so that
+> remote-endpoint parsing can find the correct parent node for these
+> coresight ports too.
 >
-> thanks,
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+
+Greg,
+
+I saw that you pulled the previous 2 patches in this series to 6.1,
+6.6 and 6.7 kernel branches. I really should have added both of those
+Fixes tag to this patch too.
+
+Can you please pull in the patch to those stable branches too?
+
+Thanks,
+Saravana
+
+> ---
+>  drivers/of/property.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> greg k-h
-
-
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
-
-Tested-by: Allen Pais <apais@linux.microsoft.com>
-
-Thanks.
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 7bb2d8e290de..39a3ee1dfb58 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -763,7 +763,9 @@ struct device_node *of_graph_get_port_parent(struct d=
+evice_node *node)
+>         /* Walk 3 levels up only if there is 'ports' node. */
+>         for (depth =3D 3; depth && node; depth--) {
+>                 node =3D of_get_next_parent(node);
+> -               if (depth =3D=3D 2 && !of_node_name_eq(node, "ports"))
+> +               if (depth =3D=3D 2 && !of_node_name_eq(node, "ports") &&
+> +                   !of_node_name_eq(node, "in-ports") &&
+> +                   !of_node_name_eq(node, "out-ports"))
+>                         break;
+>         }
+>         return node;
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
