@@ -1,227 +1,205 @@
-Return-Path: <linux-kernel+bounces-74275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A6AB85D1F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:59:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54ADF85D1F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E4852876F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:59:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72EEE1C23B29
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CBC3B295;
-	Wed, 21 Feb 2024 07:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0B33B79F;
+	Wed, 21 Feb 2024 08:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VdTrGBx8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mp3bG2mi"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DACA3B287
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708502352; cv=fail; b=NKlq28N5mFl4U4JSX3ou+O7Edmv8fh+MVDxpDgFLJ42KIHdKU8amXy9V5b2w+zhOrhY5U1E7npqy+rrNJREz1lF1blW5cCj0wCTXyeq2H7T7YKzLQlMy8RBJ7mlfTV+0PgLhHrd60CkpPnvtA5M+17YOmGM/pJ8gf5y1QGe5cpE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708502352; c=relaxed/simple;
-	bh=ywleXiIQZ6NF1En/lkSouL636P8b75wox8KWwrL5YtU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XkEmC1BsZtq0pCuslZr8Mx2jKlSy25JEZWO99y0tLfB89rhtKxJRAoz9e8pa+fYYpRTPGkasgNGbkO6TdbA+7L+Nb5whhXvOrQuXEtAYLgTja8oRZRKMLbsNwf3igdDo0p3aSzyakWAJgTRm8ZhaJ45/JEWa7ZZ76Jdi195MKWQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VdTrGBx8; arc=fail smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708502350; x=1740038350;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ywleXiIQZ6NF1En/lkSouL636P8b75wox8KWwrL5YtU=;
-  b=VdTrGBx8bn1d+bMdIt7zjknt+HRuRSW96pIFHs8v4TRnoze6/m0h6F5W
-   3U+4edDgCM50rujrjSlwFs2m++QQQicMjMypt1Q5etsz2HJs50ei9/0Pz
-   DHVLZVaGII5todABIO9x/eE7OhhFaT9S4Ob7QtQDeYQf5PiKT7LcdOXm+
-   qqVxFeaZ1KJuZOIwuItVzPwh8xxly5myPdd4dbMov/XUWmhPFkyDDE96z
-   wV33R/TbILg+UjwGh6SP5G17fkSDC4mmi9A7WaXJsQ1kf6T0oo4D3igCq
-   AbIeRYcBmwD0zDlSkRdQZOGt8quGEXvJd1uCKurHW4LBePi9z/1ktlK4g
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2534260"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="2534260"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 23:59:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="5019718"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 23:59:08 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 23:59:08 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 23:59:08 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 20 Feb 2024 23:59:08 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gMOJvinj5fwEP5Zqwp+4Uxrkyuqn9R8quz+voxdu+mOAp+o2Y1yL9fxCOTAKV7poxzJhMTtNlAmCLB7/9xZdtv7rtuyruR/eYpFIzV04etxImuo7HzpR/BOaL/pDkKDpEpdWy4ukCdcy21ae+QSDMQ1SNoOUiX8feeTglIBUsy9gzFiyIpBYp+4sqR7GyqtGTtLJ93+uM6PBHZCbnqDSRgp5RtJ0CEsAE5aWM3ALHH5O37bbqcqJThMyKd/L8vLEf0/Ej5lFMH1pLnyU2GPvskKe0/lb97RQAZ93Xcd3RduzQA25a4R+dsqa6nGS4kqzM2pTpiJX5jLQoGHu8Q+JKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RUifzW8XAW0I7/KJquzdqkDN6e76033obJd2jgL7hWQ=;
- b=LbGtDlx7AWRkRDdgpiBcujHpVs2NwK60v8zkzfAC5gwttcA5HTh4jsvphIPd6JlwB/0SL6Z0fpfwxZUTsR3C6pnbsEzal4CyF7VsxgcI9sc5fJmTltI1/5hFuQgDABaWCr9wveOQ7WYkhXsn4s38ZhwFwoIor1pBoJvlm4dayjtcEEaNYbzO5HDixkf7eEJNTIrDl/bfvOR7I0TIf9UNFNYK3ff983btMkpojfEXQ1RcneOFiEWEW368g4EQF2kDVoI2ELfsxHbknyDp4H9vlqbCKjyR+s+lGvFWfD0LhFLPxXeIW5/EfZy58IqljEdxj5uJhH1RvlIpQHONzpA5rA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MW5PR11MB5881.namprd11.prod.outlook.com (2603:10b6:303:19d::14)
- by DS0PR11MB6471.namprd11.prod.outlook.com (2603:10b6:8:c1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.37; Wed, 21 Feb
- 2024 07:59:07 +0000
-Received: from MW5PR11MB5881.namprd11.prod.outlook.com
- ([fe80::2e1e:4cf0:f8ea:a9c7]) by MW5PR11MB5881.namprd11.prod.outlook.com
- ([fe80::2e1e:4cf0:f8ea:a9c7%5]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
- 07:59:06 +0000
-From: "Zhang, Tina" <tina.zhang@intel.com>
-To: Zhangfei Gao <zhangfei.gao@linaro.org>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, jean-philippe <jean-philippe@linaro.org>,
-	Jason Gunthorpe <jgg@nvidia.com>, "baolu.lu@linux.intel.com"
-	<baolu.lu@linux.intel.com>
-CC: "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] iommu: Fix iommu_sva_bind_device to the same domain
-Thread-Topic: [PATCH] iommu: Fix iommu_sva_bind_device to the same domain
-Thread-Index: AQHaZI3Wtb0WdVGjR0SZSXyMH/XcCLEUanmw
-Date: Wed, 21 Feb 2024 07:59:06 +0000
-Message-ID: <MW5PR11MB5881E20A89840306C977F3FA89572@MW5PR11MB5881.namprd11.prod.outlook.com>
-References: <20240221061832.430-1-zhangfei.gao@linaro.org>
-In-Reply-To: <20240221061832.430-1-zhangfei.gao@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW5PR11MB5881:EE_|DS0PR11MB6471:EE_
-x-ms-office365-filtering-correlation-id: a70eb863-f1c0-49fb-a0d6-08dc32b2fa93
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cvyxgTrDrs9cOyyt0vX4EmbF1kRfAGUUdNyTqwTqgo3yxu9C/y5PSKvkke1Wra0PN1Brk9oPsK5+bsKtRVkCsbHWDueGJHh5nMdOX9sesjWGKS0iHnzZjHRaDEh8Am2HBP/Q1kCLxLPRA8dBPpvUO4yRJRnNnoIw4VIzbwBJtdDAuLhD+aSm5MP73HSYeMlR9Gd81ZobnuYxs3DxJWjGE8lCw7z9T1IpE6gRR6dTHkWoiqdhz8RQR7Eta6CMfPUamMrXFNpmKFTvoF5GBxGdaJRuMS3/alN8XwrIQRa9Kprm8EUgJoooA/5CMZ1yV/E0i96Dpyp02mUQBg9kcvNi6IHhKO0pxNRQDhs5clcGykVq9s64U5DVKXdfTkMt3cOj7aftqWHC2Od8sv7DGph5ikD4VLwb1AH1UAZHLMxG9G6hV5OFLF+B5e4JDLTKzKf3SwhbtFKVQAr/O0tCszLMRdjh/YmFnr4P7QL/J9wr966zdrPjCCsqm4/QKphCh6p4hYQAofAUD0iIXnHFTLTXdKCbg5tnntf74R3U+8XSbQPEQB2KRlsBa/iWPRtrMZqt2amf+VoRwvMgSxz4yMk6WbaugfGz3FpHFKrBd6XObsaBh/VHqwusNCLjWKU817tJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5881.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Oh1lwck0TdLgHj5+f13gbPcruBEgflIMZ3Z1kTTn7Cew4cs+9OJiTJGybNvN?=
- =?us-ascii?Q?2pQEqmufCmRB7COOD7j2UpvpAxSxnephCqc5ZnaJdepib0VzoL1+Dq6spWL8?=
- =?us-ascii?Q?JrjIK/CTpApi/P5s7NqAh+YmnEI6x/C4eC+G7qb95PaGhpNjosvQRD5shnB0?=
- =?us-ascii?Q?ampBPlKh0NEXi2F6ipVxhFFfXVGloXSTYvg4vfC6ayAJ7JDW0yp7yDmziVZK?=
- =?us-ascii?Q?8l+LALvbO7n6Am6d/H5j1j7z+w6ost9oDxr7mIApBWJzgQTtS8LBGKVEiuNi?=
- =?us-ascii?Q?CmwakIAZnnXkbKinhUzaB0wTYZVH58+SxGl1585fI5wJd7lALem0OCjxFCdT?=
- =?us-ascii?Q?5W2uvQENUCPHEeZM8I+IHL+g5YqRRXg49agLbBQCQMCG6D9tgqeypSSKbKT4?=
- =?us-ascii?Q?FplR2RtdnzEb4FXoZhS0N6G8VuRHxYL9JbNfeyeg6WX2CdnQj92DLrQB9gwE?=
- =?us-ascii?Q?kr4Ge4goK2aoi9wb0Gg2WvqqKrUPid8Woxqp3TAoboUVqtMyKHcMiwQ8BXZT?=
- =?us-ascii?Q?qr8p/Z4GtugwZ30tk2w+SQLq1S3Te0rDrCa62RdXJ0o/Trg4kXEs7LbNdqOi?=
- =?us-ascii?Q?KqnQwUxI5ijqMlIlbsCR+shiM5MOSjoOvUgTdqPC3YxUZWzQ4s5hqoxm6xkt?=
- =?us-ascii?Q?PVt5wqfv+rSmxjWLAfl3nQmf1wj1VSlres0X2aTTwcHUZ5Llm6oIW4ppUpeL?=
- =?us-ascii?Q?vk6PMOQqYZbGheMS9tmZMyRiaq0710up843dbbGdEV9BtwPjwbzwogQy260I?=
- =?us-ascii?Q?gj8lDftU1ww3aFWVnuB8KPXY0+K0xWo4wfavLKAqorXAIctNPHRWOCAbxXVY?=
- =?us-ascii?Q?tsTEq/rM7rjXWABNhPybbA5Jx/1W++S38kUZX9mPq2O/7um+Zw8t6umLZNB5?=
- =?us-ascii?Q?ElPMoZ0Gbrpw2TnrDIbpDKeMDcxm9Xx9mL1q7fgcxFcGxTXOt+QYyL4GefuN?=
- =?us-ascii?Q?JvyNC4nViQO2P0aR36glPwPAXZXnJcLqJ02ZL+FxAkoBEEP2aS5kX+H5G6NK?=
- =?us-ascii?Q?nqd9aq47iKKdfhi8DCZBnPJT4onlscMx8NLbjCv//SU9okHv2lIFYpZdO1Qg?=
- =?us-ascii?Q?CfcvjdyeCgSMcj6verNV3vJR9IIE9jzLcB2SdC83e7WnAdlbeDpT/i618adh?=
- =?us-ascii?Q?YH7OnIqh6GJ50y9k+8sxhs0ywZhB7ft6ZfKrw6PCDfl62VKV7068wyaGdwLW?=
- =?us-ascii?Q?tGb32SiMgMYxDalScaJf/D3Scfstxqu7KQLjDVQzI8uNjWK/Y00mi8v1KLBX?=
- =?us-ascii?Q?K6TM6K32V/23LblNPmrwNpAbXB1L00roNi4IeRmnH0e0uDJSJ1MS0dY7LeVT?=
- =?us-ascii?Q?mnFMeBll9ZKSCrh3xp3xfWOskxQx6HeyuAOFRkpB+IP7oM4TypTfPzvrqKQj?=
- =?us-ascii?Q?2wy4gaY4XCwifw5f9rQ8xc/xCVGcoIDSfMfVx7VpA6CPke7ZvWHLC0y0m+Zc?=
- =?us-ascii?Q?XGhdePK2rj2BudHVvbSZwS7dJL5t5LiU0GYpexOwyIR+fx4hvHtKcg/RTVGi?=
- =?us-ascii?Q?jAK24f0ZGnd92FtiyTs0OsjxSeZQJyB4Vn8m9sSDwgJO8LQYwopHkGzoOJ96?=
- =?us-ascii?Q?QCZNKMd9ACuRg793gk0m/GfwsqisYvcV7e3Nra0T?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E113B1B7
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708502532; cv=none; b=P+c4p3uNrnWs6BgOmMlOX3NF3RNZ3jEvMCKA2sXepj/C/9/miytNd9vBaX8rhsjjBTw258w01rNkiDejaz0FMmq78+8XPAFb2amDhRzI3Uds1ijUNRnCnngPncrmFR0i3486SXEq4Bus86NRxks7GpqNHmmrG2IzY603c7dYnNo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708502532; c=relaxed/simple;
+	bh=lsFXu1CbLS/JAcC8IGbcv6Okc/fTRfgi94LrWHJOr/k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p1/VW2Uqx6P3nbadchF5Xb6RzM284C/hwtFMVY+ZOALSiXTKCAZp8Ku6dgl3kvlq5D6yKsTzxMmrMp69W9wiTO3Tl2Dwxr4Dk85NEvUIEzNO5c3dc8J+/tOGbMcszIXC1wbg6i5N7An5rF890hSrrZKelL32YmfVT7k42YbZAyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mp3bG2mi; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso3948541fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:02:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708502528; x=1709107328; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1l8Q97+iETt6GAieAaoa+B3bZHXWxI3blTfH192x0c=;
+        b=mp3bG2mifW4dfvUm3QzRxbA+9mpBTvOa9M0kJyJxBOJMfGkSTSYeoTH99gXqQfcmBm
+         vd2OidnOK0HYxIgaJWFg+23/SxW7ZWk7RiYVMLvKSZsYo9kWxiTXMMofADG8kJG/cT1D
+         j8EeSu19EoaHnFVLDmCXHfQ5MPwlb+Wpo2EoqcR72bRIoc1yYqWzg2bZHCG5IkWrlbir
+         GEJOoW7SwUKU/86H7MDNHSwgcOEgYLngRfLgmyvJEbdq+zWoxnZ/w9h+QEU7TogSapbF
+         glWykjQXl7EcsJyR+gv/PCcS9Js2yPxOvCe0yC/gLsuwG/Mihgy8Va+/DB23ef3oK61m
+         HD3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708502528; x=1709107328;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g1l8Q97+iETt6GAieAaoa+B3bZHXWxI3blTfH192x0c=;
+        b=E0CyccMMAduHmm9ObIfYsYz4KnnU5pBqPWYdjtmvAp3VdlpG93J1SnAhhEjBQIZO2A
+         KGPtrdoHvKNn32ZOwC7jMSiozsk3Is8dcngP6C+G1lPEOR+PdVWbk5fhgPvbgxqB/4ss
+         O1N6xF2YctMrDyP9S4w36yyvQYoAwotIMbgtTI0xoDHY7TneCGCMCzohOTVAaLhPYsur
+         JZoFKSTdrJ7kqC7iZdzRLBlEsvOLoWUJVk4yKx/QlnmGqb7fbus04A1KlgD9ULQHscNP
+         dx72WZIpGMCxNyGXKd/MpyCngAfvBow+LG1piBqOp1r86un55MiExqBPZ+3mwiJ0/aQf
+         +x/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWLC7CkEULrgVTx+UjM0uEmuznyHiCzZSpU16JIf+HXK05HnRnYGxy41zYJ6YjVOCsENj4EnLwSKEFS3fJBl3e3c1TmGpnG5MF5XicU
+X-Gm-Message-State: AOJu0Yz5N+IAyYLDon1nuKU0o6bRmetalNKwcNT8aEErTbq3r4g35dR4
+	YlQ1+6AztIOLYZ5v/mitZ/HldEW9StsB3kRcMsjy/VGbEtEWX8Jb26LfCfQT4h0Q2aZH715/Ewa
+	H55+6jWVzGKL9jH2ecpDXyWbW+lUpi6eXPK06EA==
+X-Google-Smtp-Source: AGHT+IGn25MpS1uSHBlUApi7nJCMjufiaC7n14bIWphjESDL+OD9Zf+zi9o3mg+lr2hXljeXzlGYD1BPhQCRiV5XaJo=
+X-Received: by 2002:a2e:8811:0:b0:2d2:4c8c:4d05 with SMTP id
+ x17-20020a2e8811000000b002d24c8c4d05mr2273169ljh.11.1708502528299; Wed, 21
+ Feb 2024 00:02:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5881.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a70eb863-f1c0-49fb-a0d6-08dc32b2fa93
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2024 07:59:06.8945
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 65zDTLnPWPFAk8gKm9strl3AX1AZ8hEzg6V5qI3UYNhO05eDCAzYF6TZaN2RFEbuBz5GTVxxd+W6IlAORNYoYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6471
-X-OriginatorOrg: intel.com
+References: <20231027000525.1278806-1-tina.zhang@intel.com>
+ <20231027000525.1278806-6-tina.zhang@intel.com> <CABQgh9GWcqUeBkHQCpj5tzu6FnEgpOp3KOQ6s9c0X0KU7Ov1qw@mail.gmail.com>
+ <MW5PR11MB5881C5CC15452017867B412889502@MW5PR11MB5881.namprd11.prod.outlook.com>
+ <CABQgh9GxQmGU2HR73bSoZLuf4XZFhThXwUs_HJx6KwxDmXrXgg@mail.gmail.com>
+ <b05958ba-0c47-45ba-8159-372779f9cc8b@linux.intel.com> <CABQgh9FFpL=mEZ-7PqRRVg1eniYV176B7USbGP5MLPvhJaGo9A@mail.gmail.com>
+ <MW5PR11MB5881B3EA808820BCBCFAF72589572@MW5PR11MB5881.namprd11.prod.outlook.com>
+In-Reply-To: <MW5PR11MB5881B3EA808820BCBCFAF72589572@MW5PR11MB5881.namprd11.prod.outlook.com>
+From: Zhangfei Gao <zhangfei.gao@linaro.org>
+Date: Wed, 21 Feb 2024 16:01:56 +0800
+Message-ID: <CABQgh9HPhp+LKz5pPnpN1bWXoU3C38k6swqhAqJj67xGJQUmwA@mail.gmail.com>
+Subject: Re: [PATCH v10 5/6] iommu: Support mm PASID 1:n with sva domains
+To: "Zhang, Tina" <tina.zhang@intel.com>
+Cc: Baolu Lu <baolu.lu@linux.intel.com>, 
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, 
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, "Tian, Kevin" <kevin.tian@intel.com>, Nicolin Chen <nicolinc@nvidia.com>, 
+	Michael Shavit <mshavit@google.com>, Vasant Hegde <vasant.hegde@amd.com>, 
+	Jason Gunthorpe <jgg@nvidia.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
+	Hao Fang <fanghao11@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+On Wed, 21 Feb 2024 at 15:41, Zhang, Tina <tina.zhang@intel.com> wrote:
+>
+> Hi,
+>
+> > -----Original Message-----
+> > From: Zhangfei Gao <zhangfei.gao@linaro.org>
+> > Sent: Wednesday, February 21, 2024 10:45 AM
+> > To: Baolu Lu <baolu.lu@linux.intel.com>
+> > Cc: Zhang, Tina <tina.zhang@intel.com>; iommu@lists.linux.dev; linux-
+> > kernel@vger.kernel.org; David Woodhouse <dwmw2@infradead.org>; Joerg
+> > Roedel <joro@8bytes.org>; Will Deacon <will@kernel.org>; Robin Murphy
+> > <robin.murphy@arm.com>; Jason Gunthorpe <jgg@ziepe.ca>; Tian, Kevin
+> > <kevin.tian@intel.com>; Nicolin Chen <nicolinc@nvidia.com>; Michael Shavit
+> > <mshavit@google.com>; Vasant Hegde <vasant.hegde@amd.com>; Jason
+> > Gunthorpe <jgg@nvidia.com>; Jean-Philippe Brucker <jean-
+> > philippe@linaro.org>; Hao Fang <fanghao11@huawei.com>
+> > Subject: Re: [PATCH v10 5/6] iommu: Support mm PASID 1:n with sva
+> > domains
+> >
+> > On Wed, 21 Feb 2024 at 10:06, Baolu Lu <baolu.lu@linux.intel.com> wrote:
+> > >
+> > > On 2024/2/21 9:28, Zhangfei Gao wrote:
+> > > > On Wed, 21 Feb 2024 at 07:58, Zhang, Tina<tina.zhang@intel.com>
+> > wrote:
+> > > >
+> > > >>>>   struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+> > > >>>> struct mm_struct *mm)  {
+> > > >>>> +       struct iommu_mm_data *iommu_mm;
+> > > >>>>          struct iommu_domain *domain;
+> > > >>>>          struct iommu_sva *handle;
+> > > >>>>          int ret;
+> > > >>>>
+> > > >>>> +       mutex_lock(&iommu_sva_lock);
+> > > >>>> +
+> > > >>>>          /* Allocate mm->pasid if necessary. */
+> > > >>>> -       ret = iommu_sva_alloc_pasid(mm, dev);
+> > > >>>> -       if (ret)
+> > > >>>> -               return ERR_PTR(ret);
+> > > >>>> +       iommu_mm = iommu_alloc_mm_data(mm, dev);
+> > > >>>> +       if (IS_ERR(iommu_mm)) {
+> > > >>>> +               ret = PTR_ERR(iommu_mm);
+> > > >>>> +               goto out_unlock;
+> > > >>>> +       }
+> > > >>>>
+> > > >>>>          handle = kzalloc(sizeof(*handle), GFP_KERNEL);
+> > > >>>> -       if (!handle)
+> > > >>>> -               return ERR_PTR(-ENOMEM);
+> > > >>>> -
+> > > >>>> -       mutex_lock(&iommu_sva_lock);
+> > > >>>> -       /* Search for an existing domain. */
+> > > >>>> -       domain = iommu_get_domain_for_dev_pasid(dev, mm->pasid,
+> > > >>>> -                                               IOMMU_DOMAIN_SVA);
+> > > >>>> -       if (IS_ERR(domain)) {
+> > > >>>> -               ret = PTR_ERR(domain);
+> > > >>>> +       if (!handle) {
+> > > >>>> +               ret = -ENOMEM;
+> > > >>>>                  goto out_unlock;
+> > > >>>>          }
+> > > >>>>
+> > > >>>> -       if (domain) {
+> > > >>>> -               domain->users++;
+> > > >>>> -               goto out;
+> > > >>> Our multi bind test case broke since 6.8-rc1.
+> > > >>> The test case can use same domain & pasid, return different
+> > > >>> handle,
+> > > >>> 6.7 simply  domain->users ++ and return.
+> > > >>>
+> > > >>>> +       /* Search for an existing domain. */
+> > > >>>> +       list_for_each_entry(domain, &mm->iommu_mm->sva_domains,
+> > > >>>> + next)
+> > > >>> {
+> > > >>>> +               ret = iommu_attach_device_pasid(domain, dev,
+> > > >>>> + iommu_mm->pasid);
+> > > >>> Now iommu_attach_device_pasid return BUSY since the same pasid.
+> > > >>> And then iommu_sva_bind_device attach ret=-16
+> > > >> Sounds like the test case tries to bind a device to a same mm multiple
+> > times without unbinding the device and the expectation is that it can always
+> > return a valid handle to pass the test. Right?
+> > > > Yes
+> > > >
+> > > > The device can bind to the same mm multi-times and return different
+> > > > handle, Since the refcount, no need to unbind and bind sequently,
+> > > > The unbind can happen later with the handle.
+> > >
+> > > Is there any real use case to bind an mm to the pasid of a device
+> > > multiple times? If there are cases, is it better to handle this in the
+> > > uacce driver?
+> >
+> > Yes, it is required for multi-thread, the device can provide multi-queue to
+> > speed up.
+> >
+> > >
+> > >  From iommu core's perspective, it doesn't make sense to attach the
+> > > same domain to the same device (or pasid) multiple times.
+> >
+> > But is it the refcount domain->user++ used for?
+> > Is there any reason not doing this.
+> The domain->user is a refcount of the devices (or iommu group) attached to the domain.  IOMMU core needs to keep this refcount to ensure that a sva domain will be released when no device uses it.
 
-> -----Original Message-----
-> From: Zhangfei Gao <zhangfei.gao@linaro.org>
-> Sent: Wednesday, February 21, 2024 2:19 PM
-> To: Joerg Roedel <joro@8bytes.org>; Will Deacon <will@kernel.org>; jean-
-> philippe <jean-philippe@linaro.org>; Jason Gunthorpe <jgg@nvidia.com>;
-> baolu.lu@linux.intel.com; Zhang, Tina <tina.zhang@intel.com>
-> Cc: iommu@lists.linux.dev; linux-kernel@vger.kernel.org; Zhangfei Gao
-> <zhangfei.gao@linaro.org>
-> Subject: [PATCH] iommu: Fix iommu_sva_bind_device to the same domain
->=20
-> The accelerator dev can provide multi-queue and bind to the same domain i=
-n
-> multi-thread for better performance, and domain refcount takes care of it=
-.
->=20
-> 'commit 092edaddb660 ("iommu: Support mm PASID 1:n with sva domains")'
-> removes the possibility, so fix it
->=20
-> Fixs: '092edaddb660 ("iommu: Support mm PASID 1:n with sva domains")'
-> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> ---
->  drivers/iommu/iommu-sva.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c index
-> c3fc9201d0be..a95c8f3a5407 100644
-> --- a/drivers/iommu/iommu-sva.c
-> +++ b/drivers/iommu/iommu-sva.c
-> @@ -91,7 +91,7 @@ struct iommu_sva *iommu_sva_bind_device(struct
-> device *dev, struct mm_struct *mm
->  	/* Search for an existing domain. */
->  	list_for_each_entry(domain, &mm->iommu_mm->sva_domains, next)
-> {
->  		ret =3D iommu_attach_device_pasid(domain, dev, iommu_mm-
-> >pasid);
-> -		if (!ret) {
-> +		if (!ret || ret =3D=3D -EBUSY) {
-If rebinding is allowed, how could IOMMU core know if this invocation is in=
-tended (like the multi-thread case mentioned in the commit message) or is m=
-istakenly invoked?
+I think the limitation of one user only attach one domain one time
+does not make sense.
+Just like one file can only be opened one time by a user, then
+refcount is meanless.
 
-Thanks,
--Tina
-
->  			domain->users++;
->  			goto out;
->  		}
-> @@ -141,8 +141,8 @@ void iommu_sva_unbind_device(struct iommu_sva
-> *handle)
->  	struct device *dev =3D handle->dev;
->=20
->  	mutex_lock(&iommu_sva_lock);
-> -	iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
->  	if (--domain->users =3D=3D 0) {
-> +		iommu_detach_device_pasid(domain, dev, iommu_mm-
-> >pasid);
->  		list_del(&domain->next);
->  		iommu_domain_free(domain);
->  	}
-> --
-> 2.34.1
-
+Thanks
+>
+> Regards,
+> -Tina
+>
+> >
+> > Thanks
 
