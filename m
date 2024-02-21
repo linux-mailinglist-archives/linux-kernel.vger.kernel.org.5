@@ -1,78 +1,80 @@
-Return-Path: <linux-kernel+bounces-75655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6F3485ECF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:30:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB2F85ECF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CF2A2833D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:30:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71BF32841D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A100D12A14C;
-	Wed, 21 Feb 2024 23:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6878C12DDA4;
+	Wed, 21 Feb 2024 23:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pGG5W/pC"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ccXHuh83"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEFC1E485
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4841112B170
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:30:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708558234; cv=none; b=kumvnvQpiohWVYiuMo/iMfzQuM/Sh8xF2t1Xwi2pfZnPKI79K0s9rbRHrsHdKIzFcqDLSTGgmkUek25VdfLgMVRGeFJpdtD3mvUiZBzd4frtO8v02/6fr7C5QVnEV7Mjc2qJBcdk2TxCFwOAHXRUMBDhJJ2HyH9zjw4/EegYHbM=
+	t=1708558239; cv=none; b=n1YoJP8x7+NqD45KyMCY9ZulSmYxYGt2jv0byIpoL3EJTl5/JoZD3pBs9blp3rE4Tj1ryieVVgG8F0j32V/DblegHaIRfF783XlgwEftjqIS1QiXWq3sXNUE00geq71hRQSS6V7J3ebgxv9ri0EG6HNlqTQ0JlGeRNLWT1lDARE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708558234; c=relaxed/simple;
-	bh=rMfghQHSrf66m2xYpU7sUmwUlSg6uFRoFfJUQDk9JaI=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=YluQUkY6mUCKqlKUs36nA6DNy5G1ln3wazKT2C64XSGDlRPwA5FA9S4v2fhaG2KOe5f5g7kwq8wXyOzKqrwVByFOWek6oDDKvbP9tqovyZQ3k+VXn+DG/F9c85Jjt6yzzVSCGZYloZjUt0ssLKpZc6NCIIbzx/s91mOwHrk3c5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pGG5W/pC; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1708558239; c=relaxed/simple;
+	bh=O3k+nYu1MYBPKH6TsA/y54d2ADLO3F4v2KYWl0x8bqo=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Cc:Content-Type; b=bOoOBht9INsdQvtRtxYhHrvuJqpf65XxieXzelb9MT8z5qmWM19c6RA5uTL9NVlM00u8+zZAAyiffM71h0FWr+/aIJRYAfgqzbnTdzNjWuN5fyNYEzaISuGnBqlVK6Fo3quLQLc+tsjslIlNCBRj7M+4gRPXjwB1ingewIKhSps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ccXHuh83; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so12745893276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:30:32 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6082ad43ca1so64078007b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:30:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708558231; x=1709163031; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RsJ1fv6sfnN74ztB0VWfE18M80nrvJ6wlqEGStg9ZSY=;
-        b=pGG5W/pCpowgB90F6DOeurXkM0sDYn2DGbPwU6oOalRQK0gqUbERNIDe39Oow7i9re
-         3mkubDSPCtNrY3OhAfrvGEQ0ZVhTyoWAIUkDPVf3oDbuezJtVl/8fntnz30jA/aqyspz
-         KgY59ihna18AXxR+UdUCaYRBTqGDJDL6oTHifkDfNZpCYOxdpVALsfnPYqt7NfQl93b2
-         O6ZHzLkzTnOMkNPiyxm+vJS2dGIvo1mZoBJorw5FEoje2jSQVIOAz5E5bPfZgQJ6RdvQ
-         TqoijWnpUN7/nEqoYUftm9oM3yIKwTvD/VdxiTuCi1T+CqIH7Y/iJYLcIS0bIYqPpwWC
-         tAig==
+        d=google.com; s=20230601; t=1708558235; x=1709163035; darn=vger.kernel.org;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2RZcm32i75equt/unWf5KMZ/RAcqfb/I89ao1kCyS8A=;
+        b=ccXHuh83DugB0FVQYirkrAty60fONap3CK593aejGZlaS6pxh5cf7aP+nDz5jBoEm7
+         KYlEeTnHJJEKVGY2myu7/+bwy0rxvFSN34PvfuFcWEB9pB123ANwq/20iTZmxMdGXEcQ
+         HGuTq6NWx7HYVRdbIKzFKYJAm4n36KH1fVynRqk5YtQ7fpgvNXnIa8OSMsxH7BsEVHHD
+         OfOiKjLx/qSTq096n0LfP2kq1HVqDK9GtVJi8UdPIAn94MNGG8g6yVDNOmH3kULnaS74
+         8hfgdkA8Ue9aP9xmh6cXs6Oo+uh9gzuyGOPXZfmUOXcrlkxpTmVkCq1dWlH/z1RGpn5P
+         lSTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708558231; x=1709163031;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RsJ1fv6sfnN74ztB0VWfE18M80nrvJ6wlqEGStg9ZSY=;
-        b=qY90ixLIGfZrFJxKE1gNMSuAY3s4sOCJGhnHxmiBFK4Z0pnI4myRY8LzIjHjhFVHMb
-         w1BPvUlDBK875yxTb16gaXIh1wOcEXWeuEeSup+np8dIc3JvqU061AkIDJElBSh+H0po
-         +obKradKdDAP3NuIWB6N9wnI4cxN5ssl3TNxS1E+d5h6SIYYoESlbxq+6QkMpU0FRbs/
-         IiEE7Fi1ieAIE54P3WaSE8U2dYoCuvtg4VxhRyWL486mR2Q37nMEk7HcDE4crQNk5rBd
-         uL7BLftbEebpnpf33/1hop+z0NGteY9EszE/Jv2AbZzmFbUlNyK6Z1H8NhCAm2bg1drH
-         AnnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXLvSta99ERPhONv3+g5iqgyj6vqQwA+lagV57CnsMursxOJrKZel761wRywRY8oxc6elbR89RXphIUE6M4lpaLJay6/fChihGz8lc8
-X-Gm-Message-State: AOJu0YzxpLxghtSD77kbW9H0G/+2/vyg7/PAfr5HfLhsY+TEvnXFGRY2
-	7XPNtiZAnwifDnJdAmLdtLOj9sGAYKAzWlSlWUL3w9Q1CEuhkpx1EcJjcyykWWeN/Y9uqBN3zg1
-	2AWRJ9REDk7Jidw==
-X-Google-Smtp-Source: AGHT+IFFe6RGLehaGSPj902y32MxR8KvPs3Ay0pm4gQyZIEo/E/TTc10pIGjALHXPwbgNwcAARJB+YShim+SxHY=
+        d=1e100.net; s=20230601; t=1708558235; x=1709163035;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2RZcm32i75equt/unWf5KMZ/RAcqfb/I89ao1kCyS8A=;
+        b=LRPAZ937ha4hJDynuJxy8w6cLDEXiT+eCoVi3s+MKG2Sy4uJGibGVQRYeTzYRwx3DN
+         PpBUUGiS3V8WHuW/DMjtkizEdfkUZHtGjVxUH8XiGSrZERGb7WLnjFDgbN4nfDZC9Iwx
+         6ngz3lCS4PrBkWhpFO4sVLamiy/fa7MKW6FDDI6WFteqMQdertRQQXhE+utb33Kq4mjc
+         e6eYB5FJsZ9zqn5Jjw2cXAcWQMcPGcWbtB0JeTuZkC8z9B++MCDA/se7SC6FUUDJsWWN
+         Ss8ZnAc3GQwK3jbJP+vhtczy8DWr4pjGV8uC/3mR9zEBP1yaRskZTqMrSpFHgJo7UdOC
+         0vsg==
+X-Forwarded-Encrypted: i=1; AJvYcCWx6HkxTAkq72YZwGPE1kubenm3Um66H3lVbWpfoV8vL1E7CgjlSn5JOZUFmjeXB2+QUsixnbYYKFNNYjbVZKzjkhGGm1vL59KhdcsB
+X-Gm-Message-State: AOJu0YxBVrzThn6Bn4GY+esxpPkrtfuQK2X7joXPuEF/dW4LIe7hcady
+	vl8OJjV+w50vHVDzdEJQ6lS4AFVfdL2MuU/Bv5sBB+JZwraSgI8Nq5ExcU5mAiGXzmtv0jr1GBr
+	eMuO8q25B/6XIPg==
+X-Google-Smtp-Source: AGHT+IFymqwFZX8gUcnkDHzCjCSYD5QmwOYK5TfTYepo77znZQH+G9Phdflg4Iktv+dh1kr8I9s40IenkChq33E=
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:4e1e:336a:2b30:13fe])
- (user=saravanak job=sendgmr) by 2002:a05:6902:1024:b0:dc7:48ce:d17f with SMTP
- id x4-20020a056902102400b00dc748ced17fmr199215ybt.10.1708558231444; Wed, 21
- Feb 2024 15:30:31 -0800 (PST)
-Date: Wed, 21 Feb 2024 15:30:20 -0800
-Message-Id: <20240221233026.2915061-1-saravanak@google.com>
+ (user=saravanak job=sendgmr) by 2002:a0d:e6c5:0:b0:608:801a:e66e with SMTP id
+ p188-20020a0de6c5000000b00608801ae66emr571836ywe.3.1708558235317; Wed, 21 Feb
+ 2024 15:30:35 -0800 (PST)
+Date: Wed, 21 Feb 2024 15:30:21 -0800
+In-Reply-To: <20240221233026.2915061-1-saravanak@google.com>
+Message-Id: <20240221233026.2915061-2-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240221233026.2915061-1-saravanak@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Subject: [PATCH v3 0/4] Add post-init-providers binding to improve
- suspend/resume stability
+Subject: [PATCH v3 1/4] driver core: Adds flags param to fwnode_link_add()
 From: Saravana Kannan <saravanak@google.com>
 To: Rob Herring <robh+dt@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
@@ -87,44 +89,76 @@ Cc: kernel-team@android.com, devicetree@vger.kernel.org,
 	linux-acpi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-This patch series adds a "post-init-providers" device tree binding that
-can be used to break dependency cycles in device tree and enforce a more
-determinstic probe/suspend/resume order. This will also improve the
-stability of global async probing and async suspend/resume and allow us
-to enable them more easily. Yet another step away from playing initcall
-chicken with probing and step towards fully async probing and
-suspend/resume.
+Allow the callers to set fwnode link flags when adding fwnode links.
 
-Patch 3 (the binding documentation) provides a lot more details and
-examples.
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c              | 5 +++--
+ drivers/firmware/efi/sysfb_efi.c | 2 +-
+ drivers/of/property.c            | 2 +-
+ include/linux/fwnode.h           | 3 ++-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
 
-v2->v3:
-- Changes doc/code from "post-init-supplier" to "post-init-providers"
-- Fixed some wording that was ambiguous for Conor.
-- Fixed indentation, additionalProperties and white space issues in the
-  yaml syntax.
-- Fixed syntax errors in the example.
-
-v1->v2:
-- Addressed Documentation/commit text errors pointed out by Rob
-- Reordered MAINTAINERS chunk as pointed out by Krzysztof
-
-Saravana Kannan (4):
-  driver core: Adds flags param to fwnode_link_add()
-  driver core: Add FWLINK_FLAG_IGNORE to completely ignore a fwnode link
-  dt-bindings: Add post-init-providers property
-  of: property: fw_devlink: Add support for "post-init-providers"
-    property
-
- .../bindings/post-init-providers.yaml         | 105 ++++++++++++++++++
- MAINTAINERS                                   |  13 ++-
- drivers/base/core.c                           |  14 ++-
- drivers/firmware/efi/sysfb_efi.c              |   2 +-
- drivers/of/property.c                         |  17 ++-
- include/linux/fwnode.h                        |   5 +-
- 6 files changed, 142 insertions(+), 14 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/post-init-providers.yaml
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 9828da9b933c..adeff041d472 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -92,12 +92,13 @@ static int __fwnode_link_add(struct fwnode_handle *con,
+ 	return 0;
+ }
+ 
+-int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup)
++int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup,
++		    u8 flags)
+ {
+ 	int ret;
+ 
+ 	mutex_lock(&fwnode_link_lock);
+-	ret = __fwnode_link_add(con, sup, 0);
++	ret = __fwnode_link_add(con, sup, flags);
+ 	mutex_unlock(&fwnode_link_lock);
+ 	return ret;
+ }
+diff --git a/drivers/firmware/efi/sysfb_efi.c b/drivers/firmware/efi/sysfb_efi.c
+index 456d0e5eaf78..cc807ed35aed 100644
+--- a/drivers/firmware/efi/sysfb_efi.c
++++ b/drivers/firmware/efi/sysfb_efi.c
+@@ -336,7 +336,7 @@ static int efifb_add_links(struct fwnode_handle *fwnode)
+ 	if (!sup_np)
+ 		return 0;
+ 
+-	fwnode_link_add(fwnode, of_fwnode_handle(sup_np));
++	fwnode_link_add(fwnode, of_fwnode_handle(sup_np), 0);
+ 	of_node_put(sup_np);
+ 
+ 	return 0;
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index b71267c6667c..bce849f21ae2 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1085,7 +1085,7 @@ static void of_link_to_phandle(struct device_node *con_np,
+ 		tmp_np = of_get_next_parent(tmp_np);
+ 	}
+ 
+-	fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np));
++	fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np), 0);
+ }
+ 
+ /**
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index 2a72f55d26eb..c964749953e3 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -210,7 +210,8 @@ static inline void fwnode_dev_initialized(struct fwnode_handle *fwnode,
+ }
+ 
+ extern bool fw_devlink_is_strict(void);
+-int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
++int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup,
++		    u8 flags);
+ void fwnode_links_purge(struct fwnode_handle *fwnode);
+ void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
+ 
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
