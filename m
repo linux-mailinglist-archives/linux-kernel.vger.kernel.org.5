@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-73858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A78485CCAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:22:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E719385CCAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 306051F24A79
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:22:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 241121C21B48
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA042EC5;
-	Wed, 21 Feb 2024 00:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBF9A40;
+	Wed, 21 Feb 2024 00:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="dCEcZzUV"
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="URDWzw8f"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFAC384
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E9A1FA2
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708474971; cv=none; b=d9P5qu8ORN8stDdsXcH7SphejGZIllAObDF8eMtTPa9uJCeHbWC3gKrx7tb/WqdE4TqGEJJrmvym+JBlKBfw0BZeDlHN+BTmonFhcy9RBFCbeEDoBira4QrayAR7iD2rz4MG+DbJHrhpSnHBL8yfAx0NJ2xj1DGIQpdJU8bj3Z4=
+	t=1708474976; cv=none; b=fiaASdtHFZPBk0wdaEqNSlWtD5chGjs1qxCiWxwJxFIDkuHI0VlMIqqj4hst85B//qbKu6N8gwWR07pQ4X4vQWn1zeCvwj2K3ctfu/vgl7+yvdEQ+6fuvkXNO0G3cK3ivOcd7PqKyVOElGbfXxt/8VuzjUith3Y6xROnSl+1J5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708474971; c=relaxed/simple;
-	bh=8WZKHSERv1Qml7vaoGY8qsCxDz2HE26cW/okoCj1S1Y=;
+	s=arc-20240116; t=1708474976; c=relaxed/simple;
+	bh=l9BmiyDE5YsxPvJcFvE44ZP2zWBzemgVTqweoxFiX/4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HkKT7GLen1Q+FzF46XEYuw2+Ox0pfbpIxxdU+ZKj1kuppp0eAxvxY6F15rLFlk7gI312U9W0/vsla66vmITOmw3qcONHWq2Uta45EDFtWyhdO7XMG5Oaqs8bMuLrGDuWWVGWlmVUG9W6y9qiLNRG6hnbJaAb+o5QDVJ644khpsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=dCEcZzUV; arc=none smtp.client-ip=209.85.160.180
+	 In-Reply-To:Content-Type; b=bSCcrbnzxCnjlLGY2EBRk/hTo9EDXRA+TaFjDyot7C66lpFrhhLvAPuJRE4UWifAzKI3oWvOH/lcJHn4Xuhvkn5V94q+9Z7XPei6j3O6c2Vfzvn4mmwmcd7OaEJGBzjL2UoJ6yz8X19xJ0mR8ZmgRxc0m1CeR1Qr6KxNo/9Kugo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=URDWzw8f; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42db60ebcd7so678641cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:22:49 -0800 (PST)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42ce63b1d30so63640621cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:22:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1708474968; x=1709079768; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1708474974; x=1709079774; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CNzWCTUy9JFU/dlrovuUssQto5vHi7/OuWTxzbCEBhA=;
-        b=dCEcZzUVCwpF25X9tqVGSvgcNLTGzT/X5FJ/nYzFP4eFvFXvni5PxD4swkZnST6tbZ
-         +NzMZ7b17zLKU3iRqCuNOc/mIJDttZjDgTNendqKM36PD/pGFSmHJak3fUBne2Gr2bn1
-         pL6drN9Q0QVz9M7Cwl5szxC0ZPUEUpJ02xxjA=
+        bh=oMnFdput2U3v2+HKKFwFOlf8mYwAcddCyeloyKuYz78=;
+        b=URDWzw8fWTjsrzhewfM44RSScAUffhHk+lEm3GnQh1mdhjeRP3baoN2p177arlf3WZ
+         lb9dX3KkbPhZiQ1c4aQ/eX9nj4gBthyqBiN1QqKh5Xv3dT4yZKj6de5mClSABLtL/U9N
+         4YhDJZZSESxvoTqwhQgGOppCqgc2GFgfKqSbg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708474968; x=1709079768;
+        d=1e100.net; s=20230601; t=1708474974; x=1709079774;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CNzWCTUy9JFU/dlrovuUssQto5vHi7/OuWTxzbCEBhA=;
-        b=wiKciJnTbfct21A86AwJm9dayJ97xn2R5s52qYTNf6937qlYyHoTiPkglW+C99KhI8
-         eJdpQaJdSs6JP4C5NMG3P0f4KtH3sfUsXD6/GGTHfna5PiBUKWt4YFRxszoQIzWGaZUl
-         hD/U/xXd//HOIclgYb803H5KuI1ZITBjDQUTRX5ZnEBtolNpG4/uHcq9tdrlUeRipCVz
-         jKZNa34SQAddCeay8Pzk4/JP00oRArI5RgTm4uMuqeI1GZHElDrMCx0JkZwYRS0yjG7Z
-         qlqhHhcv5xZKUE92F2hM4wxocFlmk9fNdSz50sCRZgJaJOjyh/cT5xOMqkJzotZcNS/F
-         bIdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhA7ZtwQaQyxUSX03SML1hrupPBiztsTeYEow5evRKCsNpA0QryNkNxnYcQjSfMQmRNXD9T99+nLq5w0xvyYvfVEFkwJwKsdDl4Gd8
-X-Gm-Message-State: AOJu0Yz6bu6V6iKKMUQkJijwHErZ7kuENz1G9cpJWG7y4LvQhRQVZ95q
-	s9RAoUdCbr9cj5up71TeJ7DpbRzYP4lGsnLJS8vCNPO4vTy0uTh3DiOSl0YIsOo=
-X-Google-Smtp-Source: AGHT+IGkEKD5s4h+KVSBolVi/KlyQ6g705fjRLMKfE75hTkTjwe3yoI9olwSKK13//mX6vNwgW7HbQ==
-X-Received: by 2002:ac8:59c6:0:b0:42e:24c4:ca0c with SMTP id f6-20020ac859c6000000b0042e24c4ca0cmr4792013qtf.60.1708474968337;
-        Tue, 20 Feb 2024 16:22:48 -0800 (PST)
+        bh=oMnFdput2U3v2+HKKFwFOlf8mYwAcddCyeloyKuYz78=;
+        b=UUAfFvWx/3JBHJhEA7EN2Fpf2KfmT7opGxr5R/eB8W2FttFGmH2mZmM3eyJC4jUV+v
+         4pXbEtxzULl4qbq7weHCgf5UwN24H1MiWKsp+V/nXqdzJS7dNjGWygcXYP8z+9t0XBw/
+         10YLOBtacVWaNyRi+xCdhv2frhXOWY3DA5vgO99ckulH6RrJwdoU5mFk6GMZtKLYiaDt
+         fAqxoex3UjykgrLMOxv+NUKhzEbnyMhFkBkSBMCox1ysk/iIArtq9z3EbCwEOpsLJPUr
+         4pLPJ5ggY0Ev4eFlygAjS4ZuuF5fZDSaHbEMtQjigDNnTzC8caTpmYkUkql2xD8WEOpL
+         n7Gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWH6Kkv2eUET9mpNB+FZH5gORbc6x068gmpWRZDUVqwZGiHMB3Qnh7gAACxwiRdpVq+6CgmrIuNmvjVmacswKF0jDKfCkpw76R2+AD5
+X-Gm-Message-State: AOJu0Yw5ls2L95LkdIDkLsZhp8uU5E2Q5mUGF6Br+PJPjTl9S7ley1nD
+	o43D+kcw6e4OEnhukutYWad/zd+Ny8mT9h7yEHFn4U13rITA5fd+IvKYvyXy4Hg=
+X-Google-Smtp-Source: AGHT+IEanfu7jY6qrskGtXrg3cAnbCiZGK43ym0K7n7leStJhT/fte+Wn7utOEgfIqxxGYa/tuIh3Q==
+X-Received: by 2002:a05:622a:148c:b0:42e:3251:9a29 with SMTP id t12-20020a05622a148c00b0042e32519a29mr1818810qtx.53.1708474973783;
+        Tue, 20 Feb 2024 16:22:53 -0800 (PST)
 Received: from [10.5.0.2] ([217.114.38.27])
-        by smtp.gmail.com with ESMTPSA id fu19-20020a05622a5d9300b0042e1498d645sm2061807qtb.92.2024.02.20.16.22.46
+        by smtp.gmail.com with ESMTPSA id kc13-20020a05622a44cd00b0042c7e72746esm3940014qtb.8.2024.02.20.16.22.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 16:22:47 -0800 (PST)
-Message-ID: <55e64c9c-8c12-4d1a-b508-3165f7078b8b@joelfernandes.org>
-Date: Tue, 20 Feb 2024 19:22:43 -0500
+        Tue, 20 Feb 2024 16:22:53 -0800 (PST)
+Message-ID: <b1bddc56-6794-49d8-a005-e8ef3f8b7629@joelfernandes.org>
+Date: Tue, 20 Feb 2024 19:22:49 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -126,8 +126,7 @@ Thanks, I think Peter is out so it may take a while going through the sched
 tree. This individual patch is independent as such and could go through the
 kselftest tree. However, I am totally Ok with either option.
 
-Also, thanks to you and Chris for the tags and I will add them for future
-submissions.
+Also, thanks to you and Chris for the tags and I will add them for future postings.
 
  - Joel
 
