@@ -1,74 +1,72 @@
-Return-Path: <linux-kernel+bounces-73989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E892685CE87
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:03:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6013185CE9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFED41C23237
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:03:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA9DD1F24C26
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288782BAE7;
-	Wed, 21 Feb 2024 03:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E7736120;
+	Wed, 21 Feb 2024 03:18:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="frPaumst"
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nxUQ6I/3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE98B2F36
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174102F36
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708484601; cv=none; b=TbJmPPWWNI5H4Wza3yJQ9EZL+ZjxJmIPYobAnpIWCphihYcXHxwH+cZDtiRsWOJ5QKJLJmeKciM9c6tUw31UwKl9jqzqgHj5qd2cjjJHrUaMdJ10ZFRBgGwnQZmQKbiv4ZDeXu8zmCZoM/KW+IfhUMhB+RIR2DsK+1I4HrBnBx8=
+	t=1708485492; cv=none; b=P8f1svR1AQ32roOFlGYu59a8lcrTTdZASUagU2rQfo1UD3fYHCEJzgT1k4oCC5akho/WRRiKlwL/9LnoJZO6hsjwaBCFXR5lhJGy5pMhpkAvl+0pg6UQe0fJkBMLET/H9IKeRjIZO62HdEoBLR4RRmAYHPIXven2luNHUL18LTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708484601; c=relaxed/simple;
-	bh=oobwvJOSlJZ6jqTkxaLxre6wjaVBnYmAyPVTnY+MfJM=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=sXhwbqwmSuXX0XAWmqWZsUp3z+Uql/Bjywa93A0Mokn6DvkeBHJTMO2LTbRvEjFcjFWbb8xYen0zx7RJBLAqfeU/fPNYfyMoahMi78py069+xPj3VISf1gDRu6WFBmo/TaOu/Ra7djxJGX3j/EKej9vb1SbUL1fffr+SXSCvFoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=frPaumst; arc=none smtp.client-ip=203.205.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1708484589; bh=LKI66u4dgr+7iwYTp927KXhXTPqMfb6/+YRPw56ONE4=;
-	h=From:To:Cc:Subject:Date;
-	b=frPaumstbBFv47/rdxEFDJLe4zIYNI5yWDb8mM4pf6ydyw4Hqn6mbKxrwA+Yp1sw3
-	 XjCb0F7jFT6Q0WrH+++6upH+oL0KTODunCAFQmjFbiuUAa7CPec3Dh9D1GVHstXMIn
-	 r9hO3+WXwz5Qptm8RIT1laiXH3xBFQ4t1JFlir1U=
-Received: from cyy-pc.lan ([240e:379:2240:ef00:159c:db93:bdcd:c9c6])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id C5A0C88; Wed, 21 Feb 2024 11:03:05 +0800
-X-QQ-mid: xmsmtpt1708484585txbs3v0gn
-Message-ID: <tencent_E19FA1A095768063102E654C6FC858A32F06@qq.com>
-X-QQ-XMAILINFO: OUnVc07lD2ZBmrI0ZhjTbaZSf3JrAeZvIVT6kjHJ26bXBjMScunXxm1aDNZZKQ
-	 /X/0IbcXbZ2RgT8zWVbJ9Or//pv5wVpAsfgTCHTb0t4ud6fWvmCH6mL82nuOjSk6/qeQ8LRZQBO8
-	 8fbHDB1JF1SUl/Ova/4VF68qRq7N+tdwe/kceR1I+X8S7JtQFRoUCu+QRGSX5auPoW7zMccfPGgF
-	 csuJjMy61fN3y9sSZkZ8alcyAr4/kU7vU0Ul/yJoiTNU4Jyi+JUCNpZaULAdpgqo1FXBUfzWCMfh
-	 994NDiDExo5GjgDnf7OSDXQXmf9yHwGpScNSfEQ7YdofkkcOiedu6zxodZbriXjvZdzbB+gsfzf3
-	 P3p8ynZDcDqNdWUCYR1mDsjOgZNUk/QaC2IHmdBXyRzsaitWiJH7D/w0ZTxvZEj+CplhxOvcdRDb
-	 zk9berts7PfJWpbYb6pY9aTJiB7/mUWzzvllshAernW9m6UZ22EchXrOwN64b3lXmdLNVgAsVyzk
-	 vC+V6Iue9wFWAwW8dGMXv9aCHg4tyEWfYa4roEfIZKBoY8SHv/y4mDsP/C9VaWpyqw9YJtjcvBIk
-	 +a0x210bc7oc84PeoLUeAK4DncF/i7t6QBFnf8KszULRdSQLiQ4qRV/LsQnEZ5fBKac5xynLBVYB
-	 RzFpnfmftmwafv5dmkBR9NpOscvCC2nroj9kc8fRAF5x6ZjKpAZcoXOnmDoIittaDitwQpY8Kwo8
-	 yWKgmNmzcoBRDZ9BnrpOdQ6/Kht50BLNP2Kk70f8tTUcLI5PzDBhNRauTdXVuRg6569JpxiB3aQP
-	 NENXpQQWq36kZr7hO3GZwYJ9RNHILSgSQzO9s+jYaOdYiOxrzwq6uIyVW5YCLESDnR5YommNMggM
-	 a+9nT/Ic6sDUBVr9aOT0Gk/4TnEHlzooLRHraW8pN9S2iLiTGZX+CL4pn7bys4+k3L/MLV4mAPri
-	 5AkTJsC6bl4Md5U3zGvUlz3r0E8QBFu4BKxrJq31Ru8ka9sSneuKyeqDeMdNxrIqJUDrB80MfNnu
-	 AJdMvN59mRU4LF9QPn
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Jisheng Zhang <jszhang@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Guo Ren <guoren@kernel.org>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	linux-kernel@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v2] riscv: mm: fix NOCACHE_THEAD does not set bit[61] correctly
-Date: Wed, 21 Feb 2024 11:02:31 +0800
-X-OQ-MSGID: <20240221030231.3413066-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708485492; c=relaxed/simple;
+	bh=a8rK8mTtgAiuyOr7Rsx2gpfxVtw3gd/Dcp+omuviBu4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VcOyBYryKta5bYKwleTFxL3gXdn8BvEtRBb2VzMG9Bf8cnLq8VmRoWFN3CRDppcsshYw7wNVf3ROjPkiVn0HCotOV+kX2EXd03HvtN/NGQU/v1YRBWQXaEOy69+V8vj7GvSnBs7/peDfef2DNwJ/L2JnQPaWmYWMhdZ9uz9ct/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nxUQ6I/3; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708485490; x=1740021490;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=a8rK8mTtgAiuyOr7Rsx2gpfxVtw3gd/Dcp+omuviBu4=;
+  b=nxUQ6I/3LxlINjknFARp5u8I+rG7lV+FwK4TT2l7OvvTlmfp1bkOOGJ+
+   +HWNi5DKWQirL1h6zRv+A7t4o/hQebMydV04IXcG9l97INvoNG6VGlOMv
+   hp3xFCDoC/g2ZoCtOtsI1zvnAAqVoG4Uy/R+l1FGe19p7u7kBbmSEK3sz
+   +DDWvarg7tQ8rjNGLDFteRO9iWT12+mWyr4sgu1411LfgewjpEnpt73Xr
+   MFwWWpWdMy4tffwI2pRAydIHif4GyBa3bjHJnFYHYrpK6EvCkIlIdg3b3
+   5sGgKhRN1o0EYycM0mRlZxFo2YkKoRwqNJatLZUqCszDJt3fQkCNJu2nm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="5584180"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="5584180"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:18:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="36029868"
+Received: from feng-clx.sh.intel.com ([10.239.159.50])
+  by fmviesa001.fm.intel.com with ESMTP; 20 Feb 2024 19:18:06 -0800
+From: Feng Tang <feng.tang@intel.com>
+To: John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	paulmck@kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <longman@redhat.com>,
+	linux-kernel@vger.kernel.org
+Cc: Feng Tang <feng.tang@intel.com>,
+	Jin Wang <jin1.wang@intel.com>
+Subject: [PATCH v5] clocksource: Scale the max retry number of watchdog read according to CPU numbers
+Date: Wed, 21 Feb 2024 11:04:07 +0800
+Message-Id: <20240221030407.915927-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,37 +75,198 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Previous commit dbfbda3bd6bf ("riscv: mm: update T-Head memory type
-definitions") from patch [1] missed a `<` for bit shifting, result in
-bit(61) does not set in _PAGE_NOCACHE_THEAD and leaves bit(0) set instead.
-This patch get this fixed.
+There was a bug on one 8-socket server that the TSC is wrongly marked
+as 'unstable' and disabled during boot time (reproduce rate is about
+every 120 rounds of reboot tests), with log:
 
-Changes since v1:
-* reword commit message and add reviewed-by
+    clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
+    wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
+    tsc: Marking TSC unstable due to clocksource watchdog
+    TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+    sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
+    clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
+    clocksource: Switched to clocksource hpet
 
-Link: https://lore.kernel.org/linux-riscv/20230912072510.2510-1-jszhang@kernel.org/ [1]
-Fixes: dbfbda3bd6bf ("riscv: mm: update T-Head memory type definitions")
-Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-Reviewed-by: Guo Ren <guoren@kernel.org>
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+The reason is for platform with lots of CPU, there are sporadic big or
+huge read latency of read watchog/clocksource during boot or when system
+is under stress work load, and the frequency and maximum value of the
+latency goes up with the increasing of CPU numbers. Current code already
+has logic to detect and filter such high latency case by reading 3 times
+of watchdog, and check the 2 deltas. Due to the randomness of the
+latency, there is a low possibility situation that the first delta
+(latency) is big, but the second delta is small and looks valid, which
+can escape from the check, and there is a 'max_cswd_read_retries' for
+retrying that check covering this case, whose default value is only 2
+and may be not enough for machines with huge number of CPUs.
+
+So scale and enlarge the max retry number according to CPU number to
+better filter those latency noise for large systems, which has been
+verified fine in 4 days reboot test on the 8-socket machine.
+
+Also as suggested by Thomas, remove parameter 'max_cswd_read_retries'
+which was originally introduced to cover this.
+
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+Tested-by: Jin Wang <jin1.wang@intel.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Waiman Long <longman@redhat.com>
 ---
- arch/riscv/include/asm/pgtable-64.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changelog:
 
-diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
-index b42017d76924..b99bd66107a6 100644
---- a/arch/riscv/include/asm/pgtable-64.h
-+++ b/arch/riscv/include/asm/pgtable-64.h
-@@ -136,7 +136,7 @@ enum napot_cont_order {
-  * 10010 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Shareable, Non-trustable
-  */
- #define _PAGE_PMA_THEAD		((1UL << 62) | (1UL << 61) | (1UL << 60))
--#define _PAGE_NOCACHE_THEAD	((1UL < 61) | (1UL << 60))
-+#define _PAGE_NOCACHE_THEAD	((1UL << 61) | (1UL << 60))
- #define _PAGE_IO_THEAD		((1UL << 63) | (1UL << 60))
- #define _PAGE_MTMASK_THEAD	(_PAGE_PMA_THEAD | _PAGE_IO_THEAD | (1UL << 59))
+    since v4:
+      * Add a helper function to be shared by different files (Paul)
+
+    since v3:
+      * Remove clocksource's module parameter 'max_cswd_read_retries' (Thomas)
+      * Use "ilog4" instead of ilog2 for max retry calculation, and
+        may be adjusted later (Paul)
+
+    since v2:
+      * Fix the unexported symbol of helper function being used by
+        kernel module issue (Waiman)
+
+    since v1:
+      * Add santity check for user input value of 'max_cswd_read_retries'
+        and a helper function for getting max retry nubmer (Paul)
+      * Apply the same logic to watchdog test code (Waiman)
+
+
+
+ Documentation/admin-guide/kernel-parameters.txt   |  6 ------
+ include/linux/clocksource.h                       | 13 ++++++++++++-
+ kernel/time/clocksource-wdtest.c                  | 13 +++++++------
+ kernel/time/clocksource.c                         |  9 ++++-----
+ tools/testing/selftests/rcutorture/bin/torture.sh |  2 +-
+ 5 files changed, 24 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25680d0..763e96dcf8b1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -679,12 +679,6 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
  
+-	clocksource.max_cswd_read_retries= [KNL]
+-			Number of clocksource_watchdog() retries due to
+-			external delays before the clock will be marked
+-			unstable.  Defaults to two retries, that is,
+-			three attempts to read the clock under test.
+-
+ 	clocksource.verify_n_cpus= [KNL]
+ 			Limit the number of CPUs checked for clocksources
+ 			marked with CLOCK_SOURCE_VERIFY_PERCPU that
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 1d42d4b17327..13cf36fe27ac 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -291,7 +291,18 @@ static inline void timer_probe(void) {}
+ #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
+ 	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
+ 
+-extern ulong max_cswd_read_retries;
++static inline int clocksource_get_max_watchdog_retry(void)
++{
++	 /*
++	 * When system is in boot phase or under heavy workload, there could
++	 * be random big latency during clocksource/watchdog read, so add
++	 * some retry to filter the noise latency. As the latency's frequency
++	 * and maximum value goes up with the CPU numbers relatively, chose
++	 * the max retry number according to CPU numbers.
++	 */
++	return (ilog2(num_online_cpus()) / 2 + 1);
++}
++
+ void clocksource_verify_percpu(struct clocksource *cs);
+ 
+ #endif /* _LINUX_CLOCKSOURCE_H */
+diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+index df922f49d171..2a5abda307e1 100644
+--- a/kernel/time/clocksource-wdtest.c
++++ b/kernel/time/clocksource-wdtest.c
+@@ -105,7 +105,7 @@ static int wdtest_func(void *arg)
+ {
+ 	unsigned long j1, j2;
+ 	char *s;
+-	int i;
++	int i, max_retries;
+ 
+ 	schedule_timeout_uninterruptible(holdoff * HZ);
+ 
+@@ -139,18 +139,19 @@ static int wdtest_func(void *arg)
+ 	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
+ 
+ 	/* Verify tsc-like stability with various numbers of errors injected. */
+-	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
+-		if (i <= 1 && i < max_cswd_read_retries)
++	max_retries = clocksource_get_max_watchdog_retry(); 
++	for (i = 0; i <= max_retries + 1; i++) {
++		if (i <= 1 && i < max_retries)
+ 			s = "";
+-		else if (i <= max_cswd_read_retries)
++		else if (i <= max_retries)
+ 			s = ", expect message";
+ 		else
+ 			s = ", expect clock skew";
+-		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
++		pr_info("--- Watchdog with %dx error injection, %d retries%s.\n", i, max_retries, s);
+ 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
+ 		schedule_timeout_uninterruptible(2 * HZ);
+ 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
+-		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
++		WARN_ON_ONCE((i <= max_retries) !=
+ 			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
+ 		wdtest_ktime_clocksource_reset();
+ 	}
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index 3052b1f1168e..7fcb8d06b7cd 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -210,9 +210,6 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
+ 
+-ulong max_cswd_read_retries = 2;
+-module_param(max_cswd_read_retries, ulong, 0644);
+-EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+ static int verify_n_cpus = 8;
+ module_param(verify_n_cpus, int, 0644);
+ 
+@@ -227,8 +224,10 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+ 	unsigned int nretries;
+ 	u64 wd_end, wd_end2, wd_delta;
+ 	int64_t wd_delay, wd_seq_delay;
++	int max_retries;
+ 
+-	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
++	max_retries = clocksource_get_max_watchdog_retry(); 
++	for (nretries = 0; nretries <= max_retries; nretries++) {
+ 		local_irq_disable();
+ 		*wdnow = watchdog->read(watchdog);
+ 		*csnow = cs->read(cs);
+@@ -240,7 +239,7 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+ 		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
+ 					      watchdog->shift);
+ 		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+-			if (nretries > 1 || nretries >= max_cswd_read_retries) {
++			if (nretries > 1 || nretries >= max_retries) {
+ 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+ 					smp_processor_id(), watchdog->name, nretries);
+ 			}
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index d5a0d8a33c27..bbac5f4b03d0 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -567,7 +567,7 @@ then
+ 	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
+ 	torture_set "clocksourcewd-1" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
+ 
+-	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 clocksource.max_cswd_read_retries=1 tsc=watchdog"
++	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
+ 	torture_set "clocksourcewd-2" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
+ 
+ 	# In case our work is already done...
 -- 
-2.43.0
+2.34.1
 
 
