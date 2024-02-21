@@ -1,250 +1,254 @@
-Return-Path: <linux-kernel+bounces-75693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E47C85ED79
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:56:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C85585ED7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD0E51F21E64
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:56:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A215C1F22A78
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DD812DD82;
-	Wed, 21 Feb 2024 23:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BF812CD85;
+	Wed, 21 Feb 2024 23:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VgkZDCMo"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Guirq2Cs"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5667833062;
-	Wed, 21 Feb 2024 23:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF3D84FA5
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708559800; cv=none; b=l4/jgkf3zSXkldzWhSd1z1CCCByEKi7Jy7nIU63+l3BlNyeh9TPubGrSmXTigXZpgCrlaIya0uIEqYAvLAn8htws3qOu6s3bDJ679XmxIKIrNMIDo8pT76/UTKNSQIjx2eX8n6QKdy1k2R/qOHhX1TfuUGZnlroI1An5V9wMDgQ=
+	t=1708559877; cv=none; b=DJMg7IypSX7RORLDXoMhrinCZNHpmgllr5WRECEkYTExZGbASqVMYnJI6ZQYaOGqFFjIBO7ug3URtFa36xH3PtgD+mspRDuMKVG4VhYce5xOMhGZcx9YiFAyorJrmT2t1N4lJsSOUnVpGvNDC28X9M1O1dX68/tcAtrSlPtfZ2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708559800; c=relaxed/simple;
-	bh=ZrRwdK5utpp3sgunXkm20f5u3DpzZ9wqTr3RiV71OaI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XvLgK/RF73mysMa9bUk487q01BGW+ryrrsp3tpNBxja5spodWNCYUfMTl2PsVQ/GuFgeaowvYoDOYbNp5Mereu2KmiEx2UKyUI+Q5M0V5dTBqpUuLTAs9MNppgrSva2QdpINjUZgbuO9uFq5ppmNUNnF+q2Pf8k6o/BvbJrGiFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VgkZDCMo; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41LNPbkR007930;
-	Wed, 21 Feb 2024 23:56:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=mBBdeNeRX1o2UytltzPYiypy62H+/fRXys7G2pTuS8U=; b=Vg
-	kZDCMoyGE1qiuR9gR47YgGY9YdyOkGAR8XteT3z7QmDMjTw8dW9vAwzvleAQ8zkU
-	8ACReR3JphO+AXEwhccvaqQcm9T1BZ2BI8MoWezKDPUkwTe2+KQGI7dXH7llg/SH
-	3leYRnuLPVBdNZQ4HfuRbstArj+e/q/g5LLk5geynrpzQrx0DnN3VGqbxOdvd+EE
-	i9U1O1WB6Mr+dwA3EQTY7w8M0QIuMMBz/guUkoVMz1P+LTSETkZx/xiRE2VOkvCi
-	gDfIAGFI4LKwzAdKWEu29SYrLl4BILeTXm98E7wzRK+TjMQrVwF6BcNyyn58ClDs
-	9ULYOs4yqSiw3mQ/l0TA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdckva57u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 23:56:10 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41LNu8Yq006834
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 23:56:08 GMT
-Received: from [10.110.112.198] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
- 2024 15:56:07 -0800
-Message-ID: <0587cb46-1821-0daf-2d6e-08c5af5b97a3@quicinc.com>
-Date: Wed, 21 Feb 2024 15:56:03 -0800
+	s=arc-20240116; t=1708559877; c=relaxed/simple;
+	bh=L8PnU0k3Ilr5yG2BNMbT/RBCmodF5s2XXA6BdbEnj/U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IcFsrDby0oZyOznCP2NMTL1dR63iHmNZVMV5sBTf5GGttnQK2bXo0XDIX1SmLKY/HqHGvXqpLydKEoRlxq09DPBBX8yUjHL2pu4MUXoKC062F6abrI0UoTfMvcUFQvsXTdUK7etviS1uO5bezZl0f9fO5mz0zWuTI7kwdF8+CyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Guirq2Cs; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708559875; x=1740095875;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=L8PnU0k3Ilr5yG2BNMbT/RBCmodF5s2XXA6BdbEnj/U=;
+  b=Guirq2CsFDlGFToBY6E/PX9vQgdI7f4nIT6o09xKWTzxejGs7tzJB19V
+   QYm/zlWD7SElUGBar6DsRasfyhV3gmntHNjI5eiP6diYfxSLPPXK1ZoyT
+   mPyEDl2ml713hUvrC2UecQaqyaP+XF2m4oktkRrMoxD+BEmOGmDGbk9aC
+   /X+sT8zRMm3UBcZzTCf4CGcL3d5rdTjRtYfVOFHPfEcZ5Qf+VHIXODbN7
+   kooVUFWWASW+44VVDTrBlu+qjXzbVhOKtB9NasHupVpvKuhaX56pmTFMw
+   q7IP3YzkbpuRG+5fOwqSvBBTQBoI0Osfhwdkmbv6pLs1x4N7JmgV+faz3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2626290"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="2626290"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 15:56:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="5199835"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 15:56:59 -0800
+Date: Wed, 21 Feb 2024 15:56:58 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+	James Morse <james.morse@arm.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yu, Fenghua" <fenghua.yu@intel.com>,
+	Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+	Babu Moger <Babu.Moger@amd.com>,
+	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	"carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+	"lcherian@marvell.com" <lcherian@marvell.com>,
+	"bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+	"tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
+	"baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+	Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>,
+	"peternewman@google.com" <peternewman@google.com>,
+	"dfustini@baylibre.com" <dfustini@baylibre.com>,
+	"amitsinght@marvell.com" <amitsinght@marvell.com>,
+	David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2] x86/resctrl: Fix WARN in get_domain_from_cpu()
+Message-ID: <ZdaNymyCFAXMn18k@agluck-desk3>
+References: <20240213184438.16675-1-james.morse@arm.com>
+ <20240217105543.GAZdCQr_nosDP4tGuO@fat_crate.local>
+ <87zfvwieli.ffs@tglx>
+ <ZdUSwOM9UUNpw84Y@agluck-desk3>
+ <d409c32d-0f9a-4773-bc25-9d39de3c9e9b@intel.com>
+ <SJ1PR11MB6083A759748EAF62EDF21D0FFC502@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZdVFDIJmctsNaGd2@agluck-desk3>
+ <ZdZPht8hY4J9uIOz@agluck-desk3>
+ <89745b84-5ead-4694-b14c-341ca5a688f4@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v17 00/51] Introduce QC USB SND audio offloading support
-Content-Language: en-US
-To: Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Greg KH
-	<gregkh@linuxfoundation.org>
-CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <Thinh.Nguyen@synopsys.com>,
-        <broonie@kernel.org>, <bgoswami@quicinc.com>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
- <2024021754-unengaged-saggy-6ab1@gregkh>
- <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rs_sXXBYYB9Z73h-F7xbtB2aqFFUUtDC
-X-Proofpoint-ORIG-GUID: rs_sXXBYYB9Z73h-F7xbtB2aqFFUUtDC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-21_09,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0 mlxscore=0
- bulkscore=0 phishscore=0 priorityscore=1501 clxscore=1015 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402210188
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89745b84-5ead-4694-b14c-341ca5a688f4@intel.com>
 
-Hi Mathias,
-
-On 2/19/2024 2:27 AM, Mathias Nyman wrote:
-> On 17.2.2024 17.25, Greg KH wrote:
->> On Fri, Feb 16, 2024 at 04:09:26PM -0800, Wesley Cheng wrote:
->>> Several Qualcomm based chipsets can support USB audio offloading to a
->>> dedicated audio DSP, which can take over issuing transfers to the USB
->>> host controller.  The intention is to reduce the load on the main
->>> processors in the SoC, and allow them to be placed into lower power 
->>> modes.
->>> There are several parts to this design:
->>>    1. Adding ASoC binding layer
->>>    2. Create a USB backend for Q6DSP
->>>    3. Introduce XHCI interrupter support
->>>    4. Create vendor ops for the USB SND driver
->>>
->>>        USB                          |            ASoC
->>> --------------------------------------------------------------------
->>>                                     |  _________________________
->>>                                     | |sm8250 platform card     |
->>>                                     | |_________________________|
->>>                                     |         |           |
->>>                                     |      ___V____   ____V____
->>>                                     |     |Q6USB   | |Q6AFE    |
->>>                                     |     |"codec" | |"cpu"    |
->>>                                     |     |________| |_________|
->>>                                     |         ^  ^        ^
->>>                                     |         |  |________|
->>>                                     |      ___V____    |
->>>                                     |     |SOC-USB |   |
->>>     ________       ________               |        |   |
->>>    |USB SND |<--->|QC offld|<------------>|________|   |
->>>    |(card.c)|     |        |<----------                |
->>>    |________|     |________|___     | |                |
->>>        ^               ^       |    | |    ____________V_________
->>>        |               |       |    | |   |APR/GLINK             |
->>>     __ V_______________V_____  |    | |   |______________________|
->>>    |USB SND (endpoint.c)     | |    | |              ^
->>>    |_________________________| |    | |              |
->>>                ^               |    | |   ___________V___________
->>>                |               |    | |->|audio DSP              |
->>>     ___________V_____________  |    |    |_______________________|
->>>    |XHCI HCD                 |<-    |
->>>    |_________________________|      |
->>>
->>>
->>> Adding ASoC binding layer:
->>> soc-usb: Intention is to treat a USB port similar to a headphone jack.
->>> The port is always present on the device, but cable/pin status can be
->>> enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
->>> communicate with USB SND.
->>>
->>> Create a USB backend for Q6DSP:
->>> q6usb: Basic backend driver that will be responsible for maintaining the
->>> resources needed to initiate a playback stream using the Q6DSP.  Will
->>> be the entity that checks to make sure the connected USB audio device
->>> supports the requested PCM format.  If it does not, the PCM open call 
->>> will
->>> fail, and userpsace ALSA can take action accordingly.
->>>
->>> Introduce XHCI interrupter support:
->>> XHCI HCD supports multiple interrupters, which allows for events to 
->>> be routed
->>> to different event rings.  This is determined by "Interrupter Target" 
->>> field
->>> specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
->>>
->>> Events in the offloading case will be routed to an event ring that is 
->>> assigned
->>> to the audio DSP.
->>>
->>> Create vendor ops for the USB SND driver:
->>> qc_audio_offload: This particular driver has several components 
->>> associated
->>> with it:
->>> - QMI stream request handler
->>> - XHCI interrupter and resource management
->>> - audio DSP memory management
->>>
->>> When the audio DSP wants to enable a playback stream, the request is 
->>> first
->>> received by the ASoC platform sound card.  Depending on the selected 
->>> route,
->>> ASoC will bring up the individual DAIs in the path.  The Q6USB 
->>> backend DAI
->>> will send an AFE port start command (with enabling the USB playback 
->>> path), and
->>> the audio DSP will handle the request accordingly.
->>>
->>> Part of the AFE USB port start handling will have an exchange of control
->>> messages using the QMI protocol.  The qc_audio_offload driver will 
->>> populate the
->>> buffer information:
->>> - Event ring base address
->>> - EP transfer ring base address
->>>
->>> and pass it along to the audio DSP.  All endpoint management will now 
->>> be handed
->>> over to the DSP, and the main processor is not involved in transfers.
->>>
->>> Overall, implementing this feature will still expose separate sound 
->>> card and PCM
->>> devices for both the platorm card and USB audio device:
->>>   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
->>>                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
->>>   1 [Audio          ]: USB-Audio - USB Audio
->>>                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4, 
->>> high speed
->>>
->>> This is to ensure that userspace ALSA entities can decide which route 
->>> to take
->>> when executing the audio playback.  In the above, if card#1 is 
->>> selected, then
->>> USB audio data will take the legacy path over the USB PCM drivers, 
->>> etc...
->>>
->>> This feature was validated using:
->>> - tinymix: set/enable the multimedia path to route to USB backend
->>> - tinyplay: issue playback on platform card
->>
->> I've applied patches 1-10 and the 2 dts changes here, as those all had
->> acks from the relevant maintainers already.
->>
+On Wed, Feb 21, 2024 at 02:59:43PM -0800, Reinette Chatre wrote:
+> Hi Tony,
 > 
-> Patch 10/10 is based on an old POC patch by me, but it's heavily modified.
+> On 2/21/2024 11:31 AM, Tony Luck wrote:
+> > reset_all_ctrls() and resctrl_arch_update_domains() use on_each_cpu_mask()
+> > to call rdt_ctrl_update() on potentially one CPU from each domain.
+> > 
+> > But this means rdt_ctrl_update() needs to figure out which domain to
+> > apply changes to. Doing so requires a search of all domains in a resource,
+> > which can only be done safely if cpus_lock is held. Both callers do hold
+> > this lock, but there isn't a way for a function called on another CPU
+> > via IPI to verify this.
+> > 
+> > Fix by adding the target domain to the msr_param structure and passing an
+> > array with CDP_NUM_TYPES entries. Then calling for each domain separately
+> > using smp_call_function_single()
 > 
-> It looks like it does a few minor things that are not optimal, like extra
-> spinlock/unlock, and wait_for_completion_timeout() with magical timeout 
-> value.
+> This work contains no changes to get_domain_from_cpu(). I expect the WARN
+> within it to be removed as intended with [1] and then this work can build
+> on that without urgency. As I understand, to support the stated goal of this
+> work, I expect get_domain_from_cpu() in the end to not have any WARN or
+> IS_ENABLED checks, but just a lockdep_assert_cpus_held(). 
 > 
-> I haven't tested this version, but I guess any fixes or cleanups can be 
-> done
-> later on top of it.
+> Do you have different expectations?
+
+Same expectations. Boris should apply the simple fix (delete the WARN
+that is giving a false positive) for this current cycle.
+
+If there is support for my patch (with changes/fixes you point out
+below), then it could be added in the future and get_domain_from_cpu()
+can use lockdep_assert_cpus_held().
+
+> > Change the low level cat_wrmsr(), mba_wrmsr_intel(), and mba_wrmsr_amd()
+> > functions to just take a msr_param structure since it contains the
+> > rdt_resource and rdt_domain information.
 > 
+> Could moving the rdt_domain into msr_param be done in a separate patch?
 
-How about I modify the stop ep sync API to assume that the caller has 
-the xhci->lock already held?  I can unlock it before the wait for 
-command, and take it back after before returning to the caller.
+I can break it into more pieces if there is enthusiam to apply it.
 
-I'll remove the timeout value from the wait for command as well, since 
-if there was a command timeout, that should trigger the cmd_timer to 
-expire, and be handled there.
+> ...
+> 
+> > diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> > index 7997b47743a2..09f6e624f1bb 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+> > @@ -272,22 +272,6 @@ static u32 get_config_index(u32 closid, enum resctrl_conf_type type)
+> >  	}
+> >  }
+> >  
+> > -static bool apply_config(struct rdt_hw_domain *hw_dom,
+> > -			 struct resctrl_staged_config *cfg, u32 idx,
+> > -			 cpumask_var_t cpu_mask)
+> > -{
+> > -	struct rdt_domain *dom = &hw_dom->d_resctrl;
+> > -
+> > -	if (cfg->new_ctrl != hw_dom->ctrl_val[idx]) {
+> > -		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
+> > -		hw_dom->ctrl_val[idx] = cfg->new_ctrl;
+> > -
+> > -		return true;
+> > -	}
+> > -
+> > -	return false;
+> > -}
+> > -
+> >  int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
+> >  			    u32 closid, enum resctrl_conf_type t, u32 cfg_val)
+> >  {
+> > @@ -304,59 +288,50 @@ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
+> >  	msr_param.res = r;
+> >  	msr_param.low = idx;
+> >  	msr_param.high = idx + 1;
+> > -	hw_res->msr_update(d, &msr_param, r);
+> > +	hw_res->msr_update(&msr_param);
+> >  
+> 
+> Is this missing setting the domain in msr_param?
 
-Thanks
-Wesley Cheng
+Indeed yes.
+
+> >  	return 0;
+> >  }
+> >  
+> >  int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+> >  {
+> > +	struct msr_param msr_param[CDP_NUM_TYPES];
+> >  	struct resctrl_staged_config *cfg;
+> >  	struct rdt_hw_domain *hw_dom;
+> > -	struct msr_param msr_param;
+> >  	enum resctrl_conf_type t;
+> > -	cpumask_var_t cpu_mask;
+> >  	struct rdt_domain *d;
+> > +	bool need_update;
+> > +	int cpu;
+> >  	u32 idx;
+> >  
+> >  	/* Walking r->domains, ensure it can't race with cpuhp */
+> >  	lockdep_assert_cpus_held();
+> >  
+> > -	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+> > -		return -ENOMEM;
+> > -
+> > -	msr_param.res = NULL;
+> > +	memset(msr_param, 0, sizeof(msr_param));
+> >  	list_for_each_entry(d, &r->domains, list) {
+> >  		hw_dom = resctrl_to_arch_dom(d);
+> > +		need_update = false;
+> >  		for (t = 0; t < CDP_NUM_TYPES; t++) {
+> >  			cfg = &hw_dom->d_resctrl.staged_config[t];
+> >  			if (!cfg->have_new_ctrl)
+> >  				continue;
+> >  
+> >  			idx = get_config_index(closid, t);
+> > -			if (!apply_config(hw_dom, cfg, idx, cpu_mask))
+> > +			if (cfg->new_ctrl == hw_dom->ctrl_val[idx])
+> >  				continue;
+> > -
+> > -			if (!msr_param.res) {
+> > -				msr_param.low = idx;
+> > -				msr_param.high = msr_param.low + 1;
+> > -				msr_param.res = r;
+> > -			} else {
+> > -				msr_param.low = min(msr_param.low, idx);
+> > -				msr_param.high = max(msr_param.high, idx + 1);
+> > -			}
+> > +			hw_dom->ctrl_val[idx] = cfg->new_ctrl;
+> > +			cpu = cpumask_any(&d->cpu_mask);
+> > +
+> > +			msr_param[t].low = idx;
+> > +			msr_param[t].high = msr_param[t].low + 1;
+> > +			msr_param[t].res = r;
+> > +			msr_param[t].dom = d;
+> > +			need_update = true;
+> >  		}
+> > +		if (need_update)
+> > +			smp_call_function_single(cpu, rdt_ctrl_update, &msr_param, 1);
+> 
+> It is not clear to me why it is needed to pass this additional data. Why not
+> just use the original mechanism of letting the low and high of msr_param span the
+> multiple indices that need updating? There can still be a "need_update" but it
+> can be set when msr_param gets its first data. Any other index needing updating
+> can just update low/high and a single msr_param can be used.
+
+For some reason this morning I thought that the domain needed to be
+different. It isn't, so keeping the code that just adjusts the range
+of MSRs will work just fine.
+
+The "need_update" variable isn't required. I will move the
+	msr_param.res = NULL;
+inside the for each domain loop, and can use non-NULL value to
+decide whether to IPI a CPU.
+
+-Tony
 
