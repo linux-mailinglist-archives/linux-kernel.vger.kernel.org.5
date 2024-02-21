@@ -1,231 +1,185 @@
-Return-Path: <linux-kernel+bounces-74901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233EB85DFC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:33:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D967385DF87
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:29:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6CEE2861BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08FD71C23DD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A333F7F7DC;
-	Wed, 21 Feb 2024 14:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7F57CF02;
+	Wed, 21 Feb 2024 14:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="GlyxbrQ8"
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QXlQbSo2"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9091E4AF;
-	Wed, 21 Feb 2024 14:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0ED7BB11
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526003; cv=none; b=aEbw1861quMGRIcKI3mBndcyw8VlYj9kfsw7X4GiaPyM/eJpxdg4av8f9sozFupfym4JAz+H5cCJ6TTCIozW07Ln8iC+m7gPoPS+sjzSHKYTDW79Vkt99C8HZCpJR3tkImCxUQmlqGT+ZEJQt0mccFaW8g4LLnMJVy6tJnT9Tc4=
+	t=1708525745; cv=none; b=FT9PF7isQnpVMrh/LBMu2kzUzp9Lnp22juGSW1pV39sZ2jPIX/Ph9fd3+Dml/TZFELwePT/AnsQJv9daI6t+aQLUNgy+WpRRBaiDhL9Cq6ZIkQYKE/TgF3o0Xv+adktMjBAkoktL0pjakmdUpbYp86UIT0bz9AWmD1YX3sC3BnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526003; c=relaxed/simple;
-	bh=Wc428/NF3UCWmMZpleDfxN9wyCJ3mPXf/MXkk7fNIwE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LT1/WnabxsmYt6bCYnOUL7WqDcf7fuieouSWiHKGeTz5fEURUZ6sw2EsHka7v+zaEAEIbhJrKptTcml9o76OlbdxgrU3eGIM+igSxJ8DfD1yqgQAz3X/YXZisCAGIYwwBDdPeZROiEbnI9rh30Xwbc84KjcoEflxyl75ZMgbHOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=GlyxbrQ8; arc=none smtp.client-ip=162.62.58.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1708525690; bh=Wc428/NF3UCWmMZpleDfxN9wyCJ3mPXf/MXkk7fNIwE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=GlyxbrQ8JKpJ+9lA2hTakh30wGJzeSasfbdTiIjRjPOoYio7hAup7UU7eggZKvaF7
-	 aO1ErsbJ7lB3amQJH4b24OJAJEtdlph18/PDPxyuSdBnWODY8f/Wxlu9W8Yaeaia03
-	 UpTvi8r5uH+7ftGdTjmC0EofCZzpMy3mBg7T63TY=
-Received: from [127.0.0.1] ([240e:379:2240:ef00:159c:db93:bdcd:c9c6])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 70827887; Wed, 21 Feb 2024 22:28:08 +0800
-X-QQ-mid: xmsmtpt1708525688t0nbwvoqg
-Message-ID: <tencent_DF3D7C2E8248DA188E3FB8DF31FE21478D08@qq.com>
-X-QQ-XMAILINFO: NdRzF9Zpj4ldhvkRO4Jn+nI5lMyK6PMRWyr9/3cjs4uG8JXjcWebYVbF2ZoF0D
-	 QkDwfOpT0ooFKZXnRhQZL6/O+gTx/dAF74IiJGBBwKH6HzbGW3+GdQUVv/5lBGas08RdhaCYw6fB
-	 wF8JJUUoRCFasl2lJg7bPoOMtwI81wI9K1v7O/svR2VirizWsg5tIbBE6EIjMa3VI02Mc1cdqpt/
-	 OsCVrQawh9dY5xSrCufqDW9DgvVaXT41Olj9cxSkvy1uGtZS1gvXv2VKxjl37RiepW0kkFU7LeVl
-	 sJzKxDp/zRTFvNxCU95V5TpYM3BmJFwsq1lCtpMb2VNd56B5qn2w5+RQcyQAfHkClSeZkagH1VEX
-	 PvsbIAQ0W2RsEWXQq21VLQCOca640pRimI+1dJVLmUqsEDGLrIUgEVKrSfdvxkkSZ3F+SGXviTpv
-	 JoK7jvyizyvFKQO0jStQ/aT70brjFjYJfqSDB6gyVgscKrcHi899137rYG64kSXKESZF8rXLSHEZ
-	 cA6Q/P4yHD9yJ/tjDPBjjPuHeiUoBLo+RVod8bDw6WHd/7bwWUEKboywP1VpDMQaNINm8HhzZPSP
-	 H5HWY9aYWc+JQ2BwxcX8P+ssEri6RnzxMRA8t4kfwY8/ou1x7KWZl7iOgPjre7/kIOr3xeVkpeQ7
-	 V8ocZjhfvsVY/gcUJypSlXxPzs0ko4gEzcO53m1DW3LPJI/HQBShiW0E1gLAsNFEQuPTHErb4BdR
-	 VttGWBhmgaxbueklyQwtJq6u8yjDNwS8KvnH66XtG5lKYL56RHNe6CEJoTGu8c+32fQMdEAWNMLN
-	 FNk9Qzd/G/oN7LlN572zeg6tQvb7uYf2DGLKVLX/gUXdrqonmJXB/USi28nMy3QT/rNtD/VJbi2O
-	 NA6hpQuj8/x9TqlY93WJgP9w2PJZgcKb4RT4i4MzKArssxVj/6v4na9WHj/8W0NBHcB3ojOW8T5/
-	 PimedPC8dQM6kgb8l/TldAzr6W2E0TE7l+mY60Uatdb84CzUNNDYWaWQ6/vlFbr5K+JIxp+iU=
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-X-OQ-MSGID: <c6dd5cb481328dd3f75bc2e476d9c6d69031c43b.camel@cyyself.name>
-Subject: Re: [RFC PATCH 0/1] riscv: dts: Allow BUILTIN_DTB for all socs
-From: Yangyu Chen <cyy@cyyself.name>
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Paul Walmsley
- <paul.walmsley@sifive.com>,  Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org, Masahiro Yamada
- <masahiroy@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>, Rob Herring
- <robh+dt@kernel.org>,  devicetree@vger.kernel.org
-Date: Wed, 21 Feb 2024 22:28:08 +0800
-In-Reply-To: <20240221-islamic-quartered-3863e44bc862@spud>
-References: <tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com>
-	 <20240221-islamic-quartered-3863e44bc862@spud>
-Autocrypt: addr=cyy@cyyself.name; prefer-encrypt=mutual;
- keydata=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
-	0mslfht1JyMf5dUi38RQI/fOO0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	s=arc-20240116; t=1708525745; c=relaxed/simple;
+	bh=9VrGwqa0mBd4/4VMCG0ge/u1QOZYmBzth5XPonwUBIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jQnUHR7x7LiAS3rVv4Ntg6tNaQ3aKinIpkTjf7jR/YCvccvFyAvg+bpGbCPnqCBSQXvsvIYA6CH1OcDtxFrESqgdtkn8ypsMpzjUelNLP8GLP931ZQYYEl69iG6hKNX02lWRHvvQtG2anLvgx+umL9r80ndqlc9YBobdu9tquBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QXlQbSo2; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3e552eff09so344599866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:29:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708525742; x=1709130542; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LdWGpQpRBwI6mSmQszBM6YwILTu0TShFcoufmUhOmjQ=;
+        b=QXlQbSo2tU3EmIb1Kywbi9aH2rzuMjjLlky1mrVDjeNPxabUbeUOLbND3PUT9dndSQ
+         ttTkj7GNo3sPDOg7CHf4ZzcX3mPWdDaenvVVOdaxAigJ2m9W5X8Q+HAO9x5/+hKGD7LX
+         7JjCMwl60SE3KoMA+G2fGQJmnC96FFmG7CeCny8CG4VEhSRlcbTnTpC4FMRMU83PoaWg
+         Ny1RdtAmrbFEoNeZE5Op8CBOiOxlG/13gkz7cyD0OEXNtsSMdsNgGTMtEr8Q8TgJn73R
+         yNpWltudXsFxz07678jV9l0HnRmSbP3gHn5AU5/H/quTk49yizonIxI25vhzNeE/r8O0
+         qRqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708525742; x=1709130542;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LdWGpQpRBwI6mSmQszBM6YwILTu0TShFcoufmUhOmjQ=;
+        b=DbfPz4gAicS75Tb/n3CbMvssy+w8ZRD3esW5N1WeArrHpFxWkey/aU7pCFANdlbtpV
+         jTeE15uS1r50baXXq9n/RknuHOoRR0vfs8Szbdc7JqQB5llArnLiENOaaqDMTXF6jDFC
+         c7vJ7TX3SytgBFyC7W01/e33PlvaJW0KMv1hm6VGDh8bD+auYzfOHFPzWrd8lGsCww4m
+         xX7J7wrRn6sQXDqRhLAv4oeZHVBjl2WvqRXuIDQwL5ZCO4u3wqCgtCKFtplczLOGzkJL
+         hNs8na8uYBTtWZNIiX2Vy5ClqmyHURC30Dz7YMmvMmDphhIB8sWbWsZWhxkvPINVNpxy
+         lIHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVmVHJX8rGNqZubT1laTI5zJLEuZKEoCLiyqSoAcHjcrvnieDXB7RyMNqzZA4SLGx+2gMBRiXR+okTKBCBiMos2uNwf6WEpluHuqEXY
+X-Gm-Message-State: AOJu0YwIOE1h5jixdwlQb/N7uJrLvMELTO09EWSLU1R43qypft5wtS7s
+	08Mq+8XbaPpLrLw1BupD4+M8nA92Zy4tlEJzy1RCeG7Ol8xNwUC6/AAxR9j2pkA=
+X-Google-Smtp-Source: AGHT+IHCJhgWk1BjZowj8gaYWXRYrNhdifX7cyQv18WJplRYyhAKxRNGoCdvBOwet1sH/f76v7+dcg==
+X-Received: by 2002:a17:906:350d:b0:a3e:6c4f:44d5 with SMTP id r13-20020a170906350d00b00a3e6c4f44d5mr6228261eja.72.1708525741936;
+        Wed, 21 Feb 2024 06:29:01 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id h11-20020a17090634cb00b00a3d7bcfb9a1sm5015112ejb.128.2024.02.21.06.28.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 06:29:01 -0800 (PST)
+Message-ID: <08ca89da-d6a1-440c-8347-f2e31222bede@linaro.org>
+Date: Wed, 21 Feb 2024 15:28:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] dt-bindings: PCI: qcom: Add global irq support for
+ SA8775p
+Content-Language: en-US
+To: root <root@hu-msarkar-hyd.qualcomm.com>, andersson@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, jingoohan1@gmail.com,
+ gustavo.pimentel@synopsys.com, konrad.dybcio@linaro.org,
+ manivannan.sadhasivam@linaro.org, conor+dt@kernel.org,
+ quic_nitegupt@quicinc.com
+Cc: quic_shazhuss@quicinc.com, quic_ramkri@quicinc.com,
+ quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
+ quic_vbadigan@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240221140405.28532-1-root@hu-msarkar-hyd.qualcomm.com>
+ <20240221140405.28532-2-root@hu-msarkar-hyd.qualcomm.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240221140405.28532-2-root@hu-msarkar-hyd.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-02-21 at 11:30 +0000, Conor Dooley wrote:
-> Hey,
->=20
-> On Wed, Feb 21, 2024 at 03:01:53AM +0800, Yangyu Chen wrote:
-> > The BUILTIN_DTB kernel feature on RISC-V only works on K210 SoC
-> > only. This
-> > patch moved this configuration to entire riscv.
->=20
-> To be honest, I would rather delete BUILTIN_DTB (and the
-> configurations
-> that depend on it) than expand its usefulness.
->=20
+On 21/02/2024 15:04, root wrote:
+> From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> 
+> Add global interrupt support in dt-bindings for SA8775p RC platform.
 
-I agree it=E2=80=99s useless for most platforms because we need to start SB=
-I
-before kernel on RISC-V except NOMMU M-Mode Linux and SBI also need a
-DT to work. However, it has been there for M-Mode K210 and it is set by
-default for XIP kernel. So there might eventually be another patch to
-support some new soc that will do this like this patch.
+What is this global interrupt? Why wasn't it there before?
 
-> > Although BUILTIN_DTB is not a good choice for most platforms, it is
-> > likely
-> > to be a debug feature when some bootloader will always override
-> > something
-> > like the memory node in the device tree to adjust the memory size
-> > from SPD
-> > or configuration resistor, which makes it hard to do some
-> > debugging.
->=20
-> My inclination here is to say "fix your bootloader" and if that's not
-> possible, chainload a bootloader that allows you control over
-> modifications to your devicetree.
->=20
+> 
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  .../devicetree/bindings/pci/qcom,pcie.yaml    | 26 +++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> index a93ab3b54066..d86fb63a2d2c 100644
+> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> @@ -63,7 +63,7 @@ properties:
+>  
+>    interrupt-names:
+>      minItems: 1
+> -    maxItems: 8
+> +    maxItems: 9
+>  
+>    iommu-map:
+>      minItems: 1
+> @@ -873,8 +873,30 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> -              - qcom,pcie-msm8996
+>                - qcom,pcie-sa8775p
+> +    then:
+> +      oneOf:
 
-Chainload a bootloader like S-Mode U-Boot on some platforms is hard due
-to some drivers like pcie controller does not come to the mainline repo
-of the bootloader, and some bootloader source repos provided by the
-vendor may require specific versions of the compiler to work, which
-makes users not easy to do some kernel debugging if change DT is
-needed. The simplest way to do this I can imagine is to write a simple
-bootloader by myself link the kernel binary and the dtb I want to it
-and replace the a1 register point to the dtb address before jumping to
-the kernel. However, kernel has this feature, why should I do it
-manually rather than provide a more generic patch for everyone with
-this need to use?
+No need, drop.
 
-> > As an
-> > example, some platforms with numa like sg2042 only support sv39
-> > will fail
-> > to boot when there is no ZONE_HIGHMEM patch with 128G memory. If we
-> > want
-> > a kernel without this patch to boot, we need to write the memory
-> > nodes=20
-> > in the DT manually.
->=20
-> If, as Alex suggests, there's a way to gain support some more memory
-> in
-> sv39, we should do so - but it is worth mentioning that highmem is on
-> the
-> removal list for the kernel, so mainline support for that is highly
-> unlikely.
->=20
-
-Yes. But I=E2=80=99m debugging some mm performance issues on the sg2042 ker=
-nel.
-Specifically, it=E2=80=99s about the IPI latency when doing rfence on
-sfence.vma or fence.i. I would like to reduce the memory size and allow
-the mainline kernel to boot and test without taking some out-of-tree
-kernel patches. If I remove some DIMM modules from the board to reduce
-the memory size, it will also lose some memory channels and even leave
-some numa nodes with zero memory, and the compatible DIMM module is
-hard to find.
-
-> > Also, changing DT on some platforms is not easy. For Milk-V
-> > Pioneer, the
-> > boot procedure is ZSBL -> OpenSBI -> LinuxBoot -> Linux. If DT gets
-> > changed, OpenSBI or LinuxBoot may refuse to boot. And there is some
-> > bug on
-> > LinuxBoot now which does not consume --dtb argument on kexec and
-> > always
-> > uses DT from memory.
->=20
-> I don't use Linuxboot, but let me try to understand. Linuxboot uses
-> kexec
-> to boot the main Linux kernel, but the dtb you want to use is not
-> used, and
-> instead the one that Linuxboot itself was booted with is used?
->=20
-> It sounds like Linuxboot has a --dtb argumet that is meant to be used
-> to
-> set the dtb for the next stage, but that argument is being ignored?
->=20
-
-Yes. That=E2=80=99s correct.
-
-> That sounds like a pretty serious issue with Linuxboot which should
-> be
-> fixed - what am I missing?
->=20
-
-
-Sure, that should be fixed in the LinuxBoot. However, I think not every
-kernel developer should fix some complex bootloader like LinuxBoot
-which is built upon the linux kernel with a huge initrd rootfs and runs
-some userspace tools to support the boot process. If something is hard
-to control, skip it, and doing some override for debugging will be a
-better choice.
-
-> > So I would like to do debugging on DT using
-> > BUILTIN_DTB, which makes it very simple,
->=20
-> > I can even install the kernel in
-> > the distro's way and provide a kernel package for other users to
-> > test.
->=20
-> I'm not sure what you mean by this, other distros manage to create
-> kernel packages without using builtin dtbs.
->=20
-
-I mean I can provide a distro package like Debian .deb and distribute
-it to other users to test without changing their dtb from the entire
-boot process. Because changing the DT from the entire boot process
-might prevent their vendor-provided OpenSBI or LinuxBoot from working.
-Some vendor kernels may be developed out-of-tree and do not use the dt-
-binding from mainline. Even for very basic CLINT and PLIC dt bindings.
-It is only for testing, not for the production environment.
-
-> Thanks,
-> Conor.
-
-I want this feature to allow more people to participate in debugging
-some kernel issues without taking a huge amount of time to deal with
-bootloader issues about changing the DT. I think it will be good for
-our under-development RISC-V community. Imagine we hardly change the
-ACPI table for x86 machines but we sometimes change the DT for
-ARM/RISC-V board, right? Also, some SoCs that run M-Mode NOMMU Linux
-may need it in the future like K210 for XIP without a prior bootloader.
-
-Thanks,
-Yangyu Chen.
+Best regards,
+Krzysztof
 
 
