@@ -1,150 +1,162 @@
-Return-Path: <linux-kernel+bounces-75488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1D085E969
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:04:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C7A785E96E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BABDB2360A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:04:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A56DDB22255
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDD186AE5;
-	Wed, 21 Feb 2024 21:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED8D86AD5;
+	Wed, 21 Feb 2024 21:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XkYVzpiq"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hgrnrwmd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A1C3A1DB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E5A8173D
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708549436; cv=none; b=FhBeW3qqHOU6VOVoHhszQIdOfxZLRLj/bUuQ6eHUFtiQepw/Haw6h7icSCyFh0ANaYLIkbl3216rzgUzpEWrcn6dPGjXsswhEPPpOvtt8FZ/EfTDcyKGkhaPEFmafhKQ682novAW3GDM9cPNHhhoKavDGxcI9WW03mEe63/S1No=
+	t=1708549469; cv=none; b=C12a+3kktaaTx6Bdj4kHHbNm9cc+n3wqLSPqFIpLatdV/Bfu5LVXOjHsU6CEeMvgHb0SdECaWhZDBdNbkcecs8GgnyYPHDAWin9d999IxeP77nEx2htphB1aWrPU1PyGFojqRPA85w9zDqon6cOd2OSgUgOjQ956noY8WQmGaGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708549436; c=relaxed/simple;
-	bh=ohb243JcxVMv87lHKJOrwlHRXzxPcwkUVNHaZxmOKQc=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=pxqCB/6do8AjQIHbLP8Tte6QDxVgQrNuP8aioermiAw9YHi3c+UOpCWfaoh+l2YokOCX6exGqigZ+xbgl33/gxUSAY+NnCPIf+xT10Uv8116s7wPdACNnVNmWUJObuP/xe6gwsh03ay0f2c+iSHbpCwIyab4Hsh3Sx3wGOQ8cFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XkYVzpiq; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dhavale.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so8014215276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:03:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708549434; x=1709154234; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7SrJM1oyxiJBee5rhTbp+mwhYJ/a30jfajx9Ht8Agks=;
-        b=XkYVzpiqe9fl7KoD+u8Q5nDChNIcsunBNiRAFuXr6iUOprEDFc3Ds5mxPGuJI+ap6n
-         0t4u+LCIQJ7R19UHG4QhqUIeSMQgB/zMsJZlUcJF0qhBb4Dr93McDs211lzb//3/AMZp
-         3/bV+LbmaZKiZ7g3EkS1hgvfpaf6jbdPHNcyscVSUqaIFVxNhItvoni3ZPOzguxVDCQ/
-         t8oVMpIDtjxxNOw++Ngs7KuMhwlv/zFiRrE4rqOaRnV15hayHSPCCMlVAOjuRviiNpLa
-         dCLuO996tSsfrqevRTu/ucyGW7sEf8MjaWxvMk06w37R6py9PghQgqxZvWh1482eH27a
-         bFiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708549434; x=1709154234;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7SrJM1oyxiJBee5rhTbp+mwhYJ/a30jfajx9Ht8Agks=;
-        b=AXEtPBPjK9l6LCJ82BVbq8rJe/vaFeEM0fxDGJODkQJGAWX1rfO/fFiXwfg1Sqfwdr
-         LdG8M1oV/GZX9/XQFX7IfeRmqoCf6s5TxSzJToaxv7MXbD6faQp1d6wcRcND/fz40ue6
-         Gunxath8rBZ5jBLp2h7cgRk8xvZkVgmg2z5/22E9e1yF1sYQfmh5nDLNWJ+6cKSMvF32
-         8BHiVjcBowdNF1FXDZEpwyzXVZuB/dsjMndj9xdbMzd5GOiOFK0JnVoEJRt6y4EWuGcy
-         Ua+ab5A4q6J94MA3ZCXMjw1CRURIr02AFlIF1+cJTFGwI5XgN1J7kKUS0iwup1RoaC3V
-         gRNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUG3eBsj3OEeYhrfS1NW2CwxB6ukpnT8gtViHjigPjw/soKEyL93OWIRnOjdKBsbvXXtEu/QIRaHGzeMBvEF9WpLQGOu6nsc5o6pswT
-X-Gm-Message-State: AOJu0Yx/YTbt0OdF5s7ac99Z+mCht+q+INApQzxi4Dkvo+nHDys7XPbg
-	Sq6by4bLi2T+nno8dAE6ptn2RZ4qtejresrYfkkynDekS9HPx8Ets+tRhPxBwXQ1nev7uL3M7OR
-	yxiqwjA==
-X-Google-Smtp-Source: AGHT+IGfQ7tP0IsEPfMeTEUa+hP//eArvfxvolLuo29MkXjSjnUdg2wVPoB/uWCNVbaUgyFPLcxJaw3bv2eA
-X-Received: from dhavale-desktop.mtv.corp.google.com ([2620:15c:211:201:e195:1d33:bc5c:369a])
- (user=dhavale job=sendgmr) by 2002:a05:6902:1505:b0:dc6:c94e:fb85 with SMTP
- id q5-20020a056902150500b00dc6c94efb85mr19718ybu.2.1708549434314; Wed, 21 Feb
- 2024 13:03:54 -0800 (PST)
-Date: Wed, 21 Feb 2024 13:03:47 -0800
+	s=arc-20240116; t=1708549469; c=relaxed/simple;
+	bh=MmfRwcbeEjTW+L079Q3/1enUCXGnhNR/XHjokIR0+AQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zi1KQj+OIWpAclB6ZIIF+uoAW9x8A5er8pzKANdceit01jLg6DIgbUugAvjGbnAgWVMNeK01J/g88ABb3v7uVJvc8KYfT1HjT5Yi74hol17aT8wbz57PEAZFLr8m5ojOJtdSJvQQLcqfsTU6kO+TLHkBW2Ch/KzwjRepRVMeP/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hgrnrwmd; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708549468; x=1740085468;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MmfRwcbeEjTW+L079Q3/1enUCXGnhNR/XHjokIR0+AQ=;
+  b=hgrnrwmdRvMf4PdzNs831nGJrnC0WfaRwBb6e4gmiTP1icfLhLMNhzzX
+   ZRdsZVuLVnZp1t1f0vcBD0G19WHQfvhoVpGx/c8wldeewan1z+uo97TrK
+   CGgKk97mPrkNjuVx01gWW6G16ahVw576j61SwLifcFfI+DYBjPWk0pAKe
+   kHPtp31Lvw6z1d6BVq49ojU9YpbfHepsTuLZBP7ZUqmm33UgHw6Lp2sJQ
+   SeLFSi5E23T4cgHRGRScuCzfP/vrbQilIk08XNgAKKAKdE5iIbtL5XpCi
+   ERpVVwIAJEzi1SsWHtN5OcDcIiQOtY+AiJmrSp1OpbqyYJijjD2gKlJ+7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13296955"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="13296955"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 13:04:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913372710"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="913372710"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 13:04:25 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rctlO-00000006TAk-2zR4;
+	Wed, 21 Feb 2024 23:04:22 +0200
+Date: Wed, 21 Feb 2024 23:04:22 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
+	Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+	Jani Nikula <jani.nikula@intel.com>
+Subject: Re: [PATCH v3 1/3] bits: introduce fixed-type genmasks
+Message-ID: <ZdZlVn9BI-0q1Xdn@smile.fi.intel.com>
+References: <20240208074521.577076-1-lucas.demarchi@intel.com>
+ <20240208074521.577076-2-lucas.demarchi@intel.com>
+ <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240221210348.3667795-1-dhavale@google.com>
-Subject: [PATCH v2] erofs: fix refcount on the metabuf used for inode lookup
-From: Sandeep Dhavale <dhavale@google.com>
-To: Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc: quic_wenjieli@quicinc.com, Sandeep Dhavale <dhavale@google.com>, stable@vger.kernel.org, 
-	kernel-team@android.com, linux-erofs@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
-we do not assign the target metabuf. This causes the caller
-erofs_namei()'s erofs_put_metabuf() at the end to be not effective
-leaving the refcount on the page.
-As the page from metabuf (buf->page) is never put, such page cannot be
-migrated or reclaimed. Fix it now by putting the metabuf from
-previous loop and assigning the current metabuf to target before
-returning so caller erofs_namei() can do the final put as it was
-intended.
+On Wed, Feb 21, 2024 at 10:30:02PM +0200, Dmitry Baryshkov wrote:
+> On Thu, 8 Feb 2024 at 09:45, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
 
-Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sandeep Dhavale <dhavale@google.com>
----
-Changes since v1
-- Rearrange the cases as suggested by Gao so there is less duplication
-    of the code and it is more readable
+..
 
- fs/erofs/namei.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+> > +#define BITS_PER_TYPE(type)    (sizeof(type) * BITS_PER_BYTE)
 
-diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
-index d4f631d39f0f..f0110a78acb2 100644
---- a/fs/erofs/namei.c
-+++ b/fs/erofs/namei.c
-@@ -130,24 +130,24 @@ static void *erofs_find_target_block(struct erofs_buf *target,
- 			/* string comparison without already matched prefix */
- 			diff = erofs_dirnamecmp(name, &dname, &matched);
- 
--			if (!diff) {
--				*_ndirents = 0;
--				goto out;
--			} else if (diff > 0) {
--				head = mid + 1;
--				startprfx = matched;
--
--				if (!IS_ERR(candidate))
--					erofs_put_metabuf(target);
--				*target = buf;
--				candidate = de;
--				*_ndirents = ndirents;
--			} else {
-+			if (diff < 0) {
- 				erofs_put_metabuf(&buf);
--
- 				back = mid - 1;
- 				endprfx = matched;
-+				continue;
-+			}
-+
-+			if (!IS_ERR(candidate))
-+				erofs_put_metabuf(target);
-+			*target = buf;
-+			if (!diff) {
-+				*_ndirents = 0;
-+				return de;
- 			}
-+			head = mid + 1;
-+			startprfx = matched;
-+			candidate = de;
-+			*_ndirents = ndirents;
- 			continue;
- 		}
- out:		/* free if the candidate is valid */
+Can sizeof() be used in assembly?
+
+..
+
+> > -#define __GENMASK(h, l) \
+> > -       (((~UL(0)) - (UL(1) << (l)) + 1) & \
+> > -        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+> > -#define GENMASK(h, l) \
+> > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+
+> > +#define __GENMASK(t, h, l) \
+> > +       (GENMASK_INPUT_CHECK(h, l) + \
+> > +        (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+> > +        ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
+
+Nevertheless, the use ~0ULL is not proper assembly, this broke initial
+implementation using UL() / ULL().
+
+
+> > -#define __GENMASK_ULL(h, l) \
+> > -       (((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+> > -        (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
+> > -#define GENMASK_ULL(h, l) \
+> > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+
+Ditto.
+
+> > +#define GENMASK(h, l)          __GENMASK(unsigned long,  h, l)
+> > +#define GENMASK_ULL(h, l)      __GENMASK(unsigned long long, h, l)
+> > +#define GENMASK_U8(h, l)       __GENMASK(u8,  h, l)
+> > +#define GENMASK_U16(h, l)      __GENMASK(u16, h, l)
+> > +#define GENMASK_U32(h, l)      __GENMASK(u32, h, l)
+> > +#define GENMASK_U64(h, l)      __GENMASK(u64, h, l)
+> 
+> This breaks drm-tip on arm64 architecture:
+> 
+> arch/arm64/kernel/entry-fpsimd.S: Assembler messages:
+> 465arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+> 466arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+> 467arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+> 468arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+> 469arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+> 470arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+> 471arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+> 472arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+> 473arch/arm64/kernel/entry-fpsimd.S:271: Error: unexpected characters
+> following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
+> long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
+> long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
+> 474arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+> 475arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+> 476arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+> 477arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+> 478arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+> 479arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+> 480arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+> 481arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+> 482arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+> 483arch/arm64/kernel/entry-fpsimd.S:282: Error: unexpected characters
+> following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
+> long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
+> long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
+> 484arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+With Best Regards,
+Andy Shevchenko
+
 
 
