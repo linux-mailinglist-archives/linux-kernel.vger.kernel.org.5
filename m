@@ -1,79 +1,233 @@
-Return-Path: <linux-kernel+bounces-75549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4ED785EB07
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:36:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED09385EB0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 987BC1F274C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:36:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BCFD28AB5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB2F12AAEB;
-	Wed, 21 Feb 2024 21:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B4212C80B;
+	Wed, 21 Feb 2024 21:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmT3tKpU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D0FOyXkc"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F21C128366;
-	Wed, 21 Feb 2024 21:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1D912BEAA
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708550958; cv=none; b=ECNziEnhoeMnoc7ZbRob5mA65M7Ilm2A9WbXJY3moXxowCcg6xYrJ4SE7uGkckanIiMC/W7tn7xAUK+TVyd4jUW/7Vu1ZcHNfZzmJbk9OE7PdNPl2Q8rIf/d4hMo9oe9i24eCMRtXKr/C+9dDrEg/eTYqH7d6rEYV3/AKwCjBXM=
+	t=1708550998; cv=none; b=JRHnhaLsXHtU/A55QPu/II8+KZ4xL5r2qOtxgAW5T8/y32jDYjj1N/lMrTC90XJVuvkL5b+yhcskJurDwlrT/Hh/szHPLotKcQK8MJg/hg+2hh5XC3dcEgFWN0W8rLuNjcsi39cWked2o4tEhrwTGvNmZADdgj8p3S8iW4LBi10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708550958; c=relaxed/simple;
-	bh=JRgcBVS5XHMkL/8pMwqIfJAZLHXQePimKuWk2NELukw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PfACVVGnuZjCNM6WAbUUyeXRIEubN+cJnKByoHTdOw0p0byWD9xPf8yVAbFquXjXwDg8j8GXWXEWKyMPNyPiyyl3sOLc/Fn1ZoDvWd0Qbjv0U/icnjwmSogPqD3iOwpS0bPGG+1pgZ/8qBln/mQ8R1nZh7W1fssLvXzsNX+lbbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmT3tKpU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C8ABC433C7;
-	Wed, 21 Feb 2024 21:29:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708550957;
-	bh=JRgcBVS5XHMkL/8pMwqIfJAZLHXQePimKuWk2NELukw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JmT3tKpUUTmJMlBp4m8Rc90NH8SM6G61jzplm6+nsKJOLZW4UPY0Gc2tC6Jt8SG9a
-	 mCYtlXTXStCkRjYRbI4b2E58hh2Z0gp89qDPBKRUPNoL1veS18Ib0VG6zkcWKbL285
-	 6RY0zfyUJXv7VfWdlUtSzGP3qQ9Uy82eGgv3VTSjRzMMiuQRQsD7GPvnw55s6usZGN
-	 /Jy6Dan0/n1EdJBgedESk6YXpPOOubw/tD2+en+fPtCCL0Jy9vmUkRCWPk1+wjN8ld
-	 cVTiu+MnFB7niZt8NgwkT9VeN1ezVIkSQRGWdQsA40QZZmUQA4xWlbLRemp9L2Q3th
-	 W4Z3AICHinHhg==
-Date: Wed, 21 Feb 2024 13:29:16 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: syzbot <syzbot+039399a9b96297ddedca@syzkaller.appspotmail.com>,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, "David S. Miller"
- <davem@davemloft.net>
-Subject: Re: [syzbot] [kernel?] BUG: unable to handle kernel NULL pointer
- dereference in hrtimer_active
-Message-ID: <20240221132916.6c7c4219@kernel.org>
-In-Reply-To: <875xytjnio.ffs@tglx>
-References: <00000000000014671906112cb2ef@google.com>
-	<875xytjnio.ffs@tglx>
+	s=arc-20240116; t=1708550998; c=relaxed/simple;
+	bh=jhbT5Cr5KxXONXs4T6cwnDbtOKqKVBRtP9a65KT+oaM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YzedvxynxA2q992kFTScLjF9QfO838B/4lw7h2PqggjiT6Gz8GR4tB1wpUzphb0bErKrxIsc71Ho42NazzybmI8ukJfsIy33ZmMnUobXyXq0IAffNZBhszVMTu3NoQkoKQE5FXIDlR6W3s2wygVbTN2krKfooJMkaL3wipOGThc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D0FOyXkc; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c00128de31so202247639f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:29:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708550996; x=1709155796; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fHJzWSZbaUVkrjgtkdycbYKuoIbcz4QqReZXQuIUTd8=;
+        b=D0FOyXkcN99A8U2pypJobo/iI1rVmSj6DKFobDqrZr7YyzHGpvKpwcRQGEIDw6EbPC
+         +T4++/maF4JeYetwSfFO1/M/uhMW1BA3g7/eQWpodAJUFczLM1SgEa/ggFfvp+ENwyEU
+         0UvCXNhbjPVfWedQ2lVqe+3tPm0k0dQq/2hEQJZlmUS9fOuiy9CKIKwPDyU0Bxi7qK4/
+         INhd6nuqer6EPWnAx+EQrbhjntKaiU84ERlIbiNO3i1oV7jrKMNXvYOznFFw1IAURQig
+         UVDg6rHDUUQfu57sr5rpsWUSd0oP3nArNmCYR/OK43USKT7O5o2cfmCLOM4gtI4sGOJ7
+         XrfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708550996; x=1709155796;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fHJzWSZbaUVkrjgtkdycbYKuoIbcz4QqReZXQuIUTd8=;
+        b=gZ4t/aoGzMRtRKUEhFOehyy7sKWZW34rT61VyYrCaVBusI1CteIqb8MMj6R/SEzE4B
+         xSm6QgyTt8OD43SJjBQcLu1NpUbKEbhrmKeDm/SYWPKu0DRaghzdt9SJSh+5jCmHKgLz
+         wGPmOvElTxmNzm4NnoiJAqm+TVWlzUE+Sj/Yk0zP+GkIrG5rSnmSQNscpA0T7+cBA7jU
+         hHYRMgN4NKMKbYG57j+vR+mEtB1rwmRp+gzJy/06ZCF4/CQBDWLfwjmc4vQcJ2uNXAc6
+         b1qr9TgOo+Rl9PP1Rf5yh8gkfNpzt8f8A0dtYgHqtfgZRQH9RIzmS7c800ugLuhyQhhO
+         Noig==
+X-Forwarded-Encrypted: i=1; AJvYcCU+QdgW55RXWAYrFE5zkhAJMewGjswq1gyaef2tZKvgvGIQNoSDf+K+2wpRPd7xpTkNji4bF787axfUoa5TL3u8YnPfdLqtQsy6sltO
+X-Gm-Message-State: AOJu0YzP9BB70dqFrXhSalvZ6iEg0+rtMA9yNpM+UJtWeB9uWrFn39L0
+	IeUHeg+hBNEupfsuk/a16QbPRkhZnZ+buVYwKjWagTdPot8NJIP5Pe4Y3rsbaw==
+X-Google-Smtp-Source: AGHT+IH3xGOF+O0PatOjKRFVOXKn3+X8AKF5AtBxottFnw4acxjqjkkOFdnbYMdTb0txcBwNyBSoFw==
+X-Received: by 2002:a05:6602:3fd1:b0:7c7:397c:6690 with SMTP id fc17-20020a0566023fd100b007c7397c6690mr17957645iob.17.1708550995732;
+        Wed, 21 Feb 2024 13:29:55 -0800 (PST)
+Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id h21-20020a02c735000000b004742bbf11c0sm1712244jao.120.2024.02.21.13.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 13:29:54 -0800 (PST)
+Date: Wed, 21 Feb 2024 21:29:52 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: David Gow <davidgow@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Kees Cook <keescook@chromium.org>,
+	=?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Florian Westphal <fw@strlen.de>,
+	Cassio Neri <cassio.neri@gmail.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Arthur Grillo <arthur.grillo@usp.br>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Daniel Latypov <dlatypov@google.com>,
+	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org, linux-rtc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 7/9] drm: tests: Fix invalid printf format specifiers in
+ KUnit tests
+Message-ID: <20240221212952.bqw4rdz2i2yf3now@google.com>
+References: <20240221092728.1281499-1-davidgow@google.com>
+ <20240221092728.1281499-8-davidgow@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221092728.1281499-8-davidgow@google.com>
 
-On Tue, 13 Feb 2024 00:01:03 +0100 Thomas Gleixner wrote:
-> So something in that syzbot test case manages to tear down a napi
-> context which has not yet been fully initialized. While the rest of
-> napi_disable() does not care much as long as neither NAPIF_STATE_SCHED
-> nor NAPIF_STATE_NPSVC are set in napi->state, hrtimer_cancel() pretty
-> much cares as demonstrated by the NULL pointer dereference.
-> 
-> While it would be trivial to harden the hrtimer code for the case that a
-> non-initialized hrtimer is canceled, I wonder whether this invocation of
-> napi_disable() is harmless (aside of the hrtimer issue) or if there are
-> some hidden subtle issues with that.
+Hi,
 
-Thanks for the forward, I stared at it for a bit and I can see one way
-to make veth disable unregistered NAPI. I'll send a fix shortly.
+On Wed, Feb 21, 2024 at 05:27:20PM +0800, David Gow wrote:
+> The drm_buddy_test's alloc_contiguous test used a u64 for the page size,
+> which was then updated to be an 'unsigned long' to avoid 64-bit
+> multiplication division helpers.
+>
+> However, the variable is logged by some KUNIT_ASSERT_EQ_MSG() using the
+> '%d' or '%llu' format specifiers, the former of which is always wrong,
+> and the latter is no longer correct now that ps is no longer a u64. Fix
+> these to all use '%lu'.
+>
+> Also, drm_mm_test calls KUNIT_FAIL() with an empty string as the
+> message. gcc warns if a printf format string is empty (apparently), so
+
+clang does too; under -Wformat-zero-length
+
+> give these some more detailed error messages, which should be more
+> useful anyway.
+>
+> Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
+> Fixes: fca7526b7d89 ("drm/tests/drm_buddy: fix build failure on 32-bit targets")
+> Fixes: fc8d29e298cf ("drm: selftest: convert drm_mm selftest to KUnit")
+> Signed-off-by: David Gow <davidgow@google.com>
+
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  drivers/gpu/drm/tests/drm_buddy_test.c | 14 +++++++-------
+>  drivers/gpu/drm/tests/drm_mm_test.c    |  6 +++---
+>  2 files changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
+> index 8a464f7f4c61..3dbfa3078449 100644
+> --- a/drivers/gpu/drm/tests/drm_buddy_test.c
+> +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
+> @@ -55,30 +55,30 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
+>  		KUNIT_ASSERT_FALSE_MSG(test,
+>  				       drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							      ps, ps, list, 0),
+> -				       "buddy_alloc hit an error size=%d\n",
+> +				       "buddy_alloc hit an error size=%lu\n",
+>  				       ps);
+>  	} while (++i < n_pages);
+>
+>  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							   3 * ps, ps, &allocated,
+>  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
+> -			       "buddy_alloc didn't error size=%d\n", 3 * ps);
+> +			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
+>
+>  	drm_buddy_free_list(&mm, &middle);
+>  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							   3 * ps, ps, &allocated,
+>  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
+> -			       "buddy_alloc didn't error size=%llu\n", 3 * ps);
+> +			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
+>  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							   2 * ps, ps, &allocated,
+>  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
+> -			       "buddy_alloc didn't error size=%llu\n", 2 * ps);
+> +			       "buddy_alloc didn't error size=%lu\n", 2 * ps);
+>
+>  	drm_buddy_free_list(&mm, &right);
+>  	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							   3 * ps, ps, &allocated,
+>  							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
+> -			       "buddy_alloc didn't error size=%llu\n", 3 * ps);
+> +			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
+>  	/*
+>  	 * At this point we should have enough contiguous space for 2 blocks,
+>  	 * however they are never buddies (since we freed middle and right) so
+> @@ -87,13 +87,13 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
+>  	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							    2 * ps, ps, &allocated,
+>  							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
+> -			       "buddy_alloc hit an error size=%d\n", 2 * ps);
+> +			       "buddy_alloc hit an error size=%lu\n", 2 * ps);
+>
+>  	drm_buddy_free_list(&mm, &left);
+>  	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
+>  							    3 * ps, ps, &allocated,
+>  							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
+> -			       "buddy_alloc hit an error size=%d\n", 3 * ps);
+> +			       "buddy_alloc hit an error size=%lu\n", 3 * ps);
+>
+>  	total = 0;
+>  	list_for_each_entry(block, &allocated, link)
+> diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
+> index 1eb0c304f960..f37c0d765865 100644
+> --- a/drivers/gpu/drm/tests/drm_mm_test.c
+> +++ b/drivers/gpu/drm/tests/drm_mm_test.c
+> @@ -157,7 +157,7 @@ static void drm_test_mm_init(struct kunit *test)
+>
+>  	/* After creation, it should all be one massive hole */
+>  	if (!assert_one_hole(test, &mm, 0, size)) {
+> -		KUNIT_FAIL(test, "");
+> +		KUNIT_FAIL(test, "mm not one hole on creation");
+>  		goto out;
+>  	}
+>
+> @@ -171,14 +171,14 @@ static void drm_test_mm_init(struct kunit *test)
+>
+>  	/* After filling the range entirely, there should be no holes */
+>  	if (!assert_no_holes(test, &mm)) {
+> -		KUNIT_FAIL(test, "");
+> +		KUNIT_FAIL(test, "mm has holes when filled");
+>  		goto out;
+>  	}
+>
+>  	/* And then after emptying it again, the massive hole should be back */
+>  	drm_mm_remove_node(&tmp);
+>  	if (!assert_one_hole(test, &mm, 0, size)) {
+> -		KUNIT_FAIL(test, "");
+> +		KUNIT_FAIL(test, "mm does not have single hole after emptying");
+>  		goto out;
+>  	}
+>
+> --
+> 2.44.0.rc0.258.g7320e95886-goog
+>
+
+Thanks
+Justin
 
