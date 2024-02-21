@@ -1,121 +1,167 @@
-Return-Path: <linux-kernel+bounces-74513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6D785D556
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:20:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF29F85D557
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E6ED2859AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:20:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C2E11C21041
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7F23D96A;
-	Wed, 21 Feb 2024 10:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8DE3D978;
+	Wed, 21 Feb 2024 10:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nj/lNYal"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="D5U5RqGD"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E64B3C493;
-	Wed, 21 Feb 2024 10:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2193CF68
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510827; cv=none; b=pMdJFugv4OyxPOZQsDdMGS47aJetcem2IQrJB7Zs+DHm2tlgBHcrJpC2+BRBgJERL/y/0GaIPan2yDG2RGU8hsiOTDSxl+pVkAifwLDEldinG/RSOobNTCCoBPaIpuAb9KPMdzllmxWH3skifMYmCuSdAmTQBEvsCZv5ALC+EiY=
+	t=1708510870; cv=none; b=QCdMXPZ5eeLvsEv/eohBG1XJ1EqjBGqRrky4avVedBHqoOh/SfUQtpJsP/UIfoNVtbuqt3jcMuYfBXiqpbUIkc2DQJFypcQl/LediaydcKKix8d53IQwg5v8oiNvE98eC5G5MP2HwE4eo/QyPVr8wrkBYAOIVqN6d6FtJDmx3aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510827; c=relaxed/simple;
-	bh=J/Fg/zm/+n9uEnP0C0R0wz9xzbBtvG5jZMNnhEcMT20=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KKfer3W/vTcApRwQqTRaX0YahMLGdov6DlFxqUF8l8Rg4b5vBgOF5UaePvYpbS8Zi8TO48SsNNpqA/iWcYLWsolgCezKchh0WN7zg0QOGoxs+1EI0jdn9y01UbdKNZIPzySPYfE5FWCFkI8zIAhOXKw/YJi4jgfvVTS5Xp5OKNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nj/lNYal; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27CEBC43399;
-	Wed, 21 Feb 2024 10:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708510827;
-	bh=J/Fg/zm/+n9uEnP0C0R0wz9xzbBtvG5jZMNnhEcMT20=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=nj/lNYaliWoEYd+4sH9piCA9d/x1dVqhiCeG8ZlF64RIgjb+5ceUHp28DmaTBne5n
-	 j6IiSfg71QrgNZsSdMhxSduBKni0wN7oEXP0+9xa9YUK+N4UCE63RgDTXDiwHoDqOG
-	 P5+xsqOolGumxMBkZrRiEt/kkqOtRAJgtIO48g1DhHqZu7gb6Ibxype+5kyoePLWck
-	 mRsz4P5pXk78GJzykgJFXdovEacpa8qlOVl8nGlzNmWDRpphWEobIUpVZU9hHpsfFZ
-	 wpzUJPwnXVjGOPe6qNdUtbTyhtKfFuGXKASXftKqQPdy6Jb3p/hDF8wYK3wOIVECHk
-	 Pm/1QM1K095Ug==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d10ad265d5so70812021fa.0;
-        Wed, 21 Feb 2024 02:20:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWg7ncb1+/oZkFmmqSKUlg0imh0WE07AtVTQc2LsthiqbtW485prHnW3TQcBSIYaVXkscrBN0GhYtuoudul+VoibWSQOuDx4Nd6gg==
-X-Gm-Message-State: AOJu0YzwAc/tjLy8LTVivpLHtVHTD7RtXbd31QEuV6Y5KDOLNE4Nx9bc
-	UF4KztKvkbAdFAFr0yohh/OUSeKHyCa++29ePk4rGJiFDLWfclK0e5hu/AsEwVJU8Tj2zOig6oK
-	TqFMwOVML4bx1PapWi75SVq2eSrM=
-X-Google-Smtp-Source: AGHT+IFXVRr6o+Ds+H6VMoLX3MlKc1OGh8SqQ0XgmfrWQ13UTJ9FYKk2LR8mqqmAIPxFvRQzIZcbdxnonFCsbBc9zFY=
-X-Received: by 2002:a2e:2c01:0:b0:2d2:4778:c825 with SMTP id
- s1-20020a2e2c01000000b002d24778c825mr3470473ljs.41.1708510825347; Wed, 21 Feb
- 2024 02:20:25 -0800 (PST)
+	s=arc-20240116; t=1708510870; c=relaxed/simple;
+	bh=1O49FRnw3Hx1RJ2xYsw7QP73lcqSRFPxuNQD9VyTp7g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qBEIWXLo4uSCShrrZnZJGpLHDekYlioEiu5DD2lpg2Ws9QVzewu3D5LxCTdEWbmpcB+tboD7Qh/mnj0gAXQOVgQvz+z8mfVRcz02MEyJIDfQBJrQhGdvE1l/hzs1VuAg2AorjlNTklkYMTrbMAl31s+iSRUGp5ZwbSKNB6+/eH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=D5U5RqGD; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33d3b72f710so2251695f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708510867; x=1709115667; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=87IsNEl8BjvsGXxmFyPTEb2xKBWIImpeQ3mV7pifE5I=;
+        b=D5U5RqGDui/TUgZpjQ29o/5wYs4kbbJDCvLKzRXpsMc2pA7/u4JGSbLkcjv2btZbBU
+         9nHDDFqJava8Q+MTTDreGVlc6hZ7Vw4nTZU60dfG+8dBAH1e5yi4A4fOgRY4QT/EVk1t
+         eGSAWIzKjPlrZB5abDbBN+YC2D8gP2YN8pADdpg92tosMa6FMxMsdud2zcQ+ZL2xfq/7
+         uD5yGjJRjS4WWSUe9dbjtT2ZlYTe/GWnGusU6sajZuzZ1CQoFbUvTqyBB9N1eKp4G1QB
+         c8CxInvsIkDZ7gPLcKKSX98Y4SmnhURsPNZUkzKODQOMNgWYSQpMJ/J3hDsOGO2/Uqxo
+         gl9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708510867; x=1709115667;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=87IsNEl8BjvsGXxmFyPTEb2xKBWIImpeQ3mV7pifE5I=;
+        b=H4eojd63KenERlMjpUbxfNQYqrm3S/GnnsRM1EQNMnn7lnCnrk57HmbUZLKQ/VrPWl
+         WWhla5qkF9UYdP28hM92IvRw2x9QSH/6AF8XUEwjkk2pRcfZw3XSoslXefahfq6jdyN2
+         YSUXd1fFbI8FMq8JsrXiDLeNFMsZ6fcHUIPt5zpTuD/KHznX5WURTMlNM5FtKABsELll
+         N+oAoR8lSxt6qfVElQOtarHwvkYPBaHc33wfkTI/DEPTlfAn2rh+PTi8+lCDxxrtI5te
+         2D2TGeSUc3dIs6AXHJBdl9XFNjtmWz1+2U2wGGvn0MKsQosecx3XfP13wyKjD1PuoVOT
+         2UHw==
+X-Forwarded-Encrypted: i=1; AJvYcCUEyqfA2BYQQcczlyWTiEJ5NNEVjGTYM1PstyjXwuH28F5qgrz8p5lWKOoOyZg3aADtqwUmS6sMikXaNRx2O5Y8E/zITSKvU14FB4f7
+X-Gm-Message-State: AOJu0Yxns4QXyKh/NPdc0IbuuMJB1FUTtqiIQ5FV9FVJYjzIogmd27qE
+	nNe+kbkpn9QLVZs0BDdACuipPG/xJcq2PmUhpdw8xwpLtCu29Jve4lrkd8nCGPk=
+X-Google-Smtp-Source: AGHT+IFrwmedY5fYo7zrkWyQlIzX/qQpVRT1u5MDlvclQOGRNKL1zkU+zYRWoNBHgcMURCtuMKHsrg==
+X-Received: by 2002:adf:ec44:0:b0:33d:3ceb:5308 with SMTP id w4-20020adfec44000000b0033d3ceb5308mr6394172wrn.42.1708510866730;
+        Wed, 21 Feb 2024 02:21:06 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:9a9e:4b2:5ad4:f63e])
+        by smtp.gmail.com with ESMTPSA id x11-20020a5d444b000000b0033b7ce8b496sm16461338wrr.108.2024.02.21.02.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 02:21:06 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Herve Codina <herve.codina@bootlin.com>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpio: don't warn about removing GPIO chips with active users anymore
+Date: Wed, 21 Feb 2024 11:21:03 +0100
+Message-Id: <20240221102103.10099-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213124143.1484862-13-ardb+git@google.com>
- <20240213124143.1484862-17-ardb+git@google.com> <20240220184513.GAZdTzOQN33Nccwkno@fat_crate.local>
- <CAMj1kXF=cGHR4FVUqGrobjB4HxTmm=1upn3TpVEC-_8D9GM=uQ@mail.gmail.com> <20240221100916.GCZdXLzHb-31GMw-f-@fat_crate.local>
-In-Reply-To: <20240221100916.GCZdXLzHb-31GMw-f-@fat_crate.local>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 21 Feb 2024 11:20:13 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGqHf3b3zho_0CPccTkgXRnTrxsG_qDjhP9P+US-u2AGw@mail.gmail.com>
-Message-ID: <CAMj1kXGqHf3b3zho_0CPccTkgXRnTrxsG_qDjhP9P+US-u2AGw@mail.gmail.com>
-Subject: Re: [PATCH v4 04/11] x86/startup_64: Defer assignment of 5-level
- paging global variables
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 21 Feb 2024 at 11:09, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Feb 21, 2024 at 12:33:08AM +0100, Ard Biesheuvel wrote:
-> > Right, this is the same issue as in #11 - in both cases, the extern
-> > declaration of __pgtable_l5_enabled needs to be visible regardless of
-> > CONFIG_X86_5LEVEL.
->
-> Yap, I don't mind something like below.
->
-> 5LEVEL will be practically enabled everywhere.
->
-> diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-> index 158da0fd01d2..eeb1744215f2 100644
-> --- a/arch/x86/kernel/head64.c
-> +++ b/arch/x86/kernel/head64.c
-> @@ -52,13 +52,11 @@ extern pmd_t early_dynamic_pgts[EARLY_DYNAMIC_PAGE_TABLES][PTRS_PER_PMD];
->  static unsigned int __initdata next_early_pgt;
->  pmdval_t early_pmd_flags = __PAGE_KERNEL_LARGE & ~(_PAGE_GLOBAL | _PAGE_NX);
->
-> -#ifdef CONFIG_X86_5LEVEL
->  unsigned int __pgtable_l5_enabled __ro_after_init;
->  unsigned int pgdir_shift __ro_after_init = 39;
->  EXPORT_SYMBOL(pgdir_shift);
->  unsigned int ptrs_per_p4d __ro_after_init = 1;
->  EXPORT_SYMBOL(ptrs_per_p4d);
-> -#endif
->
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Just the below should be sufficient
+With SRCU we can now correctly handle the situation when a GPIO provider
+is removed while having users still holding references to GPIO
+descriptors. Remove all warnings emitted in this situation.
 
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -22,7 +22,7 @@ typedef struct { pteval_t pte; } pte_t;
- typedef struct { pmdval_t pmd; } pmd_t;
+Suggested-by: Kent Gibson <warthog618@gmail.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpiolib.c | 20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
 
--#ifdef CONFIG_X86_5LEVEL
- extern unsigned int __pgtable_l5_enabled;
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 3c22920bd201..63e793a410e3 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1106,7 +1106,6 @@ EXPORT_SYMBOL_GPL(gpiochip_add_data_with_key);
+ void gpiochip_remove(struct gpio_chip *gc)
+ {
+ 	struct gpio_device *gdev = gc->gpiodev;
+-	unsigned int i;
+ 
+ 	/* FIXME: should the legacy sysfs handling be moved to gpio_device? */
+ 	gpiochip_sysfs_unregister(gdev);
+@@ -1130,15 +1129,6 @@ void gpiochip_remove(struct gpio_chip *gc)
+ 	 */
+ 	gpiochip_set_data(gc, NULL);
+ 
+-	for (i = 0; i < gdev->ngpio; i++) {
+-		if (test_bit(FLAG_REQUESTED, &gdev->descs[i].flags))
+-			break;
+-	}
+-
+-	if (i != gdev->ngpio)
+-		dev_crit(&gdev->dev,
+-			 "REMOVING GPIOCHIP WITH GPIOS STILL REQUESTED\n");
+-
+ 	/*
+ 	 * The gpiochip side puts its use of the device to rest here:
+ 	 * if there are no userspace clients, the chardev and device will
+@@ -2329,10 +2319,9 @@ int gpiod_request(struct gpio_desc *desc, const char *label)
+ 	return ret;
+ }
+ 
+-static bool gpiod_free_commit(struct gpio_desc *desc)
++static void gpiod_free_commit(struct gpio_desc *desc)
+ {
+ 	unsigned long flags;
+-	bool ret = false;
+ 
+ 	might_sleep();
+ 
+@@ -2357,23 +2346,18 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
+ #ifdef CONFIG_OF_DYNAMIC
+ 		WRITE_ONCE(desc->hog, NULL);
+ #endif
+-		ret = true;
+ 		desc_set_label(desc, NULL);
+ 		WRITE_ONCE(desc->flags, flags);
+ 
+ 		gpiod_line_state_notify(desc, GPIOLINE_CHANGED_RELEASED);
+ 	}
+-
+-	return ret;
+ }
+ 
+ void gpiod_free(struct gpio_desc *desc)
+ {
+ 	VALIDATE_DESC_VOID(desc);
+ 
+-	if (!gpiod_free_commit(desc))
+-		WARN_ON(1);
+-
++	gpiod_free_commit(desc);
+ 	module_put(desc->gdev->owner);
+ 	gpio_device_put(desc->gdev);
+ }
+-- 
+2.40.1
 
-+#ifdef CONFIG_X86_5LEVEL
- #ifdef USE_EARLY_PGTABLE_L5
- /*
 
