@@ -1,143 +1,279 @@
-Return-Path: <linux-kernel+bounces-74394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DF5785D361
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:23:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A736985D35E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DE9288C71
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:23:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C850B1C219D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D673D3A0;
-	Wed, 21 Feb 2024 09:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE243D0D1;
+	Wed, 21 Feb 2024 09:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="o4VwYngi"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="s5A7OW7G"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE10B3D0C0
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C1D3D0B4;
+	Wed, 21 Feb 2024 09:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708507385; cv=none; b=lxm3mTJuGaKoDqCVk4z7qyRrER53hos2MXJ8BI5/3zmLCUgZG4n0snWIx4iVfDALs+khnJDDa9Mg6HX0QYkafvY+Pa3s/QVwlOgiN5Bqm+TL4/OocLM0gUwsEptIX22VZGikcgmMlaH4jXo1yNN7Dmrj9qCbhfxKQMB9Yor0/44=
+	t=1708507364; cv=none; b=LiVsPksQNrwI2/IkmMrWrbuM4YHQNWBGDVcUf4rgePgTJTVslYZE8Prm1+2kE3j2eKdpn7H8RxdqmLSgqLQQZR1tVBnk37EVJwnZpmjqDLgI/3hQZnrHYm5vyQDiB0oRZrH3xRlyfnS+YDqp5sEFELXNlpGfdb0XFp0dUcMZti8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708507385; c=relaxed/simple;
-	bh=K+gCIizEIOhF3THCA2HhsJVEYG4bJvjGS9rZ4eiaFR0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i/7tJfq9HiciGJgbifRBXuvu2Sjyvg4DVhqeMEk8tGqTnrJ6Fs1/zIaOzyXrGQ55CKC6UaEbp4tN1wJvKO2e4/28bnpzmPAOiXubBFoPW+0n3AFOMC8Hb2yLf+YVZ0B69y9gRh0/Nc7taJGapSEcx+aoAeSZ8uS+q4uoXhfJzV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o4VwYngi; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso7166a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708507382; x=1709112182; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y8Iw+ecnsAvxKiT4ujJzI0in5wASuEUFoB3j6AJ1Ekw=;
-        b=o4VwYngi+VEtdgvjFZw90hyG3NDQnRtUUxGoDJ77v95hA/IE7CFRa3xGt/0GcEaYXw
-         mU7ynDtnpQSawYUB+WECzesZE7u5rzp3OITErpJ2nld0dVY5+8dMlVhkeYrqPfiAMwKm
-         H8Hh3Y/3nE5H1qXnealBgI2Uk59GUXC/iKQnBlJhAPYQWUywzm6wl4otTDm/B0ty33OJ
-         AW7Ti+4vmqyzAOAtBqxX1VoGoPLh4+Pid+WBX/z/zFsebT9S8XZVTpif6ywVIHLdu5t+
-         EuQ9Hn/9+OkpvtokhF/qWROB20GNq6fqnckG0SkDmFvqzRSRbt5fQGe9K+UhemeThnYU
-         u+GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708507382; x=1709112182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y8Iw+ecnsAvxKiT4ujJzI0in5wASuEUFoB3j6AJ1Ekw=;
-        b=ae62pt+dfUxK/UIKJnYB/6udNyyETbaW5NBoiT9QARwsLLJAiN/DpwRERnbc+PZbIT
-         UPEZiwydWOLAxL91/CJLGozAd2dwRMb/UhqHZQOnIXAicp8zKBEYCvBS7rAVcl2pC5ks
-         H+toZrfbEaXjlsK6s0fwZi252YpDnnDUaEeqcdTV5GEyqY+MQnJnnHbdXZw3KB89ZchT
-         Ut6k2EOsyo5cggUSkq+z3QTRY1cypqySWI/AscSf0SRqLGuYVzOAwwD2+2dMNyQZQeWT
-         RlC5UOvHf7fMALTjmulmy1YsUWJIR/M5JOHsPjxYX8Ws2jato6Lfij+IwqZvtTNWeszG
-         Bebw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhD2EiVWRAONP9d61ID6Pw9NU0UNzy3snkp9PsNAEKGzb3hChfHU/JEwfnyabhpHnk/18TgpWYblrZhytbqOsHn7NNnibXHzHb5PBA
-X-Gm-Message-State: AOJu0YwocB74IJdf+oWXJIcSWga3rhcSxhQXdiEIdip38IT9EY/cCt5Q
-	wSK7QJXZn7ka6WqENU/adH2zHgiV1P3bxMiD33CI3Oe97Hzsq3ctLpnZJJFmHTCvc9cVzHpJxej
-	7muN9opvSZzQotfi67unJ11/wOY2SMys5bCJL
-X-Google-Smtp-Source: AGHT+IEy6kNcDvH8qV/VRy8uplqs4byx2iWbcUCj2utl/wZ7ZtNrmbmJN8hiP8u5MtxV1VFQ7vtdsIPdMmY5qpXruRs=
-X-Received: by 2002:a50:bae7:0:b0:563:fc50:37f9 with SMTP id
- x94-20020a50bae7000000b00563fc5037f9mr84099ede.3.1708507381744; Wed, 21 Feb
- 2024 01:23:01 -0800 (PST)
+	s=arc-20240116; t=1708507364; c=relaxed/simple;
+	bh=xkgrSNcnpOKalVdXXYVqaTxPkhRZgbthmWR7h5oU1Ms=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bmvN2gF0T6IsYOrLdZN+fE1NTHLXlXw8sUouRmWBnw4rmP1A1ZSX8XrGrZP/LHUYPKK2nAFlBOGjMNYqLMRSUF2lAnH6w5J7E3YhDW8xlAgCAreLeC6t7tqKCzvGwkAt6KtPA6Qql38zH4TmGd5nxC1rVMCUrjtnBW9TZGnttTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=s5A7OW7G; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708507360;
+	bh=xkgrSNcnpOKalVdXXYVqaTxPkhRZgbthmWR7h5oU1Ms=;
+	h=From:To:Cc:Subject:Date:From;
+	b=s5A7OW7G3m/lA2YtUzukRq+hqDADy89s23mso7hIRC81kX5qUYAmQW0ZzuWgtGBEZ
+	 mc48oWAQ7647K3943RD1pZBvFSOmuMTwhnTgQ1KEgtBT2T/cwPcYEIlDjevZ+KYP2F
+	 VMXUudHG95CYRdbnR6rLYQR5c1hglgfe5IIxXLmkq0dIT9+W5TbpV9UGYOzAktf1Id
+	 /nE+vkViUxsete467M1Yvu1JkFzIBjwAh4IjOS6AppenzaygDjh+cAXumlfebc3IHp
+	 RNHg3+62WwrEKKngBRI/MlUb0l6LK/EFswYnxQUPNz8fCcC4cH3sY7iQHibIBvX1XZ
+	 OlMNmAEbM2Jqg==
+Received: from localhost.localdomain (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E4F93378148F;
+	Wed, 21 Feb 2024 09:22:35 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: kernel@collabora.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2] selftests/bpf: Move test_dev_cgroup to prog_tests
+Date: Wed, 21 Feb 2024 14:22:35 +0500
+Message-ID: <20240221092248.1945364-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219061008.1761102-1-pumahsu@google.com> <20240219061008.1761102-3-pumahsu@google.com>
- <2024021906-celestial-tuesday-bd24@gregkh>
-In-Reply-To: <2024021906-celestial-tuesday-bd24@gregkh>
-From: Puma Hsu <pumahsu@google.com>
-Date: Wed, 21 Feb 2024 17:22:24 +0800
-Message-ID: <CAGCq0LYYkg0NR2pVS0sTn0vrW3oWXoSg6DgJN0v8ADY_poykag@mail.gmail.com>
-Subject: Re: [PATCH 2/3] usb: xhci: Add support for Google XHCI controller
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: mathias.nyman@intel.com, Thinh.Nguyen@synopsys.com, badhri@google.com, 
-	royluo@google.com, howardyen@google.com, albertccwang@google.com, 
-	raychi@google.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 19, 2024 at 2:30=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Mon, Feb 19, 2024 at 02:10:07PM +0800, Puma Hsu wrote:
-> > diff --git a/drivers/usb/host/xhci-goog.c b/drivers/usb/host/xhci-goog.=
-c
-> > new file mode 100644
-> > index 000000000000..db027a5866db
-> > --- /dev/null
-> > +++ b/drivers/usb/host/xhci-goog.c
-> > @@ -0,0 +1,154 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * xhci-goog.c - xHCI host controller driver platform Bus Glue.
-> > + *
-> > + * Copyright (c) 2024 Google LLC
->
-> This code is older than 2024, right?  :)
+Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
+with test_progs. Replace dev_cgroup.bpf.o with skel header file,
+dev_cgroup.skel.h and load program from it accourdingly.
 
-Yes, this actually started from 2023, will fix it.
+  ./test_progs -t test_dev_cgroup
+  mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+  64+0 records in
+  64+0 records out
+  32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+  dd: failed to open '/dev/full': Operation not permitted
+  dd: failed to open '/dev/random': Operation not permitted
+  #365     test_dev_cgroup:OK
+  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
->
-> > +     if (WARN_ON(!sysdev->dma_mask)) {
->
-> If this triggers, you just rebooted your device (as you run with
-> panic-on-warn enabled), so please, if this is something that can
-> actually happen, handle it properly and move on, don't reboot a device.
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+I've tested the patch with vmtest.sh on bpf-next/for-next and linux
+next. It is passing on both. Not sure why it was failed on BPFCI.
+Test run with vmtest.h:
+sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh ./test_progs -t dev_cgroup
+/test_progs -t dev_cgroup
+mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+64+0 records in
+64+0 records out
+32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
+dd: failed to open '/dev/full': Operation not permitted
+dd: failed to open '/dev/random': Operation not permitted
+ #69      dev_cgroup:OK
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
-Thank you for advising. Will review and handle it properly.
+Changes since v1:
+- Rename file from test_dev_cgroup.c to dev_cgroup.c
+- Use ASSERT_* in-place of CHECK
+---
+ .../selftests/bpf/prog_tests/dev_cgroup.c     | 58 +++++++++++++
+ tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
+ 2 files changed, 58 insertions(+), 85 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+ delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
 
->
-> > +MODULE_ALIAS("platform:xhci-hcd-goog");
->
-> Why is this alias needed?  I thought that was only for older-style
-> platform devices
+diff --git a/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+new file mode 100644
+index 0000000000000..980b015a116ff
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2017 Facebook
++ */
++
++#include <test_progs.h>
++#include <time.h>
++#include "cgroup_helpers.h"
++#include "dev_cgroup.skel.h"
++
++#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
++
++void test_dev_cgroup(void)
++{
++	struct dev_cgroup *skel;
++	int cgroup_fd, err;
++	__u32 prog_cnt;
++
++	skel = dev_cgroup__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
++		goto cleanup;
++
++	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
++	if (!ASSERT_GT(cgroup_fd, 0, "cgroup_setup_and_join"))
++		goto cleanup;
++
++	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
++			      BPF_CGROUP_DEVICE, 0);
++	if (!ASSERT_EQ(err, 0, "bpf_attach"))
++		goto cleanup;
++
++	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
++	if (!ASSERT_EQ(err, 0, "bpf_query") || (!ASSERT_EQ(prog_cnt, 1, "bpf_query")))
++		goto cleanup;
++
++	/* All operations with /dev/zero and /dev/urandom are allowed,
++	 * everything else is forbidden.
++	 */
++	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
++	ASSERT_NEQ(system("mknod /tmp/test_dev_cgroup_null c 1 3"), 0, "mknod");
++	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
++
++	/* /dev/zero is whitelisted */
++	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
++	ASSERT_EQ(system("mknod /tmp/test_dev_cgroup_zero c 1 5"), 0, "mknod");
++	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
++
++	ASSERT_EQ(system("dd if=/dev/urandom of=/dev/zero count=64"), 0, "dd");
++
++	/* src is allowed, target is forbidden */
++	ASSERT_NEQ(system("dd if=/dev/urandom of=/dev/full count=64"), 0, "dd");
++
++	/* src is forbidden, target is allowed */
++	ASSERT_NEQ(system("dd if=/dev/random of=/dev/zero count=64"), 0, "dd");
++
++cleanup:
++	cleanup_cgroup_environment();
++	dev_cgroup__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
+deleted file mode 100644
+index adeaf63cb6fa3..0000000000000
+--- a/tools/testing/selftests/bpf/test_dev_cgroup.c
++++ /dev/null
+@@ -1,85 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2017 Facebook
+- */
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <assert.h>
+-#include <sys/time.h>
+-
+-#include <linux/bpf.h>
+-#include <bpf/bpf.h>
+-#include <bpf/libbpf.h>
+-
+-#include "cgroup_helpers.h"
+-#include "testing_helpers.h"
+-
+-#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
+-
+-#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
+-
+-int main(int argc, char **argv)
+-{
+-	struct bpf_object *obj;
+-	int error = EXIT_FAILURE;
+-	int prog_fd, cgroup_fd;
+-	__u32 prog_cnt;
+-
+-	/* Use libbpf 1.0 API mode */
+-	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+-
+-	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
+-			  &obj, &prog_fd)) {
+-		printf("Failed to load DEV_CGROUP program\n");
+-		goto out;
+-	}
+-
+-	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+-	if (cgroup_fd < 0) {
+-		printf("Failed to create test cgroup\n");
+-		goto out;
+-	}
+-
+-	/* Attach bpf program */
+-	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
+-		printf("Failed to attach DEV_CGROUP program");
+-		goto err;
+-	}
+-
+-	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
+-			   &prog_cnt)) {
+-		printf("Failed to query attached programs");
+-		goto err;
+-	}
+-
+-	/* All operations with /dev/zero and and /dev/urandom are allowed,
+-	 * everything else is forbidden.
+-	 */
+-	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+-	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
+-	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+-
+-	/* /dev/zero is whitelisted */
+-	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+-	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
+-	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+-
+-	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
+-
+-	/* src is allowed, target is forbidden */
+-	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
+-
+-	/* src is forbidden, target is allowed */
+-	assert(system("dd if=/dev/random of=/dev/zero count=64"));
+-
+-	error = 0;
+-	printf("test_dev_cgroup:PASS\n");
+-
+-err:
+-	cleanup_cgroup_environment();
+-
+-out:
+-	return error;
+-}
+-- 
+2.42.0
 
-I will change to module_platform_driver(). Thank you for advising.
-
->
-> > +static int __init xhci_goog_init(void)
-> > +{
-> > +     return platform_driver_register(&usb_goog_xhci_driver);
-> > +}
-> > +module_init(xhci_goog_init);
-> > +
-> > +static void __exit xhci_goog_exit(void)
-> > +{
-> > +     platform_driver_unregister(&usb_goog_xhci_driver);
-> > +}
-> > +module_exit(xhci_goog_exit);
->
-> module_platform_driver()?
->
-> thanks,
->
-> greg k-h
 
