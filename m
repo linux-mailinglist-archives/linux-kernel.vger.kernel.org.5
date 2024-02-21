@@ -1,153 +1,211 @@
-Return-Path: <linux-kernel+bounces-73867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3FCB85CCD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:38:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A29E785CCD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E75761C21951
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:38:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8A3FB215A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0A11842;
-	Wed, 21 Feb 2024 00:38:24 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE691877;
+	Wed, 21 Feb 2024 00:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="tUSxyhP4"
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A43A382
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECD9110A
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708475903; cv=none; b=edSNYiU0KnUQG4pwoYKBky9srkZPw0hR2Hql65C6KYnnzbqrohGOC0ccy+ivl0aVHjuxbXqzJ+kq1H9jI8KGi60L+XPG/ZQAH+WGyWQxBTveg240JteUHDhqXM+XRjgq260I/z3hgQZW+34To1wj6+hn0YMOcth1iSnozYTrLJI=
+	t=1708476006; cv=none; b=T7mG2NhB0BVaLyeFDA9RZtK1xnNveMbfTlYmP5lzevLrJgOyBsyus0kAu1Ds/wVOU/2P0x4HekpWkrV10Vt+1OQr1MNkgZU3D/Td1bEJBDgXkMBBrNk6WLWKIRHdsi15A76PsQgWM57N9dks4NgzW3TsssH09QY4HS993LMzy1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708475903; c=relaxed/simple;
-	bh=Ekkhe4hUxiqeGDPpJMO90zirk/0PhKBcGml4i2vlXoo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=MTwHi003COwgujcS6QGEtBbHc61Kgfit2tXJKVwXLNxWAdHEp5N7J0/31wP1RkqVxrnWrx9CTBN5/vH5srMcPWn4cEz5gy8ClDMai+5taodSU50N/AY+ydXsCxMHy2bwjVWYe+8zd5N6nKX1aomeuTgxVid2llN7k/uJuc0PxIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3652d6907a1so30806455ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:38:22 -0800 (PST)
+	s=arc-20240116; t=1708476006; c=relaxed/simple;
+	bh=uAI3HK7f/g/nDyL9G7/XMvECnHYq47zYhoOD5T7jc/I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f4JZj7BA4Bhlo6MRM0lfrtSCN3fR0edQQcjWpiB820g6qyXlJa/+qKs0ld2itnl1JXQ7dF/R24luTHWUTBg9zE4x5zsm4UjzYEr7zweEffys0JtE5gUpZvnADLjs0t+vBb6WEfHr7ehErbfoZZPHeY3Tqs6gRUIAAcsjFS8xVys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tUSxyhP4; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42e0b1b11bbso37771cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:40:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708476003; x=1709080803; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LfssETidi6wFDF+vACF5kMe/yeNOLjDvgf0E4IOPBTg=;
+        b=tUSxyhP4eJ6PVCiwAyOXFcB7ipaVcXd6mWx0nPkZhjG4jwRf4Sm3lcdFJnAAQHGY+d
+         EXu70IwXsGAV69vq7nwTRgdMAKxdGhFvz8IMg85aBvNkxQzMfOsgvs/9iV27/ET5o0CZ
+         r5ibk59mDgN7TjkYSoe7yTe6OZjGoOSpi/zUxR4D8RycXXkAibqQvW3ujESKd+fEyazV
+         /bB0xFAQWSi6hGJn0GieiUVdJmKbheZ1IZ4PxnmRYe024vBzSgk2tuHdqWEszATbMkfD
+         JatPoe6iKeLt5D9hpLHJxaFKVvhFeuk5rdKX/ZOght43qU+YY4rxq88CLJuKY86Ibyyf
+         SOjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708475901; x=1709080701;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OnataEXxpks9beB1qE4GL4ZlXHU9MCHB3WDNJabYpEs=;
-        b=QIrGJYCopZ0eVOBmUndioEt27eC2OKnYru/BcCYXMJugoFuNP4tc3JS7MhJ6djFz+q
-         2NzZFOnk+QrZ5RpRSWyHKcQS63ZSVWoRP/++HK0UaKodcJrMySUxh13EHll/QvH9ovD1
-         NTaXysQZilDdqZA1OFdN3SnynsviTVMvlWO6QbLHyMgcu8RsFogJ8fCganRr8f26tKFh
-         NPtt8KMERs3q6MOFe4ozSX4UX8/PZFqhc2sUBoZo6117w4JiXfeGm6o8LRUYpFjSzSAF
-         jslSNsFtjTWtqvhoUEjb05hBCAgJ9EmDJrF/6Q/v8d9QZTBI4H7AMoKEbnlVHHYk5SZx
-         vSiw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUXim5H1EOHZZWV4kaM5Kdqf8XzQpCVNUsg6a9OXO7H/ixACVNdGuNbzA5ZMFy9mOSe2636traYjlEfjJgdXmNFdDAkyjEvOvPeD3i
-X-Gm-Message-State: AOJu0YzTliBMoYiG1NK/jjL2ATKwI3hw15rTDRc6ycevoRXvhojLa10z
-	+SznSt/v0PadXziIImqsFVZu4o3eUfSzP/sXQCiuVRPsjuGHShizso/elRdkRSWXMcYqJjP3TEJ
-	P1tWWeoDREMe5HNatGzz97QFjCziyd6x+4n1UeCuHeu+wshZn0uNfSCI=
-X-Google-Smtp-Source: AGHT+IEyEZOGy10rBoBXIjejLD//p8kfRqTq3m+niDekIjhdc7usTsHfKwrAbTBpJuyTDKlsOptq1hrpWLiYohyGnBkSi/5Lsa+T
+        d=1e100.net; s=20230601; t=1708476003; x=1709080803;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LfssETidi6wFDF+vACF5kMe/yeNOLjDvgf0E4IOPBTg=;
+        b=MrpxoGSnLo5FdKbyAOONh8o+ibJX2M8bUUYdyFamo7QFbwY+QR/n8FhND8H+Wx5QpJ
+         d8xY71CSVrNQEFAZLf6pfE/FnnyqwLpYvBp/jRSR12f5sjc+daC2SJQJbRhUL0reh0UV
+         aZQIqJK6+DzflAGCrkvTk5c3oVour3NumqdKmP2mOz30rCPN03N0KGIgspoyF59Af3Zx
+         JzcSr4zJXNs47oUwiqKMfSmcUcpl7dkilysQF3yyrScHW9s4+CMeNuoKCFQ53bfsyywn
+         GThjbLN4yJPer77mcHIpwc/NgqpTlygBJETFv5+d9UEHZ1nbQtri/3rRTSs3ycNrKFSb
+         P9Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ2KZYfqL52NmopUFrV0x8NDzo+SvnTHOzuYsgXBQzXNUr81th86XFVdg1VX6KujXKtyiuAOqNAXRj5nKmSH84gEEXl0BlOohHTGLU
+X-Gm-Message-State: AOJu0YzDWLw84ov6146DYwrCfybnQYADWNifaWE4jyvqLzaXdvx2PGVA
+	4Wh442UrNkZBsDmhEYHe+kmyoFElw9nxbwrsL6jB5OGqR/55US6Aw5SgNUs45VNyw1kdC2rdIxP
+	yqFBPgXcTUv9lRf3Qb/KTGSj8aqX7iuiIGeyr
+X-Google-Smtp-Source: AGHT+IFvq0Bv6289NmhdlxMMHgyeloDU/i+PDnJAE9VTBvimqT3m377ERyyEEF5Bs5DKJqH2k1zgEUe+msRDZaq+LRM=
+X-Received: by 2002:ac8:7c47:0:b0:42e:36fe:df90 with SMTP id
+ o7-20020ac87c47000000b0042e36fedf90mr43088qtv.1.1708476002994; Tue, 20 Feb
+ 2024 16:40:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1be9:b0:365:3e12:3eb1 with SMTP id
- y9-20020a056e021be900b003653e123eb1mr343502ilv.1.1708475901614; Tue, 20 Feb
- 2024 16:38:21 -0800 (PST)
-Date: Tue, 20 Feb 2024 16:38:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003922d30611d98bab@google.com>
-Subject: [syzbot] [media?] WARNING in cec_data_cancel
-From: syzbot <syzbot+57d7c816f3eb3c02ffa9@syzkaller.appspotmail.com>
-To: hverkuil-cisco@xs4all.nl, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, mchehab@kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240205-fix-device-links-overlays-v2-0-5344f8c79d57@analog.com>
+ <20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com>
+ <aed988a09cb4347ec7ac1b682c4ee53b7d2a840b.camel@gmail.com>
+ <20240213145131.GA1180152-robh@kernel.org> <48a86fa6908a2a7a38a45dc6dbb5574c4a9d7400.camel@gmail.com>
+ <CAGETcx9xgLykm7Ti-A4+sYxQkn=KTUptW9fbFxgTcceihutwRQ@mail.gmail.com> <71fa22870246c4ed6ae9cbb2cb93db557dd855f7.camel@gmail.com>
+In-Reply-To: <71fa22870246c4ed6ae9cbb2cb93db557dd855f7.camel@gmail.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 20 Feb 2024 16:39:24 -0800
+Message-ID: <CAGETcx_kjmZypvhjGED5V3C4E=NzffD2=8cn5Hh-tEHTMVKsiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: dynamic: flush devlinks workqueue before
+ destroying the changeset
+To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, Nuno Sa <nuno.sa@analog.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
+	linux-acpi@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Feb 14, 2024 at 4:48=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com=
+> wrote:
+>
+> On Tue, 2024-02-13 at 19:44 -0800, Saravana Kannan wrote:
+> > On Tue, Feb 13, 2024 at 6:57=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail=
+com> wrote:
+> > >
+> > > On Tue, 2024-02-13 at 08:51 -0600, Rob Herring wrote:
+> > > > On Mon, Feb 12, 2024 at 01:10:27PM +0100, Nuno S=C3=A1 wrote:
+> > > > > On Mon, 2024-02-05 at 13:09 +0100, Nuno Sa wrote:
+> > > > > > Device links will drop their supplier + consumer refcounts
+> > > > > > asynchronously. That means that the refcount of the of_node att=
+ached
+> > > > > > to
+> > > > > > these devices will also be dropped asynchronously and so we can=
+not
+> > > > > > guarantee the DT overlay assumption that the of_node refcount m=
+ust be
+> > > > > > 1 in
+> > > > > > __of_changeset_entry_destroy().
+> > > > > >
+> > > > > > Given the above, call the new fwnode_links_flush_queue() helper=
+ to
+> > > > > > flush
+> > > > > > the devlink workqueue so we can be sure that all links are drop=
+ped
+> > > > > > before
+> > > > > > doing the proper checks.
+> > > > > >
+> > > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> > > > > > ---
+> > > > > >  drivers/of/dynamic.c | 8 ++++++++
+> > > > > >  1 file changed, 8 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+> > > > > > index 3bf27052832f..b7153c72c9c9 100644
+> > > > > > --- a/drivers/of/dynamic.c
+> > > > > > +++ b/drivers/of/dynamic.c
+> > > > > > @@ -14,6 +14,7 @@
+> > > > > >  #include <linux/slab.h>
+> > > > > >  #include <linux/string.h>
+> > > > > >  #include <linux/proc_fs.h>
+> > > > > > +#include <linux/fwnode.h>
+> > > > > >
+> > > > > >  #include "of_private.h"
+> > > > > >
+> > > > > > @@ -518,6 +519,13 @@ EXPORT_SYMBOL(of_changeset_create_node);
+> > > > > >
+> > > > > >  static void __of_changeset_entry_destroy(struct of_changeset_e=
+ntry
+> > > > > > *ce)
+> > > > > >  {
+> > > > > > + /*
+> > > > > > +  * device links drop their device references (and hence their
+> > > > > > of_node
+> > > > > > +  * references) asynchronously on a dedicated workqueue. Hence=
+ we
+> > > > > > need
+> > > > > > +  * to flush it to make sure everything is done before doing t=
+he
+> > > > > > below
+> > > > > > +  * checks.
+> > > > > > +  */
+> > > > > > + fwnode_links_flush_queue();
+> > > > > >   if (ce->action =3D=3D OF_RECONFIG_ATTACH_NODE &&
+> > > > > >       of_node_check_flag(ce->np, OF_OVERLAY)) {
+> > > > > >           if (kref_read(&ce->np->kobj.kref) > 1) {
+> > > > > >
+> > > > >
+> > > > > Hi Rob and Frank,
+> > > > >
+> > > > > Any way you could take a look at this and see if you're ok with t=
+he
+> > > > > change
+> > > > > in the
+> > > > > overlay code?
+> > > > >
+> > > > > On the devlink side , we already got the ok from Rafael.
+> > > >
+> > > > Didn't Saravana say he was going to look at this? As of yesterday, =
+he's
+> > > > also a DT maintainer so deferring to him.
+> > > >
+> > >
+> > > Yeah, I did asked him but I guess he never had the time for it... Sar=
+avana,
+> > > could you please give some feedback on this? I think the most sensibl=
+e part
+> > > is
+> > > on the devlink side but I assume this is not going to be merged witho=
+ut an
+> > > ack
+> > > from a DT maintainer...
+> >
+> > Sorry for the delay Nuno. I'll get to this. I promise. This week is a b=
+it
+> > busy.
+> >
+>
+> No worries. Just making sure it's not forgotten :)
 
-syzbot found the following issue on:
+Hi Nuno,
 
-HEAD commit:    905b00721763 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=117a5b52180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c9378409372fa395
-dashboard link: https://syzkaller.appspot.com/bug?extid=57d7c816f3eb3c02ffa9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
+Thanks for nudging me about this issue.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I replied to a similar patch series that Herve sent out last year.
+Chose to reply to that because it had fewer issues to fix and Herve
+sent it out a while ago.
+https://lore.kernel.org/all/20231130174126.688486-1-herve.codina@bootlin.co=
+m/
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/afc82f43a122/disk-905b0072.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0b11ab3a34e1/vmlinux-905b0072.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/eff038048b1b/Image-905b0072.gz.xz
+Can you please chime in there?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57d7c816f3eb3c02ffa9@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 1133 at drivers/media/cec/core/cec-adap.c:365 cec_data_cancel+0x620/0x7bc drivers/media/cec/core/cec-adap.c:365
-Modules linked in:
-CPU: 1 PID: 1133 Comm: syz-executor.4 Tainted: G    B              6.8.0-rc4-syzkaller-g905b00721763 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : cec_data_cancel+0x620/0x7bc drivers/media/cec/core/cec-adap.c:365
-lr : cec_data_cancel+0x620/0x7bc drivers/media/cec/core/cec-adap.c:365
-sp : ffff800097c87730
-x29: ffff800097c87740 x28: ffff0000c86cc810 x27: ffff0000c86cc800
-x26: dfff800000000000 x25: 1fffe0001a08c4df x24: 0000000000000000
-x23: 0000000000000040 x22: 0000000000000000 x21: ffff0000d04626f8
-x20: ffff0000d0462000 x19: ffff0000c86cc800 x18: 1fffe00036804796
-x17: ffff80008ec8d000 x16: ffff800080275750 x15: 0000000000000001
-x14: 1ffff00012f90ea0 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000040000 x10: 00000000000008e5 x9 : ffff8000ac1bf000
-x8 : 00000000000008e6 x7 : 0000000000000000 x6 : ffff800086e8a5fc
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff800080316bac
-x2 : ffff0000c86cc800 x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- cec_data_cancel+0x620/0x7bc drivers/media/cec/core/cec-adap.c:365
- cec_transmit_msg_fh+0xfc0/0x1a74
- cec_transmit drivers/media/cec/core/cec-api.c:230 [inline]
- cec_ioctl+0x239c/0x37b0 drivers/media/cec/core/cec-api.c:534
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 0
-hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-hardirqs last disabled at (0): [<ffff8000801b5074>] copy_process+0x1318/0x3478 kernel/fork.c:2441
-softirqs last  enabled at (0): [<ffff8000801b509c>] copy_process+0x1340/0x3478 kernel/fork.c:2442
-softirqs last disabled at (0): [<0000000000000000>] 0x0
----[ end trace 0000000000000000 ]---
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Saravana
 
