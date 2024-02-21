@@ -1,112 +1,124 @@
-Return-Path: <linux-kernel+bounces-75353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A265885E71A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:18:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74DCE85E724
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:20:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 522C31F2293F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:18:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A68841C23E73
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85A585C68;
-	Wed, 21 Feb 2024 19:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49F585C7B;
+	Wed, 21 Feb 2024 19:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ZMOoE3vL"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fM7bxuzf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9600D85955
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E284D83A06;
+	Wed, 21 Feb 2024 19:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708543078; cv=none; b=sPlNzhny3l6A1+hWQFcaFWejr5+otcaXYdyayer2GWKcouTs8jPpQAwTTlvu9LTiOVKd+gr6eHqyTh2YqYIjDEMEqV2deI9oUqGyPORSOLn1b7059NoTP9VnAEpX1FtEAc7gvOVwO9ZyR87zEUzvhotNQOmicXYQbSbCRYvKKY8=
+	t=1708543221; cv=none; b=LfEaDtLNfCxEXpkDasfer0/6tUxUNGHCBuQete8jVHb3bftuD1YwNE0Rw5INgggRD/GMf4ZACE7oqvKl3guoQaN2dq1s6tWdjF2AmJ2XP9qs4+kRY0UDtj6Sc/VEyX42c5x4Bn83ecjzVzTWiV4nzXJYZDS1agPmBFwpHR5cHvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708543078; c=relaxed/simple;
-	bh=M0FDvNe5gdx4GV6MSGP6C/r0ckrzasd1+5u7VS+D/BA=;
+	s=arc-20240116; t=1708543221; c=relaxed/simple;
+	bh=LHJE1R6CeCVbz5voxdhxWZEEGGRoTCqvuitIhyGxW/Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DOILaKpg2GCyo1VQRfSDGvy2okn6VITJfXievzCjCil3miJ8wN4f6xxwaGiVvV5KtyQIq1Hk6C68kaTEOIib5UAjnRfSQmWn9fGIDF6Wjj+vhDEIzLd20vpndCd5UfnGEv3UCtwYDl0UtlSvnTf2/FVxJjKoTijuvywsTlZd/YU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ZMOoE3vL; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dbf1fe91fcso31995025ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:17:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1708543076; x=1709147876; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xPyGME1+D4Rx5RWLjxT2dahKKgtER+x9+Q9YDDK3GZ8=;
-        b=ZMOoE3vL80Ynwz2ejJBBIbOsOmXSZcJJ7PjQrw2q4tyf8FCHLvgVYqKJjSr+svi30K
-         s6oxbob2r0lxbnWcTKWCcCI+tseFhnxQ6+y3LdjVHNPDbsRMMJ0HqMLLFb/BToWchOdS
-         HqLjXCJ+3LjPj9x4yJDcDODaTCzHUCPTFuKmM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708543076; x=1709147876;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xPyGME1+D4Rx5RWLjxT2dahKKgtER+x9+Q9YDDK3GZ8=;
-        b=XBIps+6dsSL90/02lyLqvkjYJfyQoidWiPbbbAegLbvDftYPhdQXpj+d6ycXVz26Ve
-         aPmL0k+zMoQAGyEknArDbfbz236ae4+P7IKLMfy5m2HXEGqbP3YyauvqToQEUyKUb9z7
-         mcDBlv/OqUkc643Jgb20KDXKiwf2qX9tsEFgJ4QEB/ajD9ujoMO2xdoFBayhrr6gsF6L
-         F5ieiSI01HB9wfJlHL02IVqAhBmGfh/KrSkUqeWWY5Q+OKOnPRuI+RKDsUDoDLxq547H
-         DUrbP6a4eaMaBVtvoi8tpgdd/4cXvlIMZfiqffsBGDMiQj3YThInqzFXrFNgZWLl3FZd
-         kTxA==
-X-Forwarded-Encrypted: i=1; AJvYcCVzQLpS1OHG93NKQQXbQ4qQZdnxFOmRKV/vyJtklMBI8+oxeknzwN198JxL41fSVZQ3pWEjmICSadJsisg7dOBmJGznr5xs6qw7PeqI
-X-Gm-Message-State: AOJu0YxdonF9jLF1pX2yhs6X5liB2DFys9Qy+BLFxIfQDtHaPtZV4KkC
-	t/EDqPwW20jx7k7Gj0A8r0tWgJ9nXOQV01G5QtplqK2s/IuBYhGEVkzQgBlyyWw=
-X-Google-Smtp-Source: AGHT+IHQ43TQqS81oq7BxL4LKPXRytHQQhnbBClXNRp3eXg0/eCkjOfuROs7YtvYUWtReCcYtmoQVg==
-X-Received: by 2002:a17:903:1ca:b0:1db:aab5:1db5 with SMTP id e10-20020a17090301ca00b001dbaab51db5mr19811932plh.42.1708543076046;
-        Wed, 21 Feb 2024 11:17:56 -0800 (PST)
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id bj11-20020a170902850b00b001dc3916853csm1143816plb.73.2024.02.21.11.17.54
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Feb 2024 11:17:55 -0800 (PST)
-Date: Wed, 21 Feb 2024 11:17:53 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Larysa Zaremba <larysa.zaremba@intel.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH net-next 1/2] netdev-genl: Add ifname for queue and NAPI
- APIs
-Message-ID: <20240221191752.GA68788@fastly.com>
-References: <1708531057-67392-1-git-send-email-jdamato@fastly.com>
- <1708531057-67392-2-git-send-email-jdamato@fastly.com>
- <20240221111220.4e6b6170@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SuSitFXWqsfJaHykw+zFaWa8/gefwcdPGkxu+n6pXT+I/9pm6HaO9MINfXB2LZVzPYZJliw5AoDeWRrSel+ZCxpd+Lam+FJ/ijXMMO7JEjtZzft7HsQFfQvKltcxO4cHMib+VJ2I9cGE/fnwpsc89mKFZQlRHKtNcksjYtkL4Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fM7bxuzf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5294CC433F1;
+	Wed, 21 Feb 2024 19:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708543220;
+	bh=LHJE1R6CeCVbz5voxdhxWZEEGGRoTCqvuitIhyGxW/Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fM7bxuzf37U7KgkBjE4t6xl7196zWQ3zUCNoJ+agd+QN1cy+Xyq7yQXJHO1ESLu+m
+	 WfRkNjkseH24zdDLgFE1SQHiWbwcIsKTde/kK/nypgvvdaArvLxpMbxTv/DpPdea0Y
+	 h/S2n8KTkPnE0y1deFIAUzbMSfmwY+RBO7FMARe9q8Qz3/FxPYnixoXp6/h5t4/vuP
+	 uoT778pZQf+ryGuzNashUCuvUxs+4C4xh9U2NIQYurkPfiYpJq05pv7AaQTTfFstDU
+	 3dg2YeZnziQRTHuGFAV/FX2fhdlhfvtEv0Qil9L1OpaX49KYycDzgKOwtGXtT8v3X9
+	 UMMPgrMEFWVIg==
+Date: Wed, 21 Feb 2024 19:20:11 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
+	"Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+	Deepak Gupta <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+	"H.J. Lu" <hjl.tools@gmail.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Florian Weimer <fweimer@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v8 33/38] kselftest/arm64: Add a GCS test program built
+ with the system libc
+Message-ID: <084d97c0-a84c-49e1-a1e2-d864dbfcce0e@sirena.org.uk>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <20240203-arm64-gcs-v8-33-c9fec77673ef@kernel.org>
+ <87sf1n7uea.fsf@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2wtnap7o07IPW6JY"
+Content-Disposition: inline
+In-Reply-To: <87sf1n7uea.fsf@linaro.org>
+X-Cookie: The second best policy is dishonesty.
+
+
+--2wtnap7o07IPW6JY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221111220.4e6b6170@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
 
-On Wed, Feb 21, 2024 at 11:12:20AM -0800, Jakub Kicinski wrote:
-> On Wed, 21 Feb 2024 07:57:29 -0800 Joe Damato wrote:
-> >  	if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_ID) ||
-> >  	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_TYPE) ||
-> > -	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_IFINDEX))
-> > +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_IFINDEX) ||
-> > +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_IFNAME))
-> 
-> This means user always has to provide both ifindex and ifname,
-> right?
+On Mon, Feb 19, 2024 at 11:15:57PM -0300, Thiago Jung Bauermann wrote:
 
-That's right. I'm OK with omitting this requirement, though. I feel like to
-your earlier point on name changes, maybe ifindex is enough as far as
-required params go.
+> The only issue as can be seen above is that the can_call_function test
+> is failing. The child is getting a GCS Segmentation fault when returning
+> from fork().
+
+> I tried debugging it with GDB, but I don't see what's wrong since the
+> address in LR matches the first entry in GCSPR. Here is the
+> debug session:
+
+I'm simply not seeing this in my testing.  There's *something* going on
+somewhere, I had another report of a similarish thing elsewhere, but not
+in any way that I've ever been able to reproduce.  It smells like there
+might be something missing with the page tables...
+
+--2wtnap7o07IPW6JY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXWTOoACgkQJNaLcl1U
+h9BQigf/fQNxlJZgGDgIILMsKObHoXWsq3JdCPlraW9xJegPTEC5/TbR57O6F0Ds
+/m4Si6b75N7h1+TLJWetmyKnGAMNBss9qHx2swhi78CdwKsefp4GKaivaFWVKxRx
+srdyCavP5tHvbc4O2WqN4A8HZY2ekXKnaXvmz/1DtfvKpV5hgYKBo99ISPLrMVpC
+gX/jBaUd5GFOX6ImWBzN30pXfHRJXBr0DiXBrTlxoevDfu7GvQN4qECSqBxM2s1F
+Q0vvblI/SBO9CX3h1Pnbdr4VleVLI3arjc4YTBiaPY8cVjHyb1RkUeUrRWVXRzU8
+pzYSSKqd4kQ61qa9FEiZhZs13o9otQ==
+=eqM2
+-----END PGP SIGNATURE-----
+
+--2wtnap7o07IPW6JY--
 
