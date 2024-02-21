@@ -1,179 +1,110 @@
-Return-Path: <linux-kernel+bounces-73916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574C385CD94
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:53:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B029485CD95
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA86B1F235B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:53:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB1DE1C22DFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF5F46BF;
-	Wed, 21 Feb 2024 01:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40326FBF;
+	Wed, 21 Feb 2024 01:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p1m1hVpO"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qv6zTSYt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DFE6FAE
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A6A63DD;
+	Wed, 21 Feb 2024 01:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708480430; cv=none; b=p+lFrnt1fCoiMWQ5SCFqufE9ngshqDJSPm43RZ7s3aXj1t3VRd+SGTtiAK+i++rK9ptKfESfIUKtsxb196tkCpvZRqDVQ6DFkITAvcsGKPxIUkpPbfSz1tF5VBaetWc3bt6vN/A/zRndbo9ZUJlnmuwyOWbwMxb6MCvi5WMs02o=
+	t=1708480435; cv=none; b=U0B4jN67OSgd39l/oif4+S3fU7jRyCaihGnt7Tba9yOkvRKQnf/G4RjLtbowdLKC3/uqQDIBwvw19EasgMHPEEg6bHfOCBoSgLJYebot8IybrwDLIm3BoetcTBuH/k8+Y++XilIfaoYkvJEMc93MVnna1JLCzqa2/aKQcMO89WE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708480430; c=relaxed/simple;
-	bh=X7DS4AxqZmwIGaiOTbhL7uSmpzpJXN4zPisSmEhXWzw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ylo8lfogLL4ptGzw+j4LzQpp/Je3yuPQXI/fTVj3WtlhoL2p3mNlmGjAGJibhwioYhVvGYukorxPAzaLF1fmdRgp16snHyFz6raOZfVRj6sFdm9xAEBqu9SJJtOwAC53mYpuu9HUcGuKvo0vnbh1iy76cdk751XIUg+OTPhQ2qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p1m1hVpO; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso1074201fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:53:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708480426; x=1709085226; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xNv57wTrROpvBu7D7eRkAMBX/0S6ivveyoxRqXbvKXQ=;
-        b=p1m1hVpOwX/WbQY1KOCL3TDL7t+jJveS529gwfL5BcYVmp2m9MiXlGX5//upZDhYJ6
-         2BmYVmhUl/3EE2KPIJQpIxJ4yzi/0/nC9eUzI6yqhQBDWR+1QoUWlfkuWFdIBFFcR56P
-         yBJrW7qWCfHoTPidBUtK93YX9ydV2Ya8yYeGcQfUY+lDs8OBLi71HsNThXcN6aDwAimH
-         IxFef8G6sZ9zCjc/wEn1JkhvWW8BxOS20BIwJlC7PsIYaG6/Xi933r51RS3G/247B+KC
-         OGi0lanGqoKcJXG2AfzF712v1huH37O8RDKOkMEDkMcoGUg3ah8Au4UrZeOsIOwZH0kt
-         nLag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708480426; x=1709085226;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xNv57wTrROpvBu7D7eRkAMBX/0S6ivveyoxRqXbvKXQ=;
-        b=XIQZreEF5ygbT6hVJ/ps9CuCibxEhE8A8LC11knG5DLeyju6M5JhNSO4IL5ddlODxr
-         RWQwhr20DOCvMxHwknjXOzZpltsgO7/6cUJvX207+LH6aPnEuaI/9EkRMKneOtg548BL
-         5TLO0zOGTXw/jSJ8rDKcOEEh64zoMLnozsiMQX0LmuAqjqWviOqwPWj9mJHaQFsWCxNH
-         SkbkXVQnX++QfkfTTu257tSzwxB+rYP4H0q13/g92DJLD6FKF3KzkwGOrgU+cSavRwt0
-         KdmfOhMdCjbk+PyxVa5nanwmXtNK7l7DCn0f9Nh4oPOVESp8a5JW9ECmyLET+RzqGhzh
-         SA1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXfdjjeBUAGchv3SMX2bXCAqrxAv3rUk5psu/F3u4H0GzM2eGXKD120hY+G69CFzbywVlykHdIzaiS6cxyhESmzWW7ItgrnCGHMWnk+
-X-Gm-Message-State: AOJu0YwknRTyfEzGBlacalYruYSDzRdagbNzfiHUQNjAjdVWh4yl2u5j
-	SVOCjvGnbCcSwbXDjbqzsG/1IXwz6orKGcf9dTbY9dVysMsYwE07pBNtAtAH/PRu7yzNnIjDUNC
-	huTKnbyZPzF2RDo0kdGLDxZDg5hSmbXKx9HZ8oA==
-X-Google-Smtp-Source: AGHT+IF7gRjr9Hk5fW6BUGGbPQ45tQ34I5uYoYOH7wMtdjE5w7kHEwr10LtY/FMpzS+Tfzw5d9v8DCNbOYESwUeLQKk=
-X-Received: by 2002:a05:6512:2021:b0:512:b041:d6cc with SMTP id
- s1-20020a056512202100b00512b041d6ccmr5213332lfs.29.1708480426340; Tue, 20 Feb
- 2024 17:53:46 -0800 (PST)
+	s=arc-20240116; t=1708480435; c=relaxed/simple;
+	bh=L/2v3iSlKNPFRF36MqloXyokn7cW8/ARD/Ff7gqonv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=izx77VIgcxXm3ITYS8fFrq6AOG24W+7Iv8J0IAUhkkHsDDHIcYnLv8ewl16wG0PVzl6JZWdd/r4aqwn9GZe949taSGNJVqGzW/OkOmLSnK88GMBKb/VEyvWtisajp0cxffNWSP89BwDp/+CqkMyZ02RbTODLd573mBvaMKcyzAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qv6zTSYt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A93EC433F1;
+	Wed, 21 Feb 2024 01:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708480434;
+	bh=L/2v3iSlKNPFRF36MqloXyokn7cW8/ARD/Ff7gqonv4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=qv6zTSYtxVinYMnQP0hRlpxBBkWbrJEemqismf8LJk9epGMh5ze+QpHGSqRy2EZDk
+	 lTtY5ULt0EAWt3kf6ywzCk+HEZeTSkQ299rNV9cEabM+xq5pp3Im5QF9l2eAd3f+AA
+	 mIwA1Z1kpYLJcMPYeURHdsy4ReBrX2ulCOaxMcqIn/lZGyhvrgNav8thOjZvV4oYAw
+	 tnLnpXP3sDKwBYh9yzjUBlyCM6a35xQgALQBBEolOhCSzgKoiF5F6dDdjfpshm75d8
+	 3nB08FyqdFkURV9xbX2qJcTD6uDxSV+mU1Jbsqdm1Skxlf2UiBZCxEbvOkkbORUI1u
+	 /a0nOBP4iTPkg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 08BFDCE16C6; Tue, 20 Feb 2024 17:53:54 -0800 (PST)
+Date: Tue, 20 Feb 2024 17:53:54 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v5 0/4] Reduce synchronize_rcu() latency(v5)
+Message-ID: <70c597d0-7c4f-4b55-bdea-f6bc411862f6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240220183115.74124-1-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027000525.1278806-1-tina.zhang@intel.com>
- <20231027000525.1278806-6-tina.zhang@intel.com> <CABQgh9GWcqUeBkHQCpj5tzu6FnEgpOp3KOQ6s9c0X0KU7Ov1qw@mail.gmail.com>
- <MW5PR11MB5881C5CC15452017867B412889502@MW5PR11MB5881.namprd11.prod.outlook.com>
- <CABQgh9GxQmGU2HR73bSoZLuf4XZFhThXwUs_HJx6KwxDmXrXgg@mail.gmail.com>
-In-Reply-To: <CABQgh9GxQmGU2HR73bSoZLuf4XZFhThXwUs_HJx6KwxDmXrXgg@mail.gmail.com>
-From: Zhangfei Gao <zhangfei.gao@linaro.org>
-Date: Wed, 21 Feb 2024 09:53:34 +0800
-Message-ID: <CABQgh9HTH9Utx1CGfni42VykJAFDoYChVbucSA0tmCpeV6Wpxg@mail.gmail.com>
-Subject: Re: [PATCH v10 5/6] iommu: Support mm PASID 1:n with sva domains
-To: "Zhang, Tina" <tina.zhang@intel.com>
-Cc: "iommu@lists.linux.dev" <iommu@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, 
-	Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, 
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	"Tian, Kevin" <kevin.tian@intel.com>, Nicolin Chen <nicolinc@nvidia.com>, 
-	Michael Shavit <mshavit@google.com>, Vasant Hegde <vasant.hegde@amd.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220183115.74124-1-urezki@gmail.com>
 
-On Wed, 21 Feb 2024 at 09:28, Zhangfei Gao <zhangfei.gao@linaro.org> wrote:
->
-> Hi, Tina
->
-> On Wed, 21 Feb 2024 at 07:58, Zhang, Tina <tina.zhang@intel.com> wrote:
->
-> > > >  struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct
-> > > > mm_struct *mm)  {
-> > > > +       struct iommu_mm_data *iommu_mm;
-> > > >         struct iommu_domain *domain;
-> > > >         struct iommu_sva *handle;
-> > > >         int ret;
-> > > >
-> > > > +       mutex_lock(&iommu_sva_lock);
-> > > > +
-> > > >         /* Allocate mm->pasid if necessary. */
-> > > > -       ret = iommu_sva_alloc_pasid(mm, dev);
-> > > > -       if (ret)
-> > > > -               return ERR_PTR(ret);
-> > > > +       iommu_mm = iommu_alloc_mm_data(mm, dev);
-> > > > +       if (IS_ERR(iommu_mm)) {
-> > > > +               ret = PTR_ERR(iommu_mm);
-> > > > +               goto out_unlock;
-> > > > +       }
-> > > >
-> > > >         handle = kzalloc(sizeof(*handle), GFP_KERNEL);
-> > > > -       if (!handle)
-> > > > -               return ERR_PTR(-ENOMEM);
-> > > > -
-> > > > -       mutex_lock(&iommu_sva_lock);
-> > > > -       /* Search for an existing domain. */
-> > > > -       domain = iommu_get_domain_for_dev_pasid(dev, mm->pasid,
-> > > > -                                               IOMMU_DOMAIN_SVA);
-> > > > -       if (IS_ERR(domain)) {
-> > > > -               ret = PTR_ERR(domain);
-> > > > +       if (!handle) {
-> > > > +               ret = -ENOMEM;
-> > > >                 goto out_unlock;
-> > > >         }
-> > > >
-> > > > -       if (domain) {
-> > > > -               domain->users++;
-> > > > -               goto out;
-> > >
-> > > Our multi bind test case broke since 6.8-rc1.
-> > > The test case can use same domain & pasid, return different handle,
-> > > 6.7 simply  domain->users ++ and return.
-> > >
-> > > > +       /* Search for an existing domain. */
-> > > > +       list_for_each_entry(domain, &mm->iommu_mm->sva_domains, next)
-> > > {
-> > > > +               ret = iommu_attach_device_pasid(domain, dev,
-> > > > + iommu_mm->pasid);
-> > >
-> > > Now iommu_attach_device_pasid return BUSY since the same pasid.
-> > > And then iommu_sva_bind_device attach ret=-16
-> > Sounds like the test case tries to bind a device to a same mm multiple times without unbinding the device and the expectation is that it can always return a valid handle to pass the test. Right?
->
-> Yes
->
-> The device can bind to the same mm multi-times and return different handle,
-> Since the refcount, no need to unbind and bind sequently,
-> The unbind can happen later with the handle.
+On Tue, Feb 20, 2024 at 07:31:11PM +0100, Uladzislau Rezki (Sony) wrote:
+> This is a v5 that tends to improve synchronize_rcu() call in terms of
+> latency reduction. This has been developed together with Neeraj Upadhyay.
+> The delta between previous v4 and v5 is rather small. Main difference
+> are cosmetic changes related to patch squashing and data structures
+> splitting.
+> 
+> It is based on Paul's dev branch.
 
+Very good, thank you!
 
-With this diff can solve the issue, what's your suggestion?
+Queued for further review and testing.
 
-@@ -88,10 +94,12 @@ struct iommu_sva *iommu_sva_bind_device(struct
-device *dev, struct mm_struct *mm
-        /* Search for an existing domain. */
-        list_for_each_entry(domain, &mm->iommu_mm->sva_domains, next) {
-                ret = iommu_attach_device_pasid(domain, dev, iommu_mm->pasid);
--               if (!ret) {
-+               if (!ret || ret == -EBUSY) {
-                        domain->users++;
-                        goto out;
-                }
-@@ -141,8 +151,8 @@ void iommu_sva_unbind_device(struct iommu_sva *handle)
-        struct device *dev = handle->dev;
-        mutex_lock(&iommu_sva_lock);
--       iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
-        if (--domain->users == 0) {
-+               iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
-                list_del(&domain->next);
-                iommu_domain_free(domain);
-        }
+							Thanx, Paul
 
-Thanks
+> v4 -> v5:
+>  - furthers squashing to reduce number of patches;
+>  - remove the CONFIG_RCU_SR_NORMAL_DEBUG_GP Kconfig option and
+>    reuse already existing debug option which is CONFIG_PROVE_RCU;
+>  - add data structures in a separate patch.
+> 
+> v4: https://lore.kernel.org/lkml/ZZ2bi5iPwXLgjB-f@google.com/T/
+> v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
+> v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
+> v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
+> 
+> Uladzislau Rezki (Sony) (4):
+>   rcu: Add data structures for synchronize_rcu()
+>   rcu: Reduce synchronize_rcu() latency
+>   rcu: Add a trace event for synchronize_rcu_normal()
+>   rcu: Support direct wake-up of synchronize_rcu() users
+> 
+>  .../admin-guide/kernel-parameters.txt         |  14 +
+>  include/trace/events/rcu.h                    |  27 ++
+>  kernel/rcu/tree.c                             | 363 +++++++++++++++++-
+>  kernel/rcu/tree.h                             |  20 +
+>  kernel/rcu/tree_exp.h                         |   2 +-
+>  5 files changed, 424 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.39.2
+> 
 
