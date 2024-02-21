@@ -1,96 +1,150 @@
-Return-Path: <linux-kernel+bounces-74115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47CD85D021
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:52:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2660885D023
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:52:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80495285B2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:52:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12C11F25443
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B31E39FC6;
-	Wed, 21 Feb 2024 05:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557AA39FE5;
+	Wed, 21 Feb 2024 05:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0AoillDi"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OwcuFe6d"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAE52B9B8;
-	Wed, 21 Feb 2024 05:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15FF739863
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708494727; cv=none; b=a6ABP/oR0b7d34Yxamu5ah33qywcNcSXOlKDqw/QB0O9X4PtBJaaUfpwVD5EMbLm8Di90bL4o2L1qj66I533mkSaNrFGlCNH6UVudWzIzysB24Vadz7IPP11tihITRWLqg9WFuv1ZdxydvpiRFxqzaMgrwpCengbf7VeGOQunis=
+	t=1708494767; cv=none; b=EL6l+qTmb70aRD3fX8y/Jq2+w14iHOB7GwQeXLM5nfoVJtbGsHWXZEW3iT1HRyKpgQvahPJgBvR331MX5IizAwLQBYGgvwD56PwTB3mZ8AaTENOg3huQVil5HAn2Lb5V0q4aqeWIGtMRJumyuGYokoYy1QxjR8ahPc4kpNwnCys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708494727; c=relaxed/simple;
-	bh=mGRiv/m1ePlRL1YC8KEXlYdn9wXNyRW98wi++RwA94o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GcNXrNHDQP0Iklg/PSoP5lld6PUDQxvprDkaWyp3KF/XYcx9QoygygqzfzjSvHK1XkcgS+ArcfaXVTNM+8Uj8bAY1TW2GcSHU2mxyYv8ooT1U0EJWQHQHG07CD2m0uqzbPvfOtfbD1u1oYWhhbz/oNfcTpzvYAI0cbDTmBSQWVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0AoillDi; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=8PCwdblCqut/ML3KnTOH3qRXV1Ybferr3oAWvvLiw3I=; b=0AoillDislWUHM8umRGvZuVYN4
-	oOwksUWzNafuHEbJxwZOlgc0WkdvWnaGM96QOVCP0y9RNiyyAuXfcDn3u+MqAUPiU39lp3z4wRNJA
-	hyNKoG4WnfAaRffvodXFJ7MezbTBPRh6k9UId4ttCfeZOtRzx/qy+UPZwbC/zOVIxzoy03EBvIIfh
-	6+7BepXlyljAJd6++7KXDx2V2oQi1zVnqpsm3qWk/MGGuMbcHSP+5SalWG6pxKshOufLbeDjDXGg3
-	j/qGgDObum3dmwcRqF4ztyw33H42hT+grdDYtHJer0+TbnEhp1k1KGlJQvUSeZucXp+WELELuRZuA
-	6L+wRJiA==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcfWW-0000000HGss-1E4z;
-	Wed, 21 Feb 2024 05:52:04 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	linux-leds@vger.kernel.org
-Subject: [PATCH] leds: lm3601x: fix all kernel-doc warnings
-Date: Tue, 20 Feb 2024 21:52:03 -0800
-Message-ID: <20240221055203.26052-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1708494767; c=relaxed/simple;
+	bh=m9KXViBMIqK3eY0oESEJYXMAttcld2hKY0eqPgtVrzM=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FSVPnxVCJNYukplYqpYNEVkF96NIjmXWlyXHGUZaRbYgFWSCsJx3nfEJSYvUhoG+nd8Ahb/yUPTt+dkZsYvspTa8tOIi2nuTpW/kFPpVX0u9NIX1kjm/ml/iimZmVCKIAgsYiX5TB+Zmuy5lWeDd6v3L05AAolzoHjDGOKbST+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OwcuFe6d; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708494766; x=1740030766;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=m9KXViBMIqK3eY0oESEJYXMAttcld2hKY0eqPgtVrzM=;
+  b=OwcuFe6doZuySaMPFcxL7CnP0X0ADyHj7l4Z+cC8M3FNQLssZ5w3/l9j
+   rPGMaPBkeyF6eNEawNrxjqpSkJngTfWNIFydPlUMPjM/GqPooWlukZkIc
+   pypnhYNJkaS3pNvkUx04jf19COxdDZW+VPxbLM7nJNXFt5HV23KAvzj8+
+   ONl+m6SzCRLnn6JSTiIOzoMvoZ4GSVvkIZr/rilf78iieTfxCl3/WjDqB
+   jMn99lCnS9NknCEsHl1k8YLpnKQ1N6bTg85/aYiC5MAPKcvX6OXY4duQU
+   hiMAOc2uOr0npfNjKiEm/Rn6bkatCbOVBKoNZmAlEOxzvwxnLZrrtzH4i
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="5592741"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="5592741"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 21:52:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="9643953"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.203]) ([10.249.171.203])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 21:52:42 -0800
+Message-ID: <b0f5e418-8faa-45d1-b086-61f6c009c0cb@linux.intel.com>
+Date: Wed, 21 Feb 2024 13:52:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
+ <iommu@lists.linux.dev>,
+ "virtualization@lists.linux-foundation.org"
+ <virtualization@lists.linux-foundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/8] iommu: Add iopf domain attach/detach/replace
+ interface
+Content-Language: en-US
+To: "Tian, Kevin" <kevin.tian@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joel Granados <j.granados@samsung.com>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB527629BF9A0E27E36D3925B18C452@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB527629BF9A0E27E36D3925B18C452@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add a short struct description and remove one extraneous struct field
-description to quieten these warnings:
+On 2024/2/7 16:11, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Monday, January 22, 2024 3:39 PM
+>>
+>> There is a slight difference between iopf domains and non-iopf domains.
+>> In the latter, references to domains occur between attach and detach;
+>> While in the former, due to the existence of asynchronous iopf handling
+>> paths, references to the domain may occur after detach, which leads to
+>> potential UAF issues.
+> 
+> Does UAF still exist if iommu driver follows the guidance you just added
+> to iopf_queue_remove_device()?
+> 
+> it clearly says that the driver needs to disable IOMMU PRI reception,
+> remove device from iopf queue and disable PRI on the device.
 
-leds-lm3601x.c:73: warning: missing initial short description on line:
- * struct lm3601x_led -
-leds-lm3601x.c:100: warning: Excess struct member 'led_name' description in 'lm3601x_led'
+The iopf_queue_remove_device() function is only called after the last
+iopf-capable domain is detached from the device. It may not be called
+during domain replacement. Hence, there is no guarantee that
+iopf_queue_remove_device() will be called when a domain is detached from
+the device.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Lee Jones <lee@kernel.org>
-Cc: linux-leds@vger.kernel.org
----
- drivers/leds/flash/leds-lm3601x.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> presumably those are all about what needs to be done in the detach
+> operation. Then once detach completes there should be no more
+> reference to the domain from the iopf path?
 
-diff -- a/drivers/leds/flash/leds-lm3601x.c b/drivers/leds/flash/leds-lm3601x.c
---- a/drivers/leds/flash/leds-lm3601x.c
-+++ b/drivers/leds/flash/leds-lm3601x.c
-@@ -70,12 +70,11 @@ enum lm3601x_type {
- };
- 
- /**
-- * struct lm3601x_led -
-+ * struct lm3601x_led - private lm3601x LED data
-  * @fled_cdev: flash LED class device pointer
-  * @client: Pointer to the I2C client
-  * @regmap: Devices register map
-  * @lock: Lock for reading/writing the device
-- * @led_name: LED label for the Torch or IR LED
-  * @flash_timeout: the timeout for the flash
-  * @last_flag: last known flags register value
-  * @torch_current_max: maximum current for the torch
+The domain pointer stored in the iopf_group structure is only released
+after the iopf response, possibly after the domain is detached from the
+device. Thus, the domain pointer can only be freed after the iopf
+response.
+
+> 
+>>
+>> +struct iopf_attach_cookie {
+>> +	struct iommu_domain *domain;
+>> +	struct device *dev;
+>> +	unsigned int pasid;
+>> +	refcount_t users;
+>> +
+>> +	void *private;
+>> +	void (*release)(struct iopf_attach_cookie *cookie);
+>> +};
+> 
+> this cookie has nothing specific to iopf.
+> 
+> it may makes more sense to build a generic iommu_attach_device_cookie()
+> helper so the same object can be reused in future other usages too.
+> 
+> within iommu core it can check domain iopf handler and this generic cookie
+> to update iopf specific data e.g. the pasid_cookie xarray.
+
+This means attaching an iopf-capable domain follows two steps:
+
+1) Attaching the domain to the device.
+2) Setting up the iopf data, necessary for handling iopf data.
+
+This creates a time window during which the iopf is enabled, but the
+software cannot handle it. Or not?
+
+Best regards,
+baolu
 
