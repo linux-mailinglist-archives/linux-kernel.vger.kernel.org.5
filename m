@@ -1,58 +1,64 @@
-Return-Path: <linux-kernel+bounces-74535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 410BA85D59E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAED285D5A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAEF21F23E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:34:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FC381F23DD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92F15681;
-	Wed, 21 Feb 2024 10:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8F95C9C;
+	Wed, 21 Feb 2024 10:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="C73AFeeK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GzL5mMQG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06413D7A;
-	Wed, 21 Feb 2024 10:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA903D7A;
+	Wed, 21 Feb 2024 10:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708511639; cv=none; b=SRvLb2v955WECo/VNqSgdkRPoXaEsaKUb7wm9Ripbs/say02/AzROxI0utbl4OCsoDqt10GYJlDeG2Pmwf6Glp5GcmQa8YF+txfwhXaahlXnz3kWzmAB1/MiLlG5njalj3bVEtUOaCkfz9OUdVX2eW1d6sfODb9f2lLSLqrSscY=
+	t=1708511651; cv=none; b=V5MzZ2vfIqm2ybeoD7cS+ziOYhqVLmBwHoaLdI5yNs3PjTkMtGreF5Sk5MOHB6pjlsMXkqWBVkbj3DkQDgwu5WEpECHvZCxNMTO+MZrW1ma3MqCbF/kFFEQJ543PwUSX18PducUy9cxY4bzGcDprLmOBx/a6GlT6NDl6VE0FApg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708511639; c=relaxed/simple;
-	bh=BOPSX0/N/WnBv1zcyAER1JjpAJ3iH3Gs6X63CUetxWg=;
+	s=arc-20240116; t=1708511651; c=relaxed/simple;
+	bh=GSkRDVfIjVHsNcttujsc8mwyn+uCTaExgB7via05rEQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qJCJj+/GFw9QNTZuOzK8Mvb01j68keW/c4C4RdvSOKMILVPCqyIKkBjkrUzHgiicWrh+QBnyxKTnhKr4ORkILbUe5J0FHpAf6if/aEwd06qsviw9W/M0wfkMPx08eCtrrYqQs3nVoSKy9UL4N8TNraAbKs4MJuDlF/QIIqs6Xgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=C73AFeeK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1FE2C433C7;
-	Wed, 21 Feb 2024 10:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708511638;
-	bh=BOPSX0/N/WnBv1zcyAER1JjpAJ3iH3Gs6X63CUetxWg=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=V1EnAEXO98je051i4HkP/gBfSM6bjXph0X8lnU7gPJ5I+XF93zVcTaDb3AfS6srm+V1Jksm7k117xqd7d3Iu7i0hZjBJF97oV9wQ/Zjw5LirySZXFobpp3z4B9wtD7zEs73iElOWvpzkK0Fw/+lMk/x++l9CE7WRYKLB9xmvTC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GzL5mMQG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F246C433C7;
+	Wed, 21 Feb 2024 10:34:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708511649;
+	bh=GSkRDVfIjVHsNcttujsc8mwyn+uCTaExgB7via05rEQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=C73AFeeKkCoRVPJGqiRkIGzoxp4r26M9sOXnk+gDOX3bMVNFu/3CbMu6amn/EjjJF
-	 JW18d1eHmrQet7XbcdlFI4HZGyzr7wqo7jwYt3PobKeVRcrvSTW1/PENAFzlzbUWD0
-	 5X7ix4EZs1sYPNTV7RG6a3RAx2dR/rcCPyvN6w90=
-Date: Wed, 21 Feb 2024 11:33:55 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: "GONG, Ruiqi" <gongruiqi1@huawei.com>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Wang Weiyang <wangweiyang2@huawei.com>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>
-Subject: Re: [PATCH stable] memcg: add refcnt for pcpu stock to avoid UAF
- problem in drain_all_stock()
-Message-ID: <2024022134-tackiness-earmuff-59ef@gregkh>
-References: <20240221081801.69764-1-gongruiqi1@huawei.com>
- <2024022119-bogged-action-c877@gregkh>
- <ZdW4xR-Ke227pxjG@tiehlicka>
+	b=GzL5mMQGlp3PbrQ1Ylw+OfIq2MwK/jgW/Ue4fLsAvRD0qZiFZfzcuPHdPINZOm2IY
+	 yJDr3Zi4Mn1N2ymLbIACJl28nC7w5Irs33HlUkxp/3j7R5yOhdBQFSyT9AdaebQHww
+	 RzrsPHLzNDg32aE8jHTB/aDQviPD9kfqtwcx44aXwhoZ9HsdJmplamD6GYfTHaHI4f
+	 q6v9XtJY0t/NUNCOFAA8Buwdn/RzN7L9HRmyjv3F02SJJDBDjGRDDmVN+Ky4rJez6W
+	 5MvwyrAyTYD61XejjCg9+HGVSXXo7575dscdSnD4LmLvPlSRNJ1XML9XCujb/0YbJp
+	 NtYp6wXM+Z6Kg==
+Date: Wed, 21 Feb 2024 10:34:04 +0000
+From: Simon Horman <horms@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Alex Vesker <valex@nvidia.com>, Hamdan Igbaria <hamdani@nvidia.com>,
+	Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] [v2] net/mlx5: fix possible stack overflows
+Message-ID: <20240221103404.GB352018@kernel.org>
+References: <20240219100506.648089-1-arnd@kernel.org>
+ <20240219100506.648089-2-arnd@kernel.org>
+ <20240220080624.GQ40273@kernel.org>
+ <726459a9-c549-4fec-9a4d-61ae1da04f0a@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,21 +67,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZdW4xR-Ke227pxjG@tiehlicka>
+In-Reply-To: <726459a9-c549-4fec-9a4d-61ae1da04f0a@app.fastmail.com>
 
-On Wed, Feb 21, 2024 at 09:48:05AM +0100, Michal Hocko wrote:
-> On Wed 21-02-24 09:40:29, Greg KH wrote:
-> > On Wed, Feb 21, 2024 at 04:18:01PM +0800, GONG, Ruiqi wrote:
-> > > commit 1a3e1f40962c445b997151a542314f3c6097f8c3 upstream.
-> > > 
-> > > There was a kernel panic happened on an in-house environment running
-> > > 3.10, and the same problem was reproduced on 4.19:
-> > 
-> > Now queued up, thanks!
+On Tue, Feb 20, 2024 at 09:11:51AM +0100, Arnd Bergmann wrote:
+> On Tue, Feb 20, 2024, at 09:06, Simon Horman wrote:
+> > On Mon, Feb 19, 2024 at 11:04:56AM +0100, Arnd Bergmann wrote:
 > 
-> Give it some more time Greg, http://lkml.kernel.org/r/ZdW2gMajIw_cUN2-@tiehlicka
+> > Hi Arnd,
+> >
+> > With patch 1/2 in place this code goes on as:
+> >
+> > 	switch (action->action_type) {
+> > 	case DR_ACTION_TYP_DROP:
+> > 		memset(buff, 0, sizeof(buff));
+> >
+> > buff is now a char * rather than an array of char.
+> > siceof(buff) doesn't seem right here anymore.
+> >
+> > Flagged by Coccinelle.
+> 
+> Rihgt, that would be bad. It sounds like we won't use patch 1/2
+> after all though, so I think it's going to be fine after all.
+> If the mlx5 maintainers still want both patches, I'll rework
+> it to use the fixed size.
 
-Oops, now dropped, thanks!
+Ack. I agree that this patch is fine if 1/2 is dropped.
 
-greg k-h
+If that is the case feel free to add.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
 
