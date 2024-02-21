@@ -1,127 +1,128 @@
-Return-Path: <linux-kernel+bounces-74501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 849EF85D533
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:09:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1EF685D534
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84BDA1C22B73
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:09:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A985B21C7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC7A3D980;
-	Wed, 21 Feb 2024 10:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ZTB+XIku"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA22F3D39A;
-	Wed, 21 Feb 2024 10:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D483D96A;
+	Wed, 21 Feb 2024 10:10:28 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2963C3D39A
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510186; cv=none; b=S/IR2Cim4Rrq5BiQtteGxUqx3cC9QOiPntjrog0ki/Ddi9cyXroh4QUwX9jcEVbLgB0UsHYyn9jrNRa7cPMdG+dmnZ1rIyl246l2RerpNY40c7G5nv3ZG5CNMu4vfRqxkXAtJzgJ8O8yFK/PjxgVb6LheA5f9vZtQEOeeGWjG+0=
+	t=1708510228; cv=none; b=nR+1kcTlDxm/mv7U2opiJriPNb9yZtfEmr72mGmkn6CAJK8bPH+gIqrj6/rC/+v4+I9fwMtsZJs/uD1CT7alCm1FjobI+Dqyq9Ne+Dc6WbIeGESvHblUYdXmyb2J4ym2PYa23kVg6wZIY8VXgN+68iqXsYnYa3EYbYDQwbKrGRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510186; c=relaxed/simple;
-	bh=r5moT70R+oUVljSoprUOEoJfl4/tp6MaAnZM9QhoZhE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QPREaOB+sVHxFekEL9D+3fYk0PZ0Jwsc5xKw1AxfFNyXncnsFMs/5m9OoUIbOdfS6BvrU5p1NcNRHK2YDoRafiECY+gAzrcYurF8kuMyhAeBo1mRqhZlFlaJTKMdEpA2/Z3GjwhMlqnZK2MjG+fA96qvi3QaYGeLfnMThyjI+xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ZTB+XIku; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 48B7040E016D;
-	Wed, 21 Feb 2024 10:09:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Dsl6LZ2KmMpX; Wed, 21 Feb 2024 10:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708510179; bh=/J8Kak/gbtX4KB6FH/imEHmEzO+kxDuIp4ODj+Ng24s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZTB+XIkup8g+SSBh84HQ2Xcyp6++sEo5vmXc7I0izLOkKGf2BMVCAiuIUN+J+qKE5
-	 5CXWJw7yjMzTjlgXV3JCpNCYOoXoiFx0N65k9rOnoCecF58ILlHlP+X104H19IrP5x
-	 PsQj39A4azG3Q5napBKwLx6385WsADYKzPMRdone3iNlPF6ls5/y27AzgEZOcfXFQw
-	 lWbqGJCNC4m3IF5jso1uyaMo8UkdSULyXOdQWOz1jRXP4jAhWquWOmdZ5z+bN8XQPw
-	 VYHeqfvAL3o/89V8NqzTeZcUm+iI+5p+o49J4ToOX0bamV1i+rI+rhdzmAiv3Z6SsF
-	 aaMQztGzhLA5FRh5y2PMxY5D1GL7aixLW9EtqB0ykOv+dt6fcfxP9XWNe833tUFUby
-	 odn0T9fFKyFsodwduVs8L3rI3i0eaL3C8G/PsM9O0Ct1WaCxz2OM81e5IBp4yKNG+n
-	 qfakPcaaHBXJKZEmGY+FrShbtGhwRaRk17nPmVLWEnJ6lVPGg73U6RwpFCNxLt8la1
-	 4nQiuuUrt8RnSv5MYExPIxBjNzHQtizbfexkKVH3eJZ6DOOUVoXZFwFQD2Su6olgrF
-	 fq0EyD5JYRKf0RtFBIb85lRyDIePbLBFx00mc4wNiasrcsuuB02rQoU4Q6cLORr07a
-	 Z1GWl04RB1Hh1uCo6fBJHm8s=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F15C840E01A9;
-	Wed, 21 Feb 2024 10:09:21 +0000 (UTC)
-Date: Wed, 21 Feb 2024 11:09:16 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v4 04/11] x86/startup_64: Defer assignment of 5-level
- paging global variables
-Message-ID: <20240221100916.GCZdXLzHb-31GMw-f-@fat_crate.local>
-References: <20240213124143.1484862-13-ardb+git@google.com>
- <20240213124143.1484862-17-ardb+git@google.com>
- <20240220184513.GAZdTzOQN33Nccwkno@fat_crate.local>
- <CAMj1kXF=cGHR4FVUqGrobjB4HxTmm=1upn3TpVEC-_8D9GM=uQ@mail.gmail.com>
+	s=arc-20240116; t=1708510228; c=relaxed/simple;
+	bh=P2sW9Nlam8hlinuFy+ouLIoPd0TtBGZuqKmjtrhoOVc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rfm3NP5BN/BLrrfOPvYcNCOOMlUA7R/IkdVky318rILj9xnKk5BVi9Yaiv+wgm/da9tKpwlQwLlMSBegMZDX1/6tSEcmIROdLXeGAnqxyfKe4+29JH1JMOFVtT0beUrQim2WWKu2zx3QfDEkovfAor35As0CzF+KEdg2+w+CYM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1DFCDA7;
+	Wed, 21 Feb 2024 02:11:03 -0800 (PST)
+Received: from [192.168.1.100] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 200613F73F;
+	Wed, 21 Feb 2024 02:10:20 -0800 (PST)
+Message-ID: <c1e159b7-c884-e498-6b01-64a897117036@arm.com>
+Date: Wed, 21 Feb 2024 10:10:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXF=cGHR4FVUqGrobjB4HxTmm=1upn3TpVEC-_8D9GM=uQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 3/7] arm64/sysreg/tools: Move TRFCR definitions to
+ sysreg
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, maz@kernel.org, suzuki.poulose@arm.com,
+ acme@kernel.org, oliver.upton@linux.dev, James Morse <james.morse@arm.com>,
+ Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mike Leach <mike.leach@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Miguel Luis <miguel.luis@oracle.com>, Joey Gouly <joey.gouly@arm.com>,
+ Ard Biesheuvel <ardb@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>,
+ Kalesh Singh <kaleshsingh@google.com>,
+ Vincent Donnefort <vdonnefort@google.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, Fuad Tabba <tabba@google.com>,
+ Jing Zhang <jingzhangos@google.com>, linux-kernel@vger.kernel.org
+References: <20240220100924.2761706-1-james.clark@arm.com>
+ <20240220100924.2761706-4-james.clark@arm.com>
+ <18995343-e43e-4e92-a97d-3df74ec6ddb7@sirena.org.uk>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <18995343-e43e-4e92-a97d-3df74ec6ddb7@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 12:33:08AM +0100, Ard Biesheuvel wrote:
-> Right, this is the same issue as in #11 - in both cases, the extern
-> declaration of __pgtable_l5_enabled needs to be visible regardless of
-> CONFIG_X86_5LEVEL.
 
-Yap, I don't mind something like below.
 
-5LEVEL will be practically enabled everywhere.
+On 20/02/2024 16:11, Mark Brown wrote:
+> On Tue, Feb 20, 2024 at 10:09:13AM +0000, James Clark wrote:
+>> Add separate definitions for ELx and EL2 as TRFCR_EL1 doesn't have CX.
+>> This also mirrors the previous definition so no code change is required.
+> 
+> This is also converting to automatic generation in the process.
+> 
+>> +SysregFields TRFCR_EL2
+>> +Res0	63:7
+>> +UnsignedEnum	6:5	TS
+>> +	0b0000	USE_TRFCR_EL1_TS
+>> +	0b0001	VIRTUAL
+>> +	0b0010	GUEST_PHYSICAL
+>> +	0b0011	PHYSICAL
+>> +EndEnum
+>> +Res0	4
+>> +Field	3	CX
+>> +Res0	2
+>> +Field	1	E2TRE
+>> +Field	0	E0HTRE
+>> +EndSysregFields
+> 
+> This has exactly one user and I'd not expect more so why have a separate
+> SysregFields?
+> 
 
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 158da0fd01d2..eeb1744215f2 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -52,13 +52,11 @@ extern pmd_t early_dynamic_pgts[EARLY_DYNAMIC_PAGE_TABLES][PTRS_PER_PMD];
- static unsigned int __initdata next_early_pgt;
- pmdval_t early_pmd_flags = __PAGE_KERNEL_LARGE & ~(_PAGE_GLOBAL | _PAGE_NX);
- 
--#ifdef CONFIG_X86_5LEVEL
- unsigned int __pgtable_l5_enabled __ro_after_init;
- unsigned int pgdir_shift __ro_after_init = 39;
- EXPORT_SYMBOL(pgdir_shift);
- unsigned int ptrs_per_p4d __ro_after_init = 1;
- EXPORT_SYMBOL(ptrs_per_p4d);
--#endif
- 
- #ifdef CONFIG_DYNAMIC_MEMORY_LAYOUT
- unsigned long page_offset_base __ro_after_init = __PAGE_OFFSET_BASE_L4;
+No reason, probably just a copy paste thing. I'll change it to a Sysreg.
 
--- 
-Regards/Gruss,
-    Boris.
+>> +# TRFCR_EL1 doesn't have the CX bit so redefine it without CX instead of
+>> +# using a shared definition between TRFCR_EL2 and TRFCR_EL1
+> 
+> This comment is reflecting the default state?
+> 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+True, will remove.
+
+>> +Sysreg	TRFCR_EL1	3	0	1	2	1
+>> +Fields	TRFCR_ELx
+>> +EndSysreg
+>> +
+>> +Sysreg	TRFCR_EL2	3	4	1	2	1
+>> +Fields	TRFCR_EL2
+>> +EndSysreg
+>> +
+>> +Sysreg	TRFCR_EL12	3	5	1	2	1
+>> +Fields	TRFCR_ELx
+>> +EndSysreg
+> 
+> These are generally sorted by encoding (simiarly to how sysreg.h was
+> sorted historically).
+
+Ah I didn't know that. Can I add a comment to the top of the file saying
+that it should be kept sorted?
 
