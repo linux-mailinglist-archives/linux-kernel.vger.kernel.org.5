@@ -1,149 +1,127 @@
-Return-Path: <linux-kernel+bounces-75681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA2A85ED5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:46:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9653C85ED5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 530461F21041
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:46:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58FF1282EA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984BB12BE92;
-	Wed, 21 Feb 2024 23:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262A612C549;
+	Wed, 21 Feb 2024 23:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DueHmEmB"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUy6hCnd"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1ED12B15A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9CF12AAE2
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708559193; cv=none; b=glFnnMsacYBZ//T683DvpBlV5S2wRFooHFHLfWLt9MvwOIlFHDyCIk+tUfDhIkfc8SfRtdCbnm5suoFoA2zu917GrCOCLnWHpqisYvv11Yg17JKw6yeFnD1lHgCLsKmGBLaJ5jQHf8IlWygx0OYmUbJ1dzNnz8j6GhjZv5LlGqM=
+	t=1708559400; cv=none; b=ejOcyyq3GnuGxgT/f0smzcZYlvo8qj6AGc1zydpi15em1KaA/oM1Hl8fEvtadXuibRl444VdMEthdQcieeNfDg4q7Njc3uahQ2KMEs3+XfuCXbx8jVDAaZUKm9Fn3lcTgnQtn6feASXlkqE1J0XZjBCXal0WmCKeg6oU3BmLPh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708559193; c=relaxed/simple;
-	bh=pnWmeqP+Q+Ss6Z1HiEF7qic+Q6eECcvYbDCo4XWvvrI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NNqCfalDvrbhJOAn4F4km4QQqRj/zAHshs8lL9NYVb/0MWqpWKOYE4jSs9H9mIt7WNIXPKwsdUvvvGF0qfexICMB6ISxY/iRlUphkeldFwsM54kyh50LAgJdqpCqcWeeRUk9Rq2NP2BR7FUcWr2RA0kAtuvHj1ijgrkTqcvpkZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DueHmEmB; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso1401248276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:46:31 -0800 (PST)
+	s=arc-20240116; t=1708559400; c=relaxed/simple;
+	bh=8ssbREubAVv87aYETCRFT0C0nJ2IamnAxKYO3ULa64w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u3FAl87gc5Ai2EwD0SXneq49Ea270dX+5Z9lYVHE00mMWtnbrSEsP8lBAq63AuAglQt5da6+j/iE4h1K4uyTl0ucZbhB6dGzcM1hUkqambzxJavHbwLb6c1Df9jf4wuhsfk4Dti0oQSe88XdnbR9NfOUHmehe6azp4bTRejC0TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUy6hCnd; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d934c8f8f7so68370505ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:49:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708559190; x=1709163990; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9dEH93zhYBQD4O+y/ZdH1upWZUpwf2rY+NjXG87KgkY=;
-        b=DueHmEmB56IJsWfC2ZCVxdkD0nfWvrE4zvzf0eooQaREXhPI7xLhOOgEwH/pIbnFUt
-         V7OiXBQmSbqQ/Ip0iIbNsK411MBG94IhV/J5o6+qLziklzBkkV39XGGMBHtKi283IGSc
-         FPd9kgjW8PttPOF6GyYwTMHHFhHwo6WZgOA5WJUb/Imqlhhw3av6qZFsV/dBi8D+svU2
-         guUwyVvnXxaFxF52yivbsbxKzWZmIon+pgI/11Xilc9ykxuOb5JBwVC9p9CZKdRGIO0s
-         LuTxvKZ9a7Z/04DkKFgbUeCcvXe+s2tAk8sTEuDIrg6wNqB8Cswo8ramwF/MVdoKO7/z
-         Dr4g==
+        d=gmail.com; s=20230601; t=1708559398; x=1709164198; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JvioobkCVW12CjzalX+EBXJJJID4JZxUgaUQxw/lRTs=;
+        b=AUy6hCndJ7coh3MQzNhOI7QTMSkXh+qJ6rDyYaRU5nwYwu+rw3ga6q2kH+OCSXB1Df
+         +v1xFCfNUN9Lbn+C5u03A3etvPzvlDWYUw/L8lSlDENzQpxky8J/8LJvfss4pCAVztzC
+         6GFqpfbhPCYIeGvxWiMyI+GVFKi+TRTY95IxRUHKrdeWJSYW9+BiaIVMN1Qx/i1Au9n5
+         Px0pG6Y93gZo9i+Ign+RtBN6zf0ca/+DylG2NFRlB9jp4b0j3wCr/8VVhlSQ/b2tvN1f
+         yZj0vrwoKnHg3cGF6vYXezgpJrRoknVJCJG4t+dXw8Tlr6LqHBvPEOIBc7Vm22Z09GLb
+         OuYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708559190; x=1709163990;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708559398; x=1709164198;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9dEH93zhYBQD4O+y/ZdH1upWZUpwf2rY+NjXG87KgkY=;
-        b=cAk30Z9yMQBwYOg+N9jRI8/SN06QunWfrZUday537Y1qK7++pG4c9uTEvZiqiAjs9t
-         lhYSjqfVHDHh793CkotbHw3Njf1KRYUvdAHlEHRVnyF4f4I8LhK8GFaMVnamxPdqNFNS
-         8NISl43ISh+TjfiQ9ftsYbp7woxts9digaZcLQG3tbsAUSvoaif5CiynE1gbmgfjUYns
-         /kI9ZgM6uxQ4DQOHpZukSaZEvesS2SsSfSaEHl34xmAWDz8JI+SnceYKCqoqB9Vu2iwB
-         kBZD+DYHU/ZSL+zIdaczq/A5RjdK8LJiifcOi60WxU1cCZ5k2qMy6DHHv2YYcWQtVB2h
-         uIIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWFPnogABlYkP2Xl7JZD+9GKQNf0w6Q3yJKY27/mnYZQZVdyBNggem79hJ0i3abvnCxb7XJUjFb3eZfVO6uW0TfYga9/+HqnX+OVKWo
-X-Gm-Message-State: AOJu0YyKdKhgNsxXKDnP8kc3Oj/QE4OJpu9LbpLvUhT8NZ+wc6Ry7Gc2
-	Uz+mOjCK5Ag064MLICKoYT2ofjPEywAPpArPsqbh8TZ20KWxhAWJjO+uMS27GPuCLAzCkTo//1M
-	UyZD386N0wO+jyQAg1/e9Df1oycTCEf/e5UNZhw==
-X-Google-Smtp-Source: AGHT+IGT+kCZVUVphawG3vyzsnULQGNfcmUnmQnWaJ9LkQcRZTA/qLxPQfQPfUp2YntsI2O5+i9NAL76Naaxfiuwc7Y=
-X-Received: by 2002:a05:6902:2412:b0:dcc:245b:690e with SMTP id
- dr18-20020a056902241200b00dcc245b690emr1138030ybb.40.1708559190364; Wed, 21
- Feb 2024 15:46:30 -0800 (PST)
+        bh=JvioobkCVW12CjzalX+EBXJJJID4JZxUgaUQxw/lRTs=;
+        b=gKfMClIlC/WHBXI8GyQhsqBO3mIdmcBxbUVy1eGLk12DL73GuALIwSgwEelnugHcu6
+         K5pxws6J/bFxUvcXevGi8aEYfMCvs8VGJ6SHkNmcudwl0aEfuTss1mQTlj3HmXE6JxFu
+         4nUOWgX+6hE3IRCOFfF16ROlSJ7yr2zLGA+7hlpcQsW9gJVygA8hYmvYoBBYIrL6EhDQ
+         C9M7U7CRC+a0ptllap6gra1Ml1ApBFr3H/YMeRvT0E2qbkbDbe1/uha6RdPBHM23cl1O
+         K3Tkhe0V4w2gqv9ClCEpFOrKhH3WPpGoR7K9vDEkhnLFiADiQ1V4p6Q2vG5eoI7s0+PU
+         L44Q==
+X-Gm-Message-State: AOJu0Yyom3gLfwqJqQHvTnMb9ms8kFtq3dbrLmpL3GWLkLVy8cMt16jv
+	mLvG0XfSTCP3gIZceGM0l2pUm1zL1p2Sum0i5eJ7+7IX4acJZU8k
+X-Google-Smtp-Source: AGHT+IH2VG+9vkjpRugVYXWZ5OGglFirNFG4jzJkF84tKje3CQ5CPWnMDZZTRUKPcixFt2QSeQWvvQ==
+X-Received: by 2002:a17:902:ab94:b0:1db:d843:7246 with SMTP id f20-20020a170902ab9400b001dbd8437246mr10129008plr.51.1708559398243;
+        Wed, 21 Feb 2024 15:49:58 -0800 (PST)
+Received: from fedora.. (c-73-170-51-167.hsd1.ca.comcast.net. [73.170.51.167])
+        by smtp.googlemail.com with ESMTPSA id jx3-20020a170903138300b001d752c4f36asm8657794plb.78.2024.02.21.15.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 15:49:57 -0800 (PST)
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org,
+	muchun.song@linux.dev,
+	willy@infradead.org,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v2 0/5] Handle hugetlb faults under the VMA lock
+Date: Wed, 21 Feb 2024 15:47:27 -0800
+Message-ID: <20240221234732.187629-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com> <20240221-rb3gen2-dp-connector-v1-4-dc0964ef7d96@quicinc.com>
-In-Reply-To: <20240221-rb3gen2-dp-connector-v1-4-dc0964ef7d96@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 22 Feb 2024 01:46:19 +0200
-Message-ID: <CAA8EJppeStVB4Fn9Abh5hae6UBT871r9OrdCSux-YBwUOGAN3A@mail.gmail.com>
-Subject: Re: [PATCH 4/9] arm64: dts: qcom: qcs6490-rb3gen2: Add DP output
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
->
-> The RB3Gen2 board comes with a mini DP connector, describe this, enable
-> MDSS, DP controller and the PHY that drives this.
->
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> index ac4579119d3b..32313f47602a 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> @@ -430,6 +430,23 @@ &gcc {
->                            <GCC_WPSS_RSCP_CLK>;
->  };
->
-> +&mdss {
-> +       status = "okay";
-> +};
-> +
-> +&mdss_edp {
-> +       status = "okay";
-> +};
-> +
-> +&mdss_edp_out {
-> +       data-lanes = <0 1 2 3>;
-> +       link-frequencies = /bits/ 64 <1620000000 2700000000 5400000000 8100000000>;
-> +};
+It is generally safe to handle hugetlb faults under the VMA lock. The
+only time this is unsafe is when no anon_vma has been allocated to this
+vma yet, so we can use vmf_anon_prepare() instead of anon_vma_prepare()
+to bailout if necessary. This should only happen for the first hugetlb
+page in the vma.
 
-Please add a corresponding dp-connector device and link it to the mdss_edp_out.
+Additionally, this patchset begins to use struct vm_fault within
+hugetlb_fault(). This works towards cleaning up hugetlb code, and should
+significantly reduce the number of arguments passed to functions.
 
-> +
-> +&mdss_edp_phy {
-> +       status = "okay";
-> +};
-> +
->  &qupv3_id_0 {
->         status = "okay";
->  };
-> @@ -470,3 +487,9 @@ &usb_1_qmpphy {
->  &wifi {
->         memory-region = <&wlan_fw_mem>;
->  };
-> +
-> +/* PINCTRL - ADDITIONS TO NODES IN PARENT DEVICE TREE FILES */
-> +
-> +&edp_hot_plug_det {
-> +       bias-disable;
-> +};
->
-> --
-> 2.25.1
->
+-----
+The last patch in this series may cause ltp hugemmap10 to "fail". This
+is because vmf_anon_prepare() may bailout with no anon_vma under the VMA
+lock after allocating a folio for the hugepage. In free_huge_folio(),
+this folio is completely freed on bailout iff there is a surplus of
+hugetlb pages. This will remove a folio off the freelist and decrement
+the number of hugepages while ltp expects these counters to remain
+unchanged on failure. The rest of the ltp testcases pass.
+
+v2:
+  - Removed unnecessary variables and indentations
+  - Declare struct vm_fault in hugetlb_fault and pass it down as an
+  argument instead of defining it in each called function.
+  - Moved vmf_anon_prepare() declaration to mm/internal.h from
+  include/linux/hugetlb.h
 
 
---
-With best wishes
-Dmitry
+Vishal Moola (Oracle) (5):
+  mm/memory: Change vmf_anon_prepare() to be non-static
+  hugetlb: Move vm_struct declaration to the top of hugetlb_fault()
+  hugetlb: Pass struct vm_fault through to hugetlb_handle_userfault()
+  hugetlb: Use vmf_anon_prepare() instead of anon_vma_prepare()
+  hugetlb: Allow faults to be handled under the VMA lock
+
+ mm/hugetlb.c  | 88 ++++++++++++++++++++-------------------------------
+ mm/internal.h |  1 +
+ mm/memory.c   |  2 +-
+ 3 files changed, 36 insertions(+), 55 deletions(-)
+
+-- 
+2.43.0
+
 
