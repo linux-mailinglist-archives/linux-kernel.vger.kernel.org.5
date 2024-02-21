@@ -1,302 +1,268 @@
-Return-Path: <linux-kernel+bounces-74506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E6EF85D53E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:12:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B42085D543
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:12:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81C241C22E22
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:12:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6683282913
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3341C3D98D;
-	Wed, 21 Feb 2024 10:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EBB3D96B;
+	Wed, 21 Feb 2024 10:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G6g9NgkM"
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="5TfZlSyA"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1C63D970;
-	Wed, 21 Feb 2024 10:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECD53CF68;
+	Wed, 21 Feb 2024 10:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510316; cv=none; b=qFDvuK3zhfRvQofsJkHwoeM3uG/4rEDpweB+d9JpWG7CSx32Sc+p/ts2xg0vZUeXDfaCy6E62NbJrZd9/vBQJE/ma1mhXZD0moELCvKbEg8LgY69Z2Q6K10HwalzYGbJHaYtJUKnkhiMKQEtsAdljScpG0Q2TVzmUIpHR6x1Nwk=
+	t=1708510366; cv=none; b=HepaNMjB4ZcQwmy5IPrfWY+aBXPR/a/zmlAZKn5h2f+8Q+scRuXuP8bZ09QSAQjBD7uO7Ou/SxgBNN0HGLCPqD7gix3zSePWN37x2uFY7Hz9aga9k0rWkZqzr87hmlu7vz/n0ejbhaA3SEuZJOPNFp8YP3jld+NluxZg1Ca2eXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510316; c=relaxed/simple;
-	bh=VdwD3m6NWXC/1HXAPru75QbF/kFD+gQGSknB2LVxzwo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OPcPwxzD7kFaYrsKtewFWqUSfYGLuk7yd1d38Y+avZyJasbxtF4Lvz7c2iqq9czsWWdKQNZ6nEq10GCBmMbXh/o1wL7kVzyrFa6sIa1NlvFOaml/FKxgDZFcxUbJdCWJ5kK/Op7ll7CGjda5hJ+9AKnUyPkiVVDlvaqCg29lkoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G6g9NgkM; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-365220a2c3dso18016155ab.0;
-        Wed, 21 Feb 2024 02:11:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708510314; x=1709115114; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9ZKbp4usF7ZooMwkbNPV/awlOsKnx7RNduGOVFzVFPI=;
-        b=G6g9NgkM6GXDEGvrH8n571EQRZcPjYpfhMsmiqrbyKUdzIonXp1jQzFWKC5AlMMBvH
-         CKHTaT+jyKDos1DojznSlB2tcVEZth+X6iHHB31VL3vgmrdC8Ms3dKAOq1Gshv+i2tMO
-         IZ22BDQJ7/N69v8Ui6gkN1m4cibyEtHAhlXXEYGqFtyc4BbLVTVZ/b0g/MdPHaGpnzGw
-         crBKpKzx3n4Khe/g7e1nphD3O+J2bHL5fMgCZ0fhDzW0fIkTLiBDoSVgyDQbn//focBl
-         ccDPNNGEyUCXLQyyRtXgtGw9KqNWCsxPP8LurJjVGrqh4qTZIlC9j2uFdMFB81roqroQ
-         8Yog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708510314; x=1709115114;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9ZKbp4usF7ZooMwkbNPV/awlOsKnx7RNduGOVFzVFPI=;
-        b=D2XIa29tOasXgRPQ+0albKqADAVDUxihboYq+qbLwXUXh/HwJ/u2umf8BqI1r2qqEr
-         1XjhmaxTS8oN7KzYu9y8yfWdwFjQmwSFz6j7+P/9CH77jk1YyoZu8U8WsCFuW03E5veF
-         30N5BAlhwhfoOv3/Ifu/KcNH1N8IC50bBKfhx8SsEbVgApTsbhQvpG1tn+qvQ+q9rdLl
-         PZWyNyNhaSVWYxgOJw3fn46T2mhdNirsU5Qw3MoQrKTGprthtS9hVhTMrvLRu+SUjQCu
-         YUwr+eFeeFo2qp/p/PTZhTyh03XpIYM4lFtn6NLK00vKRJzEdv1t5ukjeCV1AtltvhHm
-         F1Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCX/DMd6y+vpcYVu8SZ+P8SNRSINn5dXX28JhKR9MV1cHECc9ZhL9Zh4hwNhYaklPwEU8+0lwwNgVSLw/mmHlaXuhoDUHa1c+NjUegAPgrVztQNYs6QeQG0WJtIvvI0y1ZcSchvrGmXb9jQ=
-X-Gm-Message-State: AOJu0YyKN7WZphgOfdY7EG84TCFIRbDLkeGBbmuZT9WdLvnp5FSKt0eY
-	D8czabc5YchYDqllG8BWS6949+59UnaZpi7Y8m9DFALV6Eq2dJbd75jT4eATaoHuxmyIRFNQIG8
-	KVSEKAWLhIiirWfcGU8zAFe1jnZM=
-X-Google-Smtp-Source: AGHT+IHwP0YGlKphHtm67xpwTbsPvnykS5moEGEGjG8wLiOUfX/6e8WVQL0nA7L2tX6O8Xl8WZ/vKMFsIJfBgPoCVzU=
-X-Received: by 2002:a05:6e02:1143:b0:364:fffe:44c4 with SMTP id
- o3-20020a056e02114300b00364fffe44c4mr15812470ill.7.1708510313179; Wed, 21 Feb
- 2024 02:11:53 -0800 (PST)
+	s=arc-20240116; t=1708510366; c=relaxed/simple;
+	bh=oC+jcIYHSc5x4O62YHQVIizn+j678uC6MmEDPXx4YMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h2yZWk562d5EwdrCvBT0rMtTLSqP91dFjVCxX20Q97RL7bHcIV3qe5GlT+tzETZbDQNfk9L+g1sxdR4PrOXXax6nbmKDOXZhOoejK6faz71STFNudSXZ2gWiFd1RkpaucRTgjkwh/TCNt7IMQFn5vD54rrDJuKft9wBO7/HChTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=5TfZlSyA; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708510363;
+	bh=oC+jcIYHSc5x4O62YHQVIizn+j678uC6MmEDPXx4YMo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=5TfZlSyAXlXFW3yVsCdpRGR8hryIUivUj5Y7GzXP2DMznawBuAznD6xMyCQFFeBP5
+	 KN1aoq9QyRvawCKj8Uk8foiujmLVnYkohGCr8NvKH78AVwdr/bjbIhWgCovoVKj99/
+	 ZEbOvc4bew84BrN26w9z+Oja1qjAhtW/rVWPKyD1F2FBi+3MrcJsYm8l+qC84M7t7K
+	 hYk6mypKtxHxl26tJhtOiZOcMbO1R+Z16Gch960iQ/ZZYH4qPuXuTAiIp4TZg+D3Yw
+	 2VCIpk+SZwrc6Z9S8tUMwVGHrDbSw/HG/0LKmd3pfsGFouM03qIUEVNx2UtdZbRCzm
+	 1PX6WEulNvsjQ==
+Received: from [100.74.67.65] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: jmassot)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2230F378107C;
+	Wed, 21 Feb 2024 10:12:43 +0000 (UTC)
+Message-ID: <c6e51f24-93f6-4b87-9977-71a7a22cc68a@collabora.com>
+Date: Wed, 21 Feb 2024 11:12:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
- <1705581128-4604-8-git-send-email-shengjiu.wang@nxp.com> <20240217104212.32f07e3a@coco.lan>
- <CAAFQd5CY731HRhFHpmwzGxAZ-BFV_pT7NNGwNGy4ZOA=qz8ntg@mail.gmail.com>
-In-Reply-To: <CAAFQd5CY731HRhFHpmwzGxAZ-BFV_pT7NNGwNGy4ZOA=qz8ntg@mail.gmail.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Wed, 21 Feb 2024 18:11:42 +0800
-Message-ID: <CAA+D8AOKNK37urZfVsuzaTv8PYP-ggTORQEVSpNO0pbaereyLg@mail.gmail.com>
-Subject: Re: [PATCH v12 07/15] media: v4l2: Add audio capture and output support
-To: Tomasz Figa <tfiga@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl, 
-	sakari.ailus@iki.fi, m.szyprowski@samsung.com, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, 
-	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, 
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, 
-	linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] dt-bindings: media: add Maxim MAX96717F GMSL2
+ Serializer
+Content-Language: en-US
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: linux-media@vger.kernel.org, kernel@collabora.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ mchehab@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org
+References: <20240111130349.2776699-1-julien.massot@collabora.com>
+ <20240111130349.2776699-2-julien.massot@collabora.com>
+ <ZcXwQA3IiDu1etH1@valkosipuli.retiisi.eu>
+From: Julien Massot <julien.massot@collabora.com>
+In-Reply-To: <ZcXwQA3IiDu1etH1@valkosipuli.retiisi.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 12:30=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> w=
-rote:
->
-> On Sat, Feb 17, 2024 at 6:42=E2=80=AFPM Mauro Carvalho Chehab
-> <mchehab@kernel.org> wrote:
-> >
-> > Em Thu, 18 Jan 2024 20:32:00 +0800
-> > Shengjiu Wang <shengjiu.wang@nxp.com> escreveu:
-> >
-> > > Audio signal processing has the requirement for memory to
-> > > memory similar as Video.
-> > >
-> > > This patch is to add this support in v4l2 framework, defined
-> > > new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
-> > > V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
-> > > for audio case usage.
-> > >
-> > > The created audio device is named "/dev/v4l-audioX".
-> > >
-> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > ---
-> > >  .../userspace-api/media/v4l/buffer.rst        |  6 ++
-> > >  .../media/v4l/dev-audio-mem2mem.rst           | 71 +++++++++++++++++=
-++
-> > >  .../userspace-api/media/v4l/devices.rst       |  1 +
-> > >  .../media/v4l/vidioc-enum-fmt.rst             |  2 +
-> > >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  4 ++
-> > >  .../media/videodev2.h.rst.exceptions          |  2 +
-> > >  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
-> > >  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  9 +++
-> > >  drivers/media/v4l2-core/v4l2-dev.c            | 17 +++++
-> > >  drivers/media/v4l2-core/v4l2-ioctl.c          | 53 ++++++++++++++
-> > >  include/media/v4l2-dev.h                      |  2 +
-> > >  include/media/v4l2-ioctl.h                    | 34 +++++++++
-> > >  include/uapi/linux/videodev2.h                | 17 +++++
-> > >  13 files changed, 222 insertions(+)
-> > >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-m=
-em2mem.rst
-> > >
-> > > diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Docum=
-entation/userspace-api/media/v4l/buffer.rst
-> > > index 52bbee81c080..a3754ca6f0d6 100644
-> > > --- a/Documentation/userspace-api/media/v4l/buffer.rst
-> > > +++ b/Documentation/userspace-api/media/v4l/buffer.rst
-> > > @@ -438,6 +438,12 @@ enum v4l2_buf_type
-> > >      * - ``V4L2_BUF_TYPE_META_OUTPUT``
-> > >        - 14
-> >
-> > >        - Buffer for metadata output, see :ref:`metadata`.
-> > > +    * - ``V4L2_BUF_TYPE_AUDIO_CAPTURE``
-> > > +      - 15
-> > > +      - Buffer for audio capture, see :ref:`audio`.
-> > > +    * - ``V4L2_BUF_TYPE_AUDIO_OUTPUT``
-> > > +      - 16
-> >
-> > Hmm... alsa APi define input/output as:
-> >         enum {
-> >                 SNDRV_PCM_STREAM_PLAYBACK =3D 0,
-> >                 SNDRV_PCM_STREAM_CAPTURE,
-> >                 SNDRV_PCM_STREAM_LAST =3D SNDRV_PCM_STREAM_CAPTURE,
-> >         };
-> >
-> >
-> > I would use a namespace as close as possible to the
-> > ALSA API. Also, we're not talking about V4L2, but, instead
-> > audio. so, not sure if I like the prefix to start with
-> > V4L2_. Maybe ALSA_?
-> >
-> > So, a better namespace would be:
-> >
-> >         ${prefix}_BUF_TYPE_PCM_STREAM_PLAYBACK
-> > and
-> >         ${prefix}_BUF_TYPE_PCM_STREAM_CAPTURE
-> >
->
-> The API is still V4L2, and all the other non-video buf types also use
-> the V4L2_ prefix, so perhaps that's good here as well?
->
-> Whether AUDIO or PCM_STREAM makes more sense goes outside of my
-> expertise. Subjectively, a PCM stream sounds more specific than an
-> audio stream. Do those buf types also support non-PCM audio streams?
+Hi Sakari,
 
-Currently I use it for PCM,  but I think it can also be used for non-PCM.
-So use the below name?
-V4L2_BUF_TYPE_AUDIO_CAPTURE
-V4L2_BUF_TYPE_AUDIO_PLAYBACK
+On 2/9/24 10:28, Sakari Ailus wrote:
+> Hi Julien,
+> 
+> On Thu, Jan 11, 2024 at 02:03:46PM +0100, Julien Massot wrote:
+>> Add DT bindings for Maxim MAX96717F GMSL2 Serializer.
+>>
+>> Signed-off-by: Julien Massot <julien.massot@collabora.com>
+>> ---
+>> Change since v2:
+>>   - remove reg description
+>>   - add data lanes min/maxItems
+>>   - Use generic node name
+>>
+>> ---
+>>   .../bindings/media/i2c/maxim,max96717f.yaml   | 147 ++++++++++++++++++
+>>   1 file changed, 147 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max96717f.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max96717f.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max96717f.yaml
+>> new file mode 100644
+>> index 000000000000..f31517b1dbc8
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max96717f.yaml
+>> @@ -0,0 +1,147 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +# Copyright (C) 2024 Collabora Ltd.
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/i2c/maxim,max96717f.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: MAX96717 CSI-2 to GMSL2 Serializer
+>> +
+>> +maintainers:
+>> +  - Julien Massot <julien.massot@collabora.com>
+>> +
+>> +description: |
+>> +  The MAX96717F serializer converts MIPI CSI-2 D-PHY or C-PHY formatted input
+> 
+> Presumably this will need to be configured on the device? You should thus
+> require the bus-type property in the endpoint.
 
->
-> > > +      - Buffer for audio output, see :ref:`audio`.
-> > >
-> > >
-> > >  .. _buffer-flags:
-> > > diff --git a/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.=
-rst b/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
-> > > new file mode 100644
-> > > index 000000000000..68faecfe3a02
-> > > --- /dev/null
-> > > +++ b/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
-> > > @@ -0,0 +1,71 @@
-> > > +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> > > +
-> > > +.. _audiomem2mem:
-> > > +
-> > > +********************************
-> > > +Audio Memory-To-Memory Interface
-> > > +********************************
-> > > +
-> > > +An audio memory-to-memory device can compress, decompress, transform=
-, or
-> > > +otherwise convert audio data from one format into another format, in=
- memory.
-> > > +Such memory-to-memory devices set the ``V4L2_CAP_AUDIO_M2M`` capabil=
-ity.
-> > > +Examples of memory-to-memory devices are audio codecs, audio preproc=
-essing,
-> > > +audio postprocessing.
-> > > +
-> > > +A memory-to-memory audio node supports both output (sending audio fr=
-ames from
-> > > +memory to the hardware) and capture (receiving the processed audio f=
-rames
-> > > +from the hardware into memory) stream I/O. An application will have =
-to
-> > > +setup the stream I/O for both sides and finally call
-> > > +:ref:`VIDIOC_STREAMON <VIDIOC_STREAMON>` for both capture and output=
- to
-> > > +start the hardware.
-> > > +
-> > > +Memory-to-memory devices function as a shared resource: you can
-> > > +open the audio node multiple times, each application setting up thei=
-r
-> > > +own properties that are local to the file handle, and each can use
-> > > +it independently from the others. The driver will arbitrate access t=
-o
-> > > +the hardware and reprogram it whenever another file handler gets acc=
-ess.
-> > > +
-> > > +Audio memory-to-memory devices are accessed through character device
-> > > +special files named ``/dev/v4l-audio``
-> > > +
-> > > +Querying Capabilities
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +Device nodes supporting the audio memory-to-memory interface set the
-> > > +``V4L2_CAP_AUDIO_M2M`` flag in the ``device_caps`` field of the
-> > > +:c:type:`v4l2_capability` structure returned by the :c:func:`VIDIOC_=
-QUERYCAP`
-> > > +ioctl.
-> > > +
-> > > +Data Format Negotiation
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > > +
-> > > +The audio device uses the :ref:`format` ioctls to select the capture=
- format.
-> > > +The audio buffer content format is bound to that selected format. In=
- addition
-> > > +to the basic :ref:`format` ioctls, the :c:func:`VIDIOC_ENUM_FMT` ioc=
-tl must be
-> > > +supported as well.
-> > > +
-> > > +To use the :ref:`format` ioctls applications set the ``type`` field =
-of the
-> > > +:c:type:`v4l2_format` structure to ``V4L2_BUF_TYPE_AUDIO_CAPTURE`` o=
-r to
-> > > +``V4L2_BUF_TYPE_AUDIO_OUTPUT``. Both drivers and applications must s=
-et the
-> > > +remainder of the :c:type:`v4l2_format` structure to 0.
-> > > +
-> > > +.. c:type:: v4l2_audio_format
-> > > +
-> > > +.. tabularcolumns:: |p{1.4cm}|p{2.4cm}|p{13.5cm}|
-> > > +
-> > > +.. flat-table:: struct v4l2_audio_format
-> > > +    :header-rows:  0
-> > > +    :stub-columns: 0
-> > > +    :widths:       1 1 2
-> > > +
-> > > +    * - __u32
-> > > +      - ``pixelformat``
-> > > +      - The sample format, set by the application. see :ref:`pixfmt-=
-audio`
-> >
-> > pixelformat doesn't make any sense for audio: there are no pixels on a
-> > PCM stream. Please use call it, instead: `snd_pcm_format`, making it ma=
-tch
-> > the values for snd_pcm_format_t.
-> >
->
-> +1
->
-> FWIW v4l2_meta_format uses the name "dataformat".
->
-> Actually, I just realized that the C code actually uses the name
-> "audioformat". Tbh., after reading the kerneldoc comment, my
-> subjective preference would be on "sample_format", since that's
-> exactly what it is.
->
-Ok, I will change it to sampleformat.
+Yes I will add the bus-type propery
 
-Best Regards
-Shengjiu Wang
+> 
+>> +  into GMSL2 serial outputs. The device allows the GMSL2 link to
+>> +  simultaneously transmit bidirectional control-channel data while forward
+>> +  video transmissions are in progress. The MAX96717F can connect to one
+>> +  remotely located deserializer using industry-standard coax or STP
+>> +  interconnects. The device cans operate in pixel or tunnel mode. In pixel mode
+>> +  the MAX96717F can select the MIPI datatype, while the tunnel mode forward all the MIPI
+>> +  data received by the serializer.
+>> +  The MAX96717F supports Reference Over Reverse (channel),
+>> +  to generate a clock output for the sensor from the GMSL reverse channel.
+>> +
+>> +  The GMSL2 serial link operates at a fixed rate of 3Gbps in the
+>> +  forward direction and 187.5Mbps in the reverse direction.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: maxim,max96717f
+>> +
+>> +  '#gpio-cells':
+>> +    const: 2
+>> +    description:
+>> +      First cell is the GPIO pin number, second cell is the flags. The GPIO pin
+>> +      number must be in range of [0, 10].
+>> +
+>> +  gpio-controller: true
+>> +
+>> +  '#clock-cells':
+>> +    const: 0
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  ports:
+>> +    $ref: /schemas/graph.yaml#/properties/ports
+>> +
+>> +    properties:
+>> +      port@0:
+>> +        $ref: /schemas/graph.yaml#/$defs/port-base
+>> +        unevaluatedProperties: false
+>> +        description: CSI-2 Input port
+>> +
+>> +        properties:
+>> +          endpoint:
+>> +            $ref: /schemas/media/video-interfaces.yaml#
+>> +            unevaluatedProperties: false
+>> +
+>> +            properties:
+>> +              data-lanes:
+>> +                minItems: 1
+>> +                maxItems: 4
+>> +
+>> +            required:
+>> +              - data-lanes
+>> +
+>> +      port@1:
+>> +        $ref: /schemas/graph.yaml#/properties/port
+>> +        unevaluatedProperties: false
+>> +        description: GMSL Output port
+>> +
+>> +    required:
+>> +      - port@1
+>> +
+>> +  i2c-gate:
+>> +    $ref: /schemas/i2c/i2c-controller.yaml
+>> +    unevaluatedProperties: false
+>> +    description: |
+> 
+> I think you can remove ' |'.
+Ok
 
-> > Yet, I would keep defining it as u32 (or u64?) instead of using a
-> > typedef int field there (snd_pcm_format_t), as the size of integer
-> > is different on 32 and 64 bit kernels.
->
-> +1
->
-> Best regards,
-> Tomasz
+> 
+>> +      The MAX96717F will forward the I2C requests from the
+>> +      incoming GMSL2 link. Therefore, it supports an i2c-gate
+>> +      subnode to configure a sensor.
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - ports
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/gpio/gpio.h>
+>> +    #include <dt-bindings/media/video-interfaces.h>
+>> +
+>> +    i2c {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +        serializer: serializer@40 {
+>> +            compatible = "maxim,max96717f";
+>> +            reg = <0x40>;
+>> +            gpio-controller;
+>> +            #gpio-cells = <2>;
+>> +            #clock-cells = <0>;
+>> +
+>> +            ports {
+>> +                #address-cells = <1>;
+>> +                #size-cells = <0>;
+>> +
+>> +                port@0 {
+>> +                    reg = <0>;
+>> +                    max96717f_csi_in: endpoint {
+>> +                        data-lanes = <1 2 3 4>;
+>> +                        remote-endpoint = <&sensor_out>;
+>> +                    };
+>> +                };
+>> +
+>> +                port@1 {
+>> +                    reg = <1>;
+>> +                    max96917f_gmsl_out: endpoint {
+>> +                        remote-endpoint = <&deser_gmsl_in>;
+>> +                    };
+>> +                };
+>> +            };
+>> +
+>> +            i2c-gate {
+>> +                #address-cells = <1>;
+>> +                #size-cells = <0>;
+>> +                sensor@10 {
+>> +                    compatible = "st,st-vgxy61";
+>> +                    reg = <0x10>;
+>> +                    reset-gpios = <&serializer 0 GPIO_ACTIVE_LOW>;
+>> +                    clocks = <&serializer>;
+>> +                    VCORE-supply = <&v1v2>;
+>> +                    VDDIO-supply = <&v1v8>;
+>> +                    VANA-supply = <&v2v8>;
+>> +                    port {
+>> +                        sensor_out: endpoint {
+>> +                            data-lanes = <1 2 3 4>;
+>> +                            remote-endpoint = <&max96717f_csi_in>;
+>> +                        };
+>> +                    };
+>> +                };
+>> +            };
+>> +        };
+>> +    };
+>> +...
+> 
+
+-- 
+Julien Massot
+Senior Software Engineer
+Collabora Ltd.
+Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
+Registered in England & Wales, no. 5513718
 
