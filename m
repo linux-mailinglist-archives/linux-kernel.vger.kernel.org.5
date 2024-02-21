@@ -1,211 +1,201 @@
-Return-Path: <linux-kernel+bounces-73868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29E785CCD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:40:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E86585CCDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8A3FB215A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:40:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81F3F1C21D33
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE691877;
-	Wed, 21 Feb 2024 00:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A101876;
+	Wed, 21 Feb 2024 00:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="tUSxyhP4"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VynMfyH2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECD9110A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC98F17D2
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476006; cv=none; b=T7mG2NhB0BVaLyeFDA9RZtK1xnNveMbfTlYmP5lzevLrJgOyBsyus0kAu1Ds/wVOU/2P0x4HekpWkrV10Vt+1OQr1MNkgZU3D/Td1bEJBDgXkMBBrNk6WLWKIRHdsi15A76PsQgWM57N9dks4NgzW3TsssH09QY4HS993LMzy1U=
+	t=1708476131; cv=none; b=NOKm+LmaYhIm2bRc43zkdO2B87sWs6vqxoXiUYVZnVRU8sQ2No4SFtIy6IKLvMdW1gxHAgQMY7HJgYBD6RTVlzmRlqMrAfDXglQ0GN255pp+j1hJaSb3Z7vqtFkQgPANM38EEFS9REqItebjPM4iz+Aszm6PgQ0HXYGSHkAJJDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476006; c=relaxed/simple;
-	bh=uAI3HK7f/g/nDyL9G7/XMvECnHYq47zYhoOD5T7jc/I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f4JZj7BA4Bhlo6MRM0lfrtSCN3fR0edQQcjWpiB820g6qyXlJa/+qKs0ld2itnl1JXQ7dF/R24luTHWUTBg9zE4x5zsm4UjzYEr7zweEffys0JtE5gUpZvnADLjs0t+vBb6WEfHr7ehErbfoZZPHeY3Tqs6gRUIAAcsjFS8xVys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tUSxyhP4; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42e0b1b11bbso37771cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:40:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708476003; x=1709080803; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LfssETidi6wFDF+vACF5kMe/yeNOLjDvgf0E4IOPBTg=;
-        b=tUSxyhP4eJ6PVCiwAyOXFcB7ipaVcXd6mWx0nPkZhjG4jwRf4Sm3lcdFJnAAQHGY+d
-         EXu70IwXsGAV69vq7nwTRgdMAKxdGhFvz8IMg85aBvNkxQzMfOsgvs/9iV27/ET5o0CZ
-         r5ibk59mDgN7TjkYSoe7yTe6OZjGoOSpi/zUxR4D8RycXXkAibqQvW3ujESKd+fEyazV
-         /bB0xFAQWSi6hGJn0GieiUVdJmKbheZ1IZ4PxnmRYe024vBzSgk2tuHdqWEszATbMkfD
-         JatPoe6iKeLt5D9hpLHJxaFKVvhFeuk5rdKX/ZOght43qU+YY4rxq88CLJuKY86Ibyyf
-         SOjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708476003; x=1709080803;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LfssETidi6wFDF+vACF5kMe/yeNOLjDvgf0E4IOPBTg=;
-        b=MrpxoGSnLo5FdKbyAOONh8o+ibJX2M8bUUYdyFamo7QFbwY+QR/n8FhND8H+Wx5QpJ
-         d8xY71CSVrNQEFAZLf6pfE/FnnyqwLpYvBp/jRSR12f5sjc+daC2SJQJbRhUL0reh0UV
-         aZQIqJK6+DzflAGCrkvTk5c3oVour3NumqdKmP2mOz30rCPN03N0KGIgspoyF59Af3Zx
-         JzcSr4zJXNs47oUwiqKMfSmcUcpl7dkilysQF3yyrScHW9s4+CMeNuoKCFQ53bfsyywn
-         GThjbLN4yJPer77mcHIpwc/NgqpTlygBJETFv5+d9UEHZ1nbQtri/3rRTSs3ycNrKFSb
-         P9Kg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ2KZYfqL52NmopUFrV0x8NDzo+SvnTHOzuYsgXBQzXNUr81th86XFVdg1VX6KujXKtyiuAOqNAXRj5nKmSH84gEEXl0BlOohHTGLU
-X-Gm-Message-State: AOJu0YzDWLw84ov6146DYwrCfybnQYADWNifaWE4jyvqLzaXdvx2PGVA
-	4Wh442UrNkZBsDmhEYHe+kmyoFElw9nxbwrsL6jB5OGqR/55US6Aw5SgNUs45VNyw1kdC2rdIxP
-	yqFBPgXcTUv9lRf3Qb/KTGSj8aqX7iuiIGeyr
-X-Google-Smtp-Source: AGHT+IFvq0Bv6289NmhdlxMMHgyeloDU/i+PDnJAE9VTBvimqT3m377ERyyEEF5Bs5DKJqH2k1zgEUe+msRDZaq+LRM=
-X-Received: by 2002:ac8:7c47:0:b0:42e:36fe:df90 with SMTP id
- o7-20020ac87c47000000b0042e36fedf90mr43088qtv.1.1708476002994; Tue, 20 Feb
- 2024 16:40:02 -0800 (PST)
+	s=arc-20240116; t=1708476131; c=relaxed/simple;
+	bh=RPiXUr+f3J0v/l1Zh9RKyxVKvEkJRigulgQGGDqXTFI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=C0kXkU9lvzmMpNCM5EOpL+m2vmYRv7z9yf6baQNfaKc8OzBagXM1pk9VK7oNeVMahXY3kKKNikeFxsLya4svd9BKxeImW5PdVwo27yjrfgFPCi7wlkRfnykmY02jk7RzH/1RgpE+Czvej+xHp4V8zyYdx4olWbauZaHchAQoz/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VynMfyH2; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708476130; x=1740012130;
+  h=date:from:to:cc:subject:message-id;
+  bh=RPiXUr+f3J0v/l1Zh9RKyxVKvEkJRigulgQGGDqXTFI=;
+  b=VynMfyH2mKkc3jBmxrWqKQE2CFs7kv2M10WrrfYl2r3oszP7U/4O4CGy
+   twwNUmJzG9aquocPglMDf+/gLVY7ebpzIuHUg9k693k9LkbIYL2guva2z
+   qM9tU825ufMvQpyBzzaaq+gLoVWLXIOzOMWbQDyP8RYh5E/LEzb453plI
+   1sKTYBICUX3ViWMJM5V3N52RxwCetaO9gz8zV+YAFUX4sAqA6X3feTj7W
+   NKmHkimIM+PpoxXrYjFTfdQe9yAqVz2ULtVKffZSv24EM10SQysLtGkWv
+   n3Un07ZorEu3AifYSYl92YqeSFyXM+qDbRxL0HpCOaN0VzXgLO6tYxoR5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2499643"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="2499643"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 16:42:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="5108237"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 20 Feb 2024 16:41:54 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rcaf8-0004ti-31;
+	Wed, 21 Feb 2024 00:40:57 +0000
+Date: Wed, 21 Feb 2024 08:39:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ b388e57d4628eb22782bdad4cd5b83ca87a1b7c9
+Message-ID: <202402210832.S8GhOhJO-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240205-fix-device-links-overlays-v2-0-5344f8c79d57@analog.com>
- <20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com>
- <aed988a09cb4347ec7ac1b682c4ee53b7d2a840b.camel@gmail.com>
- <20240213145131.GA1180152-robh@kernel.org> <48a86fa6908a2a7a38a45dc6dbb5574c4a9d7400.camel@gmail.com>
- <CAGETcx9xgLykm7Ti-A4+sYxQkn=KTUptW9fbFxgTcceihutwRQ@mail.gmail.com> <71fa22870246c4ed6ae9cbb2cb93db557dd855f7.camel@gmail.com>
-In-Reply-To: <71fa22870246c4ed6ae9cbb2cb93db557dd855f7.camel@gmail.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 16:39:24 -0800
-Message-ID: <CAGETcx_kjmZypvhjGED5V3C4E=NzffD2=8cn5Hh-tEHTMVKsiQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] of: dynamic: flush devlinks workqueue before
- destroying the changeset
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Nuno Sa <nuno.sa@analog.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Frank Rowand <frowand.list@gmail.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
-	linux-acpi@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 4:48=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com=
-> wrote:
->
-> On Tue, 2024-02-13 at 19:44 -0800, Saravana Kannan wrote:
-> > On Tue, Feb 13, 2024 at 6:57=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail=
-com> wrote:
-> > >
-> > > On Tue, 2024-02-13 at 08:51 -0600, Rob Herring wrote:
-> > > > On Mon, Feb 12, 2024 at 01:10:27PM +0100, Nuno S=C3=A1 wrote:
-> > > > > On Mon, 2024-02-05 at 13:09 +0100, Nuno Sa wrote:
-> > > > > > Device links will drop their supplier + consumer refcounts
-> > > > > > asynchronously. That means that the refcount of the of_node att=
-ached
-> > > > > > to
-> > > > > > these devices will also be dropped asynchronously and so we can=
-not
-> > > > > > guarantee the DT overlay assumption that the of_node refcount m=
-ust be
-> > > > > > 1 in
-> > > > > > __of_changeset_entry_destroy().
-> > > > > >
-> > > > > > Given the above, call the new fwnode_links_flush_queue() helper=
- to
-> > > > > > flush
-> > > > > > the devlink workqueue so we can be sure that all links are drop=
-ped
-> > > > > > before
-> > > > > > doing the proper checks.
-> > > > > >
-> > > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > > > > > ---
-> > > > > >  drivers/of/dynamic.c | 8 ++++++++
-> > > > > >  1 file changed, 8 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-> > > > > > index 3bf27052832f..b7153c72c9c9 100644
-> > > > > > --- a/drivers/of/dynamic.c
-> > > > > > +++ b/drivers/of/dynamic.c
-> > > > > > @@ -14,6 +14,7 @@
-> > > > > >  #include <linux/slab.h>
-> > > > > >  #include <linux/string.h>
-> > > > > >  #include <linux/proc_fs.h>
-> > > > > > +#include <linux/fwnode.h>
-> > > > > >
-> > > > > >  #include "of_private.h"
-> > > > > >
-> > > > > > @@ -518,6 +519,13 @@ EXPORT_SYMBOL(of_changeset_create_node);
-> > > > > >
-> > > > > >  static void __of_changeset_entry_destroy(struct of_changeset_e=
-ntry
-> > > > > > *ce)
-> > > > > >  {
-> > > > > > + /*
-> > > > > > +  * device links drop their device references (and hence their
-> > > > > > of_node
-> > > > > > +  * references) asynchronously on a dedicated workqueue. Hence=
- we
-> > > > > > need
-> > > > > > +  * to flush it to make sure everything is done before doing t=
-he
-> > > > > > below
-> > > > > > +  * checks.
-> > > > > > +  */
-> > > > > > + fwnode_links_flush_queue();
-> > > > > >   if (ce->action =3D=3D OF_RECONFIG_ATTACH_NODE &&
-> > > > > >       of_node_check_flag(ce->np, OF_OVERLAY)) {
-> > > > > >           if (kref_read(&ce->np->kobj.kref) > 1) {
-> > > > > >
-> > > > >
-> > > > > Hi Rob and Frank,
-> > > > >
-> > > > > Any way you could take a look at this and see if you're ok with t=
-he
-> > > > > change
-> > > > > in the
-> > > > > overlay code?
-> > > > >
-> > > > > On the devlink side , we already got the ok from Rafael.
-> > > >
-> > > > Didn't Saravana say he was going to look at this? As of yesterday, =
-he's
-> > > > also a DT maintainer so deferring to him.
-> > > >
-> > >
-> > > Yeah, I did asked him but I guess he never had the time for it... Sar=
-avana,
-> > > could you please give some feedback on this? I think the most sensibl=
-e part
-> > > is
-> > > on the devlink side but I assume this is not going to be merged witho=
-ut an
-> > > ack
-> > > from a DT maintainer...
-> >
-> > Sorry for the delay Nuno. I'll get to this. I promise. This week is a b=
-it
-> > busy.
-> >
->
-> No worries. Just making sure it's not forgotten :)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: b388e57d4628eb22782bdad4cd5b83ca87a1b7c9  x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
 
-Hi Nuno,
+elapsed time: 727m
 
-Thanks for nudging me about this issue.
+configs tested: 113
+configs skipped: 135
 
-I replied to a similar patch series that Herve sent out last year.
-Chose to reply to that because it had fewer issues to fix and Herve
-sent it out a while ago.
-https://lore.kernel.org/all/20231130174126.688486-1-herve.codina@bootlin.co=
-m/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Can you please chime in there?
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                           h3600_defconfig   gcc  
+arm                       spear13xx_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                          allyesconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240221   gcc  
+i386         buildonly-randconfig-002-20240221   clang
+i386         buildonly-randconfig-003-20240221   gcc  
+i386         buildonly-randconfig-004-20240221   gcc  
+i386         buildonly-randconfig-005-20240221   gcc  
+i386         buildonly-randconfig-006-20240221   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240221   gcc  
+i386                  randconfig-002-20240221   clang
+i386                  randconfig-003-20240221   clang
+i386                  randconfig-004-20240221   gcc  
+i386                  randconfig-005-20240221   gcc  
+i386                  randconfig-006-20240221   clang
+i386                  randconfig-011-20240221   gcc  
+i386                  randconfig-012-20240221   clang
+i386                  randconfig-013-20240221   gcc  
+i386                  randconfig-014-20240221   clang
+i386                  randconfig-015-20240221   gcc  
+i386                  randconfig-016-20240221   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       alldefconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                         wii_defconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        dreamcast_defconfig   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                        sh7763rdp_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                                  defconfig   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-002-20240221   gcc  
+x86_64       buildonly-randconfig-003-20240221   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240221   gcc  
+x86_64                randconfig-002-20240221   gcc  
+x86_64                randconfig-003-20240221   gcc  
+x86_64                randconfig-004-20240221   gcc  
+x86_64                randconfig-005-20240221   gcc  
+x86_64                randconfig-006-20240221   gcc  
+x86_64                randconfig-012-20240221   gcc  
+x86_64                randconfig-014-20240221   gcc  
+x86_64                randconfig-015-20240221   gcc  
+x86_64                randconfig-016-20240221   gcc  
+x86_64                randconfig-071-20240221   gcc  
+x86_64                randconfig-072-20240221   gcc  
+x86_64                randconfig-073-20240221   gcc  
+x86_64                randconfig-074-20240221   gcc  
+x86_64                randconfig-076-20240221   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
 
-Thanks,
-Saravana
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
