@@ -1,132 +1,87 @@
-Return-Path: <linux-kernel+bounces-74874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4375285DF36
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:25:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49EDA85DE6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 563DDB2C547
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 087511F24679
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D4727CF2D;
-	Wed, 21 Feb 2024 14:15:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lpjYdbGP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C8B7BB10;
+	Wed, 21 Feb 2024 14:18:06 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8927C09A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7B14C62
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708524936; cv=none; b=PBTvki+17Nq6H5vEvQjMWQV+HkNwpPCo9yqtBACI3vM/NbdUpfU8dx3JRcdwaQjUPjcnhhr4NSQ078CBAVnOSVOxknV6pSvPwEKBCLnwX1bTw3Z3I3cXswRY/4iJVTALIqaGSiUxqtqpSQm0IMuPSZlrDoE66pLEsKMe9AOQsl8=
+	t=1708525085; cv=none; b=LYHYQwUkF3z89bp7zscrf3mAAE2iFiYJ6a2vs8TG9vygTIiyDfL4SiWLOQqggEii3ZrgEmWk+F6U+jMCE1pfIZAAd7Q+TCF+YoFvq4aiTyrqgrGU/e9qdKrgm1xjLvjdkPcVY3l4Ppt16LG0v/tNjsCH0y12/idRin81AFmoxzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708524936; c=relaxed/simple;
-	bh=/vYbdGx/biRaDTrw8g8KGes/oIyLAhiiHJyRW4pxB+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ta3DZk4ov3Sq5kOIkMZ9Ju8MDY/rGY48uXnVysa0JxyKb3iGEDLrkmEJYXy745295tGd04SpYJKhs8ezVIrwzOix19U9WbjySwcyDkdfPU1d5SxyAh70ibuKnbzdCaU6U9xMIkRosr6ueeqPFISPHC8lJ+LrfZRK32TEcv/bMNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lpjYdbGP; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708524934; x=1740060934;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/vYbdGx/biRaDTrw8g8KGes/oIyLAhiiHJyRW4pxB+Y=;
-  b=lpjYdbGPaZPL7tjqptdduzJ2ckcHht0Yrn5LbBpdqyLNTjazF5RUJWzh
-   LeT7osONuHngXyP35I9g/q19Q7H0KnolkNI43DpSznjxzX0zp0HO4n50h
-   h4Z+6Plv8yVECdjxs7J7PICs+urOLpz/F9Y+oiQu3Bt8OCNuiZa5fAtTm
-   11udXFtdD5qiukSJfavgWdBZ2TbByuK+kaQoJ751qCGnm0mkW32/M/JoC
-   fH5iAaFQsyafOPtiRo48nAN0AoEmlK3UMasDe66tkHuxsci0o/yD5Wxn9
-   t3I/QoJlGIUpIPpBfiqKgUw1SzA2mknV/OlHSAsApKWTWnEKA80ANZuUU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="6500408"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="6500408"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:15:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="936650868"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="936650868"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Feb 2024 06:15:28 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id CEA572AB; Wed, 21 Feb 2024 16:15:27 +0200 (EET)
-Date: Wed, 21 Feb 2024 16:15:27 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Baoquan He <bhe@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv7 07/16] x86/mm: Return correct level from
- lookup_address() if pte is none
-Message-ID: <p34d7e5r3gkcj2xl5jycyldvpkmcllmhzioaqcmseeugl3eq73@plk43dd4luzu>
-References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
- <20240212104448.2589568-8-kirill.shutemov@linux.intel.com>
- <ZdLjQCaxhOnR+GzX@MiWiFi-R3L-srv>
- <zhbhgq27kjrhkdgbxomjykjez2i4hckguvmxyptvfvoftue5ca@zowl5qbl6psl>
- <ZdR+JzfHjES3zytp@MiWiFi-R3L-srv>
- <ic4v3q4muffjq2jhlkk3k4lg5xxvjwlw22hctzubl5573euzu2@er3m7ztog2a6>
- <ZdVh6efExdt687YY@MiWiFi-R3L-srv>
+	s=arc-20240116; t=1708525085; c=relaxed/simple;
+	bh=iGgWjgLgpBt/9RgPmSEvpnYqtBKXQsB/KW/8Pa56KgY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=TdQerDDVKrK88wvhtbYAQNhF5tTZ2LQojuzWzpDkeOj8A2EU/6gznHPb+vXV0lofuaP2Lr/ZsZ7lWqCwoZ8NkT6tw0ngtMb19YsTtVsL9WHQcmt8kGsTvRPKioWpP2VtP/4m7FwycrweKiOtgIMQ96gNyv+G4P7aNsX0vtvad1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36525729ea3so37541165ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:18:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708525083; x=1709129883;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1klTTAIrFGmvBnYQd2zOqJEkvXD6C5G+n1BZglALIZw=;
+        b=t4AMLpC/Dk0B2805JA2LoDkkP4gvNWU83NPX3QYHWyrULN2Vx/KmTkUNKeu3Y8HhBW
+         sQ+Qg9k/IDYbbR3cVc1oW7tcFSRPEe+BZ0be0SlEF/dL5VfSEkwSlVTX2UGSu98rHlma
+         YASzpBD4vSBqpwOQ/cOxSa0fYjI/YvQQohvOgANhAzuCxPJbU5J2GZjmtLkqtxhagibL
+         NKMtsASVjYGDKGUvp3LcUaqBzvpDryZVXU9j48Pzx2Ndy78F/A4cGQYQ0eWkqxl5lQai
+         zu6IwaWx55ZZ8tuKX+YKzGROhcbsdhsuVJBjdjC6ZEzQ8IkJxo3vXVgECfucCch5R+58
+         YGAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvPlgUlIlMfRy1mScqw7BSwwKT/9TtQnmWUqaCCRmd3irFe67WUg+AxLMUxaVKHyHI1lmDs3g4+JPjZkYhWpgM0I2486nUSSIAx6kF
+X-Gm-Message-State: AOJu0YzA+ek2u0G8bge0e2Didym9tKylLrarfAgA7xkjyartSeBAWxls
+	z9dH56g2SIOx44DKvN+Om54X+PlqbY7A+jPG8vFL32zbGB1quJ8AzQduSeiscIrCOLZGCAs6KJd
+	FB18f9A4P5a5ZzFFC16ye9TfYQDzeWQFeWr2s5Ar0VDDgL6i28FJZidY=
+X-Google-Smtp-Source: AGHT+IF9MpHqAqond0Z1ygJ9VfO5pGsiUZ/EJPPIM/DKqrBFsMJPde9pPYl8c7erSB/4gbsGDy3z2nVhZMCZNUtniGt3lxzW4svw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdVh6efExdt687YY@MiWiFi-R3L-srv>
+X-Received: by 2002:a05:6e02:1a4c:b0:365:22a6:596e with SMTP id
+ u12-20020a056e021a4c00b0036522a6596emr869470ilv.6.1708525083818; Wed, 21 Feb
+ 2024 06:18:03 -0800 (PST)
+Date: Wed, 21 Feb 2024 06:18:03 -0800
+In-Reply-To: <tencent_AF13764368E97383BA244FD768576566C205@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b606560611e4fe5b@google.com>
+Subject: Re: [syzbot] [media?] INFO: task hung in cec_claim_log_addrs
+From: syzbot <syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 21, 2024 at 10:37:29AM +0800, Baoquan He wrote:
-> > diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> > index 3612e3167147..425ff6e192e6 100644
-> > --- a/arch/x86/mm/pat/set_memory.c
-> > +++ b/arch/x86/mm/pat/set_memory.c
-> > @@ -657,7 +657,8 @@ static inline pgprot_t verify_rwx(pgprot_t old, pgprot_t new, unsigned long star
-> >  
-> >  /*
-> >   * Lookup the page table entry for a virtual address in a specific pgd.
-> > - * Return a pointer to the entry and the level of the mapping.
-> > + * Return a pointer to the entry and the level of the mapping (or NULL if
-> > + * the entry is none) and level of the entry.
->                        ^ this right parenthesis may need be moved to the end.
-> 
-> 
-> =======
->  * Return a pointer to the entry and the level of the mapping (or NULL if
->  * the entry is none and level of the entry).
-> =======
+Hello,
 
-Emm.. I like my variant more. We return level regardless if the entry none
-or not. I don't see a reason to repeat it twice.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> >   */
-> >  pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
-> >  			     unsigned int *level)
-> > @@ -704,9 +705,8 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
-> >   * Lookup the page table entry for a virtual address. Return a pointer
-> >   * to the entry and the level of the mapping.
-> >   *
-> > - * Note: We return pud and pmd either when the entry is marked large
-> > - * or when the present bit is not set. Otherwise we would return a
-> > - * pointer to a nonexisting mapping.
-> > + * Note: the function returns p4d, pud and pmd either when the entry is marked
->                                           ~~~
->                                            ^ s/and/or/
+Reported-and-tested-by: syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com
 
-Fair enough.
+Tested on:
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+commit:         9fc1cccc Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=162ca072180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=95be8c66da553d84
+dashboard link: https://syzkaller.appspot.com/bug?extid=116b65a23bc791ae49a6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=148ff694180000
+
+Note: testing is done by a robot and is best-effort only.
 
