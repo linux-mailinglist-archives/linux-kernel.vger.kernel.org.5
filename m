@@ -1,189 +1,173 @@
-Return-Path: <linux-kernel+bounces-75688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D32485ED6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:51:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 920C385ED6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:52:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F37FE1C2114E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:51:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5449B22587
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F1B12EBD8;
-	Wed, 21 Feb 2024 23:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88DE12DDB2;
+	Wed, 21 Feb 2024 23:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NhA3ETk3"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KrP1JFmG"
+Received: from mail-io1-f74.google.com (mail-io1-f74.google.com [209.85.166.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E06912D754
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D35C12DDA3
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708559426; cv=none; b=j1sVPYRXEPlGiSASKJ5Qw7c7meIDRsRK45P/u/Sh0/NQQ9CUPpOdk2Ws+IDfnfAkVpEHhL68sKhWp2VDNU4QdhEMH56lZrqeHX55rQD5Z6H7me73GT55CIriv1Ty2SL+CdjaiEFkFexjKT6aIcB25xtik8i3iDFOx4LJfhvZ4+0=
+	t=1708559436; cv=none; b=RYhnJdd8eDOi43nuAv8rlm2BxnpQMqN0TLTL6sl1+zxrRbgzuT2XGVQdVatqD2KXX7VCcZdxO1nuBGTDqych5vVYjU2gD91DtH2iTiVjzp20EuYrprBzdMEhrkGYuagxvvhL2+3M8autqNQc3sFn1o263G9ZV5aho94BWFwc37g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708559426; c=relaxed/simple;
-	bh=y3MIWBK0YFitBa1SLGaOLrvzg2gVwOMZAiNBj6d1t2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kQs0H0Qq9T/w9wBQ0Co8K6kV/1JJqffjQ3QOiLy0FbhbXpqxnmq6Ur/eXZDcT7n6C52mIY231y1W3VcEYgao6iG2tHpacjoIq2NVS7BHSkbQhRwyNGmSMTW0UCH+FmkF++EYGJyRUlLLUzRrvLR6O4+RiwwQIg/g+Des+LelC4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NhA3ETk3; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso5876884276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:50:24 -0800 (PST)
+	s=arc-20240116; t=1708559436; c=relaxed/simple;
+	bh=nCnAH6swIp2emDmvgeIyHlmnszZXY52TNqt+AplJKBU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=nUB5AeLYvHAA/PPKvyups4Yoc3qYt6ALaMg6aIOmzf47amP1+d9bK9H8OO+WDG0T0sDr0E2f3zZZrTaV+/mBzqTAl4rW/1NcUrCdFXx49z1gI/T8SRuYmBmndMQ1FqLU/tHD+l2eCUVJZO8/g5HqZZaPszAiwmZibiFXBfoGppE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KrP1JFmG; arc=none smtp.client-ip=209.85.166.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-io1-f74.google.com with SMTP id ca18e2360f4ac-7bfeb848712so287258339f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708559423; x=1709164223; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/XpZt7hzwc3jNcQDwZUZ5vMVTQ3xQ4U9NKZbGKi742g=;
-        b=NhA3ETk3NVvQ/4D4ROhT9QG3s9Ax5+t5GQuNDlKakQGiBJnR9NOEWkyYqYOTw5hlkN
-         w0Y4qSSStdP7900XKsYL22AOoEO8IB/sNr/0Xb9EUL1uYg7JqqRUle8KeXcCeZT8lJCH
-         k220zewx2vNIncGdPkbuxPSdaMMZx6zGegdkwi/fqzdWDEritXZFlYCH7sWhwb1htJFT
-         0++fC0Lsya9GGAzuLQR1joLUy420z+u2cI2GKKnaxeaedSKbJF2Psxb978GRpGdlbb0Y
-         D5VEDufNXFqzpInzOSmQn8i2bfI+Y+El2XWxRsdYFZFNy2Lkafa3trrzb+XZaqMUwfwD
-         fKyw==
+        d=google.com; s=20230601; t=1708559433; x=1709164233; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9ssJhSw8IGwkaMJQVHXTzvwEqUpaKWRubYumbO3rYIY=;
+        b=KrP1JFmGDzB6sYKRBjS2UDmFA+IO3Y/u1eRKNJvGNeMdIrgNRM8TN6+Y8zp75bzVhj
+         B1ifaVUKk26IyQ70/QrmlpXekFFbyBLSUz9EtCsKrWH/1y9RdvP4OXKzgKqK36xdXDUP
+         hEFD3mB4GNyve3kGNWS6VPEjyI2aQYhFmdH/S+L2VGRR3X/dbRfvvXGSYA2+gBZn9/bh
+         WOZIBKAzLeHY9stIwuqywNqbF9jAt4cFRwf6XK2jAC4vYlLLhFpUTCeUXoNsegfEZMQa
+         fs3GsNMGnmkxPKU2PSzrPzH0HIol1cplUgL2T/Hd6i8SJpQBBxnjIIuB/soW0Q3tVTpY
+         iOjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708559423; x=1709164223;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/XpZt7hzwc3jNcQDwZUZ5vMVTQ3xQ4U9NKZbGKi742g=;
-        b=JPXkQgjb9knx6EFfMFTO598SPotKdQPilEuChd2QB0e+cc7MmF3le7AcPsQnU+/j/5
-         VTUNNPzoU+7k9/Q18UmszoDGkq2Be1nR22VHUKXQAU4HVGqx7EDNqct2864j7bxLVgv9
-         pNKjWutsNnBruSiK5g5i7KORv1ZRcwx5t6SeguimSB20mNAb3AFR3MJOLRpOS+/5qmBC
-         f64SX9vzPHyeQacFvp9kDCpvA1RIU26dZbQ97bbNSSL0R36MM3FB0N74XHPJIkqDdsNQ
-         iI5FibT9TqJ18b1AfDCAW5lEDU+tdpGx8xoBixSbXP0u+oFOELPMztofmOJw0BHdIj0j
-         iCMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVxMZ8XymRoBu6MogZb1AxLqitmrUaP4NeM1h7Vr4dp6Ls7K+8gYVh2xamsjtuiIUH2JvGIVJZK6z2yI+my/QNlHXF0hIHePw+p756q
-X-Gm-Message-State: AOJu0YyrhHSUHp1KUwnQwSEAUvBT5ys7Ac9okBqxGJ8XL7syLfRdlML4
-	3apru3h5Ev4QjT/bUsVfz4XrBdjkEMZnu1LpBZwuh2r0IZgzycGUZgWGxlXgHi4ClHdSKjymEcm
-	/iIe5ryCEYYRvO3CuRRUv6a6ycKNGkeMXMv2xXg==
-X-Google-Smtp-Source: AGHT+IGFCpzYN9Tvhba/FP/G+LXkXROeoh+7TE5DeZAwGefezlUG4taS3kLJsE2C4lj2w55Q3QXgdigZ/ja3jgLbmO0=
-X-Received: by 2002:a05:6902:220f:b0:dc7:48f8:ce2e with SMTP id
- dm15-20020a056902220f00b00dc748f8ce2emr1016956ybb.37.1708559423600; Wed, 21
- Feb 2024 15:50:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708559433; x=1709164233;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9ssJhSw8IGwkaMJQVHXTzvwEqUpaKWRubYumbO3rYIY=;
+        b=EHaxhdoMXuplUavb5lo9pW+inzNbVJIMAjcsQmfy2jK9C8bkc7Xi5ROR7ujnMUdtxF
+         m2+WIpgHGRqiuzQOIYFCoDoJGX0Jt2lYPMUDgPzBmgkMPpIjecZFiGj5sxHJ6PGXVs1d
+         1aqy39LSZtm+MkE5ftwRGF9tON79/mj/Omd+BN5x9i9WHnZ9VhFXxzHwKYmf9TCqYQ1U
+         1u+MKpSrnXVTuY5I6hjw84GQCnwUuURE5nPoG6dko2jmyPeyVw+voi09srj1pPeuj31d
+         cHtIVG/q6WBH2qFtDBR/fGaKxUQm/laZ6BL+ytEPNWSromIhrQdmf7UMRU0FhldA1RW3
+         81Ww==
+X-Forwarded-Encrypted: i=1; AJvYcCXJ4XwHNjpJd3UUqjNTgbFsTM8Fx1MTiJjjqTdt+ZmpLttGbv0xDVJf60X4UC7YpuxkPHdUzTPhtd1vf0PRV7+9W4jpPkqoBr4IpOak
+X-Gm-Message-State: AOJu0YyurU2m3u6tIWY2k98oD8C44oK2NAIVcSGSPgCJHVPwDzrZooBJ
+	zw7mohBHYSaJbQ0PIg76qrVpGZM7oImTGRr2xU9r08cAc23I3GDqfbnsyd338mRD+UiPKCvuBed
+	0KxqIgwfzWUldJ+K2bLMxvw==
+X-Google-Smtp-Source: AGHT+IG5ImoOOYrjTV0m32TYWgADsPNmLYkMxOSs1mejSOYPrWlYHpAKSaT8TD6C8T1PZlMxpmL7/QPdxp6muuzRAw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6638:4816:b0:473:db4c:6fee with
+ SMTP id cp22-20020a056638481600b00473db4c6feemr258770jab.2.1708559433547;
+ Wed, 21 Feb 2024 15:50:33 -0800 (PST)
+Date: Wed, 21 Feb 2024 23:50:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com> <20240221-rb3gen2-dp-connector-v1-6-dc0964ef7d96@quicinc.com>
-In-Reply-To: <20240221-rb3gen2-dp-connector-v1-6-dc0964ef7d96@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 22 Feb 2024 01:50:12 +0200
-Message-ID: <CAA8EJppAVehWUeLAqEAq8A3nq-o2g=8GK--XRVWtDV7-0BCskA@mail.gmail.com>
-Subject: Re: [PATCH 6/9] arm64: dts: qcom: qcs6490-rb3gen2: Enable USB role switching
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAEKM1mUC/5XNQQ6CMBCF4auYrh3TlkjElfcwxMB0CpNgSzqkk
+ RDubuUGLv+3eN+mhBKTqPtpU4kyC8dQwp5PCscuDATsSiurbWV0pUGWFHBewSXOlAQEhWHi3iN
+ 4fFHA6AhGuHauto2vHTWoytmcyPPngJ5t6ZFliWk93Gx+699ENmAA9Q1tT3VPvnsMMQ4TXTC+V bvv+xdwNLBk3QAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708559432; l=3137;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=nCnAH6swIp2emDmvgeIyHlmnszZXY52TNqt+AplJKBU=; b=bjMp/bqaxulF7lV6pQWdDcIpAYH60nRPQcPkZG4591ITeaNSRX3DtgWjl3k2UaEs+KaDivfR7
+ EcPs9LYT7eEDFnxN6eg3DcMXbgVbATIzxG+6ZUP+fKcJsahijSMAmo7
+X-Mailer: b4 0.12.3
+Message-ID: <20240221-strncpy-drivers-scsi-libfc-fc_encode-h-v2-1-019a0889c5ca@google.com>
+Subject: [PATCH v2] scsi: libfc: replace deprecated strncpy with memcpy
+From: Justin Stitt <justinstitt@google.com>
+To: Hannes Reinecke <hare@suse.de>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
->
-> With the ADSP remoteproc loaded pmic_glink can be introduced and wired
-> up to provide role and orientation switching signals.
->
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 48 +++++++++++++++++++++++++++-
->  1 file changed, 47 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> index ab498494caea..079bf43b14cc 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> @@ -121,6 +121,41 @@ debug_vm_mem: debug-vm@d0600000 {
->                 };
->         };
->
-> +       pmic-glink {
-> +               compatible = "qcom,qcm6490-pmic-glink", "qcom,pmic-glink";
-> +
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               connector@0 {
-> +                       compatible = "usb-c-connector";
-> +                       reg = <0>;
-> +                       power-role = "dual";
-> +                       data-role = "dual";
-> +
-> +                       ports {
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +
-> +                               port@0 {
-> +                                       reg = <0>;
-> +
-> +                                       pmic_glink_hs_in: endpoint {
-> +                                               remote-endpoint = <&usb_1_dwc3_hs>;
-> +                                       };
-> +                               };
-> +
-> +                               port@1 {
-> +                                       reg = <1>;
-> +
-> +                                       pmic_glink_ss_in: endpoint {
-> +                                               remote-endpoint = <&usb_1_dwc3_ss>;
+strncpy() is deprecated [1] and as such we should use different apis to
+copy string data.
 
-This should be connected to the QMP PHY rather than to the USB host.
+We can see that ct is NUL-initialized with fc_ct_hdr_fill:
+|       ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len,
+..
 
-Also it might be better to squash this patch with the patch 8. Or at
-least to get redriver into the picture in this patch (and keep only
-display-related parts in that patch).
+In fc_ct_hdr_fill():
+|       memset(ct, 0, ct_plen);
 
+We also calculate the length of the source string:
+|       len = strnlen(fc_host_symbolic_name(lport->host), 255);
 
-> +                                       };
-> +                               };
-> +                       };
-> +               };
-> +       };
-> +
->         vph_pwr: vph-pwr-regulator {
->                 compatible = "regulator-fixed";
->                 regulator-name = "vph_pwr";
-> @@ -476,7 +511,16 @@ &usb_1 {
->  };
->
->  &usb_1_dwc3 {
-> -       dr_mode = "peripheral";
-> +       dr_mode = "otg";
-> +       usb-role-switch;
-> +};
-> +
-> +&usb_1_dwc3_hs {
-> +       remote-endpoint = <&pmic_glink_hs_in>;
-> +};
-> +
-> +&usb_1_dwc3_ss {
-> +       remote-endpoint = <&pmic_glink_ss_in>;
->  };
->
->  &usb_1_hsphy {
-> @@ -491,6 +535,8 @@ &usb_1_qmpphy {
->         vdda-phy-supply = <&vreg_l6b_1p2>;
->         vdda-pll-supply = <&vreg_l1b_0p912>;
->
-> +       orientation-switch;
-> +
->         status = "okay";
->  };
->
->
-> --
-> 2.25.1
->
+..then this argument is used in strncpy(), which is bad because the
+pattern of (dest, src, strlen(src)) usually leaves the destination
+buffer without NUL-termination. However, it looks as though we do not
+require NUL-termination since fr_name is part of a seq_buf-like
+structure wherein its length is monitored:
+|       struct fc_ns_rspn {
+|       	struct fc_ns_fid fr_fid;	/* port ID object */
+|       	__u8		fr_name_len;
+|       	char		fr_name[];
+|       } __attribute__((__packed__));
 
+So, this is really just a byte copy into a length-bounded buffer. Let's
+use memcpy().
 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- Don't mark fields with __nonstring
+- Link to v1: https://lore.kernel.org/r/20231030-strncpy-drivers-scsi-libfc-fc_encode-h-v1-1-c08c2be6befa@google.com
+---
+ drivers/scsi/libfc/fc_encode.h | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/scsi/libfc/fc_encode.h b/drivers/scsi/libfc/fc_encode.h
+index 7dcac3b6baa7..6b7e4ca6b7b5 100644
+--- a/drivers/scsi/libfc/fc_encode.h
++++ b/drivers/scsi/libfc/fc_encode.h
+@@ -136,22 +136,24 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
+ 		break;
+ 
+ 	case FC_NS_RSPN_ID:
+-		len = strnlen(fc_host_symbolic_name(lport->host), 255);
++		len = strnlen(fc_host_symbolic_name(lport->host),
++			      FC_SYMBOLIC_NAME_SIZE);
+ 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len,
+ 				    FC_FST_DIR, FC_NS_SUBTYPE);
+ 		hton24(ct->payload.spn.fr_fid.fp_fid, lport->port_id);
+-		strncpy(ct->payload.spn.fr_name,
+-			fc_host_symbolic_name(lport->host), len);
++		memcpy(ct->payload.spn.fr_name,
++		       fc_host_symbolic_name(lport->host), len);
+ 		ct->payload.spn.fr_name_len = len;
+ 		break;
+ 
+ 	case FC_NS_RSNN_NN:
+-		len = strnlen(fc_host_symbolic_name(lport->host), 255);
++		len = strnlen(fc_host_symbolic_name(lport->host),
++			      FC_SYMBOLIC_NAME_SIZE);
+ 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rsnn) + len,
+ 				    FC_FST_DIR, FC_NS_SUBTYPE);
+ 		put_unaligned_be64(lport->wwnn, &ct->payload.snn.fr_wwn);
+-		strncpy(ct->payload.snn.fr_name,
+-			fc_host_symbolic_name(lport->host), len);
++		memcpy(ct->payload.snn.fr_name,
++		       fc_host_symbolic_name(lport->host), len);
+ 		ct->payload.snn.fr_name_len = len;
+ 		break;
+ 
+
+---
+base-commit: 517bc069e3eaad84d879101e0351ca7783243b32
+change-id: 20231030-strncpy-drivers-scsi-libfc-fc_encode-h-5ad629f6de9c
+
+Best regards,
 --
-With best wishes
-Dmitry
+Justin Stitt <justinstitt@google.com>
+
 
