@@ -1,147 +1,167 @@
-Return-Path: <linux-kernel+bounces-75018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B55B85E1A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:43:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D83A985E1AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:45:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1508C284990
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:43:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1663DB241E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37E180C11;
-	Wed, 21 Feb 2024 15:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618B380BE1;
+	Wed, 21 Feb 2024 15:44:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bqiuurJu"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="UiBU70eP"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F5F4F8AB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801E58060B
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708530214; cv=none; b=HjF204ZUXatvmaMLYoo8GrrzdDNCm/L4JjJ1fuZYaEUN/xSrpRXIqPyKj7NiJ/45ANhJn5IcgqeP1tJOgGsUUfQ05DYkPNIrlpnecr0vHMy1j7O//6mkl4y+xP/6DdA05U3y19bHxzM3we6yQbim30SZWeA9hKDvMT/R0iJdl9s=
+	t=1708530297; cv=none; b=LEua+mv/dV8TpU7McZcIbYB4nbxxxA3BcNItfvSLib+1r753gopftBCNM4v0QEsTmBVN2l/ZzCVQ47awoSBQ0dw1KE9/pZLaKd5Jh0FPt42SvAM2EQwsojEnO61v0m/pe4GnV7NOr4f3uEsqNlr9WunFMYesve4/UmLOSnjouzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708530214; c=relaxed/simple;
-	bh=dtPcZYGotYb13H+XbyPznkYrx/vuVf9Nw4dujOkUQmU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=G8kyjIZ5q1O9gByxIPICSHs+NyquBJ/yIfDB+lVfiE6rDbJ/C6TenPfZInvZnYw3PFuIQClYRL8g3OiXA7Rrm/Ncbb1DK8SXqfqduKzYoJyiDEq2P6hJ79hpjiiUQHRMQZRrvpknpzZmd12hpYg52KLFUiM7QNiLkIQg97rG/Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bqiuurJu; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6047fed0132so103873207b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:43:33 -0800 (PST)
+	s=arc-20240116; t=1708530297; c=relaxed/simple;
+	bh=v7xENna07dOPYtuJ7TmCIX8PyRwRMSPGrpmiGon5vdM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tgHnGM/kovur6RviNfDV45ibphfpHBPB2RIz9YbUMj/OXrlvJ8GguFW8lvprq7NaKrBB2mrEXl85FiYNC5kYsbNzp30M7vJVw3NUpA61Hq9oDhkEMbzLbpmgTG7a9hn9vCUk+HO1jgDyIDFfoq9r97PLOup1fgqI6I3mQLk5xZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=UiBU70eP; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d220e39907so75229051fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:44:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708530212; x=1709135012; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WHVJrIcOXAHbQ4g5qnO/XXw4nGfAyfdi3Ure4gTW0sc=;
-        b=bqiuurJuSdZSIsjUWnenFHJTJ+78n5OQf0uJddVQX/jr3w+Clbzj/U1EkicafGIN9r
-         ea0TLsWtGPvk580FHkZK3JjE25MbuKEfriqXq6UVP1Rz6pLdA+T/Pw3M12Pt/CYmWjRY
-         HH31NbbhA/T1PxPE+g5KuvoZFqUFzx0dMzRoInytCBJrM8hJ6ZPiON0WrxRW0/Ef7ne5
-         xI/T55e7tUIhh61Ix0xi3tbBQpkeRxu25HsAmY4FAXdJGVzlORHngahZ9bqiJ+Un1g3e
-         wilAJD5YGwqXj7ChkOlsLzogDWGg4v0n17JWjyK0z60rBzZLGBnldXcbNMQchrNLTFNg
-         Y8DA==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708530293; x=1709135093; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8/c7XUwFLRKiENJ2ttxrXFWUv4lnYluY1pRWORvLrOE=;
+        b=UiBU70ePtZFNj8bD6ZQVvcnLzrLrzJgriQeyyN59N+MiROhdQvPtLWkpzwFkXbDsfV
+         61Xqn+NBCaqxtvLxSBsn8DySpwAKruTFnQ9mboFv629b2qCZ5jyumvpmglGH3/oLtoRl
+         m3Vj2v6/B5NYBzLqQnZnME7OKzdxvTiyStoQz13FtqAuN+46QfUcXX1EtzA1qflFG64R
+         JrWj1ARkc65dofPm1aWPZamQpNkCJYNZX867vVQy/DOJjKGI4j0ZEDD3Pjo/k+yeg4u6
+         xv+gxWtSicUCZiOI0UmL4O1PVX7qvO8dzCg+4B1+nMFqzLyEBRvJUij0RCh8VtKIz2Sf
+         vRDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708530212; x=1709135012;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WHVJrIcOXAHbQ4g5qnO/XXw4nGfAyfdi3Ure4gTW0sc=;
-        b=CYAWOyOtRg7Om0DcVZHt9Nx/uQBEzVrLm8uG13w2KFFnQr1w9llrtblsvak3Glxu8M
-         QsuJgE8Jme9BZmEkkyD+3RyeifRQw1oRJ9pzgppWsN33/YpAXB6c/HQ9tBKzCl1BB491
-         kVbAqwhGVwhCAs9Y/+TLLCscYJwMOf5ymwhh1oe3JMf+WcK8i62ROtabNRLSkxtulwZC
-         hkW3JoSdJ8SauKep1NFM6D60GG+5YHwELH2LVOHEIw2KFy3c4Pe+IvwMQ9yxwJvp3ysp
-         +FLrW2uekq38b8H+AV0IOwrdoCPQgIvVrPOFa6OPiPnLXy6wSBUGIQTLRDBhHIgXnDJ3
-         Y7kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWiVY+uG1ociK45aKIR49n9D6CAXvOUm9oz9jeDw2YD3eMT1ssn4viEqrzEz9rVPTEz7aRVth3gQmVgtbGpu1yGSTS/oKjp/gcaVIgE
-X-Gm-Message-State: AOJu0Yw/AOFvX09zshRpl4JWbNgdimIM09igtY+YbPhqIraiwgUXrKs9
-	cHnmlMCFskpJN1ckYrMNVRfVUBrzot7uXEGrYEq3UbEIaUnuHvxSI+5/8PvLb7x0Lxof83smgtG
-	oSA==
-X-Google-Smtp-Source: AGHT+IGhrxI4ofUDpG182hxnUyjMmsblvBAVscfBi3HLQB8eiu0haeYne7+Xs1m1lhwdsfUl21ZigjZObHI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1b85:b0:dc2:26f6:fbc8 with SMTP id
- ei5-20020a0569021b8500b00dc226f6fbc8mr752182ybb.7.1708530212469; Wed, 21 Feb
- 2024 07:43:32 -0800 (PST)
-Date: Wed, 21 Feb 2024 07:43:30 -0800
-In-Reply-To: <05571373-5072-b63b-4a79-f21037556cfa@oracle.com>
+        d=1e100.net; s=20230601; t=1708530293; x=1709135093;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8/c7XUwFLRKiENJ2ttxrXFWUv4lnYluY1pRWORvLrOE=;
+        b=xRkmX4lnvqBj3xx0xmDFCLH6/qorm6TFrmMjvGrK7O/FRFS2k972biNQi7NkBufd81
+         a6jou8Jep4gKwGy4RtxzjfHqVlS/ZyPp47DJQZMOHWPlbLHijhWQPYasGN91nW1LRgg5
+         rQZFb5LmS9sxLDb0wC5Vt1ypCHDBxMWgIvmVoEwn8y0US+DYZvuwl7Zw/zBvrULKYd77
+         SO+GcPa9eVqfEPYfRxUalcSxEudxYMN1rPj3HpI+pyTxv9whbmXwlTZUmvgkSWwriRUn
+         XLIfHMbrRxy9D2Cv5gCcymFY/uZ9d2FUxqa/sfitbXUlRkraI3tdy6nY2IcOY0IT8/8X
+         +xSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGGWC/GqA6tqYLEg6U0dDYXMFZ+y3t6n6wCOiXJI88NdoObmuenBNAH97jjXftfH81xt1GvrMP6oIDcsqWhXyLZdYwFd4VQxW2whej
+X-Gm-Message-State: AOJu0YxTdD9+zTAU/BPzFULsFWz/4OJ0g1FfbAaygzuyppOFBAYrOdZb
+	k2jkq+/7ksu5YKoittH2Pz8I2UUL4UvFVvNPldXKftyWDqf2Nz+o+zOHvEXZeRDKtuSy0sVFhtg
+	GJBfWXpQBuq2j47IzcrdjaDLzYTp7tB8oNU5pEQ==
+X-Google-Smtp-Source: AGHT+IE2jKiwWEUrCCoIvtI9A8GIbL8yLwVMX2t69LD0QqhK1FpKoYRVbIXn9VjUSpzRsw9bvzLU5Cehq1ppTDpUuPs=
+X-Received: by 2002:a2e:8018:0:b0:2d2:37d6:350c with SMTP id
+ j24-20020a2e8018000000b002d237d6350cmr8461819ljg.12.1708530293554; Wed, 21
+ Feb 2024 07:44:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240217014513.7853-1-dongli.zhang@oracle.com>
- <20240217014513.7853-4-dongli.zhang@oracle.com> <ZdPXTfHj4uxfe0Ay@google.com> <05571373-5072-b63b-4a79-f21037556cfa@oracle.com>
-Message-ID: <ZdYaIn7xwqTPdofq@google.com>
-Subject: Re: [PATCH 3/3] KVM: VMX: simplify MSR interception enable/disable
-From: Sean Christopherson <seanjc@google.com>
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: kvm@vger.kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240216-ad7944-mainline-v2-0-7eb69651e592@baylibre.com>
+ <20240216-ad7944-mainline-v2-1-7eb69651e592@baylibre.com> <20240221152226.GA2868707-robh@kernel.org>
+In-Reply-To: <20240221152226.GA2868707-robh@kernel.org>
+From: David Lechner <dlechner@baylibre.com>
+Date: Wed, 21 Feb 2024 09:44:42 -0600
+Message-ID: <CAMknhBFytGYNo8FviHepoxLApoGyo0mVhL2BzVmm1vt8-Evn9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: add ad7944 ADCs
+To: Rob Herring <robh@kernel.org>
+Cc: linux-iio@vger.kernel.org, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024, Dongli Zhang wrote:
-> Hi Sean,
-> 
-> On 2/19/24 14:33, Sean Christopherson wrote:
-> > On Fri, Feb 16, 2024, Dongli Zhang wrote:
-> >> ---
-> >>  arch/x86/kvm/vmx/vmx.c | 55 +++++++++++++++++++++---------------------
-> >>  1 file changed, 28 insertions(+), 27 deletions(-)
-> >>
-> >> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> >> index 5a866d3c2bc8..76dff0e7d8bd 100644
-> >> --- a/arch/x86/kvm/vmx/vmx.c
-> >> +++ b/arch/x86/kvm/vmx/vmx.c
-> >> @@ -669,14 +669,18 @@ static int possible_passthrough_msr_slot(u32 msr)
-> >>  	return -ENOENT;
-> >>  }
-> >>  
-> >> -static bool is_valid_passthrough_msr(u32 msr)
-> >> +#define VMX_POSSIBLE_PASSTHROUGH	1
-> >> +#define VMX_OTHER_PASSTHROUGH		2
-> >> +/*
-> >> + * Vefify if the msr is the passthrough MSRs.
-> >> + * Return the index in *possible_idx if it is a possible passthrough MSR.
-> >> + */
-> >> +static int validate_passthrough_msr(u32 msr, int *possible_idx)
-> > 
-> > There's no need for a custom tri-state return value or an out-param, just return
-> > the slot/-ENOENT.  Not fully tested yet, but this should do the trick.
-> 
-> The new patch looks good to me, from functionality's perspective.
-> 
-> Just that the new patched function looks confusing. That's why I was adding the
-> out-param initially to differentiate from different cases.
-> 
-> The new vmx_get_passthrough_msr_slot() is just doing the trick by combining many
-> jobs together:
-> 
-> 1. Get the possible passthrough msr slot index.
-> 
-> 2. For x2APIC/PT/LBR msr, return -ENOENT.
-> 
-> 3. For other msr, return the same -ENOENT, with a WARN.
-> 
-> The semantics of the function look confusing.
-> 
-> If the objective is to return passthrough msr slot, why return -ENOENT for
-> x2APIC/PT/LBR.
+On Wed, Feb 21, 2024 at 9:22=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
+:
+>
+> On Fri, Feb 16, 2024 at 01:46:18PM -0600, David Lechner wrote:
 
-Because there is no "slot" for them in vmx_possible_passthrough_msrs, and the
-main purpose of the helpers is to get that slot in order to efficiently update
-the MSR bitmaps in response to userspace MSR filter changes.  The WARN is an extra
-sanity check to ensure that KVM doesn't start passing through an MSR without
-adding the MSR to vmx_possible_passthrough_msrs (or special casing it a la XAPIC,
-PT, and LBR MSRS).
+..
 
-> Why both x2APIC/PT/LBR and other MSRs return the same -ENOENT, while the other
-> MSRs may trigger WARN. (I know this is because the other MSRs do not belong to
-> any passthrough MSRs).
+> > +  adi,spi-mode:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [ single, multi, chain ]
+> > +    default: multi
+> > +    description: |
+> > +      * single: The datasheet calls this "3-wire mode". It is often us=
+ed when
+> > +        the ADC is the only device on the bus. In this mode, SDI is ti=
+ed to VIO,
+> > +        and the CNV line can be connected to the CS line of the SPI co=
+ntroller
+> > +        or to a GPIO, in which case the CS line of the controller is u=
+nused.
+>
+> We have a standard property for this.
 
-The x2APIC/PT/LBR MSRs are given special treatment: KVM may pass them through to
-the guest, but unlike the "regular" passthrough MSRs, userspace is NOT allowed to
-override that behavior via MSR filters.
+As discussed in v1 [1], the datasheet's definition of "3-wire mode" is
+_not_ the same as the standard spi-3wire property. I can add that to
+the description here to clarify (I hoped changing the enum name was
+enough, but perhaps not). Or is there a different property you are
+referring to?
 
-And so as mentioned above, they don't have a slot in vmx_possible_passthrough_msrs.
+[1]: https://lore.kernel.org/all/20240216140826.58b3318d@jic23-huawei/
+
+>
+> > +      * multi: The datasheet calls this "4-wire mode". This is the con=
+vential
+> > +        SPI mode used when there are multiple devices on the same bus.=
+ In this
+> > +        mode, the CNV line is used to initiate the conversion and the =
+SDI line
+> > +        is connected to CS on the SPI controller.
+>
+> That's "normal" mode.
+
+That was my first choice, but the datasheet uses the term "normal
+mode" to mean not TURBO mode which is something else unrelated to the
+SPI mode.
+
+
+>
+> > +      * chain: The datasheet calls this "chain mode". This mode is use=
+d to save
+> > +        on wiring when multiple ADCs are used. In this mode, the SDI l=
+ine of
+> > +        one chip is tied to the SDO of the next chip in the chain and =
+the SDI of
+> > +        the last chip in the chain is tied to GND. Only the first chip=
+ in the
+> > +        chain is connected to the SPI bus. The CNV line of all chips a=
+re tied
+> > +        together. The CS line of the SPI controller is unused.
+>
+> Don't you need to know how many chips are chained? In any case, you just
+> need a property for chain mode. There's some existing properties for
+> chained devices I think. Standard logic shift register based GPIO IIRC.
+
+Thanks, I see #daisy-chained-devices now. I missed that before.
+
+>
+> CNV are tied together, but must be driven by something? I suppose
+> cnv-gpios?
+
+Yes.
+
+> But wouldn't that be the same as the SPI controller GPIO CS?
+> Does a SPI controller CS line connected to CNV not work in this case?
+
+Maybe technically possible if CS is inverted on the bus since the line
+has to be high to trigger the conversion and during the xfer.
 
