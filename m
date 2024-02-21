@@ -1,163 +1,142 @@
-Return-Path: <linux-kernel+bounces-74924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2097785E025
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:45:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE9885E01A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B64DB28A6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:43:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4961C231E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5849369D05;
-	Wed, 21 Feb 2024 14:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0966811FD;
+	Wed, 21 Feb 2024 14:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UQaK/ORa"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8+RZbwo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33387FBCD
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF3680034;
+	Wed, 21 Feb 2024 14:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526506; cv=none; b=jOqClI/FsEfX0bWo6KtzSPho6XOJ5M+KYHZuGVgNZI/wYDpGE28XNQ8SE2mfqiAXcTzKTuCsdMsfFqXQyXaFPgJYV+EX2KkwkWJnSAexsbmDhnhUujsUA407Su3e04Q6XJMkKtwsfsiIHAoC43ysL2hr85BcfZMWTwKn78CIITc=
+	t=1708526512; cv=none; b=dY3pPgB+/z7EsMnmpMwGxzCLtwae9TbPA4KEcN5dl6HVBCo+7FxApM0UlRGYs1iO3KwBIzaApeQHs/w4jJkOzF+gu4AXD63mnWOyb6O0rqRMXIByHTgAeCWjrQg1N/jfqMe82GCPeK8TERokoY/wXwfRtgNKywzEzzJKHYuCURQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526506; c=relaxed/simple;
-	bh=EP8HqW4umDRvOBsPISEVcT8aR7cY+L8gNkA+jwmzrB4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C3URRELWGJ70hXhmmx+cz8kWmhfUX0/4GQYPpw9hGZJ4yCcJJZX7kmrwKFStIVn6cAsmIPkrzAyBSw4OcnZitvpZa0FmWjKpbcfeVGRsu1HcnZkJNjHQz4n5fa5WqCS/aCuJYkLTXgtLDG/GtOZzhEb07hanCOtJe6edxqUDETU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UQaK/ORa; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3e4765c86eso512678766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:41:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708526503; x=1709131303; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gNVvKppdpjUMIpAElpMhT4YLDf9pEcmZRZrhoHTqnx4=;
-        b=UQaK/ORaW4OCzrfUYz2nRqkaVVwg9zZxMg6t4v6GZBxtOdbUQvxttjt/LwS5Bb9ctT
-         fqvbNYo7MUeLk7nq2GNKteATjl/IRhYhobK2wZpKpHrt2ZambdyuD2YNpfoP6E8BV3Dh
-         QUfOgJhabwydV+cbCwXyeshdGO9ZiFHTTBBUByTa4x7HvZF65EET54LbBZsUdFNh+Sq0
-         yZ22+mcn9yACqTu1Arx2ol6nZtjekVxP1urTdM3JO0DBqsfPKP408e9j53KPE016o9ZN
-         zUmiYICbW/18+owHx2wN00Ld4eyNeqtkMcYlhjshyjZjZH1xFGdayQaw+3ZL7IKZx0Rh
-         P6Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708526503; x=1709131303;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gNVvKppdpjUMIpAElpMhT4YLDf9pEcmZRZrhoHTqnx4=;
-        b=R6BHRcL8cy2stKLTXw3d6hgJcd96HAv/fbKXu43xxZXNog49D4hIjU/JzYnAHUtYGM
-         0jeEXO5Jhk7lp0CZLa2HIGeJ3QvhqaaidV3AXYGrHHOFy1d72+j0AK+y2L79kDMtpiO/
-         lEiUcrKLb6kmOrltqCA77n/+N0v2knZeSwKYuPswmCjR6r6qsQuH4DTTHqkexeSVoCPW
-         PIMLc+FsHV5zOoE2s7nnesnUf8xwwjXRGAOpL1fpSQVq+zdEeDSQahqi/7MLHF2gNFaD
-         +z3rD+DltHJ8i80Mf6vJRG0EV16Ez6GQfF5JjPGYitFYtdetHQyJGWx6ho5eppA/2pEi
-         EZfg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMB13NVPE/HwMRat1462Mp0h0wdPjyuGdcqE60gW2N1N7ZPz30nrb7JY9RttdtWkBKBmSkEDwcpGtqaIKLsi9JIoxmU+JOcrrY0qnt
-X-Gm-Message-State: AOJu0YwaJimmZLxv76yjcf25NvqLqJgEbke5M6l1cTZfP8Qo3yElHho5
-	StjeKhsbgp9vNfjcErV1gogwenjEaf62iQXHDg4nyAGYxMylkcwsC/8Qu86SiaU=
-X-Google-Smtp-Source: AGHT+IF9diBdOtITqCSbX0c0UKmh85wxVnxu8kqBryLrIT4N2/35H4N/z4/gqahG8we9+jSbEliCWA==
-X-Received: by 2002:a17:906:494d:b0:a3f:4842:2f60 with SMTP id f13-20020a170906494d00b00a3f48422f60mr1058962ejt.70.1708526503366;
-        Wed, 21 Feb 2024 06:41:43 -0800 (PST)
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id r22-20020a170906281600b00a3d777aa8fesm4983128ejc.69.2024.02.21.06.41.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 06:41:43 -0800 (PST)
-Message-ID: <bc45229c-6412-4fd5-ba8e-28b293d7864b@linaro.org>
-Date: Wed, 21 Feb 2024 15:41:41 +0100
+	s=arc-20240116; t=1708526512; c=relaxed/simple;
+	bh=EQF9KL1RT2lVZ7Xc3+VDawL+ZjdCN9kZA1uWFox451E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CwFJATLZ9UOAOaG06vy5K50+b/ufCDDTerQnJz6zTtlwvEh0SUhq80kr606vyd5btwR6fYDzxZnvslxun7gLXQ33Z1Zo4a/tlsqTIZGQUojv1xer9wytu+6Oal56BSV6QZnYON8pVftiaNbMqdDfe0FxdoHiUotDb/5PU4N+Fvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8+RZbwo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8C7BC433F1;
+	Wed, 21 Feb 2024 14:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708526512;
+	bh=EQF9KL1RT2lVZ7Xc3+VDawL+ZjdCN9kZA1uWFox451E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e8+RZbwoP4Gmf1Fbtkw60VHjWvXsG0ifLyAM2J+S0e7vmCPRk9y5sCyHy4p12Rb9E
+	 cMVnoPIVPirHjku5qiYdhSPL5zu+SjA8jtz0L3xSEUKkkefFVItIs/hOZTvpCULHi6
+	 wx3i47h8pwWbn7any3FjPK+E2iAzqVQmo7uQslQmDJ2Eg1A7ZzXEt7apYuPs3IHt8I
+	 RLKaEGmprNupovU/75faSMd55zokPKnzOblfoy+fPJNaIcqfufnyn0JmDFyBdo9e06
+	 ughyEFdoXQ0VAyuUeBTnu6rhpO2bn6uOWOIN3TF2VU6vAdDGCvLy62RPy75pi4RH+O
+	 g4CnldFCnleQg==
+Date: Wed, 21 Feb 2024 15:41:49 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Erhard Furtner <erhard_f@mailbox.org>, Linux DRI Development <dri-devel@lists.freedesktop.org>, 
+	Huang Rui <ray.huang@amd.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Karolina Stolarek <karolina.stolarek@intel.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Zi Yan <ziy@nvidia.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Memory Management List <linux-mm@kvack.org>, Brendan Higgins <brendan.higgins@linux.dev>, 
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org, 
+	kunit-dev@googlegroups.com
+Subject: Re: Running ttm_device_test leads to list_add corruption. prev->next
+ should be next (ffffffffc05cd428), but was 6b6b6b6b6b6b6b6b.
+ (prev=ffffa0b1a5c034f0) (kernel 6.7.5)
+Message-ID: <uddqboamqcnxwvnud5gmkkm4igvxj67xc2zw52iex5ahljtlb4@2e7ydoplg6rt>
+References: <20240219230116.77b8ad68@yea>
+ <ZdRtDOhQGQUm5X4d@archie.me>
+ <9cdf0baa-f544-4fa8-bee3-568b790527cc@amd.com>
+ <4xggxtkk44m3xcfucbougtuhr66s2pc7tilpnju7xnyw45facb@odsrpqp57kiz>
+ <535f9089-b988-45ac-b3f3-a7d593861723@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: Add SMB2360 pmic dtsi
-Content-Language: en-US
-To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
- Rob Herring <robh+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240221-x1e80100-dts-smb2360-v2-0-037d183cc021@linaro.org>
- <20240221-x1e80100-dts-smb2360-v2-2-037d183cc021@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240221-x1e80100-dts-smb2360-v2-2-037d183cc021@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="54nvwbweshimitzn"
+Content-Disposition: inline
+In-Reply-To: <535f9089-b988-45ac-b3f3-a7d593861723@amd.com>
 
-On 21.02.2024 15:38, Abel Vesa wrote:
-> Add nodes for SMB2360 with the eUSB2 repeater nodes.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/smb2360.dtsi | 51 +++++++++++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/smb2360.dtsi b/arch/arm64/boot/dts/qcom/smb2360.dtsi
-> new file mode 100644
-> index 000000000000..8d7bdb56e6fe
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/smb2360.dtsi
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023, Linaro Limited
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/spmi/spmi.h>
-> +
-> +/ {
-> +};
-> +
-> +&spmi_bus1 {
-> +	smb2360h: pmic@7 {
 
-Hm, I'm not 100% sure about bringing in this letter-suffix notation..
+--54nvwbweshimitzn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But then, is there anything better? What are they called in schematics?
-SMB2360_n, perhaps?
+Hi Christian,
 
-konrad
+On Tue, Feb 20, 2024 at 04:03:57PM +0100, Christian K=F6nig wrote:
+> Am 20.02.24 um 15:56 schrieb Maxime Ripard:
+> > On Tue, Feb 20, 2024 at 02:28:53PM +0100, Christian K=F6nig wrote:
+> > > [SNIP]
+> > > This kunit test is not meant to be run on real hardware, but rather j=
+ust as
+> > > stand a long kunit tests within user mode linux. I was assuming that =
+it
+> > > doesn't even compiles on bare metal.
+> > >=20
+> > > We should probably either double check the kconfig options to prevent
+> > > compiling it or modify the test so that it can run on real hardware a=
+s well.
+> > I think any cross-compiled kunit run will be impossible to differentiate
+> > from running on real hardware. We should just make it work there.
+>=20
+> The problem is what the unit test basically does is registering and
+> destroying a dummy device to see if initializing and tear down of the glo=
+bal
+> pools work correctly.
+>=20
+> If you run on real hardware and have a real device
+
+I assume you mean a real DRM device backed by TTM here, right?
+
+> additionally to the dummy device the reference count of the global
+> pool never goes down to zero and so it is never torn down.
+>=20
+> So running this test just doesn't make any sense in that environment.
+> Any idea how to work around that?
+
+I've added David, Brendan and Rae in Cc.
+
+To sum up the problem, your tests are relying on the mock device created
+to run a kunit test to be the sole DRM device in the system. But if you
+compile a kernel with the kunit tests enabled and boot that on a real
+hardware, then that assumption might not be true anymore and things
+break apart. Is that a fair description?
+
+If so, maybe we could detect if it's running under qemu or UML (if
+that's something we can do in the first place), and then extend
+kunit_attributes to only run that test if it's in a simulated
+environment.
+
+Maxime
+
+--54nvwbweshimitzn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdYLrAAKCRDj7w1vZxhR
+xdN5AP0a2qM2svXKCp42Du8M5ceOwqA0Ro4VNIqTjfP71wm84wEAqBc0BtfBVIUp
+WX9cTT9QW23f/XVrxJCgQkZF0UJvlg8=
+=cUKm
+-----END PGP SIGNATURE-----
+
+--54nvwbweshimitzn--
 
