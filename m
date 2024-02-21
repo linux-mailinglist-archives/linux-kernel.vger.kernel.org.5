@@ -1,168 +1,237 @@
-Return-Path: <linux-kernel+bounces-73930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF82885CDAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:03:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 119CB85CDD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 869ED2814F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:03:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84838283ABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA0D5235;
-	Wed, 21 Feb 2024 02:03:20 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1AE23FE0;
-	Wed, 21 Feb 2024 02:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA7E10953;
+	Wed, 21 Feb 2024 02:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="TjMhvpDx"
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6823279C6
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708481000; cv=none; b=mYR8ZWTzEzGvL4PYFjkaGEf2LZWbKXqPohw2GYaIg1LGJd4oVF4owKCJNybbuPZUpUiaWcmsUk2inFImXMpJFZxCwhGzBBKQ8J9mQ1h5DDqFpZYMSVCFCZ1d7AoamOYIImrl462RRlYZXHpp7KEQfiectRIUo1YbH/aeOIDpd/8=
+	t=1708481900; cv=none; b=fySB/sOhPEcMKqezoa3EFCiWiAVhoBE3cRcG+Eq69RFfkoVnSUExtzohk3bAZi7GUfJ1smnP7MuKGR3+2LcEQQ/eYv0OYrDKNDiiAqanKJbrDZFdSNd+8vXRMkd0I5l3080teKmMv6yR5OmgulK5X1W6tass33pu4iJsKQRo09o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708481000; c=relaxed/simple;
-	bh=KEbCD0+Yt5WycZBGFG+KMXcNoaLDk8sz4dr4unOnTvM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XqXjQ8ZmG2sUOrb1NrN0Avxs+40lf4XZwMRRWQtr8ZsfbQ4nJ9u4z9rQEJp2EpXV7o1cHLucY0rATN+GT4FQm1S6EkrGXtM4Klj3uQsfNM+oiWOZpj4Oyh6oWxxKr1k+nn0JWIdIwzKrgbNisp7Iw4vyxcQQZfSPC+mBX85+6UY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EE08FEC;
-	Tue, 20 Feb 2024 18:03:54 -0800 (PST)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.65])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DAC763F766;
-	Tue, 20 Feb 2024 18:03:15 -0800 (PST)
-From: Jeremy Linton <jeremy.linton@arm.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: catalin.marinas@arm.com,
-	will@kernel.org,
-	keescook@chromium.org,
-	gustavoars@kernel.org,
-	mark.rutland@arm.com,
-	rostedt@goodmis.org,
-	arnd@arndb.de,
-	broonie@kernel.org,
-	guohui@uniontech.com,
-	Manoj.Iyer@arm.com,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	James Yang <james.yang@arm.com>,
-	Shiyou Huang <shiyou.huang@arm.com>
-Subject: [RFC] arm64: syscall: Direct PRNG kstack randomization
-Date: Tue, 20 Feb 2024 20:02:58 -0600
-Message-ID: <20240221020258.1210148-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.41.0
+	s=arc-20240116; t=1708481900; c=relaxed/simple;
+	bh=Bz65JJzzK7nAF9fUJ/FgIyuYBpMGBYPrCxeT5tLXx4w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=vFzr8q0K72jJNB249EUHAtfKUTGwC/a+o+PoN9CdeznEVjHHwCGKXBjRGrCaWkQlBAShtuyJclLxZ6JbbGue9057qocRsYyzFMReXYFejYruaEqIiaY4JzMKrlDSkJO2KamdgXBeFHLloLnEQ5FZH+2yQvxPQUlm9g6BPphUtGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=TjMhvpDx; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240221021814epoutp02198bfaa695a1ab41c6995cb254c0b20c~1vzsbcgL40648906489epoutp02C
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:18:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240221021814epoutp02198bfaa695a1ab41c6995cb254c0b20c~1vzsbcgL40648906489epoutp02C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1708481894;
+	bh=gIB0arhLN49n5nk6aQN47dB7qr96cHagBOiYA3JmIms=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TjMhvpDxPuVIX7+9pHGBMQqjmFqg+yfzDqTIEzvb4YIJKzxb1F3eH2yMKZtpM8qW7
+	 RN7M/VTB2YNOq1RbQIltyT+HBjhk26teuIs/7vKNtaREQI2H/H00X5AYIX2kdTGulM
+	 8JftoHWtFPKzq0bt4wwdBDQy90I2cZ8pgwrpwGq8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+	20240221021813epcas5p2c56f1e5f4150b7a07dddf4af3a73696c~1vzsDJk6q2581825818epcas5p2v;
+	Wed, 21 Feb 2024 02:18:13 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.183]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4Tfg0z532Fz4x9QL; Wed, 21 Feb
+	2024 02:18:11 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	7D.A9.10009.36D55D56; Wed, 21 Feb 2024 11:18:11 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240221020432epcas5p4d3f6dcf44a4c2be392e94889786c75bc~1vnve0ayQ2500425004epcas5p4O;
+	Wed, 21 Feb 2024 02:04:32 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240221020432epsmtrp15cd8eb5bd274aed9b3747399f3a7d23d~1vnvdBtLD1595015950epsmtrp1w;
+	Wed, 21 Feb 2024 02:04:32 +0000 (GMT)
+X-AuditID: b6c32a4a-ff1ff70000002719-36-65d55d63a6cc
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	9E.66.07368.03A55D56; Wed, 21 Feb 2024 11:04:32 +0900 (KST)
+Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240221020431epsmtip1cf78aebccc892023d0a43ad74eb5f2ed~1vnuARfia2355323553epsmtip1W;
+	Wed, 21 Feb 2024 02:04:31 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com, cliang01.li@samsung.com,
+	xue01.he@samsung.com
+Subject: Re: [PATCH v9] io_uring: Statistics of the true utilization of sq
+ threads.
+Date: Wed, 21 Feb 2024 10:04:27 +0800
+Message-Id: <20240221020427.309568-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240219064241.20531-1-xiaobing.li@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmlm5y7NVUg3eP1SzmrNrGaLH6bj+b
+	xem/j1ks3rWeY7E4+v8tm8Wv7ruMFlu/fGW1uLxrDpvFs72cFl8Of2e3ODvhA6vF1C07mCw6
+	Wi4zWnRdOMXmwOexc9Zddo/LZ0s9+rasYvT4vEkugCUq2yYjNTEltUghNS85PyUzL91WyTs4
+	3jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6EQlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5x
+	ia1SakFKToFJgV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGps2/GAv+Slc87JzA1MDYIt7FyMkh
+	IWAicXfvAtYuRi4OIYHdjBK7rzexQzifGCXebrrEDOF8Y5RYvukYG1zLw0lsEIm9jBJHn3xm
+	gnB+MUpM7JrFBFLFJqAtcX1dFyuILSIgLLG/o5UFpIhZYB2TxKcdbewgCWGBUIknpw+D2SwC
+	qhJnzl8Ca+YVsJWYt/EwK8Q6eYn9B88C3cHBwQkUX3rQHaJEUOLkzCcsIDYzUEnz1tlgp0oI
+	TOSQuP1uKjtEr4tE3/pbTBC2sMSr41ug4lISL/vboOxiiSM931khmhsYJabfvgqVsJb4d2UP
+	C8hiZgFNifW79CHCshJTT61jgljMJ9H7+wnUfF6JHfNgbFWJ1ZceskDY0hKvG35DxT0k9h5v
+	gYbpBEaJT7c72SYwKsxC8tAsJA/NQli9gJF5FaNkakFxbnpqsWmBUV5qOTyek/NzNzGCE66W
+	1w7Ghw8+6B1iZOJgPMQowcGsJMLLUn4lVYg3JbGyKrUoP76oNCe1+BCjKTDAJzJLiSbnA1N+
+	Xkm8oYmlgYmZmZmJpbGZoZI47+vWuSlCAumJJanZqakFqUUwfUwcnFINTCyFy6/OL1Ow+FoQ
+	Nf2W5Ca/Q+ueHDR1Yshfd3m19+EdBm4/fDZE3FfrP2HzrX1HyaeJ2bvSP3O7mIjv4VjiepCJ
+	/ehfufPasqYBjRM+urFN8OBVZVi2eWFNwyvJvIOfHi5Y7rMvatLVm7zKEdYXP760//7cxy6q
+	V8jHe53fli0/HJk4HAUtQj8kVviHrD/3YPdT9+QDYYuEFGIZjjZmJMloJiW3J51XlZtforJ2
+	3/woi9St9jkXtmV8SyuN5AucsTD1xLzS7Pe7WUxulD7LFV8grrWN++WyHy7mMnVzn6uvuKdZ
+	LjdrS2/Svn1/XWZ6rdp8ZpdMn/hmL+6Ji1bNUPWQMWr5+E3Pj0NUX//LPCWW4oxEQy3mouJE
+	AMTnX6BBBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrILMWRmVeSWpSXmKPExsWy7bCSnK5B1NVUgzOP9SzmrNrGaLH6bj+b
+	xem/j1ks3rWeY7E4+v8tm8Wv7ruMFlu/fGW1uLxrDpvFs72cFl8Of2e3ODvhA6vF1C07mCw6
+	Wi4zWnRdOMXmwOexc9Zddo/LZ0s9+rasYvT4vEkugCWKyyYlNSezLLVI3y6BK2PT5l+MBX+l
+	Kx52TmBqYGwR72Lk5JAQMJG4+3ASWxcjF4eQwG5GifNnVjB2MXIAJaQl/vwph6gRllj57zk7
+	iC0k8INR4mVnJYjNJqAtcX1dFyuILQJUs7+jlQVkDrPAHiaJd9M+gyWEBYIl1ja8B2tmEVCV
+	OHP+EhOIzStgKzFv42FWiAXyEvsPnmUG2csJFF960B1il43E/U1P2SDKBSVOznzCAmIzA5U3
+	b53NPIFRYBaS1CwkqQWMTKsYJVMLinPTc5MNCwzzUsv1ihNzi0vz0vWS83M3MYJjQUtjB+O9
+	+f/0DjEycTAeYpTgYFYS4WUpv5IqxJuSWFmVWpQfX1Sak1p8iFGag0VJnNdwxuwUIYH0xJLU
+	7NTUgtQimCwTB6dUAxNr8ksRzZQ9qRx6Jx7Hrmo4lbxu1V/tVp6yr3+jtuq3Zc5kPyp+UU1t
+	/Yef7lv+Vk1RbLLaOCtZ+VzZ1YC9t7JVReZ2nNZZecejSGtZ8LqUG/JPDi/2FLvT8y0lo/1u
+	wjPDnONGxhaH/TpXuxVMev79orazh7VYvr9qwb9jykEt1d2unsI7jCwTPffxeGybr33O7kLT
+	tMYJ7h/WGv3RSq5f6GrLtape+VdY/8vAZ3pTdHLPqwWmi7rbOd6u65vzkOszW07cxXlXcle/
+	5O677fTux/f4rnIR83v8H6snpiwWOBfPnP766G0G5cL5V1MEfT0MMrjcQ2f/EJd3NFQ/ta56
+	qujBkA9q4fGrryoeUWIpzkg01GIuKk4EAFbtUEn0AgAA
+X-CMS-MailID: 20240221020432epcas5p4d3f6dcf44a4c2be392e94889786c75bc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240221020432epcas5p4d3f6dcf44a4c2be392e94889786c75bc
+References: <20240219064241.20531-1-xiaobing.li@samsung.com>
+	<CGME20240221020432epcas5p4d3f6dcf44a4c2be392e94889786c75bc@epcas5p4.samsung.com>
 
-The existing arm64 stack randomization uses the kernel rng to acquire
-5 bits of address space randomization. This is problematic because it
-creates non determinism in the syscall path when the rng needs to be
-generated or reseeded. This shows up as large tail latencies in some
-benchmarks and directly affects the minimum RT latencies as seen by
-cyclictest.
-
-Other architectures are using timers/cycle counters for this function,
-which is sketchy from a randomization perspective because it should be
-possible to estimate this value from knowledge of the syscall return
-time, and from reading the current value of the timer/counters.
-
-So, a poor rng should be better than the cycle counter if it is hard
-to extract the stack offsets sufficiently to be able to detect the
-PRNG's period.
-
-So, we can potentially choose a 'better' or larger PRNG, going as far
-as using one of the CSPRNGs already in the kernel, but the overhead
-increases appropriately. Further, there are a few options for
-reseeding, possibly out of the syscall path, but is it even useful in
-this case?
-
-Reported-by: James Yang <james.yang@arm.com>
-Reported-by: Shiyou Huang <shiyou.huang@arm.com>
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- arch/arm64/kernel/syscall.c | 55 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 54 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index 9a70d9746b66..70143cb8c7be 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -37,6 +37,59 @@ static long __invoke_syscall(struct pt_regs *regs, syscall_fn_t syscall_fn)
- 	return syscall_fn(regs);
- }
+On 2/19/24 14:42, Xiaobing Li wrote:
+>diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
+>index 976e9500f651..37afc5bac279 100644
+>--- a/io_uring/fdinfo.c
+>+++ b/io_uring/fdinfo.c
+>@@ -55,6 +55,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+> 	struct io_ring_ctx *ctx = f->private_data;
+> 	struct io_overflow_cqe *ocqe;
+> 	struct io_rings *r = ctx->rings;
+>+	struct rusage sq_usage;
+> 	unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
+> 	unsigned int sq_head = READ_ONCE(r->sq.head);
+> 	unsigned int sq_tail = READ_ONCE(r->sq.tail);
+>@@ -64,6 +65,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+> 	unsigned int sq_shift = 0;
+> 	unsigned int sq_entries, cq_entries;
+> 	int sq_pid = -1, sq_cpu = -1;
+>+	u64 sq_total_time = 0, sq_work_time = 0;
+> 	bool has_lock;
+> 	unsigned int i;
+> 
+>@@ -147,10 +149,15 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+> 
+> 		sq_pid = sq->task_pid;
+> 		sq_cpu = sq->sq_cpu;
+>+		getrusage(sq->thread, RUSAGE_SELF, &sq_usage);
+>+		sq_total_time = sq_usage.ru_stime.tv_sec * 1000000 + sq_usage.ru_stime.tv_usec;
+>+		sq_work_time = sq->work_time;
+> 	}
+> 
+> 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
+> 	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
+>+	seq_printf(m, "SqTotalTime:\t%llu\n", sq_total_time);
+>+	seq_printf(m, "SqWorkTime:\t%llu\n", sq_work_time);
+> 	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
+> 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
+> 		struct file *f = io_file_from_index(&ctx->file_table, i);
+>diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
+>index 65b5dbe3c850..006d7fc9cf92 100644
+>--- a/io_uring/sqpoll.c
+>+++ b/io_uring/sqpoll.c
+>@@ -219,10 +219,22 @@ static bool io_sqd_handle_event(struct io_sq_data *sqd)
+> 	return did_sig || test_bit(IO_SQ_THREAD_SHOULD_STOP, &sqd->state);
+> }
+> 
+>+static void io_sq_update_worktime(struct io_sq_data *sqd, struct rusage *start)
+>+{
+>+		struct rusage end;
+>+
+>+		getrusage(current, RUSAGE_SELF, &end);
+>+		end.ru_stime.tv_sec -= start->ru_stime.tv_sec;
+>+		end.ru_stime.tv_usec -= start->ru_stime.tv_usec;
+>+
+>+		sqd->work_time += end.ru_stime.tv_usec + end.ru_stime.tv_sec * 1000000;
+>+}
+>+
+> static int io_sq_thread(void *data)
+> {
+> 	struct io_sq_data *sqd = data;
+> 	struct io_ring_ctx *ctx;
+>+	struct rusage start;
+> 	unsigned long timeout = 0;
+> 	char buf[TASK_COMM_LEN];
+> 	DEFINE_WAIT(wait);
+>@@ -251,6 +263,7 @@ static int io_sq_thread(void *data)
+> 		}
+> 
+> 		cap_entries = !list_is_singular(&sqd->ctx_list);
+>+		getrusage(current, RUSAGE_SELF, &start);
+> 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
+> 			int ret = __io_sq_thread(ctx, cap_entries);
+> 
+>@@ -261,8 +274,10 @@ static int io_sq_thread(void *data)
+> 			sqt_spin = true;
+> 
+> 		if (sqt_spin || !time_after(jiffies, timeout)) {
+>-			if (sqt_spin)
+>+			if (sqt_spin) {
+>+				io_sq_update_worktime(sqd, &start);
+> 				timeout = jiffies + sqd->sq_thread_idle;
+>+			}
+> 			if (unlikely(need_resched())) {
+> 				mutex_unlock(&sqd->lock);
+> 				cond_resched();
+>diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
+>index 8df37e8c9149..4171666b1cf4 100644
+>--- a/io_uring/sqpoll.h
+>+++ b/io_uring/sqpoll.h
+>@@ -16,6 +16,7 @@ struct io_sq_data {
+> 	pid_t			task_pid;
+> 	pid_t			task_tgid;
+> 
+>+	u64			work_time;
+> 	unsigned long		state;
+> 	struct completion	exited;
+> };
  
-+#ifdef CONFIG_RANDOMIZE_KSTACK_OFFSET
-+DEFINE_PER_CPU(u32, kstackrng);
-+static u32 xorshift32(u32 state)
-+{
-+	/*
-+	 * From top of page 4 of Marsaglia, "Xorshift RNGs"
-+	 * This algorithm is intended to have a period 2^32 -1
-+	 * And should not be used anywhere else outside of this
-+	 * code path.
-+	 */
-+	state ^= state << 13;
-+	state ^= state >> 17;
-+	state ^= state << 5;
-+	return state;
-+}
-+
-+static u16 kstack_rng(void)
-+{
-+	u32 rng = raw_cpu_read(kstackrng);
-+
-+	rng = xorshift32(rng);
-+	raw_cpu_write(kstackrng, rng);
-+	return rng & 0x1ff;
-+}
-+
-+/* Should we reseed? */
-+static int kstack_rng_setup(unsigned int cpu)
-+{
-+	u32 rng_seed;
-+
-+	do {
-+		rng_seed = get_random_u32();
-+	} while (!rng_seed);
-+	raw_cpu_write(kstackrng, rng_seed);
-+	return 0;
-+}
-+
-+static int kstack_init(void)
-+{
-+	int ret;
-+
-+	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "arm64/cpuinfo:kstackrandomize",
-+				kstack_rng_setup, NULL);
-+	if (ret < 0)
-+		pr_err("kstack: failed to register rng callbacks.\n");
-+	return 0;
-+}
-+
-+arch_initcall(kstack_init);
-+#else
-+static u16 kstack_rng(void) { return 0; }
-+#endif /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
-+
- static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 			   unsigned int sc_nr,
- 			   const syscall_fn_t syscall_table[])
-@@ -66,7 +119,7 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 	 *
- 	 * The resulting 5 bits of entropy is seen in SP[8:4].
- 	 */
--	choose_random_kstack_offset(get_random_u16() & 0x1FF);
-+	choose_random_kstack_offset(kstack_rng());
- }
- 
- static inline bool has_syscall_work(unsigned long flags)
--- 
-2.43.0
+Hi, Jens
+I have modified the code according to your suggestions.
+Do you have any other comments?
 
+--
+Xiaobing Li
 
