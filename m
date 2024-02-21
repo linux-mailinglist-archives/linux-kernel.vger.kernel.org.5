@@ -1,143 +1,121 @@
-Return-Path: <linux-kernel+bounces-74658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB32C85D75D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:48:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B020C85D75A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BF39B242AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:48:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D35D1F23775
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF9547F4A;
-	Wed, 21 Feb 2024 11:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8A247F7A;
+	Wed, 21 Feb 2024 11:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eiROzVRF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T/tiHVVf"
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C577247A6B
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C31947A5D
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708516063; cv=none; b=igPK9Gs+up/V37S7GttyCRiOcN8EpyXAOQBHizdTg5usa5rBE1RoLJ+Fa0SRElSlCoZoNmKOxPEKYTxv1owIqCeSiqXwY3gtGR0RzPaeXeBj1SmbSxjAapWlHaJyRQNom04koLRP6cwMKNnumRWLApk9QIxoCve+pmlGqKv2LAo=
+	t=1708516059; cv=none; b=VM5IEMjpOTXtecuFGvykDVZJS44thPzv6BJGze+4unwN4SV4mZ3wAOWLdVpPXzy3WiaFIb/O6bjrlFaBSdJ1R7StGB/BbVlWdurZyjOlm6apIFOruWy7Psai1hQaILuWTmpjHuhciGGYaxeuglu+xcSUukmwc/+3Zj3zFdDYGLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708516063; c=relaxed/simple;
-	bh=JBY/mQDw97iHpPVXUG6l2AiWrlYst7bhafK07ofrkEI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nduMbT4bTigxhHYu43biHG7Uxb8YWM8o2RJH7pzHAIPdw3GBTufUPYSIsSC33tZLTCCx+NAHe6Lyx/OgUhAqwfQoHDsWcEy9gH9ss0kj7Jq71fcWHHwHj1lnGBKenPsuDQs2TQ0vcowyJGBK3Twq/zB3T1ABNR69P8ukp8E+yoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eiROzVRF; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708516050;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XYtHO8q8zxUSZSdp33YY0/GjFEJNFZGA2uUDD/K00Mg=;
-	b=eiROzVRFSb7HJRfejh4zKdM/6wkE7RIgnTGjMHnCecMiydzBHemKPKkgalg5/ncDdtmakU
-	/vTGTdc5jWmEqbH7PIoVhBJ0Y3vGNcfZYStckEkDUhx41I7kTNC6mniBaV12FC0tF7OXPj
-	nz1K9nAWC4RAJf9Ak09RGPbnRQt2YGk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-444-l1e2WZA9PjmHEE1vlZXNnA-1; Wed, 21 Feb 2024 06:47:29 -0500
-X-MC-Unique: l1e2WZA9PjmHEE1vlZXNnA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5638785A588;
-	Wed, 21 Feb 2024 11:47:28 +0000 (UTC)
-Received: from gerbillo.redhat.com (unknown [10.45.224.94])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 87354C08496;
-	Wed, 21 Feb 2024 11:47:26 +0000 (UTC)
-From: Paolo Abeni <pabeni@redhat.com>
-To: netdev@vger.kernel.org
-Cc: Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	mptcp@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] selftests: mptcp: explicitly trigger the listener diag code-path
-Date: Wed, 21 Feb 2024 12:46:59 +0100
-Message-ID: <1116d80f808ea870f3f77fe927dbd6c622d062ae.1708515908.git.pabeni@redhat.com>
-In-Reply-To: <cover.1708515908.git.pabeni@redhat.com>
-References: <cover.1708515908.git.pabeni@redhat.com>
+	s=arc-20240116; t=1708516059; c=relaxed/simple;
+	bh=vRt/FdxzDOQ4l3rxiit+Wes79HUFmm1mgOJQtV+4Bcs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ccaKOQZLCMURvUaexZ9es0OSn6lDhR2B+80bbrF0FuUpqR49rMMckTKXTyaJ/qXmWqmZ5uRtlU7MqHVXgJuy4pBFqcohy8V10T81WrRoe6nUG3oOTgNIJCX0FBYOdu04OmqD1r6Xvft+sqvTsuAX7o51aObfGzfu7C5TKzGtLaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T/tiHVVf; arc=none smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so247299241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708516049; x=1709120849; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JyovQl5iGkP+14IRCuKTQAaTQ48NTlw9CloKE2arYCM=;
+        b=T/tiHVVfCLOxXrj6ZM5mdpGBEX4GAZrjjqLFx7iK0UI6fGTJ/ppU7LQFvKvDV+wE5s
+         QiFhPiKEgYya/tJRt48lGp4H1xr6gYQt7CxoZVAX+Tv5g22/bPGk8TuILoPMSFFX/tgv
+         s1fBeV8MbnM3NN+AHADQPS9hY3bznH0hEjl9DSFMoYAjnW2f2DjdpMRX16Th4Ue7V3Ad
+         5tE1r/rhIBv8VVMXTBcSkXJUrSC+51hcIZFL+0ZfecK3B9SYT2AspBjiY0cTLB8Rr2i2
+         FYd8r9A0rl8WikK8JipBA5aBfimNVLLNF1pqiKO1SkxeB+W9BCN/bzCu4cej0XOkqrqi
+         CWiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708516049; x=1709120849;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JyovQl5iGkP+14IRCuKTQAaTQ48NTlw9CloKE2arYCM=;
+        b=Ouo9x7/5XYbFZm7fhinrOVqhW16YBLGZ/sAEodaMsk6C0oIH/yUTeBdfyW8Hzxwvuz
+         RQLj5hAkLyPR0cpXiGvqB2uE/kA+TZzlmKiUp3QeRyWAfQ7qQHv1CTdHDnaVVOc9jHjH
+         KYMQQx7VOc0QxhOfxWXckXjfC26rphI536Fa4hqSwlXgwcli3tFz1AG7S998CsB2y+Rj
+         Vewh4uK+Id+0VU3qapP2O0I94yeIwGLo+FA4WXe985KjfwTP4N7y+vznCws4cEnlvqL0
+         xKyVR9A62EOq6K037DGFY8Ir/BoPOVBidqfm/zFEJKjXWtiWtRrkmk4qyK7D/mU12OQh
+         zenQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXVLDFpbvDj04WqYTal8vfsG5EgjdEZ4NLns21cpzZwx+QbdEkTXYLT1Wl0RH4y8rBnlbCjWy4c/c5rR0i4JxCzWd1GUOkBs5k8d21p
+X-Gm-Message-State: AOJu0YwZSn9dm575Zd+xWB6yZu2yxdp/uuiED5Z0Rvy6qa3ehCbl+tEx
+	+EEN7uQAFk4q/J1CmqxnkAh88BSaN/8/DHE4W2yGlRDdlm98cxcM+ZeE8+n8rd/Bl7z87xTUzye
+	BW4DQ3ofKqaAZlgnG3SELu0C/rhqBQZ+F6Arq
+X-Google-Smtp-Source: AGHT+IFREF8kvbTfb7FArPLNxdynrye+E4NyVJO79v3NLR63gQtBpIS8c78KubOOLkY7m7sLG2Vnzy1bZof20xJryj8=
+X-Received: by 2002:a67:ee08:0:b0:470:a138:78f2 with SMTP id
+ f8-20020a67ee08000000b00470a13878f2mr1527074vsp.4.1708516048942; Wed, 21 Feb
+ 2024 03:47:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+References: <20240208-alice-mm-v2-0-d821250204a6@google.com> <20240208-alice-mm-v2-1-d821250204a6@google.com>
+In-Reply-To: <20240208-alice-mm-v2-1-d821250204a6@google.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Wed, 21 Feb 2024 12:47:18 +0100
+Message-ID: <CAH5fLgj--WrkLJLG69P59mxBjZvMqTMHjVCcbk3Q4z7ZFTeTRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] rust: uaccess: add userspace pointers
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The mptcp diag interface already experienced a few locking bugs
-that lockdep and appropriate coverage have detected in advance.
+On Thu, Feb 8, 2024 at 4:48=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
+> +    /// Reads the entirety of the user slice, appending it to the end of=
+ the
+> +    /// provided buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the read encounters a page fault.
+> +    pub fn read_all(mut self, buf: &mut Vec<u8>) -> Result<()> {
+> +        buf.try_reserve(self.length)?;
+> +
+> +        // SAFETY: The call to `try_reserve` was successful, so the spar=
+e
+> +        // capacity is at least `self.length` bytes long.
+> +        unsafe { self.read_raw(buf.spare_capacity_mut().as_mut_ptr().cas=
+t(), self.length)? };
+> +
+> +        // SAFETY: Since the call to `read_raw` was successful, so the n=
+ext
+> +        // `len` bytes of the vector have been initialized.
+> +        unsafe { buf.set_len(buf.len() + self.length) };
+> +        Ok(())
+> +    }
 
-Let's add a test-case triggering the relevant code path, to prevent
-similar issues in the future.
+There's a bug here, since read_raw changes self.length. It will be
+fixed in the next version.
 
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
----
- tools/testing/selftests/net/mptcp/diag.sh | 30 +++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-index 60a7009ce1b5..3ab584b38566 100755
---- a/tools/testing/selftests/net/mptcp/diag.sh
-+++ b/tools/testing/selftests/net/mptcp/diag.sh
-@@ -81,6 +81,21 @@ chk_msk_nr()
- 	__chk_msk_nr "grep -c token:" "$@"
- }
- 
-+chk_listener_nr()
-+{
-+	local expected=$1
-+	local msg="$2"
-+
-+	if [ $expected -gt 0 ] && \
-+	   ! mptcp_lib_kallsyms_has "mptcp_diag_dump_listeners"; then
-+		printf "%-50s%s\n" "$msg - mptcp" "[ skip ]"
-+		mptcp_lib_result_skip "many listener sockets"
-+	else
-+		__chk_nr "ss -inmlHMON $ns | wc -l" "$expected" "$msg - mptcp"
-+	fi
-+	__chk_nr "ss -inmlHtON $ns | wc -l" "$expected" "$msg - subflows"
-+}
-+
- wait_msk_nr()
- {
- 	local condition="grep -c token:"
-@@ -279,5 +294,20 @@ flush_pids
- chk_msk_inuse 0 "many->0"
- chk_msk_cestab 0 "many->0"
- 
-+chk_listener_nr 0 "no listener sockets"
-+NR_SERVERS=100
-+for I in $(seq 1 $NR_SERVERS); do
-+	ip netns exec $ns ./mptcp_connect -p $((I + 20001)) -l 0.0.0.0 2>&1 >/dev/null &
-+	mptcp_lib_wait_local_port_listen $ns $((I + 20001))
-+done
-+
-+chk_listener_nr $NR_SERVERS "many listener sockets"
-+
-+# gracefull termination
-+for I in $(seq 1 $NR_SERVERS); do
-+	echo a | ip netns exec $ns ./mptcp_connect -p $((I + 20001)) 127.0.0.1 2>&1 >/dev/null
-+done
-+flush_pids
-+
- mptcp_lib_result_print_all_tap
- exit $ret
--- 
-2.43.0
-
+Alice
 
