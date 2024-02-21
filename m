@@ -1,109 +1,143 @@
-Return-Path: <linux-kernel+bounces-75588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF44985EB97
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F78D85EB9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A1D62843B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:07:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE1028459F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B387D128394;
-	Wed, 21 Feb 2024 22:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tE5CbTty"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412C7128385;
+	Wed, 21 Feb 2024 22:08:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC26128378
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E57127B6F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708553245; cv=none; b=KKR5cvvm18K8rEGfQDzq1kyQ6C6S1FwMbG1FhTpAjGveZYkslFMVkNeWG0ZrJeFVoG8NoyGw7iXds5tTccEERo7ZV5IhDjXlHqlHipHSCo/hVLRUXRho7+olBSxqc7SjFdxztI3ANFkjehyALM7LOPKb0omNs1oKrJeDxpNKd8A=
+	t=1708553317; cv=none; b=nOGWWxu1iS/CexTlYTpTK21ntVXdQMNvHkz9oh5o46uGeftePmDVy2SkBdF8QWRuNjnwXj4rdd0NSyLqoLC/mLC796wPGXuu3mUyrNPbfr6Lsakg6IQ6lI+yIwFH/1akwMvBN7mcGwIxSXpxTp1/d3mDc1uXqN61w7KfqoOgwhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708553245; c=relaxed/simple;
-	bh=iNidW3f5wsCISbKAXdYoDRvGkkbi4875RfDnKAT5TGg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=It9Jk4emL2F3YIGr2rTGdvDLvOVGkJLzD+WYvM/jQ/zzHcTyV9W8p+prQsWfvJkjXVo9vId1uONhIRyE6MrTNkHqNOYPfl0gXa19swO9ozgqBd8C/bPVAgRFSKOhQaJmvt0TO5J/DyQd+5JLSNORQT1BLgjSw5GDO0Tk500gTT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tE5CbTty; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60495209415so70376037b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:07:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708553242; x=1709158042; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1cIdAj9Rc9YrdEZf80SuI9gbBcjMeYE4blz3NlBPNkk=;
-        b=tE5CbTty8JoVcAb7WjBqLRfrAV27yaXE5g+MkmfL2vfm6VD/EBCADX6YbvvGGvfWqE
-         ECkjUVRifnTAdb3lHfrQP2o4c7YOr0y1RfN37DQNm8QSR1XCDDdQTQw7ynSRW6rQGBi3
-         4QGRhIwUT7iAJxV6VznNSo6iQ647Dagfkp3tyToU2dkjSo+Xid9+Mrn1lO3Qv9yu0iDE
-         5uM2bl5B4bj+nMG/ZTKyVQVwIxtNBvg/W8GlZzPCR7hnyiAsWBvPrEnNNUoSSq94txlZ
-         RAmC1Bke4WkKePOkoeR5bLH7FC4vvBfo+x7+zVTLs5OCMRtRf5EJUKfq9XLLa1JUupMO
-         nO3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708553242; x=1709158042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1cIdAj9Rc9YrdEZf80SuI9gbBcjMeYE4blz3NlBPNkk=;
-        b=BjJV7Z8ULe1YUwiOBxMS3QMQ4i1tAvenr71jEHBLsYRp/VBlnyRVc7IyL6oMAz3PWJ
-         66NMqZEuH9WQmHTBXOkHMRfHdOPBqkkJo4fgr+Y8JYKJlFMq3ljCKPua5nYhQ7GQny62
-         vO4HHBL31frO4+lpC+0XZtHaO03+mzga8ecZU2jOLxb8HcfHRl1IAxSgdiKpJghsgU4M
-         VSKAbLzwXIz9+voWYuecFqEpz58/PIlc8sF6FbAsEjBh1rD1GsYEWgbbu8N8BDbUtOfK
-         U3mfFCPX6uTjf7EihH5xQVRYZP0DjeyfONFw9I13SBRxUQsozcN04z+2h9ghdOJ2ioVd
-         UUQg==
-X-Forwarded-Encrypted: i=1; AJvYcCV4b5pGudh+JF/DQqy5P988cqc4dJuPrx3qNrnV5ZvOaxGBzZ2SIJaY1oQEeShrFrSR2ojSQZy3/DuNKO3x8/xw+hsYJylWSv5ei53t
-X-Gm-Message-State: AOJu0Yy1I8FRqGM99Ii0rTTy8qhMutDqyKo+8uYC5WRnc+1rI5m2aSP3
-	8I7D0HWBDbMbjBVu4iWntbiq4sTmY3tBVI3HibxRhmrJZARBO1VfuuUe1cpqlMaSp91+7LDz4BA
-	C/2bjBqn7aPN1/rz0mC6C4byn/xFBPCWuZH2KbA==
-X-Google-Smtp-Source: AGHT+IHcXCkZHHGUkDm2xvIgiK6VurrE3eAJdP/r6uC/vcQd0YLTd8DmYtHQlaiiKrj98oMZezfQEBryKYUS8JEchGY=
-X-Received: by 2002:a05:690c:86:b0:607:d9f7:e884 with SMTP id
- be6-20020a05690c008600b00607d9f7e884mr20419761ywb.4.1708553242109; Wed, 21
- Feb 2024 14:07:22 -0800 (PST)
+	s=arc-20240116; t=1708553317; c=relaxed/simple;
+	bh=osIvO3Rr4RNhy8KfumCNnV1e4Hfi2ZGD6cGUJ7ZBljY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=DB7ioh3cpzti3SZ/sx6adFonEIUjnb1ll3RnALNMDpBExUMEdba4Tv5Y622bt1pCJaxR67bXcHcG3d8sjG0k7PzRaS6G2E79ZQQSWT+K3Q+S5urCOTS3+dMMED/75SM/MvKnJtUViIrwHg8jPCGmqD2q5u0i9UU97r+yo+io4+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rculU-00087C-FK; Wed, 21 Feb 2024 23:08:32 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rculT-00275u-Tj; Wed, 21 Feb 2024 23:08:31 +0100
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rculT-009xti-2n;
+	Wed, 21 Feb 2024 23:08:31 +0100
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Date: Wed, 21 Feb 2024 23:08:31 +0100
+Subject: [PATCH] usb: gadget: uvc: fix try format returns on uncompressed
+ formats
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217093937.58234-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240217093937.58234-1-krzysztof.kozlowski@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 21 Feb 2024 23:07:11 +0100
-Message-ID: <CACRpkdajVH4Y2K5W+o5XAoiEr57ObVbaR+9QdFV=Cp765B+dfQ@mail.gmail.com>
-Subject: Re: [PATCH] phy: constify of_phandle_args in xlate
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-phy@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, 
-	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240221-uvc-gadget-uncompressed-v1-1-f55e97287cae@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAF501mUC/x2N0QqDMAxFf0XyvICWOXC/MvbQNlkNuDiaVQTx3
+ xf2eA73cA8wrsIG9+6AypuYrOowXDrIc9TCKOQMoQ/XPoQB25axRCr8xaZ5fX8qmzFhTCNlnqY
+ b0whep2iMqUbNs/falsWlj1+y/+8ez/P8AUUeFCV+AAAA
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Daniel Scally <dan.scally@ideasonboard.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2107;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=osIvO3Rr4RNhy8KfumCNnV1e4Hfi2ZGD6cGUJ7ZBljY=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBl1nRfVFFupHo9D4ssRIPwvD9iwMrUWrf9w4/4M
+ T20WCfCPSiJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZdZ0XwAKCRC/aVhE+XH0
+ q3zwD/sGkFvwYCARNgOqt3OjyxmAqc4U3iU4t+LabEPz/x7whMQ7MKv5t7TranPdMmXwyQx+e1Y
+ zgLlH+CvEZAhHP7Eo4Jyb/k06nGFKbWwvkQCVNf7e2MvOZ+3uKuGe+xvRz6nzBfvkI5turlaSdg
+ FzkWIBXV1YBprzEpMd5Hjanb4OlX8r89ppRMrhzV2jnqSS5yqZuxs2a5qXzXfM6epk96t5wLS2y
+ kYdY8A+zGnlq3sp7zVh9AuYavVDclwTNi9Hrwyo75UTg/N0qIuNuap+wIkymxmiBcydYJSM96Pq
+ fOR99O1+HwoH3RLzpeaQaS9ZWm7HkNnZu2j/gHGRfCcoUZwnDxyW3Lolw/BUFHRAs4Pbc5i/MBj
+ Jv0FWWUfN/jU6H3DlvVAHfr6C/9oL0nRsuOGn9Lxv1PfvbAPyQQqs+I27o5joXXSKFIWXkM4eYq
+ 5fMqvLxRvctnbKb2UmEP4njTtRv32nlKrId+0CYsJ1wmZ4ClqWSWoWuOd1qps2RzHtYb40Vh64X
+ rln7dU0gFbPgx/oLAAPHbKxlYqh0t+zlVm9sFAlqVuxedFY57DNf3VuscDQdAQgl3TWvBmUN2Hg
+ IhYpB2d62ifVVdyj29P/rgbC/o5SSF3YTDrxjqN2WOCoE2dXGU4qacP0bjA6HH7jISmRMYLYzqm
+ 12m7IhvpC1VFwew==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Sat, Feb 17, 2024 at 10:39=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+When setting uncompressed formats, the values of bytesperline and
+sizeimage can already be determined by using the v4l2_fill_pixfmt helper
+function. We change the try_fmt function to use the helper instead.
 
-> The xlate callbacks are supposed to translate of_phandle_args to proper
-> provider without modifying the of_phandle_args.  Make the argument
-> pointer to const for code safety and readability.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-(...)
->  drivers/pinctrl/tegra/pinctrl-tegra-xusb.c         |  2 +-
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+ drivers/usb/gadget/function/uvc_v4l2.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+index c7e5fa4f29e03..a024aecb76dc3 100644
+--- a/drivers/usb/gadget/function/uvc_v4l2.c
++++ b/drivers/usb/gadget/function/uvc_v4l2.c
+@@ -260,12 +260,26 @@ uvc_v4l2_try_format(struct file *file, void *fh, struct v4l2_format *fmt)
+ 	if (!uframe)
+ 		return -EINVAL;
+ 
+-	fmt->fmt.pix.width = uframe->frame.w_width;
+-	fmt->fmt.pix.height = uframe->frame.w_height;
++	if (uformat->type == UVCG_UNCOMPRESSED) {
++		struct uvcg_uncompressed *u =
++			to_uvcg_uncompressed(&uformat->group.cg_item);
++		if (!u)
++			return 0;
++
++		v4l2_fill_pixfmt(&fmt->fmt.pix, fmt->fmt.pix.pixelformat,
++				 uframe->frame.w_width, uframe->frame.w_height);
++
++		if (fmt->fmt.pix.sizeimage != (uvc_v4l2_get_bytesperline(uformat, uframe) *
++						uframe->frame.w_height))
++			return -EINVAL;
++	} else {
++		fmt->fmt.pix.width = uframe->frame.w_width;
++		fmt->fmt.pix.height = uframe->frame.w_height;
++		fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(uformat, uframe);
++		fmt->fmt.pix.sizeimage = uvc_get_frame_size(uformat, uframe);
++		fmt->fmt.pix.pixelformat = to_uvc_format(uformat)->fcc;
++	}
+ 	fmt->fmt.pix.field = V4L2_FIELD_NONE;
+-	fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(uformat, uframe);
+-	fmt->fmt.pix.sizeimage = uvc_get_frame_size(uformat, uframe);
+-	fmt->fmt.pix.pixelformat = to_uvc_format(uformat)->fcc;
+ 	fmt->fmt.pix.colorspace = V4L2_COLORSPACE_SRGB;
+ 	fmt->fmt.pix.priv = 0;
+ 
 
-Yours,
-Linus Walleij
+---
+base-commit: 3bf0514dc6f36f81ee11b1becd977cb87b4c90c6
+change-id: 20240221-uvc-gadget-uncompressed-ab5dce996ed5
+
+Best regards,
+-- 
+Michael Grzeschik <m.grzeschik@pengutronix.de>
+
 
