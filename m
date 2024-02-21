@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-74857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5246C85DDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 095E385DDAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DEAC2855E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:08:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B881F28561C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF3C7F7F3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54657F7FD;
 	Wed, 21 Feb 2024 14:06:40 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDC37BB1F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC507C093
 	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708524400; cv=none; b=eSw4kGbqugXsgHU2L+Wzt3T7XvstmDeZXc10O+3Bj/Twr+Yk7RR0Rc980EFABjPEC16y0dzYt+UoHEtQ0fmJVa4WRZxhaccDOEQsO9j4Hyg8jdBLnPKoU0EjLZ4T7Xo488Jxr10mr1OB5h6yvK2AF4fb0gs9T206FxOWpgshmi4=
+	t=1708524400; cv=none; b=L5pUz7jf49PSE6wz4PG3UvTIgFucHY5GJbS8y+BaYubmLT9akHHHE2At4VKcvm//19KMfpQZXN8Wgx30KXfn0ghNukNwsFT+E60v2G58Ty1Cv1lo8xN186Oyw18CTjRlY+8+6dUx1lYS/JNsziAWGhMl/vxqa1xId+TNhWelJ3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708524400; c=relaxed/simple;
-	bh=DztiRHPHplzwTpy5XJLWUHrylul+p1viqSinmcRc8nA=;
+	bh=dbYZpa01gBm8dnFQ3bsiWZKxefe6r9i28byH8LL9dDg=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=RA7aUinkpiE5gB3nyjqGSJPMfSVshL95YvqWjc6MFaiyaDplBpBAGxTLrs1RQiL/EzymRekNxbSm98JSAW9HJRqE+ofP/9yI2VCEJCk0DZL3slIGNRKMnJ9SRu14q8s1YOJcnxXXyKV1g5KKNVbIQb1cWXG8HgmYY799esynVMk=
+	 Content-Type; b=qEVUEcnpKzPtdwi1erzS513TB+dXEfPYPrryZ8SQGqZNmXMI78e0h1VePJ043q9NZCvJt6IGfWAp/vlLYSfZH6caSHaBAL6Ci/I9xc+RBGqTFSJhp0i/A8j+ZRQ5j8mz7jPE4mI4qToKtlvFk39MruHBnTgR9/S/OIB4Z4qflWg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17147C433B1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C281C43601;
 	Wed, 21 Feb 2024 14:06:40 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rcnGu-00000002i7u-1ND7;
+	id 1rcnGu-00000002i8O-21Kr;
 	Wed, 21 Feb 2024 09:08:28 -0500
-Message-ID: <20240221140828.188781034@goodmis.org>
+Message-ID: <20240221140828.346521235@goodmis.org>
 User-Agent: quilt/0.67
-Date: Wed, 21 Feb 2024 09:07:58 -0500
+Date: Wed, 21 Feb 2024 09:07:59 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Christian Brauner <brauner@kernel.org>,
- Al Viro <viro@ZenIV.linux.org.uk>,
- Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: [for-next][PATCH 02/11] eventfs: Create eventfs_root_inode to store dentry
+ Tim Chen <tim.c.chen@linux.intel.com>,
+ Vincent Donnefort <vdonnefort@google.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Mete Durlu <meted@linux.ibm.com>
+Subject: [for-next][PATCH 03/11] tracing: Have saved_cmdlines arrays all in one allocation
 References: <20240221140756.797572998@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -57,187 +57,97 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Only the root "events" directory stores a dentry. There's no reason to
-hold a dentry pointer for every eventfs_inode as it is never set except
-for the root "events" eventfs_inode.
+The saved_cmdlines have three arrays for mapping PIDs to COMMs:
 
-Create a eventfs_root_inode structure that holds the events_dir dentry.
-The "events" eventfs_inode *is* special, let it have its own descriptor.
+ - map_pid_to_cmdline[]
+ - map_cmdline_to_pid[]
+ - saved_cmdlines
 
-Link: https://lore.kernel.org/linux-trace-kernel/20240201161617.658992558@goodmis.org
+The map_pid_to_cmdline[] is PID_MAX_DEFAULT in size and holds the index
+into the other arrays. The map_cmdline_to_pid[] is a mapping back to the
+full pid as it can be larger than PID_MAX_DEFAULT. And the
+saved_cmdlines[] just holds the COMMs associated to the pids.
 
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Currently the map_pid_to_cmdline[] and saved_cmdlines[] are allocated
+together (in reality the saved_cmdlines is just in the memory of the
+rounding of the allocation of the structure as it is always allocated in
+powers of two). The map_cmdline_to_pid[] array is allocated separately.
+
+Since the rounding to a power of two is rather large (it allows for 8000
+elements in saved_cmdlines), also include the map_cmdline_to_pid[] array.
+(This drops it to 6000 by default, which is still plenty for most use
+cases). This saves even more memory as the map_cmdline_to_pid[] array
+doesn't need to be allocated.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20240212174011.068211d9@gandalf.local.home/
+Link: https://lore.kernel.org/linux-trace-kernel/20240220140703.182330529@goodmis.org
+
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Ajay Kaher <ajay.kaher@broadcom.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Vincent Donnefort <vdonnefort@google.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Mete Durlu <meted@linux.ibm.com>
+Fixes: 44dc5c41b5b1 ("tracing: Fix wasted memory in saved_cmdlines logic")
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/tracefs/event_inode.c | 65 +++++++++++++++++++++++++++++++++-------
- fs/tracefs/internal.h    |  2 --
- 2 files changed, 55 insertions(+), 12 deletions(-)
+ kernel/trace/trace.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 9d9c7dc3114b..dc067eeb6387 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -35,6 +35,17 @@ static DEFINE_MUTEX(eventfs_mutex);
- /* Choose something "unique" ;-) */
- #define EVENTFS_FILE_INODE_INO		0x12c4e37
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8198bfc54b58..52faa30e64ed 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2325,6 +2325,10 @@ struct saved_cmdlines_buffer {
+ };
+ static struct saved_cmdlines_buffer *savedcmd;
  
-+struct eventfs_root_inode {
-+	struct eventfs_inode		ei;
-+	struct dentry			*events_dir;
-+};
++/* Holds the size of a cmdline and pid element */
++#define SAVED_CMDLINE_MAP_ELEMENT_SIZE(s)			\
++	(TASK_COMM_LEN + sizeof((s)->map_cmdline_to_pid[0]))
 +
-+static struct eventfs_root_inode *get_root_inode(struct eventfs_inode *ei)
-+{
-+	WARN_ON_ONCE(!ei->is_events);
-+	return container_of(ei, struct eventfs_root_inode, ei);
-+}
-+
- /* Just try to make something consistent and unique */
- static int eventfs_dir_ino(struct eventfs_inode *ei)
+ static inline char *get_saved_cmdlines(int idx)
  {
-@@ -73,12 +84,18 @@ enum {
- static void release_ei(struct kref *ref)
+ 	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
+@@ -2339,7 +2343,6 @@ static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
  {
- 	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
-+	struct eventfs_root_inode *rei;
+ 	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
  
- 	WARN_ON_ONCE(!ei->is_freed);
- 
- 	kfree(ei->entry_attrs);
- 	kfree_const(ei->name);
--	kfree_rcu(ei, rcu);
-+	if (ei->is_events) {
-+		rei = get_root_inode(ei);
-+		kfree_rcu(rei, ei.rcu);
-+	} else {
-+		kfree_rcu(ei, rcu);
-+	}
+-	kfree(s->map_cmdline_to_pid);
+ 	kmemleak_free(s);
+ 	free_pages((unsigned long)s, order);
  }
+@@ -2352,7 +2355,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
+ 	int order;
  
- static inline void put_ei(struct eventfs_inode *ei)
-@@ -408,19 +425,43 @@ static struct dentry *lookup_dir_entry(struct dentry *dentry,
- 	return NULL;
- }
+ 	/* Figure out how much is needed to hold the given number of cmdlines */
+-	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
++	orig_size = sizeof(*s) + val * SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
+ 	order = get_order(orig_size);
+ 	size = 1 << (order + PAGE_SHIFT);
+ 	page = alloc_pages(GFP_KERNEL, order);
+@@ -2364,16 +2367,11 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
+ 	memset(s, 0, sizeof(*s));
  
-+static inline struct eventfs_inode *init_ei(struct eventfs_inode *ei, const char *name)
-+{
-+	ei->name = kstrdup_const(name, GFP_KERNEL);
-+	if (!ei->name)
-+		return NULL;
-+	kref_init(&ei->kref);
-+	return ei;
-+}
-+
- static inline struct eventfs_inode *alloc_ei(const char *name)
- {
- 	struct eventfs_inode *ei = kzalloc(sizeof(*ei), GFP_KERNEL);
-+	struct eventfs_inode *result;
+ 	/* Round up to actual allocation */
+-	val = (size - sizeof(*s)) / TASK_COMM_LEN;
++	val = (size - sizeof(*s)) / SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
+ 	s->cmdline_num = val;
  
- 	if (!ei)
- 		return NULL;
- 
--	ei->name = kstrdup_const(name, GFP_KERNEL);
--	if (!ei->name) {
-+	result = init_ei(ei, name);
-+	if (!result)
- 		kfree(ei);
-+
-+	return result;
-+}
-+
-+static inline struct eventfs_inode *alloc_root_ei(const char *name)
-+{
-+	struct eventfs_root_inode *rei = kzalloc(sizeof(*rei), GFP_KERNEL);
-+	struct eventfs_inode *ei;
-+
-+	if (!rei)
- 		return NULL;
+-	s->map_cmdline_to_pid = kmalloc_array(val,
+-					      sizeof(*s->map_cmdline_to_pid),
+-					      GFP_KERNEL);
+-	if (!s->map_cmdline_to_pid) {
+-		free_saved_cmdlines_buffer(s);
+-		return NULL;
 -	}
--	kref_init(&ei->kref);
-+
-+	rei->ei.is_events = 1;
-+	ei = init_ei(&rei->ei, name);
-+	if (!ei)
-+		kfree(rei);
-+
- 	return ei;
- }
++	/* Place map_cmdline_to_pid array right after saved_cmdlines */
++	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
  
-@@ -710,6 +751,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 						int size, void *data)
- {
- 	struct dentry *dentry = tracefs_start_creating(name, parent);
-+	struct eventfs_root_inode *rei;
- 	struct eventfs_inode *ei;
- 	struct tracefs_inode *ti;
- 	struct inode *inode;
-@@ -722,7 +764,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	if (IS_ERR(dentry))
- 		return ERR_CAST(dentry);
- 
--	ei = alloc_ei(name);
-+	ei = alloc_root_ei(name);
- 	if (!ei)
- 		goto fail;
- 
-@@ -731,10 +773,11 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 		goto fail;
- 
- 	// Note: we have a ref to the dentry from tracefs_start_creating()
--	ei->events_dir = dentry;
-+	rei = get_root_inode(ei);
-+	rei->events_dir = dentry;
-+
- 	ei->entries = entries;
- 	ei->nr_entries = size;
--	ei->is_events = 1;
- 	ei->data = data;
- 
- 	/* Save the ownership of this directory */
-@@ -845,13 +888,15 @@ void eventfs_remove_dir(struct eventfs_inode *ei)
-  */
- void eventfs_remove_events_dir(struct eventfs_inode *ei)
- {
-+	struct eventfs_root_inode *rei;
- 	struct dentry *dentry;
- 
--	dentry = ei->events_dir;
-+	rei = get_root_inode(ei);
-+	dentry = rei->events_dir;
- 	if (!dentry)
- 		return;
- 
--	ei->events_dir = NULL;
-+	rei->events_dir = NULL;
- 	eventfs_remove_dir(ei);
- 
- 	/*
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index beb3dcd0e434..15c26f9aaad4 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -36,7 +36,6 @@ struct eventfs_attr {
-  * @children:	link list into the child eventfs_inode
-  * @entries:	the array of entries representing the files in the directory
-  * @name:	the name of the directory to create
-- * @events_dir: the dentry of the events directory
-  * @entry_attrs: Saved mode and ownership of the @d_children
-  * @data:	The private data to pass to the callbacks
-  * @attr:	Saved mode and ownership of eventfs_inode itself
-@@ -54,7 +53,6 @@ struct eventfs_inode {
- 	struct list_head		children;
- 	const struct eventfs_entry	*entries;
- 	const char			*name;
--	struct dentry			*events_dir;
- 	struct eventfs_attr		*entry_attrs;
- 	void				*data;
- 	struct eventfs_attr		attr;
+ 	s->cmdline_idx = 0;
+ 	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
 -- 
 2.43.0
 
