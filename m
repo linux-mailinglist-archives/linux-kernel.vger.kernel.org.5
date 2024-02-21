@@ -1,135 +1,155 @@
-Return-Path: <linux-kernel+bounces-74654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFCEE85D74F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:43:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF66C85D748
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E3A1B2546F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:43:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DD531C20329
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E7047A66;
-	Wed, 21 Feb 2024 11:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB8E4D599;
+	Wed, 21 Feb 2024 11:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QneGEIeJ"
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="E/eZZMw3"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FB241740;
-	Wed, 21 Feb 2024 11:41:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53B147A53;
+	Wed, 21 Feb 2024 11:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515715; cv=none; b=f/UQwkx2bgxr3KTlROXLdBvgxIhuuRLmF9NpsCP3SloQJxm+5emztHDyUropgaC6HhdftW5b8arlf2QjtGzvu/JCHu6Z2/SZfhza/s4/PtBSIA8PL3lpOBU8YFHD11Qayn+uaur4F4YbA4kZp7SA3MgS0GhWpXDJftV4PM/wvnQ=
+	t=1708515626; cv=none; b=Naok2mxPrb6X59ammwTHnQUWsdKbMpyrgnZknkhkOeCZWS7p47B2MSer3TDdv2VJdUDVGOllT3ro6M0K30YTz4W4SavTqsM8CX7fZ9+wUvA6XkaUawkrD0DsK2E5qoOgFqEVODPtwzC4bPRRHmtYTfhfms0KxnSoVUSdFYM52XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515715; c=relaxed/simple;
-	bh=ILaW+tmU19Hc2hM6tJl9+D6rdU+hAvnyjOgyR8UveG4=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=s9GOvm3q4lrM9YxKr7ScWzKrCAuWDhKBUeV+EeJa/etDzXBA8fDgTVkzRPk7O56GJMzRUcxp0qT3ID7Fun6zO+42V5xQ6xDqXFcN2PG5wrUmtE6Qd1AmGcBb87GOVs7cMAQx9DZyO0mbxR9V6zqWA3WQhx54dZNMdbNbBfDmlE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QneGEIeJ; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708515709; h=Message-ID:Subject:Date:From:To;
-	bh=0phsHgifgaYaoJTCL91u0y1uTS0FvlbXLUwQ30Yr5i8=;
-	b=QneGEIeJXIpMpaLXE6ZxGwFfr1l0qipg0DZzqwX2RD3yNtbDjcLG6RLa4jzJKxsGQXpfm0cJ3S0/mWvPyEvciRLImyCOaHAK+Ahmo0//g5U4JoBhfhfiW3LLW/VOwE31+zAOaLB6x3800StsQOA1H925x48wem+s05/ymdyWOvI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W0zjbGX_1708515708;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W0zjbGX_1708515708)
-          by smtp.aliyun-inc.com;
-          Wed, 21 Feb 2024 19:41:49 +0800
-Message-ID: <1708515555.2820647-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: RE: [PATCH net-next 1/2] xsk: Remove non-zero 'dma_page' check in xp_assign_dev
-Date: Wed, 21 Feb 2024 19:39:15 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: wangyunjian <wangyunjian@huawei.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
- xudingke <xudingke@huawei.com>,
- "mst@redhat.com" <mst@redhat.com>,
- "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
- "jasowang@redhat.com" <jasowang@redhat.com>,
- "kuba@kernel.org" <kuba@kernel.org>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>
-References: <1706089058-1364-1-git-send-email-wangyunjian@huawei.com>
- <1708509152.9501102-1-xuanzhuo@linux.alibaba.com>
- <0fce8b64808f4c6faa0eb60e44687c36@huawei.com>
-In-Reply-To: <0fce8b64808f4c6faa0eb60e44687c36@huawei.com>
+	s=arc-20240116; t=1708515626; c=relaxed/simple;
+	bh=0ec34IK25nzurSkFJjXS/YQlGdjhk3snlkzJkHfASN4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=g9bFxQgt3An0AHirVHrSqum6kWO9iyGUoFtjH8CrW4PPhHXmaprb91dgtg/bcxPsFeyy3KgiviDZNdt6slxZ+SRacrDaLapwyKCy6hMCL8cCuYctz8HGc3DfPISAx0aCeY9PslJIKRwKdZqw5k8iAZ6l1K0/AOnbtZMCwDLOg58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=E/eZZMw3; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41L8AB6D010696;
+	Wed, 21 Feb 2024 11:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=55EJpJjN/7VQPyDIfbMUTZRT/+5KZL9krJsL+5YEq/s=; b=E/
+	eZZMw31yXmpyBtXkDf6YPpYZF9nFNwRWXViSFQYjyZBSgwg6Ni3GDyUchinVC5nc
+	F/GPackZq2AqwlLtF7QDnnR+3ZbMtrgs04IAEbO/oNAZSEZnwiS3AEoMNmRS+ik/
+	Der8LrqNK/SxU1xv3XgkXWDJSS2DiRGfOuBdn69lCXXFtEkyR7jNXwy088V3kpNo
+	emS9lEvRpGH72oPaWnHe6WfpKeeg2CnLZUPCI8KJh+Fke+06D1tDynQ4F0ZTLZgy
+	0AbdUSg91QyE2x9BiuAxDO5npwLOgPz9vPsgOg0jrRjgYmsaQfkx9M7BR9qaV4D3
+	x3VTN1BmBr4aZCdw1LbQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdddg0ey0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 11:40:17 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41LBeG3T021375
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 11:40:16 GMT
+Received: from [10.216.53.46] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
+ 2024 03:40:12 -0800
+Message-ID: <00bd50ed-bc7c-482f-b126-321d1ac9228d@quicinc.com>
+Date: Wed, 21 Feb 2024 17:10:07 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] phy: qcom-snps: Fixed order of enabling regulators
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Kishon Vijay
+ Abraham I" <kishon@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20240221103202.3628142-1-quic_kriskura@quicinc.com>
+ <CAA8EJprMd5tr91gm99GyP1oefO_=tNQzxKA6hmB-xtBNVTbeeQ@mail.gmail.com>
+Content-Language: en-US
+From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <CAA8EJprMd5tr91gm99GyP1oefO_=tNQzxKA6hmB-xtBNVTbeeQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: P90DIIVEW0y5-5QJQhHZwpZwmt94OTHk
+X-Proofpoint-ORIG-GUID: P90DIIVEW0y5-5QJQhHZwpZwmt94OTHk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 adultscore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402210090
 
-On Wed, 21 Feb 2024 11:37:22 +0000, wangyunjian <wangyunjian@huawei.com> wrote:
-> > -----Original Message-----
-> > From: Xuan Zhuo [mailto:xuanzhuo@linux.alibaba.com]
-> > Sent: Wednesday, February 21, 2024 5:53 PM
-> > To: wangyunjian <wangyunjian@huawei.com>
-> > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > kvm@vger.kernel.org; virtualization@lists.linux.dev; xudingke
-> > <xudingke@huawei.com>; wangyunjian <wangyunjian@huawei.com>;
-> > mst@redhat.com; willemdebruijn.kernel@gmail.com; jasowang@redhat.com;
-> > kuba@kernel.org; davem@davemloft.net; magnus.karlsson@intel.com
-> > Subject: Re: [PATCH net-next 1/2] xsk: Remove non-zero 'dma_page' check in
-> > xp_assign_dev
-> >
-> > On Wed, 24 Jan 2024 17:37:38 +0800, Yunjian Wang
-> > <wangyunjian@huawei.com> wrote:
-> > > Now dma mappings are used by the physical NICs. However the vNIC maybe
-> > > do not need them. So remove non-zero 'dma_page' check in
-> > > xp_assign_dev.
-> >
-> > Could you tell me which one nic can work with AF_XDP without DMA?
->
-> TUN will support AF_XDP Tx zero-copy, which does not require DMA mappings.
 
 
-Great. Though I do not know how it works, but I think a new option or feature
-is better.
+On 2/21/2024 4:26 PM, Dmitry Baryshkov wrote:
+> On Wed, 21 Feb 2024 at 12:32, Krishna Kurapati > <quic_kriskura@quicinc.com> wrote:
+[...]
+>> ---
+>>
+>> Downstream kernels on QC targets use this sequence to power up
+>> the phy and this has been tested extensively on multiple targets.
+>> This change has been tested with upstream kernel on QCM6490-IDP
+>> without EUD to ensure there is no loss or breakage of functionality.
+>>
+>>   drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+>> index eb0b0f61d98e..e86d221b7397 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+>> @@ -79,7 +79,7 @@
+>>   #define LS_FS_OUTPUT_IMPEDANCE_MASK            GENMASK(3, 0)
+>>
+>>   static const char * const qcom_snps_hsphy_vreg_names[] = {
+>> -       "vdda-pll", "vdda33", "vdda18",
+>> +       "vdda-pll", "vdda18", "vdda33",
+> 
+> NAK.
+> The driver uses regulator_bulk_enable, which enables all three
+> regulators simultaneously via async calls, thus your change doesn't
+> have any effect.
+> 
+Hi Dmitry,
 
-Thanks.
+  Thanks for this information. I thought it was synchronous but you are 
+right, I see in code they are async:
 
+                 async_schedule_domain(regulator_bulk_enable_async,
+                                       &consumers[i], &async_domain);
 
->
-> Thanks
->
-> >
-> > Thanks.
-> >
-> >
-> > >
-> > > Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-> > > ---
-> > >  net/xdp/xsk_buff_pool.c | 7 -------
-> > >  1 file changed, 7 deletions(-)
-> > >
-> > > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c index
-> > > 28711cc44ced..939b6e7b59ff 100644
-> > > --- a/net/xdp/xsk_buff_pool.c
-> > > +++ b/net/xdp/xsk_buff_pool.c
-> > > @@ -219,16 +219,9 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
-> > >  	if (err)
-> > >  		goto err_unreg_pool;
-> > >
-> > > -	if (!pool->dma_pages) {
-> > > -		WARN(1, "Driver did not DMA map zero-copy buffers");
-> > > -		err = -EINVAL;
-> > > -		goto err_unreg_xsk;
-> > > -	}
-> > >  	pool->umem->zc = true;
-> > >  	return 0;
-> > >
-> > > -err_unreg_xsk:
-> > > -	xp_disable_drv_zc(pool);
-> > >  err_unreg_pool:
-> > >  	if (!force_zc)
-> > >  		err = 0; /* fallback to copy mode */
-> > > --
-> > > 2.33.0
-> > >
-> > >
+  I think separating them out and calling regulator_enable on each one 
+might work out.
+
+> Also note, that these regulators are frequently shared between
+> different consumers. As such, even if you have tight control of
+> regulator ordering in the driver, other drivers might enable
+> corresponding regulators on their own, breaking the ordering.
+> 
+
+You are right. Let me check how the phy regulators are allocated in 
+different femto phy targets.
+
+Thanks for the review.
+
+Regards,
+Krishna,
 
