@@ -1,246 +1,218 @@
-Return-Path: <linux-kernel+bounces-75133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24EB385E3AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:46:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC3D85E3B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C2511C21542
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:46:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56EDD28635A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB84283A07;
-	Wed, 21 Feb 2024 16:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48AB982D9E;
+	Wed, 21 Feb 2024 16:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cpTyxtcF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NZ13EsTr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6182882D9B
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708533944; cv=none; b=eRUsMN6h3PY8bQ208FBkBOWHFnmOk2IW8Xg0ovuMf+iykbBF+V2ydupFlIIkIomitC0Cm0cMEV6wiPKFSy6dUUlJPgOVZTV6G1qnYe8L8qfHngXpMcbRbkonMDx0vIu3B4DQMGHmSKXUiD0RsqArIZDhZ2dZ4q9uhET7VLgxYVw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708533944; c=relaxed/simple;
-	bh=PiK6GLh5Bbli9ksKDaj+Hoj+StNAExwyesgIoPSxmmY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ECcRQvFHn5DzthSEM2unwjTWFpSgM1tOIL6Yyis3ANaup74rj++x4oWlZqqv10tUeI3JjY53ymEq/bYPAuahV0wcFpMVi81smu6b2j1dPn5UYOfWO51rMd+n9x5UI3Nw1VodD2a0UEDlbYRC801eadyuW3FMwSduE04B+ADn/40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cpTyxtcF; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708533941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9Aa0856KKiSIs4J8EHY0Puegx6vd1lMlKDsy7EPPIWE=;
-	b=cpTyxtcF5EchStDgKFTvIQsj6jTFLjq3BSva/XRzccz21ybKD7adsG5ZYUEXetkdxvJttC
-	xJPnl+aw62iDDj+bYVx3CweSXOETZ8/qqcZIxHHyX6aVDbuUuPtlLEGOTwM6k3DLdVRSP8
-	ULGynDAW6mgEnVx9/TxasEP+fSDVvSI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-619-TQv-iCTJPsW0mov5tNxeZA-1; Wed, 21 Feb 2024 11:45:39 -0500
-X-MC-Unique: TQv-iCTJPsW0mov5tNxeZA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e4478a3afso34012015e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:45:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708533938; x=1709138738;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Aa0856KKiSIs4J8EHY0Puegx6vd1lMlKDsy7EPPIWE=;
-        b=cUpFo9KQxzaE4QDJRqjK5p0Wewyx820MVCU//V8Gvxq2AW2Sy3GnavbyXuCZK6jR8w
-         gA+sjDUZWZwRTaaOKmPvMS/9oZ2ewAQhMGNeSvqtuOZJcZIdrm+oqUXMqpTtaXyiY8XZ
-         1sh8J5aH8XpkRFrPXaCUJW8voi9qVTmXaijHKmWEjLeO9suZwF+fLMA/U19ZpGuz0/1t
-         XJ4tvy6lM6KhkUUW560716NhOPKz3iQAMPV3lH7tClw/BKEiMGWIc0zFabV7gJFEjhyi
-         zN2julD50raeUfn1mlqvZhuvP88JQ5YUF5y9S0hE2ZGZYty9FxLXZfniyEcJ0ZwJw1aX
-         EwOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWNuVQL9eW3q3m3xRlMpWSDIZLnAS1IK3I2AEdwltkF+vR6S7f8PgckCXmYyY6NjFrFhjbSEW+tDdJLsP+7elsJIkWQck/hxcPgL+9Z
-X-Gm-Message-State: AOJu0Yyp4Zu6FzGeKPU/AaqmvWmlnsIULA9gIVd/Dqr4IDn7yixDO8m2
-	fzievFkPWB14sH8fKrUUnUfB92KraJk+W1jmofnGhJ9dsru4+SSl2CxZDyjAKi/gw5x5kDgtFmP
-	819IdVGvr+MebNvfKi/6ymSq6KFvgLHkh0kUYhFvMedbv2LBK8ynsl+CeTDyb1g==
-X-Received: by 2002:a05:600c:444a:b0:411:c8a7:7b09 with SMTP id v10-20020a05600c444a00b00411c8a77b09mr32788wmn.10.1708533938254;
-        Wed, 21 Feb 2024 08:45:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGWNC9F/v+b8Zz5OO/sN9jdb2v+iFDyGNJnulQT9iuh/19ax1wa9bZTXvgr4iAAWnO9GFiDvA==
-X-Received: by 2002:a05:600c:444a:b0:411:c8a7:7b09 with SMTP id v10-20020a05600c444a00b00411c8a77b09mr32762wmn.10.1708533937888;
-        Wed, 21 Feb 2024 08:45:37 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ay17-20020a05600c1e1100b004127876647fsm1867978wmb.41.2024.02.21.08.45.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 08:45:37 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: dccp@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, mleitner@redhat.com, David Ahern
- <dsahern@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, Tomas Glozar
- <tglozar@redhat.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 1/1] tcp/dcpp: Un-pin tw_timer
-In-Reply-To: <CANn89iJpwUpAROOq7+ttwTMCZu0=XhS4dgwcs44t-gb7-_ejRg@mail.gmail.com>
-References: <20240219095729.2339914-1-vschneid@redhat.com>
- <20240219095729.2339914-2-vschneid@redhat.com>
- <CANn89i+3-zgAkWukFavu1wgf1XG+K9U4BhJWw7H+QKwsfYL4WA@mail.gmail.com>
- <xhsmho7cbf33q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CANn89iJpwUpAROOq7+ttwTMCZu0=XhS4dgwcs44t-gb7-_ejRg@mail.gmail.com>
-Date: Wed, 21 Feb 2024 17:45:36 +0100
-Message-ID: <xhsmhjzmxg40f.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3186680C08
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708534122; cv=fail; b=VkHk4dv5zbQf1fTINLuJW9qZrJnmh7IdGri33gw1UxXp6226E5y5CwE4738R8PdWqiAAo5tjZvz/UouT9ZrczxK11Ld4N8MPZJlcxpmCy0QiGQxNlAyWOhQaJp8iifGm/lENd/dtQwPSVUOJHXynAbo/FVbPub2Kp9JIf/Bas8g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708534122; c=relaxed/simple;
+	bh=Eqo9IH3WDwIFsoZ0SbJNEBgOvhh9blgJ+V2mebyv8U0=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=oQDhuCoI1ku6tVJx0rCdqEjS20K1KzCcmI9ZvowZ2LjqLehRA16a/umPI3Ia/Zc4CsrumqBLH+yhkXmmkKmrxYiX+OsUy08FtHx/ti/2wYENeJUWK0OsoYdhMChoe3eMekNeQeP4xMtajSPnr7PAKEMZ6VnN9VCusgbAVpiNz6g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NZ13EsTr; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708534120; x=1740070120;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Eqo9IH3WDwIFsoZ0SbJNEBgOvhh9blgJ+V2mebyv8U0=;
+  b=NZ13EsTrV98/wrA1BnZmiWeyFHjKdO2e6FMhSyhIeJJePTArwpAGLxun
+   wObx/KFiubjaXD7v9B4qIfJg2LLVnmYg6Iu9ZSWDVieG9OmLCESi0Ynhe
+   phMasSLTfMgZuolwK8QYQu0Uc182id1IyE3g7NLFHkgADGBXGiQoeNszJ
+   Co1slZWEUVYE1+cSoHy8zXAKlixBLLa3sm2jrEumiuAYYnXATm73upMdP
+   mIu6J0u+/bLPIqfU0e9oz4N5gyCyo4kHxb13+xkQaP8VQctt1f1Yx/InC
+   41LtgN3VpLLZaYZzG+7jOTykJKlJbSOKIfqpXtiej8tC7tTsJXkQProFq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13323324"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="13323324"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 08:48:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="9814447"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Feb 2024 08:48:29 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 08:48:29 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 08:48:29 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 21 Feb 2024 08:48:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C0Nk5NX2RsZPlAgZSnsp8QyvG0utqecR+fdohsn38oVYfY9q4K2UZm2dh7NIf7+3QwvBEysV78Ap4eVcGLwfAm6juOS8z/LihVvOno7lw0p3wbohcGkHL7Zr+0utGfrikX3Te8aBySpO3raEejBPIyoO1P5KhV2Z3IH/C54yiQIPUr+nJD/Wp3vGLJWyj9l4J0S3dzeqIllf7PBzx8oAow6PrSQkLlKcbGAc+B3zR2MWM43PtRKuBbCXRdpocv8w9BzHIYOGkIIP6x11yVQ12NX8VTCRRQE5aAsuggmCSq4vzu68/KiCEbeIcFtCgK+4WT+EVq0IypdoSGui2MMf9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ThDkdPskXaQLW/PE0H53WiO/RrWCUN4FUPf3238l6ns=;
+ b=IN6e9iWNZUn8WqGWwk9Hon1vW1SMp+V/zn2SM3w8DVhHfKW4RjLCEPKspkDZ5kiIxzhRX8a2ZYYL29Wx9uqzS8z+GnmQiiDHtCUTd1Sg/r72w+XWaBPb5/llxg400+fhVQjq7TTs7rmsQ1YK0T5YGQgC75FEwad9FvXtXX+ock+Vzp/O0i+HSXcEULF2upDtDtAs4H4a1uuIG3honTZLT5OH/g32UQngEsHFGI4cL//B4b37U/lrsJlcCh6+5OcljCylxn6MV8iC1kifnv0bhSiqxH3YUTbl0NtG7+xA3pIyjdnVfyO+ljQQIXSrKvxfATOQlssRc3u0Dg7+F1kDfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by MN0PR11MB6112.namprd11.prod.outlook.com (2603:10b6:208:3cc::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
+ 2024 16:48:26 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7292.036; Wed, 21 Feb 2024
+ 16:48:26 +0000
+Message-ID: <67600176-d299-434f-94d1-d6e4f1a5b2b0@intel.com>
+Date: Wed, 21 Feb 2024 08:48:24 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/resctrl: Remove lockdep annotation that triggers
+ false positive
+Content-Language: en-US
+To: James Morse <james.morse@arm.com>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Fenghua Yu <fenghua.yu@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, H Peter Anvin
+	<hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
+References: <20240221122306.633273-1-james.morse@arm.com>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20240221122306.633273-1-james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW2PR2101CA0016.namprd21.prod.outlook.com
+ (2603:10b6:302:1::29) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MN0PR11MB6112:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ab9f151-2bbc-4803-56e8-08dc32fceca7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TMQPyZqow0Ab32hwjjWh4Jopu/wV/cG8leQgC7jo4UznbtS5C1FsqIgXY9s7mFtIJEqnCJsYMJmDsLJ2ba47494QJqMetUyASmfkYQLIHQCdTdxRYCaH63Vq8U4Szx7lAihN/EBdLC/jvzpt2WGMN2hTK2VIt3uF3FFh9bBZqoWwLLmki854aIm1A8PVW0vcRP2nR+a9uma6lrv0wvHIzffgAH4FLlE11TXA5iZWJb0O1pZ/Idx4kznKMzpeC9SZNxOyDF+97QZJC1KSwhZI58P+i62c/yEbyz9NZsNkbbr33DHEHpyPKPDkYOVpldD8fj6CrivXQIXocyRLjtbdfby9rYofxa8gprZD+N1gz1EyJzFXrTNobPG86xFNrYRRxTEYf2jUrj/WEr1tToFUpQNL89Ojgmz2WD/UB+3MLM6KhO4jRTcGa7PY0mSmsLA+9wIzd1k2jzK4XXkZqhU8gzNPRdIa/G4BERNQe22VcYSrJD/Qm77Sm5AUVddaFNV+EJE66s+Occ8CYEoYp6D8Rg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rm02bmN4NlJFdmhpOS9pZStwV1ZsNDhGQ1hGenR1aC85d3U0ZjRiL05tV3Ft?=
+ =?utf-8?B?a1Blb05HVjRVNzl0UUVCK3RQTDRmTlNhV2lTOVNaNUxiKytoMi9LRU1JeDlq?=
+ =?utf-8?B?UVlnbFZiNlkvWTFVd1lLT0JWZXVpUjM2K3AyakhxMkZrMTFiU0JYTEpOVkMw?=
+ =?utf-8?B?YWs2WTh0czBTWFBZZHJLSDFrV2tTczEycFcxQUoxZmIzZTcvZ2YzUDJySjFw?=
+ =?utf-8?B?dVdWWi9MSklGYUluOFJZU0dVdSt5ZHpnQWpmYncwV0tIWXVvL0dHS0YwK3hM?=
+ =?utf-8?B?SXRKZTZIeFZwV3dJZldxUmw0bG5zTy9QT09RWjRpbmlOa0dNZG9sbXo2QWh1?=
+ =?utf-8?B?UWlJUElzakl2Uk1hQ01yaWdVTmx0NzFRY2lZbFBRNlYwdkczb0QzV29VTlRq?=
+ =?utf-8?B?K1Yrdnd1R0xINnFtOGZhNGRITU5xNjh6QmJSTk1yNHdEZzgxaGtabnMzVE1t?=
+ =?utf-8?B?Mi9vbUtCU1AwcUt0R0Y0STlVZG5yTHVKSjJHZkd6MmZERjhmWmVqcTh4VVFX?=
+ =?utf-8?B?UTBTYWphUW1QTG9MWjBuazRBNm1NeklCL1drNS8yNG1CYURrT3UzTTRSQ0I1?=
+ =?utf-8?B?Qmw4aFhWS0g1UWxGQ0N1NzE3L2dOUWVhVGh0aHVQanMyYk9DT1M5UEZCQmtQ?=
+ =?utf-8?B?T3M5cE14WDNDS08rWkVFejBqOFRlUE9HRS8xeFhSUFJSQ1B3K0JxZjFxdXl6?=
+ =?utf-8?B?QUw0aTdBbzdJd1hWdXI2THJhNmxoTDRHS3JnczVRbFNQanU2aW9vcnpUb3Zy?=
+ =?utf-8?B?QkRiMG1vSm1USXdUeWZScnBMc2p0OXEvRTVqaGMrN0svTEg2WmxQZ2d5eTVK?=
+ =?utf-8?B?RTZSbHNKRXpCVHIyNzA1TGQrOGlYcUd4QlZCMU00UXR5Ry9Ra05uWUdscWU3?=
+ =?utf-8?B?TTYrUG5aeHc2K0Q4eVFUeEpXNnI1RVhFTTZTaWlXbXhUYjNub3hDd3FWdHph?=
+ =?utf-8?B?ME5JUVhRVHJWYTQ3M2wrb3FtRUNYRUthNUFQWmhpQVlRWVZ3MUljb00vTGg0?=
+ =?utf-8?B?a3BCUFJKa3k3M1lzMEtmcVVQZGNSNzN5NmlOend4WmhzS3pOalpIWFhrRWtM?=
+ =?utf-8?B?ZmRIampZSnlUOW1KcGgvMTM3SENsaS9QaTQxOHhaMXdUT0UyYlcwVTNuczZM?=
+ =?utf-8?B?MEtDbEtvVTJZM0JOeE40aUZWY1hUcUV1Y3BxaEVPR1dmRTgydG9ubE5va3ZJ?=
+ =?utf-8?B?Y2pHQ245UVkrN0lxeXVuUHNsUURweTgwUkY2OHRmSW50OWw3OVlVZFRPWEdV?=
+ =?utf-8?B?Y0srSW5yMXpPVXJkcXdUK2pKSnlnT0xGVjJPVUsxMG9FeVlGT3dtYThzaGZX?=
+ =?utf-8?B?MHZSTEdteGxhUXd1czIzTVZHV0VSSGlraVh6c0RFOXgydXZPNDVydE1RR3lW?=
+ =?utf-8?B?dnV4RFBiZVpDb0gxUnhkazgwY0ZKNjdlL3B1M2pnd2k1bFNLVmpyQlFpRnU4?=
+ =?utf-8?B?YVpZckU3TWJOcDBueUZvbWZRdHJEVTBzN1oyNEQwMFB2eUR6WG1la00vSmRK?=
+ =?utf-8?B?SVRTNld1TExXM0cwVW1pQUtXdDdtU053Nk1DbUFnTXAxZFpDbmdEZi94Uml3?=
+ =?utf-8?B?LzA4Mk9WZFhkeDNJWTh1emgxdnFySzQxODdQcXZycjlOYS9pRUFQa1RDQm5P?=
+ =?utf-8?B?V0c5bXlTM0d6cThKNWE3a21GamtxMFo2WWcvbFN0TWFyWnpCb041dUM4Y0Ex?=
+ =?utf-8?B?Q2RaUkc3OUpCbGRUSGJSQjI0K0lRSWFMRWwzbUJodFI2bGJTN29MMytudzF1?=
+ =?utf-8?B?elJSNmJlUHNReE5qOWZMWkwvbXhJUHR6MnNZY3lnR2lxWVRDNS9ORDM2ZUtB?=
+ =?utf-8?B?bVNsclkwNnpoTHphaitKeTUxRGl4elNERU9oMkVjalM3cS9qUHlzZy9jWS90?=
+ =?utf-8?B?TklvM0VaMTBqa0ZhZ2xzUUZxcitzSjZIWXdHS0xQUDZORmV5TTJ0MzV5ZXli?=
+ =?utf-8?B?OUtqSG9RWmtrRzkwQzVaQkNpdW5mZ05oeFZnMTEzbEkrMkV1SjhEUTk1a0d3?=
+ =?utf-8?B?SENuNk5yWDFSWFlBVTRPZmZyS2twcUN0ZFNaOHZITURlcnV3aFowOUxwZmxu?=
+ =?utf-8?B?cVdvWWZtdzlHRmFDNFNjMUJBcTNaTGxsTXplaVN6OUJhS09Pa0RpemNPdHZv?=
+ =?utf-8?B?K0tNYzM2MlZQMWoveFRXTERzYUpraUdMcVRxcDhkbzNUdzVJV25Xd3hwRDVP?=
+ =?utf-8?B?d0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ab9f151-2bbc-4803-56e8-08dc32fceca7
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 16:48:26.4796
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /ZjoKaD2uIJIhvi5+ncKNpjOjYkkbiSz4bUcgytZ5DHq+QFkwgZWy+NJhC0EGB2vzSoQe5Kh6GMtN+fX2o0jEfIeXCyxeq8M6GV844hPcLM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6112
+X-OriginatorOrg: intel.com
 
-On 20/02/24 18:42, Eric Dumazet wrote:
-> On Tue, Feb 20, 2024 at 6:38=E2=80=AFPM Valentin Schneider <vschneid@redh=
-at.com> wrote:
->> Hm so that would indeed prevent a concurrent inet_twsk_schedule() from
->> re-arming the timer, but in case the calls are interleaved like so:
->>
->>                              tcp_time_wait()
->>                                inet_twsk_hashdance()
->>   inet_twsk_deschedule_put()
->>     timer_shutdown_sync()
->>                                inet_twsk_schedule()
->>
->> inet_twsk_hashdance() will have left the refcounts including a count for
->> the timer, and we won't arm the timer to clear it via the timer callback
->> (via inet_twsk_kill()) - the patch in its current form relies on the tim=
-er
->> being re-armed for that.
->>
->> I don't know if there's a cleaner way to do this, but we could catch that
->> in inet_twsk_schedule() and issue the inet_twsk_kill() directly if we can
->> tell the timer has been shutdown:
->> ---
->> diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock=
-c
->> index 61a053fbd329c..c272da5046bb4 100644
->> --- a/net/ipv4/inet_timewait_sock.c
->> +++ b/net/ipv4/inet_timewait_sock.c
->> @@ -227,7 +227,7 @@ void inet_twsk_deschedule_put(struct inet_timewait_s=
-ock *tw)
->>          * have already gone through {tcp,dcpp}_time_wait(), and we can =
-safely
->>          * call inet_twsk_kill().
->>          */
->> -       if (del_timer_sync(&tw->tw_timer))
->> +       if (timer_shutdown_sync(&tw->tw_timer))
->>                 inet_twsk_kill(tw);
->>         inet_twsk_put(tw);
->>  }
->> @@ -267,6 +267,10 @@ void __inet_twsk_schedule(struct inet_timewait_sock=
- *tw, int timeo, bool rearm)
->>                                                      LINUX_MIB_TIMEWAITE=
-D);
->>                 BUG_ON(mod_timer(&tw->tw_timer, jiffies + timeo));
->
-> Would not a shutdown timer return a wrong mod_timer() value here ?
->
-> Instead of BUG_ON(), simply release the refcount ?
->
+Hi James,
 
-Unfortunately a shutdown timer would return the same as a non-shutdown one:
+On 2/21/2024 4:23 AM, James Morse wrote:
+> get_domain_from_cpu() walks a list of domains to find the one that
+> contains the specified CPU. This needs to be protected against races
+> with CPU hotplug when the list is modified. It has recently gained a
+> lockdep annotation to check this.
+> 
+> The lockdep annotation causes false positives when called via IPI
+> as the lock is held, but by another process. Remove it.
+> 
+> Reported-by: Tony Luck <tony.luck@intel.com>
+> Link: https://lore.kernel.org/all/ZdUSwOM9UUNpw84Y@agluck-desk3/
+> Fixes: fb700810d30b ("x86/resctrl: Separate arch and fs resctrl locks")
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>  arch/x86/kernel/cpu/resctrl/core.c | 9 ---------
+>  1 file changed, 9 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+> index 9f1aa555a8ea..83e40341583e 100644
+> --- a/arch/x86/kernel/cpu/resctrl/core.c
+> +++ b/arch/x86/kernel/cpu/resctrl/core.c
+> @@ -362,15 +362,6 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
+>  {
+>  	struct rdt_domain *d;
+>  
+> -	/*
+> -	 * Walking r->domains, ensure it can't race with cpuhp.
+> -	 * Because this is called via IPI by rdt_ctrl_update(), assertions
+> -	 * about locks this thread holds will lead to false positives. Check
+> -	 * someone is holding the CPUs lock.
+> -	 */
+> -	if (IS_ENABLED(CONFIG_LOCKDEP))
+> -		lockdep_is_cpus_held();
+> -
+>  	list_for_each_entry(d, &r->domains, list) {
+>  		/* Find the domain that contains this CPU */
+>  		if (cpumask_test_cpu(cpu, &d->cpu_mask))
 
- * Return:
- * * %0 - The timer was inactive and started or was in shutdown
- *	  state and the operation was discarded
+I agree with this change. Could you please base it on x86/cache
+branch of tip? 
 
-and now that you've pointed this out, I realize it's racy to check the
-state of the timer after the mod_timer():
+Thank you
 
-  BUG_ON(mod_timer(&tw->tw_timer, jiffies + timeo));
-                                                        inet_twsk_deschedul=
-e_put()
-                                                          timer_shutdown_sy=
-nc()
-                                                          inet_twsk_kill()
-  if (!tw->tw_timer.function)
-    inet_twsk_kill()
-
-
-I've looked into messing about with the return values of mod_timer() to get
-the info that the timer was shutdown, but the only justification for this
-is that here we rely on the timer_base lock to serialize
-inet_twsk_schedule() vs inet_twsk_deschedule_put().
-
-AFAICT the alternative is adding local serialization like so, which I'm not
-the biggest fan of but couldn't think of a neater approach:
----
-diff --git a/include/net/inet_timewait_sock.h b/include/net/inet_timewait_s=
-ock.h
-index f28da08a37b4e..39bb0c148d4ee 100644
---- a/include/net/inet_timewait_sock.h
-+++ b/include/net/inet_timewait_sock.h
-@@ -75,6 +75,7 @@ struct inet_timewait_sock {
- 	struct timer_list	tw_timer;
- 	struct inet_bind_bucket	*tw_tb;
- 	struct inet_bind2_bucket	*tw_tb2;
-+	struct spinlock      tw_timer_lock;
- };
- #define tw_tclass tw_tos
-=20
-diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-index 61a053fbd329c..2471516f9c61d 100644
---- a/net/ipv4/inet_timewait_sock.c
-+++ b/net/ipv4/inet_timewait_sock.c
-@@ -193,6 +193,7 @@ struct inet_timewait_sock *inet_twsk_alloc(const struct=
- sock *sk,
- 		atomic64_set(&tw->tw_cookie, atomic64_read(&sk->sk_cookie));
- 		twsk_net_set(tw, sock_net(sk));
- 		timer_setup(&tw->tw_timer, tw_timer_handler, 0);
-+		spin_lock_init(&tw->tw_timer_lock);
- 		/*
- 		 * Because we use RCU lookups, we should not set tw_refcnt
- 		 * to a non null value before everything is setup for this
-@@ -227,8 +228,11 @@ void inet_twsk_deschedule_put(struct inet_timewait_soc=
-k *tw)
- 	 * have already gone through {tcp,dcpp}_time_wait(), and we can safely
- 	 * call inet_twsk_kill().
- 	 */
--	if (del_timer_sync(&tw->tw_timer))
-+	spin_lock(&tw->tw_timer_lock);
-+	if (timer_shutdown_sync(&tw->tw_timer))
- 		inet_twsk_kill(tw);
-+	spin_unlock(&tw->tw_timer_lock);
-+
- 	inet_twsk_put(tw);
- }
- EXPORT_SYMBOL(inet_twsk_deschedule_put);
-@@ -262,11 +266,25 @@ void __inet_twsk_schedule(struct inet_timewait_sock *=
-tw, int timeo, bool rearm)
-=20
- 	if (!rearm) {
- 		bool kill =3D timeo <=3D 4*HZ;
-+		bool pending;
-=20
- 		__NET_INC_STATS(twsk_net(tw), kill ? LINUX_MIB_TIMEWAITKILLED :
- 						     LINUX_MIB_TIMEWAITED);
-+		spin_lock(&tw->tw_timer_lock);
- 		BUG_ON(mod_timer(&tw->tw_timer, jiffies + timeo));
-+		pending =3D timer_pending(&tw->tw_timer);
- 		refcount_inc(&tw->tw_dr->tw_refcount);
-+
-+		/*
-+		 * If the timer didn't become pending under tw_timer_lock, then
-+		 * it means it has been shutdown by inet_twsk_deschedule_put()
-+		 * prior to this invocation. All that remains is to clean up the
-+		 * timewait.
-+		 */
-+		if (!pending)
-+			inet_twsk_kill(tw);
-+
-+		spin_unlock(&tw->tw_timer_lock);
- 	} else {
- 		mod_timer_pending(&tw->tw_timer, jiffies + timeo);
- 	}
-
+Reinette
 
