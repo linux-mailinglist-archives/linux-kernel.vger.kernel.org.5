@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-74960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C30E85E07C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:06:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D6885E082
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32ABE288F26
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:06:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0221A1F25338
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A78280BF3;
-	Wed, 21 Feb 2024 15:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E4581732;
+	Wed, 21 Feb 2024 15:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="lpr7cSiy"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="UyWy+uP+"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86757FBBC;
-	Wed, 21 Feb 2024 15:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF078004B;
+	Wed, 21 Feb 2024 15:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708527927; cv=none; b=jYQmqW0nATMzOPdScOAzm2T4BngJiviKRxpI8kgRcNliqnHfCtZeSW/ffnhP0qwGYDXSKdGBPdWUlduSSeyiAl5wMWi4d4DKQm+m2nqrJ9J11hn/l+m00VN82aG0dH0+rxu1W6+EwFssdVo5mIJRnkLOsAEE8wy4UKrnMWHbdvk=
+	t=1708527929; cv=none; b=rGmejX6RE4CuSpEDGptTmfMm2WJhdrPlB1DKDg2Jz/8wBFjhA/bPcVgxsJ/yD8QNcClDgqEL/yAH/gxQTShTVL4czmwrzNDzSm+1pxhmKWXSqNJsbAhyrF0QnemdcZ46mvTspHYy2Q8SMef2TfHLEwP+4rHSbN+c4foWyuTnAJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708527927; c=relaxed/simple;
-	bh=P1BHzkuWSjIzuWkSow29+n9tVFKJ7V5CgSlp5Ealq+0=;
+	s=arc-20240116; t=1708527929; c=relaxed/simple;
+	bh=AyhWYPSqg+SbEKRLSFfHUk7zH/sfDacTTWQa5bUQwDU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kn0/xri7VzFLYuPVKO1BBAUSO9CAUFhudSK2H+YsvefFy/uypzGa3CQtnASkySqVjOZd7j1Djr1GDstnibsW1iXRvMv7Rhzx2ODT5cTVt3q/syjSgXAhdzJqBuFKUwECXX0xlf6Fdh2+57ghpvHwO3vJ5Nc0K0vrTY5IsvBzY8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=lpr7cSiy; arc=none smtp.client-ip=67.231.152.168
+	 MIME-Version:Content-Type; b=igMkFu+t6r0tOa9P81CfW9lEBTgdAcVntcIA7NKc0p37fu9FNfoKsrj4/l6RnA+oOB8rYzogq5u0e8hLWv12vMr8d5x7uudPJObHaD73Z9fftdQA/JgBZ0uU0ZnJeG5aZaJAoJZlmfOCeEx/oXkEpRxGdCskDQodY7Y7ho5jHak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=UyWy+uP+; arc=none smtp.client-ip=67.231.149.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41LCUQsI011338;
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41L72AP0020807;
 	Wed, 21 Feb 2024 09:05:11 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=Uo+dEY+Nyt9VJFpgVFoLbOjBVkQZDZkESRiC9k7HK5U=; b=
-	lpr7cSiyf9qq8IGE8XXUFAo4hOjjBUrjrjC75FjgpoKMCiypLzb4pNOyF1IlZkkE
-	xwc6O1ZORc7cnGuqyvubOn849f0Je2cmiOESURql9mNCCVYy6RTVpQSM+7I8PlL7
-	4YsL44ZSQBWvgEERIBgLAwqtv1hsYi0w1zNDLknM7aXedNpBVu0U/jiHev9HHZRD
-	dBm/pg40ZzOIY8AVi4/YBl2PDAGD5bv4DhvNTq+OEI0sA/F5fF995fZgD2r/OeMj
-	NPhWRilCIz3WB9jvBab8qgPZsGZCxj6imyi3xLh9IYAZBLxH7q29EgUuTM2xS4SO
-	WYb888e7TIVixGkdlwcvhg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205h4tk-4
+	PODMain02222019; bh=vizjXmHcd079C2mw5k4d+8ZahdNc9pZNwCbEzx/xBg8=; b=
+	UyWy+uP+qvW1bTEoeu6Ydy4TrL1ELOz14mwwLxJnLDos68Zhtj9wdmylJ+bPXmva
+	/PFRuGWK82rQ0AG2yeAAAK4fQNzOVnuBOkysEz1yKgH5NTeStKnjyPhxGBPWoauV
+	wHdm0MH6Z5fZShAyX2+7z6vZY/YzxWJPDVbUUrbDKWCqfAiomXfm9ZrVQ2D2YaMj
+	M/z1kn199IIL07J8en9aqP817g29B85DZhMfSdp+2/JeELEGvPCfA0enAsaq0guT
+	r/SYquNqjdGbCRZJmXnCZLWCV/HLW7XVQJafbNsPQpqYoUYPU8ntS8TRtffIS6zS
+	Fz4uNspRr5zgnjjcCaXmfQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wd207h58t-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 09:05:11 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 21 Feb 2024 09:05:10 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
  2024 15:05:07 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.40 via Frontend Transport; Wed, 21 Feb 2024 15:05:07 +0000
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3EC9582024B;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 420EF820257;
 	Wed, 21 Feb 2024 15:05:07 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -63,9 +64,9 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 4/9] ASoC: cs-amp-lib: Add helpers for factory calibration data
-Date: Wed, 21 Feb 2024 15:05:02 +0000
-Message-ID: <20240221150507.1039979-5-rf@opensource.cirrus.com>
+Subject: [PATCH 5/9] ASoC: cs35l56: Add helper functions for amp calibration
+Date: Wed, 21 Feb 2024 15:05:03 +0000
+Message-ID: <20240221150507.1039979-6-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240221150507.1039979-1-rf@opensource.cirrus.com>
 References: <20240221150507.1039979-1-rf@opensource.cirrus.com>
@@ -77,402 +78,217 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: oR4SXLnghigTqPRSKywwA1Fde1o-e8iq
-X-Proofpoint-GUID: oR4SXLnghigTqPRSKywwA1Fde1o-e8iq
+X-Proofpoint-GUID: 7o-TXZ2GxFoqRXENefoL9zMQhlvjcma3
+X-Proofpoint-ORIG-GUID: 7o-TXZ2GxFoqRXENefoL9zMQhlvjcma3
 X-Proofpoint-Spam-Reason: safe
 
-Create a new library for code that is used by multiple Cirrus Logic
-amps. This initially implements extracting amp calibration data
-from EFI and writing it to firmware controls.
+Adds some helper functions and data for applying amp calibration.
 
-During factory calibration of built-in speakers the firmware
-calibration constants are stored in an EFI file. The file contains
-an array of calibration constants for each of the speakers.
-cs_amp_get_calibration_data() searches for an entry matching the
-requested UID stamp, otherwise by array index. If the data is found in
-EFI the constants for that speaker are copied back to the caller.
+1. cs35l56_read_silicon_uid() to get the silicon ID that is used to
+   search for the correct calibration data entry.
 
-If EFI is not enabled, the cs_amp_get_calibration_data() implementation
-will compile to simply return -ENOENT and the linker can drop the code.
+2. Add the registers for the silicon ID to the readable registers.
 
-The code to write calibration controls uses wm_adsp. Not all drivers
-use wm_adsp (notably, HDA drivers do not) so cs-amp-lib does not force
-building of wm_adsp. Instead, the code will compile away the call to
-wm_adsp_write_ctl() if wm_adsp is not reachable.
+3. cs35l56_get_calibration() wrapper around
+   cs_amp_get_efi_calibration_data()
 
-This strategy of conditional code allows cs-amp-lib to be shared by
-multiple drivers without forcing inclusion of other modules that might
-be unnecessary.
+4. cs35l56_calibration_controls() table of the firmware controls
+   for calibration data.
 
-The calls to efi.get_variable() and wm_adsp_write_ctl() are in
-small wrapper functions. This is so that a KUNIT_STATIC_STUB_REDIRECT
-can be added in a future patch to redirect these calls to replacement
-functions for KUnit testing.
+5. Added members to struct cs35l56_base to store the calibration
+   data.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- include/sound/cs-amp-lib.h    |  52 +++++++
- sound/soc/codecs/Kconfig      |   3 +
- sound/soc/codecs/Makefile     |   2 +
- sound/soc/codecs/cs-amp-lib.c | 256 ++++++++++++++++++++++++++++++++++
- 4 files changed, 313 insertions(+)
- create mode 100644 include/sound/cs-amp-lib.h
- create mode 100644 sound/soc/codecs/cs-amp-lib.c
+ include/sound/cs35l56.h           | 10 ++++
+ sound/soc/codecs/Kconfig          |  1 +
+ sound/soc/codecs/cs35l56-shared.c | 83 +++++++++++++++++++++++++++++++
+ 3 files changed, 94 insertions(+)
 
-diff --git a/include/sound/cs-amp-lib.h b/include/sound/cs-amp-lib.h
-new file mode 100644
-index 000000000000..35f7bd848276
---- /dev/null
-+++ b/include/sound/cs-amp-lib.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2024 Cirrus Logic, Inc. and
-+ *                    Cirrus Logic International Semiconductor Ltd.
-+ */
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index b24716ab2750..4014ed7097b3 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -12,6 +12,7 @@
+ #include <linux/firmware/cirrus/cs_dsp.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/regmap.h>
++#include <sound/cs-amp-lib.h>
+ 
+ #define CS35L56_DEVID					0x0000000
+ #define CS35L56_REVID					0x0000004
+@@ -23,6 +24,9 @@
+ #define CS35L56_BLOCK_ENABLES2				0x000201C
+ #define CS35L56_REFCLK_INPUT				0x0002C04
+ #define CS35L56_GLOBAL_SAMPLE_RATE			0x0002C0C
++#define CS35L56_OTP_MEM_53				0x00300D4
++#define CS35L56_OTP_MEM_54				0x00300D8
++#define CS35L56_OTP_MEM_55				0x00300DC
+ #define CS35L56_ASP1_ENABLES1				0x0004800
+ #define CS35L56_ASP1_CONTROL1				0x0004804
+ #define CS35L56_ASP1_CONTROL2				0x0004808
+@@ -262,6 +266,9 @@ struct cs35l56_base {
+ 	bool fw_patched;
+ 	bool secured;
+ 	bool can_hibernate;
++	bool cal_data_valid;
++	s8 cal_index;
++	struct cirrus_amp_cal_data cal_data;
+ 	struct gpio_desc *reset_gpio;
+ };
+ 
+@@ -269,6 +276,8 @@ extern struct regmap_config cs35l56_regmap_i2c;
+ extern struct regmap_config cs35l56_regmap_spi;
+ extern struct regmap_config cs35l56_regmap_sdw;
+ 
++extern const struct cirrus_amp_cal_controls cs35l56_calibration_controls;
 +
-+#ifndef CS_AMP_LIB_H
-+#define CS_AMP_LIB_H
-+
-+#include <linux/efi.h>
-+#include <linux/types.h>
-+
-+struct wm_adsp;
-+
-+struct cirrus_amp_cal_data {
-+	u32 calTarget[2];
-+	u32 calTime[2];
-+	s8  calAmbient;
-+	u8  calStatus;
-+	u16 calR;
-+} __packed;
-+
-+struct cirrus_amp_efi_data {
-+	u32 size;
-+	u32 count;
-+	struct cirrus_amp_cal_data data[];
-+} __packed;
-+
-+/**
-+ * struct cirrus_amp_cal_controls - definition of firmware calibration controls
-+ * @alg_id:	ID of algorithm containing the controls.
-+ * @mem_region:	DSP memory region containing the controls.
-+ * @ambient:	Name of control for calAmbient value.
-+ * @calr:	Name of control for calR value.
-+ * @status:	Name of control for calStatus value.
-+ * @checksum:	Name of control for checksum value.
-+ */
-+struct cirrus_amp_cal_controls {
-+	unsigned int alg_id;
-+	int mem_region;
-+	const char *ambient;
-+	const char *calr;
-+	const char *status;
-+	const char *checksum;
-+};
-+
-+int cs_amp_write_cal_coeffs(struct wm_adsp *dsp,
-+			    const struct cirrus_amp_cal_controls *controls,
-+			    const struct cirrus_amp_cal_data *data);
-+int cs_amp_get_efi_calibration_data(struct device *dev, u64 target_uid, int amp_index,
-+				    struct cirrus_amp_cal_data *out_data);
-+#endif /* CS_AMP_LIB_H */
+ extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
+ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
+ 
+@@ -286,6 +295,7 @@ int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base);
+ int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base);
+ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_soundwire);
+ void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_dsp);
++int cs35l56_get_calibration(struct cs35l56_base *cs35l56_base);
+ int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
+ 			     bool *fw_missing, unsigned int *fw_version);
+ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base);
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 027d9da85251..8356bd1256d8 100644
+index 8356bd1256d8..15f287784d8b 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -729,6 +729,9 @@ config SND_SOC_CROS_EC_CODEC
- 	  If you say yes here you will get support for the
- 	  ChromeOS Embedded Controller's Audio Codec.
+@@ -800,6 +800,7 @@ config SND_SOC_CS35L56
+ 	tristate
  
-+config SND_SOC_CS_AMP_LIB
-+	tristate
-+
- config SND_SOC_CS35L32
- 	tristate "Cirrus Logic CS35L32 CODEC"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 4080646b2dd6..0fc40640e5d0 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -59,6 +59,7 @@ snd-soc-chv3-codec-objs := chv3-codec.o
- snd-soc-cpcap-objs := cpcap.o
- snd-soc-cq93vc-objs := cq93vc.o
- snd-soc-cros-ec-codec-objs := cros_ec_codec.o
-+snd-soc-cs-amp-lib-objs := cs-amp-lib.o
- snd-soc-cs35l32-objs := cs35l32.o
- snd-soc-cs35l33-objs := cs35l33.o
- snd-soc-cs35l34-objs := cs35l34.o
-@@ -452,6 +453,7 @@ obj-$(CONFIG_SND_SOC_CHV3_CODEC) += snd-soc-chv3-codec.o
- obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
- obj-$(CONFIG_SND_SOC_CPCAP)	+= snd-soc-cpcap.o
- obj-$(CONFIG_SND_SOC_CROS_EC_CODEC)	+= snd-soc-cros-ec-codec.o
-+obj-$(CONFIG_SND_SOC_CS_AMP_LIB)	+= snd-soc-cs-amp-lib.o
- obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
- obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
- obj-$(CONFIG_SND_SOC_CS35L34)	+= snd-soc-cs35l34.o
-diff --git a/sound/soc/codecs/cs-amp-lib.c b/sound/soc/codecs/cs-amp-lib.c
-new file mode 100644
-index 000000000000..0e1249342a78
---- /dev/null
-+++ b/sound/soc/codecs/cs-amp-lib.c
-@@ -0,0 +1,256 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Common code for Cirrus Logic Smart Amplifiers
-+//
-+// Copyright (C) 2024 Cirrus Logic, Inc. and
-+//               Cirrus Logic International Semiconductor Ltd.
-+
-+#include <asm/byteorder.h>
-+#include <linux/dev_printk.h>
-+#include <linux/efi.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
+ config SND_SOC_CS35L56_SHARED
++	select SND_SOC_CS_AMP_LIB
+ 	tristate
+ 
+ config SND_SOC_CS35L56_I2C
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index cb4e83126b08..20b6dbd3fbab 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -5,10 +5,12 @@
+ // Copyright (C) 2023 Cirrus Logic, Inc. and
+ //                    Cirrus Logic International Semiconductor Ltd.
+ 
++#include <linux/firmware/cirrus/wmfw.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/types.h>
 +#include <sound/cs-amp-lib.h>
-+#include "wm_adsp.h"
+ 
+ #include "cs35l56.h"
+ 
+@@ -36,6 +38,8 @@ int cs35l56_set_patch(struct cs35l56_base *cs35l56_base)
+ EXPORT_SYMBOL_NS_GPL(cs35l56_set_patch, SND_SOC_CS35L56_SHARED);
+ 
+ static const struct reg_default cs35l56_reg_defaults[] = {
++	/* no defaults for OTP_MEM - first read populates cache */
 +
-+#define CS_AMP_CAL_GUID \
-+	EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4, 0x3d, 0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3)
+ 	{ CS35L56_ASP1_ENABLES1,		0x00000000 },
+ 	{ CS35L56_ASP1_CONTROL1,		0x00000028 },
+ 	{ CS35L56_ASP1_CONTROL2,		0x18180200 },
+@@ -91,6 +95,9 @@ static bool cs35l56_readable_reg(struct device *dev, unsigned int reg)
+ 	case CS35L56_BLOCK_ENABLES2:
+ 	case CS35L56_REFCLK_INPUT:
+ 	case CS35L56_GLOBAL_SAMPLE_RATE:
++	case CS35L56_OTP_MEM_53:
++	case CS35L56_OTP_MEM_54:
++	case CS35L56_OTP_MEM_55:
+ 	case CS35L56_ASP1_ENABLES1:
+ 	case CS35L56_ASP1_CONTROL1:
+ 	case CS35L56_ASP1_CONTROL2:
+@@ -629,6 +636,81 @@ void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_ds
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_init_cs_dsp, SND_SOC_CS35L56_SHARED);
+ 
++struct cs35l56_pte {
++	u8 x;
++	u8 wafer_id;
++	u8 pte[2];
++	u8 lot[3];
++	u8 y;
++	u8 unused[3];
++	u8 dvs;
++} __packed;
++static_assert((sizeof(struct cs35l56_pte) % sizeof(u32)) == 0);
 +
-+#define CS_AMP_CAL_NAME	L"CirrusSmartAmpCalibrationData"
-+
-+static int cs_amp_write_cal_coeff(struct wm_adsp *dsp,
-+				  const struct cirrus_amp_cal_controls *controls,
-+				  const char *ctl_name, u32 val)
++static int cs35l56_read_silicon_uid(struct cs35l56_base *cs35l56_base, u64 *uid)
 +{
-+	__be32 beval = cpu_to_be32(val);
++	struct cs35l56_pte pte;
++	u64 unique_id;
 +	int ret;
 +
-+	if (IS_REACHABLE(CONFIG_SND_SOC_WM_ADSP)) {
-+		ret = wm_adsp_write_ctl(dsp, ctl_name, controls->mem_region,
-+					controls->alg_id, &beval, sizeof(beval));
-+		if (ret)
-+			dev_err(dsp->cs_dsp.dev, "Failed to write to '%s': %d\n", ctl_name, ret);
-+
++	ret = regmap_raw_read(cs35l56_base->regmap, CS35L56_OTP_MEM_53, &pte, sizeof(pte));
++	if (ret) {
++		dev_err(cs35l56_base->dev, "Failed to read OTP: %d\n", ret);
 +		return ret;
 +	}
 +
-+	return -ENODEV;
-+}
++	unique_id = pte.lot[2] | (pte.lot[1] << 8) | (pte.lot[0] << 16);
++	unique_id <<= 32;
++	unique_id |= pte.x | (pte.y << 8) | (pte.wafer_id << 16) | (pte.dvs << 24);
 +
-+static int _cs_amp_write_cal_coeffs(struct wm_adsp *dsp,
-+				    const struct cirrus_amp_cal_controls *controls,
-+				    const struct cirrus_amp_cal_data *data)
-+{
-+	int ret;
++	dev_dbg(cs35l56_base->dev, "UniqueID = %#llx\n", unique_id);
 +
-+	dev_dbg(dsp->cs_dsp.dev, "Calibration: Ambient=%#x, Status=%#x, CalR=%d\n",
-+		data->calAmbient, data->calStatus, data->calR);
-+
-+	ret = cs_amp_write_cal_coeff(dsp, controls, controls->ambient, data->calAmbient);
-+	if (ret)
-+		return ret;
-+
-+	ret = cs_amp_write_cal_coeff(dsp, controls, controls->calr, data->calR);
-+	if (ret)
-+		return ret;
-+
-+	ret = cs_amp_write_cal_coeff(dsp, controls, controls->status, data->calStatus);
-+	if (ret)
-+		return ret;
-+
-+	ret = cs_amp_write_cal_coeff(dsp, controls, controls->checksum, data->calR + 1);
-+	if (ret)
-+		return ret;
++	*uid = unique_id;
 +
 +	return 0;
 +}
 +
-+/**
-+ * cs_amp_write_cal_coeffs - Write calibration data to firmware controls.
-+ * @dsp:	Pointer to struct wm_adsp.
-+ * @controls:	Pointer to definition of firmware controls to be written.
-+ * @data:	Pointer to calibration data.
-+ *
-+ * Returns: 0 on success, else negative error value.
-+ */
-+int cs_amp_write_cal_coeffs(struct wm_adsp *dsp,
-+			    const struct cirrus_amp_cal_controls *controls,
-+			    const struct cirrus_amp_cal_data *data)
++/* Firmware calibration controls */
++const struct cirrus_amp_cal_controls cs35l56_calibration_controls = {
++	.alg_id =	0x9f210,
++	.mem_region =	WMFW_ADSP2_YM,
++	.ambient =	"CAL_AMBIENT",
++	.calr =		"CAL_R",
++	.status =	"CAL_STATUS",
++	.checksum =	"CAL_CHECKSUM",
++};
++EXPORT_SYMBOL_NS_GPL(cs35l56_calibration_controls, SND_SOC_CS35L56_SHARED);
++
++int cs35l56_get_calibration(struct cs35l56_base *cs35l56_base)
 +{
-+	if (IS_REACHABLE(CONFIG_SND_SOC_WM_ADSP))
-+		return _cs_amp_write_cal_coeffs(dsp, controls, data);
-+	else
-+		return -ENODEV;
-+}
-+EXPORT_SYMBOL_NS_GPL(cs_amp_write_cal_coeffs, SND_SOC_CS_AMP_LIB);
-+
-+static efi_status_t cs_amp_get_efi_variable(efi_char16_t *name,
-+					    efi_guid_t *guid,
-+					    unsigned long *size,
-+					    void *buf)
-+{
-+	u32 attr;
-+
-+	if (IS_ENABLED(CONFIG_EFI))
-+		return efi.get_variable(name, guid, &attr, size, buf);
-+
-+	return EFI_NOT_FOUND;
-+}
-+
-+static struct cirrus_amp_efi_data *cs_amp_get_cal_efi_buffer(struct device *dev)
-+{
-+	struct cirrus_amp_efi_data *efi_data;
-+	unsigned long data_size = 0;
-+	u8 *data;
-+	efi_status_t status;
++	u64 silicon_uid;
 +	int ret;
 +
-+	/* Get real size of UEFI variable */
-+	status = cs_amp_get_efi_variable(CS_AMP_CAL_NAME, &CS_AMP_CAL_GUID, &data_size, NULL);
-+	if (status != EFI_BUFFER_TOO_SMALL)
-+		return ERR_PTR(-ENOENT);
++	/* Driver can't apply calibration to a secured part, so skip */
++	if (cs35l56_base->secured)
++		return 0;
 +
-+	if (data_size < sizeof(*efi_data)) {
-+		dev_err(dev, "EFI cal variable truncated\n");
-+		return ERR_PTR(-EOVERFLOW);
-+	}
++	ret = cs35l56_read_silicon_uid(cs35l56_base, &silicon_uid);
++	if (ret < 0)
++		return ret;
 +
-+	/* Get variable contents into buffer */
-+	data = kmalloc(data_size, GFP_KERNEL);
-+	if (!data)
-+		return ERR_PTR(-ENOMEM);
++	ret = cs_amp_get_efi_calibration_data(cs35l56_base->dev, silicon_uid,
++					      cs35l56_base->cal_index,
++					      &cs35l56_base->cal_data);
 +
-+	status = cs_amp_get_efi_variable(CS_AMP_CAL_NAME, &CS_AMP_CAL_GUID, &data_size, data);
-+	if (status != EFI_SUCCESS) {
-+		ret = efi_status_to_err(status);
-+		goto err;
-+	}
++	/* Only return an error status if probe should be aborted */
++	if ((ret == -ENOENT) || (ret == -EOVERFLOW))
++		return 0;
 +
-+	efi_data = (struct cirrus_amp_efi_data *)data;
-+	dev_dbg(dev, "Calibration: Size=%d, Amp Count=%d\n", efi_data->size, efi_data->count);
++	if (ret < 0)
++		return ret;
 +
-+	if ((efi_data->count > 128) ||
-+	    offsetof(struct cirrus_amp_efi_data, data[efi_data->count]) > data_size) {
-+		dev_err(dev, "EFI cal variable truncated\n");
-+		ret = -EOVERFLOW;
-+		goto err;
-+	}
++	cs35l56_base->cal_data_valid = true;
 +
-+	return efi_data;
-+
-+err:
-+	kfree(data);
-+	dev_err(dev, "Failed to read calibration data from EFI: %d\n", ret);
-+
-+	return ERR_PTR(ret);
++	return 0;
 +}
++EXPORT_SYMBOL_NS_GPL(cs35l56_get_calibration, SND_SOC_CS35L56_SHARED);
 +
-+static u64 cs_amp_cal_target_u64(const struct cirrus_amp_cal_data *data)
-+{
-+	return ((u64)data->calTarget[1] << 32) | data->calTarget[0];
-+}
-+
-+static int _cs_amp_get_efi_calibration_data(struct device *dev, u64 target_uid, int amp_index,
-+					    struct cirrus_amp_cal_data *out_data)
-+{
-+	struct cirrus_amp_efi_data *efi_data;
-+	struct cirrus_amp_cal_data *cal = NULL;
-+	int i, ret;
-+
-+	efi_data = cs_amp_get_cal_efi_buffer(dev);
-+	if (IS_ERR(efi_data))
-+		return PTR_ERR(efi_data);
-+
-+	if (target_uid) {
-+		for (i = 0; i < efi_data->count; ++i) {
-+			u64 cal_target = cs_amp_cal_target_u64(&efi_data->data[i]);
-+
-+			/* Skip entries with unpopulated silicon ID */
-+			if (cal_target == 0)
-+				continue;
-+
-+			if (cal_target == target_uid) {
-+				cal = &efi_data->data[i];
-+				break;
-+			}
-+		}
-+	}
-+
-+	if (!cal && (amp_index >= 0) && (amp_index < efi_data->count)) {
-+		u64 cal_target = cs_amp_cal_target_u64(&efi_data->data[amp_index]);
-+
-+		/*
-+		 * Treat unpopulated cal_target as a wildcard.
-+		 * If target_uid != 0 we can only get here if cal_target == 0
-+		 * or it didn't match any cal_target value.
-+		 * If target_uid == 0 it is a wildcard.
-+		 */
-+		if ((cal_target == 0) || (target_uid == 0))
-+			cal = &efi_data->data[amp_index];
-+		else
-+			dev_warn(dev, "Calibration entry %d does not match silicon ID", amp_index);
-+	}
-+
-+	if (cal) {
-+		memcpy(out_data, cal, sizeof(*out_data));
-+		ret = 0;
-+	} else {
-+		dev_warn(dev, "No calibration for silicon ID %#llx\n", target_uid);
-+		ret = -ENOENT;
-+	}
-+
-+	kfree(efi_data);
-+
-+	return ret;
-+}
-+
-+/**
-+ * cs_amp_get_efi_calibration_data - get an entry from calibration data in EFI.
-+ * @dev:	struct device of the caller.
-+ * @target_uid:	UID to match, or zero to ignore UID matching.
-+ * @amp_index:	Entry index to use, or -1 to prevent lookup by index.
-+ * @out_data:	struct cirrus_amp_cal_data where the entry will be copied.
-+ *
-+ * This function can perform 3 types of lookup:
-+ *
-+ * (target_uid > 0, amp_index >= 0)
-+ *	UID search with fallback to using the array index.
-+ *	Search the calibration data for a non-zero calTarget that matches
-+ *	target_uid, and if found return that entry. Else, if the entry at
-+ *	[amp_index] has calTarget == 0, return that entry. Else fail.
-+ *
-+ * (target_uid > 0, amp_index < 0)
-+ *	UID search only.
-+ *	Search the calibration data for a non-zero calTarget that matches
-+ *	target_uid, and if found return that entry. Else fail.
-+ *
-+ * (target_uid == 0, amp_index >= 0)
-+ *	Array index fetch only.
-+ *	Return the entry at [amp_index].
-+ *
-+ * An array lookup will be skipped if amp_index exceeds the number of
-+ * entries in the calibration array, and in this case the return will
-+ * be -ENOENT. An out-of-range amp_index does not prevent matching by
-+ * target_uid - it has the same effect as passing amp_index < 0.
-+ *
-+ * If the EFI data is too short to be a valid entry, or the entry count
-+ * in the EFI data overflows the actual length of the data, this function
-+ * returns -EOVERFLOW.
-+ *
-+ * Return: 0 if the entry was found, -ENOENT if no entry was found,
-+ *	   -EOVERFLOW if the EFI file is corrupt, else other error value.
-+ */
-+int cs_amp_get_efi_calibration_data(struct device *dev, u64 target_uid, int amp_index,
-+				    struct cirrus_amp_cal_data *out_data)
-+{
-+	if (IS_ENABLED(CONFIG_EFI))
-+		return _cs_amp_get_efi_calibration_data(dev, target_uid, amp_index, out_data);
-+	else
-+		return -ENOENT;
-+}
-+EXPORT_SYMBOL_NS_GPL(cs_amp_get_efi_calibration_data, SND_SOC_CS_AMP_LIB);
-+
-+MODULE_DESCRIPTION("Cirrus Logic amplifier library");
-+MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
-+MODULE_LICENSE("GPL");
+ int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
+ 			     bool *fw_missing, unsigned int *fw_version)
+ {
+@@ -923,3 +1005,4 @@ MODULE_DESCRIPTION("ASoC CS35L56 Shared");
+ MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
+ MODULE_AUTHOR("Simon Trimmer <simont@opensource.cirrus.com>");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(SND_SOC_CS_AMP_LIB);
 -- 
 2.30.2
 
