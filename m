@@ -1,92 +1,157 @@
-Return-Path: <linux-kernel+bounces-74259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E06285D1B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:49:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7143D85D1BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:50:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D8C287717
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:49:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25DA21F26AD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1F43BB31;
-	Wed, 21 Feb 2024 07:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519743B29D;
+	Wed, 21 Feb 2024 07:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ETynYkD/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lrSAqaZR"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0DE3BB24;
-	Wed, 21 Feb 2024 07:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512A13A8FF
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708501742; cv=none; b=jVutQA89JprBTDgmB/hU/36etHP8svTZd0Zah0KyuVtijrMz3jxDyuPCNwFMEHx5I0ZyKpTOlrOl+U1a7QVI4diKVVAoe3ZBV+kTm6NGTX/2GkDLSd4x8IlGQsu9pEHhvcVD18GB/CE+QsG1MyUXS4W23Gfpg0SRMUATw6RDw0E=
+	t=1708501798; cv=none; b=Gt7gSqI/HIhfrv6TTT87guhh/qwuJwZVyXE9XDdD+6ghjF/ZG8qMZoN50V7nVVpP8VqcAWZ0uVHemNaIel8cfJKrmDd2BhRfNyMeodCWMkNP7vMcXVXmQh5c2JPSNo32nz7e7KjAwzbc9w/S2LXad7VotrpjFl0zl5evMVCGVrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708501742; c=relaxed/simple;
-	bh=qi+I98yy5ZrMETBL+d0Nqci1ne8TZO4ZlEZU91fFtso=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fOXya7rHNn77s+KZfZqXWjEyOwCa9pxbr/2dnSRWA5clBWwrvitdeiESzVlY4ELSu07xCxHV9Y7leoQlngbMKaSwIHDb6oOUZN20xF+CCaELjOnjOo8Pz310evKgpAFsfHvsgHLBgM05etK2wFuo8nvkeM8/+NEBd4emZG78OmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ETynYkD/; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708501742; x=1740037742;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qi+I98yy5ZrMETBL+d0Nqci1ne8TZO4ZlEZU91fFtso=;
-  b=ETynYkD/9evKLfoWDBrs+o90h6hQmLTCbBld2Boy96dyiczaV1zyk+x/
-   VBjSaDgOyskUnHzGMG5RdaJzcOQAJ3h/0dZ/TanQ7TSe6S5n++hapd/dh
-   vC8RmRtonXXfj678wCVu1zzTwfT8j9+JKADK+JKywyWSoz+LMyXwapS+y
-   a4C08GLtZ9QsoklJsTs5r/0NN9EonKGdmgQk7+rVXLiB8mYpz4I8pWsj6
-   gVmyvbgZlUUuXBvKUiSEbbIU1STEHvd1Wp2/f87+Ed+JmtlnvmDs+rOMn
-   qxdEyAmv4j+ijbZDe70AEVJ4eGPPqSuLVheHLwMefF/yUWcOc5WvcflwX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="25109364"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="25109364"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 23:49:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="9733223"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 23:48:58 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 4B72E11F855;
-	Wed, 21 Feb 2024 09:48:54 +0200 (EET)
-Date: Wed, 21 Feb 2024 07:48:54 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v1 1/1] device property: Don't use "proxy" headers
-Message-ID: <ZdWq5vA29iB8MzNy@kekkonen.localdomain>
-References: <20240220161931.3091680-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1708501798; c=relaxed/simple;
+	bh=biqXrjAAO7u19gjgto/BNfOyWQ59ZBrQr++5TbDFiTM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=soJmJ5R78pWRaKbBuwZdEHwrcsCTe/PDxdObDffSnZr3LbVpm4bzHRG/cjbJ4KUQQhPYhGkYLjotu3wpB1fmTkaCCQEGhUgvpX6WDcVxeT7buH5bVX/FbeDT0hWYZoHpoRc2GcHaGVgl5EzGqUeX15klp5MquS968OOx3syVxrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lrSAqaZR; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so9299328a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:49:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708501794; x=1709106594; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hl95OcjGnSUINOa6Ga6tDh2IQAHjCWQTqsy3KePkrjs=;
+        b=lrSAqaZR6D+GDZoPt5Itk/MwUvgc3Uu9Oyd4Dj3k1D+oQ6AfWOEVGh1QcEDkheNpYd
+         fe+/e0vm9FagN946fHcZl97vgm4IoAkTtNZ1LdMDjeittIqX65NvuLrWj9W9ZqoR0muW
+         7ahpyVJpqecRPZqGITjkr+qG6j+zqb8pbTAEk8Z9z1P5C555mdm0MV9/VBP77mPs0ptZ
+         l+6D/21eMa7BfYguh/0yqY1LJQGUcnmqHE5TejQ8X14jIKsUML6PIZiMRkGbhejJ0jfq
+         SQ8k6ViiwFSi4nZkuOVUVz6cGtKAiRbV2jaltzgW/SK+3ZBfzIhrRPUZlMzm+bResKow
+         wH3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708501794; x=1709106594;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hl95OcjGnSUINOa6Ga6tDh2IQAHjCWQTqsy3KePkrjs=;
+        b=FlvB7JHESa3J0O0DsPTNw2EqHxSI3MQZig7P/fo2n8uITp3qmsfomIo4yDklZxWzrk
+         X+QjrvYCGfVO25M9cDVRgbXjbmuUQ6MqpeUwOBCNQZhLjVnJt4ylF5g5LFjSoRIGdxw6
+         HUuQvTs5sgMoBhg9AaX1YlVZQisDKHp14aiymTkc4IhEX6KURcKLh9IOElv70hkbVhB1
+         Jvh6kpEy7vwrOai0g/i6gTKTuuhNl3y9e/c0TVn8sp7/9ExqvMAHiulvADS7tSHAfz7X
+         S4bx3TX5oqjkx0mt/eTTX7/dxkhT7zJM0hObzEm/ISyJ4zoJUtamQjtnpWYNObSntzuO
+         GxvA==
+X-Forwarded-Encrypted: i=1; AJvYcCUm8Kk4KurPeLB9F/TEyq1QjbeU9kS/hzNK9zDB6aLwqj9IgFPLQgtF1WKVjJdfyOnLHJn7NCqFliuc4sIskOxSJz+7/s0dI8OAcACJ
+X-Gm-Message-State: AOJu0Yxyyy6ybvv662HBrsxwctZnnxS388mX//2HfkGO5C4LpL3yenMx
+	ISLzAekmCgUcN9wPTGCyyM9/BeIRfkHMprXP8VxxwF/KkOvY6Mc8CdmtMsC0juY=
+X-Google-Smtp-Source: AGHT+IFnSRUXPXg7HyUZ4O0ls3ht6rtvBMxB++XkR2HBsbPc1snKYQ9asblmg3q8HYvjJoYD1Cx1vQ==
+X-Received: by 2002:a17:906:198d:b0:a3e:fd1b:3fb5 with SMTP id g13-20020a170906198d00b00a3efd1b3fb5mr2528775ejd.1.1708501794624;
+        Tue, 20 Feb 2024 23:49:54 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id y2-20020a170906470200b00a3d0dd84276sm4687798ejq.184.2024.02.20.23.49.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 23:49:54 -0800 (PST)
+Message-ID: <633d1027-9121-4da3-a3ef-7c780b621949@linaro.org>
+Date: Wed, 21 Feb 2024 08:49:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220161931.3091680-1-andriy.shevchenko@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] dt-bindings: phy: qcom-edp: Add X1E80100 PHY
+ compatibles
+Content-Language: en-US
+To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Johan Hovold <johan@kernel.org>, Rob Herring <robh@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240221-phy-qualcomm-edp-x1e80100-v4-0-4e5018877bee@linaro.org>
+ <20240221-phy-qualcomm-edp-x1e80100-v4-1-4e5018877bee@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240221-phy-qualcomm-edp-x1e80100-v4-1-4e5018877bee@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 20, 2024 at 06:18:50PM +0200, Andy Shevchenko wrote:
-> Update header inclusions to follow IWYU (Include What You Use)
-> principle.
+On 20/02/2024 23:05, Abel Vesa wrote:
+> The Qualcomm X1E80100 platform has multiple PHYs that can work in both
+> eDP or DP mode, so document their compatible.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/phy/qcom,edp-phy.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
--- 
-Sakari Ailus
+Best regards,
+Krzysztof
+
 
