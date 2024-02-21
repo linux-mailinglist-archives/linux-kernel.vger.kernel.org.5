@@ -1,109 +1,144 @@
-Return-Path: <linux-kernel+bounces-74494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C74185D51D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:05:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31CC285D519
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDC511C23236
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:05:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFAA5283C83
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC20A3F9D3;
-	Wed, 21 Feb 2024 10:00:39 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDCE3DB92;
+	Wed, 21 Feb 2024 09:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UVHjyzqL"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0C63D54C
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:00:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB143D96B;
+	Wed, 21 Feb 2024 09:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509639; cv=none; b=KnD2+vzT6wNHnZsAdb8QAmHqTOspaT2JwsZNH3IOS+FpzQ3pjA7ZF8CTR0KJfUSqWljmFMre26qI3MsIYsEAeDTmC2iNDsafPCAzitcUDmn8exbXYUIH2Pd0rQBMvfoCJ88b/IdTbv3H2KFXOyCUpthfJ0UAOGMzkO1cjVs1fq8=
+	t=1708509589; cv=none; b=lWQa+yW18hWtC/5UHQEftUoB1Uk3yEqXrFG5uCAY7dwhrzcJnSN/ckjjwzcp/5whPCDTCbJkljq80DAjSKOdMvDDiGJRXUNM2AIRGhEdOVB0uw8c/aW0lxZhqN2xoeK9Y+Jw53mscrQ/vWb+CpnRJf74+xEqDyt/GRCeM3fbRoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509639; c=relaxed/simple;
-	bh=MGZaqLmMzO6wbM7prH14xhw2vpbo3yMc/zyQLmT9EFs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HAzRDjxY55KyLwbP7i0/b5YHjjfVMSP7qiNmRhwK8jfKR4tegEtfXkFm/MUleQJFiRCwxLe3BHmVwOmoHkAkDyqy4xPCxbTNEVsetxGc701IfePePL11S/OlOIzNHiOv6Fo3t3Y4y3SJiLUxZkKndjEyWxO8qEk3VQXTxn/PWpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 02cc5fc8cccf4f98ab5783f712d703ca-20240221
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:623a14fd-5008-4c40-89be-891b8c45b351,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:623a14fd-5008-4c40-89be-891b8c45b351,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:deed8b8f-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:2402211800264WKWF8CQ,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 02cc5fc8cccf4f98ab5783f712d703ca-20240221
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 156901990; Wed, 21 Feb 2024 18:00:23 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 9FE0CE000EBC;
-	Wed, 21 Feb 2024 18:00:23 +0800 (CST)
-X-ns-mid: postfix-65D5C9B7-383174114
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id D4F04E000EBD;
-	Wed, 21 Feb 2024 18:00:22 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch
-Cc: amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH 3/3] drm/amdgpu: Simplify the allocation of sync slab caches
-Date: Wed, 21 Feb 2024 17:59:07 +0800
-Message-Id: <20240221095907.172408-4-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240221095907.172408-1-chentao@kylinos.cn>
-References: <20240221095907.172408-1-chentao@kylinos.cn>
+	s=arc-20240116; t=1708509589; c=relaxed/simple;
+	bh=5v3dtSCXtJMKznIfq4bOSd2Ajb7Xgfbqb6Og5lUaIsE=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
+	 Content-Type; b=lr7cwgxVUqP7/+ysSs3zUlX2uq6r5AQgX4BJTufLKBKVj1biWIj19UcgmickCRp6heQ+Pau8LzydYE6hkuCsc9vTSnMSyYsflcKcnKaAVqyLG5frtYy1HqFa8Ju6jJszsyQ/ir7mBXxdQvqWFajnb3LvEY0CZuOiz6sgUayeE7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UVHjyzqL; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso6775895276.2;
+        Wed, 21 Feb 2024 01:59:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708509586; x=1709114386; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:in-reply-to
+         :message-id:cc:to:from:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5v3dtSCXtJMKznIfq4bOSd2Ajb7Xgfbqb6Og5lUaIsE=;
+        b=UVHjyzqL4FfMFP3qCrtJ0vbyQTpYTd4T6aWiJWU9qEolZ3ta9AQlaZ4Kf8nBiuR3A9
+         I0b88Stl7eHiGP7ofPTsbOHe9MXwWd69dkbda3P88wtmQ8eer2pZvVsS8l9rSz7OxvHS
+         wVfzvzXZ+16ulyziWLRIk7r5FLdnhJe1O5UOxflrYrpJ/B15BbvcckExDKd5bE96NhkV
+         V6T8KjxmLEKtbLpK1pgbhoPLZYmdVDSQejv3XDKgnaxucog2P7jr8TRoUMD7CQ3OYdp0
+         FptaXXA2Gof7kVYuk6/9W1FeZUkjaHruRSR5n2x0VpqlCQewXflHWZT9z9f+F0GDx0ZV
+         5rXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708509586; x=1709114386;
+        h=content-transfer-encoding:mime-version:subject:in-reply-to
+         :message-id:cc:to:from:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5v3dtSCXtJMKznIfq4bOSd2Ajb7Xgfbqb6Og5lUaIsE=;
+        b=nQ80AofoWewdbdu0KTaF4VzwEKb8ZzjeWUuw08P6NRclwrFW8LDaaFOLkqoix3xh4/
+         EwPhEwauzXL8ddlooe8Yi9fkELKn1rEtJfnEhBNtVEf6ILiERjVD0Ox7LW9aLDACWJh3
+         3SQ3bT/pdj9fsE3E3LcP4WUH8AFNRuWmhLyCl+6WKGBKj9zYlpmn3jp/bZN/44U0qKmx
+         BcsnGgDIUiFPrtKnLAJiRr85vD8l/7I3p8ZW9ueXVXbiRz2dsB4erEtekoE+3RRq+z8h
+         CaXMra67f/80wpx/kWG2KZnyUcBDPp8/cVQ8NGzvw9rOgNakaDu9VaMjdV+B8i8chOWa
+         8mMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVVBOa+ajhdaZiWOYpiwn2ih9P3KsmVj5Z0B1X8/iFp3jhDT7p9lhoAoFxTNQeNndeX4m2bsEkdCJdRns8XTEYe6pM8h66Ivw19eA/n2x4sqGBwFJhgv++y9yhOk6sQpyKUT5/yaeKJ9zJid2QjmSkTbUwGQ6FRV0YL397REoxgxA2mi8pizvhtaDK+7Q==
+X-Gm-Message-State: AOJu0Yz1LcIC/y+AZAemECrqSzbja0xx9R+KNEPwiSjykXghB9u7IWi5
+	hktAEKAaPoOwlci71/z0+reu9/f7pPzAOuPIPzYGSVoGEJ6P3z7a
+X-Google-Smtp-Source: AGHT+IGayboSSYCRSBTfKt/p8uzubL1dQkldpRG0mhTDMp+YvZDPIeXz2+mtkKwMRQEU2KIbrXXU8Q==
+X-Received: by 2002:a25:848d:0:b0:dc6:be64:cfd1 with SMTP id v13-20020a25848d000000b00dc6be64cfd1mr14423533ybk.36.1708509586648;
+        Wed, 21 Feb 2024 01:59:46 -0800 (PST)
+Received: from [127.0.0.1] ([106.221.238.184])
+        by smtp.gmail.com with ESMTPSA id u29-20020a056a00099d00b006e0e3e44f33sm8396473pfg.103.2024.02.21.01.59.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 01:59:46 -0800 (PST)
+Date: Wed, 21 Feb 2024 15:29:39 +0530 (GMT+05:30)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: zhangwarden@gmail.com
+Cc: jikos@kernel.org, joe.lawrence@redhat.com, jpoimboe@kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	live-patching@vger.kernel.org, mbenes@suse.cz, mpdesouza@suse.com,
+	pmladek@suse.com, shresthprasad7@gmail.com, shuah@kernel.org,
+	skhan@linuxfoundation.org
+Message-ID: <ff1078b2-447d-4ae7-8287-d0affd23588d@gmail.com>
+In-Reply-To: <B052E4A4-3652-452F-B4F9-F36860143CC3@gmail.com>
+Subject: Re: [PATCH]     Fix implicit cast warning in test_klp_state.c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <ff1078b2-447d-4ae7-8287-d0affd23588d@gmail.com>
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+I checked the source code and yes I am on the latest Linux next repo.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Here's the warning:
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c:38:24: warning: assignment to =E2=80=98struct=
+ klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
+ without a cast [-Wint-conversion]
+=C2=A0=C2=A0 38 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
+state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ^
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c: In function =E2=80=98fix_console_loglevel=E2=
+=80=99:
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c:55:24: warning: assignment to =E2=80=98struct=
+ klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
+ without a cast [-Wint-conversion]
+=C2=A0=C2=A0 55 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
+state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ^
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c: In function =E2=80=98restore_console_logleve=
+l=E2=80=99:
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c:68:24: warning: assignment to =E2=80=98struct=
+ klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
+ without a cast [-Wint-conversion]
+=C2=A0=C2=A0 68 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
+state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ^
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c: In function =E2=80=98free_loglevel_state=E2=
+=80=99:
+/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
+test_modules/test_klp_state.c:80:24: warning: assignment to =E2=80=98struct=
+ klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
+ without a cast [-Wint-conversion]
+=C2=A0=C2=A0 80 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
+state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ^
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c b/drivers/gpu/drm/a=
-md/amdgpu/amdgpu_sync.c
-index 1b013a44ca99..bdf1ef825d89 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-@@ -441,9 +441,7 @@ void amdgpu_sync_free(struct amdgpu_sync *sync)
-  */
- int amdgpu_sync_init(void)
- {
--	amdgpu_sync_slab =3D kmem_cache_create(
--		"amdgpu_sync", sizeof(struct amdgpu_sync_entry), 0,
--		SLAB_HWCACHE_ALIGN, NULL);
-+	amdgpu_sync_slab =3D KMEM_CACHE(amdgpu_sync_entry, SLAB_HWCACHE_ALIGN);
- 	if (!amdgpu_sync_slab)
- 		return -ENOMEM;
-=20
---=20
-2.39.2
+Thank you for your help so far.
 
+Regards,
+Shresth
 
