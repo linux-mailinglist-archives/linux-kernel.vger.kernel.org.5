@@ -1,112 +1,98 @@
-Return-Path: <linux-kernel+bounces-75575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F39285EB6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A73E85EB71
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB2E6B22AB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:55:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68302B25DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFA5128373;
-	Wed, 21 Feb 2024 21:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9632C127B70;
+	Wed, 21 Feb 2024 21:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="drqEE/Ra"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="sZM9OvrJ"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02221272D7
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A0786AF4;
+	Wed, 21 Feb 2024 21:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708552512; cv=none; b=hZcOzbqXTWabKB99Cv3+90+EVslO/XTBoUwEhPf1eyZ7EDEjrhxPl0k79s0PCvjwyxyYduZrs3uAcPlw3FbCQLhwgDYBUPEAWJfFJKBJ42SOGtY5z2od770/P+Yrw9rPVhaiFYwZV4z+EJRJR232fU4Jld80m/AJUu/FOx6ptHI=
+	t=1708552559; cv=none; b=uSssqPqjinRql5qYzP/YzZC8SA/9+7v12pAotCVK2BzZqIY3IObmEpOfF4we9sWew4QHNXd5pRgeb+0opiD/DQzWPMkPMaefq1RuYPiyF0UiFFTMpc4//clWzHLnEvyarInymgVwzuu08h6AlF9Htq7VcTtPmF8Y/gVlJy/rX+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708552512; c=relaxed/simple;
-	bh=vWHrhgI4Kt8kGUNcvtf3QHT4fPb4OVK0J5B/aX4bSNk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=daqc0qLl5OJLGnvaRAQ+MLa3R9HqyiBhPvI9IUp1vx8lSESIzOqRqf5k2N1oMDKhRI0cPcaLApaWx9GRo1cJQ5YbhizZiNs6kVbwWj4O/JRuDj4zDBpjcqP8AN7zgO9W7dDKUZvT1bFr8R31ro32lyEzuDzHBemxsdwEsPmVpK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=drqEE/Ra; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-607dec82853so68133337b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:55:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708552510; x=1709157310; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vWHrhgI4Kt8kGUNcvtf3QHT4fPb4OVK0J5B/aX4bSNk=;
-        b=drqEE/Ra7/oHoShJ7/NZDmAVwtS0BWeyxBhhJ8pG0Q+hfOT7/RkP1v4BPHiKR0l+TW
-         2pEHKFm5WmwIi9za/fv4FYJimgSrIxuuEs/7MGdBTLj4f3X7E48RBGOjLOwBhjpAFduM
-         42tjxlzb8MDXXHi9bR0NOa27f6f6ILYvFdV2v/Sa2UzsetY5ZWkpMYqftkKJqXbgtauK
-         WORIW/FkuPGeVWFU//sFhGjZs6bd231h00u9XX95CqEJaGaWxRgtJCStxG/IDH8qVDmH
-         Hh9nB/0AwHVFxofSGBzQyKaoahb+eCHVljS8/7bqDQu4+VFfhZo4a8EYIDrzh0t/bdJQ
-         lA+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708552510; x=1709157310;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vWHrhgI4Kt8kGUNcvtf3QHT4fPb4OVK0J5B/aX4bSNk=;
-        b=cIYm+peIWbAgq7VMwquPcBXvnq+0QBfxgPq6d4ohS6h9iUDYkLrQbNgbOwgzdwEZ8t
-         dpyysQVlYivm2wHIqIGyRcKpao7mCdZ+s6QQ+/kx3HX33Roldi05auQ66/bCKjJ/LlOn
-         wnHiPcYYre0GlgYGkoliHjO8Sw4NuwcgW70rC/YkUNyrmWMV2mcCYO+rLIatC94A9Qsx
-         VDwGzEMzjMBniPNPnSTKlCMnECfSxeyOv20zkIqA9vfrZusXOUGqj/wRaEkQG5fJkbKF
-         n2mcIYfXZkbohhFtNRdR5seOOtkK0Q930tWzwVR2ozpehHT/ebJUfnYPkyQ34hMeLs0B
-         9ZrA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/ZuWrHaQ5XgVJ2Nwl3Vek3AaHub5uTjlfd787awlNEW5gKJsKE0DTZq59RZ7VR75kPKDb++cYBlJ0Zhl9kHU+8DDbaZBFPzxwU3rC
-X-Gm-Message-State: AOJu0YyIZHg2uUiJasFT9Tb+xS/NW7EeCvYXRFEkTv54iIqp2r3ZGnJ5
-	YmjH0lbeqZ+qfrcwWEZSJQsix0JqOCxRKp8e9diz8j8K09QPy1MLSiHqrDSDhTeKZxvWasm5kIt
-	uCiDp3epkoIfh8DnGsIvknwgGHu792rSIHPJTwA==
-X-Google-Smtp-Source: AGHT+IFG7OkXBXjbNPYxfp6BSZzFgHptfq8O7pHlOruVpRLafhQo6wGBbhxmoAykBBf2wzpi0CwmDlGUgveqYfQh/CQ=
-X-Received: by 2002:a81:8341:0:b0:5ff:796e:481f with SMTP id
- t62-20020a818341000000b005ff796e481fmr18807228ywf.11.1708552509905; Wed, 21
- Feb 2024 13:55:09 -0800 (PST)
+	s=arc-20240116; t=1708552559; c=relaxed/simple;
+	bh=nTuc8LKTvKZXgaBo7OkNjdEx8ZgVIB8lvaDsj+8oJD0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UcfIOKyOOg2NpfUnecrYbQa/QNYeVT2C4scjyBMQcx8tXhhG69e2f2PmNcRLmZN9FrCaqBld1HBp3PQHab9vQ5Hi6vtvvG6RrqdSlXR5RMsNWqBqbw3WXbbRSuBZwD1nUJMt6wSX6bG9tQCuN4sgpctYGzKLggRV7U863KCsVlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=sZM9OvrJ; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=AXSy1sSCudHSwTEsn2KeZXdnhJZE8cqzG9gRyWLU2So=; b=sZM9OvrJSdjCAxoqaP9CdiOxJZ
+	qqTlAAsic6d43gCucAaDjaJzjFWSAc+4m0GfOGfB5crWz32LcV41tDABNbZwingayB1sFTKKTW2cx
+	npA3FEbLuZjUIfRc0nohlNmlU0KwLFmphVlKXMQoJ++t/Plq1nEWNSC4asMOclBUmRsk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rcuZS-008Ohp-82; Wed, 21 Feb 2024 22:56:06 +0100
+Date: Wed, 21 Feb 2024 22:56:06 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: "A. Sverdlin" <alexander.sverdlin@siemens.com>
+Cc: linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] power: reset: restart-poweroff: convert to module
+Message-ID: <6964c19f-6ffb-4d9a-bc02-ffaf52aa23b5@lunn.ch>
+References: <20240221174610.3560775-1-alexander.sverdlin@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com> <20240102-j7200-pcie-s2r-v3-1-5c2e4a3fac1f@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v3-1-5c2e4a3fac1f@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 21 Feb 2024 22:54:59 +0100
-Message-ID: <CACRpkdYSw5_70H4k5ZX-stCU=CH=v_0Ggm+R+FSBhdbk6mnhOA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/18] gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
-	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
-	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
-	thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221174610.3560775-1-alexander.sverdlin@siemens.com>
 
-On Thu, Feb 15, 2024 at 4:18=E2=80=AFPM Thomas Richard
-<thomas.richard@bootlin.com> wrote:
+On Wed, Feb 21, 2024 at 06:46:07PM +0100, A. Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+> 
+> The necessity of having a fake platform device for a generic, platform
+> independent functionality is not obvious.
+> Some platforms requre device tree modification for this, some would require
+> ACPI tables modification, while functionality may be useful even to
+> end-users without required expertise. Convert the platform driver to
+> a simple module.
 
-> Some IOs can be needed during suspend_noirq()/resume_noirq().
-> So move suspend()/resume() to noirq.
->
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+> @@ -47,15 +45,8 @@ static const struct of_device_id of_restart_poweroff_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, of_restart_poweroff_match);
+>  
+> -static struct platform_driver restart_poweroff_driver = {
+> -	.probe = restart_poweroff_probe,
+> -	.remove = restart_poweroff_remove,
+> -	.driver = {
+> -		.name = "poweroff-restart",
+> -		.of_match_table = of_restart_poweroff_match,
+> -	},
+> -};
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+of_restart_poweroff_match now seems to be disconnected from the
+driver.
 
-Yours,
-Linus Walleij
+kirkwood-linkstation.dtsi:		compatible = "restart-poweroff";
+kirkwood-lsxl.dtsi:		compatible = "restart-poweroff";
+orion5x-linkstation.dtsi:		compatible = "restart-poweroff";
+orion5x-lswsgl.dts:		compatible = "restart-poweroff";
+
+How do these devices get this driver loaded?
+
+This appears to be another reason to NACK it.
+
+	Andrew
 
