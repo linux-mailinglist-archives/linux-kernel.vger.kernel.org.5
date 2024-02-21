@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-75310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B263985E656
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:36:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC0B985E64A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D55E21C2457C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:36:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BE501F25FF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C795D1272B8;
-	Wed, 21 Feb 2024 18:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57A486AEE;
+	Wed, 21 Feb 2024 18:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PSUSXby5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MPIScU2W"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5933486AE2;
-	Wed, 21 Feb 2024 18:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438B48663E;
+	Wed, 21 Feb 2024 18:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708540506; cv=none; b=uVt2nioiRoLmRwhKvsscZ5kqG+mYfKVYjLuv2FEWeYySmxFoxyTNOYeLNoqzTN/uX99uMLNAweuh1991/7qCJkXppEMdJsavjRyolYGX5sLfFnanE6v9tS5vj5amcGB7hh8htS9eU00sT8Sr/ASS/BRyFEMeqE5Pjq89yQfnKYY=
+	t=1708540504; cv=none; b=nODZbHfXbOjlM/NHWJPXOKADqTFZuExM8RvTZ7Kipz5Pmc+vCoT8qphoHVgauqv9bduXFGtc9iImLhOEOzQ41Vq/F1f+h/80h7PJTYJhgWeyCBe7lV24EUG+aqisvbA14RwC/MqxSE9kJTq09M4/Xul8HqMmGop2kxQXLHvGovI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708540506; c=relaxed/simple;
-	bh=gldZ/Cbp9u0amwonRgNlffL/8B/cyCZTIV2zvUcgOTM=;
+	s=arc-20240116; t=1708540504; c=relaxed/simple;
+	bh=4UcL4BkrrA48FaRG5BWoOyofknmODC7RJONPDVqFX3k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cMzeuOHBtk80e/5fXJqe4uU29X+jgRHJbWRpGvLRiDqcarwRiF/HjYk60ottM05FEurOitrUo+1nxJDqDKiFQTX4+dxYiCxSUnYWUgy3H/gfB+aMHILLUGEN7g5IvozLF/9PlTtYuq0muYpqVqHc/NvaEakwzoNM7x6T86d8kTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PSUSXby5; arc=none smtp.client-ip=192.198.163.7
+	 MIME-Version; b=A2k5LKO0fk5A5Ym2C6WCGIrhnQCzbhbCp9OvmhFA2iJsZg/DszxKu2QCv1zVVzcVXfWwf1A/5o8GQRqO9dvPYq9vd4/gDkOK5M8G9yubJ0NEbttkBQhIlnihjcVAIS6x4UwaC+oF/jLqwJWNg2cqOmMxpJis4PTnewKOZcx+xes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MPIScU2W; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708540505; x=1740076505;
+  t=1708540503; x=1740076503;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gldZ/Cbp9u0amwonRgNlffL/8B/cyCZTIV2zvUcgOTM=;
-  b=PSUSXby5N5WRWK+lq2jrpRweOrHurZ85MrN8FSopEr/Z5dZqsD8uO1Pn
-   55lllRppjkHj+b00QOnCiXsaBrofdFw+JtbVXLgMh6oEjkgO0jw67Q7Lb
-   teictje4CMelAAvEKPQus5UsQwSYe8AFk3SUq8WXeJ+06DWpJ0H2ujG+b
-   NUOQ6dRIft5RPGQaSXr7EDDRkr7TMvoSNkpRwq/BD1MjvJQXttNEnMtRS
-   XD5hEaADFtGqyWZ7eadZzR0gDHKOMkux7gMkCcSObq7ayHe+z8MEXnF9r
-   9tlwzSPksOpmzIT2kiHcA+Q6hA+3+cRvvFJLsMUR654TySShmx+JZVzKj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="28164793"
+  bh=4UcL4BkrrA48FaRG5BWoOyofknmODC7RJONPDVqFX3k=;
+  b=MPIScU2Wd1m1pcRA1qVMqcAAkPqf3uaCq3jNCigHuMngwCl8lqtkSUGT
+   JJKgp1VKzaivbxKvRGR6C7nf7B3318Lt+LsFgH6ZcEH2QWAHtWoN6KmiL
+   SFotq72eJdvPVxjJq6TJlF5kZ8/RurS462HuZunyzPl+IMNkixifhx1eZ
+   I4iZ6MrbXiy0NGNs21ZGXQ2JHOd+82lMZfaVxOgo0Z3YmdYSGU11VhF4n
+   TzKo15Cq036j+2ijU1E9MA+Xpwp2Iy1xavMoVxPTJtixoa/umX2LIVjZe
+   66EOKYvoyzYayb5i/l82oi3B+PXDt5SzlVt4eFczjOnIfFpueAnRVISZz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="28164755"
 X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
-   d="scan'208";a="28164793"
+   d="scan'208";a="28164755"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 10:35:02 -0800
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 10:35:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="936684751"
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="936684750"
 X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
-   d="scan'208";a="936684751"
+   d="scan'208";a="936684750"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 21 Feb 2024 10:34:55 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 091B3458; Wed, 21 Feb 2024 20:34:46 +0200 (EET)
+	id 1A0CF49C; Wed, 21 Feb 2024 20:34:47 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -82,9 +82,9 @@ Cc: Jiri Slaby <jirislaby@kernel.org>,
 	Jonathan Hunter <jonathanh@nvidia.com>,
 	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v1 05/14] serial: 8250_bcm2835aux: Switch to use uart_read_port_properties()
-Date: Wed, 21 Feb 2024 20:31:21 +0200
-Message-ID: <20240221183442.4124354-6-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 06/14] serial: 8250_bcm7271: Switch to use uart_read_port_properties()
+Date: Wed, 21 Feb 2024 20:31:22 +0200
+Message-ID: <20240221183442.4124354-7-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
 References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
@@ -101,182 +101,100 @@ use it instead of sparse home grown solution.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/tty/serial/8250/8250_bcm2835aux.c | 92 +++++++++++------------
- 1 file changed, 42 insertions(+), 50 deletions(-)
+ drivers/tty/serial/8250/8250_bcm7271.c | 53 +++++++++-----------------
+ 1 file changed, 18 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
-index beac6b340ace..69c3c5ca77f7 100644
---- a/drivers/tty/serial/8250/8250_bcm2835aux.c
-+++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
-@@ -45,10 +45,6 @@ struct bcm2835aux_data {
- 	u32 cntl;
- };
- 
--struct bcm2835_aux_serial_driver_data {
--	resource_size_t offset;
--};
--
- static void bcm2835aux_rs485_start_tx(struct uart_8250_port *up)
- {
- 	if (!(up->port.rs485.flags & SER_RS485_RX_DURING_TX)) {
-@@ -85,10 +81,9 @@ static void bcm2835aux_rs485_stop_tx(struct uart_8250_port *up)
- 
- static int bcm2835aux_serial_probe(struct platform_device *pdev)
- {
--	const struct bcm2835_aux_serial_driver_data *bcm_data;
-+	const struct software_node *bcm2835_swnode;
- 	struct uart_8250_port up = { };
- 	struct bcm2835aux_data *data;
--	resource_size_t offset = 0;
- 	struct resource *res;
- 	unsigned int uartclk;
+diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
+index 1532fa2e8ec4..5a25e78857f7 100644
+--- a/drivers/tty/serial/8250/8250_bcm7271.c
++++ b/drivers/tty/serial/8250/8250_bcm7271.c
+@@ -942,10 +942,8 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 	struct brcmuart_priv *priv;
+ 	struct clk *baud_mux_clk;
+ 	struct uart_8250_port up;
+-	int irq;
+ 	void __iomem *membase = NULL;
+ 	resource_size_t mapbase = 0;
+-	u32 clk_rate = 0;
  	int ret;
-@@ -101,12 +96,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
- 	/* initialize data */
- 	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI;
- 	up.port.dev = &pdev->dev;
--	up.port.regshift = 2;
- 	up.port.type = PORT_16550;
--	up.port.iotype = UPIO_MEM;
--	up.port.fifosize = 8;
--	up.port.flags = UPF_SHARE_IRQ | UPF_FIXED_PORT | UPF_FIXED_TYPE |
--			UPF_SKIP_TEST | UPF_IOREMAP;
-+	up.port.flags = UPF_FIXED_PORT | UPF_FIXED_TYPE | UPF_SKIP_TEST | UPF_IOREMAP;
- 	up.port.rs485_config = serial8250_em485_config;
- 	up.port.rs485_supported = serial8250_em485_supported;
- 	up.rs485_start_tx = bcm2835aux_rs485_start_tx;
-@@ -122,12 +113,6 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
- 	if (IS_ERR(data->clk))
- 		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk\n");
+ 	int x;
+ 	int dma_irq;
+@@ -953,9 +951,6 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 		"uart", "dma_rx", "dma_tx", "dma_intr2", "dma_arb"
+ 	};
  
--	/* get the interrupt */
--	ret = platform_get_irq(pdev, 0);
--	if (ret < 0)
--		return ret;
--	up.port.irq = ret;
--
- 	/* map the main registers */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res) {
-@@ -135,52 +120,40 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
- 		return -EINVAL;
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
+-		return irq;
+ 	priv = devm_kzalloc(dev, sizeof(struct brcmuart_priv),
+ 			GFP_KERNEL);
+ 	if (!priv)
+@@ -1011,7 +1006,23 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 		}
  	}
  
--	bcm_data = device_get_match_data(&pdev->dev);
-+	up.port.mapbase = res->start;
-+	up.port.mapsize = resource_size(res);
- 
--	/* Some UEFI implementations (e.g. tianocore/edk2 for the Raspberry Pi)
--	 * describe the miniuart with a base address that encompasses the auxiliary
--	 * registers shared between the miniuart and spi.
--	 *
--	 * This is due to historical reasons, see discussion here :
--	 * https://edk2.groups.io/g/devel/topic/87501357#84349
--	 *
--	 * We need to add the offset between the miniuart and auxiliary
--	 * registers to get the real miniuart base address.
--	 */
--	if (bcm_data)
--		offset = bcm_data->offset;
-+	bcm2835_swnode = device_get_match_data(&pdev->dev);
-+	if (bcm2835_swnode) {
-+		ret = device_add_software_node(&pdev->dev, bcm2835_swnode);
-+		if (ret)
-+			return ret;
-+	}
- 
--	up.port.mapbase = res->start + offset;
--	up.port.mapsize = resource_size(res) - offset;
+-	of_property_read_u32(np, "clock-frequency", &clk_rate);
++	dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
++
++	memset(&up, 0, sizeof(up));
++	up.port.type = PORT_BCM7271;
++	up.port.dev = dev;
++	up.port.mapbase = mapbase;
++	up.port.membase = membase;
++	up.port.handle_irq = brcmuart_handle_irq;
++	up.port.flags = UPF_BOOT_AUTOCONF | UPF_FIXED_PORT | UPF_FIXED_TYPE;
++	up.port.private_data = priv;
++
 +	ret = uart_read_port_properties(&up.port, true);
 +	if (ret)
-+		goto rm_swnode;
- 
--	/* Check for a fixed line number */
--	ret = of_alias_get_id(pdev->dev.of_node, "serial");
--	if (ret >= 0)
--		up.port.line = ret;
++		goto release_dma;
++
 +	up.port.regshift = 2;
-+	up.port.fifosize = 8;
++	up.port.iotype = device_is_big_endian(dev) ? UPIO_MEM32BE : UPIO_MEM32;
  
- 	/* enable the clock as a last step */
- 	ret = clk_prepare_enable(data->clk);
- 	if (ret) {
--		dev_err(&pdev->dev, "unable to enable uart clock - %d\n",
--			ret);
--		return ret;
-+		dev_err_probe(&pdev->dev, ret, "unable to enable uart clock\n");
-+		goto rm_swnode;
+ 	/* See if a Baud clock has been specified */
+ 	baud_mux_clk = devm_clk_get_optional_enabled(dev, "sw_baud");
+@@ -1023,39 +1034,11 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 
+ 		priv->baud_mux_clk = baud_mux_clk;
+ 		init_real_clk_rates(dev, priv);
+-		clk_rate = priv->default_mux_rate;
++		up.port.uartclk = priv->default_mux_rate;
+ 	} else {
+ 		dev_dbg(dev, "BAUD MUX clock not specified\n");
  	}
  
- 	uartclk = clk_get_rate(data->clk);
--	if (!uartclk) {
--		ret = device_property_read_u32(&pdev->dev, "clock-frequency", &uartclk);
--		if (ret) {
--			dev_err_probe(&pdev->dev, ret, "could not get clk rate\n");
--			goto dis_clk;
--		}
+-	if (clk_rate == 0) {
+-		ret = dev_err_probe(dev, -EINVAL, "clock-frequency or clk not defined\n");
+-		goto release_dma;
 -	}
-+	if (uartclk)
-+		up.port.uartclk = uartclk;
- 
- 	/* the HW-clock divider for bcm2835aux is 8,
- 	 * but 8250 expects a divider of 16,
- 	 * so we have to multiply the actual clock by 2
- 	 * to get identical baudrates.
- 	 */
--	up.port.uartclk = uartclk * 2;
-+	up.port.uartclk *= 2;
- 
- 	/* register the port */
- 	ret = serial8250_register_8250_port(&up);
-@@ -194,6 +167,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
- 
- dis_clk:
- 	clk_disable_unprepare(data->clk);
-+rm_swnode:
-+	device_remove_software_node(&pdev->dev);
- 	return ret;
- }
- 
-@@ -203,10 +178,27 @@ static void bcm2835aux_serial_remove(struct platform_device *pdev)
- 
- 	serial8250_unregister_port(data->line);
- 	clk_disable_unprepare(data->clk);
-+	device_remove_software_node(&pdev->dev);
- }
- 
--static const struct bcm2835_aux_serial_driver_data bcm2835_acpi_data = {
--	.offset = 0x40,
-+/*
-+ * Some UEFI implementations (e.g. tianocore/edk2 for the Raspberry Pi)
-+ * describe the miniuart with a base address that encompasses the auxiliary
-+ * registers shared between the miniuart and spi.
-+ *
-+ * This is due to historical reasons, see discussion here:
-+ * https://edk2.groups.io/g/devel/topic/87501357#84349
-+ *
-+ * We need to add the offset between the miniuart and auxiliary registers
-+ * to get the real miniuart base address.
-+ */
-+static const struct property_entry bcm2835_acpi_properties[] = {
-+	PROPERTY_ENTRY_U32("reg-offset", 0x40),
-+	{ }
-+};
-+
-+static const struct software_node bcm2835_acpi_node = {
-+	.properties = bcm2835_acpi_properties,
- };
- 
- static const struct of_device_id bcm2835aux_serial_match[] = {
-@@ -216,7 +208,7 @@ static const struct of_device_id bcm2835aux_serial_match[] = {
- MODULE_DEVICE_TABLE(of, bcm2835aux_serial_match);
- 
- static const struct acpi_device_id bcm2835aux_serial_acpi_match[] = {
--	{ "BCM2836", (kernel_ulong_t)&bcm2835_acpi_data },
-+	{ "BCM2836", (kernel_ulong_t)&bcm2835_acpi_node },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, bcm2835aux_serial_acpi_match);
+-
+-	dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
+-
+-	memset(&up, 0, sizeof(up));
+-	up.port.type = PORT_BCM7271;
+-	up.port.uartclk = clk_rate;
+-	up.port.dev = dev;
+-	up.port.mapbase = mapbase;
+-	up.port.membase = membase;
+-	up.port.irq = irq;
+-	up.port.handle_irq = brcmuart_handle_irq;
+-	up.port.regshift = 2;
+-	up.port.iotype = of_device_is_big_endian(np) ?
+-		UPIO_MEM32BE : UPIO_MEM32;
+-	up.port.flags = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF
+-		| UPF_FIXED_PORT | UPF_FIXED_TYPE;
+-	up.port.dev = dev;
+-	up.port.private_data = priv;
+-
+-	/* Check for a fixed line number */
+-	ret = of_alias_get_id(np, "serial");
+-	if (ret >= 0)
+-		up.port.line = ret;
+-
+ 	/* setup HR timer */
+ 	hrtimer_init(&priv->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
+ 	priv->hrt.function = brcmuart_hrtimer_func;
 -- 
 2.43.0.rc1.1.gbec44491f096
 
