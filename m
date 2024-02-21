@@ -1,150 +1,221 @@
-Return-Path: <linux-kernel+bounces-74992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947FA85E0ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:24:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B86A85E102
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EC28284D7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:24:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134951F23E85
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD9480624;
-	Wed, 21 Feb 2024 15:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2DE80627;
+	Wed, 21 Feb 2024 15:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X43WiF5R"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ckv1g7PC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1DC80606
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656B180616
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708529062; cv=none; b=E3rYHUi6teULmARJ3Y45JKAI2wcv7HN+NcDRPctMkgJlINrG/0O6R//R5v98xFObeeH4dD8MQY9B2lPVucWN4T1jALLNCiiqnqMfXlHW1yMqTMewF2KpDYkAvd3NQjEi48IB+Hbwv/BHEQDpnRwmi2ZeIHvDREu16/kWbDsV5X8=
+	t=1708529099; cv=none; b=KtxlMd5LFPnaNT3IkHv7+I0anGhLDHlHtwLxuP43LZ2ymf2XpEWowMDtmn2kTUOneoI625LESpc++jAKfqP0L+BEDYZ2J+6LjOl2uFroliIjsreLQN9I6RQlZiKqngmdtF8bfwmRnBRT86TcW/2cj6Wkcd5GYlgz5EU4UgDTZX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708529062; c=relaxed/simple;
-	bh=G1SI2A6tUC59YrjJyks6t8vsbhf0181tsF0nRbc+Gok=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Qc1DEsAsFsVc4w4gTAW+RhAmyfGJ4PU8iJDsNhTVpUuQcPBa7TGDzxQ9UTqMROySbeFgmi0a/47ouoF8XORYI5ooOq1vxpCfN0aIEaUuYOrWVN8I2N+9XesuD2IBnj6tEzhxGoq5rYKkFHROnsQ2bJzvH+9oA9ncstMBkaORuFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X43WiF5R; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc05887ee9so8073367276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:24:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708529060; x=1709133860; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BHHzhvHN0kTOVo3wOm3ee1AH8U5eQGWfBAmKM9n5eN0=;
-        b=X43WiF5RExkr9EECTADddb6evCbVDhimXJjF9Z8G1tBPIpqd42YzvkWgXqXe0pwiMP
-         XvFq8cY20TKg3kTMLcAbc8ZqzGgkm+9WBF4vbuaQ/pJVl8BGWzw3Ev62NzGohQAFDAm1
-         BTyeR98Ap8Ovku2X+RUA5RZjqO1UKH/0Rx3cQp71NPWIN/OGRVPBsJhL481LsWlZH/aI
-         xDnSkpMoAAnT+hOEr/T4oYJdci78npqM8m+Qb3rJBGTWmrvrHRzEonmfw0AIDghXQ4q2
-         zaCcKaaxAHBCf3ojozyQz4NSepuHajT/O3By5RDbtoUi/LqUCzTzeNfS0rirPuDl0vzz
-         8TgA==
+	s=arc-20240116; t=1708529099; c=relaxed/simple;
+	bh=JC0OeWec5FrE69OK/lNBvWvQIi4uhRhvIlU+DytzGNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KV3x1U1qdt+f/06Bnq0kolXzeUFv2eczc0rI0tVHamJu7bYWX3Z9G3CC36NK3pPXGLLPOBOvOV9EtPZY+QmgH1ZvukjT3PK1Gk1P0DmkC7DnnmDmPyhnTCNrZb7HcOiGsBv1KrWWFKkNE0G1pNpEWAx1l5wnCaJvGpfplkwveFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ckv1g7PC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708529096;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JC0OeWec5FrE69OK/lNBvWvQIi4uhRhvIlU+DytzGNU=;
+	b=ckv1g7PCxhL3b96F7z2bjJu7XvjnvoWy2136kBX6hXmlhiqdP1co4iqPOFl/1wC5uink/v
+	Bg37t6Ie71jXvcUCoX9ZscXi88MVNkCAbB/jS3pWjn9rBfPFfPKaJI/touvz7TqzHtVH+V
+	fHgtkfnuawftoXuZhVnFy3tCeHnfoXo=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-388-yQXoaKF3MhiyWGH70J9EeA-1; Wed, 21 Feb 2024 10:24:54 -0500
+X-MC-Unique: yQXoaKF3MhiyWGH70J9EeA-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-68f33ba3d11so56872416d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:24:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708529060; x=1709133860;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BHHzhvHN0kTOVo3wOm3ee1AH8U5eQGWfBAmKM9n5eN0=;
-        b=jrX4Ow8WI/t4VGePSO2lNPWJt8dVHz9shhovmez/BtslqeM5ZkBGcEINzUsLFbWBkf
-         k8lkfqcZyu5PMyN9ZPnJUbjvAVmQdc73akt/Iyy47Od3JQUA7TVRnpDKkH1FGr58hbVd
-         +YoYAyohoOrf7TJ6ZCoRvyfMXhBHJk9p+GDEVOp+mAN5Z0T83yNE4xvwRhzTxvdLGA/1
-         sthCmHFODklX49X69qpGOpXJlRDVrsO1emBC4jRNgsvNnZFExP0smOUrCFyb2cVlMcgP
-         C9EinAE09E7qgmhHO7osPP3sWnmagcw4c4dcxpXOW+JDsD3grSYA9E9+l1vmbQtIdOuQ
-         sAwA==
-X-Forwarded-Encrypted: i=1; AJvYcCXM4NKAwB0sezP/jvWTGakd5r4Q9kt6/U0wh0HF5dYbFQxJHUsnLKR+9gUVSe4Bmh2zAtS1J7K+3t+JLJ3vdxSmc9bwnVa2rpV0eGsQ
-X-Gm-Message-State: AOJu0YyzZyBBwKMdNGKp9u266NRMA7MTyubBE9iFShXgy0BPHG0Fdtq4
-	/WtwOtXY2+QOy3DErgyU8XouZIbOdwLnNqvuWXaTdpqM0qrECOFjhWZu8dRuwApzHQwh8JIz9pz
-	SQA==
-X-Google-Smtp-Source: AGHT+IHIiqpo182eOydyp2kAE2MyaxiISahNsXsmBtUhUZTch3wVQ+TmxdSEWBoV3EtlCh1QkxcGWISraHk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:114a:b0:dc6:b982:cfa2 with SMTP id
- p10-20020a056902114a00b00dc6b982cfa2mr703388ybu.8.1708529060015; Wed, 21 Feb
- 2024 07:24:20 -0800 (PST)
-Date: Wed, 21 Feb 2024 07:24:18 -0800
-In-Reply-To: <20240217055504.2059803-1-masahiroy@kernel.org>
+        d=1e100.net; s=20230601; t=1708529094; x=1709133894;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JC0OeWec5FrE69OK/lNBvWvQIi4uhRhvIlU+DytzGNU=;
+        b=CXS4a1JjGYPcyib8FLU+ox/NJzHP3MYHoT7jjpbkjne+Y2uAIIDoNxeZbk06jsU1oF
+         +ho3n1RH9i3RyPC2HK9iF0BZL+rdGNIzJ1AWpp+vGGFFZJXO0yZyNCUbtXHB21/KHeZd
+         n9iWIvY5TUM54h1AGmd0yDvEx7rT7PL1KvV3xH/MiLnjXLLAyfUy9cx7mVFhF/J/Ur8t
+         O8nqESQ9QFKqAYbRIAI3aYrpniT39Ao8Y/45qT6jCzGGzzXHRlQM1VaRIpmwUqzdUWmG
+         atheD3Gn6CaMJE3a2ck6ixc+ynzFy0P4Qzp4p/ubpgrCd+nYxl3XzBOOMw7+idlBfi3N
+         tyXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXxQJK+lOeX3kcl4D/LUd9wDIgYTA5Ae+NBKgpHASYT08AK9H/dXU77ih+houe+zcyD3LAuXfgFl54r6piCp1C2jeYZoh28kAacAP2a
+X-Gm-Message-State: AOJu0YzYBvc+zceh94+jZHpZUyodWMV7/qrNVI1RSUwIhqQGj+m31nsG
+	cRWLEdMl6zvHgVnSf1dx5XDcbv8mglTA86l6iFOBjVpZFKiywSWJR3dAguvVY4o3EQy+FkzNhxU
+	6YLs/kMi2bMrh+Mha9HUAtCHGbplspMU8j7jmJKbEs2cIAnNqTcXV44LUflS0Kg==
+X-Received: by 2002:a0c:cb02:0:b0:68f:4191:6a9d with SMTP id o2-20020a0ccb02000000b0068f41916a9dmr11952170qvk.2.1708529094016;
+        Wed, 21 Feb 2024 07:24:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFPVZyaBfvZ8vXwiHa8tkALfxkIVZu+UfiW/uISQnCl11+LfUD1mAVqDNlrwtM6tDu7Kwc1GQ==
+X-Received: by 2002:a0c:cb02:0:b0:68f:4191:6a9d with SMTP id o2-20020a0ccb02000000b0068f41916a9dmr11952141qvk.2.1708529093590;
+        Wed, 21 Feb 2024 07:24:53 -0800 (PST)
+Received: from localhost ([2a01:e0a:b25:f902::ff])
+        by smtp.gmail.com with ESMTPSA id pv18-20020ad45492000000b0068f2ea5c678sm2307325qvb.118.2024.02.21.07.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 07:24:53 -0800 (PST)
+Date: Wed, 21 Feb 2024 16:24:51 +0100
+From: Maxime Ripard <mripard@redhat.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Javier Martinez Canillas <javierm@redhat.com>, 
+	linux-kernel@vger.kernel.org, Enric Balletbo i Serra <eballetbo@redhat.com>, 
+	Erico Nunes <nunes.erico@gmail.com>, Brian Masney <bmasney@redhat.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Bjorn Andersson <quic_bjorande@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading
+ compressed FW support
+Message-ID: <fy3wffb2jwv4veo3golfn5olri77clxywbuwuokese7sbobixd@mird5k66cl2w>
+References: <20240221141350.3740488-1-javierm@redhat.com>
+ <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
+ <6scz7iti3tzzrd4ph3gnuc2pvkcbtuuicgfgujh3pa3c34kdkt@bhfa4xbxeu7t>
+ <cb8bf006-57df-494e-80f3-947582ec71f1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240217055504.2059803-1-masahiroy@kernel.org>
-Message-ID: <ZdYVouaZX0AQF0V0@google.com>
-Subject: Re: [PATCH 1/2] kbuild: change tool coverage variables to take the
- path relative to $(obj)
-From: Sean Christopherson <seanjc@google.com>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nbgb4ezh6w6ejdw7"
+Content-Disposition: inline
+In-Reply-To: <cb8bf006-57df-494e-80f3-947582ec71f1@linaro.org>
 
-On Sat, Feb 17, 2024, Masahiro Yamada wrote:
-> To maintain the current behavior, I made adjustments to two Makefiles:
-> 
->  - arch/x86/entry/vdso/Makefile, which compiles vclock_gettime.o and
->    vdso32/vclock_gettime.o
-> 
->  - arch/x86/kvm/Makefile, which compiles vmx/vmenter.o and svm/vmenter.o
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/x86/entry/vdso/Makefile |  2 ++
->  arch/x86/kvm/Makefile        |  3 ++-
->  scripts/Makefile.build       |  2 +-
->  scripts/Makefile.lib         | 16 ++++++++--------
->  4 files changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-> index 7a97b17f28b7..148adfdb2325 100644
-> --- a/arch/x86/entry/vdso/Makefile
-> +++ b/arch/x86/entry/vdso/Makefile
-> @@ -9,7 +9,9 @@ include $(srctree)/lib/vdso/Makefile
->  # Sanitizer runtimes are unavailable and cannot be linked here.
->  KASAN_SANITIZE			:= n
->  KMSAN_SANITIZE_vclock_gettime.o := n
-> +KMSAN_SANITIZE_vdso32/vclock_gettime.o	:= n
->  KMSAN_SANITIZE_vgetcpu.o	:= n
-> +KMSAN_SANITIZE_vdso32/vgetcpu.o	:= n
->  
->  UBSAN_SANITIZE			:= n
->  KCSAN_SANITIZE			:= n
-> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-> index 475b5fa917a6..a88bb14266b6 100644
-> --- a/arch/x86/kvm/Makefile
-> +++ b/arch/x86/kvm/Makefile
-> @@ -4,7 +4,8 @@ ccflags-y += -I $(srctree)/arch/x86/kvm
->  ccflags-$(CONFIG_KVM_WERROR) += -Werror
->  
->  ifeq ($(CONFIG_FRAME_POINTER),y)
-> -OBJECT_FILES_NON_STANDARD_vmenter.o := y
-> +OBJECT_FILES_NON_STANDARD_vmx/vmenter.o := y
-> +OBJECT_FILES_NON_STANDARD_svm/vmenter.o := y
->  endif
 
-I'm 99% certain only svm/vmenter.S "needs" to be compiled with OBJECT_FILES_NON_STANDARD,
-and that vmx/vmenter.S got caught in the crossfire off commit commit 7f4b5cde2409
-("kvm: Disable objtool frame pointer checking for vmenter.S").
+--nbgb4ezh6w6ejdw7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"Needs" in quotes because I don't see any reason when __svm_vcpu_run() can't play
-the same games as __vmx_vcpu_run() to make stack validation happy, and
-__svm_sev_es_vcpu_run() flat out shouldn't be touching RBP.
+On Wed, Feb 21, 2024 at 04:10:12PM +0100, Krzysztof Kozlowski wrote:
+> On 21/02/2024 15:48, Maxime Ripard wrote:
+> > On Wed, Feb 21, 2024 at 03:22:38PM +0100, Krzysztof Kozlowski wrote:
+> >> On 21/02/2024 15:13, Javier Martinez Canillas wrote:
+> >>> These options are needed by some Linux distributions (e.g: Fedora), so
+> >>
+> >> How ZRAM is needed? Why Fedora cannot boot without it? Debian, which I
+> >> use on my arm64 boards, does not have any problem.
+> >=20
+> > Is it relevant in any way?
+>=20
+> Yes, because it is justification why we are doing it. Each commit is
+> supposed to explain "why" and the explanation here is not enough.
 
-I'll throw together a series to (hopefully) remove OBJECT_FILES_NON_STANDARD
-completely.
+There's a why though: it makes Fedora boot. It might not be enough for
+you, but that's a different story. So, if it's not enough, please state
+exactly what you expect from that patch description so Javier can
+provide it.
 
-But for this patch/series, I think it makes sense to do a 1:1 conversion.  That'll
-make it much more straightforward to resolve the eventual conflict, assuming I am
-successful in dropping OBJECT_FILES_NON_STANDARD.
+> > I'm sure Debian can boot without MEMORY_HOTREMOVE, or BRIDGE, or
+> > NUMA_BALANCING, or BPF_JIT, or NFS_FS, yet all of them are enabled. Let
+> > me know if you want hundreds more examples.
+>=20
+> So if there is any bug, you are allowed to add new one? If there is any
+> silly option, you are allowed to add new one?
+>=20
+> Feel free to propose dropping of any irrelevant options.
 
-Which is a very long-winded way of saying:
+No, of course you aren't. My point is that Fedora is a distro just as
+established and legitimate as Debian is. And apparently "it makes Debian
+works" is a reasonable argument, since, well, it does.
 
-Acked-by: Sean Christopherson <seanjc@google.com>
+If making Fedora boot with that defconfig is not a legitimate goal,
+please state why, and document it (with the ack of all the maintainers
+involved with that defconfig, obviously) so we don't have the same
+argument over and over again.
+
+> >> I kind of repeat comments from similar patch earlier:
+> >> https://lore.kernel.org/all/fe1e74a2-e933-7cd9-f740-86d871076191@linar=
+o.org/
+> >>
+> >> About XFS: I don't think it is needed to boot anything.
+> >=20
+> > Just like 9P_FS, NFS or UBIFS.
+>=20
+> NFS is often used on targets, e.g. my board farm, but also by other peopl=
+e.
+>=20
+> UBIFS was added recently because one device was using it - you needed
+> it. 9P_FS looks unnecessary.
+
+So all we need is one person or use case to require it? Sounds like
+we've checked that mark here.
+
+> >> This is a defconfig, not a distro config. Please don't make it distro.
+> >>
+> >> I will gladly support things needed by systemd or equivalent, but not
+> >> unusual filesystems needed by distro.
+> >=20
+> > It's a defconfig. It's whatever people want it to be. Or we need to come
+> > up with a clearly defined set of rules of what is acceptable in that
+> > defconfig or not, and prune every option that isn't.
+>=20
+> So that's the rule I am commenting from time to time. defconfigs are not
+> distro configs. These are reference hardware configs and debugging
+> configs.
+
+Supporting a board farm is hardly either.
+
+And again, I've never heard of such rule for that defconfig in my ~10y
+as an ARM platform maintainer. But what do I know, right?
+
+> I was working in distro so trust me - they do stuff differently
+> and they not need XFS in our defconfig for anything.
+
+Sure, but you're not just arguing for XFS there.
+
+What I really don't get is this: this makes the life of people easier.
+
+Being able to test an upstream kernel quickly when you have a bug in a
+downstream distro is super valuable for any distro developper. And on
+the long run, if we don't make the switch from a kernel distro to a
+mainline kernel relatively easy, we're the ones that will lose out.
+Because people just won't bother, or be frustrated and thus super
+reluctant to do that work.
+
+That's the part I don't get. Why do we want to make the life of people
+harder. This patch has never been about making the defconfig the main
+Fedora kernel configuration: it won't be, just like it isn't the Debian
+kernel configuration.
+
+However, it works for your board farm because it's just so much more
+convenient, you can get a kernel from all the auto-builder and boot that
+and you know that it's supposed to work. And that's totally reasonable.
+
+So if it's convenient for you and your board farm, why do you oppose
+other people trying to make it reasonably convenient for them?
+
+Maxime
+
+--nbgb4ezh6w6ejdw7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdYVwwAKCRDj7w1vZxhR
+xQfIAP9aQIEniQ/41hUku1FMmbfk8C6uHIE42LCeZlNwAK37NwEA0gT5QzXSVMC8
+w6iE/SmpnOSFNLVcqpa+35zgMWw3Uw0=
+=cwHJ
+-----END PGP SIGNATURE-----
+
+--nbgb4ezh6w6ejdw7--
+
 
