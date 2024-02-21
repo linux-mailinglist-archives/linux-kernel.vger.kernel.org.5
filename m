@@ -1,53 +1,52 @@
-Return-Path: <linux-kernel+bounces-74519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DDA85D566
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 555DA85D569
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:23:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B5B628845D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FD52288824
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7864A3D982;
-	Wed, 21 Feb 2024 10:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845923F8E6;
+	Wed, 21 Feb 2024 10:23:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="og6x6a7d"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T3fUK25O"
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3F03D96B;
-	Wed, 21 Feb 2024 10:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF2F3E470;
+	Wed, 21 Feb 2024 10:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510994; cv=none; b=OXxjN0+SMit/6Hch7QtmnLhWf0t/o+pUSi/EGdsv+Bfe7gd16vw87db0KMEfAMJ35I73w/quVDuPjHhJI+H7+876f3UwsmbpyRzS80mn4/YbFvizRzTpXwpQDlU1qDS7S/VkbtN8zGvm7vgEc7LHuvVBbJEbEbJGPzWq5OSMwB8=
+	t=1708510995; cv=none; b=H4ANatPPscqMNKGh38OpX2eJ0oHSnNeo9TAksqDHY0/RNDvTVfUwmOouiXZ/cyPsDk4WA3elSbK0Ymyu1u5HpENHbnFQ/BipHt5rqDe/VZB04N3Sy43KYPFqRijOZsUum9JSLj4Am/dmmSQo35TiAHqaN79jqbqANE0GbdS6U84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510994; c=relaxed/simple;
-	bh=1MQdjYak1V6zAqHUzUmAhT/V/GwYszErhypfdhCS1hE=;
+	s=arc-20240116; t=1708510995; c=relaxed/simple;
+	bh=wSlFXJNr/cmsVO2H+EFpGOVDsAhGPl+1vkHJEhpG3ME=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ukv6pUcmN80knf/zIuU5ib1I44fd1Qkx7x/3Ee442AH/eAfrSRq8LuqYMwCzcBYdb6SZ9FTJHRzJCHhMFFVbe9FyjQhBhjs19gMVKnJWvti6mDbhI7bmlmVsJwBK+2SAOIFB0VpfVmZci8LVZ4O8/99OICldwQQP7hlhPPUztJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=og6x6a7d; arc=none smtp.client-ip=217.70.183.193
+	 In-Reply-To:To:Cc; b=a++UT7n1n6zwe3M08UZ8NHTk9EwWCZu/b2GO1KpcPBijmSF1KK90f6xUAd+FyCnyJYugYvVVvlxJb+tiPagzSsWk2ISGRfbc7xUUoMdTzhrtrJPkvrXNIHRVdyTTyoY3EdJpA8qmu46fstiUBjPNIvGp1RDlTKRZyoJY75BVTT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T3fUK25O; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1169B24000A;
-	Wed, 21 Feb 2024 10:23:08 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 67DCF240003;
+	Wed, 21 Feb 2024 10:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708510990;
+	t=1708510991;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dDoynNu1VkjhDETvyNw0Qy9EjQXXU4BgD5Avde40d1Q=;
-	b=og6x6a7dtHjM95+Fj6PUbx90nsRaFZGvUhjDRQnxZc22SVX79WwYM6ICrDO6GyoUSt3HZj
-	TI0hU9ugs1hLOJQ0FD1k+BJX/zJklGa5oLZS8Ri/2NCDeqVLRi5yYxO3KHYSw7KZIXmNBR
-	KbztdQhzPOtoObgda8Ga3zREyqA/b+d2l77exvFv0mWdFmUaUNBYpUgi0OaPcqOc8Jfa5m
-	a6Xi7I3h0Q4+/E2m3HTBaKPAZgY7JO8DO+aOkLhuRqTualOl022CA7BR5njk5tuQHAyvWh
-	aO4zajofKKdMq5iG0BSLOkU8b6wqj6BBYh9ThuypUxXEkA34VfeCbP8TE40kbQ==
+	bh=KUrik2L/XdfT2NBxFB5is5OzPEkx0nf8lGt/JdUz6EE=;
+	b=T3fUK25OtBYlXiQ83D6l9qjN93jlVX6k3Kec8Ptp0EUERId6w8rla6gdrSKst+wK+d/olU
+	Q90Lv7Of5QpOxyCm13N3TOSKhcCgemYWUIx/uYP9rFE/QzC9OgdLVJgWuIu1LWfUEzCxtI
+	MxWSf6AJmLLGKmXMYNzTd9ZOwOhurcXnvMaUtSvLW7itf1dg86CA4BjplAZ5356+HTVSXL
+	X9tbFw2uIU8upxI5cNYFgzweonS5yNewyzMMrIoZuAqW/CY/cAVQaPndAiq1vW8ziB5K66
+	yXbNeWU90Gtw1/WXGJ/xjCQix7HOuYHadzGKov1DxDdIevZs0bwMbDM/ixYCeA==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Wed, 21 Feb 2024 11:22:46 +0100
-Subject: [PATCH v3 2/7] ASoC: dt-bindings: Add Rockchip RK3308 internal
- audio codec
+Date: Wed, 21 Feb 2024 11:22:47 +0100
+Subject: [PATCH v3 3/7] ASoC: core: add SOC_DOUBLE_RANGE_TLV() helper macro
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240221-rk3308-audio-codec-v3-2-dfa34abfcef6@bootlin.com>
+Message-Id: <20240221-rk3308-audio-codec-v3-3-dfa34abfcef6@bootlin.com>
 References: <20240221-rk3308-audio-codec-v3-0-dfa34abfcef6@bootlin.com>
 In-Reply-To: <20240221-rk3308-audio-codec-v3-0-dfa34abfcef6@bootlin.com>
 To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, 
@@ -72,147 +71,49 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: luca.ceresoli@bootlin.com
 
-Add device tree bindings document for the internal audio codec of the
-Rockchip RK3308 SoC.
+No macro currently allows handling a stereo control that has left and right
+in the same register and whose minimum register value is not zero. Add one
+that does that.
+
+Note that even though the snd_soc_*_volsw_range() look more appropriate
+given the _range suffix, they are not suitable because they don't honor the
+two shift values. The snd_soc_*_volsw() look more generic and are suitable
+for the task.
 
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
 ---
 
-Changed in v3:
- - fix underscore in DT label
+Changed in v3: nothing
 
-Changed in v2:
- - reword commit title
- - add maxItems to resets
- - remove quotes from reset-names
- - use percent values for rockchip,micbias-avdd-multiplier
- - use name compliant to the docs in the example
+This patch is new in v2.
 ---
- .../bindings/sound/rockchip,rk3308-codec.yaml      | 98 ++++++++++++++++++++++
- MAINTAINERS                                        |  5 ++
- 2 files changed, 103 insertions(+)
+ include/sound/soc.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml b/Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml
-new file mode 100644
-index 000000000000..ecf3d7d968c8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml
-@@ -0,0 +1,98 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/rockchip,rk3308-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip RK3308 Internal Codec
-+
-+description: |
-+  This is the audio codec embedded in the Rockchip RK3308
-+  SoC. It has 8 24-bit ADCs and 2 24-bit DACs. The maximum supported
-+  sampling rate is 192 kHz.
-+
-+  It is connected internally to one out of a selection of the internal I2S
-+  controllers.
-+
-+  The RK3308 audio codec has 8 independent capture channels, but some
-+  features work on stereo pairs called groups:
-+    * grp 0 -- MIC1 / MIC2
-+    * grp 1 -- MIC3 / MIC4
-+    * grp 2 -- MIC5 / MIC6
-+    * grp 3 -- MIC7 / MIC8
-+
-+maintainers:
-+  - Luca Ceresoli <luca.ceresoli@bootlin.com>
-+
-+properties:
-+  compatible:
-+    const: rockchip,rk3308-codec
-+
-+  reg:
-+    maxItems: 1
-+
-+  rockchip,grf:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the General Register Files (GRF)
-+
-+  clocks:
-+    items:
-+      - description: clock for TX
-+      - description: clock for RX
-+      - description: AHB clock driving the interface
-+
-+  clock-names:
-+    items:
-+      - const: mclk_tx
-+      - const: mclk_rx
-+      - const: hclk
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    items:
-+      - const: codec
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  rockchip,micbias-avdd-percent:
-+    description: |
-+      Voltage setting for the MICBIAS pins expressed as a percentage of
-+      AVDD.
-+
-+      E.g. if rockchip,micbias-avdd-percent = 85 and AVDD = 3v3, then the
-+      MIC BIAS voltage will be 3.3 V * 85% = 2.805 V.
-+
-+    enum: [ 50, 55, 60, 65, 70, 75, 80, 85 ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - rockchip,grf
-+  - clocks
-+  - resets
-+  - "#sound-dai-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rk3308-cru.h>
-+
-+    audio_codec: audio-codec@ff560000 {
-+        compatible = "rockchip,rk3308-codec";
-+        reg = <0xff560000 0x10000>;
-+        rockchip,grf = <&grf>;
-+        clock-names = "mclk_tx", "mclk_rx", "hclk";
-+        clocks = <&cru SCLK_I2S2_8CH_TX_OUT>,
-+                 <&cru SCLK_I2S2_8CH_RX_OUT>,
-+                 <&cru PCLK_ACODEC>;
-+        reset-names = "codec";
-+        resets = <&cru SRST_ACODEC_P>;
-+        #sound-dai-cells = <0>;
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9ed4d3868539..b67835da3994 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18924,6 +18924,11 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/media/rockchip-rga.yaml
- F:	drivers/media/platform/rockchip/rga/
- 
-+ROCKCHIP RK3308 INTERNAL AUDIO CODEC
-+M:	Luca Ceresoli <luca.ceresoli@bootlin.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/rockchip,rk3308-codec.yaml
-+
- ROCKCHIP VIDEO DECODER DRIVER
- M:	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
- L:	linux-media@vger.kernel.org
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6defc5547ff9..7492315ce0b8 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -149,6 +149,18 @@
+ 		{.reg = xreg, .rreg = xreg, \
+ 		.shift = shift_left, .rshift = shift_right, \
+ 		.max = xmax, .min = xmin} }
++#define SOC_DOUBLE_RANGE_TLV(xname, xreg, xshift_left, xshift_right, xmin, xmax, \
++			     xinvert, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
++		  SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.info = snd_soc_info_volsw, \
++	.get = snd_soc_get_volsw, .put = snd_soc_put_volsw, \
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++		{.reg = xreg, .rreg = xreg, \
++		 .shift = xshift_left, .rshift = xshift_right, \
++		 .min = xmin, .max = xmax, .invert = xinvert} }
+ #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
 
 -- 
 2.34.1
