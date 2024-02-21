@@ -1,172 +1,139 @@
-Return-Path: <linux-kernel+bounces-75038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29F8385E202
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:54:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565D785E20C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84C31B21C93
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:54:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 027A71F24B78
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4901981AAD;
-	Wed, 21 Feb 2024 15:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBFD8172A;
+	Wed, 21 Feb 2024 15:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Y2SFviG8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/WAwWXy+";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YsZ/pQyV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kHxMQ89N"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XdK9Upwd"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94046811E7
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81EA811F2;
+	Wed, 21 Feb 2024 15:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708530844; cv=none; b=ci5hB9GtE8ah/MlJFSjYK5ls4uCT/Mbk3u7Nf0PGrEJMJmdMmDBNLiYc+U0Tz0/J2SoMe6PtPXJd8LOt+x87Uc074MipYd8WyhUiOH6/MVTyQaNdyDhYkzzYEcm+3W3pV5E50aNBHPpNdTogkN51d0jd18G7o0vXtnrnSg7pSI4=
+	t=1708530885; cv=none; b=rGn9jBul8XJFGH2hDOYqdCdf/dcEq/qPA6XjDKrVxdW0tC73GrSsEvg7m2A/sYQJdgnmVhV9hxbfGiSW/+LHhu+44rCvQWozB05JtgKhDrTkadlBH5qnTqrS+zsttcNwZnZ/AOSn+e5u1Qzy9rkaVvCPoiEWk40Zo0FW0oXhVqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708530844; c=relaxed/simple;
-	bh=s+LZ0pvHtncUDQUa+gsEJgwQsHDI81gcr9cLw5gIcP0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g/9feax+CtmGWEe3lO85O6LRU+B27AsSn/ywHte16RP5EH7WUBqYtds/s7PyD7M2E9aHQ+ZdbgMCIHb/AG2tHJ7IBeXfrqHOPkuBL50m+cv7hlcbqZltQqf2QEIZ6uUxlhq+Lg8IzSoTtGSyIhTSxcEqbxQnmN6t0Z/I+Lz1S9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Y2SFviG8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/WAwWXy+; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YsZ/pQyV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kHxMQ89N; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1708530885; c=relaxed/simple;
+	bh=jZucdOOz96VmEUErUF9LuSg3JBuTnd+d9rTWdPQVjys=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Uy9NtvO82A00NdNVXcJlt9p5e5gOCghgHmZnG00Je+7Md+FmLS8sszbWALJATsKsABx5c156sXMlIfpdE46NNHxZDbErxhgQwGsAMeM52Viw2HYdq/RRIDge06ych5XTstU5mXBHiXgH+FfsYGFYJDKXeMuZ5zqhZPQrsHq3Pio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XdK9Upwd; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708530882;
+	bh=jZucdOOz96VmEUErUF9LuSg3JBuTnd+d9rTWdPQVjys=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XdK9UpwdeSelZb3MRsym1ENgeiTNQl8l2QnihXqg49Q0eVhrS+qEw5B5xiCQSEAbn
+	 dgcbZY/aEipnZhmZTgPgliBMvNJzUCRPIkt7BC6bLrKpgQ+dgPjT/NGQmKpYaudMil
+	 zDfYD/jknvqPUcOPN69/AUzInDY6R8JFiZo1MJJRE5SkO7Goe/4knzGsdilyzuJhtp
+	 Bju+MHr+Qrg2VfsB+t2xvmM9AaFzW31BcYrqXKCin+UD4M1aWJmI9EHS+BW6l5zEVU
+	 zQyRnMrCko/U2AxHnn5K+xntHBTxMJT34RvA7zUnl2I4MkMkSIMnztFiSRv24SyWBf
+	 ppj0V6b528wPw==
+Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E040C1FB65;
-	Wed, 21 Feb 2024 15:53:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708530827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jfmran7z3EZ2MYdF79KDI1n2PQIk6M5b4/gNnUh5quE=;
-	b=Y2SFviG8Kfqogu3HBU9UdX91Hd3BiFS+eLonXnuOSulcbMAjq0jCoQDu6TkyOITXDmozcI
-	uhpERPSzq6zO9yL3XeFrAPGTZ7cCB53JvxelTwsYiITP9rdP716NH3EJh+eeueQDE/WoGy
-	UUh9CgeTvS93HnJy+l7lM8wENZu4Mao=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708530827;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jfmran7z3EZ2MYdF79KDI1n2PQIk6M5b4/gNnUh5quE=;
-	b=/WAwWXy+xxY3E3+aEZQFyatvSlgvFm24Ha73i6SOPPgjmmB1BCOKNA5nSrcDgjnoVCcnBA
-	Cq7ATt+Som0MztBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708530826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jfmran7z3EZ2MYdF79KDI1n2PQIk6M5b4/gNnUh5quE=;
-	b=YsZ/pQyV+LQI/nCt8zSi3cJs89SgUg5sV99TNkG/r/26Dtr8jW2oZVk/0bTilzUCWDbPr3
-	IqOhxETSpcBHRu9t0NyYHSCURDYpT4thNbSpI5ReKBW0L645DOLLPPuMdC9AFzqqLX+7jx
-	hIkf0RdATddprUNCqPgEQesieazwn2k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708530826;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jfmran7z3EZ2MYdF79KDI1n2PQIk6M5b4/gNnUh5quE=;
-	b=kHxMQ89NIxUtOZ6rUfWb3kmUfmO69/hfuliVLpahozSGe2rOATDaUoT+vnvaMmJygU48YW
-	4dxII1LMua5PjUBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D204213A69;
-	Wed, 21 Feb 2024 15:53:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gCgrMYgc1mWjFgAAD6G6ig
-	(envelope-from <hare@suse.de>); Wed, 21 Feb 2024 15:53:44 +0000
-Message-ID: <d5b3d5b2-ec27-4057-aa76-63fe17066cfc@suse.de>
-Date: Wed, 21 Feb 2024 16:53:44 +0100
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5C1F83780629;
+	Wed, 21 Feb 2024 15:54:41 +0000 (UTC)
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To: mchehab@kernel.org,
+	tfiga@chromium.org,
+	m.szyprowski@samsung.com,
+	ezequiel@vanguardiasur.com.ar,
+	p.zabel@pengutronix.de,
+	hverkuil-cisco@xs4all.nl,
+	nicolas@ndufresne.ca
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	kernel@collabora.com,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v20 0/9] Add REMOVE_BUF ioctl
+Date: Wed, 21 Feb 2024 16:54:26 +0100
+Message-Id: <20240221155435.100093-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] nvme-fc: do not retry when auth fails or
- connection is refused
-Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Sagi Grimberg <sagi@grimberg.me>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240221132404.6311-1-dwagner@suse.de>
- <20240221132404.6311-3-dwagner@suse.de>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240221132404.6311-3-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.80
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.51)[80.15%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
 
-On 2/21/24 14:24, Daniel Wagner wrote:
-> There is no point in retrying to connect if the authentication fails.
-> 
-> Connection refused is also issued from the authentication path, thus
-> also do not retry.
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index a5b29e9ad342..b81046c9f171 100644
-> --- a/drivers/nvme/host/fc.c
-> +++ b/drivers/nvme/host/fc.c
-> @@ -3312,6 +3312,8 @@ nvme_fc_reconnect_or_delete(struct nvme_fc_ctrl *ctrl, int status)
->   			ctrl->cnum, status);
->   		if (status > 0 && (status & NVME_SC_DNR))
->   			recon = false;
-> +		if (status == NVME_SC_AUTH_REQUIRED || status == -ECONNREFUSED)
-> +			recon = false;
->   	} else if (time_after_eq(jiffies, rport->dev_loss_end))
->   		recon = false;
->   
-Is this still required after the patchset to retry authentication errors?
+Unlike when resolution change on keyframes, dynamic resolution change
+on inter frames doesn't allow to do a stream off/on sequence because
+it is need to keep all previous references alive to decode inter frames.
+This constraint have two main problems:
+- more memory consumption.
+- more buffers in use.
+To solve these issue this series introduce REMOVE_BUFS ioctl.
 
-Cheers,
+VP9 conformance tests using fluster give a score of 210/305.
+The 24 of the 24 resize inter tests (vp90-2-21-resize_inter_* files) are ok
+but require to use postprocessor.
 
-Hannes
+Kernel branch is available here:
+https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/remove_vb2_queue_limit_v20
+
+GStreamer branch to use DELETE_BUF ioctl and testing dynamic resolution
+change is here:
+https://gitlab.freedesktop.org/benjamin.gaignard1/gstreamer/-/commits/VP9_drc
+
+changes in version 20:
+- Rename DELETE_BUFS into REMOVE_BUFS
+- Change documention, structure and variables name to use 'remove'
+
+changes in version 19:
+- Fix typo in commit message.
+- Fix ioctl domentation
+- Rework q->is_busy patch following Hans's comments
+- Change where DELETE_BUFS is enabled
+
+Benjamin Gaignard (9):
+  media: videobuf2: Update vb2_is_busy() logic
+  videobuf2: Add min_reqbufs_allocation field to vb2_queue structure
+  media: test-drivers: Set REQBUFS minimum number of buffers
+  media: core: Rework how create_buf index returned value is computed
+  media: core: Add bitmap manage bufs array entries
+  media: core: Free range of buffers
+  media: v4l2: Add REMOVE_BUFS ioctl
+  media: v4l2: Add mem2mem helpers for REMOVE_BUFS ioctl
+  media: verisilicon: Support removing buffers on capture queue
+
+ .../userspace-api/media/v4l/user-func.rst     |   1 +
+ .../media/v4l/vidioc-remove-bufs.rst          |  82 +++++++
+ .../media/v4l/vidioc-reqbufs.rst              |   1 +
+ .../media/common/videobuf2/videobuf2-core.c   | 223 ++++++++++++------
+ .../media/common/videobuf2/videobuf2-v4l2.c   |  28 ++-
+ .../media/platform/verisilicon/hantro_v4l2.c  |   1 +
+ .../media/test-drivers/vicodec/vicodec-core.c |   1 +
+ drivers/media/test-drivers/vim2m.c            |   1 +
+ .../media/test-drivers/vimc/vimc-capture.c    |   3 +-
+ drivers/media/test-drivers/visl/visl-video.c  |   1 +
+ drivers/media/test-drivers/vivid/vivid-core.c |   5 +-
+ drivers/media/v4l2-core/v4l2-dev.c            |   3 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  32 +++
+ drivers/media/v4l2-core/v4l2-mem2mem.c        |  10 +
+ include/media/v4l2-ioctl.h                    |   4 +
+ include/media/v4l2-mem2mem.h                  |   2 +
+ include/media/videobuf2-core.h                |  52 +++-
+ include/media/videobuf2-v4l2.h                |   2 +
+ include/uapi/linux/videodev2.h                |  17 ++
+ 19 files changed, 383 insertions(+), 86 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/vidioc-remove-bufs.rst
+
 -- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+2.40.1
 
 
