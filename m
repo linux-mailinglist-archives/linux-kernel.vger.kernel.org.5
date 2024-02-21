@@ -1,144 +1,150 @@
-Return-Path: <linux-kernel+bounces-74490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31CC285D519
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2913485D51F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFAA5283C83
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:04:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D66472871D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDCE3DB92;
-	Wed, 21 Feb 2024 09:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88BD3FB19;
+	Wed, 21 Feb 2024 10:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UVHjyzqL"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ibcIOx9k"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB143D96B;
-	Wed, 21 Feb 2024 09:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927C13FB0C;
+	Wed, 21 Feb 2024 10:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509589; cv=none; b=lWQa+yW18hWtC/5UHQEftUoB1Uk3yEqXrFG5uCAY7dwhrzcJnSN/ckjjwzcp/5whPCDTCbJkljq80DAjSKOdMvDDiGJRXUNM2AIRGhEdOVB0uw8c/aW0lxZhqN2xoeK9Y+Jw53mscrQ/vWb+CpnRJf74+xEqDyt/GRCeM3fbRoU=
+	t=1708509650; cv=none; b=NARYdkmyqpPOa8BUWV51qI2R4OrmEAXg8FnM1GWDFaAQ6x8OJ2KVFeQDn0xtB9B8rWCvZJsQ1ngHbzKqG5oWOyf0bk8cli20D0Dc7fkxmHdIbdc07cHG6tEOWUMu2RyqQ/CoVkEgf8E4ZmNmENWGWZ4Hpwf4nJEM/P3LWRijUSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509589; c=relaxed/simple;
-	bh=5v3dtSCXtJMKznIfq4bOSd2Ajb7Xgfbqb6Og5lUaIsE=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
-	 Content-Type; b=lr7cwgxVUqP7/+ysSs3zUlX2uq6r5AQgX4BJTufLKBKVj1biWIj19UcgmickCRp6heQ+Pau8LzydYE6hkuCsc9vTSnMSyYsflcKcnKaAVqyLG5frtYy1HqFa8Ju6jJszsyQ/ir7mBXxdQvqWFajnb3LvEY0CZuOiz6sgUayeE7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UVHjyzqL; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso6775895276.2;
-        Wed, 21 Feb 2024 01:59:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708509586; x=1709114386; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:in-reply-to
-         :message-id:cc:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5v3dtSCXtJMKznIfq4bOSd2Ajb7Xgfbqb6Og5lUaIsE=;
-        b=UVHjyzqL4FfMFP3qCrtJ0vbyQTpYTd4T6aWiJWU9qEolZ3ta9AQlaZ4Kf8nBiuR3A9
-         I0b88Stl7eHiGP7ofPTsbOHe9MXwWd69dkbda3P88wtmQ8eer2pZvVsS8l9rSz7OxvHS
-         wVfzvzXZ+16ulyziWLRIk7r5FLdnhJe1O5UOxflrYrpJ/B15BbvcckExDKd5bE96NhkV
-         V6T8KjxmLEKtbLpK1pgbhoPLZYmdVDSQejv3XDKgnaxucog2P7jr8TRoUMD7CQ3OYdp0
-         FptaXXA2Gof7kVYuk6/9W1FeZUkjaHruRSR5n2x0VpqlCQewXflHWZT9z9f+F0GDx0ZV
-         5rXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708509586; x=1709114386;
-        h=content-transfer-encoding:mime-version:subject:in-reply-to
-         :message-id:cc:to:from:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5v3dtSCXtJMKznIfq4bOSd2Ajb7Xgfbqb6Og5lUaIsE=;
-        b=nQ80AofoWewdbdu0KTaF4VzwEKb8ZzjeWUuw08P6NRclwrFW8LDaaFOLkqoix3xh4/
-         EwPhEwauzXL8ddlooe8Yi9fkELKn1rEtJfnEhBNtVEf6ILiERjVD0Ox7LW9aLDACWJh3
-         3SQ3bT/pdj9fsE3E3LcP4WUH8AFNRuWmhLyCl+6WKGBKj9zYlpmn3jp/bZN/44U0qKmx
-         BcsnGgDIUiFPrtKnLAJiRr85vD8l/7I3p8ZW9ueXVXbiRz2dsB4erEtekoE+3RRq+z8h
-         CaXMra67f/80wpx/kWG2KZnyUcBDPp8/cVQ8NGzvw9rOgNakaDu9VaMjdV+B8i8chOWa
-         8mMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVVBOa+ajhdaZiWOYpiwn2ih9P3KsmVj5Z0B1X8/iFp3jhDT7p9lhoAoFxTNQeNndeX4m2bsEkdCJdRns8XTEYe6pM8h66Ivw19eA/n2x4sqGBwFJhgv++y9yhOk6sQpyKUT5/yaeKJ9zJid2QjmSkTbUwGQ6FRV0YL397REoxgxA2mi8pizvhtaDK+7Q==
-X-Gm-Message-State: AOJu0Yz1LcIC/y+AZAemECrqSzbja0xx9R+KNEPwiSjykXghB9u7IWi5
-	hktAEKAaPoOwlci71/z0+reu9/f7pPzAOuPIPzYGSVoGEJ6P3z7a
-X-Google-Smtp-Source: AGHT+IGayboSSYCRSBTfKt/p8uzubL1dQkldpRG0mhTDMp+YvZDPIeXz2+mtkKwMRQEU2KIbrXXU8Q==
-X-Received: by 2002:a25:848d:0:b0:dc6:be64:cfd1 with SMTP id v13-20020a25848d000000b00dc6be64cfd1mr14423533ybk.36.1708509586648;
-        Wed, 21 Feb 2024 01:59:46 -0800 (PST)
-Received: from [127.0.0.1] ([106.221.238.184])
-        by smtp.gmail.com with ESMTPSA id u29-20020a056a00099d00b006e0e3e44f33sm8396473pfg.103.2024.02.21.01.59.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 01:59:46 -0800 (PST)
-Date: Wed, 21 Feb 2024 15:29:39 +0530 (GMT+05:30)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: zhangwarden@gmail.com
-Cc: jikos@kernel.org, joe.lawrence@redhat.com, jpoimboe@kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	live-patching@vger.kernel.org, mbenes@suse.cz, mpdesouza@suse.com,
-	pmladek@suse.com, shresthprasad7@gmail.com, shuah@kernel.org,
-	skhan@linuxfoundation.org
-Message-ID: <ff1078b2-447d-4ae7-8287-d0affd23588d@gmail.com>
-In-Reply-To: <B052E4A4-3652-452F-B4F9-F36860143CC3@gmail.com>
-Subject: Re: [PATCH]     Fix implicit cast warning in test_klp_state.c
+	s=arc-20240116; t=1708509650; c=relaxed/simple;
+	bh=wcF4f8oB66/zilBylgZvCVlgJPjo9n+Rs862VHuPPtE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LnIEClPgvfhnuTXqa8BWZjGguOLOCV1q7zUUiKFDv2eyx9nFOQ4N/PuHCK/Jqu8HYSYyU+kz5NferE+pzZIGLW3kcnhyjZ+eH46P5JCyV/Ni9v4LU74oawjR3ZYJFp3zNCsdLadtaSbOo0/ZAmOIALDOoApUbrjz0ST9x2prabk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ibcIOx9k; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708509646;
+	bh=wcF4f8oB66/zilBylgZvCVlgJPjo9n+Rs862VHuPPtE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ibcIOx9khG/HibZOQuADQzzX0BqkCDivppWffmnMYxNslmqkpFm4o7N7PSjEXpZ+G
+	 Xkdg1M6DbzGGnluOboEfBBz6dgGonmZt8Vz6i/lpF+UaPao1G5aEhqUTAp5CqpLBFC
+	 7ZcopzX8/GZGhqzB3/JNcM/Ti4BS7Giq6lr0tyuK1sQiYXvUNwENPtHCChZn3Z0pDr
+	 Y4UCiCgo/6gwEHwz07zjY5tP+23KdmbN3DX/rLDIA8EN4lDzOdo6kj1EIZXPHmy5nm
+	 8Jj09w1Yn8pqWutpt+q4W1c5Tkjc3MRHBeHMIejmpoh37n7En5xTC0aMcKkauIjoku
+	 kr1ftJPjRQhtg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7292237820C8;
+	Wed, 21 Feb 2024 10:00:45 +0000 (UTC)
+Message-ID: <770b23ec-7199-4202-888d-6a22b7f4af74@collabora.com>
+Date: Wed, 21 Feb 2024 11:00:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Correlation-ID: <ff1078b2-447d-4ae7-8287-d0affd23588d@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] arm64: dts: mediatek: mt7981: add pinctrl
+Content-Language: en-US
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Chen-Yu Tsai <wenst@chromium.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ Heiko Stuebner <heiko.stuebner@cherry.de>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Chris Morgan <macromorgan@hotmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Sean Wang
+ <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+References: <20240221073524.20947-1-zajec5@gmail.com>
+ <20240221073524.20947-4-zajec5@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240221073524.20947-4-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-I checked the source code and yes I am on the latest Linux next repo.
+Il 21/02/24 08:35, Rafał Miłecki ha scritto:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> MT7981 contains on-SoC PIN controller that is also a GPIO provider.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>   arch/arm64/boot/dts/mediatek/mt7981b.dtsi | 37 +++++++++++++++++++++++
+>   1 file changed, 37 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt7981b.dtsi b/arch/arm64/boot/dts/mediatek/mt7981b.dtsi
+> index 4feff3d1c5f4..fdd5c22cfc9c 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt7981b.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt7981b.dtsi
+> @@ -86,6 +86,43 @@ pwm@10048000 {
+>   			#pwm-cells = <2>;
+>   		};
+>   
+> +		pio: pinctrl@11d00000 {
+> +			compatible = "mediatek,mt7981-pinctrl";
+> +			reg = <0 0x11d00000 0 0x1000>,
+> +			      <0 0x11c00000 0 0x1000>,
+> +			      <0 0x11c10000 0 0x1000>,
+> +			      <0 0x11d20000 0 0x1000>,
+> +			      <0 0x11e00000 0 0x1000>,
+> +			      <0 0x11e20000 0 0x1000>,
+> +			      <0 0x11f00000 0 0x1000>,
+> +			      <0 0x11f10000 0 0x1000>,
+> +			      <0 0x1000b000 0 0x1000>;
+> +			reg-names = "gpio", "iocfg_rt", "iocfg_rm", "iocfg_rb", "iocfg_lb",
+> +				    "iocfg_bl", "iocfg_tm", "iocfg_tl", "eint";
+> +			interrupt-controller;
+> +			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-parent = <&gic>;
+> +			gpio-ranges = <&pio 0 0 56>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			#interrupt-cells = <2>;
+> +
+> +			mdio-pins {
+> +				mux {
 
-Here's the warning:
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c:38:24: warning: assignment to =E2=80=98struct=
- klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
- without a cast [-Wint-conversion]
-=C2=A0=C2=A0 38 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
-state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ^
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c: In function =E2=80=98fix_console_loglevel=E2=
-=80=99:
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c:55:24: warning: assignment to =E2=80=98struct=
- klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
- without a cast [-Wint-conversion]
-=C2=A0=C2=A0 55 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
-state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ^
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c: In function =E2=80=98restore_console_logleve=
-l=E2=80=99:
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c:68:24: warning: assignment to =E2=80=98struct=
- klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
- without a cast [-Wint-conversion]
-=C2=A0=C2=A0 68 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
-state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ^
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c: In function =E2=80=98free_loglevel_state=E2=
-=80=99:
-/home/shresthp/dev/linux_work/linux_next/tools/testing/selftests/livepatch/=
-test_modules/test_klp_state.c:80:24: warning: assignment to =E2=80=98struct=
- klp_state *=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer=
- without a cast [-Wint-conversion]
-=C2=A0=C2=A0 80 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 loglevel_=
-state =3D klp_get_state(&patch, CONSOLE_LOGLEVEL_STATE);
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ^
+That's board specific. MDIO and SPI0 pins can be used as GPIO instead of,
+respectively, ETH and SPI.
 
-Thank you for your help so far.
+Must go to your board devicetree, not here: please move both.
 
-Regards,
-Shresth
+Cheers,
+Angelo
+
+> +					function = "eth";
+> +					groups = "smi_mdc_mdio";
+> +				};
+> +			};
+> +
+> +			spi0-pins {
+> +				mux {
+> +					function = "spi";
+> +					groups = "spi0", "spi0_wp_hold";
+> +				};
+> +			};
+> +
+> +		};
+> +
+>   		clock-controller@15000000 {
+>   			compatible = "mediatek,mt7981-ethsys", "syscon";
+>   			reg = <0 0x15000000 0 0x1000>;
+
 
