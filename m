@@ -1,109 +1,235 @@
-Return-Path: <linux-kernel+bounces-74510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2337C85D54B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:18:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ABC185D552
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9394B22024
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:18:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E32E5B21F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C493D965;
-	Wed, 21 Feb 2024 10:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9223D97A;
+	Wed, 21 Feb 2024 10:18:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h3mUGj4J"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l8D0QgDY"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E40E24B57
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662B83B198;
+	Wed, 21 Feb 2024 10:18:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510697; cv=none; b=Nn+HJvfFV/ZlNEEry9X9Lzb9c8fDvl0ZdX4ikFWEFeRLAM+siFrB9s+5ASMhR4rB112jPhUnBKhGOXjAbGbOeq2VCSIvq/7zFK/5MBkeFrYIqJYiwkwnG65B7yZNn8K0880AAO4DKITXFdli7CPK9j8mL9vDw10byFm8U+EbN0I=
+	t=1708510737; cv=none; b=r2lrrEAk/Csq2/nZmREUnPQDdtBi+lfS3k6isHSjd7e2bSKPpEPKowB+2I1ESbNNWCGFHJMwNlaU7+E1tIiWOVqchCIEDosd+rV2BLnCVWWJ6SyhIudRsdIV0m+th+Be54oTHZHtcxfrBi0mOOUIbMYV9lb009RCfdfz6OdPNrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510697; c=relaxed/simple;
-	bh=trM2Kz8pPivdf6IGVzlH0ZCKq4rpLOnpoP0R6yUBqSA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=oweo/GPLdm4ln9n2bYPeV0NkzrNHV/Jf9c1R7lP8+b07w0B2tTEssGuKVzN42ilepW5oLiGM42Gba9H5wDzDTEptNsXbjU2HM2AbkO32+jv3VNCEuyHeQqdAXYOR2leBX7+PqajZjDbOvzgk/GNjIysBh6Jmk1Ttxs+XXRWWxZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h3mUGj4J; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412767742a0so2807235e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:18:15 -0800 (PST)
+	s=arc-20240116; t=1708510737; c=relaxed/simple;
+	bh=g5i637/KCdjSuewFOCudFOu2YCYdZfEM4Frnyo4ETjw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D9z6T9pxFr3iEPWIG2qpJKwk4EVWHV7BKZplA2ymDFsTIpGZ3wh+czuZ9DgjgdDM8DtYEg8dTe7JwoYkT1LFOFgw2hBpH1FVe9ZoLZtG3Yf7IA4fs1sJ6Qus533mXG46Tvh3Gb9NkbKFv2JlukR1VR7cADrnJk5brAon/SqDmdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l8D0QgDY; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d22b8c6e0dso51193751fa.2;
+        Wed, 21 Feb 2024 02:18:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708510694; x=1709115494; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fn9WH08w7X3KaRpsc+O+6J3F2CObpMe10qvR2Y/8t6c=;
-        b=h3mUGj4JHNWOgqDCA2jll6MnX23swac2O+3XVSmgMoXrCbCI+U8YxnGynxKVbcQjUC
-         6ylTDC2hj3OivteXr9/3SsA+h53Ouyc+wn7pkB3l/gwbN/tteOcjLClIzZvs9fpAq5GA
-         gyHYZgC8Kth8vW+MWNkHCHsuThciurbRv5QA1LhhhHRd0wCzy69b4eV2MhLRunSGcAkF
-         Z2fkpZF6fnbzjG8cHJpVFBiei2ZXncw7Qk8KCzm1gRHW9Ts410Z4/ZVv9W1gNSgNfdfg
-         FNjigOkh/AmdS+KIAcv+LRfLNmtaFAYzYYjgPXmgg5EnKrXfi7DFXPN3jIpA2Xpz/tH7
-         jF1w==
+        d=gmail.com; s=20230601; t=1708510733; x=1709115533; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uxYy/oCllbVJu1lUjrqdo3aNdYciiuAnqI38767Tw8k=;
+        b=l8D0QgDYLNqM7jVm1XZa4mcjapqaSpMRnvW6VF5mzBJ2/hgnAti9xLNFZdONEAzj+z
+         +TkooNzRyBMKm+S8hh9Mvyn+v9z4FaYy/2VR+u0B0pIam+1KgVhnKUtUb3TpEj8XxjSu
+         j/UG0l3pqfwTag2k28oqddIYqk/nfdYY9TbKRjXFW4dG625oBcEBvCJuNMi7qSVwx5eU
+         Qr2Vbb2SmXT7M6K8HEkeJDiHOtGIhK1Nl1bFg3CYlh9GkhVm68TJR6k0uHf1rOTy0MBB
+         idbd03KwRWMXTT+WWXQoF7Di3HSK1w5r3/Ws+3APQndD8xGPIDnvbEFtOKGnXwP88Ryl
+         CTZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708510694; x=1709115494;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fn9WH08w7X3KaRpsc+O+6J3F2CObpMe10qvR2Y/8t6c=;
-        b=Hz+VSQU/5Cy+n1LFaqILMhfVCE717OD7sRVxAxWWuZOIyqCE2mnQIA7NEfWeTcfVjx
-         AjYXoralNTpPZtIw6KhrkJ61Y0P4TTkFf4So6Gi7a+wkZoPG3IzaMSGNlNVpnDhYcfMU
-         sQnmYVE0t7dTrhkMTU3Y/2SGcHnI3JQ7CgLPAZnjzLCXSPyYJcXYTLiIyb1gupWnnXDs
-         HB+F9MQ2RoctTNfPHWnOOJdqr6wVN5jBgsE1D49zCPH/7JU9a0z4OLboM6s67OmQrBVX
-         nYAuOlQB+Vn4R6BBGezh+6AMx3YEvRAexYCvcv3blw1OsOP1pI1kEcLyiBv3FdLacygK
-         oqZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWL61cGuCNTG3cXjcJUleYbFpwn1HkJPF4/1kI4hAc4M6t7rtCsryvo9+HXCIx6rvtNwtJCEVzuNoNgVZOBreNqSbz2Phew6U0CxMWP
-X-Gm-Message-State: AOJu0YysiWPjrlzj6BphGKEiI3BdOKuc1SGVPfP2IVWQn73usi8DW+UM
-	usqf7TfPXF/sUTkpZAfiiix6fUkTpvV5UXAbilPuKCnGB152dV9+xKsPHgrD+B0wBiAIvO/4vcW
-	S
-X-Google-Smtp-Source: AGHT+IHuTENwbRX88AmyJuMsriSXVqIUvDmx1GZlXQCUQh7dhnbVs5FGJ+kArHCimI5/Om88TN2ucg==
-X-Received: by 2002:a05:600c:1e06:b0:412:78d3:18d9 with SMTP id ay6-20020a05600c1e0600b0041278d318d9mr255680wmb.38.1708510693780;
-        Wed, 21 Feb 2024 02:18:13 -0800 (PST)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id m23-20020a7bca57000000b0041262355aeasm1959554wml.16.2024.02.21.02.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 02:18:13 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-In-Reply-To: <20240213-bus_cleanup-slimbus-v1-1-34f06d82de6e@marliere.net>
-References: <20240213-bus_cleanup-slimbus-v1-1-34f06d82de6e@marliere.net>
-Subject: Re: [PATCH] slimbus: core: make slimbus_bus const
-Message-Id: <170851069308.25406.6494531304453736550.b4-ty@linaro.org>
-Date: Wed, 21 Feb 2024 10:18:13 +0000
+        d=1e100.net; s=20230601; t=1708510733; x=1709115533;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uxYy/oCllbVJu1lUjrqdo3aNdYciiuAnqI38767Tw8k=;
+        b=H+YUcCCBUcPQbEYV4VCQMMctpXwRKbb4gch97rttlHPT9U2hAPPVPlCRYpdm/DdbAX
+         kWuVkE5kz9+v36W6/Kiu3qO0W4g5ukK37ALP/lx5e3cLyPVSiPn3LGYluoUXlcAu1GP6
+         3FAW0AZiOWbpwRDZ3fl5ctvTNoQ49nit9D0eqeF35wPpvPX/AbkOhcL64HSMQvg/D3kA
+         w47XxK5mHzs08CDAxWcshYVoDVrqr1MC4OvhvmiyqPhcdYUWVUdZIxP8JaZVQqxZW6ap
+         /rvVF3rUp4MNEdksvVXHc2rbrFdQ20gJztiyIhM0k7x4GEKUrvJNL0AUiXkS4PZkzp1O
+         zFTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXKHQRacl89Bsu+H3SANc4Fe48L+sdU2HT10DC2UPJDs+ju+27H1nhktnHMHyrkhVWRsfBfKyOb8E4Wi6FWqBNjqE9FOOqFdnywHdVsXd05W00z2vnz7sXAD4XfZQoDTumThthJ47VH/g==
+X-Gm-Message-State: AOJu0Yxz8iboDqKTdAgnsE31XrGQKAVUb5Pw4vEVyOMKN2X9mdAX2ATq
+	46eSjh1Ep1tI3/533YamKPsbnd0kkDY981Z0DK9PEJQGm6BZAKds
+X-Google-Smtp-Source: AGHT+IFTdBLcdX+mNatMOQW4Ps2MUiqJKNUfiZQWmGfDF5dJHJtDnU58iVGJ9gek14cZwh5wfP1jew==
+X-Received: by 2002:a2e:9192:0:b0:2d2:50ba:e5b6 with SMTP id f18-20020a2e9192000000b002d250bae5b6mr1780390ljg.10.1708510733213;
+        Wed, 21 Feb 2024 02:18:53 -0800 (PST)
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id l12-20020a2ea30c000000b002d2191e20e1sm1799512lje.92.2024.02.21.02.18.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 02:18:52 -0800 (PST)
+Message-ID: <b4e8d3c6-5113-4324-9af5-c4e89cd89349@gmail.com>
+Date: Wed, 21 Feb 2024 11:18:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] arm64: dts: mediatek: Add Cudy WR3000 V1
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Chen-Yu Tsai <wenst@chromium.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ Heiko Stuebner <heiko.stuebner@cherry.de>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Chris Morgan <macromorgan@hotmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Sean Wang
+ <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+References: <20240221073524.20947-1-zajec5@gmail.com>
+ <20240221073524.20947-5-zajec5@gmail.com>
+ <2fdf724e-4994-4873-971a-56c19b9fc471@collabora.com>
+Content-Language: en-US
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <2fdf724e-4994-4873-971a-56c19b9fc471@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-On Tue, 13 Feb 2024 11:40:35 -0300, Ricardo B. Marliere wrote:
-> Since commit d492cc2573a0 ("driver core: device.h: make struct
-> bus_type a const *"), the driver core can properly handle constant
-> struct bus_type, move the slimbus_bus variable to be a constant
-> structure as well, placing it into read-only memory which can not be
-> modified at runtime.
+On 21.02.2024 11:11, AngeloGioacchino Del Regno wrote:
+> Il 21/02/24 08:35, Rafał Miłecki ha scritto:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> Cudy WR3000 V1 is an MT7981B (AKA Filogic 820) based wireless router. It
+>> has 256 MiB of RAM, some LEDs & buttons and (not described yet) 4
+>> Ethernet ports.
+>>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+>>   arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+>>   .../dts/mediatek/mt7981b-cudy-wr3000-v1.dts   | 74 +++++++++++++++++++
+>>   2 files changed, 75 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7981b-cudy-wr3000-v1.dts
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+>> index 37b4ca3a87c9..96da4ad640aa 100644
+>> --- a/arch/arm64/boot/dts/mediatek/Makefile
+>> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+>> @@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-evb.dtb
+>>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
+>>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
+>>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
+>> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt7981b-cudy-wr3000-v1.dtb
+>>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7981b-xiaomi-ax3000t.dtb
+>>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-acelink-ew-7886cax.dtb
+>>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3.dtb
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt7981b-cudy-wr3000-v1.dts b/arch/arm64/boot/dts/mediatek/mt7981b-cudy-wr3000-v1.dts
+>> new file mode 100644
+>> index 000000000000..cb36a089518a
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/mediatek/mt7981b-cudy-wr3000-v1.dts
+>> @@ -0,0 +1,74 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>> +
+>> +/dts-v1/;
+>> +#include <dt-bindings/input/input.h>
+>> +#include <dt-bindings/gpio/gpio.h>
+>> +#include <dt-bindings/leds/common.h>
+>> +
+>> +#include "mt7981b.dtsi"
+>> +
+>> +/ {
+>> +    compatible = "cudy,wr3000-v1", "mediatek,mt7981b";
+>> +    model = "Cudy WR3000 V1";
+>> +
+>> +    memory@40000000 {
+>> +        reg = <0 0x40000000 0 0x10000000>;
+>> +        device_type = "memory";
+>> +    };
+>> +
+>> +    keys {
+>> +        compatible = "gpio-keys";
+>> +
+>> +        key-wps {
+>> +            label = "WPS";
+>> +            gpios = <&pio 0 GPIO_ACTIVE_LOW>;
+>> +            linux,code = <KEY_WPS_BUTTON>;
+>> +        };
+>> +
+>> +        key-reset {
+>> +            label = "RESET";
+>> +            gpios = <&pio 1 GPIO_ACTIVE_LOW>;
+>> +            linux,code = <KEY_RESTART>;
+>> +        };
+>> +    };
+>> +
+>> +    leds {
+>> +        compatible = "gpio-leds";
+>> +
+>> +        led-0 {
+>> +            function = LED_FUNCTION_WAN;
+>> +            color = <LED_COLOR_ID_BLUE>;
+>> +            gpios = <&pio 5 GPIO_ACTIVE_LOW>;
 > 
+> Can we please order those properties alphabetically, as it doesn't impact
+> on human readability in any way?
+> Just a nitpick, anyway.
 > 
-> [...]
+> color = <LED_COLOR_ID_BLUE>;
+> function = LED_FUNCTION_WAN;
+> gpios = <&pio 5 GPIO_ACTIVE_LOW>;
 
-Applied, thanks!
+If I understand [1] correctly alphabetical / alpha-numerical order
+applies to non-addresses nodes only.
 
-[1/1] slimbus: core: make slimbus_bus const
-      commit: bcb0dafbb3fff9f017d5d915a55831616a36ad75
+Here I put "function" first as that seemed more important than a color.
 
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Perhaps you could suggest an addition to Devicetree Sources (DTS) Coding
+Style or point me to the missed part, please?
 
+[1] https://www.kernel.org/doc/html/next/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+
+
+
+>> +        };
+>> +
+>> +        led-1 {
+>> +            function = LED_FUNCTION_WLAN_2GHZ;
+>> +            color = <LED_COLOR_ID_BLUE>;
+>> +            gpios = <&pio 6 GPIO_ACTIVE_LOW>;
+>> +        };
+>> +
+>> +        led-2 {
+>> +            function = LED_FUNCTION_WLAN_5GHZ;
+>> +            color = <LED_COLOR_ID_BLUE>;
+>> +            gpios = <&pio 7 GPIO_ACTIVE_LOW>;
+>> +        };
+>> +
+>> +        led-3 {
+>> +            function = LED_FUNCTION_LAN;
+>> +            color = <LED_COLOR_ID_BLUE>;
+>> +            gpios = <&pio 9 GPIO_ACTIVE_LOW>;
+>> +        };
+>> +
+>> +        led-4 {
+>> +            function = LED_FUNCTION_STATUS;
+>> +            color = <LED_COLOR_ID_BLUE>;
+>> +            gpios = <&pio 10 GPIO_ACTIVE_LOW>;
+>> +        };
+>> +
+>> +        led-5 {
+>> +            function = "online";
+> 
+> Uhm, what does "online" mean?
+> 
+> Are you sure that you can't use any of the LED_FUNCTION_XXX standard definitions?
+
+This device has:
+1. "WAN Port" LED that indicates "WAN Port has connection" state
+2. "Internet" LED that indicates "Connected to the Internet" state
+
+I couldn't find any define that would fit Internet access LED case.
 
