@@ -1,139 +1,132 @@
-Return-Path: <linux-kernel+bounces-75243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E871285E524
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:03:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6903585E51D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88EBDB24C3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC73928453D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A401585274;
-	Wed, 21 Feb 2024 18:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB8B84FDB;
+	Wed, 21 Feb 2024 18:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DhURHu2k"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nS779MhK"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5885B84A4C;
-	Wed, 21 Feb 2024 18:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DD37BB00
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708538608; cv=none; b=dMeyYzlKPdQ2lTuVv0+ikRm9UliymRb+9FTAGzhEk+sATkQI4ZpLDd8bw8tWVqt4bZKGO2+Vlzb49P10XhoQIqWryMTlwBtt/ng59SGbbU89jw+UUyARkaxq4ZWKHy6UxJPLK3vazZvehWsMitmuuCdgTTjoc/Zf9OqI3Qu4bG0=
+	t=1708538577; cv=none; b=qoRjao5+KM5czFC6QFQZ/Ldc6xl8eBynJ10L4B2rW+rUKkekzcSpx10TwTq4wfRIAj5koSMMl5iSw/fg++i6CwzmoE1vxPx71YvJd1kTsH6Z3zsdeXYgoPtfOuMa0KzWxnhnITSge8eJGxDzwgX/zgMDDYaOKV4xeEDZOOroVUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708538608; c=relaxed/simple;
-	bh=Vky8g1xlYqX8x+MNnRdTFSxQJHnbFOZbAAvwLGvHWBw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=U5wsseHs0V0nMfFKixPUdTgHSVSYMhVY1vkVYH8AZGMD3YyiucHtdduRRJkwP443CyaNU7htdhDLd0fzbGYY2/saFNoD+R1s/nIV+NCZhvVdupyC7jBfYVQiTmglaZF/OpDvdIa+XGMRohoffuT2L2MzPQHSCs7WGQ8qPIsimew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DhURHu2k; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41LDjvmi018517;
-	Wed, 21 Feb 2024 18:03:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Z1EM/p+jd2aox3yj3yzzpLjR9dADa2AsHCa27gf+ccc=; b=Dh
-	URHu2kgvqjX8cVZsUKF0RaKFmJbtzqHY7mermb1venLpxbS83zKEgC9MTuwoW3pw
-	2FlkqMBWvXiDvqaSWrXKeCKkrAEPgEUEonPL7VTQKYsAeuoiycqe1FolKijIN5xX
-	07wLnHHwoOBJNKToBEGk6IxXA+iYp85J6sy+f0B2t4BBdTW2lCwQ+/xK6YWLl5u9
-	nR017mCcix3kiZ4GCVvC7Zx2RmLDrvoX5c/EVnRV9/8A02lyyDF8MIQmVquTdU2h
-	sH/oLJ8iMOSiRFIaXlceAyIeJXvutWZYSJegZbiPaEiibxs91Zx8hRo2Q/0+2tUT
-	7NPSOzsKAkt5b5nsQOVg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wd22s2rnk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 18:03:07 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41LI36PJ004638
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 18:03:06 GMT
-Received: from [10.50.0.60] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
- 2024 10:03:02 -0800
-Message-ID: <e4cf41af-5415-f923-25f0-07e837bd7a1a@quicinc.com>
-Date: Wed, 21 Feb 2024 23:32:38 +0530
+	s=arc-20240116; t=1708538577; c=relaxed/simple;
+	bh=yi54Lm2dqrDB+cxkACqkhgnwXGwUUIDVH5OsV836WSU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JOBdTNl+kWCMax+3/QpKjXH+djaeg1X9LwlhqtNwgZoUC+i/k2+kwP54vmgKDeyz9ZOHaouFzrSG8TlYLfESriNYSozFl0YjDvrQ1yZYZB8zNj5H8+HtMAvDrA43EG828hbPXQqp7eQgEc/YOptM/PmzNP/C4EnPj9TlvuqiNPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nS779MhK; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso6722608276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:02:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708538575; x=1709143375; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IZ4ZIhOlLj482hbMZwIkVDjrXVuHvcX1vma+IQSxDL8=;
+        b=nS779MhKRQQFrZYbycRvp2QfyOb077r5exMGNNC7+TuVV3Ll2v6l4BUtWKhxdYyl7U
+         ncDL45BPaPILcv2ZxEK20yCkYBRcqpGHxX4tJLZtvEZDl++hZa/vBjXeQy1a4EsimN0B
+         etr+wsDAA8S7WD8VsdncF45n+npWi1LakjPBjNEq1y/Sb4wF8UHwUN8O73Bpq3eEf4hg
+         VVHQokCfiA46GLOHGmq0IwKoQ8YjZvT95J0T7sR0pkn5nFv94mzjx4bQqJyQ9PGxIjq2
+         UEELVcpDQkbUy1nuIqliUOe3V6t4sbgj2Ia5ws981x2dxDEjdcus9HSxXgab+HZhd86U
+         gcvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708538575; x=1709143375;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IZ4ZIhOlLj482hbMZwIkVDjrXVuHvcX1vma+IQSxDL8=;
+        b=U3kh+AtDOVIlk8dptRZ6VJXzoHhiTA42EjfTn/ase/1G2p0fPyZSXwJoPzWNFtgoGS
+         7wzGv31/xdbZOjFZC8uERgmpP3OakSSDINFk+j9QlhjT2KInwZUEpJNDVjllfQENqA4x
+         eBE2aaBCASzq8K6JNfeS0lCkAbIpFnfHu3IVycDIuAMOjgbb7LWIvp1mVIn4aACNSMP1
+         46WX0BQR22F+5zvDotabAtE2Hnl9auL71oa8aVQdBZJNEVgvkol2kN29OzFajH8x/rRU
+         pxxYe+/HwjzG4zGC6MpZvqnlRE3UpjC+ZZg1btXKtejroQC9faaK+tJ+G1hgzVHyeh4U
+         vHVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWr01BBYmOt2oJPudZqvUzSBT2U4w/1eNhsMJ3dzdh67+eQTRedj3Q/bQoDD+N3lch2X4s+4aP3oFBW0wUjkk7MiUXNTlDGUjwJDgrK
+X-Gm-Message-State: AOJu0YxJeuuXtEuQuMENSTJD5d0n3P54+o5SU3bDbEP22dNdkl61p8Lw
+	jLRoZNPuK7M8wUIdtvGGV6otqPVM+jzL5hDPnICLPNH8LGkd2gnMUj+/6VkyyF+LPAUEFAzFjOD
+	vnLBXAUSgd4qtpBq9v948Q8QVFDGEt7wY
+X-Google-Smtp-Source: AGHT+IF3eD0jXeGA8GC5jgAbnNJApudrAh14W8XoWF7HVCuDb0xyxZgSwcIAjE/svFpEKS9393R4xM06BGzr7Toj888=
+X-Received: by 2002:a05:690c:30a:b0:608:5216:80c9 with SMTP id
+ bg10-20020a05690c030a00b00608521680c9mr9108775ywb.40.1708538574924; Wed, 21
+ Feb 2024 10:02:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 01/11] crypto: qce - Add support for crypto address read
-Content-Language: en-US
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, <thara.gopinath@gmail.com>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <quic_varada@quicinc.com>
-References: <20231214114239.2635325-1-quic_mdalam@quicinc.com>
- <20231214114239.2635325-2-quic_mdalam@quicinc.com>
-From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <20231214114239.2635325-2-quic_mdalam@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: gocQSBGbcrsfedRVDFd0zds5ifsNkyqN
-X-Proofpoint-GUID: gocQSBGbcrsfedRVDFd0zds5ifsNkyqN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-21_05,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 priorityscore=1501
- mlxlogscore=999 spamscore=0 suspectscore=0 adultscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402210140
+References: <20240220231424.126600-1-vishal.moola@gmail.com>
+ <20240220231424.126600-3-vishal.moola@gmail.com> <ZdVx_Jr9tm2lV0Ku@casper.infradead.org>
+ <CAOzc2pzLbiEpMuBpX7xXhZqPc0S6ZMnziT2uUFsa0tZe6yJQ0g@mail.gmail.com> <ZdY5BfO3EdcnJM99@casper.infradead.org>
+In-Reply-To: <ZdY5BfO3EdcnJM99@casper.infradead.org>
+From: Vishal Moola <vishal.moola@gmail.com>
+Date: Wed, 21 Feb 2024 10:02:43 -0800
+Message-ID: <CAOzc2py+gFdcfSebCvkWWWjht-CTBO=O4iNTQ9xs+=Wd2Kf8Hg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] hugetlb: Use vmf_anon_prepare() instead of anon_vma_prepare()
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	akpm@linux-foundation.org, muchun.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 21, 2024 at 9:55=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Wed, Feb 21, 2024 at 09:15:51AM -0800, Vishal Moola wrote:
+> > > >       unsigned long haddr =3D address & huge_page_mask(h);
+> > > >       struct mmu_notifier_range range;
+> > > > +     struct vm_fault vmf =3D {
+> > > > +                             .vma =3D vma,
+> > > > +                             .address =3D haddr,
+> > > > +                             .real_address =3D address,
+> > > > +                             .flags =3D flags,
+> > > > +     };
+> > >
+> > > We don't usually indent quite so far.  One extra tab would be enough.
+> > >
+> > > Also, I thought we talked about creating the vmf in hugetlb_fault(),
+> > > then passing it to hugetlb_wp() hugetlb_no_page() and handle_userfaul=
+t()?
+> > > Was there a reason to abandon that idea?
+> >
+> > No I haven't abandoned that idea, I intend to have a separate patchset =
+to go
+> > on top of this one - just keeping them separate since they are conceptu=
+ally
+> > different. I'm converting each function to use struct vm_fault first, t=
+hen
+> > shifting it to be passed throughout as an arguement while cleaning up t=
+he
+> > excess variables laying around. In a sense working bottom-up instead
+> > of top-down.
+>
+> I think you'll find it less work to create it in hugetlb_fault()
+> first.  ie patch 2 could be to hoist its creation from half-way down
+> hugetlb_fault to the top of hugetlb_fault.  Patch 3 could pass it
+> through hugetlb_no_page() to hugetlb_handle_userfault() and remove its
+> creation there.  Now you've alreedy got it, and can make use of it in
+> this patch which would be the new patch 4.
 
+Ah I see, that way would definitely be a lot less work. I'll make that
+change for this patchset in v2 then.
 
-On 12/14/2023 5:12 PM, Md Sadre Alam wrote:
-> Get crypto base address from DT. This will use for
-> command descriptor support for crypto register r/w
-> via BAM/DMA
-> 
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> ---
->   drivers/crypto/qce/core.c | 9 +++++++++
->   drivers/crypto/qce/core.h | 1 +
->   2 files changed, 10 insertions(+)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 28b5fd823827..5af0dc40738a 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -192,6 +192,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
->   	struct qce_device *qce;
-> +	struct resource *res;
->   	int ret;
->   
->   	qce = devm_kzalloc(dev, sizeof(*qce), GFP_KERNEL);
-> @@ -205,6 +206,14 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	if (IS_ERR(qce->base))
->   		return PTR_ERR(qce->base);
->   
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> If you want to do a cleanup patch afterwards, you could hoist the vmf
+> creation all the way to handle_mm_fault() ;-)
 
-  Can this be combined with devm_platform_get_and_ioremap_resource ?
-> +	if (!res)
-> +		return -ENOMEM;
-> +	qce->base_dma = dma_map_resource(dev, res->start, resource_size(res),
-> +					 DMA_BIDIRECTIONAL, 0);
-
-  unmap in remove and error cases ?
-
-Regards,
-  Sricharan
+Yeah, I was already looking at doing that in the future patchset :)
 
