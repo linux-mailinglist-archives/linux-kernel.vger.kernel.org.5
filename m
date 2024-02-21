@@ -1,92 +1,109 @@
-Return-Path: <linux-kernel+bounces-74888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0F5685DF39
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:25:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7CB85DF5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50BC81F238D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:25:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CABEC28484E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:27:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3D57C6E9;
-	Wed, 21 Feb 2024 14:25:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DFB7C0A4;
-	Wed, 21 Feb 2024 14:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B61E7C0BA;
+	Wed, 21 Feb 2024 14:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IlKRO4/t"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0354C62;
+	Wed, 21 Feb 2024 14:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708525549; cv=none; b=TiFWRRVt07IsJeLHsP9Fx2woT3mytjtn8hRhemS9FKvbOZF0MKnIBCy80m6+bB9rLLG4uGcRmBBPQJEeB1Q+A4DUHMJdlWqKM7VjOKjKIpDS4TCWp9H/E2XrLG8Buc+1LyKL8gwvjLh0B+tTkP/9thMxHFw4CB3CHcyEExKOBlQ=
+	t=1708525638; cv=none; b=Lh+M+k2hNUjA5RU2FhwSbdk8y5KQDwtiM3g6kf4waiInTEXH/9NcfMJ4oQOBHykQsly6K4cRi2oPUFWI2VonLI7Dn5Ud5Dhtr+lV9fpiN5gY8HTTBHrOu30kgfmd7vYaPeQcEyKIGp0WNqqlz5OSt2PNWWES8l9HbY34tYNPYhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708525549; c=relaxed/simple;
-	bh=FN17hH5gkQQBYlZx2WhO542GI/gzqDhOeYOvKF8ZGgA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NyPMEs6HcY6d5004+HpvdUckW/8WRri0YXi92ojUHHB0ooIVi3z3ke272BurSGk2yNVuP8WVTvKHQh5vBLpIBae7rq3GeVgoqxwtnKA64Kr5p0kThHLIgK0SU4T6G0x+J96UtF9QYH3ZD3cuQxgt5YSh8xXqSOtCWjBMl81hqaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F6B31007;
-	Wed, 21 Feb 2024 06:26:25 -0800 (PST)
-Received: from e129166.arm.com (unknown [10.57.11.178])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 88D793F762;
-	Wed, 21 Feb 2024 06:25:45 -0800 (PST)
-From: Lukasz Luba <lukasz.luba@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	rafael@kernel.org
-Cc: lukasz.luba@arm.com,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] PM: EM: Fix nr_states warnings in static checks
-Date: Wed, 21 Feb 2024 14:25:50 +0000
-Message-Id: <20240221142550.1814055-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708525638; c=relaxed/simple;
+	bh=jqfY/bXjQ6+7/Pv/b/zONWyvdkAuIKWkIxD2H+3zPwk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sG4WBjSMCSWD6QjrIyVw72ttbFeAKj1Ns4noUchs4blr194ATlMYaMFA9Tb+aAD3+EVosZGmfrGV+daHejRf1Il8IdIlbLNCkWOROZD5ffhb9GiVykgbU3zFHBtM3VQOysdSyXFXiymO3KyZxOYDnCl+bdMGfJl47f5uhnNq7Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IlKRO4/t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391BFC433F1;
+	Wed, 21 Feb 2024 14:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708525638;
+	bh=jqfY/bXjQ6+7/Pv/b/zONWyvdkAuIKWkIxD2H+3zPwk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IlKRO4/tz2DIUo9D/Ve0z0iwzyPYRMxVE/2mqFqJtKFbFjk+w9U7pn8uYmBXEnrMT
+	 zuPw8w8rqvd3DykvhfemioBQESVJFGtGJ5msabci4ZMAtaOM+eOBst4kGE926EmWl7
+	 12TrmCfTQThg2Tfqiqa2q1znl5hJecb4mOOmha9qIhh2SkRB2mnD5PK+HmXH9ddIh9
+	 qJHelqxecgUAqpEq8/eBw6Asy9J5cX/erUQn/DCOyHM1WbQfCD233MTWZFq4dGbf0/
+	 CIBO1eV0sjcOqbch86ZHzvKhdCJprB1WP3auOw1VpBnEloFcZYqCQbymxYJEu0DEoq
+	 frWsUpnbN4z9Q==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so76296521fa.1;
+        Wed, 21 Feb 2024 06:27:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV6gl8bqKPJS86HB7Mxs0IAEiMhCi2lCG1vxRyrJwUhL9BUrODamkqVd88YXanZU6pkbaa+9pTQZ0NhLh5y5IJnTrJ+rieBMexwMA+cF4oJJt+3z37d68iOHY1qHTCRz6MfM9TzkDHCTA==
+X-Gm-Message-State: AOJu0YxduhNWcR8W+TBYfus5MYWTs8zIMpgDuoZsujysno1jkaaBm9I6
+	JDs8RMfaxqI5LKrtHrTZaV1SGEwPFlHaWiuWiiAf6aXhU46VJ/SiKW1mRNCShp18m6zR8JgYRK2
+	m+D49XGRXd5mXeu7jyWTkuON5oA==
+X-Google-Smtp-Source: AGHT+IEkkBZ+CJ4wHV1j1+uMZjnmhfwLLMpaC2D4+NoL2Pue13rh+y7OEdfITs5OjTiQCWgg5vBr6ZsQVriymYYNmdI=
+X-Received: by 2002:a2e:3a10:0:b0:2d2:384e:4918 with SMTP id
+ h16-20020a2e3a10000000b002d2384e4918mr6543075lja.53.1708525636437; Wed, 21
+ Feb 2024 06:27:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240221092826.748e70c4@canb.auug.org.au> <CAL_JsqKw9OXb=aOMni1qprzeWDBgmjdJef-6VAjwx0R--D+URw@mail.gmail.com>
+ <ac9ddf79-6bc9-4daf-a271-82f8b3bca988@app.fastmail.com>
+In-Reply-To: <ac9ddf79-6bc9-4daf-a271-82f8b3bca988@app.fastmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 21 Feb 2024 07:27:04 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+L7uPimQfATs14EWCbqRO1vxDUmPie7=cChTLCf2od2g@mail.gmail.com>
+Message-ID: <CAL_Jsq+L7uPimQfATs14EWCbqRO1vxDUmPie7=cChTLCf2od2g@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Olof Johansson <olof@lixom.net>, ARM <linux-arm-kernel@lists.infradead.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-next <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-During the static checks nr_states has been mentioned by the kernel test
-robot. Fix the warning in those 2 places.
+On Wed, Feb 21, 2024 at 7:00=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Wed, Feb 21, 2024, at 14:53, Rob Herring wrote:
+> > On Tue, Feb 20, 2024 at 3:28=E2=80=AFPM Stephen Rothwell <sfr@canb.auug=
+org.au> wrote:
+> >> arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_map): F=
+ailed prerequisite 'interrupt_provider'
+> >>
+> >> Introduced/exposed by commit
+> >>
+> >>   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
+> >>
+> >> I guess you missed some :-(
+> >
+> > No, Geert separately posted fixes for already.
+>
+> I did make the mistake of applying the final patch "dtc:
+> Enable dtc interrupt_provider check" to the arm/fixes branch
+> for 6.8 along with the other fixes.
+>
+> Clearly that should be separate and only go into mainline
+> after there are no more regressions, but now I'm unsure
+> about the other patches -- did you intend the dts fixes
+> for 6.8 or for the coming merge window?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- kernel/power/energy_model.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Either is fine with me. My intent was the whole series plus the
+Renesas fix to be applied together. Anything new that crops up we can
+fix on top.
 
-diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index 7101fa3fa0c0..b686ac0345bd 100644
---- a/kernel/power/energy_model.c
-+++ b/kernel/power/energy_model.c
-@@ -280,6 +280,7 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
-  * em_dev_compute_costs() - Calculate cost values for new runtime EM table
-  * @dev		: Device for which the EM table is to be updated
-  * @table	: The new EM table that is going to get the costs calculated
-+ * @nr_states	: Number of performance states
-  *
-  * Calculate the em_perf_state::cost values for new runtime EM table. The
-  * values are used for EAS during task placement. It also calculates and sets
-@@ -728,7 +729,6 @@ static void em_check_capacity_update(void)
- 		struct cpufreq_policy *policy;
- 		unsigned long em_max_perf;
- 		struct device *dev;
--		int nr_states;
- 
- 		if (cpumask_test_cpu(cpu, cpu_done_mask))
- 			continue;
-@@ -749,7 +749,6 @@ static void em_check_capacity_update(void)
- 		cpumask_or(cpu_done_mask, cpu_done_mask,
- 			   em_span_cpus(pd));
- 
--		nr_states = pd->nr_perf_states;
- 		cpu_capacity = arch_scale_cpu_capacity(cpu);
- 
- 		rcu_read_lock();
--- 
-2.25.1
+Yes, there are lots of powerpc warnings, but those are on top of lots
+of existing powerpc warnings no one seems to care about. I suppose we
+can turn them off for powerpc if desired.
 
+Rob
 
