@@ -1,224 +1,122 @@
-Return-Path: <linux-kernel+bounces-75518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2A585EA0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:23:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5043985EA17
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3410D1C23E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BD39286E3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE2E12837C;
-	Wed, 21 Feb 2024 21:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B51127B67;
+	Wed, 21 Feb 2024 21:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EihzY5jA"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="CD/Z8BK7"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7367C126F2A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:23:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCD6126F35
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708550591; cv=none; b=Gf3FqoSYpvhogWz4Ao4WyXaNQihoqL8QBK308kA59kLDnRj/W3rRIEUT5UN2K3qLUA/nqfL02pWK4tObhv03QnnnD+9TLxrlp63PI1RtVlIRWSZFZ4lqCs+YFvJRvVxasCXbbtZZz5glQWSSwOI2C2nJba0dYsHyhPL/bas9rHY=
+	t=1708550658; cv=none; b=WYbZxXnmiqcpiWbjEZUwrzwVN/LX8ROdouvD1p5p73vEhuars/9VRRJKty1qqzQZ6JgEtk+N8qNxi7lifWMsdgdZJTJovR7Cea8HkktDAeiad+mdJq3jQsx1QHv5QA2xpXyYdG7xLtNsBkp6ZeMvWzkJekhDjqQj0Ah+prN2HNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708550591; c=relaxed/simple;
-	bh=Q97GKjG618rmqzYhuKBwtMVC+Xp1EdypCJVY/5vfUc0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nabHzdxNlLW587kcAxKPCNV15RH8864LSDkgsJWgmuikupPUYmOStYIEwrf040ALlhKqbr+f656wVsVR8JFDGX2I76E4LJw0WN7PdJr7vVG6/84tBeVF2Lkb0XHLCW8B4zrVq/sfrPx9cZ/2UsQJaXCznfaXUa/3AAGLMqGF/yY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EihzY5jA; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5645960cd56so5429890a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:23:09 -0800 (PST)
+	s=arc-20240116; t=1708550658; c=relaxed/simple;
+	bh=cZXkUcelidv55pcogEZ5q8CQsV5tGZzpTAAvQxpkWOQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GdNXWjVHWX6BLrVXG2k6tDpZqVRViXsfTWjCo6NfkfIzfUaau0yY+5RFGLnu2Wc6x9GLsU4sWaM+Rmpj3H9KXpSYIreCbw8TLvILdZcn3oi2O6i3WAmxuttQ0k9O7gdAzgKmMDmth41YLxgixrwxv5kly2rcnj9LDwd15iXnvd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=CD/Z8BK7; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e2ddc5f31eso3120964a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:24:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708550588; x=1709155388; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2SSSSEzfunpVKo3VA6iNBnH3HhYtnjVDxAPoRZgjZUQ=;
-        b=EihzY5jAsxL8fZz8P2tCF4cQT2GaF5bo/XJZrTehc8gltRmqiCU5QtV3c+14kki8b6
-         6fxn+LhdhhgpPkjy5W1i6kakUe14QhDMzU6RhONg2zo6bCXP4rLqZvS9rqQVPXuu3BTT
-         dMxQeAFiCspT59Sm1ygXneojtZGCLanNgHn0NoovtbPndbK4Re8DjrntuvvEp3vKCnhS
-         yvERnGG11hHezSrea65BN/wnD7BgcR14skMVdwfnszYWb9XsN6KixIEzBzGoe6qcPzTY
-         +27JZlr2x5w5v2n0mUD3B6NjvoEiP2n4sFweNypOU4LnRGXwXpEDcvGxaApGjsnHIIEv
-         IhIA==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708550656; x=1709155456; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cZXkUcelidv55pcogEZ5q8CQsV5tGZzpTAAvQxpkWOQ=;
+        b=CD/Z8BK7Rp9L3i5Vl3s2KolMt7yZM3Q7SV1NrREyMTfzFMVwamp0srcydy69ptyQJn
+         QXSSqU31Y95owRZ167SQF3FdA3AuKMFckDCDMgq52UyBL2DglRABg7BatfCiiEhFvdrs
+         50eRs7e0ctmnkZhCHUQIzE22K+8+RjFGVMUOfer6IBBrxibv9FJqB8lZLekkBAUHlrcK
+         fK7XYKOrVx125m1pLAnDgz7S9JgR3h0CmVz/xvIlHXzYcZZ/DjgPKtk+CPQ9SH3PAId+
+         nvooirTukSELTOSVm+fMpwLm+WfP74t0mos9xXu9O7qBhtlU34sLNfg9keaEfyE0eDHQ
+         a3Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708550588; x=1709155388;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708550656; x=1709155456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2SSSSEzfunpVKo3VA6iNBnH3HhYtnjVDxAPoRZgjZUQ=;
-        b=clALUf6A5MRmXpVO5K1iAfKf2oJ9gFY2gwKL4aKf3/RSPz+ORgWRlEoRaZrvX9vJUP
-         AuJ2ricIZ/CRiERmrOFFpLOA5nlgicRwDDCxzpgFBRUEYjFfdjA1QmHEGdki6vjBZIqe
-         1X+HHFrMR6Wzuyu0y0jn7ySigJuH2X6WsH+a2sG5cpgVXpN7RxJcw3dd1iYbdAd9oodm
-         lKblKCN5vYnQRZebGO+13P3zggk7Pc3l2VQXMZVE/M07sRM+UPamKoFtUDLAg8jllkZh
-         24xCzVvab4HdjgavKc2O8J9e+S9fyi6L7II6vG1jgIsJDpdsFdvZxJZI5KgK8pvtTUxl
-         mSQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGigmEM2r64yepnWqmxWsA2ce94urGraYqBClzR6yJUFpIBaVlnyxsUTCICNhWWmC4/CcH0yl39Pp/xlXM4h5QzpOqCXVrhX1ZuZfu
-X-Gm-Message-State: AOJu0Yz6GgLgpYDvEM21N530/Fjnn9KxgMPBYSRJ/CAGUHmzZpy7JRXu
-	vW5WbCmdDbLYOvgXWwYM/dNcNUQ60VIX39GjXSE4HUQ8RpjRg+rSRmD5YXRstUc=
-X-Google-Smtp-Source: AGHT+IETkKAOcMl6EOtyDkXpzlXf09WLA7KktxIAQUyZJqVUTFRkn9d1Km8IRmcUakvpCDMyUAyXkQ==
-X-Received: by 2002:aa7:d609:0:b0:565:26f7:4bf8 with SMTP id c9-20020aa7d609000000b0056526f74bf8mr357391edr.8.1708550587743;
-        Wed, 21 Feb 2024 13:23:07 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id h14-20020a056402094e00b005644221a3desm4018764edz.3.2024.02.21.13.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 13:23:07 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 21 Feb 2024 22:23:01 +0100
-Subject: [PATCH v2 2/2] mmc: sh_mmcif: Advance sg_miter before reading
- blocks
+        bh=cZXkUcelidv55pcogEZ5q8CQsV5tGZzpTAAvQxpkWOQ=;
+        b=L2fzGIcgpJqXI4kARNY9n2aIe+iV5MUmgfbMOlJQvOqNydpnyJj4i3yLeI6X6Quz5Z
+         OjXyMgMPgOS9RlZP+KtVg1E6WvsRBzU8tj0yABgvudoFjwUkWhyB7pP4LE4Wo1MYrB5B
+         If3jehNXWXJFa0SnNhblYi32/B3xhVBLTJhQE6n82SI0J64WdX9KLK5zYKsDWeNGtMWT
+         abqTmedD2lmATIKTWk7OT75l/ewdWuu/dgn+SXwO1fOrUY28NLSQal9VtvgjMP1sWsZS
+         x3/VV2qQTpQtgVS8p+5jPN1BYSjYgs90BR8NtPfGVLK8upJpmwhVveI+Qxaw4cYBrg/+
+         7rMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVf8qU5nboZ5aTJUWbLouFMOURAbpFlZOEWMQ0szhPw+1xB02rGbHftwsc+HTwEgHuBZ+/zKvuttwyqbpgY1sG7fmhy2xdBiaKMMPcd
+X-Gm-Message-State: AOJu0YzkGrjIjTdLiD/OyNQLpLlh220ZqFyFApsNv1q7edInXnaxe5Hn
+	Wt9iWe1cFmNHBqFlTyEg2CoQsNQ80mjRFO4kcuKEz6buXCDofdPDeMtYl+Xcxd0f9EHtD7+RprQ
+	dcILoLT8pmMIRPrN+do1crAKzeMTZfQDSrUFP4g==
+X-Google-Smtp-Source: AGHT+IFvWKjWPK3amI8VL9W53BBk35ttzb77PzRBdxcUJJDHyxRlktLp+XaDhvA82AT8l0qmpbPOUDFRSVqjGiC7KOY=
+X-Received: by 2002:a05:6830:1005:b0:6e2:eba0:ec4d with SMTP id
+ a5-20020a056830100500b006e2eba0ec4dmr18796951otp.33.1708550655819; Wed, 21
+ Feb 2024 13:24:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240221-fix-sh-mmcif-v2-2-5e521eb25ae4@linaro.org>
-References: <20240221-fix-sh-mmcif-v2-0-5e521eb25ae4@linaro.org>
-In-Reply-To: <20240221-fix-sh-mmcif-v2-0-5e521eb25ae4@linaro.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>, 
- Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>
-X-Mailer: b4 0.12.4
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-6-surenb@google.com>
+In-Reply-To: <20240221194052.927623-6-surenb@google.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Wed, 21 Feb 2024 16:23:39 -0500
+Message-ID: <CA+CK2bAAzRfsDYG+LVvp9LAJLpJoakhTAB3i6JiGDogvz8kfHg@mail.gmail.com>
+Subject: Re: [PATCH v4 05/36] fs: Convert alloc_inode_sb() to a macro
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The introduction of sg_miter was a bit sloppy as it didn't
-exactly mimic the semantics of the old code on multiblock reads
-and writes: these like you to:
+On Wed, Feb 21, 2024 at 2:41=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+>
+> We're introducing alloc tagging, which tracks memory allocations by
+> callsite. Converting alloc_inode_sb() to a macro means allocations will
+> be tracked by its caller, which is a bit more useful.
+>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-- Advance to the first sglist entry *before* starting to read
-  any blocks from the card.
-
-- Advance and check availability of the next entry *right after*
-  processing one block.
-
-Not checking if we have more sglist entries right after
-reading a block will lead to this not being checked until we
-return to the callback to read out more blocks, i.e. until the
-next interrupt arrives. Since the last block is the last one
-(no more data will arrive) there will not be a next interrupt,
-and we will be waiting forever resulting in a timeout for
-command 18 when reading multiple blocks.
-
-The same bug was fixed also in the writing of multiple blocks.
-
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Fixes: 27b57277d9ba ("mmc: sh_mmcif: Use sg_miter for PIO")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mmc/host/sh_mmcif.c | 38 ++++++++++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mmc/host/sh_mmcif.c b/drivers/mmc/host/sh_mmcif.c
-index 669555b5e8fa..08b4312af94e 100644
---- a/drivers/mmc/host/sh_mmcif.c
-+++ b/drivers/mmc/host/sh_mmcif.c
-@@ -653,6 +653,7 @@ static bool sh_mmcif_read_block(struct sh_mmcif_host *host)
- static void sh_mmcif_multi_read(struct sh_mmcif_host *host,
- 				struct mmc_request *mrq)
- {
-+	struct sg_mapping_iter *sgm = &host->sg_miter;
- 	struct mmc_data *data = mrq->data;
- 
- 	if (!data->sg_len || !data->sg->length)
-@@ -661,9 +662,15 @@ static void sh_mmcif_multi_read(struct sh_mmcif_host *host,
- 	host->blocksize = sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET) &
- 		BLOCK_SIZE_MASK;
- 
--	sg_miter_start(&host->sg_miter, data->sg, data->sg_len,
-+	sg_miter_start(sgm, data->sg, data->sg_len,
- 		       SG_MITER_TO_SG);
- 
-+	/* Advance to the first sglist entry */
-+	if (!sg_miter_next(sgm)) {
-+		sg_miter_stop(sgm);
-+		return;
-+	}
-+
- 	host->wait_for = MMCIF_WAIT_FOR_MREAD;
- 
- 	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFREN);
-@@ -684,11 +691,6 @@ static bool sh_mmcif_mread_block(struct sh_mmcif_host *host)
- 		return false;
- 	}
- 
--	if (!sg_miter_next(sgm)) {
--		sg_miter_stop(sgm);
--		return false;
--	}
--
- 	p = sgm->addr;
- 
- 	for (i = 0; i < host->blocksize / 4; i++)
-@@ -698,6 +700,11 @@ static bool sh_mmcif_mread_block(struct sh_mmcif_host *host)
- 
- 	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFREN);
- 
-+	if (!sg_miter_next(sgm)) {
-+		sg_miter_stop(sgm);
-+		return false;
-+	}
-+
- 	return true;
- }
- 
-@@ -756,6 +763,7 @@ static bool sh_mmcif_write_block(struct sh_mmcif_host *host)
- static void sh_mmcif_multi_write(struct sh_mmcif_host *host,
- 				struct mmc_request *mrq)
- {
-+	struct sg_mapping_iter *sgm = &host->sg_miter;
- 	struct mmc_data *data = mrq->data;
- 
- 	if (!data->sg_len || !data->sg->length)
-@@ -764,9 +772,15 @@ static void sh_mmcif_multi_write(struct sh_mmcif_host *host,
- 	host->blocksize = sh_mmcif_readl(host->addr, MMCIF_CE_BLOCK_SET) &
- 		BLOCK_SIZE_MASK;
- 
--	sg_miter_start(&host->sg_miter, data->sg, data->sg_len,
-+	sg_miter_start(sgm, data->sg, data->sg_len,
- 		       SG_MITER_FROM_SG);
- 
-+	/* Advance to the first sglist entry */
-+	if (!sg_miter_next(sgm)) {
-+		sg_miter_stop(sgm);
-+		return;
-+	}
-+
- 	host->wait_for = MMCIF_WAIT_FOR_MWRITE;
- 
- 	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFWEN);
-@@ -787,11 +801,6 @@ static bool sh_mmcif_mwrite_block(struct sh_mmcif_host *host)
- 		return false;
- 	}
- 
--	if (!sg_miter_next(sgm)) {
--		sg_miter_stop(sgm);
--		return false;
--	}
--
- 	p = sgm->addr;
- 
- 	for (i = 0; i < host->blocksize / 4; i++)
-@@ -799,6 +808,11 @@ static bool sh_mmcif_mwrite_block(struct sh_mmcif_host *host)
- 
- 	sgm->consumed = host->blocksize;
- 
-+	if (!sg_miter_next(sgm)) {
-+		sg_miter_stop(sgm);
-+		return false;
-+	}
-+
- 	sh_mmcif_bitset(host, MMCIF_CE_INT_MASK, MASK_MBUFWEN);
- 
- 	return true;
-
--- 
-2.34.1
-
+Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
