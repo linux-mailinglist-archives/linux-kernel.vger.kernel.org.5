@@ -1,201 +1,173 @@
-Return-Path: <linux-kernel+bounces-73871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E86585CCDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:42:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F18485CCD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81F3F1C21D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:42:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34A5F28338F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A101876;
-	Wed, 21 Feb 2024 00:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0124259B;
+	Wed, 21 Feb 2024 00:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VynMfyH2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXXGDS8T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC98F17D2
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0062B1842;
+	Wed, 21 Feb 2024 00:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476131; cv=none; b=NOKm+LmaYhIm2bRc43zkdO2B87sWs6vqxoXiUYVZnVRU8sQ2No4SFtIy6IKLvMdW1gxHAgQMY7HJgYBD6RTVlzmRlqMrAfDXglQ0GN255pp+j1hJaSb3Z7vqtFkQgPANM38EEFS9REqItebjPM4iz+Aszm6PgQ0HXYGSHkAJJDg=
+	t=1708476026; cv=none; b=n5mzJ/4bs+qHlmmEBTG+7b5Zez9wjZE06BZOb4+uvbwuwz1KcKwFSgKM6z4t+5Y9sI+/Yim4yzpxfJ+BPj/WCVtG2Dn0H0AeF8kGlwXGaHuZKewSRsLbvIUlQ6x28FTOF9yQFBeqmKR8Hbd7G1I5N7nvGFclj823ZZcV/2DuFEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476131; c=relaxed/simple;
-	bh=RPiXUr+f3J0v/l1Zh9RKyxVKvEkJRigulgQGGDqXTFI=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=C0kXkU9lvzmMpNCM5EOpL+m2vmYRv7z9yf6baQNfaKc8OzBagXM1pk9VK7oNeVMahXY3kKKNikeFxsLya4svd9BKxeImW5PdVwo27yjrfgFPCi7wlkRfnykmY02jk7RzH/1RgpE+Czvej+xHp4V8zyYdx4olWbauZaHchAQoz/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VynMfyH2; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708476130; x=1740012130;
-  h=date:from:to:cc:subject:message-id;
-  bh=RPiXUr+f3J0v/l1Zh9RKyxVKvEkJRigulgQGGDqXTFI=;
-  b=VynMfyH2mKkc3jBmxrWqKQE2CFs7kv2M10WrrfYl2r3oszP7U/4O4CGy
-   twwNUmJzG9aquocPglMDf+/gLVY7ebpzIuHUg9k693k9LkbIYL2guva2z
-   qM9tU825ufMvQpyBzzaaq+gLoVWLXIOzOMWbQDyP8RYh5E/LEzb453plI
-   1sKTYBICUX3ViWMJM5V3N52RxwCetaO9gz8zV+YAFUX4sAqA6X3feTj7W
-   NKmHkimIM+PpoxXrYjFTfdQe9yAqVz2ULtVKffZSv24EM10SQysLtGkWv
-   n3Un07ZorEu3AifYSYl92YqeSFyXM+qDbRxL0HpCOaN0VzXgLO6tYxoR5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2499643"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="2499643"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 16:42:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="5108237"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 20 Feb 2024 16:41:54 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rcaf8-0004ti-31;
-	Wed, 21 Feb 2024 00:40:57 +0000
-Date: Wed, 21 Feb 2024 08:39:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- b388e57d4628eb22782bdad4cd5b83ca87a1b7c9
-Message-ID: <202402210832.S8GhOhJO-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1708476026; c=relaxed/simple;
+	bh=4oc1pZky5HkjCTR+BuVavdWJx7t0uS02Mzr1ZCWHjCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d1nSoLImu1x+OZrao0GP0bVAK0wSaOZSQICOlq73lV+IhbOpiUC3uw1Ai25cbLsCiPwL7la0MWOsfCo44+4DFb5z6sfHpYF6LFbBxkdWBLM4dvMSo0omi930hoOhuv1UaLPGwYQGTEHOoiy+uVz2bTWNvsWSbFJ/W7Cr58ST6I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXXGDS8T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDD31C433F1;
+	Wed, 21 Feb 2024 00:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708476025;
+	bh=4oc1pZky5HkjCTR+BuVavdWJx7t0uS02Mzr1ZCWHjCo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VXXGDS8ThunN70a0rYLJLDyy89pGrp2M3fSV0kNxp/p/8CGEClIOL4nl+ZzbTjuIV
+	 8V6uBESKVIYNjOAaa8Uo/S6TiQUo9smlP+Yw+uyKF1sXBB96kRwPAL6dnJjedxyo6k
+	 4qbYaZ9JN4f9mZjp3cNgSl3cbBK9AnbdforPZw6T9Sb2nChqCEt0AgeAAASchO8E6a
+	 ez7o0m5s5o/RTEFvNxASj/1hCwyW75ZRt4zTttSENFrinE4aZ9eLNeLRP+SphzQMF6
+	 qqBsMn6ugGGsgIJzoiO9Uxo6EPe3R7ANKhZYz08gVHsrHyerm0ZL7k0trACQOzI77b
+	 d6YNu+2OHW7dQ==
+Date: Wed, 21 Feb 2024 00:40:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Stefan O'Rear <sorear@fastmail.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+	Rich Felker <dalias@libc.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Palmer Dabbelt <palmer@dabbelt.com>, debug <debug@rivosinc.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	Florian Weimer <fweimer@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	James Morse <james.morse@arm.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Will Deacon <will@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+	"H.J. Lu" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <4be8dc73-4873-44e5-8ef6-62e55d5023a7@sirena.org.uk>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
+ <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
+ <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <063acc75-ea1d-4dd3-aecb-e5c8884005db@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EBD7P8ZrkhP4e0ph"
+Content-Disposition: inline
+In-Reply-To: <063acc75-ea1d-4dd3-aecb-e5c8884005db@app.fastmail.com>
+X-Cookie: E = MC ** 2 +- 3db
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: b388e57d4628eb22782bdad4cd5b83ca87a1b7c9  x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
 
-elapsed time: 727m
+--EBD7P8ZrkhP4e0ph
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-configs tested: 113
-configs skipped: 135
+On Tue, Feb 20, 2024 at 06:59:58PM -0500, Stefan O'Rear wrote:
+> On Tue, Feb 20, 2024, at 6:30 PM, Edgecombe, Rick P wrote:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> > Maybe I'm misunderstanding. I thought the proposal included allowing
+> > shadow stack access to convert normal address ranges to shadow stack,
+> > and normal writes to convert shadow stack to normal.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                       spear13xx_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240221   gcc  
-i386         buildonly-randconfig-002-20240221   clang
-i386         buildonly-randconfig-003-20240221   gcc  
-i386         buildonly-randconfig-004-20240221   gcc  
-i386         buildonly-randconfig-005-20240221   gcc  
-i386         buildonly-randconfig-006-20240221   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240221   gcc  
-i386                  randconfig-002-20240221   clang
-i386                  randconfig-003-20240221   clang
-i386                  randconfig-004-20240221   gcc  
-i386                  randconfig-005-20240221   gcc  
-i386                  randconfig-006-20240221   clang
-i386                  randconfig-011-20240221   gcc  
-i386                  randconfig-012-20240221   clang
-i386                  randconfig-013-20240221   gcc  
-i386                  randconfig-014-20240221   clang
-i386                  randconfig-015-20240221   gcc  
-i386                  randconfig-016-20240221   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       alldefconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                         wii_defconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                          sdk7786_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                                  defconfig   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-002-20240221   gcc  
-x86_64       buildonly-randconfig-003-20240221   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240221   gcc  
-x86_64                randconfig-002-20240221   gcc  
-x86_64                randconfig-003-20240221   gcc  
-x86_64                randconfig-004-20240221   gcc  
-x86_64                randconfig-005-20240221   gcc  
-x86_64                randconfig-006-20240221   gcc  
-x86_64                randconfig-012-20240221   gcc  
-x86_64                randconfig-014-20240221   gcc  
-x86_64                randconfig-015-20240221   gcc  
-x86_64                randconfig-016-20240221   gcc  
-x86_64                randconfig-071-20240221   gcc  
-x86_64                randconfig-072-20240221   gcc  
-x86_64                randconfig-073-20240221   gcc  
-x86_64                randconfig-074-20240221   gcc  
-x86_64                randconfig-076-20240221   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+> Ideally for riscv only writes would cause conversion, an incssp underflow
+> which performs shadow stack reads would be able to fault early.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> For arm, since a syscall is needed anyway to set up the token in a new
+> shadow stack region, it would make sense for conversion from non-shadow
+> to shadow usage to never be automatic.
+
+Well, we only need the token to pivot in userspace so we could
+*potentially* work something out as part of the conversion process.
+It's not filling me with enthusiasm though, and I've certainly not
+actually thought it through yet.
+
+> > I agree though that the late allocation failures are not great. Mark is
+> > working on clone3 support which should allow moving the shadow stack
+> > allocation to happen in userspace with the normal stack. Even for riscv
+> > though, doesn't it need to update a new register in stack switching?
+
+> > BTW, x86 shadow stack has a mode where the shadow stack is writable
+> > with a special instruction (WRSS). It enables the SSP to be set
+> > arbitrarily by writing restore tokens. We discussed this as an option
+> > to make the existing longjmp() and signal stuff work more transparently
+> > for glibc.
+
+We have this feature on arm64 too, plus a separately controllable push
+instruction (though that's less useful here).
+
+> > BTW, when I talk about "not supporting" I don't mean the app should
+> > crash. I mean it should instead run normally, just without shadow stack
+> > enabled. Not sure if that was clear. Since shadow stack is not
+> > essential for an application to function, it is only security hardening
+> > on top.
+
+> I appreciate that.  How far can we go in that direction?  If we can
+> automatically disable shadow stacks on any call to makecontext, sigaltstack,
+> or pthread_attr_setstack without causing other threads to crash if they were
+> in the middle of shadow stack maintenance we can probably simplify this
+> proposal, although I need to think more about what's possible.
+
+Aside from concerns about disabling over all the threads in the process
+(which should be solvable if annoying) this would be incompatible with
+policies which prevent disabling of shadow stacks, and it feels like it
+might end up being a gadget people could use which will concern some
+people.  There's a tension here between compatibility and the security
+applications of these features.
+
+--EBD7P8ZrkhP4e0ph
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXVRm8ACgkQJNaLcl1U
+h9C3fgf/Vl3KFlMHtkZvrz9cGvE2TbC0mqrxMOeapZww/WMKCmIqHtFjSPzmQOKB
+im3jrrFwQk29IabWprHeQo3+DYZFyMTugJwwJEv4rd++VT8MzDo90LzRjpj4WVzS
+aCfx0m/xEicqx9wCP0hcygDCzrktn/MTm4+/b7fTIzhDobIOvheS2/tRMwq7x8HD
+DTzVsfLNoau1eSLjxdfkFA+/rAkUuoNVqjDs33Sxiw9mBtoi0jNLc07YvZQm8u27
+ijTimNGyEbckTAafaHEd86bwPjHRaiCTEsF4PP55m/lZrpYKjeSDVJw6H6skSvmm
+ubMgYOa5diXQA6KCtKkjvhptV/C+oQ==
+=FQI7
+-----END PGP SIGNATURE-----
+
+--EBD7P8ZrkhP4e0ph--
 
