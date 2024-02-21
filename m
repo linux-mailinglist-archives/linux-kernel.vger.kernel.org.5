@@ -1,174 +1,182 @@
-Return-Path: <linux-kernel+bounces-74304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFAFE85D28E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:28:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FD985D292
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75763285CD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:28:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B94291F24A67
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CA33C469;
-	Wed, 21 Feb 2024 08:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3EA33C06B;
+	Wed, 21 Feb 2024 08:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="a9FIqdHH"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qI5wfT46"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCB93A1A2;
-	Wed, 21 Feb 2024 08:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CF03A8F5
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708504121; cv=none; b=uxumVDJ6mWTOkHPHuQxo4YuLJ/RXo9YoVGZQwVIaLPBaywJO/yu37yns17NFDiI6pQ+W/K3G4NwN0kPpNl9a6oMsNcxZd3YxZLsrGArmbgZD35aW7DiK0qj2tbTb6vZaGmCPLn1li0Yl2FA91yLj3OFoJ8IwZyISdRrPQcIhnBE=
+	t=1708504174; cv=none; b=ayBt8UrwmlG8fC/0zjy8u/44++ojJKMNhZLrdL8+bUddmXogfw4M09JhS02JOsYXre4lxv/mmDpsd1gcSaFpiffwrVUIW88lnkRyyVKaZv8X+zsmrn1qMo1FILr2lZG3zjlZcxe+jqKj5sjGeMulPOW1X9SBYl2esVhfCwC0IMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708504121; c=relaxed/simple;
-	bh=wUDHkuJfww4QlzyksTXDUyMMbY5FhW80CHg6xtS3WPw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H5ouIuYutOwPDHpoLXjco0ffJuOzoJqXqAfpRsGWYchpgsawpayvnG7dDq+bNbccrGPbcDfF7VZB4FsZmgmza2RmFHv0Ph1Bh9iCleeRdkgmXjQY0hAxj5R2W9aHtMbFAzAMYqDACXUhu6AT8Q1VzzNHXsJcO7iFhuQz89/9Aiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=a9FIqdHH; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41L6cr1L001177;
-	Wed, 21 Feb 2024 08:28:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=U2p4I8IRsPvmbwBlC9Hezxy+xYl2NZX7KluCK3px9+8=;
- b=a9FIqdHHii4XJDv1uLZhymyXsTrvyZguqZejt0djNWZh/19UTgN0ZUTW2c2Aiu3Pa2P2
- bfx/c4ifVV3d50tyIMNi1rmhCDUvSlAKX8yY6NcGeUqOlqqZSNjimAIQ8kam1LEigdPA
- vHifxj5sGDMkofw3Dzh3kS1MHp29Qf63Ydv+hRtM4eU5eDAwKB84iMri7wz8hjisA0Or
- 0pjRcWSyZ4B6fXFm2tlLJk53uaS7yCq2v+I2pcg1+PDlCZvATucCrHTKYSbetcj9fr8k
- ijC4W2HQJ8D18VsnCWfl6qXV44smoJrjw3A47txS3Xl23gDWIQCqrd4/MNESeGdF9qAl kw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wakk4172v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 21 Feb 2024 08:28:29 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41L84YuA039689;
-	Wed, 21 Feb 2024 08:28:29 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak88najp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 21 Feb 2024 08:28:29 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41L8SSK6011353;
-	Wed, 21 Feb 2024 08:28:28 GMT
-Received: from pkannoju-vm.us.oracle.com (dhcp-10-191-205-154.vpn.oracle.com [10.191.205.154])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wak88na1s-1;
-	Wed, 21 Feb 2024 08:28:28 +0000
-From: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-To: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
-        manjunath.b.patil@oracle.com,
-        Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Subject: [PATCH net-next v6] bonding: rate-limit bonding driver inspect messages
-Date: Wed, 21 Feb 2024 13:57:52 +0530
-Message-Id: <20240221082752.4660-1-praveen.kannoju@oracle.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1708504174; c=relaxed/simple;
+	bh=CQYTx8hntbeMW4oVImKnR1XLM3pqvBlVc8dmDKa9c0w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PcuQDv/HpXzy1Ov7I1NS1gKrBsb9X0iFy8BNBPvorvrMROn2tXB4UofvWp/mzfp8snt6rFIhlitH0pBZv7DBIJDRBWbFvlciLrlmrfLTQzeCNipgGUgWxN/3U2r9E15L9j1fB+z1XCuSx0Zd2lKOTf6Boe1dQNa2hCFDE0OUyoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qI5wfT46; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-563c2b2bddbso9055779a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708504170; x=1709108970; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CIF3oLHmCvNdf2w1LtFmrRJmYzffuUfqkjXXC5TFtKQ=;
+        b=qI5wfT46EBJNmvKj6AUVgbT5TQXlTanQha2BFvGQxZ3FuHSQ3aT00U6A7sj9bt2rZv
+         BZjXFBrYr/MAq/8Xo5Pq/4nsMXu3lVKWthFVRx1JYk40ENzqxWB4x5HbeB8+Y5CTO4Tg
+         MpuBqBgS6i4e3TrvRGMAta31XDq/6wvfOWBFnSD6F4FT8LKX4A2JWzqzsb4klXmlHwc3
+         +ok15TPtYQShP/xq/IN3It2SVo7hCErVTIR3e5Kd7XbdEYGefwaRCqgWkR49bXFN1DON
+         iTv6Qh9XDbUG1ItYUoH5lVp8R0q2UQBV24+8UgLsUdodzP3NGyRy41DarIJrCggVTiHU
+         P15w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708504170; x=1709108970;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CIF3oLHmCvNdf2w1LtFmrRJmYzffuUfqkjXXC5TFtKQ=;
+        b=VQ8h7JSipbxYUncMYoU+gpQm3tDrvWswq8Nyl1H5TqhpqX+Q5+cD0Wd5+Rb7YtCyLe
+         d18eKvssF1nd6idPgl0i1G2QnxIqTJYUrtGaCAE5mOVgqdVbIKO4z0l7NNNdUud9+BVh
+         Q602c2zYgI2mKLMBQjAxCkSjYrZILbQkp8/kBLNE6/Cla1nqPbBJ5vsUNWscoG1AA6at
+         RyqNy8Br2+fIpqytEJPpM2mvAAwbMevi3ZceqJSROMrEuNOFLH7YU/FT/LCyHDMzbISh
+         tcaiJfz/5ftmB968b6eVO/XmGS27WTY1yfku22zsRNQKz2StbbKWPCJKkAgDaZnoKIHs
+         mrYw==
+X-Gm-Message-State: AOJu0YyYnEb2EXF752qGR0841OOOfyL7jsyDVclMKCDlXtY70SpszOZp
+	r5ExRsox7HPq87tZTxiBzBbamAwzu/Iw+dLBKa1oRYZW5cRw9as6kfqkC8wKx9Y=
+X-Google-Smtp-Source: AGHT+IFwLs2PXK7F8WAUFHe53efTAlG7yytZFExh1DXoSXHxGIOjUUAYP4LyJhqkaoOYH7kzaaNKTg==
+X-Received: by 2002:a05:6402:3459:b0:564:f45d:1ae with SMTP id l25-20020a056402345900b00564f45d01aemr794885edc.19.1708504170618;
+        Wed, 21 Feb 2024 00:29:30 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id g14-20020a056402428e00b005642bcfed99sm3902151edc.23.2024.02.21.00.29.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 00:29:30 -0800 (PST)
+Message-ID: <1c4ab974-2b72-45ce-ab20-de158b91e356@linaro.org>
+Date: Wed, 21 Feb 2024 09:29:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402210065
-X-Proofpoint-ORIG-GUID: Boe4j8y2B2_1FevFli97TotK5z81it0C
-X-Proofpoint-GUID: Boe4j8y2B2_1FevFli97TotK5z81it0C
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] memory: stm32-fmc2-ebi: check regmap_read return
+ value
+Content-Language: en-US
+To: Christophe Kerello <christophe.kerello@foss.st.com>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ devicetree@vger.kernel.org
+References: <20240219140202.85680-1-christophe.kerello@foss.st.com>
+ <20240219140202.85680-3-christophe.kerello@foss.st.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240219140202.85680-3-christophe.kerello@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Through the routine bond_mii_monitor(), bonding driver inspects and commits
-the slave state changes. During the times when slave state change and
-failure in aqcuiring rtnl lock happen at the same time, the routine
-bond_mii_monitor() reschedules itself to come around after 1 msec to commit
-the new state.
+On 19/02/2024 15:01, Christophe Kerello wrote:
+> Check regmap_read return value to avoid to use uninitialized local
+> variables.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> ---
+> Changes in v2:
+>  - New patch added
+> 
+>  drivers/memory/stm32-fmc2-ebi.c | 128 +++++++++++++++++++++++---------
+>  1 file changed, 94 insertions(+), 34 deletions(-)
+> 
 
-During this, it executes the routine bond_miimon_inspect() to re-inspect
-the state chane and prints the corresponding slave state on to the console.
-Hence we do see a message at every 1 msec till the rtnl lock is acquired
-and state chage is committed.
+..
 
-This patch doesn't change how bond functions. It only simply limits this
-kind of log flood.
+> -static void stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
+> +static int stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
+>  {
+>  	unsigned int cs;
+> +	int ret;
+>  
+>  	for (cs = 0; cs < FMC2_MAX_EBI_CE; cs++) {
+> -		regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
+> -		regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
+> -		regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
+> +		ret = regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
+> +		if (ret)
+> +			return ret;
 
-Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
----
-v6: 
-  - Minor space additions addressed. 
-v5: https://lore.kernel.org/all/20240221050809.4372-1-praveen.kannoju@oracle.com/
-  - Redundant indentation addressed.
-v4: https://lore.kernel.org/all/20240220050437.5623-1-praveen.kannoju@oracle.com/
-  - Rectification in the patch subject and versioning details.
-v3: https://lore.kernel.org/lkml/20240219133721.4567-1-praveen.kannoju@oracle.com/
-  - Commit message is modified to provide summary of the issue, because of
-    which rate-limiting the bonding driver messages is needed.
-v2: https://lore.kernel.org/lkml/20240215172554.4211-1-praveen.kannoju@oracle.com/
-  - Use exising net_ratelimit() instead of introducing new rate-limit
-    parameter.
-v1: https://lore.kernel.org/lkml/20240214044245.33170-1-praveen.kannoju@oracle.com/
----
- drivers/net/bonding/bond_main.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+These are just:
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 4e0600c..51fdb79 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2609,7 +2609,7 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			bond_propose_link_state(slave, BOND_LINK_FAIL);
- 			commit++;
- 			slave->delay = bond->params.downdelay;
--			if (slave->delay) {
-+			if (slave->delay && net_ratelimit()) {
- 				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
- 					   (BOND_MODE(bond) ==
- 					    BOND_MODE_ACTIVEBACKUP) ?
-@@ -2623,9 +2623,10 @@ static int bond_miimon_inspect(struct bonding *bond)
- 				/* recovered before downdelay expired */
- 				bond_propose_link_state(slave, BOND_LINK_UP);
- 				slave->last_link_up = jiffies;
--				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
--					   (bond->params.downdelay - slave->delay) *
--					   bond->params.miimon);
-+				if (net_ratelimit())
-+					slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
-+						   (bond->params.downdelay - slave->delay) *
-+						   bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
-@@ -2647,7 +2648,7 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			commit++;
- 			slave->delay = bond->params.updelay;
- 
--			if (slave->delay) {
-+			if (slave->delay && net_ratelimit()) {
- 				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
- 					   ignore_updelay ? 0 :
- 					   bond->params.updelay *
-@@ -2657,9 +2658,10 @@ static int bond_miimon_inspect(struct bonding *bond)
- 		case BOND_LINK_BACK:
- 			if (!link_state) {
- 				bond_propose_link_state(slave, BOND_LINK_DOWN);
--				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
--					   (bond->params.updelay - slave->delay) *
--					   bond->params.miimon);
-+				if (net_ratelimit())
-+					slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
-+						   (bond->params.updelay - slave->delay) *
-+						   bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
--- 
-1.8.3.1
+ret |= regmapr_read()
+and one "if (ret)" clause.
+
+
+
+Best regards,
+Krzysztof
 
 
