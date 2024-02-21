@@ -1,128 +1,131 @@
-Return-Path: <linux-kernel+bounces-73981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B32485CE5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CE0985CE5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45AF6283418
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:52:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCE36281F94
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDC028DB5;
-	Wed, 21 Feb 2024 02:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA542837A;
+	Wed, 21 Feb 2024 02:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="de2Uzn9F"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYo3xyh8"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53692F36;
-	Wed, 21 Feb 2024 02:52:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63623883A
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708483922; cv=none; b=nEGSBE/cbRHCXporb0GKMQR1mUF8MUBt6y2m21Y7OZIGvFv0pFleMjJBx57FSBAQwBnREFZp0es7EJ7mD4zYXLy7hpof19Li98RviiJRtXqkNBGwYRqXQaaKsSbzdYYi9xh6I9QhxlRPLVcLeTQxaiDXbbe+2TsbHYXGscq2J80=
+	t=1708484099; cv=none; b=qOuv2/+61g82iJ07yTk96twnN/z732NY3vJAikppcelmaIDnk/DEFpYo6F6CmfGOszlGOCpMrL1706cWolahUSjd+2X1ClK0UtP9/rVa+Lb43p329RgFAAf8H6ln6uW7XIG7/UZsjCEUJKNfJBFozYVj0c7jTtaOJZKv00fAjAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708483922; c=relaxed/simple;
-	bh=M9LyLUnYSF7X179XZ54TkHDA6KFvwvPJ7sm2M1C37Dg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ci5Hg0PYGLSXJZCRqK3+LIH2Nd9z2GreJOawiD5XEWLmrv8S84UDcSpN5Cjafp8nTX7aQ0svs4++IGNemE8yTqb7AI/rS4md5XNQUJqIBCEtgyCLY05w9Z3nn9i1zPOfNToL0whiLMq9YyKiHcwIe5BRDaVckTV9t0griv2Gcu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=de2Uzn9F; arc=none smtp.client-ip=209.85.167.174
+	s=arc-20240116; t=1708484099; c=relaxed/simple;
+	bh=YBKD/G9CSyDPbKp+1m1vo+5byl0sayVwUT7MMT1YTxY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cG/ijhITOpEz/544P/097KEDaRtUPYkMhDakwHe0DuUvqlUL2BfmvZrQF873k+c7ApUJ0H8nXDArxjpJz6qP15U0SPjFXdQfgaLK3qHkilzDbiU0wFoXBJlftAOov/FprBqwK4xvrmkidXkBnGGDfDA+uw21eB9yi3rqfAYBTEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYo3xyh8; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c02b993a5aso3742293b6e.1;
-        Tue, 20 Feb 2024 18:52:00 -0800 (PST)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so5193908a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:54:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708483920; x=1709088720; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5cCcoJFfJlagmSzWB96IS3kVZKplb56dGjkjAGigbOY=;
-        b=de2Uzn9FHdeqzhpXGQIx0OrlAcm0/BkFqSN2IEuapIDmov3HtJwFEmmKBGtU+PF/AH
-         TC19lYLSMn90B2kzM1mz23Nh85qrcvo4RvxQnSZRhpXzWYj4f1/0iKKkCPprGDhRrMsc
-         8a0S4pc2irWdDs9LMGjFlaeOwbfoeZjoP72e7ZMP3gxp6IUNPyh4xben0CsRHQkfQ1fE
-         Lc4nY61lpDojgzlpZuogpWLpN9JeExNB9uJa4JWH6kxW/x1bPwyZB5pBp5s9aPqfKnHM
-         dmO4E3JL7w1HPg1n3nVqrV8bywMldeHyx5Npcrore3yA4EXiWArmGx0EzYTNmIphXL27
-         PUjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708483920; x=1709088720;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1708484097; x=1709088897; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5cCcoJFfJlagmSzWB96IS3kVZKplb56dGjkjAGigbOY=;
-        b=r69QsT/9Qo4VHL95zFpd5WJlf2Ca7b0gLwMrGloXYH++esvrYW/Acke7kNz/Ch7upl
-         OFIAecf13IguC0CnfNXtc/0Nv9oLVCaw2sh56aPg0qHarnyALRfKtYo9oYf+R5BXXX1Q
-         qU0Zg9sacoQUG1Hl9fSPOGPZMzmI2ZImLs+cxBGCOAGxTF6oCQ/AASVnISXLZKg5Jq6O
-         aLcRzMomYHPHFMIgPimMFAUj9He6FGUjbtD2frtX4MTxQVvhie2nsAMsQTIBXCRfSBfc
-         NIKXj4No41tytbuPUL1O3Jx30RxcE6fvitpq2KD776rIAmqnZ8yywD/7cr1Pwt6WOz8I
-         76Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUhHRLL2Hz5zkOrfVHgLZ3+uY97Os5iOWnY197HdE8scCu3vwzSo3hgj21bUkTpi+D+LJb5dPGKyNN5RZy/GLElyItJ5cGG6RH1fC3q12/vFK2FC4eSoq7Hy6ztKNoaaDqZz27vQEfum6PYmuCrq6NUNK2tnPwXJHjL8CjMG/fjcoG51YcQFywLXOkCtfM9LSEzbmCrV7S+zOqKNimsf1erfzl3VBRWDAgoGJg2fBwrgycb+CJl5lhnzyQ=
-X-Gm-Message-State: AOJu0YzJfch1GoUSniZ6OPHUziANPwfptn1Qm2cF6bxUcenSBSJ+b+tT
-	cT82yT4mQu4vnga6Ob80/stXHyBCoETA/WX6l0UV/THoCViS0Tio
-X-Google-Smtp-Source: AGHT+IE7orEkJIiIoLoo9uUilOiSIrkDIWd9YJNRBvQsEKS+qFHHzkz+CxBRMkhvQvzm4V/UGCkKOA==
-X-Received: by 2002:a05:6808:4498:b0:3c1:4526:7533 with SMTP id eq24-20020a056808449800b003c145267533mr17061192oib.14.1708483919989;
-        Tue, 20 Feb 2024 18:51:59 -0800 (PST)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:b11c])
-        by smtp.gmail.com with ESMTPSA id r11-20020a056a00216b00b006e4766d31bcsm2786546pff.184.2024.02.20.18.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 18:51:59 -0800 (PST)
-Date: Tue, 20 Feb 2024 18:51:56 -0800
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v2 03/10] bpf/verifier: allow more maps in
- sleepable bpf programs
-Message-ID: <ezfl6x3wxdnjhv7e5hyatneprtqvapbu7xckdejxmcdb6qejaj@5wn67k7rmtxz>
-References: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
- <20240214-hid-bpf-sleepable-v2-3-5756b054724d@kernel.org>
+        bh=iwE0MS/64X25Z/y4hbsuz3KSPQ9sE/Fa1smXc6Z3G+U=;
+        b=PYo3xyh8CKboar8flZJxJ9NbikUbet/LIQeNOm1Gjs3ULlrKBLLxPfllJ2EvmNtlmi
+         fg6b0unAW5qV+Lnsk6oS+CKFAXNi4h6O14n7WJ7Dw2kAH8yL862wUyJQpn6J1brB1PpH
+         bj+aJq3/quj85/dRhTJC1KwEdfbNBryE5ssF1b/SKf8aSWY70ioFjLZU2jIW9qtFnvXK
+         tdXLY/HhYcHX4zobEIrmVID5RWo6OsM7lW+WJanDoMr1ZgFWvKN//BxHO/huw2xTRecU
+         /MH/lmQctSShbjJK7H40gHdIUOEd6OS+riA5iCGsCg1vOHZYrP2dCKI2sGfAIMx14V1v
+         0kcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708484097; x=1709088897;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iwE0MS/64X25Z/y4hbsuz3KSPQ9sE/Fa1smXc6Z3G+U=;
+        b=LkMDet+d/diCaOnbXvPF4NNB4eQNanPbyqFx2pPTM5gtJfn7qx3eSatbW6h2jqxWmc
+         mhXU9qfjltMjAIH7dT3VyyLvoq4vDjVxfjc5qOwNifI3xA2x0aww00/rvKIPW7YXtJJV
+         HPhReTEXL5LVwk8VtzWVQ3B1cPMpHB7zxy+kDMU68VD90Fruj6QmUAzyoTroDAm322+O
+         L88SNPaFJP17vgogdjMAhB9TjNT0qQhdcNRzbgZyp3Cppani6NB5cR2eNWUSRJlotVUu
+         PrH0CEHR/GtjAOB1bjmf+wS0ixOQ9B4lsCGjQCoypytaSlpxYswQasaMB7HXSEkn4gns
+         x8fQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUj3g+ylHLpY8sBG7Q161XvIFfqK7fvIngYF8gqNUG5ce5WqVTRmvhZaG5xTB+Yc43hjxL4bqkUuu8T/+MXOYSM4BpwCDtkUYEm2xXY
+X-Gm-Message-State: AOJu0YzwobmJAoJCsr4tha976blJFnPmgza7jQEyRyTSw9ZMyK33skBj
+	ozgf3vI/5UqFCYlQweaPqmMzdMOchOSVFNw0DdHipg93o914MWQnHBOdSDZu2MwlNR/n1i39C/f
+	Ugs0oyc6ZDxcaM0EcaqBzslcQmZk573ctAsU=
+X-Google-Smtp-Source: AGHT+IEVlwZM9BHLcCDwIIywPoDLeNXsCdSezy3RFANnjV+6XZ7hnvwyMyrTczp2CZz7dz5MiwRK5EcFz1yc8JkP0iI=
+X-Received: by 2002:a17:90a:9c3:b0:299:32ee:a426 with SMTP id
+ 61-20020a17090a09c300b0029932eea426mr10736380pjo.32.1708484097600; Tue, 20
+ Feb 2024 18:54:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214-hid-bpf-sleepable-v2-3-5756b054724d@kernel.org>
+References: <20240216180559.208276-1-tj@kernel.org> <20240216180559.208276-13-tj@kernel.org>
+ <CAJhGHyCOgrU9TC9o97LpvAEL2p+Dgt=uN0mo01Gr7HadVSD-Ag@mail.gmail.com> <ZdTxisk3zp_eXDVb@slm.duckdns.org>
+In-Reply-To: <ZdTxisk3zp_eXDVb@slm.duckdns.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Wed, 21 Feb 2024 10:54:46 +0800
+Message-ID: <CAJhGHyCvk=uqcjjf-=L64ig2m00qdEuRLSvc0qiJm_SftGqunQ@mail.gmail.com>
+Subject: Re: [PATCH 12/17] workqueue: Implement disable/enable for (delayed)
+ work items
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	allen.lkml@gmail.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 06:18:32PM +0100, Benjamin Tissoires wrote:
-> These 2 maps types are required for HID-BPF when a user wants to do
-> IO with a device from a sleepable tracing point.
-> 
-> Allowing BPF_MAP_TYPE_QUEUE (and therefore BPF_MAP_TYPE_STACK) allows
-> for a BPF program to prepare from an IRQ the list of HID commands to send
-> back to the device and then these commands can be retrieved from the
-> sleepable trace point.
-> 
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> 
-> ---
-> 
-> changes in v2:
-> - dropped BPF_MAP_TYPE_PROG_ARRAY from the list
-> ---
->  kernel/bpf/verifier.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 67da3f7bddb5..cb1266566b69 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -18094,6 +18094,8 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
->  		case BPF_MAP_TYPE_SK_STORAGE:
->  		case BPF_MAP_TYPE_TASK_STORAGE:
->  		case BPF_MAP_TYPE_CGRP_STORAGE:
-> +		case BPF_MAP_TYPE_QUEUE:
-> +		case BPF_MAP_TYPE_STACK:
->  			break;
+On Wed, Feb 21, 2024 at 2:38=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, Feb 20, 2024 at 03:22:26PM +0800, Lai Jiangshan wrote:
+> > > - A work item carries 10bit disable count in work->data while not que=
+ued.
+> > >   The access to the count is synchronized by the PENDING bit like all=
+ other
+> > >   parts of work->data.
+> >
+> > It is 16bit disable count in the code.
+>
+> Fixed.
+>
+> > It misses the same handling  at queue_work_node() and queue_rcu_work().
+>
+> Oops, fixed queued_work_node() but I don't think the latter is an issue
+> given that calling work interface functions in the embedded work is not
+> supported and rcu_work can't even be canceled.
 
-Maybe resend this one and patch 1 without RFC, so we can start landing them?
+Hello, Tejun
+
+I think it is better to have the same handling (checking disable count)
+in queue_rcu_work().
+
+1) code is consistent with other queuing code
+2) known state: no work item is queued with disable count > 0
+3) catch wrong usages: some complaining code can be added when adding the c=
+heck.
+
+Adding checking and complaining in the code is as important as
+adding a comment stating rcu work is not allowed to be disabled/canceled.
+
+>
+> I'm not quite sure flush_delayed_work() is safe. Will think more about th=
+at.
+
+I think the code successfully deleting the timer not only owns the pending =
+bit
+but also ensures the disable count is zero.
+
+Thanks
+Lai
 
