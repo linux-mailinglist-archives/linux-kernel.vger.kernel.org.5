@@ -1,151 +1,84 @@
-Return-Path: <linux-kernel+bounces-74161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3819085D099
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:46:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE1FD85D09A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:48:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1E0628734D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:45:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EE251C22D1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A4E3A8CE;
-	Wed, 21 Feb 2024 06:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fp/fwxhE"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257A8364CC;
+	Wed, 21 Feb 2024 06:48:32 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D113A1D4
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65A1365;
+	Wed, 21 Feb 2024 06:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708497937; cv=none; b=NAeNNi9OvnOTvSOuq7bSUsjzYvL8wMwqlsaA4mO79qookXcGGu6tlQUgCO4wsuJly+A3DnDox4mPGEO5pW4EobiLK7JMG8572lpLfub2gyCHwTvxJmu6PA1fVq0ynJ+8YuB3HR1Y6ZDBW5hYM33xInFMwHJyAYpRueIHod7oTck=
+	t=1708498111; cv=none; b=kuV1OEOI1jbDEnu1kvEfMyHE8jSQo3zeZ0DPZ9EILGqfRGOqtFRON+Y1GsPUNlI0N2kG5XMVyh+X80JKJJRFvb099vqyRjVLcJE76szpbiEAs+bIQ1YvHeyKwiwzb8vbo08/Q/Sax7tAlNS0/pgs6CeUoVEN2IkjmawhSkgqLqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708497937; c=relaxed/simple;
-	bh=/6zujSE566bACQeKSvHvMpYeeTA8PlC2Y0AN3XU66zc=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=FreJb8J9H8sPWU+HxOiJQI6TAQoTc+J+7FH/dJd7wQt+7dwDN6W2p3qaRP0hNTFWgxFL0PkEslyjmQo4N1G4ZVvJ2kUnsaEHDrk4M7GULFhRwYuH6q11RL+IQf6sYzBKD0FXHvc1ED7Vc+a2yKtfSWoKvFXKT60LKNGYX34fm6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fp/fwxhE; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6ade10cb8so12781541276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:45:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708497935; x=1709102735; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6/pI7AtchfWx5feeWTlX63xH7EqjzW5vpXnx4QlPqwg=;
-        b=fp/fwxhEI01Fqx/jks8ALYZtPem7JIH9Lv2V8MUXGgo2PRCpRHXkjL7oo2/ddP2607
-         5rSY3Tzh7RQBJoMduCexR5JFm3/nRVTnSOTVGZQnGsX+qKQ0NXy4hE8rDd5Pm6+oSVko
-         Hd6mEHrewL9X8vOdVeMoTw+BBqojr9t5OhByVJNCcE3Epwbbm7yYhPYt50fFbsZyMgu3
-         BZo3JZh5cYk3DwEyxhx62c7pbIhyy1HeaYviwkgbqPp1C0qVOvJNOLuPHlm6wiSBHTRl
-         b/89ulYshwOkdgqQEG6YYxjucxivheF0wmbf0r7UrZS1DocBGB2TJMz/cHdwf3HXHqWH
-         uGUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708497935; x=1709102735;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6/pI7AtchfWx5feeWTlX63xH7EqjzW5vpXnx4QlPqwg=;
-        b=llxBLECou/gZ+bttyp+e0qPP8a/BrXAzkDgtfg+UABh2eWtoRD8Q6UZB5RTfiUiyBA
-         IpaVncSYRn++o/7KgFMCf/Dmh/6yunsEWWRiF0twpsJOHviDWLxAEBGXKo1z0VRkWoeq
-         I6Uy5Vg8OxGMap4+EAHupoY9OQsi3LK46ZX1HwPmUNg8HGx3DXBJKZ7dbAF4wdKf75TK
-         mX4TS4j5vz9TpNOQr3LQ7nna4+fxuubApqC5p811in3Fb2nzld1BLrUMVtFBfqYS+mkJ
-         boltA7i6JFzHif3MGMle7q5hTy4hw2MBbYIttim0VM8gIV9QiFDNkiiJbfgrRe3a+MS+
-         qwVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXM78OpTW5ZJj85ycmA8gkIMovy1jlsGZxNJnd8bOKeCBss+3aSwWJrgmIAfGKWrMK8yIzbMZUDl+xFVt1+g9MlSVL56HZnBCMhQeVp
-X-Gm-Message-State: AOJu0YxweHgPckeE+WTv1g07ZIN+rcyfUDmZYju8k2uEzyrQwQBPGBot
-	VjYqHaEXdQI2M+ft64LgzwxwYvsBoNOpJu9hk8du24SG7z3rBAHIFYtU7yz5fCw8gn6sRQHqjJB
-	nFT393g==
-X-Google-Smtp-Source: AGHT+IEwYgbJA0O1mFJMicyN/Dg0T7MX19vCpK193t3RzYHu3hebTrqejNfBSKs8JWdQ4ffOe+kV7ZVsQhYl
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3c02:f882:5876:b7ab])
- (user=irogers job=sendgmr) by 2002:a05:6902:1104:b0:dbd:b4e8:1565 with SMTP
- id o4-20020a056902110400b00dbdb4e81565mr5476893ybu.4.1708497935001; Tue, 20
- Feb 2024 22:45:35 -0800 (PST)
-Date: Tue, 20 Feb 2024 22:45:26 -0800
-In-Reply-To: <20240221064527.4157979-1-irogers@google.com>
-Message-Id: <20240221064527.4157979-3-irogers@google.com>
+	s=arc-20240116; t=1708498111; c=relaxed/simple;
+	bh=ddbPwhC7SnNRNXIB5oEsGmFtV7TO/BXd6KKtcjQfq+8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=kM9UQSpzvAz3wNgyIj9V8gFHNcc9+LBrCp++uytopk765Jsbc9Iv0kkI7BE1qcPKwgaNLzqG/NJYwp/qmeWT2NhKcs3+7GxI6v8+nlHS2dyPf4DS5VG12HETj10nw8XYAHqfqi2ujkSFRNVeciPR8m5wHs5dCyVFn8cNxrbXa3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rcgP5-0004DH-N4; Wed, 21 Feb 2024 07:48:27 +0100
+Message-ID: <28a136ee-4332-49ae-9d77-ef1abc12d19c@leemhuis.info>
+Date: Wed, 21 Feb 2024 07:48:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240221064527.4157979-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Subject: [PATCH v3 3/3] perf stat: Fix metric-only aggregation index 1;115;0c
- Aggregation index was being computed using the evsel's cpumap which may have
- a different (typically the same or fewer) entries.
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
-	John Garry <john.g.garry@oracle.com>, Kaige Ye <ye@kaige.org>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_This_is_the_fourth_time_I=E2=80=99ve_tried_to_find_?=
+ =?UTF-8?Q?what_led_to_the_regression_of_outgoing_network_speed_and_each_tim?=
+ =?UTF-8?Q?e_I_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c75849406?=
+ =?UTF-8?Q?c?=
+Content-Language: en-US, de-DE
+To: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ linux-netdev@vger.kernel.org,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
+From: "Linux regression tracking #adding (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708498109;44e2ff5c;
+X-HE-SMSGID: 1rcgP5-0004DH-N4
 
-Before:
-```
-$ perf stat --metric-only -A -M memory_bandwidth_total -a sleep 1
+On 03.02.24 02:02, Mikhail Gavrilov wrote:
+> Hi,
+> I'm trying to find the first bad commit that led to a decreased
+> network outgoing speed.
+> And every time I come to a huge merge [Merge tag 'usb-6.8-rc1' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb]
+> I have already triple-checked all my answers and speed measurements.
+> I don't understand where I'm making a mistake.
+>
 
- Performance counter stats for 'system wide':
+To be sure the issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, the Linux kernel regression tracking bot:
 
-       MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total
-CPU0                            12.8                           0.0                          12.9                          12.7                           0.0                          12.6
-CPU1
+#regzbot ^introduced f977f4c9301c
+#regzbot title irq/net/usb: performance decrease now that network device
+and xhci share IRQs
+#regzbot ignore-activity
 
-       1.007806367 seconds time elapsed
-```
-
-After:
-```
-$ perf stat --metric-only -A -M memory_bandwidth_total -a sleep 1
-
- Performance counter stats for 'system wide':
-
-       MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total MB/s  memory_bandwidth_total
-CPU0                            15.4                           0.0                          15.3                          15.0                           0.0                          14.9
-CPU18                            0.0                           0.0                          13.5                           5.2                           0.0                          11.9
-
-       1.007858736 seconds time elapsed
-```
-
-Signed-off-by: Ian Rogers <irogers@google.com>                                  |
-Acked-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/stat-display.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index ae37395f90c0..bfc1d705f437 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -1137,11 +1137,16 @@ static void print_no_aggr_metric(struct perf_stat_config *config,
- 			u64 ena, run, val;
- 			double uval;
- 			struct perf_stat_evsel *ps = counter->stats;
--			int aggr_idx = perf_cpu_map__idx(evsel__cpus(counter), cpu);
-+			int aggr_idx = 0;
- 
--			if (aggr_idx < 0)
-+			if (!perf_cpu_map__has(evsel__cpus(counter), cpu))
- 				continue;
- 
-+			cpu_aggr_map__for_each_idx(aggr_idx, config->aggr_map) {
-+				if (config->aggr_map->map[aggr_idx].cpu.cpu == cpu.cpu)
-+					break;
-+			}
-+
- 			os->evsel = counter;
- 			os->id = aggr_cpu_id__cpu(cpu, /*data=*/NULL);
- 			if (first) {
--- 
-2.44.0.rc1.240.g4c46232300-goog
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
