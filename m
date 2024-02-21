@@ -1,140 +1,122 @@
-Return-Path: <linux-kernel+bounces-74882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9126685DECD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B89785DEE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27E91C23C90
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:22:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA3B1C23C79
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D81169317;
-	Wed, 21 Feb 2024 14:22:02 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF927A715;
+	Wed, 21 Feb 2024 14:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="FmhYO+ZN"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E8A7BB11;
-	Wed, 21 Feb 2024 14:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D892969317
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708525322; cv=none; b=dnJ/4zHw/02uSacXyKGRwJIIQGVsRIXGR4xV/JA/+DIM+AeJS0bm6zRgWCDtxwtqefjz/wxWQRUGbWJPnjxDwESBd5DM9y38Vc6W1vUV3YhrxZr5GA7dxwSWJeVhHcgur58wIb/+iTOpht3l8+SuR6iZRWqNjleFeoezDm2agE8=
+	t=1708525358; cv=none; b=VyLrgdT5BdWh9gvIvz2QY9FTu+dWXFU1zRwihYwDYxXu/KEvIOK1Md7umIjBJFbBz8ldtf/dEW6h/ppD6CRw5hC8dxiWb8iERNEsKBi/zCsuvarRlVBRJO2pqEsLLDoAnmZxzcnfBmwq1rCtt1JidOgfxV+LdiyHQbdrBtl2aSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708525322; c=relaxed/simple;
-	bh=tbyIxQREtNsFl1chxmmOOxgq+9kmqvxm0SE09qbdS3U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CY3Oglk4B7hwI14DKRQMz8czfp+JKKIMTiaDZVmjpuuZs70aXWX9li3RmEb6GXTAwL0lJzVCwzn13ZWc4s+IksGCWdxII5qaszDprfTZ3YQnDcNJxzMl4AKRcU8lSNHAlxqEVdyXlgMXHaRCeU+Rt0fN3ukIs9aObGq01hYvBJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-60893d33269so183937b3.1;
-        Wed, 21 Feb 2024 06:22:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708525318; x=1709130118;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1d06i49LL9s1ZMGyde7w44zWXOkIzOdUii8V8sAQFpI=;
-        b=NTRx488gZvLGLnd/od895OIil+ZBy1TC0mNLeM4izgnD5Hs1uas2t+ayuEIVMdzbJZ
-         Q2GEpA4ezz1XYTVLu9IIMW5vkRJnNbxRGYXLKLgJN00dOG6/MCB2ilYnfhLasEr61YhH
-         hB76nVtGtlwI6uKTM+6ilPALO+BJzS6dGIVj6B+uKxeKQEysLAsvSqce1km1KersM33f
-         3cun18oNMKnxRCEoxDMOKT2SHOSUdouV2+7pjYCKrmq72pynsefzooCaZnyeYVfIR7iP
-         gtNJ5KRRIlI/U7ZS3ACHZCYai1Qi+QalM7CkIIq1A3V6ALmI1aQEBVHbpy7t8fjTYi7S
-         W6IQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUc5+ivMr1yhMWDfbUwexHhY+Q97SFo6mN9C3a9m/DbcEopgIUpbOcmWcE0NKUSCxIJRbjIHeqKaCRRiDrgQy/NzHM8qOUdBV6JwIruFWvZF7sW54kaIkInoa27IwfqaYEpcXcfoyINU9yUxWWQnBiBGjGUnbwuQxnDYZxbsyJBdauvgOQ5foxpal9
-X-Gm-Message-State: AOJu0YxuNqm6GRnEcLu1mwCwrM+fowxrFY3kd22SLZgVSwrthlZsKmWh
-	4wvxsMOwJOWwYEfXcUtYJ2dGEWaamsSfNmcTFdUgSfg7oMmxXDji8DM4Lar+3AU=
-X-Google-Smtp-Source: AGHT+IEOXOIwfrVvLYMLiVSmayIuAMz+72BSqjQLMFmTQMawKKL2HeLttcbTR5CJP7/8ts4S8FgGdQ==
-X-Received: by 2002:a0d:d685:0:b0:5ff:790d:62a with SMTP id y127-20020a0dd685000000b005ff790d062amr18310762ywd.5.1708525318664;
-        Wed, 21 Feb 2024 06:21:58 -0800 (PST)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id c129-20020a0dc187000000b00607ecc4212csm2614164ywd.80.2024.02.21.06.21.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 06:21:58 -0800 (PST)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso6800358276.1;
-        Wed, 21 Feb 2024 06:21:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWaE0v0rOSdBTWnYXAdEAxUKJDD0RgobQnLkao4qzilJU6q9/pax/SMMq2nrFvSbTOOd+O8V+uA6dfarue84E25nhASHwD1kpwFl2BwOFYL1PZmRpgAU6v+cjA9fL4N258BZZpH9DtVd/PINz2jpTGuMeRGPAf/mcWt/BZXmZevfHJ8T0odyT6qEHGP
-X-Received: by 2002:a5b:445:0:b0:dc2:48af:bf17 with SMTP id
- s5-20020a5b0445000000b00dc248afbf17mr14910452ybp.62.1708525318012; Wed, 21
- Feb 2024 06:21:58 -0800 (PST)
+	s=arc-20240116; t=1708525358; c=relaxed/simple;
+	bh=LF3mPKz82wFKYBnS3pkUFExa+8tzUpNv+iiGbb7Kggc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r7Sfwe+mSpYswe+rW5NZH7isFRq2QjCHxf7VLPBmzzyVBxKWHRyVubKLQf6aJvOJz438xs/e4NmxWdsLII19ObZnV3sNYjDfCoyvWxKw0u+ZPvn1/Wc/ziySn/ByrbKluKbS5tbeA9BWMjUISjvcNDj8gqahh4XqFfFKq6wVFMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=FmhYO+ZN; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708525351; bh=LF3mPKz82wFKYBnS3pkUFExa+8tzUpNv+iiGbb7Kggc=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=FmhYO+ZNYNU0FoScZxKn01rd9HtaMosC2AF9CFkg2IIDbNUYYYGRJBlLI/ow9fhuN
+	 S7NpSsbC2rZGeJcs2D1NrTfoiWxgMXo7Bk3eqLWovOtIHd/rcRtGcL8axGhaxSRoB4
+	 yrUAFDB3bdUZb7RnkypcZNqX5O+tiL9d3yyixMLo=
+Date: Wed, 21 Feb 2024 15:22:30 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
+Message-ID: <6n6fnjl3dw4dnmoygh3u72ebbubotpqyg67cwkuataw2vw6lwm@bhxrtjewjso6>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240216190430.1374132-1-megi@xff.cz>
+ <20240216190430.1374132-4-megi@xff.cz>
+ <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215124112.2259103-1-claudiu.beznea.uj@bp.renesas.com>
- <20240215124112.2259103-2-claudiu.beznea.uj@bp.renesas.com> <CAMuHMdVi5vN5JSf9TAbdyrNa8_7eM=RajH8Mm=Qxhj5chWcK9A@mail.gmail.com>
-In-Reply-To: <CAMuHMdVi5vN5JSf9TAbdyrNa8_7eM=RajH8Mm=Qxhj5chWcK9A@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 21 Feb 2024 15:21:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU7jFzkX7dozKYnhp5RUPr4-1tG0Eba1he+t3nskagZMg@mail.gmail.com>
-Message-ID: <CAMuHMdU7jFzkX7dozKYnhp5RUPr4-1tG0Eba1he+t3nskagZMg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: renesas: Select CONFIG_IRQ_DOMAIN_HIERARCHY
- for pinctrl-rzg2l
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
 
-On Wed, Feb 21, 2024 at 3:13=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Thu, Feb 15, 2024 at 1:41=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev=
-> wrote:
-> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >
-> > The pinctrl-rzg2l driver uses APIs that are defined only if
-> > CONFIG_IRQ_DOMAIN_HIERARCHY=3Dy (irq_chip_*_parent() APIs). On the ARCH=
-_RZG2L
-> > CONFIG_IRQ_DOMAIN_HIERARCHY is selected anyway, e.g., by the
-> > CONFIG_ARM_GIC_V3. Even so, make it explicit at the driver level for a
-> > clearer view of the dependencies.
-> >
-> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Thanks for your patch!
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Compile-testing on m68k reveals that you also need
->
->     select GPIOLIB_IRQCHIP
+Hi Maxime,
 
-FTR:
+On Wed, Feb 21, 2024 at 02:45:20PM +0100, Maxime Ripard wrote:
+> Hi,
+> 
+> On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ondřej Jirman wrote:
+> > From: Ondrej Jirman <megi@xff.cz>
+> > 
+> > Identical configurations of planes can lead to different (and wrong)
+> > layer -> pipe routing at HW level, depending on the order of atomic
+> > plane changes.
+> > 
+> > For example:
+> > 
+> > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
+> >   is enabled. This is a typical situation at boot.
+> > 
+> > - When a compositor takes over and layer 3 is enabled,
+> >   sun8i_ui_layer_enable() will get called with old_zpos=0 zpos=1, which
+> >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+> > 
+> > What happens is that sun8i_ui_layer_enable() function may disable
+> > blender pipes even if it is no longer assigned to its layer.
+> > 
+> > To correct this, move the routing setup out of individual plane's
+> > atomic_update into crtc's atomic_update, where it can be calculated
+> > and updated all at once.
+> > 
+> > Remove the atomic_disable callback because it is no longer needed.
+> > 
+> > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> 
+> I don't have enough knowledge about the mixers code to comment on your
+> patch, so I'll let Jernej review it. However, this feels to me like the
+> pipe assignment is typically the sort of things that should be dealt
+> with device-wide, and in atomic_check.
 
-drivers/pinctrl/renesas/pinctrl-rzg2l.c: In function =E2=80=98rzg2l_gpio_fr=
-ee=E2=80=99:
-drivers/pinctrl/renesas/pinctrl-rzg2l.c:1472:30: error: =E2=80=98struct
-gpio_chip=E2=80=99 has no member named =E2=80=98irq=E2=80=99
- 1472 |  virq =3D irq_find_mapping(chip->irq.domain, offset);
-      |                              ^~
-drivers/pinctrl/renesas/pinctrl-rzg2l.c: In function
-=E2=80=98rzg2l_gpio_populate_parent_fwspec=E2=80=99:
-drivers/pinctrl/renesas/pinctrl-rzg2l.c:1953:23: error: =E2=80=98struct
-gpio_chip=E2=80=99 has no member named =E2=80=98irq=E2=80=99
- 1953 |  fwspec->fwnode =3D chip->irq.parent_domain->fwnode;
-      |                       ^~
-drivers/pinctrl/renesas/pinctrl-rzg2l.c: In function =E2=80=98rzg2l_gpio_re=
-gister=E2=80=99:
-drivers/pinctrl/renesas/pinctrl-rzg2l.c:2057:14: error: =E2=80=98struct
-gpio_chip=E2=80=99 has no member named =E2=80=98irq=E2=80=99
- 2057 |  girq =3D &chip->irq;
-      |              ^~
+Yes, this is what this patch does. It moves blender setup from individual
+planes' attomic commits to a single place in crtc atomic commit.
 
-Gr{oetje,eeting}s,
+kind regards,
+	o.
 
-                        Geert
+> If I'm talking non-sense, it would be great to mention at least why that
+> can't be an option in the commit log.
+> 
+> Maxime
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
