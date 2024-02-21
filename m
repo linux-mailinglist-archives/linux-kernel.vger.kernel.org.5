@@ -1,150 +1,99 @@
-Return-Path: <linux-kernel+bounces-75342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3020E85E6E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:07:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2649E85E6F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC0E4286ED7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:07:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9357EB22A0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D276886AD2;
-	Wed, 21 Feb 2024 19:06:46 +0000 (UTC)
-Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148B285C44;
+	Wed, 21 Feb 2024 19:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g2/2zmYd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB39E86130
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513FC79DD6;
+	Wed, 21 Feb 2024 19:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708542402; cv=none; b=gsrvHNv8t7B7WSVdPlaZbEVsFfb1071cJoRrTrNrixbGbu8waYuMidpyfR/9AxZRGpgbNhuTjzkyhCpPTT6XHgzzZcwy/ZdYECryZLduN28nZMSqbKViyAaN0doTLpjm+IRkSpxJRZaVeddErqrWztQSex8yorj0jch7NJnEjyY=
+	t=1708542594; cv=none; b=ry6er6clkdY0JcbbXPe24ZQWJfm08clRc6kuXvZeSApXBswho2EzkGNMZU3LJD00GxL7hl8RLQUGsHAT+Sv4cJYcXyxTAp4KOGytWpwrsZk22f1Unot8h5nn99ZBqqeYYGJYKwqLzIBrdui69kqub6rRqUgpu5b88Ewv4GpGRl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708542402; c=relaxed/simple;
-	bh=tMAboUzIpbI8r0aCkLKiq7wam/35ifq+uf2tH3/h5q4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qD3BfcNw9YVIKaLHic8bOdmVJWV1iDIKom2pdYBb2iJu8fLmuOb9mov7LzDbIMelfdcJy+FOlY5dZFP5/IR8R3BrRa9XoL6747kQTYyNzUdgsC9y2osOh1gpQqCygNBtfs7pIPq9cqAO6hue53MLzxH+5vr2LXuAbq/o33E2+5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
-Date: Wed, 21 Feb 2024 14:06:39 -0500
-From: "dalias@libc.org" <dalias@libc.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-	"musl@lists.openwall.com" <musl@lists.openwall.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"broonie@kernel.org" <broonie@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"sorear@fastmail.com" <sorear@fastmail.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
- in userspace
-Message-ID: <20240221190639.GU4163@brightrain.aerifal.cx>
-References: <20240220235415.GP4163@brightrain.aerifal.cx>
- <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
- <20240221012736.GQ4163@brightrain.aerifal.cx>
- <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
- <20240221145800.GR4163@brightrain.aerifal.cx>
- <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
- <20240221175717.GS4163@brightrain.aerifal.cx>
- <f4a54297767eb098d903404cbe8860d655d79bed.camel@intel.com>
- <20240221183055.GT4163@brightrain.aerifal.cx>
- <c3085fbe10193dfe59b25bc7da776e60779b0e8c.camel@intel.com>
+	s=arc-20240116; t=1708542594; c=relaxed/simple;
+	bh=Mt5aF6Hr76ak8o2cE1OJ5mzFoU6w/C5uo9s6FRkcdgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jlP+FjG5Ul7pn8DM2JipqwcGjq9L4VJ2GZDC3+IaBp/HAWuI7vgKRpNrHv/F34nH5FFmfI8JOCVsC+X0IeJTymxM9IU0NOIaAx2J8pA5xqAIbwLywnZZkW4BpEgheFwypCEQXuWKv+WoXwGbsKf9Iy1LaHVPS6HnoqVwy7XwI/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g2/2zmYd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADCCC433F1;
+	Wed, 21 Feb 2024 19:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708542593;
+	bh=Mt5aF6Hr76ak8o2cE1OJ5mzFoU6w/C5uo9s6FRkcdgM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=g2/2zmYdvzqYK4cj8AmYHmwN5yICBtAIKuHg5Sqd3MvR/UIvL/Grr9eb/tPRMlJ6c
+	 3/uVSI4/ldPebzp1xz66czAakEUVVCUF+/1Vd9wE2t9r/2OY3TlFIXEBmxjxGwbpqx
+	 9xIOMA1rLb5GPk4/nCJkJSDlkJDkwPLJcQhhG7yl0AmLrvLZH66jRRpN73EhmKIX4s
+	 Mn3UiacmcxDbx6eHPoizRNG3d72/+xDrP+LYWug3f03N13WdnXOMUafRKltHbJo//F
+	 VG4TquIc07EeZX6udOTeZXFwoN4h73D4WJiqXaOENZf67wCpt/wfjykelTASTzQOYG
+	 7hiSVJ31oooEA==
+Date: Wed, 21 Feb 2024 11:09:52 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Alexei Starovoitov
+ <ast@kernel.org>, Amritha Nambiar <amritha.nambiar@intel.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Larysa Zaremba
+ <larysa.zaremba@intel.com>, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>, Paolo Abeni <pabeni@redhat.com>, Sridhar
+ Samudrala <sridhar.samudrala@intel.com>, Stanislav Fomichev
+ <sdf@google.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH net-next 0/2] Expose netdev name in netdev netlink APIs
+Message-ID: <20240221110952.43c0ae6e@kernel.org>
+In-Reply-To: <1708531057-67392-1-git-send-email-jdamato@fastly.com>
+References: <1708531057-67392-1-git-send-email-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3085fbe10193dfe59b25bc7da776e60779b0e8c.camel@intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 06:53:44PM +0000, Edgecombe, Rick P wrote:
-> On Wed, 2024-02-21 at 13:30 -0500, dalias@libc.org wrote:
-> > > 3 is the cleanest and safest I think, and it was thought it might
-> > > not
-> > > need kernel help, due to a scheme Florian had to direct signals to
-> > > specific threads. It's my preference at this point.
-> > 
-> > The operations where the shadow stack has to be processed need to be
-> > executable from async-signal context, so this imposes a requirement
-> > to
-> > block all signals around the lock. This makes all longjmps a heavy,
-> > multi-syscall operation rather than O(1) userspace operation. I do
-> > not
-> > think this is an acceptable implementation, especially when there are
-> > clearly superior alternatives without that cost or invasiveness.
+On Wed, 21 Feb 2024 07:57:28 -0800 Joe Damato wrote:
+> Greetings:
 > 
-> That is a good point. Could the per-thread locks be nestable to address
-> this? We just need to know if a thread *might* be using shadow stacks.
-> So we really just need a per-thread count.
+> The netdev netlink APIs currently provide the ifindex of a device
+> associated with the NIC queue or NAPI when the netlink API is used. In
+> order for user applications to map this back to a human readable device
+> name, user applications must issue a subsequent ioctl (SIOCGIFNAME) in
+> order to map an ifindex back to a device name.
 
-Due to arbitrarily nestable signal frames, no, this does not suffice.
-An interrupted operation using the lock could be arbitrarily delayed,
-even never execute again, making any call to dlopen deadlock.
+To be clear, if_indextoname() is doing it, right? I wanted to be sure
+the concern is really number of syscalls, not the difficulty in getting
+the name.
 
-> > > 1 and 2 are POCed here, if you are interested:
-> > > https://github.com/rpedgeco/linux/commits/shstk_suppress_rfc/
-> > 
-> > I'm not clear why 2 (suppression of #CP) is desirable at all. If
-> > shadow stack is being disabled, it should just be disabled, with
-> > minimal fault handling to paper over any racing operations at the
-> > moment it's disabled. Leaving it on with extreme slowness to make it
-> > not actually do anything does not seem useful.
+> This patch set adds ifname to the API so that when queue or NAPI
+> information is retrieved, the human readable string is included. The netdev
+> netlink YAML spec has been updated to include this field, as well.
 > 
-> The benefit is that code that is using shadow stack instructions won't
-> crash if it relies on them working. For example RDSSP turns into a NOP
-> if shadow stack is disabled, and the intrinsic is written such that a
-> NULL pointer is returned if shadow stack is disabled. The shadow stack
-> is normally readable, and this happens in glibc sometimes. So if there
-> was code like:
-> 
->    long foo = *(long *)_get_ssp();
-> 
-> ...then it could suddenly read a NULL pointer if shadow stack got
-> disabled. (notice, it's not even a "shadow stack access" fault-wise. So
-> it was looked at as somewhat more robust. But neither 1 or 2 are
-> perfect for apps that are manually using shadow stack instructions.
+> This saves the subsequent call to ioctl and makes the netlink information
+> more user friendly. Applications might use this information in conjunction
+> with SO_INCOMING_NAPI_ID to map NAPI IDs to specific NICs with application
+> specific configuration (e.g. NUMA zone and CPU layout information).
 
-It's fine to turn RDSSP into an actual emulated read of the SSP, or at
-least an emulated load of zero so that uninitialized data is not left
-in the target register. If doing the latter, code working with the
-shadow stack just needs to be prepared for the possibility that it
-could be async-disabled, and check the return value.
+For context, the reason why I left the names out is that they can change
+at any moment, but primarily because there are also altnames now:
 
-I have not looked at all the instructions that become #UD but I
-suspect they all have reasonable trivial ways to implement a
-"disabled" version of them that userspace can act upon reasonably.
+2: eth0:
+[...]
+    altname enp2s0np0
 
-Rich
+Most of the APIs try to accept altnames as well as the "main" name.
+If we propagate the name we'll step back into the rtnetlink naming
+mess :(
 
