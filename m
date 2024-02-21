@@ -1,87 +1,80 @@
-Return-Path: <linux-kernel+bounces-74738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E6C585D874
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:55:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA8585D87B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 264F51F24134
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:55:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAB2128778B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7378569954;
-	Wed, 21 Feb 2024 12:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8181169962;
+	Wed, 21 Feb 2024 12:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpzJnbgd"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZBN9BLQe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19296930F;
-	Wed, 21 Feb 2024 12:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EAED4F885
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708520121; cv=none; b=Sr34OQq3z1vd6o28amm6iDjL3D88+hKQzsRDVNAl+AA6IoVbZscXmyVW/W+hML0eWbVHntTkJfi0xhMYQys+Q35I/qxY0w/cKdbxljjfVCJ1vO6Ih0zM6TRnuSHSntZcoJUYlfGQVYtIZB/67u5y+//hQpgOT/eqm7bb/iVqqyQ=
+	t=1708520213; cv=none; b=lqOmPEp2YYijCdEgdfVtN/8amaWVqOnwCn3wlxib9DBBg1/g94BAidX/h54ydDx9mHTtyZ8ZUgUOWwFFk/+vpsDjX9/07AnJR+TEoXAJapycXTkBJqsgRjJeklC/MSK2aInD62Lu9z3BT9DS4n0AAmn4oNwmB9GquvK/kr+cWpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708520121; c=relaxed/simple;
-	bh=GdiYV6wsr4EXwoXzZq3jKtYq6R298hyFdhnVeW4EdHw=;
+	s=arc-20240116; t=1708520213; c=relaxed/simple;
+	bh=pg1mcNVSjCSg//U1qEGOAKr/92rgrkQahsiIB89xZPs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DDA2gvZZ+fvYK1J3mhJPb3qyCbaHqXMuiKdkJGlt9xsW8hpYynKRJsn39GfDxUtFf33YUrc56InxRZLJH9A80gbHJ2rWm/flbdQ77P+SMV0KIOS5zf/FzLoX7Uly6OZrmLvF/eU4HO9H2F81zUU6ADs2KpJ7W/fR8lw3lM3lEiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JpzJnbgd; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8b276979aso5060121a12.2;
-        Wed, 21 Feb 2024 04:55:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708520119; x=1709124919; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ry5MLE8fdfKGpRekU3VbZpIvbs3UzBTVWXCqh6a6iiU=;
-        b=JpzJnbgdoRV7O/+wyZ2Leoqyn6rsj3DJ8wyRboxM0O3n0d41Rtpq5luht6Irve09BC
-         f9y5Y+9IcEVQ7S+l/xtxguMmbDx9IJCBnnMt/m0Q5vqb9wjNT1xHAs/cH1Ny5z7+4Bff
-         KIT5TpiJXu4jhAJdICfmgoJaSf2at7KcTa/9JdGr4svKNkfGAs+tZz9gipHUZ4Xxlnmz
-         obs9amrzOXvgMoWX8IgR4F8efnfUCkcQ6nCFjVnmnlkn4bunlAqN2hM+iyX0s6pJ1htf
-         epsnLs8YdcF430ARk8nI0p75bHzR2f8Q+3q1KJDEaRk/gPrMh/ZSg3Oq3ikHCE1GWyQJ
-         x7ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708520119; x=1709124919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ry5MLE8fdfKGpRekU3VbZpIvbs3UzBTVWXCqh6a6iiU=;
-        b=n/I+70k2qbei1Ksts35K+fs+K6hrv8KuUjF+Qh6y55JxIBJAXTPb2FRYS9Hx5aUHII
-         nm6NfTZEzk/a/yPbioED31VZvlFxPQVrtnmTKpHn67CqGw/I7UBLRi9iZGeXefCkQ2L1
-         fh4s48O1yNDjsXpJqpQrDzMDjqHKdSIH8cuu8mTTiKNsIjKYPzopsVm23BuMmQAN8T5s
-         bsEmFkJvdfEHUu4WBqxLVgRaDhTEq9w94UAeIw9CX8jMx+JiP1t4DYCke1FZ8c/j0Aee
-         mO3izf/pz59KfqEbGo6qAYtpOSx/UUpOtwyYPk/EhV7LHOP/Ct31eL9urkzyFdWrfSRv
-         3wGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWVcjCfQP8eSs9fE2+/JaTLSm0PAOQvyNg9wwhViJ6PG6tkXKGC6BsVf7fYaj8KVzKFwWU0G4ZiO5DL81zoJirvog3VNiqwoAnVnV/M+sbxbLV07KOBwdPJlFGTeH0bE2tgPOcPoBUNPe6qn4qknhXH1Y4Cjw/fo6rcgDozTUCStPk61r1E9Lij
-X-Gm-Message-State: AOJu0YwM5zdYcvyFYK2Q74nPCUVS9gccSwugFXUXJeGPzDHbNJ719hHU
-	S7Ca+kTs6pkr6nzmo4tpYMXAnzRI3v8iWfPiCcKk3FNKmc1zFMQo
-X-Google-Smtp-Source: AGHT+IHLrLFSSc6fZHMtNHfKAVemaBpDk5FTLqVIp+18M27GOK/iRJsTJJvJizh/K9D3vhRQWhh2Jg==
-X-Received: by 2002:a05:6a21:3a82:b0:1a0:cb1b:390d with SMTP id zv2-20020a056a213a8200b001a0cb1b390dmr685189pzb.52.1708520119170;
-        Wed, 21 Feb 2024 04:55:19 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x16-20020aa79a50000000b006e471ade144sm4573360pfj.188.2024.02.21.04.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 04:55:18 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 21 Feb 2024 04:55:17 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: forbidden405@outlook.com
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Viresh Kumar <vireshk@kernel.org>, linux-watchdog@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] watchdog: sp805_wdt: deassert the reset if
- available
-Message-ID: <93e75a27-5676-4ce7-9860-258d9019977d@roeck-us.net>
-References: <20240221-hisi-wdt-v3-0-9642613dc2e6@outlook.com>
- <20240221-hisi-wdt-v3-1-9642613dc2e6@outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P1JLskG6HwkDqH0n8FVQWLPpcaIVkqDYBf9TJKhLGv8Yf5wFk+QTdLqRCIhKjFmjy9nc4vG8wFCRAdGLX+YM4p3cdKfBnhhaPN3kHloFoT1nDZa9mAyYjAlQJpJSjY5EMnBldLJXlpbTv+vu99JAcRiWRkdxpt2Qy6t9tJi25LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZBN9BLQe; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708520211;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qeM6ln5GPe+54z6KZr8QF1BPN1lbild34z3N9RGW30M=;
+	b=ZBN9BLQecB9PZpriCFPxaGUCSMz2NjdcFxAYFp+e9gxHxvN614QDc11BfBGmgylpP/aIUS
+	YrJl5/b+Aqio0ragnEh1i8ZV9JPOCELjc1vZK145tVuo+ua7JbP+dwXNfbYDlh0obqOaIu
+	TkAhdGCL5x8FYpaafrt8N6jcsF5XUKg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-376-bWiMgYo1NRyg3lvkXBfQGQ-1; Wed, 21 Feb 2024 07:56:46 -0500
+X-MC-Unique: bWiMgYo1NRyg3lvkXBfQGQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6AB5B8630C0;
+	Wed, 21 Feb 2024 12:56:46 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.78])
+	by smtp.corp.redhat.com (Postfix) with SMTP id D677C8CE8;
+	Wed, 21 Feb 2024 12:56:44 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 21 Feb 2024 13:55:28 +0100 (CET)
+Date: Wed, 21 Feb 2024 13:55:26 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <20240221125525.GA16773@redhat.com>
+References: <20240216130625.GA8723@redhat.com>
+ <20240216-ohnedies-improvisieren-58edcc102b6a@brauner>
+ <20240216181214.GA10393@redhat.com>
+ <20240220-einwurf-depesche-d8682be0370c@brauner>
+ <20240220090255.GA7783@redhat.com>
+ <20240220-pragmatisch-parzelle-8a1d10a94fae@brauner>
+ <20240220110012.GB7783@redhat.com>
+ <20240220-anlegen-feinmechaniker-3c2cfcc3ec01@brauner>
+ <20240220162201.GD7783@redhat.com>
+ <20240221-zapfhahn-pulsschlag-e8f9d919c350@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,58 +83,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221-hisi-wdt-v3-1-9642613dc2e6@outlook.com>
+In-Reply-To: <20240221-zapfhahn-pulsschlag-e8f9d919c350@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Wed, Feb 21, 2024 at 07:56:41PM +0800, Yang Xiwen via B4 Relay wrote:
-> From: Yang Xiwen <forbidden405@outlook.com>
-> 
-> According to the datasheet, the core has an WDOGRESn input signal that
-> needs to be deasserted before being operational. Implement it in the
-> driver.
-> 
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+On 02/21, Christian Brauner wrote:
+>
+> On Tue, Feb 20, 2024 at 05:22:02PM +0100, Oleg Nesterov wrote:
+> >
+> > > > > +       /* Currently unused. */
+> > > > > +       if (info)
+> > > > > +               return -EINVAL;
+> > > >
+> > > > Well, to me this looks like the unnecessary restriction... And why?
+> > >
+> > > Because right now we aren't sure that it's used
+> >
+> > Yes, but...
+> >
+> > > and we aren't sure what use-cases are there.
+> >
+> > the same use-cases as for rt_sigqueueinfo() ?
+>
+> Specifically for pidfd_send_signal() I mean. To me it seems very
+> unlikely that anyone would be opening a pidfd to itself
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Ah, with this, I do agree. And that is why (I think) we can remove
+the "task_pid(current) != pid" check in the "info != NULL" branch.
 
-> ---
->  drivers/watchdog/sp805_wdt.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/watchdog/sp805_wdt.c b/drivers/watchdog/sp805_wdt.c
-> index 2756ed54ca3d..109e2e37e8f0 100644
-> --- a/drivers/watchdog/sp805_wdt.c
-> +++ b/drivers/watchdog/sp805_wdt.c
-> @@ -25,6 +25,7 @@
->  #include <linux/moduleparam.h>
->  #include <linux/pm.h>
->  #include <linux/property.h>
-> +#include <linux/reset.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
->  #include <linux/types.h>
-> @@ -232,6 +233,7 @@ static int
->  sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
->  {
->  	struct sp805_wdt *wdt;
-> +	struct reset_control *rst;
->  	u64 rate = 0;
->  	int ret = 0;
->  
-> @@ -264,6 +266,12 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
->  		return -ENODEV;
->  	}
->  
-> +	rst = devm_reset_control_get_optional_exclusive(&adev->dev, NULL);
-> +	if (IS_ERR(rst))
-> +		return dev_err_probe(&adev->dev, PTR_ERR(rst), "Can not get reset\n");
-> +
-> +	reset_control_deassert(rst);
-> +
->  	wdt->adev = adev;
->  	wdt->wdd.info = &wdt_info;
->  	wdt->wdd.ops = &wdt_ops;
-> 
-> -- 
-> 2.43.0
-> 
+Oleg.
+
 
