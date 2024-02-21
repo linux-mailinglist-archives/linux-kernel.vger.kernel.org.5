@@ -1,195 +1,166 @@
-Return-Path: <linux-kernel+bounces-74545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D37985D5BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:38:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B1C785D5C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE2A61C218CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:38:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D12D1C20CE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A871B208C1;
-	Wed, 21 Feb 2024 10:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6118A208C1;
+	Wed, 21 Feb 2024 10:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TfsZaFTD"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="NVUrtqwk"
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A722A1EB45
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C533EA89;
+	Wed, 21 Feb 2024 10:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708511923; cv=none; b=esaGiWN9XdKA0YinR0Or+4j4JOdTAIid40Br9/sLyH+11DOAf5mYF+IwC4Xpnatoz+n9b114XGnnRp5VQrx/mT0u4aui7hIO/nUIah/M+mOQo8bzx7jaQbUa3vD0el47AdlXwz4qJFD2gOk8XuQ2MTp5w/ET2DdhAVhLpdtbSnw=
+	t=1708511944; cv=none; b=btukBm1I69ugESYaI8ulyj+rYYohEc0baGJxy5LuyoME8GpRqbtkuiVczmGrgxmWEs6GhotO/zmK6Rg2jZlIJoG+wD2gFCFYz/VTbCXvZ1KXCyHOAJO0HKRAPiE0Jcp8i9qtcATBNECd1ue+jaem29pUB8aACh1LO/Exlv0+pbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708511923; c=relaxed/simple;
-	bh=HBTD9NpgqM7kq4SO3bpEXJ5Bp3ofQRfsZKZeHA7Ambw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PGeuWDwc5ZGdFr8hzZXNXlWGSUELyKeofKKBeNh8o2uTGiCaMcN1v/iouqBFDt/p1Md+j1rHfHGRXjjXZ7mdqWDhaFVNKxMK11Exk3A2E1QWTAEqMlZ1otUcUvEC1nEmf6noudA6/Fwtoj3eYaBljJrtdyFVD3VX8zpK8aBKIhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TfsZaFTD; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-564fe0273e4so459999a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:38:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708511920; x=1709116720; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cnKoPzhACftS9EnEu9/ynu2qMvlchm1lfMLjCdPuVQo=;
-        b=TfsZaFTDBogozp2cAgzkSMybRGAUN9RDlIjzgiP5UO0OpFN7X32ox+OgPxXumY1FbW
-         POZQVDD+UIWzWEPZwHKfqKyUH0ROr9svS6vtom1werFfvZuToAwMaBb5uL8mLbNbkbgY
-         19tx8dGHEwogBxdNlz3g+HA9guvKCjaChhsk8FDKFzEeO59se+1vu1iFnYUcnMpkZRgd
-         S1gFPd27fdasdLl+4BpiavF1Wb2U6m0yJE6pvc6/dmMwERdCecvUNOqePQtLZ0YB9B7y
-         F+ItuctFxJjnf2lHONeRmEaFE6WVP0HJK6snwY2ywAXvTMNwAWC0Cqd7wnKcnT/W2r2S
-         Gd/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708511920; x=1709116720;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cnKoPzhACftS9EnEu9/ynu2qMvlchm1lfMLjCdPuVQo=;
-        b=vg8tLQU+w1481MqqcLhUiWaUra+iXq+39Q/hBnldv+5Qcmngh2p7TI8XM9/EyWu9hn
-         rtYUnHqHq4ZFpSAEnyiwSM0fjLpcRLVUJmIfxQJVfs2bVxT/6taJ39IUNIugAyNGbkGS
-         OAo5IfmCDIZA8MeMZRx2aaPjk2Mc/1RdE3pmfftNGTBw2hdkyfnrFlwdGAkl3dw4I5ux
-         AZB4dJOil3Zqcb4aO4TPbQShGbTqmjNwEjbTFruhTTkWUPXUKB4S9/pSYs1n/1emPgsh
-         E0tTa3z24MmIfL16sLc34C+L8bHtZ2sSPgz6xouQ38qK/Y+TVAW3ZfHmTZJgOMQBKJHr
-         jppQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXiePM/1rXKPv+B6NEAUikbUkF6UGMM3QXTt/2/b8XNt+3yHxHuHsiX9HkNHa/XwPBLj+c0UNMdT5nWcJlJgo9XPXrYOtUlOeer1L+I
-X-Gm-Message-State: AOJu0YwG7NAloRzov2akaQXWPEzlwgI8JS9s0kCdU4npSWpEJ5SSfglF
-	snL/KN25eofmsc0N3mZiT3beTg07Zt4pXSJdSZs1glktTdlWJ6BitS/PEd+wmjM=
-X-Google-Smtp-Source: AGHT+IGWY0olFbTK2LeHVps++mXY14F0mgECCZhY5FffQmgkJeKvOHJIZBdK7Rb6s/6ljo8BEwbLBg==
-X-Received: by 2002:a17:907:b9ca:b0:a3f:2247:bb59 with SMTP id xa10-20020a170907b9ca00b00a3f2247bb59mr1776452ejc.61.1708511919896;
-        Wed, 21 Feb 2024 02:38:39 -0800 (PST)
-Received: from [10.100.51.161] (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id j10-20020a170906474a00b00a3e50e01612sm3853825ejs.62.2024.02.21.02.38.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 02:38:39 -0800 (PST)
-Message-ID: <9b067ec7-34e2-437b-a41b-319aaee4c7e6@suse.com>
-Date: Wed, 21 Feb 2024 11:38:38 +0100
+	s=arc-20240116; t=1708511944; c=relaxed/simple;
+	bh=3T2LRJtiW3mZfk/PunFIogOMmmkLZ7ysF+8gTpzPau4=;
+	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MX3HsSVlcOCgZIdiWlVw02fCfHwRFcQS7USH4BbbFzXwzq9xLmNtpBI4AHS824CMdH44eOQEG2bakBfL9AlD1NeBaTZ408pe2AqFNlxphuaU5Ygm3J9v/yHnRIxJ4h6JWcbXX4yoWCviyrdW2CRqB6/zI9N56GV2uHObueNU1uY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=NVUrtqwk; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Tft6g64Lkz9tln;
+	Wed, 21 Feb 2024 11:38:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
+	s=MBO0001; t=1708511931;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VOqX0GOQZZOiGD9BoiPl4P99i5/2V8G3vmiVhpwmjpo=;
+	b=NVUrtqwknw/O3TZyiGfvfpG0IBx7JJpeIshlUGI/ALrW+famIowinN8F9Ti3bU4Kb+DskP
+	y775xaFPKAqf07Z9jufvCZ/AuUTAM4pXCgmXlgUugQZxZI4mmfx/4UJIb3CWj7JIytAhQg
+	l3cMMRBSKwmkaUjCkZVPwc9QSZ0W96DsujRbPvrZTUclXWsJ2NVejTPx9Ud7DDCgLM69Gb
+	4oAYCyVx0a/ZfDI7wBynT1H/fvIHe24aB5hJFSRro6uKd6bhUTPnwEiiZrZqz68LsxqWry
+	p64VobbPssd93ohFph+mesCr7BNyXCE5h4LrsNcuswhXvQdIQyv57qnfdnQpWw==
+References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
+ <20240205-pinephone-pll-fixes-v2-3-96a46a2d8c9b@oltmanns.dev>
+From: Frank Oltmanns <frank@oltmanns.dev>
+To: Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
+ <mripard@kernel.org>, Diego Roversi <diegor@tiscali.it>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Samuel Holland
+ <samuel@sholland.org>, Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+ Purism Kernel Team
+ <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
+ <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] clk: sunxi-ng: nkm: Support minimum and maximum
+ rate
+In-reply-to: <20240205-pinephone-pll-fixes-v2-3-96a46a2d8c9b@oltmanns.dev>
+Date: Wed, 21 Feb 2024 11:38:39 +0100
+Message-ID: <8734tmhzkg.fsf@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] kbuild: Use -fmin-function-alignment when available
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: nathan@kernel.org, nicolas@fjasle.eu, mark.rutland@arm.com,
- linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240215151642.8970-1-petr.pavlu@suse.com>
- <CAK7LNAS=knGxd9ZRo37CaKTvjcc28bqNasx+XuqbV3S+XV=HtQ@mail.gmail.com>
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <CAK7LNAS=knGxd9ZRo37CaKTvjcc28bqNasx+XuqbV3S+XV=HtQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Rspamd-Queue-Id: 4Tft6g64Lkz9tln
 
-On 2/20/24 14:39, Masahiro Yamada wrote:
-> On Fri, Feb 16, 2024 at 12:16 AM Petr Pavlu <petr.pavlu@suse.com> wrote:
->>
->> GCC recently added option -fmin-function-alignment, which should appear
->> in GCC 14. Unlike -falign-functions, this option causes all functions to
->> be aligned at the specified value, including the cold ones.
->>
->> Detect availability of -fmin-function-alignment and use it instead of
->> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
->> and make the workarounds for the broken function alignment conditional
->> on this setting.
->>
->> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
->> ---
-> 
-> [snip]
-> 
->> index dfb963d2f862..5a6fed4ad3df 100644
->> --- a/kernel/exit.c
->> +++ b/kernel/exit.c
->> @@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
->>   *
->>   * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
->>   */
->> -__weak __function_aligned void abort(void)
->> +#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
->> +__function_aligned
->> +#endif
->> +__weak void abort(void)
->>  {
->>         BUG();
-> 
-> 
-> 
-> 
-> 
-> __function_aligned is conditionally defined in
-> include/linux/compiler_types.h, and then it is
-> conditionally used in kernel/exit.c
-> 
-> This is unreadable.
-> 
-> 
-> 
-> 
-> You may want to move CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
-> to include/linux/compiler_types.h, as this is more
-> aligned with what you did for __cold.
-> 
-> 
-> 
-> if !defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) && \
->                CONFIG_FUNCTION_ALIGNMENT > 0
-> #define __function_aligned       __aligned(CONFIG_FUNCTION_ALIGNMENT)
-> #else
-> #define __function_aligned
-> #endif
-> 
-> 
-> 
-> 
-> 
-> However, an even more elegant approach is to unify
-> the two #ifdef blocks because __cold and __function_aligned
-> are related to each other.
-> 
-> 
-> 
-> #if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || \
->                  (CONFIG_FUNCTION_ALIGNMENT == 0)
-> #define __cold                 __attribute__((__cold__))
-> #define __function_aligned
-> #else
-> #define __cold
-> #define __function_aligned     __aligned(CONFIG_FUNCTION_ALIGNMENT)
-> #endif
+Hi Jernej,
+hi Maxime,
 
-I didn't want to make __function_aligned conditional on
-CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT because the macro has a fairly
-general name. One could decide to mark a variable as __function_aligned
-and with the above code, it would no longer produce an expected result
-when -fmin-function-alignment is available.
+On 2024-02-05 at 16:22:26 +0100, Frank Oltmanns <frank@oltmanns.dev> wrote:
+> According to the Allwinner User Manual, the Allwinner A64 requires
+> PLL-MIPI to run at 500MHz-1.4GHz. Add support for that to ccu_nkm.
 
-__function_aligned was introduced c27cd083cfb9 ("Compiler attributes:
-GCC cold function alignment workarounds") only for aligning the abort()
-function and has not been so far used anywhere else.
+I should point out that limiting PLL-MIPI also fixes a regression
+that was introduced in 6.5, specifically
+ca1170b69968233b34d26432245eddf7d265186b "clk: sunxi-ng: a64: force
+select PLL_MIPI in TCON0 mux". This has been bisected and reported by
+Diego [1].
 
-If the above unification is preferred, I think it would be good to
-additionally rename the macro in order to prevent the mentioned misuse,
-perhaps to __force_function_alignment.
+I don't know the procedure (yet), but probably the fix (if and when
+accepted) should be backported at least to 6.6 (first broken LTS), 6.7
+(stable), and 6.8 (next stable).
 
-#if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || \
-		(CONFIG_FUNCTION_ALIGNMENT == 0)
-#define __cold				__attribute__((__cold__))
-#define __force_function_alignment
-#else
-#define __cold
-#define __force_function_alignment	__aligned(CONFIG_FUNCTION_ALIGNMENT)
-#endif
+My suggestion:
+ - In V3 of this series, I will reorder the patches, so that what is now
+   PATCH 3 and 4 becomes 1 and 2 respectively, so that they can be
+   applied to 6.6 more easily.
+ - Maxime, IIUC you requested some refactoring for handling the rate
+   limits [2]. I propose, we use my current proposal as-is, and I will
+   do a follow-up series for the refactoring.
 
-Would this be ok?
+Please let me know how you would like me to proceed.
 
--- 
 Thanks,
-Petr
+  Frank
+
+[1]: https://groups.google.com/g/linux-sunxi/c/Rh-Uqqa66bw
+[2]: https://lore.kernel.org/all/exb2lvjcozak5fayrgyenrd3ntii4jfxgvqork4klyz5pky2aq@dj2zyw5su6pv/
+
+>
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> ---
+>  drivers/clk/sunxi-ng/ccu_nkm.c | 13 +++++++++++++
+>  drivers/clk/sunxi-ng/ccu_nkm.h |  2 ++
+>  2 files changed, 15 insertions(+)
+>
+> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
+> index 1168d894d636..7d135908d6e0 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+> @@ -181,6 +181,12 @@ static unsigned long ccu_nkm_round_rate(struct ccu_mux_internal *mux,
+>  	if (nkm->common.features & CCU_FEATURE_FIXED_POSTDIV)
+>  		rate *= nkm->fixed_post_div;
+>
+> +	if (nkm->min_rate && rate < nkm->min_rate)
+> +		rate = nkm->min_rate;
+> +
+> +	if (nkm->max_rate && rate > nkm->max_rate)
+> +		rate = nkm->max_rate;
+> +
+>  	if (!clk_hw_can_set_rate_parent(&nkm->common.hw))
+>  		rate = ccu_nkm_find_best(*parent_rate, rate, &_nkm, &nkm->common);
+>  	else
+> @@ -220,6 +226,13 @@ static int ccu_nkm_set_rate(struct clk_hw *hw, unsigned long rate,
+>  	_nkm.min_m = 1;
+>  	_nkm.max_m = nkm->m.max ?: 1 << nkm->m.width;
+>
+> +
+> +	if (nkm->min_rate && rate < nkm->min_rate)
+> +		rate = nkm->min_rate;
+> +
+> +	if (nkm->max_rate && rate > nkm->max_rate)
+> +		rate = nkm->max_rate;
+> +
+>  	ccu_nkm_find_best(parent_rate, rate, &_nkm, &nkm->common);
+>
+>  	spin_lock_irqsave(nkm->common.lock, flags);
+> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu_nkm.h
+> index c409212ee40e..358a9df6b6a0 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nkm.h
+> +++ b/drivers/clk/sunxi-ng/ccu_nkm.h
+> @@ -27,6 +27,8 @@ struct ccu_nkm {
+>  	struct ccu_mux_internal	mux;
+>
+>  	unsigned int		fixed_post_div;
+> +	unsigned long		min_rate;
+> +	unsigned long		max_rate;
+>  	unsigned long		max_m_n_ratio;
+>  	unsigned long		min_parent_m_ratio;
 
