@@ -1,90 +1,90 @@
-Return-Path: <linux-kernel+bounces-74784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8139E85D9F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:25:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D1E85D9F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B72B5B243A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:25:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74C101F23269
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE01C7C08D;
-	Wed, 21 Feb 2024 13:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB237CF27;
+	Wed, 21 Feb 2024 13:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AChw+Y5+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="twmwTotk";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AChw+Y5+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="twmwTotk"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W8WiOI7W";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8hIIRDyk";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W8WiOI7W";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8hIIRDyk"
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50277993E
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB177B3F2
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708521858; cv=none; b=e+8M6iViEjptgM/IEL1qSnz6tOdipmCxdHa8V2y7HYDM48THdrN5Fc/qkjo9i7Q3SZ0/gNgIFnw7xvltrRyyTwQrQHzm3FP/vSvCt/x8Jk/0cY9+A3XcW0PgFsmmvkG62axZJlE7bjQnR7puO+N9pUTAPfFjReF6uDNci2qolW0=
+	t=1708521859; cv=none; b=qfOuZEj/KazbtOklG+IBR6vxnf0tSc75tLfGqreDurXzdjvKzgFKnAJUpGxvnAYFaWT8661bF4VW9IRQCkl2zpnBKoILppqOTFuv/rn+kAWBy3EMYnmQtWXKOHPstyRV83m/udjP/aADV6Tp3k7HjC/5CEKyuN2neu3A0Xhx9ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708521858; c=relaxed/simple;
-	bh=0WQxlo/oz4Feqagd2vcBCjJkzYxrAeuDwhOkd6YNd38=;
+	s=arc-20240116; t=1708521859; c=relaxed/simple;
+	bh=IWoz41dwgZYx4gX+waj5+/RAvJibzAUNmHCQ/qaMQiA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AnD61iuNr22VcvFpl1FZeusUdVd5yQLczUC+jLBV5Phhgp/3yLw9dqc3GwzTL0TeN8QcFIZcdp6AENwvGlQqlM2NUEWk46SZwDU1PoYdIOkJeVYaDCmB5DlHCmfU/uemSiaFRP9xsxwModBlmPQ91lB5h9aFwGVn7+68B6iXXX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AChw+Y5+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=twmwTotk; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AChw+Y5+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=twmwTotk; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=qCN6jjBH5fgP5sbPYpU5dDJRidSmdYKth+N2gMnjSSSF0Mf+jTyBMeGInkZw4BKqnvnffNYQfm7Z/JySOaJHESyY7CXMDkbyzoQDO9UsqUXQrZMXDnqwTYNFtOne76dk7tM6XcWT0DoD5he0W/IjCfOC9Cmxy4BpoVC33vVCXNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W8WiOI7W; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8hIIRDyk; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W8WiOI7W; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8hIIRDyk; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0374E1FB66;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B32601FB64;
 	Wed, 21 Feb 2024 13:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
 	t=1708521855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cyEZOfkKjRD1DB2JnX5AXn1kOpeHmL85HOa4YyZnu48=;
-	b=AChw+Y5+q9flrzGaK0Ji5r+52/LUbZcCJST0+voU9QvtsHczqNH23tRRBfxtNq7diYK+y5
-	Ha0TCU3Z1iQYpRI6Cn0bNDOunURbGgKd+ZJWhulF3JYW0t4Tm/0LEvjq1/11FwkKJX+WYH
-	apt0WQdao+PKAE0TTPzt/5mb1JFN3o0=
+	bh=G2YZihmyeQWmTmVd8ag5SGtgD78nBWToo7HK+nc/Wtk=;
+	b=W8WiOI7WAvoVgR4rmwzpFEmp515BbaPgQQUIBzTps4bbE4sv7N3Rmlpk7INcJ/q6hUmt9H
+	cNIHihqRdmsTpgc9RrMtUulrZEnmThIE4NfyAQXBP6HemhFx+3fIUzxa2lgptF2HiJkzgO
+	HuarIaN5tIAv0mXj+vbhxb5L8qhBA7k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1708521855;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cyEZOfkKjRD1DB2JnX5AXn1kOpeHmL85HOa4YyZnu48=;
-	b=twmwTotkQ90dfjjtD87xxE6w5wLX/CQk4ePhcfxZ16+TeaZSRGD2QVwaH7kXOH8FwFBNHF
-	gTNRWgtqoVMk1LBg==
+	bh=G2YZihmyeQWmTmVd8ag5SGtgD78nBWToo7HK+nc/Wtk=;
+	b=8hIIRDykijJV2kXhxsIBcOdZ7rEUYk9m3DI2tm/L6kK2WcJPq1iH404Y7GL+G57Ux9q7n1
+	mqcI5yf4IDQiCUBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
 	t=1708521855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cyEZOfkKjRD1DB2JnX5AXn1kOpeHmL85HOa4YyZnu48=;
-	b=AChw+Y5+q9flrzGaK0Ji5r+52/LUbZcCJST0+voU9QvtsHczqNH23tRRBfxtNq7diYK+y5
-	Ha0TCU3Z1iQYpRI6Cn0bNDOunURbGgKd+ZJWhulF3JYW0t4Tm/0LEvjq1/11FwkKJX+WYH
-	apt0WQdao+PKAE0TTPzt/5mb1JFN3o0=
+	bh=G2YZihmyeQWmTmVd8ag5SGtgD78nBWToo7HK+nc/Wtk=;
+	b=W8WiOI7WAvoVgR4rmwzpFEmp515BbaPgQQUIBzTps4bbE4sv7N3Rmlpk7INcJ/q6hUmt9H
+	cNIHihqRdmsTpgc9RrMtUulrZEnmThIE4NfyAQXBP6HemhFx+3fIUzxa2lgptF2HiJkzgO
+	HuarIaN5tIAv0mXj+vbhxb5L8qhBA7k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1708521855;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cyEZOfkKjRD1DB2JnX5AXn1kOpeHmL85HOa4YyZnu48=;
-	b=twmwTotkQ90dfjjtD87xxE6w5wLX/CQk4ePhcfxZ16+TeaZSRGD2QVwaH7kXOH8FwFBNHF
-	gTNRWgtqoVMk1LBg==
+	bh=G2YZihmyeQWmTmVd8ag5SGtgD78nBWToo7HK+nc/Wtk=;
+	b=8hIIRDykijJV2kXhxsIBcOdZ7rEUYk9m3DI2tm/L6kK2WcJPq1iH404Y7GL+G57Ux9q7n1
+	mqcI5yf4IDQiCUBA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E526D13A25;
-	Wed, 21 Feb 2024 13:24:14 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EDE913A25;
+	Wed, 21 Feb 2024 13:24:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id lY2xNX751WUdPQAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Wed, 21 Feb 2024 13:24:14 +0000
+	id ct9BJX/51WUfPQAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Wed, 21 Feb 2024 13:24:15 +0000
 From: Daniel Wagner <dwagner@suse.de>
 To: James Smart <james.smart@broadcom.com>
 Cc: Keith Busch <kbusch@kernel.org>,
@@ -94,9 +94,9 @@ Cc: Keith Busch <kbusch@kernel.org>,
 	linux-nvme@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v2 4/5] nvme-fc: reorder ctrl ref counting and cleanup code path
-Date: Wed, 21 Feb 2024 14:24:03 +0100
-Message-ID: <20240221132404.6311-5-dwagner@suse.de>
+Subject: [PATCH v2 5/5] nvme-fc: wait for initial connect attempt to finish
+Date: Wed, 21 Feb 2024 14:24:04 +0100
+Message-ID: <20240221132404.6311-6-dwagner@suse.de>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240221132404.6311-1-dwagner@suse.de>
 References: <20240221132404.6311-1-dwagner@suse.de>
@@ -109,7 +109,9 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [1.90 / 50.00];
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
@@ -118,8 +120,10 @@ X-Spamd-Result: default: False [1.90 / 50.00];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 BROKEN_CONTENT_TYPE(1.50)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCPT_COUNT_SEVEN(0.00)[8];
 	 MID_CONTAINS_FROM(1.00)[];
 	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
@@ -128,288 +132,206 @@ X-Spamd-Result: default: False [1.90 / 50.00];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
 X-Spam-Flag: NO
 
-The life time of the controller is managed by the upper layers.
+The TCP and RDMA transport are doing a synchronous connects, that is the
+syscal returns with the final result. The operation either fails or
+succeeds. The FC transport offloads the connect attempt to a workqueue
+and thus it's an asynchronous operation.
 
-Thus just ref counting the controller when creating it and giving the
-ref back on the cleanup path. This is how the other transport are
-managed as well.
+This async connect feature was introduced to mitigate problems with
+transient connect errors and the task to coordinate retries with
+userspace (nvme-cli).
 
-In fact we don't really need the ref count for nvme_fc_ctrl at this
-point. Though, the FC transport is offloading the connect attempt to a
-workqueue and in the next patch we introduce a sync option for which the
-ref counter is necessary. So let's keep it around.
+Unfortunately, this makes the transports behave differently on the
+initial attempt. Streamline nvme-fc to wait for the initial connection
+attempt to succeed or fail.
 
-We have also to reorder the cleanup code in nvme_fc_delete_ctrl and
-nvme_fc_free_ctrl so that we do not expose resources too long and run
-into use after free situations which are currently possible.
+In order to support also the async connection attempt introduce a new
+flag for userspace. The default is a synchronous initial connect
+attempt.
 
+Link: https://lore.kernel.org/linux-nvme/0605ac36-16d5-2026-d3c6-62d346db6dfb@gmail.com/
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/nvme/host/fc.c | 101 +++++++++++++----------------------------
- 1 file changed, 32 insertions(+), 69 deletions(-)
+ drivers/nvme/host/fabrics.c | 17 ++++++++++++++++-
+ drivers/nvme/host/fabrics.h |  3 +++
+ drivers/nvme/host/fc.c      | 26 +++++++++++++++++++++++++-
+ 3 files changed, 44 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
+index 888285fe2289..52c95259debd 100644
+--- a/drivers/nvme/host/fabrics.c
++++ b/drivers/nvme/host/fabrics.c
+@@ -678,6 +678,7 @@ static const match_table_t opt_tokens = {
+ #ifdef CONFIG_NVME_TCP_TLS
+ 	{ NVMF_OPT_TLS,			"tls"			},
+ #endif
++	{ NVMF_OPT_CONNECT_ASYNC,	"connect_async=%d"	},
+ 	{ NVMF_OPT_ERR,			NULL			}
+ };
+ 
+@@ -706,6 +707,7 @@ static int nvmf_parse_options(struct nvmf_ctrl_options *opts,
+ 	opts->tls = false;
+ 	opts->tls_key = NULL;
+ 	opts->keyring = NULL;
++	opts->connect_async = false;
+ 
+ 	options = o = kstrdup(buf, GFP_KERNEL);
+ 	if (!options)
+@@ -1024,6 +1026,19 @@ static int nvmf_parse_options(struct nvmf_ctrl_options *opts,
+ 			}
+ 			opts->tls = true;
+ 			break;
++		case NVMF_OPT_CONNECT_ASYNC:
++			if (match_int(args, &token)) {
++				ret = -EINVAL;
++				goto out;
++			}
++			if (token < 0 || token > 1) {
++				pr_err("Invalid connect_async %d value\n",
++				       token);
++				ret = -EINVAL;
++				goto out;
++			}
++			opts->connect_async = token;
++			break;
+ 		default:
+ 			pr_warn("unknown parameter or missing value '%s' in ctrl creation request\n",
+ 				p);
+@@ -1259,7 +1274,7 @@ EXPORT_SYMBOL_GPL(nvmf_ctrl_options_put);
+ 				 NVMF_OPT_HOST_ID | NVMF_OPT_DUP_CONNECT |\
+ 				 NVMF_OPT_DISABLE_SQFLOW | NVMF_OPT_DISCOVERY |\
+ 				 NVMF_OPT_FAIL_FAST_TMO | NVMF_OPT_DHCHAP_SECRET |\
+-				 NVMF_OPT_DHCHAP_CTRL_SECRET)
++				 NVMF_OPT_DHCHAP_CTRL_SECRET | NVMF_OPT_CONNECT_ASYNC)
+ 
+ static struct nvme_ctrl *
+ nvmf_create_ctrl(struct device *dev, const char *buf)
+diff --git a/drivers/nvme/host/fabrics.h b/drivers/nvme/host/fabrics.h
+index 8436533aed16..75bc61401e1b 100644
+--- a/drivers/nvme/host/fabrics.h
++++ b/drivers/nvme/host/fabrics.h
+@@ -73,6 +73,7 @@ enum {
+ 	NVMF_OPT_TLS		= 1 << 25,
+ 	NVMF_OPT_KEYRING	= 1 << 26,
+ 	NVMF_OPT_TLS_KEY	= 1 << 27,
++	NVMF_OPT_CONNECT_ASYNC	= 1 << 28,
+ };
+ 
+ /**
+@@ -116,6 +117,7 @@ enum {
+  * @nr_poll_queues: number of queues for polling I/O
+  * @tos: type of service
+  * @fast_io_fail_tmo: Fast I/O fail timeout in seconds
++ * @connect_async: Don't wait for the intial connect attempt to succeed or fail
+  */
+ struct nvmf_ctrl_options {
+ 	struct kref		ref;
+@@ -146,6 +148,7 @@ struct nvmf_ctrl_options {
+ 	unsigned int		nr_poll_queues;
+ 	int			tos;
+ 	int			fast_io_fail_tmo;
++	bool			connect_async;
+ };
+ 
+ int nvmf_ctrl_options_get(struct nvmf_ctrl_options *opts);
 diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index ddbc5b21af5b..7627d10a5812 100644
+index 7627d10a5812..ebc4ff6b3343 100644
 --- a/drivers/nvme/host/fc.c
 +++ b/drivers/nvme/host/fc.c
-@@ -229,6 +229,9 @@ static struct device *fc_udev_device;
+@@ -169,6 +169,7 @@ struct nvme_fc_ctrl {
  
- static void nvme_fc_complete_rq(struct request *rq);
+ 	struct work_struct	ioerr_work;
+ 	struct delayed_work	connect_work;
++	struct completion	connect_completion;
  
-+static void nvme_fc_ctrl_put(struct nvme_fc_ctrl *);
-+static int nvme_fc_ctrl_get(struct nvme_fc_ctrl *);
-+
- /* *********************** FC-NVME Port Management ************************ */
- 
- static void __nvme_fc_delete_hw_queue(struct nvme_fc_ctrl *,
-@@ -800,7 +803,7 @@ nvme_fc_ctrl_connectivity_loss(struct nvme_fc_ctrl *ctrl)
+ 	struct kref		ref;
+ 	unsigned long		flags;
+@@ -803,6 +804,7 @@ nvme_fc_ctrl_connectivity_loss(struct nvme_fc_ctrl *ctrl)
  			dev_warn(ctrl->ctrl.device,
  				"NVME-FC{%d}: Couldn't schedule reset.\n",
  				ctrl->cnum);
--			nvme_delete_ctrl(&ctrl->ctrl);
-+			nvme_fc_ctrl_put(ctrl);
++			complete(&ctrl->connect_completion);
+ 			nvme_fc_ctrl_put(ctrl);
  		}
  		break;
- 
-@@ -868,7 +871,7 @@ nvme_fc_unregister_remoteport(struct nvme_fc_remote_port *portptr)
+@@ -871,6 +873,7 @@ nvme_fc_unregister_remoteport(struct nvme_fc_remote_port *portptr)
  			dev_warn(ctrl->ctrl.device,
  				"NVME-FC{%d}: controller connectivity lost.\n",
  				ctrl->cnum);
--			nvme_delete_ctrl(&ctrl->ctrl);
-+			nvme_fc_ctrl_put(ctrl);
++			complete(&ctrl->connect_completion);
+ 			nvme_fc_ctrl_put(ctrl);
  		} else
  			nvme_fc_ctrl_connectivity_loss(ctrl);
- 	}
-@@ -1022,9 +1025,6 @@ fc_dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nents,
- 
- /* *********************** FC-NVME LS Handling **************************** */
- 
--static void nvme_fc_ctrl_put(struct nvme_fc_ctrl *);
--static int nvme_fc_ctrl_get(struct nvme_fc_ctrl *);
--
- static void nvme_fc_error_recovery(struct nvme_fc_ctrl *ctrl, char *errmsg);
- 
- static void
-@@ -1511,8 +1511,6 @@ nvme_fc_match_disconn_ls(struct nvme_fc_rport *rport,
- 	spin_lock_irqsave(&rport->lock, flags);
- 
- 	list_for_each_entry(ctrl, &rport->ctrl_list, ctrl_list) {
--		if (!nvme_fc_ctrl_get(ctrl))
--			continue;
- 		spin_lock(&ctrl->lock);
- 		if (association_id == ctrl->association_id) {
- 			oldls = ctrl->rcv_disconn;
-@@ -1520,10 +1518,6 @@ nvme_fc_match_disconn_ls(struct nvme_fc_rport *rport,
- 			ret = ctrl;
- 		}
- 		spin_unlock(&ctrl->lock);
--		if (ret)
--			/* leave the ctrl get reference */
--			break;
--		nvme_fc_ctrl_put(ctrl);
- 	}
- 
- 	spin_unlock_irqrestore(&rport->lock, flags);
-@@ -1602,9 +1596,6 @@ nvme_fc_ls_disconnect_assoc(struct nvmefc_ls_rcv_op *lsop)
- 	/* fail the association */
- 	nvme_fc_error_recovery(ctrl, "Disconnect Association LS received");
- 
--	/* release the reference taken by nvme_fc_match_disconn_ls() */
--	nvme_fc_ctrl_put(ctrl);
--
- 	return false;
- }
- 
-@@ -2071,7 +2062,6 @@ nvme_fc_fcpio_done(struct nvmefc_fcp_req *req)
- 		__nvme_fc_fcpop_chk_teardowns(ctrl, op, opstate);
- 		atomic_set(&op->state, FCPOP_STATE_IDLE);
- 		op->flags = FCOP_FLAGS_AEN;	/* clear other flags */
--		nvme_fc_ctrl_put(ctrl);
- 		goto check_error;
- 	}
- 
-@@ -2383,37 +2373,18 @@ nvme_fc_init_io_queues(struct nvme_fc_ctrl *ctrl)
- }
- 
- static void
--nvme_fc_ctrl_free(struct kref *ref)
-+nvme_fc_ctrl_delete(struct kref *ref)
- {
- 	struct nvme_fc_ctrl *ctrl =
- 		container_of(ref, struct nvme_fc_ctrl, ref);
--	unsigned long flags;
--
--	if (ctrl->ctrl.tagset)
--		nvme_remove_io_tag_set(&ctrl->ctrl);
--
--	/* remove from rport list */
--	spin_lock_irqsave(&ctrl->rport->lock, flags);
--	list_del(&ctrl->ctrl_list);
--	spin_unlock_irqrestore(&ctrl->rport->lock, flags);
--
--	nvme_unquiesce_admin_queue(&ctrl->ctrl);
--	nvme_remove_admin_tag_set(&ctrl->ctrl);
- 
--	kfree(ctrl->queues);
--
--	put_device(ctrl->dev);
--	nvme_fc_rport_put(ctrl->rport);
--
--	ida_free(&nvme_fc_ctrl_cnt, ctrl->cnum);
--	nvmf_ctrl_options_put(ctrl->ctrl.opts);
--	kfree(ctrl);
-+	nvme_delete_ctrl(&ctrl->ctrl);
- }
- 
- static void
- nvme_fc_ctrl_put(struct nvme_fc_ctrl *ctrl)
- {
--	kref_put(&ctrl->ref, nvme_fc_ctrl_free);
-+	kref_put(&ctrl->ref, nvme_fc_ctrl_delete);
- }
- 
- static int
-@@ -2431,9 +2402,20 @@ nvme_fc_free_ctrl(struct nvme_ctrl *nctrl)
- {
- 	struct nvme_fc_ctrl *ctrl = to_fc_ctrl(nctrl);
- 
--	WARN_ON(nctrl != &ctrl->ctrl);
- 
--	nvme_fc_ctrl_put(ctrl);
-+	if (ctrl->ctrl.tagset)
-+		nvme_remove_io_tag_set(&ctrl->ctrl);
-+
-+	nvme_unquiesce_admin_queue(&ctrl->ctrl);
-+	nvme_remove_admin_tag_set(&ctrl->ctrl);
-+
-+	kfree(ctrl->queues);
-+	put_device(ctrl->dev);
-+	nvme_fc_rport_put(ctrl->rport);
-+
-+	ida_free(&nvme_fc_ctrl_cnt, ctrl->cnum);
-+	nvmf_ctrl_options_put(ctrl->ctrl.opts);
-+	kfree(ctrl);
- }
- 
- /*
-@@ -2682,9 +2664,6 @@ nvme_fc_start_fcp_op(struct nvme_fc_ctrl *ctrl, struct nvme_fc_queue *queue,
- 	if (ctrl->rport->remoteport.port_state != FC_OBJSTATE_ONLINE)
- 		return BLK_STS_RESOURCE;
- 
--	if (!nvme_fc_ctrl_get(ctrl))
--		return BLK_STS_IOERR;
--
- 	/* format the FC-NVME CMD IU and fcp_req */
- 	cmdiu->connection_id = cpu_to_be64(queue->connection_id);
- 	cmdiu->data_len = cpu_to_be32(data_len);
-@@ -2729,7 +2708,6 @@ nvme_fc_start_fcp_op(struct nvme_fc_ctrl *ctrl, struct nvme_fc_queue *queue,
- 		ret = nvme_fc_map_data(ctrl, op->rq, op);
- 		if (ret < 0) {
- 			nvme_cleanup_cmd(op->rq);
--			nvme_fc_ctrl_put(ctrl);
- 			if (ret == -ENOMEM || ret == -EAGAIN)
- 				return BLK_STS_RESOURCE;
- 			return BLK_STS_IOERR;
-@@ -2770,8 +2748,6 @@ nvme_fc_start_fcp_op(struct nvme_fc_ctrl *ctrl, struct nvme_fc_queue *queue,
- 			nvme_cleanup_cmd(op->rq);
- 		}
- 
--		nvme_fc_ctrl_put(ctrl);
--
- 		if (ctrl->rport->remoteport.port_state == FC_OBJSTATE_ONLINE &&
- 				ret != -EBUSY)
- 			return BLK_STS_IOERR;
-@@ -2855,7 +2831,6 @@ nvme_fc_complete_rq(struct request *rq)
- 
- 	nvme_fc_unmap_data(ctrl, rq, op);
- 	nvme_complete_rq(rq);
--	nvme_fc_ctrl_put(ctrl);
- }
- 
- static void nvme_fc_map_queues(struct blk_mq_tag_set *set)
-@@ -3284,9 +3259,16 @@ static void
- nvme_fc_delete_ctrl(struct nvme_ctrl *nctrl)
- {
- 	struct nvme_fc_ctrl *ctrl = to_fc_ctrl(nctrl);
-+	unsigned long flags;
- 
- 	cancel_work_sync(&ctrl->ioerr_work);
- 	cancel_delayed_work_sync(&ctrl->connect_work);
-+
-+	/* remove from rport list */
-+	spin_lock_irqsave(&ctrl->rport->lock, flags);
-+	list_del(&ctrl->ctrl_list);
-+	spin_unlock_irqrestore(&ctrl->rport->lock, flags);
-+
- 	/*
- 	 * kill the association on the link side.  this will block
- 	 * waiting for io to terminate
-@@ -3344,7 +3326,7 @@ nvme_fc_reconnect_or_delete(struct nvme_fc_ctrl *ctrl, int status)
+@@ -3326,6 +3329,7 @@ nvme_fc_reconnect_or_delete(struct nvme_fc_ctrl *ctrl, int status)
  				ctrl->cnum, min_t(int, portptr->dev_loss_tmo,
  					(ctrl->ctrl.opts->max_reconnects *
  					 ctrl->ctrl.opts->reconnect_delay)));
--		WARN_ON(nvme_delete_ctrl(&ctrl->ctrl));
++		complete(&ctrl->connect_completion);
+ 		nvme_fc_ctrl_put(ctrl);
+ 	}
+ }
+@@ -3385,10 +3389,12 @@ nvme_fc_connect_ctrl_work(struct work_struct *work)
+ 	ret = nvme_fc_create_association(ctrl);
+ 	if (ret)
+ 		nvme_fc_reconnect_or_delete(ctrl, ret);
+-	else
++	else {
+ 		dev_info(ctrl->ctrl.device,
+ 			"NVME-FC{%d}: controller connect complete\n",
+ 			ctrl->cnum);
++		complete(&ctrl->connect_completion);
++	}
+ }
+ 
+ 
+@@ -3494,6 +3500,7 @@ nvme_fc_init_ctrl(struct device *dev, struct nvmf_ctrl_options *opts,
+ 
+ 	INIT_WORK(&ctrl->ctrl.reset_work, nvme_fc_reset_ctrl_work);
+ 	INIT_DELAYED_WORK(&ctrl->connect_work, nvme_fc_connect_ctrl_work);
++	init_completion(&ctrl->connect_completion);
+ 	INIT_WORK(&ctrl->ioerr_work, nvme_fc_ctrl_ioerr_work);
+ 	spin_lock_init(&ctrl->lock);
+ 
+@@ -3541,6 +3548,9 @@ nvme_fc_init_ctrl(struct device *dev, struct nvmf_ctrl_options *opts,
+ 	list_add_tail(&ctrl->ctrl_list, &rport->ctrl_list);
+ 	spin_unlock_irqrestore(&rport->lock, flags);
+ 
++	if (!opts->connect_async)
++		nvme_fc_ctrl_get(ctrl);
++
+ 	if (!nvme_change_ctrl_state(&ctrl->ctrl, NVME_CTRL_RESETTING) ||
+ 	    !nvme_change_ctrl_state(&ctrl->ctrl, NVME_CTRL_CONNECTING)) {
+ 		dev_err(ctrl->ctrl.device,
+@@ -3557,6 +3567,19 @@ nvme_fc_init_ctrl(struct device *dev, struct nvmf_ctrl_options *opts,
+ 
+ 	flush_delayed_work(&ctrl->connect_work);
+ 
++	if (!opts->connect_async) {
++		enum nvme_ctrl_state state;
++
++		wait_for_completion(&ctrl->connect_completion);
++		state = nvme_ctrl_state(&ctrl->ctrl);
 +		nvme_fc_ctrl_put(ctrl);
- 	}
- }
- 
-@@ -3582,25 +3564,7 @@ nvme_fc_init_ctrl(struct device *dev, struct nvmf_ctrl_options *opts,
- 	return &ctrl->ctrl;
- 
- fail_ctrl:
--	nvme_change_ctrl_state(&ctrl->ctrl, NVME_CTRL_DELETING);
--	cancel_work_sync(&ctrl->ioerr_work);
--	cancel_work_sync(&ctrl->ctrl.reset_work);
--	cancel_delayed_work_sync(&ctrl->connect_work);
--
--	/* initiate nvme ctrl ref counting teardown */
--	nvme_uninit_ctrl(&ctrl->ctrl);
--
--	/* Remove core ctrl ref. */
--	nvme_put_ctrl(&ctrl->ctrl);
--
--	/* as we're past the point where we transition to the ref
--	 * counting teardown path, if we return a bad pointer here,
--	 * the calling routine, thinking it's prior to the
--	 * transition, will do an rport put. Since the teardown
--	 * path also does a rport put, we do an extra get here to
--	 * so proper order/teardown happens.
--	 */
--	nvme_fc_rport_get(rport);
-+	nvme_fc_ctrl_put(ctrl);
- 
- 	return ERR_PTR(-EIO);
- 
-@@ -3614,6 +3578,7 @@ nvme_fc_init_ctrl(struct device *dev, struct nvmf_ctrl_options *opts,
- out_free_ctrl:
- 	kfree(ctrl);
- out_fail:
-+	nvme_fc_rport_put(rport);
- 	/* exit via here doesn't follow ctlr ref points */
- 	return ERR_PTR(ret);
- }
-@@ -3724,8 +3689,6 @@ nvme_fc_create_ctrl(struct device *dev, struct nvmf_ctrl_options *opts)
- 			spin_unlock_irqrestore(&nvme_fc_lock, flags);
- 
- 			ctrl = nvme_fc_init_ctrl(dev, opts, lport, rport);
--			if (IS_ERR(ctrl))
--				nvme_fc_rport_put(rport);
- 			return ctrl;
- 		}
- 	}
-@@ -3950,7 +3913,7 @@ nvme_fc_delete_controllers(struct nvme_fc_rport *rport)
++
++		if (state != NVME_CTRL_LIVE) {
++			/* Cleanup is handled by the connect state machine */
++			return ERR_PTR(-EIO);
++		}
++	}
++
+ 	dev_info(ctrl->ctrl.device,
+ 		"NVME-FC{%d}: new ctrl: NQN \"%s\", hostnqn: %s\n",
+ 		ctrl->cnum, nvmf_ctrl_subsysnqn(&ctrl->ctrl), opts->host->nqn);
+@@ -3913,6 +3936,7 @@ nvme_fc_delete_controllers(struct nvme_fc_rport *rport)
  		dev_warn(ctrl->ctrl.device,
  			"NVME-FC{%d}: transport unloading: deleting ctrl\n",
  			ctrl->cnum);
--		nvme_delete_ctrl(&ctrl->ctrl);
-+		nvme_fc_ctrl_put(ctrl);
++		complete(&ctrl->connect_completion);
+ 		nvme_fc_ctrl_put(ctrl);
  	}
  	spin_unlock(&rport->lock);
- }
 -- 
 2.43.1
 
