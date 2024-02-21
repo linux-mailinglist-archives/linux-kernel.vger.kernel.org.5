@@ -1,131 +1,115 @@
-Return-Path: <linux-kernel+bounces-74895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4F185DFB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BEA585DFBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:32:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 322081F23DBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:31:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD411F23522
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436297F7F2;
-	Wed, 21 Feb 2024 14:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C347FBCD;
+	Wed, 21 Feb 2024 14:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="acd0dMN6"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WvBwT6Kx"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F5E67E8B
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112F47FBC0
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708525889; cv=none; b=digKKxro3uHx+k40K91vGgJQlxUEnXFTZX2//GSYmxgIayd7KWJEeMlUvGntv6sNhXM0HYKUlGbQKB5I9lcH/S3fnKFI8P73Eve5IlV+D8sLM6CnyhdrdOoIMa/bOxMhITCj6gOiMaVVUgrUo/HLOjLgtPJ4lH5V3K7FVLG/DhM=
+	t=1708525910; cv=none; b=tXnUIthYfHMvOhNt6kNNgpwUv0kAHm/7eQkre8lrR3pxRnnQnwlj5pRq5BtH7RZTXSIjTuIltKo1QwC4MOXjLizxBe99Y0QQttTKR+l9xCUwBho1DTOiMSU9naloqHjnGYStbh1rIj+DBqh17a3dn0rOqPt/Vd3sv/N2D53Dr2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708525889; c=relaxed/simple;
-	bh=ai0Y3ghr43o6eth14mZfN6FyOqZZgNeqaxFSD2r3C1Q=;
+	s=arc-20240116; t=1708525910; c=relaxed/simple;
+	bh=SzQd87jZwG+oQiOKEili2Q5rk6+fGGD3FVIw4/CT1CM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T6Kv4yqUYab4vpRoDXxLK+i8HHvkIYMTxBStV4uKZRIs4P15U7a0kcoY9hvyhdRi/gnykd41rMw5lXygwANos9JB6hmQ9i30s8b/24bs9NkpKP+Z19Z7pvBva5iG4/ZNAus4ZVXiFddLRtd5+COblr3gvpl2p93/luSeMp5A9/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=acd0dMN6; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5120ecfd75cso10266315e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:31:26 -0800 (PST)
+	 To:Cc:Content-Type; b=h/ltcjU8Il0efQlUN4uUi9IeGvTzZ5CJETOylHzBlH3ycVdoaLBs6+Qz7WXqPiNIfwCIWLNNHc6mkpS8O/VA6KRNXv4B1Ao0xJ3M7WobCSiAvjO504zX0jQBx6zSdmjjeElUKwbd0K01ZpLCuQtnbRaGN49WMgoejSQGP6SFwZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WvBwT6Kx; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso751061276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:31:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1708525885; x=1709130685; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708525907; x=1709130707; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rG0WBB4ciOPrXJmNteBsGP2QAaf4Oc9Vg6ruFampq5U=;
-        b=acd0dMN6Rq9+83tfG3q4us8gqzw0xaywraGDhNlsHogblG2RxBXDqR7qm3ALFDDTZ8
-         od/SWMd+AjtdZywAtVBE8T4gPbSSS0ODwT4Q5RlGz/pv+PASkC+2Ld1xx1b8iKVzqjZT
-         6FLUZDmWTVfOXkGmmLBGsf/cW1YhUen2pRa38ixEgt8r3Jw70sDh+Hr1C5F2o0MvE3gr
-         WG9CnOVsjCxhi0/6euFxCbi2fBCC8i9kZXTrFgq5L0fXws+zDR3SvM9ajEDHkGoNxIbo
-         GGgHKUsIj7W9Pcfn3z+CbKslGqPRxtQMoMmWVzCibecJKAx8i6COQBmM3MfMyPgllMsl
-         Gr1A==
+        bh=SzQd87jZwG+oQiOKEili2Q5rk6+fGGD3FVIw4/CT1CM=;
+        b=WvBwT6Kxg0pz41I5TVkIu6EVzlO3ZDVkCIV9Z+g8N0BHND5m7t8ljeJzvjBSHum0nk
+         fzp23KDC3LOWR4Bx0hebzKNR6NvbzbTAMNq9B7gfVse5yw8y+SZvP+Ak81S91jQyX/8L
+         3Htg9i3w4wF+RICufExVT1gX1Y6VUlQgr+ePd3Tzz21PO+SxKVKCGQImxb46c+y/2ifm
+         cuPZEYaImpDBi971tR+T118AzAP/0R+tTQXH4i5R4yy21S1tXI/hVgbipb5iamrXxfHj
+         QuolaT5uWejS1o3TNuYztREzKcG3kMlMJHvDKSnQukwSm0/u0qB2iNOXPXdzWLViqIpA
+         IE7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708525885; x=1709130685;
+        d=1e100.net; s=20230601; t=1708525907; x=1709130707;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rG0WBB4ciOPrXJmNteBsGP2QAaf4Oc9Vg6ruFampq5U=;
-        b=AJ7xQJRLYmFGnEWI+p875PYFbFG6DVXfOzF+1g4ByVfKBRNY61RvglaNlTLaLpBx1g
-         d1AUT1wOt+PDYXA5CUjPJ80d/+dCMzwtl08nLDMqkWqxvLNFJBzak6XNg5xwHviPikjc
-         aEcUpsn1arQl0RvAe/xI0KB6iYtwz+kHbFHE0ImDhI160dX4qo3+2jznMzg1H3lE0p2T
-         DGdI9/RK1eyOCKaLRx8NWypROC85ES3lQO16+9L4NFunNS8eKbjYgFo1U+yx+E3wpveo
-         rN6x+NJHXpNeIcw7q8RTY7w8OVp1Gz/OuI53qMfqX2H+4EEDvFkI8ZNiAwdD4m2dqGF+
-         9SdA==
-X-Forwarded-Encrypted: i=1; AJvYcCVawVhQIiUl2X3jOCDtAB3tuZutwifSVH7srBP4uuDkLFOvPeFwDFKx0cB2Hus9Nxr0sIzUBZ9sNng8C0YESzAEfmMjSKg+vMlYAr9+
-X-Gm-Message-State: AOJu0YzYNfcwDeCv9KOjgDRGmU5yOG2sHiwYmXMD7jEIRgSq84g8dEzv
-	8Ozj9tZThjYo8GjOLzunymNU9G7HNXilZx/9Sldv2ZyUQcMcmTaO+nCUl53BbwQPMgVLpid+xhf
-	Teiy7wjNu5QR38FY/M/paA7RR3F01PflA+uPGew==
-X-Google-Smtp-Source: AGHT+IFgyTlvcYZuUnsc3Px/pDWdM8WzXwTcIeRlitvcBj8aH7M0N907h7RZJroGn8CWGEbJElLaPVXUsGJ8sQLr8yk=
-X-Received: by 2002:ac2:456b:0:b0:512:a9aa:ab48 with SMTP id
- k11-20020ac2456b000000b00512a9aaab48mr5990070lfm.7.1708525884593; Wed, 21 Feb
- 2024 06:31:24 -0800 (PST)
+        bh=SzQd87jZwG+oQiOKEili2Q5rk6+fGGD3FVIw4/CT1CM=;
+        b=pt3haZ+GFakxOpuKgDpt6SUlFPMpdSV7brTy6CNot1f3foAK5hELheTI5SKGE+BYeB
+         gBrCW/uyWvh6xms0NAzJsfqvzuY18GHRPvgEL0VGMjy6MlPhDJ8Rjm1z2Z7Vf2bCxHI0
+         2Oj0A7eHdXkOCN81Ua0GhQMcQI418JhKEBlDl8IdnSYlgP0Q1VStM4mtTCxDY1n/oGie
+         PVwb6cv1SE/B/obVVmSQnNcDulHS+qOBds8S2mdmMbKqmCfYrpKtFFxc56A7ygC4W5e5
+         z7q2qYVOTWOz30wSpG5N/ZPqp6s6/U9zCCKSRk9Y2zuP1ej43MZzABeW6eh0tKgFcGoy
+         sfAA==
+X-Forwarded-Encrypted: i=1; AJvYcCVEgyLct7IAIjXLVsafqeXSGVs7eb0bLTdsAaKJTheYwEzMNwZQ63Wc2CifrRBJ3ePxXeNi/vwtRqWVb88YYXyi0zcnZCkuj+ar+JL0
+X-Gm-Message-State: AOJu0YwmufAKvkUj2HNmZ9oQh6AIuCsteLCk0TxKOhX5YxgUB6AJvENB
+	GeEmCsRoUKrviS1YKYz5SpBAM20UDB2sM7yNWNarqqbNkkn5Xs5kQ+VgnN7ZmJVdn/6/WtC6hw5
+	AltoGSWouBNIuR1r1yFNUEnIedQrk9k9jr+9yFg==
+X-Google-Smtp-Source: AGHT+IHtPHuNmDP1ivorhMWyf7CtrVAVcOmamjArI6U21e7odr0+fcnGW+8ENjWO4dIYPF7XJm3UqeeahMkOdj2+Yic=
+X-Received: by 2002:a25:e0d2:0:b0:dc7:5c37:5420 with SMTP id
+ x201-20020a25e0d2000000b00dc75c375420mr15986478ybg.60.1708525907011; Wed, 21
+ Feb 2024 06:31:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221125953.770767246@linuxfoundation.org>
-In-Reply-To: <20240221125953.770767246@linuxfoundation.org>
-From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date: Wed, 21 Feb 2024 23:31:13 +0900
-Message-ID: <CAKL4bV5Txf=FBfcKbCS5NrBtu9uN5ZLtLBfeMr2R8Uc1wRLEpg@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/338] 6.6.18-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com> <20240214-mbly-gpio-v1-18-f88c0ccf372b@bootlin.com>
+In-Reply-To: <20240214-mbly-gpio-v1-18-f88c0ccf372b@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 21 Feb 2024 15:31:35 +0100
+Message-ID: <CACRpkdYLBGsphNkmWyPXQZvFaO2hHGHGTMt1eqz-HAa2k5F3bg@mail.gmail.com>
+Subject: Re: [PATCH 18/23] gpio: nomadik: support mobileye,eyeq5-gpio
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Greg
+On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
 
-On Wed, Feb 21, 2024 at 10:01=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+> We create a custom compatible for the STA2X11 IP block as integrated
+> into the Mobileye EyeQ5 platform. Its wake and alternate functions have
+> been disabled, we want to avoid touching those registers.
 >
-> This is the start of the stable review cycle for the 6.6.18 release.
-> There are 338 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> We both do: (1) early return in functions that do not support the
+> platform, but with warnings, and (2) avoid calling those functions in
+> the first place.
 >
-> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
-> Anything received after that time might be too late.
+> We ensure that pinctrl-nomadik is not used with this STA2X11 variant.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.18-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-6.6.18-rc2 tested.
+When testing I noticed that this patch breaks Ux500 (up until patch 17
+all works fine!).
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+But I don't know why.
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+Trying to figure it out...
 
-[    0.000000] Linux version 6.6.18-rc2rv
-(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
-Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Wed Feb 21 23:14:15 JST 2024
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Yours,
+Linus Walleij
 
