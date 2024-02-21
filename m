@@ -1,150 +1,105 @@
-Return-Path: <linux-kernel+bounces-74495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2913485D51F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:05:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B839885D52A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:06:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D66472871D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:05:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5AE11C209C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88BD3FB19;
-	Wed, 21 Feb 2024 10:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ibcIOx9k"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563293D982;
+	Wed, 21 Feb 2024 10:04:54 +0000 (UTC)
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927C13FB0C;
-	Wed, 21 Feb 2024 10:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDC23D965
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.65.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509650; cv=none; b=NARYdkmyqpPOa8BUWV51qI2R4OrmEAXg8FnM1GWDFaAQ6x8OJ2KVFeQDn0xtB9B8rWCvZJsQ1ngHbzKqG5oWOyf0bk8cli20D0Dc7fkxmHdIbdc07cHG6tEOWUMu2RyqQ/CoVkEgf8E4ZmNmENWGWZ4Hpwf4nJEM/P3LWRijUSA=
+	t=1708509893; cv=none; b=VET+CPSUWInqOCEPNrPUUoQGmPP5Esxz1bJJ+fj+zT45fYXQLveXNB64eA054h+/URlxn5dDl1ecg+9VYBvX5hKUOgSVNDX8FhpaENO+r/ke/4gkllqvmepFXrIHANA+HrwVvDZZpamLsCB6F6mQYGFSK3KQNovfGVeP/cykQhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509650; c=relaxed/simple;
-	bh=wcF4f8oB66/zilBylgZvCVlgJPjo9n+Rs862VHuPPtE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LnIEClPgvfhnuTXqa8BWZjGguOLOCV1q7zUUiKFDv2eyx9nFOQ4N/PuHCK/Jqu8HYSYyU+kz5NferE+pzZIGLW3kcnhyjZ+eH46P5JCyV/Ni9v4LU74oawjR3ZYJFp3zNCsdLadtaSbOo0/ZAmOIALDOoApUbrjz0ST9x2prabk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ibcIOx9k; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708509646;
-	bh=wcF4f8oB66/zilBylgZvCVlgJPjo9n+Rs862VHuPPtE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ibcIOx9khG/HibZOQuADQzzX0BqkCDivppWffmnMYxNslmqkpFm4o7N7PSjEXpZ+G
-	 Xkdg1M6DbzGGnluOboEfBBz6dgGonmZt8Vz6i/lpF+UaPao1G5aEhqUTAp5CqpLBFC
-	 7ZcopzX8/GZGhqzB3/JNcM/Ti4BS7Giq6lr0tyuK1sQiYXvUNwENPtHCChZn3Z0pDr
-	 Y4UCiCgo/6gwEHwz07zjY5tP+23KdmbN3DX/rLDIA8EN4lDzOdo6kj1EIZXPHmy5nm
-	 8Jj09w1Yn8pqWutpt+q4W1c5Tkjc3MRHBeHMIejmpoh37n7En5xTC0aMcKkauIjoku
-	 kr1ftJPjRQhtg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7292237820C8;
-	Wed, 21 Feb 2024 10:00:45 +0000 (UTC)
-Message-ID: <770b23ec-7199-4202-888d-6a22b7f4af74@collabora.com>
-Date: Wed, 21 Feb 2024 11:00:44 +0100
+	s=arc-20240116; t=1708509893; c=relaxed/simple;
+	bh=RMLx0DOlR6d8tmi9pMcIaBeoejWyA37IhHX8Be6XsDM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=umJoQeJNzGFHOfSgP7Ww/61Fy44NtzWh5YEWfZQZuuSZf/SPlXSXNbPyggv13ThCGIhIAeDc2kx03RTJ68lE4RT1KdAfqYu554wt9+vwWjjzjMsplstG+xvYMw1+97/yqMi/zQ+keqaOj0a0YpMkEC44rHGrukMNqINRJ+yGqoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tinylab.org; spf=pass smtp.mailfrom=tinylab.org; arc=none smtp.client-ip=43.155.65.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tinylab.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tinylab.org
+X-QQ-mid: bizesmtp79t1708509791tffdlfxc
+X-QQ-Originating-IP: hZ5w7OPc1Pp86+CkyB3tl09awzp4C34FMga0zrF7TLo=
+Received: from ubuntu1.. ( [221.226.144.218])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 21 Feb 2024 18:03:09 +0800 (CST)
+X-QQ-SSF: 01200000000000B0B000000A0000000
+X-QQ-FEAT: C46Rb8GPIEdPMTROtMOZN6nemes7t5ZwikAXs3JSN5ZREdpnZoH+yMSsiy3X3
+	2zkr3jRvn/gzVABgxzc3QJkIk2UKXHjs9d/ZCOMC4IgwFRvy294Bt3lvNmR2us87eGtjrMk
+	qKKWrSgIcXajT/Yp4RVc8Um9sEdBp7Sey+bwv7O394Q0bP0UJlE6TgC5OcFD3V/3DzRCMJ3
+	jr3NvicWNxtebFmxdyrqnzq4hQB9KnLHju69ppHjDO7C1erx0qdWC4B6hO9+gtaQCrGS+aY
+	L9tKwiT4xqDqRC7aruaYwsWTP31kfo6UvMtJH+PwbkfPFk1r8MdN4L8t/dxLnJYlvJaaaMi
+	/9eDaaE88b3I+cyZPpXbMpZ8Lg90g==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 3370517727250236861
+From: Song Shuai <songshuaishuai@tinylab.org>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	andy.chiu@sifive.com,
+	ebiggers@google.com,
+	vincent.chen@sifive.com,
+	songshuaishuai@tinylab.org,
+	greentime.hu@sifive.com,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Andy Chiu <andybnac@gmail.com>
+Subject: [PATCH V2] riscv: vector: Fix a typo of preempt_v
+Date: Wed, 21 Feb 2024 18:02:52 +0800
+Message-Id: <20240221100252.3990445-1-songshuaishuai@tinylab.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] arm64: dts: mediatek: mt7981: add pinctrl
-Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Chen-Yu Tsai <wenst@chromium.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- Heiko Stuebner <heiko.stuebner@cherry.de>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Chris Morgan <macromorgan@hotmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, Sean Wang
- <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-References: <20240221073524.20947-1-zajec5@gmail.com>
- <20240221073524.20947-4-zajec5@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240221073524.20947-4-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-2
 
-Il 21/02/24 08:35, Rafał Miłecki ha scritto:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> MT7981 contains on-SoC PIN controller that is also a GPIO provider.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->   arch/arm64/boot/dts/mediatek/mt7981b.dtsi | 37 +++++++++++++++++++++++
->   1 file changed, 37 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7981b.dtsi b/arch/arm64/boot/dts/mediatek/mt7981b.dtsi
-> index 4feff3d1c5f4..fdd5c22cfc9c 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt7981b.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt7981b.dtsi
-> @@ -86,6 +86,43 @@ pwm@10048000 {
->   			#pwm-cells = <2>;
->   		};
->   
-> +		pio: pinctrl@11d00000 {
-> +			compatible = "mediatek,mt7981-pinctrl";
-> +			reg = <0 0x11d00000 0 0x1000>,
-> +			      <0 0x11c00000 0 0x1000>,
-> +			      <0 0x11c10000 0 0x1000>,
-> +			      <0 0x11d20000 0 0x1000>,
-> +			      <0 0x11e00000 0 0x1000>,
-> +			      <0 0x11e20000 0 0x1000>,
-> +			      <0 0x11f00000 0 0x1000>,
-> +			      <0 0x11f10000 0 0x1000>,
-> +			      <0 0x1000b000 0 0x1000>;
-> +			reg-names = "gpio", "iocfg_rt", "iocfg_rm", "iocfg_rb", "iocfg_lb",
-> +				    "iocfg_bl", "iocfg_tm", "iocfg_tl", "eint";
-> +			interrupt-controller;
-> +			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-parent = <&gic>;
-> +			gpio-ranges = <&pio 0 0 56>;
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			#interrupt-cells = <2>;
-> +
-> +			mdio-pins {
-> +				mux {
+The term "preempt_v" represents the RISCV_PREEMPT_V field of riscv_v_flags
+and is used in lots of comments.
 
-That's board specific. MDIO and SPI0 pins can be used as GPIO instead of,
-respectively, ETH and SPI.
+Here corrects the miss-spelling "prempt_v". And s/acheived/achieved/.
 
-Must go to your board devicetree, not here: please move both.
+Reviewed-by: Andy Chiu <andybnac@gmail.com>
+Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+---
+Changes since V1:
+https://lore.kernel.org/linux-riscv/20240206044217.1283849-1-songshuaishuai@tinylab.org/
+- s/acheived/achieved/ 
+- Add Reviewed-by from Andy
+---
+ arch/riscv/include/asm/simd.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Cheers,
-Angelo
-
-> +					function = "eth";
-> +					groups = "smi_mdc_mdio";
-> +				};
-> +			};
-> +
-> +			spi0-pins {
-> +				mux {
-> +					function = "spi";
-> +					groups = "spi0", "spi0_wp_hold";
-> +				};
-> +			};
-> +
-> +		};
-> +
->   		clock-controller@15000000 {
->   			compatible = "mediatek,mt7981-ethsys", "syscon";
->   			reg = <0 0x15000000 0 0x1000>;
+diff --git a/arch/riscv/include/asm/simd.h b/arch/riscv/include/asm/simd.h
+index 54efbf523d49..adb50f3ec205 100644
+--- a/arch/riscv/include/asm/simd.h
++++ b/arch/riscv/include/asm/simd.h
+@@ -34,9 +34,9 @@ static __must_check inline bool may_use_simd(void)
+ 		return false;
+ 
+ 	/*
+-	 * Nesting is acheived in preempt_v by spreading the control for
++	 * Nesting is achieved in preempt_v by spreading the control for
+ 	 * preemptible and non-preemptible kernel-mode Vector into two fields.
+-	 * Always try to match with prempt_v if kernel V-context exists. Then,
++	 * Always try to match with preempt_v if kernel V-context exists. Then,
+ 	 * fallback to check non preempt_v if nesting happens, or if the config
+ 	 * is not set.
+ 	 */
+-- 
+2.39.2
 
 
