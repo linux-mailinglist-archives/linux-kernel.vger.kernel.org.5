@@ -1,104 +1,67 @@
-Return-Path: <linux-kernel+bounces-75635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744E785EC8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EB5F85EC8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:09:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A59521C22430
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A582C1F2321E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246041272B2;
-	Wed, 21 Feb 2024 23:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="SYprxqwU"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46721126F11;
+	Wed, 21 Feb 2024 23:09:30 +0000 (UTC)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ED956456
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99530A35
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708556924; cv=none; b=MKTKv92gMw4ZgiTqJf/fwFxqDKMk6fPm1qOMk4NqIQ9l0FlKoC5syuJI5KyzIUUp+gkImAgo5mcM5/TQuHX3CDA4RLULYGAtyMjKnVjcL9lTtpXCtfH2wBLgGGpdOu0AyWIiqIo+Jn8MHyg7RFO0fXnlKoH+0zquVwRGRHcgfrs=
+	t=1708556969; cv=none; b=YS3c66vC5UoEfYMvuHh3yxhvldIuKYUXC6YzpE4uwEDGr3gSyvd6Z0DwTpvUbN7sDfh96yD0jW9PNNEHmDr1yci1DUAC8ZHM9ZGzVvK+GVHK6gZg+BuTwThlhAimIQeNvbzQGtMbt4SyGxENuaWVguCFp/ieCCJyighzHDlxMp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708556924; c=relaxed/simple;
-	bh=ubWxMaDgQA7aCLDJJnk56SO9zudn89gqBTa6kQPbUZI=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=fQslLWHoFbXs0VbfdOJoZWwoVvrNS47VWN24+NBRq1uGlUKmjnIINxjboYUa6cYcXIGMZuqb7NTK6jdA8NGlsgl9M3XIbHBZMvghj+7r2DiGSirpxWLCIKzrRAeQ76YiRGzu2PB6q9SVt2fvRaIdSIkhmMZTX98FXc3KQNuSlPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=SYprxqwU; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29a430c3057so117253a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1708556922; x=1709161722; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UyIdnrPvkMs2AU+vw/nEPIW+QxndqyTNQEwIk71io1o=;
-        b=SYprxqwUT6HKzA3P3l8z0BmVIICC5JFM3ziQFzAfWyvPNbcX5r9SJTu0mac4SJgAbY
-         oLCFdmHG+FzC6DGV1L1eLHqcVp4tOgJUcCMhtXSkgn6MfCofyiPGxgM/9AEpaMYP5ix6
-         zgna/S/AYzPjoKqMomjnRvlGS9HmrKHK6HKm5zoFFIwmG77Ky3ma6z+RAw80R317Q8sZ
-         h6JhvRRnuJqFiJZ3+nFrXISXuq3I+ocz3PAlRpOIQKpYOVr/O9ITyPuQejfMZ8aViE8R
-         T9S4KcT33FLqR0O/iAuOznF1/Q8aSrPpe+8KYi03MqYqWJ/pu8H6lJ5Vu8kVYEQ8z3FW
-         +mTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708556922; x=1709161722;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UyIdnrPvkMs2AU+vw/nEPIW+QxndqyTNQEwIk71io1o=;
-        b=WDfXeYhEcdaYjzl01LaGMHmbHzUia7rHzwNbIlMeiYYIo7mfTvBVTxV7d1+rnZvODL
-         row4i+9BdIy64g90FZnoJY8AupkUQfm8ojuh6BuYRMUhg6m4kBnyCtOnHKuetXaMgTQG
-         2lYHN0lZJFW12MFDQUa1/sxNOlRkoDmd3v0aYKLUEPKh29uWXvVdKcWyd0/LViUjfrxX
-         hZ1F9dSiL2PQeVxmbH1Fv6c8gERGhjKndpuw5lajN0Lym6AXM9khSaIdQzuOHM7ak8Bi
-         /PccODisZe+YCAOwloYM3DHvJokBsfV7r2EIpTFBYFw1DG0F3R6c+kKXJR6dWVUW3ADu
-         4sjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWAi9PtAOU5/k2+Fzejo425B24/r0RSIgCfGMLbR9RgWq30E9fUYXHNygrJOYdfRm0BRSOMEO/+eG8Q8t3vVeUr+NZJ6a9xYxucEGDe
-X-Gm-Message-State: AOJu0YxYtC1Ki9uiGwXedDSqGeSi7FM7BrjwhUhIAcHlP2f5OlMNH7Sg
-	VEhpqkuY7rowUnWsChdJqcZzz+Qjd1K2l2MSEcBDndJTHUuLNe4UnWJuv+na3H8=
-X-Google-Smtp-Source: AGHT+IHThDor4vbSwCGzgqxbkS1L4FAjcJEeNqRKW6q1pX8qIRUqKbsUqTEftPikKBnSg4ZOCItd1Q==
-X-Received: by 2002:a17:90a:604e:b0:299:3f2a:4309 with SMTP id h14-20020a17090a604e00b002993f2a4309mr12544246pjm.18.1708556921732;
-        Wed, 21 Feb 2024 15:08:41 -0800 (PST)
-Received: from localhost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id qj15-20020a17090b28cf00b002961a383303sm2420580pjb.14.2024.02.21.15.08.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 15:08:40 -0800 (PST)
-Date: Wed, 21 Feb 2024 15:08:40 -0800 (PST)
-X-Google-Original-Date: Wed, 21 Feb 2024 15:08:39 PST (-0800)
-Subject:     Re: linux-next: duplicate patch in the risc-v-fixes tree
-In-Reply-To: <20240222093025.5f9d9ad5@canb.auug.org.au>
-CC: Paul Walmsley <paul.walmsley@sifive.com>, greg@kroah.com,
-  linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Message-ID: <mhng-57f0dff8-c22c-4e94-be94-376c833e3b1f@palmer-ri-x1c9a>
+	s=arc-20240116; t=1708556969; c=relaxed/simple;
+	bh=+R/pOPh/EohcZjeWa3vr/yP353/UIkRvyTpmUKuWG58=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=H0Rx3kLU02R2g6AB3Y2VK8bQHFr0nibY3QeW1DEM5Ho2yxu4in/vUnMXhLRpyisHotQHmMPxN72obkbmFgEetpk9lflq2jgAYuGjISg+ipfrDrTWZ6Gs7Kmvy2q2sCBrxFL0aY29QOUpNK2fr+DBYg+wec7niCLl7jsmCJe35R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgBmk0GGVz4wyY;
+	Thu, 22 Feb 2024 10:09:26 +1100 (AEDT)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+In-Reply-To: <20240216135817.2003106-1-masahiroy@kernel.org>
+References: <20240216135817.2003106-1-masahiroy@kernel.org>
+Subject: Re: [PATCH] powerpc: remove unused KCSAN_SANITIZE_early_64.o in Makefile
+Message-Id: <170855692314.1938434.16998260392268778285.b4-ty@ellerman.id.au>
+Date: Thu, 22 Feb 2024 10:08:43 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Wed, 21 Feb 2024 14:30:25 PST (-0800), Stephen Rothwell wrote:
-> Hi all,
->
-> The following commit is also in the tty.current tree as a different commit
-> (but the same patch):
->
->   481860974faa ("tty: hvc: Don't enable the RISC-V SBI console by default")
->
-> This is commit
->
->   8b79d4e99407 ("tty: hvc: Don't enable the RISC-V SBI console by default")
->
-> in the tty-current tree.
+On Fri, 16 Feb 2024 22:58:17 +0900, Masahiro Yamada wrote:
+> Commit 2fb857bc9f9e ("powerpc/kcsan: Add exclusions from instrumentation")
+> added KCSAN_SANITIZE_early_64.o to arch/powerpc/kernel/Makefile, while
+> it does not compile early_64.o.
+> 
+> 
 
-Ah, sorry about that.  I'd been trying to figure out why my tester was 
-broken and forgot to check if someone else had picked this up.  Should 
-be gone now.
+Applied to powerpc/next.
+
+[1/1] powerpc: remove unused KCSAN_SANITIZE_early_64.o in Makefile
+      https://git.kernel.org/powerpc/c/97a5253d7c3076ba0dbba8bf30179e079c9c912b
+
+cheers
 
