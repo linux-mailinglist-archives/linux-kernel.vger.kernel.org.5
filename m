@@ -1,288 +1,118 @@
-Return-Path: <linux-kernel+bounces-74826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5B685DC65
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B83A485DC6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1463B26481
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:52:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40787B26843
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C3B7A715;
-	Wed, 21 Feb 2024 13:52:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7437855E5E;
-	Wed, 21 Feb 2024 13:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86BD55E5E;
+	Wed, 21 Feb 2024 13:53:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C63762C1
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708523569; cv=none; b=g/f0qIlnYuHb1465rjicU1DgEWacNclh1oat7Wro05g7sSJvK7R1yUpLcA3hMmI2MRTTppscQ8/Ijkseb5W45Pa0uBjKSSy1rmcRyIZhdGSxecMQupsaBBSpHahIaSiu0Y5yItucN9eR+LisGYQCukoB6tw7IHhf+mgIIyhBJto=
+	t=1708523586; cv=none; b=H1z5LKK5FkRF31DbBwcJzaKLdKP0Y7aeHqGnN14/5SdI77BnhApvkC9faUXOG/x7r/SBDl+bkWWeaqmlsup5lTeIsA50EJuzf61MMABhRc0vMT29Ej3+2HD+lo0YLZQDS1/pKGA72F9SGum1XTZacjRwKWu50tiIHq530R4Aa2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708523569; c=relaxed/simple;
-	bh=E0Azop+oWngR3crdMwSCqRZfbFxta8aFiAPTZHq5gI8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fcFAaeH4S/vurq5dim5f1+0yXG1aec8UMtMFUFTmK+Vh05RsIsB2W427gars+AeCbpiQq5i4GwxOY7LoeXmoNg5DCtf/xtGqYVzgo62ElhfN5fdOCRSSnUVOk8DtnXIrNRFIUXeqKSF9qIDPq47p5unx1sfkOnmiifH+G8OPX70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DAB2FEC;
-	Wed, 21 Feb 2024 05:53:24 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.65.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E8F73F762;
-	Wed, 21 Feb 2024 05:52:43 -0800 (PST)
-Date: Wed, 21 Feb 2024 13:52:38 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	will@kernel.org, catalin.marinas@arm.com,
-	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
-	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Suzuki Poulose <suzuki.poulose@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V16 1/8] arm64/sysreg: Add BRBE registers and fields
-Message-ID: <ZdYAJvZf4Ut5f5Rf@FVFF77S0Q05N>
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-2-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1708523586; c=relaxed/simple;
+	bh=VWXccFbysa1rP6LCm230g4wFngBWx7wgJA6oH3HMuIU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=KbfqOnkYanPDBRg17DbuHEpgQ0HOm96wy4U1U6CuBlSj66IbcWtCZ2w/7Yho25XNfh1ICYfMEThFyarN631YeNTs0B5WzMmvKrJi+tmMnzlVvSSe5LUC59dq2E9rvpkcsDq6rbgVAZKPkqMjG61mwHIP18lb5kQLDvYdneoeJuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-365116383bdso6687085ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:53:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708523584; x=1709128384;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8TmmxVKmOx7JUR4pXKSv9WPFUBql9re87YVO51w+Pe4=;
+        b=HCZWahDylxhbu3ahrNBzC2TXAcJdAYQn94oh/JT6ijkUzYzrt/l0nuaR+kQPYgKx5u
+         SiQscGXFbvGJwDiG+NJ6Wv+aHbcV2A7eM3yMmyd+TA123dXEU+WOYVeHAjN7920zRx5Q
+         Lnd1Rg896UNpVpjmfxmIz8nIVDzqvD9xSbGT0Re0CU3FAb9tkiRPx6JtLZpLRPs8dLqx
+         7qr2gpBb/KHe9llXkEbHz5fMBpPlDcaVqVMnFZAfdVAdnxkXuoKzzDnMPFwXrbdqggig
+         y3wEIBDtvmmlmSkuCKDaBwECJ//YXUyt2MdkFn3F9EIhd3bAFo2SSeSTdrpriU7RlWsg
+         ywpg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3Rb9rhdAFa1nR9UJ6UOFq9ZkI7X4lxhU15LTcH+aA2J3DWYw3HPhXJZNK54d6NPbLNQFHYeihip52Zb8WVQRzIMs3vVpl4nMAe8et
+X-Gm-Message-State: AOJu0YwtH5CemO+J8t1ljtrZqsoDhDZ9Ij6JUEfz4O336ZLIaUjc3knl
+	vqy4IQ9nOJBfpqYZspvib8ccivLhXJmoETpfYYP34AGP1ajIvB8IIyyWpselumestrC/tsi8/yY
+	zKYdlUNRCQaK4sbwB2IQU0ov34rAOfVINBWXf0Rz5RAho5vaZxyNyS7w=
+X-Google-Smtp-Source: AGHT+IGXk7K6uDXVLTh3rlHTvKS2wUcmz6qXFPdmMHDjENDdeEYEnvmGfmTrOFd7ff8HTJHvpPpYrBuhBZ2YyFsWXAtM6pq9DbQc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125094119.2542332-2-anshuman.khandual@arm.com>
+X-Received: by 2002:a92:c56a:0:b0:365:4e45:7922 with SMTP id
+ b10-20020a92c56a000000b003654e457922mr160003ilj.5.1708523584003; Wed, 21 Feb
+ 2024 05:53:04 -0800 (PST)
+Date: Wed, 21 Feb 2024 05:53:03 -0800
+In-Reply-To: <20240221122904.1393-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000050a83e0611e4a597@google.com>
+Subject: Re: [syzbot] [media?] INFO: task hung in cec_claim_log_addrs
+From: syzbot <syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 25, 2024 at 03:11:12PM +0530, Anshuman Khandual wrote:
-> This adds BRBE related register definitions and various other related field
-> macros there in. These will be used subsequently in a BRBE driver, which is
-> being added later on.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in V16:
-> 
-> - Updated BRBINFx_EL1.TYPE = 0b110000 as field IMPDEF_TRAP_EL3
-> - Updated BRBCR_ELx[9] as field FZPSS
-> - Updated BRBINFINJ_EL1 to use sysreg field BRBINFx_EL1
-> 
->  arch/arm64/include/asm/sysreg.h | 109 ++++++++++++++++++++++++++
->  arch/arm64/tools/sysreg         | 131 ++++++++++++++++++++++++++++++++
->  2 files changed, 240 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index c3b19b376c86..72544b5c4951 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -272,6 +272,109 @@
->  
->  #define SYS_BRBCR_EL2			sys_reg(2, 4, 9, 0, 0)
->  
-> +#define __SYS_BRBINF(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 0))
-> +#define __SYS_BRBSRC(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 1))
-> +#define __SYS_BRBTGT(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 2))
+Hello,
 
-We already have definitions for these since v6.5, added in commit:
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in cec_claim_log_addrs
 
-  57596c8f991c9aac ("arm64: Add debug registers affected by HDFGxTR_EL2:)
+INFO: task syz-executor.1:9052 blocked for more than 143 seconds.
+      Tainted: G    B              6.8.0-rc5-syzkaller-00063-ge6ac7c55d3ec-dirty #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.1  state:D stack:0     pid:9052  tgid:9051  ppid:6538   flags:0x0000000d
+Call trace:
+ __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0x1498/0x24b4 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xb8/0x19c kernel/sched/core.c:6817
+ schedule_timeout+0xb8/0x348 kernel/time/timer.c:2159
+ do_wait_for_common+0x30c/0x468 kernel/sched/completion.c:95
+ __wait_for_common kernel/sched/completion.c:116 [inline]
+ wait_for_common kernel/sched/completion.c:127 [inline]
+ wait_for_completion+0x48/0x60 kernel/sched/completion.c:148
+ cec_claim_log_addrs+0x180/0x244 drivers/media/cec/core/cec-adap.c:1607
+ __cec_s_log_addrs+0x1238/0x18d8 drivers/media/cec/core/cec-adap.c:1922
+ cec_adap_s_log_addrs drivers/media/cec/core/cec-api.c:184 [inline]
+ cec_ioctl+0x2684/0x37b0 drivers/media/cec/core/cec-api.c:528
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+INFO: lockdep is turned off.
 
-That commit also added register encoding definitions:
 
-| #define SYS_BRBINF_EL1(n)              sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 0))
-| #define SYS_BRBINFINJ_EL1              sys_reg(2, 1, 9, 1, 0)
-| #define SYS_BRBSRC_EL1(n)              sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 1))
-| #define SYS_BRBSRCINJ_EL1              sys_reg(2, 1, 9, 1, 1)
-| #define SYS_BRBTGT_EL1(n)              sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 2))
-| #define SYS_BRBTGTINJ_EL1              sys_reg(2, 1, 9, 1, 2)
-| #define SYS_BRBTS_EL1                  sys_reg(2, 1, 9, 0, 2)
+Tested on:
 
-I don't think we need to add new encoding definitions for BRBINF<n>_EL1,
-BRBSRC<n>_EL1, or BRBTGT<n>_EL1; we can just use those existing defintions
-directly. That also means we don't need to add all of the expanded 0..31
-definitions; the driver can use SYS_BRBINF_EL1(n) and friends directly.
+commit:         e6ac7c55 Merge branch 'for-next/core' into for-kernelci
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1772604a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af5c6c699e57bbb3
+dashboard link: https://syzkaller.appspot.com/bug?extid=116b65a23bc791ae49a6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13488eb4180000
 
-[...]
-
-> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-> index 4c9b67934367..caf851ba5dc0 100644
-> --- a/arch/arm64/tools/sysreg
-> +++ b/arch/arm64/tools/sysreg
-> @@ -1023,6 +1023,137 @@ UnsignedEnum	3:0	MTEPERM
->  EndEnum
->  EndSysreg
->  
-> +
-> +SysregFields BRBINFx_EL1
-> +Res0	63:47
-> +Field	46	CCU
-> +Field	45:32	CC
-> +Res0	31:18
-> +Field	17	LASTFAILED
-> +Field	16	T
-> +Res0	15:14
-> +Enum	13:8		TYPE
-> +	0b000000	UNCOND_DIRECT
-> +	0b000001	INDIRECT
-> +	0b000010	DIRECT_LINK
-> +	0b000011	INDIRECT_LINK
-> +	0b000101	RET
-> +	0b000111	ERET
-> +	0b001000	COND_DIRECT
-
-Minor nit, but for consistency with DIRECT_LINK, could we please use
-DIRECT_UNCOND and DIRECT_COND?
-
-> +	0b100001	DEBUG_HALT
-> +	0b100010	CALL
-> +	0b100011	TRAP
-> +	0b100100	SERROR
-> +	0b100110	INSN_DEBUG
-> +	0b100111	DATA_DEBUG
-> +	0b101010	ALIGN_FAULT
-> +	0b101011	INSN_FAULT
-> +	0b101100	DATA_FAULT
-> +	0b101110	IRQ
-> +	0b101111	FIQ
-> +	0b110000	IMPDEF_TRAP_EL3
-> +	0b111001	DEBUG_EXIT
-
-That IMPDEF_TRAP_EL3 encoding doesn't seem to exist in the latest ARM ARM (ARM
-DDI 0487J.a), and I see Mark Brown checked against the "Arm A-profile
-Architecture Registers" document (ARM DDI 0601 ID121123, AKA 2023-12).
-
-Could you please mention that in the commit message, and link to that version
-of the document (https://developer.arm.com/documentation/ddi0601/2023-12/) ?
-That'll make it easier for anyone else to review this, and it'll be good in
-case anyone needs to figure out where this came from in future.
-
-> +EndEnum
-> +Enum	7:6	EL
-> +	0b00	EL0
-> +	0b01	EL1
-> +	0b10	EL2
-> +	0b11	EL3
-> +EndEnum
-> +Field	5	MPRED
-> +Res0	4:2
-> +Enum	1:0	VALID
-> +	0b00	NONE
-> +	0b01	TARGET
-> +	0b10	SOURCE
-> +	0b11	FULL
-> +EndEnum
-> +EndSysregFields
-
-The other fields here all look good per the ARM ARM and sysreg document.
-
-> +SysregFields	BRBCR_ELx
-> +Res0	63:24
-> +Field	23 	EXCEPTION
-> +Field	22 	ERTN
-> +Res0	21:10
-> +Field	9	FZPSS
-> +Field	8 	FZP
-> +Res0	7
-> +Enum	6:5	TS
-> +	0b01	VIRTUAL
-> +	0b10	GUEST_PHYSICAL
-> +	0b11	PHYSICAL
-> +EndEnum
-> +Field	4	MPRED
-> +Field	3	CC
-> +Res0	2
-> +Field	1	ExBRE
-> +Field	0	E0BRE
-> +EndSysregFields
-
-This looks good per the ARM ARM and sysreg document.
-
-> +Sysreg	BRBCR_EL2	2	4	9	0	0
-> +Fields	BRBCR_ELx
-> +EndSysreg
-> +
-> +Sysreg	BRBCR_EL1	2	1	9	0	0
-> +Fields	BRBCR_ELx
-> +EndSysreg
-> +
-> +Sysreg	BRBCR_EL12	2	5	9	0	0
-> +Fields	BRBCR_ELx
-> +EndSysreg
-
-These all look good per the ARM ARM and sysreg document.
-
-Minor nit, but could we please list thse in order:
-
-	BRBCR_EL1
-	BRBCR_EL12
-	BRBCR_EL2
-
-.. since that way the names are ordered alphnumerically, which is what we've
-done for other groups (e.g. PIR_EL{1,12,2}), and it's the way the ARM ARM
-happens to be ordered.
-
-> +Sysreg	BRBFCR_EL1	2	1	9	0	1
-> +Res0	63:30
-> +Enum	29:28	BANK
-> +	0b0	FIRST
-> +	0b1	SECOND
-
-Nit: since this is a 2-bit field, please pad these as '0b00' and '0b01'.
-
-Could we please use BANK_0 and BANK_1 rather than FIRST and SECOND?
-
-That'd also be easier to use behind macros.
-
-> +EndEnum
-> +Res0	27:23
-> +Field	22	CONDDIR
-> +Field	21	DIRCALL
-> +Field	20	INDCALL
-> +Field	19	RTN
-> +Field	18	INDIRECT
-> +Field	17	DIRECT
-> +Field	16	EnI
-> +Res0	15:8
-> +Field	7	PAUSED
-> +Field	6	LASTFAILED
-> +Res0	5:0
-> +EndSysreg
-
-Other than the nit, this looks good per the ARM ARM and sysreg document.
-
-[...]
-
-> +Sysreg	BRBIDR0_EL1	2	1	9	2	0
-> +Res0	63:16
-> +Enum	15:12	CC
-> +	0b101	20_BIT
-> +EndEnum
-> +Enum	11:8	FORMAT
-> +	0b0	0
-> +EndEnum
-> +Enum	7:0		NUMREC
-> +	0b0001000	8
-> +	0b0010000	16
-> +	0b0100000	32
-> +	0b1000000	64
-
-This is an 8-bit field; please pad these to 8 bits (they all need a leading
-'0').
-
-> +EndEnum
-> +EndSysreg
-
-Aside from the comments above, this looks good to me.
-
-Mark.
 
