@@ -1,164 +1,158 @@
-Return-Path: <linux-kernel+bounces-74127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C1A85D041
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:10:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3421785D042
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8628A1F25DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:10:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6D9A284562
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE3339FF2;
-	Wed, 21 Feb 2024 06:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3079F39FF2;
+	Wed, 21 Feb 2024 06:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HHdXJ5Sa"
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yC9ZYg11"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825D339FE4;
-	Wed, 21 Feb 2024 06:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B881539FE4
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708495848; cv=none; b=VIP1/zXxzEwcp3sRe8+GeuU3JPJsfjaCs0q2DGctxax7Ggp7pVChy47JJEMBr+2j86Or47pEjv6QjU/GMS52EYqgKnXUPWld9ksK662uuSbfGBTeA2meod4oSeGmp8Uirqaf/PAh5R4Zn+HsOTdY1szbBW97+iNj5WuqRlFG78w=
+	t=1708495916; cv=none; b=DCTc3FAC8RAohUHNH6KRjIlmqQlLsUzETtt9c4y3EU2sYS/oAfKATOrkO0uwS8OQ2tGG2LWMHwfVCHpZWsU+0XBp3U6rXhUbgYH2zmt/5MEhQXX4UHpV5ND/CaVXwXl9N0u0OGauraNHSwz64oeaG6ssfFHkuKrX3wDi6FuvZw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708495848; c=relaxed/simple;
-	bh=nOFgbZ8HBxTz94wttEmZFotxCzQC7NygkRCq5asfT10=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kygH3WsnG28FCyCj3gvKg7RNnTAgR8iuNooN9WRtC/51biCSjXSN6lOLh36jY1njVaBZH0FCQaGc9cOFpthiu+4hpLvK026Kl3Xkd5uKCuHgVrGq4UmCHK6fFARSQFARNqnixKGANj8qIT8KwkoVJq/FLCrrGYvVz5nefXMfcCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HHdXJ5Sa; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so139462241.3;
-        Tue, 20 Feb 2024 22:10:46 -0800 (PST)
+	s=arc-20240116; t=1708495916; c=relaxed/simple;
+	bh=2TAQVV25B3Mep0g8bVd1ctba4+Nb47hssI9JMLGlWw8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IK2hBQmTW/BZfzilW1FcZY6W5jwscyfyyVSMPK3e0uVtWCZMHKFqJ4ffRr4AwcSC49PladzfGC29WFTEl4G5lyL836GIlRaic7S/h7okTZ+R2f6Ij8o8fzIIKbLJB+uAMgk2S622MQqqHpB1BzngBSRZXgtnp9Ej/QzWjG4vzyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yC9ZYg11; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-218eea4f1a7so2000317fac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:11:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708495845; x=1709100645; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gP/yx5IKqNIOfZ+RA2vffQW+rHFO3lsQYKh8HrE0o3E=;
-        b=HHdXJ5SaGesN3QoM3eABmgK5F+SX8IV+DuslS3L7SLDs53TWts7Fklks9moa0IiM9K
-         JB/Nd72eaEVmVFAb2xJkAFMAuhkFSHjA89IbHeWQM0yPKwdx1VnbtYKeEIHVbjO+zKUp
-         UBYX4o5vgARhcrLq3Q/eu4Tn+ZrB/J63lQDIbNUt+C06XjEyOQpMhCu5UqcN1qiMHdWL
-         N+kGDsm19yDog+C40SGQsyqHei8nyg0qnlin5Kir6G7o43QnB6tDe7WRoVj1cStaZZKE
-         aoPflG2ADsSUnlwH8CVhfaNwfdv2gVR/X7NrXY2YXFnBFhcNbv9txvkz1Ta/OHiEYGPg
-         iWqw==
+        d=linaro.org; s=google; t=1708495914; x=1709100714; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fL2zwEDwboBOluBoCe5ERhhpUpWk0xO78/TTkM69qsU=;
+        b=yC9ZYg11G1iqQHNIfpM/Z7zOLx5oT9S+Vt63cIGDgkFUWBH0rWbVZqFqlJJisR1vIy
+         gkmkhOdgs/WrmGZUk2R3zP4DV62bSRlFgYzaGAUcxjv1UZqrwQJ39RCbknPwcuF6G/Y1
+         iTmttM/HCaV3kp05WoLhK5gPdwWs4mYS9g20hzxuL2LfkbcFrAdUkBJzLSj1Lt3ZICmS
+         F7DBkJ1wBelM0AbK1chW9dmD5o7/UtLD4q6VxU8DYwMTeUvwSmsewzzMcynJxgVMfcGb
+         ZWhpNzyVyI9z8T+vE1qopd2jmAqEB3JzP0h1jPlu+CE4vNDzx/cnscUVDf68h1SUyyWt
+         gSBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708495845; x=1709100645;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gP/yx5IKqNIOfZ+RA2vffQW+rHFO3lsQYKh8HrE0o3E=;
-        b=fmliHnE/a1FTZWVD3Bo2jnRuKcfBgEfijolIoJOOXTzD9pi+uJPWCV3+ngt8Q3un3e
-         NDb/TaxF4Ph+PPr+s4HlmRewdFmWgcqTi3GPF1MMNaUQdzIcj02JIrOCSPnTZhDb1RPN
-         1VM5yI+6nGr9mEx3zdKEnfMYCpk3EpoDwhRNJK7vcMX2BDLTgXfOKjYs/9ZQaI2NFmbh
-         BsJBus2FF7AclF67bWHAVS0MHAbtsoGZquhecsSZfH0hwxBKxSsfJBvM3w5FLoAuIshb
-         riQrUMWiZKzRB4mbF+a1a6S6lSwiO10mz+fU/WjfhCvUtOxsfD5w+J3XEDhg80AnmbYv
-         u5cA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/D2XdjKQqkQ1q0HziZoc4xjQ/as4ayanKgsx27kGmE7SBHkcUoR2vvZKbf72+JxnFvRS+c6EGaH48aQvUnddxdGvd/kQ1qVPURY/P9jBdCLvd6djIM2xf5hlH/Uvhz95G8uqd5v58QBkn
-X-Gm-Message-State: AOJu0YwE2iOOeB4Rlk54obCJJVargmQrGWeL7iTtkZuszeBFnsacUuWc
-	5hmF0RD7F9zpAxYLOyI3E/r0S99XVzB9tnCmH4EnfWAwRvUYn01jZn1DhB6lDzM7XNhzE7p3MT7
-	V+3VjY+4qoRn2C29pd0P0nScOsS0=
-X-Google-Smtp-Source: AGHT+IEC4mk/79rg9qunBsxTl0hy7B1wG1nWoGnl3shs9m7Fv4hs8dl+Pn9sauvzLmUcSGHVDFdCF1muxDuOUqrsjGQ=
-X-Received: by 2002:a05:6102:1894:b0:470:4bff:830a with SMTP id
- ji20-20020a056102189400b004704bff830amr7751496vsb.13.1708495845413; Tue, 20
- Feb 2024 22:10:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708495914; x=1709100714;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fL2zwEDwboBOluBoCe5ERhhpUpWk0xO78/TTkM69qsU=;
+        b=KNNGG0EmGcRuw86pP2qhS4/ed3fa5LpvlnMYxaXDaIOT0TECila/JFrJA+ffHsDIAa
+         +cz6tzKdV+oD0xd9M+zm3G+QhI44bNF0kfnNV4UzdH8YfuGWY5QgIPcS5kOZJM4JqAZ7
+         /D79Z/BYF8BBi83zNb+X5wv8KKqUKIbsAhShGOwd6zjATIYvlVnjgdEkg0oMj2Zsklsp
+         KNi3yvwqoT9n5UwlKmnkjKU1St4r0Buh5QR867qcOpPkF8tfqDeyV0POG5Fybjp4I62K
+         +dpD7zXUOjAZB8mzfxizC+I6GOl1vV01oNsmEvFKsvhfF+CraC1pDponODP0G/2OJl1d
+         sgQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWz7SFsQ6uVA9bavy/TtLU7k6Juwp8Dxf0yfUbudqxk51xl/50dDbLJtPq+ylIFxdJVmXi3569SVOi5Amq8k7LKYpS06/NgxnZQ+KmO
+X-Gm-Message-State: AOJu0YwDtVn7t6+jE3XmCTHmFm6MyF+y2BwIGLJYn5XqOv+oxu1k71u8
+	YA0IeYClURayxNmcI8Rasj+/cfF/G68Nqh+0GhJh2HqHsqpCGY1A2/NzHd7lFw==
+X-Google-Smtp-Source: AGHT+IEXMreBXKcUfZWk6J8tb7zlxvS17xKsDFwi7Dxrk9YaZ/GcMzlIx9Pg4VQIy7bL/eGMHKNC3g==
+X-Received: by 2002:a05:6870:ac1f:b0:21e:7ad8:dce8 with SMTP id kw31-20020a056870ac1f00b0021e7ad8dce8mr13146574oab.23.1708495913799;
+        Tue, 20 Feb 2024 22:11:53 -0800 (PST)
+Received: from thinkpad ([117.207.28.224])
+        by smtp.gmail.com with ESMTPSA id g2-20020a636b02000000b005dc87f5dfcfsm7555975pgc.78.2024.02.20.22.11.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 22:11:53 -0800 (PST)
+Date: Wed, 21 Feb 2024 11:41:46 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_skananth@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH] bus: mhi: host: Change the trace string for the
+ userspace tools mapping
+Message-ID: <20240221061146.GF11693@thinkpad>
+References: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220064414.262582-1-21cnbao@gmail.com> <20240220064414.262582-4-21cnbao@gmail.com>
- <ZdWLim6zYSl/x1Bk@gondor.apana.org.au> <CAGsJ_4xCgSWz832N8+RsE=5StWwuc1zu3KpeCGxq7LdyVLY+Sg@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xCgSWz832N8+RsE=5StWwuc1zu3KpeCGxq7LdyVLY+Sg@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 21 Feb 2024 19:10:33 +1300
-Message-ID: <CAGsJ_4y69s7-_UW=gaUuk3TJzwj3xRCoZhamsn0-6k65cbeR0A@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] crypto: scompress: remove memcpy if sg_nents is 1
-To: Herbert Xu <herbert@gondor.apana.org.au>, akpm@linux-foundation.org
-Cc: davem@davemloft.net, hannes@cmpxchg.org, linux-crypto@vger.kernel.org, 
-	linux-mm@kvack.org, nphamcs@gmail.com, yosryahmed@google.com, 
-	zhouchengming@bytedance.com, chriscli@google.com, chrisl@kernel.org, 
-	ddstreet@ieee.org, linux-kernel@vger.kernel.org, sjenning@redhat.com, 
-	vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
 
-On Wed, Feb 21, 2024 at 6:55=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> On Wed, Feb 21, 2024 at 6:35=E2=80=AFPM Herbert Xu <herbert@gondor.apana.=
-org.au> wrote:
-> >
-> > On Tue, Feb 20, 2024 at 07:44:14PM +1300, Barry Song wrote:
-> > > From: Barry Song <v-songbaohua@oppo.com>
-> > >
-> > > while sg_nents is 1 which is always true for the current kernel
-> > > as the only user - zswap is the case, we should remove two big
-> > > memcpy.
-> > >
-> > > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > > Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-> > > ---
-> > >  crypto/scompress.c | 36 +++++++++++++++++++++++++++++-------
-> > >  1 file changed, 29 insertions(+), 7 deletions(-)
-> >
-> > This patch is independent of the other two.  Please split it
-> > out so I can apply it directly.
->
-> Ok. OTOH, patch 3/3 has no dependency with other patches. so patch
-> 3/3 should be perfectly applicable to crypto :-)
->
-> Hi Andrew,
-> Would you please handle patch 1/3 and 2/3 in mm-tree given Herbert's ack =
-on
-> 1/3?
->
-> >
-> > > @@ -134,13 +135,25 @@ static int scomp_acomp_comp_decomp(struct acomp=
-_req *req, int dir)
-> > >       scratch =3D raw_cpu_ptr(&scomp_scratch);
-> > >       spin_lock(&scratch->lock);
-> > >
-> > > -     scatterwalk_map_and_copy(scratch->src, req->src, 0, req->slen, =
-0);
-> > > +     if (sg_nents(req->src) =3D=3D 1) {
-> > > +             src =3D kmap_local_page(sg_page(req->src)) + req->src->=
-offset;
-> >
-> > What if the SG entry is longer than PAGE_SIZE (or indeed crosses a
-> > page boundary)? I think the test needs to be strengthened.
->
-> I don't understand what is the problem for a nents to cross two pages
-> as anyway they are contiguous in both physical and virtual addresses.
-> if they are not contiguous, they will be two nents.
+On Sun, Feb 18, 2024 at 02:13:39PM +0530, Krishna chaitanya chundru wrote:
+> User space tools can't map strings if we use directly, as the string
+> address is internal to kernel.
+> 
+> So add trace point strings for the user space tools to map strings
+> properly.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-second thought,  you are right.  sorry for my noise.
-The test was running on a platform like arm64 without HIGHMEM. thus,
-kmap_local_page always returns mapped page_address of normal
-zone.
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-but for platforms with HIGHMEM for example arm32, x86_32 , we can't use
-the virtual address of the first page as the start address of two pages tho=
-ugh
-they are physically contiguous.
+- Mani
 
-I will rework on this.  ideally, we should still avoid the memcpy though
-two pages are within one nents :-) we are really this case for zswap
-as the dst is always two pages in case the compressed data is
-longer than the original data.
+> ---
+>  drivers/bus/mhi/host/main.c  | 4 ++--
+>  drivers/bus/mhi/host/trace.h | 2 ++
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index 2d38f6005da6..15d657af9b5b 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -1340,7 +1340,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>  	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+>  	int ret;
+>  
+> -	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, "Updating");
+> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, TPS("Updating"));
+>  	switch (to_state) {
+>  	case MHI_CH_STATE_TYPE_RESET:
+>  		write_lock_irq(&mhi_chan->lock);
+> @@ -1407,7 +1407,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>  		write_unlock_irq(&mhi_chan->lock);
+>  	}
+>  
+> -	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, "Updated");
+> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, TPS("Updated"));
+>  exit_channel_update:
+>  	mhi_cntrl->runtime_put(mhi_cntrl);
+>  	mhi_device_put(mhi_cntrl->mhi_dev);
+> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+> index d12a98d44272..368515dcb22d 100644
+> --- a/drivers/bus/mhi/host/trace.h
+> +++ b/drivers/bus/mhi/host/trace.h
+> @@ -84,6 +84,8 @@ DEV_ST_TRANSITION_LIST
+>  #define dev_st_trans(a, b)		{ DEV_ST_TRANSITION_##a, b },
+>  #define dev_st_trans_end(a, b)		{ DEV_ST_TRANSITION_##a, b }
+>  
+> +#define TPS(x)	tracepoint_string(x)
+> +
+>  TRACE_EVENT(mhi_gen_tre,
+>  
+>  	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+> 
+> ---
+> base-commit: ceeb64f41fe6a1eb9fc56d583983a81f8f3dd058
+> change-id: 20240218-ftrace_string-7677762aa63c
+> 
+> Best regards,
+> -- 
+> Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> 
 
->
-> >
-> > Thanks,
-> > --
-> > Email: Herbert Xu <herbert@gondor.apana.org.au>
-> > Home Page: http://gondor.apana.org.au/~herbert/
-> > PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
->
-
-Thanks
-Barry
+-- 
+மணிவண்ணன் சதாசிவம்
 
