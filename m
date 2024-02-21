@@ -1,297 +1,150 @@
-Return-Path: <linux-kernel+bounces-75638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B5F285EC99
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:15:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6039185ECC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5340282CAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:15:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3C851F23B31
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D86127B57;
-	Wed, 21 Feb 2024 23:15:28 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6A212C809;
+	Wed, 21 Feb 2024 23:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="THqXg8nE"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47F985268
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56F08663D;
+	Wed, 21 Feb 2024 23:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708557327; cv=none; b=ShtyZAwLGJZpsLeLOp+n5GzhzmMXpoVrzvxRa3S4NBbfyapBk/FsoURfRB3SRO6fPaO4EdHgae8jVQt7eyqOhUz0YuCz8uNVnzNxbS0o7KBKI5YO6ViGyezyAWyLEeBVul0LLzfSpfOtjr2t7V5odLJB3DcWkvAaanl1wCK7GGA=
+	t=1708557568; cv=none; b=knmLHfvRJy0WeEKVmwFx6aZ3i5m6VxkXWdZjcoshQK21sSLO3WmNRh5cf07Zf9Dnxg7qxAPHJGCGUzdDZR2Ht1x0RWwIl0zGIo4JVJeNuVd66t0FmAMwsoSvUMN+jaP9pn6vDHxeew/Bdwndi1coO4ie9akZI0C8tDSdkeDIvEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708557327; c=relaxed/simple;
-	bh=PASu4t2rYovLjssJl3r/y3MJM44QJFipAJ0uuNsaxOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eLYYt+SSQggqx2tzzdpZwtwGfDQKodgIyrzRIhosbzbO+aYP3afwoGmLlu8khr7C3/IEFx5XR78u1SIDXNA5qwKbNkd6ZUnFw11vRVZbPiKJ73KLqUFJQGgTHEZ4iW2E7lS5ivEU6xC2xXiaJklbf1R74n29r0geX5QK8jeZDwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BD4DC433F1;
-	Wed, 21 Feb 2024 23:15:25 +0000 (UTC)
-Date: Wed, 21 Feb 2024 18:17:13 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
- <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>, "Paul
- E . McKenney" <paulmck@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Rik van Riel <riel@surriel.com>, Sebastian Siewior
- <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
- Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>, Christian Loehle <christian.loehle@arm.com>
-Subject: Re: [PATCH v11 19/20] timer_migration: Add tracepoints
-Message-ID: <20240221181713.12f530cb@gandalf.local.home>
-In-Reply-To: <20240221090548.36600-20-anna-maria@linutronix.de>
-References: <20240221090548.36600-1-anna-maria@linutronix.de>
-	<20240221090548.36600-20-anna-maria@linutronix.de>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708557568; c=relaxed/simple;
+	bh=UawKxY/wNEpZe/K6ZSBOrWoORz1ZeMn1m4HSMFS0WhU=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=bJgqVDmFlIyTn2U9J2LNAH2F08HsHoKvtiE+F5TVicSL9sxYC+orK+lrZWSPTZYryhMLZQPzJQlnAZeSxqHRO1a+4WtR/WLHMuh+8fiT8e1jORkkYaGcMFJqa5cA8BIC/8Rlw0BfQq3+h/k7xNNpr3kngHDRsTat9JUyjiWjDpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=THqXg8nE; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41LNEoYG028626;
+	Wed, 21 Feb 2024 23:19:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=CelsGDIFSPLJqy
+	fTWpBCJuduVZTYRQTelZocddmgQHE=; b=THqXg8nE2G+HwdHynohBH/K53Zm95a
+	L3p8ffLBH29wrdHUk4cScjB8uYh/dS/oDKncmYlTa0pBNdzDFJ3zTwhNZneTpzq+
+	ppEeu1N7yd7WYzj8o6XU8Av/lq9Uv7XSrspjrJfsDdT+5KMPDF19XI9hEaEnd/6M
+	PrB0+KgUHKe7pdzboJ7eq9ERLjXFrs9ly+dt3yOPX/spFodD27Os3qvtVeHkB9qN
+	1ZhJ3pJ9WVWCuPBY13K1flu4EiMgFqyou1xFJT3HBCgLRJVUO7936i8C8zoTKq4P
+	bseTt6ONdybGVXpA0z55EngPsgcUSIYAF3rRvjxA7Pc/RBZkZIEbcdsg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdfx4hmpv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 23:19:14 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41LNJDok020290
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 23:19:13 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
+ 2024 15:19:13 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: [PATCH 0/9] arm64: dts: qcom: qcs6490-rb3gen2: Enable two displays
+Date: Wed, 21 Feb 2024 15:19:08 -0800
+Message-ID: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOyE1mUC/x3MQQqEMAxA0atI1hOo0YV6FXExbVPNJpVUhgHp3
+ S0u3+L/GwqbcIGlu8H4J0WyNvSfDsLx1Z1RYjOQo9GRm9H8sLMSxhNDVuVwZUMfY/LTTCmRg5a
+ exkn+73bdan0AX5LCMGYAAAA=
+To: Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar
+	<quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708557553; l=1606;
+ i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
+ bh=UawKxY/wNEpZe/K6ZSBOrWoORz1ZeMn1m4HSMFS0WhU=;
+ b=VgHOPv2y0TUisMlKhdQwzFNj5emloYz3HorglSQbNjzyMT9whYMj6lmIabHBG2z6g66EgDik7
+ LYpk2ossgV5CnDvwjylGFbmrNVdkMoKcSOFYoQ3jE1FCHk+GxvdbYh9
+X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
+ pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: V37K1f2kbY2gyjU0XptpF_1ASXcal3l1
+X-Proofpoint-GUID: V37K1f2kbY2gyjU0XptpF_1ASXcal3l1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_09,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ mlxlogscore=544 clxscore=1011 mlxscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402210184
 
-On Wed, 21 Feb 2024 10:05:47 +0100
-Anna-Maria Behnsen <anna-maria@linutronix.de> wrote:
+RB3Gen2 is capable of producing DisplayPort output on a dedicated
+mini-DP connector and USB Type-C.
 
-> diff --git a/include/trace/events/timer_migration.h b/include/trace/events/timer_migration.h
-> new file mode 100644
-> index 000000000000..3f6e9502c41e
-> --- /dev/null
-> +++ b/include/trace/events/timer_migration.h
-> @@ -0,0 +1,297 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
+Utilize Abel's work for DP vs eDP selection to allow configuring both
+controllers in DP-mode, then enable the two output paths.
 
-> +DECLARE_EVENT_CLASS(tmigr_group_and_cpu,
-> +
-> +	TP_PROTO(struct tmigr_group *group, union tmigr_state state, u32 childmask),
-> +
-> +	TP_ARGS(group, state, childmask),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void *,	group		)
-> +		__field( void *,	parent		)
-> +		__field( unsigned int,	lvl		)
-> +		__field( unsigned int,	numa_node	)
-> +		__field( u8,		active		)
-> +		__field( u8,		migrator	)
-> +		__field( u32,		childmask	)
+Tested by driving fbcon to 4k@60 + 4k@30 concurrently.
 
-Could you move the two u8 after the u32? Although it probably doesn't
-matter for the actual size, I prefer to keep holes from inside the
-structure. The above will create a two byte hole between the two u8 and the
-u32.
+Depends on https://lore.kernel.org/linux-arm-msm/20240220-x1e80100-display-v4-0-971afd9de861@linaro.org/
 
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->group		= group;
-> +		__entry->parent		= group->parent;
-> +		__entry->lvl		= group->level;
-> +		__entry->numa_node	= group->numa_node;
-> +		__entry->active		= state.active;
-> +		__entry->migrator	= state.migrator;
-> +		__entry->childmask	= childmask;
-> +	),
-> +
-> +	TP_printk("group=%p lvl=%d numa=%d active=%0x migrator=%0x "
-> +		  "parent=%p childmask=%0x",
-> +		  __entry->group, __entry->lvl, __entry->numa_node,
-> +		  __entry->active, __entry->migrator,
-> +		  __entry->parent, __entry->childmask)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_group_and_cpu, tmigr_group_set_cpu_inactive,
-> +
-> +	TP_PROTO(struct tmigr_group *group, union tmigr_state state, u32 childmask),
-> +
-> +	TP_ARGS(group, state, childmask)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_group_and_cpu, tmigr_group_set_cpu_active,
-> +
-> +	TP_PROTO(struct tmigr_group *group, union tmigr_state state, u32 childmask),
-> +
-> +	TP_ARGS(group, state, childmask)
-> +);
-> +
-> +/* CPU events*/
-> +DECLARE_EVENT_CLASS(tmigr_cpugroup,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc),
-> +
-> +	TP_ARGS(tmc),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void *,	parent)
-> +		__field( unsigned int,	cpu)
-> +		__field( u64,		wakeup)
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+Bjorn Andersson (9):
+      drm/msm/dp: Add DP support to combo instance in SC7280
+      arm64: dts: qcom: sc7280: Make eDP/DP controller default DP
+      arm64: dts: qcom: sc7280: Enable MDP turbo mode
+      arm64: dts: qcom: qcs6490-rb3gen2: Add DP output
+      arm64: dts: qcom: qcs6490-rb3gen2: Enable adsp and cdsp
+      arm64: dts: qcom: qcs6490-rb3gen2: Enable USB role switching
+      arm64: dts: qcom: qcs6490-rb3gen2: Introduce USB redriver
+      arm64: dts: qcom: qcs6490-rb3gen2: Enable USB Type-C display
+      arm64: defconfig: Enable sc7280 display and gpu clock controllers
 
-Please put the u64 first. That way on 32 bit machines, parent and cpu will
-fit together and on 64 bit machines, there will not be a hole between cpu
-and wakeup.
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 154 ++++++++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi   |   2 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi         |   7 +-
+ arch/arm64/configs/defconfig                 |   2 +
+ drivers/gpu/drm/msm/dp/dp_display.c          |   9 +-
+ 5 files changed, 170 insertions(+), 4 deletions(-)
+---
+base-commit: aba508318eec7acad2373296279d6447fd35f83f
+change-id: 20240209-rb3gen2-dp-connector-bddfb892ff20
 
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->cpu		= tmc->cpuevt.cpu;
-> +		__entry->parent		= tmc->tmgroup;
-> +		__entry->wakeup		= tmc->wakeup;
-> +	),
-> +
-> +	TP_printk("cpu=%d parent=%p wakeup=%llu", __entry->cpu, __entry->parent, __entry->wakeup)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_cpugroup, tmigr_cpu_new_timer,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc),
-> +
-> +	TP_ARGS(tmc)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_cpugroup, tmigr_cpu_active,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc),
-> +
-> +	TP_ARGS(tmc)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_cpugroup, tmigr_cpu_online,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc),
-> +
-> +	TP_ARGS(tmc)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_cpugroup, tmigr_cpu_offline,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc),
-> +
-> +	TP_ARGS(tmc)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_cpugroup, tmigr_handle_remote_cpu,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc),
-> +
-> +	TP_ARGS(tmc)
-> +);
-> +
-> +DECLARE_EVENT_CLASS(tmigr_idle,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc, u64 nextevt),
-> +
-> +	TP_ARGS(tmc, nextevt),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void *,	parent)
-> +		__field( unsigned int,	cpu)
-> +		__field( u64,		nextevt)
-> +		__field( u64,		wakeup)
+Best regards,
+-- 
+Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Please put parent and cpu after wakeup so that there will not be a hole
-around cpu.
-
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->cpu		= tmc->cpuevt.cpu;
-> +		__entry->parent		= tmc->tmgroup;
-> +		__entry->nextevt	= nextevt;
-> +		__entry->wakeup		= tmc->wakeup;
-> +	),
-> +
-> +	TP_printk("cpu=%d parent=%p nextevt=%llu wakeup=%llu",
-> +		  __entry->cpu, __entry->parent, __entry->nextevt, __entry->wakeup)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_idle, tmigr_cpu_idle,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc, u64 nextevt),
-> +
-> +	TP_ARGS(tmc, nextevt)
-> +);
-> +
-> +DEFINE_EVENT(tmigr_idle, tmigr_cpu_new_timer_idle,
-> +
-> +	TP_PROTO(struct tmigr_cpu *tmc, u64 nextevt),
-> +
-> +	TP_ARGS(tmc, nextevt)
-> +);
-> +
-> +TRACE_EVENT(tmigr_update_events,
-> +
-> +	TP_PROTO(struct tmigr_group *child, struct tmigr_group *group,
-> +		 union tmigr_state childstate,	union tmigr_state groupstate,
-> +		 u64 nextevt),
-> +
-> +	TP_ARGS(child, group, childstate, groupstate, nextevt),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void *,	child			)
-> +		__field( void *,	group			)
-> +		__field( u64,		nextevt			)
-> +		__field( u64,		group_next_expiry	)
-> +		__field( unsigned int,	group_lvl		)
-> +		__field( u8,		child_active		)
-> +		__field( u8,		group_active		)
-> +		__field( unsigned int,	child_evtcpu		)
-> +		__field( u64,		child_evt_expiry	)
-
-Please put child_evt_expiry after group_next_expiry. Have group_lvl next to
-child_evtcpu and the two u8 fields at the end.
-
-Thanks!
-
--- Steve
-
-
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->child			= child;
-> +		__entry->group			= group;
-> +		__entry->nextevt		= nextevt;
-> +		__entry->group_next_expiry	= group->next_expiry;
-> +		__entry->group_lvl		= group->level;
-> +		__entry->child_active		= childstate.active;
-> +		__entry->group_active		= groupstate.active;
-> +		__entry->child_evtcpu		= child ? child->groupevt.cpu : 0;
-> +		__entry->child_evt_expiry	= child ? child->groupevt.nextevt.expires : 0;
-> +	),
-> +
-> +	TP_printk("child=%p group=%p group_lvl=%d child_active=%0x group_active=%0x "
-> +		  "nextevt=%llu next_expiry=%llu child_evt_expiry=%llu child_evtcpu=%d",
-> +		  __entry->child, __entry->group, __entry->group_lvl, __entry->child_active,
-> +		  __entry->group_active,
-> +		  __entry->nextevt, __entry->group_next_expiry, __entry->child_evt_expiry,
-> +		  __entry->child_evtcpu)
-> +);
-> +
-> +TRACE_EVENT(tmigr_handle_remote,
-> +
-> +	TP_PROTO(struct tmigr_group *group),
-> +
-> +	TP_ARGS(group),
-> +
-> +	TP_STRUCT__entry(
-> +		__field( void * ,	group	)
-> +		__field( unsigned int ,	lvl	)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->group		= group;
-> +		__entry->lvl		= group->level;
-> +	),
-> +
-> +	TP_printk("group=%p lvl=%d",
-> +		   __entry->group, __entry->lvl)
-> +);
-> +
 
