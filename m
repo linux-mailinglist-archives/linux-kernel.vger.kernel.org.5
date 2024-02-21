@@ -1,132 +1,243 @@
-Return-Path: <linux-kernel+bounces-74976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4D2285E0AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:13:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5220285E0B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4C311C23062
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:13:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0866B2843EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C1A781211;
-	Wed, 21 Feb 2024 15:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E93E80040;
+	Wed, 21 Feb 2024 15:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="PJi/yWQg"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="fcPxyOkL"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FBF77BB10;
-	Wed, 21 Feb 2024 15:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A24D80058
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708528334; cv=none; b=SdLVVxoPiK4GfiGjr2E0nnngYtYC8kfqOohggXxlG67a4sNliWfvBDWPvPIoPqYc9Ch+cGzkvR02J+2HC0CcufAxmApvT5KDPDDeejjD5K4A36P6esZYwYG5uAB5sZYItz9nNEnxddSiccsp48WCtu5LJ/EZIniO6gWhGjVDSiU=
+	t=1708528431; cv=none; b=Hl43ZmsbKrtgsxXySD+t2+uJ6gVFmptXpgvlNsX+9WPdNLJ3hHjvBGvD2Q3aOZ/RAv3+bo4lzHZl76r1GFwDYduY0ITC9WFR7s61BYIMP2RH26iMEwU6eJ0g+SaCoW9mLqaCBjRajsxSlFjkbdZm4ZfkiAr5iwJfyX0FoPFTB+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708528334; c=relaxed/simple;
-	bh=6Fh7lpaC6pNfSFrltqbIXgLkWxOT6eywJS4r6URXbGQ=;
+	s=arc-20240116; t=1708528431; c=relaxed/simple;
+	bh=xZV8Brd8oeYSukjoVFEMo2YA68l0w4nZw9ZRHheRZFU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jkw1xHlthSXzE72BX8R1EOunExrD5osDh3S/uoZBaXaGoNwl8/td9aRYMFm8BK+ssZrPLJYuoaM9aaqOFDSqklyOp+DteyPOYtiE95f1jOPjN6rpuhAYJPG1vobJ9JSBYkbOtei92Xc2+1Wb81amjF0we7yxLe8913djXwivvPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=PJi/yWQg; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
-	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=8OXzSw7Lbz7R+v639wcrlzlha3nK0uEfq5ZdlSY7S9w=; b=PJi/yWQgTvd+YJLdjTOYDlleCn
-	Tkt73178X7GXBrOZhTs5oH9nhqyMA0fbkmqCEZuODGkGqoBJI685o+LYz4g2xBkiUR1vncRg47tjW
-	Xdojrno4ZK4enOxERxn2j0oQzgOQMEn+vSmrbFXvS4BfHNTA1xeR/lbW2gkSNQStCVOiFTTTBSe7j
-	gXdmw1Om8QUBZg2T5ZxPjlA93+3A+GEJOt3gs5SRAUXztAyJcGIUU2e4KERFZpmx6D2FOEdXZ8DUZ
-	WhxbhiZgdgurwfUtpPIpuHw7u2RFIhXM5c8t7OMQ0WUjnT2Myb0sIev2CsZc53bk27rAaLI7wK7tG
-	fMzESG7A==;
-Received: from dynamic-176-000-161-131.176.0.pool.telefonica.de ([176.0.161.131]:27360 helo=bergen.fjasle.eu)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <nicolas@fjasle.eu>)
-	id 1rcoGS-00DO5M-8M;
-	Wed, 21 Feb 2024 16:12:04 +0100
-Date: Wed, 21 Feb 2024 16:12:00 +0100
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] kbuild: change DTC_FLAGS_<basetarget>.o to take the
- path relative to $(obj)
-Message-ID: <ZdYSwGUlOpGdAFVU@bergen.fjasle.eu>
-References: <20240217055504.2059803-1-masahiroy@kernel.org>
- <20240217055504.2059803-2-masahiroy@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dh+VoqU0df6O8BGl8XU7RZT2J2PhuaSm0wii4f84TcSwgrlhF9xCA4SkQTk+fB8MdtQgw8hyzBQrDzUC0LctAc2OM472+5INfzza3+rbl7GnxJFp1gredzTBec65PdOwzr8KrJlRWELLBnWDnRyZmmzZO79Eru6lmXHIAYMuDJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=fcPxyOkL; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708528422;
+	bh=xZV8Brd8oeYSukjoVFEMo2YA68l0w4nZw9ZRHheRZFU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fcPxyOkLoXNkmwKInGb3iHceJZ6HM/ekQsjErQ5nZ1HbTe2KjwUQuwQL+oS9R4EJg
+	 ipVEYZwzYEGFCaVnigywF/082BWTANWelJiqDtK0J+iQHaB/wdqNPOq+PteJ1xz3Vw
+	 uu2yGKhJi9CobfatYaSrr+G5dG4RjgmHmCCZEMSAI9oVPGC9nAAcrsbfYSxu3j6QCf
+	 8pkCxSclPV4+H9em072OTIXqYzW3oj733U4UxZG3UWVULlUShFRt2gWkf4zOFQEQa5
+	 8rQQ9yofJJeP4/NGY6B6LVOyCrmkJGzZuAVgX3Wu0qqKqsBVNK5KDcx010T5AXMl9J
+	 SX2juxfuVcMTQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: alarumbe)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9C1BE3781FE6;
+	Wed, 21 Feb 2024 15:13:42 +0000 (UTC)
+Date: Wed, 21 Feb 2024 15:13:41 +0000
+From: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>, Steven Price <steven.price@arm.com>, 
+	Lionel Landwerlin <lionel.g.landwerlin@linux.intel.com>, Boris Brezillon <boris.brezillon@collabora.com>, 
+	Rob Herring <robh@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
+Subject: Re: [PATCH 0/1] Always record job cycle and timestamp information
+Message-ID: <63vgotmjzngc2u7f6egxxgol6wtepjev5ct43sozkrove7w4co@4tkgqawcscxb>
+References: <20240214121435.3813983-1-adrian.larumbe@collabora.com>
+ <ba987da3-b4aa-410c-95ae-434e94793d85@arm.com>
+ <CAKMK7uH=QKSyMgsOYCHMwE7iv6jQZRwUMcKq=HiXsBXBCv5BCQ@mail.gmail.com>
+ <cfe1870f-16ff-45b4-8966-6bb536d3cae7@linux.intel.com>
+ <jvohxwzrgwqmzhwws3tzn53ii6eyexkutwl7pdj5buk6k6wx7c@ucxoohk5e3iw>
+ <0c001651-0339-4872-bf4f-d1a3e4f2aa43@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="na7oD77FSrV7Zoi7"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240217055504.2059803-2-masahiroy@kernel.org>
-X-Operating-System: Debian GNU/Linux trixie/sid
-Jabber-ID: nicolas@jabber.no
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0c001651-0339-4872-bf4f-d1a3e4f2aa43@linux.intel.com>
 
+> On 21.02.2024 14:34, Tvrtko Ursulin wrote:
+> 
+> On 21/02/2024 09:40, Adrián Larumbe wrote:
+> > Hi,
+> > 
+> > I just wanted to make sure we're on the same page on this matter. So in
+> > Panfrost, and I guess in almost every other single driver out there, HW perf
+> > counters and their uapi interface are orthogonal to fdinfo's reporting on drm
+> > engine utilisation.
+> > 
+> > At the moment it seems like HW perfcounters and the way they're exposed to UM
+> > are very idiosincratic and any attempt to unify their interface into a common
+> > set of ioctl's sounds like a gargantuan task I wouldn't like to be faced with.
+> 
+> I share the same feeling on this sub-topic.
+> 
+> > As for fdinfo, I guess there's more room for coming up with common helpers that
+> > could handle the toggling of HW support for drm engine calculations, but I'd at
+> > least have to see how things are being done in let's say, Freedreno or Intel.
+> 
+> For Intel we don't need this ability, well at least for pre-GuC platforms.
+> Stat collection is super cheap and permanently enabled there.
+> 
+> But let me copy Umesh because something at the back of my mind is telling me
+> that perhaps there was something expensive about collecting these stats with
+> the GuC backend? If so maybe a toggle would be beneficial there.
+> 
+> > Right now there's a pressing need to get rid of the debugfs knob for fdinfo's
+> > drm engine profiling sources in Panfrost, after which I could perhaps draw up an
+> > RFC for how to generalise this onto other drivers.
+> 
+> There is a knob currently meaning fdinfo does not work by default? If that is
+> so, I would have at least expected someone had submitted a patch for gputop to
+> handle this toggle. It being kind of a common reference implementation I don't
+> think it is great if it does not work out of the box.
 
---na7oD77FSrV7Zoi7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It does sound like I forgot to document this knob at the time I submited fdinfo
+support for Panforst.  I'll make a point of mentioning it in a new patch where I
+drop debugfs support and enable toggling from sysfs instead.
 
-On Sat 17 Feb 2024 14:55:04 GMT, Masahiro Yamada wrote:
-> For the same rationale as commit 54b8ae66ae1a ("kbuild: change
-> *FLAGS_<basetarget>.o to take the path relative to $(obj)").
->=20
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->=20
->  scripts/Makefile.lib | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 328c0d77ed48..56f7fe2b476d 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -368,7 +368,7 @@ DTC_FLAGS +=3D -Wnode_name_chars_strict \
->  	-Wunique_unit_address
->  endif
-> =20
-> -DTC_FLAGS +=3D $(DTC_FLAGS_$(basetarget))
-> +DTC_FLAGS +=3D $(DTC_FLAGS_$(target-stem))
-> =20
->  # Set -@ if the target is a base DTB that overlay is applied onto
->  DTC_FLAGS +=3D $(if $(filter $(patsubst $(obj)/%,%,$@), $(base-dtb-y)), =
--@)
-> --=20
-> 2.40.1
->=20
->=20
+> The toggle as an idea sounds a bit annoying, but if there is no other
+> realistic way maybe it is not too bad. As long as it is documented in the
+> drm-usage-stats.rst, doesn't live in debugfs, and has some common plumbing
+> implemented both on the kernel side and for the aforementioned gputop /
+> igt_drm_fdinfo / igt_drm_clients. Where and how exactly TBD.
 
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+As soon as the new patch is merged, I'll go and reflect the driver uAPI changes
+in all three of these.
 
---na7oD77FSrV7Zoi7
-Content-Type: application/pgp-signature; name="signature.asc"
+> Regards,
+> 
+> Tvrtko
+> 
 
------BEGIN PGP SIGNATURE-----
+Cheers,
+Adrian
 
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXWEsAACgkQB1IKcBYm
-Emm7Zw//bbaXDl+Kl5/Xx+uGvpJQJSvBMGDA8izA45IOGNeSK8/0HPitNQiVWDEh
-McJc9oVxm64BAl0ilHeHJGCgatlaaR3Mp4ysquu6fLUltPOp74DeVNCBV4l8BgFW
-SGCs46fIx1sF/v6u9YxYVKmDJPuJzPLNy8PgtE3xy4UcALAaesle4pN4rd7vu4HZ
-vS4cEALbP8Hdp/vLdVK5Fd6QYmeAbO8s8vqzC+Q8TZsPtCMzxbN8/kLXXUrPpoog
-j8o8cYzZg/bH/zJioNk8dQeP44zh/q3LMiM4w1Zpv0JNsxj9uvjPryMxhxqgH1RF
-FazT/u7HRHmiPcbkJsMewhwU7cUoaELPIqtRxQ0wfWReOxRSyoZqDXmtgtaEx10S
-6C0uZSg7USJjF+DRHKzm2Nk8NnKiZFP9ddpskzC4/+GbBDJJihfssodFfKHT+Uie
-ptt0Za4jfeRz/pCrLhNDyJUGogqtcGSICxighMiIy1eZ17ySVMD6h18W4mE7VJbQ
-M0kZC4/VLeLN7dQ0bMZdcvd9C9JQzzWic7DFoYCAbB3E6GKPMg2Iua1a3tqlo2TP
-pa8g0iFJmQqAUyqCV7mEBGf1sG7AlNGX/LYruAX9bkNoAfIOxu48CmMx2N9UO8PQ
-497DiBpodajTKbb//t1arP4Y2CHNn1kPbk5M4OJZl1pePJzycUI=
-=9nFd
------END PGP SIGNATURE-----
+> > On 16.02.2024 17:43, Tvrtko Ursulin wrote:
+> > > 
+> > > On 16/02/2024 16:57, Daniel Vetter wrote:
+> > > > On Wed, Feb 14, 2024 at 01:52:05PM +0000, Steven Price wrote:
+> > > > > Hi Adrián,
+> > > > > 
+> > > > > On 14/02/2024 12:14, Adrián Larumbe wrote:
+> > > > > > A driver user expressed interest in being able to access engine usage stats
+> > > > > > through fdinfo when debugfs is not built into their kernel. In the current
+> > > > > > implementation, this wasn't possible, because it was assumed even for
+> > > > > > inflight jobs enabling the cycle counter and timestamp registers would
+> > > > > > incur in additional power consumption, so both were kept disabled until
+> > > > > > toggled through debugfs.
+> > > > > > 
+> > > > > > A second read of the TRM made me think otherwise, but this is something
+> > > > > > that would be best clarified by someone from ARM's side.
+> > > > > 
+> > > > > I'm afraid I can't give a definitive answer. This will probably vary
+> > > > > depending on implementation. The command register enables/disables
+> > > > > "propagation" of the cycle/timestamp values. This propagation will cost
+> > > > > some power (gates are getting toggled) but whether that power is
+> > > > > completely in the noise of the GPU as a whole I can't say.
+> > > > > 
+> > > > > The out-of-tree kbase driver only enables the counters for jobs
+> > > > > explicitly marked (BASE_JD_REQ_PERMON) or due to an explicit connection
+> > > > > from a profiler.
+> > > > > 
+> > > > > I'd be happier moving the debugfs file to sysfs rather than assuming
+> > > > > that the power consumption is small enough for all platforms.
+> > > > > 
+> > > > > Ideally we'd have some sort of kernel interface for a profiler to inform
+> > > > > the kernel what it is interested in, but I can't immediately see how to
+> > > > > make that useful across different drivers. kbase's profiling support is
+> > > > > great with our profiling tools, but there's a very strong connection
+> > > > > between the two.
+> > > > 
+> > > > Yeah I'm not sure whether a magic (worse probably per-driver massively
+> > > > different) file in sysfs is needed to enable gpu perf monitoring stats in
+> > > > fdinfo.
+> > > > 
+> > > > I get that we do have a bit a gap because the linux perf pmu stuff is
+> > > > global, and you want per-process, and there's kinda no per-process support
+> > > > for perf stats for devices. But that's probably the direction we want to
+> > > > go, not so much fdinfo. At least for hardware performance counters and
+> > > > things like that.
+> > > > 
+> > > > Iirc the i915 pmu support had some integration for per-process support,
+> > > > you might want to chat with Tvrtko for kernel side and Lionel for more
+> > > > userspace side. At least if I'm not making a complete mess and my memory
+> > > > is vaguely related to reality. Adding them both.
+> > > 
+> > > Yeah there are two separate things, i915 PMU and i915 Perf/OA.
+> > > 
+> > > If my memory serves me right I indeed did have a per-process support for i915
+> > > PMU implemented as an RFC (or at least a branch somewhere) some years back.
+> > > IIRC it only exposed the per engine GPU utilisation and did not find it very
+> > > useful versus the complexity. (I think it at least required maintaining a map
+> > > of drm clients per task.)
+> > > 
+> > > Our more useful profiling is using a custom Perf/OA interface (Observation
+> > > Architecture) which is possibly similar to kbase mentioned above. Why it is a
+> > > custom interface is explained in a large comment on top of i915_perf.c. Not
+> > > sure if all of them still hold but on the overall perf does not sound like the
+> > > right fit for detailed GPU profiling.
+> > > 
+> > > Also PMU drivers are very challenging to get the implementation right, since
+> > > locking model and atomicity requirements are quite demanding.
+> > > 
+> > >  From my point of view, at least it is my initial thinking, if custom per
+> > > driver solutions are strongly not desired, it could be interesting to look
+> > > into whether there is enough commonality, in at least concepts, to see if a
+> > > new DRM level common but extensible API would be doable. Even then it may be
+> > > tricky to "extract" enough common code to justify it.
+> > > 
+> > > Regards,
+> > > 
+> > > Tvrtko
+> > > 
+> > > > 
+> > > > Cheers, Sima
+> > > > 
+> > > > 
+> > > > > 
+> > > > > Steve
+> > > > > 
+> > > > > > Adrián Larumbe (1):
+> > > > > >     drm/panfrost: Always record job cycle and timestamp information
+> > > > > > 
+> > > > > >    drivers/gpu/drm/panfrost/Makefile           |  2 --
+> > > > > >    drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ------------------
+> > > > > >    drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 ------------
+> > > > > >    drivers/gpu/drm/panfrost/panfrost_device.h  |  1 -
+> > > > > >    drivers/gpu/drm/panfrost/panfrost_drv.c     |  5 -----
+> > > > > >    drivers/gpu/drm/panfrost/panfrost_job.c     | 24 ++++++++-------------
+> > > > > >    drivers/gpu/drm/panfrost/panfrost_job.h     |  1 -
+> > > > > >    7 files changed, 9 insertions(+), 59 deletions(-)
+> > > > > >    delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> > > > > >    delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> > > > > > 
+> > > > > > 
+> > > > > > base-commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
+> > > > > 
+> > > > 
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
 
---na7oD77FSrV7Zoi7--
 
