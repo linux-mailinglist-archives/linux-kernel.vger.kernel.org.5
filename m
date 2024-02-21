@@ -1,279 +1,131 @@
-Return-Path: <linux-kernel+bounces-74393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A736985D35E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:22:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5E185D364
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C850B1C219D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:22:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98496B25467
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE243D0D1;
-	Wed, 21 Feb 2024 09:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3A23D0C6;
+	Wed, 21 Feb 2024 09:23:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="s5A7OW7G"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="MP0cVlVC"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C1D3D0B4;
-	Wed, 21 Feb 2024 09:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225AF383BF;
+	Wed, 21 Feb 2024 09:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708507364; cv=none; b=LiVsPksQNrwI2/IkmMrWrbuM4YHQNWBGDVcUf4rgePgTJTVslYZE8Prm1+2kE3j2eKdpn7H8RxdqmLSgqLQQZR1tVBnk37EVJwnZpmjqDLgI/3hQZnrHYm5vyQDiB0oRZrH3xRlyfnS+YDqp5sEFELXNlpGfdb0XFp0dUcMZti8=
+	t=1708507394; cv=none; b=HGP1NSwJJ8qr890u7VrW3u7HlkPF8YNF7pWFVI4GSrG8dwzBQIj43REdRyHjuFU5Nh/9qx4LLkKAdA7U0YE/p9T2rYQBDOjLfYBjlRIoU5BrDOi/A+t3uu0/jkBWRSBmIthTdOlybq7jQgHf1fVmOomO2DyLNW21brTRXoopMS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708507364; c=relaxed/simple;
-	bh=xkgrSNcnpOKalVdXXYVqaTxPkhRZgbthmWR7h5oU1Ms=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bmvN2gF0T6IsYOrLdZN+fE1NTHLXlXw8sUouRmWBnw4rmP1A1ZSX8XrGrZP/LHUYPKK2nAFlBOGjMNYqLMRSUF2lAnH6w5J7E3YhDW8xlAgCAreLeC6t7tqKCzvGwkAt6KtPA6Qql38zH4TmGd5nxC1rVMCUrjtnBW9TZGnttTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=s5A7OW7G; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708507360;
-	bh=xkgrSNcnpOKalVdXXYVqaTxPkhRZgbthmWR7h5oU1Ms=;
-	h=From:To:Cc:Subject:Date:From;
-	b=s5A7OW7G3m/lA2YtUzukRq+hqDADy89s23mso7hIRC81kX5qUYAmQW0ZzuWgtGBEZ
-	 mc48oWAQ7647K3943RD1pZBvFSOmuMTwhnTgQ1KEgtBT2T/cwPcYEIlDjevZ+KYP2F
-	 VMXUudHG95CYRdbnR6rLYQR5c1hglgfe5IIxXLmkq0dIT9+W5TbpV9UGYOzAktf1Id
-	 /nE+vkViUxsete467M1Yvu1JkFzIBjwAh4IjOS6AppenzaygDjh+cAXumlfebc3IHp
-	 RNHg3+62WwrEKKngBRI/MlUb0l6LK/EFswYnxQUPNz8fCcC4cH3sY7iQHibIBvX1XZ
-	 OlMNmAEbM2Jqg==
-Received: from localhost.localdomain (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E4F93378148F;
-	Wed, 21 Feb 2024 09:22:35 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: kernel@collabora.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2] selftests/bpf: Move test_dev_cgroup to prog_tests
-Date: Wed, 21 Feb 2024 14:22:35 +0500
-Message-ID: <20240221092248.1945364-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1708507394; c=relaxed/simple;
+	bh=0QR9CkrQOkYy9tKXZSu0qJqpOgrTbQV4Pwczfzxc8Ws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gWBhXP6NTreXNLdz/O57IeEXlzmuDhHeeRlF/ILPyO3pQDB6/F0WgmURTMbjkSJz0jgA8V+YIBooBsCwLtOG4yLm/Ql3kq/qlQydw339aO4OPrYK48bXbE8xB/J/Zy7bYaYUJIY0nwwnPCfGcN3ZE2EEl24qE63v3Go4HvsEcSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=MP0cVlVC; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=a5Y+jbVzMCuiskWa37OxLyCmdTfxWKxLyTZ3/6MLB0k=; t=1708507392;
+	x=1708939392; b=MP0cVlVCG9MH5+TEumEcBDB3ppnbXhkML/1DPSbQK13Z7VQ6MEp0KipAZxwLq
+	VnTXzVPhb/eN9TclYdgf0mhcaNSaIqeyTZ7JZgqFu2gJOUeTn5Lwwd9vrQhqIrWsISh8M+/IYTc/o
+	RoAnf4rPScBh+J1AE6S8NCdkvL/Dk9VT1+wVfDQFCeRnKHt68wFo6943hKjaKGhqmSlBEq0JP7ad9
+	FyMdxbuilSrZYMfNfsZxmwazA1jY56bRk/vzrB4DHW3olddyrAy0Eiq7HSMpox4IBRap8+ZDKAIBp
+	N+K8OTZgu4HMIo5Zd6d0x8YV7eRNTHshz/oy8yZ+HKXzL0SGYg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rciom-0008Qf-JP; Wed, 21 Feb 2024 10:23:08 +0100
+Message-ID: <27ee0d22-18aa-453e-9020-76f4687bc044@leemhuis.info>
+Date: Wed, 21 Feb 2024 10:23:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs/ntfs3: fix build without CONFIG_NTFS3_LZX_XPRESS
+Content-Language: en-US, de-DE
+To: Chris Clayton <chris2553@googlemail.com>,
+ Mark O'Donovan <shiftee@posteo.net>, linux-kernel@vger.kernel.org
+Cc: ntfs3@lists.linux.dev, almaz.alexandrovich@paragon-software.com
+References: <20240214224500.811609-1-shiftee@posteo.net>
+ <89630027-f93c-4e1d-a9c0-a120b8f0bc9e@googlemail.com>
+ <0f3542a4-d558-447c-9dd7-cbb410c88e23@googlemail.com>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <0f3542a4-d558-447c-9dd7-cbb410c88e23@googlemail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708507392;987ebf7b;
+X-HE-SMSGID: 1rciom-0008Qf-JP
 
-Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
-with test_progs. Replace dev_cgroup.bpf.o with skel header file,
-dev_cgroup.skel.h and load program from it accourdingly.
+On 21.02.24 09:27, Chris Clayton wrote:
+> 
+> This build regression also shows up, along with other problems, in a
+> report to the ntfs3 list by the kernel test robot.[1]
+> 
+> Also, as this patch seems not to have been picked up by the NTFS3
+> maintainer I've added Thorsten Leemhuis so he can consider adding
+> this egression to the tracker.
 
-  ./test_progs -t test_dev_cgroup
-  mknod: /tmp/test_dev_cgroup_null: Operation not permitted
-  64+0 records in
-  64+0 records out
-  32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
-  dd: failed to open '/dev/full': Operation not permitted
-  dd: failed to open '/dev/random': Operation not permitted
-  #365     test_dev_cgroup:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+You mistyped my email address, but I noticed this by chance. :-D
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-I've tested the patch with vmtest.sh on bpf-next/for-next and linux
-next. It is passing on both. Not sure why it was failed on BPFCI.
-Test run with vmtest.h:
-sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh ./test_progs -t dev_cgroup
-/test_progs -t dev_cgroup
-mknod: /tmp/test_dev_cgroup_null: Operation not permitted
-64+0 records in
-64+0 records out
-32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
-dd: failed to open '/dev/full': Operation not permitted
-dd: failed to open '/dev/random': Operation not permitted
- #69      dev_cgroup:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Mark, could you do me a favor and send a v2 that picked up the Tested-by
+and includes a Fixes: tag for the commit causing it? Then in case
+Konstantin doesn't pick this up any time soon I'll ask Linus to pick
+this up straight from the list.
 
-Changes since v1:
-- Rename file from test_dev_cgroup.c to dev_cgroup.c
-- Use ASSERT_* in-place of CHECK
----
- .../selftests/bpf/prog_tests/dev_cgroup.c     | 58 +++++++++++++
- tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
- 2 files changed, 58 insertions(+), 85 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
- delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
+Ciao, Thorsten
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-new file mode 100644
-index 0000000000000..980b015a116ff
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2017 Facebook
-+ */
-+
-+#include <test_progs.h>
-+#include <time.h>
-+#include "cgroup_helpers.h"
-+#include "dev_cgroup.skel.h"
-+
-+#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
-+
-+void test_dev_cgroup(void)
-+{
-+	struct dev_cgroup *skel;
-+	int cgroup_fd, err;
-+	__u32 prog_cnt;
-+
-+	skel = dev_cgroup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto cleanup;
-+
-+	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
-+	if (!ASSERT_GT(cgroup_fd, 0, "cgroup_setup_and_join"))
-+		goto cleanup;
-+
-+	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
-+			      BPF_CGROUP_DEVICE, 0);
-+	if (!ASSERT_EQ(err, 0, "bpf_attach"))
-+		goto cleanup;
-+
-+	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
-+	if (!ASSERT_EQ(err, 0, "bpf_query") || (!ASSERT_EQ(prog_cnt, 1, "bpf_query")))
-+		goto cleanup;
-+
-+	/* All operations with /dev/zero and /dev/urandom are allowed,
-+	 * everything else is forbidden.
-+	 */
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
-+	ASSERT_NEQ(system("mknod /tmp/test_dev_cgroup_null c 1 3"), 0, "mknod");
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
-+
-+	/* /dev/zero is whitelisted */
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
-+	ASSERT_EQ(system("mknod /tmp/test_dev_cgroup_zero c 1 5"), 0, "mknod");
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
-+
-+	ASSERT_EQ(system("dd if=/dev/urandom of=/dev/zero count=64"), 0, "dd");
-+
-+	/* src is allowed, target is forbidden */
-+	ASSERT_NEQ(system("dd if=/dev/urandom of=/dev/full count=64"), 0, "dd");
-+
-+	/* src is forbidden, target is allowed */
-+	ASSERT_NEQ(system("dd if=/dev/random of=/dev/zero count=64"), 0, "dd");
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+	dev_cgroup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
-deleted file mode 100644
-index adeaf63cb6fa3..0000000000000
---- a/tools/testing/selftests/bpf/test_dev_cgroup.c
-+++ /dev/null
-@@ -1,85 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2017 Facebook
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <errno.h>
--#include <assert.h>
--#include <sys/time.h>
--
--#include <linux/bpf.h>
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "cgroup_helpers.h"
--#include "testing_helpers.h"
--
--#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
--
--#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
--
--int main(int argc, char **argv)
--{
--	struct bpf_object *obj;
--	int error = EXIT_FAILURE;
--	int prog_fd, cgroup_fd;
--	__u32 prog_cnt;
--
--	/* Use libbpf 1.0 API mode */
--	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
--
--	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
--			  &obj, &prog_fd)) {
--		printf("Failed to load DEV_CGROUP program\n");
--		goto out;
--	}
--
--	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
--	if (cgroup_fd < 0) {
--		printf("Failed to create test cgroup\n");
--		goto out;
--	}
--
--	/* Attach bpf program */
--	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
--		printf("Failed to attach DEV_CGROUP program");
--		goto err;
--	}
--
--	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
--			   &prog_cnt)) {
--		printf("Failed to query attached programs");
--		goto err;
--	}
--
--	/* All operations with /dev/zero and and /dev/urandom are allowed,
--	 * everything else is forbidden.
--	 */
--	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
--	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
--	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
--
--	/* /dev/zero is whitelisted */
--	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
--	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
--	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
--
--	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
--
--	/* src is allowed, target is forbidden */
--	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
--
--	/* src is forbidden, target is allowed */
--	assert(system("dd if=/dev/random of=/dev/zero count=64"));
--
--	error = 0;
--	printf("test_dev_cgroup:PASS\n");
--
--err:
--	cleanup_cgroup_environment();
--
--out:
--	return error;
--}
--- 
-2.42.0
-
+> [1]
+> https://lore.kernel.org/ntfs3/202402211322.4GbTCzp8-lkp@intel.com/T/#u>
+> Chris>
+> On 19/02/2024 07:21, Chris Clayton wrote:
+>> Hi.
+>>
+>> On 14/02/2024 22:45, Mark O'Donovan wrote:
+>>> When CONFIG_NTFS3_LZX_XPRESS is not set then we get the following:
+>>> fs/ntfs3/frecord.c:2460:16: error: unused variable ‘i_size’
+>>>
+>>> Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+>>> ---
+>>>  fs/ntfs3/frecord.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+>>> index 3b42938a9d3b..7f27382e0ce2 100644
+>>> --- a/fs/ntfs3/frecord.c
+>>> +++ b/fs/ntfs3/frecord.c
+>>> @@ -2457,7 +2457,6 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
+>>>  	struct ATTR_LIST_ENTRY *le = NULL;
+>>>  	struct runs_tree *run = &ni->file.run;
+>>>  	u64 valid_size = ni->i_valid;
+>>> -	loff_t i_size = i_size_read(&ni->vfs_inode);
+>>>  	u64 vbo_disk;
+>>>  	size_t unc_size;
+>>>  	u32 frame_size, i, npages_disk, ondisk_size;
+>>> @@ -2509,6 +2508,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
+>>>  		err = -EOPNOTSUPP;
+>>>  		goto out1;
+>>>  #else
+>>> +		loff_t i_size = i_size_read(&ni->vfs_inode);
+>>>  		u32 frame_bits = ni_ext_compress_bits(ni);
+>>>  		u64 frame64 = frame_vbo >> frame_bits;
+>>>  		u64 frames, vbo_data;
+>>>
+>>> base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
+>>
+>> Mark - Thanks for the patch.
+>> Alex - Fixes a build bug introduced by 4fd6c08a16d7f1ba10212c9ef7bc73218144b463.
+>>
+>> Tested-by: Chris Clayton <chris2553@googlemail.com>
 
