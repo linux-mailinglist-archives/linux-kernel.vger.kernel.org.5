@@ -1,468 +1,220 @@
-Return-Path: <linux-kernel+bounces-75460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A07F85E902
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB90985E90B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:29:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F871F24124
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:27:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6394A1F24D91
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E7686AF1;
-	Wed, 21 Feb 2024 20:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE44E86AFA;
+	Wed, 21 Feb 2024 20:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MWvv+Ne6"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="O67kK4WF"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB83985C6A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04542A8DA
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708547230; cv=none; b=pmCFlwMjo2Myx77FqQytXx0JT0kva6Dp0H0MyiLy+PyDsNXsSf6YmhZPBzfWaq7S1J/+Q0QhVk4D8plBxmkcEQi19yx8N4Jf/UEIMX62OnVFWyuDSL7myZiUiRG5Mkw9raapU91Jn8XtBjvDVgO+Hk5utYBu8w7cc8D2beFnxwk=
+	t=1708547360; cv=none; b=daLCrmfbhFEJqhUokhICZaggxHWQk22bLtz3i6a3rGbxUndurdVROXXU9hELeXUPeFhD2xGB/SmKAlJbAyUVROqaXo16LHS6GmJtM+0+6zE4BmGV5Cx1BBnpAy7XbpPn/aoc/xIT7ZsQ8VILZnj+kN7DPmPuRecUrhIpLRd7L0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708547230; c=relaxed/simple;
-	bh=ezld0i8kpFcENtir9eJVLeUvod6ZBR837TtflfyVCGM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aN43Do+tgNqAn59pQ8aGjykLw095/dFlEEus5PogR2XkDJZr6bSjZxMe8JCT2s0YkGe0Sdf15x5srcjonNEdY0U2RXm6yM8galZM1HBKG1VmlWP/Uh7oCY6bQLY7qQMkbLz9X72t/L1YijhuSIH+kIyBzxNn9eeqYVsgL2Q6tjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MWvv+Ne6; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-561f0f116ecso60a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:27:07 -0800 (PST)
+	s=arc-20240116; t=1708547360; c=relaxed/simple;
+	bh=KgITQNa+cv8Wh8c0n2C2fUy/aaeCcLti0CzXRzvryps=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qjdq7rYdBLVzGAkc3mqUsy3LkWJIY8Hp4K54n9xJv64KiLVS2CPAiXcGvZdySzbm8EiFY94IjydSlcOz9Pd+F+LEjxebkSHvi9DAVgKYrPxnECUHTnbUQtwuxyZ96L443mys5Jfbr7Ts6rVAHDnm6MyPtRIn0iekoJBqN0FkHSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=O67kK4WF; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-299b818d63aso145773a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:29:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708547226; x=1709152026; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=je+wI6CEMdLT1s3zWGtUtN9P5ncA8Ay23Vgh9ImMsn0=;
-        b=MWvv+Ne6tBDyAnCCQF4lDlyyYx8ehW4aJFUudCQypFc6VVNTBbKSpOmvp3gZk+BNoa
-         7axWFqrX9HqbMTeg3E2SOOYdSniI44aYKTcnzZ0sAoVTcJw10aov4UFuKPD4clg30JOw
-         vr7A98feTKQf/IjnyjPfx/NtQqea9DdLWD6TqCGg/5XWjwWsCRbtpIC9g9ZrNSLNZIJ0
-         joLK373h1Wwo2OdetUIcSiL4vkCgyJ4vZqJTEtHdsorwrQMLZFPN8xmvEylCFQwr/KTx
-         LjC7l1iXCNbEiO4kAnByTB2hvgMc4DOo4GWqHgABHMUHXyFGyGtcPFYG2aVrt20Dl3Ux
-         RDLg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708547357; x=1709152157; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sTCGMEew0Fipe902SlrRK/D4WW/nSfSfZfwf/W230pM=;
+        b=O67kK4WFweUsPmYxrCTIK1TmK4E4xT4/zZZVo7Qb3ZTUjOucEE9Wxp+Y9+VgqVZTNd
+         Dz74+3IctO6TEKAhsxP+oVEoKQwNL1cFbrf77m6WjN+U3EpWBuBFe2J6yHcLuJhhWIiB
+         gVJeB/x1xY8I0tm8zFNIYVtpOH179Cki3k7ZYJELLL2Nvu4pOv0D3p6SX4rII0x3bxho
+         Fz+kFkmQmILbv5WOBZOBtX3F1JHm4+zOohvZcZgPs3OMXEoHg9beEMn+5+holdLhaC8t
+         wgrz3hAwbJ93WIPgbersrhJj1FQm72AEgTO/89Qdc8A/t5bNF+NrqXJtAWW+/9PVfZCo
+         ytAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708547226; x=1709152026;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=je+wI6CEMdLT1s3zWGtUtN9P5ncA8Ay23Vgh9ImMsn0=;
-        b=P9yu+1WnLeqflg0BSBI4MJwNU3yfIHJrGd6i4WRxMwQgppGqFFvX76p2S2Qa4lap/W
-         YTVa6V8oRuOkoiNGIlpY5C6Z0BlaizWkHoZLsfrw54AieRDb9eshoW0NDk3+k5SFRafT
-         0Rzpu9ffGYLN1/1K9IAWzgTm0gfAWbRUMAxg4jfkoM2Xnml6wk9/y75/mi8uhcKpk4xm
-         VpZ2w2rA4Nwvbvi4MFURKfAEjTsB4A0SUAp7VkNilXMOd7wZ64vNdf+eJTwlXRa7AdXl
-         4AFv3TWYsA7wjbTgRCIrxj66kgfj3GEbbtTdh7p/+5GfBh5FWyRXExTYer0N0biGuxQQ
-         pW+g==
-X-Forwarded-Encrypted: i=1; AJvYcCV8Rx4me/l8nVCs2AzTUPCJg1tHIFSYUwFfAMNkJ6xH9uNkqGCrBrerzwCBLywjVop6IIMTk82I3eG8NWeue5tdVUYGyAK7Smw9Fi3l
-X-Gm-Message-State: AOJu0YyCyQlk3S9vAq1RhmXb41dReNf4JTxgZFxon0fnUnoCIm/sl9Iq
-	H9D/1IbEHu+ceIImkwRDBoi5NILN9+gIelu4UBtCfKj6auvwghvnnLfhbKOUFOg5nXMMlSVBons
-	jtQ==
-X-Google-Smtp-Source: AGHT+IHPo+UjbZ6iRRYGUzoRkaVryRPKM6qpRZiFYVszmiOWnQ91YZlbOwR3BiUjPsw/CFhk3seTDA==
-X-Received: by 2002:a50:9b11:0:b0:563:ff57:b7e8 with SMTP id o17-20020a509b11000000b00563ff57b7e8mr221240edi.1.1708547226115;
-        Wed, 21 Feb 2024 12:27:06 -0800 (PST)
-Received: from localhost ([2a02:168:96c5:1:2c31:2431:3037:f162])
-        by smtp.gmail.com with ESMTPSA id bu7-20020a056000078700b0033d5aee2ff1sm9575712wrb.97.2024.02.21.12.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 12:27:05 -0800 (PST)
-From: Jann Horn <jannh@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Zhen Lei <thunder.leizhen@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	Jann Horn <jannh@google.com>
-Subject: [PATCH 2/2] kallsyms: build faster by using .incbin
-Date: Wed, 21 Feb 2024 21:26:54 +0100
-Message-ID: <20240221202655.2423854-2-jannh@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240221202655.2423854-1-jannh@google.com>
-References: <20240221202655.2423854-1-jannh@google.com>
+        d=1e100.net; s=20230601; t=1708547357; x=1709152157;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sTCGMEew0Fipe902SlrRK/D4WW/nSfSfZfwf/W230pM=;
+        b=nz40MHF+si4Tkxk6uz5yVjerHA6cGTWbVx5bh6pJ/KBwjpyJp4K/UWLBRSbxSsdCg9
+         eBRIQn/g/IivSwFQ5154AQSNmvLb93+RhbaEJ+pI7BFfgovJ+86IDux6AEyluTUkxWH3
+         mORlX1nqbO/Za3srvLArjU7cFofWXtYld/HoaHQRGxRzdKpb/ldlTWGkfzdHfagHVdts
+         ShXouK3xkz565IC+DItdntPRYu4RhtmOzmWOB96WFVEq5vxrkap8X83UVrpEtamFFJjM
+         GYnkhRu6F6eIt35EMb/QHGvG7ybjWumUHpWdDcBLFpDFO1m+25pXS+Cq4OB8voPjkdZY
+         ibKg==
+X-Forwarded-Encrypted: i=1; AJvYcCWkr+Co/42/bYaSAiKM7LwgvEudQbSzULmsJSSbCHooiwuPnfBqxycxxkEJ3Nh4F/jg4UUyUassbwKF0dlMP/ryUQj5BpqAd3y4c1RV
+X-Gm-Message-State: AOJu0Yy4QSa9yB2pfsRHPqgj+3FbxOw5cp9iF52C8L0DtWrXk+B2L/bF
+	lxzrwGPGqY2QtPPWopise2YkDw7XdJPo1RXbumjZjgcoFUHX1u/dpHlEqEbB1vI=
+X-Google-Smtp-Source: AGHT+IEv0rIXEEFymfbI7hv6WvIwIaG4wxAzbyU2mSU6ZNYe3WU2p1qg0ejBWvWUS0oTykMJfq8rng==
+X-Received: by 2002:a17:90b:3007:b0:299:8e05:4d7b with SMTP id hg7-20020a17090b300700b002998e054d7bmr783238pjb.4.1708547357279;
+        Wed, 21 Feb 2024 12:29:17 -0800 (PST)
+Received: from [172.16.0.69] (c-67-188-2-18.hsd1.ca.comcast.net. [67.188.2.18])
+        by smtp.gmail.com with ESMTPSA id pd18-20020a17090b1dd200b0029696f7f443sm2303021pjb.50.2024.02.21.12.29.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 12:29:16 -0800 (PST)
+Message-ID: <b5673bce-09e7-4531-a074-e252aa9e38e8@rivosinc.com>
+Date: Wed, 21 Feb 2024 12:29:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 11/12] KVM: riscv: selftests: Change vcpu_has_ext to a
+ common function
+Content-Language: en-US
+To: Haibo Xu <xiaobo55x@gmail.com>, Anup Patel <anup@brainfault.org>
+Cc: Atish Patra <atishp@atishpatra.org>, Haibo Xu <haibo1.xu@intel.com>,
+ ajones@ventanamicro.com, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+ James Morse <james.morse@arm.com>, Suzuki K Poulose
+ <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
+ Guo Ren <guoren@kernel.org>, Mayuresh Chitale <mchitale@ventanamicro.com>,
+ Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Minda Chen <minda.chen@starfivetech.com>, Jisheng Zhang
+ <jszhang@kernel.org>, Sean Christopherson <seanjc@google.com>,
+ Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>,
+ Vipin Sharma <vipinsh@google.com>, Thomas Huth <thuth@redhat.com>,
+ Aaron Lewis <aaronlewis@google.com>,
+ Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+ kvm-riscv@lists.infradead.org
+References: <cover.1705916069.git.haibo1.xu@intel.com>
+ <68856b86a93a4188558e5d0ebac0dd6aac8e404c.1705916069.git.haibo1.xu@intel.com>
+ <CAOnJCULwRTSnrQkR2o1P53R=tJ3TAxX+y+XRBesW6OFEzgFv2g@mail.gmail.com>
+ <CAJve8om2oOLg5-wKX7m7cBTgzwqiMcb35x=nDi1edY8evXjyMw@mail.gmail.com>
+ <2c96c61a-2685-4cee-9cef-963ed833bf92@rivosinc.com>
+ <CAJve8omCZxsiP1jF0n5SBh0_U6q7Exj5A1ACFahWpdBoxohaMA@mail.gmail.com>
+From: Atish Patra <atishp@rivosinc.com>
+In-Reply-To: <CAJve8omCZxsiP1jF0n5SBh0_U6q7Exj5A1ACFahWpdBoxohaMA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Currently, kallsyms builds a big assembly file (~19M with a normal
-kernel config), and then the assembler has to turn that big assembly
-file back into binary data, which takes around a second per kallsyms
-invocation. (Normally there are two kallsyms invocations per build.)
+On 2/21/24 05:08, Haibo Xu wrote:
+> On Wed, Feb 21, 2024 at 4:37 PM Atish Patra <atishp@rivosinc.com> wrote:
+>>
+>> On 2/20/24 18:13, Haibo Xu wrote:
+>>> On Wed, Feb 21, 2024 at 7:03 AM Atish Patra <atishp@atishpatra.org> wrote:
+>>>>
+>>>> On Mon, Jan 22, 2024 at 1:48 AM Haibo Xu <haibo1.xu@intel.com> wrote:
+>>>>>
+>>>>> Move vcpu_has_ext to the processor.c and rename it to __vcpu_has_ext
+>>>>> so that other test cases can use it for vCPU extension check.
+>>>>>
+>>>>> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+>>>>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+>>>>> ---
+>>>>>    tools/testing/selftests/kvm/include/riscv/processor.h |  2 ++
+>>>>>    tools/testing/selftests/kvm/lib/riscv/processor.c     | 10 ++++++++++
+>>>>>    tools/testing/selftests/kvm/riscv/get-reg-list.c      | 11 +----------
+>>>>>    3 files changed, 13 insertions(+), 10 deletions(-)
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/tools/testing/selftests/kvm/include/riscv/processor.h
+>>>>> index b68b1b731a34..bd27e1c67579 100644
+>>>>> --- a/tools/testing/selftests/kvm/include/riscv/processor.h
+>>>>> +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
+>>>>> @@ -42,6 +42,8 @@ static inline uint64_t __kvm_reg_id(uint64_t type, uint64_t idx,
+>>>>>    #define RISCV_ISA_EXT_REG(idx) __kvm_reg_id(KVM_REG_RISCV_ISA_EXT, \
+>>>>>                                                idx, KVM_REG_SIZE_ULONG)
+>>>>>
+>>>>> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext);
+>>>>> +
+>>>>>    struct ex_regs {
+>>>>>           unsigned long ra;
+>>>>>           unsigned long sp;
+>>>>> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c b/tools/testing/selftests/kvm/lib/riscv/processor.c
+>>>>> index 39a1e9902dec..dad73ce18164 100644
+>>>>> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
+>>>>> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
+>>>>> @@ -15,6 +15,16 @@
+>>>>>
+>>>>>    static vm_vaddr_t exception_handlers;
+>>>>>
+>>>>> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+>>>>> +{
+>>>>> +       unsigned long value = 0;
+>>>>> +       int ret;
+>>>>> +
+>>>>> +       ret = __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+>>>>> +
+>>>>> +       return !ret && !!value;
+>>>>> +}
+>>>>> +
+>>>>
+>>>> Not sure what was the base patch on which this was rebased. The actual
+>>>> commit in the queue branch looks different.
+>>>>
+>>>
+>>> This patch set was based on 6.7-rc8.
+>>>
+>>>> https://github.com/kvm-riscv/linux/commit/5563517cc2012e3326411b360c9924d3f2706c8d
+>>>>
+>>>> Both seem to have the same bug though the tests fail now and require
+>>>> the following fix.
+>>>> The ext id should be uint64_t and we need to pass ext directly so that
+>>>> SBI extension tests can also pass.
+>>>>
+>>>
+>>> It's weird that 6.7-rc8 has already included Andrew's change on the ISA ext reg,
+>>> but this patch was not generated against his change.
+>>>
+>>> commit bdf6aa328f137e184b0fce607fd585354c3742f1
+>>> Author: Andrew Jones <ajones@ventanamicro.com>
+>>> Date:   Wed Dec 13 18:09:58 2023 +0100
+>>>
+>>>       RISC-V: KVM: selftests: Treat SBI ext regs like ISA ext regs
+>>>
+>>> Anyway, your changes were right. Please go ahead to include them when merging.
+>>>
+>>
+>> I am not sure what happened. Probably, a merge conflict issue.
+>>
+>> I just realized I forgot to copy paste another fix in arch timer
+>>
+>> +++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
+>> @@ -85,7 +85,7 @@ struct kvm_vm *test_vm_create(void)
+>>           int nr_vcpus = test_args.nr_vcpus;
+>>
+>>           vm = vm_create_with_vcpus(nr_vcpus, guest_code, vcpus);
+>> -       __TEST_REQUIRE(__vcpu_has_ext(vcpus[0], KVM_RISCV_ISA_EXT_SSTC),
+>> +       __TEST_REQUIRE(__vcpu_has_ext(vcpus[0],
+>> RISCV_ISA_EXT_REG(KVM_RISCV_ISA_EXT_SSTC)),
+>>
+> 
+> Right Fix!
+> Please let me know if I need to rebase this patch series on your tree
+> and resent it.
+> 
 
-It is much faster to instead directly output binary data, which can
-be imported in an assembly file using ".incbin". This is also the
-approach taken by arch/x86/boot/compressed/mkpiggy.c.
-So this patch switches kallsyms to that approach.
+That's Anup's call.
 
-A complication with this is that the endianness of numbers between
-host and target might not match (for example, when cross-compiling);
-and there seems to be no kconfig symbol that tells us what endianness
-the target has.
-So pass the path to the intermediate vmlinux ELF file to the kallsyms
-tool, and let it parse the ELF header to figure out the target's
-endianness.
-
-I have verified that running kallsyms without these changes and
-kallsyms with these changes on the same input System.map results
-in identical object files.
-
-This change reduces the time for an incremental kernel rebuild
-(touch fs/ioctl.c, then re-run make) from 27.7s to 24.1s (medians
-over 16 runs each) on my machine - saving around 3.6 seconds.
-
-Signed-off-by: Jann Horn <jannh@google.com>
----
- scripts/kallsyms.c      | 196 ++++++++++++++++++++++++++++++++--------
- scripts/link-vmlinux.sh |   5 +-
- 2 files changed, 159 insertions(+), 42 deletions(-)
-
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index f35be95adfbe..ef03d723aded 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -27,6 +27,10 @@
- #include <string.h>
- #include <ctype.h>
- #include <limits.h>
-+#include <endian.h>
-+#include <elf.h>
-+#include <fcntl.h>
-+#include <unistd.h>
- 
- #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
- 
-@@ -75,7 +79,7 @@ static unsigned char best_table_len[256];
- static void usage(void)
- {
- 	fprintf(stderr, "Usage: kallsyms [--all-symbols] [--absolute-percpu] "
--			"[--lto-clang] in.map > out.S\n");
-+			"[--lto-clang] in in.map out.S out.bin\n");
- 	exit(1);
- }
- 
-@@ -290,20 +294,57 @@ static void read_map(const char *in)
- 	fclose(fp);
- }
- 
-+static bool is_64bit, is_little_endian;
-+static char *asm_path, *bin_path;
-+static FILE *asm_file, *bin_file;
-+static size_t bin_offset, bin_included;
-+
- static void output_label(const char *label)
- {
--	printf(".globl %s\n", label);
--	printf("\tALGN\n");
--	printf("%s:\n", label);
-+	fprintf(asm_file, ".globl %s\n", label);
-+	fprintf(asm_file, "\tALGN\n");
-+	fprintf(asm_file, "%s:\n", label);
- }
- 
- /* Provide proper symbols relocatability by their '_text' relativeness. */
- static void output_address(unsigned long long addr)
- {
- 	if (_text <= addr)
--		printf("\tPTR\t_text + %#llx\n", addr - _text);
-+		fprintf(asm_file, "\tPTR\t_text + %#llx\n", addr - _text);
- 	else
--		printf("\tPTR\t_text - %#llx\n", _text - addr);
-+		fprintf(asm_file, "\tPTR\t_text - %#llx\n", _text - addr);
-+}
-+
-+/*
-+ * Include all data that has been written into bin_file since the last call to
-+ * this function.
-+ */
-+static void include_bin_data(void)
-+{
-+	fprintf(asm_file, ".incbin \"%s\", %zu, %zu\n", bin_path,
-+		bin_included, bin_offset - bin_included);
-+	bin_included = bin_offset;
-+}
-+
-+static void output_bin_data(const void *data, size_t len)
-+{
-+	if (fwrite(data, 1, len, bin_file) != len) {
-+		fprintf(stderr, "kallsyms: unable to write output\n");
-+		exit(EXIT_FAILURE);
-+	}
-+	bin_offset += len;
-+}
-+static void output_bin_u32(uint32_t value)
-+{
-+	uint32_t encoded = is_little_endian ? htole32(value) : htobe32(value);
-+
-+	output_bin_data(&encoded, sizeof(encoded));
-+}
-+static void output_bin_u16(uint16_t value)
-+{
-+	uint16_t encoded = is_little_endian ? htole16(value) : htobe16(value);
-+
-+	output_bin_data(&encoded, sizeof(encoded));
- }
- 
- /* uncompress a compressed symbol. When this function is called, the best table
-@@ -384,25 +425,36 @@ static void sort_symbols_by_name(void)
- 
- static void write_src(void)
- {
--	unsigned int i, k, off;
-+	unsigned int i, off;
- 	unsigned int best_idx[256];
- 	unsigned int *markers;
- 	char buf[KSYM_NAME_LEN];
- 
--	printf("#include <asm/bitsperlong.h>\n");
--	printf("#if BITS_PER_LONG == 64\n");
--	printf("#define PTR .quad\n");
--	printf("#define ALGN .balign 8\n");
--	printf("#else\n");
--	printf("#define PTR .long\n");
--	printf("#define ALGN .balign 4\n");
--	printf("#endif\n");
-+	asm_file = fopen(asm_path, "w");
-+	if (!asm_file) {
-+		perror("unable to open asm output");
-+		exit(EXIT_FAILURE);
-+	}
-+	bin_file = fopen(bin_path, "w");
-+	if (!bin_file) {
-+		perror("unable to open bin output");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	fprintf(asm_file, "#include <asm/bitsperlong.h>\n");
-+	fprintf(asm_file, "#if BITS_PER_LONG == 64\n");
-+	fprintf(asm_file, "#define PTR .quad\n");
-+	fprintf(asm_file, "#define ALGN .balign 8\n");
-+	fprintf(asm_file, "#else\n");
-+	fprintf(asm_file, "#define PTR .long\n");
-+	fprintf(asm_file, "#define ALGN .balign 4\n");
-+	fprintf(asm_file, "#endif\n");
- 
--	printf("\t.section .rodata, \"a\"\n");
-+	fprintf(asm_file, "\t.section .rodata, \"a\"\n");
- 
- 	output_label("kallsyms_num_syms");
--	printf("\t.long\t%u\n", table_cnt);
--	printf("\n");
-+	fprintf(asm_file, "\t.long\t%u\n", table_cnt);
-+	fprintf(asm_file, "\n");
- 
- 	/* table of offset markers, that give the offset in the compressed stream
- 	 * every 256 symbols */
-@@ -437,20 +489,23 @@ static void write_src(void)
- 		/* Encode length with ULEB128. */
- 		if (table[i]->len <= 0x7F) {
- 			/* Most symbols use a single byte for the length. */
--			printf("\t.byte 0x%02x", table[i]->len);
-+			unsigned char len_encoded[1] = { table[i]->len };
-+
-+			output_bin_data(len_encoded, sizeof(len_encoded));
- 			off += table[i]->len + 1;
- 		} else {
- 			/* "Big" symbols use two bytes. */
--			printf("\t.byte 0x%02x, 0x%02x",
-+			unsigned char len_encoded[2] = {
- 				(table[i]->len & 0x7F) | 0x80,
--				(table[i]->len >> 7) & 0x7F);
-+				(table[i]->len >> 7) & 0x7F
-+			};
-+
-+			output_bin_data(len_encoded, sizeof(len_encoded));
- 			off += table[i]->len + 2;
- 		}
--		for (k = 0; k < table[i]->len; k++)
--			printf(", 0x%02x", table[i]->sym[k]);
--		printf("\n");
-+		output_bin_data(table[i]->sym, table[i]->len);
- 	}
--	printf("\n");
-+	include_bin_data();
- 
- 	/*
- 	 * Now that we wrote out the compressed symbol names, restore the
-@@ -463,8 +518,8 @@ static void write_src(void)
- 
- 	output_label("kallsyms_markers");
- 	for (i = 0; i < ((table_cnt + 255) >> 8); i++)
--		printf("\t.long\t%u\n", markers[i]);
--	printf("\n");
-+		output_bin_u32(markers[i]);
-+	include_bin_data();
- 
- 	free(markers);
- 
-@@ -473,15 +528,15 @@ static void write_src(void)
- 	for (i = 0; i < 256; i++) {
- 		best_idx[i] = off;
- 		expand_symbol(best_table[i], best_table_len[i], buf);
--		printf("\t.asciz\t\"%s\"\n", buf);
-+		output_bin_data(buf, strlen(buf)+1);
- 		off += strlen(buf) + 1;
- 	}
--	printf("\n");
-+	include_bin_data();
- 
- 	output_label("kallsyms_token_index");
- 	for (i = 0; i < 256; i++)
--		printf("\t.short\t%d\n", best_idx[i]);
--	printf("\n");
-+		output_bin_u16(best_idx[i]);
-+	include_bin_data();
- 
- 	output_label("kallsyms_offsets");
- 
-@@ -513,13 +568,12 @@ static void write_src(void)
- 				table[i]->addr);
- 			exit(EXIT_FAILURE);
- 		}
--		printf("\t.long\t%#x	/* %s */\n", (int)offset, table[i]->sym);
-+		output_bin_u32((uint32_t)offset);
- 	}
--	printf("\n");
-+	include_bin_data();
- 
- 	output_label("kallsyms_relative_base");
- 	output_address(relative_base);
--	printf("\n");
- 
- 	if (lto_clang)
- 		for (i = 0; i < table_cnt; i++)
-@@ -527,12 +581,24 @@ static void write_src(void)
- 
- 	sort_symbols_by_name();
- 	output_label("kallsyms_seqs_of_names");
--	for (i = 0; i < table_cnt; i++)
--		printf("\t.byte 0x%02x, 0x%02x, 0x%02x\n",
-+	for (i = 0; i < table_cnt; i++) {
-+		unsigned char seq_encoded[3] = {
- 			(unsigned char)(table[i]->seq >> 16),
- 			(unsigned char)(table[i]->seq >> 8),
--			(unsigned char)(table[i]->seq >> 0));
--	printf("\n");
-+			(unsigned char)(table[i]->seq >> 0)
-+		};
-+		output_bin_data(seq_encoded, sizeof(seq_encoded));
-+	}
-+	include_bin_data();
-+
-+	if (fclose(asm_file)) {
-+		perror("unable to write to asm output");
-+		exit(EXIT_FAILURE);
-+	}
-+	if (fclose(bin_file)) {
-+		perror("unable to write to bin output");
-+		exit(EXIT_FAILURE);
-+	}
- }
- 
- 
-@@ -795,6 +861,52 @@ static void record_relative_base(void)
- 		}
- }
- 
-+static void get_target_data_types(const char *elf_path)
-+{
-+	int elf_fd = open(elf_path, O_RDONLY);
-+	unsigned char elf_ident[EI_NIDENT];
-+
-+	if (elf_fd == -1) {
-+		perror("open ELF");
-+		exit(EXIT_FAILURE);
-+	}
-+	if (read(elf_fd, elf_ident, sizeof(elf_ident)) != sizeof(elf_ident)) {
-+		perror("read ELF header");
-+		exit(EXIT_FAILURE);
-+	}
-+	close(elf_fd);
-+
-+	if (elf_ident[EI_MAG0] != ELFMAG0 || elf_ident[EI_MAG1] != ELFMAG1 ||
-+	    elf_ident[EI_MAG2] != ELFMAG2 || elf_ident[EI_MAG3] != ELFMAG3) {
-+		fprintf(stderr, "kallsyms: input ELF has invalid header\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	switch (elf_ident[EI_CLASS]) {
-+	case ELFCLASS32:
-+		is_64bit = false;
-+		break;
-+	case ELFCLASS64:
-+		is_64bit = true;
-+		break;
-+	default:
-+		fprintf(stderr, "kallsyms: input ELF has invalid bitness\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	switch (elf_ident[EI_DATA]) {
-+	case ELFDATA2LSB:
-+		is_little_endian = true;
-+		break;
-+	case ELFDATA2MSB:
-+		is_little_endian = false;
-+		break;
-+	default:
-+		fprintf(stderr, "kallsyms: input ELF has invalid endianness\n");
-+		exit(EXIT_FAILURE);
-+	}
-+}
-+
- int main(int argc, char **argv)
- {
- 	while (1) {
-@@ -813,10 +925,14 @@ int main(int argc, char **argv)
- 			usage();
- 	}
- 
--	if (optind >= argc)
-+	if (optind+4 != argc)
- 		usage();
-+	asm_path = argv[optind+2];
-+	bin_path = argv[optind+3];
-+
-+	get_target_data_types(argv[optind]);
- 
--	read_map(argv[optind]);
-+	read_map(argv[optind+1]);
- 	shrink_table();
- 	if (absolute_percpu)
- 		make_percpus_absolute();
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 5127371d3393..1b5ff33a2d4a 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -162,7 +162,7 @@ kallsyms()
- 	fi
- 
- 	info KSYMS ${2}
--	scripts/kallsyms ${kallsymopt} ${1} > ${2}
-+	scripts/kallsyms ${kallsymopt} ${1} ${2} ${3} ${4}
- }
- 
- # Perform one step in kallsyms generation, including temporary linking of
-@@ -173,10 +173,11 @@ kallsyms_step()
- 	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
- 	kallsymso=${kallsyms_vmlinux}.o
- 	kallsyms_S=${kallsyms_vmlinux}.S
-+	kallsyms_bin=${kallsyms_vmlinux}.bin
- 
- 	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
- 	mksysmap ${kallsyms_vmlinux} ${kallsyms_vmlinux}.syms ${kallsymso_prev}
--	kallsyms ${kallsyms_vmlinux}.syms ${kallsyms_S}
-+	kallsyms ${kallsyms_vmlinux} ${kallsyms_vmlinux}.syms ${kallsyms_S} ${kallsyms_bin}
- 
- 	info AS ${kallsyms_S}
- 	${CC} ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS} \
--- 
-2.44.0.rc0.258.g7320e95886-goog
+> Thanks,
+> Haibo
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
 
