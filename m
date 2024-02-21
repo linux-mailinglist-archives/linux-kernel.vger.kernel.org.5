@@ -1,121 +1,96 @@
-Return-Path: <linux-kernel+bounces-74678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD1C85D79B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:03:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5BCE85D7BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A1E7283F3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:03:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67741B22847
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD6E4D5AA;
-	Wed, 21 Feb 2024 12:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="Jj+yFUaN"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592144F5FE;
+	Wed, 21 Feb 2024 12:14:08 +0000 (UTC)
+Received: from new-mail.astralinux.ru (new-mail.astralinux.ru [51.250.53.244])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9171482DD;
-	Wed, 21 Feb 2024 12:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39E33B794;
+	Wed, 21 Feb 2024 12:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.250.53.244
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708517023; cv=none; b=n2mkVUr8JYV4n9hx5xFl9nzMGrUpDErCJ6d4cjDeYYmaHJOdDyaO/y8wr3xaA7dmjXZDppt+JaUgn/5od9AVvO9KpHbOS2dhpXWP6+71C1yjreZ9st5NLR8XbgZG2+vKy6iTAv0I9mqs0IYj8Pb861/veLd2qPJo771hTIUe1qo=
+	t=1708517647; cv=none; b=OOSm5q11P1djgUbh18Zlnv0jEyFm4Eg/rRGP1i77bRtHTguJmBFSmNn3rs6mkCSFwla0uSuKAHGXUq6cd9TnNXi+ME7uc762xjwq9oXetuILSrLQ4zlvY7fAq2k7t7nqnR9/1p60l4TJLX//okIEi4+oZCCM2ZgvaSN8LfNUk28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708517023; c=relaxed/simple;
-	bh=G9lw+pWH4sUOkUH0bXaLYBB+FhlhFrbv+OlBmjcgIkQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Y0x1pTrNg1pSET66Z5jOUstzuFVw5l7BYO1nRa2a30s9R+54tOP4VehaAVz/9G7wbJhoRsSsakGC0ayEOB6FcDzIKVD199Ld9T6ru+Ok0cfqmAZlhdI58f1F47hQfv+sHxDvDXCYPS2iiaiPERHF9jaruSo22EZJoChnxfKX6Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=Jj+yFUaN; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1708517016;
-	bh=G9lw+pWH4sUOkUH0bXaLYBB+FhlhFrbv+OlBmjcgIkQ=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Jj+yFUaNwpoNaTbYAo72StJA+aH4ps7quIo42ug/l/UFyv9Pk5Yp3nIcAGLlf3Ebh
-	 2jVzjsZ8lBESomvHQu954Lpbj9kzja6ChBqVvrySsJq+RxkmijzskprQTCKT3NMoEo
-	 RXL/j6bPEZ5gTy9D5SAbUJ2ilXvKJaQ3Y855P99k=
-Received: from [IPv6:240e:358:118f:d600:dc73:854d:832e:7] (unknown [IPv6:240e:358:118f:d600:dc73:854d:832e:7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 27E6C668DF;
-	Wed, 21 Feb 2024 07:03:25 -0500 (EST)
-Message-ID: <f2b7c35e25a51e9a9f8036a5c08e95ba1ec45831.camel@xry111.site>
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
- argument inspection again?
-From: Xi Ruoyao <xry111@xry111.site>
-To: WANG Xuerui <kernel@xen0n.name>, linux-api@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christian Brauner <brauner@kernel.org>, 
- Kees Cook <keescook@chromium.org>, Huacai Chen <chenhuacai@kernel.org>,
- Xuefeng Li <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>,
- Xiaotian Wu <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>, Miao
- Wang <shankerwangmiao@gmail.com>, Icenowy Zheng <uwu@icenowy.me>, 
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, linux-arch
- <linux-arch@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Date: Wed, 21 Feb 2024 20:03:16 +0800
-In-Reply-To: <f59d73fb-7d3e-4c55-821a-082032267978@xen0n.name>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
-	 <f1a1bc708be543eb647df57b5eb0c0ef035baf8b.camel@xry111.site>
-	 <2d25e3bb829cbca51387eb84985db919f50ccd37.camel@xry111.site>
-	 <f59d73fb-7d3e-4c55-821a-082032267978@xen0n.name>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+	s=arc-20240116; t=1708517647; c=relaxed/simple;
+	bh=MqhbnS1NjXDY8Qh9eFNNfw3K5AIjRJ9BCE+okMQm6tI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TDRMKHXLBxEhbbinfjHjXF3YCe7yeeR/gMflUMI+qSgJaVbxkVzwBzj0Jf/chpMtEYhZlEhRKwwBH1NFlJu4Dbqe7o9197oVqXXaN9Iw+jMWenSJ2oBczSoxqftbQI6GlzyuDSN9vu1RNjhxsjpb6/DcjdjpUwh2vytDytZ6qsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; arc=none smtp.client-ip=51.250.53.244
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
+Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.233.36])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4Tfw1m5C1dzlVxB;
+	Wed, 21 Feb 2024 15:04:44 +0300 (MSK)
+From: Alexandra Diupina <adiupina@astralinux.ru>
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Alexandra Diupina <adiupina@astralinux.ru>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] Add NULL check for SCp in process_script_interrupt()
+Date: Wed, 21 Feb 2024 15:04:14 +0300
+Message-Id: <20240221120414.29192-1-adiupina@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-DrWeb-SpamScore: -100
+X-DrWeb-SpamState: legit
+X-DrWeb-SpamDetail: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehuddgtddvucetufdoteggodetrfcurfhrohhfihhlvgemucfftfghgfeunecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeetlhgvgigrnhgurhgrucffihhuphhinhgruceorgguihhuphhinhgrsegrshhtrhgrlhhinhhugidrrhhuqeenucggtffrrghtthgvrhhnpeduleetfeehffekueeuffektefgudfgffeutdefudfghedvieffheehleeuieehteenucffohhmrghinheplhhinhhugihtvghsthhinhhgrdhorhhgnecukfhppedutddrudejjedrvdeffedrfeeinecurfgrrhgrmhephhgvlhhopehrsghtrgdqmhhskhdqlhhtqdeftddvieeltddrrghsthhrrghlihhnuhigrdhruhdpihhnvghtpedutddrudejjedrvdeffedrfeeimeegvdeiudegpdhmrghilhhfrhhomheprgguihhuphhinhgrsegrshhtrhgrlhhinhhugidrrhhupdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplfgrmhgvshdruehothhtohhmlhgvhiesjfgrnhhsvghnrfgrrhhtnhgvrhhshhhiphdrtghomhdprhgtphhtthhopegrughiuhhpihhnrgesrghsthhrrghlihhnuhigrdhruhdprhgtphhtthhopehmrghrthhinhdrphgvthgvrhhsvghnsehorhgrtghlvgdrtghomhdprhgtphhtthhopehlihhnuhigqdhstghsihesvhhgvghrrd
+ hkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvhgtqdhprhhojhgvtghtsehlihhnuhigthgvshhtihhnghdrohhrgh
+X-DrWeb-SpamVersion: Vade Retro 01.423.251#02 AS+AV+AP Profile: DRWEB; Bailout: 300
+X-AntiVirus: Checked by Dr.Web [MailD: 11.1.19.2307031128, SE: 11.1.12.2210241838, Core engine: 7.00.62.01180, Virus records: 12454253, Updated: 2024-Feb-21 10:21:39 UTC]
 
-On Wed, 2024-02-21 at 18:49 +0800, WANG Xuerui wrote:
->=20
-> On 2/21/24 18:31, Xi Ruoyao wrote:
-> > On Wed, 2024-02-21 at 14:31 +0800, Xi Ruoyao wrote:
-> > > On Wed, 2024-02-21 at 14:09 +0800, WANG Xuerui wrote:
-> > >=20
-> > > > - just restore fstat and be done with it;
-> > > > - add a flag to statx so we can do the equivalent of just fstat(fd,
-> > > > &out) with statx, and ensuring an error happens if path is not empt=
-y in
-> > > > that case;
-> > > It's worse than "just restore fstat" considering the performance.=C2=
-=A0 Read
-> > > this thread:
-> > > https://sourceware.org/pipermail/libc-alpha/2023-September/151320.htm=
-l
-> > Hmm, but it looks like statx already suffers the same performance issue=
-.
-> > And in this libc-alpha discussion Linus said:
-> >=20
-> > =C2=A0=C2=A0=C2=A0 If the user asked for 'fstat()', just give the user =
-'fstat()'.
-> > =C2=A0=C2=A0=C2=A0=20
-> > So to me we should just add fstat (and use it in Glibc for LoongArch, o=
-nly
-> > falling back to statx if fstat returns -ENOSYS), or am I missing someth=
-ing?
->=20
-> Or we could add a AT_STATX_NULL_PATH flag and mandate that `path` must
-> be NULL if this flag is present -- then with simple checks we could have=
-=20
-> statx(fd, NULL, AT_STATX_NULL_PATH, STATX_BASIC_STATS, &out) that's both=
-=20
-> fstat-like and fast.
+SCp is 3rd argument of process_script_interrupt()
+(calls in drivers/scsi/53c700.c:1346 where SCp != NULL and
+drivers/scsi/53c700.c:1672 where this condition is not guaranteed).
+Before call process_script_interrupt() in drivers/scsi/53c700.c:1672
+there is SCp = hostdata->cmd, wherein (type casts omitted)
+hostdata = host->hostdata[0], host = dev_id,
+dev_id - 2nd argument of NCR_700_intr().
+NCR_700_intr() is used when calling request_irq() -> request_threaded_irq()
+as the 2nd argument.
+Last argument of call request_irq(..., NCR_700_intr, ... host) is host.
+host = NCR_700_detect(), host->hostdata[0] = hostdata, hostdata->cmd = NULL.
+So, there is possible NULL pointer dereference,
+so add NULL check for SCp in process_script_interrupt() to avoid it.
 
-But then to take the advantage in Glibc fstat() implementation, we'll
-need to try AT_STATX_NULL_PATH first, then check for EFAULT (not
-ENOSYS!) and fall back to AT_EMPTY_PATH.  The EFAULT checking seems
-nasty to me...
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+---
+ drivers/scsi/53c700.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+index 857be0f3ae5b..54bcc5727fbb 100644
+--- a/drivers/scsi/53c700.c
++++ b/drivers/scsi/53c700.c
+@@ -1067,7 +1067,7 @@ process_script_interrupt(__u32 dsps, __u32 dsp, struct scsi_cmnd *SCp,
+ 			//}
+ 			NCR_700_scsi_done(hostdata, SCp, hostdata->status[0]);
+ 		}
+-	} else if((dsps & 0xfffff0f0) == A_UNEXPECTED_PHASE) {
++	} else if ((dsps & 0xfffff0f0) == A_UNEXPECTED_PHASE && SCp) {
+ 		__u8 i = (dsps & 0xf00) >> 8;
+ 
+ 		scmd_printk(KERN_ERR, SCp, "UNEXPECTED PHASE %s (%s)\n",
+-- 
+2.30.2
+
 
