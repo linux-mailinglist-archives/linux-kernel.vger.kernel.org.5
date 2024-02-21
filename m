@@ -1,150 +1,190 @@
-Return-Path: <linux-kernel+bounces-74307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6110D85D299
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:31:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 643DE85D29C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:32:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 161BD1F252FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:31:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 184BA281F5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93ED63C499;
-	Wed, 21 Feb 2024 08:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A172E3C499;
+	Wed, 21 Feb 2024 08:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="UhuKLhBG"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pmKMlNEB"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E073C487
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F103B2AD
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708504275; cv=none; b=sQdBwdu6VYbkKKFlWJkYnqlF98H8ys0wp2++0g087qOn38FdpCCCBpLfGquQlP2TnrBS2a22n360xI7Xr1zAi/Z1EaD+HjulkEtf1/OOH4X6CgXz3WXVcf9vofdj5b8UriKqor18XTTPx9Izyqnemw7U+2m0Xy3o6DPLjYolJi0=
+	t=1708504333; cv=none; b=Upe58eRy/CcowifXoR/DJdgdHKhwtHQSkI3AxYAYwH1zid6kB+kmtUuR689cJCwJIu1iUmlRlUNeg7hq687OvhMvKzYuM1jGUE3lIRyXN2fp/cR2K9ttlA8NhgZhdECbyHttvgW1CReqmCCe7WUCCEruZMH4RbzsNkC5o9vSBlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708504275; c=relaxed/simple;
-	bh=vqbvLAUaPJ4WgRR+teh0/Ah4uMsjuy4TXqtUh9j5+sE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=N+ak/Toa3sDfcq12tziXjMWn6s8L+vfwkah5yuzN2n2GY9wUSAr4204KSiMt7W1O6ueBf05FgsBAfhIK1Fxin8Z0QVeQfdZumy8CCSeimO6LrA3OoAKyyCD7EViSdekQ8S6/h0gW4tZ2ke42Fhic7inK7UEzOToS9ic9MZ9ynoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=UhuKLhBG; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33ad9ec3ec2so1002614f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:31:13 -0800 (PST)
+	s=arc-20240116; t=1708504333; c=relaxed/simple;
+	bh=sRSdcdgUW77LnHXhmWN7ej8KZgqG5Mf2zjrzhHO5WMI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kd+1Q6bTIDwLKkGTBESvw0FauV+/Ml/u5iK/vNSaanX4QuDhwW64k391lmGOP+OMJRfWmet1aSirvLZLev0PMKWcnx1CXjf80JBVDVufTmIAS2+hh9AqFSh2Hmzh9DC0zOaa3GHSoX0flDq4gHr5N2IbkMot8iz70+jWNzabm14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pmKMlNEB; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso7926183a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708504272; x=1709109072; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3DfmgtPB5KtCEWqqxteO1F8ctpQ9OvQULDo2fgyZ5GM=;
-        b=UhuKLhBGQ/Rjv05yaNvR/EWKJMdH1Nkxmlfib/Ra8xN1twy6AVAleTXbmpfS53Au9u
-         YMP9aK7I+Bgd4APrC+wdSgkpDtyEJbbe7+C9byJO+BLLa07VnCTfWgcYhFOmpjtYIemC
-         fJfeMB6JY5xhSO5IW47UTmBB5huqKeBA3aLhMZZp+JcJrLNfid0DJNvJBJmPVICo2xsK
-         T2i7pKBFAm5fPIoEDYChqST6pih7iho+L1U+HHtmjT25vbGGMKNPikws+oQgpX2CbIO2
-         foHLlvJrk+FpTLW8yTRZtZTZvdSxqAO8QDWRgXFF194IbydtBLqKFj9+HoUPKY8Z+4ZZ
-         LsKA==
+        d=linaro.org; s=google; t=1708504330; x=1709109130; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mdaaffL3wD5KD94WUbRUHLkXwdrsOL+Wu2EeIoyFzc4=;
+        b=pmKMlNEBTctzSlnyN/Ul+B2pVC8KyJKlryVsME/yLvz0RZUNVdZg9jCPWDgtJ8l3XH
+         EHPopxZZnpjrndOBwLfi9r0SgP8TosCQlCfWitvqdVB2qQedb2L5qMCdK674mnoI0OMv
+         kJaZ54kVQw8LClqJRqgNY5BjkfcTE6p0kdLCC3W2AlGyNO227HH6/+juRu2UB/I9wbUR
+         FsIj71tL/stam7rXGVLihJsHIyLWk4PYZI/RjJHhR3TrGTv5IEQ6mfuDTqaKoxcfVDLt
+         Ey65I8OQrR0n/UpYGygtJNFTn0XAqPpX/+tr4bS5RSf5ClrwVT51FKMT9xzjPlApA0KT
+         EY5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708504272; x=1709109072;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3DfmgtPB5KtCEWqqxteO1F8ctpQ9OvQULDo2fgyZ5GM=;
-        b=exGJDjGfUka4cHHVkk6Ac3lObQ8WtkKnE6maebbCMUtE4GPxBBsaKCelEsJrZMoGGj
-         4hKi50EF8sgmoN0tcj+yULtStkbplk1LAV+ED7nf48YIZi+u4VPTacbV8akZ7ifSiFC4
-         JnFlSIUOw2BPENFj8lTF4LiuUY1C74T2J/pxQBaJ2s3krQ58FZMU829mMTLDvKEhtOIt
-         PcRkHzAUWaL1RY+wI6jhdKDx4RFmMjgiPfUbWEmd5vBB+s0e7R67Z7iKvJyb+l4iwqyr
-         rDgctLpRLscqz7oo30+kuRSXor4l0CXjSCcG4vNHbp6aJD7QO1MkFOV/iZeCQEzs78ar
-         ZJ0w==
-X-Forwarded-Encrypted: i=1; AJvYcCVlG5mHBJJMJAj7g/OzQBH0dCdagvgIoqdS4sNwfNgBOpNIuWafxszIY1j6lmAuBSOmzwpX+5waZClxlAtvv9hE9uZ0PdORdsZMEafh
-X-Gm-Message-State: AOJu0YwzJ/N8pT/Yq6RNXkhD1W9xCdnql+XMghqSabxj8cZuF0DYtTc7
-	HVEZiA8chfk8X5J4Iyl9Tj1zkbUe622oNzAGTNRp53bsaowY+m3ZXFzYUbmqVgM=
-X-Google-Smtp-Source: AGHT+IFpQ25mW9HjQjzpg+0Xj68AfJWrOkwGecdVCbJfBfuwd15xExxElqbvXDzVs+szTRDW8c+wFw==
-X-Received: by 2002:a05:600c:1ca8:b0:412:52a2:bd4e with SMTP id k40-20020a05600c1ca800b0041252a2bd4emr9522943wms.3.1708504272039;
-        Wed, 21 Feb 2024 00:31:12 -0800 (PST)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:e1be:e214:b8ab:dbb2])
-        by smtp.gmail.com with ESMTPSA id q4-20020adfab04000000b0033cf637eea2sm16210705wrc.29.2024.02.21.00.31.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 00:31:11 -0800 (PST)
-From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Robbin Ehn <rehn@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>
-Subject: [PATCH v2] riscv: hwprobe: export Zihintpause ISA extension
-Date: Wed, 21 Feb 2024 09:31:06 +0100
-Message-ID: <20240221083108.1235311-1-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1708504330; x=1709109130;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mdaaffL3wD5KD94WUbRUHLkXwdrsOL+Wu2EeIoyFzc4=;
+        b=MiOjmOQSd5lmNrxyc4LZUPIhJWZhke68i7DR3xQzak9+KH0kax8oivLS4iRCCPq2Ni
+         o7+Ki0sMNSpT3ZAMoaDoCta548QX9SdilZA9fbI8qIBTr4GDTvU8ayAnTyuQtHTAUM1p
+         g5V9jwadQqUgZ88BcnBNRS2ZFK04mOVEBxtfBON7xEjStkpAFn9fubIvDfzx1Hvb3nzb
+         owxrNb37nJTQM7MHtjeHekVCYU03QI5e+pKHT1gtxrThGcgfRSya3ZQoiXuupiBFfuUi
+         Lnuql0UgpH3zN/V+QPTnkYb20/Ctwyk74//eH7RmHk5FKG48Q0h3NnZg5pHlBH45YW19
+         HifA==
+X-Gm-Message-State: AOJu0YwY+EDjYP7vegG5NHYI4/REzy6rMFV+C2aFffyH8pxB9RdFrv0Z
+	QxVKKBdSpR6oe45wqbID5D/QmlZ6O18z/J8WZ/gCEBrQiFYBHAq2xguXlzwEIi2EG75VtmspDXr
+	M
+X-Google-Smtp-Source: AGHT+IH9KMqx8QDcnCemy8gJRJYvooBAsmB/Xn3nukq19T9gvsWue069jVrFWuwLH/iuRYOvICmeSA==
+X-Received: by 2002:a05:6402:17c4:b0:563:ccd1:26bd with SMTP id s4-20020a05640217c400b00563ccd126bdmr10123229edy.2.1708504330133;
+        Wed, 21 Feb 2024 00:32:10 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id fj21-20020a0564022b9500b00564da28dfe2sm916763edb.19.2024.02.21.00.32.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 00:32:09 -0800 (PST)
+Message-ID: <21ad2752-ad25-451a-b892-6b3b31c1031a@linaro.org>
+Date: Wed, 21 Feb 2024 09:32:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/5] memory: stm32-fmc2-ebi: add MP25 support
+Content-Language: en-US
+To: Christophe Kerello <christophe.kerello@foss.st.com>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ devicetree@vger.kernel.org
+References: <20240219140202.85680-1-christophe.kerello@foss.st.com>
+ <20240219140202.85680-4-christophe.kerello@foss.st.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240219140202.85680-4-christophe.kerello@foss.st.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Export the Zihintpause ISA extension through hwprobe which allows using
-"pause" instructions. Some userspace applications (OpenJDK for
-instance) uses this to handle some locking back-off.
+On 19/02/2024 15:02, Christophe Kerello wrote:
+> Add the support of the revision 2 of FMC2 IP.
+>      - PCSCNTR register has been removed,
+>      - CFGR register has been added,
+>      - the bit used to enable the IP has moved from BCR1 to CFGR,
+>      - the timeout for CEx deassertion has moved from PCSCNTR to BCRx,
+>      - the continuous clock enable has moved from BCR1 to CFGR,
+>      - the clk divide ratio has moved from BCR1 to CFGR.
+> 
+> The MP1 SoCs have only one signal to manage all the controllers (NWAIT).
+> The MP25 SOC has one RNB signal for the NAND controller and one NWAIT
+> signal for the memory controller.
+> 
+> Let's use a platform data structure for parameters that will differ
+> between MP1 and MP25.
 
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
----
-v2:
- - Fix typo "commit commit"
- - Add Atish Reviewed-by:
- - Link to v1: https://lore.kernel.org/lkml/20240219154905.528301-1-cleger@rivosinc.com/
----
- Documentation/arch/riscv/hwprobe.rst  | 4 ++++
- arch/riscv/include/uapi/asm/hwprobe.h | 1 +
- arch/riscv/kernel/sys_hwprobe.c       | 1 +
- 3 files changed, 6 insertions(+)
 
-diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
-index b2bcc9eed9aa..204cd4433af5 100644
---- a/Documentation/arch/riscv/hwprobe.rst
-+++ b/Documentation/arch/riscv/hwprobe.rst
-@@ -188,6 +188,10 @@ The following keys are defined:
-        manual starting from commit 95cf1f9 ("Add changes requested by Ved
-        during signoff")
- 
-+  * :c:macro:`RISCV_HWPROBE_EXT_ZIHINTPAUSE`: The Zihintpause extension is
-+       supported as defined in the RISC-V ISA manual starting from commit
-+       d8ab5c78c207 ("Zihintpause is ratified").
-+
- * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
-   information about the selected set of processors.
- 
-diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
-index 9f2a8e3ff204..31c570cbd1c5 100644
---- a/arch/riscv/include/uapi/asm/hwprobe.h
-+++ b/arch/riscv/include/uapi/asm/hwprobe.h
-@@ -59,6 +59,7 @@ struct riscv_hwprobe {
- #define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
- #define		RISCV_HWPROBE_EXT_ZACAS		(1ULL << 34)
- #define		RISCV_HWPROBE_EXT_ZICOND	(1ULL << 35)
-+#define		RISCV_HWPROBE_EXT_ZIHINTPAUSE	(1ULL << 36)
- #define RISCV_HWPROBE_KEY_CPUPERF_0	5
- #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
- #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
-diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
-index a7c56b41efd2..1008d25880e1 100644
---- a/arch/riscv/kernel/sys_hwprobe.c
-+++ b/arch/riscv/kernel/sys_hwprobe.c
-@@ -111,6 +111,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
- 		EXT_KEY(ZTSO);
- 		EXT_KEY(ZACAS);
- 		EXT_KEY(ZICOND);
-+		EXT_KEY(ZIHINTPAUSE);
- 
- 		if (has_vector()) {
- 			EXT_KEY(ZVBB);
--- 
-2.43.0
+..
+
+> +
+>  	ebi->regmap = device_node_to_regmap(dev->of_node);
+>  	if (IS_ERR(ebi->regmap))
+>  		return PTR_ERR(ebi->regmap);
+> @@ -1190,9 +1502,11 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_release;
+>  
+> -	ret = stm32_fmc2_ebi_save_setup(ebi);
+> -	if (ret)
+> -		goto err_release;
+> +	if (ebi->data->save_setup) {
+
+This cannot be NULL.
+
+> +		ret = ebi->data->save_setup(ebi);
+> +		if (ret)
+> +			goto err_release;
+> +	}
+>  
+>  	platform_set_drvdata(pdev, ebi);
+>  
+> @@ -1238,7 +1552,9 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	stm32_fmc2_ebi_set_setup(ebi);
+> +	if (ebi->data->set_setup)
+
+This cannot be NULL.
+
+
+
+Best regards,
+Krzysztof
 
 
