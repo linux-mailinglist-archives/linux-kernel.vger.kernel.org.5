@@ -1,152 +1,179 @@
-Return-Path: <linux-kernel+bounces-75236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFBAA85E503
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:56:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF1C85E50A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A5582843EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:56:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2464BB246C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1D184FDF;
-	Wed, 21 Feb 2024 17:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2870584FDF;
+	Wed, 21 Feb 2024 17:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PpTetLSO"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="grs3g+Tx"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFF384A45
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B149984FAD
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:57:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708538184; cv=none; b=TqFKTJEmdQKYhWGoRQgc7a8W9525UsNdjmLHHYREOOe+JvrFlEFju1r2Gc0ohBoey+QJhsIqd0NnuyzBVAITZgcNYpr4Ahyrb//5+uPzDj2QyEDsbkCr/I/6LpnWpC9xoTc6VdqzRuDFOT9Rc23Xj+Z8Nhi/+FCmpw0MsGTWSGw=
+	t=1708538239; cv=none; b=Ihvw3Oh3AnKLTAYV5EuMdvhDXMM7nKa3ki1ff7NUGo7vjUBoQIcjq5+vWGemaMQCF60r+odlayKTLlrry6DMSUg1hJ39C8Gtl0aIZEZrG/MLWOzsRrr0JkDjsSfqFpdeO0uWjwL7kzX9NEszTbcmhCiRrNb5GqyQ2oEySodOLoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708538184; c=relaxed/simple;
-	bh=BVFBq8MbvqfaIxtlUennLRCVo9CZPL/TUigQ6CV2aZk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rH9dA7xsAfKQ2Q1plYspfEnIPP21FgAGtIweeWmzYYtWu9qbGvAAlr803g6cgXvsgrfYkYnFsv86NvAKyG4JkkH2d2aXw3J9wf+7NOug19ubUvVV6K43WGVJ29r74T6Mr+po4VqCio0j46rSwTCK7oh2u5YvbXdvuPk2f6Ifya4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PpTetLSO; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563c595f968so1377682a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:56:20 -0800 (PST)
+	s=arc-20240116; t=1708538239; c=relaxed/simple;
+	bh=snF2AHY120g3OhxA2vENPtcrzHOEEZsmVGU8tDA7DVc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bL27TfPzIw9a/nxP+/7Ly5NjeEwYiWnz3YbH08xkGQAnmKtjYUBSB2B2ak7HiuSEhOYs8aXWu2ADa6ESkXb6SKCJ9UxCYmuqh1lglRYg02s4dty4ZxZ3B7c6nAytvb47qyK/LDagDIVmaTkNrdDWfoG2AEWW2RQ2n12OZdqrU88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=grs3g+Tx; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso108a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:57:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708538179; x=1709142979; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=it/RVOfJK4MjxrALV/dDH3SHkP5fEcXIOdKDJod6bwg=;
-        b=PpTetLSOkvJvzbUgo7YABJIGoDL0eqEBVZ/64PwD9QaSovxw8cYNI2WSJOdR64S9Bm
-         xNYCZPwkAFm2I2nN+Aw5AQ6yBUAebcB7AwypfqPg01YzfIR9+RHAkVRlZPOB/+WieTNi
-         Zhdtq55BSmPvm2J3L3FzyFlFZNkZw73D4oD9kTeX/0+1gj88X2mmjxkEAughodEjJPPN
-         zy95aig64qgaxsgha4wT4xwgnuu8zxmZTzVkucWYEp0H0BsZaQ2HYcJxdcnj6AHyub8Y
-         6wM6W88XZWTFHF65OT2TmpITydBK7Pmpjiot3O7m9+OaOanTuo1Vy73UwzkaWvNiLYPU
-         MmFQ==
+        d=google.com; s=20230601; t=1708538236; x=1709143036; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TNXJGwZ1V9rRdN3pg0jgyM1bnXXSlvPDHdCD030Tkqc=;
+        b=grs3g+TxMO16uAGgKnZcudGakRDZfecL5XTEFG9ss2Voo9F35kOIDveQwItKuz7sjv
+         0J1V0p81CDM3Qa806IT325Zg78T+3FNFzu9N32yiFuWKB82K6MWq9nLMvwEUn4AoSiVA
+         VpmClX0qXO4UKKKuklGinDSGO4JTOOUwSaFHRlUuWC/sEUXd56rKSGu3uKxdGBHRpCXu
+         DHCgwgc9ZMj7qBQd1hlaokn24vOFpV4dRBIZiD5jDm4ykztIrTESrhYt5p9fGydmiBvH
+         SeOoXC8Zbb0DGjonhK5j+vatUMFvknxmsIG2mY5UBeBMkELd0CHUppSsgHp8Pr8bGKdc
+         cLJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708538179; x=1709142979;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=it/RVOfJK4MjxrALV/dDH3SHkP5fEcXIOdKDJod6bwg=;
-        b=PL8o5ZCRf8s+k6Fjo4MYXDrdSXTo+zFSveQr1RT49UMEWqhHYKgCNblkhIbe1e8w2m
-         vp8Z9AM5XTf80uHeUCeL7ipLLE/auanOMCvwsQ8+iyLMC89LXH+tqWA+xYRBgCL21zdA
-         70c2WTGqP1ahHya60SusVQNPnrG+L5FESukG/bH1w7Au6wXjqYRMd/0n0tJwFDNnPx8c
-         jlpDHUtX6oYVwMEUgYoB7EoFEiEpnAGIfCgMiAQ+0UxgLU1wcVRz+RuuXcZB3AK914da
-         Vy/dwpXLsI0BPDZ3tPvRlp8cQ3jhcSTyoTyzRdh+K4CuNigeF4AdsUcPQ5c6HZpgg5+5
-         7u+w==
-X-Forwarded-Encrypted: i=1; AJvYcCW4jK7W6yT+lvLsXgrmLsWUj0igZ9/MSiJmux1aOAhih2t27tKvz/jqrBs9Fhs7DlfW+8P1W6FOFYoZj6G26itWU5E30xegF6drs0Fk
-X-Gm-Message-State: AOJu0YyAj11Cr9NuvJulmMzxD0L5j3RkmUJTiKyLz7Bwx3QyYwhTlada
-	lTYWV0OyvYxOWUsgGFONl64ZifLQpEomB6UfjRpvbz2HsEaZbcjze4xmjivf4JE=
-X-Google-Smtp-Source: AGHT+IGqE47uiLD78T1yQU2qNPN6dVRDsaT5Rxu1kmz28dCgLQ7tsFftgT+1AISRebYrTKMrx/S7WA==
-X-Received: by 2002:a17:906:b094:b0:a3c:a4ba:7917 with SMTP id x20-20020a170906b09400b00a3ca4ba7917mr11807476ejy.0.1708538179316;
-        Wed, 21 Feb 2024 09:56:19 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id qo3-20020a170907874300b00a3e4efbfdacsm4234766ejc.225.2024.02.21.09.56.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 09:56:18 -0800 (PST)
-Message-ID: <10f692ae-ac7a-4243-aadc-80712f781d39@linaro.org>
-Date: Wed, 21 Feb 2024 17:56:16 +0000
+        d=1e100.net; s=20230601; t=1708538236; x=1709143036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TNXJGwZ1V9rRdN3pg0jgyM1bnXXSlvPDHdCD030Tkqc=;
+        b=ugE6myr+REmENwT7zmVJ/0dMO5ZaLd/CY1C8UayC3dGhKqm3zjGJ0RIsYSnshy0Vez
+         47rtyABgV6+fKHTMdxBftYG+ebjFIduzRUAvcqB0Vu2p8ss9YH9lXbz60dWe8dAD6zBj
+         jsQAnEoliii2nXaWB6v3uT69GqQhxgWkV3puxot7J6u6uPm2beQ8Y+QXH93f2AZCfbtD
+         xZZIUCQnZABrV3Xa1yVDUa+5F2Ry40MEPOizIFxR8wVYrGXnTVfnSDrMHqyEG+VDF8DL
+         aObOkoPWsSk9ZoFCWRW2VdEW1MNRCdtf73cZKFiqihDS0BMmZbm9d4rG0dpbrn5WBsSy
+         Zyrw==
+X-Forwarded-Encrypted: i=1; AJvYcCUY/un72NsD1GGtTWp58t/Z4zPFdgEj58bqJhKkGm099UUy2qafGjgLOG5f7v77rT9iCIA8kGijhVfVCIna7n+jR4ulGD3Ohie/6zEt
+X-Gm-Message-State: AOJu0YxuqEt5gvzyjM/gjTdkz4j8d4IY081oCR+E4A0WgyscpTwgj4x2
+	VTe1gxvyGbnR8Aq5mwEuxGf5nxdR1692B5krw3k9ijlR1XkpAPTm+DI/BZyFJjt32GDEtfrOFBo
+	fDnqA0EvV47jQkpMv7X2tBlnDOp37dX0KWr/n
+X-Google-Smtp-Source: AGHT+IGieBwCGp1ECmxryncPYyi3r957SefzYuTlHBgpp8Lk7jz3qwLnAxBAaJ10d7ZTmmPhPmfgf1P51pspPyb5g/s=
+X-Received: by 2002:a50:9fc1:0:b0:563:afb0:28a with SMTP id
+ c59-20020a509fc1000000b00563afb0028amr238422edf.0.1708538235826; Wed, 21 Feb
+ 2024 09:57:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/12] spi: s3c64xx: switch exynos850 to new port
- config data
-Content-Language: en-US
-To: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org,
- krzysztof.kozlowski@linaro.org, semen.protsenko@linaro.org,
- conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com,
- devicetree@vger.kernel.org
-References: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
- <20240216070555.2483977-13-tudor.ambarus@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240216070555.2483977-13-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240221164112.846409-1-vilasbhat@google.com> <20240221121420.2e32fd00@gandalf.local.home>
+In-Reply-To: <20240221121420.2e32fd00@gandalf.local.home>
+From: Vilas Bhat <vilasbhat@google.com>
+Date: Wed, 21 Feb 2024 09:57:03 -0800
+Message-ID: <CAJNZHTTeFJvCjxUX_e_RVtJWcXW=1cjdF8EqvojnObm7jiyLKg@mail.gmail.com>
+Subject: Re: [PATCH v1] PM: runtime: add tracepoint for runtime_status changes
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Saravana Kannan <saravanak@google.com>, 
+	kernel-team@android.com, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 21, 2024 at 9:12=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Wed, 21 Feb 2024 16:41:10 +0000
+> Vilas Bhat <vilasbhat@google.com> wrote:
+>
+>
+> > diff --git a/include/trace/events/rpm.h b/include/trace/events/rpm.h
+> > index 3c716214dab1..f1dc4e95dbce 100644
+> > --- a/include/trace/events/rpm.h
+> > +++ b/include/trace/events/rpm.h
+> > @@ -101,6 +101,42 @@ TRACE_EVENT(rpm_return_int,
+> >               __entry->ret)
+> >  );
+> >
+> > +#define RPM_STATUS_STRINGS \
+> > +     { RPM_INVALID, "RPM_INVALID" }, \
+> > +     { RPM_ACTIVE, "RPM_ACTIVE" }, \
+> > +     { RPM_RESUMING, "RPM_RESUMING" }, \
+> > +     { RPM_SUSPENDED, "RPM_SUSPENDED" }, \
+> > +     { RPM_SUSPENDING, "RPM_SUSPENDING" }
+> > +
+> > +/*
+> > + * ftrace's __print_symbolic requires that all enum values be wrapped =
+in the
+> > + * TRACE_DEFINE_ENUM macro so that the enum value can be encoded in th=
+e ftrace
+> > + * ring buffer.
+> > + */
+> > +TRACE_DEFINE_ENUM(RPM_INVALID);
+> > +TRACE_DEFINE_ENUM(RPM_ACTIVE);
+> > +TRACE_DEFINE_ENUM(RPM_RESUMING);
+> > +TRACE_DEFINE_ENUM(RPM_SUSPENDED);
+> > +TRACE_DEFINE_ENUM(RPM_SUSPENDING);
+>
+> You could do what everyone else does:
+>
+> #define RPM_STATUS_STRINGS                      \
+>         EM( RPM_INVALID, "RPM_INVALID" )        \
+>         EM( RPM_ACTIVE, "RPM_ACTIVE" )          \
+>         EM( RPM_RESUMING, "RPM_RESUMING" )      \
+>         EM( RPM_SUSPENDED, "RPM_SUSPENDED" )    \
+>         EMe( RPM_SUSPENDING, "RPM_SUSPENDING" )
+>
+> #undef EM
+> #undef EMe
+> #define EM(a, b)        TRACE_DEFINE_ENUM(a);
+> #define EMe(a, b)       TRACE_DEFINE_ENUM(a);
+>
+> RPM_STATUS_STRINGS
+>
+> #undef EM
+> #undef EMe
+> #define EM(a, b)        { a, b },
+> #define EMe(a, b)       { a, b }
+>
 
-Hey, Sam,
+Thanks for the comment, Steven. I did notice both methods of defining
+enum values for tracepoints and chose this method because it felt
+clearer. Could you clarify on why the method you suggested is
+preferred?
 
-
-On 2/16/24 07:05, Tudor Ambarus wrote:
-> Exynos850 has the same version of USI SPI (v2.1) as GS101.
-
-I tested GS101 and it worked, I guess exynos850 SPI shall work too as it
-uses the same SPI version, v2.1. Can you run a test on your side too see
-if works? If not, Mark can drop this patch I guess. Please let us know
-your preference.
-
-Cheers,
-ta
-
-> Drop the fifo_lvl_mask and rx_lvl_offset and switch to the new port
-> config data.
-> 
-> Backward compatibility with DT is not broken because when alises are
-> set:
-> - the SPI core will set the bus number according to the alias ID
-> - the FIFO depth is always the same size for exynos850 (64 bytes) no
->   matter the alias ID number.
-> 
-> Advantages of the change:
-> - drop dependency on the OF alias ID.
-> - FIFO depth is inferred from the compatible. Exynos850 integrates 3 SPI
->   IPs, all with 64 bytes FIFO depths.
-> - use full mask for SPI_STATUS.{RX, TX}_FIFO_LVL fields. Using partial
->   masks is misleading and can hide problems of the driver logic.
-> 
-> Just compiled tested.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/spi/spi-s3c64xx.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> index 784786407d2e..9fcbe040cb2f 100644
-> --- a/drivers/spi/spi-s3c64xx.c
-> +++ b/drivers/spi/spi-s3c64xx.c
-> @@ -1576,10 +1576,9 @@ static const struct s3c64xx_spi_port_config exynos5433_spi_port_config = {
->  };
->  
->  static const struct s3c64xx_spi_port_config exynos850_spi_port_config = {
-> -	/* fifo_lvl_mask is deprecated. Use {rx, tx}_fifomask instead. */
-> -	.fifo_lvl_mask	= { 0x7f, 0x7f, 0x7f },
-> -	/* rx_lvl_offset is deprecated. Use {rx, tx}_fifomask instead. */
-> -	.rx_lvl_offset	= 15,
-> +	.fifo_depth	= 64,
-> +	.rx_fifomask	= S3C64XX_SPI_ST_RX_FIFO_RDY_V2,
-> +	.tx_fifomask	= S3C64XX_SPI_ST_TX_FIFO_RDY_V2,
->  	.tx_st_done	= 25,
->  	.clk_div	= 4,
->  	.high_speed	= true,
+> > +
+> > +TRACE_EVENT(rpm_status,
+> > +     TP_PROTO(struct device *dev, enum rpm_status status),
+> > +     TP_ARGS(dev, status),
+> > +
+> > +     TP_STRUCT__entry(
+> > +             __string(name,  dev_name(dev))
+> > +             __field(int,    status)
+> > +     ),
+> > +
+> > +     TP_fast_assign(
+> > +             __assign_str(name, dev_name(dev));
+> > +             __entry->status =3D status;
+> > +     ),
+> > +
+> > +     TP_printk("%s status=3D%s", __get_str(name),
+> > +             __print_symbolic(__entry->status, RPM_STATUS_STRINGS))
+>
+> This will be what you want with that last redefine of EM*()
+>
+> -- Steve
+>
+>
+> > +);
+> > +
+> >  #endif /* _TRACE_RUNTIME_POWER_H */
+> >
+> >  /* This part must be outside protection */
+>
 
