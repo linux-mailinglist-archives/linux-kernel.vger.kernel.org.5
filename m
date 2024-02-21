@@ -1,109 +1,82 @@
-Return-Path: <linux-kernel+bounces-73903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E71D85CD6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:24:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B5085CD64
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:23:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 143921F243E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:24:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C708284E58
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C35468F;
-	Wed, 21 Feb 2024 01:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWrAeSWf"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6A93D8E;
+	Wed, 21 Feb 2024 01:23:40 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381791FBF;
-	Wed, 21 Feb 2024 01:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4411FBF
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708478670; cv=none; b=VESWiLEzZr4/QjpG7ru6bfrcSPjp0X8O2Il+54aPVSEypRojLPqTgsUlcUjqNM1xWjOKR2AKsRxx+5Yl1BZn5HEfW41JryO3dlJN9l5cVxYQxguufo/PAwQOUNDv5yATdga+F4wOuRLG98bew6d0xfyWF8WxE2HanvEXOJswU4E=
+	t=1708478619; cv=none; b=ndZWfT8XS9QDlsJw2rOrSbrfw8cafgVV6QCbX+PCJcB4MGT1ro6w8aXCQ4vapIHBpySUOrYa8lI+8uUBqNH70RTZC0xSYcN7YlyjfVINJkQ6e7laVvKLanr1wyBH8tQG2gmiL0/Rb/vw8g/ELZlK7M54ig0eBvfA0t0YuBf8eN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708478670; c=relaxed/simple;
-	bh=QZojfwT+RxAPcmdQGaQgA+F8ssXlbPridr3vJSQMHT4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GRldLuwejUA2QQ2q/90ioEu2BGGZcnHmYHK+vCy14XoHr+fPT4+YgdEFnuvfdJGMqJvEosoGKZSrPM3/9WpBVH3YWOT8Vivdc4Dacb+rJCfrfc6xjPA34SCqLipLYKTR7+pm/oRKwCZTfalMRc0m5ZI8m1uPgVpXfQrpDZLfvb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWrAeSWf; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d754746c3so261294f8f.1;
-        Tue, 20 Feb 2024 17:24:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708478667; x=1709083467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QZojfwT+RxAPcmdQGaQgA+F8ssXlbPridr3vJSQMHT4=;
-        b=OWrAeSWfUGL36cZTld8OYlai5rafUEyLQ8TlkZaY6AhUOjumMc4P9k8F612tzCww8S
-         HztGjYC72SK1gsDcvM/j0KHGuFcPg2VqFZBtM+wbS8Im+RbTjPsKsOyF/iB1JipdkWFC
-         avQeS9MVsrHwe1Jhyi7Rzz3+ShggxJG0FwOxJS2gBJxLfDLUJIZqFRhZBHsWzL4TKQhz
-         qAXnDSKMGjGVW5XX/8irw1ReKYr79Z+qFXO46KuhIz6RB1L3jmX9JFJpa5Dcb8zrUTeF
-         P/xWE/Z0/FyYVLhjkz16HD0wRw/rTtKJiFhkVqy83onyFHEus1xmsrbNWd6vzVts7FdF
-         gf6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708478667; x=1709083467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QZojfwT+RxAPcmdQGaQgA+F8ssXlbPridr3vJSQMHT4=;
-        b=dw/ZLIjppozkgWHcx+QS0SObeLcu63LnzBYlCRUvG8O/Te2bvbEZGYY2EEPDZmfBGz
-         fkq+U97j4AR1yaLV0pOlCvSJeNhXB2c/D44pJk2nrp9cuvnv+wqYy0dZ3ZFnv/HJd4+y
-         k5I/Dj3+hrZp6yssJjvZBfom4wgDmzWTVhjQuShR5T3bWrwpx4Bqz1cPj83Ww45oGxta
-         Te8hHDWcoyRmZl1vbd5E93Qbc0BPv42DFX+7MJ8jd63L3KCZBklX2qDtU1qSW+aD252J
-         mFq+OlAUL9c98tcheo+nyyHezJVsoVJNV5vGVptCv57lR0BE3eO5cDLTmN9Lh9HehPrz
-         VEkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVW6GZKh+2dZ1W4ScGEQh2Axi/iThsI/BiIbmVi7U2urW1O96SqxyDLSmga9ExsSEGHmHL71zwZjQN09j5QFV4jrG1pHOo2yzBYRhN+s5dT4IeZNjW+tT+ykLMcUwicpT2xEkKRpP07yCcQqAayqU255yLFd/HizYdWX7Qm0TIy1jxC
-X-Gm-Message-State: AOJu0Yz4ExHCzImanBCBaWVUAUaarJpA+zOLdwDh2P256GopdeZgpz5/
-	gXb5A8IsCgodtVTB55oNC7acdxPRDcc7AphlbkcnT2fb7O4SHposV30/1yTf7svm+m7EWnicI+Q
-	46YXjl5Ol+dyOKTbvqug69bWNlD8=
-X-Google-Smtp-Source: AGHT+IFyffuFUKOEwh8cz2anMZHoATwBV3He7T2iJSSw7NZmTRvibOeFA+SKuUw6n1BjpafmDJGA/qD3RYrvTH/2jQ4=
-X-Received: by 2002:a05:6000:1e86:b0:33d:34a9:902f with SMTP id
- dd6-20020a0560001e8600b0033d34a9902fmr7166848wrb.36.1708478667438; Tue, 20
- Feb 2024 17:24:27 -0800 (PST)
+	s=arc-20240116; t=1708478619; c=relaxed/simple;
+	bh=IuGrRgwHUhnGKbjOR1clKgykUMeR34I+TWtRYnHTdrc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j/WrmWTLRcdcbt+/z7jF1YeaqsN81QFPI57EMYiE7tRiU3XAHYW12OdzvcdRcmA9RYtNIk539HT/fm6CWFk5UCFhCxU2cHrXJw+8lCGceeswbf3F/KzXxnzi8yQErnJ4A6AGE/owYnoy4Hz+T4fEr6lPPVdefR0wpEXlhlqzfck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65D91C433C7;
+	Wed, 21 Feb 2024 01:23:38 +0000 (UTC)
+Date: Tue, 20 Feb 2024 20:25:24 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Juri Lelli
+ <juri.lelli@redhat.com>
+Subject: Re: [PATCH] sched/clock: Make local_clock() notrace
+Message-ID: <20240220202524.2527c110@gandalf.local.home>
+In-Reply-To: <182553e4-a2e2-46f6-8c50-2de6f8effee7@efficios.com>
+References: <20240220202002.38fec245@gandalf.local.home>
+	<182553e4-a2e2-46f6-8c50-2de6f8effee7@efficios.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
-In-Reply-To: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 20 Feb 2024 17:24:16 -0800
-Message-ID: <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: make tracing program support multi-attach
-To: Menglong Dong <dongmenglong.8@bytedance.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
-	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
-	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
-<dongmenglong.8@bytedance.com> wrote:
+On Tue, 20 Feb 2024 20:19:32 -0500
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+
+> On 2024-02-20 20:20, Steven Rostedt wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > The "perf" clock in /sys/kernel/tracing/trace_clock enables local_clock(),
+> > where on machines that have CONFIG_HAVE_UNSTABLE_SCHED_CLOCK set is a
+> > normal function. This function can be traced.
+> > 
+> > I found that enabling the "perf" clock on some debug configs and running
+> > function tracer can live lock the machine. That is, it goes so slow that
+> > nothing moves forward.  
+> 
+> And I bet this is why the try_cmpxchg for reservation was
+> looping endlessly. ;)
 >
-> For now, the BPF program of type BPF_PROG_TYPE_TRACING is not allowed to
-> be attached to multiple hooks, and we have to create a BPF program for
-> each kernel function, for which we want to trace, even through all the
-> program have the same (or similar) logic. This can consume extra memory,
-> and make the program loading slow if we have plenty of kernel function to
-> trace.
 
-Should this be combined with multi link ?
-(As was recently done for kprobe_multi and uprobe_multi).
-Loading fentry prog once and attaching it through many bpf_links
-to multiple places is a nice addition,
-but we should probably add a multi link right away too.
+Yes. Debugging that was how I found it ;-) sort of.
+
+I went back to another machine which triggered the cmpxchg issue as well,
+but when removing that code and going back to the old code, it then locked
+up completely. That was because the other config had more debugging enabled.
+That debugging lead to finding this.
+
+I'm now going back to see if I can trigger that again with this update.
+
+-- Steve
 
