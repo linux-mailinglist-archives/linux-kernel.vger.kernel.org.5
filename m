@@ -1,185 +1,91 @@
-Return-Path: <linux-kernel+bounces-74120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B450485D030
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:01:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6E785D034
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D77331C23581
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:01:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B817B248E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A3239FEF;
-	Wed, 21 Feb 2024 06:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56F439FE7;
+	Wed, 21 Feb 2024 06:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dUAkKvBO"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2076.outbound.protection.outlook.com [40.107.94.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d3x/QEPK"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D52125622;
-	Wed, 21 Feb 2024 06:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.76
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708495278; cv=fail; b=IjqhwB6MTKtqdEcny+tYsBgok0VoTUw4diqLftDfggOJk0lvbAnUa0BAzDJPE8tPigDLJC3zxN4M7vSH4HtpeV3HNZ88h9YNP5ufXZZOMvE/ZpRT5RFGxzXDva9X29PoDH+GhXX/hgTDJENCHtvaFnoqnQCtQ+gsQ/f9QF3kXlw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708495278; c=relaxed/simple;
-	bh=ZqtVFUECsj0fZuvs5R/NE9TJcBHBK9xEat3lvDnAs7w=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ip9ZMk73D1Ejb1QXHH9w3/lmmyMsqUameSnV9hSeWgmIk2UxFT/J3GqY42ApsdW39peLkoK+46p/PCIZNM8Kt6DTwa6Mmh0U4eSALpx4arc42BtCTgQHza9rMjKPCRsTzfNHwQGfsmTCL872MRC7NrQSQSJb2dA23BBACm3bSzc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dUAkKvBO; arc=fail smtp.client-ip=40.107.94.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cYyCshMVumsEguwyPexNoj9RisKLJKmRnd5wKr1AShgSAw4K17MOE3X7pXJJt17IMbVlNgzLY4NZ7br7UlZkY3fgOL4l16BqMvECQnklL5BENfuS/yCRyyX8dUNgPoiPx4cklrKNXKqI7vlEt7XGyEnIViqKfKcDJVe3y5lH2m5Ylc9sHv614Jwb3Tb4N3xVte/Ee0dyXFO5MTcuwh82ZW8FsUEmlGQHXmfoh5imAA+39OBIBYF8BseMJLAUYBncdXIJJAEKtUVv1CpYUyme5tlA+GZMZsCfGjg71DGaONV/0DLMnGzvTrYrm91WNiSO8yz/onqXbywHuOHnpsHW3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZqtVFUECsj0fZuvs5R/NE9TJcBHBK9xEat3lvDnAs7w=;
- b=AZtSOng9I0D2Eq8Ji9yq1yzxdYE91AsTsHs5vmj5qCGr/ZGLggpZoZw0K1ky1GNASmHLJH5HMZug34Uv1SUnm58/0MohGV1eU8qXPJxLzx3jmRgON4lv4tBeXiH+KD4eJ9cNXitpMGL8HXAffnQKjsRdYbgig/DbiHzlaLTmulTzOovZq+yu6R0Uhv809WoWYIbTy9r+rdibRX0bWqU6IinramLeQX5v/Jpv80K7fMU3GAQC2CN0Q/Pmx85K41ahBWLblFCyqiu7fn5u4C7UvUGrG7secHXdSeJ8eqi+Q//t1pRZI4bPcBeiVd3X5uAMexR1CQ1x77SP8kumimpong==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZqtVFUECsj0fZuvs5R/NE9TJcBHBK9xEat3lvDnAs7w=;
- b=dUAkKvBOHckTUOk5IgLhJmEhF4CIxYKSkkB/0CXnP4Fht104kB0Xw0liKJpbUeOPzHedOo1D8zw5JWtvfognhjWW8H6GHiBXD9wjA9R5tPSUHnRRKWCNf23IAxWWqPntovUQEZtXrinWyk5gNBYNNk/DP80GS5aYTeIpDc2xw3kRENxVhFiKRVNz5Z6m5rGeeplQ90tXtq4aByZx23EFn5f3IPPZLsQxxmmca3IrvXwYQvqc95i0SPG+haZzNDsyYpG6kZhEC67W/bjdyGakjUR+XA0oOEgEXzlS/VDEqa61IylhGH2z6glaBFwcqEOgVnVq6/o+rmyvbbp7pzp4fQ==
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
- by IA1PR12MB6602.namprd12.prod.outlook.com (2603:10b6:208:3a2::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Wed, 21 Feb
- 2024 06:01:11 +0000
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
- 06:01:11 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-CC: Jason Gunthorpe <jgg@nvidia.com>, "maz@kernel.org" <maz@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>, "james.morse@arm.com"
-	<james.morse@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "reinette.chatre@intel.com"
-	<reinette.chatre@intel.com>, "surenb@google.com" <surenb@google.com>,
-	"stefanha@redhat.com" <stefanha@redhat.com>, "brauner@kernel.org"
-	<brauner@kernel.org>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"will@kernel.org" <will@kernel.org>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"yi.l.liu@intel.com" <yi.l.liu@intel.com>, "ardb@kernel.org"
-	<ardb@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"andreyknvl@gmail.com" <andreyknvl@gmail.com>, "wangjinchao@xfusion.com"
-	<wangjinchao@xfusion.com>, "gshan@redhat.com" <gshan@redhat.com>,
-	"shahuang@redhat.com" <shahuang@redhat.com>, "ricarkol@google.com"
-	<ricarkol@google.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"rananta@google.com" <rananta@google.com>, "ryan.roberts@arm.com"
-	<ryan.roberts@arm.com>, "david@redhat.com" <david@redhat.com>,
-	"linus.walleij@linaro.org" <linus.walleij@linaro.org>, "bhe@redhat.com"
-	<bhe@redhat.com>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
-	<cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
- (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
- Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
- Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, Matt Ochs
-	<mochs@nvidia.com>, Zhi Wang <zhiw@nvidia.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v8 1/4] kvm: arm64: introduce new flag for non-cacheable
- IO memory
-Thread-Topic: [PATCH v8 1/4] kvm: arm64: introduce new flag for non-cacheable
- IO memory
-Thread-Index: AQHaY86h4Cva4mNx7U65b8+zrBQke7ETSjgAgAEELEw=
-Date: Wed, 21 Feb 2024 06:01:10 +0000
-Message-ID:
- <SA1PR12MB7199442B899E437A3ABA2950B0572@SA1PR12MB7199.namprd12.prod.outlook.com>
-References: <20240220072926.6466-1-ankita@nvidia.com>
- <20240220072926.6466-2-ankita@nvidia.com> <ZdS2yl1kzZv/h+vH@lpieralisi>
-In-Reply-To: <ZdS2yl1kzZv/h+vH@lpieralisi>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|IA1PR12MB6602:EE_
-x-ms-office365-filtering-correlation-id: 40f7af05-db9f-4f18-7b65-08dc32a28101
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 1RjV579hTVJJdL7BpAqAkHImD1ZD4+cIJ44AO82cVwicumhssqF1D46tXZjlpn0OaWbWCwOWSwax+FQuuV/ezdYF7gWDG5o/mUIQkgFgorzNiEoLLtw3glu13Gy2QjDvmVuZKiRVSOAeOWaLHy9LbuM5+QYwwaxT9tMSokCeUJy0gy5RUFG6SlSCrLIHKVfgzZ/GQrs1ejs294vGDR7ReuERPWrQfjK+a18/hH1R0Giae6xVuRtl6nZ8Vf4Llnpy7+Zjh0n3JiYQodfkvpwmKZgQmLA2M2+nLFwhagA3mtStRcE5T7XpQs811kUlL/5wDkb7VrCURQLeRLwOYR6sPGSx8LPK6KN+3WdOTxmrUJgZr3dNPoETQJbfjVO5RafDBjH3quy3KghDxFnElIvCmhSB9Fvg4JKeUDXpOpzErLy647SIaqcDgR7uD9yXTwMUhy2D2Dl+hCaJzpoXQUijP1hEz+1h0/pRxAU6qoxMXyk+Q2IZPMybN8PtsrxAT2r93/VIDaHrx6f0yy3Oq93cRm6qEtGJy0IW4WxxQgiuettKq+lRVHNPAGDpSakNdPgQkgUu5d7hk95UsfOF8ZMzP5g9UyHGenf+YXgQ/Jb7ZAUx7oV3OYNfUUY1R2imMD7JKFWDfbuU4rF7zavtS59IGW4k0NjdhFTDdNIAy7UlTZ8=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?SPsbbAWLEgLefEwToRflsNbEi1raM/QEwk1qXJbEoqwnfeqwQpPTEfk49Q?=
- =?iso-8859-1?Q?bUyzwRFjiGdBGLYoqz+aD0h3xcPDj4ugapZz5DPyOo5HUk00ha3Hf7sHmB?=
- =?iso-8859-1?Q?21Z8RxsXhpifLC2ij1P6BVA2Bz7iFqZHLEh8YjkVPL1jcWq6yhWEBHsmBK?=
- =?iso-8859-1?Q?g/8h1r+p6h2WjWQLu7pLE7ngpGQL5wERhB5czAULsFu3LhzT5qmDsxvWqS?=
- =?iso-8859-1?Q?aqnj9ZUaFMY5iW9ju2ZiTsEsUkJzGuq+0Eh0wGQdu9ckVsnhmRtJBmVh0K?=
- =?iso-8859-1?Q?p5dft/nFSQOXJfEBG1JDbfdFS0Zl8lQa3nYLYDS5zZDDB7GTrBJG/9rScR?=
- =?iso-8859-1?Q?ET1I6cLMYt14Yo7YI6mAM08qK3E4iG1pLsW473Z9KjwHUiE1+s+o3ufFtW?=
- =?iso-8859-1?Q?QzBf4v57v1v466TjUXKz9yBpsVG/tVV5t1i75ryemqQz+K6iLTnSpFMVGs?=
- =?iso-8859-1?Q?ojBSG/9twVRtu33bzufWM93IXeb1W/U36/G1EAE8d+OOipfGN+3f2q49a+?=
- =?iso-8859-1?Q?qoqTKfTEmFqN/BgnX83cQ7NfbrXxZXI6mfvT/8fVW+zTpMDiqizk18b60b?=
- =?iso-8859-1?Q?1CSliK831jkg4UJcEWd3ctuYQBdZebPhiY2Oc8JZQi5Cj1JKiPTgkCPPzl?=
- =?iso-8859-1?Q?lA8GRQSSTchHJPMh1ETqZmht0Pam6mJv9CHNF9DB5TnmkKdZrKl3bSs3gk?=
- =?iso-8859-1?Q?cFmQJZvBPYgINduTTRoSo4Hd7ufuuotyhPAszs8tRHD5ch8NnqZvFonyYk?=
- =?iso-8859-1?Q?e5EwBFm6vYvt+JRXPQIhyGNLrWUA7qEFfHI02AkRaQt1F/hTYMzu3fCNm5?=
- =?iso-8859-1?Q?Fcgg9UzkbPXA8bcOnHt1pxg138vIA3AYI6vL4DZQAJBhHJU+fqkws9XB1S?=
- =?iso-8859-1?Q?/gvbJqrhBG81RuLFrqXzyRCmREVbYyM+qUB3PPDQWxAaZsKN/bttjxJJas?=
- =?iso-8859-1?Q?PUVijqBRop7RuYh2m2S471Knw6aJ7+IANOrZmNfMbRhXuplwZpDywWy9ZR?=
- =?iso-8859-1?Q?QW6YhDgF70ldCzb8GgcYpJxFsr3oPh5i5xjTEkZbEFLCVOrMbT0CXuMCU1?=
- =?iso-8859-1?Q?YFyr1KX5ZNpRr9DnE+gdoY40dETEEdRkZYwrFDD1cPYiY43QPrZWuPovPr?=
- =?iso-8859-1?Q?WQEjMve51c7gKZFQzjxCtxHwKVvizQu3Vk8ZReWurSa+KoqVxyvqwGgYPM?=
- =?iso-8859-1?Q?/EtyIb0BXY4ziPdkuSpdnkJ/FL94FAmiTEcvkjLAQs6YbvaTHO1IFnBKsU?=
- =?iso-8859-1?Q?c4VMUyF67uAKKuN8gYZtBRl1jtvJT9lbpH2NKtmBn2Txie+8NylKD04Dc9?=
- =?iso-8859-1?Q?Hb07fUXguql31iSDp6lrDKupHjU0ytKqmB/sdWMYZfmJrzRGTZKrMy8Twn?=
- =?iso-8859-1?Q?c7sLieKh1Vv0VgV7gk86g6fsIa99oUtiti2TknhWFZXfEwBoLM4S9EDpRH?=
- =?iso-8859-1?Q?AmNtV3sQagZi97FEVegT2BoMkWfhEzIEcxqGzpbzqwfXTijp8CsSkCJuUV?=
- =?iso-8859-1?Q?OFR1L0pgR3ZbobcLw3xKHcbKy6P3Ir4rKnTiDTJM4XMna48E/1gAEzrsn/?=
- =?iso-8859-1?Q?oIOLL9WeGLAxsjn4JpoMTTTk7rMrI9iS7TIVHyThro9b0DdcIKSrRISO/x?=
- =?iso-8859-1?Q?eSibB0nSrmTe4=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A204338F9B;
+	Wed, 21 Feb 2024 06:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708495309; cv=none; b=R2MmIQF0tn9C09X3pkksR1xpducl4B7QWHb9KQCdOS9N+fmn6ZlNsWfH0ZeaYtOxzT4GmzqzkpmPmpQgEz91nffgz4/a2hEJ9Ad3fUYKAi9Q5bh5P+FbrYG3ldZIJy05ZWQmlxfe08ZcHcqCpr/N5z+DDmtVpr+qIHKCGQ0Peus=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708495309; c=relaxed/simple;
+	bh=44XkvpDcBDxX5rZg4/ZUSxigVTajxgUFJqfJboreeOU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=US5h22IZ5eJ9d7G956s0FDqVoHfE9lBQkP7bOjoEHPvbCbVRQYDIEYRiOyGQe2B6TOF/KbOC0PeS9bLYKQOIMwpIYhptUtJJ5fUTT7S4GfHqaqTqYfexpqMqRc0n4ShdzJlDl5aUEkwetaQo1UttvJG8zVfie1jIrOcOHxQZm6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d3x/QEPK; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=EswRYSMjvhqRzU4zRKnoIRXs9psC+v2E1sO0MEvmNfs=; b=d3x/QEPK8TuB2dSaC9jfGhQQJa
+	YQH0tW1ibpm5h2XUAUkDsUFPrP2b/XUMIj1YBrOpMLHiCUCcGnG2YrNvr8yedsW4gvUsPQ8c9/YJq
+	hVzgy8cf0USltCX9HP1izjmAwItEY6u2svDlFFjk8mOi3dhJ97C1HFVT1SrydjQ4wPLY0siUq7G6x
+	h4moUDMypYdVxQim4PR/eBaFPwwGK4pwSUx8erNwr1WzFZlXt0zsL3rboEo9SwgSPqA/Dv1Fz2rjQ
+	z3k1s+KzCKWs0dMpEkqqAh5N9XkB7Bf8s+24Zjd7Kx/93hSrDpCQevWbb2ErFaORPI8B8urUDOaf7
+	TuumgN4w==;
+Received: from [50.53.50.0] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rcffv-0000000HHf5-0LCc;
+	Wed, 21 Feb 2024 06:01:47 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	linux-leds@vger.kernel.org
+Subject: [PATCH] leds: leds-mlxcpld: fix kernel-doc warnings
+Date: Tue, 20 Feb 2024 22:01:46 -0800
+Message-ID: <20240221060146.30850-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40f7af05-db9f-4f18-7b65-08dc32a28101
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2024 06:01:10.9932
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: D+BY+1z91zkKxgVJvTvaCYEKkEgBzidrrGXyfG1QVILVz6K8firvWTtze88zIFPSdHO0g15jfhTLSSTBfla8Kw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6602
+Content-Transfer-Encoding: 8bit
 
-=0A=
->> Lastly, adapt the stage2 PTE property setter function=0A=
->> (stage2_set_prot_attr) to handle the NormalNC attribute.=0A=
->>=0A=
->> [1] section D8.5.5 - DDI0487J_a_a-profile_architecture_reference_manual.=
-pdf=0A=
->> [2] section B2.8 - DDI0487J_a_a-profile_architecture_reference_manual.pd=
-f=0A=
->> [3] sections 1.7.7.3/1.8.5.2/appendix C - DEN0029H_SBSA_7.1.pdf=0A=
->>=0A=
->=0A=
-> A couple of Link: tags would not hurt in my opinion, lest we forget:=0A=
->=0A=
-> Link: https://lore.kernel.org/r/20230907181459.18145-2-ankita@nvidia.com/=
-=0A=
-> Link: https://lore.kernel.org/r/20231205033015.10044-1-ankita@nvidia.com=
-=0A=
-=0A=
-Agreed, will add.=
+Change "cled" to "cdev" to quieten kernel-doc warnings:
+
+leds-mlxcpld.c:86: warning: Function parameter or struct member 'cdev' not described in 'mlxcpld_led_priv'
+leds-mlxcpld.c:86: warning: Excess struct member 'cled' description in 'mlxcpld_led_priv'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vadim Pasternak <vadimp@nvidia.com>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Lee Jones <lee@kernel.org>
+Cc: linux-leds@vger.kernel.org
+---
+ drivers/leds/leds-mlxcpld.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -- a/drivers/leds/leds-mlxcpld.c b/drivers/leds/leds-mlxcpld.c
+--- a/drivers/leds/leds-mlxcpld.c
++++ b/drivers/leds/leds-mlxcpld.c
+@@ -77,7 +77,7 @@ struct mlxcpld_param {
+ 
+ /**
+  * struct mlxcpld_led_priv - LED private data:
+- * @cled: LED class device instance
++ * @cdev: LED class device instance
+  * @param: LED CPLD access parameters
+ **/
+ struct mlxcpld_led_priv {
 
