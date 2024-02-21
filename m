@@ -1,138 +1,117 @@
-Return-Path: <linux-kernel+bounces-75674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAF9B85ED3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:42:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6540685ED40
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:42:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C0D6B21D70
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:42:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FE50282BA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BDD12BEAE;
-	Wed, 21 Feb 2024 23:42:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2029212D76D;
+	Wed, 21 Feb 2024 23:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n+5r/B/8"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hf+myGHN"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E449129A6C
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D275812D76C
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708558943; cv=none; b=qyzmjdRdLqFOXYNctkjIPGAnFT9wogU0/NOXX31vgQKoWTgUhYZq6GJDuTpoFzroFHrJt+WejPc+vwmWBUspYzERcR2T493c3GoMU2peLY3UYc7/dT2MFmHV/1TgU3+4eVZC0hSyP95efaeLmMazXzzDkRyWiluzLFbm24TEJ6U=
+	t=1708558951; cv=none; b=enPUDpqTA0Mjf1aeuE6Z2PuRkgTppn4fS5HrOIu4Ssi6ty14X0A0A62gbBRtphMbqg1L5jk5cWbHL2xmG1EosMMY7/kHEuM6zIGaSjscSAV0vWi/nkV/P7I4fypoxV3IaVRaYZbHVKg5O+G2tZ1q7ZNReBRljS+9Ia0fyQ0YHc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708558943; c=relaxed/simple;
-	bh=R30h1HMhJTW2Hl0gQhY0c5uAgK3flvLTGgjb/74w7kk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C9+ZQmr93/3dT0tsb++NcQ4ZJj4u9UteKJvjTdp/W/Ixv5gKfK+3sufe8CJCipGiDbQo3s3DUBTrqNRLLay89nEMr0n6Ta7gSI8kMqLSCq21kZsAS/h+Let9+NjXHQ9r12/6fMJa6g55bytzjAgndfHy1UC5RNiuDOwGncTnXqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n+5r/B/8; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-db3a09e96daso6395228276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:42:21 -0800 (PST)
+	s=arc-20240116; t=1708558951; c=relaxed/simple;
+	bh=DRjQ2RMrvvFcgAl8DJc22OUJZXfHIMDxQKsf1bZcINU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OdHOVaE2IpisDEi2+Rh0yQAteM1hfEIT/HU3Lfth6nBwevsrZyVOOp78Bls4skQXfgooPgOwZVTyU7DU3L5h5fxwYmC6+NCv1fxyOX/0EV7nLmN3qpJ2sQi2JaUfVxGzv9WdISqpbxafVpaijwG/VbguoTBxypqbJkkmMf7ZJaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hf+myGHN; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-365306a6455so4225915ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:42:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708558941; x=1709163741; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C/dj756VosTuwMpPJNGyW3MhpcrxAFO76cK11lx7rxo=;
-        b=n+5r/B/8QsPnDxmK1oO/9JxDKxfbmgeikWZefanD8qDfeFviUkPQNYQ2IopWBIvI4v
-         0IRWihrLavCxR7/g6TJaKjnC624DeE1EnhdVpnQYP8J/Zn2KFQ2dzqDPQsmKDBhqDwQ+
-         Htclg7dIu14I2+bdEluF8zrQMuXSDnHxvtLsiHDWY9T/HAW+2m5qhrWnuJoQ1pEUURMV
-         xzRMkCHAExFQ8m+uyazB+tqzUPibS63Hm5dEXAcwyGsRUuGdsCezKGflQz6raJG5A8tF
-         EddIjVogMs3o5o8l9CPKROyQwO4NvzSL/6TjHj/auy30+jtBSBc6IEfPBuhaI7/psAVx
-         VZGQ==
+        d=linuxfoundation.org; s=google; t=1708558949; x=1709163749; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TToKF+RcIDqTyQ1ZlzqOBzZqj3ctKqshlDQrKFkCjgo=;
+        b=hf+myGHN4xHbXOFVsFk1ShwPr9n5sQBvba86zxNKK7mukbSP+Or785Om5N9Fpnp2Oo
+         I/lnDQVVRuvKGMVutzDRNxE85Q2TQwlz6CIsBllgzgIkxbJ+ghM5RzVGuyuHPZuk0Iba
+         Swc0HHIAirBdzY/LiLYh9IGP2xQLtskvfKmQM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708558941; x=1709163741;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C/dj756VosTuwMpPJNGyW3MhpcrxAFO76cK11lx7rxo=;
-        b=Zcb/hnnrpOguJOMsE+QlYC1hWk94DSL/yA9h/NocoQdW55vmpmhFahtxPu7KZ4xsA/
-         H6S6TfHVegWFwDy6F4aO4FhA8g7jldnn3jO6K++BTKAiFymF7S5mBF8u9EfywuTOBxY9
-         ZPN+WObszAeD7QwJSjJvLOVZ8D8z0K48glIJHLV0EmmY/jVVMypnMCrvnvUEe5qKi5uI
-         /SLBLUQWEqrrQL9LKGcPGWMJ1NDVvY6f+qEOlE4IW3cCRTVzSGquhjuo3CZRIJc1oUoR
-         +zFORdo+NkvlfumyuWC3sENESomuaEYpP54Ary4WIOj1oTEkGB3wk7/hTPU44x5p8Gdk
-         dIqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWpNe70AJF2kEgkR8bC28zSzOYbklZsG4BHYErxRotEvFYQxxb1HL7A7c90/i+riMj1NIcQqoDmfz/Tb0b7UeLEC3oC/o3fQjIKNCl7
-X-Gm-Message-State: AOJu0Yz+COfEzc9xInC5LzQaLA3Ey0O1c+BXd25S692t4HBT2+FflCBf
-	1e54iHM9Dio21C0tX9uHEEd9GXEgVBJ1cqewZQHogTbuoCioYFpIu90SpTmzfVkf80txEYT38W8
-	OsUAI8o679h4peKJ1ITqte1ZZA4XIZXIxuVo9YA==
-X-Google-Smtp-Source: AGHT+IEPTkax+cblPH2B3OK6zkJGmVKi10jTkKNhhoD5CPKfbwC59MAyFljD4sz8HRB3ajKPgQOsU016PTTq8M/17rY=
-X-Received: by 2002:a25:1e41:0:b0:dcc:67a7:430 with SMTP id
- e62-20020a251e41000000b00dcc67a70430mr834243ybe.15.1708558941152; Wed, 21 Feb
- 2024 15:42:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708558949; x=1709163749;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TToKF+RcIDqTyQ1ZlzqOBzZqj3ctKqshlDQrKFkCjgo=;
+        b=TGR1OZrsWeo1owxaHxYrljYTAOYjvf/HU8JkGJjusEIxc8azo6R6Z85D1ktmOblyjv
+         LAF6uWZ/6L1xO6YrD4Kicf5yGBjfOwQFCYO076xNQU3Iku9F/dd9+/FPlVWZvUPVrtkq
+         M9GC97/DDs3/yG1DAy2lfxxrmF2EMmPGn+Mu1a2tBnJD7aQqvBApcoVwf7ZGnoT4eCGO
+         Hb2GCBkayLAePwd8ZBMgfQbCJRg2bIwGNB8/Ep/6IuvU87mCyxA85VIsDmc9X6goxtXF
+         srUKMzlbAAE+rUiCkDrTB0+kb27fRYNVU9XNtW4/9aJCsOleKzTXwr59BsxMgJT4vHjH
+         +UzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUB4/hXP2VivFPnrMvdBuwggFlrYCBDmhF4ZsiheoGlxx4lswa5Kex+OPTOw96ZvO46/fdI9mV8TmbJHyS3y4z0FtH5RuohLetNRcOh
+X-Gm-Message-State: AOJu0Yx62nODJihENgb59K4YHD1KEqLuNbzu9SJgcUdgGKsisHQFUBRV
+	E6MIsdOK0eCbNrTZMoZ4eA6X6gDfL2A71JEsdtqW9cdeNjwFDGafJ208x4goi1A=
+X-Google-Smtp-Source: AGHT+IHS5EsQmsWHtFblC+GYNPn2/aXeJ+RVQCDeZ9fkYYv60uAvnFKF7Vu3HzcvspHc3fuwT+z7QA==
+X-Received: by 2002:a05:6e02:170e:b0:363:c82e:57d9 with SMTP id u14-20020a056e02170e00b00363c82e57d9mr16758159ill.3.1708558949053;
+        Wed, 21 Feb 2024 15:42:29 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id y11-20020a02904b000000b00473cdc58012sm2932344jaf.134.2024.02.21.15.42.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 15:42:28 -0800 (PST)
+Message-ID: <988f0326-5895-4491-af82-c6619b048816@linuxfoundation.org>
+Date: Wed, 21 Feb 2024 16:42:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com> <20240221-rb3gen2-dp-connector-v1-5-dc0964ef7d96@quicinc.com>
-In-Reply-To: <20240221-rb3gen2-dp-connector-v1-5-dc0964ef7d96@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 22 Feb 2024 01:42:10 +0200
-Message-ID: <CAA8EJpqtj-+PaUWeXH32_jfNaOUM+V-H0j5mZSW+rcaAQTdMzg@mail.gmail.com>
-Subject: Re: [PATCH 5/9] arm64: dts: qcom: qcs6490-rb3gen2: Enable adsp and cdsp
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4.19 000/202] 4.19.307-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240221125931.742034354@linuxfoundation.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240221125931.742034354@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
->
-> Define firmware paths and enable the ADSP and CDSP remoteprocs.
->
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> index 32313f47602a..ab498494caea 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> @@ -451,6 +451,16 @@ &qupv3_id_0 {
->         status = "okay";
->  };
->
-> +&remoteproc_adsp {
-> +       firmware-name = "qcom/qcs6490/rb3gen2/adsp.mbn";
+On 2/21/24 06:05, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.307 release.
+> There are 202 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.307-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-This should be either
+Compiled and booted on my test system. No dmesg regressions.
 
-       firmware-name = "qcom/qcs6490/adsp.mbn";
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-or
-
-       firmware-name = "qcom/qcs6490/Vendor/rb3gen2/adsp.mbn";
-
-
-> +       status = "okay";
-> +};
-> +
-> +&remoteproc_cdsp {
-> +       firmware-name = "qcom/qcs6490/rb3gen2/cdsp.mbn";
-> +       status = "okay";
-> +};
-> +
->  &tlmm {
->         gpio-reserved-ranges = <32 2>, /* ADSP */
->                                <48 4>; /* NFC */
->
-> --
-> 2.25.1
->
-
-
--- 
-With best wishes
-Dmitry
+thanks,
+-- Shuah
 
