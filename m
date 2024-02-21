@@ -1,167 +1,135 @@
-Return-Path: <linux-kernel+bounces-73975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8D585CE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:45:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 110C685CE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEFECB23C70
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:45:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 710F2B21F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D8C28374;
-	Wed, 21 Feb 2024 02:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D0225777;
+	Wed, 21 Feb 2024 02:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fo8+X5x2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="eY+mcvmr"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1533B2B9CC;
-	Wed, 21 Feb 2024 02:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7648F25632
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708483537; cv=none; b=GJvoszCR+XQjklVZ+BTbD+rFOlrepmAheObMpUUPICvRquPCDgHzdipVLFfBBG7xmSd0GukfZrSYC/FBZVp7Ny9m9rtcApsHcCyMv80oHo84nvwDa4KAyq+80f6zUY0/gxU5RbvHFbE+GNY7IcUbfNapZHUV9j1cP6x7iNNrL1U=
+	t=1708483561; cv=none; b=QmDjyU/q7JRQeM2y0XhRbTf0rrnykyv17tgwxKoaQjyiIP/Kn0GoRiXB8MJsRAsOGeIRllsq9eIq26Yv/KgBfp9S/mDpO/3kh0xnzB1VPALG4VHa//74A5VS3Ed6VoAC/JZD1CPvB9qh5M+OPV4Xfvmlyi/Qb50vp4+pz5ybEoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708483537; c=relaxed/simple;
-	bh=obtYbZZ9g4Ih4ksC+MZPfSTGjvsL7/Xd7/k5rk/le/s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sUZIeEPG8wYA9Cjj4Ajv9Y/Pu3o4Z5kD3NdM+m7H90LnCPCrwrN3ev4sMSZFeHoXfmJhDLnOLphFrzKxfWFh4tILZKHrtNVRix7uHrEnAbXYHIUTV563hzxTAHWTohCMSjowEObv2NL+mduI+0NPhLBKurraxHrAkGVV5X9oc2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fo8+X5x2; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708483535; x=1740019535;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=obtYbZZ9g4Ih4ksC+MZPfSTGjvsL7/Xd7/k5rk/le/s=;
-  b=Fo8+X5x29Zw3DZ3UZcHSyPA9nijTRjbT3KxZyP+Pqt24FQB+KK0nk6NE
-   c1dodl1U2EJ2iCW31H3bYM3EeRkvj/U5rkOx4Oxcvnl+qd7vdolW8O8g5
-   1ltG9rD+agUbOjh6LsBSFSOH7GGw10Qiy7kPEyk/8pkjfFnzDVatqa9CA
-   hUtjt0zGN/3vxkVzXUAzHtzbIZCEcTwDLP8l28DAlllRWMBMEyRoTDw6b
-   cnu3mQtJvY51IJi6G2YIroGUobsTvnQ06llJl2DlC9xSDiPqaHAtY8Vtb
-   9sO4K+afOtpMz3nToiuRhKj12ruBOII5T8Pv8nSiJ0jMOLSVsaQS86Mw5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="13247242"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="13247242"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:45:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="5349724"
-Received: from msbabaa-mobl.amr.corp.intel.com (HELO [10.209.28.248]) ([10.209.28.248])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:45:34 -0800
-Message-ID: <39ef1387-609c-45ca-9bfa-e01b72cacaaa@linux.intel.com>
-Date: Tue, 20 Feb 2024 18:45:32 -0800
+	s=arc-20240116; t=1708483561; c=relaxed/simple;
+	bh=ve1P36IQxgQSH5e/j0CQ97PbRHxGM/0Cwkl/MH1SMuI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F77s3kJLoBqL7EnwhF3FoTiEX7Xj+bEa2rU6TQAI5MXaOJI4N0YJKi7dUQ0OnFesMgt05yRhBKb+YVC+ZMIjXev1YufxwfIEyMGyfLjBpstAOZEemklLo6Sj6nBoSnJ2UVMrO1KCwhXxVSXI9v2VwJBrcGgEhC4xRiteIOV0HVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=eY+mcvmr; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dca1efad59so5691584a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:45:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1708483559; x=1709088359; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ve1P36IQxgQSH5e/j0CQ97PbRHxGM/0Cwkl/MH1SMuI=;
+        b=eY+mcvmrLFndy3vMd8abbvvdkULPrS9j/rbHuiS6BpOmmsCTwnlklWp6M+wxwAdgeN
+         UfoXCNMgSyr5wD1t0VfJ/nMZvzlUdWEoo3e9O6+/v4f32pq7c8hJZ6LYGE17SdTBXkEj
+         dRg70wiXqBwr4B3w77PZLgPkW8N0tWg6vRSrytbCzsL1e4enAjTMxJbQ5Eg2QIMEARVQ
+         Da5+Iyty92uH2Np1ZUyWQ2X2NhtHK8SN9oDQHOLc+TRCKfj5qtrmTgMBaoJUlPpqV2zB
+         RB7capCvii6EPMsLb5g+m23QkBLccOm+NdTIDL2hXEna+MSiUfRgQ+HsXk/0IgJ80vla
+         rRYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708483559; x=1709088359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ve1P36IQxgQSH5e/j0CQ97PbRHxGM/0Cwkl/MH1SMuI=;
+        b=lvY7AL+kSPFnnnlo1ffsueEXtLZxfnPJ9PEcXcMTwyT9huwSs13Z6GpyWuf+VDPkTl
+         u49PqH3lM+D+dza9NDee9XOccvjCQnQQeghnZlrPxZQDJ9/dsUmjHSryzEQNardeSuWV
+         YA3lfxqrf2lWNDCOVAgIOlu2PP91VGuUXekqAVRPpHyxUVqklkBfb/+cTdj/xohwpRr9
+         QvTRTUNbdjU8hJsjj0hhx3WzdLgODxH9Wc/OF2EWSQbATDdOOTTaBGXYnBG8iZYpfRej
+         qcPt4Gczwx9e3YrVWM47jya+IDDaUer6GxkbFH3m0kYZR7LxwJorU8vYMmKoPWfEGKlf
+         PjMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdZTsuA923hCbUt40qW5Ol2FwTwZYwu0ipZ4hGKtzyk6JwR5gx0uqh0O3me+1zyaQYaJPwLxJlZk1YbxDKWZNa/9EpA3u5a/1LmiQR
+X-Gm-Message-State: AOJu0YyvOjxu+ekZtXprZkcPiBfeRa3QiSQM/aU6C1tB9B8C+qvxkl6U
+	Rl1mxdVGnW/s4jydjn5xV7dfyVwbR5Ehxe7IAsv6PsMVcY48Is171JnHM4XAMRj71YFCbDEEGeT
+	41IkOCPbAAtTlb0/dOerGF0d/sXDEd4TQbSUsbQ==
+X-Google-Smtp-Source: AGHT+IGashesbOHbcyrknzxfVk2lf4tXLZJ5jdamBO+1t79MQQSOI9DHPUj6TjyB6Xz8pKhd36pDvEFEfQoRdh2c6sc=
+X-Received: by 2002:a17:90b:1281:b0:299:6848:28c1 with SMTP id
+ fw1-20020a17090b128100b00299684828c1mr7815650pjb.26.1708483558766; Tue, 20
+ Feb 2024 18:45:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI/DPC: Request DPC only if also requesting AER
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
- stable@vger.kernel.org, Matthew W Carlis <mattc@purestorage.com>,
- Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>
-References: <20240220235520.1514548-1-helgaas@kernel.org>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240220235520.1514548-1-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+ <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com> <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com>
+In-Reply-To: <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Wed, 21 Feb 2024 10:45:47 +0800
+Message-ID: <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next 0/5] bpf: make tracing program
+ support multi-attach
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
+	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
+	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
+	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 2/20/24 3:55 PM, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongm=
+englong.8@bytedance.com> wrote:
 >
-> When booting with "pci=noaer", we don't request control of AER, but we
-> previously *did* request control of DPC, as in the dmesg log attached at
-> the bugzilla below:
+> Hello,
 >
->   Command line: ... pci=noaer
->   acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI EDR HPX-Type3]
->   acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME PCIeCapability LTR DPC]
+> On Wed, Feb 21, 2024 at 9:24=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
+> > <dongmenglong.8@bytedance.com> wrote:
+> > >
+> > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not allowed=
+ to
+> > > be attached to multiple hooks, and we have to create a BPF program fo=
+r
+> > > each kernel function, for which we want to trace, even through all th=
+e
+> > > program have the same (or similar) logic. This can consume extra memo=
+ry,
+> > > and make the program loading slow if we have plenty of kernel functio=
+n to
+> > > trace.
+> >
+> > Should this be combined with multi link ?
+> > (As was recently done for kprobe_multi and uprobe_multi).
+> > Loading fentry prog once and attaching it through many bpf_links
+> > to multiple places is a nice addition,
+> > but we should probably add a multi link right away too.
 >
-> That's illegal per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, which
-> says:
+> I was planning to implement the multi link for tracing after this
+> series in another series. I can do it together with this series
+> if you prefer.
 >
->   If the operating system sets this bit [OSC_PCI_EXPRESS_DPC_CONTROL], it
->   must also set bit 7 of the Support field (indicating support for Error
->   Disconnect Recover notifications) and bits 3 and 4 of the Control field
->   (requesting control of PCI Express Advanced Error Reporting and the PCI
->   Express Capability Structure).
->
-> Request DPC control only if we have also requested AER control.
 
-Can you also add similar check in calculate_support call?
+Should I introduce the multi link for tracing first, then this series?
+(Furthermore, this series seems not necessary.)
 
-        if (pci_aer_available() && IS_ENABLED(CONFIG_PCIE_EDR))
-                support |= OSC_PCI_EDR_SUPPORT;
-
-
->
-> Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218491#c12
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: <stable@vger.kernel.org>	# v5.7+
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Cc: Matthew W Carlis <mattc@purestorage.com>
-> Cc: Keith Busch <kbusch@kernel.org>
-> Cc: Lukas Wunner <lukas@wunner.de>
-> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> ---
->  drivers/acpi/pci_root.c | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> index 58b89b8d950e..1c16965427b3 100644
-> --- a/drivers/acpi/pci_root.c
-> +++ b/drivers/acpi/pci_root.c
-> @@ -518,17 +518,19 @@ static u32 calculate_control(void)
->  	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
->  		control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
->  
-> -	if (pci_aer_available())
-> +	if (pci_aer_available()) {
->  		control |= OSC_PCI_EXPRESS_AER_CONTROL;
->  
-> -	/*
-> -	 * Per the Downstream Port Containment Related Enhancements ECN to
-> -	 * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
-> -	 * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
-> -	 * and EDR.
-> -	 */
-> -	if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
-> -		control |= OSC_PCI_EXPRESS_DPC_CONTROL;
-> +		/*
-> +		 * Per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, the
-> +		 * OS can request DPC control only if it has advertised
-> +		 * OSC_PCI_EDR_SUPPORT and requested both
-> +		 * OSC_PCI_EXPRESS_CAPABILITY_CONTROL and
-I think you mean OSC_PCI_EXPRESS_DPC_CONTROL.
-> +		 * OSC_PCI_EXPRESS_AER_CONTROL.
-> +		 */
-> +		if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
-> +			control |= OSC_PCI_EXPRESS_DPC_CONTROL;
-
-Since you are cleaning up this part, why not add a patch to remove
-CONFIG_PCIE_EDR?
-
-
-> +	}
->  
->  	return control;
->  }
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+> Thanks!
+> Menglong Dong
 
