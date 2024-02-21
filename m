@@ -1,117 +1,112 @@
-Return-Path: <linux-kernel+bounces-75675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6540685ED40
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:42:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DBB85ED44
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:43:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FE50282BA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:42:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EDE4282B8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2029212D76D;
-	Wed, 21 Feb 2024 23:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B79712AAE0;
+	Wed, 21 Feb 2024 23:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hf+myGHN"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ra/5B1wO"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D275812D76C
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03983127B70
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708558951; cv=none; b=enPUDpqTA0Mjf1aeuE6Z2PuRkgTppn4fS5HrOIu4Ssi6ty14X0A0A62gbBRtphMbqg1L5jk5cWbHL2xmG1EosMMY7/kHEuM6zIGaSjscSAV0vWi/nkV/P7I4fypoxV3IaVRaYZbHVKg5O+G2tZ1q7ZNReBRljS+9Ia0fyQ0YHc0=
+	t=1708558998; cv=none; b=YK1EJTg4CFN/omUJ9iJHJ2wH1r5gQaO+ILvM+D/W9B+xepMTiycKEt9068R7LbbvbaN5XAoStsf65fBwaBGRyrnInNE5bgiiPYs8vlxuRVAmbK50MlA88NN7b78axv2zbrXxyubY/rSnRejfF3KvcnZYXsgxDUkRpbT4aHGzWaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708558951; c=relaxed/simple;
-	bh=DRjQ2RMrvvFcgAl8DJc22OUJZXfHIMDxQKsf1bZcINU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OdHOVaE2IpisDEi2+Rh0yQAteM1hfEIT/HU3Lfth6nBwevsrZyVOOp78Bls4skQXfgooPgOwZVTyU7DU3L5h5fxwYmC6+NCv1fxyOX/0EV7nLmN3qpJ2sQi2JaUfVxGzv9WdISqpbxafVpaijwG/VbguoTBxypqbJkkmMf7ZJaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hf+myGHN; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-365306a6455so4225915ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:42:29 -0800 (PST)
+	s=arc-20240116; t=1708558998; c=relaxed/simple;
+	bh=/YFr+KKxijw6h0HemmOAPDT4OuqNlZU/nP9qnoL9f6c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a7bIG4tMGcHWvXeMJcBEhfXafmTb2/MmF5hVxfumyUN4MKIcYZI2tHxZFjpCzt23TlyIRhAHwMZZUG8zDF94ZofUCVRlbkj1ipNRIA3pVvyYDp397PqEI7TyQuhd0RSEw4lAol4ep2+5i+v3ql4DFkQi+4rSNbnz+R/TLR4hVk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ra/5B1wO; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso8016905276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:43:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1708558949; x=1709163749; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TToKF+RcIDqTyQ1ZlzqOBzZqj3ctKqshlDQrKFkCjgo=;
-        b=hf+myGHN4xHbXOFVsFk1ShwPr9n5sQBvba86zxNKK7mukbSP+Or785Om5N9Fpnp2Oo
-         I/lnDQVVRuvKGMVutzDRNxE85Q2TQwlz6CIsBllgzgIkxbJ+ghM5RzVGuyuHPZuk0Iba
-         Swc0HHIAirBdzY/LiLYh9IGP2xQLtskvfKmQM=
+        d=linaro.org; s=google; t=1708558996; x=1709163796; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WFR+rdCdcNXgjwmjuY7WFWRvujdikiPSr9iXFhu+1EA=;
+        b=ra/5B1wOIxcFhFIfRjZTmBFm+29T76Z7c9GwqjaHS1c0xFdKvdu3bf2rg1NMCBRV9U
+         Q2AElrKtsgfU/eXNv9RhDkIYQPBnrcrvL8XhLy2RgyrC0hRjI6+YpgAJbRmpkMSM0e7b
+         wUGGw1Jx0Yfps9rYYfy6rh8yBrsdyC+uHY/uaKsIS/0M3FsnbgqJf8AXvV6rvuwqAqMQ
+         ubK2yOQukVQsPKZzbeXtHp/iVWd01UCdglzPS3au2V+gWN1RJabDwmL1VPJFiMTLqRSA
+         a0AkV1RT985UOBJWxwvxwXcDsavE8By8M1bYnPEBu+an4mqp7EdkW87i2KGnQvLI/nv6
+         Gufw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708558949; x=1709163749;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TToKF+RcIDqTyQ1ZlzqOBzZqj3ctKqshlDQrKFkCjgo=;
-        b=TGR1OZrsWeo1owxaHxYrljYTAOYjvf/HU8JkGJjusEIxc8azo6R6Z85D1ktmOblyjv
-         LAF6uWZ/6L1xO6YrD4Kicf5yGBjfOwQFCYO076xNQU3Iku9F/dd9+/FPlVWZvUPVrtkq
-         M9GC97/DDs3/yG1DAy2lfxxrmF2EMmPGn+Mu1a2tBnJD7aQqvBApcoVwf7ZGnoT4eCGO
-         Hb2GCBkayLAePwd8ZBMgfQbCJRg2bIwGNB8/Ep/6IuvU87mCyxA85VIsDmc9X6goxtXF
-         srUKMzlbAAE+rUiCkDrTB0+kb27fRYNVU9XNtW4/9aJCsOleKzTXwr59BsxMgJT4vHjH
-         +UzA==
-X-Forwarded-Encrypted: i=1; AJvYcCUB4/hXP2VivFPnrMvdBuwggFlrYCBDmhF4ZsiheoGlxx4lswa5Kex+OPTOw96ZvO46/fdI9mV8TmbJHyS3y4z0FtH5RuohLetNRcOh
-X-Gm-Message-State: AOJu0Yx62nODJihENgb59K4YHD1KEqLuNbzu9SJgcUdgGKsisHQFUBRV
-	E6MIsdOK0eCbNrTZMoZ4eA6X6gDfL2A71JEsdtqW9cdeNjwFDGafJ208x4goi1A=
-X-Google-Smtp-Source: AGHT+IHS5EsQmsWHtFblC+GYNPn2/aXeJ+RVQCDeZ9fkYYv60uAvnFKF7Vu3HzcvspHc3fuwT+z7QA==
-X-Received: by 2002:a05:6e02:170e:b0:363:c82e:57d9 with SMTP id u14-20020a056e02170e00b00363c82e57d9mr16758159ill.3.1708558949053;
-        Wed, 21 Feb 2024 15:42:29 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id y11-20020a02904b000000b00473cdc58012sm2932344jaf.134.2024.02.21.15.42.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 15:42:28 -0800 (PST)
-Message-ID: <988f0326-5895-4491-af82-c6619b048816@linuxfoundation.org>
-Date: Wed, 21 Feb 2024 16:42:27 -0700
+        d=1e100.net; s=20230601; t=1708558996; x=1709163796;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WFR+rdCdcNXgjwmjuY7WFWRvujdikiPSr9iXFhu+1EA=;
+        b=PCVm9ycgmJF6615JuCHClAmqRjGhJSdei2p5xIjQ4CCvnXsbkza+oef7q9P83/g+L8
+         cWOLNdNmkZeT8Hs0AD1aIZxH+94KaK3VQVmwcpR0xffxMMkbPiJFC6GAxrUy9zCGPfoG
+         3Z6BuBck2qXvyqWlv/8IEkjhcvxii64XbeJ1CYERF7513iEfuslvGwpK/RYMfZe0rlJ3
+         37nTTB1eVF1fQKpGDKzOh1zVRVIWQXjdTaVVND8La1Nc6hnw4rIAxUIx03KYDPnc/gXu
+         bU9Ey3NfcHVVY+OdGgRAueU0HHsxdhh6qPJklGiLrO5ZombZ7n3yK3SRT4VcTKPLpPwS
+         c8Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3h2GDcrjmDrTENQAZWQARDQD3qz/uOfRMVh95qltMNsI9ZqPSbBgMVVtyQseP/O3hwNUKS5o/0Z9jFfYfvj1NlHcqV5IibBlCoZ9u
+X-Gm-Message-State: AOJu0YzTM3/0klWS1M/2OLGEJ5/e1/GvmUjNPdSr/HMzHuRis6WqtZsK
+	Ksaq9rz7GU6W2k8wME/i+mmrkyILDiaFg8Sf1ldUa+pJi/MGnPOxNjDSdPC1wQl6w5pW9y3Aj6v
+	UOl+obwWYxkdG6htThiRufhykr5u2Z+/v+EAcCw==
+X-Google-Smtp-Source: AGHT+IFjJBtN7MtXNcf/QQ3e4+26sEK2XOSpTmqDfd6w2TNPck5yPGYCu8CgXttPPvLLkfQppUj/9j3CGsKu8RzEuYE=
+X-Received: by 2002:a25:b1a0:0:b0:dcc:693e:b396 with SMTP id
+ h32-20020a25b1a0000000b00dcc693eb396mr916615ybj.2.1708558995841; Wed, 21 Feb
+ 2024 15:43:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.19 000/202] 4.19.307-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240221125931.742034354@linuxfoundation.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240221125931.742034354@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com> <20240221-rb3gen2-dp-connector-v1-2-dc0964ef7d96@quicinc.com>
+In-Reply-To: <20240221-rb3gen2-dp-connector-v1-2-dc0964ef7d96@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 22 Feb 2024 01:43:04 +0200
+Message-ID: <CAA8EJppPM9M0Jsb=GtqE4sdzWsKewEwkgKtF=Kb+n0tXZNSHkA@mail.gmail.com>
+Subject: Re: [PATCH 2/9] arm64: dts: qcom: sc7280: Make eDP/DP controller
+ default DP
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/21/24 06:05, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.307 release.
-> There are 202 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.307-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
+>
+> The newly introduced mechanism for selecting eDP mode allow us to make a
+> DisplayPort controller operate in eDP mode, but not the other way
+> around. The qcom,sc7280-edp compatible is obviously tied to eDP, so this
+> would not allow us to select DisplayPort-mode.
+>
+> Switch the compatible of the mdss_edp instance and make it eDP for the
+> SC7280 qcard.
+>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi | 2 ++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi       | 2 +-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 
-Compiled and booted on my test system. No dmesg regressions.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-thanks,
--- Shuah
+-- 
+With best wishes
+Dmitry
 
