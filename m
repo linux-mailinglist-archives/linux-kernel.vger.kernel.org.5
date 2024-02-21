@@ -1,279 +1,309 @@
-Return-Path: <linux-kernel+bounces-75229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16FC785E4EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:52:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 366DD85E4F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:53:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33ACA1C23A15
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:52:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59F481C23A7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443F184FDC;
-	Wed, 21 Feb 2024 17:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF7E84A4C;
+	Wed, 21 Feb 2024 17:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bhT4zPJ1"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N3A0o2Bx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020F384052
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D159F1C20;
+	Wed, 21 Feb 2024 17:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537936; cv=none; b=VIKD0hP9jvh0Bgt6aXXRITkkIDsqEER+8yZ7tGk5QAE51njUCxa7Engly8TxCNQ4F783z6To6mE34/bAug78O15FMYWnuNRYClymmclqTi/YhfWRHRiMlnnJk638ULmrNDWQrny1iCCpkisjCo3yK8kTDkfbqUrWlDos1JjTd2I=
+	t=1708537968; cv=none; b=RhZQCtgcYuA41vvb/9oBPOE67fSU82SX6ImxmG00gPnalPrVUWD5MlI95/La9FwvWzHzvxLljO55SmsSB2Cv6BJXWBVkUDK0s/BSF6fJoo5l0RpiK44BcSf8vzTD7wY1RUzYdxkNSangzLa4NmXP4PmPDoTgVCwgKTCV9e/iHxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537936; c=relaxed/simple;
-	bh=tZ7ZR1nkA/EFD6K9KNCEcHnkRImuMCfdTQ5YwENITDw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZrDhAkr6gBi6UUm6iVk7wQU+3zuf+VHEdBNQD14ryp8cWl86VmReNf3sCNp5NN6wtSa7ClUSh5yt/6Xc4oFj/sPWjeVgEuDzZdbV8My7eT3Bc/GfbQ0URMQ1+ziMoCjwX8sZ+lvKQmw1ZemZb2gfbU+o6qWzFTwvjNv3nEdOQKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bhT4zPJ1; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d932f6ccfaso58227545ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:52:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1708537934; x=1709142734; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q+DfUwTrji+JiliVaosYGzYtaY7yoOzYOgDQgUlYBFM=;
-        b=bhT4zPJ1KFUJzAlSHukomfjbC+A4tFZLm0WucBPFXI8g90T5L5ygrojSJFuKyIoqqn
-         6Z7AiYfFfnSgkqAnBEZf+NM4S/VJQFoF4kYGhEXXI2/vDSK+97OEjc1bJTGgS8d4m5C3
-         LMeMTQxLhRLS6wmfU1PHtu5ssuiZK79ry82hMRaAVUeZd2txLiIIfTpBJJCd/zbYa0bz
-         JF03aUHrCe4RvT1gYpKB04Juj1WKE9dGXW1Wo3QwhWIJysbOwuV8hVWcEkEmNtLuWTE2
-         m/09lswBxDRTCX8EMWs8wm5olDvSs/eOzCAV7ZQEslXJpC3uZqaQihhDeXEN4KeJ4gk/
-         0eNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708537934; x=1709142734;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q+DfUwTrji+JiliVaosYGzYtaY7yoOzYOgDQgUlYBFM=;
-        b=wzhH+7NCWK7gv7WRXRiFp2smGn4atbCyoY9HRNHEEzPpcsiJrsZYpzSEKGnWKHxWuD
-         zpmyyMvVxq/xEvcpkBV7CFKwAV8/XeC8WC6W2P5SJK2R7UvXBXsehX7k8iV8c/cebefA
-         K8FR4VgRwtBcPKo7zeTb2QXiWk+Ef41bp355RD2mLeT7Ijazn2eldwRnDofONCNlPwyh
-         NPVh6COEQ4nUqw6KcoHBj6WHuXwTlXEZd6fe0ntjSrEXOGBO1vD0P793oA7yJXFLVkqs
-         TGq9QjVXFZSU86/yBWHaqIKMtjipCzqEAJxv5s0ZMA4ltoQowFaIfVXlfd9SoCKI0vMV
-         6sig==
-X-Forwarded-Encrypted: i=1; AJvYcCW9I/93xdFnrPhteUe1Mmcea6Ie089SQ62AMINSb+r6NV5taNsNpQzHHpKMQ5pn/MS70LMr6aYeT0hhSI4JKyU0kXOfgIVmH+bz81Fk
-X-Gm-Message-State: AOJu0YxwrX+jIFWG7LphoytD/VMGexYKhPBIww9VnXn3UkoEIPwJeC0f
-	RI/blqyOnTmG242Ea3hRVuKp3e2KLOgVxXkEUtvJAy7KmwMuujk5rWFZFUT5qg==
-X-Google-Smtp-Source: AGHT+IEMLU7YlYaKGvZrOKY9ernOTo0nAZJnhvm6P2wOHB9H+omxxzWRQx6k/HLr6Y5NNsPFHHF+zg==
-X-Received: by 2002:a17:902:eccf:b0:1db:f513:28cf with SMTP id a15-20020a170902eccf00b001dbf51328cfmr11635532plh.23.1708537934363;
-        Wed, 21 Feb 2024 09:52:14 -0800 (PST)
-Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902e9c600b001d706e373a9sm8312596plk.292.2024.02.21.09.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 09:52:13 -0800 (PST)
-From: Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To: Kyle Huey <khuey@kylehuey.com>,
-	Robert O'Callahan <robert@ocallahan.org>,
-	Peter Zijlstra <peterz@infradead.org>,
+	s=arc-20240116; t=1708537968; c=relaxed/simple;
+	bh=IKee1AmsQtKeY/pOHr7cvRpR/aRhR2L3PLSUcLTKyb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AH1u6C134+NDC5TIAoGqpVHCGP5uTNNP8oZAsBGfou7waSw2Kbkas4awZo0VNpsLB8iNYq+FOLz0eflWuvzjyiaNyNkpOX0ZJ8hpcQIttxFWW3NBSj20sq0lr5ltofVI1yfCV0Fr6vudajsq//DgpYoC4VSQjVnFrPmYXt2R5tA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N3A0o2Bx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87689C433F1;
+	Wed, 21 Feb 2024 17:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708537968;
+	bh=IKee1AmsQtKeY/pOHr7cvRpR/aRhR2L3PLSUcLTKyb8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N3A0o2BxELZ/boKITgo4PEeoQrahbLiH2HaqZH/GSxoGEY8MkRjeOX5MSyxHv7gmk
+	 70KcT4EFVaIR4cQS9KMIaN8urAR44pRZyrI2pIqZxL+TkTB2h//xtwOSBqao+320EN
+	 CcXiYZycFmO3u8Y0dqzU+43aUD8aVON99/cM0JrlsebNAKROpqdBWfOMVc4Yq1nVad
+	 Zzia8XdbD1IM4OUZyAjwR5ERft9uVeQ8JOghPP5NpVqOybi+WrCNgc/BjkU2bup5PW
+	 fqDiM/UcR5MglosjpCjGNd09Rfwi53hPG10hZlCUFI4dxi1EKIEV/CQHKJj4kUt0iw
+	 5crV2yPfCXk6A==
+Date: Wed, 21 Feb 2024 14:52:43 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: weilin.wang@intel.com
+Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
-Date: Wed, 21 Feb 2024 09:52:10 -0800
-Message-Id: <20240221175210.19936-2-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240221175210.19936-1-khuey@kylehuey.com>
-References: <20240221175210.19936-1-khuey@kylehuey.com>
+	Kan Liang <kan.liang@linux.intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Perry Taylor <perry.taylor@intel.com>,
+	Samantha Alt <samantha.alt@intel.com>,
+	Caleb Biggers <caleb.biggers@intel.com>
+Subject: Re: [RFC PATCH v1 2/5] perf stat: Fork and launch perf record when
+ perf stat needs to get retire latency value for a metric.
+Message-ID: <ZdY4a5yx-C9ziobq@x1>
+References: <20240221072100.412939-1-weilin.wang@intel.com>
+ <20240221072100.412939-3-weilin.wang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221072100.412939-3-weilin.wang@intel.com>
 
-The test uses PERF_RECORD_SWITCH records to fill the ring buffer and
-trigger the watermark wakeup, which in turn should trigger an IO
-signal.
+On Wed, Feb 21, 2024 at 02:20:56AM -0500, weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- tools/perf/tests/Build              |   1 +
- tools/perf/tests/builtin-test.c     |   1 +
- tools/perf/tests/tests.h            |   1 +
- tools/perf/tests/watermark_signal.c | 123 ++++++++++++++++++++++++++++
- 4 files changed, 126 insertions(+)
- create mode 100644 tools/perf/tests/watermark_signal.c
+You wrote no description for this patch, please add one and show
+examples of the feature being used, if possible.
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 53ba9c3e20e0..de43eb60b280 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -67,6 +67,7 @@ perf-y += sigtrap.o
- perf-y += event_groups.o
- perf-y += symbols.o
- perf-y += util.o
-+perf-y += watermark_signal.o
+See below for more comments.
  
- ifeq ($(SRCARCH),$(filter $(SRCARCH),x86 arm arm64 powerpc))
- perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 4a5973f9bb9b..715c01a2172a 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -124,6 +124,7 @@ static struct test_suite *generic_tests[] = {
- 	&suite__event_groups,
- 	&suite__symbols,
- 	&suite__util,
-+	&suite__watermark_signal,
- 	NULL,
- };
- 
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index dad3d7414142..7ef4e0d0a77b 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -146,6 +146,7 @@ DECLARE_SUITE(sigtrap);
- DECLARE_SUITE(event_groups);
- DECLARE_SUITE(symbols);
- DECLARE_SUITE(util);
-+DECLARE_SUITE(watermark_signal);
- 
- /*
-  * PowerPC and S390 do not support creation of instruction breakpoints using the
-diff --git a/tools/perf/tests/watermark_signal.c b/tools/perf/tests/watermark_signal.c
-new file mode 100644
-index 000000000000..ae4abedc4b7c
---- /dev/null
-+++ b/tools/perf/tests/watermark_signal.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stddef.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+
-+#include "tests.h"
-+#include "debug.h"
-+#include "event.h"
-+#include "../perf-sys.h"
-+#include "cloexec.h"
-+#include <internal/lib.h> // page_size
-+
-+static int sigio_count;
-+
-+static void handle_sigio(int sig __always_unused)
-+{
-+	++sigio_count;
-+}
-+
-+static void do_child(void)
-+{
-+	for (int i = 0; i < 20; ++i)
-+		sleep(1);
-+
-+	exit(0);
-+}
-+
-+static int test__watermark_signal(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
-+{
-+	struct perf_event_attr attr;
-+	struct perf_event_mmap_page *p = NULL;
-+	sighandler_t previous_sigio = SIG_ERR;
-+	pid_t child = -1;
-+	int fd = -1;
-+	int ret = TEST_FAIL;
-+
-+	previous_sigio = signal(SIGIO, handle_sigio);
-+	if (previous_sigio == SIG_ERR) {
-+		pr_debug("failed setting SIGIO handler\n");
-+		goto cleanup;
-+	}
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_SOFTWARE;
-+	attr.config = PERF_COUNT_SW_DUMMY;
-+	attr.sample_period = 1;
-+	attr.disabled = 1;
-+	attr.watermark = 1;
-+	attr.context_switch = 1;
-+	attr.wakeup_watermark = 1;
-+
-+	child = fork();
-+	if (child == 0)
-+		do_child();
-+	else if (child < 0) {
-+		pr_debug("failed fork() %d\n", errno);
-+		goto cleanup;
-+	}
-+
-+	fd = sys_perf_event_open(&attr, child, -1, -1,
-+				 perf_event_open_cloexec_flag());
-+	if (fd < 0) {
-+		pr_debug("failed opening event %llx\n", attr.config);
-+		goto cleanup;
-+	}
-+
-+	if (fcntl(fd, F_SETFL, FASYNC)) {
-+		pr_debug("failed F_SETFL FASYNC %d\n", errno);
-+		goto cleanup;
-+	}
-+
-+	if (fcntl(fd, F_SETOWN, getpid())) {
-+		pr_debug("failed F_SETOWN getpid() %d\n", errno);
-+		goto cleanup;
-+	}
-+
-+	if (fcntl(fd, F_SETSIG, SIGIO)) {
-+		pr_debug("failed F_SETSIG SIGIO %d\n", errno);
-+		goto cleanup;
-+	}
-+
-+	p = mmap(NULL, 2 * page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	if (p == NULL) {
-+		pr_debug("failed to mmap\n");
-+		goto cleanup;
-+	}
-+
-+	if (ioctl(fd, PERF_EVENT_IOC_ENABLE, 0)) {
-+		pr_debug("failed PERF_EVENT_IOC_ENABLE %d\n", errno);
-+		goto cleanup;
-+	}
-+
-+	sleep(30);
-+
-+	ret = (sigio_count == 1) ? TEST_OK : TEST_FAIL;
-+
-+cleanup:
-+	if (p != NULL)
-+		munmap(p, 2 * page_size);
-+
-+	if (fd >= 0)
-+		close(fd);
-+
-+	if (child > 0) {
-+		kill(child, SIGTERM);
-+		waitpid(child, NULL, 0);
-+	}
-+
-+	if (previous_sigio != SIG_ERR)
-+		signal(SIGIO, previous_sigio);
-+
-+	return ret;
-+}
-+
-+DEFINE_SUITE("Watermark signal handler", watermark_signal);
--- 
-2.34.1
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> +static int __cmd_script(struct child_process *cmd __maybe_unused)
+> +{
+> +	int err = 0;
+> +	struct perf_session *session;
+> +	struct perf_data data = {
+> +		.mode = PERF_DATA_MODE_READ,
+> +		.path = PERF_DATA,
+> +		.fd   = cmd->out,
+> +	};
+> +	struct perf_script script = {
+> +		.tool = {
+> +		.sample		 = process_sample_event,
+> +		.ordered_events	 = true,
+> +		.ordering_requires_timestamps = true,
+> +		.feature	 = process_feature_event,
+> +		.attr		 = perf_event__process_attr,
+> +		},
+> +	};
+> +	struct tpebs_event *e;
+> +
+> +	list_for_each_entry(e, &stat_config.tpebs_events, nd) {
+> +		struct tpebs_retire_lat *new = malloc(sizeof(struct tpebs_retire_lat));
+> +
+> +		if (!new)
+> +			return -1;
+> +		new->name = strdup(e->name);
+> +		new->tpebs_name = strdup(e->tpebs_name);
+> +		new->count = 0;
+> +		new->sum = 0;
 
+Without even having thought that much about this overall architecture,
+that looks too heavy at first sight, the above is done in tools/perf/
+as:
+
+void tpebs_retire_lat__delete(struct tpebs_retire_lat *retire_lat)
+{
+	if (retire_lat == NULL)
+		return;
+
+	zfree(&retire_lat->tpebs_name);
+	zfree(&retire_lat->tpebs_name);
+}
+
+struct tpebs_retire_lat__new(tpebs_event *e)
+{
+	struct tpebs_retire_lat *retire_lat = zalloc(sizeof(*retire_lat));
+
+	if (retire_lat != NULL) {
+		retire_lat->name = strdup(e->name);
+		retire_lat->tpebs_name = strdup(e->tpebs_name);
+
+		if (retire_lat->name == NULL || retire_lat->tpebs_name == NULL) {
+			tpebs_retire_lat__delete(retire_lat);
+			retire_lat = NULL;
+		}
+	}
+
+	return retire_lat;
+}
+
+And then you call the constructor  in that loop, and the destructor at
+some point when those data structures are not needed.
+
+We do it because perf has a TUI mode and we may end up calling tools
+from them in a long running session, so we need to avoid leaks.
+
+Also can we somehow hide Intel specific terms in arch specific files
+while leaving something generic, possibly implementable in other arches
+in the core code? I mean hiding clearly intel specific stuff like the
+"tpebs" term in tools/perf/arch/x86/.
+
+> +		list_add_tail(&new->nd, &stat_config.tpebs_results);
+> +	}
+> +
+> +	kill(cmd->pid, SIGTERM);
+> +	session = perf_session__new(&data, &script.tool);
+> +	if (IS_ERR(session))
+> +		return PTR_ERR(session);
+> +	script.session = session;
+> +	err = perf_session__process_events(session);
+> +	perf_session__delete(session);
+> +
+> +	return err;
+> +}
+> +
+>  static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  {
+>  	int interval = stat_config.interval;
+> @@ -709,12 +866,14 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  	struct affinity saved_affinity, *affinity = NULL;
+>  	int err;
+>  	bool second_pass = false;
+> +	struct child_process cmd;
+>  
+>  	//Prepare perf record for sampling event retire_latency before fork and prepare workload
+>  	if (stat_config.tpebs_event_size > 0) {
+>  		int ret;
+>  
+> -		ret = __run_perf_record();
+> +		pr_debug("perf stat pid = %d\n", getpid());
+> +		ret = prepare_perf_record(&cmd);
+>  		if (ret)
+>  			return ret;
+>  	}
+> @@ -924,6 +1083,17 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  
+>  	t1 = rdclock();
+>  
+> +	if (stat_config.tpebs_event_size > 0) {
+> +		int ret;
+> +
+> +		pr_debug("pid = %d\n", getpid());
+> +		pr_debug("cmd.pid = %d\n", cmd.pid);
+> +
+> +		ret = __cmd_script(&cmd);
+> +		close(cmd.out);
+> +		pr_debug("%d\n", ret);
+> +	}
+> +
+>  	if (stat_config.walltime_run_table)
+>  		stat_config.walltime_run[run_idx] = t1 - t0;
+>  
+> @@ -2714,6 +2884,7 @@ int cmd_stat(int argc, const char **argv)
+>  	}
+>  
+>  	INIT_LIST_HEAD(&stat_config.tpebs_events);
+> +	INIT_LIST_HEAD(&stat_config.tpebs_results);
+>  
+>  	/*
+>  	 * Metric parsing needs to be delayed as metrics may optimize events
+> @@ -2921,5 +3092,7 @@ int cmd_stat(int argc, const char **argv)
+>  	metricgroup__rblist_exit(&stat_config.metric_events);
+>  	evlist__close_control(stat_config.ctl_fd, stat_config.ctl_fd_ack, &stat_config.ctl_fd_close);
+>  
+> +	tpebs_data__delete();
+> +
+>  	return status;
+>  }
+> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> index fc16299c915f..2298ca3b370b 100644
+> --- a/tools/perf/util/data.c
+> +++ b/tools/perf/util/data.c
+> @@ -173,6 +173,10 @@ static bool check_pipe(struct perf_data *data)
+>  	int fd = perf_data__is_read(data) ?
+>  		 STDIN_FILENO : STDOUT_FILENO;
+>  
+> +	if (data->fd > 0) {
+> +		fd = data->fd;
+> +	}
+> +
+>  	if (!data->path) {
+>  		if (!fstat(fd, &st) && S_ISFIFO(st.st_mode))
+>  			is_pipe = true;
+> diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
+> index effcc195d7e9..5554d46ad212 100644
+> --- a/tools/perf/util/data.h
+> +++ b/tools/perf/util/data.h
+> @@ -28,6 +28,7 @@ struct perf_data_file {
+>  
+>  struct perf_data {
+>  	const char		*path;
+> +	int			 fd;
+>  	struct perf_data_file	 file;
+>  	bool			 is_pipe;
+>  	bool			 is_dir;
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 6c16e5a0b1fc..8518e2b3e5be 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -691,8 +691,17 @@ static int metricgroup__build_event_string(struct strbuf *events,
+>  
+>  		if (p) {
+>  			struct tpebs_event *new_event = malloc(sizeof(struct tpebs_event));
+> -			*p = '\0';
+> +			char *name;
+> +
+>  			new_event->tpebs_name = strdup(id);
+> +			*p = '\0';
+> +			name = malloc(strlen(id) + 2);
+> +			if (!name)
+> +				return -ENOMEM;
+> +
+> +			strcpy(name, id);
+> +			strcat(name, ":p");
+> +			new_event->name = name;
+
+For such cases we use asprintf(), that allocates and formats the string
+in one call, look for examples in other tools/perf/ files.
+
+>  			*tpebs_event_size += 1;
+>  			pr_debug("retire_latency required, tpebs_event_size=%lu, new_event=%s\n",
+>  			*tpebs_event_size, new_event->name);
+> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+> index 7c24ed768ff3..1fa12cc3294e 100644
+> --- a/tools/perf/util/metricgroup.h
+> +++ b/tools/perf/util/metricgroup.h
+> @@ -71,6 +71,13 @@ struct tpebs_event {
+>  	const char *name;
+>  	const char *tpebs_name;
+>  };
+> +struct tpebs_retire_lat {
+> +	struct list_head nd;
+> +	const char *name;
+> +	const char *tpebs_name;
+> +	size_t count;
+> +	int sum;
+> +};
+
+Here you declare the constructor and destructor I suggested above.
+  
+>  struct metric_event *metricgroup__lookup(struct rblist *metric_events,
+>  					 struct evsel *evsel,
+> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+> index 9d0186316b29..8e180f13aa2d 100644
+> --- a/tools/perf/util/stat.h
+> +++ b/tools/perf/util/stat.h
+> @@ -111,6 +111,9 @@ struct perf_stat_config {
+>  	struct rblist		 metric_events;
+>  	struct list_head	 tpebs_events;
+>  	size_t			 tpebs_event_size;
+> +	struct list_head	 tpebs_results;
+> +	pid_t			 tpebs_pid;
+> +	int			 tpebs_pipe;
+>  	int			 ctl_fd;
+>  	int			 ctl_fd_ack;
+>  	bool			 ctl_fd_close;
+> -- 
+> 2.43.0
+> 
 
