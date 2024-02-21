@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-74669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D380E85D783
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:57:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA1E85D781
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54E43B22E0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:57:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC1F1C22433
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A83E4C615;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0850F4C60B;
 	Wed, 21 Feb 2024 11:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VX2NLF7N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gQpT880s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF0E482C1;
-	Wed, 21 Feb 2024 11:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF5D482D8;
+	Wed, 21 Feb 2024 11:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708516606; cv=none; b=BxQwdomUoVJjn4cgheNp0ayvt83ODclqcINRA3tebXoiUEqiyd1IIoXpZ+3+iNgD5871sJtjppopwgfmhT/aAAw6zGvnBxSK5hmwZrAOP8jYvSqE8/kBPssIv7pqi+uRuoE3CI6C3gmONpATdywOh4Uhc59FwYExw/tXjKdf7B8=
+	t=1708516606; cv=none; b=kW0zCu03q404/nFLkSVUabgFtIpCXAQ88g7t5NWQ0Q3QXe/pwOGziVimtiWGo+hT/IwTRrY65K4pqiz7vSEGDeJSR0PNDUT8wq7bW8vxCjQZyt3h5WUtSLhNhZS5dmHOhumi7lby35zF/mn1jHx8iugdVJbXTByibEmNlLqZ6SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708516606; c=relaxed/simple;
-	bh=cVP9oDcFqMe3HIWN3U9hzMH6sEfnqnfkj+cc6SDEDc4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=uiiOKS59NBDLk4HA1m7qI6uRGHb+JiyhAxWFQB89uDI5x0ez+ivJDxLHT75QerWKuD2B/1KFkKiLiuAz2ayse/dVjmiigPjxpAsgSV885CznFjXGToXA2yAJcAOQisD1pVvlmLBPJu3zh4eY8LADooomhIMkMOdxc1orVFLPIno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VX2NLF7N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B71A7C433C7;
+	bh=Dr9OQrUqQG/6MBjESHU6+3PVn2jjS861J9aFbtcZVq4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=bcAlSJAMdrRclCQTi11AA16ZkVFY8iw91qrWvarTf/lFcxBSfzXpGqwEDywh6LIbteweWWgkInKk+FcZb4uyx45r1bSnlQ+Yhkh7/L440m2XgmZJ9HM0vp1cTxzEWsKlHxIToE3mdm8Q6meJmm1ehre2X+uo7KDv2MtJcK+f/bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gQpT880s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CEB79C433F1;
 	Wed, 21 Feb 2024 11:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708516605;
-	bh=cVP9oDcFqMe3HIWN3U9hzMH6sEfnqnfkj+cc6SDEDc4=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=VX2NLF7NT/k0riswUv+ozEtEs5Tmuz0vQTBtwd3VL0Y4dtoenK8m5dEo0nPy/Fr1b
-	 U5fL1nL4EpxaMZWzRv3TiYqeJks8tJD9XnyJJFI52glsOqrvYMdbj39h2n8fl3Yb4d
-	 LwkMdjNtq4QPZ1bj/yfZ5R7JmYIt4eKKYdtgwCijIqBJGC3FAhMzshRSXGtbZ/HQFZ
-	 CqX3e11lEIFSu86HUuQ8mxvHn8fIRfOMfc6w1IowPyVEI8surusfZ0xb72EC7wtkM2
-	 S9d9TY1JTwRanWhCR1XjB4HLgoPrLmJbCzZGDspfNJc4USluujcpNdmV18p0D2n63u
-	 AyNuK7D/xtCog==
+	bh=Dr9OQrUqQG/6MBjESHU6+3PVn2jjS861J9aFbtcZVq4=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=gQpT880sjW3T+moOLdRPm4D/qZbYsY0ogJJyEKz2C2nNCuaEt5tJr48ZLqoPqTaEp
+	 CZBVoiKt9MkSe3dlNewYw2ku1kdgBk1xKJvU3z6dM9k7SwNtEpNjCDhRv64YQ1lOOy
+	 IfCRH+ZkaIigSizzaBsw9SN/92ES4abREtIndl+8lrePmG5JUmKD7D/GPjeXkMOfBh
+	 +HC3+aRPnAiJmphhCK2OW8frk3fvgKmdcLhJwZ4vFM1jSnr/yMzsh2OJrqKglbGOgZ
+	 TgK2O4X77zXMeGoz+xX3veUkBVu3RjlDm5zj5FqAJcgigozQV53y+IQGvs25PeWdac
+	 ppUgUz01ERzug==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90848C48BC3;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A37F0C48BF6;
 	Wed, 21 Feb 2024 11:56:45 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Subject: [PATCH v3 0/2] watchdog: sp805: add reset control support
-Date: Wed, 21 Feb 2024 19:56:40 +0800
-Message-Id: <20240221-hisi-wdt-v3-0-9642613dc2e6@outlook.com>
+Date: Wed, 21 Feb 2024 19:56:41 +0800
+Subject: [PATCH v3 1/2] watchdog: sp805_wdt: deassert the reset if
+ available
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,24 +55,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPjk1WUC/22Myw6CMBBFf4XM2pp2gGJd+R/GBX0ojUpNwaoh/
- XcHVpi4PDf3nAkGF70bYF9MEF3ygw89QbkpwHRtf3HMW2JAjhVH0bCOLuxlR1bqGlUjWlkrAXR
- /RHf27yV1PBHTcQzxs5STmNc/kSQYZ8ZqZa1ptZK7Q3iOtxCuWxPuMGcSrlTkKxVJlaWzplKy1
- pX5VXPOX5MVvqLdAAAA
+Message-Id: <20240221-hisi-wdt-v3-1-9642613dc2e6@outlook.com>
+References: <20240221-hisi-wdt-v3-0-9642613dc2e6@outlook.com>
+In-Reply-To: <20240221-hisi-wdt-v3-0-9642613dc2e6@outlook.com>
 To: Wim Van Sebroeck <wim@linux-watchdog.org>, 
  Guenter Roeck <linux@roeck-us.net>, Philipp Zabel <p.zabel@pengutronix.de>, 
  Rob Herring <robh+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
  Conor Dooley <conor+dt@kernel.org>, Viresh Kumar <vireshk@kernel.org>
 Cc: linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708516604; l=1002;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708516604; l=1308;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=cVP9oDcFqMe3HIWN3U9hzMH6sEfnqnfkj+cc6SDEDc4=;
- b=OF1L8JvpFPNieb8IzziAiUU/l2TgBSIHHY+WX5+VPGsxwuQ2zJ3cXaqgEPm4geb0nX4u3ynVi
- fvcIG6wx3DsBTZvCcsahf5yDbT2cOVcM3vy/2s2uhVx+JEZZbpepCnb
+ bh=Yulf71GztXVGablEgkhT6BHnqYqWblq9L42vUSDAg9k=;
+ b=+BBcG1xmGtzehN6g+Xwdx1UJPNgY6Spl76NJKL/19umtdnMNqtXf/NjvXINZy1aot1GKR3UgT
+ 5vXzcsBnhRuCceep7KHoaoAakAuReSP6/t0rNrqDPmpqBKs3CU+rMjj
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -79,33 +78,52 @@ X-Endpoint-Received:
 X-Original-From: Yang Xiwen <forbidden405@outlook.com>
 Reply-To: <forbidden405@outlook.com>
 
-Deassert the reset if it's available.
+From: Yang Xiwen <forbidden405@outlook.com>
+
+According to the datasheet, the core has an WDOGRESn input signal that
+needs to be deasserted before being operational. Implement it in the
+driver.
 
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
-Changes in v3:
-- move reset to local variable, get reset exclusively (Philipp Zabel)
-- Link to v2: https://lore.kernel.org/r/20240220-hisi-wdt-v2-0-63edc4965b4c@outlook.com
+ drivers/watchdog/sp805_wdt.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Changes in v2:
-- commit log: dt-binding->dt-bindings (Krzysztof Kozlowski)
-- binding: remove "|", join two lines. (Krzysztof Kozlowski)
-- Link to v1: https://lore.kernel.org/r/20240217-hisi-wdt-v1-0-cdb9ddcab968@outlook.com
+diff --git a/drivers/watchdog/sp805_wdt.c b/drivers/watchdog/sp805_wdt.c
+index 2756ed54ca3d..109e2e37e8f0 100644
+--- a/drivers/watchdog/sp805_wdt.c
++++ b/drivers/watchdog/sp805_wdt.c
+@@ -25,6 +25,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/pm.h>
+ #include <linux/property.h>
++#include <linux/reset.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+@@ -232,6 +233,7 @@ static int
+ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
+ {
+ 	struct sp805_wdt *wdt;
++	struct reset_control *rst;
+ 	u64 rate = 0;
+ 	int ret = 0;
+ 
+@@ -264,6 +266,12 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
+ 		return -ENODEV;
+ 	}
+ 
++	rst = devm_reset_control_get_optional_exclusive(&adev->dev, NULL);
++	if (IS_ERR(rst))
++		return dev_err_probe(&adev->dev, PTR_ERR(rst), "Can not get reset\n");
++
++	reset_control_deassert(rst);
++
+ 	wdt->adev = adev;
+ 	wdt->wdd.info = &wdt_info;
+ 	wdt->wdd.ops = &wdt_ops;
 
----
-Yang Xiwen (2):
-      watchdog: sp805_wdt: deassert the reset if available
-      dt-bindings: watchdog: arm,sp805: document the reset signal
-
- Documentation/devicetree/bindings/watchdog/arm,sp805.yaml | 5 +++++
- drivers/watchdog/sp805_wdt.c                              | 8 ++++++++
- 2 files changed, 13 insertions(+)
----
-base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
-change-id: 20240217-hisi-wdt-3b52971a6591
-
-Best regards,
 -- 
-Yang Xiwen <forbidden405@outlook.com>
+2.43.0
 
 
