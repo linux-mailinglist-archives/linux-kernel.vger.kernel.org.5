@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-74411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CA285D3A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:32:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8739785D3AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:32:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D03A2847F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:32:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB1F51C21CE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1A34653A;
-	Wed, 21 Feb 2024 09:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FA03FB2D;
+	Wed, 21 Feb 2024 09:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vOwtwY9T"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lGexlX5D"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F131F45BEB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A015F47A5C
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708507719; cv=none; b=W+UI2pfwSZDRY/sBYIHPejgDUrk4S3RaPgqDKubvONTwoZBh1HBwS8XnafawueBsnmB7TgPivVJKO0xJlu+3QQoTC6O+yBTadnl+Zb8p8BHG9uO+G6xXf5Lzpf3Fzk0RexXRr7BTMdug/aTRsbUiWuEttl6Mbtud9pLXCJDr65o=
+	t=1708507725; cv=none; b=iyiaW+rT/+rTPdZQP1MH1sqEwrYI1GLjwrqEjy8m5wJBqS4vFIK9LEYZDnQ4IFBZ7Nb6fC699Wh927MIko4dWPqbIbfbVKIeqncsnKZwqQ9cpe/5D70GUwwCxcEzd3Ca7n1kesV2Mh1cw76qJflNrj3djEYkdK4l2s/3tHFy9pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708507719; c=relaxed/simple;
-	bh=w3euWTwzMuy4B32i9R1sF8QJYNBjDCrCALXsWQpTZrQ=;
+	s=arc-20240116; t=1708507725; c=relaxed/simple;
+	bh=MALY8PY87om1B5rM9PQyZB962vp0AzyA5B9YGRQAQS4=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=n//gDWWzk58af9EgpIJ1D9+gpApNhyxqfQqmXeEVHXDoNQ1NLuJ8PMeDMnxGlKEbxyEToOFH86OZZ3PyCxX1Ye3sxi+/9Bd0Ttnf8w9q6IE8GumHbAmUI3EX4Pjyw1jOUis5H4i0L1p911cNThRSqJc60VJ5DWIHIOJc5T5eLAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--davidgow.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vOwtwY9T; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=NdTpx34DrchJ8Bi2Wu96GQBFc8mN3LdAwN27BpKNIH5kdS2Sth9jRmrlzP56D9PA8t2+DQ32dfjR2tFCKPLuHODUMZHH/sTJRGxoyJEVbSNouiAQHhjbB3XcXjYAWrkbtDbH7hhjN52COH0SzQ105EXPTkTDT1sTdr2vyNZpTJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--davidgow.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lGexlX5D; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--davidgow.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6082ad43ca1so50808247b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:28:37 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so8825702276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:28:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708507717; x=1709112517; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708507721; x=1709112521; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nYdfpz73mSSQOJip1+ZL+ticY/JfIGD+cYhY46XA/58=;
-        b=vOwtwY9THzRu8jN1BfHjuDKN1Vos5s0uKgwfs1S+tsZ60qBH0oisg9p8CN7UdykxeL
-         KUhm1pdTTFtoi7qIZYc47tRWnqpRvjwi/E3KJsCmYj/nNP1FIrSY4oG7Y2RS2euAEVfG
-         7VG3jClqxR6tJqf1OgD0dTyha7OE7mruVDuz7e1I/Bea6Af8pswjP8eOX1mxTmq7o3sX
-         TWgYO6DxjEyxhn1lNwWlCOdQ4bwwgADv9KgQlDHuWO0C4TJZGNfSnLTu03K5KYGWvUlm
-         NMuwIyxGA19Z1PJ8a/WYeRuWV0yePTA9Wuy+jwMWFFsI+dGLsiInpDlNdvM8e4kEqryo
-         3yXA==
+        bh=UtSX1a4twDclpP0XCHq3xRlg28EKI7v3CFBboD2ALTI=;
+        b=lGexlX5DBntYPjEQG6RjJ0FVsKToWINsWjjn43Ml34EhA3IoPvQpeE+rqHUk3I1I/h
+         YznQjIDQnf+vGqDW/kE++pZBmelMsM/USqvYQHr9gSb8/+c4pFYCh7xQghyqkqpDjBSJ
+         CK6jy8ETBZ8fpAclaaj8ACUDL7WGn0N58iow8E2+Hu5NljOEGw0Ji+v+2zJS0XvqjevZ
+         ddlYiladtiHjXz/w5QM5wsloX3M1b1R/10seHUoVMyoQsDzYexETHOm7y0xkt4FASDMm
+         tweykBtRw4lxmqPktku7Bo0UQJ7if4UHTAXpEBAAJMdODHBZDVEyJBzLvszgVsi5PiM+
+         yf5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708507717; x=1709112517;
+        d=1e100.net; s=20230601; t=1708507721; x=1709112521;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nYdfpz73mSSQOJip1+ZL+ticY/JfIGD+cYhY46XA/58=;
-        b=ERlNLS41+UCRQmmfT8CYfrqWyNsBxN4w9RyDJ5Smx3fjm89NDf89OtABXNKWvW0MQ5
-         YGa1L75+U8/ULjqVu+JPAqQhaZf/hCHyFlUdcMNpjjTul+wsz0SLnK6drz5H+mq1NnwO
-         bcPUxGtCEcHSZzc+GDo/j7JX8B6qbwz+ozK5/lOTMRUdZKnu8gvB2dJvBs67AyjvlduN
-         n45/Z/13cR+mGRnoEoYlnfe4ZcM8ZFehhN3Ja3frAMi8QGdWMmzJPG7kcCqnA7TEjZtn
-         4c0xTHG1iQSn6Tbcej+B2T/11rYj3TY1YNPfWlzBp6juTyhUyq6e6g0NI8Is2gVqouod
-         xihQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVL2IZdaI7da9iz+vQyL9pNnTRmsQ6ZACKtRTEf3IIAXVFjtbYH91hAbIOwg6T8Fcz9wZK4180cwT8mZO+Y0upRiZC5VB5dAAkRtluZ
-X-Gm-Message-State: AOJu0YxlRiNlcui28QyqCOi1k4ho57kYx0fTWKIKoH33NVeuwPzhlG3S
-	MWQtFTT2tWUx8nyY+EJjZ0cVRiqW48knZzkZTsOZbHDj7EAlBtfgOC6dLOc+pgw5IZjJl8Gh4pK
-	gllAQx6bz0Q==
-X-Google-Smtp-Source: AGHT+IFa/fu29ZmsVki9pPhB5PrTsNvq7jb5hiZUPefFb8PbN6D0cYOdutojAKCl/4VlBY7r3iK54hwJmjuHsQ==
+        bh=UtSX1a4twDclpP0XCHq3xRlg28EKI7v3CFBboD2ALTI=;
+        b=sKva/MEZvD+xTq0YF3x7vndCNnG5fX+A9SYd0yFqIo8is/6vxMztfZTJh9M7yEOKJG
+         6bMcUXv9+jsr5i2GkU17UPe/bwKnAe/XBou0rFg1PJPyLdXnXSLkRbLRsTuZTH3emwsc
+         1O71U1hCfyjnHduBmObsRsSTe6bDI78No5DSg9zwO5DCJQLVg41Ua5yyUzTvZovuVOB5
+         aJpOkqJjdIIQKU1cEnb7fua/ZVJKIH9O9oPnd7VJCClDqGPKJkhpgi9lF3W7iZGxs6Q0
+         1B1lEXxccLBmN2pF8nY4/+B5KO6u15Io9gFJq6BYE+xMudquFVetqPbEOzevnfYpUOYb
+         oTaA==
+X-Forwarded-Encrypted: i=1; AJvYcCUo8IFVAf498MmRqpU8XZjw3+djzC65sC8QyOMgG3+q01ugUwy8UCo1ipiOA7dUrvaGdc+D+rNxXmr3ZDV8b5jVZldvQ06eU9SEGVHJ
+X-Gm-Message-State: AOJu0YznHre0hRqJ6kb1z9sxkq7FgFL36FQYo+seesKGDWvzN9nP4051
+	6Y04MlEW5jsplM+tt4SOS7SEdbhrlWqS9rTP1AgFktL6joQiZ97VRk2gN0CRwKAnO1DJBJh0U28
+	pr70RtwmOLg==
+X-Google-Smtp-Source: AGHT+IE+u4BHsnTY4zBV9uwlLnSALfH2VACViqUl+6ZdsI4Ll1wRpv0qUeWfBww+/YNGvG/0sUR+LBCAIAUp6Q==
 X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a0d:d685:0:b0:607:7564:a830 with SMTP id
- y127-20020a0dd685000000b006077564a830mr3019910ywd.0.1708507717035; Wed, 21
- Feb 2024 01:28:37 -0800 (PST)
-Date: Wed, 21 Feb 2024 17:27:21 +0800
+ (user=davidgow job=sendgmr) by 2002:a05:6902:4ce:b0:dc7:865b:22c6 with SMTP
+ id v14-20020a05690204ce00b00dc7865b22c6mr618682ybs.8.1708507721736; Wed, 21
+ Feb 2024 01:28:41 -0800 (PST)
+Date: Wed, 21 Feb 2024 17:27:22 +0800
 In-Reply-To: <20240221092728.1281499-1-davidgow@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240221092728.1281499-1-davidgow@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240221092728.1281499-9-davidgow@google.com>
-Subject: [PATCH 8/9] drm/xe/tests: Fix printf format specifiers in xe_migrate test
+Message-ID: <20240221092728.1281499-10-davidgow@google.com>
+Subject: [PATCH 9/9] kunit: Annotate _MSG assertion variants with gnu printf specifiers
 From: David Gow <davidgow@google.com>
 To: Linus Torvalds <torvalds@linux-foundation.org>, Shuah Khan <skhan@linuxfoundation.org>, 
 	Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>, 
@@ -94,51 +94,47 @@ Cc: David Gow <davidgow@google.com>, Brendan Higgins <brendan.higgins@linux.dev>
 	linux-hardening@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-KUNIT_FAIL() is used to fail the xe_migrate test when an error occurs.
-However, there's a mismatch in the format specifier: '%li' is used to
-log 'err', which is an 'int'.
+KUnit's assertion macros have variants which accept a printf format
+string, to allow tests to specify a more detailed message on failure.
+These (and the related KUNIT_FAIL() macro) ultimately wrap the
+__kunit_do_failed_assertion() function, which accepted a printf format
+specifier, but did not have the __printf attribute, so gcc couldn't warn
+on incorrect agruments.
 
-Use '%i' instead of '%li', and for the case where we're printing an
-error pointer, just use '%pe', instead of extracting the error code
-manually with PTR_ERR(). (This also results in a nicer output when the
-error code is known.)
+It turns out there were quite a few tests with such incorrect arguments.
 
-Fixes: dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
+Add the __printf() specifier now that we've fixed these errors, to
+prevent them from recurring.
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: David Gow <davidgow@google.com>
 ---
- drivers/gpu/drm/xe/tests/xe_migrate.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/kunit/test.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/xe/tests/xe_migrate.c b/drivers/gpu/drm/xe/tests/xe_migrate.c
-index a6523df0f1d3..c347e2c29f81 100644
---- a/drivers/gpu/drm/xe/tests/xe_migrate.c
-+++ b/drivers/gpu/drm/xe/tests/xe_migrate.c
-@@ -114,21 +114,21 @@ static void test_copy(struct xe_migrate *m, struct xe_bo *bo,
- 						   region |
- 						   XE_BO_NEEDS_CPU_ACCESS);
- 	if (IS_ERR(remote)) {
--		KUNIT_FAIL(test, "Failed to allocate remote bo for %s: %li\n",
--			   str, PTR_ERR(remote));
-+		KUNIT_FAIL(test, "Failed to allocate remote bo for %s: %pe\n",
-+			   str, remote);
- 		return;
- 	}
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index fcb4a4940ace..61637ef32302 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -579,12 +579,12 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
  
- 	err = xe_bo_validate(remote, NULL, false);
- 	if (err) {
--		KUNIT_FAIL(test, "Failed to validate system bo for %s: %li\n",
-+		KUNIT_FAIL(test, "Failed to validate system bo for %s: %i\n",
- 			   str, err);
- 		goto out_unlock;
- 	}
+ void __noreturn __kunit_abort(struct kunit *test);
  
- 	err = xe_bo_vmap(remote);
- 	if (err) {
--		KUNIT_FAIL(test, "Failed to vmap system bo for %s: %li\n",
-+		KUNIT_FAIL(test, "Failed to vmap system bo for %s: %i\n",
- 			   str, err);
- 		goto out_unlock;
- 	}
+-void __kunit_do_failed_assertion(struct kunit *test,
+-			       const struct kunit_loc *loc,
+-			       enum kunit_assert_type type,
+-			       const struct kunit_assert *assert,
+-			       assert_format_t assert_format,
+-			       const char *fmt, ...);
++void __printf(6, 7) __kunit_do_failed_assertion(struct kunit *test,
++						const struct kunit_loc *loc,
++						enum kunit_assert_type type,
++						const struct kunit_assert *assert,
++						assert_format_t assert_format,
++						const char *fmt, ...);
+ 
+ #define _KUNIT_FAILED(test, assert_type, assert_class, assert_format, INITIALIZER, fmt, ...) do { \
+ 	static const struct kunit_loc __loc = KUNIT_CURRENT_LOC;	       \
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
