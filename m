@@ -1,119 +1,110 @@
-Return-Path: <linux-kernel+bounces-74113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8889C85D01A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2214F85D01E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:51:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AE6E283532
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:48:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFB8D285BA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C723A1D1;
-	Wed, 21 Feb 2024 05:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BDE39FEE;
+	Wed, 21 Feb 2024 05:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MClBphUx"
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K57iZaKy"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3918839FFC
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1A122F0C;
+	Wed, 21 Feb 2024 05:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708494424; cv=none; b=oVZTb5isSu9chZ9ZJ6zgydozY2wZ1QfyPXsMwp1d0lmdibhMySVyh9z/gvPZiNTMr/UYdGmnyt9l7IQbT7shaQyGaRuodaPi0iJlfB5ucdQyeW77iVBiAbO1B0HIb/RYCyhNe+duIG6JwJv5jGTD6Nt/OJmvkOI8Xf1L+lgilgE=
+	t=1708494670; cv=none; b=XMMk0U/vsGuWE2xtXTRwzWmJSDZCpnIIEPH37PqJ0pBLckFELhib97FP3vaG5ZWXL/xhz8vOJIG+wvddn7f9Wxnp3Mty1B/Kfn5ijfjtp3cTrihmxGJr1wr6EXVdraQ2jYldrEyrqcZ4HYhdppSRIdUe3u2mSKcGEIEi3yXwG4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708494424; c=relaxed/simple;
-	bh=gEF1FU5AuR5sMAROEucuVYy4vJ1INvdTgHvHk52s72s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oKWAnd4yI/L7saqIhtKfjSLnkMFHLkeQwsYvrvoeQudQFuABOo/9WneNzC08JO9OqO9pRM+ZNMnsc+6FBKfxgbKB+y6qp0yCrBe2hKoLSmRlZDkAGjMUvJ8mI5nsKoifx6FwelaEp1tHShUdGx5NXQ8f4zlT43Q8bj9vUA+dxlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MClBphUx; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1708494670; c=relaxed/simple;
+	bh=OR32rfWwqviOyaWVmjc1QHD68SeoWr7UywdOWUPAcGA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bCpiv8XyK+eNVG/kkhZ7jtFGbXkEFW7Inbc8OJlqGePZioj9GWQTiOskYDfCnEbnGk2H43U1S9yT6eBpGBzubOL//BkjezwyhQObKfFdyeOQk6ce8p6TUJF3OimhA5D0LxNiP8UKpzb5kwu9GHI+pKSMyXeKuNm+ixqv/IU0L/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K57iZaKy; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ddf26eba3cso4689572a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:47:02 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d220e39907so67386571fa.1;
+        Tue, 20 Feb 2024 21:51:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708494422; x=1709099222; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fp0jwvLzKqTFWWavRabMZOMHCIo37a0oGTF58L8clkE=;
-        b=MClBphUxJcUNV6hMrXfM12q2JP4YIfSqa39xGLIjZ0+zoGWo3O3KyYW3RBPQx+1q4g
-         +Hio5quIy/NfibMQIIMcXt48MbntRXm3sd3wxPF1tJVYAllMYjyoA/HTnzEr9GimsGs1
-         82d1XewVIACrw/WUCWxTfpnAAws9BmYGyrzGRyXFIpmwRH8nKKpE/kmn1Xiy4GKTme4L
-         weefNFnKhYsR62GhGKYJngesnTT9lXCe0tXfeUS4MoM/AvdV3qG2KN0Fxm85Y6HNxvjl
-         +/awE36BAUW/pfDISrAje5AildFJKm/qit94br1SO3IVx/ufhGb9Ahrt1arwAVV721pQ
-         l/pQ==
+        d=gmail.com; s=20230601; t=1708494667; x=1709099467; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sA+prMwPrieisZTlntbGwJdqfOFYtGdFvXg2Kpl0Qog=;
+        b=K57iZaKy26k9SKkyQf5WWNLGduyUy7cgkqKx44OFj5EktMNOmfpxCJExJhTyPuYKCb
+         COwbAw1gyjdi3/qvbTmnpPTRMRL0/jkMvNYEetMip0UwGYq3OM/y0dYQ/b+GS+c7RoUI
+         lnT4ueF37BqSCEtsxuWaL/5AzODNskoAVB6vVSTH98aRvPW6MPJmKpkuTY9tv5ELYHvg
+         Rec0p5i3gC3SKVSN4wHXU5QbxvIxV+9df/IBZxDJGCG1nKLhYMI1pqjPpD5BqQSa6pNv
+         n//g/v+qF934gTZuHzHTht93FrffYa7YsB545fkZdW9O0RkmK55fBqJ8zHIxZbvkBkhe
+         //BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708494422; x=1709099222;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708494667; x=1709099467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fp0jwvLzKqTFWWavRabMZOMHCIo37a0oGTF58L8clkE=;
-        b=onQAUTEpqQO0pYt+CAGq8kklIyNWNdyeLumS0VX/MgX9pkRBTFFXVkyqf0+j58BXLM
-         HYVGB/NtkWiwAgX3t/fIZkusN5mc0BzoIOzTIaxlWCFPMpJhlXcEvJENoF1NKkxkBObf
-         LFJoEv7q5y0+lY0mfXHwWJH20MUDbJgYgTVVoXghegEJ9aSYAfKzyfbY9hAV5INcrtom
-         BZfzs0ZWm0AbwYHW+tJLzd5s9pyyni12ZydJmeSVpj2ZwVhMhAni73HKGoCpqcQu+BfU
-         nqbjtJBK+cKBBvo1eFrbIgs+xZiqImeip8d0Y6HjG8QLHxzPHMRlNAiayM3CVRkDTltR
-         ck/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWNESobfcrd09OjbLp74KiR+2fa07FK2uFtsmwW0r5kjzC46rOa3KfBdweyw7rLp4fq0s7uZDdoOZ5BadLF/5BxBngs1MFDRdWFyaB4
-X-Gm-Message-State: AOJu0YzNSRxj5ahbLXqanmD+MMBMTQpOjuSXpen+Sm53W3puXxOk/LKJ
-	/JSx/ub1ih+e/ZAsc/DyeBDU1CYlDl6Cqpx+G4QQxMctvnUz0MNX
-X-Google-Smtp-Source: AGHT+IEN9U1/CoowF/BkPXE5HVcL3mOUwBGszVCORFAZmmkmUABJYwP2t3ePwm0ZVH4bwZnzbAAD3g==
-X-Received: by 2002:a05:6358:2486:b0:178:fda7:ef08 with SMTP id m6-20020a056358248600b00178fda7ef08mr18393921rwc.32.1708494422084;
-        Tue, 20 Feb 2024 21:47:02 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id p14-20020a056a0026ce00b006e4887b13ffsm1121856pfw.1.2024.02.20.21.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 21:47:01 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 20 Feb 2024 19:47:00 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-	allen.lkml@gmail.com, kernel-team@meta.com
-Subject: Re: [PATCH 12/17] workqueue: Implement disable/enable for (delayed)
- work items
-Message-ID: <ZdWOVP5zwD_Uyeoj@slm.duckdns.org>
-References: <20240216180559.208276-1-tj@kernel.org>
- <20240216180559.208276-13-tj@kernel.org>
- <CAJhGHyCOgrU9TC9o97LpvAEL2p+Dgt=uN0mo01Gr7HadVSD-Ag@mail.gmail.com>
- <ZdTxisk3zp_eXDVb@slm.duckdns.org>
- <CAJhGHyCvk=uqcjjf-=L64ig2m00qdEuRLSvc0qiJm_SftGqunQ@mail.gmail.com>
+        bh=sA+prMwPrieisZTlntbGwJdqfOFYtGdFvXg2Kpl0Qog=;
+        b=VOQQ7I3w9BnBA9b5uyLPg8wRGol3g084AF99phamLIdeD9egLNLRTMBGqiZnHrhuhA
+         zOM5zk+f3gtSLEDN4wK8/wJwh2S4dF8B4xPJHxtAjAB9BovcS11Iq2rmx60MBDX2TURm
+         qL24BSa3fGU2INDg1eYPjBofdiNZclXVvEWW2JV3K/8VgjSUlpkUi2OLNdUy1rLJoNL1
+         DndhXqdAlIetS+gO6dCLkkEoIOJ4LZB8xSrfcZ/ThVsWk00P3rsUSCKNYLuMybT0TB6Q
+         T2dXzPkbyc+nrqKD7cdVMpnxs3LOnT+DViHNn54GldTG6y6V4bIO7mNzKOrxtZBt9TcN
+         p6cQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2OEMf2lO0QSfMJaitcbXx5ekBpaSDTLAQtmpM5ewjA6WGdwSjPmVQzd9Xu+rhZocCQkfcVACggw/P44pPKDUlN8uTBTKk3+xfRBB4vuwYZpVW1vP0sCUI3vBWjIxD/OHrk4t54MfVHZg=
+X-Gm-Message-State: AOJu0Yyu4MnjHglIR7M0QV3M67t6R9+dL7Me9gb+nGH0JydGtjx01rFp
+	W9CK5ap3Mgpq/fGieVh6K6wVK43XFlc1qolmx85f6W3LbVievdK8lbX/rfoqeskdVGbv4L5DwPK
+	DtNbQXQqQVDVOi6JppaUjk2VeAsrg3JLb
+X-Google-Smtp-Source: AGHT+IFmM/VdDZXIoTMsEpM4pWB+1n+RPoE+FFfk+TeIHFHgMXj843KNNmqlt7TRiY63SkeiaYdXMmR83rkT8KYBjK8=
+X-Received: by 2002:a2e:3318:0:b0:2d2:426b:455c with SMTP id
+ d24-20020a2e3318000000b002d2426b455cmr5817101ljc.0.1708494666925; Tue, 20 Feb
+ 2024 21:51:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyCvk=uqcjjf-=L64ig2m00qdEuRLSvc0qiJm_SftGqunQ@mail.gmail.com>
+References: <20240221052624.573287-1-zhaoyang.huang@unisoc.com> <20240221054124.GA14358@sol.localdomain>
+In-Reply-To: <20240221054124.GA14358@sol.localdomain>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Wed, 21 Feb 2024 13:50:55 +0800
+Message-ID: <CAGWkznHTY-ROF-D2w8BjGabfzw1yAqoGsHz321BUKrRBcWuqaw@mail.gmail.com>
+Subject: Re: [Resend PATCHv9 1/1] block: introduce content activity based ioprio
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Jens Axboe <axboe@kernel.dk>, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On Wed, Feb 21, 2024 at 10:54:46AM +0800, Lai Jiangshan wrote:
-> I think it is better to have the same handling (checking disable count)
-> in queue_rcu_work().
-> 
-> 1) code is consistent with other queuing code
-> 2) known state: no work item is queued with disable count > 0
-> 3) catch wrong usages: some complaining code can be added when adding the check.
-> 
-> Adding checking and complaining in the code is as important as
-> adding a comment stating rcu work is not allowed to be disabled/canceled.
-
-Sure, will add a WARN_ON_ONCE().
-
-> > I'm not quite sure flush_delayed_work() is safe. Will think more about that.
-> 
-> I think the code successfully deleting the timer not only owns the pending bit
-> but also ensures the disable count is zero.
-
-Yeah, this should be fine.
-
-Thanks.
-
--- 
-tejun
+On Wed, Feb 21, 2024 at 1:41=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> =
+wrote:
+>
+> On Wed, Feb 21, 2024 at 01:26:24PM +0800, zhaoyang.huang wrote:
+> > +/*
+> > + * bio_set_active_ioprio_folio is helper function to count the bio's
+> > + * content's activities which measured by MGLRU.
+> > + * The file system should call this function after bio_add_page/folio =
+for
+> > + * the buffered read/write/sync.
+> > + */
+> > +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
+> > +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio)
+>
+> How did you test this?  Nothing calls this function, so this patch can't
+> actually be doing anything.  Are you planning to update any filesystems t=
+o use
+> this?
+Thanks for asking. I verified this patch in an Android based 6GB RAM
+system by modifying EROFS/F2FS/EXT4's aops API which I didn't
+upstreaming yet. I would like to recommend this to the desired fs if
+this is accepted.
+>
+> - Eric
 
