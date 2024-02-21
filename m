@@ -1,271 +1,221 @@
-Return-Path: <linux-kernel+bounces-75009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C0B85E16D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:38:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D6B85E175
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF031F22662
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:38:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3C661F2550E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C964980BE4;
-	Wed, 21 Feb 2024 15:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82968063A;
+	Wed, 21 Feb 2024 15:39:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qh3MKagF"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WQAmWM5N";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="lvoAXjxD"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D154F8063A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708529892; cv=none; b=ZLh8YW5780Py0jAC0hZ8iZ5THb4s1Y2wRAE6UT5gXPlpaZ5Q376gjDgNUe+fHPmrat/j2tLb0DXJPSWH9f2MTF76ay85YUbCuRo3seem9tS/PScZ8HB+VoMesjQ9kXjods4QleYyIT62QxFGqxMHue9XRNjzdiauiN8ao0cGKqU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708529892; c=relaxed/simple;
-	bh=Bu0mJfqyJkmDVD/OgydeykdSlc4J0+gKLfF/FCmYX58=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b5xJXdjsdfRxsGaukV2qAK7R8DUGH1ztZ1G/wBMGqr4mne9a3arTBFCrkFhgp1qaoj1/C1ir657P+i/I55ZD0FvhOTT9l8ksVFstF94wb4HSO3J126vHAioQ8DBF3AlQjBvqwSRj2zc8+Am3y71Zu3B3+V+yffMb5s7QF+YWdpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Qh3MKagF; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso480470866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:38:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AE57FBC8
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:38:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708529939; cv=fail; b=NguMu+o3oMtC+Rhwlgzr3tT4tTRzc9jmRdC0xtBNPT/wxp2MH5fWPTjdpMcebHTiZY7mR04Fjze5ka8x6T4bHG7/tPpVol5fnmZCJBPvTz6EW/IkXPf5r1TG5p8c5y31HqWhym5fFy2lDn2T3i7RXVcJ2Wg9Y9hMcgwmdjaAsq8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708529939; c=relaxed/simple;
+	bh=XOXTEwwiWUylVVOgYsYFxS6SBHyCVqWjqH3DXTt7//A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=JtqvK6/2fTjumM6o/jO9Duy7mjYRQXNERmC5sM1x/o67Ew3KmdD1hDdySak6jxopMON452J/3twa9htvm1ABD/lZtrkxEuIbD+EyOGt0jmvQGLT2s7zz5sEtt9KtJfuT6MV87REu9LRJxwccbhbuSQnEB4j8RsGJZg3ooAYdOrk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=WQAmWM5N; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=lvoAXjxD; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41LDiWTm011347;
+	Wed, 21 Feb 2024 15:38:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=iQQLcUziRSu0NwLTCS6MxGrBl6T0gg3FHgD/URAkWQU=;
+ b=WQAmWM5NHQ+CQaK5Zbx2tkl15/wuXVn99ULrAlqkxoaiOAT4e7g4orLsEPijqHHSexB2
+ /FHNYInei+FvwjyXvfuWI3x8wHtjrrVgL2SelxrgwQhJiBPH6o6MXptbN9LRmWkZnRNF
+ lCQO9Qoz/a7krEWxpBXVhLltGbkhqKdVoiLJq9AKMcs32Kqjtf9qRWOJZSULj7fdkG/D
+ 4vSBXVFnsLLv7eo5nhJsS1fRiMPCMcFL1bYRodZjmnx5EynwLrDh0fRw4VWV/N9HGQKv
+ lyopvVJYKHatPbFhiE2HFuSl9+QvDDvWLrADL0iSIyyjX2ZnxpX4lAOMsMHFRMcTa5mM 0Q== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wd5fw1qx9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 Feb 2024 15:38:33 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41LFbOhh006592;
+	Wed, 21 Feb 2024 15:38:31 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2040.outbound.protection.outlook.com [104.47.74.40])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak89dang-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 Feb 2024 15:38:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QRiNsaR74US8wNYKSRt3+dZl/4fJamc3z6irOd7UtC8LVkbCw/oTvfCJTubhvHNnhBOO0ZB7H/TFV5ecwKFOhk2UZWw4AacCIpvThob6QX0jikx54YBm6JX16datFewwDYKjpFozfkEn5gcV4cix72QwhwoTZr4iFpLy/wJhk29cTRUyIE5uuBGNgaQ8KA+AP15RB0uAt3vvoXwgNElY9bKmPU0GPnA12I2zKoSz9oR993ng7MDB+pBNsYNCoQmbLnjL7HSj2iJlUpjFXUPLTISNVSnVLOhPDdO2Jml/asYwbx5vcVcNQCNR/kHrJaGqOh99dyLKN9JuJ+22jdaINA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iQQLcUziRSu0NwLTCS6MxGrBl6T0gg3FHgD/URAkWQU=;
+ b=WTR0s7MWS6RIy3vDN86oMi0pr6GJAEW3K6esZicr3nbSdIv9CscgV0lTdg4kUmw+ciiBybCSXjsx8ftO1vqATiAeM9/MEhzJVKHSvOgdeYHeqC7Gpj12+Ao2Y7erwUrtKleyr+Iw/S1DnYJ2c9rg7+hWVQiMpSWFOEXqM0dInec+e2AkFyzkVBxF0UnSAhd8HRUNfi1sAqam6toFE5oycDTG/323p1JcRhBPH4zEZL0irh2ZQrM6GOkI0mCrmEsPl/JAyBZjUZK4LXmhrNSP8y3wKXNmZgxbyE8847ZGt8k5pHkZgt4Yd+pj8FDgiDr7NHeUXGHF6l/xZ24r4vqgCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708529889; x=1709134689; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hEKlCTLxshJjrR0vzrCVw2fOtfdhkn1op0+oVphqyTY=;
-        b=Qh3MKagFlcv/xU/WOPN0lRBHJ8K+Ikx1eOZfLaVJVY5DUhvy9pm+Y61cpJ5RhLui7K
-         SfSUVcR0bqIZSWINgvWuHMn+TcGBmdlGkb+9CcQAwc3wCbJWozpS7jng6guCsPqKkttY
-         nHgyu8wSuCwyyIl69DspOgfB4xiAEqOEGQc0X+bvI7keUZkijavRhAmjVMTXSi7c1d/C
-         OWrT8hhmX5ClCuNgQhSmFqoq44vWO+FWwVyt+oI5ydVRTXNc+s5/aGK3R97qb6wkI/8L
-         Sge0g5R2sw45oI1QE1MAJH0AbIGiETyu3HXH/GBrchzVZAABBm5XzyCy9wOqhRdayXE4
-         q59Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708529889; x=1709134689;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hEKlCTLxshJjrR0vzrCVw2fOtfdhkn1op0+oVphqyTY=;
-        b=mEDDhIx8sndZWrp1PGVutKFo6LT0AVuI3XvpBWcWxqe+OodSLUZaKRJVvG5G4D5MQz
-         o8mm+1nhpb86CfJNpMibKbmc9VbXwkadJWm87kyckgT1hQhGPvn9X/wRdMPV4poKbr71
-         8jLso9WCMFDtobhq5RjgziftLKn9k/2+4Mv7R2j2wmSyZVg79Cdp+FgIZXTM7IAGPdeM
-         NSvXGRuY4Puptae4cvyE+cVbZqlzeVOiZzrscNAorTxo212fnFerfCbGIQHe9DjzBaHQ
-         Na24KGpHry8u7BsZ/MAGVCnvEtI8uLT8HxEM5Q9NpBnp8XH4jPxSlFBZrV66MsHZ6ikl
-         1Jdg==
-X-Forwarded-Encrypted: i=1; AJvYcCW6K7RFbkJQAiRzqei7CAdEmwBs1AtWgfWIQnulqtAOFKJxn+Txu85VjPmwENGMPROMYp8couA8LyNamNTEQsLKlU108DvfFvikeP2X
-X-Gm-Message-State: AOJu0YzvP2GNTx1wuytwsmGcTZKXnAeTRFxhMDZPItDRpstWU+ezZldh
-	mjcHjOlyypzOAm9fT5AvNbTjgnTGh0ibavcAdVJ39rb1bkttWgKCkzzbPKr0D9U=
-X-Google-Smtp-Source: AGHT+IEgXPNY6KfzFpIIWCqBy8a4c+A0dwKx0vGppcKeYOF5uwpqzsk0YGrWOxXxlUbWaIyBAGxC6g==
-X-Received: by 2002:a17:907:86a3:b0:a3e:f9ae:4764 with SMTP id qa35-20020a17090786a300b00a3ef9ae4764mr5641304ejc.38.1708529889062;
-        Wed, 21 Feb 2024 07:38:09 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id tb21-20020a1709078b9500b00a3e51df2280sm4090336ejc.223.2024.02.21.07.38.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 07:38:08 -0800 (PST)
-Message-ID: <9083c414-62f2-4bff-93ee-13f8ff60eb34@linaro.org>
-Date: Wed, 21 Feb 2024 16:38:06 +0100
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iQQLcUziRSu0NwLTCS6MxGrBl6T0gg3FHgD/URAkWQU=;
+ b=lvoAXjxDYIJfItCiQbLCGcID6cpoU+YDhQrrZE6B/DfXOjPAsXjwgzPn1OH86mHubkPCTspE53uJKwxCoZZVbASyvTKcIOsT29NDg22OqLmtlcaHghFCZbu3Nvb/b7N2r/r6IjddsieIZxqDp8ShVbH606dkVokO5cxcr7JRmhA=
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
+ by PH0PR10MB5708.namprd10.prod.outlook.com (2603:10b6:510:146::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
+ 2024 15:38:29 +0000
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::20c8:7efa:f9a8:7606]) by DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::20c8:7efa:f9a8:7606%4]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
+ 15:38:29 +0000
+Date: Wed, 21 Feb 2024 10:38:27 -0500
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To: Yajun Deng <yajun.deng@linux.dev>
+Cc: akpm@linux-foundation.org, vbabka@suse.cz, lstoakes@gmail.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/mmap: return early if it can't merge in vma_merge()
+Message-ID: <20240221153827.wkmjnnwsf6lyxatc@revolver>
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+	Yajun Deng <yajun.deng@linux.dev>, akpm@linux-foundation.org,
+	vbabka@suse.cz, lstoakes@gmail.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+References: <20240221091453.1785076-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221091453.1785076-1-yajun.deng@linux.dev>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YT3PR01CA0017.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:86::9) To DS0PR10MB7933.namprd10.prod.outlook.com
+ (2603:10b6:8:1b8::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading
- compressed FW support
-Content-Language: en-US
-To: Maxime Ripard <mripard@redhat.com>
-Cc: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org, Enric Balletbo i Serra <eballetbo@redhat.com>,
- Erico Nunes <nunes.erico@gmail.com>, Brian Masney <bmasney@redhat.com>,
- Arnd Bergmann <arnd@arndb.de>, Bjorn Andersson <quic_bjorande@quicinc.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Will Deacon <will@kernel.org>,
- linux-arm-kernel@lists.infradead.org
-References: <20240221141350.3740488-1-javierm@redhat.com>
- <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
- <6scz7iti3tzzrd4ph3gnuc2pvkcbtuuicgfgujh3pa3c34kdkt@bhfa4xbxeu7t>
- <cb8bf006-57df-494e-80f3-947582ec71f1@linaro.org>
- <fy3wffb2jwv4veo3golfn5olri77clxywbuwuokese7sbobixd@mird5k66cl2w>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <fy3wffb2jwv4veo3golfn5olri77clxywbuwuokese7sbobixd@mird5k66cl2w>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|PH0PR10MB5708:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4db4ec3-c973-4fc4-ee30-08dc32f32707
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	USlzmdrfsiOR1Dyfj+m5UbpPzFklATPpv2PTQxxE3+izvGrHlv6z4VxwNlURHaE/jRm0xyDpFNnalUhKDtZvkiVlwR9fp2D3uMkfSU+VjPXzrauqWE3dsWJWGF9f7TBphfdrJ2bwgejRXBaUjPANverHo53c5yV8XiMEd/PSRC2sibxQiBkbHuK5gIJyznapWFt6GchsWYwlu0k/rzPHlKR/Mexfqhx2IZ4hwZRTaHQPIRwXbxOlHoJ1eVQyBgSEYhj66wKvMMFDItqnMXkuZHh4xlU1KYXP5JuxStpmQOv4ZArOYZjl6buz0Ww0NkY0WdIiC1mrWxdct+ZdkPKHsebl223zcoojbii2590jlOAuB24/cKH1AtQRdlYrfi0Va/WN2t/5y2i1BdI+tu56Rzkp/a8EEXhV8HMixUELUBrDv3NbR6/CIFKkms3hFNiFK4a56TfHb/8l9qkUUOPmLXmyjlcWM7ZrPt21gNRWRRy4/qFKZY4TXKK17N6o/iLTQ/YXizMwYIAYlsDIw+G6Uw==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?Iv0E3SuttJvHrQ0FL+BKcOzvAphQQEZOjW0lkzsBB0ogD85hSI8vsZJMZJ85?=
+ =?us-ascii?Q?4FjersiY9+CAoEt0ZX4N30OYMgohSSAGdpR5w+sFEJMEZRNCSEvA9ih944gu?=
+ =?us-ascii?Q?7/hNzsEd4b6vIpzDI85Kw0zNwpEsILyFqro56yYrqduLWyNxCtBNUugNZKcS?=
+ =?us-ascii?Q?+kks1itDQYCfua1ZHyk/GOGTlROZEXzmvEkgTU6J1mB8abJkblP6Kz6UvH2B?=
+ =?us-ascii?Q?qS/1KzL7z54Uo8lhdABXlLC7KJ1Zh81TUMdpoK3AtZlcEihH5KLWyciujWvc?=
+ =?us-ascii?Q?5YOGnL2itbfRtCgvxa39dHELIgZonDt7dSxcX03Mm7FRiqoS0GFokj3g2eEO?=
+ =?us-ascii?Q?/gUvMKY5VdPLrmyX8stGkU2sVY2GkR+XeDt0+Q2quPIa707YGiMGdZrPvmB5?=
+ =?us-ascii?Q?y4642+yqqOMsnN+OdOvd5uKJ2+53Be51HxZ3Jm1Wxi19PKRidCLzu0g2UraB?=
+ =?us-ascii?Q?QzgO1V9/DewqnkCACt6fhB1kY4ak+iOcDWGa+jtd21e+jPiR3Q6y/xti36Fq?=
+ =?us-ascii?Q?ZmJZB8/fmSJcI8WjWhHEeLHt2KXHmDjMKXYHjVkgeSZGVWIw1OJHdTwCz92w?=
+ =?us-ascii?Q?3eNbaP78BOFipA/uqwdw/j1Se+lyg1b9mOrmSx4VuUf3msyUXOLtrE62/m6G?=
+ =?us-ascii?Q?S16scdA9y0sWo8h8s7gNrV4EyJK6W6zGmYU6f0Ba1hs2rPpdsl6ZBLMalKrT?=
+ =?us-ascii?Q?KpgiiQoXk3dWtJugqbYnYjT/AZkO1G5NQnPleOWDjTdMnmT0Z52+O2CExtYb?=
+ =?us-ascii?Q?V4Wsoa5iSUQzjNeYz8QudFmFJKsN+XhW5orSPmAa/4BLralrc3HJLz2JkhLU?=
+ =?us-ascii?Q?t2ASCCmgPG3hPMNcdixfwP8FO1DFtG0/oNl5FIrdFBu7BZmfgyWyiYMMUjs7?=
+ =?us-ascii?Q?yQApJl3Bb8UkH3OUYNeNepUG6AQaYqj9L0i1rgudtGsdBuaZCuTz8GNOypuU?=
+ =?us-ascii?Q?mBi3L7KicGdal0MnfuLeBg0Wuq8y+120XaZZ0FIs11ZMUnERGLOyhdVF8t4n?=
+ =?us-ascii?Q?hbgwBm9l7tcsv1Vxj6joQnyRZlccqp73Fu8JnU4xzsVkLnEtAYJEp+K11jA7?=
+ =?us-ascii?Q?kRs5+yENFyg9a0E8CUUDT+oQCedeXbV9o1QtRJJ/0837VcpFrTTIBIh4vPoP?=
+ =?us-ascii?Q?mNP/kwe4csqI5yjX0r2xFA6BD4FX4eUDRzSYwvvQ723SDxAGORm/Kug5m/SU?=
+ =?us-ascii?Q?Fq9SFR2U7Sa0LgDPjmJBDixdM0U4SHsCkB8jTP8+wTURw4wGWBodG07OGKfz?=
+ =?us-ascii?Q?0k4StI/32TNR1dMBRLGst0fYF0N/QNflZ8ngp71H+10Xmqc7ch1hqtHRkhSa?=
+ =?us-ascii?Q?CWXnLRDDdIoxgLmkusLMoTzfpQGnuxfPDaoBZYOcrNlLnZYEOunn862zJlqT?=
+ =?us-ascii?Q?SXqNSoBGfkfa6g7DwpM9cV5SwJ+tIJv81zFn7azALgoEBvxur0pZUWbN8hmI?=
+ =?us-ascii?Q?Yiy4jVB3R7y8tuCJ3zuHIGuNagnnQq8DGYOvNw/LnQ2QlXQKyoaG6q9pFVqF?=
+ =?us-ascii?Q?yqBzXPtKeU9W+lGzTlsYlCsuo7GUuklk/sqzyWJHF3euNUF+sqx/kkp+6kpx?=
+ =?us-ascii?Q?rkLjeAGIOHdq8TIU3BLPYpDEXCjy2si24+ACZ2pBAXXi0waFM8R46J6ysPKa?=
+ =?us-ascii?Q?cg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	hiofgXPYeNTF8HHIiZ/1Pa8na8ifkw2wlaQVwKN3wGLzNON7ekfE6ubHpS00yyboRepAPkTCZt5mxdqEyg5hGrWxpzyYZrm+z4lBxhgYHlluCjNlIexOAj5s+F8pZOfE6fMn2Wa6juB5y02aiPacuIB7WbuJi/PLY2uoLPlUeyECZuLQGdkcikxuopZJc8mOlzxefwkeXpLT/gV1zN7Or9yau2pNBvdlI1X+tTjyQAP9J7yjeNq0h+otesCx8S1darDBDa3K42E0SNKGNgQJ42zN38QMgglm0yKb5W4JIVOKOTrVTVXGx5UzFLF6mWPyfsEgi5866d7O84fsgf3i/NQKgSU+TqqgVBriJihAqxNq4nSlo7GI4vw3k4eUYW8RGKAH4FxhZkYdtFtAeTI/VzbS7IQ/3cH4DmFzHfO4TuAOQjEvxGwzrp8MiE6q2ctceyAN99cfnbMBSyFUt2TWyxi+Wj21fCzm9enaLE0ibpOj8eRTLIymZ+E4KXBKWWB0Hp7C48i+J2gV4jpMlj/pmrTJ7yks+zvke9yZ4hZYxM6twPiqr3oSHQBrYNUQW8iWk4XQeyeYGPfPbZ2JJIh6jScfbV22wfyKJDLmnOlhHxU=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4db4ec3-c973-4fc4-ee30-08dc32f32707
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 15:38:29.4238
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vuiIMfWjGB+C+GMqVYwgAmKoi0pWERtP63F2tvtMgvGk1lavVc7Z1Fb5rjKrPpofanPC7XN6u/3DZaKP7ll8dw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5708
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_02,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=632 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402210120
+X-Proofpoint-GUID: gmiMlZNa8aOF7b2h0_fr8ALl32XFVy4h
+X-Proofpoint-ORIG-GUID: gmiMlZNa8aOF7b2h0_fr8ALl32XFVy4h
 
-On 21/02/2024 16:24, Maxime Ripard wrote:
-> On Wed, Feb 21, 2024 at 04:10:12PM +0100, Krzysztof Kozlowski wrote:
->> On 21/02/2024 15:48, Maxime Ripard wrote:
->>> On Wed, Feb 21, 2024 at 03:22:38PM +0100, Krzysztof Kozlowski wrote:
->>>> On 21/02/2024 15:13, Javier Martinez Canillas wrote:
->>>>> These options are needed by some Linux distributions (e.g: Fedora), so
->>>>
->>>> How ZRAM is needed? Why Fedora cannot boot without it? Debian, which I
->>>> use on my arm64 boards, does not have any problem.
->>>
->>> Is it relevant in any way?
->>
->> Yes, because it is justification why we are doing it. Each commit is
->> supposed to explain "why" and the explanation here is not enough.
+* Yajun Deng <yajun.deng@linux.dev> [240221 04:15]:
+> In most cases, the range of the area is valid. But in do_mprotect_pkey(),
+> the minimum value of end and vma->vm_end is passed to mprotect_fixup().
+> This will lead to the end is less than the end of prev.
 > 
-> There's a why though: it makes Fedora boot. It might not be enough for
+> In this case, the curr will be NULL, but the next will be equal to the
+> prev. So it will attempt to merge before, the vm_pgoff check will cause
+> this case to fail.
+> 
+> To avoid the process described above and reduce unnecessary operations.
+> Add a check to immediately return NULL if the end is less than the end of
+> prev.
 
-I want to know to understand. Maybe it is not really neeed but "nice to
-have"? People write various vague statements...
+If it's only one caller, could we stop that caller instead of checking
+an almost never case for all callers?  Would this better fit in
+vma_modify()?  Although that's not just for this caller at this point.
+Maybe there isn't a good place?
 
-> you, but that's a different story. So, if it's not enough, please state
-> exactly what you expect from that patch description so Javier can
-> provide it.
+Or are there other reasons this may happen and is better done in this
+function?
 
-Any explanation what ZRAM is necessary for Fedora to boot.
+Often, this is called the "punch a hole" scenario; where an operation
+creates two entries from the old data and either leaves an empty space
+or fills the space with a new VMA.
 
 > 
->>> I'm sure Debian can boot without MEMORY_HOTREMOVE, or BRIDGE, or
->>> NUMA_BALANCING, or BPF_JIT, or NFS_FS, yet all of them are enabled. Let
->>> me know if you want hundreds more examples.
->>
->> So if there is any bug, you are allowed to add new one? If there is any
->> silly option, you are allowed to add new one?
->>
->> Feel free to propose dropping of any irrelevant options.
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+> v2: remove the case label.
+> v1: https://lore.kernel.org/all/20240218085028.3294332-1-yajun.deng@linux.dev/
+> ---
+>  mm/mmap.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> No, of course you aren't. My point is that Fedora is a distro just as
-> established and legitimate as Debian is. And apparently "it makes Debian
-> works" is a reasonable argument, since, well, it does.
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 0fccd23f056e..7668854d2246 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -890,6 +890,9 @@ static struct vm_area_struct
+>  	if (vm_flags & VM_SPECIAL)
+>  		return NULL;
+>  
+> +	if (prev && end < prev->vm_end)
+> +		return NULL;
+> +
+>  	/* Does the input range span an existing VMA? (cases 5 - 8) */
+>  	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
+>  
+> -- 
+> 2.25.1
 > 
-> If making Fedora boot with that defconfig is not a legitimate goal,
-
-It is, but I asked for more information.
-
-> please state why, and document it (with the ack of all the maintainers
-> involved with that defconfig, obviously) so we don't have the same
-> argument over and over again.
-> 
->>>> I kind of repeat comments from similar patch earlier:
->>>> https://lore.kernel.org/all/fe1e74a2-e933-7cd9-f740-86d871076191@linaro.org/
->>>>
->>>> About XFS: I don't think it is needed to boot anything.
->>>
->>> Just like 9P_FS, NFS or UBIFS.
->>
->> NFS is often used on targets, e.g. my board farm, but also by other people.
->>
->> UBIFS was added recently because one device was using it - you needed
->> it. 9P_FS looks unnecessary.
-> 
-> So all we need is one person or use case to require it? Sounds like
-> we've checked that mark here.
-
-Use case of given type. I would disagree for SMBFS because we have NFS.
-UBIFS is hardware requirement. 9P_FS seems like virtio case.
-
-> 
->>>> This is a defconfig, not a distro config. Please don't make it distro.
->>>>
->>>> I will gladly support things needed by systemd or equivalent, but not
->>>> unusual filesystems needed by distro.
->>>
->>> It's a defconfig. It's whatever people want it to be. Or we need to come
->>> up with a clearly defined set of rules of what is acceptable in that
->>> defconfig or not, and prune every option that isn't.
->>
->> So that's the rule I am commenting from time to time. defconfigs are not
->> distro configs. These are reference hardware configs and debugging
->> configs.
-> 
-> Supporting a board farm is hardly either.
-
-Debugging purpose, but I agree we can drop it.
-
-> 
-> And again, I've never heard of such rule for that defconfig in my ~10y
-> as an ARM platform maintainer. But what do I know, right?
-> 
->> I was working in distro so trust me - they do stuff differently
->> and they not need XFS in our defconfig for anything.
-> 
-> Sure, but you're not just arguing for XFS there.
-
-I raised need for "why" for ZRAM and un-necessity of XFS. What's wrong
-with that? I should send separate emails or what?
-
-> 
-> What I really don't get is this: this makes the life of people easier.
-
-Again: this makes my life harder. I cannot be buying new machines every
-two years to be able to compile defconfig while testing/working.
-
-> 
-> Being able to test an upstream kernel quickly when you have a bug in a
-> downstream distro is super valuable for any distro developper. And on
-
-That's a distro need, not relevant. And even if it was, then your
-argument would be "let's enable everything distro has!". This is not a
-distro kernel.
-
-
-> the long run, if we don't make the switch from a kernel distro to a
-> mainline kernel relatively easy, we're the ones that will lose out.
-> Because people just won't bother, or be frustrated and thus super
-> reluctant to do that work.
-> 
-> That's the part I don't get. Why do we want to make the life of people
-> harder. This patch has never been about making the defconfig the main
-
-Because it makes my life harder and I don't see benefits. Quoting Arnd:
-"Unfortunately this will increase build time noticeably, but"
-
-Best regards,
-Krzysztof
-
 
