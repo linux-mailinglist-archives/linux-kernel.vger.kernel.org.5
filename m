@@ -1,178 +1,99 @@
-Return-Path: <linux-kernel+bounces-75193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2AA285E483
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:24:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B9085E46A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D47621C21D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:24:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61011B21590
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C09D83CC2;
-	Wed, 21 Feb 2024 17:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9762C83CA1;
+	Wed, 21 Feb 2024 17:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iFPdqD7r"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="J9luFRKb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD8E7F7EA;
-	Wed, 21 Feb 2024 17:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F0E33F7
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708536247; cv=none; b=BqrLuvgKsZzfcV+U8FYxceDRYHc3g+YbuF75zLX13banCzi+VAFrZKSUwKsXndFXfrq+/FUWkP7FxZFhZnpckwJSfLhofJxgORkZ1h4/oi07wKYdC15rF2akznRipid49X4SgOsLW/Sf7I419pf9Nt6pMkvxYnpLZXCasA5EWu0=
+	t=1708535999; cv=none; b=deALYakqR48UqofXNOH9vyo7ASteJitNW8LO8f0M2bLORMg5OXHmJ1Zf//661LOLJF9W5vJJ0M4pNArZbhRcx3tEIROu/VbekH7hj3xlIK4CilvH51qO9dO+a/qzIumZrK6YzJ1IfrScMPJtquD5G0xkpq0+jO0SJH/TG43x2uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708536247; c=relaxed/simple;
-	bh=2gSFdXQslCcELEmt27ii408bUhhDY+Jb6gfi1b9Tkpc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tdo6W0XccmEg/0dnwx/cJUIUdx3XfEurMmwHqCqwAvzU7WquNxoPMPjTrBoTkcmCpkQ+qiSl8KqSW8c34uSFbbTTKj0ilCVQ97Wt3mN2uUR4uPtgafkBn0UG8YKgRJdCIN+oQcDQ3QqnZncX5HDfrSNqnTkVv7zB8Am+zuCsZR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iFPdqD7r; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e46e07ff07so2234161b3a.3;
-        Wed, 21 Feb 2024 09:24:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708536245; x=1709141045; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OsPQKiy0Sm1aIRngHvDF4ALP8VICeSJz60rKu9HhQtM=;
-        b=iFPdqD7rJlhrdq1rZ2iIIM5fne7PalZ2RGwItbpXO49N3kwHAKkWz6svs94iRLkwMy
-         2nezhgz+L4XY+OCuLARTO1g991lMf5PPy3pkWHs83O/IIgaXYMwNETn6fJx+6VXo9l2H
-         Pp5vvf2c/wWbCDqAbHjWkaDgTswvWcrlbsV6J6DvIprIAuX8LVIzmW+F3tKKfjO7Vu3i
-         eSUPXtM5ixQV1m890sTJa9Li4x9G0auLdYzMeg5mB5n/foBSgzf3hj79Y8hFTM6qCrES
-         Snt6MqjXPM1xKBu2sKu8NNCUBw7urrnJqy3t66xcxerT6+XsxFCifYVrBVWWrMI2Nq8h
-         DNTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708536245; x=1709141045;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OsPQKiy0Sm1aIRngHvDF4ALP8VICeSJz60rKu9HhQtM=;
-        b=aonDHotImSBWkv6MystKNGAVJjK1/99Zu/XJmxSqBtWLy1TLOrpTPHxM3Nnty+knja
-         0lmHJZHZ2T3+QQWgWZoA62q3Abz27zmyIhmC5mWCB78fOwDToHOZ2Oi1TSElSX/zOSyc
-         k48G60oqCxb1RTbsIsFuFA2lAx2To7mnp7I4iK3s4V7mrdJdOlQWZln5r3OwM+vNoFtq
-         Y9zpov0T4S4eJZrfmBLlc2NZdMbUVgAQ7LjOtjqif2CEI92w+JkDkkuoPwXbOxX/vz/E
-         9EJnt1vav+Orj0VbE3tYtGJDt7epitprVvbfHKNn9fIQrmj3Fzqzvu6j7SVXgTxzzxmJ
-         37YA==
-X-Forwarded-Encrypted: i=1; AJvYcCXqOyPnp/b2kx3yexoNxY1SCZGW0hal5rjuI4eopNUlDZhoZ/f0n01bGpv+Z2s1XLlC4yH5FZt7KzezWk3oR4i76V4HACX9zubUuZE79JMnN38gI7kyxohqubAmm5VxgGGsOUwqNIOK1CRl9pHbhGer8bZh0K2vby6NN14kfCAET2Retnl+f4VdOswFIXW9GOfXqwT+Rtm7TUn4ZpVeOI83T5wd
-X-Gm-Message-State: AOJu0YxutujlJBX/VerlDNOvD3kFmvya9bUZgiu1xYM+T52g6kYiHWEA
-	LRWHRrWNw9fKbxo1jRgGy3U3YkdKlef4nRhZxiQuA06yO9xwZcRoqrqtylK5A4JsMQ==
-X-Google-Smtp-Source: AGHT+IE2pFiY338XU8TevuAvOfaaljl4D74mPTJNZR7osicnvccdCwPz3FojZy2vOUYswhqDgFHi5g==
-X-Received: by 2002:a05:6a00:a88:b0:6e0:f3f4:8da9 with SMTP id b8-20020a056a000a8800b006e0f3f48da9mr24499791pfl.4.1708536245357;
-        Wed, 21 Feb 2024 09:24:05 -0800 (PST)
-Received: from localhost.localdomain ([2406:3003:2000:500f:a246:8a16:bee7:140f])
-        by smtp.gmail.com with ESMTPSA id fn15-20020a056a002fcf00b006e324e33ab8sm8640356pfb.218.2024.02.21.09.24.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 09:24:05 -0800 (PST)
-From: Lucas Lee Jing Yi <lucasleeeeeeeee@gmail.com>
-To: oleksandr@natalenko.name
-Cc: Perry.Yuan@amd.com,
-	Xiaojian.Du@amd.com,
-	alexander.deucher@amd.com,
-	bp@alien8.de,
-	deepak.sharma@amd.com,
-	li.meng@amd.com,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	lucasleeeeeeeee@gmail.com,
-	mario.limonciello@amd.com,
-	nathan.fontenot@amd.com,
-	rafael.j.wysocki@intel.com,
-	rafael@kernel.org,
-	ray.huang@amd.com,
-	shimmer.huang@amd.com,
-	skhan@linuxfoundation.org,
-	viresh.kumar@linaro.org,
-	x86@kernel.org
-Subject: [PATCH] [PATCH] amd_pstate: fix erroneous highest_perf value on some CPUs
-Date: Thu, 22 Feb 2024 01:19:15 +0800
-Message-ID: <20240221172404.99765-2-lucasleeeeeeeee@gmail.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240221172404.99765-1-lucasleeeeeeeee@gmail.com>
-References: <3868832.mvXUDI8C0e@natalenko.name>
- <20240221172404.99765-1-lucasleeeeeeeee@gmail.com>
+	s=arc-20240116; t=1708535999; c=relaxed/simple;
+	bh=mohUC8yf/GvhUgtVjjHOvP3YR1w8wLsVqsCFCBn5yXo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SksRUkGQ0NLz25ePe/lS1xPRB7sP3wOmTtQ03akzGspRPwEpuYRWxUw5GjogVemi7G+wn16RzkPiwvttbsIBjlVHhxbbGLeM8SEwVoG4uM0c97oB1H10X8I3C1moW+SGS14/6of+MBmegsww12veyhEdPk9FdHA7PJJNFAO2V5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=J9luFRKb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4262CC433A6
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:19:59 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="J9luFRKb"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708535995;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+OG+ecKsQYxVgvbBvL/TtgozTpt4MGBiORcM4WnZxHk=;
+	b=J9luFRKbMsBggAKjcd6FoCQCFqK3url7Sdh3XZYJSr4mA1puXzkyaxHqj6pupLqSCWKODQ
+	RNvHBA3KLaP2mjI97rQQtGZkGNkiNYfLecKiKSTRd4TZSrptHSQxNdrKhTN+qZxCisxLkS
+	ewB8VipIPkj8LHt2k6mBzw1NRSS9BQk=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5f056f35 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+	for <linux-kernel@vger.kernel.org>;
+	Wed, 21 Feb 2024 17:19:55 +0000 (UTC)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60884277a6dso8161497b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:19:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUNaN9GuYeloOIGuCg6uRXWFDvU5D/qLf23R3OZ9SljR1wGAJsr2gRwqNH0P44L1xP6k0UvfWSIPo/hIGenbxAG4P1m5zqA6Ph+VYb9
+X-Gm-Message-State: AOJu0Ywq339mDingVJklGc/aQ+4khCutQTWT/UEM/g9uzxEcz0h5GAQv
+	vMmDy2xkKaGR9ZnJ6X3PLK/tHOj8C7Og59+G/E2q0Bs/HrKijoy446Hu+E1RVBLSGoyXz2a4YIq
+	T+VF/RSy9FdfxUIRczDUySAghYK0=
+X-Google-Smtp-Source: AGHT+IFiRSo8oJLeIG6A89DqtzR4YnG0l7JPRWlYtBL46DIFRZVdsbWf6zNNIK8u00F1s0mkvbKIVpuC66RE/4PkDno=
+X-Received: by 2002:a0d:e250:0:b0:608:94b5:3e2 with SMTP id
+ l77-20020a0de250000000b0060894b503e2mr418397ywe.4.1708535993716; Wed, 21 Feb
+ 2024 09:19:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240221123248.25570-1-Jason@zx2c4.com> <eada8acd-9341-401b-b6c9-a05848eb91d6@intel.com>
+In-Reply-To: <eada8acd-9341-401b-b6c9-a05848eb91d6@intel.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Wed, 21 Feb 2024 18:19:41 +0100
+X-Gmail-Original-Message-ID: <CAHmME9o75KzsfMRDtr2K0+N-UM-MX7MWL4AZhy27CedZRNd2Tg@mail.gmail.com>
+Message-ID: <CAHmME9o75KzsfMRDtr2K0+N-UM-MX7MWL4AZhy27CedZRNd2Tg@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/coco: Require seeding RNG with RDRAND on CoCo systems
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: x86@kernel.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Daniel_P_=2E_Berrang=C3=A9?= <berrange@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, "Theodore Ts'o" <tytso@mit.edu>, 
+	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On a Ryzen 7840HS the highest_perf value is 196, not 166 as AMD assumed.
-This leads to the advertised max clock speed to only be 4.35ghz
-instead of 5.14ghz leading to a large degradation in performance.
+On Wed, Feb 21, 2024 at 5:55=E2=80=AFPM Dave Hansen <dave.hansen@intel.com>=
+ wrote:
+>
+> On 2/21/24 04:32, Jason A. Donenfeld wrote:
+> > +__init void cc_random_init(void)
+> > +{
+> > +     unsigned long rng_seed[32 / sizeof(long)];
+>
+> My only nit with this is the magic "32".
+>
+> Why not 16?  Or 64?
 
-Fix the broken assumption and revert back to the old logic for
-getting highest_perf.
-
-TEST:
-Geekbench 6 Before Patch:
-Single Core:	2325 (-22%)!
-Multi Core:	11335 (-10%)
-
-Geekbench 6 AFTER Patch:
-Single Core:	2635
-Multi Core:	12487
-
-Signed-off-by: Lucas Lee Jing Yi <lucasleeeeeeeee@gmail.com>
----
- drivers/cpufreq/amd-pstate.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index 08e112444c27..54df68773620 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -50,7 +50,6 @@
- 
- #define AMD_PSTATE_TRANSITION_LATENCY	20000
- #define AMD_PSTATE_TRANSITION_DELAY	1000
--#define AMD_PSTATE_PREFCORE_THRESHOLD	166
- 
- /*
-  * TODO: We need more time to fine tune processors with shared memory solution
-@@ -299,15 +298,12 @@ static int pstate_init_perf(struct amd_cpudata *cpudata)
- 				     &cap1);
- 	if (ret)
- 		return ret;
--
--	/* For platforms that do not support the preferred core feature, the
--	 * highest_pef may be configured with 166 or 255, to avoid max frequency
--	 * calculated wrongly. we take the AMD_CPPC_HIGHEST_PERF(cap1) value as
--	 * the default max perf.
-+
-+	/* Some CPUs have different highest_perf from others, it is safer
-+	 * to read it than to assume some erroneous value, leading to performance issues.
- 	 */
--	if (cpudata->hw_prefcore)
--		highest_perf = AMD_PSTATE_PREFCORE_THRESHOLD;
--	else
-+	highest_perf = amd_get_highest_perf();
-+	if (highest_perf > AMD_CPPC_HIGHEST_PERF(cap1))
- 		highest_perf = AMD_CPPC_HIGHEST_PERF(cap1);
- 
- 	WRITE_ONCE(cpudata->highest_perf, highest_perf);
-@@ -329,9 +325,11 @@ static int cppc_init_perf(struct amd_cpudata *cpudata)
- 	if (ret)
- 		return ret;
- 
--	if (cpudata->hw_prefcore)
--		highest_perf = AMD_PSTATE_PREFCORE_THRESHOLD;
--	else
-+	/* Some CPUs have different highest_perf from others, it is safer
-+	 * to read it than to assume some erroneous value, leading to performance issues.
-+	 */
-+	highest_perf = amd_get_highest_perf();
-+	if (highest_perf > cppc_perf.highest_perf)
- 		highest_perf = cppc_perf.highest_perf;
- 
- 	WRITE_ONCE(cpudata->highest_perf, highest_perf);
--- 
-2.43.2
-
+32 bytes =3D 256-bits =3D what we're targeting. Very normal thing to see
+places in the RNG, used all over random.c and lots of platform
+drivers. Pretty obvious and straightforward to anyone familiar with
+this kind of code. Not the kind of thing you'd want to replace with
+some abstracted constant that makes you search.
 
