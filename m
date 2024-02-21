@@ -1,230 +1,152 @@
-Return-Path: <linux-kernel+bounces-75202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC8B85E4A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E538885E4A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44572283B1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:35:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EBCA283CBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D4383CCE;
-	Wed, 21 Feb 2024 17:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4903983CD6;
+	Wed, 21 Feb 2024 17:35:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMbIcT8O"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cYeUEHaZ"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D2C1C20
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000FA7FBD5
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708536899; cv=none; b=WGwE4l7hRDe88ytCnIps+42ian75TQUYvVoT5yPTGX3WYTSvkanvZzyGjiCe/ndKA3+iAIG0F6kMryiNmWaDjtebsOfzacwdZr4MRElhlZAe7AMkBN0IfKePTFgaPrZTItlu+nneD8OZGeAo8reExBYY3h/C6bYlLNQgGDeiAcM=
+	t=1708536945; cv=none; b=hVOIvi0UWVz4+b5Qjr77mBOIP7t6e3hKuu22v3SmT/IaZGfCiewHZSvqDGjWgVylDeh6qOY7YuGY1C2vzzCO+Sr/y15GUTtAyc3Kzgm1iHmGsYKrxrUM1TH957CwBvv3zlDfZnODgpjWmZlAznHtwtGdNejxvsfxkohWihEWSfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708536899; c=relaxed/simple;
-	bh=HzSReKzRzBUvmn6ggj+FRr4aRuCzrHPbNa8t5p5O8lA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hLWClAxMyeC5U+D2uykyPpT2X8qKPqG8I+XS7GNKBRHbFrENzqSMxyzxlg7dOShDSoMc4AiPiKC4xDfrNl5Cf6w71owl6EGtjBvgf1EEHVESE8QWJ3ifuTExK5vbyxyU4Qh3yOtalkb/57+jOoTfnnMnfAhyEfvWTh5mtJihtRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMbIcT8O; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1708536945; c=relaxed/simple;
+	bh=fmaJOjuiuzc1I3VG7/Ti8gqDkhSjfOTOI4oFIBZuQIU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VRDBkldRWUa5cLEoeZo1WUvocGDjoWkBooVrqF9oSVawKm4w6vLU0BCmI4/gbxbTN+NngqslfhTdPU3hXnu4hlCo0h21yoFSGYh6Uhs0+pi1c5JX2qE2BjxceOkfvE/tnDfeJS7Zig4OT7GGYc8DS5v9mpPIKIGcLzPUbUAZskA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cYeUEHaZ; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e4741b23d7so2251169b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:34:57 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607fc3e69adso60010127b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:35:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708536897; x=1709141697; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=6i/5+wAjAhxCfAy1lZZTKEUAvmZVwqR9MqJQFB/l10w=;
-        b=gMbIcT8OSn8uq6zKBd7G6gmx4GoyKexLaxI7H8SJ+auLx9A3z2bQyU6QSqYZOjz6vK
-         vbBi9/2vkXQEiRoPcyPeflCbgechUKJ09TyJ3XpufLF7FBKe24OI5nhLOCoq7WL5FyOC
-         NoWqao2YC2XjE5wJMY41MZ1DVMXk51Ne0bkWdZmjKz4nkDIOETvvsAUf/N3TQ++ojb15
-         F+wpm3kWs4ZpbSgE2sgXOeld/7SHgMe1QuIZN3PNIUVTn+lcO6eFgUAD4Rh8ZD4QUVrr
-         NgVCs4CuLwF9VuYagaQQm82b33bnfK+HjmSJOVFlDxNBqi8MK8Mw7bBh0cFWkWtQqgJn
-         J8NA==
+        d=gmail.com; s=20230601; t=1708536943; x=1709141743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zfPBj9b71D+eNY1wEvQoyUsDBy3rVhDy4LnJT91Hn+w=;
+        b=cYeUEHaZes2HH/6oLmUEM7Yr/jAywwDAJzBIln0NyPQuPkYjSq8IzGTiKzEbiZ7OeK
+         PA6sNOtU3ZNyyVyfK6DkamkAW7iffY1rVl72RMeZBTaPKoR3LFt8lDIOZz+rhBIO2Cc0
+         9f8KrxPwo/tCiuJK6jd+u5Mx3vyXyyrPYPwrQ637l9e7w9pjkvDeQEzZdh7JXQHwgqq9
+         cD/WngNBObNEXjB5m35wDxlNk96rb1+YhL0QAE7pwpvIZyvlD1goj5fABENGe1EJXJ/Y
+         wwZbgnPvQvGcreI+Z6SiSuDbE4ugA9w6FxbjaVBd5dQJlt18xvFm+wi1h4gorlANrkJs
+         vCkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708536897; x=1709141697;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6i/5+wAjAhxCfAy1lZZTKEUAvmZVwqR9MqJQFB/l10w=;
-        b=dzeljcku6THpcTQ+VCBsKkvZCA3gDsT5Jb1JH/rTb7Aedi3ERch4MweCScMz4hOveu
-         k+VaiWKFb7stwZhrOya5z5caECYdL9lPsfYOU380PFcvJeu7Tw2m6w+L8cctrkIk/YOq
-         Wc21bQO7LvDCvyhZPeMgncH0fVzE3BQDc30KxRSJ1Tmkqw8cSQni6FLAlOPb/1Qcu6Qx
-         izppL5P4UxhlcytvHqfWVXvGqfEZwo+4MawkDuVlS26VynKjwAMsuIlLFi3uhPL76TYL
-         BGJnilNM1EGxwtJRrRA7WnmO/nL/QDftv7M2Lr1xrVBsPxvoGEJ3bh/kL4R9XawlsL44
-         q5bg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRa8cnJco9JUwioMomCJYm1TeeIWXoKXh70B+/zJdVEkwswm8KR7mZhZoHI4JjTDyHsXdUvD6VSrivEWuxaKy2i2ZBoyriIMzWDwEx
-X-Gm-Message-State: AOJu0YxZ+9ABdFcCocdLkligcjCvDe0i8gvQoCUhLe06O6hyNwwjpozi
-	VX6yR6aT/0AcxL9wDVEnXcFPik5t6K0VYXryCVkQlhrfnpknbOv7
-X-Google-Smtp-Source: AGHT+IHyCW/M9Hn409XcgS1i1VlNbcVkcSQprSu7hN2XCAX8K7TtU41M3KEc/Jgz2InYuiG/+SJEfQ==
-X-Received: by 2002:a05:6a00:9a4:b0:6e4:59b3:928c with SMTP id u36-20020a056a0009a400b006e459b3928cmr10988213pfg.10.1708536896686;
-        Wed, 21 Feb 2024 09:34:56 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d5-20020aa78685000000b006e2301e702fsm8845982pfo.125.2024.02.21.09.34.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 09:34:55 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <8ec638c2-93b6-48e4-8ac4-965072b1d5af@roeck-us.net>
-Date: Wed, 21 Feb 2024 09:34:54 -0800
+        d=1e100.net; s=20230601; t=1708536943; x=1709141743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zfPBj9b71D+eNY1wEvQoyUsDBy3rVhDy4LnJT91Hn+w=;
+        b=GU5q+FKpip0iimN13MpHbIxNCtN6benIHhHrH+ZgV5Ir70UI+79aOXropfkwxvYyjj
+         ikq6rE3++lyzCCRbgKf+MHd3hUASqiS87yumE1+/akZuLgTKfwL2TbP75JHQplU3Ur/F
+         N+TK9z+TD0gcbvTFtiM7QCS5MpZImCi8PR6MkAUp/HpdpZ56vdT/PQ0eLWoH2s+OLEDy
+         DpU0JFXeaBejyrAZL3akYWDVnSTaFpT6y3c3sgzTHYs0UgaUQZIQKta401+ewKDtH1ZU
+         llP19ah5tUcbWATh0W+vaeviDVn9abzMvTkwU+zwaF7hEMjVW3Qq9yZSaHoA1m/R2LZj
+         9c6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUADJPDpiUWVhi/P4yBBx3kfqJ3WUw92D7HetxqvumGdsVctvporpq3XG4HqN+igfa0hwCnSWWFaUpN9RRylscQ1OMHcstYo8YhDIqC
+X-Gm-Message-State: AOJu0YzkUFFJT1LZM0EFOjmLlKV4HQmIzuJ8MGyJqVha9CaS2y6Wyw3S
+	FqHK5uXlDxTje0rL/1wMo2uLbxlTlOFl5OwU9ECZV6KXWY4o+6fnadxrM1wBg7axc4gCvJpUUZW
+	563FYn9dzfTI2TJ0uyLaKhGfJnjY=
+X-Google-Smtp-Source: AGHT+IHPzGgeVebYi5e5XGY212SUvxo7txV8bzERYstCFCs9yobH6mfd8vu3+8VNXVU7DnbhLkANMq/J4WzIHMCFe4A=
+X-Received: by 2002:a81:9a47:0:b0:607:57c5:41fc with SMTP id
+ r68-20020a819a47000000b0060757c541fcmr18443898ywg.15.1708536942761; Wed, 21
+ Feb 2024 09:35:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mfd: kempld-core: don't replace resources provided by
- ACPI
-Content-Language: en-US
-To: Michael Brunner <michael.brunner@kontron.com>,
- "lee.jones@linaro.org" <lee.jones@linaro.org>
-Cc: "mibru@gmx.de" <mibru@gmx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <09855448430a5f090dbe09cbb269959a08881ee7.camel@kontron.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <09855448430a5f090dbe09cbb269959a08881ee7.camel@kontron.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221085036.105621-1-21cnbao@gmail.com>
+In-Reply-To: <20240221085036.105621-1-21cnbao@gmail.com>
+From: Vishal Moola <vishal.moola@gmail.com>
+Date: Wed, 21 Feb 2024 09:35:31 -0800
+Message-ID: <CAOzc2pwZO4xg8TBvt2dpPNT8TeHDnWod6iJh-LJ50hfTn4ua3A@mail.gmail.com>
+Subject: Re: [PATCH] madvise:madvise_cold_or_pageout_pte_range(): allow split
+ while folio_estimated_sharers = 0
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
+	Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Matthew Wilcox <willy@infradead.org>, 
+	Minchan Kim <minchan@kernel.org>, Yang Shi <shy828301@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/21/24 09:10, Michael Brunner wrote:
-> The current implementation to retrieve ACPI resources is faulty
-> and may cause issues that even can lead to non-booting systems.
-> 
-> When adding data from an ACPI device, the resources are already
-> assigned to the platform device. Therefore there is no need to
-> retrieve the resource list from ACPI and manually assign it to
-> the platform device. Also there shouldn't be any BIOS in the wild
-> anymore, that does not have resources added to the KEMPLD ACPI
-> data.
-> 
-> In particular this fixes an issue where the retrieval of the
-> resource list using /proc/ioports is disturbed and does not list
-> the assigned resource for the kempld device or even no resources
-> at all.
-> On some distributions this also leads to problems during system
-> initialization (e.g. with udev) and causes the system to not
-> boot at all.
-> 
-> I have reproduced the issue with the following kernel versions:
->      5.10.209
->      5.15.148
->      6.1.25
->      6.6.17
->      6.7.5
->      6.8-rc5
-> 
-> The patch applies to all of those versions and seems to resolve
-> the issue.
-> 
-> Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
+On Wed, Feb 21, 2024 at 12:50=E2=80=AFAM Barry Song <21cnbao@gmail.com> wro=
+te:
+>
+> From: Barry Song <v-songbaohua@oppo.com>
+>
+> The purpose is stopping splitting large folios whose mapcount are 2 or
+> above. Folios whose estimated_shares =3D 0 should be still perfect and
+> even better candidates than estimated_shares =3D 1.
+>
+> Consider a pte-mapped large folio with 16 subpages, if we unmap 1-15,
+> the current code will split folios and reclaim them while madvise goes
+> on this folio; but if we unmap subpage 0, we will keep this folio and
+> break. This is weird.
+> For pmd-mapped large folios, we can still use "=3D 1" as the condition
+> as anyway we have the entire map for it. So this patch doesn't change
+> the condition for pmd-mapped large folios.
+> This also explains why we had been using "=3D 1" for both pmd-mapped and
+> pte-mapped large folios before commit 07e8c82b5eff ("madvise: convert
+> madvise_cold_or_pageout_pte_range() to use folios"), because in the
+> past, we used the mapcount of the specific subpage, since the subpage
+> had pte present, its mapcount wouldn't be 0.
+> The problem can be quite easily reproduced by writing a small program,
+> unmapping the first subpage of a pte-mapped large folio vs. unmapping
+> anyone other than the first subpage.
+>
+> Fixes: 2f406263e3e9 ("madvise:madvise_cold_or_pageout_pte_range(): don't =
+use mapcount() against large folio for sharing check")
+> Cc: Yin Fengwei <fengwei.yin@intel.com>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
 > ---
->   drivers/mfd/kempld-core.c | 37 -------------------------------------
->   1 file changed, 37 deletions(-)
-> 
-> diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-> index 67af36a38913..5557f023a173 100644
-> --- a/drivers/mfd/kempld-core.c
-> +++ b/drivers/mfd/kempld-core.c
-> @@ -428,50 +428,13 @@ static int kempld_detect_device(struct kempld_device_data *pld)
->   #ifdef CONFIG_ACPI
->   static int kempld_get_acpi_data(struct platform_device *pdev)
->   {
-> -	struct list_head resource_list;
-> -	struct resource *resources;
-> -	struct resource_entry *rentry;
->   	struct device *dev = &pdev->dev;
-> -	struct acpi_device *acpi_dev = ACPI_COMPANION(dev);
->   	const struct kempld_platform_data *pdata;
->   	int ret;
-> -	int count;
->   
->   	pdata = acpi_device_get_match_data(dev);
->   	ret = platform_device_add_data(pdev, pdata,
->   				       sizeof(struct kempld_platform_data));
-> -	if (ret)
-> -		return ret;
-> -
-> -	INIT_LIST_HEAD(&resource_list);
-> -	ret = acpi_dev_get_resources(acpi_dev, &resource_list, NULL, NULL);
-> -	if (ret < 0)
-> -		goto out;
-> -
-> -	count = ret;
-> -
-> -	if (count == 0) {
-> -		ret = platform_device_add_resources(pdev, pdata->ioresource, 1);
-> -		goto out;
-> -	}
-> -
-> -	resources = devm_kcalloc(&acpi_dev->dev, count, sizeof(*resources),
-> -				 GFP_KERNEL);
-> -	if (!resources) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -
-> -	count = 0;
-> -	list_for_each_entry(rentry, &resource_list, node) {
-> -		memcpy(&resources[count], rentry->res,
-> -		       sizeof(*resources));
-> -		count++;
-> -	}
-> -	ret = platform_device_add_resources(pdev, resources, count);
-> -
-> -out:
-> -	acpi_dev_free_resource_list(&resource_list);
->   
->   	return ret;
->   }
-
+>  mm/madvise.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index cfa5e7288261..abde3edb04f0 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -453,7 +453,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *p=
+md,
+>                 if (folio_test_large(folio)) {
+>                         int err;
+>
+> -                       if (folio_estimated_sharers(folio) !=3D 1)
+> +                       if (folio_estimated_sharers(folio) > 1)
+>                                 break;
+>                         if (pageout_anon_only_filter && !folio_test_anon(=
+folio))
+>                                 break;
+> --
+> 2.34.1
+>
 
