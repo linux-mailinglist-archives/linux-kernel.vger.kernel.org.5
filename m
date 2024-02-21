@@ -1,100 +1,46 @@
-Return-Path: <linux-kernel+bounces-74763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 780C885D938
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:16:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A04D785D93E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AEED1C22C35
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:16:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F17B1F21AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0931D76C62;
-	Wed, 21 Feb 2024 13:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1m8/Gvn7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DDdkVqxA";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1m8/Gvn7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DDdkVqxA"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D92378B7A;
+	Wed, 21 Feb 2024 13:15:55 +0000 (UTC)
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6898869D09;
-	Wed, 21 Feb 2024 13:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF6878B60;
+	Wed, 21 Feb 2024 13:15:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708521347; cv=none; b=Tj14UbHqKBVMkvDHfNyK55BAf+DAe9GL8SEJzOvhGaAcPI48ajxt3g9biaA8dxgX0uyTQew7QLdneG3SZu11z7mPqi92zKbIzHxWnXvZ/gB1v/+yBa1P5W8Bi/hCOQTq6qzkyA6qlkagFbyFaWMUK6p/KXeTwHSZThEYQ/34OLA=
+	t=1708521355; cv=none; b=LZ6eCFlO+9SdULiFQAzN/dyiKqb+ZWb4cJ7wag5Gp76JGexSTEH+QNgBOQbfmCrfgDECS6cgVmxZ7IDxeR3kzWBmoLGcNS3tk4NnrKh8/dDR7TzpeldSeMxuARNwiOsw+liZwm7yO36wLGD0QGVQ8a7rabgTcH2xwNk5ir2m2Dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708521347; c=relaxed/simple;
-	bh=ftWuBdO0JcBz5ZpTPaW+smTKtB8dbs4rOByOV6biaB0=;
+	s=arc-20240116; t=1708521355; c=relaxed/simple;
+	bh=csrTnXvV6MEZd5krHl41/o+frbx1m3T+Us2ZFrByfR4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ntC/+M9tWwP2iUEmcnYzIksuNrN4zaYUF+wUUVYUdTtheF/a31+Aod+zLSgIX94fDJemGGeyF5G/yM55JcSvz6uxk/ZJTgR8E8iLrZcvkQMv4+vOCv5cqqysiE/lj/fS6/OjSLMqu1vjlKNzWgD2OeX/IFKkzx0bBiCiTYAZK2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1m8/Gvn7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DDdkVqxA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1m8/Gvn7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DDdkVqxA; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F2461FB5D;
-	Wed, 21 Feb 2024 13:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708521343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c1q+3O+PlbOI5pZ5NbAJnd5M96l97I4OwjtAWw0vYtw=;
-	b=1m8/Gvn7K59jCByvWKztNp3YWT8CqQjqB+leAzVmDJAcJUWFqGR+3T6QPvpHMNVobx7qwx
-	TepME9apOxb05L8J7XbCvBAmoha3GGVgDlHj7NRfWMbQNRTdSLScKTYiX6ar/4ZjAeatBR
-	m6ND2M2BZAdlBD/vLmY+UYC+Se0ktlk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708521343;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c1q+3O+PlbOI5pZ5NbAJnd5M96l97I4OwjtAWw0vYtw=;
-	b=DDdkVqxAy7gQJk5zJCxhHwR/BZVzVmqKdxr6B8HsoSDwwEPrdpjOlclcVi7l0DT0J40bWl
-	UYV3pW1c7YM7FMDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708521343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c1q+3O+PlbOI5pZ5NbAJnd5M96l97I4OwjtAWw0vYtw=;
-	b=1m8/Gvn7K59jCByvWKztNp3YWT8CqQjqB+leAzVmDJAcJUWFqGR+3T6QPvpHMNVobx7qwx
-	TepME9apOxb05L8J7XbCvBAmoha3GGVgDlHj7NRfWMbQNRTdSLScKTYiX6ar/4ZjAeatBR
-	m6ND2M2BZAdlBD/vLmY+UYC+Se0ktlk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708521343;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c1q+3O+PlbOI5pZ5NbAJnd5M96l97I4OwjtAWw0vYtw=;
-	b=DDdkVqxAy7gQJk5zJCxhHwR/BZVzVmqKdxr6B8HsoSDwwEPrdpjOlclcVi7l0DT0J40bWl
-	UYV3pW1c7YM7FMDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 64F9A13A25;
-	Wed, 21 Feb 2024 13:15:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id g0CiGH/31WVHOwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 21 Feb 2024 13:15:43 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0E782A0807; Wed, 21 Feb 2024 14:15:39 +0100 (CET)
-Date: Wed, 21 Feb 2024 14:15:39 +0100
-From: Jan Kara <jack@suse.cz>
-To: Chuck Lever <cel@kernel.org>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	hughd@google.com, akpm@linux-foundation.org,
-	Liam.Howlett@oracle.com, oliver.sang@intel.com, feng.tang@intel.com,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
-Subject: Re: [PATCH v2 1/6] libfs: Re-arrange locking in offset_iterate_dir()
-Message-ID: <20240221131539.wmr5xde7xode2xn5@quack3>
-References: <170820083431.6328.16233178852085891453.stgit@91.116.238.104.host.secureserver.net>
- <170820142021.6328.15047865406275957018.stgit@91.116.238.104.host.secureserver.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=flWWgFq0um5TMYOU8B8HH8NoZqu/iKuXNt5VQU63MSnubljHQoiaqWTYaJIX8/nCqtW7mNJcqCemdHXlLRDxWt2Y0pamPeSqFxYudFr3fGVepwyOp+/PQTYrIlUBgSpXI+mHuSJPjvcVc4NFiL7/u2Uw5lxdTC/Z17WY5vSSLMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1rcmRu-0004dD-P4; Wed, 21 Feb 2024 14:15:46 +0100
+Date: Wed, 21 Feb 2024 14:15:46 +0100
+From: Florian Westphal <fw@strlen.de>
+To: syzbot <syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+	fw@strlen.de, horms@kernel.org, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] WARNING in mpls_gso_segment
+Message-ID: <20240221131546.GE15988@breakpoint.cc>
+References: <00000000000043b1310611e388aa@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,115 +49,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <170820142021.6328.15047865406275957018.stgit@91.116.238.104.host.secureserver.net>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+In-Reply-To: <00000000000043b1310611e388aa@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Sat 17-02-24 15:23:40, Chuck Lever wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
+syzbot <syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com> wrote:
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1536462c180000
 > 
-> Liam and Matthew say that once the RCU read lock is released,
-> xa_state is not safe to re-use for the next xas_find() call. But the
-> RCU read lock must be released on each loop iteration so that
-> dput(), which might_sleep(), can be called safely.
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/adbf5d8e38d7/disk-49344462.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/0f8e3fb78410/vmlinux-49344462.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/682f4814bf23/bzImage-49344462.xz
 > 
-> Thus we are forced to walk the offset tree with fresh state for each
-> directory entry. xa_find() can do this for us, though it might be a
-> little less efficient than maintaining xa_state locally.
+> The issue was bisected to:
 > 
-> We believe that in the current code base, inode->i_rwsem provides
-> protection for the xa_state maintained in
-> offset_iterate_dir(). However, there is no guarantee that will
-> continue to be the case in the future.
+> commit 219eee9c0d16f1b754a8b85275854ab17df0850a
+> Author: Florian Westphal <fw@strlen.de>
+> Date:   Fri Feb 16 11:36:57 2024 +0000
 > 
-> Since offset_iterate_dir() doesn't build xa_state locally any more,
-> there's no longer a strong need for offset_find_next(). Clean up by
-> rolling these two helpers together.
+>     net: skbuff: add overflow debug check to pull/push helpers
 > 
-> Suggested-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-> Message-ID: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13262752180000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10a62752180000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17262752180000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com
+> Fixes: 219eee9c0d16 ("net: skbuff: add overflow debug check to pull/push helpers")
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5068 at include/linux/skbuff.h:2723 pskb_may_pull_reason include/linux/skbuff.h:2723 [inline]
+> WARNING: CPU: 0 PID: 5068 at include/linux/skbuff.h:2723 pskb_may_pull include/linux/skbuff.h:2739 [inline]
+> WARNING: CPU: 0 PID: 5068 at include/linux/skbuff.h:2723 mpls_gso_segment+0x773/0xaa0 net/mpls/mpls_gso.c:34
 
-Looks good. Feel free to add:
+Two possible solutions:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+1.)
 
-								Honza
+diff --git a/net/mpls/mpls_gso.c b/net/mpls/mpls_gso.c
+index 533d082f0701..43801b78dd64 100644
+--- a/net/mpls/mpls_gso.c
++++ b/net/mpls/mpls_gso.c
+@@ -25,12 +25,13 @@ static struct sk_buff *mpls_gso_segment(struct sk_buff *skb,
+        netdev_features_t mpls_features;
+        u16 mac_len = skb->mac_len;
+        __be16 mpls_protocol;
+-       unsigned int mpls_hlen;
++       int mpls_hlen;
+ 
+        skb_reset_network_header(skb);
+        mpls_hlen = skb_inner_network_header(skb) - skb_network_header(skb);
+-       if (unlikely(!mpls_hlen || mpls_hlen % MPLS_HLEN))
++       if (unlikely(mpls_hlen <= 0 || mpls_hlen % MPLS_HLEN))
+                goto out;
++
+        if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
+                goto out;
 
-> ---
->  fs/libfs.c |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index eec6031b0155..752e24c669d9 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -402,12 +402,13 @@ static loff_t offset_dir_llseek(struct file *file, loff_t offset, int whence)
->  	return vfs_setpos(file, offset, U32_MAX);
->  }
->  
-> -static struct dentry *offset_find_next(struct xa_state *xas)
-> +static struct dentry *offset_find_next(struct offset_ctx *octx, loff_t offset)
->  {
->  	struct dentry *child, *found = NULL;
-> +	XA_STATE(xas, &octx->xa, offset);
->  
->  	rcu_read_lock();
-> -	child = xas_next_entry(xas, U32_MAX);
-> +	child = xas_next_entry(&xas, U32_MAX);
->  	if (!child)
->  		goto out;
->  	spin_lock(&child->d_lock);
-> @@ -430,12 +431,11 @@ static bool offset_dir_emit(struct dir_context *ctx, struct dentry *dentry)
->  
->  static void *offset_iterate_dir(struct inode *inode, struct dir_context *ctx)
->  {
-> -	struct offset_ctx *so_ctx = inode->i_op->get_offset_ctx(inode);
-> -	XA_STATE(xas, &so_ctx->xa, ctx->pos);
-> +	struct offset_ctx *octx = inode->i_op->get_offset_ctx(inode);
->  	struct dentry *dentry;
->  
->  	while (true) {
-> -		dentry = offset_find_next(&xas);
-> +		dentry = offset_find_next(octx, ctx->pos);
->  		if (!dentry)
->  			return ERR_PTR(-ENOENT);
->  
-> @@ -444,8 +444,8 @@ static void *offset_iterate_dir(struct inode *inode, struct dir_context *ctx)
->  			break;
->  		}
->  
-> +		ctx->pos = dentry2offset(dentry) + 1;
->  		dput(dentry);
-> -		ctx->pos = xas.xa_index + 1;
->  	}
->  	return NULL;
->  }
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+(or a variation thereof).
+
+2) revert the pskb_may_pull_reason change added in 219eee9c0d16f1b754a8 to
+make it tolerant to "negative" (huge) may-pull requests again.
+
+With above repro, skb_inner_network_header() yields 0, skb_network_header()
+returns 108, so we "pskb_may_pull(skb, -108)))" which now triggers
+DEBUG_NET_WARN_ON_ONCE() check.
+
+Before blamed commit, this would make pskb_may_pull hit:
+
+        if (unlikely(len > skb->len))
+                return SKB_DROP_REASON_PKT_TOO_SMALL;
+
+and mpls_gso_segment takes the 'goto out' label.
+
+So question is really if we should fix this in mpls_gso (and possible others
+that try to pull negative numbers...) or if we should legalize this, either by
+adding explicit if (unlikely(len > INT_MAX)) test to pskb_may_pull_reason or
+by adding a comment that negative 'len' numbers are expected to be caught by
+the check vs. skb->len.
+
+Opinions?
 
