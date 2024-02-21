@@ -1,120 +1,104 @@
-Return-Path: <linux-kernel+bounces-75634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A79C885EC8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 744E785EC8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AC811F23144
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:08:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A59521C22430
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D4912837E;
-	Wed, 21 Feb 2024 23:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246041272B2;
+	Wed, 21 Feb 2024 23:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LJ907JAM"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="SYprxqwU"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF92EC5
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ED956456
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708556884; cv=none; b=XKKyyk/+Iab4J57NQtgO8BDW6Algot3v++xc2xrafOCsByuWOsOE3V0eGzRX1OCnY4JRvAyx1rnj5EnW199VlbcRtE6gWjhLBjARyfS8k/C8VRdQ+bKYU7Uj/EOVMSSdoHZGcj2YG/5RF6mwN4A6jPmmB7UAZR4HFN5dAt4FCDU=
+	t=1708556924; cv=none; b=MKTKv92gMw4ZgiTqJf/fwFxqDKMk6fPm1qOMk4NqIQ9l0FlKoC5syuJI5KyzIUUp+gkImAgo5mcM5/TQuHX3CDA4RLULYGAtyMjKnVjcL9lTtpXCtfH2wBLgGGpdOu0AyWIiqIo+Jn8MHyg7RFO0fXnlKoH+0zquVwRGRHcgfrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708556884; c=relaxed/simple;
-	bh=lVVt4cd6uaVryAH57NfvJaB+/vJBBdplCM95n6hzzPI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BXD7gCSh8oaRu4cBcLdYVSbS+Hn8JjD7bwexL/lsnitub/ntLf43dY0HG8xy2xqAGHKJvdyJqJCVG0+DVGZ3VkNmt66B/mugo6wjsj7qFmH34Eb5cp0DLK2bXvGpDW6/uQMa7bEHZ6ozG5FWWwCGCd33NB7b+3Qp/s+TsHtXJ1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LJ907JAM; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so6833976276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:08:02 -0800 (PST)
+	s=arc-20240116; t=1708556924; c=relaxed/simple;
+	bh=ubWxMaDgQA7aCLDJJnk56SO9zudn89gqBTa6kQPbUZI=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=fQslLWHoFbXs0VbfdOJoZWwoVvrNS47VWN24+NBRq1uGlUKmjnIINxjboYUa6cYcXIGMZuqb7NTK6jdA8NGlsgl9M3XIbHBZMvghj+7r2DiGSirpxWLCIKzrRAeQ76YiRGzu2PB6q9SVt2fvRaIdSIkhmMZTX98FXc3KQNuSlPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=SYprxqwU; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29a430c3057so117253a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:08:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708556881; x=1709161681; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kYBbmRXDC5OSdjJgBE1Q6+6CYsK20VTrcWQxbaA18DI=;
-        b=LJ907JAM0KZ3rh+wX/0fGafmuf+VI8G8mlYpSpCEbJ3D73rwPzzznxccPb6Q3Efh/p
-         4Gh9RK/mWNrHsUzncuC+Rbr7HlRc95FVleY6x1+9Cwt/e6wRD13xxLQbv/Ke/I5Z5+Wd
-         tLg7ruRbFD9qaom30VkhQ0LcINRX+sfrGJjIGju7BAemEoOU7xOOrcV0+JRsjEHl7Wcd
-         OJzYqY6oOZl3jOmPdHIw82a70AkyzMYufmpbkeJcJO/F12KThYvKCoBO1HBLRu+LqUnV
-         i4H5Yr2V9GX8XCeRJStmk7Sg5GMzxdXtlVOUWZeovAOpZ/FR3RQJi3BaMAarqAokWni8
-         rQew==
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1708556922; x=1709161722; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UyIdnrPvkMs2AU+vw/nEPIW+QxndqyTNQEwIk71io1o=;
+        b=SYprxqwUT6HKzA3P3l8z0BmVIICC5JFM3ziQFzAfWyvPNbcX5r9SJTu0mac4SJgAbY
+         oLCFdmHG+FzC6DGV1L1eLHqcVp4tOgJUcCMhtXSkgn6MfCofyiPGxgM/9AEpaMYP5ix6
+         zgna/S/AYzPjoKqMomjnRvlGS9HmrKHK6HKm5zoFFIwmG77Ky3ma6z+RAw80R317Q8sZ
+         h6JhvRRnuJqFiJZ3+nFrXISXuq3I+ocz3PAlRpOIQKpYOVr/O9ITyPuQejfMZ8aViE8R
+         T9S4KcT33FLqR0O/iAuOznF1/Q8aSrPpe+8KYi03MqYqWJ/pu8H6lJ5Vu8kVYEQ8z3FW
+         +mTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708556881; x=1709161681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kYBbmRXDC5OSdjJgBE1Q6+6CYsK20VTrcWQxbaA18DI=;
-        b=ZUTkTL/6HEvSQF8HpDqrnIWxQSn+ijKhbNUTo2xTYshhJnzfOAKVlz8dIXtTxOYlCi
-         HyVuNoUBh6AReTQZJ0Jm3CP6NXwBTYJ8acnv5icWmnLhckscJ0N2Lnwz2m4WOU6nwUIq
-         IQRqmB9ChZDJdLU+pKWp1wEtQEZgQtz/mqHkmxspSbq4M1I1GVQBYWmH+J0f7MILxJFQ
-         O9kMM0oLgv5xTTd60D+lQI7DOgpwXkEnKMKcm1dcR9p4mU1N7TEFPicNKR06q17namcu
-         2w6JR6xOJbqQZc96O15xHbJK53Iaxo/+sAUyoUpk0rQaSQi5vg6mlYHpv2BRMEfcDEim
-         rhmw==
-X-Forwarded-Encrypted: i=1; AJvYcCUYZuY6hVN9tbQSuhaCo+yJVs+kKa3Y4frn4hix+bYLcrcAVZ9rEP1Yjd5ff6jVKaWdTunaOrqLD0iVKeAfSy8irFVy3NJ7ABImeJgm
-X-Gm-Message-State: AOJu0YxuFCzfYcLdRLJQTdIWRzTHX/k+7vdNQrOL5N066eA+1f9wvbDw
-	WRxVFY2jSrd+DAyS/3lxVuQbbZTHXdOqiC6CHgFVJxWNV96Dk6j4rm0eOKWEojtmUuoNDG7+Chs
-	Cdalnf7o3rILXKF3NFkOhbZYPZsDGaiG+eUrN5w==
-X-Google-Smtp-Source: AGHT+IELSuez3wnkWzi8gUjXrk1ECFLfUvg+ZkAvG67cVdS+sTX65l5nPJGAnEdTxvcHLOGMpEqSWoalBsmdwXNDC2c=
-X-Received: by 2002:a5b:f06:0:b0:dc6:8534:bb06 with SMTP id
- x6-20020a5b0f06000000b00dc68534bb06mr807288ybr.17.1708556881671; Wed, 21 Feb
- 2024 15:08:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708556922; x=1709161722;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UyIdnrPvkMs2AU+vw/nEPIW+QxndqyTNQEwIk71io1o=;
+        b=WDfXeYhEcdaYjzl01LaGMHmbHzUia7rHzwNbIlMeiYYIo7mfTvBVTxV7d1+rnZvODL
+         row4i+9BdIy64g90FZnoJY8AupkUQfm8ojuh6BuYRMUhg6m4kBnyCtOnHKuetXaMgTQG
+         2lYHN0lZJFW12MFDQUa1/sxNOlRkoDmd3v0aYKLUEPKh29uWXvVdKcWyd0/LViUjfrxX
+         hZ1F9dSiL2PQeVxmbH1Fv6c8gERGhjKndpuw5lajN0Lym6AXM9khSaIdQzuOHM7ak8Bi
+         /PccODisZe+YCAOwloYM3DHvJokBsfV7r2EIpTFBYFw1DG0F3R6c+kKXJR6dWVUW3ADu
+         4sjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWAi9PtAOU5/k2+Fzejo425B24/r0RSIgCfGMLbR9RgWq30E9fUYXHNygrJOYdfRm0BRSOMEO/+eG8Q8t3vVeUr+NZJ6a9xYxucEGDe
+X-Gm-Message-State: AOJu0YxYtC1Ki9uiGwXedDSqGeSi7FM7BrjwhUhIAcHlP2f5OlMNH7Sg
+	VEhpqkuY7rowUnWsChdJqcZzz+Qjd1K2l2MSEcBDndJTHUuLNe4UnWJuv+na3H8=
+X-Google-Smtp-Source: AGHT+IHThDor4vbSwCGzgqxbkS1L4FAjcJEeNqRKW6q1pX8qIRUqKbsUqTEftPikKBnSg4ZOCItd1Q==
+X-Received: by 2002:a17:90a:604e:b0:299:3f2a:4309 with SMTP id h14-20020a17090a604e00b002993f2a4309mr12544246pjm.18.1708556921732;
+        Wed, 21 Feb 2024 15:08:41 -0800 (PST)
+Received: from localhost ([50.213.54.97])
+        by smtp.gmail.com with ESMTPSA id qj15-20020a17090b28cf00b002961a383303sm2420580pjb.14.2024.02.21.15.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 15:08:40 -0800 (PST)
+Date: Wed, 21 Feb 2024 15:08:40 -0800 (PST)
+X-Google-Original-Date: Wed, 21 Feb 2024 15:08:39 PST (-0800)
+Subject:     Re: linux-next: duplicate patch in the risc-v-fixes tree
+In-Reply-To: <20240222093025.5f9d9ad5@canb.auug.org.au>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, greg@kroah.com,
+  linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Message-ID: <mhng-57f0dff8-c22c-4e94-be94-376c833e3b1f@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240216223245.12273-1-semen.protsenko@linaro.org> <29090d97-9118-4765-a4fd-3bbe271a39bd@linaro.org>
-In-Reply-To: <29090d97-9118-4765-a4fd-3bbe271a39bd@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Wed, 21 Feb 2024 17:07:50 -0600
-Message-ID: <CAPLW+4kmoCoqO=+zXbVw7VsGc-VB2At91ZnJfyTDRtVFmN4aiQ@mail.gmail.com>
-Subject: Re: [PATCH 00/16] clk: samsung: Add CPU clocks for Exynos850
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 5:07=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Wed, 21 Feb 2024 14:30:25 PST (-0800), Stephen Rothwell wrote:
+> Hi all,
 >
-> On 16/02/2024 23:32, Sam Protsenko wrote:
-> > The series implements CPU clock support for Exynos850, adds CPU CMUs to
-> > the clock driver and enables those in dts. This is the first step
-> > towards cpufreq implementation.
-> >
-> > The breakup by patch:
-> >
-> >   * Patch 01: Add bindings
-> >   * Patches 02..12: Prepare clk-cpu.c for Exynos850 support
-> >   * Patch 13: Add Exynos850 support
-> >   * Patch 14: Init PLLs to be in manual mode
-> >   * Patch 15: Add CPU CMUs in Exynos850 clock driver
-> >   * Patch 16: Add CPU CMUs and clocks in Exynos850 dtsi
+> The following commit is also in the tty.current tree as a different commit
+> (but the same patch):
 >
-> This crossed the threshold for a patch bomb, which is in general fine
-> for me, but then please put v2 changelog in each patch's changelog. If
-> the patch did not change, annotate it as well. It's not possible to keep
-> jumping between cover letter and individual patches.
+>   481860974faa ("tty: hvc: Don't enable the RISC-V SBI console by default")
 >
+> This is commit
+>
+>   8b79d4e99407 ("tty: hvc: Don't enable the RISC-V SBI console by default")
+>
+> in the tty-current tree.
 
-The above list is not a change log, I just tried to show that patches
-02..12 are cleanups. I'll reword this in v2 to make it less confusing.
-And as usual I'll keep the changelog for each patch separately. Thanks
-for the review!
-
-> Best regards,
-> Krzysztof
->
+Ah, sorry about that.  I'd been trying to figure out why my tester was 
+broken and forgot to check if someone else had picked this up.  Should 
+be gone now.
 
