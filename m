@@ -1,149 +1,121 @@
-Return-Path: <linux-kernel+bounces-74775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 071F885D9B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:21:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39C485DA07
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89215B2481B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:21:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D577C1C22D69
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED337A70E;
-	Wed, 21 Feb 2024 13:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNCLnebn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAF27E798;
+	Wed, 21 Feb 2024 13:24:39 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1083653816;
-	Wed, 21 Feb 2024 13:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010F377A03;
+	Wed, 21 Feb 2024 13:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708521670; cv=none; b=sJg34yxA9+PU0CmGtQsZRouZL00kIhbMKhpLqTBwbbGgzQbUWYJ4r/TqNAtehPKWSLaVlMKg4FKsr5sEsemwN9Hwjfe/MW0jflhhTCJjolQFAc3O7dB4WxBFOjCEoXPd+ojpA2f8G6Np6Aotg5RZ8LfgBp8FAaI6NUC3Euxrsmg=
+	t=1708521878; cv=none; b=HJMf4ud2APrl9phXI67yP6dXxszslsG2KYI8FTzKw7pWQqTJBqNsSOAGJl9yCsDRkvYoKag0CYMs5lxjad7zyFLgbPJWWEhpeMEsdT4D22/DEvy+OO3CCRJdI8vcSrM04VT1c9HT8HfDC1DUhvvAEGI0rdTSOsLz89qI8GXjiXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708521670; c=relaxed/simple;
-	bh=vZ/3Z3kWjsvIRSCYP+NqhBkV01COSs3cgT6ojHsts0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RrZG4hLzEdVvb4cgWlCMh593JvK2yCi6+lKsdssYJcxrBNYQ3xFVhrfEZLQef5FKBsDck1mnQcw5ICzaG2m6IAaTlJHjvxl+/JI0SpS0c8TP7onSGr57sOqqGnzsn4rW/rpE3bmn2ogVadMKERxqgi60dvBD0oquibwePV1LwBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNCLnebn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06DBEC433F1;
-	Wed, 21 Feb 2024 13:21:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708521669;
-	bh=vZ/3Z3kWjsvIRSCYP+NqhBkV01COSs3cgT6ojHsts0Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lNCLnebnbcp9cdVqA+fkBdmc+S9vQFvdUArU7QeU/aR8J7gl8+wshxTVPN7cbgc14
-	 N0aTytKwlkF8rbLP0QGmHj9D2YQzdG5w1Hl/wBjdoRxBZGxwT2f8TittX1DxvXI+vZ
-	 VBrckXg9iamrvXsAvN/joX2ifR4tj/HDIeNIZbEtZg0bFK8FcS1v4l5lskjVbIn7td
-	 97Ja5yzOvqE1xHJc4sVL9gHJk4Ol0PiSRc9TrkirxAbVKMJUYwCJdnUyiB/bPKb7Ex
-	 UWSMRHQfmAr9kjkF8JyBU2gpNtUlmzGdx36uQ+YC41VnJbZaK2uQX/tEvn6FJ39zRV
-	 rfzdU1zIyvwUw==
-Date: Wed, 21 Feb 2024 13:21:02 +0000
-From: Will Deacon <will@kernel.org>
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc: robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
-	konrad.dybcio@linaro.org, jsnitsel@redhat.com,
-	quic_bjorande@quicinc.com, mani@kernel.org,
-	quic_eberman@quicinc.com, robdclark@chromium.org,
-	u.kleine-koenig@pengutronix.de, robh@kernel.org,
-	vladimir.oltean@nxp.com, quic_pkondeti@quicinc.com,
-	quic_molvera@quicinc.com, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	saravanak@google.com
-Subject: Re: [PATCH v9 4/5] iommu/arm-smmu: add ACTLR data and support for
- SM8550
-Message-ID: <20240221132101.GB7273@willie-the-truck>
-References: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
- <20240123144543.9405-5-quic_bibekkum@quicinc.com>
- <20240213134714.GC28926@willie-the-truck>
- <201fef09-50ab-436b-af63-4535c7510d15@quicinc.com>
+	s=arc-20240116; t=1708521878; c=relaxed/simple;
+	bh=KrK7iNq4+GifJCxvrxb6wK+cw9XXTFp9UkvXE9nlj2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mjUwELkP4XNUbeDxIOFWSIQq75GbvZ6iq86MNK12kT9dJSjJPO8tyP98s0ReiOviQp7XBbhNu9LUbD45NQu3SbKRHwhJdij1EJ+pD4JmpvjHDhwrUyf2YAA62rIrND/AtjgHhYoB9tsjXHQm2KCGcguxOFnVc4Vxljr9fD7BLO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav118.sakura.ne.jp (fsav118.sakura.ne.jp [27.133.134.245])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 41LDLFIf072277;
+	Wed, 21 Feb 2024 22:21:15 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav118.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav118.sakura.ne.jp);
+ Wed, 21 Feb 2024 22:21:15 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav118.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 41LDL68M072234
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 21 Feb 2024 22:21:14 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <c5bd4224-8c97-4854-a0d6-253fcd8bd92b@I-love.SAKURA.ne.jp>
+Date: Wed, 21 Feb 2024 22:21:04 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201fef09-50ab-436b-af63-4535c7510d15@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+To: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Michal Hocko <mhocko@suse.com>,
+        akpm@linux-foundation.org, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, peterx@redhat.com, david@redhat.com, axboe@kernel.dk,
+        mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+        dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+        rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
+        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+        elver@google.com, dvyukov@google.com, shakeelb@google.com,
+        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+        minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org
+References: <Zc3X8XlnrZmh2mgN@tiehlicka>
+ <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
+ <Zc4_i_ED6qjGDmhR@tiehlicka>
+ <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+ <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+ <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+ <20240215180742.34470209@gandalf.local.home>
+ <20240215181648.67170ed5@gandalf.local.home>
+ <20240215182729.659f3f1c@gandalf.local.home>
+ <mi5zw42r6c2yfg7fr2pfhfff6hudwizybwydosmdiwsml7vqna@a5iu6ksb2ltk>
+ <CAJuCfpEARb8t8pc8WVZYB=yPk6G_kYGmJTMOdgiMHaYYKW3fUA@mail.gmail.com>
+ <e017b7bc-d747-46e6-a89d-4ce558ed79b0@suse.cz>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <e017b7bc-d747-46e6-a89d-4ce558ed79b0@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 02:25:26PM +0530, Bibek Kumar Patro wrote:
-> On 2/13/2024 7:17 PM, Will Deacon wrote:
-> > On Tue, Jan 23, 2024 at 08:15:42PM +0530, Bibek Kumar Patro wrote:
-> > > Add ACTLR data table for SM8550 along with support for
-> > > same including SM8550 specific implementation operations.
-> > > 
-> > > Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-> > > ---
-> > >   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 90 ++++++++++++++++++++++
-> > >   1 file changed, 90 insertions(+)
-> > > 
-> > > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > > index 6004c6d9a7b2..db15b1eade97 100644
-> > > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > > @@ -23,6 +23,86 @@
-> > > 
-> > >   #define CPRE			(1 << 1)
-> > >   #define CMTLB			(1 << 0)
-> > > +#define PREFETCH_SHIFT		8
-> > > +#define PREFETCH_DEFAULT	0
-> > > +#define PREFETCH_SHALLOW	(1 << PREFETCH_SHIFT)
-> > > +#define PREFETCH_MODERATE	(2 << PREFETCH_SHIFT)
-> > > +#define PREFETCH_DEEP		(3 << PREFETCH_SHIFT)
-> > > +#define PREFETCH_SWITCH_GFX	(5 << 3)
-> > > +
-> > > +static const struct actlr_config sm8550_apps_actlr_cfg[] = {
-> > > +	{ 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
-> > > +	{ 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
-> > > +	{ 0x0800, 0x0020, PREFETCH_DEFAULT | CMTLB },
-> > > +	{ 0x1800, 0x00c0, PREFETCH_DEFAULT | CMTLB },
-> > > +	{ 0x1820, 0x0000, PREFETCH_DEFAULT | CMTLB },
-> > > +	{ 0x1860, 0x0000, PREFETCH_DEFAULT | CMTLB },
-> > > +	{ 0x0c01, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
-> > > +	{ 0x0c02, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
-> > > +	{ 0x0c03, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
-> > > +	{ 0x0c04, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
-> > > +	{ 0x0c05, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
-> > > +	{ 0x0c06, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
-> > 
-> > [...]
-> > 
-> > Isn't this effectively hard-coding the topology of the SoC in the driver?
-> > Wouldn't it better describing higher-level prefetch properties in the DT
-> > nodes corresponding to the upstream devices?
-> 
-> Since prefetch data stored in this table represent settings for the
-> ACTLR register, and doesn't exactly define the hardware (So in this
-> manner prefetch data won't exactly be a part of soc topology ?).
+On 2024/02/21 3:27, Vlastimil Babka wrote:
+> I'm sure more such scenarios exist, Cc: Tetsuo who I recall was an expert on
+> this topic.
 
-The first two columns of the table are StreamID/Mask pairs, no? How is that
-_not_ the SoC topology? I really think it would be better to define some
-high-level prefetch properties in the DT binding which can be put on the
-master nodes.
+"[PATCH v3 10/35] lib: code tagging framework" says that codetag_lock_module_list()
+calls down_read() (i.e. sleeping operation), and
+"[PATCH v3 31/35] lib: add memory allocations report in show_mem()" says that
+__show_mem() calls alloc_tags_show_mem_report() after kmalloc(GFP_ATOMIC) (i.e.
+non-sleeping operation) but alloc_tags_show_mem_report() calls down_read() via
+codetag_lock_module_list() !?
 
-> So it seemed apt not to use the device tree for storing the prefetch
-> property. Hence we reverted from the DT approach (initial proposal in
-> RFC to piggyback on iommus property to store prefetch settings) back to use
-> driver for storing this data.
-> 
-> Some drivers use the same approach for storing their platform specific
-> data. Examples being
-> drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> drivers/soc/qcom/llcc-qcom.c
-> These drivers were taken as reference for storing platform specific ACTLR
-> data.
+If __show_mem() might be called from atomic context (e.g. kmalloc(GFP_ATOMIC)),
+this will be a sleep in atomic bug.
+If __show_mem() might be called while semaphore is held for write,
+this will be a read-lock after write-lock deadlock bug.
 
-I don't know anything about those drivers, but on the SMMU side we already
-have ways to describe the topology in the DT and the driver is using them,
-so I'm struggling to see the need to add these tables as well.
+Not the matter of whether to allocate buffer statically or dynamically.
+Please don't hold a lock when trying to report memory usage.
 
-But as I said before, if Robin and the DT folks prefer this approach,
-then I won't get in the way.
-
-Will
 
