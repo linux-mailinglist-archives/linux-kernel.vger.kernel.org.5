@@ -1,122 +1,122 @@
-Return-Path: <linux-kernel+bounces-74433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6924285D402
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:43:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A6085D3DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A2AA1C22E7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:43:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FA73B22497
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA5C3D57C;
-	Wed, 21 Feb 2024 09:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UqiBVoc6"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043FF3D546;
+	Wed, 21 Feb 2024 09:40:25 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590583FB26;
-	Wed, 21 Feb 2024 09:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97913D3B1
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708508513; cv=none; b=OjM8St2IgJv08XUusVZ5kNVP72fcGO5GE8vxBtmMj4yl3GV7JfnCm43DRZtvbMTlbY2XqkYyvDdXvKewKX2IddNlsRdctiv0/sFsCoUL5/S6RH00qUg/VgDQDU+p1G71qpor2omaCciXNQ9c1Zphqu3Vt1ZYZPnIt6R7IgRFRLQ=
+	t=1708508424; cv=none; b=D38xQyKIFtV1eQP7+CuQ0TxdlDci7WOokfqlIqUgu9TecdoVxzTkO3sNn9hQ+3iBi5ndRiSFJfu+TMZKYk3cOy0P0A0exMwOdPqz6vRPLOaxEJ/Gj9usR1igtKIn5H+tN2yImyGxv6WGG9ZUINVc6KHx850/HV4Z15X5TWbCDHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708508513; c=relaxed/simple;
-	bh=KvrYko7yQ7YG5N9k9gL8eUh9EO/Yp27eJfOJxnBH0qs=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=haQFA8qR0M/Xl8YovzQdjrGY+tGb3TtfgthD86pUbNjFFU8i+8WnDUKbRzih65maKPcxFaCMHw/7u5NIgI0eOFGGP/HlXdd24jLC9X/yPeZZpZjH9H8EeiSyv4z4GwwyIp7GY8mvRq7qSHeR1upDRqd0lp47zD9hNtFEBWeBcpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UqiBVoc6; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3c15b7b367aso49905b6e.1;
-        Wed, 21 Feb 2024 01:41:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708508511; x=1709113311; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oeRB8Ae3MB3D0N5Amo8nBZXsnfNgL0uq7S0EnYN/MPk=;
-        b=UqiBVoc6SJNPBU2POP6NU5APTwiR7YxERLkS9T9OdZYU80+/1hx3b99nihZh/pfEf9
-         /HAlCItJZ1ki2V6ktsskvfZgYpS0WwvJS0iEf8xvNmBXkzK6CKqbEBtcsMdq0zX1ViVX
-         /7GmZvnhr/xSq4Coipuj8eouCClhB/cjRW6H5sBgyYPEA3XExniOYuJYKTKsWLfrvmtY
-         QufLQsG62dRwMCBKeeblK086NZVZIMByLyGLa2FLwlhnDu0k3VDUZohzLsbMWZMH1zcP
-         pdK7L+BcEw/nw6j6nsLBqwYtsnCx0Xic8/WUdrkiY7fZw2MGeZrTSgkX+Rdw46s/9OT2
-         vWiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708508511; x=1709113311;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oeRB8Ae3MB3D0N5Amo8nBZXsnfNgL0uq7S0EnYN/MPk=;
-        b=rbpKkuiB7MDW3awaTJ2IgD7as4A9P3edKRIbey4LGSiCaQIb9L78KFvkL/DRdZfM9a
-         QipH6e6zJY5Q/7kLm5mnI359T0PdG1ld0Ud2KHbETuEWrTr4eK5VH1CHYGSTVGBQtCwe
-         tdwcVG6jJNLmincnICy28dUBF/2V+kz+D4VUqiGOXwrludSayHuyX4BWXqKKDUovVZdC
-         aAGyg6GZk+rUywjlWdY4HaZUwT2NA7LUK0OqoXb0AJwVHFj69F3ONuTyhyfSCH6kPQ86
-         7uHjjzGrBGIEi1ClMzsvFS1NAwuZImYUYdo2QBP7qBy+Rbc+BSBM7I/sYBidBlx4KsJA
-         A1eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVCnJmLM3D7mYeSLsfcugvuFkBDIAcnSc1xIhC3GHVtnvbMLaQ6VJTc+Oo3SRz6nikIBn+0oexkqpaAe4o76mndvLAAGe9oJ5yA+gfzS54klzx5YuVeD7q0nua02jMS8qGIgKLtCPkgpg==
-X-Gm-Message-State: AOJu0YzaRnAX/pCX+tAIt0TB+NdA+QRMDa4dAxlrn2bxTONkILEIt8xM
-	PUjO2A3G7JUs0lB9e9jSQgWT1h2YylysqsGrbV0diUD8brK9rymT
-X-Google-Smtp-Source: AGHT+IExxMpSW5KGc7JdiMVfUhTqkZRdgnXU7hINm16MFTbij3Pmc6wBGllC0RqE1D9rQrP1LC1JKQ==
-X-Received: by 2002:a05:6808:34c:b0:3bf:fcae:17c6 with SMTP id j12-20020a056808034c00b003bffcae17c6mr16681430oie.30.1708508511591;
-        Wed, 21 Feb 2024 01:41:51 -0800 (PST)
-Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id lm4-20020a056a003c8400b006e488553f09sm1645026pfb.81.2024.02.21.01.41.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 01:41:51 -0800 (PST)
-From: Peter Yin <peteryin.openbmc@gmail.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@aj.id.au>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 9/9] ARM: dts: aspeed: Harma: Add ltc4286 device
-Date: Wed, 21 Feb 2024 17:39:24 +0800
-Message-Id: <20240221093925.2393604-10-peteryin.openbmc@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240221093925.2393604-1-peteryin.openbmc@gmail.com>
-References: <20240221093925.2393604-1-peteryin.openbmc@gmail.com>
+	s=arc-20240116; t=1708508424; c=relaxed/simple;
+	bh=Oy5E/HNDZF5wCVxixr/Zuuk7jVIjUehgBfPYwJ5cO2c=;
+	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=h/NiWkqRuMMxIrSWLQFF3d+iF8T6Hm7C2p1i78AgfO/M/WDkLkiq2vVuwHLkWDEypsaYG/IhJedwuZt2SoBH+vNMPmd5uLjpjTf+0YH2dW7vmh3GzsyDGNRJI0ET10uSwUubShr3AXnLFKGfZvQbx/cOfarB505Ial2N0vh/pww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tfrmh3M8TzvVtn;
+	Wed, 21 Feb 2024 17:38:12 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id CFE32140114;
+	Wed, 21 Feb 2024 17:40:14 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 17:40:14 +0800
+CC: <yangyicong@hisilicon.com>, <will@kernel.org>, <mark.rutland@arm.com>,
+	<hejunhao3@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
+Subject: Re: [PATCH 3/7] drivers/perf: hisi_pcie: Add more events for counting
+ TLP bandwidth
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+References: <20240204074527.47110-1-yangyicong@huawei.com>
+ <20240204074527.47110-4-yangyicong@huawei.com>
+ <20240208122029.000005e1@Huawei.com>
+From: Yicong Yang <yangyicong@huawei.com>
+Message-ID: <9c033974-aa73-2b1d-c997-e3c38e38a859@huawei.com>
+Date: Wed, 21 Feb 2024 17:40:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240208122029.000005e1@Huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-Add ltc4286 device.
+On 2024/2/8 20:20, Jonathan Cameron wrote:
+> On Sun, 4 Feb 2024 15:45:23 +0800
+> Yicong Yang <yangyicong@huawei.com> wrote:
+> 
+>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>
+>> A typical PCIe transaction is consisted of various TLP packets in both
+>> direction. For counting bandwidth only memory read events are exported
+>> currently. Add memory write and completion counting events of both
+>> direction to complementation.
+> 
+> complementation?
+> 
 
-Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+sorry for the typo. will fix.
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-index d5c5c5b3ab4b..bbbab8023cd6 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-@@ -271,6 +271,13 @@ tmp75@49 {
- 		compatible = "ti,tmp75";
- 		reg = <0x49>;
- 	};
-+
-+	power-monitor@22 {
-+		compatible = "lltc,ltc4286";
-+		reg = <0x22>;
-+		adi,vrange-low-enable;
-+		shunt-resistor-micro-ohms = <500>;
-+	};
- };
- 
- &i2c5 {
--- 
-2.25.1
+>>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
+Thanks.
+
+> 
+>> ---
+>>  drivers/perf/hisilicon/hisi_pcie_pmu.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>>
+>> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+>> index 9623bed93876..83be3390686c 100644
+>> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+>> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+>> @@ -726,10 +726,18 @@ static struct attribute *hisi_pcie_pmu_events_attr[] = {
+>>  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_cnt, 0x10210),
+>>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_latency, 0x0011),
+>>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_cnt, 0x10011),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_flux, 0x0104),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_time, 0x10104),
+>>  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_flux, 0x0804),
+>>  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_time, 0x10804),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(rx_cpl_flux, 0x2004),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(rx_cpl_time, 0x12004),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mwr_flux, 0x0105),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mwr_time, 0x10105),
+>>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_flux, 0x0405),
+>>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_time, 0x10405),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(tx_cpl_flux, 0x1005),
+>> +	HISI_PCIE_PMU_EVENT_ATTR(tx_cpl_time, 0x11005),
+>>  	NULL
+>>  };
+>>  
+> 
+> .
+> 
 
