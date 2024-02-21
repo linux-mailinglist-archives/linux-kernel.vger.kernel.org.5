@@ -1,148 +1,113 @@
-Return-Path: <linux-kernel+bounces-75557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8671B85EB1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:39:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3432485EB26
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B81F41C23EC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:39:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94B68B26EC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D17912839D;
-	Wed, 21 Feb 2024 21:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AF6126F11;
+	Wed, 21 Feb 2024 21:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gUwpgeHS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RhR/G7VP"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C5F25619;
-	Wed, 21 Feb 2024 21:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E86126F00
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708551480; cv=none; b=hx8qS3rhGsg4T3XD6BoMLp1elz2s7ZlC1urW+uLUTLjgAtZAaML2Fj/X/92jr2ZUsDBd2djEh/2xAiAhUn+sDXDeZELF0CgaivcDB45cfZAicubrJqu8iSNOEN2ExcaHDT7cpKcvthF5b9hxuLbOGLpmG3WumwRNaoad7Wr0B+4=
+	t=1708551574; cv=none; b=RVo9wXXVYv1p/2rAJerwJI4hYhx0+OkaGR3fWJrNugROjUDRR6e5jUkN4p8nJEWo7uTpvubVp4FRJa1JKwNJbfpK+X2MXUVmkXuAZT401AjhiWs/fFxK9j9iHhEENdBbIrYoxbnydMjoMG9WLHsrTC28b9d5hLBzhbOd/UL/TMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708551480; c=relaxed/simple;
-	bh=9oOl86N850lxplmi/fO/ptHo5glf8VI/jrIlpQnN4nQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=altsWRO64cvSk5owsplFmr1vQKWBwYEKtXad2qswvYXdetsfVgvnpfPAjrOrsWHPwhxkfM14dvkfcEk5CdE4erLNDRVxAg4NGIf45QVMjevSgcMW1VWGKVDArz4qpSNnDNrALHNWdD9SfU0u+t4/eqJeuDED1kK8N7e2Ux8yy4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gUwpgeHS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B38A2C433C7;
-	Wed, 21 Feb 2024 21:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708551480;
-	bh=9oOl86N850lxplmi/fO/ptHo5glf8VI/jrIlpQnN4nQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gUwpgeHSO142RKuGwIXhScBu/2cWKaelACWeOtQaATMpwLNtmAhe7poC6xPinYXbi
-	 Pw0h3MgztfEi/qIXYF4mTyADgknquKPVgPLWiDPGfUKSPJSkGugrBQpwooGSCI5ykE
-	 PTJ1B7I9pd3+cNrqFs6TUychg9izY9QUcKU0XKL5Fcgp5faOxC9TwvqMJARlVuctr1
-	 zXwUV3b4PUd9uAW4vxP1qrfXqMeSARav+HY9fub4BB6q1p+eiMb7mPyNguEK7ULMTt
-	 CLAXyxk0TWXK+F62AuVAzwbnUpt8avb8GaWIV0Id0n7h+mCLi7n0+tMy37jeISGSIT
-	 gbmzKWRLlukmg==
-Date: Wed, 21 Feb 2024 21:37:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	denis.ciocca@st.com, linus.walleij@linaro.org,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] dt-bindings: iio: st-sensors: Add IIS2MDC magnetometer
-Message-ID: <20240221-lubricant-machine-79054f117eb0@spud>
-References: <20240221175810.3581399-1-m.felsch@pengutronix.de>
- <20240221-undecided-union-4078db711693@spud>
- <20240221191644.5r3ylr5w3cnfnrzj@pengutronix.de>
- <20240221-imitate-molar-81d93285ac77@spud>
- <20240221194518.3sm4o5i274ldpvzf@pengutronix.de>
+	s=arc-20240116; t=1708551574; c=relaxed/simple;
+	bh=jqYo7h2YXWcMs5AWREXDn7EWPpgSADQ3tsD4mbKIFfM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nYyr2AnmjYjFS9jmx6C+gfeOyWQ49vgEBrUOjxrXqv9PY7YhjIxC9NXD0dPLYcDtyiO3tEEHx4Eg5rcC7GKc+RrAOPsxEd60T551FWyJn8Yv6eNraRgC+Nq0kFkcF+g/g11RK0Vyd9fTJQLeIvLAWTUKo+ffM0snJ7OmjY7c8ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RhR/G7VP; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c15b7b36bbso448842b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:39:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708551572; x=1709156372; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w5MCkEryFiRa1ysNZ3z0nVCsM2akZXoTubQv06eoNko=;
+        b=RhR/G7VPRa2j8yBu2VEWkVGL2Z+7HeHpLpJ60+Ar/w1l+le1dBmH3P7Q8wBATa6q/M
+         2yD/V2uwtWA6hnXuUGrhEBi/VRCr27BSyazhgC8hvVP0xVY1gpZC1PH7J1DC4HrLM5Va
+         6zodn1ElA2szYc/X6w4gsCU6hS7+G/1y1SBiuDCTc1Q8ttm06ERqkXO1YWUDWhneNqC3
+         3MuxtbJaF5jgtd3uQQLcLHROBiCfzciI/2cNk01l9C7J2lj216Q8GVUtZRWWsNEVwzby
+         lRBayXUNMHtnPw+VMMya08z5HApyAkBbCvONR6xJAdWCjkhD7kTcyOlE/ONDrbaKRhzB
+         6vRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708551572; x=1709156372;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w5MCkEryFiRa1ysNZ3z0nVCsM2akZXoTubQv06eoNko=;
+        b=f+2Shvl9GIzEna+RJVmFdvBJzs6bEniVdEJzzYCjkTOfROMWivI3H0fCeuqePWauob
+         NaBKoj5T7xxY9QHrfNAAjdRi3lBiqMHbnYk1bi/Ww8HyLyIyN85FDA9Sqr6j/JbIW8Qx
+         CSl4gFKT1NQ+E+VxbFZyIjfeOrCXW0CZTB+Paa6XB+mxDo2sFtkE5QDoyNv0s+lNg/5i
+         Gjb1hsqEk6JiDRQ+lCqUhxobO2uJ8C3ucy5+DdX6F9kg8mgC5nDe9Ntc3me47xwCc4DE
+         pfAgTjuw4WknS2geOBGSCrS1XtTMBc1ofiFF0LU99z1gOfn+QhIzObf1IQaXW5mUbBoc
+         m8LA==
+X-Forwarded-Encrypted: i=1; AJvYcCUPXwBjA8CcvNqktFeCmC1HwIjUtd4pkMJkjasb37ZjmVmKOhGGfpZ69p95UBYCp971segBqgPrZgiYPi8HsoBV05vbaROZGAIv8jUD
+X-Gm-Message-State: AOJu0YxkP5jOGmsNvtdppTYgIiCUCrbt/TxPk1NVwBDvswpNveij0EnA
+	FGoIXx5hBmp7GhOgTUnTE1TPEcRttli2krrDxMj0ut4+C+xbL7sE3wJthsCZgQ==
+X-Google-Smtp-Source: AGHT+IEke1iPYKpZ3QSx5txoAmT+uWXJLLZvmFp3MPBAgWHg4JAZsS7w271x8WQKocYGCSxPXTr1Fw==
+X-Received: by 2002:a05:6808:30a9:b0:3c1:6036:8026 with SMTP id bl41-20020a05680830a900b003c160368026mr10133237oib.8.1708551572568;
+        Wed, 21 Feb 2024 13:39:32 -0800 (PST)
+Received: from FreeCalypso.domain_not_set.invalid ([2806:106e:19:4bb8:77c:948e:6b1f:1907])
+        by smtp.gmail.com with ESMTPSA id j17-20020aca1711000000b003c0b874ef8fsm1666773oii.32.2024.02.21.13.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 13:39:32 -0800 (PST)
+From: Alfredo Cruz <alfredo.carlon@gmail.com>
+To: linux@armlinux.org.uk,
+	arnd@arndb.de,
+	u.kleine-koenig@pengutronix.de,
+	shawnguo@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Alfredo Cruz <alfredo.carlon@gmail.com>
+Subject: [PATCH] ARM: sa1111: fix put_device() before device_add() in error path
+Date: Wed, 21 Feb 2024 22:38:37 +0100
+Message-ID: <20240221213837.27605-1-alfredo.carlon@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aCdhMTuN5ae1nNlN"
-Content-Disposition: inline
-In-Reply-To: <20240221194518.3sm4o5i274ldpvzf@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 
+When request_resource() fails, a jump is made to err_resource label which
+calls put_device() on &dev->res without adding it first.
+Kept the err_resource label and moved put_device() to err_add label.
 
---aCdhMTuN5ae1nNlN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alfredo Cruz <alfredo.carlon@gmail.com>
+---
+ arch/arm/common/sa1111.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, Feb 21, 2024 at 08:45:18PM +0100, Marco Felsch wrote:
-> Hi Conor,
->=20
-> On 24-02-21, Conor Dooley wrote:
-> > On Wed, Feb 21, 2024 at 08:16:44PM +0100, Marco Felsch wrote:
-> > > On 24-02-21, Conor Dooley wrote:
-> > > > On Wed, Feb 21, 2024 at 06:58:10PM +0100, Marco Felsch wrote:
-> > > > > Add the iis2mdc magnetometer support which is equivalent to the l=
-is2mdl.
-> > > > >=20
-> > > > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> > > > > ---
-> > > > >  Documentation/devicetree/bindings/iio/st,st-sensors.yaml | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > >=20
-> > > > > diff --git a/Documentation/devicetree/bindings/iio/st,st-sensors.=
-yaml b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
-> > > > > index fff7e3d83a02..ee593c8bbb65 100644
-> > > > > --- a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
-> > > > > @@ -64,6 +64,7 @@ properties:
-> > > > >            - st,lsm9ds0-gyro
-> > > > >        - description: STMicroelectronics Magnetometers
-> > > > >          enum:
-> > > > > +          - st,iis2mdc
-> > > >=20
-> > > > Without a fallback compatible to the equivilent device, how does a
-> > > > driver bind to this device?
-> > >=20
-> > > I skimed the datasheets and the driver already handles this binding
-> > > exactly the same as the st,lis2mdl, so my assumption is they do match.
-> > >=20
-> > > Why do I you think we need a fallback compatible here?
-> >=20
-> > I didn't look at the driver, there was no mention of the driver already
-> > having (undocumented) support for it. Since there was no driver change
-> > alongside this patch, I thought you'd need a fallback compatible to
-> > allow the driver to match against a compatible it recognises.
->=20
-> I explicitly did not mention the driver in the commit message else I
-> would have got a response like "dt-bindings have no dependency to
-> drivers" ;)
+diff --git a/arch/arm/common/sa1111.c b/arch/arm/common/sa1111.c
+index 1fbd7363cf11..76bf15da5115 100644
+--- a/arch/arm/common/sa1111.c
++++ b/arch/arm/common/sa1111.c
+@@ -779,8 +779,8 @@ sa1111_init_one_child(struct sa1111 *sachip, struct resource *parent,
+ 
+  err_add:
+ 	release_resource(&dev->res);
+- err_resource:
+ 	put_device(&dev->dev);
++ err_resource:
+  err_alloc:
+ 	return ret;
+ }
+-- 
+2.43.2
 
-Putting it under the --- line is always an option. Where there are
-existing users but the compatible is just undocumented, this it's
-helpful to do.
-
-> > Besides, having fallback compatibles is the norm when one device has the
-> > same programming model as another.
->=20
-> Not for this binding according the driver.
-
-If they don't have the same programming model, then describing them as
-"equivalent" wouldn't be correct. That said, they seem to use the same
-sensor settings when alls said and done (see st_magn_sensors_settings),
-so I think they are actually compatible even if the driver has separate
-match data for each.
-
-Cheers,
-Conor.
-
---aCdhMTuN5ae1nNlN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdZtMgAKCRB4tDGHoIJi
-0mhFAP4uPT1KilNvuJy11JVEqyK46NkPn3I0vD5H1rPev9iSUQD/c2IAJZDAfJpg
-j6ckgYP2rWSx/t9GqIONxFD8RfJMegM=
-=nU5D
------END PGP SIGNATURE-----
-
---aCdhMTuN5ae1nNlN--
 
