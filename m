@@ -1,127 +1,164 @@
-Return-Path: <linux-kernel+bounces-74564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFF885D608
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:49:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516B585D60A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68EF4283DCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08A291F24208
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C9D3D0BF;
-	Wed, 21 Feb 2024 10:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OYsFWyE/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B413DB8C;
-	Wed, 21 Feb 2024 10:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131813EA71;
+	Wed, 21 Feb 2024 10:49:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3187B3F8D1;
+	Wed, 21 Feb 2024 10:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708512576; cv=none; b=o8qMdGpomAuHCeWw7wvq7hsbz25YUPaDHdHI+N8CX8G65KRifHq4cLD9/xTR83QIlnOi6cMQfGPdCZr5U7eXLtyVQoOggVAQ+NEkf56tYvHGGdDRRiNkDdzNgnIoHDsQdv+EQ1Te7IwaIppVoGYXIje+o2zlQmVt0PZzDSEHiFY=
+	t=1708512580; cv=none; b=EFaW2aChIZfwZLFwgGCxW68wCJW9R9okEKSMHJzrpVHpXMYmDtsz54NMFVyb8YcfRy4KXzOrgBsZ+WmnwHbEsOCAbkif9VMW/JrTcVCPxfRQuEUTJgW62R3Gr72zBvMlk0Qlehl7oMTa2flxhiOhN953+b9bAo+SQ7zqYa5Vij0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708512576; c=relaxed/simple;
-	bh=arxOax1Fal/10bdeaxUbFAhv0i0ETEjU7HQwbaIn75g=;
+	s=arc-20240116; t=1708512580; c=relaxed/simple;
+	bh=wacTz1ELhyQDBUYMDg6UXzsrdAj+sf1BNPx+vVtNVR8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TqVKbwCtgFtz/g+2yFKPkGri/StPjoJDqe7qf3j4GEyeg5dyff0K0wF1fxTNjpoGcQEaDP6xT8sX8zhyBazHmKwdnVRTJtCNDi8dh4QxVe48zhaNbL1kUz8ptECqTx2EFNHuJVuQ6Qr6MZaKGebskU/gaSnktehrk2AviwRFmMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OYsFWyE/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89CD3C43390;
-	Wed, 21 Feb 2024 10:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708512575;
-	bh=arxOax1Fal/10bdeaxUbFAhv0i0ETEjU7HQwbaIn75g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OYsFWyE/axhIQyem8BlEb5Ux6m0afNO6l13t/w6dbXBZgrmIJqP9sVdkEdmxr4B0U
-	 avzMjmA1I49P+Bpx3W+kUjbSUdRo5iZG79GKt9wN6PZ9D7g44BTG1tVu6lBMGqgP/g
-	 r/cup2peMrEjBECspg5qHvQNbViQ7EgesHMR39ONcLFExoMUsZ65ZeLAAnVpbcVUSh
-	 ZOysjfBS4YmYCkGJalQnzgDnxLlJ88OjTB4ub9w9NYCEBG45erbSvQJ/r7pvNj/s5+
-	 qbYMLvcrR++Ytd5md6atdT0c903u1FXjCbl8tymwS1+dI3205R2la9I4XhlGFgBL7G
-	 M8abO1W7lgXsw==
-Date: Wed, 21 Feb 2024 11:49:27 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: bhelgaas@google.com, cassel@kernel.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
-	hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
-	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	manivannan.sadhasivam@linaro.org, robh@kernel.org,
-	s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH v11 07/14] dt-bindings: imx6q-pcie: Clean up
- irrationality clocks check
-Message-ID: <ZdXVN17SogJG1RgZ@lpieralisi>
-References: <20240220161924.3871774-1-Frank.Li@nxp.com>
- <20240220161924.3871774-8-Frank.Li@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IxkIlaX6AFPXbbRiEkHx0shj19E58BbNUETDk+S0d4joKEFHsEPS+NSin2PLt6uXH9dwNcCrjiEdhVlWPc2XMHs+C3dLcpj0Gnf3FbrdKWmnvQAAEjVr07wdOsG4QrpIkRljzbIa+ZyA4C/z8M4IPDszNbcM3cvs7rHqk/Bpx4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08AB8FEC;
+	Wed, 21 Feb 2024 02:50:16 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.65.90])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64BF53F73F;
+	Wed, 21 Feb 2024 02:49:36 -0800 (PST)
+Date: Wed, 21 Feb 2024 10:49:31 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, nathan@kernel.org,
+	nicolas@fjasle.eu, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kbuild: Use -fmin-function-alignment when available
+Message-ID: <ZdXVO45Y0Nr3D25Q@FVFF77S0Q05N>
+References: <20240215151642.8970-1-petr.pavlu@suse.com>
+ <CAK7LNAS=knGxd9ZRo37CaKTvjcc28bqNasx+XuqbV3S+XV=HtQ@mail.gmail.com>
+ <9b067ec7-34e2-437b-a41b-319aaee4c7e6@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240220161924.3871774-8-Frank.Li@nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b067ec7-34e2-437b-a41b-319aaee4c7e6@suse.com>
 
-Irrationality ? I think you mean "duplicate" or "redundant" ?
+On Wed, Feb 21, 2024 at 11:38:38AM +0100, Petr Pavlu wrote:
+> On 2/20/24 14:39, Masahiro Yamada wrote:
+> > On Fri, Feb 16, 2024 at 12:16 AM Petr Pavlu <petr.pavlu@suse.com> wrote:
+> >>
+> >> GCC recently added option -fmin-function-alignment, which should appear
+> >> in GCC 14. Unlike -falign-functions, this option causes all functions to
+> >> be aligned at the specified value, including the cold ones.
+> >>
+> >> Detect availability of -fmin-function-alignment and use it instead of
+> >> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
+> >> and make the workarounds for the broken function alignment conditional
+> >> on this setting.
+> >>
+> >> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+> >> ---
+> > 
+> > [snip]
+> > 
+> >> index dfb963d2f862..5a6fed4ad3df 100644
+> >> --- a/kernel/exit.c
+> >> +++ b/kernel/exit.c
+> >> @@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
+> >>   *
+> >>   * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
+> >>   */
+> >> -__weak __function_aligned void abort(void)
+> >> +#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
+> >> +__function_aligned
+> >> +#endif
+> >> +__weak void abort(void)
+> >>  {
+> >>         BUG();
+> > 
+> > 
+> > 
+> > 
+> > 
+> > __function_aligned is conditionally defined in
+> > include/linux/compiler_types.h, and then it is
+> > conditionally used in kernel/exit.c
+> > 
+> > This is unreadable.
+> > 
+> > 
+> > 
+> > 
+> > You may want to move CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
+> > to include/linux/compiler_types.h, as this is more
+> > aligned with what you did for __cold.
+> > 
+> > 
+> > 
+> > if !defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) && \
+> >                CONFIG_FUNCTION_ALIGNMENT > 0
+> > #define __function_aligned       __aligned(CONFIG_FUNCTION_ALIGNMENT)
+> > #else
+> > #define __function_aligned
+> > #endif
+> > 
+> > 
+> > 
+> > 
+> > 
+> > However, an even more elegant approach is to unify
+> > the two #ifdef blocks because __cold and __function_aligned
+> > are related to each other.
+> > 
+> > 
+> > 
+> > #if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || \
+> >                  (CONFIG_FUNCTION_ALIGNMENT == 0)
+> > #define __cold                 __attribute__((__cold__))
+> > #define __function_aligned
+> > #else
+> > #define __cold
+> > #define __function_aligned     __aligned(CONFIG_FUNCTION_ALIGNMENT)
+> > #endif
+> 
+> I didn't want to make __function_aligned conditional on
+> CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT because the macro has a fairly
+> general name. One could decide to mark a variable as __function_aligned
+> and with the above code, it would no longer produce an expected result
+> when -fmin-function-alignment is available.
+> 
+> __function_aligned was introduced c27cd083cfb9 ("Compiler attributes:
+> GCC cold function alignment workarounds") only for aligning the abort()
+> function and has not been so far used anywhere else.
+> 
+> If the above unification is preferred, I think it would be good to
+> additionally rename the macro in order to prevent the mentioned misuse,
+> perhaps to __force_function_alignment.
+> 
+> #if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || \
+> 		(CONFIG_FUNCTION_ALIGNMENT == 0)
+> #define __cold				__attribute__((__cold__))
+> #define __force_function_alignment
+> #else
+> #define __cold
+> #define __force_function_alignment	__aligned(CONFIG_FUNCTION_ALIGNMENT)
+> #endif
+> 
+> Would this be ok?
 
-Lorenzo
+FWIW, renaming this to __force_function_alignment makes sense to me, and I'm
+happy with the above.
 
-On Tue, Feb 20, 2024 at 11:19:17AM -0500, Frank Li wrote:
-> The bindings referencing this file already define these constraints for
-> each of the variants, so the if not: then: is redundant.
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v7 to v8
->     - add Manivannan Sadhasiva's Ack tag
->     Change from v6 to v7
->     - rewrite git commit message by using simple words
->     Change from v5 to v6
->     - rewrite git commit message and explain why remove it safely.
->     - Add Rob's Ack
->     Change from v1 to v4
->     - new patch at v4
-> 
->  .../bindings/pci/fsl,imx6q-pcie-common.yaml      | 16 ----------------
->  1 file changed, 16 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> index d91b639ae7ae7..0c50487a3866d 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> @@ -150,22 +150,6 @@ allOf:
->              - {}
->              - const: pcie_phy
->              - const: pcie_aux
-> -  - if:
-> -      properties:
-> -        compatible:
-> -          not:
-> -            contains:
-> -              enum:
-> -                - fsl,imx6sx-pcie
-> -                - fsl,imx8mq-pcie
-> -                - fsl,imx6sx-pcie-ep
-> -                - fsl,imx8mq-pcie-ep
-> -    then:
-> -      properties:
-> -        clocks:
-> -          maxItems: 3
-> -        clock-names:
-> -          maxItems: 3
->  
->    - if:
->        properties:
-> -- 
-> 2.34.1
-> 
+Mark.
 
