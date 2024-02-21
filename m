@@ -1,190 +1,115 @@
-Return-Path: <linux-kernel+bounces-74308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 643DE85D29C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:32:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0CD85D29D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 184BA281F5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:32:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5313FB23E85
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A172E3C499;
-	Wed, 21 Feb 2024 08:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF913C493;
+	Wed, 21 Feb 2024 08:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pmKMlNEB"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="R7Z6pgaU"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F103B2AD
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F303BB37
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708504333; cv=none; b=Upe58eRy/CcowifXoR/DJdgdHKhwtHQSkI3AxYAYwH1zid6kB+kmtUuR689cJCwJIu1iUmlRlUNeg7hq687OvhMvKzYuM1jGUE3lIRyXN2fp/cR2K9ttlA8NhgZhdECbyHttvgW1CReqmCCe7WUCCEruZMH4RbzsNkC5o9vSBlI=
+	t=1708504378; cv=none; b=MJy4WOx/JBpz1hqxRFCuQg1oCsrC05XFVd8Xh9dZZP0SryFScr4aJS8obHbirPUGT7SBJYtFIcTvFGgonvgJbRP2Q87wSdb4DR5ruZmoBGwEfUQ0Nzz2N9k/X8gGPC7iPfFDLF6tfJBUcB+oyxdGmi5AEZ+GKZQtE81gBYWbxrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708504333; c=relaxed/simple;
-	bh=sRSdcdgUW77LnHXhmWN7ej8KZgqG5Mf2zjrzhHO5WMI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kd+1Q6bTIDwLKkGTBESvw0FauV+/Ml/u5iK/vNSaanX4QuDhwW64k391lmGOP+OMJRfWmet1aSirvLZLev0PMKWcnx1CXjf80JBVDVufTmIAS2+hh9AqFSh2Hmzh9DC0zOaa3GHSoX0flDq4gHr5N2IbkMot8iz70+jWNzabm14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pmKMlNEB; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso7926183a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:32:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708504330; x=1709109130; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mdaaffL3wD5KD94WUbRUHLkXwdrsOL+Wu2EeIoyFzc4=;
-        b=pmKMlNEBTctzSlnyN/Ul+B2pVC8KyJKlryVsME/yLvz0RZUNVdZg9jCPWDgtJ8l3XH
-         EHPopxZZnpjrndOBwLfi9r0SgP8TosCQlCfWitvqdVB2qQedb2L5qMCdK674mnoI0OMv
-         kJaZ54kVQw8LClqJRqgNY5BjkfcTE6p0kdLCC3W2AlGyNO227HH6/+juRu2UB/I9wbUR
-         FsIj71tL/stam7rXGVLihJsHIyLWk4PYZI/RjJHhR3TrGTv5IEQ6mfuDTqaKoxcfVDLt
-         Ey65I8OQrR0n/UpYGygtJNFTn0XAqPpX/+tr4bS5RSf5ClrwVT51FKMT9xzjPlApA0KT
-         EY5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708504330; x=1709109130;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mdaaffL3wD5KD94WUbRUHLkXwdrsOL+Wu2EeIoyFzc4=;
-        b=MiOjmOQSd5lmNrxyc4LZUPIhJWZhke68i7DR3xQzak9+KH0kax8oivLS4iRCCPq2Ni
-         o7+Ki0sMNSpT3ZAMoaDoCta548QX9SdilZA9fbI8qIBTr4GDTvU8ayAnTyuQtHTAUM1p
-         g5V9jwadQqUgZ88BcnBNRS2ZFK04mOVEBxtfBON7xEjStkpAFn9fubIvDfzx1Hvb3nzb
-         owxrNb37nJTQM7MHtjeHekVCYU03QI5e+pKHT1gtxrThGcgfRSya3ZQoiXuupiBFfuUi
-         Lnuql0UgpH3zN/V+QPTnkYb20/Ctwyk74//eH7RmHk5FKG48Q0h3NnZg5pHlBH45YW19
-         HifA==
-X-Gm-Message-State: AOJu0YwY+EDjYP7vegG5NHYI4/REzy6rMFV+C2aFffyH8pxB9RdFrv0Z
-	QxVKKBdSpR6oe45wqbID5D/QmlZ6O18z/J8WZ/gCEBrQiFYBHAq2xguXlzwEIi2EG75VtmspDXr
-	M
-X-Google-Smtp-Source: AGHT+IH9KMqx8QDcnCemy8gJRJYvooBAsmB/Xn3nukq19T9gvsWue069jVrFWuwLH/iuRYOvICmeSA==
-X-Received: by 2002:a05:6402:17c4:b0:563:ccd1:26bd with SMTP id s4-20020a05640217c400b00563ccd126bdmr10123229edy.2.1708504330133;
-        Wed, 21 Feb 2024 00:32:10 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id fj21-20020a0564022b9500b00564da28dfe2sm916763edb.19.2024.02.21.00.32.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 00:32:09 -0800 (PST)
-Message-ID: <21ad2752-ad25-451a-b892-6b3b31c1031a@linaro.org>
-Date: Wed, 21 Feb 2024 09:32:07 +0100
+	s=arc-20240116; t=1708504378; c=relaxed/simple;
+	bh=B7JSsIhz2lakrY2mDFlX5ma7aLC+4cAGzWTKeazAoD4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LilI3dG2H5uYjjXFM3tSTYksqB2NAF0aO6tAkYxsiiqfaTxdBG7L3A9bp1lNLerGIvqlb5cn3G5kvSFRSee7So85VTEHcYiCShiGALMV9hO1vRWVEBs7MQRKgXK9fFjmu+WxakwBzM/8kFkSyAQtoDWvEFsh/a81NjNeqpRF3y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=R7Z6pgaU; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3101A1C0004;
+	Wed, 21 Feb 2024 08:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708504371;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/O0u/zSlutQp0nOXmYUgakHqJLFyHa3N/CYJjeJxzeQ=;
+	b=R7Z6pgaUldd207hxJfJcnQjh7VprZyrgdZVVzOZbB6x0vAOMbdbRMX70JpaxQ7WoBajaQm
+	GyQ72uUlXd41adHhmdtHzkbKyw6AWW/T2PeaENr5cakObB4lGeT1M35rZA+6oU1bbUQY2H
+	7YtJ77mRjJrMrzz5wHkcsNfCqmbZECiWhG1yrzYj/lfeau3OEhcbW+IZWcY6tCcZZ1bd06
+	iGdbOaIWKAXaU9OGQRS565owEAesrfHayisjP7Q1a/s26fLVd67YNq9zjKiiwSHuhLWYy8
+	gU28y8/BHUnUp+BIOdmhxiTQfcgbjutC3eECAUvNtDpv0nGQbYypfRN8VPShHg==
+Date: Wed, 21 Feb 2024 09:32:47 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: William Zhang <william.zhang@broadcom.com>, Linux MTD List
+ <linux-mtd@lists.infradead.org>, Linux ARM List
+ <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
+ <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
+ kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
+ <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
+ <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH v5 11/12] mtd: rawnand: brcmnand: exec_op helper
+ functions return type fixes
+Message-ID: <20240221093247.5297f1f3@xps-13>
+In-Reply-To: <f6e61482-b51a-4970-9257-8db7975148fa@moroto.mountain>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+	<20240207202257.271784-12-william.zhang@broadcom.com>
+	<20240220110240.1ad5b995@xps-13>
+	<f6e61482-b51a-4970-9257-8db7975148fa@moroto.mountain>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] memory: stm32-fmc2-ebi: add MP25 support
-Content-Language: en-US
-To: Christophe Kerello <christophe.kerello@foss.st.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- devicetree@vger.kernel.org
-References: <20240219140202.85680-1-christophe.kerello@foss.st.com>
- <20240219140202.85680-4-christophe.kerello@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240219140202.85680-4-christophe.kerello@foss.st.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 19/02/2024 15:02, Christophe Kerello wrote:
-> Add the support of the revision 2 of FMC2 IP.
->      - PCSCNTR register has been removed,
->      - CFGR register has been added,
->      - the bit used to enable the IP has moved from BCR1 to CFGR,
->      - the timeout for CEx deassertion has moved from PCSCNTR to BCRx,
->      - the continuous clock enable has moved from BCR1 to CFGR,
->      - the clk divide ratio has moved from BCR1 to CFGR.
-> 
-> The MP1 SoCs have only one signal to manage all the controllers (NWAIT).
-> The MP25 SOC has one RNB signal for the NAND controller and one NWAIT
-> signal for the memory controller.
-> 
-> Let's use a platform data structure for parameters that will differ
-> between MP1 and MP25.
+Hi,
 
+dan.carpenter@linaro.org wrote on Wed, 21 Feb 2024 09:16:31 +0300:
 
-..
+> On Tue, Feb 20, 2024 at 11:02:40AM +0100, Miquel Raynal wrote:
+> >=20
+> > william.zhang@broadcom.com wrote on Wed,  7 Feb 2024 12:22:56 -0800:
+> >  =20
+> > > From: David Regan <dregan@broadcom.com>
+> > >=20
+> > > fix return type for exec_op reset and status detect helper functions
+> > >=20
+> > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/=
+102423.html
+> > > Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+> > > Signed-off-by: David Regan <dregan@broadcom.com>
+> > > Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> > > Reviewed-by: William Zhang <william.zhang@broadcom.com> =20
+> >=20
+> > By the way, a Cc: stable tag might be useful as otherwise you may leak
+> > an error code in a status value (which is a bug). And move this patch
+> > first in your series so we're sure it does not conflict with any of the
+> > other patches and can be backported more easily. =20
+>=20
+> The original commit 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op
+> implementation") is not in stable so we should be okay on this.
 
-> +
->  	ebi->regmap = device_node_to_regmap(dev->of_node);
->  	if (IS_ERR(ebi->regmap))
->  		return PTR_ERR(ebi->regmap);
-> @@ -1190,9 +1502,11 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_release;
->  
-> -	ret = stm32_fmc2_ebi_save_setup(ebi);
-> -	if (ret)
-> -		goto err_release;
-> +	if (ebi->data->save_setup) {
+Right.
 
-This cannot be NULL.
+However please send again this patch quickly so I can queue it up
+before the rest of the series.
 
-> +		ret = ebi->data->save_setup(ebi);
-> +		if (ret)
-> +			goto err_release;
-> +	}
->  
->  	platform_set_drvdata(pdev, ebi);
->  
-> @@ -1238,7 +1552,9 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
->  	if (ret)
->  		return ret;
->  
-> -	stm32_fmc2_ebi_set_setup(ebi);
-> +	if (ebi->data->set_setup)
-
-This cannot be NULL.
-
-
-
-Best regards,
-Krzysztof
-
+Thanks,
+Miqu=C3=A8l
 
