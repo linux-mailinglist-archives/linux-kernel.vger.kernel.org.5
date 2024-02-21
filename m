@@ -1,94 +1,160 @@
-Return-Path: <linux-kernel+bounces-74147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 124AA85D070
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:24:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8DC485D078
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:25:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4335C1C2267A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:24:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EE7C1F237B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25793A1B8;
-	Wed, 21 Feb 2024 06:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D773AC19;
+	Wed, 21 Feb 2024 06:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="49izGoR4"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NKTvoGO6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE934A1D
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B97C3A1BC;
+	Wed, 21 Feb 2024 06:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708496520; cv=none; b=urxgZRDNR0R8/rHXFnsL+I/8OSRlAvGE1gjOUzLwfrQFl8rPxS5OPMCoINP6VskeAiwS8CryjmGoOjV7Wo5zvvlR4dZ+8dA2UEJitKkw4oJeDX8NYPrJXjXJHSyCofrdVdEPq/xzhvPYP/FpxXpSRO9496ATFY//yKogAz9wAS4=
+	t=1708496611; cv=none; b=ICYym6DcU0GuT59UVfJjESiDlhTMmMs27Mt9dj/YRCY4MsoUJp7KPt/PQ60GBgr2YZXTyE8qfe/09+QJTO3efRyTl1Q4ZZUyrP/d3EQRItLfduHSsaapwna2lO9h2SenVKyAAbyHTs5/xQkPcHUDniBcgt8jUcLloilAsTySyv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708496520; c=relaxed/simple;
-	bh=vAVbgIHkYAJyh5yqrJMHBFVJN83YshqRAh3wdY4viiQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mIp4FJccV8l3AQ8AmoZIX0EIJwsC2Z6VY8xYpUsY1F8FjZOTQp0on/elHGQHLOVAn2C7EobVUnfLEiE3mMVaaG8RC3orlOx9a9bU1lsn7qY7/+NwLP+rf4RrfjuBrX+X7C0f1/dShW8NdWJvJgpAj/JPmaIDQSiIPbLNHRm133E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=49izGoR4; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=rqPhx6jr1tPSwcKB6bnF+kRoDxCAr/BNcrz1uhr4xAw=; b=49izGoR4zV59g+0+Qb+7EzeROo
-	y1Rd/5CNW5OiFIfKgXpzT79K6uxgW3OzVpYZZuDyp3t9gyAGbWTDDgrvQYMHshIFyhfe33b3HfvdF
-	WLz7CdovH0baZwIyFsI6csRMOD2jdlsr0TE6sPp6Ttq8BfinpYowG9HYZDL1d7Ej+43gLqxiI/rLi
-	7tUojxY4w7xaVw5NwurPF+3tRWAWyiWrp3SBW9PoncAh3lMfnfHD4QcR34DMqbXltFnWVg+dGKe8D
-	kdfPmk0aT4IoH2/THk1xDUuwOL60n+W16AsAA8KmmL4D80s3+fWq9ZJeH1/kNiRshEpxPl8CHx0Mz
-	68t9LFUA==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcfzS-0000000HJed-0pKJ;
-	Wed, 21 Feb 2024 06:21:58 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] firmware: arm_scmi: optee: fix struct kernel-doc warnings
-Date: Tue, 20 Feb 2024 22:21:57 -0800
-Message-ID: <20240221062157.8694-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1708496611; c=relaxed/simple;
+	bh=0lWBlh6xitCkQRn/+82kIvUqjqF7tK3nFPTc+NjV+nA=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=bui+0NFQfhjbUCTNW8D4z/Bj4uOmOFUsl8IhEyQveqEHpcLAa5fjtdLaFYsnBjWubvEoo2Ynq5HTKytbbJvUzm24uhp/1n/lKkF/FyoUBDVPbtGYxRLBUj7wA9EVIiGwWZbCFzmyfUzwL8LO83GEOyxfMfWd+TjNkpwwtDt6hkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NKTvoGO6; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708496610; x=1740032610;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=0lWBlh6xitCkQRn/+82kIvUqjqF7tK3nFPTc+NjV+nA=;
+  b=NKTvoGO6t7BIlMvVk5wO3P6Q9/Kp30HCyXBMJTrvfe84DEMzFLiWIfQk
+   Bu3AjdsRHtQ6oDv9FNWXvqFSJwBWq/ojUEpmRp4myeiZPa0+xdODPOIZ7
+   4nisriCAq+c5gW5hLFxZpKGaEKreDC/zpjy/6rcCAHP+EglnyzuAWM7uj
+   d8MtShMpyfQqpX0Nt0QEhTJ6bQaXReNjY5oPKxTxrzasc5Ej7m0+fr85o
+   dSAi8bhGsTbk2NWh067sSylJ53WaPdn6ouSuTCfvFiAStdJ8V3rSOUBCY
+   vp/6WIykfGhCwun9eh5l852W0InjfPrzd/+1lNMdiId8wMi/Ky9q+wM9s
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="13758070"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="13758070"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 22:23:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="827290820"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="827290820"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 20 Feb 2024 22:23:26 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+Date: Wed, 21 Feb 2024 00:23:20 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jhao6nzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Fix the kernel-doc notation for the nested union in struct
-scmi_optee_channel to eliminate kerenl-doc warnings:
+StartHi Kai
+On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+[...]
+>
+> So you introduced the work/workqueue here but there's no place which  
+> actually
+> queues the work.  IMHO you can either:
+>
+> 1) move relevant code change here; or
+> 2) focus on introducing core functions to reclaim certain pages from a  
+> given EPC
+> cgroup w/o workqueue and introduce the work/workqueue in later patch.
+>
+> Makes sense?
+>
 
-optee.c:130: warning: Excess struct member 'shmem' description in 'scmi_optee_channel'
-optee.c:131: warning: Function parameter or struct member 'req' not described in 'scmi_optee_channel'
+Starting in v7, I was trying to split the big patch, #10 in v6 as you and  
+others suggested. My thought process was to put infrastructure needed for  
+per-cgroup reclaim in the front, then turn on per-cgroup reclaim in [v9  
+13/15] in the end.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
----
- drivers/firmware/arm_scmi/optee.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Before that, all reclaimables are tracked in the global LRU so really  
+there is no "reclaim certain pages from a  given EPC cgroup w/o workqueue"  
+or reclaim through workqueue before that point, as suggested in #2. This  
+patch puts down the implementation for both flows but neither used yet, as  
+stated in the commit message.
 
-diff -- a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
---- a/drivers/firmware/arm_scmi/optee.c
-+++ b/drivers/firmware/arm_scmi/optee.c
-@@ -109,8 +109,10 @@ enum scmi_optee_pta_cmd {
-  * @rx_len: Response size
-  * @mu: Mutex protection on channel access
-  * @cinfo: SCMI channel information
-- * @shmem: Virtual base address of the shared memory
-- * @req: Shared memory protocol handle for SCMI request and synchronous response
-+ * @req: union for SCMI interface
-+ * @req.shmem: Virtual base address of the shared memory
-+ * @req.msg: Shared memory protocol handle for SCMI request and
-+ *   synchronous response
-  * @tee_shm: TEE shared memory handle @req or NULL if using IOMEM shmem
-  * @link: Reference in agent's channel list
-  */
+#1 would force me go back and merge the patches again.
+
+Sorry I feel kind of lost on this whole thing by now. It seems so random  
+to me. Is there hard rules on this?
+
+I was hoping these statements would help reviewers on the flow of the  
+patches.
+
+At the end of [v9 04/15]:
+
+For now, the EPC cgroup simply blocks additional EPC allocation in
+sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
+still tracked in the global active list, only reclaimed by the global
+reclaimer when the total free page count is lower than a threshold.
+
+Later patches will reorganize the tracking and reclamation code in the
+global reclaimer and implement per-cgroup tracking and reclaiming.
+
+At the end of [v9 06/15]:
+
+Next patches will first get the cgroup reclamation flow ready while
+keeping pages tracked in the global LRU and reclaimed by ksgxd before we
+make the switch in the end for sgx_lru_list() to return per-cgroup
+LRU.
+
+At the end of [v9 08/15]:
+
+Both synchronous and asynchronous flows invoke the same top level reclaim
+function, and will be triggered later by sgx_epc_cgroup_try_charge()
+when usage of the cgroup is at or near its limit.
+
+At the end of [v9 10/15]:
+Note at this point, all reclaimable EPC pages are still tracked in the
+global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
+is activated yet.
+
+
+Thanks
+Haitao
 
