@@ -1,141 +1,129 @@
-Return-Path: <linux-kernel+bounces-75003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E88E985E149
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC8585E157
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:36:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4162284E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84E6C285B7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1AC80626;
-	Wed, 21 Feb 2024 15:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA24B8063C;
+	Wed, 21 Feb 2024 15:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="RHHgZQtD"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="fbRqzzI5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C1F6994A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240267FBC8;
+	Wed, 21 Feb 2024 15:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708529681; cv=none; b=FB4npSVKzm9DESawWlNOBNkXY9pH7/xWxYQ+P61h3fQn7DA67V8Vhg7nRCdBWBSpXJqqiVgNULlomAc+fJ72oIVX+VrHpvTGAmKM9jC5y4f8cY4XQs9hKk6Cypdto4wdjudYVd3mdvkf1L3/6H7xSaDekEXX8QQVBTxJSCGl/3Y=
+	t=1708529782; cv=none; b=BeQsfb4Xlxsu1CoEiQnzYZ8ce6M/RXuqA+7oqN6LI01bEc5Cjw9KLa7L32XgI7pXOyfQMT2spS+8FStS3NRFHM2y6hmpNAOxFCOTraE/nOanpM+lkQfI/nIKbcKfGHSXKU+x7l/V854/zhX0P0rCHVt//h/CdojVjYE/NDn6hzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708529681; c=relaxed/simple;
-	bh=xzTctav8g7TKhopihyy2IToGnTwvpiN27ZeFUg7cgO4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Im0Fp4zxi9ouzwzJj4PoP/lB11CIg4sfiugT3vGEQoTFWtxjmswWam2pw0UyBbb47TuB1NuUdA3qCgGq37xOvkEdKwcjexeaxvFdHRAUWAto5kuZs4O1ZJSRfmonDDZJ57Fjks+1NQjXefWkWoKdPGiX2AdRkvaO24Ti3MryC/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=RHHgZQtD; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78776c82564so126009185a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1708529679; x=1709134479; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lRubVpVSyqj7YKWbIXOAeHuHzuYjiGI0gsbtGXte6ic=;
-        b=RHHgZQtDj4MWHXpzEbXK/P/UfBMBJeJdwPPDfEDF+oT6od7MJz5TPvZpSNmQI/a+Zf
-         jKh7kEkzFOgvFoHuzH2xsGUwGmLf3flXtcj1CzGpcKBer3YW5yG0taDCw9h6B9p52RBs
-         0PZzuSQ2W5Woi9LZQCKo7DEGgbscYwdCfLfEKiLoPcSh9yWb6cyl8zDMC2DvWakrcr9H
-         eWlHwzpKJLBquS0Z4PmtRyJZqv0sKcvWkiFvRACvKNK7vSeIwigQFtJWNiRCJ1Zne1um
-         ZReKhrwR8Hc4tOPd95EoTBu3V4BkOdeXi4L4MwGMEookZ9oQRH1/KOQz+ftX9HJ9+qcT
-         CeWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708529679; x=1709134479;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lRubVpVSyqj7YKWbIXOAeHuHzuYjiGI0gsbtGXte6ic=;
-        b=F5My1jHB/23nQJMEOrg6MBw2z2cr+TNWDm2P+yh5e4pgg2zFAfUCjeBpO+qfWDeM7m
-         BjN4I5pJnPgNTgXNeOFOPYAE1Yk1BTBS8CjctlUYBE2+OeGGSdBJwe8BE02YEZG49hdd
-         CMqJc6ffca3d1ZF0iL8vdoI6qp9oSAqDy/1uP6FIaIrvvNi4Lm2/F/+GBO1TpSIOasC/
-         Ro/axHsY/pogWKNyu2DxdhQ+E/TcGk3skI5dd8/6b6Q/k0S/9c0qawNqk62F+Xsme1lI
-         VOUJ6qRO5evhbHGGxZnmgI2FqE9BZQxh9YpKExoW3q+h6TX20ylVzSJ7VAT00KdsA/pS
-         qEEg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7YTBYRczuH8mP1Awlkpj+NLoVVRcHMMLADDgrvmAg+6wvISfLOq8+sO1z3RuvpFoEl9w3thTEm4Q4wT24PNSSnwRD5TnzJ/CBaiTT
-X-Gm-Message-State: AOJu0YyCZNDPWLegAtONU4ZI/LFhmg8OnladbU0hgjyV8/NyE8lEuZpv
-	vDWEOepIzRhffPrpZwAM8FJ1yvkR/YixqgIWMzcXXDA9ZdTkheBXdNf/lW6BO+E=
-X-Google-Smtp-Source: AGHT+IESD+XDtO4BG0BhqALqKZjZiigRcR8hGs+7no/hgPB+qm/MZcvqa7Zg/lng5dvTDg9XR/51Fw==
-X-Received: by 2002:ad4:5743:0:b0:68f:280f:175a with SMTP id q3-20020ad45743000000b0068f280f175amr21137200qvx.12.1708529678730;
-        Wed, 21 Feb 2024 07:34:38 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id qq3-20020a0562142c0300b0068f9c181fc0sm1307321qvb.113.2024.02.21.07.34.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 07:34:38 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rcocH-00BPeA-Li;
-	Wed, 21 Feb 2024 11:34:37 -0400
-Date: Wed, 21 Feb 2024 11:34:37 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Huang Jiaqing <jiaqing.huang@intel.com>,
-	Ethan Zhao <haifeng.zhao@linux.intel.com>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iommu/vt-d: Use device rbtree in iopf reporting
- path
-Message-ID: <20240221153437.GB13491@ziepe.ca>
-References: <20240220065939.121116-1-baolu.lu@linux.intel.com>
- <20240220065939.121116-3-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1708529782; c=relaxed/simple;
+	bh=jz7bQ0RRoK61Cw9zhVIJUimC34X5/mo8M/CW0Rqtf2w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sE7j8q5DAkwubBgWp60IjI3HLPeiVvlP/4k1e1rldgkC1HTLXAD340B0q9TXdtGjpECZnYUg0D+Z4VK29jz1ROputhJw4mEsul5qD/ith9GCPmAsYhP+9m2sPu5lOKMqrFBxjeYdlGvPRNQkIyZQH3hUNUUBjehHq98r2TOZ/Js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=fbRqzzI5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477ABC433C7;
+	Wed, 21 Feb 2024 15:36:21 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="fbRqzzI5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708529777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jz7bQ0RRoK61Cw9zhVIJUimC34X5/mo8M/CW0Rqtf2w=;
+	b=fbRqzzI5dot6PF85I/FDqACOB44aW4zyUYsUhILas048I9XMxDJZ8gU523UWwrqfVu11V9
+	pTlvCiX+GRlMt5gB7OgU85ckQGSayWvmVIYEuxEqub7J839hk1WIh3HII4BBaVWSoOLx6A
+	Y/e3hwQXECdZ8MRdBwnXrjDep6Du0cM=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 996651aa (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 21 Feb 2024 15:36:17 +0000 (UTC)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607e60d01b2so29073267b3.1;
+        Wed, 21 Feb 2024 07:36:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXJbQTPNyfQU5EwAN+CFlDlDXlSxtISFqkQEeTJaUKphpcxxweLMUtxgyVsrzdaZxZbzz+RBxy3t7sj9UUMYiq77ynMYcb4qMQjBUYMJa4KTnJ1LylcXK7UUQl0mIjP2p+xK7rh
+X-Gm-Message-State: AOJu0Yw59w1q8rZKapHUHkNC5f/QFlPOgmsqAgFoGsNZStelJH7qh+W/
+	uTFCHwdf6UA2q5WtkKB7RidMLpqo0L5WExjiNWQ40UmjdgfI/vI54aYZcl8XIMquxGh378jfnKw
+	hSlkGXKV+wGwYVi96IyxCbb7nr9A=
+X-Google-Smtp-Source: AGHT+IEsVdtIcMbXk+wPT6SZPtutgQaNIU1JGngGnegEtXVIhAaP2QEbpBeZUGbXZ8l2NwEPOjdcpbSY0/xQ3aAXUNY=
+X-Received: by 2002:a81:df02:0:b0:608:8d57:368c with SMTP id
+ c2-20020a81df02000000b006088d57368cmr840841ywn.49.1708529775977; Wed, 21 Feb
+ 2024 07:36:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220065939.121116-3-baolu.lu@linux.intel.com>
+References: <20240221123248.25570-1-Jason@zx2c4.com>
+In-Reply-To: <20240221123248.25570-1-Jason@zx2c4.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Wed, 21 Feb 2024 16:36:02 +0100
+X-Gmail-Original-Message-ID: <CAHmME9r-W5UEok=EsD56grZ_Fy_nJ4u2sUp1CHw0A0F6=CCjmQ@mail.gmail.com>
+Message-ID: <CAHmME9r-W5UEok=EsD56grZ_Fy_nJ4u2sUp1CHw0A0F6=CCjmQ@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/coco: Require seeding RNG with RDRAND on CoCo systems
+To: x86@kernel.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Daniel_P_=2E_Berrang=C3=A9?= <berrange@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, "Theodore Ts'o" <tytso@mit.edu>, 
+	Thomas Gleixner <tglx@linutronix.de>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 02:59:39PM +0800, Lu Baolu wrote:
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index acfe27bd3448..6743fe6c7a36 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4430,8 +4430,11 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
->  static void intel_iommu_release_device(struct device *dev)
->  {
->  	struct device_domain_info *info = dev_iommu_priv_get(dev);
-> +	struct intel_iommu *iommu = info->iommu;
->  
-> +	mutex_lock(&iommu->iopf_lock);
->  	device_rbtree_remove(info);
-> +	mutex_unlock(&iommu->iopf_lock);
+On Wed, Feb 21, 2024 at 1:33=E2=80=AFPM Jason A. Donenfeld <Jason@zx2c4.com=
+> wrote:
+>
+> There are few uses of CoCo that don't rely on working cryptography and
+> hence a working RNG. Unfortunately, the CoCo threat model means that the
+> VM host cannot be trusted and may actively work against guests to
+> extract secrets or manipulate computation. Since a malicious host can
+> modify or observe nearly all inputs to guests, the only remaining source
+> of entropy for CoCo guests is RDRAND.
+>
+> If RDRAND is broken -- due to CPU hardware fault -- the RNG as a whole
+> is meant to gracefully continue on gathering entropy from other sources,
+> but since there aren't other sources on CoCo, this is catastrophic.
+> This is mostly a concern at boot time when initially seeding the RNG, as
+> after that the consequences of a broken RDRAND are much more
+> theoretical.
+>
+> So, try at boot to seed the RNG using 256 bits of RDRAND output. If this
+> fails, panic(). This will also trigger if the system is booted without
+> RDRAND, as RDRAND is essential for a safe CoCo boot.
+>
+> This patch is deliberately written to be "just a CoCo x86 driver
+> feature" and not part of the RNG itself. Many device drivers and
+> platforms have some desire to contribute something to the RNG, and
+> add_device_randomness() is specifically meant for this purpose. Any
+> driver can call this with seed data of any quality, or even garbage
+> quality, and it can only possibly make the quality of the RNG better or
+> have no effect, but can never make it worse. Rather than trying to
+> build something into the core of the RNG, this patch interprets the
+> particular CoCo issue as just a CoCo issue, and therefore separates this
+> all out into driver (well, arch/platform) code.
+>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Daniel P. Berrang=C3=A9 <berrange@redhat.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Elena Reshetova <elena.reshetova@intel.com>
+> Cc: H. Peter Anvin <hpa@zytor.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-This seems like a pretty reasonable solution, maybe someday it can
-become lockless.. This is a fast path right?
+Also,
 
-> @@ -691,21 +691,22 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->  		if (unlikely(req->lpig && !req->rd_req && !req->wr_req))
->  			goto prq_advance;
->  
-> -		pdev = pci_get_domain_bus_and_slot(iommu->segment,
-> -						   PCI_BUS_NUM(req->rid),
-> -						   req->rid & 0xff);
->  		/*
->  		 * If prq is to be handled outside iommu driver via receiver of
->  		 * the fault notifiers, we skip the page response here.
->  		 */
-> -		if (!pdev)
-> +		mutex_lock(&iommu->iopf_lock);
-> +		dev = device_rbtree_find(iommu, req->rid);
-> +		if (!dev) {
-> +			mutex_unlock(&iommu->iopf_lock);
->  			goto bad_req;
-> +		}
+Cc: stable@vger.kernel.org
 
-Though now we have a mutex and a spinlock covering the same data
-structure.. It could be optimized some more.
-
-But maybe we should leave micro optimization aside for now.
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+At least, I think that's probably what we want, though I don't know
+what version range is relevant for CoCo.
 
