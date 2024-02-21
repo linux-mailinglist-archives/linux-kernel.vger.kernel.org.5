@@ -1,107 +1,188 @@
-Return-Path: <linux-kernel+bounces-74470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1D6A85D4F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:00:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE01B85D4F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70CFB281B9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 932B61F209AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0BFB3F9E2;
-	Wed, 21 Feb 2024 09:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A58E3F8FE;
+	Wed, 21 Feb 2024 09:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HIqycl3r"
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/cClNDH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BBD3D0DB;
-	Wed, 21 Feb 2024 09:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A39F3D564;
+	Wed, 21 Feb 2024 09:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509236; cv=none; b=HZTIVxJlO1hPazhTJxFyJWUlBlkPHjp8GO42NMY93hM3txVKhKLDvoT9Q0wUlOGQ2q8ho2wpGF2gkwPM1roiQVhopF6H3nvUzNqKrvsIBQZoxbsc0o0zqG7gKiAkTOUR961BeaJg2muzde0d2AGCoubMDOViytfldsds8DxSZZU=
+	t=1708509178; cv=none; b=kt6F+Brld8/13jmLpQ0xj9mtPao/pZ78dvi4maFq9GhVnnk+SVkGrGVHA70q9Ystn6BtHZ827gM0iX2YPqhUcqezlZ3+S4CCwczLiWT8A4O4hdDk7xqsZwiv9x6frhYT61C/FT34TzvvHnmFVsphASmrGHDJfmulZWYGprMhwFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509236; c=relaxed/simple;
-	bh=9rQKbf/XB71bS0VjPXbpawybpWP+a4gMQOoTUb1QXKM=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=X8bAumJGJhBBEbtKlG1628AP7KCs+cb98/cowTmCeWjfXQHPpfFouaaIv2creALy/X7W7rZDy3z6C0x4pe5sel8Qhvw9OPXXmfXBTZ+Ccjolu1XqUr7mAVjgTG4pWYMyZpGucSwc0EoQtCeO3HWxgod7U/C3go/38htvYFha/F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HIqycl3r; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708509230; h=Message-ID:Subject:Date:From:To;
-	bh=iMfzMLI+K5kpzH+OCBW/f2plocUmWvxeNdyqymsPQs0=;
-	b=HIqycl3r251f7rLtINT+YGG/9HaU2hZFuMUVmGmFV0Gf1ObUT7eTO5fMdraWUKUMdB45Hqe1Jr6xzvlz6RvKQ0siXSQ2M+YQ7LO5GJkCRLobBUC7sSjbpOl2bAhrus3cY3/+2KLTIwyiFTLaWdwJxVuWTe9j7+w5yQjBLV7DFpE=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W0zZSyp_1708509229;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W0zZSyp_1708509229)
-          by smtp.aliyun-inc.com;
-          Wed, 21 Feb 2024 17:53:49 +0800
-Message-ID: <1708509152.9501102-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next 1/2] xsk: Remove non-zero 'dma_page' check in xp_assign_dev
-Date: Wed, 21 Feb 2024 17:52:32 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Yunjian Wang <wangyunjian@huawei.com>
-Cc: <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>,
- <kvm@vger.kernel.org>,
- <virtualization@lists.linux.dev>,
- <xudingke@huawei.com>,
- Yunjian Wang <wangyunjian@huawei.com>,
- <mst@redhat.com>,
- <willemdebruijn.kernel@gmail.com>,
- <jasowang@redhat.com>,
- <kuba@kernel.org>,
- <davem@davemloft.net>,
- <magnus.karlsson@intel.com>
-References: <1706089058-1364-1-git-send-email-wangyunjian@huawei.com>
-In-Reply-To: <1706089058-1364-1-git-send-email-wangyunjian@huawei.com>
+	s=arc-20240116; t=1708509178; c=relaxed/simple;
+	bh=n+F3zfUjjh0FcowZvUt7zMvLrVajwJGpsuxCwXX6+io=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j8N/xjna7MyljJKF+JztNrXd755PWiRVJxb0DfzvkHDsPRkm8BeLfzxD+ySZYYBoedE9AwwYyVmcu6q59qbuajeXveVUXrslCqcDq6Vl8S2v0fPRYFO0TIV7qFYD7VCRqwtc8LOkAEi9TEShHBGu31oQgAiof+TclmlDwHa9o/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/cClNDH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725E0C433F1;
+	Wed, 21 Feb 2024 09:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708509177;
+	bh=n+F3zfUjjh0FcowZvUt7zMvLrVajwJGpsuxCwXX6+io=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=j/cClNDHf5DPCLnlNAtv51eNkyM3+JZg3cpj30hyd/au43bgg7+XDqv4wJp3SEdm7
+	 HslEbEs0xdVbUvUt5tpF8jDvQUg9uxBL63bTPPBlbw7be4fFIfk1Dv91wzSytUwde6
+	 Vj0pRam/eVXk8WmkPoE17SK6Iky3eq01eGhZjDl2OyYkuK1FD8ydHAer79YWacywJz
+	 6B9RLZRj26wUavBTrf/5dkOqmcgh4bMJjlvJXEYu2ZOJJXklz5oxbMO3wiRKQwTAoL
+	 /BZT+iMnpHb6MVBy9lnNLY4t7e6+T/V8FrolTVPil8bgtEjdUASi1YF0lJBC9BnDRM
+	 /hYodnqz+aRLA==
+Message-ID: <bea850fe-19e8-492e-b885-6d01b389c32c@kernel.org>
+Date: Wed, 21 Feb 2024 10:52:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] usb: xhci: Add support for Google XHCI controller
+Content-Language: en-US
+To: Puma Hsu <pumahsu@google.com>
+Cc: mathias.nyman@intel.com, gregkh@linuxfoundation.org,
+ Thinh.Nguyen@synopsys.com, badhri@google.com, royluo@google.com,
+ howardyen@google.com, albertccwang@google.com, raychi@google.com,
+ linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240219061008.1761102-1-pumahsu@google.com>
+ <20240219061008.1761102-3-pumahsu@google.com>
+ <0b4464eb-631e-4c9f-a7c8-3451be15d8b4@kernel.org>
+ <CAGCq0LYFMrFmxeKZE9g-O61+N03rJoGL0XvXJVya0Yx-ZasvBA@mail.gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <CAGCq0LYFMrFmxeKZE9g-O61+N03rJoGL0XvXJVya0Yx-ZasvBA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, 24 Jan 2024 17:37:38 +0800, Yunjian Wang <wangyunjian@huawei.com> wrote:
-> Now dma mappings are used by the physical NICs. However the vNIC
-> maybe do not need them. So remove non-zero 'dma_page' check in
-> xp_assign_dev.
+On 21/02/2024 10:31, Puma Hsu wrote:
+> On Mon, Feb 19, 2024 at 8:22 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>
+>> On 19/02/2024 07:10, Puma Hsu wrote:
+>>> In our SoC platform, we support allocating dedicated memory spaces
+>>> other than system memory for XHCI, which also requires IOMMU mapping.
+>>> The rest of driver probing and executing will use the generic
+>>> xhci-plat driver.
+>>>
+>>> We support USB dual roles and switch roles by generic dwc3 driver,
+>>> the dwc3 driver always probes xhci-plat driver now, so we introduce
+>>> a device tree property to probe a XHCI glue driver.
+>>>
+>>> Sample:
+>>>   xhci_dma: xhci_dma@99C0000 {
+>>>     compatible = "shared-dma-pool";
+>>>     reg = <0x00000000 0x99C0000 0x00000000 0x40000>;
+>>>     no-map;
+>>>   };
+>>>
+>>>   dwc3: dwc3@c400000 {
+>>>     compatible = "snps,dwc3";
+>>>     reg = <0 0x0c400000  0 0x10000>;
+>>>     xhci-glue = "xhci-hcd-goog";
+>>
+>> NAK, that's not DWC3 hardware in such case.
+> 
+> By introducing this property, users can specify the name of their
+> dedicated driver in the device tree. The generic dwc3 driver will
 
-Could you tell me which one nic can work with AF_XDP without DMA?
-
-Thanks.
+DT is not a place for driver stuff.
 
 
->
-> Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-> ---
->  net/xdp/xsk_buff_pool.c | 7 -------
->  1 file changed, 7 deletions(-)
->
-> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> index 28711cc44ced..939b6e7b59ff 100644
-> --- a/net/xdp/xsk_buff_pool.c
-> +++ b/net/xdp/xsk_buff_pool.c
-> @@ -219,16 +219,9 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
->  	if (err)
->  		goto err_unreg_pool;
->
-> -	if (!pool->dma_pages) {
-> -		WARN(1, "Driver did not DMA map zero-copy buffers");
-> -		err = -EINVAL;
-> -		goto err_unreg_xsk;
-> -	}
->  	pool->umem->zc = true;
->  	return 0;
->
-> -err_unreg_xsk:
-> -	xp_disable_drv_zc(pool);
->  err_unreg_pool:
->  	if (!force_zc)
->  		err = 0; /* fallback to copy mode */
-> --
-> 2.33.0
->
->
+> read this property to initiate the probing of the dedicated driver.
+
+I know, but it is not a reason to add stuff to DT.
+
+> The motivation behind this is that we have dedicated things
+> (described in commit message) to do for the XHCI driver in our
+> device. BTW, I put this property here because currently there is
+> no xhci node, xhci related properties are put under dwc3 node.
+
+Sorry, you miss the point. Either you have pure DWC3 hardware or not.
+You claim now you do not have pure hardware, which is reasonable,
+because it is always customized per-vendor. In such case you cannot
+claim this is a pure DWC3. You must provide bindings for your hardware.
+
+Now, if you claim you have a pure DWC3 hardware without need for any
+vendor customizations, then entire patchset is fake try to upstream your
+Android vendor stuff. We talked about such stuff many times on mailing
+list, so for obvious reasons I won't repeat it. Trying to push vendor
+hooks and vendor quirks is one of the most common mistakes, so several
+talks already say: don't do this.
+
+> It will be appreciated if there are alternative or more appropriate
+> approaches, we welcome discussion to explore the best possible
+> solution. Thanks.
+
+And what's wrong with all previous feedbacks for similar
+Google/Samsung/Artpec/Tensor vendor hacks? Once or twice per year some
+folks around Google or Samsung try to push such, they all receive the
+same feedback and they disappear, so I have to repeat the same feedback
+to the next person... Please go through previous patches from
+@samsung.com for various subsystems.
+
+Documentation/devicetree/bindings/submitting-patches.rst
+Documentation/devicetree/bindings/writing-bindings.rst
++other people or my talks on Devicetree
+
+Summarizing: Devicetree is for hardware, not for your driver
+hooks/quirks/needs. Describe properly and fully the hardware, not your
+driver.
+
+
+Best regards,
+Krzysztof
+
 
