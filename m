@@ -1,188 +1,127 @@
-Return-Path: <linux-kernel+bounces-74500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECE1285D52F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:08:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 849EF85D533
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6ED1C22A2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:08:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84BDA1C22B73
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1993D97A;
-	Wed, 21 Feb 2024 10:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC7A3D980;
+	Wed, 21 Feb 2024 10:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BAbuwTrz";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eznXXzg4"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ZTB+XIku"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09A13C493;
-	Wed, 21 Feb 2024 10:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA22F3D39A;
+	Wed, 21 Feb 2024 10:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708510087; cv=none; b=o8UTyAxs9OHrlk0E8jOL+8O5yk0kGjWBoWELJdoiGFxVpG0SBEtAOp04n/NBWuWhRnzTBmDEzHb7jojOceTXZlH+BEX+4xgFGXRIcPmWYJ5+gZ8s+DhYOhtC+Kj9zh0NZ+//LMi+dyoIuPqvWL9bO8ei1lLbEHxatlQSomVsmBU=
+	t=1708510186; cv=none; b=S/IR2Cim4Rrq5BiQtteGxUqx3cC9QOiPntjrog0ki/Ddi9cyXroh4QUwX9jcEVbLgB0UsHYyn9jrNRa7cPMdG+dmnZ1rIyl246l2RerpNY40c7G5nv3ZG5CNMu4vfRqxkXAtJzgJ8O8yFK/PjxgVb6LheA5f9vZtQEOeeGWjG+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708510087; c=relaxed/simple;
-	bh=7XYolvuFmbS0LBqmUQ9KKTmR9uu6+pL4kH1WaTQzMk0=;
+	s=arc-20240116; t=1708510186; c=relaxed/simple;
+	bh=r5moT70R+oUVljSoprUOEoJfl4/tp6MaAnZM9QhoZhE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cNYVvwa1CUSv8OO8aFBTWkV4hubeLx+PAg5/6qc8UVcQCLqis2rqBeOzjTJEggi0hHcHpJKJX0+t95XAfJjJCtOIyRBwnowFsEcGDRu83hUvMPVHoa/Hi3nyuZGBIpvuz0LJoy7i2EVWGX81kP22X5ntpRIT/l+lLOISNaxzKkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BAbuwTrz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eznXXzg4; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	 Content-Type:Content-Disposition:In-Reply-To; b=QPREaOB+sVHxFekEL9D+3fYk0PZ0Jwsc5xKw1AxfFNyXncnsFMs/5m9OoUIbOdfS6BvrU5p1NcNRHK2YDoRafiECY+gAzrcYurF8kuMyhAeBo1mRqhZlFlaJTKMdEpA2/Z3GjwhMlqnZK2MjG+fA96qvi3QaYGeLfnMThyjI+xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ZTB+XIku; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 48B7040E016D;
+	Wed, 21 Feb 2024 10:09:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Dsl6LZ2KmMpX; Wed, 21 Feb 2024 10:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708510179; bh=/J8Kak/gbtX4KB6FH/imEHmEzO+kxDuIp4ODj+Ng24s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZTB+XIkup8g+SSBh84HQ2Xcyp6++sEo5vmXc7I0izLOkKGf2BMVCAiuIUN+J+qKE5
+	 5CXWJw7yjMzTjlgXV3JCpNCYOoXoiFx0N65k9rOnoCecF58ILlHlP+X104H19IrP5x
+	 PsQj39A4azG3Q5napBKwLx6385WsADYKzPMRdone3iNlPF6ls5/y27AzgEZOcfXFQw
+	 lWbqGJCNC4m3IF5jso1uyaMo8UkdSULyXOdQWOz1jRXP4jAhWquWOmdZ5z+bN8XQPw
+	 VYHeqfvAL3o/89V8NqzTeZcUm+iI+5p+o49J4ToOX0bamV1i+rI+rhdzmAiv3Z6SsF
+	 aaMQztGzhLA5FRh5y2PMxY5D1GL7aixLW9EtqB0ykOv+dt6fcfxP9XWNe833tUFUby
+	 odn0T9fFKyFsodwduVs8L3rI3i0eaL3C8G/PsM9O0Ct1WaCxz2OM81e5IBp4yKNG+n
+	 qfakPcaaHBXJKZEmGY+FrShbtGhwRaRk17nPmVLWEnJ6lVPGg73U6RwpFCNxLt8la1
+	 4nQiuuUrt8RnSv5MYExPIxBjNzHQtizbfexkKVH3eJZ6DOOUVoXZFwFQD2Su6olgrF
+	 fq0EyD5JYRKf0RtFBIb85lRyDIePbLBFx00mc4wNiasrcsuuB02rQoU4Q6cLORr07a
+	 Z1GWl04RB1Hh1uCo6fBJHm8s=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C9C9A1FB4A;
-	Wed, 21 Feb 2024 10:08:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708510083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xZGJ3olY1kWj1dk7MtZO1ibtEdnIoZrzoUYLjjxmvX0=;
-	b=BAbuwTrzJs/DVFKRHFbDFTMrOfHETXJMisKC7tj8M6JjdNEOXo93jcYFaNdeQJjEAyfekQ
-	CrWyK55GtVGUQVgEG0K6dxNYX167qbb3oWip8LFfLjTQ6Xe1gF1jehGKrTY0i0DAvPcKNH
-	EDKodBHi1qarR9EShsI0U7wX2BQobl8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708510082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xZGJ3olY1kWj1dk7MtZO1ibtEdnIoZrzoUYLjjxmvX0=;
-	b=eznXXzg4qM0A3TmtjnVpTQmOa20c6dDKPyNZj3w3j7MVgFsxv/M5WS8FbQNP/f2QOO1VnF
-	nvww1JNkoDaOiWtTt/Vga4ezs7hNrjfk0TWvaU7SBvELlCYWYPJglPfWuXzv/l7B1nQyfm
-	HFJxqzEV5z/gbJCCXo07IFcHySDtCEE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA4A813A69;
-	Wed, 21 Feb 2024 10:08:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qRKQJoLL1WXHQAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 21 Feb 2024 10:08:02 +0000
-Date: Wed, 21 Feb 2024 11:08:02 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Gong Ruiqi <gongruiqi1@huawei.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Wang Weiyang <wangweiyang2@huawei.com>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>
-Subject: Re: [PATCH stable] memcg: add refcnt for pcpu stock to avoid UAF
- problem in drain_all_stock()
-Message-ID: <ZdXLgjpUfpwEwAe0@tiehlicka>
-References: <20240221081801.69764-1-gongruiqi1@huawei.com>
- <ZdW2gMajIw_cUN2-@tiehlicka>
- <5436af7a-26d4-7c04-466a-7163d5a26040@huawei.com>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F15C840E01A9;
+	Wed, 21 Feb 2024 10:09:21 +0000 (UTC)
+Date: Wed, 21 Feb 2024 11:09:16 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 04/11] x86/startup_64: Defer assignment of 5-level
+ paging global variables
+Message-ID: <20240221100916.GCZdXLzHb-31GMw-f-@fat_crate.local>
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-17-ardb+git@google.com>
+ <20240220184513.GAZdTzOQN33Nccwkno@fat_crate.local>
+ <CAMj1kXF=cGHR4FVUqGrobjB4HxTmm=1upn3TpVEC-_8D9GM=uQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5436af7a-26d4-7c04-466a-7163d5a26040@huawei.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=eznXXzg4
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: C9C9A1FB4A
-X-Spam-Level: 
-X-Spam-Score: -2.81
-X-Spam-Flag: NO
+In-Reply-To: <CAMj1kXF=cGHR4FVUqGrobjB4HxTmm=1upn3TpVEC-_8D9GM=uQ@mail.gmail.com>
 
-On Wed 21-02-24 17:50:27, Gong Ruiqi wrote:
-> 
-> On 2024/02/21 16:38, Michal Hocko wrote:
-> > On Wed 21-02-24 16:18:01, GONG, Ruiqi wrote:
-> >> commit 1a3e1f40962c445b997151a542314f3c6097f8c3 upstream.
-> > 
-> > I think it would be good to mention that this is only a partial backport
-> > and also explain why to do a partial rather than the full one.
-> >
-> 
-> Okay. I think to fix this problem we should add refcnt relation between
-> memcg and stock, and since higher versions have achieved this, maybe
-> it's better to use the same code and align with them. So I put a "commit
-> xxx upstream" here, as requested in kernel docs[1]. So yes it's a
-> partial backport as we only need the stock part.
+On Wed, Feb 21, 2024 at 12:33:08AM +0100, Ard Biesheuvel wrote:
+> Right, this is the same issue as in #11 - in both cases, the extern
+> declaration of __pgtable_l5_enabled needs to be visible regardless of
+> CONFIG_X86_5LEVEL.
 
-I think it is sufficient to mention that this is a partial backport to
-minimize the fix to the bare minimum.
+Yap, I don't mind something like below.
 
-[...]
-> > What does prevent from the following?
-> > 
-> > refill_stock(memcgC)		drain_all_stock(memcgB)
-> >   drain_stock(memcgA)		  rcu_read_lock()
-> >     css_put(old->css)		  memcgA = stock->cached
-> >                                   mem_cgroup_is_descendant(memcgA, memcgB) UAF
-> >     stock->cached = NULL
-> > 
-> 
-> I think it's not a problem since refill_stock() has disabled irq before
-> calling drain_stock():
-> 
-> refill_stock(memcgC)
->   local_irq_save
->   drain_stock(memcgA)
->     css_put(old->css)
->     <1>
->     stock->cached = NULL
->   local_irq_restore
->   <2>
-> 
-> And since css_put(old->css) is an RCU free, memcgA would not be freed at
-> <1> as it's still in grace period. The actual release of memcgA could
-> happen only after irq is enabled (at <2>).
-> 
-> And for CPU2, the access to stock->cached in drain_all_stock() is
-> protected by rcu_read_lock(), so from stock->cached we get either NULL,
-> or a memcgA that is still not freed.
-> 
-> Please correct me if I have some wrong understanding to RCU.
+5LEVEL will be practically enabled everywhere.
 
-You are right. Thanks! IRQ disabling is there in one form or the other
-since db2ba40c277d ("mm: memcontrol: make per-cpu charge cache IRQ-safe
-for socket accounting") so 4.8+ is safe. Backports to older kernels
-would nee to pull this one as well.
-
-> >> Cc: stable@vger.kernel.org      # 4.19 5.4
-> >> Fixes: cdec2e4265df ("memcg: coalesce charging via percpu storage")
-> >> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index 158da0fd01d2..eeb1744215f2 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -52,13 +52,11 @@ extern pmd_t early_dynamic_pgts[EARLY_DYNAMIC_PAGE_TABLES][PTRS_PER_PMD];
+ static unsigned int __initdata next_early_pgt;
+ pmdval_t early_pmd_flags = __PAGE_KERNEL_LARGE & ~(_PAGE_GLOBAL | _PAGE_NX);
+ 
+-#ifdef CONFIG_X86_5LEVEL
+ unsigned int __pgtable_l5_enabled __ro_after_init;
+ unsigned int pgdir_shift __ro_after_init = 39;
+ EXPORT_SYMBOL(pgdir_shift);
+ unsigned int ptrs_per_p4d __ro_after_init = 1;
+ EXPORT_SYMBOL(ptrs_per_p4d);
+-#endif
+ 
+ #ifdef CONFIG_DYNAMIC_MEMORY_LAYOUT
+ unsigned long page_offset_base __ro_after_init = __PAGE_OFFSET_BASE_L4;
 
 -- 
-Michal Hocko
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
