@@ -1,195 +1,125 @@
-Return-Path: <linux-kernel+bounces-75608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A71385EBEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:44:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D2085EBEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:45:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 872561F24F6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:44:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F46DB24089
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBB33EA69;
-	Wed, 21 Feb 2024 22:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hpbKQrTC"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E11E126F0B;
+	Wed, 21 Feb 2024 22:44:45 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F963CF68
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CF93E468
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708555483; cv=none; b=pr/2orb5ddj91ruYdeZt0HAD7F3TSXb4h7xAwTWiwJiM0bLujd9x57HDRbniG3TdFppLN3cCOMxBUc/ojuRZn4lXfE2xBiEdsbFimmWa1Dfjjuz6kShnUnxtesLWGj4EuYdBeNBfnIFEFGDOaBouEJ7380eZiPQfRnSlK4hR7Do=
+	t=1708555485; cv=none; b=Ta6hwSyjVEGbe1eMJuqrex2hCRVEjLFnqMLKuk2ck8LytcROTJRN707tvI2kF1KbiPkL6Aq0tW9OCBFQmSv9sSxshbUUeN29pGNZKP6WwbWeS3DjUrDPb39RR08Rx6sqh2eUc/g+8+hWnnn58qtvOwpybHL714Dd5lSAa6gLFU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708555483; c=relaxed/simple;
-	bh=RC4tI31fIOZp3su17PHYaJtaFUx2oWlHNy6vF8MKmi4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cMWoTzUXwuXv1TmeRjyrh/hrpuj8Oe0bb3bRTAm9bBUkhdCiwS4/geHgJtcYKZrW18mdbrdyEcCRuAAF04xHcb3mvrNbcyrAgdbSxWjuXCiZ9XlK5De6QN1wr0eHbm9jfEkl40X4m3gTdcdnEJ6cIOfY4opE0YxHZ+YlaZLPtpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hpbKQrTC; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso6113659276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708555480; x=1709160280; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1E0gzbVlMt+nTGQE9Y6a9K/TasUA67+XJLQHC7xqZZI=;
-        b=hpbKQrTCHD3ciTk2R2xG/100QK9dCR/cF7Qj+eqiJ0XKSTSwRSIPMAQ8jMPCqAXaxn
-         7EcbrPE6sl2/hOw9uBfF1OfcqzO38Y5A04r/nM3ksTLhhA2TFPvcyzcGJ4IiXgBDy7HV
-         ZgFIhFwtEU/Q4W83z5jpmoAZHGQvjl6wQFoO4EkqMd2c5gPseyOwHvKm2B6TLUmNz4sE
-         1ffAKI9OTWuAoN2pfeb21EK7nW8NiXoO3AWhjwMLAaOn7HDkovC9TL4iKlSWr0ZFn+PW
-         ED/9Rh9SzJvJHTBunrPYvaVV9jrgob/E6R0Xi7tHLaWkr0QyTdrKwUDoKm9khHT9lLq6
-         zqYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708555480; x=1709160280;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1E0gzbVlMt+nTGQE9Y6a9K/TasUA67+XJLQHC7xqZZI=;
-        b=O2NL91N6CcGXpsbO5PQdPzVcCbM3wJWWrqD/RVoLgm+icPNNspbPWXnNnTc7VJUnf+
-         vM8oMEIMxxdwvhhE8E9kIWcWeaYRjZXRu/lPxvs2ZCWPXzvOccaumgLhoDK62lY81Uds
-         6TklKiiCQWC2wN0BmkfDVFtiCaaCRhGvTDSu97K6HbFDETTuMWroC0UuR6mjkiLzUfk2
-         VejiCBE4P+8N2/VUUwaVkpPH8PdZZxWPIEKG5hUM65XCzAX9U4NK0nK6duwgTIOXmyaO
-         aprEwitl609Nj/RzdvUd2G2Pl8IJDHzKH/x5MrJ8VsiBYjBXPxvOS6fiP1fmzsM9kIuv
-         FTBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFphoslu19geKva2xGRvItD+HRdIlELJuSCacTkXfZQyT9BBC0TxH2DXztTQ6rHJ/ut44r++GsoOr7O8DhcomyILTrb6YK8UAt7zf8
-X-Gm-Message-State: AOJu0YwZ0g7RB51QkqR1KtkppqOrqXUm/i4EA1yA2Mxf/NvTwo7Z7591
-	6yBCr9Pv6mA+TRht7Fqe5+1oRZzuKMLypFSbLC27yNhrp9UZDDAEn2PelcTvJmPX8bjyEPb+TT3
-	4lIAaMawcRejfjXdtTlHOqyHfu8gD+rNaUovjaQ==
-X-Google-Smtp-Source: AGHT+IHuu4Lp2pW2NjzZuLZxH6vx6PUKD/LiuL+7y9Bacxbpsq6vZLxkcOzHR67PhVx1mA6/6VAv6KIjsFFUQoZC/sM=
-X-Received: by 2002:a25:ada1:0:b0:dc7:46b7:b7f6 with SMTP id
- z33-20020a25ada1000000b00dc746b7b7f6mr743897ybi.28.1708555480555; Wed, 21 Feb
- 2024 14:44:40 -0800 (PST)
+	s=arc-20240116; t=1708555485; c=relaxed/simple;
+	bh=ynCx5dbHJXM1OpyJSTDx7N02mIROGTc1mkWbCs5RUpo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=p9G1PtFZafNEy93cdaR/+GAJvbgJaBtfrtP8hZQqRcH9b9dDDOlhqIebov8NFTD5AyC5CVOMazB/KZ7wO+ZKxpkp6hRYj4OUdLXhw8Qu8/bEjx4JdMp80qJZN2l5jm3R4MxEaR6aEj+56HnSklkxYmms6yHjFF1ilutsWutgeNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-65-DfNQ66gKM92OtrzTRaJzOg-1; Wed, 21 Feb 2024 22:44:33 +0000
+X-MC-Unique: DfNQ66gKM92OtrzTRaJzOg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 21 Feb
+ 2024 22:44:32 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 21 Feb 2024 22:44:32 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Marc Kleine-Budde' <mkl@pengutronix.de>, Oliver Hartkopp
+	<socketcan@hartkopp.net>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>
+CC: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] can: raw: raw_getsockopt(): reduce scope of err
+Thread-Topic: [PATCH] can: raw: raw_getsockopt(): reduce scope of err
+Thread-Index: AQHaY9Ug246GnPh9DUCq0NoOfILROLEVZS4g
+Date: Wed, 21 Feb 2024 22:44:32 +0000
+Message-ID: <7bb0474bad834a7c9f810c70e959ef12@AcuMS.aculab.com>
+References: <20240220-raw-setsockopt-v1-1-7d34cb1377fc@pengutronix.de>
+In-Reply-To: <20240220-raw-setsockopt-v1-1-7d34cb1377fc@pengutronix.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220111111.133826-1-herve.codina@bootlin.com> <20240220111111.133826-2-herve.codina@bootlin.com>
-In-Reply-To: <20240220111111.133826-2-herve.codina@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 21 Feb 2024 23:44:29 +0100
-Message-ID: <CACRpkdYWiwR_QBsiCESPYfQSsoiThn6hZyLAJA3u0bzTUNvBYQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpiolib: Introduce gpiod_device_add_link()
-To: Herve Codina <herve.codina@bootlin.com>, Saravana Kannan <saravanak@google.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-leds@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-Looping in Saravana, he should always look at patches like this.
+RnJvbTogTWFyYyBLbGVpbmUtQnVkZGUNCj4gU2VudDogMjAgRmVicnVhcnkgMjAyNCAwODoxNg0K
+PiANCj4gUmVkdWNlIHRoZSBzY29wZSBvZiB0aGUgdmFyaWFibGUgImVyciIgdG8gdGhlIGluZGl2
+aWR1YWwgY2FzZXMuIFRoaXMNCj4gaXMgdG8gYXZvaWQgdGhlIG1pc3Rha2Ugb2Ygc2V0dGluZyAi
+ZXJyIiBpbiB0aGUgbWlzdGFrZW4gYmVsaWVmIHRoYXQNCj4gaXQgd2lsbCBiZSBldmFsdWF0ZWQg
+bGF0ZXIuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1
+dHJvbml4LmRlPg0KPiAtLS0NCj4gIG5ldC9jYW4vcmF3LmMgfCAxMiArKysrKysrKy0tLS0NCj4g
+IDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvbmV0L2Nhbi9yYXcuYyBiL25ldC9jYW4vcmF3LmMNCj4gaW5kZXggODk3ZmZj
+MTdkODUwLi4yYmIzZWFiOThhZjAgMTAwNjQ0DQo+IC0tLSBhL25ldC9jYW4vcmF3LmMNCj4gKysr
+IGIvbmV0L2Nhbi9yYXcuYw0KPiBAQCAtNzU2LDcgKzc1Niw2IEBAIHN0YXRpYyBpbnQgcmF3X2dl
+dHNvY2tvcHQoc3RydWN0IHNvY2tldCAqc29jaywgaW50IGxldmVsLCBpbnQgb3B0bmFtZSwNCj4g
+IAlzdHJ1Y3QgcmF3X3NvY2sgKnJvID0gcmF3X3NrKHNrKTsNCj4gIAlpbnQgbGVuOw0KPiAgCXZv
+aWQgKnZhbDsNCj4gLQlpbnQgZXJyID0gMDsNCj4gDQo+ICAJaWYgKGxldmVsICE9IFNPTF9DQU5f
+UkFXKQ0KPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gQEAgLTc2Niw3ICs3NjUsOSBAQCBzdGF0aWMg
+aW50IHJhd19nZXRzb2Nrb3B0KHN0cnVjdCBzb2NrZXQgKnNvY2ssIGludCBsZXZlbCwgaW50IG9w
+dG5hbWUsDQo+ICAJCXJldHVybiAtRUlOVkFMOw0KPiANCj4gIAlzd2l0Y2ggKG9wdG5hbWUpIHsN
+Cj4gLQljYXNlIENBTl9SQVdfRklMVEVSOg0KPiArCWNhc2UgQ0FOX1JBV19GSUxURVI6IHsNCj4g
+KwkJaW50IGVyciA9IDA7DQo+ICsNCj4gIAkJbG9ja19zb2NrKHNrKTsNCj4gIAkJaWYgKHJvLT5j
+b3VudCA+IDApIHsNCj4gIAkJCWludCBmc2l6ZSA9IHJvLT5jb3VudCAqIHNpemVvZihzdHJ1Y3Qg
+Y2FuX2ZpbHRlcik7DQo+IEBAIC03OTEsNyArNzkyLDcgQEAgc3RhdGljIGludCByYXdfZ2V0c29j
+a29wdChzdHJ1Y3Qgc29ja2V0ICpzb2NrLCBpbnQgbGV2ZWwsIGludCBvcHRuYW1lLA0KPiAgCQlp
+ZiAoIWVycikNCj4gIAkJCWVyciA9IHB1dF91c2VyKGxlbiwgb3B0bGVuKTsNCj4gIAkJcmV0dXJu
+IGVycjsNCj4gLQ0KPiArCX0NCj4gIAljYXNlIENBTl9SQVdfRVJSX0ZJTFRFUjoNCj4gIAkJaWYg
+KGxlbiA+IHNpemVvZihjYW5fZXJyX21hc2tfdCkpDQo+ICAJCQlsZW4gPSBzaXplb2YoY2FuX2Vy
+cl9tYXNrX3QpOw0KPiBAQCAtODIyLDcgKzgyMyw5IEBAIHN0YXRpYyBpbnQgcmF3X2dldHNvY2tv
+cHQoc3RydWN0IHNvY2tldCAqc29jaywgaW50IGxldmVsLCBpbnQgb3B0bmFtZSwNCj4gIAkJdmFs
+ID0gJnJvLT54bF9mcmFtZXM7DQo+ICAJCWJyZWFrOw0KPiANCj4gLQljYXNlIENBTl9SQVdfWExf
+VkNJRF9PUFRTOg0KPiArCWNhc2UgQ0FOX1JBV19YTF9WQ0lEX09QVFM6IHsNCj4gKwkJaW50IGVy
+ciA9IDA7DQo+ICsNCj4gIAkJLyogdXNlciBzcGFjZSBidWZmZXIgdG8gc21hbGwgZm9yIFZDSUQg
+b3B0cz8gKi8NCj4gIAkJaWYgKGxlbiA8IHNpemVvZihyby0+cmF3X3ZjaWRfb3B0cykpIHsNCj4g
+IAkJCS8qIHJldHVybiAtRVJBTkdFIGFuZCBuZWVkZWQgc3BhY2UgaW4gb3B0bGVuICovDQo+IEBA
+IC04MzksNiArODQyLDcgQEAgc3RhdGljIGludCByYXdfZ2V0c29ja29wdChzdHJ1Y3Qgc29ja2V0
+ICpzb2NrLCBpbnQgbGV2ZWwsIGludCBvcHRuYW1lLA0KPiAgCQkJZXJyID0gcHV0X3VzZXIobGVu
+LCBvcHRsZW4pOw0KPiAgCQlyZXR1cm4gZXJyOw0KPiANCj4gKwl9DQo+ICAJY2FzZSBDQU5fUkFX
+X0pPSU5fRklMVEVSUzoNCj4gIAkJaWYgKGxlbiA+IHNpemVvZihpbnQpKQ0KPiAgCQkJbGVuID0g
+c2l6ZW9mKGludCk7DQoNCkknZCBiZSB2ZXJ5IHRlbXB0ZWQgdG8gY2hhbmdlIHRoZSBjb2RlIHNv
+IHRoYXQgdGhlcmUgaXMgb25seSBvbmUNCnB1dF91c2VyKGxlbiwgb3B0bGVuKSByaWdodCBhdCB0
+aGUgYm90dG9tLg0KDQpJZiB0aGUgY29kZSBpcyBvYmV5aW5nIHRoZSBub3JtYWwgJ3J1bGVzJyBm
+b3IgZ2V0c29ja29wdCgpIHRoZSBmdW5jdGlvbg0KY2FuIGFjdHVhbGx5IHJldHVybiB0aGUgbGVu
+Z3RoIG9yIGFuIGVycm9yIGFuZCB0aGUgY2FsbGVyIGNhbiBzb3J0DQpvdXQgd2hhdCB0byBkbyB3
+aXRoIHRoZSBkYXRhLg0KVGhhdCBtYWtlcyB0aGUgY2hhbmdlcyByZXF1aXJlZCB0byBpbXBsZW1l
+bnQga2VybmVsX2dldHNvY2tvcHQoKQ0KYSBsb3Qgc2ltcGxlci4NCkkgZGlkIHN0YXJ0IHdyaXRp
+bmcgYSBwYXRjaHNldCB0byBkbyB0aGF0LCBidXQgc29tZSBvZiB0aGUgY29kZQ0KaXMgZW50aXJl
+bHkgYnJhaW4tZGVhZC4NCkJ1dCBpdCB3b3VsZCBjZXJ0YWlubHkgbWFrZSBzZW5zZSBmb3IgdGhl
+ICdvcHRsZW4nIHBhcmFtZXRlciB0bw0KYmUgYSBrZXJuZWwgYWRkcmVzcyBhbmQgaGF2ZSBiZWVu
+IHZhbGlkYXRlZCB0byBiZSAnc2FuZScgKGVnIHBvc2l0aXZlKQ0KYW5kIGhhdmUgdGhlIHN5c2Nh
+bGwgd3JhcHBlciBkbyB0aGUgdXNlciBjb3BpZXMuDQpJdCBjYW4ndCBiZSBkb25lIGZvciB0aGUg
+YnVmZmVyIChpbiBhbGwgY2FzZXMpIGJlY2F1c2UgdGhlIHVzZXINCnN1cHBsaWVkIGxlbmd0aCBp
+c24ndCBhbHdheXMgdGhlIGJ1ZmZlciBsZW5ndGguDQpCdXQgdGhlIGxlbmd0aCBmaWVsZCBpcyBk
+ZWZpbmVkIHRvIGJlIGFuIGludGVnZXIuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
+c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
+IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-On Tue, Feb 20, 2024 at 12:11=E2=80=AFPM Herve Codina <herve.codina@bootlin=
-com> wrote:
->
-> With device-tree, some devlink related to gpios are automatically added
-> when a consumer device is added and the attached node has phandles
-> related to GPIOs.
-> In some cases, the real device used to get the gpio during a probe() can
-> be related to an of-node parent of the of-node used for the already done
-> automatically devlink creation.
-> For instance, a driver can be bound to a device and, during the
-> probe(), the driver can walk its of-node children to get the GPIO
-> described in these children nodes.
-> In that case, an additional devlink between the device attached to the
-> driver and the gpio consumer need to be created.
-> Indeed, if the GPIO is removed, the consumer/supplier dependency should
-> lead to remove first the consuming driver before removing the supplier.
->
-> In order to give the possibility to this kind of driver to add additional
-> devlinks, introduce gpiod_device_add_link().
->
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  drivers/gpio/gpiolib.c        | 32 ++++++++++++++++++++++++++++++++
->  include/linux/gpio/consumer.h |  5 +++++
->  2 files changed, 37 insertions(+)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 8b3a0f45b574..416ab334b02d 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -4195,6 +4195,38 @@ static struct gpio_desc *gpiod_find_and_request(st=
-ruct device *consumer,
->         return desc;
->  }
->
-> +/**
-> + * gpiod_device_add_link - Add a link between a GPIO consumer and a GPIO=
-.
-> + * @consumer: GPIO consumer.
-> + * @desc: GPIO consumed.
-> + * @flags: Link flags, see device_link_add().
-> + *
-> + * This function can be used for drivers that need to add an additional
-> + * consumer/supplier device link to a GPIO.
-> + *
-> + * Returns:
-> + * On successful, the link created.
-> + * NULL if the link was not created due to a missing GPIO parent.
-> + *
-> + * In case of error an ERR_PTR() is returned.
-> + */
-> +struct device_link *gpiod_device_add_link(struct device *consumer,
-> +                                         struct gpio_desc *desc,
-> +                                         u32 flags)
-> +{
-> +       struct device_link *link;
-> +
-> +       if (!desc->gdev->dev.parent)
-> +               return NULL;
-> +
-> +       link =3D device_link_add(consumer, desc->gdev->dev.parent, flags)=
-;
-> +       if (!link)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       return link;
-> +}
-> +EXPORT_SYMBOL_GPL(gpiod_device_add_link);
-> +
->  /**
->   * fwnode_gpiod_get_index - obtain a GPIO from firmware node
->   * @fwnode:    handle of the firmware node
-> diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.=
-h
-> index db2dfbae8edb..4feed4e166b0 100644
-> --- a/include/linux/gpio/consumer.h
-> +++ b/include/linux/gpio/consumer.h
-> @@ -7,6 +7,7 @@
->
->  struct acpi_device;
->  struct device;
-> +struct device_link;
->  struct fwnode_handle;
->
->  struct gpio_array;
-> @@ -106,6 +107,10 @@ void devm_gpiod_put(struct device *dev, struct gpio_=
-desc *desc);
->  void devm_gpiod_unhinge(struct device *dev, struct gpio_desc *desc);
->  void devm_gpiod_put_array(struct device *dev, struct gpio_descs *descs);
->
-> +struct device_link *gpiod_device_add_link(struct device *consumer,
-> +                                         struct gpio_desc *desc,
-> +                                         u32 flags);
-> +
->  int gpiod_get_direction(struct gpio_desc *desc);
->  int gpiod_direction_input(struct gpio_desc *desc);
->  int gpiod_direction_output(struct gpio_desc *desc, int value);
-
-The function as such is pretty straight forward, but the cross call
-here happens on instatiated
-devices etc, and we need to know why this can't be done earlier when sortin=
-g out
-the dependencies in the device tree e.g.
-
-Yours,
-Linus Walleij
 
