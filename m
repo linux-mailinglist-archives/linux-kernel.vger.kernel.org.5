@@ -1,119 +1,92 @@
-Return-Path: <linux-kernel+bounces-75258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F0A85E55B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:16:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78E3385E561
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E24D02842D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:16:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAF6F1C21D24
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABD48528C;
-	Wed, 21 Feb 2024 18:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ov6cm/hg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5C185285;
+	Wed, 21 Feb 2024 18:18:07 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1634942A8B;
-	Wed, 21 Feb 2024 18:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4D485268
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708539407; cv=none; b=NzaBqxI7wnYIq0Ksu4Ehda6RGB+yFjIxcK004WADPESsyGSGPPO9hT/G55JwOO1LxIDKaHiDYlUaMiLy2xGSYaes/ObjZaaTsxRPopxvOWAwQ9D7tYHBemKc7X49km3bNYLHd3F0+XeyDfGRp3VogRS1C8mGpX3La5yedZpxryc=
+	t=1708539486; cv=none; b=qQ1Fh3EAJiY3mP4Btwiz6tgcZJmI1m8KR/mYqh046xGO0FLX0ceD7qj7+dvnEVoH5w3d9Fv/Brdx1dm3BeSYW3Y7h5ONfouXVbdlW0CO/KDn/UudeQhF5jZuKhvOptixjebWh/+AaFtQbgc4OxxyRO9k1uQ3Q/hKoMFU50Y0Ihs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708539407; c=relaxed/simple;
-	bh=csK/DsyAOVnlfATFEXn3F2y/yVFcNC3OQEkT5JeAyec=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QETOAmcgOuVTIdhj/j0sjngR3fPaEYLjLe1XHAIXz5zdrTNLa2UPx/r9UDBZO8YsM2z+FT8fnd0vvHjh+xeKEGiW2/CcBuRqSVdJBBpZQUuu1OVNfbJnUS2U/JNyz6AiE7kci9IfjGO4vqGuiLHTGdwHUp+TmcbDhKXIOCSFglI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ov6cm/hg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBCEEC433F1;
-	Wed, 21 Feb 2024 18:16:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708539406;
-	bh=csK/DsyAOVnlfATFEXn3F2y/yVFcNC3OQEkT5JeAyec=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ov6cm/hg2mleRWqUd3r9/W+rkcAFVU7c27Hx8hcFb4M7UnzZrk5N2v269pkhvIIp6
-	 bYnBdTUndPV/TFw7qV/WyGz5Y5QL0nzqxYt/dpw22VmM8LawYB+liEKK4qt6TGiyDk
-	 QjYeo/CJfpAl1TAZ9ES5BuQc1+oqqSXYqQ4XvqrYCwSuthuV4CUrHLGWw1uQydZLOx
-	 AwoNAI6RkOBmr3gjndpgIT+LOuOI9T5Q22ViTkf+qm8p7en2UwVaM3vLN4MN3sD7yL
-	 3uBtCIJ1v9SEg1kQuOc2Sf9OQiw+ZsqkoXTxilnmDq1+1x53S/cyRAhhlK17+JAJew
-	 /3/DRkmjzoJ7g==
-Date: Wed, 21 Feb 2024 18:16:36 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
-	"Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-	"H.J. Lu" <hjl.tools@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Florian Weimer <fweimer@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v8 20/38] arm64/gcs: Ensure that new threads have a GCS
-Message-ID: <9400cfc3-0e87-4abd-afbc-172736d77a1b@sirena.org.uk>
-References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
- <20240203-arm64-gcs-v8-20-c9fec77673ef@kernel.org>
- <874je399ld.fsf@linaro.org>
+	s=arc-20240116; t=1708539486; c=relaxed/simple;
+	bh=Aim7Qpie5ii7CQT/cjFzRoVNO7qGkO73CWE8Fvg1iLk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=pSrEpzdmmJveo/MMl8z7ny2cekWKp5Kux4EF32xMKQs7WfNjTwdxZNhu6xHTNXBB0nXWTYwg6bYw9hvM0sSa2EmD6pUoX5LF1LxE9itEL3iayORXPuUmuV+jPNnQGbm4MSaNkfFQPwjKB6kX0BQDksxrd8SzMo8fgJMhy/cvG9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36541324e57so22876965ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:18:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708539484; x=1709144284;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MJd9Mq9bf/RBjIYNar7qNvmrsOG2DCgFiKzOfjcbWYE=;
+        b=TXSBvFUXMlROY3AatrY/FQD3OA8OOObK8Mng9JbVwqKLlsjjZdhNRV1UDwq7ttSt+f
+         LJf12efx41j4eACqX0zD1EFifLsvsKJB6MOEWu0V6NAY3XhQl09gataPfAgFbHG+vfSi
+         SgDBUPcv1d2UHGpj8M/IfgsBOE6BEiBwL0EohYeT1RH+XRiMWIAkzifdAPJ7Rkbz3vNB
+         +CDmK0smehzQmgJGU2WpNQUOCAkz58yZm4z00ts+hhCpj1jnyyw9N/TlCawSu695ITaE
+         dEHTfhB5xWiQubWr4vLhV5lTmIijJOMxV3L8YTKwOGb7KaO2T+1f6JsV+d81D3LiIGL9
+         YdwA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4+IT7MlNhD3yQ6WrZhPDTNa0G4957TgA05z701+ERySBP/T0G/YLO8T3KLHmmCX/3fpKYncdTdAnN+Nxty7NMPLE4vrjf3EL49hHz
+X-Gm-Message-State: AOJu0YywZQXCU0rM/vSNMC2Jg36BXCn+/XBx8TF76oQSJUVbZbg7sOCB
+	eFH9HonsTzXYnpSZuAXdczY2ofsYGBQZ98MVO968CMLdqPwVBOuG9O7cUuzIknXo/nVspDZWCrL
+	Sk9LQCMXBC4m2z90uAfti/UVWCz0YodJAcfv8XsFuO67RxzfeTHbg9Qw=
+X-Google-Smtp-Source: AGHT+IGLjTi1I4UnSLykK1KGsO3JplFSALaCXnxdpBvFruTsaOMe8XAVmVMcSAgBRngvxmFZPL1x1S8GHu+QOv7QW+ugTVfQa3ve
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kWxKAN+nLkxhoap7"
-Content-Disposition: inline
-In-Reply-To: <874je399ld.fsf@linaro.org>
-X-Cookie: The second best policy is dishonesty.
+X-Received: by 2002:a05:6e02:154f:b0:363:de50:f7bb with SMTP id
+ j15-20020a056e02154f00b00363de50f7bbmr1446503ilu.2.1708539483081; Wed, 21 Feb
+ 2024 10:18:03 -0800 (PST)
+Date: Wed, 21 Feb 2024 10:18:03 -0800
+In-Reply-To: <00000000000010719b05fed5d82f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f95a7a0611e85807@google.com>
+Subject: Re: [syzbot] [reiserfs] BUG: corrupted list in __mark_inode_dirty
+From: syzbot <syzbot+4a16683f5520de8e47c4@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, linkinjeon@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, sj1557.seo@samsung.com, 
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
---kWxKAN+nLkxhoap7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-On Mon, Feb 19, 2024 at 11:02:22PM -0300, Thiago Jung Bauermann wrote:
-> Mark Brown <broonie@kernel.org> writes:
+    fs: Block writes to mounted block devices
 
-> > +		gcspr_el0 = addr + size - (2 * sizeof(u64));
-> > +		if (!gcs_consume_token(tsk, gcspr_el0)) {
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1410e3d0180000
+start commit:   45a3e24f65e9 Linux 6.4-rc7
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=24ce1b2abaee24cc
+dashboard link: https://syzkaller.appspot.com/bug?extid=4a16683f5520de8e47c4
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bd1013280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=101d4adf280000
 
-> Should this code validate the end of stack marker? Or doesn't it matter
-> whether the marker is correct or not?
+If the result looks correct, please mark the issue as fixed by replying with:
 
-I don't think we specifically care, we're just looking for a token here.
+#syz fix: fs: Block writes to mounted block devices
 
---kWxKAN+nLkxhoap7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXWPgMACgkQJNaLcl1U
-h9BotQf9GJn/XYpiDfL/lza1ZizUnGoNmGMVjrNpXn5ZUEXw+EsNed40zfVPg2As
-MDBjwYmG0UWQjuOimqAPlqsQL2hNSgmuQpeOCdUJXv2+/WBRUOfix+1xhtnPUUlf
-VWqNyLLSjFbbzOAmYFiN1HTJkHsSs8FHbtskrWealJQ/wV+6GLXjkz4cP7dP84lL
-IZOifB9YSPxwaW7RKUtEJ3D6CfX0xZhD5eahzIbO4E74kha8flAy/1AuHvtlI/+O
-0oN9+6kUfQNptazvZMa8wZib2BDF1ORpASOrzn+hmFWgoUD2j2wbkMt/E8sH9ckT
-HygbfdF0QU3Xk7fxczBPUTsczeTLeA==
-=2YH/
------END PGP SIGNATURE-----
-
---kWxKAN+nLkxhoap7--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
