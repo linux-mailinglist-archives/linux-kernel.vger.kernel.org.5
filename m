@@ -1,201 +1,206 @@
-Return-Path: <linux-kernel+bounces-75477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 996BE85E939
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:46:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA7EC85E93B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB9CCB23AAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:46:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98DC0B2147F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118CF83CDF;
-	Wed, 21 Feb 2024 20:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7A983CD8;
+	Wed, 21 Feb 2024 20:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0iJYRMXo"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iE6XCpuF"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D21C3A1DB;
-	Wed, 21 Feb 2024 20:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C43380610
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708548376; cv=none; b=qnCuROjyb3m7jiSoMvqwNFPFw/jgnOsRrz4g/Xy7wVwnx6rJ0g5DihunyhYLCD4LHXKWWIled9TOksMgyYy4SvFmfab7nfm9GhjQuwHDYBH7SISIH5nfud5IEZa52vuIPxAZfVsbbcxmfM3DhaXOpaXIjIGQiMM/fQEdkXz56Zc=
+	t=1708548554; cv=none; b=jY80123ZAVnaNv6guCzxfz9w1y3EGRHXjUu2UPI0aPN5c8Eaw2t/jXDSp35v9QICWJwko/KXvu8gO4zN7whztg+Ze/z21t+HOO9bQutDRFjFyJlHmJ2as/yLT6MMXfIOQE9UHdHhsTlxCkytc/SutvAtiG/+1qS0iwyuuEzbvqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708548376; c=relaxed/simple;
-	bh=fpV5ky7lMoyvm1atC6aW4rCMiwckfAJjMGBrT51JBJU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OL95rNI3O+Vu6VvzThNo5AtOaQUQdFTld56rjBTyeiC+hFxJLrOebEzU8P/7ElrlX3ym+YTx+Yo+Ip8iZ7WPouk2Xuiuqx9r2Tb4ioo0KEP+NbY1MyDZjBt0KpTGAZTz8RyS5XkiROJesaPBOe0/RepXJ7dNm2newXFBD7LsVH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0iJYRMXo; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708548372;
-	bh=fpV5ky7lMoyvm1atC6aW4rCMiwckfAJjMGBrT51JBJU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=0iJYRMXoIKB3NGokmW0d/875EGgMcR71P8VpX0RYgACHF7IcRhZiML37xybADlzB8
-	 YaLCbPUlF48Nk86/yDsxbJl+09Q+XnoA9iz6nWbOT1awgdS5SqzqrGTXr/FnTmIyS3
-	 RRFfAhD8jpREkecl0oTvZ/IjpkAZRNaut40oYnTbBdBfj9iHx+/qegLYqtSHrHyV2d
-	 gGgqe8NOAfCPtvTA5uiR4KWJUowl3gwOXe2KKtamiDFdBG/eGMuLe4/hPe4n6fL2oy
-	 LFgVjip0zzuIon4s9cKTTQ6r23F7gpgO6mGgsqtEZTYSGymZqYfqaiWEyu4UK7LSI1
-	 lykD8p3mTiMyA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AC2F337820D2;
-	Wed, 21 Feb 2024 20:46:12 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 19B34106043F; Wed, 21 Feb 2024 21:46:12 +0100 (CET)
-Date: Wed, 21 Feb 2024 21:46:11 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] power: supply: sysfs: constify the struct device_type
- usage
-Message-ID: <j2boiqkk7fwexefgwxoytk2gdx4an5snfm4bjtflnr7wwxf5yj@g5dcmcaor453>
-References: <20240220-device_cleanup-power-v1-1-e2b9e0cea072@marliere.net>
+	s=arc-20240116; t=1708548554; c=relaxed/simple;
+	bh=TAFRD/N26PP0ABAhbf3UPHWnQ6/QGPs/Av0FUApdALs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lb2FHkWkfE3NgW+9FBwXQlf+DxOfKojv2wF7Ot2B3BGkx1RFFnhGxgwB4bOopsnrcePXRs9K8xO0Or5cknIrRT+V9u9VN5FWwMWTIHdFS1UFyBnAzSABA5P4CY9ntzwLGQJJSIajPqiVlobke4KaNBqfQax8ypbI4GcwqJr79Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iE6XCpuF; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41278553215so6719375e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:49:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708548551; x=1709153351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SFWkqH9yqFlq6IROzTMH9jhnehwNcliel89qplM6at4=;
+        b=iE6XCpuFpHW2gEMo7kyGiwy7DF6c4Wjd5JYUIMkf9NHmR1t2LoiEsyOg26RMCcb2bB
+         JHAdxfknatQb7Y6bs1RlCkRcEN3KzObUqxGhO3fOtQhN1xwZlivJcedZSVaCWgwTtdCf
+         gTFs5PUK+XGRN4XWWdUtM0wYMy/dK5BFZCCwvz4VFoBrkjyZnWaZR7qysjevPMrROVBs
+         nEQbnzr7G8WSkwfuh+U9TY4t2o2OtxXXzQKbTi0vIiUYVSuhvvVRNEX41YkLC9GIiVpK
+         eqCxjvRbq0ul0Nc7DLsC8DE9zaSfuDLH1n+RXXGpelTMWdA3c2NRpLDI1w+QZUsgQ6yn
+         osrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708548551; x=1709153351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SFWkqH9yqFlq6IROzTMH9jhnehwNcliel89qplM6at4=;
+        b=CLGRparc5x3EpOvxEoywstdrj/x2uEp0edtd25h3JeA1/ylCI0t+YdpEHYCJU0Z+Ew
+         s9FltPJ9hNwDyoqh+n6vsemU4sE0Djrwy+YF806krrNsekI+zSV+FrWeig8bs0vrRxxe
+         8GFqpyTlurdHJG0Ennvtjx8NOVB2D+wszJNhX9VUfG/D68gz2IoPFUd7Av/612FTRLnY
+         3nHlYV8P1/W5OVJJHzjqmVmyvmnpVNLEmh72ofVHAkqMr8rC+oiwWiceEiNtRDIacOdd
+         yF8m58aqk5EshbLnDAMqU9xPz7a25KnbUbbOkOWlhr6U/p7+gMPIcR0+626O68LTcaYP
+         Doqw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxLy8GkwBhlIsHl6Z7PvZSOQ40Co+Ot/C3ZCimLd3lkZyasUtRYUPEXYl20MXowAtj/4qr2wDJrHTj4VmE2g5ov1Xln+StHTAxZ7gc
+X-Gm-Message-State: AOJu0YyD0EllNYykf2dp8duVosoRF7EGsUcKVuCPy7XVUJN9nGpVMxwV
+	ztbUKHNVz0MXCqk7zJt7nCbJm/41p7GZ50g53lwoxonhgUWlTaPZy718+MUTNmdmTFTfmp0uXOY
+	wXfVH0GZP4hm1SHju9XYYAJBZw7zxpbipyD8=
+X-Google-Smtp-Source: AGHT+IGvEiI2nEXR6Koy1+9dfLmQAnyQYg4Qiah0EL2/EZOfNwX3Ntyy+x8KkYfIzDuiSEFBp387hKUD+mB3toGYQsU=
+X-Received: by 2002:a05:600c:1f8b:b0:412:4a57:388f with SMTP id
+ je11-20020a05600c1f8b00b004124a57388fmr10806274wmb.15.1708548550675; Wed, 21
+ Feb 2024 12:49:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ahfpfiswpxb2tavb"
-Content-Disposition: inline
-In-Reply-To: <20240220-device_cleanup-power-v1-1-e2b9e0cea072@marliere.net>
-
-
---ahfpfiswpxb2tavb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz> <20240220-slab-cleanup-flags-v1-3-e657e373944a@suse.cz>
+In-Reply-To: <20240220-slab-cleanup-flags-v1-3-e657e373944a@suse.cz>
+From: Andrey Konovalov <andreyknvl@gmail.com>
+Date: Wed, 21 Feb 2024 21:48:59 +0100
+Message-ID: <CA+fCnZcDf13ZgzUTUYSrEwEhGVT-8zTYLVJZ0UfONSnma8vodw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm, slab, kasan: replace kasan_never_merge() with SLAB_NO_MERGE
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+	David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Zheng Yejian <zhengyejian1@huawei.com>, 
+	Xiongwei Song <xiongwei.song@windriver.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Feb 20, 2024 at 03:40:06PM -0300, Ricardo B. Marliere wrote:
-> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-> core can properly handle constant struct device_type. Move the
-> power_supply_dev_type variable to be a constant structure as well, placing
-> it into read-only memory which can not be modified at runtime.
->=20
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+On Tue, Feb 20, 2024 at 5:58=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> The SLAB_KASAN flag prevents merging of caches in some configurations,
+> which is handled in a rather complicated way via kasan_never_merge().
+> Since we now have a generic SLAB_NO_MERGE flag, we can instead use it
+> for KASAN caches in addition to SLAB_KASAN in those configurations,
+> and simplify the SLAB_NEVER_MERGE handling.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  drivers/power/supply/power_supply.h       | 4 ++--
->  drivers/power/supply/power_supply_core.c  | 2 +-
->  drivers/power/supply/power_supply_sysfs.c | 9 ++++++---
->  3 files changed, 9 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/power/supply/power_supply.h b/drivers/power/supply/p=
-ower_supply.h
-> index 645eee4d6b6a..d547dbe5676f 100644
-> --- a/drivers/power/supply/power_supply.h
-> +++ b/drivers/power/supply/power_supply.h
-> @@ -15,12 +15,12 @@ struct power_supply;
-> =20
->  #ifdef CONFIG_SYSFS
-> =20
-> -extern void power_supply_init_attrs(struct device_type *dev_type);
-> +extern void power_supply_init_attrs(const struct device_type *dev_type);
->  extern int power_supply_uevent(const struct device *dev, struct kobj_uev=
-ent_env *env);
-> =20
->  #else
-> =20
-> -static inline void power_supply_init_attrs(struct device_type *dev_type)=
- {}
-> +static inline void power_supply_init_attrs(const struct device_type *dev=
-_type) {}
->  #define power_supply_uevent NULL
-> =20
->  #endif /* CONFIG_SYSFS */
-> diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/sup=
-ply/power_supply_core.c
-> index ecef35ac3b7e..fda21cf4111c 100644
-> --- a/drivers/power/supply/power_supply_core.c
-> +++ b/drivers/power/supply/power_supply_core.c
-> @@ -31,7 +31,7 @@ EXPORT_SYMBOL_GPL(power_supply_class);
-> =20
->  static BLOCKING_NOTIFIER_HEAD(power_supply_notifier);
-> =20
-> -static struct device_type power_supply_dev_type;
-> +static const struct device_type power_supply_dev_type;
-
-This creates an empty struct, which is being used in this file...
-
-> =20
->  #define POWER_SUPPLY_DEFERRED_REGISTER_TIME	msecs_to_jiffies(10)
-> =20
-> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
-pply/power_supply_sysfs.c
-> index 977611e16373..ed365ca54c90 100644
-> --- a/drivers/power/supply/power_supply_sysfs.c
-> +++ b/drivers/power/supply/power_supply_sysfs.c
-> @@ -399,12 +399,15 @@ static const struct attribute_group *power_supply_a=
-ttr_groups[] =3D {
->  	NULL,
+>  include/linux/kasan.h |  6 ------
+>  mm/kasan/generic.c    | 16 ++++------------
+>  mm/slab_common.c      |  2 +-
+>  3 files changed, 5 insertions(+), 19 deletions(-)
+>
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index dbb06d789e74..70d6a8f6e25d 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -429,7 +429,6 @@ struct kasan_cache {
 >  };
-> =20
-> -void power_supply_init_attrs(struct device_type *dev_type)
-> +static const struct device_type power_supply_dev_type =3D {
-> +	.name =3D "power_supply",
-> +	.groups =3D power_supply_attr_groups,
-> +};
-
-=2E.. and this creates the correct one in power_supply_sysfs.c, but it
-is not being used at all. Maybe get some sleep and/or read again
-what 'static' means for a global variable?
-
-> +void power_supply_init_attrs(const struct device_type *dev_type)
+>
+>  size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object);
+> -slab_flags_t kasan_never_merge(void);
+>  void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+>                         slab_flags_t *flags);
+>
+> @@ -446,11 +445,6 @@ static inline size_t kasan_metadata_size(struct kmem=
+_cache *cache,
 >  {
-
-This function no longer uses dev_type argument, so you can remove
-it.
-
--- Sebastian
-
->  	int i;
-> =20
-> -	dev_type->groups =3D power_supply_attr_groups;
+>         return 0;
+>  }
+> -/* And thus nothing prevents cache merging. */
+> -static inline slab_flags_t kasan_never_merge(void)
+> -{
+> -       return 0;
+> -}
+>  /* And no cache-related metadata initialization is required. */
+>  static inline void kasan_cache_create(struct kmem_cache *cache,
+>                                       unsigned int *size,
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index df6627f62402..d8b78d273b9f 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -334,14 +334,6 @@ DEFINE_ASAN_SET_SHADOW(f3);
+>  DEFINE_ASAN_SET_SHADOW(f5);
+>  DEFINE_ASAN_SET_SHADOW(f8);
+>
+> -/* Only allow cache merging when no per-object metadata is present. */
+> -slab_flags_t kasan_never_merge(void)
+> -{
+> -       if (!kasan_requires_meta())
+> -               return 0;
+> -       return SLAB_KASAN;
+> -}
 > -
+>  /*
+>   * Adaptive redzone policy taken from the userspace AddressSanitizer run=
+time.
+>   * For larger allocations larger redzones are used.
+> @@ -372,13 +364,13 @@ void kasan_cache_create(struct kmem_cache *cache, u=
+nsigned int *size,
+>         /*
+>          * SLAB_KASAN is used to mark caches that are sanitized by KASAN
+>          * and that thus have per-object metadata.
+> -        * Currently this flag is used in two places:
+> +        * Currently this flag is used in one place:
+>          * 1. In slab_ksize() to account for per-object metadata when
+>          *    calculating the size of the accessible memory within the ob=
+ject.
+> -        * 2. In slab_common.c via kasan_never_merge() to prevent merging=
+ of
+> -        *    caches with per-object metadata.
 
->  	for (i =3D 0; i < ARRAY_SIZE(power_supply_attrs); i++) {
->  		struct device_attribute *attr;
-> =20
->=20
-> ---
-> base-commit: a9b254892ce1a447b06c5019cbf0e9caeb48c138
-> change-id: 20240220-device_cleanup-power-037594022cb1
->=20
-> Best regards,
-> --=20
-> Ricardo B. Marliere <ricardo@marliere.net>
->=20
+Let's reword this to:
 
---ahfpfiswpxb2tavb
-Content-Type: application/pgp-signature; name="signature.asc"
+SLAB_KASAN is used to mark caches that are sanitized by KASAN and that
+thus have per-object metadata. Currently, this flag is used in
+slab_ksize() to account for per-object metadata when calculating the
+size of the accessible memory within the object.
 
------BEGIN PGP SIGNATURE-----
+> +        * Additionally, we use SLAB_NO_MERGE to prevent merging of cache=
+s
+> +        * with per-object metadata.
+>          */
+> -       *flags |=3D SLAB_KASAN;
+> +       *flags |=3D SLAB_KASAN | SLAB_NO_MERGE;
+>
+>         ok_size =3D *size;
+>
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 238293b1dbe1..7cfa2f1ce655 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -50,7 +50,7 @@ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+>   */
+>  #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER =
+| \
+>                 SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
+> -               SLAB_FAILSLAB | SLAB_NO_MERGE | kasan_never_merge())
+> +               SLAB_FAILSLAB | SLAB_NO_MERGE)
+>
+>  #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
+>                          SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
+>
+> --
+> 2.43.1
+>
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXWYQgACgkQ2O7X88g7
-+prJgA//UGuZMDjweESCobtCRrcWlGAoUv/DMA3MArsEdQ1X+aUGDTKUTtpwDXBi
-NmkjNgC65NdU6H99YqNB9bAl5ylzgjZMc85Xm7yKaQbV63FZ8iUWJh1l5C9ZsrFP
-1erbjhSGkO9ofWeREuiTo/juUNAkliPaZA2ySj239tAON02pVzl+Nr4lkn42sAAZ
-FVNvoPOoYxOgz4sowjf8kaUr+hVa4Vp8GpT6uqClVtlcxTzBYUk8kgw3BUrUCv/j
-BZ2Sw7qRM8S1MJ3gw0mPVPLC8WpIiwHnwFdw/RgKgY0zqDmiwIJpSFIgHTjhMeIf
-iVI5lRSF8vHIoOnqkB+2ttnJlkYamJVWWqqw/7GxZnLGX8gdK+lSMyx2EFYVSYi7
-SYT9h3wOjKC0Y5thj0F9gz6aKGCQwBcP8EHnVktOxYv9Yj8cUg19HmnLZ3iOh1Lq
-12WmUUySIaiv9DQ6mzo+dHKQsaFCc4dAjsUaTVVqjx2JGARvLCVZJidZ243k+DLE
-ASAX1zbYlgA76mySvygMoA4r7nVwb4KFmoFMhp6SmCLhIIaGchI3aJWdrVEi9yNL
-mlKWXaZzym2sCBhmf3G89S7PiZKLc7HcE5j17ruXmJv8yPO9rFTSvR8MOpnH3aoK
-h+90IGbqP01elsuRd/M8X5egX6iLFvf/NPL5UqEt39HHGQhzi/w=
-=Jo0N
------END PGP SIGNATURE-----
+Otherwise, looks good to me.
 
---ahfpfiswpxb2tavb--
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+
+Thanks!
 
