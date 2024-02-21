@@ -1,149 +1,140 @@
-Return-Path: <linux-kernel+bounces-73986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3D3885CE81
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:01:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8312C85CE86
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:02:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E27B2852CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:01:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48C22B2054B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981142E632;
-	Wed, 21 Feb 2024 03:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C292E632;
+	Wed, 21 Feb 2024 03:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="B9IoZpZS"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2084.outbound.protection.outlook.com [40.107.215.84])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ftQDL4B1"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453302B9CE;
-	Wed, 21 Feb 2024 03:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708484465; cv=fail; b=lfH+cz1dgSNG+FkPcHw0jwWgXKoHBPlYrJZHL+ZGESqUbAnjgL9xK3F3JWsoLZhmYDboN2KjiNVKnm3Bs5S/ZJs0neb65QjsoJn1EzvF1vAZyJbw9vP59evX/gF+QmlhKDLeZyY4DVRdlvgylgmVzq0fB6N/HGNrrgYefj8Hvfo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708484465; c=relaxed/simple;
-	bh=C4s6zyipUh9s3Y7UMW9Uv+cFRpRArfixanADyfEpmm4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=X5C/jt0+CeDmbbh5RdCf93eQd4dZRWW6BuxyZgULAs+7TSa+rqPKkguW/Gs6X8Qa4/ahOiqhs3HezOzqEToV0Zwh+RxppVlto6Lav6bQdbO11vHTyuD9B2QDI/TG/XUNMQ/G5EyRGSf4zn+TrAiJp/MpALm95SIQBQXhQSBPgf4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=B9IoZpZS; arc=fail smtp.client-ip=40.107.215.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nN1CwohS8aPlL+Fu34uw/S36AOLWeGJMbX/1UZYHkLeoCA5g10rGy49WaLr/Y4a+T6tD67sHyC4JFC9zGaWRBOUn96hlTrioGtLW/kBue2BvOU+uMlYth5PVr/yJVgpKMozO5nbi8hf7koNg8Tm7RKW2LRya7nfd8xcUhtNiIBayMWGNG94VX8iC79KT/odcv7FZHo79ths5XixsWNXfeETAUapU9YcFCzohPjqSVJXyEgIgCZYbIMD5GwXwc/ODyOZhG6LxVX5BTB81NNhNkrsEReqUjUZ8Cxos3rc23uTha+gTVIyyMS3iRw4uzRYq/Te6vKkZsxWe33oTLhc8vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C4s6zyipUh9s3Y7UMW9Uv+cFRpRArfixanADyfEpmm4=;
- b=Ae1wRe2vPyJtcT2jgfg6+9eDSd7/LCgxYUDJ+STHfwkp2VXWQw+13yfcnXRbuCuvBD/a2Z4TgMZzIyfwvTJfdn2E16Tbg5dZHYuNmV33Cm03fOumfbmbZF5yuJ7HJUX10/XAyQeuzPMwyWlNPHK4lhuozn7pZ+RKJMoSDb1XqYJPtvWOic8RmCerDDHGdiwqSTiK/H8tc+GuM1Lihkkd4i+6q0snXl2qhAP/nxPS0s/P9XTdPURYghcsRSI/PhnmOmGMEXH6ZV0s1tXQZY9YXMQRqcVZQHYvp5X2D+spA4enTWRZ3ZbPp4TsZua+cXQfplydSjSrwyv8NZe9+D/R+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C4s6zyipUh9s3Y7UMW9Uv+cFRpRArfixanADyfEpmm4=;
- b=B9IoZpZSAERyIs9JJIBKEOvt5qXOitLglvlLHSQB7sTQgyGgz5F5qBMNubRAF4JgB5NQFpkcG4EH4Ac5I+wlRRfVUjbjNDtxbi/65YXyVf2+R93MRbNbz3n7TniufdsCb7tjBVGxFSQRmCB24fasgNbOhAiDCSGOJB7Z0A6kGVV12SIi5zcxXEZFpG2ywPG1/yHcLVMhIVfvZz9FDpsWRg8xZXI52k3aUTgEMiWt7mbS0bwtI/9iXIjhvgdbcrsgXSdb6pFMdC/PkwL0CJaPTsxSlF8CtyyRqAAmalp4DT8pbsXg5rUzVjk1NTCer+gw7qhU8YtdBt6rmW1oLFukrw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com (2603:1096:400:21::8)
- by JH0PR06MB6850.apcprd06.prod.outlook.com (2603:1096:990:4d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.34; Wed, 21 Feb
- 2024 03:00:58 +0000
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::8865:1c6c:513:4a68]) by TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::8865:1c6c:513:4a68%6]) with mapi id 15.20.7292.029; Wed, 21 Feb 2024
- 03:00:58 +0000
-Message-ID: <3d4f44ee-f533-446f-a9e6-7f58afc78d65@vivo.com>
-Date: Wed, 21 Feb 2024 11:00:53 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v6 0/2] Make memory reclamation measurable
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: akpm@linux-foundation.org, mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
- opensource.kernel@vivo.com
-References: <20240105013607.2868-1-cuibixuan@vivo.com>
- <fac8d079-100e-4b8d-9a35-db8219b28b51@vivo.com>
- <20240220212202.59ddc123@gandalf.local.home>
-From: Bixuan Cui <cuibixuan@vivo.com>
-In-Reply-To: <20240220212202.59ddc123@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SGBP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::22)
- To TYZPR06MB4045.apcprd06.prod.outlook.com (2603:1096:400:21::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D13D2837E;
+	Wed, 21 Feb 2024 03:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708484538; cv=none; b=dgUQPR41mymwE66dCrog3lC7tib6oCot/35hXkzWA4wVzqbJGdaKrB8ii8NyZM84OMnIemNXBDYTL+esl4ofYtC2A2NNEbgVqZQtrppKuzOLFFbIVEX5GFAjyaTak1LEdmOH/5a+Y8W4S/9c7vkfYgSGqc1eD5bf6ZKMg+oYIqI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708484538; c=relaxed/simple;
+	bh=5YeEcEgxYmu09MXHLnpzvtsKYMcG3p92FbXHkOlhAMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pBtJEaieu8lEa8HkbpzmBQa7lBvYmuC8ZPvBx7jqXlJCa6l5203GRuEDGy5fnpRmPnKH0zuID7nvDhcdPC0v8fwGy1/xlkXsdILDTvxxg/ON+T/CKdzhYmXeMwB+mh6Bv3uehs4wueHcgOl8gMnyKLgOKXituBKOffa7u9D0EsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ftQDL4B1; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d509ab80eso1402208f8f.3;
+        Tue, 20 Feb 2024 19:02:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708484535; x=1709089335; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5YeEcEgxYmu09MXHLnpzvtsKYMcG3p92FbXHkOlhAMc=;
+        b=ftQDL4B1EpDsa6mlFyunr/yfdN/iW0Vs+lL+vPzoFx5xqFhde/G0tSzlIC3YESoOjC
+         ZkBZK8pw0zF+fvADmlmo5RdJ3Y4U61fO1f1R4NdQjTP1I5JXA190WC6Eega79DDEjdkc
+         Na6rb9b/2MD+P/eLNClsliNGVvRQicQMNQpsX/WkkI02aMGV5FGDCLUY004c/FjFhcPa
+         sWbWG5aiM/vuRED6YZbWbwiU1ZaT0/RcSqursvaDw4TccUj4KseXs2y1cl/jN04O+17n
+         l7OmELN39q5nAHV2rhMdG5Y7gGJtRd3nYsp0PG6FWaS/oc51G1H4liiPBKN4qSuoYMT9
+         f+Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708484535; x=1709089335;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5YeEcEgxYmu09MXHLnpzvtsKYMcG3p92FbXHkOlhAMc=;
+        b=FlXQZ3/3qaoXaXSHXlRgjhWEELWt/hCfxzVMTcsTCF2ivvKlqKVwA8eCwMNZrc9bZZ
+         btTOc+YZ55raLdX3O1wMU4Jwu2c0doChAnj9zZsTfrRMQDz8wmW7C9Rei4P9hEZbNSwC
+         gMnXAUmgXCA4iG55lx29NYuJYQtvFqGAX3Km85seSHUCZyqueqj1ik8TsGwsi5YGAs94
+         xgyoJU1lrb+3XlY5d3Gjj3/Pr3LgL4itGCkWFDJsolpVPtPI9qZEeKn+YPJHM+qrXuKn
+         7WcGRXvOIBY1CUeskSRmuMbM7ngv2BQuKwsqa3I0ilwtdfUI1jT88rgfvcS3kCnSB6tD
+         +zdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqXHIEcrD03evpJkm6SsoAUc2P3vhFEhQv1n5z3Y0FnZjh/voWG1LAbASSge115gVuDeLtO7L0LtE3/xYpq1ykc08LGMRbU+WF4911zbtaRPiUHLgMUyqhWcYEuz6zr7Ol5d1pRJcruN/w5DglvoDOz3AGrMR3deT3RVL+sl8gifSE
+X-Gm-Message-State: AOJu0Yx3yLN2vpAHIIREFMSBsj62phDsNlVXor1yHT2cIXCNAQSqRYZE
+	C3RiBmp+6crxX0T5i44eoQqmkWuMA+WIPsxc8JpUDeVBFJQQjW1pmJnZWpWX9A/VVG4XYD7XXkf
+	E2nYS5uUsl3693f+Rp41eyrN6hXw=
+X-Google-Smtp-Source: AGHT+IFXflCjYIorkLHNj0/aaODvrUQ0PoLWhZ3TXJuBYcOMC310Oxt+Nm2xprv0m8PmSrNKxRGUijunEZU7KHlAhdA=
+X-Received: by 2002:adf:cd81:0:b0:33d:731f:b750 with SMTP id
+ q1-20020adfcd81000000b0033d731fb750mr1454359wrj.54.1708484534678; Tue, 20 Feb
+ 2024 19:02:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB4045:EE_|JH0PR06MB6850:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb9b5497-80c4-4d2f-f539-08dc3289540c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bwhVjs2HynftN6KgAKj+ZO6p+XcIAHlnlfSUaVWIPlCFI9TqfPwbzKW0vXHVZRpg9cuXEiq0sNuddzMpVFZgFxRuuwgSgHgar3FgzGYAQqnxsTqOLk8xD1s7RCeilM+SaCorov3igM6US2yFbPPfeqQBR9G6tjd2tR2mrZDBm9LowppnMOj9wq7l1MCN+VCmBK1dMom7iNfVJW2k9g7vWIzpapfa/mqtCfuMYzjvSMOh6hQOMnruXXv3lfHtRN65zyfBehkQCGreECBVnwQuLYGfWA37wa41k+cDsnJIvaGkI8V1Rto8A/Pw2ePlIfRgg3aZsOl9FkmOSunFVq0Yg3i5rApOFwL8vxLXvIUqzWUMGXetzMZvec9l0ruA6ci3XqI2eUMMNtDceZHE03cAsGlbryRdCI9hfLNDSxBpFZynCtJNy0vsYZgGRfRoMLdYaCs61hy3aGlXyE7g/1bPNsQZfGwvC0dqKjssdo09tygaAP1BVGX+FkXVhZfd5MKH07mCQIedW2Bo2hJPxSSF0ZeuOfuFziYoDyOxgbS4BfIGWpcZfigsYcQV1zH8qeiyLZ8/sohI1I1BtxnNsTdAqy/h3g5QSxeReCGR+MQ/oonwUUqenVX5NE66fSKsFDaD
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4045.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UTFTZkVxUzBaZW9yNzZqajVvVXk0RzlRT2crTE12WWs0WU83RUFQSE01SjA1?=
- =?utf-8?B?OFMyNzhIYkorTjJIckVGUkZXWU5zUmV4RHBrN0hPQ2dTSEVPcTl0TWJyUHlO?=
- =?utf-8?B?a2dTQlp2ZWVCeEwrUy96VFdlL08rSjQ1VHZMR1VnZzYrWXRNWndTTno4MEww?=
- =?utf-8?B?MEZ2ZE1SMkV0SkZvaTREcXRMVmZhK0paVG1FSCtjbHJ5M2xPNm9PVlQ4alM2?=
- =?utf-8?B?K0ZTWlZxZVNtVU5zbnlNS1FNUG5tTVU2bFA1ck9YVjh0Skg0NnAwUVI1aGlw?=
- =?utf-8?B?RGs2U1k2bkF1cVdUaStPYU9kOWxKaUJLbDhidXM3MnN4dGRtYWFRUGhLNk9G?=
- =?utf-8?B?c2tQUEFwNklEd1NhVU4yeGU2R3pCVmx4enJRakh3bXZnMzY2QUR6akhFdVd6?=
- =?utf-8?B?U0NQeW5sTjlwaG4yaEZiR0haUElhL1NBVHlncEdkLzJFRGw1MG9GODlMSWFi?=
- =?utf-8?B?U3NaN3BQZWgxUDVBcU1jckVrM0hUUG9WdmlXdExqNFRQeVh2Skd0ajIyYmFQ?=
- =?utf-8?B?UFFjWDM0SUgwV2tQS0h1Y2o4SzVETStTNXArZzN6OFlyUGJSTE16bkRnUkdw?=
- =?utf-8?B?WUpiVjRJbFh0elVTcCtLSU9COUNYL1pWZGhQVzltZjlPQVZPU3pzc2lMbUho?=
- =?utf-8?B?ZGhCYWQxSEFSKzQyS1hNTWtTcDlrWjFpcERGM251b2syUjh3VjRLSE9NYTBU?=
- =?utf-8?B?bzVaejJ0WWtJeUdTRzRJTkR2NzY3WS90QkROR0pLYVgrTjVKam1rR2hyL1VT?=
- =?utf-8?B?aGZZd0NsS1UzUk1yUXZBRzhCVGZZT2cxVzB0Qm5hODg1RUkwYmhNelQvcCtE?=
- =?utf-8?B?dzdYS1R5eit5bVdqMVNiTEtlVVJoL0pFM2N1VmUzVUxYcUZ0OFFHN0hUVXZO?=
- =?utf-8?B?THdKMFZ5QlU4NGZmenlHRmhnODkvc0Y2R1FVaE5BL2dybFJsc1Y0RFhqNm0v?=
- =?utf-8?B?M1gyZjc0L1NGVThhY1NpK2lRalQ2YWlpUlNyQnNCSmtBSzBpRzNxaytHV09l?=
- =?utf-8?B?WWFMK0lqVUhDWndTYko2N01IWFRyZlZZbFMxQ3VhbEZTRTBtMFdST0kxUWov?=
- =?utf-8?B?ZkU1NkNneTRaSnFlOUhlM1FtbFFISGVjaFVleU1HVU1nY1crT3AwUExMcmM2?=
- =?utf-8?B?YytBSU9Rc3o1Z3dYa09qSVhtcWwxay93dkl3UkNBU0QxRkZKZEErS2FUcm9z?=
- =?utf-8?B?QlZCdHZDVnBiOTBHcXFiSHRiL3hOUW9ZQUJGSW9yWCtJZkk3UDF2REcxZ3NR?=
- =?utf-8?B?Yzl2NG9lY3EwekJhV0R4N0tBQmJlMkpTR1d2b3ZwNCtYTlB1UkJuUWZBbDFV?=
- =?utf-8?B?cldUMEJYMG5hTkNkbVBEUXUrNWY3NE1NOTdaSkM4eFcrWU1YUDhSZDJkaGJN?=
- =?utf-8?B?Vm5HNmZETmx3d2E2WWZLUXZTMHZMak4ramVHUXBZL3FwYnhXelNtbkVSclVP?=
- =?utf-8?B?d2hyZElVRTZOYitLWGJNeU4yZWY5VTlnZlQ1Z1IxU3dhenZhWXpaQktuVDZq?=
- =?utf-8?B?bFp0bGJ6QkUvdjZVZnJZY3A4eFVaNFUzRlcrRkNXOENrRnhyWi91RGVubTZv?=
- =?utf-8?B?ZnFvME4wMTRVZm5QRWpxZGdUblV2RXYvVHd6a3hJZjR6Z2ZjVWd5ZnQ0eWZO?=
- =?utf-8?B?cU80Nk1UK29zYkxFVm8wTm1XOVdxUFB3YzRlV2c2REk5bzRVeFFEZEJGSDZ0?=
- =?utf-8?B?RUFiOHpGWTFMU1J5c3V4YkplY004Z0s4K1U4cWdKdVZNeUl4T0lGUC9yNkdJ?=
- =?utf-8?B?TENWazNTeTVoK21KSFdEcFpvTUhzVGFPYS9RS2NXekVYb2dNMXU3VVNOVGVR?=
- =?utf-8?B?STBzSzkvYjZPeXRkVCtYQ2RaNXMzMFRQSnlhbWRtLytHZmtTVm1STUV3cm0r?=
- =?utf-8?B?TWdUV2kxa0llbVZzcXlhQmQwZkpmNzgzYUZLd2YwSjhFRDNpa09vakhYWTZD?=
- =?utf-8?B?RWlQNG9MVTg1cnBjVFVueXVYVHNudUZYQmxiaVlBTnorRy9GNGpRdm5vNHor?=
- =?utf-8?B?L3Y3eTJZWDhTYVowR2hVWG4zSlBieWRhSlRuT3pQbG1JaDdmYVVPL2RWYkk4?=
- =?utf-8?B?WmJ6aEorbW9HYWdVb3BtWTg2Wm9EY3BEMGdkeUViSWNWdU0yZThHT3gvVTN3?=
- =?utf-8?Q?d/oYaU9I+Y+WC7+hS7k3on4wU?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb9b5497-80c4-4d2f-f539-08dc3289540c
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4045.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 03:00:58.3782
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ubbp7UMzb40FKMBVub2tRN47f/KrGFc0TjxnSlWm9nvLXFiED4l3P8pRfu9rXGglUOgmTDbnH/L3PpM9xQtHqA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6850
+References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+ <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com>
+ <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com> <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com>
+In-Reply-To: <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 20 Feb 2024 19:02:03 -0800
+Message-ID: <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next 0/5] bpf: make tracing program
+ support multi-attach
+To: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
+	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
+	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
+	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 20, 2024 at 6:45=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongme=
+nglong.8@bytedance.com> wrote:
+>
+> On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=A3 <don=
+gmenglong.8@bytedance.com> wrote:
+> >
+> > Hello,
+> >
+> > On Wed, Feb 21, 2024 at 9:24=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
+> > > <dongmenglong.8@bytedance.com> wrote:
+> > > >
+> > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not allow=
+ed to
+> > > > be attached to multiple hooks, and we have to create a BPF program =
+for
+> > > > each kernel function, for which we want to trace, even through all =
+the
+> > > > program have the same (or similar) logic. This can consume extra me=
+mory,
+> > > > and make the program loading slow if we have plenty of kernel funct=
+ion to
+> > > > trace.
+> > >
+> > > Should this be combined with multi link ?
+> > > (As was recently done for kprobe_multi and uprobe_multi).
+> > > Loading fentry prog once and attaching it through many bpf_links
+> > > to multiple places is a nice addition,
+> > > but we should probably add a multi link right away too.
+> >
+> > I was planning to implement the multi link for tracing after this
+> > series in another series. I can do it together with this series
+> > if you prefer.
+> >
+>
+> Should I introduce the multi link for tracing first, then this series?
+> (Furthermore, this series seems not necessary.)
 
-
-在 2024/2/21 10:22, Steven Rostedt 写道:
-> It's up to the memory management folks to decide on this. -- Steve
-Noted with thanks.
-
-Bixuan Cui
+What do you mean "not necessary" ?
+Don't you want to still check that bpf prog access only N args
+and BTF for these args matches across all attach points ?
 
