@@ -1,166 +1,107 @@
-Return-Path: <linux-kernel+bounces-74548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B1C785D5C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:39:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3F4085D5C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:39:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D12D1C20CE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:39:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30ED41C21094
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6118A208C1;
-	Wed, 21 Feb 2024 10:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9BE3D57F;
+	Wed, 21 Feb 2024 10:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="NVUrtqwk"
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D7GYZofQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C533EA89;
-	Wed, 21 Feb 2024 10:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D67A3A1A2;
+	Wed, 21 Feb 2024 10:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708511944; cv=none; b=btukBm1I69ugESYaI8ulyj+rYYohEc0baGJxy5LuyoME8GpRqbtkuiVczmGrgxmWEs6GhotO/zmK6Rg2jZlIJoG+wD2gFCFYz/VTbCXvZ1KXCyHOAJO0HKRAPiE0Jcp8i9qtcATBNECd1ue+jaem29pUB8aACh1LO/Exlv0+pbM=
+	t=1708511938; cv=none; b=p7m1CSClL8RrJrbF/DbVhoIsfpZ4lmSlOf6SGU5mYcizowPuY+uJkh8UOczs8yIu14zn7pPBs/5QXahPIvx8BLAWFJCW2v7D79QlWJac5h9buvwsw/Cv2zbA/+AqrXilt9NOENqTeIEoLC6UAORm5VG1CdZcQlgSlAPVmtnDPkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708511944; c=relaxed/simple;
-	bh=3T2LRJtiW3mZfk/PunFIogOMmmkLZ7ysF+8gTpzPau4=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MX3HsSVlcOCgZIdiWlVw02fCfHwRFcQS7USH4BbbFzXwzq9xLmNtpBI4AHS824CMdH44eOQEG2bakBfL9AlD1NeBaTZ408pe2AqFNlxphuaU5Ygm3J9v/yHnRIxJ4h6JWcbXX4yoWCviyrdW2CRqB6/zI9N56GV2uHObueNU1uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=NVUrtqwk; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Tft6g64Lkz9tln;
-	Wed, 21 Feb 2024 11:38:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1708511931;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VOqX0GOQZZOiGD9BoiPl4P99i5/2V8G3vmiVhpwmjpo=;
-	b=NVUrtqwknw/O3TZyiGfvfpG0IBx7JJpeIshlUGI/ALrW+famIowinN8F9Ti3bU4Kb+DskP
-	y775xaFPKAqf07Z9jufvCZ/AuUTAM4pXCgmXlgUugQZxZI4mmfx/4UJIb3CWj7JIytAhQg
-	l3cMMRBSKwmkaUjCkZVPwc9QSZ0W96DsujRbPvrZTUclXWsJ2NVejTPx9Ud7DDCgLM69Gb
-	4oAYCyVx0a/ZfDI7wBynT1H/fvIHe24aB5hJFSRro6uKd6bhUTPnwEiiZrZqz68LsxqWry
-	p64VobbPssd93ohFph+mesCr7BNyXCE5h4LrsNcuswhXvQdIQyv57qnfdnQpWw==
-References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <20240205-pinephone-pll-fixes-v2-3-96a46a2d8c9b@oltmanns.dev>
-From: Frank Oltmanns <frank@oltmanns.dev>
-To: Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
- <mripard@kernel.org>, Diego Roversi <diegor@tiscali.it>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Samuel Holland
- <samuel@sholland.org>, Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team
- <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, Neil Armstrong
- <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] clk: sunxi-ng: nkm: Support minimum and maximum
- rate
-In-reply-to: <20240205-pinephone-pll-fixes-v2-3-96a46a2d8c9b@oltmanns.dev>
-Date: Wed, 21 Feb 2024 11:38:39 +0100
-Message-ID: <8734tmhzkg.fsf@oltmanns.dev>
+	s=arc-20240116; t=1708511938; c=relaxed/simple;
+	bh=FoY4vTs159m3czgbeJ2M9PAPE4Pi2TpKoQBGmnGalsI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mCE5y20sStuM2QYtRUbeCsNqJrSPZJJcaRrX6itcXipYnMV6gTkWWI2q81/vAk+QioidvBA2uzuVi1m5jP/TCMtUpeXwYC7eJ04IiGQDcMUJq6RqJNBC22pSC6WibqyHiNYwPNzJzlDaS9IoqwDxm3vcfjgwTVK5+y5sElAWz9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D7GYZofQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C62BEC433C7;
+	Wed, 21 Feb 2024 10:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708511938;
+	bh=FoY4vTs159m3czgbeJ2M9PAPE4Pi2TpKoQBGmnGalsI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D7GYZofQ8tMBxAKRh3s2vyrT3Y90i84Mvf0xwOWU7Gco2ynTLVz/J11H1m5EvEBQe
+	 cS7AbaO/xsPowrSXfYIJNcPmwVCTpHesb/WlSKZ2DgNbx7oqopaLsa23kGsOQIAfyQ
+	 wD+vTi+LdqfvhRIkqTILse1iLz5Sa9B+Id4mmLQ2s5PnzjiF0sPtWxCdbFWZEkugIv
+	 Q+muVl1bAbVvDX+zn3vDtDXA3235ewwav6YZuTyS9kFNElWnmVerE5A215m0wWPH2H
+	 TzbEo9s6znhJNnapqQkVMovZib+0NyJvlYAHLd3aP6AAzSmP5EuaVX8KIHs/U2QalP
+	 UkqZmQplAc1kA==
+Date: Wed, 21 Feb 2024 10:38:53 +0000
+From: Simon Horman <horms@kernel.org>
+To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
+	manjunath.b.patil@oracle.com
+Subject: Re: [PATCH net-next v6] bonding: rate-limit bonding driver inspect
+ messages
+Message-ID: <20240221103853.GD352018@kernel.org>
+References: <20240221082752.4660-1-praveen.kannoju@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Rspamd-Queue-Id: 4Tft6g64Lkz9tln
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221082752.4660-1-praveen.kannoju@oracle.com>
 
-Hi Jernej,
-hi Maxime,
-
-On 2024-02-05 at 16:22:26 +0100, Frank Oltmanns <frank@oltmanns.dev> wrote:
-> According to the Allwinner User Manual, the Allwinner A64 requires
-> PLL-MIPI to run at 500MHz-1.4GHz. Add support for that to ccu_nkm.
-
-I should point out that limiting PLL-MIPI also fixes a regression
-that was introduced in 6.5, specifically
-ca1170b69968233b34d26432245eddf7d265186b "clk: sunxi-ng: a64: force
-select PLL_MIPI in TCON0 mux". This has been bisected and reported by
-Diego [1].
-
-I don't know the procedure (yet), but probably the fix (if and when
-accepted) should be backported at least to 6.6 (first broken LTS), 6.7
-(stable), and 6.8 (next stable).
-
-My suggestion:
- - In V3 of this series, I will reorder the patches, so that what is now
-   PATCH 3 and 4 becomes 1 and 2 respectively, so that they can be
-   applied to 6.6 more easily.
- - Maxime, IIUC you requested some refactoring for handling the rate
-   limits [2]. I propose, we use my current proposal as-is, and I will
-   do a follow-up series for the refactoring.
-
-Please let me know how you would like me to proceed.
-
-Thanks,
-  Frank
-
-[1]: https://groups.google.com/g/linux-sunxi/c/Rh-Uqqa66bw
-[2]: https://lore.kernel.org/all/exb2lvjcozak5fayrgyenrd3ntii4jfxgvqork4klyz5pky2aq@dj2zyw5su6pv/
-
->
-> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+On Wed, Feb 21, 2024 at 01:57:52PM +0530, Praveen Kumar Kannoju wrote:
+> Through the routine bond_mii_monitor(), bonding driver inspects and commits
+> the slave state changes. During the times when slave state change and
+> failure in aqcuiring rtnl lock happen at the same time, the routine
+> bond_mii_monitor() reschedules itself to come around after 1 msec to commit
+> the new state.
+> 
+> During this, it executes the routine bond_miimon_inspect() to re-inspect
+> the state chane and prints the corresponding slave state on to the console.
+> Hence we do see a message at every 1 msec till the rtnl lock is acquired
+> and state chage is committed.
+> 
+> This patch doesn't change how bond functions. It only simply limits this
+> kind of log flood.
+> 
+> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
 > ---
->  drivers/clk/sunxi-ng/ccu_nkm.c | 13 +++++++++++++
->  drivers/clk/sunxi-ng/ccu_nkm.h |  2 ++
->  2 files changed, 15 insertions(+)
->
-> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
-> index 1168d894d636..7d135908d6e0 100644
-> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
-> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-> @@ -181,6 +181,12 @@ static unsigned long ccu_nkm_round_rate(struct ccu_mux_internal *mux,
->  	if (nkm->common.features & CCU_FEATURE_FIXED_POSTDIV)
->  		rate *= nkm->fixed_post_div;
->
-> +	if (nkm->min_rate && rate < nkm->min_rate)
-> +		rate = nkm->min_rate;
-> +
-> +	if (nkm->max_rate && rate > nkm->max_rate)
-> +		rate = nkm->max_rate;
-> +
->  	if (!clk_hw_can_set_rate_parent(&nkm->common.hw))
->  		rate = ccu_nkm_find_best(*parent_rate, rate, &_nkm, &nkm->common);
->  	else
-> @@ -220,6 +226,13 @@ static int ccu_nkm_set_rate(struct clk_hw *hw, unsigned long rate,
->  	_nkm.min_m = 1;
->  	_nkm.max_m = nkm->m.max ?: 1 << nkm->m.width;
->
-> +
-> +	if (nkm->min_rate && rate < nkm->min_rate)
-> +		rate = nkm->min_rate;
-> +
-> +	if (nkm->max_rate && rate > nkm->max_rate)
-> +		rate = nkm->max_rate;
-> +
->  	ccu_nkm_find_best(parent_rate, rate, &_nkm, &nkm->common);
->
->  	spin_lock_irqsave(nkm->common.lock, flags);
-> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu_nkm.h
-> index c409212ee40e..358a9df6b6a0 100644
-> --- a/drivers/clk/sunxi-ng/ccu_nkm.h
-> +++ b/drivers/clk/sunxi-ng/ccu_nkm.h
-> @@ -27,6 +27,8 @@ struct ccu_nkm {
->  	struct ccu_mux_internal	mux;
->
->  	unsigned int		fixed_post_div;
-> +	unsigned long		min_rate;
-> +	unsigned long		max_rate;
->  	unsigned long		max_m_n_ratio;
->  	unsigned long		min_parent_m_ratio;
+> v6: 
+>   - Minor space additions addressed. 
+> v5: https://lore.kernel.org/all/20240221050809.4372-1-praveen.kannoju@oracle.com/
+>   - Redundant indentation addressed.
+> v4: https://lore.kernel.org/all/20240220050437.5623-1-praveen.kannoju@oracle.com/
+>   - Rectification in the patch subject and versioning details.
+> v3: https://lore.kernel.org/lkml/20240219133721.4567-1-praveen.kannoju@oracle.com/
+>   - Commit message is modified to provide summary of the issue, because of
+>     which rate-limiting the bonding driver messages is needed.
+> v2: https://lore.kernel.org/lkml/20240215172554.4211-1-praveen.kannoju@oracle.com/
+>   - Use exising net_ratelimit() instead of introducing new rate-limit
+>     parameter.
+> v1: https://lore.kernel.org/lkml/20240214044245.33170-1-praveen.kannoju@oracle.com/
+> ---
+>  drivers/net/bonding/bond_main.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+
+Hi Praveen,
+
+Thanks for addressing my review of v4.
+This version looks good to me.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
+..
 
