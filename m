@@ -1,157 +1,260 @@
-Return-Path: <linux-kernel+bounces-74592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321EA85D67B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:09:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E2085D682
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB7FF1F23B6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A17CAB22280
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364833F8E0;
-	Wed, 21 Feb 2024 11:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HwzAQSho"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CD43F8EA;
+	Wed, 21 Feb 2024 11:10:23 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91163DB92;
-	Wed, 21 Feb 2024 11:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577BD3EA7A;
+	Wed, 21 Feb 2024 11:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708513738; cv=none; b=YLCuUteexl2A39M01X3UMEZbER78IYeeVubu05wDjxsbRzM/BdY6/SIDNRTfnvB8nocVp5ZJq3fhXYs6oaQG/2drImMAMlqKtu9ItQkTHpQJzNk+Eoq/QOJkJASZ5pLsnAnt0fwymWCTfTCiADWxaXJHQy4ENEVhL/3WvpShXyE=
+	t=1708513822; cv=none; b=bJWLoU0k+8b8se2ADujG+weEaTrzU7KuGs/n4vdRV1SnkaDRMXfAh5MtNXbyJKf30qvjF2GhvCNvVzUkic8acKquxWayBYLQMZ/Rw2KQ2pjBcne6n7cA9dbchTB5BIHgpLjis6urU8BthJusqtFuf05pduj4LdTVORMBzcIR9t4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708513738; c=relaxed/simple;
-	bh=Ilpl6qDn+BLmGfDkj3wZmJu260s+TcYOBxBljvMnFdQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GOyU9VPI7R6BUQiM/KoyyXGvlmG/XRjv3MIZjcvGBBKazCVen4et4jbIjZ1fekjkcOASc3etorhcOGS7v7yg2F/Y8ztmRRKy0LEst1jUu4RfmvAYAs+MleC/01nAQorJPsINplz4de/lHGDph967GXIumK8gI4aalMm5+b4Y1Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HwzAQSho; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41LB0hP2010690;
-	Wed, 21 Feb 2024 11:08:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=EojJ00F9rrvDlSEynFkxvpGQqZFHkGbZulob50tdVok=; b=Hw
-	zAQShoa0IxjzkJnpE4X/s9Ts4WS4t4r6fLx2zo4Sf8xUls51DvKLxuKjBb3orqdc
-	ZNEOLnrEM4XFpUV1ymWJEzfIqCy5CG2rhw0qV6aVCpaKcWQLMbRw/bTCFkgyIqTW
-	F8PLklMZNMC3z0DeinYB0MdKzmsMOyZyMbPNtyHZZ+t+x1No6nQbpih1Alj9FZ9c
-	ZsuHlThBOHTO3lQrbhPr/zfUmhrXNWG3fL+scFAgKeKSynP32TmI19MshaXYLpBR
-	q70Ngpu8hgbMc4+S0GK+F+mohtpW+s0UYFeWUJ20kEAcNbXNlvY6OB7Jf0UoI1ki
-	BelFtF5YQ1ZBOdmIIVVQ==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdfx4g0jh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 11:08:43 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41LB8hC7016562
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 11:08:43 GMT
-Received: from [10.216.62.93] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
- 2024 03:08:37 -0800
-Message-ID: <3a044447-375f-8f5d-1d4e-b421ed0a2c1f@quicinc.com>
-Date: Wed, 21 Feb 2024 16:38:34 +0530
+	s=arc-20240116; t=1708513822; c=relaxed/simple;
+	bh=gqquDlLrktm+6irConxTLMXklBjVcdD+zdEtyUhQCJ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mudMdC10Cj3gb0ne2wgb4ZgL4Bf/dbW1aQpwXwEdDzjPY/m5lAYcDp6emXaofombbBBtQdn/O5vPfmKxd6nGISumEhEqhYROwCvjFL2Rx+T/rsCHrPDqILek16a2eCRXKx16gstSLWyEjPoZj5Cw3DgBHoxEc/UvcAWkiti5GBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D2EC433F1;
+	Wed, 21 Feb 2024 11:10:19 +0000 (UTC)
+Message-ID: <e98a23c6-a35d-422b-be8a-1179392215c1@xs4all.nl>
+Date: Wed, 21 Feb 2024 12:10:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 0/5] Add QPIC SPI NAND driver
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "Manivannan
- Sadhasivam" <manivannan.sadhasivam@linaro.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <broonie@kernel.org>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240219130412.GC3281@thinkpad>
- <3ad2909d-4ac3-fff3-739d-b12a3408fa0f@quicinc.com>
- <454a7e8d-70f5-4bf5-a3f1-bf9e42672c4c@linaro.org>
- <bfa0edb7-02fd-42dd-2235-0ea34f362515@quicinc.com>
- <d9a49d77-32b1-45d1-b110-5e66155abad3@linaro.org>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <d9a49d77-32b1-45d1-b110-5e66155abad3@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: heR9Ezb94gQFaWmjyfV8D6KObvJhplbf
-X-Proofpoint-GUID: heR9Ezb94gQFaWmjyfV8D6KObvJhplbf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- mlxlogscore=815 clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402210086
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 08/15] media: uapi: Define audio sample format fourcc
+ type
+Content-Language: en-US, nl
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+ tfiga@chromium.org, m.szyprowski@samsung.com, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org
+References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
+ <1705581128-4604-9-git-send-email-shengjiu.wang@nxp.com>
+ <20240217101926.3f1d2452@coco.lan>
+ <CAA+D8APD+zL0xYkf6FxPNfM3Y3O8+PhT7WEXO7XCLAmBjoMmUA@mail.gmail.com>
+ <20240219135618.5c557e66@coco.lan>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20240219135618.5c557e66@coco.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 2/21/2024 4:31 PM, Krzysztof Kozlowski wrote:
-> On 21/02/2024 11:34, Md Sadre Alam wrote:
+On 19/02/2024 13:56, Mauro Carvalho Chehab wrote:
+> Em Mon, 19 Feb 2024 12:05:02 +0800
+> Shengjiu Wang <shengjiu.wang@gmail.com> escreveu:
+> 
+>> Hi Mauro
 >>
->>
->> On 2/20/2024 5:06 PM, Krzysztof Kozlowski wrote:
->>> On 20/02/2024 12:32, Md Sadre Alam wrote:
->>>>
->>>>
->>>> On 2/19/2024 6:34 PM, Manivannan Sadhasivam wrote:
->>>>> On Thu, Feb 15, 2024 at 07:18:51PM +0530, Md Sadre Alam wrote:
->>>>>> This series of patches will add initial supports
->>>>>> for QPIC SPI NAND driver.
->>>>>>
->>>>>> Currently this driver support following commands
->>>>>>
->>>>>> -- RESET
->>>>>> -- READ ID
->>>>>> -- BLOCK ERASE
->>>>>> -- PAGE READ
->>>>>> -- PAGE WRITE
->>>>>> -- GET FEATURE
->>>>>> -- SET FEATURE
->>>>>> -- BAD BLOCK CHECK
->>>>>>
->>>>>> This driver has been tested with dd command with read/write page
->>>>>> with multiple file size 1MiB, 10MiB,40MiB etc.
->>>>>> Also tested with "mtd" command like mtd erase, mtd write, mtd verify etc.
->>>>>>
->>>>>
->>>>> This is not the first version isn't it? Where is the changelog describing what
->>>>> has changed since then?
->>>>
->>>>      The earlier patch was the RFC for design review only.
+>> On Sat, Feb 17, 2024 at 5:19 PM Mauro Carvalho Chehab
+>> <mchehab@kernel.org> wrote:
 >>>
->>> RFC is state of patch, not version. This is v2 then.
+>>> Em Thu, 18 Jan 2024 20:32:01 +0800
+>>> Shengjiu Wang <shengjiu.wang@nxp.com> escreveu:
+>>>  
+>>>> The audio sample format definition is from alsa,
+>>>> the header file is include/uapi/sound/asound.h, but
+>>>> don't include this header file directly, because in
+>>>> user space, there is another copy in alsa-lib.
+>>>> There will be conflict in userspace for include
+>>>> videodev2.h & asound.h and asoundlib.h
+>>>>
+>>>> Here still use the fourcc format.
+>>>>
+>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+>>>> ---
+>>>>  .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
+>>>>  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
+>>>>  drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
+>>>>  include/uapi/linux/videodev2.h                | 23 +++++
+>>>>  4 files changed, 124 insertions(+)
+>>>>  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+>>>>
+>>>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+>>>> new file mode 100644
+>>>> index 000000000000..04b4a7fbd8f4
+>>>> --- /dev/null
+>>>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+>>>> @@ -0,0 +1,87 @@
+>>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+>>>> +
+>>>> +.. _pixfmt-audio:
+>>>> +
+>>>> +*************
+>>>> +Audio Formats
+>>>> +*************
+>>>> +
+>>>> +These formats are used for :ref:`audiomem2mem` interface only.
+>>>> +
+>>>> +.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
+>>>> +
+>>>> +.. cssclass:: longtable
+>>>> +
+>>>> +.. flat-table:: Audio Format
+>>>> +    :header-rows:  1
+>>>> +    :stub-columns: 0
+>>>> +    :widths:       3 1 4
+>>>> +
+>>>> +    * - Identifier
+>>>> +      - Code
+>>>> +      - Details
+>>>> +    * .. _V4L2-AUDIO-FMT-S8:
+>>>> +
+>>>> +      - ``V4L2_AUDIO_FMT_S8``
+>>>> +      - 'S8'
+>>>> +      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
+>>>> +    * .. _V4L2-AUDIO-FMT-S16-LE:  
 >>>
->>> These RFC postings are really becoming mess. Some people make multiple
->>> RFCs and then post v1 hiding entire previous history... And why even
->>> bother with calling it RFC?
+>>> Hmm... why can't we just use SNDRV_*_FORMAT_*? Those are already part of
+>>> an uAPI header. No need to add any abstraction here and/or redefine
+>>> what is there already at include/uapi/sound/asound.h.
+>>>  
+>> Actually I try to avoid including the include/uapi/sound/asound.h.
+>> Because in user space, there is another copy in alsa-lib (asoundlib.h).
+>> There will be conflict in userspace when including videodev2.h and
+>> asoundlib.h.
+> 
+> Well, alsasoundlib.h seems to be using the same definitions:
+> 	https://github.com/michaelwu/alsa-lib/blob/master/include/pcm.h
+> 
+> So, I can't see what would be the actual issue, as both userspace library
+> and ALSA internal headers use the same magic numbers.
+> 
+> You can still do things like:
+> 
+> 	#ifdef __KERNEL__
+> 	#  include <sound/asound.h>
+> 	#else
+> 	#  include <asoundlib.h>
+> 	#endif
+> 
+> To avoid such kind of conflicts, if you need to have it included on
+> some header file. Yet, I can't see why you would need that.
+> 
+> IMO, at uAPI headers, you just need to declare the uAPI audiofmt field
+> to be either __u32 or __u64, pointing it to where this value comes from
+> (on both userspace and Kernelspace. E. g.:
+> 
+> /**
+>  * struct v4l2_audio_format - audio data format definition
+>  * @audioformat:
+>  *	an integer number matching the fields inside
+>  *	enum snd_pcm_format_t (e. g. `SNDRV_PCM_FORMAT_*`), as defined
+>  *	in include/uapi/sound/asound.h and
+>  *      https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gaa14b7f26877a812acbb39811364177f8.
+>  * @channels:		channel numbers
+>  * @buffersize:		maximum size in bytes required for data
+>  */
+> struct v4l2_audio_format {
+> 	__u32				audioformat;
+> 	__u32				channels;
+> 	__u32				buffersize;
+> } __attribute__ ((packed));
+> 
+> Then, at documentation you just need to point to where the
+> possible values for SNDRV_PCM_FORMAT_ are defined. No need to
+> document them one by one.
+> 
+> With such definition, you'll only need to include sound/asound.h
+> within the kAPI scope.
+> 
 >>
->>    Sorry, I was not aware of this. Shall I post the next one as V3
->>    and add references to the RFC patch and this patch in the cover
->>    letter of V3?
+>> And in the V4l framework, the fourcc type is commonly used in other
+>> cases (video, radio, touch, meta....), to avoid changing common code
+>> a lot, so I think using fourcc definition for audio may be simpler.
 > 
-> Yes, like with every posting.
-Thank you.
+> Those are real video streams (or a video-related streams, in the case
+> of metadata) where fourcc is widely used. There, it makes sense.
+> However, ALSA format definitions are already being used for a long time.
+> There's no sense on trying to reinvent it - or having an abstract layer
+> to convert from/to fourcc <==> enum snd_pcm_format_t. Just use what is
+> there already.
+
+The problem is that within V4L2 we use fourcc consistently to describe a
+format, including in VIDIOC_ENUM_FMT. And the expectation is that the fourcc
+can be printed to a human readable string (there is even a printk format for
+that these days).
+
+But the pcm values are all small integers (and can even be 0!), and
+printing the fourcc will give garbage. It doesn't work well at all
+with the V4L2 API. But by having a straightforward conversion between the
+pcm identifier and a fourcc it was really easy to deal with this.
+
+There might even be applications today that call VIDIOC_ENUM_FMT to see
+what is supported and fail if it is not a proper fourcc is returned.
+
+It will certainly report nonsense in v4l_print_fmtdesc() (v4l2-ioctl.c).
+
+One of the early versions of this patch series did precisely what you request,
+but it just doesn't work well within the V4L2 uAPI.
+
+Regards,
+
+	Hans
+
 > 
-> Best regards,
-> Krzysztof
-> 
+> Thanks,
+> Mauro
+
 
