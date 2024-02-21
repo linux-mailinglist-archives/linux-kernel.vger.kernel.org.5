@@ -1,265 +1,220 @@
-Return-Path: <linux-kernel+bounces-75121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CF985E37E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:38:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF97985E389
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B8A1282935
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:38:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22BE4B22875
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A2F82865;
-	Wed, 21 Feb 2024 16:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB226839FA;
+	Wed, 21 Feb 2024 16:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="shC+rAah"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2056.outbound.protection.outlook.com [40.107.94.56])
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="nxtdSMGu"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113C77F7EA;
-	Wed, 21 Feb 2024 16:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708533500; cv=fail; b=EMxaUHTipQn8fj8cdUDAsnnCtRlcw/1iInW6WAZeR9EHznZHvF6Qa8ldfyETnnsBentEbhrB/emQbQqIWFVXKtDBiRMo9wwIWm2+dUoGsfdKDXYAWOI5F2FrElFdJe854kdTEt3McvZxY3N3omBhTXmGq/RI9djUpi9TZwiGiI4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708533500; c=relaxed/simple;
-	bh=kWb1UyRKHIjKbMvxBSWWE9lQtJA0MEbl8ovcEkX76/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=OwqsdzytELKsfgyRHZVDqe0I5Cw8ycjp21j9dL+IJEG/Cq+BJ39xBINWb27tGBWLwxElMs1YQ/jKoKJbzWU8KMcJJGM2oZEB5oB8doaHGXiQ0TuEm9xid2Vc5vHCL7JLkk9cmy/lIqDU+Qr0wC2pACQ3XYChN32b+YbErIpBDHo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=shC+rAah; arc=fail smtp.client-ip=40.107.94.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IoYiGXhDxoq9KBLD/xfPbjmyrFZBq6PivG8I+v5UpBFBS5hQHulMj1ic6E5vdHkSqrqhSfv/9h4IirDZ5rJE0sFWBXCGn6tWmWuYyp0PsKX3C30bCpxj4wlbdYFfWSgb8iDyY/EEZqQ+dIGBuWr3evm+vsK+6TNdr1m9nVyQrNBJOvBVh9npE1EJ2ZnkT4inb5nm++7mw46XahW3QUJpVllEnvqEdpwX3X4DTDnsS3o6tDNnYPdxChEIIKLLBbc+5e9ZOM8QmpfaqOBVJeylnFwRlo4qJVWffYDolykw+ZfJ14a2uSL+r7anCIyu0gDqNwwRcRogIuQj1GuqHnluQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z4N0OxAhtBk7mfKU1E1ysqqMztceX3lFjdINxbZpk1k=;
- b=G1vmOodFp+inwrL0q9Cvq0TMa1ipJ5U1SNh2PcyvS/ftyGj8zQxt5ppgwyIFFxZ0+ZgKdbo2+wsGfo7dsSELT6GUQaMzCqc77MJkU6Vmzvr0qalZQM4+eyjIOcM11AhRd74f6pmcXQOCi/USVoEczaeJffX67Wiv1m4mVI+5/GrWlA+NdPeH2ClXccmbFtv/QnwoiKx/YRTVBTrqyY68HSHsQ4Lqzx+Uj1lPUQthr4ggeOwjh4c0A12r8xnth2m8ZmqOEQJBamb8F6GQrgp0+Byz6qWW6rHwP4lt07tbIMo6GcpafV/49BbS7xIg2XwBAYhxDEwQZimq2w/XbeGdWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z4N0OxAhtBk7mfKU1E1ysqqMztceX3lFjdINxbZpk1k=;
- b=shC+rAahVC8oeo2q88Yo07BoiJ493vQ7jO9dtZUjxKuK7qGTIK+z65853bYMr91VS21k4xiuAyQO1Zof8QaY0fSgq813CoSGa99D+Zo2bWZLp1k/xwW1Hsxzn3oX6hvsCF4d5P5qkrqNws3y3goi2DvdX+5ejMNf79XndWxRK3s=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5995.namprd12.prod.outlook.com (2603:10b6:208:39b::20)
- by BY5PR12MB4307.namprd12.prod.outlook.com (2603:10b6:a03:20c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Wed, 21 Feb
- 2024 16:38:14 +0000
-Received: from BL1PR12MB5995.namprd12.prod.outlook.com
- ([fe80::319f:fe56:89b9:4638]) by BL1PR12MB5995.namprd12.prod.outlook.com
- ([fe80::319f:fe56:89b9:4638%5]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
- 16:38:14 +0000
-Date: Wed, 21 Feb 2024 10:38:05 -0600
-From: John Allen <john.allen@amd.com>
-To: Maxim Levitsky <mlevitsk@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-	weijiang.yang@intel.com, rick.p.edgecombe@intel.com,
-	seanjc@google.com, x86@kernel.org, thomas.lendacky@amd.com,
-	bp@alien8.de
-Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for
- hypervisor kernel
-Message-ID: <ZdYm7R6OmjhTvrXr@AUS-L1-JOHALLEN.amd.com>
-References: <20231010200220.897953-1-john.allen@amd.com>
- <20231010200220.897953-7-john.allen@amd.com>
- <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
-X-ClientProxiedBy: SJ0PR03CA0266.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::31) To BL1PR12MB5995.namprd12.prod.outlook.com
- (2603:10b6:208:39b::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8636E1C20;
+	Wed, 21 Feb 2024 16:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708533631; cv=none; b=RNCWtSRif23ZoZTN/nzgxHWUVMF2SC7dCdohrXb7SXUuwdilFhb9cRepdaGgF1k2wHw4vy2IIRGBHIMXO6F0iZov1S61WasAo4sawDAUMr0RG5ZoLhlo0u88GpeUr5R19VW+3oRSEueP0VHQLn3lqmBuNjaMIdZdRROIlCegLh4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708533631; c=relaxed/simple;
+	bh=45I0J5biXwYLiUaf/PmqF1jvW/5x55RLPKwzjIKpH4I=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cv1d4b7OiKxi8I++gZCzaLjaVyNnVOiHssqAUoJZSw8KH0AqrrY4AX+rpZvd+WMvVOspuyottxqI8e8lLaOwdnFFyhFsHtcMqQe0Nn0wBM94lFZ4sKnqt0d7YNK4bdDzNVjjkwb3F2m4TSQtpUwoZyHyXMY6fevY5zccHkuR/b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=nxtdSMGu; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=iE/w7zcXxXdaU9PL76g2DzI65P5Qvx6HEpMubn6cjls=; b=nxtdSMGuBsIvBlcGsFV4q/QyMF
+	TgOVPrStsVJMCkxFJBEqMlQSHAzM+REezZFM0xOLRHPRXVSajD7AuVxjN89Gx8zV8VfQaROCuWJ9A
+	hsKvkN0wOOFwEAN6pFc8y73S6NAYPyvKNlCWQfSndtOWsQDCCadb/MAydty5bhz/Zq3BFJxoh0CIR
+	a2Ne48t1iTcE2roNaY1NWfiRbYJf8DdWNP79eI3L97P88sN1qdZL9NnF8z2INf8oE+Saj3QB2dpB0
+	ENlP8JXP2KoHERxkPQL1sRIBscnF0jK0so1z2Qi3PdIX6N417a9CoXAIjTLRVkK9YA2p0bewcxPbd
+	9aLoNtDA==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rcpdW-0007PB-Iw; Wed, 21 Feb 2024 17:39:58 +0100
+Received: from [178.197.249.13] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rcpdU-0005ll-2a;
+	Wed, 21 Feb 2024 17:39:56 +0100
+Subject: Re: [PATCH v4] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+To: Kees Cook <keescook@chromium.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>,
+ Jonathan Corbet <corbet@lwn.net>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Joanne Koong <joannelkoong@gmail.com>, Yafang Shao <laoar.shao@gmail.com>,
+ Kui-Feng Lee <kuifeng@meta.com>, Anton Protopopov <aspsk@isovalent.com>,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240220185421.it.949-kees@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <da75b2bf-0d14-6ed5-91c2-dfeba9ad55c4@iogearbox.net>
+Date: Wed, 21 Feb 2024 17:39:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5995:EE_|BY5PR12MB4307:EE_
-X-MS-Office365-Filtering-Correlation-Id: 21314928-efe4-4650-93d2-08dc32fb7f91
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	/JA6+8ihK5pjeKc5CtjfK7W552d8dIwDlsxMCnEcPn3UirTkly0AnpUwpF/e7gicE+DMFLuZEdA/Ma2fiFLjjWY9NzqLm/1u2NyYmvioofiYVb1I+Tot+vtl/KFNodbf4qCtBJEPpOIUVXJfAc3H5lmHdHjKvc9oT5dFJ65CR7g+NxlmqCWhEoHLRcF0ePatEg6YFNRDLcu+jTQQK70KECKMcpDPLOfYXy8+gVKTmlqffXIlRCmXQsV8Vn0wvbOwNQeyu3wcE/bIKjJxeI2nTLLaVFdY2AcE3ymXa2J5uUEjkJ0O90PEiMCFTyPO7VZRQXGcGZ0nwJf6OHCgrVjZbSEr+gNhrDE5oRDWx8QZvehh644UiLg6angcTYrs4ojwnyQIj2Sl3TOhPT40wCPX8TefWxsYdvoer6MjYwJkXlJCsKMklZalo4sVya5a153sR83dxBf9i0/4SIBaCamG+KPmM96w/k9FC/yv1PEQdoRV6wYQiDIlgbWSub5XOf1dPF7ndgjNkbT720ewUrNfka36ApxcnO9YxvGYvCjz810=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5995.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?FzspC02tOzBHNIze1VCTpiCRYt5XpyncmbnqMa3jJorkdukxklAF37qS3SkP?=
- =?us-ascii?Q?I/ptXRWf6nP97zPWgNBtN+mvn5yw538ldDS2DbbhsCHhYCt2yySPRjo8ToTh?=
- =?us-ascii?Q?6A0WU0YSvSmgEkRietc1C+Aq7+O56jYx2TROmJETQnSbJvkoZXsj32D97dSp?=
- =?us-ascii?Q?3fdg7ihtDVYbemzz66JUdd/aADVd6GmjFmkeWnMc5KKNy00j7xjQSBFq7rRh?=
- =?us-ascii?Q?BLckUB8ZKowr0IN8mnh+xNCKBRY8e8gWytqULJAprwDh8KwyEg25ZBwz/LFE?=
- =?us-ascii?Q?0fVC9g/QWrG9eic+kWEy3IGFL18tV4731FNp9CA9Ccp9NueifeIRBk9J9wHH?=
- =?us-ascii?Q?3DBjsvfGr1DXFAEzzkHw0CFQb2d/RGIjLmT3YS/SzjdKUpStZyC/sb2MDaL8?=
- =?us-ascii?Q?lMv2CvCMaliPMavvQW4+YK+x6PegoY8oqHU4yhrVXUVpiW2a0+8kvVaEoDej?=
- =?us-ascii?Q?bPFqyDETgU02DI1N7H9GPZF7Dk0uag62DbMBtc1kU53AhlH6IMW7OHtoFiSq?=
- =?us-ascii?Q?K1SZBY7RDnoYvM1KSqWs3QzNsHj4rJhcL80LMibByBTtyGoDwOx4YBlDhD52?=
- =?us-ascii?Q?kJFnnnhktbE+e8iQC0K2YQ7oLo4DD3NVDHJXbKkr2fHUylFO6OU2wlMeVV8G?=
- =?us-ascii?Q?wVYliYtwgPoZz14cLZHeEZ+J8oe/R2WdEQHHqS3MDoXItJtdDkef1l8VGhZ1?=
- =?us-ascii?Q?craDZ/Hd70yD2rQQjm6pJYRSu6MCYxzxXrPwAusKaU8JLX3yVNgs85XRjM4U?=
- =?us-ascii?Q?Q8XqsKWklxpDTI1E/rzzwe3BHPcqAZ3Pq0nA73/E+5rWx58i92YDcPZ8ebde?=
- =?us-ascii?Q?fYeFzdeMlMX9OvAA5gvhmjmS4AM2peUew6BVJe2CsJDyS35aNyZr+mx5Ck9n?=
- =?us-ascii?Q?ECvr77TITyZ6ZnLx31wySuUmausVtn29JxiK1wxcRkfXtprldRk0DP7kgaUS?=
- =?us-ascii?Q?sCXmrWzb31lsD6j29DJeI6fIUbZPVr7h7S+aRR5/RAEE5QV1/isNICPgf4fc?=
- =?us-ascii?Q?tfdmv7R8CVW7WkZWiLvS5gQaaD98/NfZpsL9djWaV8LdjQwxZHdA8i2n5t88?=
- =?us-ascii?Q?KIuTmorEBJ2ycjL+Upt6g3lOY/zUcragsPJC1z4augX0PHoM+QcgA5aCaMCy?=
- =?us-ascii?Q?Vbh7Tnvi4yMRsAfCnwEoPiqZqawwbZf+xnB70Gp2a635YY/SzP/BnN/Ihyz6?=
- =?us-ascii?Q?F1jnD1WZQ27JtLgu/E4Q/+WePsgjXAakZcDu1cah7t5tJSvKlyOSIWhEzjhI?=
- =?us-ascii?Q?o1GTBvttvgyIY+F1Ue+1m3t22fKPmk/yRxfxI409/lQ5hFpr7DoxEFz2aQGp?=
- =?us-ascii?Q?IWF93O8mFfE2df2pBjvWga3Vy3r3HO44yGUF2V4o9MONtHOxGXhDXzwVPOqu?=
- =?us-ascii?Q?RtPh5bh5VgWM/2M4OOBrSXPAmZgp29bGXpZ6stP4PEEUOZz6NmaA5nvmMI98?=
- =?us-ascii?Q?9IPhY2EIcz2hGbVUjR+eZDXZzV/udklxJx0s94xPmrNsPqlwA+uE93B1phmJ?=
- =?us-ascii?Q?x0XQKx/J+Ow1qN/cD2F2XUvIME3xyw5FyFe4WmqF03bGT3puU0tBeu2p87CL?=
- =?us-ascii?Q?RSsFXwQpjNhJhkTxarb4iLWxg0tu5bpunJhSTFkj?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21314928-efe4-4650-93d2-08dc32fb7f91
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5995.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 16:38:14.0229
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /YrUxUlCrN/CP+lrkY6btbZIiu0nOOw+zVMGRRz8Bfv1sAZkkMigHqc52OPClLo+gqXxeOVrAUNes096MBhSSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4307
+In-Reply-To: <20240220185421.it.949-kees@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27192/Wed Feb 21 10:23:23 2024)
 
-On Thu, Nov 02, 2023 at 08:10:58PM +0200, Maxim Levitsky wrote:
-> On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
-> > When a guest issues a cpuid instruction for Fn0000000D_x0B
-> > (CetUserOffset), KVM will intercept and need to access the guest
-> > MSR_IA32_XSS value. For SEV-ES, this is encrypted and needs to be
-> > included in the GHCB to be visible to the hypervisor.
-> > 
-> > Signed-off-by: John Allen <john.allen@amd.com>
-> > ---
-> >  arch/x86/include/asm/svm.h |  1 +
-> >  arch/x86/kvm/svm/sev.c     | 12 ++++++++++--
-> >  arch/x86/kvm/svm/svm.c     |  1 +
-> >  arch/x86/kvm/svm/svm.h     |  3 ++-
-> >  4 files changed, 14 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> > index 568d97084e44..5afc9e03379d 100644
-> > --- a/arch/x86/include/asm/svm.h
-> > +++ b/arch/x86/include/asm/svm.h
-> > @@ -678,5 +678,6 @@ DEFINE_GHCB_ACCESSORS(sw_exit_info_1)
-> >  DEFINE_GHCB_ACCESSORS(sw_exit_info_2)
-> >  DEFINE_GHCB_ACCESSORS(sw_scratch)
-> >  DEFINE_GHCB_ACCESSORS(xcr0)
-> > +DEFINE_GHCB_ACCESSORS(xss)
+On 2/20/24 7:54 PM, Kees Cook wrote:
+> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+> flexible array. Found with GCC 13:
 > 
-> I don't see anywhere in the patch adding xss to ghcb_save_area.
-> What kernel version/commit these patches are based on?
+> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+>    207 |                                        *(__be16 *)&key->data[i]);
+>        |                                                   ^~~~~~~~~~~~~
+> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+>    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+>        |                                                      ^
+> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+>     97 | #define be16_to_cpu __be16_to_cpu
+>        |                     ^~~~~~~~~~~~~
+> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+>    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+> ^
+>        |                            ^~~~~~~~~~~
+> In file included from ../include/linux/bpf.h:7:
+> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+>     82 |         __u8    data[0];        /* Arbitrary size */
+>        |                 ^~~~
+> 
+> And found at run-time under CONFIG_FORTIFY_SOURCE:
+> 
+>    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
+>    index 0 is out of range for type '__u8 [*]'
+> 
+> Changing struct bpf_lpm_trie_key is difficult since has been used by
+> userspace. For example, in Cilium:
+> 
+> 	struct egress_gw_policy_key {
+> 	        struct bpf_lpm_trie_key lpm_key;
+> 	        __u32 saddr;
+> 	        __u32 daddr;
+> 	};
+> 
+> While direct references to the "data" member haven't been found, there
+> are static initializers what include the final member. For example,
+> the "{}" here:
+> 
+>          struct egress_gw_policy_key in_key = {
+>                  .lpm_key = { 32 + 24, {} },
+>                  .saddr   = CLIENT_IP,
+>                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+>          };
+> 
+> To avoid the build time and run time warnings seen with a 0-sized
+> trailing array for struct bpf_lpm_trie_key, introduce a new struct
+> that correctly uses a flexible array for the trailing bytes,
+> struct bpf_lpm_trie_key_u8. As part of this, include the "header"
+> portion (which is just the "prefixlen" member), so it can be used
+> by anything building a bpf_lpr_trie_key that has trailing members that
+> aren't a u8 flexible array (like the self-test[1]), which is named
+> struct bpf_lpm_trie_key_hdr.
+> 
+> Adjust the kernel code to use struct bpf_lpm_trie_key_u8 through-out,
+> and for the selftest to use struct bpf_lpm_trie_key_hdr. Add a comment
+> to the UAPI header directing folks to the two new options.
+> 
+> Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
+> Reported-by: Mark Rutland <mark.rutland@arm.com>
+> Closes: https://paste.debian.net/hidden/ca500597/
+> Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+[...]
 
-Looks like it first got added to the vmcb save area here:
-861377730aa9db4cbaa0f3bd3f4d295c152732c4
+The build in BPF CI is still broken, did you try to build selftests?
 
-It was included in the ghcb save area when it was created it looks
-like:
-a4690359eaec985a1351786da887df1ba92440a0
+   https://github.com/kernel-patches/bpf/actions/runs/7978647641
 
-Unless I'm misunderstanding the ask. Is there somewhere else this needs
-to be added?
+   [...]
+     GEN-SKEL [test_progs] linked_funcs.skel.h
+     LINK-BPF [test_progs] test_usdt.bpf.o
+     GEN-SKEL [test_progs-no_alu32] profiler1.skel.h
+     GEN-SKEL [test_progs] test_usdt.skel.h
+   In file included from /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:11,
+                    from test_cpp.cpp:4:
+   /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:92:17: error: ‘struct bpf_lpm_trie_key_u8::<unnamed union>::bpf_lpm_trie_key_hdr’ invalid; an anonymous union may only have public non-static data members [-fpermissive]
+      92 |  __struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
+         |                 ^~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/include/uapi/linux/stddef.h:29:10: note: in definition of macro ‘__struct_group’
+      29 |   struct TAG { MEMBERS } ATTRS NAME; \
+         |          ^~~
+     BINARY   bench
+   make: *** [Makefile:703: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/test_cpp] Error 1
+   make: *** Waiting for unfinished jobs....
+   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
+   Error: Process completed with exit code 2.
 
-Thanks,
-John
-
-> 
-> >  
-> >  #endif
-> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > index bb4b18baa6f7..94ab7203525f 100644
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > @@ -2445,8 +2445,13 @@ static void sev_es_sync_from_ghcb(struct vcpu_svm *svm)
-> >  
-> >  	svm->vmcb->save.cpl = kvm_ghcb_get_cpl_if_valid(svm, ghcb);
-> >  
-> > -	if (kvm_ghcb_xcr0_is_valid(svm)) {
-> > -		vcpu->arch.xcr0 = ghcb_get_xcr0(ghcb);
-> > +	if (kvm_ghcb_xcr0_is_valid(svm) || kvm_ghcb_xss_is_valid(svm)) {
-> > +		if (kvm_ghcb_xcr0_is_valid(svm))
-> > +			vcpu->arch.xcr0 = ghcb_get_xcr0(ghcb);
-> > +
-> > +		if (kvm_ghcb_xss_is_valid(svm))
-> > +			vcpu->arch.ia32_xss = ghcb_get_xss(ghcb);
-> > +
-> >  		kvm_update_cpuid_runtime(vcpu);
-> >  	}
-> >  
-> > @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
-> >  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
-> >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-> >  	}
-> > +
-> > +	if (kvm_caps.supported_xss)
-> > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
-> 
-> This is not just a virtualization hole. This allows the guest to set MSR_IA32_XSS
-> to whatever value it wants, and thus it might allow XSAVES to access some host msrs
-> that guest must not be able to access.
-> 
-> AMD might not yet have such msrs, but on Intel side I do see various components
-> like 'HDC State', 'HWP state' and such.
-> 
-> I understand that this is needed so that #VC handler could read this msr, and trying
-> to read it will cause another #VC which is probably not allowed (I don't know this detail of SEV-ES)
-> 
-> I guess #VC handler should instead use a kernel cached value of this msr instead, or at least
-> KVM should only allow reads and not writes to it.
-> 
-> In addition to that, if we decide to open the read access to the IA32_XSS from the guest,
-> this IMHO should be done in a separate patch.
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
-> 
-> >  }
-> >  
-> >  void sev_init_vmcb(struct vcpu_svm *svm)
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 984e89d7a734..ee7c7d0a09ab 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -146,6 +146,7 @@ static const struct svm_direct_access_msrs {
-> >  	{ .index = MSR_IA32_PL1_SSP,                    .always = false },
-> >  	{ .index = MSR_IA32_PL2_SSP,                    .always = false },
-> >  	{ .index = MSR_IA32_PL3_SSP,                    .always = false },
-> > +	{ .index = MSR_IA32_XSS,                        .always = false },
-> >  	{ .index = MSR_INVALID,				.always = false },
-> >  };
-> >  
-> > diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> > index bdc39003b955..2011456d2e9f 100644
-> > --- a/arch/x86/kvm/svm/svm.h
-> > +++ b/arch/x86/kvm/svm/svm.h
-> > @@ -30,7 +30,7 @@
-> >  #define	IOPM_SIZE PAGE_SIZE * 3
-> >  #define	MSRPM_SIZE PAGE_SIZE * 2
-> >  
-> > -#define MAX_DIRECT_ACCESS_MSRS	53
-> > +#define MAX_DIRECT_ACCESS_MSRS	54
-> >  #define MSRPM_OFFSETS	32
-> >  extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
-> >  extern bool npt_enabled;
-> > @@ -720,5 +720,6 @@ DEFINE_KVM_GHCB_ACCESSORS(sw_exit_info_1)
-> >  DEFINE_KVM_GHCB_ACCESSORS(sw_exit_info_2)
-> >  DEFINE_KVM_GHCB_ACCESSORS(sw_scratch)
-> >  DEFINE_KVM_GHCB_ACCESSORS(xcr0)
-> > +DEFINE_KVM_GHCB_ACCESSORS(xss)
-> >  
-> >  #endif
-> 
-> 
-> 
-> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 754e68ca8744..31e9bdd4641e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -8,6 +8,7 @@
+>   #ifndef _UAPI__LINUX_BPF_H__
+>   #define _UAPI__LINUX_BPF_H__
+>   
+> +#include <linux/stddef.h>
+>   #include <linux/types.h>
+>   #include <linux/bpf_common.h>
+>   
+> @@ -77,12 +78,24 @@ struct bpf_insn {
+>   	__s32	imm;		/* signed immediate constant */
+>   };
+>   
+> -/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+> +/* Deprecated: use struct bpf_lpm_trie_key_u8 (when the "data" member is needed for
+> + * byte access) or struct bpf_lpm_trie_key_hdr (when using an alternative type for
+> + * the trailing flexible array member) instead.
+> + */
+>   struct bpf_lpm_trie_key {
+>   	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+>   	__u8	data[0];	/* Arbitrary size */
+>   };
+>   
+> +/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry, with trailing byte array. */
+> +struct bpf_lpm_trie_key_u8 {
+> +	__struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
+> +		/* up to 32 for AF_INET, 128 for AF_INET6 */
+> +		__u32	prefixlen;
+> +	);
+> +	__u8	data[];		/* Arbitrary size */
+> +};
+> +
+>   struct bpf_cgroup_storage_key {
+>   	__u64	cgroup_inode_id;	/* cgroup inode id */
+>   	__u32	attach_type;		/* program attach type (enum bpf_attach_type) */
 
