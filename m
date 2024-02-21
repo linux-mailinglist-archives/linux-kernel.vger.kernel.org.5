@@ -1,217 +1,388 @@
-Return-Path: <linux-kernel+bounces-75462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B79485E90F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:30:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AFF985E913
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:34:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11B761F24D9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:30:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4A9DB273C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC5D86AEE;
-	Wed, 21 Feb 2024 20:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993F73B2A6;
+	Wed, 21 Feb 2024 20:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hxSob6Z5"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a+E6SJlN"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777F186AD5
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6320B2EB0E
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708547417; cv=none; b=tIDPZ3oxIZWZRvpsT9RVbeSa3MTU5K2Ft5OzV/nxFOHUQ7KsWs1umIGJ2MMZ6VkjeF8Hrtkr+BjpGAApvWgMvnWcGF5npaVzVSrOdvPkZDNJf7dqXj+ByTmR0StUUHrpVPMOiEaOv4hXHNFvGPjcJHQ86ZzHE7PHdCEo/E+ZjDo=
+	t=1708547658; cv=none; b=jsQnAJ720/yojRpDKP/5kGFqE88voXZHChES9okdCKwCtOwPYZixq40aj+TjHc0j4eAQZ27vFNVhKSf3KV7KFwDQ2dZPSK4dKjoX3THyQ9a0j20MpCrSfLjPcQRpSnMYvcBAdeIXCMhNAVFHnEM2JlZBsun48e0d6b3kPR7lTPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708547417; c=relaxed/simple;
-	bh=bOi+E2c42NJObr0z9FwqIGRycwQ0piUWsGffVcGcaYs=;
+	s=arc-20240116; t=1708547658; c=relaxed/simple;
+	bh=SiupudMJoNKgfnwPD/G3NbDN8EQRSKJaq6TSUmKk8ok=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gv6HxrnJfBuHZVLT+KEPysjrzhuG02E820kzVwrsLVcj2Ifs2UyBvJ2OSFx6DOEuzXJ0GzkeII6kkBMcPAq3pJKQuwcSG+gEI4RHgON0RiwqDuu1WtG3JM49RsrH4n8vgzXy+xpkQW6eTc7xaD/6PxvFoS9uh6s+AxgR9mjReOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hxSob6Z5; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6083dc087b3so36690137b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:30:15 -0800 (PST)
+	 To:Cc:Content-Type; b=uV1tYPEQl32SAF9PZmd7WNdEH2+jbNu8aHzG2iEKrPrsW+cvjgJXf+sCbQF7qIWQuxsaNqz5xaETwq7c+7pDmwvuA62uFzO+Ko+OJDJqgWAmB6hZIPVAjJrjjahjxgGozxoijQ8W5jv5kn1WOFg6r6cBIkwEnSuQ/q+cH/NFoSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a+E6SJlN; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d89f0ab02bso27315ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:34:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708547414; x=1709152214; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=66B5lNp4yjRK1cO3QunmxwT8ngO+zkQK07F7H5Y6E9A=;
-        b=hxSob6Z5MuOO2A387Yo9e0BU7zWvj2VF08QllRmOY6XRZ43bCGGBhOi3q88slCbxY4
-         3jDSVVWUXap5XNCnAcpZ7ZlRdKcsfSIBgK926u7tj8Qh8cqjcjxCFC6b7CSUHe864tuB
-         iEfYd2kMCJ/S6gwxQjFZnk3nvSh4+3rhuzVnJIzA4RPgu2nrYNaXtdoT8cC0kv6WRvgb
-         2BVLHxoCnNGBsjMgfdqGLshKG3ScO1eUhk+j4WMbktO20CxmC6J3UJoIENsE2kwHyHzF
-         3uleIBEcm/H/vXKprqZIDMU+91d1sHqMaVLqLg7aj0WtRdn6C1h1ms1RmTQR1Vbq8v3W
-         LsKA==
+        d=google.com; s=20230601; t=1708547655; x=1709152455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JwfkGZoa5Dspw+GR9yTHlF9nFPplhuKt9FvO6nNwJpQ=;
+        b=a+E6SJlNZF/QY/Phg72/h9IynghoU8rapSElWeQ5iRrmGl7OmroIoHLOkbizpqisia
+         X6WyJCAyQiHUpHpeW9TkEGZl6qWZbHW0fWXNn6FF/6WlHP/BM4KlZRGX2pYa52cmPXCn
+         Aip8RJSbipEQaUx8GfN4wMt0FZUWdLklQ1qHWhR1v2nUIQcO4ZMmVwLgGsuiStQ/ZKXY
+         9CZEMqp6/pF2P/3U///Jqs4UxjAdW2JUHoz0dPTqFEagsgF/+WtTMVSEnseEJufpZRzL
+         scyWc7LHWN8ytWG2cu8ADyvIUc00jNAKscXBXq52+5sRKyg2xBm90nDLaF28jrA5s2tV
+         pRaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708547414; x=1709152214;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=66B5lNp4yjRK1cO3QunmxwT8ngO+zkQK07F7H5Y6E9A=;
-        b=r6jA5hTW6quu5ofqf58WphdMA6Pr0ug6941OkBQrHRrW71FuDzAbf60+tM8KmrMDcf
-         Gb8/ghlxdo6e/T7cZsIb29D9m0fBdKbRI60XJcSd/2y5UePDxltFqqy3VJSrWS/MHDep
-         fH5MLDnTfQPC9HGzvPiTT4HGJrLXzO60jDfU5cMFPWMsNMPRwS7hwApHrGmuvf3LWNXB
-         i+RBKsccMO7180zlfscp8Ir1hgp4lQcxnjqx6pz+iLK++d3zVdj8gfuT0RShJWMRIglN
-         83jBeunv0CZgHnltVBQewVvlrrlhZ6X0VCWaClt4RoCERoRQD1iZjPzzZq/E62LT5y4b
-         +MRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXmYtZW74M/ACoiHocL+LL+GIDg05AWeksZYGU03Mc6/VNAV55ZCx8T58Ur3b+537NWakm9zdECI3iBHTHVE/rRdKlNKYQCjwe4/5In
-X-Gm-Message-State: AOJu0YwOo4p3vd4qfRLTGW1YzBx7lM1vXBSNNWSELJDuDt1sY2Xn0Hse
-	Rr3DzyuxeXZCNciNYfxDSrq0dr+5KeLonGAJ3SfIUiezXJuSjmNGOJj3Of6zBQW2zLnzPSlog1k
-	0ovwlRBuHPuH2YG/l0Hp++gKVCBIVQiBTC4oMGU6zRCcOI4tjyhs=
-X-Google-Smtp-Source: AGHT+IEBJ9EDSOCDzcvz7VBrxp74vTA+LiZnGpzF2He2gzOhDMIin/sW0TGoX6jQApCBgxyOafwrV0IfLSI9PYFqSYU=
-X-Received: by 2002:a0d:d88b:0:b0:604:92e1:14fd with SMTP id
- a133-20020a0dd88b000000b0060492e114fdmr17320806ywe.45.1708547414408; Wed, 21
- Feb 2024 12:30:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708547655; x=1709152455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JwfkGZoa5Dspw+GR9yTHlF9nFPplhuKt9FvO6nNwJpQ=;
+        b=DYk/91mE//v16aFqkBYNgMjUkU+Rol8/LlZfU/Dx1/HNcaDspFkhDKD/HFtXGSKwOT
+         1gXZmjlofJlwALTwPfZwCfqr0RQRQcSHmYrz2jZl1eIiWAdWV8yqbBkQvRaN7ILmo/UR
+         18K8udxaJqM9O8FDv9WOfm8ZIts/V9jpiedT+7SMLfvaBSSqa61DQMqKlwokFDkD4gNO
+         2Y9hGXLRDGf3I3QxyKv9D/mlskYRF95PAYWNaj6QPx1saQGdtA06OmHzFfnQ3145gFqZ
+         8Hhxu+TU54fhls7dYBOAQgUsQqVABtvx0PbLhnU/CO7y+KdYI+SCTxUfPog9EJ4gkmxe
+         Qvwg==
+X-Forwarded-Encrypted: i=1; AJvYcCXeJKqrMWVYGCpByCaDvTIRv85VqNP+SBbLVcwvH5Vuwe9Y7iGXbSwCrIYArWjcOlngPXxzdLHN9PW6a4pZsRXNiP36AKDiwsdbQSP3
+X-Gm-Message-State: AOJu0YyU+INphCQFbG6ehaWN3wr11EI+PU3Mou6lLOMb+dlMaBo2XdWp
+	bhSOjAZ/ut9cBUM/ZMORLomduUNOECv94ZsWRYeOWBvnU45eOCF4jR9aU4tywAHPybIUINtD5ly
+	JWaz8NUOPt1SGE3I/yodlj/YSf2qyvtk2g80C
+X-Google-Smtp-Source: AGHT+IFnRe/L4K/FhFrpxaBYLG/1m1uLG/I0cYuZEVmUPijEfgfo2makPFZmHQyt+4MXACR/nhNvcvwmF2fazYmk0e0=
+X-Received: by 2002:a17:903:25d4:b0:1db:ad46:fa9 with SMTP id
+ jc20-20020a17090325d400b001dbad460fa9mr278598plb.5.1708547655303; Wed, 21 Feb
+ 2024 12:34:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208074521.577076-1-lucas.demarchi@intel.com> <20240208074521.577076-2-lucas.demarchi@intel.com>
-In-Reply-To: <20240208074521.577076-2-lucas.demarchi@intel.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 21 Feb 2024 22:30:02 +0200
-Message-ID: <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] bits: introduce fixed-type genmasks
-To: Lucas De Marchi <lucas.demarchi@intel.com>
-Cc: Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, intel-xe@lists.freedesktop.org, 
-	intel-gfx@lists.freedesktop.org, Jani Nikula <jani.nikula@intel.com>
+References: <20240221072100.412939-1-weilin.wang@intel.com>
+ <20240221072100.412939-3-weilin.wang@intel.com> <ZdY4a5yx-C9ziobq@x1>
+In-Reply-To: <ZdY4a5yx-C9ziobq@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 21 Feb 2024 12:34:01 -0800
+Message-ID: <CAP-5=fU5JVki4OCYvYyPoBLguwHSwXripiO3Gq+MddV9ZWfnTQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 2/5] perf stat: Fork and launch perf record when
+ perf stat needs to get retire latency value for a metric.
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 8 Feb 2024 at 09:45, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+On Wed, Feb 21, 2024 at 9:52=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> From: Yury Norov <yury.norov@gmail.com>
+> On Wed, Feb 21, 2024 at 02:20:56AM -0500, weilin.wang@intel.com wrote:
+> > From: Weilin Wang <weilin.wang@intel.com>
 >
-> Generalize __GENMASK() to support different types, and implement
-> fixed-types versions of GENMASK() based on it. The fixed-type version
-> allows more strict checks to the min/max values accepted, which is
-> useful for defining registers like implemented by i915 and xe drivers
-> with their REG_GENMASK*() macros.
+> You wrote no description for this patch, please add one and show
+> examples of the feature being used, if possible.
 >
-> The strict checks rely on shift-count-overflow compiler check to
-> fail the build if a number outside of the range allowed is passed.
-> Example:
+> See below for more comments.
 >
->         #define FOO_MASK GENMASK_U32(33, 4)
+> > Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> > +static int __cmd_script(struct child_process *cmd __maybe_unused)
+> > +{
+> > +     int err =3D 0;
+> > +     struct perf_session *session;
+> > +     struct perf_data data =3D {
+> > +             .mode =3D PERF_DATA_MODE_READ,
+> > +             .path =3D PERF_DATA,
+> > +             .fd   =3D cmd->out,
+> > +     };
+> > +     struct perf_script script =3D {
+> > +             .tool =3D {
+> > +             .sample          =3D process_sample_event,
+> > +             .ordered_events  =3D true,
+> > +             .ordering_requires_timestamps =3D true,
+> > +             .feature         =3D process_feature_event,
+> > +             .attr            =3D perf_event__process_attr,
+> > +             },
+> > +     };
+> > +     struct tpebs_event *e;
+> > +
+> > +     list_for_each_entry(e, &stat_config.tpebs_events, nd) {
+> > +             struct tpebs_retire_lat *new =3D malloc(sizeof(struct tpe=
+bs_retire_lat));
+> > +
+> > +             if (!new)
+> > +                     return -1;
+> > +             new->name =3D strdup(e->name);
+> > +             new->tpebs_name =3D strdup(e->tpebs_name);
+> > +             new->count =3D 0;
+> > +             new->sum =3D 0;
 >
-> will generate a warning like:
+> Without even having thought that much about this overall architecture,
+> that looks too heavy at first sight, the above is done in tools/perf/
+> as:
 >
->         ../include/linux/bits.h:41:31: error: left shift count >= width of type [-Werror=shift-count-overflow]
->            41 |          (((t)~0ULL - ((t)(1) << (l)) + 1) & \
->               |                               ^~
+> void tpebs_retire_lat__delete(struct tpebs_retire_lat *retire_lat)
+> {
+>         if (retire_lat =3D=3D NULL)
+>                 return;
 >
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
-> Acked-by: Jani Nikula <jani.nikula@intel.com>
-> ---
->  include/linux/bitops.h |  1 -
->  include/linux/bits.h   | 32 ++++++++++++++++++++++----------
->  2 files changed, 22 insertions(+), 11 deletions(-)
+>         zfree(&retire_lat->tpebs_name);
+>         zfree(&retire_lat->tpebs_name);
+> }
 >
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index 2ba557e067fe..1db50c69cfdb 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -15,7 +15,6 @@
->  #  define aligned_byte_mask(n) (~0xffUL << (BITS_PER_LONG - 8 - 8*(n)))
->  #endif
+> struct tpebs_retire_lat__new(tpebs_event *e)
+> {
+>         struct tpebs_retire_lat *retire_lat =3D zalloc(sizeof(*retire_lat=
+));
 >
-> -#define BITS_PER_TYPE(type)    (sizeof(type) * BITS_PER_BYTE)
->  #define BITS_TO_LONGS(nr)      __KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
->  #define BITS_TO_U64(nr)                __KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
->  #define BITS_TO_U32(nr)                __KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
-> diff --git a/include/linux/bits.h b/include/linux/bits.h
-> index 7c0cf5031abe..bd56f32de44e 100644
-> --- a/include/linux/bits.h
-> +++ b/include/linux/bits.h
-> @@ -6,6 +6,8 @@
->  #include <vdso/bits.h>
->  #include <asm/bitsperlong.h>
+>         if (retire_lat !=3D NULL) {
+>                 retire_lat->name =3D strdup(e->name);
+>                 retire_lat->tpebs_name =3D strdup(e->tpebs_name);
 >
-> +#define BITS_PER_TYPE(type)    (sizeof(type) * BITS_PER_BYTE)
-> +
->  #define BIT_MASK(nr)           (UL(1) << ((nr) % BITS_PER_LONG))
->  #define BIT_WORD(nr)           ((nr) / BITS_PER_LONG)
->  #define BIT_ULL_MASK(nr)       (ULL(1) << ((nr) % BITS_PER_LONG_LONG))
-> @@ -30,16 +32,26 @@
->  #define GENMASK_INPUT_CHECK(h, l) 0
->  #endif
+>                 if (retire_lat->name =3D=3D NULL || retire_lat->tpebs_nam=
+e =3D=3D NULL) {
+>                         tpebs_retire_lat__delete(retire_lat);
+>                         retire_lat =3D NULL;
+>                 }
+>         }
 >
-> -#define __GENMASK(h, l) \
-> -       (((~UL(0)) - (UL(1) << (l)) + 1) & \
-> -        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-> -#define GENMASK(h, l) \
-> -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> +/*
-> + * Generate a mask for the specified type @t. Additional checks are made to
-> + * guarantee the value returned fits in that type, relying on
-> + * shift-count-overflow compiler check to detect incompatible arguments.
-> + * For example, all these create build errors or warnings:
-> + *
-> + * - GENMASK(15, 20): wrong argument order
-> + * - GENMASK(72, 15): doesn't fit unsigned long
-> + * - GENMASK_U32(33, 15): doesn't fit in a u32
-> + */
-> +#define __GENMASK(t, h, l) \
-> +       (GENMASK_INPUT_CHECK(h, l) + \
-> +        (((t)~0ULL - ((t)(1) << (l)) + 1) & \
-> +        ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
+>         return retire_lat;
+> }
 >
-> -#define __GENMASK_ULL(h, l) \
-> -       (((~ULL(0)) - (ULL(1) << (l)) + 1) & \
-> -        (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
-> -#define GENMASK_ULL(h, l) \
-> -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
-> +#define GENMASK(h, l)          __GENMASK(unsigned long,  h, l)
-> +#define GENMASK_ULL(h, l)      __GENMASK(unsigned long long, h, l)
-> +#define GENMASK_U8(h, l)       __GENMASK(u8,  h, l)
-> +#define GENMASK_U16(h, l)      __GENMASK(u16, h, l)
-> +#define GENMASK_U32(h, l)      __GENMASK(u32, h, l)
-> +#define GENMASK_U64(h, l)      __GENMASK(u64, h, l)
+> And then you call the constructor  in that loop, and the destructor at
+> some point when those data structures are not needed.
+>
+> We do it because perf has a TUI mode and we may end up calling tools
+> from them in a long running session, so we need to avoid leaks.
+>
+> Also can we somehow hide Intel specific terms in arch specific files
+> while leaving something generic, possibly implementable in other arches
+> in the core code? I mean hiding clearly intel specific stuff like the
+> "tpebs" term in tools/perf/arch/x86/.
 
-This breaks drm-tip on arm64 architecture:
+Thanks Arnaldo, TPEBS support is necessary to support TMA metrics 4.7
+on meteorlake. The timed values replace hard coded constants that
+assume worst case latencies. You can see the metrics here:
+https://github.com/intel/perfmon/blob/main/TMA_Metrics-full.csv
+in the MTL (meteorlake) column row 29 there is:
+MEM_INST_RETIRED.STLB_HIT_LOADS*min($PEBS, #Mem_STLB_Hit_Cost) / CLKS
++ Load_STLB_Miss
+where the $PEBS is supposed to be replaced with the latency from a
+sample of MEM_INST_RETIRED.STLB_HIT_LOADS. There are meteorlake
+machines shipping but currently there are no perf metrics.
 
-arch/arm64/kernel/entry-fpsimd.S: Assembler messages:
-465arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-466arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-467arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-468arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-469arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-470arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-471arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-472arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-473arch/arm64/kernel/entry-fpsimd.S:271: Error: unexpected characters
-following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
-long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
-long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
-474arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-475arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-476arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-477arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-478arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-479arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-480arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-481arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-482arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-483arch/arm64/kernel/entry-fpsimd.S:282: Error: unexpected characters
-following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
-long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
-long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
-484arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+Weilin raised the TPEBS problem in the LPC 2023 talk, the issue being
+that sampling and counting don't really exist in the current perf tool
+code at the same time. BPF could be a workaround but permissions are
+an issue. Perhaps leader sampling but then what to do if two latencies
+are needed. Forking perf to do this is an expedient and ideally we'd
+not do it.
 
->
->  #endif /* __LINUX_BITS_H */
-> --
-> 2.43.0
->
+I'm against stuff going in the arch directory in general. If something
+is specific to a PMU, let's special case the logic for that PMU in the
+tool. The arch directory gets us into messes like:
+https://lore.kernel.org/lkml/CAP-5=3DfVABSBZnsmtRn1uF-k-G1GWM-L5SgiinhPTfHb=
+QsKXb_g@mail.gmail.com/
+Where a heterogenous/hybrid/big.little fix is in the x86 arch folder
+(overriding a weak symbol) but not in the arm or other ones leading to
+an arm bug.
+
+I think the idea of a count coming from an external or tool source is
+something of a more generic concept. I think what Weilin is doing here
+is setting the groundwork for doing that, a first implementation. I'd
+like the expr literals, like #smt_on, #num_cpus, etc. to be more like
+tool events such as duration_time. I think we can move in the
+direction that Weilin is adding here and then iterate to clean up
+these things, hopefully move them to events that then other tools
+could use, etc.
+
+Thanks,
+Ian
 
 
--- 
-With best wishes
-Dmitry
+
+
+> > +             list_add_tail(&new->nd, &stat_config.tpebs_results);
+> > +     }
+> > +
+> > +     kill(cmd->pid, SIGTERM);
+> > +     session =3D perf_session__new(&data, &script.tool);
+> > +     if (IS_ERR(session))
+> > +             return PTR_ERR(session);
+> > +     script.session =3D session;
+> > +     err =3D perf_session__process_events(session);
+> > +     perf_session__delete(session);
+> > +
+> > +     return err;
+> > +}
+> > +
+> >  static int __run_perf_stat(int argc, const char **argv, int run_idx)
+> >  {
+> >       int interval =3D stat_config.interval;
+> > @@ -709,12 +866,14 @@ static int __run_perf_stat(int argc, const char *=
+*argv, int run_idx)
+> >       struct affinity saved_affinity, *affinity =3D NULL;
+> >       int err;
+> >       bool second_pass =3D false;
+> > +     struct child_process cmd;
+> >
+> >       //Prepare perf record for sampling event retire_latency before fo=
+rk and prepare workload
+> >       if (stat_config.tpebs_event_size > 0) {
+> >               int ret;
+> >
+> > -             ret =3D __run_perf_record();
+> > +             pr_debug("perf stat pid =3D %d\n", getpid());
+> > +             ret =3D prepare_perf_record(&cmd);
+> >               if (ret)
+> >                       return ret;
+> >       }
+> > @@ -924,6 +1083,17 @@ static int __run_perf_stat(int argc, const char *=
+*argv, int run_idx)
+> >
+> >       t1 =3D rdclock();
+> >
+> > +     if (stat_config.tpebs_event_size > 0) {
+> > +             int ret;
+> > +
+> > +             pr_debug("pid =3D %d\n", getpid());
+> > +             pr_debug("cmd.pid =3D %d\n", cmd.pid);
+> > +
+> > +             ret =3D __cmd_script(&cmd);
+> > +             close(cmd.out);
+> > +             pr_debug("%d\n", ret);
+> > +     }
+> > +
+> >       if (stat_config.walltime_run_table)
+> >               stat_config.walltime_run[run_idx] =3D t1 - t0;
+> >
+> > @@ -2714,6 +2884,7 @@ int cmd_stat(int argc, const char **argv)
+> >       }
+> >
+> >       INIT_LIST_HEAD(&stat_config.tpebs_events);
+> > +     INIT_LIST_HEAD(&stat_config.tpebs_results);
+> >
+> >       /*
+> >        * Metric parsing needs to be delayed as metrics may optimize eve=
+nts
+> > @@ -2921,5 +3092,7 @@ int cmd_stat(int argc, const char **argv)
+> >       metricgroup__rblist_exit(&stat_config.metric_events);
+> >       evlist__close_control(stat_config.ctl_fd, stat_config.ctl_fd_ack,=
+ &stat_config.ctl_fd_close);
+> >
+> > +     tpebs_data__delete();
+> > +
+> >       return status;
+> >  }
+> > diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> > index fc16299c915f..2298ca3b370b 100644
+> > --- a/tools/perf/util/data.c
+> > +++ b/tools/perf/util/data.c
+> > @@ -173,6 +173,10 @@ static bool check_pipe(struct perf_data *data)
+> >       int fd =3D perf_data__is_read(data) ?
+> >                STDIN_FILENO : STDOUT_FILENO;
+> >
+> > +     if (data->fd > 0) {
+> > +             fd =3D data->fd;
+> > +     }
+> > +
+> >       if (!data->path) {
+> >               if (!fstat(fd, &st) && S_ISFIFO(st.st_mode))
+> >                       is_pipe =3D true;
+> > diff --git a/tools/perf/util/data.h b/tools/perf/util/data.h
+> > index effcc195d7e9..5554d46ad212 100644
+> > --- a/tools/perf/util/data.h
+> > +++ b/tools/perf/util/data.h
+> > @@ -28,6 +28,7 @@ struct perf_data_file {
+> >
+> >  struct perf_data {
+> >       const char              *path;
+> > +     int                      fd;
+> >       struct perf_data_file    file;
+> >       bool                     is_pipe;
+> >       bool                     is_dir;
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgrou=
+p.c
+> > index 6c16e5a0b1fc..8518e2b3e5be 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -691,8 +691,17 @@ static int metricgroup__build_event_string(struct =
+strbuf *events,
+> >
+> >               if (p) {
+> >                       struct tpebs_event *new_event =3D malloc(sizeof(s=
+truct tpebs_event));
+> > -                     *p =3D '\0';
+> > +                     char *name;
+> > +
+> >                       new_event->tpebs_name =3D strdup(id);
+> > +                     *p =3D '\0';
+> > +                     name =3D malloc(strlen(id) + 2);
+> > +                     if (!name)
+> > +                             return -ENOMEM;
+> > +
+> > +                     strcpy(name, id);
+> > +                     strcat(name, ":p");
+> > +                     new_event->name =3D name;
+>
+> For such cases we use asprintf(), that allocates and formats the string
+> in one call, look for examples in other tools/perf/ files.
+>
+> >                       *tpebs_event_size +=3D 1;
+> >                       pr_debug("retire_latency required, tpebs_event_si=
+ze=3D%lu, new_event=3D%s\n",
+> >                       *tpebs_event_size, new_event->name);
+> > diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgrou=
+p.h
+> > index 7c24ed768ff3..1fa12cc3294e 100644
+> > --- a/tools/perf/util/metricgroup.h
+> > +++ b/tools/perf/util/metricgroup.h
+> > @@ -71,6 +71,13 @@ struct tpebs_event {
+> >       const char *name;
+> >       const char *tpebs_name;
+> >  };
+> > +struct tpebs_retire_lat {
+> > +     struct list_head nd;
+> > +     const char *name;
+> > +     const char *tpebs_name;
+> > +     size_t count;
+> > +     int sum;
+> > +};
+>
+> Here you declare the constructor and destructor I suggested above.
+>
+> >  struct metric_event *metricgroup__lookup(struct rblist *metric_events,
+> >                                        struct evsel *evsel,
+> > diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+> > index 9d0186316b29..8e180f13aa2d 100644
+> > --- a/tools/perf/util/stat.h
+> > +++ b/tools/perf/util/stat.h
+> > @@ -111,6 +111,9 @@ struct perf_stat_config {
+> >       struct rblist            metric_events;
+> >       struct list_head         tpebs_events;
+> >       size_t                   tpebs_event_size;
+> > +     struct list_head         tpebs_results;
+> > +     pid_t                    tpebs_pid;
+> > +     int                      tpebs_pipe;
+> >       int                      ctl_fd;
+> >       int                      ctl_fd_ack;
+> >       bool                     ctl_fd_close;
+> > --
+> > 2.43.0
+> >
 
