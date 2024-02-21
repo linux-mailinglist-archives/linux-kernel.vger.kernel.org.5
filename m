@@ -1,104 +1,75 @@
-Return-Path: <linux-kernel+bounces-74982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5C785E0BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:15:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D0D85E0CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:19:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1AE71C228FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:15:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E7411F26D8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBAF80050;
-	Wed, 21 Feb 2024 15:15:35 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DD4480606;
+	Wed, 21 Feb 2024 15:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DxjO3qNZ"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC4B7BB01;
-	Wed, 21 Feb 2024 15:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76C58002D
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708528534; cv=none; b=iJBWiUIkEE9OylVogaDe+vO7WD8Ffvtq4ZJ6K0NwhFLByDsE8tJbGaHcHncA0FuxtPI+6mdtxxP+oS05QlSefm1gnlRKpPEZLzC1KCgSlOPtUymqMOxxzewflAjp06FSsGXbZtSmumzgoxf6Th5aKVEYEt5sQxV0nmW3TYme8gs=
+	t=1708528740; cv=none; b=f6ZFp+1ChOUWFzry+z+ROyKr96KmzzO83QBCk70VEcJzLwUs+pwLX9rer2CX3uzyqm5IfYPtGRggOwg+UyfuDGYMe8CH8cmu2vdurhL2kqVQZBzcUhcygIEbz9OdeIypQUdrHwfhDrAwuqiV1/mAO7fSZ2nDYvVcC4YHdJEwdjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708528534; c=relaxed/simple;
-	bh=YHrLnauaskQSbiH77/IAsX8WjkWduQA2X1JXcmvI0Ag=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cDzvj+JVFj41imc6ZrcoD4ztgzipRlHpdrasf+1+c28quaA8e2tDqD5NbH0k6JJKfVbOdQFNo4GDENOV8IWmOxvR+DPTELuw5TMoElSwa4541iVNPIluNstSuFTzx3E9xLlZjxTuiHc6G7Zbw+5JdODgkqoQt2EAsa1p812hkeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA850C43399;
-	Wed, 21 Feb 2024 15:15:33 +0000 (UTC)
-Date: Wed, 21 Feb 2024 10:17:21 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v3 1/4] tracing/user_events: Prepare find/delete for
- same name events
-Message-ID: <20240221101721.4e81e9e5@gandalf.local.home>
-In-Reply-To: <20240214175046.240-2-beaub@linux.microsoft.com>
-References: <20240214175046.240-1-beaub@linux.microsoft.com>
-	<20240214175046.240-2-beaub@linux.microsoft.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708528740; c=relaxed/simple;
+	bh=SVN2brY5secpiGQcR6r7qO2NSkX9Sg3+pNiSRYMfNl8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oScmDqdsG8tcyIJ7uHoFWZkZUkL963/MvzBcrLmXyhtKMVhvzGvrWj8Q+0AL4YxOQLj+RYBorAIheGrjFzqN5ysCKeW3+UxqjDQJCiUIxkdbz/aN3CaTNIgRLH/JdotVH842jarOQ8yDzAOT4C62lSltxQJchRc1RBuOI4dJV+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DxjO3qNZ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=sPMSiwVCiPeIGwx/AAt1khtpUMTfnKFjzlJJot8Dxks=; b=DxjO3qNZEsRbv9bgH6zJr6Xx+4
+	bRW+lGgb37aeyfZERuZo1Xp9XVx+BCF5kiMRHCZ7vDWRnTLA/DAcJFIi1P/PJs6Ov6plCIKPDWtw6
+	OQDmLj8AF9of5cbrY6w+LomPvDeg9TaAhJmaUJ/OB5+Px7I46r4HBvZNyQmMZueK/m7umIrLU2Xen
+	mis/x4Xwbyplo9dcBLAI9zvx7u0CBKB66Ly7OCnI45CH8iK00YhzFubeVSgzTIVlI46l9aef/aiDJ
+	ujG6ClwOLOL35GoFduW9v97NNAF8aWQ1khOVcPYbV7X44w4DkdHyG+V916au3M2ouTgBfDjdKUqLd
+	vcBzLP5w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rcoN6-00000001Rci-3s9K;
+	Wed, 21 Feb 2024 15:18:56 +0000
+Date: Wed, 21 Feb 2024 07:18:56 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: russ.weight@linux.dev, gregkh@linuxfoundation.org, rafael@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware_loader: Suppress warning on FW_OPT_NO_WARN flag
+Message-ID: <ZdYUYOuFzE8yZ0Yz@bombadil.infradead.org>
+References: <20240219163954.7719-1-quic_mojha@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219163954.7719-1-quic_mojha@quicinc.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, 14 Feb 2024 17:50:43 +0000
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-So the patches look good, but since I gave you some updates, I'm now going
-to go though "nits". Like grammar and such ;-)
-
-> The current code for finding and deleting events assumes that there will
-> never be cases when user_events are registered with the same name, but
-> different formats. In the future this scenario will exist to ensure
-
-> user programs can be updated or modify their events and run different
-> versions of their programs side-by-side without being blocked.
-
-Can you change the last sentence above. I read it three times and it's
-still awkward to understand it. Particularly, the "user programs can be
-updated or modify their events". That just doesn't want to compute.
-
+On Mon, Feb 19, 2024 at 10:09:54PM +0530, Mukesh Ojha wrote:
+> Some of the warnings are still being printed even if FW_OPT_NO_WARN
+> is passed for some of the function e.g., firmware_request_nowarn().
+> Fix it by adding a check for FW_OPT_NO_WARN before printing the warning.
 > 
-> This change does not yet allow for multi-format events. If user_events
-> are registered with the same name but different arguments the programs
-> see the same return values as before. This change simply makes it
-> possible to easily accomodate for this in future changes.
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-I think you can drop the "in future changes" part.
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-> 
-> Update find_user_event() to take in argument parameters and register
-> flags to accomodate future multi-format event scenarios. Have find
-> validate argument matching and return error pointers to cover address
-> in use cases, or allocation errors. Update callers to handle error
-
-  "to cover address in use cases" ?
-
-> pointer logic.
-> 
-> Move delete_user_event() to use hash walking directly now that find has
-> changed. Delete all events found that match the register name, stop
-
-"now that find has changed" ?  You mean the "find function"?
-
-> if an error occurs and report back to the user.
-> 
-> Update user_fields_match() to cover list_empty() scenarios instead of
-> each callsite doing it now that find_user_event() uses it directly.
-
-The above is a bit of a run-on sentence.
-
--- Steve
-
-> 
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
+  Luis
 
