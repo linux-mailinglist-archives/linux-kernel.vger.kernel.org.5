@@ -1,77 +1,56 @@
-Return-Path: <linux-kernel+bounces-75489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C7A785E96E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:04:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4DE485E970
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A56DDB22255
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:04:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66741C22B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED8D86AD5;
-	Wed, 21 Feb 2024 21:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAEA126F0F;
+	Wed, 21 Feb 2024 21:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hgrnrwmd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GN1UAiLa"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E5A8173D
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8915586637
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708549469; cv=none; b=C12a+3kktaaTx6Bdj4kHHbNm9cc+n3wqLSPqFIpLatdV/Bfu5LVXOjHsU6CEeMvgHb0SdECaWhZDBdNbkcecs8GgnyYPHDAWin9d999IxeP77nEx2htphB1aWrPU1PyGFojqRPA85w9zDqon6cOd2OSgUgOjQ956noY8WQmGaGg=
+	t=1708549508; cv=none; b=Gr92ZpiivgYrEbNAjJJ6NFOsybPMvYN8dZoARVJUw+QzbpPpC0wCn6txbvPtg8sjTGit4yas5S0KzyqLA/oifYXrB1+NTDqm1HuyH73v+W9VkxYz60VLIkwzjTzN6GY3MnWY+t41A9msdPeo5G3eQaL4Ewc5qbuTFWtneI5kaHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708549469; c=relaxed/simple;
-	bh=MmfRwcbeEjTW+L079Q3/1enUCXGnhNR/XHjokIR0+AQ=;
+	s=arc-20240116; t=1708549508; c=relaxed/simple;
+	bh=43K2olQjRDLoK2JMYHwSGAyFBao6TRTJN3RH0Z7TSso=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zi1KQj+OIWpAclB6ZIIF+uoAW9x8A5er8pzKANdceit01jLg6DIgbUugAvjGbnAgWVMNeK01J/g88ABb3v7uVJvc8KYfT1HjT5Yi74hol17aT8wbz57PEAZFLr8m5ojOJtdSJvQQLcqfsTU6kO+TLHkBW2Ch/KzwjRepRVMeP/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hgrnrwmd; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708549468; x=1740085468;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MmfRwcbeEjTW+L079Q3/1enUCXGnhNR/XHjokIR0+AQ=;
-  b=hgrnrwmdRvMf4PdzNs831nGJrnC0WfaRwBb6e4gmiTP1icfLhLMNhzzX
-   ZRdsZVuLVnZp1t1f0vcBD0G19WHQfvhoVpGx/c8wldeewan1z+uo97TrK
-   CGgKk97mPrkNjuVx01gWW6G16ahVw576j61SwLifcFfI+DYBjPWk0pAKe
-   kHPtp31Lvw6z1d6BVq49ojU9YpbfHepsTuLZBP7ZUqmm33UgHw6Lp2sJQ
-   SeLFSi5E23T4cgHRGRScuCzfP/vrbQilIk08XNgAKKAKdE5iIbtL5XpCi
-   ERpVVwIAJEzi1SsWHtN5OcDcIiQOtY+AiJmrSp1OpbqyYJijjD2gKlJ+7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13296955"
-X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
-   d="scan'208";a="13296955"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 13:04:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913372710"
-X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
-   d="scan'208";a="913372710"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 13:04:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rctlO-00000006TAk-2zR4;
-	Wed, 21 Feb 2024 23:04:22 +0200
-Date: Wed, 21 Feb 2024 23:04:22 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-	Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH v3 1/3] bits: introduce fixed-type genmasks
-Message-ID: <ZdZlVn9BI-0q1Xdn@smile.fi.intel.com>
-References: <20240208074521.577076-1-lucas.demarchi@intel.com>
- <20240208074521.577076-2-lucas.demarchi@intel.com>
- <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dpk5NBZccV3DYtac70B3eqGmt2pYKH9pNlfR/vEiH0LDDoRL7oUeFwhlOeXjNkWQ0paJyG5pOIkr1YWwifg7moqAtG71d+gucSM0lyECEEWKkSh5SVinvf+Bp6WO3Pj4Ym5RqtUfo3eyQ7ZITJQzzOIgQLwuoDftHXIjRmfQpfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GN1UAiLa; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 21 Feb 2024 16:04:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708549504;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sTsivf6BMqQt+BMiZsHRmWuFS0uMyL6NGhUqEyvJOuc=;
+	b=GN1UAiLazx0hAHCknbnw+5J5Jk4KgDCGiMBtjacLlmDCfCDnypK0OiNv0O54sjDEFM5cDr
+	Owr9egG5ffC6VA2iPwiYqkMRQMHQENEgUoGGmJQSMXAeDpv/iI8/f6RUH2jXdW1/yZ+gqg
+	+dXYq/BJcaIgLAfpcT1URpK4q5B5Fvg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, lsf-pc@lists.linux-foundation.org, 
+	NeilBrown <neilb@suse.de>
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
+ more
+Message-ID: <l4o3zai7j5a4g3masz3a4tah3lji3bnro7vylcuitleixjmg4p@j4bpnwffgldg>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,83 +59,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 21, 2024 at 10:30:02PM +0200, Dmitry Baryshkov wrote:
-> On Thu, 8 Feb 2024 at 09:45, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
-
-..
-
-> > +#define BITS_PER_TYPE(type)    (sizeof(type) * BITS_PER_BYTE)
-
-Can sizeof() be used in assembly?
-
-..
-
-> > -#define __GENMASK(h, l) \
-> > -       (((~UL(0)) - (UL(1) << (l)) + 1) & \
-> > -        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-> > -#define GENMASK(h, l) \
-> > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-
-> > +#define __GENMASK(t, h, l) \
-> > +       (GENMASK_INPUT_CHECK(h, l) + \
-> > +        (((t)~0ULL - ((t)(1) << (l)) + 1) & \
-> > +        ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
-
-Nevertheless, the use ~0ULL is not proper assembly, this broke initial
-implementation using UL() / ULL().
-
-
-> > -#define __GENMASK_ULL(h, l) \
-> > -       (((~ULL(0)) - (ULL(1) << (l)) + 1) & \
-> > -        (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
-> > -#define GENMASK_ULL(h, l) \
-> > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
-
-Ditto.
-
-> > +#define GENMASK(h, l)          __GENMASK(unsigned long,  h, l)
-> > +#define GENMASK_ULL(h, l)      __GENMASK(unsigned long long, h, l)
-> > +#define GENMASK_U8(h, l)       __GENMASK(u8,  h, l)
-> > +#define GENMASK_U16(h, l)      __GENMASK(u16, h, l)
-> > +#define GENMASK_U32(h, l)      __GENMASK(u32, h, l)
-> > +#define GENMASK_U64(h, l)      __GENMASK(u64, h, l)
+On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Recently we had a pretty long discussion on statx extensions, which
+> > eventually got a bit offtopic but nevertheless hashed out all the major
+> > issues.
+> >
+> > To summarize:
+> >  - guaranteeing inode number uniqueness is becoming increasingly
+> >    infeasible, we need a bit to tell userspace "inode number is not
+> >    unique, use filehandle instead"
 > 
-> This breaks drm-tip on arm64 architecture:
+> This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> together uniquely identify the file within the system."
 > 
-> arch/arm64/kernel/entry-fpsimd.S: Assembler messages:
-> 465arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-> 466arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-> 467arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-> 468arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-> 469arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-> 470arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-> 471arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
-> 472arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-> 473arch/arm64/kernel/entry-fpsimd.S:271: Error: unexpected characters
-> following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
-> long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
-> long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
-> 474arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
-> 475arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-> 476arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-> 477arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-> 478arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-> 479arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-> 480arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-> 481arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
-> 482arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
-> 483arch/arm64/kernel/entry-fpsimd.S:282: Error: unexpected characters
-> following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
-> long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
-> long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
-> 484arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+> Adding a bit that says "from now the above POSIX rule is invalid"
+> doesn't instantly fix all the existing applications that rely on it.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Even POSIX must bend when faced with reality. 64 bits is getting
+uncomfortably cramped already and with filesystems getting bigger it's
+going to break sooner or later.
 
+We don't want to be abusing st_dev, and snapshots and inode number
+sharding mean we're basically out of bits today.
 
+> doing (see documentation) is generally the right direction.  It makes
+> various compromises but not to uniqueness, and we haven't had
+> complaints (fingers crossed).
+
+I haven't seen anything in overlayfs that looked like a real solution,
+just hacks that would break sooner or later if more filesystems are
+being stacked.
+
+> Nudging userspace developers to use file handles would also be good,
+> but they should do so unconditionally, not based on a flag that has no
+> well defined meaning.
+
+If we define it, it has a perfectly well defined meaning.
+
+I wouldn't be against telling userspace to use file handles
+unconditionally; they should only need to query it for a file that has
+handlinks, anyways.
+
+But I think we _do_ need this bit, if nothing else, as exactly that
+nudge.
 
