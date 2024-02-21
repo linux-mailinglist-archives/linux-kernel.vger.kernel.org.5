@@ -1,125 +1,140 @@
-Return-Path: <linux-kernel+bounces-73852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA01585CC97
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:14:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E87A85CC9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C88A1F229D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:14:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D34D3B23237
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:16:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B19B10E3;
-	Wed, 21 Feb 2024 00:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CDD1ECC;
+	Wed, 21 Feb 2024 00:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Bz9nlT6U"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RkXi10iY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B36382
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1831193;
+	Wed, 21 Feb 2024 00:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708474462; cv=none; b=t6AoAcktMSU6gLbAX/GcSj5uj0z9iNTYfJXJ7R30kbNQY+icox8+oeLbcDRK7ZMZm1Ns3y4mZTkbKJq2+PPIpCIkVGy80/ZVWm7bFHSQBNy1iIyiAcjtfNOyQWABEqPyjis1uYNpJTC6hbDRrVQ65aRw3ToLfPHmybk7Qj6uhnk=
+	t=1708474556; cv=none; b=ptP7jRi+iqPZbEhZLjheeo/n/wo8oETVlciTQPZqCY2lX7/pm4R7iOXOjcsomwZEQ3V9A/MqyUqlv04AxKAFlzQqOsMpTPBm0TwWl8/CepB4VtFbCfkxqMpS33cH2f+uNh+ZD4z1DiAEmFYfsi+T+f+JqtuOUyIjvVwL6e32fOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708474462; c=relaxed/simple;
-	bh=arpGt5Xh6mVPL2LI6cxtzQGDGHFhcHS3Qglx7+2cQ78=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tykj6OTd9bv0XZ/RrF6+tWO6LXDJOraJuD2qQqG5xCOFdHlkuemLx7fOCUXYeNwwY5zp/YRIh5UdObrj7gCOJ3kzkxJo4pI3kgpKgWsVDI+bE0s0eHD2IZTiGyf83PaEE/54bHSE86TD634BLNW9sMFpyn9WozpLBRJOR3FYC7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Bz9nlT6U; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7c495be1924so66260339f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:14:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1708474460; x=1709079260; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dbwEa+mjRLUTXrnmEQkPmHrBcrA9pXlAMlVI6ey5rh0=;
-        b=Bz9nlT6UGL0cd+bbsxchmsdRabIurxYhssemcMkSJB91zuyCMvTEypIMBdfMQdAd1V
-         2APvI+X9PltWJm309X6i6VCOtRTu/WQMkgN8VRubFlXJrmIN2F/mRCTsUK2qsCp5Cs62
-         I69ceKuVZOpssWn0vtaypRzH0kl5Tlb113ObE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708474460; x=1709079260;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dbwEa+mjRLUTXrnmEQkPmHrBcrA9pXlAMlVI6ey5rh0=;
-        b=FvqMp/vfK6+jM2a/HrB1DbPWcm4ZzmBKSiaWvr75cxIMKXUUk7iI1yijDInT9DUS77
-         AEqpIkgMwRemnVi9e9NBkwsFpqoDtyoh2wVoGDewQzHukxuFL6vkKsaS1qCPYbZzIKWz
-         CddVwR76lytvGba5vWuJWhTuNWkbqHfrfNNFJD9tcmxyic5pbbWpkk8/5tVGG/s83pH4
-         7dLONcgnKB0sTFknbQW7Rms94HR1iosVu6LnzBmRINuZ0qkomG1L1rfNRrDqqyPa3kFs
-         jJAUy3pfLRj+s8eL5Lozs0Jan/c9Sj9meVO3DLtkS4LY7S0CxsnJpayPGExjtBIE4GKY
-         8gqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUDQvC+X9IRvJm7xRpjkM4LKub5FTse472s1IRoKhGs8Ux1BXS/m9/Eakq9t3THNyev94PMw6sPWCpBJ29+jUXEK56C6MeKKkIYWuh8
-X-Gm-Message-State: AOJu0YwdAtiVrhDYAtMknmLWyWsxI+AntPGd2pLxd9ZjsDCERz1vXWor
-	a6x1gVAHfhjzjFdA7HzsjRSK/UKcwijHWoMeNhnfh/1ISuG29nUOwAakUW+6ZeA=
-X-Google-Smtp-Source: AGHT+IEHvlYzcObNY1Sb3aVdxtXV1KeGoGTPexv/zoa35da29BCRAWQsfMui+mAB+L8Fdyiump2AXw==
-X-Received: by 2002:a5d:9047:0:b0:7c4:c985:145a with SMTP id v7-20020a5d9047000000b007c4c985145amr13481443ioq.2.1708474460385;
-        Tue, 20 Feb 2024 16:14:20 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id bc11-20020a0566383ccb00b0047414ccf744sm1992399jab.91.2024.02.20.16.14.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 16:14:20 -0800 (PST)
-Message-ID: <ee74c429-4e71-4076-9b48-064769ffad6c@linuxfoundation.org>
-Date: Tue, 20 Feb 2024 17:14:19 -0700
+	s=arc-20240116; t=1708474556; c=relaxed/simple;
+	bh=3UKf88/OO9PrlzxTprcbvLUA+oabicAk0A7ct1jS0Hk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iJX25f2QzjInlRvKXOGupdGiGVGfmjuyFt+KQn6otaP8pLjgb+YPE/RNhqGn7twGax3BqZww2S1ZyLCsnnqk1XG0kV83o+fVXZPslPsYCArHkRQbTJMnGh58Z5zmT784OmgSewQhWwatjJN3K8/0EpYzVOu7njBzLJCxf3b3jRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RkXi10iY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CBE8C433C7;
+	Wed, 21 Feb 2024 00:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708474555;
+	bh=3UKf88/OO9PrlzxTprcbvLUA+oabicAk0A7ct1jS0Hk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=RkXi10iYaVYVR6VWm0leETcV94QcWYGMz2HrbLzdfyOmSH3a00DymBH7cmNDfoCQi
+	 xVC3Lu24E7JnEX1XF/Lk9qhedRTkL3OJWZVSfh6VSA+WHQkPvKw6KxkWoONnnMoW/h
+	 ew/G06241W01m+IyrtIpnwkIlp5tZQ32JKZztZH6cokg57zT7x948cHRVRDB2OpqMP
+	 4D2Y/oIWNa7SjW4oCLM4i6kubdTmfezA1emHIPDkosedFLPgiJM6alKOo/n7A4Rfaj
+	 7NXD4LRnXH1QZfqEvUE6zVkzw702mkguz9NWymEOmKiIXZ/N/jRqSAl6Jah/G9ZU4j
+	 24DQUhf1xETRA==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	damon@lists.linux.dev,
+	SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.7 000/309] 6.7.6-rc1 review
+Date: Tue, 20 Feb 2024 16:15:52 -0800
+Message-Id: <20240221001552.46741-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240220205633.096363225@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] selftests/mqueue: Set timeout to 180 seconds
-Content-Language: en-US
-To: SeongJae Park <sj@kernel.org>, shuah@kernel.org
-Cc: ryan.roberts@arm.com, abuehaze@amazon.com, brauner@kernel.org,
- jlayton@kernel.org, jack@suse.cz, keescook@chromium.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Vijaikumar_Kanagarajan@mentor.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240220000802.162556-1-sj@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240220000802.162556-1-sj@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2/19/24 17:08, SeongJae Park wrote:
-> While mq_perf_tests runs with the default kselftest timeout limit, which
-> is 45 seconds, the test takes about 60 seconds to complete on i3.metal
-> AWS instances.  Hence, the test always times out.  Increase the timeout
-> to 180 seconds.
-> 
-> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
-> Cc: <stable@vger.kernel.org> # 5.4.x
-> Signed-off-by: SeongJae Park <sj@kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
-> Changes from v2
-> (https://lore.kernel.org/r/20240220000243.162285-1-sj@kernel.org)
-> - Update commit message about the new timeout limit to 180 seconds
-> - Remove wrong Link: line
-> 
-> Changes from v1
-> (https://lore.kernel.org/r/20240208212925.68286-1-sj@kernel.org)
-> - Use 180 seconds timeout instead of 100 seconds
-> 
->   tools/testing/selftests/mqueue/setting | 1 +
->   1 file changed, 1 insertion(+)
->   create mode 100644 tools/testing/selftests/mqueue/setting
-> 
-> diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
-> new file mode 100644
-> index 000000000000..a953c96aa16e
-> --- /dev/null
-> +++ b/tools/testing/selftests/mqueue/setting
-> @@ -0,0 +1 @@
-> +timeout=180
+Hello,
 
-Applied to next for Linux 6.9-rc1
+On Tue, 20 Feb 2024 21:52:39 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-thanks,
--- Shuah
+> This is the start of the stable review cycle for the 6.7.6 release.
+> There are 309 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 22 Feb 2024 20:55:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.6-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] c40c992a3e2e ("Linux 6.7.6-rc1")
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
