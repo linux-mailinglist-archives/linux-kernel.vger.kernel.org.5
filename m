@@ -1,154 +1,107 @@
-Return-Path: <linux-kernel+bounces-74342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F4685D300
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:02:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B623F85D302
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:04:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E3A5282107
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:02:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 563D01F219DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3523D0C5;
-	Wed, 21 Feb 2024 09:02:08 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B04A3C6AB;
+	Wed, 21 Feb 2024 09:04:22 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA103A269;
-	Wed, 21 Feb 2024 09:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEE938F94
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708506127; cv=none; b=ZNpK7IrL07xO85GdmEKN+hmNCr9mOI22XU7qp6PEx3i4J324SVbUGyvJGAcyQGyNw7lgSh2eApTpBHWrEC8LbQ/QjgBfo3RNYzKQrrZKSz+8TY8wZjMlb2vD0tDoz74vuB95DIPe7bT9nlidTWf8yb9X8fhQG5fRdlGBcCiRv6g=
+	t=1708506261; cv=none; b=lVNoW3J3usMFAxILpDRD2QnJm/wyvBgtmN2r2xOe4RxF5myjCE3qvPivmcgSbOKRysVqccVNTq6GSV/w6OmGyPRuxN4GHnPYfn/EAo3xiUuqmascW2g6vpxFUYyftbgf9Cq/qTTgKnk4zci2oCaF3If/M/xITIANP4z2H0GUdGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708506127; c=relaxed/simple;
-	bh=DG6+fpNdY1Tug+hDsUyTbjuti0AppTqFewpkJHzY90I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HtuoDhjgHK90i7yfj1oL+arT3TMFr8c5nlPrdAYmJOb4e0Ewwy3+D4Z/ySWZB827A59kwO1FqCHgZCA43/rzVb80dkXheMaOn3y6fmvJGzuV9rlqtPadgYa9ZbsHDwTZaEALIgf5R9tNkaJQa845EuCDOEa6XsUOt+8tVE/+9xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D60CC433F1;
-	Wed, 21 Feb 2024 09:02:05 +0000 (UTC)
-Message-ID: <852dea56-336a-4484-8754-ee735af7bdaf@xs4all.nl>
-Date: Wed, 21 Feb 2024 10:02:01 +0100
+	s=arc-20240116; t=1708506261; c=relaxed/simple;
+	bh=yZVRv3Jj7/PoGR/VDrzkaaZCMf6fkPUEJZm99tu5WIQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jM/BDUT8yGLOonpmotiRWSeOm4XyUXoPogYbNpXh7vE9XiXrTGBFf1nD6x9UrouO7m5HVWGyWZhgPNH4hpcPyTLhl1LT1+WbjI7i7JvuVMbKf7dvYkxQ2AlgKbrFVL4nOah6nMT8xLpxACunK4c01JN8u+ydPd+IhWQo1DJtqf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: e055a30fdd404a3482e5e0535a320678-20240221
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:19c1cea5-6803-4bd9-a913-92849b05674b,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:19c1cea5-6803-4bd9-a913-92849b05674b,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:af722484-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:2402211704136R5RNTJ7,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: e055a30fdd404a3482e5e0535a320678-20240221
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1046188438; Wed, 21 Feb 2024 17:04:12 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 64F1FE000EBC;
+	Wed, 21 Feb 2024 17:04:12 +0800 (CST)
+X-ns-mid: postfix-65D5BC8C-208931588
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id C8665E000EBC;
+	Wed, 21 Feb 2024 17:04:10 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: yuq825@gmail.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org,
+	lima@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] drm/lima: Simplify the allocation of slab caches in lima_sched_slab_init
+Date: Wed, 21 Feb 2024 17:04:09 +0800
+Message-Id: <20240221090409.167478-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: cec: core: remove length check of Timer Status
-To: =?UTF-8?B?TmluaSBTb25nICjlrovlrpvlpq4p?= <Nini.Song@mediatek.com>
-Cc: "linux-mediatek@lists.infradead.org"
- <linux-mediatek@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- =?UTF-8?B?Q0kgV3UgKOS8jeWAieWEhCk=?= <ci.wu@mediatek.com>,
- "mchehab@kernel.org" <mchehab@kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- "nicolas@fjasle.eu" <nicolas@fjasle.eu>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "angelogioacchino.delregno@collabora.com"
- <angelogioacchino.delregno@collabora.com>,
- "jani.nikula@intel.com" <jani.nikula@intel.com>
-References: <20240125132850.10430-1-nini.song@mediatek.com>
- <8a4447ba-d4ac-40ac-9d6b-796db37f3100@xs4all.nl>
- <089a5abf85fb3aaa57cb9436193b09eea47a03d2.camel@mediatek.com>
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <089a5abf85fb3aaa57cb9436193b09eea47a03d2.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-Dear Nini,
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-Unfortunately I forgot to add a 'Fixes' tag to the patch, if I had, then it would
-have happened automatically.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/gpu/drm/lima/lima_sched.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Please remind me of this once kernel 6.9-rc1 is released since that will contain
-the fix. Then I can post the same patch to the stable mailinglist for inclusion in
-older kernels.
-
-It has to wait until 6.9-rc1 is release though, patches need to be in mainline first
-before they can be backported.
-
-Regards,
-
-	Hans
-
-On 21/02/2024 07:30, Nini Song (宋宛妮) wrote:
-> Dear Hans,
-> 
-> Thank your reply.
-> Could you also help to marge solution into v5.15? Our customer used v5.15 for MP production, which requires this solution.
-> 
-> 
-> BR,
-> Nini Song
-> On Mon, 2024-02-05 at 13:00 +0100, Hans Verkuil wrote:
->> 	
->>
->> External email : Please do not click links or open attachments until you have verified the sender or the content.
->>
->> On 25/01/2024 14:28, nini.song@mediatek.com wrote:
->> > From: "nini.song" <nini.song@mediatek.com>
->> > 
->> > The valid_la is used to check the length requirements,
->> > including special cases of Timer Status. If the length is
->> > shorter than 5, that means no Duration Available is returned,
->> > the message will be forced to be invalid.
->> > 
->> > However, the description of Duration Available in the spec
->> > is that this parameter may be returned when these cases, or
->> > that it can be optionally return when these cases. The key
->> > words in the spec description are flexible choices.
->>
->> Good catch, the spec indeed says 'may', so dropping the check
->> in this patch is the correct thing to do.
->>
->> It's merged in our staging tree and it will appear in v6.9.
->>
->> Regards,
->>
->> Hans
->>
->> > 
->> > Remove the special length check of Timer Status to fit the
->> > spec which is not compulsory about that.
->> > 
->> > Signed-off-by: Nini Song <nini.song@mediatek.com>
->> > ---
->> >  drivers/media/cec/core/cec-adap.c | 14 --------------
->> >  1 file changed, 14 deletions(-)
->> > 
->> > diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
->> > index 5741adf09a2e..559a172ebc6c 100644
->> > --- a/drivers/media/cec/core/cec-adap.c
->> > +++ b/drivers/media/cec/core/cec-adap.c
->> > @@ -1151,20 +1151,6 @@ void cec_received_msg_ts(struct cec_adapter *adap,
->> >  if (valid_la && min_len) {
->> >  /* These messages have special length requirements */
->> >  switch (cmd) {
->> > -case CEC_MSG_TIMER_STATUS:
->> > -if (msg->msg[2] & 0x10) {
->> > -switch (msg->msg[2] & 0xf) {
->> > -case CEC_OP_PROG_INFO_NOT_ENOUGH_SPACE:
->> > -case CEC_OP_PROG_INFO_MIGHT_NOT_BE_ENOUGH_SPACE:
->> > -if (msg->len < 5)
->> > -valid_la = false;
->> > -break;
->> > -}
->> > -} else if ((msg->msg[2] & 0xf) == CEC_OP_PROG_ERROR_DUPLICATE) {
->> > -if (msg->len < 5)
->> > -valid_la = false;
->> > -}
->> > -break;
->> >  case CEC_MSG_RECORD_ON:
->> >  switch (msg->msg[2]) {
->> >  case CEC_OP_RECORD_SRC_OWN:
->>
->>
+diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lim=
+a_sched.c
+index c3bf8cda8498..265ee6ca3c44 100644
+--- a/drivers/gpu/drm/lima/lima_sched.c
++++ b/drivers/gpu/drm/lima/lima_sched.c
+@@ -27,9 +27,7 @@ static int lima_fence_slab_refcnt;
+ int lima_sched_slab_init(void)
+ {
+ 	if (!lima_fence_slab) {
+-		lima_fence_slab =3D kmem_cache_create(
+-			"lima_fence", sizeof(struct lima_fence), 0,
+-			SLAB_HWCACHE_ALIGN, NULL);
++		lima_fence_slab =3D KMEM_CACHE(lima_fence, SLAB_HWCACHE_ALIGN);
+ 		if (!lima_fence_slab)
+ 			return -ENOMEM;
+ 	}
+--=20
+2.39.2
 
 
