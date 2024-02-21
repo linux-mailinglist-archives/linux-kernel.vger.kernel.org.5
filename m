@@ -1,205 +1,155 @@
-Return-Path: <linux-kernel+bounces-74009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50D2F85CEDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:42:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E27485CEE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:44:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73C941C22135
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:42:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B947C1F2349A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F340139FC8;
-	Wed, 21 Feb 2024 03:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8555A3B790;
+	Wed, 21 Feb 2024 03:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F2QQAfnN"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LThdpo/0"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2714438FAF
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04EF23B193
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708486929; cv=none; b=pS4pvSBVoFzDsUPC4jPcLszMg9oAM56pZoyZBcnRlPAzb9ZItRvpNz+9AyF/5XFPmJV3m8TQpDos0EM/R4UFDqECSbOC5iT8x/0GolT0eEKF1AwRnb/zWSl+6Gyh9YxikvCIvVUb1uiJBIJiC7+KyYct09GoLRUrTCs1tKN1vY4=
+	t=1708486941; cv=none; b=bni1lh3kWzivPfgEZMgNt2obwI+z0L5zuxTHAaK9DjZqzvEZ9t+1VdOXDTSrMdOO3JS5sMIgkM2iikmd0MQqtsEISs5XnUo7U/ggB3xvbrbbynoK4pJxvD7zPGJAYOp1tKDSMwa3GdFtes26A5/M47w3K53bCB4+aZs/UP/eTy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708486929; c=relaxed/simple;
-	bh=3dph1oOgPNiMARTIk1TUv0cnoXVZ3w2YcrnwEMmaGXE=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=BHoQL74pAz8x207E14WUgn1vr6ByYCCaRImYUR1ce4NiUD97eO/25CWdx778zOFKe5m4LpJOAdJj0Wd+XEHXLRSTLVNlPDkCt212/ApytOrG3i2/CyK0tI5MxujB0DgOuLxC5GCQyb2pFTRPqlbE+T6rornkCB+KrlQUCobe0WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F2QQAfnN; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60802b0afd2so42498567b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:42:07 -0800 (PST)
+	s=arc-20240116; t=1708486941; c=relaxed/simple;
+	bh=6OdqvnqpDIHcssx6HxD8cVyF7xhLIDSsl6jVQmAddoI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=LWQhMbyFtL1FjctX5fB1RVhya2WQCmK9+/tZ0vzGTabehD4OdIk18Of9P/yGP1KgyNp95tN11OTRMpmFnBEilnbUAZslisJZY+N2jAkVcIWye18z19nwifuadXhFbBCP6eyUYt8DQ6QC4SI9XEu3Xg8t8ppHK3XAEqST5RbmNsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LThdpo/0; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e484011e28so752423b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:42:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708486927; x=1709091727; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GN8DooxqnWYMX4Lx9QAzw7baLGn2b+1JMBP0il1xEM0=;
-        b=F2QQAfnNm3m+i8aHhWZVTGpzA2iBwyCjcb5CFKPzWgFZkzC4a3ty6VDa69vefd2k7Y
-         Jq7P9oPJ2I3F0bRiMt6J330w6k1AifoFp5VS3fKE/diZOEip0lcp9Bh8GgRJFDwpDHnx
-         ySWs600npH2jgmotkLzox7uWtUGwiFFtyBUkAhR0TwyJpWwZbu3Uw958rgOpxsJDD1O5
-         m+T7IE+btMN0xdlkuJnjcIBngdHU6AFgagmEhfDtZDPauBCx1EJEGDLi51pqhyJrplFv
-         hgzDFSpYFoYndNGW33yrEVDIHP1JYd9eMTkgIML2DQy3gwx2FWfKVSVbcQokYH8NLvKM
-         15Eg==
+        d=linaro.org; s=google; t=1708486939; x=1709091739; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DC+RBD8xa7z5+jHNAaczlNmwqvhjSg3R2s5n3RctooI=;
+        b=LThdpo/0MqTj1tPiQWMd845noICP765O1jdq0ZCZhnkldJvjdyMpn0+vHY7pbXYXaZ
+         4tUBClDSdj88aWf/8EaRZfnZrl5wOQWIThW64NmsLlgtumb6vVH1Ke5GtuKVSmeYMD2L
+         78H2sEzBrG0+FZbmBMVOQ/5C2wPfMMTcDM7lTRhTMpeUUIDgPMLNkqVrvm+yQYnSQxiA
+         gqmluaeNmlINCU/z1Nv6BNbeQec/vjPFMr27NU1wjGmRO4AymeeGaiuIziNS7YPHJutK
+         6bskOTCFpYrcjnSH+Ik4qwRlv1l0SFfLTUP2qXB3nhgsOMzM4i7U4NYWaUXvScoPyohN
+         JYyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708486927; x=1709091727;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GN8DooxqnWYMX4Lx9QAzw7baLGn2b+1JMBP0il1xEM0=;
-        b=omPr6rhUtX1iJ3vpOrIqZVhC/peBvTplZwyhfLVvBTXqpTFzDTUcRf55gqafmuX+Oe
-         ZinGTFhfWyxF/RPLLMKwz9lSfKD+z/30PmhqTk4trGmSR9SvfJagi9U0Yhz8IdBTFPbz
-         vj0ND4PXjIUFeQuBEklVY5D3qQijg9akHBY4OqnNhwvFncT0j4aGzGmVweb7+Oa0G84Y
-         JlI4B5qW/U2GuIWB08eD5hT0IN86g6VfsMhklwT1ztYOgQNqWNVMIfWb1Ek+QIhaR4GV
-         5xzWvHNwoX/hn0v1d1PM4C/893/HmaMDGd9ibnf+rcoc1mhoPRUyHLULDv1RqDqU3VBE
-         p3Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCXQirE8AdTPktxsNuTtin/Ik1GHCig8Ew8+Md4LNpSObIP5L13EHKhjQp1z+33loExEFQWlniu60W2OW8h86KZwC2xZJHrX9LSQM+ii
-X-Gm-Message-State: AOJu0YzUV/vr7YQaqtxsKUuhIlmIQHuZ3+4oRoaC8yC4/IfrA0juYDEv
-	vosmPQ1jH+5NXHlNcIi0rVAvkxevnurCGTMpQDvmvwVsa5HulUtVW34soYn9PDQWRtJA1kS4auI
-	ye/6etw==
-X-Google-Smtp-Source: AGHT+IHcimSGjtXP/J/UxCh+R6kQfYuW768ba/K0H1tyN90UXsV/9dElbyr75/bcNmmISHcycP36jLk6uHUp
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3c02:f882:5876:b7ab])
- (user=irogers job=sendgmr) by 2002:a05:690c:338e:b0:608:28cf:3592 with SMTP
- id fl14-20020a05690c338e00b0060828cf3592mr2065532ywb.1.1708486927165; Tue, 20
- Feb 2024 19:42:07 -0800 (PST)
-Date: Tue, 20 Feb 2024 19:41:49 -0800
-In-Reply-To: <20240221034155.1500118-1-irogers@google.com>
-Message-Id: <20240221034155.1500118-3-irogers@google.com>
+        d=1e100.net; s=20230601; t=1708486939; x=1709091739;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DC+RBD8xa7z5+jHNAaczlNmwqvhjSg3R2s5n3RctooI=;
+        b=msrDOoqrQ3gwTLiSInGloFRva7aJCqvtWBW8LVL7n9rcqYtL2p5IseSlgKdkvkU9ir
+         JrWxi45p1AYxhdp+1GwJigNvASuQ1CTPZpE/MdJFDckSNnagGyPr+4P6Eqp7CRnTbx2T
+         bpG36OlsRO1FAaA6ghXm2gZrQusd2mCGCWmIQHyoBmk0NMG+Kr2XnrhLo4B+eVgpvZIN
+         YYl13ORnBTiHTHF1giDJjZ5aO5w0IzrNtqBgQBC692ho+hX5zS3lMgjW9t1mwxPXHCA/
+         Pj52sP6iQN5OXMl3LitEN96XMogwFQxJye8J306ie+gLRsjJGe22jVE6qahECTAv/YAx
+         c1VQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWureBXhmiUjmxCI8a7agT1/2ZOE68re4aS4cCEGBrFfH8Aebivab+jiYsyv9DhUCjspI8/6xSuBSQte6MfScVtspe87MGr8eKFY3v0
+X-Gm-Message-State: AOJu0YwbFjymRsx0pwWR7l4tVAJzC3UoygOQt+kQqsmul8UwJWkmb40d
+	qsJ+kR4yiQiL0ECdlGx1Bvk1AqxeoVsEFWoO1AaxINtCb1kIzju/qRq5JpjdBkdiQa21KIru/YE
+	=
+X-Google-Smtp-Source: AGHT+IFa/xMO2wZNDRqa9l+Q9k9ekWwfTiDa5AaMSSMxyD0ucqUjwfaI0Euu6YN4Bucul6tAbB/FYQ==
+X-Received: by 2002:a05:6a00:6a09:b0:6e4:8fbe:cb33 with SMTP id hy9-20020a056a006a0900b006e48fbecb33mr305615pfb.29.1708486939057;
+        Tue, 20 Feb 2024 19:42:19 -0800 (PST)
+Received: from [127.0.1.1] ([117.207.28.224])
+        by smtp.gmail.com with ESMTPSA id o23-20020a056a001b5700b006e466369645sm4436231pfv.132.2024.02.20.19.42.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 19:42:18 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Wed, 21 Feb 2024 09:11:49 +0530
+Subject: [PATCH 03/21] arm64: dts: qcom: sm8150: Add PCIe bridge node
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240221034155.1500118-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Subject: [PATCH v6 2/8] perf list: Add scandirat compatibility function
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, James Clark <james.clark@arm.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240221-pcie-qcom-bridge-dts-v1-3-6c6df0f9450d@linaro.org>
+References: <20240221-pcie-qcom-bridge-dts-v1-0-6c6df0f9450d@linaro.org>
+In-Reply-To: <20240221-pcie-qcom-bridge-dts-v1-0-6c6df0f9450d@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1249;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=6OdqvnqpDIHcssx6HxD8cVyF7xhLIDSsl6jVQmAddoI=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBl1XEFZAe/t1aSotuopKDU6sQYhZIGV3GKq6Tmj
+ 7VLGBm9mouJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZdVxBQAKCRBVnxHm/pHO
+ 9TLYB/4lqxmDMuLB+j6HDWQjpGOBFU2Xy79ijVi9yBtEwqT41Hulx9Q6TAWQzcVAVZGQZl4YPU4
+ wz9du3QN0nFvLPIjrUyOilzChk4URG9+aEvYt0VXpHX6uLZCB586Fq9+XigjqvVdAS5URuPiGjy
+ hYLecLcic4antYMeZMUxujwK4EjWXhuSFL4Y1MeQHlYCa8PGctbzEzCe3T/5hxfRXKOggK24NEw
+ MFQFhmo78dXD8ii92olMhSKvtp9bCZoGoaPAWFPs2qzOnyAg7Co++KH2zZKzuhAeIgbZOzz9mpx
+ 7eWHkU2EOhhtfUh/I3sC1oyYqc0W8i9g7tVznc9yPM2xtVfT
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-scandirat is used during the printing of tracepoint events but may be
-missing from certain libcs. Add a compatibility implementation that
-uses the symlink of an fd in /proc as a path for the reliably present
-scandir.
+On Qcom SoCs, the PCIe host bridge is connected to a single PCIe bridge
+for each controller instance. Hence, add a node to represent the bridge.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- tools/perf/util/print-events.c | 13 ++++---------
- tools/perf/util/util.c         | 19 +++++++++++++++++++
- tools/perf/util/util.h         |  8 ++++++++
- 3 files changed, 31 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
-index 9e47712507cc..0dc70b87d609 100644
---- a/tools/perf/util/print-events.c
-+++ b/tools/perf/util/print-events.c
-@@ -28,6 +28,7 @@
- #include "tracepoint.h"
- #include "pfm.h"
- #include "thread_map.h"
-+#include "util.h"
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index 761a6757dc26..c9c46ccecb69 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -1885,6 +1885,16 @@ pcie0: pcie@1c00000 {
+ 			pinctrl-0 = <&pcie0_default_state>;
  
- #define MAX_NAME_LEN 100
- 
-@@ -63,6 +64,8 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
- {
- 	char *events_path = get_tracing_file("events");
- 	int events_fd = open(events_path, O_PATH);
-+	struct dirent **sys_namelist = NULL;
-+	int sys_items;
- 
- 	put_tracing_file(events_path);
- 	if (events_fd < 0) {
-@@ -70,10 +73,7 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
- 		return;
- 	}
- 
--#ifdef HAVE_SCANDIRAT_SUPPORT
--{
--	struct dirent **sys_namelist = NULL;
--	int sys_items = tracing_events__scandir_alphasort(&sys_namelist);
-+	sys_items = tracing_events__scandir_alphasort(&sys_namelist);
- 
- 	for (int i = 0; i < sys_items; i++) {
- 		struct dirent *sys_dirent = sys_namelist[i];
-@@ -130,11 +130,6 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
- 	}
- 
- 	free(sys_namelist);
--}
--#else
--	printf("\nWARNING: Your libc doesn't have the scandirat function, please ask its maintainers to implement it.\n"
--	       "         As a rough fallback, please do 'ls %s' to see the available tracepoint events.\n", events_path);
--#endif
- 	close(events_fd);
- }
- 
-diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-index c1fd9ba6d697..4f561e5e4162 100644
---- a/tools/perf/util/util.c
-+++ b/tools/perf/util/util.c
-@@ -552,3 +552,22 @@ int sched_getcpu(void)
- 	return -1;
- }
- #endif
+ 			status = "disabled";
 +
-+#ifndef HAVE_SCANDIRAT_SUPPORT
-+int scandirat(int dirfd, const char *dirp,
-+	      struct dirent ***namelist,
-+	      int (*filter)(const struct dirent *),
-+	      int (*compar)(const struct dirent **, const struct dirent **))
-+{
-+	char path[PATH_MAX];
-+	int err, fd = openat(dirfd, dirp, O_PATH);
++			pcie@0 {
++				device_type = "pci";
++				reg = <0x0 0x0 0x0 0x0 0x0>;
++				bus-range = <0x01 0xff>;
 +
-+	if (fd < 0)
-+		return fd;
++				#address-cells = <3>;
++				#size-cells = <2>;
++				ranges;
++			};
+ 		};
+ 
+ 		pcie0_phy: phy@1c06000 {
+@@ -1979,6 +1989,16 @@ pcie1: pcie@1c08000 {
+ 			pinctrl-0 = <&pcie1_default_state>;
+ 
+ 			status = "disabled";
 +
-+	snprintf(path, sizeof(path), "/proc/%d/fd/%d", getpid(), fd);
-+	err = scandir(path, namelist, filter, compar);
-+	close(fd);
-+	return err;
-+}
-+#endif
-diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-index 7c8915d92dca..9966c21aaf04 100644
---- a/tools/perf/util/util.h
-+++ b/tools/perf/util/util.h
-@@ -6,6 +6,7 @@
- /* glibc 2.20 deprecates _BSD_SOURCE in favour of _DEFAULT_SOURCE */
- #define _DEFAULT_SOURCE 1
- 
-+#include <dirent.h>
- #include <fcntl.h>
- #include <stdbool.h>
- #include <stddef.h>
-@@ -56,6 +57,13 @@ int perf_tip(char **strp, const char *dirpath);
- int sched_getcpu(void);
- #endif
- 
-+#ifndef HAVE_SCANDIRAT_SUPPORT
-+int scandirat(int dirfd, const char *dirp,
-+	      struct dirent ***namelist,
-+	      int (*filter)(const struct dirent *),
-+	      int (*compar)(const struct dirent **, const struct dirent **));
-+#endif
++			pcie@0 {
++				device_type = "pci";
++				reg = <0x0 0x0 0x0 0x0 0x0>;
++				bus-range = <0x01 0xff>;
 +
- extern bool perf_singlethreaded;
++				#address-cells = <3>;
++				#size-cells = <2>;
++				ranges;
++			};
+ 		};
  
- void perf_set_singlethreaded(void);
+ 		pcie1_phy: phy@1c0e000 {
+
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+2.25.1
 
 
