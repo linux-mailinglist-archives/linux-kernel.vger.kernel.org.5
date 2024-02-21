@@ -1,209 +1,178 @@
-Return-Path: <linux-kernel+bounces-74339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C39C85D2F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 768FC85D2E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD8B4B22CF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:00:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1E09B22EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF03A3D0C0;
-	Wed, 21 Feb 2024 09:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDA33D0AD;
+	Wed, 21 Feb 2024 08:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="gEGdeNEd"
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eGgPG4d4"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487BF3CF72
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5693CF79;
+	Wed, 21 Feb 2024 08:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708506042; cv=none; b=cC95Zji5n+jEnlWg6eHH2V8WDr5Yuwmz2FTfi3Ij+aTsEgDq1EGFrZbk50cP+5wHW8JGeecpxgDz7/M4df40hFGyg6a03Di0JlWsWY0/nNbbY3xkmvCN1jlc0cV3GKmsvItiU2XF68Zh6twOW7jsQ66dfdaA/pmJN0kRnZGi3mk=
+	t=1708505769; cv=none; b=KADnIUzhko/v6VZeVQMUWD0Ax0Ainj+I2RAydS6ISOhXKzOEWr2PVKgi6f/WqUQY6Wg04heH0XWlvKbR2qD/7qeXaKHEKCs2x//kDd5Z7uqsy1BZAHBPd7A9lHZAyNtZeQeXBGcYMOoit9ZZVD7JGtO0cIMFtCtdo2wruwL2pJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708506042; c=relaxed/simple;
-	bh=lOk/Sj21EXxCRmBe+YSmEWfqFcljKsQ0DRuxtfgqqT0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=s92lYTg1Pp11zczyhGDHzAFYayfA+VRZa8maWIUPtVI7e40N2n0vBHt/hIWg14SzPxBPnINEKw9LcFCPVtQydlrO+D+ssu+PCl6Iyn0QiXQvaLWikuRrYCwuMgVgW8aaKQ53q+BVtfxQNwyN+ZXcOgkiVWGbrIBnzLCtj+uP+ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=gEGdeNEd; arc=none smtp.client-ip=212.227.17.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=valentinobst.de;
-	s=s1-ionos; t=1708506030; x=1709110830; i=kernel@valentinobst.de;
-	bh=lOk/Sj21EXxCRmBe+YSmEWfqFcljKsQ0DRuxtfgqqT0=;
-	h=X-UI-Sender-Class:From:Date:Subject:To:Cc;
-	b=gEGdeNEdnMF8XKOrjBbVFcFz8tB7/dKO+hCk8n4MeBxU+pBTLNmEY4K75BA2tttk
-	 gtbQMFJuPNoUzlnbUTXqEeYnbQ51B+K56zgrZQa3CaUeSPuCz3hxWmfUPsJ+EpjlW
-	 zXK3MFjmybz74et4o6Snf3WkIuiZHBk3devfZ4lsT5Z7xmPBxOKnIusdPXX/iZYbX
-	 pSRzc/Saa6jkAzYezvbJAPsIBFovozXdhSxjO2491Qmro0MFHD7p9DjJGp14StJ7I
-	 wM8jorlnyecylKWKVmZP7n6pMeQnYo1RKgEwIomKiqsgcpcMA/2AeLln3Fy+eA7Xm
-	 yGPi+0dzx8j0CB9m/g==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from [192.168.2.229] ([79.233.63.110]) by mrelayeu.kundenserver.de
- (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis) id
- 1N6KQZ-1qs7DZ2vsH-016j74; Wed, 21 Feb 2024 09:54:04 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-Date: Wed, 21 Feb 2024 09:53:37 +0100
-Subject: [PATCH] x86/tools: fix line number reported for malformed lines
+	s=arc-20240116; t=1708505769; c=relaxed/simple;
+	bh=t0i7AUpWThgRz90yQislwVsOXiY5R5YW4Bm983CUoE8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ov5DTkp32hBynI+vJjMUrNPT46ZgGRh4ask1pHar+wu55IkNGTKJH2I3Spa/+n0Sr/CNQAE1y1/foZixc8qASa5j6WdP4vd+I7LG/OmJH5sYDAFjNYAmDP3V9oY/yXkesx8oECywep+16m3BhIK8Lg0S5MoN3PDoVox30FT7Gkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eGgPG4d4; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41L1Ddqk022068;
+	Wed, 21 Feb 2024 08:55:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Dh400oD5PMxWwz0r1DmS8UjX2c9zvWlF7BXlLVaLS2I=; b=eG
+	gPG4d4E4a3pt3DEYfWeKUw+o1V7KsSg/zjPcEov42OrMFqDYBiRpdcben/Lfg77c
+	kK7yhOv+W0ljd3mBvkHlT2tu3TKCDjt3IdYWsMXafeJZczFEmqegNaVY3wkRLHD+
+	dZVJuB7dVh7erMOlaasyzXGXKrebgydlaBz60VPYJUVG/Ze92eJNhaug7nDdSTO2
+	gsCnYq07ORVaChYtCMSKYpunzFUvslgnivBtgtEQbK/GXn9a9djbXSkkSYHkHefN
+	quLjExsnh7vhYjQrIPnEdIrzzI+PgUU0o7EH9rtCGxy1P9iMN8FPCGClZ3TsM/gB
+	4vN3Nh7lJ63c1qWkFzXg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wd22u1eu4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 08:55:43 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41L8tfJ1009386
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 08:55:41 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
+ 2024 00:55:36 -0800
+Message-ID: <201fef09-50ab-436b-af63-4535c7510d15@quicinc.com>
+Date: Wed, 21 Feb 2024 14:25:26 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20240221-x86-insn-decoder-line-fix-v1-1-47cd5a1718c6@valentinobst.de>
-X-B4-Tracking: v=1; b=H4sIABC61WUC/x2MwQqDMBAFf0X27EKyFlP6K+JBzYtdKKskIIL47
- 4YeZ2DmooKsKPRpLso4tOhmFXzb0PKdbAVrrEzi5OVEPJ/vntWKccSyRWT+qYGTnhxmnwQ+dJI
- S1X7PqPr/Hsb7fgBrqPPNawAAAA==
-To: Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>
-Cc: Andreas Hindborg <a.hindborg@samsung.com>, 
- John Baublitz <john.m.baublitz@gmail.com>, 
- David Rheinsberg <david@readahead.eu>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "H. Peter Anvin" <hpa@zytor.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
- Miguel Ojeda <ojeda@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
- =?utf-8?q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
- Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
- x86@kernel.org, Valentin Obst <kernel@valentinobst.de>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708505639; l=4033;
- i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
- bh=6jeuUZIWEEM6MczBBiqjTLcxOXq2Iex7vvCz0nnWibU=;
- b=vXw4UH3+h4Qo0u+jiIR3NzJr4RQ9SMlFuITEcLk/vPHJsi6whbcvNbyijjDj9XN0DjBIYg/FV
- lTfVcXooyCEDOAQGIQIh1dkqZwedw7Vykc53VahcxLmO3k1TzO3oxEi
-X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
- pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
-X-Provags-ID: V03:K1:8CQzPJdQOevycA67JGlkGzRtIoqyGOvtDOELvrhAlxXlRmeumAw
- cyMmaQAENoJQGOAzF5Pv8KuiJJO4FjsxaaMSo0Ix69jlCjZ1JMVGJSy8M5zvJe0BY1gZIgK
- VjGeMniG37PWoh8uMaDSBy/tZ8/S6Ib0uLef55V5Y2CUFFVfCg9Excxkvk4CpbUEZqhXNWR
- nv9Lh8Lb9a1HBI9YRKFwg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BlQJO2SEwwM=;giTIobp/tT9baZQjNYx+KP3oR6G
- BKjF31uEjg5Uv1fyIwznEnBu+8XXRq3NDOvZS3btIqZvof2KY/FX68Dtzqt5t2ymgdUmJA2G1
- jV2nkbdHbeXSrTYnTBbMP1Qx1JCGyg7Fyh+6+L7epc8quLv+nwsayV3R+ij0JY54K6awOthMb
- kbzMHUkvuU4jtAy/Mw/o1JufpYcTNA4GY6ywLounjl11FwgYgAEwvYRdiZiw0+UdmCBJVRFKP
- IXpfULIavtVKTU7gMOCLlc2K2ujb1oFBw117auc7/1ln8G7XsWS/VWmjBOews1CtLKa8CxxtV
- IqkRf5hd5X/9NyKTc625iObWD2sc6J6Zt2Qe+6pOmEqah0gBqschqEugXd2siCCWmZ+zMzgBu
- viD5nX2vtqZkck6x4XGf4BjoLGIFZjrQEjknVcmTIwdVaQQrDsurQs9nlTWHxDloNFpXI2obg
- uzxJrB+EEzJeWWvXMbxY0Wzo6yMnLv8B4tz0alU407RJRgXsTkJS2cCgrRx7xnGZtBqJdDrpc
- SjkdtBcjGGQU6Isy3qxoSgD+rYbpORl5TGYODEYrGoUJlJQhd8uJovgJxRqfqNI0EmSseapg9
- QCyKUcQoaPcMKokSccIyNDSoTvBeoTpHq7HQj6BFAlRo+Txo4ZUkfB8K2qiAcohTEpLWcS+vk
- 3Nd45+BXeDb922Uph/r9jwAzjwxvVEqSNgVs4+YfV9Ew4lcNqcv6/0DcJpDer6SYifJLPBtN3
- G2sPwW7+rc3yYmvqv2aeca7nXyyanr3D2Fl9E27ihoIURWCuts3JrI=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 4/5] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+To: Will Deacon <will@kernel.org>
+CC: <robin.murphy@arm.com>, <joro@8bytes.org>, <dmitry.baryshkov@linaro.org>,
+        <konrad.dybcio@linaro.org>, <jsnitsel@redhat.com>,
+        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <saravanak@google.com>
+References: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
+ <20240123144543.9405-5-quic_bibekkum@quicinc.com>
+ <20240213134714.GC28926@willie-the-truck>
+Content-Language: en-US
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <20240213134714.GC28926@willie-the-truck>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GH0YrLu6YqU4VmqqS0F4C2itO15lAgA4
+X-Proofpoint-ORIG-GUID: GH0YrLu6YqU4VmqqS0F4C2itO15lAgA4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 phishscore=0 adultscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 priorityscore=1501 clxscore=1011
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402210069
 
-While debugging the `X86_DECODER_SELFTEST` failure first reported in [1],
-we noticed that the line numbers reported by the `insn_decoder_test` tool
-do not correspond to the line in the output of `objdump_reformat.awk` that
-was causing the failure:
 
-  # TEST    posttest
-    llvm-objdump -d -j .text ./vmlinux | \
-    awk -f ./arch/x86/tools/objdump_reformat.awk | \
-    arch/x86/tools/insn_decoder_test -y -v
-  arch/x86/tools/insn_decoder_test: error: malformed line 1657116:
-  68db0
 
-  $ llvm-objdump -d -j .text ./vmlinux | \
-  awk -f ./arch/x86/tools/objdump_reformat.awk > objdump_reformat.txt
-  $ head -n `echo 1657116+2 | bc` objdump_reformat.txt | tail -n 5
-  ffffffff815430b1        41 8b 47 1c             movl
-  ffffffff815430b5        89 c1                   movl
-  ffffffff815430b7        81 c9 00 40 00 00       orl
-  ffffffff815430bd        41 89 4e 18             movl
-  ffffffff815430c1        a8 40                   testb
+On 2/13/2024 7:17 PM, Will Deacon wrote:
+> On Tue, Jan 23, 2024 at 08:15:42PM +0530, Bibek Kumar Patro wrote:
+>> Add ACTLR data table for SM8550 along with support for
+>> same including SM8550 specific implementation operations.
+>>
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 90 ++++++++++++++++++++++
+>>   1 file changed, 90 insertions(+)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> index 6004c6d9a7b2..db15b1eade97 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> @@ -23,6 +23,86 @@
+>>
+>>   #define CPRE			(1 << 1)
+>>   #define CMTLB			(1 << 0)
+>> +#define PREFETCH_SHIFT		8
+>> +#define PREFETCH_DEFAULT	0
+>> +#define PREFETCH_SHALLOW	(1 << PREFETCH_SHIFT)
+>> +#define PREFETCH_MODERATE	(2 << PREFETCH_SHIFT)
+>> +#define PREFETCH_DEEP		(3 << PREFETCH_SHIFT)
+>> +#define PREFETCH_SWITCH_GFX	(5 << 3)
+>> +
+>> +static const struct actlr_config sm8550_apps_actlr_cfg[] = {
+>> +	{ 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>> +	{ 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
+>> +	{ 0x0800, 0x0020, PREFETCH_DEFAULT | CMTLB },
+>> +	{ 0x1800, 0x00c0, PREFETCH_DEFAULT | CMTLB },
+>> +	{ 0x1820, 0x0000, PREFETCH_DEFAULT | CMTLB },
+>> +	{ 0x1860, 0x0000, PREFETCH_DEFAULT | CMTLB },
+>> +	{ 0x0c01, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>> +	{ 0x0c02, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>> +	{ 0x0c03, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>> +	{ 0x0c04, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>> +	{ 0x0c05, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+>> +	{ 0x0c06, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
+> 
+> [...]
+> 
+> Isn't this effectively hard-coding the topology of the SoC in the driver?
+> Wouldn't it better describing higher-level prefetch properties in the DT
+> nodes corresponding to the upstream devices?
 
-These lines are perfectly fine. The reason is that the line count reported
-by the tool only includes instruction lines, i.e., it does not count symbo=
-l
-lines.
+Since prefetch data stored in this table represent settings for the
+ACTLR register, and doesn't exactly define the hardware (So in this
+manner prefetch data won't exactly be a part of soc topology ?).
+So it seemed apt not to use the device tree for storing the prefetch
+property. Hence we reverted from the DT approach (initial proposal in
+RFC to piggyback on iommus property to store prefetch settings) back to 
+use driver for storing this data.
 
-Add a new variable to count the combined (insn+symbol) line count and
-report this in the error message. With this patch, the line reported by th=
-e
-tool is the line causing the failure (long line wrapped at 75 chars):
+Some drivers use the same approach for storing their platform specific
+data. Examples being
+drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+drivers/soc/qcom/llcc-qcom.c
+These drivers were taken as reference for storing platform specific 
+ACTLR data.
 
-  # TEST    posttest
-    llvm-objdump -d -j .text ./vmlinux | \
-    awk -f ./arch/x86/tools/objdump_reformat.awk | \
-    arch/x86/tools/insn_decoder_test -y -v
-  arch/x86/tools/insn_decoder_test: error: malformed line 1699686:
-  68db0
+Thanks & regards,
+Bibek
 
-  $ head -n ` echo 1699686+2 | bc` objdump_reformat.txt | tail -n 5
-  ffffffff81568dac        c3                      retq
-  <_RNvXsP_NtCs7qddEHlz8fK_4core3fmtRINtNtNtNtB7_4iter8adapters5chain5Chai=
-n
-  INtNtBA_7flatten7FlattenINtNtB7_6option8IntoIterNtNtB7_4char11EscapeDebu=
-g
-  EEINtB1a_7FlatMapNtNtNtB7_3str4iter5CharsB1T_NtB2D_23CharEscapeDebugCont=
-i
-  nueEENtB5_5Debug3fmtB7_>:ffffffff81568db0
-  ffffffff81568dad        0f 1f 00                nopl
-  ffffffff81568db0        f3 0f 1e fa             endbr64
-  ffffffff81568db4        41 56                   pushq
-
-[In this case the line causing the failure is interpreted as two lines by
-the tool (due to its length, but this is fixed by [1, 2]), and the second
-line is reported. Still the spatial closeness between the reported line an=
-d
-the line causing the failure would have made debugging a lot easier.]
-
-[1]: https://lore.kernel.org/lkml/Y9ES4UKl%2F+DtvAVS@gmail.com/T/
-[2]: https://lore.kernel.org/rust-for-linux/20231119180145.157455-1-sergio=
-collado@gmail.com/
-
-Signed-off-by: Valentin Obst <kernel@valentinobst.de>
-=2D--
- arch/x86/tools/insn_decoder_test.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/tools/insn_decoder_test.c b/arch/x86/tools/insn_deco=
-der_test.c
-index 472540aeabc2..727017a3c3c7 100644
-=2D-- a/arch/x86/tools/insn_decoder_test.c
-+++ b/arch/x86/tools/insn_decoder_test.c
-@@ -114,6 +114,7 @@ int main(int argc, char **argv)
- 	unsigned char insn_buff[16];
- 	struct insn insn;
- 	int insns =3D 0;
-+	int lines =3D 0;
- 	int warnings =3D 0;
-
- 	parse_args(argc, argv);
-@@ -123,6 +124,8 @@ int main(int argc, char **argv)
- 		int nb =3D 0, ret;
- 		unsigned int b;
-
-+		lines++;
-+
- 		if (line[0] =3D=3D '<') {
- 			/* Symbol line */
- 			strcpy(sym, line);
-@@ -134,12 +137,12 @@ int main(int argc, char **argv)
- 		strcpy(copy, line);
- 		tab1 =3D strchr(copy, '\t');
- 		if (!tab1)
--			malformed_line(line, insns);
-+			malformed_line(line, lines);
- 		s =3D tab1 + 1;
- 		s +=3D strspn(s, " ");
- 		tab2 =3D strchr(s, '\t');
- 		if (!tab2)
--			malformed_line(line, insns);
-+			malformed_line(line, lines);
- 		*tab2 =3D '\0';	/* Characters beyond tab2 aren't examined */
- 		while (s < tab2) {
- 			if (sscanf(s, "%x", &b) =3D=3D 1) {
-
-=2D--
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240221-x86-insn-decoder-line-fix-7b1f2e1732ff
-
-Best regards,
-=2D-
-Valentin Obst <kernel@valentinobst.de>
-
+> 
+> Looking back at the prior revisions of this series, it seems like others
+> were in favour of this approach, so if that's the general consensus, then
+> so be it. But is this _really_ what we want in the SMMU driver? It would
+> be good to have an Ack from Robin and a DT maintainer on this mechanism.
+>
+> It just all feels a bit like a step back into the bad old world of
+> platform data to me, where we end up trying to maintain a bunch of random
+> constants that supposedly make things faster for somebody :/
+> > Will
 
