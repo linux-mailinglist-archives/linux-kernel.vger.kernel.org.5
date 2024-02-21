@@ -1,170 +1,122 @@
-Return-Path: <linux-kernel+bounces-74240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F7A985D179
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:35:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F52285D17D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF6552845CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:35:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A17C1F24ADE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E885D3A8FF;
-	Wed, 21 Feb 2024 07:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAACC3AC34;
+	Wed, 21 Feb 2024 07:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lCM52Wk/"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VuiWCloo"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A179139879
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:35:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F7724B57;
+	Wed, 21 Feb 2024 07:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708500918; cv=none; b=kxabJ5F+oQl0TzHC9OQnTyYc+MDdG9K+XxQwF0ZfIeQPp7fCeGIXe2uSW8plyX5TaFWP5NdtZBkf1Ufc7quRdoPC65xUi/1ci7TWsJcFp6VC/R+xO2GLLnua56QqLxnMc52wD8+qYUm+/uMF0s2LTfbKYGpBy6QPBdFgS64CuqE=
+	t=1708500967; cv=none; b=crehpF5X/fHK57Xf09fl47mUsygPALzZ09LkQHsGRZgwvADxGabTvZGtdqcJE1DKYGEGFTDaCYXT0vDzJ9AyFJwfALLtKcXxZpm00la+q1Os1AHHqrn1cKebUuWJGzVABlC7EOZMvd95d+fwuRwG1C2f6OAxskVFW04SQqTDGkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708500918; c=relaxed/simple;
-	bh=i5Sx85wmsctPs2/SldKw+W2TXiIuxqDh80PQGqdlem0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cXfZDe7/281DtUtM7gO09Um05SahlxSbHvfF/C3FB8TwLpefhR2C9fSo9WqjL46akJvKqiO+q4R6hJ+wrDLWGd6V4eJIAVDpncu4QoGRzJjNQYGL7TCZxgl0laax00FbtlLx9LbxunYUO3dPg9bzJ2IwaZlddPqGgZhNjiFHz1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lCM52Wk/; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so3848260a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:35:16 -0800 (PST)
+	s=arc-20240116; t=1708500967; c=relaxed/simple;
+	bh=7Vu3rzmObUR+9w2tRopA/lV1r2L5Wu7SYWF1FkmQ0a4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iMJXmmaQukw21+oaM4+LoiBMg1IoSejz8mIrsKnOSoKYbVc/BVocYgunSsXlfO6a3S0g82aiyfXKVCc7Ks4p4tpf/BrWCZddJbaWCHuGAwNG75W0GQlwYHKfugY/43QiYSRLY3Rv3tod6jOhEDHs3WZJdhTRDALEJ+ImoFadTjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VuiWCloo; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d208d0b282so84721891fa.0;
+        Tue, 20 Feb 2024 23:36:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708500916; x=1709105716; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hmIOqBg1/8WHQOr613NChMcnfIzd4pmzronJgXlBxNw=;
-        b=lCM52Wk/CDoH1ctptopF4UM6eZld/BixeX54ztPdMY4QDvO+n8XvrTTy0bXvOTbNR9
-         FLBFKKm8CwhnqBbe139T+UoZ2Dz1t0DF6aMDHDhMfmuFVF5cJ3qmgfbrGLtJIP/js19+
-         MhWMUSowMV3wt39NeGMZsjkY8jrgeNdJODo+4k0k0q2KXRE99IM6XI/x7MZp+Kiu30G7
-         AJOmIuzsYcbpNvLlmLVo7YD/Ms2xtD/x8yU04BtYbNJP7ZTKeufiBDvc1tF1puvBcKIO
-         QwVk7Y+jL7gDZ1PLJ88G/zAHC8lyvp/syQfNzZo39Z3O4mSxa49n5+7EIaZGDANyk4jC
-         vzMQ==
+        d=gmail.com; s=20230601; t=1708500963; x=1709105763; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8M8/d2Svm/+PW4IDvaS8Rs5nXrVhcfBCXs/zLlxxKUw=;
+        b=VuiWCloocMFbD1MSntf+L1a9UIdOimknj+YVjhI7g4sdCHJQX/L5eeGBVGQwUcm8y2
+         9szToLb+78ZISolGAFkh4TuUpfKP4z+oVbWmXTBpfqEANhn30k88kFFZ6LpXZ4XGYzX+
+         E4umzNeoyD4Ucg74mLfm9wNizm5QQKzf0vReFy56f15t6v14CPBXIBw9j69shergWhBb
+         IwEoySulXIPSQjYBu3ionBVOdUCgbQtVt9Bi+63xZMockpcYvZ+YwqDZBuhM3+cbQ7V6
+         0MfmdiClBdU7rVUQLTMIKNn/nIbV5IkuEm4HalpBZz220/JHq4HSkXZF+3tkTx8R78fy
+         HKyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708500916; x=1709105716;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708500963; x=1709105763;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hmIOqBg1/8WHQOr613NChMcnfIzd4pmzronJgXlBxNw=;
-        b=j9e7BGLcFkp90+XIr2ENE2T7iPy8dwMYG1GiPiRkFG8aTACAJ6+VgN87011cis8Bsf
-         hpf+9WY57UA0ckIvy+phBgDEHvMeokBIaIKCEHv2tlf4OMZWzBQVkrZm+FWJr7IIcyMa
-         fx+0uMtGzNYH+QCDfV724L3Pqn1lVwnExCJxnmDAkbOC4hKf/rUzCcbwN6iv5U2TniNb
-         V6Mkd5/J2s5tvSaFf1qI5PFpmCILAjGHxUgD++Yz2gQEWNyIJr7kiJPaJuS9zsMHVnxj
-         F/nR/TVaCF587IDSwU7II0B4bU4yRgp0pot88sJWq7wV05vKWG3nVivcYBLa0gJvTOuy
-         Eafw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJBDYJOuiI5jT9boAttgF2NOlXrI7rmMZFhEC49RzLk6nVMmHh+LX94MNwocmS8vZdlueVN7AEhmSK7OsmcduLBnhAM1vZ+Dybi4JU
-X-Gm-Message-State: AOJu0YwJX5l7XkATfLLDDgNWM8taQs/haKl8Txek5fM5M64wvupcjulc
-	An4rPzAnQAI3TbB2tskBbum3WoViI3gJYtUteJAB5FRIyvONOkbuVT5lBO9lCGkM7nvW090UDuX
-	XAopMkWnhW7F36Po2wxheznFYj3kMuE5jrCFRTw==
-X-Google-Smtp-Source: AGHT+IEyfoGtlAAp8JSHXSGnVPdzKYbAy+h9ELuMYVkP7dMmdJMLjD22VuOCWasVIiW5Xy2n1mWGUbmmePwJtG1WB18=
-X-Received: by 2002:a17:90a:5b06:b0:29a:2349:4d1e with SMTP id
- o6-20020a17090a5b0600b0029a23494d1emr477974pji.23.1708500916001; Tue, 20 Feb
- 2024 23:35:16 -0800 (PST)
+        bh=8M8/d2Svm/+PW4IDvaS8Rs5nXrVhcfBCXs/zLlxxKUw=;
+        b=TW6qEma/mx81kbM5AkwhAy3DANhOvbNjCXVETrorppYhYOESuRrkXwA7OmGN5gALNV
+         x6Ph693JQpI7B6UF2ZiAqxWbLXmfGL9t6P5TGAQWB0Bs6l0wkYDb5OiqOzTTqk8a0nUn
+         tmAnHBxVyW7sYkAmHpDIrI9asY/oRLy/TdBROlHDpqFN/gqg6iA4N7BSVEiAlKuffBz4
+         0yGWvCZSgdNPfZFh919u1zjzKOYLga09HyMIHOkJbv7/3XnH4gjzVr3IJeBSdeslJrcs
+         s5maQM14XvwM8lkBkC4VbiTevUjeaQ54dBN3tlNuxuaxl/bZQ5WJlz9s15qjQdbsRZN9
+         FbOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUh+hSJtTd5+d8tz2uW31LP8qNnAoCYcIHSWeujNcKuvO1qD5G840w2mTNMz1IXYlIc6qH5bYbtyBVzXut1NKI9nm9pkr3LNuohP+qmq9tzLGmiqs1jbOqnFwbxzDPuoqPzXRzhNb804w==
+X-Gm-Message-State: AOJu0Yyhy7NIZc6KsYsb8hyCqSI0YAe5D5u4UZEE10rpeR15mzHM2ftb
+	sBws9UgXCa6GzRWFXjpB5uV2mn1J5YPOA9LM1DU8bXUEUVG9yV3T
+X-Google-Smtp-Source: AGHT+IFE6VuOfV8rlKed7pgakLr9/jErXT6huX7tGt/A7H+Xjl8Zbc3QW5Xe879Z7XUiPdk5AR8aUw==
+X-Received: by 2002:a2e:980e:0:b0:2d2:40c6:b7d2 with SMTP id a14-20020a2e980e000000b002d240c6b7d2mr4278968ljj.26.1708500963176;
+        Tue, 20 Feb 2024 23:36:03 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id z3-20020a2e7e03000000b002d0f99a7fc4sm1722330ljc.79.2024.02.20.23.36.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 23:36:02 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Chen-Yu Tsai <wenst@chromium.org>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
+	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= <nfraprado@collabora.com>,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Sean Wang <sean.wang@mediatek.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 0/4] dts: mediatek: add Cudy WR3000 V1 wireless router
+Date: Wed, 21 Feb 2024 08:35:20 +0100
+Message-Id: <20240221073524.20947-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220180820.2597581-1-qyousef@layalina.io>
-In-Reply-To: <20240220180820.2597581-1-qyousef@layalina.io>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 21 Feb 2024 08:35:04 +0100
-Message-ID: <CAKfTPtDO1r+_htQWTB3V-iXChozFtPCRMQpaRY8ecsMu1QDacA@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: cpufreq: Rename map_util_perf to sugov_apply_dvfs_headroom
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 20 Feb 2024 at 19:08, Qais Yousef <qyousef@layalina.io> wrote:
->
-> We are providing headroom for the utilization to grow until the next
-> decision point to pick the next frequency. Give the function a better
-> name and give it some documentation. It is not really mapping anything.
->
-> Also move it to cpufreq_schedutil.c. This function relies on updating
-> util signal appropriately to give a headroom to grow. This is tied to
-> schedutil and scheduler and not something that can be shared with other
-> governors.
->
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> Signed-off-by: Qais Yousef <qyousef@layalina.io>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Cudy WR3000 V1 is a MediaTek Filogic 820 based 802.11ax wireless router.
 
-> ---
->
-> Changes in v2:
->
->         1. Add Acked-by from Viresh and Raphael (Thanks!)
->         2. Move the function to cpufreq_schedutil.c instead of sched.h
->         3. Name space the function with sugov_ to indicate it is special to
->            this governor only and not generic.
->
->  include/linux/sched/cpufreq.h    |  5 -----
->  kernel/sched/cpufreq_schedutil.c | 20 +++++++++++++++++++-
->  2 files changed, 19 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-> index bdd31ab93bc5..d01755d3142f 100644
-> --- a/include/linux/sched/cpufreq.h
-> +++ b/include/linux/sched/cpufreq.h
-> @@ -28,11 +28,6 @@ static inline unsigned long map_util_freq(unsigned long util,
->  {
->         return freq * util / cap;
->  }
-> -
-> -static inline unsigned long map_util_perf(unsigned long util)
-> -{
-> -       return util + (util >> 2);
-> -}
->  #endif /* CONFIG_CPU_FREQ */
->
->  #endif /* _LINUX_SCHED_CPUFREQ_H */
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index eece6244f9d2..575df3599813 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -178,12 +178,30 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->         return cpufreq_driver_resolve_freq(policy, freq);
->  }
->
-> +/*
-> + * DVFS decision are made at discrete points. If CPU stays busy, the util will
-> + * continue to grow, which means it could need to run at a higher frequency
-> + * before the next decision point was reached. IOW, we can't follow the util as
-> + * it grows immediately, but there's a delay before we issue a request to go to
-> + * higher frequency. The headroom caters for this delay so the system continues
-> + * to run at adequate performance point.
-> + *
-> + * This function provides enough headroom to provide adequate performance
-> + * assuming the CPU continues to be busy.
-> + *
-> + * At the moment it is a constant multiplication with 1.25.
-> + */
-> +static inline unsigned long sugov_apply_dvfs_headroom(unsigned long util)
-> +{
-> +       return util + (util >> 2);
-> +}
-> +
->  unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
->                                  unsigned long min,
->                                  unsigned long max)
->  {
->         /* Add dvfs headroom to actual utilization */
-> -       actual = map_util_perf(actual);
-> +       actual = sugov_apply_dvfs_headroom(actual);
->         /* Actually we don't need to target the max performance */
->         if (actual < max)
->                 max = actual;
-> --
-> 2.34.1
->
+https://www.cudy.com/productinfo/1637722.html
+
+Rafał Miłecki (4):
+  dt-bindings: vendor-prefixes: add Cudy
+  dt-bindings: arm64: dts: mediatek: Add Cudy WR3000 V1 router
+  arm64: dts: mediatek: mt7981: add pinctrl
+  arm64: dts: mediatek: Add Cudy WR3000 V1
+
+ .../devicetree/bindings/arm/mediatek.yaml     |  1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+ .../dts/mediatek/mt7981b-cudy-wr3000-v1.dts   | 74 +++++++++++++++++++
+ arch/arm64/boot/dts/mediatek/mt7981b.dtsi     | 37 ++++++++++
+ 5 files changed, 115 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7981b-cudy-wr3000-v1.dts
+
+-- 
+2.35.3
+
 
