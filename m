@@ -1,199 +1,161 @@
-Return-Path: <linux-kernel+bounces-75095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCFBF85E2F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:23:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8DA585E2FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33497B2541D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40530283E01
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0544381746;
-	Wed, 21 Feb 2024 16:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24040823DF;
+	Wed, 21 Feb 2024 16:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mvz1frH1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P+PEwRBI"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FC881740
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9588175F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708532576; cv=none; b=rQ/pxynEbMQGpNYrfRrMymkynYtuHAe8HkAbiWna74hRcIdneMoFaH+dvcRuoDJlLF4XMqWzEbuFEGdQCIX5ltCyuFcd6J9s/s/oqmEMsFmRCaxcvNhX6qTK4S+z4Fy5XpD+FVxaGZXKFSvhidsXa4BQn7+QeOgw8Cr9UAVe8Co=
+	t=1708532672; cv=none; b=aDW3Dt3TvajM0/eO30qTmw9czj6yb1K/GvOhYwKFLbcVzb+NF4ChjxGyxNXq4mzl8DG6l5LyfIawnSgNEBH06htY8squBkEmuSos0xEySBP0/9I3B8nn1ZVHqFSy2glpA0I8yzwRrkJ+J43liejaOy936Rf9x0IhttZ1KGxPIQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708532576; c=relaxed/simple;
-	bh=ufe21RcpjI+Fe/InXrIajsCgsE8NvxRbIK3dneO0Bck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M/Zm/H1KRCBJdZ39fLbVXbo+Q+Ii6D3KbYewdwAf41PUQVKyt/aaEaSuABK3H+fMj7HU4W3n4rvgNFMtSFHMoPtAPiyGqT4hDzX7S4MchJVZovxPSd4QgROR/K8Tzb9KgTGHU/Lq/eK1klSbokjmNUscq8+XIOaRxYS+KJkX8EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mvz1frH1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1F4CC43390;
-	Wed, 21 Feb 2024 16:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708532576;
-	bh=ufe21RcpjI+Fe/InXrIajsCgsE8NvxRbIK3dneO0Bck=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mvz1frH1q9RaX5+RdvkHy33unY0QUBKGxvFGBgJsS+LduZQxN0cEf3bPTKLFU/jX3
-	 dhOhxzQ5FMxP3k93KdGhrId/2VU8QiZtSJMZsqU++UC1/YHThqdUCCVUR7Zug/a3Ji
-	 GOCglQNuDuQJiY6mRI1CFwdnsp/tjcRUmT1Ur5Dy8s8orIs/3X0zI582/GCFGdvi7Y
-	 ZUZw6oqjZiup/LYcKMtnX2Y6dfhSjiyund1O+TNt8dFFbw1FKi7Y5/NIRB3VPBb6EO
-	 JAlr61oNSPxz8+og69TRl/dsGtxHI+oJkZQ1JP1l5cti00+g6OGXflNzLvNuSZnrHn
-	 YbN1wg6XTUVgA==
-Date: Wed, 21 Feb 2024 11:22:54 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, cve@kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Kosina <jkosina@suse.cz>
-Subject: Re: CVE-2023-52437: Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING
- in raid5d"
-Message-ID: <ZdYjXmA_1OvcS_CZ@sashalap>
-References: <7ae646b3-28e4-4344-a7a4-730a0d6e3f38@redhat.com>
- <CABgObfYDcFPRNpGtsY=UbstXbqVCMcxy3LPS_xJ65aFcByC=Nw@mail.gmail.com>
- <ZdXt09vL4GJy6PbP@sashalap>
- <0e8675e0-165d-4cf7-9755-666278868ab8@redhat.com>
- <ZdX2LcAWR6wyvYC5@sashalap>
- <bec7c1db-c13e-4b00-a968-4ae69539d7ac@redhat.com>
- <ZdYKSkqRckOc5aRO@sashalap>
- <a9652aa2-e79b-4144-b3b7-746587af9eca@redhat.com>
- <ZdYSmdUKzQAYpprc@sashalap>
- <3ebbc121-8cb8-4b8d-ad5d-fb5c576e5171@redhat.com>
+	s=arc-20240116; t=1708532672; c=relaxed/simple;
+	bh=/RBZWvPXtN1/7NIi9aR11iDMtHIEuqOwwU2C8g+ij2g=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=sRBQB1AxcmYVaCG7lCJzxOmIpA0sj9J1/1bJ2RXhAxSv6jplYRgsFWXYI/OfosqV0YYExoKE/JlfNmLZG8MnEJJkjnMWZryGpViAwTwOM9nmxgHCEwc+vq8j+uKB8Vbic3BzZ0n/8oqkdkaEVxaI9+/IlgZLM/5T8Jb1zS7XFyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P+PEwRBI; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dcab65d604so5364881a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:24:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708532670; x=1709137470; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZI6vMXicCnQj/Rt2p/mimi/5sLiPfMX4BJ5d2OzSXvM=;
+        b=P+PEwRBIFPXkItj94mmz2wUsUjs4hlehXfxy5J36D6EJAQ1T90hynJkD41jLovAR0I
+         ye143SDyEmd5n40sMUESfXqUToiU1dsDIj9fUUaqlCiN/F8GanMAoC9JXLDwWBbAPDiY
+         Wr6Z+cb4saw/z8gw2uHJvmKVdzypz3jIE730ucJ+5TsdOIhNTVFOrwrwtjAjc/x4z2H2
+         yoFveBq0d+HYqdMsY6u7zb4VKr+r089Vcl976EVWBBfC5QjmxVhfElV09OL6CR8/NbmU
+         ydKMvUx5RJR0Z4VueyTNIfv35HwnBgSDryN2at4ZH4YEPy4v3bzgfJfc3PlOtbs82YYi
+         6W2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708532670; x=1709137470;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZI6vMXicCnQj/Rt2p/mimi/5sLiPfMX4BJ5d2OzSXvM=;
+        b=XIU14Ro2Zgk8p68RK6lt//54Hq37JkBAEbtCx7m5WZkhPvdEMqFgaV4FGb9dX3cbYv
+         4j5pDw057pE1v4KxkcNKc//r5bztzdZYDUbneBUEJYpkWQjXeVqVL6jU/+lrPALcRckX
+         kpUJu2q3pVoTysRRBYhg+U9KuBAN8fDhjWGLsHyuxyIZh6rGftCn0Ohf5AT/0VZVaodX
+         xBNh2Wd65szvGTtDY59cFOBsnFSB6i0fUkR9Fe8vkRRer6isrHheiQYaKnXucu3JisBq
+         cngHwakBjpoUQ+5nXdUagKcbLwO0tcu0fCVqBdeB/3tK1xrDo95wVeRCxFboGEnf/2hN
+         a82w==
+X-Forwarded-Encrypted: i=1; AJvYcCVo83vNNjw/7VtsJWpC764+8PX7arVj7kvivSdNq07REdgFP+NlnpbcDi+i5Cy2RX5SyyPFhsQmMXU+AF5HpnLrGfBKr1oqyZPQ7TlE
+X-Gm-Message-State: AOJu0YwpLQhYnGMQiY0kEY0YNe04fM03nShlFEBQ5GE7eQj7j+ULB57E
+	SMMpK2Wz52v2BPXJOJJdOadLRv5ttFb7LK6X9dGUdg/rv6137QDAHp1sOA0FmBwrVrWPT+aQzhU
+	Mng==
+X-Google-Smtp-Source: AGHT+IFYMwRhYvyeI8/KrVTwRAW8Pe1VljLQv60wXHBzxHMomElDNKIkYz0jGY9j+Vb7sPHZlBIZEnw2PUQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a65:68d0:0:b0:5dc:af76:f57d with SMTP id
+ k16-20020a6568d0000000b005dcaf76f57dmr93817pgt.7.1708532669953; Wed, 21 Feb
+ 2024 08:24:29 -0800 (PST)
+Date: Wed, 21 Feb 2024 08:24:28 -0800
+In-Reply-To: <CZA43Y64EK8R.1M8J5Q6L39LFB@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3ebbc121-8cb8-4b8d-ad5d-fb5c576e5171@redhat.com>
+Mime-Version: 1.0
+References: <20240219175735.33171-1-nsaenz@amazon.com> <ZdTQyb23KJEYqbcw@google.com>
+ <CZA43Y64EK8R.1M8J5Q6L39LFB@amazon.com>
+Message-ID: <ZdYjvBItrl20oHXC@google.com>
+Subject: Re: [RFC] cputime: Introduce option to force full dynticks accounting
+ on NOHZ & NOHZ_IDLE CPUs
+From: Sean Christopherson <seanjc@google.com>
+To: Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc: frederic@kernel.org, paulmck@kernel.org, jalliste@amazon.co.uk, 
+	mhiramat@kernel.org, akpm@linux-foundation.org, pmladek@suse.com, 
+	rdunlap@infradead.org, tsi@tuyoix.net, nphamcs@gmail.com, 
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	pbonzini@redhat.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Feb 21, 2024 at 04:56:31PM +0100, Paolo Bonzini wrote:
->To recap:
->
->- the CVE description comes from was upstream commit bed9e27baf52
->
->- neither the CVE mitigation section nor the mentioned kernel releases
->fix the bug mentioned in the upstream commit, because the mitigation
->section also includes commits that _revert_ commit bed9e27baf52
->
->- this second revert is not mentioned anywhere, so the CVE description
->is at best misleading; or perhaps more accurately described as
->"completely f***ed up".
->
->I'm sure it's just a bug in the scripts, but it's worrisome that you
->don't acknowledge this.
+On Tue, Feb 20, 2024, Nicolas Saenz Julienne wrote:
+> Hi Sean,
+> 
+> On Tue Feb 20, 2024 at 4:18 PM UTC, Sean Christopherson wrote:
+> > On Mon, Feb 19, 2024, Nicolas Saenz Julienne wrote:
+> > > Under certain extreme conditions, the tick-based cputime accounting may
+> > > produce inaccurate data. For instance, guest CPU usage is sensitive to
+> > > interrupts firing right before the tick's expiration.
 
-No objections that commit messages aren't perfect, they're just better
-than the some unhelpful text like:
+Ah, this confused me.  The "right before" is a bit misleading.  It's more like
+"shortly before", because if the interrupt that occurs due to the guest's tick
+arrives _right_ before the host tick expires, then commit 160457140187 should
+avoid horrific accounting.
 
-"""
-In the Linux kernel before 6.5.9, there is a NULL pointer dereference in send_acknowledge in net/nfc/nci/spi.c.
-"""
+> > > This forces the guest into kernel context, and has that time slice
+> > > wrongly accounted as system time. This issue is exacerbated if the
+> > > interrupt source is in sync with the tick,
 
-My choice was to actually just call out the offending commit and be done
-with it, without additional description.
+It's worth calling out why this can happen, to make it clear that getting into
+such syncopation can happen quite naturally.  E.g. something like:
 
->>So now you're asking us to drop this additional work on them by
->>reviewing CVE requests?
->
->It doesn't have to be mandatory.  But for people that _do_ want to do
->the work, they might as well do it before the CVE is publicly announced,
->rather than after.  At least give us the possibility of doing it without
->bureaucracy.
+      interrupt source is in sync with the tick, e.g. if the guest's tick
+      is configured to run at the same frequency as the host tick, and the
+      guest tick is every so slightly ahead of the host tick.
 
-[...]
+> > > significantly skewing usage metrics towards system time.
+> >
+> > ...
+> >
+> > > NOTE: This wasn't tested in depth, and it's mostly intended to highlight
+> > > the issue we're trying to solve. Also ccing KVM folks, since it's
+> > > relevant to guest CPU usage accounting.
+> >
+> > How bad is the synchronization issue on upstream kernels?  We tried to address
+> > that in commit 160457140187 ("KVM: x86: Defer vtime accounting 'til after IRQ handling").
+> >
+> > I don't expect it to be foolproof, but it'd be good to know if there's a blatant
+> > flaw and/or easily closed hole.
+> 
+> The issue is not really about the interrupts themselves, but their side
+> effects.
+> 
+> For instance, let's say the guest sets up an Hyper-V stimer that
+> consistently fires 1 us before the preemption tick. The preemption tick
+> will expire while the vCPU thread is running with !PF_VCPU (maybe inside
+> kvm_hv_process_stimers() for ex.). As long as they both keep in sync,
+> you'll get a 100% system usage. I was able to reproduce this one through
+> kvm-unit-tests, but the race window is too small to keep the interrupts
+> in sync for long periods of time, yet still capable of producing random
+> system usage bursts (which unacceptable for some use-cases).
+> 
+> Other use-cases have bigger race windows and managed to maintain high
+> system CPU usage over long periods of time. For example, with user-space
+> HPET emulation, or KVM+Xen (don't know the fine details on these, but
+> VIRT_CPU_ACCOUNTING_GEN fixes the mis-accounting). It all comes down to
+> the same situation. Something triggers an exit, and the vCPU thread goes
+> past 'vtime_account_guest_exit()' just in time for the tick interrupt to
+> show up.
 
->> How were you aware until a few weeks ago where CVE assignments were
->> handled by different entities?
->
->They more often than not CC'd me before the patch was committed and
->provided me the CVE id, and I was able to provide input or dispute the
->assignment beforehand.  This is exactly what I'm suggesting that the
->kernel should do.
+I suspect the common "problem" with those flows is that emulating the guest timer
+interrupt is (a) slow, relatively speaking and (b) done with interrupts enabled.
 
-This is fascinating to know, because when multiple members of the
-community asked to review CVEs before they are assigned, certain few
-CNAs blatantly ignored such requests.
+E.g. on VMX, the TSC deadline timer is emulated via VMX preemption timer, and both
+the programming of the guest's TSC deadline timer and the handling of the expiration
+interrupt is done in the VM-Exit fastpath with IRQs disabled.  As a result, even
+if the host tick interrupt is a hair behind the guest tick, it doesn't affect
+accounting because the host tick interrupt will never be delivered while KVM is
+emulating the guest's periodic tick.
 
-Would you want to expand on why you got the courtesy of being able to
-review these assignments, while the rest of us had to jump through the
-hoops of becoming our own CNA just to stop from this crap from happening
-to us?
-
-[ snip ]
-
->>So yes, I disagree with your "all of them" statement. For that matter,
->>I'd argue that the number of users who need massaged messages are the
->>vast minority.
->
->They don't need massaged messages.  They need correct and complete ones.
->  You're completely removing the human part of the work and expecting
->the result to be of comparable quality.  That's not going to happen, and
->this CVE is an example of this.
-
-I definitely agree that it would be nice to have better messages in
-CVEs, and I'd welcome interested parties to follow the process that was
-in place up until two weeks ago, and request an amendment to a CVE with
-a better description (or dispute an invalid one) with the CNA.
-
-This is exactly the same process that most of us had to follow in the
-past to address crappy CVE descriptions or bogus CVEs.
-
->>>2) how are you going to handle patch dependencies?  Are they going to
->>>be rolled into a single entry or split into multiple announcements?
->>
->>Likely multiple different entries.
->
->So, looking at
->https://git.kernel.org/pub/scm/linux/security/vulns.git/tree/cve/review/6.7.proposed
->I see
->
->aeb686a98a9e usb: gadget: uvc: Allocate uvc_requests one at a time
->da324ffce34c usb: gadget: uvc: Fix use-after-free for inflight usb_requests
->
->What vulnerability is the first one fixing?  Looking at your GSD
-
-Well, if you look at the first patch, it says "This patch is 1 of 2
-patches addressing the use-after-free issue.".
-
->entries, will there even be CVEs purporting that renaming a variable
->from "foo" to "bar" is fixing a vulnerability?
-
-Maybe? Hopefully not if it's not a real security issue.
-
->>>3) are the scripts used to generate the CVEs public?  Can fixes to the
->>>scripts be developed in the open?
->>
->>Yup - https://git.kernel.org/pub/scm/linux/security/vulns.git/ .
->
->What about the detection part?
-
-Manual at this point, we're looking into converging workflows but it's
-one of those things we'd need to address after we got the basics in
-place.
-
->I like to assume the best of people, so I'll assume that this is just
->naïveté rather than an intentional attempt at burning everything down.
->But please, let's take a step back and understand what the proposed
->workflow fixes and breaks for everyone (especially maintainers and
->distros).  Then make a proper solution.  In the meanwhile you can keep
->sending test announcements to linux-cve-announce, and those can be used
->to debug the process and the scripts.
-
-No objections on future improvements, right now we're still trying to
-get the basics working which is where the strong pushback on "feature
-requests" is coming from.
-
->In fact it would be nice if bippy included at the end the command line
->that was used, to aid the reproduction and fixing of bugs.
-
-Bippy just maps commits to trees and formats the json, or did I
-misunderstand what you meant?
-
--- 
-Thanks,
-Sasha
+I'm guessing that if you tested on SVM (or a guest that doesn't use the APIC timer
+in deadline mode), which doesn't utilize the fastpath since KVM needs to bounce
+through hrtimers, then you'd see similar accounting problems even without using
+any of the problematic "slow" timer sources.
 
