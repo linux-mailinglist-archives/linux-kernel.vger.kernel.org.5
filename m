@@ -1,224 +1,134 @@
-Return-Path: <linux-kernel+bounces-75088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0B485E2E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:17:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED93E85E2E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FEFD1C24022
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:17:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B8A2874FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125CA8174E;
-	Wed, 21 Feb 2024 16:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GTINw7Om"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4650281735;
+	Wed, 21 Feb 2024 16:18:09 +0000 (UTC)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4271C7FBC4
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2235D446D9;
+	Wed, 21 Feb 2024 16:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708532246; cv=none; b=uiMgPDkJKpfukfPaPUKHpzqjwSmInhM64Mq8mzDoaRF2PtXfGIxmuGOzQ42JLkBT/ystXTLyoyQdrVFWQUUf/0lSeSyvnkTvf2+hrkf1VoXrQ2TSz0IYNKUORX9QZ7Kph4dykb9MKFGS+nkiRfpQKUETRzNTa8oyZCT9IAqkWLg=
+	t=1708532288; cv=none; b=UZuFggm8Nhatr06MlmOyVu4lfkRjXSnNt2t1G9xmrhyr7dB1vHHxVfetVv1kM71T6nxa6rKYsEPpBSrqrfVwUHeTwmvLg1+C7jOVHRY3mSdNWkqYluVK3xRQrZqLttENhpvRfPIFK+mhFgzWDLTHNgNwJIX0pVf/qUHryqX/qKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708532246; c=relaxed/simple;
-	bh=I1meVWt4Ajaq/+XCxI26UXI001r+bq752Odfv/pfMpM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FiA1phUndXJzX/fYGoBKhd07wDLJcp58GE9ZN2GKdbQYOjlqCTSdUb3UpRjLX916dAkYP1G4rPnaUylHcWCFjqriIE3cINGTu2EKCPqvrY1a/fS1ve/Nsfs1XeAS4SKADG8gVlBYZB4b6IHEJWnKshK22oCfe0oj8WPGJS6CiRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GTINw7Om; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d208d0b282so90920131fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:17:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708532242; x=1709137042; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QSRdTUORIP3JPrt7kN1tEQGw0K12XfL4OvvkueI/BL4=;
-        b=GTINw7OmqIGsB35R7I/sOJ2od4Fz2fBVIFwBK7Cryxnb3Vif5kGf1ZK8L9mxplc/9z
-         deMCXeTGc13f8V12vPE9gSSlTz/Z2o2wnNLAmJ+IRL7UNbj2QLN0h2J6Z66UIdNRhYPY
-         Ib2Kr7aksnif6NH2yr5LLw1Rqr39pQBxbac35+1pVzHKrOYVlRddanWcDABCz4Qw1hNg
-         LTs9Crg3GNUrf8647/1ioplMyyPNDkxYcHT7xuk0WmDxAN5IXcKD7SeBhvywOEN0lkfz
-         E9Q2wKYhgGdXz6+fcboe2AlLCHhNRXHTqicua+bFANYo9E7gSsDLIIfZggStoirfnL0C
-         6DFQ==
+	s=arc-20240116; t=1708532288; c=relaxed/simple;
+	bh=/kpFXS2EwZl6WC5jy5PmXQiF+/eQUFkgRYhkxKfh0kE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k/kC6FL56p3PLsKZXbg+sfADq0awWBbcw1pCY1ng4rfnqy4aPYmvHGLNBt3p6IETgNAiYNZKWwMxujmVBHbMttleWbUkNxsh1V/V4y7DyxZDpIDBe5STV5IXVuBiKCOg5wcPrVUVgrovw/M2I9FcVdq+xiidv7g+krRVDHvm4Kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso10916511fa.2;
+        Wed, 21 Feb 2024 08:18:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708532242; x=1709137042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708532285; x=1709137085;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QSRdTUORIP3JPrt7kN1tEQGw0K12XfL4OvvkueI/BL4=;
-        b=uUV+6wm8+sjVPtX280GwXJtDuhjL+5Bqmb1pMG7o60uYeXwiA2KlDvIkI34qJRn2x5
-         2euG7x8mUM4vtfNFX2i7a0lebmokVYlYuyYDEgXO4TTbltdJGmEJ2bYouqRmU+YriMcX
-         n6Wqb7j/IU58Srzf79gdNaqN39rhH8D9B10OuFvIwGsan7YrVzv66JDL9vXUaOZsG7Xt
-         z6MUxitESy3dciNG0Q8CETLBcCuCxhfdUeYX/G7839Ojvc/i9sE+GBeg5JkgFQ1ajGSy
-         e6LLYpcH8hBhX2hR6TXPj5/wFlddiztwaE90ANmO3y00Juffm0Atnp39sbVCT5+dIvPA
-         WBYg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9xF6Dp8eg/eeA/FoIpJRgfn03qw9U6Wrn303ggaBc/1j+gn9Ul81+wcOUO0tjjNl++bijET2M1yBeq+7KnZEjwvkAXZrpEi53ibsi
-X-Gm-Message-State: AOJu0Yxn4n3lfTboZlr7U4ngr+1CAd9EcWF4woZeNSlzfh58O0GD4ejO
-	HVmUMuRHy49OclYf0/XBKzhWobEbX6KqAcYFi2sjbychNr55P7IHPAMeru+sMDlAFSKK7Y0Tzeh
-	bwz4VGMbgPltT6sVVkIIHlTH7CAlN1NUTYbnonztekyS4y7NbN+bwvjmZO2E=
-X-Google-Smtp-Source: AGHT+IEAPcKs9cACBOi8r1qIxX65sNThq1I+8at14ElsSzJt2HeQxDAK+upl9KCdTVvkGPrjF+VdX67GjanquSArscg=
-X-Received: by 2002:a2e:9f44:0:b0:2d2:2e1d:651b with SMTP id
- v4-20020a2e9f44000000b002d22e1d651bmr7799978ljk.29.1708532242159; Wed, 21 Feb
- 2024 08:17:22 -0800 (PST)
+        bh=9Sihn+OQP2RXoSGGMUwVUZ2ON16ouXq3GovfkSaPw3Y=;
+        b=WsxQmUFHcBzBi+Iz9i+0KUWpWu6LEsOFcazJUHVooXa9oywIZ/5mC3vznvngobOGgn
+         2+e357V1BD6WNPmJmWVlPE/MmR+/MNNOtfUNeXXfs9sdEhQ9u3GnVrusqY/i4i7VM/lS
+         OoJVfBesLNs2bzsTEBFfDD25951HyuSXKT4/4uKRz/ovwSI9PLA3Fs5/XFkKeUQpCJbE
+         RVFEPAL8QUDRw6KxNO0HFG63NSihVslUMKWqiyd4trG+7haTuFwKdDwxZmiylweYqphC
+         vm/SnLr8Yqm9TxK8YB3oblynaO+EuNfTnZBs5RllWrU2nqcOKtjgsISdWwe7ilR/PmP0
+         Fnng==
+X-Forwarded-Encrypted: i=1; AJvYcCVIjMKFDMBwiOBjENwVu9tAypW2sLnhFPzCGwUekTu8iMynViDn7d3ibFqC4SVBGejKttRKNVAYzLiB19aMBNMdELU6a4voXx6MzFqp
+X-Gm-Message-State: AOJu0YzX7yw2Q4QyeudY56vOdcQhK8BT/azlKvU67B7GV8yUw+DA4K60
+	OHMYC+twHXs+pL4vHPoxS/uEju7rj9PYuY7ampYW83bfvtrDQ9clsuLjsbHErQ0=
+X-Google-Smtp-Source: AGHT+IHt4rZ/meSl1g3jJEI+lEUS+n3f2D8JDvU7nz30+XQJU73eFFId6Dc8DKReF9u/kRtR9m3oBw==
+X-Received: by 2002:a2e:9201:0:b0:2d2:37ff:f54a with SMTP id k1-20020a2e9201000000b002d237fff54amr6803294ljg.41.1708532284991;
+        Wed, 21 Feb 2024 08:18:04 -0800 (PST)
+Received: from localhost (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id u6-20020aa7d546000000b0056503299e26sm557848edr.88.2024.02.21.08.18.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 08:18:04 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	David Ahern <dsahern@kernel.org>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	horms@kernel.org
+Subject: [PATCH net-next] ipv6/sit: Do not allocate stats in the driver
+Date: Wed, 21 Feb 2024 08:17:32 -0800
+Message-Id: <20240221161732.3026127-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221110658.529-1-zhangfei.gao@linaro.org> <20240221131725.GR13330@nvidia.com>
-In-Reply-To: <20240221131725.GR13330@nvidia.com>
-From: Zhangfei Gao <zhangfei.gao@linaro.org>
-Date: Thu, 22 Feb 2024 00:17:10 +0800
-Message-ID: <CABQgh9Ha6C=Ej7Z2Md3v5Q6iXPKHsz+yQ2G_-oOaotVuVi8Hmg@mail.gmail.com>
-Subject: Re: [PATCH v2] iommu: Fix iommu_sva_bind_device to the same domain
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
-	jean-philippe <jean-philippe@linaro.org>, baolu.lu@linux.intel.com, 
-	"Zhang, Tina" <tina.zhang@intel.com>, kevin.tian@intel.com, iommu@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 21 Feb 2024 at 21:17, Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Feb 21, 2024 at 11:06:58AM +0000, Zhangfei Gao wrote:
-> > The accelerator device can provide multi-queue and bind to
-> > the same domain in multi-thread for better performance,
-> > and domain refcount takes care of it.
-> >
-> > 'commit 092edaddb660 ("iommu: Support mm PASID 1:n with sva domains")'
-> > removes the possibility, so fix it
-> >
-> > Fixs: '092edaddb660 ("iommu: Support mm PASID 1:n with sva domains")'
-> > Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > ---
-> > v2: Instead of checking ret == -EBUSY,
-> >     change iommu_attach_device_pasid return value from -EBUSY to 0
-> >     when pasid entry is found, and refcount++ when return
-> >
-> >  drivers/iommu/iommu-sva.c | 2 +-
-> >  drivers/iommu/iommu.c     | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
-> > index c3fc9201d0be..20b232c7675d 100644
-> > --- a/drivers/iommu/iommu-sva.c
-> > +++ b/drivers/iommu/iommu-sva.c
-> > @@ -141,8 +141,8 @@ void iommu_sva_unbind_device(struct iommu_sva *handle)
-> >       struct device *dev = handle->dev;
-> >
-> >       mutex_lock(&iommu_sva_lock);
-> > -     iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
-> >       if (--domain->users == 0) {
-> > +             iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
-> >               list_del(&domain->next);
-> >               iommu_domain_free(domain);
-> >       }
->
-> The users refcount is not to provide for sharing of the same PASID it
-> is to provide for sharing the domain across devices. This change would
-> break that because we loose the 'dev' that needs to be detached in a
-> multi-device case if we don't immediately call detach_device_pasid
-> here.
->
-> You'd need to build something much more complicated here to allow
-> PASID sharing.
->
-> I wonder if this case is common enough to warrant the core code to get
-> involved. I suppose maybe, does idxd have the same problem? It can
-> only open it's cdev once because of this - that doesn't seem like what
-> the code intends for a non-wq_dedicated?
->
-> More like this:
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of this driver.
 
-Hi, Jason
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-Only added two lines change, and tested ok.
-The different with before is same handle is returned, and the handle
-itself has refcount.
-While before different handle is returned,
-Not think about any issue now, I think it is OK.
+Remove the allocation in the ipv6/sit driver and leverage the network
+core allocation.
 
-Could you send the patch, will add tested-by then.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ net/ipv6/sit.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
->
-> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
-> index c3fc9201d0be97..aec11e5cde6b0e 100644
-> --- a/drivers/iommu/iommu-sva.c
-> +++ b/drivers/iommu/iommu-sva.c
-> @@ -41,6 +41,7 @@ static struct iommu_mm_data *iommu_alloc_mm_data(struct mm_struct *mm, struct de
->         }
->         iommu_mm->pasid = pasid;
->         INIT_LIST_HEAD(&iommu_mm->sva_domains);
-> +       INIT_LIST_HEAD(&iommu_mm->sva_handles);
->         /*
->          * Make sure the write to mm->iommu_mm is not reordered in front of
->          * initialization to iommu_mm fields. If it does, readers may see a
-> @@ -82,6 +83,13 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->                 goto out_unlock;
->         }
->
-> +       list_for_each_entry(handle, &mm->iommu_mm->sva_handles, handle_item) {
-> +               if (handle->dev == dev && handle->domain->mm == mm) {
-> +                       refcount_inc(&handle->users);
+diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
+index ed3a44aa1e9d..5ad01480854d 100644
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -1408,7 +1408,6 @@ static void ipip6_dev_free(struct net_device *dev)
+ 	struct ip_tunnel *tunnel = netdev_priv(dev);
+ 
+ 	dst_cache_destroy(&tunnel->dst_cache);
+-	free_percpu(dev->tstats);
+ }
+ 
+ #define SIT_FEATURES (NETIF_F_SG	   | \
+@@ -1437,6 +1436,8 @@ static void ipip6_tunnel_setup(struct net_device *dev)
+ 	dev->features		|= NETIF_F_LLTX;
+ 	dev->features		|= SIT_FEATURES;
+ 	dev->hw_features	|= SIT_FEATURES;
++	dev->pcpu_stat_type	= NETDEV_PCPU_STAT_TSTATS;
++
+ }
+ 
+ static int ipip6_tunnel_init(struct net_device *dev)
+@@ -1449,16 +1450,11 @@ static int ipip6_tunnel_init(struct net_device *dev)
+ 	strcpy(tunnel->parms.name, dev->name);
+ 
+ 	ipip6_tunnel_bind_dev(dev);
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!dev->tstats)
+-		return -ENOMEM;
+ 
+ 	err = dst_cache_init(&tunnel->dst_cache, GFP_KERNEL);
+-	if (err) {
+-		free_percpu(dev->tstats);
+-		dev->tstats = NULL;
++	if (err)
+ 		return err;
+-	}
++
+ 	netdev_hold(dev, &tunnel->dev_tracker, GFP_KERNEL);
+ 	netdev_lockdep_set_classes(dev);
+ 	return 0;
+-- 
+2.39.3
 
-mutex_unlock(&iommu_sva_lock);
-
-
-> +                       return handle;
-> +               }
-> +       }
-> +
->         handle = kzalloc(sizeof(*handle), GFP_KERNEL);
->         if (!handle) {
->                 ret = -ENOMEM;
-> @@ -109,6 +117,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->                 goto out_free_domain;
->         domain->users = 1;
-
- refcount_set(&handle->users, 1);
-
-
->         list_add(&domain->next, &mm->iommu_mm->sva_domains);
-> +       list_add(&handle->handle_item, &mm->iommu_mm->sva_handles);
->
->  out:
->         mutex_unlock(&iommu_sva_lock);
-> @@ -141,6 +150,12 @@ void iommu_sva_unbind_device(struct iommu_sva *handle)
->         struct device *dev = handle->dev;
->
->         mutex_lock(&iommu_sva_lock);
-> +       if (!refcount_dec_and_test(&handle->users)) {
-> +               mutex_unlock(&iommu_sva_lock);
-> +               return;
-> +       }
-> +       list_del(&handle->handle_item);
-> +
->         iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
->         if (--domain->users == 0) {
->                 list_del(&domain->next);
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 1ea2a820e1eb03..5e27cb3a3be99b 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -892,11 +892,14 @@ struct iommu_fwspec {
->  struct iommu_sva {
->         struct device                   *dev;
->         struct iommu_domain             *domain;
-> +       struct list_head                handle_item;
-> +       refcount_t                      users;
->  };
->
->  struct iommu_mm_data {
->         u32                     pasid;
->         struct list_head        sva_domains;
-> +       struct list_head        sva_handles;
->  };
->
->  int iommu_fwspec_init(struct device *dev, struct fwnode_handle *iommu_fwnode,
-
-Thanks
 
