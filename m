@@ -1,110 +1,154 @@
-Return-Path: <linux-kernel+bounces-75360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E8D85E73A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:25:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDAB85E73D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE6F01F23145
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:25:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E601C1F218E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54CC586130;
-	Wed, 21 Feb 2024 19:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D5285C6F;
+	Wed, 21 Feb 2024 19:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mTQRUynX"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lrxh9ShF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ON8M4ABb"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105A885954
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E4785941;
+	Wed, 21 Feb 2024 19:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708543541; cv=none; b=dIrSv6gRrQhglhA7MucSS0rDAVmbog7fWZ4ZQ5BCKbkB/tgYsZ/nC5Bsu2WjPwUWn0XThFgvQR9u4HWCcpo1hi+Oa3jFGzdFaBqGRWemsnVLUbcqWs+CZXbuqTpxmDgyf00jHARCQsi/X0mV+NBl9OBLQPS2Heqp2iow3LmVexI=
+	t=1708543582; cv=none; b=NPGMUXbemxvuitAaxCeL3DagKttv1cKn0SZlf3LipE+SVXS9xb9m5VZdDEagxv505WDka1NwLfMtWKL4ORNucgyzciHwYDUHt/FHoV42ZFak8s6VilnO/aS/SuwSVZibC7Oq5lz9u8IP7eH2YnyN+QcCWWRSzSxcE1tOb7acijE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708543541; c=relaxed/simple;
-	bh=2Djs9szs5Ofk1BJwv5+KNW44by/NjoWPT8KOFUi6a38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lnjyrPserbud48f0kgL3YiiCAhr6BIIfdSZEYh6jHZF2f9dOVaSXVD5D7UounkRMdNQgCe8Gk68z2jV0ACgFDEzGmh9Bqfaz8yK2sVa7tDODJ5pjOLa3VMkyzDsvcxibidkmRG/gzaLB30R4rSrTkhv61bYWZQMLbGDZ/BtmJwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mTQRUynX; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-561f0f116ecso1783a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:25:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708543538; x=1709148338; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Djs9szs5Ofk1BJwv5+KNW44by/NjoWPT8KOFUi6a38=;
-        b=mTQRUynXywSy5DGwHMQ9cYVgWe1AnCp6+X7s/VI1il7jnHlUegQd2dICFU1txFAqtJ
-         9XOuvRIhh2b3ow8NJ6u7plRr0BeR6KqdGnHJeI69IfV2GQVX23X2Xc0xSENjn91lIyqY
-         V+CTXqk7L/2ugqHYMf87iyYRLolXvG3IZ7drtY9zAwwc0ZvBS/IMT5sgW8lUn2mz7cXv
-         smbW9GzqyPhtPYcTFdWX8ZtJdVJXW4g0oF9MXg7cXkCKFnVaolaR7E59kpgEfgtZFqeX
-         BkeJXFjoN+tfh1S4zGu8GhyzpmlSi753izDmYdnUGetbGg5JT8nMJFsVlP0yd4+4RZuy
-         H2fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708543538; x=1709148338;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Djs9szs5Ofk1BJwv5+KNW44by/NjoWPT8KOFUi6a38=;
-        b=NoxmNU0ReH3pCQantZq4zlpv45nf+WiBzlIFwiA7xYTWOga+QZNo0ts9yb/eoMU+HY
-         e8sMJ7DGnWBOgF7gS8MkJcJg7YdzIBopeMu2jumzPSdSjQLMyxJsvNUL0QPbXKAzZyXR
-         AZIgiv9OxyMOAB1X4Ww92//qG9KmVziFL36pr5TwEzBsLw25kqtD3M/NUuPtWp36PpwF
-         SS5DcFtaTE4kbIZ70YizcSBrvpt3fW3J9Rhejx/J0/Y8Usr7qVgM3nbUR0Z38crXFCqb
-         A/xn7JR8T8A1e18bVmy5RGcdSC12Gpk2pZZ9tiFy45TfMYRA+mpEdeLCHT1EHP7evHGz
-         luKw==
-X-Forwarded-Encrypted: i=1; AJvYcCV+J35Z7Kpd9fusHeFrOs/Q1itlHcnGDCmZMaE5dsAIpVQWTSdULQXupH+iT1oDnalMK1ScIJOY1qS0Hl7aqC5IH96vJKyld1kyD7SH
-X-Gm-Message-State: AOJu0Yy0NF3X+J5fo+EnnRVoagwEH07zALWHlT/mi0e83+rylMV2hYRG
-	c9sPUTwcKMpO+uXm/BBJsprsom28QnFSGSAHUNGfcKdONEm+gij03z7U1dUX3eOVKM972nmCBvc
-	YEcECGnUPjxQpCsEB+we07elQr+md5RGd8uYR27lH4lqsl0ip2A==
-X-Google-Smtp-Source: AGHT+IHMzmqN4PdpbCrxDUwvOVEtaYXpxHfoyNcPoJhklxll0HONqfGQfyiKVoWBSGii0vXTtUEh+qEipSvTj/D6VpU=
-X-Received: by 2002:a50:a408:0:b0:565:123a:ccec with SMTP id
- u8-20020a50a408000000b00565123accecmr138037edb.3.1708543538101; Wed, 21 Feb
- 2024 11:25:38 -0800 (PST)
+	s=arc-20240116; t=1708543582; c=relaxed/simple;
+	bh=t1bg75155h9kUzdm9X36sGXHqO5aEm2RneZiYY3VhnI=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=fregub4d8rjrBx0ke2tx5IgkPjCjV+7P5KJ1SJouLE7hLEpHkdfUvd4ps8Bco3pcGv+aAWsUtbrhDd+hxvva7f13ex/qF32ThTbeUKQfRD2WYLtJPHgg51JGDtu8yTjdbkoRoXlkPt11/xceyc5/L99cjguwFSL9l6NAnjXSE7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lrxh9ShF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ON8M4ABb; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 21 Feb 2024 19:26:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708543575;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LWexCxPo3VvQYcBlwHoCkpQstAhTBJYFavaPPN9gzJ0=;
+	b=lrxh9ShFCGQEw3leGvicwsxxstFMQGBWkyPG03QZodileqsOds+ige5Uzd8Mac2Z1NuU0G
+	qNcaVtej3ZO3kva/lPdO/qwDMgbirFa/R24J0HqDfHYB+sBlopdP32/68hyn+9Md/LS/E7
+	YTGtQUnmabXbezdbfGQp4gwIM99EUvGtLVzOfYiDXQXnDh8b9V1ex9wn99yzxeswqxB8/g
+	/wULReV4UHwYADEl+ya9c4l2iiInvOAOCH3weay5jRsrfNjFYg5XvsxXPpAg7QVo0vppLC
+	l7CET8NlNpS3pG8pmYnO3huxLncOK1dFygblOKs3wCIKInk1uKa9uEJs1J/DZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708543575;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LWexCxPo3VvQYcBlwHoCkpQstAhTBJYFavaPPN9gzJ0=;
+	b=ON8M4ABbyAvFuY8hYan2AV82gClvV/zxxK6QnD09vQNRV0amG0iHk9nFVSvs/4sgGIMDff
+	z83NiVTVYZ4eZyAQ==
+From: "tip-bot2 for Kunwu Chan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/cleanups] x86/apm_32: Remove dead function apm_get_battery_status()
+Cc: Kunwu Chan <chentao@kylinos.cn>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240126030824.579711-1-chentao@kylinos.cn>
+References: <20240126030824.579711-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220194244.2056384-1-jannh@google.com> <20240221112309.7d526047@kernel.org>
-In-Reply-To: <20240221112309.7d526047@kernel.org>
-From: Jann Horn <jannh@google.com>
-Date: Wed, 21 Feb 2024 20:25:00 +0100
-Message-ID: <CAG48ez2tr8k0BqM_Lq4VAMRfrEdYhWudK1Fx6HwOEb0TBPDd-g@mail.gmail.com>
-Subject: Re: [PATCH] net: ethtool: avoid rebuilds on UTS_RELEASE change
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	John Garry <john.g.garry@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <170854357413.398.5881100037492734739.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 8:23=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue, 20 Feb 2024 20:42:44 +0100 Jann Horn wrote:
-> > Currently, when you switch between branches or something like that and
-> > rebuild, net/ethtool/ioctl.c has to be built again because it depends
-> > on UTS_RELEASE.
-> >
-> > By instead referencing a string variable stored in another object file,
-> > this can be avoided.
-> >
-> > Signed-off-by: Jann Horn <jannh@google.com>
-> > ---
-> > (alternatively we could also use the utsname info from the current UTS
-> > namespace, but that'd be a bit of a behavior change, and I wanted to
-> > keep this change a no-op)
->
-> Is this related to John's work from:
-> https://lore.kernel.org/all/20240131104851.2311358-1-john.g.garry@oracle.=
-com/
-> ?
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Ah, I didn't see his patch, but that seems like he had the same idea
-(but implemented it less sloppily). You can drop this one then...
+Commit-ID:     e37ae6433a5eeb5fb66e3de4b97cdda68ee2c5e8
+Gitweb:        https://git.kernel.org/tip/e37ae6433a5eeb5fb66e3de4b97cdda68ee2c5e8
+Author:        Kunwu Chan <chentao@kylinos.cn>
+AuthorDate:    Fri, 26 Jan 2024 11:08:24 +08:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 21 Feb 2024 19:38:03 +01:00
+
+x86/apm_32: Remove dead function apm_get_battery_status()
+
+This part was commented out 25 years ago in:
+
+  commit d43c43b46ebfdb437b78206fcc1992c4d2e8c15e
+  Author: linus1 <torvalds@linuxfoundation.org>
+  Date:   Tue Sep 7 11:00:00 1999 -0600
+
+      Import 2.3.26pre1
+
+and probably no one knows why. Probably it was unused even then.
+
+Just remove it.
+
+  [ bp: Expand commit message. ]
+
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240126030824.579711-1-chentao@kylinos.cn
+---
+ arch/x86/kernel/apm_32.c | 29 -----------------------------
+ 1 file changed, 29 deletions(-)
+
+diff --git a/arch/x86/kernel/apm_32.c b/arch/x86/kernel/apm_32.c
+index 76a5ced..b37ab10 100644
+--- a/arch/x86/kernel/apm_32.c
++++ b/arch/x86/kernel/apm_32.c
+@@ -1055,35 +1055,6 @@ static int apm_get_power_status(u_short *status, u_short *bat, u_short *life)
+ 	return APM_SUCCESS;
+ }
+ 
+-#if 0
+-static int apm_get_battery_status(u_short which, u_short *status,
+-				  u_short *bat, u_short *life, u_short *nbat)
+-{
+-	u32 eax;
+-	u32 ebx;
+-	u32 ecx;
+-	u32 edx;
+-	u32 esi;
+-
+-	if (apm_info.connection_version < 0x0102) {
+-		/* pretend we only have one battery. */
+-		if (which != 1)
+-			return APM_BAD_DEVICE;
+-		*nbat = 1;
+-		return apm_get_power_status(status, bat, life);
+-	}
+-
+-	if (apm_bios_call(APM_FUNC_GET_STATUS, (0x8000 | (which)), 0, &eax,
+-			  &ebx, &ecx, &edx, &esi))
+-		return (eax >> 8) & 0xff;
+-	*status = ebx;
+-	*bat = ecx;
+-	*life = edx;
+-	*nbat = esi;
+-	return APM_SUCCESS;
+-}
+-#endif
+-
+ /**
+  *	apm_engage_power_management	-	enable PM on a device
+  *	@device: identity of device
 
