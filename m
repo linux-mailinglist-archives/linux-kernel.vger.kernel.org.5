@@ -1,131 +1,245 @@
-Return-Path: <linux-kernel+bounces-73982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE0985CE5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:55:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930AC85CE6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCE36281F94
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:55:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F57E1F22E2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA542837A;
-	Wed, 21 Feb 2024 02:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C226D28382;
+	Wed, 21 Feb 2024 02:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYo3xyh8"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PWUk++kR"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63623883A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728D028389
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708484099; cv=none; b=qOuv2/+61g82iJ07yTk96twnN/z732NY3vJAikppcelmaIDnk/DEFpYo6F6CmfGOszlGOCpMrL1706cWolahUSjd+2X1ClK0UtP9/rVa+Lb43p329RgFAAf8H6ln6uW7XIG7/UZsjCEUJKNfJBFozYVj0c7jTtaOJZKv00fAjAY=
+	t=1708484323; cv=none; b=eHhz70Nv1Qku89alEX+9txo4DtEQLNDRSFWI1FViKc8DyxGi5dlA64lNsLZ9pFhL1McHp1A7xCO6HyW8ql+36PR/gjqPOh+bPlSnXju0lDBBK5wLWOVhuwLre5Xx50S3eZ4Vm5XBd7kgi8V5uu5ABmdR8c3Jly45OhtiJtWAmDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708484099; c=relaxed/simple;
-	bh=YBKD/G9CSyDPbKp+1m1vo+5byl0sayVwUT7MMT1YTxY=;
+	s=arc-20240116; t=1708484323; c=relaxed/simple;
+	bh=WkwMIU0zwW1Ee86vo8DeMZxLRmnrHnV97QWi27NY+4g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cG/ijhITOpEz/544P/097KEDaRtUPYkMhDakwHe0DuUvqlUL2BfmvZrQF873k+c7ApUJ0H8nXDArxjpJz6qP15U0SPjFXdQfgaLK3qHkilzDbiU0wFoXBJlftAOov/FprBqwK4xvrmkidXkBnGGDfDA+uw21eB9yi3rqfAYBTEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYo3xyh8; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so5193908a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:54:58 -0800 (PST)
+	 To:Cc:Content-Type; b=qM2rTf1XXirW7RnpguNz167FmIcnK6ue2trREU8XTuZFdjDGxwmaiSSpHxjiSupnxjIMqMHDOSRwMXkklx0afHfMxRsesk1I7nm2TCQHs8Ek0iTdEovP5e2tyq7ipGJBZHlXTIiLpkvvMDFqUq3Va2TJ4UX4Rs5oykEVjk8P65o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=PWUk++kR; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2995185dbbbso90133a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:58:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708484097; x=1709088897; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1708484322; x=1709089122; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iwE0MS/64X25Z/y4hbsuz3KSPQ9sE/Fa1smXc6Z3G+U=;
-        b=PYo3xyh8CKboar8flZJxJ9NbikUbet/LIQeNOm1Gjs3ULlrKBLLxPfllJ2EvmNtlmi
-         fg6b0unAW5qV+Lnsk6oS+CKFAXNi4h6O14n7WJ7Dw2kAH8yL862wUyJQpn6J1brB1PpH
-         bj+aJq3/quj85/dRhTJC1KwEdfbNBryE5ssF1b/SKf8aSWY70ioFjLZU2jIW9qtFnvXK
-         tdXLY/HhYcHX4zobEIrmVID5RWo6OsM7lW+WJanDoMr1ZgFWvKN//BxHO/huw2xTRecU
-         /MH/lmQctSShbjJK7H40gHdIUOEd6OS+riA5iCGsCg1vOHZYrP2dCKI2sGfAIMx14V1v
-         0kcQ==
+        bh=wjgXTVC6oX0aWWpC+csfhG9TVCjrVW0xpmQ2dYZci0Y=;
+        b=PWUk++kREBMJXvFnKSzUd4I0p3WpzZ4rY84YikZ0wmnyJsVMelH8OEsdLSSfsHV7pu
+         f/6tYq4kYfo7ZoWnZixaci7D3Rk+CZrgwsEXmSKVtnwNIB6dj1cOnHNlo6oGgk7nKAws
+         /dPFnxj5BwtzZWJ8r4RHcJZZxxZL3Z6sla4Zake9ZlzTtxG//89ng1iTE5QKsH5eO9Zm
+         vb9pCg43Asdlc4OeYXRNyuChUEYobHvGQUB6HmGlX69VPqLJ8EsKv3UE73iV9Mr4gYkp
+         khN21ak/b5T+oBMLH+u5p+TWkt+ZonuijIiZNDycGiOI8tBKqblH1elLO6KZ23NMOCgs
+         x7wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708484097; x=1709088897;
+        d=1e100.net; s=20230601; t=1708484322; x=1709089122;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iwE0MS/64X25Z/y4hbsuz3KSPQ9sE/Fa1smXc6Z3G+U=;
-        b=LkMDet+d/diCaOnbXvPF4NNB4eQNanPbyqFx2pPTM5gtJfn7qx3eSatbW6h2jqxWmc
-         mhXU9qfjltMjAIH7dT3VyyLvoq4vDjVxfjc5qOwNifI3xA2x0aww00/rvKIPW7YXtJJV
-         HPhReTEXL5LVwk8VtzWVQ3B1cPMpHB7zxy+kDMU68VD90Fruj6QmUAzyoTroDAm322+O
-         L88SNPaFJP17vgogdjMAhB9TjNT0qQhdcNRzbgZyp3Cppani6NB5cR2eNWUSRJlotVUu
-         PrH0CEHR/GtjAOB1bjmf+wS0ixOQ9B4lsCGjQCoypytaSlpxYswQasaMB7HXSEkn4gns
-         x8fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUj3g+ylHLpY8sBG7Q161XvIFfqK7fvIngYF8gqNUG5ce5WqVTRmvhZaG5xTB+Yc43hjxL4bqkUuu8T/+MXOYSM4BpwCDtkUYEm2xXY
-X-Gm-Message-State: AOJu0YzwobmJAoJCsr4tha976blJFnPmgza7jQEyRyTSw9ZMyK33skBj
-	ozgf3vI/5UqFCYlQweaPqmMzdMOchOSVFNw0DdHipg93o914MWQnHBOdSDZu2MwlNR/n1i39C/f
-	Ugs0oyc6ZDxcaM0EcaqBzslcQmZk573ctAsU=
-X-Google-Smtp-Source: AGHT+IEVlwZM9BHLcCDwIIywPoDLeNXsCdSezy3RFANnjV+6XZ7hnvwyMyrTczp2CZz7dz5MiwRK5EcFz1yc8JkP0iI=
-X-Received: by 2002:a17:90a:9c3:b0:299:32ee:a426 with SMTP id
- 61-20020a17090a09c300b0029932eea426mr10736380pjo.32.1708484097600; Tue, 20
- Feb 2024 18:54:57 -0800 (PST)
+        bh=wjgXTVC6oX0aWWpC+csfhG9TVCjrVW0xpmQ2dYZci0Y=;
+        b=QUCffasPVVaGGtmuZCGTKoebXjOnt5JIWlj00BYOKZ154wbnp5gzo1jtPBEKhG/HNo
+         jTcbyS/xHTfavaZZa6Kb9PmojvyByzQg7gVF17eXE7row6yorVS/Url0+bSF5xZV78jQ
+         r93++HZw0kItqwPw6A7YRohrIgE8kD9ielIfKQSqdjEqsQoJZfxic5e568UG5VFBFhF9
+         urbEiZrZ4jCipEQt0hR5MxPQMjYmNtOElLvypeeGT5WfLSz0t0elD5dXzbx6CBCaZ2uj
+         ljd1fJQPFl+Sp9LGdNLFA18xGFLlFNvJalByFZBCjkzcqD0Vr37j6kkoWWoJMjFV+0Nf
+         p+Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWGV7ntL6TVRiOWKT+mR5cJvKl2Y0dFmUP0rCBi1W4nBdAki0C5NIeEgjY8sA6CfG/WSSpcnig1UMlfwKQ0vs+xK7McAceNAGJ7rp/w
+X-Gm-Message-State: AOJu0YyN4PBo6FcJoE6RPEZi3oYILKaJBnkIXqSgBNZgW9SLk0GPAocj
+	IIxInu0uHfHu/3moUeYAY6/alMZfZNZ6mEBMBOwk8yfl31g1YGScFBv1wtPYGiAcJGdG2SifLq3
+	UIVHsh2QBUW/JPXR3CtRVm3h7KQDFM2RUv/HBaQ==
+X-Google-Smtp-Source: AGHT+IGltJy69FUVSMW4LFVXZqDrwd5KyyaGFkAwhbmHGcFXmgonDoEQpIPCZKcyRVy54yw6TCa3dvIpSJcZwwcjl98=
+X-Received: by 2002:a17:90a:eb04:b0:299:6c50:c2a0 with SMTP id
+ j4-20020a17090aeb0400b002996c50c2a0mr9639990pjz.23.1708484321762; Tue, 20 Feb
+ 2024 18:58:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216180559.208276-1-tj@kernel.org> <20240216180559.208276-13-tj@kernel.org>
- <CAJhGHyCOgrU9TC9o97LpvAEL2p+Dgt=uN0mo01Gr7HadVSD-Ag@mail.gmail.com> <ZdTxisk3zp_eXDVb@slm.duckdns.org>
-In-Reply-To: <ZdTxisk3zp_eXDVb@slm.duckdns.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Wed, 21 Feb 2024 10:54:46 +0800
-Message-ID: <CAJhGHyCvk=uqcjjf-=L64ig2m00qdEuRLSvc0qiJm_SftGqunQ@mail.gmail.com>
-Subject: Re: [PATCH 12/17] workqueue: Implement disable/enable for (delayed)
- work items
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com
+References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+ <20240220035105.34626-2-dongmenglong.8@bytedance.com> <ZdTe8LteoqR43d4q@krava>
+In-Reply-To: <ZdTe8LteoqR43d4q@krava>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Wed, 21 Feb 2024 10:58:30 +0800
+Message-ID: <CALz3k9juJUBDV=wyCG7Ru6_OcMCpArL5MSGWrsb5xhx=u4+N2g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next 1/5] bpf: tracing: add support to
+ record and check the accessed args
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, mykolal@fb.com, shuah@kernel.org, 
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, thinker.li@gmail.com, 
+	zhoufeng.zf@bytedance.com, davemarchevsky@fb.com, dxu@dxuuu.xyz, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 2:38=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+On Wed, Feb 21, 2024 at 1:18=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> Hello,
+> On Tue, Feb 20, 2024 at 11:51:01AM +0800, Menglong Dong wrote:
 >
-> On Tue, Feb 20, 2024 at 03:22:26PM +0800, Lai Jiangshan wrote:
-> > > - A work item carries 10bit disable count in work->data while not que=
-ued.
-> > >   The access to the count is synchronized by the PENDING bit like all=
- other
-> > >   parts of work->data.
+> SNIP
+>
+> > +static int get_ctx_arg_idx_aligned(struct btf *btf, const struct btf_t=
+ype *t,
+> > +                                int off)
+> > +{
+> > +     const struct btf_param *args;
+> > +     u32 offset =3D 0, nr_args;
+> > +     int i;
+> > +
+> > +     nr_args =3D btf_type_vlen(t);
+> > +     args =3D (const struct btf_param *)(t + 1);
+> > +     for (i =3D 0; i < nr_args; i++) {
+> > +             if (offset =3D=3D off)
+> > +                     return i;
+> > +
+> > +             t =3D btf_type_skip_modifiers(btf, args[i].type, NULL);
+> > +             offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->size, 8);
+> > +             if (offset > off)
+> > +                     return -1;
+> > +     }
+> > +     return -1;
+> > +}
+> > +
+> > +/* This function is similar to btf_check_func_type_match(), except tha=
+t it
+> > + * only compare some function args of the function prototype t1 and t2=
+.
+> > + */
+>
+> could we reuse btf_check_func_type_match instead? perhaps just
+> adding extra argument with arguments bitmap to it?
+>
+
+This is a little difficult, as the way we check the consistency of t1
+and t2 is a little different.
+
+in btf_check_func_type_match(), we check the args of t1 and t2
+by index. But in btf_check_func_part_match(), we check the args
+of t1 and t2 by offset. Reusing can make btf_check_func_type_match
+become complex and hard to understand.
+
+Anyway, let me have a try to see if it works to reuse
+btf_check_func_type_match().
+
+Thanks!
+Menglong Dong
+
+> jirka
+>
+> > +int btf_check_func_part_match(struct btf *btf1, const struct btf_type =
+*func1,
+> > +                           struct btf *btf2, const struct btf_type *fu=
+nc2,
+> > +                           u64 func_args)
+> > +{
+> > +     const struct btf_param *args1, *args2;
+> > +     u32 nargs1, i, offset =3D 0;
+> > +     const char *s1, *s2;
+> > +
+> > +     if (!btf_type_is_func_proto(func1) || !btf_type_is_func_proto(fun=
+c2))
+> > +             return -EINVAL;
+> > +
+> > +     args1 =3D (const struct btf_param *)(func1 + 1);
+> > +     args2 =3D (const struct btf_param *)(func2 + 1);
+> > +     nargs1 =3D btf_type_vlen(func1);
+> > +
+> > +     for (i =3D 0; i <=3D nargs1; i++) {
+> > +             const struct btf_type *t1, *t2;
+> > +
+> > +             if (!(func_args & (1 << i)))
+> > +                     goto next;
+> > +
+> > +             if (i < nargs1) {
+> > +                     int t2_index;
+> > +
+> > +                     /* get the index of the arg corresponding to args=
+1[i]
+> > +                      * by the offset.
+> > +                      */
+> > +                     t2_index =3D get_ctx_arg_idx_aligned(btf2, func2,
+> > +                                                        offset);
+> > +                     if (t2_index < 0)
+> > +                             return -EINVAL;
+> > +
+> > +                     t1 =3D btf_type_skip_modifiers(btf1, args1[i].typ=
+e, NULL);
+> > +                     t2 =3D btf_type_skip_modifiers(btf2, args2[t2_ind=
+ex].type,
+> > +                                                  NULL);
+> > +             } else {
+> > +                     /* i =3D=3D nargs1, this is the index of return v=
+alue of t1 */
+> > +                     if (get_ctx_arg_total_size(btf1, func1) !=3D
+> > +                         get_ctx_arg_total_size(btf2, func2))
+> > +                             return -EINVAL;
+> > +
+> > +                     /* check the return type of t1 and t2 */
+> > +                     t1 =3D btf_type_skip_modifiers(btf1, func1->type,=
+ NULL);
+> > +                     t2 =3D btf_type_skip_modifiers(btf2, func2->type,=
+ NULL);
+> > +             }
+> > +
+> > +             if (t1->info !=3D t2->info ||
+> > +                 (btf_type_has_size(t1) && t1->size !=3D t2->size))
+> > +                     return -EINVAL;
+> > +             if (btf_type_is_int(t1) || btf_is_any_enum(t1))
+> > +                     goto next;
+> > +
+> > +             if (btf_type_is_struct(t1))
+> > +                     goto on_struct;
+> > +
+> > +             if (!btf_type_is_ptr(t1))
+> > +                     return -EINVAL;
+> > +
+> > +             t1 =3D btf_type_skip_modifiers(btf1, t1->type, NULL);
+> > +             t2 =3D btf_type_skip_modifiers(btf2, t2->type, NULL);
+> > +             if (!btf_type_is_struct(t1) || !btf_type_is_struct(t2))
+> > +                     return -EINVAL;
+> > +
+> > +on_struct:
+> > +             s1 =3D btf_name_by_offset(btf1, t1->name_off);
+> > +             s2 =3D btf_name_by_offset(btf2, t2->name_off);
+> > +             if (strcmp(s1, s2))
+> > +                     return -EINVAL;
+> > +next:
+> > +             if (i < nargs1) {
+> > +                     t1 =3D btf_type_skip_modifiers(btf1, args1[i].typ=
+e, NULL);
+> > +                     offset +=3D btf_type_is_ptr(t1) ? 8 : roundup(t1-=
+>size, 8);
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static bool btf_is_dynptr_ptr(const struct btf *btf, const struct btf_=
+type *t)
+> >  {
+> >       const char *name;
+> > --
+> > 2.39.2
 > >
-> > It is 16bit disable count in the code.
->
-> Fixed.
->
-> > It misses the same handling  at queue_work_node() and queue_rcu_work().
->
-> Oops, fixed queued_work_node() but I don't think the latter is an issue
-> given that calling work interface functions in the embedded work is not
-> supported and rcu_work can't even be canceled.
-
-Hello, Tejun
-
-I think it is better to have the same handling (checking disable count)
-in queue_rcu_work().
-
-1) code is consistent with other queuing code
-2) known state: no work item is queued with disable count > 0
-3) catch wrong usages: some complaining code can be added when adding the c=
-heck.
-
-Adding checking and complaining in the code is as important as
-adding a comment stating rcu work is not allowed to be disabled/canceled.
-
->
-> I'm not quite sure flush_delayed_work() is safe. Will think more about th=
-at.
-
-I think the code successfully deleting the timer not only owns the pending =
-bit
-but also ensures the disable count is zero.
-
-Thanks
-Lai
 
