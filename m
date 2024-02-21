@@ -1,141 +1,117 @@
-Return-Path: <linux-kernel+bounces-75469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A381485E91C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:36:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC73185E911
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61EEC2833D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:36:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A5C31F24CE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37433C485;
-	Wed, 21 Feb 2024 20:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885153A1AF;
+	Wed, 21 Feb 2024 20:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2YfyKTCa"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mTHYVEhr"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974293B298
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541701EB41
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708547797; cv=none; b=TGWP3yg9D2U/R6lxyvGSYpVfV8BPjBIZA+fxrNY2DCTwqFHCy8t/WjB95EVPiGYYb1zHwUh91Rtl+SMyYsBj296Ca4b9J960sQz1DPNDkm58VQikOwzFYSW6eAUt5kNzziDBitPO7JqE/6WgkWY6QwbJDPPw8/XG5Xv0z2XQVd0=
+	t=1708547433; cv=none; b=KZtxyALOXgYQiZxkxSVZ+A0GXhn+NfRzEBzT+E2pVYKnzzJXgx+6tE+cl3efKV70ro03C4rSSc8M1VOme3x9+PY3eznndOW6VN2hojhA/nZ90OJNBR0GcY6u+WevytYX7GzhRAhgWQY1Ffmvb4+OaHLpuFave4k1xQ4fMVNwExU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708547797; c=relaxed/simple;
-	bh=GFhPlma8ElxwHflsLYpQTVGFiMO4B/Q3z9xrY8lb7y0=;
+	s=arc-20240116; t=1708547433; c=relaxed/simple;
+	bh=vWEUJWbOIDWjPVpsgtWgbej7BleeWIMrMnxc/5NBnN8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V1rg9ojBawlxM+WLCTFh23RetCGk8tlboiILyquDej5PW6AUIZA7+UCF+60qSvr2OAbTUHO5IoDTogpnsAuQclDIIXpcn1ZBOeQC3HvAY6VJNBwY8QIpCi8onZIoQW/xjl83pOof4GTDVrR4Wfz9dFSYqHLLJtB/BKERNeUfd48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2YfyKTCa; arc=none smtp.client-ip=209.85.214.173
+	 To:Cc:Content-Type; b=VroLqVzxCgtKlJZlpA35+fgXOLwRqoe92xFmZ/hz8GOX2I5v/SvGSn8GKkWIWyzzqp/Gt5n6KhJlYMiuniW7IF5wMTrjTrwm80YFBVQ8VmH0i7XwrHLPt/YrNYS6bHE+BsmwP4JdTeJrje1L/1vV95r4nf18mRprQbhPdXZ2Rvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mTHYVEhr; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d89f0ab02bso27805ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:36:35 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso3046a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:30:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708547795; x=1709152595; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708547431; x=1709152231; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8iAiTEgCppjIE3t1disnBeWTtqYJCr/gkvmRX972lsA=;
-        b=2YfyKTCalqJEmT09oHd6tBBIhAKQCDxF7k9cZJRi+n2VzJnUWP+niT0r4LbNCPyOgH
-         6cZtFztITsdtDbUsJtrYkw4REvWYKreLhbQVwfgKK4NNmGXKfPqCiyYl5yPwkUIazorc
-         4THvpwq5OQSfZv4K6eGeoTGY9mC5T4O9Cf1AF8comXvGUNUFC5BNyBsi3s36iEKWlJoV
-         ALdfecMsG/cbTmNWMtrX9CVd/7Li88L6+ffBqCRgY6vZzpe58W81Nz25zs81BUPDkz35
-         DnwufmVEwZ1+v+XvfhM7tvBhCcRreE0DLCdSh1dvhSjdmcRli/gV0g0mBgZ7XoDFuXWW
-         Wrgg==
+        bh=vWEUJWbOIDWjPVpsgtWgbej7BleeWIMrMnxc/5NBnN8=;
+        b=mTHYVEhrbqNew1JkiUQytTshKEogY+StCD9t8+hxWSFhiVQtWNGtyGK0mZFuZZyXCw
+         txPg27l9xifIOzRMtWHD9HDs6MZMdjZCbMQPtbDKpBQDDs+bkOLO8uRhlr6A/I3F+s61
+         RfKkMnJWhyh1bJ6LVaz1cgpVObEj/d12ufqEvuSf+SURj7T/TFFopU5AhHH35L2vdvu0
+         IZeVkCn2KdCEnCM6BFBUQyMFaofmHOdkQ5w8VGlfQZ5Sv84vDL+ASIoVpGZdojpL+keZ
+         UydFWbcWLNXb3ma8D37UX/Myg6vpAm2UzwTwTogbA8dXSIVXmc0FU5O3/YpQoPdJzC2g
+         nSLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708547795; x=1709152595;
+        d=1e100.net; s=20230601; t=1708547431; x=1709152231;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8iAiTEgCppjIE3t1disnBeWTtqYJCr/gkvmRX972lsA=;
-        b=g703IEZ+Npb9D+DhkWQy/5FEU5iV3+MwIbBSNPXdwkNfiI7Ts2T+ASEXSMdY1yfx4+
-         zFiKYeaLXLOITDvJia0X5b3/UCD7XW40l0gDv+VC92b3P5D89YrJ+WkcteA6YVpQL5zw
-         MHFqvGWpWC/PIODzHpn6xeFP2f5ySz77IT9zaHcK00IvutGpAgf6/VEE4BcuGGSfJMnE
-         0D6LDL0A0h7l7GMT5NbOvIZO9K07hUx3lZJMNg5Nw/FyjBkphBfQ0BkC1/9F4ma6wqY0
-         JdxpHdKGmhUtYvsjvxI4jhAzMBfvj51WSKomR42W5pBuC4ijj28u2fMgYFGZarCH8YoQ
-         RJlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/Q5ec+BNy8uu+u5QGnjkiyV94L0dxnGOio46XJpjKKepwRl7CfDH6IDIdrnvUaB8QSqJNZlof+08lxSkF6PJGFq5SKolfWBNgPVLz
-X-Gm-Message-State: AOJu0Yxzdi+YEjmU+P4XlRdkRmKPtFz6DyAXFU58vgbRaJLbcNcH6JHp
-	ZH3RkZIqbjUi3rXcG9Z5muhKrKCUI58vuOSp+UHVtxs6+6Ubrs+c6LXydM012YdRojxmGmt2Hyi
-	WaUIwQSvIuPAXroFNFz34+65+h8O77MYB/cudoh5psr33H6UVrg==
-X-Google-Smtp-Source: AGHT+IHkUH8682wBjX2MlXCiKDKRKTZ78A7IDkSZwKh62FAeHimOB2zWqCHjoUmuvZXD72aiFX0+O0WGwp10g7NziwQ=
-X-Received: by 2002:ac8:4907:0:b0:42e:660:eb8d with SMTP id
- e7-20020ac84907000000b0042e0660eb8dmr285459qtq.5.1708547393077; Wed, 21 Feb
- 2024 12:29:53 -0800 (PST)
+        bh=vWEUJWbOIDWjPVpsgtWgbej7BleeWIMrMnxc/5NBnN8=;
+        b=nqsu+iMP1JkiLiBLz2/N3tMZegiwQkfQDc79Jbw/2KC3ObKDdtuoQxId7y7xvcOv/O
+         z5sYvaFjqu61tg2vC/2Nw5U09vmn+Daw4MYkQgwyZUQcHrKU1lN8FIPsGe32rs+ZrgKy
+         6Bbe6Hw2ZMctB7KGyGiR0QGNMuz6h4xLC2GpsGqJpuEKB8i7XKJzWvsOd0xl2XA7XWQ8
+         foSlfSqZRgtq6tfzaH4IfO6b8Yn7G/1oR4NiMtOGJRilxzV2EBHcH5J0aB3ETQzGo7hC
+         Y10AVWZ1qeCjxEfjI66gKjJBeEYXhM7FQCKQL3doXMWL+9vUKAYiY6ft3IkW+g//IQow
+         w+oA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIX/fXxRHC2Dv2uhWlESgSrgnvYQb/eVezcSc5w/N4Sru6RGf77G29pHnlsdxGD24xOBrHsgEFGbqnDvRAd1izg6byXs4hpqA0nXNB
+X-Gm-Message-State: AOJu0YzzcksGY8zgsF/5ZXOD1Xt4XG0enrP7ETDsIPi8MwhwbENRiqHt
+	OkAYQ6oTI3f0/GU97ctoeXSuPijsZtEJgT7jKJT7R3RU8ycTpdq5smeEvq2bzyG8AZGX09cgXmk
+	y62VzStxc7atu+N/PdcWkrismwJ0MqnOj7weC
+X-Google-Smtp-Source: AGHT+IFJQdjnzexcJWCML3UMWx74aD0VruZXS+4JJuNs7X76tjiq4WWxds/j68Rk4Kcl1KKjPeYpseCylVjLBycqA98=
+X-Received: by 2002:a50:c30f:0:b0:564:55e5:6ee1 with SMTP id
+ a15-20020a50c30f000000b0056455e56ee1mr261904edb.2.1708547430535; Wed, 21 Feb
+ 2024 12:30:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221092728.1281499-1-davidgow@google.com> <20240221092728.1281499-2-davidgow@google.com>
-In-Reply-To: <20240221092728.1281499-2-davidgow@google.com>
-From: Daniel Latypov <dlatypov@google.com>
-Date: Wed, 21 Feb 2024 12:29:38 -0800
-Message-ID: <CAGS_qxpyNVqigHB+kS-1xqzR4BAOQXoMSNS+d5khkLYrkpmOgA@mail.gmail.com>
-Subject: Re: [PATCH 1/9] kunit: test: Log the correct filter string in executor_test
-To: David Gow <davidgow@google.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>, 
-	Matthew Auld <matthew.auld@intel.com>, 
-	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Kees Cook <keescook@chromium.org>, =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Matthew Brost <matthew.brost@intel.com>, 
-	Willem de Bruijn <willemb@google.com>, Florian Westphal <fw@strlen.de>, Cassio Neri <cassio.neri@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Arthur Grillo <arthur.grillo@usp.br>, 
-	Brendan Higgins <brendan.higgins@linux.dev>, Stephen Boyd <sboyd@kernel.org>, 
-	David Airlie <airlied@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	"David S . Miller" <davem@davemloft.net>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org, 
-	linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, linux-hardening@vger.kernel.org, 
-	netdev@vger.kernel.org
+References: <20240221202655.2423854-1-jannh@google.com> <20240221202655.2423854-2-jannh@google.com>
+In-Reply-To: <20240221202655.2423854-2-jannh@google.com>
+From: Jann Horn <jannh@google.com>
+Date: Wed, 21 Feb 2024 21:29:52 +0100
+Message-ID: <CAG48ez189R9uJA2QATvdZuphkx2TZbu3JE9oCB4VCujaV_0TEw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kallsyms: build faster by using .incbin
+To: Andrew Morton <akpm@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Zhen Lei <thunder.leizhen@huawei.com>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 1:28=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
+On Wed, Feb 21, 2024 at 9:27=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
+> Currently, kallsyms builds a big assembly file (~19M with a normal
+> kernel config), and then the assembler has to turn that big assembly
+> file back into binary data, which takes around a second per kallsyms
+> invocation. (Normally there are two kallsyms invocations per build.)
 >
-> KUnit's executor_test logs the filter string in KUNIT_ASSERT_EQ_MSG(),
-> but passed a random character from the filter, rather than the whole
-> string.
-
-Note: it's worse than that, afaict.
-
-It's printing from a random bit of memory.
-I was curious about this, so I found under UML, the string I got was
-always "efault)" if I make it fail for j=3D0.
-
+> It is much faster to instead directly output binary data, which can
+> be imported in an assembly file using ".incbin". This is also the
+> approach taken by arch/x86/boot/compressed/mkpiggy.c.
+> So this patch switches kallsyms to that approach.
 >
-> This was found by annotating KUNIT_ASSERT_EQ_MSG() to let gcc validate
-> the format string.
+> A complication with this is that the endianness of numbers between
+> host and target might not match (for example, when cross-compiling);
+> and there seems to be no kconfig symbol that tells us what endianness
+> the target has.
+> So pass the path to the intermediate vmlinux ELF file to the kallsyms
+> tool, and let it parse the ELF header to figure out the target's
+> endianness.
 >
-> Fixes: 76066f93f1df ("kunit: add tests for filtering attributes")
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
-> ---
->  lib/kunit/executor_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I have verified that running kallsyms without these changes and
+> kallsyms with these changes on the same input System.map results
+> in identical object files.
 >
-> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-> index 22d4ee86dbed..3f7f967e3688 100644
-> --- a/lib/kunit/executor_test.c
-> +++ b/lib/kunit/executor_test.c
-> @@ -129,7 +129,7 @@ static void parse_filter_attr_test(struct kunit *test=
-)
->                         GFP_KERNEL);
->         for (j =3D 0; j < filter_count; j++) {
->                 parsed_filters[j] =3D kunit_next_attr_filter(&filter, &er=
-r);
-> -               KUNIT_ASSERT_EQ_MSG(test, err, 0, "failed to parse filter=
- '%s'", filters[j]);
-> +               KUNIT_ASSERT_EQ_MSG(test, err, 0, "failed to parse filter=
- from '%s'", filters);
+> This change reduces the time for an incremental kernel rebuild
+> (touch fs/ioctl.c, then re-run make) from 27.7s to 24.1s (medians
+> over 16 runs each) on my machine - saving around 3.6 seconds.
 
-note: if there is a v2, it might be nice to include `j` in the message.
+Ah, I found no maintainer for this file in MAINTAINERS, but now that
+I'm looking at the git history, it looks like fixes have come in
+through Masahiro Yamada's kbuild tree? So I'm not entirely sure
+whether the maintainer for this is Masahiro Yamada or akpm.
 
