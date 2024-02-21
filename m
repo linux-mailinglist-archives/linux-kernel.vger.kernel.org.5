@@ -1,99 +1,136 @@
-Return-Path: <linux-kernel+bounces-75344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2649E85E6F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C71485E6F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9357EB22A0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:10:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39D7DB23CF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148B285C44;
-	Wed, 21 Feb 2024 19:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g2/2zmYd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5E385949;
+	Wed, 21 Feb 2024 19:10:26 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513FC79DD6;
-	Wed, 21 Feb 2024 19:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDFF8563B
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708542594; cv=none; b=ry6er6clkdY0JcbbXPe24ZQWJfm08clRc6kuXvZeSApXBswho2EzkGNMZU3LJD00GxL7hl8RLQUGsHAT+Sv4cJYcXyxTAp4KOGytWpwrsZk22f1Unot8h5nn99ZBqqeYYGJYKwqLzIBrdui69kqub6rRqUgpu5b88Ewv4GpGRl8=
+	t=1708542625; cv=none; b=OIVoBxzZ5VcDMiY1p6HG6RIfhfeVvD01YCHcWn6qVEdHjzMN24wv86burkaJrFfe2GSpHZ6fzTawCm8wyhI7hvSFYqhUrR047Ay9WB4kS7BhlxzthzpbkSVj8zlJRe+HOWRWqMkJcYfggIPJOgLoQIh9QwKPBi0j0jPPQuFAtz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708542594; c=relaxed/simple;
-	bh=Mt5aF6Hr76ak8o2cE1OJ5mzFoU6w/C5uo9s6FRkcdgM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jlP+FjG5Ul7pn8DM2JipqwcGjq9L4VJ2GZDC3+IaBp/HAWuI7vgKRpNrHv/F34nH5FFmfI8JOCVsC+X0IeJTymxM9IU0NOIaAx2J8pA5xqAIbwLywnZZkW4BpEgheFwypCEQXuWKv+WoXwGbsKf9Iy1LaHVPS6HnoqVwy7XwI/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g2/2zmYd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADCCC433F1;
-	Wed, 21 Feb 2024 19:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708542593;
-	bh=Mt5aF6Hr76ak8o2cE1OJ5mzFoU6w/C5uo9s6FRkcdgM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=g2/2zmYdvzqYK4cj8AmYHmwN5yICBtAIKuHg5Sqd3MvR/UIvL/Grr9eb/tPRMlJ6c
-	 3/uVSI4/ldPebzp1xz66czAakEUVVCUF+/1Vd9wE2t9r/2OY3TlFIXEBmxjxGwbpqx
-	 9xIOMA1rLb5GPk4/nCJkJSDlkJDkwPLJcQhhG7yl0AmLrvLZH66jRRpN73EhmKIX4s
-	 Mn3UiacmcxDbx6eHPoizRNG3d72/+xDrP+LYWug3f03N13WdnXOMUafRKltHbJo//F
-	 VG4TquIc07EeZX6udOTeZXFwoN4h73D4WJiqXaOENZf67wCpt/wfjykelTASTzQOYG
-	 7hiSVJ31oooEA==
-Date: Wed, 21 Feb 2024 11:09:52 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Alexei Starovoitov
- <ast@kernel.org>, Amritha Nambiar <amritha.nambiar@intel.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Larysa Zaremba
- <larysa.zaremba@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Paolo Abeni <pabeni@redhat.com>, Sridhar
- Samudrala <sridhar.samudrala@intel.com>, Stanislav Fomichev
- <sdf@google.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH net-next 0/2] Expose netdev name in netdev netlink APIs
-Message-ID: <20240221110952.43c0ae6e@kernel.org>
-In-Reply-To: <1708531057-67392-1-git-send-email-jdamato@fastly.com>
-References: <1708531057-67392-1-git-send-email-jdamato@fastly.com>
+	s=arc-20240116; t=1708542625; c=relaxed/simple;
+	bh=AgMVTJXzONHGG61D+D+o9DyLBW2kW1yf8Ip12DuoGAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W93nx5QmJtWwFoVsredQgjQ27HcRmQb4t2M7Vl1Os2jOFQz9sRM4joeqNt2vRc785Lfcw1R9qY5L/0Oidfx1PvfSPF5uxEvj1sovC0dvktBTAT2mD7+6tIkPts0L/Ej78Y3i+2S8JRJFwuvhd7sp4yus9BkSBvFfRYqUFY76FGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
+Date: Wed, 21 Feb 2024 14:10:39 -0500
+From: "dalias@libc.org" <dalias@libc.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <20240221191039.GV4163@brightrain.aerifal.cx>
+References: <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx>
+ <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+ <20240221145800.GR4163@brightrain.aerifal.cx>
+ <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+ <20240221175717.GS4163@brightrain.aerifal.cx>
+ <b41e39d1-29f9-4958-9728-6781e72230f8@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b41e39d1-29f9-4958-9728-6781e72230f8@sirena.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, 21 Feb 2024 07:57:28 -0800 Joe Damato wrote:
-> Greetings:
+On Wed, Feb 21, 2024 at 06:32:20PM +0000, Mark Brown wrote:
+> On Wed, Feb 21, 2024 at 12:57:19PM -0500, dalias@libc.org wrote:
+> > On Wed, Feb 21, 2024 at 05:36:12PM +0000, Mark Brown wrote:
 > 
-> The netdev netlink APIs currently provide the ifindex of a device
-> associated with the NIC queue or NAPI when the netlink API is used. In
-> order for user applications to map this back to a human readable device
-> name, user applications must issue a subsequent ioctl (SIOCGIFNAME) in
-> order to map an ifindex back to a device name.
-
-To be clear, if_indextoname() is doing it, right? I wanted to be sure
-the concern is really number of syscalls, not the difficulty in getting
-the name.
-
-> This patch set adds ifname to the API so that when queue or NAPI
-> information is retrieved, the human readable string is included. The netdev
-> netlink YAML spec has been updated to include this field, as well.
+> > > This feels like it's getting complicated and I fear it may be an uphill
+> > > struggle to get such code merged, at least for arm64.  My instinct is
+> > > that it's going to be much more robust and generally tractable to let
+> > > things run to some suitable synchronisation point and then disable
+> > > there, but if we're going to do that then userspace can hopefully
+> > > arrange to do the disabling itself through the standard disable
+> > > interface anyway.  Presumably it'll want to notice things being disabled
+> > > at some point anyway?  TBH that's been how all the prior proposals for
+> > > process wide disable I've seen were done.
 > 
-> This saves the subsequent call to ioctl and makes the netlink information
-> more user friendly. Applications might use this information in conjunction
-> with SO_INCOMING_NAPI_ID to map NAPI IDs to specific NICs with application
-> specific configuration (e.g. NUMA zone and CPU layout information).
+> > If it's possible to disable per-thread rather than per-process, some
+> > things are easier. Disabling on account of using alt stacks only needs
+> 
+> Both x86 and arm64 currently track shadow stack enablement per thread,
+> not per process, so it's not just possible to do per thread it's the
+> only thing we're currently implementing.  I think the same is true for
+> RISC-V but I didn't look as closely at that yet.
 
-For context, the reason why I left the names out is that they can change
-at any moment, but primarily because there are also altnames now:
+That's nice! It allows still keeping part of the benefit of SS in
+programs which have some threads running with custom stacks. We do
+however need a global-disable option for dlopen. In musl this could be
+done via the same mechanism ("synccall") used for set*id -- it's
+basically userspace IPI. But just having a native operation would be
+nicer, and would probably help glibc where I don't think they
+abstracted their set*id mechanism to do other things like this.
 
-2: eth0:
-[...]
-    altname enp2s0np0
+> > If folks on the kernel side are not going to be amenable to doing the
+> > things that are easy for the kernel to make it work without breaking
+> > compatibility with existing interfaces, but that are impossible or
+> > near-impossible for userspace to do, this seems like a dead-end. And I
+> > suspect an operation to "disable shadow stack, but without making
+> > threads still in SS-critical sections crash" is going to be
+> > necessary..
+> 
+> Could you be more specific as to the easy things that you're referencing
+> here?
 
-Most of the APIs try to accept altnames as well as the "main" name.
-If we propagate the name we'll step back into the rtnetlink naming
-mess :(
+Basically the ARCH_SHSTK_SUPPRESS_UD proposal.
+
+Rich
 
