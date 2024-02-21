@@ -1,185 +1,134 @@
-Return-Path: <linux-kernel+bounces-74945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDE785E050
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:53:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B204685E058
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D09F1F252BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:53:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67F4E1F252D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FF67FBBF;
-	Wed, 21 Feb 2024 14:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04BB7FBC8;
+	Wed, 21 Feb 2024 14:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fBjZWblP"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VEkUQiPu"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0697FBB8;
-	Wed, 21 Feb 2024 14:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACFA7F7F0
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708527188; cv=none; b=JX7XsvoQVpwOpNHWROCIEHXalf9hMSK43pByv+8W1wAqqvz0Ajlj/Z1iXv1/CAtQ8QHdopg0l7qcQvjPPIrDnzWzHQxQ3rkRCKMMD/QHeG/PK5Flu5eexxQuaxoqQSm4nMptLd2mxM7leTK77GJuGaqxWyQa+uUZ8cZ/MQV0Lww=
+	t=1708527286; cv=none; b=XLz0Orzgq6QNTl8oTzZnX5cDRTJ8kWv0HIvkgzZsVJJZA2pQyITx+njzxjgOaqUSWrJs3PpGqI+9izSInAnb6XpxpopJVT3QmHcHM8wAHfMhDQCbHrmgD78LCs9eQxPtHCGpO5RxrswnpOW0y8OQ3DBvq5M4cm414xMX9FtEWL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708527188; c=relaxed/simple;
-	bh=GFG4jC7AMNHM9If0p4IbWL9b/Wg/EsXkiJXlP51yvcM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VVka0KtHubJHvbqDmAWQ6VkSCzteAOkKWCRyjZBuf3IHoWB1jNqpFQdvy+6NlWFVvMVML/j2NfB5c8ICsDQLItRsG5ZYgQaMoCgB1T5Qt2QOPMtNTTzOaD0sZEmVY4I4jVyuqCozBR6VU5OlOBcBdRxYU5cyFYmYjOucipMFNhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fBjZWblP; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d09cf00214so75688401fa.0;
-        Wed, 21 Feb 2024 06:53:06 -0800 (PST)
+	s=arc-20240116; t=1708527286; c=relaxed/simple;
+	bh=d605qvE8oJLHFh8wYpuXeD8Ss2JHKYc9jQTlWWU/2bI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PXWaF+IJIzcbVYRHu+TB93tyyc78GbNLPy/+1SGtLoxheb9qqcrrecvsgTrKMt00P3JmY8mVNApWlF8WzBObrnSXWdkHQuHfQ8HNrhVWlT60ReZOEDnKOddBtGpfY/5A9mIwIE7vpzjoLs4yaHh9cuo9fO1yN+Q99mgOjSUjBfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VEkUQiPu; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso1173210766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:54:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708527184; x=1709131984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ePZHUj5LUCPpE5Mosu90DBz2D4k7SKlgOf7UzKRj0RI=;
-        b=fBjZWblP/JbgAMOhCRrVKe8jWetlISDn9YEc3FZ18++H9/CVvho5AIb3TjkOlProUW
-         ce9+MK3vGW4TcDmo+NLvQ/lsyXZRa2qEZctNs8+F/BpPk1yu/DU2lT+2EMO+usI3lcJ6
-         1WNYjC4jLgtKAb9Ne5+3wjWGbtt7txQ4Q4CxSx+nA2RRJ3cBPxNZVHinAxhdMV9s0smm
-         wViMOdtwCrvBG5QqvPLC8PL3ttQ1r4pHfusIrZNKkHGn/9MGGIR0jeUXeCmZr10pjoQS
-         Dtcif7s4/KXrST5LBWBKg7+8Iw2Az1SPcGnm4+7lz4FNj2PM921XflhVKxizPab70uv8
-         7XuA==
+        d=linaro.org; s=google; t=1708527281; x=1709132081; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PwDrSDwbjDuhxc0snjMmTqWQWr4yGG/YePGvnYIgDzA=;
+        b=VEkUQiPuRTysHhqswZ0Unv01p4biFu22CZMoufZ12rNK2Aofk3L6Pm1+GqyS9YyFlE
+         ghwh+rIlsf1L2Ek4khEIWz/bC2mRCoy8uT4dPVaruQZbbwLv/UUwjGexH1DMoHU/h/hY
+         VyApC0OubwFJTskhwJYnGI8AFxnc+ERG9xuPVHcGQUa30aJlaAk0s2Y0ZLnJInuMyPa7
+         WJm0Wq2NWl0iUOpG8qCBmDCQVnH8fkdIm80UaXggsZUhSL+UD6kh1WNyrIe1tDlWxPU6
+         aWwEV+Nshtwd2JDrXOP0422nec9J+ZZvw6jupXRrvoZBraD37YzQf6mexQ97m5SLHqWL
+         YTaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708527184; x=1709131984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ePZHUj5LUCPpE5Mosu90DBz2D4k7SKlgOf7UzKRj0RI=;
-        b=t+Su6IDeyLufaYFKIVzntmXghYlXPMWWKaj6IiLOnf5aj1+eSuaoc1ykDm1fixng98
-         N6bWLbL3/uy5HjDpYIthm9gLhF7aLOEKQG9s8L2tGcqciBkt+Y0qRvJaRX4JjtOquoFF
-         AZHAB6p/gvcVsOpxSLWM7LTroQoXuY0wHg3bcW4K79k1+bbE8yqLIoFWEIdbjithioF7
-         wGa1Pmwz+mWfIl7etIxU1OYObuqs5sIZtadu6GpWfvwd7H16xQ59LHsK7wwMn3l1bEZL
-         LVt2AAKHciuN2/z+taqC/y6TEW6Ub56tCpzyS0veIN5Luw65lr6q7jMhZWqiYDDqFGku
-         wMMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUR6s+1JMBF4fLeS9c/hQM6rH4kunlh0IIYua7jHBcaLGgdkkDLdrc5h0y8vV4cNL2WaG6mcvixTMHH2gUSRmwmIAq5Neb2mjFnvQ==
-X-Gm-Message-State: AOJu0Ywf+1TzBPwdXyRCfjoJiX3lrRxRvNiUD5zh7D8Y9Z+tdNdx7ptI
-	40TUOoWqQ99DVZlTbyj+9dQ1s254PK/H2T5sOi1NDEK63wTYV0Or+ij2yOTJHfLrOew+/N28z5T
-	XFOl1dUwz2dc283Oie6KRiUz66w==
-X-Google-Smtp-Source: AGHT+IE/K+XcvoI/LcNmvDCJKjlr9B99h7U5y79IwVKbsvm+c8sY8t8FI9nhGhEJalOoimheBDOIbnrA6j+mw1hlCB0=
-X-Received: by 2002:a2e:b006:0:b0:2d2:3695:c18 with SMTP id
- y6-20020a2eb006000000b002d236950c18mr6696084ljk.19.1708527184231; Wed, 21 Feb
- 2024 06:53:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708527281; x=1709132081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PwDrSDwbjDuhxc0snjMmTqWQWr4yGG/YePGvnYIgDzA=;
+        b=rJhY2eUAKtTWB3JVdGpk59O1nblFobchQmHQCNeu13YbQ6OHyTvProhMtkIR/zeqz9
+         cEtIPR09gVQAxkLnZKdNte1pG3C6OvDtqcWHTIsPo4DEhY4Eyhmg9+lsU3MWivfcmJe/
+         Og8XwLHiv4GuQMwvlAscQ4Gjvk8AlljGkG9LYDPz0HdIpKxYpM62FEX2rWiAZbtgx2RI
+         awxiNa19g85GI7Y4GuwKwVvJgpr9uhw8PPu9EWMCjqBRYvzY39hQSYqjhuDr4bcGFqnH
+         KU0OPTDyjxlvZPy2Gpumtg9LvJb6IZh4cAETJ72eGYxnLRoxd5aLlLqjWeSwfNTE895N
+         +TUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzKmFjCw2P8YNUP+zqEyPDJKxxPUqQ8xJ3UxZMbA8LzfX+JAAtW5lbJebaDCFlX1KKetdyXiJiFgFOgNEdoRjCp5ml7jd6GdUZMgsH
+X-Gm-Message-State: AOJu0Yxvs6i85WitHcpDjz8X2o4QNlbHbvxVvY1c6SDuZXpF2up5IoZx
+	SswNd6bFZuwtHAlWkhuGbDn7BddpZMUPE+k0bRRjboJI0dFh4dRp695EHT5zi4E=
+X-Google-Smtp-Source: AGHT+IFa0ka2O3YAMzNW85WaQJjneiiknkL9slfUTJVV+TJHkqkF2wZ1NixE8hX5BSi21jsQvB7kdQ==
+X-Received: by 2002:a17:906:fa87:b0:a3e:c6de:e5ae with SMTP id lt7-20020a170906fa8700b00a3ec6dee5aemr7804788ejb.0.1708527281343;
+        Wed, 21 Feb 2024 06:54:41 -0800 (PST)
+Received: from linaro.org ([188.24.162.93])
+        by smtp.gmail.com with ESMTPSA id mn6-20020a1709077b0600b00a3e12ded9b7sm4755684ejc.169.2024.02.21.06.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 06:54:40 -0800 (PST)
+Date: Wed, 21 Feb 2024 16:54:39 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: Add SMB2360 pmic dtsi
+Message-ID: <ZdYOr6/8dupbMdbF@linaro.org>
+References: <20240221-x1e80100-dts-smb2360-v2-0-037d183cc021@linaro.org>
+ <20240221-x1e80100-dts-smb2360-v2-2-037d183cc021@linaro.org>
+ <bc45229c-6412-4fd5-ba8e-28b293d7864b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221113506.2565718-18-ardb+git@google.com> <20240221113506.2565718-25-ardb+git@google.com>
-In-Reply-To: <20240221113506.2565718-25-ardb+git@google.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Wed, 21 Feb 2024 09:52:53 -0500
-Message-ID: <CAMzpN2iu52yJWv3w1SgDXXGdvbfGi8cHRkip_qqrAO_89-4+sQ@mail.gmail.com>
-Subject: Re: [PATCH v5 07/16] x86/startup_64: Simplify CR4 handling in startup code
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc45229c-6412-4fd5-ba8e-28b293d7864b@linaro.org>
 
-On Wed, Feb 21, 2024 at 6:35=E2=80=AFAM Ard Biesheuvel <ardb+git@google.com=
-> wrote:
->
-> From: Ard Biesheuvel <ardb@kernel.org>
->
-> When paging is enabled, the CR4.PAE and CR4.LA57 control bits cannot be
-> changed, and so they can simply be preserved rather than reason about
-> whether or not they need to be set. CR4.MCE should be preserved unless
-> the kernel was built without CONFIG_X86_MCE, in which case it must be
-> cleared.
->
-> CR4.PSE should be set explicitly, regardless of whether or not it was
-> set before.
->
-> CR4.PGE is set explicitly, and then cleared and set again after
-> programming CR3 in order to flush TLB entries based on global
-> translations. This makes the first assignment redundant, and can
-> therefore be omitted.
->
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/x86/kernel/head_64.S | 24 +++++++-------------
->  1 file changed, 8 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index fb2a98c29094..426f6fdc0075 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -185,6 +185,8 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L=
-_GLOBAL)
->         addq    $(init_top_pgt - __START_KERNEL_map), %rax
->  1:
->
-> +       /* Create a mask of CR4 bits to preserve */
-> +       movl    $(X86_CR4_PAE | X86_CR4_LA57), %edx
->  #ifdef CONFIG_X86_MCE
->         /*
->          * Preserve CR4.MCE if the kernel will enable #MC support.
-> @@ -193,20 +195,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM=
-_L_GLOBAL)
->          * configured will crash the system regardless of the CR4.MCE val=
-ue set
->          * here.
->          */
-> -       movq    %cr4, %rcx
-> -       andl    $X86_CR4_MCE, %ecx
-> -#else
-> -       movl    $0, %ecx
-> +       orl     $X86_CR4_MCE, %edx
->  #endif
-> +       movq    %cr4, %rcx
-> +       andl    %edx, %ecx
->
-> -       /* Enable PAE mode, PSE, PGE and LA57 */
-> -       orl     $(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
-> -#ifdef CONFIG_X86_5LEVEL
-> -       testb   $1, __pgtable_l5_enabled(%rip)
-> -       jz      1f
-> -       orl     $X86_CR4_LA57, %ecx
-> -1:
-> -#endif
-> +       /* Even if ignored in long mode, set PSE uniformly on all logical=
- CPUs. */
-> +       btsl    $X86_CR4_PSE_BIT, %ecx
->         movq    %rcx, %cr4
+On 24-02-21 15:41:41, Konrad Dybcio wrote:
+> On 21.02.2024 15:38, Abel Vesa wrote:
+> > Add nodes for SMB2360 with the eUSB2 repeater nodes.
+> > 
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/smb2360.dtsi | 51 +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 51 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/smb2360.dtsi b/arch/arm64/boot/dts/qcom/smb2360.dtsi
+> > new file mode 100644
+> > index 000000000000..8d7bdb56e6fe
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/qcom/smb2360.dtsi
+> > @@ -0,0 +1,51 @@
+> > +// SPDX-License-Identifier: BSD-3-Clause
+> > +/*
+> > + * Copyright (c) 2023, Linaro Limited
+> > + */
+> > +
+> > +#include <dt-bindings/interrupt-controller/irq.h>
+> > +#include <dt-bindings/spmi/spmi.h>
+> > +
+> > +/ {
+> > +};
+> > +
+> > +&spmi_bus1 {
+> > +	smb2360h: pmic@7 {
+> 
+> Hm, I'm not 100% sure about bringing in this letter-suffix notation..
+> 
+> But then, is there anything better? What are they called in schematics?
+> SMB2360_n, perhaps?
 
-This CR4 write now does the global flush - see below.
 
->
->         /* Setup early boot stage 4-/5-level pagetables. */
-> @@ -226,11 +221,8 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
-L_GLOBAL)
->          * Do a global TLB flush after the CR3 switch to make sure the TL=
-B
->          * entries from the identity mapping are flushed.
->          */
+Yeah, just realized that this is wrong. I need to do something like
+sc8280xp-pmics.dtsi.
 
-This comment is misleading now since it's the first CR4 write above
-(with PGE clear) that actually does the global flush.
+There are different sources of information for the suffix, some of them 
+use smb2360k, some of them use smb2360_0. Will go with the second.
 
-> -       movq    %cr4, %rcx
-> -       movq    %rcx, %rax
-> -       xorq    $X86_CR4_PGE, %rcx
-> +       btsl    $X86_CR4_PGE_BIT, %ecx
->         movq    %rcx, %cr4
-> -       movq    %rax, %cr4
->
->         /* Ensure I am executing from virtual addresses */
->         movq    $1f, %rax
-> --
-> 2.44.0.rc0.258.g7320e95886-goog
->
-
-Brian Gerst
+> 
+> konrad
 
