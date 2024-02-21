@@ -1,118 +1,234 @@
-Return-Path: <linux-kernel+bounces-74396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91FDC85D369
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:23:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 398BD85D371
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:27:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3A631C2245E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:23:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7221C2157F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4EC3D0DD;
-	Wed, 21 Feb 2024 09:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C073C494;
+	Wed, 21 Feb 2024 09:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LrmSA7G2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y6SAPo/o"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2583D0B9;
-	Wed, 21 Feb 2024 09:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B0E3D38D
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708507415; cv=none; b=qYOeVMdii+7zm/0XmQ5ugD5RZOJCwklIa7K04b0rh2CLeq9oNCJJy1/vSz8BpV9mUeNzO7TK0roY1NaoPM6n9vQ7n1eE82MoJydVU5eTrtRHXkIKHX4JXAp66tjKOF7m7LeibTbFO48cPzHXQ1k3N4ccXWvzI4ie5D+X2eBxOTE=
+	t=1708507651; cv=none; b=bGfa+pXvIxM7rrws38QjbxuVal5LDRJ5NzuUZQ7tCtknfWmBYkfBISUw768B9X17mRLHodmYr5Rgh2luPDKbJoHAf92RE76+2A9PS10GkeSFbKxmzTb3AU0PGLyv91uXkLPb7OhL4CGnPhtqAP/thVSaS1w8CafjSvbq7KoaPnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708507415; c=relaxed/simple;
-	bh=jE1ncH7sLUYatuNt7cLbmypurrJj6Bf/Ccrj6W1lvQc=;
-	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
-	 In-Reply-To; b=FelfAn0uA42CcxK62mam3079GYUbTsfS4+kwcu7/qSIOy8DIM+vygBZYvDy7hl2nm1sFglOiRbz6VC+jHx9WM+E4IYTeeFz3QVCzfnxhxw/QRtcBMhhH4k2E6nGtz/eCT43UGFvUtAjwueUIfM9I6OQELNMxxh/P8zT+xAtaG90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LrmSA7G2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C35C433C7;
-	Wed, 21 Feb 2024 09:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708507415;
-	bh=jE1ncH7sLUYatuNt7cLbmypurrJj6Bf/Ccrj6W1lvQc=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=LrmSA7G2qnXbBZhzlDs81CW9rI3+FG6uXE41/r/OntunNmQAaXDrUdQ8ItFLdHyn+
-	 bNAfSgOe2g83K0QYoUPAzIXpjzHL7G4l3xvd8XB/qJcF947Mt65f9sgd99elh1g01v
-	 /9tAmqpvAK1edAwv7CN7XVVNFYT9gOY5u5xdfzMxSD6pJRfCvbn4uF9h6O2yVw5fIw
-	 a4rDLwUB3BShO/RVIULt8/jeq6Te5kQkxR+tRjhbSPAPByOprD+IDlTGO/be3/SsIW
-	 oSd+YaFoVy8b+45thdfESHxajkjPW6jTgRNnbfcW+SgrbNClj9xvf8E4CKYySc//gg
-	 0kgN66e1XzQJQ==
-Content-Type: multipart/signed;
- boundary=e9f867f281deaf04305f7f7b113436157ecc73b10b85215ac510f5eb30ca;
- micalg=pgp-sha256; protocol="application/pgp-signature"
-Date: Wed, 21 Feb 2024 10:23:25 +0100
-Message-Id: <CZANBUQ2RJ3N.DO07Z9VFJCBZ@kernel.org>
-Cc: "Yazan Shhady" <yazan.shhady@solid-run.com>, "Rob Herring"
- <robh@kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Josua Mayer" <josua@solid-run.com>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, "Takahiro Kuwano" <tkuw584924@gmail.com>,
- "Takahiro Kuwano" <Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH v7] dt-bindings: mtd: spi-nor: add optional interrupts
- property
-X-Mailer: aerc 0.16.0
-References: <20240219-mtd-flash-interrupt-binding-v7-1-206e30a656fa@solid-run.com> <CZAM553H2H56.2TDN36QEL90XX@kernel.org> <a0144c5b-4095-4a0c-84b6-93dfe9631a6b@solid-run.com>
-In-Reply-To: <a0144c5b-4095-4a0c-84b6-93dfe9631a6b@solid-run.com>
+	s=arc-20240116; t=1708507651; c=relaxed/simple;
+	bh=5QP0MuDrmxNzRblbI3qrO9Ljkt4BlG3Q0Bb0TpHHhGQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ux+mrkhbkULk/KhnA6kIfuERNEciypUvVUe7cyB96EGqN+RsDZOEj9CM41ZTuxqgVFbmUP9NbbFbhjHVp7SptKy2bHiC7hPYfCh0g4XLRz/hIAjnwxYSNmw7TVApP4RKGO/twK3jWEPpljJQ+zC1ca+XkT34vpkM/NbTpxBosmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y6SAPo/o; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708507636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=JqDQzqQUNVGgLXFQ47h2MyrP+vNxqZ2Sfg76FoOL2Z4=;
+	b=Y6SAPo/own6Y9bMWQqiGU4Gj2QqVahyM30URvU9hT6XBnsWh29MwZDWGcBeJJ66IEOQp9O
+	oEva/PvNNe1iHgCDppDKeqEPLYDYQbd27bIFJ70P6AxJ+Z3uAMQO5iEmmiTAA2+fA1DYuz
+	Y7JeIWGAydRBNj7Ph4d4HFXj0fwLRfA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-294-UW1KqNBdOsaUUyfEDu-VaA-1; Wed, 21 Feb 2024 04:27:14 -0500
+X-MC-Unique: UW1KqNBdOsaUUyfEDu-VaA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-410d0660929so31518335e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:27:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708507633; x=1709112433;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JqDQzqQUNVGgLXFQ47h2MyrP+vNxqZ2Sfg76FoOL2Z4=;
+        b=namVvgQ8qeAxnFkdH8t8riO7vFr1Nn4tJ9zzCT3jANkpb2kMIVZvGT42fSiOH/KUOJ
+         9lCOK+BHKwz0GuvvWs37Jaanbgu1/81oMfxrZ2A/kXbpdhzoLJD2Ecti7D0mf/LvI9ru
+         GWzEs/t/UgnRJh9RLTzkX5mBCeOVXyfRHs3q/fQhHDg9IL5L8Vc7T89/GMeBefOYlYOm
+         hZqXUzkm0h5QSify2+RungmYWDw06+VqlZayIOjMHcK3lpFUjI6hb0Yv28bIVMYv5Q44
+         GYEcQB5V4uvAq9SP/0MosjMzcP6N5LKbRX0f+7DIOKZygsEZod5mHXXGsuD4gTTh4A78
+         EJsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiAbzhY/u4VpnhdwPCo3ihJ+nnShKcdFOOfco12vjdlmSW6QpBOxv6QzGHrbupcbpKQhiBR4pQA7yth2Mb0jqLo+wjsF4UrEMK3dNb
+X-Gm-Message-State: AOJu0Yzu8s8QI9O6YfM2uHpbBbHU49HbKyfMVC6tZ5h97LySDzTMpajb
+	devaORNt4/yfdTDB+7wtIlxqtWwohpNf5CYqlx3tPFhKZoQvH8aoxR1OwnNKcWGxaealCGs0mqd
+	MyzcS4VrePY8QDm7yXUxqKh5Yk3Z9slloZ6oGN7+l6F9MPQmWhsoaH/bpOaPnYA==
+X-Received: by 2002:a05:600c:19c7:b0:412:5296:9737 with SMTP id u7-20020a05600c19c700b0041252969737mr13136567wmq.12.1708507631913;
+        Wed, 21 Feb 2024 01:27:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJ7FuH/em5oiRt/ZTOR4oMLbXYFTRabnhBDn5rQM4tupeTaNWMPYn2RFDHXi6wWaSGqKntiQ==
+X-Received: by 2002:a05:600c:19c7:b0:412:5296:9737 with SMTP id u7-20020a05600c19c700b0041252969737mr13136504wmq.12.1708507631270;
+        Wed, 21 Feb 2024 01:27:11 -0800 (PST)
+Received: from [10.32.64.237] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id jj2-20020a05600c6a0200b004126732390asm1837805wmb.37.2024.02.21.01.27.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 01:27:10 -0800 (PST)
+Message-ID: <cf5409c3-254a-459b-8969-429db2ec6439@redhat.com>
+Date: Wed, 21 Feb 2024 10:27:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] mm: pgalloc: support address-conditional pmd
+ allocation
+Content-Language: en-US
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Maxwell Bland <mbland@motorola.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
+ "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+ "ardb@kernel.org" <ardb@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
+ "ast@kernel.org" <ast@kernel.org>,
+ "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "brauner@kernel.org" <brauner@kernel.org>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "cl@linux.com" <cl@linux.com>, "daniel@iogearbox.net"
+ <daniel@iogearbox.net>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "dennis@kernel.org" <dennis@kernel.org>,
+ "dvyukov@google.com" <dvyukov@google.com>,
+ "glider@google.com" <glider@google.com>,
+ "gor@linux.ibm.com" <gor@linux.ibm.com>,
+ "guoren@kernel.org" <guoren@kernel.org>,
+ "haoluo@google.com" <haoluo@google.com>,
+ "hca@linux.ibm.com" <hca@linux.ibm.com>,
+ "hch@infradead.org" <hch@infradead.org>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "jolsa@kernel.org" <jolsa@kernel.org>,
+ "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+ "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+ "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "lstoakes@gmail.com" <lstoakes@gmail.com>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "meted@linux.ibm.com" <meted@linux.ibm.com>,
+ "michael.christie@oracle.com" <michael.christie@oracle.com>,
+ "mjguzik@gmail.com" <mjguzik@gmail.com>,
+ "mpe@ellerman.id.au" <mpe@ellerman.id.au>, "mst@redhat.com"
+ <mst@redhat.com>, "muchun.song@linux.dev" <muchun.song@linux.dev>,
+ "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+ "npiggin@gmail.com" <npiggin@gmail.com>,
+ "palmer@dabbelt.com" <palmer@dabbelt.com>,
+ "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+ "quic_nprakash@quicinc.com" <quic_nprakash@quicinc.com>,
+ "quic_pkondeti@quicinc.com" <quic_pkondeti@quicinc.com>,
+ "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+ "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
+ "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
+ "samitolvanen@google.com" <samitolvanen@google.com>,
+ "sdf@google.com" <sdf@google.com>, "song@kernel.org" <song@kernel.org>,
+ "surenb@google.com" <surenb@google.com>,
+ "svens@linux.ibm.com" <svens@linux.ibm.com>, "tj@kernel.org"
+ <tj@kernel.org>, "urezki@gmail.com" <urezki@gmail.com>,
+ "vincenzo.frascino@arm.com" <vincenzo.frascino@arm.com>,
+ "will@kernel.org" <will@kernel.org>,
+ "wuqiang.matt@bytedance.com" <wuqiang.matt@bytedance.com>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "zlim.lnx@gmail.com" <zlim.lnx@gmail.com>,
+ "awheeler@motorola.com" <awheeler@motorola.com>
+References: <20240220203256.31153-1-mbland@motorola.com>
+ <20240220203256.31153-3-mbland@motorola.com>
+ <838a05f0-568d-481d-b826-d2bb61908ace@csgroup.eu>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <838a05f0-568d-481d-b826-d2bb61908ace@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
---e9f867f281deaf04305f7f7b113436157ecc73b10b85215ac510f5eb30ca
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+On 21.02.24 08:13, Christophe Leroy wrote:
+> 
+> 
+> Le 20/02/2024 à 21:32, Maxwell Bland a écrit :
+>> [Vous ne recevez pas souvent de courriers de mbland@motorola.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> While other descriptors (e.g. pud) allow allocations conditional on
+>> which virtual address is allocated, pmd descriptor allocations do not.
+>> However, adding support for this is straightforward and is beneficial to
+>> future kernel development targeting the PMD memory granularity.
+>>
+>> As many architectures already implement pmd_populate_kernel in an
+>> address-generic manner, it is necessary to roll out support
+>> incrementally. For this purpose a preprocessor flag,
+> 
+> Is it really worth it ? It is only 48 call sites that need to be
+> updated. It would avoid that processor flag and avoid introducing that
+> pmd_populate_kernel_at() in kernel core.
 
-[+ Takahiro]
++1, let's avoid that if possible.
 
-Hi,
+-- 
+Cheers,
 
-On Wed Feb 21, 2024 at 10:13 AM CET, Josua Mayer wrote:
-> Hi,
->
-> Am 21.02.24 um 09:27 schrieb Michael Walle:
-> > Hi,
-> >
-> > On Mon Feb 19, 2024 at 3:41 PM CET, Josua Mayer wrote:
-> >> Some spi flash memories have an interrupt signal which can be used for
-> >> signalling on-chip events such as busy status or ecc errors to the hos=
-t.
-> > Do you have an example? Maybe one with a public datasheet?
->
-> My example is Infineon S28HS512T, however datasheet download requires=20
-> user account.
->
-> S26HS512T has interrupt line, too, and datasheet is downloadable without=
-=20
-> registration:
-> https://www.infineon.com/cms/en/product/memories/nor-flash/semper-nor-fla=
-sh-family/semper-nor-flash/#!documents
+David / dhildenb
 
-Thanks, as far as I can see, both are hyperbus flashes. I'm asking
-because I'm not aware of any SPI NOR flash with an interrupt line.=20
-
--michael
-
---e9f867f281deaf04305f7f7b113436157ecc73b10b85215ac510f5eb30ca
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZdXBDRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvsMiwEAjOqBidGogjxPHhp8y+blJyfOYdrapFQv
-ZY95qF3u2uIBAP+EXR9ovlBJIAjMCkirhifr2qt6x005yRPmB2mlhi8N
-=iSVx
------END PGP SIGNATURE-----
-
---e9f867f281deaf04305f7f7b113436157ecc73b10b85215ac510f5eb30ca--
 
