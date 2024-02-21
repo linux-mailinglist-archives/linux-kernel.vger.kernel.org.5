@@ -1,111 +1,114 @@
-Return-Path: <linux-kernel+bounces-74816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063A085DBB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:44:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D2C85DBBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998B41F2479A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:44:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC8401F2479A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC0279DAE;
-	Wed, 21 Feb 2024 13:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25DD7993D;
+	Wed, 21 Feb 2024 13:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WWA+wJgn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kdesK/7Y"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203E41E4B2
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAF378B53;
+	Wed, 21 Feb 2024 13:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708523054; cv=none; b=dqxCMiWcsGpnWcFGC2XxMytxTi2xnEkiYuKG7ipWcJ+3jjfvx2BUowONg+KbvjKrNaYQNJbjtofS0hPTi8Il0LBbOu79RRhuYiK9RZNgfedkmaEn+/VtK50c7hq6qEtxpuqDCx11PgTk6eVFUEKo/c50hKbxHL1KiSFDMjsRhSI=
+	t=1708523079; cv=none; b=QG5khIVkdxLYc6TmDS/0cRB8Z0NhML3Lt49uV/CFQRXU3r5Xaf7SN+6btbuyLthPp3+g6hORr+loGhfChCjmQddRKvubKCjIMq9z8qeoARLZuXFS48Bh+gywD5ewhPHBPtRk5hdGUfdI9lt/V/KkYSDsl0+WTKdr60ezLdRrGSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708523054; c=relaxed/simple;
-	bh=MrsZ6R8kVdxd/n4xz6d/BNCiT9VSGP+MbjDNCaoodJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aSbd3NjuFmRcyulps49cMyKra5glDwC5yVxyP3Iu3uswPfHfHaH8sneuM9j4SeoWHFuWzSrCn1+BkNjVmRNxDY8k6YHAuFUOFLlk1aW8b/PWEKeRUSQZKpNPOYI0tXbP5ISEDmIO8OUViB5L+AfbVTonnFrXMocj/LDo4zuB26o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WWA+wJgn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708523052;
+	s=arc-20240116; t=1708523079; c=relaxed/simple;
+	bh=jZFVlaoxSO28+3NT998Mf72mtvHwv/LubVSsk9HbnJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DKut4VhT30QQuoDMHN4meIItMUZZnXDo5CWzuBWPP65WZPkKCBu7Bf4fo8WYrt54Q6nZ6YPs791hzzJCTblYL5UaIZTjGno22+B/i3AqPvEjSGhaZuGyfvHMB7sW1YJAJxiejh9fMFEasLfEEoiEYH1SDWnIxH6okzJktYNlFxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kdesK/7Y; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5980660002;
+	Wed, 21 Feb 2024 13:44:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708523074;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kjg3ALQw4zFfCtoxrqU3mC8VARBMiLwWXwoSwpKkxVk=;
-	b=WWA+wJgnLDUk370kmYH/LehaT5Ve7heAzmR4VSiu2MrpVJh8BmRE2z/UFKzKRiaOfZgGtD
-	A/fOipeYFFzCZGG08IJSMpx57l2knMjOJF0GsqISk6o0vLD1LvuCY7T8cIa5CPRlYZkjeH
-	oeEW8XEwxGs2SJZzs2Yr9i27QBSchLo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-viBCBzv1MZWeE0zNlD0FTQ-1; Wed, 21 Feb 2024 08:44:09 -0500
-X-MC-Unique: viBCBzv1MZWeE0zNlD0FTQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1712C867943;
-	Wed, 21 Feb 2024 13:44:08 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 21A5F2166B36;
-	Wed, 21 Feb 2024 13:44:06 +0000 (UTC)
-Date: Wed, 21 Feb 2024 21:44:04 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, piliu@redhat.com, linux-sh@vger.kernel.org,
-	x86@kernel.org, kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	ebiederm@xmission.com, loongarch@lists.linux.dev,
-	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v2 00/14] Split crash out from kexec and clean up related
- config items
-Message-ID: <ZdX+JMKsQWheE0B0@MiWiFi-R3L-srv>
-References: <20240119145241.769622-1-bhe@redhat.com>
- <9101bb07-70f1-476c-bec9-ec67e9899744@linux.ibm.com>
- <Zb8D1ASrgX0qVm9z@MiWiFi-R3L-srv>
- <559f2595-1477-4ef0-80e4-85ae8b426de7@linux.ibm.com>
+	bh=jrp+YmUU+v0EhVwMHcIQvcwO/VqJPYfeVs/EWjoSXJA=;
+	b=kdesK/7Y8qVDLsCghR0aipV1MYMOWBJevJpEdYlrmc+vqk331xncXZaKQoDfbTKsCCgSY4
+	pFkpEI4J2SsnRORd0MParLYiqNXZEC0a3TnwNaqQy/0YWUbt+Tq47dTm+couH/C06schmB
+	ydviN/SiZmK85C5VpjWmT8eZImWf0aZqcjg3/r0+a9W/sFC/IbYkakP5vMepKmLSsKfJFx
+	s42dEoJyKi2pBT/xce43VCQsZDEyc8Qc6JToSDqcToxLTiFiLAJbQ7NiJpSbD6ZzQ64ov1
+	QG0Jsv2yr0Ect/roDJsitO0mbz/6jScd4Mnbg7Y/Zm4Fn/90vLBKjJ/ueMtQqw==
+Date: Wed, 21 Feb 2024 14:44:31 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Yury Norov <yury.norov@gmail.com>, Vadim Fedorenko
+ <vadim.fedorenko@linux.dev>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
+ <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 RESEND 3/6] bitmap: Make bitmap_onto() available to
+ users
+Message-ID: <20240221144431.149c3a16@bootlin.com>
+In-Reply-To: <Zc5jQ3zR51MDIovB@smile.fi.intel.com>
+References: <20240212075646.19114-1-herve.codina@bootlin.com>
+	<20240212075646.19114-4-herve.codina@bootlin.com>
+	<ZcoOpPb9HfXOYmAr@smile.fi.intel.com>
+	<20240212143753.620ddd6e@bootlin.com>
+	<ZcokwpMb6SFWhLBB@smile.fi.intel.com>
+	<20240212152022.75b10268@bootlin.com>
+	<Zcos9F3ZCX5c936p@smile.fi.intel.com>
+	<Zcptyd/AWrDD3EAL@yury-ThinkPad>
+	<20240215184612.438bd4f2@bootlin.com>
+	<Zc5jQ3zR51MDIovB@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <559f2595-1477-4ef0-80e4-85ae8b426de7@linux.ibm.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On 02/21/24 at 11:15am, Hari Bathini wrote:
-> Hi Baoquan,
-> 
-> On 04/02/24 8:56 am, Baoquan He wrote:
-> > > > Hope Hari and Pingfan can help have a look, see if
-> > > > it's doable. Now, I make it either have both kexec and crash enabled, or
-> > > > disable both of them altogether.
-> > > 
-> > > Sure. I will take a closer look...
-> > Thanks a lot. Please feel free to post patches to make that, or I can do
-> > it with your support or suggestion.
-> 
-> Tested your changes and on top of these changes, came up with the below
-> changes to get it working for powerpc:
-> 
-> 
-> https://lore.kernel.org/all/20240213113150.1148276-1-hbathini@linux.ibm.com/
-> 
-> Please take a look.
+Hi Andy, Yury,
 
-I added a comment to the patch 1 consulting if the "struct crash_mem" is
-appropriate to cover other cases except of kdump memory regions. I am
-wondering if its name need be adjusted, or other kind of memory you
-mentioned can use other structures or create a new one.
+On Thu, 15 Feb 2024 21:17:23 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-If it's has to be done like that, it's fine. 
+[...]
 
+> > Now what's the plan ?
+> > Andy, do you want to send a v2 of this patch or may I get the patch, modify it
+> > according to reviews already present in v1 and integrate it in my current
+> > series ?  
+> 
+> I would like to do that, but under pile of different things.
+> I would try my best but if you have enough time and motivation feel free
+> to take over, address the comments and integrate in your series.
+> 
+> I dunno what to do with bitmap_onto(), perhaps in a separate patch we can
+> replace it with bitmap_scatter() (IIUC) with explanation that the former
+> 1) uses atomic ops while being non-atomic as a whole, and b) having quite
+> hard to get documentation. At least that's how I see it, I mean that I would
+> like to leave bitmap_onto() alone and address it separately.
+> 
+
+I will take the Andy's bitmap_{scatter,gather}() patch in my next iteration.
+And use bitmap_{scatter,gather}() in my code.
+
+For bitmap_onto() replacement, nothing will be done in my next iteration as
+it is out of this series scope.
+
+Hervé
 
