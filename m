@@ -1,118 +1,164 @@
-Return-Path: <linux-kernel+bounces-74524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7654E85D571
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:24:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8523985D575
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F268EB22B18
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:24:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07551F238E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D453F8D1;
-	Wed, 21 Feb 2024 10:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34A03D970;
+	Wed, 21 Feb 2024 10:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="oUycE2NW"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AJZmMTFo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="chhiuuHy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AJZmMTFo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="chhiuuHy"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC44F3F9FD;
-	Wed, 21 Feb 2024 10:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3A545953;
+	Wed, 21 Feb 2024 10:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708511000; cv=none; b=cG7RQkcXxGBxt8MdixW/OKPHAAu6ZJwCvI8bNGU4iSKlhFuZgLBLchJIB6xK8xmJXrVcHfUAv1DPZxYgZg3K02AQ8DPx8llzqsZQrYwzBDGKY3FEiC74rtnMdwXg5OB+zOVLLrCPuHEPthlvm1c7pdngF9DzDeIhBdMlHCU5OEY=
+	t=1708511025; cv=none; b=bSUG3t+C8aD+rPhxYxKFB0SgT2GoTcYRnASjii6EbJLsxaNfaTd/PICcli/AjVYVXJZ3sduqW9nDGDlqL/QCFkSNY0qmNBx0BwQt8687GJYEo3l/eFNvgWasvy84vHIFiK6Lv7rxIRYFrhh4kxEasHDlIp1Fl/H+d/UkAMVUv64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708511000; c=relaxed/simple;
-	bh=le3BALk+Oworr4tEt7cCYiWfOlR3LmiluAhEAP4F2ew=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kCWsprillTI2suZ/1nlAlLPdLJXmwHVI9EhPXknWmdm2cuvC9CF/8A1Ur5nJV4Kjdtk6ilOi3/zYR4SlwcwYviAny3YIcnvLzebuZnoWNUYNlViZat6kvvSmqHhPn8rsFE4+heQfqEJiOJYvKBpIQ6nPggtX+r+9FYUAZoNqwE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=oUycE2NW; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D51F240004;
-	Wed, 21 Feb 2024 10:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708510997;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1708511025; c=relaxed/simple;
+	bh=Z7dZOMSEeCCP4d4SObybf4oqxbV8KdCpxT5f5whhQBA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fc8Grx4y5KAO1qhP+rn9hOXVlggHfHM3vjmyRXIo/L+TBegXVX5zLu8foXruU4RCOsvwFXefmoTNNJM+VSKW+wYtxNQlxFhdqoXPr1Wj62BA5pDv6jFh0AlVnHk2knb+wIVTWCC7l0+ptslAFus+gbxUpGiVngfMNk2QoTjzk0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AJZmMTFo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=chhiuuHy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AJZmMTFo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=chhiuuHy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8575821F49;
+	Wed, 21 Feb 2024 10:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708511020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rq+wybioC8LqyCl9R5OUbd29VCY4wio0dhlATjVMPPA=;
-	b=oUycE2NWHhr9JKpRhvcQI/qQWVSEfDFzrJhUFpN1vSjWU6AyQn8imRa92hSo3TxEO0kEKx
-	8rz7RIMtA4OqxCLr4Kv2NabqEcl0leme9LfP8D1gdy9lOJg1N5r55IEj/tXQdJkCj7QW5w
-	s4Wi+m8Nw9sPf4+XrNb7w9ptO7eo0MIWpUDYylPlmG0N/aCX2mNsgbr2A3+5+/Ksc/jTAP
-	2X02jS4CIFw+8y0eKzejrzdcTV6EKU5l7IkD5+t4vj3qeK/oT9nr9HGH+l7hV7juqO+VXK
-	SiNNRFp7lKrPzNmt3vIVYHH4x+2Aw3e9fCkkCfZ/aeBusdC+fbyEEzQdLRIuNw==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Wed, 21 Feb 2024 11:22:51 +0100
-Subject: [PATCH v3 7/7] arm64: dts: rockchip: add the internal audio codec
+	bh=pwRKoQNdU7TokTyqWSCOhiUQb31LjSPweEvssF3ptLA=;
+	b=AJZmMTFoK97KEnefobpzstz3Rtx5JO9oBlzA8DY4iv28XS/zYghLJSGBAhjbQ7v+hl2iYL
+	+UYtR0gMhvrc487ZnoFvLIwyxaSqGCcIuAOptpRjv4qLe6M1tqMnRZg9kQS+6XjLJ1mrgJ
+	BmoO3bITdfDdnc8qw4Ryljc+b7zt1CA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708511020;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pwRKoQNdU7TokTyqWSCOhiUQb31LjSPweEvssF3ptLA=;
+	b=chhiuuHyVF+6lDFEB7X/S0GQFETJxoFWbql+Zga5Tx7V/AI/HWIx9Cg6RPX1KNBg21i8cE
+	EEPhoVaoofW6CvBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708511020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pwRKoQNdU7TokTyqWSCOhiUQb31LjSPweEvssF3ptLA=;
+	b=AJZmMTFoK97KEnefobpzstz3Rtx5JO9oBlzA8DY4iv28XS/zYghLJSGBAhjbQ7v+hl2iYL
+	+UYtR0gMhvrc487ZnoFvLIwyxaSqGCcIuAOptpRjv4qLe6M1tqMnRZg9kQS+6XjLJ1mrgJ
+	BmoO3bITdfDdnc8qw4Ryljc+b7zt1CA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708511020;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pwRKoQNdU7TokTyqWSCOhiUQb31LjSPweEvssF3ptLA=;
+	b=chhiuuHyVF+6lDFEB7X/S0GQFETJxoFWbql+Zga5Tx7V/AI/HWIx9Cg6RPX1KNBg21i8cE
+	EEPhoVaoofW6CvBA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7939D139D1;
+	Wed, 21 Feb 2024 10:23:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id NomTHSzP1WXnFAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 21 Feb 2024 10:23:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 28F45A0807; Wed, 21 Feb 2024 11:23:40 +0100 (CET)
+Date: Wed, 21 Feb 2024 11:23:40 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+ba698041fcdf4d0214bb@syzkaller.appspotmail.com>
+Cc: almaz.alexandrovich@paragon-software.com, axboe@kernel.dk,
+	brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev,
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+	yuran.pereira@hotmail.com
+Subject: Re: [syzbot] [ntfs3?] kernel panic: stack is corrupted in
+ run_unpack_ex
+Message-ID: <20240221102340.auf7ltb7yikmysf4@quack3>
+References: <000000000000bdf37505f1a7fc09@google.com>
+ <0000000000007a3b2a0611d18c03@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240221-rk3308-audio-codec-v3-7-dfa34abfcef6@bootlin.com>
-References: <20240221-rk3308-audio-codec-v3-0-dfa34abfcef6@bootlin.com>
-In-Reply-To: <20240221-rk3308-audio-codec-v3-0-dfa34abfcef6@bootlin.com>
-To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-rockchip@lists.infradead.org, linux-sound@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000007a3b2a0611d18c03@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [2.89 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.01)[45.14%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[hotmail.com];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=8cdb1e7bec4b955a];
+	 TAGGED_RCPT(0.00)[ba698041fcdf4d0214bb];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[paragon-software.com,kernel.dk,kernel.org,suse.cz,vger.kernel.org,lists.linux.dev,googlegroups.com,zeniv.linux.org.uk,hotmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: **
+X-Spam-Score: 2.89
+X-Spam-Flag: NO
 
-The RK3308 has a built-in audio codec that connects internally to i2s_8ch_2
-or i2s_8ch_3.
+On Tue 20-02-24 07:06:02, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149d61e8180000
+> start commit:   41c03ba9beea Merge tag 'for_linus' of git://git.kernel.org..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8cdb1e7bec4b955a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ba698041fcdf4d0214bb
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e43f56480000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fbabea480000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-
----
-
-Changed in v3: nothing
-
-Changed in v2:
- - use generic node name
----
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index 662c55fe9b77..962ea893999b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -803,6 +803,20 @@ cru: clock-controller@ff500000 {
- 		assigned-clock-rates = <32768>;
- 	};
+Makes sense.
  
-+	codec: codec@ff560000 {
-+		compatible = "rockchip,rk3308-codec";
-+		reg = <0x0 0xff560000 0x0 0x10000>;
-+		rockchip,grf = <&grf>;
-+		clock-names = "mclk_tx", "mclk_rx", "hclk";
-+		clocks = <&cru SCLK_I2S2_8CH_TX_OUT>,
-+			 <&cru SCLK_I2S2_8CH_RX_OUT>,
-+			 <&cru PCLK_ACODEC>;
-+		reset-names = "codec-reset";
-+		resets = <&cru SRST_ACODEC_P>;
-+		#sound-dai-cells = <0>;
-+		status = "disabled";
-+	};
-+
- 	gic: interrupt-controller@ff580000 {
- 		compatible = "arm,gic-400";
- 		reg = <0x0 0xff581000 0x0 0x1000>,
+#syz fix: fs: Block writes to mounted block devices
 
+								Honza
 -- 
-2.34.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
