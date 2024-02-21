@@ -1,147 +1,161 @@
-Return-Path: <linux-kernel+bounces-74671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE71C85D785
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:59:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58B8B85D78A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43EA9B21605
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:59:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163FF283DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C8D48CC7;
-	Wed, 21 Feb 2024 11:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE07B4CB3D;
+	Wed, 21 Feb 2024 12:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7osNXPc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C64f5iQE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cEVxARJJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C64f5iQE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cEVxARJJ"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD19247A7A;
-	Wed, 21 Feb 2024 11:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618414CB28;
+	Wed, 21 Feb 2024 12:01:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708516766; cv=none; b=iYgVt52ESAbXWF/ysuRgBTystn0elpTHtgIr1V9O1QCVWN5QwTvnB738H3FuMZuOCsQBa3H4JlnRkn6t74aWx/XbywiXN4YD9erdE+0uthmKlMhxfD/iwIIhIwSsqTCRcZRdw36Rpaxp/Tj36H+cycuU8ef6q5rrgiD9kmXc46U=
+	t=1708516879; cv=none; b=X+e2X8k5YHoQ1ffI+Uvnxp4tu5uiPBmaSEAoOmgLHOD6fZABkiKjKDKwxFtTLU/RkHJR8nm7K7A7XXdE9cPlYU28xWXmoYtuLas9NBoBDI4cP6OLsVD4ni+3VT0I7OCyuWAGJ4mR4oi9H4+tnYApN8K/eeSCFYGiiSxl8fkRFaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708516766; c=relaxed/simple;
-	bh=icr+Ws7AdDS8MhLtU6pYh5gnTY6nWC5oeWHCPgrtqac=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=owZQUFcjHJzMR21BziImQjc1qzp2qJldyEQKiR1AfAqrWiKL94Mg8gohEQNB/JxZfWSGjXUcIv+JmeVkk3HFprioRS/d4jcJjLDjYaiBo8y8tGmQX/V9h1lhSyX4yYrKr+w1DcaZWZv/X+Tuq9gu0P+e+ARnLFXz2VTzCBXzkGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7osNXPc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7916C433C7;
-	Wed, 21 Feb 2024 11:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708516766;
-	bh=icr+Ws7AdDS8MhLtU6pYh5gnTY6nWC5oeWHCPgrtqac=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=b7osNXPcai2BCK0LMvdyyVsWjG8RLcrHGFG+6UbibZYadg2QRj/Z1m97e21ExmSir
-	 oaIgimntM9xsZx7LwugvwJsbiyP9wjgCgJSNyamLpQLD7IrsCp8fKlSbI1jcVV9xK7
-	 /D/P9Ly3/hwyJZQ8oVUDUNDuX/4NNKz7dH9hcOCb8gtPFRnNDAQ/7o5Mzn3WZ3D6Ar
-	 MrNWSLpU4k9tIZNkBl5aK6z5RH8wg7h/2beqT0F9JWnbT6MdTJg0UONe6QvH1yBlB3
-	 UgAhnRaDhOuDIPN84qqxS/sEjIi+j0qodNBdSHukYfN5Z7CLZTEJj4kuVpL1WW7hU3
-	 klWq4Xxg8m6qw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
- Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
- linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v13 06/13] irqchip: Add RISC-V incoming MSI controller
- early driver
-In-Reply-To: <CAK9=C2Xnzg3KAVETXN+ZGLWhVtaJuU4uXs3WH2ZondkBJMHFcA@mail.gmail.com>
-References: <20240220060718.823229-1-apatel@ventanamicro.com>
- <20240220060718.823229-7-apatel@ventanamicro.com>
- <87frxnfj3p.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2Xnzg3KAVETXN+ZGLWhVtaJuU4uXs3WH2ZondkBJMHFcA@mail.gmail.com>
-Date: Wed, 21 Feb 2024 12:59:22 +0100
-Message-ID: <874je2yqn9.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1708516879; c=relaxed/simple;
+	bh=rh5d4BxxAV0hi2KwaLY55hyv9DtaFkNtXG73fekBbXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljAukjPIZGYgkfV+4OMII5RqJPdrjKjf9MEwSqtH2vJBZ2auJXyd6+9jFsQfruXbdYXB4tw0mNmzgy7lZhe++tuKMAl00iMK773GVZUDusFrGcHlx6vS+tqPoqjc6EHM3KPnKXvrfM6Lf0Anz+wuxbfRnJj8DZQZT8a/4H2Pp7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C64f5iQE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cEVxARJJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C64f5iQE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cEVxARJJ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8378A22339;
+	Wed, 21 Feb 2024 12:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708516875;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ni5mPriG+jmdxYyrnCDO78SkVFYHUHeUp1IB1EtveNU=;
+	b=C64f5iQEcln2Laa+eMKfTDPpIopirhjth2p3qxv94GAcIYvy15a1IjQNtuNCC0UlEEMLV3
+	bQtJzIs9lSMikbgkwAYOaQ6HiVm+My790Y3nefL27Lgv5CAfREZYiMg8QHz5L6lkY0IFU4
+	ToCvaasGCRZM+geRfdS798HzYrVHfjE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708516875;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ni5mPriG+jmdxYyrnCDO78SkVFYHUHeUp1IB1EtveNU=;
+	b=cEVxARJJsTOx2Gz4E+rsY73JGWymItp/5zg0MHzO0S5PFwqnDiCpoE/XilXCYLWnCE+rNA
+	Ea09qcqZmrF1tKDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708516875;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ni5mPriG+jmdxYyrnCDO78SkVFYHUHeUp1IB1EtveNU=;
+	b=C64f5iQEcln2Laa+eMKfTDPpIopirhjth2p3qxv94GAcIYvy15a1IjQNtuNCC0UlEEMLV3
+	bQtJzIs9lSMikbgkwAYOaQ6HiVm+My790Y3nefL27Lgv5CAfREZYiMg8QHz5L6lkY0IFU4
+	ToCvaasGCRZM+geRfdS798HzYrVHfjE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708516875;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ni5mPriG+jmdxYyrnCDO78SkVFYHUHeUp1IB1EtveNU=;
+	b=cEVxARJJsTOx2Gz4E+rsY73JGWymItp/5zg0MHzO0S5PFwqnDiCpoE/XilXCYLWnCE+rNA
+	Ea09qcqZmrF1tKDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A12013A25;
+	Wed, 21 Feb 2024 12:01:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id YJu1GQvm1WWmKgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 21 Feb 2024 12:01:15 +0000
+Date: Wed, 21 Feb 2024 13:00:30 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] btrfs: Use KMEM_CACHE instead of kmem_cache_create
+Message-ID: <20240221120030.GI355@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240220090645.108625-1-chentao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220090645.108625-1-chentao@kylinos.cn>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=C64f5iQE;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cEVxARJJ
+X-Spamd-Result: default: False [-0.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.28)[74.49%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.29
+X-Rspamd-Queue-Id: 8378A22339
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Anup Patel <apatel@ventanamicro.com> writes:
+On Tue, Feb 20, 2024 at 05:06:39PM +0800, Kunwu Chan wrote:
+> As David Sterba said in 
+> https://lore.kernel.org/all/20240205160408.GI355@twin.jikos.cz/
+> I'm using a patchset to cleanup the same issues in the 'brtfs' module.
+> 
+> For where the cache name and the structure name match.
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> 
+> Kunwu Chan (6):
+>   btrfs: Simplify the allocation of slab caches in
+>     btrfs_delayed_inode_init
+>   btrfs: Simplify the allocation of slab caches in ordered_data_init
+>   btrfs: Simplify the allocation of slab caches in
+>     btrfs_transaction_init
+>   btrfs: Simplify the allocation of slab caches in btrfs_ctree_init
+>   btrfs: Simplify the allocation of slab caches in
+>     btrfs_delayed_ref_init
+>   btrfs: Simplify the allocation of slab caches in btrfs_free_space_init
 
->> > +void imsic_vector_mask(struct imsic_vector *vec)
->> > +{
->> > +     struct imsic_local_priv *lpriv;
->> > +
->> > +     lpriv =3D per_cpu_ptr(imsic->lpriv, vec->cpu);
->> > +     if (WARN_ON(&lpriv->vectors[vec->local_id] !=3D vec))
->> > +             return;
->> > +
->> > +     /*
->> > +      * This function is called through Linux irq subsystem with
->> > +      * irqs disabled so no need to save/restore irq flags.
->> > +      */
->> > +
->> > +     raw_spin_lock(&lpriv->lock);
->> > +
->> > +     vec->enable =3D false;
->> > +     bitmap_set(lpriv->dirty_bitmap, vec->local_id, 1);
->> > +     __imsic_remote_sync(lpriv, vec->cpu);
->> > +
->> > +     raw_spin_unlock(&lpriv->lock);
->> > +}
->>
->> Really nice that you're using a timer for the vector affinity change,
->> and got rid of the special/weird IMSIC/sync IPI. Can you really use a
->> timer for mask/unmask? That makes the mask/unmask operation
->> asynchronous!
->>
->> That was what I was trying to get though with this comment:
->> https://lore.kernel.org/linux-riscv/87sf24mo1g.fsf@all.your.base.are.bel=
-ong.to.us/
->>
->> Also, using the smp_* IPI functions, you can pass arguments, so you
->> don't need the dirty_bitmap tracking the changes.
->
-> The mask/unmask operations are called with irqs disabled so if
-> CPU X does synchronous IPI to another CPU Y from mask/unmask
-> operation then while CPU X is waiting for IPI to complete it cannot
-> receive IPI from other CPUs which can lead to crashes and stalls.
->
-> In general, we should not do any block/busy-wait work in
-> mask/unmask operation of an irqchip driver.
-
-Hmm, OK. Still, a bit odd that when the .irq_mask callback return, the
-masking is not actually completed.
-
-1. CPU 0 tries to mask an interrupt tried to CPU 1.
-2. The timer is queued on CPU 1.
-3. The call irq_mask returns on CPU 0
-4. ...the irq is masked at some future point, determined by the callback
-   at CPU 1
-
-Is that the expected outcome?
-
-There are .irq_mask implementation that does seem to go at length
-(blocking) to perform the mask, e.g.: gic_mask_irq() which calls
-gic_{re,}dist_wait_for_rwp that have sleep/retry loops. The GIC3 ITS
-code has similar things going on.
-
-I'm not saying you're wrong, I'm just trying to wrap my head around the
-masking semantics.
-
-> The AIA IMSIC spec allows setting ID pending bit using MSI write
-> irrespective whether ID is enabled or not but the interrupt will be
-> taken only after ID is enabled. In other words, there will be no
-> loss of interrupt with delayed mask/unmask using async IPI or
-> lazy timer.
-
-No loss, but we might *get* an interrupt when we explicitly asked not to
-get any. Maybe that's ok?
-
-
-Bj=C3=B6rn
+Added to for-next, thanks. I've edited the changels so the name of the
+structure is mentioned rather than the function where it happens, and
+did some minor formatting adjustments.
 
