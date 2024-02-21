@@ -1,118 +1,201 @@
-Return-Path: <linux-kernel+bounces-75208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7864385E4BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFCB885E4C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:41:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D61D1F22E51
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:39:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AE601F23043
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E8284FD0;
-	Wed, 21 Feb 2024 17:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AC383CDB;
+	Wed, 21 Feb 2024 17:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3nFf1xfe";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KFUnHNkZ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cTIffFjH"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3CF784052;
-	Wed, 21 Feb 2024 17:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E0B69313;
+	Wed, 21 Feb 2024 17:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537162; cv=none; b=HFCL2LEjcPrrsapYZwv56NFifh4ykRl0w2mncI1OSIuhEjvjUiV7GGJCIuGPjdrvH1Nyca8r49op5q4I4C8nkDvgJfsRAhlHHwTNVfbtJPzQnWmLuYNZZ6FgfeWpMKzhJDdPrYl3tXF443Klo3oNjbRQKNy6YF4Q8w3kp6NlVHw=
+	t=1708537252; cv=none; b=IG4wcI/hP/kU40goemQgb2lAgquBSPL9RE/J6OSWN3KV7JfF4eK/ew/OieqTDLIOL59Axjgtn9hp3dhYmEl4Je4KokpNw0KRsGW4Ns7n8pKQfblcUnZrHTSF5/lXOTuvKHu7NGC0XZo380Wo6p/qcrpUw5MxuT6KqEpo6HlxW/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537162; c=relaxed/simple;
-	bh=fxkW9ID7GJiMhERWY8n83OqMjHTdc9vsb1OQk6j2MUw=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=G+mFghO/54Vq+IZHVawoLQ2NuEmSyJF5SzFubxmqx2viRwPOuqtFgoSPYKfAbb8XS9B7/VAAOt+rX8lTCr0GwzBSvmRLkmKmVH8vUBvZU1eVkppHRE+4OuX4iZIXKf7T/PcpkIGAfES9iWpTOwoWuV12kM09qaqypw00XVH0I0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3nFf1xfe; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KFUnHNkZ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 21 Feb 2024 17:39:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708537159;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DGaJBynUBIXtMCHxSfHxeRMycMvw4ZUn9lwGf5oGM1I=;
-	b=3nFf1xfePu+kXptdCjw8Eml/AZQYHAEpLVqEDWQigmEtd6hTO3d9Ka5itod38dFtHPsTmy
-	4Dv4FmfxnxXmACYhMD/0GYMiVszlBlMnppm0kgzDlpDEHY2nQCtAbDeUfjMgcgLoBnNAr3
-	DJc4JdH5pN9MRi/vuPZdcfckEJC7ZnAPejPWjHMsuEDtbquOVGdg0mVQ19LQtN/GHvX6bV
-	bcFJSP8JQBascIggnRZ5AP/r0Y6Fq4ISygiefl/ujJmnjv4bWYV/bJCMF5MoyErR5dRf+j
-	xlUQ9mt0gvp2FDrFkFyhggGuk2zEvf7jUJj62x9sUTpvaC4nNrohL0yCJtq1sw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708537159;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DGaJBynUBIXtMCHxSfHxeRMycMvw4ZUn9lwGf5oGM1I=;
-	b=KFUnHNkZU5qr7lYW5F83GHTfUINbxwFx4vJ0HxWIYTc1MbILxoL5xpBTteTsV5HzF0ghh+
-	OwzQ84alsLkXufAg==
-From: "tip-bot2 for Randy Dunlap" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/vic: Fix a kernel-doc warning
-Cc: Randy Dunlap <rdunlap@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240221064104.7863-1-rdunlap@infradead.org>
-References: <20240221064104.7863-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1708537252; c=relaxed/simple;
+	bh=yLnMOorwj6QR1Q8oj/Iy54vokcHJ0eqwtfTaOHATb1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GDGxDZ6kWWJGpVVdD4qBtzt1UFXav8FXlaTr8PcKS2K+7siB2ppGMfaI8RfjUd4t365nFLzEsFjKOXQ9HrMsL9S4eHGWj5Da3HW8mjW2BOh7T7BEeyRBGGiviF5uLuwx62R5NCF5e8yuPCjdYZrOe34PqZATJPlm36l0f17tcwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cTIffFjH; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rIzuZ6FsR3sWeVB3z/k8YzwbvGS8Ck67EO49fqrTZqs=; b=cTIffFjHI+K2z/E9s7UbxErFsG
+	7PzQ9ZKYkXud32O3aA0Frwag4BWV+ym6GvRCPPadMXG/qv7zUeSrtclIK6a6wVudMKztfoDbdPfEZ
+	lwMi4hwd2y7F8LEJyv1fM8nvMKYzyv+CoH62NKQhFjubZGvPi156d7j04MjNPVOR5F34cDv4ejZ27
+	V60Nkh8uZcMq73hqsqyAgfZjZOu4aIXWerzro65GdLuWhv1iNNCCnKdZ972UItt+5yrV+ooJPtvcJ
+	OBLXaopJpgxjluOEtpEGkDqkD7Zf3Ui0RYCEARrt5opvnSzZEBEZEAzWLUm8KneKurfbxZAltmIcv
+	1t6bYHAg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rcqaO-00000001xe0-2o8H;
+	Wed, 21 Feb 2024 17:40:48 +0000
+Date: Wed, 21 Feb 2024 09:40:48 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Changbin Du <changbin.du@huawei.com>, live-patching@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Xiaoyi Su <suxiaoyi@huawei.com>,
+	Eric Chanudet <echanude@redhat.com>
+Subject: Re: [PATCH v3] modules: wait do_free_init correctly
+Message-ID: <ZdY1oHl8L8wDEvlW@bombadil.infradead.org>
+References: <20240217081810.4155871-1-changbin.du@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170853715812.398.5557328318863303144.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240217081810.4155871-1-changbin.du@huawei.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-The following commit has been merged into the irq/core branch of tip:
++ live-patching folks,
 
-Commit-ID:     eb0e1ebb1772302213f4882f5fada2b3f6362e66
-Gitweb:        https://git.kernel.org/tip/eb0e1ebb1772302213f4882f5fada2b3f6362e66
-Author:        Randy Dunlap <rdunlap@infradead.org>
-AuthorDate:    Tue, 20 Feb 2024 22:41:04 -08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 21 Feb 2024 18:31:08 +01:00
+Finally, things are starting to be much clearer. Thanks for the time
+for working on this, some more comments below and a question which
+I think deserves some attention.
 
-irqchip/vic: Fix a kernel-doc warning
+On Sat, Feb 17, 2024 at 04:18:10PM +0800, Changbin Du wrote:
+> The synchronization here is just to ensure the module init's been freed
+> before doing W+X checking. 
 
-Drop one extraneous struct member to quieten a warning:
+Some nits, this should read instead:
 
-drivers/irqchip/irq-vic.c:73: warning: Excess struct member 'parent_irq' description in 'vic_device'
+Fix the ordering of freeing of a module init so that it happens before
+W+X checking.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240221064104.7863-1-rdunlap@infradead.org
----
- drivers/irqchip/irq-vic.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> But the commit 1a7b7d922081 ("modules: Use
+> vmalloc special flag") moves do_free_init() into a global workqueue
+> instead of call_rcu(). So now rcu_barrier() can not ensure that do_free_init
+> has completed. We should wait it via flush_work().
 
-diff --git a/drivers/irqchip/irq-vic.c b/drivers/irqchip/irq-vic.c
-index 9e3d556..ea93e72 100644
---- a/drivers/irqchip/irq-vic.c
-+++ b/drivers/irqchip/irq-vic.c
-@@ -47,9 +47,8 @@
- 
- /**
-  * struct vic_device - VIC PM device
-- * @parent_irq: The parent IRQ number of the VIC if cascaded, or 0.
-- * @irq: The IRQ number for the base of the VIC.
-  * @base: The register base for the VIC.
-+ * @irq: The IRQ number for the base of the VIC.
-  * @valid_sources: A bitmask of valid interrupts
-  * @resume_sources: A bitmask of interrupts for resume.
-  * @resume_irqs: The IRQs enabled for resume.
+Remove "But" and adjust as:
+
+Commit 1a7b7d922081 ("modules: Use vmalloc special flag") moved
+calling do_free_init() into a global workqueue instead of relying on it
+being called through call_rcu(..., do_free_init), which used to allowed us
+call do_free_init() asynchronously after the end of a subsequent grace             
+period. The move to a global workqueue broke the gaurantees for code
+which needed to be sure the do_free_init() would complete with rcu_barrier().
+To fix this callers which used to rely on rcu_barrier() must now instead
+use flush_work(&init_free_wq).
+
+> Without this fix, we still could encounter false positive reports in
+> W+X checking,
+
+This is good thanks for the clarification.
+
+I think it would be useful for the commit log then to describe also that
+it is not that the freeing was not happening, it is just that our sanity
+checkers raced against the permission checkers which assume init memory
+is already gone.
+
+> and the rcu synchronization is unnecessary which can
+> introduce significant delay.
+
+While this can be true, I am not sure if we can remove it. See below.
+
+> Eric Chanudet reports that the rcu_barrier introduces ~0.1s delay on a
+> PREEMPT_RT kernel.
+
+That's a separate issue.
+
+>   [    0.291444] Freeing unused kernel memory: 5568K
+>   [    0.402442] Run /sbin/init as init process
+> 
+> With this fix, the above delay can be eliminated.
+> 
+> Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
+> Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> Cc: Xiaoyi Su <suxiaoyi@huawei.com>
+> Cc: Eric Chanudet <echanude@redhat.com>
+> 
+> ---
+> v3:
+>   - amend comment in do_init_module() and update commit msg.
+> v2:
+>   - fix compilation issue for no CONFIG_MODULES found by 0-DAY.
+> ---
+>  include/linux/moduleloader.h | 8 ++++++++
+>  init/main.c                  | 5 +++--
+>  kernel/module/main.c         | 9 +++++++--
+>  3 files changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+> index 001b2ce83832..89b1e0ed9811 100644
+> --- a/include/linux/moduleloader.h
+> +++ b/include/linux/moduleloader.h
+> @@ -115,6 +115,14 @@ int module_finalize(const Elf_Ehdr *hdr,
+>  		    const Elf_Shdr *sechdrs,
+>  		    struct module *mod);
+>  
+> +#ifdef CONFIG_MODULES
+> +void flush_module_init_free_work(void);
+> +#else
+> +static inline void flush_module_init_free_work(void)
+> +{
+> +}
+> +#endif
+> +
+>  /* Any cleanup needed when module leaves. */
+>  void module_arch_cleanup(struct module *mod);
+>  
+> diff --git a/init/main.c b/init/main.c
+> index e24b0780fdff..f0b7e21ac67f 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -99,6 +99,7 @@
+>  #include <linux/init_syscalls.h>
+>  #include <linux/stackdepot.h>
+>  #include <linux/randomize_kstack.h>
+> +#include <linux/moduleloader.h>
+>  #include <net/net_namespace.h>
+>  
+>  #include <asm/io.h>
+> @@ -1402,11 +1403,11 @@ static void mark_readonly(void)
+>  	if (rodata_enabled) {
+>  		/*
+>  		 * load_module() results in W+X mappings, which are cleaned
+> -		 * up with call_rcu().  Let's make sure that queued work is
+> +		 * up with init_free_wq. Let's make sure that queued work is
+>  		 * flushed so that we don't hit false positives looking for
+>  		 * insecure pages which are W+X.
+>  		 */
+> -		rcu_barrier();
+
+Was this the only source of waiters that used rcu_barrier() to sync ?
+What about kallsyms, live-patching ?
+
+This original source to the addition of this rcu_barrier() (in a slight
+older modified form with with rcu_barrier_sched()) was commit
+ae646f0b9ca13 ("init: fix false positives in W+X checking") since
+v4.17 in 2018, 6 years ago. So I'm hoping we don't have any other
+side-by new users which have grown dependent on this rcu_barrier() for
+other call_rcu()'s they may have used, but it is hard to tell.
+
+So while I agree that flush work is the right solution, removing the
+rcu_barrier() is technically another change which could potentially
+regress for other reasons now. It is perhaps safe, but I'm used to
+surprises for minor changes like these. So I think it makes sense to
+lift it now, and test it in the wild to see what could possibly break,
+I'd much prefer to split this as two separate commits. One which does
+the fix, and another that lifts the rcu_barrier() with the stated
+rationale and savings on time of ~0.1s on PREEMPT_RT kernels.
+
+  Luis
 
