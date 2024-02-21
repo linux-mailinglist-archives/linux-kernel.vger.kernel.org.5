@@ -1,183 +1,178 @@
-Return-Path: <linux-kernel+bounces-74899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5517D85DFC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:32:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B8A685DFBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BBB628627E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3D051F23517
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EE17FBD9;
-	Wed, 21 Feb 2024 14:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9B07F7EE;
+	Wed, 21 Feb 2024 14:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="VfD0xMKJ"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="No2piR1T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855EE1E4AF;
-	Wed, 21 Feb 2024 14:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948A647F48;
+	Wed, 21 Feb 2024 14:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708525928; cv=none; b=TdvV4tXS9kFiCu4cBshf3EiUXMbeMHYgVMPYuvgzyI32nLPWTYJ9CC950HuMd1U3DmZ+db4MwsY5kwLGHnuP3TRAqQ2CUPp75j/gUpo8S0CtZPhNPoIrxQK+bRFw6hMTzN5bArlBk6BfDP3fVnFqPBZhQw+EDg+8Ag5sTLFl6cc=
+	t=1708525927; cv=none; b=YlSGEHUjN9bZCcTUKDjDToYcXH9LQxUCwVh2vcs188xI5JtRu35fsqHMNb8681scH7PuJKpHYTsEGuUtxXr9N0vqEWVzl8SQKReLMAlrKtP1J9m9yeBORv3z5de2R7w/UPk/CDkuziTMEDsPQXYOp27FGnmKuGIuesmiax3Huko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708525928; c=relaxed/simple;
-	bh=XKusKUEvj+nGG0dkwgHxoxK1AcSzzZsNUAn7iTQh6Lg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iQXEwhmZMHxtN3KEvpHa3Kh8KQg49Voj2WnADSVHWhx8neCmiAjCrWNbFRVaiwKJFCiUQQzK9W70X8XcSmiYcB9w58uaytRWYWmV9oqRHrS+iz4BJoVEitlxwgZmAjLxNvuRqK88ZjOk08fEVm5lDnbowleMuVLyo3HvrBjkt0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=VfD0xMKJ; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708525925; x=1740061925;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gbk069DucRj43Sndt/nnkJaRND27RAMcHT3E75mzM4s=;
-  b=VfD0xMKJm1V44nWI71twevkdfhTkib5Uykwf+RosbFA236UWVlwKYtA/
-   W7B6vAKKxgS4AkSwS7U1mLv1/GFI/D4OHiCCvSeMNpMnXIB9ygUTxwSpC
-   dCLDG6T931d0t7EnfSU4q/CmgmYuP3Ra+G9Fxy/KC61pCDUy2BTKmz/Ee
-   Mc/yQWzhDO86rG7aCVI13DXoXug2i6XiCGTRHSNoiUnQxmJHWsYC5k8N/
-   i+1CIZP6qvG1ehyiQKFuF72vH0jHU7iP8Np9OS0sWECyToGu6bo+zIBFc
-   WHYOBlaRN4/xH5RCHvAU5sdSuLxJP74fDD3FAJEMrt2YyeuBOaIGwU5L2
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.06,175,1705359600"; 
-   d="scan'208";a="35525607"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 21 Feb 2024 15:32:01 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7DD8D280075;
-	Wed, 21 Feb 2024 15:32:01 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: "dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
-	"andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
-	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	"jonas@kwiboo.se" <jonas@kwiboo.se>,
-	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"shawnguo@kernel.org" <shawnguo@kernel.org>,
-	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"festevam@gmail.com" <festevam@gmail.com>,
-	"vkoul@kernel.org" <vkoul@kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-phy@lists.infradead.org" <"li nux-phy"@lists.infradead.org>,
-	Sandor Yu <sandor.yu@nxp.com>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, Oliver Brown <oliver.brown@nxp.com>, "sam@ravnborg.org" <sam@ravnborg.org>
-Subject: Re: [PATCH v14 7/7] phy: freescale: Add HDMI PHY driver for i.MX8MQ
-Date: Wed, 21 Feb 2024 15:32:01 +0100
-Message-ID: <1880037.tdWV9SEqCh@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <PAXPR04MB9448DE5926B60C36D5BFC96AF4572@PAXPR04MB9448.eurprd04.prod.outlook.com>
-References: <cover.1708395604.git.Sandor.yu@nxp.com> <22191690.EfDdHjke4D@steina-w> <PAXPR04MB9448DE5926B60C36D5BFC96AF4572@PAXPR04MB9448.eurprd04.prod.outlook.com>
+	s=arc-20240116; t=1708525927; c=relaxed/simple;
+	bh=ETU59JMcllMSB/or4eosb1YfI1+Lc4q0wczytbrnDNQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UzgSSkKnH5CXNBd/xtzRKnGRqXQxrfxtH1dcEo830FDe8vLZEjq0Y8gS6cTSMlBpXP7OjMjNKmtjnrwJfWA9ONHB9i/Jsp7scoifSpvNe2xMIV+8Slu2VAKRttNQQub7jWFPemjadgUIx+h1hnxZBvFm3QUz6bUJV/8kDHtb+2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=No2piR1T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 160ABC433C7;
+	Wed, 21 Feb 2024 14:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708525927;
+	bh=ETU59JMcllMSB/or4eosb1YfI1+Lc4q0wczytbrnDNQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=No2piR1TxZde8nJFFXemM2a3+zqfT436aGB+BMcjfAbgT7qoNeY3Ugzq2eYbu+wh7
+	 +hwltOlGdL/UB4JE+TY8cLUBK8DpBP1uuFfW4MYCxZ1QEZ3+51k0b/t/2+G9iuwwDk
+	 P5Itmhah8RpUWeJjtbXpSRe0mrC6qAZXUoTnutiVH1LtyKU32ARVkjr+AZNdB6o7c5
+	 QG0YuXMGYeXL26sbnFcx9E0BAMmUG2NCS63m/IJZWdi/v704kE34N6ZNPx4dgUlof7
+	 5a0BoTqhnE0SoLRWJs3vfmbuYmuDIJjDCT8o/3UF9qlg1ZqrsieGf1N67iw+04QylX
+	 VI16bpwZCgZ/A==
+Date: Wed, 21 Feb 2024 07:32:04 -0700
+From: Rob Herring <robh@kernel.org>
+To: Saravana Kannan <saravanak@google.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>, Len Brown <lenb@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	kernel-team@android.com, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] dt-bindings: Add post-init-supplier property
+Message-ID: <20240221143204.GA2773516-robh@kernel.org>
+References: <20240212213147.489377-1-saravanak@google.com>
+ <20240212213147.489377-4-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213147.489377-4-saravanak@google.com>
 
-Hi Sandor,
+On Mon, Feb 12, 2024 at 01:31:44PM -0800, Saravana Kannan wrote:
+> The post-init-supplier property can be used to break a dependency cycle by
+> marking some supplier(s) as a post device initialization supplier(s). This
+> allows an OS to do a better job at ordering initialization and
+> suspend/resume of the devices in a dependency cycle.
+> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  .../bindings/post-init-supplier.yaml          | 101 ++++++++++++++++++
+>  MAINTAINERS                                   |  13 +--
+>  2 files changed, 108 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/post-init-supplier.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/post-init-supplier.yaml b/Documentation/devicetree/bindings/post-init-supplier.yaml
+> new file mode 100644
+> index 000000000000..aab75b667259
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/post-init-supplier.yaml
+> @@ -0,0 +1,101 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020, Google LLC. All rights reserved.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/post-init-supplier.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Post device initialization supplier
+> +
+> +maintainers:
+> +  - Saravana Kannan <saravanak@google.com>
+> +
+> +description: |
+> +  This property is used to indicate that the device(s) pointed to by the
+> +  property are not needed for the initialization of the device that lists this
+> +  property. This property is meaningful only when pointing to direct suppliers
+> +  of a device that are pointed to by other properties in the device.
+> +
+> +  A device can list its suppliers in devicetree using one or more of the
+> +  standard devicetree bindings. By default, it would be safe to assume the
+> +  supplier device can be initialized before the consumer device is initialized.
+> +
+> +  However, that assumption cannot be made when there are cyclic dependencies
+> +  between devices. Since each device is a supplier (directly or indirectly) of
+> +  the others in the cycle, there is no guaranteed safe order for initializing
+> +  the devices in a cycle. We can try to initialize them in an arbitrary order
+> +  and eventually successfully initialize all of them, but that doesn't always
+> +  work well.
+> +
+> +  For example, say,
+> +  * The device tree has the following cyclic dependency X -> Y -> Z -> X (where
+> +    -> denotes "depends on").
+> +  * But X is not needed to fully initialize Z (X might be needed only when a
+> +    specific functionality is requested post initialization).
+> +
+> +  If all the other -> are mandatory initialization dependencies, then trying to
+> +  initialize the devices in a loop (or arbitrarily) will always eventually end
+> +  up with the devices being initialized in the order Z, Y and X.
+> +
+> +  However, if Y is an optional supplier for X (where X provides limited
+> +  functionality when Y is not initialized and providing its services), then
+> +  trying to initialize the devices in a loop (or arbitrarily) could end up with
+> +  the devices being initialized in the following order:
+> +
+> +  * Z, Y and X - All devices provide full functionality
+> +  * Z, X and Y - X provides partial functionality
+> +  * X, Z and Y - X provides partial functionality
+> +
+> +  However, we always want to initialize the devices in the order Z, Y and X
+> +  since that provides the full functionality without interruptions.
+> +
+> +  One alternate option that might be suggested is to have the driver for X
+> +  notice that Y became available at a later point and adjust the functionality
+> +  it provides. However, other userspace applications could have started using X
+> +  with the limited functionality before Y was available and it might not be
+> +  possible to transparently transition X or the users of X to full
+> +  functionality while X is in use.
+> +
+> +  Similarly, when it comes to suspend (resume) ordering, it's unclear which
+> +  device in a dependency cycle needs to be suspended/resumed first and trying
+> +  arbitrary orders can result in system crashes or instability.
+> +
+> +  Explicitly calling out which link in a cycle needs to be broken when
+> +  determining the order, simplifies things a lot, improves efficiency, makes
+> +  the behavior more deterministic and maximizes the functionality that can be
+> +  provided without interruption.
+> +
+> +  This property is used to provide this additional information between devices
+> +  in a cycle by telling which supplier(s) is not needed for initializing the
+> +  device that lists this property.
+> +
+> +  In the example above, Z would list X as a post-init-supplier and the
+> +  initialization dependency would become X -> Y -> Z -/-> X. So the best order
+> +  to initialize them become clear: Z, Y and then X.
+> +
+> +select: true
 
-Am Mittwoch, 21. Februar 2024, 08:47:52 CET schrieb Sandor Yu:
-> Hi Alexander,
->=20
-> Thanks for your comments,
->=20
-> >
-> > Hi,
-> >
-> > thanks for the update.
-> >
-> > Am Dienstag, 20. Februar 2024, 04:23:55 CET schrieb Sandor Yu:
-> > > Add Cadence HDP-TX HDMI PHY driver for i.MX8MQ.
-> > >
-> > > Cadence HDP-TX PHY could be put in either DP mode or HDMI mode base
-> > on
-> > > the configuration chosen.
-> > > HDMI PHY mode is configurated in the driver.
-> > >
-> > > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
-> > > Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> >
-> > This still works as before. I noticed there is a lot of code duplicatio=
-n with
-> > patch 6. IMHO these PHY drivers should be merged into a single one where
-> > the mode is configured using phy_set_mode() from cdns-mhdp8501-core.c.
-> > This nicely matches my concerns regarding patch 5.
-> >
-> Yes, there are some registers offset are same and the clock management fu=
-nction could be reused for DP and HDMI PHY driver.
-> But because of HDMI and DP PHY totally different work mode, the functions=
- in struct phy_ops,
-> Such as ->init, ->power_on/off and ->configure could not combine into a s=
-ingle one,
-> So separate DP and HDMI PHY driver should be a better resolution.
+blank line
 
-Despite some output type (DP/HDMI) specific settings, the similarities
-are quite huge actually. Even though apparently DP has it's own ->init setu=
-p,
-this can be delayed until ->set_mode or even ->configure.
-The distinction between each mode can be done by checking phy->attrs.mode.
-=46or a prove of concept I've hacked both drivers into a single one. I can't
-test DP, but HDMI still works. Feel free to contact me in private.
+> +properties:
+> +  post-init-supplier:
 
-Best regards,
-Alexander
+'supply' is already used for regulators. Let's make it 
+'post-init-providers'.
 
-> B.R
-> Sandor
->=20
->=20
-> > Best regards,
-> > Alexander
-> >
-> > > ---
-> > > v13->v14:
-> > >  *No change.
-> > >
-> > > v12->v13:
-> > > - Fix build warning
-> > >
-> > > v11->v12:
-> > > - Adjust clk disable order.
-> > > - Return error code to replace -1 for function wait_for_ack().
-> > > - Use bool for variable pclk_in.
-> > > - Add year 2024 to copyright.
-> > >
-> > >  drivers/phy/freescale/Kconfig               |  10 +
-> > >  drivers/phy/freescale/Makefile              |   1 +
-> > >  drivers/phy/freescale/phy-fsl-imx8mq-hdmi.c | 960
-> > > ++++++++++++++++++++
-> > >  3 files changed, 971 insertions(+)
-> > >  create mode 100644 drivers/phy/freescale/phy-fsl-imx8mq-hdmi.c
-> > >
-> > > diff --git a/drivers/phy/freescale/Kconfig
-> > > b/drivers/phy/freescale/Kconfig index c39709fd700ac..14f47b7cc77ab
-> > > 100644
-> > > --- a/drivers/phy/freescale/Kconfig
-> > > +++ b/drivers/phy/freescale/Kconfig
-
-> [snip]
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Rob
 
