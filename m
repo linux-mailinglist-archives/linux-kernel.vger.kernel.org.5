@@ -1,54 +1,60 @@
-Return-Path: <linux-kernel+bounces-75147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B6285E3D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:56:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A69185E3CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBCF11F21AA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:56:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C11B1C20996
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA3183CA2;
-	Wed, 21 Feb 2024 16:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAFF839FC;
+	Wed, 21 Feb 2024 16:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="tGwfON4L"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8803A7FBC4;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a4Bb5jCP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2E880613;
 	Wed, 21 Feb 2024 16:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708534577; cv=none; b=Q+k1+eHlSXC4Smhq0S/Wyqfuaoces4Y/HwVcUTD5bHlyCKbmEPp0ob1K1PQZLRQUwYlxtodo3ce52hlERUiuQkcKAblklTOZJ+cy1dsRJGVavjIwSBPCYuNN0+ZiKbk7Se/WfZejCPwke3fFjuq59UyjqLvcbsDA8cx/F9Menqs=
+	t=1708534577; cv=none; b=A7fhrLpDgE72D+7Yjm+FdmQH0jEJVDvddxzqeNc3I6+TNqYbZpcWjCZtNEs0+P3MmScB35gHVVsXMYpDozqC3EbMugMYy5N4kWHuLgD5Bz/QfckNvK/zAWeNrnLCuVDp5fqT1GL5Iq7gHVEGVOuFDFg2PRO7An4oswrCksQUBU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708534577; c=relaxed/simple;
-	bh=4NtW4aeUxD/AmECNuJyVZrOaIfeQcVURpE8RzhY/Eic=;
+	bh=JvU0tQfghs9ivP7wwVrY8yM2tvT8Ba8a984fQlx+zQ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kuk2b0VgMvIbc8BUEshY3TQha8StHIpTFqwqwH8b2j8A9auwug2J6RiD4VD6eDKHEhGgRN3EWYFdela0BJnVO4nyaEDJ+Cifbzy6Nop74daW1MPAyMMXHwXV/Gl3jc4ib7gm7yFALtPc1M2cvHjW/MTcXjC4Dcm+McLmRWxM430=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=tGwfON4L; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 1409A20B2000;
-	Wed, 21 Feb 2024 08:56:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1409A20B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708534576;
-	bh=3WQ3mLec9Jebwe3nros1Bu7UOMPeSwJ2ljwzi0xUrEM=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZcI74BSxkG0JVhQlmFNPR5fRlDBu76gv/OvbSlXgxX0n3eW9U97oSjdRqAQtUx7NymbDZ3cfwZdh6OcuxARxFL+ePmLpgTsZa3DgQop0ZV89uY3xPjs/5S/5QZIwRo23c0s0fbPxxww6CpKp0MFRb8Ns4jk5QUcmwj/MIwcC2xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a4Bb5jCP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B36DC433C7;
+	Wed, 21 Feb 2024 16:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708534576;
+	bh=JvU0tQfghs9ivP7wwVrY8yM2tvT8Ba8a984fQlx+zQ4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tGwfON4LA6b6vj30oKVfHe0c1NRyJXrBbMRCVNX6aj/Rx/W9MaIPU33YOUHIh9u2t
-	 fyoQYoKW3cJoUSPpkTmlLoj41Be/zgkcgwK2mGgvY6Rz+HTMu69iSKGKF6t52fy1S3
-	 c/E8uF68fx1kWSxQ9/coQqKdY5xoCqygUbyLaikI=
-Date: Wed, 21 Feb 2024 08:56:13 -0800
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v3 2/4] tracing/user_events: Introduce multi-format events
-Message-ID: <20240221165613.GB441-beaub@linux.microsoft.com>
-References: <20240214175046.240-1-beaub@linux.microsoft.com>
- <20240214175046.240-3-beaub@linux.microsoft.com>
- <20240221100833.1eb5c254@gandalf.local.home>
+	b=a4Bb5jCPAd5fYX0Ux3wZTHtsK2kKfPBlut+e/Wp4xxv0kaaK+cCnVb7B/qLuWUNl0
+	 2QfxdpL1/Ly4+rvEiITOSeHCqFjGFfo8pMrDfoMV5q668EMKxh7ngwyuwVvVUq2aZU
+	 /m8+R9RBffGExL2ZOUed+Du/qUyExN9aFhHwYxBs+qOCyYDwFz94QI/lfi6RK7EQTq
+	 QLv9gnThvx3eIOvV0HKLO9e8G25xK6IsPHmJn+lJs8lJrubqwdVdX8kVY6Yeog6rJ8
+	 fAFMbdmxkKM2hFw8+YKnQsy8tu8qQbegZvgIwAYDoE8dJD+89nGN/enhTUwASyUBQ7
+	 afIzc5RzN9Fwg==
+Date: Wed, 21 Feb 2024 08:56:15 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: John Garry <john.g.garry@oracle.com>, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
+	chandan.babu@oracle.com, martin.petersen@oracle.com,
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	ojaswin@linux.ibm.com
+Subject: Re: [PATCH 0/6] block atomic writes for XFS
+Message-ID: <20240221165615.GH6184@frogsfrogsfrogs>
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <20240213072237.GA24218@lst.de>
+ <20240213175549.GU616564@frogsfrogsfrogs>
+ <20240214074559.GB10006@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,157 +63,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221100833.1eb5c254@gandalf.local.home>
+In-Reply-To: <20240214074559.GB10006@lst.de>
 
-On Wed, Feb 21, 2024 at 10:08:33AM -0500, Steven Rostedt wrote:
-> On Wed, 14 Feb 2024 17:50:44 +0000
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+On Wed, Feb 14, 2024 at 08:45:59AM +0100, Christoph Hellwig wrote:
+> On Tue, Feb 13, 2024 at 09:55:49AM -0800, Darrick J. Wong wrote:
+> > On Tue, Feb 13, 2024 at 08:22:37AM +0100, Christoph Hellwig wrote:
+> > > From reading the series and the discussions with Darrick and Dave
+> > > I'm coming more and more back to my initial position that tying this
+> > > user visible feature to hardware limits is wrong and will just keep
+> > > on creating ever more painpoints in the future.
+> > > 
+> > > Based on that I suspect that doing proper software only atomic writes
+> > > using the swapext log item and selective always COW mode
+> > 
+> > Er, what are you thinking w.r.t. swapext and sometimescow?
 > 
-> > +static char *user_event_group_system_multi_name(void)
-> > +{
-> > +	char *system_name;
-> > +	int len = sizeof(USER_EVENTS_MULTI_SYSTEM) + 1;
+> What do you mean with sometimescow?  Just normal reflinked inodes?
 > 
-> FYI, the sizeof() will include the "\0" so no need for "+ 1", but I don't
-> think this matters as for what I mention below.
+> > swapext
+> > doesn't currently handle COW forks at all, and it can only exchange
+> > between two of the same type of fork (e.g. both data forks or both attr
+> > forks, no mixing).
+> > 
+> > Or will that be your next suggestion whenever I get back to fiddling
+> > with the online fsck patches? ;)
 > 
-> > +
-> > +	system_name = kmalloc(len, GFP_KERNEL);
-> > +
-> > +	if (!system_name)
-> > +		return NULL;
-> > +
-> > +	snprintf(system_name, len, "%s", USER_EVENTS_MULTI_SYSTEM);
-> > +
-> > +	return system_name;
-> 
-> Hmm, the above looks like an open coded version of:
-> 
-> 	system_name = kstrdup(USER_EVENTS_MULTI_SYSTEM, GFP_KERNEL);
-> 
+> Let's take a step back.  If we want atomic write semantics without
+> hardware offload, what we need is to allocate new blocks and atomically
+> swap them into the data fork.  Basicall an atomic version of
+> xfs_reflink_end_cow.  But yes, the details of the current swapext
+> item might not be an exact fit, maybe it's just shared infrastructure
+> and concepts.
 
-That's much cleaner, I'll move to that.
+Hmm.  For rt reflink (whenever I get back to that, ha) I've been
+starting to think that yes, we actually /do/ want to have a log item
+that tracks the progress of remap and cow operations.  That would solve
+the problem of someone wanting to reflink a semi-written rtx.
 
-> 
-> > +}
-> > +
-> >  static struct user_event_group *current_user_event_group(void)
-> >  {
-> >  	return init_group;
-> > @@ -367,6 +390,11 @@ static struct user_event_group *user_event_group_create(void)
-> >  	if (!group->system_name)
-> >  		goto error;
-> >  
-> > +	group->system_multi_name = user_event_group_system_multi_name();
-> > +
-> > +	if (!group->system_multi_name)
-> > +		goto error;
-> > +
-> >  	mutex_init(&group->reg_mutex);
-> >  	hash_init(group->register_table);
-> >  
-> > @@ -1482,6 +1510,11 @@ static int destroy_user_event(struct user_event *user)
-> >  	hash_del(&user->node);
-> >  
-> >  	user_event_destroy_validators(user);
-> > +
-> > +	/* If we have different names, both must be freed */
-> > +	if (EVENT_NAME(user) != EVENT_TP_NAME(user))
-> > +		kfree(EVENT_TP_NAME(user));
-> > +
-> >  	kfree(user->call.print_fmt);
-> >  	kfree(EVENT_NAME(user));
-> >  	kfree(user);
-> > @@ -1504,12 +1537,24 @@ static struct user_event *find_user_event(struct user_event_group *group,
-> >  	*outkey = key;
-> >  
-> >  	hash_for_each_possible(group->register_table, user, node, key) {
-> > +		/*
-> > +		 * Single-format events shouldn't return multi-format
-> > +		 * events. Callers expect the underlying tracepoint to match
-> > +		 * the name exactly in these cases. Only check like-formats.
-> > +		 */
-> > +		if (EVENT_MULTI_FORMAT(flags) != EVENT_MULTI_FORMAT(user->reg_flags))
-> > +			continue;
-> > +
-> >  		if (strcmp(EVENT_NAME(user), name))
-> >  			continue;
-> >  
-> >  		if (user_fields_match(user, argc, argv))
-> >  			return user_event_get(user);
-> >  
-> > +		/* Scan others if this is a multi-format event */
-> > +		if (EVENT_MULTI_FORMAT(flags))
-> > +			continue;
-> > +
-> >  		return ERR_PTR(-EADDRINUSE);
-> >  	}
-> >  
-> > @@ -1889,8 +1934,12 @@ static bool user_event_match(const char *system, const char *event,
-> >  	struct user_event *user = container_of(ev, struct user_event, devent);
-> >  	bool match;
-> >  
-> > -	match = strcmp(EVENT_NAME(user), event) == 0 &&
-> > -		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-> > +	match = strcmp(EVENT_NAME(user), event) == 0;
-> > +
-> > +	if (match && system) {
-> > +		match = strcmp(system, user->group->system_name) == 0 ||
-> > +			strcmp(system, user->group->system_multi_name) == 0;
-> > +	}
-> >  
-> >  	if (match)
-> >  		match = user_fields_match(user, argc, argv);
-> > @@ -1923,6 +1972,39 @@ static int user_event_trace_register(struct user_event *user)
-> >  	return ret;
-> >  }
-> >  
-> > +static int user_event_set_tp_name(struct user_event *user)
-> > +{
-> > +	lockdep_assert_held(&user->group->reg_mutex);
-> > +
-> > +	if (EVENT_MULTI_FORMAT(user->reg_flags)) {
-> > +		char *multi_name;
-> > +		int len;
-> > +
-> > +		len = snprintf(NULL, 0, "%s.%llx", user->reg_name,
-> > +			       user->group->multi_id) + 1;
-> > +
-> > +		multi_name = kzalloc(len, GFP_KERNEL_ACCOUNT);
-> > +
-> > +		if (!multi_name)
-> > +			return -ENOMEM;
-> > +
-> > +		snprintf(multi_name, len, "%s.%llx", user->reg_name,
-> > +			 user->group->multi_id);
-> 
-> I believe the above can be replaced with:
-> 
-> 		multi_name = kasprintf(GFP_KERNEL_ACCOUNT, "%s.%llx", user->reg_name,
-> 				       user->group->multi_id);
-> 		if (!multi_name)
-> 			return -ENOMEM;
-> 
+That said, it might complicate the reflink code quite a bit since right
+now it writes zeroes to the unwritten parts of an rt file's rtx so that
+there's only one mapping record for the whole rtx, and then it remaps
+them.  That's most of why I haven't bothered to implement that solution.
 
-Great, I'll move to that as well and validate.
+> I'm not planning to make you do it, because such a log item would
+> generally be pretty useful for always COW mode.
 
-Thanks,
--Beau
+One other thing -- while I was refactoring the swapext code into
+exch{range,maps}, it occurred to me that doing an exchange between the
+cow and data forks isn't possible because log recovery won't be able to
+do anything.  There's no ondisk metadata to map a cow staging extent
+back to the file it came from, which means we can't generally resume an
+exchange operation.
 
-> -- Steve
+However for a small write I guess you could simply queue all the log
+intent items for all the changes needed and commit that.
+
+> > > and making that
+> > > work should be the first step.  We can then avoid that overhead for
+> > > properly aligned writs if the hardware supports it.  For your Oracle
+> > > DB loads you'll set the alignment hints and maybe even check with
+> > > fiemap that everything is fine and will get the offload, but we also
+> > > provide a nice and useful API for less performance critical applications
+> > > that don't have to care about all these details.
+> > 
+> > I suspect they might want to fail-fast (back to standard WAL mode or
+> > whatever) if the hardware support isn't available.
 > 
-> > +
-> > +		user->call.name = multi_name;
-> > +		user->tracepoint.name = multi_name;
-> > +
-> > +		/* Inc to ensure unique multi-event name next time */
-> > +		user->group->multi_id++;
-> > +	} else {
-> > +		/* Non Multi-format uses register name */
-> > +		user->call.name = user->reg_name;
-> > +		user->tracepoint.name = user->reg_name;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
+> Maybe for your particular DB use case.  But there's plenty of
+> applications that just want atomic writes without building their
+> own infrastruture, including some that want pretty large chunks.
+> 
+> Also if a file system supports logging data (which I have an
+> XFS early prototype for that I plan to finish), we can even do
+> the small double writes more efficiently than the application,
+> all through the same interface.
+
+Heh.  Ted's been trying to kill data=journal.  Now we've found a use for
+it after all. :)
+
+--D
 
