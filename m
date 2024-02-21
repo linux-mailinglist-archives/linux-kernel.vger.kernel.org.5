@@ -1,221 +1,216 @@
-Return-Path: <linux-kernel+bounces-74000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D5E85CEBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:29:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A2A485CEAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C16A28436F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:29:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EFC91C22590
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1BF38DF7;
-	Wed, 21 Feb 2024 03:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEF62E3FE;
+	Wed, 21 Feb 2024 03:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PgixYFoW"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iiGvafdM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4630638DD2
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6FD38F84
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708486141; cv=none; b=CJ8U6XVlFMmEwu8/YU1J7ZddpXxBFE1/PgnKJAclZT+WRAYaoGohn5WHts1bXPxXYMNznBbKpNboTYaWF4Pay9/iKfsJvYw1o9R+A79JsgeeLYvNbJH3PoF/F1AiERupdt91LxiEHAuS0MVU+Binp1EzGYWYFrWXKfC5Sn6R0ag=
+	t=1708486003; cv=none; b=iSC3669MywiXgPXXuzglONG/oLTdlj2gK66Rf9KWzP5FyndCa3oPAICPdT4BeV7/aBXqkSb3ULugmgSjizBIuEyQxClyjE4UBxUts240aMPY0TTHVWD3emQfkEuULePEfBGtNCgGmUb04XxiDv691jd9pRWzCE7oQX8lOvWq2Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708486141; c=relaxed/simple;
-	bh=8L2dGpIc3ljEGSOLfjoGTy/I1LJM45Njm1zFexTYNtg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ooomNZr8WSAdFaQPDobueDOdyAjAPNAYrgvbCk8GUPANnZBcJlAgdJI/fFLuNjyHIwFuJzSv3K/InIp2O05qDkMMSZzanvRzlW/s1y6BkS0WmpKm/d2Q28TQOKGfcF33aa7f0OewV9c7w4hd5/G4WmEzjFcXwjYug6dc2V0aEOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PgixYFoW; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso4304a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:28:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708486137; x=1709090937; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XND0hrjLvkaDKF9iKN16jiOmI7TBD8Aik+JgMD/1rzI=;
-        b=PgixYFoWFaIBr0IDZuYMhqL9VMxBkoiRck4LGdIYWsAGjPU98J1N6o2olKzT4Dz98y
-         YrKxOGw+Ayqi98dVia9GB9/ZvqwbwX1XB+l2FjXdTL/iQaYoe3TNVz1yVIWF5El3dlmK
-         fjVUa5F27U4c9zOJuWtJBQVEA3l6C9amEMpdGXQM+AvcGvbw0rAjE0IZT7/msYk+y9j0
-         rTmKemKFsZt58SNouDF/qeFD5qI8qScg54AiiLDv/SAe/Ht/yZpIBgnyXEJJWdxcNsSW
-         KmABLp7dp8KQOidlruz/UF4HcmADlx/2HEIqvpTk9E+5f6kl8Xt59s7QwroqB6X5dfEN
-         ofOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708486137; x=1709090937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XND0hrjLvkaDKF9iKN16jiOmI7TBD8Aik+JgMD/1rzI=;
-        b=T9ltGHkQ6UWRRRjfTjYy1Q/2y5EgUxj3jqcQgY1tnxgyImq6ENfyg2k0IaSa9IwrKS
-         zhQp1AGrfIa3lrv9cwUrhytvAwS5G9hB7mfonHtKSfuZlyhFwi8/sFTtYndwR08wm8oV
-         /HNTKIHh0gxgjx7aXFlv/AWAjlPKkOovRikHzcDB5bUFZHlgJvx2uqlnLC7L/aUSfpOl
-         UrFa9jbcXS7PL3Y5006/W3C/fV3+KmFKrLNGFIy5QLpKMt/LSMQYM54SIeNcSZqmGO2M
-         1N+xQCEiy5xrPewfYHp+4nXVDf26cIZzejUKOr0Fk1h2mgRlBhL85em43hSC60lfLT+c
-         qHBA==
-X-Forwarded-Encrypted: i=1; AJvYcCUc5Ojdsc3sLcmuuOfn4Vxw7NE+UWWaPVzdGnEEHpuLIX7bhGFo0cMtLKa2IN5BTe1+hq2kFPiJKZyCrMY1J66HB7awELwzzZfbVM4z
-X-Gm-Message-State: AOJu0YygNiQ59J9rJj7IoCV1KVvwfxhWOToWcASt9N+NZVatMRzn1fx+
-	eL1Vl1cwBbmF89tBZC8wgylcTF+hCeKpREJq7W1QTje2NyURXXCcb29AyJ7fReyw5JYb3It4kb1
-	NEXv/sLybBnERe35Zpl4z+W2rpSG1PABH5JDf
-X-Google-Smtp-Source: AGHT+IGfWL7RMBbEtxsuxJolP5nR/pYTW9TY7Jcb9aIRNa1bro5mSAVswt9hCLNyH3IfBS3VEy0AZHWVlRoPJ323AR0=
-X-Received: by 2002:a50:d5d9:0:b0:563:f48f:a5bc with SMTP id
- g25-20020a50d5d9000000b00563f48fa5bcmr45004edj.5.1708486137390; Tue, 20 Feb
- 2024 19:28:57 -0800 (PST)
+	s=arc-20240116; t=1708486003; c=relaxed/simple;
+	bh=DRLcudGaxUx+pa5ipV8atxZFzPwCvpE7YqFV5CEEaes=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lbkpm1OKE9L6rjjXXq9e3+TBlmwaiD+ccNBeWOa3zkIwTfNy2DqGHmxvYnUYmzp0ZD8pHF3R7MSFYVqam6R0Kj39vfFN6+Sac7Kek9tajxxKjuFSyOpwuCwYD3r13KwcNs4ZoKGSeovg2q+l9Q3MTL26ZwZaAyQHainTkVUGyM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iiGvafdM; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708485995; x=1740021995;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=DRLcudGaxUx+pa5ipV8atxZFzPwCvpE7YqFV5CEEaes=;
+  b=iiGvafdMB0cdSSB7qltxws00WUSJKzs/p/goKDPc4nDm4wFGBcRDAbXh
+   pEwO//R2eEiZ7UoNr30C1eaBO+FRRZ4RbcJbYxVgvpehwaP+XQSZsJ1mb
+   rSKH9OZwPO1DS8r6WODtLwybyBVouZRo6GwUVPRAGWaWS2hUinldYrC5s
+   uy2jyYIt17nOp8UIwvpUJ5gOtkSaJ0WshKESySjpPs1cF9Yzhlm/vefdX
+   BSNjvrqcraNR1gzVPQPWHJ5CDGGcSy0q+JQkmj+0q1g8AH87BqNv+V68t
+   SE13z1Z6Q4zEa7Kogw+B9bUIpQF9kJoYL+UJ6Ja4pFlrQNKYdKSQlJ2Ys
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="3104520"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="3104520"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:26:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="4935110"
+Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
+  by orviesa009.jf.intel.com with ESMTP; 20 Feb 2024 19:26:29 -0800
+From: rulinhuang <rulin.huang@intel.com>
+To: akpm@linux-foundation.org
+Cc: colin.king@intel.com,
+	hch@infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	lstoakes@gmail.com,
+	rulin.huang@intel.com,
+	tianyou.li@intel.com,
+	tim.c.chen@intel.com,
+	urezki@gmail.com,
+	wangyang.guo@intel.com,
+	zhiguo.zhou@intel.com
+Subject: [PATCH v3] mm/vmalloc: lock contention optimization under multi-threading
+Date: Tue, 20 Feb 2024 22:29:05 -0500
+Message-ID: <20240221032905.11392-1-rulin.huang@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207033059.1565623-1-rulin.huang@intel.com>
+References: <20240207033059.1565623-1-rulin.huang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220133950.138452-1-herve.codina@bootlin.com>
- <CAMRc=MfWPEOHeNvAwra-JxHZBFMrQbP+273zbFLDZfxi7fx8Yg@mail.gmail.com>
- <20240220155347.693e46e1@bootlin.com> <CAMRc=MeSgCOLZvFOXF4eQOp=bTz38K5Krzuy9r569-jnDx1zFA@mail.gmail.com>
- <20240220164730.03412479@bootlin.com>
-In-Reply-To: <20240220164730.03412479@bootlin.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 19:28:17 -0800
-Message-ID: <CAGETcx_=g1dCH=YMUkc7VquUmLs=bNZMspUxH+V49uhcV0Bx2w@mail.gmail.com>
-Subject: Re: [PATCH RESEND 0/2] leds: gpio: Add devlink between the leds-gpio
- device and the gpio used.
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij <linus.walleij@linaro.org>, Pavel Machek <pavel@ucw.cz>, 
-	Lee Jones <lee@kernel.org>, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-leds@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 7:47=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
-com> wrote:
->
-> Hi Bartosz,
->
-> On Tue, 20 Feb 2024 16:30:11 +0100
-> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> > On Tue, Feb 20, 2024 at 3:53=E2=80=AFPM Herve Codina <herve.codina@boot=
-lin.com> wrote:
-> > >
-> > > On Tue, 20 Feb 2024 15:19:57 +0100
-> > > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > >
-> > > > On Tue, Feb 20, 2024 at 2:39=E2=80=AFPM Herve Codina <herve.codina@=
-bootlin.com> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > Note: Resent this series with Saravana added in Cc.
-> > > > >
-> > > > > When a gpio used by the leds-gpio device is removed, the leds-gpi=
-o
-> > > > > device continues to use this gpio. Also, when the gpio is back, t=
-he
-> > > > > leds-gpio still uses the old removed gpio.
-> > > > >
-> > > > > A consumer/supplier relationship is missing between the leds-gpio=
- device
-> > > > > (consumer) and the gpio used (supplier).
-> > > > >
-> > > > > This series adds an addionnal devlink between this two device.
-> > > > > With this link when the gpio is removed, the leds-gpio device is =
-also
-> > > > > removed.
-> > > > >
-> > > > > Best regards,
-> > > > > Herv=C3=A9 Codina
-> > > > >
-> > > > > Herve Codina (2):
-> > > > >   gpiolib: Introduce gpiod_device_add_link()
-> > > > >   leds: gpio: Add devlinks between the gpio consumed and the gpio=
- leds
-> > > > >     device
-> > > > >
-> > > > >  drivers/gpio/gpiolib.c        | 32 +++++++++++++++++++++++++++++=
-+++
-> > > > >  drivers/leds/leds-gpio.c      | 15 +++++++++++++++
-> > > > >  include/linux/gpio/consumer.h |  5 +++++
-> > > > >  3 files changed, 52 insertions(+)
-> > > > >
-> > > > > --
-> > > > > 2.43.0
-> > > > >
-> > > >
-> > > > Can you add some more context here in the form of DT snippets that
-> > > > lead to this being needed?
-> > >
-> > > / {
-> > >         leds-dock {
-> > >                 compatible =3D "gpio-leds";
-> > >
-> > >                 led-5 {
-> > >                         label =3D "dock:alarm:red";
-> > >                         gpios =3D <&tca6424_dock_2 12 GPIO_ACTIVE_HIG=
-H>;
-> > >                 };
-> >
-> > Do I understand correctly that the devlink is created between "led-5"
-> > and "tca6424_dock_2" but actually should also be created between
-> > "leds-dock" and "tca6424_dock_2"?
-> >
->
-> Yes, that's my understanding too.
+When allocating a new memory area where the mapping address range is
+known, it is observed that the vmap_area lock is acquired twice.
+The first acquisition occurs in the alloc_vmap_area() function when
+inserting the vm area into the vm mapping red-black tree. The second
+acquisition occurs in the setup_vmalloc_vm() function when updating the
+properties of the vm, such as flags and address, etc.
+Combine these two operations together in alloc_vmap_area(), which
+improves scalability when the vmap_area lock is contended. By doing so,
+the need to acquire the lock twice can also be eliminated.
+With the above change, tested on intel icelake platform(160 vcpu, kernel
+v6.7), a 6% performance improvement and a 7% reduction in overall
+spinlock hotspot are gained on
+stress-ng/pthread(https://github.com/ColinIanKing/stress-ng), which is
+the stress test of thread creations.
 
-I'm replying here instead of the RESEND because here's where the
-context and example are provided.
+Reviewed-by: Chen Tim C <tim.c.chen@intel.com>
+Reviewed-by: King Colin <colin.king@intel.com>
+Signed-off-by: rulinhuang <rulin.huang@intel.com>
+---
+V1 -> V2: Avoided the partial initialization issue of vm and 
+separated insert_vmap_area() from alloc_vmap_area()
+V2 -> V3: Rebased on 6.8-rc5
+---
+ mm/vmalloc.c | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
-I quickly poked into the gpio-leds driver. Please correct me if I'm
-misunderstanding anything.
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d12a17fc0c17..768e45f2ed94 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1630,17 +1630,18 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	va->vm = NULL;
+ 	va->flags = va_flags;
+ 
+-	spin_lock(&vmap_area_lock);
+-	insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
+-	spin_unlock(&vmap_area_lock);
+-
+ 	BUG_ON(!IS_ALIGNED(va->va_start, align));
+ 	BUG_ON(va->va_start < vstart);
+ 	BUG_ON(va->va_end > vend);
+ 
+ 	ret = kasan_populate_vmalloc(addr, size);
+ 	if (ret) {
+-		free_vmap_area(va);
++		/*
++		 * Insert/Merge it back to the free tree/list.
++		 */
++		spin_lock(&free_vmap_area_lock);
++		merge_or_add_vmap_area_augment(va, &free_vmap_area_root, &free_vmap_area_list);
++		spin_unlock(&free_vmap_area_lock);
+ 		return ERR_PTR(ret);
+ 	}
+ 
+@@ -1669,6 +1670,13 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	return ERR_PTR(-EBUSY);
+ }
+ 
++static inline void insert_vmap_area_with_lock(struct vmap_area *va)
++{
++	spin_lock(&vmap_area_lock);
++	insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
++	spin_unlock(&vmap_area_lock);
++}
++
+ int register_vmap_purge_notifier(struct notifier_block *nb)
+ {
+ 	return blocking_notifier_chain_register(&vmap_notify_list, nb);
+@@ -2045,6 +2053,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+ 		return ERR_CAST(va);
+ 	}
+ 
++	insert_vmap_area_with_lock(va);
++
+ 	vaddr = vmap_block_vaddr(va->va_start, 0);
+ 	spin_lock_init(&vb->lock);
+ 	vb->va = va;
+@@ -2398,6 +2408,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+ 		if (IS_ERR(va))
+ 			return NULL;
+ 
++		insert_vmap_area_with_lock(va);
++
+ 		addr = va->va_start;
+ 		mem = (void *)addr;
+ 	}
+@@ -2538,7 +2550,7 @@ static void vmap_init_free_space(void)
+ 	}
+ }
+ 
+-static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
++static inline void setup_vmalloc_vm(struct vm_struct *vm,
+ 	struct vmap_area *va, unsigned long flags, const void *caller)
+ {
+ 	vm->flags = flags;
+@@ -2548,14 +2560,6 @@ static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+ 	va->vm = vm;
+ }
+ 
+-static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+-			      unsigned long flags, const void *caller)
+-{
+-	spin_lock(&vmap_area_lock);
+-	setup_vmalloc_vm_locked(vm, va, flags, caller);
+-	spin_unlock(&vmap_area_lock);
+-}
+-
+ static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+ {
+ 	/*
+@@ -2600,6 +2604,8 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+ 
+ 	setup_vmalloc_vm(area, va, flags, caller);
+ 
++	insert_vmap_area_with_lock(va);
++
+ 	/*
+ 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+ 	 * best-effort approach, as they can be mapped outside of vmalloc code.
+@@ -4166,7 +4172,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+ 	for (area = 0; area < nr_vms; area++) {
+ 		insert_vmap_area(vas[area], &vmap_area_root, &vmap_area_list);
+ 
+-		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
++		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+ 				 pcpu_get_vm_areas);
+ 	}
+ 	spin_unlock(&vmap_area_lock);
 
-It looks like led-5 will be added as a class device. But the
-dev->fwnode is not set before it's added because it uses
-device_create_with_groups(). So, fw_devlink doesn't create a link
-between led-5 and tca6424_dock_2 unless tca6424_dock_2 is added after
-led-5. Which coincidentally seems to be the case here. Might want to
-explicitly create the device in gpio-leds driver.
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+-- 
+2.43.0
 
-The issue you are trying to fix is a generic issue that I'd like to
-fix in a generic fashion. It's one of my TODOs which I've mentioned
-before in conferences/emails to LKML: device links framework has a
-bunch of gaps when it comes to class devices. I've been thinking about
-it for a while, but it needs a lot more work and testing. I'll roll in
-this case when I deal with it in a generic fashion. But here's the
-general idea of things that need to be addressed:
-
-1. "Managed" device links allow having a class device as a supplier,
-but that'll mean the consumer will never probe.
-2. What if a class device is a consumer and the supplier isn't ready.
-What does it mean for the class device to be added? Is it available
-for use? Probably not. Can we do something here that'll be useful for
-the class implementation?
-3. What if the supplier and consumer are class devices, when does the
-consumer class device become "available" (do we check the suppliers of
-the supplier?)?
-4. What happens if the supplier of a class device gets removed? Do we
-notify the class so it can do the right thing? Do we force unbind the
-first ancestor that's on a bus? (your case).
-5. What if a supplier class device is removed, should we unbind the
-consumer (if it's a bus device)?
-
-I'm currently working on a patch to break dependency cycles. Once
-that's in, the next TODO item I work on is going to be this or clock
-framework sync_state() support.
-
-So, I'd recommend waiting this out if it's not urgent.
-
-Heh, here's my commit on my local repo from a year ago when I touched
-on this and realised the scope of the work.
-
-commit 7dcaad52e569209104408f3e472fde4ef8cd5585 (class-devlinks-v1)
-Author: Saravana Kannan <saravanak@google.com>
-Date:   Mon Feb 13 13:40:43 2023 -0800
-
-    add class support to device links
-
-
-Thanks,
-Saravana
 
