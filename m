@@ -1,153 +1,275 @@
-Return-Path: <linux-kernel+bounces-73990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B114B85CE8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:06:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E5ED85CE92
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:08:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 626E3285579
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:06:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A61F1C22B5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999E9364C4;
-	Wed, 21 Feb 2024 03:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1099D37160;
+	Wed, 21 Feb 2024 03:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="P9ZEzL06"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAzwHWOq"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8186E2F36
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420612837E;
+	Wed, 21 Feb 2024 03:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708484792; cv=none; b=OxGgVJAIzXnMU839nSfU1JdvN63MIfEgpgq6kGjQBR10859+fQqDm7m3Ct3IPJ17uXI2VBXJySAVaGWL6BGjG3030OTVpTt1U49FOGKo6/3OQUVX51/PCBtzlveBAGnNHFQE4Sw3XNX1y5oPc1zKc/ynUdPR/QBOtbMRXLptKrw=
+	t=1708484905; cv=none; b=d/8g8G1z21j5bxZg7UzbqtWhNMNRqRm7Ok1SzzOzH/uCoZZOorlV/3CYFm2rI21nmVTBIAjdnZUc/S+U+Za+F4g7mMDSKXNKRPIOvcXsAKnOVZtCgHz0lBT1mdM0H4r/Gmm5lK4FbFyNqOCPsC/XQz166hB/A9W9PYZ0pJXK26A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708484792; c=relaxed/simple;
-	bh=7Qyykz5fB4a0+o7/sN39zAOQibndEWz+FsTBhS+hLSs=;
+	s=arc-20240116; t=1708484905; c=relaxed/simple;
+	bh=8lqJfcyvyjZieFF6DBZsOMf4b5DXXe651nYq3W8rqcE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b6ld7Umhi2+9exVmeGfKL3Hp8iPk0Vi3r6LT76Yd3SZA4X0hApjG+3HmqHc8nrvtIOrHwj2M0B9otq0+2FCwm/HttnoWUKiFy2AgPZcPEU5JtNIQoCdJXt01ZQ5fUgyKVew7Du0fmtc9p8L+sQC/8XRquHW5r8v5fA+qRjile0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=P9ZEzL06; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-299846d6ccfso1764214a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:06:31 -0800 (PST)
+	 To:Cc:Content-Type; b=Y7ib+QbHzHKq2uXauYgRhitLjdLT2OZISD1JwRN82lFj91rTK8PEVfs/QFTKCoYEao/n3lA3pK3OqIAbHFhqk+4aXwaXsZlVJTiORzQRblITWxjbpuFlbeP5Sp0KyEFEdkp+U/u3yYPIDS91sjXjqnh1YvEk9C96aPGZGBxaE84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAzwHWOq; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d1094b549cso89657821fa.3;
+        Tue, 20 Feb 2024 19:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708484791; x=1709089591; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708484901; x=1709089701; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7Qyykz5fB4a0+o7/sN39zAOQibndEWz+FsTBhS+hLSs=;
-        b=P9ZEzL06fOZFwiwCAvAXlrsctbsf+MGECVUWo6H8SLp53IAzSgnXUtLeKsL9e2O00r
-         lhJZMvFDQAUJ6LSo139PnadTxM7b3GZTrQiYCZ5+F5V4ILwDV4Wq1SKGNyMbYG1fsvpR
-         NTFNKDsvXqhdpuKblV/7VxGGMzCS+WkBlydlMuJmRlLmYpDabOzlvk5jQv5GSlydaDlI
-         btNoHiVH2sGECweU9ZhVxPOXbDtWHzoHEM7EkZIN6A9njOnhZKstzGJaQOcFHNJxdNq0
-         RlsmIy419HOd+EztIYYCN/8yDtUH54sb+kOxPBW/XoYaQf8xvMJl/4VlJdCraWw/QuiP
-         ddyQ==
+        bh=RGUN520xlcUh9uCFJJBmFsnsOTyBRFjezJMbMofVdcY=;
+        b=FAzwHWOqhO1jCdIItUpvb54GBgQ32zT37wVY/hsl/Z+UGZ3yqjc8Sfnwd6RZOCJCtF
+         xOvK3ChkyMpuH72D1+eQM+Aw/IAH7+FVjBnFlLzHzwcjnFravs3nBp/oMXyaQks/IeBR
+         G6nHTZMckVkgdCm1+e7VCgBJbTKyMMxXfomR63I9zcI5QHL+aHkIH/+vLt6tijEh+KHl
+         CvSNBSeua61/+PeTXVr8aoPJwYbTJHdjDozz4JSGhAffpi6VrFWvFbO+Jcz6A754c8y5
+         dsDN2uY7W8gibuDQzd+kVlgXUBmPSqgFHYuRqgnMlEwGkhPcwp9whDs4ZmRR9MLQcfYm
+         mayg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708484791; x=1709089591;
+        d=1e100.net; s=20230601; t=1708484901; x=1709089701;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7Qyykz5fB4a0+o7/sN39zAOQibndEWz+FsTBhS+hLSs=;
-        b=GdHPucFfVDtvJbRuWQLapd0L4YYEd33Ri11VbcEWXRUQ7OdefFso8GKM3H+kdbO1P0
-         3twg3bDJSMXsX+2U3kc7w9sDZOtAPpT+CoYahKMFa4fSi/11AIaCCC3VWHv8TuSlbS/D
-         npTFHF6/uZ8kC0jFSOLK5X+g1JQQUw7Lqw7/aLsBgwh49F6r30vdTmHfUkNoNehbKVPv
-         hZMVKazL25vVYvC/W8YXfn5lIQOPtceAVUEU+gu9YYDDTDqOVKUXRXploavUhcDmFeCG
-         1YC2AgtmzxCg9iYnYQmvqFBVHbX4XwmzMV+agVlixgyRIjcPclyXHmmN9O2+mzTsY4Op
-         Kl7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUupx/bBbie3R09eM8HsnTkzgpaPJeIYo6PjHGDWU+j/LBGd6ahXuqVJb6jmbD6/6dVrUtbboKwzhMlop4zTbGE3ciBxDRcwk1bd4RH
-X-Gm-Message-State: AOJu0YyeK0X1yUMkBepAJXyvpKyovruxLr1BVRxCkmM6diZAlgBT+kot
-	9/M5qflPTdddBz2bHE4SyMyQ5FlGsTeQuczUKDcVbj5dE5gj9JDHysVb9G/MKCFx0TGi40FPQwe
-	H/EqqkfSPug9lO8bEa+PAQyvNG98/bKV35jO2kg==
-X-Google-Smtp-Source: AGHT+IG3cmZn0y1k/Co1iZTZhM0M3UdbM2Nc78xLp+KeD+3W703kJkSFPbNvwzYDxLMM6p/A3k8QRN1yRX7txCHLsec=
-X-Received: by 2002:a17:90a:9a94:b0:299:1777:134c with SMTP id
- e20-20020a17090a9a9400b002991777134cmr12773740pjp.33.1708484790860; Tue, 20
- Feb 2024 19:06:30 -0800 (PST)
+        bh=RGUN520xlcUh9uCFJJBmFsnsOTyBRFjezJMbMofVdcY=;
+        b=Ig1ddPm6X21iGb1amW1jF2JzaBgylWV8OaxvUio/tQRGY3oS+Tlt8DDuSHrfBZ7EAV
+         z4TTuR3QaeZwS6pFCAigByE0Qd64iNvaYUVl8mXHMjmDV4GyksXtLw9VYE3r23LL5K8L
+         7d9Ti19B9jD8bxJl3O/LUig5P+7MczxCZxZmMyzYvV0xdbUsqM2CTzoPiso1S8P46gDv
+         hcVFXts6KsZ9Utx7r0V3eJDKFawf7KUX1miyF0btRlr6nn8DWIpiorAAYKi5WHUAaORf
+         cFWBRxWrzp2DoaLv26lE/UjvkG3qZNiNDEKm/sU5ffsmnbOlrskqBMWoowethwkTj8ab
+         mjJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXWJtw7Yf8XdbHaOtC28O05P8VV0GxDqCva7fzR5u1L6huLaE6Py8kqtwiByN/d2HPzFE+l3jtnn/hbVS5gbd5zjORhKveHasYjY8PTpIXk5NPY0bA6ImRwwILwuRN9NmpcU4UX
+X-Gm-Message-State: AOJu0YzDGWsMdDIfykG9+8uvcEH2dWPh9yCWQWAIOVZYkuKsV5EIDgu/
+	Prs4uEFDO0Y+ofanbO6S0ULG3HdkQyCQYfLvQg1AI1lF5ZdDw4xqmE1NyLmqK1P9Om4E7maMend
+	5cs67MojqnuutflqSNi7QGacIseo=
+X-Google-Smtp-Source: AGHT+IEAlyiWvnV4yyV2t2lBDCZmGBokZGDeKd3W0024yiIivwOFyTymK2CxBuCR/t4IxjbwE9LuYd6ETC49PPINoJI=
+X-Received: by 2002:a2e:8950:0:b0:2d1:26f0:8167 with SMTP id
+ b16-20020a2e8950000000b002d126f08167mr11558186ljk.35.1708484901033; Tue, 20
+ Feb 2024 19:08:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
- <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com>
- <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com>
- <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com> <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Wed, 21 Feb 2024 11:06:20 +0800
-Message-ID: <CALz3k9jDsmNMrXdxdx152fgvBxDoY4Lj_xMf8z-pwPtpm75vXQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next 0/5] bpf: make tracing program
- support multi-attach
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
-	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
-	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <ZdVgLbuAYGKoDzpS@xpf.sh.intel.com>
+In-Reply-To: <ZdVgLbuAYGKoDzpS@xpf.sh.intel.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 21 Feb 2024 11:07:44 +0800
+Message-ID: <CAL+tcoB_NeHpgrg7_HngiResOPhNCBTpDTJsjYsccXZMFA7VGw@mail.gmail.com>
+Subject: Re: [Syzkaller & bisect] There is BUG: soft lockup after sendmsg
+ syscall in v6.8-rc4
+To: Pengfei Xu <pengfei.xu@intel.com>
+Cc: kuniyu@amazon.com, davem@davemloft.net, dumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, kuni1840@gmail.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lkp@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 11:02=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM Pengfei Xu <pengfei.xu@intel.com> =
+wrote:
 >
-> On Tue, Feb 20, 2024 at 6:45=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dong=
-menglong.8@bytedance.com> wrote:
-> >
-> > On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=A3 <d=
-ongmenglong.8@bytedance.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > On Wed, Feb 21, 2024 at 9:24=E2=80=AFAM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
-> > > > <dongmenglong.8@bytedance.com> wrote:
-> > > > >
-> > > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not all=
-owed to
-> > > > > be attached to multiple hooks, and we have to create a BPF progra=
-m for
-> > > > > each kernel function, for which we want to trace, even through al=
-l the
-> > > > > program have the same (or similar) logic. This can consume extra =
-memory,
-> > > > > and make the program loading slow if we have plenty of kernel fun=
-ction to
-> > > > > trace.
-> > > >
-> > > > Should this be combined with multi link ?
-> > > > (As was recently done for kprobe_multi and uprobe_multi).
-> > > > Loading fentry prog once and attaching it through many bpf_links
-> > > > to multiple places is a nice addition,
-> > > > but we should probably add a multi link right away too.
-> > >
-> > > I was planning to implement the multi link for tracing after this
-> > > series in another series. I can do it together with this series
-> > > if you prefer.
-> > >
-> >
-> > Should I introduce the multi link for tracing first, then this series?
-> > (Furthermore, this series seems not necessary.)
+> Hi Kuniyuki Iwashima and kernel experts,
 >
-> What do you mean "not necessary" ?
-> Don't you want to still check that bpf prog access only N args
-> and BTF for these args matches across all attach points ?
+> Greeting!
+> There is BUG: soft lockup after sendmsg syscall in v6.8-rc4 in guest.
+>
+> All detailed info: https://github.com/xupengfe/syzkaller_logs/tree/main/2=
+40220_161242_softlockup
+> Syzkaller reproduced code: https://github.com/xupengfe/syzkaller_logs/blo=
+b/main/240220_161242_softlockup/repro.c
+> Syzkaller syscall reproduced steps: https://github.com/xupengfe/syzkaller=
+_logs/blob/main/240220_161242_softlockup/repro.prog
+> Kconfig(need make olddefconfig): https://github.com/xupengfe/syzkaller_lo=
+gs/blob/main/240220_161242_softlockup/kconfig_origin
+> Bisect info: https://github.com/xupengfe/syzkaller_logs/blob/main/240220_=
+161242_softlockup/bisect_info.log
+> v6.8-rc4 issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/mai=
+n/240220_161242_softlockup/841c35169323cd833294798e58b9bf63fa4fa1de_dmesg.l=
+og
+> bzImage_v6.8-rc4: https://github.com/xupengfe/syzkaller_logs/raw/main/240=
+220_161242_softlockup/bzImage_v6.8-rc4.tar.gz
+>
+> Bisected and found first bad commit:
+> "
+> 1279f9d9dec2 af_unix: Call kfree_skb() for dead unix_(sk)->oob_skb in GC.
+> "
+>
+> After reverted above commit on top of v6.8-rc4 kernel, this issue was gon=
+e.
+>
+> Syzkaller repro.report: https://github.com/xupengfe/syzkaller_logs/blob/m=
+ain/240220_161242_softlockup/repro.report
+> "
+> watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [gdbus:349]
+> Modules linked in:
+> irq event stamp: 25162
+> hardirqs last  enabled at (25161): [<ffffffff855dff2e>] irqentry_exit+0x3=
+e/0xa0 kernel/entry/common.c:351
+> hardirqs last disabled at (25162): [<ffffffff855dded4>] sysvec_apic_timer=
+_interrupt+0x14/0xc0 arch/x86/kernel/apic/apic.c:1076
+> softirqs last  enabled at (25140): [<ffffffff8127fcc8>] invoke_softirq ke=
+rnel/softirq.c:427 [inline]
+> softirqs last  enabled at (25140): [<ffffffff8127fcc8>] __irq_exit_rcu+0x=
+a8/0x110 kernel/softirq.c:632
+> softirqs last disabled at (25135): [<ffffffff8127fcc8>] invoke_softirq ke=
+rnel/softirq.c:427 [inline]
+> softirqs last disabled at (25135): [<ffffffff8127fcc8>] __irq_exit_rcu+0x=
+a8/0x110 kernel/softirq.c:632
+> CPU: 0 PID: 349 Comm: gdbus Not tainted 6.8.0-rc4-2024-02-12-intel-next-e=
+92619743fcb+ #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-=
+gd239552ce722-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:__sanitizer_cov_trace_pc+0x38/0x70 kernel/kcov.c:207
+> Code: 65 8b 05 73 89 a0 7e 48 89 e5 48 8b 75 08 a9 00 01 ff 00 74 0f f6 c=
+4 01 74 35 8b 82 e4 1d 00 00 85 c0 74 2b 8b 82 c0 1d 00 00 <83> f8 02 75 20=
+ 48 8b 8a c8 1d 00 00 8b 92 c4 1d 00 00 48 8b 01 48
+> RSP: 0018:ffff88800b48f7b0 EFLAGS: 00000246
+> RAX: 0000000000000000 RBX: ffff888013018000 RCX: 1ffffffff12150bb
+> RDX: ffff888011ab8000 RSI: ffffffff8515e235 RDI: ffff888013018770
+> RBP: ffff88800b48f7b0 R08: 0000000000000001 R09: fffffbfff120f86e
+> R10: ffffffff8907c377 R11: 0000000000000001 R12: ffff888013018000
+> R13: dffffc0000000000 R14: ffff888013018630 R15: ffff88800b48f840
+> FS:  0000000000000000(0000) GS:ffff88806ca00000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fffcc5fd648 CR3: 0000000006c82000 CR4: 0000000000750ef0
+> PKRU: 55555554
+> Call Trace:
+>  <IRQ>
+>  </IRQ>
+>  <TASK>
+>  unix_gc+0x465/0xfd0 net/unix/garbage.c:319
+>  unix_release_sock+0xb8c/0xe80 net/unix/af_unix.c:683
+>  unix_release+0x9c/0x100 net/unix/af_unix.c:1064
+>  __sock_release+0xb6/0x280 net/socket.c:659
+>  sock_close+0x27/0x40 net/socket.c:1421
+>  __fput+0x284/0xb70 fs/file_table.c:376
+>  ____fput+0x1f/0x30 fs/file_table.c:404
+>  task_work_run+0x19d/0x2b0 kernel/task_work.c:180
+>  exit_task_work include/linux/task_work.h:38 [inline]
+>  do_exit+0xb51/0x28c0 kernel/exit.c:871
+>  do_group_exit+0xe5/0x2c0 kernel/exit.c:1020
+>  get_signal+0x2715/0x27d0 kernel/signal.c:2893
+>  arch_do_signal_or_restart+0x8e/0x7e0 arch/x86/kernel/signal.c:311
+>  exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
+>  exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
+>  syscall_exit_to_user_mode+0x129/0x190 kernel/entry/common.c:212
+>  do_syscall_64+0x82/0x150 arch/x86/entry/common.c:89
+>  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> RIP: 0033:0x7fe8f8b4296f
+> Code: Unable to access opcode bytes at 0x7fe8f8b42945.
+> RSP: 002b:00007fe8d7dff9c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000007
+> RAX: fffffffffffffdfc RBX: 00007fe8f8f73071 RCX: 00007fe8f8b4296f
+> RDX: 00000000ffffffff RSI: 0000000000000002 RDI: 00007fe8a801f3f0
+> RBP: 00007fe8a801f3f0 R08: 0000000000000000 R09: 00007fe8d7dff850
+> R10: 00007ffec9196080 R11: 0000000000000293 R12: 0000000000000002
+> R13: 0000000000000002 R14: 00007fe8d7dffa30 R15: 00007fe8a801c4c0
+>  </TASK>
+> "
 
-No, I means that if we should keep the
+Hello, did you try this one:
 
-"Loading fentry prog once and attaching it through many bpf_links to
-multiple places"
+commit 25236c91b5ab4a26a56ba2e79b8060cf4e047839
+Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+Date:   Fri Feb 9 14:04:53 2024 -0800
 
-and only keep the multi link.
+    af_unix: Fix task hung while purging oob_skb in GC.
 
-Both methods need to check the accessed args of the target.
+    syzbot reported a task hung; at the same time, GC was looping infinitel=
+y
+    in list_for_each_entry_safe() for OOB skb.  [0]
+
+    syzbot demonstrated that the list_for_each_entry_safe() was not actuall=
+y
+    safe in this case.
+
+    A single skb could have references for multiple sockets.  If we free su=
+ch
+    a skb in the list_for_each_entry_safe(), the current and next sockets c=
+ould
+    be unlinked in a single iteration.
+
+It should work, I think :)
+
+Thanks,
+Jason
+
+>
+> Thanks!
+>
+> ---
+>
+> If you don't need the following environment to reproduce the problem or i=
+f you
+> already have one reproduced environment, please ignore the following info=
+rmation.
+>
+> How to reproduce:
+> git clone https://gitlab.com/xupengfe/repro_vm_env.git
+> cd repro_vm_env
+> tar -xvf repro_vm_env.tar.gz
+> cd repro_vm_env; ./start3.sh  // it needs qemu-system-x86_64 and I used v=
+7.1.0
+>   // start3.sh will load bzImage_2241ab53cbb5cdb08a6b2d4688feb13971058f65=
+ v6.2-rc5 kernel
+>   // You could change the bzImage_xxx as you want
+>   // Maybe you need to remove line "-drive if=3Dpflash,format=3Draw,reado=
+nly=3Don,file=3D./OVMF_CODE.fd \" for different qemu version
+> You could use below command to log in, there is no password for root.
+> ssh -p 10023 root@localhost
+>
+> After login vm(virtual machine) successfully, you could transfer reproduc=
+ed
+> binary to the vm by below way, and reproduce the problem in vm:
+> gcc -pthread -o repro repro.c
+> scp -P 10023 repro root@localhost:/root/
+>
+> Get the bzImage for target kernel:
+> Please use target kconfig and copy it to kernel_src/.config
+> make olddefconfig
+> make -jx bzImage           //x should equal or less than cpu num your pc =
+has
+>
+> Fill the bzImage file into above start3.sh to load the target kernel in v=
+m.
+>
+>
+> Tips:
+> If you already have qemu-system-x86_64, please ignore below info.
+> If you want to install qemu v7.1.0 version:
+> git clone https://github.com/qemu/qemu.git
+> cd qemu
+> git checkout -f v7.1.0
+> mkdir build
+> cd build
+> yum install -y ninja-build.x86_64
+> yum -y install libslirp-devel.x86_64
+> ../configure --target-list=3Dx86_64-softmmu --enable-kvm --enable-vnc --e=
+nable-gtk --enable-sdl --enable-usb-redir --enable-slirp
+> make
+> make install
+>
+> Best Regards,
+> Thanks!
+>
 
