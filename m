@@ -1,382 +1,301 @@
-Return-Path: <linux-kernel+bounces-74601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED58885D69D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:16:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4692785D69F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD7B28365A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:16:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EC28B225A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3983FB3C;
-	Wed, 21 Feb 2024 11:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="NdHlpYm5"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2089.outbound.protection.outlook.com [40.92.107.89])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479603FE28;
+	Wed, 21 Feb 2024 11:16:42 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD763EA94;
-	Wed, 21 Feb 2024 11:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.89
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708514166; cv=fail; b=f8JPunt7F/sV3Oks3P9GFoKe6LLMMNyHC9N+hvnQcYjTOOiN3z2pcT8WlBaZS+pEb7dgvbi5zr5ip6QFBLEAomL82QNwrL5kaBI9IT5Z+rTsgk+ZkMXBEFx6U0Ji12jj2PJDlYftRpdlI6O6bOdTMnJaf1iO7lccE7O1tYfBilw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708514166; c=relaxed/simple;
-	bh=GhUoqkpB3ico0Io7V4Ht1LeJKUfZCkWFMb44Ti6yuxc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Wq15NthDlHCt8A0gMf5i24ebtcjB0qeTqW70gT8KxDere3FOh1Vwjg35Ki6xXNBH1cVK4mE79och/SJ1f2pMGWtkMcsiUBnnYXj6q8NrfwTsbNZ+DAE8u0+mUmTavyZ2Z+PrbnUkCT0+sXfa0ddVjaxevor8TYE9LFyDaQFanxA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=NdHlpYm5; arc=fail smtp.client-ip=40.92.107.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bCGvpiPo6xRD8JFoIRCGu4TCkIN5PGxSyK8cfgse1sEa+xamv5a3dGUFxlJDEPhFLfTPT0VbIHk/lQZlF+1H9DcM7AHXYFMvhbHi1oMayrDc6cOSfBuye53c0DGDgjqRdbCTp1M+Zzs4dWBLxVPktNSkqQbCeVF2q8s/gbBE9pTqyXfRdnJg8/03KqaHRYre99RBGvHdVJ9v5Ot2LKmQTKucdUqQd5gIm7FyXOyAr/DytN2s9w19yZ2IgWnDLmY+hgdddvClSpOcbT6AHc4Sfh897q4x3aV0DSMFUukg4Zjoplnqqh5vjqmu9vzVgVk1b58LXW9DJ2ohe6B8fcVy6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4yh+ovd8aa1Sc8Cth5KMQQHtreGox+pazB2fDmFYkr4=;
- b=ZAhX2a4C1lVYP5jl1k7Q2e09tcErcP+6ZRa9fJNKzOaosyPhgThQOoQUxExz4TY/PrceaXhE9rUbQUt18pIVcfCoDhiNpJgoUDG6uGkDXltvrG6PPSTqt1Wgwyys2GKPoBTJEnAnrshTP0tUKwwc2IcXVqJ4k++DRcEVk+U5u9IePvFln0N/V5ZdiPWZCGaFKW9Bj0qDMmiEFAgCl/fij542cKXuiDQt9c3F0qFg75LKNk12uErFZk2NjynwWKVv6LY1mNCw8tNonwpsZ9pjicp3dR0/ac++m/Zmx21sxYBThrhZdlyuslc0D0bin00YlyhEiYVrZZk9+dTRvmx5tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4yh+ovd8aa1Sc8Cth5KMQQHtreGox+pazB2fDmFYkr4=;
- b=NdHlpYm5czux2kaTMrmhNCSYpBrDuJ7JPjJH9SMuJlFZiEg21HfC852JnwXC9UlCYjd8p2ugdTbLAKEpO+q2sUrqV3I49ZB+MYfkQc7D13v+7ew0wp7JcBSi/u/2JjqTm/ImjL1WG6plV78HdYvSyxqIaViee4dlMjPtw/tdaujoZ2EaFVW5CTbA304cEhe/2QZYQCr9/x1LkHPbLPdOsJEf+cXkvGeE4yf7ySpWXkiOEmt6AIsJWQJclOkbes+AN72pZ1+TpyEsaGkqaVi3AQUjJpyXuuITfQ2MHTKnxUm1J3aftDe+5fl7joPKqkqh331Txu34bs9FCLkyZ4ahLw==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by TYZPR06MB6192.apcprd06.prod.outlook.com (2603:1096:400:332::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.41; Wed, 21 Feb
- 2024 11:15:59 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Wed, 21 Feb 2024
- 11:15:58 +0000
-Message-ID:
- <SEZPR06MB6959010AA0C96A432CE6596296572@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Wed, 21 Feb 2024 19:15:53 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 1/5] dt-bindings: phy: hisi-inno-usb2: convert to
- YAML
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Jiancheng Xue <xuejiancheng@hisilicon.com>, Shawn Guo
- <shawn.guo@linaro.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
- David Yang <mmyangfl@gmail.com>
-References: <20240220-inno-phy-v3-0-893cdf8633b4@outlook.com>
- <20240220-inno-phy-v3-1-893cdf8633b4@outlook.com>
- <62221084-247c-4a0b-a030-e12cb2931411@linaro.org>
- <SEZPR06MB6959AAB6B43F3E1F5E1C526596512@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <6f3f22f6-f659-494d-963c-544cf5f44adc@linaro.org>
- <SEZPR06MB69592FACB1EF1B9FEDA89E5996512@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <9a5e9363-79eb-416c-89ae-c826062350b5@linaro.org>
- <SEZPR06MB69594A5036F122CE6C14043C96502@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <bf4ce87a-51ab-49e1-ac70-c463d8008a62@linaro.org>
- <b4fe5565-9378-4786-8c55-113f9088f34a@linaro.org>
- <SEZPR06MB695943CE42B3A91A22E70DD696502@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <94730d0a-0e5a-4777-aadc-4748038a3ca8@linaro.org>
- <7c07c822-5962-41d6-b2a9-8ca6bf125b35@linaro.org>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <7c07c822-5962-41d6-b2a9-8ca6bf125b35@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [MlKs0ZaSJlECF2nPuLLcaW3xWOfiHVVMRVjW5sAousLW48ybhdqThcfGdvzVdW66]
-X-ClientProxiedBy: TYCPR01CA0115.jpnprd01.prod.outlook.com
- (2603:1096:405:4::31) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <5b8aea2c-b2a0-44d7-90aa-0d2d98225567@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826193EA8B;
+	Wed, 21 Feb 2024 11:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708514201; cv=none; b=PFX7TD7QU9TOBFHWkqhv2d/rADxWO0fw76VNJbogWdQNGsjOPvtuzq2nMOF/dL/UHHwA+OwPiNM+2qRaknvWiVxzRpLW4BG/RDaJJxZ/DekKYEgn+xODB6KX1xdsC9dIP8Ad2O9rGp8JfmGBiskYmxf0urc3JExAptmV12DuV9U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708514201; c=relaxed/simple;
+	bh=vpuxBZ8oEPP7CdvYYfEmiV0krzpKl60sOqo2vv8XlEU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b/P5SymOJyOlb7ATrHNIIkF4OC19Ki3Kg9OdYYrBVIVvo46c8lU+6Ncwp/XtYMkM3Db4OCwng8g3aB0sqysPLhh9BxBD8O8PLwgkzDwlMf34jWH4g0yr2CH0QM8r7BA2sqOVerrTXuJMW7r7KvutMmuwOr1n7Z9QMPAvStEjQhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A5E5C433F1;
+	Wed, 21 Feb 2024 11:16:38 +0000 (UTC)
+Message-ID: <4205d9ae-43ae-407e-9eaf-e272c52799e6@xs4all.nl>
+Date: Wed, 21 Feb 2024 12:16:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYZPR06MB6192:EE_
-X-MS-Office365-Filtering-Correlation-Id: ac43071b-4828-43cf-19fa-08dc32ce7aac
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	f5VwnCy+YLuIvHqw2hyaRuSYszAq6kLmJembuGiAK6jA3pKaVyRHPtOp5g6HpLJuNAxZMeqa1aNVy/Ui++t5cgWx0yv6U3GiYJWYI+W1I0ZatfOBCnHHH5YPvzK0j/gVdHjS2d8oB2+2o+54DkTwiPawlzEmb3Mg37EQtxEOA4HWRRp0CgCeVAgs6UOurOLHU4Un3mfMygUkvWCCopKQKwMUDA+HiIBlYJWtfCWApxixUec6wWHpsKkHsotF1Xb5RWyG+yhnMU18JpgCa0OkG1VjyhkLLp2519Ay11WBBWo0eMqQ5yr2Vnmi9MF4rZhTuevaA4g77sZuEzdNYI6EY5n4liVFDRQW/PIKTQxrFtF3gbyCJHzVZfvzC8CVzEMe+GKFBQRnfQGb9yyT+V1+2+MkieV7WAI5pIZeo9iV5PIbF3zKfDnb16sQUhJAqEGPEBgjq9mss/jYWkXO4pfS+2eRd/H8AchChVBOyNBbzejc7zUG1KdGwXljx4/97JCvNjPx2CjXgjg1KbIeTvvHzUNfdlVRRByGvm1woeKO8h1fMPV4zlHwBNxqcQmdikwvcIJ0Nm0szUsOZhInZ+bPA0zeOpTmJUQCQ9sHoIYIq0k=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bDNvN2dBZWRkME4rRDlRcndnRTFOSkJxcjcvU2hyN1czUTk2cDBvRlRJdDRT?=
- =?utf-8?B?djB0TmlKczhxbHU5c2tLQ0o5eS90S0tsU0o5VWtMOHZoQ3l6V2xKMjd6VHI3?=
- =?utf-8?B?ZzlUWHhNQlh4STkxRXZtQWx3UUdDSWNzVWlMMXNUejAwc3dFQldtZVhqdjMr?=
- =?utf-8?B?bGMvT0p4YVFnVVp5OEpMdTJERGU5S3EyZU12SjFLS1VWbGVERzlDT2piVDVh?=
- =?utf-8?B?S0lsbHl6eEk0bEVzemY0ZTVwYlQvYzIrSTcxMnNIaVl6ekszeXRzMnhRd2NK?=
- =?utf-8?B?THZsTXZWTDc2N0UrWU8zVlVYb3E3bFE1dG5naXFmaVpsS21hVWJCdnBTdEY5?=
- =?utf-8?B?amJUeVJOQnQ0VzVwK3haeG9nYjI4TFJqN2NZZUlKV0dDTkJtanlIak1IUEFB?=
- =?utf-8?B?R0JRVk9BdkxrcW1sZTFNVHMyMFdJaXI1UXRVM2NCYk5wSkV5Z2dYZWlNSlVa?=
- =?utf-8?B?WmhkamRRdGY2VVduSWNGd2xKQ3VxUDc4cHdnTzFEODk5a3BsZWNLZnlKZ25s?=
- =?utf-8?B?ZkNtcHdyUjh3aW8vMzAwTmNLSkhjUUpsZzh0dGJGbUxibnF2ZHNJc2tUaUFF?=
- =?utf-8?B?bW1CeGdsUUhXTi9mYVE2RURzMVkwRE9oMnZwNUp2WXFQSk1MMGdQeUw2NUVX?=
- =?utf-8?B?VzBnM1pXbnE3eFlPbnZIRWdjbW9FazBPa3ZSMHRxZExJeEdKNHdNVXV3TTdl?=
- =?utf-8?B?cWh0N1lnY1liUUhuRERnaFZmQ0srYStldHdydkJZT056THdhMnNDOStsREZP?=
- =?utf-8?B?TmNjOEtuRzZVS1l2SmsxV3RFZlY5a1VlZHhna21vMUd0VUEreTFqRXlqblRF?=
- =?utf-8?B?eDkzVUJLNW1nNjZReFFBaG5EVFRBZHdHNTBhbmtYdjJLUG90b3NVWm56VVly?=
- =?utf-8?B?Ry9namh4TnRMWXdOK3hmTU8vRDVkeTVscndVZE5GbUVTdVh0YzZleW1KdWpn?=
- =?utf-8?B?bEJaVGUzTDJONlgxOFpyWnJ0SDhTQ2R4YmhhS3ZwZUhtbk9ybzlCVGxBVUpq?=
- =?utf-8?B?bXg1LzJSSTdpdVNldzR4UlMrd0FzUFVWdDE0Y0lyNXBzZFo1SXNyeU9Na3Vs?=
- =?utf-8?B?MzFSZzdaVHkyVzB5cUNWa2g5SHlTdWdHa3g3TUtZV2pxdkMraVBKaGhSV3Q1?=
- =?utf-8?B?MzJ0eXFDODhPTStvZlIwR01HNld1VTA4V2V6Q0xFc3JmVFdUdjJBY3pZY08z?=
- =?utf-8?B?MGtmTnVpempHVmdqZ2hidGJKTTdQNHJ5WE1LWkVuRG92SjBQaHlnNXUrMHZx?=
- =?utf-8?B?U25kYnJPZ0QrSmljTmNJRVJENHp5OFQxYzIzMHFmUHFQY0NsOERmRVZHbmVq?=
- =?utf-8?B?a0hsM2hNMFRMaXh1cjVMc2hzTmVKaU0vK2dXcCtwTDE0Qmh1bW41OHUyVmFz?=
- =?utf-8?B?RGs2UlhOS0NqK09VTVBXUmd4VXdmaW1hRmMzdmFMN29TbGlaL1gwSm1MaDNR?=
- =?utf-8?B?WkN4NTg0d1RaTDU2TTBPZ05BQU1LOC8zOGJHQUQ3K0lEMHRka1YxOE9xVFFM?=
- =?utf-8?B?WXZZd2RmRVd3MU9YU0VteUtnNVRYVUpXeTB6YThOR1B4NGJPUW93WGh6VGpM?=
- =?utf-8?B?Und3VE1TeWlWMWpwN3RCY01qcENtcGcwSHU0elN6eVI1Z1NNaFU5RnkxREZ2?=
- =?utf-8?B?eFcwMlNuZjZVblROOVZad1o5MDBRazVBdldibzlQd05KVFdIZWFkZFEyK3kr?=
- =?utf-8?B?YUhwS1M5Q3pGNXZQMUNMTXNJQzZqYnBubWNUNDJuWmxxNUo4ZkhJVnJLVkpv?=
- =?utf-8?Q?9msli1Z5Sfqb8xKJmbfcbIezwIbqeFgBQMgFSdZ?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac43071b-4828-43cf-19fa-08dc32ce7aac
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 11:15:58.6185
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6192
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 07/15] media: v4l2: Add audio capture and output
+ support
+Content-Language: en-US, nl
+To: Shengjiu Wang <shengjiu.wang@gmail.com>, Tomasz Figa <tfiga@chromium.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+ m.szyprowski@samsung.com, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org
+References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
+ <1705581128-4604-8-git-send-email-shengjiu.wang@nxp.com>
+ <20240217104212.32f07e3a@coco.lan>
+ <CAAFQd5CY731HRhFHpmwzGxAZ-BFV_pT7NNGwNGy4ZOA=qz8ntg@mail.gmail.com>
+ <CAA+D8AOKNK37urZfVsuzaTv8PYP-ggTORQEVSpNO0pbaereyLg@mail.gmail.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <CAA+D8AOKNK37urZfVsuzaTv8PYP-ggTORQEVSpNO0pbaereyLg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2/21/2024 4:25 PM, Krzysztof Kozlowski wrote:
-> On 21/02/2024 09:22, Krzysztof Kozlowski wrote:
->> On 20/02/2024 13:12, Yang Xiwen wrote:
->>> On 2/20/2024 7:43 PM, Krzysztof Kozlowski wrote:
->>>> On 20/02/2024 12:41, Krzysztof Kozlowski wrote:
->>>>> On 20/02/2024 11:40, Yang Xiwen wrote:
->>>>>> On 2/20/2024 4:16 PM, Krzysztof Kozlowski wrote:
->>>>>>> On 19/02/2024 22:49, Yang Xiwen wrote:
->>>>>>>> On 2/20/2024 5:37 AM, Krzysztof Kozlowski wrote:
->>>>>>>>> On 19/02/2024 22:35, Yang Xiwen wrote:
->>>>>>>>>> On 2/20/2024 5:32 AM, Krzysztof Kozlowski wrote:
->>>>>>>>>>> On 19/02/2024 22:27, Yang Xiwen via B4 Relay wrote:
->>>>>>>>>>>> From: Yang Xiwen <forbidden405@outlook.com>
->>>>>>>>>>>>
->>>>>>>>>>>> Add missing compatible "hisilicon,hi3798mv100-usb2-phy" to compatible
->>>>>>>>>>>> list due to prior driver change.
->>>>>>>>>>>>
->>>>>>>>>>>> Also rename to hisilicon,inno-usb2-phy.yaml and add this name to
->>>>>>>>>>>> compatible lists.
->>>>>>>>>>>>
->>>>>>>>>>>> Fixes: 3940ffc65492 ("phy: hisilicon: Add inno-usb2-phy driver for Hi3798MV100")
->>>>>>>>>>>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->>>>>>>>>>>> ---
->>>>>>>>>>>>       .../bindings/phy/hisilicon,inno-usb2-phy.yaml      | 95 ++++++++++++++++++++++
->>>>>>>>>>>>       .../devicetree/bindings/phy/phy-hisi-inno-usb2.txt | 71 ----------------
->>>>>>>>>>>>       2 files changed, 95 insertions(+), 71 deletions(-)
->>>>>>>>>>>>
->>>>>>>>>>>> diff --git a/Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml
->>>>>>>>>>>> new file mode 100644
->>>>>>>>>>>> index 000000000000..1b57e0396209
->>>>>>>>>>>> --- /dev/null
->>>>>>>>>>>> +++ b/Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml
->>>>>>>>>>>> @@ -0,0 +1,95 @@
->>>>>>>>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>>>>>>>>>> +%YAML 1.2
->>>>>>>>>>>> +---
->>>>>>>>>>>> +$id: http://devicetree.org/schemas/phy/hisilicon,inno-usb2-phy.yaml#
->>>>>>>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>>>>>>>>> +
->>>>>>>>>>>> +title: HiSilicon HiSTB SoCs INNO USB2 PHY device
->>>>>>>>>>>> +
->>>>>>>>>>>> +maintainers:
->>>>>>>>>>>> +  - Yang Xiwen <forbidden405@outlook.com>
->>>>>>>>>>>> +
->>>>>>>>>>>> +properties:
->>>>>>>>>>>> +  compatible:
->>>>>>>>>>>> +    items:
->>>>>>>>>>>> +      - enum:
->>>>>>>>>>>> +          - hisilicon,hi3798cv200-usb2-phy
->>>>>>>>>>>> +          - hisilicon,hi3798mv100-usb2-phy
->>>>>>>>>>>> +      - const: hisilicon,inno-usb2-phy
->>>>>>>>>>> According to your driver hisilicon,hi3798mv100-usb2-phy and
->>>>>>>>>>> hisilicon,inno-usb2-phy are not compatible.
->>>>>>>>>> Ah, i didn't pay too much attention to that. I should remove the entry
->>>>>>>>>> for hisilicon,inno-usb2-phy in the driver. Sorry for that.
->>>>>>>>> We don't talk here about driver, although I used the driver as proof or
->>>>>>>>> argument, because I don't have access to hardware datasheet (and no
->>>>>>>>> intention to look there).
->>>>>>>>>
->>>>>>>>> What I claim is these are not compatible, so respond to this argument,
->>>>>>>>> not some other one.
->>>>>>>> Why not? Of course they are compatible. All 3 SoCs are using
->>>>>>> Why? Because...
->>>>>>>
->>>>>>>> inno-usb2-phy. The only difference here is the method to access the
->>>>>>> ... here! Different programming interface means not compatible.
->>>>>>>
->>>>>>> Please provide instead any argument that they are compatible, in the
->>>>>>> meaning of Devicetree of course. You are claiming inno-usb2-phy  can be
->>>>>>> used for hi3798mv100 and it will work fine?
->>>>>>>
->>>>>>>> registers. They are all enabled by `writing BIT(2) to address 0x6`. In
->>>>>>>> the cover letter, I said the driver is actually doing things wrong.
->>>>>>> Cover letter does not matter, I don't even read them. Your commits matter.
->>>>>>>
->>>>>>>> Especially the commit adding PHY_TYPE enums, the name is confusing and
->>>>>>>> conveys the wrong info. It's not PHY which are not compatible, it's the
->>>>>>>> bus. I'll fix the driver, but still the PHY hardwares are compatible
->>>>>>>> between these 3 SoCs.
->>>>>>> Provide any argument.
->>>>>> Just take a look at the driver. hisi_inno_phy_write_reg() is the
->>>>>> function that differs between different models. But for all of them,
->>>>>> hisi_inno_phy_setup() is the same.
->>>>>>
->>>>>>
->>>>>> hisi_inno_phy_write_reg() should be moved to a separate bus driver. It's
->>>>>> bus-related, not phy. PHY driver should not care how to access the bus,
->>>>> So drivers are compatible or hardware? We talk about hardware, not
->>>>> drivers...
->>>>>
->>>>>> but the bus driver should. The PHY driver only needs to use regmap_*
->>>>>> APIs to "write BIT(2) to addr 6".
->>>>> Different programming interface, so not compatible.
->>>> Although maybe I jumped to conclusions too fast. Do you claim that all
->>>> registers are the same? All the values, offsets, fields and masks?
->>>
->>> I don't quite understand. I've said there are two register spaces. One
->>> is the bus to access the PHY (i.e. perictrl for mv100 and cv200 and mmio
->>> for mv200), the other is the PHY register space. So if you are talking
->>> about the prior one, then no, because the PHY is attached to different
->>> buses. But for the latter, yes.
->> I am talking about the register address space which the binding document.
+On 21/02/2024 11:11, Shengjiu Wang wrote:
+> On Wed, Feb 21, 2024 at 12:30 PM Tomasz Figa <tfiga@chromium.org> wrote:
 >>
+>> On Sat, Feb 17, 2024 at 6:42 PM Mauro Carvalho Chehab
+>> <mchehab@kernel.org> wrote:
 >>>
->>> So here we are talking about two devices. One is the PHY, the other is
->>> the bus the phy attached to.
+>>> Em Thu, 18 Jan 2024 20:32:00 +0800
+>>> Shengjiu Wang <shengjiu.wang@nxp.com> escreveu:
+>>>
+>>>> Audio signal processing has the requirement for memory to
+>>>> memory similar as Video.
+>>>>
+>>>> This patch is to add this support in v4l2 framework, defined
+>>>> new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
+>>>> V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
+>>>> for audio case usage.
+>>>>
+>>>> The created audio device is named "/dev/v4l-audioX".
+>>>>
+>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+>>>> ---
+>>>>  .../userspace-api/media/v4l/buffer.rst        |  6 ++
+>>>>  .../media/v4l/dev-audio-mem2mem.rst           | 71 +++++++++++++++++++
+>>>>  .../userspace-api/media/v4l/devices.rst       |  1 +
+>>>>  .../media/v4l/vidioc-enum-fmt.rst             |  2 +
+>>>>  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  4 ++
+>>>>  .../media/videodev2.h.rst.exceptions          |  2 +
+>>>>  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
+>>>>  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  9 +++
+>>>>  drivers/media/v4l2-core/v4l2-dev.c            | 17 +++++
+>>>>  drivers/media/v4l2-core/v4l2-ioctl.c          | 53 ++++++++++++++
+>>>>  include/media/v4l2-dev.h                      |  2 +
+>>>>  include/media/v4l2-ioctl.h                    | 34 +++++++++
+>>>>  include/uapi/linux/videodev2.h                | 17 +++++
+>>>>  13 files changed, 222 insertions(+)
+>>>>  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
+>>>>
+>>>> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
+>>>> index 52bbee81c080..a3754ca6f0d6 100644
+>>>> --- a/Documentation/userspace-api/media/v4l/buffer.rst
+>>>> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
+>>>> @@ -438,6 +438,12 @@ enum v4l2_buf_type
+>>>>      * - ``V4L2_BUF_TYPE_META_OUTPUT``
+>>>>        - 14
+>>>
+>>>>        - Buffer for metadata output, see :ref:`metadata`.
+>>>> +    * - ``V4L2_BUF_TYPE_AUDIO_CAPTURE``
+>>>> +      - 15
+>>>> +      - Buffer for audio capture, see :ref:`audio`.
+>>>> +    * - ``V4L2_BUF_TYPE_AUDIO_OUTPUT``
+>>>> +      - 16
+>>>
+>>> Hmm... alsa APi define input/output as:
+>>>         enum {
+>>>                 SNDRV_PCM_STREAM_PLAYBACK = 0,
+>>>                 SNDRV_PCM_STREAM_CAPTURE,
+>>>                 SNDRV_PCM_STREAM_LAST = SNDRV_PCM_STREAM_CAPTURE,
+>>>         };
 >>>
 >>>
->>> The old binding is mixing all the things up because INNO PHY is the only
->>> device attached to the dedicated bus implemented by perictrl. But it's
->>> not how it works. The binding is for the PHY, not for the bus.
+>>> I would use a namespace as close as possible to the
+>>> ALSA API. Also, we're not talking about V4L2, but, instead
+>>> audio. so, not sure if I like the prefix to start with
+>>> V4L2_. Maybe ALSA_?
 >>>
+>>> So, a better namespace would be:
 >>>
->>> For mv100 and cv200, it's: cpu->perictrl->inno-phy. For mv200, it's:
->>> cpu->inno-phy. cpu always accesses peripherals with MMIO, both for
->>> perictrl and mv200-inno-phy. But if the inno-phy is attached to
->>> perictrl. CPU must access the registers of inno-phy through
->>> perictrl(Here perictrl act as a bus driver like a I2C/SPI controller).
->>> For mv100 and cv200, the difference here is only related to to perictrl,
->>> not the PHY itself. For mv200, perictrl does not implement this strange
->>> bus anymore, instead the phy is attached to system bus directly.
->> Your driver writes different values depending on the device. For one
->> model it writes PHY0_TEST_WREN+PHY0_TEST_RST+PHY0_TEST_CLK. For the
->> second PHY1-versions of above.
+>>>         ${prefix}_BUF_TYPE_PCM_STREAM_PLAYBACK
+>>> and
+>>>         ${prefix}_BUF_TYPE_PCM_STREAM_CAPTURE
+>>>
 >>
->> The PHY0_TEST_CLK is written to the "reg", so I understand that to the
->> device address space.
+>> The API is still V4L2, and all the other non-video buf types also use
+>> the V4L2_ prefix, so perhaps that's good here as well?
 >>
->> If you write two different values to the same register, devices are not
->> compatible usually.
->>
->>>
->>> I don't understand why you say they are not compatible, simply because
->>> they are attached to different buses. For x86, peripherals are mapped in
->> I did not say that. I said that according to quick look in the driver
->> and to your explanations you had different programming models and
->> interfaces, which means devices are not compatible.
->>
->>> dedicated IO address spaces with `IN` and `OUT`, while for ARM, they are
->>> all attached to MMIO buses like APB/AHB/AXI etc.. So peripherals for x86
->>> and peripherals for arm are also not compatible?
->> Depends. You did not answer to my question whether you even understand
->> what is "compatible", so I assume you don't. Compatible means
->> programming models are the same or one is subset of another, so
->> effectively both devices work with the same compatible and everything is
->> fine.
->>
->> Answer yes or not:
->> Can PHY1 type of device, so hisilicon,hi3798mv100, bind using
->> hisilicon,hi3798mv100-usb2-phy compatible and operate correctly, so you
->> remove hisilicon,hi3798mv100-usb2-phy from the driver and device
->> operates correctly?
-> I mixed compatibles, this should be:
->
-> Can PHY1 type of device, so hisilicon,hi3798mv100, bind using
-> "hisilicon,inno-usb2-phy" compatible and operate correctly, so you
-> remove hisilicon,hi3798mv100-usb2-phy from the driver and device
-> operates correctly?
+>> Whether AUDIO or PCM_STREAM makes more sense goes outside of my
+>> expertise. Subjectively, a PCM stream sounds more specific than an
+>> audio stream. Do those buf types also support non-PCM audio streams?
+> 
+> Currently I use it for PCM,  but I think it can also be used for non-PCM.
+> So use the below name?
+> V4L2_BUF_TYPE_AUDIO_CAPTURE
+> V4L2_BUF_TYPE_AUDIO_PLAYBACK
 
+I really prefer keeping the names as they are in this patch. CAPTURE/OUTPUT
+is consistent with V4L2 nomenclature, and since this is a M2M device 'PLAYBACK'
+isn't really a good name either. It's not an audio playback device, it's a
+rate converter.
 
-No, currently. But it's due to the fact that the bus to access the phy 
-registers are not compatible. Not the PHY itself is incompatible. So the 
-correct dt node (which represents the real hardware) for mv100/cv200 
-should be
-
-
-perictrl@8a20000 {
-
-     compatible = "hisilicon,hi3798cv200-perictrl"; // or 
-hi3798mv100-perictrl
-
-     phy-bus@124 {
-
-         // the bus has its own address space
-
-         usb2-phy { // the PHY does not need an address
-
-             compatible = "hisilicon,inno-usb2-phy"
-
-             port@0 { // the port needs
-
-                 // To enable a port, we need to write BIT(2) to address 
-0x6 from phy-bus@124
-
-                 reg = <0>;
-
-             };
-
-             port@1 {
-
-                 reg = <1>;
-
-             };
-
-         };
-
-     };
-
-};
-
-
-In this way, phy device gets regmap from parent bus node. So i would 
-insist that the PHY is always compatible. What is incompatible is the 
-bus to access the PHY, not the PHY itself.
-
-
-Please note ONLY hisi_inno_phy_setup() function belongs to PHY driver. 
-hisi_inno_phy_write_reg() should be moved to the (not implemented yet) 
-PHY bus driver instead.
-
-
-You say "programming interface" is different. But i'd say it's not. On 
-the opposite, it's the same in fact. Because all of 
-"hi3798mv100-usb2-phy", "hi3798cv200-usb2-phy" and even 
-"hi3798mv200-usb2-phy" are sharing the same hisi_inno_phy_setup() 
-function. And here is the key, this function should be considered as the 
-"programming interface", not hisi_inno_phy_write_reg(). And this is why 
-regmap API is introduced to the kernel, I think.
-
-
->
-> Best regards,
-> Krzysztof
->
-
--- 
 Regards,
-Yang Xiwen
+
+	Hans
+
+> 
+>>
+>>>> +      - Buffer for audio output, see :ref:`audio`.
+>>>>
+>>>>
+>>>>  .. _buffer-flags:
+>>>> diff --git a/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst b/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
+>>>> new file mode 100644
+>>>> index 000000000000..68faecfe3a02
+>>>> --- /dev/null
+>>>> +++ b/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
+>>>> @@ -0,0 +1,71 @@
+>>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+>>>> +
+>>>> +.. _audiomem2mem:
+>>>> +
+>>>> +********************************
+>>>> +Audio Memory-To-Memory Interface
+>>>> +********************************
+>>>> +
+>>>> +An audio memory-to-memory device can compress, decompress, transform, or
+>>>> +otherwise convert audio data from one format into another format, in memory.
+>>>> +Such memory-to-memory devices set the ``V4L2_CAP_AUDIO_M2M`` capability.
+>>>> +Examples of memory-to-memory devices are audio codecs, audio preprocessing,
+>>>> +audio postprocessing.
+>>>> +
+>>>> +A memory-to-memory audio node supports both output (sending audio frames from
+>>>> +memory to the hardware) and capture (receiving the processed audio frames
+>>>> +from the hardware into memory) stream I/O. An application will have to
+>>>> +setup the stream I/O for both sides and finally call
+>>>> +:ref:`VIDIOC_STREAMON <VIDIOC_STREAMON>` for both capture and output to
+>>>> +start the hardware.
+>>>> +
+>>>> +Memory-to-memory devices function as a shared resource: you can
+>>>> +open the audio node multiple times, each application setting up their
+>>>> +own properties that are local to the file handle, and each can use
+>>>> +it independently from the others. The driver will arbitrate access to
+>>>> +the hardware and reprogram it whenever another file handler gets access.
+>>>> +
+>>>> +Audio memory-to-memory devices are accessed through character device
+>>>> +special files named ``/dev/v4l-audio``
+>>>> +
+>>>> +Querying Capabilities
+>>>> +=====================
+>>>> +
+>>>> +Device nodes supporting the audio memory-to-memory interface set the
+>>>> +``V4L2_CAP_AUDIO_M2M`` flag in the ``device_caps`` field of the
+>>>> +:c:type:`v4l2_capability` structure returned by the :c:func:`VIDIOC_QUERYCAP`
+>>>> +ioctl.
+>>>> +
+>>>> +Data Format Negotiation
+>>>> +=======================
+>>>> +
+>>>> +The audio device uses the :ref:`format` ioctls to select the capture format.
+>>>> +The audio buffer content format is bound to that selected format. In addition
+>>>> +to the basic :ref:`format` ioctls, the :c:func:`VIDIOC_ENUM_FMT` ioctl must be
+>>>> +supported as well.
+>>>> +
+>>>> +To use the :ref:`format` ioctls applications set the ``type`` field of the
+>>>> +:c:type:`v4l2_format` structure to ``V4L2_BUF_TYPE_AUDIO_CAPTURE`` or to
+>>>> +``V4L2_BUF_TYPE_AUDIO_OUTPUT``. Both drivers and applications must set the
+>>>> +remainder of the :c:type:`v4l2_format` structure to 0.
+>>>> +
+>>>> +.. c:type:: v4l2_audio_format
+>>>> +
+>>>> +.. tabularcolumns:: |p{1.4cm}|p{2.4cm}|p{13.5cm}|
+>>>> +
+>>>> +.. flat-table:: struct v4l2_audio_format
+>>>> +    :header-rows:  0
+>>>> +    :stub-columns: 0
+>>>> +    :widths:       1 1 2
+>>>> +
+>>>> +    * - __u32
+>>>> +      - ``pixelformat``
+>>>> +      - The sample format, set by the application. see :ref:`pixfmt-audio`
+>>>
+>>> pixelformat doesn't make any sense for audio: there are no pixels on a
+>>> PCM stream. Please use call it, instead: `snd_pcm_format`, making it match
+>>> the values for snd_pcm_format_t.
+>>>
+>>
+>> +1
+>>
+>> FWIW v4l2_meta_format uses the name "dataformat".
+>>
+>> Actually, I just realized that the C code actually uses the name
+>> "audioformat". Tbh., after reading the kerneldoc comment, my
+>> subjective preference would be on "sample_format", since that's
+>> exactly what it is.
+>>
+> Ok, I will change it to sampleformat.
+> 
+> Best Regards
+> Shengjiu Wang
+> 
+>>> Yet, I would keep defining it as u32 (or u64?) instead of using a
+>>> typedef int field there (snd_pcm_format_t), as the size of integer
+>>> is different on 32 and 64 bit kernels.
+>>
+>> +1
+>>
+>> Best regards,
+>> Tomasz
 
 
