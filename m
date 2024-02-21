@@ -1,170 +1,99 @@
-Return-Path: <linux-kernel+bounces-74150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76DB385D079
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:27:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC50B85D089
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:37:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ACEB1C23CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:27:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A85C0287737
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC6E3A1AC;
-	Wed, 21 Feb 2024 06:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0CE3611B;
+	Wed, 21 Feb 2024 06:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X+0XEG20"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="dqrHdjnV"
+Received: from xry111.site (xry111.site [89.208.246.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A554A1D
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660EE8464;
+	Wed, 21 Feb 2024 06:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708496825; cv=none; b=eQS+PQCrkLdy2Cl8V0YHC/ZiFme2SDZSLn0vmALz4OSnxmE45DGfPENL5o14pZ+A7ifnhqT+YN1I54CGLcVRM/npoTf882DsHxNvEvaj4i0tiU/0zZWzFTAZVNiC9XordAvfw5UhB9JoqGH3IIZwQfSgqQ0Njqn9FaWYisSEAWw=
+	t=1708497437; cv=none; b=W+g4sXcWtumS0ihpg0SOzSIQ7XwRpmMqicdc4N6kIa/VMlPWyVKvGon1xqi11KTkQychbDrDi/XrlQsUMGDNnsBSGYqhuHjEoiYVS+Pe4CC7+E0goQ7ayJ2xe9Mf6s+AstidfnVGD1wiv1z/gCfyn7fkCROUqVg4vc5n+t1kUG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708496825; c=relaxed/simple;
-	bh=/V5T+YQftfD2tRWQGhzHzmXn6qVrJBWkMhBmJM5xGrw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fnLXwx7h3m0/dVxxxRV/kzbRanO4XAwUunRlkUIIvN+UahtzCvpb8DdyaiHdrx+n50wQrbwcRyM8aTl3zmpmsIx2Xn2yT1l2FP7RLifsgC3cwg07ylCm7fzNWxnwdMC+VqPdI4G5iW+L6NktnWCJq/a+KZenYAt+ePWbFgwVgtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X+0XEG20; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d1094b5568so82783051fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:27:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708496821; x=1709101621; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4SCakJf3fMGKD4Pc9DX3Fmx60D6/XewjZTTvU4lsUQ=;
-        b=X+0XEG20oH3gTiWdjKMlBQDZMej0xMp6ft+S9UPrdyFHlRb92QjNaK2SWPfQcJwZs0
-         ShaS0fCSywiH6R0YdhUiqAdUEc/cGqTCZtdjtDFMgNtLA2Ju/xeZdan+/XdjHdd4eghr
-         AZXN5paPr/VDy4emRkEO9Ey1ByIIMWrrJqsKcn2x67feGW/1HHB8BfpaNbiXdr3/M63T
-         jLWnBg50AOOkFnZ+uloZl77fh3wByQ9tlKPYgj9+CrJXTTLs1ZQAu19tciLO61gW7X1O
-         HKqVHlTzbGjoLmo0VvU4y5U/MCu6ccQj5HLOBCA/7pOIp70z3YFAYK/7fUds/6gaDLF9
-         WnBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708496821; x=1709101621;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O4SCakJf3fMGKD4Pc9DX3Fmx60D6/XewjZTTvU4lsUQ=;
-        b=Mcn+D6EMxG+807MEQR8PJeLm0elKIojphKDs4TOEI3IW4r4qlOdp6DsvHUNZ2wUkDZ
-         z7wj01anEyE0L3lO1sqhYAM3HJsalUIMtMqiKAIf9yPhE3H1oor/YKbNbehjSmIAYDIz
-         uwTB866GOwk2iKpmzPj1AtHV/SKTYkXBSgvFyL9OVB2mvVdLI1P+g6dNA0f8b/HJOgqc
-         cHIyIsFqsprOLQmWLE2dbrSvTDEu+qdyOHGjotKbCtf9CkOf8NWuY1k6szctpGvIxnVn
-         np3M5ElFlwljFltr8FbR2NMQM5/brV4Mj2W34URea9r/8vrIDRcnyGpUEL4RnBxzWJaC
-         sztQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcbvrRjhGHY/mEiQUihaS/QlArj1zTF78rHeic4dzp5xV2gWsXAETejlaMDNvmUdBukfyG2tcJYqTp3/naOvvy5kw5lJ4HGv58RKp1
-X-Gm-Message-State: AOJu0YwzZI5FNyxo86syOciAPyz+OqSnDeAN2/1hf17f5vTQK+h1GqWG
-	HW0KtyduiIuXHFCuheN0KcuxpXBOQyKxnfcwH37XCGS3sbGZg0c0xLRThHMnFTBE6Tf0qQKcNpw
-	j3KJKdbFJuCJDjwHTKfkGzYvVQ08DJwZHMC3jKQ==
-X-Google-Smtp-Source: AGHT+IGAk9uU00zF5FiQ3NZBmkalTm/vo9IQ4bsTZa6Kjs7HQJX88+nLTvnpaddJgnUhtZkssQt6m05of8wqFGM+sVc=
-X-Received: by 2002:a2e:988a:0:b0:2d2:31f1:1a2e with SMTP id
- b10-20020a2e988a000000b002d231f11a2emr5776674ljj.12.1708496821260; Tue, 20
- Feb 2024 22:27:01 -0800 (PST)
+	s=arc-20240116; t=1708497437; c=relaxed/simple;
+	bh=cMPrnGzN+ogkgu90StJkUN75mH793GVfs2DsMEIqQBw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=jsnKL3WlBjX4Ktkt52cgr0PN3v/EVTP0OHdK8+Aj2fI/231/KJzZVaWLaPx/QWhEONiuUu3hXyahpKoC7zWJW2DUHGw3AplU+k9Qtf9FrCS91wU/bEUvaFThsXl3lwzjvLjAKQ5B+Jfxcd5nnpknQltVYp2+DtJlcKKAW3Sdx94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=dqrHdjnV; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1708497085;
+	bh=cMPrnGzN+ogkgu90StJkUN75mH793GVfs2DsMEIqQBw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=dqrHdjnVqPyK89vn3kkQkzW2lVhL0QNWJ4PsjLlB/34Pos4Dx/HCA9zLywbogIoYM
+	 wb0KbhaC+Nnx9JmLkJi/CTmGiMfeN1G+2mEL1nzXBDurpWS2SMrP3YWWL0ZX0mjef7
+	 k3Y+Oh+OKywb/R/09Sk/Y/ouTw3NXbGxySqMVGcg=
+Received: from [IPv6:240e:454:8210:4ef6:8084:b400:afd2:c12] (unknown [IPv6:240e:454:8210:4ef6:8084:b400:afd2:c12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 5D42366F2E;
+	Wed, 21 Feb 2024 01:31:12 -0500 (EST)
+Message-ID: <f1a1bc708be543eb647df57b5eb0c0ef035baf8b.camel@xry111.site>
+Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
+ argument inspection again?
+From: Xi Ruoyao <xry111@xry111.site>
+To: WANG Xuerui <kernel@xen0n.name>, linux-api@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Christian Brauner <brauner@kernel.org>, 
+ Kees Cook <keescook@chromium.org>, Huacai Chen <chenhuacai@kernel.org>,
+ Xuefeng Li <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>,
+ Xiaotian Wu <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>, Miao
+ Wang <shankerwangmiao@gmail.com>, Icenowy Zheng <uwu@icenowy.me>, 
+ "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, linux-arch
+ <linux-arch@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+Date: Wed, 21 Feb 2024 14:31:02 +0800
+In-Reply-To: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027000525.1278806-1-tina.zhang@intel.com>
- <20231027000525.1278806-6-tina.zhang@intel.com> <CABQgh9GWcqUeBkHQCpj5tzu6FnEgpOp3KOQ6s9c0X0KU7Ov1qw@mail.gmail.com>
- <MW5PR11MB5881C5CC15452017867B412889502@MW5PR11MB5881.namprd11.prod.outlook.com>
- <CABQgh9GxQmGU2HR73bSoZLuf4XZFhThXwUs_HJx6KwxDmXrXgg@mail.gmail.com>
- <b05958ba-0c47-45ba-8159-372779f9cc8b@linux.intel.com> <CABQgh9FFpL=mEZ-7PqRRVg1eniYV176B7USbGP5MLPvhJaGo9A@mail.gmail.com>
- <55a4b5e5-e0ad-4aa4-a29b-5fff4ef69063@linux.intel.com>
-In-Reply-To: <55a4b5e5-e0ad-4aa4-a29b-5fff4ef69063@linux.intel.com>
-From: Zhangfei Gao <zhangfei.gao@linaro.org>
-Date: Wed, 21 Feb 2024 14:26:49 +0800
-Message-ID: <CABQgh9FD2fup3awxNyu3LpQcB6f-HF5eb1B4fhVHxLJ0O76oVQ@mail.gmail.com>
-Subject: Re: [PATCH v10 5/6] iommu: Support mm PASID 1:n with sva domains
-To: Baolu Lu <baolu.lu@linux.intel.com>
-Cc: "Zhang, Tina" <tina.zhang@intel.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, 
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, "Tian, Kevin" <kevin.tian@intel.com>, Nicolin Chen <nicolinc@nvidia.com>, 
-	Michael Shavit <mshavit@google.com>, Vasant Hegde <vasant.hegde@amd.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
-	Hao Fang <fanghao11@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 21 Feb 2024 at 11:52, Baolu Lu <baolu.lu@linux.intel.com> wrote:
->
-> On 2024/2/21 10:45, Zhangfei Gao wrote:
-> > On Wed, 21 Feb 2024 at 10:06, Baolu Lu<baolu.lu@linux.intel.com>
-> > wrote:
-> >> On 2024/2/21 9:28, Zhangfei Gao wrote:
-> >>> On Wed, 21 Feb 2024 at 07:58, Zhang, Tina<tina.zhang@intel.com>
-> >>> wrote:
-> >>>
-> >>>>>> struct iommu_sva *iommu_sva_bind_device(struct device
-> >>>>>> *dev, struct mm_struct *mm)  { +       struct
-> >>>>>> iommu_mm_data *iommu_mm; struct iommu_domain *domain;
-> >>>>>> struct iommu_sva *handle; int ret;
-> >>>>>>
-> >>>>>> +       mutex_lock(&iommu_sva_lock); + /* Allocate
-> >>>>>> mm->pasid if necessary. */ -       ret =
-> >>>>>> iommu_sva_alloc_pasid(mm, dev); -       if (ret) - return
-> >>>>>> ERR_PTR(ret); +       iommu_mm = iommu_alloc_mm_data(mm,
-> >>>>>> dev); +       if (IS_ERR(iommu_mm)) { +               ret =
-> >>>>>> PTR_ERR(iommu_mm); + goto out_unlock; +       }
-> >>>>>>
-> >>>>>> handle = kzalloc(sizeof(*handle), GFP_KERNEL); -       if
-> >>>>>> (!handle) -               return ERR_PTR(-ENOMEM); - -
-> >>>>>> mutex_lock(&iommu_sva_lock); -       /* Search for an
-> >>>>>> existing domain. */ -       domain =
-> >>>>>> iommu_get_domain_for_dev_pasid(dev, mm->pasid, -
-> >>>>>> IOMMU_DOMAIN_SVA); -       if (IS_ERR(domain)) { - ret =
-> >>>>>> PTR_ERR(domain); +       if (!handle) { + ret = -ENOMEM;
-> >>>>>> goto out_unlock; }
-> >>>>>>
-> >>>>>> -       if (domain) { -               domain->users++; -
-> >>>>>> goto out;
-> >>>>> Our multi bind test case broke since 6.8-rc1. The test case
-> >>>>> can use same domain & pasid, return different handle, 6.7
-> >>>>> simply  domain->users ++ and return.
-> >>>>>
-> >>>>>> +       /* Search for an existing domain. */ +
-> >>>>>> list_for_each_entry(domain, &mm->iommu_mm->sva_domains,
-> >>>>>> next)
-> >>>>> {
-> >>>>>> +               ret = iommu_attach_device_pasid(domain,
-> >>>>>> dev, + iommu_mm->pasid);
-> >>>>> Now iommu_attach_device_pasid return BUSY since the same
-> >>>>> pasid. And then iommu_sva_bind_device attach ret=-16
-> >>>> Sounds like the test case tries to bind a device to a same mm
-> >>>> multiple times without unbinding the device and the
-> >>>> expectation is that it can always return a valid handle to pass
-> >>>> the test. Right?
-> >>> Yes
-> >>>
-> >>> The device can bind to the same mm multi-times and return
-> >>> different handle, Since the refcount, no need to unbind and bind
-> >>> sequently, The unbind can happen later with the handle.
-> >> Is there any real use case to bind an mm to the pasid of a device
-> >> multiple times? If there are cases, is it better to handle this in
-> >> the uacce driver?
-> > Yes, it is required for multi-thread, the device can provide
-> > multi-queue to speed up.
-> >
-> >> From iommu core's perspective, it doesn't make sense to attach the
-> >> same domain to the same device (or pasid) multiple times.
-> > But is it the refcount domain->user++ used for? Is there any reason
-> > not doing this.
->
-> I was just thinking about whether to do this in the iommu core, or in
-> the upper layers, like uacce or iommufd. It seems that there is no need
-> to attach a domain to a device or pasid again if it has already been
-> attached.
+On Wed, 2024-02-21 at 14:09 +0800, WANG Xuerui wrote:
 
-It would be more complicated since the return handle can be used to
-distinguish different queues of the device.
+> - just restore fstat and be done with it;
+> - add a flag to statx so we can do the equivalent of just fstat(fd,=20
+> &out) with statx, and ensuring an error happens if path is not empty in=
+=20
+> that case;
 
-I think domain->user should handle this case as before.
+It's worse than "just restore fstat" considering the performance.  Read
+this thread:
+https://sourceware.org/pipermail/libc-alpha/2023-September/151320.html
 
-Anyway, I have sent a patch to get more feedback.
+> - tackle the long-standing problem of seccomp deep argument inspection (!=
+).
 
-Thanks
+Frankly I'm never a fan of syscall blocklisting.  When I develop the
+Online Judge system for the programming contest training in Xidian
+University I deliberately avoid using seccomp.  This thing is very
+likely to break innocent programs with some system change innocent as
+well (for example Glibc or libstdc++ update).
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
