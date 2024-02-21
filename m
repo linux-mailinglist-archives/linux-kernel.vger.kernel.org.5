@@ -1,171 +1,231 @@
-Return-Path: <linux-kernel+bounces-74698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEDD985D7EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:30:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E13285D7F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:33:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBC951C2153A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:30:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53261B2305A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2C85823F;
-	Wed, 21 Feb 2024 12:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0841967E92;
+	Wed, 21 Feb 2024 12:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Oz7LHx41";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Oz7LHx41"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="eGdNzpUb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E9B53E32;
-	Wed, 21 Feb 2024 12:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31ECE47F48;
+	Wed, 21 Feb 2024 12:33:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708518626; cv=none; b=RdNaUnHA0wJHd2jExu7bBXMhoGFzwY1JxkceTtOiz9NcNrgPYBVdJJ+U2jomexX6nOhwa4UePK2NLv+E3dPZp71xPg1dYtxRU4END4+7/mWRM8jPYyKTfoG4eLi57gWdWW0FYFx1TWkyK+uTmyn0UZr01FhGyYtY5BFUvt1g04E=
+	t=1708518790; cv=none; b=YG8LGNsNIzoLl+gGecuEw1QcUMWBk89yEeBM3Eo9GvQpwGZ4CwJpnIzVCD+c6kUxUXDuQDR7KjX5//pW7QO1TXvADSCzcHkcBzsWe0ptlpD+Rj1IjeQB4YjY2evObIFz81LY1q3kBfM7T8s//6FAxsdCodxg2BtruuARqTqIwZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708518626; c=relaxed/simple;
-	bh=1kwO+Ov/rkMoSq6eQXkirPGbfGGxQZZPux5NE5WO6ro=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s/qix4Xedv2avhHn3jVpbBOzjsqHM+ZEmIvkDBaCwUiURnED5KX01lw5YC18uDsXGrrcjENJULdhtwPs4FUAWwELu1kzg4kOKUFUdtcGNaqJklmrEf9C/dyE75wcUEto1OPqC3jFwdYRQsKjXZI3J/Eoo3Je9bQbKCqt+r4k+ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Oz7LHx41; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Oz7LHx41; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6B1091FB5A;
-	Wed, 21 Feb 2024 12:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708518622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m/3UF1llyRPkvnSOmTVftLToViwl2uA6Cb3KNTWzsjY=;
-	b=Oz7LHx41KMUKHOMjOrjKp45nuc5DNefmQznIzfZuYvHQVJ/A1IM2hQ64S0mmWFu+yDHo/9
-	knxJWzpR2pC/FOwwtO+Myyrm+Apguz+3SHhIR1sah0D6M8P2Xb/WeXwUjRXIcLHEaIfTFF
-	E3pwRHg3eGEHhMrZntrb2ogvca3v+oY=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708518622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m/3UF1llyRPkvnSOmTVftLToViwl2uA6Cb3KNTWzsjY=;
-	b=Oz7LHx41KMUKHOMjOrjKp45nuc5DNefmQznIzfZuYvHQVJ/A1IM2hQ64S0mmWFu+yDHo/9
-	knxJWzpR2pC/FOwwtO+Myyrm+Apguz+3SHhIR1sah0D6M8P2Xb/WeXwUjRXIcLHEaIfTFF
-	E3pwRHg3eGEHhMrZntrb2ogvca3v+oY=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EE85A139D1;
-	Wed, 21 Feb 2024 12:30:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id WmX0LN3s1WUuMQAAn2gu4w
-	(envelope-from <mpdesouza@suse.com>); Wed, 21 Feb 2024 12:30:21 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: kernel test robot <lkp@intel.com>
-Cc: Marcos Paulo de Souza <mpdesouza@suse.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Petr Mladek <pmladek@suse.com>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	oe-kbuild-all@lists.linux.dev,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org
-Subject: Re: [PATCH 2/3] selftests: lib.mk: Simplify TEST_GEN_MODS_DIR handling
-Date: Wed, 21 Feb 2024 09:29:47 -0300
-Message-ID: <20240221122949.26263-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <202402191502.dALlSRz0-lkp@intel.com>
-References: 
+	s=arc-20240116; t=1708518790; c=relaxed/simple;
+	bh=TKxrZ5i8qfUSmWmPOGLDIUAMYtKUR9blFenfplJL0Ig=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GbWLuPaIlGMbs7ZYgEnJgIlZcvLr+4Url1exb9y5HGOKr7JfaACrizRWeqoxRpc3UxvYzwTU29Q4CfIB+yYlWK46Qx6w9Y6bUVeiaL/feWTPLMA7xXHXfeTIqJVJB02V6SJH+S/1I6Wf/eI+V35IkGU3MbUcCiHD6eaQGyDusr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=eGdNzpUb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F419C433C7;
+	Wed, 21 Feb 2024 12:33:07 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="eGdNzpUb"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708518784;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=c8L9OYnDMwIamjO8TmzT17Jz/akuQWtAkEn5w1LxguY=;
+	b=eGdNzpUbGU3xkV4rsI7R2mHIuszaFpBv8DB5rgja4laDoQOvtTYLdGpXmX1wF7J/SO/U3H
+	voCiZAN1GhkKJpIZSM1JJSTdZgpZT2e5D+N1pjEySxgUBMynHUfgSzimsxQGzF/jnUoQ9F
+	mI6FFs8jEqotmifjHbFEL/doiAQbkFE=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 02fd8cb8 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 21 Feb 2024 12:33:04 +0000 (UTC)
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: x86@kernel.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Borislav Petkov <bp@alien8.de>,
+	=?UTF-8?q?Daniel=20P=20=2E=20Berrang=C3=A9?= <berrange@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v3] x86/coco: Require seeding RNG with RDRAND on CoCo systems
+Date: Wed, 21 Feb 2024 13:32:40 +0100
+Message-ID: <20240221123248.25570-1-Jason@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
 
-On Mon, 19 Feb 2024 15:16:51 +0800 kernel test robot <lkp@intel.com> wrote:
+There are few uses of CoCo that don't rely on working cryptography and
+hence a working RNG. Unfortunately, the CoCo threat model means that the
+VM host cannot be trusted and may actively work against guests to
+extract secrets or manipulate computation. Since a malicious host can
+modify or observe nearly all inputs to guests, the only remaining source
+of entropy for CoCo guests is RDRAND.
 
-> Hi Marcos,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on 345e8abe4c355bc24bab3f4a5634122e55be8665]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
-> base:   345e8abe4c355bc24bab3f4a5634122e55be8665
-> patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-2-89f4a6f5cddc%40suse.com
-> patch subject: [PATCH 2/3] selftests: lib.mk: Simplify TEST_GEN_MODS_DIR handling
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191502.dALlSRz0-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402191502.dALlSRz0-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> Makefile:11: warning: overriding recipe for target 'all'
-> >> ../lib.mk:62: warning: ignoring old recipe for target 'all'
->    make[1]: *** [../lib.mk:62: all] Error 2
->    Makefile:65: warning: overriding recipe for target 'emit_tests'
->    ../lib.mk:120: warning: ignoring old recipe for target 'emit_tests'
->    make[1]: *** No targets.  Stop.
->    make[1]: *** No targets.  Stop.
->    make[1]: *** No targets.  Stop.
+If RDRAND is broken -- due to CPU hardware fault -- the RNG as a whole
+is meant to gracefully continue on gathering entropy from other sources,
+but since there aren't other sources on CoCo, this is catastrophic.
+This is mostly a concern at boot time when initially seeding the RNG, as
+after that the consequences of a broken RDRAND are much more
+theoretical.
 
-I couldn't reproduce this one locally. Shuah, have you seen this issue in your
-setup? I followed the steps to reproduce this issue (it's the same sequence
-already reported in earlier patches...)
+So, try at boot to seed the RNG using 256 bits of RDRAND output. If this
+fails, panic(). This will also trigger if the system is booted without
+RDRAND, as RDRAND is essential for a safe CoCo boot.
 
-> 
-> 
-> vim +/all +11 Makefile
-> 
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16   7  
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16   8  # *DOCUMENTATION*
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16   9  # To see a list of typical targets execute "make help"
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16  10  # More info can be located in ./README
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16 @11  # Comments in this file are targeted only to the developer, do not
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16  12  # expect to learn how to build the kernel reading this file.
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16  13  
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+This patch is deliberately written to be "just a CoCo x86 driver
+feature" and not part of the RNG itself. Many device drivers and
+platforms have some desire to contribute something to the RNG, and
+add_device_randomness() is specifically meant for this purpose. Any
+driver can call this with seed data of any quality, or even garbage
+quality, and it can only possibly make the quality of the RNG better or
+have no effect, but can never make it worse. Rather than trying to
+build something into the core of the RNG, this patch interprets the
+particular CoCo issue as just a CoCo issue, and therefore separates this
+all out into driver (well, arch/platform) code.
+
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Daniel P. Berrangé <berrange@redhat.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Elena Reshetova <elena.reshetova@intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Changes v2->v3:
+- Remove patch that handled generic RDRAND failures, because that
+  doesn't really have any implication for the RNG, since it's supposed
+  to run fine on systems without RDRAND anyway, and CoCo is a weird
+  special case. If people still want an extra generic RDRAND failure
+  handler, that's standalone anyway, so we can do that disconnected from
+  this patch. No need to make it a series.
+- Update comments and commit message to reflect this.
+
+Changes v1->v2:
+- panic() instead of BUG_ON(), as suggested by Andi Kleen.
+- Update comments, now that we have info from AMD and Intel.
+
+ arch/x86/coco/core.c        | 36 ++++++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/coco.h |  2 ++
+ arch/x86/kernel/setup.c     |  2 ++
+ 3 files changed, 40 insertions(+)
+
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec9986570e..0a5d59966d6d 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -3,13 +3,16 @@
+  * Confidential Computing Platform Capability checks
+  *
+  * Copyright (C) 2021 Advanced Micro Devices, Inc.
++ * Copyright (C) 2024 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+  *
+  * Author: Tom Lendacky <thomas.lendacky@amd.com>
+  */
+ 
+ #include <linux/export.h>
+ #include <linux/cc_platform.h>
++#include <linux/random.h>
+ 
++#include <asm/archrandom.h>
+ #include <asm/coco.h>
+ #include <asm/processor.h>
+ 
+@@ -153,3 +156,36 @@ __init void cc_set_mask(u64 mask)
+ {
+ 	cc_mask = mask;
+ }
++
++__init void cc_random_init(void)
++{
++	unsigned long rng_seed[32 / sizeof(long)];
++	size_t i, longs;
++
++	if (cc_vendor == CC_VENDOR_NONE)
++		return;
++
++	/*
++	 * Since the CoCo threat model includes the host, the only reliable
++	 * source of entropy that can be neither observed nor manipulated is
++	 * RDRAND. Usually, RDRAND failure is considered tolerable, but since
++	 * CoCo guests have no other unobservable source of entropy, it's
++	 * important to at least ensure the RNG gets some initial random seeds.
++	 */
++	for (i = 0; i < ARRAY_SIZE(rng_seed); i += longs) {
++		longs = arch_get_random_longs(&rng_seed[i], ARRAY_SIZE(rng_seed) - i);
++
++		/*
++		 * A zero return value means that the guest doesn't have RDRAND
++		 * or the CPU is physically broken, and in both cases that
++		 * means most crypto inside of the CoCo instance will be
++		 * broken, defeating the purpose of CoCo in the first place. So
++		 * just panic here because it's absolutely unsafe to continue
++		 * executing.
++		 */
++		if (longs == 0)
++			panic("RDRAND is defective.");
++	}
++	add_device_randomness(rng_seed, sizeof(rng_seed));
++	memzero_explicit(rng_seed, sizeof(rng_seed));
++}
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index 76c310b19b11..e9d059449885 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -15,6 +15,7 @@ extern enum cc_vendor cc_vendor;
+ void cc_set_mask(u64 mask);
+ u64 cc_mkenc(u64 val);
+ u64 cc_mkdec(u64 val);
++void cc_random_init(void);
+ #else
+ #define cc_vendor (CC_VENDOR_NONE)
+ 
+@@ -27,6 +28,7 @@ static inline u64 cc_mkdec(u64 val)
+ {
+ 	return val;
+ }
++static inline void cc_random_init(void) { }
+ #endif
+ 
+ #endif /* _ASM_X86_COCO_H */
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 84201071dfac..30a653cfc7d2 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -36,6 +36,7 @@
+ #include <asm/bios_ebda.h>
+ #include <asm/bugs.h>
+ #include <asm/cacheinfo.h>
++#include <asm/coco.h>
+ #include <asm/cpu.h>
+ #include <asm/efi.h>
+ #include <asm/gart.h>
+@@ -994,6 +995,7 @@ void __init setup_arch(char **cmdline_p)
+ 	 * memory size.
+ 	 */
+ 	mem_encrypt_setup_arch();
++	cc_random_init();
+ 
+ 	efi_fake_memmap();
+ 	efi_find_mirror();
+-- 
+2.43.0
+
 
