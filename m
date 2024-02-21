@@ -1,272 +1,153 @@
-Return-Path: <linux-kernel+bounces-73994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6013185CE9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:18:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B114B85CE8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:06:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA9DD1F24C26
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:18:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 626E3285579
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E7736120;
-	Wed, 21 Feb 2024 03:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999E9364C4;
+	Wed, 21 Feb 2024 03:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nxUQ6I/3"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="P9ZEzL06"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174102F36
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8186E2F36
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708485492; cv=none; b=P8f1svR1AQ32roOFlGYu59a8lcrTTdZASUagU2rQfo1UD3fYHCEJzgT1k4oCC5akho/WRRiKlwL/9LnoJZO6hsjwaBCFXR5lhJGy5pMhpkAvl+0pg6UQe0fJkBMLET/H9IKeRjIZO62HdEoBLR4RRmAYHPIXven2luNHUL18LTM=
+	t=1708484792; cv=none; b=OxGgVJAIzXnMU839nSfU1JdvN63MIfEgpgq6kGjQBR10859+fQqDm7m3Ct3IPJ17uXI2VBXJySAVaGWL6BGjG3030OTVpTt1U49FOGKo6/3OQUVX51/PCBtzlveBAGnNHFQE4Sw3XNX1y5oPc1zKc/ynUdPR/QBOtbMRXLptKrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708485492; c=relaxed/simple;
-	bh=a8rK8mTtgAiuyOr7Rsx2gpfxVtw3gd/Dcp+omuviBu4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VcOyBYryKta5bYKwleTFxL3gXdn8BvEtRBb2VzMG9Bf8cnLq8VmRoWFN3CRDppcsshYw7wNVf3ROjPkiVn0HCotOV+kX2EXd03HvtN/NGQU/v1YRBWQXaEOy69+V8vj7GvSnBs7/peDfef2DNwJ/L2JnQPaWmYWMhdZ9uz9ct/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nxUQ6I/3; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708485490; x=1740021490;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a8rK8mTtgAiuyOr7Rsx2gpfxVtw3gd/Dcp+omuviBu4=;
-  b=nxUQ6I/3LxlINjknFARp5u8I+rG7lV+FwK4TT2l7OvvTlmfp1bkOOGJ+
-   +HWNi5DKWQirL1h6zRv+A7t4o/hQebMydV04IXcG9l97INvoNG6VGlOMv
-   hp3xFCDoC/g2ZoCtOtsI1zvnAAqVoG4Uy/R+l1FGe19p7u7kBbmSEK3sz
-   +DDWvarg7tQ8rjNGLDFteRO9iWT12+mWyr4sgu1411LfgewjpEnpt73Xr
-   MFwWWpWdMy4tffwI2pRAydIHif4GyBa3bjHJnFYHYrpK6EvCkIlIdg3b3
-   5sGgKhRN1o0EYycM0mRlZxFo2YkKoRwqNJatLZUqCszDJt3fQkCNJu2nm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="5584180"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="5584180"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:18:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="36029868"
-Received: from feng-clx.sh.intel.com ([10.239.159.50])
-  by fmviesa001.fm.intel.com with ESMTP; 20 Feb 2024 19:18:06 -0800
-From: Feng Tang <feng.tang@intel.com>
-To: John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	paulmck@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Waiman Long <longman@redhat.com>,
-	linux-kernel@vger.kernel.org
-Cc: Feng Tang <feng.tang@intel.com>,
-	Jin Wang <jin1.wang@intel.com>
-Subject: [PATCH v5] clocksource: Scale the max retry number of watchdog read according to CPU numbers
-Date: Wed, 21 Feb 2024 11:04:07 +0800
-Message-Id: <20240221030407.915927-1-feng.tang@intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708484792; c=relaxed/simple;
+	bh=7Qyykz5fB4a0+o7/sN39zAOQibndEWz+FsTBhS+hLSs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b6ld7Umhi2+9exVmeGfKL3Hp8iPk0Vi3r6LT76Yd3SZA4X0hApjG+3HmqHc8nrvtIOrHwj2M0B9otq0+2FCwm/HttnoWUKiFy2AgPZcPEU5JtNIQoCdJXt01ZQ5fUgyKVew7Du0fmtc9p8L+sQC/8XRquHW5r8v5fA+qRjile0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=P9ZEzL06; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-299846d6ccfso1764214a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:06:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1708484791; x=1709089591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7Qyykz5fB4a0+o7/sN39zAOQibndEWz+FsTBhS+hLSs=;
+        b=P9ZEzL06fOZFwiwCAvAXlrsctbsf+MGECVUWo6H8SLp53IAzSgnXUtLeKsL9e2O00r
+         lhJZMvFDQAUJ6LSo139PnadTxM7b3GZTrQiYCZ5+F5V4ILwDV4Wq1SKGNyMbYG1fsvpR
+         NTFNKDsvXqhdpuKblV/7VxGGMzCS+WkBlydlMuJmRlLmYpDabOzlvk5jQv5GSlydaDlI
+         btNoHiVH2sGECweU9ZhVxPOXbDtWHzoHEM7EkZIN6A9njOnhZKstzGJaQOcFHNJxdNq0
+         RlsmIy419HOd+EztIYYCN/8yDtUH54sb+kOxPBW/XoYaQf8xvMJl/4VlJdCraWw/QuiP
+         ddyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708484791; x=1709089591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7Qyykz5fB4a0+o7/sN39zAOQibndEWz+FsTBhS+hLSs=;
+        b=GdHPucFfVDtvJbRuWQLapd0L4YYEd33Ri11VbcEWXRUQ7OdefFso8GKM3H+kdbO1P0
+         3twg3bDJSMXsX+2U3kc7w9sDZOtAPpT+CoYahKMFa4fSi/11AIaCCC3VWHv8TuSlbS/D
+         npTFHF6/uZ8kC0jFSOLK5X+g1JQQUw7Lqw7/aLsBgwh49F6r30vdTmHfUkNoNehbKVPv
+         hZMVKazL25vVYvC/W8YXfn5lIQOPtceAVUEU+gu9YYDDTDqOVKUXRXploavUhcDmFeCG
+         1YC2AgtmzxCg9iYnYQmvqFBVHbX4XwmzMV+agVlixgyRIjcPclyXHmmN9O2+mzTsY4Op
+         Kl7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUupx/bBbie3R09eM8HsnTkzgpaPJeIYo6PjHGDWU+j/LBGd6ahXuqVJb6jmbD6/6dVrUtbboKwzhMlop4zTbGE3ciBxDRcwk1bd4RH
+X-Gm-Message-State: AOJu0YyeK0X1yUMkBepAJXyvpKyovruxLr1BVRxCkmM6diZAlgBT+kot
+	9/M5qflPTdddBz2bHE4SyMyQ5FlGsTeQuczUKDcVbj5dE5gj9JDHysVb9G/MKCFx0TGi40FPQwe
+	H/EqqkfSPug9lO8bEa+PAQyvNG98/bKV35jO2kg==
+X-Google-Smtp-Source: AGHT+IG3cmZn0y1k/Co1iZTZhM0M3UdbM2Nc78xLp+KeD+3W703kJkSFPbNvwzYDxLMM6p/A3k8QRN1yRX7txCHLsec=
+X-Received: by 2002:a17:90a:9a94:b0:299:1777:134c with SMTP id
+ e20-20020a17090a9a9400b002991777134cmr12773740pjp.33.1708484790860; Tue, 20
+ Feb 2024 19:06:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+ <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com>
+ <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com>
+ <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com> <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Wed, 21 Feb 2024 11:06:20 +0800
+Message-ID: <CALz3k9jDsmNMrXdxdx152fgvBxDoY4Lj_xMf8z-pwPtpm75vXQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next 0/5] bpf: make tracing program
+ support multi-attach
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
+	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
+	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
+	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There was a bug on one 8-socket server that the TSC is wrongly marked
-as 'unstable' and disabled during boot time (reproduce rate is about
-every 120 rounds of reboot tests), with log:
+On Wed, Feb 21, 2024 at 11:02=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Feb 20, 2024 at 6:45=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dong=
+menglong.8@bytedance.com> wrote:
+> >
+> > On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=A3 <d=
+ongmenglong.8@bytedance.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > On Wed, Feb 21, 2024 at 9:24=E2=80=AFAM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
+> > > > <dongmenglong.8@bytedance.com> wrote:
+> > > > >
+> > > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not all=
+owed to
+> > > > > be attached to multiple hooks, and we have to create a BPF progra=
+m for
+> > > > > each kernel function, for which we want to trace, even through al=
+l the
+> > > > > program have the same (or similar) logic. This can consume extra =
+memory,
+> > > > > and make the program loading slow if we have plenty of kernel fun=
+ction to
+> > > > > trace.
+> > > >
+> > > > Should this be combined with multi link ?
+> > > > (As was recently done for kprobe_multi and uprobe_multi).
+> > > > Loading fentry prog once and attaching it through many bpf_links
+> > > > to multiple places is a nice addition,
+> > > > but we should probably add a multi link right away too.
+> > >
+> > > I was planning to implement the multi link for tracing after this
+> > > series in another series. I can do it together with this series
+> > > if you prefer.
+> > >
+> >
+> > Should I introduce the multi link for tracing first, then this series?
+> > (Furthermore, this series seems not necessary.)
+>
+> What do you mean "not necessary" ?
+> Don't you want to still check that bpf prog access only N args
+> and BTF for these args matches across all attach points ?
 
-    clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
-    wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
-    tsc: Marking TSC unstable due to clocksource watchdog
-    TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
-    sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
-    clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
-    clocksource: Switched to clocksource hpet
+No, I means that if we should keep the
 
-The reason is for platform with lots of CPU, there are sporadic big or
-huge read latency of read watchog/clocksource during boot or when system
-is under stress work load, and the frequency and maximum value of the
-latency goes up with the increasing of CPU numbers. Current code already
-has logic to detect and filter such high latency case by reading 3 times
-of watchdog, and check the 2 deltas. Due to the randomness of the
-latency, there is a low possibility situation that the first delta
-(latency) is big, but the second delta is small and looks valid, which
-can escape from the check, and there is a 'max_cswd_read_retries' for
-retrying that check covering this case, whose default value is only 2
-and may be not enough for machines with huge number of CPUs.
+"Loading fentry prog once and attaching it through many bpf_links to
+multiple places"
 
-So scale and enlarge the max retry number according to CPU number to
-better filter those latency noise for large systems, which has been
-verified fine in 4 days reboot test on the 8-socket machine.
+and only keep the multi link.
 
-Also as suggested by Thomas, remove parameter 'max_cswd_read_retries'
-which was originally introduced to cover this.
-
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Tested-by: Jin Wang <jin1.wang@intel.com>
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Waiman Long <longman@redhat.com>
----
-Changelog:
-
-    since v4:
-      * Add a helper function to be shared by different files (Paul)
-
-    since v3:
-      * Remove clocksource's module parameter 'max_cswd_read_retries' (Thomas)
-      * Use "ilog4" instead of ilog2 for max retry calculation, and
-        may be adjusted later (Paul)
-
-    since v2:
-      * Fix the unexported symbol of helper function being used by
-        kernel module issue (Waiman)
-
-    since v1:
-      * Add santity check for user input value of 'max_cswd_read_retries'
-        and a helper function for getting max retry nubmer (Paul)
-      * Apply the same logic to watchdog test code (Waiman)
-
-
-
- Documentation/admin-guide/kernel-parameters.txt   |  6 ------
- include/linux/clocksource.h                       | 13 ++++++++++++-
- kernel/time/clocksource-wdtest.c                  | 13 +++++++------
- kernel/time/clocksource.c                         |  9 ++++-----
- tools/testing/selftests/rcutorture/bin/torture.sh |  2 +-
- 5 files changed, 24 insertions(+), 19 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 31b3a25680d0..763e96dcf8b1 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -679,12 +679,6 @@
- 			loops can be debugged more effectively on production
- 			systems.
- 
--	clocksource.max_cswd_read_retries= [KNL]
--			Number of clocksource_watchdog() retries due to
--			external delays before the clock will be marked
--			unstable.  Defaults to two retries, that is,
--			three attempts to read the clock under test.
--
- 	clocksource.verify_n_cpus= [KNL]
- 			Limit the number of CPUs checked for clocksources
- 			marked with CLOCK_SOURCE_VERIFY_PERCPU that
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 1d42d4b17327..13cf36fe27ac 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -291,7 +291,18 @@ static inline void timer_probe(void) {}
- #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
- 	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
- 
--extern ulong max_cswd_read_retries;
-+static inline int clocksource_get_max_watchdog_retry(void)
-+{
-+	 /*
-+	 * When system is in boot phase or under heavy workload, there could
-+	 * be random big latency during clocksource/watchdog read, so add
-+	 * some retry to filter the noise latency. As the latency's frequency
-+	 * and maximum value goes up with the CPU numbers relatively, chose
-+	 * the max retry number according to CPU numbers.
-+	 */
-+	return (ilog2(num_online_cpus()) / 2 + 1);
-+}
-+
- void clocksource_verify_percpu(struct clocksource *cs);
- 
- #endif /* _LINUX_CLOCKSOURCE_H */
-diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
-index df922f49d171..2a5abda307e1 100644
---- a/kernel/time/clocksource-wdtest.c
-+++ b/kernel/time/clocksource-wdtest.c
-@@ -105,7 +105,7 @@ static int wdtest_func(void *arg)
- {
- 	unsigned long j1, j2;
- 	char *s;
--	int i;
-+	int i, max_retries;
- 
- 	schedule_timeout_uninterruptible(holdoff * HZ);
- 
-@@ -139,18 +139,19 @@ static int wdtest_func(void *arg)
- 	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
- 
- 	/* Verify tsc-like stability with various numbers of errors injected. */
--	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
--		if (i <= 1 && i < max_cswd_read_retries)
-+	max_retries = clocksource_get_max_watchdog_retry(); 
-+	for (i = 0; i <= max_retries + 1; i++) {
-+		if (i <= 1 && i < max_retries)
- 			s = "";
--		else if (i <= max_cswd_read_retries)
-+		else if (i <= max_retries)
- 			s = ", expect message";
- 		else
- 			s = ", expect clock skew";
--		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
-+		pr_info("--- Watchdog with %dx error injection, %d retries%s.\n", i, max_retries, s);
- 		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
- 		schedule_timeout_uninterruptible(2 * HZ);
- 		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
--		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
-+		WARN_ON_ONCE((i <= max_retries) !=
- 			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
- 		wdtest_ktime_clocksource_reset();
- 	}
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 3052b1f1168e..7fcb8d06b7cd 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -210,9 +210,6 @@ void clocksource_mark_unstable(struct clocksource *cs)
- 	spin_unlock_irqrestore(&watchdog_lock, flags);
- }
- 
--ulong max_cswd_read_retries = 2;
--module_param(max_cswd_read_retries, ulong, 0644);
--EXPORT_SYMBOL_GPL(max_cswd_read_retries);
- static int verify_n_cpus = 8;
- module_param(verify_n_cpus, int, 0644);
- 
-@@ -227,8 +224,10 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
- 	unsigned int nretries;
- 	u64 wd_end, wd_end2, wd_delta;
- 	int64_t wd_delay, wd_seq_delay;
-+	int max_retries;
- 
--	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-+	max_retries = clocksource_get_max_watchdog_retry(); 
-+	for (nretries = 0; nretries <= max_retries; nretries++) {
- 		local_irq_disable();
- 		*wdnow = watchdog->read(watchdog);
- 		*csnow = cs->read(cs);
-@@ -240,7 +239,7 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
- 		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
- 					      watchdog->shift);
- 		if (wd_delay <= WATCHDOG_MAX_SKEW) {
--			if (nretries > 1 || nretries >= max_cswd_read_retries) {
-+			if (nretries > 1 || nretries >= max_retries) {
- 				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
- 					smp_processor_id(), watchdog->name, nretries);
- 			}
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index d5a0d8a33c27..bbac5f4b03d0 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -567,7 +567,7 @@ then
- 	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
- 	torture_set "clocksourcewd-1" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
- 
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 clocksource.max_cswd_read_retries=1 tsc=watchdog"
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
- 	torture_set "clocksourcewd-2" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
- 
- 	# In case our work is already done...
--- 
-2.34.1
-
+Both methods need to check the accessed args of the target.
 
