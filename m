@@ -1,165 +1,278 @@
-Return-Path: <linux-kernel+bounces-75132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9C6C85E3A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:44:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9E185E3A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 071771C220C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:44:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ED2DB25E54
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E88682D8F;
-	Wed, 21 Feb 2024 16:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B30C8563C;
+	Wed, 21 Feb 2024 16:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1GAtX7yd"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OKJkOO4G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C352E1DA32
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9DA839EA;
+	Wed, 21 Feb 2024 16:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708533727; cv=none; b=Xe77tcNw5E4RrlsY1HgkG4mgMsMvv0mJmKdmWg1j6SuxF2CFy9h9rZNa80BGKw6U7k+VNN2vhUFAJlo4zvvtIUhYU1rSxkoKpHkMJZGhyDHvrGuJTFKB1DNyl0Km59AYNuH96wz8jLPe1P5F/amlPTBhvUDs5a438n7oNA1HPQ4=
+	t=1708533682; cv=none; b=K0k/46oW6boN+CYZRWV2T7BlfZ29FyRQxass+jCtwcYcJhreUzFF3Sy108DQ2xEvMvcwh9IH4aDgFDQO1s7zEXd5s2bv85eGyUzEdtBM9zMbvrKlvcyq+UC9gf1yRCIkGspcU/akbCkc30Mz0eVcy5Zex97p0dwfWlYFd5BBoEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708533727; c=relaxed/simple;
-	bh=5QvEqAnoo4+rJMB/03f8vFSvfBFHh/I8MNbKCyj6Q8s=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=lEWcgpMI6iDYHO4htES1cSDIegGCsLdhJf+B8pbb/GuvY5asJ+2OUBlXRAeoEBGwMZhdAlMa8WlLgszlaudE9CIFx5iM3EYebgN41/ieXHZvQyWyJ0/2n9PQv51YeHtVqLhEQZWaQfpyMEkghnjUoMXmr2klVaQnehtkrlW1v3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vilasbhat.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1GAtX7yd; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vilasbhat.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b269686aso10555978276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:42:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708533725; x=1709138525; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KbnKqBJ3sCc2xkK0NDD9vN4I2lfLk3JwJvt5ev19VfU=;
-        b=1GAtX7ydJCksB1JKmRt1pa/tIOc0QF5C9ZHBvQpOh4XSiRgneWacp5bTYCvJ1pHD94
-         MzCfOEwsp1cok54wdoXCKBz7qhncpApABqogTpoKNIgGZGHlow8cjb7xwQe5LQiUgGm/
-         JAcx7vI76+TEJtt3dp9YIuP6S5Uj0dWf0IZG0S1STQaaQi/P0XHHHOnNo9plwEemtv+A
-         2Fo+2USg5aIIJ7xBHSvefR9vnXWlFxk6tDKwXWTZy+e9m9BvdOC4GziOeucv+sprVlFk
-         PbjaKg0IYlOL3GFvfVc94bjVcpghZ6ImEEzWwTUQg86dGaUwMDbKiWcaIwoEJhbSKIPm
-         W3ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708533725; x=1709138525;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KbnKqBJ3sCc2xkK0NDD9vN4I2lfLk3JwJvt5ev19VfU=;
-        b=HxD5XySdcmypOIdl0TOhfpqFFTG7OcW8y6WAOpE4mmNSQzK/2sFmOavQDCRaKMCeE7
-         id6//Ai0R6DUQhSl3W302bdgdcpOlowNPyBXBTSKAOhchmtZAnk1ji8MqhjwIABQTcMR
-         HoPbqyDd6seEo43u8B7lerteobxcDp85doyCnzrpwRiQjWG3EbaZVRiGdeSullGG0gLR
-         y4QU2pvlv4kmm8eWuUV93Bl8Vo9EOjQBrrDyWR9g8LaUhpf5EgW03YEC1hYWKa1Fc/av
-         U88vSdIel9eGNWtl3nDHxRtzIK0fif5fUqhFHmqfZgFSvnAEtYaPisCMtTRaJMTgQuuw
-         Eh0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXgRgQ9of4Vxc3MSe0e7IXpDv/9maDNRDXq5WCdIiR8zL8STfiluSd0HAuyYbk8LHZDiYAWFLjDXUo8WRlt3mIVY00Zk6thTtaHVP/G
-X-Gm-Message-State: AOJu0YzRN0I7e0lym8UsYgtV/8tIsRUD+4WrQFTO3ufY4iq0ny5Bywzw
-	8spUPOY7QU0MmWtiV0QtlGNcEi70S3w0chrw3UrIiQ4z3bgBqO9h9G4HA276szJmaeFMg+tAy56
-	4m+TmiLbNiXz65Q==
-X-Google-Smtp-Source: AGHT+IHXWaPLyNfBDOUrupOCFt26TQxeRbB1i6NKLfWplBjOilufWplqhgM19MdKKwZATUX83JfPRq4Jh/dX/Vk=
-X-Received: from vilasbhat-emu.c.googlers.com ([fda3:e722:ac3:cc00:dc:567e:c0a8:8f2])
- (user=vilasbhat job=sendgmr) by 2002:a25:1984:0:b0:dce:5218:c89b with SMTP id
- 126-20020a251984000000b00dce5218c89bmr478937ybz.5.1708533724903; Wed, 21 Feb
- 2024 08:42:04 -0800 (PST)
-Date: Wed, 21 Feb 2024 16:41:10 +0000
+	s=arc-20240116; t=1708533682; c=relaxed/simple;
+	bh=9m5EheU4d2kYLN7XPOS+yJFs0DWkYRSbnky/8bpWpQE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=AeDtSOx/eup2wCzr4n4g9JId7TNEu2uNi3SBAMJEDdMkTsPpRL/gj3Y+zA8hO/vmYFFQjJlYzYkVT2B56FFE4KM5BOtvISmY6FzkxlbFx3GEOQILYmzhCs5Hnj+MqevkpSUp0UkomQLbGsCrfn5Av5dh2EOAcG8WLa3s6DEyzqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OKJkOO4G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7B789C4167D;
+	Wed, 21 Feb 2024 16:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708533681;
+	bh=9m5EheU4d2kYLN7XPOS+yJFs0DWkYRSbnky/8bpWpQE=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=OKJkOO4GYmDAFmWIHPp6UL2WwmCelBK6S+cDKXicr75El5ynu0V8kdHQxlWqDPuNh
+	 AJMrqMvp4p+LMF+woJ4/NSw0HHchTA3hRHEqBMCGt9kpp6OObsiZoQXCaSxRBpmtc1
+	 LyUiBjpV6DOh3Sj/SweUBPEaUKEMRsthOjTV2cSwalwQ3hE2qmojIR7Zjyfm8oxrg1
+	 aPkR0XyXQb7Aqrk4nbe2jYOLnaMOxfns4ORp0TEMQcvJ49V8MZkPA3b0XBrA/M7uC8
+	 3IffJyT0dne4G+RKbPqhEu5542msefqrK2iyCkdochBBYuUCXJPmW/o0//zVlCjHXX
+	 /3Rvu8g58gXnw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C795C48BEB;
+	Wed, 21 Feb 2024 16:41:21 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Date: Thu, 22 Feb 2024 00:41:10 +0800
+Subject: [PATCH v3 7/8] dt-bindings: clock: hisilicon: add clock
+ definitions for Hi3798MV200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240221164112.846409-1-vilasbhat@google.com>
-Subject: [PATCH v1] PM: runtime: add tracepoint for runtime_status changes
-From: Vilas Bhat <vilasbhat@google.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Vilas Bhat <vilasbhat@google.com>, Saravana Kannan <saravanak@google.com>, kernel-team@android.com, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240222-clk-mv200-v3-7-f30795b50318@outlook.com>
+References: <20240222-clk-mv200-v3-0-f30795b50318@outlook.com>
+In-Reply-To: <20240222-clk-mv200-v3-0-f30795b50318@outlook.com>
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708533664; l=8314;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=/Zx9rOJCxdEvcDD/AuxMNiUuDXM5Wsl3T+6VUT3KaKI=;
+ b=whs7v2aNA0BTocw7m1gSeDckVZqWdslWxZg7LAUDiTwV3Or3n/F14jLDBLokICyKG1Hx0CBeu
+ GPdhxQR2L/OBcgDENNwEr4ZpvlDRaBgSi2O3tpYPQN+SGk99X1gYG6U
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-Existing runtime PM ftrace events (`rpm_suspend`, `rpm_resume`,
-`rpm_return_int`) offer limited visibility into the exact timing of device
-runtime power state transitions, particularly when asynchronous operations
-are involved. When the `rpm_suspend` or `rpm_resume` functions are invoked
-with the `RPM_ASYNC` flag, a return value of 0 i.e., success merely
-indicates that the device power state request has been queued, not that
-the device has yet transitioned.
+From: Yang Xiwen <forbidden405@outlook.com>
 
-A new ftrace event, `rpm_status`, is introduced. This event directly logs
-the `power.runtime_status` value of a device whenever it changes providing
-granular tracking of runtime power state transitions regardless of
-synchronous or asynchronous `rpm_suspend` / `rpm_resume` usage.
+Add clock definitions for core CRG and mcu CRG for Hi3798MV200 SoC.
 
-Signed-off-by: Vilas Bhat <vilasbhat@google.com>
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- drivers/base/power/runtime.c |  1 +
- include/trace/events/rpm.h   | 36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ .../dt-bindings/clock/hisilicon,hi3798mv200-crg.h  | 150 +++++++++++++++++++++
+ .../clock/hisilicon,hi3798mv200-sysctrl.h          |  21 +++
+ 2 files changed, 171 insertions(+)
 
-diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-index 05793c9fbb84..d10354847878 100644
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -94,6 +94,7 @@ static void update_pm_runtime_accounting(struct device *dev)
- static void __update_runtime_status(struct device *dev, enum rpm_status status)
- {
- 	update_pm_runtime_accounting(dev);
-+	trace_rpm_status(dev, status);
- 	dev->power.runtime_status = status;
- }
- 
-diff --git a/include/trace/events/rpm.h b/include/trace/events/rpm.h
-index 3c716214dab1..f1dc4e95dbce 100644
---- a/include/trace/events/rpm.h
-+++ b/include/trace/events/rpm.h
-@@ -101,6 +101,42 @@ TRACE_EVENT(rpm_return_int,
- 		__entry->ret)
- );
- 
-+#define RPM_STATUS_STRINGS \
-+	{ RPM_INVALID, "RPM_INVALID" }, \
-+	{ RPM_ACTIVE, "RPM_ACTIVE" }, \
-+	{ RPM_RESUMING, "RPM_RESUMING" }, \
-+	{ RPM_SUSPENDED, "RPM_SUSPENDED" }, \
-+	{ RPM_SUSPENDING, "RPM_SUSPENDING" }
-+
+diff --git a/include/dt-bindings/clock/hisilicon,hi3798mv200-crg.h b/include/dt-bindings/clock/hisilicon,hi3798mv200-crg.h
+new file mode 100644
+index 000000000000..bf6b6b855724
+--- /dev/null
++++ b/include/dt-bindings/clock/hisilicon,hi3798mv200-crg.h
+@@ -0,0 +1,150 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
 +/*
-+ * ftrace's __print_symbolic requires that all enum values be wrapped in the
-+ * TRACE_DEFINE_ENUM macro so that the enum value can be encoded in the ftrace
-+ * ring buffer.
++ * Copyright (c) 2024 Yang Xiwen <forbidden405@outlook.com>
 + */
-+TRACE_DEFINE_ENUM(RPM_INVALID);
-+TRACE_DEFINE_ENUM(RPM_ACTIVE);
-+TRACE_DEFINE_ENUM(RPM_RESUMING);
-+TRACE_DEFINE_ENUM(RPM_SUSPENDED);
-+TRACE_DEFINE_ENUM(RPM_SUSPENDING);
 +
-+TRACE_EVENT(rpm_status,
-+	TP_PROTO(struct device *dev, enum rpm_status status),
-+	TP_ARGS(dev, status),
++#ifndef __DTS_HI3798MV200_CRG_H
++#define __DTS_HI3798MV200_CRG_H
 +
-+	TP_STRUCT__entry(
-+		__string(name,	dev_name(dev))
-+		__field(int,	status)
-+	),
++/* clocks provided by core CRG */
++#define HI3798MV200_OSC_CLK			0
++#define HI3798MV200_APB_CLK			1
++#define HI3798MV200_AHB_CLK			2
++#define HI3798MV200_APLL_CLK			3
++#define HI3798MV200_BPLL_CLK			4
++#define HI3798MV200_DPLL_CLK			5
++#define HI3798MV200_VPLL_CLK			6
++#define HI3798MV200_HPLL_CLK			7
++#define HI3798MV200_EPLL_CLK			8
++#define HI3798MV200_QPLL_CLK			9
++#define HI3798MV200_PERI_DIV_CLK		10
++#define HI3798MV200_CORE_BUS_CLK                11
++#define HI3798MV200_MDE0_BUS_CLK                12
++#define HI3798MV200_MDE1_BUS_CLK                13
++#define HI3798MV200_MDE2_BUS_CLK                14
++#define HI3798MV200_MDE3_BUS_CLK                15
++/* UART1 does not exist */
++#define HI3798MV200_UART2_CLK			16
++#define HI3798MV200_UART3_CLK			17
++#define HI3798MV200_I2C0_CLK			18
++#define HI3798MV200_I2C1_CLK			19
++#define HI3798MV200_I2C2_CLK			20
++#define HI3798MV200_SPI0_CLK			21
++#define HI3798MV200_SCI0_CLK			22
++#define HI3798MV200_SCI1_CLK			23
++#define HI3798MV200_VDH_CLK                     24
++#define HI3798MV200_VDH_DSP_CLK                 25
++#define HI3798MV200_JPGD_CLK                    26
++#define HI3798MV200_PGD_CLK                     27
++#define HI3798MV200_BPD_CLK                     28
++#define HI3798MV200_VENV_CLK                    29
++#define HI3798MV200_VENV_AXI_CLK                30
++#define HI3798MV200_JPGE_CLK                    31
++#define HI3798MV200_TDE_CLK                     32
++#define HI3798MV200_SDIO0_BIU_CLK		33
++#define HI3798MV200_SDIO0_CIU_CLK		34
++#define HI3798MV200_SDIO0_DRV_CLK		35
++#define HI3798MV200_SDIO0_SAMPLE_CLK		36
++#define HI3798MV200_MMC_BIU_CLK			37
++#define HI3798MV200_MMC_CIU_CLK			38
++#define HI3798MV200_MMC_DRV_CLK			39
++#define HI3798MV200_MMC_SAMPLE_CLK		40
++#define HI3798MV200_SATA_CLK                    41
++#define HI3798MV200_SATA_RX_CLK                 42
++#define HI3798MV200_SATA_CKO_ALIVE_CLK          43
++#define HI3798MV200_SATA_TX_CLK                 44
++#define HI3798MV200_USB3_BUS_CLK		45
++#define HI3798MV200_USB3_REF_CLK		46
++#define HI3798MV200_USB3_SUSPEND_CLK		47
++#define HI3798MV200_USB3_PIPE_CLK		48
++#define HI3798MV200_USB3_UTMI_CLK		49
++#define HI3798MV200_USB3_GS_CLK			50
++#define HI3798MV200_USB3_GM_CLK			51
++#define HI3798MV200_USB2_BUS_CLK		52
++#define HI3798MV200_USB2_48M_CLK		53
++#define HI3798MV200_USB2_12M_CLK		54
++#define HI3798MV200_USB2_OTG_UTMI_CLK		55
++#define HI3798MV200_USB2_HST_PHY_CLK		56
++#define HI3798MV200_USB2_UTMI0_CLK		57
++#define HI3798MV200_USB2_UTMI1_CLK		58
++#define HI3798MV200_USB2_PHY1_REF_CLK		59
++#define HI3798MV200_USB2_PHY2_REF_CLK		60
++#define HI3798MV200_SHA0_CLK                    61
++#define HI3798MV200_SHA1_CLK                    62
++#define HI3798MV200_PMC_CLK                     63
++#define HI3798MV200_GSF_CLK                     64
++#define HI3798MV200_GMAC_CLK                    65
++#define HI3798MV200_EXT_NETPHY_CLK              66
++#define HI3798MV200_ETH_BUS_CLK                 67
++#define HI3798MV200_ETH_CLK                     68
++#define HI3798MV200_GPU_CLK                     69
++#define HI3798MV200_VO_BUS                      70
++#define HI3798MV200_VO_SD                       71
++#define HI3798MV200_VO_SDATE                    72
++#define HI3798MV200_VDAC_CH0_CLK                73
++#define HI3798MV200_VO_HD                       74
++#define HI3798MV200_VDP_CLK                     75
++#define HI3798MV200_VDP_CFG_CLK                 76
++#define HI3798MV200_VPSS_CLK                    77
++#define HI3798MV200_PVR_BUS_CLK                 78
++#define HI3798MV200_PVR_DMX_CLK                 79
++#define HI3798MV200_PVR_27M_CLK                 80
++#define HI3798MV200_PVR_TSI1_CLK                81
++#define HI3798MV200_PVR_TSI2_CLK                82
++#define HI3798MV200_PVR_TSI3_CLK                83
++#define HI3798MV200_PVR_TSI4_CLK                84
++#define HI3798MV200_PVR_TS0_CLK                 85
++#define HI3798MV200_PVR_TSOUT0_CLK              86
++#define HI3798MV200_HDMITX_SSC_CLK              87
++#define HI3798MV200_HDMITX_SSC_BYPASS_CLK       88
++#define HI3798MV200_HDMITX_CTRL_24M_CLK         89
++#define HI3798MV200_HDMITX_CTRL_CEC_CLK         90
++#define HI3798MV200_HDMITX_CTRL_60M_CLK         91
++#define HI3798MV200_HDMITX_CTRL_AS_CLK          92
++#define HI3798MV200_HDMITX_PHY_TMDS_CLK         93
++#define HI3798MV200_ADAC_CLK                    94
++#define HI3798MV200_AIAO_CLK                    95
++#define HI3798MV200_VDAC_CHOP_CLK               96
++#define HI3798MV200_WDG0_CLK                    97
++#define HI3798MV200_COMBPHY_CLK			98
++#define HI3798MV200_PCIE_BUS_CLK		99
++#define HI3798MV200_PCIE_SYS_CLK		100
++#define HI3798MV200_PCIE_PIPE_CLK		101
++#define HI3798MV200_PCIE_AUX_CLK		102
++#define HI3798MV200_SDIO1_BIU_CLK		103
++#define HI3798MV200_SDIO1_CIU_CLK		104
++#define HI3798MV200_SDIO1_DRV_CLK		105
++#define HI3798MV200_SDIO1_SAMPLE_CLK		106
++#define HI3798MV200_VENC_SMMU_CLK               107
++#define HI3798MV200_TDE_SMMU_CLK                108
++#define HI3798MV200_JPGD_SMMU_CLK               109
++#define HI3798MV200_VDH_SMMU_CLK                110
++#define HI3798MV200_VDP_SMMU_CLK                111
++#define HI3798MV200_VPSS_SMMU_CLK               112
++#define HI3798MV200_PGD_SMMU_CLK                113
++#define HI3798MV200_VO_BP_CLK                   114
++#define HI3798MV200_VDP_G4_CLK                  115
++#define HI3798MV200_VDP_V3_CLK                  116
++#define HI3798MV200_VDP_SD_CLK                  117
++#define HI3798MV200_VDP_WBC_CP_CLK              118
++#define HI3798MV200_VDP_WBC_GP_CLK              119
++#define HI3798MV200_VDP_WBC_HD_CLK              120
++#define HI3798MV200_VDP_G3_CLK                  121
++#define HI3798MV200_VDP_G1_CLK                  122
++#define HI3798MV200_VDP_G0_CLK                  123
++#define HI3798MV200_VDP_V1_CLK                  124
++#define HI3798MV200_VDP_V0_CLK                  125
++#define HI3798MV200_VDP_HD_CLK                  126
++#define HI3798MV200_CIPHER_SMMU_CLK             127
++#define HI3798MV200_FMC_CLK			128
++#define HI3798MV200_FEPHY_CLK			129
++#define HI3798MV200_DMAC_CLK			130
++#define HI3798MV200_GZIP_CLK                    131
++#define HI3798MV200_GZIP_AXI_CLK                132
++#define HI3798MV200_GZIP_APB_CLK                133
++#define HI3798MV200_PM_CLK                      134
++#define HI3798MV200_FRACDIV_CLK			135
 +
-+	TP_fast_assign(
-+		__assign_str(name, dev_name(dev));
-+		__entry->status = status;
-+	),
++#define HI3798MV200_CRG_CLK_COUNT		136
 +
-+	TP_printk("%s status=%s", __get_str(name),
-+		__print_symbolic(__entry->status, RPM_STATUS_STRINGS))
-+);
++#endif	/* __DTS_HI3798MV200_CRG_H */
+diff --git a/include/dt-bindings/clock/hisilicon,hi3798mv200-sysctrl.h b/include/dt-bindings/clock/hisilicon,hi3798mv200-sysctrl.h
+new file mode 100644
+index 000000000000..82411d28a8c7
+--- /dev/null
++++ b/include/dt-bindings/clock/hisilicon,hi3798mv200-sysctrl.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2024 Yang Xiwen <forbidden405@outlook.com>
++ */
 +
- #endif /* _TRACE_RUNTIME_POWER_H */
- 
- /* This part must be outside protection */
++#ifndef __DTS_HI3798MV200_SYSCTRL_H
++#define __DTS_HI3798MV200_SYSCTRL_H
++
++/* clocks provided by mcu CRG */
++#define HI3798MV200_MCU_BUS_CLK			0
++#define HI3798MV200_MCE_CLK			1
++#define HI3798MV200_IR_CLK			2
++#define HI3798MV200_TIMER01_CLK			3
++#define HI3798MV200_LEDC_CLK			4
++#define HI3798MV200_UART0_CLK			5
++#define HI3798MV200_WIFI_CLK			6
++#define HI3798MV200_LSADC_CLK			7
++
++#define HI3798MV200_SYSCTRL_CLK_COUNT		8
++
++#endif	/* __DTS_HI3798MV200_SYSCTRL_H */
+
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+2.43.0
 
 
