@@ -1,333 +1,247 @@
-Return-Path: <linux-kernel+bounces-74231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0518C85D15E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:29:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF3985D161
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AADE2288875
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:29:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDC9D1F242CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A343EA98;
-	Wed, 21 Feb 2024 07:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C71C3AC16;
+	Wed, 21 Feb 2024 07:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gQWJxiGZ"
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ijj4DS7v"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF433EA69
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6CD3A8DD
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708500400; cv=none; b=qHKBBmQgo5f1Z+qYYmeDA5V8j3YQ1+bxjiPXod+8dT6usc2rGmYqXwITd7JhwsZXaENk5X73Y3rpW996vQnrEUevZO1+Y0CxLC6B1kTudwPeEzbkDy3okCt665innvjHXOqogwDZVvHj7VddDCGM3z/ThFHd8ZGedus18VEkrts=
+	t=1708500463; cv=none; b=ENpym1SqyGdck54CtPZIj2Fm5OTS9G90mxajT7CqDQWUeTtfqzcoPvwjD8OD7m3306gpwiREiUdEGz6lCNhKF9zFLu/om4aWtCwvulZ2Um5H1gQRidiVdIpV5lnW07HmzD9G0pUkBA3Jz57arqzvY17zKCgDyH2E8fyzNjfpV6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708500400; c=relaxed/simple;
-	bh=GoRB5muUW/vlnvbdqSuzJBKiC4jRGCNWuO4c6CRCuLs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jQabko9uR54VwQ1rseHcmUVZoxXhxzbgN2X4CH1ZHmBKWnopt98EP/fAbdeJG07yIlYU1JUqO/+oo+AmSc4khSze1NUxpN7xyB8mn3HfMrt/oshwZCWxgrYftMy+/xFNcMnxvX5eITxzdpm9rLGnJUUP5DZL5CldjML3TyKMfzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gQWJxiGZ; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so4413274b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:26:37 -0800 (PST)
+	s=arc-20240116; t=1708500463; c=relaxed/simple;
+	bh=i/Z255Tf2x8i7s/H6pawdDSPBpzQEqOfG7zhdoGwFMQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tPMYrFB2yCu+O7uhn7LoiiteolFH1C0LrvACyuqP9FhUhXmrcDOnIZfG79BDXEdkkez/Mi6myHaXTvdCW+NKygkUV+k7owuykCop5LhyLljvcdhbdj7FfZX7D0UxzOUOnFj8oeYmvBLbV1Fy1Z//47meLj8hxElKggHMbKUIzBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ijj4DS7v; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3d01a9a9a2so21154266b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:27:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708500397; x=1709105197; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9bx11pSLT/dMnEbM2cRs3+BobJT8jfteDPW/FW2wkZ8=;
-        b=gQWJxiGZ2wAaeQ4rprfaIPlH4MuEO1gbLhQvPl2xv10QIwTr4Z2dombPI8TwVYxJph
-         XjSt0itAwDy6EkT9iEOWsHzDX8Yaf3xvXT+isQdjIFmhGyAcOh54Li9tWjnapIRGmnKn
-         bfc3J+3/alMTwz2OTnZlZxZdCUXlqvOCSQkE8=
+        d=linaro.org; s=google; t=1708500458; x=1709105258; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rmVElpnqL+d6DT1A1PN7w2052IYFt/BLMTqk1R3bSYE=;
+        b=Ijj4DS7vgxV8KcSxDvgCOVqWliccqNzFAIOVo51W/k/4wsPjfTkxy+M5TILNxsPxCk
+         SiXM1W2rbtQmlw/ulp9xZntcfFhtXK2MwOFblEmJm5yfRt7imVE4REHLQ8KE2ab4vM0T
+         sLXKOW/7H97mR1TsXmtMUghvmIH4b/Hu6XG8GJp/VzTzNadRgQLnWN1DAcwguzjMCfV9
+         P8HFeP+4DFX/QJzxkDHfRewuaTDndax+FDCJfEROFJcLhp5o7mLUicEb+kVRjz3/BiWP
+         P692AdlmZwKwA5MjMDA+tWnq80tqdJmuluKNISIU0jgSa312zl6rlcoFJ9x1qXTAB8vT
+         IRYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708500397; x=1709105197;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9bx11pSLT/dMnEbM2cRs3+BobJT8jfteDPW/FW2wkZ8=;
-        b=Oj18R9mbI1pSeZP9TH486aMMOV8eFlzuGj1x3Eqtl6w7HPV2nfGVnLqXcxYL4vQsCY
-         MD5gSdXkHllTmDnrSWH21jpjskvmqdjXjZdt84DIriaGJpogXaGlCrna3TPmkP2sMkzv
-         jdqfjXxkN7X1gCqPXbpMbqOXCrI4ZUkorXPv+9TUeKKHBiWTdUiWp/DeVV4RDFtFnQTQ
-         hdNZhcLZLSJ0/vkZ9WwBqpMRkrovNxXnxXJTVGu8tZGhgdI7VwfnysmW10VrKQIn5nni
-         NcYxQyyLIOB8EfnDbWjmRGbSffY8O8ul3F7j1BHX/8f0dF2h0VPP/zpa+dHA+QjZFwJm
-         RTUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwU4VF/7XkphaCqzofUsibTSnUUgd9aJbdIGENCI1jwnj0IJezttmfCv8YDG+4LA2npOL7nupGjXYg3Wvx22zhHNsmN7G5oaCrrUod
-X-Gm-Message-State: AOJu0YxuAjvn9Tce4BO7l+cdg+nkkXPZZ1fTSFs+V1ZknQUXx3sDaanX
-	jwi9i4jGc8n7oHY98POYdoSV8pshvu+XS5knb9Zevcia+tug4qWCcNhHRO5VrQ==
-X-Google-Smtp-Source: AGHT+IGNh9WqoGwOHL9szx/wp2kJnQlTMKTYun1TNgpWSovSInZnd2lgzADd8sI8PrrbYbICOO5+xg==
-X-Received: by 2002:a05:6808:1703:b0:3c0:b3f3:c2dc with SMTP id bc3-20020a056808170300b003c0b3f3c2dcmr20423256oib.35.1708500397214;
-        Tue, 20 Feb 2024 23:26:37 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:b417:5d09:c226:a19c])
-        by smtp.gmail.com with UTF8SMTPSA id o74-20020a62cd4d000000b006e3f09fd6a7sm6765220pfg.85.2024.02.20.23.26.34
+        d=1e100.net; s=20230601; t=1708500458; x=1709105258;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rmVElpnqL+d6DT1A1PN7w2052IYFt/BLMTqk1R3bSYE=;
+        b=dS2fdDUYsT8sazuP6xmZDRE1AzverjfUb/htWzcovWkGmoITLCsYJbHirGMN+fjV/j
+         VgR3lZSVpGEKhonMZDx3AHjX98PxStNFsbNkABra1e4p5rtXgQ4Mw0iIDP+UVvvOyn8/
+         z0VPz7adlh7robGCdNecMCCHEl4ZYllq5CK+80QO1iW0g8IKLipT2GWORuGxlCvOcXWX
+         tttG4J+8o6J7VbJIjf1EanhhDqedTSxs/3/f9kDJV0UuDGvhZahvbf33XKBszkYq/Hel
+         qM1zZO++5rj7Cm/0zY2ZffHNxRhqytb9Zdy/j9QOMt++o9+M+Wz+Dok8SNdgo/5ZVMq4
+         pOgg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZrPnnTXCOhMkvhW2CKWDZ2ZTeeAnYVAD797ItiWxTzndra6DMHd4vAoEBTEPg4odQnZyQQBagLY5+v6pR3z5MEyZ5UJIFZ/xXz0p3
+X-Gm-Message-State: AOJu0Ywv6Bhj1ami6rwNuLXNoVodE4KPH0pw4QeTaaoc/CEaCxMvTLYd
+	OYv9eM5o7M3mbFtwWQFCyFE6reJWi6WYsBpE8Omhmhu1LEtxqChnD+u7OiNQsmyWPlOLSRduDGu
+	d
+X-Google-Smtp-Source: AGHT+IFkzmnEdTYzMCJUOIA3d/1xojV557WWMTF7vx7ECfLIDE8GAWAFdeUxqkFDzkS0ac3tOY+Vew==
+X-Received: by 2002:a17:906:c28e:b0:a3f:33e:9ecb with SMTP id r14-20020a170906c28e00b00a3f033e9ecbmr2629145ejz.32.1708500458415;
+        Tue, 20 Feb 2024 23:27:38 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id vg8-20020a170907d30800b00a3d70dc4337sm4657844ejc.102.2024.02.20.23.27.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 23:26:36 -0800 (PST)
-From: David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Isaku Yamahata <isaku.yamahata@gmail.com>,
-	Zhi Wang <zhi.wang.linux@gmail.com>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	David Stevens <stevensd@chromium.org>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Subject: [PATCH v10 8/8] KVM: x86/mmu: Handle non-refcounted pages
-Date: Wed, 21 Feb 2024 16:25:28 +0900
-Message-ID: <20240221072528.2702048-11-stevensd@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240221072528.2702048-1-stevensd@google.com>
-References: <20240221072528.2702048-1-stevensd@google.com>
+        Tue, 20 Feb 2024 23:27:37 -0800 (PST)
+Message-ID: <9dc9306b-ff1b-48aa-ae03-3fabcccf480d@linaro.org>
+Date: Wed, 21 Feb 2024 08:27:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 1/5] dt-bindings: clock: histb-clock: Add missing
+ common clock and Hi3798MV200 specific clock definition
+Content-Language: en-US
+To: Yang Xiwen <forbidden405@outlook.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
+ <20240217-clk-mv200-v2-1-b782e4eb66f7@outlook.com>
+ <875b706f-801a-4a4c-8806-411a67c5a5e7@linaro.org>
+ <SEZPR06MB6959456E59D84C15F0C1B88396502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+ <90e0dc10-8514-4827-998f-15b4d45d874e@linaro.org>
+ <SEZPR06MB69594CBF0625989A5C54DC9096502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+ <3b6ab055-360b-4f73-8d11-8f52b272b7a8@linaro.org>
+ <SEZPR06MB695996DD12D23D13D3579A8996502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+ <d59ed810-f8d6-492e-aeb6-fd8ed13735a0@linaro.org>
+ <SEZPR06MB6959F718988B9A12C2D69D4396502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <SEZPR06MB6959F718988B9A12C2D69D4396502@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: David Stevens <stevensd@chromium.org>
+On 20/02/2024 18:29, Yang Xiwen wrote:
+> On 2/21/2024 1:06 AM, Krzysztof Kozlowski wrote:
+>> On 20/02/2024 17:31, Yang Xiwen wrote:
+>>> On 2/21/2024 12:25 AM, Krzysztof Kozlowski wrote:
+>>>> On 20/02/2024 17:19, Yang Xiwen wrote:
+>>>>> On 2/21/2024 12:13 AM, Krzysztof Kozlowski wrote:
+>>>>>> On 20/02/2024 15:06, Yang Xiwen wrote:
+>>>>>>> On 2/20/2024 6:10 PM, Krzysztof Kozlowski wrote:
+>>>>>>>> On 17/02/2024 13:52, Yang Xiwen via B4 Relay wrote:
+>>>>>>>>> From: Yang Xiwen <forbidden405@outlook.com>
+>>>>>>>>>
+>>>>>>>>> According to the datasheet, some clocks are missing, add their
+>>>>>>>>> definitions first.
+>>>>>>>>>
+>>>>>>>>> Some aliases for hi3798mv200 are also introduced.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+>>>>>>>>> ---
+>>>>>>>>>      include/dt-bindings/clock/histb-clock.h | 21 +++++++++++++++++++++
+>>>>>>>>>      1 file changed, 21 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/include/dt-bindings/clock/histb-clock.h b/include/dt-bindings/clock/histb-clock.h
+>>>>>>>>> index e64e5770ada6..68a53053586a 100644
+>>>>>>>>> --- a/include/dt-bindings/clock/histb-clock.h
+>>>>>>>>> +++ b/include/dt-bindings/clock/histb-clock.h
+>>>>>>>>> @@ -58,6 +58,27 @@
+>>>>>>>>>      #define HISTB_USB3_UTMI_CLK1		48
+>>>>>>>>>      #define HISTB_USB3_PIPE_CLK1		49
+>>>>>>>>>      #define HISTB_USB3_SUSPEND_CLK1		50
+>>>>>>>>> +#define HISTB_SDIO1_BIU_CLK		51
+>>>>>>>>> +#define HISTB_SDIO1_CIU_CLK		52
+>>>>>>>>> +#define HISTB_SDIO1_DRV_CLK		53
+>>>>>>>>> +#define HISTB_SDIO1_SAMPLE_CLK		54
+>>>>>>>>> +#define HISTB_ETH0_PHY_CLK		55
+>>>>>>>>> +#define HISTB_ETH1_PHY_CLK		56
+>>>>>>>>> +#define HISTB_WDG0_CLK			57
+>>>>>>>>> +#define HISTB_USB2_UTMI0_CLK		HISTB_USB2_UTMI_CLK
+>>>>>>>> Why? It's anyway placed oddly, the entries are ordered by number/value.
+>>>>>>> So this is somewhat broken at the beginning. It named after
+>>>>>>> histb-clock.h but actually they are all clocks for Hi3798CV200 SoC. For
+>>>>>>> Hi3798MV200(also a HiSTB SoC), there is one additional UTMI clock.
+>>>>>>>
+>>>>>>>
+>>>>>>> What solution do you prefer? rename UTMI_CLK to UTMI0_CLK, add UTMI1_CLK
+>>>>>>> after it and increment all the indexes after it? Then the diff would be
+>>>>>>> very ugly.
+>>>>>> I still don't understand what is the problem you are trying to solve
+>>>>>> here. Your commit msg says add missing ID, but that ID -
+>>>>>> HISTB_USB2_UTMI_CLK - is already there.
+>>>>>>
+>>>>>> I also do not get why there is a need to rename anything.
+>>>>> Because there are two USB2_UTMI_CLKs in total, at least for Hi3798MV200.
+>>>>> UTMI1 is missing here. For other HiSTB SoCs, there could be even more.
+>>>> My comment was under UTMI0. We do not talk about UTMI1...
+>>>>
+>>>>> If we add USB2_UTMI1_CLK, it looks silly to keep USB2_UTMI_CLK without
+>>>>> renaming it to UTMI0. Just like all the other clocks. E.g.
+>>>>> I2Cn_CLK(n=0,1,2,3,4) etc.., so the same for USB2_UTMI_CLK.
+>>>> Then place it next to old name and explain why it is deprecated with
+>>>> comment.
+>>>
+>>> Do we need to keep the old name? I can fix all the users (only
+>>> hi3798cv200.dtsi) in next version and drop this name directly. Is that
+>> All users in all projects? That might be tricky. And even for Linux
+>> kernel, how can you do it in a bisectable way? Just keep old name.
+>>
+>>
+>>> okay? Should i insert UTMI1_CLK to the middle and re-index all the
+>>> macros after it? Or simply add it to the tail?
+>> Bindings and header constants are ABI, so you cannot change them.
+> 
+> 
+> This file should be renamed to hi3798cv200-clock.h, it shouldn't be 
+> called histb-clock.h from the beginning. Now I have to workaround this 
+> in a dirty way. What if another HiSTB SoC has 3 or more UTMI_CLKs? Do we 
+> need to add more definitions to the end of the file? The file is gonna 
 
-Handle non-refcounted pages in kvm_faultin_pfn(). This allows the host
-to map memory into the guest that is backed by non-refcounted struct
-pages - for example, the tail pages of higher order non-compound pages
-allocated by the amdgpu driver via ttm_pool_alloc_page.
+That's not a big problem, but indeed shows poor design of the driver and
+bindings.
 
-Tested-by: Dmitry Osipenko <dmitry.osipenko@collabora.com> # virgl+venus+virtio-intel+i915
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- arch/x86/kvm/mmu/mmu.c          | 24 +++++++++++++++++-------
- arch/x86/kvm/mmu/mmu_internal.h |  2 ++
- arch/x86/kvm/mmu/paging_tmpl.h  |  2 +-
- arch/x86/kvm/mmu/tdp_mmu.c      |  3 ++-
- include/linux/kvm_host.h        |  6 ++++--
- virt/kvm/guest_memfd.c          |  8 ++++----
- virt/kvm/kvm_main.c             | 10 ++++++++--
- 7 files changed, 38 insertions(+), 17 deletions(-)
+> to be more and more unreadable with scattered clock definitions.
+> 
+> 
+> Do you think it's acceptable to create a new header file instead? I 
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 7c059b23ae16..73a9f6ee683f 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2924,6 +2924,11 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
- 	bool host_writable = !fault || fault->map_writable;
- 	bool prefetch = !fault || fault->prefetch;
- 	bool write_fault = fault && fault->write;
-+	/*
-+	 * Prefetching uses gfn_to_page_many_atomic, which never gets
-+	 * non-refcounted pages.
-+	 */
-+	bool is_refcounted = !fault || !!fault->accessed_page;
- 
- 	if (unlikely(is_noslot_pfn(pfn))) {
- 		vcpu->stat.pf_mmio_spte_created++;
-@@ -2951,7 +2956,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
- 	}
- 
- 	wrprot = make_spte(vcpu, sp, slot, pte_access, gfn, pfn, *sptep, prefetch,
--			   true, host_writable, true, &spte);
-+			   true, host_writable, is_refcounted, &spte);
- 
- 	if (*sptep == spte) {
- 		ret = RET_PF_SPURIOUS;
-@@ -4319,8 +4324,8 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
- 		return -EFAULT;
- 	}
- 
--	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault->pfn,
--			     &max_order);
-+	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn,
-+			     &fault->pfn, &fault->accessed_page, &max_order);
- 	if (r) {
- 		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
- 		return r;
-@@ -4330,6 +4335,9 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
- 			       fault->max_level);
- 	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
- 
-+	/* kvm_gmem_get_pfn takes a refcount, but accessed_page doesn't need it. */
-+	put_page(fault->accessed_page);
-+
- 	return RET_PF_CONTINUE;
- }
- 
-@@ -4339,10 +4347,10 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 	struct kvm_follow_pfn kfp = {
- 		.slot = slot,
- 		.gfn = fault->gfn,
--		.flags = FOLL_GET | (fault->write ? FOLL_WRITE : 0),
-+		.flags = fault->write ? FOLL_WRITE : 0,
- 		.try_map_writable = true,
- 		.guarded_by_mmu_notifier = true,
--		.allow_non_refcounted_struct_page = false,
-+		.allow_non_refcounted_struct_page = spte_has_refcount_bit(),
- 	};
- 
- 	/*
-@@ -4359,6 +4367,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 			fault->slot = NULL;
- 			fault->pfn = KVM_PFN_NOSLOT;
- 			fault->map_writable = false;
-+			fault->accessed_page = NULL;
- 			return RET_PF_CONTINUE;
- 		}
- 		/*
-@@ -4422,6 +4431,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- success:
- 	fault->hva = kfp.hva;
- 	fault->map_writable = kfp.writable;
-+	fault->accessed_page = kfp.refcounted_page;
- 	return RET_PF_CONTINUE;
- }
- 
-@@ -4510,8 +4520,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 	r = direct_map(vcpu, fault);
- 
- out_unlock:
-+	kvm_set_page_accessed(fault->accessed_page);
- 	write_unlock(&vcpu->kvm->mmu_lock);
--	kvm_release_pfn_clean(fault->pfn);
- 	return r;
- }
- 
-@@ -4586,8 +4596,8 @@ static int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu,
- 	r = kvm_tdp_mmu_map(vcpu, fault);
- 
- out_unlock:
-+	kvm_set_page_accessed(fault->accessed_page);
- 	read_unlock(&vcpu->kvm->mmu_lock);
--	kvm_release_pfn_clean(fault->pfn);
- 	return r;
- }
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 0669a8a668ca..0b05183600af 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -240,6 +240,8 @@ struct kvm_page_fault {
- 	kvm_pfn_t pfn;
- 	hva_t hva;
- 	bool map_writable;
-+	/* Does NOT have an elevated refcount */
-+	struct page *accessed_page;
- 
- 	/*
- 	 * Indicates the guest is trying to write a gfn that contains one or
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index c965f77ac4d5..b39dce802394 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -847,8 +847,8 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 	r = FNAME(fetch)(vcpu, fault, &walker);
- 
- out_unlock:
-+	kvm_set_page_accessed(fault->accessed_page);
- 	write_unlock(&vcpu->kvm->mmu_lock);
--	kvm_release_pfn_clean(fault->pfn);
- 	return r;
- }
- 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index ee497fb78d90..0524be7c0796 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -958,7 +958,8 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
- 	else
- 		wrprot = make_spte(vcpu, sp, fault->slot, ACC_ALL, iter->gfn,
- 				   fault->pfn, iter->old_spte, fault->prefetch, true,
--				   fault->map_writable, true, &new_spte);
-+				   fault->map_writable, !!fault->accessed_page,
-+				   &new_spte);
- 
- 	if (new_spte == iter->old_spte)
- 		ret = RET_PF_SPURIOUS;
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index cff5df6b0c52..0aae27771fea 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -2421,11 +2421,13 @@ static inline bool kvm_mem_is_private(struct kvm *kvm, gfn_t gfn)
- 
- #ifdef CONFIG_KVM_PRIVATE_MEM
- int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
--		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order);
-+		     gfn_t gfn, kvm_pfn_t *pfn, struct page **page,
-+		     int *max_order);
- #else
- static inline int kvm_gmem_get_pfn(struct kvm *kvm,
- 				   struct kvm_memory_slot *slot, gfn_t gfn,
--				   kvm_pfn_t *pfn, int *max_order)
-+				   kvm_pfn_t *pfn, struct page **page,
-+				   int *max_order)
- {
- 	KVM_BUG_ON(1, kvm);
- 	return -EIO;
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index 0f4e0cf4f158..dabcca2ecc37 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -483,12 +483,12 @@ void kvm_gmem_unbind(struct kvm_memory_slot *slot)
- }
- 
- int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
--		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
-+		     gfn_t gfn, kvm_pfn_t *pfn, struct page **page,
-+		     int *max_order)
- {
- 	pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
- 	struct kvm_gmem *gmem;
- 	struct folio *folio;
--	struct page *page;
- 	struct file *file;
- 	int r;
- 
-@@ -514,9 +514,9 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
- 		goto out_unlock;
- 	}
- 
--	page = folio_file_page(folio, index);
-+	*page = folio_file_page(folio, index);
- 
--	*pfn = page_to_pfn(page);
-+	*pfn = page_to_pfn(*page);
- 	if (max_order)
- 		*max_order = 0;
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index e53a14adf149..4db7248fb678 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3288,11 +3288,17 @@ void kvm_set_page_dirty(struct page *page)
- }
- EXPORT_SYMBOL_GPL(kvm_set_page_dirty);
- 
--void kvm_set_page_accessed(struct page *page)
-+static void __kvm_set_page_accessed(struct page *page)
- {
- 	if (kvm_is_ad_tracked_page(page))
- 		mark_page_accessed(page);
- }
-+
-+void kvm_set_page_accessed(struct page *page)
-+{
-+	if (page)
-+		__kvm_set_page_accessed(page);
-+}
- EXPORT_SYMBOL_GPL(kvm_set_page_accessed);
- 
- void kvm_release_page_clean(struct page *page)
-@@ -3302,7 +3308,7 @@ void kvm_release_page_clean(struct page *page)
- 	if (!page)
- 		return;
- 
--	kvm_set_page_accessed(page);
-+	__kvm_set_page_accessed(page);
- 	put_page(page);
- }
- EXPORT_SYMBOL_GPL(kvm_release_page_clean);
--- 
-2.44.0.rc0.258.g7320e95886-goog
+This depends on the purpose of it. In general every SoC follows that
+concept - binding headers are per given clock controller, not even per SoC.
+
+> think we don't need a generic histb-clock.h. Each SoC should maintain 
+> their own clock indexes header file. Maybe we can rename it to 
+> hi3798cv200-clock.h and include it from a new histb-clock.h (also mark 
+> this generic header file deprecated and only for hi3798cv200). Then I'll 
+> create hi3798mv200-clock.h header file instead. So we don't have to 
+> workaround this.
+
+
+Best regards,
+Krzysztof
 
 
