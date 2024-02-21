@@ -1,211 +1,266 @@
-Return-Path: <linux-kernel+bounces-73912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F9685CD89
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:44:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8B785CD8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E31861F243D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:44:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C333285506
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:47:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9613F4C7E;
-	Wed, 21 Feb 2024 01:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236A446BF;
+	Wed, 21 Feb 2024 01:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="ZoP4TGBv"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2082.outbound.protection.outlook.com [40.107.215.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cbXmoQFN"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540264428;
-	Wed, 21 Feb 2024 01:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708479883; cv=fail; b=CWJaBi7TJcmzfdRE/YgDCcIz9LdwVqwtXCn8T4Z59zPOSRvcJIuD/EiqAEUI4sgTsab/Ob6tNEIPzfhalYH3h9cCNz9Nhr+mQ9YMv9xpUOaXokT0N3alfq1qebqbDFJ5/ElWdTd5fQGMsLUEtjFV32jqQiZXYQGH/xD0GrxdLpY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708479883; c=relaxed/simple;
-	bh=WHdvgHuKUB8kT08Um2BI/jzr8lTrLl8O6NHB9y+QW9E=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dWybl4NI3q+ZMG1Pc8ExMzd29oPtnaJ1AKPZ0B+vCJDN5A82CkFJ6QTMKn4FuKjmahnvYoXsPpDNaJBSZfbwJpvropc2FyZsAZDL3Je3iQlhTbwkBC2hVy8+Od+BQSxMRguvk9FNJ5/dszhXEmwMIdftB/Bf7hdIioXdX1tB/gY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=ZoP4TGBv; arc=fail smtp.client-ip=40.107.215.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=laybEkJ6nIXIKqnlZ/mnRdE+bjfRoT66Kftsu572gu1cpCjiEHFf+cNIEMS14ab4qu0637N7yA175dSF/kx0VNMtoPjhp5mNLJwnRaxRB+Huzz/ePIhXQsQenLUO912TRP0ySQum6bMHQhdVSIgFnpSdIvksn8xNZJthtftEm26oKc8+Ipdww7H5FuyQ5l8DMWQdXWShXjF4d1UUDJAtvGnyyWTQTLRcljmR20eT9FKYof/y/mqwtJORBzDH9fP97ruZNsfZuhCyYXT78Xuciu4MW/O4QWZC2uD7klwqARBJozy1WKqTMYeJigPJE8aunZwZ56Rel+14Gthat8fswA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UUpaom51hJXjSvVhih0g0QjTelFX9vmGOrUDtVibyCc=;
- b=F+XN6+DHhRcCKNk8rUBjBwDBW9FFdA7kh0pprlFaQl8M7aXLjVoWv/aGj5+cZNZkXA7gYklHGnyBgjoK6ay+gI99xb50zFyqEOXjQ1stKnbpBMPPM4o0YbmFxg6l6vr93U4bEZkAeFD2gTkh+acExhqL4jT2tYCPrf4x9dN4L3gTQ3vLnYvaXlRJJJh7mnJAIRB/1B01NK6Wz+/ec6fahUUtHBTgzbS958tOCKlzCJGXcLbmHqScFb37kq3SEfUd04Imf9ycBuPYfzfGNsjbwAQXhdaYw0E4eOAPmK+ur/wFZFxUVeEIEG7dHi9imEvYFkL/X/2O4DAtYl5ff27klA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UUpaom51hJXjSvVhih0g0QjTelFX9vmGOrUDtVibyCc=;
- b=ZoP4TGBvIPI/8vgpYYAKaBU6wT7IKaqY8raNTTaNR2UNsj1xvgMieukPFsAOafS23RZy54+DfbFWHz5oJvyvOAjM0WwtTsxSOH4q2mA8nMkTfGV5yVsMvEQbf0gEsF1GPkt2t9vV9aByiZW2LKEDUc8ARrN2e2TW+uXvW3FLBRuLG+5NWCSSTQKnP1O33QnW3zlqr+5rGocf0zhBk/rS02hK7zCZXAzphQxlaVD/yUrM7mBOd2DW/zvWQQqj54+h2PNK+kRHrIpUivYDra+Ggfwn7INjIBqOt0BJQDMXtiv4fbzFIQ90Osuj9+EaTcfWA2a8Tbe4SXQn2rJqr6cvug==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com (2603:1096:400:21::8)
- by KL1PR06MB7367.apcprd06.prod.outlook.com (2603:1096:820:147::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Wed, 21 Feb
- 2024 01:44:36 +0000
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::8865:1c6c:513:4a68]) by TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::8865:1c6c:513:4a68%6]) with mapi id 15.20.7292.029; Wed, 21 Feb 2024
- 01:44:36 +0000
-Message-ID: <fac8d079-100e-4b8d-9a35-db8219b28b51@vivo.com>
-Date: Wed, 21 Feb 2024 09:44:32 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v6 0/2] Make memory reclamation measurable
-To: akpm@linux-foundation.org, rostedt@goodmis.org, mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-mm@kvack.org, opensource.kernel@vivo.com
-References: <20240105013607.2868-1-cuibixuan@vivo.com>
-From: Bixuan Cui <cuibixuan@vivo.com>
-In-Reply-To: <20240105013607.2868-1-cuibixuan@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYCPR01CA0205.jpnprd01.prod.outlook.com
- (2603:1096:405:7a::6) To TYZPR06MB4045.apcprd06.prod.outlook.com
- (2603:1096:400:21::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F8723C9
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708480026; cv=none; b=Gv43kTkjEBrHLkactY+lcX+T0Pw+CAiKgjp+6KzEnpe1FElrmPMAA91EuHfwFiJdMMSt5XP999YNftNqy2slSaB3X5aKRbu1hkQmmswryBVdAJY+rAWA7f3WOlRE+QBsAxylBbJUTNOK42z6pIeRWJ2shAvNHRaXRdFgdw/kOAg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708480026; c=relaxed/simple;
+	bh=iUEglDd0IusnsHYdDg0SbXUSjK8oaW8VjqNhWNenHi4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VGqqPOHQlZHim4PwVLrgSIxKL5BTAY0A5vkTCGnkX/a4XjRZ3RtBThvdkiKOV6+5biZabHVM5RYlekLQJSdU8eQF1hgg9jXSfga7jY+SNWRAK7QyQiGGtqY8gZbYN7OqZSwTSflIXEZb4K2bGLdvQo8zAt3RJZkRvNTV1nliIg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cbXmoQFN; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42e2507c6e1so72721cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:47:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708480023; x=1709084823; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PMzkgKLHF3yCOXDrFqm4rm+9bW0f0+sEV83/usFGaoc=;
+        b=cbXmoQFNUipOs2V5lqNhhahs/M3t7apGXw/JpDXF1/qQOh2zG05MZT63HGj3v0eQS+
+         OH4jSIrhhC9MzDh+7BymiPc8zdWJhb+9TvcAAA4r8ka681MNBBr5M5KEUC9P/87yTrzu
+         kGea3iaWhNnwv0gL7+iSH7zWEigMwXiidzZHIL8AS4XuXpOW1pad0IOoMQP9u/9Rs/8G
+         tkYSos5yaf+mOcXe0RKY2YLZhAGEkm4bLPfXOT1kIXnB+aK3inJs/EGqnsl0MVYl1k2B
+         PgVZOubBgZ3yHGR3GVNlOgS7lbXbU/sRxPU7SilKAT0LQJtraaXjphPk7a3guRAjxuDj
+         Ss+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708480023; x=1709084823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PMzkgKLHF3yCOXDrFqm4rm+9bW0f0+sEV83/usFGaoc=;
+        b=XqDUwR/v0fjKGPMzfchFm6kcqfDcpTtLq51JMYpqwUVb7Fxo9S6MsyyWcCsgLLGvfR
+         QyUahd8kwaA7wqIyDjBhhUQdr3LN5HrDe49w81vsTjBXa3QeOyaT8jYvKlVCOAD9v/Un
+         aYNhkqLIhLRnbsgSrAXucO6UjOLywGrEDTWqLVJ8UF1+QLVwDPfkWE+P6RrhCqYrEj/i
+         Qf0hUhPhCrZi5hhkkaf4ALqEpBkMoBGFNFrj0CdvzqX7UAzAocc2K368JDt4IXzCmNbz
+         BJTOp9HyezYIlo3IToJc6077qsTPNF7CZbrARjJADjsgVn1HXs631AfpIwEzgmVzVyZd
+         1chw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1pwomlmtG7PLUBDyNzCCalZc9/oOpW35DptR+7MJkqOZbfKuDSZEP4G077AgDhBB74mblH6S0vgwsBF3dP2a8SHZRMmXxxynE7zsB
+X-Gm-Message-State: AOJu0YxJfW8oalvSpgdM9OPj9fftRG0I+Vl0rZ74Xla20RlYdZr+u76d
+	9i9IKIF3XqF3oG61ZSSgLbcrA/0sA+kOG8qbc1YFK5qZeg9o7xlDMzALopRhLahFwp8u9V0g7K5
+	SeFjZP49Vs8WisP8UX2OBR6FwYnE4hahBvF+Z
+X-Google-Smtp-Source: AGHT+IGJDM0SJLzYNC7YRvw8M4u1KIXektOQ+aav00QS8YrONP0N83zrf2dUgYknTBFMt3qpmkG7ZMukLFbh7yilv+M=
+X-Received: by 2002:ac8:5c16:0:b0:42d:ff6e:12c9 with SMTP id
+ i22-20020ac85c16000000b0042dff6e12c9mr160959qti.4.1708480023254; Tue, 20 Feb
+ 2024 17:47:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB4045:EE_|KL1PR06MB7367:EE_
-X-MS-Office365-Filtering-Correlation-Id: cbe4873f-5096-48a4-5835-08dc327ea8f8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4GhZf2cJipiB6mnJEFcpDXJDRw+UgEB5wwpoIQ7KWjvPgSkJpGkwvXlrAC2N/j9zzGy7FsWdlan69IS9+f3EizTiToMB0+LPNuBKchUNLQtS852AZfK+qnOOYxhuHvSKbiNX7e2UYh90GqMwYkm2p/npShEX7ivnvI0uDZSkT6uARII4x5q+d/A6pHkd8yv0DhaUbyI7Ffi06bFDeXjfTsTtAWITy6bCF1Qs6V8JE/BrED/bPRnRUB64wwkPu22jlJww0tFiXujwYfnmXYH2Yt6Rz4X/6tctOMH+4E3uWyKIy5QBJoKxGzFrfwa9yKQaBIMU7m2i7amViIP6xjQHx3cdo/P9ausUn0HkZqeLL8f6vGyvIIHKmArqvmsXo/MAAwj8m62WGWnHkdlZYa+yK4yzsgbXBOTNnI54Wx96bHKhZchlgrxETmxiaDMj2lXXm/49JJg6zZEGd4T5ItUpl54oLfhRYjzLCoTEawrkdiORg8xwr3FxlQQRWP8YiTR8nMMhZH6x47yjoWlphMrcwCPk42vfr/EWcebO0oP4G8SwrS+SmalC6EmT87T6HSOzdJfUOdU1AVdhNHWq6cgGEK/57a3o0mytKWq3N7oSS6jy6vClHFXp9o1QQTFlgG+G
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4045.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZWFYSDIrNzFRV0dNUTdsMzlhNk5TaEgxNXNkU2EwcWpQanhUTEhUS2Zlc1JC?=
- =?utf-8?B?N2ZxRUt1ZmxUWC9CV0FOeFd0VEF1eStpQTFSMzNYYmgwbDRpNy9EbTVOMEtV?=
- =?utf-8?B?QTN5OVhWRDBRNUs5YkdReXp2MjdRbG9vTXJoRUh5RUVjeU9oYzJ0YWl1eXVt?=
- =?utf-8?B?N3pzRGVqaWJaNFZINWczZHlxY09nYXp4SjkrQm81Ym0vQVFzdW8xT29ZRUlj?=
- =?utf-8?B?cCtBNEkveGsvZVZTb2d5VUgzdUN3bkRRWFlJMFZxUVdRSEdpTlh4WXhQU3pp?=
- =?utf-8?B?WEp0RldmVU80MHpJaTNEcXhBQlBMUUZRS1UxSlBid1Jldm8xY3FENDZjZnVh?=
- =?utf-8?B?NExPaTNWK3JMbk1McTFFdUZ6aXc4TlJUbnJyUkJWU1lTSWZxR0JtUGRjREZo?=
- =?utf-8?B?ekk1NTlBS1FsOUxWRzNISjdGN0RvU0syaWRhT3JaWHlUV1dTdnJrakk3SGFF?=
- =?utf-8?B?QzJBVHdEWVlpNkREQW0rVWI5UE53UC9oejQ0WVFYNzY1bDF5TENoTG1UMHpK?=
- =?utf-8?B?dnFlWi90MmdNc08vNDRPbGR1OWVqOCs0ZTluNW55aTVqR2hEU2lLdFErdS9N?=
- =?utf-8?B?bVdpOTBLOWEvOE5LVUY1bnF6ZFNMaEZOQzZ5YnpaYmtrSU83MkZKb1RWZ09F?=
- =?utf-8?B?Tk5RKzRJMmMvVkx3N3lBSkZvWjJUeEsrZnNhckxERkpvZSt3L2JKWDlOYko0?=
- =?utf-8?B?clFBTzlhZG0vU3Boakw2dGdwaTBGcUdPWTFBd00xZktneG1UR2RCUDZHNnM0?=
- =?utf-8?B?c2RHbDZBSTYvS3I2b1dSNDJxVXl5aWNzSkFudVhCVjJqWm5nTDlGVzJmazFr?=
- =?utf-8?B?ZFNaZ3NFZ0Yyc3JtQ2J0aFhHOEROYTRtVGFCT3pSaHZIWTlwaHVublJMVVRP?=
- =?utf-8?B?cVJnOW5OdEF4Y3duRU1RU0Fjbm1sTThidW1uNVhrN2VrTlRyV21DUWxzWjlm?=
- =?utf-8?B?TnJsOEdSVFRvOE5wWTVtMmtSVHZaZ0lDbURSQ3FQYlZJMThQc0g2b01LSmtD?=
- =?utf-8?B?S1U1YXdRMHVRV1QvcXZ5cXNoZC9ML21BTkdkN2gwVExRWC92d0VoMGh3YUJx?=
- =?utf-8?B?UVY4QkRaRS8xbHVTaTdkbVhIcm5Ra1JnRysvb3dnRG5GWnNJZlZkcVhLREZU?=
- =?utf-8?B?MVZSeVk1ejhUVGhlQWpKYnd1MHNQVC9rUjNWY3U0QWpMakpkeTNFcGp6QzNU?=
- =?utf-8?B?VUpBbi9OY0Q3MjFXelFEbzVCaUxjeTh4TXVSNUFIUE0zaWs5Znl0b0EwaHdT?=
- =?utf-8?B?aUgwU2Z2bUJSQnZHbnpuUG5IWXFucTFKVCtXMUVjdzRzTHJrMGE3SlRod2NK?=
- =?utf-8?B?ZDJNaDNrNUJZbitkYnJJa1dBOFMwMitVVWxrWFdsTDJiaTRpaU9EZUZnMnFq?=
- =?utf-8?B?VGIyRlhyYmhrUWFvQjNqUmhrdG1Rb1I4SnkyZlNPRXNwMzFOaDVxVHBkeDZa?=
- =?utf-8?B?WEpuUXV4UXpjb2J4dWc0cWFtR2hHRWRieVdXeW1tZ2lLYVhnc2J2UEpDVXhv?=
- =?utf-8?B?YVVSVEd3d1RweEV5S0pIR0VKdWdUdDZqRS9mS2xQR3pWV2hTUVZEZXJIRytZ?=
- =?utf-8?B?Y0NUUytYb0hEZnFsNEYxWDk0cXR0ZXVWSHE1STRUU0o3dVZ5eTg3WGFkSldG?=
- =?utf-8?B?ZEw0ZUZZZkdjYnNvbENOdmF5U3ROMHc3OGJkL3o1ME9IRlNyNjc4RjB4d1Jl?=
- =?utf-8?B?REJaRU9XZ0w5bjZRRExXSk5NRWxWSzFuNlNQQTNRSzdRbXBHUkVEZURXVXdl?=
- =?utf-8?B?MjVldUlRMGhKdldxWnA3bmFJbkFLS0huZWdRQVUyS0pjVUNpOC9xcXJkRi96?=
- =?utf-8?B?d20yVEYrWUlHRmRvMUx0QVZLSXlYalN1Zy95MThaTXFpNTBhaXZPT091UmN2?=
- =?utf-8?B?WENxODJ4Ujl4OFQzWDhjbHkvMFBNTzdMWGxwazJ6NE5oWnM5cmhVM2h0Y2Z4?=
- =?utf-8?B?M2Z3ZkxDQTRaczQyWkljLzRoVEl6T2NwQ2pKTngrWE9vcjJKbVhNS3BKbVpX?=
- =?utf-8?B?OTZRbUQvWG13YUtLbWdGSkVWRStCZ0VCUEtCTXNmQ3pKcC9HUmdvQXJqSzNo?=
- =?utf-8?B?VkxPQWpzYlJqQmhzb0tTTDVWYmlYcEpuUGFuaTlsN3ovSzZCT3Z1WG9ZK0g2?=
- =?utf-8?Q?yfeSVALUfK6YgedtKCNDyCmGL?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbe4873f-5096-48a4-5835-08dc327ea8f8
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4045.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 01:44:36.2897
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: US9GSrLuBTMA2nP/M3lBvPDfZWY79EU/gXi2X7IXU4JQKlVYe70bC0tVdAx3ftmVa09uJQFb/O305Qbvqu4egw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB7367
+References: <20230901183240.102701-1-brgl@bgdev.pl> <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
+ <CAMRc=Mekf9Rek3_G2ttQY+yBvWM3+P4RAWVOQH99eajn38F+og@mail.gmail.com>
+ <ZPWcTMPiu4MSq+F7@smile.fi.intel.com> <CAMRc=MfZv70FXHyNw4yK90NL5-jjAJa6qbKc6SV2ZwbaJkKQqg@mail.gmail.com>
+ <ZPWmDL6QJJMNi2qa@smile.fi.intel.com> <CAMRc=Mc0JgPUEpaes7WcbkMu5JyrpLW8N1+bM-+OJaB+pPX4ew@mail.gmail.com>
+ <ZPWr3dRP5C1GSY9F@smile.fi.intel.com> <CAMRc=Mfae+=HPPWzsG8bgK2CGOGY9GPkS5VZcwLyr_yY8A_y2g@mail.gmail.com>
+ <ZPWxbfHNOqAnkR09@smile.fi.intel.com>
+In-Reply-To: <ZPWxbfHNOqAnkR09@smile.fi.intel.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 20 Feb 2024 17:46:27 -0800
+Message-ID: <CAGETcx9wERf-R4=r_jBYpYgGHSxS=-xx_ydeVWZdGUvEWTQwzg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: sim: don't fiddle with GPIOLIB private members
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij <linus.walleij@linaro.org>, 
+	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-ping~
+On Mon, Sep 4, 2023 at 3:29=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Sep 04, 2023 at 12:12:44PM +0200, Bartosz Golaszewski wrote:
+> > On Mon, Sep 4, 2023 at 12:05=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Mon, Sep 04, 2023 at 11:47:54AM +0200, Bartosz Golaszewski wrote:
+> > > > On Mon, Sep 4, 2023 at 11:40=E2=80=AFAM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Mon, Sep 04, 2023 at 11:22:32AM +0200, Bartosz Golaszewski wro=
+te:
+> > > > > > On Mon, Sep 4, 2023 at 10:59=E2=80=AFAM Andy Shevchenko
+> > > > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > > On Sat, Sep 02, 2023 at 04:40:05PM +0200, Bartosz Golaszewski=
+ wrote:
+> > > > > > > > On Fri, Sep 1, 2023 at 11:10=E2=80=AFPM Andy Shevchenko
+> > > > > > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > > > > On Fri, Sep 01, 2023 at 08:32:40PM +0200, Bartosz Golasze=
+wski wrote:
+>
+> ...
+>
+> > > > > > > > > > -     /* Used by sysfs and configfs callbacks. */
+> > > > > > > > > > -     dev_set_drvdata(&gc->gpiodev->dev, chip);
+> > > > > > > > > > +     /* Used by sysfs callbacks. */
+> > > > > > > > > > +     dev_set_drvdata(swnode->dev, chip);
+> > > > > > > > >
+> > > > > > > > > dev pointer of firmware node is solely for dev links. Is =
+it the case here?
+> > > > > > > > > Seems to me you luckily abuse it.
+> > > > > > > >
+> > > > > > > > I don't think so. If anything we have a helper in the form =
+of
+> > > > > > > > get_dev_from_fwnode() but it takes reference to the device =
+while we
+> > > > > > > > don't need it - we know it'll be there because we created i=
+t.
+> > > > > > > >
+> > > > > > > > This information (struct device of the GPIO device) can als=
+o be
+> > > > > > > > retrieved by iterating over the device children of the top =
+platform
+> > > > > > > > device and comparing their fwnodes against the one we got p=
+assed down
+> > > > > > > > from probe() but it's just so many extra steps.
+> > > > > > > >
+> > > > > > > > Or we can have a getter in gpio/driver.h for that but I don=
+'t want to
+> > > > > > > > expose another interface is we can simply use the fwnode.
+> > > > > > >
 
-在 2024/1/5 9:36, Bixuan Cui 写道:
-> When the system memory is low, kswapd reclaims the memory. The key steps
-> of memory reclamation include
-> 1.shrink_lruvec
->    * shrink_active_list, moves folios from the active LRU to the inactive LRU
->    * shrink_inactive_list, shrink lru from inactive LRU list
-> 2.shrink_slab
->    * shrinker->count_objects(), calculates the freeable memory
->    * shrinker->scan_objects(), reclaims the slab memory
-> 
-> The existing tracers in the vmscan are as follows:
-> 
-> --do_try_to_free_pages
-> --shrink_zones
-> --trace_mm_vmscan_node_reclaim_begin (tracer)
-> --shrink_node
-> --shrink_node_memcgs
->    --trace_mm_vmscan_memcg_shrink_begin (tracer)
->    --shrink_lruvec
->      --shrink_list
->        --shrink_active_list
-> 	  --trace_mm_vmscan_lru_shrink_active (tracer)
->        --shrink_inactive_list
-> 	  --trace_mm_vmscan_lru_shrink_inactive (tracer)
->      --shrink_active_list
->    --shrink_slab
->      --do_shrink_slab
->      --shrinker->count_objects()
->      --trace_mm_shrink_slab_start (tracer)
->      --shrinker->scan_objects()
->      --trace_mm_shrink_slab_end (tracer)
->    --trace_mm_vmscan_memcg_shrink_end (tracer)
-> --trace_mm_vmscan_node_reclaim_end (tracer)
-> 
-> If we get the duration and quantity of shrink lru and slab,
-> then we can measure the memory recycling, as follows
-> 
-> Measuring memory reclamation with bpf:
->    LRU FILE:
-> 	CPU COMM 	ShrinkActive(us) ShrinkInactive(us)  Reclaim(page)
-> 	7   kswapd0	 	26		51		32
-> 	7   kswapd0		52		47		13
->    SLAB:
-> 	CPU COMM 		OBJ_NAME		Count_Dur(us) Freeable(page) Scan_Dur(us) Reclaim(page)
-> 	 1  kswapd0		super_cache_scan.cfi_jt     2		    341		   3225		128
-> 	 7  kswapd0		super_cache_scan.cfi_jt     0		    2247	   8524		1024
-> 	 7  kswapd0	        super_cache_scan.cfi_jt     2367	    0		   0		0
-> 
-> For this, add the new tracer to shrink_active_list/shrink_inactive_list
-> and shrinker->count_objects().
-> 
-> Changes:
-> v6: * Add Reviewed-by from Steven Rostedt.
-> v5: * Use 'DECLARE_EVENT_CLASS(mm_vmscan_lru_shrink_start_template' to
-> replace 'RACE_EVENT(mm_vmscan_lru_shrink_inactive/active_start'
->      * Add the explanation for adding new shrink lru events into 'mm: vmscan: add new event to trace shrink lru'
-> v4: Add Reviewed-by and Changlog to every patch.
-> v3: Swap the positions of 'nid' and 'freeable' to prevent the hole in the trace event.
-> v2: Modify trace_mm_vmscan_lru_shrink_inactive() in evict_folios() at the same time to fix build error.
-> 
-> cuibixuan (2):
->    mm: shrinker: add new event to trace shrink count
->    mm: vmscan: add new event to trace shrink lru
-> 
->   include/trace/events/vmscan.h | 80 ++++++++++++++++++++++++++++++++++-
->   mm/shrinker.c                 |  4 ++
->   mm/vmscan.c                   | 11 +++--
->   3 files changed, 90 insertions(+), 5 deletions(-)
-> 
+Sorry for being late to the party.
+
+> > > > > > > dev pointer in the fwnode strictly speaking is optional. No-o=
+ne, except
+> > > > > > > its solely user, should rely on it (its presence and lifetime=
+).
+> > > > > >
+> > > > > > Where is this documented? Because just by a quick glance into
+> > > > > > drivers/base/core.c I can tell that if a device has an fwnode t=
+hen
+> > > > > > fwnode->dev gets assigned when the device is created and cleare=
+d when
+> > > > > > it's removed (note: note even attached to driver, just
+> > > > > > created/removed). Seems like pretty reliable behavior to me.
+> > > > >
+> > > > > Yes, and even that member in fwnode is a hack in my opinion. We s=
+hould not mix
+> > > > > layers and the idea in the future to get rid of the fwnode_handle=
+ to be
+> > > > > _embedded_ into struct device. It should be separate entity, and =
+device
+> > > > > instance may use it as a linked list. Currently we have a few pro=
+blems because
+> > > > > of the this design mistake.
+> > > >
+> > > > I don't see how this would work if fwnodes can exist before struct
+> > > > device is even created.
+> > >
+> > > That's whole idea behind swnodes. They (ideally) should be created _b=
+efore_
+> > > any other object they are being used with. This is how it works today=
+.
+> >
+> > Yes, this is what I meant: if fwnodes can be created before struct
+> > device (as it is now) and their life-time is separated then how could
+> > you possibly make the fwnode part of struct device?
+> >
+> > > And doing swnode->dev =3D ... contradicts a lot: layering, lifetime o=
+bjects, etc.
+
+I understand what you are trying to say about layering, but there are
+no lifetime violations here.
+
+> >
+> > No it doesn't. We have the software node - the template for the
+> > device. It can only be populated with a single device entry.
+>
+> Which is wrong assumption. Software nodes (and firmware nodes) in general
+> can be shared. Which device pointer you want to add there?
+
+I don't think this is any harder to handle than how a device's
+secondary fwnode is handled in set_primary_fwnode(). For secondary
+fwnodes, you just WARN and overwrite it and move on.
+
+> Which one
+> should be next when one of the devices is gone?
+
+Similar to how set_primary_fwnode() handles deletion (NULL), you can
+handle the same for when a device is removed. You can check the parent
+or the bus for another device with the same fwnode and set it.
+
+> No, simply no. Do not use it!
+
+Using fwnode_handle->dev is no different than searching a bus for a
+device which has dev->fwnode match the fwnode you are looking for.
+
+In both cases, you are just going to get the first device that was
+added. It's completely pointless to force searching a bus to find the
+device with a specific fwnode.
+
+In the special cases where one fwnode has multiple devices, no generic
+code is going to always handle the device search correctly. The
+framework adding those devices probably knows what's the right thing
+to do based on which of the N devices with the same fwnode they are
+trying to find.
+
+I understand it's not great, but blindly saying "search the bus" isn't
+really improving anything here and just makes things unnecessarily
+inefficient.
+
+-Saravana
+
+>
+> > Once it's done, I don't see why you wouldn't want to assign this device=
+ to
+> > its corresponding software node. Provided locking is in place etc.
+> >
+> > > > They - after all - represent the actual
+> > > > physical device hierarchy which may or may not be populated at
+> > > > run-time depending on many factors.
+> > >
+> > > No. This is a mistaken assumption.
+> >
+> > How so?
+>
+> See above.
+>
+> > > > Once populated, being able to retrieve the software representation =
+of
+> > > > the device (struct device) from the node from which it was populate=
+d
+> > > > sounds like a reasonable thing to do. What are those problems and a=
+re
+> > > > they even linked to this issue?
+> > > >
+> > > > > The get_dev_from_fwnode() is used only in devlink and I want to k=
+eep it that way.
+> > > > > Nobody else should use it, really.
+> > > >
+> > > > I don't care all that much, I can get the device from the children =
+of
+> > > > the platform device. Still comparing fwnodes, though this time the
+> > > > other way around.
+> > >
+> > > Fine, but do not use dev pointer from fwnode, esp. software node.
+> >
+> > I will do it but I'd like to clarify the above at some point.
+>
+> The relationship between device instance(s) and firmware node instance(s)
+> is m:n, where each of them can be from 0 to ... x or y.
+>
+> There is no unique mapping between two.
 
