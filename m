@@ -1,279 +1,166 @@
-Return-Path: <linux-kernel+bounces-75474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01A9185E932
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:41:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC01C85E935
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:44:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247951C20C2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:41:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18E601C210C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B46F85293;
-	Wed, 21 Feb 2024 20:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8437281213;
+	Wed, 21 Feb 2024 20:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="UDghL9no"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2112.outbound.protection.outlook.com [40.107.22.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARWqzCTU"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BD82C18E;
-	Wed, 21 Feb 2024 20:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708548049; cv=fail; b=bPbUpMArqwyLCsjMBhXKdrfOu/b1+JSgTPMX65P/ZS4G21jZGVsmbv8qPLsxcnM1IXU63n5Wc59y6kAKXrpySuZN/lQNZZ2erjPYOfFJYuJfNXxfsXGaks1+6RaGYI7spVpAUlBF6LMJEA4KPyDzdy4uMjdAPHg0KmaIK1v35qs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708548049; c=relaxed/simple;
-	bh=Uz4jyMcW33cML2tr7AW94op0zIMkpYMgMTNKBmrS5Rw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=P02hVvU2tm+LyYRJmoHww6T6JXWcQ+F25Uy+4iDt2pzc1cEHYFo5Bi9VsOGd6IzIqKXIJMfqWqEfam/pob5ldSpNE8f9BhQvn3unlz3cpJJp/Q2Mkxs90PrKvGkQG5IEjmXgCdzcxyXopTdDnvVKHXzO2gGHZP9vdiMMIMJo4Hw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=UDghL9no; arc=fail smtp.client-ip=40.107.22.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JcirZnYa9aGHZ3g1EpZSX8HLm93g+9NnPNqGjbwpe8RSaYOV4jaXsQwcV47wa21X3UqMKhVgcGUGDEW6imDXeh+vqmpS8F1lkSHeb7UD2kNpO1l6CMAYS067KERklqyZIlzj5Qgk+/apfnVo73qw1aousiAI88vHlfQHO2AwbEt64bJCSeOC1nptWZRga24mNRuxvOKzdp0wj6zoyX7xFfIsrIsfYfbIvbvEsLJWs28l1cbbNKO3gMl5i4rsHaMiqSN5NrziN+3g0qJoUGnjK2MjBRRJy1kuIIwK/8tEqq+KmSNCb40G+wvQmtD8H8rsbWoxziK2I4mfONR8dQYbQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EXOQM1VvRDOWKH97CZHpyjHBYwY+8I5piZLsKCJKjBw=;
- b=iVkzUIH9ceDaFJFkTn9hkSsnkciFuaAOYl2weTZZ9jliNJwBjLOlnmvgwyfvHTKVHpUVtXIw8ZKn6xm4wIYCzWnpQ4Q9Uv1dOOk8XUOvA0j/TMxvoim1Sc9Loo7bB+A5w7PdPRyKbGPVtn1C/r+uoHxYKc8B4kdhVzbos7Eoz2CliL1koRHvt+0GJRQZatlG99DEiUq0GTCZRTIVK5zfdcU6Wkv39+trReZ8eHVyiIK2FByIOIHpMudfABsA7AsBMaLmMOTu5fGfE4ZiH9Ztkq7hviipE1LzuTQJy+39nUuyHLuSt+iwwT1L8JxZrEsmMHjUkGk6hCaihK8YH8Xlpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EXOQM1VvRDOWKH97CZHpyjHBYwY+8I5piZLsKCJKjBw=;
- b=UDghL9notPWWz46LEJB13T07oIhCtqgUJAi6/9wxP8Ol7GLTYIwoqnUpR1zsoufETBzahUBc+JEClSYdR6dhDOQrQnyybSwXwjPFkm5NYNI73pxtGIeM9e5dewwBb3YIx8nfCa5qwh1gZ6cJpdTqS1zDshrar6mabXfRCeS/bd8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by DBBPR08MB5978.eurprd08.prod.outlook.com (2603:10a6:10:1f5::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
- 2024 20:40:42 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9527:ec9f:ec4b:ec99]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9527:ec9f:ec4b:ec99%6]) with mapi id 15.20.7292.033; Wed, 21 Feb 2024
- 20:40:42 +0000
-Message-ID: <503d9ea9-9812-498b-a5ee-2579ba8a7ecf@wolfvision.net>
-Date: Wed, 21 Feb 2024 21:40:38 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/8] usb: misc: onboard_dev: use device supply names
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Helen Koike <helen.koike@collabora.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Russell King <linux@armlinux.org.uk>, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240220-onboard_xvf3500-v4-0-dc1617cc5dd4@wolfvision.net>
- <20240220-onboard_xvf3500-v4-6-dc1617cc5dd4@wolfvision.net>
- <ZdZcLOlSc3FScjLK@google.com>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <ZdZcLOlSc3FScjLK@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0062.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ce::19) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FA73A1DB
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708548237; cv=none; b=QfqgbQ5zW3Le73Bk5j/uLHQvrWs1Q9K3zyNgltf0+W7ViRMk/SSm4zU1qCc+IFuOpQYsowZyR0kV6PQmza5/ZYyukFTLQ3f+EBx5s/c1Qxlehs4mFvHxCoLw+J+f0slUDlL+ShSiEywrNTP4OgOieJ4JtdztHY4B+R/RqPsD7hc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708548237; c=relaxed/simple;
+	bh=c8MfMgRUZW8qxd9gubgL7YFRZDYcZnmwcwl2hw5IXdk=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PKQDkiPossPzyitnev53c2xXy5g2e1DunU16kGLTBCFt5+DoGy3WT9PZTlQ9Ol3AjJYx4jDMe/whkkRpZIkassGcNzbBkqhNWzzo96wNFO69ZtbLc8E7hY+6aPcOgvsa28M9X+42Toqe78pSLRCPnozFRs9D2GDRjxV6MUw4WkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ARWqzCTU; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41275d2edbcso8311925e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:43:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708548234; x=1709153034; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQKBdsBXJqQPwRNGAXBAfHtnvpBdZt9I1p+3iXhYFuE=;
+        b=ARWqzCTUh0LqBDoxJkxEF3XYXXJQmdFFGepPJPdi13GbcvI8YShn0aP6rEFo9G8DuH
+         EszBgGu6CC+87ULJ3DmKn07SOmB2+e5MkhdWw2bEcGH7DT2gZfewG8QSca8l60y0Um63
+         Ldk/ERjkw152/ZdjqVntWBd8u2dSENgAbfgAlVafrukXpMZpRZd+6siZWAC9DywEALRp
+         crPZFtfac7yiaCS+PAPUAw8JkkPzStO5iO1S0Ys2AvrehAMf4OzAIP3M03DP0Xc7CXCZ
+         +qGAFCbfs/ceM+DWqTIBLTO6Wa8v0CpXYYzeMVGBlswr9uxOgBiEn2cYwJw2Yo/X1KHx
+         yC/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708548234; x=1709153034;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RQKBdsBXJqQPwRNGAXBAfHtnvpBdZt9I1p+3iXhYFuE=;
+        b=KyP/x5wM7GWi2t8D+grOar0p+7+TM+/W2SDUzSqhT+3ZphnmLYsq6UBLOGIKxUKp7q
+         bYoaMvIpsRlaZQQh4NMenAhEFUql5i4UADCu/8+Qe1BQgLXoqLzfBU5fAEYRCQqnKyXY
+         jpQ3acSRgNy7VdRTBY4O9TVR8VzIx4/EwCYpsFrUkd6GsG9TYhH0WDETIczeJWV3/jbK
+         4z11G/ysWAbU3j5uqtHLmip4xZpcxVyDQvc9v+JfL5udZKSrZTJrmNNJbY6O39xy7YiU
+         w0vMOW8tA8Oro8y8awfYjeTNgCSf8gevLm2dWcIc1Q+VptazOt2SIdeJtHEglQhICuXB
+         4kdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVyEYXElxI9YXNc9E1sVEZWW1ufoI5T1oSjM8TaLG62a7w1NGWt7yW19N6rQt/RSi5lXdpu0IrkI7JEVNXsSN1+fDESvkvvG6T6Aft9
+X-Gm-Message-State: AOJu0YyCpFJ6vInstI4hTAD3argLEoILbOA/8VsxolnDiATIiJM+9arB
+	4PkZJ50nviC8OYxbsejsTqMc5vL0IcsAwBSBqdNqrIVQHPhjk0qg
+X-Google-Smtp-Source: AGHT+IGgtUvjV/jJGCiYwhCbpRW1x+SE9MZ7JJC29jUKrNye7C5xmVAOxyBEWykJhlJrHuiU8UEJBw==
+X-Received: by 2002:a05:600c:6cf:b0:412:d8d:1d98 with SMTP id b15-20020a05600c06cf00b004120d8d1d98mr15226515wmn.37.1708548234197;
+        Wed, 21 Feb 2024 12:43:54 -0800 (PST)
+Received: from localhost (host86-164-109-77.range86-164.btcentralplus.com. [86.164.109.77])
+        by smtp.gmail.com with ESMTPSA id bp24-20020a5d5a98000000b0033cdf4bea19sm19940088wrb.9.2024.02.21.12.43.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 12:43:53 -0800 (PST)
+Date: Wed, 21 Feb 2024 20:41:39 +0000
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Yajun Deng <yajun.deng@linux.dev>, akpm@linux-foundation.org,
+	vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/mmap: return early if it can't merge in vma_merge()
+Message-ID: <f3847dd7-5564-4d7e-951e-1a9d8f55fb78@lucifer.local>
+References: <20240221091453.1785076-1-yajun.deng@linux.dev>
+ <20240221153827.wkmjnnwsf6lyxatc@revolver>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DBBPR08MB5978:EE_
-X-MS-Office365-Filtering-Correlation-Id: 856b3e27-d280-4a2f-4a10-08dc331d5ed4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	tkRhZ5w6AI7ce21L7Ezks5HDf1Dg1h6trbTTyE9w3h7tgV+uH2WjznA65aZ3mWxywUD5YWgZE3dZ2qemHEv47a8nF+MOD+rrYAA0VFDBSiNIWA0CqAxp/q4Od8zkuLfy6qVOnp7gCsX17dhHgO4B/Q/GAZ27MaJs8vndc3RMrh4g4XnN1uo5dJqd4kiLZvztK0yXp5M8LwxwXaWxE71Jup+ZCfKGjrixnk47ouTNVo7QHidUMXmUZQbH8o3WsPQV7gF7qMh6dVYkzE9O0beT6Pd68luJxHihgKFEKwphrci5hDixGzIclgzylP3oufRay7Ir49PxXTsmBhhNqbemei+dbc1bN5+NCvHa8DwTWKz5ANumq/ZHxwgIG24j8zOwRgIk9YF4MeorJSzSaK+1gA1p14+d6u3q0pXCSDdBgnDWiPOHBZjw9/loft/P7QG+FaQ0swsl3yO31TdwEC/Kb4CFay8b11HHF2foFlgQswcIr3tDwbv2epAy026JGIdG8+p6jwptMOilG/jJAtFu1jm+t8MFdrFO6qcaeiECFoM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UXo4MlNVWlF0NFRuTGJ6QytMUE12TVdSNURFQ0cya3UzZ3ltVkVjRUhlcUM4?=
- =?utf-8?B?OEZLTzFlelV6MVRyOUFyK0NDRmRGTTZaaFh4VFBYaUYyK0wxY0VkREpuNnhV?=
- =?utf-8?B?Q3NRcWdkRUoyeTd5ckZHNjdYZUQzTG5kVE9LUUV1anBzSDJRcHJTbUgvcjVQ?=
- =?utf-8?B?UTg4aG92anRPaWZtN0gvSi95QUFhSXlTdWFRNzkvU2xhcTRoeG9LbGZ3ZE82?=
- =?utf-8?B?YlVLbHdtdm1FRlViaFI5WmFxQWJzRmRaTk1Vc3hOMG42OFNFTG1iRlZYTzUv?=
- =?utf-8?B?ZHVKRVBjcCt2clVva1pucEVTdy8waVBxbmM5a05oUlBtaGZEWEwrK3JpekhM?=
- =?utf-8?B?dU1iMFpkY09QOFRMdzdIK2hqRXI1VE9RQzNwamkxSVkwVkRiZlVxcjc3TkJH?=
- =?utf-8?B?MUZmMGxmd3FNT1Nmb0hvOXVXRmllTTRjYlRBajZ2bVRaQWdIY1NTMTUrTHQ3?=
- =?utf-8?B?S1RPUHdDdWNXc3pseXhMTXl2OG1EdE03alRUUW4rVVJGdzVuOEdQL0s0K2Np?=
- =?utf-8?B?Nm44WVNLYVY0Tk9hWHN6OE9aQ1N6ZCtTMWM2L1JkOHBhNEdpSXgyVDYvRThh?=
- =?utf-8?B?eGc3ak40ZzJSL2NqcUtJZk5ONUZsMTBaUU51enNaVFkyNGdOeUpDQXE3ZHVm?=
- =?utf-8?B?bUVscWFMOGRmUDBHeHhrTmNPSWxSV3JDMk9RSjVDYUxlYXdrQmhUcWhGTjEz?=
- =?utf-8?B?L2Z2MVpGVnViR1ZPcFlUWTNtUVo4N0svWDZaaHgrV0NDNW1yS1NQRFNlMFZ1?=
- =?utf-8?B?OWtTaTVIVzE0N0RsMUdBa1oyUUtoRHZXZm1PNFd3RktlUzZFNnBLcUJkeEVC?=
- =?utf-8?B?SHQ4NTBIaGtEV3BUd0hZSHVYTEwxZ0N2amVzYzM1OG9vUEU3dFZCTklwNUJo?=
- =?utf-8?B?a244K0ErdWJubHQxM2lBQytOUjcwYWlIT2ZQMkpoT1htb2hrMHBSaHRoa3h3?=
- =?utf-8?B?U2dZSC9wSFBqNXI5clhuQmw5VUNXaXowRytKR3k1NVpZQXFtQ29jTmlyZTlv?=
- =?utf-8?B?ZVpocWE2OHpMVk1HVHI1MG12dWdVaFJQT2UrdVpVZ2ovS0dIMHlGZWNJcWNU?=
- =?utf-8?B?bm02cWk2Mkg2UC80VjRZSCtGY3BsUVlhczV5YXppR243Z0J3akpvaTM3YWxU?=
- =?utf-8?B?Rm81SDFPZHo4YnhSRlRUa0Rla0ttY2pGSW5oY2tpMWlDNXhXdlpBZmpyNW5H?=
- =?utf-8?B?a3p2ZGJNZm9FbHY0bWg4VWJOSXEweFhBNHVMVTFPNmtZUDEvOHpEK09zOGMx?=
- =?utf-8?B?WVJvVHI5TDBFVGZGc3VCeThoTnJzbDlCZkx4Y0l6SmFubGlyRkhXUVp3SG1u?=
- =?utf-8?B?dDhPVzZncEFxRkxrcUlzbEIxYUFTVldONGtsWW4vbDBjRXRwTGluMzFNVHBB?=
- =?utf-8?B?WXVsaUZLU1AyU0RVQVdhZGNpSWRLYjZsemUvellzaUY4Ti8vY2RqNHljMU9q?=
- =?utf-8?B?SVg3eGplNkl2Q3hkREhoanBwcFpaWDdqdFFzQnM4UlRWUzFQNGRnZ0dWZ3J4?=
- =?utf-8?B?d05FVFVLQTIzc0V4ZVlvTTgzMHY2Qnpkb3U0aWNZUkcxRGRnczFVQXNTZlFV?=
- =?utf-8?B?ZDBnMDQwR1JJL0JRWUx2Q2M1dTg4aXJuUVVEMzM1eFBPaTN3Mk8rRGJ3cGpi?=
- =?utf-8?B?QUZsejE2RkIzR3hTZGg1dGRHTVNhWEROMTBIQnN5d1BPdEtRSW15NEVqQjZs?=
- =?utf-8?B?WGV6SFA3RWExZG1CR014QVl3bFN0M0pPcUpBdkZYbnhsMmF3eTlzc2E0TjdE?=
- =?utf-8?B?YXk0a2w3ajhjNWhDK29RaTlRWE9KTk9WTGJKbTJoenBMTEN4R3padXdhb0Ey?=
- =?utf-8?B?UGduT25FcXI4aE83anJUcjlndDZWTFlyeHFQVHZFNFhGSkZNaGZPODNoSDFv?=
- =?utf-8?B?aU1ZMHJyNHEzMTl0NVlWZjhWK0ZkVThIanprK3I0TmxrTlpVS2ZwSmpQQ2Ev?=
- =?utf-8?B?S29JRE94WDFEeDZUR28zd1l4K2xFN3l4V2UrWHlXNFBoZ0hRMWRDSXFUSDJw?=
- =?utf-8?B?QVBBWlBWTml4MytZZ3hTdG10QWJvd0hBZ1Axbm5RRWJ6M1RoZXZsVWQrS1E1?=
- =?utf-8?B?ZWY0SDFaaE8yRmtlWW5ydWRnRjRuUzRPWVRRT3A5eThVbmpldTIxRVNlZVcw?=
- =?utf-8?B?aVoyUlYyYTJKTnJURzBraThUdCt3VXFsYTFKNmNZWFlGR2N4MDA5YTlER0pt?=
- =?utf-8?B?SWk4bGRLNkNRUmtId3lmWUswUjdNRHBuK3ZyVXh3TGsxeWtucTZ5M09neUZJ?=
- =?utf-8?Q?Wed46KEYs9+P4V/g9U1Dk2/sgK7TX57s8up9F2QZ7c=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 856b3e27-d280-4a2f-4a10-08dc331d5ed4
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 20:40:42.0283
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MnsE+LqjT4itSY0kEQOoQfmp+wDs5GsuKwRzihp6Bv9D+UWnTjl17b1EkYU1SOAI8EOpkXHUtsfBYgImtNvIZRtK7ET3f2b77qFpqav1NwA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR08MB5978
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221153827.wkmjnnwsf6lyxatc@revolver>
 
-On 21.02.24 21:25, Matthias Kaehlcke wrote:
-> On Tue, Feb 20, 2024 at 03:05:50PM +0100, Javier Carrasco wrote:
->> The current mechanism uses generic names for the power supplies, which
->> conflicts with proper name definitions in the device bindings.
->>
->> Add a per-device property to include real supply names and keep generic
->> names as a fallback mechanism for backward compatibility.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
->> ---
->>  drivers/usb/misc/onboard_usb_dev.c | 54 ++++++++++++++++++++------------------
->>  drivers/usb/misc/onboard_usb_dev.h | 23 ++++++++++++++++
->>  2 files changed, 52 insertions(+), 25 deletions(-)
->>
->> diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
->> index f43130a6786f..e66fcac93006 100644
->> --- a/drivers/usb/misc/onboard_usb_dev.c
->> +++ b/drivers/usb/misc/onboard_usb_dev.c
->> @@ -29,18 +29,6 @@
->>  
->>  #include "onboard_usb_dev.h"
->>  
->> -/*
->> - * Use generic names, as the actual names might differ between devices. If a new
->> - * device requires more than the currently supported supplies, add a new one
->> - * here.
->> - */
->> -static const char * const supply_names[] = {
->> -	"vdd",
->> -	"vdd2",
->> -};
->> -
->> -#define MAX_SUPPLIES ARRAY_SIZE(supply_names)
->> -
->>  static void onboard_dev_attach_usb_driver(struct work_struct *work);
->>  
->>  static struct usb_device_driver onboard_dev_usbdev_driver;
->> @@ -66,6 +54,33 @@ struct onboard_dev {
->>  	struct clk *clk;
->>  };
->>  
->> +static int onboard_dev_get_regulator_bulk(struct device *dev,
->> +					  struct onboard_dev *onboard_dev)
->> +{
->> +	unsigned int i;
->> +	int err;
->> +
->> +	const char * const *supply_names = onboard_dev->pdata->supply_names;
->> +
->> +	if (onboard_dev->pdata->num_supplies > MAX_SUPPLIES)
->> +		return dev_err_probe(dev, -EINVAL, "max %zu supplies supported!\n",
->> +				     MAX_SUPPLIES);
->> +
->> +	if (!supply_names[0])
->> +		supply_names = generic_supply_names;
-> 
-> Please change to 'if (!supply_names)' and omit the initialization of
-> .supply_names for devices that use the generic supply names.
-> 
+On Wed, Feb 21, 2024 at 10:38:27AM -0500, Liam R. Howlett wrote:
+> * Yajun Deng <yajun.deng@linux.dev> [240221 04:15]:
+> > In most cases, the range of the area is valid. But in do_mprotect_pkey(),
+> > the minimum value of end and vma->vm_end is passed to mprotect_fixup().
+> > This will lead to the end is less than the end of prev.
+> >
+> > In this case, the curr will be NULL, but the next will be equal to the
+> > prev. So it will attempt to merge before, the vm_pgoff check will cause
+> > this case to fail.
+> >
+> > To avoid the process described above and reduce unnecessary operations.
+> > Add a check to immediately return NULL if the end is less than the end of
+> > prev.
+>
+> If it's only one caller, could we stop that caller instead of checking
+> an almost never case for all callers?  Would this better fit in
+> vma_modify()?  Although that's not just for this caller at this point.
+> Maybe there isn't a good place?
 
-That looks much cleaner, I will apply it to the next version.
+I definitely agree with Liam that this should not be in vma_merge(), as
+it's not going to be relevant to _most_ callers.
 
->> diff --git a/drivers/usb/misc/onboard_usb_dev.h b/drivers/usb/misc/onboard_usb_dev.h
->> index ebe83e19d818..59dced6bd339 100644
->> --- a/drivers/usb/misc/onboard_usb_dev.h
->> +++ b/drivers/usb/misc/onboard_usb_dev.h
->> @@ -6,63 +6,86 @@
->>  #ifndef _USB_MISC_ONBOARD_USB_DEV_H
->>  #define _USB_MISC_ONBOARD_USB_DEV_H
->>  
->> +/*
->> + * Fallback supply names for backwards compatibility. If the device requires
->> + * more than the currently supported supplies, add a new one here, and if
->> + * possible, the real name supplies to the device-specific data.
->> + */
->> +static const char * const generic_supply_names[] = {
->> +	"vdd",
->> +	"vdd2",
->> +};
->> +
->> +#define MAX_SUPPLIES ARRAY_SIZE(generic_supply_names)
-> 
-> This will have to change when support for a device with more than 2 non-generic
-> supply names gets added. Please use a literal value for MAX_SUPPLIES instead of
-> ARRAY_SIZE. If the literal is 2 it would still need to change for future devices
-> with more supplies, but that change would be more straighforward.
-> 
+I am not sure vma_modify() is much better, this would be the only early
+exit check in that function and makes what is very simple and
+straightforward now more confusing.
 
-I am not completely sure about this. Someone could increase MAX_SUPPLIES
-without adding a generic name. Actually two modifications will be
-necessary for every addition (name and MAX_SUPPLIES). If ARRAY_SIZE is
-used, only new names are required, and MAX_SUPPLIES is automatically
-increased.
+And I think this is the crux of it - it's confusing that we special case
+this one particular non-merge scenario, but no others (all of which we then
+deem ok to be caught by the usual rules).
 
-I understand that the whole point of this is getting rid of the generic
-names, but we still have to provide generic names for every extra
-supply, at least for code consistency and to avoid size mismatches
-between real an generic supply names.
+I think it's simpler (and more efficient) to just keep things the way they
+are.
 
->> +
->>  struct onboard_dev_pdata {
->>  	unsigned long reset_us;		/* reset pulse width in us */
->>  	unsigned int num_supplies;	/* number of supplies */
->>  	bool is_hub;
->> +	const char * const supply_names[MAX_SUPPLIES];
->> +
->>  };
->>  
->>  static const struct onboard_dev_pdata microchip_usb424_data = {
->>  	.reset_us = 1,
->>  	.num_supplies = 1,
->> +	.supply_names = { NULL },
->>  	.is_hub = true,
->>  };
->>
->> ...
+>
+> Or are there other reasons this may happen and is better done in this
+> function?
+>
+> Often, this is called the "punch a hole" scenario; where an operation
+> creates two entries from the old data and either leaves an empty space
+> or fills the space with a new VMA.
+>
+> >
+> > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> > ---
+> > v2: remove the case label.
+> > v1: https://lore.kernel.org/all/20240218085028.3294332-1-yajun.deng@linux.dev/
+> > ---
+> >  mm/mmap.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index 0fccd23f056e..7668854d2246 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -890,6 +890,9 @@ static struct vm_area_struct
+> >  	if (vm_flags & VM_SPECIAL)
+> >  		return NULL;
+> >
+> > +	if (prev && end < prev->vm_end)
+> > +		return NULL;
+> > +
+> >  	/* Does the input range span an existing VMA? (cases 5 - 8) */
+> >  	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
+> >
+> > --
+> > 2.25.1
+> >
 
-Thanks again for your feedback.
+So overall I don't think this check makes much sense anywhere.
 
-Best regards,
-Javier Carrasco
+I think a better solution would be to prevent it happening _at source_ if
+you can find a logical way of doing so.
 
+I do plan to do some cleanup passes over this stuff once again so maybe I
+can figure something out that better handles non-merge scenarios.
+
+This is a great find though overall even if a patch doesn't make sense
+Yajun, thanks for this, it's really made me think about this case (+ others
+like it) :)
 
