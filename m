@@ -1,72 +1,115 @@
-Return-Path: <linux-kernel+bounces-75632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4026B85EC85
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:06:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 997B285EC86
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0BD1C21686
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:06:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA6901C22811
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB57E12BF34;
-	Wed, 21 Feb 2024 23:05:41 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917AD86AFA;
+	Wed, 21 Feb 2024 23:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="NFKEE333"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D2612AAF9;
-	Wed, 21 Feb 2024 23:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FBD1EC5;
+	Wed, 21 Feb 2024 23:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708556741; cv=none; b=DXeVwGrVN2WK9GSMRzJtVksGY6c16sja8taT2j9K37HLnmGqZZZv3jgmKKQPxi+pxgoaTE443pq5MeRnVl6lKgjJSw+3OG/tVCVpUeSqbsfs8Q2dwBV5qab6CZD7zpekzXJY7qMnUA0QhAsJJVRohKZLRPZXvc8IeCtfVcuxcZA=
+	t=1708556823; cv=none; b=usu6pgn/u1SQUKNhxw0lgQErgyPjKFrwBJRlO0t9FUhWkPyl+ePZBzkQ1IijdZwaZXOzboDhm9ASGt+fBshAMdWtkGM5xzBxhdDhnvDEZb9DAiSDe65EdT6zpNQw1Rh0tPqbkloXoEKZEcSO/8chIb4V6eSBEFXNHLjo+X8+PqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708556741; c=relaxed/simple;
-	bh=bASWmqvbEFBpJC1TyrY8VYF3sgdRmslxhzR7CW00gsU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=P2Fb+wBukdqjoN/DpxuQ3LUn0he5u6KvSeJgfbRaH2kwBx+aNU3SvYwJ/YiAt0LqeFU7sfohokjWTg48GF0/i0/uSn/JN9Y1bSyH/onccv304MlhlIrrW5iOAx3dlXVq/Uj6KD6hGUxUw8nMtJCUVm3/uKJR6CNzJyeWbiYzPwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B04B1C43399;
-	Wed, 21 Feb 2024 23:05:40 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id D3455106B79F; Thu, 22 Feb 2024 00:05:37 +0100 (CET)
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: sre@kernel.org, wens@csie.org, hdegoede@redhat.com, 
- Guoyi Zhang <kuoi@bioarchlinux.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240221083425.440108-1-kuoi@bioarchlinux.org>
-References: <20240221083425.440108-1-kuoi@bioarchlinux.org>
-Subject: Re: [PATCH] power: supply: axp288_fuel_gauge: Deny ROCK Pi X
-Message-Id: <170855673785.1674060.17523775239548340307.b4-ty@collabora.com>
-Date: Thu, 22 Feb 2024 00:05:37 +0100
+	s=arc-20240116; t=1708556823; c=relaxed/simple;
+	bh=Gwpylj/sT4sjUiniryxyurq72mhwJX0hnZbtxFhHT5c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=T3OChJOHXeif824FkDVkfNEHS/FR7N1p/Pilq2VWzs6NUE+sHu9uBeo+dpYOpPYOMIBozAyXpXwiKX6dQHq99QzvguIXSbVfzE2GRJcSHF3e9HuJLeQ81RZ9MqDj5bdyKT1PQTnoGVkMd4bj2P53S2CI0TLZDNVqXaq/PrnRsT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=NFKEE333; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708556818;
+	bh=Ib2C9zjSUcH4lTi6XWnBc7cedDQvZTeIr7QOPZ60WaI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=NFKEE333dJztxDGs2KTQ/u76F64STOXw5KpJKZBSgZfc/iPjvhKnEUcSNkSf7Oq8O
+	 yWWwTR/C19undrzJz5cLOtfyrzTmU8qUNNmLj8dhFP6UBkWpUS1VloXLumGUHXKoJt
+	 yTupGrdlrYo59xeo1q0DZ7+D5QJOEDZ5hfy79itrn1BvAdeYrVtgSwjlrxYqBCRjwf
+	 dFS+B3tQWZVsepBBR1hOLhDbMMhxXgdFwxMOkylCsJWkII7eqpGOXlQLSCb/RnOFPZ
+	 dH0FlROCYggJhZSizWw6b+iGEGwErEy+maPlOxdvCEf2TfhGo/rEzBtuTM8aYsVrEk
+	 zOgFF2vK85DJg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgBjt2Ybqz4wcF;
+	Thu, 22 Feb 2024 10:06:58 +1100 (AEDT)
+Date: Thu, 22 Feb 2024 10:06:56 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Namhyung Kim
+ <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Arnaldo Carvalho de Melo
+ <acme@redhat.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the perf tree
+Message-ID: <20240222100656.0a644254@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: multipart/signed; boundary="Sig_/6je1p2tIlVil2AvLIAwL2g.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/6je1p2tIlVil2AvLIAwL2g.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 21 Feb 2024 16:34:25 +0800, Guoyi Zhang wrote:
-> The ROCK Pi X is a single board computer without batteries using the
-> AXP288 PMIC where the EFI code does not disable the charger part of
-> the PMIC causing us to report a discharging battery with a continuously
-> consumed battery charge to userspace.
-> 
-> Add it to the deny-list to avoid the bogus battery status reporting.
-> 
-> [...]
+Hi all,
 
-Applied, thanks!
+After merging the perf tree, today's linux-next build (native perf)
+failed like this:
 
-[1/1] power: supply: axp288_fuel_gauge: Deny ROCK Pi X
-      commit: 9e6047c01159697cfd2f9b7788af9fe90fc7f544
+util/bpf_skel/augmented_raw_syscalls.bpf.c:329:15: error: invalid applicati=
+on of 'sizeof' to an incomplete type 'struct timespec64'
+        __u32 size =3D sizeof(struct timespec64);
+                     ^     ~~~~~~~~~~~~~~~~~~~
+util/bpf_skel/augmented_raw_syscalls.bpf.c:329:29: note: forward declaratio=
+n of 'struct timespec64'
+        __u32 size =3D sizeof(struct timespec64);
+                                   ^
 
-Best regards,
--- 
-Sebastian Reichel <sebastian.reichel@collabora.com>
+Caused by commit
 
+  29d16de26df1 ("perf augmented_raw_syscalls.bpf: Move 'struct timespec64' =
+to vmlinux.h")
+
+This is a ppc64 le build.
+
+I have used the perf tree from next-20240221 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/6je1p2tIlVil2AvLIAwL2g.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXWghAACgkQAVBC80lX
+0GxBZwgAk3Mk1RF4oYH8dHKJ8Jx3P2OTDVSDJrM8/7t44RElOZosaDiNv94jTzBq
+JWo161cFkbFi0+xAy12juOsvptiq83+f9/PiaGhlOVjVKNtwSD4MLnK6TiRDudd4
+0tedfNYDOZfXeDCHHej2+Kns29QHjtCorladyyNvrC6GZ+NGgev2L3N3djVk3ZP3
+JSRTZM0LhFy8SDcAhnHReoRkBSQs3vLTuHgw5aCefpiY1G07F7IEQ7FBB4DFH2yA
+tleEYzfjsuN9R47HipYEtokRSZhPNRZvQhdmk6MXEtkRmbinv0FOEFA8PUXSp/NF
++VLhkZT6lUf4E/GyMLVR5JH8ncnHAw==
+=ewK4
+-----END PGP SIGNATURE-----
+
+--Sig_/6je1p2tIlVil2AvLIAwL2g.--
 
