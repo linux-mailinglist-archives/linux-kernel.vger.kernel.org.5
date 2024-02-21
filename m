@@ -1,120 +1,148 @@
-Return-Path: <linux-kernel+bounces-74871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B795A85DE24
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:15:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2153685DED1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC2711C2117C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:15:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73C75B2A83B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:15:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0190A7EF03;
-	Wed, 21 Feb 2024 14:13:29 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0947CF27;
+	Wed, 21 Feb 2024 14:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z7tDGBwd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0253CF42;
-	Wed, 21 Feb 2024 14:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9547BB18
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708524808; cv=none; b=aft/cgyptPEWMBa2DIoaQzWOTqHDS0bAjZoQdHd0hDk5LrBKbk7FR2gx/1eXdpggGnocT6WSQj9UaUblJTauT2FCiXT5RyvTUq+0nJxXcOET7LvAemwx4ukMijOYRlrmtNCCS1pT8TqFRNKWbqXP7jOaqrBp5qzgi3ONllJKoK4=
+	t=1708524839; cv=none; b=doE7QB7J8o+oaWdHydT2DGKwshga6k7eALmSptdsoGpWIvFC3JlZO8MxKYIz8DDW7W1ltBtbmb0tz55mMd9Gyklw/KWYezYRAq2M3vevWAmKdNW7Bp8dtIfrI8nTkcmCk2GRsb7RJIqrZ1daIivoxhMBxT50C1JXcuLAlvaxyl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708524808; c=relaxed/simple;
-	bh=+0a+Vjm3LEMsvJiU2NZChDhM5R5ZE0wVMUxaZUR8OR8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WEimFLveVRCsq+PPPHjOw/WimtjW5wAdXO3cESRykJ7NdxiLI6n1sFd4n543+CSGdcTouaMkAHYi1gSgOU/XLbem++XJ4QPSXCz4LyLOXY624CnXuMVsnHsJR1ybvwwvQhXnp9x0Joz2HZoeQqFX6wdgI0+eSqKqWpvyMa7qwhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-607cd210962so58207877b3.2;
-        Wed, 21 Feb 2024 06:13:25 -0800 (PST)
+	s=arc-20240116; t=1708524839; c=relaxed/simple;
+	bh=/D4edU2dlMgF7cFcJy5ah1s2Lb6gvj+ZpJAcgtiUZ/s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y7/lam6WAtsxpcr84jCa5jN4b7EUOOQC2xTbw5j1mjiAwCudTJCTNT+HWEAXwASyKeGHL0+5ZydyEucAnclMYGsdzrRYNK3/V55N78jMpSU2kP+ws4PuNj/kv9bZ/uwmTcGeh1WqoxF70EEsC1Lo2tG67ZIeNhf1zYU+sa1BNKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z7tDGBwd; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708524836;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=X/GA9uj2BxRMWNhwLbIQ/l7TXK6bjdPEXsLkC/BAEhs=;
+	b=Z7tDGBwd+0P1Hv0ZRNme8QsJLoauu+Z8qscjXhNWNifZ9q8Vg/G2zfhnyFubLeIVRjuVsi
+	ued6a0zoH3YxQ/MR1y56sxisLy1M9qDIMFz+gY5s888SAu7Ub23em8NDqE8pGoImmYoybC
+	PSwvHHQ8Wshj5a+detNWF7z89rX8U9w=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-sTpd45gkP5-GOnExvvHczg-1; Wed, 21 Feb 2024 09:13:55 -0500
+X-MC-Unique: sTpd45gkP5-GOnExvvHczg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d35592d4aso1422845f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:13:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708524804; x=1709129604;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WssOhp4wIGct8OS+brvMMaBCr4M5Sjz7aTlXLNRimww=;
-        b=FKPziCndm/DRxtC2+qSRyDn6xXDAj75n9RPKkY17kRnUo1xRQ8MJAHNLcAUYWwJ1SP
-         QIP8GRkHh4RRQ8bbDao3vbtpta7D3LdsFG9e7V4jSHCvaSYLZoXc1joLYHxZ739DtjBX
-         7Ra1J0aFLVxUbzxZ4JxFYIN7GSRKdKD3wrzEe7FFVTtjA6imckR0O5jjHYD33Kfp3hmh
-         hSgZ9xm25xpJiq+Fmtdw9ujhgZJ5g7uyMXHkf3EKIpfEZ4Dabw5dPOSO5Oe8r0wGiydo
-         /a8grAF66QZ1v5aXonFE9iK0IPTaVOPecuUUHDntVlBkO0xiOirat7nLGAQ1VhisuO2/
-         tpJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWeNAfN7TicWLqTahtZ3aBeUjuHiS4acz/cnH6rravV/jbG6dRmQ0hJ007kHzpKMQ+m/saeIyWhuo7BpWV+6H7H2j3WZk6KfFvBdKr7lr8JuHISZy3Nvz3KeUs9BM7u1hlGyQOVZZKqiCCLqWjNzAz12KO+LcrDwbGrRzF/Sful1KVafUupeK5AXfFv
-X-Gm-Message-State: AOJu0YyyJxXQvAILgLFa8KE913PfNSnSYpPtyBH/aHUWehreFFyyVZOg
-	3cxnbmyahgz093GD2nnz8B3rKXKGK3gbaibzRJW+JhiSvHcA8GpGfOwLD4wqT0o=
-X-Google-Smtp-Source: AGHT+IFlHvCRYmlBDlCVzZqmsd8a5kmnJanono0HMHjUSQiuXiHNPBimuxkHK2E/u5Gb1yh3twMKYw==
-X-Received: by 2002:a0d:eac5:0:b0:608:7c04:d404 with SMTP id t188-20020a0deac5000000b006087c04d404mr2349613ywe.40.1708524804621;
-        Wed, 21 Feb 2024 06:13:24 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id dt16-20020a05690c251000b00607c3904416sm2522419ywb.40.2024.02.21.06.13.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 06:13:24 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607cd210962so58207497b3.2;
-        Wed, 21 Feb 2024 06:13:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWfcYwoZsPFzI9zRHBFi9Ii8YBzOYYEIc0dtIVLEVKqR3Y4yfDXkZ0zyEqTlqM7AKB74uCgIrN26hK++XJVaW1xtGMi7G0F64ZHBsVON0Hjx46m+nriwkEM6j1vQq1ufcNLBCehUGNgTxMkUjYeQV0YNo5v22Hb3HpvFJm10CLFcSOdXA7Oo8okCjVF
-X-Received: by 2002:a81:9b02:0:b0:5ff:4959:1da8 with SMTP id
- s2-20020a819b02000000b005ff49591da8mr16512998ywg.50.1708524803966; Wed, 21
- Feb 2024 06:13:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708524833; x=1709129633;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X/GA9uj2BxRMWNhwLbIQ/l7TXK6bjdPEXsLkC/BAEhs=;
+        b=EpvHH4etnaACQIYbHXAlLfEE3XdXAafUz0v/0ZenYfWLIhBcDzGe1zCMSXMKN6M/HD
+         GGGcJSvk7ErnfE2e69Ecrgm9NYWy21ftxXujijKQTy6Ou5dpLBy6qIdHxbkYs8020nlj
+         s5k2oehfG5cBx3r6yej9DT61utfrOS6YtE+N4FXovOhMSJ5qviD3F7Q/fT/9XEgt/LOm
+         Zg12XB1RsUOpG6p3F5eeXtFGQp18Cj41qPbdZo485H6+4lp/1ZhX7RppnsnqWuyzINyL
+         X4ElN2fbxGQj9R3sSu+2nr44AzLS21wukKp3JiTWS62q40Fq/o3PJ2jUhAsp/MJzSuVV
+         PDJQ==
+X-Gm-Message-State: AOJu0YxSJzcgswE7F1fjZ1my+FP5ZDkg8n616P6eF+whK/r9eiDNmo9c
+	i7s7N2P9QEnRxmivQIJabVE0dMQ1Yhe3u342kjMa5EbRfOe5C6xcbMHkCJbtHWYt1EX7ybNikZM
+	mf6sNo/N/Jx2rld9Pv/dwtfVkOBexyQHHSG2DnZcnpjUhBHK/wAMcwGOXBKHxKNIOCRCbbBfDIw
+	eiWuuM7Ishh/wGn/4LgbcVvgwQaEWDlHfoSPdKV0j8Sm77
+X-Received: by 2002:a5d:4b8b:0:b0:33d:2120:1016 with SMTP id b11-20020a5d4b8b000000b0033d21201016mr12179262wrt.52.1708524832873;
+        Wed, 21 Feb 2024 06:13:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF4awMLHOnfcg+o6Wd6BP/y/EfVVau5ctktrK2DVh4AW13DCBEghcS3UBmxjHejdwgA/Y+9Ng==
+X-Received: by 2002:a5d:4b8b:0:b0:33d:2120:1016 with SMTP id b11-20020a5d4b8b000000b0033d21201016mr12179226wrt.52.1708524832472;
+        Wed, 21 Feb 2024 06:13:52 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id j11-20020adff54b000000b0033b43a5f53csm17092735wrp.103.2024.02.21.06.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 06:13:52 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: Enric Balletbo i Serra <eballetbo@redhat.com>,
+	Maxime Ripard <mripard@redhat.com>,
+	Erico Nunes <nunes.erico@gmail.com>,
+	Brian Masney <bmasney@redhat.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading compressed FW support
+Date: Wed, 21 Feb 2024 15:13:47 +0100
+Message-ID: <20240221141350.3740488-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215124112.2259103-1-claudiu.beznea.uj@bp.renesas.com> <20240215124112.2259103-2-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240215124112.2259103-2-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 21 Feb 2024 15:13:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVi5vN5JSf9TAbdyrNa8_7eM=RajH8Mm=Qxhj5chWcK9A@mail.gmail.com>
-Message-ID: <CAMuHMdVi5vN5JSf9TAbdyrNa8_7eM=RajH8Mm=Qxhj5chWcK9A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: renesas: Select CONFIG_IRQ_DOMAIN_HIERARCHY
- for pinctrl-rzg2l
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Claudiu,
+These options are needed by some Linux distributions (e.g: Fedora), so
+let's enable them to make it easier for developers using such distros.
 
-On Thu, Feb 15, 2024 at 1:41=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
-wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> The pinctrl-rzg2l driver uses APIs that are defined only if
-> CONFIG_IRQ_DOMAIN_HIERARCHY=3Dy (irq_chip_*_parent() APIs). On the ARCH_R=
-ZG2L
-> CONFIG_IRQ_DOMAIN_HIERARCHY is selected anyway, e.g., by the
-> CONFIG_ARM_GIC_V3. Even so, make it explicit at the driver level for a
-> clearer view of the dependencies.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Brian Masney <bmasney@redhat.com>
+---
 
-Thanks for your patch!
+Changes in v2:
+- Add Brian Masney's Reviewed-by tag.
+- Drop CONFIG_MODULE_COMPRESS_XZ, it's OK to build uncompressed kernel modules.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+ arch/arm64/configs/defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Compile-testing on m68k reveals that you also need
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 056a6cc546a4..b062d6ca7f5e 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -241,6 +241,7 @@ CONFIG_PCI_EPF_TEST=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_FW_LOADER_USER_HELPER=y
++CONFIG_FW_LOADER_COMPRESS=y
+ CONFIG_HISILICON_LPC=y
+ CONFIG_TEGRA_ACONNECT=m
+ CONFIG_MHI_BUS_PCI_GENERIC=m
+@@ -275,6 +276,8 @@ CONFIG_MTD_NAND_FSL_IFC=y
+ CONFIG_MTD_NAND_QCOM=y
+ CONFIG_MTD_SPI_NOR=y
+ CONFIG_MTD_UBI=m
++CONFIG_ZRAM=m
++CONFIG_ZRAM_WRITEBACK=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_VIRTIO_BLK=y
+@@ -1595,6 +1598,7 @@ CONFIG_HTE_TEGRA194_TEST=m
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT3_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_XFS_FS=m
+ CONFIG_BTRFS_FS=m
+ CONFIG_BTRFS_FS_POSIX_ACL=y
+ CONFIG_FANOTIFY=y
+-- 
+2.43.0
 
-    select GPIOLIB_IRQCHIP
-
-So I will add that when queuing in renesas-pinctrl for v6.9.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
