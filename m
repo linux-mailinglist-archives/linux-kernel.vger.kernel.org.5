@@ -1,73 +1,80 @@
-Return-Path: <linux-kernel+bounces-75197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C13285E48C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:29:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 500CA85E491
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E62D4B23245
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:29:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 064942857D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8684383CB8;
-	Wed, 21 Feb 2024 17:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6EC83CBE;
+	Wed, 21 Feb 2024 17:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jM9Cq3n7"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Vq1c/uTz"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7495D80610
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB12E80610;
+	Wed, 21 Feb 2024 17:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708536539; cv=none; b=FH5wulNDhhME0TpH8REnLYU/K9ykhK5V3deojNb/nIiUt/g0A9OJ4rIjL7/B/w4mSpklfHzQUl6w3o4qjZLM7v5M31BLGHwkhuKdPEt5wE2Jna40NavCn0PguY7fmSLG+Su9uHSpYlow2KCMtRSgDHuLzPx1agcp496LsWAnZeo=
+	t=1708536625; cv=none; b=LCJb0DkASzQVAGOKVf7dKks0o4bb7ljZ1xj0bL3+It5mLCgNnxuakC/OJzvoX0+UAp3V75MMTvdQjy2IAvSNUiDYI0lZU9fYtyCdOlYHEG6ZWCgVjXXmgA+to1Xm+hMzpyjoeKnDhRrBpd0sqgspdgrS3/mCRimGTpKPnTdz/Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708536539; c=relaxed/simple;
-	bh=jaDN3cORrBGht2nMnO/gE2RYJ+leAh9xD2DDv35eYHs=;
+	s=arc-20240116; t=1708536625; c=relaxed/simple;
+	bh=K4JyNjxfdl3N78UjQeKmaovkQWDgWS2lJqCye9kbzUc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xo8JH2vOr7KcmMmp+8UySUDzHrLxV2vMtdTOF/ZiMxNy61Ixg9HQRAOmkW447hJ2hxFT3IJDOT3vKuNkJ5ZWAqyMQzkXIa+DndXhSIOPKRgMw81A/B3+257RXpvBonTuR780ZtCPhg1P+QTMAZIIVV8srUbdYqMpKJGK43srmIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jM9Cq3n7; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cdbc42f5efso1860166a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708536537; x=1709141337; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rDXNaqwZ7rKb0os0jpqAPzyizKXlOuImA3Swq0SLHvI=;
-        b=jM9Cq3n7X3yCw51yarzp+tLrOKIjluao9P7U8kCXw/9iCaMNhEwkED8uFNIW3kjFL/
-         4hjFTEHm9J0NnA8+7If43HpFb+wFYc4hkhQRj69NwhxjE6rs+ly7VdbB+HSjyrMdDrsl
-         zmXIqUZDoOO5ISaNiwEkBtQ3nmDpfzbpgRTOYoD2IvkCIPy3VzrEl+yoMV1fkQRV1nef
-         TGuHepoqwQ0gUxPC6KH7HqV0v1Kk4w0gcg1NHLLmXk4PTwtl94w+t2BdT+HfUTNCCFkF
-         Sv+dJmsxZKeqXLC8RMAmhEvJ3KlMvMRoAq7VbWRBbv4q07LLyJAEyIR1SobTKam+95nP
-         2nMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708536537; x=1709141337;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rDXNaqwZ7rKb0os0jpqAPzyizKXlOuImA3Swq0SLHvI=;
-        b=uKzeDUBnyW2O+6njHTgAYr45zHsdvYaklfMk8Jc8GlFojKtgJCGi8fmzU268HaABRz
-         k99kLpYYWzq8cP4NAMkZAiTOFINiTFcH+mtdJp38Iqoa7mFB5d+T7a9UDUtH2kYGwbZf
-         DLr+Z/SDVxnFzXwFt6NzHdZOgPyBzIsZKF07Np1yZyM70S8Dzh+VQP3uNaafMEGXv3AL
-         317ECYDLEvY0FsG0UZ+iWO4xVNLXww+eUc8aqj5E9pIjxcov9nr/cjDmBo5Vr7P0Yrf1
-         CDL3EFJsyHPjjDJLsv2EG2RjylVHc4WK7dUucYx20a0gDuehpm7naL2U7mJGXraxtcVT
-         ksyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXycKq4IQVRnHn63pzUTe9S9Y4k9KbyHvzBKvx+XlZKWars39Pz5LyWWnKM/OCvKj7i9moRXaT1TugOPYEJz1Z8XQW++GS+RJb3VSSC
-X-Gm-Message-State: AOJu0Yysg7stsRU8Tyvz0xXeUH4nu/sV+UooDk4Gzo11RNakz2w6oLK/
-	pI/mHbpKEhZG9/tjEelTDUZbIq5EYpxULAdOUHcy+T5pTFWOiZW6TmB1nVDtsZQ=
-X-Google-Smtp-Source: AGHT+IGkvu8JRmAknWH/uRyFmsBeeJKf7Ofjox6AxJ5b3PPIn09+j8/EJhtOV4BPXityTOwf9sgGWw==
-X-Received: by 2002:a17:90a:1bc8:b0:299:1ae1:51ae with SMTP id r8-20020a17090a1bc800b002991ae151aemr27172pjr.3.1708536536596;
-        Wed, 21 Feb 2024 09:28:56 -0800 (PST)
-Received: from [172.20.8.9] (071-095-160-189.biz.spectrum.com. [71.95.160.189])
-        by smtp.gmail.com with ESMTPSA id d13-20020a17090ad98d00b002997e87b390sm2063505pjv.29.2024.02.21.09.28.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 09:28:56 -0800 (PST)
-Message-ID: <0d0fda8f-36c1-49f4-aef0-527a79a34448@kernel.dk>
-Date: Wed, 21 Feb 2024 10:28:54 -0700
+	 In-Reply-To:Content-Type; b=EKfwkkRz5SnnIy89Mj3J652qlCedyrzv9A3Dw0GLPzf5IfE3csoQZ0687kgeyCI1tnfF0Q5waTw0Wr2eCMz2M4NwlY9pxAMM7mc6O84J5r9bbh9NY0yKhnT+NS8WleK42HkTeW4Kby/DHZ8f9lrj8x3FXYDuuoaZ5k9/BAI/g58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Vq1c/uTz; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41LHQErZ018984;
+	Wed, 21 Feb 2024 17:30:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ssDlj8Gj906RYJ+kd7oHUcLMb8QUhPVR1jtt/Kk46L0=;
+ b=Vq1c/uTzgV94liau2prJfYP3wX3LLcqlfNu4V4iDZSGwWMOxReQAZOU6EP3ae7swxkNo
+ ZBUONDmTYaq9aczD+0IvfuyuhoHePSP+T1ikLrEdHa7Iz1ieGl+VbZy9Sk4dn1WxxrJV
+ ak2SWFp7NB9qUSi4VKGc/FurNKZVjQQXlukC4vbiM8lq++nVTnfWh9GP20kbU3cg9Km2
+ QuWAQTp107chup3qGIkNguPIMpt4b3D1OlQDY6RRPEqXGe3DiGhqyZvwmDgy70bjto3t
+ J1JxZw4adxZO4iMzU7La/qrzj2nodgJhn++K2ZfU+XMo+/tcZ20/LcFjZlfA5MTUoMPe AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wdmjc1ypq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 17:30:03 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41LHQCCx018881;
+	Wed, 21 Feb 2024 17:30:02 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wdmjc1ynu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 17:30:02 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41LGpAjb003596;
+	Wed, 21 Feb 2024 17:30:01 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb74trwc4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 17:30:01 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41LHTw9Q27918916
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 Feb 2024 17:30:00 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E387B20040;
+	Wed, 21 Feb 2024 17:29:57 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CAA8D20043;
+	Wed, 21 Feb 2024 17:29:49 +0000 (GMT)
+Received: from [9.61.61.120] (unknown [9.61.61.120])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 21 Feb 2024 17:29:49 +0000 (GMT)
+Message-ID: <e1bd53c6-ad9a-46d5-9f49-ecdd64d98f61@linux.ibm.com>
+Date: Wed, 21 Feb 2024 22:59:47 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,128 +82,183 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9] io_uring: Statistics of the true utilization of sq
- threads.
+Subject: Re: [PATCH v2 01/14] kexec: split crashkernel reservation code out
+ from crash_core.c
+To: Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-s390@vger.kernel.org, piliu@redhat.com, linux-sh@vger.kernel.org,
+        x86@kernel.org, kexec@lists.infradead.org, linux-mips@vger.kernel.org,
+        ebiederm@xmission.com, loongarch@lists.linux.dev,
+        hbathini@linux.ibm.com, linux-riscv@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, viro@zeniv.linux.org.uk
+References: <20240119145241.769622-1-bhe@redhat.com>
+ <20240119145241.769622-2-bhe@redhat.com>
 Content-Language: en-US
-To: Xiaobing Li <xiaobing.li@samsung.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
- joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
- ruyi.zhang@samsung.com, cliang01.li@samsung.com, xue01.he@samsung.com
-References: <20240219064241.20531-1-xiaobing.li@samsung.com>
- <CGME20240221020432epcas5p4d3f6dcf44a4c2be392e94889786c75bc@epcas5p4.samsung.com>
- <20240221020427.309568-1-xiaobing.li@samsung.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240221020427.309568-1-xiaobing.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8
+From: Sourabh Jain <sourabhjain@linux.ibm.com>
+In-Reply-To: <20240119145241.769622-2-bhe@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 1X7jDKhl1zUKRy2B_adMLzM9iC8HO1cV
+X-Proofpoint-ORIG-GUID: Uw2D97QjE83VJR5woF4jbJ6EWAOoQuw_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_04,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ mlxscore=0 clxscore=1011 lowpriorityscore=0 adultscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402210135
 
-On 2/20/24 7:04 PM, Xiaobing Li wrote:
-> On 2/19/24 14:42, Xiaobing Li wrote:
->> diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
->> index 976e9500f651..37afc5bac279 100644
->> --- a/io_uring/fdinfo.c
->> +++ b/io_uring/fdinfo.c
->> @@ -55,6 +55,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->> 	struct io_ring_ctx *ctx = f->private_data;
->> 	struct io_overflow_cqe *ocqe;
->> 	struct io_rings *r = ctx->rings;
->> +	struct rusage sq_usage;
->> 	unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
->> 	unsigned int sq_head = READ_ONCE(r->sq.head);
->> 	unsigned int sq_tail = READ_ONCE(r->sq.tail);
->> @@ -64,6 +65,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->> 	unsigned int sq_shift = 0;
->> 	unsigned int sq_entries, cq_entries;
->> 	int sq_pid = -1, sq_cpu = -1;
->> +	u64 sq_total_time = 0, sq_work_time = 0;
->> 	bool has_lock;
->> 	unsigned int i;
->>
->> @@ -147,10 +149,15 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->>
->> 		sq_pid = sq->task_pid;
->> 		sq_cpu = sq->sq_cpu;
->> +		getrusage(sq->thread, RUSAGE_SELF, &sq_usage);
->> +		sq_total_time = sq_usage.ru_stime.tv_sec * 1000000 + sq_usage.ru_stime.tv_usec;
->> +		sq_work_time = sq->work_time;
->> 	}
->>
->> 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
->> 	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
->> +	seq_printf(m, "SqTotalTime:\t%llu\n", sq_total_time);
->> +	seq_printf(m, "SqWorkTime:\t%llu\n", sq_work_time);
->> 	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
->> 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
->> 		struct file *f = io_file_from_index(&ctx->file_table, i);
->> diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
->> index 65b5dbe3c850..006d7fc9cf92 100644
->> --- a/io_uring/sqpoll.c
->> +++ b/io_uring/sqpoll.c
->> @@ -219,10 +219,22 @@ static bool io_sqd_handle_event(struct io_sq_data *sqd)
->> 	return did_sig || test_bit(IO_SQ_THREAD_SHOULD_STOP, &sqd->state);
->> }
->>
->> +static void io_sq_update_worktime(struct io_sq_data *sqd, struct rusage *start)
->> +{
->> +		struct rusage end;
->> +
->> +		getrusage(current, RUSAGE_SELF, &end);
->> +		end.ru_stime.tv_sec -= start->ru_stime.tv_sec;
->> +		end.ru_stime.tv_usec -= start->ru_stime.tv_usec;
->> +
->> +		sqd->work_time += end.ru_stime.tv_usec + end.ru_stime.tv_sec * 1000000;
->> +}
->> +
->> static int io_sq_thread(void *data)
->> {
->> 	struct io_sq_data *sqd = data;
->> 	struct io_ring_ctx *ctx;
->> +	struct rusage start;
->> 	unsigned long timeout = 0;
->> 	char buf[TASK_COMM_LEN];
->> 	DEFINE_WAIT(wait);
->> @@ -251,6 +263,7 @@ static int io_sq_thread(void *data)
->> 		}
->>
->> 		cap_entries = !list_is_singular(&sqd->ctx_list);
->> +		getrusage(current, RUSAGE_SELF, &start);
->> 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
->> 			int ret = __io_sq_thread(ctx, cap_entries);
->>
->> @@ -261,8 +274,10 @@ static int io_sq_thread(void *data)
->> 			sqt_spin = true;
->>
->> 		if (sqt_spin || !time_after(jiffies, timeout)) {
->> -			if (sqt_spin)
->> +			if (sqt_spin) {
->> +				io_sq_update_worktime(sqd, &start);
->> 				timeout = jiffies + sqd->sq_thread_idle;
->> +			}
->> 			if (unlikely(need_resched())) {
->> 				mutex_unlock(&sqd->lock);
->> 				cond_resched();
->> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
->> index 8df37e8c9149..4171666b1cf4 100644
->> --- a/io_uring/sqpoll.h
->> +++ b/io_uring/sqpoll.h
->> @@ -16,6 +16,7 @@ struct io_sq_data {
->> 	pid_t			task_pid;
->> 	pid_t			task_tgid;
->>
->> +	u64			work_time;
->> 	unsigned long		state;
->> 	struct completion	exited;
->> };
->  
-> Hi, Jens
-> I have modified the code according to your suggestions.
-> Do you have any other comments?
+Hello Baoquan,
 
-Out of town this week, I'll check next week. But from a quick look,
-looks much better now.
+Thank you for reorganizing the kexec and kdump code with a well-defined
+configuration structure.
 
--- 
-Jens Axboe
+While reviewing the patch series, I noticed a few typos.
 
+On 19/01/24 20:22, Baoquan He wrote:
+> Both kdump and fa_dump of ppc rely on crashkernel reservation. Move the
+> relevant codes into separate files:
+> crash_reserve.c, include/linux/crash_reserve.h.
+>
+> And also add config item CRASH_RESERVE to control its enabling of the
+> codes. And update config items which has relationship with crashkernel
+> reservation.
+>
+> And also change ifdeffery from CONFIG_CRASH_CORE to CONFIG_CRASH_RESERVE
+> when those scopes are only crashkernel reservation related.
+>
+> And also rename arch/XXX/include/asm/{crash_core.h => crash_reserve.h}
+> on arm64, x86 and risc-v because those architectures' crash_core.h
+> is only related to crashkernel reservation.
+>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>   arch/arm64/Kconfig                            |   2 +-
+>   .../asm/{crash_core.h => crash_reserve.h}     |   4 +-
+>   arch/powerpc/Kconfig                          |   1 +
+>   arch/powerpc/mm/nohash/kaslr_booke.c          |   4 +-
+>   arch/riscv/Kconfig                            |   2 +-
+>   .../asm/{crash_core.h => crash_reserve.h}     |   4 +-
+>   arch/x86/Kconfig                              |   2 +-
+>   .../asm/{crash_core.h => crash_reserve.h}     |   6 +-
+>   include/linux/crash_core.h                    |  40 --
+>   include/linux/crash_reserve.h                 |  48 ++
+>   include/linux/kexec.h                         |   1 +
+>   kernel/Kconfig.kexec                          |   5 +-
+>   kernel/Makefile                               |   1 +
+>   kernel/crash_core.c                           | 438 -----------------
+>   kernel/crash_reserve.c                        | 464 ++++++++++++++++++
+>   15 files changed, 531 insertions(+), 491 deletions(-)
+>   rename arch/arm64/include/asm/{crash_core.h => crash_reserve.h} (81%)
+>   rename arch/riscv/include/asm/{crash_core.h => crash_reserve.h} (78%)
+>   rename arch/x86/include/asm/{crash_core.h => crash_reserve.h} (92%)
+>   create mode 100644 include/linux/crash_reserve.h
+>   create mode 100644 kernel/crash_reserve.c
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index ea01a2c43efa..d96bc3c67ec6 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1501,7 +1501,7 @@ config ARCH_SUPPORTS_CRASH_DUMP
+>   	def_bool y
+>   
+>   config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> -	def_bool CRASH_CORE
+> +	def_bool CRASH_RESERVE
+>   
+>   config TRANS_TABLE
+>   	def_bool y
+> diff --git a/arch/arm64/include/asm/crash_core.h b/arch/arm64/include/asm/crash_reserve.h
+> similarity index 81%
+> rename from arch/arm64/include/asm/crash_core.h
+> rename to arch/arm64/include/asm/crash_reserve.h
+> index 9f5c8d339f44..4afe027a4e7b 100644
+> --- a/arch/arm64/include/asm/crash_core.h
+> +++ b/arch/arm64/include/asm/crash_reserve.h
+> @@ -1,6 +1,6 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only */
+> -#ifndef _ARM64_CRASH_CORE_H
+> -#define _ARM64_CRASH_CORE_H
+> +#ifndef _ARM64_CRASH_RESERVE_H
+> +#define _ARM64_CRASH_RESERVE_H
+>   
+>   /* Current arm64 boot protocol requires 2MB alignment */
+>   #define CRASH_ALIGN                     SZ_2M
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 414b978b8010..6aeab95f0edd 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -691,6 +691,7 @@ config FA_DUMP
+>   	bool "Firmware-assisted dump"
+>   	depends on PPC64 && (PPC_RTAS || PPC_POWERNV)
+>   	select CRASH_CORE
+> +	select CRASH_RESERVE
+>   	select CRASH_DUMP
+>   	help
+>   	  A robust mechanism to get reliable kernel crash dump with
+> diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
+> index b4f2786a7d2b..cdff129abb14 100644
+> --- a/arch/powerpc/mm/nohash/kaslr_booke.c
+> +++ b/arch/powerpc/mm/nohash/kaslr_booke.c
+> @@ -13,7 +13,7 @@
+>   #include <linux/delay.h>
+>   #include <linux/memblock.h>
+>   #include <linux/libfdt.h>
+> -#include <linux/crash_core.h>
+> +#include <linux/crash_reserve.h>
+>   #include <linux/of.h>
+>   #include <linux/of_fdt.h>
+>   #include <asm/cacheflush.h>
+> @@ -173,7 +173,7 @@ static __init bool overlaps_region(const void *fdt, u32 start,
+>   
+>   static void __init get_crash_kernel(void *fdt, unsigned long size)
+>   {
+> -#ifdef CONFIG_CRASH_CORE
+> +#ifdef CONFIG_CRASH_RESERVE
+>   	unsigned long long crash_size, crash_base;
+>   	int ret;
+>   
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index b549499eb363..37a438c23deb 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -712,7 +712,7 @@ config ARCH_SUPPORTS_CRASH_DUMP
+>   	def_bool y
+>   
+>   config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> -	def_bool CRASH_CORE
+> +	def_bool CRASH_RESERVE
+>   
+>   config COMPAT
+>   	bool "Kernel support for 32-bit U-mode"
+> diff --git a/arch/riscv/include/asm/crash_core.h b/arch/riscv/include/asm/crash_reserve.h
+> similarity index 78%
+> rename from arch/riscv/include/asm/crash_core.h
+> rename to arch/riscv/include/asm/crash_reserve.h
+> index e1874b23feaf..013962e63587 100644
+> --- a/arch/riscv/include/asm/crash_core.h
+> +++ b/arch/riscv/include/asm/crash_reserve.h
+> @@ -1,6 +1,6 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only */
+> -#ifndef _RISCV_CRASH_CORE_H
+> -#define _RISCV_CRASH_CORE_H
+> +#ifndef _RISCV_CRASH_RESERVE_H
+> +#define _RISCV_CRASH_RESERVE_H
+>   
+>   #define CRASH_ALIGN			PMD_SIZE
+>   
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 5edec175b9bf..71417c5b228c 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -2106,7 +2106,7 @@ config ARCH_SUPPORTS_CRASH_HOTPLUG
+>   	def_bool y
+>   
+>   config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> -	def_bool CRASH_CORE
+> +	def_bool CRASH_RESEERVE
+
+%s/CRASH_RESEERVE/CRASH_RESERVE? - Sourabh
 
