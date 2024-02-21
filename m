@@ -1,213 +1,169 @@
-Return-Path: <linux-kernel+bounces-73971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8050185CE2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:42:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F2185CE44
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D8C21F2139F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:42:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F403A1C22ADF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:46:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46472BAE9;
-	Wed, 21 Feb 2024 02:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="Y5grKhT/"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE48228382;
+	Wed, 21 Feb 2024 02:46:21 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.58.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF402B9C6;
-	Wed, 21 Feb 2024 02:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D484E79FD
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.58.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708483303; cv=none; b=kZNWUPPgymEYaIlarNhpKBy3RqyBeBscCmZKVOg8kYJE/mHZvpFhbVI898Hsnu95hTvNzkaOVYzqytEje0FcMpF/MkxvFC9E523JnxUvt8EbmmnI6jrqFD9UzANzNuGF8gCgiBOYaGLf6PMq0HJfZWR/nBeqFiJOs6FeZA2Jo54=
+	t=1708483581; cv=none; b=lMn7k4Y5Xfx3qi85WgsA0yPGvszi93a+gNWXRNKpkvZMm/7lYSGxi/1p7bJzkG5uaXVXnPdQ3oNf1iOeXPeJO2TjaiNOewR/e61to9++Ds+Qvom+yRTMf/+T7JY+/Du02/BOJ5YtpkP3jQ8t07/m4qqSWjL61QJ2L/O/0on/nyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708483303; c=relaxed/simple;
-	bh=uNsZHg2GHYvf4LqOn/3+x3c6GRm6+b8jtP7o1Z0qWsc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qf3fzbECRQRUGwqsmNZqdGbeSgyTxJSQR5IOmFVNCDYMOtyDIvrzJn1/JzCTUVGPU3F8TgLH7EPUz0ibcZNaJtE4DEx2LkM80E6LHGMbJDJ66Xec9sxvJ7V46LE66+s0altf5CzUKU6ANXCkT5HDwCL7T1SAUVfp12Ntm/bT10M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=Y5grKhT/; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp14-2-85-8.adl-apt-pir-bras31.tpg.internode.on.net [14.2.85.8])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 5459D20184;
-	Wed, 21 Feb 2024 10:41:36 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1708483298;
-	bh=i30tH1Ja0ZXVCudrf3PesBOg0hw/OSVcL1FWavEO4jI=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Y5grKhT/tF0diY/VUxBXx4FN3msX2l1/VU2VbGaHBcbd95wusYTx58qbginFcaWdC
-	 G9cvzahU/eRJnSi6osDKRYFrAgAGnCqUHoCfoobsO+r84qs3yR5ae63XvzRafVmhpY
-	 ic5NC87lLFT9fBZdfjBdlm5x17brSbH/nwTK6ru92fbsLItwtUNnFWbINuXBZdjZFK
-	 NWIwXZ/u8LSYweLwt9pKUG4hss4zUQ5eRaeAmke/68G6g+ZY5kit/9AViBQpS4HEtX
-	 d35pjRJ7BQNFDkkTxxOXI85htwDkNLsqVP1LTtfLjLSg+OD/BMLpjfzvmayjQs0rpb
-	 9Pper7XHXuqZg==
-Message-ID: <18dfd5f2eff5049fa5e3a098490dc601cf146f96.camel@codeconstruct.com.au>
-Subject: Re: [PATCH] dt-bindings: gpio: Convert Aspeed binding to YAML schema
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	linus.walleij@linaro.org, brgl@bgdev.pl
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org,  joel@jms.id.au, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org,  linux-kernel@vger.kernel.org
-Date: Wed, 21 Feb 2024 13:11:35 +1030
-In-Reply-To: <0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org>
-References: <20240220052918.742793-1-andrew@codeconstruct.com.au>
-	 <0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1708483581; c=relaxed/simple;
+	bh=jISVa8nDibYniU2mn5Vk9qwOWLjCxCu8I+7+17XxWTo=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=o09mZDqP7FWeG04byV5yckgV7PX9OOY7UoJsn/0aYO4pYxRpJCXob8PgPQLkEXPio01OvggWoN4cvVWtvgOtYa/rZli7NIv6zMt5UfY0BucGcadc33/b8wgOr33RZeNetuiy40OtMtuMC2pePzc7Rix0NVqrLJHUDftceXccrQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.58.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtp85t1708483327t8z2ke3f
+X-QQ-Originating-IP: fdqu/5R07Br02wHR3lffm800aYSI2+LHQlDoDxoz+6o=
+Received: from [10.7.13.112] ( [125.76.217.162])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 21 Feb 2024 10:42:05 +0800 (CST)
+X-QQ-SSF: 01400000000000D0I000000A0000000
+X-QQ-FEAT: +ynUkgUhZJllNiNwmDGrjsnkv2+iV9NBYRHn0nBq4veJ2AT0m/jH+gIocW2Sn
+	7SUvHsI+L8kZDnWQ1GlHpyPQSVrn49/D5kVnfkbB+GSRv6wHh56YtdPOqnKaNkqH+GvDYFh
+	aypP4RQ8G3dsWLLGEyozJtj+lvAlYppnQEymrpy8jRxgtMFRXvX37cqW6W9PiH18wIUTDCf
+	djCk9obywWqBUYPXENYHieAVzEdC0rFp09BtPhwu7JO/QqrDAsYoQC+SnqSEmLfqiTZdLPt
+	t6lqFo62hlROiLNB4M5nHbMitk0YJVXRKwB9RNXqk/2AiInDMmLUnL1nXOWPpkaOIbNp7Od
+	KRg4ESsN3BXc7zbuzO8EuF4Sc7SfCyK3em1g8GLvrhyY5tEU3LaHLbP02eU7tIUuiaAdcVE
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 10674637185529186905
+Subject: Re: [PATCH] locking/osq_lock: Optimize osq_lock performance using
+ per-NUMA
+To: Waiman Long <longman@redhat.com>, peterz@infradead.org, mingo@redhat.com,
+ will@kernel.org, boqun.feng@gmail.com, David.Laight@ACULAB.COM
+Cc: linux-kernel@vger.kernel.org
+References: <20240220073058.6435-1-guohui@uniontech.com>
+ <03c1eb2e-4eae-49be-94cb-b90894cc00a9@redhat.com>
+From: Guo Hui <guohui@uniontech.com>
+Message-ID: <1EEDB3CB3E97FFDE+e8c7acce-ec6b-f2b7-9c2d-0d1b471a671f@uniontech.com>
+Date: Wed, 21 Feb 2024 10:42:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <03c1eb2e-4eae-49be-94cb-b90894cc00a9@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-0
 
-Hi Krzysztof, thanks for the feedback.
+On 2/21/24 2:16 AM, Waiman Long wrote:
 
-On Tue, 2024-02-20 at 09:27 +0100, Krzysztof Kozlowski wrote:
-> > On 20/02/2024 06:29, Andrew Jeffery wrote:
-> > > > Squash warnings such as:
-> > > >=20
-> >=20
-> > Missing subject prefix: aspeed,ast2400-gpio
-> >=20
-> >=20
-> > > > ```
-> > > > arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/ap=
-b@1e600000/gpio@1e780000: failed to match any schema with compatible: ['asp=
-eed,ast2400-gpio']
-> > > > ```
-> > > >=20
-> > > > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> >=20
-> > Thank you for your patch. There is something to discuss/improve.
-> >=20
-> >=20
-> > > > ---
-> > > >  .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 64 +++++++++++++++=
-++++
-> > > >  .../devicetree/bindings/gpio/gpio-aspeed.txt  | 39 -----------
-> > > >  2 files changed, 64 insertions(+), 39 deletions(-)
-> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,a=
-st2400-gpio.yaml
-> > > >  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-asp=
-eed.txt
-> > > >=20
-> > > > diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-=
-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..353c7620013f
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.ya=
-ml
-> > > > @@ -0,0 +1,64 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Aspeed GPIO controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Andrew Jeffery <andrew@codeconstruct.com.au>
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: /schemas/gpio/gpio.yaml#
-> >=20
-> > From where did you take it? None of the bindings have such code. Start
-> > from recent bindings in given category when writing new ones.
+>
+> On 2/20/24 02:30, Guo Hui wrote:
+>> After extensive testing of osq_lock,
+>> we found that the performance of osq_lock is closely related to
+>> the distance between NUMA nodes.The greater the distance
+>> between NUMA nodes,the more serious the performance degradation of
+>> osq_lock.When a group of processes that need to compete for
+>> the same lock are on the same NUMA node,the performance of osq_lock
+>> is the best.when the group of processes is distributed on
+>> different NUMA nodes,as the distance between NUMA nodes increases,
+>> the performance of osq_lock becomes worse.
+>>
+>> This patch uses the following solutions to improve performance:
+>> Divide the osq_lock linked list according to NUMA nodes.
+>> Each NUMA node corresponds to an osq linked list.
+>> Each CPU is added to the linked list corresponding to
+>> its respective NUMA node.When the last CPU of
+>> the NUMA node releases osq_lock,osq_lock is passed to
+>> the next NUMA node.
+>>
+>> As shown in the figure below, the last osq_node1 on NUMA0 passes the 
+>> lock
+>> to the first node (osq_node3) of the next NUMA1 node.
+>>
+>> -----------------------------------------------------------
+>> |            NUMA0           |            NUMA1           |
+>> |----------------------------|----------------------------|
+>> |  osq_node0 ---> osq_node1 -|-> osq_node3 ---> osq_node4 |
+>> -----------------------------|-----------------------------
+>>
+>> Set an atomic type global variable osq_lock_node to
+>> record the NUMA node number that can currently obtain
+>> the osq_lock lock.When the osq_lock_node value is
+>> a certain node number,the CPU on the node obtains
+>> the osq_lock lock in turn,and the CPUs on
+>> other NUMA nodes poll wait.
+>>
+>> This solution greatly reduces the performance degradation caused
+>> by communication between CPUs on different NUMA nodes.
+>>
+>> The effect on the 96-core 4-NUMA ARM64 platform is as follows:
+>> System Benchmarks Partial Index       with patch  without patch promote
+>> File Copy 1024 bufsize 2000 maxblocks   2060.8      980.3 +110.22%
+>> File Copy 256 bufsize 500 maxblocks     1346.5      601.9 +123.71%
+>> File Copy 4096 bufsize 8000 maxblocks   4229.9      2216.1 +90.87%
+>>
+>> The effect on the 128-core 8-NUMA X86_64 platform is as follows:
+>> System Benchmarks Partial Index       with patch  without patch promote
+>> File Copy 1024 bufsize 2000 maxblocks   841.1       553.7 +51.91%
+>> File Copy 256 bufsize 500 maxblocks     517.4       339.8 +52.27%
+>> File Copy 4096 bufsize 8000 maxblocks   2058.4      1392.8 +47.79%
+> That is similar in idea to the numa-aware qspinlock patch series.
+>> Signed-off-by: Guo Hui <guohui@uniontech.com>
+>> ---
+>>   include/linux/osq_lock.h  | 20 +++++++++++--
+>>   kernel/locking/osq_lock.c | 60 +++++++++++++++++++++++++++++++++------
+>>   2 files changed, 69 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/linux/osq_lock.h b/include/linux/osq_lock.h
+>> index ea8fb31379e3..c016c1cf5e8b 100644
+>> --- a/include/linux/osq_lock.h
+>> +++ b/include/linux/osq_lock.h
+>> @@ -2,6 +2,8 @@
+>>   #ifndef __LINUX_OSQ_LOCK_H
+>>   #define __LINUX_OSQ_LOCK_H
+>>   +#include <linux/nodemask.h>
+>> +
+>>   /*
+>>    * An MCS like lock especially tailored for optimistic spinning for 
+>> sleeping
+>>    * lock implementations (mutex, rwsem, etc).
+>> @@ -11,8 +13,9 @@ struct optimistic_spin_queue {
+>>       /*
+>>        * Stores an encoded value of the CPU # of the tail node in the 
+>> queue.
+>>        * If the queue is empty, then it's set to OSQ_UNLOCKED_VAL.
+>> +     * The actual number of NUMA nodes is generally not greater than 
+>> 32.
+>>        */
+>> -    atomic_t tail;
+>> +    atomic_t tail[32];
+>
+> That is a no-go. You are increasing the size of a mutex/rwsem by 128 
+> bytes. If you want to enable this numa-awareness, you have to do it in 
+> a way without increasing the size of optimistic_spin_queue. My 
+> suggestion is to queue optimistic_spin_node in a numa-aware way in 
+> osq_lock.c without touching optimistic_spin_queue.
+>
+> Cheers,
+> Longman
+>
+>
+>
+Thank you for your suggestion, I will make a better solution according 
+to your suggestion.
 
-I didn't take it from anywhere so much as try to apply some reasoning
-via the commentary in the example at [1]. Maybe I could have fought
-that approach by contrasting what I wrote to a wider set of existing
-binding documents (I did look at some and obviously didn't find
-anything similar).
-
-Anyway reflecting on the misunderstanding, is the ref unnecessary
-because the gpio binding sets `select: true`[2] and so is applied to
-the node regardless?
-
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/Documentation/devicetree/bindings/example-schema.yaml?h=3Dv6.7#n238
-[2]: https://github.com/devicetree-org/dt-schema/blob/v2023.11/dtschema/sch=
-emas/gpio/gpio.yaml#L12
-
-> >=20
-> > Please drop it.
-
-Ack.
-
-> >=20
-> > > > +  - if:
-> > > > +      properties:
-> > > > +        compatible:
-> > > > +          contains:
-> > > > +            const: aspeed,ast2600-gpio
-> > > > +    then:
-> > > > +      required:
-> > > > +        - ngpios
-> >=20
-> > Please put entire allOf: after required: block. That's the convention
-> > when it has something more than $ref, because we still want the most
-> > important parts at the top of the file.
-
-Ack.
-
-> >=20
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    enum:
-> > > > +      - aspeed,ast2400-gpio
-> > > > +      - aspeed,ast2500-gpio
-> > > > +      - aspeed,ast2600-gpio
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  clocks:
-> > > > +    maxItems: 1
-> > > > +    description: The clock to use for debounce timings
-> > > > +
-> > > > +  interrupts:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  interrupt-controller: true
-> > > > +
-> > > > +  "#interrupt-cells":
-> > > > +    const: 2
-> > > > +
-> >=20
-> > ngpios with some constraints
-
-Is this just with regard to the constraints I have under allOf above?
-Or something further (constrain the values of ngpios for the various
-controllers across the Aspeed SoCs)?
-
-Maybe I'll look at some more of the existing bindings for this as
-well...
-
-> >=20
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - interrupts
-> > > > +  - interrupt-controller
-> > > > +  - "#gpio-cells"
-> > > > +  - gpio-controller
-> > > > +
-> > > > +unevaluatedProperties: false
-> >=20
-> > Instead additionalProperties: false.
-
-Ack - this is the same misunderstanding as the gpio schema ref
-discussed above.
-
-Andrew
 
 
