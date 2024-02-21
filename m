@@ -1,140 +1,109 @@
-Return-Path: <linux-kernel+bounces-75587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDE885EB90
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:05:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF44985EB97
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AE301C216EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:05:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A1D62843B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317C112880E;
-	Wed, 21 Feb 2024 22:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B387D128394;
+	Wed, 21 Feb 2024 22:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XcQQq+4W"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tE5CbTty"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0CE127B6F
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC26128378
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708553130; cv=none; b=HSZkLX4IdQtmEupVj02RmYU53jO/sfIj2OtxYD3e973K0gfgXU8Uq8yreRZmYH7spGolzDkWR2QMynu7FykHa232zp0rDmVjaZyKeLoi3mkxAtMN23EdgRdeMWWzL8ZOX6A8JU04cUXa6hqQLr2MHMHo7gBM9G2uQP8j9/5vmvU=
+	t=1708553245; cv=none; b=KKR5cvvm18K8rEGfQDzq1kyQ6C6S1FwMbG1FhTpAjGveZYkslFMVkNeWG0ZrJeFVoG8NoyGw7iXds5tTccEERo7ZV5IhDjXlHqlHipHSCo/hVLRUXRho7+olBSxqc7SjFdxztI3ANFkjehyALM7LOPKb0omNs1oKrJeDxpNKd8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708553130; c=relaxed/simple;
-	bh=glDEKtdwdqyJIt9bRVsA7OStBeZEdBkYYd62ei+rhmE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=O88k/pI/RIatvM8mcmMOPlr9kNx9XK8AHcEUh7PKg21FJkX9DzYIUSgSt11HT9YR2ml4+HabC4SkyRnMjhPWdOYWhbyK1/e5fzUlEmrJuYPVzTwXBuf2JKZOWt8QyLdIxcmpJTIS2/hMU2aEfy3Gz4s5ZNgEOV4VG3KLyYoCEKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XcQQq+4W; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so1973658276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:05:28 -0800 (PST)
+	s=arc-20240116; t=1708553245; c=relaxed/simple;
+	bh=iNidW3f5wsCISbKAXdYoDRvGkkbi4875RfDnKAT5TGg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=It9Jk4emL2F3YIGr2rTGdvDLvOVGkJLzD+WYvM/jQ/zzHcTyV9W8p+prQsWfvJkjXVo9vId1uONhIRyE6MrTNkHqNOYPfl0gXa19swO9ozgqBd8C/bPVAgRFSKOhQaJmvt0TO5J/DyQd+5JLSNORQT1BLgjSw5GDO0Tk500gTT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tE5CbTty; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60495209415so70376037b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:07:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708553127; x=1709157927; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CEXpQXg5vnSo+q/Y96zcMRb8jRrXDHbwFt0Ekcc6U9I=;
-        b=XcQQq+4WQ1MZQLL9UPv+1x6qXBcOYK3405lqc8h21vpYT40o+1qyoF65kO7QQoAxfX
-         tu3xF5X+uHntG6SQiFjgQiXHm9jp89M38ocEsmZbC7JPiJjoOmij/01JePm38rWj7GG/
-         aPIY0J6mzWJb+lGQGmTSqA1m2KNS7NlmBNxCq0Lyic+9/ssQGwPKlaEsN2SSRzXIjV0V
-         hlVop0ZgMR3fZyrv+WS2rlFGMrNjHAuK1IWIEjQceICZvJo8o5bO5jp6nrtVovp5VJ1Z
-         ifF9WqKSZsnyhMg14kG01h57KId4B0gI5dj16ThNTgtEyyoYL4OT+fJmO2LfZrIXZ51i
-         4DFA==
+        d=linaro.org; s=google; t=1708553242; x=1709158042; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1cIdAj9Rc9YrdEZf80SuI9gbBcjMeYE4blz3NlBPNkk=;
+        b=tE5CbTty8JoVcAb7WjBqLRfrAV27yaXE5g+MkmfL2vfm6VD/EBCADX6YbvvGGvfWqE
+         ECkjUVRifnTAdb3lHfrQP2o4c7YOr0y1RfN37DQNm8QSR1XCDDdQTQw7ynSRW6rQGBi3
+         4QGRhIwUT7iAJxV6VznNSo6iQ647Dagfkp3tyToU2dkjSo+Xid9+Mrn1lO3Qv9yu0iDE
+         5uM2bl5B4bj+nMG/ZTKyVQVwIxtNBvg/W8GlZzPCR7hnyiAsWBvPrEnNNUoSSq94txlZ
+         RAmC1Bke4WkKePOkoeR5bLH7FC4vvBfo+x7+zVTLs5OCMRtRf5EJUKfq9XLLa1JUupMO
+         nO3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708553127; x=1709157927;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CEXpQXg5vnSo+q/Y96zcMRb8jRrXDHbwFt0Ekcc6U9I=;
-        b=abLBah6ZPF/nPe1auRHfVnKHt1KUmHelgx/5wy48zpEP3B9n1ZPhu9/7TPHCapG7UN
-         UT9XIi8fJON65po4/arRYWUxAreg29GoqbYUyQWYNYsn/R1scJh2STEt+JsPOFXkeGAz
-         YtvfClxb0LQojkk/CQVl07Y9Uq693o6o/gjO6sCa5uefqDKbtG5WzqtpewTKbhZ5hXF4
-         LHLRWFfVXmpoD0ZAt15z93cskGh3WVLOYmlxRDcRYYCnXoK6m1DGIFSnTvK/HdT8hVWK
-         epCXXb4F6snW71t/ruxb+nj5SH9FX1weX+hrmFMXHlN+GsrohKb8tlVyOzTCIkb1MwLB
-         Llzw==
-X-Gm-Message-State: AOJu0Ywscbqs+JgH5NrQ7p/1kTStNDJuy0Ly76datFb1SukVPJZd5tjX
-	AXdTZek1vXd3kH/l2FoHp5VkzjtHTVy3OL6huwJWGbQ53SlteZx08nTQN0dAIjbXHQm0RTRP24V
-	vQ7NoBVotYkVf0ZtB0ARK+A==
-X-Google-Smtp-Source: AGHT+IH65ETPwbThwk5AYf7wJ0+qz1pjROYQoRed6Nxu0TgqLyz0Kj79tkAiKpPEL1LlETwVW/wVTtfz+bTZkf2Qfw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:100a:b0:dc9:5ef8:2b2d with
- SMTP id w10-20020a056902100a00b00dc95ef82b2dmr158311ybt.4.1708553127595; Wed,
- 21 Feb 2024 14:05:27 -0800 (PST)
-Date: Wed, 21 Feb 2024 22:05:16 +0000
+        d=1e100.net; s=20230601; t=1708553242; x=1709158042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1cIdAj9Rc9YrdEZf80SuI9gbBcjMeYE4blz3NlBPNkk=;
+        b=BjJV7Z8ULe1YUwiOBxMS3QMQ4i1tAvenr71jEHBLsYRp/VBlnyRVc7IyL6oMAz3PWJ
+         66NMqZEuH9WQmHTBXOkHMRfHdOPBqkkJo4fgr+Y8JYKJlFMq3ljCKPua5nYhQ7GQny62
+         vO4HHBL31frO4+lpC+0XZtHaO03+mzga8ecZU2jOLxb8HcfHRl1IAxSgdiKpJghsgU4M
+         VSKAbLzwXIz9+voWYuecFqEpz58/PIlc8sF6FbAsEjBh1rD1GsYEWgbbu8N8BDbUtOfK
+         U3mfFCPX6uTjf7EihH5xQVRYZP0DjeyfONFw9I13SBRxUQsozcN04z+2h9ghdOJ2ioVd
+         UUQg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4b5pGudh+JF/DQqy5P988cqc4dJuPrx3qNrnV5ZvOaxGBzZ2SIJaY1oQEeShrFrSR2ojSQZy3/DuNKO3x8/xw+hsYJylWSv5ei53t
+X-Gm-Message-State: AOJu0Yy1I8FRqGM99Ii0rTTy8qhMutDqyKo+8uYC5WRnc+1rI5m2aSP3
+	8I7D0HWBDbMbjBVu4iWntbiq4sTmY3tBVI3HibxRhmrJZARBO1VfuuUe1cpqlMaSp91+7LDz4BA
+	C/2bjBqn7aPN1/rz0mC6C4byn/xFBPCWuZH2KbA==
+X-Google-Smtp-Source: AGHT+IHcXCkZHHGUkDm2xvIgiK6VurrE3eAJdP/r6uC/vcQd0YLTd8DmYtHQlaiiKrj98oMZezfQEBryKYUS8JEchGY=
+X-Received: by 2002:a05:690c:86:b0:607:d9f7:e884 with SMTP id
+ be6-20020a05690c008600b00607d9f7e884mr20419761ywb.4.1708553242109; Wed, 21
+ Feb 2024 14:07:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJtz1mUC/x3MQQqAIBBA0avIrBNUwqKrRAvTMYfARCWC8O5Jy
- 7f4/4WCmbDAwl7IeFOhK3bIgYENJh7IyXWDEmoUSkleYsoUq+c2oD2TqTZwM+sRnZ5wdwJ6mTJ 6ev7rurX2AVsF9GhlAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708553126; l=1887;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=glDEKtdwdqyJIt9bRVsA7OStBeZEdBkYYd62ei+rhmE=; b=uyJIZ0LPetF0XN9X4zCF00e6OsEkDTxKePErRG4rK3MlHowXuvM/g/ti/1N5Q7c9JLpIRHmzb
- jOOSpBX2gahDxCJ40oMTEt9NWPSyrvjCWqzNtseVW8J0tQWA4ku2Dd7
-X-Mailer: b4 0.12.3
-Message-ID: <20240221-snprintf-checkpatch-v1-1-3ac5025b5961@google.com>
-Subject: [PATCH] checkpatch: add check for snprintf to scnprintf
-From: Justin Stitt <justinstitt@google.com>
-To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
-	Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>, 
-	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
-	Finn Thain <fthain@linux-m68k.org>, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240217093937.58234-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240217093937.58234-1-krzysztof.kozlowski@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 21 Feb 2024 23:07:11 +0100
+Message-ID: <CACRpkdajVH4Y2K5W+o5XAoiEr57ObVbaR+9QdFV=Cp765B+dfQ@mail.gmail.com>
+Subject: Re: [PATCH] phy: constify of_phandle_args in xlate
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-phy@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, 
+	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I am going to quote Lee Jones who has been doing some snprintf ->
-scnprintf refactorings:
+On Sat, Feb 17, 2024 at 10:39=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 
-"There is a general misunderstanding amongst engineers that
-{v}snprintf() returns the length of the data *actually* encoded into the
-destination array.  However, as per the C99 standard {v}snprintf()
-really returns the length of the data that *would have been* written if
-there were enough space for it.  This misunderstanding has led to
-buffer-overruns in the past.  It's generally considered safer to use the
-{v}scnprintf() variants in their place (or even sprintf() in simple
-cases).  So let's do that."
+> The xlate callbacks are supposed to translate of_phandle_args to proper
+> provider without modifying the of_phandle_args.  Make the argument
+> pointer to const for code safety and readability.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+(...)
+>  drivers/pinctrl/tegra/pinctrl-tegra-xusb.c         |  2 +-
 
-To help prevent new instances of snprintf() from popping up, let's add a
-check to checkpatch.pl.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Suggested-by: Finn Thain <fthain@linux-m68k.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-From a discussion here [1].
-
-[1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@linux-m68k.org/
----
- scripts/checkpatch.pl | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 9c4c4a61bc83..bb4e99c818a9 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -7012,6 +7012,12 @@ sub process {
- 			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
- 		}
- 
-+# snprintf uses that should likely be {v}scnprintf
-+		if ($line =~ /\snprintf\s*\(\s*/) {
-+				WARN("SNPRINTF",
-+				     "Prefer scnprintf over snprintf\n" . $herecurr);
-+		}
-+
- # ethtool_sprintf uses that should likely be ethtool_puts
- 		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
- 			if (WARN("PREFER_ETHTOOL_PUTS",
-
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240221-snprintf-checkpatch-a864ed67ebd0
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Yours,
+Linus Walleij
 
