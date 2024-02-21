@@ -1,77 +1,52 @@
-Return-Path: <linux-kernel+bounces-74386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8387785D34A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:20:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 410F385D34F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 251811C2086F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:20:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5EC8285497
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5B83D0C6;
-	Wed, 21 Feb 2024 09:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0260E3D0B3;
+	Wed, 21 Feb 2024 09:20:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iA+jGl6i"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYCHbIsD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51CA3C6AB;
-	Wed, 21 Feb 2024 09:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A643A8EF
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708507178; cv=none; b=QEBjI0Q3cSe2ksgA3cyVDlVWkHO5JCmtRVLtBEmmDBqMeSgB10ZhDBv7atfz+PdXaQeSOhFuxZNh1U1SAM0sCqR+C9jJZxHBaA6tN21I/RvYrdLJeQqb6/iYET9pPlVSoNQ4kvI+4995TSqnkHxh3dluYm3RadYB1m/pCbwkGYs=
+	t=1708507252; cv=none; b=AXriFyy17eM7HFtF9ZjMJBb1oJT0wprxOpa/YxaMiHosjTIp/oqx2DT1wrgObZJy5fAfHip/UH2E58I8wCFzuBKoPINTU7rMwUPRDHViBtSSAz09QDIgpXvU6YXbonpLU7ZtHyDwXrynSJCTz9hmb1kZmYlFd/oG1wpJY4ZB4JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708507178; c=relaxed/simple;
-	bh=Y0eSdqsOMPZg4cFJuddNnZQAwgbH2+fFVg8Ql+kwn1w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=URt0osyBKwNTJdbDHXBNpJnIQU+WS/WURW88XI+ClvUZRfTuQwkHfsZiCGDma3QQ148MYarltuCNe8cDM/Tly3X6krIc/jOFntD7qmz2SiQVMAU4AOfr3ncouX6yenOZq7PUiAmYuddWiKTpFiQ59jmLGSSdK7+rkfNwuwWP118=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iA+jGl6i; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41L7v8n3008854;
-	Wed, 21 Feb 2024 09:19:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=tFKAfbkMIwUfImvPItLL81DNEYGwyEHVVnlhnLff+c4=;
- b=iA+jGl6iLF/5Ydef8xN+fySlSwwyHPfecr/utXRfxR3rNlm+eDUvcGMtczrp+7OShkLL
- QQ3XvtoZpHFEWks7P7ln2XnC8fnQdZpECwtA67bzAhjb6AsKpqOqVv6kbkfV100NMmCI
- /BnIlj2j8EfQEhPUgYTZc/rbiwK26pP9lxfdiMQmR/6WVpAKxyzgCu7uYm8CSmQBOPNr
- pHc83W+5coa7CMxUwRyAF9dE5yIkQqwJ6TdaxUIJ4ulGaR/VFXwpaY5IjSkJH0z4UdNl
- PfyxxEutvBmiuOPqnPqg0utD8rglDfYyFFQknOTw2VkbtDojcj9XyQT3TeDx2m7QTNYl rA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wdd7y217v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 09:19:33 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41L66ZjC017265;
-	Wed, 21 Feb 2024 09:19:32 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb8mmdx50-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 09:19:31 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41L9JOcr46334380
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 21 Feb 2024 09:19:28 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8DC9D2004D;
-	Wed, 21 Feb 2024 09:19:24 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 543F020043;
-	Wed, 21 Feb 2024 09:19:24 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 21 Feb 2024 09:19:24 +0000 (GMT)
-From: Thomas Richter <tmricht@linux.ibm.com>
-To: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, krebbel@linux.ibm.com
-Cc: svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH] perf list: fix short description for some cache events
-Date: Wed, 21 Feb 2024 10:19:08 +0100
-Message-Id: <20240221091908.1759083-1-tmricht@linux.ibm.com>
+	s=arc-20240116; t=1708507252; c=relaxed/simple;
+	bh=8R+d+/14Yh1ULKClLyNqKkMz7PaDe+aqWHTrufT11yM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NVKwMikPE+USG6Ybo1uelpc9WVBcsMxF5h6NPrx8UsckcygUZ9JnK3gPeyaNZEyWPkj6UJdnCl/DJMWiGLyEbuy/TxclBTw/32IvQmsjAD9A0rhv4Cypekmq/0L9D6Fylnq1yEBsHZaXxhjIJEGoOVGu7egXxh37ttT51UVyiOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sYCHbIsD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C97C6C433C7;
+	Wed, 21 Feb 2024 09:20:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708507251;
+	bh=8R+d+/14Yh1ULKClLyNqKkMz7PaDe+aqWHTrufT11yM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sYCHbIsDWTUA4d3jZ2Lae5zJCD+j/0knExWxy4Qy87viWnMjSr0AEFnulgh8S2G7x
+	 nXd0rtk661tggEpserzx7C5Z/+kT8UQlF5QxjL/87p9B5jPWo7YQrE4ZNskKJ5MBEy
+	 p2T2tV4tqZP2NyzP2J1Fk8ArkVgH69n8HqbSqcC8q5BRympuyKh2HOi8vjq0d0D9iv
+	 RnMgOPcBfPhi3RmokVJtnz/N9LcpDWEfam4NDN7FNto+kJtOnrlD36B2XYW6hSRHgm
+	 jawkYD+swnzm+KwHCUw4g8ZrW8G0fn76ujOS8eiogt1pp3/JmVr0E9ajMxYJ/gSU68
+	 u1Gnb604LwqMw==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup
+Date: Wed, 21 Feb 2024 17:20:40 +0800
+Message-Id: <20240221092040.403629-1-chao@kernel.org>
 X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -80,322 +55,286 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _2h7yHayXacwZJsa2sHXP_Fowggij04B
-X-Proofpoint-ORIG-GUID: _2h7yHayXacwZJsa2sHXP_Fowggij04B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=994 adultscore=0 phishscore=0
- spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402210072
 
-Correct the short description of the following events:
-DCW_REQ, DCW_REQ_CHIP_HIT, DCW_REQ_DRAWER_HIT, DCW_REQ_IV,
-DCW_ON_CHIP, DCW_ON_CHIP_IV, DCW_ON_CHIP_CHIP_HIT,
-DCW_ON_CHIP_DRAWER_HIT, CW_ON_MODULE, DCW_ON_DRAWER,
-DCW_OFF_DRAWER, IDCW_ON_MODULE_IV, IDCW_ON_MODULE_CHIP_HIT,
-IDCW_ON_MODULE_DRAWER_HIT, IDCW_ON_DRAWER_IV, IDCW_ON_DRAWER_CHIP_HIT,
-IDCW_ON_DRAWER_DRAWER_HIT, IDCW_OFF_DRAWER_IV, IDCW_OFF_DRAWER_CHIP_HIT,
-IDCW_OFF_DRAWER_DRAWER_HIT, ICW_REQ, ICW_REQ_IV, CW_REQ_CHIP_HIT,
-ICW_REQ_DRAWER_HIT, ICW_ON_CHIP, ICW_ON_CHIP_IV, ICW_ON_CHIP_CHIP_HIT,
-ICW_ON_CHIP_DRAWER_HIT, ICW_ON_MODULE and ICW_OFF_DRAWER.
+Just cleanup, no functional change.
 
-The second Cache should be L2-Cache.
-
-Output before (display diff of the first four events)
-  # perf list -d
-  DCW_REQ
-       [Directory Write Level 1 Data Cache from Cache. Unit: cpum_cf]
-  DCW_REQ_CHIP_HIT
-       [Directory Write Level 1 Data Cache from Cache with Chip HP \
-	       Hit. Unit: cpum_cf]
-  DCW_REQ_DRAWER_HIT
-       [Directory Write Level 1 Data Cache from Cache with Drawer \
-	       HP Hit. Unit: cpum_cf]
-  DCW_REQ_IV
-       [Directory Write Level 1 Data Cache from Cache with Intervention. \
-	       Unit: cpum_cf]
-
-Output after:
-  # perf list -d
-  DCW_REQ
-       [Directory Write Level 1 Data Cache from L2-Cache. Unit: cpum_cf]
-  DCW_REQ_CHIP_HIT
-       [Directory Write Level 1 Data Cache from L2-Cache with Chip HP \
-	       Hit. Unit: cpum_cf]
-  DCW_REQ_DRAWER_HIT
-       [Directory Write Level 1 Data Cache from L2-Cache with Drawer \
-	       HP Hit. Unit: cpum_cf]
-  DCW_REQ_IV
-       [Directory Write Level 1 Data Cache from L2-Cache with \
-	       Intervention. Unit: cpum_cf]
-
-Fixes: 7f76b3113068 ("perf list: Add IBM z16 event description for s390")
-Reported-by: Andreas Krebbel <krebbel@linux.ibm.com>
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Acked-by: Andreas Krebbel <krebbel@linux.ibm.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- .../pmu-events/arch/s390/cf_z16/extended.json | 62 +++++++++----------
- 1 file changed, 31 insertions(+), 31 deletions(-)
+ fs/f2fs/debug.c   |  7 +++----
+ fs/f2fs/f2fs.h    | 14 ++++++++------
+ fs/f2fs/gc.c      | 10 +++++-----
+ fs/f2fs/gc.h      |  4 ++--
+ fs/f2fs/segment.c | 12 ++++++------
+ fs/f2fs/segment.h |  8 ++++----
+ fs/f2fs/super.c   | 16 ++++++++--------
+ fs/f2fs/sysfs.c   |  4 ++--
+ 8 files changed, 38 insertions(+), 37 deletions(-)
 
-diff --git a/tools/perf/pmu-events/arch/s390/cf_z16/extended.json b/tools/perf/pmu-events/arch/s390/cf_z16/extended.json
-index c2b10ec1c6e0..02cce3a629cb 100644
---- a/tools/perf/pmu-events/arch/s390/cf_z16/extended.json
-+++ b/tools/perf/pmu-events/arch/s390/cf_z16/extended.json
-@@ -94,77 +94,77 @@
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "145",
- 		"EventName": "DCW_REQ",
--		"BriefDescription": "Directory Write Level 1 Data Cache from Cache",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from the requestors Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "146",
- 		"EventName": "DCW_REQ_IV",
--		"BriefDescription": "Directory Write Level 1 Data Cache from Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from the requestors Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "147",
- 		"EventName": "DCW_REQ_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Data Cache from Cache with Chip HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from L2-Cache with Chip HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from the requestors Level-2 cache after using chip level horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "148",
- 		"EventName": "DCW_REQ_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Data Cache from Cache with Drawer HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from L2-Cache with Drawer HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from the requestors Level-2 cache after using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "149",
- 		"EventName": "DCW_ON_CHIP",
--		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip Cache",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an On-Chip Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "150",
- 		"EventName": "DCW_ON_CHIP_IV",
--		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an On-Chip Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "151",
- 		"EventName": "DCW_ON_CHIP_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip Cache with Chip HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip L2-Cache with Chip HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an On-Chip Level-2 cache after using chip level horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "152",
- 		"EventName": "DCW_ON_CHIP_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip Cache with Drawer HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from On-Chip L2-Cache with Drawer HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an On-Chip Level-2 cache using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "153",
- 		"EventName": "DCW_ON_MODULE",
--		"BriefDescription": "Directory Write Level 1 Data Cache from On-Module Cache",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from On-Module L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an On-Module Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "154",
- 		"EventName": "DCW_ON_DRAWER",
--		"BriefDescription": "Directory Write Level 1 Data Cache from On-Drawer Cache",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from On-Drawer L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an On-Drawer Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "155",
- 		"EventName": "DCW_OFF_DRAWER",
--		"BriefDescription": "Directory Write Level 1 Data Cache from Off-Drawer Cache",
-+		"BriefDescription": "Directory Write Level 1 Data Cache from Off-Drawer L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Data cache directory where the returned cache line was sourced from an Off-Drawer Level-2 cache."
- 	},
- 	{
-@@ -199,140 +199,140 @@
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "160",
- 		"EventName": "IDCW_ON_MODULE_IV",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Module Memory Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Module Memory L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 Instruction cache directory where the returned cache line was sourced from an On-Module Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "161",
- 		"EventName": "IDCW_ON_MODULE_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Module Memory Cache with Chip Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Module Memory L2-Cache with Chip Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 Instruction cache directory where the returned cache line was sourced from an On-Module Level-2 cache using chip horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "162",
- 		"EventName": "IDCW_ON_MODULE_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Module Memory Cache with Drawer Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Module Memory L2-Cache with Drawer Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 Instruction cache directory where the returned cache line was sourced from an On-Module Level-2 cache using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "163",
- 		"EventName": "IDCW_ON_DRAWER_IV",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Drawer Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Drawer L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 Instruction cache directory where the returned cache line was sourced from an On-Drawer Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "164",
- 		"EventName": "IDCW_ON_DRAWER_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Drawer Cache with Chip Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Drawer L2-Cache with Chip Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 instruction cache directory where the returned cache line was sourced from an On-Drawer Level-2 cache using chip level horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "165",
- 		"EventName": "IDCW_ON_DRAWER_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Drawer Cache with Drawer Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from On-Drawer L2-Cache with Drawer Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 instruction cache directory where the returned cache line was sourced from an On-Drawer Level-2 cache using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "166",
- 		"EventName": "IDCW_OFF_DRAWER_IV",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from Off-Drawer Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from Off-Drawer L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 instruction cache directory where the returned cache line was sourced from an Off-Drawer Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "167",
- 		"EventName": "IDCW_OFF_DRAWER_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from Off-Drawer Cache with Chip Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from Off-Drawer L2-Cache with Chip Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 instruction cache directory where the returned cache line was sourced from an Off-Drawer Level-2 cache using chip level horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "168",
- 		"EventName": "IDCW_OFF_DRAWER_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from Off-Drawer Cache with Drawer Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction and Data Cache from Off-Drawer L2-Cache with Drawer Hit",
- 		"PublicDescription": "A directory write to the Level-1 Data or Level-1 Instruction cache directory where the returned cache line was sourced from an Off-Drawer Level-2 cache using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "169",
- 		"EventName": "ICW_REQ",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from Cache",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced the requestors Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "170",
- 		"EventName": "ICW_REQ_IV",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from the requestors Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "171",
- 		"EventName": "ICW_REQ_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from Cache with Chip HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from L2-Cache with Chip HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from the requestors Level-2 cache using chip level horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "172",
- 		"EventName": "ICW_REQ_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from Cache with Drawer HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from L2-Cache with Drawer HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from the requestors Level-2 cache using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "173",
- 		"EventName": "ICW_ON_CHIP",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip Cache",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from an On-Chip Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "174",
- 		"EventName": "ICW_ON_CHIP_IV",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip Cache with Intervention",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip L2-Cache with Intervention",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced an On-Chip Level-2 cache with intervention."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "175",
- 		"EventName": "ICW_ON_CHIP_CHIP_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip Cache with Chip HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip L2-Cache with Chip HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from an On-Chip Level-2 cache using chip level horizontal persistence, Chip-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "176",
- 		"EventName": "ICW_ON_CHIP_DRAWER_HIT",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip Cache with Drawer HP Hit",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Chip L2-Cache with Drawer HP Hit",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from an On-Chip level 2 cache using drawer level horizontal persistence, Drawer-HP hit."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "177",
- 		"EventName": "ICW_ON_MODULE",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Module Cache",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Module L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced from an On-Module Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "178",
- 		"EventName": "ICW_ON_DRAWER",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Drawer Cache",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from On-Drawer L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced an On-Drawer Level-2 cache."
- 	},
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "179",
- 		"EventName": "ICW_OFF_DRAWER",
--		"BriefDescription": "Directory Write Level 1 Instruction Cache from Off-Drawer Cache",
-+		"BriefDescription": "Directory Write Level 1 Instruction Cache from Off-Drawer L2-Cache",
- 		"PublicDescription": "A directory write to the Level-1 Instruction cache directory where the returned cache line was sourced an Off-Drawer Level-2 cache."
- 	},
- 	{
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index 6617195bd27e..12893477f2e4 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -134,7 +134,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 	si->cur_ckpt_time = sbi->cprc_info.cur_time;
+ 	si->peak_ckpt_time = sbi->cprc_info.peak_time;
+ 	spin_unlock(&sbi->cprc_info.stat_lock);
+-	si->total_count = (int)sbi->user_block_count / BLKS_PER_SEG(sbi);
++	si->total_count = BLKS_TO_SEGS(sbi, (int)sbi->user_block_count);
+ 	si->rsvd_segs = reserved_segments(sbi);
+ 	si->overp_segs = overprovision_segments(sbi);
+ 	si->valid_count = valid_user_blocks(sbi);
+@@ -175,11 +175,10 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 	si->alloc_nids = NM_I(sbi)->nid_cnt[PREALLOC_NID];
+ 	si->io_skip_bggc = sbi->io_skip_bggc;
+ 	si->other_skip_bggc = sbi->other_skip_bggc;
+-	si->util_free = (int)(free_user_blocks(sbi) >> sbi->log_blocks_per_seg)
++	si->util_free = (int)(BLKS_TO_SEGS(sbi, free_user_blocks(sbi)))
+ 		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
+ 		/ 2;
+-	si->util_valid = (int)(written_block_count(sbi) >>
+-						sbi->log_blocks_per_seg)
++	si->util_valid = (int)(BLKS_TO_SEGS(sbi, written_block_count(sbi)))
+ 		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
+ 		/ 2;
+ 	si->util_invalid = 50 - si->util_free - si->util_valid;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index dad2774ca72f..8a6fd4352a0e 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1813,12 +1813,14 @@ struct f2fs_sb_info {
+ };
+ 
+ /* Definitions to access f2fs_sb_info */
+-#define BLKS_PER_SEG(sbi)					\
+-	((sbi)->blocks_per_seg)
+-#define BLKS_PER_SEC(sbi)					\
+-	((sbi)->segs_per_sec << (sbi)->log_blocks_per_seg)
+-#define SEGS_PER_SEC(sbi)					\
+-	((sbi)->segs_per_sec)
++#define SEGS_TO_BLKS(sbi, segs)					\
++		((segs) << (sbi)->log_blocks_per_seg)
++#define BLKS_TO_SEGS(sbi, blks)					\
++		((blks) >> (sbi)->log_blocks_per_seg)
++
++#define BLKS_PER_SEG(sbi)	((sbi)->blocks_per_seg)
++#define BLKS_PER_SEC(sbi)	(SEGS_TO_BLKS(sbi, (sbi)->segs_per_sec))
++#define SEGS_PER_SEC(sbi)	((sbi)->segs_per_sec)
+ 
+ __printf(3, 4)
+ void f2fs_printk(struct f2fs_sb_info *sbi, bool limit_rate, const char *fmt, ...);
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 3ff126316d42..6d160d50e14e 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -301,7 +301,7 @@ static unsigned int get_max_cost(struct f2fs_sb_info *sbi,
+ 
+ 	/* LFS */
+ 	if (p->gc_mode == GC_GREEDY)
+-		return 2 * BLKS_PER_SEG(sbi) * p->ofs_unit;
++		return SEGS_TO_BLKS(sbi, 2 * p->ofs_unit);
+ 	else if (p->gc_mode == GC_CB)
+ 		return UINT_MAX;
+ 	else if (p->gc_mode == GC_AT)
+@@ -347,7 +347,7 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
+ 	mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
+ 	vblocks = div_u64(vblocks, SEGS_PER_SEC(sbi));
+ 
+-	u = (vblocks * 100) >> sbi->log_blocks_per_seg;
++	u = BLKS_TO_SEGS(sbi, vblocks * 100);
+ 
+ 	/* Handle if the system time has changed by the user */
+ 	if (mtime < sit_i->min_mtime)
+@@ -2060,7 +2060,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+ 	raw_sb->segment_count = cpu_to_le32(segment_count + segs);
+ 	raw_sb->segment_count_main = cpu_to_le32(segment_count_main + segs);
+ 	raw_sb->block_count = cpu_to_le64(block_count +
+-			(long long)(segs << sbi->log_blocks_per_seg));
++			(long long)SEGS_TO_BLKS(sbi, segs));
+ 	if (f2fs_is_multi_device(sbi)) {
+ 		int last_dev = sbi->s_ndevs - 1;
+ 		int dev_segs =
+@@ -2076,7 +2076,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+ static void update_fs_metadata(struct f2fs_sb_info *sbi, int secs)
+ {
+ 	int segs = secs * SEGS_PER_SEC(sbi);
+-	long long blks = (long long)(segs << sbi->log_blocks_per_seg);
++	long long blks = (long long)SEGS_TO_BLKS(sbi, segs);
+ 	long long user_block_count =
+ 				le64_to_cpu(F2FS_CKPT(sbi)->user_block_count);
+ 
+@@ -2118,7 +2118,7 @@ int f2fs_resize_fs(struct file *filp, __u64 block_count)
+ 		int last_dev = sbi->s_ndevs - 1;
+ 		__u64 last_segs = FDEV(last_dev).total_segments;
+ 
+-		if (block_count + (last_segs << sbi->log_blocks_per_seg) <=
++		if (block_count + SEGS_TO_BLKS(sbi, last_segs) <=
+ 								old_block_count)
+ 			return -EINVAL;
+ 	}
+diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+index e4a75aa4160f..6a2419ddc7c6 100644
+--- a/fs/f2fs/gc.h
++++ b/fs/f2fs/gc.h
+@@ -70,7 +70,7 @@ struct victim_entry {
+ 
+ static inline block_t free_segs_blk_count(struct f2fs_sb_info *sbi)
+ {
+-	return free_segments(sbi) << sbi->log_blocks_per_seg;
++	return SEGS_TO_BLKS(sbi, free_segments(sbi));
+ }
+ 
+ static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
+@@ -78,7 +78,7 @@ static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
+ 	block_t free_blks, ovp_blks;
+ 
+ 	free_blks = free_segs_blk_count(sbi);
+-	ovp_blks = overprovision_segments(sbi) << sbi->log_blocks_per_seg;
++	ovp_blks = SEGS_TO_BLKS(sbi, overprovision_segments(sbi));
+ 
+ 	if (free_blks < ovp_blks)
+ 		return 0;
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 56927b097e30..d0209ea77dd2 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -448,8 +448,8 @@ static inline bool excess_dirty_threshold(struct f2fs_sb_info *sbi)
+ 	unsigned int nodes = get_pages(sbi, F2FS_DIRTY_NODES);
+ 	unsigned int meta = get_pages(sbi, F2FS_DIRTY_META);
+ 	unsigned int imeta = get_pages(sbi, F2FS_DIRTY_IMETA);
+-	unsigned int threshold = (factor * DEFAULT_DIRTY_THRESHOLD) <<
+-				sbi->log_blocks_per_seg;
++	unsigned int threshold =
++		SEGS_TO_BLKS(sbi, (factor * DEFAULT_DIRTY_THRESHOLD));
+ 	unsigned int global_threshold = threshold * 3 / 2;
+ 
+ 	if (dents >= threshold || qdata >= threshold ||
+@@ -870,7 +870,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi)
+ {
+ 	int ovp_hole_segs =
+ 		(overprovision_segments(sbi) - reserved_segments(sbi));
+-	block_t ovp_holes = ovp_hole_segs << sbi->log_blocks_per_seg;
++	block_t ovp_holes = SEGS_TO_BLKS(sbi, ovp_hole_segs);
+ 	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+ 	block_t holes[2] = {0, 0};	/* DATA and NODE */
+ 	block_t unusable;
+@@ -2178,7 +2178,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ 		if (!f2fs_sb_has_blkzoned(sbi) &&
+ 		    (!f2fs_lfs_mode(sbi) || !__is_large_section(sbi))) {
+ 			f2fs_issue_discard(sbi, START_BLOCK(sbi, start),
+-				(end - start) << sbi->log_blocks_per_seg);
++				SEGS_TO_BLKS(sbi, end - start));
+ 			continue;
+ 		}
+ next:
+@@ -2289,7 +2289,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+ 	atomic_set(&dcc->queued_discard, 0);
+ 	atomic_set(&dcc->discard_cmd_cnt, 0);
+ 	dcc->nr_discards = 0;
+-	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
++	dcc->max_discards = SEGS_TO_BLKS(sbi, MAIN_SEGS(sbi));
+ 	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
+ 	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
+ 	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
+@@ -4469,7 +4469,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
+ #endif
+ 
+ 	sit_i->sit_base_addr = le32_to_cpu(raw_super->sit_blkaddr);
+-	sit_i->sit_blocks = sit_segs << sbi->log_blocks_per_seg;
++	sit_i->sit_blocks = SEGS_TO_BLKS(sbi, sit_segs);
+ 	sit_i->written_valid_blocks = 0;
+ 	sit_i->bitmap_size = sit_bitmap_size;
+ 	sit_i->dirty_sentries = 0;
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 9fe5ec619456..e72b02b67087 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -77,21 +77,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+ #define TOTAL_SEGS(sbi)							\
+ 	(SM_I(sbi) ? SM_I(sbi)->segment_count : 				\
+ 		le32_to_cpu(F2FS_RAW_SUPER(sbi)->segment_count))
+-#define TOTAL_BLKS(sbi)	(TOTAL_SEGS(sbi) << (sbi)->log_blocks_per_seg)
++#define TOTAL_BLKS(sbi)	(SEGS_TO_BLKS(sbi, TOTAL_SEGS(sbi)))
+ 
+ #define MAX_BLKADDR(sbi)	(SEG0_BLKADDR(sbi) + TOTAL_BLKS(sbi))
+ #define SEGMENT_SIZE(sbi)	(1ULL << ((sbi)->log_blocksize +	\
+ 					(sbi)->log_blocks_per_seg))
+ 
+ #define START_BLOCK(sbi, segno)	(SEG0_BLKADDR(sbi) +			\
+-	 (GET_R2L_SEGNO(FREE_I(sbi), segno) << (sbi)->log_blocks_per_seg))
++	 (SEGS_TO_BLKS(sbi, GET_R2L_SEGNO(FREE_I(sbi), segno))))
+ 
+ #define NEXT_FREE_BLKADDR(sbi, curseg)					\
+ 	(START_BLOCK(sbi, (curseg)->segno) + (curseg)->next_blkoff)
+ 
+ #define GET_SEGOFF_FROM_SEG0(sbi, blk_addr)	((blk_addr) - SEG0_BLKADDR(sbi))
+ #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
+-	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
++	(BLKS_TO_SEGS(sbi, GET_SEGOFF_FROM_SEG0(sbi, blk_addr)))
+ #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
+ 	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
+ 
+@@ -891,7 +891,7 @@ static inline int nr_pages_to_skip(struct f2fs_sb_info *sbi, int type)
+ 	if (type == DATA)
+ 		return BLKS_PER_SEG(sbi);
+ 	else if (type == NODE)
+-		return 8 * BLKS_PER_SEG(sbi);
++		return SEGS_TO_BLKS(sbi, 8);
+ 	else if (type == META)
+ 		return 8 * BIO_MAX_VECS;
+ 	else
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 9976f2b0393c..bb056700b459 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3763,9 +3763,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+ 	sbi->segs_per_sec = le32_to_cpu(raw_super->segs_per_sec);
+ 	sbi->secs_per_zone = le32_to_cpu(raw_super->secs_per_zone);
+ 	sbi->total_sections = le32_to_cpu(raw_super->section_count);
+-	sbi->total_node_count =
+-		((le32_to_cpu(raw_super->segment_count_nat) / 2) *
+-		NAT_ENTRY_PER_BLOCK) << sbi->log_blocks_per_seg;
++	sbi->total_node_count = SEGS_TO_BLKS(sbi,
++			((le32_to_cpu(raw_super->segment_count_nat) / 2) *
++			NAT_ENTRY_PER_BLOCK));
+ 	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
+ 	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
+ 	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
+@@ -4199,14 +4199,14 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 			if (i == 0) {
+ 				FDEV(i).start_blk = 0;
+ 				FDEV(i).end_blk = FDEV(i).start_blk +
+-				    (FDEV(i).total_segments <<
+-				    sbi->log_blocks_per_seg) - 1 +
+-				    le32_to_cpu(raw_super->segment0_blkaddr);
++					SEGS_TO_BLKS(sbi,
++					FDEV(i).total_segments) - 1 +
++					le32_to_cpu(raw_super->segment0_blkaddr);
+ 			} else {
+ 				FDEV(i).start_blk = FDEV(i - 1).end_blk + 1;
+ 				FDEV(i).end_blk = FDEV(i).start_blk +
+-					(FDEV(i).total_segments <<
+-					sbi->log_blocks_per_seg) - 1;
++						SEGS_TO_BLKS(sbi,
++						FDEV(i).total_segments) - 1;
+ 				FDEV(i).bdev_handle = bdev_open_by_path(
+ 					FDEV(i).path, mode, sbi->sb, NULL);
+ 			}
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 2689cc9c3bf8..ceac3bfc5e2c 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -493,8 +493,8 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		spin_lock(&sbi->stat_lock);
+ 		if (t > (unsigned long)(sbi->user_block_count -
+ 				F2FS_OPTION(sbi).root_reserved_blocks -
+-				(SM_I(sbi)->additional_reserved_segments <<
+-					sbi->log_blocks_per_seg))) {
++				SEGS_TO_BLKS(sbi,
++				SM_I(sbi)->additional_reserved_segments))) {
+ 			spin_unlock(&sbi->stat_lock);
+ 			return -EINVAL;
+ 		}
 -- 
-2.43.0
+2.40.1
 
 
