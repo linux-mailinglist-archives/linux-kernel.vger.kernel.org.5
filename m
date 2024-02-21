@@ -1,132 +1,148 @@
-Return-Path: <linux-kernel+bounces-75242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6903585E51D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:03:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE0C685E52A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC73928453D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:03:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E84DB2251C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB8B84FDB;
-	Wed, 21 Feb 2024 18:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D33185273;
+	Wed, 21 Feb 2024 18:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nS779MhK"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cQt+VtgO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DD37BB00
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAF184FAD;
+	Wed, 21 Feb 2024 18:04:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708538577; cv=none; b=qoRjao5+KM5czFC6QFQZ/Ldc6xl8eBynJ10L4B2rW+rUKkekzcSpx10TwTq4wfRIAj5koSMMl5iSw/fg++i6CwzmoE1vxPx71YvJd1kTsH6Z3zsdeXYgoPtfOuMa0KzWxnhnITSge8eJGxDzwgX/zgMDDYaOKV4xeEDZOOroVUE=
+	t=1708538683; cv=none; b=XfVkWY6JCBMIqDOhTe0Kmzo8G9PfiYd3BjRjK5Sx0DQKMIw4QcLriEwMOpGcyGB8KpOpvex+VjkS+V8l0txaMyKXv+m0yWKvM7USA1O8dqOhOwrx4TDjYLUtUiVU7F5LUvMgY7Y8U1Fp/d8TLt33tMIyuyJ/NoFY7nJp1nOpl5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708538577; c=relaxed/simple;
-	bh=yi54Lm2dqrDB+cxkACqkhgnwXGwUUIDVH5OsV836WSU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JOBdTNl+kWCMax+3/QpKjXH+djaeg1X9LwlhqtNwgZoUC+i/k2+kwP54vmgKDeyz9ZOHaouFzrSG8TlYLfESriNYSozFl0YjDvrQ1yZYZB8zNj5H8+HtMAvDrA43EG828hbPXQqp7eQgEc/YOptM/PmzNP/C4EnPj9TlvuqiNPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nS779MhK; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso6722608276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708538575; x=1709143375; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IZ4ZIhOlLj482hbMZwIkVDjrXVuHvcX1vma+IQSxDL8=;
-        b=nS779MhKRQQFrZYbycRvp2QfyOb077r5exMGNNC7+TuVV3Ll2v6l4BUtWKhxdYyl7U
-         ncDL45BPaPILcv2ZxEK20yCkYBRcqpGHxX4tJLZtvEZDl++hZa/vBjXeQy1a4EsimN0B
-         etr+wsDAA8S7WD8VsdncF45n+npWi1LakjPBjNEq1y/Sb4wF8UHwUN8O73Bpq3eEf4hg
-         VVHQokCfiA46GLOHGmq0IwKoQ8YjZvT95J0T7sR0pkn5nFv94mzjx4bQqJyQ9PGxIjq2
-         UEELVcpDQkbUy1nuIqliUOe3V6t4sbgj2Ia5ws981x2dxDEjdcus9HSxXgab+HZhd86U
-         gcvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708538575; x=1709143375;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IZ4ZIhOlLj482hbMZwIkVDjrXVuHvcX1vma+IQSxDL8=;
-        b=U3kh+AtDOVIlk8dptRZ6VJXzoHhiTA42EjfTn/ase/1G2p0fPyZSXwJoPzWNFtgoGS
-         7wzGv31/xdbZOjFZC8uERgmpP3OakSSDINFk+j9QlhjT2KInwZUEpJNDVjllfQENqA4x
-         eBE2aaBCASzq8K6JNfeS0lCkAbIpFnfHu3IVycDIuAMOjgbb7LWIvp1mVIn4aACNSMP1
-         46WX0BQR22F+5zvDotabAtE2Hnl9auL71oa8aVQdBZJNEVgvkol2kN29OzFajH8x/rRU
-         pxxYe+/HwjzG4zGC6MpZvqnlRE3UpjC+ZZg1btXKtejroQC9faaK+tJ+G1hgzVHyeh4U
-         vHVw==
-X-Forwarded-Encrypted: i=1; AJvYcCWr01BBYmOt2oJPudZqvUzSBT2U4w/1eNhsMJ3dzdh67+eQTRedj3Q/bQoDD+N3lch2X4s+4aP3oFBW0wUjkk7MiUXNTlDGUjwJDgrK
-X-Gm-Message-State: AOJu0YxJeuuXtEuQuMENSTJD5d0n3P54+o5SU3bDbEP22dNdkl61p8Lw
-	jLRoZNPuK7M8wUIdtvGGV6otqPVM+jzL5hDPnICLPNH8LGkd2gnMUj+/6VkyyF+LPAUEFAzFjOD
-	vnLBXAUSgd4qtpBq9v948Q8QVFDGEt7wY
-X-Google-Smtp-Source: AGHT+IF3eD0jXeGA8GC5jgAbnNJApudrAh14W8XoWF7HVCuDb0xyxZgSwcIAjE/svFpEKS9393R4xM06BGzr7Toj888=
-X-Received: by 2002:a05:690c:30a:b0:608:5216:80c9 with SMTP id
- bg10-20020a05690c030a00b00608521680c9mr9108775ywb.40.1708538574924; Wed, 21
- Feb 2024 10:02:54 -0800 (PST)
+	s=arc-20240116; t=1708538683; c=relaxed/simple;
+	bh=N3hyQeCD6IQBf8tWP+/hKiWNxUyx+FYv+Qik7aMVPn8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RfVru2FI34IFWdF1gnKooEWaYgGHXIGXUV9TJ5W3heK2enSNcKFxXf2wxdLM1IEtuEgMstOrAOm3ChbLhRh7iIADikiq9gZumjXIyYXmPl6aHtvrxtPYp4LRBpWb/zQKPm6ptrcZoIbYBVNq8awPBMoBcoh2vSu9atrcAZB2cts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cQt+VtgO; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708538682; x=1740074682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N3hyQeCD6IQBf8tWP+/hKiWNxUyx+FYv+Qik7aMVPn8=;
+  b=cQt+VtgOuFecBhjBLeA3z/jGGPVXZmbLde5sBJSHaaT2GciMMyexjCB+
+   QE5hqZ0mXZfuY5jJ5hX3kVqkKDPG5oDLbC7D4fMdEbYoQD1aVQFgFg7hs
+   DUdWpdmFO9MS+0/U+UInzOc72wArD2Uzzflq3ol1aU8PSrg5PBDMxFbTr
+   /AEePP6XLzsvzPLvTlnUkIYeyZhd6Sh14OZqqd5V59sb/j4pWMOnvsmw6
+   HEkoR2D4f9xcFAbDNb4A1kcb7MpsmTEZzStaSmvaCcube+GAVUuk4TKnx
+   UHcmpVVROOrPNxJ8sZiQYcK/IXe7BHNQbdYlnxTENJSByCTh6+FDfRN0s
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13845918"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="13845918"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 10:04:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="5420455"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa006.fm.intel.com with ESMTP; 21 Feb 2024 10:04:29 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rcqwz-0005ZM-24;
+	Wed, 21 Feb 2024 18:04:26 +0000
+Date: Thu, 22 Feb 2024 02:04:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	antoniu.miclaus@analog.com, alexandre.belloni@bootlin.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net
+Cc: oe-kbuild-all@lists.linux.dev, linux-rtc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v7 1/2] drivers: rtc: add max313xx series rtc driver
+Message-ID: <202402220139.EmXyZO4Q-lkp@intel.com>
+References: <20240219221827.3821415-2-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220231424.126600-1-vishal.moola@gmail.com>
- <20240220231424.126600-3-vishal.moola@gmail.com> <ZdVx_Jr9tm2lV0Ku@casper.infradead.org>
- <CAOzc2pzLbiEpMuBpX7xXhZqPc0S6ZMnziT2uUFsa0tZe6yJQ0g@mail.gmail.com> <ZdY5BfO3EdcnJM99@casper.infradead.org>
-In-Reply-To: <ZdY5BfO3EdcnJM99@casper.infradead.org>
-From: Vishal Moola <vishal.moola@gmail.com>
-Date: Wed, 21 Feb 2024 10:02:43 -0800
-Message-ID: <CAOzc2py+gFdcfSebCvkWWWjht-CTBO=O4iNTQ9xs+=Wd2Kf8Hg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] hugetlb: Use vmf_anon_prepare() instead of anon_vma_prepare()
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	akpm@linux-foundation.org, muchun.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219221827.3821415-2-chris.packham@alliedtelesis.co.nz>
 
-On Wed, Feb 21, 2024 at 9:55=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Wed, Feb 21, 2024 at 09:15:51AM -0800, Vishal Moola wrote:
-> > > >       unsigned long haddr =3D address & huge_page_mask(h);
-> > > >       struct mmu_notifier_range range;
-> > > > +     struct vm_fault vmf =3D {
-> > > > +                             .vma =3D vma,
-> > > > +                             .address =3D haddr,
-> > > > +                             .real_address =3D address,
-> > > > +                             .flags =3D flags,
-> > > > +     };
-> > >
-> > > We don't usually indent quite so far.  One extra tab would be enough.
-> > >
-> > > Also, I thought we talked about creating the vmf in hugetlb_fault(),
-> > > then passing it to hugetlb_wp() hugetlb_no_page() and handle_userfaul=
-t()?
-> > > Was there a reason to abandon that idea?
-> >
-> > No I haven't abandoned that idea, I intend to have a separate patchset =
-to go
-> > on top of this one - just keeping them separate since they are conceptu=
-ally
-> > different. I'm converting each function to use struct vm_fault first, t=
-hen
-> > shifting it to be passed throughout as an arguement while cleaning up t=
-he
-> > excess variables laying around. In a sense working bottom-up instead
-> > of top-down.
->
-> I think you'll find it less work to create it in hugetlb_fault()
-> first.  ie patch 2 could be to hoist its creation from half-way down
-> hugetlb_fault to the top of hugetlb_fault.  Patch 3 could pass it
-> through hugetlb_no_page() to hugetlb_handle_userfault() and remove its
-> creation there.  Now you've alreedy got it, and can make use of it in
-> this patch which would be the new patch 4.
+Hi Chris,
 
-Ah I see, that way would definitely be a lot less work. I'll make that
-change for this patchset in v2 then.
+kernel test robot noticed the following build warnings:
 
-> If you want to do a cleanup patch afterwards, you could hoist the vmf
-> creation all the way to handle_mm_fault() ;-)
+[auto build test WARNING on abelloni/rtc-next]
+[also build test WARNING on linus/master v6.8-rc5 next-20240221]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Yeah, I was already looking at doing that in the future patchset :)
+url:    https://github.com/intel-lab-lkp/linux/commits/Chris-Packham/drivers-rtc-add-max313xx-series-rtc-driver/20240220-062057
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
+patch link:    https://lore.kernel.org/r/20240219221827.3821415-2-chris.packham%40alliedtelesis.co.nz
+patch subject: [PATCH v7 1/2] drivers: rtc: add max313xx series rtc driver
+config: x86_64-randconfig-123-20240220 (https://download.01.org/0day-ci/archive/20240222/202402220139.EmXyZO4Q-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240222/202402220139.EmXyZO4Q-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402220139.EmXyZO4Q-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/rtc/rtc-max31335.c:727:22: sparse: sparse: symbol 'max313xx_clk_init' was not declared. Should it be static?
+>> drivers/rtc/rtc-max31335.c:750:21: sparse: sparse: symbol 'max313xx_nvmem_cfg' was not declared. Should it be static?
+
+vim +/max313xx_clk_init +727 drivers/rtc/rtc-max31335.c
+
+   726	
+ > 727	struct clk_init_data max313xx_clk_init = {
+   728		.name = "max313xx-clkout",
+   729		.ops = &max313xx_clkout_ops,
+   730	};
+   731	
+   732	static int max313xx_nvmem_reg_read(void *priv, unsigned int offset,
+   733					   void *val, size_t bytes)
+   734	{
+   735		struct max313xx *rtc = priv;
+   736		unsigned int reg = rtc->chip->ram_reg + offset;
+   737	
+   738		return regmap_bulk_read(rtc->regmap, reg, val, bytes);
+   739	}
+   740	
+   741	static int max313xx_nvmem_reg_write(void *priv, unsigned int offset,
+   742					    void *val, size_t bytes)
+   743	{
+   744		struct max313xx *rtc = priv;
+   745		unsigned int reg = rtc->chip->ram_reg + offset;
+   746	
+   747		return regmap_bulk_write(rtc->regmap, reg, val, bytes);
+   748	}
+   749	
+ > 750	struct nvmem_config max313xx_nvmem_cfg = {
+   751		.reg_read = max313xx_nvmem_reg_read,
+   752		.reg_write = max313xx_nvmem_reg_write,
+   753		.word_size = 8,
+   754	};
+   755	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
