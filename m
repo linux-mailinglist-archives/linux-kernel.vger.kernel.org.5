@@ -1,46 +1,60 @@
-Return-Path: <linux-kernel+bounces-73944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF7A85CDDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:19:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3613185CDDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:19:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B700D1F24BB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:19:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04806B23332
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC77EF9CC;
-	Wed, 21 Feb 2024 02:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7F412B7E;
+	Wed, 21 Feb 2024 02:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="R9oBRzmt"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hM4eSww1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8174717BBA;
-	Wed, 21 Feb 2024 02:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77105232;
+	Wed, 21 Feb 2024 02:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708481910; cv=none; b=TCbnBmcXzNzx68LmxP7Ea5pQVYHJZkGRze6kklY/dUSbZ9Z+nYEDd0y9MdRwFiFMb+YzeY0capeYhII2Q0/87g/zuB3cfDTlYa1V0w7O1fw2CCYXfEKaVLTjS5nGZVojGZMhFyvGPGbJtehrXVgwqSBwWYkaleJJe/oWhbrdqMU=
+	t=1708481931; cv=none; b=jgdC9JmQ3wo4FXtKqxl41gSzUtg08mLO8aosUg4bwoAXRqxo6Ekc0B+Y6IFwYi/ee7zI6s8a825HKn2W9BR6f20VPkrnk/UjQF1dZUOeQu3zBR8KshiqPlVaLoRIwfmK4Q39UXwD41PRFj+oJkwG/fsO2SA0C5LnKmEAnclQAOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708481910; c=relaxed/simple;
-	bh=rRqpE8h/KNn+FQIAVNM5vudNpdCVfCEusK6cOl+XA6o=;
+	s=arc-20240116; t=1708481931; c=relaxed/simple;
+	bh=HOY/ZKR3UxnM/lO9pCRb72aBDqSC44CZ4roDqmw4AiQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VjcCL2EaWGuw7EYblxyajZDDKQdPZgkej8N4v1B8Z6/IZh0ZkUNqUCGHIf7fF8oc9TVEkEqGusOjiVsteRXQ8SQM5OEhWxWu5ZELhP4EISyswiC3ogHi5/FFfb0CSqmGdDLKLR1dGcoGTrUff8aKGC4KDGe8Wpjic2w2li9dXwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=R9oBRzmt; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708481905; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=u91vHPmTfNCmbDbQ1w3BDcSiany6MNqpaa6ax/w7hOY=;
-	b=R9oBRzmtj6TSc3lSFdTXsxrkQe1zJcI4CJqRT6qXmxd0e2Uhdm/B3N7GKqlc6dWynV7RiXFE96e7cP2BQWgehxpa0mAlBy6A7X7hr5RKAWDUW2DNGguk5mD5O+hzqT+X9p8pQi6b9MvD5d1VxlbUNRVUVbnrezcHDbWOplpijP0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W0yLCp9_1708481903;
-Received: from 30.97.48.183(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W0yLCp9_1708481903)
-          by smtp.aliyun-inc.com;
-          Wed, 21 Feb 2024 10:18:24 +0800
-Message-ID: <6c2d5345-98bc-49b1-adc7-bcc349a0a6bb@linux.alibaba.com>
-Date: Wed, 21 Feb 2024 10:18:22 +0800
+	 In-Reply-To:Content-Type; b=AvUahDKMskmAq0LPbTS6ALJ5RrEkb6b2wEUjvqZ5SWgYilH3KhVekjwPxwDBvSg1sVDRx9EECL1lBPq4edTUa+5rlzZOKkVOKOGdDteGxB6kvELZZaNk7S7PWW9EOHC7m2TRMOLmauASeZcdtuYS4qnUJA11gkXnHjGiHpquoTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hM4eSww1; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708481930; x=1740017930;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HOY/ZKR3UxnM/lO9pCRb72aBDqSC44CZ4roDqmw4AiQ=;
+  b=hM4eSww1N2foJKB5WRjXAUcDLWocqk1RblT4Rdw/BK35WkJwknWfC+xx
+   Xnwy7kWSqCH15T3LsESqbnLCIZbhKgirj65AuIK+2LgU6d3bgaZVV/oIx
+   mm0YZE20ruxc+rrZ0HO0GFmT9N+B8r76xJk2rwejusYXcnIM2mP79lDYJ
+   WxGOKF1RItvuKF6kZIH3LvoAtv3BhnB0zCNYZs8eQE3xeICBdn5JVcrx6
+   RlLzkAFPXAAnl7i7EIP/vVgS2y+V183jXi+C+yxpB7zDnFR+1weok12QM
+   +YhQmwYSe6TMsLIy0E+zemTK8GQ+7ZD2atmHhQLAfxi1+ttLijmBB0+Fb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="25085316"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="25085316"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:18:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="4881566"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.18.46]) ([10.93.18.46])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:18:45 -0800
+Message-ID: <06b200d8-e432-478f-b564-b799da778c41@linux.intel.com>
+Date: Wed, 21 Feb 2024 10:18:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,115 +62,121 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] erofs: fix refcount on the metabuf used for inode
- lookup
-To: Sandeep Dhavale <dhavale@google.com>, Gao Xiang <xiang@kernel.org>,
- Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
- Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc: quic_wenjieli@quicinc.com, stable@vger.kernel.org,
- kernel-team@android.com, linux-erofs@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240220191114.3272126-1-dhavale@google.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20240220191114.3272126-1-dhavale@google.com>
+Subject: Re: [RFC PATCH v5 02/29] KVM: selftests: Expose function that sets up
+ sregs based on VM's mode
+To: Sagi Shahar <sagis@google.com>
+Cc: linux-kselftest@vger.kernel.org, Ackerley Tng <ackerleytng@google.com>,
+ Erdem Aktas <erdemaktas@google.com>,
+ Isaku Yamahata <isaku.yamahata@intel.com>, Ryan Afranji
+ <afranji@google.com>, Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>,
+ Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
+ Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
+ linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-3-sagis@google.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20231212204647.2170650-3-sagis@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Sandeep,
 
-On 2024/2/21 03:11, Sandeep Dhavale wrote:
-> In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
-> we do not assign the target metabuf. This causes the caller
-> erofs_namei()'s erofs_put_metabuf() at the end to be not effective
-> leaving the refcount on the page.
-> As the page from metabuf (buf->page) is never put, such page cannot be
-> migrated or reclaimed. Fix it now by putting the metabuf from
-> previous loop and assigning the current metabuf to target before
-> returning so caller erofs_namei() can do the final put as it was
-> intended.
-> 
-> Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
 
-Many thanks for the catch!
+On 12/13/2023 4:46 AM, Sagi Shahar wrote:
+> From: Ackerley Tng <ackerleytng@google.com>
+>
+> This allows initializing sregs without setting vCPU registers in
+> KVM.
+>
+> No functional change intended.
 
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+
+>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ryan Afranji <afranji@google.com>
+> Signed-off-by: Sagi Shahar <sagis@google.com>
 > ---
->   fs/erofs/namei.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
-> index d4f631d39f0f..bfe1c926436b 100644
-> --- a/fs/erofs/namei.c
-> +++ b/fs/erofs/namei.c
-> @@ -132,7 +132,10 @@ static void *erofs_find_target_block(struct erofs_buf *target,
+>   .../selftests/kvm/include/x86_64/processor.h  |  2 +
+>   .../selftests/kvm/lib/x86_64/processor.c      | 39 ++++++++++---------
+>   2 files changed, 23 insertions(+), 18 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+> index 35fcf4d78dfa..0b8855d68744 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+> @@ -958,6 +958,8 @@ static inline struct kvm_cpuid2 *allocate_kvm_cpuid2(int nr_entries)
+>   void vcpu_init_cpuid(struct kvm_vcpu *vcpu, const struct kvm_cpuid2 *cpuid);
+>   void vcpu_set_hv_cpuid(struct kvm_vcpu *vcpu);
 >   
->   			if (!diff) {
->   				*_ndirents = 0;
-> -				goto out;
-> +				if (!IS_ERR(candidate))
-> +					erofs_put_metabuf(target);
-> +				*target = buf;
-> +				return de;
->   			} else if (diff > 0) {
->   				head = mid + 1;
->   				startprfx = matched;
+> +void vcpu_setup_mode_sregs(struct kvm_vm *vm, struct kvm_sregs *sregs);
+> +
+>   static inline struct kvm_cpuid_entry2 *__vcpu_get_cpuid_entry(struct kvm_vcpu *vcpu,
+>   							      uint32_t function,
+>   							      uint32_t index)
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> index aef1c021c4bb..f130f78a4974 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> @@ -543,36 +543,39 @@ static void kvm_setup_tss_64bit(struct kvm_vm *vm, struct kvm_segment *segp,
+>   	kvm_seg_fill_gdt_64bit(vm, segp);
+>   }
+>   
+> -static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+> +void vcpu_setup_mode_sregs(struct kvm_vm *vm, struct kvm_sregs *sregs)
+>   {
+> -	struct kvm_sregs sregs;
+> -
+> -	/* Set mode specific system register values. */
+> -	vcpu_sregs_get(vcpu, &sregs);
+> -
+> -	sregs.idt.limit = 0;
+> +	sregs->idt.limit = 0;
+>   
+> -	kvm_setup_gdt(vm, &sregs.gdt);
+> +	kvm_setup_gdt(vm, &sregs->gdt);
+>   
+>   	switch (vm->mode) {
+>   	case VM_MODE_PXXV48_4K_SEV:
+>   	case VM_MODE_PXXV48_4K:
+> -		sregs.cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
+> -		sregs.cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
+> -		sregs.efer |= (EFER_LME | EFER_LMA | EFER_NX);
+> -
+> -		kvm_seg_set_unusable(&sregs.ldt);
+> -		kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs.cs);
+> -		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.ds);
+> -		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.es);
+> -		kvm_setup_tss_64bit(vm, &sregs.tr, 0x18);
+> +		sregs->cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
+> +		sregs->cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
+> +		sregs->efer |= (EFER_LME | EFER_LMA | EFER_NX);
+> +
+> +		kvm_seg_set_unusable(&sregs->ldt);
+> +		kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs->cs);
+> +		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs->ds);
+> +		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs->es);
+> +		kvm_setup_tss_64bit(vm, &sregs->tr, 0x18);
+>   		break;
+>   
+>   	default:
+>   		TEST_FAIL("Unknown guest mode, mode: 0x%x", vm->mode);
+>   	}
+>   
+> -	sregs.cr3 = vm->pgd;
+> +	sregs->cr3 = vm->pgd;
+> +}
+> +
+> +static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_sregs sregs;
+> +
+> +	vcpu_sregs_get(vcpu, &sregs);
+> +	vcpu_setup_mode_sregs(vm, &sregs);
+>   	vcpu_sregs_set(vcpu, &sregs);
+>   }
+>   
 
-The fix is correct, yet I tend to try to reorganize this snippet for
-simplicity, how about the following diff (untested)?
-
-If it looks good to you, could you resend a formal patch? Thanks!
-
-Thanks,
-Gao Xiang
-
-  fs/erofs/namei.c | 29 ++++++++++++++---------------
-  1 file changed, 14 insertions(+), 15 deletions(-)
-
-diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
-index d4f631d39f0f..9fb2d627578e 100644
---- a/fs/erofs/namei.c
-+++ b/fs/erofs/namei.c
-@@ -129,25 +129,24 @@ static void *erofs_find_target_block(struct erofs_buf *target,
-
-  			/* string comparison without already matched prefix */
-  			diff = erofs_dirnamecmp(name, &dname, &matched);
--
--			if (!diff) {
--				*_ndirents = 0;
--				goto out;
--			} else if (diff > 0) {
--				head = mid + 1;
--				startprfx = matched;
--
--				if (!IS_ERR(candidate))
--					erofs_put_metabuf(target);
--				*target = buf;
--				candidate = de;
--				*_ndirents = ndirents;
--			} else {
-+			if (diff < 0) {
-  				erofs_put_metabuf(&buf);
--
-  				back = mid - 1;
-  				endprfx = matched;
-+				continue;
-  			}
-+
-+			if (!IS_ERR(candidate))
-+				erofs_put_metabuf(target);
-+			*target = buf;
-+			if (!diff) {
-+				*_ndirents = 0;
-+				return de;
-+			}
-+			head = mid + 1;
-+			startprfx = matched;
-+			candidate = de;
-+			*_ndirents = ndirents;
-  			continue;
-  		}
-  out:		/* free if the candidate is valid */
---
-2.39.3
 
