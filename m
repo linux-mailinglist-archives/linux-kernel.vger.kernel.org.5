@@ -1,139 +1,156 @@
-Return-Path: <linux-kernel+bounces-74707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C0985D807
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:39:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD7F85D80B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99B2B1F22431
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:39:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0990B1C22370
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1776931F;
-	Wed, 21 Feb 2024 12:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611746995F;
+	Wed, 21 Feb 2024 12:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hhaOD5eV"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H0fv94/P"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD9E69946
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0300669319;
+	Wed, 21 Feb 2024 12:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708519179; cv=none; b=EYJxS3/e2Uj1woQCFBtzG0Us6RVwq2c7VDDAFwofyvKxjAN7CLuCRGGRePsFdW7nss4if+hDWCmC8UU8XKHK7zyB4Qr3DWz0SCmSIPR4Nxj9xmR5g9LCyQNMx3677Mc1sWEJ6WoJfV+TFXmxCPqAy6x7f/EUBe12JNionaJSEOE=
+	t=1708519181; cv=none; b=MdHBfA55Uvo4KlLz2rFFYJruKqWKsZqajtBlBzUNye5iUAtydqnP0pECH0+80MgGF/bp17kbZ2a7o+gP+5/K1hsM/IKc/wsEGHUjkegozUvoY9Zg1j8qb6ULr1Ydnc04lWt+3vvINF8HvYHevA15vE29f/i863PsZTNxo+t3Eeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708519179; c=relaxed/simple;
-	bh=psNgy/7CLFbBBXucyeGU6eGkGdSOPkR41zts8T1DVwc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XxrwbTnOPOgX2xwWG3QUVb2FSvVV+YkqhMsF2nWVwoZxGHAaJ9H5vH7EuB4qTeCw8oqQnI+7cOqY2cUzO99xcOYP0OjXymDOg+Ly3yzjEo9r5CfEI91XXnlMdiOSLR+LVll/jT01bWDf/K2Yvcj2rK8O3ijz6IZAp/DIh4vICH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hhaOD5eV; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512bde3d197so3229625e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:39:37 -0800 (PST)
+	s=arc-20240116; t=1708519181; c=relaxed/simple;
+	bh=Qe/A6k+4smPWDWXCEf215lQP3giMaXGWgCGQgwSs7sM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=nlzK8wc/OvFC9dlTRnaSiQtCh3sWiKC3EqFmDyh66SKBWxMHjsotvcp/TREIdfRQ2QhUE7FMo8nngnqQOWSA9vSPPEov+4CaQCqk0tIlaX4uz15CJ6hXPnYOkbP2WNbO2LAsTfUA3IyXCLZWPYpT9pkS065M5jUyDFJDMzpt3Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H0fv94/P; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d6cc6d2fcso426685f8f.2;
+        Wed, 21 Feb 2024 04:39:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708519176; x=1709123976; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zqzWKvPBdSm0fX0bVTZjqYYQBdyO4P54OQm+21chzZs=;
-        b=hhaOD5eVk15OhdKaLFfiQcbkpFGkHpU9yb1N7DXK1t0wzzvioxqOG5QSFWhRldZeGQ
-         EX4S0024Uls0kknd+9LatCpkOgWkX4V8Ju0Qc3hRZJ5wtig4g84INzTjah2rC7Q4kGS8
-         gmz9hmYPKA7Kpq9M6ZKvKhIAxz4LEWZ+gFM4yOycyq7qeHDEGseb4aEV3lw7bAdq2l8D
-         T/ksLpZ2MH9smWBajfe8uyGgykDRDig5P/oiw3IDQ0yyyNO9MTEeREQA6jiD/SxTE2O/
-         s/w8rNKeMJ5z7GnyjSOzwd1k6g4OG3YyNcfEwE49Ek3gB3Yq6eNPL2BU77DQ/nFs3uBh
-         XD6Q==
+        d=gmail.com; s=20230601; t=1708519178; x=1709123978; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVXQ0SykxtzeFN8y51Iqsk4cWHv4fF8waP8HNiw0MEc=;
+        b=H0fv94/PnPtgLjRQE6+3xeWR0N8Rv3M1QocsELb4sJetNrTo2/h+1/sysb96RvStmx
+         zYr5k05QZCmjPOHW8OHwegq73+MQR/aoY7Md6ckpv40JI+1FoRc9iE9Wt56Olj0wcVbA
+         CO/lRMELTBJ64ej6M/tLEdVSIVEeeVPo4cMRctGYU27i05lV5SEFPcuTAadBeDggo3G3
+         A6i2UXv+spCGC9ojhbbPwOhMv7ia8alp9XtoqJ07rGg+sVejt/ls7326ZfS/+bcQYb5g
+         E5Yz3fJ0ND2FxU1Qc0jVeseBhn6MJj7HaiplG3soxxnD9Tg/BS6bPn0tx3bMFQTRiIXf
+         11HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708519176; x=1709123976;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zqzWKvPBdSm0fX0bVTZjqYYQBdyO4P54OQm+21chzZs=;
-        b=v1bvwe1fE5Y62Ou3AVv6v1BsmzshmLDxbwXs7EfQItd1EKp/TiRAf2OYSNDmZH6epB
-         fRckvjKVGIKyMQy1SaL1DLTLJs33hfNKphrz0nhhGeUFWwYM/kuUTMY8/PKYOL6+1x60
-         IiYrKURLP6ZPZCbzkN0+HOitLCgm3SiVBsqw3hk5qFmZbGjuyFgVNznufev/NAuw0InY
-         xyrvuBcMQrGbCqgBhAjDzQS7G4Is6k2TVajgDnFHu2JFTmoG0Ne8DSCY9HVX6v/kzGEA
-         zmg3Gbvy/PNw1aAcB/dLiE+E/E8qRWVceZ/eTcUbY8SjmP7jUhnVt1ACX3GGdOjOboEI
-         wOKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWh0RB7IyQvVYxYSP3HSceOik+wCRa9iy9IWexHwRRX1ab/QL+b7KiwRua19kKygz7Q5gcnaDIbTXLpNuqqRR2LyfG34HL0CcGMydm3
-X-Gm-Message-State: AOJu0Yw5QdFcWBXK/8wlP2q0kVnlkczPJqIrbj9zlWwhY8wjiTP7dl4S
-	6Y8Ez1N/FKTC6VhSassOqsdxcJqfvpbFZljpQc7cnc7LgIfc3dmAw21tlQbEHh0=
-X-Google-Smtp-Source: AGHT+IFqHfOa5dAsPRtL5v9Nkouj+lXmHQgWqmDhClXmymlshTKSzB9FTS6V64HI1VEn6T8+LSky1w==
-X-Received: by 2002:ac2:4eca:0:b0:512:be76:ad37 with SMTP id p10-20020ac24eca000000b00512be76ad37mr4131922lfr.32.1708519175703;
-        Wed, 21 Feb 2024 04:39:35 -0800 (PST)
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id bp25-20020a056512159900b0051148f220ccsm1631678lfb.285.2024.02.21.04.39.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 04:39:35 -0800 (PST)
-Message-ID: <e1cd36da-7656-4f9e-9206-f831eb91dc65@linaro.org>
-Date: Wed, 21 Feb 2024 13:39:34 +0100
+        d=1e100.net; s=20230601; t=1708519178; x=1709123978;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TVXQ0SykxtzeFN8y51Iqsk4cWHv4fF8waP8HNiw0MEc=;
+        b=Hrgidrnf18HCCpsYl/TAwkUipwIywDwuiz3VdO41yCBSPpWvLDPDod4yLTukb9pKAh
+         9gSWUPzD0lR1J2yrgIGg9tmUek52eZiiWf1FtU+6HLmpz8mVvVita6f207HRJRjW7FN7
+         uYwoUeGRIMsPD1fsKzpULchQIX8CPEDJcPhZEcuJXnJZDC/bXZUJUkPBBorObYaQvToj
+         4ax7jU+p9ehBDiu1duqMyjLW8T8w3BhL/2f52toQxswlz6UrU6GnJ/GUS58LOcL+oW95
+         qIrBPBHvmu9XckYARbErhLtm1RA+mq8QAr/G2pN6sxw3HOVkIBNVBIS5uMjzMHgxLXnJ
+         WTBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWepAUvnBb9o5l4AxOm/qXCjVr8hKpg6jq+YHRO3SKpGfJSovWHMo17cXS/JDimvRp5i+zkIeM1t3IW4RK7VM90REVGSGh/qxBfOlKXBSrmFCuFwhzIoSNLBkGPBHVAziJPg66FesLacA==
+X-Gm-Message-State: AOJu0YxPL/lucXU4qc8Q3XsottkO6rE1E1CL3ynEJwGJ3KlqINfk7TYt
+	/4oXR5yEAh2nxSHrxzaNaKO1g/bdQYiXnLFg3uNVqARfOFC3V4kF/5x6R/Ff
+X-Google-Smtp-Source: AGHT+IEW/AB1dE8aKxnnyDVexgJ/J1eQz7jQelMynzFOSmmZ11AioLANDucPhDTx1xpQT19Mjnx0Aw==
+X-Received: by 2002:adf:ab07:0:b0:33d:3218:3378 with SMTP id q7-20020adfab07000000b0033d32183378mr8378085wrc.20.1708519178015;
+        Wed, 21 Feb 2024 04:39:38 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bu19-20020a056000079300b0033d3d9447e3sm11686342wrb.83.2024.02.21.04.39.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 04:39:37 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ACPI: thermal_lib: Add missing checks for errors in return code ret
+Date: Wed, 21 Feb 2024 12:39:36 +0000
+Message-Id: <20240221123936.3421462-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 21/21] arm64: dts: qcom: sm8650: Use "pcie" as the node
- name instead of "pci"
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240221-pcie-qcom-bridge-dts-v1-0-6c6df0f9450d@linaro.org>
- <20240221-pcie-qcom-bridge-dts-v1-21-6c6df0f9450d@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240221-pcie-qcom-bridge-dts-v1-21-6c6df0f9450d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 21.02.2024 04:42, Manivannan Sadhasivam wrote:
-> Qcom SoCs doesn't support legacy PCI, but only PCIe. So use the correct
-> node name for the controller instances.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+Static analysis with clang scan build detected various return codes
+being assigned and not checked. The calls to the trip point functions
+probably should be error return checked as these can fail because
+of unlikely issues such as invalid ACPI object names or ACPI value
+evaluation failures.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cleans up clang scan warnings, such as:
+drivers/acpi/thermal_lib.c:106:9: warning: 2nd function call argument
+is an uninitialized value [core.CallAndMessage]
+        return thermal_temp(ret, temp_decik, ret_temp);
 
-Konrad
+
+Fixes: 6908097aa5a7 ("ACPI: thermal_lib: Add functions returning temperature in deci-Kelvin")
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+
+Note: Not tested.
+
+---
+ drivers/acpi/thermal_lib.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/acpi/thermal_lib.c b/drivers/acpi/thermal_lib.c
+index 4e0519ca9739..4d27048ef075 100644
+--- a/drivers/acpi/thermal_lib.c
++++ b/drivers/acpi/thermal_lib.c
+@@ -103,6 +103,9 @@ int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_tem
+ 	int temp_decik;
+ 	int ret = acpi_active_trip_temp(adev, id, &temp_decik);
+ 
++	if (ret)
++		return ret;
++
+ 	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_active_trip_temp);
+@@ -122,6 +125,9 @@ int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
+ 	int temp_decik;
+ 	int ret = acpi_passive_trip_temp(adev, &temp_decik);
+ 
++	if (ret)
++		return ret;
++
+ 	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_passive_trip_temp);
+@@ -142,6 +148,9 @@ int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
+ 	int temp_decik;
+ 	int ret = acpi_hot_trip_temp(adev, &temp_decik);
+ 
++	if (ret)
++		return ret;
++
+ 	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_hot_trip_temp);
+@@ -161,6 +170,9 @@ int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
+ 	int temp_decik;
+ 	int ret = acpi_critical_trip_temp(adev, &temp_decik);
+ 
++	if (ret)
++		return ret;
++
+ 	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_critical_trip_temp);
+-- 
+2.39.2
+
 
