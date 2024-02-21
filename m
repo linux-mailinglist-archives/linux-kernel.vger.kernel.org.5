@@ -1,122 +1,110 @@
-Return-Path: <linux-kernel+bounces-75136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11DB285E3B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:49:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A893985E3BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD43D1F25469
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:49:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAB281C22715
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A24783A09;
-	Wed, 21 Feb 2024 16:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5469082D9E;
+	Wed, 21 Feb 2024 16:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QwQQdrq/"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P6tuaSvc"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1A482D8D;
-	Wed, 21 Feb 2024 16:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8E082D6B
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708534154; cv=none; b=VUmgBHzQURccrHId71eG6znzXwFfVWK10a68DKI4zzSZ0ZXThndXxq0Su0O93KBk8Lid4eS4ZTX61bBfZeoCDHL4ge04Affj/G8b+dOQWCAIqhP7ETzOB/3GOh5O86QfiDas6WdZtpYzSco6qCSzUXUQUnliy4sIe3lUo020gYM=
+	t=1708534177; cv=none; b=btL2ALZkt2HzNSSrUfo5dnNNipSwfiTNKp4/9LbOxMY5Spv5xcfRo5hJ3Msl8UeJmvHy3n3rs09xDN8crmZhwR7i7U3EJmMi4BhrdRZDByu+1+vrmLV9pEr+IoZZivreHYTyGz+IIoORyObHA5yNJQsFUapxjiimxU5RZ4IkJgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708534154; c=relaxed/simple;
-	bh=ove3upP5O826eOpG4Bg29PjtxXHxXZjXEOc9l+LtHwo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h9SR6skVzVVdqV5zm0UGTqyWerVSWbgVt+2c78MQo5iJ8CKmFPhMEBBqBj/owxM4Edl+fCZsEXqxMBAjoa2r+3sr0FYIeSYWiDAJVvXdosiGwAZPDKcHMSn7ZQY2HfoUkV/3nbbuWTUeXdhWCHiou/B5Fkd2NhjERh+aLVPOQKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QwQQdrq/; arc=none smtp.client-ip=209.85.218.53
+	s=arc-20240116; t=1708534177; c=relaxed/simple;
+	bh=buIZwIkqE14JxpgXNB/mnqOwiVrdeBEvFEjIp3BlXaw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=As78DcBxFV0FfrDsh/u7vnN3A4RMqQdPJrAITwAyw2f8xIKvUd8L98pnD2cQ4sKD3DlZcFC4582KKFOyxZZ6dpTCzfH3haevhDdCsMQJ86lgjhp+Rf4lXW6dRHaqwYzqJPPf9JDSmpRmmSCOQkpa13yYuwOHeAdZxeRfmBOvc3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P6tuaSvc; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3122b70439so856684766b.3;
-        Wed, 21 Feb 2024 08:49:12 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso6623651276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:49:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708534151; x=1709138951; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o/6HoAU7BqEYQlQGt88qfMyMbLkXax2QO39kfYNiHW0=;
-        b=QwQQdrq/vVITNW78P8xYwZOdGiHgWln1KvHMOybZ23xzF8R3EtCNwaxSGmZtcL3VMc
-         oeewQJ32byonNMnnH26LOkXIiySwMwtwp9O8FyAx/ER/LZVL4DC0uYnGN+wJ2MF2/YZi
-         5AR/oFjl/v331N55/en98ZgMShypjfNqZlMWUU7szuSLK490Z6EcgqahRfBn0M0LgjGf
-         j/F1GmLevgakMra06ptN/4Xr2ahvpCw7S31eovzI+jC3TU7yoaxZ3AiY7Cge3cOhD6Iu
-         7i+HXjaFqBRyv2gdVzFDsOmlMU4anPwFg2TeNHD3rCUJW0/eo5Co7IdKLOxT2vtSE3id
-         HEhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708534151; x=1709138951;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1708534175; x=1709138975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o/6HoAU7BqEYQlQGt88qfMyMbLkXax2QO39kfYNiHW0=;
-        b=GJ6qo3+TISsvxXJxGC6UacmkjypTpByGW2CHqYiFzXM2+YuZ5XvkAtEaxGu5Iufv3m
-         g63vU39+LPJro1UcGiSTuN+bfQPbPGNL4R2KVRgWsqLxQspzMMRMPb1Uh/vR/XzUXf0s
-         RLhKKMFY7mruDSpRSpp5EcTWBHMpZibLKsYShuAARw6ZJfoyz/Q8uaKaVEpOwmFEa+le
-         40bZJnUUrpQwlfoCbORq/kDPLJ26NlXDMMvl1tnkXzdu8/0zwv0c5uopynuwDAsZ7Jdj
-         Rh8Du2P1XbGx5AK6kXl3SyUwVSglTX74AbYORNDZHPgCWYUmkyCH/rrR2BAtRKdtbDHa
-         1QbA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxDNi5Fj4pAYMmoyh9+LHRmT1o4JYv9ihyfYbWQ2phMbyuEQ0ZYY1texnGOkOUVez3s8GBC6Ctt1sQuqAdMQZ7FiwuJP8kuIoqNtM+wYEfvtBizdEeVxp03g355ni+azrzKGfxmQQd4NhqKY+pRqTMZVPAKDgcp0ewbvnCkN0DnCtF2VVGmkKvCrkR2cEa0W70CQ5OtsxE9pbmOKNoxeG9M1th
-X-Gm-Message-State: AOJu0YxAdaCCcrFMzLfxVC1F9ujKDkaTIWaMkpd1VNlIrvxep4KrkQb4
-	aOKXV0Uw+BXXEBnurnY4M06IAGcrKOe16n7zsiQewrJM6VNbveg=
-X-Google-Smtp-Source: AGHT+IE57bcXeYkZJP98HXfK2Uv1QXGkv8qaONWD32LAi4oHSbopeSaffA0n85T1hOOupFw1aaMi8Q==
-X-Received: by 2002:a17:906:349b:b0:a3e:b5a3:acf6 with SMTP id g27-20020a170906349b00b00a3eb5a3acf6mr5647977ejb.4.1708534151368;
-        Wed, 21 Feb 2024 08:49:11 -0800 (PST)
-Received: from p183 ([46.53.251.190])
-        by smtp.gmail.com with ESMTPSA id h23-20020a170906591700b00a3ef17464b1sm1863338ejq.9.2024.02.21.08.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 08:49:10 -0800 (PST)
-Date: Wed, 21 Feb 2024 19:49:08 +0300
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Elizabeth Figura <zfigura@codeweavers.com>,
-	Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	=?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 00/31] NT synchronization primitive driver
-Message-ID: <a2f8ee20-2a2b-44bb-8db2-6d2c353d6a6c@p183>
-References: <5ae668e3-e275-40b0-af3c-6a459e3a0b87@p183>
- <2024021756-bakeshop-wolf-f975@gregkh>
+        bh=D7DFQDZc2t2UqTzC+tGr7AXfCBBtBVxZhziymIpi1W4=;
+        b=P6tuaSvc5GyxIAWOfgf+Kv4J7YyJ5gyS1l73MFCokNRDCoSPAKA/z1k8Nol5qcSIcF
+         IoRaH/Jk8YBXq0AzAYD+qsDfR0JS7TFyLI96hpfLowwbqLfbHFPuUu3AP3+ptKiNkbs/
+         J2zikEpU/Q87NhZYz4YrEr9SlaKOmwh00lbb6N/C7U15W9OXxJrZYcQn4npQ/EYjHzPs
+         7sYhkW+h13bgE5Hl426vkdJXQbUm9K2kAPLgk6U4rHdw0gB3fd/lJLy4AWMJv54v1g83
+         78rvEW9BUjLHnrfM7n3yXv7tIQkz+3e2esDTGB3OPeKVD2CznuqXJLPQb3OuO1qa+wma
+         mS2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708534175; x=1709138975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D7DFQDZc2t2UqTzC+tGr7AXfCBBtBVxZhziymIpi1W4=;
+        b=g6qOmRnRtV1BoQLEwBKilWsERr7WE9OVw8n+iJjnq+hQ2pUNsEYlvVRwkVb/YmNd83
+         usEgsVZ5JHrQ3zKMOQI72JJUiFrsyIYu6xbIx3lGMaokD4TUKCmQbxL77j9x5cEotCHq
+         CsfHk7GXgT0/B2YBDnCUovoo5WMo/ymPH7n0ipkykrSfmGQglf/iiEB2/uPdKgX+5isr
+         mJsLNbzVgclIqjylEODZ04E0TqjnpIoowdUaddCIFnNL0QQAMD5ZSkss3g0x4JSMuk8I
+         jURMcD4I317s9aIfyaTSG6VuXCt8cXmiBRfbIF1LAhsF2oOoghrqurrgXPiiLHjTHXgK
+         fifw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOFiPDKX0ns53KSZXmqbes+5HdNYbM4x5bPy2mSnWtyUQNBvnQWYD5KkgKxFlpRy6KimR+8NVO9pEkNILqUpX3mWBl6K5a6rti/0F0
+X-Gm-Message-State: AOJu0Ywk6OBxRIKSIh/xPo2chjNK9gXtG56qyO0p/oQcIIUgmGfEnpsI
+	xgEsp+F0x2wkfXEkEtu4Gw+Mmey++NgnaEQ4PawNBKLZptKVYZtM42U4D4Kx54CGh/pj61O+dYf
+	1wqxGxS0b2rL7NbMzdl5gMUqsat4=
+X-Google-Smtp-Source: AGHT+IH7+elu+0mtSRdBVbREWBEpZZtDDuKz0/jM/S5iPdGbP9NoFfxKFcp7qBJeMtcGNZPdKV5x2Ilr04mEKMcZj9c=
+X-Received: by 2002:a0d:d602:0:b0:607:782e:fe12 with SMTP id
+ y2-20020a0dd602000000b00607782efe12mr21487087ywd.34.1708534175176; Wed, 21
+ Feb 2024 08:49:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2024021756-bakeshop-wolf-f975@gregkh>
+References: <20240220231424.126600-1-vishal.moola@gmail.com>
+ <20240220231424.126600-2-vishal.moola@gmail.com> <ZdVvzu5OrdUoxc-O@casper.infradead.org>
+In-Reply-To: <ZdVvzu5OrdUoxc-O@casper.infradead.org>
+From: Vishal Moola <vishal.moola@gmail.com>
+Date: Wed, 21 Feb 2024 08:49:24 -0800
+Message-ID: <CAOzc2py2PEV9V6WFpgyYkHxpYUk84i40+USFPMiXOV=R090VaQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mm/memory: Change vmf_anon_prepare() to be non-static
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	akpm@linux-foundation.org, muchun.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 17, 2024 at 09:01:53AM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Feb 16, 2024 at 07:31:12PM +0300, Alexey Dobriyan wrote:
-> > > drivers/misc/ntsync.c                         | 1146 ++++++++++++++
-> > 
-> > Assuming this doesn't go into futex(2) or some other existing code...
-> > 
-> > Can you start putting all of this into top-level "windows" directory?
-> > I suspect there will be more Windows stuff in the future.
-> 
-> There will?  Like what?
+On Tue, Feb 20, 2024 at 7:36=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Tue, Feb 20, 2024 at 03:14:22PM -0800, Vishal Moola (Oracle) wrote:
+> > In order to handle hugetlb faults under the VMA lock, hugetlb can use
+> > vmf_anon_prepare() to ensure we can safely prepare an anon_vma. Change
+> > it to be a non-static function so it can be used within hugetlb as well=
+.
+>
+> I think the prototype for this should probably live in mm/internal.h?
 
-I don't know, native PE loader is probably a must for running Excel natively.
+That does make more sense, I'll move it for v2.
 
-> > So those who don't care about Windows can turn off just one config option
-> > (CONFIG_WINDOWS) and be done with it.
-> 
-> This should all be configured under one option anyway, so I don't see
-> the need.
-
-It is handy to have 1 obvious place to nuke some features completely.
-Especially for polarising ones like Windows support.
-
-> > Name it "Linux Subsystem for Windows" for 146% better memes.
-> 
-> Fun with marketing!  :)
-
-If they can "Subsystem for Linux", we can too.
+> > +++ b/include/linux/hugetlb.h
+> > @@ -272,6 +272,7 @@ void hugetlb_vma_unlock_write(struct vm_area_struct=
+ *vma);
+> >  int hugetlb_vma_trylock_write(struct vm_area_struct *vma);
+> >  void hugetlb_vma_assert_locked(struct vm_area_struct *vma);
+> >  void hugetlb_vma_lock_release(struct kref *kref);
+> > +vm_fault_t vmf_anon_prepare(struct vm_fault *vmf);
+> >
+> >  int pmd_huge(pmd_t pmd);
+> >  int pud_huge(pud_t pud);
+> >
 
