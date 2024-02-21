@@ -1,293 +1,230 @@
-Return-Path: <linux-kernel+bounces-75421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 474BB85E87B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3E885E87A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F236F280F1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:57:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FA9F2814ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4BA8662E;
-	Wed, 21 Feb 2024 19:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7F31292D7;
+	Wed, 21 Feb 2024 19:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KIVP95jy"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DCilb1Kx"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAB586629
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708544838; cv=none; b=lMEDSb2eFhQQ68e2BqLcK8fvZlIhfPgu46MEovtPWrxLL04A1U42dx8spwHfbNCa6yseLtKPfgpFsuqulOLl1avg9HTdXfSSstY/wdw9TuVv9Hy7u6LIxdQITSQOP47BzgRlInikfZ9zlUhmS5ID+/OAYt3QhVA4T2tLWvedJoU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708544838; c=relaxed/simple;
-	bh=9Vexo8XlUPZEpsbMOMkrK7fU2EUlDEzv3S/jPMMvnik=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jtbP4Y2GdNhmKe3hpdzg0KGvTsqsdHGMEgBSMZ+wmGw0Lwq7rDfsV6ZdS7c2vSraKqvJr3iYGDX4sVWtxtICzyEfEBduzSPrnNyAxvYBF/FiLBViiN3vbzsScPy7OkrRTGd2W5vb+J428jJdgbOaHqjx9Cv/vwsH0FP/8/goqkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KIVP95jy; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d7b8f563eso907200f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:47:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708544835; x=1709149635; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jScVkplTKNS9JH25i83p7JrWSobqpPIxlhtse73Qt2A=;
-        b=KIVP95jyaWfn+/nN6dxKbbPxolskpIee/5fbmXWJbFguW852AqXD48JQQLvEhY9sem
-         tF1BQItsnWT3+ur+SurEBaSje86E+giLd4B8QisqTQRgaDxnHZG1cQqvTPGK/DlI67xF
-         pVxHox+TrWLIsmPPa6gh2TSU+wOsiryS6bxQw1QJ9Lqx/R43dMgxwh+PoPbgtm+WTBzG
-         GK72H03ywa6DewJmuOHbQZ7HqWW72Pl2ANF3IIT5bZc09y07Ab3OKq471E1tcABPGESs
-         31K75bN9s19YGMAS8noQ7fTMFKTIZ/HMQ7Vy2SKAVLqXTgD5CdjBtACtmMdxVl1O07Gf
-         lDXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708544835; x=1709149635;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jScVkplTKNS9JH25i83p7JrWSobqpPIxlhtse73Qt2A=;
-        b=fQfa1BQ8RxA17M77ae8Tnl8GKuCd77Qy/ZonlR0xbLj4YKec9hV3sYnDIOumDBYBCm
-         hprJ4TeDp709ZLDKEBwCPbpCNy/ta8+9c72I/BdNhKV5VqSDpL9BEXbuajbTobWBCHhV
-         ACe2tNlcADWpdhPLSLIm+Hc6En1qyu14z3PkgIpiD5qxlmO3+D5pXZ/lzWiP5cljNvg9
-         SE7LokCGIvFhT9bmQw1uys47m3Oly2L0dnRp03nGVa65+Z7BwF5A8M1npN2pg3So8/43
-         LslyzlW6MhRzNPa2Xo9ZklPjnrSvE2Yzsnb3TTh0g9KQOFwB9Okuc+js14gqaDSRXzn9
-         cFdg==
-X-Forwarded-Encrypted: i=1; AJvYcCWT3ttD+xRbR1l2uuh6WKYPWt8t6EfLFlStzYitc5pMk65BP+uMBddPgf7CZh0fbd4qblm4YoM3sM4/r7tIiGXaSzFWsb3fPLp6HVQ2
-X-Gm-Message-State: AOJu0Ywhq+j6LEhB7SD+Cq9mcHLTV1i05TJ0RhwLXyrarzDJET8A6Amd
-	1nrxI8xbDnP/zaYOzbPTnGkyBgVeLC0uNuthVrMzaFQeAZ2Qy+6P
-X-Google-Smtp-Source: AGHT+IHeZsxxNcTW0LamAIrF+0mGyVTttqxxs5bsfEAXjIMM+NNA47NJeEDwrbdb84T8bV2PZNvgeA==
-X-Received: by 2002:a5d:5487:0:b0:33d:3ee3:cc04 with SMTP id h7-20020a5d5487000000b0033d3ee3cc04mr7567602wrv.0.1708544834534;
-        Wed, 21 Feb 2024 11:47:14 -0800 (PST)
-Received: from localhost.localdomain ([90.255.110.157])
-        by smtp.googlemail.com with ESMTPSA id f14-20020a056000128e00b0033d87da9ab3sm585169wrx.110.2024.02.21.11.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 11:47:14 -0800 (PST)
-From: Adam Green <greena88@gmail.com>
-To: Jagan Teki <jagan@amarulasolutions.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Cc: greena88@gmail.com
-Subject: [PATCH] drm: panel: st7701: Add Hardkernel ODROID-GO Ultra panel support
-Date: Wed, 21 Feb 2024 19:45:27 +0000
-Message-Id: <20240221194528.1855714-1-greena88@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4237F127B70
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708544766; cv=fail; b=dnQwdR1U3PFA8LNphW1M/PevLOOIVYfBDFJt5Zl30RttOjyHHQzOmMTjHOdeMzYVpp/+FIXh9IaFY92FQriGkAQV+C8gvoXwB43FKi9W2SaTbTOjyLouJoXyrkdk92EUy2XoesLa2RBZ3W9DPGODDJ01JAqlMAk7la1xJoCBRtQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708544766; c=relaxed/simple;
+	bh=2hy++yosiOYsDu7oJk7vqtloVW/nq15MbBVGugqmY54=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=tCKvNhZlVZE5ZOYpcYlp60NyB8HwqJtborkJMH5kaXGoPg5RmSFkFgT7106YgW/VBbbyh1Qx8ti2AE/EateqoxInxjZ6Qf//GbkZI9QRyIDMsc3N+7z6jaOKid080HW8m4hvaN8HWok1s99wwAEl0G9M9VQ51ZTBISCZCadj4RE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DCilb1Kx; arc=fail smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708544765; x=1740080765;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=2hy++yosiOYsDu7oJk7vqtloVW/nq15MbBVGugqmY54=;
+  b=DCilb1KxdPgum1+50dE2PdvZRqQzqhBXtPjo1FjjFfPQ7xFR1pdy89IK
+   Lu+v4WoNsmyO3TMEShar+lAroYuCZYh53c7N1rRp/tri7wXCroDPhZsaA
+   7jz3IJTXjXkqUykGVZyVnDDWYxhEnh6g0endIDBwMQHZeJxM0i9IAGnR1
+   v5m+naXIg+wDrB6qRZNIhIX686p8rbVDQKHs71MOo+twT+ZddvJW3FQHV
+   xVRaQHpqXX28DVntz9G0DT5SdNgBZR4zp4hHvRnhqoWLkiwYJ9HSRFDqk
+   kR71KGvxqAXN9IbLLcJXUsjnoj0r57llVXQkX95wEI//kxCzacIKbULio
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="14150561"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="14150561"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 11:45:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="9944416"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Feb 2024 11:45:52 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 11:45:50 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 11:45:50 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 21 Feb 2024 11:45:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SrUMsW+czN+PFD9sjcFkMeI9flHpjEYH4k6U5lLkzaTNxyGnmH7dKq9Y6TK3/F91khdbvHMfFymY6DsXq2f5tp2N8KyEpNA5dssXwtZt/Hha9ntlXA9iWXJqzhh2pskOKioArTa8wH2fK5VBUHqYnxgEZgMsYluU2fD+wJfqSnZsPkwuCL5UXZRQQmPAZo2V22SYQYy2koGXnvOKwyrUmh84QE5LAIXLp6sGrePehV6qeH84dGpoCnUuf7q3pkSPWLVFckBEy9zfDVHoynPNR7iXZgAgtEgR+42GWuIOLsv35C5luLGcNFqGSEDqh2MFCSYtXfrddeUSPMjf1CBPuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6BLnSiER+5az/T5tFOess4PsFviJOPZDWnQojCpgCZc=;
+ b=QOCGnD11z5vafy8zuL2alJgu1irsRBSxVJUFaExAUtD507f1Z9nbO2RRBzITFtxe/PQYdVveaeRivjaNk6qJo6tIKUAIGSArYrwjNE9ycnM/X37KKdebbNm6A5q/6vr9K8ji1QGpgTrdHCHmlcVrBoT2a3A2reGqyTNvVnlYGaXGWod46XtJkOVqzA5SBGN1aLgTd4+4qF41zRkZlJbVOW9BHk7xfwjrDgh/1pLSMZuE1lzsZw8QqCjFJWEmTw8pDszwUP8jEVzslUY0RoOyK6GDHbsygcaP42G0r6CkWNV8JkK0o4XWaA4PzgbWmZooJmLt+z10VOHlF1lQTIZ+Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by SA1PR11MB7061.namprd11.prod.outlook.com (2603:10b6:806:2ba::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
+ 2024 19:45:38 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954%7]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
+ 19:45:38 +0000
+Date: Wed, 21 Feb 2024 13:45:35 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+CC: Arnd Bergmann <arnd@arndb.de>, Jani Nikula <jani.nikula@linux.intel.com>,
+	Arnd Bergmann <arnd@kernel.org>, Oded Gabbay <ogabbay@kernel.org>, Thomas
+ =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Dave Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi
+	<rodrigo.vivi@intel.com>, Matt Roper <matthew.d.roper@intel.com>, "Matthew
+ Brost" <matthew.brost@intel.com>, Riana Tauro <riana.tauro@intel.com>,
+	"Daniele Ceraolo Spurio" <daniele.ceraolospurio@intel.com>,
+	<intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] drm/xe: skip building debugfs code for
+ CONFIG_DEBUG_FS=n
+Message-ID: <zospejkdqekbndbov3ubbbvr5skxwohezeslzciivhxakfjoek@oa5sp2ffcfix>
+References: <20240213134817.3347574-1-arnd@kernel.org>
+ <877cj88lck.fsf@intel.com>
+ <17209419-093b-4674-8b43-06c92312ef61@app.fastmail.com>
+ <ngu6vq5izal6suyr57p4vlxnrn4kxyii4ewdktxvw7k3uezlcz@6oevav3wpcjh>
+ <20240221172117.243799cf@canb.auug.org.au>
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240221172117.243799cf@canb.auug.org.au>
+X-ClientProxiedBy: BY3PR10CA0008.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::13) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|SA1PR11MB7061:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0de2f2a-a034-4289-5210-08dc3315ade9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uu2IesG9zP3lkyc9oqhNhS+jxcl8ZRNFVQybkaLDlhfYRd4egNCdcTJDAQpDbcU2P9//KGO/PNXcmqVRXD8yXcl3fswwShUH6luctYuPVSBJU6uqc+Vsr2fCv5pHtSGGy0KzwNwIUwyxrx7YpeexY3Jdax6vSWXneCIEV3BF3pQQ04joeKzAHJM7kxpnL0sXCYHWzQ2Y3UZ8uJq7Jb2+dVX3UHNygtag8a84qKx8ngnamanlTUEai5dKyYAVqfd54hCibZHczTZDXyAwVQy+nGPBOBaZP/kwUkGlGdX8GAfF1TTU09bsY0pqb+ItZLKFie+tjUvYSkxikCgfrqCdZSK3+ApJzaXJPcyZH6untIy26oApgIh1wAgzjkDi4DpuwNMDgZ5j2MOlj6D8bPMUYzW0brKdf6go/MEhwgvjvhJtEaVstEAy8Lr2t+kCWMCKn23YJXkoP39Rz+jlJMRCW2IXRZpkhRdfuu7086nZ94L8ANDJjknaNSqnB+CECIHxLf/5FX4hWafQeswnArxHJQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?2vpC87nP06XfPcW/RTUwUPNMM1N1iD4pb1n3mYGZDzuHRAAkAPWnd6ia//?=
+ =?iso-8859-1?Q?naqVWQTCHGyP9DK/9RJE1tYQsUr4bSWy3wA5FrM6PsRuIB8EGaiHu8Ad1f?=
+ =?iso-8859-1?Q?z1AgoEdZq4290ZzclX5VU1XJJq3Sb3GUm95kfG+4ws+uFpDqOFcZGE/I+g?=
+ =?iso-8859-1?Q?feNlG4N+ppzdCsh8pYHsecN4U4x14YFeNdZ2bm3opiFul9XymjIsn2ub/V?=
+ =?iso-8859-1?Q?J0O/sATHWct7kd5I9PkykZ2ARpvELmoSWH1mjLJuq3We94xhkNM6RBkxh+?=
+ =?iso-8859-1?Q?vE5ch9qikx7hJVI8OwFReACfHRp2cuX28BsgzJ3GlIpEciyxKo4cL6b61c?=
+ =?iso-8859-1?Q?oNhvcekIKl4sr+PaKtjN26J+Cyoh46jNDT8Pg/HBltpzzeCxDgN+lpP29U?=
+ =?iso-8859-1?Q?I3Opo6YRP1vcrFHeLUOAFZGpddMqURvBIAA4WFqmMd8M9FjWek/rBH3JJw?=
+ =?iso-8859-1?Q?jcT/FQ+GJnOlEp6iTkGfuRg/T3LH059TuyUIsE7HqobZlAjtbWjuxPn5oK?=
+ =?iso-8859-1?Q?Lj6cmcO6GweIPQ1mkBqz/XUqpvPqegClSYE1xhJQG66gE6NH/Aslz+QTVO?=
+ =?iso-8859-1?Q?BwgQ64buC4g1viF3Gf2jZNfpg73HBvqLRaollHhXNe+4sMsIHJtgj8amK9?=
+ =?iso-8859-1?Q?FV8vhN9cZ7rSi/qkDxOpy+mmgj1VvGCRkgxqJIJRUoXMDcQACONJ5GyRvH?=
+ =?iso-8859-1?Q?17TMlPEIKU6CFDwXpjOy/V6iAdEtQmBaJLhlWb6ckvtNKYkTBPUCHaLM4W?=
+ =?iso-8859-1?Q?TfwwUaqMgYLvLXH/aQ5V5SEkwOq1f3jh9KvsH2LtT856EeCYpMTAcqOj2m?=
+ =?iso-8859-1?Q?5aHklWbJ0SE3aZche9zI5T8sSlUVQKbPGjQh3XcFIiPxyqPcGkUCTaDnM/?=
+ =?iso-8859-1?Q?gvU079/cXan3K6FXrZCn4stbyc09TT0euoqGcWrFEK6smGGDvXlw4Q64xM?=
+ =?iso-8859-1?Q?WWfwv2yBrq4hCfzuRch+kN2QA+aquxQeZ3FG2xDcHQbWikUyhdpkjDpBI1?=
+ =?iso-8859-1?Q?SLN8rg7l+KBP8QhnnhxOGNfdUlbbDcEOXbEI2PiMX1iH+8ldxk5nd3hgy/?=
+ =?iso-8859-1?Q?axHA2AMJtAIOztqDUl0E7zAe2DQiFgvAGgPXyzpOC48qNQvMjyY5mT2Gls?=
+ =?iso-8859-1?Q?gG9MSLm8lczneDKQBap0wSZOGaX4tXnHpIfoN7tLGWRPrncfa8fLdwlisH?=
+ =?iso-8859-1?Q?pcEOkSzCs3SSADX0Hg2lOIQUm2bZVZ0G8dG0jj/zDFX7e0UfN3xu1QbPDl?=
+ =?iso-8859-1?Q?OL0qtZW3lxYI/+di1+MPc/bmk4oYGvr340MwG4MULzPZ6dqAyyMjfql7GN?=
+ =?iso-8859-1?Q?fyg7MSBnDmp3oIt8L9+i8RUvTI8O2yYH5XBjHVhS1XX9Q2/uEWUopxSM0r?=
+ =?iso-8859-1?Q?RLBVhPZgAI2/waN23DP3uf/PDFAx0fnnNPlF01W8YxrkRbcKeEPkwEBxCH?=
+ =?iso-8859-1?Q?zemoXzLY0nJWeSjKjqwaKa2bx1gUkJ6pnVm1AlwRV0TLLDq5wwJ1mbXgKb?=
+ =?iso-8859-1?Q?7R8JO8O+0kteS0PFbDkCbO6jgc72D998QcmylGg60KiM/IZ/4rtWFgFZfR?=
+ =?iso-8859-1?Q?ZjHVmeSUmih8feCUqeD2LDlTReVsxplHz/SKiiSWOS8wgGc/c2ER+IqXW2?=
+ =?iso-8859-1?Q?+mRuj89aGg723Scjx6F92+PG1khuKBnYvovAQkESdrm1HKtZqz0jQ4hA?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0de2f2a-a034-4289-5210-08dc3315ade9
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 19:45:38.6644
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jXQWIGp6QgCzuA10QpBg9SNzfIfrMokc5EfhZeaAjy1o6k9EFGLxg6eRgB69+Sg/zsi/I6Y98sG9WFXzkLt5+HayQxOmTdLn19O70lI+AYc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7061
+X-OriginatorOrg: intel.com
 
-The Hardkernel ODROID-GO Ultra is a handheld gaming devices, with
-a 5 inch 480x854 display. Add support for the display.
+On Wed, Feb 21, 2024 at 05:21:17PM +1100, Stephen Rothwell wrote:
+>Hi Lucas,
+>
+>On Tue, 20 Feb 2024 23:29:54 -0600 Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>>
+>> Looking at https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e
+>> it seems we still don't have drm-xe-next branch in linux-next.
+>>
+>> Stephen, could you please add it? Or do I have to do something on my end
+>> before that?  This is the branch:
+>>
+>> https://gitlab.freedesktop.org/drm/xe/kernel drm-xe-next
+>
+>Added from tomorrow.  Currently the only contact is yourself.  Do you
+>want anyone else (or a mailing list) as well?
+>
+>Do you want the drm-xe-fixes branch included as well?
 
-Signed-off-by: Adam Green <greena88@gmail.com>
----
- drivers/gpu/drm/panel/panel-sitronix-st7701.c | 158 +++++++++++++++++-
- 1 file changed, 157 insertions(+), 1 deletion(-)
+I don't think it's needed since drm-xe-next covers what is in
+drm-xe-fixes. Please add other maintainers and mailing list:
 
-diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7701.c b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-index 421eb4592b61..d08e8f4c39dd 100644
---- a/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-+++ b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-@@ -423,6 +423,62 @@ static void kd50t048a_gip_sequence(struct st7701 *st7701)
- 		   0xFF, 0xFF, 0xFF, 0xFF, 0x10, 0x45, 0x67, 0x98, 0xBA);
- }
- 
-+static void odroid_go_ultra_gip_sequence(struct st7701 *st7701)
-+{
-+	ST7701_DSI(st7701, 0x01);
-+	msleep(20);
-+	ST7701_DSI(st7701, 0x11);
-+	msleep(120);
-+
-+	ST7701_DSI(st7701, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x10);
-+	ST7701_DSI(st7701, 0xC0, 0xE9, 0x03);
-+	ST7701_DSI(st7701, 0xC1, 0x11, 0x02);
-+	ST7701_DSI(st7701, 0xC2, 0x31, 0x08);
-+	ST7701_DSI(st7701, 0xCC, 0x10);
-+	ST7701_DSI(st7701, 0xB0, 0x00, 0x0D, 0x14, 0x0D, 0x10, 0x05, 0x02, 0x08,
-+		   0x08, 0x1E, 0x05, 0x13, 0x11, 0xA3, 0x29, 0x18);
-+	ST7701_DSI(st7701, 0xB1, 0x00, 0x0C, 0x14, 0x0C, 0x10, 0x05, 0x03, 0x08,
-+		   0x07, 0x20, 0x05, 0x13, 0x11, 0xA4, 0x29, 0x18);
-+	ST7701_DSI(st7701, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x11);
-+	ST7701_DSI(st7701, 0xB0, 0x6C);
-+	ST7701_DSI(st7701, 0xB1, 0x43);
-+	ST7701_DSI(st7701, 0xB2, 0x07);
-+	ST7701_DSI(st7701, 0xB3, 0x80);
-+	ST7701_DSI(st7701, 0xB5, 0x47);
-+	ST7701_DSI(st7701, 0xB7, 0x85);
-+	ST7701_DSI(st7701, 0xB8, 0x20);
-+	ST7701_DSI(st7701, 0xB9, 0x10);
-+	ST7701_DSI(st7701, 0xC1, 0x78);
-+	ST7701_DSI(st7701, 0xC3, 0x78);
-+	ST7701_DSI(st7701, 0xD0, 0x88);
-+	msleep(120);
-+
-+	ST7701_DSI(st7701, 0xE0, 0x00, 0x00, 0x02);
-+	ST7701_DSI(st7701, 0xE1, 0x08, 0x00, 0x0A, 0x00, 0x07, 0x00, 0x09,
-+		   0x00, 0x00, 0x33, 0x33);
-+	ST7701_DSI(st7701, 0xE2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+		   0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
-+	ST7701_DSI(st7701, 0xE3, 0x00, 0x00, 0x33, 0x33);
-+	ST7701_DSI(st7701, 0xE4, 0x44, 0x44);
-+	ST7701_DSI(st7701, 0xE5, 0x0E, 0x60, 0xA0, 0xA0, 0x10, 0x60, 0xA0,
-+		   0xA0, 0x0A, 0x60, 0xA0, 0xA0, 0x0C, 0x60, 0xA0, 0xA0);
-+	ST7701_DSI(st7701, 0xE6, 0x00, 0x00, 0x33, 0x33);
-+	ST7701_DSI(st7701, 0xE7, 0x44, 0x44);
-+	ST7701_DSI(st7701, 0xE8, 0x0D, 0x60, 0xA0, 0xA0, 0x0F, 0x60, 0xA0,
-+		   0xA0, 0x09, 0x60, 0xA0, 0xA0, 0x0B, 0x60, 0xA0, 0xA0);
-+	ST7701_DSI(st7701, 0xEB, 0x02, 0x01, 0xE4, 0xE4, 0x44, 0x00, 0x40);
-+	ST7701_DSI(st7701, 0xEC, 0x02, 0x01);
-+	ST7701_DSI(st7701, 0xED, 0xAB, 0x89, 0x76, 0x54, 0x01, 0xFF, 0xFF,
-+		   0xFF, 0xFF, 0xFF, 0xFF, 0x10, 0x45, 0x67, 0x98, 0xBA);
-+	ST7701_DSI(st7701, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x00);
-+	ST7701_DSI(st7701, 0x3A, 0x70);
-+	ST7701_DSI(st7701, 0x53, 0xEC);
-+	ST7701_DSI(st7701, 0x55, 0xB3);
-+	ST7701_DSI(st7701, 0x5E, 0xFF);
-+	ST7701_DSI(st7701, 0x29);
-+	msleep(50);
-+}
-+
- static void rg_arc_gip_sequence(struct st7701 *st7701)
- {
- 	st7701_switch_cmd_bkx(st7701, true, 3);
-@@ -470,7 +526,7 @@ static int st7701_prepare(struct drm_panel *panel)
- 				    st7701->supplies);
- 	if (ret < 0)
- 		return ret;
--	msleep(20);
-+	msleep(120);
- 
- 	gpiod_set_value(st7701->reset, 1);
- 	msleep(150);
-@@ -875,6 +931,105 @@ static const struct st7701_panel_desc kd50t048a_desc = {
- 	.gip_sequence = kd50t048a_gip_sequence,
- };
- 
-+static const struct drm_display_mode odroid_go_ultra_mode = {
-+	.clock		= 29170,
-+
-+	.hdisplay	= 480,
-+	.hsync_start	= 480 + 12,
-+	.hsync_end	= 480 + 12 + 12,
-+	.htotal		= 480 + 12 + 12 + 38,
-+
-+	.vdisplay	= 854,
-+	.vsync_start	= 854 + 2,
-+	.vsync_end	= 854 + 2 + 19,
-+	.vtotal		= 854 + 2 + 19 + 22,
-+
-+	.width_mm	= 70,
-+	.height_mm	= 140,
-+
-+	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
-+};
-+
-+static const struct st7701_panel_desc odroid_go_ultra_desc = {
-+	.mode = &odroid_go_ultra_mode,
-+	.lanes = 2,
-+	.format = MIPI_DSI_FMT_RGB888,
-+	.panel_sleep_delay = 120,
-+
-+	.pv_gamma = {
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC0_MASK, 0),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC4_MASK, 0xd),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC8_MASK, 0x14),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC16_MASK, 0xd),
-+
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC24_MASK, 0x10),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC52_MASK, 0x5),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC80_MASK, 0x2),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC108_MASK, 0x8),
-+
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC147_MASK, 0x8),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC175_MASK, 0x1e),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC203_MASK, 0x5),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC231_MASK, 0x13),
-+
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC239_MASK, 0x11),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 2) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC247_MASK, 0x23),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC251_MASK, 0x29),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC255_MASK, 0x18)
-+	},
-+	.nv_gamma = {
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC0_MASK, 0),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC4_MASK, 0xc),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC8_MASK, 0x14),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC16_MASK, 0xc),
-+
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC24_MASK, 0x10),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC52_MASK, 0x5),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC80_MASK, 0x3),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC108_MASK, 0x8),
-+
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC147_MASK, 0x7),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC175_MASK, 0x20),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC203_MASK, 0x5),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC231_MASK, 0x13),
-+
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC239_MASK, 0x11),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 2) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC247_MASK, 0x24),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC251_MASK, 0x29),
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
-+		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC255_MASK, 0x18)
-+	},
-+	.nlinv = 1,
-+	.vop_uv = 4887500,
-+	.vcom_uv = 937500,
-+	.vgh_mv = 15000,
-+	.vgl_mv = -9510,
-+	.avdd_mv = 6600,
-+	.avcl_mv = -4400,
-+	.gamma_op_bias = OP_BIAS_MIDDLE,
-+	.input_op_bias = OP_BIAS_MIN,
-+	.output_op_bias = OP_BIAS_MIN,
-+	.t2d_ns = 1600,
-+	.t3d_ns = 10400,
-+	.eot_en = true,
-+	.gip_sequence = odroid_go_ultra_gip_sequence,
-+};
-+
- static const struct drm_display_mode rg_arc_mode = {
- 	.clock          = 25600,
- 
-@@ -1055,6 +1210,7 @@ static const struct of_device_id st7701_of_match[] = {
- 	{ .compatible = "anbernic,rg-arc-panel", .data = &rg_arc_desc },
- 	{ .compatible = "densitron,dmt028vghmcmi-1a", .data = &dmt028vghmcmi_1a_desc },
- 	{ .compatible = "elida,kd50t048a", .data = &kd50t048a_desc },
-+	{ .compatible = "hardkernel,odroid-go-ultra-panel", .data = &odroid_go_ultra_desc },
- 	{ .compatible = "techstar,ts8550b", .data = &ts8550b_desc },
- 	{ }
- };
--- 
-2.34.1
+M:      Oded Gabbay <ogabbay@kernel.org>
+M:      Thomas Hellström <thomas.hellstrom@linux.intel.com>
+L:      intel-xe@lists.freedesktop.org
+
+Looking at drm-intel and drm-misc, they are using a special
+for-linux-next. We may eventually adopt the same workflow, but I will
+have to check with other maintainers.
+
+thanks
+Lucas De Marchi
+
+>
+>Thanks for adding your subsystem tree as a participant of linux-next.  As
+>you may know, this is not a judgement of your code.  The purpose of
+>linux-next is for integration testing and to lower the impact of
+>conflicts between subsystems in the next merge window.
+>
+>You will need to ensure that the patches/commits in your tree/series have
+>been:
+>     * submitted under GPL v2 (or later) and include the Contributor's
+>        Signed-off-by,
+>     * posted to the relevant mailing list,
+>     * reviewed by you (or another maintainer of your subsystem tree),
+>     * successfully unit tested, and
+>     * destined for the current or next Linux merge window.
+>
+>Basically, this should be just what you would send to Linus (or ask him
+>to fetch).  It is allowed to be rebased if you deem it necessary.
+>
+>-- 
+>Cheers,
+>Stephen Rothwell
+>sfr@canb.auug.org.au
+
 
 
