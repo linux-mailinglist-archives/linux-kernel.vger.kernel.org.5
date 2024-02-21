@@ -1,166 +1,159 @@
-Return-Path: <linux-kernel+bounces-75475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC01C85E935
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A96CC85E937
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18E601C210C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:44:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D43121C219D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8437281213;
-	Wed, 21 Feb 2024 20:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B178182D91;
+	Wed, 21 Feb 2024 20:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARWqzCTU"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bOwkt4+P"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FA73A1DB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39963A1DB
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708548237; cv=none; b=QfqgbQ5zW3Le73Bk5j/uLHQvrWs1Q9K3zyNgltf0+W7ViRMk/SSm4zU1qCc+IFuOpQYsowZyR0kV6PQmza5/ZYyukFTLQ3f+EBx5s/c1Qxlehs4mFvHxCoLw+J+f0slUDlL+ShSiEywrNTP4OgOieJ4JtdztHY4B+R/RqPsD7hc=
+	t=1708548363; cv=none; b=dGgMeWoQ835blgVqSyxiaFJ3qRV/zzE0nER2YqiF/85c7hioS0TO93RwBukcsMLS4MZcoeKR5QvVbPmw4tJjEVpcoq1yFwNsNGzRyYtiTA8yEjPpBKAMDu7VL5ytYdDR1oZi8FB2BNvu48tPUrbL5CrvSb/TP3FXMPeBWr7i+V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708548237; c=relaxed/simple;
-	bh=c8MfMgRUZW8qxd9gubgL7YFRZDYcZnmwcwl2hw5IXdk=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PKQDkiPossPzyitnev53c2xXy5g2e1DunU16kGLTBCFt5+DoGy3WT9PZTlQ9Ol3AjJYx4jDMe/whkkRpZIkassGcNzbBkqhNWzzo96wNFO69ZtbLc8E7hY+6aPcOgvsa28M9X+42Toqe78pSLRCPnozFRs9D2GDRjxV6MUw4WkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ARWqzCTU; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41275d2edbcso8311925e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:43:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708548234; x=1709153034; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RQKBdsBXJqQPwRNGAXBAfHtnvpBdZt9I1p+3iXhYFuE=;
-        b=ARWqzCTUh0LqBDoxJkxEF3XYXXJQmdFFGepPJPdi13GbcvI8YShn0aP6rEFo9G8DuH
-         EszBgGu6CC+87ULJ3DmKn07SOmB2+e5MkhdWw2bEcGH7DT2gZfewG8QSca8l60y0Um63
-         Ldk/ERjkw152/ZdjqVntWBd8u2dSENgAbfgAlVafrukXpMZpRZd+6siZWAC9DywEALRp
-         crPZFtfac7yiaCS+PAPUAw8JkkPzStO5iO1S0Ys2AvrehAMf4OzAIP3M03DP0Xc7CXCZ
-         +qGAFCbfs/ceM+DWqTIBLTO6Wa8v0CpXYYzeMVGBlswr9uxOgBiEn2cYwJw2Yo/X1KHx
-         yC/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708548234; x=1709153034;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RQKBdsBXJqQPwRNGAXBAfHtnvpBdZt9I1p+3iXhYFuE=;
-        b=KyP/x5wM7GWi2t8D+grOar0p+7+TM+/W2SDUzSqhT+3ZphnmLYsq6UBLOGIKxUKp7q
-         bYoaMvIpsRlaZQQh4NMenAhEFUql5i4UADCu/8+Qe1BQgLXoqLzfBU5fAEYRCQqnKyXY
-         jpQ3acSRgNy7VdRTBY4O9TVR8VzIx4/EwCYpsFrUkd6GsG9TYhH0WDETIczeJWV3/jbK
-         4z11G/ysWAbU3j5uqtHLmip4xZpcxVyDQvc9v+JfL5udZKSrZTJrmNNJbY6O39xy7YiU
-         w0vMOW8tA8Oro8y8awfYjeTNgCSf8gevLm2dWcIc1Q+VptazOt2SIdeJtHEglQhICuXB
-         4kdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVyEYXElxI9YXNc9E1sVEZWW1ufoI5T1oSjM8TaLG62a7w1NGWt7yW19N6rQt/RSi5lXdpu0IrkI7JEVNXsSN1+fDESvkvvG6T6Aft9
-X-Gm-Message-State: AOJu0YyCpFJ6vInstI4hTAD3argLEoILbOA/8VsxolnDiATIiJM+9arB
-	4PkZJ50nviC8OYxbsejsTqMc5vL0IcsAwBSBqdNqrIVQHPhjk0qg
-X-Google-Smtp-Source: AGHT+IGgtUvjV/jJGCiYwhCbpRW1x+SE9MZ7JJC29jUKrNye7C5xmVAOxyBEWykJhlJrHuiU8UEJBw==
-X-Received: by 2002:a05:600c:6cf:b0:412:d8d:1d98 with SMTP id b15-20020a05600c06cf00b004120d8d1d98mr15226515wmn.37.1708548234197;
-        Wed, 21 Feb 2024 12:43:54 -0800 (PST)
-Received: from localhost (host86-164-109-77.range86-164.btcentralplus.com. [86.164.109.77])
-        by smtp.gmail.com with ESMTPSA id bp24-20020a5d5a98000000b0033cdf4bea19sm19940088wrb.9.2024.02.21.12.43.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 12:43:53 -0800 (PST)
-Date: Wed, 21 Feb 2024 20:41:39 +0000
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Yajun Deng <yajun.deng@linux.dev>, akpm@linux-foundation.org,
-	vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/mmap: return early if it can't merge in vma_merge()
-Message-ID: <f3847dd7-5564-4d7e-951e-1a9d8f55fb78@lucifer.local>
-References: <20240221091453.1785076-1-yajun.deng@linux.dev>
- <20240221153827.wkmjnnwsf6lyxatc@revolver>
+	s=arc-20240116; t=1708548363; c=relaxed/simple;
+	bh=iM8MV5Msd3XD5oAsXRUHQ+igf5xx2/W9uKsW/QB5D9E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M6FSP+kkge0XVMHYbzZgopxeEEce1eJQrnT1AKaJ1qF0ezJ3ceWrMCl1DsBZESOGAYX1crnbmjq62WFJ/POyfDsmXrrxuF2i6hTFen7m3j9ZTwug4pAiehoBfbYVexQxr878IM3C9siFlu52ZN/rxapI4AOAR2fqLJ+Oir1BcEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bOwkt4+P; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708548362; x=1740084362;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=iM8MV5Msd3XD5oAsXRUHQ+igf5xx2/W9uKsW/QB5D9E=;
+  b=bOwkt4+POxHqQ9XT0R4O2PGX79KH3ZZFL3mnRSHxBi3aeBWiYxXYC8ip
+   B0mLRBgY/k9W8EdCQmVxYrrPtiru/bQJv83fC4wJ7i851WohXlaQIncYJ
+   N54WGNbJlgonlwdTaYnECjEX78noIJfSIHgeG+fZBwrtFkbQkWreO17jk
+   xWlB1HMvCPD4+N1G31cduiSlJfTzul7ffFaCx64Z15eW6QB9e7aCXkvbT
+   qGkhIBxUeURy38PEf1bRPNvOZW6i7QVHthec8Z9Bl3dO69ia3yIjKKC5N
+   gOWULgSOVreMZ3a6/Uc/7kcOheCKHyBvolt3ihqzvCskdIyBdFWg5e0wU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="14157576"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="14157576"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 12:46:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="9959036"
+Received: from remiller-mobl1.amr.corp.intel.com (HELO [10.209.48.179]) ([10.209.48.179])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 12:46:01 -0800
+Message-ID: <132c19fd-5969-4b46-be64-6f19f6927f10@intel.com>
+Date: Wed, 21 Feb 2024 12:45:59 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221153827.wkmjnnwsf6lyxatc@revolver>
+User-Agent: Mozilla Thunderbird
+Subject: Re: PKRU issue while using alternate signal stack
+Content-Language: en-US
+To: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "x86@kernel.org" <x86@kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ Keith Lucas <keith.lucas@oracle.com>,
+ Andrew Brownsword <andrew.brownsword@oracle.com>,
+ Dave Kleikamp <dave.kleikamp@oracle.com>, Joe Jin <joe.jin@oracle.com>
+References: <SJ0PR10MB447870F586BFD2F326F55C819F572@SJ0PR10MB4478.namprd10.prod.outlook.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <SJ0PR10MB447870F586BFD2F326F55C819F572@SJ0PR10MB4478.namprd10.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 10:38:27AM -0500, Liam R. Howlett wrote:
-> * Yajun Deng <yajun.deng@linux.dev> [240221 04:15]:
-> > In most cases, the range of the area is valid. But in do_mprotect_pkey(),
-> > the minimum value of end and vma->vm_end is passed to mprotect_fixup().
-> > This will lead to the end is less than the end of prev.
-> >
-> > In this case, the curr will be NULL, but the next will be equal to the
-> > prev. So it will attempt to merge before, the vm_pgoff check will cause
-> > this case to fail.
-> >
-> > To avoid the process described above and reduce unnecessary operations.
-> > Add a check to immediately return NULL if the end is less than the end of
-> > prev.
->
-> If it's only one caller, could we stop that caller instead of checking
-> an almost never case for all callers?  Would this better fit in
-> vma_modify()?  Although that's not just for this caller at this point.
-> Maybe there isn't a good place?
+On 2/21/24 11:54, Aruna Ramakrishna wrote:
+> If the pkru_write_default() call were to move up the flow here, before 
+> copy_fpstate_to_sigframe(), then the signal handling would work as 
+> expected. But this code/flow is quite complicated, and we’d appreciate 
+> some expert opinion.
 
-I definitely agree with Liam that this should not be in vma_merge(), as
-it's not going to be relevant to _most_ callers.
+First, I think you're not the first ones to report this, or want the
+behavior tweaked.  I can't seem to find the thread at the moment, but
+you might want to search to see if you have some fellow travelers here.
 
-I am not sure vma_modify() is much better, this would be the only early
-exit check in that function and makes what is very simple and
-straightforward now more confusing.
+This is a bit of a chicken-and-egg problem.  We used to have some
+complicated code to munge the (compacted+supervisor) kernel fpstate into
+the (uncompacted+user) userspace sigframe.  That sucked, so we
+simplified it to always use XSAVE to write the uncompacted+user format.
 
-And I think this is the crux of it - it's confusing that we special case
-this one particular non-merge scenario, but no others (all of which we then
-deem ok to be caught by the usual rules).
+But that implementation choice fundamentally means that the register
+state *MUST* match sigframe contents, at least at the time of XSAVE.
+That's in direct conflict to your requirement that the sigframe be
+written with different PKRU contents than what was in place at the time
+that the exception happened.
 
-I think it's simpler (and more efficient) to just keep things the way they
-are.
+That means we either need to abandon the xsave_to_user_sigframe()
+approach, or we need to do something like:
 
->
-> Or are there other reasons this may happen and is better done in this
-> function?
->
-> Often, this is called the "punch a hole" scenario; where an operation
-> creates two entries from the old data and either leaves an empty space
-> or fills the space with a new VMA.
->
-> >
-> > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> > ---
-> > v2: remove the case label.
-> > v1: https://lore.kernel.org/all/20240218085028.3294332-1-yajun.deng@linux.dev/
-> > ---
-> >  mm/mmap.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 0fccd23f056e..7668854d2246 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -890,6 +890,9 @@ static struct vm_area_struct
-> >  	if (vm_flags & VM_SPECIAL)
-> >  		return NULL;
-> >
-> > +	if (prev && end < prev->vm_end)
-> > +		return NULL;
-> > +
-> >  	/* Does the input range span an existing VMA? (cases 5 - 8) */
-> >  	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
-> >
-> > --
-> > 2.25.1
-> >
+	tmp_pkru = rdpkru();
+	wrpkru(0);
+	xsave_to_user_sigframe();
+	put_user(pkru_sigframe_addr, tmp_pkru);
 
-So overall I don't think this check makes much sense anywhere.
+Which is horrid.
 
-I think a better solution would be to prevent it happening _at source_ if
-you can find a logical way of doing so.
+There are other games you could play with get_user_pages(), vmap() and
+XSAVE but those would be even more horrid.
 
-I do plan to do some cleanup passes over this stuff once again so maybe I
-can figure something out that better handles non-merge scenarios.
-
-This is a great find though overall even if a patch doesn't make sense
-Yajun, thanks for this, it's really made me think about this case (+ others
-like it) :)
+The simplest option is to just leave the altstacks writeable by all.
 
