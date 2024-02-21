@@ -1,107 +1,141 @@
-Return-Path: <linux-kernel+bounces-73872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFA985CCDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:42:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B6685CCE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEF531C2199C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:42:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AA2F1F23195
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35093D65;
-	Wed, 21 Feb 2024 00:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C45423B7;
+	Wed, 21 Feb 2024 00:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UD0dE66U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EO1AKxM9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476F4259B;
-	Wed, 21 Feb 2024 00:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F0217D2;
+	Wed, 21 Feb 2024 00:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476138; cv=none; b=cKJU5NEox7fQi9RsPAVTFX1/LoGs7Zf9CRi+JxkgEmR6vWUxx89X3ZgGsCoMkj/gezV7Y8su8WddtT/IhSY+NYIkmQL2VUJh+3+L5IIuPo5H6GfYA+pcURdHxgK9+1Rv83GJirMrTT2laJenJg7zc9hi6K1a0+y+Sb6MYLP+VHo=
+	t=1708476293; cv=none; b=rLYu+ukfo5jA5KyJgvV4+4ZVmxTMNgD3m9OF854cldBrkXlVbTbdVQW2HkyIsZrgIXbB9+a6IHy0N432IRMtCeKxQZHAbxvV4oTYX5YBZc3sZrIZwwjunJbAmAsgE5PYDnVSLYT+nKkS0MQS3kxdwuM76xGJ3WC3vNi6hylmk2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476138; c=relaxed/simple;
-	bh=Y3Wm7OwuVFt4aWjhjtNgPADfLE1yoIPV/Vl/eO3VRK0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=Y4xIC+2R0l06c+yCQV1JZ2Aha5L3AMTVfJo7WZwU1adXyd+OsePzphHqVMZRUvK3mFj8HA8nCAtPdYpItAHH3DANWWqG3CgTkC3HPqW5mjCEBLc/nhqI2lzAgiV7LMOfWQJAQUybdj++vh9Iony+NzFmW0HiBL8JpTf5vgAJB2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UD0dE66U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76C38C433C7;
-	Wed, 21 Feb 2024 00:42:15 +0000 (UTC)
+	s=arc-20240116; t=1708476293; c=relaxed/simple;
+	bh=RgYHLlEs8Obx/1+1Ex9Dia48d76DvmFNDuLMAR9oXbs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q8QCQiikidltPOET8y3Lh/KyvGv+l38zGWeXrV3B/NlZJDSR8u7+bWKpfhqNatbkaU8CZvR6yIGOSMo4FWwNMLAXD6arwEKkCb5iS/GWkZFDIR3K7erWCvjHebPaWtKLP/Exz1N89ckeS3n3uXPbq+0ZHosQ14YlkAk3ff6ffLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EO1AKxM9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C393C433F1;
+	Wed, 21 Feb 2024 00:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708476137;
-	bh=Y3Wm7OwuVFt4aWjhjtNgPADfLE1yoIPV/Vl/eO3VRK0=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=UD0dE66UmF+uiSs+1SjG/JUqr9qEaVSdd4Rdg/vl1XXX4RCvxr8NN3c5QQRk5l3w9
-	 10M6Ia50KDodPYPJbctvmMH12v9hqMJk47QQTatxd2PIiRDFlfxYIJix3WAC1n7weF
-	 +XfimmmXutN4KUw5vkkiE+9xySK0UIfOYDMMZQhmFCgTPaIlFBMy/bedgz3w2w1N/1
-	 nXq7IlHp8IAj0wHGZU51afuRKsmD5IVOhl53doczjW1KwVVX6i2qF9KBzQ7HoiBl7q
-	 20D0tVWDPIpTsna1BYsi3kxSZbiskQJI8t5c2IuQKmLTWM+zCHluQyoYtNFuN5nAQe
-	 eRUzNlhdyQUZg==
+	s=k20201202; t=1708476293;
+	bh=RgYHLlEs8Obx/1+1Ex9Dia48d76DvmFNDuLMAR9oXbs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EO1AKxM9atAW5ijESg1UGQbijOEntefJ4W7hvVziFA0UrM4OUrijGVaBzcLEs6wYr
+	 OjSIBHChIOgwKca7pXNbM5Cobz19+3leTFG2K/9EVjkOotzvVw0v6ez05ByOvLbcwV
+	 +CEf8bXXKN6XhhDI0KQZwE7hmlaMqLtNtNfWohmrOO5PLVL5FNBfFfrfun8qdbWle6
+	 BBkj3Iud3EUQQytsOc+psDxTBNOG28HZowRKkkW/VLD4pWv0zXFVJLZNdlQZAg0FeB
+	 on/Je8QMYpg2sD3Y5jNv2RyOVaFeGMIIzBve14j+nne6Gk0zkfJUvj0vvAw6pPQKrV
+	 0fcsjUUDb1b7Q==
+Date: Wed, 21 Feb 2024 00:44:43 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "dalias@libc.org" <dalias@libc.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <cffc9c7e-ba1c-4894-a455-8b2d687182cd@sirena.org.uk>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
+ <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
+ <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 21 Feb 2024 00:42:13 +0000
-Message-Id: <CZAC8SNXYDU6.2GHMH4MJAOA9C@seitikki>
-To: "Lino Sanfilippo" <l.sanfilippo@kunbus.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, "Daniel P. Smith"
- <dpsmith@apertussolutions.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Sasha
- Levin" <sashal@kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Kanth Ghatraju"
- <kanth.ghatraju@oracle.com>, "Peter Huewe" <peterhuewe@gmx.de>
-Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
- <20240131170824.6183-2-dpsmith@apertussolutions.com>
- <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
- <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
- <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
- <91f600ef-867b-4523-89be-1c0ba34f8a4c@kunbus.com>
- <CZA9CM3PDILC.82JMLUWMB6B7@seitikki> <CZA9GMC718HA.1JFHTTWV563IE@seitikki>
- <9da1855b-eca2-4c11-a69d-e01494c985d1@kunbus.com>
-In-Reply-To: <9da1855b-eca2-4c11-a69d-e01494c985d1@kunbus.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zmCyS0Odp0mOsqor"
+Content-Disposition: inline
+In-Reply-To: <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+X-Cookie: E = MC ** 2 +- 3db
 
-On Tue Feb 20, 2024 at 11:26 PM UTC, Lino Sanfilippo wrote:
->
->
-> On 20.02.24 23:31, Jarkko Sakkinen wrote:
-> > ATTENTION: This e-mail is from an external sender. Please check attachm=
-ents and links before opening e.g. with mouseover.
-> >=20
-> >=20
-> > On Tue Feb 20, 2024 at 10:26 PM UTC, Jarkko Sakkinen wrote:
-> >> On Tue Feb 20, 2024 at 8:54 PM UTC, Lino Sanfilippo wrote:
-> >>> for (i =3D 0; i <=3D MAX_LOCALITY; i++)
-> >>>     __tpm_tis_relinquish_locality(priv, i);
-> >>
-> >> I'm pretty unfamiliar with Intel TXT so asking a dummy question:
-> >> if Intel TXT uses locality 2 I suppose we should not try to
-> >> relinquish it, or?
-> >>
-> >> AFAIK, we don't have a symbol called MAX_LOCALITY.
-> >=20
-> > OK it was called TPM_MAX_LOCALITY :-) I had the patch set applied
-> > in one branch but looked up with wrong symbol name.
-> >=20
->
-> Sorry for the confusion. The code was just meant to sketch a solution, it=
- was=20
-> written out of my head and I just remembered that Daniels patch set intro=
-duced
-> some define for the max number of the localities. I did not look up the c=
-orrect
-> name though.
 
-NP
+--zmCyS0Odp0mOsqor
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-BR, Jarkko
+On Wed, Feb 21, 2024 at 12:35:48AM +0000, Edgecombe, Rick P wrote:
+
+> doing. But those threads might be using shadow stack instructions
+> (INCSSP, RSTORSSP, etc). These are a collection of instructions that
+> allow limited control of the SSP. When shadow stack gets disabled,
+> these suddenly turn into #UD generating instructions. So any other
+> threads executing those instructions when shadow stack got disabled
+> would be in for a nasty surprise.
+
+> Glibc's permissive mode (that disables shadow stack when dlopen()ing a
+> DSO that doesn't support shadow stack) is quite limited because of
+> this. There was a POC for working around it, but I'll stop there for
+> now, to not spam you with the details. I'm not sure of arm and risc-v
+> details on this specific corner, but for x86.
+
+We have the same issue with disabling GCS causing GCS instructions to
+become undefined.
+
+--zmCyS0Odp0mOsqor
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXVR3oACgkQJNaLcl1U
+h9BO9Qf/bgPI/9ROkHiV6cP5ag9FVPBuoU4y8o043FWrLxXipYjgLbjIps3r7NYd
+VLNWiX+sScsGrwtujlkAC3JYU0QAro+3+MY0cp+MjZopgqrEpOHlREM+dZO4FSB+
+BH4GTQgpADdgkbaukCb71Yd8D8HkPkpjvvsEGO6Kv2Bq4kMF6w2sd5O/llI+5BPN
+0v1hps6/0VWFICJibmb4hRIRPMjb91mxGQRdpF8OTCgHa0w4UXaTHLttIE3iqCd4
+nyeOZPkoIxUv3fYTVZjAqm6emWXXodOaOQrOtjTM1shBFck2DtY+hJJopNkuwE2j
+qeuz0TLv83oNLhiCiSUgT5gKjQrvdA==
+=VhGm
+-----END PGP SIGNATURE-----
+
+--zmCyS0Odp0mOsqor--
 
