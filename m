@@ -1,124 +1,116 @@
-Return-Path: <linux-kernel+bounces-73887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF4385CD28
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:53:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C611685CD2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850531F236A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:53:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A51A11C22939
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEAC23DE;
-	Wed, 21 Feb 2024 00:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B29A20E3;
+	Wed, 21 Feb 2024 00:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kWOT7l0O"
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rjc63krm"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CDE1C20
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351821851;
+	Wed, 21 Feb 2024 00:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476792; cv=none; b=cZAftpa3i7E5azt7MgtOy+o9ZYILEo1QB1fq/YQMefGHepD3EHTQhdUCNbmMjCjGJMpWqr8PK+cNarYpvnsF4UJ1o4VHCGpiIl+I1LPVY2swKZVe2t58gWlFiSnuOYT4wVR0FPXTrKIHu8D226wv7WQBCdWCKhMi5PVYH/muKsw=
+	t=1708476961; cv=none; b=PGNhD6xrywqJ75jost0R6GSdNF50Szk/nYJrO73SxJTv8bPB4GIz74KbJx3dHOqsePshNyNgJscgEIFO/qhr42cKTMW242ahHcmLeaDkLIQh7Nyx1rE7T91I+YmMExgspj7Aps4bg+ccR+voiyA5J4Q4xg37Ywk70BtbSTCurkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476792; c=relaxed/simple;
-	bh=hd0lhH+wZU4zitJitsjtcio44xa5sDrhwLIhJx54M48=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PNW8x+6g9kpFumMQlQNOFkKY2qhAJ5JEKWudZX1UfxLrYXdFMAx1vl//z7vlbOf7fQSQKnpCOJC/tboGorBk1TOQfKaaoMa6iBD6Sw2vjl8NHBu8h6Z1GdNAwSPvObccmgFl9sa5tmln6AFx+EzJGuWjA+ZXWLmy1aSvzKqr2Mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kWOT7l0O; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-428405a0205so86751cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:53:10 -0800 (PST)
+	s=arc-20240116; t=1708476961; c=relaxed/simple;
+	bh=h59A0nTdMaS4QknwwTF1iUgQxO7ZN7Hhiedyja68IoA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i5fEOKnL2ihBzGrHo29k6+a/Fg5fcYWBzgoSzgSEnZEJtDYKSL3Ru1xxof25H6+vrf8EsjqfQDy5+6IAp46BkHQ+8r1cnZ+M5cgDM6mfY6GS6Dv9QYRq8M21cljECZlF5zmMCoy9nYBEKfM5X8yqegtccJfDo5lbJqbGtigM7TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rjc63krm; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c1593b82acso1488101b6e.0;
+        Tue, 20 Feb 2024 16:55:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708476789; x=1709081589; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t3aliKXEbglyQXiBZG3IVeVy5el2cZXqVD0gVl1TNUU=;
-        b=kWOT7l0OVNXQJZGbA0M2wa8mXmNF1FzbDVMSzI8aBoJlPp8DAsoPt5ay+l9NA0qIDN
-         ST85QDVzD2RnqQnK2kkylX5HySvD6oj+ys2U/pPzHCih2jwfFd5OjD41xjMTlPTSY0Gd
-         vtmDD8G+imhgluv4ZRtdPo/F2xG8rbhPOAoWM4Gi37eNTscCafk2/N5devtB7AS2b1cr
-         hKOCsm+VcJKUN3+owsqWk4/PYWJ5npvYrkA1/14SQknr72D43w1VsbmKGwK29j337cHx
-         8tjup32fJy0MOEowzOcRrMJalOoULQCoqeyBB2qjueWfVSLLmrjjEyNfaUfSAn9vVfaN
-         rhSQ==
+        d=gmail.com; s=20230601; t=1708476959; x=1709081759; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xbjrdBYSMSwTJFCNzhO+Z2LsLT583lrbV5fyqTeY+XA=;
+        b=Rjc63krmidw/Yyq/Br1y2IuNlURYOajSGAi3FtH05P67g58mvw/vBnK59SHIIpHLUJ
+         5tihZzaTRY6qzLhL4nmNFpt6UHZvVsGx0dT92IS387nJrKZ6bUe5vjYj0un5OM5OyfBk
+         3BrSrDpxC3l/utJ+hrcA9DQTtwRXytzdac9VMiKOG3z5d0wDKtL9rWKQqvcP08B1G/bm
+         apgHGKxwDt6tz7t63pbvdAdZURVrNjz/AcKRcNrSWv2E6nCQMlEjJi4QdtFWPlHG0iQx
+         JQvxG5z5wrXGbKru6mtGmC6kd7iPQNPZsE5pU0vo4+7eooY2QCLMSWCfu/GhXymmhLL5
+         tRVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708476789; x=1709081589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t3aliKXEbglyQXiBZG3IVeVy5el2cZXqVD0gVl1TNUU=;
-        b=X8DuZfXNEVl0cPtt7hDvcNCxKGPidzNPc143q/LFpK3ei9I9fZfBhunAVCC/HcVwDp
-         APOdzZPeaB5wBkn65RwhM6JuLSxaIfYyZGlTZZbyDevVpqbQt3qnM4hCVV/9Khu8EboS
-         tADlpoB8Uvw1XQup0F3oghQSwWS9l78cRPzY2B6+pkcLjObD1DvePv9hDVBw7HLioLE7
-         htDMxA3yzLqFump0qZkTJYXnyQnad3JPmO/BiJ/YXjE22dWtKimEIqJ60GLF9QvJIW9F
-         W6FEacVBOAn29Sy1WKwtTkzugNQVPpmFOoFzkpVKaf19mBPfvFwZPhe4lBf7aTvAOqmF
-         8ObQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2Krm6TWKi7Foac3xlj7jp3wYFN+4MJFGTtdjDjfATNGs3xrtrT9k/4rD71ZJgmm+pDaESbiN5HWakdrAMk6mPktQlDO0PW3g5mHKf
-X-Gm-Message-State: AOJu0YzKvg7DOomQAZqzgkJjW+ZL/d0f6LLiRr0Efz+c7ETgy2NWQl8t
-	FvnQ96E9AbxaKhgqBmvfSBKlp3LeAS+sWoQbSoYiVF6sqOisYanU0Dk+96jfdqYaQX7AiyqlY6y
-	4t5c2k0SSKK4ZA4vW3zeQ0NNzg4yFtBWup8bW
-X-Google-Smtp-Source: AGHT+IGuojBOIL3NwHNGp1txCVvfo0pbzvMxcixAlnHZkwYRAeUSF6WVNWbxiaJVoKHnLXQs66Ob2cvkY1Z84vxB6qY=
-X-Received: by 2002:ac8:7c47:0:b0:42e:36fe:df90 with SMTP id
- o7-20020ac87c47000000b0042e36fedf90mr46324qtv.1.1708476789278; Tue, 20 Feb
- 2024 16:53:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708476959; x=1709081759;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xbjrdBYSMSwTJFCNzhO+Z2LsLT583lrbV5fyqTeY+XA=;
+        b=rSMpCWk/T2Df0mF+iP87ALLE4dLeOtLlQA+UFOYGPCvB12OBkNaVHqqxA7xbjYQfpS
+         yiXS+BAT0j//HxDpl+3hPxpo+VPYP7gAt3bJA+85avYG2h2Gw3Wp4jBFl8tELEs5F/hx
+         8e5YAGlO3WMCw8x38njCFG1Y7UF+lkcSY7+GgphSQZ+y6nymmN4jVk1qjW5Yj/6ET+rI
+         T4JgqF2BOLy+Jpx04euEcq0Bsl6x5o/++kCsn0nb73O45ZequVWlOkEKflcc/iRA3/Q+
+         xRj/JBMml5tHe5qAWGpgA6WcuQDkIpaD+b3KGnZ0x4uHRtQAfAj5rD5GKJefayBpdB3k
+         QZNg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOQmPdOcxJ31490t9e48Z8LBkJLnipA66MszAbvOdv1NT7fkCYshK+TDhQLdo3NBfMgAUmlyIf/a+mgAVbCMIzVQ3Mi23V2eI4ZX143TQJpcrxVRcLSxZYadW+6aDHxW0JRBnlUg9Fpg==
+X-Gm-Message-State: AOJu0Yzy9/y3jf186xI/ecZqnMeqqjIKz1Omfgqc2mseTqguohrrprlt
+	x+DVJq/tHa3suZobDWJ7rckXysaNe4WIVn+LDXpHIZKNtiKRcBEo
+X-Google-Smtp-Source: AGHT+IFlU7LrKI7VOyrfBior6ztLkrCMZihaVPFxiVnZL5Rgokt2/ol7hhYNSt0YU93vVPl35sWq6A==
+X-Received: by 2002:a05:6808:1987:b0:3c1:67e5:90fb with SMTP id bj7-20020a056808198700b003c167e590fbmr3312383oib.50.1708476959196;
+        Tue, 20 Feb 2024 16:55:59 -0800 (PST)
+Received: from rigel ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id i4-20020a62c104000000b006de050cf904sm7508723pfg.22.2024.02.20.16.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 16:55:58 -0800 (PST)
+Date: Wed, 21 Feb 2024 08:55:53 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip
+ device is removed
+Message-ID: <20240221005553.GA41819@rigel>
+References: <20240220111019.133697-1-herve.codina@bootlin.com>
+ <20240220111019.133697-3-herve.codina@bootlin.com>
+ <20240220142959.GA244726@rigel>
+ <20240220192657.3dd9480c@bootlin.com>
+ <20240221002555.GA3311@rigel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220175333.3242277-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240220175333.3242277-1-andriy.shevchenko@linux.intel.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 16:52:31 -0800
-Message-ID: <CAGETcx8w8YhC89JOYkQgcXrZgqfXOUXHXq5+86OdHGSfqz0D=w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] driver core: Drop unneeded 'extern' keyword in fwnode.h
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221002555.GA3311@rigel>
 
-On Tue, Feb 20, 2024 at 9:53=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Feb 21, 2024 at 08:25:55AM +0800, Kent Gibson wrote:
+> On Tue, Feb 20, 2024 at 07:26:57PM +0100, Herve Codina wrote:
+> > Hi Kent,
+> >
+> >
+> > I probably missed something but I don't see this use after free.
+> > Can you give me some details/pointers ?
+> >
 >
-> We do not use 'extern' keyword with functions. Remove the last one
-> mistakenly added to fwnode.h.
+> What is to prevent userspace releasing the request and freeing the
+> linereq while you use it?  The use after free is anywhere that is
+> possible.
 >
-> Fixes: 19d0f5f6bff8 ("driver core: Add fw_devlink.strict kernel param")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Acked-by: Saravana Kannan <saravanak@google.com>
+To answer my own question - the notifier call chain itself will prevent
+that - linereq_free() will get blocked on the notifier chain semaphore
+until the notifier call returns. So there is no use after free problem.
 
-> ---
-> v2: fixed a couple of typos in the Subject
->  include/linux/fwnode.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> index 2a72f55d26eb..2d23a14857c7 100644
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -209,9 +209,9 @@ static inline void fwnode_dev_initialized(struct fwno=
-de_handle *fwnode,
->                 fwnode->flags &=3D ~FWNODE_FLAG_INITIALIZED;
->  }
->
-> -extern bool fw_devlink_is_strict(void);
->  int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup=
-);
->  void fwnode_links_purge(struct fwnode_handle *fwnode);
->  void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
-> +bool fw_devlink_is_strict(void);
->
->  #endif
-> --
-> 2.43.0.rc1.1.gbec44491f096
->
+My bad - sorry for the added confusion.
+
+Cheers,
+Kent.
 
