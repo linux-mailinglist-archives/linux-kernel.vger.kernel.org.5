@@ -1,167 +1,118 @@
-Return-Path: <linux-kernel+bounces-75019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D83A985E1AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D70A285E1B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:45:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1663DB241E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:45:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C3ECB251FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618B380BE1;
-	Wed, 21 Feb 2024 15:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A47811FE;
+	Wed, 21 Feb 2024 15:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="UiBU70eP"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="inS2MZoI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801E58060B
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B588060B;
+	Wed, 21 Feb 2024 15:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708530297; cv=none; b=LEua+mv/dV8TpU7McZcIbYB4nbxxxA3BcNItfvSLib+1r753gopftBCNM4v0QEsTmBVN2l/ZzCVQ47awoSBQ0dw1KE9/pZLaKd5Jh0FPt42SvAM2EQwsojEnO61v0m/pe4GnV7NOr4f3uEsqNlr9WunFMYesve4/UmLOSnjouzw=
+	t=1708530303; cv=none; b=oCRT9rHfZBOYqvbWgskL/dp+frsxXTRf5pFxMZXa2FEHiO3yh0s5ifLA+z7AMZkt2Amp6m/MF2aAC/N1FT5Dg2c7mYBZWpoqFZ8mnEqqXpR+KOXZEZ7ipFQpkQHrh9RJATNrBjnFgxgw/qI4BOCxZlOh+1EwD6UXHVrvPvod6yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708530297; c=relaxed/simple;
-	bh=v7xENna07dOPYtuJ7TmCIX8PyRwRMSPGrpmiGon5vdM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tgHnGM/kovur6RviNfDV45ibphfpHBPB2RIz9YbUMj/OXrlvJ8GguFW8lvprq7NaKrBB2mrEXl85FiYNC5kYsbNzp30M7vJVw3NUpA61Hq9oDhkEMbzLbpmgTG7a9hn9vCUk+HO1jgDyIDFfoq9r97PLOup1fgqI6I3mQLk5xZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=UiBU70eP; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d220e39907so75229051fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:44:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708530293; x=1709135093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8/c7XUwFLRKiENJ2ttxrXFWUv4lnYluY1pRWORvLrOE=;
-        b=UiBU70ePtZFNj8bD6ZQVvcnLzrLrzJgriQeyyN59N+MiROhdQvPtLWkpzwFkXbDsfV
-         61Xqn+NBCaqxtvLxSBsn8DySpwAKruTFnQ9mboFv629b2qCZ5jyumvpmglGH3/oLtoRl
-         m3Vj2v6/B5NYBzLqQnZnME7OKzdxvTiyStoQz13FtqAuN+46QfUcXX1EtzA1qflFG64R
-         JrWj1ARkc65dofPm1aWPZamQpNkCJYNZX867vVQy/DOJjKGI4j0ZEDD3Pjo/k+yeg4u6
-         xv+gxWtSicUCZiOI0UmL4O1PVX7qvO8dzCg+4B1+nMFqzLyEBRvJUij0RCh8VtKIz2Sf
-         vRDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708530293; x=1709135093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8/c7XUwFLRKiENJ2ttxrXFWUv4lnYluY1pRWORvLrOE=;
-        b=xRkmX4lnvqBj3xx0xmDFCLH6/qorm6TFrmMjvGrK7O/FRFS2k972biNQi7NkBufd81
-         a6jou8Jep4gKwGy4RtxzjfHqVlS/ZyPp47DJQZMOHWPlbLHijhWQPYasGN91nW1LRgg5
-         rQZFb5LmS9sxLDb0wC5Vt1ypCHDBxMWgIvmVoEwn8y0US+DYZvuwl7Zw/zBvrULKYd77
-         SO+GcPa9eVqfEPYfRxUalcSxEudxYMN1rPj3HpI+pyTxv9whbmXwlTZUmvgkSWwriRUn
-         XLIfHMbrRxy9D2Cv5gCcymFY/uZ9d2FUxqa/sfitbXUlRkraI3tdy6nY2IcOY0IT8/8X
-         +xSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGGWC/GqA6tqYLEg6U0dDYXMFZ+y3t6n6wCOiXJI88NdoObmuenBNAH97jjXftfH81xt1GvrMP6oIDcsqWhXyLZdYwFd4VQxW2whej
-X-Gm-Message-State: AOJu0YxTdD9+zTAU/BPzFULsFWz/4OJ0g1FfbAaygzuyppOFBAYrOdZb
-	k2jkq+/7ksu5YKoittH2Pz8I2UUL4UvFVvNPldXKftyWDqf2Nz+o+zOHvEXZeRDKtuSy0sVFhtg
-	GJBfWXpQBuq2j47IzcrdjaDLzYTp7tB8oNU5pEQ==
-X-Google-Smtp-Source: AGHT+IE2jKiwWEUrCCoIvtI9A8GIbL8yLwVMX2t69LD0QqhK1FpKoYRVbIXn9VjUSpzRsw9bvzLU5Cehq1ppTDpUuPs=
-X-Received: by 2002:a2e:8018:0:b0:2d2:37d6:350c with SMTP id
- j24-20020a2e8018000000b002d237d6350cmr8461819ljg.12.1708530293554; Wed, 21
- Feb 2024 07:44:53 -0800 (PST)
+	s=arc-20240116; t=1708530303; c=relaxed/simple;
+	bh=Dx1Syz9O7J+YAvuPHu3WZWipG8gNA1k5VFmM93qyay0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f3BNrN+R112FhM2bHye12Px2+ozZyKUPWv01RUeUoewxfbIiNrsKOUd2+vuqBrn+5XWY/LIAVyufw3MKWF9zql/k7HoPTzD5aHpXgwP59PsdmgdWM7NXsS8/3bKhOjBuw82cVYPWLNKXMiiiFMUWMpyBxsueNUrmILc/SgpHz1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=inS2MZoI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F0EC43142;
+	Wed, 21 Feb 2024 15:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708530302;
+	bh=Dx1Syz9O7J+YAvuPHu3WZWipG8gNA1k5VFmM93qyay0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=inS2MZoI7gFXzSn1OqaDYssIZN6F+jKDv0klzkkRDqjzr1Eid3oa1ab8ohcoq7RHl
+	 Ph/53TomNjZqyH/2+MJyw6w6r+vJyEB6H1dVH61lizDeZOD0R8MPh1PDRFYbQ2ubrE
+	 //Sr6E2bjoFqGp1iM5t7kSkr/lyBMOnIRtNFD1WyErTmUbx7yYiUnoCyzpH50yMYnO
+	 BbUREfBcFRGeWi34XfuyED1VwAbs+m8QLHHp9INeKs4zbx+8VcVdWdHOVmuRMEItML
+	 17u4UUbPksP9Q2kWvyM4XoexTdehAa1ZqL5ZKoRIVKxr9RuMpSHhJjMY/cMRSKWamG
+	 VYtLGZXxJEwhw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Rob Herring <robh@kernel.org>,
+	Yangtao Li <frank.li@vivo.com>,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] soc: qcom: spm: fix building with CONFIG_REGULATOR=n
+Date: Wed, 21 Feb 2024 16:44:51 +0100
+Message-Id: <20240221154457.2007420-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216-ad7944-mainline-v2-0-7eb69651e592@baylibre.com>
- <20240216-ad7944-mainline-v2-1-7eb69651e592@baylibre.com> <20240221152226.GA2868707-robh@kernel.org>
-In-Reply-To: <20240221152226.GA2868707-robh@kernel.org>
-From: David Lechner <dlechner@baylibre.com>
-Date: Wed, 21 Feb 2024 09:44:42 -0600
-Message-ID: <CAMknhBFytGYNo8FviHepoxLApoGyo0mVhL2BzVmm1vt8-Evn9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: add ad7944 ADCs
-To: Rob Herring <robh@kernel.org>
-Cc: linux-iio@vger.kernel.org, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 9:22=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
-:
->
-> On Fri, Feb 16, 2024 at 01:46:18PM -0600, David Lechner wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-..
+The newly added code causes a build failure when -Werror is set:
 
-> > +  adi,spi-mode:
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    enum: [ single, multi, chain ]
-> > +    default: multi
-> > +    description: |
-> > +      * single: The datasheet calls this "3-wire mode". It is often us=
-ed when
-> > +        the ADC is the only device on the bus. In this mode, SDI is ti=
-ed to VIO,
-> > +        and the CNV line can be connected to the CS line of the SPI co=
-ntroller
-> > +        or to a GPIO, in which case the CS line of the controller is u=
-nused.
->
-> We have a standard property for this.
+drivers/soc/qcom/spm.c:388:12: error: 'spm_get_cpu' defined but not used [-Werror=unused-function]
 
-As discussed in v1 [1], the datasheet's definition of "3-wire mode" is
-_not_ the same as the standard spi-3wire property. I can add that to
-the description here to clarify (I hoped changing the enum name was
-enough, but perhaps not). Or is there a different property you are
-referring to?
+Remove the #ifdef and instead use an IS_ENABLED() check that lets the
+compiler perform dead code elimination instead of the preprocessor.
 
-[1]: https://lore.kernel.org/all/20240216140826.58b3318d@jic23-huawei/
+Fixes: 6496dba142f4 ("soc: qcom: spm: add support for voltage regulator")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/soc/qcom/spm.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
->
-> > +      * multi: The datasheet calls this "4-wire mode". This is the con=
-vential
-> > +        SPI mode used when there are multiple devices on the same bus.=
- In this
-> > +        mode, the CNV line is used to initiate the conversion and the =
-SDI line
-> > +        is connected to CS on the SPI controller.
->
-> That's "normal" mode.
+diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
+index 5eefaec72a13..06e2c4c2a4a8 100644
+--- a/drivers/soc/qcom/spm.c
++++ b/drivers/soc/qcom/spm.c
+@@ -411,7 +411,6 @@ static int spm_get_cpu(struct device *dev)
+ 	return -EOPNOTSUPP;
+ }
+ 
+-#ifdef CONFIG_REGULATOR
+ static int spm_register_regulator(struct device *dev, struct spm_driver_data *drv)
+ {
+ 	struct regulator_config config = {
+@@ -474,12 +473,6 @@ static int spm_register_regulator(struct device *dev, struct spm_driver_data *dr
+ 
+ 	return 0;
+ }
+-#else
+-static int spm_register_regulator(struct device *dev, struct spm_driver_data *drv)
+-{
+-	return 0;
+-}
+-#endif
+ 
+ static const struct of_device_id spm_match_table[] = {
+ 	{ .compatible = "qcom,sdm660-gold-saw2-v4.1-l2",
+@@ -559,7 +552,10 @@ static int spm_dev_probe(struct platform_device *pdev)
+ 	if (drv->reg_data->reg_offset[SPM_REG_SPM_CTL])
+ 		spm_set_low_power_mode(drv, PM_SLEEP_MODE_STBY);
+ 
+-	return spm_register_regulator(&pdev->dev, drv);
++	if (IS_ENABLED(CONFIG_REGULATOR))
++		return spm_register_regulator(&pdev->dev, drv);
++
++	return 0;
+ }
+ 
+ static struct platform_driver spm_driver = {
+-- 
+2.39.2
 
-That was my first choice, but the datasheet uses the term "normal
-mode" to mean not TURBO mode which is something else unrelated to the
-SPI mode.
-
-
->
-> > +      * chain: The datasheet calls this "chain mode". This mode is use=
-d to save
-> > +        on wiring when multiple ADCs are used. In this mode, the SDI l=
-ine of
-> > +        one chip is tied to the SDO of the next chip in the chain and =
-the SDI of
-> > +        the last chip in the chain is tied to GND. Only the first chip=
- in the
-> > +        chain is connected to the SPI bus. The CNV line of all chips a=
-re tied
-> > +        together. The CS line of the SPI controller is unused.
->
-> Don't you need to know how many chips are chained? In any case, you just
-> need a property for chain mode. There's some existing properties for
-> chained devices I think. Standard logic shift register based GPIO IIRC.
-
-Thanks, I see #daisy-chained-devices now. I missed that before.
-
->
-> CNV are tied together, but must be driven by something? I suppose
-> cnv-gpios?
-
-Yes.
-
-> But wouldn't that be the same as the SPI controller GPIO CS?
-> Does a SPI controller CS line connected to CNV not work in this case?
-
-Maybe technically possible if CS is inverted on the bus since the line
-has to be high to trigger the conversion and during the xfer.
 
