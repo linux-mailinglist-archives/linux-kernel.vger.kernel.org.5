@@ -1,181 +1,120 @@
-Return-Path: <linux-kernel+bounces-75049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0F8D85E228
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:57:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC6385E234
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB03D1C2225F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:57:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AF981C22F5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A8681AC6;
-	Wed, 21 Feb 2024 15:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E1B81742;
+	Wed, 21 Feb 2024 15:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XNtWvL40";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NhHE5x0C";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XNtWvL40";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NhHE5x0C"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M6uKue1h"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AEB343AAB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD4180C11
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708530894; cv=none; b=Q9VBd92koDr2Wfgew7Efd09reogXDsq//WbUz53I9YelnbM9iNijRm5L0KMSu4b2XsNvdHPCTKnhUO0s0sbcA1tsWvvR3zq3U+HUKqERcQrEgbdmj0OZGMMtWgtrOZHjpyelTA2EuR/jvjwl9z/LOAQITvwqJ3nFKmTq/7E5myE=
+	t=1708530991; cv=none; b=Ubr2+/32RaR1pd0DByNvjlDVIpGW164kRtQjARXK3e9CtVkEW/1jgFsaYEaJojHZ/o1dERe92A9pJKHVHW9N8mepMcYimeXRVzgGdugQNr4ib5tqNE6pbqZuLqMZM2aJCclOt7fUlvtNQUvJ2r0U3kvZXA8Wj+yldJdETv3f8JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708530894; c=relaxed/simple;
-	bh=yYK8rjdco7k6wR7fbp001J/0WmDT+IOZd2JC50HKr0I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LfKkzl0r+GYZCV+6ADENolsIel/bI8/5t3NjgGSeH1S9ipI+U0baV8a3J2ahj7mDtNI5y49HOLqyT5xOFBfUItnByZlT72hcCXYGRYMk2GTRNBKqHzpMrRKrVYkQn8gtnGRgMMaaLLZZhr15/HMOTKj+4KyrplvIkHXqdUWfVy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XNtWvL40; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NhHE5x0C; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XNtWvL40; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NhHE5x0C; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4A9F51FB66;
-	Wed, 21 Feb 2024 15:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708530890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1708530991; c=relaxed/simple;
+	bh=DxXEaPs1AbpSUHOuzvn5jW4oK4LHIugbcpGp7aTcqGQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h+ndrzuWC68RwbmgqJ0Axj0bJCnOVrTKBk5WzGj4gYYisdKzaQYZ5Q274LoCKdLN/Jykzhus77H12mh7bYHZYJt2/MgOCQA1tA8DspIyIT2QCETsoN+zb2Iyoo96wBwjU5yxaqtsEBM9f7Uj6dYLbtZXKdNG8eaLtQt6f7CotvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M6uKue1h; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708530985;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6c+PIWb1/kLk20NMKkb+j7MqFsNYlIIxImscXImM/9c=;
-	b=XNtWvL40Iu08zXUOV+Sd+vmATzuaOVs9doAzk7GuDloLhRKMTXXVsR+xJSnBSWwUdPijyF
-	Sng8zA0PuuVIBPF+5NvGOD+wqwOtw7P7Zi6vFLGToL9uYW3SGnE/8dlIOIFRbDBnk0IG6k
-	pJ4ZIuSJ1yOR+ct+92djhpBiTJQHTrM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708530890;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6c+PIWb1/kLk20NMKkb+j7MqFsNYlIIxImscXImM/9c=;
-	b=NhHE5x0CR69m3vLr7eJZgwAjcfuq2WnLoyfrltcZ1b07lYud/ZPEmbGXG3wSk71QLEMX2w
-	kYtQulQM/YzpNfBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708530890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6c+PIWb1/kLk20NMKkb+j7MqFsNYlIIxImscXImM/9c=;
-	b=XNtWvL40Iu08zXUOV+Sd+vmATzuaOVs9doAzk7GuDloLhRKMTXXVsR+xJSnBSWwUdPijyF
-	Sng8zA0PuuVIBPF+5NvGOD+wqwOtw7P7Zi6vFLGToL9uYW3SGnE/8dlIOIFRbDBnk0IG6k
-	pJ4ZIuSJ1yOR+ct+92djhpBiTJQHTrM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708530890;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6c+PIWb1/kLk20NMKkb+j7MqFsNYlIIxImscXImM/9c=;
-	b=NhHE5x0CR69m3vLr7eJZgwAjcfuq2WnLoyfrltcZ1b07lYud/ZPEmbGXG3wSk71QLEMX2w
-	kYtQulQM/YzpNfBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3CA2E13A69;
-	Wed, 21 Feb 2024 15:54:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YByTCcgc1mWjFgAAD6G6ig
-	(envelope-from <hare@suse.de>); Wed, 21 Feb 2024 15:54:48 +0000
-Message-ID: <95116d62-b254-4973-ad0e-01dc4dae7359@suse.de>
-Date: Wed, 21 Feb 2024 16:54:48 +0100
+	bh=DxXEaPs1AbpSUHOuzvn5jW4oK4LHIugbcpGp7aTcqGQ=;
+	b=M6uKue1hJyKHbkmAXnO2TxM0ht9ZD3azll64bDBD93JAFW4b7bBPLYtKKHMt3D/tE3dD3W
+	XdPxmlAiX+xBAaASfM2MZe3DrYajUMDqEfO4awnWG7gKWiVkWYYCKU6/A8MTNMcDLPb5gY
+	TiP90ApmTtcwpKLsYBjURgkMJ7lRVts=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-281-1DOE-IB4PKGYaucaHZEUdQ-1; Wed, 21 Feb 2024 10:56:23 -0500
+X-MC-Unique: 1DOE-IB4PKGYaucaHZEUdQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7816e45f957so128107085a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:56:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708530982; x=1709135782;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DxXEaPs1AbpSUHOuzvn5jW4oK4LHIugbcpGp7aTcqGQ=;
+        b=TTg609BHflZN170YJvW00/uOoJmflkpGNq1Iq3M0Lg91POgBPq4nGSbuGC4vyvnFEM
+         ufLkLCZPicyFYWaaQ7a5Y01ZD7N8Udl/L+OQ1Ats55u+69Y4zZzsnjRmC9CGRxMKR17L
+         whk7sZZe2rWie8ac2usyVd8pShzGn5FG2c2h39OeX3gbS9NLGVlbwpJ8MefxZtaGzxcN
+         ZsAwgXa5q2ZhAVTRZec4tmZGTM57ToyByu2tMrO4gpHjer3Xq0jnj2F7Nr1YowS+9hs7
+         jNyBfH0yaUBM+TWMwJeg3nBcwjLhyWCX+G5Vklzli8W8U2VbV+rVhvXC4DMUNJykuXjH
+         24iw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3lZmv/bZf0ghrcN+EVTbUHvqmLgxVWeECAPIFfgrvsPKmKpT5K3RpRaHTEe977F821LmFhcEngYGdkh21m3D/PygVqqOYWJk2hqMM
+X-Gm-Message-State: AOJu0YzTt128cp0ufaRl5Y6jSepSRZCaFMabaYaY7hdma+YEKDW5r7fN
+	d4Fdq21S79uuMdRlm3dBNsWkuFqwauJEq9cCFX+jRFN9yS4CTlMgf9H4PVPIB5bqzAHJBDY5f9X
+	ZCk36AdEKj3TEwwCal2N0SQm+0fL2cidvp8FeGvfJa27XHfGyzD6vVD5FDSYtr/mqvGrCvA==
+X-Received: by 2002:a05:620a:55b0:b0:787:747f:21b1 with SMTP id vr16-20020a05620a55b000b00787747f21b1mr7053298qkn.55.1708530982434;
+        Wed, 21 Feb 2024 07:56:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEOyjUl4IZVQ83TH6JGu+4yiX7k92dlbC7D3VEBhgZ9b2Of/Uqmh5YdT90xy5fe5wOxL0IXMA==
+X-Received: by 2002:a05:620a:55b0:b0:787:747f:21b1 with SMTP id vr16-20020a05620a55b000b00787747f21b1mr7053276qkn.55.1708530982206;
+        Wed, 21 Feb 2024 07:56:22 -0800 (PST)
+Received: from x1 (c-24-2-114-156.hsd1.pa.comcast.net. [24.2.114.156])
+        by smtp.gmail.com with ESMTPSA id y11-20020a05620a0e0b00b00785d538aebdsm4409941qkm.95.2024.02.21.07.56.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 07:56:21 -0800 (PST)
+Date: Wed, 21 Feb 2024 10:56:20 -0500
+From: Brian Masney <bmasney@redhat.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Maxime Ripard <mripard@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	Enric Balletbo i Serra <eballetbo@redhat.com>,
+	Erico Nunes <nunes.erico@gmail.com>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading
+ compressed FW support
+Message-ID: <ZdYdJILy9_anIsrr@x1>
+References: <20240221141350.3740488-1-javierm@redhat.com>
+ <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
+ <6scz7iti3tzzrd4ph3gnuc2pvkcbtuuicgfgujh3pa3c34kdkt@bhfa4xbxeu7t>
+ <cb8bf006-57df-494e-80f3-947582ec71f1@linaro.org>
+ <fy3wffb2jwv4veo3golfn5olri77clxywbuwuokese7sbobixd@mird5k66cl2w>
+ <56625c21-1b34-479b-b5b2-4c4d8b7a11b3@app.fastmail.com>
+ <724jnhrbs6r4q6whynr3aon5w7mhfvetlgcnts4nukvtxbuium@mrjv6apjqk7r>
+ <8ad96253-2053-4dc1-8dc1-d01d1fa36877@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] nvme-fabrics: introduce ref counting for
- nvmf_ctrl_options
-Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Sagi Grimberg <sagi@grimberg.me>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240221132404.6311-1-dwagner@suse.de>
- <20240221132404.6311-4-dwagner@suse.de>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240221132404.6311-4-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=XNtWvL40;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=NhHE5x0C
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.50 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -4.50
-X-Rspamd-Queue-Id: 4A9F51FB66
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ad96253-2053-4dc1-8dc1-d01d1fa36877@linaro.org>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On 2/21/24 14:24, Daniel Wagner wrote:
-> The FC transport is offloading the connect attempt to a workqueue. When
-> the attempt fails the transport is starting to cleanup resources. It is
-> possible for user space to trigger a crash because nvmf_ctrl_options are
-> exposed to sysfs.
-> 
-> This crash wasn't observed with blktests nvme/041 until now because the
-> retry loop was usually trying for several times (e.g. with defaults
-> 600s) and the test would trigger the cleanup itself. Though we the
-> recent change not retrying to use invalid credentials the crash can be
-> easily triggered.
-> 
-> The simplest way to control the life time of nvmf_ctrl_options is by
-> using ref counting.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fabrics.c | 22 +++++++++++++++++++---
->   drivers/nvme/host/fabrics.h |  6 +++++-
->   drivers/nvme/host/fc.c      | 14 +++++++++-----
->   drivers/nvme/host/rdma.c    | 18 +++++++++++++-----
->   drivers/nvme/host/tcp.c     | 21 ++++++++++++++-------
->   drivers/nvme/target/loop.c  | 19 +++++++++++++------
->   6 files changed, 73 insertions(+), 27 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On Wed, Feb 21, 2024 at 04:53:26PM +0100, Krzysztof Kozlowski wrote:
+> It would be cool to group also all the per-SoC needs in dedicated
+> fragments...
 
-Cheers,
+It would also be nice to have a fragment to enable the various tracing
+options.
 
-Hannes
-
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Brian
 
 
