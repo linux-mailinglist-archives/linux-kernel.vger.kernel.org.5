@@ -1,200 +1,139 @@
-Return-Path: <linux-kernel+bounces-74483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2BD85D509
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:02:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D6485D506
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EBBF1C23C33
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:02:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E84022881A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03BB4CB20;
-	Wed, 21 Feb 2024 09:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="CmKjDyny"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0BE4C3D0;
+	Wed, 21 Feb 2024 09:54:28 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6F34C61B;
-	Wed, 21 Feb 2024 09:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC9A46558
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509272; cv=none; b=lys0VGLjXYoj47V6Q8zCjWv48rIbVUVHrylavSTxj194fBIGBktE908AcPZPKX1fShlo7sN75EWaptGKFatnBZWQMktBEzH+VicoeHVnQNBokK0EVz0psWDetruN9DizNtCbTybahwPowIjy1ugCVxNpIrb174J2+m2L5GlUS5g=
+	t=1708509268; cv=none; b=fQJt+4BB7EJUjndHAdoc200a4RAss1bJakdGeDGV5y4wHPclXJHlJjWfIRGFhjmIXjjqH1m3zH/x8kYX5yGV3vrCLMAAdeOfv0xnN1liu4whuwkhFmSDvEOkzpKMp+o7nl4umv2bBOG8Q/QYT3AJaYr63cFH7LtdW4rbirb4ijQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509272; c=relaxed/simple;
-	bh=D4a6qDhm/r1zitj6K4QT5PaTygu+/3cz0YZaNV8v6hc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ZCwPbDh2mQLCd/rJfkDWS56niQxqsp/JzjgHZSc0fxaAycD79SBfmi4VkGSD/o3sfqTpi1qNBFh06ohb7frcCTpq3puTNaMDXyufjoosgDnqdKKYhivzNhyTFJ2RSkMq1jPuEBuQy3BZhkrQBircvstgO+sd7AZZLP6wt0Jxdu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=CmKjDyny; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41L7H87L021527;
-	Wed, 21 Feb 2024 10:54:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=tGWKi3XRrYtmuARfCajUNkylogiWFbJvSMiv0BOvGE0=; b=Cm
-	KjDyny3E82jh462D50nD6iH3WH8IaDkECoKy3+F033mPxLSmyHaUAygGk1paftxf
-	MdF55AHvDGSZCeDkJW/NX1eyDd7G60FM75zwN9VQH4FtsyP1Np+yGhRaOCRrH3k2
-	Mo9dw/mXq3vDQ8AvOC8s1PkuL+No2LCrlfX+dY8fJL9zQ4qxywJ+oLKNkA1lKiXe
-	9bQX1nPAeNNote3eo1xc2jvtmV9FnPg+0FhXwiUL1CjPIREecsoC4koOcKLcubwY
-	k/GZM3Azom3PgBwKH2L0+7c2tGXM9oHcQhtAIvVFuLRWITnPFx63KBf1eSJrSSC7
-	ygbIBPzWT4bfebdCkVsg==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wd202tjj1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 10:54:07 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 801B540051;
-	Wed, 21 Feb 2024 10:53:49 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A5ADB232FEA;
-	Wed, 21 Feb 2024 10:53:13 +0100 (CET)
-Received: from [10.201.20.71] (10.201.20.71) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 21 Feb
- 2024 10:53:13 +0100
-Message-ID: <b381cb72-943d-473f-b2f2-eb288132aaac@foss.st.com>
-Date: Wed, 21 Feb 2024 10:53:12 +0100
+	s=arc-20240116; t=1708509268; c=relaxed/simple;
+	bh=4jrgDTIItOaqzUueSGfkLHel//P9YB1P9vaM2W3h81k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=atTwnGlYW7Q6f7ySjHOLRZVs71hTftpfbjROyPby+kiZhLtqx1pIghOoxpNskZGDg+0t/zqF3gemNsamGYXhXFimuguvlnrPpqXURV4LoPVG4FqcZPfY9hqdpOo9w9+7HnSJlYe+yZdlP7zwKmrkkuFsrKHND0AFBEwgyRuTTy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rcjIq-0007GT-3K; Wed, 21 Feb 2024 10:54:12 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rcjIo-0020pI-8r; Wed, 21 Feb 2024 10:54:10 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rcjIo-008mZ2-0W;
+	Wed, 21 Feb 2024 10:54:10 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: kernel@pengutronix.de,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Frederic Barrat <fbarrat@linux.ibm.com>,
+	Andrew Donnellan <ajd@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Amol Maheshwari <amahesh@qti.qualcomm.com>,
+	linux-arm-msm@vger.kernel.org,
+	John Stultz <jstultz@google.com>,
+	Tomas Winkler <tomas.winkler@intel.com>,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Derek Kiernan <derek.kiernan@amd.com>,
+	Dragan Cvetic <dragan.cvetic@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Appana Durga Kedareswara rao <appana.durga.kedareswara.rao@amd.com>
+Subject: [PATCH 00/11] misc: Convert to platform remove callback returning void
+Date: Wed, 21 Feb 2024 10:53:44 +0100
+Message-ID: <cover.1708508896.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] serial: st-asc: don't get/put GPIOs in atomic context
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Dan
- Carpenter <dan.carpenter@linaro.org>,
-        Linus Walleij
-	<linus.walleij@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        Bartosz
- Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240220113410.16613-1-brgl@bgdev.pl>
-Content-Language: en-US
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-In-Reply-To: <20240220113410.16613-1-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2007; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=4jrgDTIItOaqzUueSGfkLHel//P9YB1P9vaM2W3h81k=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl1cgqTOtIAO8z59oSIx/sIvhuKH1+b51NAFFWR 3bkknjc77KJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZdXIKgAKCRCPgPtYfRL+ Tk2MCACCKkCdjbNZyc29xxFm4VWa+DhS4+htkcYrw+AdxDNVtW4qk33M6GeSdZmSv2NHyRXr6/e eN0IlmfFp1fVqxEGMnYT8GDi23GMW10uOku+Lfn67lM0aeNnpY7zfosgREfEoNKbM/i5vWpoZHp brAQt+3AmSOat2+Ti1HlNfBW6HUGna/AG7Ymg44ojVw57dZg5/zrML+ZNcq0Z8aKVkDMojJ117Y NKTYvX4AR5Cq4ed/0UoJUPGi+OrhYSbO9+mj6sj298JriIeXAhhVaO7iRejCq4N53L4tXaePU3P Y1hef+xmfdWUvxcS+rNEwgwOHiSwDgSg4f56iCTdzP8ZN9FP
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+Hello,
+
+this series converts all drivers below drivers/misc to struct
+platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+Provide a remove callback that returns no value") for an extended
+explanation and the eventual goal.
+
+All conversations are trivial, because their .remove() callbacks
+returned zero unconditionally.
+
+There are no interdependencies between these patches, so they could be
+picked up individually. But I'd hope that Greg or Arnd picks them up all
+together.
+
+Best regards
+Uwe
+
+Uwe Kleine-König (11):
+  misc: atmel-ssc: Convert to platform remove callback returning void
+  cxl: Convert to platform remove callback returning void
+  misc: fastrpc: Convert to platform remove callback returning void
+  misc: hisi_hikey_usb: Convert to platform remove callback returning
+    void
+  mei: vsc: Convert to platform remove callback returning void
+  misc: open-dice: Convert to platform remove callback returning void
+  misc: sram: Convert to platform remove callback returning void
+  misc: ti-st: st_kim: Convert to platform remove callback returning
+    void
+  misc: vcpu_stall_detector: Convert to platform remove callback
+    returning void
+  misc: xilinx_sdfec: Convert to platform remove callback returning void
+  misc: xilinx_tmr_inject: Convert to platform remove callback returning
+    void
+
+ drivers/misc/atmel-ssc.c           | 6 ++----
+ drivers/misc/cxl/of.c              | 5 ++---
+ drivers/misc/fastrpc.c             | 6 ++----
+ drivers/misc/hisi_hikey_usb.c      | 6 ++----
+ drivers/misc/mei/platform-vsc.c    | 6 ++----
+ drivers/misc/open-dice.c           | 5 ++---
+ drivers/misc/sram.c                | 6 ++----
+ drivers/misc/ti-st/st_kim.c        | 5 ++---
+ drivers/misc/vcpu_stall_detector.c | 6 ++----
+ drivers/misc/xilinx_sdfec.c        | 5 ++---
+ drivers/misc/xilinx_tmr_inject.c   | 5 ++---
+ 11 files changed, 22 insertions(+), 39 deletions(-)
 
 
+base-commit: 4893c639cc3659cefaa675bf1e59f4e7571afb5c
+-- 
+2.43.0
 
-On 2/20/24 12:34, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Since commit 1f2bcb8c8ccd ("gpio: protect the descriptor label with
-> SRCU") gpiod_set_consumer_name() calls synchronize_srcu() which led to
-> a "sleeping in atomic context" smatch warning.
-> 
-> This function (along with gpiod_get/put() and all other GPIO APIs apart
-> from gpiod_get/set_value() and gpiod_direction_input/output()) should
-> have never been called with a spinlock taken. We're only fixing this now
-> as GPIOLIB has been rebuilt to use SRCU for access serialization which
-> uncovered this problem.
-> 
-> Move the calls to gpiod_get/put() outside the spinlock critical section.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/linux-gpio/deee1438-efc1-47c4-8d80-0ab2cf01d60a@moroto.mountain/
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
-> v2 -> v3:
-> - we only need to change the GPIO configuration for RTS in certain situations
->   so use a separate variable for storing that information; if we don't then we
->   may end up putting the descriptor when setting a different option
-> - I dropped Linus tag as the code change significantly
-> 
-> v1 -> v2:
-> - initialize the 'manual_rts' variable to false as we don't always get to
->   the place where it's set
-> 
->  drivers/tty/serial/st-asc.c | 40 ++++++++++++++++++++++---------------
->  1 file changed, 24 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/st-asc.c b/drivers/tty/serial/st-asc.c
-> index bbb5595d7e24..a23e59551848 100644
-> --- a/drivers/tty/serial/st-asc.c
-> +++ b/drivers/tty/serial/st-asc.c
-> @@ -465,6 +465,7 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
->  			    const struct ktermios *old)
->  {
->  	struct asc_port *ascport = to_asc_port(port);
-> +	bool manual_rts, toggle_rts = false;
->  	struct gpio_desc *gpiod;
->  	unsigned int baud;
->  	u32 ctrl_val;
-> @@ -518,25 +519,13 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
->  
->  		/* If flow-control selected, stop handling RTS manually */
->  		if (ascport->rts) {
-> -			devm_gpiod_put(port->dev, ascport->rts);
-> -			ascport->rts = NULL;
-> -
-> -			pinctrl_select_state(ascport->pinctrl,
-> -					     ascport->states[DEFAULT]);
-> +			toggle_rts = true;
-> +			manual_rts = false;
->  		}
->  	} else {
->  		/* If flow-control disabled, it's safe to handle RTS manually */
-> -		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL]) {
-> -			pinctrl_select_state(ascport->pinctrl,
-> -					     ascport->states[NO_HW_FLOWCTRL]);
-> -
-> -			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
-> -			if (!IS_ERR(gpiod)) {
-> -				gpiod_set_consumer_name(gpiod,
-> -						port->dev->of_node->name);
-> -				ascport->rts = gpiod;
-> -			}
-> -		}
-> +		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL])
-> +			manual_rts = toggle_rts = true;
->  	}
->  
->  	if ((baud < 19200) && !ascport->force_m1) {
-> @@ -595,6 +584,25 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
->  	asc_out(port, ASC_CTL, (ctrl_val | ASC_CTL_RUN));
->  
->  	uart_port_unlock_irqrestore(port, flags);
-> +
-> +	if (toggle_rts) {
-> +		if (manual_rts) {
-> +			pinctrl_select_state(ascport->pinctrl,
-> +					     ascport->states[NO_HW_FLOWCTRL]);
-> +
-> +			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
-> +			if (!IS_ERR(gpiod)) {
-> +				gpiod_set_consumer_name(gpiod,
-> +							port->dev->of_node->name);
-> +				ascport->rts = gpiod;
-> +			}
-> +		} else {
-> +				devm_gpiod_put(port->dev, ascport->rts);
-> +				ascport->rts = NULL;
-> +				pinctrl_select_state(ascport->pinctrl,
-> +						     ascport->states[DEFAULT]);
-> +		}
-> +	}
->  }
->  
->  static const char *asc_type(struct uart_port *port)
-
-Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
-
-Thanks
-Patrice
 
