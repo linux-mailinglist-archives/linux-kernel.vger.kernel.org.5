@@ -1,173 +1,150 @@
-Return-Path: <linux-kernel+bounces-74991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8698685E0E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:23:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947FA85E0ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:24:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A3CA1C2137E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:23:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EC28284D7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9D680616;
-	Wed, 21 Feb 2024 15:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD9480624;
+	Wed, 21 Feb 2024 15:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbWstRBj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jzh+VVl9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbWstRBj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jzh+VVl9"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X43WiF5R"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF708005D
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1DC80606
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708529028; cv=none; b=HNWqUpvvwuuDMgvTuHgTmOqlongUU+s8PjqXQPPYb87UopOCRFsTkLCiaDqjZra9ttK8Fm5atTN/sq7mCtZwr5kd2Ea8i0EpiZxr+7EN0FXDDujRAybGezvuuv4QNBkC99pBBt5eoysN0Ri/wdI79Ly1Sm1WdlV9MGVL+Jbq/3o=
+	t=1708529062; cv=none; b=E3rYHUi6teULmARJ3Y45JKAI2wcv7HN+NcDRPctMkgJlINrG/0O6R//R5v98xFObeeH4dD8MQY9B2lPVucWN4T1jALLNCiiqnqMfXlHW1yMqTMewF2KpDYkAvd3NQjEi48IB+Hbwv/BHEQDpnRwmi2ZeIHvDREu16/kWbDsV5X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708529028; c=relaxed/simple;
-	bh=7HdpLE4zlA19XMBlfJ008MrVhtqNeziWzHJKjOQ5KIY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X72H0Wq8bMhagPS+khhIRTOQw9Eihaq5pR3Uv+izMQK06VQS+Tkj87bV5rfm87/P/R4VjuSAbU4IRSnd2nXwtRpAilRj+pdVs65BbOlbhfKBReo3aKQSZ8xVWUDjALOzZ6r/B/lNPm0jX+PlirNF7HEWL93kEZ68rU2ujdQ46Tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbWstRBj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jzh+VVl9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbWstRBj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jzh+VVl9; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AE88422163;
-	Wed, 21 Feb 2024 15:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708529024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4d/yROKMdf9XfN6Ye5SUdQjzKdIEbWXHJFKPSeQOXa4=;
-	b=sbWstRBjonUPvBAM72NQLCkKY2URoer8R2LZ5N1M9HFXP9dkGD8tqh07AzyMGDotm27y58
-	voe9D8Ljv8jVhezUZICT3GZ0Z8C/mOJJhjOUfkKWwNOv2sYkbE8wfk0MKmDgMAZQ5qoCQH
-	x4IdiMstesm+H3vMN3796HB/IzL3qdU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708529024;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4d/yROKMdf9XfN6Ye5SUdQjzKdIEbWXHJFKPSeQOXa4=;
-	b=jzh+VVl9FaRx3oKH224igBHJ7Iq7nyGYIeOzcqimtsoBVcuCFunKddehZ56KKQ++BunyJW
-	NwbaqYRbMH1260BQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708529024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4d/yROKMdf9XfN6Ye5SUdQjzKdIEbWXHJFKPSeQOXa4=;
-	b=sbWstRBjonUPvBAM72NQLCkKY2URoer8R2LZ5N1M9HFXP9dkGD8tqh07AzyMGDotm27y58
-	voe9D8Ljv8jVhezUZICT3GZ0Z8C/mOJJhjOUfkKWwNOv2sYkbE8wfk0MKmDgMAZQ5qoCQH
-	x4IdiMstesm+H3vMN3796HB/IzL3qdU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708529024;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4d/yROKMdf9XfN6Ye5SUdQjzKdIEbWXHJFKPSeQOXa4=;
-	b=jzh+VVl9FaRx3oKH224igBHJ7Iq7nyGYIeOzcqimtsoBVcuCFunKddehZ56KKQ++BunyJW
-	NwbaqYRbMH1260BQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B5EE139D0;
-	Wed, 21 Feb 2024 15:23:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pHqtIYAV1mUgEAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 21 Feb 2024 15:23:44 +0000
-Message-ID: <8b2f876a-306c-49f3-8acb-6ac816fa0611@suse.cz>
-Date: Wed, 21 Feb 2024 16:23:44 +0100
+	s=arc-20240116; t=1708529062; c=relaxed/simple;
+	bh=G1SI2A6tUC59YrjJyks6t8vsbhf0181tsF0nRbc+Gok=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Qc1DEsAsFsVc4w4gTAW+RhAmyfGJ4PU8iJDsNhTVpUuQcPBa7TGDzxQ9UTqMROySbeFgmi0a/47ouoF8XORYI5ooOq1vxpCfN0aIEaUuYOrWVN8I2N+9XesuD2IBnj6tEzhxGoq5rYKkFHROnsQ2bJzvH+9oA9ncstMBkaORuFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X43WiF5R; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc05887ee9so8073367276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:24:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708529060; x=1709133860; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BHHzhvHN0kTOVo3wOm3ee1AH8U5eQGWfBAmKM9n5eN0=;
+        b=X43WiF5RExkr9EECTADddb6evCbVDhimXJjF9Z8G1tBPIpqd42YzvkWgXqXe0pwiMP
+         XvFq8cY20TKg3kTMLcAbc8ZqzGgkm+9WBF4vbuaQ/pJVl8BGWzw3Ev62NzGohQAFDAm1
+         BTyeR98Ap8Ovku2X+RUA5RZjqO1UKH/0Rx3cQp71NPWIN/OGRVPBsJhL481LsWlZH/aI
+         xDnSkpMoAAnT+hOEr/T4oYJdci78npqM8m+Qb3rJBGTWmrvrHRzEonmfw0AIDghXQ4q2
+         zaCcKaaxAHBCf3ojozyQz4NSepuHajT/O3By5RDbtoUi/LqUCzTzeNfS0rirPuDl0vzz
+         8TgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708529060; x=1709133860;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BHHzhvHN0kTOVo3wOm3ee1AH8U5eQGWfBAmKM9n5eN0=;
+        b=jrX4Ow8WI/t4VGePSO2lNPWJt8dVHz9shhovmez/BtslqeM5ZkBGcEINzUsLFbWBkf
+         k8lkfqcZyu5PMyN9ZPnJUbjvAVmQdc73akt/Iyy47Od3JQUA7TVRnpDKkH1FGr58hbVd
+         +YoYAyohoOrf7TJ6ZCoRvyfMXhBHJk9p+GDEVOp+mAN5Z0T83yNE4xvwRhzTxvdLGA/1
+         sthCmHFODklX49X69qpGOpXJlRDVrsO1emBC4jRNgsvNnZFExP0smOUrCFyb2cVlMcgP
+         C9EinAE09E7qgmhHO7osPP3sWnmagcw4c4dcxpXOW+JDsD3grSYA9E9+l1vmbQtIdOuQ
+         sAwA==
+X-Forwarded-Encrypted: i=1; AJvYcCXM4NKAwB0sezP/jvWTGakd5r4Q9kt6/U0wh0HF5dYbFQxJHUsnLKR+9gUVSe4Bmh2zAtS1J7K+3t+JLJ3vdxSmc9bwnVa2rpV0eGsQ
+X-Gm-Message-State: AOJu0YyzZyBBwKMdNGKp9u266NRMA7MTyubBE9iFShXgy0BPHG0Fdtq4
+	/WtwOtXY2+QOy3DErgyU8XouZIbOdwLnNqvuWXaTdpqM0qrECOFjhWZu8dRuwApzHQwh8JIz9pz
+	SQA==
+X-Google-Smtp-Source: AGHT+IHIiqpo182eOydyp2kAE2MyaxiISahNsXsmBtUhUZTch3wVQ+TmxdSEWBoV3EtlCh1QkxcGWISraHk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:114a:b0:dc6:b982:cfa2 with SMTP id
+ p10-20020a056902114a00b00dc6b982cfa2mr703388ybu.8.1708529060015; Wed, 21 Feb
+ 2024 07:24:20 -0800 (PST)
+Date: Wed, 21 Feb 2024 07:24:18 -0800
+In-Reply-To: <20240217055504.2059803-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] mm, slab: two minor cleanups
-Content-Language: en-US
-To: Chengming Zhou <chengming.zhou@linux.dev>,
- Pekka Enberg <penberg@kernel.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240221-slab-cleanup-v1-0-63382f41d699@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240221-slab-cleanup-v1-0-63382f41d699@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sbWstRBj;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jzh+VVl9
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.00)[44.09%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FREEMAIL_TO(0.00)[linux.dev,kernel.org,lge.com,linux-foundation.org,google.com,linux.com,gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.20
-X-Rspamd-Queue-Id: AE88422163
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+Mime-Version: 1.0
+References: <20240217055504.2059803-1-masahiroy@kernel.org>
+Message-ID: <ZdYVouaZX0AQF0V0@google.com>
+Subject: Re: [PATCH 1/2] kbuild: change tool coverage variables to take the
+ path relative to $(obj)
+From: Sean Christopherson <seanjc@google.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On 2/21/24 13:12, Chengming Zhou wrote:
-> Just two minor cleanups when reviewing the code.
-
-Merged for 6.9, thanks.
-
-> Thanks!
+On Sat, Feb 17, 2024, Masahiro Yamada wrote:
+> To maintain the current behavior, I made adjustments to two Makefiles:
 > 
-> Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+>  - arch/x86/entry/vdso/Makefile, which compiles vclock_gettime.o and
+>    vdso32/vclock_gettime.o
+> 
+>  - arch/x86/kvm/Makefile, which compiles vmx/vmenter.o and svm/vmenter.o
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
-> Chengming Zhou (2):
->       mm, slab: remove unused object_size parameter in kmem_cache_flags()
->       mm, slab: fix the comment
-
-	made this subject more specific:
-mm, slab: fix the comment of cpu partial list
-
 > 
->  mm/slab.h        |  3 +--
->  mm/slab_common.c |  2 +-
->  mm/slub.c        | 11 ++++-------
->  3 files changed, 6 insertions(+), 10 deletions(-)
-> ---
-> base-commit: c09a8e005eff6c064e2e9f11549966c36a724fbf
-> change-id: 20240221-slab-cleanup-df9652186012
+>  arch/x86/entry/vdso/Makefile |  2 ++
+>  arch/x86/kvm/Makefile        |  3 ++-
+>  scripts/Makefile.build       |  2 +-
+>  scripts/Makefile.lib         | 16 ++++++++--------
+>  4 files changed, 13 insertions(+), 10 deletions(-)
 > 
-> Best regards,
+> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+> index 7a97b17f28b7..148adfdb2325 100644
+> --- a/arch/x86/entry/vdso/Makefile
+> +++ b/arch/x86/entry/vdso/Makefile
+> @@ -9,7 +9,9 @@ include $(srctree)/lib/vdso/Makefile
+>  # Sanitizer runtimes are unavailable and cannot be linked here.
+>  KASAN_SANITIZE			:= n
+>  KMSAN_SANITIZE_vclock_gettime.o := n
+> +KMSAN_SANITIZE_vdso32/vclock_gettime.o	:= n
+>  KMSAN_SANITIZE_vgetcpu.o	:= n
+> +KMSAN_SANITIZE_vdso32/vgetcpu.o	:= n
+>  
+>  UBSAN_SANITIZE			:= n
+>  KCSAN_SANITIZE			:= n
+> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> index 475b5fa917a6..a88bb14266b6 100644
+> --- a/arch/x86/kvm/Makefile
+> +++ b/arch/x86/kvm/Makefile
+> @@ -4,7 +4,8 @@ ccflags-y += -I $(srctree)/arch/x86/kvm
+>  ccflags-$(CONFIG_KVM_WERROR) += -Werror
+>  
+>  ifeq ($(CONFIG_FRAME_POINTER),y)
+> -OBJECT_FILES_NON_STANDARD_vmenter.o := y
+> +OBJECT_FILES_NON_STANDARD_vmx/vmenter.o := y
+> +OBJECT_FILES_NON_STANDARD_svm/vmenter.o := y
+>  endif
 
+I'm 99% certain only svm/vmenter.S "needs" to be compiled with OBJECT_FILES_NON_STANDARD,
+and that vmx/vmenter.S got caught in the crossfire off commit commit 7f4b5cde2409
+("kvm: Disable objtool frame pointer checking for vmenter.S").
+
+"Needs" in quotes because I don't see any reason when __svm_vcpu_run() can't play
+the same games as __vmx_vcpu_run() to make stack validation happy, and
+__svm_sev_es_vcpu_run() flat out shouldn't be touching RBP.
+
+I'll throw together a series to (hopefully) remove OBJECT_FILES_NON_STANDARD
+completely.
+
+But for this patch/series, I think it makes sense to do a 1:1 conversion.  That'll
+make it much more straightforward to resolve the eventual conflict, assuming I am
+successful in dropping OBJECT_FILES_NON_STANDARD.
+
+Which is a very long-winded way of saying:
+
+Acked-by: Sean Christopherson <seanjc@google.com>
 
