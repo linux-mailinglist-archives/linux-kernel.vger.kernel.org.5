@@ -1,147 +1,130 @@
-Return-Path: <linux-kernel+bounces-74421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A571485D3D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:39:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293FD85D3DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:41:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B07D1F25584
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:39:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAE5D1F2507F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AFD3D3A7;
-	Wed, 21 Feb 2024 09:39:24 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202923D552;
+	Wed, 21 Feb 2024 09:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X2yWFv6P"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24173C496
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230803D3A1;
+	Wed, 21 Feb 2024 09:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708508363; cv=none; b=niROAcMoKV06nlIu9eGUmX1HqlZPcvO9DB6ZSSj5O6RuPEygmBWgUr4rGsXg3ip1cmOXcgTeeS31geYnytj/8xCIZ4eHn8BfJuFTxebQ3z/GpOIdcTHdbuV678F84XV0Fz+5IJEO/A5gm158pGBocN5skav4LUIIDpPoeyF2JG4=
+	t=1708508490; cv=none; b=OCX+HvVgO4OltOLoY+NGmYSZ1fV7/L0xMACRU3nC0JvyqO/3xMnhAg/R9/QHxa0TX8VstZ4ONoEJhK/+ekJ8ugV0cnSK8n+63X/iSpm8RXXKcSlcLLGF9I5WYMTpmji/Nxj7U1IKpTqTLmHzd3330Xw1jCaSXtoPqFe09squQNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708508363; c=relaxed/simple;
-	bh=wqv71yyakWWdzpHYlH9OK4dYiSB5s5d3x+wzGlkqaFg=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=HcxoM5TF/RterFQdpI9LReW1kjt6W3QfVNSo50nJsVHrBZejW1cE50M2utpMzUg9nsjQdaglhCxhkUToBWESjXIpIlJbatq6J05caQuvS8PlbEoEEURBfwRiIQH/M4K3GuR+tEakTrO6nmdT8iBZtU/k7D/FqKvlisr816ZjfHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Tfrlw2zf3z1Q8sM;
-	Wed, 21 Feb 2024 17:37:32 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id BD029140427;
-	Wed, 21 Feb 2024 17:39:11 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 21 Feb 2024 17:39:11 +0800
-CC: <yangyicong@hisilicon.com>, <will@kernel.org>, <mark.rutland@arm.com>,
-	<hejunhao3@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <prime.zeng@hisilicon.com>,
-	<fanghao11@huawei.com>, <linuxarm@huawei.com>
-Subject: Re: [PATCH 1/7] drivers/perf: hisi_pcie: Introduce
- hisi_pcie_pmu_get_filter()
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-References: <20240204074527.47110-1-yangyicong@huawei.com>
- <20240204074527.47110-2-yangyicong@huawei.com>
- <20240208120643.000042fa@Huawei.com> <20240208121800.000057a2@huawei.com>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <68d4382d-7b1a-f23e-3b33-c2fca708deaf@huawei.com>
-Date: Wed, 21 Feb 2024 17:39:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1708508490; c=relaxed/simple;
+	bh=yzhPkGmyhDClujHspv4zU8ozbniJXsmsLHFQtn3+hB4=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=nSc1zlQt1Z2N16RvOFwkJa+npzpmMukig2xvm8gwLmCFAkwdPul+1ju1ZtuHxbruxxEXp5GwpgRYGcN4Q6meJvWaIYyNhNxmiKAonBQR2ka40x/jaWqU+syvQDohzzeQAKdWJ2lTbwPZIF/pEciw72fjjMnXVfVQj8wFoWZdN+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X2yWFv6P; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6de3141f041so4480503b3a.0;
+        Wed, 21 Feb 2024 01:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708508488; x=1709113288; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jxPgBDv3C3dcuReLG+Pr4kZ7NGxk76ia560ll/5bMEk=;
+        b=X2yWFv6PPs7MO/iVMQFvFoNF/k1N4qzpQ7Et3K3IBd+kGmFod8nmBB1snnx/chLeif
+         6vqJMx0Z8PWNbmQSuCi6NPqh1BLCwpkbWOOOZFbKNqi8xBl7BpVA+4QMTqO1R+yj4QUQ
+         oaSZLBUaUqGIh8QhgnSqH6NgjhSESFwBpcCbHVATW7Nkx2pl9acFxwhG6rR7kl85/aBX
+         55ovLBIFDq3K/Sjsg7SVb2n06/MhRE+WTrJiW07uCqEjDeozc3Ck5yKMzOemozxhqex5
+         NxPDwjBezjsNk4rfqlNlAD13VzjibxgPxMWaF3Qrzi9N8N13amm5scM20w6J2nL9L6QH
+         hkVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708508488; x=1709113288;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jxPgBDv3C3dcuReLG+Pr4kZ7NGxk76ia560ll/5bMEk=;
+        b=fC4u5Gr9eo7uI0OXIHHV7er+cMM/MiMVKgjG3Qm2cRaZIX89JQqSYIZAZXVL6Xzsqk
+         h171zY2VGZu9gcvbVc24yLen/A0HgWr5Rci1hE5tyzPOq6liESIslWK1g6QEPH5L0+zV
+         wedQAcu6NrLRD4bLOQ3u4a79HV3n8abZ0F4aDssEPC4jOaG3VTI9WCcCRwsXjhNL7+Mc
+         EgHjOYE09Wj7BoKuUB56XnkRLCkRejcVHiwCsbAhjFEUMVBLJlQDbsy5pXbTQwHXW6EQ
+         DeWh6mfhmMCjwABYKc2m+Hq5TanMEsceZcS5K7dhX6GLhVlIVLO7FUO6cgIur2eom5yx
+         KWbw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXFALdeA5LDapNeZ1t4JNR5NUlSBgfvfLd7RHqYMGbg+kZZOAMDe4VWM1UdAZcDQl++u7WtiUmouqnpNDRbMuJ5xNIR3F88fICVCu/fgL+1Kpe4eYW2llwys4pAHUOWX2dEPVlKP1ybw==
+X-Gm-Message-State: AOJu0Yw56/wzdrqeDUV+II3e+H41f9RAKowL7ZJaMWmmFonmNl0xb3Xc
+	dk3fAh9Ofk+0sq84cqT8xDjmapzDkNFIFY7cUUL3qpESmL/s7Qd1
+X-Google-Smtp-Source: AGHT+IEpYDF/aIErFO50W/tttHeceZ9QK7f/ypdE9/vLUtf1QQi2UI/UoCC3API4C5Z9wcpvGwoo9g==
+X-Received: by 2002:a05:6a00:2d0d:b0:6e4:5cf5:1b5b with SMTP id fa13-20020a056a002d0d00b006e45cf51b5bmr10524465pfb.30.1708508488450;
+        Wed, 21 Feb 2024 01:41:28 -0800 (PST)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id lm4-20020a056a003c8400b006e488553f09sm1645026pfb.81.2024.02.21.01.41.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 01:41:28 -0800 (PST)
+From: Peter Yin <peteryin.openbmc@gmail.com>
+To: patrick@stwcx.xyz,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@aj.id.au>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/9] Revise Meta(Facebook) Harma BMC(AST2600)
+Date: Wed, 21 Feb 2024 17:39:15 +0800
+Message-Id: <20240221093925.2393604-1-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240208121800.000057a2@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500009.china.huawei.com (7.192.105.203)
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/8 20:18, Jonathan Cameron wrote:
-> On Thu, 8 Feb 2024 12:06:43 +0000
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
->> On Sun, 4 Feb 2024 15:45:21 +0800
->> Yicong Yang <yangyicong@huawei.com> wrote:
->>
->>> From: Yicong Yang <yangyicong@hisilicon.com>
->>>
->>> Factor out retrieving of the register value for the
->>> corresponding event from hisi_pcie_config_filter() into a
->>> new function hisi_pcie_pmu_get_filter() allowing future reuse.
->>>
->>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>  
->>
->> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> On second thoughts, this might benefit from a clearer name.
-> Perhaps just call it exactly what it is
-> hisi_pcie_pmu_get_ctrl_reg_val_to_set()
-> 
-> It incorporates the event code as well as the filter.
-> Maybe we want to rename pmu_config_filter() as well to
-> pmu_config_counter() which I think is the real meaning?
-> 
+Summary:
+Revise linux device tree entry related to Meta(Facebook) Harma
+specific devices connected to BMC(AST2600) SoC.
 
-make sense to me. we can simply use the reg name as the suffix,
-it'll be more clearer:
+Base on : https://lore.kernel.org/all/CACPK8XePx+PvDKzPMjPRn_g9z8yrtAmLvP8Qbepm1AVjuCbaKw@mail.gmail.com/
 
-hisi_pcie_pmu_get_event_ctrl_val()
-hisi_pcie_pmu_config_event_ctrl()
+Change log:
 
-> 
->>
->>> ---
->>>  drivers/perf/hisilicon/hisi_pcie_pmu.c | 13 ++++++++++---
->>>  1 file changed, 10 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
->>> index b90ba8aca3fa..11a819cd07f2 100644
->>> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
->>> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
->>> @@ -216,10 +216,8 @@ static void hisi_pcie_pmu_writeq(struct hisi_pcie_pmu *pcie_pmu, u32 reg_offset,
->>>  	writeq_relaxed(val, pcie_pmu->base + offset);
->>>  }
->>>  
->>> -static void hisi_pcie_pmu_config_filter(struct perf_event *event)
->>> +static u64 hisi_pcie_pmu_get_filter(struct perf_event *event)
->>>  {
->>> -	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
->>> -	struct hw_perf_event *hwc = &event->hw;
->>>  	u64 port, trig_len, thr_len, len_mode;
->>>  	u64 reg = HISI_PCIE_INIT_SET;
->>>  
->>> @@ -256,6 +254,15 @@ static void hisi_pcie_pmu_config_filter(struct perf_event *event)
->>>  	else
->>>  		reg |= FIELD_PREP(HISI_PCIE_LEN_M, HISI_PCIE_LEN_M_DEFAULT);
->>>  
->>> +	return reg;
->>> +}
->>> +
->>> +static void hisi_pcie_pmu_config_filter(struct perf_event *event)
->>> +{
->>> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
->>> +	struct hw_perf_event *hwc = &event->hw;
->>> +	u64 reg = hisi_pcie_pmu_get_filter(event);
->>> +
->>>  	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, hwc->idx, reg);
->>>  }
->>>    
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> .
-> 
+v2 -> v3
+  - Patch 0007 - Revise max31790 address
+  - Patch 0008 - Harma: Add NIC Fru device
+  - Patch 0009 - Add ltc4286 device
+
+v1 -> v2
+  - Add infineon,slb9670 information for tpm.
+  - Patch 0006 - Add PDB temperature.
+
+v1
+  - Patch 0001 - Revise SGPIO line name.
+  - Patch 0002 - Mapping ttyS2 to UART4.
+  - Patch 0003 - Remove Vuart.
+  - Patch 0004 - Add cpu power good line name.
+  - Patch 0005 - Add spi-gpio.
+
+Peter Yin (9):
+  ARM: dts: aspeed: Harma: Revise SGPIO line name.
+  ARM: dts: aspeed: Harma: mapping ttyS2 to UART4.
+  ARM: dts: aspeed: Harma: Remove Vuart
+  ARM: dts: aspeed: Harma: Add cpu power good line name
+  ARM: dts: aspeed: Harma: Add spi-gpio
+  ARM: dts: aspeed: Harma: Add PDB temperature
+  ARM: dts: aspeed: Harma: Revise max31790 address
+  ARM: dts: aspeed: Harma: Add NIC Fru device
+  ARM: dts: aspeed: Harma: Add ltc4286 device
+
+ .../dts/aspeed/aspeed-bmc-facebook-harma.dts  | 59 +++++++++++++++----
+ 1 file changed, 47 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
+
 
