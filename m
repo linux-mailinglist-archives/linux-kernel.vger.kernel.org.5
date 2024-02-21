@@ -1,127 +1,171 @@
-Return-Path: <linux-kernel+bounces-74157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD28985D091
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0920685D094
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 885A528831E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:42:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D9E61F24F26
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152C13611B;
-	Wed, 21 Feb 2024 06:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270D9364CC;
+	Wed, 21 Feb 2024 06:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dge1XcLl"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BeQ75TrV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31B1365;
-	Wed, 21 Feb 2024 06:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89DC5365;
+	Wed, 21 Feb 2024 06:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708497744; cv=none; b=GPIkj/qKXpg/aJNYQi3zKVT8TxwVAg/3ji4E6Ebj7xpz5zBRYeyTPJHo8eWdXRSMmMtWzj7cpwzU7eC6SLR/I9W+pZK5Trgxe3cG/fuDL33HoSs+w7KauzZ9ihIKYQy3CTCoGsBxc3DyE7/XM46RP/vfbEtDlAvv65ip+C3pjrw=
+	t=1708497857; cv=none; b=Yj+52fwNqIc3tpUawDcKt0q42zrgOwEtqLDE0+FMzmalt7WTEglrcF6Q2XfsJ1qiozWkriu07k+3GPDXKLkkCVsTHYMQX0p7tbx/zDQ9i2d6ZsW5i4o25tMNJgc9W5BPCzwJEn5fqZdFsncxqLAzKQg7Oxb0uCDsNUFoNqqIYhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708497744; c=relaxed/simple;
-	bh=VNdJmD/gpyse/FMH9lufHreZgd3FLHQhGe9fMKcG+6w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sKCZtgH6emYx1PW6X2U4anEayBOF9WUP0j/KxhKTmfw2cnGIBf1bWMmr0FKhp10MAKLLhXCl8BcFrWQ4moXQBgl/nKddv1bJvYLGJU4WsLceJ6i07x+TsWgB25kydQvHzxcaEEQKa7qQ3ULi84l+6qtYUTqx0m2uE0QbnzgSYUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dge1XcLl; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e461a9e40eso605777a34.2;
-        Tue, 20 Feb 2024 22:42:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708497742; x=1709102542; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8qepPg3+JSFA4GPvBKRhv/lZipuP/R6kgkTa4naVw58=;
-        b=dge1XcLlHmZDLPKBloNzE9MOZL8rsE2q1ZdPG3mrNG/LooEBvtbdL4irDHWmrG/TLC
-         JfRGGZzcGFTO2rBehvlx5bVP8/+Vebu2kbUcsctkRsy0zQd2HWS4CKAhZ4xjFMQbqMzN
-         0L2e12tQKjaPpgbcd+HDQmmEhUaFQ5u2YBBsHBkC9+BAr0+6NU5bptASAUv58ohAz78p
-         J/TxIqlIP+V38J248mQnI/RguPCCyYAlWlTRzqrzMuMe38vsBQFR8OduhDN3lf9+M/KQ
-         k4W/pWjrUnzXBCwio+sRKtoifdURQlZROPnYLKoOaJBFU9ziDNNH36nI248smO/O6ShR
-         WByA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708497742; x=1709102542;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8qepPg3+JSFA4GPvBKRhv/lZipuP/R6kgkTa4naVw58=;
-        b=lBkLyWwxinoru4Hzb/o+5wE4ddeewhW2KqQDsnueynmIL+ZHmJ2tB++LNyYrMBai6u
-         M/Wq+ap8m5O6WGqPxYG5wBF2UXDh2qslj+4Sx6+ObT0ncv6aYRSZCxa8pFsSlvIAiQbA
-         nbWl9gQSjPdJ88LHuCbyEq6MRTzV0I4Ankg1+M2kzZFt1Ncgh6g/kH5UlHuUINN1Mb4D
-         J+PokFUTyrs9xbXTOKytQjvIk7IOie6sOaQyIAWB/Go3leGylms3o5WgeObBtvWktbEP
-         jJ58sQWD7KVV/hSrjJWsvuWcqS+sD3+8ZF0FUxMMs26u9sxBfr2TK4W4n+K5OdqM0UEs
-         ugvg==
-X-Forwarded-Encrypted: i=1; AJvYcCW9wc5SWk4Q40ya3arkjqOEpsuRA+JCqshOcnPOa3sfb8KBtCAQZqyxKqlK5rTyEuKOYtIk0eaDgvMtKaGGWTUDJuyVyXTzA0g07QPwckZeyCw8iNFrFC+s58ZK08HwfYXdom+B
-X-Gm-Message-State: AOJu0YwXNJtst5euha6Nf4F01WUVuOm+qnOzoXknlCGUf8+zPXZS1wtT
-	2WPUCKnsck3+MHXkbBvIbufB1WntdT0FpQNGASJdAWFe7Rww+j9PWks+p8zHttc=
-X-Google-Smtp-Source: AGHT+IFX2wH+plNNcu1hJmDhVaeR7nE/+xXlIrJD4rY1IqlkWMMc9Bz7kLC8LWre+uDoFlouYw/hgA==
-X-Received: by 2002:a05:6830:12:b0:6e2:d9a0:b2b0 with SMTP id c18-20020a056830001200b006e2d9a0b2b0mr18278306otp.0.1708497742019;
-        Tue, 20 Feb 2024 22:42:22 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id 5-20020a630f45000000b005d30550f954sm7667671pgp.31.2024.02.20.22.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 22:42:21 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id D76C318468568; Wed, 21 Feb 2024 13:42:17 +0700 (WIB)
-Date: Wed, 21 Feb 2024 13:42:17 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com
-Subject: Re: [PATCH 6.6 000/331] 6.6.18-rc1 review
-Message-ID: <ZdWbSQMfQoHUZFMH@archie.me>
-References: <20240220205637.572693592@linuxfoundation.org>
+	s=arc-20240116; t=1708497857; c=relaxed/simple;
+	bh=gcTfRJcyu7EKTTNdfnjRMCGaCfa/5yqWcmgCca0fnbo=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=ulaBJKmN5L0sK/W9U9bMdL0vlPrCwggnxPqzN9/0R5nPFye9FI6mBQuUsECFKTVjC13lczdvhUE72GjOV1Ib4PDa8bIFq5HMxOaQlDizhCahA4nrgdisAn4DqcvYAZcP3alfVlMwzrhNNUb1fcgH5hbGpCkSmOrVWHieAeuQDtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BeQ75TrV; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708497855; x=1740033855;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=gcTfRJcyu7EKTTNdfnjRMCGaCfa/5yqWcmgCca0fnbo=;
+  b=BeQ75TrVDHMIWFF+aL7AvjF3oy2mwMvFI4FqpQwVtl9piZesAgyxyXRG
+   CpRLpBCw1sy3+BXCn+3X6YqRkJtes3RU0jhuv1Dtr2m4MdLrB47XCNaU1
+   /kQF9NeStymtRQr76til1mcvqvLK9LNul1gVBvZj+FrdwEyaDwaeGVipx
+   XiagXg+HzW52i146jHl2wNi2RTbooBManBdaNYwhSSdZB7wu4dEy3sRcF
+   dPwBuDnWpyvBq+VvioI/vmv0NWgx2JnkjAfhSWZYkgR9aqCC96deIDe3J
+   YMaVETnTM5s6qoKK6KqlIuGVqXIQsFGa+PnsOS2uF/KnfN4UfSlz2p/wW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2502856"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="2502856"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 22:44:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="5395563"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 20 Feb 2024 22:44:12 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+Date: Wed, 21 Feb 2024 00:44:08 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xfP/hcoK8GryOZ4A"
-Content-Disposition: inline
-In-Reply-To: <20240220205637.572693592@linuxfoundation.org>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jhbnui0wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
+[...]
+>
+> Here the @nr_to_scan is reduced by the number of pages that are  
+> isolated, but
+> not actually reclaimed (which is reflected by @cnt).
+>
+> IIUC, looks you want to make this function do "each cycle" as what you  
+> mentioned
+> in the v8 [1]:
+>
+> 	I tested with that approach and found we can only target number of
+> pages
+> 	attempted to reclaim not pages actually reclaimed due to the
+> uncertainty
+> 	of how long it takes to reclaim pages. Besides targeting number of
+> 	scanned pages for each cycle is also what the ksgxd does.
+>
+> 	If we target actual number of pages, sometimes it just takes too long.
+> I
+> 	saw more timeouts with the default time limit when running parallel
+> 	selftests.
+>
+> I am not sure what does "sometimes it just takes too long" mean, but  
+> what I am
+> thinking is you are trying to do some perfect but yet complicated code  
+> here.
 
---xfP/hcoK8GryOZ4A
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think what I observed was that the try_charge() would block too long  
+before getting chance of schedule() to yield, causing more timeouts than  
+necessary.
+I'll do some re-test to be sure.
 
-On Tue, Feb 20, 2024 at 09:51:56PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.18 release.
-> There are 331 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+>
+> For instance, I don't think selftest reflect the real workload, and I  
+> believe
+> adjusting the limit of a given EPC cgroup shouldn't be a frequent  
+> operation,
+> thus it is acceptable to use some easy-maintain code but less perfect  
+> code.
+>
+> Here I still think having @nr_to_scan as a pointer is over-complicated.   
+> For
+> example, we can still let sgx_reclaim_pages() to always scan  
+> SGX_NR_TO_SCAN
+> pages, but give up when there's enough pages reclaimed or when the EPC  
+> cgroup
+> and its descendants have been looped:
+>
+> unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root)
+> {
+> 	unsigned int cnt = 0;
+> 	...
+>
+> 	css_for_each_descendant_pre(pos, css_root) {
+> 		...
+> 		epc_cg = sgx_epc_cgroup_from_misc_cg(css_misc(pos));
+> 		cnt += sgx_reclaim_pages(&epc_cg->lru);
+>
+> 		if (cnt >= SGX_NR_TO_SCAN)
+> 			break;
+> 	}
+>
+> 	...
+> 	return cnt;
+> }
+>
+> Yeah it may reclaim more than SGX_NR_TO_SCAN when the loop actually  
+> reaches any
+> descendants, but that should be rare and we don't care that much, do we?
+>
+I assume you meant @cnt here to be number of pages actually reclaimed.  
+This could cause  sgx_epc_cgroup_reclaim_pages() block too long as @cnt  
+may always be zero (all pages are too young) and you have to loop all  
+descendants.
 
-Successfully compiled and installed the kernel on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+Thanks
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---xfP/hcoK8GryOZ4A
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZdWbQAAKCRD2uYlJVVFO
-o8gSAQDcSoCptSpp/zoQllZP4KjRqZXxe+YdNcfeyiCxVWalRwD/TXM0d9CHkfig
-QgHIDWMCF5pGxWzKdg02GHHmkFstiwQ=
-=OaW4
------END PGP SIGNATURE-----
-
---xfP/hcoK8GryOZ4A--
+Haitao
 
