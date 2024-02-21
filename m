@@ -1,108 +1,238 @@
-Return-Path: <linux-kernel+bounces-74042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3658285CF34
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:03:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C094685CF38
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:08:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DF531C22E4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:03:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23976B23EE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D2B38F94;
-	Wed, 21 Feb 2024 04:03:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B3438DE6;
+	Wed, 21 Feb 2024 04:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="Z5X2Qhzx"
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="xMyMoqWJ"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FFBA35
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2794D38DDD
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708488214; cv=none; b=XO5tssoKUgVpiFqm+5bG/Ds0yKalAr4ZcPYvZDMCp2FES7kkEM+mcHcdMTMbHOZvGNUlfH2KcjIGSUgGwmOxFuaJ/rdgWoT4Hyt/u4hhX4MtF0CvzoTFiw4sAeutF+TLX4GNG97qAgNX0yE2leBcdJnzdUcq6c5Z1FQUaAYKH0c=
+	t=1708488512; cv=none; b=XFKZDleNKuPw/VW+DU8Et56QA8bMRWrouWU3j1kq4uGLwKoxpLAkhp3fW+3Ac1GRiFbV9Ztdh9a7wVVEdmKVWBt6ZMmSvvlQJN4vuixvUC6de5wHOaENTdfaZK7Qoe13b9ybW6anqf/L1fQDJ47VCgj/C+xp+s8Pu93UT78pfhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708488214; c=relaxed/simple;
-	bh=aT1sdl9ayXkLB2xeRs1vuCR8KdWKTWCt9bQfCMleplQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W8iXNI/pL3SxqzPc0Z6UTBwLrE2kYohRUd12ws3wHdwc7dx2/7Drs9dAL+VLCs/X2r9qC7S27hk5YSOxcRhlXdcUfpGbzV3lEKp6fiy5IdeFn8MxOzBaLGSu+lPX99+uFuh8dQTK8bNajijWllldlgAdbvR86Ff8uItZbO4lClw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=Z5X2Qhzx; arc=none smtp.client-ip=148.163.147.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41KNo9u7021805;
-	Wed, 21 Feb 2024 04:03:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version; s=pps0720;
- bh=p7N/Fss8yHIOqOkiG91vnjHgkvgIICzI0arBtQWEIDc=;
- b=Z5X2QhzxJCEUlJ5N+u6+I/qDdv4QpAb0hzmsa3InV+rPa8WSHME67ZU2w3h4pPyE7UNZ
- 6I787fBlrkCheGnrB7z40328fDv0qFmtY6P/u3AI+hxY2jGbzQQLK6Xi/rZjuqddDpQ0
- hBpjW+u3/FLoNLeBwRIAgxl0esWiN0HTGZLT54xg4kHz/zWZDTEdj/Tj1fXG4EYMppBO
- N0uqmfcSL1j37bo4gYbuLgT+WOXRahiVHX/1G1CP7FvcTC6HQzMQoUDQiEuhyVUCAcV0
- 7k9B+qecgUEal/JStxRuRA76fQJeKj3gUsx3aylSLHVPnlnj/Hr5gXiIqjWVFJJPXyNu AA== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3wcfmtpujx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 04:03:22 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 14903805673;
-	Wed, 21 Feb 2024 04:03:13 +0000 (UTC)
-Received: from blofly.os1.tw (unknown [16.231.227.36])
-	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id CC9758003AD;
-	Wed, 21 Feb 2024 04:03:11 +0000 (UTC)
-From: matt.hsiao@hpe.com
-To: linux-kernel@vger.kernel.org
-Cc: arnd@arndb.de, gregkh@linuxfoundation.org, keng-yu.lin@hpe.com,
-        matt.hsiao@hpe.com
-Subject: [PATCH] MAINTAINERS: change the maintainer for hpilo driver
-Date: Wed, 21 Feb 2024 12:03:07 +0800
-Message-Id: <20240221040307.23019-1-matt.hsiao@hpe.com>
-X-Mailer: git-send-email 2.16.6
-X-Proofpoint-ORIG-GUID: bLLwUCtHOgMsOqij2BuGE6iotzQpIOkq
-X-Proofpoint-GUID: bLLwUCtHOgMsOqij2BuGE6iotzQpIOkq
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1708488512; c=relaxed/simple;
+	bh=VMnZZMlvZpAbCe/9PN4y8l6fqn6fzCdYpCLaJwhENmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aAtrv8JohoRBwqL4FQtPWJfHgAAZnENFCI3l2AWSNvHeWWX7nmmAlx+7D3z/MFIzRxBGqJq6jAI9MdSi1XtKj9hwZ3O9THO+//H4g/m4NxMgq5pwDQLdYfqoshAJ1WWzHUxF43SyMZdm42Aj+Za6MaUrDXc0/NrPgRNQWr0n2Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xMyMoqWJ; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-564d311513bso5015a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:08:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708488509; x=1709093309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1vYLUdRHnLOuE5GlvVy5mmDzCcmYulWt5UKno2mI/Ts=;
+        b=xMyMoqWJWUh+y/Z7mD1swhWNCdspx5wwLL/H6thBwHhdCxoeo5NL9HnfVoYpll3wQR
+         FBi23f/6ITJisMLOy/rh/cmGA9ExQLxygiZQwu5Tksbwy264juz64oMyLem1Yts9EJgo
+         lMg+2fsgnmtK+tRuLpxdngmnJQpEvV6bj/aIdqFQPqnV8yai+zFjK34GJqkSKLsRHbtc
+         hE+ZWHamJbUevirArV2knhqefRIezkM8M9v1IBwVydOVRRRkXmoEQWGFoLJylxpen5/N
+         F1PnQbBWEyaPyT2QuCkLfOUAyC3Nr39tCg0gcjiXzOGC/ZX2QOsIql3Qwb894CkvIbvV
+         1zmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708488509; x=1709093309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1vYLUdRHnLOuE5GlvVy5mmDzCcmYulWt5UKno2mI/Ts=;
+        b=pIvzeTFFm0aDn3t0VIeQcf9BOt7bj21gz8QMYZU3pEnLv2Hl1d8/PGkX1tTo9DwJZM
+         ifCDW4x2Lpl7hUuqj8EBjm/P3Wzai1iwpnOIeky9iV7O/LltYw/7CdcT5FXzV4Lk+bNs
+         Begnz4jqBq8Uy4UpN0oTlaeEBahGstnlmKOqRWIi/lHiZZXWx1vMmpvDFHm2KpfhWO6G
+         xg1nlY3+cQibrnUHLEddDxaAc421mr6FnvDNdZdEuRgpMoZPfbMOZosm5umxswISzsU4
+         aeAtnkGbENJ8LKm/hXlMgMW5w+k0neEIWyTaISFzY0l7giMnTj5yhpj0O0qGPqxdDuiY
+         IpMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXu8rC4pjQeulj4UW872GAnKEZqtjSdSJ5DTiXquvGebpdNH0NcD3n4wFrzQkPGX/NSFBv6ueH6Aa5CrVNfpgiZz4WSTfoHQ36K1bVv
+X-Gm-Message-State: AOJu0YzPoOOZArgwzTm6abmsLbTflrgmBc78vc1ic2Cptdh+kRg08+Ty
+	C5KWjvJkRpTPAD9hic947tiAfC7tC9x/42IRsDF+PC1Iabr6N6QD5ePItYbiqtd2UHizXQT+ntn
+	A8Y+bN7fvrqslwNdNDL2sFBKi8u6rFEWcxUwH
+X-Google-Smtp-Source: AGHT+IHmgqd6Xu5JQrE9v4Rhsl5MKM0/pejNdb3HvU+7d2flqEB0yhf6jyU2v+sB5FmKxqZFYTO435nbWJ8DHnQHhOM=
+X-Received: by 2002:a50:d5d9:0:b0:563:f48f:a5bc with SMTP id
+ g25-20020a50d5d9000000b00563f48fa5bcmr47442edj.5.1708488509288; Tue, 20 Feb
+ 2024 20:08:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- clxscore=1011 priorityscore=1501 lowpriorityscore=0 malwarescore=0
- mlxlogscore=766 mlxscore=0 spamscore=0 suspectscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402210028
+References: <20240212213147.489377-1-saravanak@google.com> <20240212213147.489377-4-saravanak@google.com>
+ <20240214-stable-anytime-b51b898d87af@spud> <CAGETcx-tBjfaLQqmGW=ap2N5FLK_gvTzxskA6sVsr_SUEpvomA@mail.gmail.com>
+ <b7fcb71a-e3bf-4f50-89d6-caff9f3303dc@linaro.org>
+In-Reply-To: <b7fcb71a-e3bf-4f50-89d6-caff9f3303dc@linaro.org>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 20 Feb 2024 20:07:48 -0800
+Message-ID: <CAGETcx8XBj=vh_e3vyXuj8oQYA3UC4uy9h9K2OmwBxZ2G_ms9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: Add post-init-supplier property
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Len Brown <lenb@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, kernel-team@android.com, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Matt Hsiao <matt.hsiao@hpe.com>
+On Sat, Feb 17, 2024 at 2:27=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 15/02/2024 00:32, Saravana Kannan wrote:
+> >
+> > Good point. Done.
+> >
+> >>> +    # One or more suppliers can be marked as post initialization sup=
+plier
+> >>> +    description:
+> >>> +      List of phandles to suppliers that are not needed for initiali=
+zing or
+> >>> +      resuming this device.
+> >>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> >>> +      items:
+> >>> +        maxItems: 1
+> >>
+> >> Rob's bot rightfully complains here about invalid syntax.
+> >
+> > I added these two lines based on Rob's feedback. Is the indentation
+> > that's wrong?
+> >
+> > Yeah, I'm trying to run the dts checker, but I haven't be able to get
+> > it to work on my end. See my email to Rob on the v1 series about this.
+> >
+> > $ make DT_CHECKER_FLAGS=3D-m dt_binding_check
+> >
+> > The best I could get out of it is a bunch of error reports on other
+> > files and then:
+> > ...
+> > <snip>/Documentation/devicetree/bindings/post-init-suppliers.yaml:
+> > ignoring, error parsing file
+> > ...
+> >
+> > I also tried to use DT_SCHEMA_FILES so I can only test this one file,
+> > but that wasn't working either:
+>
+> I see the errors immediately during testing, no special arguments needed:
+>
+> crosc64_dt_binding_check post-init-supplier.yaml
+> make[1]: Entering directory '/home/krzk/dev/linux/linux/out'
+>   LINT    Documentation/devicetree/bindings
+>   DTEX    Documentation/devicetree/bindings/post-init-supplier.example.dt=
+s
+> ../Documentation/devicetree/bindings/post-init-supplier.yaml:84:12:
+> [error] syntax error: mapping values are not allowed here (syntax)
+>   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+> ../Documentation/devicetree/bindings/post-init-supplier.yaml:84:12:
+> mapping values are not allowed in this context
+> make[3]: *** [../Documentation/devicetree/bindings/Makefile:26:
+> Documentation/devicetree/bindings/post-init-supplier.example.dts] Error 1
+> make[3]: *** Deleting file
+> 'Documentation/devicetree/bindings/post-init-supplier.example.dts'
+> make[3]: *** Waiting for unfinished jobs....
+> ../Documentation/devicetree/bindings/post-init-supplier.yaml:84:12:
+> mapping values are not allowed in this context
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+> /home/krzk/dev/linux/linux/Documentation/devicetree/bindings/post-init-su=
+pplier.yaml:
+> ignoring, error parsing file
+> make[2]: *** [/home/krzk/dev/linux/linux/Makefile:1424:
+> dt_binding_check] Error 2
+> make[1]: *** [/home/krzk/dev/linux/linux/Makefile:240: __sub-make] Error =
+2
+> make[1]: Leaving directory '/home/krzk/dev/linux/linux/out'
+> make: *** [Makefile:240: __sub-make] Error 2
 
-Change the maintainer to Keng-Yu Lin as I am moving out of the project.
+I think I was just getting overwhelmed with the sea of error logs I
+saw (for unrelated files). If I don't use the flags it's way too noisy
+and it's not always the first thing that's reported.
 
-Signed-off-by: Matt Hsiao <matt.hsiao@hpe.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is what I see now and I think I now understand what to look for.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9ed4d3868539..f41e77672dad 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9426,7 +9426,7 @@ T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/usb/hdpvr/
- 
- HEWLETT PACKARD ENTERPRISE ILO CHIF DRIVER
--M:	Matt Hsiao <matt.hsiao@hpe.com>
-+M:	Keng-Yu Lin <keng-yu.lin@hpe.com>
- S:	Supported
- F:	drivers/misc/hpilo.[ch]
- 
--- 
-2.16.6
+$ make DT_CHECKER_FLAGS=3D-m dt_binding_check
+DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/post-init-suppliers.yam=
+l
+  LINT    Documentation/devicetree/bindings
+/Documentation/devicetree/bindings/post-init-suppliers.yaml:84:12:
+[error] syntax error: mapping values are not allowed here (syntax)
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+/Documentation/devicetree/bindings/post-init-suppliers.yaml:84:12:
+mapping values are not allowed in this context
+  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+/mnt/android/linus-tree/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml=
+:
+ignoring, error in schema: properties
+/mnt/android/linus-tree/Documentation/devicetree/bindings/post-init-supplie=
+rs.yaml:
+ignoring, error parsing file
+/mnt/android/linus-tree/Documentation/devicetree/bindings/soc/tegra/nvidia,=
+tegra20-pmc.yaml:
+ignoring, error in schema: allOf: 0: then: properties: pinmux
+/mnt/android/linus-tree/Documentation/devicetree/bindings/net/lantiq,pef225=
+6.yaml:
+ignoring, error in schema: properties: lantiq,data-rate-bps
+/mnt/android/linus-tree/Documentation/devicetree/bindings/iio/pressure/hone=
+ywell,mprls0025pa.yaml:
+ignoring, error in schema: properties: honeywell,pmin-pascal
+/mnt/android/linus-tree/Documentation/devicetree/bindings/iio/pressure/hone=
+ywell,hsc030pa.yaml:
+ignoring, error in schema: properties: honeywell,pmax-pascal
+  DTEX    Documentation/devicetree/bindings/post-init-suppliers.example.dts
+Documentation/devicetree/bindings/post-init-suppliers.yaml:84:12:
+mapping values are not allowed in this context
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26:
+Documentation/devicetree/bindings/post-init-suppliers.example.dts]
+Error 1
+make[2]: *** Deleting file
+'Documentation/devicetree/bindings/post-init-suppliers.example.dts'
+make[1]: *** [/mnt/android/linus-tree/Makefile:1432: dt_binding_check] Erro=
+r 2
+make: *** [Makefile:240: __sub-make] Error 2
 
+>
+>
+> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sou=
+rces-with-the-devicetree-schema/
+>
+> I assume you develop on some older trees, because both next and v6.8-rc1
+> work... or standard issues: old dtschema, old yamllint.
+>
+> I am afraid you do it for some old Android kernel... :(
+
+No, I always develop on Linus's tree and test it on an android kernel
+that's behind Linus's tree by a month or so.
+
+My yamllint version is 1.32.0, but until 2 weeks ago the latest
+yamllint version was 1.33.0.
+
+And dt-schema is  2022.08.2-5 and I had to revert this from Linus's
+tree to get it to work:
+b32dcf23a03e dt-bindings: Drop kernel copy of common reserved-memory bindin=
+gs
+
+Unfortunately, AFAIK, I don't have permissions to change the package
+repo, so can't really install a newer version.
+
+Thanks for the tips.
+
+-Saravana
+
+
+
+-Saravana
 
