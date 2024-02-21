@@ -1,76 +1,120 @@
-Return-Path: <linux-kernel+bounces-74870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16BF685DE51
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:17:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B795A85DE24
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:15:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF35B2698B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC2711C2117C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA097F7F2;
-	Wed, 21 Feb 2024 14:09:18 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0190A7EF03;
+	Wed, 21 Feb 2024 14:13:29 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A9B69D38;
-	Wed, 21 Feb 2024 14:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0253CF42;
+	Wed, 21 Feb 2024 14:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708524557; cv=none; b=Ps6S/DuRQibbDr5MF2V13//Y3guUp/DdnWduUm5CD0LuyYqtxm4TKs93wxPO+1lpMsTNBMhiYaffItx8fySGesuNdNfIR67C5nW8wxKVsdN/rXLmv9gvXz1aPUsTLvRBwbQdL8mzL2/yfNaSPIt2lLQ5zjMLWQiOhkA1KB0o3Vo=
+	t=1708524808; cv=none; b=aft/cgyptPEWMBa2DIoaQzWOTqHDS0bAjZoQdHd0hDk5LrBKbk7FR2gx/1eXdpggGnocT6WSQj9UaUblJTauT2FCiXT5RyvTUq+0nJxXcOET7LvAemwx4ukMijOYRlrmtNCCS1pT8TqFRNKWbqXP7jOaqrBp5qzgi3ONllJKoK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708524557; c=relaxed/simple;
-	bh=o+Pf9FEYFHEjMXG9WRgtJ1Cj03FyG5XJoFFDXLwWgAk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AKuoP4nsD02qK9DtvhjInNYNnnl2Sc5F9XBF4VK3cViFiQDbraxGKOpVIY2DwAQA1//oUGag3LB7XGpwppZFOSZhQSKEP2EUpXigc5ZYONzIT3a8CXq2PDls9WNQRVMW3LekoejWCiZKm3hKnQ+tpCtE7SPcPkdTBw7Ryqcqsvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30390C433C7;
-	Wed, 21 Feb 2024 14:09:16 +0000 (UTC)
-Date: Wed, 21 Feb 2024 09:11:03 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
- linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
- linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
- quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
- quic_parass@quicinc.com
-Subject: Re: [PATCH] bus: mhi: host: Change the trace string for the
- userspace tools mapping
-Message-ID: <20240221091103.37497ed0@gandalf.local.home>
-In-Reply-To: <20240221061146.GF11693@thinkpad>
-References: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
-	<20240221061146.GF11693@thinkpad>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708524808; c=relaxed/simple;
+	bh=+0a+Vjm3LEMsvJiU2NZChDhM5R5ZE0wVMUxaZUR8OR8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WEimFLveVRCsq+PPPHjOw/WimtjW5wAdXO3cESRykJ7NdxiLI6n1sFd4n543+CSGdcTouaMkAHYi1gSgOU/XLbem++XJ4QPSXCz4LyLOXY624CnXuMVsnHsJR1ybvwwvQhXnp9x0Joz2HZoeQqFX6wdgI0+eSqKqWpvyMa7qwhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-607cd210962so58207877b3.2;
+        Wed, 21 Feb 2024 06:13:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708524804; x=1709129604;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WssOhp4wIGct8OS+brvMMaBCr4M5Sjz7aTlXLNRimww=;
+        b=FKPziCndm/DRxtC2+qSRyDn6xXDAj75n9RPKkY17kRnUo1xRQ8MJAHNLcAUYWwJ1SP
+         QIP8GRkHh4RRQ8bbDao3vbtpta7D3LdsFG9e7V4jSHCvaSYLZoXc1joLYHxZ739DtjBX
+         7Ra1J0aFLVxUbzxZ4JxFYIN7GSRKdKD3wrzEe7FFVTtjA6imckR0O5jjHYD33Kfp3hmh
+         hSgZ9xm25xpJiq+Fmtdw9ujhgZJ5g7uyMXHkf3EKIpfEZ4Dabw5dPOSO5Oe8r0wGiydo
+         /a8grAF66QZ1v5aXonFE9iK0IPTaVOPecuUUHDntVlBkO0xiOirat7nLGAQ1VhisuO2/
+         tpJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWeNAfN7TicWLqTahtZ3aBeUjuHiS4acz/cnH6rravV/jbG6dRmQ0hJ007kHzpKMQ+m/saeIyWhuo7BpWV+6H7H2j3WZk6KfFvBdKr7lr8JuHISZy3Nvz3KeUs9BM7u1hlGyQOVZZKqiCCLqWjNzAz12KO+LcrDwbGrRzF/Sful1KVafUupeK5AXfFv
+X-Gm-Message-State: AOJu0YyyJxXQvAILgLFa8KE913PfNSnSYpPtyBH/aHUWehreFFyyVZOg
+	3cxnbmyahgz093GD2nnz8B3rKXKGK3gbaibzRJW+JhiSvHcA8GpGfOwLD4wqT0o=
+X-Google-Smtp-Source: AGHT+IFlHvCRYmlBDlCVzZqmsd8a5kmnJanono0HMHjUSQiuXiHNPBimuxkHK2E/u5Gb1yh3twMKYw==
+X-Received: by 2002:a0d:eac5:0:b0:608:7c04:d404 with SMTP id t188-20020a0deac5000000b006087c04d404mr2349613ywe.40.1708524804621;
+        Wed, 21 Feb 2024 06:13:24 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id dt16-20020a05690c251000b00607c3904416sm2522419ywb.40.2024.02.21.06.13.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 06:13:24 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607cd210962so58207497b3.2;
+        Wed, 21 Feb 2024 06:13:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWfcYwoZsPFzI9zRHBFi9Ii8YBzOYYEIc0dtIVLEVKqR3Y4yfDXkZ0zyEqTlqM7AKB74uCgIrN26hK++XJVaW1xtGMi7G0F64ZHBsVON0Hjx46m+nriwkEM6j1vQq1ufcNLBCehUGNgTxMkUjYeQV0YNo5v22Hb3HpvFJm10CLFcSOdXA7Oo8okCjVF
+X-Received: by 2002:a81:9b02:0:b0:5ff:4959:1da8 with SMTP id
+ s2-20020a819b02000000b005ff49591da8mr16512998ywg.50.1708524803966; Wed, 21
+ Feb 2024 06:13:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240215124112.2259103-1-claudiu.beznea.uj@bp.renesas.com> <20240215124112.2259103-2-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240215124112.2259103-2-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 21 Feb 2024 15:13:12 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVi5vN5JSf9TAbdyrNa8_7eM=RajH8Mm=Qxhj5chWcK9A@mail.gmail.com>
+Message-ID: <CAMuHMdVi5vN5JSf9TAbdyrNa8_7eM=RajH8Mm=Qxhj5chWcK9A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: renesas: Select CONFIG_IRQ_DOMAIN_HIERARCHY
+ for pinctrl-rzg2l
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 21 Feb 2024 11:41:46 +0530
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+Hi Claudiu,
 
-> On Sun, Feb 18, 2024 at 02:13:39PM +0530, Krishna chaitanya chundru wrote:
-> > User space tools can't map strings if we use directly, as the string
-> > address is internal to kernel.
-> > 
-> > So add trace point strings for the user space tools to map strings
-> > properly.
-> > 
-> > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>  
-> 
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
+On Thu, Feb 15, 2024 at 1:41=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
+wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> The pinctrl-rzg2l driver uses APIs that are defined only if
+> CONFIG_IRQ_DOMAIN_HIERARCHY=3Dy (irq_chip_*_parent() APIs). On the ARCH_R=
+ZG2L
+> CONFIG_IRQ_DOMAIN_HIERARCHY is selected anyway, e.g., by the
+> CONFIG_ARM_GIC_V3. Even so, make it explicit at the driver level for a
+> clearer view of the dependencies.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Suggested-by: may be more accurate?
+Thanks for your patch!
 
--- Steve
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Compile-testing on m68k reveals that you also need
 
+    select GPIOLIB_IRQCHIP
+
+So I will add that when queuing in renesas-pinctrl for v6.9.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
