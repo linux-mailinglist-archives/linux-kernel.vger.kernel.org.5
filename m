@@ -1,83 +1,144 @@
-Return-Path: <linux-kernel+bounces-74786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E371B85D9FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:26:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B08285DA1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96FD12833D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:25:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B39CB268DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC8D7E58F;
-	Wed, 21 Feb 2024 13:24:31 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24DD7CF33;
+	Wed, 21 Feb 2024 13:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1LvHDmD"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F025A77655
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F4D762C1;
+	Wed, 21 Feb 2024 13:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708521871; cv=none; b=j8H4Y9I7PtymwP/M8aSqToChZermgupS0FQ/F0CFcqgxAQhZ0VArvIXeblLMscAapGvORMOY3U8z9wTi/xgAI+8AdeutGJSMqQNblG1nX1fRoAdXLHGtZX1eOuwfF4UGUCW2rkZQLxXsQdN6Mzdh1SXIgvI4OdsmVZanhZkHmBc=
+	t=1708521932; cv=none; b=c3zhOI5onkEJB06GrkE5h/wOfV1ykG4A0oID8H70Lhf1jqXeL84dXxSrKLwbhH4QzVlE03pRIqU566Loi1OcAWOr7nwZrRfHlMt9qp09s7BpwZDxmNPXihgSzUyEkua4Y19+nPnDPuDFlGmLm9xKLvdYV/xWBM+YrIPP2HdgFbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708521871; c=relaxed/simple;
-	bh=qEJkDHFlcaMCT3yh6MM8qc2RcuGT84nKmTLuSreRygo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WKNQFd9xyQp0fCh1LSHj7DfUpXalwSXFL1U6rur2LNV+dyXydBS+3Uu0TaxXE/hd/XDmQP6P8Chn5WKxBYztDRhp3EGkFG20BW9P5h+OWgwpL/BuRMCjvNYoCAGSY7CA5oDosNrG0iXCfAa5wDI434/CdIxFod38So2fY9+p5aQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rcmaB-0002t3-7t; Wed, 21 Feb 2024 14:24:19 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rcma8-00238N-Vr; Wed, 21 Feb 2024 14:24:16 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rcma8-0009Is-2z;
-	Wed, 21 Feb 2024 14:24:16 +0100
-Message-ID: <13e6d73ec0db159e4f34b8dbc7c7305f0131db84.camel@pengutronix.de>
-Subject: Re: [PATCH v3 2/2] irqchip: Add StarFive external interrupt
- controller
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Changhuang Liang <changhuang.liang@starfivetech.com>, Thomas Gleixner
- <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>, Jack Zhu
-	 <jack.zhu@starfivetech.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Date: Wed, 21 Feb 2024 14:24:16 +0100
-In-Reply-To: <20240221022647.5297-3-changhuang.liang@starfivetech.com>
-References: <20240221022647.5297-1-changhuang.liang@starfivetech.com>
-	 <20240221022647.5297-3-changhuang.liang@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1708521932; c=relaxed/simple;
+	bh=Awv2ya/dCmyXIz+PUwM1HeJ90+1RVeiqxObGWE0hzLY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b/YKcn8fD7cpaVmMd2hedUF7LL4ydXYgl6zeVzUqNHYUQl9xDO+4gEpdIythX9PA51lpIx8+vZssTbtro/1OgIgqx/V0JOd/pSHgg/hAsk1gf8oWq/71VqbyW74oI/Qt70VzPA7DKHIwhMsmVAL9OM8tOyiKWH1w1bEY9YK9ISA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y1LvHDmD; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2997a9f4d61so2615130a91.3;
+        Wed, 21 Feb 2024 05:25:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708521929; x=1709126729; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OI7tqbj6mWKb61MysMY2DivYivNGwAjWTxPQEZuJVHY=;
+        b=Y1LvHDmD+j9EJUHYcVk/3g7FWLgNLMLl8nz+xHgs18O9Be0EngqZsn3/XrOvN0EBOb
+         5Qyj3WntFZPlRmW1CcjsccFJguyw5u2lcF/WaV2GnRxu8hndChR/a0+EjGbmoJrsvZmd
+         fEWOEb+Oa5+J0jBA3EV91bVZZXQkxGnHFjUQJ0XzyMputWn0rJeptGVP60S6ndZwy6vY
+         0/Pl4neVEHTVqwhS2hnQTIRuftU+BdoLYqVmfp9NVKVj9W3snL/Q/C+1xgcNU0qFB5o/
+         KWzJ++546+pSZ2rEwdCWVZLnqI6ZSowWJewRKnCYr4cuKUOQyPPbZAmbz9PS6vstJDWw
+         BbFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708521929; x=1709126729;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OI7tqbj6mWKb61MysMY2DivYivNGwAjWTxPQEZuJVHY=;
+        b=CHlFagmO5Xtst1d6lN3IzEmx2axZbkKifysUDAS1ViKtk8En7AIH0HUDZ+ncz51Pit
+         itp35h3Tvykou1kTVL+FM6yc2lWcW9bqm8kSPLDvjDavoc4aXovYFj6TEbwvIZfVJPlN
+         KVXJBfajOntaQ9s7TCneAU312uSNfAUDsapuVtjUlD7YOjtSZfOl9+YY1zTBBtSC6k/3
+         cc3E9Y0qQZr8L9oyNupZ/3V+lfMVHpaR/6r6FukcE85EHEd7mg+TTgwYZBKPtDV4y8rb
+         Mac7cAcZOb/9yUL4AaW98tkPstPRUx+KkGpAUOuaA3wdz+iJQTqfBJHCD0oSLtCz6NVG
+         9D/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVKlZ170aEBx72/zlaq6hL/y3MbzJileHXEFIIgM6ivrHTl8OmlP5aUTL7f3+K+x+LnpiTyVTVy9zuqVQV93qav90+psSWDg8V0uVhkD713SCjHGQQPprVlODYV55dxcJbYdQIT1k/xtjyBAKwVxyXILqyQ9/+bbXhRVVPsLWF79U7bkBpwcoVPBSIF6LW/wvS0ixQvs+4eXPsoqVjrEIdHPbxJuNztMi6/Vyg+TRiA0TVOY0HR9RwcpRR9QjdYU4Qh
+X-Gm-Message-State: AOJu0YwjQjenJThJJzPA7SF1BlqBuy1gmuqV2NKvkDOIsBHqQPtU1btl
+	fEltS9y+4FPnMljIvemibqO60VyAfXsFEkNbL643e8QSoM0njbIk
+X-Google-Smtp-Source: AGHT+IHg9MoLpqgIlSHX+Evp1yAd6u93J1yLlc8YUipHUrY6efz32qYsKutsv5edzLysx+zDmmo/rg==
+X-Received: by 2002:a17:90a:dd82:b0:299:5186:1989 with SMTP id l2-20020a17090add8200b0029951861989mr10159029pjv.37.1708521929579;
+        Wed, 21 Feb 2024 05:25:29 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ds15-20020a17090b08cf00b002992cf08af0sm1359109pjb.23.2024.02.21.05.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 05:25:28 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 21 Feb 2024 05:25:27 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: David Gow <davidgow@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Shuah Khan <skhan@linuxfoundation.org>, Rae Moar <rmoar@google.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Kees Cook <keescook@chromium.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Florian Westphal <fw@strlen.de>,
+	Cassio Neri <cassio.neri@gmail.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Arthur Grillo <arthur.grillo@usp.br>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Daniel Latypov <dlatypov@google.com>,
+	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org, linux-rtc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 1/9] kunit: test: Log the correct filter string in
+ executor_test
+Message-ID: <8cfc6a3e-e618-4ddd-adca-4d6bf81a5e17@roeck-us.net>
+References: <20240221092728.1281499-1-davidgow@google.com>
+ <20240221092728.1281499-2-davidgow@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221092728.1281499-2-davidgow@google.com>
 
-On Di, 2024-02-20 at 18:26 -0800, Changhuang Liang wrote:
-> Add StarFive external interrupt controller for JH8100 SoC.
->=20
-> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+On Wed, Feb 21, 2024 at 05:27:14PM +0800, David Gow wrote:
+> KUnit's executor_test logs the filter string in KUNIT_ASSERT_EQ_MSG(),
+> but passed a random character from the filter, rather than the whole
+> string.
+> 
+> This was found by annotating KUNIT_ASSERT_EQ_MSG() to let gcc validate
+> the format string.
+> 
+> Fixes: 76066f93f1df ("kunit: add tests for filtering attributes")
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-regards
-Philipp
+> ---
+>  lib/kunit/executor_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+> index 22d4ee86dbed..3f7f967e3688 100644
+> --- a/lib/kunit/executor_test.c
+> +++ b/lib/kunit/executor_test.c
+> @@ -129,7 +129,7 @@ static void parse_filter_attr_test(struct kunit *test)
+>  			GFP_KERNEL);
+>  	for (j = 0; j < filter_count; j++) {
+>  		parsed_filters[j] = kunit_next_attr_filter(&filter, &err);
+> -		KUNIT_ASSERT_EQ_MSG(test, err, 0, "failed to parse filter '%s'", filters[j]);
+> +		KUNIT_ASSERT_EQ_MSG(test, err, 0, "failed to parse filter from '%s'", filters);
+>  	}
+>  
+>  	KUNIT_EXPECT_STREQ(test, kunit_attr_filter_name(parsed_filters[0]), "speed");
+> -- 
+> 2.44.0.rc0.258.g7320e95886-goog
+> 
 
