@@ -1,79 +1,51 @@
-Return-Path: <linux-kernel+bounces-74577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5E085D631
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:59:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D96C85D636
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98F3EB23D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:59:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A98C71C22100
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E363E49B;
-	Wed, 21 Feb 2024 10:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5855F3F9CA;
+	Wed, 21 Feb 2024 10:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RMJkmLt9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="O2cnQkRk"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBC63DB92
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ACA53EA77;
+	Wed, 21 Feb 2024 10:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708513144; cv=none; b=ESq9w8QjzEAFpOe0fmdV13bf2U7m6XpH4FtET6OmcJ1eBBb2M1VF5LgoE7vBky47Raai7ToMPFXDhOwatOOCUNY4AqAoMVnj59RS7bLTP3ALHPDkGRNGqtP5+QoUobLMP2dd4D1RiUF7K402BHhRcg7L8/O6FhnODoVGN7TazGc=
+	t=1708513159; cv=none; b=IZZ6VoNxOoCq6nkhw3CjBHBM1qqvnUsxfd+2cY+6KjK6sQCmic8acRIN++u0DzxApQxrQ6ioZolRQJl6RbDr3Rd7HmTovB9CEudTZshKds25JN7w9B6kQP0Q6N8Ls8ZaAYmql8ONaohNfplP513ROODq+LAScpYgwqn42PwMIiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708513144; c=relaxed/simple;
-	bh=G7OSjnvlvhdDNHjP4t7feNBdrTVLrFfjHjvN1J9+y6A=;
+	s=arc-20240116; t=1708513159; c=relaxed/simple;
+	bh=SbWS8TbjpElVutllvsK+jzUCsU87COPD50ePr889fXs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nmrg696ktub9Oe6vqXcOCH2FXYtesJYcmlkDQDTKlo7Ikrp2E7GQDvQF2aehC8ojdY2/t9WkSQGYZ+aIju4CHWbPZqQgPPhrL5rehVhUub6h3NwtJ/of9r6GSss0GkGyuIOFrmJDRkZ2lKXl9NHuuhsP38JogdyB5eKLG4Qgk38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RMJkmLt9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708513141;
+	 In-Reply-To:Content-Type; b=To4oFnKBWvcWFK8F6ETQq7aszNxlQvqVRiiNCzXClWuv7fR+NnzkeVlV954nqgjRqJGIdFDbI9dI+sDmJoQb565hhgib+kynqAZ3GAEc+9KwFpIRtJ/aU1npwF9BlmmLJmZ8bsq31iAssmUFQ+BXO4MNDDXhZ/TM8QLY1Axs+tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=O2cnQkRk; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 23106FF809;
+	Wed, 21 Feb 2024 10:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708513149;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jsMrcn3TX1/NhXlQOBo16vEmVmCSCoy6lQ+lGk3L1Dc=;
-	b=RMJkmLt9vYP/dMPjqiN/kwU6M+ReHIiM6tMhktGiFjmHExQtPE7yoMlb12BpJDQWBRUyKn
-	sci4e5qlESxHLRUT0sPJAWlKdbnaNnDPw+cXTXJzAXoFXO9zYKWY4pStk8qQqtryifAxgK
-	xhnCUoyuBBDOlUkBIga+TkqD8tQHfnY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-505-0wCkZ6IKNaGbo56FodD89Q-1; Wed, 21 Feb 2024 05:58:59 -0500
-X-MC-Unique: 0wCkZ6IKNaGbo56FodD89Q-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a3120029877so722806866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:58:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708513138; x=1709117938;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jsMrcn3TX1/NhXlQOBo16vEmVmCSCoy6lQ+lGk3L1Dc=;
-        b=j94xkzbqI+a/tyvZy/rrp1Z/nwHI/Wz3cfHSPuQnFJjxy4CZQsq7AqB8IdO8jJB5DF
-         vKr80cKndkyaTsj15+tpgxivgUHrTOb3U1nhEOdtIXwaVUsSU2or9jS63wydV/v3EMkA
-         wVCbr37M0Eetd2n5BEkQ7eD+iqGOZrMeWi9zFYa9s5YoVs0jR19eTh9tvLZReZ+/m52e
-         iBSVhChZWzrRin3a/1Fv/ZDqo58MePtJCDB92F8jauaeaWvBAc9FAZkk4p0Ck6LB3TW/
-         QmQvLa7k0nBCT00Pkm27Z0uiQUraTddYrCPtsohZdGDOJVXJff/KUQhVn7IakANhQwKC
-         2cWg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9ZnQCTIQ89CgjIPMFWEZcHdpmZLCJ2HXfaEKhLdhNfWsU7wRcRKJ3s/Ur5h4n7FIr8bDxYzJV34pKIC75W2zWPZoa0yG8iLazsq27
-X-Gm-Message-State: AOJu0Yxn//+VmaAGmtqnfMich5sgUxx2m2L5tRfOvEAOv5yHTLwiH0Pr
-	2ENSj+th7tUdMeDcWAPKjQyNiwgilvag8ltwlnEagYAjRYUrEBF4w+FjUz3JeWpCYaUnFs01d0K
-	77kpDy05EftIg7B+XKr66XyNQe+toheFa3jgdYcI6rI2q2AIt+dSTKdPYXkoPSeDo54uFiA==
-X-Received: by 2002:a17:906:4a10:b0:a3e:8bd8:b711 with SMTP id w16-20020a1709064a1000b00a3e8bd8b711mr7146600eju.37.1708513138450;
-        Wed, 21 Feb 2024 02:58:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHK1a2cdomFDrjjoZ8XtPSdsFu03O5jLPN2slHTxGMz5wOS9Wx03ZNO0HuPdz8bhuEeYFuJbg==
-X-Received: by 2002:a17:906:4a10:b0:a3e:8bd8:b711 with SMTP id w16-20020a1709064a1000b00a3e8bd8b711mr7146591eju.37.1708513138125;
-        Wed, 21 Feb 2024 02:58:58 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id rs6-20020a170907890600b00a3e48deecd4sm3942661ejc.222.2024.02.21.02.58.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 02:58:57 -0800 (PST)
-Message-ID: <44d463e3-91f3-43c6-8c48-41cfb6ba1131@redhat.com>
-Date: Wed, 21 Feb 2024 11:58:56 +0100
+	bh=zEHFQ0b81cDkLGXCwktGr5yACT9BYmzY2jUziR5kBWE=;
+	b=O2cnQkRkGWcS8AeId+uKeW5crrGFVmgagH9G9AFsXOgr9cYdITOV3qZ7FuVoN8k7d+WuvJ
+	pnRsOIxo3yVXZWVIPTLiQNSR171q9h3D/FPpeBY6FCJzbDnihnWWNLnyB6+baU2WvkqGeT
+	4XvgzNBTPWtDPBYnc3/VWIzpl59yjELncXzktjt7ydKr5n5QdxeiSwUJWWsqM/y3WIqBOi
+	2xdQHYgYfEQNZ7XFePjr4zjIVsMaDmDn3fdPbBd3ewJXLjizpaWX6cxbcvb+DoqGwnO6p2
+	RXM1ok5jXdYesnUqM/tetsnKP8xZezDXM3pVm/6OinnHjN+1N6V7oryM6Mrh9g==
+Message-ID: <eb37a117-74bd-44fe-b677-89dc7c2aced8@bootlin.com>
+Date: Wed, 21 Feb 2024 11:59:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,60 +53,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] power: supply: axp288_fuel_gauge: Deny ROCK Pi X
-To: Guoyi Zhang <kuoi@bioarchlinux.org>, sre@kernel.org, wens@csie.org
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240221083425.440108-1-kuoi@bioarchlinux.org>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240221083425.440108-1-kuoi@bioarchlinux.org>
+Subject: Re: [PATCH v3 05/18] mux: add mux_chip_resume() function
+Content-Language: en-US
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
+ <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-5-5c2e4a3fac1f@bootlin.com>
+ <Zc4t82V9czlEqamL@smile.fi.intel.com>
+ <f1d2c9b0-238d-4b09-8212-62e00a2192b2@bootlin.com>
+ <Zc96Ke_iG_bHIvkP@smile.fi.intel.com>
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <Zc96Ke_iG_bHIvkP@smile.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-GND-Sasl: thomas.richard@bootlin.com
 
-Hi,
-
-On 2/21/24 09:34, Guoyi Zhang wrote:
-> The ROCK Pi X is a single board computer without batteries using the
-> AXP288 PMIC where the EFI code does not disable the charger part of 
-> the PMIC causing us to report a discharging battery with a continuously
-> consumed battery charge to userspace.
+On 2/16/24 16:07, Andy Shevchenko wrote:
+> On Fri, Feb 16, 2024 at 08:52:17AM +0100, Thomas Richard wrote:
+>> On 2/15/24 16:29, Andy Shevchenko wrote:
+>>> On Thu, Feb 15, 2024 at 04:17:50PM +0100, Thomas Richard wrote:
 > 
-> Add it to the deny-list to avoid the bogus battery status reporting.
+> ...
 > 
-> Signed-off-by: Guoyi Zhang <kuoi@bioarchlinux.org>
+>>>> +int mux_chip_resume(struct mux_chip *mux_chip)
+>>>> +{
+>>>> +	int global_ret = 0;
+>>>> +	int ret, i;
+>>>> +
+>>>> +	for (i = 0; i < mux_chip->controllers; ++i) {
+>>>> +		struct mux_control *mux = &mux_chip->mux[i];
+>>>> +
+>>>> +		if (mux->cached_state == MUX_CACHE_UNKNOWN)
+>>>> +			continue;
+>>>> +
+>>>> +		ret = mux_control_set(mux, mux->cached_state);
+>>>> +		if (ret < 0) {
+>>>> +			dev_err(&mux_chip->dev, "unable to restore state\n");
+>>>> +			if (!global_ret)
+>>>> +				global_ret = ret;
+>>>
+>>> Hmm... This will record the first error and continue.
+>>
+>> In the v2 we talked about this with Peter Rosin.
+>>
+>> In fact, in the v1 (mux_chip_resume() didn't exists yet, everything was
+>> done in the mmio driver) I had the same behavior: try to restore all
+>> muxes and in case of error restore the first one.
+>>
+>> I don't know what is the right solution. I just restored the behavior I
+>> had in v1.
+> 
+> Okay, I believe you know what you are doing, folks. But to me this approach
+> sounds at bare minimum "unusual". Because the failures here are not fatal
+> and recording the first one may or may not make sense and it's so fragile
+> as it completely implementation-dependent.
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+I guess if there is an error, the resume is completely dead so no need
+to continue.
+If it's okay for Peter I can return on first failure.
 
 Regards,
 
-Hans
-
-
-
-> ---
->  drivers/power/supply/axp288_fuel_gauge.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
-> index 3be6f3b10..8f67f5d0d 100644
-> --- a/drivers/power/supply/axp288_fuel_gauge.c
-> +++ b/drivers/power/supply/axp288_fuel_gauge.c
-> @@ -599,6 +599,14 @@ static const struct dmi_system_id axp288_quirks[] = {
->  		},
->  		.driver_data = NULL,
->  	},
-> +	{
-> +		/* Radxa ROCK Pi X Single Board Computer */
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_NAME, "ROCK Pi X"),
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Radxa"),
-> +		},
-> +		.driver_data = (void *)AXP288_QUIRK_NO_BATTERY,
-> +	},
->  	{
->  		/*
->  		 * Various Ace PC/Meegopad/MinisForum/Wintel Mini-PCs/HDMI-sticks
+-- 
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
