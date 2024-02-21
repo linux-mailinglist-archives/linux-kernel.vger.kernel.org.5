@@ -1,107 +1,115 @@
-Return-Path: <linux-kernel+bounces-74344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B623F85D302
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 081BC85D303
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:04:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 563D01F219DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:04:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9636D1F219C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B04A3C6AB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3143D0BF;
 	Wed, 21 Feb 2024 09:04:22 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O/SXI0pn"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEE938F94
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:04:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5EF3B781
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708506261; cv=none; b=lVNoW3J3usMFAxILpDRD2QnJm/wyvBgtmN2r2xOe4RxF5myjCE3qvPivmcgSbOKRysVqccVNTq6GSV/w6OmGyPRuxN4GHnPYfn/EAo3xiUuqmascW2g6vpxFUYyftbgf9Cq/qTTgKnk4zci2oCaF3If/M/xITIANP4z2H0GUdGM=
+	t=1708506261; cv=none; b=uFYVNCA/bb5tyfoQsTRp0831SJKeQvMTVHnygvFLqiLsjdrepLhmqkZAppNdW/vSyxHWBSZ5GuJP3CyfQsniAjS4lkefjLqkpyJ4fmxkv5YWjfAwrR8LEbHwgzPHBAcgfBVKDxauiNY2g3lJbI7Yz08IFARyWqkSpwnicstdvyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708506261; c=relaxed/simple;
-	bh=yZVRv3Jj7/PoGR/VDrzkaaZCMf6fkPUEJZm99tu5WIQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jM/BDUT8yGLOonpmotiRWSeOm4XyUXoPogYbNpXh7vE9XiXrTGBFf1nD6x9UrouO7m5HVWGyWZhgPNH4hpcPyTLhl1LT1+WbjI7i7JvuVMbKf7dvYkxQ2AlgKbrFVL4nOah6nMT8xLpxACunK4c01JN8u+ydPd+IhWQo1DJtqf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: e055a30fdd404a3482e5e0535a320678-20240221
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:19c1cea5-6803-4bd9-a913-92849b05674b,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:19c1cea5-6803-4bd9-a913-92849b05674b,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:af722484-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2402211704136R5RNTJ7,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: e055a30fdd404a3482e5e0535a320678-20240221
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1046188438; Wed, 21 Feb 2024 17:04:12 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 64F1FE000EBC;
-	Wed, 21 Feb 2024 17:04:12 +0800 (CST)
-X-ns-mid: postfix-65D5BC8C-208931588
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id C8665E000EBC;
-	Wed, 21 Feb 2024 17:04:10 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: yuq825@gmail.com,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch
-Cc: dri-devel@lists.freedesktop.org,
-	lima@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] drm/lima: Simplify the allocation of slab caches in lima_sched_slab_init
-Date: Wed, 21 Feb 2024 17:04:09 +0800
-Message-Id: <20240221090409.167478-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	bh=Zdda7Z51JmZWl++mrYVxmWkJ9CzTUizlHDqG7DrA8Qo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BObSEeTsBiziyTLK0OsjsfJhuCc+/Ab+mFncU5Zk1h0j09okPJDmmDdDslD2YNA2uoXn0D+0L2iY5MU6F7BMhxdcTj2RzsSnQMF+MRhlbyqmEaiQ5iSak9pK+JinEcBGLZZWEXQDI+bAiFCZkGgZrcJ7E+7OYddW3Pj9kmZGx5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O/SXI0pn; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3394b892691so3473076f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:04:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708506258; x=1709111058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PiEdifBXlbnyWblY09aSfoICLBbwdqMUIhM217sZ8bg=;
+        b=O/SXI0pneaTLx2kJMf0Mhg2hufkizYbJvvLpwJRUN/LyCKbVnpj8raLayF8IbQswvr
+         DErmIchmPbmdWbKto8NnO7SGZbIEKz+HGCcy2Wff4KQOKTsnofYFEqIlo4FLhF7jQTmQ
+         Nx6s1xYEjNzRoF5DdJPvPaQMOX91kXqR4Dqvijua2EKEagSR+/2/0EoeXhWK2D6DZHZ6
+         rd7ijN0ODNufKdheea4gFNMVqmtImM3vUXCAPR/m0lVF734DtwcIMTHkUBomFPnAtnhE
+         tse0wcw1VZk2mhODLXorRsagqSFAcl2jvUsF2SK375a6qk7HRyJ4LRbBCiUrjhJFJmn+
+         BFNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708506258; x=1709111058;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PiEdifBXlbnyWblY09aSfoICLBbwdqMUIhM217sZ8bg=;
+        b=p264SZHlYd2P2wXFd9xha0LfTUqYHbIBrez9hX2j/NaUVsY4E6cTUrtxEj2W7XT/7b
+         bvrKj5z+dRVplGZ6Uevlc0pX5+37k2Tra8A9Ue7AwAq2ai51p8c+IrxfidLSzf3qzPbH
+         mt5nC4h99KDG1f41AZyTq8Ak9f47c/ld91qqRVnTYiUb5IIocOMAwWCR1iGQWfzyJstW
+         rawfMHLNmJ4KYlo5fjsFleRrr7dq2Df0RXSK1G80ZSMa6R5k1jfo0i/pDb00ZaUidCXd
+         CsaVm/4/jKMvhBy6Ztlxs2VK2cn2VSPqR3SgUVu/6qsBvvocV5Xo0xcMk0uL1VnwuLqQ
+         7hsg==
+X-Forwarded-Encrypted: i=1; AJvYcCUG4HE3db4gMywDfS1lsasnLYwQMtpwTMYycTR9myJz2nCyuVa0gxX8tWGYLlnmOsNt6sy4xuq5lIYtPBK/z7OTuukv871/S2v/IsGQ
+X-Gm-Message-State: AOJu0YydHa2gVy9UbV5zTIT/5ZdXJr+i6WxhiJD0tdY6kKJTXSk8T7U2
+	WL+TQa3GVT4wRuf2z1EbkyKAcipS83xU7zrhSrSRtmCgHnthj4+jfeUQ9t53FASudfNil8S4eYe
+	7
+X-Google-Smtp-Source: AGHT+IHUSRlWWbsveuuOuWZDPXOkupYSiALK9CZwYRJSGQcRVc0UBKqwNs5oJrOFSmZTjWE31EBP1w==
+X-Received: by 2002:a5d:5748:0:b0:33d:32f2:dcac with SMTP id q8-20020a5d5748000000b0033d32f2dcacmr9350526wrw.33.1708506257911;
+        Wed, 21 Feb 2024 01:04:17 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id n14-20020a5d420e000000b0033d282c7537sm13626523wrq.23.2024.02.21.01.04.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 01:04:17 -0800 (PST)
+Message-ID: <4cbac15d-115b-437d-a622-f9aa40187ddd@linaro.org>
+Date: Wed, 21 Feb 2024 10:04:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clocksource: arm_global_timer: fix non-kernel-doc comment
+Content-Language: en-US
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>,
+ linux-arm-kernel@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>
+References: <20240115053641.29129-1-rdunlap@infradead.org>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240115053641.29129-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On 15/01/2024 06:36, Randy Dunlap wrote:
+> Use a common C comment "/*" instead of a kernel-doc marker "/**"
+> to prevent kernel-doc warnings:
+> 
+> arm_global_timer.c:92: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   * To ensure that updates to comparator value register do not set the
+> arm_global_timer.c:92: warning: missing initial short description on line:
+>   * To ensure that updates to comparator value register do not set the
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> ---
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/gpu/drm/lima/lima_sched.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Applied, thanks
 
-diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lim=
-a_sched.c
-index c3bf8cda8498..265ee6ca3c44 100644
---- a/drivers/gpu/drm/lima/lima_sched.c
-+++ b/drivers/gpu/drm/lima/lima_sched.c
-@@ -27,9 +27,7 @@ static int lima_fence_slab_refcnt;
- int lima_sched_slab_init(void)
- {
- 	if (!lima_fence_slab) {
--		lima_fence_slab =3D kmem_cache_create(
--			"lima_fence", sizeof(struct lima_fence), 0,
--			SLAB_HWCACHE_ALIGN, NULL);
-+		lima_fence_slab =3D KMEM_CACHE(lima_fence, SLAB_HWCACHE_ALIGN);
- 		if (!lima_fence_slab)
- 			return -ENOMEM;
- 	}
---=20
-2.39.2
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
