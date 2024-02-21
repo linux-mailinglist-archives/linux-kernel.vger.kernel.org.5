@@ -1,96 +1,108 @@
-Return-Path: <linux-kernel+bounces-74605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D93385D6B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:20:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C59485D6BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F2CD1C22A92
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:20:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A539BB23C8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD51405F8;
-	Wed, 21 Feb 2024 11:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F423E47B;
+	Wed, 21 Feb 2024 11:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GsLmS2tf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIDZjQNe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B0D3F9C9;
-	Wed, 21 Feb 2024 11:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDA13F8DE;
+	Wed, 21 Feb 2024 11:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708514427; cv=none; b=lnH4quAfNqUeYFDfkDQoQYGU+mIzb1B1yX/rtWjgvS8JB+MJ4JLfFq0//CsRBFy3MEU+ct4OV4urqDxdKjaQyiEmyYJMUob71c3LSIT6jGC18jBP/iJFdnK15cjMttvlkbri6DnXA8IanMdblg7OZ7CpBkBgI1Au+BhC2Q3nK5M=
+	t=1708514494; cv=none; b=mIA0C2haYMicpc7GjUfJGhOBfKLb/rGhTiVjBLNiFIv4CKxnNqHXu3DOQDFJjH3v2FDsBzyAy/Evok1vTla6XPsYM01JzXGyo0uIUbmghDNyWhT1zxEeYpqqmygmZ6aIXfP52siFTm5jb4yehEpaL+kF+HkqSvaW01/qlK5DJC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708514427; c=relaxed/simple;
-	bh=eQJjn+fyis4zmfVOr9+w1bUQCmIi1pyHsjNzhxVRHws=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IETNqB0wsO9yq6dZqAanKFxqqJcwg8OA0/M8HRQreoSDlxqK8wL0usinFmeFfN7rzsvFJqP2BnQghV6ix4/deZMdhSo7dDi/uU1c54nC7sx3GMI38NZzjqDEgXMQe+/yxieyy5Ltm+qdyk3Q+934cORrZi0ADIoNKKjGQFR3OBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GsLmS2tf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 65309C43390;
-	Wed, 21 Feb 2024 11:20:26 +0000 (UTC)
+	s=arc-20240116; t=1708514494; c=relaxed/simple;
+	bh=o0CqUPepkCs4CIXUQmn68WLLpOl3MGSW9LG6aS9an1M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sxsRDGG/2fqGK9qS7cwlkAkDFaAeZZOf7kNyQ007A0fKiI5F/JcGmYxIcz4U9zJWaAZnCs4NYnvTh+E7OFsYKnxpyzmGkS++UvmwKJ/Ss2SCO0JtBFRKo/Wev8a+CA2KyBZUKwpv8p5XWALVhkcQMNaOJTLTGe+qcbhZWo+RqrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UIDZjQNe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF332C43330;
+	Wed, 21 Feb 2024 11:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708514426;
-	bh=eQJjn+fyis4zmfVOr9+w1bUQCmIi1pyHsjNzhxVRHws=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=GsLmS2tfbwHxWhQ+pUHFHK7sIpRm2j9a0hX4RCzSk6ngnFHSjHYfGAbHBKyEUv2Gy
-	 63T8plMEg61Ij7wh9Ay/q5JcSlplivX2fjL5oIAGdEYl67l5G/JnCKWkfEoZk66L/T
-	 l14TWqEeFmutOmca1LhZwEl4ZBzkcp4Txoa5st6N5HwYzm4X/ZZMw79L59ffJ8YKQa
-	 SPbUZnZqS2s8K2fzK941QiDVWtmzxsaH0qeoBxmc/DuJ6vo57+kc7GXDc6757aCvhh
-	 Iog+vk8TBkylyb4WzAjX8+FDnPiJhK83VT33kREPvYU+anD0pg3nn8xQwN7f1uodpS
-	 gfg6hJfRosb4g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4AAD3C00446;
-	Wed, 21 Feb 2024 11:20:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1708514493;
+	bh=o0CqUPepkCs4CIXUQmn68WLLpOl3MGSW9LG6aS9an1M=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UIDZjQNenQnobihqE49sOc2MzYna0gFzBVSsOmHAyxxjANs4hfMGTWNntJ4L+1LfX
+	 p+UXKCkO0GykJvj9CJux0EuOSGLIvk/7s3SkhEYbLTK1eD/g9QDoOFlFF+wD/LtbCB
+	 dPj6cnCu5Ng+dEmBlBaVIxFcZ5K/CkO/06gvgPB36D8MpO9kphbWa1ZwBmbBzFBt4+
+	 yfr0pYmm7ozVkUtxSlpiA8Q9tETh5ZCtcCrpzXomkMmcAOr3SpQH5FxRpKuXX9sBHr
+	 FZxqYlpqmUiFjV+SLT60+SCo7vHX4o/pJDyEmyNxSD7WVBOwJxLaWzWTesrG8fA5ue
+	 intdUM1dSDTFA==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512d19e2cb8so659859e87.0;
+        Wed, 21 Feb 2024 03:21:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWh8PTf/Q2YK3b9OILooe+s5p2OmWmj3qVmmgwsvbLmld9pzqyhTSlB0nM4RJ7HAIzEZTHqcSgPruSz/46JD4CkovFYVA2+SlrWlg==
+X-Gm-Message-State: AOJu0Ywcpvf33yT21/ZvG123/WMHAsf38FE/vIB/Xg96jFYMDu78yqc7
+	7g7IrfBi1aH99tkO/07OkHmPvXSbVGD2Oq6sjKvuSLx+TARu4qnGylKq61j2cNgV3qIFhmv2OP6
+	AUFcMbXfgY4zU6HwAIC+/ZnOcImw=
+X-Google-Smtp-Source: AGHT+IFItFVuoCUXnrWGruHwPbQE2pZbaQLwrHXniho9YmMHt/jsPGHVp4KFocto40/DeSjOaOAGLl9Ln5KUPWGiUcg=
+X-Received: by 2002:a05:6512:744:b0:512:9de5:baf1 with SMTP id
+ c4-20020a056512074400b005129de5baf1mr5617243lfs.34.1708514492059; Wed, 21 Feb
+ 2024 03:21:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] octeontx2-af: Consider the action set by PF
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170851442630.9417.4575929978290134315.git-patchwork-notify@kernel.org>
-Date: Wed, 21 Feb 2024 11:20:26 +0000
-References: <1708347314-21624-1-git-send-email-sbhatta@marvell.com>
-In-Reply-To: <1708347314-21624-1-git-send-email-sbhatta@marvell.com>
-To: Subbaraya Sundeep <sbhatta@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
- hkelam@marvell.com, naveenm@marvell.com, horms@kernel.org
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-17-ardb+git@google.com> <20240220184513.GAZdTzOQN33Nccwkno@fat_crate.local>
+ <CAMj1kXF=cGHR4FVUqGrobjB4HxTmm=1upn3TpVEC-_8D9GM=uQ@mail.gmail.com>
+ <20240221100916.GCZdXLzHb-31GMw-f-@fat_crate.local> <CAMj1kXGqHf3b3zho_0CPccTkgXRnTrxsG_qDjhP9P+US-u2AGw@mail.gmail.com>
+ <20240221111245.GDZdXarZsZd7eZw_BK@fat_crate.local>
+In-Reply-To: <20240221111245.GDZdXarZsZd7eZw_BK@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 21 Feb 2024 12:21:20 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFNFxARF4bmB=a2PWT8uYLacs0GxOGkP319RLXH9Q0k7A@mail.gmail.com>
+Message-ID: <CAMj1kXFNFxARF4bmB=a2PWT8uYLacs0GxOGkP319RLXH9Q0k7A@mail.gmail.com>
+Subject: Re: [PATCH v4 04/11] x86/startup_64: Defer assignment of 5-level
+ paging global variables
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+On Wed, 21 Feb 2024 at 12:13, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Feb 21, 2024 at 11:20:13AM +0100, Ard Biesheuvel wrote:
+> > Just the below should be sufficient
+> >
+> > --- a/arch/x86/include/asm/pgtable_64_types.h
+> > +++ b/arch/x86/include/asm/pgtable_64_types.h
+> > @@ -22,7 +22,7 @@ typedef struct { pteval_t pte; } pte_t;
+> >  typedef struct { pmdval_t pmd; } pmd_t;
+> >
+> > -#ifdef CONFIG_X86_5LEVEL
+> >  extern unsigned int __pgtable_l5_enabled;
+> >
+> > +#ifdef CONFIG_X86_5LEVEL
+> >  #ifdef USE_EARLY_PGTABLE_L5
+>
+> Perhaps but the CONFIG_X86_5LEVEL ifdeffery is just ugly and getting
+> unnecessary.
+>
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 19 Feb 2024 18:25:14 +0530 you wrote:
-> AF reserves MCAM entries for each PF, VF present in the
-> system and populates the entry with DMAC and action with
-> default RSS so that basic packet I/O works. Since PF/VF is
-> not aware of the RSS action installed by AF, AF only fixup
-> the actions of the rules installed by PF/VF with corresponding
-> default RSS action. This worked well for rules installed by
-> PF/VF for features like RX VLAN offload and DMAC filters but
-> rules involving action like drop/forward to queue are also
-> getting modified by AF. Hence fix it by setting the default
-> RSS action only if requested by PF/VF.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net] octeontx2-af: Consider the action set by PF
-    https://git.kernel.org/netdev/net/c/3b1ae9b71c2a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+That all gets ripped out in the last patch.
 
 
+Btw v5 is good to go, in case you're ok switching to that:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=x86-pie-for-sev-v5
 
