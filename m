@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-74634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C984D85D71E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:37:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D69B085D720
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 835482838BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:37:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 133BF1C22FB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011F145BF6;
-	Wed, 21 Feb 2024 11:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0524CB57;
+	Wed, 21 Feb 2024 11:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ysv8a2Xv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yoKn8IIl"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6314C634
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369054174F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515347; cv=none; b=P6XlCJjqZnYzzv9q6+mVUFHYU+2wrsBSWEVMrhBTwURHielBrUNKzQ6yEd2EUssnY/6JrA40onD91yDUmjc5Kk3dDO6j1TJr7FLSDDXL9Smb9FC5+6HDl/XeyHGGIi5sjOXC/WHmVJXtOryxf5biLqEZEfWlS0Cs4XL+gyO2Lx8=
+	t=1708515349; cv=none; b=Ll3ZSfkVIzjcnD3DcU+ZvVCuUxXQPIv5xsUp80NZMSfcZimUjKkzi/x32DROuZFkmMfzQDdr8cA38LogUkhAWwPsUeyo+anB9UWGl8PqAli842FKBXDA/qxQx9YHBjmitiIMcCuqBkjjUmBI+0AdjUTmlXjdfX33JGz4uD7aAeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515347; c=relaxed/simple;
-	bh=6Y7B3eAU7WFGxIfJIx2em1X2j1KbkoJBGgvBRFQVJuk=;
+	s=arc-20240116; t=1708515349; c=relaxed/simple;
+	bh=GAlPtq8JkQJ3A2WVw8c46QbR1WtxNjQfx1w8AVpPTjc=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ctCkypFDhxQBR4w+n8Y9dZDufkA4NCFvgBHqcs5cfsKv2DFZ2gWBh07LF+7lql5IiW5jvZdR7dWzGw7u0m5v22x6CdPAlk6964j77xeOMYtYZGZNq3QZ1NrJwJ2yDBPAX4jQ7/pVA/zVOQgWvR+vPSl0/vcIhWtaec522CgsI1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ysv8a2Xv; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=kzMTYKZnkG+1bJho1PtFODPzrkZvK7v8IqtjjpoVROoba2R9VDyLoqDe+Za0DG4ZGA1Zprecyc/POp2uXgeoaCRZMW5y1shI65L0Kc3ZUeLO8Vlkkd2AMaNNx6nqHqBiUuOzzgTHx7W8gA3hVcWbOJhFN7xZUEj+4T+N4VeI4xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yoKn8IIl; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6088a755299so4077387b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:35:45 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608575317f8so35420697b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:35:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708515345; x=1709120145; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708515347; x=1709120147; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0rqzUwS6BdxGjI3H1JUFmWLh2DB/nlQLPYKogLCLbB8=;
-        b=ysv8a2XvMPZsZwkeZTnIkW8Dbj6ADJcYD6YqvfAITSGcBc13xHyDbI1xO6jTYs4Hre
-         DNu2TS74LhzOWhjDEz3FvtS0eQ8k336xSXvbj2ucGOG6wrrgsZAhFKbRjJFO4HEYACEo
-         MJJU7bowIeaScEJjDX0mY+iP5VcpFw/JH2hH0KxEJUlDplgBuRzERISP6eJkTYvMBO8O
-         2yFjjlpWHViUzlN6/UYiN0/9dtQ++68Tt4CfEHqaTl1d92HDDjmIrMguX7BF5t1AR7bL
-         pkvm1Gr5VpeFK5/9JD4KCWWWZ1Vy9PNWb+QpDSnG/Mxfdb/5w5W1HUXsj4fOvgTNhrIk
-         J5jg==
+        bh=mh8YQtdjDFBeR5IIfvtfOkH3iYneTElPPQWzRP3dQ5U=;
+        b=yoKn8IIlNUE26g5hYhsL1NTTncQyij9u7eThJAI1n31mtRwVIUbMO+3bu8DBrMeK1/
+         /9tmcPZhQOXj2cPSN20U0RoUnEgKacAlF91tOZRn7oJJ7dRQyJlZtogAx4jeXUTGXS2w
+         h3L4azD7aePLTJHCavuwYWbDOVXMSLm7W5YUsRspBZtW9UBqza77wkMZhBVLG2w3tJoW
+         qOAkYTzo1cZUumRgQl7o8S4r5zKKKbnZqkCGn4P5I4lK+9Pn42eq2OZLxppNWrUHxKJt
+         Ybe2qaTZA3zbvj/mLGqnpeYeYSmb+mfGi5UpB4X08PB6+4pSlA+2V0VjgRmFIqpQ71aB
+         MSFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708515345; x=1709120145;
+        d=1e100.net; s=20230601; t=1708515347; x=1709120147;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0rqzUwS6BdxGjI3H1JUFmWLh2DB/nlQLPYKogLCLbB8=;
-        b=jHw4pezBzsMpe7Nlm9RkSUbNPlpCC8cmFCy8HXwXKry1iEi/GipaK5reKl2b7hNRfU
-         RRFLTzUhMKTAVnCssLKDwwIggrC8AptD6Gkm3+GzZgBUqQ+cPeUmbbrJFTMP26f7d/Lf
-         5Koco5XmFJq5YPAzWVpzF08/lmi4wNMYSGiNz83nMIWBTTNHIlO61xrE/fKAnMLFaWgM
-         rmH5qXlmhd0uMpwoxXdFYxM6wEvI7Fu69XB48kbFUh31x6yx6lnLpj+dakJ6PcLtvwnf
-         Xj17l48uV0NV8RvGsLm2hYl++JyzrE8Nu40o90jmqOtLfweiEhu4f49BcvdqJcReezNl
-         b7Zw==
-X-Gm-Message-State: AOJu0Yw0bq42u8n+U8ijpYkZa0G4ohUha9N2KLkrWC+bDJigkJqZga1r
-	NZHPJfflgkxi1edr7m9HaDCKp+Hiw8FDp/IrDiCd/8Wjc+lo3NvN5ZHF0mPwudx7elIEhqpJt8a
-	DHss4yu6dBZ8USg6Q82Ki37SqSu1pjhTjxk8/kCaZcaQmSR2Bw//zWItecA9bQvK0RAS4Kc4gtQ
-	Shv9653MeCMn00y7045hz5+6idEYYlIw==
-X-Google-Smtp-Source: AGHT+IEwHju/X9vIeqhihYIRGISY1cX5Xt88mGLo3fj9jImWuJGJ1FfqScqrj4iTyDBujg+MUcvlGxTW
+        bh=mh8YQtdjDFBeR5IIfvtfOkH3iYneTElPPQWzRP3dQ5U=;
+        b=esypS/nf8o5iLZBXA5lk3GewpZQaefr1ib6oOVheIZ1/ykmP9gBxAW9EsgG83eceUh
+         EKdm6zajxhflrs/gOKhIETv9XP2WbweKFmd14P4KPanVIoKxqEICqZ6J9pN4S1lZpKpt
+         exs9HvGAd8oVVpyMbCevsj/A2M1B30beXpb7VpwDzCx047iYAiQWuursr0sw9K/O/afN
+         hM/ZpRsZTfwt2uBKAioJWMWpQGmb1KlpoBSbHRK7X30780oJSIQfqNopy/iOpeBbh/Pt
+         +EdHFnE1B/s4pouRiWjRNPXRWifky6Yjvbggw4w9FTeChrUzPgJjYEeIJlQgqtADomWa
+         Z8ag==
+X-Gm-Message-State: AOJu0YzCR9fHM1WOqpUiXM4Oi6Ft2HDgXlaib8v8qBNu8V9y7rNGm789
+	CnO9AR2shB6K/j1e95d2I3LWYg3erjUAVCcrrGoR4q/QVSNpjcPz9jkLW3dso9KesQvIxjg32GH
+	sp/y/V2NbItSeIwgBIfvBNsmTtt3CirPFwXhBcSxwNFhbOxs1BPFX22IveHqfVShyUNg/6LLcGP
+	MdHcq9D8TW0BTS4Qk2D6z6c2+9r4gHvQ==
+X-Google-Smtp-Source: AGHT+IG0fEnqGUG8+oiRHZDhntx0M4FmHH2tN93YTFeHU2r24HPHbQJjdVqv46rLLzginl6PjhXpfFFp
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a81:5748:0:b0:607:c418:33ba with SMTP id
- l69-20020a815748000000b00607c41833bamr4147129ywb.8.1708515344377; Wed, 21 Feb
- 2024 03:35:44 -0800 (PST)
-Date: Wed, 21 Feb 2024 12:35:11 +0100
+ (user=ardb job=sendgmr) by 2002:a0d:e6c5:0:b0:608:801a:e66e with SMTP id
+ p188-20020a0de6c5000000b00608801ae66emr232627ywe.3.1708515346559; Wed, 21 Feb
+ 2024 03:35:46 -0800 (PST)
+Date: Wed, 21 Feb 2024 12:35:12 +0100
 In-Reply-To: <20240221113506.2565718-18-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,14 +73,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240221113506.2565718-18-ardb+git@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1147; i=ardb@kernel.org;
- h=from:subject; bh=e7Puh3E2XK1VJqqP8geKZexKLK94zY042KFjfKEULUs=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIfXq/bd/VsVJTi+bPPmYuH9fB1t473PjspnToo1YUsxUq
- 2rZ/8p1lLIwiHEwyIopsgjM/vtu5+mJUrXOs2Rh5rAygQxh4OIUgIlcn8fwP59By9ztn+WWpIp/
- Ox3ZZ2pacQjfWxM61eabxvsZwdx2xxj+2ZrtjxF+psy/dvm6zgKZQ2ypEpVS2Y8L2oKWh7RmbCt kBgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1582; i=ardb@kernel.org;
+ h=from:subject; bh=cvzedKkAgUYV71bwW+wRLG9NvEsRD1LqBxLDjio6avo=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIfXq/XcfP02y/sG1PGlJDc9qpSi1Q69MXf6u41urqrbMb
+ sH7yR81OkpZGMQ4GGTFFFkEZv99t/P0RKla51myMHNYmUCGMHBxCsBEJmxi+B/G7rLguUZMl3+R
+ 0vtNEibBlX9ZVJt10g8o/TM9Ily2zY2RYZFpSYf4SxEfXrMP20O46g6+2tbuk+T93lr0pKL5u+8 PGQA=
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240221113506.2565718-22-ardb+git@google.com>
-Subject: [PATCH v5 04/16] x86/startup_64: Use RIP_REL_REF() to access __supported_pte_mask
+Message-ID: <20240221113506.2565718-23-ardb+git@google.com>
+Subject: [PATCH v5 05/16] x86/startup_64: Use RIP_REL_REF() to access early
+ page tables
 From: Ard Biesheuvel <ardb+git@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
@@ -95,37 +96,46 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-__supported_pte_mask is accessed from code that executes from a 1:1
-mapping so it cannot use a plain access from C. Replace the use of
-fixup_pointer() with RIP_REL_REF(), which is better and simpler.
+The early statically allocated page tables are populated from code that
+executes from a 1:1 mapping so it cannot use plain accesses from C.
+Replace the use of fixup_pointer() with RIP_REL_REF(), which is better
+and simpler.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/kernel/head64.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/x86/kernel/head64.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 2ac904110f6a..e2573ddae32f 100644
+index e2573ddae32f..7e2c9b581d58 100644
 --- a/arch/x86/kernel/head64.c
 +++ b/arch/x86/kernel/head64.c
-@@ -177,7 +177,6 @@ unsigned long __head __startup_64(unsigned long physaddr,
- 	p4dval_t *p4d;
- 	pudval_t *pud;
- 	pmdval_t *pmd, pmd_entry;
--	pteval_t *mask_ptr;
- 	bool la57;
- 	int i;
+@@ -215,13 +215,11 @@ unsigned long __head __startup_64(unsigned long physaddr,
+ 		p4d[511] += load_delta;
+ 	}
  
-@@ -259,8 +258,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
+-	pud = fixup_pointer(level3_kernel_pgt, physaddr);
+-	pud[510] += load_delta;
+-	pud[511] += load_delta;
++	RIP_REL_REF(level3_kernel_pgt)[PTRS_PER_PUD - 2].pud += load_delta;
++	RIP_REL_REF(level3_kernel_pgt)[PTRS_PER_PUD - 1].pud += load_delta;
  
- 	pmd_entry = __PAGE_KERNEL_LARGE_EXEC & ~_PAGE_GLOBAL;
- 	/* Filter out unsupported __PAGE_KERNEL_* bits: */
--	mask_ptr = fixup_pointer(&__supported_pte_mask, physaddr);
--	pmd_entry &= *mask_ptr;
-+	pmd_entry &= RIP_REL_REF(__supported_pte_mask);
- 	pmd_entry += sme_get_me_mask();
- 	pmd_entry +=  physaddr;
+-	pmd = fixup_pointer(level2_fixmap_pgt, physaddr);
+ 	for (i = FIXMAP_PMD_TOP; i > FIXMAP_PMD_TOP - FIXMAP_PMD_NUM; i--)
+-		pmd[i] += load_delta;
++		RIP_REL_REF(level2_fixmap_pgt)[i].pmd += load_delta;
  
+ 	/*
+ 	 * Set up the identity mapping for the switchover.  These
+@@ -284,7 +282,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
+ 	 * error, causing the BIOS to halt the system.
+ 	 */
+ 
+-	pmd = fixup_pointer(level2_kernel_pgt, physaddr);
++	pmd = &RIP_REL_REF(level2_kernel_pgt)->pmd;
+ 
+ 	/* invalidate pages before the kernel image */
+ 	for (i = 0; i < pmd_index((unsigned long)_text); i++)
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
