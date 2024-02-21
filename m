@@ -1,163 +1,130 @@
-Return-Path: <linux-kernel+bounces-74981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2334285E0B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:14:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D1185E078
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD973284F64
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:14:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED3431F24C04
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D817680040;
-	Wed, 21 Feb 2024 15:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A13E8003D;
+	Wed, 21 Feb 2024 15:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gehiR7Qs"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="E8hxy5Qq"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D49F7BB01;
-	Wed, 21 Feb 2024 15:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94E238398;
+	Wed, 21 Feb 2024 15:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708528480; cv=none; b=V/2oObmk3FAjpZ8Rv8O9SSUqEHW5AUYasAV6Yk39FkH9DLrU45sr4Fm/5/Wj+TWZwDNsqI97ZNi6cyKrn4ab6tYjrHeE7jkoMiaF+A7vkTlHpW3qe9uPd06yuQ0BwUawbkWWl1P/z3hHX58i57hQ0/GKrBi/QrXOmYg78VbGCM0=
+	t=1708527926; cv=none; b=SJBMfz2EaI5QhQhIQj4SGZOr8OXTE2AGd7XvGooxkBQAKIMOKfHY7jucjRUC6Ybf4jUSCJnWbcexobcE4GVV7L7mqnuvgDRgy2txIwgJYYrCoLzyLliAWcKmhzex5zFZ0sxATwdjevJtZOCTrDIwfdmGdfdo+i1Xoq8UwtPHqrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708528480; c=relaxed/simple;
-	bh=4oIgzmTnY/f+LqXpj9qdpe6DmOvhzWKH1oK8K1bmV4k=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=E95h+2AMO35WBB+nE85dmu+TMref39wFwNA21+R5CGSs4Sgtj4T/N9bT5NIH+x59VJrXXyx8cCP1x0kCUWytQxOSeQw/5Id0TNr1EwEqzLqTvyAwEVnhT252Ei1IBW6bDCRkVTMCOd4QyKGT33segFCmlRLH7igqajLdlAisVlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gehiR7Qs; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d10ad265d5so74426401fa.0;
-        Wed, 21 Feb 2024 07:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708528476; x=1709133276; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=8aiLu7q/d1kLi9vrNcF4koy98Ognr5U6JqF7jArnIv0=;
-        b=gehiR7QsrEBWvEh6yLWVtN5gc7Sje/tQxt8UTRFDzFZH/atqR88CZyVh2ZQpL5Qx1y
-         bk0uktBYC60WV+pNTdgU78lf/KM/Mlfy9mJmXG+0H/W/lFfckJlQhd6xFL0c1RZlDR5H
-         sCdtzsKRWCIFsufOV82juGCYk3kcSITT9mPeoGoZDN3ziILvdFuGq3Yufiv93044xHmq
-         P6ni4cBBPzgY1AlJARvhTXOkypt/AbZRGfczQXeR2iejI7AAbh1+IvBHsEHEfevZQXsK
-         fxGzTCeIthXNdiSeDdrfruXyq/jW1u4FyoQfrDmTkd8spF74WliAwXxct0Gv2z+nxZej
-         KZjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708528476; x=1709133276;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8aiLu7q/d1kLi9vrNcF4koy98Ognr5U6JqF7jArnIv0=;
-        b=IZf3oiiiaycOkJynjZFxiU6jeb696yw72DPQsncm2KkJr45yNdBaZSEyCo3eEwZSY0
-         X1C6PA28XM/D7nmn0BVtvF/zL7IVKpQYZp6df7sdFSkVo61i6viEAo8g8yWeXqTIzAO5
-         T3XV7sUeYC6iK+1mTsT/s2MD4nEXhOoMYAfCWLa6oOwmw56W4ASSCevKTAT1bDavP6fX
-         9Aze2OCTPGNU2nz9bds0/RsmzpsBFIRCNVuuC/UXLrD9qoAECa8EHaJ8SAbtO9BudWPb
-         Q4BtXqeMeEXAASzgY6I7RaN4DO+4YRbqKIflEwJnxkGiOccXqmVWX5914Y78+ZzUgN5H
-         wQGg==
-X-Forwarded-Encrypted: i=1; AJvYcCVtqRitLCqfqshXqMV6LUGKZjBVGE65BHXxHD2os5NgrV9Z5ksXazJzWpaVc4KRQKbfAEopYyUCi73nAyekxQJLO8maJ6NbOXTkKRpD
-X-Gm-Message-State: AOJu0YxHfe0moeS4EHmVFylj02+2ksah2TZULbDQwETTh9169oXgbUa6
-	bq3YBWkF+HJD4WdtGJGScZyiZMndiGD6jRFDvO4Z6SA+56UapQIq
-X-Google-Smtp-Source: AGHT+IEwqe4rMPKuEDPXCGIJg2V9EGKVv2j1bAOM5XSPPWHMgMrhMpQz6mDxQG1f2JAVsoF3RxHEgQ==
-X-Received: by 2002:ac2:592c:0:b0:512:b00f:a55e with SMTP id v12-20020ac2592c000000b00512b00fa55emr5715394lfi.13.1708528476184;
-        Wed, 21 Feb 2024 07:14:36 -0800 (PST)
-Received: from razdolb ([89.208.103.172])
-        by smtp.gmail.com with ESMTPSA id q6-20020ac246e6000000b00511ae6442a2sm1700184lfo.0.2024.02.21.07.14.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 07:14:35 -0800 (PST)
-References: <20231218174042.794012-1-mike.rudenko@gmail.com>
-User-agent: mu4e 1.10.8; emacs 29.2.50
-From: Mikhail Rudenko <mike.rudenko@gmail.com>
-To: Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, Sakari Ailus
- <sakari.ailus@linux.intel.com>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, Jacopo Mondi <jacopo@jmondi.org>,
- Tommaso Merciai <tomm.merciai@gmail.com>, Christophe JAILLET
- <christophe.jaillet@wanadoo.fr>, Dave Stevenson
- <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>
-Subject: Re: [PATCH v2 00/20] Omnivision OV4689 refactoring and improvements
-Date: Wed, 21 Feb 2024 18:02:15 +0300
-In-reply-to: <20231218174042.794012-1-mike.rudenko@gmail.com>
-Message-ID: <87o7c9q27c.fsf@gmail.com>
+	s=arc-20240116; t=1708527926; c=relaxed/simple;
+	bh=o0VHwBur7YDYr4Uh94axW4ZBNdf1MG7SOeDF2lLNNYA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e5cl4b8/ZWGD/fWX6+RbhIOePbyhZqQf70gUaxZ31rRwX/lp8HQVet2+mRIl6vJQANdzVkB6IQv9tyAgojO8GIvjbfhz0PYTYp1rnX4oJ5IeVMf3B6CWdt+DklWisUJoQly3GAhGX95UqQ2GqNrYE8N7C9feOvha2ltIsNndJuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=E8hxy5Qq; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41LCUQsE011338;
+	Wed, 21 Feb 2024 09:05:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=9
+	LszOJrKtOt+zOe37M1iiqx1CmUj75Si8zBC5ZDgvGE=; b=E8hxy5Qq3G5MRNH36
+	ocJ9eXz/dfx5TYX2MiwAE3p9wie8RLMP7hXX7a6ST2E38zkD9ZVwWZsjxPbvjJiQ
+	9xFZ4mE3zrwTrTMq5hxI0l86R8LJKC5VbiD5+9vwEz1wPxx81e7fd81X8fKGPtZP
+	QUy16NQayMU7/R3kyKnS3tQeO3L0i3nbAw7dhUHaQtIWaZlGBJs0ZZwjLKFSHgSP
+	ifqjqIvytclXCbk3svDtVFi8c1ClNLTMPQ3MSvOC6z4sktg6Z0GvikFo38yfr9/o
+	gwH74OYwhIfYNQ9WPUtDdBD6IHTsK1ZCsbgkapyJhIBxwfAQPJ+gP+DcTQ3Mgq4R
+	8Mtaw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205h4tk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 09:05:08 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
+ 2024 15:05:07 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Wed, 21 Feb 2024 15:05:07 +0000
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 131A4820241;
+	Wed, 21 Feb 2024 15:05:07 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH 0/9] ALSA: cs35l56: Apply calibration from EFI
+Date: Wed, 21 Feb 2024 15:04:58 +0000
+Message-ID: <20240221150507.1039979-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: GC49faqhZ8lw-AhLJf2EQ9AmyM9oYTyw
+X-Proofpoint-GUID: GC49faqhZ8lw-AhLJf2EQ9AmyM9oYTyw
+X-Proofpoint-Spam-Reason: safe
 
+Factory calibration of the speakers stores the calibration information
+into an EFI variable.
 
-Hi,
+This set of patches adds support for applying speaker calibration
+data from that EFI variable.
 
-On 2023-12-18 at 20:40 +03, Mikhail Rudenko <mike.rudenko@gmail.com> wrote:
+Patch #1 and #2 are bugfixes that are prerequisites.
 
-> Hi,
->
-> This series contains refactoring and new features implementation for
-> the Omnivision OV4689 sensor driver. Specifically, patches 1, 2, 3, 5,
-> 6, 10, 15, 16, 18, and 19 are refactorings, and are not supposed to
-> introduce any functional change. Patches 4 and 7 perform migration to
-> CCI helpers and subdevice active state respectively, and should not
-> introduce any hardware- and/or user-visible change either. Patch 8
-> fixes a possible race condition due to v4l2_async_register_subdev_sensor
-> being called too early in ov4689_probe, and patch 9 migrates power
-> management to PM autosuspend.
->
-> Patches 11-14 expose more sensor controls to the userspace, such as
-> (read-write) HBLANK, VFLIP/HFLIP, digital gain, and color
-> balance. Patch 17 implements configurable analogue crop rectangle via
-> .set_selection callback. And finally, patch 20 enables 2x2 binning
-> option. It should be noted that publicly available sensor
-> documentation is lacking description of many registers and their value
-> ranges, so a lot of values had to be found by experimentation.
+The HDA patches #7 and #8 depend on the ASoC patches.
 
-Gentle ping on this series. Anything I can do to help getting it
-reviewed and merged? Maybe split patches 15-20 which implement cropping
-and binning and change the driver away from register list based model
-into a separate series? Anyone?
+Patch #9 is a KUnit test for the new cs-amp-lib library.
 
-> Changes in v2:
-> - collect Laurent's r-b's
-> - squash together "CCI conversion" and "Set gain in one 16 bit write"
-> - use ctrl->val in ov4689_set_ctrl
-> - rename try_fmt to fmt in ov4689_init_cfg and drop corresponding comment
-> - rebase on top of media-stage and rename init_cfg->init_state
-> - sort register definitions by address throughout the whole series
-> - fix number of controls hint in v4l2_ctrl_handler_init
-> - make all hexadecimal constants lowercase
-> - disable runtime pm in probe error path
-> - implement pm autosuspend
->
-> Mikhail Rudenko (20):
->   media: i2c: ov4689: Clean up and annotate the register table
->   media: i2c: ov4689: Sort register definitions by address
->   media: i2c: ov4689: Fix typo in a comment
->   media: i2c: ov4689: CCI conversion
->   media: i2c: ov4689: Remove i2c_client from ov4689 struct
->   media: i2c: ov4689: Refactor ov4689_set_ctrl
->   media: i2c: ov4689: Use sub-device active state
->   media: i2c: ov4689: Enable runtime PM before registering sub-device
->   media: i2c: ov4689: Use runtime PM autosuspend
->   media: i2c: ov4689: Remove max_fps field from struct ov4689_mode
->   media: i2c: ov4689: Make horizontal blanking configurable
->   media: i2c: ov4689: Implement vflip/hflip controls
->   media: i2c: ov4689: Implement digital gain control
->   media: i2c: ov4689: Implement manual color balance controls
->   media: i2c: ov4689: Move pixel array size out of struct ov4689_mode
->   media: i2c: ov4689: Set timing registers programmatically
->   media: i2c: ov4689: Configurable analogue crop
->   media: i2c: ov4689: Eliminate struct ov4689_mode
->   media: i2c: ov4689: Refactor ov4689_s_stream
->   media: i2c: ov4689: Implement 2x2 binning
->
->  drivers/media/i2c/Kconfig  |   1 +
->  drivers/media/i2c/ov4689.c | 964 +++++++++++++++++++++++--------------
->  2 files changed, 592 insertions(+), 373 deletions(-)
+Richard Fitzgerald (8):
+  ASoC: wm_adsp: Fix missing mutex_lock in wm_adsp_write_ctl()
+  ASoC: wm_adsp: Add wm_adsp_start() and wm_adsp_stop()
+  ASoC: cs-amp-lib: Add helpers for factory calibration data
+  ASoC: cs35l56: Add helper functions for amp calibration
+  ASoC: cs35l56: Apply amp calibration from EFI data
+  ALSA: hda: hda_cs_dsp_ctl: Add helper function to write calibration
+  ALSA: hda: cs35l56: Apply amp calibration from EFI data
+  ASoC: cs-amp-lib: Add KUnit test for calibration helpers
 
+Simon Trimmer (1):
+  ALSA: hda: hda_cs_dsp_ctl: Only call notify when a control has been
+    added to a card
 
---
-Best regards,
-Mikhail Rudenko
+ include/sound/cs-amp-lib.h         |  66 +++
+ include/sound/cs35l56.h            |  10 +
+ sound/pci/hda/Kconfig              |   2 +
+ sound/pci/hda/cs35l56_hda.c        |  36 +-
+ sound/pci/hda/hda_cs_dsp_ctl.c     |  52 ++-
+ sound/pci/hda/hda_cs_dsp_ctl.h     |   4 +
+ sound/soc/codecs/Kconfig           |  18 +
+ sound/soc/codecs/Makefile          |   4 +
+ sound/soc/codecs/cs-amp-lib-test.c | 709 +++++++++++++++++++++++++++++
+ sound/soc/codecs/cs-amp-lib.c      | 270 +++++++++++
+ sound/soc/codecs/cs35l56-sdw.c     |  20 +
+ sound/soc/codecs/cs35l56-shared.c  |  83 ++++
+ sound/soc/codecs/cs35l56.c         |  43 +-
+ sound/soc/codecs/wm_adsp.c         |  30 +-
+ sound/soc/codecs/wm_adsp.h         |   2 +
+ 15 files changed, 1328 insertions(+), 21 deletions(-)
+ create mode 100644 include/sound/cs-amp-lib.h
+ create mode 100644 sound/soc/codecs/cs-amp-lib-test.c
+ create mode 100644 sound/soc/codecs/cs-amp-lib.c
+
+-- 
+2.30.2
+
 
