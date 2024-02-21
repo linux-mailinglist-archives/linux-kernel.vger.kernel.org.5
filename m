@@ -1,123 +1,150 @@
-Return-Path: <linux-kernel+bounces-75222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B85A785E4DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:46:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BC6585E4E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:48:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA1A21C23712
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:46:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1062B20E7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B7C84A23;
-	Wed, 21 Feb 2024 17:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C2384A31;
+	Wed, 21 Feb 2024 17:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=alexander.sverdlin@siemens.com header.b="i5NBYVK8"
-Received: from mta-65-228.siemens.flowmailer.net (mta-65-228.siemens.flowmailer.net [185.136.65.228])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CSRv2iw0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LnJAvQn3"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48067BB00
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263E183CD2;
+	Wed, 21 Feb 2024 17:47:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537584; cv=none; b=sATdG7ChlKT1uw9kOFemmJn0MVmEcdiJyjCfuHYYh78F2/+1hJe1HF+DQ1MiXC9+9emJqiqL7YWJ0uffcIuVNJaoXJN90mcPuphH334cHpfAltjfUfqV/dA0UHksahUlJBEapB9rfB+IVhSYGNlQL3loYNJt8bP7me0T3iHABpo=
+	t=1708537670; cv=none; b=qGDoSvYC2CErMw/pBNHfbgyx4M1SB/7Q0vKI8jZk+WiIqIEi54VCsMtP/drtiqUWJ/y3oICFsYXzbzaD+H05MOAhZtMpP/ZQGnMShIHHJMzGyP22/QSZFui4BTHS6kJa8nhnTrzq9kCzoVkrGys3LLCizv4/i7A3KVIzOuNrgYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537584; c=relaxed/simple;
-	bh=KkqUbvzPYYth3SxM0r3QYQIpl9bISqSyQeqsj9hxl4w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=COBzhnsmBD7XrD7GpVip1BuaHNaB/t7yF/8Viymbl6afUKBLEwfx56LEraIxYxYDbG3f5ydSpLNTZhMi5Hsrd7YW4LE3JIopCkFo2kKdhj5OVsYfGlIne2GC2XlL4DaHTCFgQN4qm0EKqEABf8T/8zniLF+iybGpWoC4p1XdPqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=alexander.sverdlin@siemens.com header.b=i5NBYVK8; arc=none smtp.client-ip=185.136.65.228
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-65-228.siemens.flowmailer.net with ESMTPSA id 2024022117461751a85647f17ff7b7a3
-        for <linux-kernel@vger.kernel.org>;
-        Wed, 21 Feb 2024 18:46:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=alexander.sverdlin@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
- bh=mKsBfKzbS6MQdlGwzOPn+j3onsmhYJkKuuKue8WTjX0=;
- b=i5NBYVK815X3qgokYN5At6yAlMWY0QXGzxusIZKPKlHzg2DxypD4P2LqqpaIBX7C3fpxLH
- hFVrUs50RnANhG0Hlu8Qv0OjN12Xwq+ZfVFQDVVPj9GmfhdnnSUgBeM70xA3OVkSKjg3c1dN
- xZTG+zDgSG6uAk/TaNGLx624vbyow=;
-From: "A. Sverdlin" <alexander.sverdlin@siemens.com>
-To: linux-pm@vger.kernel.org
-Cc: Alexander Sverdlin <alexander.sverdlin@siemens.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Sebastian Reichel <sre@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] power: reset: restart-poweroff: convert to module
-Date: Wed, 21 Feb 2024 18:46:07 +0100
-Message-ID: <20240221174610.3560775-1-alexander.sverdlin@siemens.com>
+	s=arc-20240116; t=1708537670; c=relaxed/simple;
+	bh=PRauaF92682VwsAMg09wdHVxsDKlTxRn384p1w/3jJk=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=aOfNb7NxDq1Sj7QY5I6zQjBf0VXi9jy6IwKOTt2U/0SfnlYSkATTPsxFOzrUQac6LpeZzQIMgMvazOtHie8WMGVmAEnneEoMJC7J2Dl5yJT8kqWErec4CYW9QJP7X73LQBvHozoYo4qghou4Qw0DSi8msc6bqpuKEi/+jrF5dRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CSRv2iw0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LnJAvQn3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 21 Feb 2024 17:47:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708537667;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=31NN7dBlQk+cSYn0Xu5M/e75MI8J5Cmp6IemxlCIL0A=;
+	b=CSRv2iw0nAmYDmU83rlI0JrOr7g0HAw379vheiLTpZ242XXqcBfxXOIJ50eAk20TQ9D91p
+	Pejfquj83aAPOa+tF/VVo2Bel3Ehi/mCwq4XDuXzPz0rd1zIFxTcT/KbUeTZ5/qxR0abaH
+	rQarnzPkwOAYGivfT2kvyOw3UGaGtuA0mfYgPXgyU1dl0q6uqINOwYeRKhO6q5Zk+yA8jo
+	tFu1RiLTn9HO24DxHADv8vsbgAdpE4TJ86up6pdPw/7eDhRG8/Dx3eoRaO39SwXNOfyXXU
+	iJg+SXA/23T3kAkpKStrqOd3fZD26WUMAPyx7AQf/qkbK2gYKqhwnjomIRBvzQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708537667;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=31NN7dBlQk+cSYn0Xu5M/e75MI8J5Cmp6IemxlCIL0A=;
+	b=LnJAvQn3KY+kokh2F9pFI5qUHIXgfkAok5MounSHgdg/Bkb43vTi7doeRDOBSE+tqBjYJ7
+	MfucnJzk4JVvi/CA==
+From: "tip-bot2 for Chen Jun" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] irqchip/mbigen: Don't use bus_get_dev_root() to
+ find the parent
+Cc: Chen Jun <chenjun102@huawei.com>, Thomas Gleixner <tglx@linutronix.de>,
+ stable@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ maz@kernel.org
+In-Reply-To: <20240220111429.110666-1-chenjun102@huawei.com>
+References: <20240220111429.110666-1-chenjun102@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-456497:519-21489:flowmailer
+Message-ID: <170853766628.398.14228390574695320909.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-From: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+The following commit has been merged into the irq/urgent branch of tip:
 
-The necessity of having a fake platform device for a generic, platform
-independent functionality is not obvious.
-Some platforms requre device tree modification for this, some would require
-ACPI tables modification, while functionality may be useful even to
-end-users without required expertise. Convert the platform driver to
-a simple module.
+Commit-ID:     fb33a46cd75e18773dd5a414744507d84ae90870
+Gitweb:        https://git.kernel.org/tip/fb33a46cd75e18773dd5a414744507d84ae90870
+Author:        Chen Jun <chenjun102@huawei.com>
+AuthorDate:    Tue, 20 Feb 2024 19:14:29 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 21 Feb 2024 18:40:00 +01:00
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+irqchip/mbigen: Don't use bus_get_dev_root() to find the parent
+
+bus_get_dev_root() returns sp->dev_root which is set in subsys_register(),
+but subsys_register() is not called by platform_bus_init().
+
+Therefor for the platform_bus_type, bus_get_dev_root() always returns NULL.
+This makes mbigen_of_create_domain() always return -ENODEV.
+
+Don't try to retrieve the parent via bus_get_dev_root() and
+unconditionally hand a NULL pointer to of_platform_device_create() to
+fix this.
+
+Fixes: fea087fc291b ("irqchip/mbigen: move to use bus_get_dev_root()")
+Signed-off-by: Chen Jun <chenjun102@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20240220111429.110666-1-chenjun102@huawei.com
+
 ---
-This RFC is merely to understand if this approach would be accepted.
-Converting to "tristate" could follow or preceed this patch.
+ drivers/irqchip/irq-mbigen.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/power/reset/restart-poweroff.c b/drivers/power/reset/restart-poweroff.c
-index 28f1822db1626..e1d94109f6823 100644
---- a/drivers/power/reset/restart-poweroff.c
-+++ b/drivers/power/reset/restart-poweroff.c
-@@ -20,7 +20,7 @@ static void restart_poweroff_do_poweroff(void)
- 	machine_restart(NULL);
- }
- 
--static int restart_poweroff_probe(struct platform_device *pdev)
-+static int __init restart_poweroff_init(void)
+diff --git a/drivers/irqchip/irq-mbigen.c b/drivers/irqchip/irq-mbigen.c
+index 5101a3f..58881d3 100644
+--- a/drivers/irqchip/irq-mbigen.c
++++ b/drivers/irqchip/irq-mbigen.c
+@@ -235,22 +235,17 @@ static const struct irq_domain_ops mbigen_domain_ops = {
+ static int mbigen_of_create_domain(struct platform_device *pdev,
+ 				   struct mbigen_device *mgn_chip)
  {
- 	/* If a pm_power_off function has already been added, leave it alone */
- 	if (pm_power_off != NULL) {
-@@ -33,12 +33,10 @@ static int restart_poweroff_probe(struct platform_device *pdev)
- 	return 0;
- }
+-	struct device *parent;
+ 	struct platform_device *child;
+ 	struct irq_domain *domain;
+ 	struct device_node *np;
+ 	u32 num_pins;
+ 	int ret = 0;
  
--static int restart_poweroff_remove(struct platform_device *pdev)
-+static void __exit restart_poweroff_exit(void)
- {
- 	if (pm_power_off == &restart_poweroff_do_poweroff)
- 		pm_power_off = NULL;
+-	parent = bus_get_dev_root(&platform_bus_type);
+-	if (!parent)
+-		return -ENODEV;
 -
--	return 0;
- }
+ 	for_each_child_of_node(pdev->dev.of_node, np) {
+ 		if (!of_property_read_bool(np, "interrupt-controller"))
+ 			continue;
  
- static const struct of_device_id of_restart_poweroff_match[] = {
-@@ -47,15 +45,8 @@ static const struct of_device_id of_restart_poweroff_match[] = {
- };
- MODULE_DEVICE_TABLE(of, of_restart_poweroff_match);
+-		child = of_platform_device_create(np, NULL, parent);
++		child = of_platform_device_create(np, NULL, NULL);
+ 		if (!child) {
+ 			ret = -ENOMEM;
+ 			break;
+@@ -273,7 +268,6 @@ static int mbigen_of_create_domain(struct platform_device *pdev,
+ 		}
+ 	}
  
--static struct platform_driver restart_poweroff_driver = {
--	.probe = restart_poweroff_probe,
--	.remove = restart_poweroff_remove,
--	.driver = {
--		.name = "poweroff-restart",
--		.of_match_table = of_restart_poweroff_match,
--	},
--};
--module_platform_driver(restart_poweroff_driver);
-+module_init(restart_poweroff_init);
-+module_exit(restart_poweroff_exit);
+-	put_device(parent);
+ 	if (ret)
+ 		of_node_put(np);
  
- MODULE_AUTHOR("Andrew Lunn <andrew@lunn.ch");
- MODULE_DESCRIPTION("restart poweroff driver");
--- 
-2.43.0
-
 
