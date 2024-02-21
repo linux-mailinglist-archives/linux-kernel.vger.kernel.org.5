@@ -1,195 +1,179 @@
-Return-Path: <linux-kernel+bounces-74294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57AD885D25D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:17:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D4885D240
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EF0A2848B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:17:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4A79B22401
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FFD3BB3F;
-	Wed, 21 Feb 2024 08:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="FRZ8GEDg";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="g4yn0CHZ"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C683BB43;
+	Wed, 21 Feb 2024 08:11:46 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 600143BB20;
-	Wed, 21 Feb 2024 08:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A79A3B78D;
+	Wed, 21 Feb 2024 08:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708503419; cv=none; b=RZQwvH8MmrtFJ2mCYlECf43uLMPYnc9KYKD1Kwk+pQdT6NfSyx3DhataXoikm5ACsjLfPb6zEH65dXzXMN790zyVDlgmkxihhOv99EzpNC8OxRRjlP+K9c1FDn42irkZQ0p0/XkGOkAOzVCgG9p8U+8jeHFIA2L6h/dqTIyx82s=
+	t=1708503106; cv=none; b=AFbgVSTOv7glz1Zao6s6au5FzpTIaCiqEkJpZmOxNxN/v6H/4uloTU1AWZImgnaHIQR9NhLLncyFr8kn5zv9U+t0L0zliJApjqqIiTiaIdNkYKnMY499HWg/XjGg5A3g2c7ww/s8/qDijsr7aZM3BOpEFH+F50pxzE96vFKnJNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708503419; c=relaxed/simple;
-	bh=ImDO1ptRcuiSvjyuf1c7UuMOp5LedFax4WXeJTjLDPc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZqknnvMjSOHhpRQnfezdb2Q1c6MiVOB6IXdKXPkMM7YSVtiFjudzofzick3z9j10dM68ViJX7r9s27kAg44D6oKO/Vy/vnKAI9xmeRORcxOfKRFuZSzK8ZEPA0m5mo51adXkLPnMRwqn71AQzNZxImLGoEe6T6ishmGVvEGEtIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=FRZ8GEDg; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=g4yn0CHZ reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708503415; x=1740039415;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=eG8P+rnyI2xfiyStzAxuAUfnk5thsJblifMaExi1E7E=;
-  b=FRZ8GEDgsr+USbq2dOH4+iUMLRTuW2/Rr84jRunrcuZbcfxAsPVSWBmc
-   fu0BVJkrUSjsjm6OYaefsiL6wmHDL97vU0+vFRkxUbLjuKFXKi/bQOefT
-   P3HmCy8UPzkEe4DTfiSQVk2XDwangq8gKI8uDtGfzFNMdcsklnacicEB5
-   4EiSGOqUED2ramUh0+1KEkSzCPbfaTjZiVdD+FYfx9tO70QqHMJOdRiWL
-   qykyCcoTV8tanjlfy4sB8uznFSXuexb0teDb36zQBndCvsumHN8aUj+Ao
-   dXWXV03QH4osG84Pasiww2aHyCNSOBXRTiuQnfeLqfbKdSAUOKBppLHd/
-   g==;
-X-IronPort-AV: E=Sophos;i="6.06,175,1705359600"; 
-   d="scan'208";a="35514693"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 21 Feb 2024 09:16:52 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0ABCB170D96;
-	Wed, 21 Feb 2024 09:16:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1708503407;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=eG8P+rnyI2xfiyStzAxuAUfnk5thsJblifMaExi1E7E=;
-	b=g4yn0CHZiOBUJqPxWCfvfeyvve7kFL7lYbskofXYjiiw0VMUHGMLtulodvGn56l0Lz+sBR
-	rqopJ7qUu87ZpDZM8jSYhwdF7D8l5luepJedo3TjF+AkTeNCh6Ig+FOdyvDoHdwNgGIU3C
-	6a9kkpS3+7sMJDXYcQ2ltX08YJTfMsr3rUyj3X4Q8BB945BWGbyRzpPtmXxX8tZtGQt4CJ
-	+7Bb/KpBnMuZCw0OQQz5OeEroo8OudlEttIuV3T7p6m1Q8Yso6N0zJvF5aG4k/bhOi0/uj
-	1OfBOcAXFoAB7RPLLJQPTBx/R8tD2GmtSvNKTTA5J+keWgKmltguPDPdfEh1+Q==
-Message-ID: <10ad8f935e598244d4cb68aa20130952a26ba2ef.camel@ew.tq-group.com>
-Subject: Re: [PATCH 6.1 000/197] 6.1.79-rc1 review
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Daniel =?ISO-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>, Greg
-	Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org, 
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net,  shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org,  pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com,  sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org,  allen.lkml@gmail.com, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Michael Ellerman <mpe@ellerman.id.au>
-Date: Wed, 21 Feb 2024 09:16:32 +0100
-In-Reply-To: <7e1faa29-a154-41fc-aebc-38d5f355ea90@linaro.org>
-References: <20240220204841.073267068@linuxfoundation.org>
-	 <c873370c-c12f-4f03-a722-1ae59743089b@linaro.org>
-	 <7e1faa29-a154-41fc-aebc-38d5f355ea90@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1708503106; c=relaxed/simple;
+	bh=+2+yAJpVza7viz8w2DkLR7wHx5qlz5d/JWVKzbzMLbQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RzDpM62x27hkspPPn1/iriHDBUb3p7k4KbYvGisfS0d8kZRrUB5NMlWsIGatJjMjc0osLYhOSdSfTr4X2PIlbdRk9nssijDZKm8K8ZpgAQV+nG4x0rpUfhhWaCFmvzJTo0/ipNMhkrwWxUCLwGZOhV1gxIHsIi4HFaXamBUUmgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Tfpq72rMSzNlm7;
+	Wed, 21 Feb 2024 16:10:11 +0800 (CST)
+Received: from dggpemd100002.china.huawei.com (unknown [7.185.36.164])
+	by mail.maildlp.com (Postfix) with ESMTPS id 55334140114;
+	Wed, 21 Feb 2024 16:11:34 +0800 (CST)
+Received: from huawei.com (10.67.174.33) by dggpemd100002.china.huawei.com
+ (7.185.36.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Wed, 21 Feb
+ 2024 16:11:34 +0800
+From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>, Johannes Weiner
+	<hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, Roman Gushchin
+	<roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, Muchun Song
+	<muchun.song@linux.dev>
+CC: <cgroups@vger.kernel.org>, <linux-mm@kvack.org>, Wang Weiyang
+	<wangweiyang2@huawei.com>, Xiu Jianfeng <xiujianfeng@huawei.com>
+Subject: [PATCH stable] memcg: add refcnt for pcpu stock to avoid UAF problem in drain_all_stock()
+Date: Wed, 21 Feb 2024 16:18:01 +0800
+Message-ID: <20240221081801.69764-1-gongruiqi1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemd100002.china.huawei.com (7.185.36.164)
 
-On Tue, 2024-02-20 at 19:40 -0600, Daniel D=C3=ADaz wrote:
-> ********************
-> Achtung externe E-Mail: =C3=96ffnen Sie Anh=C3=A4nge und Links nur, wenn =
-Sie wissen, dass diese aus einer sicheren Quelle stammen und sicher sind. L=
-eiten Sie die E-Mail im Zweifelsfall zur Pr=C3=BCfung an den IT-Helpdesk we=
-iter.
-> Attention external email: Open attachments and links only if you know tha=
-t they are from a secure source and are safe. In doubt forward the email to=
- the IT-Helpdesk to check it.
-> ********************
->=20
-> Hello!
->=20
-> On 20/02/24 7:04 p.=C2=A0m., Daniel D=C3=ADaz wrote:
-> > On 20/02/24 2:49 p.=C2=A0m., Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 6.1.79 release.
-> > > There are 197 patches in this series, all will be posted as a respons=
-e
-> > > to this one.=C2=A0 If anyone has any issues with these being applied,=
- please
-> > > let me know.
-> > >=20
-> > > Responses should be made by Thu, 22 Feb 2024 20:48:08 +0000.
-> > > Anything received after that time might be too late.
-> > >=20
-> > > The whole patch series can be found in one patch at:
-> > > =C2=A0=C2=A0=C2=A0=C2=A0https://www.kernel.org/pub/linux/kernel/v6.x/=
-stable-review/patch-6.1.79-rc1.gz
-> > > or in the git tree and branch at:
-> > > =C2=A0=C2=A0=C2=A0=C2=A0git://git.kernel.org/pub/scm/linux/kernel/git=
-/stable/linux-stable-rc.git linux-6.1.y
-> > > and the diffstat can be found below.
-> > >=20
-> > > thanks,
-> > >=20
-> > > greg k-h
-> >=20
-> > We see a regression with PowerPC:
-> >=20
-> > -----8<-----
-> >  =C2=A0 /builds/linux/arch/powerpc/kernel/cpu_setup_6xx.S: Assembler me=
-ssages:
-> >  =C2=A0 /builds/linux/arch/powerpc/kernel/cpu_setup_6xx.S:124: Error: u=
-nrecognized opcode: `sym_func_start_local(setup_g2_le_hid2)'
-> >  =C2=A0 /builds/linux/arch/powerpc/kernel/cpu_setup_6xx.S:131: Error: u=
-nrecognized opcode: `sym_func_end(setup_g2_le_hid2)'
-> >  =C2=A0 make[4]: *** [/builds/linux/scripts/Makefile.build:382: arch/po=
-werpc/kernel/cpu_setup_6xx.o] Error 1
-> > ----->8-----
-> >=20
-> > This is seen only on PowerPC with GCC 8, GCC 13, Clang 17, Clang nightl=
-y, on:
-> > * allnoconfig
-> > * tinyconfig
-> > * mpc83xx_defconfig
-> > * ppc6xx_defconfig
-> > (at least)
-> >=20
-> > Reproducer:
-> >=20
-> >  =C2=A0 tuxmake \
-> >  =C2=A0=C2=A0=C2=A0 --runtime podman \
-> >  =C2=A0=C2=A0=C2=A0 --target-arch powerpc \
-> >  =C2=A0=C2=A0=C2=A0 --toolchain gcc-8 \
-> >  =C2=A0=C2=A0=C2=A0 --kconfig tinyconfig
-> >=20
->=20
-> Bisection points to:
->=20
->    commit a65d7a833f486d0c162fdc854d2d5dd2e66ddd95
->    Author: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
->    Date:   Wed Jan 24 11:38:38 2024 +0100
->=20
->        powerpc/6xx: set High BAT Enable flag on G2_LE cores
->       =20
->        [ Upstream commit a038a3ff8c6582404834852c043dadc73a5b68b4 ]
->=20
->=20
-> Reverting that commit makes the build pass again.
+commit 1a3e1f40962c445b997151a542314f3c6097f8c3 upstream.
 
-It seems that backporting the mentioned commit verbatim would also require
-2da37761671b5bdedbe04e6469cfa57cd6b6ae45 ("powerpc/32: Fix objtool unannota=
-ted intra-function call
-warnings") to make SYM_FUNC_START_LOCAL/SYM_FUNC_END available. Please drop=
- this patch from 6.1 and
-older for now.
+There was a kernel panic happened on an in-house environment running
+3.10, and the same problem was reproduced on 4.19:
 
-Adding Christophe and Michael to cc. Is backporting the additional patch an=
- option (and if so, for
-which kernel versions?), or should I send a new patch that does not use
-SYM_FUNC_START_LOCAL/SYM_FUNC_END for stable?
+general protection fault: 0000 [#1] SMP PTI
+CPU: 1 PID: 2085 Comm: bash Kdump: loaded Tainted: G             L    4.19.90+ #7
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
+RIP: 0010 drain_all_stock+0xad/0x140
+Code: 00 00 4d 85 ff 74 2c 45 85 c9 74 27 4d 39 fc 74 42 41 80 bc 24 28 04 00 00 00 74 17 49 8b 04 24 49 8b 17 48 8b 88 90 02 00 00 <48> 39 8a 90 02 00 00 74 02 eb 86 48 63 88 3c 01 00 00 39 8a 3c 01
+RSP: 0018:ffffa7efc5813d70 EFLAGS: 00010202
+RAX: ffff8cb185548800 RBX: ffff8cb89f420160 RCX: ffff8cb1867b6000
+RDX: babababababababa RSI: 0000000000000001 RDI: 0000000000231876
+RBP: 0000000000000000 R08: 0000000000000415 R09: 0000000000000002
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8cb186f89040
+R13: 0000000000020160 R14: 0000000000000001 R15: ffff8cb186b27040
+FS:  00007f4a308d3740(0000) GS:ffff8cb89f440000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe4d634a68 CR3: 000000010b022000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ mem_cgroup_force_empty_write+0x31/0xb0
+ cgroup_file_write+0x60/0x140
+ ? __check_object_size+0x136/0x147
+ kernfs_fop_write+0x10e/0x190
+ __vfs_write+0x37/0x1b0
+ ? selinux_file_permission+0xe8/0x130
+ ? security_file_permission+0x2e/0xb0
+ vfs_write+0xb6/0x1a0
+ ksys_write+0x57/0xd0
+ do_syscall_64+0x63/0x250
+ ? async_page_fault+0x8/0x30
+ entry_SYSCALL_64_after_hwframe+0x5c/0xc1
+Modules linked in: ...
 
-Thanks,
-Matthias
+It is found that in case of stock->nr_pages == 0, the memcg on
+stock->cached could be freed due to its refcnt decreased to 0, which
+made stock->cached become a dangling pointer. It could cause a UAF
+problem in drain_all_stock() in the following concurrent scenario. Note
+that drain_all_stock() doesn't disable irq but only preemption.
 
+CPU1                             CPU2
+==============================================================================
+stock->cached = memcgA (freed)
+                                 drain_all_stock(memcgB)
+                                  rcu_read_lock()
+                                  memcg = CPU1's stock->cached (memcgA)
+                                  (interrupted)
+refill_stock(memcgC)
+ drain_stock(memcgA)
+ stock->cached = memcgC
+ stock->nr_pages += xxx (> 0)
+                                  stock->nr_pages > 0
+                                  mem_cgroup_is_descendant(memcgA, memcgB) [UAF]
+                                  rcu_read_unlock()
 
+This problem is, unintenionally, fixed at 5.9, where commit 1a3e1f40962c
+("mm: memcontrol: decouple reference counting from page accounting")
+adds memcg refcnt for stock. Therefore affected LTS versions include
+4.19 and 5.4.
 
->=20
-> Greetings!
->=20
-> Daniel D=C3=ADaz
-> daniel.diaz@linaro.org
->=20
+For 4.19, memcg's css offline process doesn't call drain_all_stock(). so
+it's easier for the released memcg to be left on the stock. For 5.4,
+although mem_cgroup_css_offline() does call drain_all_stock(), but the
+flushing could be skipped when stock->nr_pages happens to be 0, and
+besides the async draining could be delayed and take place after the UAF
+problem has happened.
+
+Fix this problem by adding (and decreasing) memcg's refcnt when memcg is
+put onto (and removed from) stock, just like how commit 1a3e1f40962c
+("mm: memcontrol: decouple reference counting from page accounting")
+does. After all, "being on the stock" is a kind of reference with
+regards to memcg. As such, it's guaranteed that a css on stock would not
+be freed.
+
+Cc: stable@vger.kernel.org      # 4.19 5.4
+Fixes: cdec2e4265df ("memcg: coalesce charging via percpu storage")
+Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+---
+ mm/memcontrol.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5a366cf79821..8c04296df1c7 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2015,6 +2015,9 @@ static void drain_stock(struct memcg_stock_pcp *stock)
+ {
+ 	struct mem_cgroup *old = stock->cached;
+ 
++	if (!old)
++		return;
++
+ 	if (stock->nr_pages) {
+ 		page_counter_uncharge(&old->memory, stock->nr_pages);
+ 		if (do_memsw_account())
+@@ -2022,6 +2025,8 @@ static void drain_stock(struct memcg_stock_pcp *stock)
+ 		css_put_many(&old->css, stock->nr_pages);
+ 		stock->nr_pages = 0;
+ 	}
++
++	css_put(&old->css);
+ 	stock->cached = NULL;
+ }
+ 
+@@ -2057,6 +2062,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	if (stock->cached != memcg) { /* reset if necessary */
+ 		drain_stock(stock);
++		css_get(&memcg->css);
+ 		stock->cached = memcg;
+ 	}
+ 	stock->nr_pages += nr_pages;
+-- 
+2.25.1
 
 
