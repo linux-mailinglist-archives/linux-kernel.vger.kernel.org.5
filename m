@@ -1,167 +1,131 @@
-Return-Path: <linux-kernel+bounces-75328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E08385E6A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:50:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228C685E6A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D74B11F2835B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52DC71C24192
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC57C85941;
-	Wed, 21 Feb 2024 18:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A0585935;
+	Wed, 21 Feb 2024 18:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kAxQtPEU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b9hLApkr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A21D82D97;
-	Wed, 21 Feb 2024 18:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A8642A8E
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708541419; cv=none; b=dw1Aox30q75X91HwGKm+5vk4STv/oAW+iaSejtBphQjfC6Qc2bdZwBr+ys1bBnmGeADZo0SkTKbuntCE1w1iALD8NVoJRBTxO6flO/M/OK4XsKO+GxJ4euPK7i+Z/uLmPjjsK8JniUsSLsmUS9YLILvtDeOXXIBTxpZ6wGqGW8U=
+	t=1708541438; cv=none; b=A0DRXGxzlJ2c3AEfRe2bf0H205wKwTvQYPVTtVpMBSn3JEiL8UG+ukHXrFD0h9M7A6ML48LbDi1vIS9CM//Ka5Ai+y2cW9bDBx0rj363zAM50OiwFNlu/ao1Wqhg0FQlsdRX1/YPPKdhohRIM99COSvTosZ49LDRfBYD3TTaAPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708541419; c=relaxed/simple;
-	bh=berq+dLx79W8QR0JZxbmG5z5E9hVyr2TYj6ftH2W+DU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=i2xN8LqpPXCrfJ8GvRd0euugK9PlPAhTUFmpkwdoM3Fep5BPO36/zuDByFfF3P7NkvzWuaOSt+D3hq5g9PccBOdqqB62kt7TEOQoEPKPXfGNiVyzjA0jo2Oy4+KCYaWlPKx8a8LOhmMveCMMJYs4f9vFtSjL8GM0gCSNUtCMC4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kAxQtPEU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4A9C433F1;
-	Wed, 21 Feb 2024 18:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708541418;
-	bh=berq+dLx79W8QR0JZxbmG5z5E9hVyr2TYj6ftH2W+DU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=kAxQtPEUYCxY9bKxoBer0CmYny/X0JyU63M+Zl/i/VzgkRePbL+RgKth1AS9f84aJ
-	 pipANzIjhKdTzS7DuhOhXkPkSD1YzBrGIemEDirSKyujLbCuin7x1iPed2ztjiZTWa
-	 JI7kRYnpbDTzV6EcGMrHY90bQVK49to7toCJ8LwEHG+RKisqOzK4VVyTukMxcs7w8V
-	 k4rUkFsTBKcM9LW6Z2t4h/YyQTVwNvTSFBNDN9hQe4WvmguAgsUV6FUbJdjqnqpS+Y
-	 xMYCW7OQMmNIkzxu56Iu6qvGRr60fbvqSGuTpAX2zMjhfgfy0DYN0deFfYqeUuuYIP
-	 nY/uFVgop4ysQ==
-Date: Wed, 21 Feb 2024 12:50:17 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: root <root@hu-msarkar-hyd.qualcomm.com>
-Cc: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org,
-	conor+dt@kernel.org, quic_nitegupt@quicinc.com,
-	quic_shazhuss@quicinc.com, quic_ramkri@quicinc.com,
-	quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
-	quic_vbadigan@quicinc.com, Nitesh Gupta <nitegupt@quicinc.com>,
-	Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] PCI: qcom: Add support for detecting controller
- level PCIe errors
-Message-ID: <20240221185017.GA1536431@bhelgaas>
+	s=arc-20240116; t=1708541438; c=relaxed/simple;
+	bh=mhvRmgtT+jSnGSxPdhDDc4NPptiHgOKbg3hxZ0mh8ck=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nQ8M99Ic4PHrur6l274H3Lp5ohdKsFYp8AL6Du/5JkwV/jXqrT4qB9BiGO48RXuVpPywU2wnFLdGGWfB486vQKDwyLW/p4eWiXKenRolORIgl4g/asYz04IHBLqJYpw+ReMN4662KxsCO8EsNCv7sFK2GqiOlIzLtURHmtZHD1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b9hLApkr; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708541436; x=1740077436;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=mhvRmgtT+jSnGSxPdhDDc4NPptiHgOKbg3hxZ0mh8ck=;
+  b=b9hLApkrprcxKDb3E419/wQTai7ua2xXStDPFJw935pQNasqDg3S/LKN
+   ymuU6mszZhJaHC9wii4hH30/X7eyG86vzXMqP2xqOFVRHf/XtS/XaWJ1e
+   9Orqw3ECdowtZbU+jx8yfrnwlGqcqcBRv96SDdI7NT2t1ecv3/K/nTOw0
+   zSaTEzoij5ZsuweyO9Be1xIyK8ugixeP0USrgM6Z/E3FjNW6T2+VZhFNv
+   85Jt+vzeOLq3Q2eCxsD3ihHONSLufK6dj/tIh2n8/6vmKvaSHgVl5h4rA
+   92VlSIq56quNysZYGo6MXNWp10g3utBSHvgd26A+ZFnhshU12LT8UbLrT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2871753"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="2871753"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 10:50:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="9788017"
+Received: from ubik.fi.intel.com (HELO localhost) ([10.237.72.184])
+  by fmviesa003.fm.intel.com with ESMTP; 21 Feb 2024 10:50:33 -0800
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Greg
+ Kroah-Hartman
+ <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+ alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH 7/8] intel_th: Convert to platform remove callback
+ returning void
+In-Reply-To: <qiiln66o6uy2nsqdjcykygp3yumonn7jqp7q4wxf56i6pazics@iqfaiglmsgwt>
+References: <20231107202818.4005791-1-u.kleine-koenig@pengutronix.de>
+ <20231107202818.4005791-8-u.kleine-koenig@pengutronix.de>
+ <i3oybmf3axeyk5rcef5kgfdb4cucd63h24gup6idn62nq3vvav@4mfzwzyamq27>
+ <jawceotzgdydpz74qr2e5dwgfumwjmt4wxvi43qlwldlbgemzf@v3qa2hoopawv>
+ <qiiln66o6uy2nsqdjcykygp3yumonn7jqp7q4wxf56i6pazics@iqfaiglmsgwt>
+Date: Wed, 21 Feb 2024 20:50:32 +0200
+Message-ID: <87edd5y7lz.fsf@ubik.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221140405.28532-4-root@hu-msarkar-hyd.qualcomm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 07:34:04PM +0530, root wrote:
-> From: Nitesh Gupta <nitegupt@quicinc.com>
-> 
-> Synopsys Controllers provide capabilities to detect various controller
+Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> writes:
 
-"Synopsys controllers"?  "Synopsys" refers to the DesignWare core, but
-most of this code is in the qcom driver.  If it's qcom-specific, this
-should say "Qualcomm controllers".
+> Hello Greg,
+>
+> On Thu, Feb 15, 2024 at 10:16:41PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+>> On Wed, Jan 10, 2024 at 09:41:54AM +0100, Uwe Kleine-K=C3=B6nig wrote:
+>> > On Tue, Nov 07, 2023 at 09:28:26PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+>> > > The .remove() callback for a platform driver returns an int which ma=
+kes
+>> > > many driver authors wrongly assume it's possible to do error handlin=
+g by
+>> > > returning an error code. However the value returned is ignored (apart
+>> > > from emitting a warning) and this typically results in resource leak=
+s.
+>> > >=20
+>> > > To improve here there is a quest to make the remove callback return
+>> > > void. In the first step of this quest all drivers are converted to
+>> > > .remove_new(), which already returns void. Eventually after all driv=
+ers
+>> > > are converted, .remove_new() will be renamed to .remove().
+>> > >=20
+>> > > Trivially convert this driver from always returning zero in the remo=
+ve
+>> > > callback to the void returning variant.
+>> > >=20
+>> > > Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+>> >=20
+>> > I didn't get any feedback to this patch and it didn't make it into next
+>> > up to now.
+>> >=20
+>> > Is this still on someone's radar?
+>>=20
+>> Is there a chance to get this patch into v6.9-rc1? Are you the right one
+>> to talk to about this patch? (According to MAINTAINERS you are.)
+>>=20
+>> The patch was sent during the 6.7 merge window and now already missed
+>> the 6.8 one :-\
+>
+> I failed in several attempts to get feedback on this patch. You applied
+> the last two patches for this driver (that is all patches since the
+> driver was born). Would you care for that one, too? Tell me if you want
+> a resend. Note that the other 7 patches from this series are already
+> cared for, so if you're using b4 am or shazam, make use of -P7.
 
-> level errors. These can range from controller interface error to random
-> PCIe configuration errors. This patch intends to add support to detect
-> these errors and report it to userspace entity via sysfs, which can take
-> appropriate actions to mitigate the errors.
+Apologies. This looks good to me, I will pick it up for my next
+submission to Greg unless somebody objects.
 
-s/This patch intends to add/Add/, so the commit log says what the
-patch *does*, not "what it intends to do".
-
-> +
-> +/*
-> + * Error Reporting DBI register
-> + */
-
-Typical style in this file (granted, it's not 100% consistent) is to
-make these single-line comments, i.e.,
-
-  /* Error Reporting DBI register */
-
-> +#define DBI_DEVICE_CONTROL_DEVICE_STATUS	0x78
-> +#define DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG	0x8c
-
-Most other #defines in this file use upper-case hex.
-
-> +#define PCIE_AER_EXT_CAP_ID			0x01
-
-Why not the existing PCI_EXT_CAP_ID_ERR?  If this is the standard PCIe
-AER stuff, we shouldn't make it needlessly device-specific.
-
-> +#define PCI_EXT_CAP_RASDP_ID			0x0b
-
-Looks like possibly PCI_EXT_CAP_ID_VNDR?  Capability IDs are
-definitely not device-specific.  The fact that a PCI_EXT_CAP_ID_VNDR
-capability in a device with Vendor ID PCI_VENDOR_ID_QCOM has a
-qcom-specific meaning is obviously specific to qcom, but the
-Capability ID itself is not.
-
-> +/* DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG register fields */
-> +#define PCIE_CAP_SYS_ERR_ON_CORR_ERR_EN		BIT(0)
-> +#define PCIE_CAP_SYS_ERR_ON_NON_FATAL_ERR_EN	BIT(1)
-> +#define PCIE_CAP_SYS_ERR_ON_FATAL_ERR_EN	BIT(2)
-> +
-> +/* DBI_DEVICE_CONTROL_DEVICE_STATUS register fields */
-> +#define PCIE_CAP_UNSUPPORT_REQ_REP_EN		BIT(3)
-> +#define PCIE_CAP_FATAL_ERR_REPORT_EN		BIT(2)
-> +#define PCIE_CAP_NON_FATAL_ERR_REPORT_EN	BIT(1)
-> +#define PCIE_CAP_CORR_ERR_REPORT_EN		BIT(0)
-
-These look like alternate ways to access the generic PCIe Capability.
-If that's the case, either use the existing PCI_EXP_RTCTL_SECEE,
-PCI_EXP_DEVCTL_CERE, etc., or at least match the "RTCTL_SECEE" parts
-of the names so we can see the connection.
-
-> +/* DBI_ADV_ERR_CAP_CTRL_OFF register fields */
-> +#define ECRC_GEN_EN				BIT(6)
-> +#define ECRC_CHECK_EN				BIT(8)
-
-Do these correspond to PCI_ERR_CAP_ECRC_GENE, PCI_ERR_CAP_ECRC_CHKE?
-
-> +/* DBI_ROOT_ERR_CMD_OFF register fields */
-> +#define CORR_ERR_REPORTING_EN			BIT(0)
-> +#define NON_FATAL_ERR_REPORTING_EN		BIT(1)
-> +#define FATAL_ERR_REPORTING_EN			BIT(2)
-
-PCI_ERR_ROOT_CMD_COR_EN, etc?
-
-> +static void qcom_pcie_enable_error_reporting_2_7_0(struct qcom_pcie *pcie)
-> +{
-> + ...
-
-> +	val = readl(pci->dbi_base + DBI_DEVICE_CONTROL_DEVICE_STATUS);
-> +	val |= (PCIE_CAP_CORR_ERR_REPORT_EN | PCIE_CAP_NON_FATAL_ERR_REPORT_EN |
-> +			PCIE_CAP_FATAL_ERR_REPORT_EN | PCIE_CAP_UNSUPPORT_REQ_REP_EN);
-> +	writel(val, pci->dbi_base + DBI_DEVICE_CONTROL_DEVICE_STATUS);
-
-Is there any way to split the AER part (specified by the PCIe spec)
-from the qcom-specific (or dwc-specific) part?  This looks an awful
-lot like pci_enable_pcie_error_reporting(), and we should do this in
-the PCI core in a generic way if possible.
-
-> +	val = readl(pci->dbi_base + DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG);
-> +	val |= (PCIE_CAP_SYS_ERR_ON_CORR_ERR_EN | PCIE_CAP_SYS_ERR_ON_NON_FATAL_ERR_EN |
-> +			PCIE_CAP_SYS_ERR_ON_FATAL_ERR_EN);
-> +	writel(val, pci->dbi_base + DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG);
-
-Bjorn
+Regards,
+--
+Alex
 
