@@ -1,152 +1,159 @@
-Return-Path: <linux-kernel+bounces-75203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E538885E4A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:35:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CDB285E4AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EBCA283CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:35:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EF6C1C22FFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4903983CD6;
-	Wed, 21 Feb 2024 17:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A72C8405F;
+	Wed, 21 Feb 2024 17:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cYeUEHaZ"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O12n148t"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000FA7FBD5
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB93F82865;
+	Wed, 21 Feb 2024 17:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708536945; cv=none; b=hVOIvi0UWVz4+b5Qjr77mBOIP7t6e3hKuu22v3SmT/IaZGfCiewHZSvqDGjWgVylDeh6qOY7YuGY1C2vzzCO+Sr/y15GUTtAyc3Kzgm1iHmGsYKrxrUM1TH957CwBvv3zlDfZnODgpjWmZlAznHtwtGdNejxvsfxkohWihEWSfQ=
+	t=1708536983; cv=none; b=oar2RshXI3OCV8qDYcrJvi1AW99x0vWqXR9A+fMDneD7eJcRpefdD6mrzG7Sy2LAg3QLX6eB9YgkVvLAd76il2NnbxB6/QK+Q5smlBcS3769SSafM7OWuHPF96IEuM5tZpy+kfHyOQse2Fo0mFY5cVxgI+JywSir8w1oT/Ab8dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708536945; c=relaxed/simple;
-	bh=fmaJOjuiuzc1I3VG7/Ti8gqDkhSjfOTOI4oFIBZuQIU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VRDBkldRWUa5cLEoeZo1WUvocGDjoWkBooVrqF9oSVawKm4w6vLU0BCmI4/gbxbTN+NngqslfhTdPU3hXnu4hlCo0h21yoFSGYh6Uhs0+pi1c5JX2qE2BjxceOkfvE/tnDfeJS7Zig4OT7GGYc8DS5v9mpPIKIGcLzPUbUAZskA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cYeUEHaZ; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607fc3e69adso60010127b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:35:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708536943; x=1709141743; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zfPBj9b71D+eNY1wEvQoyUsDBy3rVhDy4LnJT91Hn+w=;
-        b=cYeUEHaZes2HH/6oLmUEM7Yr/jAywwDAJzBIln0NyPQuPkYjSq8IzGTiKzEbiZ7OeK
-         PA6sNOtU3ZNyyVyfK6DkamkAW7iffY1rVl72RMeZBTaPKoR3LFt8lDIOZz+rhBIO2Cc0
-         9f8KrxPwo/tCiuJK6jd+u5Mx3vyXyyrPYPwrQ637l9e7w9pjkvDeQEzZdh7JXQHwgqq9
-         cD/WngNBObNEXjB5m35wDxlNk96rb1+YhL0QAE7pwpvIZyvlD1goj5fABENGe1EJXJ/Y
-         wwZbgnPvQvGcreI+Z6SiSuDbE4ugA9w6FxbjaVBd5dQJlt18xvFm+wi1h4gorlANrkJs
-         vCkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708536943; x=1709141743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zfPBj9b71D+eNY1wEvQoyUsDBy3rVhDy4LnJT91Hn+w=;
-        b=GU5q+FKpip0iimN13MpHbIxNCtN6benIHhHrH+ZgV5Ir70UI+79aOXropfkwxvYyjj
-         ikq6rE3++lyzCCRbgKf+MHd3hUASqiS87yumE1+/akZuLgTKfwL2TbP75JHQplU3Ur/F
-         N+TK9z+TD0gcbvTFtiM7QCS5MpZImCi8PR6MkAUp/HpdpZ56vdT/PQ0eLWoH2s+OLEDy
-         DpU0JFXeaBejyrAZL3akYWDVnSTaFpT6y3c3sgzTHYs0UgaUQZIQKta401+ewKDtH1ZU
-         llP19ah5tUcbWATh0W+vaeviDVn9abzMvTkwU+zwaF7hEMjVW3Qq9yZSaHoA1m/R2LZj
-         9c6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUADJPDpiUWVhi/P4yBBx3kfqJ3WUw92D7HetxqvumGdsVctvporpq3XG4HqN+igfa0hwCnSWWFaUpN9RRylscQ1OMHcstYo8YhDIqC
-X-Gm-Message-State: AOJu0YzkUFFJT1LZM0EFOjmLlKV4HQmIzuJ8MGyJqVha9CaS2y6Wyw3S
-	FqHK5uXlDxTje0rL/1wMo2uLbxlTlOFl5OwU9ECZV6KXWY4o+6fnadxrM1wBg7axc4gCvJpUUZW
-	563FYn9dzfTI2TJ0uyLaKhGfJnjY=
-X-Google-Smtp-Source: AGHT+IHPzGgeVebYi5e5XGY212SUvxo7txV8bzERYstCFCs9yobH6mfd8vu3+8VNXVU7DnbhLkANMq/J4WzIHMCFe4A=
-X-Received: by 2002:a81:9a47:0:b0:607:57c5:41fc with SMTP id
- r68-20020a819a47000000b0060757c541fcmr18443898ywg.15.1708536942761; Wed, 21
- Feb 2024 09:35:42 -0800 (PST)
+	s=arc-20240116; t=1708536983; c=relaxed/simple;
+	bh=yiMUcDHHU5n4NoQ84wGw656HnuqVIwBmqSIpUYSySM0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pm4hsDeN3YzFtJKMeEL4BpULGS6KHPSDVs55bYyiDpFpGaTnAW3znsuhOLg6vgMKtlOvKxvsvNhDKjuKYxpK4msIPatgic+wc/M2tHGFwruH2t/WTg16ZiC4rWWLZSKhznxa12MjoM5z5gljdXApqog/KsUKDz7T1nKtyGq7hXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O12n148t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 569D2C433F1;
+	Wed, 21 Feb 2024 17:36:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708536983;
+	bh=yiMUcDHHU5n4NoQ84wGw656HnuqVIwBmqSIpUYSySM0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O12n148tnxl0hHrH0KNUw308nap2CMfsjiJaCO+G6etl5udAA3V57bqbWZBFQUGZs
+	 Kj4x4GxnB2NHbhBuzMjO33ReX0o4unLwDVUsx7rE6BrK0mSY+AQVi1U20errE3mUk7
+	 nVTIbjx7vjPf0I68CWxX1fA4b1OFc0RyrKyDq5swD9NlwBDQWruvA/i+WNXsvWkpRM
+	 uYyCW+odtKyrAny0HBpdXJaxNnNh93OFpmEFT500VAoVKZsfjMLpKQM8nF17WmQNVZ
+	 f7b+uqFxyhSA53z6Utjz7HKlp+QYfzdvrhQRfPQSg/ENFM+J0kh3Y5lihL5FmDHnX1
+	 07XkRuq4u5RdA==
+Date: Wed, 21 Feb 2024 17:36:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "dalias@libc.org" <dalias@libc.org>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
+ <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
+ <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx>
+ <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+ <20240221145800.GR4163@brightrain.aerifal.cx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221085036.105621-1-21cnbao@gmail.com>
-In-Reply-To: <20240221085036.105621-1-21cnbao@gmail.com>
-From: Vishal Moola <vishal.moola@gmail.com>
-Date: Wed, 21 Feb 2024 09:35:31 -0800
-Message-ID: <CAOzc2pwZO4xg8TBvt2dpPNT8TeHDnWod6iJh-LJ50hfTn4ua3A@mail.gmail.com>
-Subject: Re: [PATCH] madvise:madvise_cold_or_pageout_pte_range(): allow split
- while folio_estimated_sharers = 0
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
-	Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Matthew Wilcox <willy@infradead.org>, 
-	Minchan Kim <minchan@kernel.org>, Yang Shi <shy828301@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SXzKVr6cSzokmvVK"
+Content-Disposition: inline
+In-Reply-To: <20240221145800.GR4163@brightrain.aerifal.cx>
+X-Cookie: The second best policy is dishonesty.
 
-On Wed, Feb 21, 2024 at 12:50=E2=80=AFAM Barry Song <21cnbao@gmail.com> wro=
-te:
->
-> From: Barry Song <v-songbaohua@oppo.com>
->
-> The purpose is stopping splitting large folios whose mapcount are 2 or
-> above. Folios whose estimated_shares =3D 0 should be still perfect and
-> even better candidates than estimated_shares =3D 1.
->
-> Consider a pte-mapped large folio with 16 subpages, if we unmap 1-15,
-> the current code will split folios and reclaim them while madvise goes
-> on this folio; but if we unmap subpage 0, we will keep this folio and
-> break. This is weird.
-> For pmd-mapped large folios, we can still use "=3D 1" as the condition
-> as anyway we have the entire map for it. So this patch doesn't change
-> the condition for pmd-mapped large folios.
-> This also explains why we had been using "=3D 1" for both pmd-mapped and
-> pte-mapped large folios before commit 07e8c82b5eff ("madvise: convert
-> madvise_cold_or_pageout_pte_range() to use folios"), because in the
-> past, we used the mapcount of the specific subpage, since the subpage
-> had pte present, its mapcount wouldn't be 0.
-> The problem can be quite easily reproduced by writing a small program,
-> unmapping the first subpage of a pte-mapped large folio vs. unmapping
-> anyone other than the first subpage.
->
-> Fixes: 2f406263e3e9 ("madvise:madvise_cold_or_pageout_pte_range(): don't =
-use mapcount() against large folio for sharing check")
-> Cc: Yin Fengwei <fengwei.yin@intel.com>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+--SXzKVr6cSzokmvVK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  mm/madvise.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index cfa5e7288261..abde3edb04f0 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -453,7 +453,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *p=
-md,
->                 if (folio_test_large(folio)) {
->                         int err;
->
-> -                       if (folio_estimated_sharers(folio) !=3D 1)
-> +                       if (folio_estimated_sharers(folio) > 1)
->                                 break;
->                         if (pageout_anon_only_filter && !folio_test_anon(=
-folio))
->                                 break;
-> --
-> 2.34.1
->
+On Wed, Feb 21, 2024 at 09:58:01AM -0500, dalias@libc.org wrote:
+> On Wed, Feb 21, 2024 at 01:53:10PM +0000, Mark Brown wrote:
+> > On Tue, Feb 20, 2024 at 08:27:37PM -0500, dalias@libc.org wrote:
+> > > On Wed, Feb 21, 2024 at 12:35:48AM +0000, Edgecombe, Rick P wrote:
+
+> > > > (INCSSP, RSTORSSP, etc). These are a collection of instructions that
+> > > > allow limited control of the SSP. When shadow stack gets disabled,
+> > > > these suddenly turn into #UD generating instructions. So any other
+> > > > threads executing those instructions when shadow stack got disabled
+> > > > would be in for a nasty surprise.
+
+> > > This is the kernel's problem if that's happening. It should be
+> > > trapping these and returning immediately like a NOP if shadow stack
+> > > has been disabled, not generating SIGILL.
+
+> > I'm not sure that's going to work out well, all it takes is some code
+> > that's looking at the shadow stack and expecting something to happen as
+> > a result of the instructions it's executing and we run into trouble.  A
+
+> I said NOP but there's no reason it strictly needs to be a NOP. It
+> could instead do something reasonable to convey the state of racing
+> with shadow stack being disabled.
+
+This feels like it's getting complicated and I fear it may be an uphill
+struggle to get such code merged, at least for arm64.  My instinct is
+that it's going to be much more robust and generally tractable to let
+things run to some suitable synchronisation point and then disable
+there, but if we're going to do that then userspace can hopefully
+arrange to do the disabling itself through the standard disable
+interface anyway.  Presumably it'll want to notice things being disabled
+at some point anyway?  TBH that's been how all the prior proposals for
+process wide disable I've seen were done.
+
+--SXzKVr6cSzokmvVK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXWNIwACgkQJNaLcl1U
+h9CDBQf/b2osUy8IL9ugqihJXvxZdZ2gjHyphrXKAEbbUT4oT2dVS/P4nlvlYurY
+9IML2O8yTSshh0R+WaZCQ28PqhVENeRSLmgsuSIDiSrLY66okGApL4XVaAWAek2d
+KvQ3CU5OkGfGONdHJpiaDdcQbFBuEvUq258Kv+jUJnTKUnmFIjGeM1SIZzQMbrUH
+6cXrpAA0Pqc5yrwYFzYxky0ZScQRgr1RQMV43e7IbCtfGnFfbvevfzgWwzZINjf9
+kjz8RcfyhXuAoW1sAaXsPz49nL0NGr4l5riEdr3SmDYyvhJ5LEpDnFtANzD4lD3E
+cZMNKqJyog/SgaLaqh6dMTlV5Qd9gw==
+=pmML
+-----END PGP SIGNATURE-----
+
+--SXzKVr6cSzokmvVK--
 
