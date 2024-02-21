@@ -1,275 +1,369 @@
-Return-Path: <linux-kernel+bounces-73991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E5ED85CE92
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:08:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD5E85CE96
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A61F1C22B5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:08:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69AB01C2295F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1099D37160;
-	Wed, 21 Feb 2024 03:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7D538DCC;
+	Wed, 21 Feb 2024 03:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAzwHWOq"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="F+iWiP11"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420612837E;
-	Wed, 21 Feb 2024 03:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552042BAE7
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708484905; cv=none; b=d/8g8G1z21j5bxZg7UzbqtWhNMNRqRm7Ok1SzzOzH/uCoZZOorlV/3CYFm2rI21nmVTBIAjdnZUc/S+U+Za+F4g7mMDSKXNKRPIOvcXsAKnOVZtCgHz0lBT1mdM0H4r/Gmm5lK4FbFyNqOCPsC/XQz166hB/A9W9PYZ0pJXK26A=
+	t=1708484985; cv=none; b=AyDi24eJWHyuSDsZegIxdlljBk3bm+7WxCo0g6wVO/B26KouI07rTxnQNemKxYyrznYh7uk9+1oo2BrR39T/QJ93CTLh3/k5z/j9V9aR4ToIx0pVrty48ZZ7POgTN8Ef4Ntz52mX/jqxKv5HXNpJmtrDrSi+Vi0INVFVGi706So=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708484905; c=relaxed/simple;
-	bh=8lqJfcyvyjZieFF6DBZsOMf4b5DXXe651nYq3W8rqcE=;
+	s=arc-20240116; t=1708484985; c=relaxed/simple;
+	bh=eVJKhbDl282YAD6eGBJ0Hq2ZAxNMnXe/FenergvqHCY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y7ib+QbHzHKq2uXauYgRhitLjdLT2OZISD1JwRN82lFj91rTK8PEVfs/QFTKCoYEao/n3lA3pK3OqIAbHFhqk+4aXwaXsZlVJTiORzQRblITWxjbpuFlbeP5Sp0KyEFEdkp+U/u3yYPIDS91sjXjqnh1YvEk9C96aPGZGBxaE84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAzwHWOq; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d1094b549cso89657821fa.3;
-        Tue, 20 Feb 2024 19:08:22 -0800 (PST)
+	 To:Cc:Content-Type; b=hsoJxRSkXHKSucvhzktMgShg82hWgdQAyOtW41F26ZxLFG5ESAncZ0N27S9JcYXyxwdKU/UAfJbDfL7tFGW8Ar14xFMEIAvvvQEng6KiTWCtP3HEph/TPFXM/3ZYdOsr5DtwHCrq2D6RDWcK6MdN5jMYekeNQZt586XOe3jxWgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=F+iWiP11; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso3010754a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:09:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708484901; x=1709089701; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1708484982; x=1709089782; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RGUN520xlcUh9uCFJJBmFsnsOTyBRFjezJMbMofVdcY=;
-        b=FAzwHWOqhO1jCdIItUpvb54GBgQ32zT37wVY/hsl/Z+UGZ3yqjc8Sfnwd6RZOCJCtF
-         xOvK3ChkyMpuH72D1+eQM+Aw/IAH7+FVjBnFlLzHzwcjnFravs3nBp/oMXyaQks/IeBR
-         G6nHTZMckVkgdCm1+e7VCgBJbTKyMMxXfomR63I9zcI5QHL+aHkIH/+vLt6tijEh+KHl
-         CvSNBSeua61/+PeTXVr8aoPJwYbTJHdjDozz4JSGhAffpi6VrFWvFbO+Jcz6A754c8y5
-         dsDN2uY7W8gibuDQzd+kVlgXUBmPSqgFHYuRqgnMlEwGkhPcwp9whDs4ZmRR9MLQcfYm
-         mayg==
+        bh=F9JAFBuaoAQzz3cyLyvinoNXI6OgqQmkxSp6hvS7uuM=;
+        b=F+iWiP11UzbATIZcY9YbBis4FhL24Y55sas7sPp86vUNLLwY007kVdYlOKxmdiGVik
+         aNAKormAJ2MBinZY+5XYh6L6ct6K/rC/4Nxh5Gz5zC8Gd6WzLRPvvWMq2NXAEgXCWL3B
+         272IhMv5Mv5CeTsqozMWFSuRhRne7f1HAB0oQgkDmr4rdE5VwXkOPdILJ1MHuWS326sN
+         9Bgx5UUI2K1fk1wKrKTXyskbgeABdAPlu9Y59SZ2yjz6k79ivQ3KmBdlugVKqzM+ujM/
+         TU020vEcYxjHfQPKSRnMDLibmMcZ84OqvNSmt3DWlsInwvhiyBbzol/4DXqva89fdApL
+         zBKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708484901; x=1709089701;
+        d=1e100.net; s=20230601; t=1708484982; x=1709089782;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RGUN520xlcUh9uCFJJBmFsnsOTyBRFjezJMbMofVdcY=;
-        b=Ig1ddPm6X21iGb1amW1jF2JzaBgylWV8OaxvUio/tQRGY3oS+Tlt8DDuSHrfBZ7EAV
-         z4TTuR3QaeZwS6pFCAigByE0Qd64iNvaYUVl8mXHMjmDV4GyksXtLw9VYE3r23LL5K8L
-         7d9Ti19B9jD8bxJl3O/LUig5P+7MczxCZxZmMyzYvV0xdbUsqM2CTzoPiso1S8P46gDv
-         hcVFXts6KsZ9Utx7r0V3eJDKFawf7KUX1miyF0btRlr6nn8DWIpiorAAYKi5WHUAaORf
-         cFWBRxWrzp2DoaLv26lE/UjvkG3qZNiNDEKm/sU5ffsmnbOlrskqBMWoowethwkTj8ab
-         mjJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWJtw7Yf8XdbHaOtC28O05P8VV0GxDqCva7fzR5u1L6huLaE6Py8kqtwiByN/d2HPzFE+l3jtnn/hbVS5gbd5zjORhKveHasYjY8PTpIXk5NPY0bA6ImRwwILwuRN9NmpcU4UX
-X-Gm-Message-State: AOJu0YzDGWsMdDIfykG9+8uvcEH2dWPh9yCWQWAIOVZYkuKsV5EIDgu/
-	Prs4uEFDO0Y+ofanbO6S0ULG3HdkQyCQYfLvQg1AI1lF5ZdDw4xqmE1NyLmqK1P9Om4E7maMend
-	5cs67MojqnuutflqSNi7QGacIseo=
-X-Google-Smtp-Source: AGHT+IEAlyiWvnV4yyV2t2lBDCZmGBokZGDeKd3W0024yiIivwOFyTymK2CxBuCR/t4IxjbwE9LuYd6ETC49PPINoJI=
-X-Received: by 2002:a2e:8950:0:b0:2d1:26f0:8167 with SMTP id
- b16-20020a2e8950000000b002d126f08167mr11558186ljk.35.1708484901033; Tue, 20
- Feb 2024 19:08:21 -0800 (PST)
+        bh=F9JAFBuaoAQzz3cyLyvinoNXI6OgqQmkxSp6hvS7uuM=;
+        b=M/sxZJjspV/NdNZqyM9WZdoCGGHRBdC62nziErmqKNuqC1lbIR9QshlSsZdJnOqB/J
+         7RHIO69qORBK6ZLMB10h/YcrMYLtm7KPilsJsvo6iY8N3b61W9ZO+iqg7sX2cgK2jXd7
+         pjDgv+zdfLlLkrf0q+ts2fe4QS5BdyP1WLgLeBCDROJvmqHWYDnBQDRmQozBxypbplS5
+         VhQnXLH7b2CfMN2tjnsFxG1mCYNglw1mHwVF7Q9K8XDL4Z6QMWjaoxgMGC6gQAfDb5/e
+         x4NBM1Aa5oZ1KNtbgEOphD5wF7RHwZ+LieBg8RJ2B4g3M47fkJt0LmEyKPiwV3FPcNrk
+         dwSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOOWahIbBVxmFg8jOv/v7xP+xLDUU6E18TOkPlTj5sAM8O3i83/NjTPwk0YfJM8n2BQGmwb7tE10VVHpy94V6YfpDtQ8NMj1QhxzoN
+X-Gm-Message-State: AOJu0Yw3m0uM9JToCyjRuQdUns8vo0zWscjKFlI1oigjBKsq5NaZ1IBm
+	USr/pWCcfezM5UZ0VCpdDN6Q9YrtWD56OkpP7L7/AaxQhDquy3V6MXNyP/rsdmkosyByV1UbTtC
+	gWjlUMJXDOoVk1tZBRLwlIBhXL7gnjpkFSRGdqQ==
+X-Google-Smtp-Source: AGHT+IGz6pr/9xNn3AU5WmkiQvLLrCB/3YS0FkJtcuzGRfTXJQty26y06k1HPX8yIQMnSm9glOLnmX0UnQT9ooeohxs=
+X-Received: by 2002:a17:90a:d197:b0:299:7848:7193 with SMTP id
+ fu23-20020a17090ad19700b0029978487193mr5707892pjb.45.1708484982682; Tue, 20
+ Feb 2024 19:09:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZdVgLbuAYGKoDzpS@xpf.sh.intel.com>
-In-Reply-To: <ZdVgLbuAYGKoDzpS@xpf.sh.intel.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 21 Feb 2024 11:07:44 +0800
-Message-ID: <CAL+tcoB_NeHpgrg7_HngiResOPhNCBTpDTJsjYsccXZMFA7VGw@mail.gmail.com>
-Subject: Re: [Syzkaller & bisect] There is BUG: soft lockup after sendmsg
- syscall in v6.8-rc4
-To: Pengfei Xu <pengfei.xu@intel.com>
-Cc: kuniyu@amazon.com, davem@davemloft.net, dumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, kuni1840@gmail.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lkp@intel.com
+References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
+ <20240220035105.34626-2-dongmenglong.8@bytedance.com> <81431b5d-0e0f-485a-a3ce-af8e63169552@gmail.com>
+In-Reply-To: <81431b5d-0e0f-485a-a3ce-af8e63169552@gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Wed, 21 Feb 2024 11:09:31 +0800
+Message-ID: <CALz3k9io7c6oGvCjfYr=1kb6Ndrh6RVgR5pHC5DzW-F_YGqjxA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next 1/5] bpf: tracing: add support to
+ record and check the accessed args
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
+	shuah@kernel.org, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, 
+	thinker.li@gmail.com, zhoufeng.zf@bytedance.com, davemarchevsky@fb.com, 
+	dxu@dxuuu.xyz, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM Pengfei Xu <pengfei.xu@intel.com> =
+On Wed, Feb 21, 2024 at 2:22=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.com> =
 wrote:
 >
-> Hi Kuniyuki Iwashima and kernel experts,
 >
-> Greeting!
-> There is BUG: soft lockup after sendmsg syscall in v6.8-rc4 in guest.
 >
-> All detailed info: https://github.com/xupengfe/syzkaller_logs/tree/main/2=
-40220_161242_softlockup
-> Syzkaller reproduced code: https://github.com/xupengfe/syzkaller_logs/blo=
-b/main/240220_161242_softlockup/repro.c
-> Syzkaller syscall reproduced steps: https://github.com/xupengfe/syzkaller=
-_logs/blob/main/240220_161242_softlockup/repro.prog
-> Kconfig(need make olddefconfig): https://github.com/xupengfe/syzkaller_lo=
-gs/blob/main/240220_161242_softlockup/kconfig_origin
-> Bisect info: https://github.com/xupengfe/syzkaller_logs/blob/main/240220_=
-161242_softlockup/bisect_info.log
-> v6.8-rc4 issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/mai=
-n/240220_161242_softlockup/841c35169323cd833294798e58b9bf63fa4fa1de_dmesg.l=
-og
-> bzImage_v6.8-rc4: https://github.com/xupengfe/syzkaller_logs/raw/main/240=
-220_161242_softlockup/bzImage_v6.8-rc4.tar.gz
+> On 2/19/24 19:51, Menglong Dong wrote:
+> > In this commit, we add the 'accessed_args' field to struct bpf_prog_aux=
+,
+> > which is used to record the accessed index of the function args in
+> > btf_ctx_access().
+> >
+> > Meanwhile, we add the function btf_check_func_part_match() to compare t=
+he
+> > accessed function args of two function prototype. This function will be
+> > used in the following commit.
+> >
+> > Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> > ---
+> >   include/linux/bpf.h |   4 ++
+> >   kernel/bpf/btf.c    | 121 +++++++++++++++++++++++++++++++++++++++++++=
++
+> >   2 files changed, 125 insertions(+)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index c7aa99b44dbd..0225b8dbdd9d 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1464,6 +1464,7 @@ struct bpf_prog_aux {
+> >       const struct btf_type *attach_func_proto;
+> >       /* function name for valid attach_btf_id */
+> >       const char *attach_func_name;
+> > +     u64 accessed_args;
+> >       struct bpf_prog **func;
+> >       void *jit_data; /* JIT specific data. arch dependent */
+> >       struct bpf_jit_poke_descriptor *poke_tab;
+> > @@ -2566,6 +2567,9 @@ struct bpf_reg_state;
+> >   int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog);
+> >   int btf_check_type_match(struct bpf_verifier_log *log, const struct b=
+pf_prog *prog,
+> >                        struct btf *btf, const struct btf_type *t);
+> > +int btf_check_func_part_match(struct btf *btf1, const struct btf_type =
+*t1,
+> > +                           struct btf *btf2, const struct btf_type *t2=
+,
+> > +                           u64 func_args);
+> >   const char *btf_find_decl_tag_value(const struct btf *btf, const stru=
+ct btf_type *pt,
+> >                                   int comp_idx, const char *tag_key);
+> >   int btf_find_next_decl_tag(const struct btf *btf, const struct btf_ty=
+pe *pt,
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 6ff0bd1a91d5..3a6931402fe4 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6203,6 +6203,9 @@ bool btf_ctx_access(int off, int size, enum bpf_a=
+ccess_type type,
+> >               /* skip first 'void *__data' argument in btf_trace_##name=
+ typedef */
+> >               args++;
+> >               nr_args--;
+> > +             prog->aux->accessed_args |=3D (1 << (arg + 1));
+> > +     } else {
+> > +             prog->aux->accessed_args |=3D (1 << arg);
+> >       }
+> >
+> >       if (arg > nr_args) {
+> > @@ -7010,6 +7013,124 @@ int btf_check_type_match(struct bpf_verifier_lo=
+g *log, const struct bpf_prog *pr
+> >       return btf_check_func_type_match(log, btf1, t1, btf2, t2);
+> >   }
+> >
+> > +static u32 get_ctx_arg_total_size(struct btf *btf, const struct btf_ty=
+pe *t)
+> > +{
+> > +     const struct btf_param *args;
+> > +     u32 size =3D 0, nr_args;
+> > +     int i;
+> > +
+> > +     nr_args =3D btf_type_vlen(t);
+> > +     args =3D (const struct btf_param *)(t + 1);
+> > +     for (i =3D 0; i < nr_args; i++) {
+> > +             t =3D btf_type_skip_modifiers(btf, args[i].type, NULL);
+> > +             size +=3D btf_type_is_ptr(t) ? 8 : roundup(t->size, 8);
+> > +     }
+> > +
+> > +     return size;
+> > +}
+> > +
+> > +static int get_ctx_arg_idx_aligned(struct btf *btf, const struct btf_t=
+ype *t,
+> > +                                int off)
+> > +{
+> > +     const struct btf_param *args;
+> > +     u32 offset =3D 0, nr_args;
+> > +     int i;
+> > +
+> > +     nr_args =3D btf_type_vlen(t);
+> > +     args =3D (const struct btf_param *)(t + 1);
+> > +     for (i =3D 0; i < nr_args; i++) {
+> > +             if (offset =3D=3D off)
+> > +                     return i;
+> > +
+> > +             t =3D btf_type_skip_modifiers(btf, args[i].type, NULL);
+> > +             offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->size, 8);
+> > +             if (offset > off)
+> > +                     return -1;
+> > +     }
+> > +     return -1;
+> > +}
 >
-> Bisected and found first bad commit:
-> "
-> 1279f9d9dec2 af_unix: Call kfree_skb() for dead unix_(sk)->oob_skb in GC.
-> "
+> This one is very similar to get_ctx_arg_idx().
+> How about to refactor get_ctx_arg_idx() and share the code
+> between get_ctx_arg_idx() and get_ctx_arg_idx_aligned().
 >
-> After reverted above commit on top of v6.8-rc4 kernel, this issue was gon=
-e.
->
-> Syzkaller repro.report: https://github.com/xupengfe/syzkaller_logs/blob/m=
-ain/240220_161242_softlockup/repro.report
-> "
-> watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [gdbus:349]
-> Modules linked in:
-> irq event stamp: 25162
-> hardirqs last  enabled at (25161): [<ffffffff855dff2e>] irqentry_exit+0x3=
-e/0xa0 kernel/entry/common.c:351
-> hardirqs last disabled at (25162): [<ffffffff855dded4>] sysvec_apic_timer=
-_interrupt+0x14/0xc0 arch/x86/kernel/apic/apic.c:1076
-> softirqs last  enabled at (25140): [<ffffffff8127fcc8>] invoke_softirq ke=
-rnel/softirq.c:427 [inline]
-> softirqs last  enabled at (25140): [<ffffffff8127fcc8>] __irq_exit_rcu+0x=
-a8/0x110 kernel/softirq.c:632
-> softirqs last disabled at (25135): [<ffffffff8127fcc8>] invoke_softirq ke=
-rnel/softirq.c:427 [inline]
-> softirqs last disabled at (25135): [<ffffffff8127fcc8>] __irq_exit_rcu+0x=
-a8/0x110 kernel/softirq.c:632
-> CPU: 0 PID: 349 Comm: gdbus Not tainted 6.8.0-rc4-2024-02-12-intel-next-e=
-92619743fcb+ #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-=
-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:__sanitizer_cov_trace_pc+0x38/0x70 kernel/kcov.c:207
-> Code: 65 8b 05 73 89 a0 7e 48 89 e5 48 8b 75 08 a9 00 01 ff 00 74 0f f6 c=
-4 01 74 35 8b 82 e4 1d 00 00 85 c0 74 2b 8b 82 c0 1d 00 00 <83> f8 02 75 20=
- 48 8b 8a c8 1d 00 00 8b 92 c4 1d 00 00 48 8b 01 48
-> RSP: 0018:ffff88800b48f7b0 EFLAGS: 00000246
-> RAX: 0000000000000000 RBX: ffff888013018000 RCX: 1ffffffff12150bb
-> RDX: ffff888011ab8000 RSI: ffffffff8515e235 RDI: ffff888013018770
-> RBP: ffff88800b48f7b0 R08: 0000000000000001 R09: fffffbfff120f86e
-> R10: ffffffff8907c377 R11: 0000000000000001 R12: ffff888013018000
-> R13: dffffc0000000000 R14: ffff888013018630 R15: ffff88800b48f840
-> FS:  0000000000000000(0000) GS:ffff88806ca00000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fffcc5fd648 CR3: 0000000006c82000 CR4: 0000000000750ef0
-> PKRU: 55555554
-> Call Trace:
->  <IRQ>
->  </IRQ>
->  <TASK>
->  unix_gc+0x465/0xfd0 net/unix/garbage.c:319
->  unix_release_sock+0xb8c/0xe80 net/unix/af_unix.c:683
->  unix_release+0x9c/0x100 net/unix/af_unix.c:1064
->  __sock_release+0xb6/0x280 net/socket.c:659
->  sock_close+0x27/0x40 net/socket.c:1421
->  __fput+0x284/0xb70 fs/file_table.c:376
->  ____fput+0x1f/0x30 fs/file_table.c:404
->  task_work_run+0x19d/0x2b0 kernel/task_work.c:180
->  exit_task_work include/linux/task_work.h:38 [inline]
->  do_exit+0xb51/0x28c0 kernel/exit.c:871
->  do_group_exit+0xe5/0x2c0 kernel/exit.c:1020
->  get_signal+0x2715/0x27d0 kernel/signal.c:2893
->  arch_do_signal_or_restart+0x8e/0x7e0 arch/x86/kernel/signal.c:311
->  exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
->  exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
->  syscall_exit_to_user_mode+0x129/0x190 kernel/entry/common.c:212
->  do_syscall_64+0x82/0x150 arch/x86/entry/common.c:89
->  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> RIP: 0033:0x7fe8f8b4296f
-> Code: Unable to access opcode bytes at 0x7fe8f8b42945.
-> RSP: 002b:00007fe8d7dff9c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000007
-> RAX: fffffffffffffdfc RBX: 00007fe8f8f73071 RCX: 00007fe8f8b4296f
-> RDX: 00000000ffffffff RSI: 0000000000000002 RDI: 00007fe8a801f3f0
-> RBP: 00007fe8a801f3f0 R08: 0000000000000000 R09: 00007fe8d7dff850
-> R10: 00007ffec9196080 R11: 0000000000000293 R12: 0000000000000002
-> R13: 0000000000000002 R14: 00007fe8d7dffa30 R15: 00007fe8a801c4c0
->  </TASK>
-> "
 
-Hello, did you try this one:
+This seems to work, I'll combine them in the next version.
 
-commit 25236c91b5ab4a26a56ba2e79b8060cf4e047839
-Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date:   Fri Feb 9 14:04:53 2024 -0800
+Thanks for the example code!
+Menglong Dong
 
-    af_unix: Fix task hung while purging oob_skb in GC.
-
-    syzbot reported a task hung; at the same time, GC was looping infinitel=
-y
-    in list_for_each_entry_safe() for OOB skb.  [0]
-
-    syzbot demonstrated that the list_for_each_entry_safe() was not actuall=
-y
-    safe in this case.
-
-    A single skb could have references for multiple sockets.  If we free su=
-ch
-    a skb in the list_for_each_entry_safe(), the current and next sockets c=
-ould
-    be unlinked in a single iteration.
-
-It should work, I think :)
-
-Thanks,
-Jason
-
+> For example,
 >
-> Thanks!
+> -static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type
+> *func_proto,
+> -                          int off)
+> +static u32 _get_ctx_arg_idx(struct btf *btf, const struct btf_type
+> *func_proto,
+> +                          int off, u32 *arg_off)
+>   {
+>          const struct btf_param *args;
+>          const struct btf_type *t;
+>          u32 offset =3D 0, nr_args;
+>          int i;
 >
-> ---
+>          if (!func_proto)
+>                  return off / 8;
 >
-> If you don't need the following environment to reproduce the problem or i=
-f you
-> already have one reproduced environment, please ignore the following info=
-rmation.
+>          nr_args =3D btf_type_vlen(func_proto);
+>          args =3D (const struct btf_param *)(func_proto + 1);
+>          for (i =3D 0; i < nr_args; i++) {
+> +               if (arg_off)
+> +                       *arg_off =3D offset;
+>                  t =3D btf_type_skip_modifiers(btf, args[i].type, NULL);
+>                  offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->size, 8)=
+;
+>                  if (off < offset)
+>                          return i;
+>          }
 >
-> How to reproduce:
-> git clone https://gitlab.com/xupengfe/repro_vm_env.git
-> cd repro_vm_env
-> tar -xvf repro_vm_env.tar.gz
-> cd repro_vm_env; ./start3.sh  // it needs qemu-system-x86_64 and I used v=
-7.1.0
->   // start3.sh will load bzImage_2241ab53cbb5cdb08a6b2d4688feb13971058f65=
- v6.2-rc5 kernel
->   // You could change the bzImage_xxx as you want
->   // Maybe you need to remove line "-drive if=3Dpflash,format=3Draw,reado=
-nly=3Don,file=3D./OVMF_CODE.fd \" for different qemu version
-> You could use below command to log in, there is no password for root.
-> ssh -p 10023 root@localhost
+> +       if (arg_off)
+> +               *arg_off =3D offset;
+>          t =3D btf_type_skip_modifiers(btf, func_proto->type, NULL);
+>          offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->size, 8);
+>          if (off < offset)
+>                  return nr_args;
 >
-> After login vm(virtual machine) successfully, you could transfer reproduc=
-ed
-> binary to the vm by below way, and reproduce the problem in vm:
-> gcc -pthread -o repro repro.c
-> scp -P 10023 repro root@localhost:/root/
+>          return nr_args + 1;
+>   }
 >
-> Get the bzImage for target kernel:
-> Please use target kconfig and copy it to kernel_src/.config
-> make olddefconfig
-> make -jx bzImage           //x should equal or less than cpu num your pc =
-has
+> +static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type
+> *func_proto,
+> +                          int off)
+> +{
+> +       return _get_ctx_arg_idx(btf, func_proto, off, NULL);
+> +}
+> +
+> +static u32 get_ctx_arg_idx_aligned(struct btf *btf,
+> +                                  const struct btf_type *func_proto,
+> +                                  int off)
+> +{
+> +       u32 arg_off;
+> +       u32 arg_idx =3D _get_ctx_arg_idx(btf, func_proto, off, &arg_off);
+> +       return arg_off =3D=3D off ? arg_idx : -1;
+> +}
+> +
 >
-> Fill the bzImage file into above start3.sh to load the target kernel in v=
-m.
->
->
-> Tips:
-> If you already have qemu-system-x86_64, please ignore below info.
-> If you want to install qemu v7.1.0 version:
-> git clone https://github.com/qemu/qemu.git
-> cd qemu
-> git checkout -f v7.1.0
-> mkdir build
-> cd build
-> yum install -y ninja-build.x86_64
-> yum -y install libslirp-devel.x86_64
-> ../configure --target-list=3Dx86_64-softmmu --enable-kvm --enable-vnc --e=
-nable-gtk --enable-sdl --enable-usb-redir --enable-slirp
-> make
-> make install
->
-> Best Regards,
-> Thanks!
->
+> > +
+> > +/* This function is similar to btf_check_func_type_match(), except tha=
+t it
+> > + * only compare some function args of the function prototype t1 and t2=
+.
+> > + */
+> > +int btf_check_func_part_match(struct btf *btf1, const struct btf_type =
+*func1,
+> > +                           struct btf *btf2, const struct btf_type *fu=
+nc2,
+> > +                           u64 func_args)
+> > +{
+> > +     const struct btf_param *args1, *args2;
+> > +     u32 nargs1, i, offset =3D 0;
+> > +     const char *s1, *s2;
+> > +
+> > +     if (!btf_type_is_func_proto(func1) || !btf_type_is_func_proto(fun=
+c2))
+> > +             return -EINVAL;
+> > +
+> > +     args1 =3D (const struct btf_param *)(func1 + 1);
+> > +     args2 =3D (const struct btf_param *)(func2 + 1);
+> > +     nargs1 =3D btf_type_vlen(func1);
+> > +
+> > +     for (i =3D 0; i <=3D nargs1; i++) {
+> > +             const struct btf_type *t1, *t2;
+> > +
+> > +             if (!(func_args & (1 << i)))
+> > +                     goto next;
+> > +
+> > +             if (i < nargs1) {
+> > +                     int t2_index;
+> > +
+> > +                     /* get the index of the arg corresponding to args=
+1[i]
+> > +                      * by the offset.
+> > +                      */
+> > +                     t2_index =3D get_ctx_arg_idx_aligned(btf2, func2,
+> > +                                                        offset);
+> > +                     if (t2_index < 0)
+> > +                             return -EINVAL;
+> > +
+> > +                     t1 =3D btf_type_skip_modifiers(btf1, args1[i].typ=
+e, NULL);
+> > +                     t2 =3D btf_type_skip_modifiers(btf2, args2[t2_ind=
+ex].type,
+> > +                                                  NULL);
+> > +             } else {
+> > +                     /* i =3D=3D nargs1, this is the index of return v=
+alue of t1 */
+> > +                     if (get_ctx_arg_total_size(btf1, func1) !=3D
+> > +                         get_ctx_arg_total_size(btf2, func2))
+> > +                             return -EINVAL;
+> > +
+> > +                     /* check the return type of t1 and t2 */
+> > +                     t1 =3D btf_type_skip_modifiers(btf1, func1->type,=
+ NULL);
+> > +                     t2 =3D btf_type_skip_modifiers(btf2, func2->type,=
+ NULL);
+> > +             }
+> > +
+> > +             if (t1->info !=3D t2->info ||
+> > +                 (btf_type_has_size(t1) && t1->size !=3D t2->size))
+> > +                     return -EINVAL;
+> > +             if (btf_type_is_int(t1) || btf_is_any_enum(t1))
+> > +                     goto next;
+> > +
+> > +             if (btf_type_is_struct(t1))
+> > +                     goto on_struct;
+> > +
+> > +             if (!btf_type_is_ptr(t1))
+> > +                     return -EINVAL;
+> > +
+> > +             t1 =3D btf_type_skip_modifiers(btf1, t1->type, NULL);
+> > +             t2 =3D btf_type_skip_modifiers(btf2, t2->type, NULL);
+> > +             if (!btf_type_is_struct(t1) || !btf_type_is_struct(t2))
+> > +                     return -EINVAL;
+> > +
+> > +on_struct:
+> > +             s1 =3D btf_name_by_offset(btf1, t1->name_off);
+> > +             s2 =3D btf_name_by_offset(btf2, t2->name_off);
+> > +             if (strcmp(s1, s2))
+> > +                     return -EINVAL;
+> > +next:
+> > +             if (i < nargs1) {
+> > +                     t1 =3D btf_type_skip_modifiers(btf1, args1[i].typ=
+e, NULL);
+> > +                     offset +=3D btf_type_is_ptr(t1) ? 8 : roundup(t1-=
+>size, 8);
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >   static bool btf_is_dynptr_ptr(const struct btf *btf, const struct btf=
+_type *t)
+> >   {
+> >       const char *name;
 
