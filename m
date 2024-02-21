@@ -1,145 +1,129 @@
-Return-Path: <linux-kernel+bounces-75146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A69185E3CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:56:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88D2B85E3D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C11B1C20996
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FAC283645
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAFF839FC;
-	Wed, 21 Feb 2024 16:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22770839F7;
+	Wed, 21 Feb 2024 16:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a4Bb5jCP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G6y2XApx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2E880613;
-	Wed, 21 Feb 2024 16:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AE97FBC4;
+	Wed, 21 Feb 2024 16:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708534577; cv=none; b=A7fhrLpDgE72D+7Yjm+FdmQH0jEJVDvddxzqeNc3I6+TNqYbZpcWjCZtNEs0+P3MmScB35gHVVsXMYpDozqC3EbMugMYy5N4kWHuLgD5Bz/QfckNvK/zAWeNrnLCuVDp5fqT1GL5Iq7gHVEGVOuFDFg2PRO7An4oswrCksQUBU8=
+	t=1708534621; cv=none; b=qXhanSMZXCEG0EzDk9s9wxXDBjfH/uqbOrtL3k3pZFjPEhHKX1NQW+a2z7HdGwlm0Eb52W47eMLFAjatHRpd+JzSalZ2X6fMf8qivlZcmdGwBxi+42idHFXfCY9vZVXKyGpQ8ZkdSUZ1y6IEJb/X4TsRCf8PipT55mjAgX+IuQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708534577; c=relaxed/simple;
-	bh=JvU0tQfghs9ivP7wwVrY8yM2tvT8Ba8a984fQlx+zQ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZcI74BSxkG0JVhQlmFNPR5fRlDBu76gv/OvbSlXgxX0n3eW9U97oSjdRqAQtUx7NymbDZ3cfwZdh6OcuxARxFL+ePmLpgTsZa3DgQop0ZV89uY3xPjs/5S/5QZIwRo23c0s0fbPxxww6CpKp0MFRb8Ns4jk5QUcmwj/MIwcC2xQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a4Bb5jCP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B36DC433C7;
-	Wed, 21 Feb 2024 16:56:16 +0000 (UTC)
+	s=arc-20240116; t=1708534621; c=relaxed/simple;
+	bh=fKXceB0Gk5Qi2BTh8FnrZ+MT+hE3FOYlCf2QUIU2XXQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=FCs5+dJlzdF7G83G8MKneF405apamR9cipsdX344vJkUwA9kUmMQTGIKoRh3yJ50X7W3R4pwC8AbdbTSOL+hbarskB7HorbrvqhsLC8WAYEydpS+UDHJpn9RlOE4BL8RYh0AFtZf9G68fguU3znm0P3AIceu1aukiwTxZ1/eXJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G6y2XApx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2284BC433F1;
+	Wed, 21 Feb 2024 16:56:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708534576;
-	bh=JvU0tQfghs9ivP7wwVrY8yM2tvT8Ba8a984fQlx+zQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a4Bb5jCPAd5fYX0Ux3wZTHtsK2kKfPBlut+e/Wp4xxv0kaaK+cCnVb7B/qLuWUNl0
-	 2QfxdpL1/Ly4+rvEiITOSeHCqFjGFfo8pMrDfoMV5q668EMKxh7ngwyuwVvVUq2aZU
-	 /m8+R9RBffGExL2ZOUed+Du/qUyExN9aFhHwYxBs+qOCyYDwFz94QI/lfi6RK7EQTq
-	 QLv9gnThvx3eIOvV0HKLO9e8G25xK6IsPHmJn+lJs8lJrubqwdVdX8kVY6Yeog6rJ8
-	 fAFMbdmxkKM2hFw8+YKnQsy8tu8qQbegZvgIwAYDoE8dJD+89nGN/enhTUwASyUBQ7
-	 afIzc5RzN9Fwg==
-Date: Wed, 21 Feb 2024 08:56:15 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: John Garry <john.g.garry@oracle.com>, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-	chandan.babu@oracle.com, martin.petersen@oracle.com,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	ojaswin@linux.ibm.com
-Subject: Re: [PATCH 0/6] block atomic writes for XFS
-Message-ID: <20240221165615.GH6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240213072237.GA24218@lst.de>
- <20240213175549.GU616564@frogsfrogsfrogs>
- <20240214074559.GB10006@lst.de>
+	s=k20201202; t=1708534620;
+	bh=fKXceB0Gk5Qi2BTh8FnrZ+MT+hE3FOYlCf2QUIU2XXQ=;
+	h=From:Date:Subject:To:Cc:From;
+	b=G6y2XApxOSs9SZl79EQohPRj/X5MpyJELyXCc2UtgTxkX488zdh7HWdDR+lyX0unX
+	 CUJ3F7ZZbY3Vx2bdoT0jpYzMKE1H9IUANbSkmtC/wtbJFE8gw5IkjPu/GucJ+ibf6Y
+	 88tDFcattShPJ7M6gdeISV3hDqCuzLs2iKAmubTOYAxlgjmAHL/Ure//BNYZT+JXVD
+	 ugZUI3LvAbt5KssDhcPEKqu2br9DI5l/QW1EVY8L8rhcEEHlMg48HzlCALNApQfYyt
+	 gpH+W9lLfViXuIrXKtO70sqLRd5E8bI/RFu4RbsPzbktT1Gd1Ec0M0V2ZPWQjOfv8F
+	 NCve65P6JPhpA==
+From: Simon Horman <horms@kernel.org>
+Date: Wed, 21 Feb 2024 16:56:47 +0000
+Subject: [PATCH RFC net] ps3/gelic: Fix possible NULL pointer dereference
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214074559.GB10006@lst.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240221-ps3-gelic-null-deref-v1-1-f4fe159c7cb0@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAE4r1mUC/x2MQQqDMBQFrxL+2g9JWkTcCh7ArXRhk6d+CFESW
+ wri3RtczsDMSRlJkKlVJyV8JcsWC5hKkVunuIDFFyar7VNba3jPD14QxHH8hMAeCTM32ji42jS
+ Tf1NJ9yLld29HGvpORRz0uq4/qOxVpW8AAAA=
+To: Geoff Levand <geoff@infradead.org>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, 
+ Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Jeff Garzik <jeff@garzik.org>, 
+ Dan Carpenter <dan.carpenter@linaro.org>, netdev@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.12.3
 
-On Wed, Feb 14, 2024 at 08:45:59AM +0100, Christoph Hellwig wrote:
-> On Tue, Feb 13, 2024 at 09:55:49AM -0800, Darrick J. Wong wrote:
-> > On Tue, Feb 13, 2024 at 08:22:37AM +0100, Christoph Hellwig wrote:
-> > > From reading the series and the discussions with Darrick and Dave
-> > > I'm coming more and more back to my initial position that tying this
-> > > user visible feature to hardware limits is wrong and will just keep
-> > > on creating ever more painpoints in the future.
-> > > 
-> > > Based on that I suspect that doing proper software only atomic writes
-> > > using the swapext log item and selective always COW mode
-> > 
-> > Er, what are you thinking w.r.t. swapext and sometimescow?
-> 
-> What do you mean with sometimescow?  Just normal reflinked inodes?
-> 
-> > swapext
-> > doesn't currently handle COW forks at all, and it can only exchange
-> > between two of the same type of fork (e.g. both data forks or both attr
-> > forks, no mixing).
-> > 
-> > Or will that be your next suggestion whenever I get back to fiddling
-> > with the online fsck patches? ;)
-> 
-> Let's take a step back.  If we want atomic write semantics without
-> hardware offload, what we need is to allocate new blocks and atomically
-> swap them into the data fork.  Basicall an atomic version of
-> xfs_reflink_end_cow.  But yes, the details of the current swapext
-> item might not be an exact fit, maybe it's just shared infrastructure
-> and concepts.
+Fix possible NULL pointer dereference in gelic_card_release_tx_chain()
 
-Hmm.  For rt reflink (whenever I get back to that, ha) I've been
-starting to think that yes, we actually /do/ want to have a log item
-that tracks the progress of remap and cow operations.  That would solve
-the problem of someone wanting to reflink a semi-written rtx.
+The cited commit introduced a netdev variable to
+gelic_card_release_tx_chain() which is set unconditionally on each
+iteration of a for loop.
 
-That said, it might complicate the reflink code quite a bit since right
-now it writes zeroes to the unwritten parts of an rt file's rtx so that
-there's only one mapping record for the whole rtx, and then it remaps
-them.  That's most of why I haven't bothered to implement that solution.
+It is set to the value of tx_chain->tail->skb->dev.  However, in some
+cases it is assumed that tx_chain->tail->skb may be NULL. And if that
+occurs, setting netdev will cause a NULl pointer dereference.
 
-> I'm not planning to make you do it, because such a log item would
-> generally be pretty useful for always COW mode.
+Given the age of this code I do wonder if this can occur in practice.
+But to be on the safe side this patch assumes that it can and aims to
+avoid the dereference in the case where tx_chain->tail->skb may be NULL.
 
-One other thing -- while I was refactoring the swapext code into
-exch{range,maps}, it occurred to me that doing an exchange between the
-cow and data forks isn't possible because log recovery won't be able to
-do anything.  There's no ondisk metadata to map a cow staging extent
-back to the file it came from, which means we can't generally resume an
-exchange operation.
+Flagged by Smatch.
+Compile tested only.
 
-However for a small write I guess you could simply queue all the log
-intent items for all the changes needed and commit that.
+Fixes: 589866f9f1cb ("PS3: gelic: Add support for dual network interface")
+Signed-off-by: Simon Horman <horms@kernel.org>
+---
+ drivers/net/ethernet/toshiba/ps3_gelic_net.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-> > > and making that
-> > > work should be the first step.  We can then avoid that overhead for
-> > > properly aligned writs if the hardware supports it.  For your Oracle
-> > > DB loads you'll set the alignment hints and maybe even check with
-> > > fiemap that everything is fine and will get the offload, but we also
-> > > provide a nice and useful API for less performance critical applications
-> > > that don't have to care about all these details.
-> > 
-> > I suspect they might want to fail-fast (back to standard WAL mode or
-> > whatever) if the hardware support isn't available.
-> 
-> Maybe for your particular DB use case.  But there's plenty of
-> applications that just want atomic writes without building their
-> own infrastruture, including some that want pretty large chunks.
-> 
-> Also if a file system supports logging data (which I have an
-> XFS early prototype for that I plan to finish), we can even do
-> the small double writes more efficiently than the application,
-> all through the same interface.
+diff --git a/drivers/net/ethernet/toshiba/ps3_gelic_net.c b/drivers/net/ethernet/toshiba/ps3_gelic_net.c
+index d5b75af163d3..f03489799f5d 100644
+--- a/drivers/net/ethernet/toshiba/ps3_gelic_net.c
++++ b/drivers/net/ethernet/toshiba/ps3_gelic_net.c
+@@ -549,14 +549,13 @@ static void gelic_card_release_tx_chain(struct gelic_card *card, int stop)
+ {
+ 	struct gelic_descr_chain *tx_chain;
+ 	enum gelic_descr_dma_status status;
+-	struct net_device *netdev;
+ 	int release = 0;
+ 
+ 	for (tx_chain = &card->tx_chain;
+ 	     tx_chain->head != tx_chain->tail && tx_chain->tail;
+ 	     tx_chain->tail = tx_chain->tail->next) {
+ 		status = gelic_descr_get_status(tx_chain->tail);
+-		netdev = tx_chain->tail->skb->dev;
++
+ 		switch (status) {
+ 		case GELIC_DESCR_DMA_RESPONSE_ERROR:
+ 		case GELIC_DESCR_DMA_PROTECTION_ERROR:
+@@ -566,11 +565,14 @@ static void gelic_card_release_tx_chain(struct gelic_card *card, int stop)
+ 					 "%s: forcing end of tx descriptor " \
+ 					 "with status %x\n",
+ 					 __func__, status);
+-			netdev->stats.tx_dropped++;
++			tx_chain->tail->skb->dev->stats.tx_dropped++;
+ 			break;
+ 
+ 		case GELIC_DESCR_DMA_COMPLETE:
+ 			if (tx_chain->tail->skb) {
++				struct net_device *netdev;
++
++				netdev = tx_chain->tail->skb->dev;
+ 				netdev->stats.tx_packets++;
+ 				netdev->stats.tx_bytes +=
+ 					tx_chain->tail->skb->len;
 
-Heh.  Ted's been trying to kill data=journal.  Now we've found a use for
-it after all. :)
-
---D
 
