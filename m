@@ -1,124 +1,125 @@
-Return-Path: <linux-kernel+bounces-74818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 246F385DBCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:45:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9095085DBD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5A731F24823
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:45:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C34F285D40
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7B177A03;
-	Wed, 21 Feb 2024 13:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A86578B70;
+	Wed, 21 Feb 2024 13:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KUyuvw68"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9yvpKAH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8779F55E5E
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B37BAFB;
+	Wed, 21 Feb 2024 13:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708523122; cv=none; b=NdCscdaCiAlnGpAAZ9QSzKKWvcnAqpBNzGwGiSh9brDK+FRQwCHC9I+rGGQmqY6zli0eFYPL9HY1CKk/6IXfVl++6bXLgnIG0QBjSWqUu8yK7oIPeaE3v8l/ASuOxz0J26/6C1NFxcj40N56i5Dxa8chFiFxojDGTKdfmDj6lvE=
+	t=1708523123; cv=none; b=usxLFZ9yAi+Vg1q43zLtdeGbb70XdHcZgIv+oF/wkhL4yoE9EVJZs0f0JHizfJm7xSSJ0iZ5sj2aLijmPgGGZxmteS5vcgmWEgluT5udKKxtGkrFizR97qcoyvuDrKylOKg29Xu3ovc5pC+qn3Z48xBUP+TB3KJN/oQvgbeh6Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708523122; c=relaxed/simple;
-	bh=uko49LY5PDi6sJGCc3e37qoxszoEEaGB98cU8E8eW+E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XKeacJjvCaV9bWs1izaAJZjOW/cLSyoASKJNOxh4omES3EGjkxRb/JTkav1CGs7uQGdDxy8wQ8X6SN2mYlRV0rmerC8K4BJOKW8PlfCokUbGyajaqvWykVfAHg6+I0kX9AeNuFyIrCDB+wufyu7KYycTw5DtykE31h/ZUOBkkmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KUyuvw68; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc745927098so620505276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:45:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708523119; x=1709127919; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YLd0dJHTNtVDHjhS0Xex16qn1DWjQskUbDg6XGDd1Bk=;
-        b=KUyuvw68RXeyNuMRTTY83+f468Q7iU2AeJan6dROpwKidGcuOCUI2yKWvLDpLhOAZP
-         IS2cmHzaKbs8h5aPGcGGuxuZp4VDGTFY+AbcudSXYBCnnSnhjnpB/GuF6DNUWJWSbtNB
-         jpbL5s+Z6T2r12j/iWh6QGm+XYdHNIOOBvUoHF2gPVb721yvzDFUxM58RMD91nth7Cg7
-         KHL8sc9Y5Pah7GxZ3mVKOLxJxMPOrEY9+8ovwjNyNrfqFwKS3ZjiTNw4ZwG5/BKHC3Sh
-         fL3HmeUYhvqk+ZRss1YLvjKHp0eVytglqTbMpf3PW7MeaEetlTSWVBGwpqnC09NZ0gVB
-         vsMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708523119; x=1709127919;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YLd0dJHTNtVDHjhS0Xex16qn1DWjQskUbDg6XGDd1Bk=;
-        b=gr98mXnEam5Q2k20dv9TpekAwKNtEIhg68bZjfaieQ8mNfSN+fZXKuYpSHVw8U2XUE
-         6U9nVv0b/AQn1/zouxIh2h8lpvWkvxPf0L81+g10b6N4l5GNHb/LMadB/1pmseUp8Zuy
-         ILAVrLSO4vgr5p+8EwvWqj1i3sAc7qyHckwjimlvYAeo4R1WCxsZMPdQaznCZ88wdkpp
-         mN2iqlHdfxx/of9i8hxmDKKaZyU6iMyk59MmhWT9Tgmq7RSHSLYGY7v1XwwI6qQ+JybD
-         4oZHUhG9HOxf8BP4pnupKSAw73wPDQhrQTxHQxNBwR4YXwUjw7ZOIAkgIvjuY7DkJgEA
-         /i7w==
-X-Forwarded-Encrypted: i=1; AJvYcCWXMzf7QKAVoyNkcpMUiXivfnq8393+J68K2F023K6HnmWKnneQrkj82+3BpA6omiL6iuj0mDuL7zyXDPad/8+9SfvCcXGBNBSF2bnN
-X-Gm-Message-State: AOJu0YxIpYnpPdlBpjELX2/a+iqosAaZLT8JJCRX6Iim7LODiKUOAIKq
-	d9W5hURnS5UN/fxHdQkOKr9ecWiin3u6FdnRQntZoL7iXztolbgSWddbnEZVp+OcBpjqr5mDPyH
-	dCRtl/NHeNaP3T4y8VWuOVw7gPqFtHq/8fWIOrQ==
-X-Google-Smtp-Source: AGHT+IGFBZLHG4YEWBicAng577AS9VIS0KD8vWVWha8/tAFMiKzC1C1Hv2xo8F+45n6/9msqO0M9ChNKgr/xdK8THek=
-X-Received: by 2002:a25:e0d2:0:b0:dc7:5c37:5420 with SMTP id
- x201-20020a25e0d2000000b00dc75c375420mr15835997ybg.60.1708523119618; Wed, 21
- Feb 2024 05:45:19 -0800 (PST)
+	s=arc-20240116; t=1708523123; c=relaxed/simple;
+	bh=BJHfR2bAYcqfGE3I7jpnJmREd+wIkIHX/KEdFxdNxEM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gUzAlIddXvhNnpP3ZcPuSiLugHi9yElprxPmCuH13fZRmzgJpUU4fmKXlMyR7wJgzAPSlcr75P+53L2cUIJxUkvKuSFCqbUdOZnffmPRt0tdQ9Zp9AnpPTmeIsZoULY6b7N4yPp+7S5yInGsriDhyvLYUTajFf8RDfubgSRthP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9yvpKAH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F00DC433B1;
+	Wed, 21 Feb 2024 13:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708523122;
+	bh=BJHfR2bAYcqfGE3I7jpnJmREd+wIkIHX/KEdFxdNxEM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V9yvpKAHKX1WltEJ2II938p0AA1QC7vXzKkuglhObkdmrkGI5z3dEVYrLqvzXRS5q
+	 ZxvKUYAvry0BC6AUZ/fEdagJZBM6RSkLGSv73vgr/VMTXBeQj10kx3ErKew8sQTHdH
+	 OvtsBrQfIesfTbfzEmKe12ho/3+QVunU9VSGoLQIxz6Tio6jI3zflXXIZmkBGCbTjM
+	 dAdvonYr1+9buy8TNKH8cGh0bl8fO+m8whFR+tNkFViUy9R/fTyNfNboTCPjSAmHau
+	 2EGNIX6DOvb7Hl1UCKzNQAygYCtlgA9Ywyt8vbdQDwIThTHuMb18oPwkW/Rc9F7EYs
+	 o8ax3Vj4mLX3w==
+Date: Wed, 21 Feb 2024 14:45:20 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+Cc: Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
+Message-ID: <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
+References: <20240216190430.1374132-1-megi@xff.cz>
+ <20240216190430.1374132-4-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com> <20240214-mbly-gpio-v1-18-f88c0ccf372b@bootlin.com>
-In-Reply-To: <20240214-mbly-gpio-v1-18-f88c0ccf372b@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 21 Feb 2024 14:45:08 +0100
-Message-ID: <CACRpkdYb4V5EouMBYRRrZvLT1v6zKEtjHGPAs5orDKoo6dz6nA@mail.gmail.com>
-Subject: Re: [PATCH 18/23] gpio: nomadik: support mobileye,eyeq5-gpio
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xizgahp2qebktux3"
+Content-Disposition: inline
+In-Reply-To: <20240216190430.1374132-4-megi@xff.cz>
+
+
+--xizgahp2qebktux3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Theo,
+Hi,
 
-thanks for your patch!
+On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ond=C5=99ej Jirman wrote:
+> From: Ondrej Jirman <megi@xff.cz>
+>=20
+> Identical configurations of planes can lead to different (and wrong)
+> layer -> pipe routing at HW level, depending on the order of atomic
+> plane changes.
+>=20
+> For example:
+>=20
+> - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
+>   is enabled. This is a typical situation at boot.
+>=20
+> - When a compositor takes over and layer 3 is enabled,
+>   sun8i_ui_layer_enable() will get called with old_zpos=3D0 zpos=3D1, whi=
+ch
+>   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+>=20
+> What happens is that sun8i_ui_layer_enable() function may disable
+> blender pipes even if it is no longer assigned to its layer.
+>=20
+> To correct this, move the routing setup out of individual plane's
+> atomic_update into crtc's atomic_update, where it can be calculated
+> and updated all at once.
+>=20
+> Remove the atomic_disable callback because it is no longer needed.
+>=20
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
 
-On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
-in.com> wrote:
+I don't have enough knowledge about the mixers code to comment on your
+patch, so I'll let Jernej review it. However, this feels to me like the
+pipe assignment is typically the sort of things that should be dealt
+with device-wide, and in atomic_check.
 
-> We create a custom compatible for the STA2X11 IP block as integrated
-> into the Mobileye EyeQ5 platform. Its wake and alternate functions have
-> been disabled, we want to avoid touching those registers.
->
-> We both do: (1) early return in functions that do not support the
-> platform, but with warnings, and (2) avoid calling those functions in
-> the first place.
->
-> We ensure that pinctrl-nomadik is not used with this STA2X11 variant.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-(...)
->+       bool quirk_mbly;
+If I'm talking non-sense, it would be great to mention at least why that
+can't be an option in the commit log.
 
-Compulsive abbreviation? I would just rename it:
+Maxime
 
-bool is_mobileye_soc;
+--xizgahp2qebktux3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Nevermind the long name, it makes it crystal clear for readers
-what is going on. (Rusty Russell's API naming guidelines.)
+-----BEGIN PGP SIGNATURE-----
 
-With that changed:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdX+bwAKCRDj7w1vZxhR
+xZNgAP0a4L6Azcg9V6BM/jsiHiwH17jM+P8Er1XqzO57EQIFCQD/WAIto3Vlp7l6
+KwBXVWBIRLqnsTHnduB8s/JicR+nIgU=
+=6/Lk
+-----END PGP SIGNATURE-----
 
-Yours,
-Linus Walleij
+--xizgahp2qebktux3--
 
