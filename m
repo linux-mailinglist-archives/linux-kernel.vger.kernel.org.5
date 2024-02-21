@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-74475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5A7785D4FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:01:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C4D85D4FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D482E1C231B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:01:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65CD51C23779
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312384597C;
-	Wed, 21 Feb 2024 09:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDB33FB2C;
+	Wed, 21 Feb 2024 09:54:21 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B56E4122C
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5173FB22
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:54:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509264; cv=none; b=JiahHmt6F3XqTgyjlrZMgKkiEL+UrrpalHpBx2Owftsaw2pG1/vpyzEAQB9L9lwLyOsjpmMINu1x+me8tcGRUnTqveObKw95cUi64+VTVfmlBGyo5BUmAB0xdtD+cLEFV5WoHvPUL0+F1XxrXnyvvp/sQ6HHcRhyXUdlpQSuz2A=
+	t=1708509261; cv=none; b=Nqc8su8iiRHjHv9xLqI+qztzVu+ik350ZWyZB1kdfKvTJcAC5312x+eADPIJJtv2KlQiBPrxv6tWuf5lQiVuOUQ39VZC1WEYRI2xH5BL/bAWljMReUMQ1VLcdCmWzMLM8iprSzGIE7LSr48e1o9AfK40OYnuzmPvx89XPuGthMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509264; c=relaxed/simple;
-	bh=pBTwRO+68pmeBClQENCyiZhNulNXrYvaN43H1/Tgtwk=;
+	s=arc-20240116; t=1708509261; c=relaxed/simple;
+	bh=ir78vHUD8SOpgHLYnJu/TctAQqKxSR//CX4Gftp+PpY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XHcsAhCt9o/vmWLsXIKLJnGEFqC1cQavYyj2Mk+XiFdubxtTKSsC2rqvDFByDrTAMhZhTl09Eg2EF9jOWSjXTdVeY+Mo6PIoZXlZjpq/CCSD3M5xCYqRUHVjaEhuOcG+NO+KF85Jqy3nO5sJnupeXdvnr+LA2SVX91HTx2ZJJ2M=
+	 MIME-Version:Content-Type; b=FIljlpyBRxm6Nk/BHN+/mhP9SPcaX0bioeMuVshx6fFGgFFQ4U+1ZHAcOTPtVUBn+2grWpVUy1z4g/AAjVadH/a0u1ZIMVcuVENgek7Y55BXLF7R9CvAic/LdkI79e/B3M03u5TUiEa0JGYQOyAPSwbJ3X/PowTDR/sOKua6K/M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,25 +32,24 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rcjIq-0007Gn-0v; Wed, 21 Feb 2024 10:54:12 +0100
+	id 1rcjIp-0007Gx-Gz; Wed, 21 Feb 2024 10:54:11 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rcjIo-0020pY-Vl; Wed, 21 Feb 2024 10:54:10 +0100
+	id 1rcjIp-0020pc-4K; Wed, 21 Feb 2024 10:54:11 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rcjIo-008mZR-2u;
-	Wed, 21 Feb 2024 10:54:10 +0100
+	id 1rcjIp-008mZV-0B;
+	Wed, 21 Feb 2024 10:54:11 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: kernel@pengutronix.de,
-	Tomas Winkler <tomas.winkler@intel.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] mei: vsc: Convert to platform remove callback returning void
-Date: Wed, 21 Feb 2024 10:53:49 +0100
-Message-ID:  <8e14f0b1cea107e613fa0075b3379a9f1e7ef63f.1708508896.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 06/11] misc: open-dice: Convert to platform remove callback returning void
+Date: Wed, 21 Feb 2024 10:53:50 +0100
+Message-ID:  <8e7179794ffbcaa4ad3d0db50cc4aa03f377fc8c.1708508896.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1708508896.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1708508896.git.u.kleine-koenig@pengutronix.de>
@@ -61,7 +60,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1846; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=pBTwRO+68pmeBClQENCyiZhNulNXrYvaN43H1/Tgtwk=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl1cgw8NkD13QTQZX8go+76yoqIK8/+/4AehWyh LaTaGfMegmJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZdXIMAAKCRCPgPtYfRL+ Tn1CCACAxm+y17S67+v7bI8mm/v4cAoJwqrtu2QKtfu0YuxBlcn5sx32MLvVBzwpYWTI04lXdDL IAsSxCw5uKS++0JG/UuZY49PwAwU3khoLS+/sLug+5c0MGU18JxDJgYE1BfRaIEiMXnTphzjZHP //s4mBPUhibQi0+cG/B/6z8h1xJYjKHPVDfSAsxYpoXO6LbcE1v9/gKGVa0KxLJHh5/C7E7YEMf rUaH30or6kvvqJ9yDC8w7uAGjM7/PPOC73dePRaDsE3NkeaHLnsvyki+gV2VsHvU7cJa54HGPOB oNIkPYl1XYpkUupbfLCes3zwOK8d49og7fJbOZ/F4+/s4z2+
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1730; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=ir78vHUD8SOpgHLYnJu/TctAQqKxSR//CX4Gftp+PpY=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl1cgxxQVwARjfqVxgcJw3tXAI+x5CthZ2JXeuX Ph3s96a2UWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZdXIMQAKCRCPgPtYfRL+ Tl/4B/oDzrUTvZhPFmAHuCemhm9wCHb2gzHHLh8/xzfjRirJyt1OK4OSn80BF3Fj6lJ/QC9UIIa VWVwciSnaQ/sbGJl5HfT7LmcggyYQJwLj3SYMD0PnBcKNE3anhI2I2M+zsmbH+F5Tyb3rITMq5V b09z6B2AxH7mV+RpaNEMBqIxfNb8z/rbcUZfJuRm20nHEJ4Rc9E4zWvU49ulXImF8l/+fRK/U8A xRzIgeQ3oXKx/5w33e6iLPMUcytIefLP1TV74ngh5mKrbee6t3y+c84IjH+q1WDodDPI2dIAmx7 XXZIEbS89r+gDjyCfxz6j2EO0NX9Q9P3JtRTahMPQeBPlLSz
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -84,40 +83,36 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/misc/mei/platform-vsc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/misc/open-dice.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/mei/platform-vsc.c b/drivers/misc/mei/platform-vsc.c
-index 8d303c6c0000..6c9f00bcb94b 100644
---- a/drivers/misc/mei/platform-vsc.c
-+++ b/drivers/misc/mei/platform-vsc.c
-@@ -384,7 +384,7 @@ static int mei_vsc_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/drivers/misc/open-dice.c b/drivers/misc/open-dice.c
+index d279a4f195e2..1e3eb2aa44d9 100644
+--- a/drivers/misc/open-dice.c
++++ b/drivers/misc/open-dice.c
+@@ -165,12 +165,11 @@ static int __init open_dice_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int mei_vsc_remove(struct platform_device *pdev)
-+static void mei_vsc_remove(struct platform_device *pdev)
+-static int open_dice_remove(struct platform_device *pdev)
++static void open_dice_remove(struct platform_device *pdev)
  {
- 	struct mei_device *mei_dev = platform_get_drvdata(pdev);
+ 	struct open_dice_drvdata *drvdata = platform_get_drvdata(pdev);
  
-@@ -395,8 +395,6 @@ static int mei_vsc_remove(struct platform_device *pdev)
- 	mei_disable_interrupts(mei_dev);
- 
- 	mei_deregister(mei_dev);
--
+ 	misc_deregister(&drvdata->misc);
 -	return 0;
  }
  
- static int mei_vsc_suspend(struct device *dev)
-@@ -433,7 +431,7 @@ MODULE_DEVICE_TABLE(platform, mei_vsc_id_table);
+ static const struct of_device_id open_dice_of_match[] = {
+@@ -179,7 +178,7 @@ static const struct of_device_id open_dice_of_match[] = {
+ };
  
- static struct platform_driver mei_vsc_drv = {
- 	.probe = mei_vsc_probe,
--	.remove = mei_vsc_remove,
-+	.remove_new = mei_vsc_remove,
- 	.id_table = mei_vsc_id_table,
+ static struct platform_driver open_dice_driver = {
+-	.remove = open_dice_remove,
++	.remove_new = open_dice_remove,
  	.driver = {
- 		.name = MEI_VSC_DRV_NAME,
+ 		.name = DRIVER_NAME,
+ 		.of_match_table = open_dice_of_match,
 -- 
 2.43.0
 
