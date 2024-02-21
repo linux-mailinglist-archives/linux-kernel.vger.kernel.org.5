@@ -1,173 +1,158 @@
-Return-Path: <linux-kernel+bounces-73869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F18485CCD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:40:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80C9085CCDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:41:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34A5F28338F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:40:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16CD1C21868
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:41:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0124259B;
-	Wed, 21 Feb 2024 00:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6171F1FD7;
+	Wed, 21 Feb 2024 00:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXXGDS8T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r/IcATy7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0062B1842;
-	Wed, 21 Feb 2024 00:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27401841;
+	Wed, 21 Feb 2024 00:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476026; cv=none; b=n5mzJ/4bs+qHlmmEBTG+7b5Zez9wjZE06BZOb4+uvbwuwz1KcKwFSgKM6z4t+5Y9sI+/Yim4yzpxfJ+BPj/WCVtG2Dn0H0AeF8kGlwXGaHuZKewSRsLbvIUlQ6x28FTOF9yQFBeqmKR8Hbd7G1I5N7nvGFclj823ZZcV/2DuFEU=
+	t=1708476063; cv=none; b=B4NEf2+9TurdoIC06MC0oOLiXY3WKcA3s7jC121e0XaK5fUO2AJHqjuh0HpVVUov4cX0J1PrGw8/FHk/YamuIhQWlh3K1xAK9s/AX8bf9CqwjZqkMndQdqHc6Qt2VE/fRJK101dR7HHeXHrOmjz+UQO3i//RSwOHGU3jcZA4ym0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476026; c=relaxed/simple;
-	bh=4oc1pZky5HkjCTR+BuVavdWJx7t0uS02Mzr1ZCWHjCo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d1nSoLImu1x+OZrao0GP0bVAK0wSaOZSQICOlq73lV+IhbOpiUC3uw1Ai25cbLsCiPwL7la0MWOsfCo44+4DFb5z6sfHpYF6LFbBxkdWBLM4dvMSo0omi930hoOhuv1UaLPGwYQGTEHOoiy+uVz2bTWNvsWSbFJ/W7Cr58ST6I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXXGDS8T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDD31C433F1;
-	Wed, 21 Feb 2024 00:40:18 +0000 (UTC)
+	s=arc-20240116; t=1708476063; c=relaxed/simple;
+	bh=kWIAPvMn057OFGEtOjgI4lHWt5h003rFHFlQMrNSEvw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=KDwxi3GQYQKVCwwDCI8S3xVolCGJbMebQ9DZ+2M5BFzPh11sV26HzppXKKRIG5M/R00BHt+Son3IyyhGbBljInwoIyrewDYk5v5Vp4fywa4XtKktPTR5TkZBAnRnkaig1owHEYvYJG2GMIWMak4CTR7uEgFDxYqNrwUfy26Rm5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r/IcATy7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA7B8C433F1;
+	Wed, 21 Feb 2024 00:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708476025;
-	bh=4oc1pZky5HkjCTR+BuVavdWJx7t0uS02Mzr1ZCWHjCo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VXXGDS8ThunN70a0rYLJLDyy89pGrp2M3fSV0kNxp/p/8CGEClIOL4nl+ZzbTjuIV
-	 8V6uBESKVIYNjOAaa8Uo/S6TiQUo9smlP+Yw+uyKF1sXBB96kRwPAL6dnJjedxyo6k
-	 4qbYaZ9JN4f9mZjp3cNgSl3cbBK9AnbdforPZw6T9Sb2nChqCEt0AgeAAASchO8E6a
-	 ez7o0m5s5o/RTEFvNxASj/1hCwyW75ZRt4zTttSENFrinE4aZ9eLNeLRP+SphzQMF6
-	 qqBsMn6ugGGsgIJzoiO9Uxo6EPe3R7ANKhZYz08gVHsrHyerm0ZL7k0trACQOzI77b
-	 d6YNu+2OHW7dQ==
-Date: Wed, 21 Feb 2024 00:40:16 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Stefan O'Rear <sorear@fastmail.com>
-Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-	Rich Felker <dalias@libc.org>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-	"musl@lists.openwall.com" <musl@lists.openwall.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Palmer Dabbelt <palmer@dabbelt.com>, debug <debug@rivosinc.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	Florian Weimer <fweimer@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	James Morse <james.morse@arm.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Will Deacon <will@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
-	"H.J. Lu" <hjl.tools@gmail.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
- in userspace
-Message-ID: <4be8dc73-4873-44e5-8ef6-62e55d5023a7@sirena.org.uk>
-References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
- <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
- <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
- <20240220185714.GO4163@brightrain.aerifal.cx>
- <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
- <063acc75-ea1d-4dd3-aecb-e5c8884005db@app.fastmail.com>
+	s=k20201202; t=1708476063;
+	bh=kWIAPvMn057OFGEtOjgI4lHWt5h003rFHFlQMrNSEvw=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=r/IcATy7RunSAZdZHzWO4lQq/f4hhuBaOqN0St7yn1UYon9E+TxIHsEpV5kI6Il8T
+	 kZCt5pI1N485NzkhJLoogwM9L/BO7nFSCAEYAdt32Xb17MyMcAxHYG5z0kTK2bHP5F
+	 vVZ26PWJYgiA9iq33RtcVAG7OeqdhE764mlp3vrvA7czJEBOxMRZgBkDCA9yUuF7tG
+	 /WjkOtcwBLp8YGiBgC1ZFsM7aKzkdanZrAdEt3jZ8wKazwT1gcsRdDRWSXYGcHJL9L
+	 q/iszWDfVZHNgvYDGpBHORDOckinHvd7vafo2EyXu5d4VlUbFL53UCrt74TDSSqBVA
+	 OXMjKv3GlDP2A==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="EBD7P8ZrkhP4e0ph"
-Content-Disposition: inline
-In-Reply-To: <063acc75-ea1d-4dd3-aecb-e5c8884005db@app.fastmail.com>
-X-Cookie: E = MC ** 2 +- 3db
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 21 Feb 2024 00:40:58 +0000
+Message-Id: <CZAC7U3W7L5A.1JST8CWN3PNND@seitikki>
+Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Kanth Ghatraju"
+ <kanth.ghatraju@oracle.com>, "Peter Huewe" <peterhuewe@gmx.de>
+Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>, "Alexander Steffen"
+ <Alexander.Steffen@infineon.com>, "Daniel P. Smith"
+ <dpsmith@apertussolutions.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Sasha
+ Levin" <sashal@kernel.org>, <linux-integrity@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
+ <20240131170824.6183-2-dpsmith@apertussolutions.com>
+ <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
+ <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
+ <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
+ <91f600ef-867b-4523-89be-1c0ba34f8a4c@kunbus.com>
+ <CZA9ADCGOTQT.LB5XHZZVTWVH@seitikki>
+ <0d482ce6-4318-4e42-ac12-be2a26ef3548@gmx.de>
+In-Reply-To: <0d482ce6-4318-4e42-ac12-be2a26ef3548@gmx.de>
 
+On Tue Feb 20, 2024 at 11:19 PM UTC, Lino Sanfilippo wrote:
+>
+>
+> On 20.02.24 23:23, Jarkko Sakkinen wrote:
+> > On Tue Feb 20, 2024 at 8:54 PM UTC, Lino Sanfilippo wrote:
+> >> Hi,
+> >>
+> >> On 20.02.24 19:42, Alexander Steffen wrote:
+> >>> ATTENTION: This e-mail is from an external sender. Please check attac=
+hments and links before opening e.g. with mouseover.
+> >>>
+> >>>
+> >>> On 02.02.2024 04:08, Lino Sanfilippo wrote:
+> >>>> On 01.02.24 23:21, Jarkko Sakkinen wrote:
+> >>>>
+> >>>>>
+> >>>>> On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
+> >>>>>> Commit 933bfc5ad213 introduced the use of a locality counter to co=
+ntrol when a
+> >>>>>> locality request is allowed to be sent to the TPM. In the commit, =
+the counter
+> >>>>>> is indiscriminately decremented. Thus creating a situation for an =
+integer
+> >>>>>> underflow of the counter.
+> >>>>>
+> >>>>> What is the sequence of events that leads to this triggering the
+> >>>>> underflow? This information should be represent in the commit messa=
+ge.
+> >>>>>
+> >>>>
+> >>>> AFAIU this is:
+> >>>>
+> >>>> 1. We start with a locality_counter of 0 and then we call tpm_tis_re=
+quest_locality()
+> >>>> for the first time, but since a locality is (unexpectedly) already a=
+ctive
+> >>>> check_locality() and consequently __tpm_tis_request_locality() retur=
+n "true".
+> >>>
+> >>> check_locality() returns true, but __tpm_tis_request_locality() retur=
+ns
+> >>> the requested locality. Currently, this is always 0, so the check for
+> >>> !ret will always correctly indicate success and increment the
+> >>> locality_count.
+> >>>
+> >>
+> >> Will the TPM TIS CORE ever (have to) request another locality than 0? =
+Maybe the best would
+> >> be to hardcode TPM_ACCESS(0) and get rid of all the locality parameter=
+s that are
+> >> passed from one function to another.
+> >
+> > Usually, or at least use cases I'm aware of, localities are per
+> > component. E.g. Intel TXT has one and Linux has another.
+> >
+> > There's been some proposals in the past here for hypervisor specific
+> > locality here at LKML they didn't lead to anything.
+> >
+> > If you are suggesting of removing "int l" parameter altogether, I
+> > do support that idea.
+> >
+>
+> Yes, removing the "l" parameter is what I meant. I can prepare a patch fo=
+r
+> the removal.
 
---EBD7P8ZrkhP4e0ph
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This change BTW does not need to be supported by any bug per se as
+removing useless code is always welcome.
 
-On Tue, Feb 20, 2024 at 06:59:58PM -0500, Stefan O'Rear wrote:
-> On Tue, Feb 20, 2024, at 6:30 PM, Edgecombe, Rick P wrote:
+If we wanted ever use let's say separate locality for hypervisor,
+we would want to design such feature from ground up. I don't think
+this will happen tho since localities are sort of trend that died
+with TPM 1.2... It had only authorization value and locality brought
+some additional granularity to it.
 
-> > Maybe I'm misunderstanding. I thought the proposal included allowing
-> > shadow stack access to convert normal address ranges to shadow stack,
-> > and normal writes to convert shadow stack to normal.
+As for this patch set I also don't think kernel should care about
+localities beyond 2 or at least not ever try relinquish them.
 
-> Ideally for riscv only writes would cause conversion, an incssp underflow
-> which performs shadow stack reads would be able to fault early.
+I.e. it should at most relinquish localities 0-2. The only action
+taken for 3-4 should really be perhaps rollbacking the driver init
+and report to klog that these localities have been left open by
+the platform.
 
-> For arm, since a syscall is needed anyway to set up the token in a new
-> shadow stack region, it would make sense for conversion from non-shadow
-> to shadow usage to never be automatic.
-
-Well, we only need the token to pivot in userspace so we could
-*potentially* work something out as part of the conversion process.
-It's not filling me with enthusiasm though, and I've certainly not
-actually thought it through yet.
-
-> > I agree though that the late allocation failures are not great. Mark is
-> > working on clone3 support which should allow moving the shadow stack
-> > allocation to happen in userspace with the normal stack. Even for riscv
-> > though, doesn't it need to update a new register in stack switching?
-
-> > BTW, x86 shadow stack has a mode where the shadow stack is writable
-> > with a special instruction (WRSS). It enables the SSP to be set
-> > arbitrarily by writing restore tokens. We discussed this as an option
-> > to make the existing longjmp() and signal stuff work more transparently
-> > for glibc.
-
-We have this feature on arm64 too, plus a separately controllable push
-instruction (though that's less useful here).
-
-> > BTW, when I talk about "not supporting" I don't mean the app should
-> > crash. I mean it should instead run normally, just without shadow stack
-> > enabled. Not sure if that was clear. Since shadow stack is not
-> > essential for an application to function, it is only security hardening
-> > on top.
-
-> I appreciate that.  How far can we go in that direction?  If we can
-> automatically disable shadow stacks on any call to makecontext, sigaltstack,
-> or pthread_attr_setstack without causing other threads to crash if they were
-> in the middle of shadow stack maintenance we can probably simplify this
-> proposal, although I need to think more about what's possible.
-
-Aside from concerns about disabling over all the threads in the process
-(which should be solvable if annoying) this would be incompatible with
-policies which prevent disabling of shadow stacks, and it feels like it
-might end up being a gadget people could use which will concern some
-people.  There's a tension here between compatibility and the security
-applications of these features.
-
---EBD7P8ZrkhP4e0ph
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXVRm8ACgkQJNaLcl1U
-h9C3fgf/Vl3KFlMHtkZvrz9cGvE2TbC0mqrxMOeapZww/WMKCmIqHtFjSPzmQOKB
-im3jrrFwQk29IabWprHeQo3+DYZFyMTugJwwJEv4rd++VT8MzDo90LzRjpj4WVzS
-aCfx0m/xEicqx9wCP0hcygDCzrktn/MTm4+/b7fTIzhDobIOvheS2/tRMwq7x8HD
-DTzVsfLNoau1eSLjxdfkFA+/rAkUuoNVqjDs33Sxiw9mBtoi0jNLc07YvZQm8u27
-ijTimNGyEbckTAafaHEd86bwPjHRaiCTEsF4PP55m/lZrpYKjeSDVJw6H6skSvmm
-ubMgYOa5diXQA6KCtKkjvhptV/C+oQ==
-=FQI7
------END PGP SIGNATURE-----
-
---EBD7P8ZrkhP4e0ph--
+BR, Jarkko
 
