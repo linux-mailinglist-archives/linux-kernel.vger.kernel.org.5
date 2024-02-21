@@ -1,140 +1,113 @@
-Return-Path: <linux-kernel+bounces-73988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8312C85CE86
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:02:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E892685CE87
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:03:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48C22B2054B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:02:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFED41C23237
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:03:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C292E632;
-	Wed, 21 Feb 2024 03:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288782BAE7;
+	Wed, 21 Feb 2024 03:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ftQDL4B1"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="frPaumst"
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D13D2837E;
-	Wed, 21 Feb 2024 03:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE98B2F36
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:03:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708484538; cv=none; b=dgUQPR41mymwE66dCrog3lC7tib6oCot/35hXkzWA4wVzqbJGdaKrB8ii8NyZM84OMnIemNXBDYTL+esl4ofYtC2A2NNEbgVqZQtrppKuzOLFFbIVEX5GFAjyaTak1LEdmOH/5a+Y8W4S/9c7vkfYgSGqc1eD5bf6ZKMg+oYIqI=
+	t=1708484601; cv=none; b=TbJmPPWWNI5H4Wza3yJQ9EZL+ZjxJmIPYobAnpIWCphihYcXHxwH+cZDtiRsWOJ5QKJLJmeKciM9c6tUw31UwKl9jqzqgHj5qd2cjjJHrUaMdJ10ZFRBgGwnQZmQKbiv4ZDeXu8zmCZoM/KW+IfhUMhB+RIR2DsK+1I4HrBnBx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708484538; c=relaxed/simple;
-	bh=5YeEcEgxYmu09MXHLnpzvtsKYMcG3p92FbXHkOlhAMc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pBtJEaieu8lEa8HkbpzmBQa7lBvYmuC8ZPvBx7jqXlJCa6l5203GRuEDGy5fnpRmPnKH0zuID7nvDhcdPC0v8fwGy1/xlkXsdILDTvxxg/ON+T/CKdzhYmXeMwB+mh6Bv3uehs4wueHcgOl8gMnyKLgOKXituBKOffa7u9D0EsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ftQDL4B1; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d509ab80eso1402208f8f.3;
-        Tue, 20 Feb 2024 19:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708484535; x=1709089335; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5YeEcEgxYmu09MXHLnpzvtsKYMcG3p92FbXHkOlhAMc=;
-        b=ftQDL4B1EpDsa6mlFyunr/yfdN/iW0Vs+lL+vPzoFx5xqFhde/G0tSzlIC3YESoOjC
-         ZkBZK8pw0zF+fvADmlmo5RdJ3Y4U61fO1f1R4NdQjTP1I5JXA190WC6Eega79DDEjdkc
-         Na6rb9b/2MD+P/eLNClsliNGVvRQicQMNQpsX/WkkI02aMGV5FGDCLUY004c/FjFhcPa
-         sWbWG5aiM/vuRED6YZbWbwiU1ZaT0/RcSqursvaDw4TccUj4KseXs2y1cl/jN04O+17n
-         l7OmELN39q5nAHV2rhMdG5Y7gGJtRd3nYsp0PG6FWaS/oc51G1H4liiPBKN4qSuoYMT9
-         f+Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708484535; x=1709089335;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5YeEcEgxYmu09MXHLnpzvtsKYMcG3p92FbXHkOlhAMc=;
-        b=FlXQZ3/3qaoXaXSHXlRgjhWEELWt/hCfxzVMTcsTCF2ivvKlqKVwA8eCwMNZrc9bZZ
-         btTOc+YZ55raLdX3O1wMU4Jwu2c0doChAnj9zZsTfrRMQDz8wmW7C9Rei4P9hEZbNSwC
-         gMnXAUmgXCA4iG55lx29NYuJYQtvFqGAX3Km85seSHUCZyqueqj1ik8TsGwsi5YGAs94
-         xgyoJU1lrb+3XlY5d3Gjj3/Pr3LgL4itGCkWFDJsolpVPtPI9qZEeKn+YPJHM+qrXuKn
-         7WcGRXvOIBY1CUeskSRmuMbM7ngv2BQuKwsqa3I0ilwtdfUI1jT88rgfvcS3kCnSB6tD
-         +zdw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqXHIEcrD03evpJkm6SsoAUc2P3vhFEhQv1n5z3Y0FnZjh/voWG1LAbASSge115gVuDeLtO7L0LtE3/xYpq1ykc08LGMRbU+WF4911zbtaRPiUHLgMUyqhWcYEuz6zr7Ol5d1pRJcruN/w5DglvoDOz3AGrMR3deT3RVL+sl8gifSE
-X-Gm-Message-State: AOJu0Yx3yLN2vpAHIIREFMSBsj62phDsNlVXor1yHT2cIXCNAQSqRYZE
-	C3RiBmp+6crxX0T5i44eoQqmkWuMA+WIPsxc8JpUDeVBFJQQjW1pmJnZWpWX9A/VVG4XYD7XXkf
-	E2nYS5uUsl3693f+Rp41eyrN6hXw=
-X-Google-Smtp-Source: AGHT+IFXflCjYIorkLHNj0/aaODvrUQ0PoLWhZ3TXJuBYcOMC310Oxt+Nm2xprv0m8PmSrNKxRGUijunEZU7KHlAhdA=
-X-Received: by 2002:adf:cd81:0:b0:33d:731f:b750 with SMTP id
- q1-20020adfcd81000000b0033d731fb750mr1454359wrj.54.1708484534678; Tue, 20 Feb
- 2024 19:02:14 -0800 (PST)
+	s=arc-20240116; t=1708484601; c=relaxed/simple;
+	bh=oobwvJOSlJZ6jqTkxaLxre6wjaVBnYmAyPVTnY+MfJM=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=sXhwbqwmSuXX0XAWmqWZsUp3z+Uql/Bjywa93A0Mokn6DvkeBHJTMO2LTbRvEjFcjFWbb8xYen0zx7RJBLAqfeU/fPNYfyMoahMi78py069+xPj3VISf1gDRu6WFBmo/TaOu/Ra7djxJGX3j/EKej9vb1SbUL1fffr+SXSCvFoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=frPaumst; arc=none smtp.client-ip=203.205.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708484589; bh=LKI66u4dgr+7iwYTp927KXhXTPqMfb6/+YRPw56ONE4=;
+	h=From:To:Cc:Subject:Date;
+	b=frPaumstbBFv47/rdxEFDJLe4zIYNI5yWDb8mM4pf6ydyw4Hqn6mbKxrwA+Yp1sw3
+	 XjCb0F7jFT6Q0WrH+++6upH+oL0KTODunCAFQmjFbiuUAa7CPec3Dh9D1GVHstXMIn
+	 r9hO3+WXwz5Qptm8RIT1laiXH3xBFQ4t1JFlir1U=
+Received: from cyy-pc.lan ([240e:379:2240:ef00:159c:db93:bdcd:c9c6])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id C5A0C88; Wed, 21 Feb 2024 11:03:05 +0800
+X-QQ-mid: xmsmtpt1708484585txbs3v0gn
+Message-ID: <tencent_E19FA1A095768063102E654C6FC858A32F06@qq.com>
+X-QQ-XMAILINFO: OUnVc07lD2ZBmrI0ZhjTbaZSf3JrAeZvIVT6kjHJ26bXBjMScunXxm1aDNZZKQ
+	 /X/0IbcXbZ2RgT8zWVbJ9Or//pv5wVpAsfgTCHTb0t4ud6fWvmCH6mL82nuOjSk6/qeQ8LRZQBO8
+	 8fbHDB1JF1SUl/Ova/4VF68qRq7N+tdwe/kceR1I+X8S7JtQFRoUCu+QRGSX5auPoW7zMccfPGgF
+	 csuJjMy61fN3y9sSZkZ8alcyAr4/kU7vU0Ul/yJoiTNU4Jyi+JUCNpZaULAdpgqo1FXBUfzWCMfh
+	 994NDiDExo5GjgDnf7OSDXQXmf9yHwGpScNSfEQ7YdofkkcOiedu6zxodZbriXjvZdzbB+gsfzf3
+	 P3p8ynZDcDqNdWUCYR1mDsjOgZNUk/QaC2IHmdBXyRzsaitWiJH7D/w0ZTxvZEj+CplhxOvcdRDb
+	 zk9berts7PfJWpbYb6pY9aTJiB7/mUWzzvllshAernW9m6UZ22EchXrOwN64b3lXmdLNVgAsVyzk
+	 vC+V6Iue9wFWAwW8dGMXv9aCHg4tyEWfYa4roEfIZKBoY8SHv/y4mDsP/C9VaWpyqw9YJtjcvBIk
+	 +a0x210bc7oc84PeoLUeAK4DncF/i7t6QBFnf8KszULRdSQLiQ4qRV/LsQnEZ5fBKac5xynLBVYB
+	 RzFpnfmftmwafv5dmkBR9NpOscvCC2nroj9kc8fRAF5x6ZjKpAZcoXOnmDoIittaDitwQpY8Kwo8
+	 yWKgmNmzcoBRDZ9BnrpOdQ6/Kht50BLNP2Kk70f8tTUcLI5PzDBhNRauTdXVuRg6569JpxiB3aQP
+	 NENXpQQWq36kZr7hO3GZwYJ9RNHILSgSQzO9s+jYaOdYiOxrzwq6uIyVW5YCLESDnR5YommNMggM
+	 a+9nT/Ic6sDUBVr9aOT0Gk/4TnEHlzooLRHraW8pN9S2iLiTGZX+CL4pn7bys4+k3L/MLV4mAPri
+	 5AkTJsC6bl4Md5U3zGvUlz3r0E8QBFu4BKxrJq31Ru8ka9sSneuKyeqDeMdNxrIqJUDrB80MfNnu
+	 AJdMvN59mRU4LF9QPn
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Guo Ren <guoren@kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>
+Subject: [PATCH v2] riscv: mm: fix NOCACHE_THEAD does not set bit[61] correctly
+Date: Wed, 21 Feb 2024 11:02:31 +0800
+X-OQ-MSGID: <20240221030231.3413066-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
- <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com>
- <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com> <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com>
-In-Reply-To: <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 20 Feb 2024 19:02:03 -0800
-Message-ID: <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next 0/5] bpf: make tracing program
- support multi-attach
-To: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
-	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
-	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 6:45=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongme=
-nglong.8@bytedance.com> wrote:
->
-> On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=A3 <don=
-gmenglong.8@bytedance.com> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, Feb 21, 2024 at 9:24=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
-> > > <dongmenglong.8@bytedance.com> wrote:
-> > > >
-> > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not allow=
-ed to
-> > > > be attached to multiple hooks, and we have to create a BPF program =
-for
-> > > > each kernel function, for which we want to trace, even through all =
-the
-> > > > program have the same (or similar) logic. This can consume extra me=
-mory,
-> > > > and make the program loading slow if we have plenty of kernel funct=
-ion to
-> > > > trace.
-> > >
-> > > Should this be combined with multi link ?
-> > > (As was recently done for kprobe_multi and uprobe_multi).
-> > > Loading fentry prog once and attaching it through many bpf_links
-> > > to multiple places is a nice addition,
-> > > but we should probably add a multi link right away too.
-> >
-> > I was planning to implement the multi link for tracing after this
-> > series in another series. I can do it together with this series
-> > if you prefer.
-> >
->
-> Should I introduce the multi link for tracing first, then this series?
-> (Furthermore, this series seems not necessary.)
+Previous commit dbfbda3bd6bf ("riscv: mm: update T-Head memory type
+definitions") from patch [1] missed a `<` for bit shifting, result in
+bit(61) does not set in _PAGE_NOCACHE_THEAD and leaves bit(0) set instead.
+This patch get this fixed.
 
-What do you mean "not necessary" ?
-Don't you want to still check that bpf prog access only N args
-and BTF for these args matches across all attach points ?
+Changes since v1:
+* reword commit message and add reviewed-by
+
+Link: https://lore.kernel.org/linux-riscv/20230912072510.2510-1-jszhang@kernel.org/ [1]
+Fixes: dbfbda3bd6bf ("riscv: mm: update T-Head memory type definitions")
+Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+Reviewed-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/include/asm/pgtable-64.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
+index b42017d76924..b99bd66107a6 100644
+--- a/arch/riscv/include/asm/pgtable-64.h
++++ b/arch/riscv/include/asm/pgtable-64.h
+@@ -136,7 +136,7 @@ enum napot_cont_order {
+  * 10010 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Shareable, Non-trustable
+  */
+ #define _PAGE_PMA_THEAD		((1UL << 62) | (1UL << 61) | (1UL << 60))
+-#define _PAGE_NOCACHE_THEAD	((1UL < 61) | (1UL << 60))
++#define _PAGE_NOCACHE_THEAD	((1UL << 61) | (1UL << 60))
+ #define _PAGE_IO_THEAD		((1UL << 63) | (1UL << 60))
+ #define _PAGE_MTMASK_THEAD	(_PAGE_PMA_THEAD | _PAGE_IO_THEAD | (1UL << 59))
+ 
+-- 
+2.43.0
+
 
