@@ -1,133 +1,189 @@
-Return-Path: <linux-kernel+bounces-75687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7C4D85ED67
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:51:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D32485ED6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96CD7B22C2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:51:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F37FE1C2114E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74FF132470;
-	Wed, 21 Feb 2024 23:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F1B12EBD8;
+	Wed, 21 Feb 2024 23:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LgC/KyMo"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NhA3ETk3"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5C212EBD8
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E06912D754
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708559407; cv=none; b=j1DPKqpwaddOGIBGj7pnEjLbOSGcGqOUbeiCpg1ABDhB1WuH/afIcO7w9ifRucsoh5I9iWiJXNkTnvtS/xTrvlHv0tCPYPNJF2tHICn6x/iGL1Cq4NQEphE8XT0ht1sbuuX3WZrX80hyqNPDwvADpXcLk00lPuWMgHBB6jrE+jM=
+	t=1708559426; cv=none; b=j1sVPYRXEPlGiSASKJ5Qw7c7meIDRsRK45P/u/Sh0/NQQ9CUPpOdk2Ws+IDfnfAkVpEHhL68sKhWp2VDNU4QdhEMH56lZrqeHX55rQD5Z6H7me73GT55CIriv1Ty2SL+CdjaiEFkFexjKT6aIcB25xtik8i3iDFOx4LJfhvZ4+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708559407; c=relaxed/simple;
-	bh=kuCilgvuAIh9xQxA9Yc9QbjSc9LNo4S0L3J7arnWxXU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Seg8a6UIDeQeh06BjSFN32p+W2NDCB8JseJo2CyFa8ftKV+U3zZOPO/gHHL7KdRiCE7T9kRIkOZh78PH+u6ASfheQsQloZLZGWmMbjkCQ5qqopxoFww14X4K4HswgvIdv28nUIozDD8ipnb1YbFHez3D2O1qeq/RPYm3Yb2Db+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LgC/KyMo; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dbf1fe91fcso34096775ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:50:05 -0800 (PST)
+	s=arc-20240116; t=1708559426; c=relaxed/simple;
+	bh=y3MIWBK0YFitBa1SLGaOLrvzg2gVwOMZAiNBj6d1t2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kQs0H0Qq9T/w9wBQ0Co8K6kV/1JJqffjQ3QOiLy0FbhbXpqxnmq6Ur/eXZDcT7n6C52mIY231y1W3VcEYgao6iG2tHpacjoIq2NVS7BHSkbQhRwyNGmSMTW0UCH+FmkF++EYGJyRUlLLUzRrvLR6O4+RiwwQIg/g+Des+LelC4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NhA3ETk3; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso5876884276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:50:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708559405; x=1709164205; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sSphF0hTHN6hhmxhntDhI8RCYH5xfOdNqWBCuNfZ/qQ=;
-        b=LgC/KyMoozmyO4oXLVBr62ZbpCIIufqufHT80D2orEwyE/eaXu+Eqa5/u1RMMyDnu+
-         yDKe/MHODT98BV+umht4rYfU1ZrLXUToA6enMfzs7oDUizM7NMZmmA70VSmGsjDPTLcr
-         pcQVut8HoYojsUDmM2Pi7RAFYLm/iNrHF5xVCofWzS4YkCvgJ3kbenrLT7PkUlWaehP7
-         FsCQbIcqNg4R1PtTeWNwj2J7GwfEh9zaKGn7UmYTsiRt5AM51gUlwuPTJzp/84I/QMr6
-         rILRVI3h1uRdaGtwaPRVe2rieVPSEg0SVYDPCqIyosexkVHdCbTw69jncE7dTEf6Slxb
-         NTaw==
+        d=linaro.org; s=google; t=1708559423; x=1709164223; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/XpZt7hzwc3jNcQDwZUZ5vMVTQ3xQ4U9NKZbGKi742g=;
+        b=NhA3ETk3NVvQ/4D4ROhT9QG3s9Ax5+t5GQuNDlKakQGiBJnR9NOEWkyYqYOTw5hlkN
+         w0Y4qSSStdP7900XKsYL22AOoEO8IB/sNr/0Xb9EUL1uYg7JqqRUle8KeXcCeZT8lJCH
+         k220zewx2vNIncGdPkbuxPSdaMMZx6zGegdkwi/fqzdWDEritXZFlYCH7sWhwb1htJFT
+         0++fC0Lsya9GGAzuLQR1joLUy420z+u2cI2GKKnaxeaedSKbJF2Psxb978GRpGdlbb0Y
+         D5VEDufNXFqzpInzOSmQn8i2bfI+Y+El2XWxRsdYFZFNy2Lkafa3trrzb+XZaqMUwfwD
+         fKyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708559405; x=1709164205;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sSphF0hTHN6hhmxhntDhI8RCYH5xfOdNqWBCuNfZ/qQ=;
-        b=glN/j6rgmzPLezkraJkl6YPtVeuk603d4wL69smOCMZARXUrRnoIwjrRTmgPtAO625
-         0FDX62A8J4mqBTZPNuCRuhnhAy7wxsrUNH9da7jhGF+C78oXkZiFdXxy5LURlC7rRL86
-         SsrELBPE8q3C8YLBjOrw7tvFTn1w1Ngon2lupOkYWcm53Ku6aBqf3QmjRafYuOYUJJ3H
-         QGzZEfYonpcXnMC0UMKjynRWqHu2SVtGeZucYsjHrdg3dMVhJq2OfypPrndNHZmleyU4
-         bqsBUp81OV25hDbjv8Rg1PgpaibeW7qtYPOdR5EmMRTiQm6D/QQXJDl9eZXEJ4e0Mqf7
-         wBSQ==
-X-Gm-Message-State: AOJu0YxQDHpQBTVsuyc4Krl5BZxs/0f6ZpESlALZwhHUevfyD1SkC9JX
-	5enRBdsL3OqzGBNMiSeV2kps0SjkQMPdSlL8LN0gSVsB8sRwYhsM
-X-Google-Smtp-Source: AGHT+IFFqAzicIYgkaaVMs06g/rAMIBEgY7J+qJJESuWeEScuRMjcUmETWIKG0itACQICVY/8H3/VQ==
-X-Received: by 2002:a17:903:110c:b0:1da:1e60:f9fe with SMTP id n12-20020a170903110c00b001da1e60f9femr22926959plh.54.1708559405036;
-        Wed, 21 Feb 2024 15:50:05 -0800 (PST)
-Received: from fedora.. (c-73-170-51-167.hsd1.ca.comcast.net. [73.170.51.167])
-        by smtp.googlemail.com with ESMTPSA id jx3-20020a170903138300b001d752c4f36asm8657794plb.78.2024.02.21.15.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 15:50:04 -0800 (PST)
-From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org,
-	muchun.song@linux.dev,
-	willy@infradead.org,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH v2 5/5] hugetlb: Allow faults to be handled under the VMA lock
-Date: Wed, 21 Feb 2024 15:47:32 -0800
-Message-ID: <20240221234732.187629-6-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240221234732.187629-1-vishal.moola@gmail.com>
-References: <20240221234732.187629-1-vishal.moola@gmail.com>
+        d=1e100.net; s=20230601; t=1708559423; x=1709164223;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/XpZt7hzwc3jNcQDwZUZ5vMVTQ3xQ4U9NKZbGKi742g=;
+        b=JPXkQgjb9knx6EFfMFTO598SPotKdQPilEuChd2QB0e+cc7MmF3le7AcPsQnU+/j/5
+         VTUNNPzoU+7k9/Q18UmszoDGkq2Be1nR22VHUKXQAU4HVGqx7EDNqct2864j7bxLVgv9
+         pNKjWutsNnBruSiK5g5i7KORv1ZRcwx5t6SeguimSB20mNAb3AFR3MJOLRpOS+/5qmBC
+         f64SX9vzPHyeQacFvp9kDCpvA1RIU26dZbQ97bbNSSL0R36MM3FB0N74XHPJIkqDdsNQ
+         iI5FibT9TqJ18b1AfDCAW5lEDU+tdpGx8xoBixSbXP0u+oFOELPMztofmOJw0BHdIj0j
+         iCMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVxMZ8XymRoBu6MogZb1AxLqitmrUaP4NeM1h7Vr4dp6Ls7K+8gYVh2xamsjtuiIUH2JvGIVJZK6z2yI+my/QNlHXF0hIHePw+p756q
+X-Gm-Message-State: AOJu0YyrhHSUHp1KUwnQwSEAUvBT5ys7Ac9okBqxGJ8XL7syLfRdlML4
+	3apru3h5Ev4QjT/bUsVfz4XrBdjkEMZnu1LpBZwuh2r0IZgzycGUZgWGxlXgHi4ClHdSKjymEcm
+	/iIe5ryCEYYRvO3CuRRUv6a6ycKNGkeMXMv2xXg==
+X-Google-Smtp-Source: AGHT+IGFCpzYN9Tvhba/FP/G+LXkXROeoh+7TE5DeZAwGefezlUG4taS3kLJsE2C4lj2w55Q3QXgdigZ/ja3jgLbmO0=
+X-Received: by 2002:a05:6902:220f:b0:dc7:48f8:ce2e with SMTP id
+ dm15-20020a056902220f00b00dc748f8ce2emr1016956ybb.37.1708559423600; Wed, 21
+ Feb 2024 15:50:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com> <20240221-rb3gen2-dp-connector-v1-6-dc0964ef7d96@quicinc.com>
+In-Reply-To: <20240221-rb3gen2-dp-connector-v1-6-dc0964ef7d96@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 22 Feb 2024 01:50:12 +0200
+Message-ID: <CAA8EJppAVehWUeLAqEAq8A3nq-o2g=8GK--XRVWtDV7-0BCskA@mail.gmail.com>
+Subject: Re: [PATCH 6/9] arm64: dts: qcom: qcs6490-rb3gen2: Enable USB role switching
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hugetlb can now safely handle faults under the VMA lock, so allow it to
-do so.
+On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
+>
+> With the ADSP remoteproc loaded pmic_glink can be introduced and wired
+> up to provide role and orientation switching signals.
+>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 48 +++++++++++++++++++++++++++-
+>  1 file changed, 47 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> index ab498494caea..079bf43b14cc 100644
+> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> @@ -121,6 +121,41 @@ debug_vm_mem: debug-vm@d0600000 {
+>                 };
+>         };
+>
+> +       pmic-glink {
+> +               compatible = "qcom,qcm6490-pmic-glink", "qcom,pmic-glink";
+> +
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +
+> +               connector@0 {
+> +                       compatible = "usb-c-connector";
+> +                       reg = <0>;
+> +                       power-role = "dual";
+> +                       data-role = "dual";
+> +
+> +                       ports {
+> +                               #address-cells = <1>;
+> +                               #size-cells = <0>;
+> +
+> +                               port@0 {
+> +                                       reg = <0>;
+> +
+> +                                       pmic_glink_hs_in: endpoint {
+> +                                               remote-endpoint = <&usb_1_dwc3_hs>;
+> +                                       };
+> +                               };
+> +
+> +                               port@1 {
+> +                                       reg = <1>;
+> +
+> +                                       pmic_glink_ss_in: endpoint {
+> +                                               remote-endpoint = <&usb_1_dwc3_ss>;
 
-This patch may cause ltp hugemmap10 to "fail". Hugemmap10 tests hugetlb
-counters, and expects the counters to remain unchanged on failure to
-handle a fault.
+This should be connected to the QMP PHY rather than to the USB host.
 
-In hugetlb_no_page(), vmf_anon_prepare() may bailout with no anon_vma
-under the VMA lock after allocating a folio for the hugepage. In
-free_huge_folio(), this folio is completely freed on bailout iff there
-is a surplus of hugetlb pages. This will remove a folio off the freelist
-and decrement the number of hugepages while ltp expects these counters
-to remain unchanged on failure.
+Also it might be better to squash this patch with the patch 8. Or at
+least to get redriver into the picture in this patch (and keep only
+display-related parts in that patch).
 
-Originally this could only happen due to OOM failures, but now it may
-also occur after we allocate a hugetlb folio without a suitable anon_vma
-under the VMA lock. This should only happen for the first freshly
-allocated hugepage in this vma.
 
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
----
- mm/hugetlb.c | 6 ------
- 1 file changed, 6 deletions(-)
+> +                                       };
+> +                               };
+> +                       };
+> +               };
+> +       };
+> +
+>         vph_pwr: vph-pwr-regulator {
+>                 compatible = "regulator-fixed";
+>                 regulator-name = "vph_pwr";
+> @@ -476,7 +511,16 @@ &usb_1 {
+>  };
+>
+>  &usb_1_dwc3 {
+> -       dr_mode = "peripheral";
+> +       dr_mode = "otg";
+> +       usb-role-switch;
+> +};
+> +
+> +&usb_1_dwc3_hs {
+> +       remote-endpoint = <&pmic_glink_hs_in>;
+> +};
+> +
+> +&usb_1_dwc3_ss {
+> +       remote-endpoint = <&pmic_glink_ss_in>;
+>  };
+>
+>  &usb_1_hsphy {
+> @@ -491,6 +535,8 @@ &usb_1_qmpphy {
+>         vdda-phy-supply = <&vreg_l6b_1p2>;
+>         vdda-pll-supply = <&vreg_l1b_0p912>;
+>
+> +       orientation-switch;
+> +
+>         status = "okay";
+>  };
+>
+>
+> --
+> 2.25.1
+>
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ae8c8b3da981..688017ca0cc2 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -6354,12 +6354,6 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
- 		 */
- 	};
- 
--	/* TODO: Handle faults under the VMA lock */
--	if (flags & FAULT_FLAG_VMA_LOCK) {
--		vma_end_read(vma);
--		return VM_FAULT_RETRY;
--	}
--
- 	/*
- 	 * Serialize hugepage allocation and instantiation, so that we don't
- 	 * get spurious allocation failures if two CPUs race to instantiate
--- 
-2.43.0
 
+--
+With best wishes
+Dmitry
 
