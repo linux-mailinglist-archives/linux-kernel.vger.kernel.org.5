@@ -1,125 +1,162 @@
-Return-Path: <linux-kernel+bounces-74271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24DD985D1E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A17885D1E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 546151C2335C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B8941C23774
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB9C3BB55;
-	Wed, 21 Feb 2024 07:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5363B799;
+	Wed, 21 Feb 2024 07:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hTRhnfjB"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WaACTNG2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WaACTNG2"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E963BB43
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FD53B787;
+	Wed, 21 Feb 2024 07:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708502165; cv=none; b=c8BNbnbTAe7231AEDHR1MsQEjae+6fkR97J31vHyNT/mSl5gmlgh/M306nVq4PVizzD3+RVO/UbwPTK4LrRnfJT5LhRwTjYFmyhDKhji6frvEjyCvcCYg3u2HQAGkIZeFzd1UMc0Tk73pJdqdAecMCzl/YnV1CyJJO+HudivD+Y=
+	t=1708502155; cv=none; b=TLy/pm3epXHdCTR9GoRTuC5ZoHJ4Lra/FHH7y4TSS4I2D/8H/9eLxpDIfbeY354deUoDQbIYZshQgwjKJBg13cotGbIt4QaCHNZfl94Whv1EGz7fI5RjaVQiWBHHDCDPcjKjG2opsFJTTizEAnkT8v5t9QWXxaJnQLKNyinOG8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708502165; c=relaxed/simple;
-	bh=YzYwl8YMGXua6CQa68UF9a5u/8CEn2EQrELUkuKJmDc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eakYbGUCHoEWp6C2FbJUjl0Nit8E3JePXT3/4OYF1H93uCPek/OsWGpQKF+DXCO6wDFaYrZluWHMuehCNfqbVAdV/d9jr3SurS/NDODEeSeqpwb6sRbMBHh6UzBzqyIphZ93hH06yiYqZQEUDggjf8hca+aGLiQSq5pxMuLjnl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hTRhnfjB; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5650c27e352so807a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:56:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708502162; x=1709106962; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YzYwl8YMGXua6CQa68UF9a5u/8CEn2EQrELUkuKJmDc=;
-        b=hTRhnfjB52h3gEsDcN91+SRKHPF9y3mX1SbAEcuC1dGpkQD/AXPuqFZ2BQzN1/iEN6
-         LFnVBVnKpLNakQZrcH+L3ddoHDuGzDGW/IJw1M+FYEEi3al4FOEWsYHajVxZMy/6kHeV
-         XQ5VB3mjR8eKSkkGGH4gPnrw3k8YXrWEenJAucK+PurHg/pZZT7WT27X2Utd5usm/92Z
-         1er13htjmjIf4f6bbqb2fqnl6i/hP1EmJbj/Qeili43m4+H/H0G52wqFIFmo0H8qgHzf
-         mOjqgo/s1QnRbfK+pApA7AIAUN+ibS1sYaavR38GPPD6KeInzkzN0hSPw1D7cZxn3eL2
-         pF3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708502162; x=1709106962;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YzYwl8YMGXua6CQa68UF9a5u/8CEn2EQrELUkuKJmDc=;
-        b=U6AcUAZtI2OGJzt/dOD4hWn+/5cBGM0NHrPe+mI9ojHXywt6rOUUjnJNW8D3L9MuZT
-         vG8Q2pquSS6muEa+nNAY1egtYyKRozkB//GsROpV2277vA6HPvuxgDDGR0QiWySAS1zX
-         qUtj+Uezl0Z4rwbGk42BPUvNkK7s5FOUr59M7GVJQOhJnpQKW/u/gy+QnrU7mvP+LBeL
-         Hw/RSDutSXTeiIjW832l28EYmaM1ZQjJWdHemmPdFYF7v488sS7ZSwwEmFWEIlf2o/QW
-         pFjBuSuRk0ttMFq17hsB2Pg8EiiqIT4SVSoHJv0axeJOb7zUcvqXD/n3haALQiGOBf/5
-         F7Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCWWy/2fWI7giEpOicA4lgYfy0Xbm9FRR1VoJsNHMZYZxNxPQNEOITE1kxxHrUoj9re6IzrAwXo3eLfjomBSEPlaeJZx0vWUmrqur1pi
-X-Gm-Message-State: AOJu0Yz/4opqHF7eWI19l/SglZX6okZX7l1pWTNB3AURdITQ5zBO428Q
-	WzIREPq2WvGJELkB4vP/FE5j4JL6G4dApbK/VVj3gIp/uOrbIXfvj3ZsyIXqCld6p38How4qef+
-	GHxCkZo+2ozEjM1H699RssG/UbvVLPwglYBwe
-X-Google-Smtp-Source: AGHT+IEZyK1I0Los2sCbs/M/7PLIrS5TIHZ/Hh2HuGzFydwv3VjJ5hM9ffQop/gnv7WwXjQ4ZoWbFXnKzj0WIMAjUSA=
-X-Received: by 2002:a50:cdcc:0:b0:560:1a1:eb8d with SMTP id
- h12-20020a50cdcc000000b0056001a1eb8dmr65434edj.7.1708502162160; Tue, 20 Feb
- 2024 23:56:02 -0800 (PST)
+	s=arc-20240116; t=1708502155; c=relaxed/simple;
+	bh=P4IowivBzoNIWBfFyDl62im4NWjMcpg9erihxXbDmVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m1wnBEU2B0ojX0HvBuarnfA9oJL9fGU8E8P+zBayRqjKIYiyBSgJH23CzWgAoRhZzE6gL85EwQyo5L9+ujoguYwdJYNjB029u95A6WZC5K55CoV0v62cJsVxLq+SNXxHtAnlqKM53SZ/40WAkuj4kyrMqUyjO9RZWP3FpKcBXD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WaACTNG2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WaACTNG2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ADCC522224;
+	Wed, 21 Feb 2024 07:55:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708502151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PtbBQesguJw5L/5dujKSNhT2R4ZTGtPZub9PPAkUNuw=;
+	b=WaACTNG2/y8guzY3WY0wfs9CdWpKiwbXdw2pZfRoXwkCDPRrwEb12F0V/creKp7RrW8/do
+	ETwi0zyfpAZqWZQx/RyErjUL0gPr4D55+d2BxzBtUcanO905Nf0Nd9L0NDbAomPUnukkt8
+	Bkz2ZiPfhs6visJ1+k8WipKmXOYAFV0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708502151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PtbBQesguJw5L/5dujKSNhT2R4ZTGtPZub9PPAkUNuw=;
+	b=WaACTNG2/y8guzY3WY0wfs9CdWpKiwbXdw2pZfRoXwkCDPRrwEb12F0V/creKp7RrW8/do
+	ETwi0zyfpAZqWZQx/RyErjUL0gPr4D55+d2BxzBtUcanO905Nf0Nd9L0NDbAomPUnukkt8
+	Bkz2ZiPfhs6visJ1+k8WipKmXOYAFV0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9562E13A69;
+	Wed, 21 Feb 2024 07:55:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id G4NzIYes1WUaHwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 21 Feb 2024 07:55:51 +0000
+Date: Wed, 21 Feb 2024 08:55:49 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Carlos Galo <carlosgalo@google.com>
+Cc: rostedt@goodmis.org, akpm@linux-foundation.org, surenb@google.com,
+	android-mm@google.com, kernel-team@android.com,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: Update mark_victim tracepoints fields
+Message-ID: <ZdWshXSoLthv6J6b@tiehlicka>
+References: <20240111210539.636607-1-carlosgalo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221074053.1794118-1-ryasuoka@redhat.com>
-In-Reply-To: <20240221074053.1794118-1-ryasuoka@redhat.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 21 Feb 2024 08:55:48 +0100
-Message-ID: <CANn89iK0j6j+dvp0EnEzPi32-6nLaR2qJ1sHjPg9865TigzENA@mail.gmail.com>
-Subject: Re: [PATCH net] netlink: Fix kernel-infoleak-after-free in __skb_datagram_iter
-To: Ryosuke Yasuoka <ryasuoka@redhat.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, 
-	anjali.k.kulkarni@oracle.com, lirongqing@baidu.com, dhowells@redhat.com, 
-	pctammela@mojatatu.com, kuniyu@amazon.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111210539.636607-1-carlosgalo@google.com>
+X-Spam-Level: ****
+X-Spamd-Bar: ++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=WaACTNG2
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [4.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 BAYES_SPAM(5.10)[99.99%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 4.09
+X-Rspamd-Queue-Id: ADCC522224
+X-Spam-Flag: NO
 
-On Wed, Feb 21, 2024 at 8:42=E2=80=AFAM Ryosuke Yasuoka <ryasuoka@redhat.co=
-m> wrote:
->
-> syzbot reported the following uninit-value access issue [1]:
->
-> netlink_to_full_skb() creates a new `skb` and puts the `skb->data`
-> passed as a 1st arg of netlink_to_full_skb() onto new `skb`. The data
-> size is specified as `len` and passed to skb_put_data(). This `len`
-> is based on `skb->end` that is not data offset but buffer offset. The
-> `skb->end` contains data and tailroom. Since the tailroom is not
-> initialized when the new `skb` created, KMSAN detects uninitialized
-> memory area when copying the data.
->
-> This patch resolved this issue by correct the len from `skb->end` to
-> `skb->len`, which is the actual data offset.
->
->
-> Bytes 3852-3903 of 3904 are uninitialized
-> Memory access of size 3904 starts at ffff88812ea1e000
-> Data copied to user address 0000000020003280
->
-> CPU: 1 PID: 5043 Comm: syz-executor297 Not tainted 6.7.0-rc5-syzkaller-00=
-047-g5bd7ef53ffe5 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 11/10/2023
->
-> Fixes: 1853c9496460 ("netlink, mmap: transform mmap skb into full skb on =
-taps")
-> Reported-and-tested-by: syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail=
-com
-> Closes: https://syzkaller.appspot.com/bug?extid=3D34ad5fab48f7bf510349 [1=
-]
-> Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
+Hi,
+sorry I have missed this before.
 
-These vmalloc() skbs have caused so many issues, thanks for this fix.
+On Thu 11-01-24 21:05:30, Carlos Galo wrote:
+> The current implementation of the mark_victim tracepoint provides only
+> the process ID (pid) of the victim process. This limitation poses
+> challenges for userspace tools that need additional information
+> about the OOM victim. The association between pid and the additional
+> data may be lost after the kill, making it difficult for userspace to
+> correlate the OOM event with the specific process.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+You are correct that post OOM all per-process information is lost. On
+the other hand we do dump all this information to the kernel log. Could
+you explain why that is not suitable for your purpose?
+
+> In order to mitigate this limitation, add the following fields:
+> 
+> - UID
+>    In Android each installed application has a unique UID. Including
+>    the `uid` assists in correlating OOM events with specific apps.
+> 
+> - Process Name (comm)
+>    Enables identification of the affected process.
+> 
+> - OOM Score
+>    Allows userspace to get additional insights of the relative kill
+>    priority of the OOM victim.
+
+What is the oom score useful for?
+
+Is there any reason to provide a different information from the one
+reported to the kernel log?
+__oom_kill_process:
+pr_err("%s: Killed process %d (%s) total-vm:%lukB, anon-rss:%lukB, file-rss:%lukB, shmem-rss:%lukB, UID:%u pgtables:%lukB oom_score_adj:%hd\n",
+                message, task_pid_nr(victim), victim->comm, K(mm->total_vm),
+                K(get_mm_counter(mm, MM_ANONPAGES)),
+                K(get_mm_counter(mm, MM_FILEPAGES)),
+                K(get_mm_counter(mm, MM_SHMEMPAGES)),
+                from_kuid(&init_user_ns, task_uid(victim)),
+                mm_pgtables_bytes(mm) >> 10, victim->signal->oom_score_adj);
+
+-- 
+Michal Hocko
+SUSE Labs
 
