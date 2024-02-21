@@ -1,76 +1,113 @@
-Return-Path: <linux-kernel+bounces-73954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4B1285CE01
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:27:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79DF585CE29
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:41:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7A331C23010
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:27:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6461C1C20BE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78ACA17BB6;
-	Wed, 21 Feb 2024 02:27:19 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2107.outbound.protection.partner.outlook.cn [139.219.146.107])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3193A25777;
+	Wed, 21 Feb 2024 02:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iUY2UWNG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0BA154B1;
-	Wed, 21 Feb 2024 02:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.107
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324DE2B9C6
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708482438; cv=fail; b=JLWIRVP0wajZqzcfcGRbW54210HbgDDjqoEgcyG1fuqKMUN3nn/++jIt4pWBvGq68Rt526fkvUwfe/h6e0Mjus8MHLDTxG29IvNT+4NqEDTxCD+/gqIkPGwbKJnPmaLyDAf0zKS1XDEqvcPqJCDn/pFr2RvYEOdp/UOZGXZIrdg=
+	t=1708483293; cv=fail; b=rTxrBtuvKk+GWzf0GZZbdhKCxuQfhVyv73rdWGFlxIQJndmiw/xq7VuxIy/tUfaTttSAtwvWyiOvtog+obE/KY1WJSVI7xFFj208O8GfFKMrUCfMQxQkWodZSMp2LSS9cpkaVhrlD7rezgL/gPjZl5qvDpqJtO64oFeM4hIzmAw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708482438; c=relaxed/simple;
-	bh=ZE0Gm2H+R05ae9LneQuPHiJAJ/fZ02DBSgPAltY/Bvs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gVbjP4qUQ7BcvBOOCDZhwzKQItA+wPxPYhvh3z72cZFsdRqXuFx+uFZGqdTBtH5WRcWtWAqjJZeFeX6N59cqSs3Vhq1elfUWXoWgvHZpgsT9wzvuisZ5sXDaEeEWjZLAw0yuRt4/8OCbQ3bh+On+vbSELN3gEahDsKHqgCCUPaE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.107
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+	s=arc-20240116; t=1708483293; c=relaxed/simple;
+	bh=gy8CsgVu9E9DZJwzeVhwJnERi7LpWMPZCAvU1tibxLs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=F2vQiu/lN3BLow8wh9U9AC66g4EvjJ0UHsTM+C6j5w+LH0TJJt17rUZz2qtnhGt01K8DCCMW0KAZOE0T5pXmySo9JZm1mdRUYdW5zSXmvo8jAZ65u1rfun5uLGUe2o5qtZr4/ElBdMQxsLPu+5poTSY5gM3cIzp59JF6z3VraAs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iUY2UWNG; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708483292; x=1740019292;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=gy8CsgVu9E9DZJwzeVhwJnERi7LpWMPZCAvU1tibxLs=;
+  b=iUY2UWNGJIOdO5FsyyxK2lZ/fB4xkRk4qoCEY8a7KBeVdKARwyopULXv
+   UPa9Im9WqFqSUCKzlV3ABOCtY7wPUQJg9xmw/9utImBqvS+1kCAlHcISv
+   zFVvXZtEnjn5BeGPgFLxT2+62f2F/4jgowo1hit2jUIlE0muG3OD8lGIT
+   unj9/GsBDydwZ+oQY4XMGxCFroRUu0iv0BAHU2IROfKOcXXvRZoov1XwV
+   quuvf+R6tHEAgQimGh+CBkts4+pCHJyc+bAW+kuUbLnowcLBpSLySQ5b0
+   C+gOsUzNdV0f7V7+j2Df3fkZ0kUlLHTZn5fmLX5bbjfEOCO7FQ0+gSsm6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="6441208"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="6441208"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:41:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="9637515"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 18:41:31 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 18:41:29 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 18:41:29 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 18:41:29 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 20 Feb 2024 18:41:29 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l6x7ziNT3IkcJY/gICyQ9PB66+dTNhsGpsx014FgRpn9hNCXJenM0R/Pr4/Znu40uDkwXMgNmtj9lb2W96hnixxxi8QE4BydRsjw9oPY1VXDO3ZlEqdlvvdE03s5PWapNGAqloLQsZmU1fDoIur7EKHs8F3GvNLIS0SGvKQAFnLUzwxUuhV2ZXuFCuAK5uiYBuun7irLS/sUucE/4Zvb70pwaYEEuQndaUEumZen6ArXRBSdQttsD3WZU1QW9H0388efQvEPB/XcszxS7iPFzM3freI32xt82yMJQHjPfJqhxMqUpq4B64BfuSywr3SYNXTs2JEqBaHqzPEHbBiUlA==
+ b=YOu6xSMVIm3c5UCBk7m8lC2ZVkicm2SMk833cp1sNNhuEZ0bNZofWRHbPetYtz79xbR9EFUrAnj0gnzG9oHnLkGFahmhupCzEvol1zcvHkCs24xEPk7hY7aamGK01Bd81Pmlyx412AT5usa8mcEhfL1zdcv/Ie6C+Bo6id/ynQh5815aSr8AYQpjQ2Hp6AOzyCUJyxuUB3DtErirpBMENSu923ZHw0z6ALmqydfX2dpqE5mXdp2FH4rssEU7cSKqh3wXH/VsMBGmuUIeQQXkoCQ85kjomf+vR1nuTtTJla8MuTkKnNQR/bltSaEtnFDcWQtkEn1aWgVFf8FHzQ7Nwg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n3J7vJaxM3jUR4q2zFdrL8tMpvILc/3hyS2EV4Da33U=;
- b=ZtuxRYII+dGq5YcC0S2Gwkb8cIBKvOZlLWjcz4vu9apG4HQHR6f9gcKz4GUVQCy1ijz4aDXLgzpfgvlwIov9ojjjWEn19H2hhVBZKx4+Rkv0t9q8NO+y3iEFlqizXtipBu78v459CjcgbiNDDwR3lbM5OUOA6qDrlomo3NYBUqSC2mGS8YITj3ELA8uSechry60KShQVje8NexMjdOAB9HovINn0R/qkCB20mNo+0xmD55j9jE4MUStMa4DTCw56jHrJOcYdzkcAg5P6Nn8Tk+h7VNfB82JZFPOq+kTzJG5YwsuNETsyV3CneNsW864Q4eQypFxJcct2K9HV0Hf5Qw==
+ bh=ObPYDDsk0p2eKkxYg9bFz/MYCrN3WCAHihnyzTiIxY0=;
+ b=EX+nd78ik+RKjPCVSoIAoYOmXx/AXusPto4VnTltrPLP17PUEN2/SejnDaXxdQjBhMtrQzbl7oGelSMIa6l9wcuj9XxY2n8reCmOKq+ZcXaJ7MugWkIPTlLOFWn4RbFMgBjobb52kh7EMDS5iqehot8Xcb5Y8Bx9zmhS9tgHlnRyFVIa/92CrDoGezA+agCTjHbmygpfjlWf8DfCfMkxmnv/w3Mn8z5pH2TVoy2v+ca+Snz95Vrgiopv0Y2wYcB6IbihkIs2LuQT3g64+qN/XGaUSakc0QDWLceiX0cYakI6U2bedMOo3mzLWmmpyvMW4dmq0o97Ub0/YKoQ+spFzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10) by SHXPR01MB0541.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:1d::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.47; Wed, 21 Feb
- 2024 02:26:58 +0000
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- ([fe80::b0af:4c9d:2058:a344]) by
- SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
- with mapi id 15.20.7249.041; Wed, 21 Feb 2024 02:26:58 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	Jack Zhu <jack.zhu@starfivetech.com>,
-	Changhuang Liang <changhuang.liang@starfivetech.com>,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 2/2] irqchip: Add StarFive external interrupt controller
-Date: Tue, 20 Feb 2024 18:26:47 -0800
-Message-Id: <20240221022647.5297-3-changhuang.liang@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240221022647.5297-1-changhuang.liang@starfivetech.com>
-References: <20240221022647.5297-1-changhuang.liang@starfivetech.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BJSPR01CA0019.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:c::31) To SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+ by SJ2PR11MB8585.namprd11.prod.outlook.com (2603:10b6:a03:56b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
+ 2024 02:41:27 +0000
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::4d4c:6d3e:4780:f643]) by MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::4d4c:6d3e:4780:f643%4]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
+ 02:41:26 +0000
+Date: Wed, 21 Feb 2024 10:27:19 +0800
+From: Feng Tang <feng.tang@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+CC: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>, Jonathan Corbet <corbet@lwn.net>, "Peter
+ Zijlstra" <peterz@infradead.org>, Waiman Long <longman@redhat.com>,
+	<linux-kernel@vger.kernel.org>, Jin Wang <jin1.wang@intel.com>
+Subject: Re: [PATCH v4] clocksource: Scale the max retry number of watchdog
+ read according to CPU numbers
+Message-ID: <ZdVfh1yeDEplFPzR@feng-clx.sh.intel.com>
+References: <20240220154302.848412-1-feng.tang@intel.com>
+ <2996a3b1-33db-4a58-aa69-fd13cdbb1eee@paulmck-laptop>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2996a3b1-33db-4a58-aa69-fd13cdbb1eee@paulmck-laptop>
+X-ClientProxiedBy: SI2PR04CA0018.apcprd04.prod.outlook.com
+ (2603:1096:4:197::9) To MN0PR11MB6304.namprd11.prod.outlook.com
+ (2603:10b6:208:3c0::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,334 +115,184 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SHXPR01MB0671:EE_|SHXPR01MB0541:EE_
-X-MS-Office365-Filtering-Correlation-Id: f489f186-4bdd-4dcb-878f-08dc3284944a
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|SJ2PR11MB8585:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ad4b69c-d1d2-4b27-8625-08dc32869980
 X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6Woz1ujBEkuwWc+292NIvwvvjMfx9O0fdHJivF1Mumje+y2xWSRYw5toBk6fUjoXdHnzx8WCtk+bLeY10xKFoo+Y0DO4o1bd+qJmS/szzYGD9EZcQNFO58XUhmtbGaFJ9gI7TvlpDxuwnxbziHSmii7zwd8WC1oL1scUMEXYMpwgPSZFQ2zXmjMReY2jDMSw83QZ/cbRPIp2RrghVjGbWoq6fASY1GtXEknFhJSp9bYDpPmadMct8mnamOJVP4s2RF4dLZ1B+ONeFmAISd3LkCRkIZR/1jXr9UCj1z6anKOHXtF13UxoMzy8/aTUlroXeavBN5nHA7LqhqTeCZcknn/7NSim+oElBE9ZV6oWGxbX9atnEYnkHLqGYHQheyvsTNclxH+ZG+jxQpCBrdODB0NJ+5XfV+wRKanWMnYMYBH1BLO5qyjGG4loRBZekhp44vqzVNJMrGscfKRl/LY7UZRi4AL+PZcqXPaW+ZY1k1Z5ejfR9ifBpPHSETcWYbmuB78K6nXEfczxcD0pQ/XEgy2I/1bwOgdEgfSKFGsivl2iHRvtfjYwxAWWVNKr8ScQ
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38350700005);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: ppPozrJd7Xq8086kDh9ZLkFeaOthUiEafOpGOb/zDMIECDgYZo9XzsZ05mYDKuYxBeE6DlMScMeAoqheDy0OFaj0cDzVUKYK0YOaVkOLVGCR07XQhoMZxJDtMr2YHm0peOOOBJB3H02kNAsbnVrjn4k2WwZipyldVVfLEeSjttICW4vgm3lDMFfzVAik+eIVmsNOEJctbySQiCKYzL/wtaYaQBFMW6bUU1VzMKygdqzeOaalLZQNCkTG4NOPIzUXwrkdUR5VwcvXu+H0hRgejY9k+zCJiEtloEJlnJlWxt3cHIuIBCWnlYQKc3Lf0oYmoMM+vv5E5gaAlKIH1ZENgsmgtJ8pmzrZSjfgTQv86EP7ULwdMCkwIPNiggeC7Io1G7ckE614LXSxl6Hb8tErJVKJkk87Edujw+CKVLIISR+Mv68BhJ1Hu/BsfpK8LsiI7laLo79QF9u9iUBCbZM5anZamczG39klW7tXN8D3BvK4/Ib9auRY/w8QKFFZIrQBoAy02LfzjqQtMoz50FKPITddlUl743LubMAGKeU44i48Rdvs9wKmCkCwW2dVyzvq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xHfz9b23cDFwsQqY2KdXA7DSfQKtuf3e5fqVoVw5Uy+4AJtvcCLuxWDuG0cQ?=
- =?us-ascii?Q?NYeG+L5hv+mmauCdW8A/7tgPbIzR4OuBAl07kF/SErFFZkgMJv5YoHaKdnVX?=
- =?us-ascii?Q?R1NGQ8ygaeSwZDmAcxWjQYYjHCe5go8leYh4t94YwZPGTJPfJfLF5nxVxJbq?=
- =?us-ascii?Q?IcfQOOLOXJ71QVkB5/uwUddvp+f0QI2U/Us175T/y19gQkqv41H9MGcoNrPu?=
- =?us-ascii?Q?AvFLpjSArbioJ6qkHlb9YY1vcmel2BQvFtAKbCgb5ifPaURCmj8oS7RmUN/w?=
- =?us-ascii?Q?J5r7IqdWciObtinJonKYHKaJziGgbDCp7NbiqqktNmEVBP2oPIrW8vn/mfWO?=
- =?us-ascii?Q?z2gSifCMR3oR26ewR+dwByx7uXDnEs+VS0inYq3A8V12fRrS5JTZRcf4eltA?=
- =?us-ascii?Q?B/R+F/WUPrdak+/furXDzUQTsqnBD/3oAS6eirgLFQRY97TLHLGPGWpfYl95?=
- =?us-ascii?Q?sKnv9mL8MG9sy7SXm/mQMvjAD6w2Ekjd/sByNE9T/bu8FZYDAYk7/l+tpur+?=
- =?us-ascii?Q?tLSlo5PWPG8jGMNrWjK7jTa+/SoGJvfgQWg216LFHWbuN2y2TVF8uvTgMSf7?=
- =?us-ascii?Q?GLU6orqa1niDOuW5YefCT6BtuwLwoALOpU/SEbxT5CJYA5XTTZa1+VmiPFTU?=
- =?us-ascii?Q?hQwu5zfLPF25rE1U+hrGAbuaIAXcn6ofbvzIzj6Ovs3Lvmk9oECIfJdWZUQN?=
- =?us-ascii?Q?ZBxOGOSYlkbH5YAGQjCWkI/5zfaTZn+fGrHJkq2k8wub68XIbJACIDilrYsW?=
- =?us-ascii?Q?PhtqZ5YAVINu6Q1g6oGH772E2P3Gmizps1MqUW5SzzkPVpNOliklffceBiPt?=
- =?us-ascii?Q?Scsv8Fj/0w7WTZCKOrP+q9M4e65bMIeNGuiVjauLH2jfjTkmviQ9gTC4m0dw?=
- =?us-ascii?Q?uIfzRwCA09BSSPy3MYkYXWEhMvJz66Aqci6+fb8m4sbZvVFDycghS9zvboA8?=
- =?us-ascii?Q?Z0oNDA6VbuIlkgHb82UWJavIMzxwhQrwrRk8RumbkE59BuAOjMza0LkQaWuN?=
- =?us-ascii?Q?oR1mct67u4fe+GRDX1i5eKaI91adfVi+/NqL6FWQp8DVcrIsn5ecqhz6PWe9?=
- =?us-ascii?Q?KIz2uiVoa2QyUOOIv67GjaWmklzTqbBLocPiz7+rS5+Z/d8uVvCds3Sl7qjw?=
- =?us-ascii?Q?1tAuX14flr1bhHIs+d14cU7HHZm03SRdmz+w01tHx6MtKsb1q8YMB3xkFGtB?=
- =?us-ascii?Q?1t13b/N41QOQunwFG7fRsX35M9X+4RdL7NoPT0hrCHLz+wi7wORk0B6PIs0U?=
- =?us-ascii?Q?G0CPgjn9XXJtsWDUqYa400LWhB5pTp2xsgF12Ol53W/HFyJf+9Mf3KIqZb37?=
- =?us-ascii?Q?acHaJ+2/QGLAiIqSGvdv+1fsfX+XCFdVTLw76WKVTR7enZNB/ZlemxKZ1d/h?=
- =?us-ascii?Q?+cnGoyN0h2q7XTokoggs00IfZVC0z6K1/3Vw2rXnaOCJkYqKvDx09xkdFohf?=
- =?us-ascii?Q?AyiEpOnlD/qb7/fRz5tPohXyy/lRS0yBVbVmeICPVqlz4G/AV9ohubLMAQ2n?=
- =?us-ascii?Q?3KS2ACMSh1fkN1gS8B1Jzt2HYrRFAh+ND8vIppo4v8Zt3fQlp7S1iXGqkkoI?=
- =?us-ascii?Q?0f6KBhYMYSGAqRH1jV9+o5qUP0q1XJt/0mklF+uVVoHcuQ6PClKJJ6QjZN1w?=
- =?us-ascii?Q?iB5adCGu6wtYnc78iVXxt68=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f489f186-4bdd-4dcb-878f-08dc3284944a
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/e6kH1qeNKPGKY78QRAMMxpCIMpCdVzGMnFKBela8YLyu/D65DgMtskKmNJ8?=
+ =?us-ascii?Q?JIOqQfGTj6YTMfcTDtuL6BrM3H21AASoVvj2zlbZZVUrjfyV4PFA1qv/Uwcd?=
+ =?us-ascii?Q?L0RMn433X2CcIQLj+AXl+8+b0WcY7I/Wx/BmuSI8G52uyVkJo2142AK/tucP?=
+ =?us-ascii?Q?P9gw3pviWJ5t+oWdA80FWwFuvLmzJHNhCacyhINFCpbTx/m+OgeeIQKB8Red?=
+ =?us-ascii?Q?93PxWO03PcJGxqCmyV7PGkffh9ZSUBWW3oPxAPNn1nCxMDmhSAeDMCjrNHib?=
+ =?us-ascii?Q?mR0YJQd6Vc0bpXfzgvhfc1JgrRd5sk/deM+gFtL67TSPz5wRGh3gOqOsrr6L?=
+ =?us-ascii?Q?1y67nsx7/WjQYn1qFo0eOe9m7EExmHLb47lUFnAlfOufh96yiKfGehxrC18n?=
+ =?us-ascii?Q?B2JrTLOuRzMAszca5iivbwmPikKWerKqLk3iLDqZNxTAYC8hKVeBIBTBzTPe?=
+ =?us-ascii?Q?Gp1fbj8UYp6BR2jNMKS4UpqWXMkp3OyNK+HDllAY86CwHRZfVjtsZVyACCI9?=
+ =?us-ascii?Q?lKkXHvuId5sTUpql19GOBwVjlOKSyPOt/F3KzvHXVDJwz3zoM7S4//xPUy0I?=
+ =?us-ascii?Q?Hq4G3TJXzWEO5MIcmfMiNr/bPDWFAoQsZP8g3E/uG6fxCXKz1nF17+8123sp?=
+ =?us-ascii?Q?Qo9W+p91gaBQyEhrkLDdZ7+Jsn4KqU4+jv6yndtdGL02lFGJh320iKwNlxzz?=
+ =?us-ascii?Q?bMyMsJaw+rQsNhReWNTBRwNk/VgERxMxkaS9rdqKzOYuSQeerknWZpobg/Od?=
+ =?us-ascii?Q?3PcotTk+jOI8FaYgxPtn8MQmPvL9eYys/Nend/bAQ8HtPHG7QMSm438odf7P?=
+ =?us-ascii?Q?EIZ6tWbbErN2DC87cuNnv/hnUXeiJxClBA9ZEY03UtVwmMGi82pYRLEQNVku?=
+ =?us-ascii?Q?GOzFKIIWklg1rR3aJfBc/7zdmmj2sRmlFrBREyVHJw4ezpmQKXJIQ5S3Kh/y?=
+ =?us-ascii?Q?CAvfo7uVjhVWnxUU7OQgZ8NQJBgbC9TkjFiF3RzUTgJIzqp4C9+E6CW14pHV?=
+ =?us-ascii?Q?YeEHF7O2pWpPQLTxO9XuMUexs8udA8hudVYCpp4ws9jFbzGVHRg36XrCc9aZ?=
+ =?us-ascii?Q?q9QktbVBuNQ8hNXMPPpRBd5E7KiyL86g6LtzaPPTG0Wwc0ps5wdfMG8Y6b1m?=
+ =?us-ascii?Q?brYJl73jnAUGH4o38k5rfdltMERR324qPOT9+r7E/luXYGny50MWbOOskbOf?=
+ =?us-ascii?Q?aHxtOGlXINPxA93/A4u5iNofLw0ttjDC6ioGz+fkXkSUPnuCEJJSL5ymO79F?=
+ =?us-ascii?Q?Ong1QUxUn+EAoJb9dNQm2OvHk9JfwD6bSpeuU8/IXqQFbgiYd7+7u3By43hC?=
+ =?us-ascii?Q?pjcUGRoi81XpZbscQObQA7x+RIbhxqwuwFXINa09EwacJG23A/21LR5u0Lik?=
+ =?us-ascii?Q?xRUF6XCdwhZTwYhehla6u46QbYqpBJVyDYGLOc7gxFhvt9LtVpxNh9X9zvFF?=
+ =?us-ascii?Q?LduyVrn2YkoAVRaaiyI83sMR+AK5CMc2F+KntfYXhJbhHQt6UWk7fTc227SQ?=
+ =?us-ascii?Q?rcSNmTsdee9ivMZOhD6XHe3YrXST1cqH5c4dmBELwrje5sPTPLtwNPVHF/kF?=
+ =?us-ascii?Q?WpvHbAM7pe6hXJ3hmA9d0x9HFyJfV8V9+YXq/63V?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ad4b69c-d1d2-4b27-8625-08dc32869980
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 02:26:58.5937
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 02:41:26.5312
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s34lNXclK3AHkJKJsWt6gfQwVIHRUKbW8Gqv7QA7diiQexHUEmptfWTssQdAR/h2IHDI5Hn3TNougpUxszO8OBVrSzON/sg/+wDNLycXsUWQL3kz8Jw3922KLMA0aMrZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0541
+X-MS-Exchange-CrossTenant-UserPrincipalName: VlRfTd532CJZWY5F58fAM79jQAQ01M8yP3hSTBbOAcVnZt8bMrOg9oJTlXD/8FRFEECw5kWev51d2wALLGRE6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8585
+X-OriginatorOrg: intel.com
 
-Add StarFive external interrupt controller for JH8100 SoC.
-
-Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
----
- MAINTAINERS                                |   6 +
- drivers/irqchip/Kconfig                    |  11 ++
- drivers/irqchip/Makefile                   |   1 +
- drivers/irqchip/irq-starfive-jh8100-intc.c | 208 +++++++++++++++++++++
- 4 files changed, 226 insertions(+)
- create mode 100644 drivers/irqchip/irq-starfive-jh8100-intc.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 73d898383e51..3359d5016f00 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20960,6 +20960,12 @@ F:	Documentation/devicetree/bindings/phy/starfive,jh7110-usb-phy.yaml
- F:	drivers/phy/starfive/phy-jh7110-pcie.c
- F:	drivers/phy/starfive/phy-jh7110-usb.c
+On Tue, Feb 20, 2024 at 09:47:11AM -0800, Paul E. McKenney wrote:
+> On Tue, Feb 20, 2024 at 11:43:02PM +0800, Feng Tang wrote:
+> > There was a bug on one 8-socket server that the TSC is wrongly marked
+> > as 'unstable' and disabled during boot time (reproduce rate is about
+> > every 120 rounds of reboot tests), with log:
+> > 
+> >     clocksource: timekeeping watchdog on CPU227: wd-tsc-wd excessive read-back delay of 153560ns vs. limit of 125000ns,
+> >     wd-wd read-back delay only 11440ns, attempt 3, marking tsc unstable
+> >     tsc: Marking TSC unstable due to clocksource watchdog
+> >     TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+> >     sched_clock: Marking unstable (119294969739, 159204297)<-(125446229205, -5992055152)
+> >     clocksource: Checking clocksource tsc synchronization from CPU 319 to CPUs 0,99,136,180,210,542,601,896.
+> >     clocksource: Switched to clocksource hpet
+> > 
+> > The reason is for platform with lots of CPU, there are sporadic big or
+> > huge read latency of read watchog/clocksource during boot or when system
+> > is under stress work load, and the frequency and maximum value of the
+> > latency goes up with the increasing of CPU numbers. Current code already
+> > has logic to detect and filter such high latency case by reading 3 times
+> > of watchdog, and check the 2 deltas. Due to the randomness of the
+> > latency, there is a low possibility situation that the first delta
+> > (latency) is big, but the second delta is small and looks valid, which
+> > can escape from the check, and there is a 'max_cswd_read_retries' for
+> > retrying that check covering this case, whose default value is only 2
+> > and may be not enough for machines with huge number of CPUs.
+> > 
+> > So scale and enlarge the max retry number according to CPU number to
+> > better filter those latency noise for large systems, which has been
+> > verified fine in 4 days reboot test on the 8-socket machine.
+> > 
+> > Also as suggested by Thomas, remove parameter 'max_cswd_read_retries'
+> > which was originally introduced to cover this.
+> > 
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > Tested-by: Jin Wang <jin1.wang@intel.com>
+> > Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Reviewed-by: Waiman Long <longman@redhat.com>
+> > ---
+> >  
+> > Hi Paul, Waiman,
+> > 
+> > I keep your 'Tested-by' and 'Reviewed-by' tag for v3, as I think the
+> > core logic of the patch isn't changed. Please let me know if you
+> > think otherwise. thanks!
+> 
+> I retested, and all went well, so please keep my Tested-by.
  
-+STARFIVE JH8100 EXTERNAL INTERRUPT CONTROLLER DRIVER
-+M:	Changhuang Liang <changhuang.liang@starfivetech.com>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/interrupt-controller/starfive,jh8100-intc.yaml
-+F:	drivers/irqchip/irq-starfive-jh8100-intc.c
-+
- STATIC BRANCH/CALL
- M:	Peter Zijlstra <peterz@infradead.org>
- M:	Josh Poimboeuf <jpoimboe@kernel.org>
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index f7149d0f3d45..72c07a12f5e1 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -546,6 +546,17 @@ config SIFIVE_PLIC
- 	select IRQ_DOMAIN_HIERARCHY
- 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK if SMP
- 
-+config STARFIVE_JH8100_INTC
-+	bool "StarFive JH8100 External Interrupt Controller"
-+	depends on ARCH_STARFIVE || COMPILE_TEST
-+	default ARCH_STARFIVE
-+	select IRQ_DOMAIN_HIERARCHY
-+	help
-+	  This enables support for the INTC chip found in StarFive JH8100
-+	  SoC.
-+
-+	  If you don't know what to do here, say Y.
-+
- config EXYNOS_IRQ_COMBINER
- 	bool "Samsung Exynos IRQ combiner support" if COMPILE_TEST
- 	depends on (ARCH_EXYNOS && ARM) || COMPILE_TEST
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index ffd945fe71aa..ec4a18380998 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -96,6 +96,7 @@ obj-$(CONFIG_CSKY_MPINTC)		+= irq-csky-mpintc.o
- obj-$(CONFIG_CSKY_APB_INTC)		+= irq-csky-apb-intc.o
- obj-$(CONFIG_RISCV_INTC)		+= irq-riscv-intc.o
- obj-$(CONFIG_SIFIVE_PLIC)		+= irq-sifive-plic.o
-+obj-$(CONFIG_STARFIVE_JH8100_INTC)	+= irq-starfive-jh8100-intc.o
- obj-$(CONFIG_IMX_IRQSTEER)		+= irq-imx-irqsteer.o
- obj-$(CONFIG_IMX_INTMUX)		+= irq-imx-intmux.o
- obj-$(CONFIG_IMX_MU_MSI)		+= irq-imx-mu-msi.o
-diff --git a/drivers/irqchip/irq-starfive-jh8100-intc.c b/drivers/irqchip/irq-starfive-jh8100-intc.c
-new file mode 100644
-index 000000000000..0e6e10c321ff
---- /dev/null
-+++ b/drivers/irqchip/irq-starfive-jh8100-intc.c
-@@ -0,0 +1,208 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * StarFive JH8100 External Interrupt Controller driver
-+ *
-+ * Copyright (C) 2023 StarFive Technology Co., Ltd.
-+ *
-+ * Author: Changhuang Liang <changhuang.liang@starfivetech.com>
-+ */
-+
-+#define pr_fmt(fmt) "irq-starfive-jh8100: " fmt
-+
-+#include <linux/bitops.h>
-+#include <linux/clk.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/reset.h>
-+
-+#define STARFIVE_INTC_SRC0_CLEAR	0x10
-+#define STARFIVE_INTC_SRC0_MASK		0x14
-+#define STARFIVE_INTC_SRC0_INT		0x1c
-+
-+#define STARFIVE_INTC_SRC_IRQ_NUM	32
-+
-+struct starfive_irq_chip {
-+	void __iomem		*base;
-+	struct irq_domain	*domain;
-+	raw_spinlock_t		lock;
-+};
-+
-+static void starfive_intc_bit_set(struct starfive_irq_chip *irqc,
-+				  u32 reg, u32 bit_mask)
-+{
-+	u32 value;
-+
-+	value = ioread32(irqc->base + reg);
-+	value |= bit_mask;
-+	iowrite32(value, irqc->base + reg);
-+}
-+
-+static void starfive_intc_bit_clear(struct starfive_irq_chip *irqc,
-+				    u32 reg, u32 bit_mask)
-+{
-+	u32 value;
-+
-+	value = ioread32(irqc->base + reg);
-+	value &= ~bit_mask;
-+	iowrite32(value, irqc->base + reg);
-+}
-+
-+static void starfive_intc_unmask(struct irq_data *d)
-+{
-+	struct starfive_irq_chip *irqc = irq_data_get_irq_chip_data(d);
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&irqc->lock, flags);
-+	starfive_intc_bit_clear(irqc, STARFIVE_INTC_SRC0_MASK, BIT(d->hwirq));
-+	raw_spin_unlock_irqrestore(&irqc->lock, flags);
-+}
-+
-+static void starfive_intc_mask(struct irq_data *d)
-+{
-+	struct starfive_irq_chip *irqc = irq_data_get_irq_chip_data(d);
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&irqc->lock, flags);
-+	starfive_intc_bit_set(irqc, STARFIVE_INTC_SRC0_MASK, BIT(d->hwirq));
-+	raw_spin_unlock_irqrestore(&irqc->lock, flags);
-+}
-+
-+static struct irq_chip intc_dev = {
-+	.name		= "StarFive JH8100 INTC",
-+	.irq_unmask	= starfive_intc_unmask,
-+	.irq_mask	= starfive_intc_mask,
-+};
-+
-+static int starfive_intc_map(struct irq_domain *d, unsigned int irq,
-+			     irq_hw_number_t hwirq)
-+{
-+	irq_domain_set_info(d, irq, hwirq, &intc_dev, d->host_data,
-+			    handle_level_irq, NULL, NULL);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops starfive_intc_domain_ops = {
-+	.xlate	= irq_domain_xlate_onecell,
-+	.map	= starfive_intc_map,
-+};
-+
-+static void starfive_intc_irq_handler(struct irq_desc *desc)
-+{
-+	struct starfive_irq_chip *irqc = irq_data_get_irq_handler_data(&desc->irq_data);
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	unsigned long value;
-+	int hwirq;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	value = ioread32(irqc->base + STARFIVE_INTC_SRC0_INT);
-+	while (value) {
-+		hwirq = ffs(value) - 1;
-+
-+		generic_handle_domain_irq(irqc->domain, hwirq);
-+
-+		starfive_intc_bit_set(irqc, STARFIVE_INTC_SRC0_CLEAR, BIT(hwirq));
-+		starfive_intc_bit_clear(irqc, STARFIVE_INTC_SRC0_CLEAR, BIT(hwirq));
-+
-+		clear_bit(hwirq, &value);
-+	}
-+
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static int __init starfive_intc_init(struct device_node *intc,
-+				     struct device_node *parent)
-+{
-+	struct starfive_irq_chip *irqc;
-+	struct reset_control *rst;
-+	struct clk *clk;
-+	int parent_irq;
-+	int ret;
-+
-+	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
-+	if (!irqc)
-+		return -ENOMEM;
-+
-+	irqc->base = of_iomap(intc, 0);
-+	if (!irqc->base) {
-+		pr_err("Unable to map registers\n");
-+		ret = -ENXIO;
-+		goto err_free;
-+	}
-+
-+	rst = of_reset_control_get_exclusive(intc, NULL);
-+	if (IS_ERR(rst)) {
-+		pr_err("Unable to get reset control %pe\n", rst);
-+		ret = PTR_ERR(rst);
-+		goto err_unmap;
-+	}
-+
-+	clk = of_clk_get(intc, 0);
-+	if (IS_ERR(clk)) {
-+		pr_err("Unable to get clock %pe\n", clk);
-+		ret = PTR_ERR(clk);
-+		goto err_reset_put;
-+	}
-+
-+	ret = reset_control_deassert(rst);
-+	if (ret)
-+		goto err_clk_put;
-+
-+	ret = clk_prepare_enable(clk);
-+	if (ret)
-+		goto err_reset_assert;
-+
-+	raw_spin_lock_init(&irqc->lock);
-+
-+	irqc->domain = irq_domain_add_linear(intc, STARFIVE_INTC_SRC_IRQ_NUM,
-+					     &starfive_intc_domain_ops, irqc);
-+	if (!irqc->domain) {
-+		pr_err("Unable to create IRQ domain\n");
-+		ret = -EINVAL;
-+		goto err_clk_disable;
-+	}
-+
-+	parent_irq = of_irq_get(intc, 0);
-+	if (parent_irq < 0) {
-+		pr_err("Failed to get main IRQ: %d\n", parent_irq);
-+		ret = parent_irq;
-+		goto err_remove_domain;
-+	}
-+
-+	irq_set_chained_handler_and_data(parent_irq, starfive_intc_irq_handler,
-+					 irqc);
-+
-+	pr_info("Interrupt controller register, nr_irqs %d\n",
-+		STARFIVE_INTC_SRC_IRQ_NUM);
-+
-+	return 0;
-+
-+err_remove_domain:
-+	irq_domain_remove(irqc->domain);
-+err_clk_disable:
-+	clk_disable_unprepare(clk);
-+err_reset_assert:
-+	reset_control_assert(rst);
-+err_clk_put:
-+	clk_put(clk);
-+err_reset_put:
-+	reset_control_put(rst);
-+err_unmap:
-+	iounmap(irqc->base);
-+err_free:
-+	kfree(irqc);
-+	return ret;
-+}
-+
-+IRQCHIP_PLATFORM_DRIVER_BEGIN(starfive_intc)
-+IRQCHIP_MATCH("starfive,jh8100-intc", starfive_intc_init)
-+IRQCHIP_PLATFORM_DRIVER_END(starfive_intc)
-+
-+MODULE_DESCRIPTION("StarFive JH8100 External Interrupt Controller");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Changhuang Liang <changhuang.liang@starfivetech.com>");
--- 
-2.25.1
+Thanks for the testing, again!
 
+> One nit below...
+> 
+> 							Thanx, Paul
+> 
+> > Changelog:
+> > 
+> >     since v3:
+> >       * Remove clocksource's module parameter 'max_cswd_read_retries' (Thomas)
+> >       * Use "ilog4" instead of ilog2 for max retry calculation, and
+> >         may be adjusted later (Paul)
+> > 
+> >     since v2:
+> >       * Fix the unexported symbol of helper function being used by
+> >         kernel module issue (Waiman)
+> > 
+> >     since v1:
+> >       * Add santity check for user input value of 'max_cswd_read_retries'
+> >         and a helper function for getting max retry nubmer (Paul)
+> >       * Apply the same logic to watchdog test code (Waiman)
+> > 
+> > 
+> >  Documentation/admin-guide/kernel-parameters.txt  |  6 ------
+> >  include/linux/clocksource.h                      |  1 -
+> >  kernel/time/clocksource-wdtest.c                 | 13 +++++++------
+> >  kernel/time/clocksource.c                        | 16 +++++++++++-----
+> >  .../testing/selftests/rcutorture/bin/torture.sh  |  2 +-
+> >  5 files changed, 19 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 31b3a25680d0..763e96dcf8b1 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -679,12 +679,6 @@
+> >  			loops can be debugged more effectively on production
+> >  			systems.
+> >  
+> > -	clocksource.max_cswd_read_retries= [KNL]
+> > -			Number of clocksource_watchdog() retries due to
+> > -			external delays before the clock will be marked
+> > -			unstable.  Defaults to two retries, that is,
+> > -			three attempts to read the clock under test.
+> > -
+> >  	clocksource.verify_n_cpus= [KNL]
+> >  			Limit the number of CPUs checked for clocksources
+> >  			marked with CLOCK_SOURCE_VERIFY_PERCPU that
+> > diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+> > index 1d42d4b17327..b93f18270b5c 100644
+> > --- a/include/linux/clocksource.h
+> > +++ b/include/linux/clocksource.h
+> > @@ -291,7 +291,6 @@ static inline void timer_probe(void) {}
+> >  #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
+> >  	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
+> >  
+> > -extern ulong max_cswd_read_retries;
+> >  void clocksource_verify_percpu(struct clocksource *cs);
+> >  
+> >  #endif /* _LINUX_CLOCKSOURCE_H */
+> > diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+> > index df922f49d171..d1025f956fab 100644
+> > --- a/kernel/time/clocksource-wdtest.c
+> > +++ b/kernel/time/clocksource-wdtest.c
+> > @@ -105,7 +105,7 @@ static int wdtest_func(void *arg)
+> >  {
+> >  	unsigned long j1, j2;
+> >  	char *s;
+> > -	int i;
+> > +	int i, max_retries;
+> >  
+> >  	schedule_timeout_uninterruptible(holdoff * HZ);
+> >  
+> > @@ -139,18 +139,19 @@ static int wdtest_func(void *arg)
+> >  	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
+> >  
+> >  	/* Verify tsc-like stability with various numbers of errors injected. */
+> > -	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
+> > -		if (i <= 1 && i < max_cswd_read_retries)
+> > +	max_retries = ilog2(num_online_cpus()) / 2 + 1;
+> 
+> Please pull this into a function so that the two calculations of
+> max_retries are automatically in synchronization with each other.
+
+Will do, thanks.
+
+- Feng
 
