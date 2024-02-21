@@ -1,221 +1,142 @@
-Return-Path: <linux-kernel+bounces-74620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0CEB85D705
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:33:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3551E85D707
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:33:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E2D31C22EB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:33:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 671AC1C2276B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:33:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94BE41AAB;
-	Wed, 21 Feb 2024 11:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA3B3FE4C;
+	Wed, 21 Feb 2024 11:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NgFExfEB"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KDaPoHyg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F89405DD
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5D540BF0;
+	Wed, 21 Feb 2024 11:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515045; cv=none; b=KofaEGRmnN6by5HXE0C03sVqkRJsxn+Zbb68IWmqD2+FRXiMVcy9Z42k76SF7Fhr8Lgletmtz1I80p5U5Rpwn818pUg50U06Vfx5iJUpEqYXgvpsRAICO99LXYQvFbGjdvX9SD4sUC5treMwNQj6FqrYij0gpx6gGAR3bA03Z00=
+	t=1708515062; cv=none; b=ucMusyf8lfU6aaor5rIt7eqjx6esaYs3mXXI+wxPTjP15gFownIt6+LlFRSd8vQFa6+qy77zzs8A8iEeP9AZCKJDwTlqsHpLY5RiWMmxiUYyMdHNmAQXYarIw1U66sAs7+oF3GB9AGhJOMHPkXQQXT7sCzjC4J2TXcUMg4tDQ7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515045; c=relaxed/simple;
-	bh=UvCheUVIoFjk4cSiZxMiMgUAjFsOzD0QEdp/BP6hA54=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ctdVR6igxbnConsoNsRQb7h3YejIqg2/JJITYHH7aTgX0jNnfqVlKYs+hrbSM3NdIQbrgMiUnIYT2vF2J98OnsuYt4qceRWNOQX4JKmcGhhUK03N6dqyWloXnbSYkzOorXwAcSBDKsbtdq82xYvPbZW9NWqSLIRO9EOHh6FiMwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NgFExfEB; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3e75e30d36so598150166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:30:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708515042; x=1709119842; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dMJuotCi10MIEivhgp+/HFVWVuz2YA+wsQ3N0tBEkCQ=;
-        b=NgFExfEBtuPzOq8ifX7JMsESrD2wfANQfoyYYYAWm6BbP1NR1ERpkQrEcJF5rv/mdW
-         L+ct51HifCgTodAllpbLQfI2wglCtnzVFEGHmKTKjuXPxIWRTN0rhG7nYJkgNTJoHQN3
-         DXvt9jRzHN9fldGmzAKUiNRQ3V0xwRfwJhI+M6WpgaMoO4keRfBhjpQIRB9lhLeSSSvu
-         NQhYWOGwAG/N+XocsMgxJ8F0MvTDwwYogMR7e1ZE1z5Lx0m6K06CGCEQy3jlrTLMLY1R
-         f12M1mA78X9Sjaf9mu4Gn0wDSvswabxrSP3WoiaGcz+DJIGkXzdrY1vPw/wwxvSBF7rK
-         V5yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708515042; x=1709119842;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dMJuotCi10MIEivhgp+/HFVWVuz2YA+wsQ3N0tBEkCQ=;
-        b=oEtDf20EvAPmDxxYHnoOu7A6Jr9/OPXhtB7wx+ofmu6BsDUOcNakAot2YARX9dDpYZ
-         VBqp5rh7VnawI3Wz3D7ZxwmPpZ+CkPO0sTLfrZFMkjZHerS7WoHsajRhf5isjU68C1z5
-         JagJxU+DL1OZJ81B6jdRhwmaOgNKwQFnbEp0c+J20alZy45WBTHyKcsa8QAcPuLHlLso
-         kfUyr05jJoJRKfx61AZrbVUIqRNHECde9aLU1Spg3VSxpa2RhuuavxV1ZJSQRG9Uxh58
-         +kMY2yujVdrCz+ob0wABmUWLoYOahLLqglw8X4QZXRYO010s5s53jnw+bn+BmnhafhxZ
-         YHwA==
-X-Forwarded-Encrypted: i=1; AJvYcCU4WDBY5pzyKN1f3Fml4AvxxMt9q2FjAs6chu9KS4I5Y7GpIxKGXtXbotP7AVxRAt+cy6qCAmLoGAQxrLQmKkJF2FfztSFN0OhIglIe
-X-Gm-Message-State: AOJu0YwpQt4XjXr70Lx/+aXgKx+uNJUMhKLlzh3bwwcjXpBPMBa35y5I
-	cXCwkgLQ/xxWbbATZN0kPKceIcAOKLi1aK27dqNHYGNG1fqnEyoSA4UlBIH/ugo=
-X-Google-Smtp-Source: AGHT+IGa30Y9sZCSRDuOG9iML0YaKidoEu1++hvS9trF/xcUXTGjRT1+VbSba/xh5BEu6evlsLJz4w==
-X-Received: by 2002:a17:906:e085:b0:a3f:421:26a5 with SMTP id gh5-20020a170906e08500b00a3f042126a5mr4151010ejb.12.1708515041688;
-        Wed, 21 Feb 2024 03:30:41 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id g1-20020a170906c18100b00a3e278c4a3fsm4393712ejz.53.2024.02.21.03.30.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 03:30:41 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	alsa-devel@alsa-project.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Sean Anderson <sean.anderson@seco.com>
-Subject: [RESEND PATCH v6 v6 2/2] ASoC: codecs: wsa884x: Allow sharing reset GPIO
-Date: Wed, 21 Feb 2024 12:30:36 +0100
-Message-Id: <20240221113036.23905-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240221113036.23905-1-krzysztof.kozlowski@linaro.org>
-References: <20240221113036.23905-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1708515062; c=relaxed/simple;
+	bh=R06aAEMhs4VND/RSzWUYXOWMIOf4o7CtU24ik/gBYso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KHgaOVAt2TeZ3kN94RTFjwWeNMf+2f9kQPjRs/SZsgzcAwXN9IngFOXB0Nr+oEaE9Xj61a3qZ8Yuw/W7kbK691p1F46nwvvk2j/mUMvXcENFGXoh54NyWgkzawzMbPculevuMnMN8ibFhALzVSt+kO/BhEeZlTuqyJ5Ee2UPzVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KDaPoHyg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8BCC433F1;
+	Wed, 21 Feb 2024 11:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708515061;
+	bh=R06aAEMhs4VND/RSzWUYXOWMIOf4o7CtU24ik/gBYso=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KDaPoHyg0AHRcXQMxanR12gVR12clkhaAkwfKJCuJzmieyysXJRL9eC6SSH6dTa+r
+	 HCsjYMivTJUX7bKJLQVWT9nXnfedTTBy8Hn+pr8Suf014f+f8dap/wwR1GCj20jMkz
+	 4iORMgd7Hl+JTKLIpPn8UE+9TvHOtTwakxCKPgXF5/hWBj7+msySjnAtNIup4dIEqj
+	 WmQztSkiw3aUB8pbyvo85E9XXRGvH70OtAMF3LNRhbYoHv/7Iw/YZZ/HZV4c+EWwFA
+	 UXyoXCMHo7GRT734ub1xahDq7M/Gy5+0vUuYJHxoGr0is8QtBFWas3hI31JqicvcuC
+	 5FUbGRU7CRnyA==
+Date: Wed, 21 Feb 2024 11:30:57 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Alexandre Ghiti <alex@ghiti.fr>, Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 0/1] riscv: dts: Allow BUILTIN_DTB for all socs
+Message-ID: <20240221-islamic-quartered-3863e44bc862@spud>
+References: <tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6BDdXDRGwPxzf+xE"
+Content-Disposition: inline
+In-Reply-To: <tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com>
 
-On some boards with multiple WSA8840/WSA8845 speakers, the reset
-(shutdown) GPIO is shared between two speakers.  Use the reset
-controller framework and its "reset-gpio" driver to handle this case.
-This allows bring-up and proper handling of all WSA884x speakers on
-X1E80100-CRD board.
 
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sean Anderson <sean.anderson@seco.com>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/wsa884x.c | 53 +++++++++++++++++++++++++++++++-------
- 1 file changed, 43 insertions(+), 10 deletions(-)
+--6BDdXDRGwPxzf+xE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
-index f2653df84e4a..a9767ef0e39d 100644
---- a/sound/soc/codecs/wsa884x.c
-+++ b/sound/soc/codecs/wsa884x.c
-@@ -13,6 +13,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -699,6 +700,7 @@ struct wsa884x_priv {
- 	struct sdw_stream_runtime *sruntime;
- 	struct sdw_port_config port_config[WSA884X_MAX_SWR_PORTS];
- 	struct gpio_desc *sd_n;
-+	struct reset_control *sd_reset;
- 	bool port_prepared[WSA884X_MAX_SWR_PORTS];
- 	bool port_enable[WSA884X_MAX_SWR_PORTS];
- 	unsigned int variant;
-@@ -1799,9 +1801,22 @@ static struct snd_soc_dai_driver wsa884x_dais[] = {
- 	},
- };
- 
--static void wsa884x_gpio_powerdown(void *data)
-+static void wsa884x_reset_powerdown(void *data)
- {
--	gpiod_direction_output(data, 1);
-+	struct wsa884x_priv *wsa884x = data;
-+
-+	if (wsa884x->sd_reset)
-+		reset_control_assert(wsa884x->sd_reset);
-+	else
-+		gpiod_direction_output(wsa884x->sd_n, 1);
-+}
-+
-+static void wsa884x_reset_deassert(struct wsa884x_priv *wsa884x)
-+{
-+	if (wsa884x->sd_reset)
-+		reset_control_deassert(wsa884x->sd_reset);
-+	else
-+		gpiod_direction_output(wsa884x->sd_n, 0);
- }
- 
- static void wsa884x_regulator_disable(void *data)
-@@ -1809,6 +1824,27 @@ static void wsa884x_regulator_disable(void *data)
- 	regulator_bulk_disable(WSA884X_SUPPLIES_NUM, data);
- }
- 
-+static int wsa884x_get_reset(struct device *dev, struct wsa884x_priv *wsa884x)
-+{
-+	wsa884x->sd_reset = devm_reset_control_get_optional_shared(dev, NULL);
-+	if (IS_ERR(wsa884x->sd_reset))
-+		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_reset),
-+				     "Failed to get reset\n");
-+	else if (wsa884x->sd_reset)
-+		return 0;
-+	/*
-+	 * else: NULL, so use the backwards compatible way for powerdown-gpios,
-+	 * which does not handle sharing GPIO properly.
-+	 */
-+	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
-+						GPIOD_OUT_HIGH);
-+	if (IS_ERR(wsa884x->sd_n))
-+		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
-+				     "Shutdown Control GPIO not found\n");
-+
-+	return 0;
-+}
-+
- static int wsa884x_probe(struct sdw_slave *pdev,
- 			 const struct sdw_device_id *id)
- {
-@@ -1838,11 +1874,9 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 	if (ret)
- 		return ret;
- 
--	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
--						GPIOD_OUT_HIGH);
--	if (IS_ERR(wsa884x->sd_n))
--		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
--				     "Shutdown Control GPIO not found\n");
-+	ret = wsa884x_get_reset(dev, wsa884x);
-+	if (ret)
-+		return ret;
- 
- 	dev_set_drvdata(dev, wsa884x);
- 	wsa884x->slave = pdev;
-@@ -1858,9 +1892,8 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 	pdev->prop.sink_dpn_prop = wsa884x_sink_dpn_prop;
- 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
- 
--	/* Bring out of reset */
--	gpiod_direction_output(wsa884x->sd_n, 0);
--	ret = devm_add_action_or_reset(dev, wsa884x_gpio_powerdown, wsa884x->sd_n);
-+	wsa884x_reset_deassert(wsa884x);
-+	ret = devm_add_action_or_reset(dev, wsa884x_reset_powerdown, wsa884x);
- 	if (ret)
- 		return ret;
- 
--- 
-2.34.1
+Hey,
 
+On Wed, Feb 21, 2024 at 03:01:53AM +0800, Yangyu Chen wrote:
+> The BUILTIN_DTB kernel feature on RISC-V only works on K210 SoC only. This
+> patch moved this configuration to entire riscv.
+
+To be honest, I would rather delete BUILTIN_DTB (and the configurations
+that depend on it) than expand its usefulness.
+
+> Although BUILTIN_DTB is not a good choice for most platforms, it is likely
+> to be a debug feature when some bootloader will always override something
+> like the memory node in the device tree to adjust the memory size from SPD
+> or configuration resistor, which makes it hard to do some debugging.
+
+My inclination here is to say "fix your bootloader" and if that's not
+possible, chainload a bootloader that allows you control over
+modifications to your devicetree.
+
+> As an
+> example, some platforms with numa like sg2042 only support sv39 will fail
+> to boot when there is no ZONE_HIGHMEM patch with 128G memory. If we want
+> a kernel without this patch to boot, we need to write the memory nodes=20
+> in the DT manually.
+
+If, as Alex suggests, there's a way to gain support some more memory in
+sv39, we should do so - but it is worth mentioning that highmem is on the
+removal list for the kernel, so mainline support for that is highly
+unlikely.
+
+> Also, changing DT on some platforms is not easy. For Milk-V Pioneer, the
+> boot procedure is ZSBL -> OpenSBI -> LinuxBoot -> Linux. If DT gets
+> changed, OpenSBI or LinuxBoot may refuse to boot. And there is some bug on
+> LinuxBoot now which does not consume --dtb argument on kexec and always
+> uses DT from memory.
+
+I don't use Linuxboot, but let me try to understand. Linuxboot uses kexec
+to boot the main Linux kernel, but the dtb you want to use is not used, and
+instead the one that Linuxboot itself was booted with is used?
+
+It sounds like Linuxboot has a --dtb argumet that is meant to be used to
+set the dtb for the next stage, but that argument is being ignored?
+
+That sounds like a pretty serious issue with Linuxboot which should be
+fixed - what am I missing?
+
+> So I would like to do debugging on DT using
+> BUILTIN_DTB, which makes it very simple,
+
+> I can even install the kernel in
+> the distro's way and provide a kernel package for other users to test.
+
+I'm not sure what you mean by this, other distros manage to create
+kernel packages without using builtin dtbs.
+
+Thanks,
+Conor.
+
+--6BDdXDRGwPxzf+xE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdXe8QAKCRB4tDGHoIJi
+0vrYAP9VXm6khUlWB8q8p1RxXCZDwC0wOdqAAu2teabf2mgMbAEA0oaXGtQIWT+6
+hRyOdPEH0c08Xd4EhI/UdYf2kNSMkwc=
+=yHib
+-----END PGP SIGNATURE-----
+
+--6BDdXDRGwPxzf+xE--
 
