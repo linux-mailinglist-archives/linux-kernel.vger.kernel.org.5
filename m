@@ -1,161 +1,155 @@
-Return-Path: <linux-kernel+bounces-74909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04E4A85DFE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:38:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 108A885DFEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4AB1286A20
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:38:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB50B2875DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E507F7FBB1;
-	Wed, 21 Feb 2024 14:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529B37FBD3;
+	Wed, 21 Feb 2024 14:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="WnL6F42n";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="289aKcgA"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sF0jUMJ/"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9467FBA1;
-	Wed, 21 Feb 2024 14:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.164
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526303; cv=pass; b=cVgkAyz79VOKDaMYsIj69tfEW80TMWldVsLXCz/xs0l/L4RxWAcd4Jc1T+2CbjBC8Kod3eAucJgNpaPE5olY2eihSW1ZoM+/eh3KUiHQASbzyl51G9IezKFjE+tYBOG1qPqC/I360GcnOaF/qnrwGl7mBDrUxmZMHvvwZPLMOtA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526303; c=relaxed/simple;
-	bh=Yk/f5XifWhGXBDB2dBIer/YPFVx1NYJczki/GIL9pm0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qdoSV3F8MLcyd2CSxCFLnrcKPuCj1RTlILi2EEDo2VU0LBPMPpbN+LJ2JrrnCQuw2fyhB5OOR6lmXFEJ3c0E2Sr2EG4wtNbGN78dJr44FljkPnOSh5E84XYCc7r30p3IBH6LALzisZRCKbDFYBVhS/Cq9jK7z1Tll1HJLGKOyc0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=WnL6F42n; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=289aKcgA; arc=pass smtp.client-ip=81.169.146.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-ARC-Seal: i=1; a=rsa-sha256; t=1708526292; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=gNd+zI5sqYXi782KQQG4i1gGlvtRSk28pUr3JFmuDlexdios7wHWgWJIfkY0B9oajU
-    TgTbHERDZlJ/nUvEKhg/NOA+T/0+kLbxC/H22KUofiyaq2cGDLEoKH0uChdTWcSOnKcD
-    fSrNgQ6snVlEiD4MXQpX6Ts+am+v7E/5p7pj8ozCE/3HiGapGSqRcqAnOrBsbjLy24l0
-    C5R/7PxaD6a9j4ZNYtX29yFucUHvJH88AW8doyLXLixu1+9N0h/SstlxCCfnmpSZrAOp
-    s3+EWlHFo6dQTghxgvadj5Ce9cjz1J2prW/RCoBxG4Q08WIbne21MIsoEyBm2gho2QRW
-    WOSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1708526292;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Kiw7sAnsh6n8rHnUUwg+xTvudXCU4yvOhcAFDzbeABU=;
-    b=NIuR+50Zkn29+Oa3MK4HHaSwXfaNRqu0Q42AiesvueB9shP/SG2z/03A4E119II9Xt
-    lflucqynIdCO4Bifb6uIKtoUYDBNxTXIWsL19F89SouOF9kIiuD+au+WeHDx8UFMQzyE
-    njoJO5LERpwzXFK+I2TmdipR7UJ/Iz4ECcFo9ysveq6afLFdJJ53O4CRiWssY8miveHF
-    AGlDWvLPdzxgrJsJ8RCK8sEfvGctJwsmn8J+/C+Qed3xr185Fsx4QgaUTDZN6TDyQ5gf
-    Bf4Y56lC/pn+V3GzUfSrPYI1bYAuJiOWo1m2CQKAuo/41Ngoi902RoZUYQFTU75sPKUU
-    rOfw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1708526292;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Kiw7sAnsh6n8rHnUUwg+xTvudXCU4yvOhcAFDzbeABU=;
-    b=WnL6F42nnKSH9gbtQ8gDzo/AZlSBr2Q+RKA5xDVelJ6+q6S5NEr2x2M5M6tFDJmFUo
-    Pixlc6Crv7fEt+NEadCcxXc1yMAdY5VX76RPGD5y6U7zwkmDUyzl/NeL52U9lciPdiVh
-    +++tfv7RSvBgWZeq+hBebdH1aZKuVWFctrP/DJ6lO1XLlxURdsOgJN864YJMkI0IYSnm
-    ktiF37yhp7eKFsePnYX6x6bPCq7NNVgJSj6k1eviexAkloJJd0jQZKabDfs3ksF3ffW8
-    eaudYRgfepkVsKxZAu7YkqhGe07oD9QxLstMxArwk8vIbzTyi/+KyPFt2NYUANTGmywz
-    umKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1708526292;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Kiw7sAnsh6n8rHnUUwg+xTvudXCU4yvOhcAFDzbeABU=;
-    b=289aKcgAEnQjjLtvnkekJnaI8uOOwebsrVObWbyZDmU6iRbTFa8p9dQ+PAqthEVZb7
-    ku5nnBe4jpuuV0D+yUBA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFr0USEbHoO0g=="
-Received: from [IPV6:2a00:6020:4a8e:5010::923]
-    by smtp.strato.de (RZmta 49.11.2 AUTH)
-    with ESMTPSA id K49f9c01LEcCELB
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 21 Feb 2024 15:38:12 +0100 (CET)
-Message-ID: <d4b3bc0b-95e3-470e-9993-a9f01a18364f@hartkopp.net>
-Date: Wed, 21 Feb 2024 15:38:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82647F7EA
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708526338; cv=none; b=phd+sB28Bwf93s5GRq/BlZwdQuP2uuu3Ov3jx8Knm+lIPDC7DqDR0o8MmF727TLZ+yKTHeccLZa06IZAB4HqDiMySmvW8ylopSyCRllBdsN2+lcD9fQabl3JnUFeKDzkt4pFNYReq2j7cLqvamXDS8LR9kYPR2VEYXlOtwdjh40=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708526338; c=relaxed/simple;
+	bh=q4atgorVyarvUtiSOp6Dkx/P5tSPZXkAjKk4CWmyCaw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TWPoP4y2c2/Ml5nZdxlKY+pcabJVSAW5faqwwlOLKL3y3T++p185vjFoRIwElniOW5T7VfkBkUNdmv1QEG/9IWggVxWTTJfz04UVInltC5XK4E4wNWg9EWz7ABwbWZdbrkRXIUBxYZQ/mvlyqpvvFeDvpFQzaINFXsymVaYDBX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sF0jUMJ/; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3ee69976c9so347601366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:38:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708526335; x=1709131135; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DVpjBrfZDLz5cq2FcVPX67ljd8ZHs+O+QU1skwOj/LM=;
+        b=sF0jUMJ/ks68HKZmRehWewlq4U+7tl7NBlgg94buMdybg1+U8KoNh85MEkesdyZMfP
+         4Sra3fUYiFwjqgN7GyNDOjD/JUEh1itnpS1tv/i8rWDTcylW/WgZ8TvuM4DkvmN7BDV3
+         qYjehY49/jo7rBZGpfCvT4udKCxh1imJ2NGdvfV3GYXNJDtGTTaU26O436F5/wIfvj1n
+         PMC4jYuOzI9HWCZRKdWsI8AYgphjcQJt5S7EM8TI5pNlxCrFImNJUlvpsC3Be+ZHU3Tm
+         s4kPWy368L8hhI7foZlB1egLP6AQU8p1cmGosjP0DewcaddJATeazSinh46CtM20t3pd
+         12fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708526335; x=1709131135;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DVpjBrfZDLz5cq2FcVPX67ljd8ZHs+O+QU1skwOj/LM=;
+        b=GODQGcgL04D/DsGMVoVdQ6xcXBxRSP7AkX0X3sEoccbDuCIcaRPJZOUffGzEreoS/X
+         2QkfAjgWH137AyA65j9tRAU+1u7N5QgvVpi1mp6bFpIrbS702o77zp7st04dCVX1/b+Y
+         xMpr2Fa9c66JhWunHgdls9iP4LxEiINaWQvSFwvvHUD2H4lfbs+hsx4nHWAZGs1J17Ca
+         x6YZDuY85LbIh3Q4t+EAHCsJGffwWYDA9oHJYVFfmszMc1tIqEWenxQrRvA2Tc9odTJH
+         yIGNNV4WYjqp7hfZbOIf1hsVIN5JFpvg3/QMndjgsZ2H97BlhFCBVjLJDuDJvtYyhHaR
+         uobw==
+X-Forwarded-Encrypted: i=1; AJvYcCWSFTno+NZp9F18h4zhbpKMeTJHFf1Oekz8uxx4+1yuInVuo1MzjNcRyjA5DkQZ//ZjioHAVsl1dz3gpqxtNcxFz11oAAul4Peze8Ro
+X-Gm-Message-State: AOJu0Yx2IQMcynl8lZRwAXYD9godcYYtRWGTP+7wxihG4Q7J7MllK8rJ
+	jbRMQ0CGp6YiQ+cL8HWxJI+3p27zfs1Ygjr60Wd7ugC4n6oCoJdDZfHE07HsV+Y=
+X-Google-Smtp-Source: AGHT+IH3nTACWpA78HizfHb+QZrj8kkswkekwHjT/yU8q6sleBVZr4oVFwhVL7AXZx1gELCaRLokwg==
+X-Received: by 2002:a17:906:7f84:b0:a3e:b7b5:a64e with SMTP id f4-20020a1709067f8400b00a3eb7b5a64emr4693686ejr.20.1708526335019;
+        Wed, 21 Feb 2024 06:38:55 -0800 (PST)
+Received: from [127.0.1.1] ([188.24.162.93])
+        by smtp.gmail.com with ESMTPSA id wp12-20020a170907060c00b00a3eb953335esm2653970ejb.44.2024.02.21.06.38.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 06:38:54 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v2 0/4] arm64: dts: qcom: x1e80100: Add support for eUSB2
+ repeaters
+Date: Wed, 21 Feb 2024 16:38:30 +0200
+Message-Id: <20240221-x1e80100-dts-smb2360-v2-0-037d183cc021@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: netlink: Fix TDCO calculation using the old data
- bittiming
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
- Maxime Jayat <maxime.jayat@mobile-devices.fr>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <40579c18-63c0-43a4-8d4c-f3a6c1c0b417@munic.io>
- <CAMZ6Rq+10m=yQ9Cc9gZQegwD=6iCU=s1r78+ogJ4PV0f5_s+tQ@mail.gmail.com>
- <54afa5e8-fb5e-4d90-8897-8f3c5a684418@hartkopp.net>
- <20240221-garden-petted-789304a1b1a5-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20240221-garden-petted-789304a1b1a5-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOYK1mUC/22NQQ6CMBAAv2J6ds3uIkI8+Q/DoS0LNMHWtEgwh
+ L9biUePM8lkVpUkOknqelhVlNklF3wGPh6UHbTvBVybWTFyQYwEC0mNhAjtlCA9DBcXBLSV5bJ
+ jQV2pnBqdBEzU3g459q9xzPIZpXPL/ro3mQeXphDf+3qmr/1diP9fZgICy7Ux57YiLOU2Oq9jO
+ IXYq2bbtg+oHHutzgAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1807; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=q4atgorVyarvUtiSOp6Dkx/P5tSPZXkAjKk4CWmyCaw=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBl1grzV02Xl5xbRYiP7XMlIVQG91w9EaJLHjw6y
+ cgl4RmwfpKJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZdYK8wAKCRAbX0TJAJUV
+ Vo4qEACObTtQpjCuBVnsEVxDBLprIFYJpidJBKvGYjQNOJB2n0kayuY7VGu79F9J+HdgqW4/1Ku
+ nX4gjbXDOVsWE2xAqFwdaKFmuozvG2ZF/XOdlopuJTY4tTbnkgDVy2FCIZSPYS2HRt6Fthwr+R9
+ 7uup9bT8vidkG8U3N05uztYwz0kgai4wFbczRd3wXJ3zmMaaltgl2ASJP66O0tcaaWM4uc/TXh/
+ eJGfIszBj6cQTgvrl9HDIxFhFfV8ekFyUrZYpk8SMbI/G+thAjzxDdi3MejH9XKGNJhy0w9rciK
+ FqskZIYL6MCGlUtxCb6Raf9mxTFjbzINT+bOvwV0Ek4owazW2i0eEPYB+PpULtxOvpEdAssNnIf
+ BQS+TNzAOd7dysSuWfVMM03BASNcElDK2S1xnDPmsB7YkoWSYVR/W7HEQVen2nsIy5c0WuHigmk
+ lbj7zGwe+GaIAThSWeKJOA87IPRRvy0vYUSiUBCSRAZLtX3pijqpiUU1JhN37u1JjQlNpusJIQ4
+ I9L550o57YlrkumpjCGLmhN++aXyuwy418FQLaqjqZN41CoTH+lYXZrIvjMAEGL/37EQIhC8DNa
+ WCy+cjkwyeC6kHWt02cqUm2tid7GZ7dST5PHhTzNWlBO6N03IkXwro5imR0K2M2TUUSFtzgkJT9
+ j1CgZKsXDUMcJDQ==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-Hello Marc,
+The X1E80100 platform comes with a v7 SPMI arbiter, which means it
+implements two separate buses. The boards using this platform come with
+3 instances of SMB2360 PMIC which implement a eUSB2 repeater.
 
-On 21.02.24 15:24, Marc Kleine-Budde wrote:
-> On 21.02.2024 15:14:02, Oliver Hartkopp wrote:
->> I have an old PCAN USB adapter (Classical CAN) which uses the pcan_usb
->> driver and wanted to set a 50kbit/s bitrate:
->>
->> ip link set can0 up txqueuelen 500 type can bitrate 50000 sjw 4
->>
->> First it complained about the SJW having a higher value than some phase-seg
->> value which was 2.
->>
->> Error: sjw: 4 greater than phase-seg2: 2.
->>
->> I always thought the driver automatically adapts the SJW value to the
->> highest possible and SJW=4 could always be set. Did this change at a certain
->> point?
-> 
-> Yes, that changed with b5a3d0864ee7 ("can: bittiming: can_sjw_check():
-> check that SJW is not longer than either Phase Buffer Segment")
-> 
-> See discussion in https://lore.kernel.org/all/20220907103845.3929288-3-mkl@pengutronix.de/
+This patchset relies on the support added by this patchset:
+https://lore.kernel.org/all/20240221-spmi-multi-master-support-v5-0-3255ca413a0b@linaro.org/
 
-Ok, thanks.
+To: Andy Gross <agross@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 
->> Anyway, then I reduced the given SJW value and the ip command did not give
->> any error message.
->>
->> But finally there was not CAN traffic possible with my "always working
->> setup".
->>
->> I'm running 6.8.0-rc4-00433-g92a355464776 from Linus' tree.
->>
->> Reverting this patch fixed my issue.
-> 
-> But what has the tdco calculation to do with non CAN-FD controllers?
+Changes in v2:
+- Reworked the whole SPMI DT node layout
+- Added the SPMI DT node
+- Added patches for each board (QCP and CRD) that adds the repeater
+  nodes
+- Link to v1: https://lore.kernel.org/r/20231212-x1e80100-dts-smb2360-v1-1-c28bb4d7105e@linaro.org
 
-Hm, I was using a Debian 6.1 kernel in between, which worked.
+---
+Abel Vesa (4):
+      arm64: dts: qcom: x1e80100: Add SPMI support
+      arm64: dts: qcom: Add SMB2360 pmic dtsi
+      arm64: dts: qcom: x1e80100-crd: Add repeater nodes
+      arm64: dts: qcom: x1e80100-qcp: Add repeater nodes
 
-Then I booted my 6.8.0-rc4-00433-g92a355464776 again, reverted the patch 
-and loaded the changed can-dev module by hand - which then also worked.
-
-To double check now I was unloading the patched version and using the 
-can-dev from /lib/modules again, also works ¯\_(ツ)_/¯
-
-So, I'll have to make more investigations what really went wrong here.
-I also was astonished about such CAN FD dependency.
-
-Will come back with more info about my experienced issue.
-So far please drop my blame for this patch.
+ arch/arm64/boot/dts/qcom/smb2360.dtsi     | 51 +++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 22 +++++++++++++
+ arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 22 +++++++++++++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi    | 42 +++++++++++++++++++++++++
+ 4 files changed, 137 insertions(+)
+---
+base-commit: 4893c639cc3659cefaa675bf1e59f4e7571afb5c
+change-id: 20231201-x1e80100-dts-smb2360-0c7c25f2e0a7
 
 Best regards,
-Oliver
+-- 
+Abel Vesa <abel.vesa@linaro.org>
+
 
