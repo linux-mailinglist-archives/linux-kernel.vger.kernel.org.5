@@ -1,127 +1,163 @@
-Return-Path: <linux-kernel+bounces-75610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D068985EBEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:45:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161CF85EBF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60C68B24753
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:45:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480701C21D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CFC3F8C8;
-	Wed, 21 Feb 2024 22:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D5F55C3C;
+	Wed, 21 Feb 2024 22:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fdu06XWz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="Do/QualS"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98753C491
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D930C86632;
+	Wed, 21 Feb 2024 22:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708555507; cv=none; b=BzpkwINa0LY13P6CZnwC9YJJPj0IivL50x9qsMsUbAb79D4Ur/1J8RMgRMS3JrERYeFbtRlZVrQRE3a3spyfwFupb9+D/msIWvHGBaQQhRH/UyZmdeo8yJF65nKGtvUeo7j/hDxOa6mp5VEM2q37jP3xImOPxNsUh7E3KzKrsKg=
+	t=1708555520; cv=none; b=OWURP5KA7z06jYFHwg2O7RKMdqOt4CKRV4/HdRSlpKR2IdUgF3bt+9rBN1CltR0tsnMCwPDRrt9eYzmBSMNJQIZ8XVc2ExVuz/cmf5OVbzhpPaL778yAKOYU0j0QQ/KNTiMseTnHF+xpTGGkosYkq7GRyg0VSqSeJlQ6tMsxa2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708555507; c=relaxed/simple;
-	bh=N5qsqlaM6wIWKBrbuRB67nhnIYO7bZ0mzk6l+tLJOdY=;
+	s=arc-20240116; t=1708555520; c=relaxed/simple;
+	bh=fDkXZQyzvS8dAR3rkIWG/K/wRLGBKBMUb6eh57byNQ8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tqPU1xkJtBDi2pKLKkjMcROnFlnsLQ3plgiQfCPTj11xEoEIa6mxs2e5wJ7FMDhXziq4YP8s45V2naJBc5JjyIE/RjIY4AdpTwo0+A0RIUT+HzSITyOy9hRp8fkLk/uo9BKZPB5GCu6uzWdlXoRICnA/FlsVIR3Kf3ZfIAovarU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fdu06XWz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48461C433C7;
-	Wed, 21 Feb 2024 22:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708555506;
-	bh=N5qsqlaM6wIWKBrbuRB67nhnIYO7bZ0mzk6l+tLJOdY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Fdu06XWz4dMTMbGXS2rN56c+se4iGqzxyS45CO7VnTqJcYpMvPelGT7J7ghXB1Qx6
-	 GueVGgGpGmUTqxge5bEJzk7WdOloQble4z/n9EktLC7khJ/d7FUzdmJd2uxktiffsA
-	 0LcV1ZBCF1xQhGOt3aPL3e/NP4RD4T+S/Nm5D0hXJqxDEWUlJEjYTPxsU65mZY5R0t
-	 pQpI40S4uQx9UMMeWGZFORASLV5GnoLw+2fVAyvJp4yCdVXnBkaNd4+ad4DDRysACd
-	 lSwHGLWqZeNcbzdiDT5KZZgTcgO0gYk2HMx8GRSGeCh2/faxOIMmLHtU5hmYfFB9yZ
-	 lS2SD8LIUiYyA==
-Date: Wed, 21 Feb 2024 23:45:03 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Christian Loehle <christian.loehle@arm.com>
-Subject: Re: [PATCH v11 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZdZ87whmpul8xIBI@pavilion.home>
-References: <20240221090548.36600-1-anna-maria@linutronix.de>
- <20240221090548.36600-19-anna-maria@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hKVxwjTdGs4MOTuvM6cbyjRcIvmbp+BV94m5wIh+T2j4kqrJpyXfZOJWRvDyqcvo+uSEzHFxmInipkLMzb8B0aD2taoT5mRytZdefcDoz5PYINQ5MoFcKG6VDOxwwczawfoGBGiNoZpqr2X9JJBUJXIvDP/k8qBqyW6Lm/GCw2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=Do/QualS; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 192821C0080; Wed, 21 Feb 2024 23:45:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708555515;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s1SEjDExyUooD+Jplmcfeg3a+A+/P8S2geYCCDEDfDw=;
+	b=Do/QualS6TWwqfjCVIUtecQ7axmrxAqkVrtY+0y1OCoNY6quxfCKL58g5jKDmz+OE20bfi
+	bS9pOcfCewqt62b5yFrd6ESlhTSyeHL6AH3PECsvRPRo+HInsL0WOoFGZzu0lpGxc/q7K/
+	9qc7PY2zRl7gZHYbAlchwqw1wIX5P50=
+Date: Wed, 21 Feb 2024 23:45:14 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+	fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org,
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+	megi@xff.cz
+Subject: Re: [PATCH] dt-bindings: usb: typec: anx7688: start a binding
+ document
+Message-ID: <ZdZ8+vwoILO3pf0h@duo.ucw.cz>
+References: <ZcaCXYOf6o4VNneu@duo.ucw.cz>
+ <3a662ef2-1888-4f24-bebe-3ce32da9d277@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VEdryfHzoLY8OQfU"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240221090548.36600-19-anna-maria@linutronix.de>
+In-Reply-To: <3a662ef2-1888-4f24-bebe-3ce32da9d277@linaro.org>
 
-Le Wed, Feb 21, 2024 at 10:05:46AM +0100, Anna-Maria Behnsen a écrit :
-> Placing timers at enqueue time on a target CPU based on dubious heuristics
-> does not make any sense:
-> 
->  1) Most timer wheel timers are canceled or rearmed before they expire.
-> 
->  2) The heuristics to predict which CPU will be busy when the timer expires
->     are wrong by definition.
-> 
-> So placing the timers at enqueue wastes precious cycles.
-> 
-> The proper solution to this problem is to always queue the timers on the
-> local CPU and allow the non pinned timers to be pulled onto a busy CPU at
-> expiry time.
-> 
-> Therefore split the timer storage into local pinned and global timers:
-> Local pinned timers are always expired on the CPU on which they have been
-> queued. Global timers can be expired on any CPU.
-> 
-> As long as a CPU is busy it expires both local and global timers. When a
-> CPU goes idle it arms for the first expiring local timer. If the first
-> expiring pinned (local) timer is before the first expiring movable timer,
-> then no action is required because the CPU will wake up before the first
-> movable timer expires. If the first expiring movable timer is before the
-> first expiring pinned (local) timer, then this timer is queued into an idle
-> timerqueue and eventually expired by another active CPU.
-> 
-> To avoid global locking the timerqueues are implemented as a hierarchy. The
-> lowest level of the hierarchy holds the CPUs. The CPUs are associated to
-> groups of 8, which are separated per node. If more than one CPU group
-> exist, then a second level in the hierarchy collects the groups. Depending
-> on the size of the system more than 2 levels are required. Each group has a
-> "migrator" which checks the timerqueue during the tick for remote expirable
-> timers.
-> 
-> If the last CPU in a group goes idle it reports the first expiring event in
-> the group up to the next group(s) in the hierarchy. If the last CPU goes
-> idle it arms its timer for the first system wide expiring timer to ensure
-> that no timer event is missed.
-> 
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+--VEdryfHzoLY8OQfU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Though I must confess I only had a shallow look at group creation (init_group,
-get_group, connect_child_parent, setup_groups, add_cpu, and tmigr_init). But for
-the rest, I'm running out of bad scenarios. Time for the rest of the world to
-find them!
+Hi!
 
-Thanks for the hard work!
+> > +  reset-gpios:
+> > +    maxItems: 1
+>=20
+> blank line
+>=20
+> > +  avdd10-supply:
+> > +    description:
+> > +      1.0V power supply
+>=20
+> Keep description in one line and add a blank line. This code is not that
+> readable.
+>=20
+> > +  i2c-supply:
+> > +    description:
+> > +      Power supply
+>=20
+> Drop all useless descriptions (so : true)
+
+Ok, fixed, I hope I got it right.
+
+> > +  vbus-supply:
+> > +    description:
+> > +      Power supply
+> > +  vbus_in-supply:
+>=20
+> No underscores in property names.
+
+Ok.
+
+> > +  connector:
+> > +    type: object
+> > +    $ref: ../connector/usb-connector.yaml
+>=20
+> Full path, so /schemas/connector/......
+>=20
+> > +    unevaluatedProperties: false
+>=20
+> Drop
+
+> > +
+> > +    description:
+> > +      Properties for usb c connector.
+>=20
+> > +
+> > +    properties:
+> > +      compatible:
+> > +        const: usb-c-connector
+> > +
+> > +      power-role: true
+> > +
+> > +      data-role: true
+> > +
+> > +      try-power-role: true
+>=20
+> I don't understand why do you have here properties. Do you see any
+> binding like this?
+
+Well, it looks like I copied these mistakes from analogix,anx7411.yaml .
+
+> > +
+> > +    required:
+> > +      - compatible
+>=20
+> Drop, why is it needed?
+
+Again, copy from analogix,anx7411.yaml .
+
+Should I try to fix up analogix,anx7411.yaml , and submit that, first,
+or is it easier if you do that?
+
+Thanks and best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--VEdryfHzoLY8OQfU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdZ8+gAKCRAw5/Bqldv6
+8gr4AJ97KMZrugfihrFG/IvlUx3HrasLBACeOE+16JUA5PzpDbeRrZPUpXx/JiY=
+=Iun9
+-----END PGP SIGNATURE-----
+
+--VEdryfHzoLY8OQfU--
 
