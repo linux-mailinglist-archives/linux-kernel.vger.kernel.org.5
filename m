@@ -1,172 +1,216 @@
-Return-Path: <linux-kernel+bounces-74721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F12485D837
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:48:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2090385D83B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3564C2832CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:48:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A04111F22D44
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7596A8D6;
-	Wed, 21 Feb 2024 12:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E0E69946;
+	Wed, 21 Feb 2024 12:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ENwD+qif"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="OP952Y0K"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2020.outbound.protection.outlook.com [40.92.107.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D720E69E00
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708519618; cv=none; b=ee8uZuIUtXPNEfxV+qD+OwYn1ICRBTmyds5k0P3IAe7UaG3vsmfihwIPw7I4Cl4Wnu0qJOWuXDV/7d2I6BBAMgb2bQf6iLN2LjDWIWVgaQJRBUWh5Zk5cdywnR/B3zqeyHda6UFGqyOV1AS/LJNNqEJg2GNkLSLToUd9aRlGUv4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708519618; c=relaxed/simple;
-	bh=C+qHTE/kUwa5Ov25oiEYLHT4061re5xSbJ7Y0ykBMro=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=EElbVrSONFvOYlzwhNOLsmNFdbChuWNqTiC8wkDuvnh+vkLudr5Sh/xXNBHgHQvfeuFhSVxydCBUW/7Dzon1quLdFcoN5yPwGVUvZx8+1zZiB7YVViql3yOAXqmHVzSpghoV1rQjmTTPO9zVHNM+oLGyzx4Croobf4hyCEM5JYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ENwD+qif; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412730e5b95so7419475e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:46:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708519615; x=1709124415; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gkh71+m5Vihy0uM/MvTxrgi7TFtnMZn2RZ+Ics2kzLw=;
-        b=ENwD+qiftGyRKGK5rmPZy6tzQbZwF4aefE63b6cCCh5GZgLLlzKjfLZ03rPbzUDI05
-         Dzwf8tjX+60j0vJJgUAbimoJ03/UkJIlfWyhfpy4OB2eqGjE2B8jlYGIK/c+Y6WsDAMW
-         ie8slVGSCs9pkOc7x0eIX+T9Dg7BHBqrbKFpApyGcBS21Y7ELCuhslE22Fok+X4U/eci
-         bPNaXXwo0WxZpn+Z/X/oMt1OcUTIPFCNW6b1vg5v2UPLRdoYftHgy2KbATPYvZ6sXVCw
-         D2h/CgJOBa06JMM2SFKq6e5quh/IPLT0Nk2L8RCKeKpwR8HOeey4XgTFqAN6HQSqdctb
-         fPiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708519615; x=1709124415;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Gkh71+m5Vihy0uM/MvTxrgi7TFtnMZn2RZ+Ics2kzLw=;
-        b=t2tbDejQF43icOEfZdfXqC9UpEcF9horu/kwnYz2rgGMrvzbHkZQiRMIIYOfnWyQFV
-         LpLqgaggpfWv2W5iBzSU0ahK/vEEmXPvEZZJDA0U8KQMaxEOhISA8qeMdqYUyJWZZ9DX
-         nof4V5R4Wh7VnIUmM4ofbmKzIq0bjlXmAjhMopUvVVRgb5KdUBprR3T84oqa25FmPvzo
-         7FJTMXTtNcRbQ9nUHRhFfAujwiicU15DvQdkkPA04Qo4vOg4rse4l/f41Dd7fbjAAexd
-         KOfHqVqlbk3jGze5LyUuJvun/3pW9xrosahArEmwEZg0Xt5L5rZk8iKpdA4GPWsgB5P3
-         b+Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCUUUJ89s6Ia6Myv1l/AIRQ1s/BxsWfgVU8TAjF7NY48T04nddrvx+x086efgJ9FbZ2gAxAyVv17UNW/0/CV986JLi0NleHO1ig5ndSe
-X-Gm-Message-State: AOJu0Yw2ReyygKCEqxPvAbnPJKCr6CM9xpHZYHgjilW0JvufHutJWVIU
-	gPXEr8pEajpcMf49dr56Az+J7zlcmptvfCuUZegHSUzrJFe5bTh6rSkUsJeOugE=
-X-Google-Smtp-Source: AGHT+IHcHp5sk7A3bj3G965spGGsd2AaYtv85k/ipjfaVQGAR0F1tHbg3IfPgWstGGpYwAIlKk3w4Q==
-X-Received: by 2002:a05:600c:314b:b0:412:71fb:7732 with SMTP id h11-20020a05600c314b00b0041271fb7732mr2262112wmo.38.1708519615146;
-        Wed, 21 Feb 2024 04:46:55 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:83fc:439c:6f36:ce5c? ([2a01:e0a:982:cbb0:83fc:439c:6f36:ce5c])
-        by smtp.gmail.com with ESMTPSA id r17-20020a05600c459100b004124907f43fsm17468735wmo.12.2024.02.21.04.46.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 04:46:54 -0800 (PST)
-Message-ID: <e3425067-5e55-4f32-8183-c79617c17d3d@linaro.org>
-Date: Wed, 21 Feb 2024 13:46:54 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B068F3EA7A;
+	Wed, 21 Feb 2024 12:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708519726; cv=fail; b=Rxt43KH9ThfUEJZp0MW4PQI5jGh8zrZh2o2tK2ucxRCt0qdBZXwJW9EuafSR7Y8vGN65drP1mYP+5C9VQ4/ZOhsEMKYJep21b/PrhxkMD30E9NOWRqXYX1a69iOufAOigednkBmv4VSWZVz78K4TLJ11KFym8+bDSozXuc8EHXI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708519726; c=relaxed/simple;
+	bh=AoK46/r6Z7XpY4RRiIR3w1ALFi1kKs8ofDQT9gnYjAA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=N+lx6izT0JASt41+5DV5ucjE6efGkVS9JF1BPMgANeReolkPaD6I3fnXthHK6681bs4RZW35+pMB+zu1Ht94mbHZZzNrXlHZWv/stgAtlm4EukUx1yMJ6wlRc+rmVKwp95VdJbORP5mz4R9saewG3wJ2XHIgMLnRmRSfLGXan/c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=OP952Y0K; arc=fail smtp.client-ip=40.92.107.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HU6TW+LAmd9UZ9f9U9MAztiKDeWVn3ClYbcyibEDXUzH4eszkTdbj27T3N1BseCIx60gFxe2vmOUFQ6nbDAuPC9N37v+W+4yxRTzwzqnytyTX7Ivuq5sdEoxPLskts5RYoWYbwDOfPtkLPimZKKKwGqKOm3lzTJsofGBfjRYUvgnRCGyoYLvkQ4HXAjEMyXXrUG02eauSB08EW6UoMuh9GDhvh66hyL2SPy9J43XwRlUYZg7oK7mWboWDj7T4aI9TBzfl94KNSwiS4GMq8ga2ZQXhyPPclHexPyd2GFEj/F60cT38VtanjqiNBaquMbDe/y3ODTzebqwe6KlYSlrLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rBpQjQJ7mbmLeoVKRu3vitTuzjyyAuqnmfOXzu7vkYQ=;
+ b=fupmacuqnlKQsANY6FtmLdVNjbGab7jKiiW+9SZABUsohGvIxhgrMc14oSuhZxZunmCMXGrJT1gYY4j75vL3wB85AlfDWHn0ew7D8zYDKiw/jTHPfAC/629OdEAkGXm7jhxU9c269tHpdAfmKvpIVaOg2ezKnufPaB052caWi8ibrKqJH7LsCwcXYo5PLmKvDYQRCVTdUbe6RTMbolr7kj5hvhDYsXumbvLsKcsdRdBEccZumEN6rZHT2MgaMqb35SfN9aWjpAAAQTN+SJcW98s/trRsaWcMfgfcXQe+rPkKeMWr7jp0LU9dDcXS0Dna/b/zkxReDUxlWfrnI74g2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rBpQjQJ7mbmLeoVKRu3vitTuzjyyAuqnmfOXzu7vkYQ=;
+ b=OP952Y0KdtK7omOwLW0fIy4vJ3ZLqpO8KxMhlCLpFW90pMxfXCqux9g1fMB8BsJzQp61zCd9AsSLSPUAY+fzjN1K0GgqkD2V1hrKF+K2c9QIPCDEhzaG+QfCji82+fLK5pAH6qPNgngHjf3mQ72lEzMsrm6gG5Lk/6XRKwC6D4+NBZoghJdfxg8lfWeVrCGd9nQ/zuM7i7xwdVMxa71YT59MezTTupOZ6jlXlRN7LDbw6FjyENWtQH6ewbtV8JiGuOHhCL8H1AvzlPQjz7kBOW6NWDJCDGPUhlv+7hTUVL9/o1VVEvB67sceZRKY6kNWSxV9Ubdkf3aANRDbsEUMLw==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by KL1PR06MB7317.apcprd06.prod.outlook.com (2603:1096:820:145::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.34; Wed, 21 Feb
+ 2024 12:48:39 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Wed, 21 Feb 2024
+ 12:48:39 +0000
+Message-ID:
+ <SEZPR06MB695941B73156497A7E73CE8596572@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Wed, 21 Feb 2024 20:48:25 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: host: replace 1st argument to struct device * for
+ mmc_of_parse_clk_phase()
+Content-Language: en-US
+To: Ulf Hansson <ulf.hansson@linaro.org>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Adrian Hunter <adrian.hunter@intel.com>, Joel Stanley <joel@jms.id.au>
+Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240215-mmc_phase-v1-1-f27644ee13e4@outlook.com>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <20240215-mmc_phase-v1-1-f27644ee13e4@outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [R8K6OdDz7NE1mlww1KdSEuL60F5ECXVLELv/8TOcc7YXvKLHYv9i7D5ffRLJLBMJ]
+X-ClientProxiedBy: TY2PR02CA0031.apcprd02.prod.outlook.com
+ (2603:1096:404:a6::19) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <e3aee910-974e-4fb9-8fc3-152b85130c6b@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 05/21] arm64: dts: qcom: sm8450: Add PCIe bridge node
-Content-Language: en-US, fr
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240221-pcie-qcom-bridge-dts-v1-0-6c6df0f9450d@linaro.org>
- <20240221-pcie-qcom-bridge-dts-v1-5-6c6df0f9450d@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240221-pcie-qcom-bridge-dts-v1-5-6c6df0f9450d@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|KL1PR06MB7317:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44957021-cbe1-4f94-32eb-08dc32db6d12
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	0dx19bR8VpTslOiJ+zoneSWR/chrWb2Xg4EmdTqg8K8agDG5YxmEoIyYHst9PniAeIZev6mxUaxsJpmeCVrObSaT90ivA1wmx9dWfaeCgBHI9kyjiyD3gNiaujbM8Ol4Uq+wToNCooIdf0KSxysMU8VcSeJlG30eMHKSQZqo9aK1xOYxkf6UP3Gut8cH1TvmT4sA0EpIJqx6nk67pKxflc4E2G0W7gkSAjMiRZatnUr7IH2GrPzpU2kgAkM4LzFD2eaTQnvaNyQebKLesFr5XSAzg32HDbZtQuZ/2QALbu0FY9+7Uk2ldp+ALS4yBzWZfF/EZRWhR1fI0h8AkXyOdMTlvRu1o8KIQrDFqJWHGKlNqDsltS5U2HSEnU7EnjXVPbMxCLIm30TZJX68SuPOwHLTpZRqjIeKgNRY6VeAYFnuqP7X3x/wLn6sq5GXqquo8OR56VjPB/b0UISK4CAYmrn3UHHe3FTDTU9IP67bHFWpn4xVi3BNgg7R1VpO8C+EP+XuFnh7Nq4Di760dtTcylOJbM805wbpSHyDrnZCkQsXHf5htr7d+NZUoru9l75UtiA9Upi9RFgcEcPPn6izQ1Uq4/gvyLg8F/osEQ8Msho=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?clV0WWI3RUJFbnlPTVQySG81R1UzbFM3OVhqOGg5d2dXVVN3QTUwSVFaR2hD?=
+ =?utf-8?B?c29sZXkzQ2RNeEpjNnFUMXBNYVkrQzFvbmV6ZWRlbmZzdkNzV2F0UHZJUUY1?=
+ =?utf-8?B?dFZ6M0tzQzVxNzVpbWhOcytUcU9tR016ZTZJS05xaW9NTkhtcU9KUFdsY1p1?=
+ =?utf-8?B?a2NlWFEyZGl1aEEvdXlYMW51YnNUeGZ4NlQwT3FXZ2ZDY2lsYk1wR1RoMVBa?=
+ =?utf-8?B?K2tXVEJ3MHdpc21VOWJ6OEhBR3FpVzhvWTJPRC9LSEF1LzJnQmJIUlVUOHpE?=
+ =?utf-8?B?bEhGcUsraXptZXh6eHZXRmpubWdFK2trSjU0OEZla3psQnlLeTdnSUpGUldN?=
+ =?utf-8?B?elJSaitQWnQ1NkR4d3BXSFNweTVPNHJrUWFuTEJNSWQ2dm0vajFOYjJqQ2NX?=
+ =?utf-8?B?eGYzY3dtSlZiOHhhc3JIYnpYSlNOMnlnanpyc0ppS29jdHo1NVdsNllUR3pq?=
+ =?utf-8?B?SjNIWUlQeE1WbjlUanZ1SEhMczVvbFJLdDBhb1ZKcVJ2cWJmQ2JKRjdLQlRw?=
+ =?utf-8?B?b2YrOFkrOWtBaWsvOE12SUFqL0ZGaTMvUy9PbjZ6NmJCd3hlYlhHTHVUL2RQ?=
+ =?utf-8?B?OG9HY1dOL1hkN0RLVVQ5QUVjdW5aQjd4SVJHdDRxNWIwdVYvYVFKNVFNeGRq?=
+ =?utf-8?B?bERRZi9wS0s4N3VBc2k5T21tdzIxeVRBM29VWDA3b0VNdTlBdzE5QSswU3Fr?=
+ =?utf-8?B?L0tYNXY3TFpKcGFUSVZSY0htT1RXVnF2c1U4Zi92SVcvTlFqaE0xTHFCZkJU?=
+ =?utf-8?B?a1Z1emxneThLUEVmL3pZWk8zQVJrQjd4bWRVUTBpdlFMV3dTQUQyNlZTT1cy?=
+ =?utf-8?B?RW01TGVYL3NDV1JCM0ZBUkhvRkFrS2YxVVFEa1EyZzVyVXQyc1pBVys4VXJ0?=
+ =?utf-8?B?YnQ5dGJRWkQzRTZDR2hGcnRFQ3BGTUVIbFNMQytNMjZIaWNSbUl0ZGpiWXFJ?=
+ =?utf-8?B?NFZxM3JMQTVOZTJvbHp4My95eWlxM1N1VFZCc2I4dE9tcUp0MFVyTnZ3YWdV?=
+ =?utf-8?B?dUhRYVRWUXRpOXowcW4wbVJEY1Z6U2gzTnR0T3RmSTBWUTQ4c09NMUdTU21P?=
+ =?utf-8?B?Z0NGM0J2WVNUL0RhS3JoeFFrT2llcWgxSENGaFlCN243RlhZZjFkYXpTOGd0?=
+ =?utf-8?B?T0o5dUJvaWFKVmcya0xpUWNjUjJLRlF3NUpLcE9BRzhML1dhNjhpd0lJWm9M?=
+ =?utf-8?B?WjNDVm8yWHo1YTBLK0JOaDN3SmYxYWhXdzR2OFo4b2NnUU92emJmT0UraTZZ?=
+ =?utf-8?B?MmZYMmdYQTZDellNeklqYllGeEtEZFRSUUlvUlg2WWxNMVdRR1Jpd2RHbita?=
+ =?utf-8?B?eEJ4RjBUVE1Bd0w4d3l3ZmdOTUF4ZEtWcmR0b0kySUZadi82M0NiSUFTOWxw?=
+ =?utf-8?B?dnNQcG9XTzhNTGNqSnkyY2FyWStYSVN3eFhFMTYydlRmUERFSXRlM3JnMGlW?=
+ =?utf-8?B?RGZIT0FqRVBuK25sNHZ5TFMwWFp6S0NTQTAzMWtqSGtCMHhSL3JsTzZDMWdE?=
+ =?utf-8?B?WTVYRVBzb2tkMmw1SnZEMnlkWFBybmJMSFNSaWx3eVJiSU5qR0IvdlBvd2p4?=
+ =?utf-8?B?dTQvWitUUTBTUWQ3ejFXLzNkaGxyc1dLSFlGNWsxMUxOL243VGNiQXRqbkd1?=
+ =?utf-8?B?MU4wK2w2aEc5a0MxeG5jbVA3Y0MxS1pRRzJmcWxjVG9qV3RFVERFVDhWSjVS?=
+ =?utf-8?B?czJjTm9wYktaQ2hwNzFuRE9BdWR1QS9lTzRuM0tBbmQrMDRHbUIzZS84ZFZv?=
+ =?utf-8?Q?XAa2EHIdDMy+96rbUjqIk7KkKxTfpk9GYS+kjgf?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44957021-cbe1-4f94-32eb-08dc32db6d12
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 12:48:39.0243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB7317
 
-On 21/02/2024 04:41, Manivannan Sadhasivam wrote:
-> On Qcom SoCs, the PCIe host bridge is connected to a single PCIe bridge
-> for each controller instance. Hence, add a node to represent the bridge.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On 2/15/2024 7:03 PM, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+>
+> Parsing dt usaully happens very early, sometimes even bofore struct
+> mmc_host is allocated (e.g. dw_mci_probe() and dw_mci_parse_dt() in
+> dw_mmc.c). Looking at the source of mmc_of_parse_clk_phase(), it's
+> actually not mandatory to have a initialized mmc_host first, instead we
+> can pass struct device * to it directly.
+>
+> Also fix the only current user (sdhci-of-aspeed.c).
+>
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 > ---
->   arch/arm64/boot/dts/qcom/sm8450.dtsi | 20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> index 01e4dfc4babd..e874cc4f8e6f 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> @@ -1824,6 +1824,16 @@ pcie0: pcie@1c00000 {
->   			pinctrl-0 = <&pcie0_default_state>;
+>   drivers/mmc/core/host.c            | 4 +---
+>   drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
+>   include/linux/mmc/host.h           | 2 +-
+>   3 files changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> index cf396e8f34e9..8b2844ac5dc5 100644
+> --- a/drivers/mmc/core/host.c
+> +++ b/drivers/mmc/core/host.c
+> @@ -234,10 +234,8 @@ static void mmc_of_parse_timing_phase(struct device *dev, const char *prop,
+>   }
 >   
->   			status = "disabled";
-> +
-> +			pcie@0 {
-> +				device_type = "pci";
-> +				reg = <0x0 0x0 0x0 0x0 0x0>;
-> +				bus-range = <0x01 0xff>;
-> +
-> +				#address-cells = <3>;
-> +				#size-cells = <2>;
-> +				ranges;
-> +			};
->   		};
+>   void
+> -mmc_of_parse_clk_phase(struct mmc_host *host, struct mmc_clk_phase_map *map)
+> +mmc_of_parse_clk_phase(struct device *dev, struct mmc_clk_phase_map *map)
+>   {
+> -	struct device *dev = host->parent;
+> -
+>   	mmc_of_parse_timing_phase(dev, "clk-phase-legacy",
+>   				  &map->phase[MMC_TIMING_LEGACY]);
+>   	mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs",
+> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+> index 42d54532cabe..430c1f90037b 100644
+> --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> @@ -435,7 +435,7 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
+>   		goto err_sdhci_add;
 >   
->   		pcie0_phy: phy@1c06000 {
-> @@ -1931,6 +1941,16 @@ pcie1: pcie@1c08000 {
->   			pinctrl-0 = <&pcie1_default_state>;
+>   	if (dev->phase_desc)
+> -		mmc_of_parse_clk_phase(host->mmc, &dev->phase_map);
+> +		mmc_of_parse_clk_phase(&pdev->dev, &dev->phase_map);
 >   
->   			status = "disabled";
-> +
-> +			pcie@0 {
-> +				device_type = "pci";
-> +				reg = <0x0 0x0 0x0 0x0 0x0>;
-> +				bus-range = <0x01 0xff>;
-> +
-> +				#address-cells = <3>;
-> +				#size-cells = <2>;
-> +				ranges;
-> +			};
->   		};
->   
->   		pcie1_phy: phy@1c0e000 {
-> 
+>   	ret = sdhci_add_host(host);
+>   	if (ret)
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 2f445c651742..5894bf912f7b 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -539,7 +539,7 @@ struct mmc_host *devm_mmc_alloc_host(struct device *dev, int extra);
+>   int mmc_add_host(struct mmc_host *);
+>   void mmc_remove_host(struct mmc_host *);
+>   void mmc_free_host(struct mmc_host *);
+> -void mmc_of_parse_clk_phase(struct mmc_host *host,
+> +void mmc_of_parse_clk_phase(struct device *dev,
+>   			    struct mmc_clk_phase_map *map);
+>   int mmc_of_parse(struct mmc_host *host);
+>   int mmc_of_parse_voltage(struct mmc_host *host, u32 *mask);
+>
+> ---
+> base-commit: 9d64bf433c53cab2f48a3fff7a1f2a696bc5229a
+> change-id: 20240215-mmc_phase-26e85511285d
+>
+> Best regards,
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+
+Dear maintainers, this patch has been absorbed by the patchset here:
+
+https://lore.kernel.org/all/20240221-b4-mmc-hi3798mv200-v6-1-bc41bf6a9769@outlook.com/
+
+
+So do not apply this patch directly anymore.
+
+-- 
+Regards,
+Yang Xiwen
+
 
