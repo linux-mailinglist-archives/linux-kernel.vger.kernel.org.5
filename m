@@ -1,225 +1,221 @@
-Return-Path: <linux-kernel+bounces-74248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C91585D193
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:38:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A60485D199
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20B0E286659
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:38:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997051C22A8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF9C3B193;
-	Wed, 21 Feb 2024 07:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01743B1B7;
+	Wed, 21 Feb 2024 07:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="XYc+SGek"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2097.outbound.protection.outlook.com [40.107.9.97])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K2AyCiuW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8DF273F9;
-	Wed, 21 Feb 2024 07:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.97
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708501118; cv=fail; b=l1HqZoEKZLjBhxvdJIagx4JuqCLshBCIovgqu+DeezOwbj7r1Of2g/xYTTXyLpgmXxEntoxfmGQlovN2vU6pVyROjYqJZlS2L1E3GJb/eo8bVzxIGJUXxgRY+t129PlQ1/lyb/il8HGi2nJfEJ4ZjxsWj7K1LlKW/wE1ZZmwBN4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708501118; c=relaxed/simple;
-	bh=MXZLuJtNgTm52IXo2S8naIieT83ZW1InPsP2+L/39lY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=j6eykB7ST6AbYLo4+NZkOvwCro/hSQzgsOTFt053wR7VfZV0ImCpcSniF9hwoIJNpMiGwsR+3nY4LDS4jamkNf5EPw1WXWv3kz0uJFQHQhRfKok2VDlx1422SBmktepVNuoa423xjwr9137yylh9ZcG/D4JGSsiud/oEgO1FTK0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=XYc+SGek; arc=fail smtp.client-ip=40.107.9.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m0HWueNXSvinZgZ6KPRNtraBkLlCJ5UMQVYYnxqL89EOM0Bk+vlePeDmIwQPMedg7YyzlgjKtitov8q23Q125aUTz27ZVGtVpaFFEF+6uJHNPZUD9N8bCIM8tmCZJlJEU0Ih5VIyDv0R4OpzxZERq3j8vb4JI91UUi29+XHAdxn0weGPZACq0zCktUZkMZCzU8hwUrfYVqkg4QW3sZ0RScBWg16w0xKJN/rhnvDaW4jgszZBSW/1rsU8dMa2HxAnHDVFUWayKn2dJquMoELTMIWl+SPWTLEEfqyjbFpwdSo712qEzrWmcZ21IiWc2NffN8LPHeBVtHSgjN/cidX+pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MXZLuJtNgTm52IXo2S8naIieT83ZW1InPsP2+L/39lY=;
- b=ZQAW/FqBWABgMsS4pxIYtl67jg0DLJu+A2hRy2jFilApmvVcExnsyEgM5toCGajS3Eu2GRFeoE2WenciRkVkqFb3PD7Ftmr2vjUancEl+d0KiQS6t1gfvOsgEe4MWRSvOhteEuT7k1zqvAOli5s+AWx4Y32aZZV3BXz02NMEmU0/zRmdxOz+XCXXvmplpYLSdYtM1t6uJ2KyE6psEePuCn6GT4XVdw3LjszY4TSc34XEPjbC5kX0ZuV7pyo3fyS0L+tWi6abGwW6ZEVN3tWP96idtH6I+brazF5OldWm2iiIVBFitAbEED0RK4ad3yxC7xRtcrZ2aophIxjFLhiphg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MXZLuJtNgTm52IXo2S8naIieT83ZW1InPsP2+L/39lY=;
- b=XYc+SGekOEFzziIvcH4RvN4vt62U/MqVp1rDN0m07StgyDOzjIWRgru4RqPTczeEESPAZ3OV77omZVCp/Sqoq32N+Npw5NXa8oNPGR2QJk6EPjHKcNJPMD3g+5KTfVfJa+PQ2CXKIdtUsTXOdqXSZ0EtrSlT7QGYzcmSCNg+BVgFqsZiWLkKktwTFSq477lIe3mQp9FD/9V8+O9ynOSSPZvI8w9buSpja262bsBxwgFCdRvLKCK/yF0V902DUhjOp+U/Vejp7R8oyH7n5ZPm57/ffXe3PdyMrNKgDxRkrqm6wDUhUqjLGj+dVY7qm7QO0sxBJPOphjGpD3+aJCTuIg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB3660.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:162::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Wed, 21 Feb
- 2024 07:38:32 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::64a9:9a73:652c:1589]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::64a9:9a73:652c:1589%7]) with mapi id 15.20.7292.036; Wed, 21 Feb 2024
- 07:38:32 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Christoph Hellwig <hch@infradead.org>, Maxwell Bland <mbland@motorola.com>
-CC: "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>, "agordeev@linux.ibm.com"
-	<agordeev@linux.ibm.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-	"andrii@kernel.org" <andrii@kernel.org>, "aneesh.kumar@kernel.org"
-	<aneesh.kumar@kernel.org>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"ardb@kernel.org" <ardb@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
-	"ast@kernel.org" <ast@kernel.org>, "borntraeger@linux.ibm.com"
-	<borntraeger@linux.ibm.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>, "catalin.marinas@arm.com"
-	<catalin.marinas@arm.com>, "cl@linux.com" <cl@linux.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "david@redhat.com" <david@redhat.com>,
-	"dennis@kernel.org" <dennis@kernel.org>, "dvyukov@google.com"
-	<dvyukov@google.com>, "glider@google.com" <glider@google.com>,
-	"gor@linux.ibm.com" <gor@linux.ibm.com>, "guoren@kernel.org"
-	<guoren@kernel.org>, "haoluo@google.com" <haoluo@google.com>,
-	"hca@linux.ibm.com" <hca@linux.ibm.com>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "jolsa@kernel.org" <jolsa@kernel.org>,
-	"kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, "linux@armlinux.org.uk"
-	<linux@armlinux.org.uk>, "linux-efi@vger.kernel.org"
-	<linux-efi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"lstoakes@gmail.com" <lstoakes@gmail.com>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"meted@linux.ibm.com" <meted@linux.ibm.com>, "michael.christie@oracle.com"
-	<michael.christie@oracle.com>, "mjguzik@gmail.com" <mjguzik@gmail.com>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "mst@redhat.com" <mst@redhat.com>,
-	"muchun.song@linux.dev" <muchun.song@linux.dev>, "naveen.n.rao@linux.ibm.com"
-	<naveen.n.rao@linux.ibm.com>, "npiggin@gmail.com" <npiggin@gmail.com>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>, "paul.walmsley@sifive.com"
-	<paul.walmsley@sifive.com>, "quic_nprakash@quicinc.com"
-	<quic_nprakash@quicinc.com>, "quic_pkondeti@quicinc.com"
-	<quic_pkondeti@quicinc.com>, "rick.p.edgecombe@intel.com"
-	<rick.p.edgecombe@intel.com>, "ryabinin.a.a@gmail.com"
-	<ryabinin.a.a@gmail.com>, "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-	"samitolvanen@google.com" <samitolvanen@google.com>, "sdf@google.com"
-	<sdf@google.com>, "song@kernel.org" <song@kernel.org>, "surenb@google.com"
-	<surenb@google.com>, "svens@linux.ibm.com" <svens@linux.ibm.com>,
-	"tj@kernel.org" <tj@kernel.org>, "urezki@gmail.com" <urezki@gmail.com>,
-	"vincenzo.frascino@arm.com" <vincenzo.frascino@arm.com>, "will@kernel.org"
-	<will@kernel.org>, "wuqiang.matt@bytedance.com" <wuqiang.matt@bytedance.com>,
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, "zlim.lnx@gmail.com"
-	<zlim.lnx@gmail.com>, "awheeler@motorola.com" <awheeler@motorola.com>
-Subject: Re: [PATCH 1/4] mm/vmalloc: allow arch-specific vmalloc_node
- overrides
-Thread-Topic: [PATCH 1/4] mm/vmalloc: allow arch-specific vmalloc_node
- overrides
-Thread-Index: AQHaZDwS6FkPILIvP0qdTgNTWVgWnbEUSTcAgAAgP4A=
-Date: Wed, 21 Feb 2024 07:38:32 +0000
-Message-ID: <e508c3e0-8644-40f1-aee2-90625237b01c@csgroup.eu>
-References: <20240220203256.31153-1-mbland@motorola.com>
- <20240220203256.31153-2-mbland@motorola.com> <ZdWNalbmABYDuFHE@infradead.org>
-In-Reply-To: <ZdWNalbmABYDuFHE@infradead.org>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3660:EE_
-x-ms-office365-filtering-correlation-id: 0ad90097-84ff-4286-924b-08dc32b01ad2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- /ye+NiC8jyBUKD38/Q5eOx6zLGvyGGkiJNjR7VDR2ZVxFydv5FebhevuJCUBTHfgZ8XjblfnGOa7I6+9CrT5/0S7XqYi0GdXF5BRGgjPUXxg0KpLLfDjmrRaxZO3ystievjwyF3wkCrxjevjA8SM5lY4V1IMbQlKxWJoT9owF5LBDXPuQ4B+47GtqYoX6HdGS2SqFEBThQ8KGKrUpKpJf2DTeAqGaj0pzTLjVbkKRmNgkaF2wi+lAeZq+bU5Csn0+YGc5J7j30rfQYbyhGu2/DsXQYMl9twDp/5mT/41TzYMKqINaF4oIdz3pi7MbEtJxRgVZNL7VsivR7s4LYV0pPVqv//+h6Y6zjnUwXxONLc1p2rSel4UtCtBnA+9RvZWZUVKZjDQo+2gT9f6Ib5ztPfhAVg4oUb6Xr9+9cmdx+eguV6ckIJdyDfcIXfU/H10GdN9p3JuU+tRPOd2fkPzp2cIYdR2t9a/Re6P7Jx/VimI0HQnqsuXFtsVuwNAxhYkThPQxSIEDGNIOpKmatoSMUPpb8CjVyZ9dmFamS6vixPBrwZmyXSGKqW+4sZQdUzNGLbPLtoVfJi8612XSuPawBiE90AfkQfiKewcWWwwgT1n1fQkjm3EEnxdYs8hqqO5
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?NU9pRFE2d1pab0hMa0c0b0dqeU1vNFQwbGgyY2w0ekFFYUVONHNzNmw1TWlM?=
- =?utf-8?B?MDB3WDlZR0pqUEdueWlvN1BBY1Z2bjhTeGpIQlM2c0pmV1AwekJ0V1BBRkFv?=
- =?utf-8?B?ZjdaSDlNVHoycHVYTFBFYi9lZmxhSE1hRjVjVFJSdHdGZ2RXL1U5L3FxS2FU?=
- =?utf-8?B?WUpOM1VNUGF5VmhYRUovK1REeTBpSis0MS9vOEdTWG0rendBcUNBeDRiYVhN?=
- =?utf-8?B?Sld5Q3Iva2g1M2tIVmpQYitVcFQvSHJiYVp1OE1iU1Bja2ZrbkRLNXpESlJj?=
- =?utf-8?B?REdxMXJEaUpIRzRDN1hpazBxbDFiTUt6Z1BqYm9yRmVoQzFLN1B3QWo4dUJy?=
- =?utf-8?B?SksvaWdyTXJpY3lKeldmZUZoNnNXUGIwQ0VsZlBnZ0Y5VEViNDhjMDllN2x5?=
- =?utf-8?B?YXR2SmZQcXFDbUFYSWRjUUF6aS9yOTZSK2tBWWdhV0NpbHV2Uit6YlVsS1NH?=
- =?utf-8?B?bld2VVdWdms0YWFUSDlsUE1GL1QrTmUvaTNTR3puN1J4SmdENnIvRnRib05B?=
- =?utf-8?B?eEtCRUZGTE9FUnJKblFsYjF4czFKZE1OR0JXd2t4N2xyQ0hpOUFsR0k4ZWpO?=
- =?utf-8?B?NzlhYngyL3cyWTdVdlpqdUI2bkZNUklwTy9tdmd3VTJvYUpIWXN3TStQV00z?=
- =?utf-8?B?TDFMT2xabjloVlhUbFRUTzlDRlcwUHhJamJpRjBuUFlNVkVUVTlOQTR4VmR2?=
- =?utf-8?B?R0prM0x4U3o2VVNpM2x3aTBSSEsxd1pwbGpjSGozQmJjYkg1akRTakhFM3JQ?=
- =?utf-8?B?KzhFeDFjREExM2l6dlBOQ1ByUHhqQmJaQVRqY1JCL2pnNVhlWjlKV2VIMXZ5?=
- =?utf-8?B?a3lrS2xuNlFERGJDUm1XREQ2cGpWekFtUHhhSXI1MDh3d08xeWZHSHE1ZXgw?=
- =?utf-8?B?eUM5RkNKNExPblBiOFllaklzZlg1RUZqSmZ1UjRwY1RvMVA3dm9Benh0MGhE?=
- =?utf-8?B?NVpIY3ZDVXBmVzdMNzBFU3BRai9TWnd1RXJFTEFkNmpYNGFnRlJPc2FMY3cx?=
- =?utf-8?B?a2w5SmVuKzV5Z3NURGNXekJvZ1dEdTVPdFpaTnVJd0txRU5ISkJLYy9aVmZI?=
- =?utf-8?B?M0VqK2RaRXhZYXk0aU9kVGJCWWtuUnhrMTl3VlBQVndWQmpkbXRUNjZoYW1k?=
- =?utf-8?B?VWxFc3Q2Z0hoTDRndzBTeFQ4eklzbmdkdjk0U25PUC84cU1HTDFrZVFLMWEz?=
- =?utf-8?B?UVhiZHd6OEZYaldmMTZkd1lCK21IZDVTMEVkTFloV2RkSENFZmViR1dDUVdY?=
- =?utf-8?B?TGJUaFlJRWllSjdsc1NUUFM1VnNvcHhDQXlWako5aFFiVElRRmk1cTJ1M1h6?=
- =?utf-8?B?VDJCb04xQlhGOFRUVWh3M1VZeFhZdVFtNytIeXVFMEp3bERMbFlPSmorTFlm?=
- =?utf-8?B?NHFKaHJ3aTFiVlh2QVBPTHVCV240Qjg5c0w4cTVWZ2lEQWxpdW81TU1HZGZR?=
- =?utf-8?B?Sk5oUmNsYXA1dWs3ZEcwdytmekpJSE55NThDc2xGUVBsYTRiWWlWUWVORHNS?=
- =?utf-8?B?ajJCdS9aY2xoaXFPMGFBU2NMOUNTWUc0NGdueDBqSFRXcFN6bkZ4ZHNabUVZ?=
- =?utf-8?B?MFBaQzRyaU5QZHdpTHdMdEtYL09kOFhUcGFoZ1VHM3pYNHg0RVBOZW1seVZB?=
- =?utf-8?B?Zk16V090WkptVFJJMFJiWk1oRndGWVNOM1hIMjQ5Vm9xakliaUI4OEV4TnE0?=
- =?utf-8?B?RHUyZWlDMzErRnlhNzVvQVIxU3R1eFlQN2Q4YndTNW9rR05BdUh6cVhNek8w?=
- =?utf-8?B?c0lSR0xHWURNcnRTYm1CVHdjQTFid1BSa3NvYXBEbUlwVFVISCsyUGJRZHpL?=
- =?utf-8?B?anp2SjRQYXpvZSthL1NUaUFYTXFaTkNIOGhPT1RjeDJCbG9Rd2hlTWpuRWxt?=
- =?utf-8?B?MEZuUHk2KzNQV25LZGpKdVdDdGYxcDRNUHFVZE9sYVNwNXo4YW9acVFSMzNV?=
- =?utf-8?B?SW5hemdycU9mUWZTVytsYXgxSk41MVhQeXlvM0VKdTNKeTMvM3I5QjJIaFli?=
- =?utf-8?B?ZGxDUUM4QWxkMURPRXdxWmNTUzZ6Yjh5eElKcXZHc0dQRjZVWEhFTDVIeVh6?=
- =?utf-8?B?NnR6ME5ZREpJbHVHbnFUZ05oSDF5QUVCUUtEaDBJUGFnTHBEMmRJUzJFNWhZ?=
- =?utf-8?Q?P8FL5k9l3JMP9mcURlctrXEg1?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6302266E3F2ADF4B9219C990578BC0A5@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274303AC34
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708501335; cv=none; b=XyqltkGAvX8kYPUZC3QsA0UxajhZXEb2RsM3EZ49Etn7lwkLLY2hFmsNQLYk9c2RqB/BxnBmcDjXMAvRnxi4/DOHZLFky8dwu7rDQpH2m/WweI7F4PCFyvDKtTUFS8lHcve9oTubGhu/ZuC2d2R8vuF5YudPmhVnq0pqzaTLxtA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708501335; c=relaxed/simple;
+	bh=K2XmoBnc0oSqRMZca+v0xBottXSpJOmficAexsCc8c0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NdK9mdQM/h2dYPuPm8HDedFalrnXIZden4rlhzFhOeqx/r9JYTm3mVFqjrTuuUa/ejO5qakkmiKK/3VO70PLO4xb5ZDABjptwcwjPyV/xWbOlJn7mTFIfMorOWXVqT47b4YAv26LIjitxEcLV1xGekQdInMVDzq1uTqfTVLHvrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K2AyCiuW; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708501331;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=l1m0Q2FXSUoou8OR42HmZbOVSoPby5yOdtK1PAigeO0=;
+	b=K2AyCiuWVPLo/YP8oYZj16qvyisAkL2b4WgILMjgOknjYnjWxsi6L2hQdvBGNVSLDRXhOJ
+	tOe+dkX+v5tegMuRUJsBNSNi4fT7LsBnd7C1xZ0rQfIvnZIdfjjcJ3/Gz7GvIW8SZixknA
+	ZwyPYPN+J9KntJn3rpzFu4PjcjXAzbE=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-500-0fdCEy1qOQiK8xbFgNf7Dw-1; Wed, 21 Feb 2024 02:42:09 -0500
+X-MC-Unique: 0fdCEy1qOQiK8xbFgNf7Dw-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-29902c06980so4230107a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:42:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708501329; x=1709106129;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l1m0Q2FXSUoou8OR42HmZbOVSoPby5yOdtK1PAigeO0=;
+        b=ppxAiBu2Ygsg8vCJPX5BKvLYfdfd5C7Fv5JjvusGhH5eJhofcIJW6aJLaaaNeXJsUh
+         Ir7Ga7PAMY2LxffHxNLK2yKCtRv7P+5xPPLorTY54ngDZLV6/1+vcigj6YxmXpptWhLR
+         9nrXmWh86hHGiH6w+TcI+OrhNVNwuYouNUHlIzwpPqDdNKXaUL79TJemXO+ylOConPiF
+         jA/nU2The8tBj9VgXZgCmSI3mxcCrRWmiglr/ZMBDxELE6T54mT+OzGZm4PDJF/o8MeE
+         3lH2APZgakwzlbQneM25PUuFXcdLAr58doqUUbXGRQXto6bWLTxAEhsXX1UJhHiZldUC
+         WVEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMagfEdyC/exDtduOIpWCPaT+bwJpw1XhIv/g8QOgir+kSKBJFS2ZtLaST7mWWWMvSczqYuA/PNaYyW7fvyfWFLnqV94mWlrP9Z4R/
+X-Gm-Message-State: AOJu0YyE3+etSWregn6QUEqVLAnUqI5/Xt4SAYInNTvU4JqJsCjTOnWM
+	E0ufTEK5VYBzTiDDLqHkfpOvyIHYqTWMGTy/SCS4768tO0xQ0wecb33+bV27DMKcCLbJ95rlcYK
+	HW1TDgl1IlQDfmTqOEkGPCA6v9JjTtWh9t8g8KV9rdQc6eINBBFoK4Nhp84uLow==
+X-Received: by 2002:a17:90a:bc84:b0:299:5139:600a with SMTP id x4-20020a17090abc8400b002995139600amr8457777pjr.21.1708501328694;
+        Tue, 20 Feb 2024 23:42:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFTY+pXX+tbRjYehwnZGgjwRZqnV/ZhdL6J5Qs6uckMjmhN4J7BLe/nKXQeDR3HNRcsMqEBPQ==
+X-Received: by 2002:a17:90a:bc84:b0:299:5139:600a with SMTP id x4-20020a17090abc8400b002995139600amr8457764pjr.21.1708501328356;
+        Tue, 20 Feb 2024 23:42:08 -0800 (PST)
+Received: from zeus.elecom ([240b:10:83a2:bd00:6e35:f2f5:2e21:ae3a])
+        by smtp.gmail.com with ESMTPSA id ky14-20020a170902f98e00b001db717ed294sm7388132plb.120.2024.02.20.23.42.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 23:42:07 -0800 (PST)
+From: Ryosuke Yasuoka <ryasuoka@redhat.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	anjali.k.kulkarni@oracle.com,
+	lirongqing@baidu.com,
+	dhowells@redhat.com,
+	pctammela@mojatatu.com,
+	kuniyu@amazon.com
+Cc: Ryosuke Yasuoka <ryasuoka@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com
+Subject: [PATCH net] netlink: Fix kernel-infoleak-after-free in __skb_datagram_iter
+Date: Wed, 21 Feb 2024 16:40:48 +0900
+Message-ID: <20240221074053.1794118-1-ryasuoka@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ad90097-84ff-4286-924b-08dc32b01ad2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2024 07:38:32.5128
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OCAT1sYyjWBizOWOz5o72xlfzVAm6cj/PsVud6+IRWc20HYzILTVwNr9S3EI1MtezxNC60gA5/79pJoFCdQZNmK2R1x5SV2Z6yR7gejkfSQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3660
+Content-Transfer-Encoding: 8bit
 
-DQoNCkxlIDIxLzAyLzIwMjQgw6AgMDY6NDMsIENocmlzdG9waCBIZWxsd2lnIGEgw6ljcml0wqA6
-DQo+IE9uIFR1ZSwgRmViIDIwLCAyMDI0IGF0IDAyOjMyOjUzUE0gLTA2MDAsIE1heHdlbGwgQmxh
-bmQgd3JvdGU6DQo+PiBQcmVzZW50IG5vbi11bmlmb3JtIHVzZSBvZiBfX3ZtYWxsb2Nfbm9kZSBh
-bmQgX192bWFsbG9jX25vZGVfcmFuZ2UgbWFrZXMNCj4+IGVuZm9yY2luZyBhcHByb3ByaWF0ZSBj
-b2RlIGFuZCBkYXRhIHNlcGVyYXRpb24gdW50ZW5hYmxlIG9uIGNlcnRhaW4NCj4+IG1pY3JvYXJj
-aGl0ZWN0dXJlcywgYXMgVk1BTExPQ19TVEFSVCBhbmQgVk1BTExPQ19FTkQgYXJlIG1vbm9saXRo
-aWMNCj4+IHdoaWxlIHRoZSB1c2Ugb2YgdGhlIHZtYWxsb2MgaW50ZXJmYWNlIGlzIG5vbi1tb25v
-bGl0aGljOiBpbiBwYXJ0aWN1bGFyLA0KPj4gYXBwcm9wcmlhdGUgcmFuZG9tbmVzcyBpbiBBU0xS
-IG1ha2VzIGl0IHN1Y2ggdGhhdCBjb2RlIHJlZ2lvbnMgbXVzdCBmYWxsDQo+PiBpbiBzb21lIHJl
-Z2lvbiBiZXR3ZWVuIFZNQUxMT0NfU1RBUlQgYW5kIFZNQUxMT0NfZW5kLCBidXQgdGhpcw0KPj4g
-bmVjZXNzaXRhdGVzIHRoYXQgY29kZSBwYWdlcyBhcmUgaW50ZXJtaW5nbGVkIHdpdGggZGF0YSBw
-YWdlcywgbWVhbmluZw0KPj4gY29kZS1zcGVjaWZpYyBwcm90ZWN0aW9ucywgc3VjaCBhcyBhcm02
-NCdzIFBYTlRhYmxlLCBjYW5ub3QgYmUNCj4+IHBlcmZvcm1hbnRseSBydW50aW1lIGVuZm9yY2Vk
-Lg0KPiANCj4gVGhhdCdzIG5vdCBhY3R1YWxseSB0cnVlLiAgV2UgaGF2ZSBNT0RVTEVfU1RBUlQv
-RU5EIHRvIHNlcGFyYXRlIHRoZW0sDQo+IHdoaWNoIGlzIHVzZWQgYnkgbWlwcyBvbmx5IGZvciBu
-b3cuDQoNCldlIGhhdmUgTU9EVUxFU19WQUREUiBhbmQgTU9EVUxFU19FTkQgdGhhdCBhcmUgdXNl
-ZCBieSBhcm0sIGFybTY0LCANCmxvb25nYXJjZywgcG93ZXJwYywgcmlzY3YsIHMzOTAsIHNwYXJj
-LCB4ODZfNjQNCg0KaXNfdm1hbGxvY19vcl9tb2R1bGVfYWRkcigpIGlzIHVzaW5nIE1PRFVMRVNf
-VkFERFIgc28gSSBndWVzcyB0aGlzIA0KZnVuY3Rpb24gZmFpbHMgb24gbWlwcyA/DQoNCj4gDQo+
-Pg0KPj4gVGhlIHNvbHV0aW9uIHRvIHRoaXMgcHJvYmxlbSBhbGxvd3MgYXJjaGl0ZWN0dXJlcyB0
-byBvdmVycmlkZSB0aGUNCj4+IHZtYWxsb2Mgd3JhcHBlciBmdW5jdGlvbnMgYnkgZW5mb3JjaW5n
-IHRoYXQgdGhlIHJlc3Qgb2YgdGhlIGtlcm5lbCBkb2VzDQo+PiBub3QgcmVpbXBsZW1lbnQgX192
-bWFsbG9jX25vZGUgYnkgdXNpbmcgX192bWFsbG9jX25vZGVfcmFuZ2Ugd2l0aCB0aGUNCj4+IHNh
-bWUgcGFyYW1ldGVycyBhcyBfX3ZtYWxsb2Nfbm9kZSBvciBwcm92aWRlcyBhIF9fd2VhayB0YWcg
-dG8gdGhvc2UNCj4+IGZ1bmN0aW9ucyB1c2luZyBfX3ZtYWxsb2Nfbm9kZV9yYW5nZSB3aXRoIHBh
-cmFtZXRlcnMgcmVwZWF0aW5nIHRob3NlIG9mDQo+PiBfX3ZtYWxsb2Nfbm9kZS4NCj4gDQo+IEkn
-bSByZWFsbHkgbm90IHRvbyBoYXBweSBhYm91dCBvdmVycmlkaW5nIHRoZSBmdW5jdGlvbnMuICBF
-c3BlY2lhbGx5DQo+IGFzIHRoZSBzZXBhcmF0aW9uIGlzIGEgZ2VuZXJhbGx5IGdvb2QgaWRlYSBh
-bmQgaXQgd291bGQgYmUgZ29vZCB0bw0KPiBtb3ZlIGV2ZXJ5b25lIChvciBhdCBsZWFzdCBhbGwg
-bW9kZXJuIGFyY2hpdGVjdHVyZXMpIG92ZXIgdG8gYSBzY2hlbWUNCj4gbGlrZSB0aGlzLg0K
+syzbot reported the following uninit-value access issue [1]:
+
+netlink_to_full_skb() creates a new `skb` and puts the `skb->data`
+passed as a 1st arg of netlink_to_full_skb() onto new `skb`. The data
+size is specified as `len` and passed to skb_put_data(). This `len`
+is based on `skb->end` that is not data offset but buffer offset. The
+`skb->end` contains data and tailroom. Since the tailroom is not
+initialized when the new `skb` created, KMSAN detects uninitialized
+memory area when copying the data.
+
+This patch resolved this issue by correct the len from `skb->end` to
+`skb->len`, which is the actual data offset.
+
+BUG: KMSAN: kernel-infoleak-after-free in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in copy_to_user_iter lib/iov_iter.c:24 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in iterate_ubuf include/linux/iov_iter.h:29 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in iterate_and_advance2 include/linux/iov_iter.h:245 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in iterate_and_advance include/linux/iov_iter.h:271 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in _copy_to_iter+0x364/0x2520 lib/iov_iter.c:186
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ copy_to_user_iter lib/iov_iter.c:24 [inline]
+ iterate_ubuf include/linux/iov_iter.h:29 [inline]
+ iterate_and_advance2 include/linux/iov_iter.h:245 [inline]
+ iterate_and_advance include/linux/iov_iter.h:271 [inline]
+ _copy_to_iter+0x364/0x2520 lib/iov_iter.c:186
+ copy_to_iter include/linux/uio.h:197 [inline]
+ simple_copy_to_iter+0x68/0xa0 net/core/datagram.c:532
+ __skb_datagram_iter+0x123/0xdc0 net/core/datagram.c:420
+ skb_copy_datagram_iter+0x5c/0x200 net/core/datagram.c:546
+ skb_copy_datagram_msg include/linux/skbuff.h:3960 [inline]
+ packet_recvmsg+0xd9c/0x2000 net/packet/af_packet.c:3482
+ sock_recvmsg_nosec net/socket.c:1044 [inline]
+ sock_recvmsg net/socket.c:1066 [inline]
+ sock_read_iter+0x467/0x580 net/socket.c:1136
+ call_read_iter include/linux/fs.h:2014 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x8f6/0xe00 fs/read_write.c:470
+ ksys_read+0x20f/0x4c0 fs/read_write.c:613
+ __do_sys_read fs/read_write.c:623 [inline]
+ __se_sys_read fs/read_write.c:621 [inline]
+ __x64_sys_read+0x93/0xd0 fs/read_write.c:621
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was stored to memory at:
+ skb_put_data include/linux/skbuff.h:2622 [inline]
+ netlink_to_full_skb net/netlink/af_netlink.c:181 [inline]
+ __netlink_deliver_tap_skb net/netlink/af_netlink.c:298 [inline]
+ __netlink_deliver_tap+0x5be/0xc90 net/netlink/af_netlink.c:325
+ netlink_deliver_tap net/netlink/af_netlink.c:338 [inline]
+ netlink_deliver_tap_kernel net/netlink/af_netlink.c:347 [inline]
+ netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+ netlink_unicast+0x10f1/0x1250 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x1238/0x13d0 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
+ __sys_sendmsg net/socket.c:2667 [inline]
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+ free_pages_prepare mm/page_alloc.c:1087 [inline]
+ free_unref_page_prepare+0xb0/0xa40 mm/page_alloc.c:2347
+ free_unref_page_list+0xeb/0x1100 mm/page_alloc.c:2533
+ release_pages+0x23d3/0x2410 mm/swap.c:1042
+ free_pages_and_swap_cache+0xd9/0xf0 mm/swap_state.c:316
+ tlb_batch_pages_flush mm/mmu_gather.c:98 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:293 [inline]
+ tlb_flush_mmu+0x6f5/0x980 mm/mmu_gather.c:300
+ tlb_finish_mmu+0x101/0x260 mm/mmu_gather.c:392
+ exit_mmap+0x49e/0xd30 mm/mmap.c:3321
+ __mmput+0x13f/0x530 kernel/fork.c:1349
+ mmput+0x8a/0xa0 kernel/fork.c:1371
+ exit_mm+0x1b8/0x360 kernel/exit.c:567
+ do_exit+0xd57/0x4080 kernel/exit.c:858
+ do_group_exit+0x2fd/0x390 kernel/exit.c:1021
+ __do_sys_exit_group kernel/exit.c:1032 [inline]
+ __se_sys_exit_group kernel/exit.c:1030 [inline]
+ __x64_sys_exit_group+0x3c/0x50 kernel/exit.c:1030
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Bytes 3852-3903 of 3904 are uninitialized
+Memory access of size 3904 starts at ffff88812ea1e000
+Data copied to user address 0000000020003280
+
+CPU: 1 PID: 5043 Comm: syz-executor297 Not tainted 6.7.0-rc5-syzkaller-00047-g5bd7ef53ffe5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+
+Fixes: 1853c9496460 ("netlink, mmap: transform mmap skb into full skb on taps")
+Reported-and-tested-by: syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=34ad5fab48f7bf510349 [1]
+Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
+---
+ net/netlink/af_netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 9c962347cf85..ff315351269f 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -167,7 +167,7 @@ static inline u32 netlink_group_mask(u32 group)
+ static struct sk_buff *netlink_to_full_skb(const struct sk_buff *skb,
+ 					   gfp_t gfp_mask)
+ {
+-	unsigned int len = skb_end_offset(skb);
++	unsigned int len = skb->len;
+ 	struct sk_buff *new;
+ 
+ 	new = alloc_skb(len, gfp_mask);
+-- 
+2.43.0
+
 
