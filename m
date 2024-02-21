@@ -1,49 +1,95 @@
-Return-Path: <linux-kernel+bounces-74618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 093E785D6FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:32:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F97685D702
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA9AB222E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:32:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60A391C22E3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E205E405C6;
-	Wed, 21 Feb 2024 11:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4542844C77;
+	Wed, 21 Feb 2024 11:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZeEmx1Lt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IXSRbhzy"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE3C481AD;
-	Wed, 21 Feb 2024 11:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A913FE4F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515029; cv=none; b=amLlAiQFQDjYWzaGD5sY3s3k0OMA2m3r5XTkSyjfO6v+NTl8rN2JvXljYrn++cyKyc6WFGUjO1Qvv4KROLsuETFv3vss5ra4/MgJZ5Eq5p6UmYuVpGEdX6WTYa9vguqGv2XbLCDj6JsgEbcvHYVifx5il3KCUm806M8QXUsUfAo=
+	t=1708515043; cv=none; b=SpvUkDu+05Qq2M3sQK/+h+PX+y8LDQkmFx0pN+KcNwMhBw/p/8d4jYdhNk77hXo7ui1u7ZwAKdTgSNY9yio8O2eBwZYeH8RjNyC646CMDLmJJkRH2Y5lq9+vlyb9OnCqpj2a8cNIRINttfX3hRa6rKM/tZaxEXa4+E31mv9y63Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515029; c=relaxed/simple;
-	bh=q8iei6SJEoGcWw/7HaWMNBq0PFhJeMnbU+3HGyo+ceU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=KZF9PfNWEbVDTSvVxLYRVnDBEJAKLwy87sqi7AtTJXWxFBtCuoZ6raQ3xH3VaPQECSmRTe2+rzanJkOzECHfEa1oShQv2loD7r8DLLnxgXFpNRi02Jq5yH9jtK1pLZKA4nrxMsDhMSAu2NmZYEfYxPpRIOkDhmdyzFmiozCaS78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZeEmx1Lt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A0B9CC43399;
-	Wed, 21 Feb 2024 11:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708515028;
-	bh=q8iei6SJEoGcWw/7HaWMNBq0PFhJeMnbU+3HGyo+ceU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ZeEmx1Lt17ZmCBXIfLwYqoPlVRUzxDYqKjGqccNA04uP1GTpLAD61F3H+j6XkjqYf
-	 FkyXVH2bd58gZrvlKbylH7s4u94MtXf6YDfSrStFxru2WNchKMkLiHrXxxZRNgcR8F
-	 tGILumeBvBz73LOvgcMwjMhEyitrglC54HlPaDJ915GIKcd9SavTIYaF/lxL6g7Qc1
-	 P5nGdQWWnm8o1YaPLUyBOjGn5BWBJzCSXVO2QZ0vF46q8XIgfu+ShBhfp01IHz9Y2F
-	 OP9/OG7i+2ZWIg78InbXBBEaM24Vuq/6HfIQ5qav/bXWbsDwXiuF1x0LWX5jktN30K
-	 nA1pNuTHQEvtg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8E25FD84BBC;
-	Wed, 21 Feb 2024 11:30:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708515043; c=relaxed/simple;
+	bh=QBSDWr0jaVh7zeXBOsel/rJ+6ajgeIvN4uQ8MGcm7Rs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hU68dqPQPsBNQf4M3vdxuPrTEvxYHlg9gkguC/Fbf2irGewrbRKD4WTfyC+pC16gCmtbgC/h0HF4JvhzCtZlayE/RI7KQzosZWWGvD9UDUcYB1iJ5u9ioeZc0XobWMK4sXtgyw/G4jBqp7WYMrpvdiW2+YMEFmMOzkii7ubm/Ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IXSRbhzy; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3e706f50beso59646466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:30:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708515040; x=1709119840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sAQmTehuuu7pDZORVsAvuPr+CnRbLVUq10Y5vLWq90k=;
+        b=IXSRbhzyjX0CHBvWAEJajL0BYaVdpQZCNtderlyXQQ8Mm6FUwt9c9gD+mNk2d9Cu3L
+         kfVaaIAuIx1Zu4MI7/f8Bds4GJ6qEeTzemF15gotVzt6tcvW9G+BXn0zXge+akOR/8KL
+         4RUjzH92k47IqQKVC3sUGLJlP1Rt5IEWC0wKaLnRvNSyHmdFt0GiZHFSpbCBWvAp9nRG
+         HRaaSQ7pgtva/bL/dFv9JNqnkn/I5KEuxd6pvCxyUqN8S0Pz7Z1aMp9m1dfPCzKEn6z5
+         wojqu0RiKtIPJYnksYOfZm3me450vvEwN9eeQ5EZ5+qkwgtV0U0qTeiDVoZXDt7Sela/
+         Oxgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708515040; x=1709119840;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sAQmTehuuu7pDZORVsAvuPr+CnRbLVUq10Y5vLWq90k=;
+        b=P5bgFsyD7fwWPa2MjhhK6ET5DIcAkbLQF9NdejHaRpY69M0C9vjuioJm4V5qOHwIOd
+         KYDZcotE+i/f8tt95TiBqvuLmgEruJ73GuZtRQYS2g+e7vAaDgZx0njcEIsDqX44+1+5
+         2fdxgHP0Lf+RanXflzVYLPSF32fuLmavy21HO6QXDlYtSzSsenYkf+YqBeB/cK4kThym
+         dF4uGbAYQyceq3OKD6HkNUusovOksdlGmtjjeTjRHnYZ8WthE+qJ5IU0MwdWmi94ugQf
+         2/d7cv7wX0Z41mlZ4xWQade6sCBsn5nMs2pPWUfyY7LjhQYxRyoBMghx7LNxMDPVvnQ5
+         djNg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTu5TiWljM2HsLhaBIx+i44vYLrkYS0346bB2FfSDm4o4rKQqskAM9+bqKzoxKNR9/JurfyvqhdFS4Nv1mXoYAHArWOBUvfS0e1nmQ
+X-Gm-Message-State: AOJu0Yw76dwEmlkn49W1TYiikrFOabGTKhnKBqOyH/5dexE6nbWwmPCS
+	BJY7aWFRWEOIoEolMwp5vxAqRs8yAQMaH2QDROgr6UM45nxhXvgOyGXZj4JXmZw=
+X-Google-Smtp-Source: AGHT+IFMtWAXfF6096VkEiNa5/PKLj4TmtqoNEwWGCceJzPnphZEPIX4fokcFB8EcevGHD4Key3dhw==
+X-Received: by 2002:a17:906:368a:b0:a3d:bb68:be30 with SMTP id a10-20020a170906368a00b00a3dbb68be30mr10815533ejc.6.1708515039933;
+        Wed, 21 Feb 2024 03:30:39 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id g1-20020a170906c18100b00a3e278c4a3fsm4393712ejz.53.2024.02.21.03.30.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 03:30:39 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	alsa-devel@alsa-project.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Sean Anderson <sean.anderson@seco.com>,
+	Rob Herring <robh@kernel.org>
+Subject: [RESEND PATCH v6 v6 1/2] ASoC: dt-bindings: qcom,wsa8840: Add reset-gpios for shared line
+Date: Wed, 21 Feb 2024 12:30:35 +0100
+Message-Id: <20240221113036.23905-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,42 +97,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/dummy: Move stats allocation to core
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170851502857.15341.15517644108152469413.git-patchwork-notify@kernel.org>
-Date: Wed, 21 Feb 2024 11:30:28 +0000
-References: <20240219134328.1066787-1-leitao@debian.org>
-In-Reply-To: <20240219134328.1066787-1-leitao@debian.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- horms@kernel.org
 
-Hello:
+On newer Qualcomm platforms, like X1E80100-CRD, the WSA884x speakers
+share SD_N GPIOs between two speakers, thus a coordinated assertion is
+needed.  Linux supports handling shared GPIO lines through "reset-gpios"
+property, thus allow specifying either powerdown or reset GPIOs (these
+are the same).
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sean Anderson <sean.anderson@seco.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Mon, 19 Feb 2024 05:43:28 -0800 you wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-> convert veth & vrf"), stats allocation could be done on net core instead
-> of this driver.
-> 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
-> 
-> [...]
+---
 
-Here is the summary with links:
-  - [net-next] net/dummy: Move stats allocation to core
-    https://git.kernel.org/netdev/net-next/c/a381690dd842
+Resending because reset part of the patchset was applied, so this can go
+independently via ASoC.
+https://lore.kernel.org/all/38fda6619769da7240517982adfe734cb653ff5e.camel@pengutronix.de/
 
-You are awesome, thank you!
+Changes in v6
+=============
+1. Add Rb/Ack tags.
+
+For full changelog, see:
+https://lore.kernel.org/all/20240129115216.96479-1-krzysztof.kozlowski@linaro.org/
+---
+ .../devicetree/bindings/sound/qcom,wsa8840.yaml       | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+index d717017b0fdb..22798d22d981 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+@@ -28,6 +28,10 @@ properties:
+     description: Powerdown/Shutdown line to use (pin SD_N)
+     maxItems: 1
+ 
++  reset-gpios:
++    description: Powerdown/Shutdown line to use (pin SD_N)
++    maxItems: 1
++
+   '#sound-dai-cells':
+     const: 0
+ 
+@@ -37,11 +41,16 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - powerdown-gpios
+   - '#sound-dai-cells'
+   - vdd-1p8-supply
+   - vdd-io-supply
+ 
++oneOf:
++  - required:
++      - powerdown-gpios
++  - required:
++      - reset-gpios
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
