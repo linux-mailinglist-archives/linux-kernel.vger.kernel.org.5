@@ -1,116 +1,199 @@
-Return-Path: <linux-kernel+bounces-75094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC5B85E2F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:22:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCFBF85E2F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07E7E1F24281
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:22:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33497B2541D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEB38174B;
-	Wed, 21 Feb 2024 16:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0544381746;
+	Wed, 21 Feb 2024 16:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ojElP1EM"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mvz1frH1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8313A1A2;
-	Wed, 21 Feb 2024 16:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FC881740
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708532550; cv=none; b=X/l1Pv2VT92p+21zkp92TYZ01Jy93ScoeFUuCWhOVAqKFM+gFBa/XJ60NgSXEW9P+xEHWVs2LFCjkKKQSrU7T9b1Cp1tZcegZaaQ2mRoY9bGCTxca0YdtzFpdUuX4Jrmfb3L3OBY+c/2coiISIYcsx+uCvyLEfAn5iGDChEyqJA=
+	t=1708532576; cv=none; b=rQ/pxynEbMQGpNYrfRrMymkynYtuHAe8HkAbiWna74hRcIdneMoFaH+dvcRuoDJlLF4XMqWzEbuFEGdQCIX5ltCyuFcd6J9s/s/oqmEMsFmRCaxcvNhX6qTK4S+z4Fy5XpD+FVxaGZXKFSvhidsXa4BQn7+QeOgw8Cr9UAVe8Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708532550; c=relaxed/simple;
-	bh=kiiMrG6mntXHh6iDBqWOevebD5aCEfw6RRIXVCezYaY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=iLTXi/35hNx4AMb/4oc5HJrwNd2xFtC5WS2971tbS4L0CZPuT7dWZiJ668NyZFOikkIV/nVtpVpAfAFGWFG9pIPg3CAKgeC01oLTxNiwrIRKYYWZEFcY+Zk/QNZdRHUR7s3i3A0gY2iURosDy4Q2Au4hqK9k+nBeB4rUQVJAxuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ojElP1EM; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F42F20009;
-	Wed, 21 Feb 2024 16:22:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708532546;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oYNF6aBAFXnBwLIFV8DYWQPUG0yyBkNdFICAoB9FzHE=;
-	b=ojElP1EMF86PODLDP9T4uBAGLfHZ1XkMqIJ3TaYZ+/sPvFdYH/gFLxXGAxPKV8NptsQnTm
-	ne9p4VweZ0loVzt0Zxn9ZiI6AoEWxplApr8d3wULM3fpKnDLDrVwznE0qzkPi+DL97wyqp
-	SDdPRyCGzk78gi88IJEK4ihGSwIVbuwsnSGU3Y/6bpNZIA9vxndaJXfUHFGVMvVSR2cKcU
-	R7WBtOEJywKiZMahVoID7HQWx4ScEF838i1TO9vi3B2+kRwsFRNIMdgbFNrlGU2JJER12O
-	kE4NnVSnabdhLkqzuN/FD7goeVkrZnRuu5J6waTx33AtumU8mre+3lTeJCobcQ==
+	s=arc-20240116; t=1708532576; c=relaxed/simple;
+	bh=ufe21RcpjI+Fe/InXrIajsCgsE8NvxRbIK3dneO0Bck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M/Zm/H1KRCBJdZ39fLbVXbo+Q+Ii6D3KbYewdwAf41PUQVKyt/aaEaSuABK3H+fMj7HU4W3n4rvgNFMtSFHMoPtAPiyGqT4hDzX7S4MchJVZovxPSd4QgROR/K8Tzb9KgTGHU/Lq/eK1klSbokjmNUscq8+XIOaRxYS+KJkX8EU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mvz1frH1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1F4CC43390;
+	Wed, 21 Feb 2024 16:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708532576;
+	bh=ufe21RcpjI+Fe/InXrIajsCgsE8NvxRbIK3dneO0Bck=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Mvz1frH1q9RaX5+RdvkHy33unY0QUBKGxvFGBgJsS+LduZQxN0cEf3bPTKLFU/jX3
+	 dhOhxzQ5FMxP3k93KdGhrId/2VU8QiZtSJMZsqU++UC1/YHThqdUCCVUR7Zug/a3Ji
+	 GOCglQNuDuQJiY6mRI1CFwdnsp/tjcRUmT1Ur5Dy8s8orIs/3X0zI582/GCFGdvi7Y
+	 ZUZw6oqjZiup/LYcKMtnX2Y6dfhSjiyund1O+TNt8dFFbw1FKi7Y5/NIRB3VPBb6EO
+	 JAlr61oNSPxz8+og69TRl/dsGtxHI+oJkZQ1JP1l5cti00+g6OGXflNzLvNuSZnrHn
+	 YbN1wg6XTUVgA==
+Date: Wed, 21 Feb 2024 11:22:54 -0500
+From: Sasha Levin <sashal@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, cve@kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Kosina <jkosina@suse.cz>
+Subject: Re: CVE-2023-52437: Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING
+ in raid5d"
+Message-ID: <ZdYjXmA_1OvcS_CZ@sashalap>
+References: <7ae646b3-28e4-4344-a7a4-730a0d6e3f38@redhat.com>
+ <CABgObfYDcFPRNpGtsY=UbstXbqVCMcxy3LPS_xJ65aFcByC=Nw@mail.gmail.com>
+ <ZdXt09vL4GJy6PbP@sashalap>
+ <0e8675e0-165d-4cf7-9755-666278868ab8@redhat.com>
+ <ZdX2LcAWR6wyvYC5@sashalap>
+ <bec7c1db-c13e-4b00-a968-4ae69539d7ac@redhat.com>
+ <ZdYKSkqRckOc5aRO@sashalap>
+ <a9652aa2-e79b-4144-b3b7-746587af9eca@redhat.com>
+ <ZdYSmdUKzQAYpprc@sashalap>
+ <3ebbc121-8cb8-4b8d-ad5d-fb5c576e5171@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 21 Feb 2024 17:22:25 +0100
-Message-Id: <CZAW8NNS98TB.18RASC15YIRNB@bootlin.com>
-Subject: Re: [PATCH 18/23] gpio: nomadik: support mobileye,eyeq5-gpio
-Cc: "Bartosz Golaszewski" <brgl@bgdev.pl>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Philipp Zabel" <p.zabel@pengutronix.de>, "Thomas Bogendoerfer"
- <tsbogend@alpha.franken.de>, <linux-gpio@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mips@vger.kernel.org>,
- "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Linus Walleij" <linus.walleij@linaro.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
- <20240214-mbly-gpio-v1-18-f88c0ccf372b@bootlin.com>
- <CACRpkdYb4V5EouMBYRRrZvLT1v6zKEtjHGPAs5orDKoo6dz6nA@mail.gmail.com>
-In-Reply-To: <CACRpkdYb4V5EouMBYRRrZvLT1v6zKEtjHGPAs5orDKoo6dz6nA@mail.gmail.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ebbc121-8cb8-4b8d-ad5d-fb5c576e5171@redhat.com>
 
-Hello,
-
-On Wed Feb 21, 2024 at 2:45 PM CET, Linus Walleij wrote:
-> On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
-tlin.com> wrote:
-> > We create a custom compatible for the STA2X11 IP block as integrated
-> > into the Mobileye EyeQ5 platform. Its wake and alternate functions have
-> > been disabled, we want to avoid touching those registers.
-> >
-> > We both do: (1) early return in functions that do not support the
-> > platform, but with warnings, and (2) avoid calling those functions in
-> > the first place.
-> >
-> > We ensure that pinctrl-nomadik is not used with this STA2X11 variant.
-> >
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> (...)
-> >+       bool quirk_mbly;
+On Wed, Feb 21, 2024 at 04:56:31PM +0100, Paolo Bonzini wrote:
+>To recap:
 >
-> Compulsive abbreviation? I would just rename it:
+>- the CVE description comes from was upstream commit bed9e27baf52
 >
-> bool is_mobileye_soc;
+>- neither the CVE mitigation section nor the mentioned kernel releases
+>fix the bug mentioned in the upstream commit, because the mitigation
+>section also includes commits that _revert_ commit bed9e27baf52
 >
-> Nevermind the long name, it makes it crystal clear for readers
-> what is going on. (Rusty Russell's API naming guidelines.)
+>- this second revert is not mentioned anywhere, so the CVE description
+>is at best misleading; or perhaps more accurately described as
+>"completely f***ed up".
 >
-> With that changed:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>I'm sure it's just a bug in the scripts, but it's worrisome that you
+>don't acknowledge this.
 
-Makes complete sense. This is old heritage from my initial prototype
-that should have long gone disappeared.
+No objections that commit messages aren't perfect, they're just better
+than the some unhelpful text like:
 
-Thanks for your feedback & reviews!
+"""
+In the Linux kernel before 6.5.9, there is a NULL pointer dereference in send_acknowledge in net/nfc/nci/spi.c.
+"""
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+My choice was to actually just call out the offending commit and be done
+with it, without additional description.
+
+>>So now you're asking us to drop this additional work on them by
+>>reviewing CVE requests?
+>
+>It doesn't have to be mandatory.  But for people that _do_ want to do
+>the work, they might as well do it before the CVE is publicly announced,
+>rather than after.  At least give us the possibility of doing it without
+>bureaucracy.
+
+[...]
+
+>> How were you aware until a few weeks ago where CVE assignments were
+>> handled by different entities?
+>
+>They more often than not CC'd me before the patch was committed and
+>provided me the CVE id, and I was able to provide input or dispute the
+>assignment beforehand.  This is exactly what I'm suggesting that the
+>kernel should do.
+
+This is fascinating to know, because when multiple members of the
+community asked to review CVEs before they are assigned, certain few
+CNAs blatantly ignored such requests.
+
+Would you want to expand on why you got the courtesy of being able to
+review these assignments, while the rest of us had to jump through the
+hoops of becoming our own CNA just to stop from this crap from happening
+to us?
+
+[ snip ]
+
+>>So yes, I disagree with your "all of them" statement. For that matter,
+>>I'd argue that the number of users who need massaged messages are the
+>>vast minority.
+>
+>They don't need massaged messages.  They need correct and complete ones.
+>  You're completely removing the human part of the work and expecting
+>the result to be of comparable quality.  That's not going to happen, and
+>this CVE is an example of this.
+
+I definitely agree that it would be nice to have better messages in
+CVEs, and I'd welcome interested parties to follow the process that was
+in place up until two weeks ago, and request an amendment to a CVE with
+a better description (or dispute an invalid one) with the CNA.
+
+This is exactly the same process that most of us had to follow in the
+past to address crappy CVE descriptions or bogus CVEs.
+
+>>>2) how are you going to handle patch dependencies?  Are they going to
+>>>be rolled into a single entry or split into multiple announcements?
+>>
+>>Likely multiple different entries.
+>
+>So, looking at
+>https://git.kernel.org/pub/scm/linux/security/vulns.git/tree/cve/review/6.7.proposed
+>I see
+>
+>aeb686a98a9e usb: gadget: uvc: Allocate uvc_requests one at a time
+>da324ffce34c usb: gadget: uvc: Fix use-after-free for inflight usb_requests
+>
+>What vulnerability is the first one fixing?  Looking at your GSD
+
+Well, if you look at the first patch, it says "This patch is 1 of 2
+patches addressing the use-after-free issue.".
+
+>entries, will there even be CVEs purporting that renaming a variable
+>from "foo" to "bar" is fixing a vulnerability?
+
+Maybe? Hopefully not if it's not a real security issue.
+
+>>>3) are the scripts used to generate the CVEs public?  Can fixes to the
+>>>scripts be developed in the open?
+>>
+>>Yup - https://git.kernel.org/pub/scm/linux/security/vulns.git/ .
+>
+>What about the detection part?
+
+Manual at this point, we're looking into converging workflows but it's
+one of those things we'd need to address after we got the basics in
+place.
+
+>I like to assume the best of people, so I'll assume that this is just
+>naïveté rather than an intentional attempt at burning everything down.
+>But please, let's take a step back and understand what the proposed
+>workflow fixes and breaks for everyone (especially maintainers and
+>distros).  Then make a proper solution.  In the meanwhile you can keep
+>sending test announcements to linux-cve-announce, and those can be used
+>to debug the process and the scripts.
+
+No objections on future improvements, right now we're still trying to
+get the basics working which is where the strong pushback on "feature
+requests" is coming from.
+
+>In fact it would be nice if bippy included at the end the command line
+>that was used, to aid the reproduction and fixing of bugs.
+
+Bippy just maps commits to trees and formats the json, or did I
+misunderstand what you meant?
+
+-- 
+Thanks,
+Sasha
 
