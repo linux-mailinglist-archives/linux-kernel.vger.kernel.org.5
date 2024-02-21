@@ -1,128 +1,117 @@
-Return-Path: <linux-kernel+bounces-75006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7420285E164
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:37:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBA5685E16A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:37:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F6B7285AF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:37:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97D56286F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAFD8063D;
-	Wed, 21 Feb 2024 15:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935248063E;
+	Wed, 21 Feb 2024 15:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Te5ZEZOq"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="g7NkZZSa"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993AB7F47A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0B580618
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:37:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708529859; cv=none; b=TJkOBjLgCDhW3R2Y7BEOmVMDyR4rgwUzpwnLfSOTV19+EE7lwAip5XBUH4peNIzA84SvX7EpMWcPsjM4mFVKui9dIDIc2kjoes1nVRp8gi5e99BL8x15jqKwcLz1MrTSIH9A8g7eeorzJVEobalLW40GT6eYPbIGYqkSDThnTqs=
+	t=1708529874; cv=none; b=U/mCsI9fnh/F4c7TMojxB+zAw/B4QLMksOENLSvB/+mf0noU+SoFxL5g9m20P8GZLP8eKLfsZLf7rXxSh6nJqrk0/34owJpqpelXvv52Yo5O+LH3JsIgrE274X79c2KjCdGFDOOlAUubiFRv4PxoQ/QkqzNNrSZUJsw0D1Y3QSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708529859; c=relaxed/simple;
-	bh=EoeICkB3hFDxSwcp464+mUrp0AXFd54m6bE/NoDVnvo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WSnQKAtj+zWr5amTTH/I3+wfn+qeTAunxTuH5GQaG9Nw/0RXNFpRNTixTP8Uw6cvffKPx3eQEM8QBCvm29Yc3F/qQIw8nQIVl3jk0Jn0hxGMjTDUeM+8UEMRnhzL0LVThdNwVNDZvxGdQYhqDLC75mnwNVqLyqj0ZcQILk3w3eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Te5ZEZOq; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708529857; x=1740065857;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=EoeICkB3hFDxSwcp464+mUrp0AXFd54m6bE/NoDVnvo=;
-  b=Te5ZEZOqZHHvDsCfaql1V7449h/C+9OGUYWcBXN1ikfOLzqpFezcHwvx
-   Kiq2SiqK9HgeYnrg21H2A3OsSSIncHgJDMrQlbCvUvAgCF9ZC+BB2IeUQ
-   fzHAang252f2rXxVFpYKaeUsmoV3kEiGDL3Tl1ZG4OSnFwoeYd14yqyUe
-   jOHsw2XJ7zR+xppulmbW0PQyhCCI/HzE2euKlX6HaRGJogcIRgYyJuvAg
-   /AYRXNA41b9+gN2YYQvZSaV/jT4TZFAnrks8TQQ4amC7nNcYo7kV37vOg
-   3qTW5RfiySxCphfOxTmrULz3mLIVntYEm38UWxg5+lXlTb1ksLFIKmMm7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="25158282"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="25158282"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 07:37:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="936660356"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="936660356"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Feb 2024 07:37:33 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 2C3822A0; Wed, 21 Feb 2024 17:37:32 +0200 (EET)
-Date: Wed, 21 Feb 2024 17:37:32 +0200
-From: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: x86@kernel.org, linux-coco@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>, 
-	Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Elena Reshetova <elena.reshetova@intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, Theodore Ts'o <tytso@mit.edu>, 
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3] x86/coco: Require seeding RNG with RDRAND on CoCo
- systems
-Message-ID: <ja7dptjwhshsjjcgwxivq4tmfs52owlueqexz2ubnnir6mbflh@bjooemgy7ml2>
-References: <20240221123248.25570-1-Jason@zx2c4.com>
+	s=arc-20240116; t=1708529874; c=relaxed/simple;
+	bh=GVmjKweFpkvqNGNICWL3z3UdvYBia4a0Ku2Kgy+MvZI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HfcThhTXreCWwF5bJF3x32YiVgDy1EluUouJH58zsONAqrkmtXwaEQvk0aFEIe1tEuHaaF0OVP6bhYv8uzI6B9gyj8kBBIpE4rDOsPCoSSmBJFUrxxye3ADL6LSvtVVUW+8qQUFUPMCbvmU60+INW0iTo07f3vYmiSmnGbPcCmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=g7NkZZSa; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bf3283c18dso107273039f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:37:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1708529871; x=1709134671; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Jgzt36BlzBXtqVbdNQbmcPDo4k/aD72MiYTSmtpMR84=;
+        b=g7NkZZSaZpZsMNCfBqfjtL4OjXg0C7HaYoffOG/S/IPEmzHta6IMwbVbrsC+2spqDW
+         KR9p+EsgDVfhWn5pbypNnYE79s8JNNhS0e25NaZg+0meaZFW2uYiHjia/xBLGaVZ6+y+
+         TwsWawBbt/ZZrLzeq2QzwmZG9vRa7H4m5v7Oc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708529871; x=1709134671;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jgzt36BlzBXtqVbdNQbmcPDo4k/aD72MiYTSmtpMR84=;
+        b=j2KBwn1AXORwI8miRJk7Jzt/tuoK25Jf1jErJOIliAXAT6hzYTODf8y24EQ07gqQUZ
+         rS+4PItCejCt691oPvv+Wms0WGT/87ZutqftzVT040PVhChxcmqvjfefgD0gBnVj33dL
+         5EcZC/9QK34WC/mY0OBjZ9mF0O3Vpsz8tnPpwxveYPlqyYsCIR5VFHdL+vAM8qHxzIvt
+         /8C8E+t4SQqixqoBKXUH7OQcsgpMIOU8Gw8LqKIeQVbcHbzagd1w6OGC7rgPXIzr1lcg
+         o6yJ+9yt7a01EG6QHtlMoOQ0Ww+O9EAWWbmck3GuR94ije9aAeODGKj/QnPgMR/Itbzp
+         tREw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjgRGTUgzESo1KX8c0pS4inEr1gEJ2yvA8h+os53GpQZ64i3HkEq5lkAjsLknH3eQ02X98vCD8W0wAfrNk6QE7cLdn/nbvLAvpqKyu
+X-Gm-Message-State: AOJu0Yz55c10zroXUmqZpKNKgYgv5+3aJecoRjRHs3UW9x5p3JWLnqaZ
+	193za/r+Td/rwD1yYotGrxMcnvgoF7PsfhWYo1bgETrVTW1v5yyHSBMOCpQT8B4=
+X-Google-Smtp-Source: AGHT+IExr/IvF/UtOz3IX45Dm147dWyye0NzXPRZMjCGqlL1L00lNeoZ+bFHxdOc3K9jwHGjAud59A==
+X-Received: by 2002:a05:6602:2cd6:b0:7c4:9e06:b9c8 with SMTP id j22-20020a0566022cd600b007c49e06b9c8mr17837772iow.2.1708529871177;
+        Wed, 21 Feb 2024 07:37:51 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id e3-20020a02a783000000b004743cd55d69sm767784jaj.163.2024.02.21.07.37.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 07:37:50 -0800 (PST)
+Message-ID: <63bdded0-e625-4a80-b85f-01032656108f@linuxfoundation.org>
+Date: Wed, 21 Feb 2024 08:37:50 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240221123248.25570-1-Jason@zx2c4.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/331] 6.6.18-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240220205637.572693592@linuxfoundation.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240220205637.572693592@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 01:32:40PM +0100, Jason A. Donenfeld wrote:
-> There are few uses of CoCo that don't rely on working cryptography and
-> hence a working RNG. Unfortunately, the CoCo threat model means that the
-> VM host cannot be trusted and may actively work against guests to
-> extract secrets or manipulate computation. Since a malicious host can
-> modify or observe nearly all inputs to guests, the only remaining source
-> of entropy for CoCo guests is RDRAND.
+On 2/20/24 13:51, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.18 release.
+> There are 331 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> If RDRAND is broken -- due to CPU hardware fault -- the RNG as a whole
-> is meant to gracefully continue on gathering entropy from other sources,
-> but since there aren't other sources on CoCo, this is catastrophic.
-> This is mostly a concern at boot time when initially seeding the RNG, as
-> after that the consequences of a broken RDRAND are much more
-> theoretical.
+> Responses should be made by Thu, 22 Feb 2024 20:55:45 +0000.
+> Anything received after that time might be too late.
 > 
-> So, try at boot to seed the RNG using 256 bits of RDRAND output. If this
-> fails, panic(). This will also trigger if the system is booted without
-> RDRAND, as RDRAND is essential for a safe CoCo boot.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.18-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 > 
-> This patch is deliberately written to be "just a CoCo x86 driver
-> feature" and not part of the RNG itself. Many device drivers and
-> platforms have some desire to contribute something to the RNG, and
-> add_device_randomness() is specifically meant for this purpose. Any
-> driver can call this with seed data of any quality, or even garbage
-> quality, and it can only possibly make the quality of the RNG better or
-> have no effect, but can never make it worse. Rather than trying to
-> build something into the core of the RNG, this patch interprets the
-> particular CoCo issue as just a CoCo issue, and therefore separates this
-> all out into driver (well, arch/platform) code.
+> thanks,
 > 
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Daniel P. Berrangé <berrange@redhat.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Elena Reshetova <elena.reshetova@intel.com>
-> Cc: H. Peter Anvin <hpa@zytor.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Theodore Ts'o <tytso@mit.edu>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> greg k-h
+> 
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Compiled and booted on my test system. No dmesg regressions.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
