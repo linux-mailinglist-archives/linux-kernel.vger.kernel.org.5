@@ -1,92 +1,117 @@
-Return-Path: <linux-kernel+bounces-73925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B120285CDA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:00:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C3385CDA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D836B23912
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:00:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EECFA1F247A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5515B5235;
-	Wed, 21 Feb 2024 01:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC7A5235;
+	Wed, 21 Feb 2024 02:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZ1Kex7B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="OTSfQgIG"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B1353AC;
-	Wed, 21 Feb 2024 01:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5AA522C
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708480793; cv=none; b=Yqv2/9wwFtveUbJRMkTQkvCU50MMSRIec+WdJAa6gs6oKjG2fGfATwuqyhXdtqgWln7BwC6V5+LVtNPFjw0cayWfP8rU9G6sboUguzccFgbYA4aJ1/XiTXJSUbcXedPe/2XMxRofW+i3DStIrlGfs0rI2QECXAhfutPOK9TlxMU=
+	t=1708480804; cv=none; b=doEPnUBAzrFROuNLKDqNEyPBY6/8HlsPdqhi091bXk0IU54ihp5ei2+pqLdAFf8qptQ7jy21YWtsOP42uofSCyPSlT3MjaoFANZwBqUtU2tA2nGBKVh0FtpxD7n5OVmqrtymQU9aaeGmy/UegO8kxmaVFqn8/vKJb7fWgdPTvGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708480793; c=relaxed/simple;
-	bh=sEkCxHX6RnAczbZivO5ymv01uGSyS7puhDorwgbbBbo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PAZscqknEclF7QL1FhwQBzZ3B2YbvbdS1yClkGWtA6wVxqNmMIsPEhTLS73nWAJChwT4zUpts9ryMCHIA4dmc23uVx34zN/5BUHxhstsVXEpPiz3PwXMgeaJxaVnheTXzNgSp6uJqrY6/SrB1pXp3UvY0sGpilL0Qk1thPDn2vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZ1Kex7B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B931C433C7;
-	Wed, 21 Feb 2024 01:59:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708480793;
-	bh=sEkCxHX6RnAczbZivO5ymv01uGSyS7puhDorwgbbBbo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sZ1Kex7BbWPkjHWC8fZf6PW1rYnJzz3Sqgpz77CtVwj5WhIsBJBcWGDLnTfy7k7Q0
-	 l2c4YLtODQlIbNy/EHdd+TJtKuzxbJ79ZSPeaVViEvi+D8kHnFPVSP7gUicEL0hGMH
-	 7+c4ceU9asQttKPVBLGv7qIh6dl/5Tw3ZU2YTOO0LlyxKzePOyEzgFGBHGTUfEQWjb
-	 1YeRiNgRonvsUKlRk9Onys74vQrIEwtXoTfBsdkr6M/eHXDJzXMneHG9cJZbya7x8w
-	 fAMkcmib9Jlie5k44idY71rx3fiw9VrNtXHRoz0K5fqZTwMk3USkUdhmfkhrETZMuJ
-	 qa8bQFJ/UtapQ==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Samantha Alt <samantha.alt@intel.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	linux-kernel@vger.kernel.org,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Caleb Biggers <caleb.biggers@intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Perry Taylor <perry.taylor@intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Edward Baker <edward.baker@intel.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v1 00/30] perf vendor event and TMA 4.7 metric update
-Date: Tue, 20 Feb 2024 17:59:50 -0800
-Message-ID: <170848061724.1313505.6465396484131071224.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240214011820.644458-1-irogers@google.com>
-References: <20240214011820.644458-1-irogers@google.com>
+	s=arc-20240116; t=1708480804; c=relaxed/simple;
+	bh=/j03kTBhHuYv5hD6MBKvEOxeLJn8lDs/sfflH1ChU6k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=edKdxA+mX8fui2pJDBUnaTHpwiSgfcgeYbXy4g3WUzcUl/rYF+Srr8Yf6YU3+yvVv9WQ+hHcmOjQZePBNBxJbxOP2t9CdsPmIJd9Nsc/AzO52EG4WyAGk7I0j8kFiJur23/ZRo4bgvNPym4QtLlessMs3Xz876hp09OrE/WveEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=OTSfQgIG; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d4c11bd34so2157345f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1708480801; x=1709085601; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B0Xfrtyc6Fe2TP/mvUkjSY1AXhIKwaD0TJ4vwwuvGxU=;
+        b=OTSfQgIGlHX9tcFNUsWXNe4rSCwApq1CgniTDGp2dxiOYoGnaJX6miFKmwjsS9/4bQ
+         sOtAR5+7SfyBJ4IPTjNhr1ciFet7fwQwq2URKUkR8ytSjtQyF+sQTu01yv+YWCkDlENM
+         HtGor0vTfx2EmDAAcmqxoU70kPgex/LZlKLk3at80mLSIh1gq1x9PEBH0mkB1hY3Uw70
+         +vUyD1+i2VRphTwYULFTi/llsIjgGZc4J9lUHPezzMtiy8hYYaQyTMcp4czEcQtWvVuS
+         2H11p+ZWwSvuLwKQ5+WAxScCHIGr62Cm3dwZuApS1vhOkebIM4is464236mt2jhIfL8z
+         acDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708480801; x=1709085601;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B0Xfrtyc6Fe2TP/mvUkjSY1AXhIKwaD0TJ4vwwuvGxU=;
+        b=dhgC6nS6MCs+gkjFr954rNdYWlanklSHFTQKaWQykpOp+TFeL8U5mlzZBBoh+lOa3C
+         kF8Odi6qDotyxareSKxuhRcd1D3ZbjMsKty8XFhdSljKfRoU+PCltvQHCl6JCoHOS22Z
+         sbGzhDBmWbEHpL6BLUOnLpbB9+ox3l4s+WQ/d6nryGQDy8QfR7RqQb8X2sUvOuJaquap
+         6oZY+D6mrRpTxJf7cdBlYKJZLEnNOIOXF1I31OpeYjsAfmUTKzo2KJirRkHQFsEZgSEW
+         xTjYug8DnGoYb5Qj0lZxorwYcFtvGZNYP93kdxIXnDPYTGEkHuCduvoiLODAE7V26tOG
+         5NSQ==
+X-Gm-Message-State: AOJu0YxjGTk7r7dgJmO5uTrya29INo3bLy+0zNOL9uZ/fRwWuHh6JvWZ
+	MPR0KqotRLmRZZlPwrmSfgra/KAOnoI23EajVM6l4g2Bm+t1UFetiJdSUvwZ9g==
+X-Google-Smtp-Source: AGHT+IHvBifN3KTXMY5XE5gInJfW2utknZtISjSR9rcpEniYiyxK6aT650VKdIao0/vIclIH/Pxydw==
+X-Received: by 2002:a5d:64c8:0:b0:33d:545b:a74 with SMTP id f8-20020a5d64c8000000b0033d545b0a74mr7815004wri.33.1708480800941;
+        Tue, 20 Feb 2024 18:00:00 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id z11-20020a1c4c0b000000b0040fd3121c4asm16018618wmf.46.2024.02.20.17.59.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 18:00:00 -0800 (PST)
+Message-ID: <1027d6bc-f4c7-4da5-bf46-3809b7c487d4@arista.com>
+Date: Wed, 21 Feb 2024 01:59:53 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation/ftrace: Correct wording on trace_options
+ sharing
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, Dmitry Safonov <0x7f454c46@gmail.com>
+References: <20240220-ftrace-options-docs-v1-1-95448f535056@arista.com>
+From: Dmitry Safonov <dima@arista.com>
+In-Reply-To: <20240220-ftrace-options-docs-v1-1-95448f535056@arista.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 13 Feb 2024 17:17:49 -0800, Ian Rogers wrote:
-> The first 12 patches update vendor events to those in:
-> https://github.com/intel/perfmon
-> 
-> The next 18 patches update the TMA metrics from version 4.5 to version
-> 4.7. This includes improvements to many models like the
-> tma_info_bottleneck* metrics, an abstraction or summarization of the
-> 100+ TMA tree nodes into 12-entry familiar performance metrics.
-> 
-> [...]
+On 2/20/24 21:00, Dmitry Safonov wrote:
+[..]
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index 7e7b8ec17934..c79a6bcef3c9 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -3603,9 +3603,9 @@ The files in the new directory work just like the files with the
+>  same name in the tracing directory except the buffer that is used
+>  is a separate and new buffer. The files affect that buffer but do not
+>  affect the main buffer with the exception of trace_options. Currently,
+> -the trace_options affect all instances and the top level buffer
+> -the same, but this may change in future releases. That is, options
+> -may become specific to the instance they reside in.
+> +most of the options are specific to the instance they reside in, but
+> +trace_printk, printk-msg-only and record-cmd are affecting all instances
+> +and the top level buffer, but this may change in future releases.
 
-Applied to perf-tools-next, thanks!
+Actually, it seems that at least on -next these 3 are not shared as
+well? (if my tests aren't misbehaving)
 
-Best regards,
--- 
-Namhyung Kim <namhyung@kernel.org>
+So, just remove the part about trace_options exception?
+
+Thanks,
+             Dmitry
+
 
