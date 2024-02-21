@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-75384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BAE985E7B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:43:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE0585E7B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:43:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B2E285A92
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:43:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F4A285A5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9AB129A8D;
-	Wed, 21 Feb 2024 19:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA7812B150;
+	Wed, 21 Feb 2024 19:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="byge+aaK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pThgaqqo"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737C7128365
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975AD1292E9
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708544470; cv=none; b=Jlm+mREVkCm9Dszjj4C9t0Uh6buuFk2W2xs2rNIjsvh6w0y8PTxBJuaAbw40auMLWrUwIFVAaTK4Ak7wkD3pjYpxguYtMU9zvY5R/mfCjbpHpJvaaeWQ3JJjVIuxhW3eTas9d0sIkLwMXIV9Xh0V7ce4f2Or1DL6fL0NbUCthgU=
+	t=1708544472; cv=none; b=Lj2iC6xHHrzR8H0QQdoSIWKp8Q3le1q4AteTnkRUAVEK4GzvFFBApAuOYKWOOIdlBYDiasA2MpMjsKBFyQufgyakiJjJhLHlMAbsUj+4XxjDH/THQe+ahp/CMX8z8iJMomj/6ZmO0KYI5rfO9GzfwoJsEwwJixBHAV+qJQAwJ9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708544470; c=relaxed/simple;
-	bh=Z0uieU1Hw2qDymgn+R30jj728IuRbiBIVd6A3QTsoEg=;
+	s=arc-20240116; t=1708544472; c=relaxed/simple;
+	bh=3SDYPCdVYkdl44Xy2RE9TEi2A/qtXKzD+8kZ+amgz8s=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NXf1CZBe7U49o3+/7ve+tcQObkxReQ2ibv+4MeiuqB7Ma4klPeYzxTtGrLeDm/atjxxuWIRjdWyqcpcwjWvMDGjnpG/2fJ3U/G86mfJ7TMbFExDGFv3mvXZemhBLulCRCrsQ7pGrlp/JFp4nXtW5kK+sKlrd2Aoh9pRIQh2r6GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=byge+aaK; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=A0q8rDMoEguAUP2tdNZW5Ug+ECw0V0RcxuBqAzaCK7qUC+wRbUnIcWTv+rGumKd+2DYJjWEbEuuRKRYPethqBtFogyS7F29gabKiX1yD1YUdP6POO7W6+GB0A+XPyaeJ5tH+4/cFySyC4Gvg1lw7pl6x5CMJg2Vlaa8bWuLeToY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pThgaqqo; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6047fed0132so108263297b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:41:08 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-607cd6c11d7so104094227b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:41:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708544467; x=1709149267; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=14sostfgXdBtkigrgclSIrhsv4NljUYVKVXEohyvFzI=;
-        b=byge+aaKKirc/1HtrNjKyqcEh1JvgEDAfzILDPbokj0bGNmdMzHMyliJoEP6JRJ+qk
-         bhGiYyCwGhDZTEOKGxj+ABhC9mVdMWWHv6GtmMuN7ybSvKpU8Mc2FfbA9zcdorlH0cUO
-         /L6GVNl9T1n0I9asPP9NvNY5yWPUtwerWFneQlK/tLXWQ0Uj0Y7AxBagPMg6rZywoPSr
-         DjvV3RRrSoPKkW9TkKqtxhnHY/39vU560lNYeMS9SS340Xh+dtqnHhO3nGEnyfghptt7
-         l4vhmHvMk3ulYJQO++e6PAVqPtel0Zx0cTfWBxhcj+Ilqp8YAQYPCxDi8/df4KQ+bWLa
-         +R9Q==
+        d=google.com; s=20230601; t=1708544470; x=1709149270; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QzsUMX2xNFk2gXovx8vmt7vEJ3oqQRqP0H0Mn26pLn0=;
+        b=pThgaqqotzhxkqOFd8QfHbkwpwYhafp/KVNWpbY4ncOi0zF1tEQE5+waQMZfVpBzCS
+         ZqNiLb2uaIu5ejqUuMpbmOukA/zaMQ4Zbi2U5SCTA8PMpBU4sm6son44668yHr8L+Vps
+         QSBDXs3jFyOsStesxHeBftFuoHeFrSHFhoM2zERX1CEM8h6w08tw2Qc5IY4mqo6/eyCh
+         fT9I4CqPLQgJE8NwMZvbR1XkTTyoaIYAVhwaquzZYLN8+403clL9xctRfmKRf8kXI89L
+         2INF5tjggBrX2SFYKtPtMdIVR0FAObyqhTH8LAq51+ml9vcnodmcHl8SueDUKEre3a6P
+         l/MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708544467; x=1709149267;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=14sostfgXdBtkigrgclSIrhsv4NljUYVKVXEohyvFzI=;
-        b=DqFmBJhJNQSdVFtibgHdZzOSlFAc7GiFDME9oZnmHYRLCGmtZpH6xhM97+6LYrHLF3
-         qE/TCo/k9cJPS0iOAWS1gUqA7QenKGazi2P3cYdezZDlOgwufeKV1XXtZxWHvs/BNVut
-         SAebAQ0m4Tk6x/ykNCkT0qpw5+lav/9V1y5xmFUldPIVayYL9STBx97j1wIEuszU2pNP
-         ffp5R4vl6iQpJ94WhISUr4oh1fb1QewkFWzBYMMuD8zoyteh/M1b+oawzTJNDYGfK+ZD
-         5D3kjsajgC7dCtqjWSzB7fAix5vYcYXrNPK3zMD4JIfhOKDi0oUH0Dhfg4MQxMxtjoQd
-         EslQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3/6JRELPgE0JoRJN9QE8NA7Fsi6M7o9PCndYh3yDEPVS2ZoHJyYOEgL0X1qJsF/KTrFPYtojdVpzdgZZa76Roe3i+Eknjmuy9+6T5
-X-Gm-Message-State: AOJu0YzrqQxgQ0wNOvqnFiEDJJa4uSyGMMzPc+FSvyv0gbXB6X7s0fnd
-	v6fmezvNOV2aBTRaHASn8YTx672AmFf09mccx2V+KUhDqiZ1iltqmbVWFKHho6O59KuPiUpD32j
-	ecg==
-X-Google-Smtp-Source: AGHT+IEg8J3/Tgw3rQ0HmvocmCN1KEaF26PclNShE/JXdkinKLyGnMcr7oBUIgKaZkEgV9b6wmo43w0h+Rc=
+        d=1e100.net; s=20230601; t=1708544470; x=1709149270;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QzsUMX2xNFk2gXovx8vmt7vEJ3oqQRqP0H0Mn26pLn0=;
+        b=HnIA3+wxYKB8OdCjLOFx+msKmQRSh7PnLsUdjB91Z6NAV2RQG0JvJ8K24fmtvWQd0f
+         BKnXYEi7h9S847mPKrhNNMEWQlRIIKcg7/X5eCKFpzlVQ/YtJWyT0/LgTXsYXKiYpCxa
+         3b99LPOBbBGX4zTZLGR9KIkDmb6cQTSSiOLV5cF/kXrk7jiDNHJLSGyT/dl8fFq4KQv3
+         aznzZE5fpBhdts87vgqSVIly5a4I/clQJe0Yy9uE33dl7ehBWb5HHkQUT0BanUzyPx4a
+         W+QQetGskon60f2C4dEAZqZd4xR1Kq/cz6FjECBAsHEGimbw+dePaknT92Sdjpt+sm0V
+         nrVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfBCyIEc1LRPj+FGZR9i1Sr9ArAnAvX9X5UGla4Hnhf+yG4xbWnFywKYgm4eZH29CLT8oKNHDwmIsI3SE2hMtoJuO3GAQJh5h6Rl+q
+X-Gm-Message-State: AOJu0YyPN2FvdokDW/wICP5z+1SBdlKqPegf+rC/0az4ADWZ9bopDtL0
+	KAQ4NlZl/h42tdECGcicsg9gNcaq0z65kDKkUlpKjbc/Ash0RGHo1fO257rQ8DYCqT7p7c2DTR6
+	GCA==
+X-Google-Smtp-Source: AGHT+IF7qn4ITZM6B47DxNzFWv3QLjl0M2+lztN5UUvu7bxl5t2P16qOZECK10ItUf59ZcZs0KUc+Z86KCU=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:953b:9a4e:1e10:3f07])
- (user=surenb job=sendgmr) by 2002:a05:6902:4c2:b0:dcc:4785:b51e with SMTP id
- v2-20020a05690204c200b00dcc4785b51emr10314ybs.12.1708544467498; Wed, 21 Feb
- 2024 11:41:07 -0800 (PST)
-Date: Wed, 21 Feb 2024 11:40:18 -0800
+ (user=surenb job=sendgmr) by 2002:a0d:e6c5:0:b0:608:801a:e66e with SMTP id
+ p188-20020a0de6c5000000b00608801ae66emr474072ywe.3.1708544469656; Wed, 21 Feb
+ 2024 11:41:09 -0800 (PST)
+Date: Wed, 21 Feb 2024 11:40:19 -0800
 In-Reply-To: <20240221194052.927623-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240221194052.927623-1-surenb@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240221194052.927623-6-surenb@google.com>
-Subject: [PATCH v4 05/36] fs: Convert alloc_inode_sb() to a macro
+Message-ID: <20240221194052.927623-7-surenb@google.com>
+Subject: [PATCH v4 06/36] mm: enumerate all gfp flags
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -101,41 +103,142 @@ Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
 	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
 	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
+	cgroups@vger.kernel.org, 
+	"=?UTF-8?q?Petr=20Tesa=C5=99=C3=ADk?=" <petr@tesarici.cz>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
+Introduce GFP bits enumeration to let compiler track the number of used
+bits (which depends on the config options) instead of hardcoding them.
+That simplifies __GFP_BITS_SHIFT calculation.
 
-We're introducing alloc tagging, which tracks memory allocations by
-callsite. Converting alloc_inode_sb() to a macro means allocations will
-be tracked by its caller, which is a bit more useful.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- include/linux/fs.h | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
+ 1 file changed, 62 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 023f37c60709..08d8246399c3 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3010,11 +3010,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
-  * This must be used for allocating filesystems specific inodes to set
-  * up the inode reclaim context correctly.
+diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+index 1b6053da8754..868c8fb1bbc1 100644
+--- a/include/linux/gfp_types.h
++++ b/include/linux/gfp_types.h
+@@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
+  * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
   */
--static inline void *
--alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
--{
--	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
--}
-+#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache, &_sb->s_inode_lru, _gfp)
- 
- extern void __insert_inode_hash(struct inode *, unsigned long hashval);
- static inline void insert_inode_hash(struct inode *inode)
--- 
+=20
++enum {
++	___GFP_DMA_BIT,
++	___GFP_HIGHMEM_BIT,
++	___GFP_DMA32_BIT,
++	___GFP_MOVABLE_BIT,
++	___GFP_RECLAIMABLE_BIT,
++	___GFP_HIGH_BIT,
++	___GFP_IO_BIT,
++	___GFP_FS_BIT,
++	___GFP_ZERO_BIT,
++	___GFP_UNUSED_BIT,	/* 0x200u unused */
++	___GFP_DIRECT_RECLAIM_BIT,
++	___GFP_KSWAPD_RECLAIM_BIT,
++	___GFP_WRITE_BIT,
++	___GFP_NOWARN_BIT,
++	___GFP_RETRY_MAYFAIL_BIT,
++	___GFP_NOFAIL_BIT,
++	___GFP_NORETRY_BIT,
++	___GFP_MEMALLOC_BIT,
++	___GFP_COMP_BIT,
++	___GFP_NOMEMALLOC_BIT,
++	___GFP_HARDWALL_BIT,
++	___GFP_THISNODE_BIT,
++	___GFP_ACCOUNT_BIT,
++	___GFP_ZEROTAGS_BIT,
++#ifdef CONFIG_KASAN_HW_TAGS
++	___GFP_SKIP_ZERO_BIT,
++	___GFP_SKIP_KASAN_BIT,
++#endif
++#ifdef CONFIG_LOCKDEP
++	___GFP_NOLOCKDEP_BIT,
++#endif
++	___GFP_LAST_BIT
++};
++
+ /* Plain integer GFP bitmasks. Do not use this directly. */
+-#define ___GFP_DMA		0x01u
+-#define ___GFP_HIGHMEM		0x02u
+-#define ___GFP_DMA32		0x04u
+-#define ___GFP_MOVABLE		0x08u
+-#define ___GFP_RECLAIMABLE	0x10u
+-#define ___GFP_HIGH		0x20u
+-#define ___GFP_IO		0x40u
+-#define ___GFP_FS		0x80u
+-#define ___GFP_ZERO		0x100u
++#define ___GFP_DMA		BIT(___GFP_DMA_BIT)
++#define ___GFP_HIGHMEM		BIT(___GFP_HIGHMEM_BIT)
++#define ___GFP_DMA32		BIT(___GFP_DMA32_BIT)
++#define ___GFP_MOVABLE		BIT(___GFP_MOVABLE_BIT)
++#define ___GFP_RECLAIMABLE	BIT(___GFP_RECLAIMABLE_BIT)
++#define ___GFP_HIGH		BIT(___GFP_HIGH_BIT)
++#define ___GFP_IO		BIT(___GFP_IO_BIT)
++#define ___GFP_FS		BIT(___GFP_FS_BIT)
++#define ___GFP_ZERO		BIT(___GFP_ZERO_BIT)
+ /* 0x200u unused */
+-#define ___GFP_DIRECT_RECLAIM	0x400u
+-#define ___GFP_KSWAPD_RECLAIM	0x800u
+-#define ___GFP_WRITE		0x1000u
+-#define ___GFP_NOWARN		0x2000u
+-#define ___GFP_RETRY_MAYFAIL	0x4000u
+-#define ___GFP_NOFAIL		0x8000u
+-#define ___GFP_NORETRY		0x10000u
+-#define ___GFP_MEMALLOC		0x20000u
+-#define ___GFP_COMP		0x40000u
+-#define ___GFP_NOMEMALLOC	0x80000u
+-#define ___GFP_HARDWALL		0x100000u
+-#define ___GFP_THISNODE		0x200000u
+-#define ___GFP_ACCOUNT		0x400000u
+-#define ___GFP_ZEROTAGS		0x800000u
++#define ___GFP_DIRECT_RECLAIM	BIT(___GFP_DIRECT_RECLAIM_BIT)
++#define ___GFP_KSWAPD_RECLAIM	BIT(___GFP_KSWAPD_RECLAIM_BIT)
++#define ___GFP_WRITE		BIT(___GFP_WRITE_BIT)
++#define ___GFP_NOWARN		BIT(___GFP_NOWARN_BIT)
++#define ___GFP_RETRY_MAYFAIL	BIT(___GFP_RETRY_MAYFAIL_BIT)
++#define ___GFP_NOFAIL		BIT(___GFP_NOFAIL_BIT)
++#define ___GFP_NORETRY		BIT(___GFP_NORETRY_BIT)
++#define ___GFP_MEMALLOC		BIT(___GFP_MEMALLOC_BIT)
++#define ___GFP_COMP		BIT(___GFP_COMP_BIT)
++#define ___GFP_NOMEMALLOC	BIT(___GFP_NOMEMALLOC_BIT)
++#define ___GFP_HARDWALL		BIT(___GFP_HARDWALL_BIT)
++#define ___GFP_THISNODE		BIT(___GFP_THISNODE_BIT)
++#define ___GFP_ACCOUNT		BIT(___GFP_ACCOUNT_BIT)
++#define ___GFP_ZEROTAGS		BIT(___GFP_ZEROTAGS_BIT)
+ #ifdef CONFIG_KASAN_HW_TAGS
+-#define ___GFP_SKIP_ZERO	0x1000000u
+-#define ___GFP_SKIP_KASAN	0x2000000u
++#define ___GFP_SKIP_ZERO	BIT(___GFP_SKIP_ZERO_BIT)
++#define ___GFP_SKIP_KASAN	BIT(___GFP_SKIP_KASAN_BIT)
+ #else
+ #define ___GFP_SKIP_ZERO	0
+ #define ___GFP_SKIP_KASAN	0
+ #endif
+ #ifdef CONFIG_LOCKDEP
+-#define ___GFP_NOLOCKDEP	0x4000000u
++#define ___GFP_NOLOCKDEP	BIT(___GFP_NOLOCKDEP_BIT)
+ #else
+ #define ___GFP_NOLOCKDEP	0
+ #endif
+-/* If the above are modified, __GFP_BITS_SHIFT may need updating */
+=20
+ /*
+  * Physical address zone modifiers (see linux/mmzone.h - low four bits)
+@@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
+ #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
+=20
+ /* Room for N __GFP_FOO bits */
+-#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
++#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
+ #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
+=20
+ /**
+--=20
 2.44.0.rc0.258.g7320e95886-goog
 
 
