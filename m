@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-75228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C807485E4EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FC785E4EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE9281C239A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:52:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33ACA1C23A15
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F8B84FD7;
-	Wed, 21 Feb 2024 17:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443F184FDC;
+	Wed, 21 Feb 2024 17:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="OcvIKM4U"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bhT4zPJ1"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B5582865
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020F384052
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537936; cv=none; b=GJHXh89d4rsD/h0Plw6rwYMHx2VuSs9ec6I7SFc033U2w1SgLp/I4Og9AC5lmZ9U00DU06jbfp/2CSwU2wv84qL2K6uLvTo2eB8/QE+EdUiPBLTAKqtUwVa8/lw2EVaeEcqtv0a/cOEyG12JCPGAAmeJU7llClyFgMx/4R5X2lE=
+	t=1708537936; cv=none; b=VIKD0hP9jvh0Bgt6aXXRITkkIDsqEER+8yZ7tGk5QAE51njUCxa7Engly8TxCNQ4F783z6To6mE34/bAug78O15FMYWnuNRYClymmclqTi/YhfWRHRiMlnnJk638ULmrNDWQrny1iCCpkisjCo3yK8kTDkfbqUrWlDos1JjTd2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708537936; c=relaxed/simple;
-	bh=rI+UFBLzHgh5osY1C+DB3EoIdb5NuomFAo9d4P0bbRs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r+CBmjWzYtf+rszLgSPGieRVrw2t+XO7o6zJDhjUS0z5pc6SSnK5gVdhlqxqHInF9BoHDXmsvfpGLV2fPnvmkSD2VA58sTrD2G9Fa+i44Tsz0PR5wsS+oRw9NDKyslQ6wtfkjz4VzuTwXbUYv6xu72qO9lMOFveF/zsQmlHxp34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=OcvIKM4U; arc=none smtp.client-ip=209.85.214.182
+	bh=tZ7ZR1nkA/EFD6K9KNCEcHnkRImuMCfdTQ5YwENITDw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZrDhAkr6gBi6UUm6iVk7wQU+3zuf+VHEdBNQD14ryp8cWl86VmReNf3sCNp5NN6wtSa7ClUSh5yt/6Xc4oFj/sPWjeVgEuDzZdbV8My7eT3Bc/GfbQ0URMQ1+ziMoCjwX8sZ+lvKQmw1ZemZb2gfbU+o6qWzFTwvjNv3nEdOQKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bhT4zPJ1; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d918008b99so57646435ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:52:13 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d932f6ccfaso58227545ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:52:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1708537933; x=1709142733; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5V8y3dySFl8kdmMCLan3vQixGPkJBiAZiaFJHDPmSXw=;
-        b=OcvIKM4Uf0WoTJ2OjOhpb7hR1He3GV1/B4b3A6C4INqKAK5r/bvVqVT3Lmtod+5rUg
-         0lz0ZOM5REfDMkFcT2AG9b+DYdPCxweX/Gs2boFEo/Ai2pcfy0NQFwJ1/edOVcWAR0jt
-         viwJbUxHKNFX3J7VD7M5lTxjR7QezjgRh7b4OZZTkYrJ2owvd2WP/wMhPNKi8DXUDASt
-         3FEJ9w2Ue9xw7PxkdZbk+eR5pWE23vksovNxUeKwjgcyw7R0groru3G8DUk8r6r9SeSO
-         cMYSo7QTz+1PjVbn45ssnyg9P15LO6VVfSCZif5gjxljGPLoL7jVGzzoxoIl87U9JFiW
-         y9LA==
+        d=kylehuey.com; s=google; t=1708537934; x=1709142734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q+DfUwTrji+JiliVaosYGzYtaY7yoOzYOgDQgUlYBFM=;
+        b=bhT4zPJ1KFUJzAlSHukomfjbC+A4tFZLm0WucBPFXI8g90T5L5ygrojSJFuKyIoqqn
+         6Z7AiYfFfnSgkqAnBEZf+NM4S/VJQFoF4kYGhEXXI2/vDSK+97OEjc1bJTGgS8d4m5C3
+         LMeMTQxLhRLS6wmfU1PHtu5ssuiZK79ry82hMRaAVUeZd2txLiIIfTpBJJCd/zbYa0bz
+         JF03aUHrCe4RvT1gYpKB04Juj1WKE9dGXW1Wo3QwhWIJysbOwuV8hVWcEkEmNtLuWTE2
+         m/09lswBxDRTCX8EMWs8wm5olDvSs/eOzCAV7ZQEslXJpC3uZqaQihhDeXEN4KeJ4gk/
+         0eNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708537933; x=1709142733;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5V8y3dySFl8kdmMCLan3vQixGPkJBiAZiaFJHDPmSXw=;
-        b=DZPrvCcbWrS6BX9kz/wvnYGAXqoMWD05L2fppqOe3S+kJ2rMNsR6ua0RG6iMh1Oh+v
-         ObutY5JrtJqpAEPHKbAl681UnlelNETWW4cwx0NMwjoH1l3wfGGvIlMAbR5ornR+Erll
-         6GAR/jdzI2TXP+VvwItA2udyLev4qNSzU4Z1m6rTNGyPTtV068EHAcBGnAFqSP+xoPvL
-         I4UqzoVDwB/K8AtglwWbRxc2P653Dj2u3QsZCvY8loSfLXXtWZNmNiQUcTZd9n52ga+X
-         CePjELD+yRleKTcI5bb5FksFMEnd4zrLwsW7uM07blk7bxtUEaWuDzULI/x4FVuStjke
-         49kA==
-X-Forwarded-Encrypted: i=1; AJvYcCVSjg6hJLsp7KuCqSOM3J1uZAiIU3JGXH86myTolHV0UAaGptFDrO3sm8fvoVCpTnXWtQt+Uq9JsRODSgXvTUVJoRcCqj1Pavica65K
-X-Gm-Message-State: AOJu0YyhCwMSoU5p/08efTaHhftqEOQEgEFQrohkWoOa/lgqHkI3M7ep
-	MGIjoC6G2kvWZULkoaiqpDJYiuPIFxAriRQVLi95TgvBy8c1MdW1BlMlb9Y5xA==
-X-Google-Smtp-Source: AGHT+IGW8WYnnvJLYkMaaoUrrD89EyF1j7SjyCLvgEkswY7dZasilkjwVId/1YGCSZSr4OIgcKfI2A==
-X-Received: by 2002:a17:902:d508:b0:1db:d3d7:88a7 with SMTP id b8-20020a170902d50800b001dbd3d788a7mr11668295plg.49.1708537933064;
-        Wed, 21 Feb 2024 09:52:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708537934; x=1709142734;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q+DfUwTrji+JiliVaosYGzYtaY7yoOzYOgDQgUlYBFM=;
+        b=wzhH+7NCWK7gv7WRXRiFp2smGn4atbCyoY9HRNHEEzPpcsiJrsZYpzSEKGnWKHxWuD
+         zpmyyMvVxq/xEvcpkBV7CFKwAV8/XeC8WC6W2P5SJK2R7UvXBXsehX7k8iV8c/cebefA
+         K8FR4VgRwtBcPKo7zeTb2QXiWk+Ef41bp355RD2mLeT7Ijazn2eldwRnDofONCNlPwyh
+         NPVh6COEQ4nUqw6KcoHBj6WHuXwTlXEZd6fe0ntjSrEXOGBO1vD0P793oA7yJXFLVkqs
+         TGq9QjVXFZSU86/yBWHaqIKMtjipCzqEAJxv5s0ZMA4ltoQowFaIfVXlfd9SoCKI0vMV
+         6sig==
+X-Forwarded-Encrypted: i=1; AJvYcCW9I/93xdFnrPhteUe1Mmcea6Ie089SQ62AMINSb+r6NV5taNsNpQzHHpKMQ5pn/MS70LMr6aYeT0hhSI4JKyU0kXOfgIVmH+bz81Fk
+X-Gm-Message-State: AOJu0YxwrX+jIFWG7LphoytD/VMGexYKhPBIww9VnXn3UkoEIPwJeC0f
+	RI/blqyOnTmG242Ea3hRVuKp3e2KLOgVxXkEUtvJAy7KmwMuujk5rWFZFUT5qg==
+X-Google-Smtp-Source: AGHT+IEMLU7YlYaKGvZrOKY9ernOTo0nAZJnhvm6P2wOHB9H+omxxzWRQx6k/HLr6Y5NNsPFHHF+zg==
+X-Received: by 2002:a17:902:eccf:b0:1db:f513:28cf with SMTP id a15-20020a170902eccf00b001dbf51328cfmr11635532plh.23.1708537934363;
+        Wed, 21 Feb 2024 09:52:14 -0800 (PST)
 Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902e9c600b001d706e373a9sm8312596plk.292.2024.02.21.09.52.11
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902e9c600b001d706e373a9sm8312596plk.292.2024.02.21.09.52.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 09:52:12 -0800 (PST)
+        Wed, 21 Feb 2024 09:52:13 -0800 (PST)
 From: Kyle Huey <me@kylehuey.com>
 X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
 To: Kyle Huey <khuey@kylehuey.com>,
@@ -79,10 +81,12 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] perf/ring_buffer: Trigger FASYNC signals for watermark wakeups
-Date: Wed, 21 Feb 2024 09:52:09 -0800
-Message-Id: <20240221175210.19936-1-khuey@kylehuey.com>
+Subject: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
+Date: Wed, 21 Feb 2024 09:52:10 -0800
+Message-Id: <20240221175210.19936-2-khuey@kylehuey.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240221175210.19936-1-khuey@kylehuey.com>
+References: <20240221175210.19936-1-khuey@kylehuey.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,66 +95,184 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-perf_output_wakeup() already marks the perf event fd available for polling.
-Add code to trigger IO signals with FASYNC too.
+The test uses PERF_RECORD_SWITCH records to fill the ring buffer and
+trigger the watermark wakeup, which in turn should trigger an IO
+signal.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- include/linux/perf_event.h  | 8 ++++++++
- kernel/events/core.c        | 8 --------
- kernel/events/ring_buffer.c | 3 +++
- 3 files changed, 11 insertions(+), 8 deletions(-)
+ tools/perf/tests/Build              |   1 +
+ tools/perf/tests/builtin-test.c     |   1 +
+ tools/perf/tests/tests.h            |   1 +
+ tools/perf/tests/watermark_signal.c | 123 ++++++++++++++++++++++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100644 tools/perf/tests/watermark_signal.c
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index c8bd5bb6610c..c077968d7e52 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1914,4 +1914,12 @@ static inline void perf_lopwr_cb(bool mode)
- }
- #endif
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index 53ba9c3e20e0..de43eb60b280 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -67,6 +67,7 @@ perf-y += sigtrap.o
+ perf-y += event_groups.o
+ perf-y += symbols.o
+ perf-y += util.o
++perf-y += watermark_signal.o
  
-+static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
+ ifeq ($(SRCARCH),$(filter $(SRCARCH),x86 arm arm64 powerpc))
+ perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 4a5973f9bb9b..715c01a2172a 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -124,6 +124,7 @@ static struct test_suite *generic_tests[] = {
+ 	&suite__event_groups,
+ 	&suite__symbols,
+ 	&suite__util,
++	&suite__watermark_signal,
+ 	NULL,
+ };
+ 
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index dad3d7414142..7ef4e0d0a77b 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -146,6 +146,7 @@ DECLARE_SUITE(sigtrap);
+ DECLARE_SUITE(event_groups);
+ DECLARE_SUITE(symbols);
+ DECLARE_SUITE(util);
++DECLARE_SUITE(watermark_signal);
+ 
+ /*
+  * PowerPC and S390 do not support creation of instruction breakpoints using the
+diff --git a/tools/perf/tests/watermark_signal.c b/tools/perf/tests/watermark_signal.c
+new file mode 100644
+index 000000000000..ae4abedc4b7c
+--- /dev/null
++++ b/tools/perf/tests/watermark_signal.c
+@@ -0,0 +1,123 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stddef.h>
++#include <signal.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <errno.h>
++#include <fcntl.h>
++
++#include "tests.h"
++#include "debug.h"
++#include "event.h"
++#include "../perf-sys.h"
++#include "cloexec.h"
++#include <internal/lib.h> // page_size
++
++static int sigio_count;
++
++static void handle_sigio(int sig __always_unused)
 +{
-+	/* only the parent has fasync state */
-+	if (event->parent)
-+		event = event->parent;
-+	return &event->fasync;
++	++sigio_count;
 +}
 +
- #endif /* _LINUX_PERF_EVENT_H */
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index a329bec42c4d..36b5fbdf8e6e 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6684,14 +6684,6 @@ static const struct file_operations perf_fops = {
-  * to user-space before waking everybody up.
-  */
- 
--static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
--{
--	/* only the parent has fasync state */
--	if (event->parent)
--		event = event->parent;
--	return &event->fasync;
--}
--
- void perf_event_wakeup(struct perf_event *event)
- {
- 	ring_buffer_wakeup(event);
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index 60ed43d1c29e..033e54bb5c62 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -22,6 +22,9 @@ static void perf_output_wakeup(struct perf_output_handle *handle)
- 	atomic_set(&handle->rb->poll, EPOLLIN);
- 
- 	handle->event->pending_wakeup = 1;
-+	if (*perf_event_fasync(handle->event) && !handle->event->pending_kill)
-+		handle->event->pending_kill = POLL_IN;
++static void do_child(void)
++{
++	for (int i = 0; i < 20; ++i)
++		sleep(1);
 +
- 	irq_work_queue(&handle->event->pending_irq);
- }
- 
++	exit(0);
++}
++
++static int test__watermark_signal(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
++{
++	struct perf_event_attr attr;
++	struct perf_event_mmap_page *p = NULL;
++	sighandler_t previous_sigio = SIG_ERR;
++	pid_t child = -1;
++	int fd = -1;
++	int ret = TEST_FAIL;
++
++	previous_sigio = signal(SIGIO, handle_sigio);
++	if (previous_sigio == SIG_ERR) {
++		pr_debug("failed setting SIGIO handler\n");
++		goto cleanup;
++	}
++
++	memset(&attr, 0, sizeof(attr));
++	attr.size = sizeof(attr);
++	attr.type = PERF_TYPE_SOFTWARE;
++	attr.config = PERF_COUNT_SW_DUMMY;
++	attr.sample_period = 1;
++	attr.disabled = 1;
++	attr.watermark = 1;
++	attr.context_switch = 1;
++	attr.wakeup_watermark = 1;
++
++	child = fork();
++	if (child == 0)
++		do_child();
++	else if (child < 0) {
++		pr_debug("failed fork() %d\n", errno);
++		goto cleanup;
++	}
++
++	fd = sys_perf_event_open(&attr, child, -1, -1,
++				 perf_event_open_cloexec_flag());
++	if (fd < 0) {
++		pr_debug("failed opening event %llx\n", attr.config);
++		goto cleanup;
++	}
++
++	if (fcntl(fd, F_SETFL, FASYNC)) {
++		pr_debug("failed F_SETFL FASYNC %d\n", errno);
++		goto cleanup;
++	}
++
++	if (fcntl(fd, F_SETOWN, getpid())) {
++		pr_debug("failed F_SETOWN getpid() %d\n", errno);
++		goto cleanup;
++	}
++
++	if (fcntl(fd, F_SETSIG, SIGIO)) {
++		pr_debug("failed F_SETSIG SIGIO %d\n", errno);
++		goto cleanup;
++	}
++
++	p = mmap(NULL, 2 * page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	if (p == NULL) {
++		pr_debug("failed to mmap\n");
++		goto cleanup;
++	}
++
++	if (ioctl(fd, PERF_EVENT_IOC_ENABLE, 0)) {
++		pr_debug("failed PERF_EVENT_IOC_ENABLE %d\n", errno);
++		goto cleanup;
++	}
++
++	sleep(30);
++
++	ret = (sigio_count == 1) ? TEST_OK : TEST_FAIL;
++
++cleanup:
++	if (p != NULL)
++		munmap(p, 2 * page_size);
++
++	if (fd >= 0)
++		close(fd);
++
++	if (child > 0) {
++		kill(child, SIGTERM);
++		waitpid(child, NULL, 0);
++	}
++
++	if (previous_sigio != SIG_ERR)
++		signal(SIGIO, previous_sigio);
++
++	return ret;
++}
++
++DEFINE_SUITE("Watermark signal handler", watermark_signal);
 -- 
 2.34.1
 
