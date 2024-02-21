@@ -1,184 +1,124 @@
-Return-Path: <linux-kernel+bounces-74133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E29F85D04D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:15:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C67A85D052
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:16:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F4711C23A3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:15:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B126CB24CAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2408239FFE;
-	Wed, 21 Feb 2024 06:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889BC39FEE;
+	Wed, 21 Feb 2024 06:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Eloji9zY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VLDqXc/E"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9ED239FD7
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0179A35
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708496133; cv=none; b=rpOPy7k3kcuCkR7vAzriZY3QCjh+oOYjiyxNCx7gPRu/IvUd4dfG3WuXj7tLM+I5/S9JI0J8qJpCtsIYkEetdD6EW7qtNIwRF7fEAm7Ineq30TERHzywHKTAqFQxhM52QwHpoDA4DNZbZshMGyw6JDNau5uFCoJioSIqe0XVgH0=
+	t=1708496198; cv=none; b=tJ7YoMUmP6PG9l9UZs5T7FBoa6CFzldgYg/ZF7A66C1BXDyn2u+WaIGfwK2SKIVTxtje2BawOzKDxFXyvQBQmdohQHI7BIuXz+tuyjFiYfcqfhudYwKRF3wInr4KnueZUHGWO2Z+LMC3d6GIL/If755Lu4G5CD6ELqHINA6siDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708496133; c=relaxed/simple;
-	bh=SDe3bR6/TlqWOlbdFv3L2ztVWoTT66bjZktzp3aZjLc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jCl84/pCN3e2iOQd6UIIY4UBgX7/1rDUdJh/p2z6A//Au2fQFtE7ldQjAV1LH1BwKrF6mNffcpdw7ocm4wjOeKIgwyDhDXCK9Wh2r09fTOOXXWpAEU6CKATKBmhAcmNwCHKmH7ghQs1L+EkHy+TGl+diYppiWiO/uF4dVGXUpiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Eloji9zY; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708496131; x=1740032131;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=SDe3bR6/TlqWOlbdFv3L2ztVWoTT66bjZktzp3aZjLc=;
-  b=Eloji9zYefCPAUwJFkwmrOgdsLWkcmZk6zueuEkK3TeUfwcXR6H2QAbr
-   I28cs5IpQ5Ep/g39E0Xek/CwvTSxXbN3MYKI4tHDw64F15V/Pgud7iohN
-   KziNiWOfwDe3guFYXwQyVN2QL8Qo9EaavXQCaK72z6Zb4IdQwRNO4ctuq
-   +nchksMTNGj477vV9H5Yiu9kViZhreX1ptz+tiNEaDfjRKXjJru/j+aC4
-   O/a4jm4T2ayFU9ZfetCA+mhFwZksB1b/QoMOpiYjxqYBIHYOD8GsB2ss+
-   Lnc5ULwv7TzfcWt9CnQ4zb48hplGDvA6lHvgkDs6FNHwFOdtK2S20GqQZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="20177488"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="20177488"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 22:15:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="5391553"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.203]) ([10.249.171.203])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 22:15:27 -0800
-Message-ID: <5f23b7b7-c76f-4076-b12d-909ddddd7905@linux.intel.com>
-Date: Wed, 21 Feb 2024 14:15:24 +0800
+	s=arc-20240116; t=1708496198; c=relaxed/simple;
+	bh=lHfFTbKGGvFdck/rmrAXH594b/eXCNIyVcujZgd1IsE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l6MlVcU5zjQT7bIstzs83IOkxHH7pv54Xlsbmr425RgiD8hw8v3H6DpIZ4gJe4fRkEkq8IW6nDToDcJ+t9JtfxCPNqjj+wWXNayC9xVkW691p157OwfMX8i/uwxNP5WF3X2IAcx8ySX4my4kpn5UB67llRmzS/ac6ATqCcl6Bhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VLDqXc/E; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a34c5ca2537so22763366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:16:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708496195; x=1709100995; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BBpDJD/8UR0M4A+lAq/lEBCPZtNQVXe2AMZez47aZ5k=;
+        b=VLDqXc/E4Z/ffpIEUfFI2GOqqp6Tmltb/q8/Bn2nrUbguo2+fvkTtX9J8Z3FQmDI7Y
+         VtMRU52U5f8EddfUagrNtKRTMypERR25m57/aRc8F2lc3wJ1k7msDC3Jbff2tIVvQkx1
+         22ZW5+70z3SFaAUDpbf+DsLFLP6u5fSpnGAhNAF90iQzVDkltMQxVX2QYQlnx2ZwtGyH
+         nW6ZcTwiJE6yl1tcZQMXwq84mV3afh7/6Qw5GtfckW+46JEL+Bv6hoCpcUFQZ2Ox1YS6
+         UkAxycYY+LBqbfgtjvwJir5SZQuHxQuhhSx8wV7DuoeDBpmRZpJWPYkDKf75IUGGMHoO
+         t+ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708496195; x=1709100995;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BBpDJD/8UR0M4A+lAq/lEBCPZtNQVXe2AMZez47aZ5k=;
+        b=xJjjGkf2N+sQfinD76Kt15Hy+AQPPLHW7aPlBMSZldjRAgc0q5DAjpT1MwTk7TOqe2
+         5g2+NoGhWDttKv564XgI0QaL1O1XDeABVudweAQtZDvQU2ygGRmSJcUHk5Ro8f79jak7
+         CqtFkCfIqb1x3mTN1EhPDGiOmHIpOCATmEs0PGN/TZhGTPb0pArTxskbF8rWLCqOMtFC
+         5ipoHsYoYR81UG1aD/ESxFPzhyXHXMcnfTU6BiP7mMgnRpBR4B0T0iILfE7uzQXKNypZ
+         1cBfMsaUKo3YO3r3YvWizJxiOCeEoifZ6VUZGpL8BzmTUeGCTC37uCSX0Vv56mAzUYMU
+         IQ1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXVK+p0ir93tGqCdE3Q+unQKIfVwhjGpXGC2bZDkOHUgZVjia3AdmcUqwvC3rV7Hs5pYJ506bNdMZT3oeJkQEJDfoMve2u9mRywW4KE
+X-Gm-Message-State: AOJu0Ywrp7v4Fgn7576R5tPVah9KQB1k0a6Go0xvsqcUsDvLxjIRkHmb
+	SMqFpUeHALCLZavy8MtRf9zoXnw32ILl8WaFUnzFj8PKbrmVfWmCEVBnKvCaheQ=
+X-Google-Smtp-Source: AGHT+IGSjRq7w4HlZKHtJgf/CLxLIPbnicGK4G0VfEkYa35QHuhw5fYTdppYKXMoYhBKVY732t8qKQ==
+X-Received: by 2002:a17:906:abcf:b0:a3f:2ffd:c683 with SMTP id kq15-20020a170906abcf00b00a3f2ffdc683mr736205ejb.62.1708496195279;
+        Tue, 20 Feb 2024 22:16:35 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id hw12-20020a170907a0cc00b00a3d11908bbcsm4534876ejc.203.2024.02.20.22.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 22:16:34 -0800 (PST)
+Date: Wed, 21 Feb 2024 09:16:31 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: William Zhang <william.zhang@broadcom.com>,
+	Linux MTD List <linux-mtd@lists.infradead.org>,
+	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+	f.fainelli@gmail.com, kursad.oney@broadcom.com,
+	joel.peshkin@broadcom.com, anand.gore@broadcom.com, dregan@mail.com,
+	kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com, David Regan <dregan@broadcom.com>,
+	linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v5 11/12] mtd: rawnand: brcmnand: exec_op helper
+ functions return type fixes
+Message-ID: <f6e61482-b51a-4970-9257-8db7975148fa@moroto.mountain>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+ <20240207202257.271784-12-william.zhang@broadcom.com>
+ <20240220110240.1ad5b995@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>, iommu@lists.linux.dev,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/8] iommufd: IOPF-capable hw page table
- attach/detach/replace
-Content-Language: en-US
-To: Joel Granados <j.granados@samsung.com>
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
- <20240122073903.24406-7-baolu.lu@linux.intel.com>
- <CGME20240220135755eucas1p24e882cb5a735caed4bbfedb22a811442@eucas1p2.samsung.com>
- <20240220135752.vksznb4rdj73ln6c@joelS2.panther.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240220135752.vksznb4rdj73ln6c@joelS2.panther.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220110240.1ad5b995@xps-13>
 
-On 2024/2/20 21:57, Joel Granados wrote:
->> diff --git a/drivers/iommu/iommufd/fault.c b/drivers/iommu/iommufd/fault.c
->> index e752d1c49dde..a4a49f3cd4c2 100644
->> --- a/drivers/iommu/iommufd/fault.c
->> +++ b/drivers/iommu/iommufd/fault.c
->> @@ -267,3 +267,125 @@ int iommufd_fault_iopf_handler(struct iopf_group *group)
->>   
->>   	return 0;
->>   }
->> +
->> +static void release_attach_cookie(struct iopf_attach_cookie *cookie)
->> +{
->> +	struct iommufd_hw_pagetable *hwpt = cookie->domain->fault_data;
-> There is a possibility here of cookie->domain being NULL. When you call
-> release_attach_cookie from iommufd_fault_domain_attach_dev if
-> idev->iopf_enabled is false. In this case, you have not set the domain
-> yet.
-
-Yes. Good catch!
-
+On Tue, Feb 20, 2024 at 11:02:40AM +0100, Miquel Raynal wrote:
 > 
->> +	struct iommufd_device *idev = cookie->private;
->> +
->> +	refcount_dec(&idev->obj.users);
->> +	refcount_dec(&hwpt->obj.users);
-> You should decrease this ref count only if the cookie actually had a
-> domain.
+> william.zhang@broadcom.com wrote on Wed,  7 Feb 2024 12:22:56 -0800:
 > 
-> This function could be something like this:
+> > From: David Regan <dregan@broadcom.com>
+> > 
+> > fix return type for exec_op reset and status detect helper functions
+> > 
+> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
+> > Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+> > Signed-off-by: David Regan <dregan@broadcom.com>
+> > Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> > Reviewed-by: William Zhang <william.zhang@broadcom.com>
 > 
-> 	static void release_attach_cookie(struct iopf_attach_cookie *cookie)
-> 	{
-> 		struct iommufd_hw_pagetable *hwpt;
-> 		struct iommufd_device *idev = cookie->private;
-> 
-> 		refcount_dec(&idev->obj.users);
-> 		if (cookie->domain) {
-> 			hwpt = cookie->domain->fault_data;
-> 			refcount_dec(&hwpt->obj.users);
-> 		}
-> 		kfree(cookie);
-> 	}
+> By the way, a Cc: stable tag might be useful as otherwise you may leak
+> an error code in a status value (which is a bug). And move this patch
+> first in your series so we're sure it does not conflict with any of the
+> other patches and can be backported more easily.
 
-Yeah, fixed.
+The original commit 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op
+implementation") is not in stable so we should be okay on this.
 
->> +	kfree(cookie);
->> +}
->> +
->> +static int iommufd_fault_iopf_enable(struct iommufd_device *idev)
->> +{
->> +	int ret;
->> +
->> +	if (idev->iopf_enabled)
->> +		return 0;
->> +
->> +	ret = iommu_dev_enable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
->> +	if (ret)
->> +		return ret;
->> +
->> +	idev->iopf_enabled = true;
->> +
->> +	return 0;
->> +}
->> +
->> +static void iommufd_fault_iopf_disable(struct iommufd_device *idev)
->> +{
->> +	if (!idev->iopf_enabled)
->> +		return;
->> +
->> +	iommu_dev_disable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
->> +	idev->iopf_enabled = false;
->> +}
->> +
->> +int iommufd_fault_domain_attach_dev(struct iommufd_hw_pagetable *hwpt,
->> +				    struct iommufd_device *idev)
->> +{
->> +	struct iopf_attach_cookie *cookie;
->> +	int ret;
->> +
->> +	cookie = kzalloc(sizeof(*cookie), GFP_KERNEL);
->> +	if (!cookie)
->> +		return -ENOMEM;
->> +
->> +	refcount_inc(&hwpt->obj.users);
->> +	refcount_inc(&idev->obj.users);
->> +	cookie->release = release_attach_cookie;
->> +	cookie->private = idev;
->> +
->> +	if (!idev->iopf_enabled) {
->> +		ret = iommufd_fault_iopf_enable(idev);
->> +		if (ret)
->> +			goto out_put_cookie;
-> You have not set domain here and release_attach_cookie will try to
-> access a null address.
+regards,
+dan carpenter
 
-Fixed as above.
-
-Best regards,
-baolu
 
