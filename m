@@ -1,91 +1,189 @@
-Return-Path: <linux-kernel+bounces-75296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54CBA85E604
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7377385E606
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:31:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5823284AC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:30:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28F31284C65
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B7985654;
-	Wed, 21 Feb 2024 18:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sbJ6zd2J"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A1A85934;
+	Wed, 21 Feb 2024 18:30:44 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A9784FD8
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5362383CBB
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708540243; cv=none; b=B9v7SYNCJw/2jCOIbciKwKcTvLJsVcKI+NJUCxT1CtHhFgrY992oiDbIeEcEVIFKVXzpu0nlT0IaVtBAYoCN1Y00lIU6YOGpGYKlrqSRXDbiyBL0dDvSSyICcH2T5KptmDMdykOn0xA9SDaDE17uD9iPzierN8DXrlDg/y3kh1g=
+	t=1708540244; cv=none; b=FNVfzUmpFG7A8ZeZ1hQa0jm2Y+W/KJ0kObaabqd/6bPdNUTb1BPHg7f3udTWEanlKqD9DMLk8JBgNthny4fswPdW8bWYiA0rohdwImB51pmwh2jSYLvA9f3vkU2Ii5cxCflQMbz/kpRE0QlL7YD1WecTvwGqsT1grXXr6qOzdKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708540243; c=relaxed/simple;
-	bh=onB+abJjruTzzbHbLA8gv0zsFd+P1U9flFiiaAQhMrU=;
+	s=arc-20240116; t=1708540244; c=relaxed/simple;
+	bh=IQ9Hdi1C0K5tEBHBjujZgoxD3cUlRqBGyMd80ICd2vI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uen6bmc3e3duoMxj9HDfPcfAeGO2iXBkU9jaL6nB9CY9qJtTeDqbTXV5SLcXLJiLwQv2S5vxcN5QFzq365FlIFVTkYwC+RJa1PO9ZANyesSGyJ00zxk6gD2GNCxAt9empO3c6bx05q+ivuoILsjXO+OrnqZWRs2+z36Fn4HB4iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sbJ6zd2J; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 21 Feb 2024 10:30:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708540238;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FekxhxYh2M8PuEvR0875ALSaW6smsNFC8mdylkThqb8=;
-	b=sbJ6zd2Jm8KIsuk2mP1lBhRM34SywZap4g2+mC7W5O97siHcv0PiA/Myf6zP+eU/rVFq37
-	nBzzsWlzYuNO7uNWrnvKqIPEvu4EAn/RmO1lNnCts5EmhsayT6xy4nihRI5CcL+5TWrSQd
-	Z2hYtSHSWp4hkaxqp9Aya4cKeT5Lay0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Zheng Yejian <zhengyejian1@huawei.com>,
-	Xiongwei Song <xiongwei.song@windriver.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/3] mm, slab: deprecate SLAB_MEM_SPREAD flag
-Message-ID: <ZdZBN_K8yJTVIbtC@P9FQF9L96D.corp.robot.car>
-References: <20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz>
- <20240220-slab-cleanup-flags-v1-1-e657e373944a@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lDxDS9MBDeXWSuk75zuK3+A3i0gdiB3XBXw92kAy4gHxV3DfxPNMd7Riy+SX7prhzpHqM/P+iNeZYkKgHRt03dUkEUt26cLtkFjazotiu0kzrEcV/HIvrGkJ41zV7tv9t9R60ksOH62/K/zE06xyT0BboSc9/S0RzUqIpdfNnI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
+Date: Wed, 21 Feb 2024 13:30:55 -0500
+From: "dalias@libc.org" <dalias@libc.org>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <20240221183055.GT4163@brightrain.aerifal.cx>
+References: <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx>
+ <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+ <20240221145800.GR4163@brightrain.aerifal.cx>
+ <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+ <20240221175717.GS4163@brightrain.aerifal.cx>
+ <f4a54297767eb098d903404cbe8860d655d79bed.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240220-slab-cleanup-flags-v1-1-e657e373944a@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f4a54297767eb098d903404cbe8860d655d79bed.camel@intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Tue, Feb 20, 2024 at 05:58:25PM +0100, Vlastimil Babka wrote:
-0;95;0c> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
-> removed.  SLUB instead relies on the page allocator's NUMA policies.
-> Change the flag's value to 0 to free up the value it had, and mark it
-> for full removal once all users are gone.
+On Wed, Feb 21, 2024 at 06:12:30PM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2024-02-21 at 12:57 -0500, dalias@libc.org wrote:
+> > > This feels like it's getting complicated and I fear it may be an
+> > > uphill
+> > > struggle to get such code merged, at least for arm64.  My instinct
+> > > is
+> > > that it's going to be much more robust and generally tractable to
+> > > let
+> > > things run to some suitable synchronisation point and then disable
+> > > there, but if we're going to do that then userspace can hopefully
+> > > arrange to do the disabling itself through the standard disable
+> > > interface anyway.  Presumably it'll want to notice things being
+> > > disabled
+> > > at some point anyway?  TBH that's been how all the prior proposals
+> > > for
+> > > process wide disable I've seen were done.
+> > 
+> > If it's possible to disable per-thread rather than per-process, some
+> > things are easier. Disabling on account of using alt stacks only
+> > needs
+> > to be done on the threads using those stacks. However, for dlopen
+> > purposes you need a way to disable shadow stack for the whole
+> > process.
+> > Initially this is only needed for the thread that called dlopen, but
+> > it needs to have propagated to any thread that synchronizes with
+> > completion of the call to dlopen by the time that synchronization
+> > occurs, and since that synchronization can happen in lots of
+> > different
+> > ways that are purely userspace (thanks to futexes being userspace in
+> > the uncontended case), I don't see any way to make it work without
+> > extremely invasive, high-cost checks.
 > 
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> Closes: https://lore.kernel.org/all/20240131172027.10f64405@gandalf.local.home/
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> For glibc's use, we talked about a couple of options.
+> 1. A mode to start suppressing the #UD's from the shadow stack
+> instructions
+> 2. A mode to start suppressing #CPs (the exception that happens when
+> the shadow stack doesn't match). So the shadow stack instructions
+> continue to operate normally, but if the shadow stack gets mismatched
+> due to lack of support, the ret is emulated. It probably is safer (but
+> still not perfect), but the performance penalty of emulating every RET
+> after things get screwed up would be a significant down side. There
+> also needs to be clean handling of shadow stack #PFs.
+> 3. Per-thread locking that is used around all shadow stack operations
+> that could be sensitive to disabling. This could be maybe exposed to
+> apps in case they want to use shadow stack instructions manually. Then
+> during dlopen() it waits until it can cleanly disable shadow stack for
+> each thread. In each critical sections there are checks for whether
+> shadow stack is still enabled.
+> 
+> 3 is the cleanest and safest I think, and it was thought it might not
+> need kernel help, due to a scheme Florian had to direct signals to
+> specific threads. It's my preference at this point.
 
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+The operations where the shadow stack has to be processed need to be
+executable from async-signal context, so this imposes a requirement to
+block all signals around the lock. This makes all longjmps a heavy,
+multi-syscall operation rather than O(1) userspace operation. I do not
+think this is an acceptable implementation, especially when there are
+clearly superior alternatives without that cost or invasiveness.
 
-Do you plan to follow up with a patch series removing all usages?
+> 1 and 2 are POCed here, if you are interested:
+> https://github.com/rpedgeco/linux/commits/shstk_suppress_rfc/
 
-Thanks!
+I'm not clear why 2 (suppression of #CP) is desirable at all. If
+shadow stack is being disabled, it should just be disabled, with
+minimal fault handling to paper over any racing operations at the
+moment it's disabled. Leaving it on with extreme slowness to make it
+not actually do anything does not seem useful.
+
+Is there some way folks have in mind to use option 2 to lazily disable
+shadow stack once the first SS-incompatible code is executed, when
+execution is then known not to be in the middle of a SS-critical
+section, instead of doing it right away? I don't see how this could
+work, since the SS-incompatible code could be running from a signal
+handler that interrupted an SS-critical section.
+
+> > If folks on the kernel side are not going to be amenable to doing the
+> > things that are easy for the kernel to make it work without breaking
+> > compatibility with existing interfaces, but that are impossible or
+> > near-impossible for userspace to do, this seems like a dead-end. And
+> > I
+> > suspect an operation to "disable shadow stack, but without making
+> > threads still in SS-critical sections crash" is going to be
+> > necessary..
+> 
+> I think we have to work through all the alternative before we can
+> accuse the kernel of not being amenable. Is there something that you
+> would like to see out of this conversation that is not happening?
+
+No, I was just interpreting "uphill battle". I really do not want to
+engage in an uphill battle for the sake of making it practical to
+support something that was never my goal to begin with. If I'm
+misreading this, or if others are willing to put the effort into that
+"battle", I'd be happy to be mistaken about "not amenable".
+
+Rich
 
