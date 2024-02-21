@@ -1,101 +1,144 @@
-Return-Path: <linux-kernel+bounces-74769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51AE185D983
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF9685D989
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83C1C1C22DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:19:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 420181C23031
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FAEE53816;
-	Wed, 21 Feb 2024 13:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824C67762D;
+	Wed, 21 Feb 2024 13:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hzTsbrU2"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uTTLfZo0"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA9669DF6
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DEF69DF9
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708521561; cv=none; b=dV26WeOftg8AJ7uSVqLISPj8ASidWiQU0jVzc22VgoaA/10p+cVZy2p++3S8flMH8iRPmvWUixACR3GxMMxpw1SLhFHVXNmOPRr251cNv0pntmyArQS1Fe4601w3VJPZlm3uijYn4I5lSpd8NJCR4QoUf5QwxEUgXDLIbuR0r1o=
+	t=1708521570; cv=none; b=kqHqn3GA3MHJnnxyR7ElTZtmQqqOIVIITms4QVOf9UMGlPLaKcQ9hnoNXw4vXIVA9FGC1MGJNqsyJ6zkNs2g8Biv/9c3DpzJZSfhEvRot6cnluCp6bujhzEaS/RwOoWiXhAUKcX8/1maRVnONZMXLs49oHERmJDEkVQvS7NQUu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708521561; c=relaxed/simple;
-	bh=v7sh1t2tO3VL3q82JxTbVWXUuuW6ywKJik5QNS7wZCI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pLl8vIQj0SEL2WGbqNW0KuIeJMv/rATvLP8+Afl42Z6D6mDaJ2z3GCnogbjJLwCTGYjADasdZFtqy3SNsUGCFrVVJ8NDgaB5aKGCzbh7MId1QXc5sWNtotU0JPqTvL5HOSqiYuihOIEkcE6Ij1Suq3Z+c21tVepe2Fxv34XOss0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hzTsbrU2; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1708521570; c=relaxed/simple;
+	bh=q5JilIcVQv0asTMfdbPLV+EjUbD0TRKeDJha67fbVZM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RsmvPsG1pdFKrpltZwYliJVXvdIzLLj8M3hLDD1+kIJRhhaQb2gizwYT91q1Fegwz55LGcd4E9rPu2qTkAjim4w7amXyu8A05H9jVzYbDAJlCrp0+ldrEEP3jLmEpN6UhCsQ/k7ikfY4wdFtD05XuBmWs0MduVTnvaYpCmoDyRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uTTLfZo0; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33d28468666so490053f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:19:19 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3566c0309fso790606366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:19:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708521558; x=1709126358; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z1S2KOzHiWZdc6EMCFLkKLCqiX/8caKNdzG63AOEvMU=;
-        b=hzTsbrU2bq8I5z9x6tdxgKRQX19yea/2FkVfBoYAUFshrOeXDrQgKEhtfFsyVNFqKn
-         YIPrid4ExsV/EoO4qV4PUANNxaF/DhYMNQsuQmT4Z22zfzK727qvLn7OuQ4EoARw2bnT
-         XP5KXS7ZX5P9tH76EwVNpegs0u8kIoRfhveJb4vEStjxdjct9iE/gYItDRxT7Oo3ZhuX
-         8jA9eWjTNa5L4fgF320SazlEdE83/rCCptMSCxOVAC0C7DDgH5oieF/T9FuhcE/bWv85
-         pMpdhtuXGGsFTxPRNxIUhEdBiim4o0RFY9MFFz1VQexSRlKom+Rm8Y6MzZUV2p2KgxPC
-         nuKQ==
+        d=linaro.org; s=google; t=1708521567; x=1709126367; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GtK5MWLbQCBAiuSyFF6bj//hw0Gzw6bHi7DgIgBCBgY=;
+        b=uTTLfZo0dTCwgGOQfcGRmfup2/Z670fOteqBjfL7bBF7/ZtdNpwWHLB3cEgQ2jaBLi
+         le/uTqPt/GA8qJCQLJ9O5gt+A2QmJ3V7WTCohxttFHaZ1NTTX0Ooj5vzgRSKpDan4X/S
+         GGso3gnzPkeyfCXet4ne04seY2B2yoOWLSaj9Mn/1OZ6tfYZU4Zd3ZZUmmriYVVAXIKx
+         yyuyh8JTgzlv0cFjKvwDWym+9Qk5rf8QOehtoNlCW1q+ie6XqR+yU4RUW/r1eyQUV3cy
+         aVviEUxg5e2TUferbmLJuU112K3M8thEmODr3pIZCUMgTBeRfC0fxaOGrI9ygdQRJqD6
+         UEyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708521558; x=1709126358;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z1S2KOzHiWZdc6EMCFLkKLCqiX/8caKNdzG63AOEvMU=;
-        b=fj7i7VbYN7L44yRfkVOffYrzmh0fw0sV4lszTXtt73XwI8ozLftoD0m8X3iFtBakNm
-         p6kguBBkfy/EbjMJYNvU/lRb9EjGn7NyEpRzVmj5xPPwAejFS71tS9H8fRfOXycnRAvy
-         SOPSkSbkWh8Qo1vW6aZAZqeLGDezB28mjqo0CV1C7hcWtYQWLkd+p9l7FIdtx6TU686O
-         iQhtmRoEB9V6o83m/BBpkdp0OfrkqKNe3webmbIne/oNQhd9ZCnQL2ITkBdkBvhybwwM
-         OMT87m22lIG/Qp7p6vyl1ovXBGwCLjCLI1exEGtwvOGOFpX4QlXpQtSI4lxSXFQnV5o+
-         p3Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUT+kM7Wz9HMOw0ZjKaVTjQ7ZSqcjhqJL+FsD092fRRU4jQ6SDTSRjpykUI9zpjsjBAYs+7uRi0r0br4nRMBHNr+6U7BumUcErE8yxM
-X-Gm-Message-State: AOJu0YyI0NfKlcRUSaYzmJMKYdpqrXE5MJbsGsv/W8fXzMkY38fzNCTt
-	OjL8vNx/uxJhxsLYLJNzB+YmQBvhncIBM4RbjjT5hbyx5hZniWqrtkZJklfcebk=
-X-Google-Smtp-Source: AGHT+IGUhnYBb72HO3q/troMrrl1Yvh0UUzCGFF2i69FmxCni6Rzv9DIpeCKiR4J0QtwMZGzWpNw9A==
-X-Received: by 2002:adf:f0d0:0:b0:33d:174e:4813 with SMTP id x16-20020adff0d0000000b0033d174e4813mr10817748wro.23.1708521558177;
-        Wed, 21 Feb 2024 05:19:18 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id f7-20020a5d5687000000b0033ce727e728sm16683728wrv.94.2024.02.21.05.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 05:19:17 -0800 (PST)
-Date: Wed, 21 Feb 2024 16:19:14 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Zhang Rui <rui.zhang@intel.com>, Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ACPI: thermal_lib: Add missing checks for errors
- in return code ret
-Message-ID: <68571997-c33a-49f8-b922-4b102e5b682b@moroto.mountain>
-References: <20240221123936.3421462-1-colin.i.king@gmail.com>
- <4b78456b-071f-46c0-bb47-919b493cab79@moroto.mountain>
+        d=1e100.net; s=20230601; t=1708521567; x=1709126367;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GtK5MWLbQCBAiuSyFF6bj//hw0Gzw6bHi7DgIgBCBgY=;
+        b=t9E0J+WPSCF/spvrUK06Ao9ylODWsgQpqEaSUHxO8d2jHhzwW9GIBQjpK/6Qd86jHv
+         PCKsn+TS11l0Llz0pu2pOpLUQQT2Li3PiOF2+09okUGa4FqLLht7iIs0PAWAKpq8mExm
+         FfOhHpuq7S/YcZcyh/CASAprn/dNkp8NWf/+qRd4keMTfabOWulf4TJsGdL1v5AM4OUY
+         GoAiZSC4Wfb6On8RhTWUiEEP86PjkUqNyurApFgCy+g+HhPj24MWtQuDW94SsK1a83FN
+         e31MFP7vFMYgrhRkCR+6yF5VUG5s9u6VpT7Jp38th8kVi8hYY1D6t6GlEfMkf/6LZIZR
+         35vg==
+X-Forwarded-Encrypted: i=1; AJvYcCU1Hu5iRcOG4eDTbJBNH0Csa+QKro4Q27mOJUE9ptXcA3TcREh//46ID7yCVjtM5aElvYx85ei130fwVlDQLF7gGwaMGuxShd6FvSfB
+X-Gm-Message-State: AOJu0YxosSpQSF4rAP9Eo1DGaLS0s09YI6ZV/4lLRx7CMS1Ufh4mu54c
+	CzZt/R4qzllvAw53wYOhRsRgsVyDRXd8i9NtUO99iS5ziR5HTyMF6NRHBNatLBk=
+X-Google-Smtp-Source: AGHT+IGdWyIk8lJxpduRvuF/iGdRqltToq/V8iDbZBmbBmMz4C5k0jcrQ3m1AOOgiyLM7IDCgJPTzg==
+X-Received: by 2002:a17:906:168a:b0:a3e:f04c:5dfa with SMTP id s10-20020a170906168a00b00a3ef04c5dfamr3874620ejd.62.1708521567399;
+        Wed, 21 Feb 2024 05:19:27 -0800 (PST)
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id ts7-20020a170907c5c700b00a3f4bb02bc8sm412700ejc.42.2024.02.21.05.19.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 05:19:27 -0800 (PST)
+Message-ID: <6010c3d1-9c1f-44be-80f1-faed635fd073@linaro.org>
+Date: Wed, 21 Feb 2024 14:19:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b78456b-071f-46c0-bb47-919b493cab79@moroto.mountain>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sm8550: Fix SPMI channels size
+Content-Language: en-US
+To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+References: <20240221-dts-qcom-sm8550-fix-spmi-chnls-size-v2-0-72b5efd9dc4f@linaro.org>
+ <20240221-dts-qcom-sm8550-fix-spmi-chnls-size-v2-1-72b5efd9dc4f@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240221-dts-qcom-sm8550-fix-spmi-chnls-size-v2-1-72b5efd9dc4f@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Btw, in real life, in 2024, the compiler is going to automatically
-initialize "temp_decik" to zero.  So we could just do:
+On 21.02.2024 14:04, Abel Vesa wrote:
+> The actual size of the channels registers region is 4MB, according to the
+> documentation. This issue was not caught until now because the driver was
+> supposed to allow same regions being mapped multiple times for supporting
+> multiple buses. Thie driver is using platform_get_resource_byname() and
+> devm_ioremap() towards that purpose, which intentionally avoids
+> devm_request_mem_region() altogether.
+> 
+> Fixes: ffc50b2d3828 ("arm64: dts: qcom: Add base SM8550 dtsi")
+> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
 
--	int temp_decik;
-+	int temp_decik = 0;
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-That would silence the warning without affecting anything else at all.
-
-regards,
-dan carpenter
-
+Konrad
 
