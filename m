@@ -1,104 +1,127 @@
-Return-Path: <linux-kernel+bounces-74563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBB7785D605
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:49:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACFF885D608
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA291F2415D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:49:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68EF4283DCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5233D38F;
-	Wed, 21 Feb 2024 10:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C9D3D0BF;
+	Wed, 21 Feb 2024 10:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="jxfwViVl"
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OYsFWyE/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D3D3E49E;
-	Wed, 21 Feb 2024 10:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B413DB8C;
+	Wed, 21 Feb 2024 10:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708512563; cv=none; b=qSOMC1l21bM0IiGify+BnqfftokMYI9jtIOEUOQMIQh9omIEBQNlD97rR+RBjYUHmgp9K9nUX7j7f8odWVGMPuW334tgiaqSXeCcWDbMRgVfn9RUhwdBktNJStPoF9Xr4/xHAjG6jfW/Q74tzmmqZsweSbc5Tacrxbm+XdJKPO4=
+	t=1708512576; cv=none; b=o8qMdGpomAuHCeWw7wvq7hsbz25YUPaDHdHI+N8CX8G65KRifHq4cLD9/xTR83QIlnOi6cMQfGPdCZr5U7eXLtyVQoOggVAQ+NEkf56tYvHGGdDRRiNkDdzNgnIoHDsQdv+EQ1Te7IwaIppVoGYXIje+o2zlQmVt0PZzDSEHiFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708512563; c=relaxed/simple;
-	bh=mxb+gMGUDBPnZJub2OxpXr5cGn1a7UGyvzYeTJOlnQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ufl9zoH84K+9BmDf9a0XnDA1H/oJFbvC3+Mh6mR1ZeznNP8aYGbWyw61LrjE0kJ5Xcbkd2NDLFLj7NIp045Kc6Qgpv8/CPEQ5h9bwJV/F6UCLfcguOHL7ePvM4CxjuPJRtE9bH7iOmKFbO9RDccBJz0JVFetVjc9M7QrPxe3iTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=jxfwViVl; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1708512558; bh=mxb+gMGUDBPnZJub2OxpXr5cGn1a7UGyvzYeTJOlnQQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jxfwViVltVdU1XrVjxL2is6j6mZSDlh7cWd6cir0CWPkHl7p2jymVy/+9oUxCXArS
-	 GnEw1NKQGBRsTgbJzfEnBwqTW7QPrzQbHgJ1mH5oCtPCuo94UU/Qfhe5VzlXxDltY8
-	 qEjJkNmXM4BDIbSTQWnQZq3QTl/Zo2ZAOUpVUGcI=
-Received: from [IPV6:240e:388:8d00:6500:8954:615d:4577:1f21] (unknown [IPv6:240e:388:8d00:6500:8954:615d:4577:1f21])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 385B360094;
-	Wed, 21 Feb 2024 18:49:18 +0800 (CST)
-Message-ID: <f59d73fb-7d3e-4c55-821a-082032267978@xen0n.name>
-Date: Wed, 21 Feb 2024 18:49:17 +0800
+	s=arc-20240116; t=1708512576; c=relaxed/simple;
+	bh=arxOax1Fal/10bdeaxUbFAhv0i0ETEjU7HQwbaIn75g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TqVKbwCtgFtz/g+2yFKPkGri/StPjoJDqe7qf3j4GEyeg5dyff0K0wF1fxTNjpoGcQEaDP6xT8sX8zhyBazHmKwdnVRTJtCNDi8dh4QxVe48zhaNbL1kUz8ptECqTx2EFNHuJVuQ6Qr6MZaKGebskU/gaSnktehrk2AviwRFmMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OYsFWyE/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89CD3C43390;
+	Wed, 21 Feb 2024 10:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708512575;
+	bh=arxOax1Fal/10bdeaxUbFAhv0i0ETEjU7HQwbaIn75g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OYsFWyE/axhIQyem8BlEb5Ux6m0afNO6l13t/w6dbXBZgrmIJqP9sVdkEdmxr4B0U
+	 avzMjmA1I49P+Bpx3W+kUjbSUdRo5iZG79GKt9wN6PZ9D7g44BTG1tVu6lBMGqgP/g
+	 r/cup2peMrEjBECspg5qHvQNbViQ7EgesHMR39ONcLFExoMUsZ65ZeLAAnVpbcVUSh
+	 ZOysjfBS4YmYCkGJalQnzgDnxLlJ88OjTB4ub9w9NYCEBG45erbSvQJ/r7pvNj/s5+
+	 qbYMLvcrR++Ytd5md6atdT0c903u1FXjCbl8tymwS1+dI3205R2la9I4XhlGFgBL7G
+	 M8abO1W7lgXsw==
+Date: Wed, 21 Feb 2024 11:49:27 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: bhelgaas@google.com, cassel@kernel.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
+	hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	manivannan.sadhasivam@linaro.org, robh@kernel.org,
+	s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v11 07/14] dt-bindings: imx6q-pcie: Clean up
+ irrationality clocks check
+Message-ID: <ZdXVN17SogJG1RgZ@lpieralisi>
+References: <20240220161924.3871774-1-Frank.Li@nxp.com>
+ <20240220161924.3871774-8-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep argument
- inspection again?
-Content-Language: en-US
-To: Xi Ruoyao <xry111@xry111.site>, linux-api@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Christian Brauner <brauner@kernel.org>,
- Kees Cook <keescook@chromium.org>, Huacai Chen <chenhuacai@kernel.org>,
- Xuefeng Li <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>,
- Xiaotian Wu <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>,
- Miao Wang <shankerwangmiao@gmail.com>, Icenowy Zheng <uwu@icenowy.me>,
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
- linux-arch <linux-arch@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
- <f1a1bc708be543eb647df57b5eb0c0ef035baf8b.camel@xry111.site>
- <2d25e3bb829cbca51387eb84985db919f50ccd37.camel@xry111.site>
-From: WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <2d25e3bb829cbca51387eb84985db919f50ccd37.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220161924.3871774-8-Frank.Li@nxp.com>
 
+Irrationality ? I think you mean "duplicate" or "redundant" ?
 
-On 2/21/24 18:31, Xi Ruoyao wrote:
-> On Wed, 2024-02-21 at 14:31 +0800, Xi Ruoyao wrote:
->> On Wed, 2024-02-21 at 14:09 +0800, WANG Xuerui wrote:
->>
->>> - just restore fstat and be done with it;
->>> - add a flag to statx so we can do the equivalent of just fstat(fd,
->>> &out) with statx, and ensuring an error happens if path is not empty in
->>> that case;
->> It's worse than "just restore fstat" considering the performance.  Read
->> this thread:
->> https://sourceware.org/pipermail/libc-alpha/2023-September/151320.html
-> Hmm, but it looks like statx already suffers the same performance issue.
-> And in this libc-alpha discussion Linus said:
->
->     If the user asked for 'fstat()', just give the user 'fstat()'.
->     
-> So to me we should just add fstat (and use it in Glibc for LoongArch, only
-> falling back to statx if fstat returns -ENOSYS), or am I missing something?
+Lorenzo
 
-Or we could add a AT_STATX_NULL_PATH flag and mandate that `path` must 
-be NULL if this flag is present -- then with simple checks we could have 
-statx(fd, NULL, AT_STATX_NULL_PATH, STATX_BASIC_STATS, &out) that's both 
-fstat-like and fast.
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+On Tue, Feb 20, 2024 at 11:19:17AM -0500, Frank Li wrote:
+> The bindings referencing this file already define these constraints for
+> each of the variants, so the if not: then: is redundant.
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v7 to v8
+>     - add Manivannan Sadhasiva's Ack tag
+>     Change from v6 to v7
+>     - rewrite git commit message by using simple words
+>     Change from v5 to v6
+>     - rewrite git commit message and explain why remove it safely.
+>     - Add Rob's Ack
+>     Change from v1 to v4
+>     - new patch at v4
+> 
+>  .../bindings/pci/fsl,imx6q-pcie-common.yaml      | 16 ----------------
+>  1 file changed, 16 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> index d91b639ae7ae7..0c50487a3866d 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> @@ -150,22 +150,6 @@ allOf:
+>              - {}
+>              - const: pcie_phy
+>              - const: pcie_aux
+> -  - if:
+> -      properties:
+> -        compatible:
+> -          not:
+> -            contains:
+> -              enum:
+> -                - fsl,imx6sx-pcie
+> -                - fsl,imx8mq-pcie
+> -                - fsl,imx6sx-pcie-ep
+> -                - fsl,imx8mq-pcie-ep
+> -    then:
+> -      properties:
+> -        clocks:
+> -          maxItems: 3
+> -        clock-names:
+> -          maxItems: 3
+>  
+>    - if:
+>        properties:
+> -- 
+> 2.34.1
+> 
 
