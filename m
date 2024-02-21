@@ -1,229 +1,167 @@
-Return-Path: <linux-kernel+bounces-75327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F282085E69E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:48:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E08385E6A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:50:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D0711F27FC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:48:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D74B11F2835B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779EA85949;
-	Wed, 21 Feb 2024 18:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC57C85941;
+	Wed, 21 Feb 2024 18:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="KCwsESLM"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2081.outbound.protection.outlook.com [40.107.243.81])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kAxQtPEU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F8285941;
-	Wed, 21 Feb 2024 18:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708541275; cv=fail; b=acIyn1VR/gtg9MB+uce+kWMJs1vzbaCJ/G38gBTgItcRPsgOnLKkjnQ2DrBvsNEWaGEVX4rQ9rMzbehQjmbKNrkmxm2x4UKXmtCzckH2oyTNTG5lgme5n6gmrnm5qA9qktoN7M+9VJaMCO7hG0oa10LShfvADROb1thTECk4c8w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708541275; c=relaxed/simple;
-	bh=o8lUqljxvZGhcfuZR1IQtTPGVPCCkzNuxYwVKEzDbwg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dcSGOpbILpBTKrqlCrvCE8dX+ME2lVbCb4LgdiWe1q4cSp9jcIKcRHerB83z1ykbzOYW20UnvAsEcTMWxc/MMmh3HqIeIKkMknuaziXMLfnktqVm6mVsgCvqisyEu6N29WnsS/vVMxNj8F6htOHGruEFGyv3JVz4qgpUQ+uf1Gs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KCwsESLM; arc=fail smtp.client-ip=40.107.243.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OIome5t086D74QabXfRmiBxE88XCx9p3Bj/F4TfV1uG+QtHC5tEPviGqidwpY2el8MMKuY2XWXOUt5060TBnd5B23e6TXudKNQbHb06Bl+0/nwdedfZV0zycnd7PJZ2qkwODFslvBC7fOsF3S6W33OtSJ5aP5q4fWcTQoQyts+uhUWji5YN0CTBiNeKEYjw0JZekbKhaIL8hV5Iy0dYGq2sepDwIQEFhKCGQiri+Te0xWPqVWagDaWf5rs5jHoRhmiTwOeUBc7JpZCjc/XHPNO2C73DyhGl+km4ESuVR3ShhpKdjLOJkbOia5o/LN91Kuh33bENl5YYlFfz9lxOlyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GLT0psKsGJ3r1dy1PAHy5a9WiB2IbS4PK7XcBN+8UqA=;
- b=CE1nNXeJv4FEjsiAvwZKArJSpVpkPhfrTa+NcNldUzGequZ8YwsZBu70spotwKbBzf18DqxcliyDCUrh+9/qDxpFGxQRysg5l7s0o+IqCMd0rCa9vADvzEDS+ITEgE0jLaX54zubdqaXM5B/sUbI4BbWCVhXGjRhLUy3xpN7k5zZM5GO7HvRmv/K6Eiqh6qAQEjjxFMbCwl22QQCoNGjlN98WMt21HDZ3LuohxsLIJYNskCdfApoPXhLhwYJIjdgUvpZnSBpu5xEX4UYfFN/a5cxusdjb4RrCyfT733udSTW/0/Efil4o0jpMEQpU7747IUpxRLdupe/L8B0kWxeWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GLT0psKsGJ3r1dy1PAHy5a9WiB2IbS4PK7XcBN+8UqA=;
- b=KCwsESLMHwpwVQCg+6GF6vOkK1ThSq2/5VMS99ThvsJwnKXndPiCwU/ZgsCp1mbvooi98hkvJTTHjVkNm2VaFAApw9jxo+tiefIMW3PAq7adGiDAFRSdTF+/Du9rBiNSNmChQXlWuxK1Wg7B7qL8NX8lAmy4n15V1wy9lrormDE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by SA0PR12MB4413.namprd12.prod.outlook.com (2603:10b6:806:9e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.21; Wed, 21 Feb
- 2024 18:47:46 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::dd00:9ab5:4d11:2d1a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::dd00:9ab5:4d11:2d1a%7]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
- 18:47:46 +0000
-Message-ID: <a92eb6e2-1636-4f80-8db9-23bbcf885337@amd.com>
-Date: Wed, 21 Feb 2024 12:47:43 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [PATCH] amd_pstate: fix erroneous highest_perf value on
- some CPUs
-Content-Language: en-US
-To: Lucas Lee Jing Yi <lucasleeeeeeeee@gmail.com>, oleksandr@natalenko.name
-Cc: Perry.Yuan@amd.com, Xiaojian.Du@amd.com, alexander.deucher@amd.com,
- bp@alien8.de, deepak.sharma@amd.com, li.meng@amd.com,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-pm@vger.kernel.org,
- nathan.fontenot@amd.com, rafael.j.wysocki@intel.com, rafael@kernel.org,
- ray.huang@amd.com, shimmer.huang@amd.com, skhan@linuxfoundation.org,
- viresh.kumar@linaro.org, x86@kernel.org
-References: <3868832.mvXUDI8C0e@natalenko.name>
- <20240221172404.99765-1-lucasleeeeeeeee@gmail.com>
- <20240221172404.99765-2-lucasleeeeeeeee@gmail.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20240221172404.99765-2-lucasleeeeeeeee@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7P222CA0024.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:124::20) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A21D82D97;
+	Wed, 21 Feb 2024 18:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708541419; cv=none; b=dw1Aox30q75X91HwGKm+5vk4STv/oAW+iaSejtBphQjfC6Qc2bdZwBr+ys1bBnmGeADZo0SkTKbuntCE1w1iALD8NVoJRBTxO6flO/M/OK4XsKO+GxJ4euPK7i+Z/uLmPjjsK8JniUsSLsmUS9YLILvtDeOXXIBTxpZ6wGqGW8U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708541419; c=relaxed/simple;
+	bh=berq+dLx79W8QR0JZxbmG5z5E9hVyr2TYj6ftH2W+DU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=i2xN8LqpPXCrfJ8GvRd0euugK9PlPAhTUFmpkwdoM3Fep5BPO36/zuDByFfF3P7NkvzWuaOSt+D3hq5g9PccBOdqqB62kt7TEOQoEPKPXfGNiVyzjA0jo2Oy4+KCYaWlPKx8a8LOhmMveCMMJYs4f9vFtSjL8GM0gCSNUtCMC4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kAxQtPEU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4A9C433F1;
+	Wed, 21 Feb 2024 18:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708541418;
+	bh=berq+dLx79W8QR0JZxbmG5z5E9hVyr2TYj6ftH2W+DU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=kAxQtPEUYCxY9bKxoBer0CmYny/X0JyU63M+Zl/i/VzgkRePbL+RgKth1AS9f84aJ
+	 pipANzIjhKdTzS7DuhOhXkPkSD1YzBrGIemEDirSKyujLbCuin7x1iPed2ztjiZTWa
+	 JI7kRYnpbDTzV6EcGMrHY90bQVK49to7toCJ8LwEHG+RKisqOzK4VVyTukMxcs7w8V
+	 k4rUkFsTBKcM9LW6Z2t4h/YyQTVwNvTSFBNDN9hQe4WvmguAgsUV6FUbJdjqnqpS+Y
+	 xMYCW7OQMmNIkzxu56Iu6qvGRr60fbvqSGuTpAX2zMjhfgfy0DYN0deFfYqeUuuYIP
+	 nY/uFVgop4ysQ==
+Date: Wed, 21 Feb 2024 12:50:17 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: root <root@hu-msarkar-hyd.qualcomm.com>
+Cc: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org,
+	conor+dt@kernel.org, quic_nitegupt@quicinc.com,
+	quic_shazhuss@quicinc.com, quic_ramkri@quicinc.com,
+	quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, Nitesh Gupta <nitegupt@quicinc.com>,
+	Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] PCI: qcom: Add support for detecting controller
+ level PCIe errors
+Message-ID: <20240221185017.GA1536431@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SA0PR12MB4413:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b9554d8-2e79-45ba-b4d3-08dc330d983c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	LzSxSKX+xE/p/Qv42uQY7KDCUXLC0S8uLxka4gRioT9+SquqgTCAs1bHHs3QIBqnjJDBDzyo5H+Q2ZtXsPQHk9UeSid+B5Jibg9VjPwXKKG4e/aztW7XA3Jb3tcDgFeOwdGuZVWq+DyzpDjPG8LHICNNrXYb15yFkS05GBxPyLuLO9oy9TF7EQxjNZusVmwpyhHmrgkjOeh0B/7SaI1KYDMFDD0qxHFBiBi9gwEPSIzJzVDcG2SeuI3QKSIQjIr3j3pt3LKqLk1j3b6VHiDMUySkva+eA8pCBjiAwH/fbuIbJBY6bdyGIq0D+7VfXu7/0j5FjQbsoqrcfOE9mj0upYfm1RN15wNuMi7V62FLPFcHvIUIXf0+9votmyll04PTB+5jni0NN9kD/hjjVN6H4HuMHREHbk+5rE/WzP/qB4SG+Nw5z7lVdFau31Us3nrOwxaDcRYyZrrh1WxkSvzNFkwAs4tRKGJuETMHjy86Yce3n66uuqoBz5q8E10p/DP7SmMsQ6p7IIRRXBpj+cF9Qw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZWdaRGFHdWZyWlZIUWdWUCtHajNVSTdkbFY4S2llRTR0YnZPWHFCR0lLQ2Vt?=
- =?utf-8?B?UXNtdTl0cG5qQlVLdmpkRWp6RUxLcVViazJhWFh4WXF3SDJUaFZZUklOcDJn?=
- =?utf-8?B?OTJ0S3h6TlJJYmFnTHNsazBCTlV2SE1uWVk2TVZ4OGJVQkV2dFVHeTdPY0c5?=
- =?utf-8?B?UkxWc3N4MUl3dlFXTkhsd1FLT1haakpRNXVmRitZOE8xRFQ2czRTVGV3Ymo5?=
- =?utf-8?B?RkhhZzJSb1N3MGlRVU5XZThoVHYyRXJoNWhMcEFmNEN1U2xhTnEvQnI2YlNB?=
- =?utf-8?B?MWczTUkyR0g1Q1gvV01RRi9YUzBvS2FaUjhXZS9vVEV6bDV4dTYyWVBjYW5C?=
- =?utf-8?B?NEpMQm10ak5PWmNpQ3pQOGZHTmw3NjdyZFdsQjRYVnJ6MG9jODlOT1c5dkNX?=
- =?utf-8?B?WEtNeGt6RTVNVGdUL2RzWnVwcEcrNDlqV2llTjRDS0l5MXZLQnU3cTN2aXlq?=
- =?utf-8?B?ZUpqMllTOEN0WXdPM0dIajE1MGZDaFZWOGhKT1F6N0tFQVgzalNjLzRwQUly?=
- =?utf-8?B?aTN6L3haQUZyRmd0M2FyOHJteDBFWjhSZHdhMDBXL2xZeDRkUlZ6TkUzcmF2?=
- =?utf-8?B?c0xTdHViU0hFbkJYaTJZcnV6WDhUUEdSVHFINkZXVjQwMUdMQUhteTNMUnRu?=
- =?utf-8?B?cUxCcWpzMGZibEdBSG13VmtRSlc1dkJ6cnc2QitrcUlld01FK3J4N0EvclNo?=
- =?utf-8?B?eS85WWNVdWJSbXhzZks5STJFdG45RFJZRmRPSDRvVTRnZE5qNVV5eTN1MUVY?=
- =?utf-8?B?RDh5QXZqaWRSNlBhTm1CSmVIczRmRm9FMzJCQTJucW9tdnBxaDViYmxCcVNx?=
- =?utf-8?B?Y2NDeUlYVUEzUWlScGdLZTVCKzZQZ1hWNEtFT1Y3OEZIM0xnYm4xS1ViMVRy?=
- =?utf-8?B?NEV0YzJCWVZOV0RQOUZrVnFjTVhDVFpmZ0hiOGVqbDdRQ25PTzROZ05wYXUy?=
- =?utf-8?B?K0hHMzI0SlVKZUlMbEMvRGh6VnF5SjRDVTY5bllEWmk4QlcwVU41ZFg3NmdZ?=
- =?utf-8?B?clZEWWYrdmlVUG0yOFRuOTJxNldvV2pHd1I4STdzandsMlQzd05sUloxWEVE?=
- =?utf-8?B?VGpNR1RQTGpXZVBNQTEyNllWNHFiNi8rdHJNNmlla1dOZ2NONnUya2s3cGNR?=
- =?utf-8?B?aHc1Q1dVTUtNQ2pUTGx1NDJwUEdUaHdWUjVyeit5QkdPWmRnd01MWXJUWTBO?=
- =?utf-8?B?U1dqN1FINmVjOUdETW5tUWxlN21xRG1QNHJscmowa25GRXFsZFhaTFFlUUsy?=
- =?utf-8?B?dll5SmY4TnovbFhybkZYYkc2MnBCMSswYkNnVXV5cEVUNVl3S0oyQzJCc0xD?=
- =?utf-8?B?MEYrdHlIaXErTGJDMWRWSFZFTnhFaXNzUTVSTCt0ZC9UNFYwOXdWcXhjdVFW?=
- =?utf-8?B?TVNvODZNcklrSTdjWXJycmpVaUh6bmoxSWMzMGN3KzJRYjM0d3pTQlUwN2Zy?=
- =?utf-8?B?dlc4RVhMVmZkNlpabGFVbXF1bnBGd1IxUmR2YkNFOThWV1hxZEtTOWl3cCtu?=
- =?utf-8?B?Ky9lUnJQcDRWZ3Q3VzJPZlh4bnpNYzVCb1JRcUNZZkNYVU1oTGVhQzNyZDJn?=
- =?utf-8?B?dTU1T0VLQ2lkQkJvaENEeDFhd1ZkRFc1MGtibzNYMHNTb096UVNraEwxWG9h?=
- =?utf-8?B?c1ZHanNRRURRVGE4bm0ydEZ3VkZaTlhJWXU2Qkc3S2g5Qi9BQVhBQlB6UDNw?=
- =?utf-8?B?eEpkSGlVVTlMK2JNYS9LL255cFgxUnd1cVZxZWRiamtGd0FLTmdIVS93Wklp?=
- =?utf-8?B?QmhqaW00bFVkS3BCT3RQU0RrNFBpenBkVU1sUFlQUDR1UkYvendPRHg1em9r?=
- =?utf-8?B?Q2lnNVFVaXdXL0ZBdys1MTFvN3V1SDNXUElWdmZHdDFBK2pFRnZVOTFKdUU4?=
- =?utf-8?B?MHJBa1RyNzA0WWxLbWJXbFhqZzBIbkFpMzZmY2dEOXdMcE9pR3BKZVVFa2Zx?=
- =?utf-8?B?OWtiTmZGeDhrQkFRRllvcG1Ua3VYQVNiOFBwbmI4OHFZTjd4Y09CK3VmRzJV?=
- =?utf-8?B?cVV2bUwyb0VXSWQrQ0svN0x5bndCSnhadFgweDZRNjlza1lxRE5EajlOUXda?=
- =?utf-8?B?TFZkRFpTdkxJQ09XcUQvOUZuMXc0K0MrS0IwV295MklPelVlRm5jdHBmZDdh?=
- =?utf-8?Q?glOd7upklYOl5IUQbrHDHcg5h?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b9554d8-2e79-45ba-b4d3-08dc330d983c
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 18:47:46.3412
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cKnymOQsyxr5lg3AfUbGGYZ7uCSkGQOjPwRZLjO1N+JhihQmM4pfGYYh9+U2D2D+f6pb3qdEngYPbd/A7tO9sw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4413
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221140405.28532-4-root@hu-msarkar-hyd.qualcomm.com>
 
-On 2/21/2024 11:19, Lucas Lee Jing Yi wrote:
-> On a Ryzen 7840HS the highest_perf value is 196, not 166 as AMD assumed.
-> This leads to the advertised max clock speed to only be 4.35ghz
-> instead of 5.14ghz leading to a large degradation in performance.
+On Wed, Feb 21, 2024 at 07:34:04PM +0530, root wrote:
+> From: Nitesh Gupta <nitegupt@quicinc.com>
 > 
-> Fix the broken assumption and revert back to the old logic for
-> getting highest_perf.
-> 
-> TEST:
-> Geekbench 6 Before Patch:
-> Single Core:	2325 (-22%)!
-> Multi Core:	11335 (-10%)
-> 
-> Geekbench 6 AFTER Patch:
-> Single Core:	2635
-> Multi Core:	12487
-> 
+> Synopsys Controllers provide capabilities to detect various controller
 
-Yes; the max boost for your system should be 5.1GHz according to the 
-specification [1].
+"Synopsys controllers"?  "Synopsys" refers to the DesignWare core, but
+most of this code is in the qcom driver.  If it's qcom-specific, this
+should say "Qualcomm controllers".
 
-Would you please open a kernel Bugzilla and attach an acpidump and dmesg 
-for your system?  I believe we need to better understand your system's 
-situation before deciding on how to correctly approach it.
+> level errors. These can range from controller interface error to random
+> PCIe configuration errors. This patch intends to add support to detect
+> these errors and report it to userspace entity via sysfs, which can take
+> appropriate actions to mitigate the errors.
 
-[1] https://www.amd.com/en/product/13041
+s/This patch intends to add/Add/, so the commit log says what the
+patch *does*, not "what it intends to do".
 
-> Signed-off-by: Lucas Lee Jing Yi <lucasleeeeeeeee@gmail.com>
-> ---
->   drivers/cpufreq/amd-pstate.c | 22 ++++++++++------------
->   1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 08e112444c27..54df68773620 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -50,7 +50,6 @@
->   
->   #define AMD_PSTATE_TRANSITION_LATENCY	20000
->   #define AMD_PSTATE_TRANSITION_DELAY	1000
-> -#define AMD_PSTATE_PREFCORE_THRESHOLD	166
->   
->   /*
->    * TODO: We need more time to fine tune processors with shared memory solution
-> @@ -299,15 +298,12 @@ static int pstate_init_perf(struct amd_cpudata *cpudata)
->   				     &cap1);
->   	if (ret)
->   		return ret;
-> -
-> -	/* For platforms that do not support the preferred core feature, the
-> -	 * highest_pef may be configured with 166 or 255, to avoid max frequency
-> -	 * calculated wrongly. we take the AMD_CPPC_HIGHEST_PERF(cap1) value as
-> -	 * the default max perf.
 > +
-> +	/* Some CPUs have different highest_perf from others, it is safer
-> +	 * to read it than to assume some erroneous value, leading to performance issues.
->   	 */
-> -	if (cpudata->hw_prefcore)
-> -		highest_perf = AMD_PSTATE_PREFCORE_THRESHOLD;
-> -	else
-> +	highest_perf = amd_get_highest_perf();
-> +	if (highest_perf > AMD_CPPC_HIGHEST_PERF(cap1))
->   		highest_perf = AMD_CPPC_HIGHEST_PERF(cap1);
->   
->   	WRITE_ONCE(cpudata->highest_perf, highest_perf);
-> @@ -329,9 +325,11 @@ static int cppc_init_perf(struct amd_cpudata *cpudata)
->   	if (ret)
->   		return ret;
->   
-> -	if (cpudata->hw_prefcore)
-> -		highest_perf = AMD_PSTATE_PREFCORE_THRESHOLD;
-> -	else
-> +	/* Some CPUs have different highest_perf from others, it is safer
-> +	 * to read it than to assume some erroneous value, leading to performance issues.
-> +	 */
-> +	highest_perf = amd_get_highest_perf();
-> +	if (highest_perf > cppc_perf.highest_perf)
->   		highest_perf = cppc_perf.highest_perf;
->   
->   	WRITE_ONCE(cpudata->highest_perf, highest_perf);
+> +/*
+> + * Error Reporting DBI register
+> + */
 
+Typical style in this file (granted, it's not 100% consistent) is to
+make these single-line comments, i.e.,
+
+  /* Error Reporting DBI register */
+
+> +#define DBI_DEVICE_CONTROL_DEVICE_STATUS	0x78
+> +#define DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG	0x8c
+
+Most other #defines in this file use upper-case hex.
+
+> +#define PCIE_AER_EXT_CAP_ID			0x01
+
+Why not the existing PCI_EXT_CAP_ID_ERR?  If this is the standard PCIe
+AER stuff, we shouldn't make it needlessly device-specific.
+
+> +#define PCI_EXT_CAP_RASDP_ID			0x0b
+
+Looks like possibly PCI_EXT_CAP_ID_VNDR?  Capability IDs are
+definitely not device-specific.  The fact that a PCI_EXT_CAP_ID_VNDR
+capability in a device with Vendor ID PCI_VENDOR_ID_QCOM has a
+qcom-specific meaning is obviously specific to qcom, but the
+Capability ID itself is not.
+
+> +/* DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG register fields */
+> +#define PCIE_CAP_SYS_ERR_ON_CORR_ERR_EN		BIT(0)
+> +#define PCIE_CAP_SYS_ERR_ON_NON_FATAL_ERR_EN	BIT(1)
+> +#define PCIE_CAP_SYS_ERR_ON_FATAL_ERR_EN	BIT(2)
+> +
+> +/* DBI_DEVICE_CONTROL_DEVICE_STATUS register fields */
+> +#define PCIE_CAP_UNSUPPORT_REQ_REP_EN		BIT(3)
+> +#define PCIE_CAP_FATAL_ERR_REPORT_EN		BIT(2)
+> +#define PCIE_CAP_NON_FATAL_ERR_REPORT_EN	BIT(1)
+> +#define PCIE_CAP_CORR_ERR_REPORT_EN		BIT(0)
+
+These look like alternate ways to access the generic PCIe Capability.
+If that's the case, either use the existing PCI_EXP_RTCTL_SECEE,
+PCI_EXP_DEVCTL_CERE, etc., or at least match the "RTCTL_SECEE" parts
+of the names so we can see the connection.
+
+> +/* DBI_ADV_ERR_CAP_CTRL_OFF register fields */
+> +#define ECRC_GEN_EN				BIT(6)
+> +#define ECRC_CHECK_EN				BIT(8)
+
+Do these correspond to PCI_ERR_CAP_ECRC_GENE, PCI_ERR_CAP_ECRC_CHKE?
+
+> +/* DBI_ROOT_ERR_CMD_OFF register fields */
+> +#define CORR_ERR_REPORTING_EN			BIT(0)
+> +#define NON_FATAL_ERR_REPORTING_EN		BIT(1)
+> +#define FATAL_ERR_REPORTING_EN			BIT(2)
+
+PCI_ERR_ROOT_CMD_COR_EN, etc?
+
+> +static void qcom_pcie_enable_error_reporting_2_7_0(struct qcom_pcie *pcie)
+> +{
+> + ...
+
+> +	val = readl(pci->dbi_base + DBI_DEVICE_CONTROL_DEVICE_STATUS);
+> +	val |= (PCIE_CAP_CORR_ERR_REPORT_EN | PCIE_CAP_NON_FATAL_ERR_REPORT_EN |
+> +			PCIE_CAP_FATAL_ERR_REPORT_EN | PCIE_CAP_UNSUPPORT_REQ_REP_EN);
+> +	writel(val, pci->dbi_base + DBI_DEVICE_CONTROL_DEVICE_STATUS);
+
+Is there any way to split the AER part (specified by the PCIe spec)
+from the qcom-specific (or dwc-specific) part?  This looks an awful
+lot like pci_enable_pcie_error_reporting(), and we should do this in
+the PCI core in a generic way if possible.
+
+> +	val = readl(pci->dbi_base + DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG);
+> +	val |= (PCIE_CAP_SYS_ERR_ON_CORR_ERR_EN | PCIE_CAP_SYS_ERR_ON_NON_FATAL_ERR_EN |
+> +			PCIE_CAP_SYS_ERR_ON_FATAL_ERR_EN);
+> +	writel(val, pci->dbi_base + DBI_ROOT_CONTROL_ROOT_CAPABILITIES_REG);
+
+Bjorn
 
