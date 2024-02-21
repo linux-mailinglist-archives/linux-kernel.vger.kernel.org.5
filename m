@@ -1,98 +1,185 @@
-Return-Path: <linux-kernel+bounces-74944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B248C85E059
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:55:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DDE785E050
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1F7DB28B0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:53:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D09F1F252BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2557A7FBCD;
-	Wed, 21 Feb 2024 14:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FF67FBBF;
+	Wed, 21 Feb 2024 14:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RVZ2mB8h"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fBjZWblP"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCB07FBB7
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0697FBB8;
+	Wed, 21 Feb 2024 14:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708527170; cv=none; b=aU9PGLQkGjJBUCt26Ve5xTF4/XQhn9SDtvE6L8GbeGzhrxCk6BAoHwewcrVwjzO0ggHvSuEMeMySgvK/ZY0B+4AV9dEuO45Gt4xbeUy6eJGH4WRCbcjRR7RfefoX8PRrUw7uuhTTEqh8NL8aXjL4KeGJQnTkLkYUlECBET1IyBY=
+	t=1708527188; cv=none; b=JX7XsvoQVpwOpNHWROCIEHXalf9hMSK43pByv+8W1wAqqvz0Ajlj/Z1iXv1/CAtQ8QHdopg0l7qcQvjPPIrDnzWzHQxQ3rkRCKMMD/QHeG/PK5Flu5eexxQuaxoqQSm4nMptLd2mxM7leTK77GJuGaqxWyQa+uUZ8cZ/MQV0Lww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708527170; c=relaxed/simple;
-	bh=zXfcecKK7a0Wq45pUBJhy0+SLFreUTI3cAZpFt+oZHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hPgGLKTTy9/MH12OR/EqcS9/Qmnq3MRqapjI5KfKXzRhr/GAWD1fbNS+lnhrUEvLh94PlsD0XJsBU8OG+MguEYpllqbkplJ+kD0hudRBn8xTfzvadcrD0+IxItT6wiud1lc6mv71CkcQUU8ctozksHSsK4eEaZvY4qY30dG9nQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RVZ2mB8h; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708527169; x=1740063169;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zXfcecKK7a0Wq45pUBJhy0+SLFreUTI3cAZpFt+oZHY=;
-  b=RVZ2mB8hgRRGgoOwaHBepq4Tvqjssltwfb3tqFoRFqkrZWu/CIgKtkju
-   wlA42KZMnlK8WJ1PDjXoehP9URGnw+BFEvFbncXqpC/k4wBY0ilAAsq5Y
-   81jW+y+ahIp27sZJP1/le4UFewAXQcD3rbXs3sujP6R4Tj2j6ZsuzfInY
-   2KpjqIxtCpDMcj5sanI5UkGw8qgDIibDx6urjPDhGqiYK39Fo5vYf6N7O
-   T169CLwoQGpTAVXNy5F0EScpbYMrr1Qw5n62epbAKLNJzbEZzKNWUO9se
-   3DRwlooV5gQ3Or+xA7102ef4ts6gqrJ+9zUT7LlGbYGlglVqnEVQdJ9fe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2551837"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="2551837"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:52:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="913318499"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="913318499"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:52:47 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rcnxk-00000006NPr-1yzb;
-	Wed, 21 Feb 2024 16:52:44 +0200
-Date: Wed, 21 Feb 2024 16:52:44 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: MyungJoo Ham <myungjoo.ham@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH v1 1/1] extcon: intel-mrfld: Switch to use dev_err_probe()
-Message-ID: <ZdYOPISUzbjid9l8@smile.fi.intel.com>
-References: <20231222161954.2955905-1-andriy.shevchenko@linux.intel.com>
- <ZbuJ8zCEfU-ORmk_@smile.fi.intel.com>
+	s=arc-20240116; t=1708527188; c=relaxed/simple;
+	bh=GFG4jC7AMNHM9If0p4IbWL9b/Wg/EsXkiJXlP51yvcM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VVka0KtHubJHvbqDmAWQ6VkSCzteAOkKWCRyjZBuf3IHoWB1jNqpFQdvy+6NlWFVvMVML/j2NfB5c8ICsDQLItRsG5ZYgQaMoCgB1T5Qt2QOPMtNTTzOaD0sZEmVY4I4jVyuqCozBR6VU5OlOBcBdRxYU5cyFYmYjOucipMFNhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fBjZWblP; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d09cf00214so75688401fa.0;
+        Wed, 21 Feb 2024 06:53:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708527184; x=1709131984; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ePZHUj5LUCPpE5Mosu90DBz2D4k7SKlgOf7UzKRj0RI=;
+        b=fBjZWblP/JbgAMOhCRrVKe8jWetlISDn9YEc3FZ18++H9/CVvho5AIb3TjkOlProUW
+         ce9+MK3vGW4TcDmo+NLvQ/lsyXZRa2qEZctNs8+F/BpPk1yu/DU2lT+2EMO+usI3lcJ6
+         1WNYjC4jLgtKAb9Ne5+3wjWGbtt7txQ4Q4CxSx+nA2RRJ3cBPxNZVHinAxhdMV9s0smm
+         wViMOdtwCrvBG5QqvPLC8PL3ttQ1r4pHfusIrZNKkHGn/9MGGIR0jeUXeCmZr10pjoQS
+         Dtcif7s4/KXrST5LBWBKg7+8Iw2Az1SPcGnm4+7lz4FNj2PM921XflhVKxizPab70uv8
+         7XuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708527184; x=1709131984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ePZHUj5LUCPpE5Mosu90DBz2D4k7SKlgOf7UzKRj0RI=;
+        b=t+Su6IDeyLufaYFKIVzntmXghYlXPMWWKaj6IiLOnf5aj1+eSuaoc1ykDm1fixng98
+         N6bWLbL3/uy5HjDpYIthm9gLhF7aLOEKQG9s8L2tGcqciBkt+Y0qRvJaRX4JjtOquoFF
+         AZHAB6p/gvcVsOpxSLWM7LTroQoXuY0wHg3bcW4K79k1+bbE8yqLIoFWEIdbjithioF7
+         wGa1Pmwz+mWfIl7etIxU1OYObuqs5sIZtadu6GpWfvwd7H16xQ59LHsK7wwMn3l1bEZL
+         LVt2AAKHciuN2/z+taqC/y6TEW6Ub56tCpzyS0veIN5Luw65lr6q7jMhZWqiYDDqFGku
+         wMMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUR6s+1JMBF4fLeS9c/hQM6rH4kunlh0IIYua7jHBcaLGgdkkDLdrc5h0y8vV4cNL2WaG6mcvixTMHH2gUSRmwmIAq5Neb2mjFnvQ==
+X-Gm-Message-State: AOJu0Ywf+1TzBPwdXyRCfjoJiX3lrRxRvNiUD5zh7D8Y9Z+tdNdx7ptI
+	40TUOoWqQ99DVZlTbyj+9dQ1s254PK/H2T5sOi1NDEK63wTYV0Or+ij2yOTJHfLrOew+/N28z5T
+	XFOl1dUwz2dc283Oie6KRiUz66w==
+X-Google-Smtp-Source: AGHT+IE/K+XcvoI/LcNmvDCJKjlr9B99h7U5y79IwVKbsvm+c8sY8t8FI9nhGhEJalOoimheBDOIbnrA6j+mw1hlCB0=
+X-Received: by 2002:a2e:b006:0:b0:2d2:3695:c18 with SMTP id
+ y6-20020a2eb006000000b002d236950c18mr6696084ljk.19.1708527184231; Wed, 21 Feb
+ 2024 06:53:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbuJ8zCEfU-ORmk_@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240221113506.2565718-18-ardb+git@google.com> <20240221113506.2565718-25-ardb+git@google.com>
+In-Reply-To: <20240221113506.2565718-25-ardb+git@google.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Wed, 21 Feb 2024 09:52:53 -0500
+Message-ID: <CAMzpN2iu52yJWv3w1SgDXXGdvbfGi8cHRkip_qqrAO_89-4+sQ@mail.gmail.com>
+Subject: Re: [PATCH v5 07/16] x86/startup_64: Simplify CR4 handling in startup code
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 02:09:23PM +0200, Andy Shevchenko wrote:
-> On Fri, Dec 22, 2023 at 06:19:54PM +0200, Andy Shevchenko wrote:
-> > Switch to use dev_err_probe() to simplify the error path and
-> > unify a message template.
-> 
-> Any comments? Can these two patches (with
-> 20231222161854.2955859-1-andriy.shevchenko@linux.intel.com) be applied?
+On Wed, Feb 21, 2024 at 6:35=E2=80=AFAM Ard Biesheuvel <ardb+git@google.com=
+> wrote:
+>
+> From: Ard Biesheuvel <ardb@kernel.org>
+>
+> When paging is enabled, the CR4.PAE and CR4.LA57 control bits cannot be
+> changed, and so they can simply be preserved rather than reason about
+> whether or not they need to be set. CR4.MCE should be preserved unless
+> the kernel was built without CONFIG_X86_MCE, in which case it must be
+> cleared.
+>
+> CR4.PSE should be set explicitly, regardless of whether or not it was
+> set before.
+>
+> CR4.PGE is set explicitly, and then cleared and set again after
+> programming CR3 in order to flush TLB entries based on global
+> translations. This makes the first assignment redundant, and can
+> therefore be omitted.
+>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/x86/kernel/head_64.S | 24 +++++++-------------
+>  1 file changed, 8 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> index fb2a98c29094..426f6fdc0075 100644
+> --- a/arch/x86/kernel/head_64.S
+> +++ b/arch/x86/kernel/head_64.S
+> @@ -185,6 +185,8 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L=
+_GLOBAL)
+>         addq    $(init_top_pgt - __START_KERNEL_map), %rax
+>  1:
+>
+> +       /* Create a mask of CR4 bits to preserve */
+> +       movl    $(X86_CR4_PAE | X86_CR4_LA57), %edx
+>  #ifdef CONFIG_X86_MCE
+>         /*
+>          * Preserve CR4.MCE if the kernel will enable #MC support.
+> @@ -193,20 +195,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM=
+_L_GLOBAL)
+>          * configured will crash the system regardless of the CR4.MCE val=
+ue set
+>          * here.
+>          */
+> -       movq    %cr4, %rcx
+> -       andl    $X86_CR4_MCE, %ecx
+> -#else
+> -       movl    $0, %ecx
+> +       orl     $X86_CR4_MCE, %edx
+>  #endif
+> +       movq    %cr4, %rcx
+> +       andl    %edx, %ecx
+>
+> -       /* Enable PAE mode, PSE, PGE and LA57 */
+> -       orl     $(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
+> -#ifdef CONFIG_X86_5LEVEL
+> -       testb   $1, __pgtable_l5_enabled(%rip)
+> -       jz      1f
+> -       orl     $X86_CR4_LA57, %ecx
+> -1:
+> -#endif
+> +       /* Even if ignored in long mode, set PSE uniformly on all logical=
+ CPUs. */
+> +       btsl    $X86_CR4_PSE_BIT, %ecx
+>         movq    %rcx, %cr4
 
-Ping?
+This CR4 write now does the global flush - see below.
 
-It's more than two months passed...
+>
+>         /* Setup early boot stage 4-/5-level pagetables. */
+> @@ -226,11 +221,8 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
+L_GLOBAL)
+>          * Do a global TLB flush after the CR3 switch to make sure the TL=
+B
+>          * entries from the identity mapping are flushed.
+>          */
 
--- 
-With Best Regards,
-Andy Shevchenko
+This comment is misleading now since it's the first CR4 write above
+(with PGE clear) that actually does the global flush.
 
+> -       movq    %cr4, %rcx
+> -       movq    %rcx, %rax
+> -       xorq    $X86_CR4_PGE, %rcx
+> +       btsl    $X86_CR4_PGE_BIT, %ecx
+>         movq    %rcx, %cr4
+> -       movq    %rax, %cr4
+>
+>         /* Ensure I am executing from virtual addresses */
+>         movq    $1f, %rax
+> --
+> 2.44.0.rc0.258.g7320e95886-goog
+>
 
+Brian Gerst
 
