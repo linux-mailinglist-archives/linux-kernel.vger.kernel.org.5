@@ -1,166 +1,156 @@
-Return-Path: <linux-kernel+bounces-74926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D72B085E01B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:43:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC0E185E023
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:44:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1621F2501B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:43:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0EE8B28329
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B869E8005A;
-	Wed, 21 Feb 2024 14:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622807C098;
+	Wed, 21 Feb 2024 14:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="Tyx+Lg7G"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Oae2NjIA"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650AD7C098;
-	Wed, 21 Feb 2024 14:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFA17FBA0
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526526; cv=none; b=PgN42h3Qo7NSF2prmq73azTy8LgAvzQZYNFUP2ptDTFxqYqT0AimS9asYabkLGFDxe4s/xknsCibr9YjcJ70Hgr3i/MmCy80f/t1i/0ImPcyO2+wv6735g0xOr0uNrOBUyDGz/awepPnr3Skf2CnmOT2p2kZEDW1n4OIM0sskBE=
+	t=1708526557; cv=none; b=hxuDicfyFp5tl851/01dF5hW1nVo9EOs1K4aqr+aOihVsaCoIwczPN2Cpy6k9I5JdO5SBkmAUASXux0m6xgVxzw86Zwrw+b8hQ+Z+bE755mMszqd5XL/xLNackI3YZT0cAWs9jr/1kXiSzPWCdMhc/nww4iSLxyutQP6UtqgEnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526526; c=relaxed/simple;
-	bh=qfmyZSJgxNHQKChzfs713W6+r1H1kW/lMOe8B8MNPuo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D5dnCK/Uc2KshSfrAbiHjJzLXy05E4s/yHDN99in4Zih1Gpi13tkezXuCSD6Oe6Qvn3v/MQTMYSDyMbDcMhjPmDMhpbDXr1xvmRO1QaohTzU+wXHaZ7503vANLZjDCfUpu7eIXxE/UZWVQYs0ZPdcXegmfIzK2g0Pr+ONAbMbBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=Tyx+Lg7G; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1708526557; c=relaxed/simple;
+	bh=eS9Am8iJ9twWD9D7MfqonCf31Z+HUcDc5tkf5h7bc7w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k8jhr/VzVHzkCW2mAID6nSFsVf6VLIUZt4RvsrrAGQllJlkKemsA/7PqjjiJWyqD0x0T81fEHKFTq4giLv/9tf4eUHb5UMtpz1MuHpNW5IScCHks5gDcG22xAC3Yxr3mC3DYQ5poc1Tuvj1bl/DfbqV36KkjbtWD7hbTm4T4LDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Oae2NjIA; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-563ed3d221aso8714477a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:42:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708526523; x=1740062523;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FZAuBeWNVe7S926YYHfB+88G6fnv3frBjDDyTaf2+Wc=;
-  b=Tyx+Lg7GPmAtAvz+XVYIAZeQgMCIWh6X957kunGrrBUNWYqewfJvb4Ss
-   Yqh+hZcnwaMZVOj8TuKsqNvCJIMgREVx8NTcE8s0R4JCh9FQpih6+RfbK
-   J7IOl6XbE/eE5JuLnJo1IWiURlGm0l4eshkh6KdxAfF49gh03Bs6CV36i
-   z96qN6uZUS24I0D6dOIE2nBMYUXlbVrbROO0ndY/EjRrlIryXyaZ8cJDl
-   55+noFaxohXylgyJYA8skSamyFnRe4IDyM2xuj7jiLTqj7wfjbkorulkd
-   FAQYmoWlNGD9wTB08J8F5Fj3FFrg/tjDgVNpN6QmIWKiuhwErI5cOJLxO
-   g==;
-X-IronPort-AV: E=Sophos;i="6.06,175,1705359600"; 
-   d="scan'208";a="35525870"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 21 Feb 2024 15:42:01 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 1400B280075;
-	Wed, 21 Feb 2024 15:42:01 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Rob Herring <robh@kernel.org>
-Cc: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>, ARM <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
-Date: Wed, 21 Feb 2024 15:42:00 +0100
-Message-ID: <13457561.uLZWGnKmhe@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <CAL_Jsq+2ri0JsmuU184YGj=p53jSxn+8EZq_FuBbMjsVyNLvtw@mail.gmail.com>
-References: <20240221092826.748e70c4@canb.auug.org.au> <20240221163010.5f81813a@canb.auug.org.au> <CAL_Jsq+2ri0JsmuU184YGj=p53jSxn+8EZq_FuBbMjsVyNLvtw@mail.gmail.com>
+        d=linaro.org; s=google; t=1708526554; x=1709131354; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F1Kmlsg6mHbFOG6v2ikopaJgo51oV6dg5EjaptpGoDw=;
+        b=Oae2NjIA0z8Kld5WDbpMq8qsvAaX9cmHf8hWZ24t4djxIC317iUO29f10hqX/rs4h7
+         5ifa9oWb8jpRzFJPpdt0bT9fp1aKddoxCk8iGD00EeYWpPm39KAgGduKRLRnwHXEefdc
+         sel7IT2Q/v/za+MDTgPjWUQBJb5aM3VqFCQfQNZchzctVxyVrW4flhGKOX1O9OkJIoPf
+         22/iLXOJ4bNa3k+2cozSY2M2kbCBrQdH6L6SSL6bUcCZbfEfFu4sEilxj6JqXki2xERL
+         187ehGiCtgIH/3rkd27b+/O+1DqCA1Fp/rgPVbSm9a3neaN+RPQ+yZuS2RmxgtJ8+Dsn
+         G+5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708526554; x=1709131354;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F1Kmlsg6mHbFOG6v2ikopaJgo51oV6dg5EjaptpGoDw=;
+        b=bbEqHWltcDbQ4nS+AhyQc/7+69jRHXF8DT+7SRxYYi8cmq1pp+KRXWb/CkAW8gtSPH
+         K796G0JmeZUfSobjJUuv/GRPTxzxXhGcT12ih6iYD+Kfmk143Z5p4X+0xF2PO78xKEdH
+         3mnuAg/YZMzBe2g95FxIc8uCkOGShSBTDc8RrfhgZ1NLjaoC/4kiLlgn3bQ+z0EMYUce
+         NmuIgDr0YB7tlwvZXH25s/b3BRiW+q/ZP5Oz10iZxrxaVRPH6qaMsi4hojXRb5lVikmb
+         Kq7l+Gzz2QOmPfzenb3ZxkjobEOc/lbsEp+n2FA9J/zTQirg4O2Yx4lcKKm1zKaSEmkS
+         blzw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKz0VDvyCmzudTZnK4hDofjZJp4zEHoe2Dm568uK+mZ2ZEe5UMTnvf1QpVJatkx3qjAjW43YHWV0XETkwX31bucaOYz/IWWg+R2LyG
+X-Gm-Message-State: AOJu0Yz8YNEdLCP7hhyoJDn8QNi+z8HoHL0aOPPJoVFA6kNKa36urND4
+	q37YhFhXNJO9iqhoEtmrWDSIMz8X7K0PYaCUYJ8XHqi5ryW7q2rEdrGhd8Yi80o=
+X-Google-Smtp-Source: AGHT+IHAgZ1c2HtFOf7W54HfxVd65piuCXVksLf3uZv299tc+n6fVwFIj45hOEodLVzneDppQCcE6g==
+X-Received: by 2002:a17:906:68d4:b0:a3f:816:1e0a with SMTP id y20-20020a17090668d400b00a3f08161e0amr3808840ejr.37.1708526554172;
+        Wed, 21 Feb 2024 06:42:34 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id ha1-20020a170906a88100b00a3d310a2684sm5002073ejb.158.2024.02.21.06.42.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 06:42:33 -0800 (PST)
+Message-ID: <f4465547-1fb1-4578-9a69-7d399e7661b3@linaro.org>
+Date: Wed, 21 Feb 2024 15:42:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] MAINTAINERS: Add maintainer for NXP S32G boards
+Content-Language: en-US
+To: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>,
+ Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+ Chester Lin <chester62515@gmail.com>, krzysztof.kozlowski+dt@linaro.org,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Matthias Brugger <mbrugger@suse.com>, robh+dt@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ soc@kernel.org, NXP S32 Linux Team <s32@nxp.com>,
+ Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+References: <20240221120123.1118552-1-ghennadi.procopciuc@oss.nxp.com>
+ <20240221120123.1118552-2-ghennadi.procopciuc@oss.nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240221120123.1118552-2-ghennadi.procopciuc@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Rob,
+On 21/02/2024 13:01, Ghennadi Procopciuc wrote:
+> From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+> 
+> Add myself as a maintainer of the NXP S32G DT files.
 
-Am Mittwoch, 21. Februar 2024, 14:58:32 CET schrieb Rob Herring:
-> On Tue, Feb 20, 2024 at 10:30=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.=
-org.au> wrote:
-> >
-> > Hi all,
-> >
-> > On Wed, 21 Feb 2024 09:28:26 +1100 Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote:
-> > >
-> > > After merging the arm-soc-fixes tree, today's linux-next build (arm
-> > > multi_v7_defconfig) produced this warning:
-> > >
-> > > arch/arm/boot/dts/renesas/r8a7790-lager.dts:444.11-458.5: Warning (in=
-terrupt_provider): /i2c-mux4/pmic@58: Missing '#interrupt-cells' in interru=
-pt provider
-> > > arch/arm/boot/dts/renesas/r8a7790-lager.dtb: Warning (interrupt_map):=
- Failed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7792-blanche.dts:376.10-392.4: Warning (=
-interrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' =
-in interrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7792-blanche.dtb: Warning (interrupt_map=
-): Failed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7790-stout.dts:344.10-362.4: Warning (in=
-terrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in=
- interrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7790-stout.dtb: Warning (interrupt_map):=
- Failed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7791-koelsch.dts:816.10-830.4: Warning (=
-interrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' =
-in interrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7791-koelsch.dtb: Warning (interrupt_map=
-): Failed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7791-porter.dts:410.10-420.4: Warning (i=
-nterrupt_provider): /soc/i2c@e60b0000/pmic@5a: Missing '#interrupt-cells' i=
-n interrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7791-porter.dtb: Warning (interrupt_map)=
-: Failed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7794-alt.dts:450.10-464.4: Warning (inte=
-rrupt_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in i=
-nterrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7794-alt.dtb: Warning (interrupt_map): F=
-ailed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7794-silk.dts:436.10-454.4: Warning (int=
-errupt_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in =
-interrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7794-silk.dtb: Warning (interrupt_map): =
-=46ailed prerequisite 'interrupt_provider'
-> > > arch/arm/boot/dts/renesas/r8a7793-gose.dts:756.10-770.4: Warning (int=
-errupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in =
-interrupt provider
-> > > arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_map): =
-=46ailed prerequisite 'interrupt_provider'
-> > >
-> > > Introduced/exposed by commit
-> > >
-> > >   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
-> > >
-> > > I guess you missed some :-(
-> >
-> > Also these from the arm64 defconfig build:
-> >
-> > arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interr=
-upt_provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cell=
-s' in interrupt provider
-> > arch/arm64/boot/dts/freescale/imx8dxp-tqma8xdp-mba8xx.dtb: Warning (int=
-errupt_map): Failed prerequisite 'interrupt_provider'
-> > arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interr=
-upt_provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cell=
-s' in interrupt provider
-> > arch/arm64/boot/dts/freescale/imx8qxp-tqma8xqp-mba8xx.dtb: Warning (int=
-errupt_map): Failed prerequisite 'interrupt_provider'
->=20
-> Looks like a new platform in next.
->=20
-> Alexander, Can you fix these?
+No need for cover letters for single patches. OTOH, this commit msg is
+empty...
 
-Thanks for reminding me. This was already fixed on my queue.
-Just send the patch, you are on CC as well.
+Plus your patch looks corrupted (wrong encoding): F??rber
 
-Thanks and best regards,
-Alexander
-=2D-=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-http://www.tq-group.com/
+BTW, did you contribute anything to the upstream Linux kernel? Do you
+know the process? Downstream does not really matter.
 
+
+Best regards,
+Krzysztof
 
 
