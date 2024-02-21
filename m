@@ -1,164 +1,162 @@
-Return-Path: <linux-kernel+bounces-74484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D39C185D50C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:03:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7057C85D50D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0304F1C23C6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:03:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C0BC2891A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9ED74D107;
-	Wed, 21 Feb 2024 09:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22614D58A;
+	Wed, 21 Feb 2024 09:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m7O2Saz+"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XeYfHNBG"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516E44CE19
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A127E3D569
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509301; cv=none; b=b21gh6K4UocSEjFKcWiItkis4Tpj5QtuFYfb8SoQwCI5VOrfmTfnTKjATRdRwfFEKSYDZdD9+yWiKtPLCi66HfQNRRnGh9/XTOBWmKAvkB0XBrYd+gO3i2i4PeHDrASIGqXdw10aZoX4J9lER6WE6kyshga6EaGE9vNp+Qi9ouE=
+	t=1708509344; cv=none; b=gkM5BCgLTnhdCZHqy/M9T1xTdv2DjbxatgAwERwNKOUUm0IkTBWrmCzEr5wckbVAwo2gml1TuNfaKgPzWp6Yyaf3aame9UjF1WNe35kdt3rm1YF9f36JjKk5OFTMMs6Lr37D2MoarHFBhRmTG3y9Gph7h7y4fF/Hfud2s+xnB0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509301; c=relaxed/simple;
-	bh=zm/vBibTZ3Rw1+e1hTTVkyysGtZeGEl4z6JnweURqmg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NrynhWmwtHNBmp3vlNEY2Us9sXa9XZFB2xYYHsD645q7MopD09+ebFX+JdmR9Ydz0KnbtISgeVlQqJ+px+LGfLmRbFj4Y8Jl+ynmcBnprBFHwa9MykIkQn3dKI0aL8WMob8nOMRyW3QGuw7nzRv2gdm+u5wcvh1tFgoKrB4Stus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m7O2Saz+; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3e5d82ad86so452016966b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:54:58 -0800 (PST)
+	s=arc-20240116; t=1708509344; c=relaxed/simple;
+	bh=JgZLBZQcJ9RFD+71cHou/Nio6U+OakhP53IZQMwrPfo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tQhzB5hbPV2M2lD4n4gMvAF+9kkMb9XCJAijcUxRC+VeF/G+MVOUWF0ORmcT7fBJS84vrN8xRc11wRVXdhMWqqAnREaiuPhiwhs8zUdm4XMnq5XE/ReMBaM75VXZACXkAhG0YgsR3L8xuhUhI+zuNjvvMWcYseZVwlFzDkbKAVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XeYfHNBG; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-564d9b0e96dso1850809a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:55:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708509297; x=1709114097; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KcmtWXC+eeRLQpsTOmN8RmXIXynGIPAPPuNNVvjXO7E=;
-        b=m7O2Saz+5wDh3x6N5ZUcOfeF9V2tItGVJg6mVNNfVPyniR1NoN/VITvuHIjufOzaUC
-         ml37e3oSdenjgR/6qdhubNaI3ptbh9YLBXIAafKq9Rye9Em4X0ZRuA0IaiMK7I4YEj9c
-         aKt7NhkZIdiZaJhtnbbh/hAQPx7t4ioamIoK4UiUAd58Mp5fs5/D4fFbNJmhfLcjMbun
-         ilDx+cTbZuMQh8AtPDmP7bSd0bz7y8ye7sQihnyB1TTMe7ghdkzVjXnDOg6t5YiOV0Os
-         L2SR6geTDqjulkDkKdUeOB6K7d9mbK5YKkCXByrTwwd4ECYPUpETrz4F3aXwZv5oToP/
-         OUgw==
+        d=suse.com; s=google; t=1708509340; x=1709114140; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MKaWUA238AHD6XbVPnmRsVUt8mKri+iu5YZ+VjxH69E=;
+        b=XeYfHNBGePyvRUl00gjiF88z9mvaZ9mIHnBOhkU8DCZHm4wiRlIGHZ+1HMrdyc5Pdi
+         5WcnvYGF4d469oX+mlo8RsqmXNlNcCnnBQBRXjJFBb+nnUG1UVnlJ9jrkU/g0SN4fFb5
+         LBVVb/e6Pylb8X2rb16YvHBNCNQKnrt7dhohyip62ltubqcdDVbAkAYl2Eucu/iC8IxH
+         woxIG6hxEvas1TVcoH4AJ7xCzIVFxDs9D05muM4GBxF41YJ1hm4qUslk8/ZPwbylmDGB
+         ScH1Nwtbkowe+uSQa7N48jdCq/HxUdFXIiVKAXTivMh3d74qEQGmdB5EsO8WgHm4DuLv
+         G5sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708509297; x=1709114097;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KcmtWXC+eeRLQpsTOmN8RmXIXynGIPAPPuNNVvjXO7E=;
-        b=EbZ13oom51reR4K9bGC1yD6wgovrMhVTk+4JxWRCcpsa0llfb0WB4tO29ZwZQGEyWc
-         QBTg/uCy21T8E33avBmOD5eP/oDdEMbiNRadNAh6cqGr81ZAQoJmjV238KxBIr/fnuYe
-         92w/ZhHPqtGWOHYRVc18XutFgQrU2ekfT2ecwZd/JR+jkZrnwtfi8eNjJ0tYNHBhVSbd
-         HSi9qaaGzEA0VvpnMsLu3ocofKnSEOw7dN+9Ujl6YzHCsgxPgDzXPj3IzVGsHuXD63b9
-         tI6q4Oam3eguUQyH5wdrJgSi3Avp+1cNuZigtBONqzLyXYCvKVx6gui2IXtdixOVPeBv
-         FQDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXu2KtvvXwU7DjhMM6Ucz6fyC+jNPC+AiPvmdN66nHBz/pmwRlsP9LM94vDqbKGpO/T5Qb+ufba6udLB5o3X8K1IzDudPbskSSQLUzZ
-X-Gm-Message-State: AOJu0YxHv4P4lSOgg9Q+yXNLbu74MpwrxlkIB+6bdC8tCkRtyAwrjesS
-	5MiUvHWx2qv1U/BYSq4ZkMNKtq5UDwI6OFiSnEyXUU1RKyAc716P+8pf0M0ALrE=
-X-Google-Smtp-Source: AGHT+IEU1nxc4NKao6byiVMdxqkd2y5TaHUyEJZs+U3hYhmscxhdnGmUNo/hj6bQWgubkdGHXQX7Ew==
-X-Received: by 2002:a17:906:4f0d:b0:a3e:8aeb:c198 with SMTP id t13-20020a1709064f0d00b00a3e8aebc198mr7655196eju.17.1708509297621;
-        Wed, 21 Feb 2024 01:54:57 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id ss15-20020a170907c00f00b00a3e0dc787bfsm4745061ejc.17.2024.02.21.01.54.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 01:54:57 -0800 (PST)
-Message-ID: <c532285c-6104-473f-be12-a5e833484bd3@linaro.org>
-Date: Wed, 21 Feb 2024 10:54:54 +0100
+        d=1e100.net; s=20230601; t=1708509340; x=1709114140;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MKaWUA238AHD6XbVPnmRsVUt8mKri+iu5YZ+VjxH69E=;
+        b=jy1fs8XTbuIuXTFRfCjp6UEevXsi2MbOjL4cfxyPjF9Gf61fZpgPYHLf6GHwbWlOQW
+         4/M3dWhayGtPeUN5Ksf2F2mKMktiVnveJ9m0BqzLuKnM0/YCTZSjZZ7U8jP6e3VwSciV
+         0jer/sCxf4tqxeOMJrJmKTTzFgUXbrw7Tosn+PS4Y9cP4WAZZaBr5hx8Zv8Rq8YAwclh
+         usqLYnUOenYA86Xzj8kvWKYJkmn8YsLedObYfvQIgQqPrNa1MfEEQPi+c9QOqjApSMvE
+         eEpZ0pIWebNDrzohqquLvmXfUN9fe/xNaExilzi1SFPWJCi2xJxcrQ4jutXCeXZ/oi9Z
+         vXbg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTd99RZJSFkvAguFHci0pc6xg4qp45+kfYAqyMxTBQChjFnGfSJMDKlZbjcNwxeP4H2Pm5O8VIsPwIwwRHoOtFqXAn75hXS86p63TU
+X-Gm-Message-State: AOJu0Yx9UcpZ7fZre3OapFT7oRkQNMCdqyUlJb/rNXBgVaNSudfLXxT8
+	NueHJu73OtiJtccAKFMwFy5Ws2nI/AnMrcpgCfKF2K6hZu6flUWaz5DQzB59QAI=
+X-Google-Smtp-Source: AGHT+IHKbL3OsCklwT8Lkyw6/niEJsdATAQX+tx3g6PPL9b9Cz6tw5fhhgTIO5ABfBzd2tsQWXZS0A==
+X-Received: by 2002:aa7:c390:0:b0:560:db41:7ef4 with SMTP id k16-20020aa7c390000000b00560db417ef4mr12347132edq.0.1708509339903;
+        Wed, 21 Feb 2024 01:55:39 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id y5-20020aa7d505000000b0056200715130sm4418022edq.54.2024.02.21.01.55.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 01:55:39 -0800 (PST)
+Date: Wed, 21 Feb 2024 10:55:38 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH printk v2 07/26] printk: Check
+ printk_deferred_enter()/_exit() usage
+Message-ID: <ZdXB-7E7kTyFGhDU@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-8-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/9] ARM: dts: aspeed: Harma: Add PDB temperature
-Content-Language: en-US
-To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240221093925.2393604-1-peteryin.openbmc@gmail.com>
- <20240221093925.2393604-7-peteryin.openbmc@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240221093925.2393604-7-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218185726.1994771-8-john.ogness@linutronix.de>
 
-On 21/02/2024 10:39, Peter Yin wrote:
-> Add PDB temperature sensor.
+On Sun 2024-02-18 20:03:07, John Ogness wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts | 5 +++++
->  1 file changed, 5 insertions(+)
+> Add validation that printk_deferred_enter()/_exit() are called in
+> non-migration contexts.
 > 
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-> index ca3052cce0e0..4d5d1c822fa3 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-> @@ -260,6 +260,11 @@ delta_brick@69 {
->  		compatible = "pmbus";
->  		reg = <0x69>;
->  	};
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -159,13 +159,16 @@ __printf(1, 2) __cold int _printk_deferred(const char *fmt, ...);
+>  
+>  extern void __printk_safe_enter(void);
+>  extern void __printk_safe_exit(void);
+
+It seems that these two does not longer need to stay in
+the global linux/printk.h. The declaration can be
+moved to kernel/printk/internal.h (with 'extern' removed).
+
+> +extern void __printk_deferred_enter(void);
+> +extern void __printk_deferred_exit(void);
 > +
-> +	tmp75@49 {
+>  /*
+>   * The printk_deferred_enter/exit macros are available only as a hack for
+>   * some code paths that need to defer all printk console printing. Interrupts
+>   * must be disabled for the deferred duration.
+>   */
+> -#define printk_deferred_enter __printk_safe_enter
+> -#define printk_deferred_exit __printk_safe_exit
+> +#define printk_deferred_enter() __printk_deferred_enter()
+> +#define printk_deferred_exit() __printk_deferred_exit()
+>  
+>  /*
+>   * Please don't use printk_ratelimit(), because it shares ratelimiting state
+> diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+> index 6d10927a07d8..8d9408d653de 100644
+> --- a/kernel/printk/printk_safe.c
+> +++ b/kernel/printk/printk_safe.c
+> @@ -26,6 +26,18 @@ void __printk_safe_exit(void)
+>  	this_cpu_dec(printk_context);
+>  }
+>  
+> +void __printk_deferred_enter(void)
+> +{
+> +	cant_migrate();
+> +	this_cpu_inc(printk_context);
 
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+I would prefer to call __printk_safe_enter() here to make
+it clear that they update printk_context the same way
+and have the same effect.
 
-Best regards,
-Krzysztof
+Let's make compiler to do the inlining.
 
+> +}
+> +
+> +void __printk_deferred_exit(void)
+> +{
+> +	cant_migrate();
+> +	this_cpu_dec(printk_context);
+
+ditto
+
+> +}
+> +
+>  asmlinkage int vprintk(const char *fmt, va_list args)
+>  {
+>  #ifdef CONFIG_KGDB_KDB
+
+With the two changes:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
 
