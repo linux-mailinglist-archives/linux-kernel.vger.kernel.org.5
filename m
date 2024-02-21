@@ -1,187 +1,141 @@
-Return-Path: <linux-kernel+bounces-74952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0CFD85E068
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:00:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564DB85E061
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A117BB291DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:59:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05B871F24FEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D307FBB6;
-	Wed, 21 Feb 2024 14:59:15 +0000 (UTC)
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1D17FBD4;
+	Wed, 21 Feb 2024 14:57:48 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239837FBC5;
-	Wed, 21 Feb 2024 14:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4748E7FBB8
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708527555; cv=none; b=IfxdTPJN4yoCaH7OxpE0RdDMjhXzYLXGxWJfdEVGFUEavruucKNR3Mv8wqJuzdBFaSOwmrmHs+Fhl7f6L2OtvL0DiIFmAXZ3+HZi54WidmtRU0hin6pC5fc1P0G1M061RrevMCr825czOTCrDSNen99jD3dnewAvljjjUqPBvik=
+	t=1708527468; cv=none; b=YHchI7S8BAn5vQwILdL+Trd3dUcN71OSrMlT4E9EAJGmkGonzDvNd6ovOTy4CApO46Nv+5TRkSSU+6PDRd+dogCjdphWKobvrimdQXAUnXWTWaARnZBCuh8S7hMzF9MPKJmZogo2t8Z1poPdyEXLQFLqd+RIpAbQ5WhUlzgYMKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708527555; c=relaxed/simple;
-	bh=rOXs7IK7BPd47XxyU2z2y1odp+Wf1KbCWQduP9pOyt0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CuiCS5ec7ckfYz8Si+26TUHEIhc8RXWS0Fgamh+slhvSfPBGvfefaSGfom3HqkXEkgjHGjYafuoGAlHsRAB0lay8q/MOeiQ2Kf3iytIM0AFbCUlF10b2dfZ6MlGr1u6KgEhIflXvK2hTHhPbdchpfX7sVGeQAce5p+IFJ8GKzrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <d.dulov@aladdin.ru>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
-CC: Daniil Dulov <d.dulov@aladdin.ru>, Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz
-	<luiz.dentz@gmail.com>, Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>,
-	<linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>, Ying Hsu <yinghsu@chromium.org>, Luiz Augusto
- von Dentz <luiz.von.dentz@intel.com>
-Subject: [PATCH 5.10/5.15 1/1] Bluetooth: Fix deadlock in vhci_send_frame
-Date: Wed, 21 Feb 2024 17:57:44 +0300
-Message-ID: <20240221145744.27895-2-d.dulov@aladdin.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240221145744.27895-1-d.dulov@aladdin.ru>
-References: <20240221145744.27895-1-d.dulov@aladdin.ru>
+	s=arc-20240116; t=1708527468; c=relaxed/simple;
+	bh=VXm+kZmxMVHqvGGNho4lRaBPvFnNMXrsUkhaZtCVkdg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=di+Ph33/9JeP4ALbeKH/nteq+3JqDV4ThjtqH9emARidu3obJZKnTZ6LQ/AfmrvZbXi99bmQ14l+B9jpfL0t9wBVDY03RS2xEjZPv7E0ulhBrMDklvjf1iGBCamM/ZPbKnCK198k9kNEnqB3LS3eOFxGk6/DK17wTzGBt5aEWRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
+Date: Wed, 21 Feb 2024 09:58:01 -0500
+From: "dalias@libc.org" <dalias@libc.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <20240221145800.GR4163@brightrain.aerifal.cx>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
+ <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
+ <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx>
+ <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-03.aladdin.ru (192.168.1.103) To
- EXCH-2016-01.aladdin.ru (192.168.1.101)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Ying Hsu <yinghsu@chromium.org>
+On Wed, Feb 21, 2024 at 01:53:10PM +0000, Mark Brown wrote:
+> On Tue, Feb 20, 2024 at 08:27:37PM -0500, dalias@libc.org wrote:
+> > On Wed, Feb 21, 2024 at 12:35:48AM +0000, Edgecombe, Rick P wrote:
+> 
+> > > (INCSSP, RSTORSSP, etc). These are a collection of instructions that
+> > > allow limited control of the SSP. When shadow stack gets disabled,
+> > > these suddenly turn into #UD generating instructions. So any other
+> > > threads executing those instructions when shadow stack got disabled
+> > > would be in for a nasty surprise.
+> 
+> > This is the kernel's problem if that's happening. It should be
+> > trapping these and returning immediately like a NOP if shadow stack
+> > has been disabled, not generating SIGILL.
+> 
+> I'm not sure that's going to work out well, all it takes is some code
+> that's looking at the shadow stack and expecting something to happen as
+> a result of the instructions it's executing and we run into trouble.  A
+> lot of things won't notice and will just happily carry on but I expect
+> there are going to be things that care.  We also end up with an
+> additional state for threads that have had shadow stacks transparently
+> disabled, that's managable but still.
 
-commit 769bf60e17ee1a56a81e7c031192c3928312c52e upstream.
+I said NOP but there's no reason it strictly needs to be a NOP. It
+could instead do something reasonable to convey the state of racing
+with shadow stack being disabled.
 
-syzbot found a potential circular dependency leading to a deadlock:
-    -> #3 (&hdev->req_lock){+.+.}-{3:3}:
-    __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-    __mutex_lock kernel/locking/mutex.c:732 [inline]
-    mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-    hci_dev_do_close+0x3f/0x9f net/bluetooth/hci_core.c:551
-    hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
-    rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
-    rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
-    vfs_write+0x277/0xcf5 fs/read_write.c:594
-    ksys_write+0x19b/0x2bd fs/read_write.c:650
-    do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-    do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-    entry_SYSCALL_64_after_hwframe+0x61/0xcb
+> 
+> > > > The place where it's really needed to be able to allocate the shadow
+> > > > stack synchronously under userspace control, in order to harden
+> > > > normal
+> > > > applications that aren't doing funny things, is in pthread_create
+> > > > without a caller-provided stack.
+> 
+> > > Yea most apps don't do anything too tricky. Mostly shadow stack "just
+> > > works". But it's no excuse to just crash for the others.
+> 
+> > One thing to note here is that, to enable this, we're going to need
+> > some way to detect "new enough kernel that shadow stack semantics are
+> > all right". If there are kernels that have shadow stack support but
+> > with problems that make it unsafe to use (this sounds like the case),
+> > we can't turn it on without a way to avoid trying to use it on those.
+> 
+> If we have this automatic conversion of pages to shadow stack then we
+> should have an API for enabling it, userspace should be able to use the
+> presence of that API to determine if the feature is there.
 
-    -> #2 (rfkill_global_mutex){+.+.}-{3:3}:
-    __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-    __mutex_lock kernel/locking/mutex.c:732 [inline]
-    mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-    rfkill_register+0x30/0x7e3 net/rfkill/core.c:1045
-    hci_register_dev+0x48f/0x96d net/bluetooth/hci_core.c:2622
-    __vhci_create_device drivers/bluetooth/hci_vhci.c:341 [inline]
-    vhci_create_device+0x3ad/0x68f drivers/bluetooth/hci_vhci.c:374
-    vhci_get_user drivers/bluetooth/hci_vhci.c:431 [inline]
-    vhci_write+0x37b/0x429 drivers/bluetooth/hci_vhci.c:511
-    call_write_iter include/linux/fs.h:2109 [inline]
-    new_sync_write fs/read_write.c:509 [inline]
-    vfs_write+0xaa8/0xcf5 fs/read_write.c:596
-    ksys_write+0x19b/0x2bd fs/read_write.c:650
-    do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-    do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-    entry_SYSCALL_64_after_hwframe+0x61/0xcb
+Yes, or if a new prctl is needed to make disabling safe (see above)
+that could probably be used.
 
-    -> #1 (&data->open_mutex){+.+.}-{3:3}:
-    __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-    __mutex_lock kernel/locking/mutex.c:732 [inline]
-    mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-    vhci_send_frame+0x68/0x9c drivers/bluetooth/hci_vhci.c:75
-    hci_send_frame+0x1cc/0x2ff net/bluetooth/hci_core.c:2989
-    hci_sched_acl_pkt net/bluetooth/hci_core.c:3498 [inline]
-    hci_sched_acl net/bluetooth/hci_core.c:3583 [inline]
-    hci_tx_work+0xb94/0x1a60 net/bluetooth/hci_core.c:3654
-    process_one_work+0x901/0xfb8 kernel/workqueue.c:2310
-    worker_thread+0xa67/0x1003 kernel/workqueue.c:2457
-    kthread+0x36a/0x430 kernel/kthread.c:319
-    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
-
-    -> #0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}:
-    check_prev_add kernel/locking/lockdep.c:3053 [inline]
-    check_prevs_add kernel/locking/lockdep.c:3172 [inline]
-    validate_chain kernel/locking/lockdep.c:3787 [inline]
-    __lock_acquire+0x2d32/0x77fa kernel/locking/lockdep.c:5011
-    lock_acquire+0x273/0x4d5 kernel/locking/lockdep.c:5622
-    __flush_work+0xee/0x19f kernel/workqueue.c:3090
-    hci_dev_close_sync+0x32f/0x1113 net/bluetooth/hci_sync.c:4352
-    hci_dev_do_close+0x47/0x9f net/bluetooth/hci_core.c:553
-    hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
-    rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
-    rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
-    vfs_write+0x277/0xcf5 fs/read_write.c:594
-    ksys_write+0x19b/0x2bd fs/read_write.c:650
-    do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-    do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-    entry_SYSCALL_64_after_hwframe+0x61/0xcb
-
-This change removes the need for acquiring the open_mutex in
-vhci_send_frame, thus eliminating the potential deadlock while
-maintaining the required packet ordering.
-
-Fixes: 92d4abd66f70 ("Bluetooth: vhci: Fix race when opening vhci device")
-Signed-off-by: Ying Hsu <yinghsu@chromium.org>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-[Daniil: In order to adapt this patch to branches 5.10 and 5.15
-redundant fields of struct vhci_data were removed as these fields are
-not used in 5.10 and 5.15.]
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
----
- drivers/bluetooth/hci_vhci.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
-index 31d70bad83d2..93773ec90795 100644
---- a/drivers/bluetooth/hci_vhci.c
-+++ b/drivers/bluetooth/hci_vhci.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <asm/unaligned.h>
- 
-+#include <linux/atomic.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/slab.h>
-@@ -37,6 +38,7 @@ struct vhci_data {
- 
- 	struct mutex open_mutex;
- 	struct delayed_work open_timeout;
-+	atomic_t initialized;
- };
- 
- static int vhci_open_dev(struct hci_dev *hdev)
-@@ -68,11 +70,10 @@ static int vhci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
- 
- 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
- 
--	mutex_lock(&data->open_mutex);
- 	skb_queue_tail(&data->readq, skb);
--	mutex_unlock(&data->open_mutex);
- 
--	wake_up_interruptible(&data->read_wait);
-+	if (atomic_read(&data->initialized))
-+		wake_up_interruptible(&data->read_wait);
- 	return 0;
- }
- 
-@@ -139,7 +140,8 @@ static int __vhci_create_device(struct vhci_data *data, __u8 opcode)
- 	skb_put_u8(skb, 0xff);
- 	skb_put_u8(skb, opcode);
- 	put_unaligned_le16(hdev->id, skb_put(skb, 2));
--	skb_queue_tail(&data->readq, skb);
-+	skb_queue_head(&data->readq, skb);
-+	atomic_inc(&data->initialized);
- 
- 	wake_up_interruptible(&data->read_wait);
- 	return 0;
--- 
-2.25.1
-
+Rich
 
