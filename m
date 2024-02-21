@@ -1,406 +1,140 @@
-Return-Path: <linux-kernel+bounces-75586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB9D985EB8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:04:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DDE885EB90
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 721D12841B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:04:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AE301C216EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24346128373;
-	Wed, 21 Feb 2024 22:04:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66CC3A29E
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317C112880E;
+	Wed, 21 Feb 2024 22:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XcQQq+4W"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0CE127B6F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 22:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708553089; cv=none; b=Qi+fl48c3Z8WY+G9kNHAYtyajlOkqgb70xk7yQKu09yRavZ/f/7H//LmwUHCzqAKOuyLBCoMk6VFwxMSLmzAPcc+oc4mv3UIXtppj+M9sN3Cu4Ky5wLB9IcNs11vYaoPE4z7l2jLzi01oc5YODNKbZS4YJbYFdnfXIvRAmDLc0o=
+	t=1708553130; cv=none; b=HSZkLX4IdQtmEupVj02RmYU53jO/sfIj2OtxYD3e973K0gfgXU8Uq8yreRZmYH7spGolzDkWR2QMynu7FykHa232zp0rDmVjaZyKeLoi3mkxAtMN23EdgRdeMWWzL8ZOX6A8JU04cUXa6hqQLr2MHMHo7gBM9G2uQP8j9/5vmvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708553089; c=relaxed/simple;
-	bh=QosNy/Sq6euw/CGlf3VUVlRfq5RFG2DnnHxO6BqslvI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q4spc9+N1IVN1mr4BTe074n90TQenLM7tHdG9rzacV7oGAHHOb4kzwme8IVvVFya6DYc6xI8CufaTPZI8ShVQjiMSxTXMGSNhSCDfdBfWWEE9j0qBFfROstgjxXmpJl/02X7Kxrr/BZeLiKQi0tWzFMywEOkX1tym5V+XRZvbt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DBC5DA7;
-	Wed, 21 Feb 2024 14:05:22 -0800 (PST)
-Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00DE13F766;
-	Wed, 21 Feb 2024 14:04:41 -0800 (PST)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: sudeep.holla@arm.com,
-	james.quinlan@broadcom.com,
-	f.fainelli@gmail.com,
-	vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com,
-	michal.simek@amd.com,
-	quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com,
-	souvik.chakravarty@arm.com,
-	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH] firmware: arm_scmi: Add support for multiple vendors custom protocols
-Date: Wed, 21 Feb 2024 22:04:26 +0000
-Message-ID: <20240221220426.1205146-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708553130; c=relaxed/simple;
+	bh=glDEKtdwdqyJIt9bRVsA7OStBeZEdBkYYd62ei+rhmE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=O88k/pI/RIatvM8mcmMOPlr9kNx9XK8AHcEUh7PKg21FJkX9DzYIUSgSt11HT9YR2ml4+HabC4SkyRnMjhPWdOYWhbyK1/e5fzUlEmrJuYPVzTwXBuf2JKZOWt8QyLdIxcmpJTIS2/hMU2aEfy3Gz4s5ZNgEOV4VG3KLyYoCEKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XcQQq+4W; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so1973658276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:05:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708553127; x=1709157927; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CEXpQXg5vnSo+q/Y96zcMRb8jRrXDHbwFt0Ekcc6U9I=;
+        b=XcQQq+4WQ1MZQLL9UPv+1x6qXBcOYK3405lqc8h21vpYT40o+1qyoF65kO7QQoAxfX
+         tu3xF5X+uHntG6SQiFjgQiXHm9jp89M38ocEsmZbC7JPiJjoOmij/01JePm38rWj7GG/
+         aPIY0J6mzWJb+lGQGmTSqA1m2KNS7NlmBNxCq0Lyic+9/ssQGwPKlaEsN2SSRzXIjV0V
+         hlVop0ZgMR3fZyrv+WS2rlFGMrNjHAuK1IWIEjQceICZvJo8o5bO5jp6nrtVovp5VJ1Z
+         ifF9WqKSZsnyhMg14kG01h57KId4B0gI5dj16ThNTgtEyyoYL4OT+fJmO2LfZrIXZ51i
+         4DFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708553127; x=1709157927;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CEXpQXg5vnSo+q/Y96zcMRb8jRrXDHbwFt0Ekcc6U9I=;
+        b=abLBah6ZPF/nPe1auRHfVnKHt1KUmHelgx/5wy48zpEP3B9n1ZPhu9/7TPHCapG7UN
+         UT9XIi8fJON65po4/arRYWUxAreg29GoqbYUyQWYNYsn/R1scJh2STEt+JsPOFXkeGAz
+         YtvfClxb0LQojkk/CQVl07Y9Uq693o6o/gjO6sCa5uefqDKbtG5WzqtpewTKbhZ5hXF4
+         LHLRWFfVXmpoD0ZAt15z93cskGh3WVLOYmlxRDcRYYCnXoK6m1DGIFSnTvK/HdT8hVWK
+         epCXXb4F6snW71t/ruxb+nj5SH9FX1weX+hrmFMXHlN+GsrohKb8tlVyOzTCIkb1MwLB
+         Llzw==
+X-Gm-Message-State: AOJu0Ywscbqs+JgH5NrQ7p/1kTStNDJuy0Ly76datFb1SukVPJZd5tjX
+	AXdTZek1vXd3kH/l2FoHp5VkzjtHTVy3OL6huwJWGbQ53SlteZx08nTQN0dAIjbXHQm0RTRP24V
+	vQ7NoBVotYkVf0ZtB0ARK+A==
+X-Google-Smtp-Source: AGHT+IH65ETPwbThwk5AYf7wJ0+qz1pjROYQoRed6Nxu0TgqLyz0Kj79tkAiKpPEL1LlETwVW/wVTtfz+bTZkf2Qfw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:100a:b0:dc9:5ef8:2b2d with
+ SMTP id w10-20020a056902100a00b00dc95ef82b2dmr158311ybt.4.1708553127595; Wed,
+ 21 Feb 2024 14:05:27 -0800 (PST)
+Date: Wed, 21 Feb 2024 22:05:16 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJtz1mUC/x3MQQqAIBBA0avIrBNUwqKrRAvTMYfARCWC8O5Jy
+ 7f4/4WCmbDAwl7IeFOhK3bIgYENJh7IyXWDEmoUSkleYsoUq+c2oD2TqTZwM+sRnZ5wdwJ6mTJ 6ev7rurX2AVsF9GhlAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708553126; l=1887;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=glDEKtdwdqyJIt9bRVsA7OStBeZEdBkYYd62ei+rhmE=; b=uyJIZ0LPetF0XN9X4zCF00e6OsEkDTxKePErRG4rK3MlHowXuvM/g/ti/1N5Q7c9JLpIRHmzb
+ jOOSpBX2gahDxCJ40oMTEt9NWPSyrvjCWqzNtseVW8J0tQWA4ku2Dd7
+X-Mailer: b4 0.12.3
+Message-ID: <20240221-snprintf-checkpatch-v1-1-3ac5025b5961@google.com>
+Subject: [PATCH] checkpatch: add check for snprintf to scnprintf
+From: Justin Stitt <justinstitt@google.com>
+To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>, 
+	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	Finn Thain <fthain@linux-m68k.org>, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-Add a mechanism to be able to tag vendor protocol modules at compile-time
-with a vendor/sub_vendor string and an implementation version and then to
-choose to load, at run-time, only those vendor protocol modules matching
-as close as possible the vendor/subvendor identification advertised by
-the SCMI platform server.
+I am going to quote Lee Jones who has been doing some snprintf ->
+scnprintf refactorings:
 
-In this way, any in-tree existent vendor protocol module can be build and
-shipped by default in a single kernel image, even when using the same
-clashing protocol identification numbers, since the SCMI core will take
-care at run-time to load only the ones pertinent to the running system.
+"There is a general misunderstanding amongst engineers that
+{v}snprintf() returns the length of the data *actually* encoded into the
+destination array.  However, as per the C99 standard {v}snprintf()
+really returns the length of the data that *would have been* written if
+there were enough space for it.  This misunderstanding has led to
+buffer-overruns in the past.  It's generally considered safer to use the
+{v}scnprintf() variants in their place (or even sprintf() in simple
+cases).  So let's do that."
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+To help prevent new instances of snprintf() from popping up, let's add a
+check to checkpatch.pl.
+
+Suggested-by: Finn Thain <fthain@linux-m68k.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
-Hi all,
+From a discussion here [1].
 
-this is meant to address the possibility of having multiple vendors
-implementing distinct SCMI vendor protocols with possibly the same
-overlapping protocol number without the need of crafting the Kconfig
-at compile time to include only wanted protos
-(and without the need for a lottery :P)
-
-Basic idea is simple:
-
-- vendor protos HAS to be 'tagged' at build time with a vendor_id
-- vendor protos COULD also optionally be tagged at build time with
-sub_vendor_id and implemetation version
-
-- at init all the build vendor protos are registerd with the SCMI core
-  using a key derived from the above tags
-
-- at SCMI probe time the platform is identified via Base protocol as
-  usual and all the required vendor protos (i.e. IDs defined in the DT
-  as usual) are loaded after a lookup process based on the following rules:
-
-  + protocol DB is searched using the platform/Base runtime provided tags
-
-  	<vendor> / <sub_vendor> / <impl_ver>
-
-    using the the following search logic (keys), first match:
-
-     1. proto_id / <vendor_id> / <sub_vendor_id> / <impl_ver>
-
-     2. proto_id / <vendor_id> / <sub_vendor_id> / 0
-
-     3. proto_id / <vendor_id> / NULL / 0
-
-  IOW, closest match, depending on how much fine grained is your
-  protocol tuned (tagged) for the platform.
-
-  I am doubtful about the usage of <impl_ver>, and tempted to drop it
-  since we have anyway protocol version and NEGOTIATE_PROTOCOL_VERSION
-  to deal with slight difference in fw revision...
-
-Based on sudeep/for-linux-next on top of
-
-	1c2c88cfcb2b ("clk: scmi: Support get/set duty_cycle operations")
-
-Minimally tested ....
-
-  Any feedback welcome
-
-  Thanks,
-  Cristian
+[1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@linux-m68k.org/
 ---
- drivers/firmware/arm_scmi/driver.c    | 166 ++++++++++++++++++++++----
- drivers/firmware/arm_scmi/protocols.h |   5 +
- 2 files changed, 149 insertions(+), 22 deletions(-)
+ scripts/checkpatch.pl | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 34d77802c990..8fb2903698c9 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -33,6 +33,7 @@
- #include <linux/processor.h>
- #include <linux/refcount.h>
- #include <linux/slab.h>
-+#include <linux/xarray.h>
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..bb4e99c818a9 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7012,6 +7012,12 @@ sub process {
+ 			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+ 		}
  
- #include "common.h"
- #include "notify.h"
-@@ -44,8 +45,7 @@
- 
- static DEFINE_IDA(scmi_id);
- 
--static DEFINE_IDR(scmi_protocols);
--static DEFINE_SPINLOCK(protocol_lock);
-+static DEFINE_XARRAY(scmi_protocols);
- 
- /* List of all SCMI devices active in system */
- static LIST_HEAD(scmi_list);
-@@ -194,11 +194,90 @@ struct scmi_info {
- #define bus_nb_to_scmi_info(nb)	container_of(nb, struct scmi_info, bus_nb)
- #define req_nb_to_scmi_info(nb)	container_of(nb, struct scmi_info, dev_req_nb)
- 
--static const struct scmi_protocol *scmi_protocol_get(int protocol_id)
-+static unsigned long
-+scmi_vendor_protocol_signature(unsigned protocol_id, char *vendor_id,
-+			       char *sub_vendor_id, u32 impl_ver)
- {
--	const struct scmi_protocol *proto;
-+	char *signature, *p;
-+	unsigned long hash = 0;
- 
--	proto = idr_find(&scmi_protocols, protocol_id);
-+	/* vendor_id/sub_vendor_id guaranteed <= SCMI_SHORT_NAME_MAX_SIZE */
-+	signature = kasprintf(GFP_KERNEL, "%02X|%s|%s|0x%08X", protocol_id,
-+			      vendor_id ?: "", sub_vendor_id ?: "", impl_ver);
-+	if (!signature)
-+		return 0;
++# snprintf uses that should likely be {v}scnprintf
++		if ($line =~ /\snprintf\s*\(\s*/) {
++				WARN("SNPRINTF",
++				     "Prefer scnprintf over snprintf\n" . $herecurr);
++		}
 +
-+	p = signature;
-+	while (*p)
-+		hash = partial_name_hash(tolower(*p++), hash);
-+	hash = end_name_hash(hash);
-+
-+	kfree(signature);
-+
-+	return hash;
-+}
-+
-+static unsigned long
-+scmi_protocol_key_calculate(int protocol_id, char *vendor_id,
-+			    char *sub_vendor_id, u32 impl_ver)
-+{
-+	if (protocol_id < SCMI_PROTOCOL_VENDOR)
-+		return protocol_id;
-+	else
-+		return scmi_vendor_protocol_signature(protocol_id, vendor_id,
-+						      sub_vendor_id, impl_ver);
-+}
-+
-+static const struct scmi_protocol *
-+scmi_vendor_protocol_lookup(int protocol_id, char *vendor_id,
-+			    char *sub_vendor_id, u32 impl_ver)
-+{
-+	unsigned long key;
-+	struct scmi_protocol *proto = NULL;
-+
-+	/* Searching for closest match ...*/
-+	key = scmi_protocol_key_calculate(protocol_id, vendor_id,
-+					  sub_vendor_id, impl_ver);
-+	if (key)
-+		proto = xa_load(&scmi_protocols, key);
-+
-+	if (proto)
-+		return proto;
-+
-+	/* Any match on vendor/sub_vendor ? */
-+	if (impl_ver) {
-+		key = scmi_protocol_key_calculate(protocol_id, vendor_id,
-+						  sub_vendor_id, 0);
-+		if (key)
-+			proto = xa_load(&scmi_protocols, key);
-+
-+		if (proto)
-+			return proto;
-+	}
-+
-+	/* Any match on just the vendor ? */
-+	if (sub_vendor_id) {
-+		key = scmi_protocol_key_calculate(protocol_id, vendor_id,
-+						  NULL, 0);
-+		if (key)
-+			proto = xa_load(&scmi_protocols, key);
-+	}
-+
-+	return proto;
-+}
-+
-+static const struct scmi_protocol *
-+scmi_protocol_get(int protocol_id, struct scmi_revision_info *version)
-+{
-+	const struct scmi_protocol *proto = NULL;
-+
-+	if (protocol_id < SCMI_PROTOCOL_VENDOR)
-+		proto = xa_load(&scmi_protocols, protocol_id);
-+	else
-+		proto = scmi_vendor_protocol_lookup(protocol_id,
-+						    version->vendor_id,
-+						    version->sub_vendor_id,
-+						    version->impl_ver);
- 	if (!proto || !try_module_get(proto->owner)) {
- 		pr_warn("SCMI Protocol 0x%x not found!\n", protocol_id);
- 		return NULL;
-@@ -206,21 +285,47 @@ static const struct scmi_protocol *scmi_protocol_get(int protocol_id)
- 
- 	pr_debug("Found SCMI Protocol 0x%x\n", protocol_id);
- 
-+	if (protocol_id >= SCMI_PROTOCOL_VENDOR)
-+		pr_info("Loaded SCMI Vendor Protocol 0x%x - %s %s %X\n",
-+			protocol_id, proto->vendor_id ?: "",
-+			proto->sub_vendor_id ?: "", proto->impl_ver);
-+
- 	return proto;
- }
- 
--static void scmi_protocol_put(int protocol_id)
-+static void scmi_protocol_put(const struct scmi_protocol *proto)
- {
--	const struct scmi_protocol *proto;
--
--	proto = idr_find(&scmi_protocols, protocol_id);
- 	if (proto)
- 		module_put(proto->owner);
- }
- 
-+static int scmi_vendor_protocol_check(const struct scmi_protocol *proto)
-+{
-+	if (!proto->vendor_id) {
-+		pr_err("missing vendor_id for protocol 0x%x\n", proto->id);
-+		return -EINVAL;
-+	}
-+
-+	if (proto->vendor_id &&
-+	    strlen(proto->vendor_id) >= SCMI_SHORT_NAME_MAX_SIZE) {
-+		pr_err("malformed vendor_id for protocol 0x%x\n", proto->id);
-+		return -EINVAL;
-+	}
-+
-+	if (proto->sub_vendor_id &&
-+	    strlen(proto->sub_vendor_id) >= SCMI_SHORT_NAME_MAX_SIZE) {
-+		pr_err("malformed sub_vendor_id for protocol 0x%x\n",
-+		       proto->id);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- int scmi_protocol_register(const struct scmi_protocol *proto)
- {
- 	int ret;
-+	unsigned long key;
- 
- 	if (!proto) {
- 		pr_err("invalid protocol\n");
-@@ -232,12 +337,23 @@ int scmi_protocol_register(const struct scmi_protocol *proto)
- 		return -EINVAL;
- 	}
- 
--	spin_lock(&protocol_lock);
--	ret = idr_alloc(&scmi_protocols, (void *)proto,
--			proto->id, proto->id + 1, GFP_ATOMIC);
--	spin_unlock(&protocol_lock);
--	if (ret != proto->id) {
--		pr_err("unable to allocate SCMI idr slot for 0x%x - err %d\n",
-+	if (proto->id >= SCMI_PROTOCOL_VENDOR &&
-+	    scmi_vendor_protocol_check(proto))
-+		return -EINVAL;
-+
-+	/*
-+	 * Calculate a protocol key to register this protocol with the core;
-+	 * key value 0 is considered invalid.
-+	 */
-+	key = scmi_protocol_key_calculate(proto->id, proto->vendor_id,
-+					  proto->sub_vendor_id,
-+					  proto->impl_ver);
-+	if (!key)
-+		return -EINVAL;
-+
-+	ret = xa_insert(&scmi_protocols, key, (void *)proto, GFP_KERNEL);
-+	if (ret) {
-+		pr_err("unable to allocate SCMI protocol slot for 0x%x - err %d\n",
- 		       proto->id, ret);
- 		return ret;
- 	}
-@@ -250,9 +366,15 @@ EXPORT_SYMBOL_GPL(scmi_protocol_register);
- 
- void scmi_protocol_unregister(const struct scmi_protocol *proto)
- {
--	spin_lock(&protocol_lock);
--	idr_remove(&scmi_protocols, proto->id);
--	spin_unlock(&protocol_lock);
-+	unsigned long key;
-+
-+	key = scmi_protocol_key_calculate(proto->id, proto->vendor_id,
-+					  proto->sub_vendor_id,
-+					  proto->impl_ver);
-+	if (!key)
-+		return;
-+
-+	xa_erase(&scmi_protocols, key);
- 
- 	pr_debug("Unregistered SCMI Protocol 0x%x\n", proto->id);
- }
-@@ -1888,7 +2010,7 @@ scmi_alloc_init_protocol_instance(struct scmi_info *info,
- 	/* Protocol specific devres group */
- 	gid = devres_open_group(handle->dev, NULL, GFP_KERNEL);
- 	if (!gid) {
--		scmi_protocol_put(proto->id);
-+		scmi_protocol_put(pi->proto);
- 		goto out;
- 	}
- 
-@@ -1952,7 +2074,7 @@ scmi_alloc_init_protocol_instance(struct scmi_info *info,
- 
- clean:
- 	/* Take care to put the protocol module's owner before releasing all */
--	scmi_protocol_put(proto->id);
-+	scmi_protocol_put(proto);
- 	devres_release_group(handle->dev, gid);
- out:
- 	return ERR_PTR(ret);
-@@ -1986,7 +2108,7 @@ scmi_get_protocol_instance(const struct scmi_handle *handle, u8 protocol_id)
- 		const struct scmi_protocol *proto;
- 
- 		/* Fails if protocol not registered on bus */
--		proto = scmi_protocol_get(protocol_id);
-+		proto = scmi_protocol_get(protocol_id, &info->version);
- 		if (proto)
- 			pi = scmi_alloc_init_protocol_instance(info, proto);
- 		else
-@@ -2041,7 +2163,7 @@ void scmi_protocol_release(const struct scmi_handle *handle, u8 protocol_id)
- 
- 		idr_remove(&info->protocols, protocol_id);
- 
--		scmi_protocol_put(protocol_id);
-+		scmi_protocol_put(pi->proto);
- 
- 		devres_release_group(handle->dev, gid);
- 		dev_dbg(handle->dev, "De-Initialized protocol: 0x%X\n",
-diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
-index 693019fff0f6..cb8dbc93584b 100644
---- a/drivers/firmware/arm_scmi/protocols.h
-+++ b/drivers/firmware/arm_scmi/protocols.h
-@@ -29,6 +29,8 @@
- #define PROTOCOL_REV_MAJOR(x)	((u16)(FIELD_GET(PROTOCOL_REV_MAJOR_MASK, (x))))
- #define PROTOCOL_REV_MINOR(x)	((u16)(FIELD_GET(PROTOCOL_REV_MINOR_MASK, (x))))
- 
-+#define SCMI_PROTOCOL_VENDOR	0x80
-+
- enum scmi_common_cmd {
- 	PROTOCOL_VERSION = 0x0,
- 	PROTOCOL_ATTRIBUTES = 0x1,
-@@ -330,6 +332,9 @@ struct scmi_protocol {
- 	const void				*ops;
- 	const struct scmi_protocol_events	*events;
- 	unsigned int				supported_version;
-+	u32					impl_ver;
-+	char					*vendor_id;
-+	char					*sub_vendor_id;
- };
- 
- #define DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(name, proto)	\
--- 
-2.43.0
+ # ethtool_sprintf uses that should likely be ethtool_puts
+ 		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
+ 			if (WARN("PREFER_ETHTOOL_PUTS",
+
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240221-snprintf-checkpatch-a864ed67ebd0
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
 
