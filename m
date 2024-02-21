@@ -1,154 +1,170 @@
-Return-Path: <linux-kernel+bounces-75149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E899285E3D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:57:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4461A85E3D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5313A1F227F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:57:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6790F1C224AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA3382D9F;
-	Wed, 21 Feb 2024 16:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B91839E6;
+	Wed, 21 Feb 2024 16:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KISnUU3j"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UsljfjTJ"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B30467E89
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6B33A1B1
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708534627; cv=none; b=uEd6zJjz1ZKZ75ddi19HV/1ma9gDnT+p8OXV//FkEnb6//olv1p9VH7+88huVG422v9MZcV0nOz7XFIFo3QC132YoXauAVOQV+g6mSoPeS3ChIIlaHgBeDEBX7Q2uwXNwyQqEYj2hP9ip0rdTJFYZSJzWXoDSNddOaQnRJKVjb0=
+	t=1708534672; cv=none; b=ss5HY/GCfCfNmfsWc1ebwnfXoWjueF52C4923gv4GrK5BkCz/j9z4jaj2yoiR9znwDhOJzSEF9u4wJmPh8vsGT/R1cZAPpCkr79d5Jw6E5JoxZ5KsgjCvVFC2lZ5asrTBPodIsMRnxnLh3Tzqr1MgaSemjKG1dXYTTwJgwj5nqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708534627; c=relaxed/simple;
-	bh=wh1Y68Qw9TiSpJkLvYzv56JbZYASbMgr3+trld1sEeM=;
-	h=Message-ID:Date:From:To:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fvjzPdHMzDhepaflUWIXbzNXrxFqEZHPSW+Pb9QoerRpy6uZTIqfjk7IpXw6it3o4Li2YtFQZDx5Z9nrz5vtoGCUZykGhETMpltTuPzIa3H3X1y4wiOS3O5uOhaFZxTBeaDBEjbY9vUAZ69OaJI2J8HV2/ao7L/6+a39B05+Ung=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KISnUU3j; arc=none smtp.client-ip=209.85.222.173
+	s=arc-20240116; t=1708534672; c=relaxed/simple;
+	bh=JQ6FVpaAPtcvjI//WyhL8aGmD1PfvX1dpap9Ryke5Ww=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=g2uEMnrTSr7O89KFXmUv5B1WQjosHTrPthTdE/n/656FJ/ITHjiJPpTkxTmvR4TYQpTVooTsqlVx0nTMmHWiiVPtor0L/8Nor2CPbLEbWR0TCGMYcHvisWZJ6u3/lAVzNy3GoYZaacWTJTdz8NAXB9zKYlNAorMUI2pGZeItV6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UsljfjTJ; arc=none smtp.client-ip=209.85.167.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7875c347a03so51322385a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:57:05 -0800 (PST)
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c134813841so2323519b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:57:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708534625; x=1709139425; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:to
-         :from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=EjEx5GdMf18n+MVcK0OG2gI0zxVtTpHLxuGAPIBqzlA=;
-        b=KISnUU3j9zVeCzJwsndVI6qgrq8GLvv0EmT28YyzoguHbELlLsIeMEhhrwX+fbaVso
-         gfyBJq1b2MQESwvNmLXDxp1npvCnasxlgKsZ77byZzjSizwpdkZvVwDEj+p+qjIFkf6d
-         Cok5agx7/UNT3+fYoxVpzHdnrc5xceTFquUAOdunL53wwePQ6VGcav0Eojc+954hTrIW
-         2pSUld51bKBY62FYbeFiOqNSf5rsOWgn5vWRmj987Bya6Yj+A6TrxJbi/nFikqPr7eCM
-         c8a0H4emocmqcHrpORgdRX5TPnfCqOUOP10UOOZFAciD32EddOWeYKs7B+wuX7K9UVIX
-         SaZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708534625; x=1709139425;
-        h=in-reply-to:content-disposition:mime-version:references:subject:to
-         :from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1708534670; x=1709139470; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EjEx5GdMf18n+MVcK0OG2gI0zxVtTpHLxuGAPIBqzlA=;
-        b=FrfpgXgjR17rPJOnymlW+joG8VufrbtIbCiUNy+nfGD5o+3TFfumfVcdqKuGSVfDDD
-         wnl6+rx23TEO46GQ9VFqXIbew2bx/Ui5xJIQ0dKeuOkxV34MSdJ5BX0lwhhcxIfiDUOk
-         WUPqZWZfjCwi1Bd0mTxIKyU+/r2L3K3N/HkAc6wuiANNd4FFhw+XPRCu06/+EbWdxGQ4
-         UOKsvzVD4UZuA+MkorVpMyX1YS46vXRR3djVWbmO9++jqbhihY8pnAWLUQ6JibrEvlrw
-         TOaPAVmgy3BFYLq6L/in1jJlPpFbgeBHnad60OsAGtRsVJEqZqwFhFkZWa/Bj6P1R6vE
-         YK3w==
-X-Forwarded-Encrypted: i=1; AJvYcCXTiKx94pBvZhW1EWL5WOhzhwzbU7+8xOEbk+VXhwoI8Y+4eHeAKrWW1SII31ijhYOKm8KXqwWs55abFo0/J7IsoVPBLomyseZgwtgr
-X-Gm-Message-State: AOJu0YyUAzSmtrS5hq9d8881Gtka5E4kcz4uWfmXXDl8hnxUf+/QgjsS
-	xWpQW/pgnfjGxM9dvgD7vHnLQJrqm93JnGdq7UfDmzChJcZK0PkI
-X-Google-Smtp-Source: AGHT+IGUX8Pf3qFKmT8HFC1cYqwmlRIY6B8oBVLzt8R7MtzZiDl4O99UQOHB0WFLKn6zfQwLYQ1zWQ==
-X-Received: by 2002:a05:620a:16b6:b0:787:7f9f:d5ed with SMTP id s22-20020a05620a16b600b007877f9fd5edmr4526752qkj.6.1708534624770;
-        Wed, 21 Feb 2024 08:57:04 -0800 (PST)
-Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id os38-20020a05620a812600b0078722793b6csm4477618qkn.48.2024.02.21.08.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 08:57:04 -0800 (PST)
-Message-ID: <65d62b60.050a0220.c7b96.614e@mx.google.com>
-X-Google-Original-Message-ID: <ZdYrXKF67tgRKOaF@Ansuel-XPS.>
-Date: Wed, 21 Feb 2024 17:57:00 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Eric DeVolder <eric.devolder@oracle.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	John Crispin <john@phrozen.org>
-Subject: Re: [PATCH v2 0/2] ARM: decompressor: support AUTO_ZRELADDR and
- appended DTB
-References: <20240121203009.9257-1-ansuelsmth@gmail.com>
+        bh=AJWYEU/M/WsHNzSMkh9EKav36BnK47emNVVN/Db4odE=;
+        b=UsljfjTJqxaMHLN9TaYjQTXOkm4Lq/yQQWH/ReYYZt1aQl+jYzzOTZ+I1yCvJNKnFC
+         bJW5QzM6nK2RM58z+oJrDbYdz0CEUklXlt9WpUR0iSkpIWJyngx9xZ4JxoBa3FN4i+Qe
+         2k+xpo/xj6uMk4axI14PrTfwkRPT+u7N69OhLgQb8CRPzrfjaUAX1PtB4axuvvrdg8F8
+         bxmNdPqWND3Q+ROicUSxGNXjjACyu80FQf2ApwTxLqbx7pTE+axrrekMCm4TNW3WpRzk
+         4wqrhOTbysRXyFDwqJttiQ4DdnIQKE+7GKPkv5iTrQbNBn0D2mNqPWZWsH1VTmOw5sfa
+         wVoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708534670; x=1709139470;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AJWYEU/M/WsHNzSMkh9EKav36BnK47emNVVN/Db4odE=;
+        b=KVHPPd8qJssM0RaJkJwq5u5fO6TN5zagNnZffKm0vIc/PR6gEOMLACaw7RjDLvheNf
+         NdOAfIV1WuYdQJ+KpzkE49aAFps4+XH/NsLMatYduC9pjqsjk5fJNHVIMNioRrhcCfI+
+         lyizN7eFILegkIYC5q+O0dMnumTrylFFHmmgrkuTjUsr4EJD8PUT2XPgkhH59PnBzLuP
+         rx11Q3XKl6lqSRfpu1WM+/WgGTenN3isbuRnRY1UVtySgZ5MUkgqlFPkmEtaskYj+rin
+         SH4yE0NisI6SQSio+c+cMBoM4TFNi/T2bwdkzAYTMnmBcHMtTPUIold7CEZoZY4T/Uel
+         fKAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWWvsDuLX1nS0+pbAhmMaFSnh20Y5gi1AvHX0XQOtG6S4m8Mc3yEiBNPEQ5avCXpVtG/IVeT42CcSQgsBsWcKdu+QBNV4SMrV+v3HI4
+X-Gm-Message-State: AOJu0YwJbvF6DBu+ZBfHNsuGbBQZayb3Eweftz37aSNsPPbOBK03lkmj
+	r57fML8RoHzJfs9Ptm+RhtVz3NsQ9sbCY6hhdwz1VD2G0txx7BUj
+X-Google-Smtp-Source: AGHT+IHUcyjcP2AuJIMMMPPLJA0QZmjqHygE1wZIcVBYLdz8J3dluza4MbNXQvR57Vui1zS7cOCffQ==
+X-Received: by 2002:a05:6808:189a:b0:3c1:6caa:1131 with SMTP id bi26-20020a056808189a00b003c16caa1131mr22813oib.18.1708534670133;
+        Wed, 21 Feb 2024 08:57:50 -0800 (PST)
+Received: from smtpclient.apple ([2605:a601:aa0a:4200:30a5:ebd1:48db:41c6])
+        by smtp.gmail.com with ESMTPSA id nz6-20020a056871758600b0021ed5ee3c77sm1551790oac.16.2024.02.21.08.57.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Feb 2024 08:57:49 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121203009.9257-1-ansuelsmth@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH] ipmi: kcs: Update OBF poll timeout to reduce latency
+From: Andrew Geissler <geissonator@gmail.com>
+In-Reply-To: <9680ad7d7a48fc36a0572dc2286a1229a29341fe.camel@codeconstruct.com.au>
+Date: Wed, 21 Feb 2024 10:57:38 -0600
+Cc: minyard@acm.org,
+ Paul Menzel <pmenzel@molgen.mpg.de>,
+ Joel Stanley <joel@jms.id.au>,
+ openipmi-developer@lists.sourceforge.net,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ openbmc@lists.ozlabs.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <527F52AB-0070-43EA-BE82-945280CA2AEE@gmail.com>
+References: <20240220123615.963916-1-geissonator@gmail.com>
+ <a9169894-6972-49c0-a1d4-d80863f5b511@molgen.mpg.de>
+ <ZdT+eThnYqb3iawF@mail.minyard.net>
+ <9680ad7d7a48fc36a0572dc2286a1229a29341fe.camel@codeconstruct.com.au>
+To: Andrew Jeffery <andrew@codeconstruct.com.au>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-On Sun, Jan 21, 2024 at 09:29:32PM +0100, Christian Marangi wrote:
-> This series try to address a long lasting problem with legacy device
-> that require an appended DTB and the use of AUTO_ZRELADDR.
-> 
-> With these device AUTO_ZRELADDR is not possible if for some reason at
-> the start of the RAM it's needed to reserve some space. (example qcom SoC
-> that allocate reserved space for SMEM)
-> 
-> In the current implementation with appended DTB and AUTO_ZRELADDR,
-> the memory start is only derived from the PC register and it can't be
-> changed by declaring additional info in the DTS.
-> 
-> In a normal setup, we have an intentional undocumented chosen property
-> to handle this and the memory node to declare the start of the memory.
-> 
-> With this applied and ARM_ATAG_DTB_COMPAT_IGNORE_MEM enabled (more 
-> info in the related patch) ipq806x can boot right away with AUTO_ZRELADDR
-> enabled and a correct memory node defined in DTS.
-> 
-> It's needed to ignore MEM ATAGs as most of the time the values from the
-> bootloader are hardcoded and OEM didn't care to actually provide them
-> resulting in funny situation where a Netgear R7800 with 512Mb of RAM
-> have Uboot passing 1.7GB of RAM with ATAGS.
-> 
-> While MEM ATAG may be broken, other ATAG like serial number or bootargs
-> might still be useful for partition declaration (cmdlinepart) or other
-> info hence DTB_COMPAT is still needed in these case and can't be
-> disabled.
-> 
-> I'm open to any suggestion on how this can be improved and I would love
-> some additional testing on other legacy platform but I assume this will
-> permit many legacy device to be correctly supported without having to
-> hardcode address.
-> 
-> Changes v2:
-> - Add Review and Ack Tags
-> - Use IS_ENABLED instead of global variable
-> 
-> Christian Marangi (2):
->   ARM: decompressor: support memory start validation for appended DTB
->   ARM: decompressor: add option to ignore MEM ATAGs
-> 
->  arch/arm/Kconfig                        | 12 ++++++++++++
->  arch/arm/boot/compressed/atags_to_fdt.c |  4 ++++
->  arch/arm/boot/compressed/head.S         | 22 ++++++++++++++++++++++
->  3 files changed, 38 insertions(+)
-> 
->
 
-Any news for this?
 
--- 
-	Ansuel
+> On Feb 20, 2024, at 4:36=E2=80=AFPM, Andrew Jeffery =
+<andrew@codeconstruct.com.au> wrote:
+>=20
+> On Tue, 2024-02-20 at 13:33 -0600, Corey Minyard wrote:
+>> On Tue, Feb 20, 2024 at 04:51:21PM +0100, Paul Menzel wrote:
+>>> Dear Andrew,
+>>=20
+>> It's because increasing that number causes it to poll longer for the
+>> event, the host takes longer than 100us to generate the event, and if
+>> the event is missed the time when it is checked again is very long.
+>>=20
+>> Polling for 100us is already pretty extreme. 200us is really too =
+long.
+>>=20
+>> The real problem is that there is no interrupt for this.  I'd also =
+guess
+>> there is no interrupt on the host side, because that would solve this
+>> problem, too, as it would certainly get around to handling the =
+interupt
+>> in 100us.  I'm assuming the host driver is not the Linux driver, as =
+it
+>> should also handle this in a timely manner, even when polling.
+>=20
+> I expect the issues Andrew G is observing are with the Power10 boot
+> firmware. The boot firmware only polls. The runtime firmware enables
+> interrupts.
+
+Yep, this is with the low level host boot firmware.
+Also, further testing over night showed that 200us wasn=E2=80=99t enough =
+for
+our larger Everest P10 machines, I needed to go to 300us. As we
+were struggling to allow 200us, I assume 300us is going to be a no-go.
+
+>>=20
+>=20
+>>=20
+>> The right way to fix this is probably to do the same thing the host =
+side
+>> Linux driver does.  It has a kernel thread that is kicked off to do
+>> this.  Unfortunately, that's more complicated to implement, but it
+>> avoids polling in this location (which causes latency issues on the =
+BMC
+>> side) and lets you poll longer without causing issues.
+>=20
+> In Andrew G's case he's talking MCTP over KCS using a vendor-defined
+> transport binding (that also leverages LPC FWH cycles for bulk data
+> transfers)[1]. I think it could have taken more inspiration from the
+> IPMI KCS protocol: It might be worth an experiment to write the dummy
+> command value to IDR from the host side after each ODR read to signal
+> the host's clearing of OBF (no interrupt for the BMC) with an IBF
+> (which does interrupt the BMC). And doing the obverse for the BMC. =
+Some
+> brief thought suggests that if the dummy value is read there's no need
+> to send a dummy value in reply (as it's an indicator to read the =
+status
+> register). With that the need for the spin here (or on the host side)
+> is reduced at the cost of some constant protocol overhead.
+>=20
+
+Thanks for the quick reviews and ideas.
+I=E2=80=99ll see if I can find someone on the team to help out with =
+Andrew J=E2=80=99s
+thoughts and if that doesn=E2=80=99t work, look into the kernel thread =
+idea.
+
+>=20
+>=20
+> Andrew J
+
+
 
