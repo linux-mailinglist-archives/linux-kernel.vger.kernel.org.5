@@ -1,147 +1,214 @@
-Return-Path: <linux-kernel+bounces-75067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D883385E281
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:04:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5353785E296
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 162D71C24582
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:04:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB051F25AA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1C6839EA;
-	Wed, 21 Feb 2024 16:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FA185946;
+	Wed, 21 Feb 2024 16:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsnNB56J"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="N5Ct9CLh"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B00082D75
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7DE85651;
+	Wed, 21 Feb 2024 16:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708531362; cv=none; b=PeujPXm7gkWx64SyupwpWR/0+xQro4fVaES76WVB6PLApGR2NeOAIluRQeLvS3cOCupDUOmIbRmiS0KyWVBRzQZpuShqXwalztJggAq8p5VCTT8KBYTu9U33rFX+ONisBoMqhfJa4r9R5sLUl+a4TufDTVPOJGT4Jfq1v/fCyo4=
+	t=1708531379; cv=none; b=rDximMABXCHMEaWktxFFqkg6wceUKISuh8ZvYkssxEcweepNdyh8+hOhJMDJUXUq5uLaHJspRu7MBeDNb17cPyB0jtH8bMyHPqhb+1tyvJ8w8uoTdIFT9/Iun4aSZzM+eIvliGh5OYxkKiWR2ozsYWqzwE2xhPT3eedHaYAgtWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708531362; c=relaxed/simple;
-	bh=kR3/fVNZt26AdpqpP3ANsMTDHjenBDak66/1Ny0G4RY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NL7IY4o76FHEUekvsS+26CnfklV59Gt+bX/IxEvHjuhPKa7aySLbaj3TpsFM0MOibBVZjoepdfdPASy7dnry1ZkZ1sgCrakdlKDoXAn/w5L6/435tK7KB2FB/5TY9CVaj07u0HVwkFa/tqVcWVARA77DqVxF21rDkerhKqE64qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsnNB56J; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42c7c1cb2e9so39204781cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:02:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708531360; x=1709136160; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bAuU+EdMCZqWdqfPENA6Ha7cgOpM7XDiB8KgwfnnOOE=;
-        b=RsnNB56JBXaArBbXhv6FhWbgKY9cGuhVCxLuB0WiWkY+bwitLFokgUUrYpGXmNANRc
-         6yiv4wrpT4q0JRFlFUto8RZAtPDghf0hEX3rbMTMve5q7LXBrJaPoDgeaoK7WTUxb5Vg
-         DdwEidvMJcwZJJ/AANWmLkL+iXC/Oz9ydVibkKzwB0GWgtINqqots6FNWsU6TLnA9Nny
-         tMBKfqNiz8vUDm982WNSHNd7dCu8rEywcCowaGr/K89dv4ybz92marnxRbUFNJOJ/Kcn
-         dY0q/qMY9RqlgGN+i4/UWnVPr9qObpzJ6cIrpnBENKXeyh/TZkj83T4msBzfycttT5zZ
-         RV6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708531360; x=1709136160;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bAuU+EdMCZqWdqfPENA6Ha7cgOpM7XDiB8KgwfnnOOE=;
-        b=DkwPgEoPVEp66gZqvfFpOGPf0Om4/4edsSpzM/GVgAZjSQqoUmYhlwToxr0+wliBmJ
-         SQ4LK0Q84wXr7TszUkCZowbbJFOxjn5H8wn+3VTQYSKjTjFcVe3RfOHp+IK3yGFl8Gv8
-         iZDo7Vkkz+LibapdGH6RULpPNgCdCUDk1BYBWQpM91z1OKpFYvn3BzCook73IO0fJbgq
-         ORN/RRBxGnf9AlvDa4Qna3NLIk4zkITdy6NrwRKrsspzcNB+MfFrWQhNM3k4OSWWlD3K
-         UIQDbn5HZa3YIEcKBD/Yj0mdlURF5PDzldBBRi6J+esoNlseu//qkcnJopC09PjSI+x/
-         d6Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCVel5c7Ev13VCnZ38EhM5WCjp35w6XLb326+5QbuCNacHp5xuj/fnPcJDlm2pTCbvlxGfpUswMQXnd8L6HWXWSGjzhvhgYt6U1pBQD3
-X-Gm-Message-State: AOJu0YzYBIBADzsv2ePehKNP5Y6R2V0IEyjnEJwP16lQy/aaE01DKo7m
-	kV3/Neu52NXC5h3+UfMGXF7DY8wUjsyj92C2BBbfY4Gr63RD0aW3EgwTUGud
-X-Google-Smtp-Source: AGHT+IHvqIYB4biKtYzJbhHN+Ma/1oviTGRg9JC1eXPc0zNSgNincvvoFuI3kFaT58xPiJ1t8QDiaQ==
-X-Received: by 2002:a0c:ab13:0:b0:68f:ac2c:883c with SMTP id h19-20020a0cab13000000b0068fac2c883cmr1140954qvb.52.1708531359798;
-        Wed, 21 Feb 2024 08:02:39 -0800 (PST)
-Received: from localhost.localdomain (024-171-058-032.res.spectrum.com. [24.171.58.32])
-        by smtp.gmail.com with ESMTPSA id pj4-20020a0562144b0400b0068f79a4ce67sm3060611qvb.22.2024.02.21.08.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 08:02:39 -0800 (PST)
-From: Matthew Cassell <mcassell411@gmail.com>
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	mcassell411@gmail.com
-Subject: [PATCH] mm/util.c: Added page count to __vm_enough_memory failure warning
-Date: Wed, 21 Feb 2024 16:02:35 +0000
-Message-Id: <20240221160235.1771-1-mcassell411@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708531379; c=relaxed/simple;
+	bh=N65iXSjU/h0ELkZkUlceQfqdX38DRu2buPhtEJ4dLQI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=WQx3nYJMdibey/Tr1e6yFPVzUE59lPhyFvkQptLKWMBG1PwO6VxHIUrcu2QRcY4UNsYupQ8skq3e2utKmKRd56X1yxQeJCOZbI/Dw1Tb7ZCqgsR32DXDFD+zhpluTWyMXdRO5LrpLr7R+0mlCD57q4GZn1LcVwbfSW4+DKkCiJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=N5Ct9CLh; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0619D40007;
+	Wed, 21 Feb 2024 16:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708531372;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IXbmWq1iYuKDOOGKfD5Ci1T2sY0QXJfhciM8bKHhdb0=;
+	b=N5Ct9CLh7AbDeQnE8aCydJ0xJbJ2daqddQuOB0AJiMqVTu8n2WycvnhoDi2gb9AQI1a9A7
+	DLd1nvSy9EDhUcuFCg6raWyc5PcHmJ7j9AKCBj8uaj6cwpy1VJPBODb7zZOeP9m6u8iGj+
+	wIOL9QRu9rwaR91Rd8dVO/GJRkS6PLJCliWCg5pLAonMoFaiTQ9muooFuQSxRBqK62zLJk
+	o9+b4bFgFvrRVsnIGWljKXJraqvf48ettxpK1/eIuk0mLxzucfIS3JUnN9G176qnA5v0QR
+	SNgGFrs/ptnquRahTr8irkWKVs6V9HoGRxgAYhFDIzA+AhpHN+uL9jiFHwQOHQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 21 Feb 2024 17:02:51 +0100
+Message-Id: <CZAVTOOYBRY0.FH5RTPSXS8QN@bootlin.com>
+Subject: Re: [PATCH 05/23] gpio: nomadik: extract GPIO platform driver from
+ drivers/pinctrl/nomadik/
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Philipp Zabel" <p.zabel@pengutronix.de>, "Thomas Bogendoerfer"
+ <tsbogend@alpha.franken.de>, <linux-gpio@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+ "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Bartosz Golaszewski" <brgl@bgdev.pl>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
+ <20240214-mbly-gpio-v1-5-f88c0ccf372b@bootlin.com>
+ <CAMRc=MfXHbpq7vgw64pYGGAyQQnYyGa1ei5NAQ6swtH7o--R=w@mail.gmail.com>
+In-Reply-To: <CAMRc=MfXHbpq7vgw64pYGGAyQQnYyGa1ei5NAQ6swtH7o--R=w@mail.gmail.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Commit 44b414c8715c5dcf53288 ("mm/util.c: add warning if __vm_enough_memory
-fails") adds debug information which gives the process id and executable name
-should __vm_enough_memory() fail. Adding the number of pages to the failure
-message would benefit application developers and system administrators in
-debugging overambitious memory requests by providing a point of reference to
-the amount of memory causing __vm_enough_memory() to fail.
+Hello Bartosz,
 
-1. Set appropriate kernel tunable to reach code path for failure
-   message:
+On Mon Feb 19, 2024 at 5:08 PM CET, Bartosz Golaszewski wrote:
+> On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
+tlin.com> wrote:
+> >
+> > Previously, drivers/pinctrl/nomadik/pinctrl-nomadik.c registered two
+> > platform drivers: pinctrl & GPIO. Move the GPIO aspect to the
+> > drivers/gpio/ folder, as would be expected.
+> >
+> > Both drivers are intertwined for a reason; pinctrl requires access to
+> > GPIO registers for pinmuxing, pull-disable, disabling interrupts while
+> > setting the muxing and wakeup control. Information sharing is done
+> > through a shared array containing GPIO chips and a few helper
+> > functions. That shared array is not touched from gpio-nomadik when
+> > CONFIG_PINCTRL_NOMADIK is not defined.
+> >
+> > Make no change to the code that moved into gpio-nomadik; there should b=
+e
+> > no behavior change following. A few functions are shared and header
+> > comments are added. Checkpatch warnings are addressed. NUM_BANKS is
+> > renamed to NMK_MAX_BANKS.
+> >
+> > It is supported to compile gpio-nomadik without pinctrl-nomadik. The
+> > opposite is not true.
+> >
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  MAINTAINERS                                        |   1 +
+> >  drivers/gpio/Kconfig                               |  12 +
+> >  drivers/gpio/Makefile                              |   1 +
+> >  drivers/gpio/gpio-nomadik.c                        | 660 +++++++++++++=
+++++++
+> >  drivers/pinctrl/nomadik/Kconfig                    |   5 +-
+> >  drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c   |   3 +-
+> >  drivers/pinctrl/nomadik/pinctrl-nomadik-stn8815.c  |   3 +-
+> >  drivers/pinctrl/nomadik/pinctrl-nomadik.c          | 722 +------------=
+--------
+> >  .../linux/gpio/gpio-nomadik.h                      | 122 +++-
+> >  9 files changed, 804 insertions(+), 725 deletions(-)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 0cb2c459d1cf..3f864e773267 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -2474,6 +2474,7 @@ F:        drivers/clk/clk-nomadik.c
+> >  F:     drivers/clocksource/clksrc-dbx500-prcmu.c
+> >  F:     drivers/dma/ste_dma40*
+> >  F:     drivers/pmdomain/st/ste-ux500-pm-domain.c
+> > +F:     drivers/gpio/gpio-nomadik.c
+> >  F:     drivers/hwspinlock/u8500_hsem.c
+> >  F:     drivers/i2c/busses/i2c-nomadik.c
+> >  F:     drivers/iio/adc/ab8500-gpadc.c
+> > diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> > index 1301cec94f12..ff83371251c1 100644
+> > --- a/drivers/gpio/Kconfig
+> > +++ b/drivers/gpio/Kconfig
+> > @@ -478,6 +478,18 @@ config GPIO_MXS
+> >         select GPIO_GENERIC
+> >         select GENERIC_IRQ_CHIP
+> >
+> > +config GPIO_NOMADIK
+> > +       bool "Nomadik GPIO driver"
+> > +       depends on ARCH_U8500 || ARCH_NOMADIK || COMPILE_TEST
+> > +       select OF_GPIO
+> > +       select GPIOLIB_IRQCHIP
+> > +       help
+> > +         Say yes here to support the Nomadik SoC GPIO block.
+> > +
+> > +         It handles up to 32 GPIOs per bank, that can all be interrupt=
+ sources.
+> > +         It is deeply interconnected with the associated pinctrl drive=
+r as GPIO
+> > +         registers handle muxing ("alternate functions") as well.
+> > +
+> >  config GPIO_NPCM_SGPIO
+> >         bool "Nuvoton SGPIO support"
+> >         depends on ARCH_NPCM || COMPILE_TEST
+> > diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> > index 9e40af196aae..9fc2f5931b22 100644
+> > --- a/drivers/gpio/Makefile
+> > +++ b/drivers/gpio/Makefile
+> > @@ -116,6 +116,7 @@ obj-$(CONFIG_GPIO_MT7621)           +=3D gpio-mt762=
+1.o
+> >  obj-$(CONFIG_GPIO_MVEBU)               +=3D gpio-mvebu.o
+> >  obj-$(CONFIG_GPIO_MXC)                 +=3D gpio-mxc.o
+> >  obj-$(CONFIG_GPIO_MXS)                 +=3D gpio-mxs.o
+> > +obj-$(CONFIG_GPIO_NOMADIK)             +=3D gpio-nomadik.o
+> >  obj-$(CONFIG_GPIO_NPCM_SGPIO)          +=3D gpio-npcm-sgpio.o
+> >  obj-$(CONFIG_GPIO_OCTEON)              +=3D gpio-octeon.o
+> >  obj-$(CONFIG_GPIO_OMAP)                        +=3D gpio-omap.o
+> > diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
+> > new file mode 100644
+> > index 000000000000..e39477e1a58f
+> > --- /dev/null
+> > +++ b/drivers/gpio/gpio-nomadik.c
+> > @@ -0,0 +1,660 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * GPIO driver for the IP block found in the Nomadik SoC; it is an AMB=
+A device,
+> > + * managing 32 pins with alternate functions. It can also handle the S=
+TA2X11
+> > + * block from ST.
+> > + *
+> > + * The GPIO chips are shared with pinctrl-nomadik if used; it needs ac=
+cess for
+> > + * pinmuxing functionality and others.
+> > + *
+> > + * Copyright (C) 2008,2009 STMicroelectronics
+> > + * Copyright (C) 2009 Alessandro Rubini <rubini@unipv.it>
+> > + *   Rewritten based on work by Prafulla WADASKAR <prafulla.wadaskar@s=
+t.com>
+> > + * Copyright (C) 2011-2013 Linus Walleij <linus.walleij@linaro.org>
+> > + */
+>
+> Add a newline here.
 
-	# echo 2 > /proc/sys/vm/overcommit_memory
+This commit tries its best to not modify the file too much. It mostly is
+a copy-and-paste. The goal is to have a sensible diff between old
+drivers/pinctrl/nomadik/pinctrl-nomadik.c and new
+drivers/gpio/gpio-nomadik.c. We wait until later commits to fix stuff.
 
-2. Test program to generate failure - requests 1 gibibyte per iteration:
+Should below comments "avoid new calls to X" still be taken into
+account, knowing that this is old code being moved around?
 
-	#include <stdlib.h>
-	#include <stdio.h>
+Thanks,
 
-	int main(int argc, char **argv) {
-		for(;;) {
-			if(malloc(1<<30) == NULL)
-				break;
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-			printf("allocated 1 GiB\n");
-		}
-
-		return 0;
-	}
-
-3. Output:
-
-	Before:
-
-	__vm_enough_memory: pid: 1218, comm: a.out, not enough
-memory for the allocation
-
-	After:
-
-	__vm_enough_memory: pid: 1141, comm: a.out, pages: 262145, not
-enough memory for the allocation
-
-Signed-off-by: Matthew Cassell <mcassell411@gmail.com>
----
- mm/util.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/util.c b/mm/util.c
-index 5a6a9802583b..c0afb56f16ea 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -976,8 +976,8 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
- 	if (percpu_counter_read_positive(&vm_committed_as) < allowed)
- 		return 0;
- error:
--	pr_warn_ratelimited("%s: pid: %d, comm: %s, not enough memory for the allocation\n",
--			    __func__, current->pid, current->comm);
-+	pr_warn_ratelimited("%s: pid: %d, comm: %s, pages: %ld, not enough memory for the allocation\n",
-+			    __func__, current->pid, current->comm, pages);
- 	vm_unacct_memory(pages);
- 
- 	return -ENOMEM;
--- 
-2.43.2
+------------------------------------------------------------------------
 
 
