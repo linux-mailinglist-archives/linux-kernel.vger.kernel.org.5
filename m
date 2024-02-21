@@ -1,162 +1,95 @@
-Return-Path: <linux-kernel+bounces-74598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9DE85D694
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:14:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50E6E85D696
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1250B21167
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:14:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80F481C22C83
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EB93F9C7;
-	Wed, 21 Feb 2024 11:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ga1g4CJY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kRcJa/ti";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ga1g4CJY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kRcJa/ti"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920713F9C0;
+	Wed, 21 Feb 2024 11:14:53 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091273F8E0;
-	Wed, 21 Feb 2024 11:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A472E3FB1E
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708514073; cv=none; b=JMrUKhOoWzhjdY7XK97T+w7PdrNRVbvgwl1PlXtQ5rPwlMYaSeLinbSVaFDPnGaCUdsRtdzC6nPYSLLhbjauv3+4dpFNa3oF9puNEekwwA347zDDHE4whIUo9wvTrmd8Yzo1eCb7P4CR3kXyckIfRecJM+xvyhfeUY/C+TZh/SI=
+	t=1708514093; cv=none; b=Lzm99juJKyF4AbI126LyEVcDtPcRU/6wvV0Y/H2wd6if5l3N171J9CJo6sD7AYhuf4LynsxlJstLI9VbobOx81i7dhA4YGTQ2zuX35V4am8CCzbtUfWE9g5HPjYQvOo7usl6BxH3rMmPaPaZW61pF7YG+/Dy2G3t6UE16qJRJQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708514073; c=relaxed/simple;
-	bh=X4PKlUGXGUBT6n4ZwlbiScUTkbbHPd6kRM2zdVKwFSk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d+ufod/G00MvMdC6MVlvAnF+um7aMHQpA9ds+V8LmrT/nplk49/OSdOUfuzQ+7OPDk5ftbtUvmBHjKciCBzsfxjggjyXiI0+xMDppXhAtBFphB2Fa8kpC2WyoeTM1P7HItOMSqt99+q8vTA1XybONHc7EHoQJF07WduSiAFT+so=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ga1g4CJY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kRcJa/ti; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ga1g4CJY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kRcJa/ti; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 30AF621EC9;
-	Wed, 21 Feb 2024 11:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708514070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LqptqeC63/PQtZVEUM5DP4rj/btQZge0A7Gr5JvYGkA=;
-	b=Ga1g4CJYiXXomuE05WOuqHhnjbhcVdBDeoH5K6B8VkAHddKgoOLrWs1XTCxUwNQQPwl2bj
-	Vx8wMBnOJB9eOCe5M+X2WYcoG3RcjX9rC36ajDViSFpsP+RZ6kA+kVTXZDwWgibpbMuCBA
-	ZEYcYA84xNxoe0mCBiImuAVoQUUbHX0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708514070;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LqptqeC63/PQtZVEUM5DP4rj/btQZge0A7Gr5JvYGkA=;
-	b=kRcJa/tiDAN/1qlRbQTAUIEOltL9Wn5W0tEf2/FUs0YwdWmBcK6EmMF6SP3WCKgmXDrXoS
-	su2LLbcmuKW69JDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708514070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LqptqeC63/PQtZVEUM5DP4rj/btQZge0A7Gr5JvYGkA=;
-	b=Ga1g4CJYiXXomuE05WOuqHhnjbhcVdBDeoH5K6B8VkAHddKgoOLrWs1XTCxUwNQQPwl2bj
-	Vx8wMBnOJB9eOCe5M+X2WYcoG3RcjX9rC36ajDViSFpsP+RZ6kA+kVTXZDwWgibpbMuCBA
-	ZEYcYA84xNxoe0mCBiImuAVoQUUbHX0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708514070;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LqptqeC63/PQtZVEUM5DP4rj/btQZge0A7Gr5JvYGkA=;
-	b=kRcJa/tiDAN/1qlRbQTAUIEOltL9Wn5W0tEf2/FUs0YwdWmBcK6EmMF6SP3WCKgmXDrXoS
-	su2LLbcmuKW69JDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BBFA13A25;
-	Wed, 21 Feb 2024 11:14:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id DCLBBhbb1WUDIAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 21 Feb 2024 11:14:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B9F41A0807; Wed, 21 Feb 2024 12:14:25 +0100 (CET)
-Date: Wed, 21 Feb 2024 12:14:25 +0100
-From: Jan Kara <jack@suse.cz>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: Jan Kara <jack@suse.cz>, oe-lkp@lists.linux.dev, lkp@intel.com,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Guo Xuenan <guoxuenan@huawei.com>, linux-fsdevel@vger.kernel.org,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [readahead]  ab4443fe3c:
- vm-scalability.throughput -21.4% regression
-Message-ID: <20240221111425.ozdozcbl3konmkov@quack3>
-References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
+	s=arc-20240116; t=1708514093; c=relaxed/simple;
+	bh=j/UrxbqGXjMApeAYrsxmXtVgP8/WQvYKxK+3jW73fp0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=S4fxuAl8zM4nh129DQ8yB6Kcl/Ny5BH3kGsjziaCyOGIrZ8BCPKYJItRz6rOB0r8nDRHzjNc/O4pPnnaqYb0OfWXdixZBS5Jq7mrg/GflZ47yMCJoNJZ3QIFkF6GIL9B1OGBKDdvfJ8gUliZuWz+3sXnobC3sbNQv1QVz/RJ0WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rckYo-0006Z1-G5; Wed, 21 Feb 2024 12:14:46 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rckYl-0021lP-6U; Wed, 21 Feb 2024 12:14:43 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rckYl-0005JE-0O;
+	Wed, 21 Feb 2024 12:14:43 +0100
+Message-ID: <6aeef5bcc9ce007bdd3312f6b96ffb06655ae909.camel@pengutronix.de>
+Subject: Re: [PATCH v3 0/4] riscv: sophgo: add reset support for SG2042
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com,  conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ palmer@dabbelt.com,  paul.walmsley@sifive.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org,  haijiao.liu@sophgo.com,
+ xiaoguang.xing@sophgo.com, guoren@kernel.org,  jszhang@kernel.org,
+ inochiama@outlook.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+Date: Wed, 21 Feb 2024 12:14:43 +0100
+In-Reply-To: <cover.1706577450.git.unicorn_wang@outlook.com>
+References: <cover.1706577450.git.unicorn_wang@outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402201642.c8d6bbc3-oliver.sang@intel.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[41.49%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.40
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Tue 20-02-24 16:25:37, kernel test robot wrote:
-> Hello,
-> 
-> kernel test robot noticed a -21.4% regression of vm-scalability.throughput on:
-> 
-> 
-> commit: ab4443fe3ca6298663a55c4a70efc6c3ce913ca6 ("readahead: avoid multiple marked readahead pages")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> testcase: vm-scalability
-> test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480CTDX (Sapphire Rapids) with 512G memory
-> parameters:
-> 
-> 	runtime: 300s
-> 	test: lru-file-readtwice
-> 	cpufreq_governor: performance
+On Tue, 30 Jan 2024 09:49:08 +0800, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
+>=20
+> This series adds reset controller support for Sophgo SG2042 using
+> reset-simple driver.
+>=20
+> Thanks,
+> Chen
+>=20
+> [...]
 
-JFYI I had a look into this. What the test seems to do is that it creates
-image files on tmpfs, loopmounts XFS there, and does reads over file on
-XFS. But I was not able to find what lru-file-readtwice exactly does,
-neither I was able to reproduce it because I got stuck on some missing Ruby
-dependencies on my test system yesterday.
+Applied patches 1-2 to reset/next, thanks!
 
-Given the workload is over tmpfs, I'm not very concerned about what
-readahead does and how it performs but still I'd like to investigate where
-the regression is coming from because it is unexpected.
+[1/4] dt-bindings: reset: sophgo: support SG2042
+      https://git.pengutronix.de/cgit/pza/linux/commit/?id=3D41197eb5f993
+[2/4] reset: simple: add support for Sophgo SG2042
+      https://git.pengutronix.de/cgit/pza/linux/commit/?id=3Da6166a4da5e4
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+regards
+Philipp
+
+
 
