@@ -1,273 +1,241 @@
-Return-Path: <linux-kernel+bounces-74419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCD485D3BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:35:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC3B85D3CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 739A028403B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:35:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 772101F24D70
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:38:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130FF3D3A8;
-	Wed, 21 Feb 2024 09:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE103D3A7;
+	Wed, 21 Feb 2024 09:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="27eEx0m2"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UFHnGmnL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26BEA3D0AF;
-	Wed, 21 Feb 2024 09:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E2B3C6A4
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708508128; cv=none; b=UYe0EeDWzWo4DIB33Xx4j6WX/iXDmOp42wssl6llEw/WuhOc5jn052+Dq0YMgnKksCaYIMJr2MopbNV6QdXqLPL3HqoD5wsn9pxuE8UOzG+BrvhfyBCoIDtOKyMcjlc116x6BckQlSYe7BqFJK3LerzrtqcLB96mjCAx/IHuk4Q=
+	t=1708508275; cv=none; b=SxEKYyA0mKJA8676q59GBPfkNDqqi6xSjR5PQW6Oao/sewdihY+zqWqH823AZMbuuOh2clz2chEJp5uaL5RdXsFV1LEfPcZd7fH9QWGKOFruq7Z0mEqAygxWkMQMsOUNcDkZJKJujkiROWc+J93geP6/Ad7vQ+QFvx8HbaXbXTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708508128; c=relaxed/simple;
-	bh=ZWJny5hDmVoDsoifGsfG1NwH9fjOr39mDzWHBIT6QrE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DiC9tA9qBao/UPeOTdRclZN4SBYOqsb6gP8Gn8iiAzWDXJOzK3mc20A0EjWHVfFYUCRkvQfmxPKXnX6D9wgUkBpe0/v48p9U0ZzYBkKtWQKyT6SAGtx4CyRxkxbxHcbVBFDCxXu42Q3pn93J8Pf8UOakBTFivSA60ZICTJ2Lz/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=27eEx0m2; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708508124;
-	bh=ZWJny5hDmVoDsoifGsfG1NwH9fjOr39mDzWHBIT6QrE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=27eEx0m2Y57RGki5Tg/d8bO98TkHsTUmDx546m5WO9M4Sc1M7jjlxlQZsGWTV8hXq
-	 zECaDhHjP6Mo70MTiOZP0S0wWvNA3TdTEVlx6iLRp0k9wlmBDYYybRGAq5hnWPUWCT
-	 a+T7MX8+S2X6x1gesDLei+jKwSzDasoXgQm5Qf84TP33ks1AIcuATkn3Bzggf8WrPq
-	 XLtHh1GhcCN1/2yDYkvLwkT7wiGR6F9Ot5XsanpZ+xQhF/vvCAbjgb9Mo/3iaWYeeb
-	 giylLJfAv5d/l+zZWOM2YJPk9rnHexCszNYagTw9S1Acd8BBPtc4Je0UdDS5LjKeu8
-	 f9Ud1qPm8XwSA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 03EE8378148F;
-	Wed, 21 Feb 2024 09:35:22 +0000 (UTC)
-Message-ID: <54c35628-9897-4415-86c0-cf81c897840e@collabora.com>
-Date: Wed, 21 Feb 2024 10:35:21 +0100
+	s=arc-20240116; t=1708508275; c=relaxed/simple;
+	bh=UTBKMZKTMSyHNytfC7MXF3sYkrxnXGO8g1oIE0Xngrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fGbT6Ek8g4YHicoay8INeMOI4bq9YSjeIdHmC/5FgLCEzdQI6yA8u458qD28VqHmKh9tiA9PfsKP/GKQLmmuJu9EK2wA8uL2vfOAhb0bCGmMX+1nePsIEs332IqcpGq5kPZ3splp4IA3Lyxjnp+SwuAyv3JRtj1AqmsghU+LvIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UFHnGmnL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708508272;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BdaKpo1zKogZCn5PWAqhqXGnoFVUrqpY1LtEmaKu+FM=;
+	b=UFHnGmnLLF1dyPsTJH5oE/3mBxEFT/++jT/G+HjD7XNGKQ3fM50r6Ae/bvTlMF2ZPJ50sA
+	u4HFcu/ZT+AYd4PF/tCzxX75rWp8XDI2yzbRON2gREhNo/34KFrv5SRAVpeLgG8bJJHgaT
+	AYFbp2Yq5fFDoJfM16nbxysxbaKm4+E=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-MewX7aF9Pye4DziUeeFEtw-1; Wed, 21 Feb 2024 04:37:51 -0500
+X-MC-Unique: MewX7aF9Pye4DziUeeFEtw-1
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6db0e05548fso1863907b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:37:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708508270; x=1709113070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BdaKpo1zKogZCn5PWAqhqXGnoFVUrqpY1LtEmaKu+FM=;
+        b=R8Lvw89/xmEA0oLh79385u1tMiCjQaSF8WWzbvEiHPKfsRpWP+yoazB1pDIzgwACKW
+         Ri91dMA3+ybcv5+larzgplKTUZ14lXoAUH3HyLBrr2RelVxxQuP/M5zyva1h0Pspl87S
+         Oo1ZkOyFDlKk/0yAeoe9dqTsejPwj/CgkdZiM/tCzcFAPhpL+MAjt8EAIZ66+cEpSgj4
+         nYJhX2tq3bYtwST0LsAISRGxvxpLg7jxHLRtyCn+cPqka2Os+Ih4LzamzwlksA4WL8kX
+         9DwqjiipkkK2O808a3m82w2F680FOWPUH2U3VBHnm94Wt7RvIoNAvRb5ytGOi5jJ8XzY
+         pbmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAU1oAP5RMT/+hdLtE6mNgN8kg9LBm+zDJVKA/QjH7XwGQX7z09Bbx3TyeaLK9Fg0ZyG90ZUy7t09h/BwyD20FErFDqATIa6RyyZx9
+X-Gm-Message-State: AOJu0Yz8EK0ihbCj0iYb5ymhiEoSI5FWhp1wifGMlh1TUvEPCjeAC1ad
+	wjrkYedez5RdYLw4b75QvhckHUuGFg4wS15GVffX9G/NniRADGDf93vX5dMVztHpAZtfhDAA2K6
+	fTzf3FrE5HYQmbMyGNV3ovuhB4hroKlLG7ZMP6/JU9aFttfJIAeXyi/7DEwCM6A==
+X-Received: by 2002:a05:6a00:3d13:b0:6e4:672b:f384 with SMTP id lo19-20020a056a003d1300b006e4672bf384mr7669533pfb.2.1708508269915;
+        Wed, 21 Feb 2024 01:37:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGnK/5Xc9SKm0wQPEnUuYiqinVCHstqfWVnR5OuYxZ4xQLJmopCSPYZqNRQ2oNZWFAP27lsbg==
+X-Received: by 2002:a05:6a00:3d13:b0:6e4:672b:f384 with SMTP id lo19-20020a056a003d1300b006e4672bf384mr7669524pfb.2.1708508269578;
+        Wed, 21 Feb 2024 01:37:49 -0800 (PST)
+Received: from x1n ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id e11-20020aa7980b000000b006e4698d53casm4990624pfl.140.2024.02.21.01.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 01:37:49 -0800 (PST)
+Date: Wed, 21 Feb 2024 17:37:37 +0800
+From: Peter Xu <peterx@redhat.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Yang Shi <shy828301@gmail.com>, linux-riscv@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Mike Rapoport <rppt@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	linuxppc-dev@lists.ozlabs.org,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-arm-kernel@lists.infradead.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 03/13] mm: Provide generic pmd_thp_or_huge()
+Message-ID: <ZdXEYfs_xhS_9gRo@x1n>
+References: <20240103091423.400294-1-peterx@redhat.com>
+ <20240103091423.400294-4-peterx@redhat.com>
+ <20240115175551.GP734935@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] ASoC: SOF: amd: Move signed_fw_image to struct
- acp_quirk_entry
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20240220201623.438944-1-cristian.ciocaltea@collabora.com>
- <20240220201623.438944-2-cristian.ciocaltea@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240220201623.438944-2-cristian.ciocaltea@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240115175551.GP734935@nvidia.com>
 
-Il 20/02/24 21:16, Cristian Ciocaltea ha scritto:
-> The signed_fw_image member of struct sof_amd_acp_desc is used to enable
-> signed firmware support in the driver via the acp_sof_quirk_table.
+On Mon, Jan 15, 2024 at 01:55:51PM -0400, Jason Gunthorpe wrote:
+> On Wed, Jan 03, 2024 at 05:14:13PM +0800, peterx@redhat.com wrote:
+> > From: Peter Xu <peterx@redhat.com>
+> > 
+> > ARM defines pmd_thp_or_huge(), detecting either a THP or a huge PMD.  It
+> > can be a helpful helper if we want to merge more THP and hugetlb code
+> > paths.  Make it a generic default implementation, only exist when
+> > CONFIG_MMU.  Arch can overwrite it by defining its own version.
+> > 
+> > For example, ARM's pgtable-2level.h defines it to always return false.
+> > 
+> > Keep the macro declared with all config, it should be optimized to a false
+> > anyway if !THP && !HUGETLB.
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  include/linux/pgtable.h | 4 ++++
+> >  mm/gup.c                | 3 +--
+> >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> > index 466cf477551a..2b42e95a4e3a 100644
+> > --- a/include/linux/pgtable.h
+> > +++ b/include/linux/pgtable.h
+> > @@ -1362,6 +1362,10 @@ static inline int pmd_write(pmd_t pmd)
+> >  #endif /* pmd_write */
+> >  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> >  
+> > +#ifndef pmd_thp_or_huge
+> > +#define pmd_thp_or_huge(pmd)	(pmd_huge(pmd) || pmd_trans_huge(pmd))
+> > +#endif
 > 
-> In preparation to support additional use cases of the quirk table (i.e.
-> adding new flags), move signed_fw_image to a new struct acp_quirk_entry
-> and update all references to it accordingly.
+> Why not just use pmd_leaf() ?
 > 
-> No functional changes intended.
+> This GUP case seems to me exactly like what pmd_leaf() should really
+> do and be used for..
+
+I think I mostly agree with you, and these APIs are indeed confusing.  IMHO
+the challenge is about the risk of breaking others on small changes in the
+details where evil resides.
+
 > 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-> ---
->   sound/soc/sof/amd/acp-loader.c |  2 +-
->   sound/soc/sof/amd/acp.c        | 47 ++++++++++++++++++----------------
->   sound/soc/sof/amd/acp.h        |  6 ++++-
->   sound/soc/sof/amd/vangogh.c    |  9 +++++--
->   4 files changed, 38 insertions(+), 26 deletions(-)
+> eg x86 does:
 > 
-> diff --git a/sound/soc/sof/amd/acp-loader.c b/sound/soc/sof/amd/acp-loader.c
-> index d2d21478399e..aad904839b81 100644
-> --- a/sound/soc/sof/amd/acp-loader.c
-> +++ b/sound/soc/sof/amd/acp-loader.c
-> @@ -173,7 +173,7 @@ int acp_dsp_pre_fw_run(struct snd_sof_dev *sdev)
->   
->   	adata = sdev->pdata->hw_pdata;
->   
-> -	if (adata->signed_fw_image)
-> +	if (adata->quirks && adata->quirks->signed_fw_image)
->   		size_fw = adata->fw_bin_size - ACP_FIRMWARE_SIGNATURE;
->   	else
->   		size_fw = adata->fw_bin_size;
-> diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-> index 9b3c26210db3..9d9197fa83ed 100644
-> --- a/sound/soc/sof/amd/acp.c
-> +++ b/sound/soc/sof/amd/acp.c
-> @@ -20,12 +20,14 @@
->   #include "acp.h"
->   #include "acp-dsp-offset.h"
->   
-> -#define SECURED_FIRMWARE 1
-> -
->   static bool enable_fw_debug;
->   module_param(enable_fw_debug, bool, 0444);
->   MODULE_PARM_DESC(enable_fw_debug, "Enable Firmware debug");
->   
-> +static struct acp_quirk_entry quirk_valve_galileo = {
-> +	.signed_fw_image = true,
+> #define pmd_leaf	pmd_large
+> static inline int pmd_large(pmd_t pte)
+> 	return pmd_flags(pte) & _PAGE_PSE;
+> 
+> static inline int pmd_trans_huge(pmd_t pmd)
+> 	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
+> 
+> int pmd_huge(pmd_t pmd)
+>         return !pmd_none(pmd) &&
+>                 (pmd_val(pmd) & (_PAGE_PRESENT|_PAGE_PSE)) != _PAGE_PRESENT;
 
-Hello Cristian,
+For example, here I don't think it's strictly pmd_leaf()? As pmd_huge()
+will return true if PRESENT=0 && PSE=0 (as long as none pte ruled out
+first), while pmd_leaf() will return false; I think that came from
+cbef8478bee5.  I'm not sure whether that is the best solution, e.g., from a
+1st glance it seems better to me to process swap entries separately
+(including both migration and poisoned entries)..
 
-are you sure that a structure holding "quirks" is the right choice here?
+Sparc has similar things there, which in that case I'm not sure whether a
+direct replace is always safe.
 
-That probably comes as a personal preference, but I would simply pass a `u32 flags`
-and structure the quirks as bits.
+Besides that, there're also other cases where it's not clear of such direct
+replacement, not until further investigated.  E.g., arm-3level has:
 
-#define ACP_SIGNED_FW_IMAGE	BIT(0)
-#define ACP_SOMETHING_ELSE	BIT(1)
+#define pmd_leaf(pmd)		pmd_sect(pmd)
+#define pmd_sect(pmd)		((pmd_val(pmd) & PMD_TYPE_MASK) == \
+						 PMD_TYPE_SECT)
+#define PMD_TYPE_SECT		(_AT(pmdval_t, 1) << 0)
 
-flags = BIT(SIGNED_FW_IMAGE) | BIT(SOMETHING_ELSE);
+While pmd_huge() there relies on PMD_TABLE_BIT ()
 
-if (flags & BIT(SIGNED_FW_IMAGE))
-    do_something()
+int pmd_huge(pmd_t pmd)
+{
+	return pmd_val(pmd) && !(pmd_val(pmd) & PMD_TABLE_BIT);
+}
 
-What do you think?
+#define PMD_TABLE_BIT		(_AT(pmdval_t, 1) << 1)
 
-Cheers,
-Angelo
+These are just the trivial details that I wanted to avoid to touch in this
+series, so as to resolve the hugetlb issue separately from others.
 
-> +};
-> +
->   const struct dmi_system_id acp_sof_quirk_table[] = {
->   	{
->   		/* Steam Deck OLED device */
-> @@ -33,7 +35,7 @@ const struct dmi_system_id acp_sof_quirk_table[] = {
->   			DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
->   			DMI_MATCH(DMI_PRODUCT_NAME, "Galileo"),
->   		},
-> -		.driver_data = (void *)SECURED_FIRMWARE,
-> +		.driver_data = &quirk_valve_galileo,
->   	},
->   	{}
->   };
-> @@ -254,7 +256,7 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
->   		}
->   	}
->   
-> -	if (adata->signed_fw_image)
-> +	if (adata->quirks && adata->quirks->signed_fw_image)
->   		snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_INCLUDE_HDR, ACP_SHA_HEADER);
->   
->   	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_STRT_ADDR, start_addr);
-> @@ -738,26 +740,27 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
->   	sdev->debug_box.offset = sdev->host_box.offset + sdev->host_box.size;
->   	sdev->debug_box.size = BOX_SIZE_1024;
->   
-> -	adata->signed_fw_image = false;
->   	dmi_id = dmi_first_match(acp_sof_quirk_table);
-> -	if (dmi_id && dmi_id->driver_data) {
-> -		adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-> -						    "sof-%s-code.bin",
-> -						    chip->name);
-> -		if (!adata->fw_code_bin) {
-> -			ret = -ENOMEM;
-> -			goto free_ipc_irq;
-> +	if (dmi_id) {
-> +		adata->quirks = dmi_id->driver_data;
-> +
-> +		if (adata->quirks->signed_fw_image) {
-> +			adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-> +							    "sof-%s-code.bin",
-> +							    chip->name);
-> +			if (!adata->fw_code_bin) {
-> +				ret = -ENOMEM;
-> +				goto free_ipc_irq;
-> +			}
-> +
-> +			adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-> +							    "sof-%s-data.bin",
-> +							    chip->name);
-> +			if (!adata->fw_data_bin) {
-> +				ret = -ENOMEM;
-> +				goto free_ipc_irq;
-> +			}
->   		}
-> -
-> -		adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-> -						    "sof-%s-data.bin",
-> -						    chip->name);
-> -		if (!adata->fw_data_bin) {
-> -			ret = -ENOMEM;
-> -			goto free_ipc_irq;
-> -		}
-> -
-> -		adata->signed_fw_image = dmi_id->driver_data;
->   	}
->   
->   	adata->enable_fw_debug = enable_fw_debug;
-> diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-> index 947068da39b5..b648ed194b9f 100644
-> --- a/sound/soc/sof/amd/acp.h
-> +++ b/sound/soc/sof/amd/acp.h
-> @@ -207,6 +207,10 @@ struct sof_amd_acp_desc {
->   	u64 sdw_acpi_dev_addr;
->   };
->   
-> +struct acp_quirk_entry {
-> +	bool signed_fw_image;
-> +};
-> +
->   /* Common device data struct for ACP devices */
->   struct acp_dev_data {
->   	struct snd_sof_dev  *dev;
-> @@ -236,7 +240,7 @@ struct acp_dev_data {
->   	u8 *data_buf;
->   	dma_addr_t sram_dma_addr;
->   	u8 *sram_data_buf;
-> -	bool signed_fw_image;
-> +	struct acp_quirk_entry *quirks;
->   	struct dma_descriptor dscr_info[ACP_MAX_DESC];
->   	struct acp_dsp_stream stream_buf[ACP_MAX_STREAM];
->   	struct acp_dsp_stream *dtrace_stream;
-> diff --git a/sound/soc/sof/amd/vangogh.c b/sound/soc/sof/amd/vangogh.c
-> index de15d21aa6d9..bc6ffdb5471a 100644
-> --- a/sound/soc/sof/amd/vangogh.c
-> +++ b/sound/soc/sof/amd/vangogh.c
-> @@ -143,6 +143,7 @@ EXPORT_SYMBOL_NS(sof_vangogh_ops, SND_SOC_SOF_AMD_COMMON);
->   int sof_vangogh_ops_init(struct snd_sof_dev *sdev)
->   {
->   	const struct dmi_system_id *dmi_id;
-> +	struct acp_quirk_entry *quirks;
->   
->   	/* common defaults */
->   	memcpy(&sof_vangogh_ops, &sof_acp_common_ops, sizeof(struct snd_sof_dsp_ops));
-> @@ -151,8 +152,12 @@ int sof_vangogh_ops_init(struct snd_sof_dev *sdev)
->   	sof_vangogh_ops.num_drv = ARRAY_SIZE(vangogh_sof_dai);
->   
->   	dmi_id = dmi_first_match(acp_sof_quirk_table);
-> -	if (dmi_id && dmi_id->driver_data)
-> -		sof_vangogh_ops.load_firmware = acp_sof_load_signed_firmware;
-> +	if (dmi_id) {
-> +		quirks = dmi_id->driver_data;
-> +
-> +		if (quirks->signed_fw_image)
-> +			sof_vangogh_ops.load_firmware = acp_sof_load_signed_firmware;
-> +	}
->   
->   	return 0;
->   }
+The new pmd_huge_or_thp() is not ideal, but that easily isolates all these
+trivial details / evils out of the picture, so that we can tackle them one
+by one.  It is strictly an OR or huge||thp, so it's hopefully safe to not
+break anything yet from that regard.
 
+> 
+> I spot checked a couple arches and it looks like it holds up.
+> 
+> Further, it looks to me like this site in GUP is the only core code
+> caller..
+> 
+> So, I'd suggest a small series to go arch by arch and convert the arch
+> to use pmd_huge() == pmd_leaf(). Then retire pmd_huge() as a public
+> API.
+> 
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index df83182ec72d..eebae70d2465 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -3004,8 +3004,7 @@ static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned lo
+> >  		if (!pmd_present(pmd))
+> >  			return 0;
+> >  
+> > -		if (unlikely(pmd_trans_huge(pmd) || pmd_huge(pmd) ||
+> > -			     pmd_devmap(pmd))) {
+> > +		if (unlikely(pmd_thp_or_huge(pmd) || pmd_devmap(pmd))) {
+> >  			/* See gup_pte_range() */
+> >  			if (pmd_protnone(pmd))
+> >  				return 0;
+> 
+> And the devmap thing here doesn't make any sense either. The arch
+> should ensure that pmd_devmap() implies pmd_leaf(). Since devmap is a
+> purely SW construct it almost certainly does already anyhow.
 
+Yep, but only if pmd_leaf() is safe to be put here. A pmd devmap should
+always imply as a pmd_leaf() indeed.
+
+Thanks,
+
+-- 
+Peter Xu
 
 
