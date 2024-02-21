@@ -1,125 +1,90 @@
-Return-Path: <linux-kernel+bounces-74686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 010E185D7BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC63B85D7BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:13:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81089282E30
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:12:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35F63283680
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F394F605;
-	Wed, 21 Feb 2024 12:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A014F5EA;
+	Wed, 21 Feb 2024 12:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J0/SbFSn"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vTYD1Ukl"
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4907E523D;
-	Wed, 21 Feb 2024 12:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B532547F46
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 12:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708517535; cv=none; b=hMsv7oe1PsOxP95m53is9YWPkVn5KHGEblyVvVJZxWGhYw+QB06iKqw/qeV1NjZ2f1TlcgO4uMY48RFSo72ZPn3QlL9Xjr7uuaId6c2yTRZ+jPTDemCeQMo7qo45kR/lZcaTLqCxirFleV/gueHNF8HVmB7DF9lQFeWOK9WX5p0=
+	t=1708517593; cv=none; b=gTGULL0qFVRgs6lYXEozoJwDTm04TJpGlqBCiO4iEaMwR6KpGvuj4uVxwUByFY45Xi0hoZNR66P6/TRU50cT5IQTE8t50fy1LRYmxxdRurTdwa9Po9+HOknM9ogGJqPR8Cdgzeiab+fXooCce/z5AZDsY9e/CMB0ndMECyZUmzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708517535; c=relaxed/simple;
-	bh=+N00AKpZ7J2ODw+foLQY6q9YlapQF1eaDkMorrMhEEg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BT4FDcYlwq1ifhsJ88/viT2qZ2bRB8qmcHJDkCBYPPIQNxVHwKMJ/uyN+XjGObr9ZlWXxK+kpwT0hZSc2/bs/9L81UUBXThXMsdLXIr5PUO95qrDL9JguZ+h5ipt6RmtLvhTbUesHvHputQxfIpAHQEgXCK91qscjhahfeQ36JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J0/SbFSn; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc1ff3ba1aso12622645ad.3;
-        Wed, 21 Feb 2024 04:12:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708517533; x=1709122333; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H8qbWRcjaBqAixK335JcZcC9lTsg4DX0lD6Zkn6qa+g=;
-        b=J0/SbFSnyf0TMrBbU9UN4dwkugqGnitxVi9oGD4vivTWUyYw5nJi1HGGYlPjgUQ7Ol
-         m5WyNKY+3k/bc8k4AE3z6BvapSVtCFgy0i64YrB0Z7yfRuB6wUNT6exbegQUXEgiNzpA
-         /p7DPKXswpNAEFxe2HPWA4tKacAXiQWTGFlrpN1awiSA8SBOnC78oa8tA/Wx/Y6RHvO9
-         GtMitwsBky/S6loQHM2Bg1xzaW2Qufk8Z4irRrDNrcgyaZEzkndsNg6PQcyn4DD30OKT
-         hEyyHfZ/3A0J7hVjgVDiVFll0814iIo9mNvKX1hCh7L3kdN4hUhYLpJ1n+gumNhA5zkS
-         g6og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708517533; x=1709122333;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H8qbWRcjaBqAixK335JcZcC9lTsg4DX0lD6Zkn6qa+g=;
-        b=PtMkxg73vvBXBbiicEht9ZF7qG7FY0uHLHsF6ZWkCh6q6MeQlymcpjGXXbtru1MnZP
-         rDn+CEkx05aY4r/dNpBF4EUo+xNg8TEDMabbxWzyLLfmfoAbOzIov9I9gGnzYtNCDK+p
-         s5yhFL2Z4ulKTVa69xWvaCnR/lFDgtvNm7sqz3WFUXUqfVsdhM65/ymLVVb2hWYlMDvN
-         ODpwnA6nemLf6N3jDyx3KimYPH9NvGEW6zD5n7b7mcWCR7QBSPgIArDj69HnTDcZX2/8
-         5oGSttBdu4PVAImRdKCmIbEhatdpH2fAMPDPOtLm47m+Pza+zogEzkl8LAswcaYClaqF
-         ypMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVP+P8YkcPkvNbsz7mcEeNEnZg3pKnw8PnZ0HV8aYPufSbVBmxu5+k4kykefq2zO0hRE6IYL6Reeyd9bHuzi4RTsYF0oNfzjqjG7UrrZ95tU19Drl4BCjcztt1q19egDVuC9dN2
-X-Gm-Message-State: AOJu0Yw/PRLDxsxIFU4YMHyItJkC3Kn4ra8E+3LkxfPyht2T4wD8iELY
-	94H1SWkTx7kKmp/SBA3O7ZImwSO3Po2Olfw0MqDKPbWl0Bxdjkn1
-X-Google-Smtp-Source: AGHT+IHtcbcaPU1cuzHOPpHw6dBbxnjuILLkDnjB8c1TjMSfrMiGMelmDTm4Gws0oMtZ/UzhOe/WyQ==
-X-Received: by 2002:a17:902:8501:b0:1dc:791:9941 with SMTP id bj1-20020a170902850100b001dc07919941mr5795930plb.65.1708517533456;
-        Wed, 21 Feb 2024 04:12:13 -0800 (PST)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id kr7-20020a170903080700b001d74502d261sm7941572plb.115.2024.02.21.04.12.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 04:12:12 -0800 (PST)
-Date: Wed, 21 Feb 2024 20:12:07 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Cc: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
-	manjunath.b.patil@oracle.com
-Subject: Re: [PATCH net-next v6] bonding: rate-limit bonding driver inspect
- messages
-Message-ID: <ZdXol6g4Jxx0VM_0@Laptop-X1>
-References: <20240221082752.4660-1-praveen.kannoju@oracle.com>
+	s=arc-20240116; t=1708517593; c=relaxed/simple;
+	bh=NS7tk7efrsJuXRhHDIrpruLzqy4vUvvkh9XAu5b/x0c=;
+	h=Subject:MIME-Version:Content-Type:From:Date:Message-Id:To:Cc; b=C1xXNCJbRAucWIsivL0DqlRCws79eEbDegootEVsu5SRyPtJaoQN+7iJEzF6nryOMmB8Qyt+XIYUYkKT12H/dvShqekxIpFWdfoKOoFm+Fw9UCYlGAsN6FtdYCpxUU3uOI2VFb/Z3z9kItUMV9y+o4G+Z/Uz/KlX1YsHBRSf4Ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vTYD1Ukl; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Subject: [PATCH 0/2] mm, slab: two minor cleanups
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708517588;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YyFeFAas4vB0dada4uODHpuW+z80qf5vTLrFrMDt84U=;
+	b=vTYD1Ukl/6JuCaUhkepVvZi3LcadMxR9MswwSvI7fiN/TCiBh0YHShvK1GIO6TBLmlLsLh
+	lcHe8EMsqlOHcz26H2cs40ca0yLm46EgJkfsWy9EGKarUObqu7bqHVTdbFy7SRJUzSY2BB
+	st6ZC11E2/Cb6yKBCNv6RVUDNZqHERM=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221082752.4660-1-praveen.kannoju@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-b4-tracking: H4sIAMTo1WUC/w3LMQqAMAwAwK9IZgNtUFF/k7ZRCyVKgy7i3+14w71gUrMYrN0LVZ5s+dQG33cQD9
+ ZdMKdmIEeDI/JohQPGIqz3hWlbppH8PDlP0EpgEwyVNR4t6V3K9/3LTDErYwAAAA==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+Date: Wed, 21 Feb 2024 12:12:52 +0000
+Message-Id: <20240221-slab-cleanup-v1-0-63382f41d699@linux.dev>
+To: Pekka Enberg <penberg@kernel.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>,
+ David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708517585; l=572;
+ i=chengming.zhou@linux.dev; s=20240220; h=from:subject:message-id;
+ bh=NS7tk7efrsJuXRhHDIrpruLzqy4vUvvkh9XAu5b/x0c=;
+ b=3TzBimA+pFpGgJgezqzOceInyXlU1v3/aveS1LU+hy7LdO9YF43jeTccx0xJsn2J/tqk+Oi3k
+ 0ppRy2/thivAsBq6XfyglIunz9an6HGKfuSySAp3M04iF5+riV76Bbk
+X-Developer-Key: i=chengming.zhou@linux.dev; a=ed25519;
+ pk=5+68Wfci+T30FoQos5RH+hfToF6SlC+S9LMPSPBFWuw=
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 21, 2024 at 01:57:52PM +0530, Praveen Kumar Kannoju wrote:
-> Through the routine bond_mii_monitor(), bonding driver inspects and commits
-> the slave state changes. During the times when slave state change and
-> failure in aqcuiring rtnl lock happen at the same time, the routine
-> bond_mii_monitor() reschedules itself to come around after 1 msec to commit
-> the new state.
-> 
-> During this, it executes the routine bond_miimon_inspect() to re-inspect
-> the state chane and prints the corresponding slave state on to the console.
-> Hence we do see a message at every 1 msec till the rtnl lock is acquired
-> and state chage is committed.
-> 
-> This patch doesn't change how bond functions. It only simply limits this
-> kind of log flood.
-> 
-> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-> ---
-> v6: 
->   - Minor space additions addressed. 
-> v5: https://lore.kernel.org/all/20240221050809.4372-1-praveen.kannoju@oracle.com/
->   - Redundant indentation addressed.
-> v4: https://lore.kernel.org/all/20240220050437.5623-1-praveen.kannoju@oracle.com/
->   - Rectification in the patch subject and versioning details.
-> v3: https://lore.kernel.org/lkml/20240219133721.4567-1-praveen.kannoju@oracle.com/
->   - Commit message is modified to provide summary of the issue, because of
->     which rate-limiting the bonding driver messages is needed.
-> v2: https://lore.kernel.org/lkml/20240215172554.4211-1-praveen.kannoju@oracle.com/
->   - Use exising net_ratelimit() instead of introducing new rate-limit
->     parameter.
-> v1: https://lore.kernel.org/lkml/20240214044245.33170-1-praveen.kannoju@oracle.com/
-> ---
+Just two minor cleanups when reviewing the code.
 
-Thanks for your patient update.
+Thanks!
 
-Reviewed-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+---
+Chengming Zhou (2):
+      mm, slab: remove unused object_size parameter in kmem_cache_flags()
+      mm, slab: fix the comment
+
+ mm/slab.h        |  3 +--
+ mm/slab_common.c |  2 +-
+ mm/slub.c        | 11 ++++-------
+ 3 files changed, 6 insertions(+), 10 deletions(-)
+---
+base-commit: c09a8e005eff6c064e2e9f11549966c36a724fbf
+change-id: 20240221-slab-cleanup-df9652186012
+
+Best regards,
+-- 
+Chengming Zhou <chengming.zhou@linux.dev>
 
