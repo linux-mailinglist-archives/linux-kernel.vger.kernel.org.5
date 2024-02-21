@@ -1,92 +1,128 @@
-Return-Path: <linux-kernel+bounces-73980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90EF485CE55
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:50:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B32485CE5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 467621F22C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:50:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45AF6283418
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA142B9D3;
-	Wed, 21 Feb 2024 02:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDC028DB5;
+	Wed, 21 Feb 2024 02:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+bB4gee"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="de2Uzn9F"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08992F36;
-	Wed, 21 Feb 2024 02:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53692F36;
+	Wed, 21 Feb 2024 02:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708483829; cv=none; b=mviUQP0eGESQGyeTTCmgBKARDseQhMNNqbqsnR0gbZY+CtQ2u9NHlVVFQfr8txuMrnem+pVwn9EunHC1ixFqRmYLAgu845+j+SPYOsViFpWHsJK+vKxooyshkr3hLbisJNcfH8mqWorzYLHFL2FaJ9mlk8GEgHM5VTk7QhN5MSk=
+	t=1708483922; cv=none; b=nEGSBE/cbRHCXporb0GKMQR1mUF8MUBt6y2m21Y7OZIGvFv0pFleMjJBx57FSBAQwBnREFZp0es7EJ7mD4zYXLy7hpof19Li98RviiJRtXqkNBGwYRqXQaaKsSbzdYYi9xh6I9QhxlRPLVcLeTQxaiDXbbe+2TsbHYXGscq2J80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708483829; c=relaxed/simple;
-	bh=ft6GS4HttWFaomhruIwxgB1TwBKcke3gHYkZySKkgrQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=iyFk1ff2U5xQ4R3gqYBONntacrKKIIDI9FQSj2UqJX5wRAyxVjpkTZ7E2MyMBAHQMYxr3EI27P7VZ46y+gZTBUmY9PC7SOT9ahRlc+M50v/fvDax5N3lAiAxlhP4jMWig8pr/SRDtq+ZmqTidkZ1DEm4+wGsecoNmtpbh0Oogx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+bB4gee; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 58BC0C43399;
-	Wed, 21 Feb 2024 02:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708483829;
-	bh=ft6GS4HttWFaomhruIwxgB1TwBKcke3gHYkZySKkgrQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Z+bB4geejshT8htwTNcfuJPtC9LkXsg/g7Q2TzaI/OcUQYS0ZBoX5M0gx5t3gp+sC
-	 qIMZBhXHIfdGlUifIGIET/pWA99SoW3JFZBJbm01zMqtPVfVwj+G8KqNGNvy1s90FM
-	 1I9rSbQEV0iedhstnPnGFnPKp59dFOAbHOHWZoMi0HsN7Bw/Qb+/QO9FezV3CVqjIg
-	 Uqr5FA4adZoMCoaMfMvHivfn8Yxq1/ilKiqCHKTIauNC6Ytt00aN+U0j8pDQ8QUHSF
-	 A5pUekvEACZ50vnRoGX/2XYXehaQOX4+AErVftzA/ouPMHEoqtYyAJzxdhy8inn70t
-	 JwG7ugxFwb41A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 40262D990D7;
-	Wed, 21 Feb 2024 02:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708483922; c=relaxed/simple;
+	bh=M9LyLUnYSF7X179XZ54TkHDA6KFvwvPJ7sm2M1C37Dg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ci5Hg0PYGLSXJZCRqK3+LIH2Nd9z2GreJOawiD5XEWLmrv8S84UDcSpN5Cjafp8nTX7aQ0svs4++IGNemE8yTqb7AI/rS4md5XNQUJqIBCEtgyCLY05w9Z3nn9i1zPOfNToL0whiLMq9YyKiHcwIe5BRDaVckTV9t0griv2Gcu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=de2Uzn9F; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c02b993a5aso3742293b6e.1;
+        Tue, 20 Feb 2024 18:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708483920; x=1709088720; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5cCcoJFfJlagmSzWB96IS3kVZKplb56dGjkjAGigbOY=;
+        b=de2Uzn9FHdeqzhpXGQIx0OrlAcm0/BkFqSN2IEuapIDmov3HtJwFEmmKBGtU+PF/AH
+         TC19lYLSMn90B2kzM1mz23Nh85qrcvo4RvxQnSZRhpXzWYj4f1/0iKKkCPprGDhRrMsc
+         8a0S4pc2irWdDs9LMGjFlaeOwbfoeZjoP72e7ZMP3gxp6IUNPyh4xben0CsRHQkfQ1fE
+         Lc4nY61lpDojgzlpZuogpWLpN9JeExNB9uJa4JWH6kxW/x1bPwyZB5pBp5s9aPqfKnHM
+         dmO4E3JL7w1HPg1n3nVqrV8bywMldeHyx5Npcrore3yA4EXiWArmGx0EzYTNmIphXL27
+         PUjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708483920; x=1709088720;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5cCcoJFfJlagmSzWB96IS3kVZKplb56dGjkjAGigbOY=;
+        b=r69QsT/9Qo4VHL95zFpd5WJlf2Ca7b0gLwMrGloXYH++esvrYW/Acke7kNz/Ch7upl
+         OFIAecf13IguC0CnfNXtc/0Nv9oLVCaw2sh56aPg0qHarnyALRfKtYo9oYf+R5BXXX1Q
+         qU0Zg9sacoQUG1Hl9fSPOGPZMzmI2ZImLs+cxBGCOAGxTF6oCQ/AASVnISXLZKg5Jq6O
+         aLcRzMomYHPHFMIgPimMFAUj9He6FGUjbtD2frtX4MTxQVvhie2nsAMsQTIBXCRfSBfc
+         NIKXj4No41tytbuPUL1O3Jx30RxcE6fvitpq2KD776rIAmqnZ8yywD/7cr1Pwt6WOz8I
+         76Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCUhHRLL2Hz5zkOrfVHgLZ3+uY97Os5iOWnY197HdE8scCu3vwzSo3hgj21bUkTpi+D+LJb5dPGKyNN5RZy/GLElyItJ5cGG6RH1fC3q12/vFK2FC4eSoq7Hy6ztKNoaaDqZz27vQEfum6PYmuCrq6NUNK2tnPwXJHjL8CjMG/fjcoG51YcQFywLXOkCtfM9LSEzbmCrV7S+zOqKNimsf1erfzl3VBRWDAgoGJg2fBwrgycb+CJl5lhnzyQ=
+X-Gm-Message-State: AOJu0YzJfch1GoUSniZ6OPHUziANPwfptn1Qm2cF6bxUcenSBSJ+b+tT
+	cT82yT4mQu4vnga6Ob80/stXHyBCoETA/WX6l0UV/THoCViS0Tio
+X-Google-Smtp-Source: AGHT+IE7orEkJIiIoLoo9uUilOiSIrkDIWd9YJNRBvQsEKS+qFHHzkz+CxBRMkhvQvzm4V/UGCkKOA==
+X-Received: by 2002:a05:6808:4498:b0:3c1:4526:7533 with SMTP id eq24-20020a056808449800b003c145267533mr17061192oib.14.1708483919989;
+        Tue, 20 Feb 2024 18:51:59 -0800 (PST)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:b11c])
+        by smtp.gmail.com with ESMTPSA id r11-20020a056a00216b00b006e4766d31bcsm2786546pff.184.2024.02.20.18.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 18:51:59 -0800 (PST)
+Date: Tue, 20 Feb 2024 18:51:56 -0800
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v2 03/10] bpf/verifier: allow more maps in
+ sleepable bpf programs
+Message-ID: <ezfl6x3wxdnjhv7e5hyatneprtqvapbu7xckdejxmcdb6qejaj@5wn67k7rmtxz>
+References: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
+ <20240214-hid-bpf-sleepable-v2-3-5756b054724d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [RESEND PATCH net-next] net: wan: framer: constify of_phandle_args in
- xlate
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170848382925.20526.2525351962528037305.git-patchwork-notify@kernel.org>
-Date: Wed, 21 Feb 2024 02:50:29 +0000
-References: <20240217100306.86740-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240217100306.86740-1-krzysztof.kozlowski@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214-hid-bpf-sleepable-v2-3-5756b054724d@kernel.org>
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Sat, 17 Feb 2024 11:03:06 +0100 you wrote:
-> The xlate callbacks are supposed to translate of_phandle_args to proper
-> provider without modifying the of_phandle_args.  Make the argument
-> pointer to const for code safety and readability.
+On Wed, Feb 14, 2024 at 06:18:32PM +0100, Benjamin Tissoires wrote:
+> These 2 maps types are required for HID-BPF when a user wants to do
+> IO with a device from a sleepable tracing point.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Allowing BPF_MAP_TYPE_QUEUE (and therefore BPF_MAP_TYPE_STACK) allows
+> for a BPF program to prepare from an IRQ the list of HID commands to send
+> back to the device and then these commands can be retrieved from the
+> sleepable trace point.
+> 
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> 
 > ---
->  drivers/net/wan/framer/framer-core.c   |  9 +++++----
->  include/linux/framer/framer-provider.h | 14 +++++++-------
->  2 files changed, 12 insertions(+), 11 deletions(-)
+> 
+> changes in v2:
+> - dropped BPF_MAP_TYPE_PROG_ARRAY from the list
+> ---
+>  kernel/bpf/verifier.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 67da3f7bddb5..cb1266566b69 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -18094,6 +18094,8 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+>  		case BPF_MAP_TYPE_SK_STORAGE:
+>  		case BPF_MAP_TYPE_TASK_STORAGE:
+>  		case BPF_MAP_TYPE_CGRP_STORAGE:
+> +		case BPF_MAP_TYPE_QUEUE:
+> +		case BPF_MAP_TYPE_STACK:
+>  			break;
 
-Here is the summary with links:
-  - [RESEND,net-next] net: wan: framer: constify of_phandle_args in xlate
-    https://git.kernel.org/netdev/net-next/c/2f3bfa8e30b5
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Maybe resend this one and patch 1 without RFC, so we can start landing them?
 
