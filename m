@@ -1,102 +1,203 @@
-Return-Path: <linux-kernel+bounces-75158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8493085E3FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:04:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E6185E3FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:04:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D0CC1C2273C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:04:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3BC61C227D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C4283CB6;
-	Wed, 21 Feb 2024 17:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A58839F7;
+	Wed, 21 Feb 2024 17:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kKF9hTRn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rLHUGzek"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nOD15bXa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E73E83A12;
-	Wed, 21 Feb 2024 17:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977B5839E0;
+	Wed, 21 Feb 2024 17:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708535067; cv=none; b=SEW6jGQhmOkTqSLa9xI9ikXaXRDBCPDPZxqQ3XF2YpDA66jiinLdQUKbIMebVmQFn2/V2iX9Ef1G2mckrS+EqtxdpLwijoJWEQmfWz1R0qwIpnIjbSFuqIEj5PxfqQq035RAPqp5kIM3CXKUHNykmteVqoU9afw1NSd9LTz4vHg=
+	t=1708535083; cv=none; b=ZzIr8hGqR8YOIiD30DuOmPHidnPTS/j4zUrdRsIkg+dAUkxyS0LFrt0ySSYfCBkXoFk+4/ABVrcyZjxJNOnIjpAlx2/CoXisWTdb66mcztB1SNvMu+ogB3oVWDkFRmsrveuswdapw6K2lsbs0Zg3Dq7UtrZa08fPAU4Xe1ai+z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708535067; c=relaxed/simple;
-	bh=I9BPIMQV8ivzAq2sUNXIWktFBAZhuoYcLn9hK+92n3c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DX83b1WvCU1idgVqBLTwr+BqH5vBrmQBOsdE1Kdb08xi7hhyx3C96LNCw2WHKfcyuYGKf26LhCJeb16jDb9ID7vtREg+mZ/5/6foswpS20tdCYHxsTTkLozA5TypoTNNNlJFuv/fj86WKwBzDeyV+KAd5CbVREOssmrN0RFENwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kKF9hTRn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rLHUGzek; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708535062;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5/2PXeUtYZN5Banhfqv2e+wEkrcm+AGTORes2hTmKPk=;
-	b=kKF9hTRn/NdeRVN/fjSQ36SK7Zt7CiVyKGHrDJzYPqU0cXodAWIB/lUF9AjSYLYhDC5pHM
-	VR++i0UzTHTD7IfjU2W0BA8BIpmXWPOOxssJfqsDArwrdX0FXqQNO79viSVqzcxO0uIddu
-	jWKpkJlGMoatTw6CVsY7Py1oVOMmVpAU4sq0iWXsZ2aM1ewa1WNBJphhA/Ih7GtU74xcQs
-	sogpPaxc9Endjt9XGRmJs+kJxrAUqCqvipRfyjWHFFV11pxFisAkrpzpCB0jUoUW5gg8/R
-	qSSi9iXBJHCt36FSNo5la0FOTGGFSzfTf+T6ioISkGwD/wcyNeaoSjCNWDXTDA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708535062;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5/2PXeUtYZN5Banhfqv2e+wEkrcm+AGTORes2hTmKPk=;
-	b=rLHUGzek8UDGvurt1OgFa5LrZ4A+qJ29OC7ELGvQHxrIjqGY/PneNNgi5prXv4tdqQJbZh
-	O/aOtUoeywd5CUCg==
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Leonardo Bras <leobras@redhat.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Tony
- Lindgren <tony@atomide.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, John Ogness
- <john.ogness@linutronix.de>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, Florian Fainelli
- <florian.fainelli@broadcom.com>, Shanker Donthineni
- <sdonthineni@nvidia.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/4] irq: Introduce IRQ_HANDLED_MANY
-In-Reply-To: <87edd5hljz.ffs@tglx>
-References: <20240216075948.131372-2-leobras@redhat.com>
- <20240216075948.131372-5-leobras@redhat.com> <87zfvwai62.ffs@tglx>
- <87v86kaf84.ffs@tglx> <ZdWMja3BfCZsbF_q@LeoBras> <87edd5hljz.ffs@tglx>
-Date: Wed, 21 Feb 2024 18:04:21 +0100
-Message-ID: <87bk89hhpm.ffs@tglx>
+	s=arc-20240116; t=1708535083; c=relaxed/simple;
+	bh=7qKbGwaEKrIs5CEKuJzoB1E1+PJ1uNtIk55d8WvXuWg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=tRe/Hs6X44oePkeLLKEFcMCWmvsCFjxSfl5RvaA9jBs7jNMnmvfdZlew9/ZI9s38h4X4pn582b5AFAxlI2m0J08+4FYzGm1aRSBMJV00+nFvRX7lLXqW+a5RDioPvsqxfI3dO1IpdmzjQ2C/3IGh2DRphuVQJR3Msg+Ohn45vJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nOD15bXa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E802C433C7;
+	Wed, 21 Feb 2024 17:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708535083;
+	bh=7qKbGwaEKrIs5CEKuJzoB1E1+PJ1uNtIk55d8WvXuWg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=nOD15bXa7Csn7bTVsgw2dPxCBjVqJFWuLJjfyMjCmSuf6w78iwxId925yJ7IFcV7y
+	 vXl3We1TGQMGF3J26yXbxQZPHzjiflMw3gKKTP3esJp5449Lrw0G5yZPDrGS+HlCrN
+	 IufQLHdMl8Py1sSHMjid1HJLRbAE+1zmcPcLz7PJvJCxXGoOpvDw7aOzV7v7J9GluI
+	 s0xslSwpOTNO4NQ13jt2hocaJF3999b3QphL0uY3GHVKLqsxaD1EBvgRTYkVY2uj3S
+	 2gXq+KZxGWMSU6Tn0HRJliQfaCzFiPXcgBYHNJT2pF9XN3x1kY617ak4cnwzZlupIx
+	 YFdZt83PycAMQ==
+Date: Wed, 21 Feb 2024 14:04:38 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH 1/1] perf trace: Collect sys_nanosleep first argument
+Message-ID: <ZdYtJs8nWt6ALprh@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Feb 21 2024 at 16:41, Thomas Gleixner wrote:
-> On Wed, Feb 21 2024 at 02:39, Leonardo Bras wrote:
-> But as I pointed out above the detection logic is flawed due to the
-> unconditional accumulation. Can you give the uncompiled below a test
-> ride with your scenario?
+That is a 'struct timespec' passed from userspace to the kernel as we
+can see with a system wide syscall tracing:
 
-Bah. Ignore this. I misread the code completely. No idea where my brain
-was.
+  root@number:~# perf trace -e nanosleep
+       0.000 (10.102 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+      38.924 (10.077 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     100.177 (10.107 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     139.171 (10.063 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     200.603 (10.105 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     239.399 (10.064 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     300.994 (10.096 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     339.584 (10.067 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     401.335 (10.057 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     439.758 (10.166 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     501.814 (10.110 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     539.983 (10.227 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     602.284 (10.199 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     640.208 (10.105 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     702.662 (10.163 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     740.440 (10.107 ms): podman/2195174 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+     802.993 (10.159 ms): podman/9150 nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 10000000 })                   = 0
+  ^Croot@number:~# strace -p 9150 -e nanosleep
 
-This thing triggers only when there are 100K interrupts and 99.9k of
-them unhandled. The 100k total resets the unhandled counts.
+If we then use the ptrace method to look at that podman process:
 
-Though one thing which strikes me odd is that this actually triggers at
-all because it needs 99.9k unhandled out of 100k total. That means on
-average every thread handler invocation handles 1000 hardware interrupts
-in one go. Is that even realistic?
+  root@number:~# strace -p 9150 -e nanosleep
+  strace: Process 9150 attached
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  nanosleep({tv_sec=0, tv_nsec=10000000}, NULL) = 0
+  ^Cstrace: Process 9150 detached
+  root@number:~#
 
-Thanks,
+With some changes we can get something closer to the strace output,
+still in system wide mode:
 
-        tglx
+  root@number:~# perf config trace.show_arg_names=false
+  root@number:~# perf config trace.show_duration=false
+  root@number:~# perf config trace.show_timestamp=false
+  root@number:~# perf config trace.show_zeros=true
+  root@number:~# perf config trace.args_alignment=0
+  root@number:~# perf trace -e nanosleep --max-events=10
+  podman/2195174 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/9150 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/2195174 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/9150 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/2195174 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/9150 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/2195174 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/9150 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/2195174 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  podman/9150 nanosleep({ .tv_sec: 0, .tv_nsec: 10000000 }, NULL) = 0
+  root@number:~#
+  root@number:~# perf config
+  trace.show_arg_names=false
+  trace.show_duration=false
+  trace.show_timestamp=false
+  trace.show_zeros=true
+  trace.args_alignment=0
+  root@number:~# cat ~/.perfconfig
+  # this file is auto-generated.
+  [trace]
+  	show_arg_names = false
+  	show_duration = false
+  	show_timestamp = false
+  	show_zeros = true
+  	args_alignment = 0
+  root@number:~#
 
+This will not get reused by any other syscall as nanosleep is the only
+one to have as its first argument a 'struct timespec" pointer argument
+passed from userspace to the kernel:
+
+  root@number:~# grep timespec /sys/kernel/tracing/events/syscalls/sys_enter_*/format | grep offset:16
+  /sys/kernel/tracing/events/syscalls/sys_enter_nanosleep/format:	field:struct __kernel_timespec * rqtp;	offset:16;	size:8;	signed:0;
+  root@number:~#
+
+BTF based pretty printing will simplify all this, but then lets just get
+the low hanging fruits first.
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/builtin-trace.c                    |  2 ++
+ .../bpf_skel/augmented_raw_syscalls.bpf.c     | 21 +++++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 109b8e64fe69ae32..6abe280dc38f1921 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -1048,6 +1048,8 @@ static const struct syscall_fmt syscall_fmts[] = {
+ 	  .arg = { [3] = { .scnprintf = SCA_MREMAP_FLAGS, /* flags */ }, }, },
+ 	{ .name	    = "name_to_handle_at",
+ 	  .arg = { [0] = { .scnprintf = SCA_FDAT, /* dfd */ }, }, },
++	{ .name	    = "nanosleep",
++	  .arg = { [0] = { .scnprintf = SCA_TIMESPEC,  /* req */ }, }, },
+ 	{ .name	    = "newfstatat",
+ 	  .arg = { [0] = { .scnprintf = SCA_FDAT, /* dfd */ }, }, },
+ 	{ .name	    = "open",
+diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+index 2872f9bc07850bd7..0acbd74e8c760956 100644
+--- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
++++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+@@ -341,6 +341,27 @@ int sys_enter_clock_nanosleep(struct syscall_enter_args *args)
+ 	return 1; /* Failure: don't filter */
+ }
+ 
++SEC("tp/syscalls/sys_enter_nanosleep")
++int sys_enter_nanosleep(struct syscall_enter_args *args)
++{
++	struct augmented_args_payload *augmented_args = augmented_args_payload();
++	const void *req_arg = (const void *)args->args[0];
++	unsigned int len = sizeof(augmented_args->args);
++	__u32 size = sizeof(struct timespec64);
++
++        if (augmented_args == NULL)
++		goto failure;
++
++	if (size > sizeof(augmented_args->__data))
++                goto failure;
++
++	bpf_probe_read_user(&augmented_args->__data, size, req_arg);
++
++	return augmented__output(args, augmented_args, len + size);
++failure:
++	return 1; /* Failure: don't filter */
++}
++
+ static pid_t getpid(void)
+ {
+ 	return bpf_get_current_pid_tgid();
+-- 
+2.43.0
 
 
