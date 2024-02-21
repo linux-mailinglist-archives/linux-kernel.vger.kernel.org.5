@@ -1,152 +1,120 @@
-Return-Path: <linux-kernel+bounces-75497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C62C85E991
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:08:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B6B85E992
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:09:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D634528514A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:08:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E78FB2398A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05D7126F3D;
-	Wed, 21 Feb 2024 21:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A01B126F0B;
+	Wed, 21 Feb 2024 21:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Ib6TAnIH"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ebTIqFOX"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7033A1DB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D54126F2A
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708549695; cv=none; b=b95LXSp15zbbk80zCp+PLO6CmHtZdid8B6t09Pl9oKN98uv1APaY16DqEeRZTJeRB8IlD2tq1soLKLi48ziq6tefeNCptqkx71+prPpRnNbyG2is7ouQ84Osqedl8at17kfn0wBOuK+ISoHloO+AAAL7f/FTzHZmvQh9fD+PXFI=
+	t=1708549769; cv=none; b=OtnYIyJsLKJWtG8YXEf+Gkctg8LCme/2nzGcITsUaV1r+76cJtKk0w49aZBzekc6hlorMkJtyzIpnvZBOyNzgMn3pxDkHkJsti6NiXuCmeyDgXJ+K4A4oCIdVdsWJzeYEsIPXXyi1OnnYvIJILZLkDwxClt5Ct6MY8ta3BCcg1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708549695; c=relaxed/simple;
-	bh=tYBXf2y7UIw2vtxYzTBtooJijhaQRqe+79pKgkHHECI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U96W2MxT/IghniIeN0VdZo83oV3ZclHXfaS8ylEAv16xWu7FWqL5Dkh7x4c4azMd3yyUvmjtoMD2PiQx2nJZO/mWdZg1A7miQxdiWfkxO6DdVOkOhBiMpa9VhqowOOZK7QoSrQCwYXPP3otemzCikVZD9pzzFjZGBVmSPF3UlaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Ib6TAnIH; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso7256092276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:08:13 -0800 (PST)
+	s=arc-20240116; t=1708549769; c=relaxed/simple;
+	bh=A7MgpSAgPwbO17hLGoDnvZLFVp7RaXADSRnNJuIsHV0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jLzHfTwRmmRS6+BCeh2D5dMTRDRgB2IBP8qVVxNOd2BnihbJ1o2wk+yzUW70IWgOEuqtmwOgStk4ZQegNWSYNcL76CX0W9+UUD/OEKoV0Xrwv9jKah0uRYJQZPd8s8Ph8jysjYyQbOvt5grTB6R4mhji9E0Zu+ZGqX+X/TJqhjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ebTIqFOX; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso5582728a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:09:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1708549693; x=1709154493; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uxQRWE8qWdWGvPbeyoiI7JXSLfPc5rNq4lsxS+F9O60=;
-        b=Ib6TAnIHxisbMmR1pdPP/BYKP1SLu/iltfPESg72efh8VTH8O4heJ0FN6Ptm18Wrpl
-         sIN1Hw0PRA97PcdRBkW4KuVG2OVcWzyjCQ8MXtBQbxezBH7BbqJ/9hIiexOJHWHXc6hF
-         OvdURRvrdp3UBOg4+kx7ou//gYADUBilg41HTNq66jaGqCBh1VQ1myAtjksKV3+cn1vw
-         nRAa8ZBAOtzaX6N9oQcXB75wMa3Uca5CMcsYmtYB55bb+wv1O8Vh0kMYmHQm5SvdrxzN
-         UMa1ukxvaKArIVeQqtMUn9TfGn/caunRKJn45U9qwty+K4u8n3xu6guyDxC54kkk5Vbe
-         4wLQ==
+        d=gmail.com; s=20230601; t=1708549752; x=1709154552; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MgEgI0pyQ0ahFABUGJN4FTJZ0fWcQT3ObrmUIWNiMM0=;
+        b=ebTIqFOXrwBWr5W/r/GgvnJLa1a23HmujQkU/C9MmMblPSV/Ee5dJPQoKKH8zEnPym
+         t4QDJSx7rVtdOXxi3G/XN/DnpDpYWH/IvUJNwqcv3/AOq4mwNfLtS/C2xIoB99/cuVgw
+         xmmnSDItBE+J7AfJtBAYQ2KCXtS2MLA6E8v2fA2pGol9/GHd2QnSKseyfZCuWPKE8Ijw
+         jh1EyAgLbkLg///luBd4nOfSE2KAwy2mSyx3TDaoUbMcJ1hWmwbH1hRoo8Ri2Jxni0SZ
+         4f8Gdk/Vawd6CRIqbZg4zGGfQo8bVtjtKv5hCDR4mRUY8spvI0RRnkaIka0Bzv7vqlaf
+         SWCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708549693; x=1709154493;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uxQRWE8qWdWGvPbeyoiI7JXSLfPc5rNq4lsxS+F9O60=;
-        b=Qx3jBQGagiFRHUraJoOIwHdb1SO1vD98VrTOn5RTHOgpPTlpgQ4cJHPldbqISYM73D
-         stFOiZxHXBz6eMAqEiy6h93rgg7sg9bWZ+8hktn3Pmryx1q3hVZZwZJrpOPqWcsFAFcQ
-         qdfbspgRZ53lNGTUNTweQDwxLP2IO83fD3aU3XsW0GhmD/rKC4+SY3D7qElJ7mxZBcy1
-         IUTNS/lxkNA+Zv0pBeQwWQfmC/9NP5ulqE17X04DWPyBZ3LmtuRhSpYMnOXj28gb0HEp
-         rvTsArzb4v505U2mTZ7Ck4kulcA8rA0BEvpp2ewbyxXSCMTrX6JBCTf9KaHhPYCFUXcp
-         u8Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCWaSB9yKmsgpk5+pTF2OhCmz4aJLhHprhQqzsHdOcwMDdOXIvR9eeA3aOgHvYY5z0u/w4LvnOP9bMEXP8hVBx4Fm69+An/8FJT/XTTs
-X-Gm-Message-State: AOJu0YzCzVL3XU0J+nDW7cfSUYES7MXVDTTJ02HqgTVXizIH1dHfHH5h
-	2+TW2CjgpWcgmoisy5AkLI9CU0gRmGamywckVqps6RWYsl5cW2PEwGAR2RsK/68=
-X-Google-Smtp-Source: AGHT+IHkBQNL8p6Pcm8L+lZPje+lqYlO3FmGWcacKgdbtFyX/CVuuEU6jDOyXLLh/7ci747lQJAMRg==
-X-Received: by 2002:a05:6902:1b03:b0:dc7:451b:6e33 with SMTP id eh3-20020a0569021b0300b00dc7451b6e33mr517637ybb.46.1708549692880;
-        Wed, 21 Feb 2024 13:08:12 -0800 (PST)
-Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i13-20020a25f20d000000b00dcc620f4139sm2483462ybe.14.2024.02.21.13.08.12
+        d=1e100.net; s=20230601; t=1708549752; x=1709154552;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MgEgI0pyQ0ahFABUGJN4FTJZ0fWcQT3ObrmUIWNiMM0=;
+        b=XgBvTA3W7MSAnRSJVm5MM7Yc7xgzDuBC2BfMfMYz8wCxVQRmIY2mCjSTIbpHg4Z+po
+         yf68ewqBGkZ4zTg29dZV3d+HuxX3ElLiWylJyBJghwWx/g6MBxVhNTARRAfdOrCoMHHC
+         e/YOmcqgKlL8lxKSFhB5OovLIpvOz5yFoqWAOqP0kphxJlaUzDV2CYV0b6dXeL01CeDG
+         Y4rVQLsgVshS0VXMr9FYB1TKhoad9LcF8gP8nY+ZE3Fie5lXkhCm4Sgv6/hTbUu5mYNt
+         pGVdCY8S1PR6wKL6uT7EgH5N+Ogv8poED4gocTLnz9v47Vx97qmSUNySsE/gugOnBl/8
+         CdBg==
+X-Gm-Message-State: AOJu0YxGEAQoK5XvOsCNkrJpdDx3nD+9ULQPy6NDqrM5GXVQaGYuUvWD
+	CwSQFRGRDIOfEJQrSvjXSPwS6qfDD5wCzZvJqAIU7ZLYp5hbrbq/
+X-Google-Smtp-Source: AGHT+IGx4Ckh9+rgDzCEHIwqC+BEIR8tWS3MN+9/iDSLEeA1aJK0bU29MEZzWU3iKIn72xFWfbRGzQ==
+X-Received: by 2002:a17:90a:bf0f:b0:299:6479:4678 with SMTP id c15-20020a17090abf0f00b0029964794678mr8599563pjs.19.1708549751681;
+        Wed, 21 Feb 2024 13:09:11 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:366d:9fa0:e78b:3075])
+        by smtp.gmail.com with ESMTPSA id l21-20020a17090aaa9500b00298c9790610sm10004596pjq.6.2024.02.21.13.09.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 13:08:12 -0800 (PST)
-Date: Wed, 21 Feb 2024 16:08:11 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	lsf-pc@lists.linux-foundation.org
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
- more
-Message-ID: <20240221210811.GA1161565@perftesting>
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+        Wed, 21 Feb 2024 13:09:11 -0800 (PST)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>
+Subject: [PATCH v2] mm/swapfile:__swap_duplicate: drop redundant WRITE_ONCE on swap_map for err cases
+Date: Thu, 22 Feb 2024 10:08:45 +1300
+Message-Id: <20240221210845.13488-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
-> On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > Recently we had a pretty long discussion on statx extensions, which
-> > eventually got a bit offtopic but nevertheless hashed out all the major
-> > issues.
-> >
-> > To summarize:
-> >  - guaranteeing inode number uniqueness is becoming increasingly
-> >    infeasible, we need a bit to tell userspace "inode number is not
-> >    unique, use filehandle instead"
-> 
-> This is a tough one.   POSIX says "The st_ino and st_dev fields taken
-> together uniquely identify the file within the system."
-> 
+From: Barry Song <v-songbaohua@oppo.com>
 
-Which is what btrfs has done forever, and we've gotten yelled at forever for
-doing it.  We have a compromise and a way forward, but it's not a widely held
-view that changing st_dev to give uniqueness is an acceptable solution.  It may
-have been for overlayfs because you guys are already doing something special,
-but it's not an option that is afforded the rest of us.
+The code is quite hard to read, we are still writing swap_map after
+errors happen. Though the written value is as before,
 
-> Adding a bit that says "from now the above POSIX rule is invalid"
-> doesn't instantly fix all the existing applications that rely on it.
-> 
-> Linux did manage to extend st_ino from 32 to 64 bits, but even in that
-> case it's not clear how many instances of
-> 
->     stat(path1, &st);
->     unsigned int ino = st.st_ino;
->     stat(path2, &st);
->     if (ino == st.st_ino)
->         ...
-> 
-> are waiting to blow up one fine day.  Of course the code should have
-> used ino_t, but I think this pattern is not that uncommon.
-> 
-> All in all, I don't think adding a flag to statx is the right answer.
-> It entitles filesystem developers to be sloppy about st_ino
-> uniqueness, which is not a good idea.   I think what overlayfs is
-> doing (see documentation) is generally the right direction.  It makes
-> various compromises but not to uniqueness, and we haven't had
-> complaints (fingers crossed).
+ has_cache = count & SWAP_HAS_CACHE;
+ count &= ~SWAP_HAS_CACHE;
+ [snipped]
+ WRITE_ONCE(p->swap_map[offset], count | has_cache);
 
-Again, you haven't, I have, consistently and constantly for a decade.
+It would be better to entirely drop the WRITE_ONCE for both
+performance and readability.
 
-> Nudging userspace developers to use file handles would also be good,
-> but they should do so unconditionally, not based on a flag that has no
-> well defined meaning.
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+---
+ -v2: drop goto according to Andrew, Thanks!
 
-I think that's what we're trying to do, define it properly.  We now have 2 file
-systems in tree that have this sort of behavior.  It's not a new or crazy thing
-(well I suppose it is when you consider the lifetime of file systems), having a
-way for user space developers that care to properly identify they've wandered
-across a subvolume boundary could be useful.
+ mm/swapfile.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-As for the proposal itself, we talk about this every year.  We're all more or
-less onboard with the idea, the code just needs to be written.  Write the code
-and post the patches, I assume that there won't be much pushback, probably could
-even get it into Christian's tree in some branch or another before LSF.  Thanks,
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 556ff7347d5f..7cb6d9a2d51d 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3320,7 +3320,8 @@ static int __swap_duplicate(swp_entry_t entry, unsigned char usage)
+ 	} else
+ 		err = -ENOENT;			/* unused swap entry */
+ 
+-	WRITE_ONCE(p->swap_map[offset], count | has_cache);
++	if (!err)
++		WRITE_ONCE(p->swap_map[offset], count | has_cache);
+ 
+ unlock_out:
+ 	unlock_cluster_or_swap_info(p, ci);
+-- 
+2.34.1
 
-Josef
 
