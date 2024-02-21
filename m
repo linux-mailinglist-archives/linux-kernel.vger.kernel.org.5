@@ -1,111 +1,134 @@
-Return-Path: <linux-kernel+bounces-74530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFA0385D58D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:30:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A3285D592
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CA9B1C21400
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E95F285402
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA7A5231;
-	Wed, 21 Feb 2024 10:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C9737708;
+	Wed, 21 Feb 2024 10:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bc43piSv"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Prj9SD/T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B816B186F;
-	Wed, 21 Feb 2024 10:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFB736118;
+	Wed, 21 Feb 2024 10:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708511449; cv=none; b=h9Ah6tUC6SFXY4JhOTgozvI1kZ8rMtYKIi81UShQ1nxHB6EEqT6Mj8AWl+1Jbn6MezpZyefyMKr8VPGcUEL9mGe/QQCOsizu31g/gROMZYi9O/4PTEC/3qJfim9uztAKvNz4iuXyrmX34Y4e1E01Fc++y88xaUZyT8tHIE/bqUs=
+	t=1708511457; cv=none; b=l9nwjO5f63Motv1+UYPFAvNsQQKVmzEWG8Hg/yQZC/1tYm/k+ymPzQCHgO4w8znNV9xARzzwwXqkjoxlFrJdGMOlNcCyg7VYAfyORbVS+GtgjfzmDMocCv94v4kLAzb6yggrqEX6ZJogsQePQ7R8K6zJpjgXytI+z7rskF1bDj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708511449; c=relaxed/simple;
-	bh=Y5xsKgigDPeqt/VxKiQzkP1SOMCGJPYPQlZloVadbDg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=az5bkToouSP66RpEyKnlT9EF75HLvKt18ht2v5q9Wbd83GNWIPSZ2eO+gNIlia3PjcX4YLEcsORuu9mje5pNEn0Vrp84yfOpEze1ptURG40a51vudGYtBRxChEN8/zxAtYd6rGQbQVCxzdH4Yeihijw3mGm0tX6MaEbiRSXsYbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bc43piSv; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-595aa5b1fe0so4228609eaf.2;
-        Wed, 21 Feb 2024 02:30:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708511447; x=1709116247; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FS9/jiE8MWvoVVRlTeZyyyHcTdU0X9jAny+PuZ4RSHs=;
-        b=Bc43piSvuX7qzaA2FzhpcFP2KVYzHax5Zyztoh2IuapvdAuCLQ63P0hgGqND2dnYMi
-         vWMgqCfIBtEQi7aiAcgGpmb3k4Bk2uTUsZbX8DdMgzqOIABiOzZm5KiF0q8hVmNKeQC1
-         24bA6UJxPgYBxv0hk68k62wVDCKrzHQq1IFgi6OirpJN4QSFZIq2CfhSUm2tXyd/0Oaq
-         mF1dXVjTTG0G53Z+0uoS3HCAzzoVz85j5tTPYbXsh1FCyo9Kolt1/lDSMWhy1cDdW406
-         jNxzAu2r3BpDSwhbuJy9D/MXad+8fp929aplTKFbtszLna3/hciIkIrFJX6u6Y/sEjeJ
-         l6Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708511447; x=1709116247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FS9/jiE8MWvoVVRlTeZyyyHcTdU0X9jAny+PuZ4RSHs=;
-        b=DjrC89sUsMWq8xw/B+F/99whZdftjE4i7NHFMVkzM/3sNAV6fUZI6s0piBctJiIqUN
-         Taam6narB5BYh0B+i6Tmnp2x+D+gNjRipzRvGEduHMF9USQrqhXIAt4ISFeoQ+8UTQ7Q
-         MD6CG5MM6P9xUYanB2Kpso27hbAVai9Fu6laoSn5hxC3wbB4EYEcBh/LppTnXPqou7bm
-         1bPogEKjXOLVNjk0KgAzrNBMlkvj1CYWsyd62V2cDtuBMLmR+r4MDGvqQsqjpEfvV0WC
-         fFUzPZlwFDv1D/D3WOhqYU+TtYLq//DWC5upz4spv5uOzFBYUFKvcEjve+fsqkV3nbJK
-         fk2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXFGeGNxIj0g6TMe+1fkzOXxgPUkflwmlR01d2yub3XLJ+gBvph0urmHB8w2mRsBRcvp4+6xMmm6qtpr5SqJ1mHQV+dDxdsLFsr/5f/c0SqzvX1asxV/1Ax2pX8dnH+pNBK0x5z4w8DzayRxxat
-X-Gm-Message-State: AOJu0YyjCKSm1lg+Q3FDuR5kcZ+xkKmWeffI3Q/in+wjH2152GkWLl+H
-	oVtaudNUMIqg+2YuyUK+7ANHa3ddr8zX1tamKO1xnZHODZhrrAc6VzI4DxSA6sxs0UMzar16iF5
-	dxRSiuSK91Wkp+ACHEreQalwoQLY=
-X-Google-Smtp-Source: AGHT+IGy0agsGAwrKbTWhpUR4Xd/LZ1E7T8rgouIcMK3FZ4hyasWMdTdVLD1EHGJQCFTnpFWrTwR85RVEgJwpIdSdXI=
-X-Received: by 2002:a05:6218:2624:b0:17b:6171:adab with SMTP id
- oy36-20020a056218262400b0017b6171adabmr625829rwc.1.1708511446736; Wed, 21 Feb
- 2024 02:30:46 -0800 (PST)
+	s=arc-20240116; t=1708511457; c=relaxed/simple;
+	bh=AyULnxl8eWca9ATWEvMi4RxoJIAaos1kfRJm+tdT0fA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PwAmnPPsaGV2Xjd217lxFfLZv+JVxposwEgoWT6TEyYhHIiiGDrNDazPUo9JGXg9v9m3Mb46zFmjtgMHkLmC9nivDMpyq0XJCJUq92FXkp5rQG424vqZKdMX8FUwQUq3VejISdZHeztzFh6jv+Q4tcMty+8l39eCBjt2eqHO40A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Prj9SD/T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBBD2C433F1;
+	Wed, 21 Feb 2024 10:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708511456;
+	bh=AyULnxl8eWca9ATWEvMi4RxoJIAaos1kfRJm+tdT0fA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Prj9SD/TT3thrMU98jXSo6RtM1nbzBbYJawWoAMeejKQvddmS8PmNUtqzfTM9NgLm
+	 +KECwCrcXSHSLjvVupbrzepUotTmpb8/fsE6BK3RhXHmJySuwmY8nX8k2AgVqPUNNn
+	 stkaZz9VPX9tvSfgBp/nX8eZarCPsZDqGgS70ixFktf4j71rAr6MXrANw7Wfzrah+S
+	 MlhmLp2CbpzOJDpAyBwnSNmPE7LSSmMKsxU8ZrPEYsNKwE2jW+OCoYqQXkseMuONhM
+	 hYLpfjAOnfunhFfava9qqfHGF/ATdLDbYTeqMblmaFQE9YiQ/ZJ5yJs9lqFMPlm26F
+	 scmkNBNjnsGOA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rcjsQ-000000007Sk-2gBd;
+	Wed, 21 Feb 2024 11:30:58 +0100
+Date: Wed, 21 Feb 2024 11:30:58 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] dt-bindings: PCI: qcom: Do not require
+ 'msi-map-mask'
+Message-ID: <ZdXQ4h03J9pi81Vq@hovoldconsulting.com>
+References: <20240212165043.26961-1-johan+linaro@kernel.org>
+ <20240212165043.26961-3-johan+linaro@kernel.org>
+ <e396cf20-8598-4437-b635-09a4a737a772@linaro.org>
+ <Zcy4Atjmb6-wofCL@hovoldconsulting.com>
+ <59bd6e54-0d5d-4e1a-818a-475a96c223ff@linaro.org>
+ <20240216165406.GD39963@thinkpad>
+ <ZdRXpQnbDbojlMkV@hovoldconsulting.com>
+ <20240221052607.GB11693@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221051634.work.287-kees@kernel.org>
-In-Reply-To: <20240221051634.work.287-kees@kernel.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Wed, 21 Feb 2024 11:30:33 +0100
-Message-ID: <CANiq72mab-U9i0qVre7yucfi2oRHJ2yQPDju4sQuTb6HjCy7WQ@mail.gmail.com>
-Subject: Re: [PATCH] refcount: Annotated intentional signed integer wrap-around
-To: Kees Cook <keescook@chromium.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Mark Rutland <mark.rutland@arm.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221052607.GB11693@thinkpad>
 
-On Wed, Feb 21, 2024 at 6:16=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> Mark the various refcount_t functions with __signed_wrap, as we depend
-> on the wrapping behavior to detect the overflow and perform saturation.
-> Silences warnings seen with the LKDTM REFCOUNT_* tests:
->
->   UBSAN: signed-integer-overflow in ../include/linux/refcount.h:189:11
->   2147483647 + 1 cannot be represented in type 'int'
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Wed, Feb 21, 2024 at 10:56:07AM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Feb 20, 2024 at 08:41:25AM +0100, Johan Hovold wrote:
+> > On Fri, Feb 16, 2024 at 10:24:06PM +0530, Manivannan Sadhasivam wrote:
 
-Not sure why I am the "To:" (i.e. even if it is a change involving
-only an addition of an attribute), but it looks good to me (UBSan is
-triggering on the few `old + i`s caused by the calls from
-`drivers/misc/lkdtm/refcount.c`, right?):
+> > > msi-map-mask is definitely needed as it would allow all the devices under the
+> > > same bus to reuse the MSI identifier. Currently, excluding this property will
+> > > not cause any issue since there is a single device under each bus. But we cannot
+> > > assume that is going to be the case on all boards.
+> > 
+> > Are you saying that there is never a use case for an identity mapping?
+> > Just on Qualcomm hardware or in general?
+> > 
+> > It looks like we have a fairly large number of mainline devicetrees that
+> > do use an identity mapping here (i.e. do not specify 'msi-map-mask') and
+> > the binding document also has an explicit example of this.
+> > 
+> > 	Documentation/devicetree/bindings/pci/pci-msi.txt
+> 
+> I don't know how other platforms supposed to work without this property for more
+> than one devices. Maybe they were not tested enough?
 
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Seems a bit far fetched since it's also an example in the binding.
 
-As usual, thanks Kees for keeping up on getting the kernel (un)signed
-UBSan-clean :)
+In fact, only the two Qualcomm platforms that you added 'msi-map-mask'
+for use it.
 
-Cheers,
-Miguel
+> But for sure, Qcom SoCs require either per device MSI identifier or
+> msi-map-mask.
+
+But isn't the mapping set up by the boot firmware and can differ between
+platforms?
+
+The mapping on sc8280xp looks quite different from sm8450/sm8650:
+
+	msi-map = <0x0 &gic_its 0x5981 0x1>,
+		  <0x100 &gic_its 0x5980 0x1>;
+	msi-map-mask = <0xff00>;
+
+Here it's obvious that the mask is needed, whereas for sc8280xp:
+
+	msi-map = <0x0 &its 0xa0000 0x10000>;
+
+it's not obvious what the mask should be. In fact, it looks like
+Qualcomm intended a linear mapping here as the length is 0x10000 and
+they left out the mask.
+
+And after digging through the X13s ACPI tables, this is indeed how the
+hardware is configured, which means that we should not use a
+'msi-map-mask' property for sc8280xp and that this patch is correct.
+
+Johan
 
