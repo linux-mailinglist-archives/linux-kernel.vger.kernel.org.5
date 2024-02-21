@@ -1,144 +1,175 @@
-Return-Path: <linux-kernel+bounces-75456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0595A85E8F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:22:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3342E85E8FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 375931C232EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:22:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63125B2505B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:25:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106898663A;
-	Wed, 21 Feb 2024 20:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD9786AF8;
+	Wed, 21 Feb 2024 20:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NmQ0CYQ6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CXJvB53F"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2B481213
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A63A85958;
+	Wed, 21 Feb 2024 20:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708546956; cv=none; b=tzFzLSIJ/1YotnbC7WjlCG+65Nu+BFcmMxSBKJmHn1wmb1K7FER1YjiMZKRCEz7ksIKwqPgog3EKrEB+69NtqVx3ZwjDuruQ+8oH/AQYTGfNispsV7dERj1WM3zKDghe2Lt3rICKRnJ4iIjJgBb9cRfgtBuieEoURAQ8k1OqEj8=
+	t=1708547145; cv=none; b=CK9hIprvKLoxuh/ciZlvw/bskDc71VqBCVABOguiAQZOxD6kfuYF82RTTW2SXtFxz15YXWA+xSuVUoAdpgh+5P+e8ETLpiRdaBQbKZwaBiWfZ1kAynslmz3EERw3bX9dQ/6a3sBt9QeEq3Ze2PrHXTYCuQnxwT3YuihtIvWRyk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708546956; c=relaxed/simple;
-	bh=xKyQlbp2/ZXI/OUsXfTHW6S35m4spQpcmJXXQajdyOI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=emGcUpQlk33mI4YFxtHPPs3Uzgkt2IRgeMQkKoMxwYDGRdzXJAwkH4h4+wzKNIVFNey4K3rm4dcMTk4VbsSc0AkmVAmRwmVilHDx2bktiUIk/j3g87QJP4NwTDrLG4lWW0/MJ2XnbMusAREuY8h3KIUAQMDlq4TDsiUUs7FyV6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NmQ0CYQ6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F01C433F1;
-	Wed, 21 Feb 2024 20:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708546955;
-	bh=xKyQlbp2/ZXI/OUsXfTHW6S35m4spQpcmJXXQajdyOI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=NmQ0CYQ6MobmJmLJQ4NhtxZo3JbKcAB2Epotsa/wuR1rYd4Yc4NOYD7PKQJbjoYPc
-	 OBhQHPqcSJAUFtwhD4inJ0iU+IvdUswP6OQdctU9N9vjEtzL05GRlbixW1665eixmW
-	 rAAZE3PKVxxuvIMK3Br51ZxMIdDbRLpt3Ke9o8eTQXBY+OFgHmunzd0lfcINBizeuz
-	 HD13e8FxV9otfdNCJqTkM3JwLmfUfSX7dV4xhJUpsruhzKoP3FUg5iHgQi+JRTKgh7
-	 CBzUil5sJBJSAWLO4Ov1eRQ59ZWy8MdgIQH/eU+DLgw1S26VPAqY2N8/rjo12FOtQo
-	 Q86C5Rg0AtmKA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6F89ECE189D; Wed, 21 Feb 2024 12:22:35 -0800 (PST)
-Date: Wed, 21 Feb 2024 12:22:35 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
-	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-	krypton@ulrich-teichert.org, David.Laight@aculab.com,
-	richard@nod.at, jon.grimm@amd.com, bharata@amd.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
-Message-ID: <53020731-e9a9-4561-97db-8848c78172c7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <9916c73f-510c-47a6-a9b4-ea6b438e82c0@paulmck-laptop>
- <87le7lkzj6.fsf@oracle.com>
- <4bc4ea06-e3e9-4d22-bacf-71cae0ba673d@paulmck-laptop>
- <0be4df28-99be-41a3-9e24-2b7cfc740b4a@paulmck-laptop>
- <87r0hbkafi.fsf@oracle.com>
- <7db5c057-8bd4-4209-8484-3a0f9f3cd02d@paulmck-laptop>
- <2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
- <20240221131901.69c80c47@gandalf.local.home>
- <8f30ecd8-629b-414e-b6ea-b526b265b592@paulmck-laptop>
- <20240221151157.042c3291@gandalf.local.home>
+	s=arc-20240116; t=1708547145; c=relaxed/simple;
+	bh=ctqglnnCAjYhrU7DgoFcCYpe21K+LqH9msD+JxCEk8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G1fB5bGYpKLnQURZ9fqXLszzzd4WZpv2Z21mWVqfCELa/XF5Dd8X0BidG1y7OJk2Q3ezKzZOvEmVp+tTzjZyDAjWB8n6Vu52F1RCDhXSO/kg0ak+iwUpy5u1dwu43wMCsOwq4AQ+Rfgtoq9NX6AAkgUXBadVHq/c853RdhFLgCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CXJvB53F; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so7347067276.2;
+        Wed, 21 Feb 2024 12:25:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708547142; x=1709151942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KUZZ04EW9/qUv3qL29C/Oq6T36PR4Q6EbgcYZzQ1nWg=;
+        b=CXJvB53FdF2inK8jk9wO2zptQSqDu+Zxhe3+4/pIN1AY7sFtJ1Pk8QAcId214t79od
+         HF+YAY2kLt26GZ/8tKP3vXlxmb2rWXpKTqVCGxuQx3BmK4S0da2XtlQa2oGddEA6vo+A
+         XmXXIm7yaLBlIAGgJfjaCU9cwdgehlCTAeoUkTDDr6i4CANDXjFLzjaJqMfjjFjuZrgg
+         6EMbYDF/pacSNmj7Uhc43mlc8RytVfwmye/sGndpiZSzXPoz9jOiKe376nVyEfBycMKB
+         u7DhtFsJYxZ/wPEQlcSQ2DxTc6Ze7c6e5I6hFy3j9wvKFA4Qvb3BHC1EM6Qny0aKeanD
+         ofVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708547142; x=1709151942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KUZZ04EW9/qUv3qL29C/Oq6T36PR4Q6EbgcYZzQ1nWg=;
+        b=ZYiLcqP8Eh0plARBI8zkjPWq0/X1WQt42I6TyRfIrMFl+2uYXWfC0f1JBqRU/SdCAY
+         Z12470ai2RvrzCRRvn1WXQgQfMPTmYWxymhidwd6V4YrDDg46ImKk3UQIhOu/tLwft4s
+         sPoDjj0GBcULLxt11p8JO8xsit+DfLymBE8XF7wP3C6bcb29JiSDWz5zI0FQvuB4zVTw
+         vLUqw34XxSe+9H6Hk7o+mlGoqEdeAbKT6AWC7PeBnIw816PNIRKW3LLWnuJtsBrS3ilj
+         2dzWC0P0wmqzNHBDkOQJnrIuv2tqVzGWt318yWhblVaSOy3c9+h4Izla94pdCLeWSG8Z
+         vnYg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOuIpvE5g86kH2IFKZlvjQRNuQVtImbh+wE2dAhAOv4fghoIpfInBQztIA0lokalOS6dlEcN2CadVsayad998XjAlMk3Yzxla/qO+baw1LznXjttK6LCjBYEX+WuINQVbYGYFS6M8WNLhrh6Vq8urSZNDwgOewMYxLTEKgxlrwcX4TN/EfPponbzxJMXMPG/PDgyEc8jdpLPAhc0L+wytkvAqq06xF5BNLYltCBugdatoGWVvM8+YgUc8zH5xobjaJLbw=
+X-Gm-Message-State: AOJu0YzV1y/KGW6NlgEMnz0XxfOsWrfh3Tc06CFG3revtGvcBPbvhw8W
+	LBqoCzdcD6a/jQKEpb/MjXlWog1lUpu6q55jIhZvPpPPjKnkOmvc5ddMGG+ZgsvuG4bhb5dIVwG
+	PNmiCCraExD+nhPcha9qpXT490QU=
+X-Google-Smtp-Source: AGHT+IHulW4fhdXYsgZSX5RqxAxS95jeQrXQWkLqG01c1LAdpuKIFalEI/fkzodUlC0P2/EUntFG0c+fYBgzVA4WA2w=
+X-Received: by 2002:a25:1f8b:0:b0:dc7:46ef:8b9e with SMTP id
+ f133-20020a251f8b000000b00dc746ef8b9emr389206ybf.29.1708547142617; Wed, 21
+ Feb 2024 12:25:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221151157.042c3291@gandalf.local.home>
+References: <20240220235415.GP4163@brightrain.aerifal.cx> <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx> <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+ <20240221145800.GR4163@brightrain.aerifal.cx> <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+ <20240221175717.GS4163@brightrain.aerifal.cx> <f4a54297767eb098d903404cbe8860d655d79bed.camel@intel.com>
+ <20240221183055.GT4163@brightrain.aerifal.cx> <c3085fbe10193dfe59b25bc7da776e60779b0e8c.camel@intel.com>
+ <20240221190639.GU4163@brightrain.aerifal.cx> <e3a432c0fa9f5fe837e9d2fc7b36304709a34428.camel@intel.com>
+ <CAMe9rOoUO-D7Uoj9s3eq+w9pJBZ=iucEDpU4hqtJYtPmW5T4dQ@mail.gmail.com>
+In-Reply-To: <CAMe9rOoUO-D7Uoj9s3eq+w9pJBZ=iucEDpU4hqtJYtPmW5T4dQ@mail.gmail.com>
+From: "H.J. Lu" <hjl.tools@gmail.com>
+Date: Wed, 21 Feb 2024 12:25:06 -0800
+Message-ID: <CAMe9rOr1frpnKSnVQrqeiKK3aAR3xpG=VAiPYLOR9OpHnHhYUw@mail.gmail.com>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS in userspace
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "dalias@libc.org" <dalias@libc.org>, 
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, 
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>, 
+	"musl@lists.openwall.com" <musl@lists.openwall.com>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, "corbet@lwn.net" <corbet@lwn.net>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>, "broonie@kernel.org" <broonie@kernel.org>, 
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>, "palmer@dabbelt.com" <palmer@dabbelt.com>, 
+	"debug@rivosinc.com" <debug@rivosinc.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, 
+	"shuah@kernel.org" <shuah@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>, 
+	"oleg@redhat.com" <oleg@redhat.com>, "fweimer@redhat.com" <fweimer@redhat.com>, 
+	"keescook@chromium.org" <keescook@chromium.org>, "james.morse@arm.com" <james.morse@arm.com>, 
+	"ebiederm@xmission.com" <ebiederm@xmission.com>, "will@kernel.org" <will@kernel.org>, 
+	"brauner@kernel.org" <brauner@kernel.org>, 
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "ardb@kernel.org" <ardb@kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>, 
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "sorear@fastmail.com" <sorear@fastmail.com>, 
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 03:11:57PM -0500, Steven Rostedt wrote:
-> On Wed, 21 Feb 2024 11:41:47 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > > I wonder if we can just see if the instruction pointer at preemption is at
-> > > something that was allocated? That is, if it __is_kernel(addr) returns
-> > > false, then we need to do more work. Of course that means modules will also
-> > > trigger this. We could check __is_module_text() but that does a bit more
-> > > work and may cause too much overhead. But who knows, if the module check is
-> > > only done if the __is_kernel() check fails, maybe it's not that bad.  
-> > 
-> > I do like very much that idea, but it requires that we be able to identify
-> > this instruction pointer perfectly, no matter what.  It might also require
-> > that we be able to perfectly identify any IRQ return addresses as well,
-> > for example, if the preemption was triggered within an interrupt handler.
-> > And interrupts from softirq environments might require identifying an
-> > additional level of IRQ return address.  The original IRQ might have
-> > interrupted a trampoline, and then after transitioning into softirq,
-> > another IRQ might also interrupt a trampoline, and this last IRQ handler
-> > might have instigated a preemption.
-> 
-> Note, softirqs still require a real interrupt to happen in order to preempt
-> executing code. Otherwise it should never be running from a trampoline.
+On Wed, Feb 21, 2024 at 12:18=E2=80=AFPM H.J. Lu <hjl.tools@gmail.com> wrot=
+e:
+>
+> On Wed, Feb 21, 2024 at 11:22=E2=80=AFAM Edgecombe, Rick P
+> <rick.p.edgecombe@intel.com> wrote:
+> >
+> > On Wed, 2024-02-21 at 14:06 -0500, dalias@libc.org wrote:
+> > > Due to arbitrarily nestable signal frames, no, this does not suffice.
+> > > An interrupted operation using the lock could be arbitrarily delayed,
+> > > even never execute again, making any call to dlopen deadlock.
+> >
+> > Doh! Yep, it is not robust to this. The only thing that could be done
+> > would be a timeout in dlopen(). Which would make the whole thing just
+> > better than nothing.
+> >
+> > >
+> > > >
+> > >
+> > > It's fine to turn RDSSP into an actual emulated read of the SSP, or
+> > > at
+> > > least an emulated load of zero so that uninitialized data is not left
+> > > in the target register.
+> >
+> > We can't intercept RDSSP, but it becomes a NOP by default. (disclaimer
+> > x86-only knowledge).
+> >
+> > >  If doing the latter, code working with the
+> > > shadow stack just needs to be prepared for the possibility that it
+> > > could be async-disabled, and check the return value.
+> > >
+> > > I have not looked at all the instructions that become #UD but I
+> > > suspect they all have reasonable trivial ways to implement a
+> > > "disabled" version of them that userspace can act upon reasonably.
+> >
+> > This would have to be thought through functionally and performance
+> > wise. I'm not opposed if can come up with a fully fleshed out plan. How
+> > serious are you in pursuing musl support, if we had something like
+> > this?
+> >
+> > HJ, any thoughts on whether glibc would use this as well?
+>
+> Assuming that we are talking about permissive mode,  if kernel can
+> suppress UD, we don't need to disable SHSTK.   Glibc can enable
+> ARCH_SHSTK_SUPPRESS_UD instead.
 
-Yes, the first interrupt interrupted a trampoline.  Then, on return,
-that interrupt transitioned to softirq (as opposed to ksoftirqd).
-While a softirq handler was executing within a trampoline, we got
-another interrupt.  We thus have two interrupted trampolines.
+Kernel must suppress all possible SHSTK UDs.
 
-Or am I missing something that prevents this?
+> > It is probably worth mentioning that from the security side (as Mark
+> > mentioned there is always tension in the tradeoffs on these features),
+> > permissive mode is seen by some as something that weakens security too
+> > much. Apps could call dlopen() on a known unsupported DSO before doing
+> > ROP. I don't know if you have any musl users with specific shadow stack
+> > use cases to ask about this.
+>
+>
+>
+> --
+> H.J.
 
-> > Are there additional levels or mechanisms requiring identifying
-> > return addresses?
-> 
-> Hmm, could we add to irq_enter_rcu()
-> 
-> 	__this_cpu_write(__rcu_ip, instruction_pointer(get_irq_regs()));
-> 
-> That is to save off were the ip was when it was interrupted.
-> 
-> Hmm, but it looks like the get_irq_regs() is set up outside of
-> irq_enter_rcu() :-(
-> 
-> I wonder how hard it would be to change all the architectures to pass in
-> pt_regs to irq_enter_rcu()? All the places it is called, the regs should be
-> available.
-> 
-> Either way, it looks like it will be a bit of work around the trampoline or
-> around RCU to get this efficiently done.
 
-One approach would be to make Tasks RCU be present for PREEMPT_AUTO
-kernels as well as PREEMPTIBLE kernels, and then, as architectures provide
-the needed return-address infrastructure, transition those architectures
-to something more precise.
 
-Or maybe the workaround will prove to be good enough.  We did
-inadvertently test it for a year or so at scale, so I am at least
-confident that it works.  ;-)
-
-							Thanx, Paul
+--=20
+H.J.
 
