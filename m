@@ -1,166 +1,108 @@
-Return-Path: <linux-kernel+bounces-74041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5686585CF32
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:58:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3658285CF34
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:03:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D269B283A7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:58:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DF531C22E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6354FA35;
-	Wed, 21 Feb 2024 03:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D2B38F94;
+	Wed, 21 Feb 2024 04:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="h4YroqIt"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="Z5X2Qhzx"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1811E1851
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FFBA35
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708487891; cv=none; b=Dz9gWfqlKHxO6JgyZA0xuCU0Bp0PqrIDV+gc8ngXVmwAc8WlCDQ9RktWzxU61EBDeuN5lv2QaK+wfnrudbLnRHDzvLGvWp9W1JwAcw90Ucl02vlMs0ykhChRQki1kT48mpDrAgKPlfKZ/HAY+3GanKK7M2CTXE8U4HTmXak+ul0=
+	t=1708488214; cv=none; b=XO5tssoKUgVpiFqm+5bG/Ds0yKalAr4ZcPYvZDMCp2FES7kkEM+mcHcdMTMbHOZvGNUlfH2KcjIGSUgGwmOxFuaJ/rdgWoT4Hyt/u4hhX4MtF0CvzoTFiw4sAeutF+TLX4GNG97qAgNX0yE2leBcdJnzdUcq6c5Z1FQUaAYKH0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708487891; c=relaxed/simple;
-	bh=jquv4CpaBSqhtiqh7lJvpOasNrgo49Zb1h9viA+rxj4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RBNXAUvAPVW+ExgD6C6Q50cJKqotBg4/qXhZUMIs5eM3ouCnKfo3IW+qyJ4MlKzh3ofYi8JtF8tGZ8ih7b0QHmawyaBobMYDp9z5UPX2cprU3EBmZLcbG/gV5CR01EGR5kc3RYOFsyOePvCLvDu34hQt5wKyQykb7gTa+H66fII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=h4YroqIt; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e09143c7bdso3379850b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:58:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708487889; x=1709092689; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jquv4CpaBSqhtiqh7lJvpOasNrgo49Zb1h9viA+rxj4=;
-        b=h4YroqIt5P77JejHMWjSsaMAKdFmGgF4PT1GYzOEpSOoielziWlNBY+ssvhLJWt9Is
-         7/2Rb5ZfEw7TQqU70aPIz2PYRWRa7cEYyQ8B/g9Y+Z8JQxJ7bwUoFO7Ycw/yF0qUSZFP
-         tbb7v1xDmAXLwQbJHM52skxZGq/oJJhNSpLdRic2CIlO529A7DE8hyrYtQUqKnnkPV93
-         6vBj6t42bHc1vdLZGDCYaxYIlHBW4G7EW3D6Gvjpcw2e4DMMmfiCnDhjYyqZfM1LRb/N
-         FDBU2R3Gf+Ts65ay+rFdrRXOdcvWRpK9X/ICdfnskuvgIuvyEMD3m8gcunUr7xFXGgai
-         SB8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708487889; x=1709092689;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jquv4CpaBSqhtiqh7lJvpOasNrgo49Zb1h9viA+rxj4=;
-        b=GtWH7fhItGQgLnFxSM8iQ1F0hotMSCuCTK089HMhlD3mOqVbXBqW34FiAOdyGFfjBL
-         kDFnlx+2bkCeD8KkI9p4GmZPcmXaOJmXcNDv6yNIonbBvQ/kzV5Y7mJ3X6xGCYZ2LB1a
-         AX9LBt9RenTGMOhHL6T/JZKGlo7aBdyRXPPtsQQVwcJ1kVfKD82QW05rXAFJOLcrH/os
-         64+0zioFyh/+ncgbkBaMQn98GFrglzdyQU3YKXX486JU/cr+3cKje0hHSF3WNbWV5NiF
-         mZaU5XOvl1ZiFMWmxNkVedWcib28s3uX8JgPr/otDrEZz/gjPy2JiNpMkBVZ7i1UIfJW
-         0pgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUO7ruO33TIhay7ofLM5dnqnAil+AVEQgJGZsjnGZKKxA0fwEpkXwR5mBuJaNqHBbQvmSwuGl8xpYa/o3BansKIv2u+qc9yHmkpz4mE
-X-Gm-Message-State: AOJu0YxznzYYyC7fdZTTvERqI5qnme6S1hDATYbrYl35gt/2fyASRQZ4
-	dEtlohzaUNXpcElVfqWjvu7UN/ugSaIHMG+Gk1r6kKBBEShuZlWFAcvWXgVDYIbKEJ0iGzoQiKs
-	1uhTkAX2SMSZa1C3j1sRfZuRp3C1/52UjmUorAA==
-X-Google-Smtp-Source: AGHT+IEFB9mgAouA35P/IFzUU88J+61x2Pg2aLsGi1Cb2/PG/KohmSs7+vl57fDt/Eq95l7k+PyXxygh+8rDDdHcp2E=
-X-Received: by 2002:a05:6a20:d38f:b0:19e:a353:81b0 with SMTP id
- iq15-20020a056a20d38f00b0019ea35381b0mr17920299pzb.11.1708487889551; Tue, 20
- Feb 2024 19:58:09 -0800 (PST)
+	s=arc-20240116; t=1708488214; c=relaxed/simple;
+	bh=aT1sdl9ayXkLB2xeRs1vuCR8KdWKTWCt9bQfCMleplQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W8iXNI/pL3SxqzPc0Z6UTBwLrE2kYohRUd12ws3wHdwc7dx2/7Drs9dAL+VLCs/X2r9qC7S27hk5YSOxcRhlXdcUfpGbzV3lEKp6fiy5IdeFn8MxOzBaLGSu+lPX99+uFuh8dQTK8bNajijWllldlgAdbvR86Ff8uItZbO4lClw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=Z5X2Qhzx; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41KNo9u7021805;
+	Wed, 21 Feb 2024 04:03:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version; s=pps0720;
+ bh=p7N/Fss8yHIOqOkiG91vnjHgkvgIICzI0arBtQWEIDc=;
+ b=Z5X2QhzxJCEUlJ5N+u6+I/qDdv4QpAb0hzmsa3InV+rPa8WSHME67ZU2w3h4pPyE7UNZ
+ 6I787fBlrkCheGnrB7z40328fDv0qFmtY6P/u3AI+hxY2jGbzQQLK6Xi/rZjuqddDpQ0
+ hBpjW+u3/FLoNLeBwRIAgxl0esWiN0HTGZLT54xg4kHz/zWZDTEdj/Tj1fXG4EYMppBO
+ N0uqmfcSL1j37bo4gYbuLgT+WOXRahiVHX/1G1CP7FvcTC6HQzMQoUDQiEuhyVUCAcV0
+ 7k9B+qecgUEal/JStxRuRA76fQJeKj3gUsx3aylSLHVPnlnj/Hr5gXiIqjWVFJJPXyNu AA== 
+Received: from p1lg14881.it.hpe.com ([16.230.97.202])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3wcfmtpujx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 04:03:22 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 14903805673;
+	Wed, 21 Feb 2024 04:03:13 +0000 (UTC)
+Received: from blofly.os1.tw (unknown [16.231.227.36])
+	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id CC9758003AD;
+	Wed, 21 Feb 2024 04:03:11 +0000 (UTC)
+From: matt.hsiao@hpe.com
+To: linux-kernel@vger.kernel.org
+Cc: arnd@arndb.de, gregkh@linuxfoundation.org, keng-yu.lin@hpe.com,
+        matt.hsiao@hpe.com
+Subject: [PATCH] MAINTAINERS: change the maintainer for hpilo driver
+Date: Wed, 21 Feb 2024 12:03:07 +0800
+Message-Id: <20240221040307.23019-1-matt.hsiao@hpe.com>
+X-Mailer: git-send-email 2.16.6
+X-Proofpoint-ORIG-GUID: bLLwUCtHOgMsOqij2BuGE6iotzQpIOkq
+X-Proofpoint-GUID: bLLwUCtHOgMsOqij2BuGE6iotzQpIOkq
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220035105.34626-1-dongmenglong.8@bytedance.com>
- <CAADnVQ+E4ygZV6dcs8wj5FdFz9bfrQ=61235uiRoxe9RqQvR9Q@mail.gmail.com>
- <CALz3k9g__P+UdO2vLPrR5Y4sQonQJjOnGPNmhmxtRfhLKoV7Rg@mail.gmail.com>
- <CALz3k9h8CoAP8+ZmNvNGeXL9D_Q83Ovrubz9zHECr6C0TXuoVg@mail.gmail.com>
- <CAADnVQ+bOhh1R_eCoThyNg50dd4nA4-qhpXxOWheLeA_44npXg@mail.gmail.com>
- <CALz3k9jDsmNMrXdxdx152fgvBxDoY4Lj_xMf8z-pwPtpm75vXQ@mail.gmail.com> <CAADnVQLtHQO9X7EBxe4x6YyAdQi33aqzTirTJff5epTcBatd3g@mail.gmail.com>
-In-Reply-To: <CAADnVQLtHQO9X7EBxe4x6YyAdQi33aqzTirTJff5epTcBatd3g@mail.gmail.com>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Wed, 21 Feb 2024 11:57:58 +0800
-Message-ID: <CALz3k9gM9Leuztxs9ZrM5YgwLXFQ4FMnBxHr6P=Q+GppPv5d=g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next 0/5] bpf: make tracing program
- support multi-attach
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, mcoquelin.stm32@gmail.com, 
-	alexandre.torgue@foss.st.com, Kui-Feng Lee <thinker.li@gmail.com>, 
-	Feng Zhou <zhoufeng.zf@bytedance.com>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ clxscore=1011 priorityscore=1501 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=766 mlxscore=0 spamscore=0 suspectscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402210028
 
-On Wed, Feb 21, 2024 at 11:18=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Feb 20, 2024 at 7:06=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dong=
-menglong.8@bytedance.com> wrote:
-> >
-> > On Wed, Feb 21, 2024 at 11:02=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Feb 20, 2024 at 6:45=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <=
-dongmenglong.8@bytedance.com> wrote:
-> > > >
-> > > > On Wed, Feb 21, 2024 at 10:35=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=
-=A3 <dongmenglong.8@bytedance.com> wrote:
-> > > > >
-> > > > > Hello,
-> > > > >
-> > > > > On Wed, Feb 21, 2024 at 9:24=E2=80=AFAM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, Feb 19, 2024 at 7:51=E2=80=AFPM Menglong Dong
-> > > > > > <dongmenglong.8@bytedance.com> wrote:
-> > > > > > >
-> > > > > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not=
- allowed to
-> > > > > > > be attached to multiple hooks, and we have to create a BPF pr=
-ogram for
-> > > > > > > each kernel function, for which we want to trace, even throug=
-h all the
-> > > > > > > program have the same (or similar) logic. This can consume ex=
-tra memory,
-> > > > > > > and make the program loading slow if we have plenty of kernel=
- function to
-> > > > > > > trace.
-> > > > > >
-> > > > > > Should this be combined with multi link ?
-> > > > > > (As was recently done for kprobe_multi and uprobe_multi).
-> > > > > > Loading fentry prog once and attaching it through many bpf_link=
-s
-> > > > > > to multiple places is a nice addition,
-> > > > > > but we should probably add a multi link right away too.
-> > > > >
-> > > > > I was planning to implement the multi link for tracing after this
-> > > > > series in another series. I can do it together with this series
-> > > > > if you prefer.
-> > > > >
-> > > >
-> > > > Should I introduce the multi link for tracing first, then this seri=
-es?
-> > > > (Furthermore, this series seems not necessary.)
-> > >
-> > > What do you mean "not necessary" ?
-> > > Don't you want to still check that bpf prog access only N args
-> > > and BTF for these args matches across all attach points ?
-> >
-> > No, I means that if we should keep the
-> >
-> > "Loading fentry prog once and attaching it through many bpf_links to
-> > multiple places"
-> >
-> > and only keep the multi link.
->
-> I suspect supporting multi link only is better,
-> since the amount of kernel code to maintain will be less.
+From: Matt Hsiao <matt.hsiao@hpe.com>
 
-Okay!
+Change the maintainer to Keng-Yu Lin as I am moving out of the project.
+
+Signed-off-by: Matt Hsiao <matt.hsiao@hpe.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9ed4d3868539..f41e77672dad 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9426,7 +9426,7 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	drivers/media/usb/hdpvr/
+ 
+ HEWLETT PACKARD ENTERPRISE ILO CHIF DRIVER
+-M:	Matt Hsiao <matt.hsiao@hpe.com>
++M:	Keng-Yu Lin <keng-yu.lin@hpe.com>
+ S:	Supported
+ F:	drivers/misc/hpilo.[ch]
+ 
+-- 
+2.16.6
+
 
