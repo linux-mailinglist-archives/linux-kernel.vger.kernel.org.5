@@ -1,125 +1,113 @@
-Return-Path: <linux-kernel+bounces-74819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9095085DBD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:45:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63E5585DBD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C34F285D40
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:45:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8BF3B273BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A86578B70;
-	Wed, 21 Feb 2024 13:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9yvpKAH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A8E7BB14;
+	Wed, 21 Feb 2024 13:45:44 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B37BAFB;
-	Wed, 21 Feb 2024 13:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6707BB02
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708523123; cv=none; b=usxLFZ9yAi+Vg1q43zLtdeGbb70XdHcZgIv+oF/wkhL4yoE9EVJZs0f0JHizfJm7xSSJ0iZ5sj2aLijmPgGGZxmteS5vcgmWEgluT5udKKxtGkrFizR97qcoyvuDrKylOKg29Xu3ovc5pC+qn3Z48xBUP+TB3KJN/oQvgbeh6Xs=
+	t=1708523143; cv=none; b=gi1d7qmt3ANfxAN8YzXZcO81LOR949nMLCAqwERx2EJhshPB9d7CGFCWsIcQMsd2hgEbmbZVfEzLZodoaPpsz9y26pysB4mUIQbHgQQWgvbHLmMnID1e3/kr/mIX9soacZvrPSHM+Sk0GZzOS+5iNbD57eVrwuQJdd61i8j0/9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708523123; c=relaxed/simple;
-	bh=BJHfR2bAYcqfGE3I7jpnJmREd+wIkIHX/KEdFxdNxEM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gUzAlIddXvhNnpP3ZcPuSiLugHi9yElprxPmCuH13fZRmzgJpUU4fmKXlMyR7wJgzAPSlcr75P+53L2cUIJxUkvKuSFCqbUdOZnffmPRt0tdQ9Zp9AnpPTmeIsZoULY6b7N4yPp+7S5yInGsriDhyvLYUTajFf8RDfubgSRthP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9yvpKAH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F00DC433B1;
-	Wed, 21 Feb 2024 13:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708523122;
-	bh=BJHfR2bAYcqfGE3I7jpnJmREd+wIkIHX/KEdFxdNxEM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V9yvpKAHKX1WltEJ2II938p0AA1QC7vXzKkuglhObkdmrkGI5z3dEVYrLqvzXRS5q
-	 ZxvKUYAvry0BC6AUZ/fEdagJZBM6RSkLGSv73vgr/VMTXBeQj10kx3ErKew8sQTHdH
-	 OvtsBrQfIesfTbfzEmKe12ho/3+QVunU9VSGoLQIxz6Tio6jI3zflXXIZmkBGCbTjM
-	 dAdvonYr1+9buy8TNKH8cGh0bl8fO+m8whFR+tNkFViUy9R/fTyNfNboTCPjSAmHau
-	 2EGNIX6DOvb7Hl1UCKzNQAygYCtlgA9Ywyt8vbdQDwIThTHuMb18oPwkW/Rc9F7EYs
-	 o8ax3Vj4mLX3w==
-Date: Wed, 21 Feb 2024 14:45:20 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-Cc: Chen-Yu Tsai <wens@csie.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
-Message-ID: <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
-References: <20240216190430.1374132-1-megi@xff.cz>
- <20240216190430.1374132-4-megi@xff.cz>
+	s=arc-20240116; t=1708523143; c=relaxed/simple;
+	bh=juEouuUJ136A2uRyt4uiuxJPTi66X9k73J4uyYTWJ0A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PEHTynHKbq3VA3FCptG/r73VQpDyNyRUQFqYILbQOPY5TbXEfm+s8NVKPBSavwTXsIVDZpWghQ8k/MEpzFk9oYlO6jGlAvvYvbm/lYP0CsRe+g/O+7bA2zbyeE4PtPJMtuxB8sHm2s9SyzM9uedMYepnH+1bGSWtlJsjUViUOTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rcmud-0006fc-1G; Wed, 21 Feb 2024 14:45:27 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rcmub-0023Ct-Qm; Wed, 21 Feb 2024 14:45:25 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rcmub-0009z1-2Q;
+	Wed, 21 Feb 2024 14:45:25 +0100
+Message-ID: <8598dea60afa80effd7fad2650dc045bc36d0f0e.camel@pengutronix.de>
+Subject: Re: [PATCH v2 20/20] media: venus: pm_helpers: Use reset_bulk API
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, Stanimir Varbanov
+ <stanimir.k.varbanov@gmail.com>, Vikash Garodia
+ <quic_vgarodia@quicinc.com>,  Bryan O'Donoghue
+ <bryan.odonoghue@linaro.org>, Andy Gross <agross@kernel.org>, Bjorn
+ Andersson <andersson@kernel.org>,  Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Dikshita Agarwal <quic_dikshita@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, Stanimir Varbanov
+	 <stanimir.varbanov@linaro.org>, Mauro Carvalho Chehab
+	 <mchehab+huawei@kernel.org>, linux-media@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 21 Feb 2024 14:45:25 +0100
+In-Reply-To: <466efa71-bd42-46b7-b81f-2a70d80e3f03@linaro.org>
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+	 <20230911-topic-mars-v2-20-3dac84b88c4b@linaro.org>
+	 <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
+	 <ad20b872-0b50-4a16-b342-582d2f33eeca@linaro.org>
+	 <1cf19cf23ffd88d9ffb673e8f382f3b1d24545bb.camel@pengutronix.de>
+	 <466efa71-bd42-46b7-b81f-2a70d80e3f03@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xizgahp2qebktux3"
-Content-Disposition: inline
-In-Reply-To: <20240216190430.1374132-4-megi@xff.cz>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-
---xizgahp2qebktux3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ond=C5=99ej Jirman wrote:
-> From: Ondrej Jirman <megi@xff.cz>
+On Mi, 2024-02-21 at 14:37 +0100, Konrad Dybcio wrote:
+> On 21.02.2024 14:34, Philipp Zabel wrote:
+> > On Mi, 2024-02-14 at 22:20 +0100, Konrad Dybcio wrote:
+> > > On 14.02.2024 14:31, Philipp Zabel wrote:
+> > > > Hi Konrad,
+> > > >=20
+> > > > On Fr, 2024-02-09 at 22:10 +0100, Konrad Dybcio wrote:
+> > > > > All of the resets are toggled together. Use the bulk api to save =
+on some
+> > > > > code complexity.
+> > > > >=20
+> > > > > The delay between resets is now correctly determined by the reset
+> > > > > framework.
+> > > >=20
+> > > > If this is a recent change, could you reference the commit?
+> > >=20
+> > > It's a series that recently landed in -next [1]
+> >=20
+> > Missing link?
 >=20
-> Identical configurations of planes can lead to different (and wrong)
-> layer -> pipe routing at HW level, depending on the order of atomic
-> plane changes.
+> Yes, sorry!
 >=20
-> For example:
+> Konrad
 >=20
-> - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
->   is enabled. This is a typical situation at boot.
->=20
-> - When a compositor takes over and layer 3 is enabled,
->   sun8i_ui_layer_enable() will get called with old_zpos=3D0 zpos=3D1, whi=
-ch
->   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
->=20
-> What happens is that sun8i_ui_layer_enable() function may disable
-> blender pipes even if it is no longer assigned to its layer.
->=20
-> To correct this, move the routing setup out of individual plane's
-> atomic_update into crtc's atomic_update, where it can be calculated
-> and updated all at once.
->=20
-> Remove the atomic_disable callback because it is no longer needed.
->=20
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> [1] https://lore.kernel.org/linux-arm-msm/20240105-topic-venus_reset-v2-0=
+-c37eba13b5ce@linaro.org/
 
-I don't have enough knowledge about the mixers code to comment on your
-patch, so I'll let Jernej review it. However, this feels to me like the
-pipe assignment is typically the sort of things that should be dealt
-with device-wide, and in atomic_check.
+Thank you. With that,
 
-If I'm talking non-sense, it would be great to mention at least why that
-can't be an option in the commit log.
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Maxime
-
---xizgahp2qebktux3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdX+bwAKCRDj7w1vZxhR
-xZNgAP0a4L6Azcg9V6BM/jsiHiwH17jM+P8Er1XqzO57EQIFCQD/WAIto3Vlp7l6
-KwBXVWBIRLqnsTHnduB8s/JicR+nIgU=
-=6/Lk
------END PGP SIGNATURE-----
-
---xizgahp2qebktux3--
+regards
+Philipp
 
