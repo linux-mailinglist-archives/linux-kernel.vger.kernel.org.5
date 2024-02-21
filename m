@@ -1,121 +1,150 @@
-Return-Path: <linux-kernel+bounces-75343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEA085E6EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:07:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3020E85E6E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED2E71F215CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:07:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC0E4286ED7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAA286ADC;
-	Wed, 21 Feb 2024 19:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="0MVjdiRF"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D276886AD2;
+	Wed, 21 Feb 2024 19:06:46 +0000 (UTC)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [104.156.224.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06ED58664A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB39E86130
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.156.224.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708542410; cv=none; b=uig7KJJMcJTQjR7mpkvzNJmzlzL6xVS8HunyrCb6bgaRcnXLnUaFP63ucumhxWx2bcTtHJUM4TDfl4KVj/xL4Sr2esUJuAgNCGTd1y81BsMRHEmm1fSvtfWqe+h1uz+eFpIV3MYEdnExkfsJTzHwOkNWIYpjtZkDLbtZDtjIFbU=
+	t=1708542402; cv=none; b=gsrvHNv8t7B7WSVdPlaZbEVsFfb1071cJoRrTrNrixbGbu8waYuMidpyfR/9AxZRGpgbNhuTjzkyhCpPTT6XHgzzZcwy/ZdYECryZLduN28nZMSqbKViyAaN0doTLpjm+IRkSpxJRZaVeddErqrWztQSex8yorj0jch7NJnEjyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708542410; c=relaxed/simple;
-	bh=kcfco0q09KRbXlbQQeEDNzewpUTgOtWvGAGR2Dj8574=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bZRbWLlwRMfBbCYxAez1q5bCqwiCOUuRicu6LxSFvAkDaTm97qytVcx61sdwICjWuvANo3mEi3siSS55plSZ90WCceQPxhAGdtcjiqBZmvyC7zXpq1IgADsOWuc2kVNYfYr19bkOYEg80zx6VscQAmGHpZy1eigNP7XhcoCCpyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=0MVjdiRF; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59fe5b77c0cso528015eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 11:06:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708542400; x=1709147200; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kcfco0q09KRbXlbQQeEDNzewpUTgOtWvGAGR2Dj8574=;
-        b=0MVjdiRFkK7iaxkbtqqYFe4yEIBb5PtoEdcjfNuNrtwvD9SWc3FAaqy9sVMbI8Mde8
-         2EapIlpHpLt72GZBsAOrp5Nr24Z5yGC/Y1fXNy44pHhNx5p6SlqJMMk+CEesLgkfndFT
-         eHiT4H74uIxvWvxPava3MyhT2pjFFoqbKxhBh42yrGzKK4ZzHe/V5Embc8NxkBjINGu2
-         sp72CwsCNiq1hkr+dpUIuZ6SzZ2VsTYdZ1kC8BGNFSy+eBvQJlGlzmy3kAhpXcuqNa3K
-         kuUouSdlBbHF0WaSzKmiF65ROW2yt9xaxJzx/4BwYcWktMKzcWluic5FEBLwaBlnpWk1
-         M8ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708542400; x=1709147200;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kcfco0q09KRbXlbQQeEDNzewpUTgOtWvGAGR2Dj8574=;
-        b=ChadkLaLBGNegFXhiyk6PbmFLmP5YsMo/V7crbKBUZrdQbOX3Hu6lVu1gr4y31KJfO
-         8jtIAZkvlz8qVTiIQ874QmLJPtxb6KAnwXQ5fXSsSvXuqpPI1svH24K1Nxl10wbKco+d
-         XtT8v8SQYytjhJaXQAAZrQgdpQh+7+RF9wgRQVMyzNByZXp+b7/h2Sd1nZl4/fkJqNyn
-         boxzCQ4rGmrufI3E8b57oh1IYEMPiUkno6yhcFn5OaAPBB2Db36O3S0EN5MM6yME8reH
-         7nkcKlX/9dMsylaBe6y/Fus6IKDnKGl2BbdEJytghS+wdHvnU+Yu+igszEHSywI9tZa+
-         X9OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVnrIqf2i65RwQcsgahQu23erzNP+EVg9WjF0W/27ehE9YlhyT3OCgiXZ4jcMwuYqW362Ou0ulZ/6nXImxXy3muNAj9zmJOxU/UEiD1
-X-Gm-Message-State: AOJu0YzpZtcprwx/vinr88cAw1y6k2RR57/Q5od/lntHbwyrENZJYO/J
-	3WOWo6J7lJ87KL2muX1oIk6oQH6pxJIjrbyGEgUSKwov8lIfYU/DLHw2rmd2FPNGyya1h+DsbTJ
-	/v6NLrkQ1mOcCYWWsl6zIaZO0bivnMcDQw93arw==
-X-Google-Smtp-Source: AGHT+IF1SptazV6aoLbwXb6AsvXsynwnTUX/SLIVAEokAiWCqUDqLcGdMHsf9bAktVT4a5reeZ9YGl9B6Z2G2u09Xx0=
-X-Received: by 2002:a05:6870:5b15:b0:21e:5f83:e698 with SMTP id
- ds21-20020a0568705b1500b0021e5f83e698mr14255030oab.52.1708542400397; Wed, 21
- Feb 2024 11:06:40 -0800 (PST)
+	s=arc-20240116; t=1708542402; c=relaxed/simple;
+	bh=tMAboUzIpbI8r0aCkLKiq7wam/35ifq+uf2tH3/h5q4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qD3BfcNw9YVIKaLHic8bOdmVJWV1iDIKom2pdYBb2iJu8fLmuOb9mov7LzDbIMelfdcJy+FOlY5dZFP5/IR8R3BrRa9XoL6747kQTYyNzUdgsC9y2osOh1gpQqCygNBtfs7pIPq9cqAO6hue53MLzxH+5vr2LXuAbq/o33E2+5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org; spf=pass smtp.mailfrom=libc.org; arc=none smtp.client-ip=104.156.224.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libc.org
+Date: Wed, 21 Feb 2024 14:06:39 -0500
+From: "dalias@libc.org" <dalias@libc.org>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <20240221190639.GU4163@brightrain.aerifal.cx>
+References: <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx>
+ <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+ <20240221145800.GR4163@brightrain.aerifal.cx>
+ <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+ <20240221175717.GS4163@brightrain.aerifal.cx>
+ <f4a54297767eb098d903404cbe8860d655d79bed.camel@intel.com>
+ <20240221183055.GT4163@brightrain.aerifal.cx>
+ <c3085fbe10193dfe59b25bc7da776e60779b0e8c.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205182810.58382-1-brgl@bgdev.pl> <20240205182810.58382-11-brgl@bgdev.pl>
- <7pybw4wxlzxfl65yuqxzks5w7uq52hosyq53etlzas6i6o5l6d@vxd4sykcxora>
-In-Reply-To: <7pybw4wxlzxfl65yuqxzks5w7uq52hosyq53etlzas6i6o5l6d@vxd4sykcxora>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 21 Feb 2024 20:06:29 +0100
-Message-ID: <CAMRc=MdAG7jehYbF1ZuEzpK5x9QpHNTvzxc6C=5wkCAP3OhGcQ@mail.gmail.com>
-Subject: Re: [PATCH v7 10/12] firmware: qcom: tzmem: enable SHM Bridge support
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Elliot Berman <quic_eberman@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3085fbe10193dfe59b25bc7da776e60779b0e8c.camel@intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Sun, Feb 18, 2024 at 4:41=E2=80=AFAM Bjorn Andersson <andersson@kernel.o=
-rg> wrote:
->
-> On Mon, Feb 05, 2024 at 07:28:08PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Add a new Kconfig option for selecting the SHM Bridge mode of operation
->
-> The Kconfig option is the least significant bit of this patch. I guess
-> there isn't really a problem to describe, but let's at least mention
-> that we're switching TZ to shmbridge mode and all.
->
-> > for the TrustZone memory allocator.
-> >
-> > If enabled at build-time, it will still be checked for availability at
-> > run-time. If the architecture doesn't support SHM Bridge, the allocator
-> > will work just like in the default mode.
->
-> "default mode"...SHMBRIDGE is the default mode from this point onwards.
->
+On Wed, Feb 21, 2024 at 06:53:44PM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2024-02-21 at 13:30 -0500, dalias@libc.org wrote:
+> > > 3 is the cleanest and safest I think, and it was thought it might
+> > > not
+> > > need kernel help, due to a scheme Florian had to direct signals to
+> > > specific threads. It's my preference at this point.
+> > 
+> > The operations where the shadow stack has to be processed need to be
+> > executable from async-signal context, so this imposes a requirement
+> > to
+> > block all signals around the lock. This makes all longjmps a heavy,
+> > multi-syscall operation rather than O(1) userspace operation. I do
+> > not
+> > think this is an acceptable implementation, especially when there are
+> > clearly superior alternatives without that cost or invasiveness.
+> 
+> That is a good point. Could the per-thread locks be nestable to address
+> this? We just need to know if a thread *might* be using shadow stacks.
+> So we really just need a per-thread count.
 
-Well, it is starting with patch 12/12 and only with arm64 defconfig.
-The Kconfig *default* is still the regular non-SHM bridge pool. I'll
-work on the naming convention.
+Due to arbitrarily nestable signal frames, no, this does not suffice.
+An interrupted operation using the lock could be arbitrarily delayed,
+even never execute again, making any call to dlopen deadlock.
 
-Bart
+> > > 1 and 2 are POCed here, if you are interested:
+> > > https://github.com/rpedgeco/linux/commits/shstk_suppress_rfc/
+> > 
+> > I'm not clear why 2 (suppression of #CP) is desirable at all. If
+> > shadow stack is being disabled, it should just be disabled, with
+> > minimal fault handling to paper over any racing operations at the
+> > moment it's disabled. Leaving it on with extreme slowness to make it
+> > not actually do anything does not seem useful.
+> 
+> The benefit is that code that is using shadow stack instructions won't
+> crash if it relies on them working. For example RDSSP turns into a NOP
+> if shadow stack is disabled, and the intrinsic is written such that a
+> NULL pointer is returned if shadow stack is disabled. The shadow stack
+> is normally readable, and this happens in glibc sometimes. So if there
+> was code like:
+> 
+>    long foo = *(long *)_get_ssp();
+> 
+> ...then it could suddenly read a NULL pointer if shadow stack got
+> disabled. (notice, it's not even a "shadow stack access" fault-wise. So
+> it was looked at as somewhat more robust. But neither 1 or 2 are
+> perfect for apps that are manually using shadow stack instructions.
 
-[snip]
+It's fine to turn RDSSP into an actual emulated read of the SSP, or at
+least an emulated load of zero so that uninitialized data is not left
+in the target register. If doing the latter, code working with the
+shadow stack just needs to be prepared for the possibility that it
+could be async-disabled, and check the return value.
+
+I have not looked at all the instructions that become #UD but I
+suspect they all have reasonable trivial ways to implement a
+"disabled" version of them that userspace can act upon reasonably.
+
+Rich
 
