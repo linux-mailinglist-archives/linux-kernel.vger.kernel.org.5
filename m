@@ -1,153 +1,119 @@
-Return-Path: <linux-kernel+bounces-74291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F9FE85D249
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:13:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5758985D252
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F03F61F21A9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:13:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 892F91C22EAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961953CF69;
-	Wed, 21 Feb 2024 08:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3173BB3F;
+	Wed, 21 Feb 2024 08:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xCGNzn/5"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TxPD8nz1"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CB43C48C
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540563BB2D
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708503190; cv=none; b=QxWdLWvLT3AGkXPcX9sowEKqGgVb9Zh04ciE0PyBhoYoaPH2VU5ZdZB2MICbwjZ39Frbtzn5+yIhECmrBe6q8eHDvw9acgx5p8YtVmAwHCcnM/dZySkglWrsVC6SG4pL7ACrS42LqJfA8tbaLqutfSNKCnB+z5QtBQYuDekKDhc=
+	t=1708503274; cv=none; b=FSlNtrcY3tQKuR9JaI0YOzDbd8SvjiG1lEkeiaWWB1TVuxwOz/67xqCS4Lq+GuhBUMMp6jb6xK7MYbS3JpTMqpq5T5lrDlGAoCLCPU2MVUucQPzrI/iWJ3fcT/GYZzRdmj1YXsGFpr4nQkFh/sHSaUdZbZaETGDosr+DlwWOLWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708503190; c=relaxed/simple;
-	bh=UZpFQCPv5SwyCY+4tpUsGQtfOk4AyXVrf4Buyc8uqrw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=svbTig1hV1EY4qfqlgr0IX7Vuf8jnN5Y+MnNks8vkHNUtTl93SgzHxZphA2YydIl8YxlkrizyUeTKWLyh34QY9dv7p1CZquvVxPbANe06sSdHqUvEfh8sJQck6eS10+vJFbYf3Q0uvW0aUk6Ll56PnsP9iftsz8+2UleWfjjDFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xCGNzn/5; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3e4765c86eso454064066b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:12:56 -0800 (PST)
+	s=arc-20240116; t=1708503274; c=relaxed/simple;
+	bh=hAvZUArQubG6FOTvp2Z9ZxyhW0jKEIvDo1xz4DEtdnA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=C8tV4CN81gv77DrMxkqbkm88s+LRbv1E3GdK7Xm7tEd+dZqtccnvZ5EtisTKKYn/zhoo1pu0tBnXv2iHL+1roPiXkM9iUzAv5zB7twmYDOXsttGKC2HaRARqNXhVcI3EhPMcyEXpaTaoSw9CGW2jrXilZs67axzwRffRA1zZQN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TxPD8nz1; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so27005145ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 00:14:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708503173; x=1709107973; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cEzUojqpCcqMOmOHsvTFUJmAvY/LITVTjxFmosd3AoY=;
-        b=xCGNzn/5hV29yiUTr7bFXcaC/HQoc3Xd8JEwqdR50zQfwo0VKm8FXecG475JvInn7y
-         PckPR9fSrWkILVH5VGkqUlpyIS9v/A60Vmy40H9kDWvTY3LlPMPM8iEaxKzXYMLm1nQR
-         EROKd9K0bnGYEOoVUObvPZ10Gqb7bJg7QnAf9eCR7rttDnz9CaPbGRaBt3y8q1x+F1d8
-         LnwVDQ47kj2Zt9eGjN0E9TbpH/0Apv10f4OLijFOHRvnaVubtknIR8ypvYmMOnEV+s1i
-         mhufRd84BrLXr43xG077W3kc70+Ta3DqgQZVGId0Cfxa+LPoNQeQxsbBe6GmEEIjxsfH
-         LkMQ==
+        d=gmail.com; s=20230601; t=1708503272; x=1709108072; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RLLstCGYI81xQhpwq9Yxp4yDZIlsvXljT4KfVN7Dg6s=;
+        b=TxPD8nz17QzRn8Xao8choHPD0KWPHaeqFXEEO9yeQ5I+byKNyOfFQgAce+YYIqD8sK
+         nTDUzzrjDFtOgXz8YAi1aZ6s+QsKNxhs5URtjhYiLtIEmlXGNfxZcEVrOq2gAtstBeG3
+         bTJPrPCIoEejYRz0uuQZry0gIk8g68I70VAknf00yStiCKWPfw72WepWi/XeYAqx2EKb
+         hY2IbQ1DA1XzcFp+y5N/YTNKwkpIBflCjrs4QZfiNaf/x0OWNcuyiuHnWptBBQuqQS5p
+         zJOCVH9OjyrmQvyBe6UXtkcWUJ6jJixjMRE5oolZNHV63eQ0R5B2N3TxogLpn7RzDHxg
+         MCug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708503173; x=1709107973;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cEzUojqpCcqMOmOHsvTFUJmAvY/LITVTjxFmosd3AoY=;
-        b=eanAMGoaPpnepyM39MR30UmyZrx2OQsiByZ4qS7hOsUjkiF7aCYarF6Z70+qyAyao0
-         Nt1UU5WYLdpaeGGv4gOp/OQ0+IqEDzZEMgnpMcrBmEQp6BX1YGM6R+DoBLFzBfSSCD98
-         /RRAxPp8rFF/JorZZ/dKbzQnS05UshgLlTKEMUYwkv+3Mizv1uLPle8gU09Ct6t0HxRn
-         o2NM2//itHEe3GJBwLjmLtUYCnsbr9nGK3JDSOylXtv5S6YcuDVdBjjgEhCjdjiyFjxJ
-         KH9g2jMZ/UghlfMf7tIgej3nO2VF86b7dohZkLV09iTF59uP3EUT91IpIkvTlhOJyhzZ
-         mxOw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7FNq9zPACHvTmXh9ghgy1W72Yzo66IIqnQScJzKa4S225uMW7Wn/fkpbIYPaHQUcjO0bzoKurDwSqi3MCLLiMDBo/giAVJmwnkzSp
-X-Gm-Message-State: AOJu0YzdS5+HdCn4dE+GnzCYSWlf9GPNxqPY9YwB2nsVpmJariBoNnbe
-	kUNbmR123w/6/agkeuzSOyt2ksUibj6c9s4zXwyQGeT2nLRThxF6sI6V9ctjzKE=
-X-Google-Smtp-Source: AGHT+IFcAzqmvRfYabnMYEqKm7p/D7imKIAWnSC1JgSZ6CPN8llqQzNYhs13S40MYaBe2JuDz6K08Q==
-X-Received: by 2002:a17:906:4a18:b0:a3f:d82:cef4 with SMTP id w24-20020a1709064a1800b00a3f0d82cef4mr2496898eju.67.1708503172937;
-        Wed, 21 Feb 2024 00:12:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id h40-20020a0564020ea800b00563c22abac2sm4419715eda.61.2024.02.21.00.12.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 00:12:52 -0800 (PST)
-Message-ID: <174b9bf7-fcdb-48e3-a6d6-5d2ea96fce58@linaro.org>
-Date: Wed, 21 Feb 2024 09:12:51 +0100
+        d=1e100.net; s=20230601; t=1708503272; x=1709108072;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RLLstCGYI81xQhpwq9Yxp4yDZIlsvXljT4KfVN7Dg6s=;
+        b=p9yVKZcm5ELS8apjIATVjR+LD+QloyygYIb7gbFreWNgQ5VT85LNUVbyFx9TAaHTjI
+         c493StH+eM1N1UbGkj5j0dRTqDPm3+zQak6VrcjD/I8QOeSiRRBQJKJfg+l0GtgAQ9rw
+         7iutjlviVqN8/c5CkfYUeO011LOjjmNQ0MsuXJPTjsbxUEHpQzZLFtTPlNXx0hFoX6rE
+         Qdhs60mqOW5jixQzgX7fu9dsMz4rqQfIoX4RfPOlDYaQrfgmuDlhxX8ILnjN6ZRX8i91
+         JNl2mIjrPAyDs5E/CtNSwivoBOdKaVBAom173Khx5ykhD0Pf1/VRIOYi0ls6IhoM5jkE
+         TLWA==
+X-Forwarded-Encrypted: i=1; AJvYcCUfcKpLBx7oxX+4GZKxhVRyQxenykEDhnCh2Fhzvznyq1EGwfgnNUSbMf0Cp243T3vCV1qEF4rA6HnNRUMpJ8D80iCPG3JkAOE8YrKX
+X-Gm-Message-State: AOJu0YyXlhGJ1BblAo+oTUpC9VWQW0sewQ6P6ETTbiqPWmfxMMEyae7d
+	9EzVlj8Zq6b6Mfwa/tsELz7vgn2ax0R81jH4A60UJ7ErpOPqMEOp+BQXzbVw
+X-Google-Smtp-Source: AGHT+IE84X1gwtq0IISwa/yDBtGDeQ/oOnbumLEt9s6m0b2yQuk5GOnSCx8Fwx3Hj//33cWNcZLtVg==
+X-Received: by 2002:a17:902:c084:b0:1dc:20f2:77bb with SMTP id j4-20020a170902c08400b001dc20f277bbmr2597073pld.29.1708503272399;
+        Wed, 21 Feb 2024 00:14:32 -0800 (PST)
+Received: from mi.mioffice.cn ([43.224.245.229])
+        by smtp.gmail.com with ESMTPSA id kr6-20020a170903080600b001da1fae8a73sm697162plb.12.2024.02.21.00.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 00:14:32 -0800 (PST)
+From: liujinbao1 <jinbaoliu365@gmail.com>
+To: chao@kernel.org,
+	jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	liujinbao1 <liujinbao1@xiaomi.com>
+Subject: [PATCH] f2fs: control gc_thread_func to run periodically
+Date: Wed, 21 Feb 2024 16:14:20 +0800
+Message-Id: <20240221081420.1712430-1-jinbaoliu365@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 2/6] dt-bindings: net: hisilicon-femac-mdio:
- convert to YAML
-Content-Language: en-US
-To: forbidden405@outlook.com, Yisen Zhuang <yisen.zhuang@huawei.com>,
- Salil Mehta <salil.mehta@huawei.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240220-net-v3-0-b68e5b75e765@outlook.com>
- <20240220-net-v3-2-b68e5b75e765@outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240220-net-v3-2-b68e5b75e765@outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 19/02/2024 20:57, Yang Xiwen via B4 Relay wrote:
-> From: Yang Xiwen <forbidden405@outlook.com>
-> 
-> Also mark the clock optional
+From: liujinbao1 <liujinbao1@xiaomi.com>
 
-Why? Your commit msg must provide rationale. Clocks are rarely optional
-signals, so this looks wrong.
+By default, the gc_thread_func function fluctuates within
+the range of min_sleep_time to max_sleep_time, and only
+when gc_mode is GC_URGENT_HIGH, wait_ms can be specified
+as urgent_sleep_time.For other algorithms, we may also want
+to execute it periodically. After introducing this patch,
+we can control the gc_thread_func function to run periodically
+by setting the values of min_sleep_time and max_sleep_time to
+be the same.
 
-Best regards,
-Krzysztof
+Signed-off-by: liujinbao1 <liujinbao1@xiaomi.com>
+---
+ fs/f2fs/gc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index f550cdeaa663..df94e64533de 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -120,6 +120,10 @@ static int gc_thread_func(void *data)
+ 			decrease_sleep_time(gc_th, &wait_ms);
+ 		else
+ 			increase_sleep_time(gc_th, &wait_ms);
++
++		if (gc_th->min_sleep_time == gc_th->max_sleep_time)
++			wait_ms = gc_th->min_sleep_time;
++
+ do_gc:
+ 		stat_inc_gc_call_count(sbi, foreground ?
+ 					FOREGROUND : BACKGROUND);
+-- 
+2.25.1
 
 
