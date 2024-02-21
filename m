@@ -1,148 +1,93 @@
-Return-Path: <linux-kernel+bounces-74773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245DD85D995
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:20:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5A385D99F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3598286BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:20:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3335B24FF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336B27C094;
-	Wed, 21 Feb 2024 13:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1217BAE4;
+	Wed, 21 Feb 2024 13:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZlHB78da"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RdKnMnnO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240EC76C70;
-	Wed, 21 Feb 2024 13:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4256A8D6;
+	Wed, 21 Feb 2024 13:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708521588; cv=none; b=h0A7v293HaIN/wB+JCEoYFy22iGdO0p6OvQXLleFvMVdA3yFU+bfFLlnCPr8Dey7cy4AWe9vrtFolRwTT/LAwZLurmq2BVfgdsIifRx1/77OxGoUDm0HybanI++2HS1QijgW02qAHvPLbi6YZWA5SVuthFMT9rCxHBrcfShJIqU=
+	t=1708521614; cv=none; b=sxmkVhe03l/8JOXSkQKb2GIbVzZR5bgZM0nxcMwepX38kqsAmkfWkXAfNVtfxN0+pi8jttOw4BktGk5TvKMRtDqojlxUtTCmSMUGt+TPtdx7tieWHAAvJY3yv5hfh7FmgxuCDCR5FDbawHAelfJ16QBl8k2fi60Vdv1+VRG4xlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708521588; c=relaxed/simple;
-	bh=74j0KMRvHouF5ZmtPFEUMnvXFGsbWB29eVIGATcfoos=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UkapJQuyf6U7fc7skVuXHGK9uPUPiVzNo16LGUkQ31dW03/UksJOFY1GoPlRhPG3a4OWxyAJ9hIk5HNyZKIDA7BQs9uI/95jo4TeU74LZubdzHdmBgdNC3Xz4oOo75dUhNIORknhFpYpyJgWWmUEV91bbnZu4SqAbx+rXNhewZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZlHB78da; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e46db0cf82so411734b3a.0;
-        Wed, 21 Feb 2024 05:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708521586; x=1709126386; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7fVXs0c1xW5R0XcN/TtjeHMhc8Un9kbDR9fRIOqUs0M=;
-        b=ZlHB78dad0g3q/vLp1o3OhHKH2KUw1RixCtwHqEGUeJrGPEPxycZV5DwOlXBUX+o2K
-         VijvuceBiw7q5OR8O3ULqSek1a/uxt00Gmo3CAVBe+TUtrhA5GxJxcvsZDuSL+GWtM19
-         q5sp8ImvdG2jLyRkE78q2RtxiU3crSYsvN7ikp+XEvzAcZdDBr6yhflUw7JAB19xF/oH
-         5zRkVAX+BPeRSXqNY+NtT+EckD4TEoI9XAlwXOtaPofFSLhuNvfFsAKgHcnNfm+65O0E
-         CAv2yxIBZ6UYH/Nt0pepMcjPZP7flWNj3BJSCDA10VmaoNF/rEoijNq+upSlj4gSX6kp
-         8g+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708521586; x=1709126386;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7fVXs0c1xW5R0XcN/TtjeHMhc8Un9kbDR9fRIOqUs0M=;
-        b=CZQtk8chT6fgXWYINzxY10RBBLTd5cB7N/pMkRkU5gARhd9h7toF9t5s+0Ze5XOCR3
-         37lMO/ENYDgxSO6i8Blsp5uu4YOj9oL5IDuGvE8hLQ6Loz8192+v/adrZuyxs/ntQ1zp
-         yIFLcCmIiZCm+x4KtNoFtflha9ibykgJIxkQMZSKh9A7nQUGkDmLAiwUNoHCgishvbg/
-         oO7NzIeELrauhTOoFfWrC2F2p76bZx4N/N3+kNxEiEKCY299cnw1TTlK9jpY1/0oy1JU
-         ubx4Klup2yJwxrNq62TCo2rtsBxKt4/Zy4P+TNeKvO6A5Ro0raGjp4+unno9779lF0tm
-         HMUA==
-X-Forwarded-Encrypted: i=1; AJvYcCWVj36hIVmccMHPousHUnYkzAZISj+0S+ez6ascTPxjBpA289z/Pv40XEuvKA4AwKkdq7gjgMncwFn8WShMX6EihocMjGtBul6icakNFofSJI0VX/LMBSEw+oPVu8jUANM6hfoF
-X-Gm-Message-State: AOJu0YynxC0gmEfK1PCsFcQKSFhJR89V1q9wUccaqUGSzmlmzqxPXAL+
-	csP+36g1cUecstaNYB3rYe/ugBnRZgSUa30KXZXPW3RmdDAa/YmxpvGHgpfPigpYRmrEkOp2xde
-	UQxeaM7ELn5wY7NVW97DgewqUhTM=
-X-Google-Smtp-Source: AGHT+IEGfEmfoVnXCrDbklzytPcDGpRPdPnaTMTA8aDm2ZJkRdv6l8p4vKCpqsgGl73y2nHG6bdhEYWhMtOeXrHXz1U=
-X-Received: by 2002:a05:6a21:1014:b0:1a0:cc7a:77fc with SMTP id
- nk20-20020a056a21101400b001a0cc7a77fcmr589163pzb.33.1708521586342; Wed, 21
- Feb 2024 05:19:46 -0800 (PST)
+	s=arc-20240116; t=1708521614; c=relaxed/simple;
+	bh=2wjGF5jbjsu0i3M9Tg69QSKMJU8pypnOd8aBudYMAUU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F6+LT2xiXRuLBEcx6ppb9HlHw6nhvXd3jOLwM30Ve78s/9EYcbeAiGH8aYM/nyYp66tdv7b02W4R3JkpbnGUwKZUIzbeaXl+SXhOI6S0Hc9vt2WhTTt/6JT74S53LdPfl6bHZ8LovpbyyASbWWn0GMflfivaS3SWpoh/q/aIL2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RdKnMnnO; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708521612; x=1740057612;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2wjGF5jbjsu0i3M9Tg69QSKMJU8pypnOd8aBudYMAUU=;
+  b=RdKnMnnOxh5ZB0gJcK49r1grhsaqEVjuO46QP6dMiJAD4LDpShNTqJ9L
+   NT4jjRi3amtWGumh8EdgADAF+2rQg0SkWPzQ5Gb2wU9NINb/46bHl9j/C
+   NJ7AX8nxHKP7wCWasLlH+thIBMuLbq5xD56zuxVwzHaTKCeAyZqy2K4q7
+   rbJU3Tcf5EmgEyzvO+lPCTr3ousIyb+YYTN1Q2pSnK7AxAKzkmolPE/4j
+   mdAL2VeEIgLqCpfGCYfagRTVdLJLsGVPk5ZUrAAf30qT8PM3kCBy0XmX/
+   SeNFcNKA0fyILnBhPqC97Rr6h3eboBl7ZB8kk3MaS+gRtM8SN4IrEN4FG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="6454957"
+X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
+   d="scan'208";a="6454957"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 05:20:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="913302683"
+X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
+   d="scan'208";a="913302683"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 05:20:09 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rcmW7-00000006MAD-0wqm;
+	Wed, 21 Feb 2024 15:20:07 +0200
+Date: Wed, 21 Feb 2024 15:20:06 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	linus.walleij@linaro.org, semen.protsenko@linaro.org,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] drivers: iio: pressure: Sort headers of BMPxxx SPI
+ driver
+Message-ID: <ZdX4hgXtFaXTujGZ@smile.fi.intel.com>
+References: <20240220224329.53729-1-vassilisamir@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-x86-insn-decoder-line-fix-v1-1-47cd5a1718c6@valentinobst.de>
-In-Reply-To: <20240221-x86-insn-decoder-line-fix-v1-1-47cd5a1718c6@valentinobst.de>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Wed, 21 Feb 2024 14:19:33 +0100
-Message-ID: <CANiq72=gYWZ24EEqRL71Vh+YjjK9Bu0QfxGEBzee16QAf4Q6XA@mail.gmail.com>
-Subject: Re: [PATCH] x86/tools: fix line number reported for malformed lines
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, John Baublitz <john.m.baublitz@gmail.com>, 
-	David Rheinsberg <david@readahead.eu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Masami Hiramatsu <mhiramat@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, 
-	=?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220224329.53729-1-vassilisamir@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Feb 21, 2024 at 10:00=E2=80=AFAM Valentin Obst <kernel@valentinobst=
-de> wrote:
->
-> While debugging the `X86_DECODER_SELFTEST` failure first reported in [1],
-> [In this case the line causing the failure is interpreted as two lines by
-> the tool (due to its length, but this is fixed by [1, 2]), and the second
-> line is reported. Still the spatial closeness between the reported line a=
-nd
-> the line causing the failure would have made debugging a lot easier.]
+On Tue, Feb 20, 2024 at 11:43:28PM +0100, Vasileios Amoiridis wrote:
+> Alphabetical sorting and separation of headers for the BMPxxx
+> SPI driver.
 
-Thanks Valentin, John et al. for digging into this (and the related
-issue) -- very much appreciated.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-It looks good to me:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
-This should probably have a Fixes tag -- from a quick look, the
-original test did not seem to have the problem because `insns` was
-equivalent to the number of lines since there was no `if ... {
-continue; }` for the symbol case. At some point that branch was added,
-so that was not true anymore, thus that one should probably be the
-Fixes tag, though please double-check:
-
-    Fixes: 35039eb6b199 ("x86: Show symbol name if insn decoder test failed=
-")
-
-It is a minor issue for sure, so perhaps not worth backporting, but
-nevertheless the hash is in a very old kernel, and thus the issue
-applies to all stable kernels. So it does not hurt flagging it to the
-stable team:
-
-    Cc: stable@vger.kernel.org
-
-In addition, John reported the original issue, but this one was found
-due to that one, and I am not exactly sure who did what here. Please
-consider whether one of the following (or similar) may be fair:
-
-    Reported-by: John Baublitz <john.m.baublitz@gmail.com>
-    Debugged-by: John Baublitz <john.m.baublitz@gmail.com>
-
-An extra Link to the discussion in Zulip could be nice too:
-
-    Link: https://rust-for-linux.zulipchat.com/#narrow/stream/291565-Help/t=
-opic/insn_decoder_test.20failure/near/421075039
-
-Finally, a nit: links are typically written like the following -- you
-can still use bracket references at the end:
-
-    Link: https://lore.kernel.org/lkml/Y9ES4UKl%2F+DtvAVS@gmail.com/T/ [1]
-    Link: https://lore.kernel.org/rust-for-linux/20231119180145.157455-1-se=
-rgio.collado@gmail.com/
-[2]
-
-Cheers,
-Miguel
 
