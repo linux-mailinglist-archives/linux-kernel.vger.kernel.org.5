@@ -1,104 +1,142 @@
-Return-Path: <linux-kernel+bounces-73962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D3785CE19
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:39:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22AAF85CE06
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:29:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFCC71F23A68
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59474285B1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94EE1282F1;
-	Wed, 21 Feb 2024 02:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FAC1079D;
+	Wed, 21 Feb 2024 02:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="GYmhSy8b"
-Received: from mail-m25472.xmail.ntesmail.com (mail-m25472.xmail.ntesmail.com [103.129.254.72])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ICs169in"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23D73C29;
-	Wed, 21 Feb 2024 02:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.254.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476023C29;
+	Wed, 21 Feb 2024 02:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708483145; cv=none; b=GgFw6r2CfufIeGdhJ5dPGMqDPD43ZSY3hevbLqVzQRvxWzfLertClyeNO8SbuaJzMH45GcE95swdkdBg2khIWv7ab0W729PojWQeSIHMC3n2fzh3oKHiv2thq9uywED60l6KwXzlIBzuvHctYFtlK0208F7dAcxn1FohkYX+VPU=
+	t=1708482564; cv=none; b=t7BN7WfQNgcp2eY2zMvxv8bQJeeQGx1itHQ+ciWtsQCIj50PypzysQULidshPaiVBYJdPMvTUF862xde80UPvdKz3UdGCOSDfGKmyhodMkEVX3c69M1LzQMD8Cl4hKsmJqYb+AugUINuHb/pdJkgNTKzClsE10j5JTXAmanDVzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708483145; c=relaxed/simple;
-	bh=gDH+n+0NnV9FxQRfCsoM/AhVCuoBlilZUMfWQoy5EE0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DTSiIj0mymPV3qqsl5MJXUIndQXhCofiMy5k/zeNnbHR6PU6m2N3WnkMmwTd5TX5wgEL+ZszfZVGrHdBeQFI0l5TQB/4vgmEtt1KcIuDvQL6RmnMKs0ElkRW5gURa4tqS5eDYcMIfNXGu30pnfQRYqm/KIvY/TEpoY//0luDFHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=GYmhSy8b; arc=none smtp.client-ip=103.129.254.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-DKIM-Signature: a=rsa-sha256;
-	b=GYmhSy8b3DQvLH8AKVVc4plknLVoNZKnArUxzqkd8yLxr8TzLWUPALshEFGn8ZTKWk7x4JtrAiESM9tuPHaj6rT5oWWzXYPe4g5pS7TGiLFyGvFBm+/X+2bLLPY69tKTWII9anzJygBay7g+BsM3fWc0MMteACfWdJWL2jRMnJs=;
-	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-	bh=s+djMZiOg/oatebJVJNtdf28VXXHPNCfX6vs4XlvzIk=;
-	h=date:mime-version:subject:message-id:from;
-Received: from zhangzj-rk.. (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 5ECF72A0144;
-	Wed, 21 Feb 2024 10:31:03 +0800 (CST)
-From: Elon Zhang <zhangzj@rock-chips.com>
-To: heiko@sntech.de,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: weizhao.ouyang@arm.com,
-	linux-kernel@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	Elon Zhang <zhangzj@rock-chips.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 2/2] dt-bindings: arm: rockchip: Add Toybrick TB-RK3588X
-Date: Wed, 21 Feb 2024 10:29:02 +0800
-Message-Id: <20240221022902.751528-2-zhangzj@rock-chips.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240221022902.751528-1-zhangzj@rock-chips.com>
-References: <20240221022902.751528-1-zhangzj@rock-chips.com>
+	s=arc-20240116; t=1708482564; c=relaxed/simple;
+	bh=gPPbnQYj1+eq6sPOlu7HUtlfxwyArBDBxuXKAwgAUJw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u2eVS4gX5hpvJTj1bu6pJQwDI4zMSaYgUEC73nZs/BgsMRAle+jpK9U+VHn1qFa75Iu5D8EBJGBh6FLopq7wUhBLntnz5WNn932DiFeJoroHDPkLd0jz2v6S9vB9omQVSOxU1hHJGHTH14wTTgFDpz2nSseObmh0fuoQDlNcCm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ICs169in; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708482563; x=1740018563;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gPPbnQYj1+eq6sPOlu7HUtlfxwyArBDBxuXKAwgAUJw=;
+  b=ICs169inoE63OF7XBCBD2/T9gUaF+t89+Y9PtwtKycRLMs/mmNcD1qpB
+   Z7e4gh3lFwwTbGGr8bWmAnb7WWKYhZDsz7KpPGx/OytNT6UTZwLFDGPYW
+   zrMTTaVhBypqJnBNMzXFjotm08WfBxWgOzAU7+WaPZGvoAcEj9vNCkTcN
+   4IrPcjnHYG6Glrq66HoXflIR+pgn1KsSNTKpEJBb6ZgKk/8rBcfNtVkN3
+   n+U4uexGlvP1Ntxu7cYlZBnlKAhTArNrtNUFN2VRbTEi54c7zct74zFhB
+   3zbRWweL/9A8tEAed/0sFp/puacde5RxtmiS5URk0tU6oW2hKhYJ/4mu4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2533262"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="2533262"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:29:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="5333435"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.18.46]) ([10.93.18.46])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 18:29:18 -0800
+Message-ID: <e6dd174c-e6db-487e-8e0c-abb5bdf1b9b0@linux.intel.com>
+Date: Wed, 21 Feb 2024 10:29:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGR8ZHVZCT0NJT05PGB8aSktVEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
-	tLWQY+
-X-HM-Tid: 0a8dc980960403aakunm5ecf72a0144
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MAg6PSo5GDMTExoJCwEhFjkY
-	GQhPFAtVSlVKTEtDT0NJTU1PSE1IVTMWGhIXVQETGhUcARE7CRQYEFYYExILCFUYFBZFWVdZEgtZ
-	QVlOQ1VJSVVMVUpKT1lXWQgBWUFJTktJNwY+
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 03/29] KVM: selftests: Store initial stack address
+ in struct kvm_vcpu
+To: Sagi Shahar <sagis@google.com>
+Cc: linux-kselftest@vger.kernel.org, Ackerley Tng <ackerleytng@google.com>,
+ Ryan Afranji <afranji@google.com>, Erdem Aktas <erdemaktas@google.com>,
+ Isaku Yamahata <isaku.yamahata@intel.com>,
+ Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>,
+ Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
+ Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
+ linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-4-sagis@google.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20231212204647.2170650-4-sagis@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add devicetree binding for Toybrick TB-RK3588X board from Rockchip Toybrick.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Weizhao Ouyang <weizhao.ouyang@arm.com>
-Signed-off-by: Elon Zhang <zhangzj@rock-chips.com>
----
- Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index 5cf5cbef2cf5..d29df97c7b25 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -878,6 +878,11 @@ properties:
-           - const: rockchip,rv1108-evb
-           - const: rockchip,rv1108
- 
-+      - description: Rockchip Toybrick TB-RK3588X board
-+        items:
-+          - const: rockchip,rk3588-toybrick-x0
-+          - const: rockchip,rk3588
-+
-       - description: Theobroma Systems PX30-uQ7 with Haikou baseboard
-         items:
-           - const: tsd,px30-ringneck-haikou
--- 
-2.34.1
+On 12/13/2023 4:46 AM, Sagi Shahar wrote:
+> From: Ackerley Tng <ackerleytng@google.com>
+>
+> TDX guests' registers cannot be initialized directly using
+> vcpu_regs_set(), hence the stack pointer needs to be initialized by
+> the guest itself, running boot code beginning at the reset vector.
+>
+> We store the stack address as part of struct kvm_vcpu so that it can
+> be accessible later to be passed to the boot code for rsp
+> initialization.
+>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ryan Afranji <afranji@google.com>
+> Signed-off-by: Sagi Shahar <sagis@google.com>
+> ---
+>   tools/testing/selftests/kvm/include/kvm_util_base.h | 1 +
+>   tools/testing/selftests/kvm/lib/x86_64/processor.c  | 4 +++-
+>   2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> index c2e5c5f25dfc..b353617fcdd1 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> @@ -68,6 +68,7 @@ struct kvm_vcpu {
+>   	int fd;
+>   	struct kvm_vm *vm;
+>   	struct kvm_run *run;
+> +	vm_vaddr_t initial_stack_addr;
+>   #ifdef __x86_64__
+>   	struct kvm_cpuid2 *cpuid;
+>   #endif
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> index f130f78a4974..b6b9438e0a33 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> @@ -621,10 +621,12 @@ struct kvm_vcpu *vm_arch_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id,
+>   	vcpu_init_cpuid(vcpu, kvm_get_supported_cpuid());
+>   	vcpu_setup(vm, vcpu);
+>   
+> +	vcpu->initial_stack_addr = stack_vaddr;
+> +
+>   	/* Setup guest general purpose registers */
+>   	vcpu_regs_get(vcpu, &regs);
+>   	regs.rflags = regs.rflags | 0x2;
+> -	regs.rsp = stack_vaddr;
+> +	regs.rsp = vcpu->initial_stack_addr;
+
+Nit: No need to do this change.
+
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+
+>   	regs.rip = (unsigned long) guest_code;
+>   	vcpu_regs_set(vcpu, &regs);
+>   
 
 
