@@ -1,161 +1,267 @@
-Return-Path: <linux-kernel+bounces-74573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0213285D627
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:58:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E87885D629
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DF2BB23D2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:58:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 165CC1F23BA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764C63DB8C;
-	Wed, 21 Feb 2024 10:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B98C3F8ED;
+	Wed, 21 Feb 2024 10:58:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZVTzdEs3"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2058.outbound.protection.outlook.com [40.107.244.58])
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="RXDUnqSJ"
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D252C2EB0A
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093B83EA93;
+	Wed, 21 Feb 2024 10:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708513088; cv=fail; b=J1IHMi27B+4oVde/qQ6EJqC0PCtuRoroYqHdb41wS3DxkWyPd6yz+rZIcQzGJbWqA6yAoFNcIKZoFdioQeKQOe8n35EzP2K5gRmqvVOKz4/JUFgOTFpeOhYV6cOdMWR92ggFNZzz1DbP/f0g6b0vCUplWQhyid7U1XWuoxawmNA=
+	t=1708513094; cv=pass; b=Pn2CZBoSW23MYJ3KfDH3NsPDX1QuabSfMrQcWfRgGy4J/dyi4I9yH/Xb/GJsN7NWDm42nPjHVTYvsUnn9bLWXZ5nqkxj2uXDfdpAfl1x9Xh2nlyUrJEE1BXOIO4F7Epc18WwaqAJjwxvJ4mW2C39WzdT84CrVGZ5hACkBka/IkA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708513088; c=relaxed/simple;
-	bh=eEO+Yt4zJgqrYw08TN92cqY1zmdl+Uk/ZKBx0BTnrnE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=lzey+x/aI9VrrIRueGTcnfGMFYKJTu3+jhbMHbzgn6p3VxKUHh8RVP2V8rx1wFqofRMsbXeTtpWir2MSlfkyahuaIyNjeNuYxyHnykwmG547VqhP77Uv68tHZUsfifKlYi/Pmd0mydYpDAQXjoXmZrLRo3w7QjrMAQlPFNVf0Xw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZVTzdEs3; arc=fail smtp.client-ip=40.107.244.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d2ezXbU2j1laOJkj21eISL96sv60n4U21o1ZmTKxO9WsICaeFH8V94aVaxPMnsXL/p0r7Rf0uSWPPlw24biaUbsUcyTS0DtVfXs0WYAYXzYUTD83tuoXeMztujIPrQvLm4BD9fwJzA5mQ2Jzm7y3LutesoSE6j69bcuf7sTzHDQ84lGtAKyxDaz9PLR+xtnlnVykkBdbRt/msZ9Y5zueRFSa1A+u42HwLPowl0QAfEhhbqXCexVMlvxQ3VNXjrvTcc267pbUKC9taxj8d/SH+eUF5CYfbu+q0+J94FLN4+w+7PBxc52/C6/I7YuMGpCf6y5cTVPa6teBHeB224rClA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ang2y0nKPrtf4XdwpQC+H4x586FPxABKzWfWhI+Fuoc=;
- b=UmP0zFNLiNPGWlytR3XdzeHKVfmbUF4pH5LGFiiJjbtn68SN8XyEDzzNoA7JAMOHhw8vUjgoDdge3WPHoEpOOf6/U+ep72cqWcUPEtDSVb3RnTCaXQ+9N1yLtniJcTExeVMVe8bvsjl8xP/bc71UIOIgayxZebxofgBK2aJ4xaPykohu8uUdpMAeObQC5uHQuJ32bf0TCw5lL6WzkLxKJ01e+jZ0qewD4u7KO4SqallzDxYA7SYE0l4tFedcU9YIf3FqMeajFoMEah7ykNwkng14ox545JV0Y7y5W3k/wlob1KW6Y+OArZTDbX0g01i6g1G1D++KeiMFMDNCvSBRVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ang2y0nKPrtf4XdwpQC+H4x586FPxABKzWfWhI+Fuoc=;
- b=ZVTzdEs3q1mJcmCG4MHZP7dyxgkpWsylqgoWwogiSu0wiePsyo/1HlrlE3i8kVDXJhtgbK/uggeRQt6xU+CUV5p1KtS/zToP0ReBvle1zi4xQ+jLLw9f4Ru4o+Ws2bpoa+Atkg+1theCXmLdspq+ATsoJ1IHXiKPeUZwdMmsj4g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by BL1PR12MB5190.namprd12.prod.outlook.com (2603:10b6:208:31c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Wed, 21 Feb
- 2024 10:58:04 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
- 10:58:04 +0000
-Message-ID: <75a4102e-b078-4e95-a5b5-a677ad9622fd@amd.com>
-Date: Wed, 21 Feb 2024 11:57:57 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] drm/amdgpu: Use KMEM_CACHE instead of
- kmem_cache_create
-Content-Language: en-US
-To: Kunwu Chan <chentao@kylinos.cn>, alexander.deucher@amd.com,
- Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240221095907.172408-1-chentao@kylinos.cn>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240221095907.172408-1-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM4PR05CA0007.eurprd05.prod.outlook.com (2603:10a6:205::20)
- To PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+	s=arc-20240116; t=1708513094; c=relaxed/simple;
+	bh=o8sYnoTQvODKPsJ5eLmeJIo3Vkg1AHBr3FnhQry1IJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZNDI0YQo7E5n86kOS2jzxipXxhC5uKWWHxLQqnInB1goH8cIDWqJWWjXLy3bj2KB3DHt37kdvbSq3hWHdI8TSW9/nOvJetK6qKSl4Mo2BLlnp9AWykZZwNdn8VR6yOn5Dez6ra8Jv2ll4EuvQg3OeZowlvmoU7uH3M6QBDSIDv0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=RXDUnqSJ; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4TftXm5q20zyRj;
+	Wed, 21 Feb 2024 12:58:00 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1708513083;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VflWzHR2epedex4fdVA6CCyN8VAZ75HPYtEERrituog=;
+	b=RXDUnqSJFv3hpYNEpxvGSu7gqWhh0ujUdsdT4YCJ4dDWESvOzAM5eqvZPrjcRCCcjsE8ra
+	SThL5MHDt7PIeiVjLDSqKME8DxlHb74mG0tgBLnF4L+EJhS0lwWZh+KrcRhM45xaVKTo9J
+	ZvSeLATKC5eCBBgoF8H0dRMfGBpXgUY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1708513083;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VflWzHR2epedex4fdVA6CCyN8VAZ75HPYtEERrituog=;
+	b=o1wxzSlssOm48b1EhrHj0rsBX7CX/GSH7Or4RkiN6FPA5wFLiLFP0mcG1NkxT0K25z7V+7
+	8wgpV4nuhyCd35ikGsp3CRc3QKgBdm6HoSin4dZwEal6VS2jLWqfpD7L2bljcN0WBlJ926
+	uM0zgj1+8m7C5a33uoX19/3aAo0M9Hg=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1708513083; a=rsa-sha256; cv=none;
+	b=uE2cKX6w2Endr4JLi6v7mx6NOaOpXQ0ZzEzFrb42PbN54KgbvPwp/RWwdaSowkQXTVcGrx
+	ojmewYuUzp/WY6qeSfZYgVe7Ki/20jJogiMEIxrTGpryQVz9XEfeZ8RLro5RzDqn79EWZH
+	AfR3TyKMOtGuDl0MSBAzDuMkOmaYbSU=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 36092634C93;
+	Wed, 21 Feb 2024 12:57:59 +0200 (EET)
+Date: Wed, 21 Feb 2024 10:57:58 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Mehdi Djait <mehdi.djait.k@gmail.com>
+Cc: mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	conor+dt@kernel.org, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+	maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com,
+	michael.riesch@wolfvision.net, laurent.pinchart@ideasonboard.com,
+	Mehdi Djait <mehdi.djait@bootlin.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [RESEND Patch v13 1/3] media: dt-bindings: media: add bindings
+ for Rockchip CIF
+Message-ID: <ZdXXNvGl-2CZdnhk@valkosipuli.retiisi.eu>
+References: <cover.1707677804.git.mehdi.djait.k@gmail.com>
+ <13deb8c5cb58e08c1b47decd112b51e8e0b6c4dc.1707677804.git.mehdi.djait.k@gmail.com>
+ <Zcta6hhSio67ahKs@valkosipuli.retiisi.eu>
+ <ZdTbilKCsMFcjz64@mehdi-archlinux>
+ <ZdT97Szv3yYG9Xbb@valkosipuli.retiisi.eu>
+ <ZdUQBl5pkFg2i1iu@mehdi-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|BL1PR12MB5190:EE_
-X-MS-Office365-Filtering-Correlation-Id: 685522e1-dead-49e5-8942-08dc32cbfa53
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	eHFe4aXVTwtdSdNbuU+JLfJeF5OtroxqfSCPaSqnALAxfFqe0KOjZ/saTSR0+TTM5JRF7+ix8DsrDVqVE6hrWBEJpIMPvfSa0SbgVr2nNZ6OSiuAUZy97c/LIsp4nEdcc5u9WoJF6nGQeIFm7+VZ1TuoibHjHQbyClRqy5mZKJ33Y6uYH19AFrIoPXsBdAFVoHZNCRQ9HBcCcF6AlJWylULpx9SZyUI91G5viVUJAy+J6/jYfIjukKlruuyCK2vtOvQyS404GFLVybJ7imiw1BFILxdltrqrZ8vPDcKd0q6xq0+YLAAEENukPqq5/kJGw+YZvpopbPCRov+4V/pZs3Q/SCaLAwtbjjd5xqk9RX2XcovZUOOWJw1A2s21pfqO+LCRC5AoiV774Coqg+ScIebYN/ZyMXnIlTleFGMOBeCRarVVitIe1bLtl3FZMN2rpw2xErbenGvRh4XWDi9cFbC+4xd7E5pq8ZQgN/bSnDdkogtKY4OFhOFw31Auu/m2jHDSGnsFhylcnvmwALjGbj+D0XyvrXaR56gEcHyp/bY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SkdSbFB0Y2QvT2twZ3IvbHVVRmk0ai9Md0lKWWxZeTdhWXp2bG1wRFdXL1pV?=
- =?utf-8?B?SktHeHVDeFNnbzcxSGpKWU1VVFlpNnhkOEE0L1ZBZ0s4NW1IdG1ySng5QWRy?=
- =?utf-8?B?bzdlQldMdG52WThaK3poamppUGhYd1gzOUtITFRuSGtYQkFzK2tqNm45NDBR?=
- =?utf-8?B?T0c4dHl4Q0JGRXBVNll3MkFhYzRCZDFiS3BhLytSM0VMakVRM0Z4RDIyMUJN?=
- =?utf-8?B?UGNlWC9XV3lpSVN0ZldyY1l0d29ES3VRV2FyWlJtOVNXSHJXczNSdFdvWGYv?=
- =?utf-8?B?Qkk0T2pMNy9EMFNxVFF6RTdvMGJ4a0wyOFVzamJVY2tJM1RscXVQQ1lla2FM?=
- =?utf-8?B?WTJvZ2FxVmRicDlaQlFJazdKUFg4MWw2U1NzYVhKUHBWTFhNeVlFOGRHM3d6?=
- =?utf-8?B?KzJ3U3ZaVlFiZFBuT1VqSk1XbEJvRGtmT1FGY2RMNHJ2dHk5SndwM21ISDJP?=
- =?utf-8?B?L0dWWlppdnl6U2Y4UEhrRUxTaDJjNk13eHIrS2VJRTV6VGx5ZmRDSUNrS1N3?=
- =?utf-8?B?WGEwYWFScEE0OUJVSUd0eHp6VWpwdit2SlFWeXE3SVF0S1ZtdnErWXBVeUdT?=
- =?utf-8?B?bTRHVXlraGxxN0tGSHZwdHJiWEIySWhGMjB4ZWVaeVA2WStIeGdlcnN5WGZC?=
- =?utf-8?B?Y2dYK3VnQm9TUGwyMWRpTlU4SEZQVWozMS9HMFlkQXBwN24zN1B6MGdUaWdX?=
- =?utf-8?B?cTlUUVF0Y2E2aGpMTENHUzNoOE5PcGdPbHBqNklFdDhkbUcxcjk1T0s2cW1B?=
- =?utf-8?B?YUFmbG1BWU1NKytUUHQ2MEhCSDQwY1cvZGszOW16V1hocVAyM2VKcnlmQVZy?=
- =?utf-8?B?VGptOWxQTHhxQ1Nkb2xYY0lSWDcwV1MyODlYSU9Sd3BOWi9vamdjU2QwRWoz?=
- =?utf-8?B?bEpWRU1KUWRwTDdZNFBKQnRhbnlqYnhqYjBhZlJLWXNEZVRDaVpUYVFJeFhs?=
- =?utf-8?B?KzJ0VGxhZm5KVEdsZlpRZC9ZYlQzRk9sRGtEd0orbFRoeGtvbU02K2dTYmJY?=
- =?utf-8?B?Y0JrZjdXemZRZk9kWmZDY0M4NVM4SHJQcEtYOUhOUUxKMnZUeHZjejFqSHZN?=
- =?utf-8?B?NlcxcklEMDVyS3h6T0JOSkI2MHZuNS9vNndNM1k1cXhDWUg0YzlVVE92WjZG?=
- =?utf-8?B?OXlvZXI3SWYzNjRCNklKWWZuMHV5YXFzQ3dPS1VYYTJJUTN5b3dNY2dsZ1gx?=
- =?utf-8?B?TUxvcjdtWURwRU9iTVZUOVpIQTdhVy9uZ3pDdzliZjV3U2tocElXbkdoM2Uv?=
- =?utf-8?B?UFo2Y2VMREFLL0RNV1ArTHpDaVpFbUdHYTZ5bUo3WlltY3hTVG5xM1Zjb2ln?=
- =?utf-8?B?RVBVSlZzTnZVNWFYdkRMeDU2VkRIYmN1VVNqOHViMVZuSk1KTVFRZ2djSHUr?=
- =?utf-8?B?OHh6TnRoWmZUT2JOcENWdm84ckoxd2REaCs2d2Q5cCtuZFZoRzBGTTVrbk5O?=
- =?utf-8?B?UmNLaUZpcU9nVkJzOExncUJaTHZuSktOdDdHV1N1ZFhhL3gwbU1scVk2YVlY?=
- =?utf-8?B?bWFIblpNMGFybFJiR0ZDaUZON0FPUnFPbzdka2ZUNlhxWXdqTG51SmxpckJB?=
- =?utf-8?B?WE5WYlVMMExWUkVNL1ZLRkVYRi9nRG1uaGVObFRYU0JPMnhuUmRyN0JyZW9U?=
- =?utf-8?B?T2NPSkc1SnhzWUZQOFplMDdKZEhWSkd4Y3hYMzhuUlpYcWZkemswT09FTmlh?=
- =?utf-8?B?NHErZjN6N3FXR1p1V0lET1VOUXlKUFkxMTBudHJpM3lQN0dkLzhkQ2tSM1Jv?=
- =?utf-8?B?NVVKUzlwOUo2YzIzMm5LMXFFbWIvcEJZc2lVSVV4bHVMV01iNnU3Mmk5ZVNP?=
- =?utf-8?B?ckoxN2hzSi9kNUJYUVg2RW5Cei9KM2pqVnFVTmdSVHpaQWowWWg1OW1ldjBu?=
- =?utf-8?B?SVZ0TVBxYStHN29vcklwR0diUnlQMDdNdkhSaWJhdWY1ZDhhVFJOa1lTd21K?=
- =?utf-8?B?UHBsaGJscDFmU3I2SmpKZ1daUkNUbWtsU3VJWWMzMlpYMUUyMVZ3UDBPWG1V?=
- =?utf-8?B?MUhqdHM3bG1ZdklYakQ2am5mTTFLb0JyYk9qUU9BOG9FdWNHQm9aYUpad25w?=
- =?utf-8?B?UG5ERElqa1dQM3lENzlWNTlxV1hjVGJTUHdKRkwvek1hSllmSm4yR0ZqY3V1?=
- =?utf-8?Q?OmrJEhruOrA5D8vKOwgq1T6Gr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 685522e1-dead-49e5-8942-08dc32cbfa53
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 10:58:04.1530
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b2mJ8KhSsvGYcTN8dz5jxY6aQRN/PH/YcEdSO+GTcKaxfgFtm74u6O7P36hbCdhB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5190
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdUQBl5pkFg2i1iu@mehdi-archlinux>
 
-Am 21.02.24 um 10:59 schrieb Kunwu Chan:
-> For where the cache name and the structure name match.
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
+Hi Mehdi,
 
-Reviewed-by: Christian König <christian.koenig@amd.com> for the entire 
-series.
+On Tue, Feb 20, 2024 at 09:48:06PM +0100, Mehdi Djait wrote:
+> Hi Sakari,
+> 
+> On Tue, Feb 20, 2024 at 07:30:53PM +0000, Sakari Ailus wrote:
+> > Hi Mehdi,
+> > 
+> > On Tue, Feb 20, 2024 at 06:04:10PM +0100, Mehdi Djait wrote:
+> > > Hi Sakari,
+> > > 
+> > > Thank you for the review.
+> > 
+> > You're welcome!
+> > 
+> > > 
+> > > On Tue, Feb 13, 2024 at 12:04:58PM +0000, Sakari Ailus wrote:
+> > > > Hi Mehdi,
+> > > > 
+> > > > Thanks for the patchset.
+> > > > 
+> > > > On Sun, Feb 11, 2024 at 08:03:30PM +0100, Mehdi Djait wrote:
+> > > > > From: Mehdi Djait <mehdi.djait@bootlin.com>
+> > > > > 
+> > > > > Add a documentation for the Rockchip Camera Interface binding.
+> > > > > 
+> > > > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > > > > Reviewed-by: Michael Riesch <michael.riesch@wolfvision.net>
+> > > > > Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> > > > > Signed-off-by: Mehdi Djait <mehdi.djait.k@gmail.com>
+> > > > > ---
+> > > > >  .../bindings/media/rockchip,px30-vip.yaml     | 123 ++++++++++++++++++
+> > > > >  1 file changed, 123 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > > > 
+> > > > > diff --git a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..6af4a9b6774a
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > > > @@ -0,0 +1,123 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/media/rockchip,px30-vip.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Rockchip Camera Interface (CIF)
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Mehdi Djait <mehdi.djait@bootlin.com>
+> > > > > +
+> > > > > +description:
+> > > > > +  CIF is a camera interface present on some Rockchip SoCs. It receives the data
+> > > > > +  from Camera sensor or CCIR656 encoder and transfers it into system main memory
+> > > > > +  by AXI bus.
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    const: rockchip,px30-vip
+> > > > > +
+> > > > > +  reg:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  interrupts:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clocks:
+> > > > > +    items:
+> > > > > +      - description: ACLK
+> > > > > +      - description: HCLK
+> > > > > +      - description: PCLK
+> > > > > +
+> > > > > +  clock-names:
+> > > > > +    items:
+> > > > > +      - const: aclk
+> > > > > +      - const: hclk
+> > > > > +      - const: pclk
+> > > > > +
+> > > > > +  resets:
+> > > > > +    items:
+> > > > > +      - description: AXI
+> > > > > +      - description: AHB
+> > > > > +      - description: PCLK IN
+> > > > > +
+> > > > > +  reset-names:
+> > > > > +    items:
+> > > > > +      - const: axi
+> > > > > +      - const: ahb
+> > > > > +      - const: pclkin
+> > > > > +
+> > > > > +  power-domains:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  ports:
+> > > > > +    $ref: /schemas/graph.yaml#/properties/ports
+> > > > > +
+> > > > > +    properties:
+> > > > > +      port@0:
+> > > > > +        $ref: /schemas/graph.yaml#/$defs/port-base
+> > > > > +        unevaluatedProperties: false
+> > > > > +        description: input port on the parallel interface
+> > > > > +
+> > > > > +        properties:
+> > > > > +          endpoint:
+> > > > > +            $ref: video-interfaces.yaml#
+> > > > > +            unevaluatedProperties: false
+> > > > > +
+> > > > > +            properties:
+> > > > > +              bus-type:
+> > > > > +                enum: [5, 6]
+> > > > > +
+> > > > > +            required:
+> > > > > +              - bus-type
+> > > > 
+> > > > What about the vsync-active, hsync-active and data-active properties?
+> > > > Aren't they relevant for this device? Are there default values? This should
+> > > > be part of the bindings for the device, shouldn't it?
+> > > > 
+> > > 
+> > > From what I gathered from the Rockchip PX30 TRM and the other
+> > > available documents from Rockchip, I will add the following:
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > index 6af4a9b6774a..6920b0cb0507 100644
+> > > --- a/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+> > > @@ -69,6 +69,14 @@ properties:
+> > >                bus-type:
+> > >                  enum: [5, 6]
+> > >  
+> > > +              hsync-active:
+> > > +                enum: [0, 1]
+> > > +                default: 1
+> > > +
+> > > +              vsync-active:
+> > > +                enum: [0, 1]
+> > > +                default: 0
+> > 
+> > I'd use the same default for both, whether it's 0 or 1.
+> > 
+> 
+> Is this supposed to be the default value HIGH or LOW if it is not
+> configured by the driver ? because the manual states the following:
+> 
+> HREF_POL
+> Href input polarity:
+> 1'b0 : high active
+> 1'b1 : low active
+> RESET VALUE: 0x0
+> 
+> VSYNC_POL
+> Vsync input polarity:
+> 1'b0 : low active
+> 1'b1 : high active
+> RESET VALUE: 0x0
+> 
+> And that's why I chose 1 for hsync and 0 for vsync
 
->
-> Kunwu Chan (3):
->    drm/amdgpu: Simplify the allocation of fence slab caches
->    drm/amdgpu: Simplify the allocation of mux_chunk slab caches
->    drm/amdgpu: Simplify the allocation of sync slab caches
->
->   drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c    | 4 +---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_ring_mux.c | 4 +---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c     | 4 +---
->   3 files changed, 3 insertions(+), 9 deletions(-)
->
+The hardware reset values do not have to reflect defaults in DT bindings.
 
+-- 
+Kind regards,
+
+Sakari Ailus
 
