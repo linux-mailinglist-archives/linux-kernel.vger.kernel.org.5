@@ -1,159 +1,142 @@
-Return-Path: <linux-kernel+bounces-74797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DEFE85DA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:30:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB14E85DA7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE86FB2755C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:30:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F2D6B25BF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E958062D;
-	Wed, 21 Feb 2024 13:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NPCRgmP6"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55C377A03;
-	Wed, 21 Feb 2024 13:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AB97EF1E;
+	Wed, 21 Feb 2024 13:28:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73C6762C1;
+	Wed, 21 Feb 2024 13:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708522009; cv=none; b=tUBhex5rP2D2nlxGxBpuPs6H+fjYscESmLK7uHEDdzJ5L/pAKdk1Pp2aD8qnBMJE//nEadaiMb1E7PwqGOz1IzKOKoagy9knsBlos6SgY4UPIqJJC87a7qJpmHK01wdSWEfpi6mLF+Q/9q2oDwtMoRd6OrapXShNdC00tNtXlew=
+	t=1708522121; cv=none; b=ChVxc5FeQ9+JBq+vkiFwuKvrUoOP0s1cmiJcqyKNCpKQXOnebi/VWh9GkP4vgbdS9/IlPSbGMYz3zH+O4oQ3ge92Ja5OchtcxqvEaevaOhf7KfHPQPOBSsLpqT4ZKlT6sTgqXq3tbCJUH9JskbWxUPJGbIzb0ehrYaQFobILGWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708522009; c=relaxed/simple;
-	bh=F+O2jT8N2BIEGIYwYUqoDBWQmBTa2NMIDug/qqNZ5Hk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r04yEurEDpr3HyNMrW9P76bBshc2fjFDTXNjjmH8DE4ifk6b61Y3EoexiF+7ZL5I3sHilsu08vDWHlHeE+7z4xoqVQazurRC21fNW96puGXjKnSxXY5G/h7ROFEkML/xsC+1uyeR7WMZNVpbUXxDgJVkBvGIIPcL69AMGxxBrvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NPCRgmP6; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d731314e67so47519845ad.1;
-        Wed, 21 Feb 2024 05:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708522007; x=1709126807; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FIcGpMiTUFuShIJcNZW3Z6nnK/vjwEkJ2H69Fs4AHDY=;
-        b=NPCRgmP6U42OtlkgqwEWc6Rt5ApAtn4Z8GzHJ0ECxDbWb4EKPx/2r4SHjW0Avbfk8p
-         Zk7Wd02iO/qlmC8A2xm9jjiOxeo6Aitn4YqnHLaETgWC9iPRIwE1VYy9aUIL1M/4XN4/
-         2uEyuYER3WuVaDfxYbcticsRCZL7mOeRB/uYmeJjsguCA5zHETBMw2J5qd6TBZu3nSaC
-         R7sBOgvSH2QfB/Ua19ZJDfgU+SbvJaKBfAYlcStr3A0uvFQpZfzD1nSeGLUNOEPZAfp5
-         S0vc6Xzzc/9mTj8ExmtawE4V+FFal7dX1X727PaYl3cGzcWJDaAHkruVIFMFTAXJSa0x
-         Ambg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708522007; x=1709126807;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FIcGpMiTUFuShIJcNZW3Z6nnK/vjwEkJ2H69Fs4AHDY=;
-        b=bZ3lacwWWojrYnGaC8w1zvAdIA9DGpv5kN2bb1GYI5/khh7A3DvmBUBpJzAtNkcAJ6
-         9t8DxNWROUk8ymVIkiaPwiyne7ZZ0Qum8dqtnDnSoMR1cBAYmyntP3zGwDNfCEvxD73c
-         FIE/OdoxOI37jrAufCJYLAxUdtSx42AT/bkPeGwlDM3EonD91sbJXOLAVR04HgaEawLO
-         ZimtWRUGOqAg4QQFwNTArfNA/oJobItNmYQ8wOMpJ4EMi/bfa7NA2/oFfSfGcXTpx8FF
-         m/jEi6rZdwzShJVLcerHqCyHFgkiMcEbF/VFDocliGJR2YA7We1VScI4iyqqyNbvvO4Q
-         X+1A==
-X-Forwarded-Encrypted: i=1; AJvYcCXJJwznjKjIxLDgvJgIFwKiBJA9sHCIYnkIqMPSgLhpiPnbkXTbPSjjmjYhi2jMJ9G8pJolzGVzMsisd0nysMe20AXFaAJiSiaFsOpX/Cl/B1S+DuG7vm0Vr6WuQ28VAcmBf60NzjbsT6UTCfML/hNY5nArxdu39XudaBcEv0OsBgsx6I1lVblvzMAL07BGr0mMd7EobL3dLVUV1mw8GD/7jDondWS+Od7cUaR2Qs3JC3VW5J3fZP8+uXgowUYriXgv
-X-Gm-Message-State: AOJu0YwHZNjWjrqxU5vCWDIRGyTmNsT/gbIFxYR+IIXO/ICwOH3f5HIk
-	knuw6lSKKuF0s1YqWA85rEkYIGkGky0q2FMxqaJFEhey8DdVrvCP
-X-Google-Smtp-Source: AGHT+IFE0VdYohKERbDpngNjL2p6AnzRx2gY/8gsbGjsig+sWD9GvuWZ3WTfrhlLRHdoubZSLlvgUQ==
-X-Received: by 2002:a17:90b:3b50:b0:299:6c4a:c5f0 with SMTP id ot16-20020a17090b3b5000b002996c4ac5f0mr8381795pjb.9.1708522007304;
-        Wed, 21 Feb 2024 05:26:47 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h23-20020a17090aea9700b00298c633bd5fsm1699769pjz.30.2024.02.21.05.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 05:26:46 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 21 Feb 2024 05:26:45 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: David Gow <davidgow@google.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Shuah Khan <skhan@linuxfoundation.org>, Rae Moar <rmoar@google.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Kees Cook <keescook@chromium.org>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Florian Westphal <fw@strlen.de>,
-	Cassio Neri <cassio.neri@gmail.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Arthur Grillo <arthur.grillo@usp.br>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Daniel Latypov <dlatypov@google.com>,
-	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	intel-xe@lists.freedesktop.org, linux-rtc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 9/9] kunit: Annotate _MSG assertion variants with gnu
- printf specifiers
-Message-ID: <678b4b1b-6319-448b-b6a7-7692b368bf31@roeck-us.net>
-References: <20240221092728.1281499-1-davidgow@google.com>
- <20240221092728.1281499-10-davidgow@google.com>
+	s=arc-20240116; t=1708522121; c=relaxed/simple;
+	bh=jcM7Y8plT+9yKZcGSc7nmPeNy9idDPzXx63Ses56ZJk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=Lw9eWAaP8elQO9gCGBmpqE4E6QhHoCF9Q7LsllObyimR0lXMtInELo3jsRN4oi4J1rMBEbgE4FZi9d8MectE0CTfCaA4/Jtcs7ujglBB7Obf1BGmDQdqsMe942/ilosSrIl14Z0bv6EM+V60NcXxrVDEeuWqvx76joDF1/OZ2hw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AA85FEC;
+	Wed, 21 Feb 2024 05:29:16 -0800 (PST)
+Received: from [10.57.11.178] (unknown [10.57.11.178])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95FE63F762;
+	Wed, 21 Feb 2024 05:28:32 -0800 (PST)
+Message-ID: <4e9603e9-4127-43f1-92be-6c2b59ff2fe0@arm.com>
+Date: Wed, 21 Feb 2024 13:28:48 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221092728.1281499-10-davidgow@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/5] Rework system pressure interface to the scheduler
+Content-Language: en-US
+To: Vincent Guittot <vincent.guittot@linaro.org>
+References: <20240220145947.1107937-1-vincent.guittot@linaro.org>
+Cc: konrad.dybcio@linaro.org, mhiramat@kernel.org, agross@kernel.org,
+ rafael@kernel.org, sudeep.holla@arm.com, will@kernel.org,
+ linux@armlinux.org.uk, bristot@redhat.com, mgorman@suse.de,
+ bsegall@google.com, rostedt@goodmis.org, andersson@kernel.org,
+ dietmar.eggemann@arm.com, juri.lelli@redhat.com, mingo@redhat.com,
+ linux-pm@vger.kernel.org, catalin.marinas@arm.com,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ corbet@lwn.net, amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+ peterz@infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ gregkh@linuxfoundation.org, vschneid@redhat.com, rui.zhang@intel.com,
+ viresh.kumar@linaro.org
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240220145947.1107937-1-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 05:27:22PM +0800, David Gow wrote:
-> KUnit's assertion macros have variants which accept a printf format
-> string, to allow tests to specify a more detailed message on failure.
-> These (and the related KUNIT_FAIL() macro) ultimately wrap the
-> __kunit_do_failed_assertion() function, which accepted a printf format
-> specifier, but did not have the __printf attribute, so gcc couldn't warn
-> on incorrect agruments.
-> 
-> It turns out there were quite a few tests with such incorrect arguments.
-> 
-> Add the __printf() specifier now that we've fixed these errors, to
-> prevent them from recurring.
-> 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: David Gow <davidgow@google.com>
+Hi Vincent,
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+On 2/20/24 14:59, Vincent Guittot wrote:
+> Following the consolidation and cleanup of CPU capacity in [1], this serie
+> reworks how the scheduler gets the pressures on CPUs. We need to take into
+> account all pressures applied by cpufreq on the compute capacity of a CPU
+> for dozens of ms or more and not only cpufreq cooling device or HW
+> mitigiations. We split the pressure applied on CPU's capacity in 2 parts:
+> - one from cpufreq and freq_qos
+> - one from HW high freq mitigiation.
+> 
+> The next step will be to add a dedicated interface for long standing
+> capping of the CPU capacity (i.e. for seconds or more) like the
+> scaling_max_freq of cpufreq sysfs. The latter is already taken into
+> account by this serie but as a temporary pressure which is not always the
+> best choice when we know that it will happen for seconds or more.
+> 
+> [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
+> 
+> Change since v4:
+> - Add READ_ONCE() in cpufreq_get_pressure()
+> - Add ack and reviewed tags
+> 
+> Change since v3:
+> - Fix uninitialized variables in cpufreq_update_pressure()
+> 
+> Change since v2:
+> - Rework cpufreq_update_pressure()
+> 
+> Change since v1:
+> - Use struct cpufreq_policy as parameter of cpufreq_update_pressure()
+> - Fix typos and comments
+> - Make sched_thermal_decay_shift boot param as deprecated
+> 
+> Vincent Guittot (5):
+>    cpufreq: Add a cpufreq pressure feedback for the scheduler
+>    sched: Take cpufreq feedback into account
+>    thermal/cpufreq: Remove arch_update_thermal_pressure()
+>    sched: Rename arch_update_thermal_pressure into
+>      arch_update_hw_pressure
+>    sched/pelt: Remove shift of thermal clock
+> 
+>   .../admin-guide/kernel-parameters.txt         |  1 +
+>   arch/arm/include/asm/topology.h               |  6 +-
+>   arch/arm64/include/asm/topology.h             |  6 +-
+>   drivers/base/arch_topology.c                  | 26 ++++----
+>   drivers/cpufreq/cpufreq.c                     | 36 +++++++++++
+>   drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
+>   drivers/thermal/cpufreq_cooling.c             |  3 -
+>   include/linux/arch_topology.h                 |  8 +--
+>   include/linux/cpufreq.h                       | 10 +++
+>   include/linux/sched/topology.h                |  8 +--
+>   .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
+>   include/trace/events/sched.h                  |  2 +-
+>   init/Kconfig                                  | 12 ++--
+>   kernel/sched/core.c                           |  8 +--
+>   kernel/sched/fair.c                           | 63 +++++++++----------
+>   kernel/sched/pelt.c                           | 18 +++---
+>   kernel/sched/pelt.h                           | 16 ++---
+>   kernel/sched/sched.h                          | 22 +------
+>   18 files changed, 144 insertions(+), 119 deletions(-)
+>   rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
+> 
 
-> ---
->  include/kunit/test.h | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index fcb4a4940ace..61637ef32302 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -579,12 +579,12 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
->  
->  void __noreturn __kunit_abort(struct kunit *test);
->  
-> -void __kunit_do_failed_assertion(struct kunit *test,
-> -			       const struct kunit_loc *loc,
-> -			       enum kunit_assert_type type,
-> -			       const struct kunit_assert *assert,
-> -			       assert_format_t assert_format,
-> -			       const char *fmt, ...);
-> +void __printf(6, 7) __kunit_do_failed_assertion(struct kunit *test,
-> +						const struct kunit_loc *loc,
-> +						enum kunit_assert_type type,
-> +						const struct kunit_assert *assert,
-> +						assert_format_t assert_format,
-> +						const char *fmt, ...);
->  
->  #define _KUNIT_FAILED(test, assert_type, assert_class, assert_format, INITIALIZER, fmt, ...) do { \
->  	static const struct kunit_loc __loc = KUNIT_CURRENT_LOC;	       \
-> -- 
-> 2.44.0.rc0.258.g7320e95886-goog
-> 
+
+The code looks good and works as expected. The time delays in those
+old mechanisms that were important to me are good now. The boost is
+handled, cpufreq capping from sysfs - all good. Also the last patch
+which removes the shift and makes it obsolete. Thanks!
+
+Feel free to add to all patches:
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Regards,
+Lukasz
 
