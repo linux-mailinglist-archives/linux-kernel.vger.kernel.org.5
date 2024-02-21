@@ -1,161 +1,162 @@
-Return-Path: <linux-kernel+bounces-74437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C286185D437
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:46:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CBE85D439
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:48:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D5D8282396
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:46:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD4971C22E27
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:48:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE573D55E;
-	Wed, 21 Feb 2024 09:46:13 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E893D55E;
+	Wed, 21 Feb 2024 09:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="2gNEAT4p";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y+jJlUhw"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE213D3BB
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867533B781;
+	Wed, 21 Feb 2024 09:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708508772; cv=none; b=slP1hv1HO85uwLzM5bFCog41MxUQ1Z+CpAOUTnH7x+QhJgyxGocp/cV+AMufLM0jou0XVmMD3GxU3DwNIDcg+ZMzdyezvGMoM+RX7vIR1e592bSpCARfEVTOyRqcFSz/QbKs4o2TDEp7afPUgjFULNPfgB0uidRw9zHpo6QWpUE=
+	t=1708508919; cv=none; b=sh8caVVozQPmhJM+J9WPNtQZWGoho5ulofqYOxSKpaoPeKNsDqJ6RDYkuIl/eTq8pXRH9gyaycRBfWKkUIQETTG9FWAY60iAeISjaxILbk8Nt+CZo0MAuVbX3mDrfVONM7+xsrYzepqHg0K3iTO7u4PUoMMQJ30MsCuQuDqOK0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708508772; c=relaxed/simple;
-	bh=DSOCctHCmNn4Fne1Ro5IcslS2936SkICNdDghitRmMU=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=caMvDZhWM/+TuAe4gX6i8ttezkd3mPKJ3ypGrjQGEE4vzBYiEAcMekJCksF94B7VOwhg9asgQqCZyQBPBjw3Qonoj00POecLoCZahLWExschSMOUKtH1sTixibY5A1f7adULmXOhMh0tRj8XPVmzlB/0sywledNL2fQydVZB1l4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Tfrvw2xHNz1Q8tx;
-	Wed, 21 Feb 2024 17:44:28 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id BAE73140429;
-	Wed, 21 Feb 2024 17:46:07 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 21 Feb 2024 17:46:07 +0800
-CC: <yangyicong@hisilicon.com>, <will@kernel.org>, <mark.rutland@arm.com>,
-	<hejunhao3@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
-Subject: Re: [PATCH 4/7] drivers/perf: hisi_pcie: Check the target filter
- properly
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-References: <20240204074527.47110-1-yangyicong@huawei.com>
- <20240204074527.47110-5-yangyicong@huawei.com>
- <20240208122902.0000768f@Huawei.com>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <03acfe6b-bcde-8a11-ea6d-add1998d5bd1@huawei.com>
-Date: Wed, 21 Feb 2024 17:46:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1708508919; c=relaxed/simple;
+	bh=HLE/MP1SWWxlDamRNgvoEaBeblwna1EiTKCiw4WhSCk=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=qlQVm70MABritlQ+1hPoW+/GoZ4whfytwiisEdxksZp9vVn4rH/PmraoFfa01biAJpfPjE1CZdWG/KrYqJvKpo635wEF01hgIpxe6PeBccXcaiuitTh8HTs+3w/gvMzRpTif4YLf3tWFx1xw0PQFfI8PM8078SfVfuZrCkKHu4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=2gNEAT4p; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Y+jJlUhw; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 2719432001AB;
+	Wed, 21 Feb 2024 04:48:35 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 21 Feb 2024 04:48:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708508914; x=1708595314; bh=Fw9lSJoYft
+	ih2HH5DSoXI7rUStJLYAI4RgfN/FK3Rx8=; b=2gNEAT4pin6JGIAnt8bwDF8i/y
+	dxEN6bb4iHtQoqbP3lVzUxytZUW00tT3+JjWU4qg5fqI1guNgjRy68mUGWNgV+C1
+	1xsIejWLV5OQjEbNMzcU9ggp2RXzud15v35SiCS5UfBcpIi54yCe5dWmJzkIL9rL
+	a85RIpRD6ZPv8sumhAKtm/SjOdRGS9qDJHCplrWv0KxQtQxIHRBgoh8JkG3gGMlF
+	l3rZp8xOBpMN514u8tm8+XqwkMeHYVD6/TiJ1fIT+4bMBiVJBFg4ubv0kBt9unFi
+	zyiKRdecuT7mGCXTG+ndxo47a1cBssKpv2IL+4/fXQ3YbJUnlv4N3DXldFPg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708508914; x=1708595314; bh=Fw9lSJoYftih2HH5DSoXI7rUStJL
+	YAI4RgfN/FK3Rx8=; b=Y+jJlUhwn2Xxw5axMqBCkm6M4C2Y/yBLWAoNSy1RShLI
+	rH+TmCdFjkJZdQGKN3t5GMVXjg2YsNhOTxq/QE5OClC0Q78aNRlYT9fitKY4qjNh
+	7HdM9Zsn5R8FHlfPhM51nE3duHAaqeQFDsewCNZKoTC0jIqwE2OMZkzuso39OsBc
+	HX7mT5kCvkWZWLq2vqUV6m7nhKZ5rNn/vDmB4snjDXQTD2/m1kvDgPB9cLTx86YH
+	zMWH0YCJjC1c+Nmmcu67f7jfPAPR8fIakBOo40agc+LrYMynVH4lTuFuW3ZVIHJU
+	8db1OhMLygnZ7OzdKAjFPmg24CGKNskQTeZiovWsPA==
+X-ME-Sender: <xms:8sbVZSMzblp1OEWPd-v2NpPQ3PjdRcaZ6kawcqduEoE1wmkFiC4rAg>
+    <xme:8sbVZQ9UF0lyRCoMoN3qphU4tyTxrkMnMY7wvbGVpIoA-Ee1QyvgddQzqg-oMyFzw
+    0h-WoRsXuxA8HCcZ2w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedvgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:8sbVZZScqItcSO1tcHZc2YIG43a4PawB7RjYMfePrVwiKUDm_Nj1-g>
+    <xmx:8sbVZSsPy-iXcZYKkJBjOqyfVl3mn41HoUdesiYlscHAb7rsu3HDEA>
+    <xmx:8sbVZafb_Q_hf0W56ovGZceEXz-ISsc8LWRtIJHrP-TyyjQa6KVYpA>
+    <xmx:8sbVZR-j0XCHrDFtXulF0JMNDiCyjeGvkH7SCCCy8xLd2UCKXEMO2Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 29F20B6008D; Wed, 21 Feb 2024 04:48:34 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240208122902.0000768f@Huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500009.china.huawei.com (7.192.105.203)
+Message-Id: <938f3418-fd88-476d-b67f-3f7ada98e444@app.fastmail.com>
+In-Reply-To: <20240221020258.1210148-1-jeremy.linton@arm.com>
+References: <20240221020258.1210148-1-jeremy.linton@arm.com>
+Date: Wed, 21 Feb 2024 10:48:12 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Jeremy Linton" <jeremy.linton@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>, "Kees Cook" <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>,
+ "Steven Rostedt" <rostedt@goodmis.org>, "Mark Brown" <broonie@kernel.org>,
+ "Guo Hui" <guohui@uniontech.com>, Manoj.Iyer@arm.com,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ "James Yang" <james.yang@arm.com>, "Shiyou Huang" <shiyou.huang@arm.com>
+Subject: Re: [RFC] arm64: syscall: Direct PRNG kstack randomization
+Content-Type: text/plain
 
-On 2024/2/8 20:29, Jonathan Cameron wrote:
-> On Sun, 4 Feb 2024 15:45:24 +0800
-> Yicong Yang <yangyicong@huawei.com> wrote:
-> 
->> From: Junhao He <hejunhao3@huawei.com>
->>
->> The PMU can monitor traffic of certain target Root Port or downstream
->> target Endpoint. User can specify the target filter by the "port" or
->> "bdf" option respectively. The PMU can only monitor the Root Port or
->> Endpoint on the same PCIe core so the value of "port" or "bdf" should
->> be valid and will be checked by the driver.
->>
->> Currently at least and only one of "port" and "bdf" option must be set.
->> If "port" filter is not set or is set explicitly to zero (default),
->> driver will regard the user specifies a "bdf" option since "port" option
->> is a bitmask of the target Root Ports and zero is not a valid
->> value.
->>
->> If user not explicitly set "port" or "bdf" filter, the driver uses "bdf"
->> default value (zero) to set target filter, but driver will skip the
->> check of bdf=0, although it's a valid value (meaning 0000:000:00.0).
->> Then the user just gets zero.
->>
->> Therefore, we need to check if both "port" and "bdf" are invalid, then
->> return failure and report warning.
->>
->> Testing:
->> before the patch:
->>                    0      hisi_pcie0_core1/rx_mrd_flux/
->>                    0      hisi_pcie0_core1/rx_mrd_flux,port=0/
->>               24,124      hisi_pcie0_core1/rx_mrd_flux,port=1/
->>                    0      hisi_pcie0_core1/rx_mrd_flux,bdf=0/
->>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,bdf=1/
-> 
-> Nice to include an example that works for bdf
-> 			    hisi_pcie0_core1/rx_mrd_flux,bdf=1,port=0 
-> or something like that?
->>
->> after the patch:
->>      <not supported>      hisi_pcie0_core1/rx_mrd_flux/
->>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,port=0/
->>               24,153      hisi_pcie0_core1/rx_mrd_flux,port=1/
->>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,bdf=0/
->>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,bdf=1/
->>
->> Signed-off-by: Junhao He <hejunhao3@huawei.com>
->> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> 
-> Clearly the current situation is wrong, but perhaps we can
-> have a more intuitive scheme (could be added as a follow up patch)
-> and have the driver figure out which port the bdf lies below?
-> 
-> Maybe that's a job for userspace tooling rather than the driver, but
-> the driver already has verification code and it wouldn't be hard
-> to not just check the rp is ours, but also set the filter to specify
-> that rp, or maybe just set the mask to include them all?
-> 
+On Wed, Feb 21, 2024, at 03:02, Jeremy Linton wrote:
+> The existing arm64 stack randomization uses the kernel rng to acquire
+> 5 bits of address space randomization. This is problematic because it
+> creates non determinism in the syscall path when the rng needs to be
+> generated or reseeded. This shows up as large tail latencies in some
+> benchmarks and directly affects the minimum RT latencies as seen by
+> cyclictest.
 
-To do a check should be simple, we can decode the bdf and find the target
-endpoint and related root port for doing the check.
+Hi Jeremy,
 
-Another example is what we've done in hisi_ptt that we maintian a list of
-supported root ports and endpoints, but that will be a bit more complex.
+I think from your description it's clear that reseeding the
+rng is a problem for predictable RT latencies, but at the same
+time we have too many things going on to fix this by
+special-casing kstack randomization on one architecture:
 
-> Jonathan
-> 
-> 
->> ---
->>  drivers/perf/hisilicon/hisi_pcie_pmu.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
->> index 83be3390686c..b91f03c02c57 100644
->> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
->> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
->> @@ -306,10 +306,10 @@ static bool hisi_pcie_pmu_valid_filter(struct perf_event *event,
->>  	if (hisi_pcie_get_trig_len(event) > HISI_PCIE_TRIG_MAX_VAL)
->>  		return false;
->>  
->> -	if (requester_id) {
->> -		if (!hisi_pcie_pmu_valid_requester_id(pcie_pmu, requester_id))
->> -			return false;
->> -	}
->> +	/* Need to explicitly set filter of "port" or "bdf" */
->> +	if (!hisi_pcie_get_port(event) &&
->> +	    !hisi_pcie_pmu_valid_requester_id(pcie_pmu, requester_id))
->> +		return false;
->>  
->>  	return true;
->>  }
-> 
-> .
-> 
+- if reseeding latency is a problem, can we be sure that
+  none of the other ~500 files containing a call to
+  get_random_{bytes,long,u8,u16,u32,u64} are in an equally
+  critical path for RT? Maybe those are just harder to hit?
+
+- CONFIG_RANDOMIZE_KSTACK_OFFSET can already be disabled
+  at compile or at at boot time to avoid the overhead entirely,
+  which may be the right thing to do for users that care more
+  deeply about syscall latencies than the fairly weak stack
+  randomization. Most architectures don't implement it at all.
+
+- It looks like the unpredictable latency from reseeding
+  started with f5b98461cb81 ("random: use chacha20 for
+  get_random_int/long"), which was intended to make
+  get_random() faster and better, but it could be seen
+  as  regression for real-time latency guarantees. If this
+  turns out to be a general problem for RT workloads,
+  the answer might be to bring back an option to make
+  get_random() have predictable overhead everywhere
+  rather than special-casing the stack randomization.
+
+> Other architectures are using timers/cycle counters for this function,
+> which is sketchy from a randomization perspective because it should be
+> possible to estimate this value from knowledge of the syscall return
+> time, and from reading the current value of the timer/counters.
+>
+> So, a poor rng should be better than the cycle counter if it is hard
+> to extract the stack offsets sufficiently to be able to detect the
+> PRNG's period.
+
+I'm not convinced by the argument that the implementation you
+have here is less predictable than the cycle counter, but I
+have not done any particular research here and would rely on
+others to take a closer look. The 32 bit global state variable
+does appear weak, and I know that 
+
+OTOH if we can show that a particular implementation is in fact
+better than a cycle counter, I strongly think we should
+use the same one across all architectures that currently
+use the cycle counter.
+
+      Arnd
 
