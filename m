@@ -1,80 +1,102 @@
-Return-Path: <linux-kernel+bounces-75691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 781B885ED72
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:52:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11ADC85EC7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5E43284343
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:52:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BD47B234EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 23:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13761350E8;
-	Wed, 21 Feb 2024 23:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE751E520;
+	Wed, 21 Feb 2024 23:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDCTFdyW"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YaN0kVu6"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C204B12DD9C;
-	Wed, 21 Feb 2024 23:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAAB86632
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708559455; cv=none; b=fOZk3WkQvHqPgRdn+suyaNOKV5mPWvg9MoTVVL3rUOs5kCQMgZUSTXqXDRcMsZw8b0AxhuYoBoxrilcMGACa2Naqif5ADk/enU6iP1Fg4eyXBD45cFY/HYgXalgZ5mjc5hFlWSnMvDaVOgazk095sMaeVNbWnJaIHemHz/fiA+o=
+	t=1708556736; cv=none; b=jrTYJsunJ/JY5jQIVHHfRsZBt/ElvqhoWm6C22p88/sWZl61i/UqAyt12xekVgGkmXrugCuao+jk/LC+QUxt3F9VZMyVYH5SWeZjv72a58h0MkiFmmmvuxUTLN1y8HjF5ypILUk9Q4b5eHoi9sidDJSqbVAIADdi641+yXa3SXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708559455; c=relaxed/simple;
-	bh=+F3FwsNuYJcoRogLHWj8TN7/aBSkjTsDrn3YDdVqzlc=;
+	s=arc-20240116; t=1708556736; c=relaxed/simple;
+	bh=zssxqx37knagHcWIMKikX95cYC9xskvO7oxvfidP8XA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b37lzxELEV4gGm3AmIQhyzfJLfBqDYmx1824ea6eejIEVpaW72VVw37qjuVA4m9NF+IclxMlO6oML9dedhy4EHeO+GKUMAL3htqdhSYpH/VOk0354LN81sl4rjLGAV5PRop36cxPf6qNha/AfNBKmryIFJOJwmtDB6XqqhkVnUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDCTFdyW; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6861538916cso7183486d6.3;
-        Wed, 21 Feb 2024 15:50:53 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GqiHcwCExBcc4806C3oscm3wHo1MlUlmUW/sZDVv4YSd6167ilkykBmO9Ad4umMk/Po/oB/lmVyCNOHq0nf16y/dmFfYlEgCCjEJahQ9zAhAYZYBJiX2iuopGDGT1SsBqKCRHf+IFs1ekcpZ7F3unnW7r4k/qh4oGYGZjTyfE3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YaN0kVu6; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dc49b00bdbso1423145ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:05:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708559453; x=1709164253; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1708556733; x=1709161533; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wpJsXHNvgeU4dal1ulrv4/ExFJIkJaSEOuwbJ3BtDq0=;
-        b=KDCTFdyWTOM3KcN45woaSZm/r0Cf35QpbzrPJHaet3dWIeoUxnaCQP56K+ec58+Dx+
-         W4XjHjXQA6vZmMZUb8ptRh7kHfDJVjVT4QDRjh4q9fHQ+Ng5NXr+fxd/Hi4Pm+pDkSLn
-         FkvT24xf2yrRIjlIMVETTMws7g1mYZRVSdPe85WK230GGalZBNkpxhZVSBNE+YOs5gAb
-         2iznKxq/sAy0mQFpbtl7oQoXDrpSkgGMI3tXGnw2Uj0zX06m3APqzO/B0wdeDNBWq+bT
-         C8pB4jup2O7HynGMY3K6jco+1CucUpwPXZ2PD4od+1gOXgyw6+NVVAKeWTWxhwz98b4T
-         4TuA==
+        bh=IaQv6IYiHqQsQRwxagN42nrCoy2L36X/io0NIlSKpEE=;
+        b=YaN0kVu68tjoY2VWfrn+E6uvbAVTphdtX2sn1L28iRKphMDLBI9svC4bsq2VmT/eR8
+         rwRvkCCtNjWgHofEkG8E7Fa9EScJZEtSHQyWJ/LpBDz2lqo6oxVVa3zIO1ynxdFuk3sE
+         2H4E1XYMIw5Mwkk//ZqWOw1PorI89LsVlxO/A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708559453; x=1709164253;
+        d=1e100.net; s=20230601; t=1708556733; x=1709161533;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wpJsXHNvgeU4dal1ulrv4/ExFJIkJaSEOuwbJ3BtDq0=;
-        b=Vo7o2qvbwAY8Vxc/GBAM9fmP6x0DQcbiZ1UQffpJN53A4wgq5DMkysBuFRXbD96MjB
-         vakDC1NRaPLhgINo3mT0C6SJ573MymJPayZGAS1SiyjHD6VRVNnA0vb/xsgi6SKI1M74
-         mYy0WF8r078x934h3Uj032QFE6R0DCuElBGSykpFEUP+M/0gBzbon8Gq+/BExjKdPFg1
-         y/1OFpbWwVcnKH9rdN8FMuKXwZbE5vxeYxL1dz3jNG90GfaeAdeeBSi/ks9JCp3e0cJ6
-         mcUr4XL5CWWGj7QS5AzlwoaydAumRcD/SukiJCR1oq7YsbvsF/opf4j+o26nQBdejhDg
-         00aA==
-X-Forwarded-Encrypted: i=1; AJvYcCXuJJQtyn7IM4yjGMjEc/3wbx/el/M6zdTcP1oA6a1yoq0kMeTNLILpj3XWvpx7EtArRvjVCCQQ/EhSwIfhqwnEal1pRxyfIbXIeG4e
-X-Gm-Message-State: AOJu0Yw0zW5sNzL2VARhutyzBCStlgZkokR4kXKuaQJvT29tnw7UG666
-	haSglEegzCt5ozCrKDLWUSOx9rA3qw40ECwKeuSYiN9Bm+D/FqTwM8GldTLt
-X-Google-Smtp-Source: AGHT+IHIQaHZ33MBLelZ3bpytnTaDUICJ6MtwXYD6PAZ8osX4cb4angP51aQftIcJeEIVibbxXBrPg==
-X-Received: by 2002:ad4:5aa7:0:b0:68f:4a94:8d45 with SMTP id u7-20020ad45aa7000000b0068f4a948d45mr16659977qvg.11.1708559452634;
-        Wed, 21 Feb 2024 15:50:52 -0800 (PST)
-Received: from localhost ([2601:8c:502:14f0:acdd:1182:de4a:7f88])
-        by smtp.gmail.com with ESMTPSA id pf1-20020a056214498100b0068f5a02ed6dsm4906104qvb.145.2024.02.21.15.50.51
+        bh=IaQv6IYiHqQsQRwxagN42nrCoy2L36X/io0NIlSKpEE=;
+        b=nnqDKx4KAafVE1uLgrw9jXuSf10Ss+EzmInm3hs+qYsNZq38O+vsDA0wZt0kG0+aRJ
+         4A6GDB7S192+SY0+/9WWQ6pi1i5WkWofmr/baBkgMmHzTNd0kWKPS4Pp/qJg7RrsSSYS
+         xaenKjVz6kl8NkEJUX2Ke+t1W88LesMe8PZJbU08HBOrgnaI+1db4uDZjgVy4GDhhtNr
+         IgrPGKouVzpbOdhSQPRxgdR7+b8RIP1ITJLNA3jd6h23wL5Z7Sp1ZKGNxQGxGlMgYrfe
+         aGa9SUjGg+G3ocSwVfVOrZwd/Zc3wZ5fZ+vV3loiPUQGPANCKBpPIcMgN96EaTB0nJ0Y
+         uueQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWu2/znwhRhmO9FzPp7hjwpwU7/+SoSPz0GrTI7zaqf6TS5rvcdwRNws5dKARDGaMGF54eLjWAdZdM8vlis5vIEz9LtcFpOZMLoHi8b
+X-Gm-Message-State: AOJu0YwwDXtNgRSWtl+O2iTd2rkSZExdjKWnL3ohiZsuu4vQLbcgDhIe
+	i02Qo5QNcuZNWZaWCxG7FVc2p32M0sqpCM28CC1AJFaBmo7kr5NkfqOswDmF9w==
+X-Google-Smtp-Source: AGHT+IH1309ck0C/2D22VOAASZNUEEf4x9Q57P9Qvk9iAKdRznvrywgHAh+2sanfhM2Axko6bAh9XQ==
+X-Received: by 2002:a17:902:c086:b0:1dc:7b6:867a with SMTP id j6-20020a170902c08600b001dc07b6867amr6026373pld.21.1708556733655;
+        Wed, 21 Feb 2024 15:05:33 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h18-20020a170902f2d200b001d913992d8csm8631586plc.242.2024.02.21.15.05.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 15:50:52 -0800 (PST)
-Date: Wed, 21 Feb 2024 13:50:50 -0500
-From: Oliver Crumrine <ozlinuxc@gmail.com>
-To: dsahern@kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: copy routing table more efficiently in
- rt_dst_clone
-Message-ID: <psfmabpw6p3fk5jk3iuuhv4eiolmtvteiydgoxowk35jxpdslu@pcuzmfyxkm6s>
-References: <xlabdyc4izitfdfpuoy2p2hi3abiq4mrrgizdqz45k7xeftbsg@ee6jgncdaqg7>
- <8afe7956-8f29-49e8-a59f-7e6b4136fa1d@kernel.org>
+        Wed, 21 Feb 2024 15:05:33 -0800 (PST)
+Date: Wed, 21 Feb 2024 15:05:32 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+	ytcoode@gmail.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+	glider@google.com, elver@google.com, dvyukov@google.com,
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+	kernel-team@android.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 14/36] lib: add allocation tagging support for memory
+ allocation profiling
+Message-ID: <202402211449.401382D2AF@keescook>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-15-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,38 +105,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8afe7956-8f29-49e8-a59f-7e6b4136fa1d@kernel.org>
+In-Reply-To: <20240221194052.927623-15-surenb@google.com>
 
-On Tue, Feb 20, 2024 at 07:44:24PM -0700, David Ahern wrote:
-Hi David,
+On Wed, Feb 21, 2024 at 11:40:27AM -0800, Suren Baghdasaryan wrote:
+> [...]
+> +struct alloc_tag {
+> +	struct codetag			ct;
+> +	struct alloc_tag_counters __percpu	*counters;
+> +} __aligned(8);
+> [...]
+> +#define DEFINE_ALLOC_TAG(_alloc_tag)						\
+> +	static DEFINE_PER_CPU(struct alloc_tag_counters, _alloc_tag_cntr);	\
+> +	static struct alloc_tag _alloc_tag __used __aligned(8)			\
+> +	__section("alloc_tags") = {						\
+> +		.ct = CODE_TAG_INIT,						\
+> +		.counters = &_alloc_tag_cntr };
+> [...]
+> +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag)
+> +{
+> +	swap(current->alloc_tag, tag);
+> +	return tag;
+> +}
 
-You are correct that rtable is a container of dst_entry, and the
-previous code copied not only the fields of rtable but also the fields
-of dst_entry. However, the *new_rt = *rt line not only copies the fields
-of rtable, but also the fields of dst_entry. 
+Future security hardening improvement idea based on this infrastructure:
+it should be possible to implement per-allocation-site kmem caches. For
+example, we could create:
 
-I have demonstrated this by generating a random number and putting it in
-the "expired" field of the dst_entry that is part of rt, and the printing
-the random number that was generated. After the copy, I printed the
-expired field of the dst_entry that is part of new_rt and the numbers
-matched. This proves that not only the fields that were part of rtable
-were copied but also the fields of dst_entry.
+struct alloc_details {
+	u32 flags;
+	union {
+		u32 size; /* not valid after __init completes */
+		struct kmem_cache *cache;
+	};
+};
 
-Thanks,
-Oliver
-> On 2/18/24 6:35 AM, Oliver Crumrine wrote:
-> > diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-> > index 16615d107cf0..ebb17c3a0dec 100644
-> > --- a/net/ipv4/route.c
-> > +++ b/net/ipv4/route.c
-> > @@ -1664,22 +1664,8 @@ struct rtable *rt_dst_clone(struct net_device *dev, struct rtable *rt)
-> >  			   rt->dst.flags);
-> >  
-> >  	if (new_rt) {
-> > +		*new_rt = *rt;
-> 
-> rtable is a container of dst_entry, so this is copying those fields as well.
-> 
-> pw-bot: reject
-> 
+- add struct alloc_details to struct alloc_tag
+- move the tags section into .ro_after_init
+- extend alloc_hooks() to populate flags and size:
+	.flags = __builtin_constant_p(size) ? KMALLOC_ALLOCATE_FIXED
+					    : KMALLOC_ALLOCATE_BUCKETS;
+	.size = __builtin_constant_p(size) ? size : SIZE_MAX;
+- during kernel start or module init, walk the alloc_tag list
+  and create either a fixed-size kmem_cache or to allocate a
+  full set of kmalloc-buckets, and update the "cache" member.
+- adjust kmalloc core routines to use current->alloc_tag->cache instead
+  of using the global buckets.
+
+This would get us fully separated allocations, producing better than
+type-based levels of granularity, exceeding what we have currently with
+CONFIG_RANDOM_KMALLOC_CACHES.
+
+Does this look possible, or am I misunderstanding something in the
+infrastructure being created here?
+
+-- 
+Kees Cook
 
