@@ -1,266 +1,225 @@
-Return-Path: <linux-kernel+bounces-73913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8B785CD8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:47:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEACC85CD8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C333285506
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:47:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8201B2854ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236A446BF;
-	Wed, 21 Feb 2024 01:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55794C86;
+	Wed, 21 Feb 2024 01:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cbXmoQFN"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dx5oGHMH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F8723C9
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4F820E4;
+	Wed, 21 Feb 2024 01:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708480026; cv=none; b=Gv43kTkjEBrHLkactY+lcX+T0Pw+CAiKgjp+6KzEnpe1FElrmPMAA91EuHfwFiJdMMSt5XP999YNftNqy2slSaB3X5aKRbu1hkQmmswryBVdAJY+rAWA7f3WOlRE+QBsAxylBbJUTNOK42z6pIeRWJ2shAvNHRaXRdFgdw/kOAg=
+	t=1708480168; cv=none; b=IBzuc0pakclaNnId0D3Gzk4aUSyXO0jOfIhwguZWvNaRijeW4UCb78SRNq32hj63ybI/AY8R+dEXAuDX+exj0c8SGYU/JAxfXd6sd36YvBPwJC32dQPPlxmDRjqWlNqAViYws47fICnTy2JjilpebN00CdmCFzpZH94IP/t6orc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708480026; c=relaxed/simple;
-	bh=iUEglDd0IusnsHYdDg0SbXUSjK8oaW8VjqNhWNenHi4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VGqqPOHQlZHim4PwVLrgSIxKL5BTAY0A5vkTCGnkX/a4XjRZ3RtBThvdkiKOV6+5biZabHVM5RYlekLQJSdU8eQF1hgg9jXSfga7jY+SNWRAK7QyQiGGtqY8gZbYN7OqZSwTSflIXEZb4K2bGLdvQo8zAt3RJZkRvNTV1nliIg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cbXmoQFN; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42e2507c6e1so72721cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:47:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708480023; x=1709084823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PMzkgKLHF3yCOXDrFqm4rm+9bW0f0+sEV83/usFGaoc=;
-        b=cbXmoQFNUipOs2V5lqNhhahs/M3t7apGXw/JpDXF1/qQOh2zG05MZT63HGj3v0eQS+
-         OH4jSIrhhC9MzDh+7BymiPc8zdWJhb+9TvcAAA4r8ka681MNBBr5M5KEUC9P/87yTrzu
-         kGea3iaWhNnwv0gL7+iSH7zWEigMwXiidzZHIL8AS4XuXpOW1pad0IOoMQP9u/9Rs/8G
-         tkYSos5yaf+mOcXe0RKY2YLZhAGEkm4bLPfXOT1kIXnB+aK3inJs/EGqnsl0MVYl1k2B
-         PgVZOubBgZ3yHGR3GVNlOgS7lbXbU/sRxPU7SilKAT0LQJtraaXjphPk7a3guRAjxuDj
-         Ss+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708480023; x=1709084823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PMzkgKLHF3yCOXDrFqm4rm+9bW0f0+sEV83/usFGaoc=;
-        b=XqDUwR/v0fjKGPMzfchFm6kcqfDcpTtLq51JMYpqwUVb7Fxo9S6MsyyWcCsgLLGvfR
-         QyUahd8kwaA7wqIyDjBhhUQdr3LN5HrDe49w81vsTjBXa3QeOyaT8jYvKlVCOAD9v/Un
-         aYNhkqLIhLRnbsgSrAXucO6UjOLywGrEDTWqLVJ8UF1+QLVwDPfkWE+P6RrhCqYrEj/i
-         Qf0hUhPhCrZi5hhkkaf4ALqEpBkMoBGFNFrj0CdvzqX7UAzAocc2K368JDt4IXzCmNbz
-         BJTOp9HyezYIlo3IToJc6077qsTPNF7CZbrARjJADjsgVn1HXs631AfpIwEzgmVzVyZd
-         1chw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1pwomlmtG7PLUBDyNzCCalZc9/oOpW35DptR+7MJkqOZbfKuDSZEP4G077AgDhBB74mblH6S0vgwsBF3dP2a8SHZRMmXxxynE7zsB
-X-Gm-Message-State: AOJu0YxJfW8oalvSpgdM9OPj9fftRG0I+Vl0rZ74Xla20RlYdZr+u76d
-	9i9IKIF3XqF3oG61ZSSgLbcrA/0sA+kOG8qbc1YFK5qZeg9o7xlDMzALopRhLahFwp8u9V0g7K5
-	SeFjZP49Vs8WisP8UX2OBR6FwYnE4hahBvF+Z
-X-Google-Smtp-Source: AGHT+IGJDM0SJLzYNC7YRvw8M4u1KIXektOQ+aav00QS8YrONP0N83zrf2dUgYknTBFMt3qpmkG7ZMukLFbh7yilv+M=
-X-Received: by 2002:ac8:5c16:0:b0:42d:ff6e:12c9 with SMTP id
- i22-20020ac85c16000000b0042dff6e12c9mr160959qti.4.1708480023254; Tue, 20 Feb
- 2024 17:47:03 -0800 (PST)
+	s=arc-20240116; t=1708480168; c=relaxed/simple;
+	bh=lwuyW/GBXLuu2hlfhCsl6S4z6xmDhNYp6k+ZbZvS4+g=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=jSMJUQzJE2WQ6ZdgNz7s3giIpRI8kpkjzy1WCnt9PS+cgf+sYGb9+ltPVcBAaq1xvgLJj/Wm4tmPWqPQtmeHLdjXML1lSz/Xoz+7Y1HhpQ2I084NGmTSJR4EolkdTOYC+M2n9hKHC/cCaFqiBl6KW6Gwvmzln1mKDUAS5FxNy/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dx5oGHMH; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708480167; x=1740016167;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=lwuyW/GBXLuu2hlfhCsl6S4z6xmDhNYp6k+ZbZvS4+g=;
+  b=Dx5oGHMH3O9VojvSTxRXoiG2oFjY0Y5NcPMAcs4QtpZLMUvWgGhvQcUf
+   YwG9dQf/Fxr1ZQVd2x2mTeMijuIPoYEopEyZEe+U0cB86/l1iU72DljAL
+   9yzpRwPFXpTqhy9QmbgbNxN759DiyhKezd6seNNQxjFMthfhKHlEN7Vug
+   Eqx3ujZnCRIeA9XgfNdDisiPGi9hUmi5t7ihVeKsUdWoFRKefCddoEkz1
+   wLkxbRv7R9BXt2VwqThHw/NACFAb+hPGGR3OcAu8JRITkscrjkbjHk3ES
+   pYc61KoLpmmHYrNBslYunL/VCoRRtUFsQmir6SuR6BeKznDwIB6FhsECt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2489483"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="2489483"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 17:49:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="35740831"
+Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 17:49:25 -0800
+Date: Tue, 20 Feb 2024 17:49:04 -0800 (PST)
+From: matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
+To: Xu Yilun <yilun.xu@linux.intel.com>
+cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com, 
+    linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fpga: dfl: afu: support Rev 2 of DFL Port feature
+In-Reply-To: <ZdF4JvYQQL8irnbW@yilunxu-OptiPlex-7050>
+Message-ID: <alpine.DEB.2.22.394.2402201658400.191484@sj-4150-psse-sw-opae-dev2>
+References: <20240125233715.861883-1-matthew.gerlach@linux.intel.com> <ZbjHl8ptQG5FdHvC@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2401300948590.112016@sj-4150-psse-sw-opae-dev2> <Zbnd8W1ciTKeoKc4@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2401311610020.112016@sj-4150-psse-sw-opae-dev2>
+ <ZcBIjcFJjGKf0qcO@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2402051600190.122158@sj-4150-psse-sw-opae-dev2> <ZdF4JvYQQL8irnbW@yilunxu-OptiPlex-7050>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230901183240.102701-1-brgl@bgdev.pl> <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
- <CAMRc=Mekf9Rek3_G2ttQY+yBvWM3+P4RAWVOQH99eajn38F+og@mail.gmail.com>
- <ZPWcTMPiu4MSq+F7@smile.fi.intel.com> <CAMRc=MfZv70FXHyNw4yK90NL5-jjAJa6qbKc6SV2ZwbaJkKQqg@mail.gmail.com>
- <ZPWmDL6QJJMNi2qa@smile.fi.intel.com> <CAMRc=Mc0JgPUEpaes7WcbkMu5JyrpLW8N1+bM-+OJaB+pPX4ew@mail.gmail.com>
- <ZPWr3dRP5C1GSY9F@smile.fi.intel.com> <CAMRc=Mfae+=HPPWzsG8bgK2CGOGY9GPkS5VZcwLyr_yY8A_y2g@mail.gmail.com>
- <ZPWxbfHNOqAnkR09@smile.fi.intel.com>
-In-Reply-To: <ZPWxbfHNOqAnkR09@smile.fi.intel.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 17:46:27 -0800
-Message-ID: <CAGETcx9wERf-R4=r_jBYpYgGHSxS=-xx_ydeVWZdGUvEWTQwzg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sim: don't fiddle with GPIOLIB private members
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij <linus.walleij@linaro.org>, 
-	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On Mon, Sep 4, 2023 at 3:29=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+
+
+On Sun, 18 Feb 2024, Xu Yilun wrote:
+
+> On Wed, Feb 07, 2024 at 08:40:55AM -0800, matthew.gerlach@linux.intel.com wrote:
+>>
+>>
+>> On Mon, 5 Feb 2024, Xu Yilun wrote:
+>>
+>>> On Wed, Jan 31, 2024 at 04:26:27PM -0800, matthew.gerlach@linux.intel.com wrote:
+>>>>
+>>>>
+>>>> On Wed, 31 Jan 2024, Xu Yilun wrote:
+>>>>
+>>>>> On Tue, Jan 30, 2024 at 10:00:16AM -0800, matthew.gerlach@linux.intel.com wrote:
+>>>>>>
+>>>>>>
+>>>>>> On Tue, 30 Jan 2024, Xu Yilun wrote:
+>>>>>>
+>>>>>>> On Thu, Jan 25, 2024 at 03:37:15PM -0800, Matthew Gerlach wrote:
+>>>>>>>> Revision 2 of the Device Feature List (DFL) Port feature
+>>>>>>>> adds support for connecting the contents of the port to
+>>>>>>>> multiple PCIe Physical Functions (PF).
+>>>>>>>>
+>>>>>>>> This new functionality requires changing the port reset
+>>>>>>>> behavior during FPGA and software initialization from
+>>>>>>>> revision 1 of the port feature. With revision 1, the initial
+>>>>>>>> state of the logic inside the port was not guaranteed to
+>>>>>>>> be valid until a port reset was performed by software during
+>>>>>>>> driver initialization. With revision 2, the initial state
+>>>>>>>> of the logic inside the port is guaranteed to be valid,
+>>>>>>>> and a port reset is not required during driver initialization.
+>>>>>>>>
+>>>>>>>> This change in port reset behavior avoids a potential race
+>>>>>>>> condition during PCI enumeration when a port is connected to
+>>>>>>>> multiple PFs. Problems can occur if the driver attached to
+>>>>>>>> the PF managing the port asserts reset in its probe function
+>>>>>>>> when a driver attached to another PF accesses the port in its
+>>>>>>>> own probe function. The potential problems include failed or hung
+>>>>>>>
+>>>>>>> Only racing during probe functions? I assume any time port_reset()
+>>>>>>> would fail TLPs for the other PF. And port_reset() could be triggered
+>>>>>>> at runtime by ioctl().
+>>>>>>
+>>>>>> Yes, a port_reset() triggered by ioctl could result in failed TLP for the
+>>>>>> other PFs. The user space SW performing the ioctl needs to ensure all PFs
+>>>>>> involved are properly quiesced before the port_reset is performed.
+>>>>>
+>>>>> How would user get an insight into other PF drivers to know everything
+>>>>> is quiesced?  I mean do we need driver level management for this?
+>>>>
+>>>> Since this is an FPGA, the number of other PFs and the drivers bound to
+>>>> those PFs depends on the FPGA image. There would also be user space software
+>>>> stacks involved with the other PFs as well. The user would have to ensure
+>>>> all the SW stacks and drivers are quiesced as appropriate for the FPGA
+>>>
+>>> User may not know everything about the device, they only get part of the
+>>> controls that drivers grant. This is still true for vfio + userspace
+>>> drivers.
+>>
+>> A user performing a port reset would have to know the impact to the specific
+>> FPGA image being run in order to ensure all SW stacks are ready for the
+>> reset.
 >
-> On Mon, Sep 04, 2023 at 12:12:44PM +0200, Bartosz Golaszewski wrote:
-> > On Mon, Sep 4, 2023 at 12:05=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Mon, Sep 04, 2023 at 11:47:54AM +0200, Bartosz Golaszewski wrote:
-> > > > On Mon, Sep 4, 2023 at 11:40=E2=80=AFAM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Mon, Sep 04, 2023 at 11:22:32AM +0200, Bartosz Golaszewski wro=
-te:
-> > > > > > On Mon, Sep 4, 2023 at 10:59=E2=80=AFAM Andy Shevchenko
-> > > > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > > > On Sat, Sep 02, 2023 at 04:40:05PM +0200, Bartosz Golaszewski=
- wrote:
-> > > > > > > > On Fri, Sep 1, 2023 at 11:10=E2=80=AFPM Andy Shevchenko
-> > > > > > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > > > > > On Fri, Sep 01, 2023 at 08:32:40PM +0200, Bartosz Golasze=
-wski wrote:
+> We are not going to change the logic of the whole driver model just
+> because the device is backed up by an FPGA image.  The *driver* should be
+> fully responsible for matched devices.  A HW reset unaware to the
+> device driver is not wanted.  Assuming that the userspace could control
+> every access to device makes no sense.
 >
-> ...
->
-> > > > > > > > > > -     /* Used by sysfs and configfs callbacks. */
-> > > > > > > > > > -     dev_set_drvdata(&gc->gpiodev->dev, chip);
-> > > > > > > > > > +     /* Used by sysfs callbacks. */
-> > > > > > > > > > +     dev_set_drvdata(swnode->dev, chip);
-> > > > > > > > >
-> > > > > > > > > dev pointer of firmware node is solely for dev links. Is =
-it the case here?
-> > > > > > > > > Seems to me you luckily abuse it.
-> > > > > > > >
-> > > > > > > > I don't think so. If anything we have a helper in the form =
-of
-> > > > > > > > get_dev_from_fwnode() but it takes reference to the device =
-while we
-> > > > > > > > don't need it - we know it'll be there because we created i=
-t.
-> > > > > > > >
-> > > > > > > > This information (struct device of the GPIO device) can als=
-o be
-> > > > > > > > retrieved by iterating over the device children of the top =
-platform
-> > > > > > > > device and comparing their fwnodes against the one we got p=
-assed down
-> > > > > > > > from probe() but it's just so many extra steps.
-> > > > > > > >
-> > > > > > > > Or we can have a getter in gpio/driver.h for that but I don=
-'t want to
-> > > > > > > > expose another interface is we can simply use the fwnode.
-> > > > > > >
+> For your case, there is no garantee userspace could block every access
+> to "other PF" initiated by "other PF" driver.  There is also no
+> notification to "other PF" driver that userspace is doing reset to
+> "other PF" via "management PF" interface.  "other PF" driver just break
+> on reset.
 
-Sorry for being late to the party.
+Hi Yilun,
 
-> > > > > > > dev pointer in the fwnode strictly speaking is optional. No-o=
-ne, except
-> > > > > > > its solely user, should rely on it (its presence and lifetime=
-).
-> > > > > >
-> > > > > > Where is this documented? Because just by a quick glance into
-> > > > > > drivers/base/core.c I can tell that if a device has an fwnode t=
-hen
-> > > > > > fwnode->dev gets assigned when the device is created and cleare=
-d when
-> > > > > > it's removed (note: note even attached to driver, just
-> > > > > > created/removed). Seems like pretty reliable behavior to me.
-> > > > >
-> > > > > Yes, and even that member in fwnode is a hack in my opinion. We s=
-hould not mix
-> > > > > layers and the idea in the future to get rid of the fwnode_handle=
- to be
-> > > > > _embedded_ into struct device. It should be separate entity, and =
-device
-> > > > > instance may use it as a linked list. Currently we have a few pro=
-blems because
-> > > > > of the this design mistake.
-> > > >
-> > > > I don't see how this would work if fwnodes can exist before struct
-> > > > device is even created.
-> > >
-> > > That's whole idea behind swnodes. They (ideally) should be created _b=
-efore_
-> > > any other object they are being used with. This is how it works today=
-.
-> >
-> > Yes, this is what I meant: if fwnodes can be created before struct
-> > device (as it is now) and their life-time is separated then how could
-> > you possibly make the fwnode part of struct device?
-> >
-> > > And doing swnode->dev =3D ... contradicts a lot: layering, lifetime o=
-bjects, etc.
-
-I understand what you are trying to say about layering, but there are
-no lifetime violations here.
-
-> >
-> > No it doesn't. We have the software node - the template for the
-> > device. It can only be populated with a single device entry.
->
-> Which is wrong assumption. Software nodes (and firmware nodes) in general
-> can be shared. Which device pointer you want to add there?
-
-I don't think this is any harder to handle than how a device's
-secondary fwnode is handled in set_primary_fwnode(). For secondary
-fwnodes, you just WARN and overwrite it and move on.
-
-> Which one
-> should be next when one of the devices is gone?
-
-Similar to how set_primary_fwnode() handles deletion (NULL), you can
-handle the same for when a device is removed. You can check the parent
-or the bus for another device with the same fwnode and set it.
-
-> No, simply no. Do not use it!
-
-Using fwnode_handle->dev is no different than searching a bus for a
-device which has dev->fwnode match the fwnode you are looking for.
-
-In both cases, you are just going to get the first device that was
-added. It's completely pointless to force searching a bus to find the
-device with a specific fwnode.
-
-In the special cases where one fwnode has multiple devices, no generic
-code is going to always handle the device search correctly. The
-framework adding those devices probably knows what's the right thing
-to do based on which of the N devices with the same fwnode they are
-trying to find.
-
-I understand it's not great, but blindly saying "search the bus" isn't
-really improving anything here and just makes things unnecessarily
-inefficient.
-
--Saravana
+I think this conversation has gotten a little off track. This patch 
+only changes the port reset behavior at driver initialization for revision 
+2 of the port IP. The behavior and the requirements of port reset during 
+run time have not changed. The existing implementation requires the user 
+performing the port reset to ensure appropriate SW was quiesced. This 
+patch does not change this requirement.
 
 >
-> > Once it's done, I don't see why you wouldn't want to assign this device=
- to
-> > its corresponding software node. Provided locking is in place etc.
-> >
-> > > > They - after all - represent the actual
-> > > > physical device hierarchy which may or may not be populated at
-> > > > run-time depending on many factors.
-> > >
-> > > No. This is a mistaken assumption.
-> >
-> > How so?
+>>
+>>>
+>>>> image. I don't think the driver performing the port_reset() can know all the
+>>>
+>>> Other PF drivers should know their own components. They should be aware
+>>> that their devices are being reset.
+>>
+>> The other PF drivers depend on the actual FPGA image being run.
+>>
+>>>
+>>>> components to be able to provide any meaningful management.
+>>>
+>>> If the reset provider and reset consumer are not in the same driver,
+>>> they should interact with each other. IIRC, some reset controller class
+>>> works for this purpose.
+>>
+>> The other PFs in many cases can present as standard devices with existing
+>> drivers like virtio-net or virtio-blk. It does not seem desireable to have
+>> to change existing drivers for a particular FPGA implementation
 >
-> See above.
+> If you have to use a specific method for reset, it is not a standard virtio
+> pci device, and you have to make some change.
+
+From the perspective of the PCI PF/VF implementing the virtio or 
+other standard device, the pci endpoint is completely compliant to the 
+standard, and no driver changes should be required. As mentioned above, 
+this patch does nothing to change any of this behavior. Consider a port 
+reset that is part of a partial configuration flow. The virtio endpoint 
+can become something completely different with a completely different 
+driver. This patch does not affect this flow either.
+
+Thanks,
+Matthew
+
 >
-> > > > Once populated, being able to retrieve the software representation =
-of
-> > > > the device (struct device) from the node from which it was populate=
-d
-> > > > sounds like a reasonable thing to do. What are those problems and a=
-re
-> > > > they even linked to this issue?
-> > > >
-> > > > > The get_dev_from_fwnode() is used only in devlink and I want to k=
-eep it that way.
-> > > > > Nobody else should use it, really.
-> > > >
-> > > > I don't care all that much, I can get the device from the children =
-of
-> > > > the platform device. Still comparing fwnodes, though this time the
-> > > > other way around.
-> > >
-> > > Fine, but do not use dev pointer from fwnode, esp. software node.
-> >
-> > I will do it but I'd like to clarify the above at some point.
+> Thanks,
+> Yilun
 >
-> The relationship between device instance(s) and firmware node instance(s)
-> is m:n, where each of them can be from 0 to ... x or y.
+>>
+>> Thanks,
+>> Matthew
+>>>
+>>> Thanks,
+>>> Yilun
+>>>
+>>>>
+>>>> Thanks,
+>>>> Matthew
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Yilun
+>>>>>
+>>>>>>
+>>>>>> Do you want me to update the commit message with this information?
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Matthew
+>>>>>
+>>>>>
+>>>
+>>>
 >
-> There is no unique mapping between two.
 
