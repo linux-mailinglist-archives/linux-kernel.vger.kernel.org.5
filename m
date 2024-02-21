@@ -1,167 +1,331 @@
-Return-Path: <linux-kernel+bounces-75191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CB285E47B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:22:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665BC85E484
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEE53B213BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:22:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07743B22CFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A836583CAE;
-	Wed, 21 Feb 2024 17:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uS6BeSvp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39397F7EA;
-	Wed, 21 Feb 2024 17:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33F983CBD;
+	Wed, 21 Feb 2024 17:25:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E7583A1F;
+	Wed, 21 Feb 2024 17:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708536164; cv=none; b=NMwIovxXcnpJYY+WmxV1vm1KpOboXrzpvTR150GYf2WuOJUe9rFN3SqEUM5AK74UgL9ZXJTqQI5FAZ8RN9LqgchviWeAgmyHsKwmSaAUtALSxEbgXtx37BLnvTFH1yKlI+wrWdP0XJ4yXQjKuJzRk3lGOBUt6S2sEx5aY4/hSQs=
+	t=1708536316; cv=none; b=CyaKGOpwORpCLrlZeedJes2zJbQVJRMW9DUN9TKQxGza4B3393JCViKpgGkfPz4uNbWtQfKEkr115LLtKxvDyDkzB0f2ntMuxS0stf1LmwbcUY0YwykP0XJHJU5NqUYwgu3YyanSrMID9HsNlclOufq/nEnln9IrfkLBJi2jVhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708536164; c=relaxed/simple;
-	bh=blg5JU8tDMyTEMnxPmEINNG8w4b5crwe8Ll8EbiY46w=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JgQDKxVpaOzs8cEwb+TmHyt5zQJufgRRj36oqMPg8/bNNVgSAOsUs3lKfieZ05eMJCeUKr5DhiYoAaZjv2OZGdeBPUDYX71235s15R+C/HIS+eRmGoC1U+b/Aono9rBeDWruLvJdw97cnOr7QtyP66qqeU2N+0H9UfKiMaJPUZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uS6BeSvp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE996C433C7;
-	Wed, 21 Feb 2024 17:22:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708536163;
-	bh=blg5JU8tDMyTEMnxPmEINNG8w4b5crwe8Ll8EbiY46w=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=uS6BeSvp5tQGb7tUlatSA/6AdxlnEqgjZPLPhr6LKL2tCyHmyDbdKRfzPS5FAWS9h
-	 5m1LOHkjES0ipSOeDSL5tcJz44ykKBaIkXK8HNmJI96vuZZ3SAnXIoqD45xVPGoOYt
-	 o8QzAj15C6JcXC/J6h42DDG/vCskLuUz3ocow7c4bExBhrXzOZumMNiTCvqsInTi5C
-	 PvHc0P00mfCSC2JJZ2ksFd/m4QmfmQy5BhzTAnSFHQoJBD1ZndQam64PHic0VPDW9S
-	 rI+bVOD5JBrV2noI1rPqGMASyOA+IQuUeceifL3AcwuLzdiwnImYBY46T27+Ob5deH
-	 k03G6v925g45Q==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
- Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
- linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v13 06/13] irqchip: Add RISC-V incoming MSI controller
- early driver
-In-Reply-To: <CAK9=C2WXR49KZg3rstChqAHda+hUhPm3AEo6o2jh0NM3kvoSUA@mail.gmail.com>
-References: <20240220060718.823229-1-apatel@ventanamicro.com>
- <20240220060718.823229-7-apatel@ventanamicro.com>
- <87frxnfj3p.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2Xnzg3KAVETXN+ZGLWhVtaJuU4uXs3WH2ZondkBJMHFcA@mail.gmail.com>
- <874je2yqn9.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2WXR49KZg3rstChqAHda+hUhPm3AEo6o2jh0NM3kvoSUA@mail.gmail.com>
-Date: Wed, 21 Feb 2024 18:22:40 +0100
-Message-ID: <87frxl3f6n.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1708536316; c=relaxed/simple;
+	bh=pi3m3lINB34XM4b05DNPw2Om1XAK5T2xa3AtMdE8pgw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HKGy3yAVXGBJC0Pmx5pSrgrSz01PxwAVf5y1Mria76fEPNsKRD0nkf42xjDCMsCMOm7TRqvGBsQXdoDIBxKzwbg7NgD2677UJcQPhmWEQhElk+9iEqfJW+glATY0GdVBLCgsxspWgNonRjdHlP/B9etSPle1i26S5xTNqVDEArk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DA351007;
+	Wed, 21 Feb 2024 09:25:51 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.65.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D45D3F73F;
+	Wed, 21 Feb 2024 09:25:10 -0800 (PST)
+Date: Wed, 21 Feb 2024 17:25:05 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	will@kernel.org, catalin.marinas@arm.com,
+	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
+	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	Suzuki Poulose <suzuki.poulose@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH V16 3/8] drivers: perf: arm_pmuv3: Enable branch stack
+ sampling framework
+Message-ID: <ZdYx8cawn0sAbktv@FVFF77S0Q05N>
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-4-anshuman.khandual@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125094119.2542332-4-anshuman.khandual@arm.com>
 
-Anup Patel <apatel@ventanamicro.com> writes:
+Hi Anshuman,
 
-> On Wed, Feb 21, 2024 at 5:29=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
-el.org> wrote:
->>
->> Anup Patel <apatel@ventanamicro.com> writes:
->>
->> >> > +void imsic_vector_mask(struct imsic_vector *vec)
->> >> > +{
->> >> > +     struct imsic_local_priv *lpriv;
->> >> > +
->> >> > +     lpriv =3D per_cpu_ptr(imsic->lpriv, vec->cpu);
->> >> > +     if (WARN_ON(&lpriv->vectors[vec->local_id] !=3D vec))
->> >> > +             return;
->> >> > +
->> >> > +     /*
->> >> > +      * This function is called through Linux irq subsystem with
->> >> > +      * irqs disabled so no need to save/restore irq flags.
->> >> > +      */
->> >> > +
->> >> > +     raw_spin_lock(&lpriv->lock);
->> >> > +
->> >> > +     vec->enable =3D false;
->> >> > +     bitmap_set(lpriv->dirty_bitmap, vec->local_id, 1);
->> >> > +     __imsic_remote_sync(lpriv, vec->cpu);
->> >> > +
->> >> > +     raw_spin_unlock(&lpriv->lock);
->> >> > +}
->> >>
->> >> Really nice that you're using a timer for the vector affinity change,
->> >> and got rid of the special/weird IMSIC/sync IPI. Can you really use a
->> >> timer for mask/unmask? That makes the mask/unmask operation
->> >> asynchronous!
->> >>
->> >> That was what I was trying to get though with this comment:
->> >> https://lore.kernel.org/linux-riscv/87sf24mo1g.fsf@all.your.base.are.=
-belong.to.us/
->> >>
->> >> Also, using the smp_* IPI functions, you can pass arguments, so you
->> >> don't need the dirty_bitmap tracking the changes.
->> >
->> > The mask/unmask operations are called with irqs disabled so if
->> > CPU X does synchronous IPI to another CPU Y from mask/unmask
->> > operation then while CPU X is waiting for IPI to complete it cannot
->> > receive IPI from other CPUs which can lead to crashes and stalls.
->> >
->> > In general, we should not do any block/busy-wait work in
->> > mask/unmask operation of an irqchip driver.
->>
->> Hmm, OK. Still, a bit odd that when the .irq_mask callback return, the
->> masking is not actually completed.
->>
->> 1. CPU 0 tries to mask an interrupt tried to CPU 1.
->> 2. The timer is queued on CPU 1.
->> 3. The call irq_mask returns on CPU 0
->> 4. ...the irq is masked at some future point, determined by the callback
->>    at CPU 1
->>
->> Is that the expected outcome?
->
-> Yes, that's right.
->
->>
->> There are .irq_mask implementation that does seem to go at length
->> (blocking) to perform the mask, e.g.: gic_mask_irq() which calls
->> gic_{re,}dist_wait_for_rwp that have sleep/retry loops. The GIC3 ITS
->> code has similar things going on.
->
-> The gic_{re,}dist_wait_for_rwp() polls on a HW register for completion
-> which will certainly complete in a predictable time whereas waiting
-> for IPI to be executed by another CPU is not predictable and fragile.
->
->>
->> I'm not saying you're wrong, I'm just trying to wrap my head around the
->> masking semantics.
->>
->> > The AIA IMSIC spec allows setting ID pending bit using MSI write
->> > irrespective whether ID is enabled or not but the interrupt will be
->> > taken only after ID is enabled. In other words, there will be no
->> > loss of interrupt with delayed mask/unmask using async IPI or
->> > lazy timer.
->>
->> No loss, but we might *get* an interrupt when we explicitly asked not to
->> get any. Maybe that's ok?
->>
->
-> The delayed spurious interrupt after masking is avoided by additional
-> masking at the source of interrupt. For wired-to-MSI interrupts, we have
-> additional masking on the APLIC MSI-mode. For PCI MSI interrupts, we
-> have additional masking at PCI device level using pci_msi_mask_irq().
+On Thu, Jan 25, 2024 at 03:11:14PM +0530, Anshuman Khandual wrote:
+> Branch stack sampling support i.e capturing branch records during execution
+> in core perf, rides along with normal HW events being scheduled on the PMU.
+> This prepares ARMV8 PMU framework for branch stack support on relevant PMUs
+> with required HW implementation.
 
-Thanks for the clarifications, Anup! Much appreciated!
+Please can we start a bit more clearly, e.g.
+
+| drivers: perf: arm_pmu: add instructure for branch stack sampling
+| 
+| In order to support the Branch Record Buffer Extension (BRBE), we need to
+| extend the arm_pmu framework with some basic infrastructure for branch stack
+| sampling which arm_pmu drivers can opt-in to using. Subsequent patches will
+| use this to add support for BRBE in the PMUv3 driver.
+
+> ARMV8 PMU hardware support for branch stack sampling is indicated via a new
+> feature flag called 'has_branch_stack' that can be ascertained via probing.
+> This modifies current gate in armpmu_event_init() which blocks branch stack
+> sampling based perf events unconditionally. Instead allows such perf events
+> getting initialized on supporting PMU hardware.
+
+This paragraph can be deleted. The addition of 'has_branch_stack' and its use
+in armpmu_event_init() is trivial and obvious in-context, and this distracts
+from the important parts of this patch.
+
+> Branch stack sampling is enabled and disabled along with regular PMU events
+> . This adds required function callbacks in armv8pmu_branch_xxx() format, to
+> drive the PMU branch stack hardware when supported. This also adds fallback
+> stub definitions for these callbacks for PMUs which would not have required
+> support.
+
+Those additions to the PMUv3 driver should all be in the next patch.
+
+We don't add anything for the other PMU drivers that don't support branch
+sampling, so why do we need to do *anything* to the PMUv3 driver here, given we
+add the support in the next patch? Those additions only make this patch bigger
+and more confusing (and hence more painful to review).
+
+> If a task gets scheduled out, the current branch records get saved in the
+> task's context data, which can be later used to fill in the records upon an
+> event overflow. Hence, we enable PERF_ATTACH_TASK_DATA (event->attach_state
+> based flag) for branch stack requesting perf events. But this also requires
+> adding support for pmu::sched_task() callback to arm_pmu.
+
+I think what this is trying to say is:
+
+| With BRBE, the hardware records branches into a hardware FIFO, which will be
+| sampled by software when perf events overflow. A task may be context-switched
+| an arbitrary number of times between overflows, and to avoid losing samples
+| we need to save the current records when a task is context-switched out. To
+| do these we'll need to use the pmu::sched_task() callback, and we'll need to
+| allocate some per-task storage space using PERF_ATTACH_TASK_DATA.
+
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V16:
+> 
+> - Renamed arm_brbe.h as arm_pmuv3_branch.h
+> - Updated perf_sample_save_brstack()'s new argument requirements with NULL
+> 
+>  drivers/perf/arm_pmu.c          |  57 ++++++++++++-
+>  drivers/perf/arm_pmuv3.c        | 141 +++++++++++++++++++++++++++++++-
+>  drivers/perf/arm_pmuv3_branch.h |  50 +++++++++++
+>  include/linux/perf/arm_pmu.h    |  29 ++++++-
+>  include/linux/perf/arm_pmuv3.h  |   1 -
+>  5 files changed, 273 insertions(+), 5 deletions(-)
+>  create mode 100644 drivers/perf/arm_pmuv3_branch.h
+> 
+> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+> index 8458fe2cebb4..16f488ae7747 100644
+> --- a/drivers/perf/arm_pmu.c
+> +++ b/drivers/perf/arm_pmu.c
+> @@ -317,6 +317,15 @@ armpmu_del(struct perf_event *event, int flags)
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	int idx = hwc->idx;
+>  
+> +	if (has_branch_stack(event)) {
+> +		WARN_ON_ONCE(!hw_events->brbe_users);
+> +		hw_events->brbe_users--;
+> +		if (!hw_events->brbe_users) {
+> +			hw_events->brbe_context = NULL;
+> +			hw_events->brbe_sample_type = 0;
+> +		}
+> +	}
+> +
+
+If this is going to leak into the core arm_pmu code, use "branch_stack" rather
+than "brbe" for these field names.
+
+However, I reckon we could just have two new callbacks on arm_pmu:
+
+	branch_stack_add(struct perf_event *event, ...);
+	branch_stack_del(struct perf_event *event, ...);
+
+.. and hide all of the details in the PMUv3 (or BRBE) driver for now, and the
+code above can just do:
+
+	if (has_branch_stack(event))
+		branch_stack_del(event, ...);
+
+.. and likewise in armpmu_add().
+
+That way the actuel management logic for the context and so on can be added in
+the next patch, where the lifetime would be *much* clearer.
+
+>  	armpmu_stop(event, PERF_EF_UPDATE);
+>  	hw_events->events[idx] = NULL;
+>  	armpmu->clear_event_idx(hw_events, event);
+> @@ -333,6 +342,38 @@ armpmu_add(struct perf_event *event, int flags)
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	int idx;
+>  
+> +	if (has_branch_stack(event)) {
+> +		/*
+> +		 * Reset branch records buffer if a new CPU bound event
+> +		 * gets scheduled on a PMU. Otherwise existing branch
+> +		 * records present in the buffer might just leak into
+> +		 * such events.
+> +		 *
+> +		 * Also reset current 'hw_events->brbe_context' because
+> +		 * any previous task bound event now would have lost an
+> +		 * opportunity for continuous branch records.
+> +		 */
+
+Doesn't this mean some user silently loses events? Why is that ok?
+
+> +		if (!event->ctx->task) {
+> +			hw_events->brbe_context = NULL;
+> +			if (armpmu->branch_reset)
+> +				armpmu->branch_reset();
+> +		}
+> +
+> +		/*
+> +		 * Reset branch records buffer if a new task event gets
+> +		 * scheduled on a PMU which might have existing records.
+> +		 * Otherwise older branch records present in the buffer
+> +		 * might leak into the new task event.
+> +		 */
+> +		if (event->ctx->task && hw_events->brbe_context != event->ctx) {
+> +			hw_events->brbe_context = event->ctx;
+> +			if (armpmu->branch_reset)
+> +				armpmu->branch_reset();
+> +		}
+
+Same question here.
+
+How does this work on other architectures?
+
+What do we do if the CPU-bound and task-bound events want different filters,
+etc?
+
+This is the sort of gnarly detail that should be explained (or at least
+introduced) in the commit message.
+
+> +		hw_events->brbe_users++;
+> +		hw_events->brbe_sample_type = event->attr.branch_sample_type;
+
+What exactly is brbe_sample_type, and why does it get overriden *every time* we
+add a new event? What happens when events have different values for
+brbe_sample_type? Or is that forbidden somehow?
+
+> +	}
+> +
+>  	/* An event following a process won't be stopped earlier */
+>  	if (!cpumask_test_cpu(smp_processor_id(), &armpmu->supported_cpus))
+>  		return -ENOENT;
+
+Unless this cpumask check has been made redundant, it means that the code above
+it is obviously wrong, since that pokes the BRBE HW and increments brbe_users
+*before* we decide whether the event can be installed on this CPU. That'll blow
+up on big.LITTLE,  e.g. we try and install a 'big' CPU event on a 'little' CPU,
+poke the BRBE HW and increment brbe_users, then *after* that we abort
+installing the event.
+
+Even ignoring big.LITTLE, we can fail immediately after this when we don't have
+enough counters, since the following code is:
+
+|        /* An event following a process won't be stopped earlier */
+|        if (!cpumask_test_cpu(smp_processor_id(), &armpmu->supported_cpus))
+|                return -ENOENT;
+|
+|        /* If we don't have a space for the counter then finish early. */
+|        idx = armpmu->get_event_idx(hw_events, event);
+|        if (idx < 0)
+|                return idx;
+
+.. which'll go wrong if you try to open 1 more event than the CPU has
+counters.
+
+> @@ -511,13 +552,24 @@ static int armpmu_event_init(struct perf_event *event)
+>  		!cpumask_test_cpu(event->cpu, &armpmu->supported_cpus))
+>  		return -ENOENT;
+>  
+> -	/* does not support taken branch sampling */
+> -	if (has_branch_stack(event))
+> +	/*
+> +	 * Branch stack sampling events are allowed
+> +	 * only on PMU which has required support.
+> +	 */
+> +	if (has_branch_stack(event) && !armpmu->has_branch_stack)
+>  		return -EOPNOTSUPP;
+>  	return __hw_perf_event_init(event);
+>  }
+>  
+
+I think we can delete the comment entirely here, but the code itself looks
+fine here.
+
+> +static void armpmu_sched_task(struct perf_event_pmu_context *pmu_ctx, bool sched_in)
+> +{
+> +	struct arm_pmu *armpmu = to_arm_pmu(pmu_ctx->pmu);
+> +
+> +	if (armpmu->sched_task)
+> +		armpmu->sched_task(pmu_ctx, sched_in);
+> +}
+
+This looks fine.
+
+>  static void armpmu_enable(struct pmu *pmu)
+>  {
+>  	struct arm_pmu *armpmu = to_arm_pmu(pmu);
+> @@ -864,6 +916,7 @@ struct arm_pmu *armpmu_alloc(void)
+>  	}
+>  
+>  	pmu->pmu = (struct pmu) {
+> +		.sched_task	= armpmu_sched_task,
+>  		.pmu_enable	= armpmu_enable,
+>  		.pmu_disable	= armpmu_disable,
+>  		.event_init	= armpmu_event_init,
+> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> index 23fa6c5da82c..9e17764a0929 100644
+> --- a/drivers/perf/arm_pmuv3.c
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/nmi.h>
+>  
+>  #include <asm/arm_pmuv3.h>
+> +#include "arm_pmuv3_branch.h"
+
+As above, I do not thing that the PMUv3 driver should change at all in this
+patch. As of this patch it achieves nothing, and it makes it really hard to
+understand what's going on because the important aspects are spread randomly
+across this patch and the next patch which actually adds the BRBE management.
+
+Please factor the PMUv3 changes out into the patch adding the actual BRBE code.
+
+[...]
+
+> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
+> index 46377e134d67..c3e7d2cfb737 100644
+> --- a/include/linux/perf/arm_pmuv3.h
+> +++ b/include/linux/perf/arm_pmuv3.h
+> @@ -308,5 +308,4 @@
+>  		default: WARN(1, "Invalid PMEV* index\n");	\
+>  		}						\
+>  	} while (0)
+> -
+>  #endif
+
+Unrelated whitespace change.
+
+Mark.
 
