@@ -1,114 +1,235 @@
-Return-Path: <linux-kernel+bounces-74908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE95285DFE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:37:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4F485E011
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3CEDB24405
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:37:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64D7828A559
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA5E7F7EA;
-	Wed, 21 Feb 2024 14:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5927FBD7;
+	Wed, 21 Feb 2024 14:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XU0P1dH4"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OX9yqpzF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE421E4B2
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F256C80052;
+	Wed, 21 Feb 2024 14:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526249; cv=none; b=McN0XXGBm9103mARVUkKU3CBiKUolpMyMB7Gk8lcCOEFUxaPw4uEU9KGm7Dyp/BsGz9bgSGXBdZNJjUhSxmus6MPBBFsBEWrlVLYbmlGjjZJZNsm/GI6l21Mxqvo0obCpblUztsBiIpzC/Xc3K/rj5JuDVPblFx05v0eO4bMMfk=
+	t=1708526479; cv=none; b=YGq7JPqeKf9T7X6LCaYIJS5RazGS74eAkPskSWJhMB5njHCfOmmYFTm7F28vkkDaQQShMkZbZAjL15noOyJ5f2iUQSgPmq5ZknRcWgyQrnux9C/TD3N6RD+M68H3KP8OXYpZ4byATWx8AoxxhC+Gq71t7ZXk1ozCZuLFec+ZaxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526249; c=relaxed/simple;
-	bh=J8q0JlB/CSmcraPRz+OroMVJcRYOKeq7wFX81mHHwC0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AEWoXcljQtwuzS3Bgm3Kskz5W6ko7N87qNV7pGMyP4zRxOlvdC5V8qXu+KJiVYXc4JBMCZT1YmAEPrDqBLMCXUdGacf4Oec+cJgatUgS2DN1HjVKpxUCD6J9f7LaRFlDv22J8waMt5CHsETtM+z0kLDaD4pTdONi/CCB8PXpg7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XU0P1dH4; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607bfa4c913so6550137b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:37:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708526247; x=1709131047; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=96dYgcSw1uzHwk35CUcYsL8G15ZF0LlfphttW1dNAO8=;
-        b=XU0P1dH47EmAdAw554gnxahswlY2N7CeXgUBjqVbkF2itptU1PLUl42y5XyjO0vZWT
-         pRm3JuvaAayAr1GDHyHoBkndoN5hkWSUvvygxeibgytIm46/TNFPG/464m9CnYKKH1xE
-         E3xOy3lPOp5Uhv/2I7Sk0CppJSj4N+8fhuR+waXkBOZUAnTU8JK8QrpSLbFqi9y4nq2E
-         LgY01q9KHjnEd7ZqVhrCgneVdgXRRXJLMc+sDXL0OuUgKX2r+zkc7sMILzIUvyzY0fE/
-         qfJYEgjFiEO1T5mAhfeDH3+ACHt+NjlC3j3QjPw0h9UVEh6bPCHUBIJMU4R4ijBTDFwu
-         riSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708526247; x=1709131047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=96dYgcSw1uzHwk35CUcYsL8G15ZF0LlfphttW1dNAO8=;
-        b=FEz55f52umQxioiBvp+CNhk/3DGcH06NGGPJK7KVoH2JNp9mmKs8BOqOAQC01S3Q6k
-         IDIbkQ2kNM464WWh+jpE4FFuPQo6sdCbrIVUgqbZOJRTcj0OlJFZZsE6lqCmQT2XLgam
-         85Op0h8Lf8jwf/AOiAEntZO4X78ITk3uwZSriL0uFAEfRSSg6BWOsp3s/P+I8d4+eXuv
-         22rW7I7bTxup3QMW52EytjifFT9eo+4VkFSV3AAY5TbXlpLmUMN/POprMctcm8oLydXu
-         Rw+8LbiY/TyiJVcGolSKEMvSWvZy7L4demae2uRHpkykWXCrvrzJd09orpdtbl8lxoH0
-         UHLA==
-X-Forwarded-Encrypted: i=1; AJvYcCW9jHEjL0oagCowgQRz2enm8MJNyTsYn1YGJqO2cpYtneUgyhsmLRrApa7D12iBOMXFKEx3H8c1XvQm3G/+dAmocL7ZFxU07JddF5XV
-X-Gm-Message-State: AOJu0YykKLSTZw2DMBBw/vCJeZ2Scw1TEgITOuqPSbFbNvzDGvViN2Hn
-	k8Pf3zlQ2GJyyfHyRKjeINHwIa/Ll2CzcOZoFfJzvlz2RJdXYor4B7x2bQn6rbU2sv26K8uIBst
-	E1NbNVdUMlonYV9r08sGO8s2rnj2ykuM4i7pfUw==
-X-Google-Smtp-Source: AGHT+IF7pOoDUqDYgFCWHrS/yspiLu24Q9Cz2m39Sye6lsyfXxK+C51y7B3RynHaRvKVKc9Ic8TVoo8lot4no3c5fF8=
-X-Received: by 2002:a81:6f0b:0:b0:607:ca2e:f23e with SMTP id
- k11-20020a816f0b000000b00607ca2ef23emr17929112ywc.30.1708526247225; Wed, 21
- Feb 2024 06:37:27 -0800 (PST)
+	s=arc-20240116; t=1708526479; c=relaxed/simple;
+	bh=fGy1ZeYlSSA1oBp701WLKo8Ii38jlfVIpfInS3YAkG0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sqrcIY2CcBWs5R3J/4Ji/4tP8NU9sBh9YvswaDTlEkk7Bi1a24+xQMjX/OGRZm5c0wvmQveV6LuF17YNV4k2ceyGwz/AEysTb4JtC0ooTmC7fs4NrXkrhUm5weBWZ6Kd2vkwNENG5TuWux5Ldg/3pGYc9dSC2cUOUDmAlGI8WaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OX9yqpzF; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708526477; x=1740062477;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fGy1ZeYlSSA1oBp701WLKo8Ii38jlfVIpfInS3YAkG0=;
+  b=OX9yqpzFG/HhJHwYntijMEsD1WDOPQ0RbQl6UZ5mNceiVPKR81whzxwP
+   KGNjozORukipANRZmqQgX4leGGsZmQAhygwFG72OAlqBTNpudhZIMw6sf
+   rnIy3PR+EgJhLpGtIDRe2gYx/R57sV2S798jT8qExiB8fHNjd6U3S00ul
+   dERcBe5+34dzaujzkk4vTIBGmXAV66hzmcNYzTxQChkSkoWBeWwzHkPvI
+   hbKYxqN/+5LFFq2qcbIbVXWvGt7vwK0yHxjPn+8bvPCvgOIp+p26iIEmA
+   gQbS6EIG2PVVgi1dfYHCvtuJ7GtVmz5i/kSsSGSUGJPuEWPtHioHoLRb5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="20228461"
+X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
+   d="scan'208";a="20228461"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:41:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
+   d="scan'208";a="5321684"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa008.fm.intel.com with ESMTP; 21 Feb 2024 06:41:13 -0800
+Date: Wed, 21 Feb 2024 22:37:17 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Tull <atull@opensource.altera.com>,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v5 1/1] fpga: add an owner and use it to take the
+ low-level module's refcount
+Message-ID: <ZdYKnZxdTCvu5THG@yilunxu-OptiPlex-7050>
+References: <20240111160242.149265-1-marpagan@redhat.com>
+ <20240111160242.149265-2-marpagan@redhat.com>
+ <Zbh7iO9wlm9ekzB7@yilunxu-OptiPlex-7050>
+ <0720eb91-72f9-4781-8558-8a1b0a3691c2@redhat.com>
+ <Zb8dd9af0Ru/fzGi@yilunxu-OptiPlex-7050>
+ <4aaa131a-4b64-4b86-9548-68aef63c87b3@redhat.com>
+ <ZdHWaeU+/On6LmHX@yilunxu-OptiPlex-7050>
+ <9a9d4018-fd65-49be-9e0a-1eecc9cbf15d@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com> <20240214-mbly-gpio-v1-5-f88c0ccf372b@bootlin.com>
-In-Reply-To: <20240214-mbly-gpio-v1-5-f88c0ccf372b@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 21 Feb 2024 15:37:15 +0100
-Message-ID: <CACRpkdaSMJBFrmbTu+C1Ls8HkLH4FZsAQ6t7dC76+sVTXXHEyw@mail.gmail.com>
-Subject: Re: [PATCH 05/23] gpio: nomadik: extract GPIO platform driver from drivers/pinctrl/nomadik/
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a9d4018-fd65-49be-9e0a-1eecc9cbf15d@redhat.com>
 
-Hi Theo,
+On Tue, Feb 20, 2024 at 12:11:26PM +0100, Marco Pagani wrote:
+> 
+> 
+> On 2024-02-18 11:05, Xu Yilun wrote:
+> > On Mon, Feb 05, 2024 at 06:47:34PM +0100, Marco Pagani wrote:
+> >>
+> >>
+> >> On 2024-02-04 06:15, Xu Yilun wrote:
+> >>> On Fri, Feb 02, 2024 at 06:44:01PM +0100, Marco Pagani wrote:
+> >>>>
+> >>>>
+> >>>> On 2024-01-30 05:31, Xu Yilun wrote:
+> >>>>>> +#define fpga_mgr_register_full(parent, info) \
+> >>>>>> +	__fpga_mgr_register_full(parent, info, THIS_MODULE)
+> >>>>>>  struct fpga_manager *
+> >>>>>> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+> >>>>>> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+> >>>>>> +			 struct module *owner);
+> >>>>>>  
+> >>>>>> +#define fpga_mgr_register(parent, name, mops, priv) \
+> >>>>>> +	__fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+> >>>>>>  struct fpga_manager *
+> >>>>>> -fpga_mgr_register(struct device *parent, const char *name,
+> >>>>>> -		  const struct fpga_manager_ops *mops, void *priv);
+> >>>>>> +__fpga_mgr_register(struct device *parent, const char *name,
+> >>>>>> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner);
+> >>>>>> +
+> >>>>>>  void fpga_mgr_unregister(struct fpga_manager *mgr);
+> >>>>>>  
+> >>>>>> +#define devm_fpga_mgr_register_full(parent, info) \
+> >>>>>> +	__devm_fpga_mgr_register_full(parent, info, THIS_MODULE)
+> >>>>>>  struct fpga_manager *
+> >>>>>> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+> >>>>>> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+> >>>>>> +			      struct module *owner);
+> >>>>>
+> >>>>> Add a line here. I can do it myself if you agree.
+> >>>>
+> >>>> Sure, that is fine by me. I also spotted a typo in the commit log body
+> >>>> (in taken -> is taken). Do you want me to send a v6, or do you prefer
+> >>>> to fix that in place?
+> >>>
+> >>> No need, I can fix it.
+> >>>
+> >>>>
+> >>>>>
+> >>>>> There is still a RFC prefix for this patch. Are you ready to get it merged?
+> >>>>> If yes, Acked-by: Xu Yilun <yilun.xu@intel.com>
+> >>>>
+> >>>> I'm ready for the patch to be merged. However, I recently sent an RFC
+> >>>> to propose a safer implementation of try_module_get() that would
+> >>>> simplify the code and may also benefit other subsystems. What do you
+> >>>> think?
+> >>>>
+> >>>> https://lore.kernel.org/linux-modules/20240130193614.49772-1-marpagan@redhat.com/
+> >>>
+> >>> I suggest take your fix to linux-fpga/for-next now. If your try_module_get()
+> >>> proposal is applied before the end of this cycle, we could re-evaluate
+> >>> this patch.
+> >>
+> >> That's fine by me.
+> > 
+> > Sorry, I still found issues about this solution.
+> > 
+> > void fpga_mgr_unregister(struct fpga_manager *mgr)
+> > {
+> >         dev_info(&mgr->dev, "%s %s\n", __func__, mgr->name);
+> > 
+> >         /*
+> >          * If the low level driver provides a method for putting fpga into
+> >          * a desired state upon unregister, do it.
+> >          */
+> >         fpga_mgr_fpga_remove(mgr);
+> > 
+> >         mutex_lock(&mgr->mops_mutex);
+> > 
+> >         mgr->mops = NULL;
+> > 
+> >         mutex_unlock(&mgr->mops_mutex);
+> > 
+> >         device_unregister(&mgr->dev);
+> > }
+> > 
+> > Note that fpga_mgr_unregister() doesn't have to be called in module_exit().
+> > So if we do fpga_mgr_get() then fpga_mgr_unregister(), We finally had a
+> > fpga_manager dev without mops, this is not what the user want and cause
+> > problem when using this fpga_manager dev for other FPGA APIs.
+> 
+> How about moving mgr->mops = NULL from fpga_mgr_unregister() to
+> class->dev_release()? In that way, mops will be set to NULL only when the
+> manager dev refcount reaches 0.
 
-just a quick note here:
+I'm afraid it doesn't help.  The lifecycle of the module and the fpga
+mgr dev is different.
 
-On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
-in.com> wrote:
+We use mops = NULL to indicate module has been freed or will be freed in no
+time.  On the other hand mops != NULL means module is still there, so
+that try_module_get() could be safely called.  It is possible someone
+has got fpga mgr dev but not the module yet, at that time the module is
+unloaded, then try_module_get() triggers crash.
 
-> +config GPIO_NOMADIK
-> +       bool "Nomadik GPIO driver"
-> +       depends on ARCH_U8500 || ARCH_NOMADIK || COMPILE_TEST
-> +       select OF_GPIO
-> +       select GPIOLIB_IRQCHIP
+> 
+> If fpga_mgr_unregister() is called from module_exit(), we are sure that nobody
+> got the manager dev earlier using fpga_mgr_get(), or it would have bumped up
 
-Could you add:
+No, someone may get the manager dev but not the module yet, and been
+scheduled out.
 
-default PINCTRL_NOMADIK
-
-so it is turned on by default when we have that, since they are jitted toge=
-ther
-so closely.
-
-Yours,
-Linus Walleij
+> the module's refcount, preventing its removal in the first place. In this case,
+> when device_unregister() is called, it will trigger dev_release() since the
+> manager dev refcount has reached 0.
+> 
+> If fpga_mgr_unregister() is called elsewhere in the module that registered the
+> manager (1), we have two subcases:
+> 
+> a) someone got the manager dev earlier and bumped the module's refcount. Hence,
+> the ops are safe since the module cannot be removed until the manager dev is
+> released by calling (the last) put_device(). This, in turn, will trigger
+> class->dev_release().
+> 
+> b) no one got manager dev. In this case, class->dev_release() will be called
+> immediately.
+> 
+> (1) The caller of fpga_mgr_register_*() is responsible for calling
+> fpga_mgr_unregister(), as specified in the docs.
+> 
+> > I have this concern when I was reviewing the same improvement for fpga
+> > bridge. The change for fpga bridge seems workable, the mutex keeps hold
+> > until fpga_bridge_put(). But I somewhat don't prefer the unregistration
+> > been unnecessarily blocked for long term.
+> 
+> I also don't like the idea of potentially blocking the unregistration, but I
+> could not find a better solution for the bridge at the moment.
+> 
+> > I think your try_module_get_safe() patch may finally solve the invalid
+> > module owner issue. Some options now, we ignore the invalid module owner
+> > issue (it exists before this change) and merge the rest of the
+> > improvements, or we wait for your patch accepted then re-evaluate. I
+> > prefer the former.
+> 
+> Yeah, try_module_get_safe() would make things simpler and easier. I'm currently
+> working on a series of selftests to demonstrate that the function is safe from
+> deadlocks, as requested by the maintainer. I hope I can convince people of the
+> advantages.
+> 
+> Thanks,
+> Marco
+> 
 
