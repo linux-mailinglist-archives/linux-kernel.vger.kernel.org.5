@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-74898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8A685DFBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:32:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3462A85DFC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3D051F23517
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6616C1C2404F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9B07F7EE;
-	Wed, 21 Feb 2024 14:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C937FBB2;
+	Wed, 21 Feb 2024 14:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="No2piR1T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="QiZQHm2A"
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948A647F48;
-	Wed, 21 Feb 2024 14:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957CF78B5E
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.143.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708525927; cv=none; b=YlSGEHUjN9bZCcTUKDjDToYcXH9LQxUCwVh2vcs188xI5JtRu35fsqHMNb8681scH7PuJKpHYTsEGuUtxXr9N0vqEWVzl8SQKReLMAlrKtP1J9m9yeBORv3z5de2R7w/UPk/CDkuziTMEDsPQXYOp27FGnmKuGIuesmiax3Huko=
+	t=1708525947; cv=none; b=sHZ8IqrSnejQ7/qjpF7ASd6k7ooChMlAcQpqdtGDltUUpuaBvBeNyjY0b80xHHP0S7uOEuvJ1yF+WYrIM55gecQKWGci6ON2RP3gjkvwD+aEuZNLt+XgiCBMIzFA137Tl00bf7ii1S9RZ/atZEC2w4o3dmSzyozcYX+SKiEPfQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708525927; c=relaxed/simple;
-	bh=ETU59JMcllMSB/or4eosb1YfI1+Lc4q0wczytbrnDNQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UzgSSkKnH5CXNBd/xtzRKnGRqXQxrfxtH1dcEo830FDe8vLZEjq0Y8gS6cTSMlBpXP7OjMjNKmtjnrwJfWA9ONHB9i/Jsp7scoifSpvNe2xMIV+8Slu2VAKRttNQQub7jWFPemjadgUIx+h1hnxZBvFm3QUz6bUJV/8kDHtb+2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=No2piR1T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 160ABC433C7;
-	Wed, 21 Feb 2024 14:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708525927;
-	bh=ETU59JMcllMSB/or4eosb1YfI1+Lc4q0wczytbrnDNQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=No2piR1TxZde8nJFFXemM2a3+zqfT436aGB+BMcjfAbgT7qoNeY3Ugzq2eYbu+wh7
-	 +hwltOlGdL/UB4JE+TY8cLUBK8DpBP1uuFfW4MYCxZ1QEZ3+51k0b/t/2+G9iuwwDk
-	 P5Itmhah8RpUWeJjtbXpSRe0mrC6qAZXUoTnutiVH1LtyKU32ARVkjr+AZNdB6o7c5
-	 QG0YuXMGYeXL26sbnFcx9E0BAMmUG2NCS63m/IJZWdi/v704kE34N6ZNPx4dgUlof7
-	 5a0BoTqhnE0SoLRWJs3vfmbuYmuDIJjDCT8o/3UF9qlg1ZqrsieGf1N67iw+04QylX
-	 VI16bpwZCgZ/A==
-Date: Wed, 21 Feb 2024 07:32:04 -0700
-From: Rob Herring <robh@kernel.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>, Len Brown <lenb@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	kernel-team@android.com, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] dt-bindings: Add post-init-supplier property
-Message-ID: <20240221143204.GA2773516-robh@kernel.org>
-References: <20240212213147.489377-1-saravanak@google.com>
- <20240212213147.489377-4-saravanak@google.com>
+	s=arc-20240116; t=1708525947; c=relaxed/simple;
+	bh=A8tZrzARhDzSrJvFwMxR+MdZZC7cYSQdLi2blDB1wa0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Zex+W839sRTPq955eqjkJc0Dm8IkLVgW9mSyzqLeNH2p8rHo5fKyA99wks9CmauA7s5sOyP2svh2PnevBq17nrRV0VGEW11mCF6u7n6OlE3TlgF+QMT2Rd+wjcUkIjnV3tCZEN88OiFRUVaLeIR+yA6B0L3aBSqign8eavm31mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=QiZQHm2A; arc=none smtp.client-ip=148.163.143.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
+	by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41L9WIHP029001;
+	Wed, 21 Feb 2024 14:32:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type : in-reply-to;
+ s=pps0720; bh=/iv4ThsUnofZrp6dBFEzAeN+gu67jIY2EunvYP4Mqns=;
+ b=QiZQHm2ATy+WpXFBZOqA5MKwuHiJ4tHrPID5SrQv4sHZidH21NOAe+X/PzIl5G+6F7bG
+ qcp6MJ6k1bEAxsBjEez3U3cLGKZ6W2cgt1sjeL9pGiXjlHb6BCh+vQyqbH/PlAKMazFM
+ D8y3rMZZn+XDJ+5WIA4z5spHggUQ0UBIxXFs7EScJz7nSm22fj1ZXVxjyMte6C3vUDFP
+ taM9V5aZmtr6u/33ajel4jroqoh1Wk+L/EgwpwkiuRyGb6r5h+zdDN4iigIT68nIkUi3
+ Gc0ZYFlWS2HXJVcLjRZNaf+fM46ErbL5Masbvfz9/tCEqX3XYO6qV+SRzF8xXz/iZFUd bg== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3wd3dh125t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 14:32:12 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 15ADA13794;
+	Wed, 21 Feb 2024 14:32:12 +0000 (UTC)
+Received: from localhost (unknown [16.231.227.39])
+	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id 9EF5E800466;
+	Wed, 21 Feb 2024 14:32:11 +0000 (UTC)
+Date: Wed, 21 Feb 2024 22:32:10 +0800
+From: Keng-Yu Lin <keng-yu.lin@hpe.com>
+To: gregkh@linuxfoundation.org, matt.hsiao@hpe.com
+Cc: linux-kernel@vger.kernel.org, arnd@arndb.de
+Subject: Re: [PATCH] MAINTAINERS: change the maintainer for hpilo driver
+Message-ID: <ZdYJag6SKHmU027h@tarheel.asiapacific.hpqcorp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,111 +68,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212213147.489377-4-saravanak@google.com>
+In-Reply-To: <2024022107-amuck-festival-873f@gregkh>
+X-Proofpoint-ORIG-GUID: WU1u4KOW7fcNv6Pzj3JWLGI6cklqdWur
+X-Proofpoint-GUID: WU1u4KOW7fcNv6Pzj3JWLGI6cklqdWur
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_01,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ mlxlogscore=401 mlxscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402210113
 
-On Mon, Feb 12, 2024 at 01:31:44PM -0800, Saravana Kannan wrote:
-> The post-init-supplier property can be used to break a dependency cycle by
-> marking some supplier(s) as a post device initialization supplier(s). This
-> allows an OS to do a better job at ordering initialization and
-> suspend/resume of the devices in a dependency cycle.
+On Wed, 21 Feb 2024 08:02:27 +0100, gregkh@linuxfoundation.org wrote:
+> Great, but I need an ack from Keng-Yu for obvious reasons :)
 > 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  .../bindings/post-init-supplier.yaml          | 101 ++++++++++++++++++
->  MAINTAINERS                                   |  13 +--
->  2 files changed, 108 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/post-init-supplier.yaml
+> thanks,
 > 
-> diff --git a/Documentation/devicetree/bindings/post-init-supplier.yaml b/Documentation/devicetree/bindings/post-init-supplier.yaml
-> new file mode 100644
-> index 000000000000..aab75b667259
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/post-init-supplier.yaml
-> @@ -0,0 +1,101 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (c) 2020, Google LLC. All rights reserved.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/post-init-supplier.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Post device initialization supplier
-> +
-> +maintainers:
-> +  - Saravana Kannan <saravanak@google.com>
-> +
-> +description: |
-> +  This property is used to indicate that the device(s) pointed to by the
-> +  property are not needed for the initialization of the device that lists this
-> +  property. This property is meaningful only when pointing to direct suppliers
-> +  of a device that are pointed to by other properties in the device.
-> +
-> +  A device can list its suppliers in devicetree using one or more of the
-> +  standard devicetree bindings. By default, it would be safe to assume the
-> +  supplier device can be initialized before the consumer device is initialized.
-> +
-> +  However, that assumption cannot be made when there are cyclic dependencies
-> +  between devices. Since each device is a supplier (directly or indirectly) of
-> +  the others in the cycle, there is no guaranteed safe order for initializing
-> +  the devices in a cycle. We can try to initialize them in an arbitrary order
-> +  and eventually successfully initialize all of them, but that doesn't always
-> +  work well.
-> +
-> +  For example, say,
-> +  * The device tree has the following cyclic dependency X -> Y -> Z -> X (where
-> +    -> denotes "depends on").
-> +  * But X is not needed to fully initialize Z (X might be needed only when a
-> +    specific functionality is requested post initialization).
-> +
-> +  If all the other -> are mandatory initialization dependencies, then trying to
-> +  initialize the devices in a loop (or arbitrarily) will always eventually end
-> +  up with the devices being initialized in the order Z, Y and X.
-> +
-> +  However, if Y is an optional supplier for X (where X provides limited
-> +  functionality when Y is not initialized and providing its services), then
-> +  trying to initialize the devices in a loop (or arbitrarily) could end up with
-> +  the devices being initialized in the following order:
-> +
-> +  * Z, Y and X - All devices provide full functionality
-> +  * Z, X and Y - X provides partial functionality
-> +  * X, Z and Y - X provides partial functionality
-> +
-> +  However, we always want to initialize the devices in the order Z, Y and X
-> +  since that provides the full functionality without interruptions.
-> +
-> +  One alternate option that might be suggested is to have the driver for X
-> +  notice that Y became available at a later point and adjust the functionality
-> +  it provides. However, other userspace applications could have started using X
-> +  with the limited functionality before Y was available and it might not be
-> +  possible to transparently transition X or the users of X to full
-> +  functionality while X is in use.
-> +
-> +  Similarly, when it comes to suspend (resume) ordering, it's unclear which
-> +  device in a dependency cycle needs to be suspended/resumed first and trying
-> +  arbitrary orders can result in system crashes or instability.
-> +
-> +  Explicitly calling out which link in a cycle needs to be broken when
-> +  determining the order, simplifies things a lot, improves efficiency, makes
-> +  the behavior more deterministic and maximizes the functionality that can be
-> +  provided without interruption.
-> +
-> +  This property is used to provide this additional information between devices
-> +  in a cycle by telling which supplier(s) is not needed for initializing the
-> +  device that lists this property.
-> +
-> +  In the example above, Z would list X as a post-init-supplier and the
-> +  initialization dependency would become X -> Y -> Z -/-> X. So the best order
-> +  to initialize them become clear: Z, Y and then X.
-> +
-> +select: true
+> greg k-h
 
-blank line
+Sure, no problem.
 
-> +properties:
-> +  post-init-supplier:
-
-'supply' is already used for regulators. Let's make it 
-'post-init-providers'.
-
-Rob
+Acked-by: Keng-Yu Lin <keng-yu.lin@hpe.com>
 
