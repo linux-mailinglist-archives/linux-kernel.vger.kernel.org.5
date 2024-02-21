@@ -1,142 +1,173 @@
-Return-Path: <linux-kernel+bounces-75299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7998285E611
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:32:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2559E85E614
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:33:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F72A284DDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:32:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E73C1F25DB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FE885940;
-	Wed, 21 Feb 2024 18:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE5085275;
+	Wed, 21 Feb 2024 18:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jt0Cd1zb"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="X9AH01D9"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9266F3C068
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D93842A8B
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708540356; cv=none; b=EPlZqHEBCvi6QKFxsl/A9m9/2cv9ZUUSO7OaxRXd74wp51eazbBe+1Y0soDS3bBOEFTT6D9LwbMGUuzTl8KA0MhpiCEtBAKZpG/mjQRtltaNJQf9v26mpQUaxOqHTxGEsJfaqgnYFyPzklC5sHkNMPInNP8MQ6hd2wYOqNz529g=
+	t=1708540393; cv=none; b=tTyZilRypLJnHniqRzUwvVIZbK1Nz1ViRPsQQGTLWiqlmMkYPYwAMI8+RPqnl9hSFJf5SzAA5UwvIoJpeSyu1sG8j65FY1llL4emGP53XY2L1fQ9Ybye1g62rOHlIujEjIwbdQDWZop9o1LAJdRfDX2t6tBK4V717qdC5c7Psno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708540356; c=relaxed/simple;
-	bh=huu2hWz+NSGDR1cCL7Z963qagQlNiSvksrY9h0TiL/I=;
+	s=arc-20240116; t=1708540393; c=relaxed/simple;
+	bh=89purHZkKcLXQHZInAgN1YPrrQ+QBmPNt/5xpga4zZo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TuOgPBf4duYS79f+r1T0wuD7m1gM40ieF2hUqBWnwvk9a3OccJbnoXCC+8h47i+V0SXwJrIiAQ/ITyCMM4dLZM/F7rNu/NrR1KgIMCENm10iDtPx/5u+5i2vhwsNALHhB2XqgB6kfU0sKufho815tFvzK9bL5A71CHqSsp36UEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jt0Cd1zb; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d6fe64a9bso1691248f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:32:34 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nvGIj8f0KrSXC0vFudIbry/+vI68tbjtyPAHonmrGUaqofq3Lnz1+LDAXM7Vpz1Zr7EbmD+FRTio5iFUy6AURCexrYO49WfH0Jl6f28UC+CpGetkBzF8Y0HTCrb95LLPB4ib7xyl1Xqsk2BL7+x07+yH0QwpJ+KhzX+RrQL+RT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=X9AH01D9; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7c7674446c0so41222139f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:33:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708540353; x=1709145153; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1708540391; x=1709145191; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kdCNHUB8NlhEWaYuHhsXiudAInPYTn2vq7tNOUbWmbI=;
-        b=Jt0Cd1zblFmKyzbK1yXyjzWBD6MThIh03wyhxTP89KIffyhvFElQn0DHY3zJeg37nh
-         ab56GpXNvN/mIlcV6uI+d5tVTJ8Acm/MxWTzqD6S3ZSo/jh00YfvyRVcVU5sqSQYJZLD
-         YOxtxRJ5jmT5dOBXP32fdlJut82WvLBRCt6EFLbqN3uyeURPYdUg3VvI73DiVRMJ+PWj
-         vasgxBYxD0rdqv6XZsFYdXU5CyDAmOACO+Q4Y64T5xFFu8jGV8UGVibf/nzgqRTslnoB
-         t9sSVlfdILEWaskUba4oyTxHZkYfyUg3XlaSge1iXoWlxRopSC6rnuSOPK6Me3HeWCBV
-         nIrA==
+        bh=/YQ+k2u4/KRCl3gB+BuuroOtM62WkzZOyZVtF18iF8E=;
+        b=X9AH01D97fqw2isfcfBMZOrlCiaIhvf6vhdH5qaTSJMZJMDjy8Q358YEMRrJq4mvQt
+         g2/ZCUOO25BftYn8LAtpspQS4PjWo+FGIJjjxSi58dSZrQyroyq0tfpr/Q3Fv4GCdln6
+         2ISQQRXGPOqPO+S77WuicFYaK5VX03mUEO5Zg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708540353; x=1709145153;
+        d=1e100.net; s=20230601; t=1708540391; x=1709145191;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kdCNHUB8NlhEWaYuHhsXiudAInPYTn2vq7tNOUbWmbI=;
-        b=XebFAnUqNqZcnJKIITwjW0yLIr+4Xut5lTq+CkBt50bny6Ye+rWPulIsl1KA+4iMOx
-         huZa4w/8vkCexHzTCxKi5UWfwB5w4E6mUhPr63kLhMhLv0EvEQ4EyN5QtqzAmMUGSxhy
-         l2d/79J53I9smwpK5NbDRm82o5EbdSWMydPzwq78HARkI1/Ot6wU+/NiTzIsg6xSN1np
-         fjFhwWS7V3KoEOtQCMtmHnzcY4X7q6fxQTGchnadA5lH0s8t5Hw74DS7IOSGXfCdyuap
-         9oUFI423Eg07DzT0n7nUTK9Ur8uC08Y8EC07dKmsN2Xmkf6PTuT4hx/zj+l+w9pLQc1Q
-         Bsqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvVkzpUROUT2dK8uqaXIEPB8oYogIqJKuFo4dyohpNTbPLVbK4TOIoGV9r7jPqGehXhuvy7Y6mfh29WWKnUuEAluBYarJ9S4dGXCn/
-X-Gm-Message-State: AOJu0YwuJ8kk5r7PLg0I45iA+W4GxkSpOoATqYBlGQ9TcOdD8kwiCPKM
-	LOnsKgd0oIGGpeIPYZFO6jgTpNWezS6boYZ9nAWWA4aotvARP73OXnUJSBDNmDY=
-X-Google-Smtp-Source: AGHT+IGjjh41J8R6w1HgLCzLEhL+yAFtNJQ8Did+W2yZkuwwHAhhY4N1gRhnvSo6GKC5QbcXWFhzlA==
-X-Received: by 2002:a05:6000:809:b0:33d:1656:21fa with SMTP id bt9-20020a056000080900b0033d165621famr19010789wrb.24.1708540352842;
-        Wed, 21 Feb 2024 10:32:32 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id bx14-20020a5d5b0e000000b0033d6bd4eab9sm6552101wrb.1.2024.02.21.10.32.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 10:32:32 -0800 (PST)
-Date: Wed, 21 Feb 2024 21:32:27 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Simon Horman <horms@kernel.org>, Geoff Levand <geoff@infradead.org>
-Cc: Geoff Levand <geoff@infradead.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Jeff Garzik <jeff@garzik.org>, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net] ps3/gelic: Fix possible NULL pointer dereference
-Message-ID: <d8cfc517-f597-420b-a164-1d33f3117b93@moroto.mountain>
-References: <20240221-ps3-gelic-null-deref-v1-1-f4fe159c7cb0@kernel.org>
+        bh=/YQ+k2u4/KRCl3gB+BuuroOtM62WkzZOyZVtF18iF8E=;
+        b=VFoKv+BIsezXc3n7pPQEmaDHlR5aN1cuD/oNhMuYa1e4fdgqlvN69vd6tK+nR4Bz9w
+         u4+rQi0/kGJYcRfJtuA3yyPc2zp/IhMl9c+h9r2IvsVA1NRdNANb+/3CfWrsV9eaH8dG
+         LKfo2kjnq+p+OgUNbydP6NDB+OQywWZBial54dWACXFo2poMrNXCj1E/GYwvMfMYcNIA
+         eFCsb2hxqWm/0bD7DulATe8jKMaBnWup1EF7o53MGP9JWxDcrRm3/k9jHpIsLxzglnI4
+         /Ak9NPEdqsxv3NZqRd7y3d412l2eL9/kuop/PqQ8SWkNI5eTHN24S5T7v06nTzMP7EWc
+         HxXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXF09xafyo0WTviTUkrUMFUxfTOBvrul3j5EfApMp4fyuPrfOX+BePW7+6U/Ot+MYgekJd9K5VaMlJVGbWdMwJ6YX3ELIJ6J9iIYxST
+X-Gm-Message-State: AOJu0YyV+vCmYSFk9CnkfCvomATiw6HEjx7+Py+yEcmM/GOXYY5CAVrs
+	1YBEkeSI7UYeQaKznoI06ThRwF9BLjunN7UjHRJHtA9P/m9hCzMBrvv+W8Rbnw==
+X-Google-Smtp-Source: AGHT+IFHndbwvPi9HKM94gjUT+3r1Ko6m+vh9uNJ/tA+SNYvwRMb5Y+Io18p6G2V3UkJiZURF7V0DQ==
+X-Received: by 2002:a6b:e713:0:b0:7c7:4f34:3ab6 with SMTP id b19-20020a6be713000000b007c74f343ab6mr11332480ioh.19.1708540390759;
+        Wed, 21 Feb 2024 10:33:10 -0800 (PST)
+Received: from localhost (147.220.222.35.bc.googleusercontent.com. [35.222.220.147])
+        by smtp.gmail.com with UTF8SMTPSA id i19-20020a056602135300b007c762411fa4sm1058727iov.21.2024.02.21.10.33.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 10:33:10 -0800 (PST)
+Date: Wed, 21 Feb 2024 18:33:09 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] usb: misc: onboard_dev: add support for non-hub
+ devices
+Message-ID: <ZdZB5S2bU3TFaj4u@google.com>
+References: <20240206-onboard_xvf3500-v3-0-f85b04116688@wolfvision.net>
+ <20240206-onboard_xvf3500-v3-2-f85b04116688@wolfvision.net>
+ <ZcJ9OnYOtUVMu2Yk@google.com>
+ <2a23817d-b797-4659-a4e6-5c8a75864c90@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240221-ps3-gelic-null-deref-v1-1-f4fe159c7cb0@kernel.org>
+In-Reply-To: <2a23817d-b797-4659-a4e6-5c8a75864c90@wolfvision.net>
 
-This driver is PPC so I have never looked at the code before.  I noticed
-another issue that was introduced last December in commit 3ce4f9c3fbb3
-("net/ps3_gelic_net: Add gelic_descr structures").
+On Tue, Feb 13, 2024 at 11:00:43AM +0100, Javier Carrasco wrote:
+> On 06.02.24 19:40, Matthias Kaehlcke wrote:
+> > On Tue, Feb 06, 2024 at 02:59:30PM +0100, Javier Carrasco wrote:
+> >> Most of the functionality this driver provides can be used by non-hub
+> >> devices as well.
+> >>
+> >> To account for the hub-specific code, add a flag to the device data
+> >> structure and check its value for hub-specific code.
+> >>
+> >> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+> >> ---
+> >>  drivers/usb/misc/onboard_usb_dev.c |  3 +++
+> >>  drivers/usb/misc/onboard_usb_dev.h | 10 ++++++++++
+> >>  2 files changed, 13 insertions(+)
+> >>
+> >> diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
+> >> index e2e1e1e30c1e..3ac21ec38ac0 100644
+> >> --- a/drivers/usb/misc/onboard_usb_dev.c
+> >> +++ b/drivers/usb/misc/onboard_usb_dev.c
+> >> @@ -123,6 +123,9 @@ static int __maybe_unused onboard_dev_suspend(struct device *dev)
+> >>  	if (onboard_dev->always_powered_in_suspend)
+> >>  		return 0;
+> >>  
+> >> +	if (!onboard_dev->pdata->is_hub)
+> >> +		return onboard_dev_power_off(onboard_dev);
+> > 
+> > Why turn the device always off when it isn't a hub? It could be a device
+> > with wakeup support.
+> > 
+> > I really regret making 'off in suspend' the default :(
+> > 
+> 
+> 
+> The power management seems to be a critical point to consider.
+> 
+> Maybe we keep the current implementation and add support to non-hub
+> devices by simply adding a check to set power_off to false:
+> 
+> static int __maybe_unused onboard_dev_suspend(struct device *dev)
+> 
+> {
+> 
+>         struct onboard_dev *onboard_dev = dev_get_drvdata(dev);
+> 
+>         struct usbdev_node *node;
+> 
+>         bool power_off = true;
+> 
+> 
+> 
+>         if (onboard_dev->always_powered_in_suspend)
+> 
+>                 return 0;
+> 
+> 
+> 
+>         mutex_lock(&onboard_dev->lock);
+> 
+> 
+> 
+>         list_for_each_entry(node, &onboard_dev->udev_list, list) {
+> 
+>                 if (!device_may_wakeup(node->udev->bus->controller))
+> 
+>                         continue;
+> 
+> 
+> 
+> ~                if (usb_wakeup_enabled_descendants(node->udev) ||
+> 
+> +                    !onboard_dev->pdata->is_hub) {
+> 
+>                         power_off = false;
+> 
+>                         break;
+> 
+>                 }
 
-net/ethernet/toshiba/ps3_gelic_net.c
-   375  static int gelic_descr_prepare_rx(struct gelic_card *card,
-   376                                    struct gelic_descr *descr)
-   377  {
-   378          static const unsigned int rx_skb_size =
-   379                  ALIGN(GELIC_NET_MAX_FRAME, GELIC_NET_RXBUF_ALIGN) +
-   380                  GELIC_NET_RXBUF_ALIGN - 1;
-   381          dma_addr_t cpu_addr;
-   382          int offset;
-   383  
-   384          if (gelic_descr_get_status(descr) !=  GELIC_DESCR_DMA_NOT_IN_USE)
-   385                  dev_info(ctodev(card), "%s: ERROR status\n", __func__);
-   386  
-   387          descr->skb = netdev_alloc_skb(*card->netdev, rx_skb_size);
-   388          if (!descr->skb) {
-   389                  descr->hw_regs.payload.dev_addr = 0; /* tell DMAC don't touch memory */
-   390                  return -ENOMEM;
-   391          }
-   392          descr->hw_regs.dmac_cmd_status = 0;
-   393          descr->hw_regs.result_size = 0;
-   394          descr->hw_regs.valid_size = 0;
-   395          descr->hw_regs.data_error = 0;
-   396          descr->hw_regs.payload.dev_addr = 0;
-   397          descr->hw_regs.payload.size = 0;
-   398          descr->skb = NULL;
-                ^^^^^^^^^^^^^^^^^^
-NULL
-
-   399  
-   400          offset = ((unsigned long)descr->skb->data) &
-                                         ^^^^^^^^^^^^
-Dereferenced here.
-
-   401                  (GELIC_NET_RXBUF_ALIGN - 1);
-   402          if (offset)
-   403                  skb_reserve(descr->skb, GELIC_NET_RXBUF_ALIGN - offset);
-   404          /* io-mmu-map the skb */
-   405          cpu_addr = dma_map_single(ctodev(card), descr->skb->data,
-   406                                    GELIC_NET_MAX_FRAME, DMA_FROM_DEVICE);
-
-regards,
-dan carpenter
-
+It isn't really necessary to perform this check in the loop, it isn't
+dependent on any properties of the USB devices, right? It could be
+combined with the check of 'always_powered_in_suspend' above.
 
