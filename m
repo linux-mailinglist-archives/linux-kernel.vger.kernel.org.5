@@ -1,216 +1,96 @@
-Return-Path: <linux-kernel+bounces-74185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E980485D0E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:08:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD7D85D0E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 08:09:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189331C22F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:08:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72150287A90
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600CC3A28E;
-	Wed, 21 Feb 2024 07:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98A93B797;
+	Wed, 21 Feb 2024 07:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XrF/1n7d"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vkQfgsQD"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD3C3A8E3
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0ED3B78B
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708499279; cv=none; b=h3NomfiOeRQpS9Bmbqy9ylH7O5GAsuvYs3kJeTpJU5+zRW4fYrwU0QnCv3fh/mGyyGPYm4/KscnZjlwgKKvMRPYk2X4Mp02tbylE78TU819IpwpRCZnP0ZdM7Qt/h/1LY8CKp+DelLO4f2wbMIflZYRLw+NCmBSSOcnqNO5IIxQ=
+	t=1708499288; cv=none; b=d/n5IuBRG7y6TaEpNRjGpu+O8klnK+v8FNrmS2fvKpxzhOObtoHlMaZmJLEalvot2IwrhFa0+oFQC+gYWQFlmlUdqobkUq/Bcp1RFKj4H+ne7Qf5coEdaLdfQdLGc2kbQJ67r3EHm15gtpw7i0kSCI+J5e2/SH2E7q1wvUAFZZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708499279; c=relaxed/simple;
-	bh=Vctcg2i0KcfuRuGiF34q8FKyaNU+WFLIoo1taHhTiGA=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=JihDLXVvDbTBcXCjybdctB2HJpxCtoT0gOsAdzw+3jAQgDb13e2g7V8LN2G/++O0jiGRu6QFWXstumXuvaMTNtIen3m4qmo7adAea8OXDMueF/rDY/y/RJt+4+FMOo9IW5uXljROVQACD8a654RInCyhtjMZSARXrIHXjonlsgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XrF/1n7d; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1708499288; c=relaxed/simple;
+	bh=L6zbD+r4iAQVkolpUdqaC5kdIDlOZs92K4PNPYeqx8Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vs186qEZ5D9z5WOqCJ8murJvrCmpseUmGQFQAU6mLhxTJ08x+oEprI30tAGkZfEZdWmNjA9s9g+9PWLcWxzUfNliEwPBV8WxRmH5UzB/rkAcXYyFulNmAzQaAs+jNOLTtXD1GBnI/Zi2PGpCGHhfzF66HDlwIoVaKi3OstzdTFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vkQfgsQD; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602dae507caso103810417b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:07:57 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-511976c126dso402590e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:08:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708499277; x=1709104077; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tjKYmJzQl8F9/gAiKS0z/bm1yBfw+nAatzaAOGPVP0k=;
-        b=XrF/1n7dOXKAH5wwlFadyQT+L3Z6MR53hW/PKAjj+2En2vZI9bzH9ynIoY3vETgytt
-         TG3qmFQPUux+TK0yo1csf/5DvXHXFFEPzh4ptDxH4PRAvosOb6LZwE543X/I+mFb+ZVz
-         NsV8Qp5M0pQTczBSMiuMoVKTxpoXfUsVCQYVFNHFLlX8sBYQDv/w6qdzYj+VmUevsyjh
-         6ho48hzhNE93SRUqEodChE7Gc8ltK+QAX9MuBMjHvr0hUCQ1dquctIgKsP0Lz35teJ0V
-         0TL97/tQ3IAH46OU5ruNnB1T7PPMAuUEhI7QVSxYgUCKrbIAZjLgZYg12GAl+USPGaOX
-         wGPw==
+        d=google.com; s=20230601; t=1708499285; x=1709104085; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=L6zbD+r4iAQVkolpUdqaC5kdIDlOZs92K4PNPYeqx8Y=;
+        b=vkQfgsQDHrbxG0DiaoWAnw8FsfnbUdtZib000uWHg0wIlYT+HrgSStHuiYTFUcJX+e
+         WxuIkK2ISklm7coEPKp5c4WxJ1ItMjJcaNB8ViHy0TMQQou9LBHAhK8lNrXNP1UFDnmj
+         0PC0tcY6HTPeoetxu516Pf+mF4jHWA3jzFvgNzv3dSdg4L83oGnRoGj6PvPKG0wgqado
+         oXMgHUNtdrh61hAjN49nc9F36tiScy25yxpJYLLhwKySzAuU9+zoHH24k2aRZOjzq/n/
+         jgDtVQNmz3Cy8icJcJZdMLlt0wqpN9qNPWLCE0UozdxYIJUcxYOwIkkojnyKbpr0Qq0+
+         zRsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708499277; x=1709104077;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tjKYmJzQl8F9/gAiKS0z/bm1yBfw+nAatzaAOGPVP0k=;
-        b=n2NFfRfdRcQl9bdGqfV+eUZNHrB29pyx9YI+hHipyIw2I3tMKAx5kSTkpjkl7ysYqP
-         L+jAC5HxSrIu1u0Q74fwE46yLFEWuIjdluJJXrS7Urn1JgjE0SveWNcq+dhqEogCK3N1
-         lrYi2QSFxU1gwRtvEGmcwqew0j1qB9xkIqVnu//xUz4T/njZF8DbFbiHMsfoUcbtgSbD
-         lQvsDQCZBm46taN9qzolD7mwArAihzL6yAr6UdoFaIn1klPnzgEEYLPMZeLgEp2p+N2F
-         JMatdqeip6dxADqWgZX6ALHySSnzH0YbTIjGmh/hK4J/3K1C+TqMmUT22dgaAvU00uXU
-         inlg==
-X-Forwarded-Encrypted: i=1; AJvYcCV21/erLd9wt5qur70JSBmTyf7yqQM4HcBj9Jd9UHGGRQyL7F0Uwz1Kx6LJmPUd/a+u0vBrGOTGL1G+c6uyScOdkL62VT9Ob8nNsGnQ
-X-Gm-Message-State: AOJu0YwSUXupJeYU5M65r6gd4h4sxcrMF8Ld7dhAaHAZ6QLEJN63xJfM
-	/MW6Cj/wrvoxz7/ssuLS3eA376Ji0iCnSrgVrNRzUkF8DfDJDMxaW3gUx1rsWqPXPBI6GO63e+7
-	O9DXPaQ==
-X-Google-Smtp-Source: AGHT+IHqlDDgcr3rxtaox3ghXBLqkcK54ihRY+l5S7iwLrcnlNm+aa7RnDj8IoptqZzHNtAsKnMzftEqUTMC
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:3c02:f882:5876:b7ab])
- (user=irogers job=sendgmr) by 2002:a0d:d9c6:0:b0:608:77cd:bbfd with SMTP id
- b189-20020a0dd9c6000000b0060877cdbbfdmr485456ywe.1.1708499276945; Tue, 20 Feb
- 2024 23:07:56 -0800 (PST)
-Date: Tue, 20 Feb 2024 23:07:52 -0800
-Message-Id: <20240221070754.4163916-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1708499285; x=1709104085;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L6zbD+r4iAQVkolpUdqaC5kdIDlOZs92K4PNPYeqx8Y=;
+        b=KaCBIJPMdnpTdHLplxAnudOukmt7SVRbOFiRe8Uy/ON1aD64SNrQgsWt+fHWX1y372
+         AKdKW9qaOz7zd3L7N3MrAOz4zAjLDGlaYuKQomb9w0YoUaO5P4FfsHRDejPAVAHU/xfr
+         KIymzwLqnAVtF34cpLIErwrXI9NklTEQNbRM5hEUnaKxuhdVonxC0ODCIqIRUs+WuCKD
+         U1K2uukQrDLi9a1yxFnyp66eFYTsg3Iq2uwm9bK80zU9tTb/FW/yMQ6LCZL/bNbYHFMY
+         n3SspL/uYhZtQPaMOL8UDbQPkuN5a6q9tUxDdihLLEfTQQD0wqoKR8BAA3V7rGd0XAG2
+         qWRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8nxpI3SCQ4CpE+9dcK/G4vAf0mQ+p4aGL5i4Dq9/u4IcL0AQjTG9rZbuf/80H9Fa8QaN65nAwpBXeeU1LVFzQMaJFbUUldZWDxVgp
+X-Gm-Message-State: AOJu0YzjOh/n8BfccW/1t8u42qC54eVu19XEC/6TCPvI73vVe9W7srGM
+	b7eMeZ+JcuZ234cQ57/pBIdfIA1cQFtRybePaEbshHf7KdLpPDuIUFgHLPuuzzbqza7Sf0kLATm
+	H6+k/vws5g4yt9qL2hvMOJLNfib2DpDqCkqT8
+X-Google-Smtp-Source: AGHT+IHa365tMHI74PcJwpoL4by21xl2KdQYoT7uJGyPBKgsElto/rB7Qh2SvL3fkLhg7dgdD64D4s6+6hqom1eKg68=
+X-Received: by 2002:a05:6512:2107:b0:512:d6ca:71ae with SMTP id
+ q7-20020a056512210700b00512d6ca71aemr61918lfr.31.1708499284887; Tue, 20 Feb
+ 2024 23:08:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Subject: [PATCH v3 1/3] perf stat: Pass fewer metric arguments
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
-	John Garry <john.g.garry@oracle.com>, Kaige Ye <ye@kaige.org>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
+MIME-Version: 1.0
+References: <20240220191114.3272126-1-dhavale@google.com> <6c2d5345-98bc-49b1-adc7-bcc349a0a6bb@linux.alibaba.com>
+In-Reply-To: <6c2d5345-98bc-49b1-adc7-bcc349a0a6bb@linux.alibaba.com>
+From: Sandeep Dhavale <dhavale@google.com>
+Date: Tue, 20 Feb 2024 23:07:52 -0800
+Message-ID: <CAB=BE-Se6nO_VTncA9CH7k65xRPtyxo=xSH__i_OhV8++LfEYQ@mail.gmail.com>
+Subject: Re: [PATCH v1] erofs: fix refcount on the metabuf used for inode lookup
+To: Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc: Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, quic_wenjieli@quicinc.com, 
+	stable@vger.kernel.org, kernel-team@android.com, linux-erofs@lists.ozlabs.org, 
 	linux-kernel@vger.kernel.org
-Cc: Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Pass metric_expr and evsel rather than specific variables from the
-struct, thereby reducing the number of arguments. This will enable
-later fixes.
+>
+> If it looks good to you, could you resend a formal patch? Thanks!
+>
+Hi Gao,
+This looks better and more readable. I will send a v2.
 
-To reduce the size of the diff, local variables are added to match the
-previous parameter names. This isn't done in the case of "name" as
-evsel->name is more intention revealing. A whitespace issue is also
-addressed.
+Thanks,
+Sandeep.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
----
-v3 is a rebase fixing a merge conflict with
-6d6be5eb45b4 ("perf metric: Don't remove scale from counts")
----
- tools/perf/util/stat-shadow.c | 38 +++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 20 deletions(-)
-
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index cf573ff3fa84..10b452792037 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -355,11 +355,12 @@ static void print_nsecs(struct perf_stat_config *config,
- 		print_metric(config, ctxp, NULL, NULL, "CPUs utilized", 0);
- }
- 
--static int prepare_metric(struct evsel **metric_events,
--			  struct metric_ref *metric_refs,
-+static int prepare_metric(const struct metric_expr *mexp,
- 			  struct expr_parse_ctx *pctx,
- 			  int aggr_idx)
- {
-+	struct evsel * const *metric_events = mexp->metric_events;
-+	struct metric_ref *metric_refs = mexp->metric_refs;
- 	int i;
- 
- 	for (i = 0; metric_events[i]; i++) {
-@@ -403,7 +404,7 @@ static int prepare_metric(struct evsel **metric_events,
- 			if (!aggr)
- 				break;
- 
--                        if (!metric_events[i]->supported) {
-+			if (!metric_events[i]->supported) {
- 				/*
- 				 * Not supported events will have a count of 0,
- 				 * which can be confusing in a
-@@ -436,18 +437,18 @@ static int prepare_metric(struct evsel **metric_events,
- }
- 
- static void generic_metric(struct perf_stat_config *config,
--			   const char *metric_expr,
--			   const char *metric_threshold,
--			   struct evsel **metric_events,
--			   struct metric_ref *metric_refs,
--			   char *name,
--			   const char *metric_name,
--			   const char *metric_unit,
--			   int runtime,
-+			   struct metric_expr *mexp,
-+			   struct evsel *evsel,
- 			   int aggr_idx,
- 			   struct perf_stat_output_ctx *out)
- {
- 	print_metric_t print_metric = out->print_metric;
-+	const char *metric_name = mexp->metric_name;
-+	const char *metric_expr = mexp->metric_expr;
-+	const char *metric_threshold = mexp->metric_threshold;
-+	const char *metric_unit = mexp->metric_unit;
-+	struct evsel * const *metric_events = mexp->metric_events;
-+	int runtime = mexp->runtime;
- 	struct expr_parse_ctx *pctx;
- 	double ratio, scale, threshold;
- 	int i;
-@@ -462,7 +463,7 @@ static void generic_metric(struct perf_stat_config *config,
- 		pctx->sctx.user_requested_cpu_list = strdup(config->user_requested_cpu_list);
- 	pctx->sctx.runtime = runtime;
- 	pctx->sctx.system_wide = config->system_wide;
--	i = prepare_metric(metric_events, metric_refs, pctx, aggr_idx);
-+	i = prepare_metric(mexp, pctx, aggr_idx);
- 	if (i < 0) {
- 		expr__ctx_free(pctx);
- 		return;
-@@ -497,18 +498,18 @@ static void generic_metric(struct perf_stat_config *config,
- 				print_metric(config, ctxp, color, "%8.2f",
- 					metric_name ?
- 					metric_name :
--					out->force_header ?  name : "",
-+					out->force_header ?  evsel->name : "",
- 					ratio);
- 			}
- 		} else {
- 			print_metric(config, ctxp, color, /*unit=*/NULL,
- 				     out->force_header ?
--				     (metric_name ? metric_name : name) : "", 0);
-+				     (metric_name ?: evsel->name) : "", 0);
- 		}
- 	} else {
- 		print_metric(config, ctxp, color, /*unit=*/NULL,
- 			     out->force_header ?
--			     (metric_name ? metric_name : name) : "", 0);
-+			     (metric_name ?: evsel->name) : "", 0);
- 	}
- 
- 	expr__ctx_free(pctx);
-@@ -523,7 +524,7 @@ double test_generic_metric(struct metric_expr *mexp, int aggr_idx)
- 	if (!pctx)
- 		return NAN;
- 
--	if (prepare_metric(mexp->metric_events, mexp->metric_refs, pctx, aggr_idx) < 0)
-+	if (prepare_metric(mexp, pctx, aggr_idx) < 0)
- 		goto out;
- 
- 	if (expr__parse(&ratio, pctx, mexp->metric_expr))
-@@ -625,10 +626,7 @@ void *perf_stat__print_shadow_stats_metricgroup(struct perf_stat_config *config,
- 
- 		if ((*num)++ > 0)
- 			out->new_line(config, ctxp);
--		generic_metric(config, mexp->metric_expr, mexp->metric_threshold,
--			       mexp->metric_events, mexp->metric_refs, evsel->name,
--			       mexp->metric_name, mexp->metric_unit, mexp->runtime,
--			       aggr_idx, out);
-+		generic_metric(config, mexp, evsel, aggr_idx, out);
- 	}
- 
- 	return NULL;
--- 
-2.44.0.rc1.240.g4c46232300-goog
-
+> Thanks,
+> Gao Xiang
 
