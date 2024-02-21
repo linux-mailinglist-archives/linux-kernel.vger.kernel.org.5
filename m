@@ -1,306 +1,131 @@
-Return-Path: <linux-kernel+bounces-74837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8ED085DCF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:00:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0F3285DD03
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 412C31F2298D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:00:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2DB61C23A17
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FE87D414;
-	Wed, 21 Feb 2024 13:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49697E57B;
+	Wed, 21 Feb 2024 14:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bNqbJGxB"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="KjHA62cN";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="j6sHylUr"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061F078B4B;
-	Wed, 21 Feb 2024 13:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B6778B4B;
+	Wed, 21 Feb 2024 13:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708523988; cv=none; b=laRj59f55wcW8p/dPlx2w1ZJXYkZ1xjhXBsY5GCShfORwPVRecvBQrRAoGVr1YnVRdhDnbO7wvW36OcexmwhUjiGH/jf4NaZmRGry6UrpFmC4gJZeqlsXudgGaYiVAm20688CV30mE08Tz27n7djSKC/1FThRdAzakIeOuxlLCM=
+	t=1708524000; cv=none; b=f+DK/RF4wCKG4Mg/6KcZjb21P8OcydGU0OgEeIVYZox4J7/ku/1Q6anRKIjMMY5fNw5CKkd0FODZRHsNugk2pdUOq9AZUTnb1KvDCPpll/uGk00ow1WzEqLimIjDJ0H82866jVRIF+EDQlOh+Vk6u/Kl5R2aCzM784nWPjJGua8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708523988; c=relaxed/simple;
-	bh=SnPLHbpo/441VAamU2FvPSSpEtFvKMwOMzEK2EmKY1E=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=hF/sIxbthoSxv5YuAamVz3SklWZPfhhJco/2AcPl7pyj6hI9OW3xdyBf1Q+V/hltQFThyMUXpH0ZxzlQSxKqDHCRHN5oStBaJKH3gXhXl2fNkWgaQ4O/D4cadu5eMRPfxDHzDi0JXIYpeB0HspMtoy0zgYztiAYqAaeYWQ/yvOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bNqbJGxB; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d934c8f8f7so62499855ad.2;
-        Wed, 21 Feb 2024 05:59:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708523986; x=1709128786; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aaHNU3TsVz9YPg3zJxPm9tj9UZPGWWuZNDbw2aB5JJI=;
-        b=bNqbJGxBBjZN1lfkbB55cKKnmGFeuFnPwUjnThjb/c0lTPe51WFxGma4f83JONlSoi
-         GutNnwNb88Uirh0lx7yhwI/p92mpJpaZM49fuaqLcpwe3aUTybiM7ZIRWSCipCLRRJYt
-         W6AmdYBQTKhqIfyFP78YeOWT3J1F93yCVB4gQOXej3x70ZUVWL2vxlZ2lpAQZ/hn5Bp9
-         IEleDim6hCJWpp0+PzAI/fzccmtdc4aK+Q5I5a0kBhz6JgcYwe3Y3BSe1qOaqXONZcNJ
-         4j2IYGSW86FXIHjM3GiJP4MMRVkBnd38WmkAPoDLuBQrgp8d2NUEXgNvsZLyn/qWTRSa
-         armA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708523986; x=1709128786;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aaHNU3TsVz9YPg3zJxPm9tj9UZPGWWuZNDbw2aB5JJI=;
-        b=LLjj+MUNTajSvS0W6l3t2QrQwJ7P73LBnMoMhAfWV/TmBzI4NxRPUCTF1nxJRQk5Cj
-         NGqMcVTv6Xn08qfVSeV2rsU3Kq9wlFe2eB9+1o2HUyBiZ4sKi9/x4fKaHoaRMnIpn92X
-         ipAhmuaOAr9U7NcPqz8BpiWLNisUHKaLjJspRfciMhDJ3GJmBBxiKqUVT1/3/u0mZLI6
-         kOW0qJVKQujm1R8kHMJXolwYqWS2fVFUpIBY7urjGx0X8Yb8YzVymk5xNDRU0DpUG6rf
-         I2iP1C/Hi9xFT2OxzfW7+W+8BDYgPJB69ggo++YDyKJGILHHfNTtfFmb3a65MUDLh7X4
-         tWsw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFj4QGccxMfGMHWR+0x3nLdyKbioNZb4sBrPKzVi2p/UpQTRdrV6MkgJ/w28Q+WKEsQmkLeNP6yJZimjhQz0hXI0iJunng9+yRTYrGvW1yOU257+OqRaScsWPem/GUmFa9X7DDaVDbqw5JXv+WvXqIBAT//70AwCdLyokYx2CtZysTGEyl
-X-Gm-Message-State: AOJu0Ywn+Wv/LueSDv47i3tQ9k9NrcSJxrIK4/QftgpUoydnlVo8fsuy
-	RackIcFhamTej88llNmjNudRWxmzz9cBsHjAvy2A9R2cDxzSiUc7Su58r65L9x525Y1ehdh3beq
-	LEhwD1SQd69OgZKao5e3NilrBa/1z09xA
-X-Google-Smtp-Source: AGHT+IGA7OlFHoL29A1Ks5gKGBoCCdoRecUcAoF52pJ9S32niGcrcIP8xX/JRmbCOc1hnGaycyULN1xJHu503jPkYSQ=
-X-Received: by 2002:a17:903:32cc:b0:1dc:157e:456a with SMTP id
- i12-20020a17090332cc00b001dc157e456amr5645861plr.49.1708523986187; Wed, 21
- Feb 2024 05:59:46 -0800 (PST)
+	s=arc-20240116; t=1708524000; c=relaxed/simple;
+	bh=UfVoiNEIYsbLpMEbykUi8R7DRApQ5LdQp6AqEhWwq44=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ABy1GyYLRhRn6iY19H6ABsOo5pnoDRo+PmPsBPb9EKZ8FnvuR4FsnGO5qPVzDyzzEPRijZWJmkgUQjr2gESmWfXm5dveQKzdnKkbvFqG6JxDbqQxGML/0AsR62/HxJ4NCK4czdZEsT9r5VqzkrcIxsexVb4q6YiYPfMEq6Zxf/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=KjHA62cN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=j6sHylUr; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id D488B3200A4E;
+	Wed, 21 Feb 2024 08:59:57 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 21 Feb 2024 08:59:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1708523997;
+	 x=1708610397; bh=lCqLbTkRqvWoHbwM+Jq1WD6BnkDkMXqUOkgyLNO9i4U=; b=
+	KjHA62cNvV8wq0zHeHB8bt/yfnrM7ig8IaP1ulx2DM62dKQVRGFUgvFMtzNUU6X7
+	zr1nVCsUQHSyryk/TuIRUidKpbCDDIQ1X8+lsaZmZqV5NKUoz5e5PkBwCm6QLW1D
+	doxYlWRmcJle1DW+IQ2lwh0qMq/FCk2kmFx/nUATwX27Sp1T8uWJB1nbKC8YOrpL
+	hrHKqGSgJElGsrNe2T3k8wtSAxlCzf9zaPSyjT+2HJlrAuk7vw/kqX+DhyFXcZBX
+	lFhiB3rkoSVWOmQUr6ixlKntUvCoMa+He3oGkESY7egf6SbcI/hmgu7qjULej9ud
+	sB8qOOz3cXVJjbTLjWXAUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708523997; x=
+	1708610397; bh=lCqLbTkRqvWoHbwM+Jq1WD6BnkDkMXqUOkgyLNO9i4U=; b=j
+	6sHylUre7avg4v1SUChjKnv7m1q7EXXfDD20c7ke6mC+z1mkPfpJI/3M9ZjRSznL
+	nZ/v1NY1GZy7T5Qif2EULoNClAKrerBDX3zKGxLa9pit8hDKL9hmdEQtkrVPN2r2
+	aIVDPV+r7jhpfVL+GPdYQKNrKcG7cO6nKs5dAN/isCqwpDY5+1s9slWJWD3yVnGo
+	dzDvpuDHXKvAPPnGwMSG2PB7cJH0aiD2UhA7eq5U3ipTT3andi8fds75G/u4gCe0
+	wXxH3fIXAD4wSJObtKDaM8DA+bKxQS8ue+D16vV6z+g3hV8/sEFqmsHYJiikPpzH
+	amREV/gWyx8wsogSwxGXw==
+X-ME-Sender: <xms:3AHWZeJ_sIf2ys2hhzAE0jsqGrqHWfKP2m04RB1bHhRUmwybWihBVw>
+    <xme:3AHWZWKbWYH54JHIafcFS7RQ0TCJiotdmJ35ohcJNNEFBoDV7PaGsagHVk8WlkKJQ
+    EU0elm2Q6aQlypkejU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedvgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:3AHWZeuMecalP8bTKayZVDIthdoCQKox007Gs4MePnbgVVHsNq2wKA>
+    <xmx:3AHWZTaO4623tZab6Wp9qHAODYC3_14N7WT0XyRBLu-6CmbycdFlCQ>
+    <xmx:3AHWZVbVs6Vg4uZOs3-x2CJ3bO_MGJNvo6WsxHWNmWGI1cn6yqPw4Q>
+    <xmx:3QHWZYyJgRF7lRT3-WyKTyVQsN813cuR2FKmUss_OJpCb6Mod_6nxQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id C85F4B6008D; Wed, 21 Feb 2024 08:59:56 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Wed, 21 Feb 2024 21:59:35 +0800
-Message-ID: <CABOYnLzFYHSnvTyS6zGa-udNX55+izqkOt2sB9WDqUcEGW6n8w@mail.gmail.com>
-Subject: Re: [syzbot] [netfilter?] KMSAN: uninit-value in __nla_validate_parse (3)
-To: syzbot+3f497b07aa3baf2fb4d0@syzkaller.appspotmail.com
-Cc: coreteam@netfilter.org, davem@davemloft.net, 
-	Eric Dumazet <edumazet@google.com>, fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <ac9ddf79-6bc9-4daf-a271-82f8b3bca988@app.fastmail.com>
+In-Reply-To: 
+ <CAL_JsqKw9OXb=aOMni1qprzeWDBgmjdJef-6VAjwx0R--D+URw@mail.gmail.com>
+References: <20240221092826.748e70c4@canb.auug.org.au>
+ <CAL_JsqKw9OXb=aOMni1qprzeWDBgmjdJef-6VAjwx0R--D+URw@mail.gmail.com>
+Date: Wed, 21 Feb 2024 14:59:36 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Rob Herring" <robh@kernel.org>,
+ "Stephen Rothwell" <sfr@canb.auug.org.au>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>
+Cc: "Olof Johansson" <olof@lixom.net>,
+ ARM <linux-arm-kernel@lists.infradead.org>,
+ "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+ linux-next <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello, I reproduced this bug in the syzbot dashboard and upstream linux.
+On Wed, Feb 21, 2024, at 14:53, Rob Herring wrote:
+> On Tue, Feb 20, 2024 at 3:28=E2=80=AFPM Stephen Rothwell <sfr@canb.auu=
+g.org.au> wrote:
+>> arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_map): =
+Failed prerequisite 'interrupt_provider'
+>>
+>> Introduced/exposed by commit
+>>
+>>   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
+>>
+>> I guess you missed some :-(
+>
+> No, Geert separately posted fixes for already.
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei lee <xrivendell7@gmail.com>
+I did make the mistake of applying the final patch "dtc:
+Enable dtc interrupt_provider check" to the arm/fixes branch
+for 6.8 along with the other fixes.
 
-I use the same config with syzbot dashboard.
-kernel version: c1ca10ceffbb289ed02feaf005bc9ee6095b4507
-kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=e3dd779fba027968
-with KMSAN enabled
-compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Clearly that should be separate and only go into mainline
+after there are no more regressions, but now I'm unsure
+about the other patches -- did you intend the dts fixes
+for 6.8 or for the coming merge window?
 
-[  254.423842][ T8047] =====================================================
-[  254.430576][ T8047] BUG: KMSAN: uninit-value in
-__nla_validate_parse+0x3d62/0x4f90
-[  254.434357][ T8047]  __nla_validate_parse+0x3d62/0x4f90
-[  254.437054][ T8047]  __nla_parse+0x6a/0x80
-[  254.439556][ T8047]  nfnetlink_rcv_msg+0x74c/0xed0
-[  254.444928][ T8047]  netlink_rcv_skb+0x58f/0x6d0
-[  254.447359][ T8047]  nfnetlink_rcv+0x3e8/0x4d10
-[  254.449893][ T8047]  netlink_unicast+0x107c/0x13e0
-[  254.452371][ T8047]  netlink_sendmsg+0x132c/0x1540
-[  254.454791][ T8047]  ____sys_sendmsg+0xa5b/0xe70
-[  254.456975][ T8047]  ___sys_sendmsg+0x2a7/0x3f0
-[  254.459423][ T8047]  __x64_sys_sendmsg+0x342/0x510
-[  254.461514][ T8047]  do_syscall_64+0xcf/0x1e0
-[  254.463345][ T8047]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  254.465643][ T8047]
-[  254.466539][ T8047] Uninit was created at:
-[  254.468194][ T8047]  kmem_cache_alloc_node+0x5cb/0xbc0
-[  254.470272][ T8047]  kmalloc_reserve+0x14d/0x500
-[  254.471882][ T8047]  __alloc_skb+0x385/0x820
-[  254.473385][ T8047]  netlink_sendmsg+0xbd6/0x1540
-[  254.475011][ T8047]  ____sys_sendmsg+0xa5b/0xe70
-[  254.476534][ T8047]  ___sys_sendmsg+0x2a7/0x3f0
-[  254.478039][ T8047]  __x64_sys_sendmsg+0x342/0x510
-[  254.479628][ T8047]  do_syscall_64+0xcf/0x1e0
-[  254.480995][ T8047]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  254.482719][ T8047]
-
-
-=* repro.c =*
-#define _GNU_SOURCE
-
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/prctl.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
-
-static void sleep_ms(uint64_t ms) {
-  usleep(ms * 1000);
-}
-
-static uint64_t current_time_ms(void) {
-  struct timespec ts;
-  if (clock_gettime(CLOCK_MONOTONIC, &ts))
-    exit(1);
-  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-#define BITMASK(bf_off, bf_len) (((1ull << (bf_len)) - 1) << (bf_off))
-#define STORE_BY_BITMASK(type, htobe, addr, val, bf_off, bf_len)     \
-  *(type*)(addr) =                                                   \
-      htobe((htobe(*(type*)(addr)) & ~BITMASK((bf_off), (bf_len))) | \
-            (((type)(val) << (bf_off)) & BITMASK((bf_off), (bf_len))))
-
-static bool write_file(const char* file, const char* what, ...) {
-  char buf[1024];
-  va_list args;
-  va_start(args, what);
-  vsnprintf(buf, sizeof(buf), what, args);
-  va_end(args);
-  buf[sizeof(buf) - 1] = 0;
-  int len = strlen(buf);
-  int fd = open(file, O_WRONLY | O_CLOEXEC);
-  if (fd == -1)
-    return false;
-  if (write(fd, buf, len) != len) {
-    int err = errno;
-    close(fd);
-    errno = err;
-    return false;
-  }
-  close(fd);
-  return true;
-}
-
-static void kill_and_wait(int pid, int* status) {
-  kill(-pid, SIGKILL);
-  kill(pid, SIGKILL);
-  for (int i = 0; i < 100; i++) {
-    if (waitpid(-1, status, WNOHANG | __WALL) == pid)
-      return;
-    usleep(1000);
-  }
-  DIR* dir = opendir("/sys/fs/fuse/connections");
-  if (dir) {
-    for (;;) {
-      struct dirent* ent = readdir(dir);
-      if (!ent)
-        break;
-      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-        continue;
-      char abort[300];
-      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-               ent->d_name);
-      int fd = open(abort, O_WRONLY);
-      if (fd == -1) {
-        continue;
-      }
-      if (write(fd, abort, 1) < 0) {
-      }
-      close(fd);
-    }
-    closedir(dir);
-  } else {
-  }
-  while (waitpid(-1, status, __WALL) != pid) {
-  }
-}
-
-static void setup_test() {
-  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-  setpgrp();
-  write_file("/proc/self/oom_score_adj", "1000");
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void) {
-  int iter = 0;
-  for (;; iter++) {
-    int pid = fork();
-    if (pid < 0)
-      exit(1);
-    if (pid == 0) {
-      setup_test();
-      execute_one();
-      exit(0);
-    }
-    int status = 0;
-    uint64_t start = current_time_ms();
-    for (;;) {
-      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid)
-        break;
-      sleep_ms(1);
-      if (current_time_ms() - start < 5000)
-        continue;
-      kill_and_wait(pid, &status);
-      break;
-    }
-  }
-}
-
-uint64_t r[1] = {0xffffffffffffffff};
-
-void execute_one(void) {
-  intptr_t res = 0;
-  res = syscall(__NR_socket, /*domain=*/0x10ul, /*type=*/3ul, /*proto=*/0xc);
-  if (res != -1)
-    r[0] = res;
-  *(uint64_t*)0x20000080 = 0;
-  *(uint32_t*)0x20000088 = 0;
-  *(uint64_t*)0x20000090 = 0x20000040;
-  *(uint64_t*)0x20000040 = 0x20000100;
-  *(uint32_t*)0x20000100 = 0x18;
-  *(uint8_t*)0x20000104 = 0;
-  *(uint8_t*)0x20000105 = 0xb;
-  *(uint16_t*)0x20000106 = 0x401;
-  *(uint32_t*)0x20000108 = 0;
-  *(uint32_t*)0x2000010c = 0;
-  *(uint8_t*)0x20000110 = 0;
-  *(uint8_t*)0x20000111 = 0;
-  *(uint16_t*)0x20000112 = htobe16(0);
-  *(uint16_t*)0x20000114 = 4;
-  STORE_BY_BITMASK(uint16_t, , 0x20000116, 2, 0, 14);
-  STORE_BY_BITMASK(uint16_t, , 0x20000117, 0, 6, 1);
-  STORE_BY_BITMASK(uint16_t, , 0x20000117, 1, 7, 1);
-  *(uint64_t*)0x20000048 = 0x18;
-  *(uint64_t*)0x20000098 = 1;
-  *(uint64_t*)0x200000a0 = 0;
-  *(uint64_t*)0x200000a8 = 0;
-  *(uint32_t*)0x200000b0 = 0;
-  syscall(__NR_sendmsg, /*fd=*/r[0], /*msg=*/0x20000080ul, /*f=*/0ul);
-}
-int main(void) {
-  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  loop();
-  return 0;
-}
-
-=* repro.txt =*
-r0 = socket$nl_netfilter(0x10, 0x3, 0xc)
-sendmsg$IPCTNL_MSG_CT_NEW(r0, &(0x7f0000000080)={0x0, 0x0,
-&(0x7f0000000040)={&(0x7f0000000100)={0x18, 0x0, 0xb, 0x401, 0x0, 0x0,
-{}, [@CTA_TUPLE_REPLY={0x4}]}, 0x18}}, 0x0)
-
-
-and see also in
-https://gist.github.com/xrivendell7/fe97316e8a66f8d81109a158a3225bc0
-
-I hope it helps.
-Best regards!
-xingwei Lee
+      Arnd
 
