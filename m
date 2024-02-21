@@ -1,98 +1,257 @@
-Return-Path: <linux-kernel+bounces-75578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED3985EB73
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:57:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1855E85EB79
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A33D7284095
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:57:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08BA51C22989
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87255127B57;
-	Wed, 21 Feb 2024 21:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA3B127B6A;
+	Wed, 21 Feb 2024 21:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="M7N8f6yA"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fZpwq1Bf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC943C469
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708552638; cv=none; b=XFUPMUS/5k6GGDtiNWbz0271IO0Thkyvl9oPsHz0Bew5mgEd/VjRYsqTRiMGeuPoKi8mlmxH4a0SMwrnE0NveIWawulvBECddG/jOpNDVgovRmL4sAOZbi/H3i2JpdQToyOi0ZmI/RdxsVwU0kEJXXcSyCJ1yTABBz89WFozBuo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708552638; c=relaxed/simple;
-	bh=ibxTlhN5MoDPOlT+ANu5l2nVH2J8CNPgYyG8UXQV5vs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ddYOWezXeyDUNOVZ11t9OcVxRaE0REGnm6AFneUe4ITnRYcbr8vLGWedHHzXoVWgrT+DcbogAXEv4/n3cpyzFrbKQDsEW4maNIRbhR41293U0xvw0QlPn3dPvPZLeAWTvt5iMyuD7P9H/kOPlDev4wtMvf09ArZER2qng3p3R4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=M7N8f6yA; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=DxwjOJIsFQjRzr4/dwZ/wXiHdh9ufDgj/YF2uuzFhQk=; b=M7N8f6yAZG9Q4j75df8d2cXfxe
-	1dnxylJgVzlZ7uRldGGjEQxP+GOJaV60Sjny9+UlxcuVcWqei83ZB6yiqxZ8AfMQtUsD0z+WgRNps
-	z6k0K0Imy0Jmxz+7kLsHFqyPwoFxmDr720p5aDO4uLmVZ0+NR9vDETn1NtgVRGq0YWoOfR1y42R30
-	PyEYhtIhBG0US5RL9SP7V9/UbdfBavqzC2lpexLYj0hrs1JSnkb0b+jyvRoGzZAt/J0dSdHU2JeAX
-	YsIyyI0QG5f+Fa29kYXHq7Rfcj4HFwQYaBGKf1RsfgsMbVpKlsypMYavegSG0TMi+HajzopKQr31M
-	HuJ6I2YQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44572)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rcuaR-0000al-2z;
-	Wed, 21 Feb 2024 21:57:07 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rcuaQ-000266-AF; Wed, 21 Feb 2024 21:57:06 +0000
-Date: Wed, 21 Feb 2024 21:57:06 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Alfredo Cruz <alfredo.carlon@gmail.com>
-Cc: arnd@arndb.de, u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: sa1111: fix put_device() before device_add() in
- error path
-Message-ID: <ZdZxsrhLNCt+bCOB@shell.armlinux.org.uk>
-References: <20240221213837.27605-1-alfredo.carlon@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109B62574F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708552755; cv=fail; b=Tefh85TiIKp+vmZ9BSbtxwqlVDmRj1qPIoOjNLtIoGVDyRfGQbEr7q6m7wdVzwVKyvpn3FSJ619Ax1vCP5+W5n4cL+lHcnQWgGZuUBU5qQT2/zI9aiq/qW1m1Hf42N2c45xGsBEvIwH1Wq2v2g+V1/MFfu1/yFeMvdyojJCS600=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708552755; c=relaxed/simple;
+	bh=+lKyxplhkfn2ludHMlsltaV7SU+tYIWQAS4xHplhPC8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=sQ7n+JFG3VhKRNbJRQuh1/KmF8yIBYywYox6LehScmBGZ5XbLT+qrA+k+2D9mGJr9SxLpi1QLokiGNhmPl+IifmRbx/uOKof2Qx5kc41bIg/agblLRKhzZypjAn+JTuszirDdetrZxurKri3R1sEcD2BCnGiIc2KxkYnCFzgAtU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fZpwq1Bf; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708552753; x=1740088753;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=+lKyxplhkfn2ludHMlsltaV7SU+tYIWQAS4xHplhPC8=;
+  b=fZpwq1Bft5EEYk8kqaIEC//YDMjreJzw1xAfb1dUXuMD7XES57KjG++n
+   uwZYX5mE6J3wQsRqo3V1ed7CK9tHIsC3YivSe+gpqby/VCch8OQMwr1b0
+   p9zxiOXdYG+r+5jqAbyJBsHwedmAxo/qZ6AVa6HpvYVIsuMBYJRQs1Piv
+   GOor3H1sIzQOuv8rRiu5ywFD7UZl3RZwW8SDXvceAl/sOLVeo2tSEZVPP
+   dvQk0SL+Tro4Y7Gr7vfS7RwEb2iy1dIuRiMppXZ3nHwHmnD96rXVgNPmA
+   4kuDepFJF/s9Ui8/TldcJoPTn/qh2dar8sVt49uCiSvWxC1g0HN8D7/cV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2614185"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="2614185"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 13:59:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="36062088"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Feb 2024 13:59:11 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 13:59:11 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 13:59:11 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 13:59:11 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 21 Feb 2024 13:59:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kqAQXAgwEV4oAMtwS3FQh2S4Mnk/QKmai7imf2ScGWrGcV+xId4em16hTRA/+EeQJrU1IPxv7SswtkIqirTDXszr4PmQD3PhI5xt8/RlwQum5QqhuOtREM6QeUL3ftD81ehb2hCHi3ZmHTaPLMcM6My8949ZTNuFxuY5uqKCTf6yuUb++JOcPJcH1sjBjPuoDoNNd2Nga3rkmoro5LktOk39FJmgSA4+4t9gL0YFJRSDOoOX7Iei/DLspUiSG/oC3k3yFT4FeEKPWm2krDVA4WG0MziSRfjGclKYhx3Ac0dhBlHY0qW7HfABMBDkN6uBREvRcXvtz1e8k1IzTvJuLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1whcz++vsgADkqWJHDuQFbC0PC/jVC270cQDadCjjBs=;
+ b=TAaXfPqWnlhj9LjQQf2ugZMEW62aKLOuvwluwqhApxf6vLUY5kKasyS/FgHNAI7sdoRZXW58vk3GjK7oo4UiArr3Ghvm24988DXdOwSpDpZcogqpLXULPwBcFPe/Hl2/IlvQs9VY2bv6gMsDD5piKJxqiZB6GHyKfUzaDz6fxmk0v+bQkEKg5piUyQWkmpBe2ODqwSyKMb4F4gxhsdGeRNsUQY7QVb86TUlGg04zODP7Lz+PTDdzTyMUPqyRZ12nB/rllZcyhUVGJ4XY8k2PLXhPeEy7Q89IsimlcZe0BZMKN2bBYvt/Ni5U0bP7G8gf4L7w2M/cLOPiZT/EOzDesQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by IA0PR11MB8419.namprd11.prod.outlook.com (2603:10b6:208:48b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Wed, 21 Feb
+ 2024 21:59:08 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954%7]) with mapi id 15.20.7316.018; Wed, 21 Feb 2024
+ 21:59:08 +0000
+Date: Wed, 21 Feb 2024 15:59:06 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Yury Norov
+	<yury.norov@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Jani Nikula <jani.nikula@linux.intel.com>,
+	<intel-xe@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>, "Jani
+ Nikula" <jani.nikula@intel.com>
+Subject: Re: Re: [PATCH v3 1/3] bits: introduce fixed-type genmasks
+Message-ID: <btssirjumey2kcp5dyhe6m3embdwd5bswjz3c6swrhxfijfhld@lztxaptkegw6>
+References: <20240208074521.577076-1-lucas.demarchi@intel.com>
+ <20240208074521.577076-2-lucas.demarchi@intel.com>
+ <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
+ <ZdZlVn9BI-0q1Xdn@smile.fi.intel.com>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZdZlVn9BI-0q1Xdn@smile.fi.intel.com>
+X-ClientProxiedBy: SJ0PR05CA0208.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::33) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221213837.27605-1-alfredo.carlon@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|IA0PR11MB8419:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11fb31bf-1282-44d2-23f9-08dc33285441
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MCLwKQEc6nGTi1ja6H+G0t+OAD3D5R17fJeDlldyCMmNxQnhbp7wRv8u+4DJaN+7/cL+x9xEa/dqvfpTOWlGkFIImsc0Sg5M25RUsZGY6Gk9JddNDKpifut0D9SA+bw9cpQQ00GU7YE8y31/Vs7XwNeg1I+Rgt/8whQWRK099XRF4WdKDWLMhsUfnThTczg/ppz5LaQEtM45t6DjKqDrjpOhQ/uY0vjXKSShEZVt9tUjzJOF7aU1/629klkh59QWYUohrO5wDwCx+zIz9OYp7b9jDO0z3UQ5vvgkKPGdcDwSQmNv4tRvmzHMRNleP5CVUbdItVSAAX7i8I8u+WljtzpWJ2ZqfEJPp+C679UxXgZSGbnAV4Gz3O6DXQ4svPxXHQN17Z1ZbcPNj72daalNDfLHcVVRWWGMkhsDBOqJuNubMVSGGwOEgGo0kdAhmT8Y/cI01Q9xePtfys4wWnoqpmx8AJWLUsvpCaX0PqmBY0Dj4wu0j7Qo7nDewhBD/2vABNh+aY+qfhatKI3DBzCBVP2cSU05sV5L4ZSYAvqsf/A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t0+hVZM9O7bpkrVjANFHZn/+6adcSG8sGsxw/Wy/siSoMlXYJViHB3E7hd/G?=
+ =?us-ascii?Q?CkHYFZUHzWZeFDADan63nICD06B7VmnmQegMHU355wmjNAJTWaJK4qySZaJI?=
+ =?us-ascii?Q?E2x/Uo19XJpf8ldG7F494ZTcwtqlw60vSOJWSjR6xhF88NOV5WTA5/MTx1nD?=
+ =?us-ascii?Q?61daJ8w6vFCCU0ZmQ4kBWTkA5x3NBcmgVSkwuttyytbSOr86n82GeTBKTaNO?=
+ =?us-ascii?Q?uR5z3cP8LirIXLcPiKcqI/78pkFjMcTDeiuT8wQ9txUNYtI1484qxpCRyX1e?=
+ =?us-ascii?Q?4iH9jiwccoh2yy2a7ZI5pB/nNw2Y4NgMljYa0zwnM10YytHc4Ol00zql3RZk?=
+ =?us-ascii?Q?7Ep8ipZI+uz9KdYzETm0lhMOqJgzIDK7xagHDPAiOCHcNd0YvmC1sjlILzhR?=
+ =?us-ascii?Q?h0uYQobXZ4Bx6TlnYke6IxshHf13KKDoLoH9tGfm0GYG2lI0ffavV7pnxJrW?=
+ =?us-ascii?Q?07Gn1Cb+FE59V9LlWvv+4NCd9YuEMIkdHrdceKG1YIE8Q20pyHzkfsx4XtNb?=
+ =?us-ascii?Q?G3S20QEBj/k/SD7FzIsqwdhki2OnN7j3WYcaIKJBxOQ8WCPHp/LZuwhLMyUe?=
+ =?us-ascii?Q?KxlAAaqP80SIycC0LVUDZn4Fiej6WCNjBR5wEZveNcwcM779q1FNyWbEZ2sC?=
+ =?us-ascii?Q?nOaT9SjULfSF1RV68AaQSO3P++h1M/YKx1MHksAPeAfvQqEzx7DS9zyPeOUv?=
+ =?us-ascii?Q?gTTWp/UShx0A4ANBMLtEj2HBqUJFjvKmzjBwzgFh5gLwGC/XV7bBC8Ky6TRg?=
+ =?us-ascii?Q?m74S0zVuQ+SPLQdh8hIKmi0DZhfaZt2KiWdjCZXyzfKIym/KvXzMntacVX1Z?=
+ =?us-ascii?Q?AXVoUR7kRMHUVfQxtplDBRY9RmVAW4seZrohYa5DLTpyNe1v2k43i/goI6qV?=
+ =?us-ascii?Q?z5zaCCfXiSrq0xAM926c7o7UxbpdBXOoK4pQyImvKIlo/OSh/ylRNXqwNNTg?=
+ =?us-ascii?Q?83OFMim50TwVPUjp//VGB/jMyi4oocKT8WF1pZWA/FmsLxQdpwpUmnjWKHTU?=
+ =?us-ascii?Q?pdkI72nfSt/Uck8SintMeSZmTwma2jJvL4IvRdiJL+NzvFT6ZpeeQ9js599l?=
+ =?us-ascii?Q?DtF15V5RCSyGxGBg47mIzOCk+v9x8H19guFBaFvB5VeeASnX1LQxP/7fDukF?=
+ =?us-ascii?Q?zK9cFqNeFv7nTz/k7g6l+84fgsMNIOGdHfeRblMD1GruPYNC/mKLY75vrOdU?=
+ =?us-ascii?Q?eEEFMqRHYgB9dIMbTj1u29rvK5lh7+vFmW/n1qrb9gK0TqpjXjGPbb7ojUAk?=
+ =?us-ascii?Q?YRxQ+OHS/fK99j2Dqttaq4qr2X3AZIGIxEojj+Y45+UzM1CuTmXH75AlTbeH?=
+ =?us-ascii?Q?vkJEtNuJAELEuTgyuzsxa42Bziip9e5JFMURZ6gri/IPLuW/NE7AwpL0OTq0?=
+ =?us-ascii?Q?1Jpdy96lk3WwsCbM99Me1uoQVfxy4QDYHAxQbYWzw7j0pIuuG30+wGGyLEta?=
+ =?us-ascii?Q?tm7qF1YR36TeuaZvTDa9EyGSPMt0HkyGgWEutA50JMnS0jzNmlZfVAFDkx3g?=
+ =?us-ascii?Q?86GyLgAo6YBUA+LzhoI3RyLMWF+JiJo0k4WB7UrLBN0/FvXpRobdcc34RIht?=
+ =?us-ascii?Q?S9dETvTqjjwRJQH20neOsOtJUHqhE4ps2LogpGA6PcAIa/Wzj8UeBY/tVL2s?=
+ =?us-ascii?Q?LQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11fb31bf-1282-44d2-23f9-08dc33285441
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2024 21:59:08.6558
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5y5PGFW1l7rzE8x6TEP0NvHisQvIXTwMs0G3jeGnx4Itm0qMykNVA0IfiJ42TqOkXPJd0lZvxIGQs34zmfroY2Soe/0f3ydLhnr1qW1CyFg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB8419
+X-OriginatorOrg: intel.com
 
-On Wed, Feb 21, 2024 at 10:38:37PM +0100, Alfredo Cruz wrote:
-> When request_resource() fails, a jump is made to err_resource label which
-> calls put_device() on &dev->res without adding it first.
-> Kept the err_resource label and moved put_device() to err_add label.
+On Wed, Feb 21, 2024 at 11:04:22PM +0200, Andy Shevchenko wrote:
+>On Wed, Feb 21, 2024 at 10:30:02PM +0200, Dmitry Baryshkov wrote:
+>> On Thu, 8 Feb 2024 at 09:45, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>
+>...
+>
+>> > +#define BITS_PER_TYPE(type)    (sizeof(type) * BITS_PER_BYTE)
+>
+>Can sizeof() be used in assembly?
+>
+>...
+>
+>> > -#define __GENMASK(h, l) \
+>> > -       (((~UL(0)) - (UL(1) << (l)) + 1) & \
+>> > -        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+>> > -#define GENMASK(h, l) \
+>> > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+>
+>> > +#define __GENMASK(t, h, l) \
+>> > +       (GENMASK_INPUT_CHECK(h, l) + \
+>> > +        (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>> > +        ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
+>
+>Nevertheless, the use ~0ULL is not proper assembly, this broke initial
+>implementation using UL() / ULL().
 
-You fail to explain why this is incorrect. I think this patch is
-incorrect. The reason is as follows:
+indeed.
 
-"dev" is allocated.
-dev->dev is then initialised. This initialises the struct device,
-setting its initial refcount to '1'.
+>
+>
+>> > -#define __GENMASK_ULL(h, l) \
+>> > -       (((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+>> > -        (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
+>> > -#define GENMASK_ULL(h, l) \
+>> > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+>
+>Ditto.
 
-We then request the resource. If this fails, then the device needs to
-be released. As refcounting has been initialised, it is *not*
-appropriate to simply kfree() "dev". The correct action, as noted by
-the device_initialize() documentation is to call put_device() on it.
-This is what the code does.
+problem here seems actually because of the cast to the final type. My
+previous impl was avoiding that, but was too verbose compared to this.
 
-I _do_ hope you haven't submitted other patches like this, because if
-you have, they could well also be wrong.
+I will look at reverting this.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Lucas De Marchi
+
+>
+>> > +#define GENMASK(h, l)          __GENMASK(unsigned long,  h, l)
+>> > +#define GENMASK_ULL(h, l)      __GENMASK(unsigned long long, h, l)
+>> > +#define GENMASK_U8(h, l)       __GENMASK(u8,  h, l)
+>> > +#define GENMASK_U16(h, l)      __GENMASK(u16, h, l)
+>> > +#define GENMASK_U32(h, l)      __GENMASK(u32, h, l)
+>> > +#define GENMASK_U64(h, l)      __GENMASK(u64, h, l)
+>>
+>> This breaks drm-tip on arm64 architecture:
+>>
+>> arch/arm64/kernel/entry-fpsimd.S: Assembler messages:
+>> 465arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+>> 466arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+>> 467arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+>> 468arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+>> 469arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+>> 470arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+>> 471arch/arm64/kernel/entry-fpsimd.S:271: Error: found 'l', expected: ')'
+>> 472arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+>> 473arch/arm64/kernel/entry-fpsimd.S:271: Error: unexpected characters
+>> following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
+>> long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
+>> long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
+>> 474arch/arm64/kernel/entry-fpsimd.S:66: Info: macro invoked from here
+>> 475arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+>> 476arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+>> 477arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+>> 478arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+>> 479arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+>> 480arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+>> 481arch/arm64/kernel/entry-fpsimd.S:282: Error: found 'l', expected: ')'
+>> 482arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+>> 483arch/arm64/kernel/entry-fpsimd.S:282: Error: unexpected characters
+>> following instruction at operand 3 -- `bic x2,x1,(0+(((unsigned
+>> long)~0ULL-((unsigned long)(1)<<(0))+1)&((unsigned
+>> long)~0ULL>>((sizeof(unsigned long)*8)-1-(3)))))'
+>> 484arch/arm64/kernel/entry-fpsimd.S:98: Info: macro invoked from here
+>
+>-- 
+>With Best Regards,
+>Andy Shevchenko
+>
+>
 
