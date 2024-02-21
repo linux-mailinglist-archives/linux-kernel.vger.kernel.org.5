@@ -1,123 +1,193 @@
-Return-Path: <linux-kernel+bounces-74967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E00B585E08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:07:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D9485E088
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:07:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5A428AD1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:07:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 581A51F20FAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E083B80613;
-	Wed, 21 Feb 2024 15:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="cBpNq+AE"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071F77FBDD;
+	Wed, 21 Feb 2024 15:06:47 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0738003D
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 15:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8A07FBA9;
+	Wed, 21 Feb 2024 15:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708528010; cv=none; b=hMT+uDuMuk31wf8GRkvApxZ+q2GXzM+SySXZ2WMFd+yagJoGk5Z6e5TJjpk0gtlKDGxooqKxjnLiqXzg+mpRyEy+UHSfrGP+jha72Q+Z+7JBVziFIjqJExfBxHIyuvmaEJ3dU2q1g3Roc3fXoVz5ZNYLwHYbDqJKuP2EzgzVwQM=
+	t=1708528006; cv=none; b=g9mhDgnbJwXOPzPWeI3c1s2v7gyinI+XrYim2flwOKjxuylV8RWXLjiM+S6T7gKzqzauwk7ZJVDv2prf6WZAg6bt3Yq46ANT5puo3z7sdl6T939Fdibs+xL555vokTI00WBCVq9+rog0fFqv6BV+lvqAovX8YzOkj1eCk+cca1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708528010; c=relaxed/simple;
-	bh=IfJatG9lRhZKsYbgCREitFJU8OpCGpoZT8OQPAcVahk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GTUXal+Hlm+BILDb5wq4e5oTXO5GFyJ7ldNZUNQwbVs/1TdHBSiwMcd8ULt0mZpLEKdyw8yU5E5yywuADgAbSrGWriYw97VAbItwZZN5BiFnTvNXmPp550a2NlxDt59mFa9AxZt162j+mQkc8mbmEIQ0BZFJ36cZF3Xc0vWKqXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=cBpNq+AE; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3e4765c86eso517308166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 07:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1708528006; x=1709132806; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jIv9PGtlgXOsnlHNE4Tcy9JvBcQ7HLVWrvu11qJkS/c=;
-        b=cBpNq+AE9Yg4EOhFD+7XEsO7TU5XVOlX8SrcXQIiduRyd9nYXGB7G3uWK4MAOsLM97
-         14ek3N7AUgGmTh6xD5kMj9s3JSGsZugvwb7Igy/nVl4dVEBNiPr/lGXzlizXJzh2krUC
-         p1K1WPbeAi6qDoq79XdDIXsLf2oc8T7fIhf5E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708528006; x=1709132806;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jIv9PGtlgXOsnlHNE4Tcy9JvBcQ7HLVWrvu11qJkS/c=;
-        b=XPE5aZXXbbr7gFc7OF+cKvf55+hmQ59x6EYiGnCPmx2NlVtXzuj+eXwVs+7rmngGna
-         e2wBFA5YrZ1HOZuxPHqr9OhG6eT0P83ebhVTIwo1caQD7rQ5oxzLXt/RNDGgxh9Kls/T
-         deK8HNoOAK3Rnjh2Dam8N2v+eDaZhn1cF2zGVZQhF+Bd2y1n/K2nWsyp4p+9/PClVbNO
-         CQSVKlqMwZiDPDwvcE+i5dNJVWEvRQdpTc8nBigH33jx8iriBxhef1QD90Cka+mecu5q
-         Td4VDq8gup1RU3q7GO2aIcLqE2v4ygaC8OPspYkl51vtY59x6NjolRXtjl0W0x72056k
-         329g==
-X-Forwarded-Encrypted: i=1; AJvYcCXemPkiW+fWM61psMV73flO9IN03cQ9tuOBxnRGOXF6/CPNzLGJ7vRwmdSIvwXGgRL+9/3tR85+n3MlbbIiPDV//3hbFjFESbVw89OG
-X-Gm-Message-State: AOJu0YyTMAfUoVTZCIL9yr+B3QTAJiL6W9DiJSzEyQ35Jet7n9oKYRRZ
-	uYKHvrSOVoGFJzxphdDLk7wMtGc9irnnruxzMvpJy29hJp3TZvfnSZW7LJ6skYvkEHZt5J6hNRT
-	omw2dtCi0DFt98WFKyU2z2S2Gp3mVakDYQUu2Hg==
-X-Google-Smtp-Source: AGHT+IERxnqIikhmylu4cOJ75RfiT2FYUV0rib82c7+t48H2eRYLuPnPyIEpvl+01PQoj6symStM8+Yyyt3FTnnwVaU=
-X-Received: by 2002:a17:906:fccd:b0:a3f:816:1e29 with SMTP id
- qx13-20020a170906fccd00b00a3f08161e29mr3428600ejb.39.1708528005923; Wed, 21
- Feb 2024 07:06:45 -0800 (PST)
+	s=arc-20240116; t=1708528006; c=relaxed/simple;
+	bh=x4tyllg3kVsxkFGprOI8+rA4D5kFS9LnDsPy0r+Wi6w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OjeZGV1ngBqg0vrSQBpx3jwDneZDLu5Zjl2RZlHKcYFPLOZIMxPR25s/vFde6rKcopZL+FImmUOiVdzRkEAFdd5TpUfP1VztTMXO5Qx5IlD3qoH+wmsKA78CbiwM5+R5+UbM8B1RjSvCLbUobUtaVXkhHL/DVlupUpWCuhki8xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 707B6C43394;
+	Wed, 21 Feb 2024 15:06:45 +0000 (UTC)
+Date: Wed, 21 Feb 2024 10:08:33 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Beau Belgrave <beaub@linux.microsoft.com>
+Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v3 2/4] tracing/user_events: Introduce multi-format
+ events
+Message-ID: <20240221100833.1eb5c254@gandalf.local.home>
+In-Reply-To: <20240214175046.240-3-beaub@linux.microsoft.com>
+References: <20240214175046.240-1-beaub@linux.microsoft.com>
+	<20240214175046.240-3-beaub@linux.microsoft.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
-In-Reply-To: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 21 Feb 2024 16:06:34 +0100
-Message-ID: <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> Recently we had a pretty long discussion on statx extensions, which
-> eventually got a bit offtopic but nevertheless hashed out all the major
-> issues.
->
-> To summarize:
->  - guaranteeing inode number uniqueness is becoming increasingly
->    infeasible, we need a bit to tell userspace "inode number is not
->    unique, use filehandle instead"
+On Wed, 14 Feb 2024 17:50:44 +0000
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-This is a tough one.   POSIX says "The st_ino and st_dev fields taken
-together uniquely identify the file within the system."
+> +static char *user_event_group_system_multi_name(void)
+> +{
+> +	char *system_name;
+> +	int len = sizeof(USER_EVENTS_MULTI_SYSTEM) + 1;
 
-Adding a bit that says "from now the above POSIX rule is invalid"
-doesn't instantly fix all the existing applications that rely on it.
+FYI, the sizeof() will include the "\0" so no need for "+ 1", but I don't
+think this matters as for what I mention below.
 
-Linux did manage to extend st_ino from 32 to 64 bits, but even in that
-case it's not clear how many instances of
+> +
+> +	system_name = kmalloc(len, GFP_KERNEL);
+> +
+> +	if (!system_name)
+> +		return NULL;
+> +
+> +	snprintf(system_name, len, "%s", USER_EVENTS_MULTI_SYSTEM);
+> +
+> +	return system_name;
 
-    stat(path1, &st);
-    unsigned int ino = st.st_ino;
-    stat(path2, &st);
-    if (ino == st.st_ino)
-        ...
+Hmm, the above looks like an open coded version of:
 
-are waiting to blow up one fine day.  Of course the code should have
-used ino_t, but I think this pattern is not that uncommon.
+	system_name = kstrdup(USER_EVENTS_MULTI_SYSTEM, GFP_KERNEL);
 
-All in all, I don't think adding a flag to statx is the right answer.
-It entitles filesystem developers to be sloppy about st_ino
-uniqueness, which is not a good idea.   I think what overlayfs is
-doing (see documentation) is generally the right direction.  It makes
-various compromises but not to uniqueness, and we haven't had
-complaints (fingers crossed).
 
-Nudging userspace developers to use file handles would also be good,
-but they should do so unconditionally, not based on a flag that has no
-well defined meaning.
+> +}
+> +
+>  static struct user_event_group *current_user_event_group(void)
+>  {
+>  	return init_group;
+> @@ -367,6 +390,11 @@ static struct user_event_group *user_event_group_create(void)
+>  	if (!group->system_name)
+>  		goto error;
+>  
+> +	group->system_multi_name = user_event_group_system_multi_name();
+> +
+> +	if (!group->system_multi_name)
+> +		goto error;
+> +
+>  	mutex_init(&group->reg_mutex);
+>  	hash_init(group->register_table);
+>  
+> @@ -1482,6 +1510,11 @@ static int destroy_user_event(struct user_event *user)
+>  	hash_del(&user->node);
+>  
+>  	user_event_destroy_validators(user);
+> +
+> +	/* If we have different names, both must be freed */
+> +	if (EVENT_NAME(user) != EVENT_TP_NAME(user))
+> +		kfree(EVENT_TP_NAME(user));
+> +
+>  	kfree(user->call.print_fmt);
+>  	kfree(EVENT_NAME(user));
+>  	kfree(user);
+> @@ -1504,12 +1537,24 @@ static struct user_event *find_user_event(struct user_event_group *group,
+>  	*outkey = key;
+>  
+>  	hash_for_each_possible(group->register_table, user, node, key) {
+> +		/*
+> +		 * Single-format events shouldn't return multi-format
+> +		 * events. Callers expect the underlying tracepoint to match
+> +		 * the name exactly in these cases. Only check like-formats.
+> +		 */
+> +		if (EVENT_MULTI_FORMAT(flags) != EVENT_MULTI_FORMAT(user->reg_flags))
+> +			continue;
+> +
+>  		if (strcmp(EVENT_NAME(user), name))
+>  			continue;
+>  
+>  		if (user_fields_match(user, argc, argv))
+>  			return user_event_get(user);
+>  
+> +		/* Scan others if this is a multi-format event */
+> +		if (EVENT_MULTI_FORMAT(flags))
+> +			continue;
+> +
+>  		return ERR_PTR(-EADDRINUSE);
+>  	}
+>  
+> @@ -1889,8 +1934,12 @@ static bool user_event_match(const char *system, const char *event,
+>  	struct user_event *user = container_of(ev, struct user_event, devent);
+>  	bool match;
+>  
+> -	match = strcmp(EVENT_NAME(user), event) == 0 &&
+> -		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
+> +	match = strcmp(EVENT_NAME(user), event) == 0;
+> +
+> +	if (match && system) {
+> +		match = strcmp(system, user->group->system_name) == 0 ||
+> +			strcmp(system, user->group->system_multi_name) == 0;
+> +	}
+>  
+>  	if (match)
+>  		match = user_fields_match(user, argc, argv);
+> @@ -1923,6 +1972,39 @@ static int user_event_trace_register(struct user_event *user)
+>  	return ret;
+>  }
+>  
+> +static int user_event_set_tp_name(struct user_event *user)
+> +{
+> +	lockdep_assert_held(&user->group->reg_mutex);
+> +
+> +	if (EVENT_MULTI_FORMAT(user->reg_flags)) {
+> +		char *multi_name;
+> +		int len;
+> +
+> +		len = snprintf(NULL, 0, "%s.%llx", user->reg_name,
+> +			       user->group->multi_id) + 1;
+> +
+> +		multi_name = kzalloc(len, GFP_KERNEL_ACCOUNT);
+> +
+> +		if (!multi_name)
+> +			return -ENOMEM;
+> +
+> +		snprintf(multi_name, len, "%s.%llx", user->reg_name,
+> +			 user->group->multi_id);
 
-Thanks,
-Miklos
+I believe the above can be replaced with:
+
+		multi_name = kasprintf(GFP_KERNEL_ACCOUNT, "%s.%llx", user->reg_name,
+				       user->group->multi_id);
+		if (!multi_name)
+			return -ENOMEM;
+
+-- Steve
+
+> +
+> +		user->call.name = multi_name;
+> +		user->tracepoint.name = multi_name;
+> +
+> +		/* Inc to ensure unique multi-event name next time */
+> +		user->group->multi_id++;
+> +	} else {
+> +		/* Non Multi-format uses register name */
+> +		user->call.name = user->reg_name;
+> +		user->tracepoint.name = user->reg_name;
+> +	}
+> +
+> +	return 0;
+> +}
 
