@@ -1,196 +1,159 @@
-Return-Path: <linux-kernel+bounces-74040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DDE385CF2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:54:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7B985CF27
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:53:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 409501C22CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:54:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69D5E1C22A93
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A2538DCC;
-	Wed, 21 Feb 2024 03:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE0036120;
+	Wed, 21 Feb 2024 03:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OSoSp0Tk"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c4iHpw+s"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C444939867
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64C923C9
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 03:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708487661; cv=none; b=Z9OxZo35sbDK5bzaRx1gG7goqFlkaMy8hL0JYbm3QOYESIXuGhOGIKOk+VIDJlZCcnQgJJ7bZXe+/b1bfunVveKk/BasW4tHPxjadAev8BJtRzV9BqUW2jyhrVazT07RZDXfPkNmLSKrIsU1ZRVKii+0jPJuVZpsz5WWoJKQAYo=
+	t=1708487577; cv=none; b=OY8Gu9SPfC9rZTjQvYbCVoWj+NOJ32jlnBqoeClwjGohSlzueiEB8E4bT8MAl3MvB9rIm6a70YsRB9WPKW+ZKGrUBlQxu7YYYWfU89OkQ2+s7tnkyabEeyYkQEHTOat4HQnVfjC6jUCXxl1hRBU1DnpPp4kKtl7XZnYuUEsuxoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708487661; c=relaxed/simple;
-	bh=TFAvA1/yz76l+ryudayP2LNvIDPNPKxdKoM54HtDt/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=D4mZ0PRX0uig1JfSuyyy/PWFnYpa1ZV567xYiHrFQHFE0vmIiMAophY/dldvvnNGClWtM2nUguNLtiPCUbyZi8LcVBgmZ6lSGHkw4GeSoSM9ZZh6GBg5yHVXBgjdyq5IHfcRZwUUA/tTvmhYAOgWwTx4zu/Oq1sC3DvAKjAW8UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OSoSp0Tk; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1708487577; c=relaxed/simple;
+	bh=wMXkiqGzzQswodcAtPpqIN0/SQsqU1RmoTmUsVBlmzo=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ocSO4FNLFmcBr/HIFROkupIf8BjjLOi+Z9Z0SUDQF6P+nQ3mtk1VgVfUzNcM7irnoc5IaiB/pwXDajTCW4OH8GiVgPoF9RHLCdnkg0pNzfEe9LJ1xiY3sG3+G39svC1qIfbuFxCMnM/oN3NS6RFOh2EtiR9GuPYM0vf+1vsPi9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c4iHpw+s; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708487659; x=1740023659;
-  h=date:from:to:cc:subject:message-id;
-  bh=TFAvA1/yz76l+ryudayP2LNvIDPNPKxdKoM54HtDt/Q=;
-  b=OSoSp0TkSurdJ19QrezQuzX8lHVwtSBcJl5uAm3tLpZ4D7Ct+CQSZOuq
-   pap3X/lG5js8j630OX+rC0lvxAPUpXjjhoVEbtnfRiy3vj1ZOFsrr8nTb
-   X6P4XT/CNCF8FplWTrq3O2izyUc3pnyMUtOepPDHLlK5WYkz7GDCBdHib
-   3Otp89ejt8beySVXieXnPpK7inFQ8N2Yjz1TOTSA7nJwUdfb2dQhe1qOr
-   qWsTiDjq8EC3hPaK2AD2bOtd7JoqFDu57L07bMPppSZcC1EHNJx3smk03
-   gBuW5/h8VuVjYEsUOw7WZq6UpkLnCz70XxttdaKsAMO16sxGq9qpf5Hin
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="6446168"
+  t=1708487576; x=1740023576;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=wMXkiqGzzQswodcAtPpqIN0/SQsqU1RmoTmUsVBlmzo=;
+  b=c4iHpw+s3ZLXAQktVxlhttA6MGW8ZMgPe9iFDZZVmPzPs2eodx2/ewb/
+   YhHYQw8tCUvEvgWpD8RatmNirCHjI09LMmuPg1S8u9fXRjFJLyu3p5Kxb
+   vCe+V6cPssMdOu6K/gbrStXIB1irzaq+A9yhbmEskjmyqtYGakGV/PCl0
+   oW6I+fpBMTLa7ZVhtkUq6Pj5bTYfQLhTJbID/Nzd2CET4RPuUD6iJORYI
+   fYZO4ulAXDXou6oGW3LZB3qT60oFb/Z75nt656OGBqSX6v4E0/vh3RJXG
+   Wl5NIRRxfiBxQLlWNXBuyRKGoCjY5D+U8hrp+eLLxHIwP5+jpj7aGzVKh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2742510"
 X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="6446168"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:54:19 -0800
+   d="scan'208";a="2742510"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:52:56 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="5311392"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 20 Feb 2024 19:54:19 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rcdg6-0004zK-22;
-	Wed, 21 Feb 2024 03:54:00 +0000
-Date: Wed, 21 Feb 2024 11:50:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/mtrr] BUILD SUCCESS
- ffc92cf3db62443c626469ef160f9276f296f6c6
-Message-ID: <202402211153.Ei0vXAGU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+   d="scan'208";a="9620072"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.203]) ([10.249.171.203])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 19:52:51 -0800
+Message-ID: <55a4b5e5-e0ad-4aa4-a29b-5fff4ef69063@linux.intel.com>
+Date: Wed, 21 Feb 2024 11:52:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "Zhang, Tina" <tina.zhang@intel.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, "Tian, Kevin" <kevin.tian@intel.com>,
+ Nicolin Chen <nicolinc@nvidia.com>, Michael Shavit <mshavit@google.com>,
+ Vasant Hegde <vasant.hegde@amd.com>, Jason Gunthorpe <jgg@nvidia.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Hao Fang <fanghao11@huawei.com>
+Subject: Re: [PATCH v10 5/6] iommu: Support mm PASID 1:n with sva domains
+Content-Language: en-US
+To: Zhangfei Gao <zhangfei.gao@linaro.org>
+References: <20231027000525.1278806-1-tina.zhang@intel.com>
+ <20231027000525.1278806-6-tina.zhang@intel.com>
+ <CABQgh9GWcqUeBkHQCpj5tzu6FnEgpOp3KOQ6s9c0X0KU7Ov1qw@mail.gmail.com>
+ <MW5PR11MB5881C5CC15452017867B412889502@MW5PR11MB5881.namprd11.prod.outlook.com>
+ <CABQgh9GxQmGU2HR73bSoZLuf4XZFhThXwUs_HJx6KwxDmXrXgg@mail.gmail.com>
+ <b05958ba-0c47-45ba-8159-372779f9cc8b@linux.intel.com>
+ <CABQgh9FFpL=mEZ-7PqRRVg1eniYV176B7USbGP5MLPvhJaGo9A@mail.gmail.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <CABQgh9FFpL=mEZ-7PqRRVg1eniYV176B7USbGP5MLPvhJaGo9A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mtrr
-branch HEAD: ffc92cf3db62443c626469ef160f9276f296f6c6  x86/pat: Simplify the PAT programming protocol
+On 2024/2/21 10:45, Zhangfei Gao wrote:
+> On Wed, 21 Feb 2024 at 10:06, Baolu Lu<baolu.lu@linux.intel.com> 
+> wrote:
+>> On 2024/2/21 9:28, Zhangfei Gao wrote:
+>>> On Wed, 21 Feb 2024 at 07:58, Zhang, Tina<tina.zhang@intel.com> 
+>>> wrote:
+>>> 
+>>>>>> struct iommu_sva *iommu_sva_bind_device(struct device
+>>>>>> *dev, struct mm_struct *mm)  { +       struct
+>>>>>> iommu_mm_data *iommu_mm; struct iommu_domain *domain;
+>>>>>> struct iommu_sva *handle; int ret;
+>>>>>> 
+>>>>>> +       mutex_lock(&iommu_sva_lock); + /* Allocate 
+>>>>>> mm->pasid if necessary. */ -       ret = 
+>>>>>> iommu_sva_alloc_pasid(mm, dev); -       if (ret) - return
+>>>>>> ERR_PTR(ret); +       iommu_mm = iommu_alloc_mm_data(mm,
+>>>>>> dev); +       if (IS_ERR(iommu_mm)) { +               ret =
+>>>>>> PTR_ERR(iommu_mm); + goto out_unlock; +       }
+>>>>>> 
+>>>>>> handle = kzalloc(sizeof(*handle), GFP_KERNEL); -       if 
+>>>>>> (!handle) -               return ERR_PTR(-ENOMEM); - - 
+>>>>>> mutex_lock(&iommu_sva_lock); -       /* Search for an 
+>>>>>> existing domain. */ -       domain = 
+>>>>>> iommu_get_domain_for_dev_pasid(dev, mm->pasid, - 
+>>>>>> IOMMU_DOMAIN_SVA); -       if (IS_ERR(domain)) { - ret =
+>>>>>> PTR_ERR(domain); +       if (!handle) { + ret = -ENOMEM;
+>>>>>> goto out_unlock; }
+>>>>>> 
+>>>>>> -       if (domain) { -               domain->users++; - 
+>>>>>> goto out;
+>>>>> Our multi bind test case broke since 6.8-rc1. The test case 
+>>>>> can use same domain & pasid, return different handle, 6.7 
+>>>>> simply  domain->users ++ and return.
+>>>>> 
+>>>>>> +       /* Search for an existing domain. */ + 
+>>>>>> list_for_each_entry(domain, &mm->iommu_mm->sva_domains, 
+>>>>>> next)
+>>>>> {
+>>>>>> +               ret = iommu_attach_device_pasid(domain, 
+>>>>>> dev, + iommu_mm->pasid);
+>>>>> Now iommu_attach_device_pasid return BUSY since the same 
+>>>>> pasid. And then iommu_sva_bind_device attach ret=-16
+>>>> Sounds like the test case tries to bind a device to a same mm 
+>>>> multiple times without unbinding the device and the
+>>>> expectation is that it can always return a valid handle to pass
+>>>> the test. Right?
+>>> Yes
+>>> 
+>>> The device can bind to the same mm multi-times and return 
+>>> different handle, Since the refcount, no need to unbind and bind 
+>>> sequently, The unbind can happen later with the handle.
+>> Is there any real use case to bind an mm to the pasid of a device 
+>> multiple times? If there are cases, is it better to handle this in 
+>> the uacce driver?
+> Yes, it is required for multi-thread, the device can provide 
+> multi-queue to speed up.
+> 
+>> From iommu core's perspective, it doesn't make sense to attach the 
+>> same domain to the same device (or pasid) multiple times.
+> But is it the refcount domain->user++ used for? Is there any reason 
+> not doing this.
 
-elapsed time: 829m
+I was just thinking about whether to do this in the iommu core, or in
+the upper layers, like uacce or iommufd. It seems that there is no need
+to attach a domain to a device or pasid again if it has already been
+attached.
 
-configs tested: 108
-configs skipped: 135
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                       spear13xx_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-002-20240221   clang
-i386                                defconfig   clang
-i386                  randconfig-002-20240221   clang
-i386                  randconfig-003-20240221   clang
-i386                  randconfig-006-20240221   clang
-i386                  randconfig-012-20240221   clang
-i386                  randconfig-014-20240221   clang
-i386                  randconfig-016-20240221   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       alldefconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                         wii_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                          sdk7786_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-002-20240221   gcc  
-x86_64       buildonly-randconfig-003-20240221   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240221   gcc  
-x86_64                randconfig-002-20240221   gcc  
-x86_64                randconfig-003-20240221   gcc  
-x86_64                randconfig-004-20240221   gcc  
-x86_64                randconfig-005-20240221   gcc  
-x86_64                randconfig-006-20240221   gcc  
-x86_64                randconfig-012-20240221   gcc  
-x86_64                randconfig-014-20240221   gcc  
-x86_64                randconfig-015-20240221   gcc  
-x86_64                randconfig-016-20240221   gcc  
-x86_64                randconfig-071-20240221   gcc  
-x86_64                randconfig-072-20240221   gcc  
-x86_64                randconfig-073-20240221   gcc  
-x86_64                randconfig-074-20240221   gcc  
-x86_64                randconfig-076-20240221   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+baolu
 
