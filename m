@@ -1,235 +1,161 @@
-Return-Path: <linux-kernel+bounces-74922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4F485E011
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04E4A85DFE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:38:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64D7828A559
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:42:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4AB1286A20
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5927FBD7;
-	Wed, 21 Feb 2024 14:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E507F7FBB1;
+	Wed, 21 Feb 2024 14:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OX9yqpzF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="WnL6F42n";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="289aKcgA"
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F256C80052;
-	Wed, 21 Feb 2024 14:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526479; cv=none; b=YGq7JPqeKf9T7X6LCaYIJS5RazGS74eAkPskSWJhMB5njHCfOmmYFTm7F28vkkDaQQShMkZbZAjL15noOyJ5f2iUQSgPmq5ZknRcWgyQrnux9C/TD3N6RD+M68H3KP8OXYpZ4byATWx8AoxxhC+Gq71t7ZXk1ozCZuLFec+ZaxY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526479; c=relaxed/simple;
-	bh=fGy1ZeYlSSA1oBp701WLKo8Ii38jlfVIpfInS3YAkG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sqrcIY2CcBWs5R3J/4Ji/4tP8NU9sBh9YvswaDTlEkk7Bi1a24+xQMjX/OGRZm5c0wvmQveV6LuF17YNV4k2ceyGwz/AEysTb4JtC0ooTmC7fs4NrXkrhUm5weBWZ6Kd2vkwNENG5TuWux5Ldg/3pGYc9dSC2cUOUDmAlGI8WaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OX9yqpzF; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708526477; x=1740062477;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fGy1ZeYlSSA1oBp701WLKo8Ii38jlfVIpfInS3YAkG0=;
-  b=OX9yqpzFG/HhJHwYntijMEsD1WDOPQ0RbQl6UZ5mNceiVPKR81whzxwP
-   KGNjozORukipANRZmqQgX4leGGsZmQAhygwFG72OAlqBTNpudhZIMw6sf
-   rnIy3PR+EgJhLpGtIDRe2gYx/R57sV2S798jT8qExiB8fHNjd6U3S00ul
-   dERcBe5+34dzaujzkk4vTIBGmXAV66hzmcNYzTxQChkSkoWBeWwzHkPvI
-   hbKYxqN/+5LFFq2qcbIbVXWvGt7vwK0yHxjPn+8bvPCvgOIp+p26iIEmA
-   gQbS6EIG2PVVgi1dfYHCvtuJ7GtVmz5i/kSsSGSUGJPuEWPtHioHoLRb5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="20228461"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="20228461"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:41:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="5321684"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa008.fm.intel.com with ESMTP; 21 Feb 2024 06:41:13 -0800
-Date: Wed, 21 Feb 2024 22:37:17 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Marco Pagani <marpagan@redhat.com>
-Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alan Tull <atull@opensource.altera.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fpga@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/1] fpga: add an owner and use it to take the
- low-level module's refcount
-Message-ID: <ZdYKnZxdTCvu5THG@yilunxu-OptiPlex-7050>
-References: <20240111160242.149265-1-marpagan@redhat.com>
- <20240111160242.149265-2-marpagan@redhat.com>
- <Zbh7iO9wlm9ekzB7@yilunxu-OptiPlex-7050>
- <0720eb91-72f9-4781-8558-8a1b0a3691c2@redhat.com>
- <Zb8dd9af0Ru/fzGi@yilunxu-OptiPlex-7050>
- <4aaa131a-4b64-4b86-9548-68aef63c87b3@redhat.com>
- <ZdHWaeU+/On6LmHX@yilunxu-OptiPlex-7050>
- <9a9d4018-fd65-49be-9e0a-1eecc9cbf15d@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9467FBA1;
+	Wed, 21 Feb 2024 14:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.164
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708526303; cv=pass; b=cVgkAyz79VOKDaMYsIj69tfEW80TMWldVsLXCz/xs0l/L4RxWAcd4Jc1T+2CbjBC8Kod3eAucJgNpaPE5olY2eihSW1ZoM+/eh3KUiHQASbzyl51G9IezKFjE+tYBOG1qPqC/I360GcnOaF/qnrwGl7mBDrUxmZMHvvwZPLMOtA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708526303; c=relaxed/simple;
+	bh=Yk/f5XifWhGXBDB2dBIer/YPFVx1NYJczki/GIL9pm0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qdoSV3F8MLcyd2CSxCFLnrcKPuCj1RTlILi2EEDo2VU0LBPMPpbN+LJ2JrrnCQuw2fyhB5OOR6lmXFEJ3c0E2Sr2EG4wtNbGN78dJr44FljkPnOSh5E84XYCc7r30p3IBH6LALzisZRCKbDFYBVhS/Cq9jK7z1Tll1HJLGKOyc0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=WnL6F42n; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=289aKcgA; arc=pass smtp.client-ip=81.169.146.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+ARC-Seal: i=1; a=rsa-sha256; t=1708526292; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=gNd+zI5sqYXi782KQQG4i1gGlvtRSk28pUr3JFmuDlexdios7wHWgWJIfkY0B9oajU
+    TgTbHERDZlJ/nUvEKhg/NOA+T/0+kLbxC/H22KUofiyaq2cGDLEoKH0uChdTWcSOnKcD
+    fSrNgQ6snVlEiD4MXQpX6Ts+am+v7E/5p7pj8ozCE/3HiGapGSqRcqAnOrBsbjLy24l0
+    C5R/7PxaD6a9j4ZNYtX29yFucUHvJH88AW8doyLXLixu1+9N0h/SstlxCCfnmpSZrAOp
+    s3+EWlHFo6dQTghxgvadj5Ce9cjz1J2prW/RCoBxG4Q08WIbne21MIsoEyBm2gho2QRW
+    WOSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1708526292;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Kiw7sAnsh6n8rHnUUwg+xTvudXCU4yvOhcAFDzbeABU=;
+    b=NIuR+50Zkn29+Oa3MK4HHaSwXfaNRqu0Q42AiesvueB9shP/SG2z/03A4E119II9Xt
+    lflucqynIdCO4Bifb6uIKtoUYDBNxTXIWsL19F89SouOF9kIiuD+au+WeHDx8UFMQzyE
+    njoJO5LERpwzXFK+I2TmdipR7UJ/Iz4ECcFo9ysveq6afLFdJJ53O4CRiWssY8miveHF
+    AGlDWvLPdzxgrJsJ8RCK8sEfvGctJwsmn8J+/C+Qed3xr185Fsx4QgaUTDZN6TDyQ5gf
+    Bf4Y56lC/pn+V3GzUfSrPYI1bYAuJiOWo1m2CQKAuo/41Ngoi902RoZUYQFTU75sPKUU
+    rOfw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1708526292;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Kiw7sAnsh6n8rHnUUwg+xTvudXCU4yvOhcAFDzbeABU=;
+    b=WnL6F42nnKSH9gbtQ8gDzo/AZlSBr2Q+RKA5xDVelJ6+q6S5NEr2x2M5M6tFDJmFUo
+    Pixlc6Crv7fEt+NEadCcxXc1yMAdY5VX76RPGD5y6U7zwkmDUyzl/NeL52U9lciPdiVh
+    +++tfv7RSvBgWZeq+hBebdH1aZKuVWFctrP/DJ6lO1XLlxURdsOgJN864YJMkI0IYSnm
+    ktiF37yhp7eKFsePnYX6x6bPCq7NNVgJSj6k1eviexAkloJJd0jQZKabDfs3ksF3ffW8
+    eaudYRgfepkVsKxZAu7YkqhGe07oD9QxLstMxArwk8vIbzTyi/+KyPFt2NYUANTGmywz
+    umKg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1708526292;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Kiw7sAnsh6n8rHnUUwg+xTvudXCU4yvOhcAFDzbeABU=;
+    b=289aKcgAEnQjjLtvnkekJnaI8uOOwebsrVObWbyZDmU6iRbTFa8p9dQ+PAqthEVZb7
+    ku5nnBe4jpuuV0D+yUBA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFr0USEbHoO0g=="
+Received: from [IPV6:2a00:6020:4a8e:5010::923]
+    by smtp.strato.de (RZmta 49.11.2 AUTH)
+    with ESMTPSA id K49f9c01LEcCELB
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 21 Feb 2024 15:38:12 +0100 (CET)
+Message-ID: <d4b3bc0b-95e3-470e-9993-a9f01a18364f@hartkopp.net>
+Date: Wed, 21 Feb 2024 15:38:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a9d4018-fd65-49be-9e0a-1eecc9cbf15d@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: netlink: Fix TDCO calculation using the old data
+ bittiming
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+ Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+ Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <40579c18-63c0-43a4-8d4c-f3a6c1c0b417@munic.io>
+ <CAMZ6Rq+10m=yQ9Cc9gZQegwD=6iCU=s1r78+ogJ4PV0f5_s+tQ@mail.gmail.com>
+ <54afa5e8-fb5e-4d90-8897-8f3c5a684418@hartkopp.net>
+ <20240221-garden-petted-789304a1b1a5-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20240221-garden-petted-789304a1b1a5-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 12:11:26PM +0100, Marco Pagani wrote:
-> 
-> 
-> On 2024-02-18 11:05, Xu Yilun wrote:
-> > On Mon, Feb 05, 2024 at 06:47:34PM +0100, Marco Pagani wrote:
-> >>
-> >>
-> >> On 2024-02-04 06:15, Xu Yilun wrote:
-> >>> On Fri, Feb 02, 2024 at 06:44:01PM +0100, Marco Pagani wrote:
-> >>>>
-> >>>>
-> >>>> On 2024-01-30 05:31, Xu Yilun wrote:
-> >>>>>> +#define fpga_mgr_register_full(parent, info) \
-> >>>>>> +	__fpga_mgr_register_full(parent, info, THIS_MODULE)
-> >>>>>>  struct fpga_manager *
-> >>>>>> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
-> >>>>>> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
-> >>>>>> +			 struct module *owner);
-> >>>>>>  
-> >>>>>> +#define fpga_mgr_register(parent, name, mops, priv) \
-> >>>>>> +	__fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
-> >>>>>>  struct fpga_manager *
-> >>>>>> -fpga_mgr_register(struct device *parent, const char *name,
-> >>>>>> -		  const struct fpga_manager_ops *mops, void *priv);
-> >>>>>> +__fpga_mgr_register(struct device *parent, const char *name,
-> >>>>>> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner);
-> >>>>>> +
-> >>>>>>  void fpga_mgr_unregister(struct fpga_manager *mgr);
-> >>>>>>  
-> >>>>>> +#define devm_fpga_mgr_register_full(parent, info) \
-> >>>>>> +	__devm_fpga_mgr_register_full(parent, info, THIS_MODULE)
-> >>>>>>  struct fpga_manager *
-> >>>>>> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
-> >>>>>> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
-> >>>>>> +			      struct module *owner);
-> >>>>>
-> >>>>> Add a line here. I can do it myself if you agree.
-> >>>>
-> >>>> Sure, that is fine by me. I also spotted a typo in the commit log body
-> >>>> (in taken -> is taken). Do you want me to send a v6, or do you prefer
-> >>>> to fix that in place?
-> >>>
-> >>> No need, I can fix it.
-> >>>
-> >>>>
-> >>>>>
-> >>>>> There is still a RFC prefix for this patch. Are you ready to get it merged?
-> >>>>> If yes, Acked-by: Xu Yilun <yilun.xu@intel.com>
-> >>>>
-> >>>> I'm ready for the patch to be merged. However, I recently sent an RFC
-> >>>> to propose a safer implementation of try_module_get() that would
-> >>>> simplify the code and may also benefit other subsystems. What do you
-> >>>> think?
-> >>>>
-> >>>> https://lore.kernel.org/linux-modules/20240130193614.49772-1-marpagan@redhat.com/
-> >>>
-> >>> I suggest take your fix to linux-fpga/for-next now. If your try_module_get()
-> >>> proposal is applied before the end of this cycle, we could re-evaluate
-> >>> this patch.
-> >>
-> >> That's fine by me.
-> > 
-> > Sorry, I still found issues about this solution.
-> > 
-> > void fpga_mgr_unregister(struct fpga_manager *mgr)
-> > {
-> >         dev_info(&mgr->dev, "%s %s\n", __func__, mgr->name);
-> > 
-> >         /*
-> >          * If the low level driver provides a method for putting fpga into
-> >          * a desired state upon unregister, do it.
-> >          */
-> >         fpga_mgr_fpga_remove(mgr);
-> > 
-> >         mutex_lock(&mgr->mops_mutex);
-> > 
-> >         mgr->mops = NULL;
-> > 
-> >         mutex_unlock(&mgr->mops_mutex);
-> > 
-> >         device_unregister(&mgr->dev);
-> > }
-> > 
-> > Note that fpga_mgr_unregister() doesn't have to be called in module_exit().
-> > So if we do fpga_mgr_get() then fpga_mgr_unregister(), We finally had a
-> > fpga_manager dev without mops, this is not what the user want and cause
-> > problem when using this fpga_manager dev for other FPGA APIs.
-> 
-> How about moving mgr->mops = NULL from fpga_mgr_unregister() to
-> class->dev_release()? In that way, mops will be set to NULL only when the
-> manager dev refcount reaches 0.
+Hello Marc,
 
-I'm afraid it doesn't help.  The lifecycle of the module and the fpga
-mgr dev is different.
+On 21.02.24 15:24, Marc Kleine-Budde wrote:
+> On 21.02.2024 15:14:02, Oliver Hartkopp wrote:
+>> I have an old PCAN USB adapter (Classical CAN) which uses the pcan_usb
+>> driver and wanted to set a 50kbit/s bitrate:
+>>
+>> ip link set can0 up txqueuelen 500 type can bitrate 50000 sjw 4
+>>
+>> First it complained about the SJW having a higher value than some phase-seg
+>> value which was 2.
+>>
+>> Error: sjw: 4 greater than phase-seg2: 2.
+>>
+>> I always thought the driver automatically adapts the SJW value to the
+>> highest possible and SJW=4 could always be set. Did this change at a certain
+>> point?
+> 
+> Yes, that changed with b5a3d0864ee7 ("can: bittiming: can_sjw_check():
+> check that SJW is not longer than either Phase Buffer Segment")
+> 
+> See discussion in https://lore.kernel.org/all/20220907103845.3929288-3-mkl@pengutronix.de/
 
-We use mops = NULL to indicate module has been freed or will be freed in no
-time.  On the other hand mops != NULL means module is still there, so
-that try_module_get() could be safely called.  It is possible someone
-has got fpga mgr dev but not the module yet, at that time the module is
-unloaded, then try_module_get() triggers crash.
+Ok, thanks.
 
+>> Anyway, then I reduced the given SJW value and the ip command did not give
+>> any error message.
+>>
+>> But finally there was not CAN traffic possible with my "always working
+>> setup".
+>>
+>> I'm running 6.8.0-rc4-00433-g92a355464776 from Linus' tree.
+>>
+>> Reverting this patch fixed my issue.
 > 
-> If fpga_mgr_unregister() is called from module_exit(), we are sure that nobody
-> got the manager dev earlier using fpga_mgr_get(), or it would have bumped up
+> But what has the tdco calculation to do with non CAN-FD controllers?
 
-No, someone may get the manager dev but not the module yet, and been
-scheduled out.
+Hm, I was using a Debian 6.1 kernel in between, which worked.
 
-> the module's refcount, preventing its removal in the first place. In this case,
-> when device_unregister() is called, it will trigger dev_release() since the
-> manager dev refcount has reached 0.
-> 
-> If fpga_mgr_unregister() is called elsewhere in the module that registered the
-> manager (1), we have two subcases:
-> 
-> a) someone got the manager dev earlier and bumped the module's refcount. Hence,
-> the ops are safe since the module cannot be removed until the manager dev is
-> released by calling (the last) put_device(). This, in turn, will trigger
-> class->dev_release().
-> 
-> b) no one got manager dev. In this case, class->dev_release() will be called
-> immediately.
-> 
-> (1) The caller of fpga_mgr_register_*() is responsible for calling
-> fpga_mgr_unregister(), as specified in the docs.
-> 
-> > I have this concern when I was reviewing the same improvement for fpga
-> > bridge. The change for fpga bridge seems workable, the mutex keeps hold
-> > until fpga_bridge_put(). But I somewhat don't prefer the unregistration
-> > been unnecessarily blocked for long term.
-> 
-> I also don't like the idea of potentially blocking the unregistration, but I
-> could not find a better solution for the bridge at the moment.
-> 
-> > I think your try_module_get_safe() patch may finally solve the invalid
-> > module owner issue. Some options now, we ignore the invalid module owner
-> > issue (it exists before this change) and merge the rest of the
-> > improvements, or we wait for your patch accepted then re-evaluate. I
-> > prefer the former.
-> 
-> Yeah, try_module_get_safe() would make things simpler and easier. I'm currently
-> working on a series of selftests to demonstrate that the function is safe from
-> deadlocks, as requested by the maintainer. I hope I can convince people of the
-> advantages.
-> 
-> Thanks,
-> Marco
-> 
+Then I booted my 6.8.0-rc4-00433-g92a355464776 again, reverted the patch 
+and loaded the changed can-dev module by hand - which then also worked.
+
+To double check now I was unloading the patched version and using the 
+can-dev from /lib/modules again, also works ¯\_(ツ)_/¯
+
+So, I'll have to make more investigations what really went wrong here.
+I also was astonished about such CAN FD dependency.
+
+Will come back with more info about my experienced issue.
+So far please drop my blame for this patch.
+
+Best regards,
+Oliver
 
