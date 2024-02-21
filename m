@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-74902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38D3885DFC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:34:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D424785DFCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2CE02865E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:34:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CAE91F24DFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20EF47F7F0;
-	Wed, 21 Feb 2024 14:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B157F7EA;
+	Wed, 21 Feb 2024 14:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SfSm5W7M"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VSCgXtTG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B849F78B5E
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:34:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9C969D10
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708526047; cv=none; b=PXHqh9nbog/+wf53mCgjWcyorHuV73vIVxqYiyDo9YDt8D4Ohe7wiYNwALIpIL6aeQ6M0iGqk4qYe69XpTjvIRZrUwmHD8dc9pmOJWJKN20mVE4OaNXICXjzI4a+BsvZB4J1Vr+ZDqQ+xJZ98AgyfMZQcnM5tZLCaN6Q10gJCeI=
+	t=1708526060; cv=none; b=FFnJOmnMycGofkBuRJLjgH54ZgopwTnQhvE0m0H/X7wV5utd3iFYQPAPT5oBHY/xTh5Oi5WoLMzb/oKiqxo7JZLDlsi4QjkzCxMhO86BacvqXN6V8d+HcQQCaTceNQVljGxu72gHOAMAG3oL8B2Vbk2E3itfZ1cvx7CPuLew9z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708526047; c=relaxed/simple;
-	bh=fk/hx35bDJfwmm2rrn7zg+nEITyyI4XpRW1p6l+4fN8=;
+	s=arc-20240116; t=1708526060; c=relaxed/simple;
+	bh=GfZVq947I9YP7CqrtkkOI/Xke7wAOCBhrZCjc34f1xc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W/fXm0PedZOe4qJ+cDOtfVySKMPTwNH7NCn021TXEgRCxDl8yrvFWauGmkz1RxCvoyeWxmAbHVTunuZAUgDi+PEs9mZEypobDcpfqcCYOioCB3Arwv78HPmR1WG6bU+zx8tZcwALPKkEfqT3tWL7AMBC20Ng8zmkjjLpuSMkmYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SfSm5W7M; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so7719637a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:34:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708526043; x=1709130843; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8rAlRoM29ajsutB92KLvoThndrvNnQoe5UZ7QoG1Y/o=;
-        b=SfSm5W7MGJdkxcafOcMyEtyBnZfJTQsayNcbFsJ5dVp4pLS/EInGfq87FvYmPVAdn+
-         Sg4da8XEFiHQM3Nt59GMomGUEQE+R3541U+YFbtEIjgN7/T5EjMkdD7aZkKR8ydh3Dqk
-         IYR2B3ArjnKb59y3FKEzwkw24N/IcJs9EVUw4+YaRGdkTMwEHdDehyFB0aSjgbVRv5n/
-         ItaBCCzmv1I2LV0+ePsycI8CFkG8V3zvUZpOtd6OamNXQPN/t2kXvXUzTUTs6T9k2y6H
-         ir/k+nezY9TYCMwv/woEAnu8WqyAXiC5k77JZ/49mszM/XSzv6ZKdyr32mnO2ApaeiGG
-         gtow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708526043; x=1709130843;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8rAlRoM29ajsutB92KLvoThndrvNnQoe5UZ7QoG1Y/o=;
-        b=i4Yc2VbCl2xguCHHRjGlftNQPtz85rXTspe2aslegqel+OKJX11yiyFujkwtPf4/wt
-         bJpYjJLoFL33z/4F+zuSAb6xfwtkuV8fKy8SV/FdyEGP/buG6ACW6I9+9b/YuJEp9jB6
-         cOpYWkWuEVIwUvx6MurBVIzYnPbtmO/1/iZ7ByXWa9NpaJUMWbL9cEYjegQtGKgNdWd0
-         w9LicHDz292CByN8NoD8qyjkpm+LtNK/+365O/CGxP/n0x3NJ1MUJtZO8KRWk8b2JV+7
-         /m0v4ARL7Cp9rRk/euQv3hJhxEiUBwfxXnG+N5KyPe/0NJ8fpYJnmbFQA2ZeFGDQqV1N
-         AAtg==
-X-Forwarded-Encrypted: i=1; AJvYcCW33CscczDUKUt3iLpb+099INVuRvDJSZ0gR6TAJIjLflKVyD9UGUh5p5r5/QLi6+Mr7pQPRnSJPn+Bd8NkPZTES847PJrsCpZg4mgX
-X-Gm-Message-State: AOJu0YzSnB0AylvxIT8GYn49x68OHJjIpETOLM3h5Zwd2FhM2c/ewbfD
-	vss+mV4BmwtHPbn0r+4g+QoZpyYiIN6GVQOK/Tn1OsTFqwG89KY7/erPvQGemzs=
-X-Google-Smtp-Source: AGHT+IGZQkwx4Qc949RPLUdXWDl0TSjbT+eCw56rdpcOSUGIcytXd04rBw0ljTAcoMoB7x+aghYamQ==
-X-Received: by 2002:a17:906:f88a:b0:a3e:9ce3:1bb with SMTP id lg10-20020a170906f88a00b00a3e9ce301bbmr5822915ejb.3.1708526043024;
-        Wed, 21 Feb 2024 06:34:03 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id r22-20020a170906281600b00a3d777aa8fesm4977610ejc.69.2024.02.21.06.34.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 06:34:02 -0800 (PST)
-Message-ID: <88d8fea5-2b11-4d01-816c-dbe822ac8d19@linaro.org>
-Date: Wed, 21 Feb 2024 15:33:58 +0100
+	 In-Reply-To:Content-Type; b=U5ijaA0Mz97d8OrMK4c1o1HPwz3q5kD5v1Lsh0e0pYxqMWSvlOnuxx7F19tS9k0nYUZmNRdZsDWDLemcf+TA9HVA+U4juruAy3tPGxGv60gHqIhnBzdGI93Cd2/djVNdTRNdMAlYgmzgLWz9jsk4kMdJIqwuxmb4ruyMxSZjHnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VSCgXtTG; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708526059; x=1740062059;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GfZVq947I9YP7CqrtkkOI/Xke7wAOCBhrZCjc34f1xc=;
+  b=VSCgXtTGRGziZLS2egogHbYhBzRjSFPV54YDlMVlV+aRjKiOXyiq/l5F
+   Rsb1YkJaZVvxYpiXhxYnuAIFIFgDTCi50C8wJV6lg2llRqmPZMT8g8b7N
+   ci0VSSGRl1MpUxZ+maTaVznsGaXbDlbSsHm7WitC8+/ul14CgNFxuYtns
+   dsjo00zfZCT5h7hAUEJ6AEyWdun4oPJiVdSVfq+zSvRihql8O5+cJ/Mya
+   7p33xaNi5csxcLqEFR1ZOHlarcWS0hbTiWYk0Yia5+1OM9pU3qV5OtBPn
+   7loAvBDxLhtWeE/Ai++lsM/hkUaEpZ+RHsBor4s1wN6hlp1HrPD+hav5Y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="13304972"
+X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
+   d="scan'208";a="13304972"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:34:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
+   d="scan'208";a="5056610"
+Received: from jdoyle1x-mobl2.ger.corp.intel.com (HELO [10.213.204.109]) ([10.213.204.109])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 06:34:11 -0800
+Message-ID: <0c001651-0339-4872-bf4f-d1a3e4f2aa43@linux.intel.com>
+Date: Wed, 21 Feb 2024 14:34:09 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,124 +62,182 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] dt-bindings: PCI: qcom: Add global irq support for
- SA8775p
+Subject: Re: [PATCH 0/1] Always record job cycle and timestamp information
 Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- root <root@hu-msarkar-hyd.qualcomm.com>, andersson@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, jingoohan1@gmail.com,
- gustavo.pimentel@synopsys.com, manivannan.sadhasivam@linaro.org,
- conor+dt@kernel.org, quic_nitegupt@quicinc.com
-Cc: quic_shazhuss@quicinc.com, quic_ramkri@quicinc.com,
- quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
- quic_vbadigan@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240221140405.28532-1-root@hu-msarkar-hyd.qualcomm.com>
- <20240221140405.28532-2-root@hu-msarkar-hyd.qualcomm.com>
- <08ca89da-d6a1-440c-8347-f2e31222bede@linaro.org>
- <a0677780-d013-44f7-94bf-ea7e23aab019@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a0677780-d013-44f7-94bf-ea7e23aab019@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>, Steven Price <steven.price@arm.com>,
+ Lionel Landwerlin <lionel.g.landwerlin@linux.intel.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Rob Herring <robh@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
+References: <20240214121435.3813983-1-adrian.larumbe@collabora.com>
+ <ba987da3-b4aa-410c-95ae-434e94793d85@arm.com>
+ <CAKMK7uH=QKSyMgsOYCHMwE7iv6jQZRwUMcKq=HiXsBXBCv5BCQ@mail.gmail.com>
+ <cfe1870f-16ff-45b4-8966-6bb536d3cae7@linux.intel.com>
+ <jvohxwzrgwqmzhwws3tzn53ii6eyexkutwl7pdj5buk6k6wx7c@ucxoohk5e3iw>
+From: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <jvohxwzrgwqmzhwws3tzn53ii6eyexkutwl7pdj5buk6k6wx7c@ucxoohk5e3iw>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 21/02/2024 15:31, Konrad Dybcio wrote:
-> On 21.02.2024 15:28, Krzysztof Kozlowski wrote:
->> On 21/02/2024 15:04, root wrote:
->>> From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->>>
->>> Add global interrupt support in dt-bindings for SA8775p RC platform.
->>
->> What is this global interrupt? Why wasn't it there before?
->>
->>>
->>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->>> ---
->>>  .../devicetree/bindings/pci/qcom,pcie.yaml    | 26 +++++++++++++++++--
->>>  1 file changed, 24 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->>> index a93ab3b54066..d86fb63a2d2c 100644
->>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->>> @@ -63,7 +63,7 @@ properties:
->>>  
->>>    interrupt-names:
->>>      minItems: 1
->>> -    maxItems: 8
->>> +    maxItems: 9
->>>  
->>>    iommu-map:
->>>      minItems: 1
->>> @@ -873,8 +873,30 @@ allOf:
->>>          compatible:
->>>            contains:
->>>              enum:
->>> -              - qcom,pcie-msm8996
->>>                - qcom,pcie-sa8775p
->>> +    then:
->>> +      oneOf:
->>
->> No need, drop.
+
+On 21/02/2024 09:40, Adrián Larumbe wrote:
+> Hi,
 > 
-> Moreover, I think this global irq should be present on all qc platforms
+> I just wanted to make sure we're on the same page on this matter. So in
+> Panfrost, and I guess in almost every other single driver out there, HW perf
+> counters and their uapi interface are orthogonal to fdinfo's reporting on drm
+> engine utilisation.
+> 
+> At the moment it seems like HW perfcounters and the way they're exposed to UM
+> are very idiosincratic and any attempt to unify their interface into a common
+> set of ioctl's sounds like a gargantuan task I wouldn't like to be faced with.
 
-Heh, this will anyway conflict with my series:
-https://lore.kernel.org/all/90a50ab4-a513-48af-b13a-bba082e49540@linaro.org/
+I share the same feeling on this sub-topic.
 
-https://lore.kernel.org/all/20240205-dt-bindings-pci-qcom-split-continued-v1-0-c333cab5eeea@linaro.org/
+> As for fdinfo, I guess there's more room for coming up with common helpers that
+> could handle the toggling of HW support for drm engine calculations, but I'd at
+> least have to see how things are being done in let's say, Freedreno or Intel.
 
+For Intel we don't need this ability, well at least for pre-GuC 
+platforms. Stat collection is super cheap and permanently enabled there.
 
+But let me copy Umesh because something at the back of my mind is 
+telling me that perhaps there was something expensive about collecting 
+these stats with the GuC backend? If so maybe a toggle would be 
+beneficial there.
 
-Best regards,
-Krzysztof
+> Right now there's a pressing need to get rid of the debugfs knob for fdinfo's
+> drm engine profiling sources in Panfrost, after which I could perhaps draw up an
+> RFC for how to generalise this onto other drivers.
 
+There is a knob currently meaning fdinfo does not work by default? If 
+that is so, I would have at least expected someone had submitted a patch 
+for gputop to handle this toggle. It being kind of a common reference 
+implementation I don't think it is great if it does not work out of the box.
+
+The toggle as an idea sounds a bit annoying, but if there is no other 
+realistic way maybe it is not too bad. As long as it is documented in 
+the drm-usage-stats.rst, doesn't live in debugfs, and has some common 
+plumbing implemented both on the kernel side and for the aforementioned 
+gputop / igt_drm_fdinfo / igt_drm_clients. Where and how exactly TBD.
+
+Regards,
+
+Tvrtko
+
+> 
+> On 16.02.2024 17:43, Tvrtko Ursulin wrote:
+>>
+>> On 16/02/2024 16:57, Daniel Vetter wrote:
+>>> On Wed, Feb 14, 2024 at 01:52:05PM +0000, Steven Price wrote:
+>>>> Hi Adrián,
+>>>>
+>>>> On 14/02/2024 12:14, Adrián Larumbe wrote:
+>>>>> A driver user expressed interest in being able to access engine usage stats
+>>>>> through fdinfo when debugfs is not built into their kernel. In the current
+>>>>> implementation, this wasn't possible, because it was assumed even for
+>>>>> inflight jobs enabling the cycle counter and timestamp registers would
+>>>>> incur in additional power consumption, so both were kept disabled until
+>>>>> toggled through debugfs.
+>>>>>
+>>>>> A second read of the TRM made me think otherwise, but this is something
+>>>>> that would be best clarified by someone from ARM's side.
+>>>>
+>>>> I'm afraid I can't give a definitive answer. This will probably vary
+>>>> depending on implementation. The command register enables/disables
+>>>> "propagation" of the cycle/timestamp values. This propagation will cost
+>>>> some power (gates are getting toggled) but whether that power is
+>>>> completely in the noise of the GPU as a whole I can't say.
+>>>>
+>>>> The out-of-tree kbase driver only enables the counters for jobs
+>>>> explicitly marked (BASE_JD_REQ_PERMON) or due to an explicit connection
+>>>> from a profiler.
+>>>>
+>>>> I'd be happier moving the debugfs file to sysfs rather than assuming
+>>>> that the power consumption is small enough for all platforms.
+>>>>
+>>>> Ideally we'd have some sort of kernel interface for a profiler to inform
+>>>> the kernel what it is interested in, but I can't immediately see how to
+>>>> make that useful across different drivers. kbase's profiling support is
+>>>> great with our profiling tools, but there's a very strong connection
+>>>> between the two.
+>>>
+>>> Yeah I'm not sure whether a magic (worse probably per-driver massively
+>>> different) file in sysfs is needed to enable gpu perf monitoring stats in
+>>> fdinfo.
+>>>
+>>> I get that we do have a bit a gap because the linux perf pmu stuff is
+>>> global, and you want per-process, and there's kinda no per-process support
+>>> for perf stats for devices. But that's probably the direction we want to
+>>> go, not so much fdinfo. At least for hardware performance counters and
+>>> things like that.
+>>>
+>>> Iirc the i915 pmu support had some integration for per-process support,
+>>> you might want to chat with Tvrtko for kernel side and Lionel for more
+>>> userspace side. At least if I'm not making a complete mess and my memory
+>>> is vaguely related to reality. Adding them both.
+>>
+>> Yeah there are two separate things, i915 PMU and i915 Perf/OA.
+>>
+>> If my memory serves me right I indeed did have a per-process support for i915
+>> PMU implemented as an RFC (or at least a branch somewhere) some years back.
+>> IIRC it only exposed the per engine GPU utilisation and did not find it very
+>> useful versus the complexity. (I think it at least required maintaining a map
+>> of drm clients per task.)
+>>
+>> Our more useful profiling is using a custom Perf/OA interface (Observation
+>> Architecture) which is possibly similar to kbase mentioned above. Why it is a
+>> custom interface is explained in a large comment on top of i915_perf.c. Not
+>> sure if all of them still hold but on the overall perf does not sound like the
+>> right fit for detailed GPU profiling.
+>>
+>> Also PMU drivers are very challenging to get the implementation right, since
+>> locking model and atomicity requirements are quite demanding.
+>>
+>>  From my point of view, at least it is my initial thinking, if custom per
+>> driver solutions are strongly not desired, it could be interesting to look
+>> into whether there is enough commonality, in at least concepts, to see if a
+>> new DRM level common but extensible API would be doable. Even then it may be
+>> tricky to "extract" enough common code to justify it.
+>>
+>> Regards,
+>>
+>> Tvrtko
+>>
+>>>
+>>> Cheers, Sima
+>>>
+>>>
+>>>>
+>>>> Steve
+>>>>
+>>>>> Adrián Larumbe (1):
+>>>>>     drm/panfrost: Always record job cycle and timestamp information
+>>>>>
+>>>>>    drivers/gpu/drm/panfrost/Makefile           |  2 --
+>>>>>    drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ------------------
+>>>>>    drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 ------------
+>>>>>    drivers/gpu/drm/panfrost/panfrost_device.h  |  1 -
+>>>>>    drivers/gpu/drm/panfrost/panfrost_drv.c     |  5 -----
+>>>>>    drivers/gpu/drm/panfrost/panfrost_job.c     | 24 ++++++++-------------
+>>>>>    drivers/gpu/drm/panfrost/panfrost_job.h     |  1 -
+>>>>>    7 files changed, 9 insertions(+), 59 deletions(-)
+>>>>>    delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+>>>>>    delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+>>>>>
+>>>>>
+>>>>> base-commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
+>>>>
+>>>
+>>> --
+>>> Daniel Vetter
+>>> Software Engineer, Intel Corporation
+>>> http://blog.ffwll.ch
+> 
 
