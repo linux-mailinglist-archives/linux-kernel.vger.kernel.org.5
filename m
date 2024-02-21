@@ -1,105 +1,127 @@
-Return-Path: <linux-kernel+bounces-73883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CBF285CD19
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:52:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C96485CD20
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 01:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30DCE28699E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:52:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46D33B221A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE214432;
-	Wed, 21 Feb 2024 00:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417A8882D;
+	Wed, 21 Feb 2024 00:51:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzIIh7bf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J7USTkxr"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAA8882D;
-	Wed, 21 Feb 2024 00:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C0C6FBE;
+	Wed, 21 Feb 2024 00:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708476701; cv=none; b=qgTDQ5fv7zKOicVaf2PjYhXyY3XGuOoUAUyG6x97VR+bNUxSNMpoVdbPhqQ/prZdbL4FWcqTjrlzDQKHqwzMQ2xz7aN8mRc4EdBhOjXRPW5rt6nKQfhCrg9yncQCDixkboNJv1TAlJaaSwHqdgZdCvjzWxQ2h9LgWQeoNjrsGGY=
+	t=1708476710; cv=none; b=G70z3ExGM1bX0n3PrvQdG5q5XOjBH+tCTJhD5F6pblwnYaFthvXbXqDFbmfOc4ErIuebnPpblipHtoeiTPbYFkRm/WzojMJUn/h29dhkvplk2fj0Tpw05s5wczgwWNTu8N41GjZODl6mdCyds9Q79NW5Si8l6djHHphkjR+MbvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708476701; c=relaxed/simple;
-	bh=cus2iwaXW84ognaMM49j+z1rlDGkGcW+6/WiXWamahE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TX/xwu5EJKC8hjXGngEMdPRQxHX6EZ6eEXKC3DzDRN78Zh8acdKHBHm3931YqwauOPldNLV4st8ubylyPGOuXyAZf+KKdpLN0ewq8PbnyewQqpyePnI8Xnx3DnqeASCggpVGJGfhOw7NLYzCxJluHbBF3zOXZ9wVOJ8a2Em7PGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzIIh7bf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 782D1C433C7;
-	Wed, 21 Feb 2024 00:51:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708476700;
-	bh=cus2iwaXW84ognaMM49j+z1rlDGkGcW+6/WiXWamahE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dzIIh7bfuiptnNznsNXeH5o9LEzfqNAuZ1GtMgqCzwm+qCK0ujePcwDTcEPseDAzc
-	 hRFu8ZfTOIi3gMWB+RBMLu4b/c/TQOT16GUBjE3N7FyqypPQD7xvubFsfji6fbAy73
-	 sR6OgHJriElGDgOsW6akpmfO34tSdgLQnK9A8Dy4u0EPtjJyj94ruKsLq3JQx3nXIG
-	 m1vI8DvDr7wIc4c/F+POFL4cv4t/xM2pVh3k1OWhpKMi3y6YUfCmMoJbGJ+srpmwaF
-	 bUT/q9rwF7kVyNM6Du2wxAqzrEky/8W4LvteznpAeTEYHbB2mgRSxtYys8eI4VYTWk
-	 FXPN6ekcM3xKg==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240216140535.1434933-1-rf@opensource.cirrus.com>
-References: <20240216140535.1434933-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l56: Must clear HALO_STATE before issuing
- SYSTEM_RESET
-Message-Id: <170847669920.72316.9216524053259588241.b4-ty@kernel.org>
-Date: Wed, 21 Feb 2024 00:51:39 +0000
+	s=arc-20240116; t=1708476710; c=relaxed/simple;
+	bh=MieXVm22ma551iVFmKtgUAOJPGMkvDbr5o0lgBA3X8M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fmfl4VOaLuYtYH6ZHqr11iDUSSrchBmA1gfxyWaC1G/78AcX/rn6IAfe3dGzyShgCsDW34IQJbwvHGTv4sNHWl3vz+diygWcA5LM6gAqEUaw4zPGP5tWJhvJOWCAQw9kTZZ/EiZyq0XpFm6eMIoL8ElaWOYtFMJuLsTxIeNET0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J7USTkxr; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d8da50bffaso30966745ad.2;
+        Tue, 20 Feb 2024 16:51:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708476708; x=1709081508; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B0SlzYf9q4r5oo3cnCmgPLBf9yL53UG8nb29+3uRtXs=;
+        b=J7USTkxr/V0zCXI/6QuqmR4yBLA7UTlue+U6jYfCGfz8FOTFbXnN5ddjTflQL98o7n
+         Ej24WbK7Q9mxP0IFjgmFAyAkjtjLFkuVK71IrQE459mBQur1Vsc8pA9Qn3ujZLmVt6QQ
+         OMEdn8dP64qTXbHakZRRqU8m4Feyv5txGSnwnohsnjEnWL6DMo86V5z+E2+6WMPaIhQP
+         PWg5b6+G6n1O5dXCwZd67ulI2UTTr4O/ps2fvv/Jf/IY+nkeknXXqfxph0k0TuGe+wqT
+         Ms5w6J5NWjwap0/xqQif8vVuqX9php8F0vHDzyxCA8pOL3z1WqSFoLzgOrwHNPgTd6iA
+         cLeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708476708; x=1709081508;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B0SlzYf9q4r5oo3cnCmgPLBf9yL53UG8nb29+3uRtXs=;
+        b=i3pBjz1FA/sBxcf1yzegSxFIvIn1buj/T9XvERJHlfPzkDM4fYFGsaJ1HfKKgYMkNP
+         cLNfI/mUciMml1KzgobsrnrgF+HJXOQKOc+kxBge/eWzfsTM3vjD7vieUHqAnHuuRoqR
+         LAFdJNYJqDTFkJetwIyjbE71e5SL/yioKpfaUIuQAsU5CgX5MOedb8VrYzlCK3x5Ua6a
+         AK9VUZmiD252Bn/1XKe4G2cVR5uXr4KnErkpV0Lix9t+i6+f3dTmruOXv1eHXV3FiAhe
+         99g4p/p0ryu8annH1e9D01a+cLYkLRU6E6cChDKO2IDPeZYG6ECOx29XpkJdK1cyGqJ/
+         OlFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVrrmtvuayv/ZL0aE/89lZ7lSt1dU7F/WHKnB3sInL2bL2/hJmKbRna7Ir0W6hh1PH+fVPGjDEjZZxYidODH7SqViFtf4ztXSSTXBlPxsHIhZjGVt/TRygiEuJ967Jbq4CJcY8Prxj9+HWnLudlq2AANyI6nUm6P9CdNVrYjnMNUfvy++c=
+X-Gm-Message-State: AOJu0YxWbAZUSm1pbFSI8Ch3VzUZHP/5LHWAmzBnUrhS7/ya12o1ys1n
+	ww0lu9gx0JOwhZJPfvny44U5yG3ONhJ61hZnoEzaKuRVP49ZBweF
+X-Google-Smtp-Source: AGHT+IHpWBNu8g6t7YfE+qIGbFSW1RZzQSg9X2TrRyMpgRBhzWoeu63O8KOYi+IXdOVYZh0DRmDQOg==
+X-Received: by 2002:a17:902:c084:b0:1dc:20f2:77bb with SMTP id j4-20020a170902c08400b001dc20f277bbmr2027961pld.29.1708476708315;
+        Tue, 20 Feb 2024 16:51:48 -0800 (PST)
+Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id w16-20020a1709029a9000b001db7ee44ff9sm6790232plp.263.2024.02.20.16.51.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 16:51:47 -0800 (PST)
+Message-ID: <9c0f9285-4418-4ae9-9f72-ea74bfcf92cc@gmail.com>
+Date: Wed, 21 Feb 2024 08:51:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/4] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
+ driver
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ linus.walleij@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ychuang3@nuvoton.com, schung@nuvoton.com
+References: <20240220004159.1580108-1-ychuang570808@gmail.com>
+ <20240220004159.1580108-5-ychuang570808@gmail.com>
+ <b40f5b2d-d41f-47fa-8aae-30290e0d2737@linaro.org>
+Content-Language: en-US
+From: Jacky Huang <ychuang570808@gmail.com>
+In-Reply-To: <b40f5b2d-d41f-47fa-8aae-30290e0d2737@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 16 Feb 2024 14:05:35 +0000, Richard Fitzgerald wrote:
-> The driver must write 0 to HALO_STATE before sending the SYSTEM_RESET
-> command to the firmware.
-> 
-> HALO_STATE is in DSP memory, which is preserved across a soft reset.
-> The SYSTEM_RESET command does not change the value of HALO_STATE.
-> There is period of time while the CS35L56 is resetting, before the
-> firmware has started to boot, where a read of HALO_STATE will return
-> the value it had before the SYSTEM_RESET. If the driver does not
-> clear HALO_STATE, this would return BOOT_DONE status even though the
-> firmware has not booted.
-> 
-> [...]
+Dear Krzysztof,
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On 2024/2/20 下午 04:28, Krzysztof Kozlowski wrote:
+> On 20/02/2024 01:41, Jacky Huang wrote:
+>> From: Jacky Huang <ychuang3@nuvoton.com>
+>>
+>> Add common pinctrl and GPIO driver for Nuvoton MA35 series SoC, and
+>> add support for ma35d1 pinctrl.
+>>
+>> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+>> ---
+>>   drivers/pinctrl/nuvoton/Kconfig          |   19 +
+>>   drivers/pinctrl/nuvoton/Makefile         |    2 +
+>>   drivers/pinctrl/nuvoton/pinctrl-ma35.c   | 1211 +++++++++++++++
+>>   drivers/pinctrl/nuvoton/pinctrl-ma35.h   |   51 +
+>>   drivers/pinctrl/nuvoton/pinctrl-ma35d1.c | 1797 ++++++++++++++++++++++
+>>   5 files changed, 3080 insertions(+)
+>>   create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.c
+>>   create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.h
+>>   create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
+> Driver cannot depend on DTS, so please reorganize patchset so DTS is not
+> in the middle or even split the DTS to separate patchset.
+>
+> Best regards,
+> Krzysztof
+>
 
-Thanks!
-
-[1/1] ASoC: cs35l56: Must clear HALO_STATE before issuing SYSTEM_RESET
-      commit: e33625c84b75e4f078d7f9bf58f01fe71ab99642
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Thank you for your explanation. In the next version, I will adjust the 
+order and move the DTS to the end of this patchset. Best Regards, Jacky 
+Huang
 
