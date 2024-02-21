@@ -1,133 +1,138 @@
-Return-Path: <linux-kernel+bounces-75200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5821F85E494
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:31:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF6B85E498
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87A5A1C22C16
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:31:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7FFE1F25336
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B46383CDB;
-	Wed, 21 Feb 2024 17:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9FF83CCD;
+	Wed, 21 Feb 2024 17:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Wbi6jkdu"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CBIp/lFd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA53182D8F;
-	Wed, 21 Feb 2024 17:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 862DA1C20
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708536644; cv=none; b=g8LuG/gwI0UnIy0ilNShZucZOzd53i864m5apw6Iwm1kmUAalgWUoscs91wZTDXzzgI4UOVZ3eaHjC6cJasNRRRqet+iNh4UgGTCUMaiBMZ+v4Dgdje6YCkrp5hrtPo1bpELVUbhYNmXXTzefIWyjN8Vi78Zu+nqhZbhe6TBMbU=
+	t=1708536679; cv=none; b=LVJWzEgcxJ6QFeljNf0cCx0II9hu/DfPyhaJyJn0BSiLhyCFN0N/J/oY2icLtOTyBSGeNKjF4i9iSmWNhzC+tK3Exahv7QMpgrfm5z+XIO/iXOlows9OSTRkhxDoZSVSoTn+H8F6AeEYSpPNmtMkkCQJ82ZF7RgUJO49NOD1Bec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708536644; c=relaxed/simple;
-	bh=VVJKBus/4hY3nazwz3pZiLEtUFESTJ1fNiTVxhfAPy8=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=fM4QWwqusHPWuR64guH1A3efrUEKvGoTV2hf6QwWhtIbxyKJHSPtHI05wGN/01WX9XHMqAW3TMUZb2G7/YuSUCq7YBaJuDq1fKeXXX3cBVKaGrWc4zqaNoOM36K7kw/Yf0I5dnPBBKypgX/rwJDMwALkOVQAqThqrS5eQX/mM38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Wbi6jkdu; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=I87YIZpurdfl8CTcBVVyeB1j4NeBVQcdCIaP0A3iopg=; b=Wbi6jkduFDxsAg3gq98PHpUcSq
-	aPM+WXH/eyj6E6cMlenpE90+cdly1BVWqZB6ONVaiY8julWfqqoG3pUFl+AvtS7xqybQALkdyiCOo
-	CrpduV0kwBnHP7w1Gvgch5neon/t/NXjK/tlNZVS07pUouiNswnCxjD9E1yMqrgCouzrEvUQrPdPC
-	PvmbhlVxxThM7yvKKISOPzDuh4Z7w3ewE/LNdN/HqMkOSRwqdey/VluqZaJhG70tBSln8j4TL4IKe
-	J8K250ppqDuGsZv87Q1bPknz68dtbZaAutZ01j6/Cxg/QAuaRWMs3tl9BP+p1AMPgMLRbm2StSITl
-	Fns2ykmw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcqQU-000DLL-Kx; Wed, 21 Feb 2024 18:30:34 +0100
-Received: from [178.197.249.13] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rcqQT-003ehV-20;
-	Wed, 21 Feb 2024 18:30:33 +0100
-Subject: Re: [PATCH bpf-next 1/2] bpf: Take return from set_memory_ro() into
- account with bpf_prog_lock_ro()
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Hengqi Chen <hengqi.chen@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>,
- "linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
-References: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
- <CAEyhmHT8H3AXyOKMc3eQSdM2+1UDETJDPyEQ0-AEb6E8pt9LTg@mail.gmail.com>
- <4d53e0f9-cfee-4877-8b56-9f258c8325f6@csgroup.eu>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2abc14fc-a19e-8205-c54f-a87c11ebd5be@iogearbox.net>
-Date: Wed, 21 Feb 2024 18:30:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1708536679; c=relaxed/simple;
+	bh=x4m0ZIEdqBXtWBesysoHgAjQIPLTEUcC/b3cdm0G0oU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNjjVIuMDLJSkfIU9eY2wr7GeVaNhtzLLstJhI5oKQS1fSLacyOgYUWv4SOOVwBIEP+B6COIkQtrDTGZxgrs41ErwMKn04+6s4ncK5jmqUDIGBaMbVUuBoaSMGeE6I572EZCH4MGsPI+U/WwsL+VMj63osl3oRicvDyIsss7L1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CBIp/lFd; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708536679; x=1740072679;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x4m0ZIEdqBXtWBesysoHgAjQIPLTEUcC/b3cdm0G0oU=;
+  b=CBIp/lFdBqB8d3vMyZ82FvnrGzNGLuKYvqFa58nKCTraIKvLpqx9W1pf
+   VWK28IIfQHRYUJdwRAVkjzWOV7/o5QEq8bNbEuwTc8YwaKyDup5qJFbkW
+   IXcpG6TRKIkQiquhjTeo3+dyTFlkGj5IWStPT7wRZqNxqJFbbc5BA3eD6
+   Vr7R1bfm473Cneo8ZWPFnBvFIKqzS94quzVsvW+JU6y3uf1DGH7JOoDhq
+   Ep43/fcbZr4tcGFJBBvth88cl3F9EpjLs0qntXDKJLXbmunqxbm6RQRly
+   IRBDIS8g0/omdlXabKZT3HxLozrAqQTJIvOBVx/aGP8hnDzwxHaM5MhIb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="25177046"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="25177046"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 09:31:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="827382575"
+X-IronPort-AV: E=Sophos;i="6.06,176,1705392000"; 
+   d="scan'208";a="827382575"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 21 Feb 2024 09:31:15 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rcqR0-0005Xw-22;
+	Wed, 21 Feb 2024 17:31:08 +0000
+Date: Thu, 22 Feb 2024 01:30:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, linux-mm@kvack.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	muchun.song@linux.dev,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: Re: [PATCH 1/3] mm/memory: Change vmf_anon_prepare() to be non-static
+Message-ID: <202402220109.SIlFdfQ5-lkp@intel.com>
+References: <20240220231424.126600-2-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <4d53e0f9-cfee-4877-8b56-9f258c8325f6@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27192/Wed Feb 21 10:23:23 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220231424.126600-2-vishal.moola@gmail.com>
 
-On 2/19/24 7:39 AM, Christophe Leroy wrote:
-> 
-> 
-> Le 19/02/2024 à 02:40, Hengqi Chen a écrit :
->> [Vous ne recevez pas souvent de courriers de hengqi.chen@gmail.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
->>
->> Hello Christophe,
->>
->> On Sun, Feb 18, 2024 at 6:55 PM Christophe Leroy
->> <christophe.leroy@csgroup.eu> wrote:
->>>
->>> set_memory_ro() can fail, leaving memory unprotected.
->>>
->>> Check its return and take it into account as an error.
->>>
->>
->> I don't see a cover letter for this series, could you describe how
->> set_memory_ro() could fail.
->> (Most callsites of set_memory_ro() didn't check the return values)
-> 
-> Yeah, there is no cover letter because as explained in patch 2 the two
-> patches are autonomous. The only reason why I sent it as a series is
-> because the patches both modify include/linux/filter.h in two places
-> that are too close to each other.
-> 
-> I should have added a link to https://github.com/KSPP/linux/issues/7
-> See that link for detailed explanation.
-> 
-> If we take powerpc as an exemple, set_memory_ro() is a frontend to
-> change_memory_attr(). When you look at change_memory_attr() you see it
-> can return -EINVAL in two cases. Then it calls
-> apply_to_existing_page_range(). When you go down the road you see you
-> can get -EINVAL or -ENOMEM from that function or its callees.
+Hi Vishal,
 
-By that logic, don't you have the same issue when undoing all of this?
-E.g. take arch_protect_bpf_trampoline() / arch_unprotect_bpf_trampoline()
-which is not covered in here, but what happens if you set it first to ro
-and later the setting back to rw fails? How would the error path there
-look like? It's something you cannot recover.
+kernel test robot noticed the following build warnings:
 
-Thanks,
-Daniel
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.8-rc5 next-20240221]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/mm-memory-Change-vmf_anon_prepare-to-be-non-static/20240221-071907
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240220231424.126600-2-vishal.moola%40gmail.com
+patch subject: [PATCH 1/3] mm/memory: Change vmf_anon_prepare() to be non-static
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240222/202402220109.SIlFdfQ5-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240222/202402220109.SIlFdfQ5-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402220109.SIlFdfQ5-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/memory.c:3283:12: warning: no previous prototype for function 'vmf_anon_prepare' [-Wmissing-prototypes]
+   vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
+              ^
+   mm/memory.c:3283:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
+   ^
+   static 
+   1 warning generated.
+
+
+vim +/vmf_anon_prepare +3283 mm/memory.c
+
+  3282	
+> 3283	vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
+  3284	{
+  3285		struct vm_area_struct *vma = vmf->vma;
+  3286	
+  3287		if (likely(vma->anon_vma))
+  3288			return 0;
+  3289		if (vmf->flags & FAULT_FLAG_VMA_LOCK) {
+  3290			vma_end_read(vma);
+  3291			return VM_FAULT_RETRY;
+  3292		}
+  3293		if (__anon_vma_prepare(vma))
+  3294			return VM_FAULT_OOM;
+  3295		return 0;
+  3296	}
+  3297	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
