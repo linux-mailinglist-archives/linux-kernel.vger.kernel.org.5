@@ -1,92 +1,119 @@
-Return-Path: <linux-kernel+bounces-75483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9EB85E951
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2DCF85E953
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:58:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9671C22594
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:57:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F1231C228FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE46586ADE;
-	Wed, 21 Feb 2024 20:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFB986ADE;
+	Wed, 21 Feb 2024 20:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Bbd9ALrc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZzW9GLDx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42613A1AF;
-	Wed, 21 Feb 2024 20:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA58C3A1AF;
+	Wed, 21 Feb 2024 20:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708549074; cv=none; b=nybWr0hiArKPTSQEgvxRv9Aq9En7hrW/2T+3kJ3ukReE26g8WFJfgcYZsCpcGRn77kxx5gSoZiHTGUIFplksjNBLFZLBQjvULoEeeS9mk7Nm1A2KXdar/2P8IRcrAChfb4fBvIs0UuEYuiedVKrbUyBX0uC4vvmIaBBMAefaFX0=
+	t=1708549107; cv=none; b=BjPDfDpgAr1qIoHDkW3LOFParCaTNQGzQ7wH9iVwSzhZYSLNc+7DmNuhIerT9+PA703p3dsS4r2wdJeSb9bhHknUoAg6RrKy38FCACadwPnmU2zYjzVI8gJDcfgB2U8ykG/Dt08nM1ktGacdZniuhIFDI6kp17y862aSTz0GdU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708549074; c=relaxed/simple;
-	bh=cQNUlLy8aiGRIYPC4jZV2h79/t7uLaYDp/ZsuaE++9Y=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=RD/0mynJsdJweaXVw9sZCxyvQ+bYrGzNlfX59Pro2+M7eFu2GpCOBAx8VjIHWeAQIPjmdWjWF/0EF2qacx4SET4Ya2z4k5TNhHcEPrljDt0FKd7AdcchbAOeqobVaDYVNLA8p2zg7ofVng0jNURX81YLOMktV8Lw0Wki6gbmHsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Bbd9ALrc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92CEFC433F1;
-	Wed, 21 Feb 2024 20:57:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708549073;
-	bh=cQNUlLy8aiGRIYPC4jZV2h79/t7uLaYDp/ZsuaE++9Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Bbd9ALrcftdB4hiAFAbv+r3I0ERbgznFbhuh6MxPmx8jG8xGLzeq23eo9RRwwfYK+
-	 iZCi2iMyB0NelsBsnf7/OypvyrQWmMazP7HA7Jbw0rZNQMouPMIBGFEDM881CMWNgk
-	 2e1ZuX9I7suwwEUiqPo2BxD0oszsroHPkKn6qHbQ=
-Date: Wed, 21 Feb 2024 12:57:52 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: Baoquan He <bhe@redhat.com>, linux-s390@vger.kernel.org,
- piliu@redhat.com, linux-sh@vger.kernel.org, x86@kernel.org,
- kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, ebiederm@xmission.com,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v2 00/14] Split crash out from kexec and clean up
- related config items
-Message-Id: <20240221125752.36fbfe9c307496313198b60f@linux-foundation.org>
-In-Reply-To: <559f2595-1477-4ef0-80e4-85ae8b426de7@linux.ibm.com>
-References: <20240119145241.769622-1-bhe@redhat.com>
-	<9101bb07-70f1-476c-bec9-ec67e9899744@linux.ibm.com>
-	<Zb8D1ASrgX0qVm9z@MiWiFi-R3L-srv>
-	<559f2595-1477-4ef0-80e4-85ae8b426de7@linux.ibm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708549107; c=relaxed/simple;
+	bh=a+JDh1FFIqaHPqou/rENlBnsnFcJSsYpw/0jB2FoUoY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n6IwQrSvMbYjOhAWr15TY7OKdITw5g9tvAURvrIA7+spQDU+lKGtkAUUbWGshmlkYV8kT4er7Ec0WNPwV9iAeL4QGIKSykekgn9YBl3l16ihnrttEdm0spny75hwTL+8QTii3ME8AJwhN24utV9BFPkiASQBlnJPNX9fyL/SdF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZzW9GLDx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3251C433F1;
+	Wed, 21 Feb 2024 20:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708549107;
+	bh=a+JDh1FFIqaHPqou/rENlBnsnFcJSsYpw/0jB2FoUoY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZzW9GLDxb7lMYGUDAEl7xKagQesuhRDH5tGnzJDx77zfodhK451n19WiFHEVZ18oK
+	 LZmEuD+F+jqE9z+CqZqQvvLVzFMNVhxz/DL6SbXHS5f9YGLtH2jiNw0dCBeTkNZ/OK
+	 HltrjmeafGoV1mxz2LAIt7wlPQhbROVKjK+2RPbGp0QUMnvyiAjliw3+z7nYuDicyx
+	 0jiTxTbS2/USJMcLoCPUOyg5P37TOPe0L1N5UJqo0r8n/+xJSr7on8EmuqICdiOy7M
+	 9JKClM8DyQXi+a24RW0uUYoL9ut3uSUTMMY9mJzU0Fru6xB2IinIttIdZl07PzDt9d
+	 Cp4u+/V2rVo7w==
+Date: Wed, 21 Feb 2024 21:58:23 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Corey Minyard <minyard@acm.org>, 
+	Andrew Manley <andrew.manley@sealingtech.com>, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] i2c: imx: when being a target, mark the last read as
+ processed
+Message-ID: <kgfagzj5vez56levwam6n6tzxl2lu7efnw5x3eadl3uophxism@ph2tghrvedg5>
+References: <20240221193013.14233-2-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221193013.14233-2-wsa+renesas@sang-engineering.com>
 
-On Wed, 21 Feb 2024 11:15:00 +0530 Hari Bathini <hbathini@linux.ibm.com> wrote:
+Hi Wolfram and Corey,
 
-> On 04/02/24 8:56 am, Baoquan He wrote:
-> >>> Hope Hari and Pingfan can help have a look, see if
-> >>> it's doable. Now, I make it either have both kexec and crash enabled, or
-> >>> disable both of them altogether.
-> >>
-> >> Sure. I will take a closer look...
-> > Thanks a lot. Please feel free to post patches to make that, or I can do
-> > it with your support or suggestion.
+On Wed, Feb 21, 2024 at 08:27:13PM +0100, Wolfram Sang wrote:
+> From: Corey Minyard <minyard@acm.org>
 > 
-> Tested your changes and on top of these changes, came up with the below
-> changes to get it working for powerpc:
+> When being a target, NAK from the controller means that all bytes have
+> been transferred. So, the last byte needs also to be marked as
+> 'processed'. Otherwise index registers of backends may not increase.
 > 
->  
-> https://lore.kernel.org/all/20240213113150.1148276-1-hbathini@linux.ibm.com/
+> Signed-off-by: Corey Minyard <minyard@acm.org>
+> Tested-by: Andrew Manley <andrew.manley@sealingtech.com>
+> Reviewed-by: Andrew Manley <andrew.manley@sealingtech.com>
+> Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> [wsa: fixed comment and commit message to properly describe the case]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-So can we take it that you're OK with Baoquan's series as-is?
+is this a fix?
 
-Baoquan, do you believe the patches in mm-unstable are ready for moving
-into mm-stable in preparation for an upstream merge?
+Andi
 
-
-
+> ---
+> 
+> Changes since v2:
+> * updated commit message and comment
+> 
+> In the stalled discussion[1], it seems I couldn't make my suggestions
+> clear. So, here are the changes how I meant them. I hope this can be
+> agreed on.
+> 
+> [1] http://patchwork.ozlabs.org/project/linux-i2c/patch/20211112133956.655179-3-minyard@acm.org/
+> 
+>  drivers/i2c/busses/i2c-imx.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index 88a053987403..60e813137f84 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -803,6 +803,11 @@ static irqreturn_t i2c_imx_slave_handle(struct imx_i2c_struct *i2c_imx,
+>  		ctl &= ~I2CR_MTX;
+>  		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
+>  		imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
+> +
+> +		/* flag the last byte as processed */
+> +		i2c_imx_slave_event(i2c_imx,
+> +				    I2C_SLAVE_READ_PROCESSED, &value);
+> +
+>  		i2c_imx_slave_finish_op(i2c_imx);
+>  		return IRQ_HANDLED;
+>  	}
+> -- 
+> 2.43.0
+> 
 
