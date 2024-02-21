@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-74357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A82E85D311
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:08:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 076DE85D315
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:09:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 299F01F22AF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:08:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 842F1B24785
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 09:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB763F9E9;
-	Wed, 21 Feb 2024 09:06:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF9F405E8;
+	Wed, 21 Feb 2024 09:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tvSifHza";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wtOujEsX"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZKiwyV2z";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eIB2QWWz"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83323D965
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65903E468
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708506381; cv=none; b=ns+ZXF1IyDH01ChP2U1t5bdBIQroyvxcKIrPs+AGXeIhtUM1ge5sEa8V6BHDKyIFJzRxSqu9jzDIXFhgbfN6MdpRA0EhrgdWsMUqXfmrzFMjWD/0HPwKE0V/S0cW4tZH9hbczuHaq9jz3JLBSEwI2+xvw/fDzMeN3vB3aO9tvCA=
+	t=1708506382; cv=none; b=GmSCiox3g8nc0OnBrYNi6sOBNHb5WoH0oo8CZ96D1EIUsZhn096hCJW3Ia3sGVcW+iUDjWaMRvZLVY3LveI5MvG2j50vS78DBQUYfFpPl0rgFolcxYGGfB0Qk4RMU8SbZpRNJTaiYFBUIsldQV7CyKgR9fnbBcbY7fW7PXSecYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708506381; c=relaxed/simple;
-	bh=Y2acepoGiFBus/o+gYKEuBFXzXXX1WvysSEaYzKXOYg=;
+	s=arc-20240116; t=1708506382; c=relaxed/simple;
+	bh=Ud9pgOn2B/0m50aOpIF31SSVvpgQRaOUxbGunhq51UI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=G5BZGaSMCKY2MFUqrZ4xK116RqM3+KzZRmmNqp3872MaPx4GVjCj4npfIWhrga/o8x72RigndSnd3yGKVPL7No+EOb7M/gaSc621wJ4OjFAwxMH8RqsD4KKHYMSVMmrU4Ouyt2zm7xgqUo5D8BysRObIePEaEQz9z791vcAZGOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tvSifHza; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wtOujEsX; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=pGMoyrZOuJddnwOWCFilyaEROf5iqNNiGYFJmp2bbBiR9uf85kj42iynxSLRBQyxYOxUnC5+0vs0C0CGsIo1A7cqyrj5bBEtQnBZtBNtmCipXK2BiDdhExlyWLavWp1oYaY1A6/Usa58EjaYtoq1qtscYbuwvPPBchhI86nyFJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZKiwyV2z; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eIB2QWWz; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Anna-Maria Behnsen <anna-maria@linutronix.de>
@@ -38,21 +38,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8Rk56jS4ox3LCyUSnYHvNlLdqZIvRSv1jWR0mBi/KNM=;
-	b=tvSifHza9FJpYdPGN14ZKC6V3XR8MQF6d1u8sRX1M3nXQkeBVoGTK3ed45Tp+Wn6Pxl34P
-	6IeT7hO5vshrkdsYEa11CvDY2TV2OumynAdBsHrz+zGnGhKt5939Qqixkem4dRqkNsoTPI
-	YijYecLSRUiZQ/jzOkiN2Y7VXUeNBznGVaQYdGRZzLjCRSkyMvzFXo1YZTF+Sy+89QbpAf
-	ghnWE/HFPgZJN+LMRiSk7WFx/ajpy7z3E4F4L3QiApGCdFBmTmQ2n/qD8Get8icU8Hgkg8
-	cgOk0xiWQf1V2On6T0jm+96lB03fPKwNMt8JjwbzQW1sSlWDG8drZ4x0dqlDnA==
+	bh=84mTYhbxH69oUoy6SwRp7poh6N58HyKxHp1SCrdM7O4=;
+	b=ZKiwyV2zkZ+h+SdEAzRyGq5O9LN9CHu1eeIzWsHowWJu6xsGLtpPL44lQ4YBsCFe8D8cwy
+	zrenZpCWFkeb9u4ZxmK2v+tJNJ9J2qmrOY5jyCHgWcf8zBZGh+nsPVcERkERUy+TWpWT/m
+	YQruHpAStbSFmkVs8rkOd3Rs7KQF6LOSmpubfL2ukplL/lVvaKcd8HoceXpy3Pujk9nKcC
+	udmHmsSrpVB7uNBPmNXUEk/W9YoiMguuEdhDkPXqC8Q2R4NoARbheI7LEQC5179OikwtqY
+	RWWy6jTQuiqsmpNFvQBxkB3NJA4KOyhSXnWIVgvYwQM2LfjyhiKaVPvBBQkIZw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1708506375;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8Rk56jS4ox3LCyUSnYHvNlLdqZIvRSv1jWR0mBi/KNM=;
-	b=wtOujEsXq56FVsf4pAgUz4UY2mcmXcLUCrvFSKEik1is8Jtqy3EJq05R0YiQNLzYwXRU1a
-	TUIrAQ29Ip7CV2BA==
+	bh=84mTYhbxH69oUoy6SwRp7poh6N58HyKxHp1SCrdM7O4=;
+	b=eIB2QWWzcZQPTgaK4YkWqHopYbdU70bbtzBJsBK1v6l+WFLnw8dlk2GujZTaEKWDnqOHqp
+	RC7nGW6K89ngf5AQ==
 To: linux-kernel@vger.kernel.org
 Cc: Peter Zijlstra <peterz@infradead.org>,
 	John Stultz <jstultz@google.com>,
@@ -71,11 +71,10 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
 	K Prateek Nayak <kprateek.nayak@amd.com>,
 	Christian Loehle <christian.loehle@arm.com>,
-	"Richard Cochran (linutronix GmbH)" <richardcochran@gmail.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v11 14/20] timers: Restructure internal locking
-Date: Wed, 21 Feb 2024 10:05:42 +0100
-Message-Id: <20240221090548.36600-15-anna-maria@linutronix.de>
+Subject: [PATCH v11 15/20] timers: Check if timers base is handled already
+Date: Wed, 21 Feb 2024 10:05:43 +0100
+Message-Id: <20240221090548.36600-16-anna-maria@linutronix.de>
 In-Reply-To: <20240221090548.36600-1-anna-maria@linutronix.de>
 References: <20240221090548.36600-1-anna-maria@linutronix.de>
 Precedence: bulk
@@ -86,80 +85,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Richard Cochran (linutronix GmbH)" <richardcochran@gmail.com>
+Due to the conversion of the NOHZ timer placement to a pull at expiry
+time model, the per CPU timer bases with non pinned timers are no
+longer handled only by the local CPU. In case a remote CPU already
+expires the non pinned timers base of the local CPU, nothing more
+needs to be done by the local CPU. A check at the begin of the expire
+timers routine is required, because timer base lock is dropped before
+executing the timer callback function.
 
-Move the locking out from __run_timers() to the call sites, so the
-protected section can be extended at the call site. Preparatory patch for
-changing the NOHZ timer placement to a pull at expiry time model.
+This is a preparatory work, but has no functional impact right now.
 
-No functional change.
-
-Signed-off-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.com>
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/timer.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+v10: s/cpu/CPU/ in commit message
+
+v6: Drop double negation
+---
+ kernel/time/timer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 88160b3461e0..52af50d00ae6 100644
+index 52af50d00ae6..7b9f9ed25fc2 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -2238,11 +2238,7 @@ static inline void __run_timers(struct timer_base *base)
- 	struct hlist_head heads[LVL_DEPTH];
- 	int levels;
+@@ -2240,6 +2240,9 @@ static inline void __run_timers(struct timer_base *base)
  
--	if (time_before(jiffies, base->next_expiry))
--		return;
--
--	timer_base_lock_expiry(base);
--	raw_spin_lock_irq(&base->lock);
-+	lockdep_assert_held(&base->lock);
+ 	lockdep_assert_held(&base->lock);
  
- 	while (time_after_eq(jiffies, base->clk) &&
- 	       time_after_eq(jiffies, base->next_expiry)) {
-@@ -2266,21 +2262,36 @@ static inline void __run_timers(struct timer_base *base)
- 		while (levels--)
- 			expire_timers(base, heads + levels);
- 	}
-+}
-+
-+static void __run_timer_base(struct timer_base *base)
-+{
-+	if (time_before(jiffies, base->next_expiry))
++	if (base->running_timer)
 +		return;
 +
-+	timer_base_lock_expiry(base);
-+	raw_spin_lock_irq(&base->lock);
-+	__run_timers(base);
- 	raw_spin_unlock_irq(&base->lock);
- 	timer_base_unlock_expiry(base);
- }
- 
-+static void run_timer_base(int index)
-+{
-+	struct timer_base *base = this_cpu_ptr(&timer_bases[index]);
-+
-+	__run_timer_base(base);
-+}
-+
- /*
-  * This function runs timers and the timer-tq in bottom half context.
-  */
- static __latent_entropy void run_timer_softirq(struct softirq_action *h)
- {
--	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_LOCAL]);
--
--	__run_timers(base);
-+	run_timer_base(BASE_LOCAL);
- 	if (IS_ENABLED(CONFIG_NO_HZ_COMMON)) {
--		__run_timers(this_cpu_ptr(&timer_bases[BASE_GLOBAL]));
--		__run_timers(this_cpu_ptr(&timer_bases[BASE_DEF]));
-+		run_timer_base(BASE_GLOBAL);
-+		run_timer_base(BASE_DEF);
- 	}
- }
- 
+ 	while (time_after_eq(jiffies, base->clk) &&
+ 	       time_after_eq(jiffies, base->next_expiry)) {
+ 		levels = collect_expired_timers(base, heads);
 -- 
 2.39.2
 
