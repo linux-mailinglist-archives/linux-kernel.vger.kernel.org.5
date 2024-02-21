@@ -1,107 +1,180 @@
-Return-Path: <linux-kernel+bounces-74547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3F4085D5C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:39:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB5385D5CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30ED41C21094
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:39:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A53CE282C0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9BE3D57F;
-	Wed, 21 Feb 2024 10:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D7GYZofQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55D53771F;
+	Wed, 21 Feb 2024 10:40:40 +0000 (UTC)
+Received: from TWMBX01.aspeed.com (211-20-114-70.hinet-ip.hinet.net [211.20.114.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D67A3A1A2;
-	Wed, 21 Feb 2024 10:38:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C5E442A;
+	Wed, 21 Feb 2024 10:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.20.114.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708511938; cv=none; b=p7m1CSClL8RrJrbF/DbVhoIsfpZ4lmSlOf6SGU5mYcizowPuY+uJkh8UOczs8yIu14zn7pPBs/5QXahPIvx8BLAWFJCW2v7D79QlWJac5h9buvwsw/Cv2zbA/+AqrXilt9NOENqTeIEoLC6UAORm5VG1CdZcQlgSlAPVmtnDPkM=
+	t=1708512040; cv=none; b=Li5nqS8jl4wv2F5JEg7KTShS7Wc91MUQkKkXpBYY2GbtHNe7BZHv3CV8l5j1dbKws00nYAoOqR8zQRMTE5qEupqrPjkli3eaFg87WSt020WiOdCvIa4rUG5VccOCe3Psd/Nj4OJXjeDyJNkD4lfUZrz33smc37NbBojjGU6qeF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708511938; c=relaxed/simple;
-	bh=FoY4vTs159m3czgbeJ2M9PAPE4Pi2TpKoQBGmnGalsI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mCE5y20sStuM2QYtRUbeCsNqJrSPZJJcaRrX6itcXipYnMV6gTkWWI2q81/vAk+QioidvBA2uzuVi1m5jP/TCMtUpeXwYC7eJ04IiGQDcMUJq6RqJNBC22pSC6WibqyHiNYwPNzJzlDaS9IoqwDxm3vcfjgwTVK5+y5sElAWz9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D7GYZofQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C62BEC433C7;
-	Wed, 21 Feb 2024 10:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708511938;
-	bh=FoY4vTs159m3czgbeJ2M9PAPE4Pi2TpKoQBGmnGalsI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D7GYZofQ8tMBxAKRh3s2vyrT3Y90i84Mvf0xwOWU7Gco2ynTLVz/J11H1m5EvEBQe
-	 cS7AbaO/xsPowrSXfYIJNcPmwVCTpHesb/WlSKZ2DgNbx7oqopaLsa23kGsOQIAfyQ
-	 wD+vTi+LdqfvhRIkqTILse1iLz5Sa9B+Id4mmLQ2s5PnzjiF0sPtWxCdbFWZEkugIv
-	 Q+muVl1bAbVvDX+zn3vDtDXA3235ewwav6YZuTyS9kFNElWnmVerE5A215m0wWPH2H
-	 TzbEo9s6znhJNnapqQkVMovZib+0NyJvlYAHLd3aP6AAzSmP5EuaVX8KIHs/U2QalP
-	 UkqZmQplAc1kA==
-Date: Wed, 21 Feb 2024 10:38:53 +0000
-From: Simon Horman <horms@kernel.org>
-To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Cc: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
-	manjunath.b.patil@oracle.com
-Subject: Re: [PATCH net-next v6] bonding: rate-limit bonding driver inspect
- messages
-Message-ID: <20240221103853.GD352018@kernel.org>
-References: <20240221082752.4660-1-praveen.kannoju@oracle.com>
+	s=arc-20240116; t=1708512040; c=relaxed/simple;
+	bh=ZYQUxHkonFhaXRGYDsoLklvyyCireBnJY2HZQ4MAHEw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jmqB7mpLJ9fHOJLBbP599gtVaHC0sGwliMdeKy1qnQwFbtvMuQY1Lr8uRuu8kBPuYcD6M9Pj1wdfl4kuIK3yHEdW9tQ3Cl83U1zYvJ96s/Cr2sTNfaqvfQgA+tWkx93dgj4kVl1eCWRWn4Sc7gDH40qZuZPZbv3lfad5QSoavP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=aspeedtech.com; spf=fail smtp.mailfrom=aspeedtech.com; arc=none smtp.client-ip=211.20.114.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=aspeedtech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=aspeedtech.com
+Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX01.aspeed.com
+ (192.168.0.124) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 21 Feb
+ 2024 18:41:17 +0800
+Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 21 Feb 2024 18:40:27 +0800
+From: Billy Tsai <billy_tsai@aspeedtech.com>
+To: <jdelvare@suse.com>, <linux@roeck-us.net>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>, <joel@jms.id.au>,
+	<andrew@codeconstruct.com.au>, <corbet@lwn.net>,
+	<u.kleine-koenig@pengutronix.de>, <p.zabel@pengutronix.de>,
+	<billy_tsai@aspeedtech.com>, <naresh.solanki@9elements.com>,
+	<linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-aspeed@lists.ozlabs.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-pwm@vger.kernel.org>, <BMC-SW@aspeedtech.com>, <patrick@stwcx.xyz>
+Subject: [PATCH v14 0/3] Support pwm/tach driver for aspeed ast26xx
+Date: Wed, 21 Feb 2024 18:40:22 +0800
+Message-ID: <20240221104025.1306227-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221082752.4660-1-praveen.kannoju@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Wed, Feb 21, 2024 at 01:57:52PM +0530, Praveen Kumar Kannoju wrote:
-> Through the routine bond_mii_monitor(), bonding driver inspects and commits
-> the slave state changes. During the times when slave state change and
-> failure in aqcuiring rtnl lock happen at the same time, the routine
-> bond_mii_monitor() reschedules itself to come around after 1 msec to commit
-> the new state.
-> 
-> During this, it executes the routine bond_miimon_inspect() to re-inspect
-> the state chane and prints the corresponding slave state on to the console.
-> Hence we do see a message at every 1 msec till the rtnl lock is acquired
-> and state chage is committed.
-> 
-> This patch doesn't change how bond functions. It only simply limits this
-> kind of log flood.
-> 
-> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-> ---
-> v6: 
->   - Minor space additions addressed. 
-> v5: https://lore.kernel.org/all/20240221050809.4372-1-praveen.kannoju@oracle.com/
->   - Redundant indentation addressed.
-> v4: https://lore.kernel.org/all/20240220050437.5623-1-praveen.kannoju@oracle.com/
->   - Rectification in the patch subject and versioning details.
-> v3: https://lore.kernel.org/lkml/20240219133721.4567-1-praveen.kannoju@oracle.com/
->   - Commit message is modified to provide summary of the issue, because of
->     which rate-limiting the bonding driver messages is needed.
-> v2: https://lore.kernel.org/lkml/20240215172554.4211-1-praveen.kannoju@oracle.com/
->   - Use exising net_ratelimit() instead of introducing new rate-limit
->     parameter.
-> v1: https://lore.kernel.org/lkml/20240214044245.33170-1-praveen.kannoju@oracle.com/
-> ---
->  drivers/net/bonding/bond_main.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
+Unlike the old design that the register setting of the TACH should based
+on the configure of the PWM. In ast26xx, the dependency between pwm and
+tach controller is eliminated and becomes a separate hardware block. One
+is used to provide pwm output and another is used to monitor the frequency
+of the input. This driver implements them by exposing two kernel
+subsystems: PWM and HWMON. The PWM subsystem can be utilized alongside
+existing drivers for controlling elements such as fans (pwm-fan.c),
+beepers (pwm-beeper.c) and so on. Through the HWMON subsystem, the driver
+provides sysfs interfaces for fan.
 
-Hi Praveen,
+Changes since v13:
+Restore Rob's "Reviewed-by" for fan-common.yaml.
+Remove the compatible string in the dts example in aspeed,g6-pwm-tach.yaml.
+Utilize devm_add_action_or_reset() to assert the reset.
+Resolve the compiler error.
 
-Thanks for addressing my review of v4.
-This version looks good to me.
+Changes since v12:
+Merge the pwm-fan configure information into the fan node.
+Add the of_platform_populate function to the driver to treat the child
+node as a platform device.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Changes since v11:
+Fix the compiler error of the driver.
+The owner member has to be moved to struct pwm_chip.
 
-..
+Changes since v10:
+Add the enum for the 'fan-driving-mode' properties in the fan-common.yaml.
+
+Changes since v9:
+Change the type of fan-driving-mode to string
+Fix some typos and formatting issues.
+
+Changes since v8:
+Fix the fail of fan div register setting. (FIELD_GET -> FIELD_PREP)
+Change the type of tach-ch from uint32_t to uint8-array
+Add additional properties and apply constraints to certain properties.
+
+Changes since v7:
+Cherry-pick the fan-common.yaml and add the following properties:
+- min-rpm
+- div
+- mode
+- tach-ch
+Fix the warning which is reported by the kernel test robot.
+
+Changes since v6:
+Consolidate the PWM and TACH functionalities into a unified driver.
+
+Changes since v5:
+- pwm/tach:
+  - Remove the utilization of common resources from the parent node.
+  - Change the concept to 16 PWM/TACH controllers, each with one channel,
+  instead of 1 PWM/TACH controller with 16 channels.
+- dt-binding:
+  - Eliminate the usage of simple-mfd.
+
+Changes since v4:
+- pwm:
+  - Fix the return type of get_status function.
+- tach:
+  - read clk source once and re-use it
+  - Remove the constants variables
+  - Allocate tach_channel as array
+  - Use dev->parent
+- dt-binding:
+  - Fix the order of the patches
+  - Add example and description for tach child node
+  - Remove pwm extension property
+
+Changes since v3:
+- pwm:
+  - Remove unnecessary include header
+  - Fix warning Prefer "GPL" over "GPL v2"
+- tach:
+  - Remove the paremeter min_rpm and max_rpm and return the tach value 
+  directly without any polling or delay.
+  - Fix warning Prefer "GPL" over "GPL v2"
+- dt-binding:
+  - Replace underscore in node names with dashes
+  - Split per subsystem
+
+Changes since v2:
+- pwm:
+  - Use devm_* api to simplify the error cleanup
+  - Fix the multi-line alignment problem
+- tach:
+  - Add tach-aspeed-ast2600 to index.rst
+  - Fix the multi-line alignment problem
+  - Remove the tach enable/disable when read the rpm
+  - Fix some coding format issue
+
+Changes since v1:
+- tach:
+  - Add the document tach-aspeed-ast2600.rst
+  - Use devm_* api to simplify the error cleanup.
+  - Change hwmon register api to devm_hwmon_device_register_with_info
+
+Billy Tsai (2):
+  dt-bindings: hwmon: Support Aspeed g6 PWM TACH Control
+  hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED g6 PWM/Fan tach
+
+Naresh Solanki (1):
+  dt-bindings: hwmon: fan: Add fan binding to schema
+
+ .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    |  71 +++
+ .../devicetree/bindings/hwmon/fan-common.yaml |  79 +++
+ Documentation/hwmon/aspeed-g6-pwm-tach.rst    |  26 +
+ Documentation/hwmon/index.rst                 |   1 +
+ drivers/hwmon/Kconfig                         |  11 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/aspeed-g6-pwm-tach.c            | 549 ++++++++++++++++++
+ 7 files changed, 738 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.yaml
+ create mode 100644 Documentation/hwmon/aspeed-g6-pwm-tach.rst
+ create mode 100644 drivers/hwmon/aspeed-g6-pwm-tach.c
+
+-- 
+2.25.1
+
 
