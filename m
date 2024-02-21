@@ -1,120 +1,87 @@
-Return-Path: <linux-kernel+bounces-74154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 865ED85D08D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:39:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C427885D08E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 07:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0F61F24518
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:39:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F01D71C2323B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1FFB2E400;
-	Wed, 21 Feb 2024 06:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0112E40C;
+	Wed, 21 Feb 2024 06:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hXMmRKNK"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fXxIvKfp"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB71A35
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E904C365
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708497559; cv=none; b=m4LqLU9y96NZeaXdM4WWKYUTbb3fIX0iHAUbSC9VwxWGawDhtrW2N5i4TsPO8PZLwx0vpPopPbWZErFb191YkMcJN/Pv/GYvmpBtIgB2rMx5DanifpVjP4L8g9omr473FoBxtv7ztyUBLFn1XbEls2kWOKRBfWuPjHz3hKuARB8=
+	t=1708497667; cv=none; b=RG/G2vrqSys4xdzrPwKH5vDgOTDgR31vgIWMucRHvp9A8f6nt1fG4FLnUaVe5wCtHuqJVuCPhdBOgSL3vY3XDXR8oys8BRv+eLlJ6sOd0ZaxzXtZCPfusNJsEVmJV3LFsqzxUNahjJtFNfEaTi0HR1N6oIr7xd2tnxO+rvoIHrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708497559; c=relaxed/simple;
-	bh=f0HDwa1vf5SRBb3ZPUrzmRhDIF3eBxQOxuTRSxuw4UM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qRe4agxVoi99nvWvYAkzSf7ckzEMfvRA6Yn1yJwO18jKEkdz5BjYOTrs8jChwAAYau1e/hp0CXm0LpfjKHk/DMW66NFpmO64/cqmfcfKCupIcdwPbcGcGy86H+dhpdPvzoYFdAOCYohBHELRaJRIaRrtetoJgiRL7bTMwqWSXi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hXMmRKNK; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so6716982276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:39:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708497556; x=1709102356; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C/kx0MMgzpebCxflYE7VD+ZZKlLv7LbIjirao9DRCq0=;
-        b=hXMmRKNKO+o4LWqDRkIDLFmWIWac90Q7TlXzX6G0HZaryly4v0BZKVFcHIF+MHE+zc
-         4qj0+Ansbrxd0xUPKBPV+x5sAdpJsOz+iW70xaxxbVV7++cqMp8HD9RxcixWNHGBkhvV
-         aJwKnK/kzobZWD/e6ofJ4aza19zs6jh2ZDdCA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708497556; x=1709102356;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C/kx0MMgzpebCxflYE7VD+ZZKlLv7LbIjirao9DRCq0=;
-        b=QBblvhOqG77+pLRkfAwVr0VPrTWivqGak28PG5kYYHbPC3mf9mt/Eaa5BrhMAfj3RW
-         doQCntduhmIAe/fZkEVUuF8mgkaQuNepGCbm95iMG7aaWtPyCg+GY1vybAZ5ifSXxPk5
-         TbvZUCHsvibuEWhggKuhxoEu+ebyFxnKC1xAONHS/XlD7+dxP4t0pOm42CgLiVgldue+
-         3MnJHRtVnXCwaYL2rqtbPcF/YHpgWevdoijqb3DoI9iB+vx3HNytKn0wGNQSA5G1u7g3
-         Ek4rH9dzNpH34W4kA2bYAyYkdR1TjGqpUyCAeLv/uV8wkdzcWLUqUsUdIQKX0bhDq6L7
-         o4aw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzEdo+jT5bxVkO3S2GWRkI1SuXwoLENIy3/ZVfIRoLtWF+swrH2EKQKeYEVFQiJOcjqtw0QVNjP+iS6CoUG9X5KYR9IfoWoMIMjJUE
-X-Gm-Message-State: AOJu0Ywy4rKq2IGFXOTb4FvrUacK0TTQqiqvrP5M08m3bZxpSVfFJkYl
-	W7HBjKtL6EGn5Cvyuam3Wp+U8cdFwf/VEl+xDielO9h5Ejk5rtYUOZzB+HTkqQ==
-X-Google-Smtp-Source: AGHT+IEDBNlgi9fOUdqyWnl61n6BJWPOOAV7EQV0qVdwgnub+GBgpaz0jIe8FwPV8Mtvha7IwXR11Q==
-X-Received: by 2002:a25:ab27:0:b0:dcb:c0ea:6abc with SMTP id u36-20020a25ab27000000b00dcbc0ea6abcmr13836899ybi.64.1708497556402;
-        Tue, 20 Feb 2024 22:39:16 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i5-20020a639d05000000b005dc4829d0e1sm7729634pgd.85.2024.02.20.22.39.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 22:39:16 -0800 (PST)
-Date: Tue, 20 Feb 2024 22:39:15 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Russell King <linux@armlinux.org.uk>
-Cc: Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Wang Kefeng <wangkefeng.wang@huawei.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Hutchings <ben@decadent.org.uk>,
+	s=arc-20240116; t=1708497667; c=relaxed/simple;
+	bh=BpdPWR7pon5r5ZEdPdiDwdmwrRSn8q/xofPHNbBvSPk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RBcg9xgR3ITgSPgFV5+2DRTmxB19/RA8QgIgzBZKItj19qoVL9N+4RPZEuBCe/18l9pLZ6rsfgRpvs/8uBwldw7EcPkwjB7rcfN0iblP2ZW27QOgmFe15+RSu/ASnByIO9/+RnlSxrSG1n3WFys3A4Ud0CW7JbjA9gV0PLBZ720=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fXxIvKfp; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=4GBEUR6m/x4kV1WpR6FFfymIX//G8pHWwa4ckAC909E=; b=fXxIvKfpQDJjEEK84TB5PY8Ved
+	BuCYyJr6KitX8z6MflRqoPFv9F1N1KoXQrODjxb1Jbz/pl0s6fxDc4oiz3NGVwWHrZW6tjWtKzylz
+	NKBpqisr5luUXR8tjQUmOh1Ipd45tYx1pj+UbNkzwbTuyVTRYVokzvYW15IUDWoBsLJfySVMSo5++
+	0hXy2G/Z3VK1JVYiC9FUdzhEgfAK795ai8H7YWay0gNwO4rpRjx4pgJAloWy82xWL4vr33ddgP9j/
+	YzbTjh7iL4DFnhF0qbAtuEyAqq+5v9nOei7W/TcvjxNPwKx4wcPQc+plGR56mEIVS6kBrtU0HNIiD
+	O/AaXuTA==;
+Received: from [50.53.50.0] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rcgHx-0000000HMS8-1cG9;
+	Wed, 21 Feb 2024 06:41:05 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	linux-arm-kernel@lists.infradead.org,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ARM: fault: Implement copy_from_kernel_nofault_allowed()
-Message-ID: <202402202235.A77C9AD@keescook>
-References: <20240123011238.work.301-kees@kernel.org>
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] irqchip: vic: fix a kernel-doc warning
+Date: Tue, 20 Feb 2024 22:41:04 -0800
+Message-ID: <20240221064104.7863-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123011238.work.301-kees@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024 at 05:12:38PM -0800, Kees Cook wrote:
-> Under PAN emulation when dumping backtraces from things like the
-> LKDTM EXEC_USERSPACE test[1], a double fault (which would hang a CPU)
-> would happen because of dump_instr() attempting to read a userspace
-> address. Make sure copy_from_kernel_nofault() does not attempt this
-> any more.
-> 
-> Reported-by: Mark Brown <broonie@kernel.org>
-> Link: https://lore.kernel.org/all/202401181125.D48DCB4C@keescook/ [1]
-> Suggested-by: "Russell King (Oracle)" <linux@armlinux.org.uk>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Wang Kefeng <wangkefeng.wang@huawei.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Ben Hutchings <ben@decadent.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Drop one extraneous struct member to quieten a warning:
 
-Russell, do you mind if I carry in my tree the 3 ARM patches I sent?
-They're mostly pretty trivial, and they've been in "Incoming"[1] for 2
-weeks but haven't shown up in -next yet. I'd really like them to get
-some soak time, and for them to reach the v6.9 merge window in time.
+drivers/irqchip/irq-vic.c:73: warning: Excess struct member 'parent_irq' description in 'vic_device'
 
-Please let me know what you think. :) Thanks!
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Thomas Gleixner <tglx@linutronix.de>
+---
+ drivers/irqchip/irq-vic.c |    1 -
+ 1 file changed, 1 deletion(-)
 
--Kees
-
-[1] https://www.arm.linux.org.uk/developer/patches/section.php?section=0
-
--- 
-Kees Cook
+diff -- a/drivers/irqchip/irq-vic.c b/drivers/irqchip/irq-vic.c
+--- a/drivers/irqchip/irq-vic.c
++++ b/drivers/irqchip/irq-vic.c
+@@ -47,7 +47,6 @@
+ 
+ /**
+  * struct vic_device - VIC PM device
+- * @parent_irq: The parent IRQ number of the VIC if cascaded, or 0.
+  * @irq: The IRQ number for the base of the VIC.
+  * @base: The register base for the VIC.
+  * @valid_sources: A bitmask of valid interrupts
 
