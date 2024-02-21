@@ -1,104 +1,97 @@
-Return-Path: <linux-kernel+bounces-74725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2002B85D842
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFBD685D848
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50B5E1C22585
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:50:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4F61C219F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 12:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30936994A;
-	Wed, 21 Feb 2024 12:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EADF69D26;
+	Wed, 21 Feb 2024 12:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a6u3/TAS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7AizsU3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBF33C493;
-	Wed, 21 Feb 2024 12:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60B969962;
+	Wed, 21 Feb 2024 12:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708519802; cv=none; b=ol0DLSYBHg45TjCqNJgNTj5KdtTej+H6xgExeVMl79b7cS1QamfN78KXSCkz4X23fwuz1qusxtBuRURrPCUXJ9IL6KV9S13IhQW9VqFbpyAV+pfVn0aHtbUmTAsGOvNYtNRij+yPbZABpIf1cNsxJsoIyiiQK3+mo0m8x8VqZiI=
+	t=1708519828; cv=none; b=VPTW729ypJyVcclZtn14OI0pbTwp6p+OYWPSs31MfG0Cu69ya3ujZQdTRnlfpoDFh8HE8zpl+QKlOnDFhLsYYUAHLXwuySPVFMyrz5KTp4V2Ero6B4/HCSnBZ28k2f0m+nqfyAjxJgoI2KUVsWFeMhLQ0XWD6Xu17XNHTX7TwGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708519802; c=relaxed/simple;
-	bh=U9EwuQOPyEZ1QW2UV093xXq9ku/ZVhR3UVuOoJ00P1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OkIt9xtcHA/WrsKbLLN03DycJJE5gLBJJb/yRh7v/0x2oYL7OH5UuKKWnzaIHd5dp9ShsWkOwOA6VjlUUFgmKBVXooalDb74l9suz7wLmAYfKehmVqBrGHEGC8eqD2RdVuUECrcDB8C1GYhkzbZH/c9U0SwUHZ5MzxD63rmpuXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a6u3/TAS; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708519800; x=1740055800;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=U9EwuQOPyEZ1QW2UV093xXq9ku/ZVhR3UVuOoJ00P1k=;
-  b=a6u3/TASci0BN7MM+yWmUUSnD9zFRS4mY2XKCIprJdjipiM61KDb1YNo
-   DahTfQnPrwiPjjHXf9xMp8EztfJ0G+vPkzJ2+ja72N06KDUUx4xo0ZXN9
-   7plTBYJEb3yCcQLGTCAZ7qw39T1dNqcxTapEPtQ4OCn9AsllbWQNTCWD1
-   HBq0P3lrHEOQbp3lca0ul7NYCOO0WJw0QvzCzgjsYZEpGDbXVH3jHCtMQ
-   mns/++ZaFeRolFkG7qLBYKqdfl5snhVnOuy0nwLvX06p4B2VeiDor9wYV
-   Yv/DIBf9L6rArH7TreJ9CZ1MOwO+BXtsZnsefZ9hP5NSgaIVgUsmThkue
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2825232"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="2825232"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 04:49:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="913299426"
-X-IronPort-AV: E=Sophos;i="6.06,175,1705392000"; 
-   d="scan'208";a="913299426"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2024 04:49:57 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rcm2s-00000006Lku-2Rys;
-	Wed, 21 Feb 2024 14:49:54 +0200
-Date: Wed, 21 Feb 2024 14:49:54 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>, Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v1 1/1] driver core: Move fw_devlink stuff to where it
- belongs
-Message-ID: <ZdXxci3JXY-dV-eD@smile.fi.intel.com>
-References: <20240220161002.2983334-1-andriy.shevchenko@linux.intel.com>
- <ZdWqodFSRBZ1NAco@kekkonen.localdomain>
+	s=arc-20240116; t=1708519828; c=relaxed/simple;
+	bh=lneanaRetTbUaTbA8++ZJ4eDAzcd2jVVU7VARp/KLiU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=iXjbYDm6ShCGnO79vjCgIWJFoAF0rbLWIYPodgFMqdmi0lkBHopvnohpU9htd061Aw2DPdb9LC2YtyKJBd6s5QZm/zeTL4uZ9qV67tHZq2TXK7zIcHWtXd6waBZuu8RUt5/K86HM1WaHxgrb+IAQtK1t6zPSDATXWvMH3SHflt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p7AizsU3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 66718C433C7;
+	Wed, 21 Feb 2024 12:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708519828;
+	bh=lneanaRetTbUaTbA8++ZJ4eDAzcd2jVVU7VARp/KLiU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=p7AizsU3m0/ttH4fdkRVVd6AK6OjGF2qD7+hn3ev9qGanGp9zOcljDj7i2hbzT52i
+	 C8reG/21e3XccBL1rFpQQHDJUzltG6fwnt7foKlvMUO4DemBGImBm6Np3whEzKUk0s
+	 rfBHURcUXbJpW+Gld/8YfORl/ur+HsFPDyUHyL+NoMYECGc/EovWhk9Kc65VGBVmM4
+	 w19OqhyVv8OXLkwuuWQ7Ztu9BfHlbZ+4t9OZlg6+/yjihd6vpiPJL4TK+ad7kzb5XD
+	 ybVpWgAv6J3MSwbn/PC+sAi7Fso5s+9ruTuykIKU+haeUTlhqidOEleqj2BMZ3BtL4
+	 TMFlUuMMcs9Dg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53E20C00446;
+	Wed, 21 Feb 2024 12:50:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdWqodFSRBZ1NAco@kekkonen.localdomain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/3] Rework GENET MDIO controller clocking
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170851982833.28838.11670954342538332576.git-patchwork-notify@kernel.org>
+Date: Wed, 21 Feb 2024 12:50:28 +0000
+References: <20240219204053.471825-1-florian.fainelli@broadcom.com>
+In-Reply-To: <20240219204053.471825-1-florian.fainelli@broadcom.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: netdev@vger.kernel.org, opendmb@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
+ hkallweit1@gmail.com, linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+ justin.chen@broadcom.com
 
-On Wed, Feb 21, 2024 at 07:47:45AM +0000, Sakari Ailus wrote:
-> On Tue, Feb 20, 2024 at 06:10:02PM +0200, Andy Shevchenko wrote:
-> > A few APIs that belong specifically to the fw_devlink APIs
-> > - are exposed to others without need
-> > - prevents device property code to be cleaned up in the future
-> > 
-> > Resolve this mess by moving fw_devlink code to where it belongs
-> > and hide from others.
+Hello:
 
-> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Thank you!
+On Mon, 19 Feb 2024 12:40:50 -0800 you wrote:
+> This patch series reworks the way that we manage the GENET MDIO
+> controller clocks around I/O accesses. During testing with a fully
+> modular build where bcmgenet, mdio-bcm-unimac, and the Broadcom PHY
+> driver (broadcom) are all loaded as modules, with no particular care
+> being taken to order them to mimize deferred probing the following bus
+> error was obtained:
+> 
+> [...]
 
+Here is the summary with links:
+  - [net-next,v2,1/3] net: mdio: mdio-bcm-unimac: Manage clock around I/O accesses
+    https://git.kernel.org/netdev/net-next/c/ee975351cf0c
+  - [net-next,v2,2/3] net: bcmgenet: Pass "main" clock down to the MDIO driver
+    https://git.kernel.org/netdev/net-next/c/ee2b4cf8b281
+  - [net-next,v2,3/3] Revert "net: bcmgenet: Ensure MDIO unregistration has clocks enabled"
+    https://git.kernel.org/netdev/net-next/c/ba0b78371c46
+
+You are awesome, thank you!
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
