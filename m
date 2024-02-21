@@ -1,119 +1,156 @@
-Return-Path: <linux-kernel+bounces-75552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD3785EB0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:37:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66BBF85EB0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 22:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 332321F27F38
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:37:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 072D3B2958A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692F012E1D3;
-	Wed, 21 Feb 2024 21:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F3912D77A;
+	Wed, 21 Feb 2024 21:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="TvKM5Qjm"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Okuurdc1"
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C5E12DDA1
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C2512882E
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708551078; cv=none; b=bmkA3MvMYTMZWzyU/6DAukbRfyyffva27uWslvvlNtX3fFul6ZZ3Y9m2I+1rHJyIPgtEFvS0d+hxm17BNTkGQbH7dicokrc83zesh4+wYVnehpZXHaiWPwDP8zNquSxAoufe+QgWKFE3wDc6Tiko+0w6WEUZAbvG0IORgv91WNY=
+	t=1708551067; cv=none; b=bfino+V5BiByAY5sxB80PKac/rY94U52crKoWee3q0LsMj3t3fMz4LqATKc88RPk3SzlX1jBy+4xr/iXayNHt3KRkb3JAcYtStmYnkNmnoH/Z1TdoWHKK9814U7P1SnUPiUhr2i77ZVkvLfNR5dM1wNFi3NzGQBenhgf3njheP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708551078; c=relaxed/simple;
-	bh=gFsioKErNguGb0UXfpCehO3mOIaCj+gYffuxZggc6lc=;
+	s=arc-20240116; t=1708551067; c=relaxed/simple;
+	bh=vkGTScK5M6Sthovdj0M+72XV5UMq/lWO1wwEeMwIR1o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KbaF2rCs4sC8dGm2pKQ0N778AIG+sRlOo9Nc2yPRHK4A6bQOVWK4I9PM7QF1Zbkud2aqT9s7H5BQJTZlvQj6CCpKTQ7QdWr3UdzLjRtX1/bapBSvZZfNkcEguTIoRnnfeaB4e4GDG/pG5BwFvOjaVAmBkvnxIjuTeOkJDCgfKm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=TvKM5Qjm; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a4516ec46so2209541cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:31:16 -0800 (PST)
+	 To:Cc:Content-Type; b=CvLaaBbmTZhLRl0nj2UY68kQNsTapqNHbztLjCJJGIX+wXdk+DOyyJtQFN19HtVPJHLkFndJCRC/rYMCzQqsVDmOD4bIBfS0HDWPqiaVatPIAavbTuVuI1Bx1CIOW1v8qSAubUeF5Mtry9mj5AUa6CLXxWnAcpulvKoumwekgn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Okuurdc1; arc=none smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so5263222b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 13:31:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708551076; x=1709155876; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708551064; x=1709155864; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gFsioKErNguGb0UXfpCehO3mOIaCj+gYffuxZggc6lc=;
-        b=TvKM5QjmE9xrfDQJ0zweQnLEld1ypTjdep3yzcgaY30WwpzHdpmS5OdggDnbCVaKgl
-         1JI/zHkJI7W6/zh4E+3JMqzlHbFQqqjxdhIdIhzoFfy9vEkG0Ut4sFjJAWQIxQfVcLLI
-         ugE17rbvStlLf4KlWm7GZ4w0Y23sSuKIgk/Gp0ewW1tpB1IW3EUUNBOK2S0IvZMhQBAV
-         Fljy92n/Wd4jpdvCPDYvSWZFTUCreb0Gt1ia9PFfu8yiO4DmpffOnJASQG1dxoO8YQMc
-         KUK3XFt3/8JyqXNqZ/Q+U1IaLjSKpwN+bGASvPMOF6g+KRYRa0s4joCrPuQI+G3jREI1
-         +i+A==
+        bh=gyDvZIu7lyAMZr8iHtIW9gaK0zzbqkQ/ZarxVd+kbsw=;
+        b=Okuurdc17ebSBJG7qhyTr9oJhy3C7On7Xn1CRRLP73dXm9Zd0IoaeRPZn2T/m4A/1p
+         fO9vrZn8w9av70NWsDAuxnn8+HTGjTgpRIYYzJDrM85LDjhZp4L1ovNig38AntgOeL+G
+         Ddfj7XnTRf3qU7qcKuliJqUR4HBwWk+zm+cEHDoR1M3wdM/qwiN86MZ/EyMMPrHOrEHi
+         lVuQba0mQRqnpNllwCbTvbgdbL7h5trOZq8qh7A7XdGBAeL0gqrpRarm+BunqoaJ3MgE
+         gSRULSoqJGwFwdW7nQFa/kAHrb0tA4OFkNCVIHflzk7pgtZvsmcpd4gn/a9q35wu6De4
+         /ajw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708551076; x=1709155876;
+        d=1e100.net; s=20230601; t=1708551064; x=1709155864;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gFsioKErNguGb0UXfpCehO3mOIaCj+gYffuxZggc6lc=;
-        b=u8NUCoRNFozYdGl1ieBC+7ra6Ukmxsn+WSckvuRWGtGZw9ZKYFIF9XzrX2XaOgNpnA
-         KdFYHvBDnaTMU2v0gkTmxOo5D+RnJ9hKKgjLG5mUxqr8LAtMvBmHz+RlGsKtv/x5EAhN
-         zdjv51JXsC3gDPY0b5/LC0qFei41OoHHRNBP5MZA/i9quTBkrxRlj68a9t7C9sBOQ/hR
-         YnGBQQ9FB+79bq5oUAuEjoNSc5xenY573zzbrigUX0J7tPKgbel8pXMH1zNYNiY0c7k8
-         w3eVfQtIgAJoS6NS8o7hm6lNloz0xPzDJtMZfAjH2RJrbvQvHVDM+pdzZiX+sK9mfFQN
-         b0mA==
-X-Forwarded-Encrypted: i=1; AJvYcCVy/ZIrT0vLMxmeuRDr/jhEz4Rlkq7vNCTiuidc84me7kpTpio1KgjL5GQHewqcqOM7Nh9jnqLRAqcyNnDNxScGTLdSA77nX8sjEdsh
-X-Gm-Message-State: AOJu0Yxu6jWIOMPoEpbBiR3OTE/MEMnhsaRLrcoRfYbG6SjoNtIiTgwD
-	0lyBL4SqVQNBk2TD0NkhlJgy7R7bHYsRjrn1HCrxrkgua5rlLyEdlwKfoOozFsRSsX6TSPZ5UYz
-	DImrrdK6e8DDUqNKATpcrVB/gwx6LFol47lgNgA==
-X-Google-Smtp-Source: AGHT+IFO5Z7BsmHAefImdCXlOf9v/A1DymY9rKzrFG6F8X6fIh9MpYHyGC/yHJX92pP0BH/FzDecR0AIIxui9aAjnNM=
-X-Received: by 2002:ac8:570f:0:b0:42c:78fd:e4fa with SMTP id
- 15-20020ac8570f000000b0042c78fde4famr1316065qtw.32.1708551075946; Wed, 21 Feb
- 2024 13:31:15 -0800 (PST)
+        bh=gyDvZIu7lyAMZr8iHtIW9gaK0zzbqkQ/ZarxVd+kbsw=;
+        b=KJm0pHhOddV7wKPFsbZEdNn+sxkb6GtXAVnpurD1evKlbJluiC7K8W1fD1jwisoVsG
+         E+sPKbOqRYW0iu6ocjDwAt62B05C9By9OB548LfZ566R6XxrVZrybnmvbpaPxRI/3dOb
+         HE83YwKFEkxHLyW5Ug/jmF+1lXuGe/H314r+MyGdJDNhToUsQwJGaeWx93Q+piACET+V
+         qJ7MV3EkTbJ+KkxA9iTWtt21eJAfdu+kqsjaldq/a1WiZrHnXC+Azd8E4v+IEG9my6fx
+         W1cqyCppzkKtF0iSMQC2LUToh7QR5e67MgSmqweqkNQQUYJNjl8WTHv6i3NFjGwR2ZkG
+         QBfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWR7CZCMTRb5igES8g1ocaRgalrqu94i4F//VSX+VGxH63xfJ2hUEOdrZUo/famBZ856ank3hjJZ8n5IvhRoEjUkAAY0EkKPiG87Tmb
+X-Gm-Message-State: AOJu0YxoB2Ks4DBgnXjiglbIB/jKjveZZA9VqsbcPjI91r3ix8M904ka
+	cKNd2L5hvtR6IoHA0GFM6srBmzDdiMY+xjcxG8HHVwmWzBPFb1UK/QzxAypW9EoLTXstvoD7vha
+	eR91F9gu1F4i3n5NH2v2WJ25a1PunH/S/nM+L
+X-Google-Smtp-Source: AGHT+IG7j3+ZxAmTcECSokeLQXuBK0cuQtwLdGeOlZvOqznQYFNFe5YbgpRUaAFW0uN3IZ6N5EAeSRZ29mohF0it6i4=
+X-Received: by 2002:a05:6808:120e:b0:3c1:67d3:694 with SMTP id
+ a14-20020a056808120e00b003c167d30694mr6194946oil.30.1708551064423; Wed, 21
+ Feb 2024 13:31:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-8-surenb@google.com>
-In-Reply-To: <20240221194052.927623-8-surenb@google.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Wed, 21 Feb 2024 16:30:39 -0500
-Message-ID: <CA+CK2bDOiV8xwig1pDdTVjkO4KhK+jJ0wXAtNon1ZXQGviih4A@mail.gmail.com>
-Subject: Re: [PATCH v4 07/36] mm: introduce slabobj_ext to support slab object extensions
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <20240111210539.636607-1-carlosgalo@google.com> <ZdWshXSoLthv6J6b@tiehlicka>
+In-Reply-To: <ZdWshXSoLthv6J6b@tiehlicka>
+From: Carlos Galo <carlosgalo@google.com>
+Date: Wed, 21 Feb 2024 13:30:51 -0800
+Message-ID: <CABtOLR+gpU2BYxcGCCqccZGcRDF337z3JJ=7nvC47ANHmS1tNA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: Update mark_victim tracepoints fields
+To: Michal Hocko <mhocko@suse.com>
+Cc: rostedt@goodmis.org, akpm@linux-foundation.org, surenb@google.com, 
+	android-mm@google.com, kernel-team@android.com, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 2:41=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Tue, Feb 20, 2024 at 11:55=E2=80=AFPM Michal Hocko <mhocko@suse.com> wro=
+te:
 >
-> Currently slab pages can store only vectors of obj_cgroup pointers in
-> page->memcg_data. Introduce slabobj_ext structure to allow more data
-> to be stored for each slab object. Wrap obj_cgroup into slabobj_ext
-> to support current functionality while allowing to extend slabobj_ext
-> in the future.
+> Hi,
+> sorry I have missed this before.
 >
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> On Thu 11-01-24 21:05:30, Carlos Galo wrote:
+> > The current implementation of the mark_victim tracepoint provides only
+> > the process ID (pid) of the victim process. This limitation poses
+> > challenges for userspace tools that need additional information
+> > about the OOM victim. The association between pid and the additional
+> > data may be lost after the kill, making it difficult for userspace to
+> > correlate the OOM event with the specific process.
+>
+> You are correct that post OOM all per-process information is lost. On
+> the other hand we do dump all this information to the kernel log. Could
+> you explain why that is not suitable for your purpose?
 
-Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Userspace tools often need real-time visibility into OOM situations
+for userspace intervention. Our use case involves utilizing BPF
+programs, along with BPF ring buffers, to provide OOM notification to
+userspace. Parsing kernel logs would be significant overhead as
+opposed to the event based BPF approach.
+
+> > In order to mitigate this limitation, add the following fields:
+> >
+> > - UID
+> >    In Android each installed application has a unique UID. Including
+> >    the `uid` assists in correlating OOM events with specific apps.
+> >
+> > - Process Name (comm)
+> >    Enables identification of the affected process.
+> >
+> > - OOM Score
+> >    Allows userspace to get additional insights of the relative kill
+> >    priority of the OOM victim.
+>
+> What is the oom score useful for?
+>
+The OOM score provides us a measure of the victim's importance. On the
+android side, it allows us to identify if top or foreground apps are
+killed, which have user perceptible impact.
+
+> Is there any reason to provide a different information from the one
+> reported to the kernel log?
+> __oom_kill_process:
+> pr_err("%s: Killed process %d (%s) total-vm:%lukB, anon-rss:%lukB, file-r=
+ss:%lukB, shmem-rss:%lukB, UID:%u pgtables:%lukB oom_score_adj:%hd\n",
+>                 message, task_pid_nr(victim), victim->comm, K(mm->total_v=
+m),
+>                 K(get_mm_counter(mm, MM_ANONPAGES)),
+>                 K(get_mm_counter(mm, MM_FILEPAGES)),
+>                 K(get_mm_counter(mm, MM_SHMEMPAGES)),
+>                 from_kuid(&init_user_ns, task_uid(victim)),
+>                 mm_pgtables_bytes(mm) >> 10, victim->signal->oom_score_ad=
+j);
+>
+
+We added these fields we need (UID, process name, and OOM score), but
+we're open to adding the others if you prefer that for consistency
+with the kernel log.
+
+Thanks,
+Carlos
+
+> --
+> Michal Hocko
+> SUSE Labs
 
