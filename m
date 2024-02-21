@@ -1,109 +1,105 @@
-Return-Path: <linux-kernel+bounces-75467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84D6285E91A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:36:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59BA85E91B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 21:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E21D1C20BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:36:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80F872834E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 20:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731671EB41;
-	Wed, 21 Feb 2024 20:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A653B2A6;
+	Wed, 21 Feb 2024 20:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NhXTm9Ss"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P8epUoUG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B064453A1
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950001E485
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708547770; cv=none; b=DiaHGISGRbQY9axAUt7N1h7ImAXDQIYNtzfhoonk0rBKyyaKhsw2Xi3zS/yk9p3iN7FXHGA3XPUQ5GZVuDLs/j2QFFvkfC4TY0k/lmMEUZOdHlBGuLBFpT2sbFmdKiANm5JOpUHWZZtsahTiY8LSXHBKZ3VVXLoAUIskZelvJkE=
+	t=1708547778; cv=none; b=rmQwqHpljeuIc5/lR0ShXuO/2pMksfM9KCVzttdSJK7onJ5RpSkJ5q9Jis3J13uRnj2L3jWXVFzqU8E8gHslOGnc4T8s0hVgAzb/+vvh7ziuKpPCFa3Mn8VU9foqKduZZZLYqpkpG1YHEx7tDo/cqqk+L5/nBv2NXiiuPTP66B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708547770; c=relaxed/simple;
-	bh=hWY1Y7gwaHsCt+60O0plbbDiTxgt1/isDaR9hySz3Bo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=QMqpyIzffGrLr/Iq/ZTeFYrxYd0wBaeZ8+rUfXJHUbUpMv6vU4lAR7nHSMeHtLsrLaIcfVLqXq6rmnslhY9L6t9rIMfXPEneIGY8X1TksdCt6DV1d99nXd1wA8+cFO5XG3d/9NTGKjCBA+atHC78MC5SifP59EVracSHnNCBq4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NhXTm9Ss; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DFE0C433F1;
-	Wed, 21 Feb 2024 20:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708547770;
-	bh=hWY1Y7gwaHsCt+60O0plbbDiTxgt1/isDaR9hySz3Bo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NhXTm9Ss+RtkoPhR9wtAeLEzXXMWA+4u6rw8ILNyykZ9foBpB4ny8n/PFimlKdEY6
-	 LXlO6hlrVfgSbm0HQ6HtxVv8I17FVhBaYhkC+6xF8aZb7w7ZUoNalfj4gSNTZz1NCg
-	 tKwNt2lg7LFKJR3fvlZcAtPNbNG2IXowaer4P7WY=
-Date: Wed, 21 Feb 2024 12:36:09 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Barry Song <21cnbao@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, Barry Song
- <v-songbaohua@oppo.com>
-Subject: Re: [PATCH] mm/swapfile:__swap_duplicate: drop redundant WRITE_ONCE
- on swap_map for err cases
-Message-Id: <20240221123609.3cd20c3dc2d6adeaf5d3ffc8@linux-foundation.org>
-In-Reply-To: <20240221091028.123122-1-21cnbao@gmail.com>
-References: <20240221091028.123122-1-21cnbao@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708547778; c=relaxed/simple;
+	bh=NzM1hRe8wv7YB8wEXVEeZHO9YYwtH/8T9TsFR/fw1pc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QVRr9nkgNXZPdORhSjQPCIPeR+kSV31KNRft2UVk/eNkkdTUkedYZB4WkSPlLMnHQIzP7Z6963ocdAZdrhIlZD9vbEWsgArzblISuXci74/GDfqA7te9az9hYiWM003YVscU2/EfEAF18BJQGQpnSBdMA6YySfVbHk4NRsV7hbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P8epUoUG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AED03C433F1;
+	Wed, 21 Feb 2024 20:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708547778;
+	bh=NzM1hRe8wv7YB8wEXVEeZHO9YYwtH/8T9TsFR/fw1pc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P8epUoUGnpHiIhKsWaClqpSTWhBTyfSj0xBYoD3c7ohSqqA/9Gjgx/6cLZELHvmAD
+	 gj4IOz7qx2eHbUQuP1o4nnoT+AZnev4OM3sfqyH9Xqz77uVAwoydmw67lUVh3TeYTf
+	 bPFbfN/OZWQkTCEDlp4WXILExjHFj2HBpD1n3RuGYA1DvnTaBM09hHqhf09zXdZwXv
+	 Z+DS0Cv8+tyl0DxVL4MZ7NO2h5Mh4jASHEyL7olz4qBp1a3BbYk9l6EdJ9sB0RvvyL
+	 Jwc4mu84vwvS5Vz5Gfet+XfC1zZJNh0ZZ15LwFTH6UN8hu6fUIjB6HAa1+sebzKqiV
+	 /c/biw5Xdli3w==
+Date: Wed, 21 Feb 2024 21:36:14 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Christian Loehle <christian.loehle@arm.com>
+Subject: Re: [PATCH v11 03/20] timers: Move marking timer bases idle into
+ tick_nohz_stop_tick()
+Message-ID: <ZdZevnP0p1y476jn@pavilion.home>
+References: <20240221090548.36600-1-anna-maria@linutronix.de>
+ <20240221090548.36600-4-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240221090548.36600-4-anna-maria@linutronix.de>
 
-On Wed, 21 Feb 2024 22:10:28 +1300 Barry Song <21cnbao@gmail.com> wrote:
-
-> From: Barry Song <v-songbaohua@oppo.com>
+Le Wed, Feb 21, 2024 at 10:05:31AM +0100, Anna-Maria Behnsen a écrit :
+> The timer base is marked idle when get_next_timer_interrupt() is
+> executed. But the decision whether the tick will be stopped and whether the
+> system is able to go idle is done later. When the timer bases is marked
+> idle and a new first timer is enqueued remote an IPI is raised. Even if it
+> is not required because the tick is not stopped and the timer base is
+> evaluated again at the next tick.
 > 
-> The code is quite hard to read, we are still writing swap_map after
-> errors happen. Though the written value is as before,
+> To prevent this, the timer base is marked idle in tick_nohz_stop_tick() and
+> get_next_timer_interrupt() is streamlined by only looking for the next timer
+> interrupt. All other work is postponed to timer_base_try_to_set_idle() which is
+> called by tick_nohz_stop_tick(). timer_base_try_to_set_idle() never resets
+> timer_base::is_idle state. This is done when the tick is restarted via
+> tick_nohz_restart_sched_tick().
 > 
->  has_cache = count & SWAP_HAS_CACHE;
->  count &= ~SWAP_HAS_CACHE;
->  [snipped]
->  WRITE_ONCE(p->swap_map[offset], count | has_cache);
+> With this, tick_sched::tick_stopped and timer_base::is_idle are always in
+> sync. So there is no longer the need to execute timer_clear_idle() in
+> tick_nohz_idle_retain_tick(). This was required before, as
+> tick_nohz_next_event() set timer_base::is_idle even if the tick would not be
+> stopped. So timer_clear_idle() is only executed, when timer base is idle. So the
+> check whether timer base is idle, is now no longer required as well.
 > 
-> It would be better to entirely drop the WRITE_ONCE for both
-> performance and readability.
+> While at it fix some nearby whitespace damage as well.
 > 
-> ...
->
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3320,6 +3320,9 @@ static int __swap_duplicate(swp_entry_t entry, unsigned char usage)
->  	} else
->  		err = -ENOENT;			/* unused swap entry */
->  
-> +	if (err)
-> +		goto unlock_out;
-> +
->  	WRITE_ONCE(p->swap_map[offset], count | has_cache);
->  
->  unlock_out:
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-I agree, but why add the goto?
-
---- a/mm/swapfile.c~mm-swapfile-__swap_duplicate-drop-redundant-write_once-on-swap_map-for-err-cases-fix
-+++ a/mm/swapfile.c
-@@ -3335,10 +3335,8 @@ static int __swap_duplicate(swp_entry_t
- 	} else
- 		err = -ENOENT;			/* unused swap entry */
- 
--	if (err)
--		goto unlock_out;
--
--	WRITE_ONCE(p->swap_map[offset], count | has_cache);
-+	if (!err)
-+		WRITE_ONCE(p->swap_map[offset], count | has_cache);
- 
- unlock_out:
- 	unlock_cluster_or_swap_info(p, ci);
-_
-
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
