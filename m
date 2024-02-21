@@ -1,47 +1,64 @@
-Return-Path: <linux-kernel+bounces-74469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE01B85D4F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:00:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B2BD85D509
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 932B61F209AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:00:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EBBF1C23C33
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A58E3F8FE;
-	Wed, 21 Feb 2024 09:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03BB4CB20;
+	Wed, 21 Feb 2024 09:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/cClNDH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="CmKjDyny"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A39F3D564;
-	Wed, 21 Feb 2024 09:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6F34C61B;
+	Wed, 21 Feb 2024 09:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509178; cv=none; b=kt6F+Brld8/13jmLpQ0xj9mtPao/pZ78dvi4maFq9GhVnnk+SVkGrGVHA70q9Ystn6BtHZ827gM0iX2YPqhUcqezlZ3+S4CCwczLiWT8A4O4hdDk7xqsZwiv9x6frhYT61C/FT34TzvvHnmFVsphASmrGHDJfmulZWYGprMhwFY=
+	t=1708509272; cv=none; b=lys0VGLjXYoj47V6Q8zCjWv48rIbVUVHrylavSTxj194fBIGBktE908AcPZPKX1fShlo7sN75EWaptGKFatnBZWQMktBEzH+VicoeHVnQNBokK0EVz0psWDetruN9DizNtCbTybahwPowIjy1ugCVxNpIrb174J2+m2L5GlUS5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708509178; c=relaxed/simple;
-	bh=n+F3zfUjjh0FcowZvUt7zMvLrVajwJGpsuxCwXX6+io=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j8N/xjna7MyljJKF+JztNrXd755PWiRVJxb0DfzvkHDsPRkm8BeLfzxD+ySZYYBoedE9AwwYyVmcu6q59qbuajeXveVUXrslCqcDq6Vl8S2v0fPRYFO0TIV7qFYD7VCRqwtc8LOkAEi9TEShHBGu31oQgAiof+TclmlDwHa9o/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/cClNDH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725E0C433F1;
-	Wed, 21 Feb 2024 09:52:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708509177;
-	bh=n+F3zfUjjh0FcowZvUt7zMvLrVajwJGpsuxCwXX6+io=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j/cClNDHf5DPCLnlNAtv51eNkyM3+JZg3cpj30hyd/au43bgg7+XDqv4wJp3SEdm7
-	 HslEbEs0xdVbUvUt5tpF8jDvQUg9uxBL63bTPPBlbw7be4fFIfk1Dv91wzSytUwde6
-	 Vj0pRam/eVXk8WmkPoE17SK6Iky3eq01eGhZjDl2OyYkuK1FD8ydHAer79YWacywJz
-	 6B9RLZRj26wUavBTrf/5dkOqmcgh4bMJjlvJXEYu2ZOJJXklz5oxbMO3wiRKQwTAoL
-	 /BZT+iMnpHb6MVBy9lnNLY4t7e6+T/V8FrolTVPil8bgtEjdUASi1YF0lJBC9BnDRM
-	 /hYodnqz+aRLA==
-Message-ID: <bea850fe-19e8-492e-b885-6d01b389c32c@kernel.org>
-Date: Wed, 21 Feb 2024 10:52:49 +0100
+	s=arc-20240116; t=1708509272; c=relaxed/simple;
+	bh=D4a6qDhm/r1zitj6K4QT5PaTygu+/3cz0YZaNV8v6hc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZCwPbDh2mQLCd/rJfkDWS56niQxqsp/JzjgHZSc0fxaAycD79SBfmi4VkGSD/o3sfqTpi1qNBFh06ohb7frcCTpq3puTNaMDXyufjoosgDnqdKKYhivzNhyTFJ2RSkMq1jPuEBuQy3BZhkrQBircvstgO+sd7AZZLP6wt0Jxdu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=CmKjDyny; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41L7H87L021527;
+	Wed, 21 Feb 2024 10:54:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=tGWKi3XRrYtmuARfCajUNkylogiWFbJvSMiv0BOvGE0=; b=Cm
+	KjDyny3E82jh462D50nD6iH3WH8IaDkECoKy3+F033mPxLSmyHaUAygGk1paftxf
+	MdF55AHvDGSZCeDkJW/NX1eyDd7G60FM75zwN9VQH4FtsyP1Np+yGhRaOCRrH3k2
+	Mo9dw/mXq3vDQ8AvOC8s1PkuL+No2LCrlfX+dY8fJL9zQ4qxywJ+oLKNkA1lKiXe
+	9bQX1nPAeNNote3eo1xc2jvtmV9FnPg+0FhXwiUL1CjPIREecsoC4koOcKLcubwY
+	k/GZM3Azom3PgBwKH2L0+7c2tGXM9oHcQhtAIvVFuLRWITnPFx63KBf1eSJrSSC7
+	ygbIBPzWT4bfebdCkVsg==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wd202tjj1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 10:54:07 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 801B540051;
+	Wed, 21 Feb 2024 10:53:49 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A5ADB232FEA;
+	Wed, 21 Feb 2024 10:53:13 +0100 (CET)
+Received: from [10.201.20.71] (10.201.20.71) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 21 Feb
+ 2024 10:53:13 +0100
+Message-ID: <b381cb72-943d-473f-b2f2-eb288132aaac@foss.st.com>
+Date: Wed, 21 Feb 2024 10:53:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,140 +66,135 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] usb: xhci: Add support for Google XHCI controller
+Subject: Re: [PATCH v3] serial: st-asc: don't get/put GPIOs in atomic context
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Dan
+ Carpenter <dan.carpenter@linaro.org>,
+        Linus Walleij
+	<linus.walleij@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        Bartosz
+ Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240220113410.16613-1-brgl@bgdev.pl>
 Content-Language: en-US
-To: Puma Hsu <pumahsu@google.com>
-Cc: mathias.nyman@intel.com, gregkh@linuxfoundation.org,
- Thinh.Nguyen@synopsys.com, badhri@google.com, royluo@google.com,
- howardyen@google.com, albertccwang@google.com, raychi@google.com,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-References: <20240219061008.1761102-1-pumahsu@google.com>
- <20240219061008.1761102-3-pumahsu@google.com>
- <0b4464eb-631e-4c9f-a7c8-3451be15d8b4@kernel.org>
- <CAGCq0LYFMrFmxeKZE9g-O61+N03rJoGL0XvXJVya0Yx-ZasvBA@mail.gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CAGCq0LYFMrFmxeKZE9g-O61+N03rJoGL0XvXJVya0Yx-ZasvBA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Patrice CHOTARD <patrice.chotard@foss.st.com>
+In-Reply-To: <20240220113410.16613-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
 
-On 21/02/2024 10:31, Puma Hsu wrote:
-> On Mon, Feb 19, 2024 at 8:22 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->> On 19/02/2024 07:10, Puma Hsu wrote:
->>> In our SoC platform, we support allocating dedicated memory spaces
->>> other than system memory for XHCI, which also requires IOMMU mapping.
->>> The rest of driver probing and executing will use the generic
->>> xhci-plat driver.
->>>
->>> We support USB dual roles and switch roles by generic dwc3 driver,
->>> the dwc3 driver always probes xhci-plat driver now, so we introduce
->>> a device tree property to probe a XHCI glue driver.
->>>
->>> Sample:
->>>   xhci_dma: xhci_dma@99C0000 {
->>>     compatible = "shared-dma-pool";
->>>     reg = <0x00000000 0x99C0000 0x00000000 0x40000>;
->>>     no-map;
->>>   };
->>>
->>>   dwc3: dwc3@c400000 {
->>>     compatible = "snps,dwc3";
->>>     reg = <0 0x0c400000  0 0x10000>;
->>>     xhci-glue = "xhci-hcd-goog";
->>
->> NAK, that's not DWC3 hardware in such case.
+
+
+On 2/20/24 12:34, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> By introducing this property, users can specify the name of their
-> dedicated driver in the device tree. The generic dwc3 driver will
+> Since commit 1f2bcb8c8ccd ("gpio: protect the descriptor label with
+> SRCU") gpiod_set_consumer_name() calls synchronize_srcu() which led to
+> a "sleeping in atomic context" smatch warning.
+> 
+> This function (along with gpiod_get/put() and all other GPIO APIs apart
+> from gpiod_get/set_value() and gpiod_direction_input/output()) should
+> have never been called with a spinlock taken. We're only fixing this now
+> as GPIOLIB has been rebuilt to use SRCU for access serialization which
+> uncovered this problem.
+> 
+> Move the calls to gpiod_get/put() outside the spinlock critical section.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-gpio/deee1438-efc1-47c4-8d80-0ab2cf01d60a@moroto.mountain/
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+> v2 -> v3:
+> - we only need to change the GPIO configuration for RTS in certain situations
+>   so use a separate variable for storing that information; if we don't then we
+>   may end up putting the descriptor when setting a different option
+> - I dropped Linus tag as the code change significantly
+> 
+> v1 -> v2:
+> - initialize the 'manual_rts' variable to false as we don't always get to
+>   the place where it's set
+> 
+>  drivers/tty/serial/st-asc.c | 40 ++++++++++++++++++++++---------------
+>  1 file changed, 24 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/st-asc.c b/drivers/tty/serial/st-asc.c
+> index bbb5595d7e24..a23e59551848 100644
+> --- a/drivers/tty/serial/st-asc.c
+> +++ b/drivers/tty/serial/st-asc.c
+> @@ -465,6 +465,7 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+>  			    const struct ktermios *old)
+>  {
+>  	struct asc_port *ascport = to_asc_port(port);
+> +	bool manual_rts, toggle_rts = false;
+>  	struct gpio_desc *gpiod;
+>  	unsigned int baud;
+>  	u32 ctrl_val;
+> @@ -518,25 +519,13 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+>  
+>  		/* If flow-control selected, stop handling RTS manually */
+>  		if (ascport->rts) {
+> -			devm_gpiod_put(port->dev, ascport->rts);
+> -			ascport->rts = NULL;
+> -
+> -			pinctrl_select_state(ascport->pinctrl,
+> -					     ascport->states[DEFAULT]);
+> +			toggle_rts = true;
+> +			manual_rts = false;
+>  		}
+>  	} else {
+>  		/* If flow-control disabled, it's safe to handle RTS manually */
+> -		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL]) {
+> -			pinctrl_select_state(ascport->pinctrl,
+> -					     ascport->states[NO_HW_FLOWCTRL]);
+> -
+> -			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
+> -			if (!IS_ERR(gpiod)) {
+> -				gpiod_set_consumer_name(gpiod,
+> -						port->dev->of_node->name);
+> -				ascport->rts = gpiod;
+> -			}
+> -		}
+> +		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL])
+> +			manual_rts = toggle_rts = true;
+>  	}
+>  
+>  	if ((baud < 19200) && !ascport->force_m1) {
+> @@ -595,6 +584,25 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+>  	asc_out(port, ASC_CTL, (ctrl_val | ASC_CTL_RUN));
+>  
+>  	uart_port_unlock_irqrestore(port, flags);
+> +
+> +	if (toggle_rts) {
+> +		if (manual_rts) {
+> +			pinctrl_select_state(ascport->pinctrl,
+> +					     ascport->states[NO_HW_FLOWCTRL]);
+> +
+> +			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
+> +			if (!IS_ERR(gpiod)) {
+> +				gpiod_set_consumer_name(gpiod,
+> +							port->dev->of_node->name);
+> +				ascport->rts = gpiod;
+> +			}
+> +		} else {
+> +				devm_gpiod_put(port->dev, ascport->rts);
+> +				ascport->rts = NULL;
+> +				pinctrl_select_state(ascport->pinctrl,
+> +						     ascport->states[DEFAULT]);
+> +		}
+> +	}
+>  }
+>  
+>  static const char *asc_type(struct uart_port *port)
 
-DT is not a place for driver stuff.
+Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
 
-
-> read this property to initiate the probing of the dedicated driver.
-
-I know, but it is not a reason to add stuff to DT.
-
-> The motivation behind this is that we have dedicated things
-> (described in commit message) to do for the XHCI driver in our
-> device. BTW, I put this property here because currently there is
-> no xhci node, xhci related properties are put under dwc3 node.
-
-Sorry, you miss the point. Either you have pure DWC3 hardware or not.
-You claim now you do not have pure hardware, which is reasonable,
-because it is always customized per-vendor. In such case you cannot
-claim this is a pure DWC3. You must provide bindings for your hardware.
-
-Now, if you claim you have a pure DWC3 hardware without need for any
-vendor customizations, then entire patchset is fake try to upstream your
-Android vendor stuff. We talked about such stuff many times on mailing
-list, so for obvious reasons I won't repeat it. Trying to push vendor
-hooks and vendor quirks is one of the most common mistakes, so several
-talks already say: don't do this.
-
-> It will be appreciated if there are alternative or more appropriate
-> approaches, we welcome discussion to explore the best possible
-> solution. Thanks.
-
-And what's wrong with all previous feedbacks for similar
-Google/Samsung/Artpec/Tensor vendor hacks? Once or twice per year some
-folks around Google or Samsung try to push such, they all receive the
-same feedback and they disappear, so I have to repeat the same feedback
-to the next person... Please go through previous patches from
-@samsung.com for various subsystems.
-
-Documentation/devicetree/bindings/submitting-patches.rst
-Documentation/devicetree/bindings/writing-bindings.rst
-+other people or my talks on Devicetree
-
-Summarizing: Devicetree is for hardware, not for your driver
-hooks/quirks/needs. Describe properly and fully the hardware, not your
-driver.
-
-
-Best regards,
-Krzysztof
-
+Thanks
+Patrice
 
