@@ -1,162 +1,256 @@
-Return-Path: <linux-kernel+bounces-74074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19E1085CFA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:30:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6538F85CFAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 06:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2B5628456B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:30:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 892741C21AA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BDF39FC0;
-	Wed, 21 Feb 2024 05:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B4139AF4;
+	Wed, 21 Feb 2024 05:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="YQRRiEU7"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HArRftZA"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CC239AF1;
-	Wed, 21 Feb 2024 05:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DF339AC4
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 05:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708493417; cv=none; b=Y3d0ecVKFoYzCjO1JZIjbh9Ui1xNq6HspWgoLry3eXgCjNeuOQEAVxPMP+LS11lXXRvCjyKAS7JadzjC2Kp/19NoRrBIYntqJ4+RCqd2RFgoQz9Q1jbIpopOwbopIPVroRqMMpt0KdBApkHFNOkmEyHltRxYBax37tMIdTT7Hsk=
+	t=1708493477; cv=none; b=oRnPfOcTtnJspPA0ra8GA0atvEiebCgNi2c8OfMOwmdlCPU2K0i6SnpXvz4wjS4mSC9iCFoFPbXtE3fQutkGKUcd/WY3NUeiMIiIXpTiuNuakbenucgBSYePswSgm8PRsU/NWbKwiAvPCKTfj9v2PnaVe+glnrLT8lqRCqIH6Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708493417; c=relaxed/simple;
-	bh=TstZ7gaQL4APdokx0BRsi7KY401fTHJY/C9qmxVNOTw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KiN/3LQV+0RvnjTUlFvQ8hiH8VEikuQtedTx/DUvdYHwaQl6Lj/BOWBFLMdouH/rlp/PR1untttQ88PslZ7GjraQEsOy7KOoscbOhOFbODHDIBT0dWQQXXg5K5ihMOgza/XGtXi1Dk3fBKEZXMkR6l6L4jvoRBx9fgf32jTYjpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=YQRRiEU7; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708493412;
-	bh=UbR/3icVfa2qWzkdtDgQIqP2aGsp+IED1sx6TLj5ukQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YQRRiEU7EdcvhiGdkXVJCAxnr2N2XMWwpqJbdYp3ZKQT0HZCQT7Cwyg2Q2We+5+2R
-	 aRH1dzcfjkvc0VC5f98JTyQHeuFTkJiWXxV88FQZlftb2gbZQRCKZhWV/EriMHwTGL
-	 p8EfuLLi6V8lfdRLEOpAQ28n+31MKMElU+niyrjKTpqL00aaso0ABDK9pmrVczSHyC
-	 z7XVonLjGhtyTH3CTBHRhZStkJYtThvlZ+Qg7mbXXR1GAv3NJxcioigxGBJh01iivB
-	 D+HNHMsr0ogIoIaAED6sQ4qFjZDC92ir7Knb3nusjEnU8jvgyPrbAcoVcDKtV+7UU4
-	 sUMub4df/6OrQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TflGW4S5Kz4wc4;
-	Wed, 21 Feb 2024 16:30:11 +1100 (AEDT)
-Date: Wed, 21 Feb 2024 16:30:10 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>, ARM
- <linux-arm-kernel@lists.infradead.org>
-Cc: Rob Herring <robh@kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
-Message-ID: <20240221163010.5f81813a@canb.auug.org.au>
-In-Reply-To: <20240221092826.748e70c4@canb.auug.org.au>
-References: <20240221092826.748e70c4@canb.auug.org.au>
+	s=arc-20240116; t=1708493477; c=relaxed/simple;
+	bh=4kNUkPSsZ6NwsVXrjkUeOW8afEalspPvKs5WE0LwN4c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=DG6pYDGJqV5g/8ZM3ply9EZeHysry+PBHawAPp/jgxPpfO2zba1TkRi3f7tQ+yaTF9eVPCIvUNT1LneiXP4BGBNpe1PASQYnjm68RI7hW6NvCdXcjk7xqe7j0HuDZS9LrhYOj2oXUbBGmVT8GdDkpOF5fee5apXI0FwQ08ohOB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HArRftZA; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2a17f3217aso825424066b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:31:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708493473; x=1709098273; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ee8UGbAfInlRw0mmY32iabqom41XT4N0g5e35WXpWiI=;
+        b=HArRftZAYJ8B3wxTmNgb1/Orax37uyijt/C68U4lmJFxHfL72EcJveWuGQf9qsYGEh
+         VJqbvZ1PQtcVtp97h17qteUjsOUqKjGwJXhECjXVKtMskUcErJmcVeNJh0xUsdrgrFo0
+         UBKgsQXyOpRZDISgFr0mgLT47hxrGWxpE4AbLmcSkm8oAEQ5W+Ass+UgyIGhIPrUgHpX
+         Ok/eElGpKQ+qlK0qAXZlIki3kgeXMssZHpc63EeLvriCfgxa2+xYSF+W5WiUScJhzrLQ
+         O7WAWqstsFO5//3lSV/dQJFYFyWOa9G+FBd+0dnrDOmXPtDKr8XjsYmc21Aa1Mwy+myH
+         /IXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708493473; x=1709098273;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ee8UGbAfInlRw0mmY32iabqom41XT4N0g5e35WXpWiI=;
+        b=OeGkGoqH5VjMXm+9G6BtRW1dnM/3ciOHOSHEsAl6AXWsvFSv+4C42oIDUbDHwzwdoh
+         UeTlPd/zrSthvb/jSYJBfz9uiHY+JGnB3cgRp8qQ4WfrkREL8oaox4JJFPI8rz4hPYB+
+         Yp8ex4pelDuHSvSaxDkSni3y+iPol+ibe3mSXyz9e05fIXK0OINGdDcAKHjErKDZs+Y2
+         Lc9YhYRipA9j7dxX2gJ8TwGXpl8rPSBUPDIuY8Jk7a6Jwc8NU4sFf7PXr8iD7IOZOSbQ
+         8RbZA04683QVaTjDGGjeYLWf+1420KqJzgIcIRaItFgN9l+i9l7snWhuJEUGMrXzem2T
+         LCKA==
+X-Forwarded-Encrypted: i=1; AJvYcCXmnu02FP3ItI5/zPY7wjvybeVE7EMYm7A34BNbAEhgCwp6sahBv01t/1eSmkJGT0z8R4X/xy9pGn5K50o+gedy744hN3EwZnqJt4RN
+X-Gm-Message-State: AOJu0YzTVu7tJxnH/Zktt/rB9bpofyS8Iw7TdZIeUcCALedGZvphv9hs
+	uIAQMu3rIho8QoXAc2BraBHcoTw18QjpJOaOqaomgOYFH2FdLZFgkouiAsHZWys=
+X-Google-Smtp-Source: AGHT+IEq1eFtTNdd/bmaa3GnlDQllZezHXuoSDlWDXRfmFI1MDpUwA5PpLIhedjCVEADYrw9jNbQjg==
+X-Received: by 2002:a17:906:b18e:b0:a3e:8972:4404 with SMTP id w14-20020a170906b18e00b00a3e89724404mr4985261ejy.9.1708493473094;
+        Tue, 20 Feb 2024 21:31:13 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id ov28-20020a170906fc1c00b00a3cf9b832eesm4587301ejb.40.2024.02.20.21.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 21:31:12 -0800 (PST)
+Date: Wed, 21 Feb 2024 08:31:08 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Menglong Dong <dongmenglong.8@bytedance.com>,
+	andrii@kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+	thinker.li@gmail.com, dongmenglong.8@bytedance.com,
+	zhoufeng.zf@bytedance.com, davemarchevsky@fb.com, dxu@dxuuu.xyz,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next 2/5] bpf: tracing: support to attach program to
+ multi hooks
+Message-ID: <d0607bff-b589-4548-98e1-a94d227b4e93@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rq22gDeMu4XxzAZPnY.wJux";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240220035105.34626-3-dongmenglong.8@bytedance.com>
 
---Sig_/rq22gDeMu4XxzAZPnY.wJux
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Menglong,
 
-Hi all,
+kernel test robot noticed the following build warnings:
 
-On Wed, 21 Feb 2024 09:28:26 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the arm-soc-fixes tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
->=20
-> arch/arm/boot/dts/renesas/r8a7790-lager.dts:444.11-458.5: Warning (interr=
-upt_provider): /i2c-mux4/pmic@58: Missing '#interrupt-cells' in interrupt p=
-rovider
-> arch/arm/boot/dts/renesas/r8a7790-lager.dtb: Warning (interrupt_map): Fai=
-led prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7792-blanche.dts:376.10-392.4: Warning (inte=
-rrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in i=
-nterrupt provider
-> arch/arm/boot/dts/renesas/r8a7792-blanche.dtb: Warning (interrupt_map): F=
-ailed prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7790-stout.dts:344.10-362.4: Warning (interr=
-upt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in int=
-errupt provider
-> arch/arm/boot/dts/renesas/r8a7790-stout.dtb: Warning (interrupt_map): Fai=
-led prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7791-koelsch.dts:816.10-830.4: Warning (inte=
-rrupt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in i=
-nterrupt provider
-> arch/arm/boot/dts/renesas/r8a7791-koelsch.dtb: Warning (interrupt_map): F=
-ailed prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7791-porter.dts:410.10-420.4: Warning (inter=
-rupt_provider): /soc/i2c@e60b0000/pmic@5a: Missing '#interrupt-cells' in in=
-terrupt provider
-> arch/arm/boot/dts/renesas/r8a7791-porter.dtb: Warning (interrupt_map): Fa=
-iled prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7794-alt.dts:450.10-464.4: Warning (interrup=
-t_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in inter=
-rupt provider
-> arch/arm/boot/dts/renesas/r8a7794-alt.dtb: Warning (interrupt_map): Faile=
-d prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7794-silk.dts:436.10-454.4: Warning (interru=
-pt_provider): /soc/i2c@e6510000/pmic@58: Missing '#interrupt-cells' in inte=
-rrupt provider
-> arch/arm/boot/dts/renesas/r8a7794-silk.dtb: Warning (interrupt_map): Fail=
-ed prerequisite 'interrupt_provider'
-> arch/arm/boot/dts/renesas/r8a7793-gose.dts:756.10-770.4: Warning (interru=
-pt_provider): /soc/i2c@e60b0000/pmic@58: Missing '#interrupt-cells' in inte=
-rrupt provider
-> arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_map): Fail=
-ed prerequisite 'interrupt_provider'
->=20
-> Introduced/exposed by commit
->=20
->   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
->=20
-> I guess you missed some :-(
+url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/bpf-tracing-add-support-to-record-and-check-the-accessed-args/20240220-115317
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240220035105.34626-3-dongmenglong.8%40bytedance.com
+patch subject: [PATCH bpf-next 2/5] bpf: tracing: support to attach program to multi hooks
+config: m68k-randconfig-r071-20240220 (https://download.01.org/0day-ci/archive/20240221/202402210534.siGKEfus-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
 
-Also these from the arm64 defconfig build:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202402210534.siGKEfus-lkp@intel.com/
 
-arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interrupt_=
-provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cells' i=
-n interrupt provider
-arch/arm64/boot/dts/freescale/imx8dxp-tqma8xdp-mba8xx.dtb: Warning (interru=
-pt_map): Failed prerequisite 'interrupt_provider'
-arch/arm64/boot/dts/freescale/mba8xx.dtsi:233.20-249.4: Warning (interrupt_=
-provider): /bus@5a000000/i2c@5a810000/gpio@70: Missing '#interrupt-cells' i=
-n interrupt provider
-arch/arm64/boot/dts/freescale/imx8qxp-tqma8xqp-mba8xx.dtb: Warning (interru=
-pt_map): Failed prerequisite 'interrupt_provider'
+smatch warnings:
+kernel/bpf/syscall.c:3325 bpf_tracing_prog_attach() warn: passing zero to 'PTR_ERR'
+kernel/bpf/syscall.c:3485 bpf_tracing_prog_attach() error: uninitialized symbol 'link'.
 
---=20
-Cheers,
-Stephen Rothwell
+vim +/PTR_ERR +3325 kernel/bpf/syscall.c
 
---Sig_/rq22gDeMu4XxzAZPnY.wJux
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3255  static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3256  				   int tgt_prog_fd,
+2fcc82411e74e5 Kui-Feng Lee           2022-05-10  3257  				   u32 btf_id,
+2fcc82411e74e5 Kui-Feng Lee           2022-05-10  3258  				   u64 bpf_cookie)
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3259  {
+a3b80e1078943d Andrii Nakryiko        2020-04-28  3260  	struct bpf_link_primer link_primer;
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29  3261  	struct bpf_prog *tgt_prog = NULL;
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3262  	struct bpf_trampoline *tr = NULL;
+5f80eb32851d7a Menglong Dong          2024-02-20  3263  	struct btf *attach_btf = NULL;
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3264  	struct bpf_tracing_link *link;
+5f80eb32851d7a Menglong Dong          2024-02-20  3265  	struct module *mod = NULL;
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3266  	u64 key = 0;
+a3b80e1078943d Andrii Nakryiko        2020-04-28  3267  	int err;
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3268  
+9e4e01dfd3254c KP Singh               2020-03-29  3269  	switch (prog->type) {
+9e4e01dfd3254c KP Singh               2020-03-29  3270  	case BPF_PROG_TYPE_TRACING:
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3271  		if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
+be8704ff07d237 Alexei Starovoitov     2020-01-20  3272  		    prog->expected_attach_type != BPF_TRACE_FEXIT &&
+9e4e01dfd3254c KP Singh               2020-03-29  3273  		    prog->expected_attach_type != BPF_MODIFY_RETURN) {
+9e4e01dfd3254c KP Singh               2020-03-29  3274  			err = -EINVAL;
+9e4e01dfd3254c KP Singh               2020-03-29  3275  			goto out_put_prog;
+9e4e01dfd3254c KP Singh               2020-03-29  3276  		}
+9e4e01dfd3254c KP Singh               2020-03-29  3277  		break;
+9e4e01dfd3254c KP Singh               2020-03-29  3278  	case BPF_PROG_TYPE_EXT:
+9e4e01dfd3254c KP Singh               2020-03-29  3279  		if (prog->expected_attach_type != 0) {
+9e4e01dfd3254c KP Singh               2020-03-29  3280  			err = -EINVAL;
+9e4e01dfd3254c KP Singh               2020-03-29  3281  			goto out_put_prog;
+9e4e01dfd3254c KP Singh               2020-03-29  3282  		}
+9e4e01dfd3254c KP Singh               2020-03-29  3283  		break;
+9e4e01dfd3254c KP Singh               2020-03-29  3284  	case BPF_PROG_TYPE_LSM:
+9e4e01dfd3254c KP Singh               2020-03-29  3285  		if (prog->expected_attach_type != BPF_LSM_MAC) {
+9e4e01dfd3254c KP Singh               2020-03-29  3286  			err = -EINVAL;
+9e4e01dfd3254c KP Singh               2020-03-29  3287  			goto out_put_prog;
+9e4e01dfd3254c KP Singh               2020-03-29  3288  		}
+9e4e01dfd3254c KP Singh               2020-03-29  3289  		break;
+9e4e01dfd3254c KP Singh               2020-03-29  3290  	default:
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3291  		err = -EINVAL;
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3292  		goto out_put_prog;
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3293  	}
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3294  
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3295  	if (tgt_prog_fd) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3296  		if (!btf_id) {
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3297  			err = -EINVAL;
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3298  			goto out_put_prog;
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3299  		}
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3300  		tgt_prog = bpf_prog_get(tgt_prog_fd);
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3301  		if (IS_ERR(tgt_prog)) {
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3302  			tgt_prog = NULL;
+5f80eb32851d7a Menglong Dong          2024-02-20  3303  			/* tgt_prog_fd is the fd of the kernel module BTF */
+5f80eb32851d7a Menglong Dong          2024-02-20  3304  			attach_btf = btf_get_by_fd(tgt_prog_fd);
+5f80eb32851d7a Menglong Dong          2024-02-20  3305  			if (IS_ERR(attach_btf)) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3306  				attach_btf = NULL;
+5f80eb32851d7a Menglong Dong          2024-02-20  3307  				err = -EINVAL;
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3308  				goto out_put_prog;
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3309  			}
+5f80eb32851d7a Menglong Dong          2024-02-20  3310  			if (!btf_is_kernel(attach_btf)) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3311  				btf_put(attach_btf);
+5f80eb32851d7a Menglong Dong          2024-02-20  3312  				err = -EOPNOTSUPP;
+5f80eb32851d7a Menglong Dong          2024-02-20  3313  				goto out_put_prog;
+5f80eb32851d7a Menglong Dong          2024-02-20  3314  			}
+5f80eb32851d7a Menglong Dong          2024-02-20  3315  		} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+5f80eb32851d7a Menglong Dong          2024-02-20  3316  			   tgt_prog->type == BPF_PROG_TYPE_TRACING) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3317  			prog->aux->attach_tracing_prog = true;
+5f80eb32851d7a Menglong Dong          2024-02-20  3318  		}
+5f80eb32851d7a Menglong Dong          2024-02-20  3319  		key = bpf_trampoline_compute_key(tgt_prog, attach_btf,
+5f80eb32851d7a Menglong Dong          2024-02-20  3320  						 btf_id);
+5f80eb32851d7a Menglong Dong          2024-02-20  3321  	} else if (btf_id) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3322  		attach_btf = bpf_get_btf_vmlinux();
+5f80eb32851d7a Menglong Dong          2024-02-20  3323  		if (IS_ERR(attach_btf)) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3324  			attach_btf = NULL;
+                                                                                ^^^^^^^^^^^^^^^^^^
+This needs to be done after the "err = " assignment on the next line.
 
------BEGIN PGP SIGNATURE-----
+5f80eb32851d7a Menglong Dong          2024-02-20 @3325  			err = PTR_ERR(attach_btf);
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+Here.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXVimIACgkQAVBC80lX
-0GwTxAf+Mn967p1+Zv8P/ni3TvTIy2wD89SdrJFpGzqCzmdpENiXwYGvIhcmudwb
-7QRTjPUVBxge6ZtSRtA3u/NcrO99TlmXkR2S0a73k1q8ZbhTAlRzp1cOE0+xXUb3
-IgYADZbmNdzVXfnwa4IFnUmVdVIb6yYAVqiMu2Q+UV9GGxC1iznIK3Vs442lDEXS
-dC3+r2nNgztXYnvoPXd6Hhnzu74e24usEwd3SSu/SgAh4HabQm2Ol5d9uwl/He3J
-ZWwR3WOAgge67TiFj1CBRvq/+vraRu6qj2S70CAJ1mvit9Yc5MhVqX0AM0TjqeiD
-dWc7VXPvgEEwN2CfQWR2QgVLLFxOLw==
-=deZB
------END PGP SIGNATURE-----
+5f80eb32851d7a Menglong Dong          2024-02-20  3326  			goto out_unlock;
+5f80eb32851d7a Menglong Dong          2024-02-20  3327  		}
+5f80eb32851d7a Menglong Dong          2024-02-20  3328  		if (!attach_btf) {
+5f80eb32851d7a Menglong Dong          2024-02-20  3329  			err = -EINVAL;
+5f80eb32851d7a Menglong Dong          2024-02-20  3330  			goto out_unlock;
 
---Sig_/rq22gDeMu4XxzAZPnY.wJux--
+"link" is not initialized on this goto path so it leads to an
+uninitialized variable warning.
+
+5f80eb32851d7a Menglong Dong          2024-02-20  3331  		}
+5f80eb32851d7a Menglong Dong          2024-02-20  3332  		btf_get(attach_btf);
+5f80eb32851d7a Menglong Dong          2024-02-20  3333  		key = bpf_trampoline_compute_key(NULL, attach_btf, btf_id);
+5f80eb32851d7a Menglong Dong          2024-02-20  3334  	} else {
+5f80eb32851d7a Menglong Dong          2024-02-20  3335  		attach_btf = prog->aux->attach_btf;
+5f80eb32851d7a Menglong Dong          2024-02-20  3336  		/* get the reference of the btf for bpf link */
+5f80eb32851d7a Menglong Dong          2024-02-20  3337  		if (attach_btf)
+5f80eb32851d7a Menglong Dong          2024-02-20  3338  			btf_get(attach_btf);
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3339  	}
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3340  
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3341  	link = kzalloc(sizeof(*link), GFP_USER);
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3342  	if (!link) {
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3343  		err = -ENOMEM;
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3344  		goto out_put_prog;
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3345  	}
+f7e0beaf39d386 Kui-Feng Lee           2022-05-10  3346  	bpf_link_init(&link->link.link, BPF_LINK_TYPE_TRACING,
+f2e10bff16a0fd Andrii Nakryiko        2020-04-28  3347  		      &bpf_tracing_link_lops, prog);
+f2e10bff16a0fd Andrii Nakryiko        2020-04-28  3348  	link->attach_type = prog->expected_attach_type;
+2fcc82411e74e5 Kui-Feng Lee           2022-05-10  3349  	link->link.cookie = bpf_cookie;
+70ed506c3bbcfa Andrii Nakryiko        2020-03-02  3350  
+
+[ snip ]
+
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29  3474  	prog->aux->dst_trampoline = NULL;
+5f80eb32851d7a Menglong Dong          2024-02-20  3475  	prog->aux->mod = NULL;
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29  3476  	mutex_unlock(&prog->aux->dst_mutex);
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29  3477  
+a3b80e1078943d Andrii Nakryiko        2020-04-28  3478  	return bpf_link_settle(&link_primer);
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29  3479  out_unlock:
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3480  	if (tr && tr != prog->aux->dst_trampoline)
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3481  		bpf_trampoline_put(tr);
+5f80eb32851d7a Menglong Dong          2024-02-20  3482  	if (mod && mod != prog->aux->mod)
+5f80eb32851d7a Menglong Dong          2024-02-20  3483  		module_put(mod);
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29  3484  	mutex_unlock(&prog->aux->dst_mutex);
+3aac1ead5eb6b7 Toke Høiland-Jørgensen 2020-09-29 @3485  	kfree(link);
+                                                                      ^^^^
+
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3486  out_put_prog:
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3487  	if (tgt_prog_fd && tgt_prog)
+4a1e7c0c63e02d Toke Høiland-Jørgensen 2020-09-29  3488  		bpf_prog_put(tgt_prog);
+5f80eb32851d7a Menglong Dong          2024-02-20  3489  	btf_put(attach_btf);
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3490  	return err;
+fec56f5890d93f Alexei Starovoitov     2019-11-14  3491  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
