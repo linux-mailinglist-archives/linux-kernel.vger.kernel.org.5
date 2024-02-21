@@ -1,142 +1,132 @@
-Return-Path: <linux-kernel+bounces-74798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB14E85DA7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375BD85DA90
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F2D6B25BF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:32:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 691051C22D47
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 13:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AB97EF1E;
-	Wed, 21 Feb 2024 13:28:42 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73C6762C1;
-	Wed, 21 Feb 2024 13:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895917E795;
+	Wed, 21 Feb 2024 13:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YiBXL6Vx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD2E7E78F;
+	Wed, 21 Feb 2024 13:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708522121; cv=none; b=ChVxc5FeQ9+JBq+vkiFwuKvrUoOP0s1cmiJcqyKNCpKQXOnebi/VWh9GkP4vgbdS9/IlPSbGMYz3zH+O4oQ3ge92Ja5OchtcxqvEaevaOhf7KfHPQPOBSsLpqT4ZKlT6sTgqXq3tbCJUH9JskbWxUPJGbIzb0ehrYaQFobILGWA=
+	t=1708522170; cv=none; b=tyGtXln04cWn4qJh9+V6I03s1mtpp0RbiP/pyew4DDtk4mHxbw+e4qD+XToiEP36R/ax6Cksl2X6oKmU82LYt3/kyZ8XW79w+01p/fcelJ6ah/sQH2Jf6xC5RmiokuBy0ZBhNVzUK0eqXRsb0KHwKYithrjX4oSBxuDbPH4/iLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708522121; c=relaxed/simple;
-	bh=jcM7Y8plT+9yKZcGSc7nmPeNy9idDPzXx63Ses56ZJk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=Lw9eWAaP8elQO9gCGBmpqE4E6QhHoCF9Q7LsllObyimR0lXMtInELo3jsRN4oi4J1rMBEbgE4FZi9d8MectE0CTfCaA4/Jtcs7ujglBB7Obf1BGmDQdqsMe942/ilosSrIl14Z0bv6EM+V60NcXxrVDEeuWqvx76joDF1/OZ2hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AA85FEC;
-	Wed, 21 Feb 2024 05:29:16 -0800 (PST)
-Received: from [10.57.11.178] (unknown [10.57.11.178])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95FE63F762;
-	Wed, 21 Feb 2024 05:28:32 -0800 (PST)
-Message-ID: <4e9603e9-4127-43f1-92be-6c2b59ff2fe0@arm.com>
-Date: Wed, 21 Feb 2024 13:28:48 +0000
+	s=arc-20240116; t=1708522170; c=relaxed/simple;
+	bh=1uXA3tuk5DSrYBKlcNHOd+IpgOiOvjcTfXfos632w+8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fkt8DjHEcCX6Q0tcMxgTAsfB4ucFIzJBkqFRxfcC8DhBVCGGeZrmymKG55kkIrymtbk/WKYgZf+Y+nvnUB/3MS3Gyc8ILHF9aTiMeUKqoHXq58MOhLoej4utNIt65L6up/wGODve7470JU80cvhSojfMqnqDUOVpXJSBaTN3yvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YiBXL6Vx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31A34C43390;
+	Wed, 21 Feb 2024 13:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708522170;
+	bh=1uXA3tuk5DSrYBKlcNHOd+IpgOiOvjcTfXfos632w+8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YiBXL6VxZWpc4KOcEK2JVTNsblnglRNXqfOhTGNFEOOP3Z05SEHo/yJJZgGTfy6Yy
+	 x5i2ENXsswo0PsZfBbOQAsZyHoNv/onQNmWuZpA+8n/oxElvFdoqRi0mzLwWVmnusP
+	 4o020bDIPLnaGgwRaawuQ6ExPSxEwS9tjNHSOU3RRAgwx0t3fpNdN4N9xYYf8nH+f/
+	 AOtHcMNsU9xJMldnzfakVY3MacOvm0l/CKsIgCAZnZ61GsXNnBfAEtA1aDxQgVd0+n
+	 jM6rpcQZPk7BVwHx5KaEP4lSa8C5hCRPVxHKvPn3uCLDMLLgfnPAlq21qZXhNA05QB
+	 jflhzGp8tFFOg==
+Date: Wed, 21 Feb 2024 13:29:19 +0000
+From: Will Deacon <will@kernel.org>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com,
+	alyssa@rosenzweig.io, asahi@lists.linux.dev,
+	baolu.lu@linux.intel.com, bhelgaas@google.com,
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com,
+	jonathanh@nvidia.com, joro@8bytes.org,
+	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
+	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
+	samuel@sholland.org, suravee.suthikulpanit@amd.com,
+	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
+	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
+	yu-cheng.yu@intel.com, rientjes@google.com
+Subject: Re: [PATCH v3 10/10] iommu: account IOMMU allocated memory
+Message-ID: <20240221132919.GC7273@willie-the-truck>
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+ <20231226200205.562565-11-pasha.tatashin@soleen.com>
+ <20240213131210.GA28926@willie-the-truck>
+ <CA+CK2bB4Z+z8tocO79AdsAy+gmN_4aVHgFUsm_gYLUJ2zV1A6A@mail.gmail.com>
+ <20240216175752.GB2374@willie-the-truck>
+ <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/5] Rework system pressure interface to the scheduler
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>
-References: <20240220145947.1107937-1-vincent.guittot@linaro.org>
-Cc: konrad.dybcio@linaro.org, mhiramat@kernel.org, agross@kernel.org,
- rafael@kernel.org, sudeep.holla@arm.com, will@kernel.org,
- linux@armlinux.org.uk, bristot@redhat.com, mgorman@suse.de,
- bsegall@google.com, rostedt@goodmis.org, andersson@kernel.org,
- dietmar.eggemann@arm.com, juri.lelli@redhat.com, mingo@redhat.com,
- linux-pm@vger.kernel.org, catalin.marinas@arm.com,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- corbet@lwn.net, amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
- peterz@infradead.org, linux-arm-msm@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- gregkh@linuxfoundation.org, vschneid@redhat.com, rui.zhang@intel.com,
- viresh.kumar@linaro.org
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20240220145947.1107937-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Hi Vincent,
+On Fri, Feb 16, 2024 at 02:48:00PM -0500, Pasha Tatashin wrote:
+> On Fri, Feb 16, 2024 at 12:58 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 10:44:53AM -0500, Pasha Tatashin wrote:
+> > > > >  SecPageTables
+> > > > > -              Memory consumed by secondary page tables, this currently
+> > > > > -              currently includes KVM mmu allocations on x86 and arm64.
+> > > > > +              Memory consumed by secondary page tables, this currently includes
+> > > > > +              KVM mmu and IOMMU allocations on x86 and arm64.
+> > >
+> > > Hi Will,
+> > >
+> > > > While I can see the value in this for IOMMU mappings managed by VFIO,
+> > > > doesn't this end up conflating that with the normal case of DMA domains?
+> > > > For systems that e.g. rely on an IOMMU for functional host DMA, it seems
+> > > > wrong to subject that to accounting constraints.
+> > >
+> > > The accounting constraints are only applicable when GFP_KERNEL_ACCOUNT
+> > > is passed to the iommu mapping functions. We do that from the vfio,
+> > > iommufd, and vhost. Without this flag, the memory useage is reported
+> > > in /proc/meminfo as part of  SecPageTables field, but not constrained
+> > > in cgroup.
+> >
+> > Thanks, Pasha, that explanation makes sense. I still find it bizarre to
+> > include IOMMU allocations from the DMA API in SecPageTables though, and
+> > I worry that it will confuse people who are using that metric as a way
+> > to get a feeling for how much memory is being used by KVM's secondary
+> > page-tables. As an extreme example, having a non-zero SecPageTables count
+> > without KVM even compiled in is pretty bizarre.
+> 
+> I agree; I also prefer a new field in /proc/meminfo named
+> 'IOMMUPageTables'. This is what I proposed at LPC, but I was asked to
+> reuse the existing 'SecPageTables' field instead. The rationale was
+> that 'secondary' implies not only KVM page tables, but any other
+> non-regular page tables.
+> 
+> I would appreciate the opinion of IOMMU maintainers on this: is it
+> preferable to bundle the information with 'SecPageTables' or maintain
+> a separate field?
 
-On 2/20/24 14:59, Vincent Guittot wrote:
-> Following the consolidation and cleanup of CPU capacity in [1], this serie
-> reworks how the scheduler gets the pressures on CPUs. We need to take into
-> account all pressures applied by cpufreq on the compute capacity of a CPU
-> for dozens of ms or more and not only cpufreq cooling device or HW
-> mitigiations. We split the pressure applied on CPU's capacity in 2 parts:
-> - one from cpufreq and freq_qos
-> - one from HW high freq mitigiation.
-> 
-> The next step will be to add a dedicated interface for long standing
-> capping of the CPU capacity (i.e. for seconds or more) like the
-> scaling_max_freq of cpufreq sysfs. The latter is already taken into
-> account by this serie but as a temporary pressure which is not always the
-> best choice when we know that it will happen for seconds or more.
-> 
-> [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
-> 
-> Change since v4:
-> - Add READ_ONCE() in cpufreq_get_pressure()
-> - Add ack and reviewed tags
-> 
-> Change since v3:
-> - Fix uninitialized variables in cpufreq_update_pressure()
-> 
-> Change since v2:
-> - Rework cpufreq_update_pressure()
-> 
-> Change since v1:
-> - Use struct cpufreq_policy as parameter of cpufreq_update_pressure()
-> - Fix typos and comments
-> - Make sched_thermal_decay_shift boot param as deprecated
-> 
-> Vincent Guittot (5):
->    cpufreq: Add a cpufreq pressure feedback for the scheduler
->    sched: Take cpufreq feedback into account
->    thermal/cpufreq: Remove arch_update_thermal_pressure()
->    sched: Rename arch_update_thermal_pressure into
->      arch_update_hw_pressure
->    sched/pelt: Remove shift of thermal clock
-> 
->   .../admin-guide/kernel-parameters.txt         |  1 +
->   arch/arm/include/asm/topology.h               |  6 +-
->   arch/arm64/include/asm/topology.h             |  6 +-
->   drivers/base/arch_topology.c                  | 26 ++++----
->   drivers/cpufreq/cpufreq.c                     | 36 +++++++++++
->   drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
->   drivers/thermal/cpufreq_cooling.c             |  3 -
->   include/linux/arch_topology.h                 |  8 +--
->   include/linux/cpufreq.h                       | 10 +++
->   include/linux/sched/topology.h                |  8 +--
->   .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
->   include/trace/events/sched.h                  |  2 +-
->   init/Kconfig                                  | 12 ++--
->   kernel/sched/core.c                           |  8 +--
->   kernel/sched/fair.c                           | 63 +++++++++----------
->   kernel/sched/pelt.c                           | 18 +++---
->   kernel/sched/pelt.h                           | 16 ++---
->   kernel/sched/sched.h                          | 22 +------
->   18 files changed, 144 insertions(+), 119 deletions(-)
->   rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
-> 
+I personally find it confusing to add all IOMMU page-table allocations
+to SecPageTables, considering that userspace could be using that today
+with a reasonable expectation that it's concerned only with virtual
+machine overhead. However, if the opposite conclusion was reached at LPC,
+then I really don't want to re-open the discussion and derail your
+patchset.
 
-
-The code looks good and works as expected. The time delays in those
-old mechanisms that were important to me are good now. The boost is
-handled, cpufreq capping from sysfs - all good. Also the last patch
-which removes the shift and makes it obsolete. Thanks!
-
-Feel free to add to all patches:
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
+Will
 
