@@ -1,441 +1,186 @@
-Return-Path: <linux-kernel+bounces-74046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42AED85CF3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:14:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC7C85CF3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 05:14:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8E061F25900
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:14:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0F171C22988
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 04:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C1839AD4;
-	Wed, 21 Feb 2024 04:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9314638FBE;
+	Wed, 21 Feb 2024 04:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ltAGKq+e"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jjteLDhv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C103984F
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D71D38FA1
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 04:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708488856; cv=none; b=KpZRxA7iXfyNNJbheeJe0wNExS2BNctCO5O4F5W6unLhEF7SKgi7bo/9D400s9Q3euJIoCMVWLUUnF5+pVm+BIiE1YXheFSb2qJF0XSSjluz7Qf5+jIsT2d6R4n8Ck4nzupe5uhCP14C2PP/iIQlLkRnpfQNRH8rCV+0YKUpq6g=
+	t=1708488852; cv=none; b=dqqZmpxWn6ryXQLU/r5EiT2VR+G5rzbCKdjh7q7riRTBrZymF0ZIAopy/S/N9gdYfUJsBewzQ2fc2I3lB9yf4ybgh3Ob/fCt6P8aviKXDh/7i4+P6pgBhjwO5GZdDeMhSXnrbzadWoE4PprBDUgq2IwnLbqdFqXfwBAKLB36mf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708488856; c=relaxed/simple;
-	bh=iv7CH99iRhguDQ1/YjXbTn4+yMkEyHgzrQwytHVXsmo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U2amMVjWFG7h706cVEh5/wTiGCg735vC6lHxSaS0DG4F+umVZTdZvCP8YuTSlwp77dvljIb1t89fvN4QeOJYmZbEQdQL8bdzLRDkmcAP5da6GuRIWZv1HSMDL4SMM9I+JtJGV6jOss3MAHKcP2x4/aZ3kyiVNpojE7Et4fn4ffA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ltAGKq+e; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso4759a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:14:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708488852; x=1709093652; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TCa6Ml6GRh+LdklHOgguZfEh9d/lY861XdAuUikozNs=;
-        b=ltAGKq+e1pRtwewINOGDXpaAx3jWSDpDE5UXqojnajW6k25F/HrfoY9CnF3HSEqOX9
-         O+z3CZJPoeDyeXw+uFppwgHZFJBYGsKRwLJSk4WRTPdcj0hcqF70oFozmzubx17gr6TI
-         W8rKFC8WgFyfDaX/5onkLVzmuyBc5lZMNO00Y37JwHA4ZOfylYBmeJWrgx1SwSLTM5Qd
-         BPecGoUf4oAWSnlA3woJQdutHgCLa3f832mP1564IXWV14VlsKpDH/xTrVqvf96kO8aa
-         2PvRJEm8FDyOfdZBz1N+l2EMUWmtfKLCO25XD2OVoH/Z6kdgj2obH1CyxKwoQnA087Lk
-         mjQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708488852; x=1709093652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TCa6Ml6GRh+LdklHOgguZfEh9d/lY861XdAuUikozNs=;
-        b=JdeAJwazKzz6ZFmY/2nU+of2PkZxF9nUEBYBxx0bN34tc+VMitZmnK7ujdcoPcOO/0
-         NvstqMOKHyjrxxRfFbP4rQInzLCeAR/hIX0DhEEnAYL3oCgR79fIDh8d8RiXGPEMGH19
-         6/FITZWKSB+5aEoP3O8gcVlH0dEJMb6JVR/0jRde6+pSyKPsF3huNSoJYXfzcjjzN+tk
-         i7QRCAyAJMTMndppMB0MoabssN6LlMR3gO3TQxGsfIxL2/3r2lbSpFYsUPw8cYVq4xiQ
-         6JcwyyjltlJM1Rn15ipm6WiVqYxUV+AdaA45fNBZIV37h6xYX6hUMC3P59G8rViqRymw
-         axmA==
-X-Forwarded-Encrypted: i=1; AJvYcCWY+Wnu/URGSQk62N0IY7PeFr/+0Xnt+3lJ752SPtn3k+ZTgzDpMdvc3DZolYnGkJCr1sbZ6rF84aFcn94jb+QedDJ6cE4WNv76FUHd
-X-Gm-Message-State: AOJu0YyQFH7YCRJzslsWvQxa5djGVyZ8qi+SrldnC7H3QyUonXq4DEBo
-	PFcxw+Al/Iep2lzmhXZBXIhXqOF/PnvRgL1lv+utCBt59qH/zg/TYq45h647eonT3YYAeZ9Td7k
-	wkZ7h36U++EmcVy0rUUq6Jao3ZxYXrAMWtaHW
-X-Google-Smtp-Source: AGHT+IEmhFJMlJUUEju8UhhM1aaUnzSKK+rUpO3avm0pyBj9JxssRH7+jbwr7oE7NQv7fjKcKV4K1nsC9iq3UoRUqVE=
-X-Received: by 2002:a50:c30f:0:b0:564:55e5:6ee1 with SMTP id
- a15-20020a50c30f000000b0056455e56ee1mr107058edb.2.1708488852242; Tue, 20 Feb
- 2024 20:14:12 -0800 (PST)
+	s=arc-20240116; t=1708488852; c=relaxed/simple;
+	bh=dBG1F20hu98eigBkepFynMNfxKqRaLMacnj06c7mr/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=b79bH6zn2MITfj0X3HtEUTMgmTEQSN/AKhw1EaX9BlpFzN2+ftLVoZO/jnMbmUwYuQYjm3MKc76QBmY5uiYacG6mBvKFpULfiI8GhEwPhDdoZUCE/G128fyW0vY4qb9lnpmH9oS3dsRSH+t6qLqi+z2QA1WIgmHA1eiD00Zx/zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jjteLDhv; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708488851; x=1740024851;
+  h=date:from:to:cc:subject:message-id;
+  bh=dBG1F20hu98eigBkepFynMNfxKqRaLMacnj06c7mr/Q=;
+  b=jjteLDhvxPYL2GoRSLwbDiGlvJU3W2k4L738vCgcSwjbtdtd/or3dIAi
+   VSY5Daqd1DoCnYAXtuZMihQrHDK7JiBzfPAADl39pwzN8N/qwTiTiOT6D
+   Lk5FpIKD21yd9MZSiZjccr0/4i/16Ltv30WU0fbHz2byLMn17mKW0rxk/
+   AlhWAAwqA/UL3eaAd5YYl0hk+mpOAAb/iaDnh7UeLyI+OewE3zr8MXoxm
+   7g89/qlMI388l7axbNe1ScuPrumm8EtQ9pmzweti343Z5qHYVNIoKLt6a
+   wt5HDvvIG66yjWISLtBHksk/AbxLxg7Qc0AXrOzBpNbaPAQhlH1tT5l9O
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="13333771"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="13333771"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 20:14:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="9624336"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 20 Feb 2024 20:14:09 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rcdzi-00051a-34;
+	Wed, 21 Feb 2024 04:14:06 +0000
+Date: Wed, 21 Feb 2024 12:13:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ c56ac217a3c00d12e23606e0635cc95d6eb8c36a
+Message-ID: <202402211233.UGguDXU5-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240212213147.489377-1-saravanak@google.com> <20240212213147.489377-4-saravanak@google.com>
- <20240214-stable-anytime-b51b898d87af@spud> <CAGETcx-tBjfaLQqmGW=ap2N5FLK_gvTzxskA6sVsr_SUEpvomA@mail.gmail.com>
- <20240215-unstirred-rearrange-d619a2524a63@spud>
-In-Reply-To: <20240215-unstirred-rearrange-d619a2524a63@spud>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 20 Feb 2024 20:13:31 -0800
-Message-ID: <CAGETcx8EBta8dUSELUJ6_ibZABnnhSYX0VEGa8s-CbHFYuskkQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] dt-bindings: Add post-init-supplier property
-To: Conor Dooley <conor@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Len Brown <lenb@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 4:15=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Wed, Feb 14, 2024 at 03:32:31PM -0800, Saravana Kannan wrote:
-> > Hi Conon,
-> >
-> > On Wed, Feb 14, 2024 at 10:49=E2=80=AFAM Conor Dooley <conor@kernel.org=
-> wrote:
-> > >
-> > > On Mon, Feb 12, 2024 at 01:31:44PM -0800, Saravana Kannan wrote:
-> > > > The post-init-supplier property can be used to break a dependency c=
-ycle by
-> > > > marking some supplier(s) as a post device initialization supplier(s=
-). This
-> > > > allows an OS to do a better job at ordering initialization and
-> > > > suspend/resume of the devices in a dependency cycle.
-> > > >
-> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > ---
-> > > >  .../bindings/post-init-supplier.yaml          | 101 ++++++++++++++=
-++++
-> > > >  MAINTAINERS                                   |  13 +--
-> > > >  2 files changed, 108 insertions(+), 6 deletions(-)
-> > > >  create mode 100644 Documentation/devicetree/bindings/post-init-sup=
-plier.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/post-init-supplier.y=
-aml b/Documentation/devicetree/bindings/post-init-supplier.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..aab75b667259
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/post-init-supplier.yaml
-> > > > @@ -0,0 +1,101 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +# Copyright (c) 2020, Google LLC. All rights reserved.
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/post-init-supplier.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Post device initialization supplier
-> > > > +
-> > > > +maintainers:
-> > > > +  - Saravana Kannan <saravanak@google.com>
-> > > > +
-> > > > +description: |
-> > > > +  This property is used to indicate that the device(s) pointed to =
-by the
-> > > > +  property are not needed for the initialization of the device tha=
-t lists this
-> > > > +  property.
-> > >
-> > > > This property is meaningful only when pointing to direct suppliers
-> > > > +  of a device that are pointed to by other properties in the devic=
-e.
-> > >
-> > > I don't think this sentence makes sense, or at least it is not easy t=
-o
-> > > parse. It implies that it can "point to" other properties too
-> >
-> > I don't see how this sentence implies this.
->
-> Because, to me, it reads as if you can put extra stuff in here that will
-> be ignored if not "pointed to" by another property. The word
-> "meaningful" is what implies that you can.
->
-> > But open to suggestions on
-> > how to reword it. I don't want to drop this line entirely though
-> > because I'm trying to make it clear that this doesn't make a device
-> > (that's not previously a supplier) into a supplier. It only down
-> > grades an existing supplier to a post device initialization supplier.
->
-> If you wanna keep it, I would just go for what you said in this
-> response - that this property does not make devices into suppliers and
-> is only to mark existing suppliers as post-init. I think that rules out
-> putting other devices in there.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: c56ac217a3c00d12e23606e0635cc95d6eb8c36a  Merge branch into tip/master: 'x86/vdso'
 
-Sounds good.
+elapsed time: 1062m
 
-> > > - but
-> > > that's not the case. It is only valid to "point to" these suppliers.
-> > > I'd drop this entirely.
-> >
-> > >
-> > > > +
-> > > > +  A device can list its suppliers in devicetree using one or more =
-of the
-> > > > +  standard devicetree bindings. By default, it would be safe to as=
-sume the
-> > > > +  supplier device can be initialized before the consumer device is=
- initialized.
-> > >
-> > > "it would be safe to assume" seems odd wording to me - I feel like th=
-e
-> > > default is stronger than "safe to assume". I'd just drop the "would b=
-e
-> > > safe to assume and replace with "is assumed".
-> >
-> > Sounds good.
-> >
-> > >
-> > > > +
-> > > > +  However, that assumption cannot be made when there are cyclic de=
-pendencies
-> > > > +  between devices. Since each device is a supplier (directly or in=
-directly) of
-> > > > +  the others in the cycle, there is no guaranteed safe order for i=
-nitializing
-> > > > +  the devices in a cycle. We can try to initialize them in an arbi=
-trary order
-> > > > +  and eventually successfully initialize all of them, but that doe=
-sn't always
-> > > > +  work well.
-> > > > +
-> > > > +  For example, say,
-> > > > +  * The device tree has the following cyclic dependency X -> Y -> =
-Z -> X (where
-> > > > +    -> denotes "depends on").
-> > > > +  * But X is not needed to fully initialize Z (X might be needed o=
-nly when a
-> > > > +    specific functionality is requested post initialization).
-> > > > +
-> > > > +  If all the other -> are mandatory initialization dependencies, t=
-hen trying to
-> > > > +  initialize the devices in a loop (or arbitrarily) will always ev=
-entually end
-> > > > +  up with the devices being initialized in the order Z, Y and X.
-> > > > +
-> > > > +  However, if Y is an optional supplier for X (where X provides li=
-mited
-> > > > +  functionality when Y is not initialized and providing its servic=
-es), then
-> > > > +  trying to initialize the devices in a loop (or arbitrarily) coul=
-d end up with
-> > > > +  the devices being initialized in the following order:
-> > > > +
-> > > > +  * Z, Y and X - All devices provide full functionality
-> > > > +  * Z, X and Y - X provides partial functionality
-> > > > +  * X, Z and Y - X provides partial functionality
-> > > > +
-> > > > +  However, we always want to initialize the devices in the order Z=
-, Y and X
-> > > > +  since that provides the full functionality without interruptions=
-.
-> > > > +
-> > > > +  One alternate option that might be suggested is to have the driv=
-er for X
-> > > > +  notice that Y became available at a later point and adjust the f=
-unctionality
-> > > > +  it provides. However, other userspace applications could have st=
-arted using X
-> > > > +  with the limited functionality before Y was available and it mig=
-ht not be
-> > > > +  possible to transparently transition X or the users of X to full
-> > > > +  functionality while X is in use.
-> > > > +
-> > > > +  Similarly, when it comes to suspend (resume) ordering, it's uncl=
-ear which
-> > > > +  device in a dependency cycle needs to be suspended/resumed first=
- and trying
-> > > > +  arbitrary orders can result in system crashes or instability.
-> > > > +
-> > > > +  Explicitly calling out which link in a cycle needs to be broken =
-when
-> > > > +  determining the order, simplifies things a lot, improves efficie=
-ncy, makes
-> > > > +  the behavior more deterministic and maximizes the functionality =
-that can be
-> > > > +  provided without interruption.
-> > > > +
-> > > > +  This property is used to provide this additional information bet=
-ween devices
-> > > > +  in a cycle by telling which supplier(s) is not needed for initia=
-lizing the
-> > > > +  device that lists this property.
-> > > > +
-> > > > +  In the example above, Z would list X as a post-init-supplier and=
- the
-> > > > +  initialization dependency would become X -> Y -> Z -/-> X. So th=
-e best order
-> > > > +  to initialize them become clear: Z, Y and then X.
-> > >
-> > > Otherwise, I think this is a great description, describing the use ca=
-se
-> > > well :)
-> >
-> > Thanks! I always spend more time writing documentation and commit text
-> > than the time I spend writing code.
-> >
-> > >
-> > > > +
-> > > > +select: true
-> > > > +properties:
-> > > > +  post-init-supplier:
-> >
-> > [Merging your other email here]
-> >
-> > > Also, this should likely be pluralised, to match "clocks" "resets"
-> > > "interrupts" etc.
-> >
-> > Good point. Done.
-> >
-> > > > +    # One or more suppliers can be marked as post initialization s=
-upplier
-> > > > +    description:
-> > > > +      List of phandles to suppliers that are not needed for initia=
-lizing or
-> > > > +      resuming this device.
-> > > > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > > > +      items:
-> > > > +        maxItems: 1
-> > >
-> > > Rob's bot rightfully complains here about invalid syntax.
-> >
-> > I added these two lines based on Rob's feedback. Is the indentation
-> > that's wrong?
->
-> Aye, both items: and maxItems: need to lose a level of indent. That
-> said, its not actually restricting anything. I fixed it up locally and
-> you can put as many elements as you like into each phandle and it does
-> not care. Maybe Rob can tell what is going wrong there..
+configs tested: 98
+configs skipped: 3
 
-I made that fix and now I'm getting this:
-$ make DT_CHECKER_FLAGS=3D-m dt_binding_check
-DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/post-init-suppliers.yam=
-l
-  DTEX    Documentation/devicetree/bindings/post-init-suppliers.example.dts
-  LINT    Documentation/devicetree/bindings
-  CHKDT   Documentation/devicetree/bindings/processed-schema.json
-/mnt/android/linus-tree/Documentation/devicetree/bindings/post-init-supplie=
-rs.yaml:
-'oneOf' conditional failed, one must be fixed:
-        'unevaluatedProperties' is a required property
-        'additionalProperties' is a required property
-        hint: Either unevaluatedProperties or additionalProperties
-must be present
-        from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-/mnt/android/linus-tree/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml=
-:
-ignoring, error in schema: properties
-/mnt/android/linus-tree/Documentation/devicetree/bindings/post-init-supplie=
-rs.yaml:
-ignoring, error in schema:
-/mnt/android/linus-tree/Documentation/devicetree/bindings/soc/tegra/nvidia,=
-tegra20-pmc.yaml:
-ignoring, error in schema: allOf: 0: then: properties: pinmux
-/mnt/android/linus-tree/Documentation/devicetree/bindings/net/lantiq,pef225=
-6.yaml:
-ignoring, error in schema: properties: lantiq,data-rate-bps
-/mnt/android/linus-tree/Documentation/devicetree/bindings/post-init-supplie=
-r.yaml:
-ignoring, error in schema:
-/mnt/android/linus-tree/Documentation/devicetree/bindings/iio/pressure/hone=
-ywell,mprls0025pa.yaml:
-ignoring, error in schema: properties: honeywell,pmax-pascal
-/mnt/android/linus-tree/Documentation/devicetree/bindings/iio/pressure/hone=
-ywell,hsc030pa.yaml:
-ignoring, error in schema: properties: honeywell,pmax-pascal
-  DTC_CHK Documentation/devicetree/bindings/post-init-suppliers.example.dtb
-Documentation/devicetree/bindings/post-init-suppliers.example.dtb:0:0:
-/example-0/clock-controller@1000: failed to match any schema with
-compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
-Documentation/devicetree/bindings/post-init-suppliers.example.dtb:0:0:
-/example-0/clock-controller@1000: failed to match any schema with
-compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
-Documentation/devicetree/bindings/post-init-suppliers.example.dtb:0:0:
-/example-0/clock-controller@2000: failed to match any schema with
-compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
-Documentation/devicetree/bindings/post-init-suppliers.example.dtb:0:0:
-/example-0/clock-controller@2000: failed to match any schema with
-compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-But I guess the "oneOf" error is because the yaml is being treated as
-a description of a DT node and not a schema?
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              alldefconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                        clps711x_defconfig   clang
+arm                                 defconfig   clang
+arm                          exynos_defconfig   clang
+arm                           omap1_defconfig   gcc  
+arm                         s3c6400_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386                                defconfig   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath25_defconfig   clang
+mips                           gcw0_defconfig   clang
+mips                        qi_lb60_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    amigaone_defconfig   gcc  
+powerpc                      bamboo_defconfig   clang
+powerpc                      mgcoge_defconfig   clang
+powerpc                     redwood_defconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          landisk_defconfig   gcc  
+sh                           se7780_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
-Rob,
-
-Can you let me know how to move ahead with this? I'll do the fixes
-that Conor suggested in v3.
-
--Saravana
-
->
-> >
-> > Yeah, I'm trying to run the dts checker, but I haven't be able to get
-> > it to work on my end. See my email to Rob on the v1 series about this.
-> >
-> > $ make DT_CHECKER_FLAGS=3D-m dt_binding_check
-> >
-> > The best I could get out of it is a bunch of error reports on other
-> > files and then:
-> > ...
-> > <snip>/Documentation/devicetree/bindings/post-init-suppliers.yaml:
-> > ignoring, error parsing file
-> > ...
->
-> Yup, that is about right, although you snipped out the actual complaint.
->
-> >
-> > I also tried to use DT_SCHEMA_FILES so I can only test this one file,
-> > but that wasn't working either:
-> >
-> > $ make DT_CHECKER_FLAGS=3D-m dt_binding_check
-> > DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/post-init-suppliers=
-yaml
-> > or
-> > $ make DT_CHECKER_FLAGS=3D-m dt_binding_check DT_SCHEMA_FILES=3D<path t=
-o
-> > the .patch file>
-> >
-> > Results in this error early on in the output:
-> > ...
-> > usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA]
-> > [--list-files] [-f {parsable,standard,colored,github,auto}] [-s]
-> > [--no-warnings] [-v] [FILE_OR_DIR ...]
-> > yamllint: error: one of the arguments FILE_OR_DIR - is required
-> > ...
-> > /mnt/android/linus-tree/Documentation/devicetree/bindings/post-init-sup=
-pliers.yaml:
-> > ignoring, error parsing file
-> > ...
->
-> That is part of the actual complaint:
->
-> make dt_binding_check W=3D1 -j 30 DT_SCHEMA_FILES=3Dpost-init-supplier.ya=
-ml
->   LINT    Documentation/devicetree/bindings
->   DTEX    Documentation/devicetree/bindings/post-init-supplier.example.dt=
-s
-> Documentation/devicetree/bindings/post-init-supplier.yaml:84:12: mapping =
-values are not allowed here
-> make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentatio=
-n/devicetree/bindings/post-init-supplier.example.dts] Error 1
-> make[2]: *** Deleting file 'Documentation/devicetree/bindings/post-init-s=
-upplier.example.dts'
-> make[2]: *** Waiting for unfinished jobs....
-> ./Documentation/devicetree/bindings/post-init-supplier.yaml:84:12: [error=
-] syntax error: mapping values are not allowed here (syntax)
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
-> ./Documentation/devicetree/bindings/post-init-supplier.yaml:84:12: mappin=
-g values are not allowed here
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> /stuff/linux-dt/Documentation/devicetree/bindings/post-init-supplier.yaml=
-: ignoring, error parsing file
-> make[1]: *** [/stuff/linux-dt/Makefile:1432: dt_binding_check] Error 2
-> make: *** [Makefile:240: __sub-make] Error 2
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
