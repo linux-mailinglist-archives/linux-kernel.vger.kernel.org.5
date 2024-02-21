@@ -1,244 +1,291 @@
-Return-Path: <linux-kernel+bounces-74854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7575B85DD98
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:07:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB0E85DD91
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 15:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8362B233C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:07:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63D1A1C236BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 14:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DFC7F473;
-	Wed, 21 Feb 2024 14:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268697EEEA;
+	Wed, 21 Feb 2024 14:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HZficcdC"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="zCkplmGs"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9713B7E105
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 14:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9057E78B;
+	Wed, 21 Feb 2024 14:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708524366; cv=none; b=KjLU0E0vx63zzZWSNVoOcqQV0deLaw5onyoDArvrPT2OkbmT1uvcnkDTnJZi6jNvTNtCdH9GdQlJ2CbsLyTZIiNu2a6SYQO9rzvGjHl940f/HZhnlSurjKOKd4Xp9MYyfmO67MLQt+Giy+k9VWeDYcfGziSVyyJx/DYSiA457xg=
+	t=1708524357; cv=none; b=qqDGE80I0IZHFRp2P+WCGKlZM3UkK9gQClgp758hs0GLyLBGvgIpfNDqWxkLpr51sYuRbQvuFEMDxi4OsLPvFn64drzMH6GnHE7OTudVh5VFMPwgLB0PX01qG0dRYTnbxpTrdjrtUDEzVtIg9sRmG+23Ppepee53iZ+kDVdGtNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708524366; c=relaxed/simple;
-	bh=efIt4GZE7Y0DFlRIraGxw8oWbBJZf8tCwSO/5ZThiuU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X43z3M4erI6+QBAEvTujTQ9IJMLQHJp89HczQWeZaP0Tw30OINn2sdc8wDeg3cKUAOGwtdVxRmy09EeKi1NxFEdrqSCXCIeQDgtn5U1Ewnx+31LBsN1NCFkJr2ONzPC0hKdYdOC0oH0ZnfPnK4XbGOtCjR+pItS7Zz00jp45QOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HZficcdC; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607e60d01b2so28113007b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 06:06:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708524363; x=1709129163; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bBNt5mBouMup7TvH0VKGOarNbwSfPK+5cPhFazcNHCw=;
-        b=HZficcdCZPpeTsFxk8S7LDZkcCYv7daUKhkJWcAIOX9mn6M1ZThSawn459n0ioi3ID
-         EGaeNyQuDJAghGAC6IgAx4u81hewy8XmfxMp6CixBqdquXtfnP55JvwH6HrEHYaV7DFe
-         enolhjIt0FEHjtSLW4fMFmXD3bNdIMeptCgYehU3wqUHaIdCA5nXRBe94TRH0KVkdlaH
-         FIvMKKwUdA8/wZlTvxJX7zOiNNRbOA5V2HJy3QvkpJX1kI0EYfIuewwppDRtWqzY/mOI
-         kpa7N6H9F6yDsGZbtpAcgGLrqQcoCmpCkFh2wy8+FhlTOz+aOsOPPMTeoJrPWu42I3Oh
-         jYRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708524363; x=1709129163;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bBNt5mBouMup7TvH0VKGOarNbwSfPK+5cPhFazcNHCw=;
-        b=wQqZHmZXR3F/7I2tNKiO/iAQNwLhmLoIBBL9pZ2n3H0dL0ZrgdHZ6XiET0mnQaYLeI
-         AXRpKwItNFBEIUnOIhPkukBYXWtMJLgCWoBDIX8SCW5BHH0daiuTvetPVIMAwqrRKtgQ
-         qFqHPTwebkViRZzN2C+4NXT8IvOP7Ko6vGsYkUcA2T9pffvV5jATq10Rb3CTZs80fu8K
-         n1F/JCmuLis69i+odDWyXdbGCnFl7SGTYzBOuU8f40dxJ+BG8Qr/50copciCBvKZdFhf
-         fSGlFQQbgFowXtRNzhUD/0eOaGTdAkuOj7o7tqRQuQtcaNmydR/gZn+MUENvodCrmveN
-         NkHw==
-X-Forwarded-Encrypted: i=1; AJvYcCU2izKqPAQepO8Mwo/nUYMbp5tOoRz+/ADgLTQjPXTjEB0ypJsTX0sOoMUPHetk+T6G4S9t9YXUt0T7m3Ki4u7GyRDj08n2h5k9a0yM
-X-Gm-Message-State: AOJu0YwQVKO4Phu5zh3GgwYn+mFrPHPAbKUOYlL7k9DwhBSKmF/yDaC8
-	ebZFUUQWsLxhOZEByHVz2MjpPYd1uwIiMEdQ12gPjGGFUIDQRoKm4/saa9lHEvV0UONQI6RhOlA
-	wdLI4CdI1pZeVJ95VD40fMdM20bUEVQDKFAQQNQ==
-X-Google-Smtp-Source: AGHT+IHuXw4PJBIXZfuHh5gCNjMNTK/lLlsjTtlp+aEYUcD1kRLLumSXWcRF6pZKzf0+upCxVbz0lh9xD4Nk6MROwQg=
-X-Received: by 2002:a81:9a50:0:b0:607:d9f7:e4fc with SMTP id
- r77-20020a819a50000000b00607d9f7e4fcmr13053315ywg.5.1708524363650; Wed, 21
- Feb 2024 06:06:03 -0800 (PST)
+	s=arc-20240116; t=1708524357; c=relaxed/simple;
+	bh=I7jqWKOrzrHMCe8EuaiKBHGPPoI8dnJeRLwfMcA1ysc=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=IpoedMd2xspakBqRnLf/quY7J6u2LRAW46+LUK6Ms9vxzO6C3q5U3GST0Q7faV/xLKeTHSusBlar5OJYxAQpuw9jtSElm/bZ1qVpEuz5DKvCJyqlMN5xeVy5AHWr0APPnRdhj6IDPUEqj1HYaYG7YWDj4ldiPKxHm1IcgS1g6nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=zCkplmGs; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708524347;
+	bh=I7jqWKOrzrHMCe8EuaiKBHGPPoI8dnJeRLwfMcA1ysc=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=zCkplmGs3coQgzUZiT9Uyt9kTsV5pWnDApeb36YYD9uNJNLsvT5/IkB0JAvpCtRrr
+	 CLgx6Bb8/ffJdih9YrNHJCSe4ZlmYmK0YfAhzCtZ7BvrZ/qPkAbnONOv6MH610njLY
+	 Pvxo1fpjY862xoapewtyOKQBLGudMBJ1Kzx+pmPvNxFQ/JZ8TSsaf4T4y12ObCu+qq
+	 tI6i07U4IaNlAXO0jiOqMQ38L6aQNNpqiFnbBYsrWQEcVkq1r99v45T9o4pgXs/Z4A
+	 7NAlAyqK4dhYZbKBslJ6rYwyXI/XrLZIbUoQzjtH8uCGcDUJwsW1+/DxupxNfvxq2U
+	 Ug581xosqu1Hg==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E35093782082;
+	Wed, 21 Feb 2024 14:05:40 +0000 (UTC)
+Message-ID: <a0fb8d9a-ae4d-4fc0-a921-efaa180e1bd7@collabora.com>
+Date: Wed, 21 Feb 2024 19:06:05 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-spmi-multi-master-support-v5-0-3255ca413a0b@linaro.org> <20240221-spmi-multi-master-support-v5-1-3255ca413a0b@linaro.org>
-In-Reply-To: <20240221-spmi-multi-master-support-v5-1-3255ca413a0b@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 21 Feb 2024 16:05:51 +0200
-Message-ID: <CAA8EJposY0uf2S98VoOr5pOhJq9_i15mVSiEFP_r4jk+rPB0Ow@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] dt-bindings: spmi: Add PMIC ARB v7 schema
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Johan Hovold <johan@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Move test_dev_cgroup to
+ prog_tests
+Content-Language: en-US
+To: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>
+References: <20240221092248.1945364-1-usama.anjum@collabora.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240221092248.1945364-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 21 Feb 2024 at 14:52, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> Add dedicated schema for PMIC ARB v7 as it allows multiple
-> buses by declaring them as child nodes. These child nodes
-> will follow the generic spmi bus bindings.
->
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+On 2/21/24 2:22 PM, Muhammad Usama Anjum wrote:
+> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
+> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
+> dev_cgroup.skel.h and load program from it accourdingly.
+> 
+>   ./test_progs -t test_dev_cgroup
+>   mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>   64+0 records in
+>   64+0 records out
+>   32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+>   dd: failed to open '/dev/full': Operation not permitted
+>   dd: failed to open '/dev/random': Operation not permitted
+>   #365     test_dev_cgroup:OK
+>   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 > ---
->  .../bindings/spmi/qcom,spmi-pmic-arb-v7.yaml       | 119 +++++++++++++++++++++
->  1 file changed, 119 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb-v7.yaml b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb-v7.yaml
+> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
+> next. It is passing on both. Not sure why it was failed on BPFCI.
+> Test run with vmtest.h:
+> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh ./test_progs -t dev_cgroup
+> ./test_progs -t dev_cgroup
+> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+> 64+0 records in
+> 64+0 records out
+> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
+> dd: failed to open '/dev/full': Operation not permitted
+> dd: failed to open '/dev/random': Operation not permitted
+>  #69      dev_cgroup:OK
+> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Locally this test passes, but fails on BPFCI:
+https://github.com/kernel-patches/bpf/actions/runs/7986809998/job/21808178301#step:5:9744
+
+> 
+> Changes since v1:
+> - Rename file from test_dev_cgroup.c to dev_cgroup.c
+> - Use ASSERT_* in-place of CHECK
+> ---
+>  .../selftests/bpf/prog_tests/dev_cgroup.c     | 58 +++++++++++++
+>  tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
+>  2 files changed, 58 insertions(+), 85 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+>  delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
 > new file mode 100644
-> index 000000000000..8a93d2145aa5
+> index 0000000000000..980b015a116ff
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb-v7.yaml
-> @@ -0,0 +1,119 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spmi/qcom,spmi-pmic-arb-v7.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +++ b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2017 Facebook
+> + */
 > +
-> +title: Qualcomm SPMI Controller v7 (PMIC Arbiter)
+> +#include <test_progs.h>
+> +#include <time.h>
+> +#include "cgroup_helpers.h"
+> +#include "dev_cgroup.skel.h"
 > +
-> +maintainers:
-> +  - Stephen Boyd <sboyd@kernel.org>
+> +#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
 > +
-> +description: |
-> +  The SPMI PMIC Arbiter v7 is found on Snapdragon chipsets. It is an SPMI
-> +  controller with wrapping arbitration logic to allow for multiple on-chip
-> +  devices to control up to 2 SPMI separate buses.
+> +void test_dev_cgroup(void)
+> +{
+> +	struct dev_cgroup *skel;
+> +	int cgroup_fd, err;
+> +	__u32 prog_cnt;
 > +
-> +  The PMIC Arbiter can also act as an interrupt controller, providing interrupts
-> +  to slave devices.
+> +	skel = dev_cgroup__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +		goto cleanup;
 > +
-> +properties:
-> +  compatible:
-> +    const: qcom,spmi-pmic-arb-v7
+> +	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+> +	if (!ASSERT_GT(cgroup_fd, 0, "cgroup_setup_and_join"))
+> +		goto cleanup;
 > +
-> +  reg:
-> +    items:
-> +      - description: core registers
-> +      - description: tx-channel per virtual slave regosters
-> +      - description: rx-channel (called observer) per virtual slave registers
+> +	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
+> +			      BPF_CGROUP_DEVICE, 0);
+> +	if (!ASSERT_EQ(err, 0, "bpf_attach"))
+> +		goto cleanup;
 > +
-> +  reg-names:
-> +    items:
-> +      - const: core
-> +      - const: chnls
-> +      - const: obsrvr
+> +	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
+> +	if (!ASSERT_EQ(err, 0, "bpf_query") || (!ASSERT_EQ(prog_cnt, 1, "bpf_query")))
+> +		goto cleanup;
 > +
-> +  ranges: true
+> +	/* All operations with /dev/zero and /dev/urandom are allowed,
+> +	 * everything else is forbidden.
+> +	 */
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
+> +	ASSERT_NEQ(system("mknod /tmp/test_dev_cgroup_null c 1 3"), 0, "mknod");
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
 > +
-> +  '#address-cells':
-> +    const: 2
-> +
-> +  '#size-cells':
-> +    const: 2
-> +
-> +  qcom,ee:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 5
-> +    description: >
-> +      indicates the active Execution Environment identifier
-> +
-> +  qcom,channel:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 5
-> +    description: >
-> +      which of the PMIC Arb provided channels to use for accesses
-> +
-> +patternProperties:
-> +  "spmi@[0-1]$":
-> +    type: object
-> +    $ref: /schemas/spmi/spmi.yaml
-> +
-> +required:
-> +  - compatible
-> +  - reg-names
-> +  - qcom,ee
-> +  - qcom,channel
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    spmi: arbiter@c400000 {
-> +      compatible = "qcom,spmi-pmic-arb-v7";
-> +      reg = <0x0c400000 0x3000>,
-> +            <0x0c500000 0x4000000>,
-> +            <0x0c440000 0x80000>;
-> +      reg-names = "core", "chnls", "obsrvr";
-> +
-> +      qcom,ee = <0>;
-> +      qcom,channel = <0>;
-> +
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
+> +	/* /dev/zero is whitelisted */
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
+> +	ASSERT_EQ(system("mknod /tmp/test_dev_cgroup_zero c 1 5"), 0, "mknod");
+Access to major number 1 and minor number 5 is allowed. The return code of
+0 is expected, but on CI we are getting 256 which indicates error. mknod
+help page mentions the same:
 
-Shouldn't there be an empty 'ranges;' property?
+> An exit status of zero indicates success, and a nonzero value indicates
+failure.
 
-> +
-> +      spmi_bus0: spmi@0 {
-> +        reg = <0 0x0c42d000 0 0x4000>,
-> +              <0 0x0c4c0000 0 0x10000>;
 
-Shouldn't the node address  (@0, @1) match the first address from reg property?
-
-> +        reg-names = "cnfg", "intr";
+> +	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
 > +
-> +        interrupt-names = "periph_irq";
-> +        interrupts-extended = <&pdc 1 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-controller;
-> +        #interrupt-cells = <4>;
+> +	ASSERT_EQ(system("dd if=/dev/urandom of=/dev/zero count=64"), 0, "dd");
 > +
-> +        qcom,bus-id = <0>;
-
-I thought the goal was to drop qcom,bus-id ?
-
+> +	/* src is allowed, target is forbidden */
+> +	ASSERT_NEQ(system("dd if=/dev/urandom of=/dev/full count=64"), 0, "dd");
 > +
-> +        #address-cells = <2>;
-> +        #size-cells = <0>;
-> +      };
+> +	/* src is forbidden, target is allowed */
+> +	ASSERT_NEQ(system("dd if=/dev/random of=/dev/zero count=64"), 0, "dd");
 > +
-> +      spmi_bus1: spmi@1 {
-> +        reg = <0 0x0c432000 0 0x4000>,
-> +              <0 0x0c4d0000 0 0x10000>;
-> +        reg-names = "cnfg", "intr";
-> +
-> +        interrupt-names = "periph_irq";
-> +        interrupts-extended = <&pdc 3 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-controller;
-> +        #interrupt-cells = <4>;
-> +
-> +        qcom,bus-id = <1>;
-> +
-> +        #address-cells = <2>;
-> +        #size-cells = <0>;
-> +      };
-> +    };
->
-> --
-> 2.34.1
->
-
+> +cleanup:
+> +	cleanup_cgroup_environment();
+> +	dev_cgroup__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
+> deleted file mode 100644
+> index adeaf63cb6fa3..0000000000000
+> --- a/tools/testing/selftests/bpf/test_dev_cgroup.c
+> +++ /dev/null
+> @@ -1,85 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/* Copyright (c) 2017 Facebook
+> - */
+> -
+> -#include <stdio.h>
+> -#include <stdlib.h>
+> -#include <string.h>
+> -#include <errno.h>
+> -#include <assert.h>
+> -#include <sys/time.h>
+> -
+> -#include <linux/bpf.h>
+> -#include <bpf/bpf.h>
+> -#include <bpf/libbpf.h>
+> -
+> -#include "cgroup_helpers.h"
+> -#include "testing_helpers.h"
+> -
+> -#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
+> -
+> -#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
+> -
+> -int main(int argc, char **argv)
+> -{
+> -	struct bpf_object *obj;
+> -	int error = EXIT_FAILURE;
+> -	int prog_fd, cgroup_fd;
+> -	__u32 prog_cnt;
+> -
+> -	/* Use libbpf 1.0 API mode */
+> -	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> -
+> -	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
+> -			  &obj, &prog_fd)) {
+> -		printf("Failed to load DEV_CGROUP program\n");
+> -		goto out;
+> -	}
+> -
+> -	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+> -	if (cgroup_fd < 0) {
+> -		printf("Failed to create test cgroup\n");
+> -		goto out;
+> -	}
+> -
+> -	/* Attach bpf program */
+> -	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
+> -		printf("Failed to attach DEV_CGROUP program");
+> -		goto err;
+> -	}
+> -
+> -	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
+> -			   &prog_cnt)) {
+> -		printf("Failed to query attached programs");
+> -		goto err;
+> -	}
+> -
+> -	/* All operations with /dev/zero and and /dev/urandom are allowed,
+> -	 * everything else is forbidden.
+> -	 */
+> -	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+> -	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
+> -	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+> -
+> -	/* /dev/zero is whitelisted */
+> -	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+> -	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
+> -	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+> -
+> -	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
+> -
+> -	/* src is allowed, target is forbidden */
+> -	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
+> -
+> -	/* src is forbidden, target is allowed */
+> -	assert(system("dd if=/dev/random of=/dev/zero count=64"));
+> -
+> -	error = 0;
+> -	printf("test_dev_cgroup:PASS\n");
+> -
+> -err:
+> -	cleanup_cgroup_environment();
+> -
+> -out:
+> -	return error;
+> -}
 
 -- 
-With best wishes
-Dmitry
+BR,
+Muhammad Usama Anjum
 
