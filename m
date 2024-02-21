@@ -1,112 +1,171 @@
-Return-Path: <linux-kernel+bounces-73968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A8E85CE25
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:40:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05C285CE27
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 03:41:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5182B1C22846
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:40:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 102F01F22328
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 02:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DFC282F9;
-	Wed, 21 Feb 2024 02:40:16 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE86C282F1;
+	Wed, 21 Feb 2024 02:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="by0Ly4w+"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F362554B;
-	Wed, 21 Feb 2024 02:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0612574F
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 02:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708483215; cv=none; b=mhjASLOaMXQsG2R/mkmaxXvL+aL8ykLkHRsxjXJwHZJP3pNcQk1VOVw/+2xXU51JnKFR4JkHylLPrwhVAtokef4DhXo0aZJV9XzdZImGE7hb51/R3kxmpdxrLh9ToNbAgue93DFRx7xaTyKrz6Sr10JHm8Jn/tNkTJhbDYMC9X8=
+	t=1708483281; cv=none; b=Y+YPVrvUasIyzrIT/v6eGO8L3IF+JyeF4dWShMDZJvXt8NHKJRT5UBIWAO3uXyw5WCnluEF4Q0QxBpEBGpNvTnBWJPCC6exDB/W01ZQACmgwqEu65ifeK8JIGnWL7JwxoKjlzsfFP0mwbV7YKNYHCHkFwEcRnlYtQALT8G7OeFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708483215; c=relaxed/simple;
-	bh=huQBhc4YHl3eGuZLk1rpaJes8758crbomsUCrYGNCLA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=sHRZD6l3Vca/WPTHEk8VMfpr4Zj8ygAhG0skaXQ5uBG+va3ihdrjX+4iE7N4HLovblCxnDKN8d/gWKzdsV8kCagv34UnAWxZB7riIvckIonI4YnC7oU9bplLWm+lfDLEfAyvqYY6T1jdi4Ex+nrG1IKWfXLcErHMK1k3eFP1IeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TfgRs0SvXz1h0LC;
-	Wed, 21 Feb 2024 10:38:01 +0800 (CST)
-Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6C784140157;
-	Wed, 21 Feb 2024 10:40:09 +0800 (CST)
-Received: from kwepemd100010.china.huawei.com (7.221.188.107) by
- kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 21 Feb 2024 10:40:09 +0800
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- kwepemd100010.china.huawei.com (7.221.188.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Wed, 21 Feb 2024 10:40:08 +0800
-Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
- dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
- Wed, 21 Feb 2024 10:40:08 +0800
-From: wangyunjian <wangyunjian@huawei.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "jasowang@redhat.com"
-	<jasowang@redhat.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, xudingke
-	<xudingke@huawei.com>
-Subject: RE: [PATCH net] tun: Fix xdp_rxq_info's queue_index when detaching
-Thread-Topic: [PATCH net] tun: Fix xdp_rxq_info's queue_index when detaching
-Thread-Index: AQHaY6qX2CBy+Itti0yhEsLiFpBp4LES3gaAgAE1xQA=
-Date: Wed, 21 Feb 2024 02:40:08 +0000
-Message-ID: <3f175a5ef4e34a0394ae584a0b84523e@huawei.com>
-References: <1708398727-46308-1-git-send-email-wangyunjian@huawei.com>
- <65d4cc4b88e56_23483829431@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65d4cc4b88e56_23483829431@willemb.c.googlers.com.notmuch>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1708483281; c=relaxed/simple;
+	bh=yLvENca37koqXHk4DDkN36MXxCa5K53ryrsPH9SnC/4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XBE/8gEb/QOqdSqCpHtjXOKjbYva5idyheh2JhFqw02sOpTzOqMcY4c7LEgmXQydbeHorMgqS1F+xowvbdmXiSnEIzBBbV+nFdirkTlNhu8dtRGgHh6YM/lc4rwGAAqRYEo2vo6BTemSKAWsYkdqq9+vD1NUn9j8NzJ0Y+A9DrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=by0Ly4w+; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42db1baff53so95041cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708483278; x=1709088078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nIFksRQNrLKsi4orC6zr7YrZCHRKvKULKcRY+vVqW6k=;
+        b=by0Ly4w+55d8tT2uUPVeAvIyth4mfXuh3IMiWsIpA4ciU6ZWuHDyN+AY+Dj/OSdbAz
+         TYt4f923UnWaTh/dvx2W4oINnG3YhWrDDkonYTDOhvLfsptPzrDS0ts0UQMOKEF8R9hK
+         B9cZZvq/H2VT66VsF4kL/YUiqg90Nu8Ha4JDKuR1Xl1FPMoOHiZQ+INQ3m6L7VgQA9wy
+         486B3uXRP/sIBLhg//90jTq2L1w76v/c6LlPJa9JNBv8M89H5eeTUv0GZ2KTPOqpUiGJ
+         rD1SDpM31CgyoMP7xbVPOACNJ9/ZUBhhLKYxKh20lMyRBgmjFKHkcdZv8UaC4+FRXnju
+         cbMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708483278; x=1709088078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nIFksRQNrLKsi4orC6zr7YrZCHRKvKULKcRY+vVqW6k=;
+        b=YsPnUugmtjqMQ9oqZytIWPTOE3X/jGfV1gMwiWbq4tN4YVWM+Ld5mNqVpgVZkgi30o
+         7VEL+89xsZQ21XMX5nIrpLeDIWyB9eKTwVSW61R5ZjVr6UR5FM9ZFAcKlGIr6qL8eCpt
+         vW/pgkZmvsy75Rzp+mABVWKxii58OQwjOOrKKKaaaJVlF8DbqiwRMvic/2zZMmOdcDxs
+         PtFYVaRr/ppgWmaeO/AnSpuUPCK8T2SiIq0aJWjlIaMp6JgZJzHrirCyGHmd/g5eTxI3
+         tgjzjrDJuMHK9VHcHb2O6+BHv34+yB/ONQEKogDeK2xpCUeGhvy6F7A4Dr4FcIsJ3Rl2
+         XhVg==
+X-Forwarded-Encrypted: i=1; AJvYcCXtA9NIznvFWz3PqH0fQjyep/FSrRr83/WvXrZQvTbxn2D4pwX3pnXyr6SMtJ7ojtQzENMScCnEj9wvXnG3IB8nIWM72MBwIz6yl90L
+X-Gm-Message-State: AOJu0Yy3Vg80ro23pFvvGxZ1hJ76NbeHp8lm3ziz2vrc0gLWBli5VkM5
+	V4b3B7AOcr8iiiP2vWoOKA+cJ/Tcl3aMAVtWXWrcMEf+xJB2rJ4WwDSdobUb3GaPFWsuyqh/muD
+	HY85TMEh+4iRYhuyZz4DPSTEUM1YGg5Bm1Y/j
+X-Google-Smtp-Source: AGHT+IFOcuDVp/F/WYtSc5/xEn9ksomEmtwYk1VlCy3rZMnYA0KETmu6Zt2Q8sCPoT4/nV09I0zmKNOAzKhBzQM7CoE=
+X-Received: by 2002:ac8:744e:0:b0:42e:3233:4924 with SMTP id
+ h14-20020ac8744e000000b0042e32334924mr121412qtr.26.1708483278081; Tue, 20 Feb
+ 2024 18:41:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240220111044.133776-1-herve.codina@bootlin.com> <20240220111044.133776-3-herve.codina@bootlin.com>
+In-Reply-To: <20240220111044.133776-3-herve.codina@bootlin.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 20 Feb 2024 18:40:40 -0800
+Message-ID: <CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] of: property: fw_devlink: Fix links to supplier when
+ created from phandles
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Shawn Guo <shawnguo@kernel.org>, Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogV2lsbGVtIGRlIEJydWlq
-biBbbWFpbHRvOndpbGxlbWRlYnJ1aWpuLmtlcm5lbEBnbWFpbC5jb21dDQo+IFNlbnQ6IFR1ZXNk
-YXksIEZlYnJ1YXJ5IDIwLCAyMDI0IDExOjU5IFBNDQo+IFRvOiB3YW5neXVuamlhbiA8d2FuZ3l1
-bmppYW5AaHVhd2VpLmNvbT47DQo+IHdpbGxlbWRlYnJ1aWpuLmtlcm5lbEBnbWFpbC5jb207IGph
-c293YW5nQHJlZGhhdC5jb207IGt1YmFAa2VybmVsLm9yZzsNCj4gZGF2ZW1AZGF2ZW1sb2Z0Lm5l
-dA0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZzsNCj4gYnJvdWVyQHJlZGhhdC5jb207IHh1ZGluZ2tlIDx4dWRpbmdrZUBodWF3ZWkuY29t
-Pjsgd2FuZ3l1bmppYW4NCj4gPHdhbmd5dW5qaWFuQGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0ggbmV0XSB0dW46IEZpeCB4ZHBfcnhxX2luZm8ncyBxdWV1ZV9pbmRleCB3aGVuIGRl
-dGFjaGluZw0KPiANCj4gWXVuamlhbiBXYW5nIHdyb3RlOg0KPiA+IFdoZW4gYSBxdWV1ZSh0Zmls
-ZSkgaXMgZGV0YWNoZWQsIHdlIG9ubHkgdXBkYXRlIHRmaWxlJ3MgcXVldWVfaW5kZXgsDQo+ID4g
-YnV0IGRvIG5vdCB1cGRhdGUgeGRwX3J4cV9pbmZvJ3MgcXVldWVfaW5kZXguIFRoaXMgcGF0Y2gg
-Zml4ZXMgaXQuDQo+ID4NCj4gPiBGaXhlczogOGJmNWM0ZWUxODg5ICgidHVuOiBzZXR1cCB4ZHBf
-cnhxX2luZm8iKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFl1bmppYW4gV2FuZyA8d2FuZ3l1bmppYW5A
-aHVhd2VpLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQvdHVuLmMgfCAxICsNCj4gPiAg
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9uZXQvdHVuLmMgYi9kcml2ZXJzL25ldC90dW4uYyBpbmRleA0KPiA+IGJjODBmYzFkNTc2
-ZS4uYmUzNzIzNWFmNTVkIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L3R1bi5jDQo+ID4g
-KysrIGIvZHJpdmVycy9uZXQvdHVuLmMNCj4gPiBAQCAtNjUyLDYgKzY1Miw3IEBAIHN0YXRpYyB2
-b2lkIF9fdHVuX2RldGFjaChzdHJ1Y3QgdHVuX2ZpbGUgKnRmaWxlLCBib29sDQo+IGNsZWFuKQ0K
-PiA+ICAJCQkJICAgdHVuLT50ZmlsZXNbdHVuLT5udW1xdWV1ZXMgLSAxXSk7DQo+ID4gIAkJbnRm
-aWxlID0gcnRubF9kZXJlZmVyZW5jZSh0dW4tPnRmaWxlc1tpbmRleF0pOw0KPiA+ICAJCW50Zmls
-ZS0+cXVldWVfaW5kZXggPSBpbmRleDsNCj4gPiArCQludGZpbGUtPnhkcF9yeHEucXVldWVfaW5k
-ZXggPSBpbmRleDsNCj4gPiAgCQlyY3VfYXNzaWduX3BvaW50ZXIodHVuLT50ZmlsZXNbdHVuLT5u
-dW1xdWV1ZXMgLSAxXSwNCj4gPiAgCQkJCSAgIE5VTEwpOw0KPiANCj4gRG9lcyBpdCBtYXR0ZXIg
-dGhhdCB0aGlzIHZhbHVlIGlzIHN0YWxlIHdoZW4gdW5kZXRhY2hlZD8NCg0KWWVzLCB0aGUgZGV0
-YWNoIHRmaWxlJ3F1ZXVlX2luZGV4IGlzIG5vdCBpbXBvcnRhbnQgYmVjYXVzZSB0aGUgcmUtYXR0
-YWNoIHdpbGwgdXBkYXRlLg0KQnV0IHRoaXMgcGF0Y2ggaXMgdG8gZml4IHRoZSAnbnRmaWxlJyh0
-aGF0IHJlcGxhY2VzIHRoZSBkZXRhY2ggdGZpbGUpJ3MgcXVldWVfaW5kZXgsIGl0IGlzIHdyb25n
-Lg0KDQpUaGFua3MNCj4gDQo+IEl0IGlzIHJlcGxhY2VkIGluIHR1bl9hdHRhY2ggaWYgcHJldmlv
-dXNseSBhdHRhY2hlZDoNCj4gDQo+IAkJLyogUmUtYXR0YWNoIGRldGFjaGVkIHRmaWxlLCB1cGRh
-dGluZyBYRFAgcXVldWVfaW5kZXggKi8NCj4gICAgICAgICAgICAgICAgIFdBUk5fT04oIXhkcF9y
-eHFfaW5mb19pc19yZWcoJnRmaWxlLT54ZHBfcnhxKSk7DQo+IA0KPiAgICAgICAgICAgICAgICAg
-aWYgKHRmaWxlLT54ZHBfcnhxLnF1ZXVlX2luZGV4ICAgICE9IHRmaWxlLT5xdWV1ZV9pbmRleCkN
-Cj4gICAgICAgICAgICAgICAgICAgICAgICAgdGZpbGUtPnhkcF9yeHEucXVldWVfaW5kZXggPSB0
-ZmlsZS0+cXVldWVfaW5kZXg7DQo=
+On Tue, Feb 20, 2024 at 3:10=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
+com> wrote:
+>
+> Since commit 1a50d9403fb9 ("treewide: Fix probing of devices in DT
+> overlays"), when using device-tree overlays, the FWNODE_FLAG_NOT_DEVICE
+> is set on each overlay nodes. This flag is cleared when a struct device
+> is actually created for the DT node.
+> Also, when a device is created, the device DT node is parsed for known
+> phandle and devlinks consumer/supplier links are created between the
+> device (consumer) and the devices referenced by phandles (suppliers).
+> As these supplier device can have a struct device not already created,
+> the FWNODE_FLAG_NOT_DEVICE can be set for suppliers and leads the
+> devlink supplier point to the device's parent instead of the device
+> itself.
+>
+> Avoid this situation clearing the supplier FWNODE_FLAG_NOT_DEVICE just
+> before the devlink creation if a device is supposed to be created and
+> handled later in the process.
+>
+> Fixes: 1a50d9403fb9 ("treewide: Fix probing of devices in DT overlays")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  drivers/of/property.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 641a40cf5cf3..ff5cac477dbe 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1097,6 +1097,7 @@ static void of_link_to_phandle(struct device_node *=
+con_np,
+>                               struct device_node *sup_np)
+>  {
+>         struct device_node *tmp_np =3D of_node_get(sup_np);
+> +       struct fwnode_handle *sup_fwnode;
+>
+>         /* Check that sup_np and its ancestors are available. */
+>         while (tmp_np) {
+> @@ -1113,7 +1114,20 @@ static void of_link_to_phandle(struct device_node =
+*con_np,
+>                 tmp_np =3D of_get_next_parent(tmp_np);
+>         }
+>
+> -       fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np=
+));
+> +       /*
+> +        * In case of overlays, the fwnode are added with FWNODE_FLAG_NOT=
+_DEVICE
+> +        * flag set. A node can have a phandle that references an other n=
+ode
+> +        * added by the overlay.
+> +        * Clear the supplier's FWNODE_FLAG_NOT_DEVICE so that fw_devlink=
+ links
+> +        * to this supplier instead of linking to its parent.
+> +        */
+> +       sup_fwnode =3D of_fwnode_handle(sup_np);
+> +       if (sup_fwnode->flags & FWNODE_FLAG_NOT_DEVICE) {
+> +               if (of_property_present(sup_np, "compatible") &&
+> +                   of_device_is_available(sup_np))
+> +                       sup_fwnode->flags &=3D ~FWNODE_FLAG_NOT_DEVICE;
+> +       }
+> +       fwnode_link_add(of_fwnode_handle(con_np), sup_fwnode);
+
+Nack.
+
+of_link_to_phandle() doesn't care about any of the fwnode flags. It
+just creates links between the consumer and supplier nodes. Don't add
+more intelligence into it please. Also, "compatible" doesn't really
+guarantee device creation and you can have devices created out of
+nodes with no compatible property. I finally managed to get away from
+looking for the "compatible" property. So, let's not add back a
+dependency on that property please.
+
+Can you please give a real example where you are hitting this? I have
+some thoughts on solutions, but I want to understand the issue fully
+before I make suggestions.
+
+Thanks,
+Saravana
 
