@@ -1,74 +1,92 @@
-Return-Path: <linux-kernel+bounces-74487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-74488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E565F85D512
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:03:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD95685D513
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 11:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221501C23A5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:03:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32BC21F28BD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 10:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BEC4E1CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B214EB3A;
 	Wed, 21 Feb 2024 09:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nuvf1FKa"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eqoWccbd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uHlzl5Mb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eqoWccbd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uHlzl5Mb"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78B64E1CA
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963FD3D964;
+	Wed, 21 Feb 2024 09:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708509511; cv=none; b=DwvQQg6dz1YAc6XOayR+5X+2QKTbZRV16qs8WgHGOfTkOh3W/cH1oiyN3rz6bVkW6lA0cy+bnFtQNmZAJ/l+J1nJIABhzCVqHp34okLpkBhrdeNK+oH8b2GklKr+sU3uH79wURYGvs3KEeZ92Fc3TdUrAs676gf43GqANpf0/44=
+	t=1708509511; cv=none; b=R2hMk1I9IgePyaZ5pcLCqa+nf7cx84SHTOIAd9p02uFrd6Ki+TbqsvlbTYGCm74Ej4CvpWWIXHVjcy9fXYLSEMznx2sTEcEd/7H0WJsuQZoJg0nl5YFGxjp3IkxKZx3Yw3arOCYTBlHOppumO3W0QP+vv4Y9vEUKpDZq3xuxcSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708509511; c=relaxed/simple;
-	bh=35UDvqaEjT+Hd/yr4gwYb/tZirZ1jaBXbFk85JTZ5Sc=;
+	bh=x+tAsEV3Ej8sASoFgkA+UV5jf5YbQU5Wt1y7ot4Nh/M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YJ6FSqe4VIb1JRhrU/43Qv1a0i0wVi/OmCBZONARN2J3jRx4cL2pBRe7wZfNHH17ki/2J1+eNZ7wgUaO6wev/31TVquza1ynEKCyNyV+5aXpbgNI5TciJZMtHGYMOkLVJDbiJBS8a06ixWeCUDDLdb8GsNAXDwxDHgM4ViIBQ40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nuvf1FKa; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-564d9b0e96dso1855187a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 01:58:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708509508; x=1709114308; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zaQGx9XByKSc51LpkoUduPFIZjy4psowaw+hO7Oynl8=;
-        b=nuvf1FKa4r4/MMeIxCeuchUOnHCyoyj/LoLrlMaOq1M2KNDg8k5Q6u12w13U7HfNmG
-         iQM6ex6chyFu1pO9FNQxldlA40AmfFD0XGGoJbTUst5+Yzs37cEPkmVhRUocdBPa3bDq
-         1MpkLwk8jiZqF6sKnMsG1h0kIOdtWO6jeQG/7EXPgVAO/868A08vy+UWW3NBwEAwyAiS
-         KKoQqHi4eOJ0ftSTrt1HKoRXSg+tH9uaxrQkvb96RoSqqiFlw/5plc7OQlNKQiWuFhFd
-         OWnrOGQfLgJDOVcUcoE42YXnHsaK8+GOUSRbdwru7HfR/KcC5Xy4QU9DTbbR1PTKn+z4
-         o4Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708509508; x=1709114308;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zaQGx9XByKSc51LpkoUduPFIZjy4psowaw+hO7Oynl8=;
-        b=RU3ee6FlcHEZMbRT23L9/9S9mdcHjI42OwI4A/HsL9qZ+30tGkzB978zNOM1oQgf92
-         74NZzdfwn2BOBAUkcnmdptTNRlvmrLX/NnwBvF93mqpJj2F3XRqBs9lr8wKO8VE0v2bj
-         Hm51z7V8cIc2etroPMgWnJn3DEAELZ+kNWiti4+v9MMlSCF8zQc9sWdwjifhtDCA+hlX
-         JKDDn5XUqK6BTQEXkz4kL6ZyHoPUWU66hdL9JrDxHcFO3DooEfL1bVMNjqeTxUdDpcrz
-         WWnEBnB90Is0nFPnqT5rF+mB28fGc3qWn4uhLpb0bT1CuaT0fXFDsbuMUmx1tGdXyJld
-         jg4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWxpNvObXwAxuPcTAI8cSSDTgFlHnTUJSe2RcfbvBq8QSRHlB6botUHIAo+OqUGO045o4b1BWUJnMBP4YilutB6QeZvqCX6OJV0z/gH
-X-Gm-Message-State: AOJu0YzbX7Adr+fEsd1gfm6DH4fzWqhfkKdl7DYhn2uiFBmeuIYal890
-	r0nMMoGDCtr+Vt3bPowXmSX9v0nuEYD5xPyP7Oi3kr0cl1cIKmn839E7dPug1qQysXvMy51USBm
-	UDtolTw==
-X-Google-Smtp-Source: AGHT+IGCskWR+d3aRl4ZoT1wuIhZfVSo9PKn3auj07ruinBPu2PLg14UAn9mjm1hpm8wHCSYYIdnjw==
-X-Received: by 2002:a17:906:1958:b0:a3e:c557:7cbe with SMTP id b24-20020a170906195800b00a3ec5577cbemr4661160eje.3.1708509508206;
-        Wed, 21 Feb 2024 01:58:28 -0800 (PST)
-Received: from ?IPV6:2001:1c06:2302:5600:366d:ca8f:f3af:381? (2001-1c06-2302-5600-366d-ca8f-f3af-0381.cable.dynamic.v6.ziggo.nl. [2001:1c06:2302:5600:366d:ca8f:f3af:381])
-        by smtp.gmail.com with ESMTPSA id hs32-20020a1709073ea000b00a3e4802b4f1sm3946290ejc.217.2024.02.21.01.58.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 01:58:27 -0800 (PST)
-Message-ID: <cf3a2def-4c41-4ca9-abdc-477d79ca396a@linaro.org>
-Date: Wed, 21 Feb 2024 09:58:23 +0000
+	 In-Reply-To:Content-Type; b=CgLamNvU5gtzFIUineb3zowi9T6fcP3PNz1NS9o6Ps7ilcbZu4x/k+77yFRe+EzN8jZjHHUXV96s63bv4n/BXi+D3Hq+NuFVFSwoYMJA4gx8g+qjmh3r4E4hdKUlY4TgXBJdoCYGmEpMzBR0OweAyPK7zD+HdhBbn/4sPvSf7hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eqoWccbd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uHlzl5Mb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eqoWccbd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uHlzl5Mb; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 92DB01FB4C;
+	Wed, 21 Feb 2024 09:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708509506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6CZZLxaCjUniAqfUA8XuBol8bY7o8se1WYeJDD69kWY=;
+	b=eqoWccbdoRy5sD7lxgF7mOoSFHp5C6lhXoEJoGUq9zlS3nrMaTLkHS7eJqywHowi9zOuWv
+	uEvWpF1xEcPNduaRxQqwOzE/poPKvGc8galZRHs2kFwgaGNn0Ytp6kZXaW2ilJzGFkJAr2
+	OcWkdhacveMY6FiUe3jkaM6laJ+yUlI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708509506;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6CZZLxaCjUniAqfUA8XuBol8bY7o8se1WYeJDD69kWY=;
+	b=uHlzl5MbBIGidM84g/sKNE+UkK+1QMttnvG9eoEGviWkKkZixshbakkWgnUmXJzluiFZwJ
+	XUPLbrrhp99SyzDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708509506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6CZZLxaCjUniAqfUA8XuBol8bY7o8se1WYeJDD69kWY=;
+	b=eqoWccbdoRy5sD7lxgF7mOoSFHp5C6lhXoEJoGUq9zlS3nrMaTLkHS7eJqywHowi9zOuWv
+	uEvWpF1xEcPNduaRxQqwOzE/poPKvGc8galZRHs2kFwgaGNn0Ytp6kZXaW2ilJzGFkJAr2
+	OcWkdhacveMY6FiUe3jkaM6laJ+yUlI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708509506;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6CZZLxaCjUniAqfUA8XuBol8bY7o8se1WYeJDD69kWY=;
+	b=uHlzl5MbBIGidM84g/sKNE+UkK+1QMttnvG9eoEGviWkKkZixshbakkWgnUmXJzluiFZwJ
+	XUPLbrrhp99SyzDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7856213A69;
+	Wed, 21 Feb 2024 09:58:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 23v5HELJ1WUYPgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 21 Feb 2024 09:58:26 +0000
+Message-ID: <ea61304a-81a4-402d-9d71-b13b9ac89ed2@suse.cz>
+Date: Wed, 21 Feb 2024 10:58:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,53 +94,119 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regulator: qcom-rpmh: Fix pm8010 pmic5_pldo502ln minimum
- voltage
+Subject: Re: Stall at page allocations with __GFP_RETRY_MAYFAIL (Re: [PATCH
+ v1] ALSA: memalloc: Fix indefinite hang in non-iommu case)
 Content-Language: en-US
-To: Fenglin Wu <quic_fenglinw@quicinc.com>, Mark Brown <broonie@kernel.org>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, lgirdwood@gmail.com,
- quic_collinsd@quicinc.com, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
- <13baed68-1014-4a48-874a-94027a6dd061@sirena.org.uk>
- <f38468b4-8b16-4180-9738-0a2b557651a1@linaro.org>
- <dcce3fa9-ecf3-42be-adf6-ca653a79ba2e@sirena.org.uk>
- <3851e21f-f8cb-487b-9ed4-9975949ff922@linaro.org>
- <a09d6450-95e7-4ed6-a0ad-5e7bb661533a@sirena.org.uk>
- <df6a49f3-88e9-46b4-b7c3-e5419fd01eca@linaro.org>
- <6f6dfaa2-f529-c9fe-7dde-402c92f0daf6@quicinc.com>
- <bc05fe84-0700-4587-bb18-eb39d30f10a8@linaro.org>
- <6b36bdc2-0ffb-491f-a1ae-93a20822e6f0@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <6b36bdc2-0ffb-491f-a1ae-93a20822e6f0@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Sven van Ashbrook <svenva@chromium.org>
+Cc: Takashi Iwai <tiwai@suse.de>,
+ Karthikeyan Ramasubramanian <kramasub@chromium.org>,
+ LKML <linux-kernel@vger.kernel.org>, Brian Geffon <bgeffon@google.com>,
+ stable@vger.kernel.org, Curtis Malainey <cujomalainey@chromium.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-sound@vger.kernel.org, linux-mm@kvack.org
+References: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
+ <87jzn0ofdb.wl-tiwai@suse.de> <235ab5aa-90a4-4dd7-b2c6-70469605bcfb@suse.cz>
+ <CAG-rBihs_xMKb3wrMO1+-+p4fowP9oy1pa_OTkfxBzPUVOZF+g@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAG-rBihs_xMKb3wrMO1+-+p4fowP9oy1pa_OTkfxBzPUVOZF+g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eqoWccbd;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uHlzl5Mb
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -4.50
+X-Rspamd-Queue-Id: 92DB01FB4C
+X-Spam-Flag: NO
 
-On 21/02/2024 9:11 a.m., Fenglin Wu wrote:
+On 2/20/24 16:52, Sven van Ashbrook wrote:
+> Takaski, Vlastimil: thanks so much for the engagement! See below.
 > 
-> So, programming it to either 1.8V or 1.808V, the HW will output 1.8V. I 
-> understand there is a problem for x1e801000 because its AOP side limits 
-> the voltage range to [1.808V, 1.808V] for LDO3/4/6 power rails, it won't 
-> work if linux side updates to use 1.8V. Actually the same issue applies 
-> to SM8550 and SM8650 if you simply update the voltage level to 1.808V, 
-> because their AOP side limits the voltage ranges for some of these LDOs 
-> to [1.8V, 1.8V].
+>> On 2/19/24 12:36, Takashi Iwai wrote:
+>> >
+>> > Karthikeyan, Sven, and co: could you guys show the stack trace at the
+>> > stall?  This may give us more clear light.
+> Here are our notes of the indefinite stall we saw on v5.10 with iommu SoCs.
+> We did not pursue debugging the stall at the time, in favour of a work-around
+> with the gfp flags. Therefore we only have partial confidence in the notes
+> below. Take them with a block of salt, but they may point in a useful direction.
+> 
+> 1. try to do a "costly" allocation (order > PAGE_ALLOC_COSTLY_ORDER) with
+>     __GFP_RETRY_MAYFAIL set.
+> 
+> 2. page alloc's __alloc_pages_slowpath [1] tries to get a page from
+> the freelist.
+>     This fails because there is nothing free of that costly order.
+> 
+> 3. page alloc tries to reclaim by calling __alloc_pages_direct_reclaim, which
+>     bails out [2] because a zone is ready to be compacted; it pretends
+> to have made
+>     a single page of progress.
+> 
+> 4. page alloc tries to compact, but this always bails out early [3]
+> because __GFP_IO is not set
+>     (it's not passed by the snd allocator, and even if it were, we are
+> suspending so the
+>     __GFP_IO flag would be cleared anyway).
+> 
+> 5. page alloc believes reclaim progress was made (because of the
+> pretense in item 3) and
+>     so it checks whether it should retry compaction. The compaction
+> retry logic [4] thinks
+>     it should try again, because:
+>     a) reclaim is needed because of the early bail-out in item 4
+>     b) a zonelist is suitable for compaction
+> 
+> 6. goto 2. indefinite stall.
 
-Hmm.
+Thanks a lot, seems this can indeed happen even in 6.8-rc5. We're
+mishandling the case where compaction is skipped due to lack of __GFP_IO,
+which is indeed cleared in suspend/resume. I'll create a fix. Please don't
+hesitate to report such issues the next time, even if not fully debugged :)
 
-We have no use case for 1.808 to my knowledge - the sensors take 
-voltages in the range 1.7 to 1.9 volts.
+>>
+>> > Also, Vlastimil suggested that tracepoints would be helpful if that's
+>> > really in the page allocator, too.
+>> >
+> 
+> We might be able to generate traces by bailing out of the indefinite
+> stall using a timer,
+> which should hopefully give us a device that's "alive enough" to read
+> the traces.
+> 
+> Can you advise which tracepoints you'd like to see? Is trace-cmd [5]
+> suitable to capture
+> this?
+> 
+> [1] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/third_party/kernel/v5.10/mm/page_alloc.c;l=4654;drc=a16293af64a1f558dab9a5dd7fb05fdbc2b7c5c0
+> [2] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/third_party/kernel/v5.10/mm/vmscan.c;drc=44452e4236561f6e36ec587805a52b683e2804c9;l=6177
+> [3] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/third_party/kernel/v5.10/mm/compaction.c;l=2479;drc=d7b105aa1559e6c287f3f372044c21c7400b7784
+> [4] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/third_party/kernel/v5.10/mm/page_alloc.c;l=4171;drc=a16293af64a1f558dab9a5dd7fb05fdbc2b7c5c0
+> [5] https://chromium.googlesource.com/chromiumos/docs/+/HEAD/kernel_development.md#ftrace-debugging
 
-TBH I think it should work just fine at 1.8v bang on.
-
-I'll test this theory on the reference hardware and repost either a 
-patch or further discussion.
-
-But I think we should probably just leave what you've upstreamed and 
-request 1.8 v in the dts honestly.
-
-Thanks
-
----
-bod
 
