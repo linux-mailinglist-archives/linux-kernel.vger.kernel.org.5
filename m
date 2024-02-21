@@ -1,183 +1,157 @@
-Return-Path: <linux-kernel+bounces-75227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD13A85E4ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:51:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C807485E4EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A5C9B24422
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:51:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE9281C239A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A1F84FAD;
-	Wed, 21 Feb 2024 17:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F8B84FD7;
+	Wed, 21 Feb 2024 17:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dGvbddyI"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="OcvIKM4U"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C619839F9
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B5582865
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 17:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537897; cv=none; b=egDJXwcdvv0f141i5+khC+COZrZ3Pn9eT5oVlTHEu8on4A2Hb4U8O71n/EeiTzX5jmmSWGpx86ndlJok1twZ+imJ1uG2JIFFIA93DLyg44BwOZhlZVwo95lJYtv83v21IQ3FKgfU/9GNLKcckYdKLceZDRlTj0zdll0cqyhWaQw=
+	t=1708537936; cv=none; b=GJHXh89d4rsD/h0Plw6rwYMHx2VuSs9ec6I7SFc033U2w1SgLp/I4Og9AC5lmZ9U00DU06jbfp/2CSwU2wv84qL2K6uLvTo2eB8/QE+EdUiPBLTAKqtUwVa8/lw2EVaeEcqtv0a/cOEyG12JCPGAAmeJU7llClyFgMx/4R5X2lE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537897; c=relaxed/simple;
-	bh=Fda278FTR/5zMJ4YPLlXLcjCkr0VfwBO0Aaliz79MDs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gdYD4186G1IRnqC7ebyz3cgo7/XvF3WBV2n8yQH1EbcyyXfnXVcN948Lw8Umhb5R9Lxg8TpZy2OzWwU0G6E4sgP8rFjKGv3z2GsPXuigCA64Vzvi3J7oeCaDubU0gnDQtxi2f4R/0O0+ZnADZRqrrdkZe4/sES5bwRcQjhdcHhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dGvbddyI; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2997c5fe6abso670641a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:51:35 -0800 (PST)
+	s=arc-20240116; t=1708537936; c=relaxed/simple;
+	bh=rI+UFBLzHgh5osY1C+DB3EoIdb5NuomFAo9d4P0bbRs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r+CBmjWzYtf+rszLgSPGieRVrw2t+XO7o6zJDhjUS0z5pc6SSnK5gVdhlqxqHInF9BoHDXmsvfpGLV2fPnvmkSD2VA58sTrD2G9Fa+i44Tsz0PR5wsS+oRw9NDKyslQ6wtfkjz4VzuTwXbUYv6xu72qO9lMOFveF/zsQmlHxp34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=OcvIKM4U; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d918008b99so57646435ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 09:52:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708537895; x=1709142695; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4c6JOQ+FrSe0D6YFyR6qod+/IDocW0FckRUNcekKjE4=;
-        b=dGvbddyIeumIz6Od+KrvNb3kslvCS3xj46z4eTtCR+TR1QXsym+onhiFVfYsuYXCKB
-         1/Z4dq98kNTASH6y8h+IJFkDD/a7c1IPtsha4KIH8+ypRj5F+7gay18en9G77OrRV1Mm
-         5BVvcxQxDGu4K34ZieRVhkyqcfAkWm8F8EyKlkY9RD7YiHS4BUxWbw3/hm8ZPeSiK9e0
-         VdxTVJ3z5Ca5LMUsfhr6T0friwd6qXJVxLlDh5uW/0LnDcu4MuWCgEjIWjmIsdXJaWn3
-         L0DP++Pdg9PRjt8WcCa6hwaU3hXx1RpEMsXiXAtd6gxTO+IbZdzuvpZXVc0arZF8tO8D
-         6inw==
+        d=kylehuey.com; s=google; t=1708537933; x=1709142733; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5V8y3dySFl8kdmMCLan3vQixGPkJBiAZiaFJHDPmSXw=;
+        b=OcvIKM4Uf0WoTJ2OjOhpb7hR1He3GV1/B4b3A6C4INqKAK5r/bvVqVT3Lmtod+5rUg
+         0lz0ZOM5REfDMkFcT2AG9b+DYdPCxweX/Gs2boFEo/Ai2pcfy0NQFwJ1/edOVcWAR0jt
+         viwJbUxHKNFX3J7VD7M5lTxjR7QezjgRh7b4OZZTkYrJ2owvd2WP/wMhPNKi8DXUDASt
+         3FEJ9w2Ue9xw7PxkdZbk+eR5pWE23vksovNxUeKwjgcyw7R0groru3G8DUk8r6r9SeSO
+         cMYSo7QTz+1PjVbn45ssnyg9P15LO6VVfSCZif5gjxljGPLoL7jVGzzoxoIl87U9JFiW
+         y9LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708537895; x=1709142695;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708537933; x=1709142733;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4c6JOQ+FrSe0D6YFyR6qod+/IDocW0FckRUNcekKjE4=;
-        b=R4Cbajr5LY2a4MmJy9LE6o7so++Ay5Jc7JcYpR86XZdDqj2pYusGqw171cAX2qcyhw
-         14o0aVWL0AY3TwimCdM5BTYD4uQTkVG27dEiYhUR11TG1f/sRqLKBsqzVG8zf1GylysA
-         lSccYHc/0yDTsSM1trZN1YMZx5LwXT6jWROAHiS1Vi3wHaKVm2/W7hJ3uPnai8sr3BNv
-         AAz+rfOqfiQ/0GX6r7gMhq088JinmqwbgTSNZ1ui4u+isCcQcmAN617UVk97oGeu5gTZ
-         kOOKB0TxRgTbsXeviv7Qp9yHjfwMnBCwbA/7LMYXIy3mPrVPJHTGhEDtmV0kXsT2oQ/7
-         N+aw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJYL7XVRGuKqDbbh4DBHVFLY91sM3uwSr0YkHjZZS1EDfeuEoS1feQSvStB126ap/1D1AJazDJNRWcPpWLsA60C7oG+tRCOqLxcvWn
-X-Gm-Message-State: AOJu0YxZSFkAt2FFjSa+ISjPQ3VZlWvi6c9CwPYo39GYDBtFlVinwhkF
-	2J563xosqsa4jNRRfm42i6nDsDXuCok85pSuX/RVXzB30y0MgjzUot+QFk19TrCrg7q7B9tdSnB
-	plTQCLFslyVPHf3KGwm2Zx9e06O6pY3WpCFGSxQ==
-X-Google-Smtp-Source: AGHT+IFeE56/qU5RJZPjGhSa8rqSHr150i/t1QrHgQ7Ys9e8cxyefrsUL+ZIrdKRDSpjARmKXd9Q8k1L/VGnJCgaL2Y=
-X-Received: by 2002:a17:90a:d157:b0:299:64d8:10ef with SMTP id
- t23-20020a17090ad15700b0029964d810efmr10391553pjw.10.1708537895370; Wed, 21
- Feb 2024 09:51:35 -0800 (PST)
+        bh=5V8y3dySFl8kdmMCLan3vQixGPkJBiAZiaFJHDPmSXw=;
+        b=DZPrvCcbWrS6BX9kz/wvnYGAXqoMWD05L2fppqOe3S+kJ2rMNsR6ua0RG6iMh1Oh+v
+         ObutY5JrtJqpAEPHKbAl681UnlelNETWW4cwx0NMwjoH1l3wfGGvIlMAbR5ornR+Erll
+         6GAR/jdzI2TXP+VvwItA2udyLev4qNSzU4Z1m6rTNGyPTtV068EHAcBGnAFqSP+xoPvL
+         I4UqzoVDwB/K8AtglwWbRxc2P653Dj2u3QsZCvY8loSfLXXtWZNmNiQUcTZd9n52ga+X
+         CePjELD+yRleKTcI5bb5FksFMEnd4zrLwsW7uM07blk7bxtUEaWuDzULI/x4FVuStjke
+         49kA==
+X-Forwarded-Encrypted: i=1; AJvYcCVSjg6hJLsp7KuCqSOM3J1uZAiIU3JGXH86myTolHV0UAaGptFDrO3sm8fvoVCpTnXWtQt+Uq9JsRODSgXvTUVJoRcCqj1Pavica65K
+X-Gm-Message-State: AOJu0YyhCwMSoU5p/08efTaHhftqEOQEgEFQrohkWoOa/lgqHkI3M7ep
+	MGIjoC6G2kvWZULkoaiqpDJYiuPIFxAriRQVLi95TgvBy8c1MdW1BlMlb9Y5xA==
+X-Google-Smtp-Source: AGHT+IGW8WYnnvJLYkMaaoUrrD89EyF1j7SjyCLvgEkswY7dZasilkjwVId/1YGCSZSr4OIgcKfI2A==
+X-Received: by 2002:a17:902:d508:b0:1db:d3d7:88a7 with SMTP id b8-20020a170902d50800b001dbd3d788a7mr11668295plg.49.1708537933064;
+        Wed, 21 Feb 2024 09:52:13 -0800 (PST)
+Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902e9c600b001d706e373a9sm8312596plk.292.2024.02.21.09.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 09:52:12 -0800 (PST)
+From: Kyle Huey <me@kylehuey.com>
+X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
+To: Kyle Huey <khuey@kylehuey.com>,
+	Robert O'Callahan <robert@ocallahan.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] perf/ring_buffer: Trigger FASYNC signals for watermark wakeups
+Date: Wed, 21 Feb 2024 09:52:09 -0800
+Message-Id: <20240221175210.19936-1-khuey@kylehuey.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220061542.489922-1-zhaoyang.huang@unisoc.com>
-In-Reply-To: <20240220061542.489922-1-zhaoyang.huang@unisoc.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 21 Feb 2024 18:51:23 +0100
-Message-ID: <CAKfTPtCbxk4_pAwi_+0ROo52f7R4+kZawe=OFEcOc2bTCYfsHw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched: introduce helper function to calculate
- distribution over sched class
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Zhaoyang Huang <huangzhaoyang@gmail.com>, 
-	steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 20 Feb 2024 at 07:16, zhaoyang.huang <zhaoyang.huang@unisoc.com> wrote:
->
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->
-> As RT, DL, IRQ time could be deemed as lost time of CFS's task, some
+perf_output_wakeup() already marks the perf event fd available for polling.
+Add code to trigger IO signals with FASYNC too.
 
-It's lost only if cfs has been actually preempted
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+---
+ include/linux/perf_event.h  | 8 ++++++++
+ kernel/events/core.c        | 8 --------
+ kernel/events/ring_buffer.c | 3 +++
+ 3 files changed, 11 insertions(+), 8 deletions(-)
 
-> timing value want to know the distribution of how these spread
-> approximately by using utilization account value (nivcsw is not enough
-> sometimes). This commit would like to introduce a helper function to
-> achieve this goal.
->
-> eg.
-> Effective part of A = Total_time * cpu_util_cfs / cpu_util
->
-> Timing value A
-> (should be a process last for several TICKs or statistics of a repeadted
-> process)
->
-> Timing start
-> |
-> |
-> preempted by RT, DL or IRQ
-> |\
-> | This period time is nonvoluntary CPU give up, need to know how long
-> |/
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index c8bd5bb6610c..c077968d7e52 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1914,4 +1914,12 @@ static inline void perf_lopwr_cb(bool mode)
+ }
+ #endif
+ 
++static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
++{
++	/* only the parent has fasync state */
++	if (event->parent)
++		event = event->parent;
++	return &event->fasync;
++}
++
+ #endif /* _LINUX_PERF_EVENT_H */
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index a329bec42c4d..36b5fbdf8e6e 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6684,14 +6684,6 @@ static const struct file_operations perf_fops = {
+  * to user-space before waking everybody up.
+  */
+ 
+-static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
+-{
+-	/* only the parent has fasync state */
+-	if (event->parent)
+-		event = event->parent;
+-	return &event->fasync;
+-}
+-
+ void perf_event_wakeup(struct perf_event *event)
+ {
+ 	ring_buffer_wakeup(event);
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index 60ed43d1c29e..033e54bb5c62 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -22,6 +22,9 @@ static void perf_output_wakeup(struct perf_output_handle *handle)
+ 	atomic_set(&handle->rb->poll, EPOLLIN);
+ 
+ 	handle->event->pending_wakeup = 1;
++	if (*perf_event_fasync(handle->event) && !handle->event->pending_kill)
++		handle->event->pending_kill = POLL_IN;
++
+ 	irq_work_queue(&handle->event->pending_irq);
+ }
+ 
+-- 
+2.34.1
 
-preempted means that a cfs task stops running on the cpu and lets
-another rt/dl task or an irq run on the cpu instead. We can't know
-that. We know an average ratio of time spent in rt/dl and irq contexts
-but not if the cpu was idle or running cfs task
-
-> sched in again
-> |
-> |
-> |
-> Timing end
->
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
->  include/linux/sched.h |  1 +
->  kernel/sched/core.c   | 20 ++++++++++++++++++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 77f01ac385f7..99cf09c47f72 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -2318,6 +2318,7 @@ static inline bool owner_on_cpu(struct task_struct *owner)
->
->  /* Returns effective CPU energy utilization, as seen by the scheduler */
->  unsigned long sched_cpu_util(int cpu);
-> +unsigned long cfs_prop_by_util(struct task_struct *tsk, unsigned long val);
->  #endif /* CONFIG_SMP */
->
->  #ifdef CONFIG_RSEQ
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 802551e0009b..217e2220fdc1 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7494,6 +7494,26 @@ unsigned long sched_cpu_util(int cpu)
->  {
->         return effective_cpu_util(cpu, cpu_util_cfs(cpu), ENERGY_UTIL, NULL);
->  }
-> +
-> +/*
-> + * Calculate the approximate proportion of timing value consumed in cfs.
-> + * The user must be aware of this is done by avg_util which is tracked by
-> + * the geometric series as decaying the load by y^32 = 0.5 (unit is 1ms).
-> + * That is, only the period last for at least several TICKs or the statistics
-> + * of repeated timing value are suitable for this helper function.
-> + */
-> +unsigned long cfs_prop_by_util(struct task_struct *tsk, unsigned long val)
-> +{
-> +       unsigned int cpu = task_cpu(tsk);
-> +       struct rq *rq = cpu_rq(cpu);
-> +       unsigned long util;
-> +
-> +       if (tsk->sched_class != &fair_sched_class)
-> +               return val;
-> +       util = cpu_util_rt(rq) + cpu_util_cfs(cpu) + cpu_util_irq(rq) + cpu_util_dl(rq);
-
-This is not correct as irq is not on the same clock domain: look at
-effective_cpu_util()
-
-You don't care about idle time ?
-
-> +       return min(val, cpu_util_cfs(cpu) * val / util);
-> +}
-> +
->  #endif /* CONFIG_SMP */
->
->  /**
-> --
-> 2.25.1
->
 
