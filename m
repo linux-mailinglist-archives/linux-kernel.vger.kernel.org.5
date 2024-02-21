@@ -1,105 +1,119 @@
-Return-Path: <linux-kernel+bounces-75143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C72E85E3C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:53:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A875B85E3CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FED428558D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:53:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 416261F2589C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA6F82D9E;
-	Wed, 21 Feb 2024 16:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="fr3pny1G"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD388120C;
-	Wed, 21 Feb 2024 16:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333BA82D9E;
+	Wed, 21 Feb 2024 16:55:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4437FBC4;
+	Wed, 21 Feb 2024 16:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708534430; cv=none; b=DxlixcWNB0JSD7j6fZYYhxrJpZu75YO/5uIJmXfLLBBRahPAtGV8Tb9+uNv2PoPP37nncrClvpc7gBM+gpRr+Ge221VgDXmN/PSYkgv+p/QhDwB9yYZP338nxgh7NX9V3a9vdqFXk4vf4HYcWlFnjUsdKVER+eMRP9TFvo2pQnE=
+	t=1708534509; cv=none; b=TP19tpH6hozl45z1lL0ZSQYzyw4KHPBGdHLn5/TYqEZ4qlTGZpJt7ODCxble/4fSac2yyuDhUgq3EEf6jnaF9tIs+GbH2N7/aERh3AYQeFK41NLFCQCbSHdZx7W7i9x3Q86cglOQrq2mqHr0JA1+0YOLzD3XDZZqFHK6syHsXzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708534430; c=relaxed/simple;
-	bh=AxeeFvoKkLDcSkOcVOKeQwzTbC26QJBy/Prx61GhjMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OIhrPNYhE4b/CqmP4RDw+0kLTnSIJLzj3KpG9sFWLq8+7kOhpnKO7WWuBG8lQMNWM9XL1sLKXNGC7hCDBMrJxnhsHnM9TRyWJNk4p2DPQ5r8Q9TO8LRTXJdhJmHfSv/Qzq5BWlk2U8DJVpN7PMOVZxeMbeooHl7uaqBWo4TTNvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=fr3pny1G; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3846A20B2000;
-	Wed, 21 Feb 2024 08:53:43 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3846A20B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708534423;
-	bh=WoWK2cdZE5hAZaE+2mXpfqVJo/Fqx/LjLI1coCuc52g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fr3pny1GK3v+9/F9gBlLYrMCOgBpMSr8hLdVINUQFJvVBNDlt7wGE1nSPJuUoDvnQ
-	 Mc7YYA8NxnVv2lkSnnOZc3tYEQYnC+XjCxXr8bepjMfP+P2vsyF5dSzoFonbLK6Ug2
-	 YTclTNDCTk6KSinCTNwaP9pIxd0BGnybE1Fa51FY=
-Date: Wed, 21 Feb 2024 08:53:37 -0800
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v3 2/4] tracing/user_events: Introduce multi-format events
-Message-ID: <20240221165337.GA441-beaub@linux.microsoft.com>
-References: <20240214175046.240-1-beaub@linux.microsoft.com>
- <20240214175046.240-3-beaub@linux.microsoft.com>
- <20240221102104.6ab80e5a@gandalf.local.home>
+	s=arc-20240116; t=1708534509; c=relaxed/simple;
+	bh=07lkd9NoppxxiEpP29PS7z0+eMrgeWwUwan7L7s+lZE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EkcFzvmKN0TGsdtQUBZNapr7Z2CsXn/zdpaDzhKekosed8hcwdSC4/bSVSj4fChBDBx4HU2vrA1o2waq98w9VtlLreMucP6FFYRy6c02yVDCFl/J2fkEydire2eFtlcyXw9kmNanOTo71Ig1qmgGNrDeVgkCEV2oPTu49JmNdas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D0611007;
+	Wed, 21 Feb 2024 08:55:43 -0800 (PST)
+Received: from [192.168.20.13] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5F143F73F;
+	Wed, 21 Feb 2024 08:55:00 -0800 (PST)
+Message-ID: <305d26ba-8738-4244-801f-939e1a9730a1@arm.com>
+Date: Wed, 21 Feb 2024 10:54:58 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221102104.6ab80e5a@gandalf.local.home>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] arm64: syscall: Direct PRNG kstack randomization
+Content-Language: en-US
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, Kees Cook <keescook@chromium.org>
+Cc: linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+ will@kernel.org, gustavoars@kernel.org, mark.rutland@arm.com,
+ rostedt@goodmis.org, arnd@arndb.de, broonie@kernel.org,
+ guohui@uniontech.com, Manoj.Iyer@arm.com, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, James Yang <james.yang@arm.com>,
+ Shiyou Huang <shiyou.huang@arm.com>
+References: <20240221020258.1210148-1-jeremy.linton@arm.com>
+ <202402202226.A6817927@keescook>
+ <CAHmME9pYS=YZM1b0ftrjj_qjz_U4V8PsiLzB15JmBRr39Av2Ng@mail.gmail.com>
+From: Jeremy Linton <jeremy.linton@arm.com>
+In-Reply-To: <CAHmME9pYS=YZM1b0ftrjj_qjz_U4V8PsiLzB15JmBRr39Av2Ng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 10:21:04AM -0500, Steven Rostedt wrote:
-> On Wed, 14 Feb 2024 17:50:44 +0000
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Hi,
+
+Thanks for looking at this.
+
+On 2/21/24 06:44, Jason A. Donenfeld wrote:
+> Hi,
 > 
-> > Currently user_events supports 1 event with the same name and must have
-> > the exact same format when referenced by multiple programs. This opens
-> > an opportunity for malicous or poorly thought through programs to
-> > create events that others use with different formats. Another scenario
-> > is user programs wishing to use the same event name but add more fields
-> > later when the software updates. Various versions of a program may be
-> > running side-by-side, which is prevented by the current single format
-> > requirement.
-> > 
-> > Add a new register flag (USER_EVENT_REG_MULTI_FORMAT) which indicates
-> > the user program wishes to use the same user_event name, but may have
-> > several different formats of the event in the future. When this flag is
+> On Wed, Feb 21, 2024 at 7:33 AM Kees Cook <keescook@chromium.org> wrote:
+>>> +#ifdef CONFIG_RANDOMIZE_KSTACK_OFFSET
+>>> +DEFINE_PER_CPU(u32, kstackrng);
+>>> +static u32 xorshift32(u32 state)
+>>> +{
+>>> +     /*
+>>> +      * From top of page 4 of Marsaglia, "Xorshift RNGs"
+>>> +      * This algorithm is intended to have a period 2^32 -1
+>>> +      * And should not be used anywhere else outside of this
+>>> +      * code path.
+>>> +      */
+>>> +     state ^= state << 13;
+>>> +     state ^= state >> 17;
+>>> +     state ^= state << 5;
+>>> +     return state;
+>>> +}
 > 
-> "of the event in the future." Does it have to be in the future? Is there
-> use case where an application might legitimately want the same event name
-> with different formats?
+> Can we please *not* introduce yet another RNG? You can't just sprinkle
+> this stuff all over the place with no rhyme or reason.
 > 
+> If you need repeatable randomness, use prandom_u32_state() or similar.
+> If you need non-repeatable randomness, use get_random_bytes() or
+> similar.
 
-You're right, our use cases are mostly around future facing/compat.
-There are valid cases where you just want several different formats with
-the same name.
+Sure prandom_u32_state() should have a similar effect being a bit 
+slower, and a bit better due to the extra hidden state.
 
-I'll drop the "in the future", so it'll just be "several different
-formats".
-
-Thanks,
--Beau
-
-> -- Steve
 > 
-> > used, create the underlying tracepoint backing the user_event with a
-> > unique name per-version of the format. It's important that existing ABI
-> > users do not get this logic automatically, even if one of the multi
-> > format events matches the format. This ensures existing programs that
-> > create events and assume the tracepoint name will match exactly continue
-> > to work as expected. Add logic to only check multi-format events with
-> > other multi-format events and single-format events to only check
-> > single-format events during find.
-> > 
+> If you think prandom_u32_state() is insufficient for some reason or
+> doesn't have some property or performance that you want, submit a
+> patch to make it better.
+> 
+> Looking at the actual intention here, of using repeatable randomness,
+> I find the intent pretty weird. Isn't the whole point of kstack
+> randomization that you can't predict it? If so, get_random_u*() is
+> what you want. If performance isn't sufficient, let's figure out some
+
+There isn't anything wrong with get_random_u16 from a kstack 
+randomization standpoint, except for the latency spikes of course.
+
+> way to improve performance. And as Kees said, if the point of this is
+> to have some repeatable benchmarks, maybe just don't enable the
+> security-intended code whose purpose is non-determinism? Both exploits
+> and now apparently benchmarks like determinism.
+
+As I mentioned in the other email, benchmark is probably the wrong word. 
+Its a better QoS response time distributions for a given workload. And 
+its not strictly in RT kernel latency test types of things, but normal 
+memcached style workloads on !RT kernels as well.
+
+
 
