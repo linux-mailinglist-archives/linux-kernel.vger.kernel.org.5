@@ -1,702 +1,163 @@
-Return-Path: <linux-kernel+bounces-75084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC82585E2D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:15:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8927685E29F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 17:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 529FB1F25479
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:15:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 119E31F21584
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 16:07:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB68A8289C;
-	Wed, 21 Feb 2024 16:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB06581213;
+	Wed, 21 Feb 2024 16:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MpWs2XTx";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+phTHet4";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MpWs2XTx";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+phTHet4"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cUJWKrp5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A0D81733;
-	Wed, 21 Feb 2024 16:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D25278B70
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708532081; cv=none; b=QWByZ7BlGmMAvYO0Wncauzc9xeYmhm0Q2yOXRbaVf4JwpqlS5GuqVCzlcsRJ7mPSGfwqHFU1l5Drv43kqdMXzQha83CvUigtkzxEqZAbarSb0eXoDD6kd2nB/gva/Ni5FwxpcEI0rVd5I7xdDUS2eBwroDiWqphlXnBrv0XA6dI=
+	t=1708531632; cv=none; b=QoPgfM22Sazemg3JT10qGcLvRUZg2kDTTEZAckx2vGi/gsaXJ/1VoohMcyALuADhQ9QF6TsoYwrU2sC/zp7qRJAp2QAcvB9/pgw3yWb6qCZznucAHLEiK2Jt1rVr267F3tmaP+JHYKoGNLtLbCHf3IOYeARJtHMsVQgse88LmwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708532081; c=relaxed/simple;
-	bh=iPevy6vWRINCKWH4ZuSAEfl6bcE2GcQIeGU5/Lq7FPM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T2JwLX6crexlyi1lf0cC6VZX8qRi9yVWGilMdL0ZPeZuthMI/nU0p5A6jHAyMC45OWyHgF2vXAZmmFMRSYHrYvmSNil2gM3wVgyVAB44rVzAmytVlYQ/hl/tqPvMGsVylZgenxjk++RsSjW1DHts+4hc9juzy9RBcKvhamdA5K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MpWs2XTx; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+phTHet4; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MpWs2XTx; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+phTHet4; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B5DC220CC;
-	Wed, 21 Feb 2024 16:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708532076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
+	s=arc-20240116; t=1708531632; c=relaxed/simple;
+	bh=dGmgF8qGHnx/mJYlpADnCFU8iTkJrq/0O6aXwei1tvY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I4jJD147UXp7JILxzaMKvAyUKNhRQV0ojI9XeDqm2O024MneWI66sLhkAaaIuSJKZNzYHCzuLHRuqhT7PFcTNwT1sMS0VTEEXFY5b/ThsS+F943mrtx8F0gAeSTpZh9dmP5zNfiZCrHMkTIerUGRu2xewQ4UTjgXO4VFhyf19GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cUJWKrp5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708531629;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8MvvpcpWnBzUMwm04TriRfSyKRDSqvYuqMEyx8cW23c=;
-	b=MpWs2XTxWPvvKhrdNistj68L3fB8Kzf6dVVMN+bnWTXOJzjJgcg2L8Fn15D+3+kX9WOE/V
-	jchQWCj9HWj2fUkSM8XD3+9s/IdlsUt7ee0QK6C5s+wIkhCvqe9YPH2gvluU9Cl6+nYVqz
-	NDqrXzV9qlkYF3ZeE8vARGsdqzrmoOA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708532076;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8MvvpcpWnBzUMwm04TriRfSyKRDSqvYuqMEyx8cW23c=;
-	b=+phTHet4GDHD3y7zJqGDr2EiLgVhihwIv93Q48OFZGZVo91iKAwsUn7lm6pfLdVnHVnHK/
-	2fzCG9J1adAlCHCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708532076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8MvvpcpWnBzUMwm04TriRfSyKRDSqvYuqMEyx8cW23c=;
-	b=MpWs2XTxWPvvKhrdNistj68L3fB8Kzf6dVVMN+bnWTXOJzjJgcg2L8Fn15D+3+kX9WOE/V
-	jchQWCj9HWj2fUkSM8XD3+9s/IdlsUt7ee0QK6C5s+wIkhCvqe9YPH2gvluU9Cl6+nYVqz
-	NDqrXzV9qlkYF3ZeE8vARGsdqzrmoOA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708532076;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8MvvpcpWnBzUMwm04TriRfSyKRDSqvYuqMEyx8cW23c=;
-	b=+phTHet4GDHD3y7zJqGDr2EiLgVhihwIv93Q48OFZGZVo91iKAwsUn7lm6pfLdVnHVnHK/
-	2fzCG9J1adAlCHCg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D6EF13A42;
-	Wed, 21 Feb 2024 16:14:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id qDCZFWsh1mVrYwAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Wed, 21 Feb 2024 16:14:35 +0000
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: arnd@arndb.de,
-	javierm@redhat.com,
-	deller@gmx.de,
-	suijingfeng@loongson.cn
-Cc: linux-arch@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-parisc@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	loongarch@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 3/3] arch: Rename fbdev header and source files
-Date: Wed, 21 Feb 2024 17:05:26 +0100
-Message-ID: <20240221161431.8245-4-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240221161431.8245-1-tzimmermann@suse.de>
-References: <20240221161431.8245-1-tzimmermann@suse.de>
+	bh=y30RSH8hthw/OYPhhhlk6+N/9nuxkhj3RC/Z3jCPafw=;
+	b=cUJWKrp5FaJGVarLt8LVWwUAHBffFjeEPq1b8C+w11cdW8RzAIidgPO9mClgOx5f0K1y8p
+	acup2CODzt56h2bokQfdLeZkGAGMO8xuacVB8CVuytbFWb+TrBJQAB+JqSpR9IGjXYPViv
+	OdjQ4/pbDf0k5iJpSVxvKue5F2f/GBs=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-83deHuj1Ouq2xXDZaNQ7WA-1; Wed, 21 Feb 2024 11:07:07 -0500
+X-MC-Unique: 83deHuj1Ouq2xXDZaNQ7WA-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-559391de41bso4555335a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 08:07:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708531626; x=1709136426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y30RSH8hthw/OYPhhhlk6+N/9nuxkhj3RC/Z3jCPafw=;
+        b=N7bt1V91UhdhKgmsqn9xAH7KvcALc4xnQX0hURFGKuKV/vMFIdOfd0H4wsR47QEMij
+         bxe8+2BzdVCugpMO0ZBZZHoEppEzDjxhOavDH9rMMrPUuZoL1dWylatSib++L89C4mOG
+         Rs0DcN4xYz+i8B52LjAyJ4mGpwOpYmrfKgSFsPNImijjuYGhRFohuRvQQ+fHMho2aY85
+         l2Ao8Gd1yqw4+bKoY36/z1BwovXOww/1lLDIUAA36v2rzKhPIqGfvK1ToANhjjzGpa0W
+         5SjIRMcSy7NHsDsKkX7iNfG0WaDM/iOOdVNqrYGkkHieI+TfYLFKQALyPP3O5oXpn4Y8
+         yxtA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOy/wY9bIwvHKbTQMUsusrwjXzQCjgJUfp4gibJDwFKhvdvsrMXfBP1Zyfzjk/3/uz4qsZACKhHWwAvH+fR9nQ8nVtdRKu7rEdHk9/
+X-Gm-Message-State: AOJu0YxoMJ/8YwtPuqKBm/qhTFtAHZVjb6oYeG9xX/UmvHFtWV7KQRrb
+	v1gMnLyGNb1WhHetzZbgmD9DtAfvlFHNHWUxQhOvA4pNdzEMpkQyGbRKUwNOQQ6P1lugL6DIh4r
+	riLjX3BKpU4Ts3BX9DZxti42zrKKOsvj5IJpCnDxHjaS9utqKHeNy15TGZwHOk0+XBjF0XH+ipT
+	fQFGnXuXtDZiNSFBKXDSyVSiqEGrVNz2hRSKMf
+X-Received: by 2002:a17:906:7f0e:b0:a3f:4a33:8112 with SMTP id d14-20020a1709067f0e00b00a3f4a338112mr1044413ejr.53.1708531626788;
+        Wed, 21 Feb 2024 08:07:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEU4eTPlizClIf0KjJt8QJlDiVbr8zCov6ZxhFgOKzHfX9uYPosMdqWZ4sbQtPG6AkyJmD/Xm3IdY1QDhuEqg4=
+X-Received: by 2002:a17:906:7f0e:b0:a3f:4a33:8112 with SMTP id
+ d14-20020a1709067f0e00b00a3f4a338112mr1044385ejr.53.1708531626473; Wed, 21
+ Feb 2024 08:07:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 REPLY(-4.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RLthqzz6q5hnubohss7ffybi86)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[39];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[arndb.de,redhat.com,gmx.de,loongson.cn];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.freedesktop.org,lists.ozlabs.org,lists.linux-m68k.org,lists.linux.dev,lists.infradead.org,suse.de,kernel.org,arm.com,xen0n.name,linux-m68k.org,alpha.franken.de,HansenPartnership.com,ellerman.id.au,gmail.com,users.sourceforge.jp,libc.org,physik.fu-berlin.de,davemloft.net,gaisler.com,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+References: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
+ <20240214-hid-bpf-sleepable-v2-2-5756b054724d@kernel.org> <mth43jfjhwtatwfo3unefrze62opht3yklleblslyz2adc6p5p@wm3miaqhhtkt>
+ <rhdu4st5tfabsdqs27ewhvdlwblhj2re4o56iz3fq3bsuokxxe@gtuqdjffj2hn> <i2womwfk2bvxh3h7ubmj2p4aqywci36hcfufuqflcusg73ilsq@chpndguq7bgu>
+In-Reply-To: <i2womwfk2bvxh3h7ubmj2p4aqywci36hcfufuqflcusg73ilsq@chpndguq7bgu>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Wed, 21 Feb 2024 17:06:54 +0100
+Message-ID: <CAO-hwJKz+eRA+BFLANTrEqz2jQAOANTE3c7eqNJ6wDqJR7jMiQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v2 02/10] bpf/helpers: introduce sleepable timers
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The per-architecture fbdev code has no dependencies on fbdev and can
-be used for any video-related subsystem. Rename the files to 'video'.
-Use video-sti.c on parisc as the source file depends on CONFIG_STI_CORE.
+[replying to both of your messages here]
 
-Further update all includes statements, includ guards, and Makefiles.
-Also update a few strings and comments to refer to video instead of
-fbdev.
+On Wed, Feb 21, 2024 at 3:59=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Feb 16, 2024 at 10:50:10AM +0100, Benjamin Tissoires wrote:
+> >  static bool is_rbtree_lock_required_kfunc(u32 btf_id)
+> >  {
+> >       return is_bpf_rbtree_api_kfunc(btf_id);
+> > @@ -12140,6 +12143,16 @@ static int check_kfunc_call(struct bpf_verifie=
+r_env *env, struct bpf_insn *insn,
+> >               }
+> >       }
+> >
+> > +     if (is_bpf_timer_set_sleepable_cb_kfunc(meta.func_id)) {
+> > +             err =3D push_callback_call(env, insn, insn_idx, meta.subp=
+rogno,
+> > +                                      set_timer_callback_state);
+> > +             if (err) {
+> > +                     verbose(env, "kfunc %s#%d failed callback verific=
+ation\n",
+> > +                             func_name, meta.func_id);
+> > +                     return err;
+> > +             }
+> > +     }
+>
+> All makes sense so far.
+> Please squash all the fix and repost.
+> It's hard to do a proper review in this shape of the patch.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Vineet Gupta <vgupta@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Andreas Larsson <andreas@gaisler.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
----
- arch/arc/include/asm/fb.h                    |  8 --------
- arch/arc/include/asm/video.h                 |  8 ++++++++
- arch/arm/include/asm/fb.h                    |  6 ------
- arch/arm/include/asm/video.h                 |  6 ++++++
- arch/arm64/include/asm/fb.h                  | 10 ----------
- arch/arm64/include/asm/video.h               | 10 ++++++++++
- arch/loongarch/include/asm/{fb.h => video.h} |  8 ++++----
- arch/m68k/include/asm/{fb.h => video.h}      |  8 ++++----
- arch/mips/include/asm/{fb.h => video.h}      | 12 ++++++------
- arch/parisc/include/asm/{fb.h => video.h}    |  8 ++++----
- arch/parisc/video/Makefile                   |  2 +-
- arch/parisc/video/{fbdev.c => video-sti.c}   |  2 +-
- arch/powerpc/include/asm/{fb.h => video.h}   |  8 ++++----
- arch/powerpc/kernel/pci-common.c             |  2 +-
- arch/sh/include/asm/fb.h                     |  7 -------
- arch/sh/include/asm/video.h                  |  7 +++++++
- arch/sparc/include/asm/{fb.h => video.h}     |  8 ++++----
- arch/sparc/video/Makefile                    |  2 +-
- arch/sparc/video/{fbdev.c => video.c}        |  4 ++--
- arch/x86/include/asm/{fb.h => video.h}       |  8 ++++----
- arch/x86/video/Makefile                      |  2 +-
- arch/x86/video/{fbdev.c => video.c}          |  3 ++-
- include/asm-generic/Kbuild                   |  2 +-
- include/asm-generic/{fb.h => video.h}        |  6 +++---
- include/linux/fb.h                           |  2 +-
- 25 files changed, 75 insertions(+), 74 deletions(-)
- delete mode 100644 arch/arc/include/asm/fb.h
- create mode 100644 arch/arc/include/asm/video.h
- delete mode 100644 arch/arm/include/asm/fb.h
- create mode 100644 arch/arm/include/asm/video.h
- delete mode 100644 arch/arm64/include/asm/fb.h
- create mode 100644 arch/arm64/include/asm/video.h
- rename arch/loongarch/include/asm/{fb.h => video.h} (86%)
- rename arch/m68k/include/asm/{fb.h => video.h} (86%)
- rename arch/mips/include/asm/{fb.h => video.h} (76%)
- rename arch/parisc/include/asm/{fb.h => video.h} (68%)
- rename arch/parisc/video/{fbdev.c => video-sti.c} (96%)
- rename arch/powerpc/include/asm/{fb.h => video.h} (76%)
- delete mode 100644 arch/sh/include/asm/fb.h
- create mode 100644 arch/sh/include/asm/video.h
- rename arch/sparc/include/asm/{fb.h => video.h} (89%)
- rename arch/sparc/video/{fbdev.c => video.c} (86%)
- rename arch/x86/include/asm/{fb.h => video.h} (77%)
- rename arch/x86/video/{fbdev.c => video.c} (97%)
- rename include/asm-generic/{fb.h => video.h} (96%)
+Yeah, I was expecting a very quick "I know why you are crashing", not
+a full review here.
 
-diff --git a/arch/arc/include/asm/fb.h b/arch/arc/include/asm/fb.h
-deleted file mode 100644
-index 9c2383d29cbb9..0000000000000
---- a/arch/arc/include/asm/fb.h
-+++ /dev/null
-@@ -1,8 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
--
--#include <asm-generic/fb.h>
--
--#endif /* _ASM_FB_H_ */
-diff --git a/arch/arc/include/asm/video.h b/arch/arc/include/asm/video.h
-new file mode 100644
-index 0000000000000..8ff7263727fe7
---- /dev/null
-+++ b/arch/arc/include/asm/video.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
-+
-+#include <asm-generic/video.h>
-+
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/arm/include/asm/fb.h b/arch/arm/include/asm/fb.h
-deleted file mode 100644
-index ce20a43c30339..0000000000000
---- a/arch/arm/include/asm/fb.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
--
--#include <asm-generic/fb.h>
--
--#endif /* _ASM_FB_H_ */
-diff --git a/arch/arm/include/asm/video.h b/arch/arm/include/asm/video.h
-new file mode 100644
-index 0000000000000..f570565366e67
---- /dev/null
-+++ b/arch/arm/include/asm/video.h
-@@ -0,0 +1,6 @@
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
-+
-+#include <asm-generic/video.h>
-+
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/arm64/include/asm/fb.h b/arch/arm64/include/asm/fb.h
-deleted file mode 100644
-index 1a495d8fb2ce0..0000000000000
---- a/arch/arm64/include/asm/fb.h
-+++ /dev/null
-@@ -1,10 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2012 ARM Ltd.
-- */
--#ifndef __ASM_FB_H_
--#define __ASM_FB_H_
--
--#include <asm-generic/fb.h>
--
--#endif /* __ASM_FB_H_ */
-diff --git a/arch/arm64/include/asm/video.h b/arch/arm64/include/asm/video.h
-new file mode 100644
-index 0000000000000..fe0e74983f4d9
---- /dev/null
-+++ b/arch/arm64/include/asm/video.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2012 ARM Ltd.
-+ */
-+#ifndef __ASM_VIDEO_H_
-+#define __ASM_VIDEO_H_
-+
-+#include <asm-generic/video.h>
-+
-+#endif /* __ASM_VIDEO_H_ */
-diff --git a/arch/loongarch/include/asm/fb.h b/arch/loongarch/include/asm/video.h
-similarity index 86%
-rename from arch/loongarch/include/asm/fb.h
-rename to arch/loongarch/include/asm/video.h
-index 0b218b10a9ec3..9f76845f2d4fd 100644
---- a/arch/loongarch/include/asm/fb.h
-+++ b/arch/loongarch/include/asm/video.h
-@@ -2,8 +2,8 @@
- /*
-  * Copyright (C) 2020-2022 Loongson Technology Corporation Limited
-  */
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
- 
- #include <linux/compiler.h>
- #include <linux/string.h>
-@@ -26,6 +26,6 @@ static inline void fb_memset_io(volatile void __iomem *addr, int c, size_t n)
- }
- #define fb_memset fb_memset_io
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _ASM_FB_H_ */
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/m68k/include/asm/fb.h b/arch/m68k/include/asm/video.h
-similarity index 86%
-rename from arch/m68k/include/asm/fb.h
-rename to arch/m68k/include/asm/video.h
-index 9941b7434b696..6cf2194c413d8 100644
---- a/arch/m68k/include/asm/fb.h
-+++ b/arch/m68k/include/asm/video.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
- 
- #include <asm/page.h>
- #include <asm/setup.h>
-@@ -27,6 +27,6 @@ static inline pgprot_t pgprot_framebuffer(pgprot_t prot,
- }
- #define pgprot_framebuffer pgprot_framebuffer
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _ASM_FB_H_ */
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/mips/include/asm/fb.h b/arch/mips/include/asm/video.h
-similarity index 76%
-rename from arch/mips/include/asm/fb.h
-rename to arch/mips/include/asm/video.h
-index d98d6681d64ec..007c106d980fd 100644
---- a/arch/mips/include/asm/fb.h
-+++ b/arch/mips/include/asm/video.h
-@@ -1,5 +1,5 @@
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
- 
- #include <asm/page.h>
- 
-@@ -13,8 +13,8 @@ static inline pgprot_t pgprot_framebuffer(pgprot_t prot,
- 
- /*
-  * MIPS doesn't define __raw_ I/O macros, so the helpers
-- * in <asm-generic/fb.h> don't generate fb_readq() and
-- * fb_write(). We have to provide them here.
-+ * in <asm-generic/video.h> don't generate fb_readq() and
-+ * fb_writeq(). We have to provide them here.
-  *
-  * TODO: Convert MIPS to generic I/O. The helpers below can
-  *       then be removed.
-@@ -33,6 +33,6 @@ static inline void fb_writeq(u64 b, volatile void __iomem *addr)
- #define fb_writeq fb_writeq
- #endif
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _ASM_FB_H_ */
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/parisc/include/asm/fb.h b/arch/parisc/include/asm/video.h
-similarity index 68%
-rename from arch/parisc/include/asm/fb.h
-rename to arch/parisc/include/asm/video.h
-index ed2a195a3e762..c5dff3223194a 100644
---- a/arch/parisc/include/asm/fb.h
-+++ b/arch/parisc/include/asm/video.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
- 
- #include <linux/types.h>
- 
-@@ -11,6 +11,6 @@ bool video_is_primary_device(struct device *dev);
- #define video_is_primary_device video_is_primary_device
- #endif
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _ASM_FB_H_ */
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/parisc/video/Makefile b/arch/parisc/video/Makefile
-index 16a73cce46612..b5db5b42880f8 100644
---- a/arch/parisc/video/Makefile
-+++ b/arch/parisc/video/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
--obj-$(CONFIG_STI_CORE) += fbdev.o
-+obj-$(CONFIG_STI_CORE) += video-sti.o
-diff --git a/arch/parisc/video/fbdev.c b/arch/parisc/video/video-sti.c
-similarity index 96%
-rename from arch/parisc/video/fbdev.c
-rename to arch/parisc/video/video-sti.c
-index 540fa0c919d59..564661e87093c 100644
---- a/arch/parisc/video/fbdev.c
-+++ b/arch/parisc/video/video-sti.c
-@@ -9,7 +9,7 @@
- 
- #include <video/sticore.h>
- 
--#include <asm/fb.h>
-+#include <asm/video.h>
- 
- bool video_is_primary_device(struct device *dev)
- {
-diff --git a/arch/powerpc/include/asm/fb.h b/arch/powerpc/include/asm/video.h
-similarity index 76%
-rename from arch/powerpc/include/asm/fb.h
-rename to arch/powerpc/include/asm/video.h
-index c0c5d1df7ad1e..e1770114ffc36 100644
---- a/arch/powerpc/include/asm/fb.h
-+++ b/arch/powerpc/include/asm/video.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
- 
- #include <asm/page.h>
- 
-@@ -12,6 +12,6 @@ static inline pgprot_t pgprot_framebuffer(pgprot_t prot,
- }
- #define pgprot_framebuffer pgprot_framebuffer
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _ASM_FB_H_ */
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-index d95a48eff412e..eac84d687b53f 100644
---- a/arch/powerpc/kernel/pci-common.c
-+++ b/arch/powerpc/kernel/pci-common.c
-@@ -517,7 +517,7 @@ int pci_iobar_pfn(struct pci_dev *pdev, int bar, struct vm_area_struct *vma)
- }
- 
- /*
-- * This one is used by /dev/mem and fbdev who have no clue about the
-+ * This one is used by /dev/mem and video who have no clue about the
-  * PCI device, it tries to find the PCI device first and calls the
-  * above routine
-  */
-diff --git a/arch/sh/include/asm/fb.h b/arch/sh/include/asm/fb.h
-deleted file mode 100644
-index 19df13ee9ca73..0000000000000
---- a/arch/sh/include/asm/fb.h
-+++ /dev/null
-@@ -1,7 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_FB_H_
--#define _ASM_FB_H_
--
--#include <asm-generic/fb.h>
--
--#endif /* _ASM_FB_H_ */
-diff --git a/arch/sh/include/asm/video.h b/arch/sh/include/asm/video.h
-new file mode 100644
-index 0000000000000..14f49934a247a
---- /dev/null
-+++ b/arch/sh/include/asm/video.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_VIDEO_H_
-+#define _ASM_VIDEO_H_
-+
-+#include <asm-generic/video.h>
-+
-+#endif /* _ASM_VIDEO_H_ */
-diff --git a/arch/sparc/include/asm/fb.h b/arch/sparc/include/asm/video.h
-similarity index 89%
-rename from arch/sparc/include/asm/fb.h
-rename to arch/sparc/include/asm/video.h
-index 07f0325d6921c..a6f48f52db584 100644
---- a/arch/sparc/include/asm/fb.h
-+++ b/arch/sparc/include/asm/video.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _SPARC_FB_H_
--#define _SPARC_FB_H_
-+#ifndef _SPARC_VIDEO_H_
-+#define _SPARC_VIDEO_H_
- 
- #include <linux/io.h>
- #include <linux/types.h>
-@@ -40,6 +40,6 @@ static inline void fb_memset_io(volatile void __iomem *addr, int c, size_t n)
- }
- #define fb_memset fb_memset_io
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _SPARC_FB_H_ */
-+#endif /* _SPARC_VIDEO_H_ */
-diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
-index 9dd82880a027a..fdf83a408d750 100644
---- a/arch/sparc/video/Makefile
-+++ b/arch/sparc/video/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
--obj-y	+= fbdev.o
-+obj-y	+= video.o
-diff --git a/arch/sparc/video/fbdev.c b/arch/sparc/video/video.c
-similarity index 86%
-rename from arch/sparc/video/fbdev.c
-rename to arch/sparc/video/video.c
-index e46f0499c2774..2414380caadc9 100644
---- a/arch/sparc/video/fbdev.c
-+++ b/arch/sparc/video/video.c
-@@ -4,8 +4,8 @@
- #include <linux/device.h>
- #include <linux/module.h>
- 
--#include <asm/fb.h>
- #include <asm/prom.h>
-+#include <asm/video.h>
- 
- bool video_is_primary_device(struct device *dev)
- {
-@@ -21,5 +21,5 @@ bool video_is_primary_device(struct device *dev)
- }
- EXPORT_SYMBOL(video_is_primary_device);
- 
--MODULE_DESCRIPTION("Sparc fbdev helpers");
-+MODULE_DESCRIPTION("Sparc video helpers");
- MODULE_LICENSE("GPL");
-diff --git a/arch/x86/include/asm/fb.h b/arch/x86/include/asm/video.h
-similarity index 77%
-rename from arch/x86/include/asm/fb.h
-rename to arch/x86/include/asm/video.h
-index 999db33792869..0950c9535fae9 100644
---- a/arch/x86/include/asm/fb.h
-+++ b/arch/x86/include/asm/video.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_X86_FB_H
--#define _ASM_X86_FB_H
-+#ifndef _ASM_X86_VIDEO_H
-+#define _ASM_X86_VIDEO_H
- 
- #include <linux/types.h>
- 
-@@ -16,6 +16,6 @@ pgprot_t pgprot_framebuffer(pgprot_t prot,
- bool video_is_primary_device(struct device *dev);
- #define video_is_primary_device video_is_primary_device
- 
--#include <asm-generic/fb.h>
-+#include <asm-generic/video.h>
- 
--#endif /* _ASM_X86_FB_H */
-+#endif /* _ASM_X86_VIDEO_H */
-diff --git a/arch/x86/video/Makefile b/arch/x86/video/Makefile
-index 9dd82880a027a..fdf83a408d750 100644
---- a/arch/x86/video/Makefile
-+++ b/arch/x86/video/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
--obj-y	+= fbdev.o
-+obj-y	+= video.o
-diff --git a/arch/x86/video/fbdev.c b/arch/x86/video/video.c
-similarity index 97%
-rename from arch/x86/video/fbdev.c
-rename to arch/x86/video/video.c
-index 4d87ce8e257fe..81fc97a2a837a 100644
---- a/arch/x86/video/fbdev.c
-+++ b/arch/x86/video/video.c
-@@ -10,7 +10,8 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/vgaarb.h>
--#include <asm/fb.h>
-+
-+#include <asm/video.h>
- 
- pgprot_t pgprot_framebuffer(pgprot_t prot,
- 			    unsigned long vm_start, unsigned long vm_end,
-diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
-index d436bee4d129d..b20fa25a7e8d8 100644
---- a/include/asm-generic/Kbuild
-+++ b/include/asm-generic/Kbuild
-@@ -22,7 +22,6 @@ mandatory-y += dma-mapping.h
- mandatory-y += dma.h
- mandatory-y += emergency-restart.h
- mandatory-y += exec.h
--mandatory-y += fb.h
- mandatory-y += ftrace.h
- mandatory-y += futex.h
- mandatory-y += hardirq.h
-@@ -62,5 +61,6 @@ mandatory-y += uaccess.h
- mandatory-y += unaligned.h
- mandatory-y += vermagic.h
- mandatory-y += vga.h
-+mandatory-y += video.h
- mandatory-y += word-at-a-time.h
- mandatory-y += xor.h
-diff --git a/include/asm-generic/fb.h b/include/asm-generic/video.h
-similarity index 96%
-rename from include/asm-generic/fb.h
-rename to include/asm-generic/video.h
-index 4788c1e1c6bc0..b1da2309d9434 100644
---- a/include/asm-generic/fb.h
-+++ b/include/asm-generic/video.h
-@@ -1,7 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
--#ifndef __ASM_GENERIC_FB_H_
--#define __ASM_GENERIC_FB_H_
-+#ifndef __ASM_GENERIC_VIDEO_H_
-+#define __ASM_GENERIC_VIDEO_H_
- 
- /*
-  * Only include this header file from your architecture's <asm/fb.h>.
-@@ -133,4 +133,4 @@ static inline void fb_memset_io(volatile void __iomem *addr, int c, size_t n)
- #define fb_memset fb_memset_io
- #endif
- 
--#endif /* __ASM_GENERIC_FB_H_ */
-+#endif /* __ASM_GENERIC_VIDEO_H_ */
-diff --git a/include/linux/fb.h b/include/linux/fb.h
-index 2ce2f5c2fca9a..8fe9df5ae19da 100644
---- a/include/linux/fb.h
-+++ b/include/linux/fb.h
-@@ -16,7 +16,7 @@
- #include <linux/backlight.h>
- #include <linux/slab.h>
- 
--#include <asm/fb.h>
-+#include <asm/video.h>
- 
- struct vm_area_struct;
- struct fb_info;
--- 
-2.43.0
+> As far as rcu_read_lock/unlock that is done in callback...
+> it feels buggy and unnecessary.
+
+This rcu approach is indeed wrong, but there still needs to be some
+locking if bpf_timer_set_callback() or bpf_timer_set_sleepable_cb() is
+called while the work just started. I went with a semaphore in v3 as
+it seemed lightweight enough there. Please shout if you disagree :)
+
+Anyway, I've also dropped the flags in bpf_timer_init() in v3 to only
+add BPF_F_TIMER_SLEEPABLE in bpf_timer_start().
+
+V3 (not RFC) is coming.
+
+Cheers,
+Benjamin
+
+> bpf prog and timer won't disappear while work is queued.
+> array and hash map will call bpf_obj_free_timer() before going away.
+>
+> And things like:
+> +       rcu_read_lock();
+> +       callback_fn =3D rcu_dereference(t->sleepable_cb_fn);
+> +       rcu_read_unlock();
+> +       if (!callback_fn)
+> +               return;
+>
+> is 99% broken. if (!callback_fn) line is UAF.
+>
 
 
