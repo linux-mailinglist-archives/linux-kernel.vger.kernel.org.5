@@ -1,92 +1,169 @@
-Return-Path: <linux-kernel+bounces-75260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78E3385E561
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:18:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4527985E55E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 19:17:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAF6F1C21D24
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:18:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66E531C21726
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 18:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5C185285;
-	Wed, 21 Feb 2024 18:18:07 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A361885276;
+	Wed, 21 Feb 2024 18:17:17 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4D485268
-	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B3D42A8B
+	for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708539486; cv=none; b=qQ1Fh3EAJiY3mP4Btwiz6tgcZJmI1m8KR/mYqh046xGO0FLX0ceD7qj7+dvnEVoH5w3d9Fv/Brdx1dm3BeSYW3Y7h5ONfouXVbdlW0CO/KDn/UudeQhF5jZuKhvOptixjebWh/+AaFtQbgc4OxxyRO9k1uQ3Q/hKoMFU50Y0Ihs=
+	t=1708539437; cv=none; b=UjIUsP1/C/aaU1pqvl6CzwMKNlj/j7hxAFWuuBxv42O+xi6doYbV3Enepq909RlwV0OVYpgEsUh+HXAumEm/KcyfZatdQyRYzmsAxn1CxroTG2mEyAIzptompcUDklFW+zslQsgy8XVg+cKXREh4WkdKE5sIvbeCm0Xl2bQVw6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708539486; c=relaxed/simple;
-	bh=Aim7Qpie5ii7CQT/cjFzRoVNO7qGkO73CWE8Fvg1iLk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=pSrEpzdmmJveo/MMl8z7ny2cekWKp5Kux4EF32xMKQs7WfNjTwdxZNhu6xHTNXBB0nXWTYwg6bYw9hvM0sSa2EmD6pUoX5LF1LxE9itEL3iayORXPuUmuV+jPNnQGbm4MSaNkfFQPwjKB6kX0BQDksxrd8SzMo8fgJMhy/cvG9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36541324e57so22876965ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 10:18:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708539484; x=1709144284;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MJd9Mq9bf/RBjIYNar7qNvmrsOG2DCgFiKzOfjcbWYE=;
-        b=TXSBvFUXMlROY3AatrY/FQD3OA8OOObK8Mng9JbVwqKLlsjjZdhNRV1UDwq7ttSt+f
-         LJf12efx41j4eACqX0zD1EFifLsvsKJB6MOEWu0V6NAY3XhQl09gataPfAgFbHG+vfSi
-         SgDBUPcv1d2UHGpj8M/IfgsBOE6BEiBwL0EohYeT1RH+XRiMWIAkzifdAPJ7Rkbz3vNB
-         +CDmK0smehzQmgJGU2WpNQUOCAkz58yZm4z00ts+hhCpj1jnyyw9N/TlCawSu695ITaE
-         dEHTfhB5xWiQubWr4vLhV5lTmIijJOMxV3L8YTKwOGb7KaO2T+1f6JsV+d81D3LiIGL9
-         YdwA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4+IT7MlNhD3yQ6WrZhPDTNa0G4957TgA05z701+ERySBP/T0G/YLO8T3KLHmmCX/3fpKYncdTdAnN+Nxty7NMPLE4vrjf3EL49hHz
-X-Gm-Message-State: AOJu0YywZQXCU0rM/vSNMC2Jg36BXCn+/XBx8TF76oQSJUVbZbg7sOCB
-	eFH9HonsTzXYnpSZuAXdczY2ofsYGBQZ98MVO968CMLdqPwVBOuG9O7cUuzIknXo/nVspDZWCrL
-	Sk9LQCMXBC4m2z90uAfti/UVWCz0YodJAcfv8XsFuO67RxzfeTHbg9Qw=
-X-Google-Smtp-Source: AGHT+IGLjTi1I4UnSLykK1KGsO3JplFSALaCXnxdpBvFruTsaOMe8XAVmVMcSAgBRngvxmFZPL1x1S8GHu+QOv7QW+ugTVfQa3ve
+	s=arc-20240116; t=1708539437; c=relaxed/simple;
+	bh=XaMobFpXAK8tIXrf0/UQugdaVpU+uyKO0rivX2fVDtI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FWybEEloO9mJY3m9S/ZpOEREYr1N7Mn8XoSaSxrh5EArBRnFj09QFxA4EV8Pk1Kdbq68FgWFn75DDdVh6eBCbiaiTbc+hJuzmM+7eHL8Auok3PfdV8VI/EzxzODsPn6Tqw3qF+lpYXCU5oGqmZw7l+OmMKKv3xbOrcwvrkuMjCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64274C433F1;
+	Wed, 21 Feb 2024 18:17:13 +0000 (UTC)
+Date: Wed, 21 Feb 2024 13:19:01 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, peterz@infradead.org, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
+ mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com,
+ jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
+ mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
+ anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+ krypton@ulrich-teichert.org, David.Laight@aculab.com, richard@nod.at,
+ jon.grimm@amd.com, bharata@amd.com, boris.ostrovsky@oracle.com,
+ konrad.wilk@oracle.com
+Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
+Message-ID: <20240221131901.69c80c47@gandalf.local.home>
+In-Reply-To: <2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
+References: <87le7mpjpr.fsf@oracle.com>
+	<4e070ae0-29dc-41ee-aee6-0d3670304825@paulmck-laptop>
+	<0d4a4eec-ce91-48da-91b6-1708a97edaeb@paulmck-laptop>
+	<871q9dmndg.fsf@oracle.com>
+	<9916c73f-510c-47a6-a9b4-ea6b438e82c0@paulmck-laptop>
+	<87le7lkzj6.fsf@oracle.com>
+	<4bc4ea06-e3e9-4d22-bacf-71cae0ba673d@paulmck-laptop>
+	<0be4df28-99be-41a3-9e24-2b7cfc740b4a@paulmck-laptop>
+	<87r0hbkafi.fsf@oracle.com>
+	<7db5c057-8bd4-4209-8484-3a0f9f3cd02d@paulmck-laptop>
+	<2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:154f:b0:363:de50:f7bb with SMTP id
- j15-20020a056e02154f00b00363de50f7bbmr1446503ilu.2.1708539483081; Wed, 21 Feb
- 2024 10:18:03 -0800 (PST)
-Date: Wed, 21 Feb 2024 10:18:03 -0800
-In-Reply-To: <00000000000010719b05fed5d82f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f95a7a0611e85807@google.com>
-Subject: Re: [syzbot] [reiserfs] BUG: corrupted list in __mark_inode_dirty
-From: syzbot <syzbot+4a16683f5520de8e47c4@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, linkinjeon@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+On Mon, 19 Feb 2024 08:48:20 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+> > I will look again -- it is quite possible that I was confused by earlier
+> > in-fleet setups that had Tasks RCU enabled even when preemption was
+> > disabled.  (We don't do that anymore, and, had I been paying sufficient
+> > attention, would not have been doing it to start with.  Back in the day,
+> > enabling rcutorture, even as a module, had the side effect of enabling
+> > Tasks RCU.  How else to test it, right?  Well...)  
+> 
+> OK, I got my head straight on this one...
+> 
+> And the problem is in fact that Tasks RCU isn't normally present
+> in non-preemptible kernels.  This is because normal RCU will wait
+> for preemption-disabled regions of code, and in PREMPT_NONE and
+> PREEMPT_VOLUNTARY kernels, that includes pretty much any region of code
+> lacking an explicit schedule() or similar.  And as I understand it,
+> tracing trampolines rely on this implicit lack of preemption.
+> 
+> So, with lazy preemption, we could preempt in the middle of a
+> trampoline, and synchronize_rcu() won't save us.
+> 
+> Steve and Mathieu will correct me if I am wrong.
+> 
+> If I do understand this correctly, one workaround is to remove the
+> "if PREEMPTIBLE" on all occurrences of "select TASKS_RCU".  That way,
+> all kernels would use synchronize_rcu_tasks(), which would wait for
+> a voluntary context switch.
+> 
+> This workaround does increase the overhead and tracepoint-removal
+> latency on non-preemptible kernels, so it might be time to revisit the
+> synchronization of trampolines.  Unfortunately, the things I have come
+> up with thus far have disadvantages:
+> 
+> o	Keep a set of permanent trampolines that enter and exit
+> 	some sort of explicit RCU read-side critical section.
+> 	If the address for this trampoline to call is in a register,
+> 	then these permanent trampolines remain constant so that
+> 	no synchronization of them is required.  The selected
+> 	flavor of RCU can then be used to deal with the non-permanent
+> 	trampolines.
+> 
+> 	The disadvantage here is a significant increase in the complexity
+> 	and overhead of trampoline code and the code that invokes the
+> 	trampolines.  This overhead limits where tracing may be used
+> 	in the kernel, which is of course undesirable.
 
-    fs: Block writes to mounted block devices
+I wonder if we can just see if the instruction pointer at preemption is at
+something that was allocated? That is, if it __is_kernel(addr) returns
+false, then we need to do more work. Of course that means modules will also
+trigger this. We could check __is_module_text() but that does a bit more
+work and may cause too much overhead. But who knows, if the module check is
+only done if the __is_kernel() check fails, maybe it's not that bad.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1410e3d0180000
-start commit:   45a3e24f65e9 Linux 6.4-rc7
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=24ce1b2abaee24cc
-dashboard link: https://syzkaller.appspot.com/bug?extid=4a16683f5520de8e47c4
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bd1013280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=101d4adf280000
+-- Steve
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> o	Check for being preempted within a trampoline, and track this
+> 	within the tasks structure.  The disadvantage here is that this
+> 	requires keeping track of all of the trampolines and adding a
+> 	check for being in one on a scheduler fast path.
+> 
+> o	Have a variant of Tasks RCU which checks the stack of preempted
+> 	tasks, waiting until all have been seen without being preempted
+> 	in a trampoline.  This still requires keeping track of all the
+> 	trampolines in an easy-to-search manner, but gets the overhead
+> 	of searching off of the scheduler fastpaths.
+> 
+> 	It is also necessary to check running tasks, which might have
+> 	been interrupted from within a trampoline.
+> 
+> 	I would have a hard time convincing myself that these return
+> 	addresses were unconditionally reliable.  But maybe they are?
+> 
+> o	Your idea here!
+> 
+> Again, the short-term workaround is to remove the "if PREEMPTIBLE" from
+> all of the "select TASKS_RCU" clauses.
+> 
+> > > > My next step is to try this on bare metal on a system configured as
+> > > > is the fleet.  But good progress for a week!!!  
+> > > 
+> > > Yeah this is great. Fingers crossed for the wider set of tests.  
+> > 
+> > I got what might be a one-off when hitting rcutorture and KASAN harder.
+> > I am running 320*TRACE01 to see if it reproduces.  
+> 
+> [ . . . ]
+> 
+> > So, first see if it is reproducible, second enable more diagnostics,
+> > third make more grace-period sequence numbers available to rcutorture,
+> > fourth recheck the diagnostics code, and then see where we go from there.
+> > It might be that lazy preemption needs adjustment, or it might be that
+> > it just tickled latent diagnostic issues in rcutorture.
+> > 
+> > (I rarely hit this WARN_ON() except in early development, when the
+> > problem is usually glaringly obvious, hence all the uncertainty.)  
+> 
+> And it is eminently reproducible.  Digging into it...
 
