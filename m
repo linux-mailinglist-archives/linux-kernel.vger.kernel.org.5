@@ -1,233 +1,442 @@
-Return-Path: <linux-kernel+bounces-77297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690D8860377
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:05:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F82E86037A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAB571F2509C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:05:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51F341C249FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCD66AFB8;
-	Thu, 22 Feb 2024 20:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99B76E5E8;
+	Thu, 22 Feb 2024 20:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MYhQ90J7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338B4548F3;
-	Thu, 22 Feb 2024 20:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708632315; cv=none; b=WV3Ur6hfTxwiTd6IvnJ7wUGWMTRthoegFiWD1ADs7JAzpX+IXlkVyqnRuSYF7X99o8LaqPziYrGyoKspGkPWovIQSyvk3t0My3KHON0Zo88wBIyTpi0tcTsCSv67B7v4q4yMmmuyUAASTTUytjjPcKQlzHT5dmbsjfYiVBbP6+k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708632315; c=relaxed/simple;
-	bh=NNN5sIYqYmoNZjYzCoccvYjI75lw8cPlmAS3bA9uaqQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a2yrhPgCmWs+m1S1/go+mO/C/xXBqOXLBCg+znLbVi/6y9ZZ0o0S37r1FL97iuq35hco/cfcgjdPCj1Fa+qb5LqfwDdJJT5jWkznsZ483tr/Zx7GZiZhbeT14dmJQZwQoDaNx0EpU3HU2lqmfQY4idJmMZAJBCWSCvDZoq/l4wM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MYhQ90J7; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708632314; x=1740168314;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=NNN5sIYqYmoNZjYzCoccvYjI75lw8cPlmAS3bA9uaqQ=;
-  b=MYhQ90J7Ah8DAE01j+Jpb2Lxda40odLF4oQBM0UvWUTrwRcKynuJDIAb
-   0OBviFQFQAsGKReJ2/znXo4GD+Xnru1Ve4EU0mDuVn3zUMDT5B7ad7y7T
-   p9YaW5OZForxUl0+KCoXTcraUsvi8j9JhCqgencfekm1hcOYuCUp6oKkh
-   WLWcI38Tx0Q8StfrTMOabg9zYE1C/hcxKIWk2Nf4haoYZ/v4u3fVzT33G
-   +kZf7+TWqzjZfR/GvLtIqGDH1THFaPYnCn2aPxVkpiGKzd9igIVvUMiOJ
-   lAyc4sYEjF5ywZYF0XlMJ2Kmny78nwVSqCX6+ak5JjXFFjyi3ouJ/NVRt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13596797"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="13596797"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 12:05:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="936897396"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="936897396"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 12:05:12 -0800
-Received: from [10.212.89.194] (kliang2-mobl1.ccr.corp.intel.com [10.212.89.194])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8FFUyyk"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 241E1580DED;
-	Thu, 22 Feb 2024 12:05:10 -0800 (PST)
-Message-ID: <05d29733-cfc4-42e1-bbb1-a496d9522d0e@linux.intel.com>
-Date: Thu, 22 Feb 2024 15:05:08 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA486AFBA;
+	Thu, 22 Feb 2024 20:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708632446; cv=none; b=OzUVjXL6ZjQu66u18JL7orUJ9CYk0oGBE4OgmdkOr+VdwSZUm1b2K/+05vgj29Bdex5YzHYK+d4f9WYaSzC0xVvmSgFSG8DV/EUlnis9vMSssg5o914iSCumS3HPPsi6rqB1H7NMuziF7WA9Te/pKMERKx8cJIBxGfRj3+pWNbo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708632446; c=relaxed/simple;
+	bh=zN+5jWdr1AFEWGXgY4IyH30f+7fdJMTD1kuJs7PtE1A=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=SuRUUVpPCu2czzhGAwffEthVI9rE3aSe+Ja8O69POTIyqTrerVpbBRQCvXApmrHw8v9jCnBuNrgcSUaeeANfEic2lbQICDQ9kyU1E6+kKuze2WNfgNaL5OmRnIsX5yitVyDkPfhvxUQRe0e/mFBrzTEFayBpAWuZ5TLu2dgisok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8FFUyyk; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e332bc65b3so21717b3a.3;
+        Thu, 22 Feb 2024 12:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708632443; x=1709237243; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lbseMcFKepqBXMWp7jRCJziRIOpCvQ/MX0kkyWb/JvM=;
+        b=M8FFUyykCFTk86ThqrmMh4JseTg4RbU2hdxfErkde42ob0h0InQXC+PjfhRBYDa2C8
+         TmzMCrUwf8/AcbNpf3zPHXZ7b/qvcacPVyasX+/SI/CUCL9Vm986fa405fGld/N76rsS
+         bu/ZxALvMqCmGd3SiHUoAv8PvpkHXycIAttd7vzjGT7DB4Uf3tOWV+nC2dwSx3W8kvzP
+         4WUFAOnj3MI+UGL6Rf8+CiiIRdllhO+3vC3YF08wTIKaQee+jK/Bc9h6LCLbODe2DOY2
+         X1uyzoRMwU50P95RGslpM2P390ocV0PVjfcyuqaMyN7nUwONX3F1DtPa7kfvfVdhsx5G
+         qM+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708632443; x=1709237243;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lbseMcFKepqBXMWp7jRCJziRIOpCvQ/MX0kkyWb/JvM=;
+        b=dLWRluxlNwZP+sycdB/bhS4BllXlGFC1kyBbtTy7Cm/wch0e/5DePt7yKeHiPT6exp
+         rqhvYLNFusw/L/etFzXI4YrBUQBYrTitV5wC54dChQ4SGDy6wCcQaALK3mcnJoI9I7Rq
+         /KQd1D7/qWrqdRL2/MyRW61EsCHImm5Coa0j7n9LToXxkUtFSChEd9OpfDzE07EymIcZ
+         IZLe/TfXrpNoKXzFZykpd0ZsmKq4TWOIX6NU0l66ahkrpWhyxsL1lOE65aSs7/5e8tmU
+         bT2Fb4j/juYVO+qAQlq1R2UTnnNWxPCOsFomDamamxjPpSsOZEu13e0BvuqumeIeFkwB
+         yRNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjqipFBLu0xj44/WXblBfHs5VkeWfJlPkJOaO3v7Vc26Xocv5jcJnE44SHOE0ea9aXSrt2G4VZnTetmqss7I+p1RVV/BGjBQLIQoqnO3t5wIv6XHzYxzgOvBZNYKFk2wKWoWlPeC96Ev4zncO5MhYGYj6OX/OL6Zb1CfRJymj4h+szaGnz
+X-Gm-Message-State: AOJu0YylUoMpINV/BU2a6Tc30+qUIOkAB6+0zmBccFHpMNxa6hjTRQ7K
+	E8ER7E26W8D2zgmZUneCSorW952Vzgj1nnqmROmzj7E3brzRxEuWWeTq1/7x
+X-Google-Smtp-Source: AGHT+IF3oPjfZTRG+PA8gDeol47hQhT6ZXf1ydVNbtpV2KUt4Dbz2ZQO8pHsUQBAJMd8l8dUMnmW6Q==
+X-Received: by 2002:a05:6a00:80d4:b0:6e2:de02:598e with SMTP id ei20-20020a056a0080d400b006e2de02598emr13916187pfb.33.1708632443292;
+        Thu, 22 Feb 2024 12:07:23 -0800 (PST)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id fa3-20020a056a002d0300b006e4c0ce85b2sm2858965pfb.181.2024.02.22.12.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 12:07:23 -0800 (PST)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	corbet@lwn.net,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v2 1/1] Documentation: hyperv: Add overview of PCI pass-thru device support
+Date: Thu, 22 Feb 2024 12:07:10 -0800
+Message-Id: <20240222200710.305259-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] perf/x86/intel: HitM false-positives on Ice Lake / Tiger
- Lake (I think?)
-Content-Language: en-US
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
- Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>
-Cc: Joe Mario <jmario@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Feng Tang <feng.tang@intel.com>,
- Andi Kleen <ak@linux.intel.com>, the arch/x86 maintainers <x86@kernel.org>,
- kernel list <linux-kernel@vger.kernel.org>,
- linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>,
- "Taylor, Perry" <perry.taylor@intel.com>,
- "Alt, Samantha" <samantha.alt@intel.com>,
- "Biggers, Caleb" <caleb.biggers@intel.com>,
- "Wang, Weilin" <weilin.wang@intel.com>
-References: <CAG48ez3RmV6SsVw9oyTXxQXHp3rqtKDk2qwJWo9TGvXCq7Xr-w@mail.gmail.com>
- <CAP-5=fXsFBwt9ARmQja0pKGL-_Vms_NDKeaH5CX=_om1aSvssw@mail.gmail.com>
- <ZdTIYLoJOdyu62LU@x1>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <ZdTIYLoJOdyu62LU@x1>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi Jann,
+From: Michael Kelley <mhklinux@outlook.com>
 
-Sorry for the late response.
+Add documentation topic for PCI pass-thru devices in Linux guests
+on Hyper-V and for the associated PCI controller driver (pci-hyperv.c).
 
-On 2024-02-20 10:42 a.m., Arnaldo Carvalho de Melo wrote:
-> Just adding Joe Mario to the CC list.
-> 
-> On Mon, Feb 19, 2024 at 03:20:00PM -0800, Ian Rogers wrote:
->> On Mon, Feb 19, 2024 at 5:01 AM Jann Horn <jannh@google.com> wrote:
->>>
->>> Hi!
->>>
->>> From what I understand, "perf c2c" shows bogus HitM events on Ice Lake
->>> (and newer) because Intel added some feature where *clean* cachelines
->>> can get snoop-forwarded ("cross-core FWD"), and the PMU apparently
->>> treats this mostly the same as snoop-forwarding of modified cache
->>> lines (HitM)? On a Tiger Lake CPU, I can see addresses from the kernel
->>> rodata section in "perf c2c report".
->>>
->>> This is mentioned in the SDM, Volume 3B, section "20.9.7 Load Latency
->>> Facility", table "Table 20-101. Data Source Encoding for Memory
->>> Accesses (Ice Lake and Later Microarchitectures)", encoding 07H:
->>> "XCORE FWD. This request was satisfied by a sibling core where either
->>> a modified (cross-core HITM) or a non-modified (cross-core FWD)
->>> cache-line copy was found."
->>>
->>> I don't see anything about this in arch/x86/events/intel/ds.c - if I
->>> understand correctly, the kernel's PEBS data source decoding assumes
->>> that 0x07 means "L3 hit, snoop hitm" on these CPUs. I think this needs
->>> to be adjusted somehow - and maybe it just isn't possible to actually
->>> distinguish between HitM and cross-core FWD in PEBS events on these
->>> CPUs (without big-hammer chicken bit trickery)? Maybe someone from
->>> Intel can clarify?
->>>
->>> (The SDM describes that E-cores on the newer 12th Gen have more
->>> precise PEBS encodings that distinguish between "L3 HITM" and "L3
->>> HITF"; but I guess the P-cores there maybe still don't let you
->>> distinguish HITM/HITF?)
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+---
+Changes in v2:
+* Fixed wording error. "removed by" should be "removed from"
+  in the last paragraph of the Device Presentation section
+  [Easwar Hariharan]
+* Added Easwar's "Reviewed-by:"
 
-Right, there is no way to distinguish HITM/HITF on Tiger Lake.
+ Documentation/virt/hyperv/index.rst |   1 +
+ Documentation/virt/hyperv/vpci.rst  | 316 ++++++++++++++++++++++++++++
+ 2 files changed, 317 insertions(+)
+ create mode 100644 Documentation/virt/hyperv/vpci.rst
 
-I think what we can do is to add both HITM and HITF for the 0x07 to
-match the SDM description.
+diff --git a/Documentation/virt/hyperv/index.rst b/Documentation/virt/hyperv/index.rst
+index 4a7a1b738bbe..de447e11b4a5 100644
+--- a/Documentation/virt/hyperv/index.rst
++++ b/Documentation/virt/hyperv/index.rst
+@@ -10,3 +10,4 @@ Hyper-V Enlightenments
+    overview
+    vmbus
+    clocks
++   vpci
+diff --git a/Documentation/virt/hyperv/vpci.rst b/Documentation/virt/hyperv/vpci.rst
+new file mode 100644
+index 000000000000..b65b2126ede3
+--- /dev/null
++++ b/Documentation/virt/hyperv/vpci.rst
+@@ -0,0 +1,316 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++PCI pass-thru devices
++=========================
++In a Hyper-V guest VM, PCI pass-thru devices (also called
++virtual PCI devices, or vPCI devices) are physical PCI devices
++that are mapped directly into the VM's physical address space.
++Guest device drivers can interact directly with the hardware
++without intermediation by the host hypervisor.  This approach
++provides higher bandwidth access to the device with lower
++latency, compared with devices that are virtualized by the
++hypervisor.  The device should appear to the guest just as it
++would when running on bare metal, so no changes are required
++to the Linux device drivers for the device.
++
++Hyper-V terminology for vPCI devices is "Discrete Device
++Assignment" (DDA).  Public documentation for Hyper-V DDA is
++available here: `DDA`_
++
++.. _DDA: https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/plan/plan-for-deploying-devices-using-discrete-device-assignment
++
++DDA is typically used for storage controllers, such as NVMe,
++and for GPUs.  A similar mechanism for NICs is called SR-IOV
++and produces the same benefits by allowing a guest device
++driver to interact directly with the hardware.  See Hyper-V
++public documentation here: `SR-IOV`_
++
++.. _SR-IOV: https://learn.microsoft.com/en-us/windows-hardware/drivers/network/overview-of-single-root-i-o-virtualization--sr-iov-
++
++This discussion of vPCI devices includes DDA and SR-IOV
++devices.
++
++Device Presentation
++-------------------
++Hyper-V provides full PCI functionality for a vPCI device when
++it is operating, so the Linux device driver for the device can
++be used unchanged, provided it uses the correct Linux kernel
++APIs for accessing PCI config space and for other integration
++with Linux.  But the initial detection of the PCI device and
++its integration with the Linux PCI subsystem must use Hyper-V
++specific mechanisms.  Consequently, vPCI devices on Hyper-V
++have a dual identity.  They are initially presented to Linux
++guests as VMBus devices via the standard VMBus "offer"
++mechanism, so they have a VMBus identity and appear under
++/sys/bus/vmbus/devices.  The VMBus vPCI driver in Linux at
++drivers/pci/controller/pci-hyperv.c handles a newly introduced
++vPCI device by fabricating a PCI bus topology and creating all
++the normal PCI device data structures in Linux that would
++exist if the PCI device were discovered via ACPI on a bare-
++metal system.  Once those data structures are set up, the
++device also has a normal PCI identity in Linux, and the normal
++Linux device driver for the vPCI device can function as if it
++were running in Linux on bare-metal.  Because vPCI devices are
++presented dynamically through the VMBus offer mechanism, they
++do not appear in the Linux guest's ACPI tables.  vPCI devices
++may be added to a VM or removed from a VM at any time during
++the life of the VM, and not just during initial boot.
++
++With this approach, the vPCI device is a VMBus device and a
++PCI device at the same time.  In response to the VMBus offer
++message, the hv_pci_probe() function runs and establishes a
++VMBus connection to the vPCI VSP on the Hyper-V host.  That
++connection has a single VMBus channel.  The channel is used to
++exchange messages with the vPCI VSP for the purpose of setting
++up and configuring the vPCI device in Linux.  Once the device
++is fully configured in Linux as a PCI device, the VMBus
++channel is used only if Linux changes the vCPU to be interrupted
++in the guest, or if the vPCI device is removed from
++the VM while the VM is running.  The ongoing operation of the
++device happens directly between the Linux device driver for
++the device and the hardware, with VMBus and the VMBus channel
++playing no role.
++
++PCI Device Setup
++----------------
++PCI device setup follows a sequence that Hyper-V originally
++created for Windows guests, and that can be ill-suited for
++Linux guests due to differences in the overall structure of
++the Linux PCI subsystem compared with Windows.  Nonetheless,
++with a bit of hackery in the Hyper-V virtual PCI driver for
++Linux, the virtual PCI device is setup in Linux so that
++generic Linux PCI subsystem code and the Linux driver for the
++device "just work".
++
++Each vPCI device is set up in Linux to be in its own PCI
++domain with a host bridge.  The PCI domainID is derived from
++bytes 4 and 5 of the instance GUID assigned to the VMBus vPCI
++device.  The Hyper-V host does not guarantee that these bytes
++are unique, so hv_pci_probe() has an algorithm to resolve
++collisions.  The collision resolution is intended to be stable
++across reboots of the same VM so that the PCI domainIDs don't
++change, as the domainID appears in the user space
++configuration of some devices.
++
++hv_pci_probe() allocates a guest MMIO range to be used as PCI
++config space for the device.  This MMIO range is communicated
++to the Hyper-V host over the VMBus channel as part of telling
++the host that the device is ready to enter d0.  See
++hv_pci_enter_d0().  When the guest subsequently accesses this
++MMIO range, the Hyper-V host intercepts the accesses and maps
++them to the physical device PCI config space.
++
++hv_pci_probe() also gets BAR information for the device from
++the Hyper-V host, and uses this information to allocate MMIO
++space for the BARs.  That MMIO space is then setup to be
++associated with the host bridge so that it works when generic
++PCI subsystem code in Linux processes the BARs.
++
++Finally, hv_pci_probe() creates the root PCI bus.  At this
++point the Hyper-V virtual PCI driver hackery is done, and the
++normal Linux PCI machinery for scanning the root bus works to
++detect the device, to perform driver matching, and to
++initialize the driver and device.
++
++PCI Device Removal
++------------------
++A Hyper-V host may initiate removal of a vPCI device from a
++guest VM at any time during the life of the VM.  The removal
++is instigated by an admin action taken on the Hyper-V host and
++is not under the control of the guest OS.
++
++A guest VM is notified of the removal by an unsolicited
++"Eject" message sent from the host to the guest over the VMBus
++channel associated with the vPCI device.  Upon receipt of such
++a message, the Hyper-V virtual PCI driver in Linux
++asynchronously invokes Linux kernel PCI subsystem calls to
++shutdown and remove the device.  When those calls are
++complete, an "Ejection Complete" message is sent back to
++Hyper-V over the VMBus channel indicating that the device has
++been removed.  At this point, Hyper-V sends a VMBus rescind
++message to the Linux guest, which the VMBus driver in Linux
++processes by removing the VMBus identity for the device.  Once
++that processing is complete, all vestiges of the device having
++been present are gone from the Linux kernel.  The rescind
++message also indicates to the guest that Hyper-V has stopped
++providing support for the vPCI device in the guest.  If the
++guest were to attempt to access that device's MMIO space, it
++would be an invalid reference. Hypercalls affecting the device
++return errors, and any further messages sent in the VMBus
++channel are ignored.
++
++After sending the Eject message, Hyper-V allows the guest VM
++60 seconds to cleanly shutdown the device and respond with
++Ejection Complete before sending the VMBus rescind
++message.  If for any reason the Eject steps don't complete
++within the allowed 60 seconds, the Hyper-V host forcibly
++performs the rescind steps, which will likely result in
++cascading errors in the guest because the device is now no
++longer present from the guest standpoint and accessing the
++device MMIO space will fail.
++
++Because ejection is asynchronous and can happen at any point
++during the guest VM lifecycle, proper synchronization in the
++Hyper-V virtual PCI driver is very tricky.  Ejection has been
++observed even before a newly offered vPCI device has been
++fully setup.  The Hyper-V virtual PCI driver has been updated
++several times over the years to fix race conditions when
++ejections happen at inopportune times. Care must be taken when
++modifying this code to prevent re-introducing such problems.
++See comments in the code.
++
++Interrupt Assignment
++--------------------
++The Hyper-V virtual PCI driver supports vPCI devices using
++MSI, multi-MSI, or MSI-X.  Assigning the guest vCPU that will
++receive the interrupt for a particular MSI or MSI-X message is
++complex because of the way the Linux setup of IRQs maps onto
++the Hyper-V interfaces.  For the single-MSI and MSI-X cases,
++Linux calls hv_compse_msi_msg() twice, with the first call
++containing a dummy vCPU and the second call containing the
++real vCPU.  Furthermore, hv_irq_unmask() is finally called
++(on x86) or the GICD registers are set (on arm64) to specify
++the real vCPU again.  Each of these three calls interact
++with Hyper-V, which must decide which physical CPU should
++receive the interrupt before it is forwarded to the guest VM.
++Unfortunately, the Hyper-V decision-making process is a bit
++limited, and can result in concentrating the physical
++interrupts on a single CPU, causing a performance bottleneck.
++See details about how this is resolved in the extensive
++comment above the function hv_compose_msi_req_get_cpu().
++
++The Hyper-V virtual PCI driver implements the
++irq_chip.irq_compose_msi_msg function as hv_compose_msi_msg().
++Unfortunately, on Hyper-V the implementation requires sending
++a VMBus message to the Hyper-V host and awaiting an interrupt
++indicating receipt of a reply message.  Since
++irq_chip.irq_compose_msi_msg can be called with IRQ locks
++held, it doesn't work to do the normal sleep until awakened by
++the interrupt. Instead hv_compose_msi_msg() must send the
++VMBus message, and then poll for the completion message. As
++further complexity, the vPCI device could be ejected/rescinded
++while the polling is in progress, so this scenario must be
++detected as well.  See comments in the code regarding this
++very tricky area.
++
++Most of the code in the Hyper-V virtual PCI driver (pci-
++hyperv.c) applies to Hyper-V and Linux guests running on x86
++and on arm64 architectures.  But there are differences in how
++interrupt assignments are managed.  On x86, the Hyper-V
++virtual PCI driver in the guest must make a hypercall to tell
++Hyper-V which guest vCPU should be interrupted by each
++MSI/MSI-X interrupt, and the x86 interrupt vector number that
++the x86_vector IRQ domain has picked for the interrupt.  This
++hypercall is made by hv_arch_irq_unmask().  On arm64, the
++Hyper-V virtual PCI driver manages the allocation of an SPI
++for each MSI/MSI-X interrupt.  The Hyper-V virtual PCI driver
++stores the allocated SPI in the architectural GICD registers,
++which Hyper-V emulates, so no hypercall is necessary as with
++x86.  Hyper-V does not support using LPIs for vPCI devices in
++arm64 guest VMs because it does not emulate a GICv3 ITS.
++
++The Hyper-V virtual PCI driver in Linux supports vPCI devices
++whose drivers create managed or unmanaged Linux IRQs.  If the
++smp_affinity for an unmanaged IRQ is updated via the /proc/irq
++interface, the Hyper-V virtual PCI driver is called to tell
++the Hyper-V host to change the interrupt targeting and
++everything works properly.  However, on x86 if the x86_vector
++IRQ domain needs to reassign an interrupt vector due to
++running out of vectors on a CPU, there's no path to inform the
++Hyper-V host of the change, and things break.  Fortunately,
++guest VMs operate in a constrained device environment where
++using all the vectors on a CPU doesn't happen. Since such a
++problem is only a theoretical concern rather than a practical
++concern, it has been left unaddressed.
++
++DMA
++---
++By default, Hyper-V pins all guest VM memory in the host
++when the VM is created, and programs the physical IOMMU to
++allow the VM to have DMA access to all its memory.  Hence
++it is safe to assign PCI devices to the VM, and allow the
++guest operating system to program the DMA transfers.  The
++physical IOMMU prevents a malicious guest from initiating
++DMA to memory belonging to the host or to other VMs on the
++host. From the Linux guest standpoint, such DMA transfers
++are in "direct" mode since Hyper-V does not provide a virtual
++IOMMU in the guest.
++
++Hyper-V assumes that physical PCI devices always perform
++cache-coherent DMA.  When running on x86, this behavior is
++required by the architecture.  When running on arm64, the
++architecture allows for both cache-coherent and
++non-cache-coherent devices, with the behavior of each device
++specified in the ACPI DSDT.  But when a PCI device is assigned
++to a guest VM, that device does not appear in the DSDT, so the
++Hyper-V VMBus driver propagates cache-coherency information
++from the VMBus node in the ACPI DSDT to all VMBus devices,
++including vPCI devices (since they have a dual identity as a VMBus
++device and as a PCI device).  See vmbus_dma_configure().
++Current Hyper-V versions always indicate that the VMBus is
++cache coherent, so vPCI devices on arm64 always get marked as
++cache coherent and the CPU does not perform any sync
++operations as part of dma_map/unmap_*() calls.
++
++vPCI protocol versions
++----------------------
++As previously described, during vPCI device setup and teardown
++messages are passed over a VMBus channel between the Hyper-V
++host and the Hyper-v vPCI driver in the Linux guest.  Some
++messages have been revised in newer versions of Hyper-V, so
++the guest and host must agree on the vPCI protocol version to
++be used.  The version is negotiated when communication over
++the VMBus channel is first established.  See
++hv_pci_protocol_negotiation(). Newer versions of the protocol
++extend support to VMs with more than 64 vCPUs, and provide
++additional information about the vPCI device, such as the
++guest virtual NUMA node to which it is most closely affined in
++the underlying hardware.
++
++Guest NUMA node affinity
++------------------------
++When the vPCI protocol version provides it, the guest NUMA
++node affinity of the vPCI device is stored as part of the Linux
++device information for subsequent use by the Linux driver. See
++hv_pci_assign_numa_node().  If the negotiated protocol version
++does not support the host providing NUMA affinity information,
++the Linux guest defaults the device NUMA node to 0.  But even
++when the negotiated protocol version includes NUMA affinity
++information, the ability of the host to provide such
++information depends on certain host configuration options.  If
++the guest receives NUMA node value "0", it could mean NUMA
++node 0, or it could mean "no information is available".
++Unfortunately it is not possible to distinguish the two cases
++from the guest side.
++
++PCI config space access in a CoCo VM
++------------------------------------
++Linux PCI device drivers access PCI config space using a
++standard set of functions provided by the Linux PCI subsystem.
++In Hyper-V guests these standard functions map to functions
++hv_pcifront_read_config() and hv_pcifront_write_config()
++in the Hyper-V virtual PCI driver.  In normal VMs,
++these hv_pcifront_*() functions directly access the PCI config
++space, and the accesses trap to Hyper-V to be handled.
++But in CoCo VMs, memory encryption prevents Hyper-V
++from reading the guest instruction stream to emulate the
++access, so the hv_pcifront_*() functions must invoke
++hypercalls with explicit arguments describing the access to be
++made.
++
++Config Block back-channel
++-------------------------
++The Hyper-V host and Hyper-V virtual PCI driver in Linux
++together implement a non-standard back-channel communication
++path between the host and guest.  The back-channel path uses
++messages sent over the VMBus channel associated with the vPCI
++device.  The functions hyperv_read_cfg_blk() and
++hyperv_write_cfg_blk() are the primary interfaces provided to
++other parts of the Linux kernel.  As of this writing, these
++interfaces are used only by the Mellanox mlx5 driver to pass
++diagnostic data to a Hyper-V host running in the Azure public
++cloud.  The functions hyperv_read_cfg_blk() and
++hyperv_write_cfg_blk() are implemented in a separate module
++(pci-hyperv-intf.c, under CONFIG_PCI_HYPERV_INTERFACE) that
++effectively stubs them out when running in non-Hyper-V
++environments.
+-- 
+2.25.1
 
-How about the below patch (not tested yet)?
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index d49d661ec0a7..8c966b5b23cb 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -84,7 +84,7 @@ static u64 pebs_data_source[] = {
-	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, NONE),  /* 0x04: L3 hit */
-	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, MISS),  /* 0x05: L3 hit,
-snoop miss */
-	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, HIT),   /* 0x06: L3 hit,
-snoop hit */
--	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, HITM),  /* 0x07: L3 hit,
-snoop hitm */
-+	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, HITM) | P(SNOOPX, FWD),  /*
-0x07: L3 hit, snoop hitm & fwd */
-	OP_LH | P(LVL, REM_CCE1) | REM | LEVEL(L3) | P(SNOOP, HIT),  /* 0x08:
-L3 miss snoop hit */
-	OP_LH | P(LVL, REM_CCE1) | REM | LEVEL(L3) | P(SNOOP, HITM), /* 0x09:
-L3 miss snoop hitm*/
-	OP_LH | P(LVL, LOC_RAM)  | LEVEL(RAM) | P(SNOOP, HIT),       /* 0x0a:
-L3 miss, shared */
-
-
->>>
->>>
->>> I think https://perfmon-events.intel.com/tigerLake.html is also
->>> outdated, or at least it uses ambiguous grammar: The
->>> MEM_LOAD_L3_HIT_RETIRED.XSNP_FWD event (EventSel=D2H UMask=04H) is
->>> documented as "Counts retired load instructions where a cross-core
->>> snoop hit in another cores caches on this socket, the data was
->>> forwarded back to the requesting core as the data was modified
->>> (SNOOP_HITM) or the L3 did not have the data(SNOOP_HIT_WITH_FWD)" -
->>> from what I understand, a "cross-core FWD" should be a case where the
->>> L3 does have the data, unless L3 has become non-inclusive on Ice Lake?
->>>
-
-For the event, the BriefDescription in the event list json file gives a
-more accurate description.
-"BriefDescription": "Snoop hit a modified(HITM) or clean line(HIT_W_FWD)
-in another on-pkg core which forwarded the data back due to a retired
-load instruction.",
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/pmu-events/arch/x86/tigerlake/cache.json#n286
-
-Thanks,
-Kan
->>> On a Tiger Lake CPU, I can see this event trigger for the
->>> sys_call_table, which is located in the rodata region and probably
->>> shouldn't be containing Modified cache lines:
->>>
->>> # grep -A1 -w sys_call_table /proc/kallsyms
->>> ffffffff82800280 D sys_call_table
->>> ffffffff82801100 d vdso_mapping
->>> # perf record -e mem_load_l3_hit_retired.xsnp_fwd:ppp --all-kernel -c 100 --data
->>> ^C[ perf record: Woken up 11 times to write data ]
->>> [ perf record: Captured and wrote 22.851 MB perf.data (43176 samples) ]
->>> # perf script -F event,ip,sym,addr | egrep --color 'ffffffff828002[89abcdef]'
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002d8
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800288
->>> ffffffff82526275 do_syscall_64
->>> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
->>> ffffffff82526275 do_syscall_64
->>>
->>>
->>> (For what it's worth, there is a thread on LKML where "cross-core FWD"
->>> got mentioned: <https://lore.kernel.org/lkml/b4aaf1ed-124d-1339-3e99-a120f6cc4d28@linux.intel.com/>)
->>
->> +others better qualified than me to respond.
->>
->> Hi Jann,
->>
->> I'm not overly familiar with the issue, but it appears a similar issue
->> has been reported for Broadwell Xeon here:
->> https://community.intel.com/t5/Software-Tuning-Performance/Broadwell-Xeon-perf-c2c-showing-remote-HITM-but-remote-socket-is/td-p/1172120
->> I'm not sure that thread will be particularly useful, but having the
->> Intel people better qualified than me to answer is probably the better
->> service of this email.
->>
->> Thanks,
->> Ian
-> 
 
