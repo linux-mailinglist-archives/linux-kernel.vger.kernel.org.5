@@ -1,202 +1,275 @@
-Return-Path: <linux-kernel+bounces-77541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F37860712
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:37:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB7C860715
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6BA81C21CA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:37:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1655B23C10
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34846200A0;
-	Thu, 22 Feb 2024 23:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7AA13BAF7;
+	Thu, 22 Feb 2024 23:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="4C5sN+/w"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="itOF+Zcl"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39821B7E8
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2319913BADE
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708645071; cv=none; b=AVQlckiy0wvMRsIy3sTPWJS+11PqsrIZBtmGQRLHWwSBaG+1MnG7nS0yMhR0UyN0I6inb1k3nBLNSB6D1b1sq6uoqUmNV9TBpCDgAxpEd6OzwEqxx5RuRiPzmiMnrknmvndveQ7cqcPIftPCRs5QaMXV7oONLWJnXm2F2sD+Jfc=
+	t=1708645193; cv=none; b=Qzq8O6Deni84fFY/0r4iV7/7UCn+dxur3SNK5qiZrc6Cjh8pRb2uzkszVKfg9+rg+D0OVrrzB4RjfDPbGyHXvbuOwqX83yoJXlFkR9Pk7x469quKt7l26d5eUPGWgiFLoR8ANgYsxFZ+FhWandvOHuV0p7dXm8ugSMtlV7c7kxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708645071; c=relaxed/simple;
-	bh=f/lgEVxAapn9LU5P4MSUpHzwUuNz+DzPlQ8crsjgIUg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=la/U7A83SjuNMQRLPdm6Go4dmQW8/zKwnOuyWhbbisR3Cd4OMlHV7EveCK5R2A6Ixyu/QYS1EmJpC267VDX0jKfRI6M7cmRfQZuH8vagemPk6wlX8HLtUnLvFbXmvfpFOrG99Q2MFFtVNoxlrI6O4jaQWHPNuWYu+OfmLy3SbME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4C5sN+/w; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5650c27e352so2160a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:37:49 -0800 (PST)
+	s=arc-20240116; t=1708645193; c=relaxed/simple;
+	bh=k/T+MWitDhRoKFA0RmTLMBPwet2/JnsHLf8BjORtpZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BAKLFAnDLsWghii0prDY1E7fSLKgRu7er8daRGAI3xBdobJQP6P2sZluBTpze2m5/+gHpGDEMWquJXnMah8eLBsVtoo0Lu2vhLjFgs/pcMufpJEt5hi+MUnYWnOLEqeL7qzZYo6iCQBZXoRHf4D8A0WNvO+nSA1JSHazoeWO0rQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=itOF+Zcl; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412934b98b8so93545e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:39:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708645068; x=1709249868; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pIMJ44zSEPY3QuIze2cPVqSa+denNNP9zamzlju/GhU=;
-        b=4C5sN+/wGgh9srSUvjhFkuakajf1MJh34jR2AxlKIXPKiHQVBMUdV/H8U9K8oNY7+Y
-         MIxDV/122pR6WMKMliTja6i1VwQlOKgz07mJObVUGCzAUNsWRxd470tM5Y+oA0DvgNxb
-         kDgdfS45LWRq4GYBJLlWl+F2jJ7B8gTm3FIU855XAZB61WzCVS+83HpJJ8lXGpVjtgup
-         LKDvEdAhl9Ol4ppmJrsKAx6RYv+ksWQGCKA5yB71XTa+Gw6ZBAH4C2kQEL66bp5gVsoC
-         H0E9EyzZb8Atw43obkR2JpYGK6NE4tvb7y9CvMqtM1WoFGnooISZXKJiQhVg9+G/g3YO
-         9Nbw==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708645189; x=1709249989; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8w8G1a8Y4HlJfHccqFgYT1HVBWLDDvx3WA7xBJKUAJ0=;
+        b=itOF+Zclpp1oESZ8wbMh7wGVW1lH+ycY5b6yFkXHcUphCt/Uoi9Ieec6x6U5dw/i5S
+         bnIQYJeVqZLVxAvLtcp/t3RUJImWRAFGpg76COh5gq9DxaTWfHDHJiE3zw4H4OrFhSgD
+         R3YoGaj6G1XhRY+viTq4/+1CVblAdN0KztL9d6uDES/rRdqPePbKU6n8BXvz5DtEWDe+
+         SCgsruaNwn9bH3lOtjPphGNqodAB31CDROPc1AWMxW68UPplJDHUQoe6fseZiCWbYxC8
+         0FCYeKI/HN0SWDw2M34gXYTGY0+yOgEXZqmkNMCpxxOEaiUiKNnyXMj0BQE20zTvawdq
+         dUVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708645068; x=1709249868;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pIMJ44zSEPY3QuIze2cPVqSa+denNNP9zamzlju/GhU=;
-        b=uhQdNiEN0XG9jTFYwD/4BVswki/xhtUlbDZtcvR+/g3wzox4Wy8tKs1ujeurd0nE2a
-         nBoyjz/J61UMnCLve0+u4zPQePu8Af9eEwTnCI35XDyXgLwGTuqJoF51dfNc2nWbR/7n
-         HmQVgldNSs4gKkImp2txa2wMRNcHCLNdVr5Bsca3DvkLuxo3GYhIE/GlqlGTGhKeIA9w
-         aEL7yQMlaJWErrmGa09XjcAc0vPLjWMFtpekOj1Nhxc9Y2XcUf82nvW0dimRe7YRIssb
-         Eee5WoRSe/f1JVBYwXFOIsm3gUDvTYDGRNeCGWNzLCdQ2/J0i7VPM/NTYgEDlyy325gY
-         pyJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVBzoHriHSJ12CUubs+RdNuo9evmZs8RBI4kQ4kxmUTaWPkvtJMwDbwyQn0VSoGnCww2h5uyno4hvgBBU6rrOkh+R95xxUPa0X9RGO8
-X-Gm-Message-State: AOJu0Yx/nc/8gv0S2FscfWAAYe4kLo7r+Gj9faGC+bm/1WmKRNWxOoMR
-	oj3SN7wf8ABO45b3fH6/tAiEvSiSYfP2FKZ6xtMEaG3esSyEUtK8IQ+9Jn6wkgj94bYhIJz46VD
-	qSqYrY3oJBGTsDj9BTPPzq2vq2YniWzPdXAS5
-X-Google-Smtp-Source: AGHT+IFoD52gYH3sO6MerCtxOu2jS63yBmcWTPfXTimkdoS6Epy8Tt3BcnhUR1l2Ln1NpSh+MBAbvvPwpkxrBi0gQtc=
-X-Received: by 2002:a50:9f04:0:b0:562:9d2:8857 with SMTP id
- b4-20020a509f04000000b0056209d28857mr584121edf.6.1708645067849; Thu, 22 Feb
- 2024 15:37:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708645189; x=1709249989;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8w8G1a8Y4HlJfHccqFgYT1HVBWLDDvx3WA7xBJKUAJ0=;
+        b=id2o85lT6hFVUOaxH2dXstN9a5w4QXZOgrYZSTpUdhcOD7UMbgKpKhc80VtZ18rPtS
+         0aIZxcl5oH48PZZrDq+V6M0EDwFD1sBNJvxM9k0f7CRrV9Mdt04WAAX8VjQ6bJFLxWhk
+         PcUw3nSqstCfRYCybC/zXa9GVO5sxPYNV03FhnXGOoGb4mYGLK9nXRz8sAJ1Pz1RpLHn
+         OEjxcbb/DA0S7xHd/JjYoHY5SEicUEzb0b7AUcCAhWp6BEE3dKOoNvkMINvJNRuzlsUc
+         UQGlD5ld8LnJEJB3K2OgZuJYn1H+edy2FAsI0R9PtYcyv9v31jLujzcpB5aHFe/dcC/C
+         k4Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCX9g5LUCe0haSMFqtafmPSgDwzc54dD8lqYZCnOtEHce1Mob2tdyTghDOvLSbInYBoaUhyopKSTaV3AIdYCkdJjugNlKytWCtosVURa
+X-Gm-Message-State: AOJu0YwAVPRLOGVTeh2DL2xW/5pdLcONDPwhIqZ+uQr0HMv1PuFie57M
+	RriGiS/6/oOlVzIhJtc3tFxN7OXxOGum15BURLE4q45/bFauEomgJfNa8QktDaM=
+X-Google-Smtp-Source: AGHT+IEy0EI8YStg0v9f2MbRg2VpNvuWIDZJWXNTQ7pCGm2FkfhhkqEdz31SKMWI+8MaE83zQGJcjg==
+X-Received: by 2002:adf:fc8f:0:b0:33d:76a9:89ae with SMTP id g15-20020adffc8f000000b0033d76a989aemr320430wrr.12.1708645189394;
+        Thu, 22 Feb 2024 15:39:49 -0800 (PST)
+Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
+        by smtp.gmail.com with ESMTPSA id d5-20020a5d4f85000000b0033d9ee09b7asm500683wru.107.2024.02.22.15.39.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 15:39:48 -0800 (PST)
+Date: Thu, 22 Feb 2024 23:39:47 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Christian.Loehle@arm.com
+Subject: Re: [PATCH] cpufreq: Change default transition delay to 2ms
+Message-ID: <20240222233947.sl435tvhhpe5iqzw@airbuntu>
+References: <20240205022500.2232124-1-qyousef@layalina.io>
+ <20240205074514.kiolurpounokalum@vireshk-i7>
+ <CAJZ5v0j2rA-+Jpdv6OZ_ymiqh0+RGzmJBNncKGBwuxO3PxgSKA@mail.gmail.com>
+ <ca000b2d-b552-43cb-8807-0a5f1450c6a2@arm.com>
+ <20240220135037.qriyapwrznz2wdni@airbuntu>
+ <d58de550-0ce1-4af9-9e2d-dedd5e73c797@arm.com>
+ <20240222115557.blnm4uulkxnorrl4@airbuntu>
+ <f4c3f028-b93e-4658-af28-ac2123203d68@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222221814.3572215-1-rmoar@google.com>
-In-Reply-To: <20240222221814.3572215-1-rmoar@google.com>
-From: Daniel Latypov <dlatypov@google.com>
-Date: Thu, 22 Feb 2024 15:37:35 -0800
-Message-ID: <CAGS_qxqQ09wUppF9s1BgNoj5T2yo8+Yd0RLRBisj5th7Yw97eQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: add parsing of all files in directory
-To: Rae Moar <rmoar@google.com>
-Cc: shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev, 
-	kevko@google.com, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f4c3f028-b93e-4658-af28-ac2123203d68@arm.com>
 
-On Thu, Feb 22, 2024 at 2:18=E2=80=AFPM Rae Moar <rmoar@google.com> wrote:
->
-> Add ability to parse all files within a directory. Additionally add the
-> ability to parse all results in the KUnit debugfs repository.
+On 02/22/24 16:15, Pierre Gondois wrote:
 
-Nice, I'd been hoping for this.
-It's enough to pull me back in for a bit :)
+> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > index 66cef33c4ec7..68a5ba24a5e0 100644
+> > --- a/drivers/cpufreq/cpufreq.c
+> > +++ b/drivers/cpufreq/cpufreq.c
+> > @@ -576,6 +576,15 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+> > 
+> >          latency = policy->cpuinfo.transition_latency / NSEC_PER_USEC;
+> >          if (latency) {
+> > +               unsigned int max_delay_us = 2 * MSEC_PER_SEC;;
+> > +
+> > +               /*
+> > +                * If the platform already has high transition_latency, use it
+> > +                * as-is.
+> > +                */
+> > +               if (latency > max_delay_us)
+> [1]  return min(latency, 10ms);
+> > +                       return latency;
+> > +
+> >                  /*
+> >                   * For platforms that can change the frequency very fast (< 10
+> >                   * us), the above formula gives a decent transition delay. But
+> > @@ -586,7 +595,7 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+> >                   * a reasonable amount of time after which we should reevaluate
+> >                   * the frequency.
+> >                   */
+> > -               return min(latency * LATENCY_MULTIPLIER, (unsigned int)(2 * MSEC_PER_SEC));
+> > +               return min(latency * LATENCY_MULTIPLIER, max_delay_us);
+> >          }
+> > 
+> >          return LATENCY_MULTIPLIER;
+> > 
+> 
+> A policy with these values:
+> - transition_delay_us = 0
+> - transition_latency = 30ms
+> would get a transition_delay of 30ms I think.
+> 
+> Maybe it would be better to default to the old value in this case [1].
 
-<snip>
+Hmm. I think it wouldn't make sense to have 2 levels of capping. It's either we
+cap to 2ms, or honour the transition latency from the driver if it is higher
+and let it lower it if it can truly handle smaller values?
 
->  tools/testing/kunit/kunit.py | 45 ++++++++++++++++++++++++++----------
->  1 file changed, 33 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index bc74088c458a..827e6dac40ae 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -511,19 +511,40 @@ def exec_handler(cli_args: argparse.Namespace) -> N=
-one:
->
->
->  def parse_handler(cli_args: argparse.Namespace) -> None:
-> -       if cli_args.file is None:
-> +       parsed_files =3D []
+Rafael, should I send a new version of the patch, a new patch on top or would
+you like to take a fixup if you can amend the commit? If you and Viresh think
+the two levels of capping make sense as suggested above let me know. I think
+better to delegate to the drivers if they report transition_latency higher than
+2ms.
 
-optional: can we annotate the type?
-  parsed_files =3D []  # type: List[str]
+-->8--
 
-> +       total_test =3D kunit_parser.Test()
-> +       total_test.status =3D kunit_parser.TestStatus.SUCCESS
-> +       if cli_args.file_path is None:
->                 sys.stdin.reconfigure(errors=3D'backslashreplace')  # typ=
-e: ignore
->                 kunit_output =3D sys.stdin  # type: Iterable[str]
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 66cef33c4ec7..668263c53810 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -576,8 +576,17 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+ 
+        latency = policy->cpuinfo.transition_latency / NSEC_PER_USEC;
+        if (latency) {
++               unsigned int max_delay_us = 2 * MSEC_PER_SEC;;
++
++               /*
++                * If the platform already has high transition_latency, use it
++                * as-is.
++                */
++               if (latency > max_delay_us)
++                       return latency;
++
+                /*
+-                * For platforms that can change the frequency very fast (< 10
++                * For platforms that can change the frequency very fast (< 20
+                 * us), the above formula gives a decent transition delay. But
+                 * for platforms where transition_latency is in milliseconds, it
+                 * ends up giving unrealistic values.
+@@ -586,7 +595,7 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+                 * a reasonable amount of time after which we should reevaluate
+                 * the frequency.
+                 */
+-               return min(latency * LATENCY_MULTIPLIER, (unsigned int)(2 * MSEC_PER_SEC));
++               return min(latency * LATENCY_MULTIPLIER, max_delay_us);
+        }
+ 
+        return LATENCY_MULTIPLIER;
 
-This branch no longer does anything, since we only parse what's in
-`parsed_files`
+-->8--
 
-E.g. if you try
-$ kunit.py parse $FILENAME
-it'll work whereas
-$ kunit.py parse < $FILENAME
-will do nothing
+> 
+> ---
+> 
+> Also a note that on the Pixel6 I have, transition_latency=5ms,
+> so the platform's policies would end up with transition_delay=5ms
 
-We'll need to rework the control flow somehow
+Yes I know. But at this stage it's a driver issue. I think this value is not
+correct and there's a typo.
 
-> -       else:
-> -               with open(cli_args.file, 'r', errors=3D'backslashreplace'=
-) as f:
-> +       elif cli_args.file_path =3D=3D "debugfs":
-> +               for (root, _, files) in os.walk("/sys/kernel/debug/kunit"=
-):
-> +                       for file in files:
-> +                               if file =3D=3D "results":
-> +                                       parsed_files.append(os.path.join(=
-root, file))
-> +       elif os.path.isdir(cli_args.file_path):
-> +               for (root, _, files) in os.walk(cli_args.file_path):
-> +                       for file in files:
-> +                               parsed_files.append(os.path.join(root, fi=
-le))
+> 
+> 
+> > > 
+> > > 
+> > > 2.
+> > > There are references to the 10ms values at other places in the code:
+> > > 
+> > > include/linux/cpufreq.h
+> > >   * ondemand governor will work on any processor with transition latency <= 10ms,
+> > 
+> > Not sure this one needs updating. Especially with the change above which means
+> > 10ms could theoretically happen. But if there are suggestions happy to take
+> > them.
+> 
+> a.
+> LATENCY_MULTIPLIER introduction:
+> 112124ab0a9f ("[CPUFREQ] ondemand/conservative: sanitize sampling_rate restrictions")
+> 
+> b.
+> max_transition_latency removal:
+> ed4676e25463 ("cpufreq: Replace "max_transition_latency" with "dynamic_switching"")
+> 
+> c.
+> dynamic_switching removal:
+> 9a2a9ebc0a75 ("cpufreq: Introduce governor flags")
+> 
+> The value could be removed independently from this patch indeed, as this is not
+> related to cpufreq_policy_transition_delay_us() since b.
 
-just a note here, we could make this a bit terser via
-  parsed_files.extend(os.path.join(root, f) for f in files)
+Thanks for sending the patch.
 
-and the debugfs branch could be rendered as
-  parsed_files.extend(os.path.join(root, f) for f in files if f =3D=3D "res=
-ults")
+> 
+> 
+> > 
+> > > 
+> > > drivers/cpufreq/cpufreq.c
+> > >   * For platforms that can change the frequency very fast (< 10
+> > >   * us), the above formula gives a decent transition delay. But
+> > > -> the 10us value matches 10ms = 10us * LATENCY_MULTIPLIER
+> > 
+> > I can't find this one.
+> 
+> It's in cpufreq_policy_transition_delay_us(),
+>   "the 10us value matches 10ms = 10us * LATENCY_MULTIPLIER"
+> is a sentence I wrote, the comment to modify would be:
+> """
+> * For platforms that can change the frequency very fast (< 10
+> * us), the above formula gives a decent transition delay. But
+> """
 
-> +       elif os.path.isfile(cli_args.file_path):
-> +               parsed_files.append(cli_args.file_path)
+Ah you were referring to s/10/20/. Done.
 
-nit: should there be an `else` here that prints a warning?
+> 
+> > 
+> > > 
+> > > Documentation/admin-guide/pm/cpufreq.rst
+> > >   Typically, it is set to values of the order of 10000 (10 ms).  Its
+> > >   default value is equal to the value of ``cpuinfo_transition_latency``
+> > 
+> > I am not sure about this one. It refers to cpuinfo_transition_latency not the
+> > delay and uses a formula to calculate it based on that.
+> > 
+> > Seems the paragraph needs updating in general to reflect other changes?
+> 
+> aa7519af450d ("cpufreq: Use transition_delay_us for legacy governors as well")
+> 
+> The cpufreq_policy_transition_delay_us() was introduced there and integrates the
+> 10ms value related to this paragraph.
+> 
+> ---
+> 
+> I assume that if we keep the 10ms value in the code, it should be ok to let
+> the comment as is. I'll send a patch to remove the first one as it can be
+> done independently.
 
-Example that would trigger this case and silently do nothing
-$ mkfifo /tmp/example_fifo
-$ ./tools/testing/kunit/kunit.py parse /tmp/example_fifo
-<no output>
+Thanks!
 
-
-<snip>
-
-> @@ -569,8 +590,8 @@ def main(argv: Sequence[str]) -> None:
->                                             help=3D'Parses KUnit results =
-from a file, '
->                                             'and parses formatted results=
-')
->         add_parse_opts(parse_parser)
-> -       parse_parser.add_argument('file',
-> -                                 help=3D'Specifies the file to read resu=
-lts from.',
-> +       parse_parser.add_argument('file_path',
-> +                                 help=3D'Specifies the file path to read=
- results from.',
-
-Should this mention that the make `debugfs` string works?
-
->                                   type=3Dstr, nargs=3D'?', metavar=3D'inp=
-ut_file')
-
-Tangent: would it be useful to allow the user to pass in multiple
-files now and set this to nargs=3D'*'?
-
-E.g.
-$ kunit.py parse /my/dir/some_prefix*
-
-It would also let people implement their own version of the debugfs logic v=
-ia
-$ find /other/debugfs/dir -name 'results' | xargs kunit.py parse
-
-That could be useful if the user has recursively copied off the
-debugfs from a test machine and wants to inspect it elsewhere, for
-example.
-
-Thanks,
-Daniel
+--
+Qais Yousef
 
