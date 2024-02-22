@@ -1,194 +1,199 @@
-Return-Path: <linux-kernel+bounces-76438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E494485F75B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:41:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0DFB85F762
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:44:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B00B21A53
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:41:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C5361F2297F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:44:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880F945BEF;
-	Thu, 22 Feb 2024 11:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F4A45C08;
+	Thu, 22 Feb 2024 11:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Ge/Y40e+"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GxRql0GQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH+HrikD";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GxRql0GQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH+HrikD"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92753F9ED;
-	Thu, 22 Feb 2024 11:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4B6405CE;
+	Thu, 22 Feb 2024 11:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602047; cv=none; b=fvybAcNnx/Tqc71Lm/TFyOOaH+qXNg3+gkkL0SVTeNSfrIVQ+XorigakTZVERDczeNRQ2qtrtPdB9Pcx4gfXr7BU/dImBWBBJHOIxwp16oVAC+dzAmYXCUIX+cU3rBCBPefWh8RELrMh1s3ELjK3ARQ5qcRiAz7CKH5ZhrFoPqo=
+	t=1708602261; cv=none; b=h5d0F2v/IkJVcmiWLMHwb6cjQwxZ9ySN00uNSD70OWWDsCiMPrtBuZwbqCBH89e71zFjQV30cOWYzxXXdyuUbx6Bied6/48ZJDi6RWMaZoy6A+IcHFRXQrnrluZ8QvKc6fbYLZBg/dKJX2phK+SSUQ9Vn/3LbjUuJe5gVr19DSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602047; c=relaxed/simple;
-	bh=qErhb31YfBBbfbwsXUA9smxLugNiT5kmyg/IG8Z2rbA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j67xN8wjImr8ZDFbvvVb00rBB5mhqKPNH3nPVXLg/xmi5tDrCfx3N0wEtrT6LYA7kfj66HpgIJbabAcpgyk94Sad64h+zaKh1S2B2iYdEYuhpZmYoBhbtG3+fruONShqe2pKZLQolhLpWVsJiPU2HurLiC9NnuV5cYOtVXi3TDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Ge/Y40e+; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708602043;
-	bh=bJXOfG/Dk72N81ShHuOJUbjEwxeP53GZRuMDnBXS5rc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ge/Y40e++eyOSiOWUCdFX0J57Zp12w08KgkZfld28dxOqN1K3L85Jym1O5bjFIUyL
-	 EnI79ZcpBZQOe8Q+zYq3/zloBlOu0VgQdGnR+ij/Yv9qeS/6AK2WvxjAgxB6EvsIwu
-	 Bvuod3hkNtIPcFnTvdoXkoZ15Q3cSR8rFh4XisolfkLgpgWZ1ENp/SFVYFtE78R3Dy
-	 aiq862/J/Cb7yfnuowHnO0p1ZcUlGNZ/McEgxtVkOgxhuOv1ngW3yGYBxrRG7Ir7lS
-	 S54T3qk89K4O/keOCe0zYAvWOQsy4b7CNcP2pgOxO3ZpS5RifJ9Nrk3k8KitLKsO40
-	 Ej4f+ydj8bmvQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1708602261; c=relaxed/simple;
+	bh=60OEQh8O8xUBuyXADpm7mF+KjKWqxvHIH7CFVVDduFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cc5yFeCFIwem0EMX2fMitadI7STTPZ3x/X79pKdiUXUSwzFRwH2FP52nneK+mPmNA2SXUWis50oqPpwjK9VdaiEs+I8P75uZuIUjUfNOnFrge3N5Czx5PB5VoiSjthBEj4Ug1f54qqtq4X22K4qovW9kzEvSyF1R+v2XnlH4Ox0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GxRql0GQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH+HrikD; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GxRql0GQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH+HrikD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgWRZ4Crzz4wb2;
-	Thu, 22 Feb 2024 22:40:42 +1100 (AEDT)
-Date: Thu, 22 Feb 2024 22:40:41 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Joey Gouly <joey.gouly@arm.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Christoffer Dall
- <cdall@cs.columbia.edu>, Marc Zyngier <maz@kernel.org>, KVM
- <kvm@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the kvm-arm tree
-Message-ID: <20240222224041.782761fd@canb.auug.org.au>
-In-Reply-To: <20240222111129.GA946362@e124191.cambridge.arm.com>
-References: <20240222220349.1889c728@canb.auug.org.au>
-	<20240222111129.GA946362@e124191.cambridge.arm.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C3B071F457;
+	Thu, 22 Feb 2024 11:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708602257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
+	b=GxRql0GQN3kZ+yJ+otqo12KJcytm8iR3GDBEyzgH/ko4tHxaQGCUGGXUqHpLUKzFEy1V7F
+	/qv0Sw/VxgIYENs8vjnDUV/6mcw9FJgE4s3W8bNvmz7NtnjS8tGsPXJafUHbjEJ9MwG1b+
+	h22OkGgAV+Sa0O3vK38Dj6J3zlX5qFU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708602257;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
+	b=eH+HrikD7HaZ+vBU6osfGw2xTbRl8qJjN94PyPQvhdYW1VVQDtatc5+v4cn1MiiP2d4s2p
+	8DR+FtyyaSRulzBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708602257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
+	b=GxRql0GQN3kZ+yJ+otqo12KJcytm8iR3GDBEyzgH/ko4tHxaQGCUGGXUqHpLUKzFEy1V7F
+	/qv0Sw/VxgIYENs8vjnDUV/6mcw9FJgE4s3W8bNvmz7NtnjS8tGsPXJafUHbjEJ9MwG1b+
+	h22OkGgAV+Sa0O3vK38Dj6J3zlX5qFU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708602257;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
+	b=eH+HrikD7HaZ+vBU6osfGw2xTbRl8qJjN94PyPQvhdYW1VVQDtatc5+v4cn1MiiP2d4s2p
+	8DR+FtyyaSRulzBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B8D0313A6B;
+	Thu, 22 Feb 2024 11:44:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id jSIbLZEz12X9PgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 11:44:17 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 62015A0807; Thu, 22 Feb 2024 12:44:17 +0100 (CET)
+Date: Thu, 22 Feb 2024 12:44:17 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>,
+	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+Message-ID: <20240222114417.wpcdkgsed7wklv3h@quack3>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting>
+ <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
+ <20240222110138.ckai4sxiin3a74ku@quack3>
+ <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/AedWDBZ0=V+nKK0DvBL+JL8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
---Sig_/AedWDBZ0=V+nKK0DvBL+JL8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu 22-02-24 06:27:14, Kent Overstreet wrote:
+> On Thu, Feb 22, 2024 at 12:01:38PM +0100, Jan Kara wrote:
+> > On Thu 22-02-24 04:42:07, Kent Overstreet wrote:
+> > > On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
+> > > > On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
+> > > > >
+> > > > > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> > > > > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > > > > >
+> > > > > > > Recently we had a pretty long discussion on statx extensions, which
+> > > > > > > eventually got a bit offtopic but nevertheless hashed out all the major
+> > > > > > > issues.
+> > > > > > >
+> > > > > > > To summarize:
+> > > > > > >  - guaranteeing inode number uniqueness is becoming increasingly
+> > > > > > >    infeasible, we need a bit to tell userspace "inode number is not
+> > > > > > >    unique, use filehandle instead"
+> > > > > >
+> > > > > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> > > > > > together uniquely identify the file within the system."
+> > > > > >
+> > > > >
+> > > > > Which is what btrfs has done forever, and we've gotten yelled at forever for
+> > > > > doing it.  We have a compromise and a way forward, but it's not a widely held
+> > > > > view that changing st_dev to give uniqueness is an acceptable solution.  It may
+> > > > > have been for overlayfs because you guys are already doing something special,
+> > > > > but it's not an option that is afforded the rest of us.
+> > > > 
+> > > > Overlayfs tries hard not to use st_dev to give uniqueness and instead
+> > > > partitions the 64bit st_ino space within the same st_dev.  There are
+> > > > various fallback cases, some involve switching st_dev and some using
+> > > > non-persistent st_ino.
+> > > 
+> > > Yeah no, you can't crap multiple 64 bit inode number spaces into 64
+> > > bits: pigeonhole principle.
+> > > 
+> > > We need something better than "hacks".
+> > 
+> > I agree we should have a better long-term plan than finding ways how to
+> > cram things into 64-bits inos. However I don't see a realistic short-term
+> > solution other than that.
+> > 
+> > To explicit: Currently, tar and patch and very likely other less well-known
+> > tools are broken on bcachefs due to non-unique inode numbers. If you want
+> > ot fix them, either you find ways how bcachefs can cram things into 64-bit
+> > ino_t or you go and modify these tools (or prod maintainers or whatever) to
+> > not depend on ino_t for uniqueness. The application side of things isn't
+> > going to magically fix itself by us telling "bad luck, ino_t isn't unique
+> > anymore".
+> 
+> My intent is to make a real effort towards getting better interfaces
+> going, prod those maintainers, _then_ look at adding those hacks (that
+> will necessarily be short term solutions since 64 bits is already
+> looking cramped).
 
-Hi Joey,
+OK, fine by me :) So one thing is still not quite clear to me - how do you
+expect the INO_NOT_UNIQUE flag to be used by these apps? Do you expect them
+to use st_dev + st_ino by default and fall back to fsid + fhandle only when
+INO_NOT_UNIQUE is set?
 
-On Thu, 22 Feb 2024 11:11:29 +0000 Joey Gouly <joey.gouly@arm.com> wrote:
->
-> On Thu, Feb 22, 2024 at 10:03:49PM +1100, Stephen Rothwell wrote:
-> >=20
-> > After merging the kvm tree, today's linux-next build (arm64 defconfig)
-> > failed like this:
-> >=20
-> > In file included from <command-line>:
-> > In function 'check_res_bits',
-> >     inlined from 'kvm_sys_reg_table_init' at arch/arm64/kvm/sys_regs.c:=
-4109:2:
-> > include/linux/compiler_types.h:449:45: error: call to '__compiletime_as=
-sert_591' declared with attribute error: BUILD_BUG_ON failed: ID_AA64DFR1_E=
-L1_RES0 !=3D (GENMASK_ULL(63, 0))
-> >   449 |         _compiletime_assert(condition, msg, __compiletime_asser=
-t_, __COUNTER__)
-> >       |                                             ^
-> > include/linux/compiler_types.h:430:25: note: in definition of macro '__=
-compiletime_assert'
-> >   430 |                         prefix ## suffix();                    =
-         \
-> >       |                         ^~~~~~
-> > include/linux/compiler_types.h:449:9: note: in expansion of macro '_com=
-piletime_assert'
-> >   449 |         _compiletime_assert(condition, msg, __compiletime_asser=
-t_, __COUNTER__)
-> >       |         ^~~~~~~~~~~~~~~~~~~
-> > include/linux/build_bug.h:39:37: note: in expansion of macro 'compileti=
-me_assert'
-> >    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond),=
- msg)
-> >       |                                     ^~~~~~~~~~~~~~~~~~
-> > include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_=
-ON_MSG'
-> >    50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #co=
-ndition)
-> >       |         ^~~~~~~~~~~~~~~~
-> > arch/arm64/kvm/check-res-bits.h:58:9: note: in expansion of macro 'BUIL=
-D_BUG_ON'
-> >    58 |         BUILD_BUG_ON(ID_AA64DFR1_EL1_RES0       !=3D (GENMASK_U=
-LL(63, 0)));
-> >       |         ^~~~~~~~~~~~
-> >=20
-> > I bisected this to the merge of the kvm-arm tree into linux-next but I
-> > could not figure out why it fails :-(
-> >=20
-> > --=20
-> > Cheers,
-> > Stephen Rothwell =20
->=20
-> This fails because https://git.kernel.org/pub/scm/linux/kernel/git/arm64/=
-linux.git/commit/?id=3Dfdd867fe9b32
-> added new fields to that register (ID_AA64DFR1_EL1)
->=20
-> and commit b80b701d5a6 ("KVM: arm64: Snapshot all non-zero RES0/RES1 sysr=
-eg fields for later checking")
-> took a snapshot of the fields, so the RES0 (reserved 0) bits don't match =
-anymore.
->=20
-> Not sure how to resolve it in the git branches though.
-
-Thanks.  I will apply this patch to the merge of the kvm-arm tree from
-tomorrow (and at the end of today's tree).
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 22 Feb 2024 22:31:22 +1100
-Subject: [PATCH] fix up for "arm64/sysreg: Add register fields for ID_AA64D=
-FR1_EL1"
-
-interacting with "KVM: arm64: Snapshot all non-zero RES0/RES1 sysreg fields=
- for later checking"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/arm64/kvm/check-res-bits.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm64/kvm/check-res-bits.h b/arch/arm64/kvm/check-res-bit=
-s.h
-index 967b5d171d53..39f537875d17 100644
---- a/arch/arm64/kvm/check-res-bits.h
-+++ b/arch/arm64/kvm/check-res-bits.h
-@@ -55,7 +55,6 @@ static inline void check_res_bits(void)
- 	BUILD_BUG_ON(ID_AA64SMFR0_EL1_RES0	!=3D (GENMASK_ULL(62, 61) | GENMASK_UL=
-L(51, 49) | GENMASK_ULL(31, 31) | GENMASK_ULL(27, 0)));
- 	BUILD_BUG_ON(ID_AA64FPFR0_EL1_RES0	!=3D (GENMASK_ULL(63, 32) | GENMASK_UL=
-L(27, 2)));
- 	BUILD_BUG_ON(ID_AA64DFR0_EL1_RES0	!=3D (GENMASK_ULL(27, 24) | GENMASK_ULL=
-(19, 16)));
--	BUILD_BUG_ON(ID_AA64DFR1_EL1_RES0	!=3D (GENMASK_ULL(63, 0)));
- 	BUILD_BUG_ON(ID_AA64AFR0_EL1_RES0	!=3D (GENMASK_ULL(63, 32)));
- 	BUILD_BUG_ON(ID_AA64AFR1_EL1_RES0	!=3D (GENMASK_ULL(63, 0)));
- 	BUILD_BUG_ON(ID_AA64ISAR0_EL1_RES0	!=3D (GENMASK_ULL(3, 0)));
---=20
-2.43.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/AedWDBZ0=V+nKK0DvBL+JL8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXXMrkACgkQAVBC80lX
-0Gyb6wf/Y/9NIHRf5ckuf73aWrvP2Z3vSOrtciYwk1j77ut8ISRM9gkpZkYpk3IN
-dLyNfXMpuRZHXMfD0xT7KzdV8bgtAjP2IwOLqQdTbwxnDOvILVSUzfdeTKninGKf
-Tor1rMYB55PJxqu3yO1ToCl2wSXLWbari6DbZIA9K6NhSBrA6r0djmqK5pS2cChr
-VUkI3cN4PH9P+oZE6lw4+WphtrXDmUIUjfUHtbVT6VQE7E7qLQX1oqJsMkfJPCaG
-Bg0Zu/9KA6tDDwBoI5XU5U+OvpBOC9r+o9jX/AKAKmrm8DGpQc0Sw1zsDPwTumvK
-53Pi7MPtAz4t05LzcNWdr7gYcCTkkw==
-=aSyV
------END PGP SIGNATURE-----
-
---Sig_/AedWDBZ0=V+nKK0DvBL+JL8--
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
