@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-77062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40C1B8600BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 246598600C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D540F1F269C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:15:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2A891F26928
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC6A15A49C;
-	Thu, 22 Feb 2024 18:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644A215AAAD;
+	Thu, 22 Feb 2024 18:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hXHfdYv+"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ue0/3Pe+"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB4A158D9C;
-	Thu, 22 Feb 2024 18:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC1215959E;
+	Thu, 22 Feb 2024 18:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625671; cv=none; b=SFp4e7P0HCr8p/Mftevv16lJ8Q/zf89CPl/TN+d8zyCRUn0x5dOuV5ZLrKDRNBydZvDUhAWBXX6eQ5Kwxd6dqbg7JbwrplFe9w2azMswpQ6JxxfD/AiTeI/fEICC5eEHwwG1FR29IOx0d4HQVCes9gJvnsncWQFLKp0KvmQl/uA=
+	t=1708625673; cv=none; b=asCFZHCESruGdYSwV9//BgYvDCXG655Sk2eDC+bt5u0VnxWCrRjUn+j+AXBksfr5u1/KJxQb2Btd15G7z/0r7mSGUP9XPcm0Pj/Ub9c+NpP0OIrRWq7cUiyDrtTrjmh/0Pzpivn0IxomyCbUPJTh6rVkTtLHHtaWma6IxzZjgnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625671; c=relaxed/simple;
-	bh=dfE8/fN+nDw0npX+fEVeYJzEd30RZQVbS+TjqYr8HB4=;
+	s=arc-20240116; t=1708625673; c=relaxed/simple;
+	bh=oGXJR8OhoCabOTPanO1K+l2Sjh3ownabZ5/7tEogxag=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DjT79kx7guLWPWoMecFam7Bf8SqVJQD3hzNj5xMBdNiTcbwT7FlqMpTU/l1CMEOWtd+ShoPvh3qfqtP//r4Q8dMPs6fxWpaR3PYqOHLpJt1x/9ot1P2/UU4RqVcu91oS+kTti8eBPTd/JvDO4hXLZFPJLDL1dxV/q5rAyQbJfIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hXHfdYv+; arc=none smtp.client-ip=209.85.208.177
+	 MIME-Version; b=dI/R3j/tVC79j51ti5T5V+vMEoibYXi1PO/XjzEhL15vdFLhPok1k4x3x/OWfQ1b2784r6011kg4ZmT4L5nH4dDvO1IwXJYZ3JWq4mxviRv2nLsiATcHXJ+AwJ4JxCOuGSSvK4uV+8utmJoCeTjGBeoKrzZkMztoh+RnFal+Pnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ue0/3Pe+; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d23d301452so1068901fa.1;
-        Thu, 22 Feb 2024 10:14:29 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512b700c8ebso117215e87.0;
+        Thu, 22 Feb 2024 10:14:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708625668; x=1709230468; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708625670; x=1709230470; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e3HjL25KMxGa56gkLYon0vOuoqvhZeVF+dp0oSQkrO0=;
-        b=hXHfdYv+aJkVGblsQVERsYlh/Y12RJh5lSo8xtTFKqaryDvmoREn1ZPtGZzFYaBQOA
-         aeEmQI21vC1tm1tVBji9ISbRGGwibj9mFGld1pniffv1dWZBCj1GFoOz6Up8QAUURlbq
-         p8scr1jq/hQWsE7DAXmmsXssjhV157/45NWfH1fzbxusk/XaRe+EmkwKlxzajAnxFezW
-         LM+/VHPK2GmkeDl6v2Cm/3F/9popi+h15Oeh1aeJp/pE+sJqs8sh4oNHPG9NV63ejMpf
-         URQeMqRbx5qUNUJ5LiSpvFZtNkqiw3xxr9yX+qnpRnfnv5IiyhMOVwDFXxeOhhObuyOy
-         MvNw==
+        bh=WbPuoFHthQO7fGdQQUUYWZPA9hiREThQLMfvHVCy2ro=;
+        b=Ue0/3Pe+98cA6Dx8aXaNIy1267GfazE0vHHCY9ei5ADgtMhWGXUttPRDFJreOOcep/
+         jVWKh0Hgc4QgSLyT/Nx5Vd26iOhPhrV1xUOnigRkur67vXrKmhkX8BxdvDjvnPviLnvH
+         AD7apUbirr/QN80LsxgoH9ry/uMI87xDuyBLFhH8xYp7NBxmGWkX6tBqjbbDBAORgm9O
+         RmPQ/2SazPu+xBKZFgZ1GPVJHurljQegMSau0NP4/90oFSjTjo5kfyYivpsh2Id+RgXf
+         jNPcWGU4kex+zqgC2G7gNBTRJhpJe3RpMAiMAVxDMY1zHF0rkUn61nuJPRaSAkp1Kh8t
+         OdxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708625668; x=1709230468;
+        d=1e100.net; s=20230601; t=1708625670; x=1709230470;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e3HjL25KMxGa56gkLYon0vOuoqvhZeVF+dp0oSQkrO0=;
-        b=Qtouci7NBvSnMz0446qWUUHdeIQjtKTDnyBjZHcPwJVi8eZ3xewMExjYoCMJZGS1nR
-         mgCRLd04PLoCIgZyVE8BaRhmHKYumJeLJ7+t7xa2sGbHLTOpeTcvGGLXSwQKwqP2lE2G
-         VWfZ+8yz1qc/a+ax/OJBLyabTnZbQul1b5Sf2YXI+/hTugJpMsv15Yi/ULJBuwVL/JCm
-         Y4qJ3Fmrgwglm1VzUXs9Syjz3qptNKalAj6hgFlMIlfELxqqyjiC8oMPFwiTlp4bhOPs
-         gVgyZS+d8a+P5vWs/Di1PM3Fu+fs1EX3hv28b6IwCweXBdwfmSIYycKAIYrI8FsScywH
-         6/zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWwoQf4yeXWbd6Nb1RprZjobO9u0pK2PXp/vf+cY8jo9sJafM7DxzgaOdmtpTVb3jUTL0xCCIrS/HxbtVMQ9RT4tyweH8kBaac/MJCGckvy+9KdWmHdvlTeBlwVqAcyVXo3Bi5i7IdHAQ==
-X-Gm-Message-State: AOJu0YxpVV+iqfNWZklhYMc1r6lKxTXg7CK41lCI9pPV8+7x1M+B56z7
-	GM/freh/vdYqOCY9XU68/pd8wboSKnT4T0oKlDIeaIZ53wKv0j84
-X-Google-Smtp-Source: AGHT+IHxkZX3auLTPAfGj/5QgChR12wrYdWdu9SKHx0EmevS1A3wDKwZARalLbPB/ZrSULuvY5aXew==
-X-Received: by 2002:a2e:b169:0:b0:2d2:643b:df06 with SMTP id a9-20020a2eb169000000b002d2643bdf06mr1365251ljm.2.1708625668311;
-        Thu, 22 Feb 2024 10:14:28 -0800 (PST)
+        bh=WbPuoFHthQO7fGdQQUUYWZPA9hiREThQLMfvHVCy2ro=;
+        b=GulIygj5WUKCmGVQq8hTV533J5L1ogafeXVXlkfLrPxVvfvhe9JHNCKi/4CHJf7bwz
+         2a+l1Usq9/e4nXsF/Gg6uvP1aXJxk7nlDNx7Im9rtZsa1vz2oUtSldWY9Bm5sqJ18vES
+         OfobTogfp1Kvq0JE/8r3OPeyWDIcYzSd0V+Q7dZ0+q4sfdGovloRVT/kj06ZiiYQAsAB
+         rec38Wl1rjIbK4JdBxZW5R2f5YOSpOxdqhzinOAYYqEBzcWWVnNoECKUs8Pr9quGW8l3
+         quY+NXkQt/4eYPcB0LNsl99AGDG4otVhwZM089SVUpBUK6P/XLOJDFtJZ087iwuYus5U
+         AfWg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRgM7vyQaMi6GYcy4BgUTFFo7CHW9QVG2FK7JM2bzBZcbhHl0NVZz5V7i18alsV+l+I6RHR2Ha+ne3Eu3TpXX1LRJLMnSTxfj1QV2uX18zlBZNKRVjKe3s3ppSEgJn4/G7fgHgsZ6LYw==
+X-Gm-Message-State: AOJu0YwFOejWtaqBUBayIMVGGlB6lTqdoNmG7HUpGnnCf+QdcA1Fdke6
+	5twace8Fj2SW/AxzR+Rrls2ptPCyBaHf50z2GtCkKZbZYAkVZuGb
+X-Google-Smtp-Source: AGHT+IGub+R7lksw83N6+DHfltE4tBIGvnJJIwOUCUdGcZp49D75S0w8KHqmr2FCPWTC9/SRdqNmdg==
+X-Received: by 2002:a05:6512:31d6:b0:512:a9a4:d933 with SMTP id j22-20020a05651231d600b00512a9a4d933mr12295115lfe.69.1708625670043;
+        Thu, 22 Feb 2024 10:14:30 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id j26-20020a2e801a000000b002d10d093c4csm2381337ljg.111.2024.02.22.10.14.27
+        by smtp.gmail.com with ESMTPSA id t4-20020ac24c04000000b00512acc62388sm1837562lfq.237.2024.02.22.10.14.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 10:14:27 -0800 (PST)
+        Thu, 22 Feb 2024 10:14:29 -0800 (PST)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Michal Simek <michal.simek@amd.com>,
 	Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -74,7 +74,7 @@ To: Michal Simek <michal.simek@amd.com>,
 	James Morse <james.morse@arm.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Robert Richter <rric@kernel.org>,
-	Manish Narani <manish.narani@xilinx.com>
+	Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
 Cc: Serge Semin <fancer.lancer@gmail.com>,
 	Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
 	Dinh Nguyen <dinguyen@kernel.org>,
@@ -83,10 +83,11 @@ Cc: Serge Semin <fancer.lancer@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-edac@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
 	Borislav Petkov <bp@suse.de>
-Subject: [PATCH v5 04/20] EDAC/synopsys: Drop erroneous ADDRMAP4.addrmap_col_b10 parse
-Date: Thu, 22 Feb 2024 21:12:49 +0300
-Message-ID: <20240222181324.28242-5-fancer.lancer@gmail.com>
+Subject: [PATCH v5 05/20] EDAC/synopsys: Fix reading errors count before ECC status
+Date: Thu, 22 Feb 2024 21:12:50 +0300
+Message-ID: <20240222181324.28242-6-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240222181324.28242-1-fancer.lancer@gmail.com>
 References: <20240222181324.28242-1-fancer.lancer@gmail.com>
@@ -98,36 +99,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently the ADDRMAP4.addrmap_col_b10 field gets to be parsed in case of
-the LPDDR3 memory and Quarter DQ bus width mode. It's wrong since that
-field is marked as unused for that mode in all the available DW uMCTL2
-DDRC releases (up to IP-core v3.91a). Most likely the field parsing was
-added by mistake as a result of the copy-paste from the Half DQ bus width
-mode part of the same function. Even though the field is supposed to be
-always set to the UNUSED value (0x1F) drop parsing it anyway so to
-simplify the setup_column_address_map() method a tiny bit.
+Aside with fixing the errors count CSR usage the commit e2932d1f6f05
+("EDAC/synopsys: Read the error count from the correct register") all of
+the sudden has also changed the order of the errors status check
+procedure. So now the errors handler method first reads the number of CE
+and UE and only then makes sure that any of these errors have actually
+happened. It doesn't make sense. Fix that by getting back the correct
+procedures order: first check the ECC status, then read the number of
+errors.
 
-Fixes: 1a81361f75d8 ("EDAC, synopsys: Add Error Injection support for ZynqMP DDR controller")
+Fixes: e2932d1f6f05 ("EDAC/synopsys: Read the error count from the correct register")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Reviewed-by: Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
 ---
- drivers/edac/synopsys_edac.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/edac/synopsys_edac.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 7c57c43b4d31..bd6e52db68bc 100644
+index bd6e52db68bc..fbaf3d9ad517 100644
 --- a/drivers/edac/synopsys_edac.c
 +++ b/drivers/edac/synopsys_edac.c
-@@ -1236,10 +1236,6 @@ static void setup_column_address_map(struct synps_edac_priv *priv, u32 *addrmap)
- 				COL_MAX_VAL_MASK) == COL_MAX_VAL_MASK) ? 0 :
- 				(((addrmap[3] >> 24) & COL_MAX_VAL_MASK) +
- 				 COL_B9_BASE);
--			priv->col_shift[13] = ((addrmap[4] &
--				COL_MAX_VAL_MASK) == COL_MAX_VAL_MASK) ? 0 :
--				((addrmap[4] & COL_MAX_VAL_MASK) +
--				 COL_B10_BASE);
- 		} else {
- 			priv->col_shift[11] = (((addrmap[3] >> 16) &
- 				COL_MAX_VAL_MASK) == COL_MAX_VAL_MASK) ? 0 :
+@@ -418,18 +418,18 @@ static int zynqmp_get_error_info(struct synps_edac_priv *priv)
+ 	base = priv->baseaddr;
+ 	p = &priv->stat;
+ 
+-	regval = readl(base + ECC_ERRCNT_OFST);
+-	p->ce_cnt = regval & ECC_ERRCNT_CECNT_MASK;
+-	p->ue_cnt = (regval & ECC_ERRCNT_UECNT_MASK) >> ECC_ERRCNT_UECNT_SHIFT;
+-	if (!p->ce_cnt)
+-		goto ue_err;
+-
+ 	regval = readl(base + ECC_STAT_OFST);
+ 	if (!regval)
+ 		return 1;
+ 
+ 	p->ceinfo.bitpos = (regval & ECC_STAT_BITNUM_MASK);
+ 
++	regval = readl(base + ECC_ERRCNT_OFST);
++	p->ce_cnt = regval & ECC_ERRCNT_CECNT_MASK;
++	p->ue_cnt = (regval & ECC_ERRCNT_UECNT_MASK) >> ECC_ERRCNT_UECNT_SHIFT;
++	if (!p->ce_cnt)
++		goto ue_err;
++
+ 	regval = readl(base + ECC_CEADDR0_OFST);
+ 	p->ceinfo.row = (regval & ECC_CEADDR0_RW_MASK);
+ 	regval = readl(base + ECC_CEADDR1_OFST);
 -- 
 2.43.0
 
