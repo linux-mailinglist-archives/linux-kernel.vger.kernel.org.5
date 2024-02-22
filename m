@@ -1,168 +1,120 @@
-Return-Path: <linux-kernel+bounces-75727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE73085EE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:35:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27BBD85EE16
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:35:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A3711F23007
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:35:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58C761C203AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF7B10A1D;
-	Thu, 22 Feb 2024 00:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B0D12B7F;
+	Thu, 22 Feb 2024 00:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DNUFEkkq"
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aeGesws4"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AE5A94F
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A824C11720;
+	Thu, 22 Feb 2024 00:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708562101; cv=none; b=Kvz2d/DlLzJOuLTTi6hJ9B5z8UxEmcOaG4I9Ly9Ql0sHOArXFEGEBpBddWZMaoD3jSTpzbscpsBfEqFcZmupG6J4pxi4HsK10HWN6z5W+FGe2mKP0mS/QLMdZkAqRLBAWy7yrvWviuQ4JKN+CT9vLTN+tkhwQnS8lN7Me6aWLLk=
+	t=1708562105; cv=none; b=JYEmLCEAuHeWNlW27Oqrzbe4ofOIMneEGlDsoKdjsSYtXeeFOdbX0yCSAlffNkB37j4z6zQg+VdFGJ2LL7l6rR1kCKx2xEkvfGb2qcssHb44BjVn489l0u0eOR8exa4PbOjfE+uR5lNQtpw303gxwSKA8q6VdmbSDpiBo8vSGRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708562101; c=relaxed/simple;
-	bh=fsJO7Voe+3kvWM45B0Sk22Vetz/209FiI591NGHa660=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nlOkeDrPbLQpPeVd0m/H9jnOi7U2pjSPAomuHzZqhXGQJ3iDbjSkK6re5PiSIVGiipJBjiBpfOB9r9hg+RZENUbpXm8A8lfr+60TdEzfNMTfo+/if67NU5gpZsVqw3j8qVwUl+qCnLbK14QfTun5nTOlxhp1UqnvgjCaPDa5APg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DNUFEkkq; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 21 Feb 2024 19:34:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708562097;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G88uSOyu1u80Eng+KqSI+b6wDgfOq5t2Nzkcxgmz8B8=;
-	b=DNUFEkkqgQoWl+SP5laughmYXRyxMqPuHqKkeAnGKyFby/zySfYBY3FIzXWdfPg84xohpk
-	J9sGqqVtCHuZbx8fNQO/nCqhO4qFN18b+/JysbQQ/t5n2nk/SljAJhmsg3qEL65+dgnRkH
-	bSHDYXEVjKjZFJzAzNHVNqfZXbzQDrY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kees Cook <keescook@chromium.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v4 14/36] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <vxx2o2wdcqjkxauglu7ul52mygu4tti2i3yc2dvmcbzydvgvu2@knujflwtakni>
-References: <20240221194052.927623-1-surenb@google.com>
- <20240221194052.927623-15-surenb@google.com>
- <202402211449.401382D2AF@keescook>
- <4vwiwgsemga7vmahgwsikbsawjq5xfskdsssmjsfe5hn7k2alk@b6ig5v2pxe5i>
- <202402211608.41AD94094@keescook>
+	s=arc-20240116; t=1708562105; c=relaxed/simple;
+	bh=HeAxr6RmqZTnbhdpIBx8pD8sph4h4esqJt4E0AhwFh0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mp58Jgd1e+y/Q1/hokT0GENcJiAoGXNES6WRbAxxb5QfrBdRcQOeaZRg8mnHT7X8iMdBN+zGsgHDkjXOcUwYZpejzT71e9g1kyywwE2iqGHFHf0GoaSF/GBWCNU4hDymibNvooNTdkVK7b2OTOHuGlmmjlpuNXkdsgen9MOryxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aeGesws4; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7875a838d79so202471785a.2;
+        Wed, 21 Feb 2024 16:35:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708562102; x=1709166902; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i2JrJ5jovyaupsBQpWC5oSStAdx+X43YfCSVImiiIZg=;
+        b=aeGesws4JVcCKOV1Agvi17DpqouZKVDZnM4kQq1LGQ3VLlxz3zHCm+zRgCTtEk0JGk
+         5B9x8kM2ZqbKi3C9Xkc/ZOCuONG/btg05QrKIB1TJJ6BQj/NPRkRAmHgf7JFm1gVsszn
+         g4mnRjAfFEIF5wjUIpgocImHc4OESiAi3oFwBQ99oH0nGqlpnuGIhEVNw01WMrOi/d94
+         EWD3pFPAHYUFVCtV+moQv2ZRzCrapXDuqImDYxeduL6VszayJLM8VPElCCePVeCY6ofD
+         gmttiAzCBonKjZIrQlts8Ff+NrNHDs+hbyrkNhasDGAPIe/0yHUvSx7YPZS9m2HX9pki
+         QYYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708562102; x=1709166902;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i2JrJ5jovyaupsBQpWC5oSStAdx+X43YfCSVImiiIZg=;
+        b=c+yapD3/oyAMiCYisbqQ8CzeicOLFakykXILiVrrtzXn8v5ICEUECmnJ7jVcwEu/1l
+         JB9XcywPInIGYbePGFBBANRr7NYyqEilrS7c3/WtMdJcEwVwlx4hti/rvRT1RuMJhdzO
+         Np3AAF1Z6bnrJyha83uiYju0k01YM49goG7PzCjRqCzAPScyTllgI5p5jmD7e26ZqzNj
+         yToFMT37ImW+hS0Rq+D6A6z5P7g4PSNk57UXXf/KK2bziJamuUyGBhlv9qWxANretozz
+         CjzZSo+3M6tJL/9KSIQqGVK9zzOUNuNzfTx4JMZPivIlG5iJvUgy3fl0oqTffwXt3XRs
+         u+BA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDA3COPVSDDMJGijBl/70T4CiRa7IDCqf95RMoC4ghES/l7hHoTleloU9QikOSWbujKBArp1EK75rHfSS3dMQowr9+6l1q+uASQL5fhoUMWnpRZ67S4W62gYBwnMAFzeij0ai7nbgcUg==
+X-Gm-Message-State: AOJu0YzuYFbo8z/0sofSKdnIcGWRlYjz8HAG4fmmF1h4G7smwpezPfHN
+	L8fmGT6dkNBqA01BBYszsZIRzwO16iCM6TxWWvPDmZ3Vh2V5GH2G
+X-Google-Smtp-Source: AGHT+IEYXoCUv9uwVxBvPd4ZWMdMVNZBGtJ42BWDPA9KK+T3cDyPZx84QXdMTyGTLF4uhMbQI4kZEA==
+X-Received: by 2002:a05:620a:34a:b0:785:ab77:fe6c with SMTP id t10-20020a05620a034a00b00785ab77fe6cmr18929305qkm.6.1708562102426;
+        Wed, 21 Feb 2024 16:35:02 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w5-20020a05620a148500b0078723db4da9sm4804921qkj.98.2024.02.21.16.34.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 16:35:01 -0800 (PST)
+Message-ID: <e978801c-8bf6-4117-b44d-1c485e3d8769@gmail.com>
+Date: Wed, 21 Feb 2024 16:34:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402211608.41AD94094@keescook>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 01/12] dt-bindings: mtd: brcmnand: Updates for bcmbca
+ SoCs
+Content-Language: en-US
+To: William Zhang <william.zhang@broadcom.com>,
+ Linux MTD List <linux-mtd@lists.infradead.org>,
+ Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+ Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
+Cc: kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+ David Regan <dregan@broadcom.com>, Rob Herring <robh@kernel.org>,
+ devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+ <20240207202257.271784-2-william.zhang@broadcom.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240207202257.271784-2-william.zhang@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 04:25:02PM -0800, Kees Cook wrote:
-> On Wed, Feb 21, 2024 at 06:29:17PM -0500, Kent Overstreet wrote:
-> > On Wed, Feb 21, 2024 at 03:05:32PM -0800, Kees Cook wrote:
-> > > On Wed, Feb 21, 2024 at 11:40:27AM -0800, Suren Baghdasaryan wrote:
-> > > > [...]
-> > > > +struct alloc_tag {
-> > > > +	struct codetag			ct;
-> > > > +	struct alloc_tag_counters __percpu	*counters;
-> > > > +} __aligned(8);
-> > > > [...]
-> > > > +#define DEFINE_ALLOC_TAG(_alloc_tag)						\
-> > > > +	static DEFINE_PER_CPU(struct alloc_tag_counters, _alloc_tag_cntr);	\
-> > > > +	static struct alloc_tag _alloc_tag __used __aligned(8)			\
-> > > > +	__section("alloc_tags") = {						\
-> > > > +		.ct = CODE_TAG_INIT,						\
-> > > > +		.counters = &_alloc_tag_cntr };
-> > > > [...]
-> > > > +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag)
-> > > > +{
-> > > > +	swap(current->alloc_tag, tag);
-> > > > +	return tag;
-> > > > +}
-> > > 
-> > > Future security hardening improvement idea based on this infrastructure:
-> > > it should be possible to implement per-allocation-site kmem caches. For
-> > > example, we could create:
-> > > 
-> > > struct alloc_details {
-> > > 	u32 flags;
-> > > 	union {
-> > > 		u32 size; /* not valid after __init completes */
-> > > 		struct kmem_cache *cache;
-> > > 	};
-> > > };
-> > > 
-> > > - add struct alloc_details to struct alloc_tag
-> > > - move the tags section into .ro_after_init
-> > > - extend alloc_hooks() to populate flags and size:
-> > > 	.flags = __builtin_constant_p(size) ? KMALLOC_ALLOCATE_FIXED
-> > > 					    : KMALLOC_ALLOCATE_BUCKETS;
-> > > 	.size = __builtin_constant_p(size) ? size : SIZE_MAX;
-> > > - during kernel start or module init, walk the alloc_tag list
-> > >   and create either a fixed-size kmem_cache or to allocate a
-> > >   full set of kmalloc-buckets, and update the "cache" member.
-> > > - adjust kmalloc core routines to use current->alloc_tag->cache instead
-> > >   of using the global buckets.
-> > > 
-> > > This would get us fully separated allocations, producing better than
-> > > type-based levels of granularity, exceeding what we have currently with
-> > > CONFIG_RANDOM_KMALLOC_CACHES.
-> > > 
-> > > Does this look possible, or am I misunderstanding something in the
-> > > infrastructure being created here?
-> > 
-> > Definitely possible, but... would we want this?
+On 2/7/24 12:22, William Zhang wrote:
+> Update the descriptions to reflect different families of broadband SoC and
+> use the general name bcmbca for ARM based SoC.
 > 
-> Yes, very very much. One of the worst and mostly unaddressed weaknesses
-> with the kernel right now is use-after-free based type confusion[0], which
-> depends on merged caches (or cache reuse).
+> Remove the requirement of interrupts property to reflect the driver
+> code and only require interrupt-names when interrupts property present.
 > 
-> This doesn't solve cross-allocator (kmalloc/page_alloc) type confusion
-> (as terrifyingly demonstrated[1] by Jann Horn), but it does help with
-> what has been a very common case of "use msg_msg to impersonate your
-> target object"[2] exploitation.
-
-We have a ton of code that references PAGE_SIZE and uses the page
-allocator completely unnecessarily - that's something worth harping
-about at conferences; if we could motivate people to clean that stuff up
-it'd have a lot of positive effects.
-
-> > That would produce a _lot_ of kmem caches
+> Also add myself to the list of maintainers.
 > 
-> Fewer than you'd expect, but yes, there is some overhead. However,
-> out-of-tree forks of Linux have successfully experimented with this
-> already and seen good results[3].
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: David Regan <dregan@broadcom.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-So in that case - I don't think there's any need for a separate
-alloc_details; we'd just add a kmem_cache * to alloc_tag and then hook
-into the codetag init/unload path to create and destroy the kmem caches.
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-No need to adjust the slab code either; alloc_hooks() itself could
-dispatch to kmem_cache_alloc() instead of kmalloc() if this is in use.
 
