@@ -1,135 +1,102 @@
-Return-Path: <linux-kernel+bounces-77361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE11D860458
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E55D860469
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:10:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EB801F2215F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:07:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13EC81F24B95
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1CD73F1B;
-	Thu, 22 Feb 2024 21:07:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JXD9nKE/"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32704137903;
+	Thu, 22 Feb 2024 21:09:32 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D41E7172E;
-	Thu, 22 Feb 2024 21:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F22412D1F9
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708636043; cv=none; b=lqshvHqPQ21e/kc08FtSzL44YMbdO474aWcyRXYFtkDFvgXAR74z5ZiqMhJ2m6p0m8GoXu7ApwtNLsfxjvBqnceAx65b5R+7msiupUHsSuj360X7V3HEwygHVCxGtKrLs68UAY2aP/hpb/KlvEikTYHSY7MvmQfG3tkw7ksGJ8E=
+	t=1708636171; cv=none; b=Jtzn7X7Zsuppve/LgM8oN0+22iig9OiBcJWZEU1D2dO7Ldu0G2gK7mcw+L4jRvx1knYD7h1OoDkqlyFfLJ+2wiOpgeprRcdXCAy9JTvS8FnzrwKrRN6cyPJ2pBnc0xEEJwTWhjY7/3jO13ExO6f265Ah8v2PRzmsgsi3A8cjRmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708636043; c=relaxed/simple;
-	bh=yEcHDxN9RLq38OaBT7T32ipqe63fnfoOEny+8083TOs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=WHqsO0RLKJHfat6/MFNZ9gXCsylZYYep7J/3vSvyY/H3l29OzQ9NJSjzJ/2dJhpTaVZdehYZSE2dzzq0A5g9VD1BwUT/daZSvWlbRU1Pbq565B679RpIPWKz0JKPCiK311aIA5EtBvIXfHS25z7Bjo/HZj3y1HIDRUqhhjte4Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JXD9nKE/; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3394ca0c874so107832f8f.2;
-        Thu, 22 Feb 2024 13:07:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708636040; x=1709240840; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W/LsAF7t/DjHyNUZ4YFga9FjpoydH+mPM4Uvs/yTAKk=;
-        b=JXD9nKE/4nZXAgT2Z9S71xEsz6keTY9zT6Vorbyfa8OkjBmeCxeycdYCtjc+HSmfgP
-         eAFWP8JEUNy2d6dZe2GtRU4qzvPL32j2eZkgIXwcyc2ZGjDTpnJ6jyyp1Zo/gGVJXFMR
-         13CBuJNpC3AFoP8amOx9XATng3AZfwDCr8ED93soqL+pCNqGU6zOL7mQz9NvVtG+6T8q
-         WZVEQFQ1m87hGTiYXKDeUAxDlbShtBxOCFa+g9P+LcnOXplmci0TB2cj3n0nfDGKIn1X
-         7gN5DzVkamzDIr0zW/a38PVOLnwtW+SpKfktW0MhL2XUBrOrIfPE7J+wH2H+CVlOLJry
-         hwzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708636040; x=1709240840;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W/LsAF7t/DjHyNUZ4YFga9FjpoydH+mPM4Uvs/yTAKk=;
-        b=EJ9XFW+NMYtXej9mQN/uC8R6uS3VnaoTJHYvLbl58Xq3C4HNEVKlplg2LeYzkSd8yC
-         FqzWFhFLyvv/7ATVqXmMqg3QpdHTK8uvO0h3tSSG/t/qYBDwFN4jBMAgTjoy+8wur6CN
-         RUDZjqXiXEZHalt8t+Eif1id25qna1Jy6/hwk5nSXy/AEg6pwoFEWr05LHa5uCL0hr5T
-         AZcrRthSqGDqnxGth2bEPVprW/ey89io4RbORbD7NjUr93dQl8jhIp1ugzDVCPEthw0O
-         +mKRXLwn23CixbDRtefvUN+jnCwdSsYtPLakdvwGR4aUEh7H+1Ya+XdR9ZD1doUENmI5
-         4dSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfFabX1UjEcBKhkvmf7fvUe19o52v9oR3G7lOlKX/Fh9a1KzUdXj2Nvu/RcUSDMI/qCIC5zmC8LFbpYkYsPjYQPkdtt8sjABWcA+ki1gyDGa2IvHVYZy45adSu8poh0PDRi1RhNjuajX+4/5u7dE2GTfLWBQsdwOYx5Y73xA47UP1zJbGl
-X-Gm-Message-State: AOJu0YxhoIZzIhjZSLuv73REhGFNDG634MTrYpS001MNz3LYy6/UYRZ4
-	ltodNoGhD3K4jeTza1leCPhfDA+ED2qUWrVIBCSe/DgXYesbMVPe
-X-Google-Smtp-Source: AGHT+IFXB/nbEaMFXlrONCtpl4m94bpLbDQAxbSjm81SFiVV49HMZ9AYUU5sK3Wv8De5bJ1XDyYGRw==
-X-Received: by 2002:a5d:5007:0:b0:33d:67a1:ba0b with SMTP id e7-20020a5d5007000000b0033d67a1ba0bmr196182wrt.61.1708636039601;
-        Thu, 22 Feb 2024 13:07:19 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id bx9-20020a5d5b09000000b0033d568f8310sm198145wrb.89.2024.02.22.13.07.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 13:07:19 -0800 (PST)
-Message-ID: <2622ff3b-144f-4038-8f05-82c01afc5ce3@gmail.com>
-Date: Thu, 22 Feb 2024 22:07:00 +0100
+	s=arc-20240116; t=1708636171; c=relaxed/simple;
+	bh=j31Dajbarf+Gba2tIUbxNCli685oiAzWii4l564PZMs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dzoebH7JFKuYmCqMULq7e2Asrh+tFFcZtHamz7Dw7ev8ntbAxqU5hX01f9lmjWzDxfvqvlHeTfALjkFlyP2wT0eJA/We85vQk3KQe/1y6/hcIrRtSvCeHT/yGBXlP5iaZLwCSqhA3ynkLlZezMijy7kYm7cJPhyq2Bpipx1CLdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <m.felsch@pengutronix.de>)
+	id 1rdGJY-0000lo-UV; Thu, 22 Feb 2024 22:09:08 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: gregkh@linuxfoundation.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux@roeck-us.net,
+	heikki.krogerus@linux.intel.com,
+	jun.li@nxp.com
+Cc: devicetree@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH v3 0/4] USB-C TCPM Orientation Support
+Date: Thu, 22 Feb 2024 22:08:59 +0100
+Message-Id: <20240222210903.208901-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next 2/3] selftests/net: add local address bind in vxlan
- selftest
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, shuah@kernel.org,
- liujian56@huawei.com, horms@kernel.org, aleksander.lobakin@intel.com,
- linyunsheng@huawei.com, therbert@google.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <e1d22505-c5f8-4c02-a997-64248480338b@gmail.com>
-From: Richard Gobert <richardbgobert@gmail.com>
-In-Reply-To: <e1d22505-c5f8-4c02-a997-64248480338b@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
+X-SA-Exim-Mail-From: m.felsch@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Add local address bind support to existing udpgro_fwd.sh vxlan selftest, to
-ensure UDP socket lookup in GRO is working.
+Hi,
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- tools/testing/selftests/net/udpgro_fwd.sh | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+this adds the support to control the optional connector-orientation
+available on some TCPC from the TCPM.
 
-diff --git a/tools/testing/selftests/net/udpgro_fwd.sh b/tools/testing/selftests/net/udpgro_fwd.sh
-index c079565add39..8cc9b6ff3910 100755
---- a/tools/testing/selftests/net/udpgro_fwd.sh
-+++ b/tools/testing/selftests/net/udpgro_fwd.sh
-@@ -56,11 +56,13 @@ create_vxlan_endpoint() {
- 	local -r bm_rem_addr=$3
- 	local -r vxlan_dev=$4
- 	local -r vxlan_id=$5
-+	local -r bm_local_addr=$6
- 	local -r vxlan_port=4789
- 
- 	ip -n $netns link set dev $bm_dev up
- 	ip -n $netns link add dev $vxlan_dev type vxlan id $vxlan_id \
--				dstport $vxlan_port remote $bm_rem_addr
-+				dstport $vxlan_port local $bm_local_addr \
-+				remote $bm_rem_addr
- 	ip -n $netns link set dev $vxlan_dev up
- }
- 
-@@ -71,11 +73,13 @@ create_vxlan_pair() {
- 
- 	for ns in $SRC $DST; do
- 		# note that 3 - $SRC == $DST and 3 - $DST == $SRC
--		create_vxlan_endpoint $BASE$ns veth$ns $BM_NET_V4$((3 - $ns)) vxlan$ns 4
-+		create_vxlan_endpoint $BASE$ns veth$ns $BM_NET_V4$((3 - $ns)) \
-+					vxlan$ns 4 $BM_NET_V4$ns
- 		ip -n $BASE$ns addr add dev vxlan$ns $OL_NET_V4$ns/24
- 	done
- 	for ns in $SRC $DST; do
--		create_vxlan_endpoint $BASE$ns veth$ns $BM_NET_V6$((3 - $ns)) vxlan6$ns 6
-+		create_vxlan_endpoint $BASE$ns veth$ns $BM_NET_V6$((3 - $ns)) \
-+					vxlan6$ns 6 $BM_NET_V6$ns
- 		ip -n $BASE$ns addr add dev vxlan6$ns $OL_NET_V6$ns/24 nodad
- 	done
- }
+I used an custom board with OnSemi FUSB307B TCPC which is spec [1]
+compatible but albeit the spec [1] says that this pin is controlled by
+the TCPC if 'TCPC_CONTROL.DebugAccessoryControl = 0' it isn't at least
+for this device.
+
+I'm unsure if the usb tcpci spec has an copy'n'paste failure since
+'TCPC_CONTROL.DebugAccessoryControl' shouldn't control the state of the
+'connector orientation' pin or if the OnSemi FUSB307B has an HW bug.
+Since on my device the 'TCPC_CONTROL.DebugAccessoryControl' is set to
+0 but the register wasn't updated automatically.
+
+The patch adapting the existing dts files is send separately, as
+requested.
+
+Regards,
+  Marco
+
+[1] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
+
+Marco Felsch (4):
+  dt-bindings: usb: typec-tcpci: add tcpci fallback binding
+  usb: typec: tcpci: add generic tcpci fallback compatible
+  usb: typec: tcpm: add support to set tcpc connector orientatition
+  usb: typec: tcpci: add support to set connector orientation
+
+ .../devicetree/bindings/usb/nxp,ptn5110.yaml  |  6 ++-
+ drivers/usb/typec/tcpm/tcpci.c                | 45 +++++++++++++++++++
+ drivers/usb/typec/tcpm/tcpm.c                 |  6 +++
+ include/linux/usb/tcpci.h                     |  8 ++++
+ include/linux/usb/tcpm.h                      |  2 +
+ 5 files changed, 65 insertions(+), 2 deletions(-)
+
 -- 
-2.36.1
+2.39.2
+
 
