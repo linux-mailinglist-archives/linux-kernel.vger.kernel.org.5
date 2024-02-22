@@ -1,121 +1,141 @@
-Return-Path: <linux-kernel+bounces-75750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC1585EE6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:06:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D4985EE6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:05:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CDA21F232B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:06:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E55DB22BB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5F2111AA;
-	Thu, 22 Feb 2024 01:05:44 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB9C11721;
+	Thu, 22 Feb 2024 01:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfikvTaB"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061F812E49;
-	Thu, 22 Feb 2024 01:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACAC362;
+	Thu, 22 Feb 2024 01:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708563944; cv=none; b=GI5At/X6pjMZHC7Iw+ICeOUS07CV9pbKhJllmGrSV2Hljp3uAhtN7ZMJ5+KReYgWsbhZKdYoKBmdZJ1QFwX2dnGl+1kaXRtZB6dT4DtIDv2brpqYqxxjYmYASBXMrp+EK5Bd+d7yyIa6bDsAGia9P3lsmdUHaBHRxhEAUbMZkkQ=
+	t=1708563938; cv=none; b=gy7Yc4rR0mkwDrbcZm+XF3kBKCsYvq2YczcI9x7fpYteJKzNV8gYhk61ZFqbsR2GX6wCyEBZRnGWrU18oEt4qKsc5mGL9mfvePdJ1R2J/nddisUtGayjZiqCUyc151PaJ3cHXQq+m2zhbp6/Jp+Z+38WHphoIoB4ovA99R1cykI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708563944; c=relaxed/simple;
-	bh=FsJU68LcNxW7h4DF/UR5XSZahK63i7JaNo9cTyHunOc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=De3FxXe8O5Leh0LMqIk9oz3t2S6S3ZgPptW1XpbruiVaXOWTh9jDz9zwmTv3kFK/aTueHff5xLgg30PuRv3lfTI9+1qtpSeLB4N33V6Rc4JwnSXzYQpGiKoijnGk11SLgg3zAZiTGEwasJFHplGmyBUQ4sjXny6eLiGKMrDdISQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay10.hostedemail.com (Postfix) with ESMTP id 400B7C0C28;
-	Thu, 22 Feb 2024 01:05:35 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id AA0B12002C;
-	Thu, 22 Feb 2024 01:05:31 +0000 (UTC)
-Message-ID: <bccc704fc78b362bbc57a79eb240219f5ec1548e.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add check for snprintf to scnprintf
-From: Joe Perches <joe@perches.com>
-To: Justin Stitt <justinstitt@google.com>, Andy Whitcroft
- <apw@canonical.com>,  Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas
- Bulwahn <lukas.bulwahn@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>, 
- linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, Finn
- Thain <fthain@linux-m68k.org>
-Date: Wed, 21 Feb 2024 17:05:30 -0800
-In-Reply-To: <20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com>
-References: <20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1708563938; c=relaxed/simple;
+	bh=oVwvNABBYQwg8ch1Migh1pBvGqfufD05wV+UJaVQcMs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TQGtNJzRBZIv8mkWKmPZWja2S3qgXWSMqH4r4saA5l5QI/Mzhzowi+DWoz74UuA0IHoPgz9qE6vB8EIlXmzk2xh5mBrs5XvygH/Ip08aVKwVstjWi8xi7RrJ8mnS2pk+RTWJb4WrrYnCTV3qPrS6EzyPzdHKHSaO25/aaHOPM1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JfikvTaB; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d746856d85so48420595ad.0;
+        Wed, 21 Feb 2024 17:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708563936; x=1709168736; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/kZGWidKQHDeiGOirXOw/MofqnSEIzxtMp9arYvsBI=;
+        b=JfikvTaBbDdpORSJTkHHFg1J/YudbcHSas8bS/TzvXnBphgXkmiXzMwA8Z7v4w8ux3
+         Z4f5C8GmYbZbEX/5FIR2vdEc9WmRkY1W2UWV53IqM2O9x7udAq/95WSiCWfklCAssXAr
+         5x+9pFZIFfsd0ft1cjKGZi8dKZY4fFjAJPw4dHDxDq70OmwfOmkrNFEv5FdOv7h2G/hf
+         pHu7UuzTdy/9s7OV5mSn9CxNEY4jP5P5rCrCToud/MRZt0gltGKg05X+h2lgONnD9hkc
+         igUjFT1w7geFHMdDnn7U5IIfR+q0b2x143as3VCBCBPw2FuoRyDzMZel8aavNd4m1+eN
+         7HbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708563936; x=1709168736;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l/kZGWidKQHDeiGOirXOw/MofqnSEIzxtMp9arYvsBI=;
+        b=jRLKtByOOKDPqD2N583gtL6Iq9jcF+H7mQQBroGSZWBbLLx06bx0xcDqcgf8257spE
+         a8bJDl6mZk/WfJ1efyxnplH535tJBJ24k+MYNMwGpMq1nGzO5b1hhw3aulpN7wYLi49K
+         hhQsaZJiCzTAFjg1kvF+uaPadc4j9KP5Mc7vTCQVxRezq4BU6UWRBt+OBtGgu7Siby3R
+         +a/o9OCtH5x364fpfMGBtAc6juM7TqGkDzuIrX32v42ESZvQxhHX8Rbbte0kjsj6NUsc
+         xJaJRRzqUEY8YsDX7j1GkFXFnBptNNUQSJahGjTmFn0oh/3qFOpKmPZPWjnHSOY7n7mi
+         V2JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdLOfS7mS8S2YlYPRT/YaJF5KPNikCJR6F0mbTjH3XD14mWLhn9HLyzmRRAaoYqkcs3cGgpFZZq+eLbbISYzG5SjPEtLIpN3t7kAKByxBcGwAcUaUtyzT/2uS0FHRDCZBAwr4h3HGoqg==
+X-Gm-Message-State: AOJu0YyAdQSFoyaJtPigpZiGbo11FE9FETz5IfT4IDqiXH6P4TJRp2RF
+	br4dMKx906KTNMiJ4lt3QLIuu1VMZbhDWwNMzboA2q4Wz73h/B4fGeS23phN
+X-Google-Smtp-Source: AGHT+IE6f+V0neO5f8BH6R4TDq0lyTu6zajB+MVmEOa+stdrRoMJ/qawhHeR7I+keI6fAMiDV6xA6g==
+X-Received: by 2002:a17:902:b20a:b0:1d9:a647:5579 with SMTP id t10-20020a170902b20a00b001d9a6475579mr16599279plr.1.1708563936147;
+        Wed, 21 Feb 2024 17:05:36 -0800 (PST)
+Received: from rigel ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id k5-20020a170902e90500b001db7599aba0sm8749027pld.24.2024.02.21.17.05.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 17:05:35 -0800 (PST)
+Date: Thu, 22 Feb 2024 09:05:30 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip
+ device is removed
+Message-ID: <20240222010530.GA11949@rigel>
+References: <20240220111019.133697-1-herve.codina@bootlin.com>
+ <20240220111019.133697-3-herve.codina@bootlin.com>
+ <20240220142959.GA244726@rigel>
+ <20240222005744.GA3603@rigel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: AA0B12002C
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: cyucsypd3qhnw59f9ezfa9557qf9fsux
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/0uf+Q0wPPk+E8Q442h+fw1PySOnfqySI=
-X-HE-Tag: 1708563931-486686
-X-HE-Meta: U2FsdGVkX18di8ZY8Lx3J5yZpNPSNulE1qFL0I57DOQ/eaeZywd5jWcZRnNYgG9paRrRvpE8dgeSdevTISn2cf5OLsschxZqnxdaV1U5bNYMB3HbohNNP5DYTyH/PCP14IZjr+ZnLIkcEeros7ZlNQRMMqz4Ni7+YyLmDTb0JAFt3G9VePngpbF4XmwmG9sh/6SyPr8V6K9g2CDvS5wCUfX3QM1aG5Sy5CpwLE/PqbIfkPajWImacyXWI/iqxo5uv0vHoGTbjA3Yxs1mFm2ZeUCYNDIg8ZjVri0JAGKtNHgh2k87u6OTNysp4pnrxxTnFgYssMhs6MUiHAv81+a8lpqWmNmVDE6SHhaczHD1CMIkD+TYjS9Tvifnq0tmLhABz9CAq/DpfO0DUcwLyio6P2DOZkvwIz3/+8iJBFJGhF2nKDWH/YNEfEVEj6Lw9H/awthTWL3Qe14EoJjIDXsp/1y6fHCrG7WPSjezpj4e8tI=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222005744.GA3603@rigel>
 
-On Wed, 2024-02-21 at 22:11 +0000, Justin Stitt wrote:
-> I am going to quote Lee Jones who has been doing some snprintf ->
-> scnprintf refactorings:
->=20
-> "There is a general misunderstanding amongst engineers that
-> {v}snprintf() returns the length of the data *actually* encoded into the
-> destination array.  However, as per the C99 standard {v}snprintf()
-> really returns the length of the data that *would have been* written if
-> there were enough space for it.  This misunderstanding has led to
-> buffer-overruns in the past.  It's generally considered safer to use the
-> {v}scnprintf() variants in their place (or even sprintf() in simple
-> cases).  So let's do that."
->=20
-> To help prevent new instances of snprintf() from popping up, let's add a
-> check to checkpatch.pl.
->=20
-> Suggested-by: Finn Thain <fthain@linux-m68k.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Changes in v2:
-> - Had a vim moment and deleted a character before sending the patch.
-> - Replaced the character :)
-> - Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v1-1=
--3ac5025b5961@google.com
-> ---
-> From a discussion here [1].
->=20
-> [1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@lin=
-ux-m68k.org/
+On Thu, Feb 22, 2024 at 08:57:44AM +0800, Kent Gibson wrote:
+> On Tue, Feb 20, 2024 at 10:29:59PM +0800, Kent Gibson wrote:
+> > On Tue, Feb 20, 2024 at 12:10:18PM +0100, Herve Codina wrote:
+>
+> ...
+>
+> > >  }
+> > >
+> > > +static int linereq_unregistered_notify(struct notifier_block *nb,
+> > > +				       unsigned long action, void *data)
+> > > +{
+> > > +	struct linereq *lr = container_of(nb, struct linereq,
+> > > +					  device_unregistered_nb);
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < lr->num_lines; i++) {
+> > > +		if (lr->lines[i].desc)
+> > > +			edge_detector_stop(&lr->lines[i]);
+> > > +	}
+> > > +
+> >
+> > Firstly, the re-ordering in the previous patch creates a race,
+> > as the NULLing of the gdev->chip serves to numb the cdev ioctls, so
+> > there is now a window between the notifier being called and that numbing,
+> > during which userspace may call linereq_set_config() and re-request
+> > the irq.
+> >
+> > There is also a race here with linereq_set_config().  That can be prevented
+> > by holding the lr->config_mutex - assuming the notifier is not being called
+> > from atomic context.
+> >
+>
+> It occurs to me that the fixed reordering in patch 1 would place
+> the notifier call AFTER the NULLing of the ioctls, so there will no longer
+> be any chance of a race with linereq_set_config() - so holding the
+> config_mutex semaphore is not necessary.
+>
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -7012,6 +7012,12 @@ sub process {
->  			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see:=
- https://github.com/KSPP/linux/issues/90\n" . $herecurr);
->  		}
-> =20
-> +# snprintf uses that should likely be {v}scnprintf
-> +		if ($line =3D~ /\bsnprintf\s*\(\s*/) {
-> +				WARN("SNPRINTF",
-> +				     "Prefer scnprintf over snprintf\n" . $herecurr);
+NULLing -> numbing
 
-There really should be some sort of reference link here
-similar to the one above this.
+The gdev->chip is NULLed, so the ioctls are numbed.
+And I need to let the coffee soak in before sending.
 
-Also, I rather doubt _all_ of these should be changed just
-for churn's sake.
-
-Maybe add a test for some return value use like
-
-		if (defined($stat) &&
-		    $stat =3D~ /$Lval\s*=3D\s*snprintf\s*\(/) {
-			etc...
-
-Maybe offer to --fix it too.
-
+> In which case this patch is fine - it is only patch 1 that requires
+> updating.
+>
+> Cheers,
+> Kent.
 
