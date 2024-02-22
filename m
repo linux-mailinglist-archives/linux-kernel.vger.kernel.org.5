@@ -1,161 +1,117 @@
-Return-Path: <linux-kernel+bounces-76477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 450CB85F7B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:06:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F69E85F7BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6903A1C235B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:06:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3468FB24AD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF5C5B68D;
-	Thu, 22 Feb 2024 12:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD25F60893;
+	Thu, 22 Feb 2024 12:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XneJ1u2W"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g4xbulGG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2FF5789F
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7415915B;
+	Thu, 22 Feb 2024 12:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708603595; cv=none; b=NHbrdDto7VVrBqsw9AP2V3eRhj8vYUoDG53L1O8+IQ6iSan+5V2fVqsgw7mv6mJgCu3jZZWwrA0UNjpRUZZxhVO/U5YazYMqBZyz80cPH7co8F6Cl6QpMc2IgJuHhyOI++pR4DP3g45+qUmQ1oD2jp9BifOMDWjrhR65UdvHUd4=
+	t=1708603637; cv=none; b=Pg99BBJQyBT7Bd2cVtCRgQjYgTqgJQYmmIcn6tY30SQRWLUodDxkodTbzONiRdZwmjPLDoT5wO0A5eI0ztz4GY9oSt3R08OnLl7hzHzg21jwvSS1BBlU6pi1CFp7dtmfK/JG8uTpv3K66pTzj1AmFkeHbRog8Bwu50DjT2EBOJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708603595; c=relaxed/simple;
-	bh=7aI6G4bBOHHgdLUJENGOOZbX/ns+aV6r4MxNKmJTzm4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q7Jp3XY1OiYnQiZ1WAPIk1+TvCsmDECHaSdVIHi6pu2jjP76+BdAHGnzahnq7kGRAZX88To73/R7UkCr6onlhdiE3Ya7dHjIxpbgZqMMPohaDq2MMBhfMKCSBumHABO6FAnQFVzmdrvvQFyqP3J1n+mxHEIt7msdmFjYM0ycCvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XneJ1u2W; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3eafbcb1c5so498638466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:06:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708603592; x=1709208392; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XHa5235f3kt9jZfGjaBEmGnvg17AThIfGkA6Ms6UFUA=;
-        b=XneJ1u2W1KOzgK+jolP9i/q9qSrD0hp79olzBem3WUzqA3Aqb6WbTKYteFDOfXWOxu
-         ZEb5T2FO2LQMjBeNSmLZyRdQIUAQfh0BNXvfSrxq2c3ObS8iEEbhGXiv1LtMAMAOmLHt
-         xABjkwv+3Zf/ieTGPowEnG5r/BC8gKeLk/T8MbXHP+g70f7h2rUWFVYPieJTCPm0MIVd
-         6H9rOGYd+JnlZ99UG3WX2z6Ob8jxyQ3PKizp7rqJ/yk4EW0p6TY9QDl5G6oa8OZD0NCt
-         rEe7tHMbEvDxkUK/XYdnn0OMAYjfrUIHnhXf5SBrZ2Z41pkYaKWj57RSzxwBfoOzNZSY
-         QN2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708603592; x=1709208392;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XHa5235f3kt9jZfGjaBEmGnvg17AThIfGkA6Ms6UFUA=;
-        b=sLZ4zhYpDcdFsDvVllf+f5aP36U2FuIsyYu/A6x/PbxN8xshvJVcxxAy1M8lHoJYMB
-         galHpsBX8W/tGWAnTmYyH9IlbeTFKPxwTAlZKlQ3GJy0MNWCgZBpmVNM2ABEaucJ4647
-         vsVaLgnfkIev1yb+4z4yVOVWTn8oa0xhA0xhxt+Tljzlk/gEkFiBcplemX5zl5sAPrR1
-         phVZtjNnxoFrdPxm7DOKzp0fMMOLAD2kkslF9HDYNmAORE1RlR3mB3HVANz0leLcUD0U
-         IQsJth0oT+36lgCw7fv0+gjy1XS5FUxObrsUibSbsmPih4ImFQzFFozrT0LRCFGhb6bm
-         /qgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpKL+dtLQeJsF/aVvNIIM7FoUmD/iJDYhp1myIZnqyaQPnhruTl1s1xE4k+GQD1eFXXtUOphRFlonu+B3BRJRr2JCurls0sSQHoH3R
-X-Gm-Message-State: AOJu0YzXA28W15KbEDTcMmJTzMOtZzBdgsk5bVgqpf7aIrBq7ITqbMA0
-	TRQE7LFAsG1VUdtYgNXhHZSz8wD4OyIQuQi+JP+eufEmue/s1a9jwtijDFdO7PU=
-X-Google-Smtp-Source: AGHT+IHvla7m4ZYgc3jjkIaynn5M6ot4IzHI5Wb7Kz375HfTJBfGN/z83SI+l/ELrpL/guKZwGYY+Q==
-X-Received: by 2002:a17:906:1c05:b0:a3f:804f:c1a4 with SMTP id k5-20020a1709061c0500b00a3f804fc1a4mr1267372ejg.74.1708603592180;
-        Thu, 22 Feb 2024 04:06:32 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id y2-20020a170906470200b00a3d0dd84276sm5890564ejq.184.2024.02.22.04.06.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 04:06:31 -0800 (PST)
-Message-ID: <4a812d27-26e4-4358-a9f5-33ac66086769@linaro.org>
-Date: Thu, 22 Feb 2024 13:06:28 +0100
+	s=arc-20240116; t=1708603637; c=relaxed/simple;
+	bh=ISipd+RvHeb8FAy3tub2FjR36pI88FRyLXT4pFOGt/8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZZHkIJmz9Yk4di1jfK4T5pFSbHoqwLsWnXVluFwqhNMqggcFJKUNqLImZ8XhQ+jdJ+tk3HfxXt8u635pI4xb681/6BgtqqlZdetaS0Q484hWdtMVgpKEjCgkCkyOmUJXn/uqyWgtAfVnmdg7rHvrNlSKnjwHdmUJslL3sNxN7xM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g4xbulGG; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708603635; x=1740139635;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ISipd+RvHeb8FAy3tub2FjR36pI88FRyLXT4pFOGt/8=;
+  b=g4xbulGGE7kpX0lqCku8/LqruPaawEwQMxh4Lf76H4EJTzEgGFXdzJoJ
+   JvN0rgrOsO4gg4Wuz1cTRwcHTJujda00JEWj6Yrxs4V7k4MPxpK3L9z2e
+   +wcXlFM2+z8MzpikckPkvHMw/4gKU7XSpdJxdoHx1eWPYtgC1q2je/ChV
+   6xtxhwxR5qqVzTvjgLy/LG+JE1OybNFEu1G6+arBNATjfViv+3lvJ2L/G
+   Hffkl/S5wqjkPiClXt2c62wkqssjyI2LJk9KeEloXgQZzyJhu7jSjDJg1
+   cv/p6msBF6VG5u64WAoIQlIJEIGSOoOuXfhov9nfWz25Q92JwnHo0SSWz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="6643098"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="6643098"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:07:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="10050370"
+Received: from ksulimow-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.23.120])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:07:12 -0800
+From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To: reinette.chatre@intel.com,
+	shuah@kernel.org,
+	fenghua.yu@intel.com
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ilpo.jarvinen@linux.intel.com
+Subject: [PATCH v3 0/3] selftests/resctrl: Simplify test cleanup functions
+Date: Thu, 22 Feb 2024 13:06:57 +0100
+Message-ID: <cover.1708599491.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/7] dt-bindings: arm-smmu: Document SM8650 GPU SMMU
-Content-Language: en-US
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- iommu@lists.linux.dev
-References: <20240216-topic-sm8650-gpu-v3-0-eb1f4b86d8d3@linaro.org>
- <20240216-topic-sm8650-gpu-v3-3-eb1f4b86d8d3@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240216-topic-sm8650-gpu-v3-3-eb1f4b86d8d3@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 16/02/2024 12:03, Neil Armstrong wrote:
-> Document the GPU SMMU found on the SM8650 platform.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+Cleaning up after tests is implemented separately for individual tests
+and called at the end of each test execution. Since these functions are
+very similar and a more generalized test framework was introduced a
+function pointer in the resctrl_test struct can be used to reduce the
+amount of function calls.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+These functions are also all called in the ctrl-c handler because the
+handler isn't aware which test is currently running. Since the handler
+is implemented with a sigaction no function parameters can be passed
+there but information about what test is currently running can be passed
+with a global variable.
 
-Best regards,
-Krzysztof
+Changelog v3:
+- Make current_test static.
+- Add callback NULL check to the ctrl-c handler.
+
+Changelog v2:
+- Make current_test a const pointer limited in scope to resctrl_val
+  file.
+- Remove tests_cleanup from resctrl.h.
+- Cleanup 'goto out' path and labels in individual test functions.
+
+Older versions of this series:
+[v1] https://lore.kernel.org/all/cover.1708434017.git.maciej.wieczor-retman@intel.com/
+[v2] https://lore.kernel.org/all/cover.1708596015.git.maciej.wieczor-retman@intel.com/
+
+Maciej Wieczor-Retman (3):
+  selftests/resctrl: Add cleanup function to test framework
+  selftests/resctrl: Simplify cleanup in ctrl-c handler
+  selftests/resctrl: Move cleanups out of individual tests
+
+ tools/testing/selftests/resctrl/cat_test.c      |  8 +++-----
+ tools/testing/selftests/resctrl/cmt_test.c      |  4 ++--
+ tools/testing/selftests/resctrl/mba_test.c      |  8 +++-----
+ tools/testing/selftests/resctrl/mbm_test.c      |  8 +++-----
+ tools/testing/selftests/resctrl/resctrl.h       |  9 +++------
+ tools/testing/selftests/resctrl/resctrl_tests.c | 16 +++++-----------
+ tools/testing/selftests/resctrl/resctrl_val.c   |  7 +++++--
+ 7 files changed, 24 insertions(+), 36 deletions(-)
+
+-- 
+2.43.2
 
 
