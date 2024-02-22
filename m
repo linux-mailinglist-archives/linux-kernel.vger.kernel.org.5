@@ -1,116 +1,153 @@
-Return-Path: <linux-kernel+bounces-76704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304E185FB4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:33:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8281585FB51
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:34:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 624751C22C63
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:33:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B39AE1C23621
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014DC1474A2;
-	Thu, 22 Feb 2024 14:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6DE1474B4;
+	Thu, 22 Feb 2024 14:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eMQy/uoZ"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L+ll0oIH"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E1F4436C;
-	Thu, 22 Feb 2024 14:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBB536B15;
+	Thu, 22 Feb 2024 14:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708612404; cv=none; b=I+PhHyfZFDnTdqMCVg/fU5k1F93l+TYUVl0+nSuC5VYKvT/PVlDioR7GU9zUNoetxEYMVJmbeuFvSJwry5a49HA3WIHQwch0IRdTIsyHvveeYRsoRwMeGDMQmHCWV0uBJKVcHgiA3DZ2kkYEPOQ71AL0TSGBJj3S84pq0lLTAPc=
+	t=1708612447; cv=none; b=rh0jgHnsg0dI9bhgjBrytaLz0lOvQikTUvIkILbW3KIdf8MKhAr8kybwingXxTYLJs0FRH6/b9ToSnoTqLeMgjHfDrp7Qeh4LYwemwhiqB/nVSlpAZJq6BAGpm+o2Knn4RgWirjJNvDNcwOJyIPyEheKi4001+HYp6FXgx5+auY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708612404; c=relaxed/simple;
-	bh=7Nxd9L0hTx4wS4KdRxCSjT6nCn4X+i13aWUcdkoxH2o=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=B87Z1aRG+hAIAaXOPWtbYGQTJbC7tU1OX0bkkwb4gzdvNDwSWceXcpeRQF4kmq7Zm12z4daqOZRbRSxXimkUBV6WeMJr6m2SzutFcb+zX+TSGY74tKYAsXfwGluWPWmhXTGiDYZnK2o5c0otiVZBb3V9d1+ZhG9KF/KsCTBn+FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eMQy/uoZ; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a293f2280c7so1145202566b.1;
-        Thu, 22 Feb 2024 06:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708612401; x=1709217201; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ldyzz6/JzuL7eIas6PfwBWLiCcFLpsFRhU47ib609w8=;
-        b=eMQy/uoZ7i3VOPPd+/IwRfRO+1+PJDPiLBizbL9YThX0mrnXL4CfcRksN+fUmAYQr1
-         c29IcXO7Ue+ZLSlSLNGHVoYDi4JqYR7teXw2GgXPFZ6U7apBj/OnMORsI3S9TX8i/QQi
-         jjmk7OvryjKJOHofcIec1LWzXXQiIXMBIUL/9cp4UDz0lEftanY6aoluFePIwdu05+Q1
-         6m1i9XFLexxRFJvinV0fhZnsGxUicmjccD2ZrhhSeBpN/kElACrQuzbLKMwtDrmeCGTc
-         9VgMfxBScDQ9dwPjhAnGRwemL6hHNcT7D+QvOzkefjxqbp3tm3IP4TCmp3FMUeZq/he5
-         Z81Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708612401; x=1709217201;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ldyzz6/JzuL7eIas6PfwBWLiCcFLpsFRhU47ib609w8=;
-        b=gAbfHcU2ZlRDmU2bTRnj9+szhP2o05Bp1eb62cT8sUP/Q2XIamGBkKdeLJv1v5skrw
-         EpRmcz/E1AYxQtOl5TkeLXUDgSFv3tJUjckifP9HuzNJhztJki5+53KRbpc46KUEJDnb
-         3gzC/031/MLRO0lMk3r6cVQF7RY0aOfXWEHiZPvY20TLjE8KOsqvcQrEGOLSPchQ/kn6
-         h1tHifuvI5QsinYAl88IK7rXeGqCziHaApwYaux178tmSLFFtCTsY9upO9oFNIiw12vu
-         vW3EzVDJqwFq3neCkOeW/ovx/7Oz7PFv166ayMF8ytzOhAc/5i0GoRz+B5gkx4EPhLRD
-         YVKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBr6h/69lu3vRmV3moOnSRwBPhhytjUyYFOBuIC1uryRYkmm8psPqxapjk5oeM0uTp/5hUeE4IGyKFA/h85a12FSobDi3ULzYdcMkU
-X-Gm-Message-State: AOJu0YwYLywiBTC4uUy9b6ghJcFNblZS/vU90TVDi9X/yTrWB7F8h9Qm
-	9M1eY01WUAaiUlpGANkjJ39dII5uUqWCXLWNhjyg5DUgpoYXrcD4zZObg0JM
-X-Google-Smtp-Source: AGHT+IE/mq6F4oG3XuFKcZ0cPjBTjZcJco4+3Mo3sbwsAXaFVeGGVeSxCh/cb3xzKOmdp5YiV9BS1Q==
-X-Received: by 2002:a17:906:69b:b0:a3f:6302:1e61 with SMTP id u27-20020a170906069b00b00a3f63021e61mr2516651ejb.73.1708612400745;
-        Thu, 22 Feb 2024 06:33:20 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:e4dd:831d:c00a:fc45])
-        by smtp.gmail.com with ESMTPSA id vu12-20020a170907a64c00b00a3f15cb8d9dsm2245506ejc.126.2024.02.22.06.33.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 06:33:20 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: remove entry to non-existing file in MOBILEYE MIPS SOCS
-Date: Thu, 22 Feb 2024 15:33:12 +0100
-Message-Id: <20240222143312.27757-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1708612447; c=relaxed/simple;
+	bh=63VvWHOsb5SrifL0YqM2vYk9CJsCWqhAbpQiJetgKlE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Zg3Xs0Awk1FTOP9fA2WBGrn8je8AKdXwELL8+kQkc7KBGUocB1P2raIBjaRs8p7li9PTqoYkcfHZvYEdjW06dx/YuTf7VqO6p0yEL8L2IIj3+2YbvkVtWQExupAwnLfzN9Z0UTwKz6RW2kMmnupKcnfoBezaJz2G7Ui14/dbzyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L+ll0oIH; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41MEWA6j003869;
+	Thu, 22 Feb 2024 14:33:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=SkW65BNKyUwWU0v4NRmdx4GQ+g+y60Q/zkRCnOS+nao=;
+ b=L+ll0oIHN8Fy8iRxekw2HYocJVIYABKEhQFts/oAuPeMSaXsmRD4Nik1Ieoeusvwtbct
+ firLHP+HVI2FCJGohUXX95AMhZLVFb/Mhbjxj1LSz4DvxBecqlSEYPgGK7oTsGxg1GDs
+ Al1gra91CMUT+fbpMPD7nOPyIKBRy6Z4mvw6tQ4Awo42Ub4Ah5rvrcF5LnHiW9Xym0oB
+ Z7z70pEG5dId/j76uVF9RM6IUs82Yx+1Rc3OMu/XwnmQPcjfYNrgqXd+HQQEBavLGcdq
+ xY7TfHJoJlSqODdso4fZlPwVE1kRYMrlSdZ5Osr350basP5+gIl1zG0h3Akt1gxM823K dA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3we845g256-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 14:33:49 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41MEWR4k004668;
+	Thu, 22 Feb 2024 14:33:49 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3we845g23u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 14:33:49 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41ME5wbp013470;
+	Thu, 22 Feb 2024 14:33:48 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb7h0pys2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 14:33:47 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41MEXgAJ14746164
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Feb 2024 14:33:44 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 273A820043;
+	Thu, 22 Feb 2024 14:33:42 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 15F532004E;
+	Thu, 22 Feb 2024 14:33:42 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 22 Feb 2024 14:33:42 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
+	id D3921E0294; Thu, 22 Feb 2024 15:33:41 +0100 (CET)
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH v2 RESEND 0/5] sched/vtime: vtime.h headers cleanup
+Date: Thu, 22 Feb 2024 15:33:36 +0100
+Message-Id: <cover.1708612016.git.agordeev@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DWilcBPorEPdwtnR0sFiGCPVISGjb0bZ
+X-Proofpoint-GUID: 9Lzv7XImVzxe76IoKrsKYYXS1zqCGiN-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_11,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 spamscore=0 mlxlogscore=772 suspectscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402220116
 
-Commit f34158edd249 ("MAINTAINERS: Add entry for Mobileye MIPS SoCs") adds
-the section MOBILEYE MIPS SOCS with a file entry to the non-existing file
-include/dt-bindings/soc/mobileye,eyeq5.h.
+Hi All,
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-broken reference.
+There are no changes since the last post, just a re-send.
 
-Possibly, this file was part of an early patch series, but in the final
-patch series, this file does not appear anymore.
+v2:
 
-Delete this file entry in the MOBILEYE MIPS SOCS section.
+- patch 4: commit message reworded (Heiko)
+- patch 5: vtime.h is removed from Kbuild scripts (PowerPC only) (Heiko)
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+v1:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 28b2013031bd..19ac6a8e46b2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14914,7 +14914,6 @@ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
- F:	arch/mips/boot/dts/mobileye/
- F:	arch/mips/configs/eyeq5_defconfig
- F:	arch/mips/mobileye/board-epm5.its.S
--F:	include/dt-bindings/soc/mobileye,eyeq5.h
- 
- MODULE SUPPORT
- M:	Luis Chamberlain <mcgrof@kernel.org>
+Please find a small cleanup to vtime_task_switch() wiring.
+I split it into smaller patches to allow separate PowerPC
+vs s390 reviews. Otherwise patches 2+3 and 4+5 could have
+been merged.
+
+I tested it on s390 and compile-tested it on 32- and 64-bit
+PowerPC and few other major architectures only, but it is
+only of concern for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE-capable
+ones (AFAICT).
+
+Thanks!
+
+Alexander Gordeev (5):
+  sched/vtime: remove confusing arch_vtime_task_switch() declaration
+  sched/vtime: get rid of generic vtime_task_switch() implementation
+  s390/vtime: remove unused __ARCH_HAS_VTIME_TASK_SWITCH leftover
+  s390/irq,nmi: include <asm/vtime.h> header directly
+  sched/vtime: do not include <asm/vtime.h> header
+
+ arch/powerpc/include/asm/Kbuild    |  1 -
+ arch/powerpc/include/asm/cputime.h | 13 -------------
+ arch/powerpc/kernel/time.c         | 22 ++++++++++++++++++++++
+ arch/s390/include/asm/vtime.h      |  2 --
+ arch/s390/kernel/irq.c             |  1 +
+ arch/s390/kernel/nmi.c             |  1 +
+ include/asm-generic/vtime.h        |  1 -
+ include/linux/vtime.h              |  5 -----
+ kernel/sched/cputime.c             | 13 -------------
+ 9 files changed, 24 insertions(+), 35 deletions(-)
+ delete mode 100644 include/asm-generic/vtime.h
+
 -- 
-2.17.1
+2.40.1
 
 
