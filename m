@@ -1,141 +1,181 @@
-Return-Path: <linux-kernel+bounces-77319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C786C8603AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:30:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54A648603AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F390B263FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:30:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795171C24986
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C842F71749;
-	Thu, 22 Feb 2024 20:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06E171743;
+	Thu, 22 Feb 2024 20:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="JGZc1gqk"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M0hXCybI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F325C29CEA;
-	Thu, 22 Feb 2024 20:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6BD3B287
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708633843; cv=none; b=XTV5ZlyFKumEBfyILuZbHIPMMMc51vcPETUmQzOd3Waz9Qks+x4Q8MUsnDVuUbUL/LaQSJV/DLRVt0YaF4qeJfr8tz8yw/wPhbrzL9kXm4ZsimAIkOBe/NLRLiZ9ZaAW5qQOJwGGDknNV7n2fFHw+0+HPBLSLEok1XZ6mK8TG2I=
+	t=1708633896; cv=none; b=PrFG3mNktHjT/YvcTJUsN8X7GE4FfaMLfrPrbI6M7toB0IzgTLa8XqFiZJ0WAOzqDzYmU0+hGRtUF4jjqsy1aBBlvDsQRK8STWyp5Gnmu+zrv1ykwzrf+AYQjTybufwN651xXn0TMrdk5E7AeUBRUPomqjA5HZbgK2BhXTWWauY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708633843; c=relaxed/simple;
-	bh=PGw/6elJRjzjT5oami1yJD74wKwg8urvYRLz170UPWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=a0gMP9lMZvuMcpFVCY6yzKw8SuTGC80XtmjIlCuWbBs7LzpMGoAtdxoI5gwFy5tRTNBAfFC/rTRtGnrgHFNwUOOrrvAGklvO0J96m5z4slSmOujeA7rlWktXYdEBLAFfErSUoPcdbyUwRlPiqCqnU/+vYr5Wjen8sEZe3dH8YEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=JGZc1gqk; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=uDD88zaVrMvSV7jyXIjccldv2PnZ3aOybLZ9ITuOEPM=; b=JGZc1gqkZdMeL5Y4Bsdn/FPyaq
-	DFOTfRXZTGmrEQmBgQ5yBj0Dbf9dCT8o6LG1NZ7WjVclxxUFMHtPouewiUtOBODiJaaefLnY6LK74
-	wVx+P36s6ULKZM2OqnQX2+63eY3fP4Sda0nDOHVqFGm6/hTL2xwheMFdsp9jSvVN3jeqtddSS9kdS
-	wdG7m+AgLId0wB3PGptDb5agHuynLsV9VSrPbxGJIp9pvk7TCbjMGCzM4zx4z6rfRAla3N6mFFSn3
-	OSSUPSWcdYyrEPhPB8qnL+l75+Sbcc26ihMXCNfye6Uyh3b391GsEFcx9TNbnV8zAQL5/a+U1wovK
-	zRamh19Q==;
-Received: from 179-125-75-196-dinamico.pombonet.net.br ([179.125.75.196] helo=quatroqueijos.lan)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rdFi4-002SRK-9F; Thu, 22 Feb 2024 21:30:24 +0100
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>,
-	dlunev@chromium.org,
-	Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Subject: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Date: Thu, 22 Feb 2024 17:30:13 -0300
-Message-Id: <20240222203013.2649457-1-cascardo@igalia.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708633896; c=relaxed/simple;
+	bh=frCw0vw8Hnz0wsAVXoXZBwpSJ02lJS7FmLNaWilu4gQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fk2TPZ3Usnq+lyLdRreTS1nEuvMMkqQwTXTsHBlFKdYn/JsVLJrV/pr3NlTcpsWHszVAmtWSVuXu9BOpFmVIhB3rnvrAGBetp5SGAmYVUA55h2k+ivjtN9F6BnkHhbt4s4wA2GuyBnQxXdIHRQesBqT/H0OS7ov6XiDUWilINDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M0hXCybI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708633894;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ml62MscfXMtib2J91KWEJozUo6pIGfLxBFp+YKWAR2g=;
+	b=M0hXCybIr9+UYyuHYWGuXrEvGRc/ujldFcdsPMFEKI4ALXBDqdGKkpJnXM/+NyZY1yD6Ul
+	TAvp5NWSHr2dXMo2Lw2pjBImCIsslTuXvxsUkhzKru+DiVfP0tCbdR5/woe7Ija4Yu0UUj
+	cI1d4SUGSM8tHoeEZPNjt5qrcd6ZFNE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-330--HrSEjiSM8akjnNIrwS0WQ-1; Thu, 22 Feb 2024 15:31:32 -0500
+X-MC-Unique: -HrSEjiSM8akjnNIrwS0WQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41290780cafso608385e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:31:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708633891; x=1709238691;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ml62MscfXMtib2J91KWEJozUo6pIGfLxBFp+YKWAR2g=;
+        b=KIjKxOhYvUHj/0fDHR8ahfOzGnHN8Uc7wE0N9icrlm0x+mFWrlKaYOR0xzKmlrXF5i
+         yi0lFtIqIYYb+oTepsGSRkNa7cZqKHuw2sflXkIJ0PajjzQfzGL59665RlHyQSCAjz7M
+         abFoBuioTsIFC48vNPzoOj96DMjfwabn8phqPRMyKb6u2Py8HsMD1NEcJYMSqXlaybTv
+         Nh30n2x2cluuTsHoDVD24qsqruR1vymeewBqLeDn2ansFniB9xdeUdLbFLlNvZrvViQY
+         m0qEErydXFIPTL98dQYXh1AC0Y9B/HW29344Gg9ECjiK/Fa3T/fnUi1UGoNSXzULSr+i
+         czSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxPfLULCDOQbgKBN8895Ui1sQtftsXwraSjGru1+wnEHUEF+LcUdWNHypWt57ZMY+N1qxyUtwHFwQ2HsBfVqszWCAiguDgBpyWLXoi
+X-Gm-Message-State: AOJu0YxfY3EtMk+CXJANzg8aROMd4Jmf38xhx1nr0T8pvYscUKxGQeEW
+	x4Ov8L34FJiqiFOD7X9zrMaleiN4tXJd190C5+7EY5c8HaDrvcDT0I6ZKjn8dByheFcUrtfv2lv
+	liSwAcJRAxxYnQcLIPvITSUuKnjWUth0Yeu/8Ge3MzRMlyye54TVpkwem9cBijw==
+X-Received: by 2002:a05:600c:3790:b0:40f:cf69:3e1a with SMTP id o16-20020a05600c379000b0040fcf693e1amr15985745wmr.39.1708633891744;
+        Thu, 22 Feb 2024 12:31:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG3FdHXFce+xg3CWNOl2GOEfrJH/lTzsntzdD95OUI8gjyeZM+JSJT1saB9k7R5eAvOpdv2jQ==
+X-Received: by 2002:a05:600c:3790:b0:40f:cf69:3e1a with SMTP id o16-20020a05600c379000b0040fcf693e1amr15985739wmr.39.1708633891400;
+        Thu, 22 Feb 2024 12:31:31 -0800 (PST)
+Received: from redhat.com ([172.93.237.99])
+        by smtp.gmail.com with ESMTPSA id r1-20020a05600c298100b0041069adbd87sm7218365wmd.21.2024.02.22.12.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 12:31:30 -0800 (PST)
+Date: Thu, 22 Feb 2024 15:31:23 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Cc: Halil Pasic <pasic@linux.ibm.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jason Wang <jasowang@redhat.com>,
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	Marc Hartmayer <mhartmay@linux.ibm.com>
+Subject: Re: virtcrypto_dataq_callback calls crypto_finalize_request() from
+ irq context
+Message-ID: <20240222153106-mutt-send-email-mst@kernel.org>
+References: <20230922154546.4f7447ce.pasic@linux.ibm.com>
+ <ed47fb73ad634ca395bd6c8e979dda8e@huawei.com>
+ <20230924193941.6a02237f.pasic@linux.ibm.com>
+ <20231101092521-mutt-send-email-mst@kernel.org>
+ <5d9ebbdb042845009b47e6a9ee149231@huawei.com>
+ <20231102091548-mutt-send-email-mst@kernel.org>
+ <6e1792a31c1646f4a301faf1a1b42cc1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e1792a31c1646f4a301faf1a1b42cc1@huawei.com>
 
-The tools used for creating images for the Lego Mindstrom EV3 are not
-adding '.' and '..' entry in the 'Projects' directory.
+On Thu, Nov 02, 2023 at 01:25:31PM +0000, Gonglei (Arei) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Michael S. Tsirkin [mailto:mst@redhat.com]
+> > Sent: Thursday, November 2, 2023 9:17 PM
+> > To: Gonglei (Arei) <arei.gonglei@huawei.com>
+> > Cc: Halil Pasic <pasic@linux.ibm.com>; Herbert Xu
+> > <herbert@gondor.apana.org.au>; Jason Wang <jasowang@redhat.com>;
+> > virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+> > linux-crypto@vger.kernel.org; Marc Hartmayer <mhartmay@linux.ibm.com>
+> > Subject: Re: virtcrypto_dataq_callback calls crypto_finalize_request() from irq
+> > context
+> > 
+> > On Thu, Nov 02, 2023 at 01:04:07PM +0000, Gonglei (Arei) wrote:
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Michael S. Tsirkin [mailto:mst@redhat.com]
+> > > > Sent: Wednesday, November 1, 2023 9:26 PM
+> > > > To: Halil Pasic <pasic@linux.ibm.com>
+> > > > Cc: Gonglei (Arei) <arei.gonglei@huawei.com>; Herbert Xu
+> > > > <herbert@gondor.apana.org.au>; Jason Wang <jasowang@redhat.com>;
+> > > > virtualization@lists.linux-foundation.org;
+> > > > linux-kernel@vger.kernel.org; linux-crypto@vger.kernel.org; Marc
+> > > > Hartmayer <mhartmay@linux.ibm.com>
+> > > > Subject: Re: virtcrypto_dataq_callback calls
+> > > > crypto_finalize_request() from irq context
+> > > >
+> > > > On Sun, Sep 24, 2023 at 07:39:41PM +0200, Halil Pasic wrote:
+> > > > > On Sun, 24 Sep 2023 11:56:25 +0000 "Gonglei (Arei)"
+> > > > > <arei.gonglei@huawei.com> wrote:
+> > > > >
+> > > > > > Hi Halil,
+> > > > > >
+> > > > > > Commit 4058cf08945 introduced a check for detecting crypto
+> > > > > > completion function called with enable BH, and indeed the
+> > > > > > virtio-crypto driver didn't disable BH, which needs a patch to fix it.
+> > > > > >
+> > > > > > P.S.:
+> > > > > > https://lore.kernel.org/lkml/20220221120833.2618733-5-clabbe@bay
+> > > > > > libr
+> > > > > > e.com/T/
+> > > > > >
+> > > > > > Regards,
+> > > > > > -Gonglei
+> > > > >
+> > > > > Thanks Gonglei!
+> > > > >
+> > > > > Thanks! I would be glad to test that fix on s390x. Are you about
+> > > > > to send one?
+> > > > >
+> > > > > Regards,
+> > > > > Halil
+> > > >
+> > > >
+> > > > Gonglei did you intend to send a fix?
+> > >
+> > > Actually I sent a patch a month ago, pls see another thread.
+> > >
+> > >
+> > > Regards,
+> > > -Gonglei
+> > 
+> > And I think there was an issue with that patch that you wanted to fix?
+> > config changed callback got fixed but this still didn't.
+> > 
+> Now my concern is whether or not the judgement (commit 4058cf08945c1) is reasonable.
+> 
+> Regards,
+> -Gonglei
 
-Without this fix, the kernel can not fill the inode structure for
-'Projects' directory.
+So what is the plan to deal with the issue?
 
-See https://github.com/microsoft/pxt-ev3/issues/980
-And https://github.com/microsoft/uf2-linux/issues/6
-
-When counting the number of subdirs, ignore .. subdir and add one when
-setting the initial link count for directories. This way, when .. is
-present, it is still accounted for, and when neither . or .. are present, a
-single link is still done, as it should, since this link would be the one
-from the parent directory.
-
-With this fix applied, we can mount an image with such empty directories,
-access them, create subdirectories and remove them.
-
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: Gwendal Grignou <gwendal@chromium.org>
-Link: https://lore.kernel.org/all/20220204062232.3410036-1-gwendal@chromium.org/
-Cc: dlunev@chromium.org
----
- fs/fat/dir.c   |  3 ++-
- fs/fat/inode.c | 12 +++++++++---
- 2 files changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/fs/fat/dir.c b/fs/fat/dir.c
-index 00235b8a1823..fcdb652efc53 100644
---- a/fs/fat/dir.c
-+++ b/fs/fat/dir.c
-@@ -937,7 +937,8 @@ int fat_subdirs(struct inode *dir)
- 	bh = NULL;
- 	cpos = 0;
- 	while (fat_get_short_entry(dir, &cpos, &bh, &de) >= 0) {
--		if (de->attr & ATTR_DIR)
-+		if (de->attr & ATTR_DIR &&
-+		    strncmp(de->name, MSDOS_DOTDOT, MSDOS_NAME))
- 			count++;
- 	}
- 	brelse(bh);
-diff --git a/fs/fat/inode.c b/fs/fat/inode.c
-index 1fac3dabf130..9a3bd38a4494 100644
---- a/fs/fat/inode.c
-+++ b/fs/fat/inode.c
-@@ -494,8 +494,14 @@ static int fat_validate_dir(struct inode *dir)
- {
- 	struct super_block *sb = dir->i_sb;
- 
--	if (dir->i_nlink < 2) {
--		/* Directory should have "."/".." entries at least. */
-+	if (dir->i_nlink < 1) {
-+		/*
-+		 * Though it is expected that directories have at least
-+		 * "."/".." entries, there are filesystems in the field that
-+		 * don't have either. Even in those cases, at least one link
-+		 * is necessary, as otherwise, when trying to increment it,
-+		 * VFS would BUG.
-+		 */
- 		fat_fs_error(sb, "corrupted directory (invalid entries)");
- 		return -EIO;
- 	}
-@@ -534,7 +540,7 @@ int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
- 			return error;
- 		MSDOS_I(inode)->mmu_private = inode->i_size;
- 
--		set_nlink(inode, fat_subdirs(inode));
-+		set_nlink(inode, fat_subdirs(inode) + 1);
- 
- 		error = fat_validate_dir(inode);
- 		if (error < 0)
 -- 
-2.34.1
+MST
 
 
