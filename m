@@ -1,122 +1,78 @@
-Return-Path: <linux-kernel+bounces-77285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 377C0860337
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:50:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B998686036E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3AD9288316
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:50:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DADA5B2C48B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF386E605;
-	Thu, 22 Feb 2024 19:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D85E6AFA5;
+	Thu, 22 Feb 2024 19:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjQ+j8cr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFDD6E5F0;
-	Thu, 22 Feb 2024 19:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CF56AF86;
+	Thu, 22 Feb 2024 19:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708631415; cv=none; b=BXZemLbkIiEN9uFhw3/qhECgVgshDzpmiE/I7y3rzWjpiHy83uwAdDh4ZGwLWf3jK/Zk0TB37CuoPqbxdJzlbDqmo50eq3yPee7qakDqcdt62NtPzYrfg2jN7heLPD6AVPszU1Zyvx/nYp/v2x8bP8Eax41squd28KVvtbl4IPE=
+	t=1708631485; cv=none; b=k+slqZwNzaTjDet3a+uPR4aiDI/8+WBz8rZe7y/MFalpcezCYJQTAUmipWVhcX1zmQw1TGV7ecZZS1x1M+Jhcwsy9c/iOep5lPSDeeoYr+ExOEuuG2buW4DWXAmeSLSu3EPqCHldaUM6S9x3tsFjP/3/5ySwX3ZUgwov7vTria8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708631415; c=relaxed/simple;
-	bh=DN/mPR/MulUxISIwqdVAZ+Dv5KqrCmA0c9BnouZcZQI=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=dGvxEd5cYFtv2BFOwEFoR9yDBy/5fGm398a7fM8I2K6Pzq4m4B95xu7YGK50FNZ8hjymplp6hDG0Q0L3AwxK1w9+41Ind2x7Af0O0QVdt9y3hMxjKDVtsxwe4jqYZeklbvKl62wHU6jQTLiqQIiHBJ+XdeqkEdwAHszy/6XsAdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1BFAC433A6;
-	Thu, 22 Feb 2024 19:50:14 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rdF70-00000006fYj-0CcN;
-	Thu, 22 Feb 2024 14:52:06 -0500
-Message-ID: <20240222195205.909016488@goodmis.org>
-User-Agent: quilt/0.67
-Date: Thu, 22 Feb 2024 14:51:13 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 2/2] tracing: Do not calculate strlen() twice for __string() fields
-References: <20240222195111.139824528@goodmis.org>
+	s=arc-20240116; t=1708631485; c=relaxed/simple;
+	bh=SzwwYFuLR6ZQog8lwwldYZZygr7tXCbPVaY0n40RI1E=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=dEjlhOZmIVqdOwSRmr/dFOFe4tU5edLcejhxjsbIfEO+cf6T18HVOgH0gFaxlY/uNz+tWS9nY1ypqjlkIenBquKXJ8bLd7DSXTA/LgvTd5nHbpIkAeXrZvnXhAM5/5Uk60Ntmgl0SMMDiKKexVeGJvunUclxrddoa4OHAZ8Q/E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjQ+j8cr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4B05AC433F1;
+	Thu, 22 Feb 2024 19:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708631485;
+	bh=SzwwYFuLR6ZQog8lwwldYZZygr7tXCbPVaY0n40RI1E=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=OjQ+j8crwhbOIvhblfbJZZYCvT1V29VU84N/6cVuw1eWP1qawTlnAzkeeLIOYTa3Y
+	 ZXrrcGcN9RC/u69FizSgz5NFLnmpsCvdIMJK+HFzGgjlisOsupMXdXSzDgV+UzzEcz
+	 QPKY6LXgUXoiewaivCyUEpD4WbHGlA2j3PfH5egDyckA+VUdLUXecyXoMp7zrPrdPn
+	 4eCFQfwBhKdaiOfT/0iRwYP/2JyRzgGQ08GDNMTk2KIYh+cnnInkkfneVJasQJW06b
+	 kGIGwgttZHFQgVYjB5M4q7NC4ovUNFfoggQATK5V4eg079+v9ueptCkqduBXr6X/RG
+	 nCuTAjVtuWx6Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 372F7C04E32;
+	Thu, 22 Feb 2024 19:51:25 +0000 (UTC)
+Subject: Re: [GIT PULL] clk fixes for v6.8-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240222064521.2538149-1-sboyd@kernel.org>
+References: <20240222064521.2538149-1-sboyd@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240222064521.2538149-1-sboyd@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+X-PR-Tracked-Commit-Id: cc976dbc492c2bf67d8225845b609ea72e292128
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 88953761b94df7dc9bfc46591a8975401689b057
+Message-Id: <170863148520.11658.7094787355205911363.pr-tracker-bot@kernel.org>
+Date: Thu, 22 Feb 2024 19:51:25 +0000
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The pull request you sent on Wed, 21 Feb 2024 22:45:21 -0800:
 
-The TRACE_EVENT() macro handles dynamic strings by having:
+> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
 
-  TP_PROTO(struct some_struct *s),
-  TP_ARGS(s),
-  TP_STRUCT__entry(
-        __string(my_string, s->string)
- ),
- TP_fast_assign(
-        __assign_str(my_string, s->string);
- )
- TP_printk("%s", __get_str(my_string))
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/88953761b94df7dc9bfc46591a8975401689b057
 
-There's even some code that may call a function helper to find the
-s->string value. The problem with the above is that the work to get the
-length of s->string is done twice. Once at the __string() and again in the
-__assign_str().
+Thank you!
 
-The length of the string is calculated via a strlen(), not once, but twice
-(via strcpy() in __assign_str()). Once during the __string() macro and again
-in __assign_str(). But the length is actually already recorded in the data
-location and there's no reason to call strlen() again.
-
-Just use the saved length that was saved in the __string() code for the
-__assign_str() code.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/trace/stages/stage6_event_callback.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
-index e09e3d019dcc..d389725937e9 100644
---- a/include/trace/stages/stage6_event_callback.h
-+++ b/include/trace/stages/stage6_event_callback.h
-@@ -32,8 +32,9 @@
- 
- #undef __assign_str
- #define __assign_str(dst, src)						\
--	strcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?		\
--	       __data_offsets.dst##_ptr_ : "(null)")
-+	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?		\
-+	       __data_offsets.dst##_ptr_ : "(null)",			\
-+	       __get_dynamic_array_len(dst))
- 
- #undef __assign_str_len
- #define __assign_str_len(dst, src, len)					\
-@@ -94,8 +95,9 @@
- 
- #undef __assign_rel_str
- #define __assign_rel_str(dst, src)					\
--	strcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ?		\
--	       __data_offsets.dst##_ptr_ : "(null)")
-+	memcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ?		\
-+	       __data_offsets.dst##_ptr_ : "(null)",			\
-+	       __get_rel_dynamic_array_len(dst))
- 
- #undef __assign_rel_str_len
- #define __assign_rel_str_len(dst, src, len)				\
 -- 
-2.43.0
-
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
