@@ -1,599 +1,347 @@
-Return-Path: <linux-kernel+bounces-77276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48841860306
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:42:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B953B86031D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B40451F27CD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:42:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2BDE1C24276
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E4373F29;
-	Thu, 22 Feb 2024 19:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22BC96AF86;
+	Thu, 22 Feb 2024 19:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HcXryzbT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vsu78cFn"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F9556AFA0;
-	Thu, 22 Feb 2024 19:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5356254908
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708630837; cv=none; b=S42C9mpFOAz21DUEo22CSlYMYjXlm9utsrKpNDcevY9PNcdsQ+LLamEkNt0D5lP6O7pKfO61rYaRonBSxrPbe/MLwd/i8nnk7jh52Zm3sPBXQfXi+Yn6JXvHbNrEsEnHQ8hP452+02RXFeppXvQ1gwGoXY3ZB7vBGVqaFp2ewfw=
+	t=1708631085; cv=none; b=PzG0a4FgSC2pzXN4ybvaF1gNjKBgjgr+NjPn5P46S+3+vt+mlBGvssATzZqhv4UikG2PjRcLm5mmjXIwWTJg2CaKGqgE4vaLWkGe0wCM25BadYRYsAQ2FJUlX3HWMagFGNevLbopYoZbg/q/stO0wAiqKMUmjoiGO5nVCy2fNCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708630837; c=relaxed/simple;
-	bh=6jiMQsziQVT6fOrvLbLmIT+jqUpGKlFvZg9cowyUhmk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FGqRYJL+WRGMjaEVMasTCfF4M6cIZOtuGyQz0dCVofrxoNRC7KUrjzk3RRKVsb8iT68WNzvzSeDId7rVe8SgpuWx+w9E2ZmUOPNzYCLDbuXifZS8Qmyuuv7ZJ0qMU6HSYQBuXxo4HFzyxAxhslTBd1Tulj7jijU2YjFH8wokSho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HcXryzbT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ECC3CC3277B;
-	Thu, 22 Feb 2024 19:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708630837;
-	bh=6jiMQsziQVT6fOrvLbLmIT+jqUpGKlFvZg9cowyUhmk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=HcXryzbTLxTklinmIs0v8tBAk/fuTwFWON4U4du75hdeFmqvxGGK4i783I6kEr5HH
-	 ijcqlGdmfje/afAcvk8zk1hc5UcDESk25GjTlsyducbtC4Uw7M4ONEYm8CX+UdPBiY
-	 +3aCPG+TRqLkpLp80hdKXJBagI+7h6vFMmVYgnv/wCvFJ9BkpAMMDM5970AXZJ0PBC
-	 kOHzHUcU+XFXEgTQ3sE/6TPChPBVmV7dS5wIcrD4WPCYsKHh2H3LqltiqT4X8TcYla
-	 AtdRKBw5or9UOjnRL1uUV64Gab5BEk4aRhvnHXNndJHahUSU1Iw+7GhzeekOFiqphK
-	 Q1RysQqmvuWrA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD1C8C54791;
-	Thu, 22 Feb 2024 19:40:36 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Fri, 23 Feb 2024 03:40:17 +0800
-Subject: [PATCH v4 7/7] clk: hisilicon: add CRG driver for Hi3798MV200 SoC
+	s=arc-20240116; t=1708631085; c=relaxed/simple;
+	bh=tgWG/Godrei85+X/RdUMDJtVegkqZmu5Afi5kVXwTJQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hB+gDjOQX8wEEj1bhsnOywSv1IB/AcPYl7qF1R8a2knh6SsaKnWFzzZUS75ntPkbabMlKfvJ7y0Kvl/1AnoQl3qzHTRqI0ppCqWIEUwhaqBNE/es0IQFmJIx3pMS3W8Qvm6yFDT7wfCWAK9J8gIMVzcKjcvxzmFYVp65tIxa70I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vsu78cFn; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dbe7e51f91so21665ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:44:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708631083; x=1709235883; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n6OcETDiZuUNE51mFmBIi+Ji9vV910q3idLCCfNTBw0=;
+        b=vsu78cFnGbB7U6cp6otil1RiBwyD0widjeu6RxCtt1od9vHXdITa7IyuoN7hCK63Q1
+         HEyvU9z+pnQLsyQJC9MtN8SKx5eFP7YHxORpx/ZR+tKIGX4kzAg+0YFt6IGXTivHPmHC
+         05E8T5sjhjPWAZH0mOLLv+I1zfl+VI87dwSiymnh3Ls2sMvFBteAbflvM5qwCqAfdGmZ
+         C6SHGzUkDlORCWYCbXX8K6XR6h7eQWvjB7Jleum+738YD2JYOEJrAOu3jrMx06bOlXDP
+         RIBdO5p/jCtSRye3X2wqr/cl3TLHbS6CarreuytTY6y6bQ7RLaVi/2u8/7xMEk0BGq21
+         pkmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708631083; x=1709235883;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n6OcETDiZuUNE51mFmBIi+Ji9vV910q3idLCCfNTBw0=;
+        b=MOPB8YIWmfhhc2jbtVrqWmIAAZid1QL+JFGz+R9OtXkW4fl4jD0aNEp07YBUdMHsKc
+         1g0NaEy9mT1Pun1eWyRLNXpSEdckEOX+CZylX84ZlZDaI9xu/7kXBa3N4LOL20XjQQZH
+         Z4GwCvC8ufPhWJioPRvLKYHy2F182p6AI6Ce7F2mdF1gqQFve0CCpC8L8INKzHvSHDf1
+         x4rXWGorMCwW51w8DoiyMGvVKlShJXRn0KebniycyRDaVTqvcb7aRPVBBxlLxg1WeXlv
+         0FcruAZCvmJLUrVJr4YzeS3Nmm5cEQxO25TcwzYSWqxuEDlgjODBJWaVbe6zpKC/xbQC
+         hQGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDoPZKHeBxTynqqGnRMim7zEoMV5n4iPArEk9hF1dfQKQkDQoOz51vLXAz4R/jEdDhOPmQsAN3UwWxxvs88YdCwiA0H+wzhuyxQzGJ
+X-Gm-Message-State: AOJu0Yw3Ic+ZTwEEwy3jzElRJDqjUVWhXaaFF9t2s5owDm0yrnlYNco1
+	2AZkFnkMwXO9QOcobJdwfhXfQgFIsYXj9oUiAHXDCtZBzLzM6E5BuJX6lYbiBkVeCNJPqvkb0mD
+	TDuJD3dBrZY+5FCF/gISgEcMOlaO0AlC/fUg8
+X-Google-Smtp-Source: AGHT+IF1ooeawE2vMbZjpLm2Ef3AVCRRzjYlPHKaZvx8SmduQN4iR7iUcbz6RiWqnOpXyKd387FJreCALy56syI2ux8=
+X-Received: by 2002:a17:902:ce91:b0:1db:a6be:ddc6 with SMTP id
+ f17-20020a170902ce9100b001dba6beddc6mr544314plg.27.1708631082359; Thu, 22 Feb
+ 2024 11:44:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-clk-mv200-v4-7-3e37e501d407@outlook.com>
-References: <20240223-clk-mv200-v4-0-3e37e501d407@outlook.com>
-In-Reply-To: <20240223-clk-mv200-v4-0-3e37e501d407@outlook.com>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708630834; l=18889;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=/5tubVp4D3o4gm3SuOgYSetmwQOt4vNMUPhcAqZfpwU=;
- b=BiJLOgTNAbMlBwvxeGamhBHOlts+vjki+4zoHQ3kF/OWXwzxKzTTPsgypGiO9LvrraFIdSL2T
- J0VDW9tra9tBgOGij+d0agMU8scgM6j7Umx2CIAEubEl5w+wwtQsNW2
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+References: <20240221175210.19936-1-khuey@kylehuey.com> <20240221175210.19936-2-khuey@kylehuey.com>
+ <CAP-5=fXsv7TJ_SVOZc38fN0gn+7cWBcMWt3FdVLcs5v0_vO=uw@mail.gmail.com>
+ <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
+ <CAP-5=fVWUAWa4vZ7_Zb_3DjaMiTGT6grfFO2j_kOFbuZemJZTA@mail.gmail.com> <CAP045Arp+1j_W_iiHWwOGRCvvXCg3pC=gH5WMho-RpQXi4H1xg@mail.gmail.com>
+In-Reply-To: <CAP045Arp+1j_W_iiHWwOGRCvvXCg3pC=gH5WMho-RpQXi4H1xg@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 22 Feb 2024 11:44:29 -0800
+Message-ID: <CAP-5=fXh0OunzyZdky9BCqA1QfsqwPifCbbFRpsB5QY+5DP6+A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, "Robert O'Callahan" <robert@ocallahan.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Yang Xiwen <forbidden405@outlook.com>
+On Thu, Feb 22, 2024 at 10:41=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
+>
+> On Thu, Feb 22, 2024 at 10:33=E2=80=AFAM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > On Thu, Feb 22, 2024 at 9:55=E2=80=AFAM Kyle Huey <me@kylehuey.com> wro=
+te:
+> > >
+> > > On Wed, Feb 21, 2024 at 10:36=E2=80=AFAM Ian Rogers <irogers@google.c=
+om> wrote:
+> > > >
+> > > > On Wed, Feb 21, 2024 at 9:52=E2=80=AFAM Kyle Huey <me@kylehuey.com>=
+ wrote:
+> > > > >
+> > > > > The test uses PERF_RECORD_SWITCH records to fill the ring buffer =
+and
+> > > > > trigger the watermark wakeup, which in turn should trigger an IO
+> > > > > signal.
+> > > > >
+> > > > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> > > > > ---
+> > > > >  tools/perf/tests/Build              |   1 +
+> > > > >  tools/perf/tests/builtin-test.c     |   1 +
+> > > > >  tools/perf/tests/tests.h            |   1 +
+> > > > >  tools/perf/tests/watermark_signal.c | 123 ++++++++++++++++++++++=
+++++++
+> > > > >  4 files changed, 126 insertions(+)
+> > > > >  create mode 100644 tools/perf/tests/watermark_signal.c
+> > > > >
+> > > > > diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+> > > > > index 53ba9c3e20e0..de43eb60b280 100644
+> > > > > --- a/tools/perf/tests/Build
+> > > > > +++ b/tools/perf/tests/Build
+> > > > > @@ -67,6 +67,7 @@ perf-y +=3D sigtrap.o
+> > > > >  perf-y +=3D event_groups.o
+> > > > >  perf-y +=3D symbols.o
+> > > > >  perf-y +=3D util.o
+> > > > > +perf-y +=3D watermark_signal.o
+> > > > >
+> > > > >  ifeq ($(SRCARCH),$(filter $(SRCARCH),x86 arm arm64 powerpc))
+> > > > >  perf-$(CONFIG_DWARF_UNWIND) +=3D dwarf-unwind.o
+> > > > > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/b=
+uiltin-test.c
+> > > > > index 4a5973f9bb9b..715c01a2172a 100644
+> > > > > --- a/tools/perf/tests/builtin-test.c
+> > > > > +++ b/tools/perf/tests/builtin-test.c
+> > > > > @@ -124,6 +124,7 @@ static struct test_suite *generic_tests[] =3D=
+ {
+> > > > >         &suite__event_groups,
+> > > > >         &suite__symbols,
+> > > > >         &suite__util,
+> > > > > +       &suite__watermark_signal,
+> > > > >         NULL,
+> > > > >  };
+> > > > >
+> > > > > diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> > > > > index dad3d7414142..7ef4e0d0a77b 100644
+> > > > > --- a/tools/perf/tests/tests.h
+> > > > > +++ b/tools/perf/tests/tests.h
+> > > > > @@ -146,6 +146,7 @@ DECLARE_SUITE(sigtrap);
+> > > > >  DECLARE_SUITE(event_groups);
+> > > > >  DECLARE_SUITE(symbols);
+> > > > >  DECLARE_SUITE(util);
+> > > > > +DECLARE_SUITE(watermark_signal);
+> > > > >
+> > > > >  /*
+> > > > >   * PowerPC and S390 do not support creation of instruction break=
+points using the
+> > > > > diff --git a/tools/perf/tests/watermark_signal.c b/tools/perf/tes=
+ts/watermark_signal.c
+> > > > > new file mode 100644
+> > > > > index 000000000000..ae4abedc4b7c
+> > > > > --- /dev/null
+> > > > > +++ b/tools/perf/tests/watermark_signal.c
+> > > > > @@ -0,0 +1,123 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > +#include <stddef.h>
+> > > > > +#include <signal.h>
+> > > > > +#include <stdlib.h>
+> > > > > +#include <string.h>
+> > > > > +#include <sys/ioctl.h>
+> > > > > +#include <sys/mman.h>
+> > > > > +#include <sys/wait.h>
+> > > > > +#include <unistd.h>
+> > > > > +#include <errno.h>
+> > > > > +#include <fcntl.h>
+> > > > > +
+> > > > > +#include "tests.h"
+> > > > > +#include "debug.h"
+> > > > > +#include "event.h"
+> > > > > +#include "../perf-sys.h"
+> > > > > +#include "cloexec.h"
+> > > > > +#include <internal/lib.h> // page_size
+> > > > > +
+> > > > > +static int sigio_count;
+> > > > > +
+> > > > > +static void handle_sigio(int sig __always_unused)
+> > > > > +{
+> > > > > +       ++sigio_count;
+> > > > > +}
+> > > > > +
+> > > > > +static void do_child(void)
+> > > > > +{
+> > > > > +       for (int i =3D 0; i < 20; ++i)
+> > > > > +               sleep(1);
+> > > > > +
+> > > > > +       exit(0);
+> > > > > +}
+> > > > > +
+> > > > > +static int test__watermark_signal(struct test_suite *test __mayb=
+e_unused, int subtest __maybe_unused)
+> > > > > +{
+> > > > > +       struct perf_event_attr attr;
+> > > > > +       struct perf_event_mmap_page *p =3D NULL;
+> > > > > +       sighandler_t previous_sigio =3D SIG_ERR;
+> > > > > +       pid_t child =3D -1;
+> > > > > +       int fd =3D -1;
+> > > > > +       int ret =3D TEST_FAIL;
+> > > > > +
+> > > > > +       previous_sigio =3D signal(SIGIO, handle_sigio);
+> > > > > +       if (previous_sigio =3D=3D SIG_ERR) {
+> > > > > +               pr_debug("failed setting SIGIO handler\n");
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       memset(&attr, 0, sizeof(attr));
+> > > > > +       attr.size =3D sizeof(attr);
+> > > > > +       attr.type =3D PERF_TYPE_SOFTWARE;
+> > > > > +       attr.config =3D PERF_COUNT_SW_DUMMY;
+> > > > > +       attr.sample_period =3D 1;
+> > > > > +       attr.disabled =3D 1;
+> > > > > +       attr.watermark =3D 1;
+> > > > > +       attr.context_switch =3D 1;
+> > > > > +       attr.wakeup_watermark =3D 1;
+> > > > > +
+> > > > > +       child =3D fork();
+> > > > > +       if (child =3D=3D 0)
+> > > > > +               do_child();
+> > > > > +       else if (child < 0) {
+> > > > > +               pr_debug("failed fork() %d\n", errno);
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       fd =3D sys_perf_event_open(&attr, child, -1, -1,
+> > > > > +                                perf_event_open_cloexec_flag());
+> > > > > +       if (fd < 0) {
+> > > > > +               pr_debug("failed opening event %llx\n", attr.conf=
+ig);
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       if (fcntl(fd, F_SETFL, FASYNC)) {
+> > > > > +               pr_debug("failed F_SETFL FASYNC %d\n", errno);
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > >
+> > > > Thanks for the work! The perf tool and perf test should run on olde=
+r
+> > > > kernels ideally without failure. I'm assuming this would fail on an
+> > > > older kernel. Could we make the return value skip in that case?
+> > >
+> > > Ah, hmm, I wasn't aware of that. This would fail on an older kernel,
+> > > yes. It's not possible to distinguish between an older kernel and a
+> > > kernel where this fix broke (at least not without hardcoding in an
+> > > expected good kernel version, which seems undesirable), so that would
+> > > mean the test would always return ok or skip, not ok or fail. Is that
+> > > ok?
+> >
+> > Not great :-) Is there any hint from the errno? I was hoping for
+> > EOPNOTSUPP but I'm guessing it will be EINVAL, in which case probably
+> > something like:
+> > /* Older kernels lack support. */
+> > ret =3D (errno =3D=3D EINVAL) ? TEST_SKIP : TEST_FAIL;
+>
+> Ah, I see. The issue I am trying to fix is not that setting FASYNC is
+> rejected with an error code, it's that it doesn't actually send the IO
+> signal when the watermark is reached.
 
-Add CRG driver for Hi3798MV200 SoC. CRG(Clock and Reset Generator) module
-generates clock and reset signals used by other module blocks on SoC.
+That's unfortunate. Perhaps similar to errno you could use uname,
+return skip for failures on older kernels and fail on newer kernels.
 
-Only currently used clocks are added. Clocks without mainline user are omitted.
+Thanks,
+Ian
 
-Notably PLLs are missing due to the lack of PLL driver.
-
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
----
- drivers/clk/hisilicon/Kconfig           |   8 +
- drivers/clk/hisilicon/Makefile          |   1 +
- drivers/clk/hisilicon/crg-hi3798mv200.c | 462 ++++++++++++++++++++++++++++++++
- 3 files changed, 471 insertions(+)
-
-diff --git a/drivers/clk/hisilicon/Kconfig b/drivers/clk/hisilicon/Kconfig
-index c1ec75aa4ccd..fab8059240b7 100644
---- a/drivers/clk/hisilicon/Kconfig
-+++ b/drivers/clk/hisilicon/Kconfig
-@@ -45,6 +45,14 @@ config COMMON_CLK_HI3798CV200
- 	help
- 	  Build the clock driver for hi3798cv200.
- 
-+config COMMON_CLK_HI3798MV200
-+	tristate "Hi3798MV200 Clock Driver"
-+	depends on ARCH_HISI || COMPILE_TEST
-+	select RESET_HISI
-+	default ARCH_HISI
-+	help
-+	  Build the clock driver for hi3798mv200.
-+
- config COMMON_CLK_HI6220
- 	bool "Hi6220 Clock Driver"
- 	depends on ARCH_HISI || COMPILE_TEST
-diff --git a/drivers/clk/hisilicon/Makefile b/drivers/clk/hisilicon/Makefile
-index 2978e56cb876..7acb63e909bd 100644
---- a/drivers/clk/hisilicon/Makefile
-+++ b/drivers/clk/hisilicon/Makefile
-@@ -14,6 +14,7 @@ obj-$(CONFIG_COMMON_CLK_HI3559A)	+= clk-hi3559a.o
- obj-$(CONFIG_COMMON_CLK_HI3660) += clk-hi3660.o
- obj-$(CONFIG_COMMON_CLK_HI3670) += clk-hi3670.o
- obj-$(CONFIG_COMMON_CLK_HI3798CV200)	+= crg-hi3798cv200.o
-+obj-$(CONFIG_COMMON_CLK_HI3798MV200)	+= crg-hi3798mv200.o
- obj-$(CONFIG_COMMON_CLK_HI6220)	+= clk-hi6220.o
- obj-$(CONFIG_RESET_HISI)	+= reset.o
- obj-$(CONFIG_STUB_CLK_HI6220)	+= clk-hi6220-stub.o
-diff --git a/drivers/clk/hisilicon/crg-hi3798mv200.c b/drivers/clk/hisilicon/crg-hi3798mv200.c
-new file mode 100644
-index 000000000000..065def955e6a
---- /dev/null
-+++ b/drivers/clk/hisilicon/crg-hi3798mv200.c
-@@ -0,0 +1,462 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Hi3798MV200 Clock and Reset Generator Driver
-+ *
-+ * Copyright (c) 2024 Yang Xiwen <forbidden405@outlook.com>
-+ * Copyright (c) 2016 HiSilicon Technologies Co., Ltd.
-+ */
-+
-+#include <dt-bindings/clock/hisilicon,hi3798mv200-crg.h>
-+#include <dt-bindings/clock/hisilicon,hi3798mv200-sysctrl.h>
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include "clk.h"
-+#include "crg.h"
-+#include "reset.h"
-+
-+/* hi3798MV200 core CRG */
-+enum hi3798mv200_crg_inner_clk {
-+	HI3798MV200_FIXED_3M = HI3798MV200_CRG_CLK_COUNT,
-+	HI3798MV200_FIXED_12M,
-+	HI3798MV200_FIXED_24M,
-+	HI3798MV200_FIXED_25M,
-+	HI3798MV200_FIXED_27M,
-+	HI3798MV200_FIXED_48M,
-+	HI3798MV200_FIXED_50M,
-+	HI3798MV200_FIXED_54M,
-+	HI3798MV200_FIXED_60M,
-+	HI3798MV200_FIXED_75M,
-+	HI3798MV200_FIXED_100M,
-+	HI3798MV200_FIXED_125M,
-+	HI3798MV200_FIXED_150M,
-+	HI3798MV200_FIXED_200M,
-+	HI3798MV200_FIXED_250M,
-+	HI3798MV200_FIXED_300M,
-+	HI3798MV200_FIXED_400M,
-+	HI3798MV200_FIXED_450M,
-+	HI3798MV200_MMC_MUX,
-+	HI3798MV200_SDIO0_MUX,
-+	HI3798MV200_SDIO1_MUX,
-+	HI3798MV200_COMBPHY0_MUX,
-+	HI3798MV200_FEMAC_MUX,
-+	HI3798MV200_GMAC_MUX,
-+	HI3798MV200_CRG_NR_CLKS,
-+};
-+
-+static const struct hisi_fixed_rate_clock hi3798mv200_fixed_rate_clks[] = {
-+	{ HI3798MV200_OSC_CLK, "clk_osc", NULL, 0, 24000000, },
-+	{ HI3798MV200_APB_CLK, "clk_apb", NULL, 0, 100000000, },
-+	{ HI3798MV200_AHB_CLK, "clk_ahb", NULL, 0, 200000000, },
-+	{ HI3798MV200_FIXED_3M, "3m", NULL, 0, 3000000, },
-+	{ HI3798MV200_FIXED_12M, "12m", NULL, 0, 12000000, },
-+	{ HI3798MV200_FIXED_24M, "24m", NULL, 0, 24000000, },
-+	{ HI3798MV200_FIXED_25M, "25m", NULL, 0, 25000000, },
-+	{ HI3798MV200_FIXED_27M, "27m", NULL, 0, 27000000, },
-+	{ HI3798MV200_FIXED_48M, "48m", NULL, 0, 48000000, },
-+	{ HI3798MV200_FIXED_50M, "50m", NULL, 0, 50000000, },
-+	{ HI3798MV200_FIXED_54M, "54m", NULL, 0, 54000000, },
-+	{ HI3798MV200_FIXED_60M, "60m", NULL, 0, 60000000, },
-+	{ HI3798MV200_FIXED_75M, "75m", NULL, 0, 75000000, },
-+	{ HI3798MV200_FIXED_100M, "100m", NULL, 0, 100000000, },
-+	{ HI3798MV200_FIXED_125M, "125m", NULL, 0, 125000000, },
-+	{ HI3798MV200_FIXED_150M, "150m", NULL, 0, 150000000, },
-+	{ HI3798MV200_FIXED_200M, "200m", NULL, 0, 200000000, },
-+};
-+
-+static const char *const sdio_mux_p[] = { "100m", "50m", "150m", "25m" };
-+static u32 sdio_mux_table[] = {0, 1, 2, 3};
-+
-+static const char *const mmc_mux_p[] = { "100m", "50m", "25m", "200m", "150m" };
-+static u32 mmc_mux_table[] = {0, 1, 2, 3, 6};
-+
-+static const char *const comphy_mux_p[] = { "25m", "100m"};
-+static const char *const femac_mux_p[] = { "54m", "27m" };
-+static const char *const gmac_mux_p[] = { "125m", "75m" };
-+static const char *const ext_netphy_mux_p[] = { "25m", "50m" };
-+static const char *const mde1_bus_mux_p[] = { "24m", "200m" };
-+static const char *const mde3_bus_mux_p[] = { "24m", "400m" };
-+static u32 mux_table_1bit[] = {0, 1};
-+
-+static const char *const core_bus_mux_p[] = { "24m", "200m", "250m" };
-+static const char *const mde0_bus_mux_p[] = { "24m", "300m", "400m" };
-+static const char *const mde2_bus_mux_p[] = { "24m", "400m", "450m" };
-+static u32 mux_table_2bit_pattern1[] = {0, 1, 2};
-+
-+static struct hisi_mux_clock hi3798mv200_mux_clks[] = {
-+	{ HI3798MV200_CORE_BUS_CLK, "clk_core_bus", core_bus_mux_p, ARRAY_SIZE(core_bus_mux_p),
-+		0, 0x58, 0, 2, 0, mux_table_2bit_pattern1, },
-+	{ HI3798MV200_MDE0_BUS_CLK, "clk_mde0_bus", mde0_bus_mux_p, ARRAY_SIZE(mde0_bus_mux_p),
-+		0, 0x58, 2, 2, 0, mux_table_2bit_pattern1, },
-+	{ HI3798MV200_MDE1_BUS_CLK, "clk_mde1_bus", mde1_bus_mux_p, ARRAY_SIZE(mde1_bus_mux_p),
-+		0, 0x58, 4, 1, 0, mux_table_1bit, },
-+	{ HI3798MV200_MDE2_BUS_CLK, "clk_mde2_bus", mde2_bus_mux_p, ARRAY_SIZE(mde2_bus_mux_p),
-+		0, 0x58, 8, 2, 0, mux_table_2bit_pattern1, },
-+	{ HI3798MV200_MDE3_BUS_CLK, "clk_mde3_bus", mde3_bus_mux_p, ARRAY_SIZE(mde3_bus_mux_p),
-+		0, 0x58, 10, 1, 0, mux_table_1bit, },
-+	{ HI3798MV200_MMC_MUX, "mmc_mux", mmc_mux_p, ARRAY_SIZE(mmc_mux_p),
-+		0, 0xa0, 8, 3, CLK_MUX_ROUND_CLOSEST, mmc_mux_table, },
-+	{ HI3798MV200_COMBPHY0_MUX, "combphy_mux", comphy_mux_p,
-+		ARRAY_SIZE(comphy_mux_p), 0, 0x188, 3, 1, 0, mux_table_1bit, },
-+	{ HI3798MV200_SDIO0_MUX, "sdio0_mux", sdio_mux_p, ARRAY_SIZE(sdio_mux_p),
-+		0, 0x9c, 8, 2, CLK_MUX_ROUND_CLOSEST, sdio_mux_table, },
-+	{ HI3798MV200_SDIO1_MUX, "sdio1_mux", sdio_mux_p, ARRAY_SIZE(sdio_mux_p),
-+		0, 0x28c, 8, 2, CLK_MUX_ROUND_CLOSEST, sdio_mux_table, },
-+	{ HI3798MV200_FEMAC_MUX, "femac_mux", femac_mux_p, ARRAY_SIZE(femac_mux_p),
-+		0, 0xd0, 2, 1, 0, mux_table_1bit, },
-+	{ HI3798MV200_GMAC_MUX, "gmac_mux", gmac_mux_p, ARRAY_SIZE(gmac_mux_p),
-+		0, 0xcc, 7, 1, 0, mux_table_1bit, },
-+	{ HI3798MV200_EXT_NETPHY_CLK, "ext_netphy_mux", ext_netphy_mux_p, ARRAY_SIZE(ext_netphy_mux_p),
-+		0, 0xcc, 6, 1, 0, mux_table_1bit, },
-+};
-+
-+static u32 mmc_phase_regvals[] = {0, 1, 2, 3, 4, 5, 6, 7};
-+static u32 mmc_phase_degrees[] = {0, 45, 90, 135, 180, 225, 270, 315};
-+
-+static struct hisi_phase_clock hi3798mv200_phase_clks[] = {
-+	{ HI3798MV200_SDIO0_SAMPLE_CLK, "sdio0_sample", "clk_sdio0_ciu",
-+		0, 0x9c, 12, 3, mmc_phase_degrees,
-+		mmc_phase_regvals, ARRAY_SIZE(mmc_phase_regvals) },
-+	{ HI3798MV200_SDIO0_DRV_CLK, "sdio0_drive", "clk_sdio0_ciu",
-+		0, 0x9c, 16, 3, mmc_phase_degrees,
-+		mmc_phase_regvals, ARRAY_SIZE(mmc_phase_regvals) },
-+	{ HI3798MV200_SDIO1_SAMPLE_CLK, "sdio1_sample", "clk_sdio1_ciu",
-+		0, 0x28c, 12, 3, mmc_phase_degrees,
-+		mmc_phase_regvals, ARRAY_SIZE(mmc_phase_regvals) },
-+	{ HI3798MV200_SDIO1_DRV_CLK, "sdio1_drive", "clk_sdio1_ciu",
-+		0, 0x28c, 16, 3, mmc_phase_degrees,
-+		mmc_phase_regvals, ARRAY_SIZE(mmc_phase_regvals) },
-+	{ HI3798MV200_MMC_SAMPLE_CLK, "mmc_sample", "clk_mmc_ciu",
-+		0, 0xa0, 12, 3, mmc_phase_degrees,
-+		mmc_phase_regvals, ARRAY_SIZE(mmc_phase_regvals) },
-+	{ HI3798MV200_MMC_DRV_CLK, "mmc_drive", "clk_mmc_ciu",
-+		0, 0xa0, 16, 3, mmc_phase_degrees,
-+		mmc_phase_regvals, ARRAY_SIZE(mmc_phase_regvals) },
-+};
-+
-+static const struct hisi_gate_clock hi3798mv200_gate_clks[] = {
-+	/* UART */
-+	{ HI3798MV200_UART2_CLK, "clk_uart2", "75m",
-+		CLK_SET_RATE_PARENT, 0x68, 4, 0, },
-+	{ HI3798MV200_UART3_CLK, "clk_uart3", "75m",
-+		CLK_SET_RATE_PARENT, 0x68, 6, 0, },
-+	/* I2C */
-+	{ HI3798MV200_I2C0_CLK, "clk_i2c0", "clk_apb",
-+		CLK_SET_RATE_PARENT, 0x6c, 4, 0, },
-+	{ HI3798MV200_I2C1_CLK, "clk_i2c1", "clk_apb",
-+		CLK_SET_RATE_PARENT, 0x6c, 8, 0, },
-+	{ HI3798MV200_I2C2_CLK, "clk_i2c2", "clk_apb",
-+		CLK_SET_RATE_PARENT, 0x6c, 12, 0, },
-+	/* SPI */
-+	{ HI3798MV200_SPI0_CLK, "clk_spi0", "clk_apb",
-+		CLK_SET_RATE_PARENT, 0x70, 0, 0, },
-+	/* SCI */
-+	{ HI3798MV200_SCI0_CLK, "clk_sci0", "clk_apb",
-+		CLK_SET_RATE_PARENT, 0x74, 0, 0, },
-+	{ HI3798MV200_SCI1_CLK, "clk_sci1", "clk_apb",
-+		CLK_SET_RATE_PARENT, 0x74, 2, 0, },
-+	/* SDIO */
-+	{ HI3798MV200_SDIO0_BIU_CLK, "clk_sdio0_biu", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0x9c, 0, 0, },
-+	{ HI3798MV200_SDIO0_CIU_CLK, "clk_sdio0_ciu", "sdio0_mux",
-+		CLK_SET_RATE_PARENT, 0x9c, 1, 0, },
-+	{ HI3798MV200_SDIO1_BIU_CLK, "clk_sdio1_biu", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0x28c, 0, 0, },
-+	{ HI3798MV200_SDIO1_CIU_CLK, "clk_sdio1_ciu", "sdio1_mux",
-+		CLK_SET_RATE_PARENT, 0x28c, 1, 0, },
-+	/* EMMC */
-+	{ HI3798MV200_MMC_BIU_CLK, "clk_mmc_biu", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xa0, 0, 0, },
-+	{ HI3798MV200_MMC_CIU_CLK, "clk_mmc_ciu", "mmc_mux",
-+		CLK_SET_RATE_PARENT, 0xa0, 1, 0, },
-+	/* Ethernet */
-+	{ HI3798MV200_GMAC_CLK, "clk_gmac", "gmac_mux",
-+		CLK_SET_RATE_PARENT, 0xcc, 2, 0, },
-+	{ HI3798MV200_GSF_CLK, "clk_gmacif", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xcc, 0, 0, },
-+	{ HI3798MV200_ETH_CLK, "clk_femac", "femac_mux",
-+		CLK_SET_RATE_PARENT, 0xd0, 1, 0, },
-+	{ HI3798MV200_ETH_BUS_CLK, "clk_femacif", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xd0, 0, 0, },
-+	{ HI3798MV200_FEPHY_CLK, "clk_fephy", "25m",
-+		CLK_SET_RATE_PARENT, 0x388, 0, 0, },
-+	/* COMBPHY */
-+	{ HI3798MV200_COMBPHY_CLK, "clk_combphy", "combphy_mux",
-+		CLK_SET_RATE_PARENT, 0x188, 0, 0, },
-+	/* USB2 */
-+	{ HI3798MV200_USB2_BUS_CLK, "clk_u2_bus", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xb8, 0, 0, },
-+	{ HI3798MV200_USB2_HST_PHY_CLK, "clk_u2_phy", "60m",
-+		CLK_SET_RATE_PARENT, 0xb8, 4, 0, },
-+	{ HI3798MV200_USB2_12M_CLK, "clk_u2_12m", "12m",
-+		CLK_SET_RATE_PARENT, 0xb8, 2, 0 },
-+	{ HI3798MV200_USB2_48M_CLK, "clk_u2_48m", "48m",
-+		CLK_SET_RATE_PARENT, 0xb8, 1, 0 },
-+	{ HI3798MV200_USB2_UTMI0_CLK, "clk_u2_utmi0", "60m",
-+		CLK_SET_RATE_PARENT, 0xb8, 5, 0 },
-+	{ HI3798MV200_USB2_UTMI1_CLK, "clk_u2_utmi1", "60m",
-+		CLK_SET_RATE_PARENT, 0xb8, 6, 0 },
-+	{ HI3798MV200_USB2_OTG_UTMI_CLK, "clk_u2_otg_utmi", "60m",
-+		CLK_SET_RATE_PARENT, 0xb8, 3, 0 },
-+	{ HI3798MV200_USB2_PHY1_REF_CLK, "clk_u2_phy1_ref", "24m",
-+		CLK_SET_RATE_PARENT, 0xbc, 0, 0 },
-+	{ HI3798MV200_USB2_PHY2_REF_CLK, "clk_u2_phy2_ref", "24m",
-+		CLK_SET_RATE_PARENT, 0xbc, 2, 0 },
-+	/* USB3 bus */
-+	{ HI3798MV200_USB3_GM_CLK, "clk_u3_gm", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xb0, 6, 0 },
-+	{ HI3798MV200_USB3_GS_CLK, "clk_u3_gs", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xb0, 5, 0 },
-+	{ HI3798MV200_USB3_BUS_CLK, "clk_u3_bus", "clk_ahb",
-+		CLK_SET_RATE_PARENT, 0xb0, 0, 0 },
-+	/* USB3 ctrl */
-+	{ HI3798MV200_USB3_SUSPEND_CLK, "clk_u3_suspend", NULL,
-+		CLK_SET_RATE_PARENT, 0xb0, 2, 0 },
-+	{ HI3798MV200_USB3_PIPE_CLK, "clk_u3_pipe", NULL,
-+		CLK_SET_RATE_PARENT, 0xb0, 3, 0 },
-+	{ HI3798MV200_USB3_REF_CLK, "clk_u3_ref", "125m",
-+		CLK_SET_RATE_PARENT, 0xb0, 1, 0 },
-+	{ HI3798MV200_USB3_UTMI_CLK, "clk_u3_utmi", "60m",
-+		CLK_SET_RATE_PARENT, 0xb0, 4, 0 },
-+	/* Watchdog */
-+	{ HI3798MV200_WDG0_CLK, "clk_wdg0", "clk_osc",
-+		CLK_SET_RATE_PARENT, 0x178, 0, 0 },
-+};
-+
-+static struct hisi_clock_data *hi3798mv200_clk_register(
-+				struct platform_device *pdev)
-+{
-+	struct hisi_clock_data *clk_data;
-+	int ret;
-+
-+	clk_data = hisi_clk_alloc(pdev, HI3798MV200_CRG_NR_CLKS);
-+	if (!clk_data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	/* hisi_phase_clock is resource managed */
-+	ret = hisi_clk_register_phase(&pdev->dev,
-+				hi3798mv200_phase_clks,
-+				ARRAY_SIZE(hi3798mv200_phase_clks),
-+				clk_data);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	ret = hisi_clk_register_fixed_rate(hi3798mv200_fixed_rate_clks,
-+				     ARRAY_SIZE(hi3798mv200_fixed_rate_clks),
-+				     clk_data);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	ret = hisi_clk_register_mux(hi3798mv200_mux_clks,
-+				ARRAY_SIZE(hi3798mv200_mux_clks),
-+				clk_data);
-+	if (ret)
-+		goto unregister_fixed_rate;
-+
-+	ret = hisi_clk_register_gate(hi3798mv200_gate_clks,
-+				ARRAY_SIZE(hi3798mv200_gate_clks),
-+				clk_data);
-+	if (ret)
-+		goto unregister_mux;
-+
-+	ret = of_clk_add_provider(pdev->dev.of_node,
-+			of_clk_src_onecell_get, &clk_data->clk_data);
-+	if (ret)
-+		goto unregister_gate;
-+
-+	return clk_data;
-+
-+unregister_gate:
-+	hisi_clk_unregister_gate(hi3798mv200_gate_clks,
-+				ARRAY_SIZE(hi3798mv200_gate_clks),
-+				clk_data);
-+unregister_mux:
-+	hisi_clk_unregister_mux(hi3798mv200_mux_clks,
-+				ARRAY_SIZE(hi3798mv200_mux_clks),
-+				clk_data);
-+unregister_fixed_rate:
-+	hisi_clk_unregister_fixed_rate(hi3798mv200_fixed_rate_clks,
-+				ARRAY_SIZE(hi3798mv200_fixed_rate_clks),
-+				clk_data);
-+	return ERR_PTR(ret);
-+}
-+
-+static void hi3798mv200_clk_unregister(struct platform_device *pdev)
-+{
-+	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
-+
-+	of_clk_del_provider(pdev->dev.of_node);
-+
-+	hisi_clk_unregister_gate(hi3798mv200_gate_clks,
-+				ARRAY_SIZE(hi3798mv200_gate_clks),
-+				crg->clk_data);
-+	hisi_clk_unregister_mux(hi3798mv200_mux_clks,
-+				ARRAY_SIZE(hi3798mv200_mux_clks),
-+				crg->clk_data);
-+	hisi_clk_unregister_fixed_rate(hi3798mv200_fixed_rate_clks,
-+				ARRAY_SIZE(hi3798mv200_fixed_rate_clks),
-+				crg->clk_data);
-+}
-+
-+static const struct hisi_crg_funcs hi3798mv200_crg_funcs = {
-+	.register_clks = hi3798mv200_clk_register,
-+	.unregister_clks = hi3798mv200_clk_unregister,
-+};
-+
-+/* hi3798MV200 sysctrl CRG */
-+
-+enum hi3798mv200_sysctrl_inner_clk {
-+	HI3798MV200_UART0_MUX = HI3798MV200_SYSCTRL_CLK_COUNT,
-+
-+	HI3798MV200_SYSCTRL_NR_CLKS
-+};
-+
-+static const char *const uart0_mux_p[] = { "3m", "75m" };
-+
-+static const char *const mcu_bus_mux_p[] = { "24m", "200m", "6m" };
-+
-+static const struct hisi_mux_clock hi3798mv200_sysctrl_mux_clks[] = {
-+	{ HI3798MV200_UART0_MUX, "uart0_mux", uart0_mux_p, ARRAY_SIZE(uart0_mux_p),
-+		CLK_SET_RATE_PARENT, 0x48, 29, 1, 0, mux_table_1bit, },
-+	{ HI3798MV200_MCU_BUS_CLK, "mcu_bus_mux", mcu_bus_mux_p, ARRAY_SIZE(mcu_bus_mux_p),
-+		CLK_SET_RATE_PARENT, 0x0, 0, 2, 0, mux_table_2bit_pattern1, },
-+};
-+
-+static const struct hisi_gate_clock hi3798mv200_sysctrl_gate_clks[] = {
-+	{ HI3798MV200_MCE_CLK, "clk_mce", "mcu_bus_mux",
-+		CLK_SET_RATE_PARENT, 0x48, 0, 0, },
-+	{ HI3798MV200_IR_CLK, "clk_ir", "clk_osc",
-+		CLK_SET_RATE_PARENT, 0x48, 4, 0, },
-+	{ HI3798MV200_TIMER01_CLK, "clk_timer01", "clk_osc",
-+		CLK_SET_RATE_PARENT, 0x48, 6, 0, },
-+	{ HI3798MV200_UART0_CLK, "clk_uart0", "uart0_mux",
-+		CLK_SET_RATE_PARENT, 0x48, 12, 0, },
-+};
-+
-+static struct hisi_clock_data *hi3798mv200_sysctrl_clk_register(
-+					struct platform_device *pdev)
-+{
-+	struct hisi_clock_data *clk_data;
-+	int ret;
-+
-+	clk_data = hisi_clk_alloc(pdev, HI3798MV200_SYSCTRL_NR_CLKS);
-+	if (!clk_data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = hisi_clk_register_mux(hi3798mv200_sysctrl_mux_clks,
-+				ARRAY_SIZE(hi3798mv200_sysctrl_mux_clks),
-+				clk_data);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	ret = hisi_clk_register_gate(hi3798mv200_sysctrl_gate_clks,
-+				ARRAY_SIZE(hi3798mv200_sysctrl_gate_clks),
-+				clk_data);
-+	if (ret)
-+		goto unregister_mux;
-+
-+	ret = of_clk_add_provider(pdev->dev.of_node,
-+			of_clk_src_onecell_get, &clk_data->clk_data);
-+	if (ret)
-+		goto unregister_gate;
-+
-+	return clk_data;
-+
-+unregister_gate:
-+	hisi_clk_unregister_gate(hi3798mv200_sysctrl_gate_clks,
-+				ARRAY_SIZE(hi3798mv200_sysctrl_gate_clks),
-+				clk_data);
-+unregister_mux:
-+	hisi_clk_unregister_mux(hi3798mv200_sysctrl_mux_clks,
-+				ARRAY_SIZE(hi3798mv200_sysctrl_mux_clks),
-+				clk_data);
-+	return ERR_PTR(ret);
-+}
-+
-+static void hi3798mv200_sysctrl_clk_unregister(struct platform_device *pdev)
-+{
-+	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
-+
-+	of_clk_del_provider(pdev->dev.of_node);
-+
-+	hisi_clk_unregister_gate(hi3798mv200_sysctrl_gate_clks,
-+				ARRAY_SIZE(hi3798mv200_sysctrl_gate_clks),
-+				crg->clk_data);
-+	hisi_clk_unregister_mux(hi3798mv200_sysctrl_mux_clks,
-+				ARRAY_SIZE(hi3798mv200_sysctrl_mux_clks),
-+				crg->clk_data);
-+}
-+
-+static const struct hisi_crg_funcs hi3798mv200_sysctrl_funcs = {
-+	.register_clks = hi3798mv200_sysctrl_clk_register,
-+	.unregister_clks = hi3798mv200_sysctrl_clk_unregister,
-+};
-+
-+static const struct of_device_id hi3798mv200_crg_match_table[] = {
-+	{ .compatible = "hisilicon,hi3798mv200-crg",
-+		.data = &hi3798mv200_crg_funcs },
-+	{ .compatible = "hisilicon,hi3798mv200-sysctrl",
-+		.data = &hi3798mv200_sysctrl_funcs },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, hi3798mv200_crg_match_table);
-+
-+static int hi3798mv200_crg_probe(struct platform_device *pdev)
-+{
-+	struct hisi_crg_dev *crg;
-+
-+	crg = devm_kmalloc(&pdev->dev, sizeof(*crg), GFP_KERNEL);
-+	if (!crg)
-+		return -ENOMEM;
-+
-+	crg->funcs = of_device_get_match_data(&pdev->dev);
-+	if (!crg->funcs)
-+		return -ENOENT;
-+
-+	crg->rstc = hisi_reset_init(pdev);
-+	if (!crg->rstc)
-+		return -ENOMEM;
-+
-+	crg->clk_data = crg->funcs->register_clks(pdev);
-+	if (IS_ERR(crg->clk_data)) {
-+		hisi_reset_exit(crg->rstc);
-+		return PTR_ERR(crg->clk_data);
-+	}
-+
-+	platform_set_drvdata(pdev, crg);
-+	return 0;
-+}
-+
-+static int hi3798mv200_crg_remove(struct platform_device *pdev)
-+{
-+	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
-+
-+	hisi_reset_exit(crg->rstc);
-+	crg->funcs->unregister_clks(pdev);
-+	return 0;
-+}
-+
-+static struct platform_driver hi3798mv200_crg_driver = {
-+	.probe          = hi3798mv200_crg_probe,
-+	.remove		= hi3798mv200_crg_remove,
-+	.driver         = {
-+		.name   = "hi3798mv200-crg",
-+		.of_match_table = hi3798mv200_crg_match_table,
-+	},
-+};
-+
-+static int __init hi3798mv200_crg_init(void)
-+{
-+	return platform_driver_register(&hi3798mv200_crg_driver);
-+}
-+core_initcall(hi3798mv200_crg_init);
-+
-+static void __exit hi3798mv200_crg_exit(void)
-+{
-+	platform_driver_unregister(&hi3798mv200_crg_driver);
-+}
-+module_exit(hi3798mv200_crg_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("HiSilicon Hi3798MV200 CRG Driver");
-
--- 
-2.43.0
-
+> - Kyle
+>
+> > > > > +
+> > > > > +       if (fcntl(fd, F_SETOWN, getpid())) {
+> > > > > +               pr_debug("failed F_SETOWN getpid() %d\n", errno);
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       if (fcntl(fd, F_SETSIG, SIGIO)) {
+> > > > > +               pr_debug("failed F_SETSIG SIGIO %d\n", errno);
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       p =3D mmap(NULL, 2 * page_size, PROT_READ | PROT_WRITE, M=
+AP_SHARED, fd, 0);
+> > > > > +       if (p =3D=3D NULL) {
+> > > > > +               pr_debug("failed to mmap\n");
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       if (ioctl(fd, PERF_EVENT_IOC_ENABLE, 0)) {
+> > > > > +               pr_debug("failed PERF_EVENT_IOC_ENABLE %d\n", err=
+no);
+> > > > > +               goto cleanup;
+> > > > > +       }
+> > > > > +
+> > > > > +       sleep(30);
+> > > >
+> > > > This is kind of a painful wait, could it be less? No sleeps would b=
+e best :-)
+> > >
+> > > We could synchronize with the child using SIGSTOP instead of sleeping
+> > > here. Not sure about getting rid of the tiny sleeps in the child. I
+> > > have observed that sched_yield() doesn't reliably trigger context
+> > > switches (which isn't surprising). I'll experiment with blocking on a
+> > > pipe or something.
+> >
+> > Great, thanks!
+> > Ian
+> >
+> > > - Kyle
+> > >
+> > > > Thanks,
+> > > > Ian
+> > > >
+> > > > > +
+> > > > > +       ret =3D (sigio_count =3D=3D 1) ? TEST_OK : TEST_FAIL;
+> > > > > +
+> > > > > +cleanup:
+> > > > > +       if (p !=3D NULL)
+> > > > > +               munmap(p, 2 * page_size);
+> > > > > +
+> > > > > +       if (fd >=3D 0)
+> > > > > +               close(fd);
+> > > > > +
+> > > > > +       if (child > 0) {
+> > > > > +               kill(child, SIGTERM);
+> > > > > +               waitpid(child, NULL, 0);
+> > > > > +       }
+> > > > > +
+> > > > > +       if (previous_sigio !=3D SIG_ERR)
+> > > > > +               signal(SIGIO, previous_sigio);
+> > > > > +
+> > > > > +       return ret;
+> > > > > +}
+> > > > > +
+> > > > > +DEFINE_SUITE("Watermark signal handler", watermark_signal);
+> > > > > --
+> > > > > 2.34.1
+> > > > >
 
