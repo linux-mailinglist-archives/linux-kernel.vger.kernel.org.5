@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-77113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B0A086015B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:30:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A774686015E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A040F1F21BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:30:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5801D2829C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3121614DFF2;
-	Thu, 22 Feb 2024 18:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A8814EFDF;
+	Thu, 22 Feb 2024 18:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o/2jN3Oc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jmup7ZtY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9C514DFD0;
-	Thu, 22 Feb 2024 18:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3F8B14EFC6;
+	Thu, 22 Feb 2024 18:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625761; cv=none; b=ELRTK8Qz6ra7ARlXK3JscKGmJvuvCxOpej5WJoUctVDeGfm3UxVUP//f8FJOrKj4smr+Enb7xN3b1Pws3V3HyJOXVzoElpDOj12jOIlolUK8cubrDd6R74soHFm7jzLJ8cseTe/d5CgYcmysaxPWICrFFT2LtZo/DP3KXvQhFvA=
+	t=1708625763; cv=none; b=DqyQzVmeWwZ4C3L66Xaw1QNwmf4GvhX1IoWbY3Bw3mkEQ3jELAnmRcIMZHfko0a/8EH272mA2AzBA8/d0FxdjkV5cfS9o5NVvJQLA6wwIZlDA4Tyzpewvi2XAQC8iNLpx81QEvYxxLZQgrGU0mMX0uWY0ZzR4KCwmZO2laKueZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625761; c=relaxed/simple;
-	bh=06Y9bTrXk/Zk/AbVbMU7GmJ4QmvebUl1g2EB4tW+8+Y=;
+	s=arc-20240116; t=1708625763; c=relaxed/simple;
+	bh=BTZIvRqcuCTEKcvLPQKN0PrMjRjf9kk4vsMhE/kOVtY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UwYC0LQx4HD5LSO+Q3iIQDRPHgOFCKOQzP2vVlLqGTBZjxxise3mD2VjD2KE1lclU6zrk8Z0H4qBHAecA6CqUh9DYH6TDiQfK49gxtP/ULIAwRX1cjXH2meZP/LiOVkDR1XQtmABX6XX4NBiKb6xmvcXmxdUcDe0BO+iBcGKZg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o/2jN3Oc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DAB7C433F1;
-	Thu, 22 Feb 2024 18:16:00 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=PhqH7PUrvqAwTWtButs8uHMIRr46q4LobAIwdXiOrI+TY2MAB95OzKDiWErPy59tAPW6QIoh2NOwPtt/OXxJZUQ8NpGFcp+xxbMLrY1Dy50hf+VvArHhhJO+UBCMxZRDfqk3L9M+x2mFjTQDTSDqAezUfYHxf3PiLxcfpHHlcJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jmup7ZtY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42413C43399;
+	Thu, 22 Feb 2024 18:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708625760;
-	bh=06Y9bTrXk/Zk/AbVbMU7GmJ4QmvebUl1g2EB4tW+8+Y=;
+	s=k20201202; t=1708625763;
+	bh=BTZIvRqcuCTEKcvLPQKN0PrMjRjf9kk4vsMhE/kOVtY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=o/2jN3OcW2EHEuhgApfFwexvsxu24F6mDo3xTlm5P5n0dYYsGhwUtDPI8hrjXhRBQ
-	 v0X2n88pj2d7iB7OVwpYNybk546AvqFvCTIe6uvKxYSDSudW3MzkIH6giFRsqEtehe
-	 9wJXC/RFsRwp2s1hHm4/vz5zakhx540MBvwpSdmWdHLL4YLqW0BPR7QufjJ04Ipeme
-	 SHV98ayR1euxJvpLnerk5O4wsbEgTXNSTgLfbxbR/kcL2RCkRkW8RtKqR8gbQmab2O
-	 2euu17XWbEgn3L4iekLP6XfFkXUw9eA2S2wKA/dLBQoQRcZtsS6iQE9o2Ghwt31VpD
-	 m3LiNucktuV2Q==
+	b=Jmup7ZtY0PC+Ppu5C9ix3hOqqK5wEZ+noUiy7APcEAVG25bVpcSHzOT3QYUEWPg38
+	 vnn4IWUvYJxk0rsjc/ulwqwwMM0SUuBWZ+W51mnhum9GoapU+0A2X1HB7caJRJ/CVd
+	 6QxUKYzJujnEoj4nY906EdIxGaCGNjVSe8yjduq3cOcR3Z9T2stK4Zqv9eUyWu/Erq
+	 i0GfhITXuFwGCFBn8Q7XeAhLGwpl3V/zfHEVZblpqKzKKuR9UwiEckxcrnQSde6Ue3
+	 JXjHWcBEN+d556PrpEKnPaRksE9yZKPSvQcNDURhngA6f66MCIzVFCG4n1PMSj83vS
+	 f0fzYZ4fejIrw==
 From: Maxime Ripard <mripard@kernel.org>
-Date: Thu, 22 Feb 2024 19:14:19 +0100
-Subject: [PATCH v7 33/36] drm/sun4i: hdmi: Move mode_set into enable
+Date: Thu, 22 Feb 2024 19:14:20 +0100
+Subject: [PATCH v7 34/36] drm/sun4i: hdmi: Switch to container_of_const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240222-kms-hdmi-connector-state-v7-33-8f4af575fce2@kernel.org>
+Message-Id: <20240222-kms-hdmi-connector-state-v7-34-8f4af575fce2@kernel.org>
 References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
 In-Reply-To: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
@@ -70,91 +70,54 @@ Cc: Hans Verkuil <hverkuil@xs4all.nl>,
  linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>, 
  Sui Jingfeng <sui.jingfeng@linux.dev>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2857; i=mripard@kernel.org;
- h=from:subject:message-id; bh=06Y9bTrXk/Zk/AbVbMU7GmJ4QmvebUl1g2EB4tW+8+Y=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKnX+/4933Hnf92ptXcjNhkouzH3NuQwhs9/YmSuVxqwc
- PGjc+e7OkpZGMS4GGTFFFlihM2XxJ2a9bqTjW8ezBxWJpAhDFycAjCRFE5GhmXXxGSSfV2OzZ4f
- 6nS4zjV8Tumb2Tfe97KGtl8977ewfBfDP4vVfHcfXU9XPBU088R+vs9XX1eu61p5KeN4pB3Tvs1
- f9zADAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1396; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=BTZIvRqcuCTEKcvLPQKN0PrMjRjf9kk4vsMhE/kOVtY=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKnX+/69f2n8caKoQub+F69/+e2KY3v54bKK+SHvnykL9
+ me/4wzt6ihlYRDjYpAVU2SJETZfEndq1utONr55MHNYmUCGMHBxCsBEOOwYGW5MTL44peuu6wL+
+ f5aCIedmyan++RhyZeIKdiFl2Znn9vYz/A+ak310c+ZsyZfhR0Ul1TeK2r3+57NoRdPiCzFbJp7
+ xucAOAA==
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
-We're not doing anything special in atomic_mode_set so we can simply
-merge it into atomic_enable.
+container_of_const() allows to preserve the pointer constness and is
+thus more flexible than inline functions.
 
-Acked-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+Let's switch all our instances of container_of() to container_of_const().
+
+Reviewed-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 38 +++++++++++++---------------------
- 1 file changed, 14 insertions(+), 24 deletions(-)
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-index 799a26215cc2..bae69d696765 100644
+index bae69d696765..c276d984da6b 100644
 --- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
 +++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-@@ -103,33 +103,11 @@ static void sun4i_hdmi_enable(struct drm_encoder *encoder,
- 	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
- 	struct sun4i_hdmi *hdmi = drm_encoder_to_sun4i_hdmi(encoder);
- 	struct drm_display_info *display = &hdmi->connector.display_info;
-+	unsigned int x, y;
- 	u32 val = 0;
+@@ -30,19 +30,11 @@
+ #include "sun4i_drv.h"
+ #include "sun4i_hdmi.h"
  
- 	DRM_DEBUG_DRIVER("Enabling the HDMI Output\n");
- 
--	clk_prepare_enable(hdmi->tmds_clk);
--
--	sun4i_hdmi_setup_avi_infoframes(hdmi, mode);
--	val |= SUN4I_HDMI_PKT_CTRL_TYPE(0, SUN4I_HDMI_PKT_AVI);
--	val |= SUN4I_HDMI_PKT_CTRL_TYPE(1, SUN4I_HDMI_PKT_END);
--	writel(val, hdmi->base + SUN4I_HDMI_PKT_CTRL_REG(0));
--
--	val = SUN4I_HDMI_VID_CTRL_ENABLE;
--	if (display->is_hdmi)
--		val |= SUN4I_HDMI_VID_CTRL_HDMI_MODE;
--
--	writel(val, hdmi->base + SUN4I_HDMI_VID_CTRL_REG);
--}
--
--static void sun4i_hdmi_mode_set(struct drm_encoder *encoder,
--				struct drm_crtc_state *crtc_state,
--				struct drm_connector_state *conn_state)
+-static inline struct sun4i_hdmi *
+-drm_encoder_to_sun4i_hdmi(struct drm_encoder *encoder)
 -{
--	const struct drm_display_mode *mode = &crtc_state->mode;
--	struct sun4i_hdmi *hdmi = drm_encoder_to_sun4i_hdmi(encoder);
--	unsigned int x, y;
--	u32 val;
--
- 	clk_set_rate(hdmi->mod_clk, mode->crtc_clock * 1000);
- 	clk_set_rate(hdmi->tmds_clk, mode->crtc_clock * 1000);
+-	return container_of(encoder, struct sun4i_hdmi,
+-			    encoder);
+-}
++#define drm_encoder_to_sun4i_hdmi(e)		\
++	container_of_const(e, struct sun4i_hdmi, encoder)
  
-@@ -181,6 +159,19 @@ static void sun4i_hdmi_mode_set(struct drm_encoder *encoder,
- 		val |= SUN4I_HDMI_VID_TIMING_POL_VSYNC;
+-static inline struct sun4i_hdmi *
+-drm_connector_to_sun4i_hdmi(struct drm_connector *connector)
+-{
+-	return container_of(connector, struct sun4i_hdmi,
+-			    connector);
+-}
++#define drm_connector_to_sun4i_hdmi(c)		\
++	container_of_const(c, struct sun4i_hdmi, connector)
  
- 	writel(val, hdmi->base + SUN4I_HDMI_VID_TIMING_POL_REG);
-+
-+	clk_prepare_enable(hdmi->tmds_clk);
-+
-+	sun4i_hdmi_setup_avi_infoframes(hdmi, mode);
-+	val |= SUN4I_HDMI_PKT_CTRL_TYPE(0, SUN4I_HDMI_PKT_AVI);
-+	val |= SUN4I_HDMI_PKT_CTRL_TYPE(1, SUN4I_HDMI_PKT_END);
-+	writel(val, hdmi->base + SUN4I_HDMI_PKT_CTRL_REG(0));
-+
-+	val = SUN4I_HDMI_VID_CTRL_ENABLE;
-+	if (display->is_hdmi)
-+		val |= SUN4I_HDMI_VID_CTRL_HDMI_MODE;
-+
-+	writel(val, hdmi->base + SUN4I_HDMI_VID_CTRL_REG);
- }
- 
- static enum drm_mode_status sun4i_hdmi_mode_valid(struct drm_encoder *encoder,
-@@ -206,7 +197,6 @@ static const struct drm_encoder_helper_funcs sun4i_hdmi_helper_funcs = {
- 	.atomic_check	= sun4i_hdmi_atomic_check,
- 	.atomic_disable	= sun4i_hdmi_disable,
- 	.atomic_enable	= sun4i_hdmi_enable,
--	.atomic_mode_set	= sun4i_hdmi_mode_set,
- 	.mode_valid	= sun4i_hdmi_mode_valid,
- };
- 
+ static int sun4i_hdmi_setup_avi_infoframes(struct sun4i_hdmi *hdmi,
+ 					   struct drm_display_mode *mode)
 
 -- 
 2.43.2
