@@ -1,152 +1,170 @@
-Return-Path: <linux-kernel+bounces-76446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49F185F773
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB4585F777
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7915B28327E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:50:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D867A2859BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC82047A6B;
-	Thu, 22 Feb 2024 11:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8923D45BF9;
+	Thu, 22 Feb 2024 11:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LNHlvWpD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OQ9WENxL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KTjgGJO9";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OQ9WENxL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KTjgGJO9"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F8E47781
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A6F208A2;
+	Thu, 22 Feb 2024 11:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602620; cv=none; b=AXwafH/2aoaPLX1CNQJb93H1TOZDYldTZqlM3dRi4NYF8kWs4jShGJhWsA7Ko7b0TOcVf9wHfDHNGiJM0ik/P9BG4DrGYlf4YDdLt6yO8mm5Ljd6UhVxkYCxuqP0iNAPisS6gfTd0A2lPON9tcRDT38ElY32n4ZSFsFUoUNOt1U=
+	t=1708602645; cv=none; b=W286EtR+tytwa4n/8e1f8THEl7/BHafn1qsaZB75dM2hldZNinXK7Ln5o7srWG92+I3o4G1MRQDhO25OF2HbUwBsIpIZDP99apwOceapaIpAIqLhRUN3U7pkJOhM45AzdIf+ysuTyZ/knMMbhQBjRA8K5mZW7Xke3wGM6XcSXWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602620; c=relaxed/simple;
-	bh=ma9DfQIGiAa5vr3ks75PfINXo2TPrC0w7A/88yi8pA8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VmJZJTnW6kkpzpuRhVpEqDaS2EMygcF5SvOkR5ZdQzegPV2avFddb3oJ33WHQYGgdyKLhmjOUNIEJ9MH0Gu+5lmNCvNpsDZ6USyC12nmw2ZYpui+nBgdQNmQBIfgIxiCC+CRZ3I6+kN29DhlJ+eQZiwQQqZTDxvrNP/354N8R84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LNHlvWpD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708602617;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1708602645; c=relaxed/simple;
+	bh=HgRKsDY0PLOGMDAasKMEGBLFqk2ft8ubOfJfMmQV5N8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WyvijNzmzbTZXOlRww/VEJEZ91pGIJ9G9LgTjbUgpQGm/7ELrQPeMBJDtutcj3zSqOO5vgFPbA6l5EnZLomNjhpujgJZ24UeoQ3vu+jZRlwxjO1bK6NK+0f9WNMGnw4KByVJlRDpql1hk/k4qFmeTDP1c9cBiyLYDH4vH9HfZ8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OQ9WENxL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KTjgGJO9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OQ9WENxL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KTjgGJO9; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 36555222B5;
+	Thu, 22 Feb 2024 11:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708602641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ldC5iLR/TjfHxpr5I8kE+2L9PTCMZ2jj1k9txMQpdfM=;
-	b=LNHlvWpDPvqy6mIpfwQBe7iBjXqd28ML5ZmGBOpEMRu1nPlpHyWxgNMk6N4czt4mPdsSNw
-	EkNAUkQeAsQWv+W58bVedLlLGDy8CWVecJCD/r19DIyPYLNKVp7pOJHqgDh2NCRfiiGFCg
-	XRwa7yM8XhJhwk95PwaQFQbgc+ynhvA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-182-g0UZMkfeNbWkzyUAlnhfUA-1; Thu, 22 Feb 2024 06:50:16 -0500
-X-MC-Unique: g0UZMkfeNbWkzyUAlnhfUA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a3bdd99a243so79437866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:50:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708602614; x=1709207414;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ldC5iLR/TjfHxpr5I8kE+2L9PTCMZ2jj1k9txMQpdfM=;
-        b=N05hOo/rwTMB8aJAy+VgoGPlXQdvKYxP01tFucyh8frQHj+tD4mBIJZa9ZRYQlGZnP
-         Ss+YYl1m71XZ9X+RY5G4i9/HtggsIUs9qgxh72gyt5nMD8Zo6eQwZTnAghFofrZpl8FT
-         EEH8KCbUe2nytdP9rVPtd4IstJIuQ+Dkqqx7CmGyaGETbdcwB+x60lxkUJXiJEu21OEg
-         lBYh2sW+RgXjZ9ixBq2eY65+GsjnMyMJwcXnuas/omGSqcaQUIb20QUeTk8UsjpJgMFK
-         HHFMAEwwJFbjOtV6pdYbY238SfUIA57VlSpesg97nyryl7tB8O1hCxuk64pZGaEz9zqr
-         lyiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+LncBH7w6LI2ooI6en8FVK9nQT9aW+G2bdK4DqVJb9zNQucRIS1Acm1KV+/KeIFOT0ZDdC/xYcClJKbTdcbGTucGV7r/44EbpWJU2
-X-Gm-Message-State: AOJu0YxKeyW09EiVvnhX1TaPMT9pLeArrB/rlc3a0k67QOaG/bvVRMZB
-	3tiN2As9u5RMR1rZ3SZT14zK/rP1JrCmPBDrWyQ8pNK/6NC4ugLwfzk0q8Q8pBWHEtXe1+fzKST
-	/C4lJSBi62Cmv6Vr3xTjGdXzra2P3xKH8W34QTpxgfmKrMkAUHThvCLttMUReHMUSD7wseA==
-X-Received: by 2002:a17:906:393:b0:a3f:4ca8:f93e with SMTP id b19-20020a170906039300b00a3f4ca8f93emr2003789eja.24.1708602614217;
-        Thu, 22 Feb 2024 03:50:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHFqkM/gRLrevRcPSWpe7we5hg0Pbu6lFDxiRpmiSyGCXmYKdK+uwM9zZOtenBwAxZkzrXVHw==
-X-Received: by 2002:a17:906:393:b0:a3f:4ca8:f93e with SMTP id b19-20020a170906039300b00a3f4ca8f93emr2003757eja.24.1708602613833;
-        Thu, 22 Feb 2024 03:50:13 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id h10-20020a170906398a00b00a3f99497456sm259912eje.90.2024.02.22.03.50.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 03:50:13 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 63345112DEFE; Thu, 22 Feb 2024 12:50:12 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jiri Kosina
- <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-Subject: Re: [PATCH RFC bpf-next v3 04/16] bpf/helpers: introduce sleepable
- bpf_timers
-In-Reply-To: <20240221-hid-bpf-sleepable-v3-4-1fb378ca6301@kernel.org>
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
- <20240221-hid-bpf-sleepable-v3-4-1fb378ca6301@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 22 Feb 2024 12:50:12 +0100
-Message-ID: <87le7chg5n.fsf@toke.dk>
+	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
+	b=OQ9WENxLJThQnmKrDmZe1chLMzOPrUbrUEsnGFbRdYTDxD58soTl6ZgUGxOHmG8FAzZatV
+	4C4waoX+yHTn87c+gfwbhRmeejfVvhgkrx5fwHC2qPF8wjIWl6crPYMBDP9a1zVF2Ib5ZZ
+	G5at/OK0iLTwQDGs8gTo5EPKi29S7aU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708602641;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
+	b=KTjgGJO9gucsDYuF8huMNLLkVx+dd1XuU5vwqpAGnq57bT98ATwNnY58Gub9QH/XYEYLON
+	e8dQCy4lQg30zbCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708602641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
+	b=OQ9WENxLJThQnmKrDmZe1chLMzOPrUbrUEsnGFbRdYTDxD58soTl6ZgUGxOHmG8FAzZatV
+	4C4waoX+yHTn87c+gfwbhRmeejfVvhgkrx5fwHC2qPF8wjIWl6crPYMBDP9a1zVF2Ib5ZZ
+	G5at/OK0iLTwQDGs8gTo5EPKi29S7aU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708602641;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
+	b=KTjgGJO9gucsDYuF8huMNLLkVx+dd1XuU5vwqpAGnq57bT98ATwNnY58Gub9QH/XYEYLON
+	e8dQCy4lQg30zbCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 293E513A6B;
+	Thu, 22 Feb 2024 11:50:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id B8QKChE112ViQAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 11:50:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C9950A0807; Thu, 22 Feb 2024 12:50:32 +0100 (CET)
+Date: Thu, 22 Feb 2024 12:50:32 +0100
+From: Jan Kara <jack@suse.cz>
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: Jan Kara <jack@suse.cz>, oe-lkp@lists.linux.dev, lkp@intel.com,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Guo Xuenan <guoxuenan@huawei.com>, linux-fsdevel@vger.kernel.org,
+	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
+Subject: Re: [linus:master] [readahead]  ab4443fe3c:
+ vm-scalability.throughput -21.4% regression
+Message-ID: <20240222115032.u5h2phfxpn77lu5a@quack3>
+References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
+ <20240221111425.ozdozcbl3konmkov@quack3>
+ <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[31.24%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.40
 
-Benjamin Tissoires <bentiss@kernel.org> writes:
+Hello,
 
-> @@ -1245,6 +1294,7 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callb
->  		ret = -EPERM;
->  		goto out;
->  	}
-> +	down(&t->sleepable_lock);
->  	prev = t->prog;
->  	if (prev != prog) {
->  		/* Bump prog refcnt once. Every bpf_timer_set_callback()
-> @@ -1261,6 +1311,7 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callb
->  		t->prog = prog;
->  	}
->  	rcu_assign_pointer(t->callback_fn, callback_fn);
-> +	up(&t->sleepable_lock);
->  out:
->  	__bpf_spin_unlock_irqrestore(&timer->lock);
->  	return ret;
-> @@ -1282,7 +1333,7 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
->  
->  	if (in_nmi())
->  		return -EOPNOTSUPP;
-> -	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
-> +	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN | BPF_F_TIMER_SLEEPABLE))
->  		return -EINVAL;
->  	__bpf_spin_lock_irqsave(&timer->lock);
->  	t = timer->timer;
-> @@ -1299,7 +1350,10 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, fla
->  	if (flags & BPF_F_TIMER_CPU_PIN)
->  		mode |= HRTIMER_MODE_PINNED;
->  
-> -	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
-> +	if (flags & BPF_F_TIMER_SLEEPABLE)
-> +		schedule_work(&t->work);
-> +	else
-> +		hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
->  out:
->  	__bpf_spin_unlock_irqrestore(&timer->lock);
->  	return ret;
+On Thu 22-02-24 09:32:52, Oliver Sang wrote:
+> On Wed, Feb 21, 2024 at 12:14:25PM +0100, Jan Kara wrote:
+> > On Tue 20-02-24 16:25:37, kernel test robot wrote:
+> > > kernel test robot noticed a -21.4% regression of vm-scalability.throughput on:
+> > > 
+> > > commit: ab4443fe3ca6298663a55c4a70efc6c3ce913ca6 ("readahead: avoid multiple marked readahead pages")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > 
+> > > testcase: vm-scalability
+> > > test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480CTDX (Sapphire Rapids) with 512G memory
+> > > parameters:
+> > > 
+> > > 	runtime: 300s
+> > > 	test: lru-file-readtwice
+> > > 	cpufreq_governor: performance
+> > 
+> > JFYI I had a look into this. What the test seems to do is that it creates
+> > image files on tmpfs, loopmounts XFS there, and does reads over file on
+> > XFS. But I was not able to find what lru-file-readtwice exactly does,
+> > neither I was able to reproduce it because I got stuck on some missing Ruby
+> > dependencies on my test system yesterday.
+> 
+> what's your OS?
 
-I think it's a little weird to just ignore the timeout parameter when
-called with the sleepable flag. But I guess it can work at least as a
-first pass; however, in that case we should enforce that the caller
-passes in a timeout of 0, so that if we do add support for a timeout for
-sleepable timers in the future, callers will be able to detect this.
+I have SLES15-SP4 installed in my VM. What was missing was 'git' rubygem
+which apparently is not packaged at all and when I manually installed it, I
+was still hitting other problems so I rather went ahead and checked the
+vm-scalability source and wrote my own reproducer based on that.
 
--Toke
+I'm now able to reproduce the regression in my VM so I'm investigating...
 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
