@@ -1,193 +1,118 @@
-Return-Path: <linux-kernel+bounces-75884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D42DA85F045
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:59:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 444DE85F04B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:01:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AC92285BA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:59:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82B71F24AEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B221E1775A;
-	Thu, 22 Feb 2024 03:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6C017755;
+	Thu, 22 Feb 2024 04:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="WC+T892F"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="UVIb7hVQ"
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECC3FBF2;
-	Thu, 22 Feb 2024 03:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C53BFBF2;
+	Thu, 22 Feb 2024 04:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708574335; cv=none; b=ibSjauyWTXjqWBcv2e3hUtLw2JtGHWVL9YTLSqF6TglxywmOwTsHxf9bKpkl2xXjkulN99RlPomMXi3QWjanVuteHK+mQf0RaeayCGPu2mH9poorUJz0tjWIRZKF9TtQxyqZEtSYga3Y05a86uc/XX8mHI2oFNbV7LvCgDSUhow=
+	t=1708574479; cv=none; b=VIr3kveVb1hmE9OlexbmrDspSQzoUluTvmmVfg7E3XdvSSkYXIb/MMZJvzdx2GF6q/FBAeVUKBNI8jcgGyM3B5r2MZ5+wNbLWTnADvfGbaFst1eR/acbBbMVK2Hu7JHgo/d8tvyxU4/HDZccABRH7mlaX29GSw0EJfULCwiLEgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708574335; c=relaxed/simple;
-	bh=+p4ZKVjWl5lZooQvNzTz/nwRMpvJy45X7Bqh4CNH1JA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=JKcVg131PdR6XBcgZtS+gfq2XBmB99LPvJeL/QyVErB9PIFvixpTJmIRIwjrm3E+tL00gvmUcwhRlYSKiJfWq/VvZoj+4ZOy7C1N3YAIvyziPyNOhK2BIqvix5EidfqehNRR4vYs2R8U5dIm8XHs2DWY0e688BFEB4Nm2bVahkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=WC+T892F; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708574324;
-	bh=emV0MkgJME9zlEcVVPyA53ouLSsHaJyiSI9ys/B7uzw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=WC+T892FO1v5FRGYWML2pkV/JGvBkjWNxWHVFw0JaF4BykGV0Fjuce34YLjlQoXny
-	 N7E8w9PbFEvG9JFTT6AI2hdK9+G7/SmGTJupNoPidnfbqu9nWxxnATXDZKzBBMKCAT
-	 ImX8/ubTQq4a3IYmge6NHibJkGg7PIzrlEXW2STT49/82sAo7Oo+lA7+P1EjafmtU8
-	 rGu53vaEr4N+nAezJMI8U5mT0//y2XLVuvWLnMD2/wwrqF8fD3gw5LjdAp26H0z2u8
-	 lhF3HFv5uPW/XzICtrPX/hRwq1vZ3T1uSZ6R5JaQVden25O+CErPRlA5f6V1UcZoO6
-	 wokwWE4QCBgZQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgKBW3gDPz4wb2;
-	Thu, 22 Feb 2024 14:58:43 +1100 (AEDT)
-Date: Thu, 22 Feb 2024 14:58:42 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Paolo Bonzini <pbonzini@redhat.com>, Lucas De Marchi
- <lucas.demarchi@intel.com>, Oded Gabbay <ogabbay@kernel.org>, Thomas
- =?UTF-8?B?SGVsbHN0csO2bQ==?= <thomas.hellstrom@linux.intel.com>
-Cc: DRM XE List <intel-xe@lists.freedesktop.org>, KVM <kvm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Yury Norov
- <yury.norov@gmail.com>
-Subject: linux-next: manual merge of the kvm tree with the drm-xe tree
-Message-ID: <20240222145842.1714b195@canb.auug.org.au>
+	s=arc-20240116; t=1708574479; c=relaxed/simple;
+	bh=OJZtJeG9oFC0CHpkLX/+q6CW2oV5Xm1b7Y/agkt23OU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=V2ixyQBF3O18GxYOZDbO+MyaA0nip3psTNjSrso7GLqjdG/4ikjvDfnBcRejwmFIkaEEUC+TG+F/u0vrpLJQ7VONu83yJrQyWh6kPTkWT6YJRgBWKWKnoZ1rvhO2Id91WH4o7dL5Ih6OqJ6Eqmo+hpjm0EO73epZ9nEVmWW6bdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=UVIb7hVQ; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M2JpOs008937;
+	Thu, 22 Feb 2024 04:00:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PPS06212021; bh=7MhjdBIzVbtJC+qrWqwmXmRz5gU4c1bPbqnR2zTbpeE=; b=
+	UVIb7hVQI1QU1gxPmSCLwsc1C1zChrc3VTuPstp5OAIdDxWofg4iV4BTbMeK1SDK
+	mweU9Q0EWco3IgGMecMXSIadmzwq5xUkkU6nG2KZvYVn9J9ne6/BA7I376RGFYds
+	Z0w+xk55+AHLQ9Y1D8evNwCzidBDersq4SyeGEdxM1OlxRjiZ4fJ/DbugC+mb1q+
+	SUpuHVX7Wqik0AZjSggAy0Qd5xnctCZpu6YLuyF8YD5fLckSqOfMHMGITIduno+Q
+	x5Jb/MQJdNmhodVGPJqgCr2VcVLMFuzLh+YnaQmlh1T00vp9o6cIBOXnjEznOpva
+	SqmI8Dk9uUm7BELKXRkHlQ==
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wd218hjn1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Thu, 22 Feb 2024 04:00:51 +0000 (GMT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 20:00:50 -0800
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 20:00:47 -0800
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com>
+CC: <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+        <fw@strlen.de>, <horms@kernel.org>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH net-next] net/mpls: fix WARNING in mpls_gso_segment
+Date: Thu, 22 Feb 2024 12:00:45 +0800
+Message-ID: <20240222040046.2568269-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000043b1310611e388aa@google.com>
+References: <00000000000043b1310611e388aa@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ikOHUZBlsvlN1FF4nRb3mHW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: yxP3AvRov-tsgP_uT6gijPle0aFETzCU
+X-Proofpoint-ORIG-GUID: yxP3AvRov-tsgP_uT6gijPle0aFETzCU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_01,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=922 mlxscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 clxscore=1011
+ bulkscore=0 malwarescore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402220028
 
---Sig_/ikOHUZBlsvlN1FF4nRb3mHW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When the network header pointer is greater than the inner network header, the
+difference between the two can cause mpls_hlen overflow.
 
-Hi all,
+Reported-and-tested-by: syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+---
+ net/mpls/mpls_gso.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Today's linux-next merge of the kvm tree got a conflict in:
+diff --git a/net/mpls/mpls_gso.c b/net/mpls/mpls_gso.c
+index 533d082f0701..2ab24b2fd90f 100644
+--- a/net/mpls/mpls_gso.c
++++ b/net/mpls/mpls_gso.c
+@@ -25,11 +25,11 @@ static struct sk_buff *mpls_gso_segment(struct sk_buff *skb,
+ 	netdev_features_t mpls_features;
+ 	u16 mac_len = skb->mac_len;
+ 	__be16 mpls_protocol;
+-	unsigned int mpls_hlen;
++	int mpls_hlen;
+ 
+ 	skb_reset_network_header(skb);
+ 	mpls_hlen = skb_inner_network_header(skb) - skb_network_header(skb);
+-	if (unlikely(!mpls_hlen || mpls_hlen % MPLS_HLEN))
++	if (unlikely(mpls_hlen <= 0 || mpls_hlen % MPLS_HLEN))
+ 		goto out;
+ 	if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
+ 		goto out;
+-- 
+2.43.0
 
-  include/linux/bits.h
-
-between commits:
-
-  b77cb9640f1f ("bits: introduce fixed-type genmasks")
-  34b80df456ca ("bits: Introduce fixed-type BIT")
-
-from the drm-xe tree and commit:
-
-  3c7a8e190bc5 ("uapi: introduce uapi-friendly macros for GENMASK")
-
-from the kvm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/bits.h
-index 811846ce110e,0eb24d21aac2..000000000000
---- a/include/linux/bits.h
-+++ b/include/linux/bits.h
-@@@ -4,10 -4,9 +4,11 @@@
- =20
-  #include <linux/const.h>
-  #include <vdso/bits.h>
-+ #include <uapi/linux/bits.h>
-  #include <asm/bitsperlong.h>
- =20
- +#define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
- +
-  #define BIT_MASK(nr)		(UL(1) << ((nr) % BITS_PER_LONG))
-  #define BIT_WORD(nr)		((nr) / BITS_PER_LONG)
-  #define BIT_ULL_MASK(nr)	(ULL(1) << ((nr) % BITS_PER_LONG_LONG))
-@@@ -33,42 -29,11 +34,42 @@@
-   * disable the input check if that is the case.
-   */
-  #define GENMASK_INPUT_CHECK(h, l) 0
- +#define BIT_INPUT_CHECK(type, b) 0
-  #endif
- =20
- -#define GENMASK(h, l) \
- -	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
- -#define GENMASK_ULL(h, l) \
- -	(GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
- +/*
- + * Generate a mask for the specified type @t. Additional checks are made =
-to
- + * guarantee the value returned fits in that type, relying on
- + * shift-count-overflow compiler check to detect incompatible arguments.
- + * For example, all these create build errors or warnings:
- + *
- + * - GENMASK(15, 20): wrong argument order
- + * - GENMASK(72, 15): doesn't fit unsigned long
- + * - GENMASK_U32(33, 15): doesn't fit in a u32
- + */
-- #define __GENMASK(t, h, l) \
-++#define ___GENMASK(t, h, l) \
- +	(GENMASK_INPUT_CHECK(h, l) + \
- +	 (((t)~0ULL - ((t)(1) << (l)) + 1) & \
- +	 ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
- +
-- #define GENMASK(h, l)		__GENMASK(unsigned long,  h, l)
-- #define GENMASK_ULL(h, l)	__GENMASK(unsigned long long, h, l)
-- #define GENMASK_U8(h, l)	__GENMASK(u8,  h, l)
-- #define GENMASK_U16(h, l)	__GENMASK(u16, h, l)
-- #define GENMASK_U32(h, l)	__GENMASK(u32, h, l)
-- #define GENMASK_U64(h, l)	__GENMASK(u64, h, l)
-++#define GENMASK(h, l)		___GENMASK(unsigned long,  h, l)
-++#define GENMASK_ULL(h, l)	___GENMASK(unsigned long long, h, l)
-++#define GENMASK_U8(h, l)	___GENMASK(u8,  h, l)
-++#define GENMASK_U16(h, l)	___GENMASK(u16, h, l)
-++#define GENMASK_U32(h, l)	___GENMASK(u32, h, l)
-++#define GENMASK_U64(h, l)	___GENMASK(u64, h, l)
- +
- +/*
--  * Fixed-type variants of BIT(), with additional checks like __GENMASK().=
-  The
-++ * Fixed-type variants of BIT(), with additional checks like ___GENMASK()=
-  The
- + * following examples generate compiler warnings due to shift-count-overf=
-low:
- + *
- + * - BIT_U8(8)
- + * - BIT_U32(-1)
- + * - BIT_U32(40)
- + */
- +#define BIT_U8(b)		((u8)(BIT_INPUT_CHECK(u8, b) + BIT(b)))
- +#define BIT_U16(b)		((u16)(BIT_INPUT_CHECK(u16, b) + BIT(b)))
- +#define BIT_U32(b)		((u32)(BIT_INPUT_CHECK(u32, b) + BIT(b)))
- +#define BIT_U64(b)		((u64)(BIT_INPUT_CHECK(u64, b) + BIT(b)))
- =20
-  #endif	/* __LINUX_BITS_H */
-
---Sig_/ikOHUZBlsvlN1FF4nRb3mHW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXWxnIACgkQAVBC80lX
-0GyLjQgAm6+l36vr//Nbkn+sd1Ov5uGVFWeFODu5hfsKFwUMBCEhqQtS3RbnD5Ea
-vLgm1TIuNZaHdSRloymHtrRt+A46BHnNqxzVGjRsNCw2DkXXJuI9tOBpgagLbU8i
-o1veOF74FBWjk/oJrNZ2ZzSETLKh7NzXLrOEJL/iDoUSp+8mOMCSi0D/Dplzn4J7
-5mYu1V0UFFeJcXRDOS+bujcmmLv9XqpT/NcwWoj1kS6TlqULrvSIXt3vDG808osT
-UMz7l2zFx2gvu1rvpxNwY9bgucK1M1pSyBwHAZNEdmGKLR4iVN/BiXOXt0w8zKHr
-cm75A3NyEJIYIweJZbWGUNjVWKDrZw==
-=p2KP
------END PGP SIGNATURE-----
-
---Sig_/ikOHUZBlsvlN1FF4nRb3mHW--
 
