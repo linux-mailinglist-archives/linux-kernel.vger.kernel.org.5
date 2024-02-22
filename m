@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-76977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 850CC85FF51
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:29:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1773485FF58
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 158F6B2306C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:29:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7C23286C8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A64E9156960;
-	Thu, 22 Feb 2024 17:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B170415699F;
+	Thu, 22 Feb 2024 17:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Is+kwkLo"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lIqlTrNj"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39952155303;
-	Thu, 22 Feb 2024 17:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E98155A55;
+	Thu, 22 Feb 2024 17:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708622940; cv=none; b=TBIWNvT9CV0CU5UDj691KbnsJPrP4txqeBlz4U/2EugniFuQxzfmFIlwZcEhyV9Z5JiRfEZX7ttWhze2+t/yUbf2BGpzcYu7cvhYE4E3Ui5q1axDxlTup934kqIUJtbDsStGhwHM5XSya+E5IBtzwGuGpR09PByjSqYP68POqcU=
+	t=1708622943; cv=none; b=dvd+L+Y7K60X1xDlzzcj/CSJlgKgULSoKC1tQPxnb8X8ZJ93rNsaX0fvuc/kmkh1nfiHfmNSVO+M22TUBKKtO4+93wDW5KwFS4ksSYhNlr1no1S00h16Rnje3BKkqJh5e5Tes9rKpRPfclWFvplVrQY564Uca8R3F+5GNVo6Gzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708622940; c=relaxed/simple;
-	bh=K1UkPr+qwrl0AxN89XM75ZcSZhSG0ZNbLMmfwU7qP70=;
+	s=arc-20240116; t=1708622943; c=relaxed/simple;
+	bh=KBAkQBgpYdLDaJ5qYLlC9p8SlXhmDfw3UvehvJhSkG8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XhrXSIorcTFChyhhOyDHC/RxbOGfTxuA/0xV9ZqVEf1gclOtQcz1pS29Fzpl6MgxUar+JiM7L1xndRptetVj8A1xfTrBX/GVWzqM77i6wo44Yv66WyrjtEw7wOhbMoQ3DzLSDWKWbSGoUk4BeOX7X16vdLsZmyt6kVV2siyKlxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Is+kwkLo; arc=none smtp.client-ip=209.85.208.182
+	 MIME-Version; b=u+pisaQI8pih62gCYHhWyjn2lNDRP3uAUi6uUUknrFLHe/YzYmj68AJc8lPw1CdhVh4C8utHCEpxYm7vfoU8SSKlnsRP4BM134PhiYzzWvDN4wmZiM30zchsaZhPrvak0mQSs9Xfu7lc3b3clIpoimq7li1mxClINKFjLa6gVeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lIqlTrNj; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d2531294faso120251fa.2;
-        Thu, 22 Feb 2024 09:28:58 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512db550e3fso30086e87.2;
+        Thu, 22 Feb 2024 09:29:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708622937; x=1709227737; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708622939; x=1709227739; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YkIadt0nAZR1d0O39/7H5hjsJWBN2vmdJ6bdv/9nuZs=;
-        b=Is+kwkLoPJ2ej3KdZeiT+bn9HfOj6r1DE94Tkx1zQzd8UBdPeic+UcaR4On9qZkUml
-         HTpwVmwzMHbJEzmvSWNTcJHk2oQMiYqA3kR8LYp+B6EzM7Q8gtlO/x0k6ea6N0d8DiWx
-         tlYvByC3PGG+LUrsL1Mx5B7ckU0YAF+w6Z3iZGHPbLyxhFPhTTAcIFNNGIMvcuFv3xtW
-         ZGhZlJLKOLzFa1hpn/hOGW7SdQt+8nUAuLsiLoqdxifovuEIJgMoB/+3/5UBfH2zm5BS
-         scqFBNFElWibUmCg/3+MT0mo920ZmRUxm7SoGXn+O4P6iX21IES4TL7AHBkbRqEj7/A/
-         WwPw==
+        bh=Ef0c0lkPbUi43MY5AODLBrbnTIwKOtyjY4A1tP/i59I=;
+        b=lIqlTrNjAjkGJyaZDYrXGO9lA9431n2C5MZK+bbU5LyaJginG/3Xv1HWvL1IGnolio
+         6ikG93Z00M/GPndkYZqmcBal964GCAiasSHRXAdgVA1oXMevr8CFobPEai88oeyvkiNE
+         cPm/BCv3LNN9wnPxuUEjmEcC/JBNaVfkA+aM0C5043bLUr+yiJyFQJAHU5dtmNZXS0Re
+         CEbH/F0wDSmBkb61CaKweguA9b2+fe2tOM8Ewl+RboHXI1b4+ETvzbfNx69ZHwHNFWM0
+         hzm/z1eVJtnvO+hoEGtXvWUzejNro80YJOWKYrm4vCp/OuyyiOwEc4aYBE7o0LJjUnJc
+         pUTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708622937; x=1709227737;
+        d=1e100.net; s=20230601; t=1708622939; x=1709227739;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YkIadt0nAZR1d0O39/7H5hjsJWBN2vmdJ6bdv/9nuZs=;
-        b=QZKSBu2XJHAv2KYAIwqN6HiW3u4NHbY8hVnKOvKw0JYPZTcuh9x8x5/Yd7zeKjLt1r
-         oyKgWjSnMt/VomW/ylIAnABGLE5EH/OSN2/PUOGq+kKRIwngF2Xyfqruiuoxvl9lMP6v
-         mgltghJQCrHV/8m3QpTtfA3c038Y415HSW55qMrcKs5DfcCQpXGjEvIVROVonPz7Ro+7
-         MNIvZSVmwV1iN6RNCi+LsInMxVwKvveFvqjp4ai4n0ENl5K1I1fRCCeCpGlpW0mDso8o
-         KCYePHSPDEqoH2PuTEtQsFYI9Nsxen3+aOw5PUw34eSXtPH4p2MgM+OJUvHLYeqSWCS5
-         llGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0/LFHTrYdqJBQ+wcpET3UsEkVWXUFB8p2POBJTuITnA4ORDIg/VT4aG5X75+Lz1T+M+f8rK4oWz+FoYfh/Nm0uCsUckFBpLwKnGHSuCOR/b3mKT4jxOg7O+0SXTRLpAoCeavL6ScY
-X-Gm-Message-State: AOJu0YzkGI9w/eokKa1SFhkKwG1DtwmduDnzAuSHa2yVAgEKcJPAGaAt
-	XVGUlWgIzYaH0vJT1tnCyUf0IV/3Hm+ODfDE/LN91eTh7k3EH7zo
-X-Google-Smtp-Source: AGHT+IGWZTNp8bR2uQibBqGN1L2Owt1NmKxyQapvJfK6J7h3cvhVVIdamGG05CcQtoHd9CLvYLiyKQ==
-X-Received: by 2002:a2e:a7c3:0:b0:2d2:65b9:b420 with SMTP id x3-20020a2ea7c3000000b002d265b9b420mr1122817ljp.1.1708622937331;
-        Thu, 22 Feb 2024 09:28:57 -0800 (PST)
+        bh=Ef0c0lkPbUi43MY5AODLBrbnTIwKOtyjY4A1tP/i59I=;
+        b=tHFYktiof+sp+nzJjPaZ3dVDHSA3hvuDsXk1RBstAtHGt4rM0l42p81jjiQEggbsAP
+         9VW+BGlrBiPDHdlmVkYuLN33CoTAWqLhGGO8HwfkUw14gA2Il0OFZZGAV4GmtTMwKxWZ
+         ksk3WNW9G/dv2BfbWl/s/1Lrjwk8FxbAK3ym5/cOzQLodN3QOelEDlzLt3ytbruNNYiA
+         mXCytUip0obToKNiro5PDLep1buHIZrK2hzs14AJLMLTaZl/3rbsodo1bJcKfoEa1MRF
+         MATSDNmhH4vjiQv8YWtwploqDwsY5qk9TS97MHwYkcX8vxU23MlkTFWk8Skt3H6vNViJ
+         wVlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX5iJtVSQGHCFTJwyqp4Bk/AxdEhCHpRPLXiwMi5CuMm9S5gMtQrm4IAZJ5ICsugTBSwsDqEoS/xGRUUiYUX1HdMRQV4C0PhmHY5OnhXlPMEujh1IxoY0v+l19UV6g5TTEZ6EJULJfN
+X-Gm-Message-State: AOJu0YyywSbHBEWjBInLyKUOvTJMByqaRIPB6eqBuoVKBEu8Suc/RxTx
+	UyFWJzpoIVZg+uBcmNxlCFCxPMMflVj4p6H1GAgfAPyBSTmecLUz
+X-Google-Smtp-Source: AGHT+IGMx/+bKadvMHlHqX6J5/LNuTKVLFP12Pa7fpozYPU5Wq9oHbEIXywVddZLcBZ4aymZ23u09A==
+X-Received: by 2002:ac2:520d:0:b0:512:aa89:961f with SMTP id a13-20020ac2520d000000b00512aa89961fmr7923206lfl.25.1708622938960;
+        Thu, 22 Feb 2024 09:28:58 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id w4-20020a2e9584000000b002cdf4797fb7sm2368004ljh.125.2024.02.22.09.28.56
+        by smtp.gmail.com with ESMTPSA id d20-20020ac24c94000000b00512b2ffb007sm1656537lfl.246.2024.02.22.09.28.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 09:28:56 -0800 (PST)
+        Thu, 22 Feb 2024 09:28:58 -0800 (PST)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Serge Semin <fancer.lancer@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -75,9 +75,9 @@ Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
 	Andy Shevchenko <andy@kernel.org>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/4] spi: dw: Convert to using BITS_TO_BYTES() macro
-Date: Thu, 22 Feb 2024 20:28:44 +0300
-Message-ID: <20240222172853.25082-2-fancer.lancer@gmail.com>
+Subject: [PATCH v2 2/4] spi: dw: Add a number of native CS auto-detection
+Date: Thu, 22 Feb 2024 20:28:45 +0300
+Message-ID: <20240222172853.25082-3-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240222172853.25082-1-fancer.lancer@gmail.com>
 References: <20240222172853.25082-1-fancer.lancer@gmail.com>
@@ -89,41 +89,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit dd3e7cba1627 ("ocfs2/dlm: move BITS_TO_BYTES() to bitops.h
-for wider use") there is a generic helper available to calculate a number
-of bytes needed to accommodate the specified number of bits. Let's use it
-instead of the hard-coded DIV_ROUND_UP() macro function.
+Aside with the FIFO depth and DFS field size it's possible to auto-detect
+a number of native chip-select synthesized in the DW APB/AHB SSI IP-core.
+It can be done just by writing ones to the SER register. The number of
+writable flags in the register is limited by the SSI_NUM_SLAVES IP-core
+synthesize parameter. All the upper flags are read-only and wired to zero.
+Based on that let's add the number of native CS auto-detection procedure
+so the low-level platform drivers wouldn't need to manually set it up
+unless it's required to set a constraint due to platform-specific reasons
+(for instance, due to a hardware bug).
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/spi/spi-dw-core.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/spi/spi-dw-core.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-index 0274c9295514..722b5eb1f709 100644
+index 722b5eb1f709..ddfdb903047a 100644
 --- a/drivers/spi/spi-dw-core.c
 +++ b/drivers/spi/spi-dw-core.c
-@@ -6,6 +6,7 @@
-  */
+@@ -834,6 +834,20 @@ static void dw_spi_hw_init(struct device *dev, struct dw_spi *dws)
+ 			DW_SPI_GET_BYTE(dws->ver, 1));
+ 	}
  
- #include <linux/bitfield.h>
-+#include <linux/bitops.h>
- #include <linux/dma-mapping.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-@@ -421,10 +422,7 @@ static int dw_spi_transfer_one(struct spi_controller *host,
- 	int ret;
- 
- 	dws->dma_mapped = 0;
--	dws->n_bytes =
--		roundup_pow_of_two(DIV_ROUND_UP(transfer->bits_per_word,
--						BITS_PER_BYTE));
--
-+	dws->n_bytes = roundup_pow_of_two(BITS_TO_BYTES(transfer->bits_per_word));
- 	dws->tx = (void *)transfer->tx_buf;
- 	dws->tx_len = transfer->len / dws->n_bytes;
- 	dws->rx = transfer->rx_buf;
++	/*
++	 * Try to detect the number of native chip-selects if the platform
++	 * driver didn't set it up. There can be up to 16 lines configured.
++	 */
++	if (!dws->num_cs) {
++		u32 ser;
++
++		dw_writel(dws, DW_SPI_SER, 0xffff);
++		ser = dw_readl(dws, DW_SPI_SER);
++		dw_writel(dws, DW_SPI_SER, 0);
++
++		dws->num_cs = hweight16(ser);
++	}
++
+ 	/*
+ 	 * Try to detect the FIFO depth if not set by interface driver,
+ 	 * the depth could be from 2 to 256 from HW spec
 -- 
 2.43.0
 
