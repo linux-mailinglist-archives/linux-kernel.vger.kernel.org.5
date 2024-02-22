@@ -1,118 +1,122 @@
-Return-Path: <linux-kernel+bounces-76546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8585585F8D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:54:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFA6285F8E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A36E286F7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:54:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E14EC1C24BF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D3A12DDA6;
-	Thu, 22 Feb 2024 12:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4105C12EBC0;
+	Thu, 22 Feb 2024 12:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ghW4uGTd"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VGdiXxTn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6AB12DDB0
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2A760B90;
+	Thu, 22 Feb 2024 12:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708606334; cv=none; b=AsHPbrzSMVnZ68Sbw6vdqQ1oJaTQRnt0Sm32D661HrBlfiu5W0qxSz3+aB3oSkhsdQRQz4VpPCccalcTHR1ooGBWVuCAkZ3SKMuLlmOkhWIh+sfC+IV2TfP7DoOgao0IPDjeYj1hoOZMyD+PzA2cC2dsAFuABhTvixCsqv2SyH4=
+	t=1708606502; cv=none; b=B33UlLxPdDI/+x9V1ykFfrV7mM5GL+iIDLfYho/MDwR3esR4DqHhGeLDvMp5JVG+8CHljfRiNPAzOSwsuyQq4D89C00Ljfj3nhnByykNVblH1ihS0k28GIRMviq4a014XBr9lyd6ELvnJZobZ+4E4JomZaLcm/0NXr3kIif3L94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708606334; c=relaxed/simple;
-	bh=YZgo82B41d//o7sDxWxpGAe2B+3IYZxwhge5g5/PF8o=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WHeVd4/hsVv2E3XZ+Zsl9ELzFqzAreAO+m0lg1uhpBLkwNQTV0hdPNBfP772J5rnrwhVDjynNellc9M5D1W1gPCPcEYmYfBi+KJtY1LB+/uT/NQnBJE01bR/mI5i6lurAuUxFcgse7AofSOd9q1mkyziEzFXuUNlxLw2MG7lp84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ghW4uGTd; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d220e39907so89950931fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:52:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708606331; x=1709211131; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R4bu1C98vBLZH7tB289/lMNViA1falfSyt+9+Xa4zfw=;
-        b=ghW4uGTdQaN6oSdrU8Ims7GkX9lu3xReuDrBg2QJwFDYTneoZCGU7LVDtRob2Ze21J
-         1k5NsajbNR6Mg36vlFWBxQU3TjfmN/y80vMmt9WCOwUe1ZqgIfnvCKD6dmaqP3VglYKj
-         ZhP6Q5PjQvRYTzr3gYp5KxaPwzQNH7b860JLY0oqnkJRN/GoNSFtD7CmNZTR9AatQJvn
-         J0Y4czLornVL9XaPih+PKRKkGTh9K57MmjZYsyeOCZL1C9nARfDJT3eLJsLP4xQwH4JH
-         E6Lw93iOoEblFGzydIj3Ycqv/AXp1IrdWiFX9tR8Jm61H2kAQMqf9aH15+y4LeTTxAhi
-         9dtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708606331; x=1709211131;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R4bu1C98vBLZH7tB289/lMNViA1falfSyt+9+Xa4zfw=;
-        b=bXxp3QkQtG2u7ZERUZyvphhcyQ+2c/bLZjB2E5c95PMmUue02uUmDU41aw+1eql4Dx
-         LicPzZnx6J0RzZNqGqBRufo8sN9kqaQ0xAoU8lR2jfoeTSWjUccNWTyVHZPlM0NMyUH7
-         hLBx8/QUIa//qiQJPyZNYkz1+bFyjDiKGUwl8i5Fi3Bsu4fH1mgH2ZyVA4WQF95XuKU/
-         Bq6xWu0vEZBEMiVs9wag0UgxuaKS33H2SIS//Db3GE0I/0l9NTLXX83eUFa/mJwpuML4
-         DuH5kj+gjkkGotm7gbEDo0ufgwlh9asRIS1C9/gMqCjhdA86+IGUal272eoe1vUt8c2q
-         NnmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVIez8dfeAftmCP6DlFOFM7WPa26zJV8WIzp/bOjVA8D6IOo6G4DcNodwLi+PkbKWTxkwXLIaSbZUpobUCezjv3ZVDuI4zYShjBvnNE
-X-Gm-Message-State: AOJu0YxQyRjz10Z5RzJ54dwKKHCk7Ms3fmJ4Pthql1MyG3ne2fGHj2qI
-	B9tH5c7ntx/uV2/4R0A3TF+un67GaOM4aObNxASXnF/UykrwFzUUFpgGIae34Wk=
-X-Google-Smtp-Source: AGHT+IFWLo128zbfkmgYSAlGiHCEt+v/eP6YfSG4/bgRWkA1/NShAOAiBcjXHq1XsveclTlN71ur0Q==
-X-Received: by 2002:a05:6512:2209:b0:512:b0c1:3bb2 with SMTP id h9-20020a056512220900b00512b0c13bb2mr11453210lfu.46.1708606330867;
-        Thu, 22 Feb 2024 04:52:10 -0800 (PST)
-Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
-        by smtp.gmail.com with ESMTPSA id k24-20020a192d18000000b00512ab0bb96dsm1882817lfj.57.2024.02.22.04.52.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 04:52:10 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 22 Feb 2024 13:52:07 +0100
-To: rulinhuang <rulin.huang@intel.com>
-Cc: akpm@linux-foundation.org, urezki@gmail.com, colin.king@intel.com,
-	hch@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v3] mm/vmalloc: lock contention optimization under
- multi-threading
-Message-ID: <ZddDdxcdD5hNpyUX@pc636>
-References: <ZdW2HB-XdAJKph5s@pc636>
- <20240222121045.216556-1-rulin.huang@intel.com>
+	s=arc-20240116; t=1708606502; c=relaxed/simple;
+	bh=cVfB0yeCoQ1d3ZYvhoeMYL94HZ5I4I0dl5HnrRLOySE=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=YCs7DTvv53BFh3ave0Qj76p6zjSV/Qmq5uvH4pmqjNrs4IFpfe7ga1XrscMOpVsnaxOZQFkICxW4WL2aeRMV+grBbNeJ/mM4mmrGooSdrEIMGXlmfNregNqoeJiiFeWXMm88cPh9BqLVoWnVKJmOTv/Nj7ZFFLI6Ng2zvopH9bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VGdiXxTn; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708606501; x=1740142501;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cVfB0yeCoQ1d3ZYvhoeMYL94HZ5I4I0dl5HnrRLOySE=;
+  b=VGdiXxTn6I6vgnNbzzpMG0q/OYAbWf9qTb0sJwQrzXPB/ZJFuSHXlS8Y
+   N9QpQJ1+30n8pmlgVCSPxVuZ6LSZM+qS/tIco8fvkbVXxW2JJXTCaFH9J
+   k5QJyX0xVJnrK7rOzJWZ/UuwgJh6dxzNVU2kVdJ90komTU1nRTB9En8pQ
+   n9FDzPe6khrlCUlUIRO2w5MyA65DC4ymB0/HE7wMCgUGqxnA5Ea3fVCr7
+   3G72892XXsL9K9g0oO4O74OCMYUt0WIaNIe2v3iszFA9SvJ4XDrLIA1jq
+   uJWJaOsGZE8NMgO8F0xk7wdEicU6M+pDjVnoMd3PAjS2dFd4/+GUWMptR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="14243689"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="14243689"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:55:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913518859"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="913518859"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.222]) ([10.249.171.222])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:54:56 -0800
+Message-ID: <9c4637d5-6496-4c68-b2db-4be1e56ca746@linux.intel.com>
+Date: Thu, 22 Feb 2024 20:54:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222121045.216556-1-rulin.huang@intel.com>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, kevin.tian@intel.com, dwmw2@infradead.org,
+ will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
+ dan.carpenter@linaro.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ Haorong Ye <yehaorong@bytedance.com>
+Subject: Re: [PATCH v13 1/3] PCI: make pci_dev_is_disconnected() helper public
+ for other drivers
+Content-Language: en-US
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, bhelgaas@google.com,
+ robin.murphy@arm.com, jgg@ziepe.ca
+References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
+ <20240222090251.2849702-2-haifeng.zhao@linux.intel.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240222090251.2849702-2-haifeng.zhao@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello, Rulinhuang!
+On 2024/2/22 17:02, Ethan Zhao wrote:
+> Make pci_dev_is_disconnected() public so that it can be called from
+> Intel VT-d driver to quickly fix/workaround the surprise removal
+> unplug hang issue for those ATS capable devices on PCIe switch downstream
+> hotplug capable ports.
+> 
+> Beside pci_device_is_present() function, this one has no config space
+> space access, so is light enough to optimize the normal pure surprise
+> removal and safe removal flow.
+> 
+> Tested-by: Haorong Ye<yehaorong@bytedance.com>
+> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
+> ---
+>   drivers/pci/pci.h   | 5 -----
+>   include/linux/pci.h | 5 +++++
+>   2 files changed, 5 insertions(+), 5 deletions(-)
 
-> Hi Uladzislau and Andrew, we have rebased it(Patch v4) on branch 
-> mm-unstable and remeasured it. Could you kindly help confirm if 
-> this is the right base to work on?
-> Compared to the previous result at kernel v6.7 with a 5% performance 
-> gain on intel icelake(160 vcpu), we only had a 0.6% with this commit 
-> base. But we think our modification still has some significance. On 
-> the one hand, this does reduce a critical section. On the other hand, 
-> we have a 4% performance gain on intel sapphire rapids(224 vcpu), 
-> which suggests more performance improvement would likely be achieved 
-> when the core count of processors increases to hundreds or 
-> even thousands.
-> Thank you again for your comments.
->
-According to the patch that was a correct rebase. Right a small delta
-on your 160 CPUs is because of removing a contention. As for bigger
-systems it is bigger impact, like you point here on your 224 vcpu
-results where you see %4 perf improvement.
+Hi PCI subsystem maintainers,
 
-So we should fix it. But the way how it is fixed is not optimal from
-my point of view, because the patch that is in question spreads the
-internals from alloc_vmap_area(), like inserting busy area, across
-many parts now.
+The iommu drivers (including, but not limited to, the Intel VT-d driver)
+require a helper to check the physical presence of a PCI device in two
+scenarios:
 
---
-Uladzislau Rezki
+- During the iommu_release_device() path: This ensures the device is
+   physically present before sending device TLB invalidation to device.
+
+- During the device driver lifecycle when a device TLB invalidation
+   timeout event is generated by the IOMMU hardware: This helps handle
+   situations where the device might have been hot-removed.
+
+While there may be some adjustments needed in patch 3/3, I'd like to
+confirm with you whether it's feasible to expose this helper for general
+use within the iommu subsystem.
+
+If you agree with this change, I can route this patch to Linus through
+the iommu tree with an "acked-by" or "reviewed-by" tag from you.
+
+Best regards,
+baolu
 
