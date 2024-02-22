@@ -1,150 +1,134 @@
-Return-Path: <linux-kernel+bounces-76592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB5685F9B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:26:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD1D85F9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E425B273A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:26:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76C26288878
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD781133439;
-	Thu, 22 Feb 2024 13:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCCE1350D8;
+	Thu, 22 Feb 2024 13:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="R6AE6aX2"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="lI/NOJ4L"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612F413172C;
-	Thu, 22 Feb 2024 13:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0528D133296
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708608378; cv=none; b=eq4nmlG5bja6zLLWdPxQyNJ/pITUAHcK7OTt7b3dYNvIw/gMEIaHdIxClOIjofwIM+hjR8E9aV47S53qNtHS0QXR+g/UQMqAOgAaZpMlua9XOSZWkDkDVOxAX7A20P+noKBSbU5zX3JdXSAFcBCNnvymb8u7dSG4DTEJidYD5Z0=
+	t=1708608433; cv=none; b=MaK1DrbEN//bj3uHn/51c6Eh9bA6x3y5/dFx3W95vuugdY/8g+XtlO5DHC5FwsmHQd5r2MgmuvsPZ/+oji+pmVLHIyf68Nyd8uO+An8rROeY6J+eNIqT2xyPmmOKxAucb1RzUaJ1zMwjdaaUrehuTag+2lsUhe+5CVvpW7VMdzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708608378; c=relaxed/simple;
-	bh=I4irWzrbdiecduFdHLP1KMnn3sD5tUCl+NF7IaHYyNw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uCDfHxHCydmrT24/aeIGHlV3aIfrnfUXHT6v4Y/5bAk4Qbgz5pjmRU2JCjbPBL13nFiJmeH7w+CaPDVMSMOhcTZcJmnGP1AexHb52NsPj5B8D9O7xL8XUePI0BG6gh+3tQXxFnWjeZxXBP+eNUBeKCjnQa0C+eV4mlCbPeUcxTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=R6AE6aX2; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MDPnE8005138;
-	Thu, 22 Feb 2024 07:25:49 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708608349;
-	bh=aMbV5adGSWaSv1TMJZb7IGsODIV0BZo86n43P68dotQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=R6AE6aX2PKZCmsmuSvWgSBQ/RSttSCzhRnHMr5aosFwhfCCcWNiLUuk1K76N10Ymr
-	 2eFtWa4wIVVmSxRM8Y+Cy6zIqqu3Aqd46kv/6Kb3awTiQnta97BTftuyco2Hhj33I/
-	 TvMTX4oWJZ12ATFjwdJPcR/1MppAgRsgLbPl8S8A=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MDPnf9123837
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 22 Feb 2024 07:25:49 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 22
- Feb 2024 07:25:49 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 22 Feb 2024 07:25:49 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MDPgml103774;
-	Thu, 22 Feb 2024 07:25:43 -0600
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Geert Uytterhoeven
-	<geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
-	<nfraprado@collabora.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Darren Etheridge <detheridge@ti.com>,
-        Brandon
- Brnich <b-brnich@ti.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Andrew Davis <afd@ti.com>
-Subject: Re: [PATCH v5 0/4] Add Support for Wave5 on TI Devices
-Date: Thu, 22 Feb 2024 18:55:25 +0530
-Message-ID: <170860824003.1969506.11520093746235278886.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240220191413.3355007-1-b-brnich@ti.com>
-References: <20240220191413.3355007-1-b-brnich@ti.com>
+	s=arc-20240116; t=1708608433; c=relaxed/simple;
+	bh=snpGyI7YNE/Sro06+yGoEFaZBAn/Q00Q5PkCi6CMdMw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Np2hzowmSN8msX0zQLmqLi3djn1vGVNNKvrpEA958WwSx/SB8hmTCD1NHx72/zs6W9Bg+kU3U1Ryqrqnc3QfVIROwvDbWQPpGkb679yqyLpdg495epUkwytkh6ySfVeEPRVpPNVSotYHFY5sVM3z7ADT94l9mxZ8xXprf53Fxew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=lI/NOJ4L; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d2a67daa25so4775529241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:27:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708608431; x=1709213231; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=snpGyI7YNE/Sro06+yGoEFaZBAn/Q00Q5PkCi6CMdMw=;
+        b=lI/NOJ4Lt8pYoAkCV7uSez40ysyo/fZizj5Qyb2djhe7NH5YUXKKSW0jZtpbvQiBRj
+         yQN5k+eopYB6SrpNnjW+fxBdV/g0k2i5WzfWhfQpMl0uHcTvuvGH8CcswGRysRwYFPwA
+         mbyLrMF6eal2fpxQN3ZEza6kApGnbiqPPFp5Maxvp41hX6pm7o5BAHWvUsz5W5g3CZaX
+         WDhJU6879r1E6Kcv+CDTzHI/YSIwOto/F9O0tj7Yp+QGnEGt8VxwU0D7P2GtQCpyOI24
+         DtCzXXi2/P0otU+jF/4hb4M7t3i4g4K6Gh/pzEZoIg3gMOWX0K5gkTMpOSVfctybvLEi
+         ct/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708608431; x=1709213231;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=snpGyI7YNE/Sro06+yGoEFaZBAn/Q00Q5PkCi6CMdMw=;
+        b=jpOgESpjBsH8jnngaVLVWuKvSH6i6YVA2VBZBzAQxoOLx+HHhePfInk3rl87RBYsgB
+         FTcPnHdNEbEHcU4yKdh9tytJQxntSqelVI/rrX8kfUHiZk1A2446Bc0GQKEqWxg5Xprk
+         4Ubm0lFV3svefnQgbWfPNQN/NMJ+EHrpqVHreXw5nClWectoyMwDxUn+Wxw3FSAnDZa2
+         eeCQLXzb09r5p6bB4oGxBfHKEV71pRb1GsEvRhEF5Fv5bbCVbwP6aAZiVOFJOmE++ho7
+         vH6mDvkCwiraPq9kZhlXn8gQqafQQC6q6wuY1pCIixZQf9xqPyHDieFsMr41bxMvXBNj
+         FAaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUKnimCASFD/DwN/zX8bKDmIei+CsDZwBTL5y6CEGu9OHt+Ew2+MBi3aGG9mfqUJjCTGPeawct8iT6nKve3Qn6YTRs0HureMPA85Ydw
+X-Gm-Message-State: AOJu0YwgWd0yLrK+cclAlkILGSJo7VL4xkOzXgH1uZHB2yI9dppGgABU
+	Ex3jGRGWKA2KL4eXFS6WOWyFHpWndxO7xj2vaf00y23eqYQ6jJc/4Ab4CnioTCSbUnXPUfC3pPM
+	VsU8j4djyHT/+qIHhBYz/GRj4T1/C3mvckQk11Q==
+X-Google-Smtp-Source: AGHT+IGZke8GPxuTnIFkoutjIP1dxFF56tGFJbVOgH1doqRbM8ENn6+k7HWpy/CEfw0YnaYPzOd9wrML9VZzcB0ao6s=
+X-Received: by 2002:a67:f9c9:0:b0:470:492d:672e with SMTP id
+ c9-20020a67f9c9000000b00470492d672emr11912352vsq.9.1708608430904; Thu, 22 Feb
+ 2024 05:27:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-15-brgl@bgdev.pl>
+ <d5d603dc-ec66-4e21-aa41-3b25557f1fb7@sirena.org.uk> <CAMRc=MeUjKPS3ANE6=7WZ3kbbGAdyE8HeXFN=75Jp-pVyBaWrQ@mail.gmail.com>
+ <ea08a286-ff53-4d58-ae41-38cca151508c@sirena.org.uk> <17bbd9ae-0282-430e-947b-e6fb08c53af7@linaro.org>
+ <53f0956f-ee64-4bd6-b44f-cbebafd42e46@sirena.org.uk> <CAMRc=MedCX_TGGawMhr39oXtJPF4pOQF=Jh2z4uXkOxwhfJWRw@mail.gmail.com>
+ <52fba837-989b-4213-8af7-f02cd8cb48c8@sirena.org.uk> <CAMRc=MeF7xVjRKetg1A3MNO4yMasPA2GC7MLCBrOiwO5UBv6LA@mail.gmail.com>
+ <68e401c6-6e59-4c35-8f05-40f6c5eb6849@sirena.org.uk>
+In-Reply-To: <68e401c6-6e59-4c35-8f05-40f6c5eb6849@sirena.org.uk>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 22 Feb 2024 14:26:59 +0100
+Message-ID: <CAMRc=Mfi6wgGSsH=pS68-GFWZwHB98YnH4+6LiBFprTEHntdcQ@mail.gmail.com>
+Subject: Re: [PATCH v5 14/18] PCI/pwrctl: add a power control driver for WCN7850
+To: Mark Brown <broonie@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Brandon Brnich,
+On Thu, Feb 22, 2024 at 2:15=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Thu, Feb 22, 2024 at 01:26:59PM +0100, Bartosz Golaszewski wrote:
+> > On Thu, Feb 22, 2024 at 1:21=E2=80=AFPM Mark Brown <broonie@kernel.org>=
+ wrote:
+> > > On Thu, Feb 22, 2024 at 10:22:50AM +0100, Bartosz Golaszewski wrote:
+>
+> > > > Removing it would be out of scope for this series and I don't reall=
+y
+> > > > want to introduce any undefined behavior when doing a big developme=
+nt
+> > > > like that. I'll think about it separately.
+>
+> > > This is new code?
+>
+> > It's a new driver but Qualcomm standard has been to provide the load
+> > values. If it's really unnecessary then maybe let's consider it
+> > separately and possibly rework globally?
+>
+> That doesn't seem a great reason to add more instances of this - it's
+> more instances that need to be removed later, and somewhere else people
+> can cut'n'paste from to introduce new usage.
 
-On Tue, 20 Feb 2024 13:14:09 -0600, Brandon Brnich wrote:
-> This series is responsible for adding support for Wave5 driver[0]
-> across numerous TI K3 platforms.
-> 
-> [0]: https://lore.kernel.org/all/ae6d2ad3-0b2a-462a-a9eb-9ce01e7a7f5e@xs4all.nl/
-> 
-> Changes since v4:
-> =================
-> * Remove clock-names from device tree nodes per Vignesh's request
->   - "vcodec" clock-name is defined as macro in driver, but unused
->   - no purpose to have it in dt node
-> 
-> [...]
+Ok, whatever, I'll drop these until they're needed.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
-
-[1/4] arm64: dts: ti: k3-j784s4: Add Wave5 Video Encoder/Decoder Node
-      commit: 7805623df1ff50e69fa66e91f7305144e9ef5c31
-[2/4] arm64: dts: ti: k3-j721s2-main: Add Wave5 Video Encoder/Decoder Node
-      commit: 8caaf735b9114f77895608acde21a5163b1bf02e
-[3/4] arm64: dts: ti: k3-am62p: Add Wave5 Video Encoder/Decoder Node
-      commit: ab480b8036fde8c1ea628bb1027919bf399468e9
-
-I have applied the following to branch ti-k3-config-next on [1].
-Thank you!
-
-[4/4] arm64: defconfig: Enable Wave5 Video Encoder/Decoder
-      commit: 02b645583e26f38261711f2a8b36c5db06862527
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
-
+Bartosz
 
