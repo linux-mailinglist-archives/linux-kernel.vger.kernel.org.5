@@ -1,131 +1,133 @@
-Return-Path: <linux-kernel+bounces-76847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79AB285FD8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:05:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC32585FD92
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABDEB1C24489
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:05:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B5D4289196
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F44153517;
-	Thu, 22 Feb 2024 16:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A78150983;
+	Thu, 22 Feb 2024 16:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HJWb9XpA"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="LI1ER78W";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W/q0WRYE"
+Received: from wfout8-smtp.messagingengine.com (wfout8-smtp.messagingengine.com [64.147.123.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F03FC1E;
-	Thu, 22 Feb 2024 16:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D82F14F9F6
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617880; cv=none; b=q1k2YiMcfOMjq3gyYIfuB83KuPHsdIl/U3eIXtYmoWYaLWMBO2gfzwVvTAc8u6gJKZdeHsOW0Hv0UuWczQ5/8ACU5eokQTjDTmQ0BilyPbPQyZbHOjp2a/ypGPsdgjWtdWG/8UrasdAvRNLbKlBPa3sPdpXIm516TtrKUbqM/H4=
+	t=1708617909; cv=none; b=MHU8XCA4v7ToyRLo8uq6aV7gnXNIZB/TxFQ8HgmBhhrYuKmjh2deUMQd27KS7HYNCHcO4EJtTsnpSzxMIue+PgGxROaAE9pi41/yrUXE3jiCmEHtdf6JrLG9ILsvfNtqLimPxZBJNoO0Zn4CmrzsMWWkE20dXTvIzv3novksFI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617880; c=relaxed/simple;
-	bh=ZVx1qmxkur7UaIIHYcAUnzkg5jJchz8D5RcHyd4B9L8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Adp6OyZKqCvC729WcTdiP7TB+E++AkwxkWaO2IKhLebQuXsC9mI01KnukVifiRqdCFzpR3FJQeJh6KkFRKNlRr4DcU4NWxwYkPjbYLn4vPKnwFH4JUvSlztdHZk+95d96XLdHQWisqrRRvMsW179CeI2FeG1z9X6w79UE8uSgcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HJWb9XpA; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso6642121a12.0;
-        Thu, 22 Feb 2024 08:04:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708617877; x=1709222677; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RvwPOwO7kqE6CHssC6QwZQmh+BGrju3fLpuyeIMI9Q8=;
-        b=HJWb9XpAjXFtA+liypbns/CJ7yFvRyahU/+BqTiGEO+AgiX7lntH+JCAQ9fkiozo1Z
-         lqYy4Tttd8rEjTU4apaFehM1uDSL8ZRfp9ELaeyjfyVjeHJIGlOhqz/xWsugl7bGBtZS
-         wl4yuDdlgJK+yIlxXcMcgtAU/kil1ahYoCEa9HviNPX/Aa6fY1rptgUETwz0eEkIKcy+
-         f79zUirM79abJ2L/puUUBXT9BWVc0dI9u/fTG3b5dp2NkclMC0vINVcsPjDAvgqPDTNY
-         xHj+Pyag8nsPzxaecNny3JSnDtntdorN8IaCzptOUArhlkY5Zm0nRgilcM1d4Qzne8Ue
-         OYkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708617877; x=1709222677;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RvwPOwO7kqE6CHssC6QwZQmh+BGrju3fLpuyeIMI9Q8=;
-        b=iutnhyqb+SiOmwlrKEalR19C3W6GK2/AQ5jQErrHh6rA0Z8OmaSDGRbkXlLqHYg6Vt
-         wbeKI0r/pcOYrKCLB2aAUSRh/n3oe7h6XS48NtpE+qBpJnY3auZcrZZ9YEmiBl9COAX6
-         T2/TXhLm0Z4MzYH6lMb0c6Mf2vOLDnu/lUkUyWirEzHGS/wVMH9ImhXIIuo4i86Yv/bw
-         ABFmrxiNmn2gI9Xh3LdifDUNMNNgqmwBMArdeexIvQenzuHGceVQKIjJqEwwJ2/SlW11
-         IIeb2InMj5I9nhoDHIP3+PeC7OBXdC7WwEt7qa6dlpoXJLJ/AjR9SYR/nBxQWWOZVmOP
-         oaMg==
-X-Forwarded-Encrypted: i=1; AJvYcCXXjIXYxggYX8Rx6dSFYOaEYlN6JgKd5Vw3iqznH6Md9qtrGjOW6q7ALN0iSonNL0PAKwlnkLX9CCEF5V4/iZBpPdgzKBzkxW00J04BXdpuxGNBdAMteuejYTYE6M0Mhsrd9ERKJECOJgyXxKvbk0ucndsCvFQ8eMhiyumvktnYNsYv5hdA9g==
-X-Gm-Message-State: AOJu0YzYJJJN5/LCbUc3FAIO+BOc4EIIaoK54g62B36skAuZvt3eRf7T
-	EwBn2Xfsaac3SbQAHD8Pz9XYyeBnKcplDYMJLfXCizlEK29FE66e
-X-Google-Smtp-Source: AGHT+IFVIeAzfLUetGDsE6f3CvAc2dJbXKCrq7BnvWVfAq8Fg1rQX2qFP36rITin/K5CziY/TYJFDQ==
-X-Received: by 2002:a05:6a20:e68b:b0:1a0:c209:9932 with SMTP id mz11-20020a056a20e68b00b001a0c2099932mr5783254pzb.16.1708617877120;
-        Thu, 22 Feb 2024 08:04:37 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k5-20020a635605000000b005dc85821c80sm10476757pgb.12.2024.02.22.08.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 08:04:36 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 22 Feb 2024 08:04:35 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org
-Subject: Re: [PATCH 3/4] parisc: checksum: Remove folding from csum_partial
-Message-ID: <f5d028f8-a961-4a1f-bba9-a495d92de103@roeck-us.net>
-References: <20240221-parisc_use_generic_checksum-v1-0-ad34d895fd1b@rivosinc.com>
- <20240221-parisc_use_generic_checksum-v1-3-ad34d895fd1b@rivosinc.com>
+	s=arc-20240116; t=1708617909; c=relaxed/simple;
+	bh=RfsuVSe8GNXs7XyLML0In0jzB6G/EuStSNIt2i71n8k=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=DRirv6cxScBV6OCaAn7M7THshR2xGFxAr4KAKeUlZodI7FjtSmrbtp+V3evpDDXBOvp1UUGivLxxHHiKGKk1g8f6nuCn/Na2uhYqbpgDDjt6Y+PvB/HjsHchBG8leVM5LmTJkSWAnzqI+6vHaL5hak/5qaiyKmgHKPTiJ5saFeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=LI1ER78W; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W/q0WRYE; arc=none smtp.client-ip=64.147.123.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 78F3E1C00097;
+	Thu, 22 Feb 2024 11:05:05 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 22 Feb 2024 11:05:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708617905; x=1708704305; bh=oyltdXXGcd
+	hvG+yd7mXvuWv0EVxRlvMya8h/82uW5s4=; b=LI1ER78Wvd+MF7uqYk0caF5CAW
+	HrnTX8Cm1F1MZNX04bxsASqKE2GWgF1D12os5fuqsqWCBoNKkmOxm600KKD6Y+iJ
+	r7KKM1ozrCTG48qMkuWSE7Efc1xfM/ajKt2RCWLEQP2m/4+VE+0an0KmoDuqsS5C
+	qxkO27Tk9xrF7ppOizFXYO+Hk11hIAHLRAs6KQXkOMzaIXdiN1B7va+tNdlqOBOR
+	Eew+1x3jgOlBFffDxgaJ7x8RE13NjrktOh2P71yIMQ1bsUh55bWb3oOgj+t5md8e
+	iQYXoaMGKjMirW5xz8OgPwWjR9Rte5EaT5dUB+aWW4sgo3SLPV7tGi9FU9KA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708617905; x=1708704305; bh=oyltdXXGcdhvG+yd7mXvuWv0EVxR
+	lvMya8h/82uW5s4=; b=W/q0WRYEugit6zPUKthF4WQ5Ow0hrWEIB463EH6VtX22
+	FjAE1WxmIKJroWz9Ty/SFibLOx7NSLEa8WTTPcNiC7rdl+W5xM6R59qraP/o5wgT
+	aSsaFM1yy7Epa38mJq0CeVkDi5M5QA32rK69Zf2/CF4T4j1pvk0//a7gQrmXXQVD
+	skm34d1P1wgRYnaxl0q7totZyLqtHfIh+QS7IIJX+vX0mBE4l0dq+OZtngN/V6UZ
+	4y0IX3aKnjjs0hAPGhjpzrmvigRrdCppd6ad49CnUXX0Hf+fgs9dfJ7JuwDyhO4h
+	zvOhYSIQNv1BqOwmTFTlxWIK576CdpKtTnOqD3EWVg==
+X-ME-Sender: <xms:r3DXZUASbnYtssaDujRnEbqSELH_zmRau5VzhNGXapJlkdml7FnjEg>
+    <xme:r3DXZWhhOeyuGmAoOsEKqAlzr_rl0zqwaY6U7rXSemzNWeoTXmrXnHiISQ6e7eTfd
+    VrVDuPXb_EHOtvmyPE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeeggdekfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:r3DXZXlBMhWU8w-DwlvYmzGdJloOSM_FW78CwyeDT561wiEa6QsrEA>
+    <xmx:r3DXZawCqLtuqQhHptYfAZqgCAl7dIi_wBXWLXK4MSkGHeIUpUXgEA>
+    <xmx:r3DXZZRvw7Od1q-HYNJhksQT8vcrX9IfmWLvuqYOOQD5mJReSAv2fA>
+    <xmx:sXDXZfBzEuLPcOeoul3NFB7ZNim_jUmaTRNIhzs-ohMhnbqVgF53WxXSe2g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 728F5B6008D; Thu, 22 Feb 2024 11:05:03 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221-parisc_use_generic_checksum-v1-3-ad34d895fd1b@rivosinc.com>
+Message-Id: <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
+In-Reply-To: <4e9396ca-460b-49ca-818e-73f0a8997b15@huawei.com>
+References: <20240220081527.23408-1-liuyuntao12@huawei.com>
+ <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
+ <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
+ <30b01c65-12f2-4ee0-81d5-c7a2da2c36b4@app.fastmail.com>
+ <4e9396ca-460b-49ca-818e-73f0a8997b15@huawei.com>
+Date: Thu, 22 Feb 2024 17:04:43 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Yuntao Liu" <liuyuntao12@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "Russell King" <linux@armlinux.org.uk>, "Andrew Davis" <afd@ti.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Jonathan Corbet" <corbet@lwn.net>, "Mike Rapoport" <rppt@kernel.org>,
+ "Eric DeVolder" <eric.devolder@oracle.com>, "Rob Herring" <robh@kernel.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>
+Subject: Re: [PATCH -next] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Type: text/plain
 
-On Wed, Feb 21, 2024 at 06:37:13PM -0800, Charlie Jenkins wrote:
-> The parisc implementation of csum_partial previously folded the result
-> into 16 bits instead of returning all 32 bits and letting consumers like
-> ip_compute_csum do the folding. Since ip_compute_csum no longer depends
-> on this requirement, remove the folding so that the parisc
-> implementation operates the same as other architectures.
-> 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+On Thu, Feb 22, 2024, at 12:24, liuyuntao (F) wrote:
+>
+> The position of the caret has been moved below the right brace
+> of { KEEP(*(.vectors.bhb.loop8)) }, indicating that lld is treating
+> the entire `KEEP(*(.vectors))` as a file name. This could potentially be 
+> a bug in lld. Perhaps we can temporarily
+> enable the DCE option only when option LD_IS_LLD is disabled,
+> like risc-v:
+>
+> `select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD`.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+I would really like to see this working with lld if at all
+possible, as it allows the combination of gc-sections with
+lto and CONFIG_TRIM_UNUSED_KSYMS.
 
-> ---
->  arch/parisc/lib/checksum.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/arch/parisc/lib/checksum.c b/arch/parisc/lib/checksum.c
-> index 05f5ca4b2f96..eaa660491e24 100644
-> --- a/arch/parisc/lib/checksum.c
-> +++ b/arch/parisc/lib/checksum.c
-> @@ -95,14 +95,11 @@ unsigned int do_csum(const unsigned char *buff, int len)
->  /*
->   * computes a partial checksum, e.g. for TCP/UDP fragments
->   */
-> -/*
-> - * why bother folding?
-> - */
->  __wsum csum_partial(const void *buff, int len, __wsum sum)
->  {
->  	unsigned int result = do_csum(buff, len);
->  	addc(result, sum);
-> -	return (__force __wsum)from32to16(result);
-> +	return (__force __wsum)result;
->  }
->  
->  EXPORT_SYMBOL(csum_partial);
-> 
-> -- 
-> 2.34.1
-> 
+I experimented with lld myself now and I did get a booting
+kernel even without the the KEEP() on the vectors. I also
+see that this is the only use of OVERLAY in the kernel, so
+I hope that we can find a way to make it work with existing
+lld after all, either without the KEEP or without the OVERLAY.
+
+Did you see any problems without the KEEP() on the vectors?
+
+     Arnd
 
