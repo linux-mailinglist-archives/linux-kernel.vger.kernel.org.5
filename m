@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-77442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9D5860564
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:06:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D00D3860565
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:06:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3401F231DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:06:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71681B241BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C643F12D21D;
-	Thu, 22 Feb 2024 22:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42289137922;
+	Thu, 22 Feb 2024 22:05:36 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C37112D21B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9AD12D1F9
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708639526; cv=none; b=kkfJ6hkrW/JFsG6LciXB94/MX71RFts3pSiXl8N+L2pxWR7jrzoUNoWQA5plbFT78tl4eGRVavY/ese3d2HJskvUEyr3hAnV+CZ55zecF0FdkN7cCsOxeqpP/TxLnbWzKD6nzzfh4OhNDuO2HVhG9p29k8YKD/whjAMFIhGEM+4=
+	t=1708639535; cv=none; b=Zc6rfalgfS6RpC+BVk6mjEYh7VQ1hZDuh4NhUBe6Bx5WBHk2Le9tF5TKADUGO1GN1692QTR4XMVLpq2+a1CL/y4TIV4rAE5cCrrL1HvtqNZNIWONJlyMPd6dsInowy6m+wx9LO7Ut8eWmRm4TSlMnJ/jWnRUuZuRZBSqT9oAmzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708639526; c=relaxed/simple;
-	bh=+mZhHWe7xSKT8W0e3WXpAxvn0hKPCW1nUJ0c++/2jew=;
+	s=arc-20240116; t=1708639535; c=relaxed/simple;
+	bh=fescA2HCA+KDAyGQ4evjhwnLChU3ktYbPThY1amsb0o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NKLcGNLDI75cNAXBSPDdYUV2zU0kaQOlWFFhX+UdmkZMxikYJyrISvS7W3hmQIofZFHex6IVOPgbCMHaTxN7SI4DojESEmajskdBxQAB5VBXQnaY3CJzb8yTl52r9cx68wEc293X0Fz4irNnKINYGqKvUEc27vmD4Wncibu5JcU=
+	 MIME-Version:Content-Type; b=CAHmYL/K6Aqw8gMj8b5E7qjQ1vSuNU4rVmhO+TkgXK6dRgV5fzNUMl7OKSQItG+RBS3KS8m9lDx6tTbnupQcXJZ89utugTtwgOkQxEy8fBzuy9azkFs2HVY0avpDU6i6wRslTOhSlWP4bEHBoY/qQ3mUJUFJTlCg+gOfme8kmJM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1156BC433F1;
-	Thu, 22 Feb 2024 22:05:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E040C433F1;
+	Thu, 22 Feb 2024 22:05:33 +0000 (UTC)
 From: Catalin Marinas <catalin.marinas@arm.com>
 To: will@kernel.org,
-	Dawei Li <dawei.li@shingroup.cn>
-Cc: mark.rutland@arm.com,
-	mcgrof@kernel.org,
-	jpoimboe@kernel.org,
-	j.granados@samsung.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	set_pte_at@outlook.com
-Subject: Re: [PATCH] arm64: remove unneeded BUILD_BUG_ON assertion
-Date: Thu, 22 Feb 2024 22:05:21 +0000
-Message-Id: <170863948630.1616990.3978730044792626566.b4-ty@arm.com>
+	revest@chromium.org,
+	rostedt@goodmis.org,
+	mark.rutland@arm.com,
+	arnd@arndb.de,
+	pengdonglin@sangfor.com.cn,
+	Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: make member of struct pt_regs and it's offset macro in the same order
+Date: Thu, 22 Feb 2024 22:05:31 +0000
+Message-Id: <170863948634.1616990.12613009434270992544.b4-ty@arm.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240202040211.3118918-1-dawei.li@shingroup.cn>
-References: <20240202040211.3118918-1-dawei.li@shingroup.cn>
+In-Reply-To: <20240130175504.106364-1-shikemeng@huaweicloud.com>
+References: <20240130175504.106364-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,17 +53,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Fri, 02 Feb 2024 12:02:11 +0800, Dawei Li wrote:
-> Since commit c02433dd6de3 ("arm64: split thread_info from task stack"),
-> CONFIG_THREAD_INFO_IN_TASK is enabled unconditionally for arm64. So
-> remove this always-true assertion from arch_dup_task_struct.
+On Wed, 31 Jan 2024 01:55:04 +0800, Kemeng Shi wrote:
+> In struct pt_regs, member pstate is after member pc. Move offset macro
+> of pstate after offset macro of pc to improve readability a little.
 > 
 > 
 
 Applied to arm64 (for-next/misc), thanks!
 
-[1/1] arm64: remove unneeded BUILD_BUG_ON assertion
-      https://git.kernel.org/arm64/c/bce79b0c8097
+[1/1] arm64: make member of struct pt_regs and it's offset macro in the same order
+      https://git.kernel.org/arm64/c/58a0484eaf5e
 
 -- 
 Catalin
