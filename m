@@ -1,179 +1,207 @@
-Return-Path: <linux-kernel+bounces-75780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 597AE85EED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:03:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5865685EEDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F0B4282C97
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:03:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B38FAB22303
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CCF14A94;
-	Thu, 22 Feb 2024 02:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6F414287;
+	Thu, 22 Feb 2024 02:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="Myd74kcu"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EFMyLwKr";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EFMyLwKr"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93F513AD4
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D27125D7;
+	Thu, 22 Feb 2024 02:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708567403; cv=none; b=cXDSjzNlXVG8xNrS1tszkEZYKNIfhRY+2yN8vOCCf0rsWxh5ok2wOjOyi2D2V0gKWnlbCyUsO6ASxPjr+g2+ynPQvKhNwSPH34sMZbUUgF9eSb7k7x/sq9vlrBVFdAO/IaL8wtAYbU7MWKDexNcxeyRs6XZMvNg4IMHSgqfkK2k=
+	t=1708567511; cv=none; b=NU5RWU0xzKp4jubk0e1uf3mrhD4vSM2W1KpCRlYl7BMxMCMzRWu8HeH8d/viuYeneh/avggBc39HJ6MafzIxPIOxYYouuY7yc7+WW6hkZ6B2VjhWUkNtl5GO2opxCqvYK00EDFMHZdjTw/hnPJAE8g2yI8sBs7R95UH+rcqRw78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708567403; c=relaxed/simple;
-	bh=JRupkqtOY1jWzd/kLbCtgp183MTrg3adCZsTzQc2mQg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rcIRnrZ12S7eu+W4h/OJpMAd+9OyYB+wlAGgFE51aGrSvo6p6A3nYemxCu48gMCy126L7b9ftnI54SJ1KG0aPq0DKsjarw0fpzjq0OOkv+ijBX6uFgCwQ/n4Ls8Tu67+9TRD1Ao2fS8uNDsgQF4Q1dUH4YwKKViK+7rygNFYvCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=Myd74kcu; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4125df3c40aso40131275e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1708567400; x=1709172200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RpCgjNX1LqPX7oZGVuldx9UiwfGbtf89koJSaGuEDxQ=;
-        b=Myd74kcur8vH1I3zmXPqZUmeM5zBeOLvHMqgEu654WOdpzz2U0+KzfJCVPGnEDV9Z1
-         3u8TrpzQqiotDZVjyrdIUIlJpP9n+jXcduSgdmN22sU9FBXLCdql6YLdTDrqiOsXU9Pf
-         Br0vBaZehS8dgnBO76KtsxmJLc3iEu6r32AKM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708567400; x=1709172200;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RpCgjNX1LqPX7oZGVuldx9UiwfGbtf89koJSaGuEDxQ=;
-        b=Gsl6W2eEMSdNT2OL96Uh4myaZbN9rjJ62YICNcCzSi8E3Myu2Vla9zisZcWOHM+KXH
-         jMgAik4NB9lIQFP8tmkhnHbONgshpLC8xtyfMtwEdM/MF/Rn7l8a441l1SpdD8Ydj3eY
-         6/doGAeTJ9iu9TZkIedGKszo2FW9cx1omTrf2km7qEoXJkKhNJLartqjPAmaGr4WtWrs
-         rGF0mb1y9zteNIUqEdIgzlGe/ARBBf8hK9DaexbQ9xXe2BVNsILPdKrZRzUepsRQhNDL
-         9w5YTSP5v7ILioM2R9N0H8S47gxkK2D/nywFO38qXjy9RpUNqZRorg8R8RkjvjYHUxoF
-         tJJQ==
-X-Gm-Message-State: AOJu0YxJXgxmIuPLKmzhe2DMqQuXC5QXk6KJ2Q0epg5xBMU52gnokcgd
-	OLViQIHSlloFsqAVHSKlSWFcJVc8n39gCl6n9z03D+SOq+byjFAWvXo5r5RxcOg=
-X-Google-Smtp-Source: AGHT+IF17JfDiQPU6La0me//6yi5Ziq+H6StnWpBIOWkvLcTMKHIezhdF+lH9T4BxYSFO+mETuw9kA==
-X-Received: by 2002:a05:600c:22c6:b0:411:ef17:9c46 with SMTP id 6-20020a05600c22c600b00411ef179c46mr14985747wmg.39.1708567400316;
-        Wed, 21 Feb 2024 18:03:20 -0800 (PST)
-Received: from [192.168.1.10] (host-92-3-248-192.as13285.net. [92.3.248.192])
-        by smtp.gmail.com with ESMTPSA id f9-20020a05600c44c900b00411e3cc0e0asm19318507wmo.44.2024.02.21.18.03.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 18:03:20 -0800 (PST)
-Message-ID: <08ac69b4-4d12-4454-aa16-40db7e54816f@citrix.com>
-Date: Thu, 22 Feb 2024 02:03:19 +0000
+	s=arc-20240116; t=1708567511; c=relaxed/simple;
+	bh=3m2O0gxqVD4leeDPk3EpgqVSoMqn/AGGWB8HA13FHP4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IbF0vFT741xxhXxbP+BnFF0xZE0v2QU2wROhLJ4x6iqcLVEGhj7N2G/QaxKlregqsrERv7o2wVafjhMKEnkEW8HBY9X+ao5xfxuaB54sa6Rt011Gz/iGyhj/1JF2Utalks602F+axjQSL5dv79fCJsuUrehgPw7L/Sb17cv9Gpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EFMyLwKr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EFMyLwKr; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A99EC21FEF;
+	Thu, 22 Feb 2024 02:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708567499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yt2nTJyCo2DcsFR2s8JybA6/3TKUrIMwu//hSiSPmVk=;
+	b=EFMyLwKrIv2T/TF+cLB4CGTgD/P/SAUnitjVyiw/hHJqjncyIlIe/EPUxTnreAIAyUk1vx
+	7h6ebhwTHigc5XL7GqVaOvd2q8Zwr4L6emwPkiSJjvaRrE24kKkRUySbhjsc7yUqRwUP3M
+	hNmxbIUlr1pJ8aCQG1nCwyiQP+EUhvw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708567499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yt2nTJyCo2DcsFR2s8JybA6/3TKUrIMwu//hSiSPmVk=;
+	b=EFMyLwKrIv2T/TF+cLB4CGTgD/P/SAUnitjVyiw/hHJqjncyIlIe/EPUxTnreAIAyUk1vx
+	7h6ebhwTHigc5XL7GqVaOvd2q8Zwr4L6emwPkiSJjvaRrE24kKkRUySbhjsc7yUqRwUP3M
+	hNmxbIUlr1pJ8aCQG1nCwyiQP+EUhvw=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 35F12134AF;
+	Thu, 22 Feb 2024 02:04:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id W7QtOsqr1mXTUAAAn2gu4w
+	(envelope-from <mpdesouza@suse.com>); Thu, 22 Feb 2024 02:04:58 +0000
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: Yujie Liu <yujie.liu@intel.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>,
+	Marcos Paulo de Souza <mpdesouza@suse.com>,
+	kernel test robot <lkp@intel.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>,
+	Petr Mladek <pmladek@suse.com>,
+	Joe Lawrence <joe.lawrence@redhat.com>,
+	oe-kbuild-all@lists.linux.dev,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	live-patching@vger.kernel.org
+Subject: Re: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
+Date: Wed, 21 Feb 2024 23:04:55 -0300
+Message-ID: <20240222020456.28532-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <ZdajMy061zaqq8fP@yujie-X299>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 04/15] x86: Secure Launch Resource Table header file
-Content-Language: en-GB
-To: Ard Biesheuvel <ardb@kernel.org>,
- Ross Philipson <ross.philipson@oracle.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
- linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
- mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
- peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
- nivedita@alum.mit.edu, herbert@gondor.apana.org.au, davem@davemloft.net,
- kanth.ghatraju@oracle.com, trenchboot-devel@googlegroups.com
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-5-ross.philipson@oracle.com>
- <CAMj1kXGaMfUAR85jpeS2JxcmWBbpkzroCVZOtwa3WDQwStDjMw@mail.gmail.com>
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- xsFNBFLhNn8BEADVhE+Hb8i0GV6mihnnr/uiQQdPF8kUoFzCOPXkf7jQ5sLYeJa0cQi6Penp
- VtiFYznTairnVsN5J+ujSTIb+OlMSJUWV4opS7WVNnxHbFTPYZVQ3erv7NKc2iVizCRZ2Kxn
- srM1oPXWRic8BIAdYOKOloF2300SL/bIpeD+x7h3w9B/qez7nOin5NzkxgFoaUeIal12pXSR
- Q354FKFoy6Vh96gc4VRqte3jw8mPuJQpfws+Pb+swvSf/i1q1+1I4jsRQQh2m6OTADHIqg2E
- ofTYAEh7R5HfPx0EXoEDMdRjOeKn8+vvkAwhviWXTHlG3R1QkbE5M/oywnZ83udJmi+lxjJ5
- YhQ5IzomvJ16H0Bq+TLyVLO/VRksp1VR9HxCzItLNCS8PdpYYz5TC204ViycobYU65WMpzWe
- LFAGn8jSS25XIpqv0Y9k87dLbctKKA14Ifw2kq5OIVu2FuX+3i446JOa2vpCI9GcjCzi3oHV
- e00bzYiHMIl0FICrNJU0Kjho8pdo0m2uxkn6SYEpogAy9pnatUlO+erL4LqFUO7GXSdBRbw5
- gNt25XTLdSFuZtMxkY3tq8MFss5QnjhehCVPEpE6y9ZjI4XB8ad1G4oBHVGK5LMsvg22PfMJ
- ISWFSHoF/B5+lHkCKWkFxZ0gZn33ju5n6/FOdEx4B8cMJt+cWwARAQABzSlBbmRyZXcgQ29v
- cGVyIDxhbmRyZXcuY29vcGVyM0BjaXRyaXguY29tPsLBegQTAQgAJAIbAwULCQgHAwUVCgkI
- CwUWAgMBAAIeAQIXgAUCWKD95wIZAQAKCRBlw/kGpdefoHbdD/9AIoR3k6fKl+RFiFpyAhvO
- 59ttDFI7nIAnlYngev2XUR3acFElJATHSDO0ju+hqWqAb8kVijXLops0gOfqt3VPZq9cuHlh
- IMDquatGLzAadfFx2eQYIYT+FYuMoPZy/aTUazmJIDVxP7L383grjIkn+7tAv+qeDfE+txL4
- SAm1UHNvmdfgL2/lcmL3xRh7sub3nJilM93RWX1Pe5LBSDXO45uzCGEdst6uSlzYR/MEr+5Z
- JQQ32JV64zwvf/aKaagSQSQMYNX9JFgfZ3TKWC1KJQbX5ssoX/5hNLqxMcZV3TN7kU8I3kjK
- mPec9+1nECOjjJSO/h4P0sBZyIUGfguwzhEeGf4sMCuSEM4xjCnwiBwftR17sr0spYcOpqET
- ZGcAmyYcNjy6CYadNCnfR40vhhWuCfNCBzWnUW0lFoo12wb0YnzoOLjvfD6OL3JjIUJNOmJy
- RCsJ5IA/Iz33RhSVRmROu+TztwuThClw63g7+hoyewv7BemKyuU6FTVhjjW+XUWmS/FzknSi
- dAG+insr0746cTPpSkGl3KAXeWDGJzve7/SBBfyznWCMGaf8E2P1oOdIZRxHgWj0zNr1+ooF
- /PzgLPiCI4OMUttTlEKChgbUTQ+5o0P080JojqfXwbPAyumbaYcQNiH1/xYbJdOFSiBv9rpt
- TQTBLzDKXok86M7BTQRS4TZ/ARAAkgqudHsp+hd82UVkvgnlqZjzz2vyrYfz7bkPtXaGb9H4
- Rfo7mQsEQavEBdWWjbga6eMnDqtu+FC+qeTGYebToxEyp2lKDSoAsvt8w82tIlP/EbmRbDVn
- 7bhjBlfRcFjVYw8uVDPptT0TV47vpoCVkTwcyb6OltJrvg/QzV9f07DJswuda1JH3/qvYu0p
- vjPnYvCq4NsqY2XSdAJ02HrdYPFtNyPEntu1n1KK+gJrstjtw7KsZ4ygXYrsm/oCBiVW/OgU
- g/XIlGErkrxe4vQvJyVwg6YH653YTX5hLLUEL1NS4TCo47RP+wi6y+TnuAL36UtK/uFyEuPy
- wwrDVcC4cIFhYSfsO0BumEI65yu7a8aHbGfq2lW251UcoU48Z27ZUUZd2Dr6O/n8poQHbaTd
- 6bJJSjzGGHZVbRP9UQ3lkmkmc0+XCHmj5WhwNNYjgbbmML7y0fsJT5RgvefAIFfHBg7fTY/i
- kBEimoUsTEQz+N4hbKwo1hULfVxDJStE4sbPhjbsPCrlXf6W9CxSyQ0qmZ2bXsLQYRj2xqd1
- bpA+1o1j2N4/au1R/uSiUFjewJdT/LX1EklKDcQwpk06Af/N7VZtSfEJeRV04unbsKVXWZAk
- uAJyDDKN99ziC0Wz5kcPyVD1HNf8bgaqGDzrv3TfYjwqayRFcMf7xJaL9xXedMcAEQEAAcLB
- XwQYAQgACQUCUuE2fwIbDAAKCRBlw/kGpdefoG4XEACD1Qf/er8EA7g23HMxYWd3FXHThrVQ
- HgiGdk5Yh632vjOm9L4sd/GCEACVQKjsu98e8o3ysitFlznEns5EAAXEbITrgKWXDDUWGYxd
- pnjj2u+GkVdsOAGk0kxczX6s+VRBhpbBI2PWnOsRJgU2n10PZ3mZD4Xu9kU2IXYmuW+e5KCA
- vTArRUdCrAtIa1k01sPipPPw6dfxx2e5asy21YOytzxuWFfJTGnVxZZSCyLUO83sh6OZhJkk
- b9rxL9wPmpN/t2IPaEKoAc0FTQZS36wAMOXkBh24PQ9gaLJvfPKpNzGD8XWR5HHF0NLIJhgg
- 4ZlEXQ2fVp3XrtocHqhu4UZR4koCijgB8sB7Tb0GCpwK+C4UePdFLfhKyRdSXuvY3AHJd4CP
- 4JzW0Bzq/WXY3XMOzUTYApGQpnUpdOmuQSfpV9MQO+/jo7r6yPbxT7CwRS5dcQPzUiuHLK9i
- nvjREdh84qycnx0/6dDroYhp0DFv4udxuAvt1h4wGwTPRQZerSm4xaYegEFusyhbZrI0U9tJ
- B8WrhBLXDiYlyJT6zOV2yZFuW47VrLsjYnHwn27hmxTC/7tvG3euCklmkn9Sl9IAKFu29RSo
- d5bD8kMSCYsTqtTfT6W4A3qHGvIDta3ptLYpIAOD2sY3GYq2nf3Bbzx81wZK14JdDDHUX2Rs
- 6+ahAA==
-In-Reply-To: <CAMj1kXGaMfUAR85jpeS2JxcmWBbpkzroCVZOtwa3WDQwStDjMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=EFMyLwKr
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.51 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.com:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Score: -1.51
+X-Rspamd-Queue-Id: A99EC21FEF
+X-Spam-Flag: NO
 
-On 15/02/2024 8:08 am, Ard Biesheuvel wrote:
-> On Wed, 14 Feb 2024 at 23:31, Ross Philipson <ross.philipson@oracle.com> wrote:
->> +/*
->> + * Primary SLR Table Header
+On Thu, 22 Feb 2024 09:28:19 +0800 Yujie Liu <yujie.liu@intel.com> wrote:
 
-I know it's just a comment, but SLR ought to be written in longhand here.
+> On Wed, Feb 21, 2024 at 07:04:03PM -0300, Marcos Paulo de Souza wrote:
+> > On Wed, 21 Feb 2024 14:12:00 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
+> > 
+> > > On 2/21/24 05:26, Marcos Paulo de Souza wrote:
+> > > > On Tue, 20 Feb 2024 17:19:54 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
+> > > > 
+> > > >> On 2/19/24 06:53, Marcos Paulo de Souza wrote:
+> > > >>> On Mon, 19 Feb 2024 09:15:15 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
+> > > >>>
+> > > >>>> On Mon, 19 Feb 2024 14:35:16 +0800 kernel test robot <lkp@intel.com> wrote:
+> > > >>>>
+> > > >>>>> Hi Marcos,
+> > > >>>>>
+> > > >>>>> kernel test robot noticed the following build errors:
+> > > >>>>>
+> > > >>>>> [auto build test ERROR on 345e8abe4c355bc24bab3f4a5634122e55be8665]
+> > > >>>>>
+> > > >>>>> url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
+> > > >>>>> base:   345e8abe4c355bc24bab3f4a5634122e55be8665
+> > > >>>>> patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-1-89f4a6f5cddc%40suse.com
+> > > >>>>> patch subject: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
+> > > >>>>> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > > >>>>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191417.XULH88Ct-lkp@intel.com/reproduce)
+> > > >>>>>
+> > > >>>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > >>>>> the same patch/commit), kindly add following tags
+> > > >>>>> | Reported-by: kernel test robot <lkp@intel.com>
+> > > >>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202402191417.XULH88Ct-lkp@intel.com/
+> > > >>>>>
+> > > >>>>> All errors (new ones prefixed by >>):
+> > > >>>>>
+> > > >>>>>>> make[3]: *** /lib/modules/5.9.0-2-amd64/build: No such file or directory.  Stop.
+> > > >>>>
+> > > >>>> We should ask the kernel test robot machine owners to install kernel-devel
+> > > >>>> package in order to have this fixed.
+> > > >>>
+> > > >>> Or maybe ask them to change the reproducer to specify KDIR to the git tree,
+> > > >>> instead of /lib/modules/?
+> > > >>>
+> > > >>
+> > > >> This would be a regression to automated test rings. Do you have any other
+> > > >> solutions?
+> > > > 
+> > > > I would say that we could skip the these tests if kernel-devel package is not
+> > > > installed. Would it be acceptable? At least we would avoid such issues like this
+> > > > in the future as well.
+> > > > 
+> > > 
+> > > We have to check and skip build. Something we could do in the livepatch
+> > > Makefile. Can you send patch for this - I will oull this in for next
+> > > so we don't break test rings.
+> > 
+> > I added a new patch in the same patchset that would cover this, skipping the
+> > build and test if kernel-devel is not installed. The patchset was sent earlier
+> > today. Please check if the new patch fixes things on the build robot.
+> 
+> Hi Shuah, Hi Marcos,
+> 
+> Sorry for this wrong report. The files are organized in a different way
+> in the bot and cause this issue. We have fixed the bot to explicitly
+> set KDIR to the correct path before building the selftests. The patch
+> [1] can also work well in bot's environment.
+> 
+> [1] https://lore.kernel.org/all/20240221-lp-selftests-fixes-v2-2-a19be1e029a7@suse.com/
 
->> + */
->> +struct slr_table {
->> +       u32 magic;
->> +       u16 revision;
->> +       u16 architecture;
->> +       u32 size;
->> +       u32 max_size;
->> +       /* entries[] */
->> +} __packed;
-> Packing this struct has no effect on the layout so better drop the
-> __packed here. If this table is part of a structure that can appear
-> misaligned in memory, better to pack the outer struct or deal with it
-> there in another way.
+Hi Yujie, thanks for letting us know that the bot had different settings. Either
+way the patch you mentioned should help to reduce noise in the future on
+bot's that doesn't have kernel-devel installed.
 
-As you note, __packed does two things not one.
+Again, thanks a lot for fixing the issue!
+  Marcos
 
-The consumer of the random integer that is expected to be a pointer to a
-struct lsr_table doesn't know whether it was invoked by a 16bit
-bootloader or a 32bit bootloader, and this really does make a difference
-for an ABI described only in C.
-
-Then again, we're holding off on setting the spec in stone until there's
-an agreement in principle, so we could retrofit a statement about the
-expected alignment of this structure in memory.
-
-The sane choices are either 8b alignment (there are uint64_t's in
-entires[], but I also see there are some misaligned uint64_t's too,
-which is dull), or using the good old x86 fallback or paragraph
-alignment just in case we really want to extend it with a uint128_t in
-future.
-
-Thoughts?
-
-~Andrew
+> 
+> Best Regards,
+> Yujie
 
