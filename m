@@ -1,176 +1,117 @@
-Return-Path: <linux-kernel+bounces-77477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633178605DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:56:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827C28605DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:57:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E03B9B22C61
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:56:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F7B284D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D6E18643;
-	Thu, 22 Feb 2024 22:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4920E1865B;
+	Thu, 22 Feb 2024 22:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DElzBV7u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTwbtdZJ"
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C13118046;
-	Thu, 22 Feb 2024 22:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A894A1B7F1;
+	Thu, 22 Feb 2024 22:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708642607; cv=none; b=sDBtWCYIWAIjXHoEYVg6h5MHEi1pvXt09iFsyv2Glp6mzjbzdc5SZrFST6EKJc4Xb/WoXGw1qxnGJsql/RgOInKbSsJL0uB1fAi/VtpX8QPjyHV3oW+3B9MmT5K0WP+61qVqwizluAtH+USA513T1EptEsNxliLq5wB253zbHNU=
+	t=1708642616; cv=none; b=GN4yOqIGpeZwtGh7fCOoRaxqF1xdQ2IUlJwIIPXlDL5jJmJHVS0iZ1DJ8cnQs4/NFOpAskVmPfCt4am/5AMis9+MNhMGKZn6DkhuACHtl7DVfEZ/hOgsPlW51y4Msbr/m1wEsgn3ICsrmZlxxAs9nhttbzDYRXeVxCDIDXLgTzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708642607; c=relaxed/simple;
-	bh=cknM0/4tXtPhyqko/AdQF0LnXQDz7Vadyz3mhIDH8pI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VJ5w4wZFUKpb8y5or1b7EK86QUzrMw4WzuSGnCsFAHNXqkPdkZYRnNcnyNcFD38Rt57rSPYoflS7+C+z57RlFfZfqTyPX2NkhUCu3o80vlRK8Y3ExEhsIrxkK36waK9GDm8mRE7c/yIGKSvhNbpnGu/U9nrCES80NwhM6UB4u2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DElzBV7u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC2CC433F1;
-	Thu, 22 Feb 2024 22:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708642606;
-	bh=cknM0/4tXtPhyqko/AdQF0LnXQDz7Vadyz3mhIDH8pI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=DElzBV7ud0iWyLnjJlxPm+vIhILu8iYF7XrUJ3JqZ8TkcKt5Nu04HC344ao57UzY4
-	 +yt8OXvySo0pkSKU51erzBnuQgfo7xRILkv9md+SoWLIIoGyQGEANteOepLIhkbdRW
-	 DYpOQSzd7+87l1geaRDSXrWonlUGJvvNx6DTpPdUOlpsMk9uS+xhzGxVQ8tN59i/Uq
-	 f2WD0HUQp3j7ramXDMeyUzUCvU48cu9fEDKWnUb5fJBEWdtdnBgAzXJpnVKmIE2f1d
-	 3bFFtIf7G29AmgYS/AFfA+v1NxM3c/9QVomX278p37/hF+wH1D6bJbcv0fpSbQ1L6D
-	 32YVZCfu/8sbQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 675F4CE0B71; Thu, 22 Feb 2024 14:56:46 -0800 (PST)
-Date: Thu, 22 Feb 2024 14:56:46 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 6/6] rcu-tasks: Maintain real-time response in
- rcu_tasks_postscan()
-Message-ID: <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <20240217012745.3446231-7-boqun.feng@gmail.com>
- <ZdeI_-RfdLR8jlsm@localhost.localdomain>
- <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
+	s=arc-20240116; t=1708642616; c=relaxed/simple;
+	bh=MWhQ9OitdtI2L2kqqmn2Abh1jxW5jtLKi+QUQjezWUY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e/nzNpMBkQpOGN9yuzkfElnTdqXWJGRNgylJhlBuPH4olIjWQyEE88z69a45sWoT6xdiNSH12EdG5Yyyktq4eB/OojKLbOkZwq12wqxlWaitMJkQubMJV4aX6wCNolEwHoqAPUfzpZUswIcLYwFiewP0ymHQ4zmHtXJ6X9OxV3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DTwbtdZJ; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e2ee49ebaaso85753a34.0;
+        Thu, 22 Feb 2024 14:56:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708642613; x=1709247413; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=CXk2yPJ/mVtgjito9mdZBvBKyIgsv1n5SPKheaIBNWM=;
+        b=DTwbtdZJ8VEhrI08mZVDdy/XQad0xXPvj5PiXp7VU3tJXUJ/+tqab5CqwdyW2cmYXB
+         Vhz1cTPoJgpAXrAqaqSkOg57u0RpDUbzzqjECbuc39SDzHFjWOMGdj9r8NfD9+XiBiRr
+         Oy/jYc3Pj2zXNfO1T2M0ejSgEgfygi9ArQhfBJFWMHtaLKP+5qGJw1c1GeUjigC9FNOA
+         kdvJ1GvKmGWzCIP825Th0AT3o6S1ZzuJdUjP1H4hjJRj/Lccw887mm3Sp1/5SehMGFFr
+         jIpYYFb5c9ScIFN0lLoqEZXfZzRFBoSlHyc4Y5T/FRqAzeuG2L9C3dn2nrDUkC2MOZCg
+         Nnog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708642613; x=1709247413;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CXk2yPJ/mVtgjito9mdZBvBKyIgsv1n5SPKheaIBNWM=;
+        b=GZop/pLILgdF2XKu16a3+S6sMV5S7l9BwO68GIosl5N1ynKS117UlW0uUvCOS+tmf4
+         YuslQWQCO2hH4A4c06/CBOu/FDxN9ydN2mP0tlRKWa367/EFqVNinTj6HnPdK+NeDM34
+         VVLG/UY2E8euioSUieSqzG0d90m1WQYzEXnbt+uSgLgfNJGwLupgMn9LeWUaQkT3dFLS
+         tWEcdHb5H/Ti9+LQL7SdAi5a9SjPldTqzzh/AXXcl3eEI+/nbvWxmc6VfTpMQW0JW96m
+         UmwJ3vH9hcjVULVGvADg+B5qCdhh2McCvV5zCPWB7WlyOgmv0uCsTuZoryF8+6LxzJTm
+         FyVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkOWTui2hC+9kwtHu38fIQtyNnF+RVP4eJ39ZcZJrqZ1fyEYoxD2gV2Yfvn5xNWBBNBFCp/AuYZn/J8DmanmpoQtBgH18fcStifJyk
+X-Gm-Message-State: AOJu0Yx6GyHcTOS3r0mqfZfRUfMG/9ZGeYm6LLi4eA9vFvSQA7/vFCyj
+	e2R2QBFwdGM01dW9c3JAMEaF/5jPhLa/4aDVi51KJczyg7/ygdmGLfPKbWhb
+X-Google-Smtp-Source: AGHT+IESB0mW2h/K+hIcMqYziPmpTJHRpyy2uKpnUt5HUOHKIcZ4t1EaDg76kaOlpc2Ez1jbZZ9SZA==
+X-Received: by 2002:a05:6830:911:b0:6dd:dd28:c711 with SMTP id v17-20020a056830091100b006dddd28c711mr469402ott.36.1708642613485;
+        Thu, 22 Feb 2024 14:56:53 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 32-20020a631260000000b005d3bae243bbsm10991177pgs.4.2024.02.22.14.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 14:56:53 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hwmon fixes for v6.8-rc6
+Date: Thu, 22 Feb 2024 14:56:51 -0800
+Message-Id: <20240222225651.4078336-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
 
-On Thu, Feb 22, 2024 at 12:52:24PM -0800, Paul E. McKenney wrote:
-> On Thu, Feb 22, 2024 at 06:48:47PM +0100, Frederic Weisbecker wrote:
-> > Le Fri, Feb 16, 2024 at 05:27:41PM -0800, Boqun Feng a écrit :
-> > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > 
-> > > The current code will scan the entirety of each per-CPU list of exiting
-> > > tasks in ->rtp_exit_list with interrupts disabled.  This is normally just
-> > > fine, because each CPU typically won't have very many tasks in this state.
-> > > However, if a large number of tasks block late in do_exit(), these lists
-> > > could be arbitrarily long.  Low probability, perhaps, but it really
-> > > could happen.
-> > > 
-> > > This commit therefore occasionally re-enables interrupts while traversing
-> > > these lists, inserting a dummy element to hold the current place in the
-> > > list.  In kernels built with CONFIG_PREEMPT_RT=y, this re-enabling happens
-> > > after each list element is processed, otherwise every one-to-two jiffies.
-> > > 
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Sebastian Siewior <bigeasy@linutronix.de>
-> > > Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > > ---
-> > >  kernel/rcu/tasks.h | 21 ++++++++++++++++++++-
-> > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index 4dc355b2ac22..866743e0796f 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -971,13 +971,32 @@ static void rcu_tasks_postscan(struct list_head *hop)
-> > >  	 */
-> > >  
-> > >  	for_each_possible_cpu(cpu) {
-> > > +		unsigned long j = jiffies + 1;
-> > >  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
-> > >  		struct task_struct *t;
-> > > +		struct task_struct *t1;
-> > > +		struct list_head tmp;
-> > >  
-> > >  		raw_spin_lock_irq_rcu_node(rtpcp);
-> > > -		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
-> > > +		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
-> > >  			if (list_empty(&t->rcu_tasks_holdout_list))
-> > >  				rcu_tasks_pertask(t, hop);
-> > > +
-> > > +			// RT kernels need frequent pauses, otherwise
-> > > +			// pause at least once per pair of jiffies.
-> > > +			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
-> > > +				continue;
-> > > +
-> > > +			// Keep our place in the list while pausing.
-> > > +			// Nothing else traverses this list, so adding a
-> > > +			// bare list_head is OK.
-> > > +			list_add(&tmp, &t->rcu_tasks_exit_list);
-> > 
-> > I'm a bit confused about what this does...
-> > 
-> > > +			raw_spin_unlock_irq_rcu_node(rtpcp);
-> > > +			cond_resched(); // For CONFIG_PREEMPT=n kernels
-> > > +			raw_spin_lock_irq_rcu_node(rtpcp);
-> > > +			list_del(&tmp);
-> > 
-> > Isn't there a risk that t is reaped by then? If it was not observed on_rq
-> > while calling rcu_tasks_pertask() then there is no get_task_struct.
-> 
-> That is OK, courtesy of the _safe in list_for_each_entry_safe().
-> 
-> > And what about t1? Can't it be reaped as well?
-> 
-> It can, and that is a problem, good catch!
-> 
-> My current thought is to add this before the list_del(), which is
-> admittedly a bit crude:
-> 
-> 			t1 = tmp.next;
+Hi Linus,
 
-OK, OK...  ;-)
+Please pull hwmon fixes for Linux v6.8-rc6 from signed tag:
 
-			t1 = list_entry(tmp.next, struct task_struct, rcu_tasks_exit_list);
+    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.8-rc6
 
-Is there still a better way?
+Thanks,
+Guenter
+------
 
-							Thanx, Paul
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
 
-> > Thanks.
-> > 
-> > 
-> > > +			j = jiffies + 1;
-> > > +		}
-> > >  		raw_spin_unlock_irq_rcu_node(rtpcp);
-> > >  	}
-> > >  
-> > > -- 
-> > > 2.43.0
-> > > 
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v6.8-rc6
+
+for you to fetch changes up to d56e460e19ea8382f813eb489730248ec8d7eb73:
+
+  hwmon: (nct6775) Fix access to temperature configuration registers (2024-02-21 13:56:33 -0800)
+
+----------------------------------------------------------------
+hwmon fixes for v6.8-rc6
+
+Fix a global-out-of-bounds bug in nct6775 driver.
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      hwmon: (nct6775) Fix access to temperature configuration registers
+
+ drivers/hwmon/nct6775-core.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
