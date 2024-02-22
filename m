@@ -1,77 +1,115 @@
-Return-Path: <linux-kernel+bounces-75699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B01E285ED88
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:05:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B07D85ED90
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 411DBB253D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:05:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EADF3284745
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273DA14298;
-	Thu, 22 Feb 2024 00:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AA2881F;
+	Thu, 22 Feb 2024 00:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TIMkT15W"
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y42VscKr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11D1B647
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27331854;
+	Thu, 22 Feb 2024 00:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560270; cv=none; b=GbqI6lIRhCUIFESOdsBK/666BDLSnw22+g9sbAijuGrGxIqqVGdy2xMltiJt+0OQeR0qLczZ22Jwv1hYhIqzBV274jHAp7jLH1aUhHMwMsANHRpx7haoDbzeIqekVvNXwn/VZjgE2PZsEKx3IjDsw2E7jT6oxfdMR5BCF93yMu4=
+	t=1708560481; cv=none; b=bighMFvtnxScIe9blMRrySrupue9zM9x8WAQFRP4nB3hIbadegZ4hk9Ia3jG0UFuRjMJrJ/Qgn/8dDrAHetzaF/bNYo9v+6o5DVEfS26t377BRgBa/1TPWh6MqWOfAxt1QG/C8OenzmFHLfVi6sMfDVeQ3eWsvTMCwiLoxkZuow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560270; c=relaxed/simple;
-	bh=4WKkWotYZ1Oazo/PiLbdh34LV4deHtqfIISRRq7ZkH8=;
+	s=arc-20240116; t=1708560481; c=relaxed/simple;
+	bh=vE8G0tEnjCDvKYtM1hAj6g+Z7bZNowrFZogG32m/K70=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PJdFFNhLH2Gvbf9Soo36cabRLizfSCZQYjHlkRy9BuoEtcmMLc+3Xzvu+rBfPvKP0hxGffcdadROaFJCLxcCX3R5eKmLTu//DuF5mnmSFPfekCDCFIvsfrIqouq4QDgbpLxNCXKby2sPQPXtED11YSH+OihWPbxE/Zrug4qzydE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TIMkT15W; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 21 Feb 2024 19:04:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708560266;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DacZQ2bgLZrPyV3TE+Kd66Fku/+A0+dgRbmVjv/psVo=;
-	b=TIMkT15Wa83yuKPGA7xJBGstG2DmQTXX6m46kts3xS2DRGpqIxD0qfriZ6Uj8+J3aTLC7Q
-	S6zwVQOMpY4HUNWunGEpmApf7YuNFrH33khwHIE+k2HD/Nd2OVamTuJeO+x5YYbufH81xm
-	9C6yHywEYXYfmMNWDGv86G2xOms2uFI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
- ret
-Message-ID: <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
-References: <20240221115203.3413554-1-colin.i.king@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FDpZvRKAXUTBXQBGwzd9zjJ7Y1eK3EPr2OpFFuReeIZ3TIkqLVUpTuoCPJxPq0i8twmEF3uvEi+2XKtUB4/3LK5mM0gXXSqpe3mbw22l8ggW07DuzgjzOVYzAzBCCFED8m92YK9mhUvhw47yiQ27b7wPXgF7JF8ZgezhG4YOo5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y42VscKr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF65C433C7;
+	Thu, 22 Feb 2024 00:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708560480;
+	bh=vE8G0tEnjCDvKYtM1hAj6g+Z7bZNowrFZogG32m/K70=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y42VscKrvxtAeYusTRWD6nCdHe83JpVE4gTfo6qOWzSr35vqn+d3jY7Zw5IcL0vnB
+	 PakgDEDQ6OPmTo0AK9gFPD6TJx3p4/8JJPJFk4lV1V5VLRgjczH0cX15H6dfnlWs19
+	 w9A5I0t+DccGyh5nE/w3d3RJxsfu3btoZCd1VpBOA8jebEHWFizMP5AWg0So7quzxy
+	 QjGE4Tti8547FKVzZGuTljGQDc+MGukbKyomzjNKeJn1tK8sY/PgOiEivvyH+Ww0bn
+	 a6KlSCCFCx5aeAWxlgoHf4bXLz8WtZSNJ8rbHPmwW6S9h1/qML7j6TvG6WBPb5Dara
+	 Fq6dZETVqsoFw==
+Date: Wed, 21 Feb 2024 18:07:59 -0600
+From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 11/25] security: add hooks for set/get/remove of fscaps
+Message-ID: <ZdaQX9385Sq3VmMZ@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-11-3039364623bd@kernel.org>
+ <CAHC9VhQ5QK_4BaHCj9SEvW9M_suWa9edDXrbw2MiNcn56eoWPg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240221115203.3413554-1-colin.i.king@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhQ5QK_4BaHCj9SEvW9M_suWa9edDXrbw2MiNcn56eoWPg@mail.gmail.com>
 
-On Wed, Feb 21, 2024 at 11:52:03AM +0000, Colin Ian King wrote:
-> Variable ret is being assigned a value that is never read, it is
-> being re-assigned a couple of statements later on. The assignment
-> is redundant and can be removed.
+On Wed, Feb 21, 2024 at 06:31:42PM -0500, Paul Moore wrote:
+> On Wed, Feb 21, 2024 at 4:26 PM Seth Forshee (DigitalOcean)
+> <sforshee@kernel.org> wrote:
+> >
+> > In preparation for moving fscaps out of the xattr code paths, add new
+> > security hooks. These hooks are largely needed because common kernel
+> > code will pass around struct vfs_caps pointers, which EVM will need to
+> > convert to raw xattr data for verification and updates of its hashes.
+> >
+> > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > ---
+> >  include/linux/lsm_hook_defs.h |  7 +++++
+> >  include/linux/security.h      | 33 +++++++++++++++++++++
+> >  security/security.c           | 69 +++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 109 insertions(+)
 > 
-> Cleans up clang scan build warning:
-> fs/bcachefs/super-io.c:806:2: warning: Value stored to 'ret' is
-> never read [deadcode.DeadStores]
+> One minor problem below, but assuming you fix that, this looks okay to me.
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Acked-by: Paul Moore <paul@paul-moore.com>
+> 
+> > diff --git a/security/security.c b/security/security.c
+> > index 3aaad75c9ce8..0d210da9862c 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -2351,6 +2351,75 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
+> 
+> ...
+> 
+> > +/**
+> > + * security_inode_get_fscaps() - Check if reading fscaps is allowed
+> > + * @dentry: file
+> 
+> You are missing an entry for the @idmap parameter.
 
-I'll take this, but - entirely too much of the traffic on this list is
-getting taken up by static analyzer bullshit, we need to cut down on
-this
+Fixed, thanks!
 
