@@ -1,119 +1,204 @@
-Return-Path: <linux-kernel+bounces-75720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F69B85EDF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:25:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E8D385EDF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A4AF1F24831
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:25:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A15731F2352D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4218A935;
-	Thu, 22 Feb 2024 00:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D09810A29;
+	Thu, 22 Feb 2024 00:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hkl9h2/K"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ofhFBy0g"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894CAA35;
-	Thu, 22 Feb 2024 00:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C70F9CE
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708561501; cv=none; b=dmGK76qewutXqLLLN3ykuGm7EPy6J/hU/FTWA041lQzgvDuMspBxV1CTcCXSqWU65s3ovQtcBnOUy9GD5MHEogibeea/jQtCbKCKG2FzeUMf4hGdl/nShD7j6LRsB2TECnE4yGSToRvNo9VZufVYbVVlh34gmxLj0T1dahY1LUM=
+	t=1708561505; cv=none; b=rL81Ne9ux6bL+N0y+wXx37S0tCBI/t6DOEwWzsPE+PZtFstZ22qmi7npF3h8rqu0KEN9Ki/XuyhsXl5eZ5qqTxrii/m/EH26tYkix3iEEi7v1aet6WvBW8yj92cHiPuEZVjW4zzUMvxN8MqfKQno/nk5S3u+gPb0RyxdCK+6BLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708561501; c=relaxed/simple;
-	bh=6cM1nNU4sUYIudgP5How1TvdFL1U8i4R9xzk/u45MW8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VEp4ZTqqp5CNe+5WcSsURNnGSQpnBGsiJqAhQcAddFSKh9PAqon3tKK73BVI5jZb2KSbNdULmr0XrlyEVpnQqI5W9/uxC6P7PSfLIuL9L0LYnmpOAKgsEqqDmgkZhjEXMBdkT2XEL9G8uTZME2ydRmKIQfUqe/O6uVlWKeJgZYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hkl9h2/K; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68f51ba7043so31252016d6.3;
-        Wed, 21 Feb 2024 16:24:59 -0800 (PST)
+	s=arc-20240116; t=1708561505; c=relaxed/simple;
+	bh=Wl2VBsr8T1E9brAP9ZLk+di58Ii4yEnpHnIDqcL7Ys4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IKY55UTbNXXIoWnsMiCRwUWKNL8gI9/pcqVSizNY+0DXGUP5RaTgu5k0OSGplRPzj5mCQjRIrTBEBwUyeYqXCCMp1A6Ac0IUYmgtSkn96MfoLO45/YKgbmq2QAaxVEidwBvTGYqQ4NuJ3ivQr/Iz6wGg47rKI20lz1FVN8eleko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ofhFBy0g; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e34d12404eso3774058b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708561498; x=1709166298; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=anqGFlBV+rsLg3vMhzVMgDCSwtexSsDpUKQLzjs1Ooo=;
-        b=hkl9h2/KRoGtY3ilhTyM8pdImGfzthuwP6dh7LPfEo+1RJXvhOt8XMk1XQcyXCmTCx
-         0fjfmZnMOa9jgvYvyuBLXpKpTucoMQSCz1OO5aXdeU/R5f31nrJikDE4qq9BmY3OOQ5r
-         b1iPAwFpzBb4zCT2DqLtxVt1Zb+K3arFAsu6kqQfvzdzIJ7EZpEW2YEPWc+4R1hYkjYJ
-         LOVB0+1j6aSksuXZbEk5ZbtSf4AOn3NjkEVIefI3Twu5eUIZu0vj6/qSnX+z+/Oks3/Q
-         fV3++Lh1bnIudDCMENorRPymbJAl5UDkluSisl3M0DBSpFxLv6EAp1e/iDpZi1N1tWFG
-         E3nQ==
+        d=chromium.org; s=google; t=1708561503; x=1709166303; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WrVxGxFZ9H3+hlcYIVohDlCBqheEbLY5A8SDm36k8gU=;
+        b=ofhFBy0gzNz2gmMbsAtpvobfLetDEr2h/tPE+renP/99jyIWS80pMhgteraIKPRAuT
+         dVlepU+AgxElGXhJTrV3XW5TKRRYghKYMkGBB6bsmf9UWTapjBEs+sytEdFYdPj195G4
+         U9m8fSBu+mk6/tjkHArePIX9vdpFML0ALGQ50=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708561498; x=1709166298;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=anqGFlBV+rsLg3vMhzVMgDCSwtexSsDpUKQLzjs1Ooo=;
-        b=WxX66Nb+na9my4n8bs1oSVt/s57E4IHwOTw1AfBhwu78OBvYWtkpiSAx6hXPxEv9QU
-         /AMQXMZpoVt3Pw4NTJR5ekodrBV2MW/0+W1MGbhq0v8JA6n2PmBgITWcb1EUu1Qp9pIu
-         GHs/MqdwBe65KJnUCtYmRrfdLlEqpjycMPX0ham3dvMRERqjLif5+b88iGlR0XeCnOmx
-         dtNca/XoMGZCjlMvtXRNojONKBUnpdnNyT/V1Y1847mOMNyP5SGTuyb+lqudrXbdvdin
-         XiJ1b+wOgmdwFtfba7PenLbpZ1Utij740kaS9xidOYKWxq7C4uA407mFAovAoVWBKsbP
-         NehQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEg0s+wgYFUz/ypDdI5Edo4sk3iz0eMg4z+cdu5BR/w63uzuA2gJTYgT+3Y/yW9sWw0MWJPK9kGYQ2qI8Oh08IY+c5//6WFQOXdN0BOW6EbFJZA4ycxF6wApVnFeyurwBcP++6
-X-Gm-Message-State: AOJu0YyOb6GXROsWRtxfwQXIjcWjTKNgzAb7fP9JqrcpKB+o6+sOOSAX
-	43HSxiEqP7WAG3wXZwOwRAMsDFhkRaaeoRkOEXuQZ9r2+vCwWAOt
-X-Google-Smtp-Source: AGHT+IEEGx4qOQu1n7xW61AL2JSTReDsufs5qC56cdZ3yIFGqrRdkeZ7gcw9oBgnuzV4cOIWbbFgiA==
-X-Received: by 2002:a05:6214:2422:b0:68f:6dc5:149b with SMTP id gy2-20020a056214242200b0068f6dc5149bmr10959031qvb.58.1708561498418;
-        Wed, 21 Feb 2024 16:24:58 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id db15-20020a056214170f00b0068fa7e73367sm1160611qvb.42.2024.02.21.16.24.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 16:24:57 -0800 (PST)
-Message-ID: <58d5141a-6813-4831-ae44-9ccfcf79893b@gmail.com>
-Date: Wed, 21 Feb 2024 16:24:54 -0800
+        d=1e100.net; s=20230601; t=1708561503; x=1709166303;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WrVxGxFZ9H3+hlcYIVohDlCBqheEbLY5A8SDm36k8gU=;
+        b=RLogXrWLQL9ZOBSg+pxuES6ZGk2yCnURko2anskhe3lpue7nTsWHQYkex0MezWaTNC
+         KCutLW5Xtajt9TsvtJ9b6r8KzWdGCln/aDWrjCxe/7LgDROv17bfiM3R7+v38IneFdSO
+         J6eUjRnZ+ruZECZ+s7ugXWqiMdOZlxk2zrLEQgvbrF1pgvBrcFqqFQfe0g2GSV8+c+24
+         0ArZ1ct8w1wB/XJBOup8brjB0kySP6gBa09U1gjQmiM68GxY37saw3Q2iZRliZfjfErK
+         GtLh6mLfdEV7w6iV3k/5RQ9a332Gjt0TfHYFFXWlmUHSJR8yTRmFiOeX7TwMZReTTK0s
+         2GxA==
+X-Forwarded-Encrypted: i=1; AJvYcCXCIQuDh0LQLpvmvk+JgDzgc3Lkf82B7lVEfTYP8MPgQYXnUBo+QCnCZnpn0iMwdgvopuKKjcHOaD1oOBABflsez1nbeM+80pR3NBj8
+X-Gm-Message-State: AOJu0YyMt2zu5W2m56qhyGCnznz4Il56EQtNQBEZCuAto/d2XHn1Rjah
+	ZNcDjNBXifhNQx2jw1KFP2TzT+zk6Yxhabh+SOhx3D0bA9nOi2d6LuIK3QAmpA==
+X-Google-Smtp-Source: AGHT+IEJZ3HYcFxZObICKM/x49WlLf4h3po0Yzl2rQr8TWxwQ9a9m/zFcKDEERUUQbcGP3mxNS8r5A==
+X-Received: by 2002:aa7:8a06:0:b0:6e4:59d0:febe with SMTP id m6-20020aa78a06000000b006e459d0febemr11129392pfa.7.1708561503366;
+        Wed, 21 Feb 2024 16:25:03 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q13-20020a056a00088d00b006e05c801748sm9501136pfj.199.2024.02.21.16.25.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 16:25:03 -0800 (PST)
+Date: Wed, 21 Feb 2024 16:25:02 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+	willy@infradead.org, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 14/36] lib: add allocation tagging support for memory
+ allocation profiling
+Message-ID: <202402211608.41AD94094@keescook>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-15-surenb@google.com>
+ <202402211449.401382D2AF@keescook>
+ <4vwiwgsemga7vmahgwsikbsawjq5xfskdsssmjsfe5hn7k2alk@b6ig5v2pxe5i>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/206] 6.1.79-rc2 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240221130223.073542172@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240221130223.073542172@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4vwiwgsemga7vmahgwsikbsawjq5xfskdsssmjsfe5hn7k2alk@b6ig5v2pxe5i>
 
-On 2/21/24 05:03, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.79 release.
-> There are 206 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Feb 21, 2024 at 06:29:17PM -0500, Kent Overstreet wrote:
+> On Wed, Feb 21, 2024 at 03:05:32PM -0800, Kees Cook wrote:
+> > On Wed, Feb 21, 2024 at 11:40:27AM -0800, Suren Baghdasaryan wrote:
+> > > [...]
+> > > +struct alloc_tag {
+> > > +	struct codetag			ct;
+> > > +	struct alloc_tag_counters __percpu	*counters;
+> > > +} __aligned(8);
+> > > [...]
+> > > +#define DEFINE_ALLOC_TAG(_alloc_tag)						\
+> > > +	static DEFINE_PER_CPU(struct alloc_tag_counters, _alloc_tag_cntr);	\
+> > > +	static struct alloc_tag _alloc_tag __used __aligned(8)			\
+> > > +	__section("alloc_tags") = {						\
+> > > +		.ct = CODE_TAG_INIT,						\
+> > > +		.counters = &_alloc_tag_cntr };
+> > > [...]
+> > > +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag)
+> > > +{
+> > > +	swap(current->alloc_tag, tag);
+> > > +	return tag;
+> > > +}
+> > 
+> > Future security hardening improvement idea based on this infrastructure:
+> > it should be possible to implement per-allocation-site kmem caches. For
+> > example, we could create:
+> > 
+> > struct alloc_details {
+> > 	u32 flags;
+> > 	union {
+> > 		u32 size; /* not valid after __init completes */
+> > 		struct kmem_cache *cache;
+> > 	};
+> > };
+> > 
+> > - add struct alloc_details to struct alloc_tag
+> > - move the tags section into .ro_after_init
+> > - extend alloc_hooks() to populate flags and size:
+> > 	.flags = __builtin_constant_p(size) ? KMALLOC_ALLOCATE_FIXED
+> > 					    : KMALLOC_ALLOCATE_BUCKETS;
+> > 	.size = __builtin_constant_p(size) ? size : SIZE_MAX;
+> > - during kernel start or module init, walk the alloc_tag list
+> >   and create either a fixed-size kmem_cache or to allocate a
+> >   full set of kmalloc-buckets, and update the "cache" member.
+> > - adjust kmalloc core routines to use current->alloc_tag->cache instead
+> >   of using the global buckets.
+> > 
+> > This would get us fully separated allocations, producing better than
+> > type-based levels of granularity, exceeding what we have currently with
+> > CONFIG_RANDOM_KMALLOC_CACHES.
+> > 
+> > Does this look possible, or am I misunderstanding something in the
+> > infrastructure being created here?
 > 
-> Responses should be made by Fri, 23 Feb 2024 13:01:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.79-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Definitely possible, but... would we want this?
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Yes, very very much. One of the worst and mostly unaddressed weaknesses
+with the kernel right now is use-after-free based type confusion[0], which
+depends on merged caches (or cache reuse).
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+This doesn't solve cross-allocator (kmalloc/page_alloc) type confusion
+(as terrifyingly demonstrated[1] by Jann Horn), but it does help with
+what has been a very common case of "use msg_msg to impersonate your
+target object"[2] exploitation.
+
+> That would produce a _lot_ of kmem caches
+
+Fewer than you'd expect, but yes, there is some overhead. However,
+out-of-tree forks of Linux have successfully experimented with this
+already and seen good results[3].
+
+> and don't we already try to collapse those where possible to reduce
+> internal fragmentation?
+
+In the past, yes, but the desire for security has tended to have more
+people building with SLAB_MERGE_DEFAULT=n and/or CONFIG_RANDOM_KMALLOC_CACHES=y
+(or booting with "slab_nomerge").
+
+Just doing the type safety isn't sufficient without the cross-allocator
+safety, but we've also had solutions for that proposed[4].
+
+-Kees
+
+[0] https://github.com/KSPP/linux/issues/189
+[1] https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html
+[2] https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html
+    https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html#exploring-struct-msg_msg
+[3] https://grsecurity.net/how_autoslab_changes_the_memory_unsafety_game
+[4] https://lore.kernel.org/linux-hardening/20230915105933.495735-1-matteorizzo@google.com/
+
 -- 
-Florian
-
+Kees Cook
 
