@@ -1,103 +1,194 @@
-Return-Path: <linux-kernel+bounces-75961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B2585F12B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:56:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA9885F130
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8498283668
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:56:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1128BB22564
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937EE168A8;
-	Thu, 22 Feb 2024 05:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7553F168A4;
+	Thu, 22 Feb 2024 05:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="oqTbNApA"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GWCqeQ9Z"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B362B12E4F;
-	Thu, 22 Feb 2024 05:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79DF101F1;
+	Thu, 22 Feb 2024 05:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708581402; cv=none; b=hUD5BuJH1E2Myk04AqGUUkCHpOWr78ifGwtdrvfWvCi60UlSaC4JT5iLD1sJejdzqFD3XgBz6c8gOAW71PFmT+DO1CVU1NWjJmj0MwJStnELoTpKQdiR1FqOFYI9aeo5ZhxHVZSAf/3Zfn93uy6EqCi+QFr4Vu6mFZfFnZ7XPuo=
+	t=1708581484; cv=none; b=CwASvGwKLlOAXIab6GQMskDSAJVLfcC3uorPe6Nc8rylE4pKMAkLcVplGeQEK6c+OLbl4mi4yYXzjmP0oyG1ox0LPjKm7btlPtgcYMTgWfoegSTtLXZBzn3ooxnk5vCc2peHKRK3EUJysrByoe3OfMgFAiYNB4lQKqn4c+2HpgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708581402; c=relaxed/simple;
-	bh=igvdT3OW8iB13zNtn88d6z8rm2yodrqF6L3B5TbaL5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=YUZdJmZ5+/tqMSurSv6aB/xCroH5DF2A8uvMatdggrU+PvXX1jVX4N31tkmqh8il7q+8JTxVgT3sdMZZ4loZODE7FTTfDZsVsi/KUlhZZC44hZhqmn1DyJdFq814gytG1YSPIFsr0cZo8jabk4xD4wEFyyGr0w/4cr91O+dGf6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=oqTbNApA; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708581395;
-	bh=A8bs9/nh2+Pun4s3PfS5o+wVH+viQgRLUCoSctg7lss=;
-	h=Date:From:To:Cc:Subject:From;
-	b=oqTbNApAeMcdsnsekVtpz7CVwKlryIBwbD59X3BzTfSYOHuU1r1xz/07BVTfURvbF
-	 p75QqjA9syOKY7aUX+b65HM72TFF7aTdLHQR+M2pXWr+aR+6YNZBhdvEKjPCau0eDs
-	 xVYFfYU2EWnKiBkx75ci/o3/s/iU60934133UCIVNZWYogxVOVcmoB/HjEmZbh7lnq
-	 /2fPkYzvZ5osL0QcezK9v07+Tf/Zp04NWfeuiKiiG4uneVlTkzkdukIiAgkDBEZnyx
-	 dXxQ7yBtYpHFDd+nA1MIceSbfI+Bo1eTESpNC+EDl1fmSxWwK2I+eRRv8XIuTb9Vha
-	 U730EJqSjZL8w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgMpW5RRFz4wcR;
-	Thu, 22 Feb 2024 16:56:35 +1100 (AEDT)
-Date: Thu, 22 Feb 2024 16:56:35 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Kees Cook <keescook@chromium.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kspp tree
-Message-ID: <20240222165635.3dbfad02@canb.auug.org.au>
+	s=arc-20240116; t=1708581484; c=relaxed/simple;
+	bh=EofOeYODL7p7e0qVfaAW76kCTVxz6mRFJbAg2DnJq6A=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=hgJxc33xQiR7/GuvM651rJhCshKn5JWUOUcCgJFwADC5C8/2Y+Hk+LDuJAIAbtq0owapulZmKnX8rn3KVkf9dpzaUWTRWYot1vWxnqoxIdCRB3XR+Hbp3jqnZnrP5mgIgcIR5nD3ASS+1ip8n/Av1OhKwnRfPmBmFN7/TMJctPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GWCqeQ9Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2AF1C433F1;
+	Thu, 22 Feb 2024 05:58:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708581484;
+	bh=EofOeYODL7p7e0qVfaAW76kCTVxz6mRFJbAg2DnJq6A=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=GWCqeQ9ZA1pgle3Iuf7PUTJs1bgjWohQyYsMFUTPzRZGI++viJ1Aw35r3Swl9n+Az
+	 JtVUJOUlMh90vDDB6B+KW9HdAKhSBi9LA467AZ1x1obMjVVPe8EB8Ugy8/ctbH0PiE
+	 YKEfrSXf+bY9FZ01Zt3dtuOFSdUnnGUb85QVkYrTt2SqTqHwQ9NZ93PpgV4JguFXdX
+	 oUYl0IXL74hD0FaDm0cjD1It5FLJi/GBlJHS5jtBgpc+4/qP7sCGaGP2mmmc4809Vn
+	 gOTKfzm0o7+x9xGgtt1ywmWS+R32cwBqVvzaxsokYr3b3NWGz40FEhTcdKJOaExXDp
+	 7pp+W0XQxTt1A==
+Message-ID: <74e003c6d80611ddd826ac21f48b4b3a.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/AU3eQiveujyOPJWsYNlEQ8h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/AU3eQiveujyOPJWsYNlEQ8h
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240131182653.2673554-4-tmaimon77@gmail.com>
+References: <20240131182653.2673554-1-tmaimon77@gmail.com> <20240131182653.2673554-4-tmaimon77@gmail.com>
+Subject: Re: [PATCH v23 3/3] clk: npcm8xx: add clock controller
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Tomer Maimon <tmaimon77@gmail.com>
+To: Tomer Maimon <tmaimon77@gmail.com>, benjaminfair@google.com, joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, robh+dt@kernel.org, tali.perry1@gmail.com, venture@google.com, yuenn@google.com
+Date: Wed, 21 Feb 2024 21:58:01 -0800
+User-Agent: alot/0.10
 
-Hi all,
+Quoting Tomer Maimon (2024-01-31 10:26:53)
+> diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
+> new file mode 100644
+> index 000000000000..eacb579d30af
+> --- /dev/null
+> +++ b/drivers/clk/clk-npcm8xx.c
+> @@ -0,0 +1,509 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Nuvoton NPCM8xx Clock Generator
+> + * All the clocks are initialized by the bootloader, so this driver allo=
+ws only
+[...]
+> +
+> +/* external clock definition */
+> +#define NPCM8XX_CLK_S_REFCLK   "refclk"
+> +
+> +/* pll definition */
+> +#define NPCM8XX_CLK_S_PLL0     "pll0"
+> +#define NPCM8XX_CLK_S_PLL1     "pll1"
+> +#define NPCM8XX_CLK_S_PLL2     "pll2"
+> +#define NPCM8XX_CLK_S_PLL_GFX  "pll_gfx"
+> +
+> +/* early divider definition */
+> +#define NPCM8XX_CLK_S_PLL2_DIV2                "pll2_div2"
+> +#define NPCM8XX_CLK_S_PLL_GFX_DIV2     "pll_gfx_div2"
+> +#define NPCM8XX_CLK_S_PLL1_DIV2                "pll1_div2"
+> +
+> +/* mux definition */
+> +#define NPCM8XX_CLK_S_CPU_MUX     "cpu_mux"
+> +
+> +/* div definition */
+> +#define NPCM8XX_CLK_S_TH          "th"
+> +#define NPCM8XX_CLK_S_AXI         "axi"
 
-After merging the kspp tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+Please inline all these string #defines to the place they're used.
 
-arch/arm/boot/compressed/misc.c:157:6: warning: no previous prototype for '=
-__fortify_panic' [-Wmissing-prototypes]
-  157 | void __fortify_panic(const u8 reason, size_t avail, size_t size)
-      |      ^~~~~~~~~~~~~~~
+> +
+> +static struct clk_hw hw_pll1_div2, hw_pll2_div2, hw_gfx_div2, hw_pre_clk;
+[..]
+> +static struct clk_hw *
+> +npcm8xx_clk_register(struct device *dev, const char *name,
+> +                    struct regmap *clk_regmap, unsigned int offset,
+> +                    unsigned long flags, const struct clk_ops *npcm8xx_c=
+lk_ops,
+> +                    const struct clk_parent_data *parent_data,
+> +                    const struct clk_hw *parent_hw, u8 num_parents,
+> +                    u8 shift, u32 mask, unsigned long width,
+> +                    const u32 *table, unsigned long clk_flags)
+> +{
+> +       struct npcm8xx_clk *clk;
+> +       struct clk_init_data init =3D {};
+> +       int ret;
+> +
+> +       clk =3D devm_kzalloc(dev, sizeof(*clk), GFP_KERNEL);
+> +       if (!clk)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       init.name =3D name;
+> +       init.ops =3D npcm8xx_clk_ops;
+> +       init.parent_data =3D parent_data;
+> +       init.parent_hws =3D parent_hw ? &parent_hw : NULL;
 
-Introduced by commit
+Is it necessary to check? Can't it be set unconditionally?
 
-  0f4459080884 ("fortify: Split reporting and avoid passing string pointer")
+> +       init.num_parents =3D num_parents;
+> +       init.flags =3D flags;
+> +
+> +       clk->clk_regmap =3D clk_regmap;
+> +       clk->hw.init =3D &init;
+> +       clk->offset =3D offset;
+> +       clk->shift =3D shift;
+> +       clk->mask =3D mask;
+> +       clk->width =3D width;
+> +       clk->table =3D table;
+> +       clk->flags =3D clk_flags;
+> +
+> +       ret =3D devm_clk_hw_register(dev, &clk->hw);
+> +       if (ret)
+> +               return ERR_PTR(ret);
+> +
+> +       return &clk->hw;
+[...]
+> +
+> +static unsigned long npcm8xx_clk_div_get_parent(struct clk_hw *hw,
+> +                                               unsigned long parent_rate)
+> +{
+> +       struct npcm8xx_clk *div =3D to_npcm8xx_clk(hw);
+> +       unsigned int val;
+> +
+> +       regmap_read(div->clk_regmap, div->offset, &val);
+> +       val =3D val >> div->shift;
+> +       val &=3D clk_div_mask(div->width);
+> +
+> +       return divider_recalc_rate(hw, parent_rate, val, NULL, div->flags,
+> +                                  div->width);
+> +}
+> +
+> +static const struct clk_ops npcm8xx_clk_div_ops =3D {
+> +       .recalc_rate =3D npcm8xx_clk_div_get_parent,
+> +};
+> +
+> +static int npcm8xx_clk_probe(struct platform_device *pdev)
+> +{
+> +       struct device_node *parent_np =3D of_get_parent(pdev->dev.of_node=
+);
 
---=20
-Cheers,
-Stephen Rothwell
+The parent of this device is not a syscon.
 
---Sig_/AU3eQiveujyOPJWsYNlEQ8h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +       struct clk_hw_onecell_data *npcm8xx_clk_data;
+> +       struct device *dev =3D &pdev->dev;
+> +       struct regmap *clk_regmap;
+> +       struct clk_hw *hw;
+> +       unsigned int i;
+> +
+> +       npcm8xx_clk_data =3D devm_kzalloc(dev, struct_size(npcm8xx_clk_da=
+ta, hws,
+> +                                                        NPCM8XX_NUM_CLOC=
+KS),
+> +                                       GFP_KERNEL);
+> +       if (!npcm8xx_clk_data)
+> +               return -ENOMEM;
+> +
+> +       clk_regmap =3D syscon_node_to_regmap(parent_np);
+> +       of_node_put(parent_np);
 
------BEGIN PGP SIGNATURE-----
+Is there another binding update that is going to move this node to be a
+child of the syscon?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXW4hMACgkQAVBC80lX
-0GzF+Af+K8otmvDsrNokGTZE+0H9N45+z4KWWtTfJFSm/oIVL9rtNey+V3I2tWvJ
-KCAV0wu4vFlhHM4gUhUDudEljfOJfS4x5n2ofAfHO1Id1XHFCLZL2QeU17IE0MEz
-eK7LFQ7bDLqayP2KUBlFOG/czCCCW1GewTKZPa5RU3kgx9eV9h66vZ5QKSn72MAr
-y2oosJDCTD3DksQQFkauR0LRh6/18uS32XCwz1ZtKpOGKZw3xqrK+ibe8GxuV34n
-Ptumxe9783C1C5A08uEZxzyDw877fsGsYGFayg618boNMDKSOsksiI2cGUDBOxra
-0WYqOlX1LISzZcZlseL62sRR4khHYg==
-=6U6F
------END PGP SIGNATURE-----
-
---Sig_/AU3eQiveujyOPJWsYNlEQ8h--
+		gcr: system-controller@f0800000 {
+                        compatible =3D "nuvoton,npcm845-gcr", "syscon";
+                        reg =3D <0x0 0xf0800000 0x0 0x1000>;
+                };
 
