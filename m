@@ -1,196 +1,84 @@
-Return-Path: <linux-kernel+bounces-75876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EECE85F02B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:51:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48CAE85F02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F4021F217FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:51:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66AC41C22AB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C71317C62;
-	Thu, 22 Feb 2024 03:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD3817583;
+	Thu, 22 Feb 2024 03:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hgxftMf3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="apGU9qyw"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CE5179A1
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C9E111B2
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708573862; cv=none; b=EmB6JWJBmameiSl95TTx2DHqyZCtYF9X5GRbjquWwro96zhIGXGfy4OUXf7tE5p6uqvhhqi5h6hHLuk+x2PyOb9FEBkHPvPglUfsEl5hOLaGac++aLJhkivhn57KQYUsQUWyPuLF1zjFgPv6udoc411ncmGmTuk6VhTa+7J081I=
+	t=1708573880; cv=none; b=BDXtZOIn83o5FFAdQ/rt+LzjziYtfNl76/G1OP5TadSNsrY/9n5QBu60dtzZBbbeNjNVwDlgZwmoQSHoc03ihFA9sE5TLFB9XUJuKxli/4gzvgilMkZL5Lp+ZiXBZ4O25vpuRtPX/3i5lGTx0gAG7MERBD7INwoHS6Sj43kZhc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708573862; c=relaxed/simple;
-	bh=AmuEmjS5wBqNkgpz1y48vQc7UX9xpoy7av58HWxwi4g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GUzsRUl9TStCHArszXO8C1VY+wDjMUN652tHbh8SPaFSzths2u43YkLLMNGuG8dHyMuQvcoSDHv+u/54hEkjKm2004a5McGW0lLEIW+BA3/UGWz9r1VhcDWg4PLNOlA63tc/XyjKFwWQzNugV+Yb6eLudKXb8ova7OgdN9rR6KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hgxftMf3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12172C433C7;
-	Thu, 22 Feb 2024 03:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708573862;
-	bh=AmuEmjS5wBqNkgpz1y48vQc7UX9xpoy7av58HWxwi4g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hgxftMf3qeKrempOip8cL2/wXV7Qe0jKIMhcyAMmARCfJBqkTlYH7pfkD6F/QEDTZ
-	 2P0ENRO11mjnDNpCv7hBGSawqvMBUrKwIvKAyo8lWWM1ybhvBEaAxO17MqZhTpa5s8
-	 p4M1UQxwr01Lyoo4Uq20z67ck3iuY3rBdOeZyv+q33OuN679bVcPNzASn9v8iNGGta
-	 uZq3IHdkZiDV/rOlrAxoIpn+TDNnHXI7kWqvZLTjHfXKS5A0y2ZupIrqsVtIe3TzlI
-	 02OEpLQLbaRfGSfvs/CNkUNZ5ABrzh6snjKoCgdgR9X5wQp4Gt7agAOY/qc7C/+elu
-	 HdnajIsAvdc4w==
-Message-ID: <c0adebd6-8aa3-4704-b429-a14775ed2dcb@kernel.org>
-Date: Thu, 22 Feb 2024 11:50:57 +0800
+	s=arc-20240116; t=1708573880; c=relaxed/simple;
+	bh=U8r0bihuYdw2bLbxoL06ppuLdubJ4RlmL6Hu0e74X6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GE7N4YFVRoLAEVeWb3KUVJ4kS12OtTB2PhklPf334zvgGRwDE6dbxqNQhYopCu27ccn0q6Pqz6r+Kke6jZsUK2EmhyOQ8Oi470ojRDo1SOo2AH3qJ/BRdYNU8sfpliv57pSsBfaZiWPw4GaRdbORI0M6T5yYIH8Wve3onKYdPjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=apGU9qyw; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=i/7HIyFgwgzD7YbEDR31NVPlVkKUleWuI0Mc79KExFQ=; b=apGU9qywdin7SKMFel85/KBcxq
+	dYyK6+2aDKa8SI4lIUbdk5vL8F/W3opK2JsUcA5cPvRrB8xCLy+95KzcQ7NTjZqy5bPe3/67Zh4WW
+	hK8CG3AyqzQvw0cMVwsYaBhfM/+OmSqlEbo3MfnyYOGoNuSal00W5s0vE/g/Nq0Z9uLaDPouvqU08
+	zI+BXEYpwdpSiagmuzFestJBOfYN/E8dzzHW/v4/xvZvome5KYLvknMA2HUfUUh0BerLnJPfgT3Cs
+	rMvsjf5nZRxDaKt1zE1qMmW1WrkE+4d1V/ixzdisgsUSZzQr9RpCs2+8ND7O1qxdRbNZcFXlftSNy
+	z2OQdYSg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rd07A-00000002VKP-1vyV;
+	Thu, 22 Feb 2024 03:51:16 +0000
+Date: Thu, 22 Feb 2024 03:51:16 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, muchun.song@linux.dev
+Subject: Re: [PATCH v2 4/5] hugetlb: Use vmf_anon_prepare() instead of
+ anon_vma_prepare()
+Message-ID: <ZdbEtEa-G-EuZ2n2@casper.infradead.org>
+References: <20240221234732.187629-1-vishal.moola@gmail.com>
+ <20240221234732.187629-5-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/4] f2fs: stop checkpoint when get a out-of-bounds
- segment
-Content-Language: en-US
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1708409484-27326-1-git-send-email-zhiguo.niu@unisoc.com>
- <c2ab9d88-b947-42e5-a1a2-204d58e0c1a8@kernel.org>
- <CAHJ8P3+LGb7pQyLVjsxYvLHgO87Wn41VRhVZ_kkvcdqC8y=5Lg@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAHJ8P3+LGb7pQyLVjsxYvLHgO87Wn41VRhVZ_kkvcdqC8y=5Lg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221234732.187629-5-vishal.moola@gmail.com>
 
-On 2024/2/22 10:15, Zhiguo Niu wrote:
+On Wed, Feb 21, 2024 at 03:47:31PM -0800, Vishal Moola (Oracle) wrote:
+> hugetlb_no_page() and hugetlb_wp() call anon_vma_prepare(). In
+> preparation for hugetlb to safely handle faults under the VMA lock,
+> use vmf_anon_prepare() here instead.
 > 
-> 
-> On Thu, Feb 22, 2024 at 9:37 AM Chao Yu <chao@kernel.org <mailto:chao@kernel.org>> wrote:
-> 
->     On 2024/2/20 14:11, Zhiguo Niu wrote:
->      > There is low probability that an out-of-bounds segment will be got
->      > on a small-capacity device. In order to prevent subsequent write requests
->      > allocating block address from this invalid segment, which may cause
->      > unexpected issue, stop checkpoint should be performed.
->      >
->      > Also introduce a new stop cp reason: STOP_CP_REASON_NO_SEGMENT.
->      >
->      > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com <mailto:zhiguo.niu@unisoc.com>>
->      > ---
->      > changes of v4: use more suitable MACRO name according to Chao's suggestions
->      > changes of v3: correct MACRO spelling and update based on the lastes code
->      > ---
->      > ---
->      >   fs/f2fs/segment.c       | 7 ++++++-
->      >   include/linux/f2fs_fs.h | 1 +
->      >   2 files changed, 7 insertions(+), 1 deletion(-)
->      >
->      > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->      > index c25aaec..e42e34c 100644
->      > --- a/fs/f2fs/segment.c
->      > +++ b/fs/f2fs/segment.c
->      > @@ -2665,7 +2665,12 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->      >       if (secno >= MAIN_SECS(sbi)) {
->      >               secno = find_first_zero_bit(free_i->free_secmap,
->      >                                                       MAIN_SECS(sbi));
->      > -             f2fs_bug_on(sbi, secno >= MAIN_SECS(sbi));
->      > +             if (secno >= MAIN_SECS(sbi)) {
->      > +                     f2fs_stop_checkpoint(sbi, false,
->      > +                             STOP_CP_REASON_NO_SEGMENT);
-> 
->     We should relocate stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT) outside
->     segmap_lock spinlock, due to it may sleep in f2fs_flush_merged_writes().
-> 
-> Indeed it is. How about the following fix?
-> @@ -2665,11 +2665,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->          if (secno >= MAIN_SECS(sbi)) {
->                  secno = find_first_zero_bit(free_i->free_secmap,
->                                                          MAIN_SECS(sbi));
-> -               if (secno >= MAIN_SECS(sbi)) {
-> -                       f2fs_stop_checkpoint(sbi, false,
-> -                               STOP_CP_REASON_NO_SEGMENT);
-> -                       f2fs_bug_on(sbi, 1);
-> -               }
-> +               f2fs_bug_on(sbi, secno >= MAIN_SECS(sbi));
->          }
->          segno = GET_SEG_FROM_SEC(sbi, secno);
->          zoneno = GET_ZONE_FROM_SEC(sbi, secno);
-> @@ -2700,6 +2696,8 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->          __set_inuse(sbi, segno);
->          *newseg = segno;
->          spin_unlock(&free_i->segmap_lock);
-> +       if (secno >= MAIN_SECS(sbi))
-> +               f2fs_stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT);
+> Additionally, passing hugetlb_wp() the vm_fault struct from hugetlb_fault()
+> works toward cleaning up the hugetlb code and function stack.
 
-How about this?
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
----
-  fs/f2fs/segment.c | 12 +++++++++---
-  1 file changed, 9 insertions(+), 3 deletions(-)
+>  static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+>  		       unsigned long address, pte_t *ptep, unsigned int flags,
+> -		       struct folio *pagecache_folio, spinlock_t *ptl)
+> +		       struct folio *pagecache_folio, spinlock_t *ptl,
+> +		       struct vm_fault *vmf)
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index d0209ea77dd2..8edc42071e6f 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2646,6 +2646,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
-  	unsigned int old_zoneno = GET_ZONE_FROM_SEG(sbi, *newseg);
-  	bool init = true;
-  	int i;
-+	int ret = 0;
+Is it worth removing vma, address and flags?
 
-  	spin_lock(&free_i->segmap_lock);
-
-@@ -2671,9 +2672,8 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
-  		secno = find_first_zero_bit(free_i->free_secmap,
-  							MAIN_SECS(sbi));
-  		if (secno >= MAIN_SECS(sbi)) {
--			f2fs_stop_checkpoint(sbi, false,
--				STOP_CP_REASON_NO_SEGMENT);
--			f2fs_bug_on(sbi, 1);
-+			ret = -ENOSPC;
-+			goto out_unlock;
-  		}
-  	}
-  	segno = GET_SEG_FROM_SEC(sbi, secno);
-@@ -2704,7 +2704,13 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
-  	f2fs_bug_on(sbi, test_bit(segno, free_i->free_segmap));
-  	__set_inuse(sbi, segno);
-  	*newseg = segno;
-+out_unlock:
-  	spin_unlock(&free_i->segmap_lock);
-+
-+	if (ret) {
-+		f2fs_stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT);
-+		f2fs_bug_on(sbi, 1);
-+	}
-  }
-
-  static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
--- 
-2.40.1
-
-> 
->     Thanks,
-> 
->      > +                     f2fs_bug_on(sbi, 1);
->      > +             }
->      > +
->      >       }
->      >       segno = GET_SEG_FROM_SEC(sbi, secno);
->      >       zoneno = GET_ZONE_FROM_SEC(sbi, secno);
->      > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
->      > index 9b69c50..755e9a4 100644
->      > --- a/include/linux/f2fs_fs.h
->      > +++ b/include/linux/f2fs_fs.h
->      > @@ -75,6 +75,7 @@ enum stop_cp_reason {
->      >       STOP_CP_REASON_CORRUPTED_SUMMARY,
->      >       STOP_CP_REASON_UPDATE_INODE,
->      >       STOP_CP_REASON_FLUSH_FAIL,
->      > +     STOP_CP_REASON_NO_SEGMENT,
->      >       STOP_CP_REASON_MAX,
->      >   };
->      >
-> 
 
