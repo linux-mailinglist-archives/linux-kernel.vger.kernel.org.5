@@ -1,163 +1,131 @@
-Return-Path: <linux-kernel+bounces-76409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B4085F6E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:30:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C196985F6F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 451F2B21724
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:30:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 795FE282283
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDCDC46450;
-	Thu, 22 Feb 2024 11:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCAC446DE;
+	Thu, 22 Feb 2024 11:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QZxnhPgI"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IgzfUFSE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="crDvkCQj"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A4E4596E;
-	Thu, 22 Feb 2024 11:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578E541775;
+	Thu, 22 Feb 2024 11:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708601423; cv=none; b=q0Wg+lIrid4bzb57c+9iRSBLdFLCJgK4CsjOsbIQhmJOtZUYCHgihqjshOADoHMJPC+r4wvu+yXUfh/Qqr2Atdmxa9BbXsIvzVtNJEqsnCAbasB46JN7kBbmgxNHIGjGNGW7yxUcWBdndM/cPWP9zXslDX7oJeIwDfWRqFDWGbg=
+	t=1708601470; cv=none; b=kO1jj3BiwjV/l36OF+aHSd/2htjR2etKTRhmc++M/d9bRopfqZaPmKiggOBNhBO41IcuGT18xj0y85ulNZQScAzJNPOCNkhStIjJU0dIRAZIxZr/Iv2Y2L7wJ+Giv2qKPrFife7kL0k7k7Mo6Mfd7VSHwPUNj9tfeKD5bk8/IWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708601423; c=relaxed/simple;
-	bh=njxph6cxDRMjmK8PfLlG9X0Dovd5CLwlQOVCp6ZnYZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h6uMXSqpo94tTfGt0rNGMsph3UUrUAIKw9DbnuspJ6HVquldYcNB7/GKIN09wUD5gFv//BFZU/ncqIpIAcGoV38+ljdJ5qta8wexaqsBQy2/FIJBzR6DXqWm6VJXzt+K15jQILaq7U3W6WzcTSpPTQdqB0nrW4aZ3ZnvNa9zlQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=QZxnhPgI; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41MBRt1S015387;
-	Thu, 22 Feb 2024 11:30:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YKyWnxlhzjZajUJTQyAlBlA2kQqHZg8cZo5gXNQH4Xw=;
- b=QZxnhPgIBk2tTCq/DuY7TpvBwsDqrOM6PI1k0sQcN5a7TmqRcx1HL+0nGBAyMRCChkFH
- kgQgF8WKdFD6KqWuK0ORW+wfgZ7J/ih6GgrUuHHhCuOhjtiosJhfE9+M85r/MoOud44Z
- MD9NOeWP2rv0QbPT6G3CffubuGX+VeseoswrH5Ol0MRvYo7HFVDQae2pdYTeiAnFsA+c
- /xvwlx4htpbg980CRdNq+UHvewVHIINKc+KW8LWQOcCzWv3uf5hVTKh87caIW4vSgbVk
- 0vvzQoYL+ZRl5OZq+bISMEthIzX442Mffh9z07OLokHJzVpOB/tOqZVEzX3ddLu5Vueu Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3we5dvr2se-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 11:30:16 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41MBTCSj020769;
-	Thu, 22 Feb 2024 11:30:16 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3we5dvr2rv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 11:30:16 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41MAqSsV003615;
-	Thu, 22 Feb 2024 11:30:15 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb74tx1xu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 11:30:15 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41MBU9LG25625338
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 22 Feb 2024 11:30:11 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C30A92004B;
-	Thu, 22 Feb 2024 11:30:09 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7AB4420040;
-	Thu, 22 Feb 2024 11:30:09 +0000 (GMT)
-Received: from [9.152.224.253] (unknown [9.152.224.253])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 22 Feb 2024 11:30:09 +0000 (GMT)
-Message-ID: <0b3b5f02-9492-4569-b2a0-190b95b43c31@linux.ibm.com>
-Date: Thu, 22 Feb 2024 12:30:09 +0100
+	s=arc-20240116; t=1708601470; c=relaxed/simple;
+	bh=y5OXnARYeFusvY6Or6+wIPXGBavk21Ik9v+34dOOtNg=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=I0G+6fT01/C6daE8RlsekT2XAIDXOTBtsSZzzA80KLhTkXQ1ktu1wjFaZ3FRXGp1ooICzSAXfAjZJ600BVy1xUjeVKwwibATfqitVArFqdQhdnW/WeuLDPat6MIBF05uOilEGG34Som0i7olq02xK1h2YzHvd5/J+S95eQc2MFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IgzfUFSE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=crDvkCQj; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 22 Feb 2024 11:31:06 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708601467;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RfBkxluRutbE/Lh/+wGlGRl086YIN4Xh8dFpPaGgW3I=;
+	b=IgzfUFSEayCI69hmyk+7yPPDMH05xS6xUdHBd1SUAidNAVigpRfPDV9+27CO/fOzxJAc0Y
+	XO1aSpNe3TncMDaSMmUoJYWF4wztO/jjJG9MAdjz09BSsawBVglPpZvLLIaioALb6hiTE9
+	G95lIBqJlIaJZP/YZHvwNMiJ4XdE0h05hcQ7fwxsDjO154o73VojzrG7zyEP+uN7ZeYcjL
+	/yFtGjJgVcfYPhEl/ZMCPGLZeGP/k305MGDtCe7j3K1GTXV1oU31dzRQH4WaJqtNgfObf8
+	kmep1u6jCzLiaLUyO7jA4YZI+xpRHQZdgUS5SRtRfsN6sO3SQ+oqEJW+zL4ukg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708601467;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RfBkxluRutbE/Lh/+wGlGRl086YIN4Xh8dFpPaGgW3I=;
+	b=crDvkCQjjzWTmaSTkr8ctT57V/YVizwaNe54z0uy+bo7aSDAtQbeV+6SLMYS/xUT7frf3g
+	vx0/U9fyXjBWNuBQ==
+From: "tip-bot2 for Nikolay Borisov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/asm] x86/insn: Directly assign x86_64 state in insn_init()
+Cc: Nikolay Borisov <nik.borisov@suse.com>, Ingo Molnar <mingo@kernel.org>,
+ Josh Poimboeuf <jpoimboe@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240222111636.2214523-3-nik.borisov@suse.com>
+References: <20240222111636.2214523-3-nik.borisov@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] KVM: s390: selftest: memop: Fix undefined behavior
-Content-Language: en-US
-To: Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20240111094805.363047-1-nsg@linux.ibm.com>
-From: Janosch Frank <frankja@linux.ibm.com>
-Autocrypt: addr=frankja@linux.ibm.com; keydata=
- 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
-In-Reply-To: <20240111094805.363047-1-nsg@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <170860146647.398.7255494884182148282.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uDCH6ydyqme9QsRZyZxLRwKuJidOalJZ
-X-Proofpoint-ORIG-GUID: EUZB2xcVd5Se3lTeye-fa0Exbp3518uq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_09,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=929 spamscore=0
- clxscore=1011 mlxscore=0 malwarescore=0 lowpriorityscore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 phishscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402220091
 
-On 1/11/24 10:48, Nina Schoetterl-Glausch wrote:
-> If an integer's type has x bits, shifting the integer left by x or more
-> is undefined behavior.
-> This can happen in the rotate function when attempting to do a rotation
-> of the whole value by 0.
-> 
-> Fixes: 0dd714bfd200 ("KVM: s390: selftest: memop: Add cmpxchg tests")
-> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+The following commit has been merged into the x86/asm branch of tip:
 
+Commit-ID:     07a5d4bcbf8e70a430431991f185eb29e74ae533
+Gitweb:        https://git.kernel.org/tip/07a5d4bcbf8e70a430431991f185eb29e74ae533
+Author:        Nikolay Borisov <nik.borisov@suse.com>
+AuthorDate:    Thu, 22 Feb 2024 13:16:36 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 22 Feb 2024 12:23:27 +01:00
 
-Acked-by: Janosch Frank <frankja@linux.ibm.com>
+x86/insn: Directly assign x86_64 state in insn_init()
+
+No point in checking again as this was already done by the caller.
+
+Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20240222111636.2214523-3-nik.borisov@suse.com
+---
+ arch/x86/lib/insn.c       | 2 +-
+ tools/arch/x86/lib/insn.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index 3946bdc..1bb155a 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -71,7 +71,7 @@ void insn_init(struct insn *insn, const void *kaddr, int buf_len, int x86_64)
+ 	insn->kaddr = kaddr;
+ 	insn->end_kaddr = kaddr + buf_len;
+ 	insn->next_byte = kaddr;
+-	insn->x86_64 = x86_64 ? 1 : 0;
++	insn->x86_64 = x86_64;
+ 	insn->opnd_bytes = 4;
+ 	if (x86_64)
+ 		insn->addr_bytes = 8;
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index 5d81924..ada4b4a 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -71,7 +71,7 @@ void insn_init(struct insn *insn, const void *kaddr, int buf_len, int x86_64)
+ 	insn->kaddr = kaddr;
+ 	insn->end_kaddr = kaddr + buf_len;
+ 	insn->next_byte = kaddr;
+-	insn->x86_64 = x86_64 ? 1 : 0;
++	insn->x86_64 = x86_64;
+ 	insn->opnd_bytes = 4;
+ 	if (x86_64)
+ 		insn->addr_bytes = 8;
 
