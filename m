@@ -1,142 +1,101 @@
-Return-Path: <linux-kernel+bounces-77026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C203A86003D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68320860041
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8CAD1C23FA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:00:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7215F1C2531B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E932315957C;
-	Thu, 22 Feb 2024 17:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DFF157E95;
+	Thu, 22 Feb 2024 17:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bGZrPy3/"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d/Rou46X"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8DB158D7E;
-	Thu, 22 Feb 2024 17:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59106153BEF;
+	Thu, 22 Feb 2024 17:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708624747; cv=none; b=S1DEoS8ciHh3g1gkcHWdwdDsnEjp87bo/L/X/vYTcnFhvtn5N4UIA5E6zKPbIiZZmwLN/cFvilOLShrk/yEkloFgTP299xrSmVMRj/vHbwRABkBOcjyCMfz2KqCcGHJYjFoc3qOmJGIeIG/iXoElFou4YJzqH9w2KN1HUojh1t0=
+	t=1708624763; cv=none; b=ISr79GV8rXAdoqwR4JjfWx6STMANA84bwdcdonKYgZUxfS1iZcB+JrIoO0bm3ERp/xHnENvrKMQlM/iXmt3ee79Kyt1u0UA7jjJ0HUrDfECLgeBM1740E/IbSFJG98hVNY1UtkHDdwsZH/szJdwN2ICecSrzD0ujH74BRiBUZDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708624747; c=relaxed/simple;
-	bh=Z/EIGnuYjLNrAYUnfmJi4T97HGPjIPXlLK6RZjCVmqY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uetQ0cZI/J7kVI48mOOosgordsc9HxGDJukzBvvxLqh4T/5q+lGq0Dyi5Tm/L67x0bSl7yOwe0pCCIHwl/7nKNg7ycwQKzNnfnZpTtU1qGd3Ii9c095OTDsznoumiAZEMzVKT7YIb+SUQiubejT30clQR48YWUECSPP0U7fy2Mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bGZrPy3/; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d2628e81b8so7543761fa.0;
-        Thu, 22 Feb 2024 09:59:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708624743; x=1709229543; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5bTqyc5eLl00Lab2XpbFjSYvN/btOw7kIcPOi9K55pg=;
-        b=bGZrPy3/FKYsUr4VSUe6MTQx723LvRkz6A8tqWv6bO/6KQFC5YRPXXORWjKaTyj3Fq
-         P0/ciaQSbqbyF1oQNhboasL/+mzWwbY92eiO6zH5oc7DSesc9VBlLADam3IAySiAnu1j
-         DzsbRu+TwPPAqaxzGtTVT2zBbgEI0I92fuDUxuehNHKmuu1EavWfyVJUwwH6BUrckGDO
-         M1KxwvDat/oaB3Bv4US77WE8BbGiVAyWRa50lgt/cSgwPq9JJJVAg8omU1swP+7pChnT
-         KgCon99xDMNJ7snstt9MEuWGehIc7Gv+dGwaifDjW62x6t7+wqoOzCAob8qpOme+Y5rs
-         RrTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708624743; x=1709229543;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5bTqyc5eLl00Lab2XpbFjSYvN/btOw7kIcPOi9K55pg=;
-        b=NDVHyvpxDy5vE+qOG/xqoM3WM9oFTpncJCH6oig6q1LvAIVUDxzEkGGJ+dF4D1eYFc
-         Lo0bkgMq9wFi2eWN7M2vVHBs7Z2HQj+9pmEyVXZ0exg2yukyo8HEswQBhvt4HNo75LZH
-         DW0ChIcob3nt/ko0cuVx510Wu5tOlL3PqsVECH51HgEKLVZW0YsNusTEm/CuLjbBY+hD
-         cLkHnwyjOv87ZNJNZrbrPtjL1YkRPXsHphP9N+eowfvJj3ZzHXvR6hbafeTkFAj2IRgk
-         Ewjjriy1P5lKFP9ktMrqZDpq292MJ8VyzrbXuvPrJ0FKA9Jpbq/Airkf7xiUbrZqqSbB
-         MmYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVK/T7acKIqjgTEqn3+ooVF8YE5/mzWjULhOmuEWw/VWb9/plVodoBUE+RF5vRkVLXl+DlTIejXIJOk5VbZDwBQ9ET9+za8yyN/qFwaaedboX4EA31PMVYjqYpgRTvkbYH2pznY
-X-Gm-Message-State: AOJu0YyixE2gFm+ghtj75M1edyXEzURf3q2imIRKDUlIXAs+uCOWk6hh
-	vMosvVHCiAiqPImzfROtItRJQdLFoOd0T4+dj1I1/J4exPCUM7wj
-X-Google-Smtp-Source: AGHT+IHuasSgIqN4mYlSs8rVhcBwid+S/k+ba5GORgBQig/kQBDhwbuCR6H37k2jc6Uam3ZK+g908A==
-X-Received: by 2002:a2e:904d:0:b0:2d2:31a8:cb1a with SMTP id n13-20020a2e904d000000b002d231a8cb1amr1275872ljg.13.1708624743579;
-        Thu, 22 Feb 2024 09:59:03 -0800 (PST)
-Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id l25-20020a2e8699000000b002d221041b59sm2296052lji.51.2024.02.22.09.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 09:59:03 -0800 (PST)
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Jose Abreu <joabreu@synopsys.com>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Serge Semin <fancer.lancer@gmail.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
-	Tomer Maimon <tmaimon77@gmail.com>,
-	Jiawen Wu <jiawenwu@trustnetic.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	openbmc@lists.ozlabs.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 4/4] net: pcs: xpcs: Explicitly return error on caps validation
-Date: Thu, 22 Feb 2024 20:58:23 +0300
-Message-ID: <20240222175843.26919-5-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240222175843.26919-1-fancer.lancer@gmail.com>
-References: <20240222175843.26919-1-fancer.lancer@gmail.com>
+	s=arc-20240116; t=1708624763; c=relaxed/simple;
+	bh=wdnO0bFfHymT5iCbsiUCX/eH2jaKJvVYJF6RugEQ6ZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UJKLZACgw80yF4FI1a47qSj6xgquzzriTSCBKwUaNuvRHLPuxaajhSka7qkSAd0CGuwDimsUaV0isrkDPwgiZ1xVUIfOIfLj49gRVAx+n0GLo1LoQnudKkHd+Xa+PBsUGa1gNS5ZrgMF/A2Zj7uEMho2hqi197X1IYtU2UWjynk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d/Rou46X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E618C433F1;
+	Thu, 22 Feb 2024 17:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708624762;
+	bh=wdnO0bFfHymT5iCbsiUCX/eH2jaKJvVYJF6RugEQ6ZU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d/Rou46XoeDVCackneWERhF7n8kwnrl/gU/Vr0pLn9yDrVgMvCxjRhrUAXm+TYb8e
+	 BxgA8ftVrWEEbAoq/CYx2arEmh6w7yrXkSQG5NTJjCHbA+yo0vM7LeLom1I1WROFhJ
+	 tTH7iVbkZ1D1Vs3OfSDyuOZCX2OV6YoVTkU977KlgYbtdQkudT4MCTvi81LQUjyx8Z
+	 wUHGZgwSwh+arqkj3SUW8cB5ZrqdMY1eAB+8ukEwCpyzkQ5L2JfveFUbXI3QCwuMI4
+	 LlF0XNDeh5SZOcz6LVTRTOauO2th45VNxBDr3m6pIuihZQ9MlNcLeWOpGa3rwltHWK
+	 j1HQahO9xKuAg==
+Date: Thu, 22 Feb 2024 10:59:18 -0700
+From: Rob Herring <robh@kernel.org>
+To: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
+Cc: nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, linux@armlinux.org.uk,
+	vadim.fedorenko@linux.dev, andrew@lunn.ch, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	git@amd.com
+Subject: Re: [PATCH net-next v2 4/4] dt-bindings: net: cdns,macb: Deprecate
+ magic-packet property
+Message-ID: <20240222175918.GA3500038-robh@kernel.org>
+References: <20240222153848.2374782-1-vineeth.karumanchi@amd.com>
+ <20240222153848.2374782-5-vineeth.karumanchi@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222153848.2374782-5-vineeth.karumanchi@amd.com>
 
-If an unsupported interface is passed to the PCS validation callback there
-is no need in further link-modes calculations since the resultant array
-will be initialized with zeros which will be perceived by the phylink
-subsystem as error anyway (see phylink_validate_mac_and_pcs()). Instead
-let's explicitly return the -EINVAL error to inform the caller about the
-unsupported interface as it's done in the rest of the pcs_validate
-callbacks.
+On Thu, Feb 22, 2024 at 09:08:48PM +0530, Vineeth Karumanchi wrote:
+> WOL modes such as magic-packet should be an OS policy.
+> Leverage MACB_CAPS_WOL on supported devices to advertise
+> supported modes through ethtool. Use ethtool to activate
+> the required mode.
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
----
- drivers/net/pcs/pcs-xpcs.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+According to the description of the property, it indicates whether magic 
+packet is supported by the h/w or not. Enabling WOL or not is a separate 
+matter. OTOH, I would think WOL support would be implied by compatible 
+properties. No objection from me, just highlighting the distinction.
 
-diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-index 92c47da61db4..46afeb5510c0 100644
---- a/drivers/net/pcs/pcs-xpcs.c
-+++ b/drivers/net/pcs/pcs-xpcs.c
-@@ -613,14 +613,15 @@ static int xpcs_validate(struct phylink_pcs *pcs, unsigned long *supported,
- 
- 	xpcs = phylink_pcs_to_xpcs(pcs);
- 	compat = xpcs_find_compat(xpcs->id, state->interface);
-+	if (!compat)
-+		return -EINVAL;
- 
- 	/* Populate the supported link modes for this PHY interface type.
- 	 * FIXME: what about the port modes and autoneg bit? This masks
- 	 * all those away.
- 	 */
--	if (compat)
--		for (i = 0; compat->supported[i] != __ETHTOOL_LINK_MODE_MASK_NBITS; i++)
--			set_bit(compat->supported[i], xpcs_supported);
-+	for (i = 0; compat->supported[i] != __ETHTOOL_LINK_MODE_MASK_NBITS; i++)
-+		set_bit(compat->supported[i], xpcs_supported);
- 
- 	linkmode_and(supported, supported, xpcs_supported);
- 
--- 
-2.43.0
-
+> 
+> Suggested-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
+> ---
+>  Documentation/devicetree/bindings/net/cdns,macb.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> index bf8894a0257e..096309bf3235 100644
+> --- a/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> +++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> @@ -141,6 +141,7 @@ patternProperties:
+>  
+>        magic-packet:
+>          type: boolean
+> +        deprecated: true
+>          description:
+>            Indicates that the hardware supports waking up via magic packet.
+>  
+> -- 
+> 2.34.1
+> 
 
