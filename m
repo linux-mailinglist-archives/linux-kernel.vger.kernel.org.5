@@ -1,146 +1,164 @@
-Return-Path: <linux-kernel+bounces-75737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 506B385EE32
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:42:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261E185EE36
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:42:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF8A1F23818
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49A911C21D27
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA24111AA;
-	Thu, 22 Feb 2024 00:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD0510A1A;
+	Thu, 22 Feb 2024 00:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Tk75PSBw"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UYtixNgB"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CAFF9CE
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD6BF9CE
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708562515; cv=none; b=ratHn77Ocn2D8TT71Pk+06l+3ENqTCQi/msvFIKq2Ae7vC4/TQNCv9g6tEkv78n/E/+MdR8hWlcjM7i0deifIFlrpBT3ik1u25o7MP5n3gfQz8Jem03Hq5VIZ3wS29Y6ZwDfWntWugmO45GYzCQ/Fuc0ODv3pdDJ00Ot46l1dgU=
+	t=1708562553; cv=none; b=b77vXBoUw6fzCfR/403dIVIlO9WjuuAkz2bZbS1Cqa5s9Eo4x+PXDn+Ok40vzsXoqCzKRGHPpksTtN0n64+6E5gn9O80F6jBgrdIx742RywDWRSPSqHWBColDMVMWJ0bakyWqBVgX41diFBqu662TyR2uAkp7rVmN8VXZYXS0/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708562515; c=relaxed/simple;
-	bh=OTTeh2V6QDGWlxJqsDj3XrQmqyt1AJR5mKB7r3e/JNI=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=IRB4JBnHyNOliJLYN+f5LHczT1wgo3PeGYhCB2liXH949Mch9vqvk/j0rwc7su44xdIEEv9QuE79DmxoXmR0BrrQIo0YBcvn54ujkAAanJwQY/vFlR3SV1d9aD/P0NRrUW8BF1meySr+xCeR0jcTO8LkWIPjcvUn5Ww0OdeTVeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Tk75PSBw; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so7291326276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:41:53 -0800 (PST)
+	s=arc-20240116; t=1708562553; c=relaxed/simple;
+	bh=Bs9vhLKuGEIex6OPxJkFxMFJCT3jUj8PEgVKlk55ND4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TPo5aUJPv1pIsPa4zaC6K29BIRQPwcxE7quXZ5xEARQVkyzeYNQUXzQ5wLeKjfexAANLVMVXFIyo8nSwgu94ZPdo1+xQLNzcfuBgTao6LiwLZvH7go+vVhWOqpPdhu1qpwW5dTkKiGjw8ZMEciwJoOP8btJE0BAZ7sTMXoqoJWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UYtixNgB; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcd94fb9e4dso1469241276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:42:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708562513; x=1709167313; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=G583JTbO9RH5e4qatRoF50zt3H5aOXeubyono7wZgbU=;
-        b=Tk75PSBwIRulegjD4wXVI1LoeKNytzxPNKGF4r7J5YViBQNmAULy2k/fqEPqOxoeD2
-         zixpnd7HmSHoVdtIaGmE40ejGYb3MduYVIVSXlkrUzje0S0c1eB5APUQ9pWYMd87glFC
-         fGFEoJS/WLc+Uwo8L1TowBnpXCxdaEQXCmtIxwOSKACuzriFetajC0psuuFdcopskDFp
-         3u4eSuBVwLAeDykDPx5ZkMscJhz9HplfH1TWN77M6W36VxkNZ8mlJYHyGGaJ0CEsOAWO
-         XHJEGOUVVO2rreQRe7HNKGUtqO1inIqTss1JInnIwUGV0u8rU0p9VcDxiJfPndObQZIw
-         869w==
+        d=linaro.org; s=google; t=1708562550; x=1709167350; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ShxvQ8PVoqtGaEPQqhEqEYNCHruhNGrg1u0pTjKfrU0=;
+        b=UYtixNgBQFiKAO4w4+Udpn2GKuFPl0ARB5tOU1uUFetljSj8qUmr+Rn5G1gSGUqBg0
+         f5tv5Q+P8Z5CSQegkDMu3wuvbSEGxAmkb/2Ur+cUWt9wEHexOAlA4nViBG3VLQK65bz1
+         kqY7/KnQfsQRrJ7XeDuSybRY80SMRQLdCFrJHlwRi54sDKGV+oaExp0Gjff7O1orll0M
+         8MriWzrdQQYSm2VeBeUzt2DQFs15sn706mvjUXqkhMVppZOC3rlaBUTHTYvSL9qqkWK5
+         ayHgYwJIDv3Z1ff+NHd02CwxMpTPxSRp0FJ8d8IIKN7S3d6o+OIENWdKw7/do+acWQxc
+         qSkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708562513; x=1709167313;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G583JTbO9RH5e4qatRoF50zt3H5aOXeubyono7wZgbU=;
-        b=gxB//B1zkvijFUf/xEqQ7bZTc8p0bZvipb7szI1bz6czfywOJmZNIi1tZWfw+I6VfB
-         jLzyRttv+juQqvHccMMiZcReITorc4DEvA5XFRbTve/I12W0DX3lX2fFs2Dy4Y4n1OcK
-         Ao0UmhcLk6V/T1QZs+C1SaX47g16Q9NfTWLDlqqxFDgGGcyc8+bZO6MEL764p47Kn21g
-         b5sKzX5Q4P2zF0oFprKklAvIfuk9y/mDQ1OevZLIbaK6DTBJj6iyRLFJfrp49y/Jtxql
-         zn//EwfcYhaZgvAa+51iCcl7dDtAZPpo6GYp4VX1ff8JDOEADXoymP7cF4OzWi4Jpcyw
-         F9OA==
-X-Forwarded-Encrypted: i=1; AJvYcCXL/3uAUxe1GlZUU5rHx/KP9S1nSUnrkaIRFbTUc5nXCgPAU5WSbEiWbkwMpl3pGK2t4HCDwEAAtkeAIyux/eiEc5eCsNQoid5Bmagf
-X-Gm-Message-State: AOJu0Yzsa3l5eggoOwPH4in+D/39VlZHxMf4zdDB6XJduGDGBzQwePjP
-	n6O/EPjI1qwGhrn+i5UQAQaRJGFaylYdRx3VUiaXi/7M6Sm35YgYvc5EUPhvXs0yvjoYJ554np4
-	IWjQX5kC5nsmTIpz1h8e1jw==
-X-Google-Smtp-Source: AGHT+IGiyZ42qLqEd5VQhwppGk37FON0JE3UDwx/pyMP6iMh4zKRGnb0Q2Uu5IjrwRjQyoA/k3ecbiXnP1KcI9kYAg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1008:b0:dbe:387d:a8ef with
- SMTP id w8-20020a056902100800b00dbe387da8efmr33807ybt.1.1708562513250; Wed,
- 21 Feb 2024 16:41:53 -0800 (PST)
-Date: Thu, 22 Feb 2024 00:41:52 +0000
+        d=1e100.net; s=20230601; t=1708562550; x=1709167350;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ShxvQ8PVoqtGaEPQqhEqEYNCHruhNGrg1u0pTjKfrU0=;
+        b=a89sXImg+yet66E1YsSV+8age4syTyVNLQbu+bRLFt7rYW+HOJmOWmhkJfGylQZmlw
+         5KFOgaDaEB9/wjxpeJtiXh4qZrgEWkLb7qBhBIVl+hW35JVVvo1oea4pFuHK6zcUc6ql
+         NK++RqssSssswp1t44XWW+1uZU+A3zsdeRI9Y8I5E7YApQdh3BDS9I7wgzPUqumRJIKZ
+         2UkVptFgodwK2LozxK5MhkPm6wuE7hQjeVmF4adPAeoaJN2Qa4uWwR1+6rcui6Pz8Q5G
+         qafcYTVHTRyLnhuvCNJaW3j7C475wFTmlDtrN4gM7yBDJw7xTkvmS80AQbOuqmZ3uOB/
+         oHCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVIv3NSR6u9j9Gy6ebEJMJ7Meibp6G7vspCKqR5C0QchJ/bhPGateBIYt0lMkcfhmvmAMk/CMhQbm5KmvxKFkPM0VowcfNVhiNDhNWp
+X-Gm-Message-State: AOJu0Yx3UDEdh3n5eDp9rUwQfIMgMGjC/Vm/B/me7lKU4w+5wxeUcnBd
+	v0naEfG4lJWprO0fzXmWtadHZy7caLQyDfapIC2W2cTSYMcvDeiyncKf2LoW1PJ5lgkToshe7zm
+	Ho0/4S7CQVb/fvQTfL+RZ3oHPOX66EQvqBHLtwQ==
+X-Google-Smtp-Source: AGHT+IHHuwGqbZaTb+bV+UPau4y6yhAeIrb6TWdnVktV+oEQVFlA8nEB2tKz9vC9H977t8keyZqZPMrkgYtfMJvYxvw=
+X-Received: by 2002:a81:9a47:0:b0:607:a75e:9caf with SMTP id
+ r68-20020a819a47000000b00607a75e9cafmr18882889ywg.22.1708562549946; Wed, 21
+ Feb 2024 16:42:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAE+Y1mUC/x2NwQrCQAwFf6XkbKCGWsVfESk2fasBWZekFKX03
- 116GZjLzEoBNwRdm5Uci4V9cpXjoSF9PfITbFN1kla6VkQ4Zs9afjy5LfDg0DB+l6Q7Bp1ZOZ2 6sT8DGPsL1VJxJPvul9t92/4hgrO3dQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708562512; l=2488;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=OTTeh2V6QDGWlxJqsDj3XrQmqyt1AJR5mKB7r3e/JNI=; b=A2o2fiTjLDUmZ9F3wqmvRRVWLzoT82nVkkZDj98Xnn0hewgY8d0BMBO+anxo+q5J1CvgVNGan
- ecX1M9fbJJPB0fqNn0QDDpCEd/lQOrqsnM7HQ5lW5sI5e2Ioaybsh6P
-X-Mailer: b4 0.12.3
-Message-ID: <20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-v1-1-20c685bd1b43@google.com>
-Subject: [PATCH] scsi: lpfc: replace deprecated strncpy with strscpy
-From: Justin Stitt <justinstitt@google.com>
-To: James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240216223245.12273-1-semen.protsenko@linaro.org>
+ <20240216223245.12273-12-semen.protsenko@linaro.org> <ce515530-428a-4a21-8c56-5a497cc8130a@linaro.org>
+In-Reply-To: <ce515530-428a-4a21-8c56-5a497cc8130a@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Wed, 21 Feb 2024 18:42:18 -0600
+Message-ID: <CAPLW+4=kpk=Vg=nX-hVxcCS0OttC6xmyUcB005tmX+vtUF9TLA@mail.gmail.com>
+Subject: Re: [PATCH 11/16] clk: samsung: Keep register offsets in chip
+ specific structure
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, Feb 20, 2024 at 5:04=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 16/02/2024 23:32, Sam Protsenko wrote:
+> > Abstract CPU clock registers by keeping their offsets in a dedicated
+> > chip specific structure to accommodate for oncoming Exynos850 support,
+> > which has different offsets for cluster 0 and cluster 1. This rework
+> > also makes it possible to use exynos_set_safe_div() for all chips, so
+> > exynos5433_set_safe_div() is removed here to reduce the code
+> > duplication.
+> >
+>
+> So that's the answer why you could not use flags anymore - you need an
+> enum, not a bitmap. Such short explanation should be in previous commits
+> justifying moving reg layout to new property.
 
-We expect ae->value_string to be NUL-terminated because there's a
-comment that says as much; these attr strings are also used with other
-string APIs, further cementing the fact.
+Will do, thanks.
 
-Now, the question of whether or not to NUL-pad the destination buffer:
-lpfc_fdmi_rprt_defer() initializes vports (all zero-initialized), then
-we call lpfc_fdmi_cmd() with each vport and a mask. Then, inside of
-lpfc_fdmi_cmd() we check each bit in the mask to invoke the proper
-callback. Importantly, the zero-initialized vport is passed in as the
-"attr" parameter. Seeing this:
-|	struct lpfc_fdmi_attr_string *ae = attr;
-.. we can tell that ae->value_string is entirely zero-initialized. Due
-to this, NUL-padding is _not_ required as it would be redundant.
+>
+> > No functional change.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  drivers/clk/samsung/clk-cpu.c | 156 +++++++++++++++++++---------------
+> >  1 file changed, 86 insertions(+), 70 deletions(-)
+> >
+> > diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cp=
+u.c
+> > index 04394d2166c9..744b609c222d 100644
+> > --- a/drivers/clk/samsung/clk-cpu.c
+> > +++ b/drivers/clk/samsung/clk-cpu.c
+> > @@ -44,12 +44,14 @@ typedef int (*exynos_rate_change_fn_t)(struct clk_n=
+otifier_data *ndata,
+> >
+> >  /**
+> >   * struct exynos_cpuclk_chip - Chip specific data for CPU clock
+> > + * @regs: register offsets for CPU related clocks
+> >   * @pre_rate_cb: callback to run before CPU clock rate change
+> >   * @post_rate_cb: callback to run after CPU clock rate change
+> >   */
+> >  struct exynos_cpuclk_chip {
+> > -     exynos_rate_change_fn_t pre_rate_cb;
+> > -     exynos_rate_change_fn_t post_rate_cb;
+> > +     const void                              * const regs;
+>
+> Why this is void?
+>
 
-Conveniently, strscpy also returns the number of bytes copied into the
-destination buffer, eliminating the need for strnlen!
+Different chips can have very different register layout. For example,
+older Exynos chips usually keep multiple CPU divider ratios in one
+single register, whereas more modern chips have a dedicated register
+for each divider clock. Also, old chips usually split divider ratio vs
+DIV clock status between different registers, but in modern chips they
+both live in one single register. Having (void *) makes it possible to
+keep pointers to different structures, and each function for the
+particular chip can "know" which exactly structure is stored there,
+casting (void *) to a needed type. Another way to do that would be to
+have "one-size-fits-all" structure with all possible registers for all
+possible chips. I don't know, I just didn't like that for a couple of
+reasons, so decided to go with (void *).
 
-Considering the above, a suitable replacement is `strscpy` [2].
+I'll add some explanation in the commit message in v2.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/scsi/lpfc/lpfc_ct.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_ct.c b/drivers/scsi/lpfc/lpfc_ct.c
-index baae1f8279e0..42594ec87290 100644
---- a/drivers/scsi/lpfc/lpfc_ct.c
-+++ b/drivers/scsi/lpfc/lpfc_ct.c
-@@ -2569,9 +2569,8 @@ lpfc_fdmi_set_attr_string(void *attr, uint16_t attrtype, char *attrstring)
- 	 * 64 bytes or less.
- 	 */
- 
--	strncpy(ae->value_string, attrstring, sizeof(ae->value_string));
--	len = strnlen(ae->value_string, sizeof(ae->value_string));
--	/* round string length to a 32bit boundary. Ensure there's a NULL */
-+	len = strscpy(ae->value_string, attrstring, sizeof(ae->value_string));
-+	/* round string length to a 32bit boundary */
- 	len += (len & 3) ? (4 - (len & 3)) : 4;
- 	/* size is Type/Len (4 bytes) plus string length */
- 	size = FOURBYTES + len;
-
----
-base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
-change-id: 20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-f54b67eeeb68
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> > +     exynos_rate_change_fn_t                 pre_rate_cb;
+> > +     exynos_rate_change_fn_t                 post_rate_cb;
+> >  };
+> >
+>
+>
+>
+> Best regards,
+> Krzysztof
+>
 
