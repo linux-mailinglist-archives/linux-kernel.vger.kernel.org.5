@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-76084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18E285F2C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:22:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E42AB85F2C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D5A01F22D36
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:22:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4113EB235F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA221B59C;
-	Thu, 22 Feb 2024 08:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A871B7E7;
+	Thu, 22 Feb 2024 08:22:25 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB06D2232D;
-	Thu, 22 Feb 2024 08:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCA9224F1;
+	Thu, 22 Feb 2024 08:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708590139; cv=none; b=lHOXaL/N/Svo1mO/szZyzLD/9Xit9mnG+JpFM3HBbQWTixEOIHY6eJC8e/ZpFUCPM08GhiVTn+hf37w7pomwMMxGWmIO2zvRGXF0wnTZ7puBksQlZdq9hf7b0UlAUgNxP0JIH130xr1K1e71yf9A0nSNqlDgTDcRBt13FR46k1M=
+	t=1708590144; cv=none; b=WmCdx9lhmPXRJlEYLC21edkbjDVWKDgCADI3GnlFe7WAuXqbzQuhfW/k9ZzcZX7usXUpSmqn2FD6ASKZo61TY9C86LvvSSPDMPDQANJRPcRVnoc7h8chEqDdSBcdsCXL5JEIXL5V/QlpDo0OknVOo2N79x5/y856Ahy+m0fGADg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708590139; c=relaxed/simple;
-	bh=AXFYcuYN3g5ZirUZbpsxyvNQu0ugVEt9rj0ERr0kW9o=;
+	s=arc-20240116; t=1708590144; c=relaxed/simple;
+	bh=jGIbbOE99EZBa8dJK15RCZFZMqliA/pI0s/dt+f/Y30=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FtL3SjfYVQZ3uzaQW0NLYnLrPsjfK3+d5HIccgAI0I4FNpWQN4Jq35NUDwy+JoSBKXBiaY0zsInuZ6OUdyfcPDHSMuIBrc44WaLVrB+4RoLqWC2BINIm3AUnPIYO8/Djd2XS1F8YFe+iTfaI9TOgTMsuKxapdDS3WlxUbudlWOQ=
+	 MIME-Version; b=mG5HEDwzSgUpFNBabdl/qOg733BrN0hb7aXQHpXOAbPPY3NhHc9P0LjAUkuAK6k3ubB+HylqHtYrD4Fq31NprEDuJVGlrkkwrKrUprlRe09APDpBtawrhXRMhbcRBcQgAtjpIZZajy/wek3ZsdrCl45G7xLZ7sPbc1wd7uMHCWc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 707A81576;
-	Thu, 22 Feb 2024 00:22:55 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A76711007;
+	Thu, 22 Feb 2024 00:23:00 -0800 (PST)
 Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.42.8])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EF8F63F762;
-	Thu, 22 Feb 2024 00:22:12 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A01733F762;
+	Thu, 22 Feb 2024 00:22:17 -0800 (PST)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	suzuki.poulose@arm.com
@@ -45,10 +45,12 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	linux-acpi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	coresight@lists.linaro.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH V5 03/11] coresight: tmc: Extract device properties from AMBA pid based table lookup
-Date: Thu, 22 Feb 2024 13:51:34 +0530
-Message-Id: <20240222082142.3663983-4-anshuman.khandual@arm.com>
+	linux-stm32@st-md-mailman.stormreply.com,
+	Leo Yan <leo.yan@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: [PATCH V5 04/11] coresight: Add helpers registering/removing both AMBA and platform drivers
+Date: Thu, 22 Feb 2024 13:51:35 +0530
+Message-Id: <20240222082142.3663983-5-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240222082142.3663983-1-anshuman.khandual@arm.com>
 References: <20240222082142.3663983-1-anshuman.khandual@arm.com>
@@ -60,67 +62,165 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This extracts device properties from AMBA pid based table lookup. But first
-this modifies tmc_etr_setup_caps() to accept csdev access.
+This adds two different helpers i.e coresight_init_driver()/remove_driver()
+enabling coresight devices to register or remove AMBA and platform drivers.
+This changes replicator and funnel devices to use above new helpers.
 
 Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc: Mike Leach <mike.leach@linaro.org>
 Cc: James Clark <james.clark@arm.com>
-Cc: coresight@lists.linaro.org
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
+Cc: coresight@lists.linaro.org
 Reviewed-by: James Clark <james.clark@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
 Changes in V5:
 
-- Modified tmc_etr_setup_caps() to accept struct csdev_access argument
-- Reverted back tmc_etr_setup_caps() call site position in tmc_probe()
-- Dropped custom mask TMC_AMBA_MASK
+- Changed replicator and funnel devices to use the new helpers
 
- drivers/hwtracing/coresight/coresight-tmc-core.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/hwtracing/coresight/coresight-core.c  | 29 +++++++++++++++++++
+ .../hwtracing/coresight/coresight-funnel.c    | 19 ++----------
+ .../coresight/coresight-replicator.c          | 20 ++-----------
+ include/linux/coresight.h                     |  7 +++++
+ 4 files changed, 41 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-index 7ec5365e2b64..43874fa4def0 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-@@ -370,16 +370,23 @@ static inline bool tmc_etr_has_non_secure_access(struct tmc_drvdata *drvdata)
- 	return (auth & TMC_AUTH_NSID_MASK) == 0x3;
+diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+index d7f0e231feb9..4e897cc5da81 100644
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -1836,6 +1836,35 @@ static void __exit coresight_exit(void)
+ module_init(coresight_init);
+ module_exit(coresight_exit);
+ 
++int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
++			  struct platform_driver *pdev_drv)
++{
++	int ret;
++
++	ret = amba_driver_register(amba_drv);
++	if (ret) {
++		pr_err("%s: error registering AMBA driver\n", drv);
++		return ret;
++	}
++
++	ret = platform_driver_register(pdev_drv);
++	if (!ret)
++		return 0;
++
++	pr_err("%s: error registering platform driver\n", drv);
++	amba_driver_unregister(amba_drv);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(coresight_init_driver);
++
++void coresight_remove_driver(struct amba_driver *amba_drv,
++			     struct platform_driver *pdev_drv)
++{
++	amba_driver_unregister(amba_drv);
++	platform_driver_unregister(pdev_drv);
++}
++EXPORT_SYMBOL_GPL(coresight_remove_driver);
++
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
+ MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
+diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+index a5b1fc787766..004cb63f9cbc 100644
+--- a/drivers/hwtracing/coresight/coresight-funnel.c
++++ b/drivers/hwtracing/coresight/coresight-funnel.c
+@@ -410,27 +410,12 @@ static struct amba_driver dynamic_funnel_driver = {
+ 
+ static int __init funnel_init(void)
+ {
+-	int ret;
+-
+-	ret = platform_driver_register(&static_funnel_driver);
+-	if (ret) {
+-		pr_info("Error registering platform driver\n");
+-		return ret;
+-	}
+-
+-	ret = amba_driver_register(&dynamic_funnel_driver);
+-	if (ret) {
+-		pr_info("Error registering amba driver\n");
+-		platform_driver_unregister(&static_funnel_driver);
+-	}
+-
+-	return ret;
++	return coresight_init_driver("funnel", &dynamic_funnel_driver, &static_funnel_driver);
  }
  
-+static const struct amba_id tmc_ids[];
-+
- /* Detect and initialise the capabilities of a TMC ETR */
--static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
-+static int tmc_etr_setup_caps(struct device *parent, u32 devid,
-+			      struct csdev_access *access)
+ static void __exit funnel_exit(void)
  {
- 	int rc;
--	u32 dma_mask = 0;
-+	u32 tmc_pid, dma_mask = 0;
- 	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
-+	void *dev_caps;
+-	platform_driver_unregister(&static_funnel_driver);
+-	amba_driver_unregister(&dynamic_funnel_driver);
++	coresight_remove_driver(&dynamic_funnel_driver, &static_funnel_driver);
+ }
  
- 	if (!tmc_etr_has_non_secure_access(drvdata))
- 		return -EACCES;
+ module_init(funnel_init);
+diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+index 91d93060dda5..b82cf9906cfb 100644
+--- a/drivers/hwtracing/coresight/coresight-replicator.c
++++ b/drivers/hwtracing/coresight/coresight-replicator.c
+@@ -416,27 +416,13 @@ static struct amba_driver dynamic_replicator_driver = {
  
-+	tmc_pid = coresight_get_pid(access);
-+	dev_caps = coresight_get_uci_data_from_amba(tmc_ids, tmc_pid);
+ static int __init replicator_init(void)
+ {
+-	int ret;
+-
+-	ret = platform_driver_register(&static_replicator_driver);
+-	if (ret) {
+-		pr_info("Error registering platform driver\n");
+-		return ret;
+-	}
+-
+-	ret = amba_driver_register(&dynamic_replicator_driver);
+-	if (ret) {
+-		pr_info("Error registering amba driver\n");
+-		platform_driver_unregister(&static_replicator_driver);
+-	}
+-
+-	return ret;
++	return coresight_init_driver("replicator", &dynamic_replicator_driver,
++				     &static_replicator_driver);
+ }
+ 
+ static void __exit replicator_exit(void)
+ {
+-	platform_driver_unregister(&static_replicator_driver);
+-	amba_driver_unregister(&dynamic_replicator_driver);
++	coresight_remove_driver(&dynamic_replicator_driver, &static_replicator_driver);
+ }
+ 
+ module_init(replicator_init);
+diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+index a4cb7dd6ca23..7e1646d4863c 100644
+--- a/include/linux/coresight.h
++++ b/include/linux/coresight.h
+@@ -12,6 +12,8 @@
+ #include <linux/io.h>
+ #include <linux/perf_event.h>
+ #include <linux/sched.h>
++#include <linux/amba/bus.h>
++#include <linux/platform_device.h>
+ 
+ /* Peripheral id registers (0xFD0-0xFEC) */
+ #define CORESIGHT_PERIPHIDR4	0xfd0
+@@ -598,6 +600,11 @@ void coresight_relaxed_write64(struct coresight_device *csdev,
+ 			       u64 val, u32 offset);
+ void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
+ 
++int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
++			  struct platform_driver *pdev_drv);
 +
- 	/* Set the unadvertised capabilities */
- 	tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
- 
-@@ -497,8 +504,7 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
- 		desc.type = CORESIGHT_DEV_TYPE_SINK;
- 		desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
- 		desc.ops = &tmc_etr_cs_ops;
--		ret = tmc_etr_setup_caps(dev, devid,
--					 coresight_get_uci_data(id));
-+		ret = tmc_etr_setup_caps(dev, devid, &desc.access);
- 		if (ret)
- 			goto out;
- 		idr_init(&drvdata->idr);
++void coresight_remove_driver(struct amba_driver *amba_drv,
++			     struct platform_driver *pdev_drv);
+ #else
+ static inline struct coresight_device *
+ coresight_register(struct coresight_desc *desc) { return NULL; }
 -- 
 2.25.1
 
