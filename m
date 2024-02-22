@@ -1,335 +1,234 @@
-Return-Path: <linux-kernel+bounces-76525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D3A85F86B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7372E85F86D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA44282E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:41:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29C81282DC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2205112DDBF;
-	Thu, 22 Feb 2024 12:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC5212EBD4;
+	Thu, 22 Feb 2024 12:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="k1rGqdtO"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2076.outbound.protection.outlook.com [40.107.93.76])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="T+3Fu8tM";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Pu0k5kAn"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CA63F9ED;
-	Thu, 22 Feb 2024 12:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5EEC12E1CD;
+	Thu, 22 Feb 2024 12:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708605705; cv=fail; b=jCX0urtOIDaIbSifn/kO8p2daiWmGRfaPEGDqdHigThRkj2aE+vO3VKLRcEaWLK364KCkQKjq31/iTA74v7LhSPrtpCKKOwNJRvetwlhWJi3MPPbAIB+9i4OR9DgJKGqoy9G2VT6OL4xY+PsmFVXD0YINRiH2mqcoitNwhlsKCc=
+	t=1708605710; cv=fail; b=bKyt2JjqUOttDF64eLJdtLFPGtU8sGZQKFERUvOlcI3MybREYt0XEuRCuLEUw/2kuURdOSe8ndBfmbr7ibK6du1EGFdgpfpOi6GK1bGM+y2oHp2Evxn0H9w3Dp9VAA88JTwUhKuGspMSDOMYOxC09PK7i8fUmHcWcNMCGgvBMBA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708605705; c=relaxed/simple;
-	bh=/8iim6Odnq3bniuyxvsPqDgvjcGqDABgif97Nybskx0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BXfo0dx0iRSH5b8C2R6xc818sGT9bJzGpwWbbaZ+DYD2XNNvSgwfAAT2IZawzYWcnsYYqoiX9BPA8hnOqqgGLrkCjyLfe0bejK4ug/wI4KreUjxcOgWHGz/yIyKGU25YPwRzvVOvD5rDdGuR+LSOQ5BKz24fmcEra1wKeA9eeVk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=k1rGqdtO; arc=fail smtp.client-ip=40.107.93.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1708605710; c=relaxed/simple;
+	bh=tLTYL1Qvofyo61nlWnzU/7C0XYYEpPQ7mF23uhcKdgw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=cRbcsV9VL4qQp6TAjK6zcpc6lWGZ7qfGUJqy7Xq0fG9FbbbZRV6tonXAEeH8c4sN4hq6ZvBO8vmKcLo1uT/cmaEyRv5uLfqFHuiCqPYYezbzpELQvvvz2IHuqH1XIl3wlTyjmT1d7g2Xv2kJatxVL6CtOnaXp6AHdXp7kL4rwCo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=T+3Fu8tM; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Pu0k5kAn; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41MBowBR029148;
+	Thu, 22 Feb 2024 12:41:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=mt7evFhgJjYfZ7KIYilCRV1fZKGiYmHSToToM/z+h5E=;
+ b=T+3Fu8tM39mGDwmntDCuJ4X5jE2stu3K75PhInVsCttKLoEaoJWISmR0IVduJH2rLd7S
+ YHuXDwmoZbBxnW+1kXHdAZ0kO9fKoG+LAxBHe/2Ve9mD69zSiXpUKtvEB5zwfoPGmXny
+ dZYCLci8GBJfzKSV5h2lBmj48ZgydHn4lhMPWFgNTv5owKzhuXI7ocSCFDl6PNHEHcKE
+ e8eOrcAUZhgakchIRkkLfVd4g/XvpeMj0ZzqVxgYF9ZdeTeVx/bDUNRqB/JfArBtQfC7
+ LI8f589RN8sbdnEqeapqeszdJd2XXNLOmigPj9lnXnSi0dq22IcIkevdPSctqP7DVGWB cQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wakk44m4g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Feb 2024 12:41:22 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41MB6XmO012786;
+	Thu, 22 Feb 2024 12:41:21 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wak8ayjfs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Feb 2024 12:41:21 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X8Ey4PYF+O1xpMc33t5efCYAqB/cQYzJeFGU+NYbxCvM/G1S+ZOurr9bgJc6/ghLInXkBFXDqRmIHmKID3hFROmQTA+u419VR6w8V2lv4jMxFXd+FfkZQAR1XoFQkWKYtmWnEt5FiYDlEHTYRn3rgJsvR7OQLJPKkUK4ceaqVb7LjLLgXeYIv7/OTYiCYaZwETujkrHvYD2unOlnUwNLy0fiBfcUpw4+QRnTsNIEiygaFxVgjYHaqtBjwfignztlILZ1acIrJJzqGqP6g6McDPyEDIKdbAh6LtXEaQ0F7SDRGaV6PIVvsPqpq2aTlWPu1fUIMA2F0MZK7FW4o8e2Xw==
+ b=PiZl/z8lBqrPlEBgMp1g9pLM5nwV2USRgUTzgi1/SA6SqQ/5IogVl7nHmZHY+d/YnIWaA0j8idjowpr5Wx+VVNhIPjAt+Rp9BAg/0YH9gTgM2rzRLB7BBOUgq6tl6sA7Rm6xQPsuPbqPnTRMwJCpgoPrZEOAjv6HApPoa2MWPZqP4EYFhksd1kj/Q8jJWyZQEfZvPMbbxSs8IRDMMe5JMR9/v/zzRxV/QqBd+QZaadG3Q8e5YXXPWLIjky7RqW7jVYS2gEh8fJ+ib1jUiKGelvk1prMi7IV7L+YP/puicrizmYXyN52fJpJoYVokbSNbHSsH8hDCFy3dshGaKP9OEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vyh6oaCu+k3fo/EjEA/8BsFuywQUjll2qpTNlLMJvhE=;
- b=iRTfmd+qkuN8RxOh7/bT7OVVly16ILsswxskt6v+YgZ0wi00Cc6Lo4wiFuemmozaJRDKyJYP7jbcyA9oZWqGMRs7wKY/FTNKYRW64cXpD/LM5gINm4mHtRLOtDMSSmlvf2kKo8bsE/EWwB3Conl8QMYoNa1dUjlSDYK0/kI/88k0n3yyynV3o2NiuWP99Oe2sWmmZVYXH3C/O+vqfYOy9DpBzWRNj5BdCyiR/ratEYSvW50N//p26oGDQtRfsnsJdXQDqj5MPo8KUD3ZpkBz3DFSuy+GXZmkf09p5hcVPnOrIoeuEeWJU1Z/LEAu27VjuglLcHwsV14Hru7BPAHhCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=mt7evFhgJjYfZ7KIYilCRV1fZKGiYmHSToToM/z+h5E=;
+ b=fttyRlfSleCqe2oVhteVP98ef9dEryjZRgqZwUF9XHXKH9HUvEz4CAUp7Ncnwe1Zu4iHNbpp/Dl0m9EWiI8YfLcSPSruTipWlbyxuYk7dEjA8EXUrHTc11bOAHtuD9vIvaknFYjRFvYeVyCMNrLp15x+6h6WAeaahxYW+TtlzCcT3rwDwnsgTQEjRwgPwYL/8NuiZWywUYWSUTQz/zkSU53FI5mc6b8ubQfuVrqW5wySZ37WlFK02pCu8AQF5rRA0N71DsgbP5Af6ubZ1P7sEeh877HY/22ug9X88BLTZFO4V7Zk8hDPedtVQcvEw6rQVt9pBmGyCX17qFdsGYKjhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vyh6oaCu+k3fo/EjEA/8BsFuywQUjll2qpTNlLMJvhE=;
- b=k1rGqdtO139urIsyTFvCKejm73NE98tMJsyM/+TlvCtSFGoyzhjrdjQY34ouf3iAcaPo5u1IP83Arggalizof1/1eNmGZjR1Yehw78ZwYRoH05EZoIksF1t2C+JDA5SJOrNYH0Gc3DQMJKc1BLCi53czXNPfRJduPNEFHI47l1VRR8hC9E8oa64SoKVdskiXXV0UkNLDd6HExYW9rtozYYKr7KBqky7G/7xhvExmvhvP3Wmv0ulmYBbxFwqinxVssxI0E61OsGBt8kgpv325/KNj/7SL3GMcTRVa7bqG+1TmkR20sszdaxY4Zf59Zrt6YqCfxEncVsx41grohUqibw==
-Received: from BL1PR13CA0298.namprd13.prod.outlook.com (2603:10b6:208:2bc::33)
- by IA1PR12MB6018.namprd12.prod.outlook.com (2603:10b6:208:3d6::6) with
+ bh=mt7evFhgJjYfZ7KIYilCRV1fZKGiYmHSToToM/z+h5E=;
+ b=Pu0k5kAnLOkbvHQ8ytl2YK7coazAJmwQH8Ssoj8VgbMb3ScLm17CxNgSZ2yUPDmLZMQJsxFSmXWwy2IwTGJ855prZminNWP+pG5QALRkL0hbCZ52MBRM+W9Wu9JPIuil/eufMKmRfror5Lc7FS2guhyNHPrCgReAUi+dvvM++DQ=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by DS0PR10MB7344.namprd10.prod.outlook.com (2603:10b6:8:fe::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.23; Thu, 22 Feb
- 2024 12:41:40 +0000
-Received: from BL6PEPF0001AB56.namprd02.prod.outlook.com
- (2603:10b6:208:2bc:cafe::be) by BL1PR13CA0298.outlook.office365.com
- (2603:10b6:208:2bc::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17 via Frontend
- Transport; Thu, 22 Feb 2024 12:41:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BL6PEPF0001AB56.mail.protection.outlook.com (10.167.241.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 12:41:40 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 22 Feb
- 2024 04:41:18 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Thu, 22 Feb
- 2024 04:41:18 -0800
-Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Thu, 22 Feb 2024 04:41:13 -0800
-From: Vidya Sagar <vidyas@nvidia.com>
-To: <bhelgaas@google.com>, <rafael@kernel.org>, <lenb@kernel.org>,
-	<will@kernel.org>, <lpieralisi@kernel.org>, <kw@linux.com>,
-	<robh@kernel.org>, <frowand.list@gmail.com>
-CC: <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
-	<kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
-	<sagar.tv@gmail.com>
-Subject: [PATCH V3] PCI: Add support for preserving boot configuration
-Date: Thu, 22 Feb 2024 18:11:10 +0530
-Message-ID: <20240222124110.2681455-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240110030725.710547-3-vidyas@nvidia.com>
-References: <20240110030725.710547-3-vidyas@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Thu, 22 Feb
+ 2024 12:41:19 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7316.018; Thu, 22 Feb 2024
+ 12:41:19 +0000
+Message-ID: <d765d2c5-3451-4519-a5e1-9e8f28dcd6b3@oracle.com>
+Date: Thu, 22 Feb 2024 12:41:15 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
+ removed
+To: Xingui Yang <yangxingui@huawei.com>, yanaijie@huawei.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        damien.lemoal@opensource.wdc.com
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, prime.zeng@hisilicon.com,
+        chenxiang66@hisilicon.com, kangfenglong@huawei.com
+References: <20240221073159.29408-1-yangxingui@huawei.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240221073159.29408-1-yangxingui@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P123CA0087.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:138::20) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB56:EE_|IA1PR12MB6018:EE_
-X-MS-Office365-Filtering-Correlation-Id: 20e0c21f-e981-46b9-b2c1-08dc33a39e14
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS0PR10MB7344:EE_
+X-MS-Office365-Filtering-Correlation-Id: d08f0169-ac98-4e76-69dd-08dc33a39181
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CunnjSPOpz9Lx6vS6ASsf4GLvpIxfFci8Uc3EuB7qvoW9z+gbV37PHSVDaXKZm6Jtru9z0asF2QzJraJoFSGdqbRil6pgYzyHf+DHEq3ApJcvUfLhlMy+nwBOB9m7U9by/ns5J9SerJc9O3d7Gm+p91sqOqexCSEx0lAEYBkIS23GIAbHfpXXW38NvjtiR9MAFb3nT3XlDxSZ0zvBHtUXYU1/WMIPACGTLxWC7mF3g4SQsKloQKeJgvfWOBBBJ37r5R+chA8e4Wt/gofXmDY162KT6gHTeFIouLN+W5NCE0PVP8h2OhM9pTQGduJbopjgOk6HW/MiN5RzgnAzHh+1TS5z0feEQHs210DvuRorALnGt9hveK4sMSzoTje4C00aiGz9u4kqNge72Kn5bGGFLxjaSokHHtFjZTgEdenyI8VutRvKBTLnez+k61Dm9tfjcWliSOXJqjfBscyQQypXU6HqfbsBf0HZgziaeg4xKRPYC2OTyjBlezw+vymcAcRdilRNLNV30dK+UTiZTV3Z3G+DeYjNzDOkQLnHtHKMefV+uIl68+51oM14c2Y6undejO9wq4HGaeE92wCRgP8TSPd70oMEQzn1EGSYeOsJ1lTOH/kmxd+BpH+2OxYEFpqjoUrMJuvpBu25w3pqcBDHjmHd1xRV7B03VVUTgJfJQE=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 12:41:40.1172
+X-Microsoft-Antispam-Message-Info: 
+	YO7o7x/TuoOO5KIZ6lG3MjRVTWBJGjZFdMX3b8RSuDkzyJBqjYxd0rowFXJZPYPCdUTzfyfXOHZeO4maK1zfSzkeEIvDp6dcQr6vZpFLtDqf3nhLEkyhaNdCExkUZS7tAOhHSuf3smpTqhOxSbBUCYBK5c8/c9jLetkcPxuwy3VW42EmE+74YaFCIIY/ubO3f/sKCXpFc+JHgfMJT3ssL5IG/Uyjm3cIYIojNTrRIOyskNkClsHCTvncY1N/87WMIQ/12g/Fhyl4tJjOlSakFEX6DLhqJwrtxi2ENZeNeaxxpOfj+8hDRhxoM2EAZNiJOQZbINr6eHqDlzRcFsJEBjOK4K0lTAtbhm9eSWqc6PJc/AWB3nuSO8bQ0pjZ2Wk+VZgmdozwR9tw6ZIw/jygYjCY0VRyal8UWS82C95KBfqWqoAxjVbboJKxYgOBypu82czZb7gVCsyDEDC0VAQ25QMILhoQx4zIboKzOh1Qw6GevNq61wt7PFpr0ERr7/THSNcXs96D2rhbECfqdpR5QOlsRw+8e/njqLE7lWSAoGo=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?WjFwQ05jKzRmRmRKNmVMa3hrVVBhWXp1K05pYkc3WlozMjFiR2xWV1lJTFBa?=
+ =?utf-8?B?eFRHYlZWanJ2cGlWQjVwdExiNUg4TVZRQlBBUDR3SW1vT3QvU2xVRlYzUVdl?=
+ =?utf-8?B?S3BoOS9Ka1VGY2JCVWdQUDNyOGNpdzQyZTdJcGxPRXlHTS80MUx6eGpRRXJ1?=
+ =?utf-8?B?bXgzazI3TnEvZ01xZFlpNStqRGNRYUZsYjlTcEoreXE5YXd6K29qNHJoOU9t?=
+ =?utf-8?B?SDN0U0U1S2hCRnRyNzJJWVNPT2lLaTlRRXJ0dDdUcjdxZ2Z0OFI5UDlxQUJh?=
+ =?utf-8?B?ejBMUkYwemlLejZyNWtZOFp0TTEzYytuNnkzUDMvOHMxZVU4STg0VWJyQWVh?=
+ =?utf-8?B?U3VYSm5PdUlyL3VqU0lPTlRta3dKVkcrTkJNU0ZpR3FwVno0ekxEa3FOcU9s?=
+ =?utf-8?B?YVdoSUV5cE0xRmZYUlNuMmZxcitHQVFyZStkMnNZTXZvd3Arb1dqTXpHRUNa?=
+ =?utf-8?B?REtGK212clBNaXR6cmJENXNSWmlSalFIckd4UGhseGdrdGRsMVJ6andlRjhy?=
+ =?utf-8?B?RUUvQzRKYldWb2VUcmhCMW1EMS9wZFJHMkZJSUpCdDNzUzFiaUozdysrZUhw?=
+ =?utf-8?B?dDB0LzV0YWRUN052RGJ5VW1qRmZRMmlhRWJtVDl2eC9vbkdVWk9LNHBTSXF6?=
+ =?utf-8?B?cVdwc0djWldQdENSb04rZEkzbG5JYlg1YWNDc0hGKzNpdUljNE85bnYvQ0hR?=
+ =?utf-8?B?L3NIdnRuaGhGNGhqYmtaVjVxSWhKR2hZcHdKNWc2UFlUUjVrVUFYbEtzMits?=
+ =?utf-8?B?alNMN3NDdmRSZm5Ncy9UTHdtSkhrSlo2QjYxeExUdnh3NlNyR2FCMHNxWHRv?=
+ =?utf-8?B?Q1FJM0VpM253WGtOMkFKaEMvMWxJUWlrY0pSQUFCRnpjVitUbGE5cys2RjJK?=
+ =?utf-8?B?aU1iaGF5dFFTREl0ZFVJcURFY1E2QmcvTnlWSFh0QkNIRGYvaWpYQllCREwv?=
+ =?utf-8?B?UWtwc2h4TndBVG9zNlExN2ZWOVRJdFhubFJNaVpjaUNLam95bFFwUnNuTVhm?=
+ =?utf-8?B?cVJQc3ZVUU93b1VGRkcvNDlMNDZ3azdzMFYrUUx2TGFNMnR3Y29Jcm9SWjBs?=
+ =?utf-8?B?TFVSQzg2NTFWMmRNSEdhR3A3bEhLc1FvUDd3dlJrYUxCNFMwbzRjWVdrdnB3?=
+ =?utf-8?B?cHkrZVp5NUNsQ1p4VkJGL1NsNkpFQXJQM0FNSjUvcGozNlJXWGhDeGxvaWs2?=
+ =?utf-8?B?L1JZajZYR1YveXBFclJEQzhIWkxHalJtTWF3bm9ic0ZnamZveHBUQUppWWlI?=
+ =?utf-8?B?SDVGNW9iNGNpeXBDS3VHVnhpU1RjVS84MVFRUE5WSHRIdlZQTWJvUWZtYzFJ?=
+ =?utf-8?B?U0ppenVMK0ZRZXhvMkxpVHhPWGRBNExSQWZTKzBFM1FhZDh3ZUxNbTNYNnEz?=
+ =?utf-8?B?eVlGcUwrM2tkckVmNS9SUlZVcFZjeno1K1VxOGRzWHB5VG91MS9INHIzNmtq?=
+ =?utf-8?B?NWZHclh4WFpHODZtMVVNZWpFN0c0a0FudHZuS2tNMUFoN2VZV2J6SGVBODRG?=
+ =?utf-8?B?VlM5TkRUcDdmV1pjTzlEMk1NQ20wRnpjcmhlK3Q2aGI1OExOaUFOYUhOOEpB?=
+ =?utf-8?B?dDJFMmt4WUxlQmJ3SWpVMTBGeXZFdVJweVdLNk8xSkFROGxuUEdGc0NWN1Y3?=
+ =?utf-8?B?L0gzQmp2VEZkeGxOSkpjaDNXYlVFY0ZCTng5bTVuWXlIMm9qbjdBai8zakNm?=
+ =?utf-8?B?ZkpQUG05R1BESFJKRE5reC9VeDRjejZnRHh2bDVjckhYL2RsM2psTjRCeUhq?=
+ =?utf-8?B?TUwrLzl5Y1pQbHJXWDlhMk42QmNQbmJ6bGtEaEFyZG40dzQyK2NhQ2s0dzF3?=
+ =?utf-8?B?eU1OMCs0MlRqRk8wT2dRRWlyQVBVbGVHazhkZHpLelBDVkdPZ2ZGazhoWUlR?=
+ =?utf-8?B?QnM4NE4rbGRUcGp3SU44UGNOQ0JseC9VUks2QmNUcnVvUk5tSGRheCs2TXFG?=
+ =?utf-8?B?bTR4NHFQTHdMV1JXMFFkOU94eHdzaEt5aks2U3ZncVdIRUpYUFFzTjNKUUFW?=
+ =?utf-8?B?bW80QTVYTytYTkxrcmpiRWNNbWI4Ujk2L0FJSHN3NjhCbk11c0FiV2EvMUY0?=
+ =?utf-8?B?Zjk3aGpleFZGQWl2VmFqazUvbExqSndJOCtiWXJUUnBWQTIyZjhXK1JqTm1T?=
+ =?utf-8?Q?ZoUnS0zgS0FBh68IpHSHqi3V2?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	iq35pUpsk0fu54JfHrpd4mzA504/yd4JAuboj5jMHonPlTag3f8HzYx7HyQNVcOsV0zn7u/yb6H/Ei4/g8C0WIUPehuTS1K+xR3u8o7pk6zOYdbqK4V3nexIpKZ8r/Y/A8BSRLFaRsaljC08o453fYKN8q/x4Z6DVvLlTbp2c5fi0026kscPPGdStkszxd0/LfPuk6sLC9pZuibIqcW4V5t3ZG9S38bv6rtalkdpSWL0YwSg5zIbuIvTg4MxfraC+BKL4sJ4nC3CEiKiAEaRsi9z1urX1iesX+Zx/HIrB+F3vdPQi7dZKmknzp2hVrKRkFUs7mEDp+gEVlR/ef2Wp8sNYG6O+DgGutoTqVsiMs8SbHtFVj6jSBLAuSnAuz9CAK9joYOzuJwoPCDxranUfKlp4gcf+HhVUXjykUzNpVNBoQsv0Efs1QCZFe65PSL3bSOjMzACQARdqSlD6GOnrcuVQEg7QaYMM8jcWJNJ7KU+PPYBuWL1ISq7IaXOZdPMCEJwCu6Br64vFiLVZgPg6C0MONQKUb9rB1KwQYTSrKONlJB3No0L2zIrczRQjLrVCBWCKYyXslKwO2At56qipMDmGRA3gXZjMeBxI19w5hQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d08f0169-ac98-4e76-69dd-08dc33a39181
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 12:41:19.5739
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20e0c21f-e981-46b9-b2c1-08dc33a39e14
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB56.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6018
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KRKSxLYJd3rQ39XjMZLelrL7c5S2CCPqY4OrnoL0fOQkEtawJl7AkHC/O2kbgO3Ykr2ZBQEfFfhUrdsBuXwtZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7344
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_09,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402220101
+X-Proofpoint-ORIG-GUID: -OdW4M-JGrMw5vIY_J4GceUX2PoLRhe-
+X-Proofpoint-GUID: -OdW4M-JGrMw5vIY_J4GceUX2PoLRhe-
 
-Add support for preserving the boot configuration done by the
-platform firmware per host bridge basis, based on the presence of
-'linux,pci-probe-only' property in the respective PCIe host bridge
-device-tree node. It also unifies the ACPI and DT based boot flows
-in this regard.
+On 21/02/2024 07:31, Xingui Yang wrote:
+> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
+> update PHY info"), do discovery will send a new SMP_DISCOVER and update
+> phy->phy_change_count. We found that if the disk is reconnected and phy
+> change_count changes at this time, the disk scanning process will not be
+> triggered.
+> 
+> So update the PHY info with the last query results.
+> 
+> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to update PHY info")
+> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+> ---
+>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
+> index a2204674b680..9563f5589948 100644
+> --- a/drivers/scsi/libsas/sas_expander.c
+> +++ b/drivers/scsi/libsas/sas_expander.c
+> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct domain_device *dev, int phy_id,
+>   		if (*type == 0)
+>   			memset(sas_addr, 0, SAS_ADDR_SIZE);
+>   	}
+> +
+> +	if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
+> +		sas_set_ex_phy(dev, phy_id, disc_resp);
+> +
+>   	kfree(disc_resp);
+>   	return res;
+>   }
+> @@ -1972,11 +1976,6 @@ static int sas_rediscover_dev(struct domain_device *dev, int phy_id,
+>   	if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM)) {
+>   		phy->phy_state = PHY_EMPTY;
+>   		sas_unregister_devs_sas_addr(dev, phy_id, last);
+> -		/*
+> -		 * Even though the PHY is empty, for convenience we discover
+> -		 * the PHY to update the PHY info, like negotiated linkrate.
+> -		 */
+> -		sas_ex_phy_discover(dev, phy_id);
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
-V3:
-* Unified ACPI and DT flows as part of addressing Bjorn's review comments
+It would be nice to be able to call sas_set_ex_phy() here (instead of 
+sas_get_phy_attached_dev()), but I assume that you can't do that as the 
+disc_resp memory is not available.
 
-V2:
-* Addressed issues reported by kernel test robot <lkp@intel.com>
+If we were to manually set the PHY info here instead, how would that look?
 
- drivers/acpi/pci_root.c                  | 12 -------
- drivers/pci/controller/pci-host-common.c |  4 ---
- drivers/pci/of.c                         | 22 ++++++++++++
- drivers/pci/probe.c                      | 46 ++++++++++++++++++------
- include/linux/of_pci.h                   |  6 ++++
- 5 files changed, 63 insertions(+), 27 deletions(-)
+Thanks,
+John
 
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index 84030804a763..ddc2b3e89111 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -1008,7 +1008,6 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
- 	int node = acpi_get_node(device->handle);
- 	struct pci_bus *bus;
- 	struct pci_host_bridge *host_bridge;
--	union acpi_object *obj;
- 
- 	info->root = root;
- 	info->bridge = device;
-@@ -1050,17 +1049,6 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
- 	if (!(root->osc_ext_control_set & OSC_CXL_ERROR_REPORTING_CONTROL))
- 		host_bridge->native_cxl_error = 0;
- 
--	/*
--	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
--	 * exists and returns 0, we must preserve any PCI resource
--	 * assignments made by firmware for this host bridge.
--	 */
--	obj = acpi_evaluate_dsm(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 1,
--				DSM_PCI_PRESERVE_BOOT_CONFIG, NULL);
--	if (obj && obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 0)
--		host_bridge->preserve_config = 1;
--	ACPI_FREE(obj);
--
- 	acpi_dev_power_up_children_with_adr(device);
- 
- 	pci_scan_child_bus(bus);
-diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
-index 6be3266cd7b5..e2602e38ae45 100644
---- a/drivers/pci/controller/pci-host-common.c
-+++ b/drivers/pci/controller/pci-host-common.c
-@@ -73,10 +73,6 @@ int pci_host_common_probe(struct platform_device *pdev)
- 	if (IS_ERR(cfg))
- 		return PTR_ERR(cfg);
- 
--	/* Do not reassign resources if probe only */
--	if (!pci_has_flag(PCI_PROBE_ONLY))
--		pci_add_flags(PCI_REASSIGN_ALL_BUS);
--
- 	bridge->sysdata = cfg;
- 	bridge->ops = (struct pci_ops *)&ops->pci_ops;
- 	bridge->msi_domain = true;
-diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-index 51e3dd0ea5ab..7b553dd83587 100644
---- a/drivers/pci/of.c
-+++ b/drivers/pci/of.c
-@@ -258,6 +258,28 @@ void of_pci_check_probe_only(void)
- }
- EXPORT_SYMBOL_GPL(of_pci_check_probe_only);
- 
-+/**
-+ * of_pci_bridge_check_probe_only - Return true if the boot configuration
-+ *                                  needs to be preserved
-+ * @node: Device tree node with the domain information.
-+ *
-+ * This function looks for "linux,pci-probe-only" property for a given
-+ * PCIe controller's node and returns true if found. Having this property
-+ * for a PCIe controller ensures that the kernel doesn't re-enumerate and
-+ * reconfigure the BAR resources that are already done by the platform firmware.
-+ * NOTE: The scope of "linux,pci-probe-only" defined within a PCIe bridge device
-+ *       is limited to the hierarchy under that particular bridge device. whereas
-+ *       the scope of "linux,pci-probe-only" defined within chosen node is
-+ *       system wide.
-+ *
-+ * Return: true if the property exists false otherwise.
-+ */
-+bool of_pci_bridge_check_probe_only(struct device_node *node)
-+{
-+	return of_property_read_bool(node, "linux,pci-probe-only");
-+}
-+EXPORT_SYMBOL_GPL(of_pci_bridge_check_probe_only);
-+
- /**
-  * devm_of_pci_get_host_bridge_resources() - Resource-managed parsing of PCI
-  *                                           host bridge resources from DT
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 795534589b98..d62d1f151ba9 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -15,6 +15,7 @@
- #include <linux/cpumask.h>
- #include <linux/aer.h>
- #include <linux/acpi.h>
-+#include <linux/pci-acpi.h>
- #include <linux/hypervisor.h>
- #include <linux/irqdomain.h>
- #include <linux/pm_runtime.h>
-@@ -877,6 +878,28 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
- 	dev_set_msi_domain(&bus->dev, d);
- }
- 
-+static void pci_check_config_preserve(struct pci_host_bridge *host_bridge)
-+{
-+	if (&host_bridge->dev) {
-+		union acpi_object *obj;
-+
-+		/*
-+		 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
-+		 * exists and returns 0, we must preserve any PCI resource
-+		 * assignments made by firmware for this host bridge.
-+		 */
-+		obj = acpi_evaluate_dsm(ACPI_HANDLE(&host_bridge->dev), &pci_acpi_dsm_guid, 1,
-+					DSM_PCI_PRESERVE_BOOT_CONFIG, NULL);
-+		if (obj && obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 0)
-+			host_bridge->preserve_config = 1;
-+		ACPI_FREE(obj);
-+	}
-+
-+	if (host_bridge->dev.parent && host_bridge->dev.parent->of_node)
-+		host_bridge->preserve_config =
-+			of_pci_bridge_check_probe_only(host_bridge->dev.parent->of_node);
-+}
-+
- static int pci_register_host_bridge(struct pci_host_bridge *bridge)
- {
- 	struct device *parent = bridge->dev.parent;
-@@ -971,6 +994,9 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
- 	if (nr_node_ids > 1 && pcibus_to_node(bus) == NUMA_NO_NODE)
- 		dev_warn(&bus->dev, "Unknown NUMA node; performance will be reduced\n");
- 
-+	/* Check if the boot configuration by FW needs to be preserved */
-+	pci_check_config_preserve(bridge);
-+
- 	/* Coalesce contiguous windows */
- 	resource_list_for_each_entry_safe(window, n, &resources) {
- 		if (list_is_last(&window->node, &resources))
-@@ -3080,20 +3106,18 @@ int pci_host_probe(struct pci_host_bridge *bridge)
- 
- 	bus = bridge->bus;
- 
-+	/* If we must preserve the resource configuration, claim now */
-+	if (pci_has_flag(PCI_PROBE_ONLY) || bridge->preserve_config)
-+		pci_bus_claim_resources(bus);
-+
- 	/*
--	 * We insert PCI resources into the iomem_resource and
--	 * ioport_resource trees in either pci_bus_claim_resources()
--	 * or pci_bus_assign_resources().
-+	 * Assign whatever was left unassigned. If we didn't claim above,
-+	 * this will reassign everything.
- 	 */
--	if (pci_has_flag(PCI_PROBE_ONLY)) {
--		pci_bus_claim_resources(bus);
--	} else {
--		pci_bus_size_bridges(bus);
--		pci_bus_assign_resources(bus);
-+	pci_assign_unassigned_root_bus_resources(bus);
- 
--		list_for_each_entry(child, &bus->children, node)
--			pcie_bus_configure_settings(child);
--	}
-+	list_for_each_entry(child, &bus->children, node)
-+		pcie_bus_configure_settings(child);
- 
- 	pci_bus_add_devices(bus);
- 	return 0;
-diff --git a/include/linux/of_pci.h b/include/linux/of_pci.h
-index 29658c0ee71f..9e045de3be44 100644
---- a/include/linux/of_pci.h
-+++ b/include/linux/of_pci.h
-@@ -13,6 +13,7 @@ struct device_node *of_pci_find_child_device(struct device_node *parent,
- 					     unsigned int devfn);
- int of_pci_get_devfn(struct device_node *np);
- void of_pci_check_probe_only(void);
-+bool of_pci_bridge_check_probe_only(struct device_node *node);
- #else
- static inline struct device_node *of_pci_find_child_device(struct device_node *parent,
- 					     unsigned int devfn)
-@@ -26,6 +27,11 @@ static inline int of_pci_get_devfn(struct device_node *np)
- }
- 
- static inline void of_pci_check_probe_only(void) { }
-+
-+static inline bool of_pci_bridge_check_probe_only(struct device_node *node)
-+{
-+	return false;
-+}
- #endif
- 
- #if IS_ENABLED(CONFIG_OF_IRQ)
--- 
-2.25.1
+
+>   		return res;
+>   	} else if (SAS_ADDR(sas_addr) == SAS_ADDR(phy->attached_sas_addr) &&
+>   		   dev_type_flutter(type, phy->attached_dev_type)) {
 
 
