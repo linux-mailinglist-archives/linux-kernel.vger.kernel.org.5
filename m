@@ -1,146 +1,232 @@
-Return-Path: <linux-kernel+bounces-75783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F08E85EEE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:06:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9363185EEE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DC40B229E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:06:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A893283440
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2B517567;
-	Thu, 22 Feb 2024 02:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD71F17573;
+	Thu, 22 Feb 2024 02:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="cVYzlEJT"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="e60CWs9O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4C01400A
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93CC17558;
+	Thu, 22 Feb 2024 02:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708567556; cv=none; b=iKrttuxvEhLZEb61SSF5jIOmxV4rNP7ct08nUTGqs6HI2T6V3702Ihl/kdZSPfMtZCjivVsOMoiD7+u8Ysnkq1HjpnvbLxs0SfUlF/+t+wOJ9Eo/9sUtDGYXj5sL8bc+wVk2DD0GTyPrvC0QBOO6jCN9azDkAqn5UitOrzBED7g=
+	t=1708567606; cv=none; b=iZdLxf8moKleonzMGN2jYYHd+kOcRXjYh4DTYW5jCEtEuySgJSjEmp+Pz0yvFrxHuwSYkB7Ybj5MdGoaaiI+nYPOa69r1qCVt5y8FcIoq3INRa6NKC4959dVC9AlmMZxn4eOY78qmKdG1NlcTl4GywxeiuLfyxXaTSJyezF8Ro4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708567556; c=relaxed/simple;
-	bh=ozCZhRUwbru42YhRIa9D6DyDB6aCfOEQUSg9R1xBB10=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fvOrB7ekRaPTerR4iLmlFou7D/3bTGRp7JD7LOyBNoJp0LtLTH7V+eS3cLnNMAgLMWUaXNWAFVGqFbfB/UhuIHQmqYxDOtDVL293FBz2gmdvxv8ODDO2XTs8cC4acvxR8wFzDjYje33i7+envn009qdXlH+Ch4puaXMVv1R0exQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cVYzlEJT; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-d9a541b720aso12410130276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708567550; x=1709172350; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wYRM8eOs48YYKU37Y3bVOmsx2y3KEiVB2XVZoknd41E=;
-        b=cVYzlEJTdhrtb28wLvzhrntIuzRcvWlBiSAeZZnOCZyT2NEeYQ4kJBX7V+um3fKswu
-         YjUyO7gChTG+/z8ZuKHxPtPwwySBAqYwVAPSom4+sT2ssnEXpXRMakA/AP/5rDSc9Ggw
-         64UKDDqjdbNKoQZ0mIVp2SU94fkQMB3jV5QDO1Gwz+TQEHHbnnLaWuReROBbOG0t8APu
-         zY4hD6RYL69F8nnrdoLmU+Tla3SoMinsOtbcc5rl6s/RBNUX7hQbzarG7s6jj8pahwSc
-         IBZdJzCQXhSW8dNWA2YFFhi+zWKhiRj3LOm8dZ8IjDsrHBzba/tBGtv83gl8suopIBB+
-         jDvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708567550; x=1709172350;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wYRM8eOs48YYKU37Y3bVOmsx2y3KEiVB2XVZoknd41E=;
-        b=vHwNDLlOMY0y0RAEZXrb8jFsXrk3gQQp8lrJkorAS2gnvDmvdhhN7VNxEu0+qSaewR
-         aLyONHfjdGmCPdcIC19BTQwk5QWmvqy7Gcxr89f5mJ9FrFWFO1rzwSG+fd5OQpuEE60+
-         vDAqgEMjgBPp892l9ID3nnw9f6bXYDsRtxhuUZP2e6YjXkTWhijaBdoqZry3uu6nlQBZ
-         uJ+nR2NwMhU9EhpcuMFL8eQuNQV9CwW5E5wMdHkM6XPYSQSZ0vgSHM0KwfGFR7iwTiyj
-         JMkuRS2YT4h5E2YGVw8hJMmQJXLexyFrxFuiK17ARfyiqu8nWW57sCa4ndD/KInM9jPl
-         tVdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXqMCE4HILPEQwq0U0iNbtrW0MgiX4rrokLoe9Fm0wNp88dGkLyBHDBAXvdzO9yllqzhrrxLcrghq8K4rrTdiiH25PffB0/JoyMWPgU
-X-Gm-Message-State: AOJu0YxpNVk84/D5Xqqo//2Lg+FDk5l+UVOtLwN5IPsVoMxVxoRGlEmO
-	PXAYYWCYxkR4I6rEyfY/Ax+0KV3722h4HAQXWJAtGeaYPaz19QaTj2FAfy54OZF0qKxTsh3GLxw
-	ivg==
-X-Google-Smtp-Source: AGHT+IGLZRXp0J9qN8JJcoB3W0uf+vPPo31BgwKOSu3YKTJjr76LRxvOfOEDc1mZvTNorZoF2DnNDi6XZz8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:134d:b0:dcb:e4a2:1ab1 with SMTP id
- g13-20020a056902134d00b00dcbe4a21ab1mr276046ybu.11.1708567549779; Wed, 21 Feb
- 2024 18:05:49 -0800 (PST)
-Date: Wed, 21 Feb 2024 18:05:48 -0800
-In-Reply-To: <20230722005227.GK25699@ls.amr.corp.intel.com>
+	s=arc-20240116; t=1708567606; c=relaxed/simple;
+	bh=7su2uc/qjT5uiRB7c3q8axt/+BDQygJevCLmMZSgwVE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jYNJZAeZNN6+SMYOcqw4CcMSVPhc/aTYbysP8iYjZm5tHtb1KxQljjc8EbkluKYtol2G54O7U15opL5a4KiwQiLhCL5G5USOmmuCSDK91Z37w7iMlxaP8SdVAkuDEaxJZcvoB9SKcUutfQw0H5YoXF5eCrbV/d8pe49Iv2vuMqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=e60CWs9O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0385DC433C7;
+	Thu, 22 Feb 2024 02:06:43 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="e60CWs9O"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708567601;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kSpZ9HfMHwwDA3D6imETo1Lc+vWLLY3fMavVn1pGHck=;
+	b=e60CWs9OyzstH4poKO4dJoti0RWaX5QLMQKIQK/dNOEZTsHUjUGa10VU3HzyJLG2TpYszN
+	n8oeI9VNpNXcOnsdiiz+w8WMkLdaiMZyJasn7EeJiZyyCcWTd3EdTtOMnwJscKYdyuT9o+
+	BRg5jJfopa5NgNgsZ6uHW1+y+gZ8iV8=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3b5d701a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 22 Feb 2024 02:06:41 +0000 (UTC)
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: x86@kernel.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Borislav Petkov <bp@alien8.de>,
+	=?UTF-8?q?Daniel=20P=20=2E=20Berrang=C3=A9?= <berrange@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	stable@vger.kernel.org,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Theodore Ts'o <tytso@mit.edu>
+Subject: [PATCH v4] x86/coco: Require seeding RNG with RDRAND on CoCo systems
+Date: Thu, 22 Feb 2024 03:05:51 +0100
+Message-ID: <20240222020616.2315199-1-Jason@zx2c4.com>
+In-Reply-To: <5648f43d-76e4-4396-b626-411d60657c93@intel.com>
+References: <5648f43d-76e4-4396-b626-411d60657c93@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1689893403.git.isaku.yamahata@intel.com>
- <f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com>
- <ZLqSH/lEbHEnQ9i8@google.com> <20230722005227.GK25699@ls.amr.corp.intel.com>
-Message-ID: <Zdar_PrV4rzHpcGc@google.com>
-Subject: Re: [RFC PATCH v4 04/10] KVM: x86: Introduce PFERR_GUEST_ENC_MASK to
- indicate fault is private
-From: Sean Christopherson <seanjc@google.com>
-To: Isaku Yamahata <isaku.yamahata@gmail.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Michael Roth <michael.roth@amd.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, Sagi Shahar <sagis@google.com>, 
-	David Matlack <dmatlack@google.com>, Kai Huang <kai.huang@intel.com>, 
-	Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com, linux-coco@lists.linux.dev, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Ackerley Tng <ackerleytng@google.com>, 
-	Vishal Annapurve <vannapurve@google.com>, Yuan Yao <yuan.yao@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 21, 2023, Isaku Yamahata wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> Date: Wed, 14 Jun 2023 12:34:00 -0700
-> Subject: [PATCH 4/8] KVM: x86: Use PFERR_GUEST_ENC_MASK to indicate fault is
->  private
-> 
-> SEV-SNP defines PFERR_GUEST_ENC_MASK (bit 32) in page-fault error bits to
-> represent the guest page is encrypted.  Use the bit to designate that the
-> page fault is private and that it requires looking up memory attributes.
-> The vendor kvm page fault handler should set PFERR_GUEST_ENC_MASK bit based
-> on their fault information.  It may or may not use the hardware value
-> directly or parse the hardware value to set the bit.
-> 
-> For KVM_X86_SW_PROTECTED_VM, ask memory attributes for the fault
-> privateness.  For async page fault, carry the bit and use it for kvm page
-> fault handler.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+There are few uses of CoCo that don't rely on working cryptography and
+hence a working RNG. Unfortunately, the CoCo threat model means that the
+VM host cannot be trusted and may actively work against guests to
+extract secrets or manipulate computation. Since a malicious host can
+modify or observe nearly all inputs to guests, the only remaining source
+of entropy for CoCo guests is RDRAND.
 
-..
+If RDRAND is broken -- due to CPU hardware fault -- the RNG as a whole
+is meant to gracefully continue on gathering entropy from other sources,
+but since there aren't other sources on CoCo, this is catastrophic.
+This is mostly a concern at boot time when initially seeding the RNG, as
+after that the consequences of a broken RDRAND are much more
+theoretical.
 
-> @@ -4315,7 +4316,8 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
->  	      work->arch.cr3 != kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu))
->  		return;
->  
-> -	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
-> +	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, work->arch.error_code,
-> +			      true, NULL);
+So, try at boot to seed the RNG using 256 bits of RDRAND output. If this
+fails, panic(). This will also trigger if the system is booted without
+RDRAND, as RDRAND is essential for a safe CoCo boot.
 
-This is unnecessary, KVM doesn't suppoort async page fault behavior for private
-memory (and doesn't need to, because guest_memmfd() doesn't support swap).
+This patch is deliberately written to be "just a CoCo x86 driver
+feature" and not part of the RNG itself. Many device drivers and
+platforms have some desire to contribute something to the RNG, and
+add_device_randomness() is specifically meant for this purpose. Any
+driver can call this with seed data of any quality, or even garbage
+quality, and it can only possibly make the quality of the RNG better or
+have no effect, but can never make it worse. Rather than trying to
+build something into the core of the RNG, this patch interprets the
+particular CoCo issue as just a CoCo issue, and therefore separates this
+all out into driver (well, arch/platform) code.
 
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 7f9ec1e5b136..3a423403af01 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -295,13 +295,13 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  		.user = err & PFERR_USER_MASK,
->  		.prefetch = prefetch,
->  		.is_tdp = likely(vcpu->arch.mmu->page_fault == kvm_tdp_page_fault),
-> +		.is_private = err & PFERR_GUEST_ENC_MASK,
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Daniel P. Berrangé <berrange@redhat.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Reviewed-by: Elena Reshetova <elena.reshetova@intel.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Changes v3->v4:
+- Add stable@ tag and reviewed-by lines.
+- Add comment for Dave explaining where the "32" comes from.
 
-This breaks SEV and SEV-ES guests, because AFAICT, the APM is lying by defining
-PFERR_GUEST_ENC_MASK in the context of SNP.  The flag isn't just set when running
-SEV-SNP guests, it's set for all C-bit=1 effective accesses when running on SNP
-capable hardware (at least, that's my observation).
+ arch/x86/coco/core.c        | 40 +++++++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/coco.h |  2 ++
+ arch/x86/kernel/setup.c     |  2 ++
+ 3 files changed, 44 insertions(+)
 
-Grumpiness about discovering yet another problem that I would have expected
-_someone_ to stumble upon...
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec9986570e..0e988bff4aec 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -3,13 +3,16 @@
+  * Confidential Computing Platform Capability checks
+  *
+  * Copyright (C) 2021 Advanced Micro Devices, Inc.
++ * Copyright (C) 2024 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+  *
+  * Author: Tom Lendacky <thomas.lendacky@amd.com>
+  */
+ 
+ #include <linux/export.h>
+ #include <linux/cc_platform.h>
++#include <linux/random.h>
+ 
++#include <asm/archrandom.h>
+ #include <asm/coco.h>
+ #include <asm/processor.h>
+ 
+@@ -153,3 +156,40 @@ __init void cc_set_mask(u64 mask)
+ {
+ 	cc_mask = mask;
+ }
++
++__init void cc_random_init(void)
++{
++	/*
++	 * The seed is 32 bytes (in units of longs), which is 256 bits, which
++	 * is the security level that the RNG is targeting.
++	 */
++	unsigned long rng_seed[32 / sizeof(long)];
++	size_t i, longs;
++
++	if (cc_vendor == CC_VENDOR_NONE)
++		return;
++
++	/*
++	 * Since the CoCo threat model includes the host, the only reliable
++	 * source of entropy that can be neither observed nor manipulated is
++	 * RDRAND. Usually, RDRAND failure is considered tolerable, but since
++	 * CoCo guests have no other unobservable source of entropy, it's
++	 * important to at least ensure the RNG gets some initial random seeds.
++	 */
++	for (i = 0; i < ARRAY_SIZE(rng_seed); i += longs) {
++		longs = arch_get_random_longs(&rng_seed[i], ARRAY_SIZE(rng_seed) - i);
++
++		/*
++		 * A zero return value means that the guest doesn't have RDRAND
++		 * or the CPU is physically broken, and in both cases that
++		 * means most crypto inside of the CoCo instance will be
++		 * broken, defeating the purpose of CoCo in the first place. So
++		 * just panic here because it's absolutely unsafe to continue
++		 * executing.
++		 */
++		if (longs == 0)
++			panic("RDRAND is defective.");
++	}
++	add_device_randomness(rng_seed, sizeof(rng_seed));
++	memzero_explicit(rng_seed, sizeof(rng_seed));
++}
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index 76c310b19b11..e9d059449885 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -15,6 +15,7 @@ extern enum cc_vendor cc_vendor;
+ void cc_set_mask(u64 mask);
+ u64 cc_mkenc(u64 val);
+ u64 cc_mkdec(u64 val);
++void cc_random_init(void);
+ #else
+ #define cc_vendor (CC_VENDOR_NONE)
+ 
+@@ -27,6 +28,7 @@ static inline u64 cc_mkdec(u64 val)
+ {
+ 	return val;
+ }
++static inline void cc_random_init(void) { }
+ #endif
+ 
+ #endif /* _ASM_X86_COCO_H */
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 84201071dfac..30a653cfc7d2 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -36,6 +36,7 @@
+ #include <asm/bios_ebda.h>
+ #include <asm/bugs.h>
+ #include <asm/cacheinfo.h>
++#include <asm/coco.h>
+ #include <asm/cpu.h>
+ #include <asm/efi.h>
+ #include <asm/gart.h>
+@@ -994,6 +995,7 @@ void __init setup_arch(char **cmdline_p)
+ 	 * memory size.
+ 	 */
+ 	mem_encrypt_setup_arch();
++	cc_random_init();
+ 
+ 	efi_fake_memmap();
+ 	efi_find_mirror();
+-- 
+2.43.2
 
-FYI, I'm going to post a rambling series to cleanup code in the page fault path
-(it started as a cleanup of the "no slot" code and then grew a few more heads).
-One of the patches I'm going to include is something that looks like this patch,
-but I'm going to use a KVM-defined synthetic bit, because stuffing a bit that KVM
-would need _clear_ on _some_ hardware is gross.
 
