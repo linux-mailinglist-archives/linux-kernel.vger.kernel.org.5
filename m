@@ -1,136 +1,124 @@
-Return-Path: <linux-kernel+bounces-77016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED448860019
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:52:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A586086001F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64781B215FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:52:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C06B4B242DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9547156963;
-	Thu, 22 Feb 2024 17:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CA515698C;
+	Thu, 22 Feb 2024 17:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VZne/zSD"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h1TYOqFT"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC661E874;
-	Thu, 22 Feb 2024 17:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2466B3FE2C;
+	Thu, 22 Feb 2024 17:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708624337; cv=none; b=IySoHROcvxzc11a2n5Q6cfxa7MDI3lW11Ab6KVs1a9JzGSntpOwkjfz/+1JbqBbNqBg86Jqd6YN086CxGAgDYURzlwHKRXtckP+hpKVO0XZhNpP9Iaa6zT7lTPynhFzDb3B1XI6eBgISBDA7rSvD9VtfrSYUKq7tMBNIhFw8Q94=
+	t=1708624390; cv=none; b=IyvUElrCg9mzhLYR0UEIy2fKYbgvKSjpPLzosRdKeRpe4fjJPKzfcj5TAHtDZhUIS3vCbMpPPU2AJ5N5AeOvN21Wm/iZ2uoGRr23fkX9njAbq3QJmIrEdRTJpZNZFSh6Iqi1dEyzxNh2olvS+NLuu1AfNXECuSQuHo3AaB6PjpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708624337; c=relaxed/simple;
-	bh=eL+9k62j+T2wkNoUbruSw/UNEvQBMY50/oKAF9aTu/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C3ILVv5luo0tF9zLTniXHnLtQB1R5nogwM7uvS/riF4aaTae2ynee/O5unirbfjXVi2fBsNXI0l5DXRGBVjY7+J7sbKy7fdqOv0UqfuwesKgxZ4oU4S29gIeTHKnJzwES2HKh6KunoekxHxRLI9kvfC16XImhE4Bla/ha5QyjKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VZne/zSD; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1708624390; c=relaxed/simple;
+	bh=cDqWqadbN50Zl4mZEaqlzp/ooKAkJAaVs2CpHDBNz68=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cVrz/TPUlEDXapgtwabpT5S0l4jEbAiHpISHMAU71dLiVMqUnKK6i2dBpR9pRA4mR+uotSSh/8MulcgxbBCCNVBG1Cjy92OrHG3VNjHEiFsoopWRabpi2Tgs4ySgQO1I3IO19b/LnDQAqQj4H4HifDAHhvZ5vGK/uTQabTnfTyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h1TYOqFT; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso2901346b3a.2;
-        Thu, 22 Feb 2024 09:52:15 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3f3d0d2787so305998166b.3;
+        Thu, 22 Feb 2024 09:53:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708624335; x=1709229135; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2NeG/jlTUOS1kChoLvPJgLP36dfUNN+QX4mIOKkKMtk=;
-        b=VZne/zSDFtEcqfHVKGmM1nK2YmIyZ+ui6cNVx2x/TcqhpCtqRRYCyNfyrO0Yr3PByy
-         SOMN7Cvai2C/ZyrpgJ9Lz0ShzQLc48jBscfYOlOmUDktO2Qz5o3+y50mkpPfpsp6fBas
-         ZQHlbDxiz9QyAO9jN/nA5QzLY6Q7vzMpPcrIGhS0PatwyacDoxumuZ5j/j/Nl4/9ScyG
-         GTKXy0GYkbEY2cq6DsIyeHosZlPXY36L8+VyttO2htETCRGc7efIYEmdra8aEgfKiGuo
-         ewzYo3H2a8MciFpCT48kNLr46lv43n1+/0Y69yNcSfJceYJgeymarbClnj1Htryb9vsk
-         BAxg==
+        d=gmail.com; s=20230601; t=1708624387; x=1709229187; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cDSOZZzKwjBntfuVietadJvq9uZco80DUUsd+KMIQFA=;
+        b=h1TYOqFTWIsIav+9kjUqbhxasvdUj+qgNa1gApfRqKZLMMrWQ/7OQ9aADaD1UmWEJv
+         DXTJu66WS9+LZ6j0GJsnmL4RNQfH3hglMJIf0QADOsQpoQdSRUEDjlrKxH89IUVO0MSb
+         Y9TTFOeK6wjNOD0ilXqUf3R0iqAX9/hBQ/AgEtuZhYKKXH4FIU+YN8tUsA5/5BEqVS/h
+         CTIvhf+sjeooVqHuBb07sab2rC4g+bbIxzFRDdLaTlw67+jCsbo8GjNEIdwar3P/2B7K
+         IV20j4TBIsSNv0SeCPFyZWYf/Pv2BY1wGF0UKpfaUdvmf/OQucuWqGuYcIChXr4Q6o8R
+         sh8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708624335; x=1709229135;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708624387; x=1709229187;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2NeG/jlTUOS1kChoLvPJgLP36dfUNN+QX4mIOKkKMtk=;
-        b=WEehP6fGrrhWuY6U3u2fSNe5MIq7t46EK4UjetPnhwv4loD+m7c3HIAbQdE+qitbPW
-         hpEPygkEd9D1n9+qHtPrdzsaE6RQhI3FyH5yCiTnt6Th9U2W+XHtETznVQRHIiLba0qm
-         sUqbiOh3W+AEy5y4XZf1cDVIFfZq51H5xzL+AYaeIQRO9HY68uce0Kcyjd0x2bp1CKYe
-         JepxI16BsGjjxAkhnlQ+eGVGpX+nEDG4lRI5jJv1KW1oHtAJU3Qm8aI3aIoKMtBIy7A/
-         Sfa8zIRWP6HPXRMEXdOV9paBP67rNIAnYEwERbE2g6PZLl2zLZWB1aHNvJbQElB9tpM7
-         6BDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUoxSMXa8kKYFWI7CQ1JNvSA+HohIXLwx/yL9d4PfjXMAmlFPDhZqXa+u5769DAnzjk4+G0+NB4GV1GPLDk5ziax79jFcxUh+z+WKJmYHLoBtiEWH2fmxp1CQMrWXGLbckqYT8ylgy2
-X-Gm-Message-State: AOJu0YxKMtFFmuDeHgAmiUphuqwsLTC4SWz2oc1Sq/qxczQ0CXllnswp
-	z3xYjaDw+ZRumP/dT4KiQGiZXy1n/jhZ1gVXV7bYWLax7XYosnBY
-X-Google-Smtp-Source: AGHT+IEY4KZulJpk2BVOktl2enNQhFaSyfHvehOYpg7X+/+CP81iSn/wB/3tA9sNRFGmP5Jybgfpvg==
-X-Received: by 2002:a62:cec5:0:b0:6e4:6484:1a36 with SMTP id y188-20020a62cec5000000b006e464841a36mr12436119pfg.21.1708624334599;
-        Thu, 22 Feb 2024 09:52:14 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id w2-20020a62c702000000b006e089bb3619sm11708740pfg.112.2024.02.22.09.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 09:52:14 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 22 Feb 2024 07:52:13 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xuewen Yan <xuewen.yan@unisoc.com>
-Cc: corbet@lwn.net, jiangshanlai@gmail.com, paulmck@kernel.org,
-	rdunlap@infradead.org, peterz@infradead.org, yanjiewtw@gmail.com,
-	ke.wang@unisoc.com, di.shen@unisoc.com, xuewen.yan94@gmail.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] workqueue: Control intensive warning threshold
- through cmdline
-Message-ID: <ZdeJzZfPkpOKSH5c@slm.duckdns.org>
-References: <20240222072808.5363-1-xuewen.yan@unisoc.com>
+        bh=cDSOZZzKwjBntfuVietadJvq9uZco80DUUsd+KMIQFA=;
+        b=QdMOE3NVyFya6U8QqIxquhGECBdgGh3Ddi0YIRL4CWvLs0Ecm5KvAHgjp/GqPL5GdQ
+         +i7HrTMLJP3VtkPn8s4fusPz5SovpYPGtXQUR+D30uR7+78kX9LKKrVTmEVC0XZvW4Dg
+         pxGjLoOsRdqSGcbSQQmi7KfVG6RNnR0CqnCZJyzomcVPX+Na5/JUsyz0+P6OEl4Qc4fr
+         /esGXoeGCho18+2hs9zOqST42sfIa63joHODfk7u+31gNP6sp8+wy7Ohxh66wtouue3q
+         hfiWkDMwI8z8HbX+LnXhrl+SQ0p0ce/Gub+IyHTqdEdRGBhkNW/XbRkbqKV48ZLvq1aM
+         c5PA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZFIjpRqEW8SpfzvIQ0XEouOwiwoODi52/sd54lTL5k9Y8Y5P3US1N7BN/nZICAo/xbVVy/GiFpj25xL55rrH6yPRqK+IUFxfLoRU6NWI6IhCP3546aMGOH8AQMgjqlDGBrCEgzfVb
+X-Gm-Message-State: AOJu0Yz6zVeE6puWy2whjcIdjkf/tX0cXquVpYOxIhSS2WK7QsUrBewE
+	6/KDIsCIbNG5Le93XrBfMAtFLMTNswMlsmUnYy3T8CHBIUZe+rDG5CqpJhQOM/AUS8p6fvFrazk
+	QcdQT4zuuo8sXIT7RD25k0/hBYh8=
+X-Google-Smtp-Source: AGHT+IGRJoFm0SECUPXdNZ/eyyHAsA4s3nex/hUFijbPM65k9/KNMYbvWx9otT1PRGkEhFVWZEqnWEMmXbMkU1kbZ3Q=
+X-Received: by 2002:a17:906:6dc1:b0:a3f:81e1:2dad with SMTP id
+ j1-20020a1709066dc100b00a3f81e12dadmr1806185ejt.21.1708624387159; Thu, 22 Feb
+ 2024 09:53:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222072808.5363-1-xuewen.yan@unisoc.com>
+References: <20240222172853.25082-1-fancer.lancer@gmail.com>
+In-Reply-To: <20240222172853.25082-1-fancer.lancer@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 22 Feb 2024 19:52:30 +0200
+Message-ID: <CAHp75VdgVaqyCRW=Dx0FmfrJe5FcaoXpZJ2Mb7hd0FvyhxeOWQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] spi: dw: Auto-detect number of native CS
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, 
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andy Shevchenko <andy@kernel.org>, 
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 03:28:08PM +0800, Xuewen Yan wrote:
-> When CONFIG_WQ_CPU_INTENSIVE_REPORT is set, the kernel will report
-> the work functions which violate the intensive_threshold_us repeatedly.
-> And now, only when the violate times exceed 4 and is a power of 2,
-> the kernel warning could be triggered.
-> 
-> However, sometimes, even if a long work execution time occurs only once,
-> it may cause other work to be delayed for a long time. This may also
-> cause some problems sometimes.
-> 
-> In order to freely control the threshold of warninging, a boot argument
-> is added so that the user can control the warning threshold to be printed.
-> At the same time, keep the exponential backoff to prevent reporting too much.
-> 
-> By default, the warning threshold is 4.
-> 
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+On Thu, Feb 22, 2024 at 7:28=E2=80=AFPM Serge Semin <fancer.lancer@gmail.co=
+m> wrote:
+>
+> The main goal of the short series is to provide a procedure implementing
+> the auto-detection of the number of native Chip-Select signals supported
+> by the controller. The suggested algorithm is straightforward. It relies
+> on the fact that the SER register writable flags reflects the actual
+> number of available native chip-select signals. So the DW APB/AHB SSI
+> driver now tests the SER register for having the writable bits,
+> calculates the number of CS signals based on the number of set flags and
+> then initializes the num_cs private data field based on that, which then
+> will be passed to the SPI-core subsystem indicating the number of
+> supported hardware chip-selects. The implemented procedure will be useful
+> for the DW SSI device nodes not having the explicitly set "num-cs"
+> property. In case if the property is specified it will be utilized instea=
+d
+> of the auto-detection procedure.
+>
+> Besides of that a small cleanup patch is introduced in the head of the
+> series. It converts the driver to using the BITS_TO_BYTES() macro instead
+> of the hard-coded DIV_ROUND_UP()-based calculation of the number of
+> bytes-per-transfer-word.
+>
+> Link: https://lore.kernel.org/linux-spi/20240215180102.13887-1-fancer.lan=
+cer@gmail.com
+> Changelog v2:
+> - Add a new patch:
+>   [PATCH v2 3/4] spi: dw: Convert dw_spi::num_cs to u32
+> - Fix some spelling notes (@Andy).
 
-Applied to wq/for-6.9 with the following edit:
+For all untagged,
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+Thank you!
 
-> +	workqueue.cpu_intensive_warning_thresh=<uint>
-> +			If CONFIG_WQ_CPU_INTENSIVE_REPORT is set, the kernel
-> +			will report the work functions which violate the
-> +			intensive_threshold_us repeatedly. In order to prevent
-> +			the kernel log from being printed too frequently,
-> +			control the frequency and the threshold.
-> +
-> +			By Default, the threshold is 4 times, and the warning
-> +			is limited by powers of 2. On the other hand, 0 will
-> +			disable the warning.
-
-I changed this to:
-
-			If CONFIG_WQ_CPU_INTENSIVE_REPORT is set, the kernel
-			will report the work functions which violate the
-			intensive_threshold_us repeatedly. In order to prevent
-			spurious warnings, start printing only after a work
-			function has violated this threshold number of times.
-
-			The default is 4 times. 0 disables the warning.
-
-Thanks.
-
--- 
-tejun
+--=20
+With Best Regards,
+Andy Shevchenko
 
