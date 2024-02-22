@@ -1,109 +1,103 @@
-Return-Path: <linux-kernel+bounces-76097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDD3785F2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:27:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765C585F2E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:28:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F27C61C222C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:27:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17CCFB23569
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32E2199AD;
-	Thu, 22 Feb 2024 08:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E573F1B5B1;
+	Thu, 22 Feb 2024 08:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jM2SZDf/"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BKY0nMrB"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91D217F3
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983B018654
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708590450; cv=none; b=KoeRjWqOgaSI+36QMm1i7UeDOdC+r6JbI1p4fS6Murp8BIn/SPrhNHDgjxltWFRdy+nNfjp3lnDDY6Cwes6b+9jCAr4FAvJaWmjFXnoaV9G39KORJcmpwhWjamQ1MzrSdsoEJaHbexuyKthP/Q0A94j2j9osluNU5soqlu+1lPY=
+	t=1708590469; cv=none; b=mAybMsL/yjZUyKFfzdlhGSlSzMpAsbAKWIhtGU2fCZm5/b3Ny8T3rHNRJbUeXyeNTPL4ZM1kpq1qKeG/Og0mIG/9JqqrQAKqG6azrMAA963tZKwD6EhIfwet+tQOFfJKYciO8V60XWDNlYo60uVxaDlbwQvUlNMY4RsXTC4ELlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708590450; c=relaxed/simple;
-	bh=z+mGQTZiNVs7YPpi0HFlCESGNSOQ2weUxYSp90GF+2c=;
+	s=arc-20240116; t=1708590469; c=relaxed/simple;
+	bh=42vLzQafvh0kEIFCeD5IElVY0TCzlGFSo3aibC2pLlI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EPOiSCQFHokFi67ydzzzcMBQGg24UAg7UTROlvf4zpM16iEDasXJ/TNIekPfWteq7Ht7rF09FPrbxqaPLkSj8w5+zv10te/L7udgwCe/+jsZZtM9AAdJVd2ZJgjLxklEEkMrCsMK6FxIZ2M/Mqu18S6HRMVHZjQqrnohiV1FnP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jM2SZDf/; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so8872265a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:27:27 -0800 (PST)
+	 To:Cc:Content-Type; b=hHlkOru38TPSWMlc3lPtJYVa2ZanweFEWq78i47MQYcgRyw1OwZbOfLdBGDS4lXQYu88cBgdKboXutf2mldHVA6FH8Qhldl3no1KwG1GS5ul2EJzggLIc9JsbE5P4+5U3F8v0uqWgTaK8hvEQbbeN1d6fciJVDeC6AK/6pyvpqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BKY0nMrB; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so6711a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:27:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708590446; x=1709195246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z+mGQTZiNVs7YPpi0HFlCESGNSOQ2weUxYSp90GF+2c=;
-        b=jM2SZDf/Y+AoApATOgVJAcyRwPZz1rjnZm5fsVGv7E1tLVMh6oiqFvm6oXTkAVpdNC
-         Si8uCmiR+YjkH4JXrs2YtxsSS3ftJwOK/JILLLbFUCKW6a1+ns7UQqRT8QKRE2KFFK32
-         9Ee2Iwu+FXOSIMku/UhLqQHbkGqXsweDvFQcycWvzZUTxzNVevLb93dPL+tci3noJ3ir
-         +p8qo0V1wFSiZ6bvL2N2MKFRl4OfvQM3OxLsLXqcp/Dw3Cdv0iBFXPY8YlocHJJC0dhi
-         /KtZ8v0m4fU3UCSaZx5NUfF2B1+MtYQOoKHRyH7ako/xiHtBO++J3zQN56+BU/lS8nsq
-         BecQ==
+        d=google.com; s=20230601; t=1708590466; x=1709195266; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=42vLzQafvh0kEIFCeD5IElVY0TCzlGFSo3aibC2pLlI=;
+        b=BKY0nMrB4sGhgG78QvHYlyf5iNFHcRbWTzkYKDB7n+RmI9gYYgcsHSkH9BpQjeieXa
+         /rESupUjD1Uk84ppypU0FO53lrSmBD+eO3KkOgDvkUQOhBHHWCPn1RqrUc0omm5NYGtJ
+         KoJ2L7Nx7MVYlTlqaRzBYoO/rnHVsR63bWmXQ+3Lvh3wK22OiT11NEblS/WVoQ7o30Eu
+         aStw7LWuc/8zUh6ciWDt0scw5jJwh8Gc8mVS3GSVyEF52CDGLyKFIqQb57TwWa2F3+Ha
+         BADqifFo6EulQVLI6Ra43tx3nA0sAeTQph5u+a5zL9G9OksESGHoO5kzyzwN/j9GlEfb
+         5xlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708590446; x=1709195246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z+mGQTZiNVs7YPpi0HFlCESGNSOQ2weUxYSp90GF+2c=;
-        b=UCwsBKsamSga+7tZffFoIiib6rnZSpqDdNPRhbK5OAhTZtQAYMpExSnCyasKysk+5a
-         1N09Q7xtMn+75dv2uGrdLoQLfzgwsx2XavSQneHqqCTCI6bKylG6X7ccAVjJQ+uVtMAQ
-         9KF/E0xZNMdna9Hf1y8q27khUjK2y/0C6UcWSdi9mUj+lmU64MkR3tVY0+61LMFKJ0D3
-         u9xkebSCNoYIxSy6Em/jAfoE25NP/31z/o4raEtwwy1tJTirfdB0Ji4fVQbnJKrCNNPS
-         AudeQccg2uYuEukTGtELxL4DPZXI6vPLo7ZHFi11TPo83sSyfwlckBahky3I3arWYEBE
-         PYZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWje7jsfTdYHtB3HNM7g2ypnxFTbEv8x1UxmaNSoNZ0hyX+wnHEM5/ZiNQzbwrFBnV9O9oiwKCFKS7PeaOjyqapmrEY+T9pKk1AG44Y
-X-Gm-Message-State: AOJu0Yw+2gKTM+3YDbuo9JykODrQKs0K9hU5qeElHjSZjIisSYUbBLQF
-	KZGoeo31mL31aOEw4L4TZuBZL/0Mo1+oa117HBzf/R+JdtFtg73xrDtAvnuKkK4spthFrOWZc6h
-	DK8L4kFi8gSkqziSs01A+Nl0ijTY=
-X-Google-Smtp-Source: AGHT+IH2Qxnh/Y2XD23vYD1Rel2Nz8fobiOlpuTkZaAifcP3I3bxGmThw75ddoQezkJDTJSoo2AeQwi1VWrr/mFx8C0=
-X-Received: by 2002:aa7:d887:0:b0:565:fc0:6f1a with SMTP id
- u7-20020aa7d887000000b005650fc06f1amr2379463edq.24.1708590445774; Thu, 22 Feb
- 2024 00:27:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708590466; x=1709195266;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=42vLzQafvh0kEIFCeD5IElVY0TCzlGFSo3aibC2pLlI=;
+        b=MCXhcfJiampiOnKZO9CIRwqFgA2hTP3jfMo7Oj2Jti7OUE3IQJfkxL77XH33s6Uy84
+         t8DTxObEz+CVauCs4Jd30sD3JdpN7Xl/tNQ4PVgRnvc1lxoMFr+OY8Hnbq5kdocLZ5Di
+         f89g+nmih+08N3ogrTbG2DLvTEMMgcr3uxoCwIT0l+PlQ1JWhx3T/GGkJBSAJBEnFoei
+         y4qi0xCyj+vIAPOgmoK6Dj3zLr2zEWT7/K9N+aTLpFv1aebyHJ+O+Yll4+KFry+b+E0v
+         JoGFAZokadpmYWYumN7HQgVUlDPo0ZYIc6vdB0tnKv2cZSD5I2hUsTUuFeYzaL1ycnEj
+         +/ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUh3HVbZhRjkFwwLQAyBkqXcLW9FyF47jAeAgscOYSrpqxW80YnindwYZGjGs+gn2YhZA6bMB07Smn2pRQfjHXZLwkLaLvDq7zcA8WO
+X-Gm-Message-State: AOJu0YxapdJbOuLmX/O8PumOt1JpU/D66ulenRdAKJrHLFRLCTDEPtN0
+	dEgZGYP7l/23jXJXPS2vkXRyvTyaXxQMabM2xDEZgWV1DO6JWvLDqT0z1xJpIR1CSrgnygdTTtR
+	kVWwX3zKRIpDuq3YkNNcAjJeSMXlNxXc04pWv
+X-Google-Smtp-Source: AGHT+IF9Pslsp2Wk+JCCeyDyiuzYmQpUnrU/YDwfVaY7TIOceUDD/8XPiAnUfH8BKWm+574Wzkl/1hnxv4RUVkMsyGk=
+X-Received: by 2002:a50:9feb:0:b0:562:a438:47ff with SMTP id
+ c98-20020a509feb000000b00562a43847ffmr375785edf.6.1708590465698; Thu, 22 Feb
+ 2024 00:27:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220164005.1345603-1-daniel.baluta@oss.nxp.com> <05b7bf7f-9b5d-4ae3-a295-82f2b46abb4a@pengutronix.de>
-In-Reply-To: <05b7bf7f-9b5d-4ae3-a295-82f2b46abb4a@pengutronix.de>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Thu, 22 Feb 2024 10:27:13 +0200
-Message-ID: <CAEnQRZBD1+5JbFWCguL2U7-me6gEta_-XuUZQ3GkDq9=Wck8LA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Use a proper mailinglist for NXP i.MX development
-To: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc: "Daniel Baluta (OSS)" <daniel.baluta@oss.nxp.com>, shawnguo@kernel.org, aisheng.dong@nxp.com, 
-	peng.fan@nxp.com, f.fainelli@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, 
-	shengjiu.wang@nxp.com, Frank.Li@nxp.com, linux-kernel@vger.kernel.org, 
-	haibo.chen@nxp.com, mirela.rabulea@nxp.com, kernel@pengutronix.de, 
-	kuba@kernel.org, abel.vesa@linaro.org, laurentiu.palcu@nxp.com
+References: <20240220090805.2886914-1-rohitner@google.com> <1920a2f6-e398-47af-a5d7-9dad9c70e03d@acm.org>
+ <c7635c10-1724-4db5-9568-d554e1c64f72@quicinc.com>
+In-Reply-To: <c7635c10-1724-4db5-9568-d554e1c64f72@quicinc.com>
+From: Rohit Ner <rohitner@google.com>
+Date: Thu, 22 Feb 2024 13:57:33 +0530
+Message-ID: <CAGt9f=T5352bo=K2OAa7QRMds=tQC1JspN+zQ2aYxNRDWGSVnA@mail.gmail.com>
+Subject: Re: [PATCH] scsi: ufs: core: Fix setup_xfer_req invocation
+To: Can Guo <quic_cang@quicinc.com>
+Cc: Bart Van Assche <bvanassche@acm.org>, Bean Huo <beanhuo@micron.com>, 
+	Stanley Chu <stanley.chu@mediatek.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Jaegeuk Kim <jaegeuk@kernel.org>, 
+	Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 7:38=E2=80=AFPM Ahmad Fatoum <a.fatoum@pengutronix.=
-de> wrote:
->
-> Hello Daniel,
->
-> On 20.02.24 17:40, Daniel Baluta (OSS) wrote:
-> > From: Daniel Baluta <daniel.baluta@nxp.com>
-> >
-> > So far we used an internal linux-imx@nxp.com email address to
-> > gather all patches related to NXP i.MX development.
-> >
-> > Let's switch to an open mailing list that provides ability
-> > for people from the community to subscribe and also have
-> > a proper archive.
-> >
-> > List interface at: https://lists.linux.dev.
-> > Archive is at: https://lore.kernel.org/imx/
->
-> I think the R: should be changed to L: then?
+On 2/21/24 01:13, Can Guo wrote:
+> I am going to push some BUG fixes for Qualcomm UFSHCI MCQ engine, one of
+> which would count on a vops in ufshcd_send_command(). My original plan
+> was to add a new vops.mcq_setup_xfer_req() to differentiate from the
+> existing one used in legacy mode. But if Rohit moves the existing
+> .setup_xfer_req() up, I can use it instead of introducing the new one.
 
-Correct. Will change it in v2.
+Hi Can,
+
+Can we stick to the current approach of moving the .setup_xfer_req()
+up, keeping in mind the following pros?
+1. Avoid redundant callbacks for setting up transfers
+2. Trim the duration for which hba->outstanding_lock is acquired unnecessarily
+
+Thanks,
+Rohit.
 
