@@ -1,251 +1,149 @@
-Return-Path: <linux-kernel+bounces-76669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D757185FABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:06:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C617785FABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CB1928752D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:06:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 037FC1C25DC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D2E1350FE;
-	Thu, 22 Feb 2024 14:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t41r5HaT"
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89231482FB;
+	Thu, 22 Feb 2024 14:05:32 +0000 (UTC)
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDE11474BD
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2860145FF6;
+	Thu, 22 Feb 2024 14:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610716; cv=none; b=BvMd/kzRAZNqrimzKMENJ3S61j5nORVK6jVcY+/IZQ+3tY1CPCnWwqHE9hrciaomPHrDHBcNqYuSav9WHthUUVFDhuLy8Z4LuUGIe2FmwypPBqn4UK0Nt/IUXM77MJyn2gfgKzTy4N3IInkIepgw+hZ1/CYMxk/pW3PdjB7Cbts=
+	t=1708610732; cv=none; b=K2fVCYquFpZ+nUmNrNOyrU57XZMKxzbmV6k7CBYI3LMsIQlS9nd4rMNxqKvec08CmjQxDycNlkeajn/MPNXuTKXcrRj6+4uoKsBygw2NY6pxSrh8+F5usmwSyYF0aWleweBjv2LFuZuGYIbI83o/DJb7WvWH8HRVwvqwUt30pp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610716; c=relaxed/simple;
-	bh=RPjBKA6DR5wkHsrMFWa2oUnkIDrSZ9zmAWeJ9svygWA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q+1gxaKeeV7aFDXH2mwRgmkLzuqSnkOR0hiOKP0tehAeMAWX7qHu4645Xi+32Z7AWP576hxgpDfzns1XN876ksiJXNNGUhd1nIZrtX4zGac451j8lO1KUFhcEQn/ph6MZJLYL4hmLfoId7dzk9fkjV+AqN2ZWYbDdpxTzKDwKKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t41r5HaT; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708610711;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PkfbG9EDgmYztgYWXLtb18KzwOAsDRoGbeegEzJG3FQ=;
-	b=t41r5HaT0mYHvm84//2lfA9azmzwtZPkLtm5E0DMzyiun/u/Gc1oQ9waBm96kAePKKkDSe
-	Hi+OLO9VM8zbSrf+T3I+INs/MUO9PYJdI1PkVQUVo0g6y2VYj2OdAF9TygrPCwHNCzMTVQ
-	ooYuq9JMPkcTZoUsPL2yAYMTAI4NREU=
-From: Gang Li <gang.li@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Hildenbrand <david@redhat.com>,
-	David Rientjes <rientjes@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Tim Chen <tim.c.chen@linux.intel.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Daniel Jordan <daniel.m.jordan@oracle.com>,
-	Jane Chu <jane.chu@oracle.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	ligang.bdlg@bytedance.com,
-	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v6 8/8] hugetlb: parallelize 1G hugetlb initialization
-Date: Thu, 22 Feb 2024 22:04:21 +0800
-Message-Id: <20240222140422.393911-9-gang.li@linux.dev>
-In-Reply-To: <20240222140422.393911-1-gang.li@linux.dev>
-References: <20240222140422.393911-1-gang.li@linux.dev>
+	s=arc-20240116; t=1708610732; c=relaxed/simple;
+	bh=x+mYmnKRAmVbqPnh7GeoP7TfYOz5wxcG8FEocgdSbnI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NZVY7t7BP5xEo8Yvj1KtOlTwO/PAD59WI7x04HH2lY0fLw+6TtTrOYSrQ1P6swCfBXF8Lw2lMSiBRBC19RxJ4vMsqWsW7Lg8ECee/nKnXSeKbjX8g7BYP1gTMCXCVQ8VLzOs4rrda26N9z7zATM1K4V/f9Y1Vgx0cNs80qNqojo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59d29103089so274261eaf.0;
+        Thu, 22 Feb 2024 06:05:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708610730; x=1709215530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mO2nclL9U8dwMBtj05knQsK6PwiKnaTN1YsWrMMD8vI=;
+        b=FosOGLrKRqK3dYislDlbGkzRHuOq1fL59UceHoVDcHXSAeLbVdAwUn/L6eW/h6v1EZ
+         jwRcYlTok6x+dWcI004aV6m/g0wCINr59mkHx220bv3P6UEX58Ytx7dR90c+lR+aqckL
+         UEbyWT5EPCZa4BsTSxCNC4EVByM3sYSixVGodUxlAQ0OuOZP7M5hM17m7YCA25PrPE9o
+         x13CVygDZ43Wv7pbCt2+R8eLm9M5pCkqjZ/XyGs9cCIRw8uil7241BZAaiWcLuxuzeZe
+         hI2XG7KeWrBfOd3L07Gg1oGcjgWLLLpfNhXKeepL/pcv5AkbfE4wbGRlCOCWcvTnSdGj
+         z5OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSRV3RPmDsllF2xVeXIu4SzhsOCH4/IxrD+8+spQ44bp/Lwsk6+TIJY5q6bp4THlsBUh7RAr8xXuSvM6k6A/Oh4Q+E40cuPYAeewxk6cItSGl1Z1ZTP2SQqXENNrBsKv0tT6TFCfcVpDXfA4BGUTT5lhc4JvGOisAuH/3UFsbdEnR0
+X-Gm-Message-State: AOJu0YzdmpdP1xrrry+STA7G6jj06/Uy550z5E25bqXhXts03cvn4iug
+	7kr8qqdooF3pqABknD4+2yy1l18DIliSTUlgqGPOVAIRc7B7VKsnUVlO35ukS5+BHZr2mOnxTOn
+	aMo98LVOMIryDh1nPs7inyoHASWzReHbB
+X-Google-Smtp-Source: AGHT+IF/MxrG60R8TID8ybyMR9spvMRfMWAcGgt8A1vNx5pFyyYEl/Lj51iJ6p6EGf74m4x6FQXnD+26iZOWIo9qM78=
+X-Received: by 2002:a4a:a886:0:b0:5a0:396d:2489 with SMTP id
+ q6-20020a4aa886000000b005a0396d2489mr474588oom.1.1708610729714; Thu, 22 Feb
+ 2024 06:05:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <4551531.LvFx2qVVIh@kreacher> <2262393.iZASKD2KPV@kreacher>
+ <ffa37950-d850-44e2-a33e-837466238d6d@linaro.org> <CAJZ5v0hqCbxChYmvADZJAFiuS1yPnRmj6ZZJfD032tnLB7ZZAA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hqCbxChYmvADZJAFiuS1yPnRmj6ZZJfD032tnLB7ZZAA@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 22 Feb 2024 15:05:18 +0100
+Message-ID: <CAJZ5v0jLCh7NioDs2-ibCZ1UUAvCL=hH-5WgAk9SPJE_DoynEg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] thermal: core: Store zone ops in struct thermal_zone_device
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>, 
+	Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Optimizing the initialization speed of 1G huge pages through
-parallelization.
+On Thu, Feb 22, 2024 at 11:52=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
+>
+> On Thu, Feb 22, 2024 at 11:47=E2=80=AFAM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+> >
+> > On 14/02/2024 13:45, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > The current code requires thermal zone creators to pass pointers to
+> > > writable ops structures to thermal_zone_device_register_with_trips()
+> > > which needs to modify the target struct thermal_zone_device_ops objec=
+t
+> > > if the "critical" operation in it is NULL.
+> > >
+> > > Moreover, the callers of thermal_zone_device_register_with_trips() ar=
+e
+> > > required to hold on to the struct thermal_zone_device_ops object pass=
+ed
+> > > to it until the given thermal zone is unregistered.
+> > >
+> > > Both of these requirements are quite inconvenient, so modify struct
+> > > thermal_zone_device to contain struct thermal_zone_device_ops as fiel=
+d and
+> > > make thermal_zone_device_register_with_trips() copy the contents of t=
+he
+> > > struct thermal_zone_device_ops passed to it via a pointer (which can =
+be
+> > > const now) to that field.
+> > >
+> > > Also adjust the code using thermal zone ops accordingly and modify
+> > > thermal_of_zone_register() to use a local ops variable during
+> > > thermal zone registration so ops do not need to be freed in
+> > > thermal_of_zone_unregister() any more.
+> >
+> > [ ... ]
+> >
+> > >   static void thermal_of_zone_unregister(struct thermal_zone_device *=
+tz)
+> > >   {
+> > >       struct thermal_trip *trips =3D tz->trips;
+> > > -     struct thermal_zone_device_ops *ops =3D tz->ops;
+> > >
+> > >       thermal_zone_device_disable(tz);
+> > >       thermal_zone_device_unregister(tz);
+> > >       kfree(trips);
+> >
+> > Not related to the current patch but with patch 1/6. Freeing the trip
+> > points here will lead to a double free given it is already freed from
+> > thermal_zone_device_unregister() after the changes introduces in patch
+> > 1, right ?
+>
+> No, patch [1/6] doesn't free the caller-supplied ops, just copies them
+> into the local instance.  Attempting to free a static ops would not be
+> a good idea, for example.
+>
+> BTW, thanks for all of the reviews, but this series is not applicable
+> without the one at
+>
+> https://lore.kernel.org/linux-pm/6017196.lOV4Wx5bFT@kreacher/
 
-1G hugetlbs are allocated from bootmem, a process that is already
-very fast and does not currently require optimization. Therefore,
-we focus on parallelizing only the initialization phase in
-`gather_bootmem_prealloc`.
+As it turns out, this really is not a big deal, because the rebase is
+trivial for everything except for the Intel patches, but for those two
+I have the v1 versions that apply just fine without the other series
+and have been reviewed.
 
-Here are some test results:
-      test case       no patch(ms)   patched(ms)   saved
- ------------------- -------------- ------------- --------
-  256c2T(4 node) 1G           4745          2024   57.34%
-  128c1T(2 node) 1G           3358          1712   49.02%
-     12T         1G          77000         18300   76.23%
+So I can apply this series before the above one and rebase the latter
+(I'd rather not send a new version of it though, so it can be reviewed
+as is).
 
-Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
-Tested-by: David Rientjes <rientjes@google.com>
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
----
- arch/powerpc/mm/hugetlbpage.c |  2 +-
- include/linux/hugetlb.h       |  2 +-
- mm/hugetlb.c                  | 51 +++++++++++++++++++++++++++++------
- 3 files changed, 45 insertions(+), 10 deletions(-)
-
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 16557d008eef5..594a4b7b2ca24 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -226,7 +226,7 @@ static int __init pseries_alloc_bootmem_huge_page(struct hstate *hstate)
- 		return 0;
- 	m = phys_to_virt(gpage_freearray[--nr_gpages]);
- 	gpage_freearray[nr_gpages] = 0;
--	list_add(&m->list, &huge_boot_pages);
-+	list_add(&m->list, &huge_boot_pages[0]);
- 	m->hstate = hstate;
- 	return 1;
- }
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index c1ee640d87b11..77b30a8c6076b 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -178,7 +178,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
- struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
- 
- extern int sysctl_hugetlb_shm_group;
--extern struct list_head huge_boot_pages;
-+extern struct list_head huge_boot_pages[MAX_NUMNODES];
- 
- /* arch callbacks */
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3ce957b3e350b..1ac38e7606461 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -69,7 +69,7 @@ static bool hugetlb_cma_folio(struct folio *folio, unsigned int order)
- #endif
- static unsigned long hugetlb_cma_size __initdata;
- 
--__initdata LIST_HEAD(huge_boot_pages);
-+__initdata struct list_head huge_boot_pages[MAX_NUMNODES];
- 
- /* for command line parsing */
- static struct hstate * __initdata parsed_hstate;
-@@ -3301,7 +3301,7 @@ int alloc_bootmem_huge_page(struct hstate *h, int nid)
- int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
- 	struct huge_bootmem_page *m = NULL; /* initialize for clang */
--	int nr_nodes, node;
-+	int nr_nodes, node = nid;
- 
- 	/* do node specific alloc */
- 	if (nid != NUMA_NO_NODE) {
-@@ -3339,7 +3339,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- 		huge_page_size(h) - PAGE_SIZE);
- 	/* Put them into a private list first because mem_map is not up yet */
- 	INIT_LIST_HEAD(&m->list);
--	list_add(&m->list, &huge_boot_pages);
-+	list_add(&m->list, &huge_boot_pages[node]);
- 	m->hstate = h;
- 	return 1;
- }
-@@ -3390,8 +3390,6 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
- 	/* Send list for bulk vmemmap optimization processing */
- 	hugetlb_vmemmap_optimize_folios(h, folio_list);
- 
--	/* Add all new pool pages to free lists in one lock cycle */
--	spin_lock_irqsave(&hugetlb_lock, flags);
- 	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
- 		if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
- 			/*
-@@ -3404,23 +3402,25 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
- 					HUGETLB_VMEMMAP_RESERVE_PAGES,
- 					pages_per_huge_page(h));
- 		}
-+		/* Subdivide locks to achieve better parallel performance */
-+		spin_lock_irqsave(&hugetlb_lock, flags);
- 		__prep_account_new_huge_page(h, folio_nid(folio));
- 		enqueue_hugetlb_folio(h, folio);
-+		spin_unlock_irqrestore(&hugetlb_lock, flags);
- 	}
--	spin_unlock_irqrestore(&hugetlb_lock, flags);
- }
- 
- /*
-  * Put bootmem huge pages into the standard lists after mem_map is up.
-  * Note: This only applies to gigantic (order > MAX_PAGE_ORDER) pages.
-  */
--static void __init gather_bootmem_prealloc(void)
-+static void __init gather_bootmem_prealloc_node(unsigned long nid)
- {
- 	LIST_HEAD(folio_list);
- 	struct huge_bootmem_page *m;
- 	struct hstate *h = NULL, *prev_h = NULL;
- 
--	list_for_each_entry(m, &huge_boot_pages, list) {
-+	list_for_each_entry(m, &huge_boot_pages[nid], list) {
- 		struct page *page = virt_to_page(m);
- 		struct folio *folio = (void *)page;
- 
-@@ -3453,6 +3453,31 @@ static void __init gather_bootmem_prealloc(void)
- 	prep_and_add_bootmem_folios(h, &folio_list);
- }
- 
-+static void __init gather_bootmem_prealloc_parallel(unsigned long start,
-+						    unsigned long end, void *arg)
-+{
-+	int nid;
-+
-+	for (nid = start; nid < end; nid++)
-+		gather_bootmem_prealloc_node(nid);
-+}
-+
-+static void __init gather_bootmem_prealloc(void)
-+{
-+	struct padata_mt_job job = {
-+		.thread_fn	= gather_bootmem_prealloc_parallel,
-+		.fn_arg		= NULL,
-+		.start		= 0,
-+		.size		= num_node_state(N_MEMORY),
-+		.align		= 1,
-+		.min_chunk	= 1,
-+		.max_threads	= num_node_state(N_MEMORY),
-+		.numa_aware	= true,
-+	};
-+
-+	padata_do_multithreaded(&job);
-+}
-+
- static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
- {
- 	unsigned long i;
-@@ -3600,6 +3625,7 @@ static unsigned long __init hugetlb_pages_alloc_boot(struct hstate *h)
- static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- {
- 	unsigned long allocated;
-+	static bool initialied __initdata;
- 
- 	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
- 	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-@@ -3607,6 +3633,15 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 		return;
- 	}
- 
-+	/* hugetlb_hstate_alloc_pages will be called many times, initialize huge_boot_pages once */
-+	if (!initialied) {
-+		int i = 0;
-+
-+		for (i = 0; i < MAX_NUMNODES; i++)
-+			INIT_LIST_HEAD(&huge_boot_pages[i]);
-+		initialied = true;
-+	}
-+
- 	/* do node specific alloc */
- 	if (hugetlb_hstate_alloc_pages_specific_nodes(h))
- 		return;
--- 
-2.20.1
-
+So never mind.
 
