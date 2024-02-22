@@ -1,119 +1,152 @@
-Return-Path: <linux-kernel+bounces-75741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3229F85EE40
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:45:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C282185EE44
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF787281FD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:45:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39ED61F22D8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4547B10A1D;
-	Thu, 22 Feb 2024 00:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F93011181;
+	Thu, 22 Feb 2024 00:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eW9KHpML"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="pRb17MbG"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335B08F5C;
-	Thu, 22 Feb 2024 00:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B0C10A05
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708562699; cv=none; b=Co+m0CfuYLzK8OtF4nynUkV86YEkDlnhltHCtasBRXtQy9Qsx53cDw2b2JnALamoO2D7090UCnpQC121j6HNUpoTHlh6CqIaNXNBtrR9+uOxgzDF6DFW4By6m5LXeDcu3L9A49/Uk3In3mUki3QUsn0J+Q+Y62C7F6CmNFtrrUc=
+	t=1708562839; cv=none; b=I+kGEIluPikeKmOud2wOqUr2ERDDakgrN8eV7PGrxfoFRmUX9xla03sPGr0u5TJkCWrFPWr5LeldJDf1/v3u0eVdwwEhGJ8XdeBKdvj1WlWNSCddaciQHk7X3Ps8/tBWGjllGskYr/nbeQtIu2jt9tcuA6hwlsMe9Qf7v9tt3qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708562699; c=relaxed/simple;
-	bh=FTQVWoTN4udNIev/o61f7h3z6g9hy9brkZh6+BJLBuY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DJnUVoY4oGMxo9Tokw+rlM2My7dAEmgDTpPI4oLOrRsxzFv6ZA/a+tswrdOBUW5cqZzbU6pskTn1K/GNG0N9Ry9XQTMKhLXZ6YLehafFn6ViFAmS6Nz0htLeIstk+yDbMpCaMot9qrBtiN4mH41wgIxQe8I0GQVCSRawOVTMp+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eW9KHpML; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68fb71fc886so1856176d6.3;
-        Wed, 21 Feb 2024 16:44:57 -0800 (PST)
+	s=arc-20240116; t=1708562839; c=relaxed/simple;
+	bh=TPRDg52o/XUAEJGbQcaz27E13NquY89Tp4mylzmLm5g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g6a4g0CAcfOJxky285u9sSk9xoBrhTiMb9h4v1Z7sgrrpnwKAtr9zwQPAbProtkkJWJsmNmFsOHqqHZXLX1lrc55JLgc0Wsm+SDDipHSyA5s5uSc9e6yWldLGtVrffopeh1QVP8W2vOX3cuflv7dDiZR8k9QmkXDshtYXotAQgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=pRb17MbG; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c17ac08a38so30565b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:47:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708562697; x=1709167497; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p3b/ZWjoEVuTPYpZDzQMf2PYiptTKxj9oR1blBf+Uz0=;
-        b=eW9KHpMLDOzWLvQSDZ0/ghz3Ny3Kr7LYEOO3cx/UkWMRM6TXXA7/kgWGWNL4PRLezF
-         6uWcubUfjKzM2UlmGjxj8BlYuDECl3a23h/+mPZpuC3gc0Uh6t1SYHVCWNlOSRx+Wz2k
-         dRK/jk61DVFRY8k51eOuZZrnZOKJ+KToRxD4ZJWKeVYX+quXaFmgXF0Ct71u17QfprQQ
-         3yHETS2DnT/wIfZbUs9hRRxaNpq0Lj7pBsCL+4KZAci6Gil8x/fQ80TT7qovR1pFn4YP
-         jnafYsZ4J9HU/tN0G8E4hd73XolwiC6qSWYSg0NUb67e2QNTJuk/9aFd9e6f9ZgNSs5l
-         KRMw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708562836; x=1709167636; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PxnB8hIBaJHKU9GMJod5TzavYw729HDn9dbYWz/K8DM=;
+        b=pRb17MbGCSgF084iq8gn+zcwxWgWZ7DZdI4X3SQ4AQePL32QfkTF3m/ziJYnQP1k1S
+         2pMHI23BvPUIhmY0m6OkAntfXbw3EfAeUoV7KRsemjn3mXuov2AUF18H4uEs8A/atUSu
+         cWNiwZoec7ZLBovAlsoMNZBRLGZZrrA0gd5CCE2WCT59gHi+190Gw527w92Mg07nGNQz
+         b+aRR9ZXjcf75FYFJ8QUOhfvW/kN4lsfidpabsdKasHSFv7cW6SLjzDKcs8rJjgMEzdC
+         Mzb/E9HeHazoNloEL8LElBrxh1NYpZ/mG7h3Jr74W4qoEcZCXa1P0por5A6xtMniQdWf
+         2xBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708562697; x=1709167497;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p3b/ZWjoEVuTPYpZDzQMf2PYiptTKxj9oR1blBf+Uz0=;
-        b=xM69Pxnj1FfHsnZ8kLM+gZsUwDLiEjCnCj9vmlTMGgISHOrNb2DYW5Mdm74ooLeV0r
-         IXDdR5ul3wlA9xXZ+01txQgsEBmG/Uc2Ujm7/Scg8clcrXyUXfY7EPlk9FELHbmxA1JL
-         JjvVC4vyOG94iuL2P7uV9unvNlIObbWYZ+LPnBEhUtOd+pmGEtI7dP/+eDTon7L5yjxq
-         HOXVTeWLRImfl3r2DzlpJBTgOZWrbxeoT3iomc9yQjgbWzMK/bHaAMVq5CoXLFSod8Ci
-         cvbG4xaeKFPg4RDm/HRzNBeu6S4t5s4eR+0yChJXIXbMIlNgVlAVmJxcCwIfR/DBsVBY
-         nbZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXLZOk6/lyKZjhaNilV6O1QdtyQjP6CWaCaCBsqEO+ViuWDGPS0uES+cGGivq5psm+dDHkp21Bl28wOdoj7XKBTSlwid1qa1DCue7h8c6ttjKXvIw94QlplbtjCxWqON4qOyzSS
-X-Gm-Message-State: AOJu0YymHPhoI1jrrXXU00Kt1dpWMj3SUTHiSOWN+i6iHr1RpRZ+uZEc
-	/FnJUY8QFWmvp6+z9bgFhoG9Kd9z/z1jf+VFklgft3umW7C15jVn
-X-Google-Smtp-Source: AGHT+IHP7ox0/cmyfpIm9AiYc/3Y4/0B0F+cltZOxZ3nrUw0EDHOpAnz7iXfd2eJAokwNVKN2sNoLA==
-X-Received: by 2002:a0c:e0cf:0:b0:68f:601b:9001 with SMTP id x15-20020a0ce0cf000000b0068f601b9001mr2928662qvk.23.1708562697083;
-        Wed, 21 Feb 2024 16:44:57 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id s9-20020ad45009000000b0068f11430971sm6107220qvo.35.2024.02.21.16.44.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 16:44:56 -0800 (PST)
-Message-ID: <0bf4806e-0648-4c35-aaa0-7b3f1c177f0d@gmail.com>
-Date: Wed, 21 Feb 2024 16:44:51 -0800
+        d=1e100.net; s=20230601; t=1708562836; x=1709167636;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PxnB8hIBaJHKU9GMJod5TzavYw729HDn9dbYWz/K8DM=;
+        b=sWuDQ9b+fXI+2tGBpMOYBFUoqhtVomfBBoH6JzeBbLGKXqiK1o9f02g+EbMo8FL33n
+         1LnsjOgahiihg8tOfr/6vA3NM6m8eA643HoTwfMTlqLn5vh7P6Jry2rZTw7q+mdiTSkP
+         niF4VLS4PZ4UMpEI9uZ9dYV2lsXhIEOMd8ZpZboNMl8AhO4h1vhwfzNs927g15lE6hIE
+         clGpZko5or/gEBMszQPXjMWXPmkaD9d2K4o78tnwinjpMueni/23Zl67rlZKIJDVL0gi
+         if9nDFy/aW4N+wvj+HdWXMDSEb9wvCQtNyqUAw7PR4jRpO9n9GhIecnw/h2px4jWrj9e
+         oJWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU5+/KnPkFb9Uv/hECuB65uReWMFslktlVBJXgy6+csc9UWdxeoabKPd8Lr+4QoQcPtO4QjbTywIhQRjULV4RQc2oWldeI8ChchTkwp
+X-Gm-Message-State: AOJu0YzfJ9935SnE4susEs+JdTtqmqOzBRL4Qxs4yhUnPOLZ3DvBowON
+	V0zAr0SkY6E0LOM35aHuwYrgCVlIHt5IsqdhsZo/D8QWUf3Yde+wLxBlT7SQdgA=
+X-Google-Smtp-Source: AGHT+IFSLTMc3hCuIYilhHI07UG+3jHSb+dOia9uI0EVHy8hIHGEMNdRSjhvd4xYo+3moab7FJoglQ==
+X-Received: by 2002:a05:6808:170f:b0:3c1:5440:d2c5 with SMTP id bc15-20020a056808170f00b003c15440d2c5mr11757138oib.38.1708562836074;
+        Wed, 21 Feb 2024 16:47:16 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id f10-20020a056a000b0a00b006dddf2ed8f0sm9533333pfu.154.2024.02.21.16.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 16:47:15 -0800 (PST)
+Date: Wed, 21 Feb 2024 16:47:11 -0800
+From: Deepak Gupta <debug@rivosinc.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: rick.p.edgecombe@intel.com, Szabolcs.Nagy@arm.com,
+	kito.cheng@sifive.com, keescook@chromium.org,
+	ajones@ventanamicro.com, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
+	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
+	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
+	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
+	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
+	xiao.w.wang@intel.com, apatel@ventanamicro.com,
+	mchitale@ventanamicro.com, waylingii@gmail.com,
+	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
+	shikemeng@huaweicloud.com, david@redhat.com, charlie@rivosinc.com,
+	panqinglin2020@iscas.ac.cn, willy@infradead.org,
+	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
+	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
+	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+	cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
+	ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
+	baruch@tkos.co.il, zhangqing@loongson.cn, catalin.marinas@arm.com,
+	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
+	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
+	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v1 15/28] riscv/mm: Implement map_shadow_stack()
+ syscall
+Message-ID: <ZdaZj0pqaVJiNOUg@debug.ba.rivosinc.com>
+References: <20240125062739.1339782-1-debug@rivosinc.com>
+ <20240125062739.1339782-16-debug@rivosinc.com>
+ <ZcJX2IJb0hOM5RF5@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/338] 6.6.18-rc2 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240221125953.770767246@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240221125953.770767246@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZcJX2IJb0hOM5RF5@finisterre.sirena.org.uk>
 
-On 2/21/24 05:01, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.18 release.
-> There are 338 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.18-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Tue, Feb 06, 2024 at 04:01:28PM +0000, Mark Brown wrote:
+>On Wed, Jan 24, 2024 at 10:21:40PM -0800, debug@rivosinc.com wrote:
+>
+>> As discussed extensively in the changelog for the addition of this
+>> syscall on x86 ("x86/shstk: Introduce map_shadow_stack syscall") the
+>> existing mmap() and madvise() syscalls do not map entirely well onto the
+>> security requirements for guarded control stacks since they lead to
+>> windows where memory is allocated but not yet protected or stacks which
+>> are not properly and safely initialised. Instead a new syscall
+>> map_shadow_stack() has been defined which allocates and initialises a
+>> shadow stack page.
+>
+>While I agree that this is very well written you probably want to update
+>the references to guarded control stacks to whatever the RISC-V term is :P
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Noted. I'll do that in next patchset.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+>
+>> --- a/include/uapi/asm-generic/mman.h
+>> +++ b/include/uapi/asm-generic/mman.h
+>> @@ -19,4 +19,5 @@
+>>  #define MCL_FUTURE	2		/* lock all future mappings */
+>>  #define MCL_ONFAULT	4		/* lock all pages that are faulted in */
+>>
+>> +#define SHADOW_STACK_SET_TOKEN (1ULL << 0)     /* Set up a restore token in the shadow stack */
+>>  #endif /* __ASM_GENERIC_MMAN_H */
+>
+>For arm64 I also added a SHADOW_STACK_SET_MARKER for adding a top of
+>stack marker, did you have any thoughts on that for RISC-V?  I think x86
+>were considering adding it too, it'd be good if we could get things
+>consistent.
+
+Please correct me on this. A token at the top which can't be consumed to restore
+but *just* purely as marker, right?
+It's a good design basic with not a lot of cost.
+
+I think risc-v should be able to converge on that.
+
 
 
