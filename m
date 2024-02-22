@@ -1,108 +1,115 @@
-Return-Path: <linux-kernel+bounces-76901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD29C85FE61
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:46:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A448885FE62
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 877E428226F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:46:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D870282F06
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B366153BD6;
-	Thu, 22 Feb 2024 16:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074EF153BE4;
+	Thu, 22 Feb 2024 16:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fh20xNac"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2hZtdag"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586F1132C1B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A519153BCE;
+	Thu, 22 Feb 2024 16:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620368; cv=none; b=K7HAoI5ZamUJbYcYhUwb1YADdVVMQ1FDky+cGiBTPelG1dCi8rzfM+HSIKnihzxd4CiJqnBQ4368pEe+9/1asr/nBIEkhFmzcl0CMYX9Qqmx536wGLekOIMIJ3xg3QdoTUOsDj8RxpKNvasrBfZH+dYMm6bK3fhlt3gMkfDZTFY=
+	t=1708620385; cv=none; b=GWN5b4y8TtqkFYUwTM0v8X/ew5kfKe2XkLpstsGDJwHjx7tMLjvRJbEBKW04pn5BHC0db+lRf5Ru3r5PppiYO5Ac+fQljKaoG34T6U/mQvhkF1eXlmo2/w6dHvnE3V2dyfTRahQOl+lZ3CquBz4qolWPavCO75XFKmhmqXrK1LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620368; c=relaxed/simple;
-	bh=/ZxGVQIgNU60+X6ZhcB1CqepEyXK/I+U/TXpvkzgqzU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hjLG3iB1eQa/y4X9I8Lc9o5ByqM0eIXaqQSLZpz9Cb8az2UZz0z/WsU90tz1zB83rpZ9AE46go/R+pWZlI3kQ1lyXSAm89oRnwf7rZufLegjjletREnQdYx0wqaTD5jHmcUpj+joAiZz/hRtFh4PC6Zu7nmTHqXq2u/z5HJA/XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fh20xNac; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41277b9ef37so65135e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:46:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708620365; x=1709225165; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n1ou0Mr/3PF/316RdFkzM/d90e2Dm+AxF27+aafT9VM=;
-        b=fh20xNacMsZX2nOdiaRukZ3tRhXpzhYb5Ms69Bf1G1saoSCpLuZohUbZOvfMSB/xcw
-         ZGdPx+NpaqypZKr+JSaFyWz0DCT8rCYei55+qa62cpR7haUtSuFw3nV+M6sQSWyQXTan
-         rAA3eROT2tq0bhhlg0PmLd+54W/qpWgGFZj4+shYoWtp9dHYLWgHCPqVPNvhid/IdKCm
-         ZJR9Mcuw3Bl26Ec32ZSCTBkCW1CRw+tUfdGbwLgCUIhm6p3rPydOq7GMS+DZ9ESU35KL
-         UKtfPyQaTiKFVyuk+VQ9S0ROa4LSbA3THHhQVnBajyA7QjD3G8Kot5YgUJRQhN4rRMZD
-         V9WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708620365; x=1709225165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n1ou0Mr/3PF/316RdFkzM/d90e2Dm+AxF27+aafT9VM=;
-        b=liIEAvbXjDh9ioBBamUVVqwM68lGZB4qcQaxMVuPR3lkAjl8nWG1J320PjjHQSNpJ5
-         dO4H3SShGszIi9R+PQisJqQ3iK5aMJoBAf4P3P+UnBfLO42FRTEyVNjLKAu9XidooxWI
-         lAicQtm3e7dk9DbK2yF4B3Z2fp64Pa1foAE1RZJQZRt9jce6usbfL5th9fXYXPgpClx/
-         R+qjx1pTOSbFi9ZMCWdNoC/dO9zLeh27vKbkbdWBRDlXDE8wfxHdbpD6560kN5xyCCd1
-         TtAqj/iwQ1ERpjw0DMQIq6faPnJ9x6sDumShd5keTW/n7tWkHekaP1Bdizh1h/LATZBR
-         sASQ==
-X-Gm-Message-State: AOJu0YxSDo9hKIFA++DLQC5G5eifv1QFR1p5S2NGCRTah0u5vNiFjtjv
-	acuVKzoNIXGB5y9YQgZ93MZus1SzUMs7L1Nru3+8sV2PEf74CIjeFm8QtXhu9vka6d8GZFghmoD
-	eCWVx5KwcPEhcT5QKZ817HwsgJHAVzkWC2vA=
-X-Google-Smtp-Source: AGHT+IGf+z+7+K55Wqvir814EhjJuJx1V8C2xONW3Oyog2jTyHWIKEi7H6gXXpn15MK1AWjImaPNpH2IIQv0E3KhmRg=
-X-Received: by 2002:a05:600c:5026:b0:412:8ed2:b6b4 with SMTP id
- n38-20020a05600c502600b004128ed2b6b4mr53102wmr.4.1708620364657; Thu, 22 Feb
- 2024 08:46:04 -0800 (PST)
+	s=arc-20240116; t=1708620385; c=relaxed/simple;
+	bh=SI8rgYcy5xVxInz1JaUkz/QQn9h0SltRhO+47i1XgD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DtU3uxztiW1w8Qr6Xq0fdIdSzb388NACmqk4wvbPzS9S+szoFdJVue0YXPS6Jsb9KVD4jvnsGqAieRBlEHPS9qFyt9uXFKGMBksNvCloHUhBalOmb9wHTkYty/kg/8Qc/umeap3RJpSASPi0i9DXBGdwF7DFiH4M90NJsJe1X28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2hZtdag; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44DB9C433F1;
+	Thu, 22 Feb 2024 16:46:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708620384;
+	bh=SI8rgYcy5xVxInz1JaUkz/QQn9h0SltRhO+47i1XgD8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V2hZtdagF4x/ThTGHsvbfuxY821HtZKKrSpuhXcjcr+v0IMIA+2ndb+kn7Wer2lm/
+	 JQIs3+EKD0ptoaXKJgg0/riqZhSbiNUfVr+GnCCuCa5ShgmCrkOTZko0rrGcoFdBV9
+	 QfqMeLDnZPIACmP2smETS1U7Sh2Rx5uYuoGG5KtT7bTd9lF41XxL1zNdLQts1Ys1Gr
+	 SQS7Q0u1PIXOY5no77ne28og5+P6D+dZ0l6vM4ohMXxv8xRi4mWWNEt7PB5OAkItUL
+	 hmvqytwlvirNbRDBdp9FazG7p+616hZQh85y78bTVeVdobQNbLQFZL50WHpcv5IBHQ
+	 VaTEWJDc2mWMQ==
+Date: Thu, 22 Feb 2024 17:46:22 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 5/6] rcu-tasks: Eliminate deadlocks involving
+ do_exit() and RCU tasks
+Message-ID: <Zdd6Xm15-WfF5cus@localhost.localdomain>
+References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+ <20240217012745.3446231-6-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222051253.1361002-1-jstultz@google.com> <8734tkfrzz.ffs@tglx>
-In-Reply-To: <8734tkfrzz.ffs@tglx>
-From: John Stultz <jstultz@google.com>
-Date: Thu, 22 Feb 2024 08:45:51 -0800
-Message-ID: <CANDhNCoHqX9fo5e=K7_74YSmV8-T2tE-Obu+phhqy+n2bqc4QQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH] hrtimer: Use printk_deferred_once for
- hrtimer_interrupt message
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, kernel-team@android.com, 
-	John Ogness <jogness@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240217012745.3446231-6-boqun.feng@gmail.com>
 
-On Thu, Feb 22, 2024 at 7:17=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Wed, Feb 21 2024 at 21:12, John Stultz wrote:
->
-> Cc+ John. Keeping context intact,
->
-> > With qemu, I constantly see lockdep warnings after the
-> > hrimter_interrupt message is printed:
-> >
-> > [   43.434557] hrtimer: interrupt took 6517564 ns
-> > [   43.435000]
-> > [   43.435000] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [   43.435000] [ BUG: Invalid wait context ]
->
-> Do you have PROVE_RAW_LOCK_NESTING enabled?
+Le Fri, Feb 16, 2024 at 05:27:40PM -0800, Boqun Feng a écrit :
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> Holding a mutex across synchronize_rcu_tasks() and acquiring
+> that same mutex in code called from do_exit() after its call to
+> exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+> results in deadlock.  This is by design, because tasks that are far
+> enough into do_exit() are no longer present on the tasks list, making
+> it a bit difficult for RCU Tasks to find them, let alone wait on them
+> to do a voluntary context switch.  However, such deadlocks are becoming
+> more frequent.  In addition, lockdep currently does not detect such
+> deadlocks and they can be difficult to reproduce.
+> 
+> In addition, if a task voluntarily context switches during that time
+> (for example, if it blocks acquiring a mutex), then this task is in an
+> RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+> just as well take advantage of that fact.
+> 
+> This commit therefore eliminates these deadlock by replacing the
+> SRCU-based wait for do_exit() completion with per-CPU lists of tasks
+> currently exiting.  A given task will be on one of these per-CPU lists for
+> the same period of time that this task would previously have been in the
+> previous SRCU read-side critical section.  These lists enable RCU Tasks
+> to find the tasks that have already been removed from the tasks list,
+> but that must nevertheless be waited upon.
+> 
+> The RCU Tasks grace period gathers any of these do_exit() tasks that it
+> must wait on, and adds them to the list of holdouts.  Per-CPU locking
+> and get_task_struct() are used to synchronize addition to and removal
+> from these lists.
+> 
+> Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
+> 
+> Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> Reported-by: Yang Jihong <yangjihong1@huawei.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Tested-by: Yang Jihong <yangjihong1@huawei.com>
+> Tested-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-Yes, I do. Let me know if there's anything else you'd like me to try.
-
-thanks
--john
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
