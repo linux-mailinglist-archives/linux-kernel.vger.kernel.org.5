@@ -1,108 +1,112 @@
-Return-Path: <linux-kernel+bounces-76395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80E385F6A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C78285F6A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:19:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B65A1F2206A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:19:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF2671F21ED8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CCF844C6B;
-	Thu, 22 Feb 2024 11:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC6541760;
+	Thu, 22 Feb 2024 11:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xRwnfgWB"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KxFYP9tI"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7561E208A2
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF3341235
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708600770; cv=none; b=JmgYYS+YJN4K8UGVTiQNQGDDTwcMNYkEcCd3CkNRKkDS/oeFQN4vKez4DAXCZf0OgXNHL3+BfhxBhQz8G19hivQ0VyqjhqjuacywNbVEKL2+A26gIeWHAK4lYhOVyM6CgiTauffWPKF5M0Ivsg06bmtlXVi59ylnJnQdgiU9I4Y=
+	t=1708600781; cv=none; b=FvTLYSseu+vUgkO/aSSXXByz/gmiCLVzNEYbVaaTvv+5oFROC8rcwKn58NXs1oDWlUhOgjNlD8cBhu9aJgrcnaBB8+jFNiyJJEzYVY7GQVp+gRGNra1rPrDpSevmooMKi9DMmoEe5LyzGCbp7uZrnBKArEam1FF3mwdYeoZrfGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708600770; c=relaxed/simple;
-	bh=/Ljrr6CJk+mIUZ+I8p47GxKWHfPQCKx+XO5pmkj2Zdw=;
+	s=arc-20240116; t=1708600781; c=relaxed/simple;
+	bh=FqTbz2D2gTxpyB9VwCCqqL9YFJIQagi087SYexBr+e4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QpEG0lHiONHGqMl0ndL1AOyGqHWMBG1MERqlu+7Rkt0cfxAWV5C+Om4DbJANpgrjDMB9pzQIApK4Da9rhJBZP72JHNKqKTxn2ZjNTjHBv4PNmV9fwZ8qPfJqyUpTCdfJcP4QFdKPSDAg10Z90KMlrsWDytnERE9O3VyAuW/Cn9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xRwnfgWB; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 22 Feb 2024 06:19:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708600766;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SLtXP+zArhGcaGCh9YToDwJ5gVLqg/X2spMjxvpVolE=;
-	b=xRwnfgWBwskIO9s8RehDD2wEevpdAGb31vUwSCo5owmykKEtrkxGUWhsToPDvKrJIMX6IE
-	InRMHGnQcTltMb7RlsvY4dnPxWwExlCuk9of76Y8Fmnl7z7EowHUqukB4ToGLfrPzmfeuU
-	ukkv9popOugyzjK0PAJ78Bi1TNRQhPg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
- more
-Message-ID: <yaq7zpqe3x67igm6kvzbs4jczgd7pqhx733jha4fmzihr6e67c@pm5nfkpabtk7>
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting>
- <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
- <CAJfpegtxv3Omm3227c-1vprHYVTd1n3WoOxDKUSioNSP5pdeGw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TwEkglCu8mSZHVihWpKfvATfocMdLjDfLEzs+dluoc9u4h0SABfp8UmIK3RxpVPA4yxijbQ7YGcIHxUZDnU8LTlCa/YwNF8+mm7V99QkXEAXkO3OhIBrS9nswGFWIhWVawHosU6jHM2+q9oQtIICSlByUP/FjAV6nNlXDbKpjIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KxFYP9tI; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3e75e30d36so130644466b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:19:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708600778; x=1709205578; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mSel0K+jW3G7oIUBLnh40+t8+RQ+O6NgVmJw2vixq0I=;
+        b=KxFYP9tIndC6EVEiay5P301PyUDTqc/dXlbGfTQwV2dRMf1sK6OsPwv6fCTv6eoi1r
+         1pZgpq8F1I0I0weI+DsU6ng7VBXdGP8Gg4on10xidtALZAwgUkphcE87HUOrjVeZUk5s
+         Z0tDfvKL7MANzETirRzHhdF08MQv4tpqLDaHs6EAePCHEgPNeSVLFI6ve3X6BUdNBaUk
+         rhvrtGkruMrffsSieeZuETTZISKAL/2foWhsGDQtsW5L0Ut0ZAc2WNv2oxPQhObyKX9S
+         oOxlygSxFV/E8pKrSD0ddIBUWQG0Yy7Fds/rW6UXXKFMsAZvL8rTcNUlnHO951/SVgl2
+         qshA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708600778; x=1709205578;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mSel0K+jW3G7oIUBLnh40+t8+RQ+O6NgVmJw2vixq0I=;
+        b=Eb8XOUETkwiEjYLfFsczdiuUUqQUpzGI2bLW/KJ3rUVvyXS52TcOUP2U2sRUTPBgro
+         L66jU6BKrbY0vwc9I5/ZTO7lBeE3euEyJa8C9tiWMD6FyLVuuNptnkHLNARaTDi1Aa4L
+         S32dhdtCw6lZxaEI7D4gt3W7cCOitrbZL6GMzWouTymSCwim/fKiDChvx19zp31g2J9m
+         tjbPF8geLfIAz/7+0VQkCr0Y94Gb8J/2xl6Fn6VBv4VvPFq8BbOipwG7FJ4n1w6Zx3kR
+         s488y/ge2Te9Br46txZ1xgLNJSOfHEZTOrDd8ZUp0esTIQdqwuw+usVcFn+UDq+UVt+1
+         qK0Q==
+X-Gm-Message-State: AOJu0YyhXSnDiqVbRqiGdyrRQVRUwzl4aTq17nLmtvhmGv3D2OF6Bkmd
+	qY4EmIA0kwbAX5fn0qZj9UkOVKilYYTLeOlZvKdUb/na6P3dujM=
+X-Google-Smtp-Source: AGHT+IGKAC6wZEBHTG2aqAxwyxDq0zgJwe5JqF9EUVdUxOd7oHFIF3z8/qlZqRMK62rbjftZPOITcA==
+X-Received: by 2002:a17:906:c182:b0:a3f:2b3b:baa9 with SMTP id g2-20020a170906c18200b00a3f2b3bbaa9mr1695242ejz.14.1708600777419;
+        Thu, 22 Feb 2024 03:19:37 -0800 (PST)
+Received: from p183 ([46.53.251.190])
+        by smtp.gmail.com with ESMTPSA id ot18-20020a170906ccd200b00a3ecdd0ba23sm3270814ejb.52.2024.02.22.03.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 03:19:36 -0800 (PST)
+Date: Thu, 22 Feb 2024 14:19:35 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2] cpu: mark cpu_possible_mask as __ro_after_init
+Message-ID: <11d7a34f-909b-4923-a15f-d32015463c35@p183>
+References: <41cd78af-92a3-4f23-8c7a-4316a04a66d8@p183>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJfpegtxv3Omm3227c-1vprHYVTd1n3WoOxDKUSioNSP5pdeGw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <41cd78af-92a3-4f23-8c7a-4316a04a66d8@p183>
 
-On Thu, Feb 22, 2024 at 11:25:12AM +0100, Miklos Szeredi wrote:
-> On Thu, 22 Feb 2024 at 10:42, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> 
-> > Yeah no, you can't crap multiple 64 bit inode number spaces into 64
-> > bits: pigeonhole principle.
-> 
-> Obviously not.  And I have no idea about the inode number allocation
-> strategy of bcachefs and how many bits would be needed for subvolumes,
-> etc..   I was just telling what overlayfs does and why.  It's a
-> pragmatic solution that works.  I'd very much like to move to better
-> interfaces, but creating good interfaces is never easy.
+cpu_possible_mask is by definition "cpus which could be hotplugged without
+reboot". It's a property which is fixed after kernel enumerates hardware
+configuration.
 
-You say "creating good interfaces is never easy" - but we've got a
-proposal, that's bounced around a fair bit, and you aren't saying
-anything concrete.
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-> > We need something better than "hacks".
-> 
-> That's the end goal, obviously.   But we also need to take care of
-> legacy.  Always have.
+	v2: fix parisc compilation
 
-So what are you proposing?
+ kernel/cpu.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > This isn't a serious proposal.
-> 
-> If not, then what is?
-> 
-> BTW to expand on the st_dev_v2 idea, it can be done by adding a
-> STATX_DEV_V2 query mask.
-
-Didn't you see Josef just say they're trying to get away from st_dev?
-
-> The other issue is adding subvolume ID.  You seem to think that it's
-> okay to add that to statx and let userspace use (st_ino, st_subvoid)
-> to identify the inode.  I'm saying this is wrong, because it doesn't
-> work in the general case.
-
-No, I explicitly said that when INO_NOT_UNIQUE is set the _filehandle_
-would be the means to identify the file.
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -3107,10 +3107,10 @@ const DECLARE_BITMAP(cpu_all_bits, NR_CPUS) = CPU_BITS_ALL;
+ EXPORT_SYMBOL(cpu_all_bits);
+ 
+ #ifdef CONFIG_INIT_ALL_POSSIBLE
+-struct cpumask __cpu_possible_mask __read_mostly
++struct cpumask __cpu_possible_mask __ro_after_init
+ 	= {CPU_BITS_ALL};
+ #else
+-struct cpumask __cpu_possible_mask __read_mostly;
++struct cpumask __cpu_possible_mask __ro_after_init;
+ #endif
+ EXPORT_SYMBOL(__cpu_possible_mask);
+ 
 
