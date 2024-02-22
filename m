@@ -1,150 +1,123 @@
-Return-Path: <linux-kernel+bounces-76877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2174F85FE08
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:26:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49FDF85FE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ED24284BC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:26:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B90C1C22774
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7D01534EE;
-	Thu, 22 Feb 2024 16:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB4D153BCF;
+	Thu, 22 Feb 2024 16:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WLO5vQhX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBgI+8Ck"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6BD1509B5;
-	Thu, 22 Feb 2024 16:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB5615351C;
+	Thu, 22 Feb 2024 16:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708619205; cv=none; b=nd74QlfFj3pE2VOPzGWSBt26blx1FZ8qd+Tmx7c79HrNvS5PK9tLVoPZAAraMgqGdKCvbDI5MTZkTUfuOkfbt6IFNWTH6lL/0zl7U69C2FOXUjCE1etF3pbT0X6Rbah4ZVZOaHd5qGlfEmJCFWQAnN4y8I5RnTHI8iR/qt28DKM=
+	t=1708619314; cv=none; b=F6kW/epvrbl+wzdjIGp5WHy9w8qSdTUCRUyj91ewgjDRUsf8RctEYaEtEyPp2+ZJRzYONywHmYix4EZCGoMYgv8okO5hyuAUUjTf8CnF34qZrkX3Rxuu2X3NtB4pMk1WeyO3JNMMtaK8cbIOJL0js1G4FFvqCz/hz/9FWgddsm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708619205; c=relaxed/simple;
-	bh=Sg+7uBjGXjQ1pdFX/E/hnLOflmTEI1B/auJ2nJ5yZc0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sOf8XR0EmEIvNeNP1lGbQhB9Dj3+RwrkHStbAu1vev3yomZudj5JRc+Z6c5Nfh3Gmm1yXpq4OJRAvZInoCeTkgLgT+EQOtK5FwZTkrTBxS34ofB2RMlTkPq9wMHxpOrqPWi7v32kKwdsqBBXf6GgBnFyzEt5C1bGANNbrrKYDUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WLO5vQhX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C2867C433F1;
-	Thu, 22 Feb 2024 16:26:44 +0000 (UTC)
+	s=arc-20240116; t=1708619314; c=relaxed/simple;
+	bh=itZJtWvnlDX8BTYjQebFHP4oWvzdRahIFdPuDTsEIwE=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lNhA0Qf2hqnAvlBN5uotvromCupVStjt8tBZRr7YP7GIl+2HLhQFKcDKuRvthuahfypDoin09qd0iafpiRHBrXfI0jtFeGT4HDzB7H5RMwaEu7YEI1nB4sI1P3Lz2gTmrKE8jtYdhIfl2hub2XhSak3h6dwi9QWmCxQbz2X8zag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBgI+8Ck; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9382AC433B2;
+	Thu, 22 Feb 2024 16:28:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708619204;
-	bh=Sg+7uBjGXjQ1pdFX/E/hnLOflmTEI1B/auJ2nJ5yZc0=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=WLO5vQhXIjUKiQW8MTNAerCcpBsPpFOzeIdgsi8kk7cuLH0455SdSy2LdfaS8pz+z
-	 szQinCZUxI5/ERaAYyqew38pmwKsmbUFRx1B1AUpebU9Jd/IPBOelz00AjHfKTcSDE
-	 5cVg2krcsICfsyr9EjXNaPf5JZvHkb9R7BDVz+ZjnAnkHqsuavU3//GOC6+mMk6H1B
-	 8/2MmVRZ5oWWc59NVvtCDEhMCQDpBMRVotzu5xsc9CopupQialp/GadulIhhOgt0bn
-	 Yv8FV9pQ/lY/UWTXj7xM16MwdJT0uGWV++70IiQpvuK8cGxVdlelRvj0aQlAr4TiJk
-	 cNL7YxC/U3URg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A36E4C54791;
-	Thu, 22 Feb 2024 16:26:44 +0000 (UTC)
-From:
- Mathys-Gasnier via B4 Relay <devnull+mathys35.gasnier.gmail.com@kernel.org>
-Date: Thu, 22 Feb 2024 17:26:44 +0100
-Subject: [PATCH v3] rust: locks: Add `get_mut` method to `Lock`
+	s=k20201202; t=1708619313;
+	bh=itZJtWvnlDX8BTYjQebFHP4oWvzdRahIFdPuDTsEIwE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=cBgI+8Ckp17p3a8II2dv5FbR0WpnSaEmgaNRFhim9Tr/ReIHOaExdlfVNL+4Zw3pJ
+	 W5NTxrT3RkIQQHPU2JNIISiLtlpp7nJGN06cg4i8PESZgn70gaJdGzwRC5omcjK8eH
+	 9jqyOIKOgah9JOp4r+OmWhzL/AZ1uJJVjNbP/MzL1QS4+o0+ph+PK/BYV5txoyLXcW
+	 R4PFxg9C7TsVleHzEkexV7w4ieUaGS/jeRMjauWUTIdaO1LF95QrVz8uaSCTXUe296
+	 zDIJq4eD+CLCoc1dXIp6cbep5sJoSuEEXpJBMh2dr/xLfkNSJIQKT1kEv5eioaVCWN
+	 rsMGp31hI1qXA==
+Received: from 82-132-212-42.dab.02.net ([82.132.212.42] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdBvy-005njW-UK;
+	Thu, 22 Feb 2024 16:28:31 +0000
+Date: Thu, 22 Feb 2024 16:28:27 +0000
+Message-ID: <87edd4a2fo.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Aishwarya TCV <aishwarya.tcv@arm.com>
+Cc: Anup Patel <apatel@ventanamicro.com>,	Palmer Dabbelt
+ <palmer@dabbelt.com>,	Paul Walmsley <paul.walmsley@sifive.com>,	Thomas
+ Gleixner <tglx@linutronix.de>,	Rob Herring <robh+dt@kernel.org>,	Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,	Frank Rowand
+ <frowand.list@gmail.com>,	Conor Dooley <conor+dt@kernel.org>,
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,	Atish Patra
+ <atishp@atishpatra.org>,	Andrew Jones <ajones@ventanamicro.com>,	Sunil V L
+ <sunilvl@ventanamicro.com>,	Saravana Kannan <saravanak@google.com>,	Anup
+ Patel <anup@brainfault.org>,	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,	Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v12 02/25] genirq/irqdomain: Remove the param count restriction from select()
+In-Reply-To: <e42b76a9-fc5f-4ab7-96a2-629261a9c983@arm.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+	<20240127161753.114685-3-apatel@ventanamicro.com>
+	<e42b76a9-fc5f-4ab7-96a2-629261a9c983@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240222-rust-locks-get-mut-v3-1-d38a6f4bde3d@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAMN112UC/23NQQ6CMBCF4auQrh3TGUqqrryHcQFDgUagpgWiI
- dzdghsWLP+XzDezCMZbE8QtmYU3kw3W9THSUyK4yfvagC1jC5KkJOIF/BgGaB2/AtRmgG4cgBV
- JTSix1LmIh29vKvvZ0MczdmPD4Px3+zHhuv45ktcjbkJAYJNmWHFaGqXvdZfb9syuEys30Y5AO
- iQoEhlzmSqmQstiTyzL8gNvQQPR9wAAAA==
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
- Wedson Almeida Filho <wedsonaf@gmail.com>, 
- Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
- =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
- Benno Lossin <benno.lossin@proton.me>, 
- Andreas Hindborg <a.hindborg@samsung.com>, 
- Alice Ryhl <aliceryhl@google.com>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mathys-Gasnier <mathys35.gasnier@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708619203; l=2400;
- i=mathys35.gasnier@gmail.com; s=20240118; h=from:subject:message-id;
- bh=ky/U3Y/MfgLzPcLAna8JPEAOaEfDevCIfhcVRsmkGug=;
- b=+QNhsp6z7HFvXcgU9rqBsgzmYXhbx8BMMQKZVVl3iF27daLZJUjw+acCHkIHotOIKO9yiW8qw
- t1cr1passtyA4d6GfP0rDl+TbeGP4C0ecOarsbaGF95e1sfZ2j6smYK
-X-Developer-Key: i=mathys35.gasnier@gmail.com; a=ed25519;
- pk=C5tqKAA3Ua7li5s3a+q2aDelT2j98/yjGg2nEVGArXE=
-X-Endpoint-Received:
- by B4 Relay for mathys35.gasnier@gmail.com/20240118 with auth_id=129
-X-Original-From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-Reply-To: <mathys35.gasnier@gmail.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.212.42
+X-SA-Exim-Rcpt-To: aishwarya.tcv@arm.com, apatel@ventanamicro.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, frowand.list@gmail.com, conor+dt@kernel.org, bjorn@kernel.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, saravanak@google.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, broonie@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+On Thu, 22 Feb 2024 13:01:32 +0000,
+Aishwarya TCV <aishwarya.tcv@arm.com> wrote:
+> 
+> 
+> 
+> On 27/01/2024 16:17, Anup Patel wrote:
+> > From: Thomas Gleixner <tglx@linutronix.de>
+> > 
+> > Now that the GIC-v3 callback can handle invocation with a fwspec parameter
+> > count of 0 lift the restriction in the core code and invoke select()
+> > unconditionally when the domain provides it.
+> > 
+> > Preparatory change for per device MSI domains.
+> > 
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> 
+> Hi Thomas/Anup
+> 
+> Currently when booting the kernel against next-master(next-20240222)
+> with Arm64 on Qualcomm boards RB5/DB845C, the kernel is resulting in
+> boot failures for our CI. I can send the full logs if required. Most
+> other boards seem to be fine.
+> 
+> A bisect (full log below) identified this patch as introducing the
+> failure. Bisected it on the tag "next-20240220" at repo
+> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+> 
+> This works fine on Linux v6.8-rc5
 
-Having a mutable reference guarantees that no other threads have
-access to the lock, so we can take advantage of that to grant callers
-access to the protected data without the the cost of acquiring and
-releasing the locks. Since the lifetime of the data is tied to the
-mutable reference, the borrow checker guarantees that the usage is safe.
+Can you please try [1]?
 
-Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
----
-Changes in v3:
-- Changing the function to take a `Pin<&mut self>` instead of a `&mut self`
-- Removed reviewed-by's since big changes were made. Please take another
-  look.
-- Link to v2: https://lore.kernel.org/r/20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com
+	M.
 
-Changes in v2:
-- Improved doc comment. 
-- Link to v1: https://lore.kernel.org/r/20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com
----
- rust/kernel/sync/lock.rs | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+[1] https://lore.kernel.org/linux-kernel/20240220114731.1898534-1-maz@kernel.org
 
-diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-index f12a684bc957..0c8faf36d654 100644
---- a/rust/kernel/sync/lock.rs
-+++ b/rust/kernel/sync/lock.rs
-@@ -7,7 +7,11 @@
- 
- use super::LockClassKey;
- use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque, types::ScopeGuard};
--use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinned};
-+use core::{
-+    cell::UnsafeCell,
-+    marker::{PhantomData, PhantomPinned},
-+    pin::Pin,
-+};
- use macros::pin_data;
- 
- pub mod mutex;
-@@ -121,6 +125,16 @@ pub fn lock(&self) -> Guard<'_, T, B> {
-         // SAFETY: The lock was just acquired.
-         unsafe { Guard::new(self, state) }
-     }
-+
-+    /// Gets the data contained in the lock
-+    /// Having a mutable reference to the lock guarantees that no other threads have access to the lock.
-+    /// Making it safe to get a mutable reference to the lock content.
-+    pub fn get_mut(self: Pin<&mut Self>) -> &mut T {
-+        // SAFETY: Since the data is not pinned (No structural pinning for data).
-+        // It is safe to get a mutable reference to the data and we never move the state.
-+        let lock = unsafe { self.get_unchecked_mut() };
-+        lock.data.get_mut()
-+    }
- }
- 
- /// A lock guard.
-
----
-base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
-change-id: 20240118-rust-locks-get-mut-c42072101d7a
-
-Best regards,
 -- 
-Mathys-Gasnier <mathys35.gasnier@gmail.com>
-
+Without deviation from the norm, progress is not possible.
 
