@@ -1,235 +1,148 @@
-Return-Path: <linux-kernel+bounces-76145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F318C85F372
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:50:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C67C85F375
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7952C284137
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:50:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9F6B1F24546
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA182C6B5;
-	Thu, 22 Feb 2024 08:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCE836AF3;
+	Thu, 22 Feb 2024 08:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="r9tPTYdB"
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2048.outbound.protection.outlook.com [40.107.113.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QfWzejNl"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E5A22F0A;
-	Thu, 22 Feb 2024 08:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.113.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708591801; cv=fail; b=KSPNsq7YnL/NZrmcouub5FFoYD0kGz+Tbr3HKyeZiZyy/On6qSpSBkiNuhpjFBB8BpVKBWItzYlWyfFvvCrl3EKumIgUUCKpOaoYrw1TKCPzjU6k74KK3r8GwE2wnLJrHqYJlCGU3z6Izecjlo4tF04XHwhh0UgwY4IRS0WsXa4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708591801; c=relaxed/simple;
-	bh=YnkZfy4D66QAwECMrwc9PekMUXGcWd2OodZL3lomncE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=uMRezF6903IA9WMtqaTay77ns54m5Y6ZMNwbJ2yuJbOhz88Iza6yMbatCWq8+2hP1FbbA+9gELnJvu5R9BecnH8IBTsyfIWS/aV4CmM0sfJ7DQ/TCJUyRnCjjrQUNHM9HHoxWQRhArFtgLK/pk7IwYMDTqF4hhDB24Ytgs/P+wI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=r9tPTYdB; arc=fail smtp.client-ip=40.107.113.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aZF7rSbri1u6VDhiJ8GgCkx9+j0nTUkz53xwgfO48Sy59tupLc3/OWMdZMiSmZU5kCebEsSKDyZQRzMDoAsTRGr4KZLsZEVGJbrubwrrUOc1kPX5GX+D3tCx089PdtCiwNvMPn/RhohT/laixAENHQ3AaJHZPEdzaheaCvAmUoW09ONrUJWlfCv/tB7LzFdKf1NkPpK7xFFSjhhWayaSzWoVdKmFs0Es2VlsRqA/KCkrvBEec8qUtR9lhUbmtlqGGmy32YdMW2AbGEx4LUvAqAsV6a2hEv1M8kW48KROva89JUh3WssghR3mALD+8IKomBmiNzxBGPGvLO9iymGKSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oiBOH89qZFGL0oi+eLbAYIoR5OV0QfO6IYl5wrCHbok=;
- b=mj+rIZa461NmVyNck/0qUySuMMkD8AJKf3LRXf97+TNEr1D6JgmiBPLV9S7wR6c5th5gbjt8XmwfDNe5VZEBTHxwPXPPNi9kYiMjoCHjutvrE9FkuPWOR6x8tfIv898/aycyQ/Ch0Htid+OwmXXebE4gt9cMPTjvx0Xhal+me6VQ7DQvVi52dawxIEDIZNzURNxb5PqYxzFkN5NEVgjrAiAnctEaL1DDT8l52oQvKbIIN0YYBo9KUXeJ3U5y5pF+9xEfjr5MsipI+06R67/+5rpiEwkWyJotrk3UlbkUwqgkH/FQe/VtSmg8t1P2Ur4LZiew+RyTCyzxQDtWba/6dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oiBOH89qZFGL0oi+eLbAYIoR5OV0QfO6IYl5wrCHbok=;
- b=r9tPTYdBzU0imFltIRrkqf0wPelcYYHWRZvnILxyGyQ1MqKHR85a2VJyAj8ovHUUXS68/gArdIvjJO3MbwYLQcC5QWt/Wgi5fon08YwdVQk5S+xmYajpAgdPElRKGMUpLFVXKEbqSfbqh5wCozd3i097nyFunWtKSa7uOYMN8s0=
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- (2603:1096:400:3c0::10) by TYVPR01MB11245.jpnprd01.prod.outlook.com
- (2603:1096:400:369::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Thu, 22 Feb
- 2024 08:49:53 +0000
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0%3]) with mapi id 15.20.7292.036; Thu, 22 Feb 2024
- 08:49:52 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Maxime Ripard <mripard@kernel.org>
-CC: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
-	<daniel.vetter@ffwll.ch>, Intel Graphics <intel-gfx@lists.freedesktop.org>,
-	DRI <dri-devel@lists.freedesktop.org>, Linux Kernel Mailing List
-	<linux-kernel@vger.kernel.org>, Linux Next Mailing List
-	<linux-next@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: RE: linux-next: build failure after merge of the drm-misc tree
-Thread-Topic: linux-next: build failure after merge of the drm-misc tree
-Thread-Index: AQHaZTDuEl5j7jpCP0Wkfk+nxl48zbEV+sGwgAAOHYCAAATT0A==
-Date: Thu, 22 Feb 2024 08:49:52 +0000
-Message-ID:
- <TYCPR01MB11269CD3070201364E92C582186562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-References: <20240222124610.383e1ce3@canb.auug.org.au>
- <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <4hdbpzyab7djy7gxsn6qjhgmr3qczstfgwhefgar4nuxohajdq@5hn6m3b4m64n>
-In-Reply-To: <4hdbpzyab7djy7gxsn6qjhgmr3qczstfgwhefgar4nuxohajdq@5hn6m3b4m64n>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|TYVPR01MB11245:EE_
-x-ms-office365-filtering-correlation-id: 93be6cbe-48cf-4b80-c011-08dc33833c71
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 6p95UOWal1I83AfAZamXpiLATIrUCTzB2QBxQ686Eal2DzjfUdtmlgvetIVzcGlhBQWyJFRBRYgXoOnkdPDBWHbfzzaJnDSaktC8AR+MfwLUM5P4/chK1VYxCJVURKmWFnVoCPyI+IYTJ1eZXJi7Rq5W4LvPMVy8oHG+0A6mzwV4cKdhz9jAmik4gp2WkTgO9iGc2ShRxPo5j+QCIE/CjxzyQ4uF08/mrQCy/9MvOqa98JtbS/4wxwklenPn7JBUKDZmfzFfpsGoMlF9x+tmaucG/z0jKby74cbYihyPnnIvUXXrQDBXLVSv3AxxHg0ibEc28QND3GuxptGTW/nZXfCubrY3tW5ZlAPh5kqQwf+MGu/3DNtVq83LBzwW1UPwqnZKe6O/hEB2ApbF8IF7ZhHDQ5Dmx7o/CLmhmyoAwi1btgGOJ2Daq+rfUmjRKiZxfcDRCG41rlXWhHX6mRRRIrpkGhz4Us9ujGulTzkauxAqzStywbcqY2kZ4aw0uqXcpwZYQs5GqUl4Cv9ha2PPbZxmeyro6t10MQXwN/qrIHx3wgCI/Czi5E1ppY1jXm4gES2anDS8j5BXLvjkJO4Y2TMuGwvTALM6M7kewpLvN/rIcgLbztG4F1uSxP+wVZAx
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?EREmshZiGa3gXPh4/TWAEcbxglAbzHAMempBDP5N3Wmw9zO6kyW7ahR0LvC2?=
- =?us-ascii?Q?ah9OeV3UkixGZwwUXIBVY/3Lfa0Pquw+fZtdRnt3Dc44JajNyN1dNdA8AI0O?=
- =?us-ascii?Q?97E/FEdJv5hStkw9X1HQZzFf38zmKgZmSy4L9mlaX0zMmq/RQvh+Oe+9wjPE?=
- =?us-ascii?Q?Y7C+zwO7z5jmCreFUAO/GQmsGi+w4BFvEZOQiqVfbYsACjbC0YsRogXMck6r?=
- =?us-ascii?Q?bBkLernluEzkW/olYd/HfdAq2KRwIPQDFoCVfqzebAAZGA0XbXP/2MHzqDH8?=
- =?us-ascii?Q?nCSGkMshYL9uuirfxoW7f8lsBFF2jP5bauj/dXHv87opV1rIbM/abqEYTvyp?=
- =?us-ascii?Q?8CYs0VDur1zRmBhkBuk0VZa+NJdsn79Ahoq0h//uovI6sqJizPj9ZhGMD/uf?=
- =?us-ascii?Q?/On1jpyTYlcB1kHi6YaLGXNwOQJQ+2VJgc8vjEMrB0V+oA69++N2Kr+17gCl?=
- =?us-ascii?Q?RqeLDxrM/rt3oIC51UqoMfEsCscQWr+eoIq5r23/KKIyYlrmxVwNmu61W70Y?=
- =?us-ascii?Q?oErImlQ0cAfX9U4wJHGF4NfEp3gi7x/ipOsqZ5MiGiIQx5UuGg/4PRpAR2vw?=
- =?us-ascii?Q?RHKnNIIR2dGZ5f254Njs13mJ6OUMjVlTFphaWvsGF5Rz4kCGxvic8uC6IEJD?=
- =?us-ascii?Q?gj6TukUyUFKGk2cQKV4T2frrer7fdYUJyphplaGm5AhvWpVoOe3GvKpOgb3j?=
- =?us-ascii?Q?tIli8eT1WrmMM3zz7dYCLx7qs1Okbb/Oi4cV4SOdnEkuMaQjtczc6+fuxHhj?=
- =?us-ascii?Q?re8oNg/Kt1aeM/fsy4WXlnnHm5x5w86lvUOBmFAeWp+qWQeLptyWUurAukVd?=
- =?us-ascii?Q?Xd7s5Qfb270hWfNBOTGYKj2PkJ9yAiIcpZ4mus/matT4UYu/4+6UjsH848kC?=
- =?us-ascii?Q?DLySMN3QFW8S7ZT38thEs5lG5/3RdQQ5cGAi2Lr5EGDdZf1zNrolpg0H/967?=
- =?us-ascii?Q?DEZRLbcBXclsvY90og6f9+hJkEbdlKzUxXuL7N9HjWZqcdCndT4YJ662YlOE?=
- =?us-ascii?Q?46+OLU1j36nMcJgC9d0TSOEoTtq6O/W2oGj25qkAXZJhfLrvvIUNzqwLv3IG?=
- =?us-ascii?Q?eJtSqJbrGXansRuDdxnMk7u6+sHBuCEWwU3TC07QXr9F3GZSMV4Lkwrg9yfH?=
- =?us-ascii?Q?6HkEdSNbmESBemCOzhvJX5nEaK+/OFyvDwEUgYX+CHaM4qQsGKwwr+Bq5yQ9?=
- =?us-ascii?Q?ULVbQ/daGGTQtrffwcGw/vR8h15xhNRmUVT4mxPiPVj1dC394t8loYLORHHa?=
- =?us-ascii?Q?FqYXwpuTJB+SeyaAKQvOTqop4Z6R8RqB6gNiO/kIZnCMbiievXsVq854y1b3?=
- =?us-ascii?Q?mb7xzmNR/fCVbjcyNgP+sJEmkpbv3cAwx6j6cDCSSbWQ/5rHo4eVfx6Jcogt?=
- =?us-ascii?Q?+ShxPBBUSH/Yr2307d/K5Ogs+/rgbNIduugRUX3XFyTLBcCZ4VlG6bPqx2yI?=
- =?us-ascii?Q?PDvStN1UmUCbngVn/1AGb5BS7yixLLAz4AZTfL217BLMonO9Ms9Hb0KCabdP?=
- =?us-ascii?Q?XiitcBc7xvzgK/xwCf7+5fiuHXIIaM2aKOVAvnC0LlfZ7/xb1TSivB6s1SeT?=
- =?us-ascii?Q?UA1ivDIsQcEumUD6BAB3guV95XfsUyH9bK4PrRPduwF4MQCZMvWHajcrnhgH?=
- =?us-ascii?Q?fg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63ABA2C6B3
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708591804; cv=none; b=h40EYYZx3zITBu1wZLzgrCduXzIBYUKT0SztfV31VS77IdUms11QTz2zrbpcWFmFBEBdOgU/kJY33zH0fX8Tfa4947ukNKLs5EOG/JFcEnS2+Ar3SvUojcR47a/Oks47Z8oxiPgwelw4YYbof7uqZ6kUUTEFs4vfI8k8U/SRjEs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708591804; c=relaxed/simple;
+	bh=D/nUQN7NYaiaPkI9T6J6ezrsHaCP33aZDmexe1pbOjE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jrj2hBRzy7kxevNmMjHFPCCqHww/Cfrz7ptDHMjopVVpz5gwXVvNGWvreNVHdPusqoOShbBWmCPdcKGMaIW0wa/cdkkLkvuEnxPhHSz/6iRa2Sdteg+2OLhergy651CBKTtKF5nYYGaRb1h1OsMa3BGCI8k7RjqglpUr7Mr1qO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QfWzejNl; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso115299666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708591801; x=1709196601; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D/nUQN7NYaiaPkI9T6J6ezrsHaCP33aZDmexe1pbOjE=;
+        b=QfWzejNlZ12PjwYOX4NZG5jzG/4WRKidhoowH1Vt8BgaP2SBJ1aVv/MAyQTEsXALGs
+         MBgKRn7FTAQweqSKqse0uYQk3EEOfeTU3tE0x8Gb8A9OiLJrW5bucGlxxXhdkFYoWLHe
+         HohNgdxWoksU3SZTsei9rWE6S1Mt0//YDmuSHwQ2rKAKHxoaGb4H4GcWmE9s3dQyiB/u
+         7TQKxSJY7LIdNjyUh7oHmuqO2rFp22qar0B3jK7EC6/Rvz7tywlsqOdmAPv0wgbhNC2D
+         y6CP8y21ASzAS4lsBadu8qJ7IkICOsZu5PJzTp9Lp/ipI8NwfmIH1O9hsFsyFxZ16gBu
+         bafw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708591801; x=1709196601;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D/nUQN7NYaiaPkI9T6J6ezrsHaCP33aZDmexe1pbOjE=;
+        b=HqRkPTcGbNR0TYh2GD+38XF45cy5a1VYOZHGgnDr+o8JEWPxHBVpSgqKb2ZqHmh0Tx
+         00GVbhtQnNO8nm4r8EM0DydmJ5E2MwneyamfxWqYfvus7i//cz2z8pf5lv5KWNrQ4Rvl
+         ps1gACuIFpQdQM9tftIczJqXnYBMynZPY8mrnvlUPok+09iznqmVGynxK0MbGxEZJDmp
+         qdo9B1eVPzHjmBRKL99TzoLnnoJrZtcPG5ICS5WehgaP6LY6V1RnwJ+nTe/QG0GJsQtW
+         6vtdaqnKtlyJqp77CtY/Ofj7L7CSuaUnySrksFN6injM6JPDPJMKHqI0v/GZvalAlsEW
+         1qYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXBEqL190Zprc5ruKzLWOCMVX2BuA3XglsUvA8Iaf19ZXOJSCPJ8VGEzsI72x0VDb1JVUve3/DabedQN2Qm5mACuuqRCCfASpIPlmHm
+X-Gm-Message-State: AOJu0YxNzp/jx62Hn5+XB5PrBubZemgsI8N+3xSmaC4jXvFY0qeAqDMV
+	RXTEdVsR1fXaYmvtmi9EEgC5/TqBxRbSfUsZAJMVph10z1eZ+SUewxk8kDDU5iA=
+X-Google-Smtp-Source: AGHT+IH/nh++5vilUspAVKKJyxBjsl+Ckxtaqb05jotBiF2zHKJp0sk0Zmn1nWBdalzUaV+KjllKQQ==
+X-Received: by 2002:a17:906:27ce:b0:a3e:4cfc:2186 with SMTP id k14-20020a17090627ce00b00a3e4cfc2186mr1566310ejc.17.1708591800779;
+        Thu, 22 Feb 2024 00:50:00 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id wb8-20020a170907d50800b00a3e9c4fa24esm3742427ejc.96.2024.02.22.00.49.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 00:50:00 -0800 (PST)
+Message-ID: <be85edb1-4f65-4b5e-a137-76e4e92d8fe4@linaro.org>
+Date: Thu, 22 Feb 2024 09:49:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93be6cbe-48cf-4b80-c011-08dc33833c71
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2024 08:49:52.6989
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /5xuyTqiz8LvfV09yP1EvKFS+4vdo5dtvzJCCwa+l3+AXsEBBFY0GNHbfIG56wleMLYLiQqJ7e1+cJMBvyT0K6KYXPNFDsXZGypEfbxIQHM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYVPR01MB11245
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/7] ARM: dts: samsung: specify the SPI FIFO depth
+Content-Language: en-US
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ krzysztof.kozlowski+dt@linaro.org, robh@kernel.org, conor+dt@kernel.org
+Cc: alim.akhtar@samsung.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, broonie@kernel.org, andi.shyti@kernel.org,
+ semen.protsenko@linaro.org, kernel-team@android.com,
+ willmcvicker@google.com, andre.draszik@linaro.org, peter.griffin@linaro.org
+References: <20240216140449.2564625-1-tudor.ambarus@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240216140449.2564625-1-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Maxime Ripard,
+On 16/02/2024 15:04, Tudor Ambarus wrote:
+> Bindings patch sent but not yet integrated:
+> https://lore.kernel.org/linux-spi/20240216070555.2483977-2-tudor.ambarus@linaro.org/
 
-> -----Original Message-----
-> From: Maxime Ripard <mripard@kernel.org>
-> Sent: Thursday, February 22, 2024 8:32 AM
-> To: Biju Das <biju.das.jz@bp.renesas.com>
-> Subject: Re: linux-next: build failure after merge of the drm-misc tree
->=20
-> Hi Biju,
->=20
-> On Thu, Feb 22, 2024 at 08:14:14AM +0000, Biju Das wrote:
-> > > -----Original Message-----
-> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Sent: Thursday, February 22, 2024 1:46 AM
-> > > Subject: linux-next: build failure after merge of the drm-misc tree
-> > >
-> > > Hi all,
-> > >
-> > > After merging the drm-misc tree, today's linux-next build (x86_64
-> > > allmodconfig) failed like this:
-> > >
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:47:6: error:
-> > > redefinition of 'rzg2l_du_vsp_enable'
-> > >    47 | void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *crtc)
-> > >       |      ^~~~~~~~~~~~~~~~~~~
-> > > In file included from drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.h:18=
-,
-> > >                  from drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:30=
-:
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:72:20: note: previous
-> > > definition of 'rzg2l_du_vsp_enable' with type 'void(struct
-> > > rzg2l_du_crtc *)'
-> > >    72 | static inline void rzg2l_du_vsp_enable(struct rzg2l_du_crtc
-> > > *crtc) { };
-> > >       |                    ^~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:61:6: error:
-> > > redefinition of 'rzg2l_du_vsp_disable'
-> > >    61 | void rzg2l_du_vsp_disable(struct rzg2l_du_crtc *crtc)
-> > >       |      ^~~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:73:20: note: previous
-> > > definition of 'rzg2l_du_vsp_disable' with type 'void(struct
-> > > rzg2l_du_crtc *)'
-> > >    73 | static inline void rzg2l_du_vsp_disable(struct rzg2l_du_crtc
-> > > *crtc) { };
-> > >       |                    ^~~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:66:6: error:
-> > > redefinition of 'rzg2l_du_vsp_atomic_flush'
-> > >    66 | void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_crtc *crtc)
-> > >       |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:74:20: note: previous
-> > > definition of 'rzg2l_du_vsp_atomic_flush' with type 'void(struct
-> > > rzg2l_du_crtc *)'
-> > >    74 | static inline void rzg2l_du_vsp_atomic_flush(struct
-> > > rzg2l_du_crtc
-> > > *crtc) { };
-> > >       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:76:19: error:
-> > > redefinition of 'rzg2l_du_vsp_get_drm_plane'
-> > >    76 | struct drm_plane *rzg2l_du_vsp_get_drm_plane(struct
-> > > rzg2l_du_crtc *crtc,
-> > >       |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:75:33: note: previous
-> > > definition of 'rzg2l_du_vsp_get_drm_plane' with type 'struct
-> > > drm_plane *(struct rzg2l_du_crtc *, unsigned int)'
-> > >    75 | static inline struct drm_plane
-> > > *rzg2l_du_vsp_get_drm_plane(struct
-> > > rzg2l_du_crtc *crtc,
-> > >       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:302:5: error:
-> > > redefinition of 'rzg2l_du_vsp_init'
-> > >   302 | int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp, struct
-> > > device_node *np,
-> > >       |     ^~~~~~~~~~~~~~~~~
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:66:19: note: previous
-> > > definition of 'rzg2l_du_vsp_init' with type 'int(struct rzg2l_du_vsp
-> > > *, struct device_node *, unsigned int)'
-> > >    66 | static inline int rzg2l_du_vsp_init(struct rzg2l_du_vsp
-> > > *vsp, struct device_node *np,
-> > >       |                   ^~~~~~~~~~~~~~~~~
-> > >
-> > > Caused by commit
-> > >
-> > >   768e9e61b3b9 ("drm: renesas: Add RZ/G2L DU Support")
-> > >
-> > > I have used the drm-misc tree from next-20240221 for today.
-> >
-> > I will send an incremental patch to fix this build error with x86 on
-> drm-next.
->=20
-> Any chance you can do it today? We need to send the drm-misc-next PR.
+I still wait for bindings to be applied. This means it might be too late
+to apply it for this cycle. Just letting you know, that I did not forget
+about this patchset.
 
-Yes I am on it.
+Best regards,
+Krzysztof
 
-Cheers,
-Biju
 
