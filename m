@@ -1,125 +1,136 @@
-Return-Path: <linux-kernel+bounces-76598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AC9585F9CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:29:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D76A185F9CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C6511C25054
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:29:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D0022851D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC321339B1;
-	Thu, 22 Feb 2024 13:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A831339A2;
+	Thu, 22 Feb 2024 13:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bHzNZ0TI"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="OgK2Bcdk"
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967A450A98;
-	Thu, 22 Feb 2024 13:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D4812FB02
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708608578; cv=none; b=s+5hMLdcCnblNXGRNUO93J7SbR1zv94AsKQZ6/jv28isWKfF48cSyHZ+0JlWE1Dvad2yINDOT9JeZm5SI8JP+2njoUqWx+19nBcrHJQ8VVvWI8StPD8ZV/rcXqZKanNPydmpx2nehZm1sXhcW8+fL7gln5lOEVFXWkHCEN2Zo9k=
+	t=1708608616; cv=none; b=FujtBoRj1zvQWvDoVRQsrjgCMrZf1m3kwu6pizVxEGHXvfcs7YUjpSF5ut9GT+BTxUyEnRxOq69JRrK9//NZUkPC4LfoBMNejvgXmzPjnZWBotnxYfq+IrcdmQ/d3Inxl9iQBFdcoJWQJl9Way+UjcxFqNdc2FL8tmFdindg6H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708608578; c=relaxed/simple;
-	bh=5O4K7q1IK/NjYK7WhiJ/eVnZEXOtS5drn8zpx1YYZg0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uWZc5pomHEIKlly5aEdk4P1DzUk9o3OFDKvJwsHDzjArhaMoyp0nf97gIHpvNzDz5X0z14XbDz0Z4w/UAHN6otOOOK0JrDarGJ1PTpvl/NXrE14Ltcmjt5/LXaV5zyEujbCGnCio1RfsNhP0uNLTr99AiQhFEjk7k4gBsJUrgsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bHzNZ0TI; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MDTOIU051313;
-	Thu, 22 Feb 2024 07:29:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708608564;
-	bh=/aXM1yR70nrbW0ktic0OxdjuUQY0IFYS5g44OXEYMrc=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=bHzNZ0TItjC1RCegWIeDfp0oiYQyIL6AN66VMk+Gk33sTymag13pEOTfELydsFbo7
-	 1JQF8xRSIYlW821A+CMsB+kS6LjV8SpDPkV971Qd6gBUifZ/JBWTgbiZ+3FBI9Oswg
-	 zbWd8WLc3xUMLd5C6c6OzkAg9hAb5iMNg3pW0jys=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MDTO4K028337
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 22 Feb 2024 07:29:24 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 22
- Feb 2024 07:29:24 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 22 Feb 2024 07:29:24 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MDTKSa107922;
-	Thu, 22 Feb 2024 07:29:21 -0600
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Peter Rosin <peda@axentia.se>, Andrew Davis
-	<afd@ti.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j721e: Fix mux-reg-masks in hbmc_mux
-Date: Thu, 22 Feb 2024 18:59:17 +0530
-Message-ID: <170860805561.1966114.12049702081667007759.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240215141957.13775-1-afd@ti.com>
-References: <20240215141957.13775-1-afd@ti.com>
+	s=arc-20240116; t=1708608616; c=relaxed/simple;
+	bh=CCCDVfjOdXJUfj4abfYUhg1XpYqlkNzhg8HjSIrRepQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ShpN+4ocJ/l8fLt8MViW8Nj9hvd2+amZmcH2oKgXr2ROvGDbDWXJEzamrhufOQb4sPXvJeUp83tthDbGuvUWSLmCtNgy4T6cmfZwyMw03TnM+J+wpWSGb/IKxPVUbQR62mH+N5Z8dZoXywQ8+THgmIn6eEoNoDDcTBdeyLjX6hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=OgK2Bcdk; arc=none smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7d6a772e08dso2847803241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:30:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708608614; x=1709213414; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+ZS1HiPVKUfAHyltRnTHESSwTY1uCLLaR3nEKiiJ6YE=;
+        b=OgK2BcdkrufgiUFsd9LZftjYuFaQHRmFuQZJc43Ymm+cukXYZooRRqf2ft9yBO9+D6
+         07vxz+DR+o8N82O0UxuQJH9fnlQPGzBot+bFuGISFJmMudljmbcSSFC+PEK5G/n8DSPS
+         lWMkKa5t3pdpq/5D7DF/vHPb8aBjBwkuGv6j88W8OiVMkfaSlcwULSCdYXQFmfAeAPeM
+         cX5Nh4W5gkuSeZXOBbJ/ccc7VFAwQMIogOp25p8zA3Bod00I/u6kh3bJGvTJ/MlMKEzf
+         Y3NX/58A4988aXB4UsapMCff5d5cTuofZMbQ8Z73dmaweyYP8mj7Dfu9ePnOOha3I+EN
+         oKzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708608614; x=1709213414;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+ZS1HiPVKUfAHyltRnTHESSwTY1uCLLaR3nEKiiJ6YE=;
+        b=Fhj+R9ceKSxW+bkxP1O/nWI6eTay9v3SOyWNn5XClKk5Ok+NW84M9kNosu3W/rbExu
+         IqTCKxJ2NXvrk/GVGjpdEuReXIn7LphAPs59hDfp7z92Ri4fs2j7457n+9DPGssilJ6e
+         ej/kMcjXVu3jgQ7ZuIaQjKHztEpikIc4YPVMBg0Dy58DS2eu9vpLrRmReWQsMhiyBWqy
+         9ozznNUaPJdmVQHcbbIo7q8B3dStKayol9U5O58UMcQBzQuTeUw2cpxVNhCBQa1kjIA9
+         EdcKOKUUN5JznoAvmTs/Xq9TV2PfxOZffQ1CD8R7GcUZMkbTY6FWrtoUG25pAoKQho9S
+         EFEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVZGJbHY8ptHk8bL3nxU+meO+u6nrTtRVHqOw0epAcWlT4/VgGK0Mh+yQ1taXAotHt4tXCrxwrtX5/9DBLxJ4ciMGS+tuRQg6+klzV8
+X-Gm-Message-State: AOJu0YyZfDwHnZ/Acq6zu0rkpLqtoV3oB0rJ/TUEzuoILvGk49r5q6Gy
+	Nit1+jw+kY+AF70Q2qF4NLNqpKooT45YEkd/K4+NhagN2BT7KSi5L73JB9L6gq2pHsyu0dxdqNQ
+	RzM1FzfffDAB5V7b5Cmva7dr+imDJKN/lrLO5Ig==
+X-Google-Smtp-Source: AGHT+IGTU97g9Jf/2v5+mWOkYTyqn/V5nIeZiiSxBuquPKjPl5Vuf6KJd3ahpcqNQG6gAH6OfM2TM3ziLHElX2nKI/U=
+X-Received: by 2002:a05:6102:cd:b0:46d:7523:1fe with SMTP id
+ u13-20020a05610200cd00b0046d752301femr10082224vsp.30.1708608614014; Thu, 22
+ Feb 2024 05:30:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240221193647.13777-1-andriy.shevchenko@linux.intel.com>
+ <CAMRc=McECxKW+uS7fQyGtYVfcSZQaAJZFi+s+wNMoRiHxef0zw@mail.gmail.com> <ZddL7L24RXoqR7sN@smile.fi.intel.com>
+In-Reply-To: <ZddL7L24RXoqR7sN@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 22 Feb 2024 14:30:03 +0100
+Message-ID: <CAMRc=Md6d19hhySFti+vSLV9pfyzuHNUDmHN_XYV73uCWDAY7w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Deduplicate cleanup for-loop in gpiochip_add_data_with_key()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andrew Davis,
+On Thu, Feb 22, 2024 at 2:28=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Feb 22, 2024 at 10:48:00AM +0100, Bartosz Golaszewski wrote:
+> > On Wed, Feb 21, 2024 at 8:36=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > There is no need to repeat for-loop twice in the error path in
+> > > gpiochip_add_data_with_key(). Deduplicate it. While at it,
+> > > rename loop variable to be more specific and avoid ambguity.
+> > >
+> > > It also properly unwinds the SRCU, i.e. in reversed order of allocati=
+ng.
+>
+> ...
+>
+> > This doesn't apply on top of gpio/for-next, I think it depends on one
+> > of your earlier patches?
+>
+> Yes, on the fix with error path.
+>
+> ...
+>
+> > > +       while (desc_index--)
+> >
+> > What about gdev->descs[0]?
+>
+> What about it? :-)
+>
+> for (i =3D i - 1; i >=3D 0; i--)
+> while (--i >=3D 0)
+> while (i--)
+>
+> are all equivalents.
+>
+> The difference is what the value will i get _after_ the loop.
 
-On Thu, 15 Feb 2024 08:19:57 -0600, Andrew Davis wrote:
-> Change offset in mux-reg-masks property for hbmc_mux node
-> since reg-mux property is used in compatible.
-> 
-> While here, update the reg region to include 4 bytes as this
-> is a 32bit register.
-> 
-> 
-> [...]
+Ugh of course. But the first one is more readable given I got tricked
+by variant #3 at a quick glance but the for loop says out loud what it
+does.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Bart
 
-[1/1] arm64: dts: ti: k3-j721e: Fix mux-reg-masks in hbmc_mux
-      commit: 3d585389d454e147187684e492a0eb8f56adf311
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
-
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
