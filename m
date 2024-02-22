@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-77059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDADF8600A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:15:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872FB8600AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:15:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52EE2B23540
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:15:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C9441F2576B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4F0158D7E;
-	Thu, 22 Feb 2024 18:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6161159574;
+	Thu, 22 Feb 2024 18:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VJRcBuLb"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgS/draF"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E4C157E9E;
-	Thu, 22 Feb 2024 18:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B011586FE;
+	Thu, 22 Feb 2024 18:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625668; cv=none; b=giQqpQrNUmpjdXq2z9vGD30GV7kJRNpwMqu+yyMniPFe/0zORJYjvpN6RjBEdtA7ggr9B4VfBCUdhuW99fpoSVMb3R+NS0kcNMdnb7ChlDs3SH26KgRLljPp0N74wToLuYsKSqF3JKNRYgPQeGkJiCkydfxB8M17hcHWYEwu9p4=
+	t=1708625670; cv=none; b=c2FkqOURmUo+MwWNkY3HJmmymU1uhLR48wUU3PCNwNLkmdAm9R9gxV4FEtYjJPZeytlYX44fxS7uRfe+/415GV1xqE2Q+p17M34BYxRF31WtCF0IwYcG2KO4ZQHa+K/1hAFn4uzDMarc/T0Hsk2zRxM/56mYR6GyiBm+xK+LG+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625668; c=relaxed/simple;
-	bh=YzCbWthFnZoVbBTFuXK4fwe/Z//BvPsDRf2GmSlj8Ag=;
+	s=arc-20240116; t=1708625670; c=relaxed/simple;
+	bh=qvt/AxuuD7wwbgx60w7qybSQURCLd9kZ77gSrC/d+OU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oUBT2kiuxP3jRFbYL9dpw2xXX63KF0yZzi/R9bGzBTDe7HCGh7ntQH4X9O8zThazTp9uuXLclbwZZDyCTA+RV4TCPq2PuzG5NOeNyP/rthie2IzAMIaRSNpwyL3xOIK9hjPTpMcxQw0+h8raN7/Yzrs6A8n4QX9d3dkMhxFbYYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VJRcBuLb; arc=none smtp.client-ip=209.85.167.41
+	 MIME-Version; b=TFY8wCUKGpFDz5KOuY6s3fnEOr8b/WlKLxrSvnh8SSaz9AQ1XX88zBvyDMczs/K2NX1GjScR+KJPBVWe2yDDxt1ytrwIA+NgsyrdqwBriz/pc+41Hry0I+ZNwIzJOJQop0HsRg6w7jeFni7u7tOemgTGSulyRUJOf24Q1FqpgCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgS/draF; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51294b40a52so82633e87.0;
-        Thu, 22 Feb 2024 10:14:26 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512aafb3ca8so92422e87.3;
+        Thu, 22 Feb 2024 10:14:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708625664; x=1709230464; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708625666; x=1709230466; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x4DYckUBnyYVrA7U82dE/dSUDjWpjIV6W2v0tQMwU8w=;
-        b=VJRcBuLbC1fm+9F1FAGEPr9128tyXq/dh9NxBT+YTw0JvLcwZ3r/Hcc9j63Rwts0Ku
-         P0xqv+lZsg2ub79sCS+UW53ImfknduVuZW9TdaRtLNexHaecrsvZtpt/jMvPSiZDzE/t
-         bneBOGF5OcxRGESzReYaW8qo7Uf6RtWEUbYbQtJuySrfVLLPzUK6d0DQ91DWfM/Z+wn+
-         4S8S+ipH0liAA94QlkQjtSAGEfWyVb6VLCuzFL3P+1fC7+Q65Al338C8krfgChieLqYr
-         EZLIV+0YjkqULqN+FXuQ8tHx1TBUHxrbza67+sj6r7LIYkciNqMCNOkWRX+1DvL8ijt+
-         TdRQ==
+        bh=s0PkFM1zHHNODsMfc/INZSKS8pmA7KHQoUde1CaCg/A=;
+        b=KgS/draFvQy/FNfwqqAh+O3dVfhyX7v+jMYRVoXHI25AU9/9f5leVsm1D+ra1kK80F
+         7ZxqK6VKAu472cLY/mEZpzhupvB1JPLSYbenX+CS1chEhQKi2IIrbEyYkzyZBZcDTmts
+         qEvhcs1Ms9P+h5nZcNntgLXL9Z7YCtzyaq6Tnz81pmKuIWTCBpS5k6Z9MFGOOudqR8BW
+         2bsOhjTlqDL7JsDSCizGSqteRU2KGulH2SNI0b3bG+epAhW4y3wk4m0sTYG2bhRLaOe4
+         G9kNxV9wmf5xDSl7v4nD8wBYYHd0os4Aet/C8g7JOe5qz5CHdTQ9w82cNWwYy2zUicMc
+         RlDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708625664; x=1709230464;
+        d=1e100.net; s=20230601; t=1708625666; x=1709230466;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x4DYckUBnyYVrA7U82dE/dSUDjWpjIV6W2v0tQMwU8w=;
-        b=sz+5S4KXiRkhrSKLgGBhjFBmgoBI08uVVbCyQoyPkUU+OXr3uuCRTR4SDpRqBlrYG4
-         yXNXEkXE3bDGjZ+LFzer1CMoAN6JPm22VZSi0S3TAMbgkehmY5TsR295dXuVmEtF0SZx
-         J0ugqlz4bwa9ZFX7ek53oCt4pVYMHtwM9K6rGd5XELADtq+kHtJgMfzwe2uBTRsbq2db
-         fwYwNt9dddCgCaZZQ9y4ngfxnNEXmB1ThF5I3lwBYTkjnI3dv8SxnOXxiB6kaAbBDBrN
-         0Q583QDeS+gi8NXEo5kQqwrNI1o2hGj6f57b4oaGX4jQz23Oq7TKmZUV0ef0G6iHfv8r
-         8+GA==
-X-Forwarded-Encrypted: i=1; AJvYcCWgAJOpfE4WrLnCDr0pqRI0gXdy8CUhfutQrbeIFR7EqUJ1MtrhEdrfNlDrTZIITDQrwawrvXafqKfC2mZ0tiGYSM6srv+4jjI43RZ/z5t0jQYDqfVwLdTfC4N56BYqmpSruVuskCXExg==
-X-Gm-Message-State: AOJu0YwXyF/b4C5gOT4vIc8It4M0urFy4MBEsGFaPscT3IIGxtsLDi09
-	Yo/tNsu5eBS18YvcSk/D9WUXC3rp9BQaPoPJz4USkvjr5qmQF4Vk
-X-Google-Smtp-Source: AGHT+IGJ/nsuVLRKc8FXj1WcjDvwWPQJBicyowF64SttTvyGSeLfyGnnezM8knKtZRAhXGeFbwZldw==
-X-Received: by 2002:ac2:4ac2:0:b0:512:cd90:221d with SMTP id m2-20020ac24ac2000000b00512cd90221dmr1228096lfp.33.1708625664597;
-        Thu, 22 Feb 2024 10:14:24 -0800 (PST)
+        bh=s0PkFM1zHHNODsMfc/INZSKS8pmA7KHQoUde1CaCg/A=;
+        b=Kw0F3iJdD4dIDXqVQjZHS4pHv3cxUuKRJcttm11RZIdJRX7HaMn1fTWlB+pa96Abnu
+         aXeJ4XFmM51ds0epkrARz3uaHPIfCqya6PKJJAnGAa34a4vP7rEkQA/yOKb3aXOOW78J
+         uTIEYB0pkKCeE6BmxL43PJismPjh3l15cCuEubMrW1c25eZJkpXEbdxgtic63uk+d02y
+         3gf1+iKZYv1liA1NSrHrwPIzEC62lVBJilPyG9Wu33P6091Osl3jmTwggXyj9aK8CM9l
+         s5LT1Gfvqp0IjSCBpK2t2WNFPquFAN3zQNeFo8BMmTC9XySbU92QYUX+suI0BrbZGpX/
+         XEZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGIJadneJ1m5njLXW3zUdLO9co61jzOKmCXd3NJnJS0ucnKwTiICakRz20hSyp2IIqbKFpSQ4RC2dkfKd/pKGFPb86biIEXxunnKKyYka6cJ3ZglVsHFy4cBVr3u5M2rRiCnmuBNsqkg==
+X-Gm-Message-State: AOJu0YzgSLAw4zpPrlICk51x22mXHLycof22TBm3MqDVYSI/nwYB/XLc
+	XgOZbkeGFRO24Vnz62CEaDHNzdXHySt0llaqqtC/GJ+e50EKSCk5
+X-Google-Smtp-Source: AGHT+IHahT0a07aFA2OedK8mTZdnaBkfS3CSGBF+9vHiELIFN8mrf5vJu/bEAFsJ399T8e/mgXYx1Q==
+X-Received: by 2002:ac2:593b:0:b0:512:b366:6c42 with SMTP id v27-20020ac2593b000000b00512b3666c42mr8072382lfi.32.1708625666512;
+        Thu, 22 Feb 2024 10:14:26 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id m15-20020a19520f000000b00512c8ef474asm1042885lfb.270.2024.02.22.10.14.23
+        by smtp.gmail.com with ESMTPSA id q2-20020ac25a02000000b00512daaef13bsm398124lfn.102.2024.02.22.10.14.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 10:14:24 -0800 (PST)
+        Thu, 22 Feb 2024 10:14:26 -0800 (PST)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Michal Simek <michal.simek@amd.com>,
 	Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -74,9 +74,8 @@ To: Michal Simek <michal.simek@amd.com>,
 	James Morse <james.morse@arm.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Robert Richter <rric@kernel.org>,
-	Manish Narani <manish.narani@xilinx.com>
+	Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
 Cc: Serge Semin <fancer.lancer@gmail.com>,
-	Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
 	Dinh Nguyen <dinguyen@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -84,9 +83,9 @@ Cc: Serge Semin <fancer.lancer@gmail.com>,
 	linux-edac@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Borislav Petkov <bp@suse.de>
-Subject: [PATCH v5 02/20] EDAC/synopsys: Fix generic device type detection procedure
-Date: Thu, 22 Feb 2024 21:12:47 +0300
-Message-ID: <20240222181324.28242-3-fancer.lancer@gmail.com>
+Subject: [PATCH v5 03/20] EDAC/synopsys: Fix mci->scrub_cap field setting
+Date: Thu, 22 Feb 2024 21:12:48 +0300
+Message-ID: <20240222181324.28242-4-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240222181324.28242-1-fancer.lancer@gmail.com>
 References: <20240222181324.28242-1-fancer.lancer@gmail.com>
@@ -96,123 +95,34 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-First of all the enum dev_type constants describe the memory DRAM chips
-used at the stick, not the entire DQ-bus width (see the enumeration kdoc
-for details). So what is returned from the zynqmp_get_dtype() function and
-then specified to the dimm_info->dtype field is definitely incorrect.
-Secondly the DRAM chips type has nothing to do with the data bus width
-specified in the MSTR.data_bus_width CSR field. That CSR field just
-determines the part of the whole DQ-bus currently used to access the data
-from the all DRAM memory chips. So it doesn't indicate the individual
-chips type. Thirdly the DRAM chips type can be determined only in case of
-the DDR4 protocol by means of the MSTR.device_config field state (it is
-supposed to be set by the system firmware). Finally the DW uMCTL2 DDRC ECC
-capability doesn't depend on the memory chips type. Moreover it doesn't
-depend on the utilized data bus width in runtime either. The IP-core
-reference manual says in [1,2] that the ECC support can't be enabled
-during the IP-core synthesizes for the DRAM data bus widths other than 16,
-32 or 64.  At the same time the bus width mode (MSTR.data_bus_width)
-doesn't change the ECC feature availability. Thus it was wrong to
-determine the ECC state with respect to the DQ-bus width mode.
+The mem_ctl_info.scrub_cap field is supposed to be set with the ECC
+scrub-related flags. Instead the driver erroneously initializes it with
+the SCRUB_HW_SRC flag ID. It's definitely wrong, though it hasn't caused
+any problem so far since the structure field isn't used by the EDAC core.
+Fix it anyway by using the SCRUB_FLAG_HW_SRC macro to initialize the
+field.
 
-Fix all of the mistakes described above in the zynqmp_get_dtype() and
-zynqmp_get_ecc_state() methods: specify actual DRAM chips data width only
-for the DDR4 protocol and return that it's UNKNOWN in the rest of the
-cases; determine ECC availability by the ECCCFG0.ecc_mode field state
-only (that field can't be modified anyway if the IP-core was synthesized
-with no ECC support).
-
-[1] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
-Databook, Version 3.91a, October 2020, p. 421.
-[2] DesignWare® Cores Enhanced Universal DDR Memory Controller (uMCTL2)
-Databook, Version 3.91a, October 2020, p. 633.
-
-Fixes: b500b4a029d5 ("EDAC, synopsys: Add ECC support for ZynqMP DDR controller")
+Fixes: ae9b56e3996d ("EDAC, synps: Add EDAC support for zynq ddr ecc controller")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-
 ---
-
-Changelog v2:
-- Include "linux/bitfield.h" header file to get the FIELD_GET macro
-  definition. (@tbot)
----
- drivers/edac/synopsys_edac.c | 49 +++++++++++++++---------------------
- 1 file changed, 20 insertions(+), 29 deletions(-)
+ drivers/edac/synopsys_edac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 0168b05e3ca1..455d2fcfd8c1 100644
+index 455d2fcfd8c1..7c57c43b4d31 100644
 --- a/drivers/edac/synopsys_edac.c
 +++ b/drivers/edac/synopsys_edac.c
-@@ -674,26 +674,25 @@ static enum dev_type zynq_get_dtype(const void __iomem *base)
-  */
- static enum dev_type zynqmp_get_dtype(const void __iomem *base)
- {
--	enum dev_type dt;
--	u32 width;
--
--	width = readl(base + CTRL_OFST);
--	width = (width & ECC_CTRL_BUSWIDTH_MASK) >> ECC_CTRL_BUSWIDTH_SHIFT;
--	switch (width) {
--	case DDRCTL_EWDTH_16:
--		dt = DEV_X2;
--		break;
--	case DDRCTL_EWDTH_32:
--		dt = DEV_X4;
--		break;
--	case DDRCTL_EWDTH_64:
--		dt = DEV_X8;
--		break;
--	default:
--		dt = DEV_UNKNOWN;
-+	u32 regval;
-+
-+	regval = readl(base + CTRL_OFST);
-+	if (!(regval & MEM_TYPE_DDR4))
-+		return DEV_UNKNOWN;
-+
-+	regval = (regval & DDRC_MSTR_CFG_MASK) >> DDRC_MSTR_CFG_SHIFT;
-+	switch (regval) {
-+	case DDRC_MSTR_CFG_X4_MASK:
-+		return DEV_X4;
-+	case DDRC_MSTR_CFG_X8_MASK:
-+		return DEV_X8;
-+	case DDRC_MSTR_CFG_X16_MASK:
-+		return DEV_X16;
-+	case DDRC_MSTR_CFG_X32_MASK:
-+		return DEV_X32;
- 	}
+@@ -855,7 +855,7 @@ static void mc_init(struct mem_ctl_info *mci, struct platform_device *pdev)
+ 	/* Initialize controller capabilities and configuration */
+ 	mci->mtype_cap = MEM_FLAG_DDR3 | MEM_FLAG_DDR2;
+ 	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
+-	mci->scrub_cap = SCRUB_HW_SRC;
++	mci->scrub_cap = SCRUB_FLAG_HW_SRC;
+ 	mci->scrub_mode = SCRUB_NONE;
  
--	return dt;
-+	return DEV_UNKNOWN;
- }
- 
- /**
-@@ -730,19 +729,11 @@ static bool zynq_get_ecc_state(void __iomem *base)
-  */
- static bool zynqmp_get_ecc_state(void __iomem *base)
- {
--	enum dev_type dt;
--	u32 ecctype;
-+	u32 regval;
- 
--	dt = zynqmp_get_dtype(base);
--	if (dt == DEV_UNKNOWN)
--		return false;
-+	regval = readl(base + ECC_CFG0_OFST) & SCRUB_MODE_MASK;
- 
--	ecctype = readl(base + ECC_CFG0_OFST) & SCRUB_MODE_MASK;
--	if ((ecctype == SCRUB_MODE_SECDED) &&
--	    ((dt == DEV_X2) || (dt == DEV_X4) || (dt == DEV_X8)))
--		return true;
--
--	return false;
-+	return (regval == SCRUB_MODE_SECDED);
- }
- 
- /**
+ 	mci->edac_cap = EDAC_FLAG_SECDED;
 -- 
 2.43.0
 
