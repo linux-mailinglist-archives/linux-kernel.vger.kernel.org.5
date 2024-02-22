@@ -1,117 +1,124 @@
-Return-Path: <linux-kernel+bounces-76585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB7C985F993
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:22:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A88C385F997
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6DD01C23A3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:22:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F128287D55
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51F21350D6;
-	Thu, 22 Feb 2024 13:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24E413473F;
+	Thu, 22 Feb 2024 13:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VRmSJ3m1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bNzOX7jY"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A29133983;
-	Thu, 22 Feb 2024 13:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D62B3F9ED;
+	Thu, 22 Feb 2024 13:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708608117; cv=none; b=mcn8sDrs/1Da2iVwVqp7HwWpImpt55E9b8wKq9VjufuL/9/VI5An4F/NgyscHyNcWPwTFl3eElJKyJ7IXBvs+afwqEF2dUn1pwLXKLUU2c+GEUOzyHZXvz9BV07jD/tQZQbjREOUdas7AUcPLLtPYsBtcMoAFcg4Kr91pA33Ujs=
+	t=1708608165; cv=none; b=oAaYvkCH/Z3vWK6OOmJ0Q34wIGsQoujYHb72mW1PdltXRM2YStsAwBn4WpClR5Ei2Y4zKvDWmXF7qafnEBGhPteNUHNIFejy2W2MZfrP3bG5/txCQhWzkrhxGQdYSsOOTQj63Kv4wVLnHZ83Y6+9AZGZhhYIS7zeu+HvupCLY/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708608117; c=relaxed/simple;
-	bh=LUP/1Bq8oCXj+CsYBpJOUqAEbKSgM+4ilo2mGVOjFxQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHzSsy3SsND5p7rPsvHhypkz0HsOhLvp2DKKutnqngCM5++Qo0rhJ3NHzUCXoBW1aDONj+kM3qopGYauduQz6M6St4bOzDXTUaPW+mKu57oRJlq6XaTefH/vCeduppe3aBTYJkzRDz5//wlp5F74B/PlFPrF6FSpaS2Qw2jWLkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VRmSJ3m1; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708608115; x=1740144115;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LUP/1Bq8oCXj+CsYBpJOUqAEbKSgM+4ilo2mGVOjFxQ=;
-  b=VRmSJ3m1CPbF8brZL8s+uSfURQSgB4g3OBwSSCIAFElJPfz5SnuOA6gM
-   XDexW3TAnmdyeX4KcVccD4uTKcMJqp0p5LoXM+axxHC5+D7Wvz0OLXWzQ
-   rg/ad0g9ECRoONwuD/D3p1r3nczFOHmYIzJvs40G039Bxumi91dqVDFha
-   2Lo0mjOW0yn+/uHXnqd9XIzkdh2uOk+hGBCFjIVO8gJG/pRMC4yKoEJ/f
-   RUMXJo6CktXKzRO8NmhNp8hsaktk7i60kwDFa0rNovYo4/+KGNGxH6XJO
-   7BvKNt8bfH7onOb0+t+BKt8ZQEOgYGufujGQdVarW72F+yshUyDL8v/FG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="25291944"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="25291944"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 05:21:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913523354"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="913523354"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 05:21:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rd91F-00000006dVC-3OPd;
-	Thu, 22 Feb 2024 15:21:45 +0200
-Date: Thu, 22 Feb 2024 15:21:45 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v1 02/14] serial: core: Add UPIO_UNSET constant for unset
- port type
-Message-ID: <ZddKaaB7HO0CyldD@smile.fi.intel.com>
-References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
- <20240221183442.4124354-3-andriy.shevchenko@linux.intel.com>
- <5aeee02f-45a6-48e5-a6f4-e55b76d4b959@kernel.org>
+	s=arc-20240116; t=1708608165; c=relaxed/simple;
+	bh=eBYXIyM7l7L2CPD4PZhB6FUIsDNqhBJx3bdqZp3tWg4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XOfzg/6ZDn9CakRQJXFcdYk8RJGp7yXqVNJU0rstMNJ1CnMI/4R1y/1/hV6xgSP8ZYw553YcxBMpQSzAxzKhl5u2oOsLlMlu9imDNiJwkfili5W4vXJhcL6VBzwh2pk4to+NBI4aPJj11/1sMv7PvUAkoSxR4A8g/XGwPgggkI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bNzOX7jY; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MDMZLD046755;
+	Thu, 22 Feb 2024 07:22:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708608155;
+	bh=XgfpVgHH1tgrJ5dLNBy/JKfod6zFSg3RNVRg+hVXmEo=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=bNzOX7jYKJtuRVFz4CF/+dZ0IteuFbYrcHXSawakmYBK5KAOSW9P74YH6x/yww1wI
+	 sDqR83VRj2V70Q71oDfAxcViSlNMAt8KeyE+AXzLn4hPZjCXnUAGCtldhwrmAnEhFh
+	 OMi+MVtsTI2Mb8ZonCeJEVs7wPMZxB0/W2gud56M=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MDMZmX120727
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 22 Feb 2024 07:22:35 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 22
+ Feb 2024 07:22:35 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 22 Feb 2024 07:22:35 -0600
+Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MDMVWF008883;
+	Thu, 22 Feb 2024 07:22:32 -0600
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: <nm@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        Vaishnav Achath
+	<vaishnav.a@ti.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <u-kumar1@ti.com>,
+        <s-vadapalli@ti.com>
+Subject: Re: [PATCH v2 0/2] Add OSPI and Ethernet support on J722S EVM
+Date: Thu, 22 Feb 2024 18:52:28 +0530
+Message-ID: <170860805562.1966114.3015232602049266823.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240219090435.934383-1-vaishnav.a@ti.com>
+References: <20240219090435.934383-1-vaishnav.a@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5aeee02f-45a6-48e5-a6f4-e55b76d4b959@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Feb 22, 2024 at 07:58:32AM +0100, Jiri Slaby wrote:
-> On 21. 02. 24, 19:31, Andy Shevchenko wrote:
+Hi Vaishnav Achath,
 
-..
-
-> >   	unsigned char		iotype;			/* io access style */
-> > +#define UPIO_UNSET		((unsigned char)~0U)	/* UCHAR_MAX */
+On Mon, 19 Feb 2024 14:34:33 +0530, Vaishnav Achath wrote:
+> This series adds support for Ethernet and OSPI NOR flash on J722S EVM.
 > 
-> Perhaps making the var u8 and this U8_MAX then? It would make more sense to
-> me.
+> V1: https://lore.kernel.org/all/20240216135533.904130-1-vaishnav.a@ti.com/
+> 
+> Changelog:
+> V1->V2:
+>   * Update comments indicating PAD numbers.
+> 
+> [...]
 
-WFM, should it be a separate change? Btw, how can I justify it?
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
--- 
-With Best Regards,
-Andy Shevchenko
+[1/2] arm64: dts: ti: k3-j722s-evm: Enable CPSW3G RGMII1
+      commit: 9aa197b64df4c382763f032a31b35cad92cbce17
+[2/2] arm64: dts: ti: k3-j722s-evm: Enable OSPI NOR support
+      commit: 2e53b9c05a1589577565625fdb45cf918b54eb39
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+--
+Vignesh
 
 
