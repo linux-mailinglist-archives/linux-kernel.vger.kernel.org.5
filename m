@@ -1,105 +1,160 @@
-Return-Path: <linux-kernel+bounces-75902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1608A85F075
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:35:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A347A85F076
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:36:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEF10283187
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:35:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F0DB2830F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D51115B3;
-	Thu, 22 Feb 2024 04:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72671388;
+	Thu, 22 Feb 2024 04:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gq2V4Vqm"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MlZfSV4f"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1BE4C7E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA9610E5
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708576548; cv=none; b=oJTQqZe6p27MHgzen4piFjUoINi+EOwzqmze63FpQt+B2RiNbTN1TevIMEHXHWke9TAJXDrWMsPjIhEB5giV8yD8+b9j0eIutSQjRacXA/aarfaHJvlryzhtiR3Jj8wybzrQEjDDE4hWJGkvkPmkPF5JQFy8PlO4iswn+NR5NRE=
+	t=1708576592; cv=none; b=H6ez4AwClBXTEZrCHImqzPV2FpT3srNPRqhlkRNeCJ7JTxhH7NWqmJyEtqHiEzrZ+B/M1X/Z4tIlLDlCoKaZXTeSXsLsxkfwYEAi9aFJXau4CgJK8LCSUVnDyA+V9RqKhcZeC6ghuk3gr2mwhxCL6vvDoh9l3tPc85C75moW2jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708576548; c=relaxed/simple;
-	bh=R+LaV9IObqXEDslRt6huejtrzOUwqWZwLScJ3hFhjoo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vBG4pkkFRF1nXlbknuaxxTmwlcM5Zmq4z0I/jeIPfczclL3f4wQo36csHW4wal6Cu3YXBxVF/L2rGgNPYoeH/pDK0z+ScruyJkUba/1EMgy3mHsz+PU4+oHTwgo221b1ap8p4v6SUtpeIJt2p8oIGf3aaPgtnsM7iJA6Tg2KO4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gq2V4Vqm; arc=none smtp.client-ip=209.85.161.46
+	s=arc-20240116; t=1708576592; c=relaxed/simple;
+	bh=/te6BUN5uNGb3X5VKlBOeewCkUInzQPYhE0UrDEOiJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uvMrxsXgt5gPDMmrp4yNQDUEhdOS/zNeOFl9sYaLFiLdMQP21ZAGb8eknm0CyI8sz5o1F23NzJWmGLTK50Vv9gdo2xqmvLLfLTlL/0e+U2ZfOdDQGeEBJKijIOXN3Mhc+9YjfBIoVmMweQtm0JRN8DgKyDuOhrqrq63lrDpzaZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MlZfSV4f; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a0073ae310so1121628eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:35:45 -0800 (PST)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78725b62cf2so363244985a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708576544; x=1709181344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1708576589; x=1709181389; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dd5caO8ozl7kT0iui9IzlMI2kddZaEY7frmQ6rB1CWk=;
-        b=gq2V4VqmZZCL3XUy1CYzfRluSbXeUOXkDVfuCU0rud8fRK+BS6sftmdo13cD00gprw
-         +5g9Q9BWW6RL02vEWSHzShmE4WKdeOro593dU9nOS5y1jtganxI9M/XttZvr2ehg5Rl1
-         jmHXAjdW5iAmUhtQW4L9gHEOhrYSqYDR59JIgR5r8RJ0nhFwjPSPDkP6PoxPZeSi5m5w
-         k6hExnIsJDmzbn60uLFgmXNQ9tFuNknLsAGeuPMG6wu3im2HIWB4TZVU5FG8ycZUbP1H
-         78FaRK3pcsMtwqOmYR/p1k7uXfCU2O7xs5Q10eH9hOsmgKwrymUaaySdNzRn9ob7QVcA
-         9qMw==
+        bh=/wj82xEL3MXTSUC7EkK9OL5XKxFUXCZ97I1b2wdmhvE=;
+        b=MlZfSV4f8P0EYrlY86nLs9xlCk0bfZPFYGHFSW4qcAHBTs/LmWS9D6P8LBuK6vJ+pw
+         XEZugNqQn/hV5c6MRSvghBEYKjdQZCQRTTx90XSvb6GanDNPNbWT3LDShAk4Ft9eyctU
+         PyvYpglndC0X0j0lOP3BSFlweM1awTB+/74SDgLMPFdw/xgZRyRR3z9qS0U9OJNoFScK
+         3Sp+nD3XcF1TB8w74QIdn3V0QLVzDNZN8qwPqeiyaL4EcwZxkQWBPUsohibV+s6bxdqX
+         asNgwN8c9xvCUZXJo7ArlBv3s6XKUcD0XBdfFUT4dIOS8hYILEccDSRQG5wB2WmJvRGp
+         yDbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708576544; x=1709181344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708576589; x=1709181389;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dd5caO8ozl7kT0iui9IzlMI2kddZaEY7frmQ6rB1CWk=;
-        b=lInefsTaid/P06UGgr70AnVixq4tZH2nvb5o/+8g7C+ZGNU0dSGPYbDTW5tT5TrgCN
-         m0xHL5JNsie9hC+zKKbTpB52cmpl9A+gA2eSeBuCadvy8Jowaw82gv6FsvqDZqK8aylw
-         YugMZlyoinqHQuzbf/nKZQgjO/eWNQv/HgdqZZ2jTr9ql6ifZ9ViW7yf3AD4XkiUD3FT
-         A7uIqnPudhbB7CZX3u8xl7aD5nWuh7T7U39nem5IY27Jzd1TBrEAGwV33OTsMLi7nXV2
-         ew8yKps2WncRYnC5PFpT4k9CpZtPAs0tlcU2dIJetWVKFt8suOx0RxzCvmkYLCWRqey8
-         t0qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMK9oedffXWvhWbZ+A78Q4mWqNkGG2n1NGwQU4LEvEEm/pA6SR/G0+P7aK8/4AN1hZxTp2xy8lzxN+uTfVR+INT4vGSSpaNVwPa31h
-X-Gm-Message-State: AOJu0Yw6SB9ZGour69KC6DJ1IJ5e6hlJEACXw+fCaxx2/if9k1D5Sq70
-	J30jZslAiajdhucI2hr1NYhoWMuLk3JmUhuwOqSdFWUie6BHSGb7PtED2lh/hMbP7Z0pnnSOs8L
-	zWfyiYcD5ZcAPZlFzPLXOUXavpbg=
-X-Google-Smtp-Source: AGHT+IELOPzLAZtuM/6YlRq9uat+E4pWlf0jBLcTfsx73d5yOnxzzon+ziMTuPx5sKRX9OrmsCT+Ztozk2567eMxYzM=
-X-Received: by 2002:a05:6358:18c:b0:17a:ec74:b574 with SMTP id
- d12-20020a056358018c00b0017aec74b574mr29323834rwa.10.1708576542881; Wed, 21
- Feb 2024 20:35:42 -0800 (PST)
+        bh=/wj82xEL3MXTSUC7EkK9OL5XKxFUXCZ97I1b2wdmhvE=;
+        b=EaS5daCMkG9Hy0vBbCnJA3NuhBAwYqS1nppZcNjWIu3cqCPy5IJPJ1gSVv7xmB9MRJ
+         He6H9kIfNz/mFEcchGBUIrX3svJt8NY0HEeDxZ0NU4fxBp/p2FOjrG2+BVExAs8bHO2B
+         97ufjrA88aSMX+RZlFyyKgLxVc1bi5t8ext2sjEsb3DVyei3cID4KADFGh1O+uMmTbPW
+         /lHgP2Y5EQndegtCiHx3ZmKMvVdgmccOefYF7gOO+TWDDj98WfGrFxNiTJmbVzd81JsJ
+         HS9rFSJ/v7KjHfXvq6IKcxDrcDv/GucVIQ/YIwLSqU8TT53sRHpAbQltctGTr8w2Acfl
+         kHqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXgL0Uoy/Brsc/j+bFkICXEnE0oNTlCTOeBOgcfDBwGS2GOArOgZXtgHjllgCVC+HSSmx9y1oUaVsm4prrGTNBcGoADNVITS0C8FZQr
+X-Gm-Message-State: AOJu0YwxCtIfvULI64SdpXpdkOUuQZLkZ3BezPg0xZex82brn6+cws2e
+	8A8BFxWT+zMRZonUTO67IgFy16Sp9skqQq82abwNscOIL9YcP2dh
+X-Google-Smtp-Source: AGHT+IGTT+ZtO31I2bVygnmpS3RxMRkbe0updWAXzmCjZgGcSoOrGB9oHZx3tgRMo8/wMk/SvSNTvA==
+X-Received: by 2002:a05:620a:470c:b0:787:94b6:a97d with SMTP id bs12-20020a05620a470c00b0078794b6a97dmr2229446qkb.54.1708576589473;
+        Wed, 21 Feb 2024 20:36:29 -0800 (PST)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id u8-20020a05620a084800b0078783b32229sm1275370qku.7.2024.02.21.20.36.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 20:36:29 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id A73F41200043;
+	Wed, 21 Feb 2024 23:36:28 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Wed, 21 Feb 2024 23:36:28 -0500
+X-ME-Sender: <xms:TM_WZTIpyypMwzU17vUlc92fKMtZGqqa99ybYV3xaYZZ8PSYMeVJxQ>
+    <xme:TM_WZXKSkV0wwFXTVKZH3EqDfgpggYDUIwSurssqe_j_0TxpNmKdr2l76Z5WEfpUc
+    qA7OMtYzHxYdsgMyQ>
+X-ME-Received: <xmr:TM_WZbseBnVH6BHDI-bjvPsqj0vlge_heb-jkLRVtKWg05shOHy4AlGn8439kg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeefgdejudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:TM_WZcaDfhazMZ-7Uzt2otggzeYYw9WobI0plgjD_XjxKRr8xAcz6A>
+    <xmx:TM_WZabDDam6zYsjwfjAO6B-TCNLEtPryIrEyozc6BuikQIawhfDsQ>
+    <xmx:TM_WZQAOkipDdOFkuvnsZmntpkTqdtcv0OQYDg8zAiMxHL5F7ZaMdQ>
+    <xmx:TM_WZS6dLPMRtFUxAqX9MWhzhkXNKz35gWh3nY4k8G06LRChOjus6Bh3Cfg>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 21 Feb 2024 23:36:27 -0500 (EST)
+Date: Wed, 21 Feb 2024 20:36:05 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	George Stark <gnstark@salutedevices.com>
+Subject: Re: [PATCH 4/4] locking/rwsem: Make DEBUG_RWSEMS and PREEMPT_RT
+ mutually exclusive
+Message-ID: <ZdbPNV1qa2GBF8rj@boqun-archlinux>
+References: <20240213031656.1375951-1-longman@redhat.com>
+ <20240213031656.1375951-5-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221174333.700197-1-tj@kernel.org> <20240221174333.700197-2-tj@kernel.org>
-In-Reply-To: <20240221174333.700197-2-tj@kernel.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Thu, 22 Feb 2024 12:35:31 +0800
-Message-ID: <CAJhGHyBgjMWtob2VRWhxCRyNuUVMzSEQufza5TRn7Cw-hBaQ3Q@mail.gmail.com>
-Subject: Re: [PATCH 1/7] workqueue: Preserve OFFQ bits in cancel[_sync] paths
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213031656.1375951-5-longman@redhat.com>
 
-Hello,
+On Mon, Feb 12, 2024 at 10:16:56PM -0500, Waiman Long wrote:
+> The debugging code enabled by CONFIG_DEBUG_RWSEMS will only be
+> compiled in when CONFIG_PREEMPT_RT isn't set. There is no point to
+> allow CONFIG_DEBUG_RWSEMS to be set in a kernel configuration where
+> CONFIG_PREEMPT_RT is also set. Make them mutually exclusive.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-On Thu, Feb 22, 2024 at 1:43=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
->
->  /* Convenience constants - of type 'unsigned long', not 'enum'! */
->  #define WORK_OFFQ_CANCELING    (1ul << WORK_OFFQ_CANCELING_BIT)
-> +#define WORK_OFFQ_FLAG_MASK    (((1ul << WORK_OFFQ_FLAG_BITS) - 1) << WO=
-RK_OFFQ_FLAG_SHIFT)
+Regards,
+Boqun
 
-It can use GENMASK.
-
-Thanks
-Lai
-
-
->  #define WORK_OFFQ_POOL_NONE    ((1ul << WORK_OFFQ_POOL_BITS) - 1)
->  #define WORK_STRUCT_NO_POOL    (WORK_OFFQ_POOL_NONE << WORK_OFFQ_POOL_SH=
-IFT)
->  #define WORK_STRUCT_PWQ_MASK   (~((1ul << WORK_STRUCT_PWQ_SHIFT) - 1))
+> ---
+>  lib/Kconfig.debug | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 975a07f9f1cc..cb695bc76d30 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1303,7 +1303,7 @@ config PROVE_LOCKING
+>  	select DEBUG_SPINLOCK
+>  	select DEBUG_MUTEXES if !PREEMPT_RT
+>  	select DEBUG_RT_MUTEXES if RT_MUTEXES
+> -	select DEBUG_RWSEMS
+> +	select DEBUG_RWSEMS if !PREEMPT_RT
+>  	select DEBUG_WW_MUTEX_SLOWPATH
+>  	select DEBUG_LOCK_ALLOC
+>  	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
+> @@ -1426,7 +1426,7 @@ config DEBUG_WW_MUTEX_SLOWPATH
+>  
+>  config DEBUG_RWSEMS
+>  	bool "RW Semaphore debugging: basic checks"
+> -	depends on DEBUG_KERNEL
+> +	depends on DEBUG_KERNEL && !PREEMPT_RT
+>  	help
+>  	  This debugging feature allows mismatched rw semaphore locks
+>  	  and unlocks to be detected and reported.
+> -- 
+> 2.39.3
+> 
 
