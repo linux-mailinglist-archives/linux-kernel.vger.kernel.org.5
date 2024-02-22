@@ -1,120 +1,151 @@
-Return-Path: <linux-kernel+bounces-77261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707D38602AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DEC558602AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F7F01F27279
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:28:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CFF71F2648B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1FF6AF92;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A0A6AF8C;
 	Thu, 22 Feb 2024 19:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDpluMk4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3E554912;
-	Thu, 22 Feb 2024 19:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4153138FB2;
+	Thu, 22 Feb 2024 19:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708630099; cv=none; b=urs+YfaUkWgJRwI8/rVwMl/FsyK9mCs24C7TcT8bywJ7ZtjDhJz/zWvmivkvYcaAPCd8JWVOr1tkp1ehcSwVbk6qVtplCotJlAgx0cjuzQeJ3FTtVWMurGQAds3bmSMW2D4gXh80GVKwuFkGC0c15xQphHxCMPLbLwOCuscJxIw=
+	t=1708630099; cv=none; b=SrAw2i6OBMEx8IB19hP/sN5mcRO6cy+atU48qAB0DLYyEMRCajSS8UE+L48kH7YzL1mcsZMHGLaJ1kRICZKs6x1ozHbiSINcEIp9Gp6doKkq2vcZnK9hi5INnRbHCkBKJguBmEJRhsjB//CpJPFwZSqVOQeDwoEUyqNhmLxMyNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708630099; c=relaxed/simple;
-	bh=9b8XTulk2QF1sfxc4c5foOvPMIs5CgMKk2ts2maQPYw=;
+	bh=Uyg9dSHslJ9qxNU6tRv4iTy9tiKqRQ5uql4e8bT0C1I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kQR1C7UQY1M2lvucGvWJFo+mCqpYHncDCzecNmRFB6Ej5XNCnLMuQsFZa9JrqdfQ6EJOnR+36UXh/Ji+UWG4oGjF0l4ouGKzYXMgKADgTL+cjfSk9T8PhqRSVmZvy3lMF1QY2aKY+iqScvrk/yGUY3fBwR03VHm+MwWrGGKg+sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10F9C433F1;
-	Thu, 22 Feb 2024 19:28:15 +0000 (UTC)
-Date: Thu, 22 Feb 2024 19:28:13 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] arm64: stacktrace: Implement
- arch_bpf_stack_walk() for the BPF JIT
-Message-ID: <ZdegTX9x2ye-7xIt@arm.com>
-References: <20240201125225.72796-1-puranjay12@gmail.com>
- <20240201125225.72796-2-puranjay12@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aMbOjVqqSNyakepglTtiouynIl6W7Wjz6EkodnAA+p/yOkAxrFRwbvCL0J8CxCq1IAiYtTJlGk2ZUxPol0EvtNGGQ4hME1nEMgjbJ8rzSxDcQ+VUfK+V8vajIfrgni0VBMncrg4BJE4ZY5BBmdLPmNDOwc9fQh0Bg5EL+oejjzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dDpluMk4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E51C433C7;
+	Thu, 22 Feb 2024 19:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708630098;
+	bh=Uyg9dSHslJ9qxNU6tRv4iTy9tiKqRQ5uql4e8bT0C1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dDpluMk4aQFS7LOckKKih/hJjwFlidVqRlOBOHcdSHa8UWxfkWdubrFH6Ft1BbyD4
+	 MhZDasLvf1hEybHeMvyAatR+qF1ij1dwZGfvIsbySRMnnt1RWDDfCRlDT4qFqUiCfH
+	 wOpl6RnHuM84V/aFa1n2aepM8o+JqkLRT/paS6f0lEj2M5v0ULwoyUFU8w9t5gt4ZJ
+	 +P3U30FZlDWy+e+oYWK1HRfey0b743s6y5BPTMV6AexyGTTXDlTSig7sZ6zBYB1PiV
+	 /c0rcqc5pjAjfbkBY5SEf5W1Oqc5JABjiC1/HCXeTZoLdhTo88nYW9mix4FaVaj69l
+	 0b1UW608HxSBQ==
+Date: Thu, 22 Feb 2024 20:28:14 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH 01/13] dt-bindings: i2c: nomadik: add timeout-usecs
+ property bindings
+Message-ID: <ZdegTjJpDJGEgdvo@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-1-19a336e91dca@bootlin.com>
+ <20240216022704.GB850600-robh@kernel.org>
+ <CZ6E24VPJKJG.35LACFD6ZV5KE@bootlin.com>
+ <CACRpkdZZhhzg5SY7U5dv_OfLEVejRFom4V9nCfkQXunAw1ZXSw@mail.gmail.com>
+ <CZ94LGRSF9KN.15ZO1VRMIQVR8@bootlin.com>
+ <CZAX02IL1N1J.2GQR9D73GLRZB@bootlin.com>
+ <ZdY2WzKbElloXC4-@shikoro>
+ <20240222171404.GA3334332-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="B6WJG40ec9FdGRUS"
+Content-Disposition: inline
+In-Reply-To: <20240222171404.GA3334332-robh@kernel.org>
+
+
+--B6WJG40ec9FdGRUS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201125225.72796-2-puranjay12@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 12:52:24PM +0000, Puranjay Mohan wrote:
-> This will be used by bpf_throw() to unwind till the program marked as
-> exception boundary and run the callback with the stack of the main
-> program.
-> 
-> This is required for supporting BPF exceptions on ARM64.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  arch/arm64/kernel/stacktrace.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index 7f88028a00c0..66cffc5fc0be 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -7,6 +7,7 @@
->  #include <linux/kernel.h>
->  #include <linux/efi.h>
->  #include <linux/export.h>
-> +#include <linux/filter.h>
->  #include <linux/ftrace.h>
->  #include <linux/kprobes.h>
->  #include <linux/sched.h>
-> @@ -266,6 +267,31 @@ noinline noinstr void arch_stack_walk(stack_trace_consume_fn consume_entry,
->  	kunwind_stack_walk(arch_kunwind_consume_entry, &data, task, regs);
->  }
->  
-> +struct bpf_unwind_consume_entry_data {
-> +	bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
-> +	void *cookie;
-> +};
-> +
-> +static bool
-> +arch_bpf_unwind_consume_entry(const struct kunwind_state *state, void *cookie)
-> +{
-> +	struct bpf_unwind_consume_entry_data *data = cookie;
-> +
-> +	return data->consume_entry(data->cookie, state->common.pc, 0,
-> +				   state->common.fp);
-> +}
-> +
-> +noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void *cookie, u64 ip, u64 sp,
-> +								u64 fp), void *cookie)
-> +{
-> +	struct bpf_unwind_consume_entry_data data = {
-> +		.consume_entry = consume_entry,
-> +		.cookie = cookie,
-> +	};
-> +
-> +	kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, current, NULL);
-> +}
 
-Too many "cookies", I found reading this confusing. If you ever respin,
-please use some different "cookie" names.
+> > @Rob: My memory fails a little bit about these two schemas: we have the
+> > github one for generic bindings, not strictly related to Linux, right?
+>=20
+> Well, NONE of the bindings are strictly related to linux unless they say=
+=20
+> 'linux,' prefix.
 
-I guess you want this to be merged via the bpf tree?
+Ok, right, of course. What I meant was probably: why do we have
+controller bindings in the kernel and schema bindings in a github tree?
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+For me, this is a tad more difficult to maintain. Like
+i2c-controller.yaml file has the "no-detect" binding which IMO is wrong
+in many ways. I rejected the supporting code for Linux.
+
+> We need to remove i2c.txt. Often that hasn't happened because we need to=
+=20
+> relicense the text from GPL only to dual licensed. From a quick look,=20
+> i2c/i2c-controller.yaml appears to have everything in i2c.txt, so I=20
+> think we can go ahead and remove it. There's only a few references to=20
+> i2c.txt to update with that. I'll send a patch, but please double check=
+=20
+> whether you think i2c-controller.yaml is missing anything.
+
+Will do, thanks!
+
+
+--B6WJG40ec9FdGRUS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXXoEoACgkQFA3kzBSg
+Kbb2EA/9Hi0Zf/si4mO1ASJ8MJ4l6Dhz+zE2/Yd6c62lF3Ql+W2/kDCn7Y9ian2Y
+wgrMfigGHubXEDf4q4mlgm3MFMVbbxK0LM5nZCb4+PsS7KsjEIyr5quniPt+iK8Y
+qzvmuq31oleVoO/q+UTNkWlQ9ofVS+gGEfm8YcArndDhTUdYeTfi9AwwVjsyjPgO
+wuuokHdGrS4w3GjlKtZN+osms1ldGa5F7AOgD050/l7qPxImpTYWpoQOXquq7WxW
+6SoHgVu+KP90/ybjX36lfMSg3nfnNP6wALqpoUVvJyzxEt7ukEsMXDlUTZX45BUT
+uEFWL6T+b6b6ZXxvS0uGGZetayd2GKKh1sPPLbBq4Fw5UbkV6pOH4o2Y2so/UeqK
+Px1G23l3jQw7HLUOYuB9qyRVj9hSeby1nJ/nIqTMKMieGUIYx9ixs6M8WgCGBcXj
+yZMrgW+yRxlD0s8P/whrhX7Nt0x7t5ySTGIt8GpuqVymGqOexQP3jHYRbvyGbvWE
+F9TtNLW47Nw1aK9igfbi4yOzy9hJ5w82sH+Ol9m5J9YxLbDeMHB6dwIKE7WOpPWs
+NWLkFRUVJk0+wdUcgO2gH5QBLpRgnQXT7rWX+dcp6XuiG/mUDVYjUuaC0WZOXdf/
+FLp434f9gcj3hQh+5zZCcTaN0jEe/X1HPKZgGZWXgIyhfkT5ciE=
+=d0aY
+-----END PGP SIGNATURE-----
+
+--B6WJG40ec9FdGRUS--
 
