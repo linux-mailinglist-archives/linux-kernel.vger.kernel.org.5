@@ -1,267 +1,275 @@
-Return-Path: <linux-kernel+bounces-76987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17FD285FF8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:39:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B2B785FF94
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1306284F5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:39:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22AF52815B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6656B155A4E;
-	Thu, 22 Feb 2024 17:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F53C157E75;
+	Thu, 22 Feb 2024 17:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QlE4oh1V"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="QIgIN8iF"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E245B66E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3AF155A43
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623554; cv=none; b=h+oJvgkE/YsTpne6lT6DTHlTgSQ3oOemEyDu3GTgiRf4N2cFjL492zQSjZXnTjewmaCNgeLzSaDqvnjQGS20QW5om7qzCNsaa/1JL3GoRqCtVp0Ah2HfAPKrTBpei2TcZLq+SvP6H4aMc9BGYscmpySKjcyqXUB4yh3kiLHNNns=
+	t=1708623589; cv=none; b=C1L+2X55tK5dGoUyLhy5jm7qyg56O6TgNJIShpl5ug5yJVGuymY7mwtvmQnbQoIz3pIt7A6wU4g8fTfdag8/9tL9VXHF9yCUW4PEhDtbsCKvv2MZ8AZNFa3IDD7UjSaSbovMPd2gwAQzbQhI1r222SjSxPT9u0+tspHj1J+VT10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623554; c=relaxed/simple;
-	bh=HSvRkeUcQAXv0l69gaBeP0XQdAuQfn/L5XwJSDQwnwk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BazZdD9HYYxrZQ1N9KxVNmdrGjPqh1GQqHNRQugPH/8Tmp9KTz1LhxWfo2Sbi4PciZgk8qe97KhzFY2/QzQ24OCVqqggMyG9O72uo2IVjwNF35KSU4+ckgyzrEPXBKDM7jRwTWPQSmKHEaChinaegNFpGdwUIj8rdsrHpsSgg3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QlE4oh1V; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e471caaa71so2900981b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:39:12 -0800 (PST)
+	s=arc-20240116; t=1708623589; c=relaxed/simple;
+	bh=nvxVBP9G8vyW1pjoAsXI7Druau5onIPvQrtVWXmTopM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZqaKFa+42ild7D5VvU8tpspkO8bFzylurBYD/oKPPK5eAe8VhAUorxQ2HBvYvfgOu4mqVN6FJFgQ9y2HQfNTAcRqPT4/AQSM0+DwF9MkkFxgn1SgmzsjiFYFxJQVOdAfmj8y0hzVsImrG1nai65uj1oWhpNfiSS4Nncr+p5DWCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=QIgIN8iF; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-42c705e8e4bso13033231cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:39:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1708623552; x=1709228352; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vmn59f/7Qb3OOzJH9MbS9Xpr3MU03w04l8dQqDp9g0E=;
-        b=QlE4oh1VmePKt17ug0IHAqC8xaUgpOfTntjny9qyjSlCKOKKV7PH133k44nCmNlWk5
-         GRxPdD6i39Q0oDhT8XcrciUqRKl33WBF/VMUdwJYOzo1gqCeKkntMIVfK+/e8T3+rChB
-         qRscURjPIro9vh4R7nsoxNr9ondDo9/bVsxV8=
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708623586; x=1709228386; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SmC4SQg9RJFTyxACzu+4WUHQYE29YjgzDeLpVcyOgV4=;
+        b=QIgIN8iFVsoKNIk11BxiSlbCIhTr2skiL7I7NKoJ9jFAjBFkPaTwi8+UuiY7hrq0Fk
+         uyP2kZBWprCtRNwUDna3KpHPbjq5frKQL7m2tycBN6VuYurjfUlw/p0S9tfBZOSQZ2zY
+         l/SyqaLmWGAvoaqSEvvznLo8yph7eYwsR2l9VjDupZrWcC8vhM97nWWY76fNIEFZveka
+         eK07Ye1o5UOw/JRSelT1Qb+wqbYCAylsfd+28XjYDi/+XWGwNS01h2aWJxGgyJb5R7pR
+         Gw4lgrPXXleXP9FMhl6HkxbR7hYsw6H600VMFLXb7zvLI6bs1eDawH3KZ/43s3K51H71
+         oR0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708623552; x=1709228352;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Vmn59f/7Qb3OOzJH9MbS9Xpr3MU03w04l8dQqDp9g0E=;
-        b=KGiiYCtnSzSqNPtyTGxIffv/zZoBEgzZgMsMIlP8OXK3eHQsDVhjRYUe3nxU9ltcVn
-         J2eQJLFYTK5sirk0slrCFJFKDLrTeA5f5gmJEgEs9vFui3wCvzfijIQ19rZLakchjOuA
-         1mvhzLvWR+3rITinRt118RiH39+4hckexYTmuSanYmhYPARb/Ijg1MtvuTc84aGDm61p
-         qclCEKoowDXAHYnVKSmdMGhfbwHpEWSWiaWGqRgeAlRqAECM5ukMEBeNybEMtUAJ4TLi
-         aBtKuV2Rk1ps1NT1u6SYnWZvFZK1lsgOJaT5XUjJzDeI4yL7xSwT92+i4gkzJKpbyjW8
-         gNkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVk5w9JlP/tXKDukr+yoDl76d/iBf7Da1s4wO704IZrn6uta5PoPH1louH0DycbvOQ74EaU1p7g29jomspRcp3pIjpMDEfPsuvCBmO
-X-Gm-Message-State: AOJu0YyrUHT1dfNFRIV8REahV2i3SKYytqcduVoGcPWgRsntlrdwwr8e
-	smwrtUMK7socJlQJUiimpU1287CmVsoYfC6dVALCOOLHJRJw0CMJ3RZcKh8O5w==
-X-Google-Smtp-Source: AGHT+IEbjgQpsX3eY+Hkb05waAD9L6tnVKUQ83TsLtgdBmsSihLgzLKmnVUUjkbCGFyqHSVFt5Dc4A==
-X-Received: by 2002:aa7:864d:0:b0:6e3:9176:5c2c with SMTP id a13-20020aa7864d000000b006e391765c2cmr12870182pfo.0.1708623552110;
-        Thu, 22 Feb 2024 09:39:12 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z1-20020a63ac41000000b005d880b41598sm10701437pgn.94.2024.02.22.09.39.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 09:39:10 -0800 (PST)
-Message-ID: <e5fd9d8b-84eb-4ef9-82ab-ff4ecc41c0d5@broadcom.com>
-Date: Thu, 22 Feb 2024 09:39:06 -0800
+        d=1e100.net; s=20230601; t=1708623586; x=1709228386;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SmC4SQg9RJFTyxACzu+4WUHQYE29YjgzDeLpVcyOgV4=;
+        b=KFCZ+Qv2J5D11BA7q7/4bP6tewNzxh9exGsxOKRJv+NZKaHelRXb8EDVLfCHfZPbx5
+         sPp+JbZnea6mug/ZZ1PBAreasZsyhZMbI1NV4ZUv+ExBPxCvY7fkSvOPm5c6sGTswrm5
+         hvmRTL9pay0KTH05Ph6tppOUkh+UfeNhvA7DAVhYYmOF2/Zc20S9WC5fuGD3JNHoRLxZ
+         DmH/ZCq9T4bdy4k9x+EzmTtLJM4fA4jQxETUFadseZmh5iHTLvPtvwUzS2mHrdcHl+1+
+         uxFvRYfOLoZ92UB9MausL7nAaqSFXLIsn1yHnrYYqX7DILMwQA/Xqw4F+3rw91O9u/N1
+         EP1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXISQLEaSDIsaeRF77Lk4qyBE2lUvcefthllV+n8CxsHg7abTqiKafpSL8360SpUY5gHQ7OANiEMJakJMwtxCiYDTDEkbLXrf8xrphF
+X-Gm-Message-State: AOJu0YxNIB8zMCN6tps5d8ZflmQp6JiE0WCClikJd4W1D+hLSmv//Y6K
+	TAp03lewbBrG/gIIqqXeAeMqQCLf/9pC+QTeEe21eQmGYe/V15QZjTJBBqOTGw4=
+X-Google-Smtp-Source: AGHT+IHQazQ2VKGKYiiCB/F+URR0eEgUMsL+eJQ7E97VwpEkplwTztlYNQqqnsB6QCcvUbBxCire4A==
+X-Received: by 2002:a05:622a:3d0:b0:42c:71ea:9b28 with SMTP id k16-20020a05622a03d000b0042c71ea9b28mr28604094qtx.32.1708623585634;
+        Thu, 22 Feb 2024 09:39:45 -0800 (PST)
+Received: from soleen.c.googlers.com.com (249.240.85.34.bc.googleusercontent.com. [34.85.240.249])
+        by smtp.gmail.com with ESMTPSA id f17-20020ac86ed1000000b0042e5ab6f24fsm259682qtv.7.2024.02.22.09.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 09:39:45 -0800 (PST)
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+To: akpm@linux-foundation.org,
+	alim.akhtar@samsung.com,
+	alyssa@rosenzweig.io,
+	asahi@lists.linux.dev,
+	baolu.lu@linux.intel.com,
+	bhelgaas@google.com,
+	cgroups@vger.kernel.org,
+	corbet@lwn.net,
+	david@redhat.com,
+	dwmw2@infradead.org,
+	hannes@cmpxchg.org,
+	heiko@sntech.de,
+	iommu@lists.linux.dev,
+	jernej.skrabec@gmail.com,
+	jonathanh@nvidia.com,
+	joro@8bytes.org,
+	krzysztof.kozlowski@linaro.org,
+	linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org,
+	lizefan.x@bytedance.com,
+	marcan@marcan.st,
+	mhiramat@kernel.org,
+	m.szyprowski@samsung.com,
+	pasha.tatashin@soleen.com,
+	paulmck@kernel.org,
+	rdunlap@infradead.org,
+	robin.murphy@arm.com,
+	samuel@sholland.org,
+	suravee.suthikulpanit@amd.com,
+	sven@svenpeter.dev,
+	thierry.reding@gmail.com,
+	tj@kernel.org,
+	tomas.mudrunka@gmail.com,
+	vdumpa@nvidia.com,
+	wens@csie.org,
+	will@kernel.org,
+	yu-cheng.yu@intel.com,
+	rientjes@google.com,
+	bagasdotme@gmail.com,
+	mkoutny@suse.com
+Subject: [PATCH v5 00/11] IOMMU memory observability
+Date: Thu, 22 Feb 2024 17:39:26 +0000
+Message-ID: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 10/14] serial: 8250_of: Switch to use
- uart_read_port_properties()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
- Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
- Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Al Cooper <alcooperx@gmail.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Paul Cercueil <paul@crapouillou.net>, Vladimir Zapolskiy <vz@mleia.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Andi Shyti <andi.shyti@linux.intel.com>
-References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
- <20240221183442.4124354-11-andriy.shevchenko@linux.intel.com>
- <0a828f2c50de712940fb9a881702ac1678a35b7c.camel@codeconstruct.com.au>
- <ZddKzHplwOX7naLv@smile.fi.intel.com> <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
- <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- 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
-In-Reply-To: <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000e7b3170611fbeb4b"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---000000000000e7b3170611fbeb4b
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+Changelog
+----------------------------------------------------------------------
+v5:
+- Synced with v6.8-rc5
+- Added: Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+- Added: Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+- Addressed review comments from Robin Murphy:
+  Updated the header comment in iommu-pages.h
+  Removed __iommu_alloc_pages_node(), invoke
+  iommu_alloc_pages_node directly.
+  Removed unused: __iommu_alloc_page_node()
+  Removed __iommu_free_page()
+  Renamed: iommu_free_pages_list() -> iommu_put_pages_list()
+  Added missing iommu_put_pages_list() to dma-iommu.c in
+  iommu/dma: use iommu_put_pages_list() to releae freelist
 
-On 2/22/24 08:47, Andy Shevchenko wrote:
-> On Thu, Feb 22, 2024 at 06:43:08PM +0200, Andy Shevchenko wrote:
->> On Thu, Feb 22, 2024 at 03:23:24PM +0200, Andy Shevchenko wrote:
->>> On Thu, Feb 22, 2024 at 11:07:05AM +1030, Andrew Jeffery wrote:
->>>> On Wed, 2024-02-21 at 20:31 +0200, Andy Shevchenko wrote:
->>>>> Since we have now a common helper to read port properties
->>>>> use it instead of sparse home grown solution.
->>>>
->>>> I did some brief testing of the series for the Aspeed machines under
->>>> qemu, building them on top of v6.8-rc5:
->>>>
->>>> export ARCH=arm
->>>> export CROSS_COMPILE=arm-linux-gnueabihf-
->>>> make aspeed_g5_defconfig
->>>> make -j$(nproc)
->>>> qemu-system-arm -M rainier-bmc -nographic -no-reboot -kernel arch/arm/boot/zImage -dtb arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dtb -initrd ...
->>>>
->>>> I got an oops during boot, which bisected to this change:
->>>
->>> Thank you for prompt testing! I will look at it.
->>
->> I found the issue, will be fixed in next version.
-> 
-> Whoever is going to test this series, the
-> 
-> -		port->iotype = use_defaults ? UPIO_MEM : port->iotype;
-> +		port->iotype = UPIO_MEM;
-> 
-> should be applied to uart_read_port_properties() implementation.
-> 
+v4:
+- Synced with v6.8-rc3
+- Updated commit log for "iommu: account IOMMU allocated memory" as
+  suggested by Michal Koutný
+- Added more Acked-bys David Rientjes and Thierry Reding
+- Added Tested-by Bagas Sanjaya.
 
-Thanks, on 8250_bcm7271.c with the above hunk applied, I did not spot 
-any differences between the values returned by stty or a cat 
-/sys/class/tty/ttyS0/* before or after, the console remained fully 
-functional. I will see if I can run an additional test where I removed 
-the DT's "clocks" property and confirm that the fall back to 
-"clock-frequency" works.
+v3:
+- Sync with v6.7-rc7
+- Addressed comments from David Rientjes: s/pages/page/, added
+  unlikely() into the branches, expanded comment for
+  iommu_free_pages_list().
+- Added Acked-bys: David Rientjes
 
-Thanks Andy!
+v2:
+- Added Reviewed-by Janne Grunau
+- Sync with 6.7.0-rc3
+- Separated form the series patches:
+vhost-vdpa: account iommu allocations
+https://lore.kernel.org/all/20231130200447.2319543-1-pasha.tatashin@soleen.com
+vfio: account iommu allocations
+https://lore.kernel.org/all/20231130200900.2320829-1-pasha.tatashin@soleen.com
+as suggested by Jason Gunthorpe
+- Fixed SPARC build issue detected by kernel test robot
+- Drop the following patches as they do account iommu page tables:
+iommu/dma: use page allocation function provided by iommu-pages.h
+iommu/fsl: use page allocation function provided by iommu-pages.h
+iommu/iommufd: use page allocation function provided by iommu-pages.h
+as suggested by Robin Murphy. These patches are not related to IOMMU
+page tables. We might need to do a separate work to support DMA
+observability.
+- Remove support iommu/io-pgtable-arm-v7s as the 2nd level pages are
+under a page size, thanks Robin Murphy for pointing this out.
+
+----------------------------------------------------------------------
+Description
+----------------------------------------------------------------------
+IOMMU subsystem may contain state that is in gigabytes. Majority of that
+state is iommu page tables. Yet, there is currently, no way to observe
+how much memory is actually used by the iommu subsystem.
+
+This patch series solves this problem by adding both observability to
+all pages that are allocated by IOMMU, and also accountability, so
+admins can limit the amount if via cgroups.
+
+The system-wide observability is using /proc/meminfo:
+SecPageTables:    438176 kB
+
+Contains IOMMU and KVM memory.
+
+Per-node observability:
+/sys/devices/system/node/nodeN/meminfo
+Node N SecPageTables:    422204 kB
+
+Contains IOMMU and KVM memory in the given NUMA node.
+
+Per-node IOMMU only observability:
+/sys/devices/system/node/nodeN/vmstat
+nr_iommu_pages 105555
+
+Contains number of pages IOMMU allocated in the given node.
+
+Accountability: using sec_pagetables cgroup-v2 memory.stat entry.
+
+With the change, iova_stress[1] stops as limit is reached:
+
+$ ./iova_stress
+iova space:     0T      free memory:   497G
+iova space:     1T      free memory:   495G
+iova space:     2T      free memory:   493G
+iova space:     3T      free memory:   491G
+
+stops as limit is reached.
+
+This series encorporates suggestions that came from the discussion
+at LPC [2].
+----------------------------------------------------------------------
+[1] https://github.com/soleen/iova_stress
+[2] https://lpc.events/event/17/contributions/1466
+----------------------------------------------------------------------
+Previous versions
+v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
+v2: https://lore.kernel.org/linux-mm/20231130201504.2322355-1-pasha.tatashin@soleen.com
+v3: https://lore.kernel.org/all/20231226200205.562565-1-pasha.tatashin@soleen.com
+v4: https://lore.kernel.org/all/20240207174102.1486130-1-pasha.tatashin@soleen.com
+----------------------------------------------------------------------
+
+Pasha Tatashin (11):
+  iommu/vt-d: add wrapper functions for page allocations
+  iommu/dma: use iommu_put_pages_list() to releae freelist
+  iommu/amd: use page allocation function provided by iommu-pages.h
+  iommu/io-pgtable-arm: use page allocation function provided by
+    iommu-pages.h
+  iommu/io-pgtable-dart: use page allocation function provided by
+    iommu-pages.h
+  iommu/exynos: use page allocation function provided by iommu-pages.h
+  iommu/rockchip: use page allocation function provided by iommu-pages.h
+  iommu/sun50i: use page allocation function provided by iommu-pages.h
+  iommu/tegra-smmu: use page allocation function provided by
+    iommu-pages.h
+  iommu: observability of the IOMMU allocations
+  iommu: account IOMMU allocated memory
+
+ Documentation/admin-guide/cgroup-v2.rst |   2 +-
+ Documentation/filesystems/proc.rst      |   4 +-
+ drivers/iommu/amd/amd_iommu.h           |   8 -
+ drivers/iommu/amd/init.c                |  91 ++++++------
+ drivers/iommu/amd/io_pgtable.c          |  13 +-
+ drivers/iommu/amd/io_pgtable_v2.c       |  20 +--
+ drivers/iommu/amd/iommu.c               |  13 +-
+ drivers/iommu/dma-iommu.c               |   7 +-
+ drivers/iommu/exynos-iommu.c            |  14 +-
+ drivers/iommu/intel/dmar.c              |  16 +-
+ drivers/iommu/intel/iommu.c             |  47 ++----
+ drivers/iommu/intel/iommu.h             |   2 -
+ drivers/iommu/intel/irq_remapping.c     |  16 +-
+ drivers/iommu/intel/pasid.c             |  18 +--
+ drivers/iommu/intel/svm.c               |  11 +-
+ drivers/iommu/io-pgtable-arm.c          |  15 +-
+ drivers/iommu/io-pgtable-dart.c         |  37 ++---
+ drivers/iommu/iommu-pages.h             | 186 ++++++++++++++++++++++++
+ drivers/iommu/rockchip-iommu.c          |  14 +-
+ drivers/iommu/sun50i-iommu.c            |   7 +-
+ drivers/iommu/tegra-smmu.c              |  18 ++-
+ include/linux/mmzone.h                  |   5 +-
+ mm/vmstat.c                             |   3 +
+ 23 files changed, 361 insertions(+), 206 deletions(-)
+ create mode 100644 drivers/iommu/iommu-pages.h
+
 -- 
-Florian
+2.44.0.rc0.258.g7320e95886-goog
 
-
---000000000000e7b3170611fbeb4b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOvdhbC0f9bdBKDd
-nSsfq8nfBYeoIlbNLSfBdp/XckuAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDIyMjE3MzkxMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDzaNg3x1GgqfWcmgwE4YdhBtB+jfOo1h92
-ge9P9fpGU477OGyF8xlL24P8bTU5Ok3+xnqsfvCA6mbdIkaQ8a58fMj3Y2B9ixyeF1oySHLJXgZI
-cfY0K8oQbahZP7mOXseSy0FdQEbdp3Q6cMKXYDfKBHwOVAc52JOgDUyAfAV20o1i6sYqxaoG1UfC
-XxF3MVVoV2XIGPsr9QoJOa7g89OHbd9CImz40fmAtEoH4mYhYHGxWcmeINmy5XE6SPMrivI2258U
-Q+UDww04Q93MAMH0DE0LN3EPSDYLO6hm9I9AhLyBl2RpLWfzIyQzPjSQzxisr+GQ8B4kBamIDnS8
-I1z3
---000000000000e7b3170611fbeb4b--
 
