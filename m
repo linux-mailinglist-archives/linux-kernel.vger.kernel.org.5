@@ -1,197 +1,145 @@
-Return-Path: <linux-kernel+bounces-76115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A014B85F31C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:38:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C41485F31F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10659B2165A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:38:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E66011F21534
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1C923758;
-	Thu, 22 Feb 2024 08:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE3524A0D;
+	Thu, 22 Feb 2024 08:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Br3Ux179"
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b="N+njsBqB"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2050.outbound.protection.outlook.com [40.107.215.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA03B7489
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708591079; cv=none; b=izlHJZb72fd2VogwoCzcSbtzZFXmwllw+otaflZ4/9OoEonNOigIjfdsO2BBfwxIkyRAkdrJ4ysdI28KQizO6C3xUlMcNvd+7neASysNxcGN9Lf9/q2BQoMv2xkqXFwo4z5VWgzItRzFZJ1SsCKNhAkWOL47GxbeQfx0ISH6hqw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708591079; c=relaxed/simple;
-	bh=7YOqReXSrg+D9p04iIoWnVOSNboFsdzKRwZEZRJ2ibY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GM6SkeV8azuPmboSk9tjoRh1B+WAznLEGJahfyZ+euSdfWjTO28hYzvH6YQPdYJFdu6xnC/e84LlT5cnRmvol2w7GmtiIObx3Oew//H7prC2ZS4Ukjv+n9r5E7GScnXLU0yingnzQok2teTYOA3RY/H6XVPh4QRBWSxSdvZXn8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Br3Ux179; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d3be7a90-b186-a8fb-678c-f06ef950d942@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708591073;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rqsis7qCIfa4wD4HgfeAJauNuQNyODgqCcBJ3xvV6ng=;
-	b=Br3Ux1791TakLd/z0p8E0Sf3d879NhVS0/I2uu+Fr8Ug5ZcT7ArqgrZPO1tMWC9nc7MQrz
-	QljCIBIDbjCjyfoG+VBKHilsyGPazDapzS/gGbeeBZicHGWs4/PopowhRJsTKIxsNpHrUK
-	wdc0V8CqMc3YAfbymN3cGKtAv4nKzsw=
-Date: Thu, 22 Feb 2024 16:37:44 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DED2261F;
+	Thu, 22 Feb 2024 08:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708591127; cv=fail; b=OiJiN0Fh9aiR3F2ruLFyNBNd9FKYW687+VUc+L6SKsaezNSNexg+ElGDBOJLKCFxw3Ow63sh2s2Cy0PRgUhEwVOdvna7If19emt4UXqLyCFE/os0p1JahN0BEFVT0FOQvQd/tkCC+kuG3j7/WhvFN5Ge41xZ218d4BR+R2IhV3w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708591127; c=relaxed/simple;
+	bh=urpBMRg4QJ/+erpVhxrs3D7M9jaAucnv/nvlYHl9zUY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ogvnt3Qk/sfCrRdWK1qTCJTKTSCViHqbXYdrdYV5ClT6Lb+WdRlgWAPX5XrUrq3hocL3uEOqKPCKoi0rtjqZ41DnfB8UmMrtf+XCXf2743GFxbxFjK/P/9qaVL32GC4GRAXf+ILp8tGqdZA9ZStDyArcWQaVRDigZ1f1DzMMNVQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com; spf=pass smtp.mailfrom=nuvoton.com; dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b=N+njsBqB; arc=fail smtp.client-ip=40.107.215.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nuvoton.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gFDhbap8blGlutriPlDzr3sDs4fAS+YzrJkD+cPO9DZM/4ttA44k5dCFJAVuWagQTQ5Cyx/nOZYBhsGoYEoej04+9BTtIMpMqxPdKwQSQhsakdvIUG31U/MPHU8kngbAiDXMpXnCeizxuKIa7ZxqI9QWK3y7YzTSuHsLQ4Z/K+ZRZMJ0Io0IdABMB0vieHrXFEfaeT5HIAwb+LK9lbizQMb2fpv4y64qiKdiAFuz1nwDQET71sCvfrJqdNHNjan5ZrgWqRkUXfgEopLTCjjaX383B1rg4sRzCfTymamABVRqMREnzzYDlMrK3RFjEQrx4KhwuLvgkOt7cq9jYBivPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VuuSublDF3WqGdilez+Yu8tqbNiAXUNSAgn4+jcjmtU=;
+ b=PCtTqeSzwK2us7xciTT9n6ANlwRUmPpZqSz35/j4s2BTKQaJN7qdJBN0H0vHhwkLYdMGT7gXNo0TdjMN4kQ1KIc1a/W3i7KNZdmSbRK9RMd6Z3hmXA1ukUi/vToTwUfTSZ5DPRw7hKr3AHA603dhurw11buj7Hm6O1jJ1OI3oAL/X1um0TnlG7Lwo3cqt8QiuBJFOJck4BbMZToZhGOv/9xSHboXXxz3NKdrrnl8YPSCIKhbPY9a6uVjwVIF5BmUkFdbnSKFlp1L1BjXQiHVqCxfzlKaPcfjerY/35KXDF4UpwUDAf1+FH9vupd0mZ5PSdAun0k/DL5JlA+78pvPHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VuuSublDF3WqGdilez+Yu8tqbNiAXUNSAgn4+jcjmtU=;
+ b=N+njsBqBZvHj75nskfXED2d9viRKC8zaYELC9y4BP6VEoL0H/QNpJjd+ualp0Keqy3Tsc9MIsbuZPjafd4FiVnA1hRnomb43++K17dtAzX/htowH1N1iD/b8i/A9nq0nON++jYPO8mQ7Ds1rV/A0u9VGZGh4QJOzzIeEq6z3bLc=
+Received: from SG2PR04CA0156.apcprd04.prod.outlook.com (2603:1096:4::18) by
+ SEYPR03MB8391.apcprd03.prod.outlook.com (2603:1096:101:203::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Thu, 22 Feb
+ 2024 08:38:38 +0000
+Received: from SG1PEPF000082E8.apcprd02.prod.outlook.com
+ (2603:1096:4:0:cafe::fd) by SG2PR04CA0156.outlook.office365.com
+ (2603:1096:4::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
+ Transport; Thu, 22 Feb 2024 08:38:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=175.98.123.7; helo=NTHCCAS04.nuvoton.com; pr=C
+Received: from NTHCCAS04.nuvoton.com (175.98.123.7) by
+ SG1PEPF000082E8.mail.protection.outlook.com (10.167.240.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 08:38:38 +0000
+Received: from NTHCCAS04.nuvoton.com (10.1.8.29) by NTHCCAS04.nuvoton.com
+ (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 22
+ Feb 2024 16:38:36 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS04.nuvoton.com
+ (10.1.8.29) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 22 Feb 2024 16:38:36 +0800
+From: Seven Lee <wtli@nuvoton.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <YHCHuang@nuvoton.com>,
+	<KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>,
+	<wtli@nuvoton.com>, <scott6986@gmail.com>, <supercraig0719@gmail.com>,
+	<dardar923@gmail.com>
+Subject: [PATCH v2 0/2] ASoC: nau8325: Modify driver code and dtschema.
+Date: Thu, 22 Feb 2024 16:38:23 +0800
+Message-ID: <20240222083825.190854-1-wtli@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] mm/mmap: return early if it can't merge in vma_merge()
-Content-Language: en-US
-To: Lorenzo Stoakes <lstoakes@gmail.com>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org,
- vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240221091453.1785076-1-yajun.deng@linux.dev>
- <20240221153827.wkmjnnwsf6lyxatc@revolver>
- <f3847dd7-5564-4d7e-951e-1a9d8f55fb78@lucifer.local>
- <082fed0a-8489-37d1-f990-067976260659@linux.dev>
- <b4232b44-083a-42d4-a245-7eb4382f7329@lucifer.local>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <b4232b44-083a-42d4-a245-7eb4382f7329@lucifer.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG1PEPF000082E8:EE_|SEYPR03MB8391:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd8309d1-b293-4163-5eb7-08dc3381aa65
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HB6kpCcQlX1LYxCYiSwhUFYDl0YiH6s3oIglvaA6KIvgmEA0UJknhMvnywihfysQO8gdMudq8WOqQj4ykwykcwokU+ErkuAthVxPXb/TTOOzkL3/uOL0I2x1qEFVxH3G8r2Ri8xdPPzOA3EAdfwQTxkEZv3FNhjVRKiY5B4KwO7Wqcgw/iiyGNXORzUMtie4Fw2kmdaJuQCIkixCXjt+oUtBfzCG701K04XZFo/mak1Rta8lw33DYS8uyKK8XU6N+m3vdUSSdpp4q4Ndw77yahF9dCczp3JjGzUzuiICXkcN8bOniwXCFwPhvRs0fVpveCB8NgYJwfgjelSF4l7OLhWaHYE9+Hi9TQTHSFr6P/p1vphce6Q3rcnWms+MsYZ+fv8w3tWax0316s6NES1ZorXDbUAek7SyolobShEYJyWCzhZW3T/eZO2eE2uqE5/S7R1haLE+Wqm84abHP9YV0Vel2swfeDIF61weFrohO3IA8hhe3kGHWS4r3RiLZzm2gROdUbQMbH28CxFuoMqilOn3xts2NT99kRcgR/g2dNTHSLOv/7I8tdW/o6omprC6U5jiYclVlOx9IoD+jVDO7JJmfETuZP3SRMBoEWYSBbsu4IFn6K/dCp36VoU4Qn/FL4l2HX2E8/rrxX4bUEfcWA==
+X-Forefront-Antispam-Report:
+	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS04.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 08:38:38.1241
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd8309d1-b293-4163-5eb7-08dc3381aa65
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS04.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SG1PEPF000082E8.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB8391
 
+Remove the "Clock detection" switch control, and modify dtschema
+for the explanation of "nuvoton,dac-vref".
 
-On 2024/2/22 16:31, Lorenzo Stoakes wrote:
-> On Thu, Feb 22, 2024 at 03:47:04PM +0800, Yajun Deng wrote:
->> On 2024/2/22 04:41, Lorenzo Stoakes wrote:
->>> On Wed, Feb 21, 2024 at 10:38:27AM -0500, Liam R. Howlett wrote:
->>>> * Yajun Deng <yajun.deng@linux.dev> [240221 04:15]:
->>>>> In most cases, the range of the area is valid. But in do_mprotect_pkey(),
->>>>> the minimum value of end and vma->vm_end is passed to mprotect_fixup().
->>>>> This will lead to the end is less than the end of prev.
->>>>>
->>>>> In this case, the curr will be NULL, but the next will be equal to the
->>>>> prev. So it will attempt to merge before, the vm_pgoff check will cause
->>>>> this case to fail.
->>>>>
->>>>> To avoid the process described above and reduce unnecessary operations.
->>>>> Add a check to immediately return NULL if the end is less than the end of
->>>>> prev.
->>>> If it's only one caller, could we stop that caller instead of checking
->>>> an almost never case for all callers?  Would this better fit in
->>>> vma_modify()?  Although that's not just for this caller at this point.
->>>> Maybe there isn't a good place?
->>> I definitely agree with Liam that this should not be in vma_merge(), as
->>> it's not going to be relevant to _most_ callers.
->>>
->>> I am not sure vma_modify() is much better, this would be the only early
->>> exit check in that function and makes what is very simple and
->>> straightforward now more confusing.
->>
->> There are two paths that will cause this case. One is in mprotect_fixup(),
->> the other is in
->>
->> madvise_update_vma().
->>
->>
->> One way is to separate out the split_vma() from vma_modify(). And create a
->> new helper function.
-> Absolutely not. I wrote the vma_modify() patch series explicitly to expose
-> _less_ not more.
->
->> We can call it directly at source, but we need to do this in both paths.
->> It's more complicated.
->>
->>
->> The other way is to add a check in vma_modify(). Like the following:
-> As I said above, I really don't think this is a good idea, you're just
-> special casing one non-merge case but not any others + adding an
-> unnecessary branch.
->
->> diff --git a/mm/mmap.c b/mm/mmap.c
->> index 0fccd23f056e..f93f1d3939f2 100644
->> --- a/mm/mmap.c
->> +++ b/mm/mmap.c
->> @@ -2431,11 +2431,15 @@ struct vm_area_struct *vma_modify(struct
->> vma_iterator *vmi,
->>          pgoff_t pgoff = vma->vm_pgoff + ((start - vma->vm_start) >>
->> PAGE_SHIFT);
->>          struct vm_area_struct *merged;
->>
->> +       if (prev && end < prev->vm_end)
->> +               goto cannot_merge;
->> +
->>          merged = vma_merge(vmi, prev, vma, start, end, vm_flags,
->>                             pgoff, policy, uffd_ctx, anon_name);
->>          if (merged)
->>                  return merged;
->>
->> +cannot_merge:
->>          if (vma->vm_start < start) {
->>                  int err = split_vma(vmi, vma, start, 1);
->>
->>
->>> And I think this is the crux of it - it's confusing that we special case
->>> this one particular non-merge scenario, but no others (all of which we then
->>> deem ok to be caught by the usual rules).
->>>
->>> I think it's simpler (and more efficient) to just keep things the way they
->>> are.
->>>
->>>> Or are there other reasons this may happen and is better done in this
->>>> function?
->>>>
->>>> Often, this is called the "punch a hole" scenario; where an operation
->>>> creates two entries from the old data and either leaves an empty space
->>>> or fills the space with a new VMA.
->>>>
->>>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->>>>> ---
->>>>> v2: remove the case label.
->>>>> v1: https://lore.kernel.org/all/20240218085028.3294332-1-yajun.deng@linux.dev/
->>>>> ---
->>>>>    mm/mmap.c | 3 +++
->>>>>    1 file changed, 3 insertions(+)
->>>>>
->>>>> diff --git a/mm/mmap.c b/mm/mmap.c
->>>>> index 0fccd23f056e..7668854d2246 100644
->>>>> --- a/mm/mmap.c
->>>>> +++ b/mm/mmap.c
->>>>> @@ -890,6 +890,9 @@ static struct vm_area_struct
->>>>>    	if (vm_flags & VM_SPECIAL)
->>>>>    		return NULL;
->>>>>
->>>>> +	if (prev && end < prev->vm_end)
->>>>> +		return NULL;
->>>>> +
->>>>>    	/* Does the input range span an existing VMA? (cases 5 - 8) */
->>>>>    	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
->>>>>
->>>>> --
->>>>> 2.25.1
->>>>>
->>> So overall I don't think this check makes much sense anywhere.
->>>
->>> I think a better solution would be to prevent it happening _at source_ if
->>> you can find a logical way of doing so.
->>>
->>> I do plan to do some cleanup passes over this stuff once again so maybe I
->>> can figure something out that better handles non-merge scenarios.
->>>
->>> This is a great find though overall even if a patch doesn't make sense
->>> Yajun, thanks for this, it's really made me think about this case (+ others
->>> like it) :)
-> I guess maybe again I've not been clear enough on this, so unless
-> compelling reasoning can otherwise be provided, I feel this check should
-> not be added _anywhere_.
+Change:
+V1 -> V2
+ - Revise the driver description part for the C++ comment.
+ - In the nau8325_clkdet_put function, modify the max variable to hard code.
+ - Removed "Clock Detection" switch control.
+ - modify the "ALC Enable" switch name.
+ - Revise the dtschema for "nuvoton,dac-vref".
 
+Seven Lee (2):
+  ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
+  ASoC: nau8325: new driver
 
-Okay, I got it. Thank you!
+ .../bindings/sound/nuvoton,nau8325.yaml       |  82 ++
+ sound/soc/codecs/nau8325.c                    | 856 ++++++++++++++++++
+ sound/soc/codecs/nau8325.h                    | 391 ++++++++
+ 3 files changed, 1329 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+ create mode 100755 sound/soc/codecs/nau8325.c
+ create mode 100644 sound/soc/codecs/nau8325.h
 
-> Therefore, NACK.
+-- 
+2.25.1
+
 
