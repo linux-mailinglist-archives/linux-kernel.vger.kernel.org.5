@@ -1,192 +1,237 @@
-Return-Path: <linux-kernel+bounces-77481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58EC186062C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:03:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609BC8606EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEBCD28629A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:03:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92C05287F05
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:28:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9D918032;
-	Thu, 22 Feb 2024 23:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48EE817BDC;
+	Thu, 22 Feb 2024 23:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UGhp8xO6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Z2Ritci3"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gtb9elFl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4667A12E40;
-	Thu, 22 Feb 2024 23:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1282208F;
+	Thu, 22 Feb 2024 23:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708643026; cv=none; b=uSklAvkr+78u6424Ocg0GoQJbhxB5FARYkpSHM7T+CL9x4u9OCSQrDCcqzV5RRZYY48hlz9iHVSPswDO5PJusPB1MHggWF6tEIbn47Fp9WXoAD/5Q8naxaL+WFSC+64Z/UbFMbWUWpMBlII6ZLAzso7rpGcJ6+mSaz3f6MBPNJM=
+	t=1708644094; cv=none; b=dNUmuaQ+TF9k2wZCFt0Dz79yLIscOf6HlG6yy1MPV2mxWLwxsBVUm961gSq3sEflxCtj+xgudBWT2t6LDJ+xgqTQ0trjULfyaIKGREKhX9J/zDcps79zA35AIItZm5j2lGHqZmzp/M2qgsPv5En+mi2F57WzmzW0/pVx8ibu00A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708643026; c=relaxed/simple;
-	bh=65ctlHPFx8HGBnJ8HHkM9o0DAjuwNkJMkaldzDFz6as=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=CGvgGGYa6lCLRNjxoYw1tL4ng9SzimNkd/whY3A91sY0144U5nRro3W1cGPA45Vtf2PPvh7693ZejA0ROCa/GPbiAiZjmmwFq1O49KVEv7f23vYGdjQMqf8h0ROItFyBli/9h+ZEhyUhMQwOwtjt/i2AT7hryx83kU0M2NvMk8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UGhp8xO6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Z2Ritci3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 22 Feb 2024 23:03:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708643022;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=O7SorYCwmf0domtChWfkJadL/FzGPFi6yHpZIU9XWg8=;
-	b=UGhp8xO6rUUr5SZmNhrQr9c7VWMS9WkDSGQS7xu66gb3I6lrwArB/unYEbEUVj+MOUwCTj
-	owy3xjbLrI0bcDTmFctMj3re8g2hznzBNXyvEf3jUypn8sc4vkSP39Lppgj/3NUcr+TFtA
-	dmdM6SwtU7WF4gdQdtXkMRCGNrvS3i71Fj7IBEm9oS2p9t7fYVkjRKqEy77y67n4j12SBw
-	L8iUTrmlixYo22v4qA3mkmJR9mVInJJq2xq1C4PfiA9q6ieOIW+gIQdYl9Ey2Vvhv52bMf
-	wMkGXpr02u1FQUKV8hbipjgDrI6/1cOSGpcQT18qRtMIuFOLBTWKQfMXiK7zMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708643022;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=O7SorYCwmf0domtChWfkJadL/FzGPFi6yHpZIU9XWg8=;
-	b=Z2Ritci3bXsI1GSHwmfUX3YG1uRh5oGQhxM5KHiFyCbNhA3Ww7OH6tgfZ+ig6BBkzJgvlL
-	VFIpZu3rTUF96hBw==
-From: "tip-bot2 for Kai Huang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/tdx] x86/asm: Remove the __iomem annotation of
- movdir64b()'s dst argument
-Cc: kernel test robot <lkp@intel.com>, Kai Huang <kai.huang@intel.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, Dave Jiang <dave.jiang@intel.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Yuan Yao <yuan.yao@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1708644094; c=relaxed/simple;
+	bh=/7oDxzaotDMQ2PYxvxhhKnxcodeCvytyBRIpHzW+Yog=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dDCfqb8eOA86bj99TUIJw59yFsZEKN1dTOiiymmwxNgOvAdCldZ6KPQIyPW7/IxkBEIdxbY8JUk2x1EE2bENHN43mNkS9XN8ZyH5m2gPXcaAU8eqteqIm30sD2AG1Sw5B6uTCihnWa0XqFWvlvuq5U46/KqlhdDKWacspZUX1c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gtb9elFl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CF3CC433F1;
+	Thu, 22 Feb 2024 23:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708644093;
+	bh=/7oDxzaotDMQ2PYxvxhhKnxcodeCvytyBRIpHzW+Yog=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Gtb9elFlw0C4aEVU9bfKXRUwfVwgsRLl1VDgjExetw4rUsO6PHqWUITOD0C0czy/M
+	 gNJ4rn6NoNwiJF5S3bnE7sXKW4vY8DkFfKWLHDJIOG+GDRTJ7vZv2hlLAodZb3O1a+
+	 HJuhgzRwS2Gofu45IBFGFB9akdWh0kV0OCC+YJj87tVmmELVm/inroYIhyA5PWFC1/
+	 ooYrLFpTFexkoWaAZ5Ur6dyia+okjXSViKu31n1NNtCYGK3O3xVMQChYmlt0tK46Qz
+	 dCwtuMytvYnz1IzvlyBBEie3z2WQo5D1uZKMUe1IYSUWr6eWzkUazxXChyHGiPqNCH
+	 LDG66X26HEVyQ==
+Date: Thu, 22 Feb 2024 14:14:11 -0600
+From: Rob Herring <robh@kernel.org>
+To: Yang Xiwen <forbidden405@outlook.com>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, David Yang <mmyangfl@gmail.com>,
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 3/4] dt-binding: clock: merge all hisilicon clock
+ bindings to hisilicon,clock-reset-generator
+Message-ID: <20240222201411.GA3765548-robh@kernel.org>
+References: <20240216-clk-mv200-v1-0-a29ace29e636@outlook.com>
+ <20240216-clk-mv200-v1-3-a29ace29e636@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170864302149.398.6585871274599667665.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216-clk-mv200-v1-3-a29ace29e636@outlook.com>
 
-The following commit has been merged into the x86/tdx branch of tip:
+On Fri, Feb 16, 2024 at 07:37:53PM +0800, Yang Xiwen wrote:
+> We don't need so many separated and duplicated dt-binding files. Merge
+> them all and convert them to YAML.
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> ---
+>  .../devicetree/bindings/clock/hi3660-clock.txt     |  47 -------
+>  .../devicetree/bindings/clock/hi3670-clock.txt     |  43 -------
+>  .../devicetree/bindings/clock/hi6220-clock.txt     |  52 --------
+>  .../devicetree/bindings/clock/hisi-crg.txt         |  50 --------
+>  .../clock/hisilicon,clock-reset-generator.yaml     | 139 +++++++++++++++++++++
+>  .../clock/hisilicon,hi3559av100-clock.yaml         |  59 ---------
+>  6 files changed, 139 insertions(+), 251 deletions(-)
 
-Commit-ID:     5bdd181821b2c65b074cfad07d7c7d5d3cfe20bf
-Gitweb:        https://git.kernel.org/tip/5bdd181821b2c65b074cfad07d7c7d5d3cfe20bf
-Author:        Kai Huang <kai.huang@intel.com>
-AuthorDate:    Fri, 26 Jan 2024 15:38:52 +13:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Thu, 22 Feb 2024 14:52:09 -08:00
 
-x86/asm: Remove the __iomem annotation of movdir64b()'s dst argument
+> diff --git a/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml b/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+> new file mode 100644
+> index 000000000000..d37cd892473e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/hisilicon,clock-reset-generator.yaml
+> @@ -0,0 +1,139 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/hisilicon,clock-reset-generator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hisilicon SOC Clock and Reset Generator (CRG) module
+> +
+> +maintainers:
+> +  - Yang Xiwen <forbidden405@foxmail.com>
+> +
+> +description: |
 
-Commit e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all
-packages") causes a sparse warning:
+Don't need '|' if no formatting. Here and elsewhere.
 
-  arch/x86/virt/vmx/tdx/tdx.c:683:27: warning: incorrect type in argument 1 (different address spaces)
-  arch/x86/virt/vmx/tdx/tdx.c:683:27:    expected void [noderef] __iomem *dst
-  arch/x86/virt/vmx/tdx/tdx.c:683:27:    got void *
+> +  Hisilicon SOC clock control module which supports the clocks, resets and
+> +  power domains on various SoCs.
+> +
+> +properties:
+> +  compatible:
+> +    minItems: 1
+> +    items:
+> +      - enum:
+> +          - hisilicon,hi3559av100-clock
+> +          - hisilicon,hi3559av100-shub-clock
+> +          - hisilicon,hi3660-crgctrl
+> +          - hisilicon,hi3660-pctrl
+> +          - hisilicon,hi3660-pmuctrl
+> +          - hisilicon,hi3660-sctrl
+> +          - hisilicon,hi3660-iomcu
+> +          - hisilicon,hi3660-stub-clk
+> +          - hisilicon,hi3670-crgctrl
+> +          - hisilicon,hi3670-pctrl
+> +          - hisilicon,hi3670-pmuctrl
+> +          - hisilicon,hi3670-sctrl
+> +          - hisilicon,hi3670-iomcu
+> +          - hisilicon,hi3670-media1-crg
+> +          - hisilicon,hi3670-media2-crg
+> +          - hisilicon,hi6220-acpu-sctrl
+> +          - hisilicon,hi6220-aoctrl
+> +          - hisilicon,hi6220-sysctrl
+> +          - hisilicon,hi6220-mediactrl
+> +          - hisilicon,hi6220-pmctrl
+> +          - hisilicon,hi6220-stub-clk
+> +          - hisilicon,hi3516cv300-crg
+> +          - hisilicon,hi3516cv300-sysctrl
+> +          - hisilicon,hi3519-crg
+> +          - hisilicon,hi3798cv200-crg
+> +          - hisilicon,hi3798cv200-sysctrl
+> +      - const: syscon
+> +      - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    enum: [1, 2]
+> +    description: |
+> +      First cell is reset request register offset.
+> +      Second cell is bit offset in reset request register.
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 1
+> +
+> +  mboxes:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
 
-The reason is TDX must use the MOVDIR64B instruction to convert TDX
-private memory (which is normal RAM but not MMIO) back to normal.  The
-TDX code uses existing movdir64b() helper to do that, but the first
-argument @dst of movdir64b() is annotated with __iomem.
+Standard property already has a type. You need to define how many 
+entries and what each one is if more than 1.
 
-When movdir64b() was firstly introduced in commit 0888e1030d3e
-("x86/asm: Carve out a generic movdir64b() helper for general usage"),
-it didn't have the __iomem annotation.  But this commit also introduced
-the same "incorrect type" sparse warning because the iosubmit_cmds512(),
-which was the solo caller of movdir64b(), has the __iomem annotation.
+> +    description: |
+> +      Phandle to the mailbox for sending msg to MCU
+> +      (See ../mailbox/hisilicon,hi3660-mailbox.txt for more info)
 
-This was later fixed by commit 6ae58d871319 ("x86/asm: Annotate
-movdir64b()'s dst argument with __iomem").  That fix was reasonable
-because until TDX code the movdir64b() was only used to move data to
-MMIO location, as described by the commit message:
+Convert or avoid adding new references to txt bindings.
 
-  ... The current usages send a 64-bytes command descriptor to an MMIO
-  location (portal) on a device for consumption. When future usages for
-  the MOVDIR64B instruction warrant a separate variant of a memory to
-  memory operation, the argument annotation can be revisited.
-
-Now TDX code uses MOVDIR64B to move data to normal memory so it's time
-to revisit.
-
-The SDM says the destination of MOVDIR64B is "memory location specified
-in a general register", thus it's more reasonable that movdir64b() does
-not have the __iomem annotation on the @dst.
-
-Remove the __iomem annotation from the @dst argument of movdir64b() to
-fix the sparse warning in TDX code.  Similar to memset_io(), introduce a
-new movdir64b_io() to cover the case where the destination is an MMIO
-location, and change the solo caller iosubmit_cmds512() to use the new
-movdir64b_io().
-
-In movdir64b_io() explicitly use __force in the type casting otherwise
-there will be below sparse warning:
-
-  warning: cast removes address space '__iomem' of expression
-
-[ dhansen: normal changelog tweaks ]
-
-Closes: https://lore.kernel.org/oe-kbuild-all/202312311924.tGjsBIQD-lkp@intel.com/
-Fixes: e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all packages")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
-Link: https://lore.kernel.org/all/20240126023852.11065-1-kai.huang%40intel.com
----
- arch/x86/include/asm/io.h            |  2 +-
- arch/x86/include/asm/special_insns.h |  9 +++++++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-index 3814a92..294cd2a 100644
---- a/arch/x86/include/asm/io.h
-+++ b/arch/x86/include/asm/io.h
-@@ -379,7 +379,7 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
- 	const u8 *end = from + count * 64;
- 
- 	while (from < end) {
--		movdir64b(dst, from);
-+		movdir64b_io(dst, from);
- 		from += 64;
- 	}
- }
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 48f8dd4..09a5461 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -224,10 +224,10 @@ static inline void serialize(void)
- }
- 
- /* The dst parameter must be 64-bytes aligned */
--static inline void movdir64b(void __iomem *dst, const void *src)
-+static inline void movdir64b(void *dst, const void *src)
- {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } __iomem *__dst = dst;
-+	struct { char _[64]; } *__dst = dst;
- 
- 	/*
- 	 * MOVDIR64B %(rdx), rax.
-@@ -245,6 +245,11 @@ static inline void movdir64b(void __iomem *dst, const void *src)
- 		     :  "m" (*__src), "a" (__dst), "d" (__src));
- }
- 
-+static inline void movdir64b_io(void __iomem *dst, const void *src)
-+{
-+	movdir64b((void __force *)dst, src);
-+}
-+
- /**
-  * enqcmds - Enqueue a command in supervisor (CPL0) mode
-  * @dst: destination, in MMIO space (must be 512-bit aligned)
+> +
+> +  mbox-names:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    description: |
+> +      Names of the mailboxes.
+> +
+> +  hisilicon,hi6220-clk-sram:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: |
+> +      Phandle to the syscon managing the SoC internal sram
+> +      the driver needs using the sram to pass parameters for frequency change.
+> +
+> +  reset-controller:
+> +    type: object
+> +    description: |
+> +      Reset controller for Hi3798CV200 GMAC module
+> +
+> +required:
+> +  - compatible
+> +  - '#clock-cells'
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          not:
+> +            contains:
+> +              enum:
+> +                - hisilicon,hi3798cv200-crg
+> +    then:
+> +      properties:
+> +        reset-controller: false
+> +  - oneOf:
+> +      - required:
+> +          - hisilicon,hi6220-clk-sram
+> +      - required:
+> +          - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/hi3559av100-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        clock-controller@12010000 {
+> +            compatible = "hisilicon,hi3559av100-clock";
+> +            #clock-cells = <1>;
+> +            #reset-cells = <2>;
+> +            reg = <0x0 0x12010000 0x0 0x10000>;
+> +        };
+> +    };
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/hi3660-clock.h>
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        clock-controller@fff35000 {
+> +            compatible = "hisilicon,hi3660-crgctrl", "syscon";
+> +            reg = <0x0 0xfff35000 0x0 0x1000>;
+> +            #clock-cells = <1>;
+> +        };
+> +    };
 
