@@ -1,91 +1,179 @@
-Return-Path: <linux-kernel+bounces-76878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A384D85FE11
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:28:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0842285FE16
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D404B2689A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:28:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A5EE1C22188
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04E3153509;
-	Thu, 22 Feb 2024 16:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81031534F2;
+	Thu, 22 Feb 2024 16:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LSSOSWpv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ojW/Q3wB"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D23130E32;
-	Thu, 22 Feb 2024 16:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FED1474BA;
+	Thu, 22 Feb 2024 16:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708619312; cv=none; b=R5LZAY6ByT1/2lycbu7JQJj/u/QtvfDmBsey8xtQ5E/6skjHQdychmhZN0h4cHz+8rVR70t7kLC0hFptOQuh3gsXt5eGZjq4cek6LAE1ai0oARchok+kRwE67h4fdDYTrzKsDDEBZzQ0D+J7vUFesTO3hruTv4oLEaAN5lvi8I4=
+	t=1708619388; cv=none; b=FcvF/eRZzHfu8STjg9C4+RBJLfPdZ6IpKh5bNYMmoeHtQahnRI0JE3wBD7B3Az9bLU5Yh3nlFkHeVy/XXpbBdlGXTYfl04HZ29uKc/Tg9nkisNB5OuUJMNdqWai5Qd/eDEmAFi0ZHG7afJZiYVC8yZLb5bhKIBvWCBhaTZggx8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708619312; c=relaxed/simple;
-	bh=/N54fL35ZdVbtebauo84ov69w0sjILFhff+gvM1V4NQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UmEvtRKf/RjR1Gmp5csvavt0vx7rs1oVBpn7P+fSq2boaWeRGFTc3b5r2I7yfKnsJZw0gH5PaAzN6HxcZzuhvrdudRH3MxaLsO8aHHuph7yFCqtzavUWE6AuKXYwWbvmqJbaIPwOu5tDx+pQksMG4r0n9C/kmptCrR8umZUPC1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LSSOSWpv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AF65C433C7;
-	Thu, 22 Feb 2024 16:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708619311;
-	bh=/N54fL35ZdVbtebauo84ov69w0sjILFhff+gvM1V4NQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LSSOSWpvtYIZUdKHdK5v726xYpd5If9zSDsal9KwYkamz32CsMORMaSaXI/72Bpg5
-	 22nEvBfXATGQPWXLadPhkOf6zHZgnVGaZQiW8KPJ2qugrI6tPe102a1KHsvoG+SHft
-	 nbLUkVuCRBv651s92Fc5UZWHtM9ev5xHVp4EIMgBMRAfCAqQ7ndd9W/ra89WBBWaYN
-	 loO2sTQELS5Qlk8MfRrVk3XeU2P4r+0CghckSCRoK7L+inB85apxFx7No8AVC6vshv
-	 4x3f+HqI2OZp/pbxliU0m95ZleWOQ41TUq605vpcdWwnIf74RMBZDIrfIjJo31Xdq/
-	 SrNw0kNrsqdUg==
-Date: Thu, 22 Feb 2024 10:28:30 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/25] fs: use type-safe uid representation for
- filesystem capabilities
-Message-ID: <Zdd2LuUpQDldrkVO@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240222-fluchen-viren-50e216b653fb@brauner>
+	s=arc-20240116; t=1708619388; c=relaxed/simple;
+	bh=XDPa4zEJuUAt2gJOYf0ufxuZ/t7zjS1SdbdV9RQRBKE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eEQ3zKDj98+eL0oVJQIgUW4v3a6lv46+7TjKFUNHuXW4Ei1LOr8v+pZ4m/vGqDNnJeyC8z4D3H+K9xIId+XNQ33o2tW0WoPCG5Air7SqE7bfNXzTorzgWlvsHEaqu+EnLstLje6Nc/sq2kTg45BuwyHa9amihLk2oSrRIb6qOy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ojW/Q3wB; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708619384;
+	bh=XDPa4zEJuUAt2gJOYf0ufxuZ/t7zjS1SdbdV9RQRBKE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ojW/Q3wBZe+6AcTn4kNEFGzh4qGJp2fuVg0gVnJ+IlLotYBuHjvjLp4Cyjjr1JYX1
+	 FIrFhOAeHTwuync8gLKW7pCiD79kishmeAKpWKUzLITp1DR1du6FhNrgWp433OQRbt
+	 bshAIZiTvix2xDJE/3N62w4jvLuzcOCMOEWHa7xrrUdHMgo6S/34fkt6LoH1uarZon
+	 TiAT5pT2o/UI5hOp+N//O2NwdZ6Tw2NScPSRpg/anSeTE9lLqQEHRiyXcvMRbU+qyD
+	 JZEO1Puq3gnohoMpSoZO5lvooRHHPaNfe5E0COJCqrMnFKQc/wFIhp7dGlSDAGn/2y
+	 FeWsJCdH26/wQ==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: laura.nao)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 21A9937820D7;
+	Thu, 22 Feb 2024 16:29:43 +0000 (UTC)
+From: Laura Nao <laura.nao@collabora.com>
+To: ojeda@kernel.org,
+	alex.gaynor@gmail.com,
+	wedsonaf@gmail.com,
+	shuah@kernel.org
+Cc: usama.anjum@collabora.com,
+	a.hindborg@samsung.com,
+	aliceryhl@google.com,
+	benno.lossin@proton.me,
+	bjorn3_gh@protonmail.com,
+	boqun.feng@gmail.com,
+	gary@garyguo.net,
+	kernel@collabora.com,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	kernel@valentinobst.de,
+	Sergio Gonzalez Collado <sergio.collado@gmail.com>
+Subject: [PATCH v3] kselftest: Add basic test for probing the rust sample modules
+Date: Thu, 22 Feb 2024 17:29:13 +0100
+Message-Id: <20240222162913.498197-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222-fluchen-viren-50e216b653fb@brauner>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 04:27:50PM +0100, Christian Brauner wrote:
-> I still think that the generic_{get,set,remove}_fscaps() helpers falling
-> back to plain *vfs_*xattr() calls is a hackish. So ideally I'd like to
-> see this killed in a follow-up series and make all fses that support
-> them use the inode operation.
+Add new basic kselftest that checks if the available rust sample modules
+can be added and removed correctly.
 
-Right, you brought this up last time, and I probably should have
-mentioned it in the cover letter. I haven't seriously looked at doing
-this yet, in large part because I got interrupted from working on this
-and felt like v2 patches were long overdue (and you said you were fine
-with doing it as a follow-up series anyway). But I will have a look to
-see if it makes sense to change that in the next version of this series.
+Signed-off-by: Laura Nao <laura.nao@collabora.com>
+Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes in v3:
+- Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
+- Used ktap_finished to print the results summary and handle the return code
+Changes in v2:
+- Added missing SPDX line
+- Edited test_probe_samples.sh script to use the common KTAP helpers file
+---
+ MAINTAINERS                                   |  1 +
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/rust/Makefile         |  4 +++
+ .../selftests/rust/test_probe_samples.sh      | 34 +++++++++++++++++++
+ 4 files changed, 40 insertions(+)
+ create mode 100644 tools/testing/selftests/rust/Makefile
+ create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c1a18af3593a..5f62904c80bd 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19207,6 +19207,7 @@ F:	Documentation/rust/
+ F:	rust/
+ F:	samples/rust/
+ F:	scripts/*rust*
++F:	tools/testing/selftests/rust/
+ K:	\b(?i:rust)\b
+ 
+ RXRPC SOCKETS (AF_RXRPC)
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index f7255969b695..e1504833654d 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -80,6 +80,7 @@ TARGETS += riscv
+ TARGETS += rlimits
+ TARGETS += rseq
+ TARGETS += rtc
++TARGETS += rust
+ TARGETS += seccomp
+ TARGETS += sgx
+ TARGETS += sigaltstack
+diff --git a/tools/testing/selftests/rust/Makefile b/tools/testing/selftests/rust/Makefile
+new file mode 100644
+index 000000000000..fce1584d3bc0
+--- /dev/null
++++ b/tools/testing/selftests/rust/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++TEST_PROGS += test_probe_samples.sh
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
+new file mode 100755
+index 000000000000..389d180f14a5
+--- /dev/null
++++ b/tools/testing/selftests/rust/test_probe_samples.sh
+@@ -0,0 +1,34 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (c) 2023 Collabora Ltd
++#
++# This script tests whether the rust sample modules can
++# be added and removed correctly.
++#
++
++DIR="$(dirname "$(readlink -f "$0")")"
++
++source "${DIR}"/../kselftest/ktap_helpers.sh
++
++rust_sample_modules=("rust_minimal" "rust_print")
++
++ktap_print_header
++
++ktap_set_plan "${#rust_sample_modules[@]}"
++
++for sample in "${rust_sample_modules[@]}"; do
++    if ! /sbin/modprobe -n -q "$sample"; then
++        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
++        continue
++    fi
++
++    if /sbin/modprobe -q "$sample"; then
++        /sbin/modprobe -q -r "$sample"
++        ktap_test_pass "$sample"
++    else
++        ktap_test_fail "$sample"
++    fi
++done
++
++ktap_finished
+-- 
+2.30.2
+
 
