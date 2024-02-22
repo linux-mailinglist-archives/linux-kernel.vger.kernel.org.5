@@ -1,173 +1,194 @@
-Return-Path: <linux-kernel+bounces-76437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDA3285F758
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E494485F75B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 157D9B217B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:40:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B00B21A53
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CDD645010;
-	Thu, 22 Feb 2024 11:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880F945BEF;
+	Thu, 22 Feb 2024 11:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5blD3Xn"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Ge/Y40e+"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9652405D4;
-	Thu, 22 Feb 2024 11:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92753F9ED;
+	Thu, 22 Feb 2024 11:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708601894; cv=none; b=Alob+qW5OqlUrAQazicF3CEvnz2jjdIVuesV4++1UMkVUuzE5KLj39YMKOfx0t8U2koXf7RzTplYKoCPnW3XYyw5D8mcyWnGh52eeUW1vL81atODfzKFL0qm4EeQbYKITMhVZ3R14TZXkgX4RaLqyX8/MlXxgslGO56K7dhnHDI=
+	t=1708602047; cv=none; b=fvybAcNnx/Tqc71Lm/TFyOOaH+qXNg3+gkkL0SVTeNSfrIVQ+XorigakTZVERDczeNRQ2qtrtPdB9Pcx4gfXr7BU/dImBWBBJHOIxwp16oVAC+dzAmYXCUIX+cU3rBCBPefWh8RELrMh1s3ELjK3ARQ5qcRiAz7CKH5ZhrFoPqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708601894; c=relaxed/simple;
-	bh=uLn85H6BfgHQmu6Lkpo3kyKem1I/giGYKE2Jvsin2kE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L/+mylnlzxMiwq3ZAoUHMX5EYJKDHuyH0CMWCYIt7OxF8uEZsVYS38ar54j1TeBpbUn+4hEfuUfWGbJvTLBRHSwCQgNVbyPw39f/jJZa8MD8tABbCAUyGgM/H68aa9ZNlCZH7uc3meW9By90wjG/X7py4GmOPxoLdA05FiJlOGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X5blD3Xn; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3f1bf03722so312542866b.1;
-        Thu, 22 Feb 2024 03:38:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708601891; x=1709206691; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4j+GQLy+4UDOE+jrUoWuh2+LJUqbegRz7zLOxtcxl8=;
-        b=X5blD3Xn2I+EZIPUm6KESusfJPhoSxmPmKxPUeD7theFuaH5rTWm/LIimtMUhh1Kph
-         ZNpxxoTvisdMXhRRsJ3B+IFFnc+irQyn5BJzQebNXEclRoKIueR5Bu/uU83mf0TP+ACH
-         EGtLigphJE+ohIitf5Zzio22QLDsZevD+W6LBwWRbO/kAMwSjkxLysEWPgPAbcl4pzz8
-         gKx1CUvvkhc/e03THjrzS4UdnxSsELW2OvfmUEGoouxd6UoVOsUZ7H76pWXwgaji6FAL
-         G2B1Wc+oDqfpseFmSY1h8moBB4zIGDAU8OApd4BRm2473ykSYIRA16Ep/VaJylcyHG6I
-         8D+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708601891; x=1709206691;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q4j+GQLy+4UDOE+jrUoWuh2+LJUqbegRz7zLOxtcxl8=;
-        b=W6U6QxJaTkRBV5NZ2sasbwabw9DGm7sdDakpT7lX9YQtqjLJa3N4USHbA/SzjsDWgg
-         IU1HSemqumJ7Uly6Ua2+o7uDROun1R10TNMyeMCft1ZPy8oRd26ipfs92D3UI9vyK/E/
-         NNshiA+VLCe+EQn8APN5vjIWt30OrePRac/lbVcUPTKrG+l3B6O3FfXbCJroGnOApYXV
-         ZU3gjcH7CRv+CN8XkUoV0bIWUdwrN8IDc8qharcFGFFHD0npopsWxKVrIDFeVlTJLBWN
-         U+tDQDqCz0RlhPIg71AVKMUtdLVm1hPnfx2lf2B0rTObSjRSdTY6jr3LtYZEmKFNvnOu
-         Q3ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0gMoHJ6Q4ZP8kuXUTKLeY+UZnKKmoe1BBKKsdJ9H2NJ/iKV/gy6UoQnTZbUJDaqajc6NgfZ73jXhvRWUFqEV+ItIUOSd0BVC4CbLP0SIR9OGkpP8W/WDqJN0+jaeM6vrK8jUZ8jyvESfo4dcgEbnBel0LPQBjZC+2N2wxab4bw8/mAvJd
-X-Gm-Message-State: AOJu0YxozFAs+jJ6rjBR8MNJsWFHVQHA6GnkiCChS8iWvyJq+ffJqgrm
-	aEcyk0vMnKiywNq8carwRt2eb8EZY+VBXxuGlNJQfv4uJu2z7CSR
-X-Google-Smtp-Source: AGHT+IGCbUbNF+tds+NYR3EhGNyKrbLXM2++L+ZotTeZEEO+/PmKKaikbMzR162S8tSZ1WWrGUPaIA==
-X-Received: by 2002:a17:906:3559:b0:a3f:a562:ded2 with SMTP id s25-20020a170906355900b00a3fa562ded2mr96896eja.73.1708601890657;
-        Thu, 22 Feb 2024 03:38:10 -0800 (PST)
-Received: from [100.125.116.68] ([213.55.188.37])
-        by smtp.googlemail.com with ESMTPSA id wb1-20020a170907d50100b00a3ec215f130sm3435903ejc.103.2024.02.22.03.38.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 03:38:09 -0800 (PST)
-Message-ID: <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
-Date: Thu, 22 Feb 2024 12:38:07 +0100
+	s=arc-20240116; t=1708602047; c=relaxed/simple;
+	bh=qErhb31YfBBbfbwsXUA9smxLugNiT5kmyg/IG8Z2rbA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j67xN8wjImr8ZDFbvvVb00rBB5mhqKPNH3nPVXLg/xmi5tDrCfx3N0wEtrT6LYA7kfj66HpgIJbabAcpgyk94Sad64h+zaKh1S2B2iYdEYuhpZmYoBhbtG3+fruONShqe2pKZLQolhLpWVsJiPU2HurLiC9NnuV5cYOtVXi3TDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Ge/Y40e+; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708602043;
+	bh=bJXOfG/Dk72N81ShHuOJUbjEwxeP53GZRuMDnBXS5rc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ge/Y40e++eyOSiOWUCdFX0J57Zp12w08KgkZfld28dxOqN1K3L85Jym1O5bjFIUyL
+	 EnI79ZcpBZQOe8Q+zYq3/zloBlOu0VgQdGnR+ij/Yv9qeS/6AK2WvxjAgxB6EvsIwu
+	 Bvuod3hkNtIPcFnTvdoXkoZ15Q3cSR8rFh4XisolfkLgpgWZ1ENp/SFVYFtE78R3Dy
+	 aiq862/J/Cb7yfnuowHnO0p1ZcUlGNZ/McEgxtVkOgxhuOv1ngW3yGYBxrRG7Ir7lS
+	 S54T3qk89K4O/keOCe0zYAvWOQsy4b7CNcP2pgOxO3ZpS5RifJ9Nrk3k8KitLKsO40
+	 Ej4f+ydj8bmvQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgWRZ4Crzz4wb2;
+	Thu, 22 Feb 2024 22:40:42 +1100 (AEDT)
+Date: Thu, 22 Feb 2024 22:40:41 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Joey Gouly <joey.gouly@arm.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Christoffer Dall
+ <cdall@cs.columbia.edu>, Marc Zyngier <maz@kernel.org>, KVM
+ <kvm@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kvm-arm tree
+Message-ID: <20240222224041.782761fd@canb.auug.org.au>
+In-Reply-To: <20240222111129.GA946362@e124191.cambridge.arm.com>
+References: <20240222220349.1889c728@canb.auug.org.au>
+	<20240222111129.GA946362@e124191.cambridge.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Future handling of complex RGB devices on Linux v2
-To: Werner Sembach <wse@tuxedocomputers.com>
-Cc: Lee Jones <lee@kernel.org>, jikos@kernel.org,
- linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
- Pavel Machek <pavel@ucw.cz>, Hans de Goede <hdegoede@redhat.com>
-References: <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
- <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
- <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
- <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
- <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
- <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
- <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
- <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
- <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
- <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
- <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
-Content-Language: en-US, de-CH, fr-CH
-From: Gregor Riepl <onitake@gmail.com>
-Autocrypt: addr=onitake@gmail.com; keydata=
- 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
- DMcsQA==
-In-Reply-To: <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/AedWDBZ0=V+nKK0DvBL+JL8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-> This certainly is the most KISS approach. This proposal
-> in essence is just an arbitrary command multiplexer /
-> demultiplexer and ioctls already are exactly that.
-> 
-> With the added advantage of being able to directly use
-> pass the vendor-cmd-specific struct to the ioctl instead
-> of having to first embed it in some other struct.
+--Sig_/AedWDBZ0=V+nKK0DvBL+JL8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There's also the question of how much complexity needs to remain in the 
-kernel, if vendor-specific ioctls are made available.
+Hi Joey,
 
-Does every vendor driver implement a complex mapping to hardware 
-registers? What about drivers that basically implement no mapping at all 
-and simply forward all data to the hardware without any checking? The 
-latter case would match Pavel's concerns, although I don't see how this 
-is any different from the situation today, where userspace talks 
-directly to the hardware via libusb etc.
+On Thu, 22 Feb 2024 11:11:29 +0000 Joey Gouly <joey.gouly@arm.com> wrote:
+>
+> On Thu, Feb 22, 2024 at 10:03:49PM +1100, Stephen Rothwell wrote:
+> >=20
+> > After merging the kvm tree, today's linux-next build (arm64 defconfig)
+> > failed like this:
+> >=20
+> > In file included from <command-line>:
+> > In function 'check_res_bits',
+> >     inlined from 'kvm_sys_reg_table_init' at arch/arm64/kvm/sys_regs.c:=
+4109:2:
+> > include/linux/compiler_types.h:449:45: error: call to '__compiletime_as=
+sert_591' declared with attribute error: BUILD_BUG_ON failed: ID_AA64DFR1_E=
+L1_RES0 !=3D (GENMASK_ULL(63, 0))
+> >   449 |         _compiletime_assert(condition, msg, __compiletime_asser=
+t_, __COUNTER__)
+> >       |                                             ^
+> > include/linux/compiler_types.h:430:25: note: in definition of macro '__=
+compiletime_assert'
+> >   430 |                         prefix ## suffix();                    =
+         \
+> >       |                         ^~~~~~
+> > include/linux/compiler_types.h:449:9: note: in expansion of macro '_com=
+piletime_assert'
+> >   449 |         _compiletime_assert(condition, msg, __compiletime_asser=
+t_, __COUNTER__)
+> >       |         ^~~~~~~~~~~~~~~~~~~
+> > include/linux/build_bug.h:39:37: note: in expansion of macro 'compileti=
+me_assert'
+> >    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond),=
+ msg)
+> >       |                                     ^~~~~~~~~~~~~~~~~~
+> > include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_=
+ON_MSG'
+> >    50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #co=
+ndition)
+> >       |         ^~~~~~~~~~~~~~~~
+> > arch/arm64/kvm/check-res-bits.h:58:9: note: in expansion of macro 'BUIL=
+D_BUG_ON'
+> >    58 |         BUILD_BUG_ON(ID_AA64DFR1_EL1_RES0       !=3D (GENMASK_U=
+LL(63, 0)));
+> >       |         ^~~~~~~~~~~~
+> >=20
+> > I bisected this to the merge of the kvm-arm tree into linux-next but I
+> > could not figure out why it fails :-(
+> >=20
+> > --=20
+> > Cheers,
+> > Stephen Rothwell =20
+>=20
+> This fails because https://git.kernel.org/pub/scm/linux/kernel/git/arm64/=
+linux.git/commit/?id=3Dfdd867fe9b32
+> added new fields to that register (ID_AA64DFR1_EL1)
+>=20
+> and commit b80b701d5a6 ("KVM: arm64: Snapshot all non-zero RES0/RES1 sysr=
+eg fields for later checking")
+> took a snapshot of the fields, so the RES0 (reserved 0) bits don't match =
+anymore.
+>=20
+> Not sure how to resolve it in the git branches though.
 
-To be honest, I think the kernel shouldn't include too much high-level 
-complexity. If there is a desire to implement a generic display device 
-on top of the RGB device, this should be a configurable service running 
-in user space. The kernel should provide an interface to expose this 
-emulated display as a "real" display to applications - unless this can 
-also be done entirely in user space in a generic way.
+Thanks.  I will apply this patch to the merge of the kvm-arm tree from
+tomorrow (and at the end of today's tree).
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 22 Feb 2024 22:31:22 +1100
+Subject: [PATCH] fix up for "arm64/sysreg: Add register fields for ID_AA64D=
+FR1_EL1"
+
+interacting with "KVM: arm64: Snapshot all non-zero RES0/RES1 sysreg fields=
+ for later checking"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/arm64/kvm/check-res-bits.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/kvm/check-res-bits.h b/arch/arm64/kvm/check-res-bit=
+s.h
+index 967b5d171d53..39f537875d17 100644
+--- a/arch/arm64/kvm/check-res-bits.h
++++ b/arch/arm64/kvm/check-res-bits.h
+@@ -55,7 +55,6 @@ static inline void check_res_bits(void)
+ 	BUILD_BUG_ON(ID_AA64SMFR0_EL1_RES0	!=3D (GENMASK_ULL(62, 61) | GENMASK_UL=
+L(51, 49) | GENMASK_ULL(31, 31) | GENMASK_ULL(27, 0)));
+ 	BUILD_BUG_ON(ID_AA64FPFR0_EL1_RES0	!=3D (GENMASK_ULL(63, 32) | GENMASK_UL=
+L(27, 2)));
+ 	BUILD_BUG_ON(ID_AA64DFR0_EL1_RES0	!=3D (GENMASK_ULL(27, 24) | GENMASK_ULL=
+(19, 16)));
+-	BUILD_BUG_ON(ID_AA64DFR1_EL1_RES0	!=3D (GENMASK_ULL(63, 0)));
+ 	BUILD_BUG_ON(ID_AA64AFR0_EL1_RES0	!=3D (GENMASK_ULL(63, 32)));
+ 	BUILD_BUG_ON(ID_AA64AFR1_EL1_RES0	!=3D (GENMASK_ULL(63, 0)));
+ 	BUILD_BUG_ON(ID_AA64ISAR0_EL1_RES0	!=3D (GENMASK_ULL(3, 0)));
+--=20
+2.43.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/AedWDBZ0=V+nKK0DvBL+JL8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXXMrkACgkQAVBC80lX
+0Gyb6wf/Y/9NIHRf5ckuf73aWrvP2Z3vSOrtciYwk1j77ut8ISRM9gkpZkYpk3IN
+dLyNfXMpuRZHXMfD0xT7KzdV8bgtAjP2IwOLqQdTbwxnDOvILVSUzfdeTKninGKf
+Tor1rMYB55PJxqu3yO1ToCl2wSXLWbari6DbZIA9K6NhSBrA6r0djmqK5pS2cChr
+VUkI3cN4PH9P+oZE6lw4+WphtrXDmUIUjfUHtbVT6VQE7E7qLQX1oqJsMkfJPCaG
+Bg0Zu/9KA6tDDwBoI5XU5U+OvpBOC9r+o9jX/AKAKmrm8DGpQc0Sw1zsDPwTumvK
+53Pi7MPtAz4t05LzcNWdr7gYcCTkkw==
+=aSyV
+-----END PGP SIGNATURE-----
+
+--Sig_/AedWDBZ0=V+nKK0DvBL+JL8--
 
