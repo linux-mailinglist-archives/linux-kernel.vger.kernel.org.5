@@ -1,156 +1,112 @@
-Return-Path: <linux-kernel+bounces-76464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA5A85F78B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:54:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F7E85F78E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2745628578D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:54:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A0C62821F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6CE47A62;
-	Thu, 22 Feb 2024 11:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E881482D3;
+	Thu, 22 Feb 2024 11:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="drqElOnw"
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NkRu5pwR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5062346558
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE4047F58
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602831; cv=none; b=B66ft8ErgDaj77Ac9oGkvg/iKW7Qdd4s7xFwg/EkrC+hqOGDKftl4ZJeea2V4ea3YY5YXGi2Hgy2RtkHoKPzMsubswZcmaikCVrhmuvtt1XQKCcwXqaaZAz1UsIDYXnPH7WUPU1wcAGxZJWl87jzEtmNKKRUHDSfFGxt3YMXNN0=
+	t=1708602838; cv=none; b=YWcY/nWa/osAAqG5PqEs29qS+08pao/ulrQ1/hmN1ghXSiUyDHrGyHINwwBpKGZs+edqgM1Mrrb/2pDlGq7idtRaIaxuksn7t7TmM+91VsFhyUvjmqFnsZZxk22XpznbtsY+cfUVVSS168/TTTOmeHFOdfVzJ9t1qHecCHHDNT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602831; c=relaxed/simple;
-	bh=/GZnl1bApZlEPKB/0OjNOdfWl1yXpoyVVjwgwuxpGQ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M+hXVyx+tW3Q0JFZGrtaLXhwzGpje3jfje3pkeuhUtDvMlO5SerWynHYl9INBUZfxLUtkFivyZx3uOUp+Fo9733pnpLX6yknCBlregXygz53bCoYo2LFAI9NVKS9KBRAwT/oFEFAHKH1mDw4eEc9kDRuiK0WA4Pa4EMyB2p6I/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=drqElOnw; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 22 Feb 2024 06:53:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708602827;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1oV0lp1K4Ub7tESvDeFqVDjAAwFBAw9Dokd5x1fT4D0=;
-	b=drqElOnwL3FwHj1AMzKxLETAoI5EamXZIjhfyV0ps8yqhsMnbw8hmnguls1XP3MXWFfwmP
-	Hs/PZOSzbbZtnYkLWR4clg1W6XFaNomccWlPYLiIDu4gIbcbGQ+lA8+YclNzl4JrC9QnZU
-	QPvkzbsPkVgeL1M06zYMpKhmhk8JnHg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org, Christian Brauner <christian@brauner.io>, 
-	=?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>
-Subject: Re: [LSF TOPIC] beyond uidmapping, & towards a better security model
-Message-ID: <lgsh46klnmhaqsgzguoces452gbuzpzpg6jqr3cndblhpq34ez@jm2kobculj2p>
-References: <tixdzlcmitz2kvyamswcpnydeypunkify5aifsmfihpecvat7d@pmgcepiilpi6>
- <141b4c7ecda2a8c064586d064b8d1476d8de3617.camel@HansenPartnership.com>
- <qlmv2hjwzgnkmtvjpyn6zdnnmja3a35tx4nh6ldl23tkzh5reb@r3dseusgs3x6>
- <bfbb1e9b521811b234f4f603c2616a9840da9ece.camel@HansenPartnership.com>
- <4ub23tni5bwxthqzsn2uvfs5hwr6gd3oitbckd5xwxdbgci4lj@xddn3dh6y23x>
- <c0d77327b15e84df19a019300347063a0b74e1a5.camel@HansenPartnership.com>
- <giojfztuhxc5ilv24htcyhlerc6otajpa32cjtze4gghevg2jr@vwykmx7526ae>
- <67a0b68946d39928502ce2d3e3ad834aa8d73d02.camel@HansenPartnership.com>
+	s=arc-20240116; t=1708602838; c=relaxed/simple;
+	bh=hK4pxYV9GrDhdvp+ZHYHLQFmxepY3EOddcsHm2aSlD4=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qVtuIzQW0H+ts4l1wOWYA96mYbEM8YLN4zekt4q7RmbB2DjHZWWM5oeru2E5VG7K+1Vt1aOveSNGtpFNsIPkZgjK8OdCWE0Uls27LK4ig3vdnmfLa8yUaum9Xf2HV2ASMwfYlb/bNnjkvPIwtMWeNs1jTvRlXXok6RomzNpeU/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NkRu5pwR; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708602837; x=1740138837;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=hK4pxYV9GrDhdvp+ZHYHLQFmxepY3EOddcsHm2aSlD4=;
+  b=NkRu5pwRouYfMeGjnskUOZDUDTwzQRSklGZPEyGeUcN3TdVM/FBmT7fw
+   Ea15iG7t2IMSVZtMJPPj262GR6tGLTA4jeNrhuulx/i9VkywGOQlvn/Rl
+   ksKpVoXGkJzbf+un/XADjjz0RUgupCgh6d1aAYrVZDdotpRpnNVEbtqEn
+   hb+WE+oJVWtp1yGMh4gk2urHJAPvS6nEaWe83zUFBQGsMMWLqeMCfEtzW
+   +/W5+WQ2t1uT3d53i0YbnlJpblBCMgL4RJVpXhsxNZ1W0qrLKWrZnOrXt
+   vj+ZC5QrrST6lrHY07NXCdlz0y6/KgEJG8eiSEmGxzW7uJuALP/SRAAVM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13522715"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="13522715"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:53:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="5437426"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.222]) ([10.249.171.222])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:53:54 -0800
+Message-ID: <4c64bfb2-26b1-4fed-af30-5acd4ac2759e@linux.intel.com>
+Date: Thu, 22 Feb 2024 19:53:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <67a0b68946d39928502ce2d3e3ad834aa8d73d02.camel@HansenPartnership.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Eric Badger <ebadger@purestorage.com>,
+ David Woodhouse <dwmw2@infradead.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ "open list:INTEL IOMMU (VT-d)" <iommu@lists.linux.dev>,
+ open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iommu/vt-d: Check for non-NULL domain on device release
+To: Jason Gunthorpe <jgg@ziepe.ca>
+References: <20240113181713.1817855-1-ebadger@purestorage.com>
+ <20240116152215.GE50608@ziepe.ca>
+ <7455b538-e934-4377-9ab5-004ee991b3d2@linux.intel.com>
+ <20240221154012.GC13491@ziepe.ca>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240221154012.GC13491@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 22, 2024 at 09:45:32AM +0100, James Bottomley wrote:
-> On Wed, 2024-02-21 at 22:37 -0500, Kent Overstreet wrote:
-> > On Thu, Feb 22, 2024 at 01:33:14AM +0100, James Bottomley wrote:
-> > > On Wed, 2024-02-21 at 18:01 -0500, Kent Overstreet wrote:
-> > > > Strings are just arrays of integers, and anyways this stuff would
-> > > > be within helpers.
-> > > 
-> > > Length limits and comparisons are the problem
-> > 
-> > We'd be using qstrs for this, not c strings, so they really are
-> > equivalent to arrays for this purpose.
-> > 
-> > > 
-> > > > 
-> > > > But what you're not seeing is the beauty and simplicity of
-> > > > killing
-> > > > the mapping layer.
-> > > 
-> > > Well, that's the problem: you don't for certain use cases.  That's
-> > > what I've been trying to explain.  For the fully unprivileged use
-> > > case, sure, it all works (as does the upper 32 bits proposal or the
-> > > integer array ... equally well.
-> > > 
-> > > Once you're representing to the userns contained entity they have a
-> > > privileged admin that can write to the fsimage as an apparently
-> > > privileged user then the problems begin.
-> > 
-> > In what sense?
-> > 
-> > If they're in a userns and all their mounts are username mapped,
-> > that's completely fine from a userns POV; they can put a suid root
-> > binary into the fs image but when they mount that suid root will be
-> > suid to the root user of their userns.
+On 2024/2/21 23:40, Jason Gunthorpe wrote:
+> On Wed, Jan 31, 2024 at 03:10:53PM +0800, Baolu Lu wrote:
+>> I like this suggestion.
+>>
+>> Currently, the device_release callback for an iommu driver does the
+>> following:
+>>
+>> a) Silent IOMMU DMA translation. This is done by detaching the existing
+>>     domain from the IOMMU and bringing the IOMMU into a blocking state
+>>     (some drivers might be in identity state);
+>> b) Releases the resources allocated in the probe callback and restores
+>>     the device to its previous state before the probe.
+>>
+>>  From my understanding of your suggestion, we should move a) out of the
+>> release callback and make it a special domain, which could be a blocking
+>> domain or identity domain, depending on the iommu hardware.
+>>
+>> In the end, the release_device callback of an iommu driver should focus
+>> on the opposite operation of device_probe. This makes the concept
+>> clearer.
+> Right
 > 
-> if userns root can alter a suid root binary that's bind mounted from
-> the root namespace then that's a security violation because a user in
-> the root ns could use the altered binary to do a privilege escalation
-> attack.
+> Can someone make some patches to fix Eric's bug? We don't really need
+> to do the release_domain stuff if the driver just self-attaches one of
+> its known static domain types (blocking/identity)
 
-That's a completely different situation; now you're talking about suid
-root, where root is _outside_ the userns, and if you're playing tricks
-to make something from a user from outside the ns that is not
-representable in the ns visible in that ns, and now you're making that
-something suid, of course you're going to have trouble defining self
-consistent behaviour.
+I will follow up with a formal patch series.
 
-So I'm not sure what point you were trying to make, but it does
-illustrate some key points.
-
-Any time you're creating a system where different agents can have
-different but overlapping views of the world, you're going to have some
-really fun corner cases and it's going to be hard to reason about.
-
-(if you buy me a really nice scotch somitem I'll tell you about fsck for
-a snapshotting filesystem, where for performance reasons fsck has to
-process keys from all snapshots simultaneously).
-
-So such things are best avoided, if we can. For another example, see if
-you know anyone who's had to track down what's keeping a mount alive,
-then the something was a systemd service running in a private namespace.
-
-Systems where we can recursively enumerate the world are much nicer to
-work with.
-
-Now, back to user namespaces: they shouldn't exist.
-
-And they wouldn't exist, if usernames had started out as a recursive
-structure instead of a flat namespace. But since they started out as a
-flat namespace, and only _later_ we realized they actually needed to be
-a tree structure - but we have to preserve for compatibility the _view_
-of the world as a flat namespace! - that's why we have user namespaces.
-
-And you get all sorts of super weird corner cases like you just
-described.
-
-So let's take a step back from all that, and instead of reasoning from
-"what weird corner cases from our current system do we have to support"
-- instead, just seem what we can do with a cleaner model and get that
-properly specified. A good model helps you make sense of the world even
-in crazy situations.
-
-With that in mind, back to your bind mount thing: if you chroot(), and
-you try to access a symlink that points outside the chroot, what
-happens?
+Best regards,
+baolu
 
