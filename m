@@ -1,123 +1,91 @@
-Return-Path: <linux-kernel+bounces-76879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FDF85FE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:28:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A384D85FE11
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B90C1C22774
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:28:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D404B2689A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB4D153BCF;
-	Thu, 22 Feb 2024 16:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04E3153509;
+	Thu, 22 Feb 2024 16:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBgI+8Ck"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LSSOSWpv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB5615351C;
-	Thu, 22 Feb 2024 16:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D23130E32;
+	Thu, 22 Feb 2024 16:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708619314; cv=none; b=F6kW/epvrbl+wzdjIGp5WHy9w8qSdTUCRUyj91ewgjDRUsf8RctEYaEtEyPp2+ZJRzYONywHmYix4EZCGoMYgv8okO5hyuAUUjTf8CnF34qZrkX3Rxuu2X3NtB4pMk1WeyO3JNMMtaK8cbIOJL0js1G4FFvqCz/hz/9FWgddsm0=
+	t=1708619312; cv=none; b=R5LZAY6ByT1/2lycbu7JQJj/u/QtvfDmBsey8xtQ5E/6skjHQdychmhZN0h4cHz+8rVR70t7kLC0hFptOQuh3gsXt5eGZjq4cek6LAE1ai0oARchok+kRwE67h4fdDYTrzKsDDEBZzQ0D+J7vUFesTO3hruTv4oLEaAN5lvi8I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708619314; c=relaxed/simple;
-	bh=itZJtWvnlDX8BTYjQebFHP4oWvzdRahIFdPuDTsEIwE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lNhA0Qf2hqnAvlBN5uotvromCupVStjt8tBZRr7YP7GIl+2HLhQFKcDKuRvthuahfypDoin09qd0iafpiRHBrXfI0jtFeGT4HDzB7H5RMwaEu7YEI1nB4sI1P3Lz2gTmrKE8jtYdhIfl2hub2XhSak3h6dwi9QWmCxQbz2X8zag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBgI+8Ck; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9382AC433B2;
-	Thu, 22 Feb 2024 16:28:33 +0000 (UTC)
+	s=arc-20240116; t=1708619312; c=relaxed/simple;
+	bh=/N54fL35ZdVbtebauo84ov69w0sjILFhff+gvM1V4NQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UmEvtRKf/RjR1Gmp5csvavt0vx7rs1oVBpn7P+fSq2boaWeRGFTc3b5r2I7yfKnsJZw0gH5PaAzN6HxcZzuhvrdudRH3MxaLsO8aHHuph7yFCqtzavUWE6AuKXYwWbvmqJbaIPwOu5tDx+pQksMG4r0n9C/kmptCrR8umZUPC1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LSSOSWpv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AF65C433C7;
+	Thu, 22 Feb 2024 16:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708619313;
-	bh=itZJtWvnlDX8BTYjQebFHP4oWvzdRahIFdPuDTsEIwE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cBgI+8Ckp17p3a8II2dv5FbR0WpnSaEmgaNRFhim9Tr/ReIHOaExdlfVNL+4Zw3pJ
-	 W5NTxrT3RkIQQHPU2JNIISiLtlpp7nJGN06cg4i8PESZgn70gaJdGzwRC5omcjK8eH
-	 9jqyOIKOgah9JOp4r+OmWhzL/AZ1uJJVjNbP/MzL1QS4+o0+ph+PK/BYV5txoyLXcW
-	 R4PFxg9C7TsVleHzEkexV7w4ieUaGS/jeRMjauWUTIdaO1LF95QrVz8uaSCTXUe296
-	 zDIJq4eD+CLCoc1dXIp6cbep5sJoSuEEXpJBMh2dr/xLfkNSJIQKT1kEv5eioaVCWN
-	 rsMGp31hI1qXA==
-Received: from 82-132-212-42.dab.02.net ([82.132.212.42] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rdBvy-005njW-UK;
-	Thu, 22 Feb 2024 16:28:31 +0000
-Date: Thu, 22 Feb 2024 16:28:27 +0000
-Message-ID: <87edd4a2fo.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Aishwarya TCV <aishwarya.tcv@arm.com>
-Cc: Anup Patel <apatel@ventanamicro.com>,	Palmer Dabbelt
- <palmer@dabbelt.com>,	Paul Walmsley <paul.walmsley@sifive.com>,	Thomas
- Gleixner <tglx@linutronix.de>,	Rob Herring <robh+dt@kernel.org>,	Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,	Frank Rowand
- <frowand.list@gmail.com>,	Conor Dooley <conor+dt@kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,	Atish Patra
- <atishp@atishpatra.org>,	Andrew Jones <ajones@ventanamicro.com>,	Sunil V L
- <sunilvl@ventanamicro.com>,	Saravana Kannan <saravanak@google.com>,	Anup
- Patel <anup@brainfault.org>,	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,	Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v12 02/25] genirq/irqdomain: Remove the param count restriction from select()
-In-Reply-To: <e42b76a9-fc5f-4ab7-96a2-629261a9c983@arm.com>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
-	<20240127161753.114685-3-apatel@ventanamicro.com>
-	<e42b76a9-fc5f-4ab7-96a2-629261a9c983@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1708619311;
+	bh=/N54fL35ZdVbtebauo84ov69w0sjILFhff+gvM1V4NQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LSSOSWpvtYIZUdKHdK5v726xYpd5If9zSDsal9KwYkamz32CsMORMaSaXI/72Bpg5
+	 22nEvBfXATGQPWXLadPhkOf6zHZgnVGaZQiW8KPJ2qugrI6tPe102a1KHsvoG+SHft
+	 nbLUkVuCRBv651s92Fc5UZWHtM9ev5xHVp4EIMgBMRAfCAqQ7ndd9W/ra89WBBWaYN
+	 loO2sTQELS5Qlk8MfRrVk3XeU2P4r+0CghckSCRoK7L+inB85apxFx7No8AVC6vshv
+	 4x3f+HqI2OZp/pbxliU0m95ZleWOQ41TUq605vpcdWwnIf74RMBZDIrfIjJo31Xdq/
+	 SrNw0kNrsqdUg==
+Date: Thu, 22 Feb 2024 10:28:30 -0600
+From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
+	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/25] fs: use type-safe uid representation for
+ filesystem capabilities
+Message-ID: <Zdd2LuUpQDldrkVO@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240222-fluchen-viren-50e216b653fb@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 82.132.212.42
-X-SA-Exim-Rcpt-To: aishwarya.tcv@arm.com, apatel@ventanamicro.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, frowand.list@gmail.com, conor+dt@kernel.org, bjorn@kernel.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, saravanak@google.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, broonie@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222-fluchen-viren-50e216b653fb@brauner>
 
-On Thu, 22 Feb 2024 13:01:32 +0000,
-Aishwarya TCV <aishwarya.tcv@arm.com> wrote:
-> 
-> 
-> 
-> On 27/01/2024 16:17, Anup Patel wrote:
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > 
-> > Now that the GIC-v3 callback can handle invocation with a fwspec parameter
-> > count of 0 lift the restriction in the core code and invoke select()
-> > unconditionally when the domain provides it.
-> > 
-> > Preparatory change for per device MSI domains.
-> > 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> 
-> Hi Thomas/Anup
-> 
-> Currently when booting the kernel against next-master(next-20240222)
-> with Arm64 on Qualcomm boards RB5/DB845C, the kernel is resulting in
-> boot failures for our CI. I can send the full logs if required. Most
-> other boards seem to be fine.
-> 
-> A bisect (full log below) identified this patch as introducing the
-> failure. Bisected it on the tag "next-20240220" at repo
-> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
-> 
-> This works fine on Linux v6.8-rc5
+On Thu, Feb 22, 2024 at 04:27:50PM +0100, Christian Brauner wrote:
+> I still think that the generic_{get,set,remove}_fscaps() helpers falling
+> back to plain *vfs_*xattr() calls is a hackish. So ideally I'd like to
+> see this killed in a follow-up series and make all fses that support
+> them use the inode operation.
 
-Can you please try [1]?
-
-	M.
-
-[1] https://lore.kernel.org/linux-kernel/20240220114731.1898534-1-maz@kernel.org
-
--- 
-Without deviation from the norm, progress is not possible.
+Right, you brought this up last time, and I probably should have
+mentioned it in the cover letter. I haven't seriously looked at doing
+this yet, in large part because I got interrupted from working on this
+and felt like v2 patches were long overdue (and you said you were fine
+with doing it as a follow-up series anyway). But I will have a look to
+see if it makes sense to change that in the next version of this series.
 
