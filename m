@@ -1,244 +1,364 @@
-Return-Path: <linux-kernel+bounces-76293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC2D85F547
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:06:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B99F585F53F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C590F282149
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:06:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06F47B25B28
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2833A1AE;
-	Thu, 22 Feb 2024 10:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B5939861;
+	Thu, 22 Feb 2024 10:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lf5YfxJi"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b="YscK8jwQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YlbyjpYY"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A2E3A1B9;
-	Thu, 22 Feb 2024 10:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAAB93BB35;
+	Thu, 22 Feb 2024 10:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596334; cv=none; b=B3IUxHcEuRFE2KtX4rcjUBeCKwidBOKIAgwuRCESLlImZ9P/BjODSl3m3aoN378nzecNJQow8uoUhqfPPwC3YpwsaGoHgefNGvbwtUFOIjrZU1Gcuhy+8/tk97MBu9zhVAsz5gULzhdYBRDlzZjNiPl/6brB1TRrSWpzrUcdMiY=
+	t=1708596310; cv=none; b=YBMAe7aHqbhFLGRITs92IEy3jWx3z3mksfPUTVmGpkeTRqe7b8b1iTUi2cXxT7K+iAzjB4qQoef9HoCgpZtWPTV96wMCzXVhumEgeKlRlsLCyeJaBZAu2qTD9S+nb1pZFftTe7kdNBCmq0zoHmzDE+diip7QRXUOtIU3ewFezrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596334; c=relaxed/simple;
-	bh=HgyUJIc15qW7raXPSPT2a89MGSMGgVE+WXE4DuWEu1g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NKbOx21Schd/5fAN7LnCsp17ySyz93et8zUXaK08R0+cZ4u4GxppVdHtN9qDzS/3g13NhizWlgxMyxNZNRLPIN+nqFY5Lm/gH4mbaEqWfNKmNdAzIVc8eWhA9seeGJn7zpj5AXtzz2/gnfSUlieDw4XAa7S2/B+TnAUUlxzuKaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lf5YfxJi; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708596327; x=1740132327;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HgyUJIc15qW7raXPSPT2a89MGSMGgVE+WXE4DuWEu1g=;
-  b=Lf5YfxJicl5Hz7fj71HBuhYPVfro2F0x+gZYyoYHan6UMON4KEB8hE3T
-   LhNLRhPlWCkeYDu9QC3obD5pF9R1L016igji3mEvhIxHUElLlIX6Em5Oy
-   yzoG3buaH6TibJh1yuR4ht3PClJUo8FCgfaThSOb5ezY60e88RSPqt8el
-   AR9NZ+CPCkwcd45IcPUigoDeiVpo/8QQCEdaN7pjYL4QxOIizMEAVGQWn
-   czJUAIIECpuFLs9UrZyJOFKvzXAdG1KywuI3a1ihUEAaJYoGUi/mkZOeA
-   i57jSv/QvI9rqnL0uPBOte2MeQzBQsFn/HTrHlhj1+iRq103Vmxtv5t8+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2920736"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="2920736"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:05:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="5754014"
-Received: from ksulimow-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.23.120])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:05:18 -0800
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 3/3] selftests/resctrl: Move cleanups out of individual tests
-Date: Thu, 22 Feb 2024 11:04:30 +0100
-Message-ID: <edcd3fee8bcd2b55f07c98468cb8cf633927e23f.1708596015.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1708596015.git.maciej.wieczor-retman@intel.com>
-References: <cover.1708596015.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1708596310; c=relaxed/simple;
+	bh=G4AOmBRKxS/WTqphDG8YVVDSIDuD3NBfSq2KaoveCrc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dbwG0J+16L1EwQDAMYakte00iyuM6d66gIJv3U0duKy1mN/xZjbTa1tRbhw5qnTuLUi2gu9IwVqoSW2qZrGtgQLDXbTC0nUlFM/H/QH3jU+f9G8sBhNUKQlT3Ryk5v61a+nEpCg4GYn11aZLC/tS6IhAXw9kKa/vL1+xwrpwVZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me; spf=pass smtp.mailfrom=beims.me; dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b=YscK8jwQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YlbyjpYY; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=beims.me
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 2D1555C0096;
+	Thu, 22 Feb 2024 05:04:51 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 22 Feb 2024 05:04:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=beims.me; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1708596291;
+	 x=1708682691; bh=a6Bu4H5OwhICFP+Cg3GexMiu885sGO/mY8lKauWqlL0=; b=
+	YscK8jwQWgPI5Nal57A19elHqnKbAKJT4GaSVeYndzt+9PfaaHwRNjRfW3719eSb
+	CgyXsuMCXbkkPVoLIbgmerbi7uXcvUAXirJGMRS2X57+FSJKD1vK/QkO6Cncf2z8
+	+vUw1ZZtU6ALSknxAJFd/2ciBNpQld2IaGVRV3c5lbrqluNnUZFbkL9dtKwAEyLs
+	Pe6DBAyQyF2XQJ8VKK8CD19+YZaaUNqeKQ68VCxysoSRfsg15XTuhVVKsc2m7TM1
+	OQ9/IjLalydqUr1gJQjtV8pN1wZg8tRMphxCsfTvxRQ+KB/DQruwj2dQpDosYWOV
+	5LdgEm+fkh3Opmubpz9PoQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708596291; x=
+	1708682691; bh=a6Bu4H5OwhICFP+Cg3GexMiu885sGO/mY8lKauWqlL0=; b=Y
+	lbyjpYYnMWsgH1sZ1tmC5DDw2FT1l/x+uAdk8gZG6cFUKOzSh396BUMOC2kkr5Rl
+	SrzjLTwxUFaMEXiJ/F/MGcwKyfRv0VjNpEUV75x09L64yGxNuq2IZIdnvLDVDns1
+	hN9XeUxn/iLcNuiKXBKqMixUl/SuGaZqSTP8CzktZaujpklXASbxtEKIZcp9CDKc
+	c9YzEiBFjNmYg9pHBT+dBFCtbltC5DGyQNKoejPHPeD3xSPwAllaESCDJkDSKdjv
+	CAFRAvcvJMLJV7GRsLNarLU/+fDkFO3uHVCH5z7Q71Vs6PWVLdN/UuHkmMft1jJD
+	Nz4sKVP5rADVcofIhKx5w==
+X-ME-Sender: <xms:QhzXZQ_URyVK4W4w9miyHEstehRVfSHZ1Ql27c11lxKCqxcemVeysg>
+    <xme:QhzXZYvg5C9apt8Kihfp1baU9PrRZAwUFVyNbfTl6mdAszQRw8JRcNjA62ZxVkXYP
+    uyHydcPI3cJ-9O4i2E>
+X-ME-Received: <xmr:QhzXZWDVtId1JJEZ-jC4Dg1pznF_B01qqxxhyesLrAFqXfrUJhWzlnoeT7zntN45lSk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeeggddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
+    fuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefkffggfgfuvfevfhfhjggt
+    gfesthejredttddvjeenucfhrhhomheptfgrfhgrvghluceuvghimhhsuceorhgrfhgrvg
+    hlsegsvghimhhsrdhmvgeqnecuggftrfgrthhtvghrnhepffeuveegueffvdegffekveel
+    tdejteeiheefuddugfffiedtffevveetfeekvdfgnecuffhomhgrihhnpehgohhoghhlvg
+    drtghomhdpthhorhgruggvgidrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehrrghfrggvlhessggvihhmshdrmhgv
+X-ME-Proxy: <xmx:QhzXZQeGFnnqPKGI3LtQlaauXIIbTSrDIwYxGJy_NfyU4Ls7aylwJg>
+    <xmx:QhzXZVMfuafITJ963naaLarwswaXHeI5zjJnXbKMvq7KN9qd89UQdw>
+    <xmx:QhzXZamEYRfTpmOKS0FHahfDRjMLESEEEuLN3kSxaJCfngRlYyzjqg>
+    <xmx:QxzXZY3IVE1YddtwSN_cHbVMQ2BMIsN5X7qFA8x7YYEIAiuBumEyPw>
+Feedback-ID: idc214666:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 22 Feb 2024 05:04:49 -0500 (EST)
+Message-ID: <c6c1f096-ffe1-4ecd-885c-d50934380752@beims.me>
+Date: Thu, 22 Feb 2024 07:04:46 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host
+ mlme
+Content-Language: pt-BR
+To: David Lin <yu-hao.lin@nxp.com>, Francesco Dolcini <francesco@dolcini.it>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "briannorris@chromium.org" <briannorris@chromium.org>,
+ "kvalo@kernel.org" <kvalo@kernel.org>, Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+References: <20231222032123.1036277-1-yu-hao.lin@nxp.com>
+ <97bb3869-3b82-4b64-87cd-9b63d4516649@beims.me>
+ <PA4PR04MB96389A5DDB41DFF80CBB4738D17D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <48364f66-99b4-40ca-b4b2-4adf1071960f@beims.me>
+ <ZcSB3_16C6JTgBJB@gaggiata.pivistrello.it>
+ <PA4PR04MB96381141AFBE8E61B8DD94F9D14D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <b77af968-ec6f-44df-a544-4ea2a5ad3ff2@beims.me>
+ <PA4PR04MB963849A7E04ADEE5DE92002DD14C2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <PA4PR04MB963887774FBAF4E2E022C552D14C2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <3d1c45bd-fb89-4a4c-8f53-b1775f6c9a3e@beims.me>
+ <PA4PR04MB9638007CEECACA73A6F13BCED1562@PA4PR04MB9638.eurprd04.prod.outlook.com>
+From: Rafael Beims <rafael@beims.me>
+In-Reply-To: <PA4PR04MB9638007CEECACA73A6F13BCED1562@PA4PR04MB9638.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Every test calls its cleanup function at the end of it's test function.
-After the cleanup function pointer is added to the test framework this
-can be simplified to executing the callback function at the end of the
-generic test running function.
+On 22/02/2024 05:01, David Lin wrote:
+>> From: Rafael Beims <rafael@beims.me>
+>> Sent: Friday, February 16, 2024 6:11 PM
+>> To: David Lin <yu-hao.lin@nxp.com>; Francesco Dolcini <francesco@dolcini.it>
+>> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> briannorris@chromium.org; kvalo@kernel.org; Pete Hsieh
+>> <tsung-hsien.hsieh@nxp.com>
+>> Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host
+>> mlme
+>>
+>> Caution: This is an external email. Please take care when clicking links or
+>> opening attachments. When in doubt, report the message using the 'Report
+>> this email' button
+>>
+>>
+>> On 15/02/2024 22:48, David Lin wrote:
+>>>> From: David Lin
+>>>> Sent: Friday, February 16, 2024 9:41 AM
+>>>> To: Rafael Beims <rafael@beims.me>; Francesco Dolcini
+>>>> <francesco@dolcini.it>
+>>>> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>> briannorris@chromium.org; kvalo@kernel.org; Pete Hsieh
+>>>> <tsung-hsien.hsieh@nxp.com>
+>>>> Subject: RE: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to
+>>>> support host mlme
+>>>>
+>>>>> From: Rafael Beims <rafael@beims.me>
+>>>>> Sent: Thursday, February 15, 2024 8:11 PM
+>>>>> To: David Lin <yu-hao.lin@nxp.com>; Francesco Dolcini
+>>>>> <francesco@dolcini.it>
+>>>>> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>>> briannorris@chromium.org; kvalo@kernel.org; Pete Hsieh
+>>>>> <tsung-hsien.hsieh@nxp.com>
+>>>>> Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to
+>>>>> support host mlme
+>>>>>
+>>>>> Caution: This is an external email. Please take care when clicking
+>>>>> links or opening attachments. When in doubt, report the message
+>>>>> using the 'Report this email' button
+>>>>>
+>>>>>
+>>>>> On 14/02/2024 23:07, David Lin wrote:
+>>>>>>> From: Francesco Dolcini <francesco@dolcini.it>
+>>>>>>> Sent: Thursday, February 8, 2024 3:25 PM
+>>>>>>> To: Rafael Beims <rafael@beims.me>
+>>>>>>> Cc: David Lin <yu-hao.lin@nxp.com>;
+>>>>>>> linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>>>>> briannorris@chromium.org; kvalo@kernel.org; francesco@dolcini.it;
+>>>>>>> Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+>>>>>>> Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to
+>>>>>>> support host mlme
+>>>>>>>
+>>>>>>> Caution: This is an external email. Please take care when clicking
+>>>>>>> links or opening attachments. When in doubt, report the message
+>>>>>>> using the 'Report this email' button
+>>>>>>>
+>>>>>>>
+>>>>>>> On Wed, Feb 07, 2024 at 06:30:03PM -0300, Rafael Beims wrote:
+>>>>>>>> On 30/01/2024 04:19, David Lin wrote:
+>>>>>>>>>> From: Rafael Beims <rafael@beims.me> On 22/12/2023 00:21,
+>> David
+>>>>>>>>>> Lin wrote:
+>>>>>>>>>>> This series add host based MLME support to the mwifiex driver,
+>>>>>>>>>>> this enables WPA3 support in both client and AP mode.
+>>>>>>>>>>> To enable WPA3, a firmware with corresponding V2 Key API
+>>>>>>>>>>> support is required.
+>>>>>>>>>>> The feature is currently only enabled on NXP IW416 (SD8978),
+>>>>>>>>>>> and it was internally validated by the NXP QA team. Other NXP
+>>>>>>>>>>> Wi-Fi chips supported in current mwifiex are not affected by
+>>>>>>>>>>> this
+>>>> change.
+>>>>>>> ...
+>>>>>>>
+>>>>>>>>>>> David Lin (2):
+>>>>>>>>>>>        wifi: mwifiex: add host mlme for client mode
+>>>>>>>>>>>        wifi: mwifiex: add host mlme for AP mode
+>>>>>>> ...
+>>>>>>>
+>>>>>>>>>> I applied the two commits of this series on top of v6.7 but
+>>>>>>>>>> unfortunately the AP is failing to start with the patches. I
+>>>>>>>>>> get this output from "hostapd -d" (running on a Verdin AM62 with
+>> IW416):
+>>>>>>>>>> nl80211: kernel reports: Match already configured
+>>>>>>>>>> nl80211: Register frame command failed (type=176): ret=-114
+>>>>>>>>>> (Operation already in progress)
+>>>>>>>>>> nl80211: Register frame match - hexdump(len=0): [NULL]
+>>>>>>>>>>
+>>>>>>>>>> If I run the same hostapd on v6.7 without the patches, the AP
+>>>>>>>>>> is started with no issues.
+>>>>>>>>>>
+>>>>>>>>>> Is there anything else that should be done in order to test this?
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>> I applied patch v8 (mbox from patch work) to Linux stable
+>>>>>>>>> repository (tag
+>>>>>>> v6.7.2).
+>>>>>>>>> Both client and AP mode can work with and without WPA3.
+>>>>>>>>>
+>>>>>>>> I went back and executed the tests again. I re-applied the pach
+>>>>>>>> on top of tag v6.7.2 to make sure we're seeing exactly the same thing.
+>>>>>>>>
+>>>>>>>> At first, the behavior I was seeing was exactly the same I
+>>>>>>>> reported
+>>>> before.
+>>>>>>>> Upon starting hostapd with our basic example configuration, it
+>>>>>>>> would fail to start the AP with the error:
+>>>>>>>>
+>>>>>>>> nl80211: kernel reports: Match already configured
+>>>>>>>> nl80211: Could not configure driver mode
+>>>>>>>>
+>>>>>>>> After some investigation of what could cause this error, I found
+>>>>>>>> out that it was connman that was interfering with this somehow.
+>>>>>>>> After killing the connman service, the AP would start correctly.
+>>>>>>>>
+>>>>>>>> I want to point out that this behavior is different from the
+>>>>>>>> unpatched driver. With that one we don't need to kill connman in
+>>>>>>>> order to start the AP with hostapd.
+>>>>>>> Any idea what's going on in this regard? Is such a change in
+>>>>>>> behavior
+>>>>> expected?
+>>>>>>> Francesco
+>>>>>> When I tried to test v6.7.2+ (with patch v8) on NB + SDIO IW416, it
+>>>>>> needs to
+>>>>> issue "sudo systemctl stop NetworkManager" in order to test AP mode.
+>>>>>
+>>>>> The issue I reported is that the kernel with the patch is behaving
+>>>>> differently when compared to the kernel without the patch. I kept
+>>>>> all the test conditions the same, just replacing the kernel. It
+>>>>> seems that you can reproduce this on your end using NetworkManager.
+>>>>>
+>>>>> This is a change in behavior on userspace that's not currently explained.
+>>>>>
+>>>>>> For i.MX + SDIO IW416, it needs to install following two files for
+>>>>>> client and
+>>>>> AP mode to "/lib/systemd/network" for systemd-networkd:
+>>>>>> <<Client mode: 80-wifi-station.network>>
+>>>>>>
+>>>>>> [Match]
+>>>>>> Type=wlan
+>>>>>> WLANInterfaceType=station
+>>>>>>
+>>>>>> [Network]
+>>>>>> DHCP=yes
+>>>>>>
+>>>>>> <<AP mode: 80-wifi-ap.network>>
+>>>>>>
+>>>>>> [Match]
+>>>>>> Type=wlan
+>>>>>> WLANInterfaceType=ap
+>>>>>>
+>>>>>> [Network]
+>>>>>> Address=192.168.100.1/24
+>>>>>> DHCPServer=yes
+>>>>>>
+>>>>>> [DHCPServer]
+>>>>>> PoolOffset=100
+>>>>>> PoolSize=20
+>>>>>>
+>>>>>> I think this is not related to driver.
+>>>>>>
+>>>>>> David
+>>>>> I didn't really understand what systemd-networkd has to do with
+>>>>> anything being discussed here. We could use it to create an AP, but
+>>>>> that's not the test I did. In my case I used hostapd directly.
+>>>>>
+>>>>>
+>>>>> Rafael
+>>>> I think the difference between previous driver is host mlme.
+>>>> Systemd-networkd is only for address assignment, so it won't affect
+>>>> the test of AP mode. However, Ubuntu Network Manager will affect AP
+>>>> mode test, so it needs to stop it before running hostapd.
+>>>>
+>>>> David
+>>> I found
+>> https://groups.go/
+>> ogle.com%2Fg%2Fbeagleboard%2Fc%2F3Um2Xqa2MHU&data=05%7C02%7Cy
+>> u-hao.lin%40nxp.com%7C4c74f7c309e243eb6c0c08dc2ed78b4c%7C686ea1d3
+>> bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638436750492293425%7CUnknow
+>> n%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haW
+>> wiLCJXVCI6Mn0%3D%7C0%7C%7C%7C&sdata=99eQWmm39kbo63JKNFbiljFQz
+>> o%2Bz7ki%2FSsllw%2FdonbE%3D&reserved=0 to setup commman with
+>> hostapd. Can you give me your setting for commman? Thanks.
+>>> David
+>>>
+>> Just to make it clear, we are *not* setting up the AP with connman. On our
+>> reference images we have a simple service that starts hostapd directly. We also
+>> have connman running by default and it's responsible for setting up the other
+>> interfaces (ethernet, wifi client).
+>>
+>> In this setup, we previously were able to just start the hostapd service and the
+>> AP would start working. Now with the patch, connman seems to be doing
+>> something with the interface that causes the AP to fail starting.
+>>
+>> For reference, this is the simple AP service we start:
+>>
+>> [Unit]
+>> Description=Hostapd IEEE 802.11 AP, IEEE 802.1X/WPA/WPA2/EAP/RADIUS
+>> Authenticator Requires=enable-wifi.service
+>>
+>> [Service]
+>> Type=forking
+>> PIDFile=/run/hostapd.pid
+>> ExecStart=/usr/sbin/hostapd /etc/hostapd-tdx-demo-img.conf -P
+>> /run/hostapd.pid -B
+>>
+>>
+>> [Install]
+>> WantedBy=multi-user.target
+>>
+>>
+>> If you want to replicate this behavior on your side, probably just building
+>> connman with yocto and adding it to your image is enough. After enabling
+>> connman to start at boot time, you can try to start hostapd manually.
+>>
+>>
+>> Regards,
+>>
+>> Rafael
+>>
+> 1. Without host mlme, management packet filter of AP mode is the same as client mode. Authentication/Association packets are handled by firmware and once if station is connected, firmware will send station connection event to driver. So you can still start wpa_supplicant and hostapd on uap0 at same time. However, this is not correct setting and usage.
+>
+> 2. With host mlme, management packet filter of AP mode is not the same as client mode. Authentication/Association packets are sent to hostapd, so cfg80211 won't allow wpa_supplicant and hostapd run on uap0 at same time (different management packet filter).
+>
+> I think no matter with or without patch v8, setting of connman for uap0 should not be client mode. Setting of connman for uap0 should be ap mode or bypass to control it as client mode.
+>
+> The behavior of patch v8 is correct and it can avoid user to run wpa_supplicant and hostapd on AP wireless interface at same time. There is no side effect of patch v8 for this behavior.
+>
+> I also found document from Toradex about how to run connman for AP mode:
+>
+> https://developer.toradex.com/linux-bsp/application-development/networking-connectivity/how-to-setup-wi-fi-access-point-mode-linux/
+>
+> Please check section 8:
+>
+> Enable and start hostapd service:
+> First, make sure to blacklist the uap0 interface on connmanctl by adding it to NetworkInterfaceBlacklist at connman/main.conf.
+>
+> I think to block uap0 from connman is correct way to run hostapd on uap0.
+>
+> David
+>
+That explains the difference in behavior, thank you!
 
-Make test cleanup functions static and call them from the end of
-run_single_test() from the resctrl_test's cleanup function pointer.
 
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
----
-Changelog v2:
-- Change most goto out paths into return ret. (Ilpo)
+Tested-by: <rafael.beims@toradex.com> #Verdin AM62 IW416 SD
 
- tools/testing/selftests/resctrl/cat_test.c      | 7 ++-----
- tools/testing/selftests/resctrl/cmt_test.c      | 3 +--
- tools/testing/selftests/resctrl/mba_test.c      | 7 ++-----
- tools/testing/selftests/resctrl/mbm_test.c      | 7 ++-----
- tools/testing/selftests/resctrl/resctrl.h       | 4 ----
- tools/testing/selftests/resctrl/resctrl_tests.c | 2 ++
- 6 files changed, 9 insertions(+), 21 deletions(-)
 
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 2d2f69d3e5b7..1d1efed6164e 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -128,7 +128,7 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
- 	return fail;
- }
- 
--void cat_test_cleanup(void)
-+static void cat_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -284,13 +284,10 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- 
- 	ret = cat_test(test, uparams, &param, span, start_mask);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = check_results(&param, test->resource,
- 			    cache_total_size, full_cache_mask, start_mask);
--out:
--	cat_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-index 32ddee87e43d..c477f3c9635f 100644
---- a/tools/testing/selftests/resctrl/cmt_test.c
-+++ b/tools/testing/selftests/resctrl/cmt_test.c
-@@ -91,7 +91,7 @@ static int check_results(struct resctrl_val_param *param, size_t span, int no_of
- 				 MAX_DIFF, MAX_DIFF_PERCENT, runs - 1, true);
- }
- 
--void cmt_test_cleanup(void)
-+static void cmt_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -161,7 +161,6 @@ static int cmt_run_test(const struct resctrl_test *test, const struct user_param
- 		ksft_print_msg("Intel CMT may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
- 
- out:
--	cmt_test_cleanup();
- 	free(span_str);
- 
- 	return ret;
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index 7cc4067ce930..a2f81d900900 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -137,7 +137,7 @@ static int check_results(void)
- 	return show_mba_info(bw_imc, bw_resc);
- }
- 
--void mba_test_cleanup(void)
-+static void mba_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -158,13 +158,10 @@ static int mba_run_test(const struct resctrl_test *test, const struct user_param
- 
- 	ret = resctrl_val(test, uparams, uparams->benchmark_cmd, &param);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = check_results();
- 
--out:
--	mba_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 071e2d3808a7..6589154c102e 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -105,7 +105,7 @@ static int mbm_setup(const struct resctrl_test *test,
- 	return ret;
- }
- 
--void mbm_test_cleanup(void)
-+static void mbm_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -126,15 +126,12 @@ static int mbm_run_test(const struct resctrl_test *test, const struct user_param
- 
- 	ret = resctrl_val(test, uparams, uparams->benchmark_cmd, &param);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = check_results(DEFAULT_SPAN);
- 	if (ret && (get_vendor() == ARCH_INTEL))
- 		ksft_print_msg("Intel MBM may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
- 
--out:
--	mbm_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 826783b29c9d..428ce9174384 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -153,8 +153,6 @@ int resctrl_val(const struct resctrl_test *test,
- 		const struct user_params *uparams,
- 		const char * const *benchmark_cmd,
- 		struct resctrl_val_param *param);
--void mbm_test_cleanup(void);
--void mba_test_cleanup(void);
- unsigned long create_bit_mask(unsigned int start, unsigned int len);
- unsigned int count_contiguous_bits(unsigned long val, unsigned int *start);
- int get_full_cbm(const char *cache_type, unsigned long *mask);
-@@ -163,9 +161,7 @@ int get_cache_size(int cpu_no, const char *cache_type, unsigned long *cache_size
- void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
- int signal_handler_register(const struct resctrl_test *test);
- void signal_handler_unregister(void);
--void cat_test_cleanup(void);
- unsigned int count_bits(unsigned long n);
--void cmt_test_cleanup(void);
- 
- void perf_event_attr_initialize(struct perf_event_attr *pea, __u64 config);
- void perf_event_initialize_read_format(struct perf_event_read *pe_read);
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 161f5365b4f0..bae08d1221ec 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -134,6 +134,8 @@ static void run_single_test(const struct resctrl_test *test, const struct user_p
- 	}
- 
- 	ret = test->run_test(test, uparams);
-+	if (test->cleanup)
-+		test->cleanup();
- 	ksft_test_result(!ret, "%s: test\n", test->name);
- 
- cleanup:
--- 
-2.43.2
+Rafael
 
 
