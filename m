@@ -1,84 +1,71 @@
-Return-Path: <linux-kernel+bounces-76015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B821A85F1F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 86A7A85F1FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:38:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3F3F1C22DE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EBF01C22D4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322F21799E;
-	Thu, 22 Feb 2024 07:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FItXX0at"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743FE290A;
-	Thu, 22 Feb 2024 07:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5169E1799C;
+	Thu, 22 Feb 2024 07:38:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90AF379EA
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708587347; cv=none; b=huzNtuNCwBsC1jpdtpRY/asAvn31PLigejCDRz6U27IygTbyde+qKlvt5wOMbTDZ2Jgo+FcHPkqEx1iz/BzS6x7ylD046+iEcRj++nzsvaUJGWPaky8vW6PCDhpVM6mjgF1Rwa3rBl6dQogFIPRmprsqxC1qI+pxE4szHpGEfUk=
+	t=1708587500; cv=none; b=T5D8nGQAA1kxeB8hJJxJU4OKK+LjSGElrrhlbsRW11Yi0EULMvNOSzz4YDj9Pc00p7Xpui9lefvneDpTD6AG4KyXzOC1Z0iuuuyCAy9lI8WIQfXaOKiNX49cr/Ej6oz5LN/S4VVGyRCQt3yxx1jslQ0O4D30LUDYekamhUhmBuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708587347; c=relaxed/simple;
-	bh=/gg6HLF1iVc0ufJm2KfXB3s9/qrmwuJTBEsKy5Ju3CQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OXyecHVd/dsWkbwE3IhbKVlVHlgJ4fBodjKBslUIrtZAlH6dlPjWrGK78rG/0Dz+oYmdNZxuFWl18f8iBA5SXebmW49iv2aqyWdB/FAjgmLRB973EMNtEfsXNehNK3iRkc8PvYbu+QB56fJa7WqHFILjf+P+GzVZ2tigpTRzGBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FItXX0at; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66413C433C7;
-	Thu, 22 Feb 2024 07:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708587347;
-	bh=/gg6HLF1iVc0ufJm2KfXB3s9/qrmwuJTBEsKy5Ju3CQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FItXX0atqDVJdSO1Mfc/40AiapAWskiKnq9zL2oS2mm9+kzD56o7fNbV91yzoA8eM
-	 RAJTFEnxz7s6CLqzlajoYgAwf/uE3XXD/8A9vo8sDLZe9cmqp0JAADAK2cyDnAHXuu
-	 G6tmuLc/4/gwZSwk9jY2NdUaPwTnBInpgOW4p9iRkvKZvfbgQF48SI+CBffipUVdef
-	 d7OC33Jcba0SJn6ahtRcbU0DvAyyu6SpmrF+pmuCztU3vXKyZ4pge3YvB/XaS9XsWE
-	 4aHOfOtOrR2qB2wUg//b5CTkmFXNSjqJ+CRiK+h3p96888P51y/SCMlA/cFrbNv35L
-	 IB+IIccn1kCdw==
-Message-ID: <12b7187d-73c9-488c-a7cb-93ca31bc74e5@kernel.org>
-Date: Thu, 22 Feb 2024 15:35:41 +0800
+	s=arc-20240116; t=1708587500; c=relaxed/simple;
+	bh=FSEIn7TKL0cw+Qnh47yGxDvJNkCX9bok7fIoj/Dliuo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ht9P+bQ0zSsCDiDfGhe2mOeDwZOyJZWMlGhymeeCmum4a/Z0KqmQqs7KFeHdOluMjo0vvCKztKjYW85ER//Q07QQhAZqLroaN0QzQARZDUjojIkCj+gIz2CBIZipjXAepLjuhqU+ZkVcaHsif4JthGidEeA5yUi18YM8s7R+n/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1CCF1007;
+	Wed, 21 Feb 2024 23:38:55 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AF2423F762;
+	Wed, 21 Feb 2024 23:38:16 -0800 (PST)
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Cristian Marussi <cristian.marussi@arm.com>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] firmware: struct bus_type cleanup
+Date: Thu, 22 Feb 2024 07:38:10 +0000
+Message-ID: <170858556491.105647.13334595992310350270.b4-ty@arm.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240211-bus_cleanup-firmware2-v1-0-1851c92c7be7@marliere.net>
+References: <20240211-bus_cleanup-firmware2-v1-0-1851c92c7be7@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] erofs: fix refcount on the metabuf used for inode
- lookup
-Content-Language: en-US
-To: Sandeep Dhavale <dhavale@google.com>, Gao Xiang <xiang@kernel.org>,
- Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc: quic_wenjieli@quicinc.com, stable@vger.kernel.org,
- kernel-team@android.com, linux-erofs@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240221210348.3667795-1-dhavale@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240221210348.3667795-1-dhavale@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/22 5:03, Sandeep Dhavale wrote:
-> In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
-> we do not assign the target metabuf. This causes the caller
-> erofs_namei()'s erofs_put_metabuf() at the end to be not effective
-> leaving the refcount on the page.
-> As the page from metabuf (buf->page) is never put, such page cannot be
-> migrated or reclaimed. Fix it now by putting the metabuf from
-> previous loop and assigning the current metabuf to target before
-> returning so caller erofs_namei() can do the final put as it was
-> intended.
+On Sun, 11 Feb 2024 12:51:28 -0300, Ricardo B. Marliere wrote:
+> This series is part of an effort to cleanup the users of the driver
+> core, as can be seen in many recent patches authored by Greg across the
+> tree (e.g. [1]).
 > 
-> Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Applied to sudeep.holla/linux (for-next/ffa/updates), thanks!
 
-Thanks,
+[1/2] firmware: arm_ffa: Make ffa_bus_type const
+      https://git.kernel.org/sudeep.holla/c/989e8661dc45
+--
+Regards,
+Sudeep
+
 
