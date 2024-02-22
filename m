@@ -1,202 +1,322 @@
-Return-Path: <linux-kernel+bounces-76711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6062885FB5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3DA385FB63
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:36:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83ADB1C23CA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:35:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 224C61C2356E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4534F14D43B;
-	Thu, 22 Feb 2024 14:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5811614831D;
+	Thu, 22 Feb 2024 14:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5Dqc4YZz"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2071.outbound.protection.outlook.com [40.107.237.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="q72bJHz3"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB421474D9;
-	Thu, 22 Feb 2024 14:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708612461; cv=fail; b=CKOu1xBLjcnF9qkPnuqe5caY4bSqBCVkRdV3X/PNC2jgqBb2vrD010Sbl+KdjIEWQzxvIsZuC2eku1G2nmW7nbYakSduFVBXcJJ3SOCq7i4z85XIzBqESGpZ2eev5uZnaf6FDgoVl2d0/9ZS9FUjcm0Eltdo05vcrhHTyKpAVCI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708612461; c=relaxed/simple;
-	bh=jkUbFhcZul2qqx5yPF6UA84QaMiGtY+vmqnSzgIdtsk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=N08VIuZ1AhlCoC00M9pc29ZW1yOzK02bxeK5eg9YGmnCjC52056l+Q3mEMgMNwjpVYjq+bgUCSxbkQgDz5qba8taXMGyMASA5mrV3vR0BnAUbECu0y04wXkPltyPyJ0qXLsDZK0M1fnL3hxbvDMg6DSjF7J9l0Mhc+mFyU8SA6w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=5Dqc4YZz; arc=fail smtp.client-ip=40.107.237.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LuXAttqZ2TggCkh9yL/c/i1rm4bJtvu+uoopVaHO9SqGPYGxV2kd7BXHL87d9uCU039697r7MFljQL8R+H48+xtrKC2MvEpSOZUalzoXRc5IsWfCY/hquLvDv6JeRVQltjunt2NCyv64JQllywrqmJ1J4iqnsl9kBYDZvCYXBDUCKl5oXWoy94iIC+RMmEE8JV4drO5W80WXBaClJPBwh/GKYu8mUfRs9UuDgMen5Biulg2YBbIcdh8rTZG3NFFbnlcDH9PI8YJsvQ4TCSYElnxbsBlvKU43wFPHz4uf4+nkaNOeNDBFJjl1AFLzMi2YilAUC7H6uBfrkr9b2Qf4WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hlhfb1lk1TzI6rPJ6i4EOcwuRUhV1ad4i13tbp1EBoo=;
- b=KnEFZbnTMDUvSw0dRlbHibtIIK7MafOXZsO2+uLQIrualeneLTM/t5T1bOjLxGvSycN71bNgllET0TIOBx+jP5LSs+4TpsKJRK2R8NGmkv79nHU1hu/g33JT6dukGf61MN1l80pPc1gIcYDlHs/u/7RS6NCKsDHnvUb9eIXUtIiu7vMtUqCx1Chu5HDewfDFRyPrdZAA/cP5ORYqeiowOY736VAvVNyODQQeZ3PrurBVKRfH/QfC4GH2tGzAxtp2+AjJltdqCYDy/GBDx+odyhFh8Amhi9UYngT8PPYlO7SrHrtqz0M3zDTH684GtsDiplDyFMnZXeH7e8/gVfobcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hlhfb1lk1TzI6rPJ6i4EOcwuRUhV1ad4i13tbp1EBoo=;
- b=5Dqc4YZzXTPSKCPbdk08iLkojxCOetecfsvf6NAW/YrdfegEvymm+FsLLcFL5jk8gAfuUdcZdhkNob4nI+0V5QaYBTRQWGB8/N/+CO4jHdqMSFIHRA+fkZWpbQPfciLBi8f63QG5xWPAF3xB/VGpaYlnB7ojXxToa7b7z6oHs9A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by DM4PR12MB6231.namprd12.prod.outlook.com (2603:10b6:8:a6::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Thu, 22 Feb
- 2024 14:34:14 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::251:b545:952c:18dd]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::251:b545:952c:18dd%7]) with mapi id 15.20.7316.023; Thu, 22 Feb 2024
- 14:34:14 +0000
-Message-ID: <65c650e0-3d43-4f86-a79a-fb899012bff1@amd.com>
-Date: Thu, 22 Feb 2024 08:34:12 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] docs: Include simplified link titles in main index
-Content-Language: en-US
-To: Jonathan Corbet <corbet@lwn.net>, rdunlap@infradead.org,
- vegard.nossum@oracle.com
-Cc: bilbao@vt.edu, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240109155643.3489369-1-carlos.bilbao@amd.com>
- <6314de0b-a69c-4e72-9538-8b133fc50047@amd.com> <874je1d00v.fsf@meer.lwn.net>
-From: Carlos Bilbao <carlos.bilbao@amd.com>
-In-Reply-To: <874je1d00v.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7P222CA0010.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:124::33) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B9453364
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708612570; cv=none; b=CfeR/fRj/7rgHObsTI3Ng+p3N6K332Xi2aOusmJubJvfT1aQ37smKuYurjB5fYMbyqloOfSwlGKrvE3mIaS8CbBp+5WX6kJOCt/7hS4cIPnJGh5+S7iCU6yekR0lexmqdL3ccy3ZJkTVDKd2twNVKs9BOtvnUBaCACOI40G5hUw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708612570; c=relaxed/simple;
+	bh=HliuWGGmLq3LvWFnUzny9BGxNLmSfmBeFrSvnFUmeT0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gdikj9lELyj0D+y+BJ397N5/pm6Y2ApG51lsA5Lsh01XS2XqIgKzdV3jK0v+ZxwGEWZHQyvLXv4//u6PJTDyUZHN0rH0MmaXQXWVagMyXJAex5rfNVjSM/b8bNR/BqWFV+yKvtnu6i2GTSVXmhelJVTAFl91oBxCnpTE8EgjiwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=q72bJHz3; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d4c0b198aso1236927f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 06:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708612567; x=1709217367; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=97R8kfjvE4ydiVE9xk3Hq8ViU+odGzafXCe6ly6SQak=;
+        b=q72bJHz3oZ5vkUpFZj9FecLT/Sx8TTW5RZRLvmol98Wb1rO7B0Ee8LsoZhYzv7Mtkk
+         t85bGRbSoP2If6hUCTect2IhLzzMdUJNLETTOHWUEZEXvl4nfj53Sl+cZTeAStltJAm5
+         7YvZ7fjNzgdmG2vmxvyRgT4C9rh5gJKfMo6xlmmts503a2RcOh44lmceBoJ56lOt4x+X
+         9ljhSdC8ZdZq50W25CrFxYpJyHqPZ6N+ENGr43BTWUqZUuhjogyhGTSJ9U1F7QPF6yuI
+         FN5FkMW1zTg0dy5pG3yqsreW/Yz4Bu+o7XHaP/IZxDuPkM0iy9K8nMsMiT+lJmLzfQFV
+         OYTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708612567; x=1709217367;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=97R8kfjvE4ydiVE9xk3Hq8ViU+odGzafXCe6ly6SQak=;
+        b=KB2v/sAREjdlNDWlr+y3Z1KoZk2V+AcUr+YDmvvi2ecSYhlKY4GaO3X/imwVcYSkzG
+         yMjly9haYwbdfFuOiXdqP26z1mIJgBSsr0UE+b5gs6KDf5lCv5yguyCf5Bw0LBPdfwsf
+         ju0cBXf7bRu/lT7sLV0LMzEk6v3aSYkIxdlSYvtowEsKzUmOnI/VarWLReHiUT17KHWB
+         Pc4f7QRq52hDdLDf1IOcTVmcDf3oMNC48COT7nCiaXDP5r9x1jrIvmq7MUPt8hydzJ+g
+         BpqYPOzkqPimaSRz7+Cr51kyW8kAiSvoqsBx5jp8xZpV0UTYhJJvp4sGtiC5xxn46bxz
+         6PCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUdYgLX7PFRsQE3Hzk1HBKMa1Dg2+ztY/07KZASBDfcnYtvIRW48mCwv5TGi9YGu33dVrLydss/KSaFH7cI++qhAyoR/aKMdlM0eKZ/
+X-Gm-Message-State: AOJu0Yz82qMQmrloNdLWMkTnEazg2Z1mYo0feMCqzlXg8ubBUAUFVsQc
+	lKxUGw/Ruckb25wLmocht7EnXOkpdZPlKH3FKXGanAGmx7pABMY5GsSIrPcXG1I=
+X-Google-Smtp-Source: AGHT+IHu5V8esi5kOiAWFJ9acLTrnNi8Fr4bd1xwp17ik98eNa3jMw23rdKPpaaB5oRlxd4fqlFbhw==
+X-Received: by 2002:adf:ff8a:0:b0:33d:30a4:d744 with SMTP id j10-20020adfff8a000000b0033d30a4d744mr10446253wrr.30.1708612566630;
+        Thu, 22 Feb 2024 06:36:06 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id jj2-20020a05600c6a0200b004126732390asm6198255wmb.37.2024.02.22.06.36.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 06:36:06 -0800 (PST)
+Message-ID: <59e8fd70-5ba6-4256-9127-bd5e76e6bc99@linaro.org>
+Date: Thu, 22 Feb 2024 15:36:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|DM4PR12MB6231:EE_
-X-MS-Office365-Filtering-Correlation-Id: 73b8db9c-9a86-4a8b-e307-08dc33b357a3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UN57gjMx9jalyNa2igvSW/A1+xtlXl7mo2b46HnDQc5xNR8D6t8qZc3QTFmRDtV9ZV3vXDT3R6UmFypYwSghBkvwnr/t7BsQeSN2vqAOVOqU1OxeX4U7R+MUolfmRUwOjseRFyF6k5BZNlqrFm71zf6TLM91PG+Xww83sjDtHiXu6T2563gnncrLDnJkRGGtx1odPhegNrD4OCadpCCutrDLqQrpiNeIgj1Q3GueCvsRyiNtlrjzLeC6MP6TRGpd9x9uoEnHa/QWvE5RSilDqLV2bTG5KQs+9IoiRGGAzs8JbouY7QSTUyXugW5rb6vxCyHdGy2xdCS7uvKAGnVxd0ZeTIzptehkCBaGx9P+VE9TU3nLjbYdcZLfxlS3EfeFK+KQzc3eGhuzIIvPE3HXTsUXftknqK05jzIh1oLApKSZwAaT6YT6tob5XVgN2J0PVSoY+HcnsmZVUneP0Iw8Xz8ySfIqkW+HtQNy/rDHFsMJMs0N+cIh0435sWNwz7+9AGdgJULALWIuqA+/zngxLorHQ0CAqwZtPcZ8BjXFEqo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bGkzRTkzOGUzdHBCelp0amZENG5EcDNMeDhwSW1qODZJRy9kNHduM0pyV28v?=
- =?utf-8?B?ZFVINncxTGNna2E1T3R4dGxmM0ZhbmRpUW5zSFFlc3VibVBibFlwTjFSclBV?=
- =?utf-8?B?RWhHemNwUCtUc3MwU0JXMWNZL0RhSUFGUGJDeW1SdnJRd2w5RGs4QkRxSTUw?=
- =?utf-8?B?MGN5S0VwM1NrdXljN3Z5WFhld3pZdHBFMExzU1QyZHprRmxBSm81MHdKMHVS?=
- =?utf-8?B?OHdrQ2hlV2pWV1ltRm9EM2RUKzFnZUFVNGdIZVNzNjYrQWdQS0ttK2pDZHVQ?=
- =?utf-8?B?WENuelNIUlg1UkhSSnFvdi9TTHJ4QjhzQ1ZOSHkxcVFuQW9zZ3RBQzkzWm9F?=
- =?utf-8?B?TWVFakY5M25OVHl0Q3ZzNmVHeTNiQ0d1TGhPTWtkOEVHMEFzVnJYYWZyb1Rh?=
- =?utf-8?B?QXZycEJCalRlNEtCa3NIZ3BFUFR4Q1hham8xNkZSOTVVcEQ1TXozTlE1SjJz?=
- =?utf-8?B?cE10KzR4ZjFpaEtFMlYzck9EZ243QUdHRnkyL2IwUXNiNjUzcU9xdTdQaEtk?=
- =?utf-8?B?WVh1L2grSHI5emNzKzJnVjdSTDJqVnpmWklFSndkZXp3M1FnN3JjT0VIVHZS?=
- =?utf-8?B?eUJFZVVlSkd5YXU1aWV0ZkhpcVpoL3NxMHBRM09jQlNEeFJYWE94c0MyQ010?=
- =?utf-8?B?L085ZWZiRWpzZFlhbFBwV3lsQzVpcFZZKzNQZk1WWE9nTFIrNmdGUnFHa3RS?=
- =?utf-8?B?WE5pYVJGMERJMk1BdkFxYmM2T3haQkg4NUZaOFRVYXlnZWRhVi85bjEzNGRD?=
- =?utf-8?B?UEFtcTFaODQxVE9pSWFPVGpYS3VkT0RjMVFTTTVIL2hzRXFtaXJjTDBTZUQx?=
- =?utf-8?B?N1FFY0t2cFN5WjVsWm9HWXBUS1FXYm0waTQ3TjM3aHMwdUc5NjB1QVJPR2dp?=
- =?utf-8?B?c2tPTTBvSmFKTjVGSVdMMXZGck8zYXBsYWlvTmYrQTcrTTRrVU5sVTFsOXNK?=
- =?utf-8?B?SklSZFVjeW5UMDY1Yjl1VWpNbFV5cEVOUTRtZzJzQ1pNQm1qZ1c5UVk0SDM0?=
- =?utf-8?B?UFNLU3V2YzNBUXVFenFpZ0Qra0laNDRXOHZ1Vm0yZC9sNVZVNGZpT01Vc1ov?=
- =?utf-8?B?MTZUTWpsUGxPTURFeWlsdGNvR0NjaVVKcWxwS1ZjTHk5K3dhS3BSUkpUenpQ?=
- =?utf-8?B?dkZPRlA4aWhhQWV0cEZHWkNEM0p4R21pNnNUalFaZzRYLy8wY0hnQ3lWUFlz?=
- =?utf-8?B?enkyU2VSbU00U1BtM0VQVmY1Wk1kUkVPOTBvRFNHbDNQb1BzWGJPSkZGbERx?=
- =?utf-8?B?QmsrMXo2Zm8xa1pEd1J2cTZrZCs5ai9pdmFacG1PSUNPSHJ5MkxmSHkzajc4?=
- =?utf-8?B?UW5YTlZLRUx3MWhjTDZmRmRwbWg3QXF2Mmc1SnJTL01VMFRpbWFHWlhHVmla?=
- =?utf-8?B?UGV4U2kzU1VzNFhQcFB5Y0ZhMnJPWXIrSi9KeHlPNmw1N29nUlJqOEd1Q1Nk?=
- =?utf-8?B?RVRyRjd3b3VlRGYyWnZtaDhxb0xxbFY2empybWlDUmhvbnNzNi9ZY2lBRjY3?=
- =?utf-8?B?aFljRXVXYTdKVVpERDd3UzJpNEZDdnBKL0NrRFArU1J0QnVzVFk2OXdJamlS?=
- =?utf-8?B?NWVYOFVmbmV5U0FzemJxeHplK0hrOG9nUE9jb1R4R1ppdENXYVpYSCs5MWNk?=
- =?utf-8?B?TXNmcXpEd1RaY3k0alNDRnlEYXBWWEE4TTI0QThaSlEwMmI4ZXBPbVBpM09j?=
- =?utf-8?B?Zms2Q04zc3lhdFIwbzUwalgvT2VyMk9Vak1nRFpSRURKWXB3bSszTHkxWjkx?=
- =?utf-8?B?WkRUNGJ2T0ZhZkFHNFZ6ajcweEc0dXBMUWhteE1JYVREL0RoZEd1OCtGQ3dQ?=
- =?utf-8?B?M090Uis2UnBRV2ZVWkVBVFpWY1F1RHhzazFKaGZFOFJGenBEYS9kdVZhZjZF?=
- =?utf-8?B?eHJSUHkrazFTeEVnd3JHRDJveWZPQ0NWVmVBTTZEN0VhSDg3dUQxbnpmSVpM?=
- =?utf-8?B?ZzBpZHhHZEhHMFNVUzVjYjljWW02U01vQnlQeW1IdFlxRUVlWnZWN2pqNkxl?=
- =?utf-8?B?NHNrL0RxYm9TcGdtM0hCUFE4dmhXd3JWTE8zS0pvTDJxNTZ6MHVodWM3WmtH?=
- =?utf-8?B?bUlDWXBhM2xkRE1WeGYyU3hDc2ZiYzVUSGFJckVIMUFDc2k1N0lmSU1ibE9D?=
- =?utf-8?Q?lRLKsw5FcR4qgoGwFIKCbr0RJ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73b8db9c-9a86-4a8b-e307-08dc33b357a3
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 14:34:14.3473
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ck2w6zfv9Fx1Pqa68tsmCAfg/yzTcvAFqREHzr6i0LLBbU8U3v/L039ctZvBvjPbZugySE6zTSqwYsuObkK0ww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6231
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/9] thermal: core: Add flags to struct thermal_trip
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
+ Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+ Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+ linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+References: <6017196.lOV4Wx5bFT@kreacher> <2173914.irdbgypaU6@kreacher>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <2173914.irdbgypaU6@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2/21/24 14:40, Jonathan Corbet wrote:
-> Carlos Bilbao <carlos.bilbao@amd.com> writes:
+On 12/02/2024 19:31, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
->> Hello,
->>
->> On 1/9/24 09:56, Carlos Bilbao wrote:
->>> The general consensus is that the documentation's website main entry point
->>> and its sidebar leave room for improvement. Something we can easily fix is
->>> that there's too much duplicated text.
->>>
->>> To that point, consider the titles "The Linux kernel user's and
->>> administrator's guide" and "The Linux kernel user-space API guide." We get
->>> it, it's the Linux kernel. It's assumed that everything listed pertains to
->>> the Linux kernel, given the overarching title, "The Linux Kernel
->>> documentation." Constant repetition of "Linux" and "kernel" (45 times
->>> each), "documentation" (21 times), and "guide" (18 times) are excessive and
->>> affect UX.
->>>
->>> I propose simplifying without altering actual document titles, the text
->>> linking to these documents on the main page ("link titles"). For example,
->>> "The Linux kernel user's and administrator's guide" could become "User's
->>> and Administrator's Guide," and "A guide to the Kernel Development Process"
->>> could be "Development Process". This is what my patch does.
->>>
->>> Also, I send a patch fixing the formatting of the title of
->>> admin-guide/index.rst (The Linux kernel user's and administrator's guide);
->>> a detail I noticed because the link title would not work otherwise.
->>>
->>> Thanks,
->>> Carlos
->>>
->>> Carlos Bilbao (2):
->>>       docs: Correct formatting of title in admin-guide/index.rst
->>>       docs: Include simplified link titles in main index
->>
->> Is there a reason why this patch set is currently on hold? It must to be
->> feeling a bit lonely by now.
+> In order to allow thermal zone creators to specify the writability of
+> trip point temperature and hysteresis on a per-trip basis, add a flags
+> field to struct thermal_trip and define flags to represent the desired
+> trip properties.
 > 
-> It's been sitting there because, as I explained in response to the first
-> version, I'm not really convinced that it's the best idea.  We're
-> trading off the readability of the main page to make things better for
-> the sidebar, and I think there are better ways to improve the sidebar.
+> Also make thermal_zone_device_register_with_trips() set the
+> THERMAL_TRIP_FLAG_RW_TEMP flag for all trips covered by the writable
+> trips mask passed to it and modify the thermal sysfs code to look at
+> the trip flags instead of using the writable trips mask directly or
+> checking the presence of the .set_trip_hyst() zone callback.
 > 
-> That said, I've not managed to get around to experimenting with any of
-> those better ways, and I don't see that happening anytime this side of
-> the next merge window.
+> Additionally, make trip_point_temp_store() and trip_point_hyst_store()
+> fail with an error code if the trip passed to one of them has
+> THERMAL_TRIP_FLAG_RW_TEMP or THERMAL_TRIP_FLAG_RW_HYST,
+> respectively, clear in its flags.
 > 
-> So I'll go ahead and apply the series, but I do still intend to revisit
-> this area when I can.
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> v1 -> v2:
+>     * Rename trip flags (Stanislaw).
+> 
+> ---
+>   drivers/thermal/thermal_core.c  |   12 +++++++++++-
+>   drivers/thermal/thermal_core.h  |    2 +-
+>   drivers/thermal/thermal_sysfs.c |   28 +++++++++++++++++++---------
+>   include/linux/thermal.h         |    7 +++++++
+>   4 files changed, 38 insertions(+), 11 deletions(-)
+> 
+> Index: linux-pm/include/linux/thermal.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/thermal.h
+> +++ linux-pm/include/linux/thermal.h
+> @@ -64,15 +64,23 @@ enum thermal_notify_event {
+>    * @threshold: trip crossing notification threshold miliCelsius
+>    * @type: trip point type
+>    * @priv: pointer to driver data associated with this trip
+> + * @flags: flags representing binary properties of the trip
+>    */
+>   struct thermal_trip {
+>   	int temperature;
+>   	int hysteresis;
+>   	int threshold;
+>   	enum thermal_trip_type type;
+> +	u8 flags;
+>   	void *priv;
+>   };
+>   
+> +#define THERMAL_TRIP_FLAG_RW_TEMP	BIT(0)
+> +#define THERMAL_TRIP_FLAG_RW_HYST	BIT(1)
+> +
+> +#define THERMAL_TRIP_FLAG_MASK_RW	(THERMAL_TRIP_FLAG_RW_TEMP | \
+> +					 THERMAL_TRIP_FLAG_RW_HYST)
 
- From my perspective, this improves readability for both the sidebar and
-the main page, but I know that is a subjective perception. I look forward
-to helping with alternative ways in the future.
+What about THERMAL_TRIP_FLAG_RW instead ?
 
-> 
-> Thanks,
-> 
-> jon
+>   struct thermal_zone_device_ops {
+>   	int (*bind) (struct thermal_zone_device *,
+>   		     struct thermal_cooling_device *);
+> Index: linux-pm/drivers/thermal/thermal_core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.c
+> +++ linux-pm/drivers/thermal/thermal_core.c
+> @@ -1356,13 +1356,23 @@ thermal_zone_device_register_with_trips(
+>   	tz->devdata = devdata;
+>   	tz->trips = trips;
+>   	tz->num_trips = num_trips;
+> +	if (num_trips > 0) {
 
-Thanks,
-Carlos
+Is this check really necessary? for_each_trip() should exit immediately 
+if there is no trip points.
+
+> +		struct thermal_trip *trip;
+> +
+> +		for_each_trip(tz, trip) {
+> +			if (mask & 1)
+> +				trip->flags |= THERMAL_TRIP_FLAG_RW_TEMP;
+> +
+> +			mask >>= 1;
+> +		}
+> +	}
+>   
+>   	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+>   	thermal_set_delay_jiffies(&tz->polling_delay_jiffies, polling_delay);
+>   
+>   	/* sys I/F */
+>   	/* Add nodes that are always present via .groups */
+> -	result = thermal_zone_create_device_groups(tz, mask);
+> +	result = thermal_zone_create_device_groups(tz);
+>   	if (result)
+>   		goto remove_id;
+>   
+> Index: linux-pm/drivers/thermal/thermal_core.h
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.h
+> +++ linux-pm/drivers/thermal/thermal_core.h
+> @@ -131,7 +131,7 @@ void thermal_zone_trip_updated(struct th
+>   int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
+>   
+>   /* sysfs I/F */
+> -int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
+> +int thermal_zone_create_device_groups(struct thermal_zone_device *tz);
+>   void thermal_zone_destroy_device_groups(struct thermal_zone_device *);
+>   void thermal_cooling_device_setup_sysfs(struct thermal_cooling_device *);
+>   void thermal_cooling_device_destroy_sysfs(struct thermal_cooling_device *cdev);
+> Index: linux-pm/drivers/thermal/thermal_sysfs.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_sysfs.c
+> +++ linux-pm/drivers/thermal/thermal_sysfs.c
+> @@ -122,6 +122,11 @@ trip_point_temp_store(struct device *dev
+>   
+>   	trip = &tz->trips[trip_id];
+>   
+> +	if (!(trip->flags & THERMAL_TRIP_FLAG_RW_TEMP)) {
+> +		ret = -EPERM;
+> +		goto unlock;
+> +	}
+
+Does it really happen?
+
+If the sysfs file is created with the right permission regarding the 
+trip->flags then this condition can never be true.
+
+>   	if (temp != trip->temperature) {
+>   		if (tz->ops->set_trip_temp) {
+>   			ret = tz->ops->set_trip_temp(tz, trip_id, temp);
+> @@ -173,6 +178,11 @@ trip_point_hyst_store(struct device *dev
+>   
+>   	trip = &tz->trips[trip_id];
+>   
+> +	if (!(trip->flags & THERMAL_TRIP_FLAG_RW_HYST)) {
+> +		ret = -EPERM;
+> +		goto unlock;
+> +	}
+
+Ditto
+
+>   	if (hyst != trip->hysteresis) {
+>   		if (tz->ops->set_trip_hyst) {
+>   			ret = tz->ops->set_trip_hyst(tz, trip_id, hyst);
+> @@ -392,17 +402,16 @@ static const struct attribute_group *the
+>   /**
+>    * create_trip_attrs() - create attributes for trip points
+>    * @tz:		the thermal zone device
+> - * @mask:	Writeable trip point bitmap.
+>    *
+>    * helper function to instantiate sysfs entries for every trip
+>    * point and its properties of a struct thermal_zone_device.
+>    *
+>    * Return: 0 on success, the proper error value otherwise.
+>    */
+> -static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
+> +static int create_trip_attrs(struct thermal_zone_device *tz)
+>   {
+> +	const struct thermal_trip *trip;
+>   	struct attribute **attrs;
+> -	int indx;
+>   
+>   	/* This function works only for zones with at least one trip */
+>   	if (tz->num_trips <= 0)
+> @@ -437,7 +446,9 @@ static int create_trip_attrs(struct ther
+>   		return -ENOMEM;
+>   	}
+>   
+> -	for (indx = 0; indx < tz->num_trips; indx++) {
+> +	for_each_trip(tz, trip) {
+> +		int indx = thermal_zone_trip_id(tz, trip);
+> +
+>   		/* create trip type attribute */
+>   		snprintf(tz->trip_type_attrs[indx].name, THERMAL_NAME_LENGTH,
+>   			 "trip_point_%d_type", indx);
+> @@ -458,7 +469,7 @@ static int create_trip_attrs(struct ther
+>   						tz->trip_temp_attrs[indx].name;
+>   		tz->trip_temp_attrs[indx].attr.attr.mode = S_IRUGO;
+>   		tz->trip_temp_attrs[indx].attr.show = trip_point_temp_show;
+> -		if (mask & (1 << indx)) {
+> +		if (trip->flags & THERMAL_TRIP_FLAG_RW_TEMP) {
+>   			tz->trip_temp_attrs[indx].attr.attr.mode |= S_IWUSR;
+>   			tz->trip_temp_attrs[indx].attr.store =
+>   							trip_point_temp_store;
+> @@ -473,7 +484,7 @@ static int create_trip_attrs(struct ther
+>   					tz->trip_hyst_attrs[indx].name;
+>   		tz->trip_hyst_attrs[indx].attr.attr.mode = S_IRUGO;
+>   		tz->trip_hyst_attrs[indx].attr.show = trip_point_hyst_show;
+> -		if (tz->ops->set_trip_hyst) {
+> +		if (trip->flags & THERMAL_TRIP_FLAG_RW_HYST) {
+>   			tz->trip_hyst_attrs[indx].attr.attr.mode |= S_IWUSR;
+>   			tz->trip_hyst_attrs[indx].attr.store =
+>   					trip_point_hyst_store;
+> @@ -505,8 +516,7 @@ static void destroy_trip_attrs(struct th
+>   	kfree(tz->trips_attribute_group.attrs);
+>   }
+>   
+> -int thermal_zone_create_device_groups(struct thermal_zone_device *tz,
+> -				      int mask)
+> +int thermal_zone_create_device_groups(struct thermal_zone_device *tz)
+>   {
+>   	const struct attribute_group **groups;
+>   	int i, size, result;
+> @@ -522,7 +532,7 @@ int thermal_zone_create_device_groups(st
+>   		groups[i] = thermal_zone_attribute_groups[i];
+>   
+>   	if (tz->num_trips) {
+> -		result = create_trip_attrs(tz, mask);
+> +		result = create_trip_attrs(tz);
+>   		if (result) {
+>   			kfree(groups);
+>   
+> 
+> 
+> 
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
