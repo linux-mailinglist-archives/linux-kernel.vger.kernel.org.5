@@ -1,141 +1,86 @@
-Return-Path: <linux-kernel+bounces-76320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE31585F59A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3517485F5A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:26:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93DCA1F268BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:26:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBCEA1F26431
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179463A1B4;
-	Thu, 22 Feb 2024 10:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nxAkwHqU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D001B59E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4F93A8FE;
+	Thu, 22 Feb 2024 10:26:17 +0000 (UTC)
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id BE4EC3C481;
+	Thu, 22 Feb 2024 10:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597537; cv=none; b=DrKsL4vNu4lghwv23Bo6EP9hB2k12sF6VO0WnI+q6UbCzsuc1ivyjltD2aHn2eGr9rfJjMZwWN68PBLyhO1ZXZepWUwAXGOIRLc07ACSnQQXApZM//G8RI0QC6UPa5ZdngJ/OJyEW66bLUljb48UXTVuwKv5UKILHE+zFk10JIo=
+	t=1708597576; cv=none; b=nSvWAv1Zb+rATCXVUqQ7ua2nb6eKoajNQ2nHbeUC8YBT7hzaPvqHvIEXnnHCtjJXUWlmOCbzAMVPXM83l4s33r57oikR4W8aNaE5s96S3E7ozOBfERRMd2uJR7ZVbvKZJ7LaP64ghGRhBUJYpbJAX+13Vj7mKn3nlAHj59+iUtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597537; c=relaxed/simple;
-	bh=jHPeddCOy8adCP656HMcnAP37nqYydpbombti7EBDIk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YISJuYC5hm0gTWgsigG01DCnk6zy/XRLCb4123G742OLz6IySwX1pmu9rdyik5oxW58nNrBecPV1SwBPCP9WxXMke42gizuAFhdqgRTo1zTGMxoiiTqrdepZ15oJINlmm9omGMr2h8kwH4UC5VVDsPtd0RZQT2bdkojV3ScFcnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nxAkwHqU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37246C433C7;
-	Thu, 22 Feb 2024 10:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708597536;
-	bh=jHPeddCOy8adCP656HMcnAP37nqYydpbombti7EBDIk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nxAkwHqU+R+Kp6rbn5CUCbGP6KAw1DjTcTxtaEGUXshLGYsnxzYvRJ9raS11UKufV
-	 LJeZYGip/mcbOQBGnMmmLszgLwN6zLy/BhWmOgaW4vRduPFuAGU8lgpw40+e/SPQ0s
-	 XHoWM22Oy17zerDDigG2kllnkUz+Vfdo8u41faAsxj4ZT6c1/TjShru6VePy26dlTx
-	 gI5w6DdixYP/wByiCIQui3ByA/HpIb3FOG4hczQl2Vu9mMP2DNaxagsLknTpWwzE28
-	 i8RUwJYV1jYvQAhOsizY5MDDs92BATZQirZMQ3q+gMBQZax5BVZTEH0cLelg5fJjpy
-	 k3SNC5tzy4GVA==
-Date: Thu, 22 Feb 2024 11:25:33 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Christian Loehle <christian.loehle@arm.com>
-Subject: Re: [PATCH v11 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZdchHZCcE/LkxBYt@lothringen>
-References: <20240221090548.36600-1-anna-maria@linutronix.de>
- <20240221090548.36600-19-anna-maria@linutronix.de>
- <ZdZ87whmpul8xIBI@pavilion.home>
- <87jzmwnc9y.fsf@somnus>
+	s=arc-20240116; t=1708597576; c=relaxed/simple;
+	bh=Rm+Yj2UuZ1027lvdPwgeiZQLrr3sHaHO5cTHO1idRqg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G6pfVhou3QvsIsUHgvSK9LgyiZD8E6u8zQI31mun11HkxUs78/jVYaqsbHnVMBF5umGRrLNNu2NajhtLrOWMPep1MNIcaPtOrMU0W4JGdOb+/ce4bBRNvxk8Ltl1mccPOxqxsCZmdq5upA8lMn94hv87dD4SJ+MRVm+lEjgprc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
+Received: from localhost.localdomain (unknown [180.167.10.98])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 093096032FDD7;
+	Thu, 22 Feb 2024 18:25:52 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From: Su Hui <suhui@nfschina.com>
+To: hubcap@omnibond.com,
+	martin@omnibond.com
+Cc: Su Hui <suhui@nfschina.com>,
+	xiyuyang19@fudan.edu.cn,
+	cymi20@fudan.edu.cn,
+	tanxin.ctf@gmail.com,
+	devel@lists.orangefs.org,
+	linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] orangefs: Fix possible NULL deference in orangefs_mount
+Date: Thu, 22 Feb 2024 18:25:49 +0800
+Message-Id: <20240222102548.1426561-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87jzmwnc9y.fsf@somnus>
 
-On Thu, Feb 22, 2024 at 09:17:29AM +0100, Anna-Maria Behnsen wrote:
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> 
-> > Le Wed, Feb 21, 2024 at 10:05:46AM +0100, Anna-Maria Behnsen a écrit :
-> >> Placing timers at enqueue time on a target CPU based on dubious heuristics
-> >> does not make any sense:
-> >> 
-> >>  1) Most timer wheel timers are canceled or rearmed before they expire.
-> >> 
-> >>  2) The heuristics to predict which CPU will be busy when the timer expires
-> >>     are wrong by definition.
-> >> 
-> >> So placing the timers at enqueue wastes precious cycles.
-> >> 
-> >> The proper solution to this problem is to always queue the timers on the
-> >> local CPU and allow the non pinned timers to be pulled onto a busy CPU at
-> >> expiry time.
-> >> 
-> >> Therefore split the timer storage into local pinned and global timers:
-> >> Local pinned timers are always expired on the CPU on which they have been
-> >> queued. Global timers can be expired on any CPU.
-> >> 
-> >> As long as a CPU is busy it expires both local and global timers. When a
-> >> CPU goes idle it arms for the first expiring local timer. If the first
-> >> expiring pinned (local) timer is before the first expiring movable timer,
-> >> then no action is required because the CPU will wake up before the first
-> >> movable timer expires. If the first expiring movable timer is before the
-> >> first expiring pinned (local) timer, then this timer is queued into an idle
-> >> timerqueue and eventually expired by another active CPU.
-> >> 
-> >> To avoid global locking the timerqueues are implemented as a hierarchy. The
-> >> lowest level of the hierarchy holds the CPUs. The CPUs are associated to
-> >> groups of 8, which are separated per node. If more than one CPU group
-> >> exist, then a second level in the hierarchy collects the groups. Depending
-> >> on the size of the system more than 2 levels are required. Each group has a
-> >> "migrator" which checks the timerqueue during the tick for remote expirable
-> >> timers.
-> >> 
-> >> If the last CPU in a group goes idle it reports the first expiring event in
-> >> the group up to the next group(s) in the hierarchy. If the last CPU goes
-> >> idle it arms its timer for the first system wide expiring timer to ensure
-> >> that no timer event is missed.
-> >> 
-> >> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> >
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> >
-> > Though I must confess I only had a shallow look at group creation (init_group,
-> > get_group, connect_child_parent, setup_groups, add_cpu, and tmigr_init). But for
-> > the rest, I'm running out of bad scenarios. Time for the rest of the world to
-> > find them!
-> >
-> > Thanks for the hard work!
-> 
-> Thank you for your support!
-> 
-> Did you saw the v11a for this patch? It is only a cleanup - it removes
-> an unused variable. Just asking, because Review was for plain v11 patch.
+scripts/coccinelle/null/deref_null.cocci complains:
+fs/orangefs/super.c:584:18-25: ERROR:
+ORANGEFS_SB ( sb ) is NULL but dereferenced.
 
-Yep, I reviewed the 11a one, with the "leftmost" variable off.
+When memory allocation for orangefs_sb_info_s fails, ORANGEFS_SB(sb)
+is NULL and ORANGEFS_SB(sb)->no_list will result in NULL deference.
+Add a judgement to fix this NULL deference problem.
 
-Thanks.
+Fixes: ac2c63757f4f ("orangefs: Fix sb refcount leak when allocate sb info failed.")
+Signed-off-by: Su Hui <suhui@nfschina.com>
+---
+ fs/orangefs/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
+index 5254256a224d..c056c86e2482 100644
+--- a/fs/orangefs/super.c
++++ b/fs/orangefs/super.c
+@@ -581,7 +581,8 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
+ 
+ free_sb_and_op:
+ 	/* Will call orangefs_kill_sb with sb not in list. */
+-	ORANGEFS_SB(sb)->no_list = 1;
++	if (ORANGEFS_SB(sb))
++		ORANGEFS_SB(sb)->no_list = 1;
+ 	/* ORANGEFS_VFS_OP_FS_UMOUNT is done by orangefs_kill_sb. */
+ 	deactivate_locked_super(sb);
+ free_op:
+-- 
+2.30.2
+
 
