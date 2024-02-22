@@ -1,58 +1,67 @@
-Return-Path: <linux-kernel+bounces-76518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4285285F848
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:34:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECD1985F851
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2CFA280DAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:34:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CBE9281BA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D3E12DD8E;
-	Thu, 22 Feb 2024 12:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DCB312DDA6;
+	Thu, 22 Feb 2024 12:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gEmfeymq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1xO5VRo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97381F95E;
-	Thu, 22 Feb 2024 12:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E0112C809;
+	Thu, 22 Feb 2024 12:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708605285; cv=none; b=SoVfAAbkBRYQKHW5fvMnccAu+910h06402Ey2jD5VbW6aU35VJcX3NSGh1g/McL1OIxZLJ6DN4ThP/T0Dm7Y0sKY15uBBrGQBk6HOeHG6/62UfkBnzhufctXLr0Xi/yNSc9AZgoNQbqttmOdAOnjByTQy3+3wt17uivTySRikLU=
+	t=1708605416; cv=none; b=slRcGEn7UHLkbtmeLkH6dWWKe7WGl8mNs1FZ/rXCumhO9E/dbllnoZ3u4Tdz/Jd3uTWm9IdG/5dTF/EB7+i7c/aiJPJvSmru6X9OGP0GGMCkejBzp3H4H0uNPu+BDnDi0KQpDXO+aVWppcSrtymC3thYHnT7vXu+rVbdSrlxexM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708605285; c=relaxed/simple;
-	bh=ZI+o8a8KnNcSBUYdnSaf3q7l9/6TqpPnGor6PEAB6kQ=;
+	s=arc-20240116; t=1708605416; c=relaxed/simple;
+	bh=5JMBWnzvOQc2q9DWqlLSJhqyKMkqobNiRXLfi0gNSkw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QwJt7BumPJZdSH+JjUxvR2DB2G3cA+jTXbc7VK8vNTG44BlBk8y7sV2PhrbOakGZImDv3tadqHrhqpwqo5TirZGhHwEZ4RQi4dhLDEzpUSm3OEynRXcOYkOT06v24JErfHINbI2eC2QvXhPL+9IBqQYDg0nkxf3OU2D7i2NibXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gEmfeymq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5346CC433F1;
-	Thu, 22 Feb 2024 12:34:44 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GMZ9+NTEbnWf0I8lhNnaricC745y7og6+dp6b11AVC4wdHxXPHuZ+qQf497jmOEjPWjftuubhkNycUrveDAIOUMaIRrayWRV1tgA1QdGybgVYf/QglMuUnd3OTq+KVF/mbmtsbv0mW+1GoOc2xKmM4peg0NtIE3o72phB6q6Rb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1xO5VRo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8BCC433F1;
+	Thu, 22 Feb 2024 12:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708605284;
-	bh=ZI+o8a8KnNcSBUYdnSaf3q7l9/6TqpPnGor6PEAB6kQ=;
+	s=k20201202; t=1708605416;
+	bh=5JMBWnzvOQc2q9DWqlLSJhqyKMkqobNiRXLfi0gNSkw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gEmfeymqM7VQw7hx3G0r+Xzdoyt8kzAl79LLtb6r1ODhpfFKH7KHBgjfH4mBPk1oC
-	 b1NPJy2Px2/7V4nOvICKBGEfL6Nx8agfEv1Gwl492uv8pEIOMb5ZJjrU6gYzPn04ye
-	 oa15nK8Od9grkYZbGXeOkHhnys82jc0PEV+M250QP0ZDWbjC72YZ6bSAxz4Sfy24KX
-	 LQOhvdj60szF+gjGfqEUWbsbQA0fSZ6hvtURUFfbwmitlSvWdonu+RXnvS1nlujDt5
-	 sJ9VwRQc+HK0Ysk0F1ECl0+6RYEsUjVKqJ8C4tyDjxReR9oBIAOI9qwFoNTr04scYA
-	 e59cCi/CQvt3g==
-Date: Thu, 22 Feb 2024 07:34:44 -0500
+	b=D1xO5VRoWXbIbpcnOhY/uLVhsXx/2oRZ2xD235yMjQklY/wimmoooLrtFXjW9Jd2Z
+	 4Nj1KxVN1DvLIa1/KLDUWTU+wbSCz1KQ8tj6JDssXczs9h0SpBTrx+KDnzmj78TzPK
+	 0B5HvJD/XEpCogvsZ+B+MdxKl9ZrlYE/ljxwDSq0reRjMdhHSTtcFSdPy3LfF4PqlJ
+	 Ywlx5zj+OqnDsEhvPpU4WlBXF1IExGnDeQL0nS7vBvAnXO6Wed5aQEoMhaVfghyMV/
+	 sODhTLvWPinMcOY35mJfngLaWw4vzUTgQwd63hFrGlFol3IW7K8oYunizs4JzskfHg
+	 6m0ipcTYDF3nw==
+Date: Thu, 22 Feb 2024 07:36:56 -0500
 From: Sasha Levin <sashal@kernel.org>
 To: Pavel Machek <pavel@denx.de>
 Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com
-Subject: Re: [PATCH AUTOSEL 6.1 05/15] x86/cpu: Add model number for Intel
- Clearwater Forest processor
-Message-ID: <Zdc_ZLH200jhMTsx@sashalap>
-References: <20240202184057.541411-1-sashal@kernel.org>
- <20240202184057.541411-5-sashal@kernel.org>
- <ZdJXAs2j6UGcSBBN@duo.ucw.cz>
+	Kees Cook <keescook@chromium.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, surenb@google.com,
+	michael.christie@oracle.com, mst@redhat.com, mjguzik@gmail.com,
+	npiggin@gmail.com, zhangpeng.00@bytedance.com, hca@linux.ibm.com
+Subject: Re: [PATCH AUTOSEL 5.10 7/8] exec: Distinguish in_execve from in_exec
+Message-ID: <Zdc_6Jx93folkK6B@sashalap>
+References: <20240202184156.541981-1-sashal@kernel.org>
+ <20240202184156.541981-7-sashal@kernel.org>
+ <ZdJWuMifIiNnrLbZ@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,16 +70,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ZdJXAs2j6UGcSBBN@duo.ucw.cz>
+In-Reply-To: <ZdJWuMifIiNnrLbZ@duo.ucw.cz>
 
-On Sun, Feb 18, 2024 at 08:14:10PM +0100, Pavel Machek wrote:
+On Sun, Feb 18, 2024 at 08:12:56PM +0100, Pavel Machek wrote:
 >Hi!
 >
->> [ Upstream commit 090e3bec01763e415bccae445f5bfe3d0c61b629 ]
+>> From: Kees Cook <keescook@chromium.org>
 >>
->> Server product based on the Atom Darkmont core.
+>> [ Upstream commit 90383cc07895183c75a0db2460301c2ffd912359 ]
+>>
+>> Just to help distinguish the fs->in_exec flag from the current->in_execve
+>> flag, add comments in check_unsafe_exec() and copy_fs() for more
+>> context. Also note that in_execve is only used by TOMOYO now.
 >
->This adds unused include, I don't believe we need it in AUTOSEL.
+>These are just a whitespace changes, we should not need them.
 
 Dropped, thanks!
 
