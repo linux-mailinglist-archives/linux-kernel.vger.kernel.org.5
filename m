@@ -1,133 +1,147 @@
-Return-Path: <linux-kernel+bounces-76811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9638A85FCF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:47:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA76285FCFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:48:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4D1B1C22396
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:47:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BF191F26EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2F314E2D7;
-	Thu, 22 Feb 2024 15:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B161509A7;
+	Thu, 22 Feb 2024 15:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="omK6Fsoe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="RIEywIvv"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9B814AD14;
-	Thu, 22 Feb 2024 15:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B04B14D45C
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708616861; cv=none; b=a9rhL8LSm5j8mAm7k4ZYreSbv47m2F4R5l0DCZxdQBjFWlpRUQzVoZMuF/tWPfY+Wn5HMEnmcR+vOtz/DtdU/CU6S52iJ129/VVzPcZcUC+AOjJHLe9mMGY/R38Sj0rf+VphknIzWpYwdr3+Np81pVDDrovmgFLjACQAycZkIKI=
+	t=1708616886; cv=none; b=PtRFZrtCv/cRVTq3trBL0CRAvUNiVKJkm2nHATXNUNZJZ7hTNB9wJ/y4z56rmRSMmxsYuaUcY61SEdcZKH60xXqtsruSk7aLBpb1t0pKFvyOtfrzyBEJOUFBCkCKCkaPX7Uph8ipqfF8Y8uHuW0PWMgG7WHfMz+VvoR8+nzkaHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708616861; c=relaxed/simple;
-	bh=ZEQ3TuXtQ1HZkjiFkZjRQexbw/7ACSFzMu3l/emJLw8=;
+	s=arc-20240116; t=1708616886; c=relaxed/simple;
+	bh=/URg4PQnQQuQavo2tWzU6iVHhXxnRjfAkpj2MvvU244=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sr8RvvqbcLCSYDRFAYDA0ePsHh6rTYrGFLFKqIocNrr3twlITyjk8c+VFiHhNbw9B7nf8acz7bBUjNhlpB0KLf3tMZuKzWp+rHOIEx4BEeVp3q4sIlZ8dsY+3cVfrZ+F5JdrR0n8nK/vb9c1pz6ZebK15u3wQ/gZmIEFEv0w938=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=omK6Fsoe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6015C433F1;
-	Thu, 22 Feb 2024 15:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708616860;
-	bh=ZEQ3TuXtQ1HZkjiFkZjRQexbw/7ACSFzMu3l/emJLw8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=omK6FsoeI1CmcgHU2vWay4w7nXK5X5mgurfwE4sCPsXzV9xD+Lp4QAQ0l3QK+/pxQ
-	 yAQ6eLf2uMyhLXrzIYkQ9L0gpvbDeHB1T9K5uUTygvHOx7y4/iTUAsCGXts4mTq2bS
-	 3ZRZVBE9nRGheoUYiNLPMFIfZJCpZH/hEOmoUz5CjMlU72RmUqGyNyO/vKa3OD0zJ/
-	 3BQpJ4XsBfBdidPZ3DS/NnVQrOaoyEbCbwFOZViSd6Zi4M1SzKhRM/x/z89vqW+9Tj
-	 s3A2tT4ChwWY7yU6ewZipVDWRytyaGLQK1lTBP/BBKJaN0lugY6I+0j0gDzBJ1RuzG
-	 L/hq2ck9YkSBw==
-Date: Thu, 22 Feb 2024 15:47:34 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-	scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH v2 2/2] ASoC: nau8325: new driver
-Message-ID: <6ffb4165-95e0-4ccd-868f-8ecda56b4079@sirena.org.uk>
-References: <20240222083825.190854-1-wtli@nuvoton.com>
- <20240222083825.190854-3-wtli@nuvoton.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XIvISMy3yojNr8HlmF1rwCtVcNnwIkSTtf5m0/XLdiRsf44UoT2oPOf5FFekSqggvvJ+qycLhW/jLDbheT2ulk7fUvSJEaNXfVq61Gvp2X8bm6TS1A3aNfYEW/qYrWQ3mIHhnWa6YkKPG7EDqYLAhlb1rMEfMBthLJIOhj47khU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=RIEywIvv; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso2227172276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1708616884; x=1709221684; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QIa8oVIZuT7lP1k8X8l2WJQdq609coU/Nz2aGnBWwe4=;
+        b=RIEywIvvscu1E8xViuV4ZuAJOikoT2p1+xmOQaCMPZpoQ5BUx/TnMjs2uOiFXVRR5t
+         Phh57Z4wdTLREqHqs61NjoO3Iknt5R4e49VX887QUDXR/WQfNIjffCEOLEp+hzX2JfSQ
+         7mYiEamFKSWVW4qKy756x+ZdsL850EDSFBQ6aT2vDN0O6LWiu1D1IsEHpKgwq/EUuk+w
+         fy1d5afa6gPYlpjt/rxtXtUmLRtfYb4zRb0KJR/wAf/ZwfTJ3VurlPCdyt1ySZZwf7Ey
+         MW3R+XNomF88wZDCrC9WcSAzOoWZSHsPQfwAC2w8ZgWdrfCdK4VZeLpiBusKI1ZhDuIb
+         BdSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708616884; x=1709221684;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QIa8oVIZuT7lP1k8X8l2WJQdq609coU/Nz2aGnBWwe4=;
+        b=gauiw+YZmn5lKgrSCHtQgk9IwYwT4H3JrYwzYY7hssoVOTxBLlZGj1R8BbCnfz6mRK
+         tafG6p8Szk3xU8kss0GpfKgN5t5eYBReDvxFcG9yISlZPgAuyFjLBbex7bhkPPjnnByn
+         oGZ5b0ucWqgkAD1Cr4te/EX+8kqEZLNY7CN09tQTWysGVPLw8itqTkK6E1Bh32cspOi4
+         rx4Q/5M8RWtzZxAcTJaO90knbIZYjctPdygAmcH6Tqpu/LJmpiE+almaoyAosQT1KbIC
+         K1utFb3oAkmuur5OUh0jE4TfYLxpdhE+PlN2C/V6EO4mEvYneq6QZilr+wGZTllvBSfw
+         c2WA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6S89EclNcuMnYph0FyRaMYhxFLvNbU3SsHgHlKBRu8iNpYk+q5wHx8Y6I+zWBDf0lbcpb5bK1OkBYNW6ZiubQNaFE/Z2bCFYi8/9T
+X-Gm-Message-State: AOJu0YxQGSERh1uHYkmKE7VTTHtCAEzDleSSnqHldu0b7eG4UbHYE9y0
+	pGlgs4ypAcDkrRlt7dyYLJd6ty84d5SisTvOXcasFjlwFp9IqTkV/aVZqKE68XU=
+X-Google-Smtp-Source: AGHT+IHeRNYTHAQHlTw6FyZDjFXRERNo4oRgHEr44ZmqBtCgNvJrfmcbtG60abBs4SP3t2oerm+vSw==
+X-Received: by 2002:a25:8b85:0:b0:dcd:2f2d:7a05 with SMTP id j5-20020a258b85000000b00dcd2f2d7a05mr2616558ybl.35.1708616884094;
+        Thu, 22 Feb 2024 07:48:04 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id w131-20020a253089000000b00dc25d5f4c75sm2942698ybw.10.2024.02.22.07.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 07:48:03 -0800 (PST)
+Date: Thu, 22 Feb 2024 10:48:02 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lsf-pc@lists.linux-foundation.org
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
+ more
+Message-ID: <20240222154802.GA1219527@perftesting>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting>
+ <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="e7yScaGYIov+nAEz"
-Content-Disposition: inline
-In-Reply-To: <20240222083825.190854-3-wtli@nuvoton.com>
-X-Cookie: I have accepted Provolone into my life!
-
-
---e7yScaGYIov+nAEz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
 
-On Thu, Feb 22, 2024 at 04:38:25PM +0800, Seven Lee wrote:
+On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
+> On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > >
+> > > > Recently we had a pretty long discussion on statx extensions, which
+> > > > eventually got a bit offtopic but nevertheless hashed out all the major
+> > > > issues.
+> > > >
+> > > > To summarize:
+> > > >  - guaranteeing inode number uniqueness is becoming increasingly
+> > > >    infeasible, we need a bit to tell userspace "inode number is not
+> > > >    unique, use filehandle instead"
+> > >
+> > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> > > together uniquely identify the file within the system."
+> > >
+> >
+> > Which is what btrfs has done forever, and we've gotten yelled at forever for
+> > doing it.  We have a compromise and a way forward, but it's not a widely held
+> > view that changing st_dev to give uniqueness is an acceptable solution.  It may
+> > have been for overlayfs because you guys are already doing something special,
+> > but it's not an option that is afforded the rest of us.
+> 
+> Overlayfs tries hard not to use st_dev to give uniqueness and instead
+> partitions the 64bit st_ino space within the same st_dev.  There are
+> various fallback cases, some involve switching st_dev and some using
+> non-persistent st_ino.
+> 
+> What overlayfs does may or may not be applicable to btrfs/bcachefs,
+> but that's not my point.  My point is that adding a flag to statx does
+> not solve anything.   You can't just say that from now on btrfs
+> doesn't have use unique st_ino/st_dev because we've just indicated
+> that in statx and everything is fine.   That will trigger the
+> no-regressions rule and then it's game over.  At least I would expect
+> that to happen.
 
-A few very minor things below but basically this looks good.
+Right, nobody is arguing that.  Our plan is to
 
-> +static int nau8325_clksrc_choose(struct nau8325 *nau8325,
-> +				 const struct nau8325_srate_attr **srate_table,
-> +				 int *n1_sel, int *mult_sel, int *n2_sel)
-> +{
+1) Introduce some sort of statx mechanism to expose this information.
+2) Introduce an incompat fs feature flag to give unique inode numbers for people
+   that want them, and there stop doing the st_dev thing we currently do.
+3) Continue doing the st_dev thing we currently do for the non-feature flag
+   case.
+4) Wait 50 years and then maybe stop doing the st_dev thing once people have
+   adopted whatever statx flag has been introduced.  God willing I will have
+   been hit by a bus well before then.
 
-> +proc_done:
-> +	dev_err(nau8325->dev, "nau8325->fs=%d,range=0x%x, %s, (n1,mu,n2,dmu):(%d,%d,%d), MCLK_SRC=%uHz (%d)",
-> +		nau8325->fs, (*srate_table)->range,
-> +		(*srate_table)->max ? "MAX" : "MIN",
-> +		*n1_sel == CLK_PROC_BYPASS ?
-> +		CLK_PROC_BYPASS : mclk_n1_div[*n1_sel].param,
-> +		*mult_sel == CLK_PROC_BYPASS ?
-> +		CLK_PROC_BYPASS : 1 << mclk_n3_mult[*mult_sel].param,
-> +		1 << mclk_n2_div[*n2_sel].param,
-> +		(*srate_table)->mclk_src[ratio],
-> +		(*srate_table)->mclk_src[ratio] / nau8325->fs);
+Nobody is arguing about reverting existing behavior, we're stuck with it.
 
-This should be a dev_dbg(), dev_err() will be very noisy in normal
-operation.
+We're trying to define how we'd like it to look going forward, and start working
+towards that.  Thanks,
 
-> +static int nau8325_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-> +{
-> +	struct snd_soc_component *component = dai->component;
-> +	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-> +	unsigned int ctrl1_val = 0;
-> +
-> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +	case SND_SOC_DAIFMT_CBS_CFS:
-> +		break;
-
-Please use the modern _CBC_CFC defines.
-
-> +	ret = regmap_read(nau8325->regmap, NAU8325_R02_DEVICE_ID, &value);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to read device id (%d)", ret);
-> +		goto err;
-> +	}
-
-Probably a good idea to check that the device ID is what we expected
-too.
-
---e7yScaGYIov+nAEz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXXbJYACgkQJNaLcl1U
-h9B1UQf/bbkyPq72hB16DeF5r7ZEpD8pxmWbH7Z+fKteU+6U295SCSHqnxBE+KX2
-taIj/NfQ5964S9buK72KAeaiwI4o7d6duiqXCiy2vlLIBe4X+RBG4Ch+5E7SUdAu
-ovjwmHLvfyJPCqcflNpxDQ35sVOrph6kFTi7UywOiY0X3oWAnIMuQK/wnGq2rfgB
-tSKpUJU9AhGUog03Fg8D4kK+5SuQ5Wb6kfUfrYbDLrrxSxQeAWlgLuTJ84RDZ5gq
-QAoLemPwWspvf8wLK71i22ETnllb87XHFzCuRv9ZXlqckJOjHSFHBHNcBGIAjXqb
-2cMhEzQZj137Wwu6n+Dc8NE5g9hO4Q==
-=9vMY
------END PGP SIGNATURE-----
-
---e7yScaGYIov+nAEz--
+Josef
 
