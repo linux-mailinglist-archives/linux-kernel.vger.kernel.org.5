@@ -1,160 +1,319 @@
-Return-Path: <linux-kernel+bounces-76523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 597C085F860
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1214185F867
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:41:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAA2A1F26929
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:39:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94F831F26785
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B96D12DD96;
-	Thu, 22 Feb 2024 12:39:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C1F12DD93;
+	Thu, 22 Feb 2024 12:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BeJWNPbz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MOSb7oBJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE3512D756
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:39:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44A612DD84;
+	Thu, 22 Feb 2024 12:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708605553; cv=none; b=UlFgqhkIcYQw7ukAYiyIRCyLpKHEpWF4E1zlnUWQqzezcRodMgC3JuzUdQjYNUEeWB003v0XfESLARB2rXP1FmT98GKsipz+vgrDOpy0IqLU7hfIsvI7bq7bhSYSEmJart6HnA8xFh04KXfDQEhdzowKOpw0U6xZplVrtvWDdLk=
+	t=1708605650; cv=none; b=DwIXRGLfcUizxUbqS8QZgPRPVLbJSPbUPWJQlfKNRbNl+fKWpTRxrmXX9n2/+j0zJOOmBzE/ezJdN16Hv4cVPDy1bUKjy3nHFJm2OFXLtbpYgx3DE7pXpbotSJjQqml6x/qSSzD7o/rw1cCR+oFoYS2N9uPlGTQT/URwipwDK1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708605553; c=relaxed/simple;
-	bh=A9/2Z2e/Wolvr+TkJMMv6W92q5TwTKl5h3cwWrEQIqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aEeE7vpMx7fY+muy+F/T6hBGHA2s7LRCK6PC0WJ+yiObSCj31t/QEl2ohO7hGo8LsQv4ejPJgO6nsLwSq3Obx2VC4fI1aZk8xHJatK2Us78kJKl+keH389B4GGvORTE88s9J1UzqnWib2Z/avqN7izUyvqjH6nVFAhbI6sCFnoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BeJWNPbz; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708605550;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BERBpKjH6+/bGhkBw+85S7JQ5x9o2AKS4RztDXQg4B4=;
-	b=BeJWNPbzDCebiWi6zA4I760T2e+nFaJbnHkzkkMXDKAyEx7tA4p+FPSWlaHcdVjseliyuL
-	kUX0giCkY8LucPYLbDUlhV8+urqOvB/47OBYWsnJIBPjhK7vlfefHTxj+obw0S/VrAQRrQ
-	UrV4xFyaoolBee/DwVukMoUVeFmcb4k=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-443-guD2SgfiM6y5fBebnaMrnQ-1; Thu, 22 Feb 2024 07:39:09 -0500
-X-MC-Unique: guD2SgfiM6y5fBebnaMrnQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3ee69976dfso154110066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:39:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708605548; x=1709210348;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BERBpKjH6+/bGhkBw+85S7JQ5x9o2AKS4RztDXQg4B4=;
-        b=tlI9d/4NC/oXfogNHVx4AYnV6CE6e3u26EmmpqMUv36OglnR5NyFCOBHlEp5r4xGcC
-         pp6PDVfcNxfH2vY0AjBTDs0MNK5OwPH+66OcAh0cSkzPEN9Xq7mKMT7djnAQ0EhVvYqB
-         j1Rdc5l/eJcjOE1uBuDriKlcbxHNlk+rvV5S9uLwe7IjurK84KPk8EP5Oz/r6F/6zqkJ
-         +/eZHoPfQJXWfIkmWUU73dgoRivgSkfcrT0lk3hw6yBLXJj4hHcTGSQf1p830LKbGlOK
-         M1GwwHlD8jbooQAIgImhzjlnDcjuUcpf1YFSiGX9SK1jWc5zFpVGll5QrAfMhK2dFl9Z
-         jgVw==
-X-Forwarded-Encrypted: i=1; AJvYcCV9JVYHSjhH36tOeLSrB/GwkXq5GMuWp+5aAM+SOSKMkGB8uikA5v7IdUMTgt5HW7z71vKg4husu0F2yG3I22uSHl4ZY4mC4JEEsEEG
-X-Gm-Message-State: AOJu0YzKH8yVR2D49vINRj+ElvSzdp64JIrtaavbJi8CkARm7xMCi76d
-	e+MynQumPV47owQsUYNK+I3enFTrABtFMyoa+hdq3oiOtu3g5nYqUSHRXBSScRCjWPZ7ArOmhNk
-	DdEbbMNs1j/epuOLGOwTsnwXAte4AZUT/5IB0eekfcjrfXM+YGTOO/kWDOORgloL0Lv40OA==
-X-Received: by 2002:a17:906:407:b0:a3e:a3dc:45c9 with SMTP id d7-20020a170906040700b00a3ea3dc45c9mr7716004eja.72.1708605548117;
-        Thu, 22 Feb 2024 04:39:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEj7dB0iOnvtjM8nL87yde9xp+FwpKAGy0QKGBTz8j82TooN3WqgozN46dnwDBExLoaRc63YQ==
-X-Received: by 2002:a17:906:407:b0:a3e:a3dc:45c9 with SMTP id d7-20020a170906040700b00a3ea3dc45c9mr7715991eja.72.1708605547809;
-        Thu, 22 Feb 2024 04:39:07 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id lu16-20020a170906fad000b00a3d5efc65e0sm4599899ejb.91.2024.02.22.04.39.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 04:39:07 -0800 (PST)
-Message-ID: <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
-Date: Thu, 22 Feb 2024 13:39:06 +0100
+	s=arc-20240116; t=1708605650; c=relaxed/simple;
+	bh=eajeQHvLMChOHRIay40XPtkfd6ypiOKuXZP+1OEM90s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ANsI3MQsFX5AB1v8PDvkzDmh0Ll/jT6XeQUT+n8tSHVAk8xc1JYzbtp7osLV3onoovsMddfLeObtDByx6R2Ud9CrGkinGn6i9BrUFFw/Tj4Y3pDKHrebq7FwHFsDSz2t8Wjdd0cEAiBe/owYPGPu0AEI3dzLhiLJTsu7ShVnzUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MOSb7oBJ; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708605649; x=1740141649;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eajeQHvLMChOHRIay40XPtkfd6ypiOKuXZP+1OEM90s=;
+  b=MOSb7oBJRY7mIMioKDpfk8H2Ym10HnFc0iDbbyiLuPb6npBfvZG7VlZ9
+   pCPYj+YKM8M0uXeWzLMHX13MDd6TG5DhXtRy4F/8ISwsM/wb6Dmn2j4s2
+   znT43diIGubLfFTKmHQ5QAiBwAkQ59SiuFev36Un8mfki18/L0KS/R8/0
+   dSLxlH6zT1Lh9Uo81C0kwrTAgZcxGmmZX/d+CqKHo0vE+uMoecPM6POUv
+   CD9hFLgc9tOSAGCvrJ91CIGdoDC6asJ4vz32q/3sGSy1M0j0mvPYZA64h
+   mAR4tRnshRiQNXuRGQzaCY/p0PELkl5LZzr0zrhF6HsydXxqjzgRPxrOl
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2690260"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="2690260"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:40:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913516993"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="913516993"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Feb 2024 04:40:42 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rd8NC-0006JM-23;
+	Thu, 22 Feb 2024 12:40:31 +0000
+Date: Thu, 22 Feb 2024 20:39:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org,
+	conor+dt@kernel.org, quic_nitegupt@quicinc.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	quic_shazhuss@quicinc.com, quic_ramkri@quicinc.com,
+	quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, Nitesh Gupta <nitegupt@quicinc.com>,
+	Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+	Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] PCI: qcom: Add support for detecting controller
+ level PCIe errors
+Message-ID: <202402222044.JXTN6nr0-lkp@intel.com>
+References: <20240221140405.28532-4-root@hu-msarkar-hyd.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Future handling of complex RGB devices on Linux v2
-To: Gregor Riepl <onitake@gmail.com>, Werner Sembach <wse@tuxedocomputers.com>
-Cc: Lee Jones <lee@kernel.org>, jikos@kernel.org,
- linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
- Pavel Machek <pavel@ucw.cz>
-References: <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
- <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
- <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
- <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
- <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
- <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
- <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
- <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
- <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
- <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
- <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
- <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221140405.28532-4-root@hu-msarkar-hyd.qualcomm.com>
 
-Hi,
+Hi root,
 
-On 2/22/24 12:38, Gregor Riepl wrote:
->> This certainly is the most KISS approach. This proposal
->> in essence is just an arbitrary command multiplexer /
->> demultiplexer and ioctls already are exactly that.
->>
->> With the added advantage of being able to directly use
->> pass the vendor-cmd-specific struct to the ioctl instead
->> of having to first embed it in some other struct.
-> 
-> There's also the question of how much complexity needs to remain in the kernel, if vendor-specific ioctls are made available.
-> 
-> Does every vendor driver implement a complex mapping to hardware registers? What about drivers that basically implement no mapping at all and simply forward all data to the hardware without any checking? The latter case would match Pavel's concerns, although I don't see how this is any different from the situation today, where userspace talks directly to the hardware via libusb etc.
+kernel test robot noticed the following build warnings:
 
-This whole discussion got started by embedded-controller driven
-keyboards in laptops with per key RGB lighting. We cannot just
-allow userspace raw-access to the embedded-controller.
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus robh/for-next mani-mhi/mhi-next linus/master v6.8-rc5 next-20240221]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-So these per vendor ioctl commands will need to do the minimum
-to make sure userspace cannot do bad things. But yes complex
-stuff like figuring out which LED(s) maps to say the enter key
-should be left to userspace.
+url:    https://github.com/intel-lab-lkp/linux/commits/root/dt-bindings-PCI-qcom-Add-global-irq-support-for-SA8775p/20240221-220722
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20240221140405.28532-4-root%40hu-msarkar-hyd.qualcomm.com
+patch subject: [PATCH v1 3/3] PCI: qcom: Add support for detecting controller level PCIe errors
+config: i386-buildonly-randconfig-005-20240222 (https://download.01.org/0day-ci/archive/20240222/202402222044.JXTN6nr0-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240222/202402222044.JXTN6nr0-lkp@intel.com/reproduce)
 
-Especially since this can differ per keyboardlayout.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402222044.JXTN6nr0-lkp@intel.com/
 
-> To be honest, I think the kernel shouldn't include too much high-level complexity. If there is a desire to implement a generic display device on top of the RGB device, this should be a configurable service running in user space. The kernel should provide an interface to expose this emulated display as a "real" display to applications - unless this can also be done entirely in user space in a generic way.
+All warnings (new ones prefixed by >>):
 
-We really need to stop seeing per key addressable RGB keyboards as displays:
-
-1. Some "pixels" are non square
-2. Not all "pixels" have the same width-height ratio
-3. Not all rows have the same amount of pixels
-4. There are holes in the rows like between the enter key and then numpad
-5. Some "pixels" have multiple LEDs beneath them. These might be addressable
-   per LEDs are the sub-pixels ? What about a 2 key wide backspace key vs
-   the 1 key wide + another key (some non US layouts) in place of the backspace?
-   This will be "2 pixels" in some layout and 1 pixel with maybe / maybe-not
-   2 subpixels where the sub-pixels may/may not be individually addressable ?
-
-For all these reasons the display analogy really is a bit fit for these keyboards
-we tried to come up with a universal coordinate system for these at the beginning
-of the thread and we failed ...
-
-Regards,
-
-Hans
+>> drivers/pci/controller/dwc/pcie-qcom.c:1753:6: warning: format specifies type 'unsigned long' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
+    1751 |                         len += sysfs_emit_at(buf, len, "%s: %lu\n",
+         |                                                             ~~~
+         |                                                             %u
+    1752 |                                         pcie_fault_string[i],
+    1753 |                                         pcie_fault[i]);
+         |                                         ^~~~~~~~~~~~~
+   drivers/pci/controller/dwc/pcie-qcom.c:1758:6: warning: format specifies type 'unsigned long' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
+    1756 |         len += sysfs_emit_at(buf, len, "%s: %lu\n",
+         |                                             ~~~
+         |                                             %u
+    1757 |                                         pcie_fault_string[i],
+    1758 |                                         pcie->pcie_fault_total);
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~
+>> drivers/pci/controller/dwc/pcie-qcom.c:1902:2: warning: ignoring return value of function declared with 'warn_unused_result' attribute [-Wunused-result]
+    1902 |         sysfs_create_group(&pdev->dev.kobj, &qcom_pcie_attribute_group);
+         |         ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   3 warnings generated.
 
 
+vim +1753 drivers/pci/controller/dwc/pcie-qcom.c
+
+  1739	
+  1740	static ssize_t qcom_pcie_error_report_show(struct device *dev,
+  1741			struct device_attribute *attr,
+  1742			char *buf)
+  1743	{
+  1744		unsigned int i;
+  1745		struct qcom_pcie *pcie = (struct qcom_pcie *)dev_get_drvdata(dev);
+  1746		u32 *pcie_fault = pcie->pcie_fault;
+  1747		size_t len = 0;
+  1748	
+  1749		for (i = 0; i < MAX_PCIE_SAFETY_FAULT; i++) {
+  1750			if (pcie_fault_string[i])
+  1751				len += sysfs_emit_at(buf, len, "%s: %lu\n",
+  1752						pcie_fault_string[i],
+> 1753						pcie_fault[i]);
+  1754		}
+  1755	
+  1756		len += sysfs_emit_at(buf, len, "%s: %lu\n",
+  1757						pcie_fault_string[i],
+> 1758						pcie->pcie_fault_total);
+  1759	
+  1760		return len;
+  1761	}
+  1762	static DEVICE_ATTR_RO(qcom_pcie_error_report);
+  1763	
+  1764	static struct attribute *qcom_pcie_attrs[] = {
+  1765		&dev_attr_qcom_pcie_error_report.attr,
+  1766		NULL,
+  1767	};
+  1768	
+  1769	static const struct attribute_group qcom_pcie_attribute_group = {
+  1770		.attrs = qcom_pcie_attrs,
+  1771		.name = "qcom_pcie"
+  1772	};
+  1773	
+  1774	static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
+  1775	{
+  1776		struct dw_pcie *pci = pcie->pci;
+  1777		struct device *dev = pci->dev;
+  1778		char *name;
+  1779	
+  1780		name = devm_kasprintf(dev, GFP_KERNEL, "%pOFP", dev->of_node);
+  1781		if (!name)
+  1782			return;
+  1783	
+  1784		pcie->debugfs = debugfs_create_dir(name, NULL);
+  1785		debugfs_create_devm_seqfile(dev, "link_transition_count", pcie->debugfs,
+  1786					    qcom_pcie_link_transition_count);
+  1787	}
+  1788	
+  1789	static int qcom_pcie_probe(struct platform_device *pdev)
+  1790	{
+  1791		const struct qcom_pcie_cfg *pcie_cfg;
+  1792		struct device *dev = &pdev->dev;
+  1793		struct qcom_pcie *pcie;
+  1794		struct dw_pcie_rp *pp;
+  1795		struct resource *res;
+  1796		struct dw_pcie *pci;
+  1797		int ret;
+  1798	
+  1799		pcie_cfg = of_device_get_match_data(dev);
+  1800		if (!pcie_cfg || !pcie_cfg->ops) {
+  1801			dev_err(dev, "Invalid platform data\n");
+  1802			return -EINVAL;
+  1803		}
+  1804	
+  1805		pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+  1806		if (!pcie)
+  1807			return -ENOMEM;
+  1808	
+  1809		pci = devm_kzalloc(dev, sizeof(*pci), GFP_KERNEL);
+  1810		if (!pci)
+  1811			return -ENOMEM;
+  1812	
+  1813		pm_runtime_enable(dev);
+  1814		ret = pm_runtime_get_sync(dev);
+  1815		if (ret < 0)
+  1816			goto err_pm_runtime_put;
+  1817	
+  1818		pci->dev = dev;
+  1819		pci->ops = &dw_pcie_ops;
+  1820		pp = &pci->pp;
+  1821	
+  1822		pcie->pci = pci;
+  1823	
+  1824		pcie->cfg = pcie_cfg;
+  1825	
+  1826		pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
+  1827		if (IS_ERR(pcie->reset)) {
+  1828			ret = PTR_ERR(pcie->reset);
+  1829			goto err_pm_runtime_put;
+  1830		}
+  1831	
+  1832		pcie->global_irq = platform_get_irq_byname(pdev, "global");
+  1833		if (pcie->global_irq < 0) {
+  1834			ret = pcie->global_irq;
+  1835			goto err_pm_runtime_put;
+  1836		}
+  1837	
+  1838		ret = devm_request_threaded_irq(dev, pcie->global_irq, NULL,
+  1839					qcom_pcie_global_irq_thread,
+  1840					IRQF_ONESHOT,
+  1841					"global_irq", pcie);
+  1842		if (ret) {
+  1843			dev_err(dev, "Failed to request Global IRQ\n");
+  1844			goto err_pm_runtime_put;
+  1845		}
+  1846	
+  1847		pcie->parf = devm_platform_ioremap_resource_byname(pdev, "parf");
+  1848		if (IS_ERR(pcie->parf)) {
+  1849			ret = PTR_ERR(pcie->parf);
+  1850			goto err_pm_runtime_put;
+  1851		}
+  1852	
+  1853		pcie->elbi = devm_platform_ioremap_resource_byname(pdev, "elbi");
+  1854		if (IS_ERR(pcie->elbi)) {
+  1855			ret = PTR_ERR(pcie->elbi);
+  1856			goto err_pm_runtime_put;
+  1857		}
+  1858	
+  1859		/* MHI region is optional */
+  1860		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mhi");
+  1861		if (res) {
+  1862			pcie->mhi = devm_ioremap_resource(dev, res);
+  1863			if (IS_ERR(pcie->mhi)) {
+  1864				ret = PTR_ERR(pcie->mhi);
+  1865				goto err_pm_runtime_put;
+  1866			}
+  1867		}
+  1868	
+  1869		pcie->phy = devm_phy_optional_get(dev, "pciephy");
+  1870		if (IS_ERR(pcie->phy)) {
+  1871			ret = PTR_ERR(pcie->phy);
+  1872			goto err_pm_runtime_put;
+  1873		}
+  1874	
+  1875		ret = qcom_pcie_icc_init(pcie);
+  1876		if (ret)
+  1877			goto err_pm_runtime_put;
+  1878	
+  1879		ret = pcie->cfg->ops->get_resources(pcie);
+  1880		if (ret)
+  1881			goto err_pm_runtime_put;
+  1882	
+  1883		pp->ops = &qcom_pcie_dw_ops;
+  1884	
+  1885		ret = phy_init(pcie->phy);
+  1886		if (ret)
+  1887			goto err_pm_runtime_put;
+  1888	
+  1889		platform_set_drvdata(pdev, pcie);
+  1890	
+  1891		ret = dw_pcie_host_init(pp);
+  1892		if (ret) {
+  1893			dev_err(dev, "cannot initialize host\n");
+  1894			goto err_phy_exit;
+  1895		}
+  1896	
+  1897		qcom_pcie_icc_update(pcie);
+  1898	
+  1899		if (pcie->mhi)
+  1900			qcom_pcie_init_debugfs(pcie);
+  1901	
+> 1902		sysfs_create_group(&pdev->dev.kobj, &qcom_pcie_attribute_group);
+  1903	
+  1904		return 0;
+  1905	
+  1906	err_phy_exit:
+  1907		phy_exit(pcie->phy);
+  1908	err_pm_runtime_put:
+  1909		pm_runtime_put(dev);
+  1910		pm_runtime_disable(dev);
+  1911	
+  1912		return ret;
+  1913	}
+  1914	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
