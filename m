@@ -1,79 +1,222 @@
-Return-Path: <linux-kernel+bounces-76643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71AC785FA67
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:54:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85EF085FA69
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:54:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 103A31F24BE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:54:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C24D289F48
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E904B13959C;
-	Thu, 22 Feb 2024 13:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB01135403;
+	Thu, 22 Feb 2024 13:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jhIh2Xhs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="erADxNE/"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C21134CE5;
-	Thu, 22 Feb 2024 13:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DAF133981
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610056; cv=none; b=I1vVOlKsBijnfsEVJYwgz7eyq8QAmSdB5+96nNffW/VlG30tVs44nH8bSdNOrVj5QQ9CZZCZHBZz2GhAg0/WBntwdkOm7KdaJEVnYde7HRs7UW/UIlHt1Toqc+ANh9vBz8L2O+KnFnZQXgOlBBdMfB1daICYiPR71fFEWtLs+is=
+	t=1708610076; cv=none; b=IHhbi0CTrWUNqFVXWB2LkO8agUGlbs6QqZ+P+gzNOYY7JEmDtZ15p+4H6rYH9KlvgFc9txq8iFxmCIOfsqV8fmXp5ipgdVQsGCfeXtl8N1bwaNi0rLprp0T9Vx122QXXLKeM6ReoMepHe4BSRo0ySUkidpWBn8h/WDRhOlbDOTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610056; c=relaxed/simple;
-	bh=TFqTDDc7hfgU+NmeSyhNhMWiSsAwWXo+2EEjwbhB9NM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=une7QYfL5SYFil4+D0JdkdfpLNrq/lI58tY3h2B1tHPleod0iEjeQ1YGo/JUkiKWv5GqenV2VuP6aNMTL8WKrBryB57kHtZxnm6Gc+61Nptde/X+IMz83OD+he2OPv3N5qyLFxip7i/bvb4bDk4xJMU+ThMS3NDutP0kJpkxd2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jhIh2Xhs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8E91C433F1;
-	Thu, 22 Feb 2024 13:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708610055;
-	bh=TFqTDDc7hfgU+NmeSyhNhMWiSsAwWXo+2EEjwbhB9NM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jhIh2XhskNnFDqhlshGY5CJ1ZjtI+yVVJithb8D4km1zc527YGA9k2xeIy0smnTYM
-	 gf/SvP1qQ6Mf+4EEFkLZF/qxVXIU+dcBrP6PXuR4RVBrUaFEMd6KAYrdv6HL4bSqrE
-	 GoRBiIio3VehM5XmfruHvU7hy5bK0cDC6steaagzObJVVt3oRAgyXGGTYSpPDT+6DK
-	 tojXe02djpvcHwk3JaPAmHEdeEeXARubluikQHLy0qVyDA2CGlTYvhWw/R7aaWkGQp
-	 t8hdxZGLiSZXsG4BPFN2OKiNGIEv2rh/r+G2sbmjch0FcgLFsPqALA7CFC5HA/vevY
-	 GkZHtNQZ0xnrQ==
-Date: Thu, 22 Feb 2024 13:54:11 +0000
-From: Simon Horman <horms@kernel.org>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Bryan Whitehead <bryan.whitehead@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net: microchip: lan743x: Fix spelling mistake
- "erro" -> "error"
-Message-ID: <20240222135411.GA961545@kernel.org>
-References: <20240220091737.2676984-1-colin.i.king@gmail.com>
+	s=arc-20240116; t=1708610076; c=relaxed/simple;
+	bh=PXI1clNCyNU5/408UJ9wrb59OAo5xi/EPQc4XTjmvQg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T1Oap8zpC7fwjk1WVqWBFsQyOv5WSCccrI+9oNy01kgy+PSTMbv0EKuipCnZkt8lB365OPukkGBdcg2jCrac5SQnvMwNaKMMzZPikoD6ibCh8sZ2OD2nBuYDHyuqB4rScEv+rGvbTG3PBaME58B0sXzFBjUSX+Gqs6lcemTVojo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=erADxNE/; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d5c890c67fso3899520241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708610074; x=1709214874; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D4wody7AEosg/imFqwwzzZCILtL+8Y4lbZUS3vTJ0Eo=;
+        b=erADxNE/Xr5mVSiwKJY+Tv1qpHmmoO4kJaGfI67zpsa725bUGRwL/vZl7j9S05xBsQ
+         kTHoP68lzoSRlEa26GuVxHgVGmZBo8rmz/Ii3WNpfmlWr/tcnaNUubVr7yVuCpPTuM28
+         r13vi96oyXq8w8cJVu63rw17VdWpc+Vl2SNS9T3otpRE0a412h3P2/Y83wcdqz9DrGZQ
+         QNKoQBPhYprAc+VgJaMBr6yapx7bDs+DhI66DMCpNf1C7V5Usw7Ls1nWMvtJ+2hQIZ4e
+         zJvk7Ui+Jbv7YE3bid086md4I67Fpko5E+w+XlUIr2fNqMSvfe2ynouT8265kmgCxX7k
+         e/LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708610074; x=1709214874;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D4wody7AEosg/imFqwwzzZCILtL+8Y4lbZUS3vTJ0Eo=;
+        b=UtruUGHUQCjsEJtAgPy1YapLaHvfekdvu8h4sL3fdt3ZScE7u0KGMijmyYMqjJqQRC
+         m+0Lm5xv4NSEvLbBN0PSrBlu8CfIVKUf91iUJ5I7RE1k9e+u4hBdxJiFGG7klBe6xA8Q
+         q6xj4rfnqK3Fq6lshq1CJ+bxlBOnKObYbJATMXKKbFmw4mtMdl66/Y0ybKM293xRjEfB
+         ZmaXtcQU1HKW8c5OmJ4b1HDuoxgn+/mUL3hr8R+Mh4maA+FAvXdsyT6BZRxLDIxKioOS
+         JXkg65JAFCGl9C3u0zzEu1va3ppV5t0h40NfwSsBsNL2rd2uha2InxxrN50qz+EJ0T6W
+         hOHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiUPbXVqgIUs5gfaPeJ5auya/Ti4jAE4BTdCmIBmXVtpFY0Xctcs7gXKy8WRgNDWq8RXHIiIGMoEmi544pjiWoZFgIYLd8yNWSOt6i
+X-Gm-Message-State: AOJu0YxLQB1iveDU8fXZUrhNnUy8bfPlRbUt6svdZ/kENpiJjdmF9Uny
+	r+8zFkrZ5RUpqsToQ06YLSgUzi6wcdbGNNBX07449pq4It5mW0AzAHJ05rRHdISO0TbiNAnj71i
+	xad7f/ZWfE8+YF9yFEGrNfUkjYMw0kupEiUMD8g==
+X-Google-Smtp-Source: AGHT+IEFZVcSb6EpSmuHI0WYX0cdApu6B/RLs7NdqNRViBgXup/2PE0P1x2U47NasBSgdBEzOwZELJpztQ8QpNsEY34=
+X-Received: by 2002:a05:6102:31a:b0:470:430b:154d with SMTP id
+ 26-20020a056102031a00b00470430b154dmr11777688vsa.33.1708610073985; Thu, 22
+ Feb 2024 05:54:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220091737.2676984-1-colin.i.king@gmail.com>
+References: <20240205182810.58382-1-brgl@bgdev.pl> <20240205182810.58382-3-brgl@bgdev.pl>
+ <tnylagkmj36lve2ub5voumtkqjdy6j3hr6yyk4mqkaabvc3gdv@voaiu2oqi73o> <CAMRc=McmfufqqEvouRCjY1ukVB_ie1r5QEocqRUK0VBheEq5Hg@mail.gmail.com>
+In-Reply-To: <CAMRc=McmfufqqEvouRCjY1ukVB_ie1r5QEocqRUK0VBheEq5Hg@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 22 Feb 2024 14:54:23 +0100
+Message-ID: <CAMRc=Mc_iwMzKznfUknm+RwS3jN_GimpirdTDVCPtnYYS_1PNg@mail.gmail.com>
+Subject: Re: [PATCH v7 02/12] firmware: qcom: scm: enable the TZ mem allocator
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
+	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 09:17:37AM +0000, Colin Ian King wrote:
-> There is a spelling mistake in a netif_err message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Feb 21, 2024 at 7:39=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Sun, Feb 18, 2024 at 4:25=E2=80=AFAM Bjorn Andersson <andersson@kernel=
+org> wrote:
+> >
+> > On Mon, Feb 05, 2024 at 07:28:00PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > Select the TrustZone memory allocator in Kconfig and create a pool of
+> > > memory shareable with the TrustZone when probing the SCM driver.
+> > >
+> > > This will allow a gradual conversion of all relevant SCM calls to usi=
+ng
+> > > the dedicated allocator.
+> > >
+> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+> > > Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thi=
+nkpad-x13s
+> > > Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
+> > > Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+> > > ---
+> > >  drivers/firmware/qcom/Kconfig    |  1 +
+> > >  drivers/firmware/qcom/qcom_scm.c | 16 ++++++++++++++++
+> > >  2 files changed, 17 insertions(+)
+> > >
+> > > diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kc=
+onfig
+> > > index f18686edf415..d24d83223867 100644
+> > > --- a/drivers/firmware/qcom/Kconfig
+> > > +++ b/drivers/firmware/qcom/Kconfig
+> > > @@ -7,6 +7,7 @@
+> > >  menu "Qualcomm firmware drivers"
+> > >
+> > >  config QCOM_SCM
+> > > +     select QCOM_TZMEM
+> > >       tristate
+> > >
+> > >  config QCOM_TZMEM
+> > > diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom=
+/qcom_scm.c
+> > > index 520de9b5633a..0d4c028be0c1 100644
+> > > --- a/drivers/firmware/qcom/qcom_scm.c
+> > > +++ b/drivers/firmware/qcom/qcom_scm.c
+> > > @@ -8,8 +8,10 @@
+> > >  #include <linux/completion.h>
+> > >  #include <linux/cpumask.h>
+> > >  #include <linux/dma-mapping.h>
+> > > +#include <linux/err.h>
+> > >  #include <linux/export.h>
+> > >  #include <linux/firmware/qcom/qcom_scm.h>
+> > > +#include <linux/firmware/qcom/qcom_tzmem.h>
+> > >  #include <linux/init.h>
+> > >  #include <linux/interconnect.h>
+> > >  #include <linux/interrupt.h>
+> > > @@ -20,9 +22,11 @@
+> > >  #include <linux/of_platform.h>
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/reset-controller.h>
+> > > +#include <linux/sizes.h>
+> > >  #include <linux/types.h>
+> > >
+> > >  #include "qcom_scm.h"
+> > > +#include "qcom_tzmem.h"
+> > >
+> > >  static bool download_mode =3D IS_ENABLED(CONFIG_QCOM_SCM_DOWNLOAD_MO=
+DE_DEFAULT);
+> > >  module_param(download_mode, bool, 0);
+> > > @@ -41,6 +45,8 @@ struct qcom_scm {
+> > >       int scm_vote_count;
+> > >
+> > >       u64 dload_mode_addr;
+> > > +
+> > > +     struct qcom_tzmem_pool *mempool;
+> > >  };
+> > >
+> > >  struct qcom_scm_current_perm_info {
+> > > @@ -1887,6 +1893,16 @@ static int qcom_scm_probe(struct platform_devi=
+ce *pdev)
+> > >       if (of_property_read_bool(pdev->dev.of_node, "qcom,sdi-enabled"=
+))
+> > >               qcom_scm_disable_sdi();
+> > >
+> > > +     ret =3D qcom_tzmem_enable(__scm->dev);
+> > > +     if (ret)
+> > > +             return dev_err_probe(__scm->dev, ret,
+> > > +                                  "Failed to enable the TrustZone me=
+mory allocator\n");
+> > > +
+> > > +     __scm->mempool =3D devm_qcom_tzmem_pool_new(__scm->dev, SZ_256K=
+);
+> >
+> > As we're not moving from the callers freely allocating what they need,
+> > to a fixed sized pool of 256kb. Please document why 256kb was choosen,
+> > so that we have something to fall back on when someone runs out of this
+> > space, or wonders "why not 128kb?".
+> >
+>
+> If you worry about these pools being taken out of the total memory and
+> prefer to have a way to avoid it, I was thinking about another
+> build-time mode for the allocator - one where there's no pool but it
+> just allocates chunks using dma_alloc_coherent() like before and pool
+> size is ignored. Does it sound good?
+>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Or we could even have an argument for the initial size of the pool and
+then once it's exhausted, we'd add a new chunk (maybe twice the size?)
+and so on.
 
-FWIIW, confirm is mispelt twice in comments in the same file.
-But unlike the problem addressed here, it is not user visible.
+Bart
+
+> Bart
+>
+> > Regards,
+> > Bjorn
+> >
+> > > +     if (IS_ERR(__scm->mempool))
+> > > +             return dev_err_probe(__scm->dev, PTR_ERR(__scm->mempool=
+),
+> > > +                                  "Failed to create the SCM memory p=
+ool\n");
+> > > +
+> > >       /*
+> > >        * Initialize the QSEECOM interface.
+> > >        *
+> > > --
+> > > 2.40.1
+> > >
 
