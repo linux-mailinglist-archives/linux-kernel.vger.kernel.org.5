@@ -1,157 +1,154 @@
-Return-Path: <linux-kernel+bounces-75930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF87E85F0D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:16:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B297385F0D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49A121F22994
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:16:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187D4284D7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3342B12E40;
-	Thu, 22 Feb 2024 05:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D35F9CC;
+	Thu, 22 Feb 2024 05:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZQLXTAfk"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="j2df0zYH"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6562F501
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7636C7482;
+	Thu, 22 Feb 2024 05:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708578993; cv=none; b=XTcmerWd6zPP3Q0j3QJPu/iTxqO94pE5uT4jmdZDopL+F9r97m7HO9wTVh0a8yAokXOKQX2qLs5BCUTRtXV/rlxKSINYAraiA/Zsz3qrBb8pvciAmEhqc4ZXNbZJedXgMniK/VAVfzRSIWc5KenrcBW10Vqg1oNNiT3LY3Md60o=
+	t=1708579072; cv=none; b=RF1MlMuM97tIxbhEzqqEDIpWgz6fGRYUfERv82jNHOB4SvHUu1DAGRoNAqM03jWWVvJehQUurC6WKTZcOZs+qwfraAm4bMY93EuR0L9FEnhtxaBB5lJJ92BjeHpycDexcZXhh0cLl4qziLqE9VfTa9FeZ97Opa8M4rnUNVs2lKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708578993; c=relaxed/simple;
-	bh=EYqco1GKfph2qvviCl2qwp3U+UCjcwLr0vJ5cMoQcXI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JJ0GEH0DoYN/UfPS+Fv3YXuA+9DDRdl7Wu5MfNDHzaa24WiXpJcY+dsUai/ALflCSb/8dTy7OoW+8OlucGGfm9G0tptRPlamEPLyRKHKav3FNKdEpXoVeO+skYDV+w+go2kLS050yc31f4ejj1YAiGecz3MNwpl5AoHb3knWo7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZQLXTAfk; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so6093854a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:16:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708578990; x=1709183790; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=duIZxpvn6RingjjUFfVcxJVtZ2NkUSkNaC91pQVkegY=;
-        b=ZQLXTAfk0RvwuVmUULKeLpNK72O3zrBu5wE1qw3+2yR0JULUCbtWv8gI7vM34cq7BB
-         cxvlDNdpDt6w25riE3cK4aDqefh9ZoXIyIeU53K6P5ZKdsCBarecrUKVTeDMdaw2ff5U
-         tJe+UitS43xJ7zxgUQb8mQw4qtwPfr30WQCa3nXG2l4319NT6yG1FQ6EiJHXK9w8VKBj
-         WAfg5BMAdkMj6RH6NYBUIfTbHXTHchQkgOrjdUVHB8psQbEMG4lAfKJO6hQ13iidhH5G
-         oBwKYoVQFI8W1mAnM6j4t2Wo6/5g0uYPXnBnWBuXLby53HGl2R+es0dMmf4tvLRKSq9k
-         trTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708578990; x=1709183790;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=duIZxpvn6RingjjUFfVcxJVtZ2NkUSkNaC91pQVkegY=;
-        b=EkIGNSEr+FzxUda5TJucCpcfVu4Q6FpGvqweNxXWXPtCuTPIwgg2S1EvfvDzh1Xyz9
-         kM5zRfPg2isaqrx0Jgoj4CrJBk7Vgx4mBQzFYfN+MsczArGvqBVmABdVutvbau/t5aJQ
-         wxJ6Z326Tv+/lh93ccQxaFyJsdORYUBS18jYVBHTEsEV9FYilhZykQ64LvpR01g9Q89B
-         IouBfhuK/JRd2+ynjhyzQ5YJNQk4KTVGmFw0rVlswAGwskilzM/PxV332A0e4xcb/wR6
-         TfKmduArucikLJPxtetL+4sEjFs8nf64c9GEpXzwuwsZaVQLDOaKPBzXi431an+HZL9G
-         sHOA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWQkCO8p7xLeB+c8PtIg4F8Q8eooXPmm6aAcwWjlsa2Iw6S5ChoW7EMuF/ADw3/6u1df/ErQRhq2Kc+a9j59+bS57cK5RZ1dgUv5Xw
-X-Gm-Message-State: AOJu0YzaINUSxVRL4EOJRBJW/I02Umyb3KAUp1JmBeP5JLA5Yrh4IbN8
-	poAokz5AxHB5SUf+r9KvOR/8QQJPg7BjGRxHvrbM+jYMJRKqpaDWzb5yYs3nPg==
-X-Google-Smtp-Source: AGHT+IF1BbQ0EnZKJMj1ATUyc9q4gcsnLCvpFzHDOMbytY3INdyz3p1P9lC6mFjFGyQVSpe1j4yvSg==
-X-Received: by 2002:a05:6a21:1693:b0:19e:b6e0:8d26 with SMTP id np19-20020a056a21169300b0019eb6e08d26mr19510388pzb.15.1708578990015;
-        Wed, 21 Feb 2024 21:16:30 -0800 (PST)
-Received: from thinkpad ([117.193.212.166])
-        by smtp.gmail.com with ESMTPSA id p11-20020a170902bd0b00b001dc35e04b02sm1933206pls.32.2024.02.21.21.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 21:16:29 -0800 (PST)
-Date: Thu, 22 Feb 2024 10:46:21 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-	quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
-	quic_skananth@quicinc.com, quic_parass@quicinc.com
-Subject: Re: [PATCH] bus: mhi: host: Change the trace string for the
- userspace tools mapping
-Message-ID: <20240222051621.GD3374@thinkpad>
-References: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
+	s=arc-20240116; t=1708579072; c=relaxed/simple;
+	bh=9gNhI/HsDtNamLxlDShpJ4poTz3S2AKFbaAKWidvA28=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=netaBGPsee9Ks3LXZrJ4n3diuY/agpIheWwByHxIYdijAXzzb7JBTH9AgsY+hZjVoWaYmef7RLHcaQ1omU3ME3mKcjIqnj3axQ4cfqU2OHeGmBkm0M6cKMJ++QV1tukJ8F38lvxm3+sNM+sNYB84UbwQNm2Q1kpuKZz74RZlSqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=j2df0zYH; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41M4R18H006546;
+	Thu, 22 Feb 2024 05:17:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=K/2wCf7f7QyZDGdorAUOAQQO5+gbW6WWu/gqndqtKoo=;
+ b=j2df0zYHchuygCjJA8VvcPJMD5NOOimHOizytE+BsJqendgmCw6liiefKOdO4Xk7oI8Q
+ gLl8/2EYckkCCycaJE4Szarj0rlNtu6VXE6fglTkfAs+zC42vvveYZ5Apuzi56mjFD6n
+ ht6Ro0ysut5PTMuIhaFaVfKZ+JUHSXg9FO3O7gjfj+HLyqSANQMqT/KDC7PpAcclPX+o
+ rcrcpXnXQEEFtArWb/OOPEkml2HwlyEwP6j4+5u7Eu91Xrsu8cRJ71wOeNbqtRSl5DLa
+ HMao4YJOoPUb06NpNWUX1AmnN0OKe1mGq5EkL7G7K2+NEqVVboq5N1SbaAjZvCo+cb79 VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wdy8g90us-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 05:17:39 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41M5El9B013094;
+	Thu, 22 Feb 2024 05:17:38 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wdy8g90tw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 05:17:38 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41M3Yqmv031143;
+	Thu, 22 Feb 2024 05:17:37 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9bm3my2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 05:17:36 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41M5HXgC65929482
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Feb 2024 05:17:35 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 442CE2004E;
+	Thu, 22 Feb 2024 05:17:33 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7CF102004B;
+	Thu, 22 Feb 2024 05:17:30 +0000 (GMT)
+Received: from [9.203.115.195] (unknown [9.203.115.195])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 22 Feb 2024 05:17:30 +0000 (GMT)
+Message-ID: <3393a42f-d9b3-4031-bdef-78bb2ce758f1@linux.ibm.com>
+Date: Thu, 22 Feb 2024 10:47:29 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/14] Split crash out from kexec and clean up related
+ config items
+Content-Language: en-US
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-s390@vger.kernel.org, Baoquan He <bhe@redhat.com>, piliu@redhat.com,
+        linux-sh@vger.kernel.org, x86@kernel.org, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        ebiederm@xmission.com, loongarch@lists.linux.dev,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, viro@zeniv.linux.org.uk
+References: <20240119145241.769622-1-bhe@redhat.com>
+ <9101bb07-70f1-476c-bec9-ec67e9899744@linux.ibm.com>
+ <Zb8D1ASrgX0qVm9z@MiWiFi-R3L-srv>
+ <559f2595-1477-4ef0-80e4-85ae8b426de7@linux.ibm.com>
+ <20240221125752.36fbfe9c307496313198b60f@linux-foundation.org>
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <20240221125752.36fbfe9c307496313198b60f@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Uw-TiETYrrtmy9xa6nwhBWKWx0V7gLnU
+X-Proofpoint-ORIG-GUID: pNdWEEFYaOYyVGnBPerBSEQApCC4_Zph
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_03,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402220039
 
-On Sun, Feb 18, 2024 at 02:13:39PM +0530, Krishna chaitanya chundru wrote:
-> User space tools can't map strings if we use directly, as the string
-> address is internal to kernel.
-> 
-> So add trace point strings for the user space tools to map strings
-> properly.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Applied to mhi-next!
 
-- Mani
+On 22/02/24 2:27 am, Andrew Morton wrote:
+> On Wed, 21 Feb 2024 11:15:00 +0530 Hari Bathini <hbathini@linux.ibm.com> wrote:
+> 
+>> On 04/02/24 8:56 am, Baoquan He wrote:
+>>>>> Hope Hari and Pingfan can help have a look, see if
+>>>>> it's doable. Now, I make it either have both kexec and crash enabled, or
+>>>>> disable both of them altogether.
+>>>>
+>>>> Sure. I will take a closer look...
+>>> Thanks a lot. Please feel free to post patches to make that, or I can do
+>>> it with your support or suggestion.
+>>
+>> Tested your changes and on top of these changes, came up with the below
+>> changes to get it working for powerpc:
+>>
+>>   
+>> https://lore.kernel.org/all/20240213113150.1148276-1-hbathini@linux.ibm.com/
+> 
+> So can we take it that you're OK with Baoquan's series as-is?
 
-> ---
->  drivers/bus/mhi/host/main.c  | 4 ++--
->  drivers/bus/mhi/host/trace.h | 2 ++
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> index 2d38f6005da6..15d657af9b5b 100644
-> --- a/drivers/bus/mhi/host/main.c
-> +++ b/drivers/bus/mhi/host/main.c
-> @@ -1340,7 +1340,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->  	enum mhi_cmd_type cmd = MHI_CMD_NOP;
->  	int ret;
->  
-> -	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, "Updating");
-> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, TPS("Updating"));
->  	switch (to_state) {
->  	case MHI_CH_STATE_TYPE_RESET:
->  		write_lock_irq(&mhi_chan->lock);
-> @@ -1407,7 +1407,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->  		write_unlock_irq(&mhi_chan->lock);
->  	}
->  
-> -	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, "Updated");
-> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, TPS("Updated"));
->  exit_channel_update:
->  	mhi_cntrl->runtime_put(mhi_cntrl);
->  	mhi_device_put(mhi_cntrl->mhi_dev);
-> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
-> index d12a98d44272..368515dcb22d 100644
-> --- a/drivers/bus/mhi/host/trace.h
-> +++ b/drivers/bus/mhi/host/trace.h
-> @@ -84,6 +84,8 @@ DEV_ST_TRANSITION_LIST
->  #define dev_st_trans(a, b)		{ DEV_ST_TRANSITION_##a, b },
->  #define dev_st_trans_end(a, b)		{ DEV_ST_TRANSITION_##a, b }
->  
-> +#define TPS(x)	tracepoint_string(x)
-> +
->  TRACE_EVENT(mhi_gen_tre,
->  
->  	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
-> 
-> ---
-> base-commit: ceeb64f41fe6a1eb9fc56d583983a81f8f3dd058
-> change-id: 20240218-ftrace_string-7677762aa63c
-> 
-> Best regards,
-> -- 
-> Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> 
+Hi Andrew,
 
--- 
-மணிவண்ணன் சதாசிவம்
+If you mean
+
+v3 (https://lore.kernel.org/all/20240124051254.67105-1-bhe@redhat.com/)
++
+follow-up from Baoquan 
+(https://lore.kernel.org/all/Zb8D1ASrgX0qVm9z@MiWiFi-R3L-srv/)
+
+Yes.
+
+My changes are based on top of the above patches..
+
+Thanks
+Hari
 
