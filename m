@@ -1,103 +1,89 @@
-Return-Path: <linux-kernel+bounces-76907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98BD785FE78
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:52:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5FDB85FE7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3865B1F2662C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:52:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B59A1F28220
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:53:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F230D153BEF;
-	Thu, 22 Feb 2024 16:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860EA153BFD;
+	Thu, 22 Feb 2024 16:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0QK9tFx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E0Wh3HJi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F49A153BC9;
-	Thu, 22 Feb 2024 16:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA756153BC9;
+	Thu, 22 Feb 2024 16:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620746; cv=none; b=FyFepszDKTYOh2UUQt3NZQdu0eX8DuWinRrgo7opH8V9qOM3GX0mmTuStLwmsPyLI/J7S1W/nnwmcGhyZUWMeSmptpfIOZQdeRUWkMWDKf3zB3XMkagL6nS7LYKbfKM/+ZEvxKwn8LFMTeEXP/s0AA9IjA/zPxhQmay86UoObfU=
+	t=1708620804; cv=none; b=XJz1z1rPCCcz5e6y/iZLlj7aowdRT28TEf1XL/aFWQOzM0VxtrJjOCi+2OcK6wgfWxGYBNPBi7tu1FCncBAvreRFOEcWwtQusqROM+NvCwHDyqPPAxVQr0Zhw0Ag2gUMbBoUUcyCTw/apOWrNL45btYR/+9jxkpiSaWRPKzrUMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620746; c=relaxed/simple;
-	bh=98Sm4DZ8Y1ZioHme9G4K5gXY1XZZ3VUczoPsHQr9Qhg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PWPVoWiyRuUBQ5usLAibH9HDom1X7KHe1drzSfbJGw3aRFeAq7x/d8y22muFFe6Se8IkAKE6o0lptC61duXVLgtmn+8dE7mikizgpNa5lm3ru9/VvgJ9rfQlznf+Wz3Gd/sJtXQSr/7JgJO6BwSc2SvGjTNn7FmGM6YmmDq0r88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0QK9tFx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA55BC433C7;
-	Thu, 22 Feb 2024 16:52:25 +0000 (UTC)
+	s=arc-20240116; t=1708620804; c=relaxed/simple;
+	bh=9Ux3/1Qnwjn25pAAnhZvRLEmk9F6Wz6WljZVmjWNokE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OAV1fVLW+TmCDKLHAD10kUBuhKBbkzfTuWMY+FH5Yf/xEZIaibohSI7q5dZhXu5DJK0QuksVKtmMgP1Z37XGU7JATCbGfRNl3lqhzgUlEMfH8kgRhxt1SFdGEVezj9Ep68k6/CBcjf7iau9wy1nDVWHFo3MCvkpoxEqiUb0zeFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E0Wh3HJi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC37C433C7;
+	Thu, 22 Feb 2024 16:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708620746;
-	bh=98Sm4DZ8Y1ZioHme9G4K5gXY1XZZ3VUczoPsHQr9Qhg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G0QK9tFxHTWHbW973ceBcqVxgJ9lKHZLL4ZHXiqXJwL8ThTWYF7hcbAKuoGcUsZ6B
-	 uKRTjIOqSnJaXRYzaAssp/caPIRBVJZeJpxi2AjuGJPOIypwZmb4SDbbLc5eNMdPyE
-	 CV6KBevicSl2yQ5b8vbRVueXipUZq7DUkk7lxbiU5w1ReBxTezoIMDEpQ0ZKvGGy1d
-	 3OJK0JNTqsi79RYZAp9v+fNh/VQumk8yzGZJqhuLxD3LtOBOmN3IQzybP14A8FfMUS
-	 OmJJWKFSIqH7Mouq1Xzq95nWEu5EhQtxmsExjxRcmthOE6gRHgWPW+zsgebIii3c5q
-	 2o5MgefxDfI6g==
-Date: Thu, 22 Feb 2024 17:52:23 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: Re: [PATCH v2 0/6] RCU tasks fixes for v6.9
-Message-ID: <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
-References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+	s=k20201202; t=1708620804;
+	bh=9Ux3/1Qnwjn25pAAnhZvRLEmk9F6Wz6WljZVmjWNokE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=E0Wh3HJiRvTyY1Et+pZBgl3FkA6p/dz7m7xrQjJ4ZRZcqFSejXZoLI9scHWFoHPHU
+	 0MP/WayrcNjgBGr4e5BLrz9OFuHc7oCEvHJ74RmBCXvV8BQfdn9f1Cpv8Hcephh+Mx
+	 j9r3y8VLmUKMWX4pU+jrcxSQsXQZM2MVljvMdavvldGARq1/3NDh8kf8umlXj0llAm
+	 gGWx3T7G4fpa7080Z1JucwOJNDY7oyKntFwIsZiNW7XtIYC52Be6XO0wJPjXvw1gng
+	 +XvXryHdTllppvr074uRizGIXlJFryEw5gikDwnBhIT9qORgg19Hlg4OEbrhKhtDtA
+	 LNi59L1BCxE3A==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Changbin Du <changbin.du@huawei.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	Andi Kleen <ak@linux.intel.com>,
+	linux-perf-users@vger.kernel.org,
+	Ian Rogers <irogers@google.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Changbin Du <changbin.du@intel.com>
+Subject: Re: [PATCH v8 0/5] perf: script: Intro capstone disasm engine to show instruction trace
+Date: Thu, 22 Feb 2024 08:53:21 -0800
+Message-ID: <170862076568.3024784.8799548310369120740.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+In-Reply-To: <20240217074046.4100789-1-changbin.du@huawei.com>
+References: <20240217074046.4100789-1-changbin.du@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240217012745.3446231-1-boqun.feng@gmail.com>
 
-Le Fri, Feb 16, 2024 at 05:27:35PM -0800, Boqun Feng a écrit :
-> Hi,
+On Sat, 17 Feb 2024 15:40:41 +0800, Changbin Du wrote:
+> This series introduces capstone disassembler engine to print instructions of
+> Intel PT trace, which was printed via the XED tool.
 > 
-> This series contains the fixes of RCU tasks for v6.9. You can also find
-> the series at:
+> The advantages compared to XED tool:
+>     * Support arm, arm64, x86-32, x86_64, s390 (more could be supported),
+>       xed only for x86_64.
+>     * More friendly to read. Immediate address operands are shown as symbol+offs.
 > 
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git rcu-tasks.2024.02.14a
-> 
-> Changes since v1:
-> 
-> *	Update with Paul's rework on "Eliminate deadlocks involving
-> 	do_exit() and RCU task"
-> 
-> The detailed list of changes:
-> 
-> Paul E. McKenney (6):
->   rcu-tasks: Repair RCU Tasks Trace quiescence check
->   rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
->   rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
->   rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
->   rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+> [...]
 
-Food for later thoughts and further improvements: would it make sense to
-call exit_rcu_tasks_start() on fork() instead and rely solely on
-each CPUs' rtp_exit_list instead of the tasklist?
+Applied to perf-tools-next, thanks!
 
-Thanks.
-
->   rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
-> 
->  include/linux/rcupdate.h |   4 +-
->  include/linux/sched.h    |   2 +
->  init/init_task.c         |   1 +
->  kernel/fork.c            |   1 +
->  kernel/rcu/tasks.h       | 110 ++++++++++++++++++++++++++++++---------
->  5 files changed, 90 insertions(+), 28 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
-> 
+Best regards,
+-- 
+Namhyung Kim <namhyung@kernel.org>
 
