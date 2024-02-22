@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-76663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA33A85FAB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F02285FAB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85F94287507
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F369F1F289C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CAA14601D;
-	Thu, 22 Feb 2024 14:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5D7149018;
+	Thu, 22 Feb 2024 14:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZZ38NdKG"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GMb+VdCD"
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1981474B3
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E60148FFE
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610693; cv=none; b=fnp6E9R21YzuV4+vMmmy6x/eUqtbtgoXr1iM4ERzKPKh2Z/zhxdAjkOP3n9ompLIhAzF4WZMgvn0yiQKL1e45sCp455/xvNpGF3nqbQPFCsP/J+8SR/HBdBisTwsYy+I4TR2ItugOyp8+h4mIfLAaDTb8t/EIquk+ZfqoMWPh84=
+	t=1708610697; cv=none; b=q3WlXVQ9i5sGxKTaFuWmWDF7ELpaTPfWelgQe00yMCjyT76JFCvvdGqhFciq7INihQajgVJat+s7tz6nQ3FP7FNGuNaGxEQHPMGrtPUmZ3UMYFcioIpOjI7TTKrufSfd2Kc4EpzjBE2zsdKCbYnlZ6/rPiGUQxVgyHhhUQ8dVe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610693; c=relaxed/simple;
-	bh=vRuxUrdqrEjW/kmQKHVnf2KKQjRlpz3t45eHDJuC1Z8=;
+	s=arc-20240116; t=1708610697; c=relaxed/simple;
+	bh=GJdtD9vyuX0d/G7xkiT5uC/YyxLu8BmsN8PyxCBFDIM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Sf+Fkr8HhW+ZK2vz8JSRm2tGDHbmGizSuWT8yDISkkNjH11VAiKYmWA+5u4yLqe0BUh0Ow+hPPstokk5SyTNPNVytqBgBmYhpjAH9kJ8Jsh2VWgzl2TPtSYkHVKA/UqcJpnATX9i02Zk0GmRa2i7QqvDxBMXEncB9sIThA/81p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZZ38NdKG; arc=none smtp.client-ip=91.218.175.187
+	 MIME-Version; b=XwvJ8TUoV7BAnu+mRfT/UpfiXTNxSq/Xons6FK9TZpgWTD+1ovJ8ER5cM96gBmZL9SPMqlK3j51Mxgk1Dp7HpKlx0U081r+GDeUEMYwEgqVrp5zYFSt0kQvd7HyemXQbyZFImfgeYazW58N8uOxRdXcdBAcBd1xar+7Rq6COCtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GMb+VdCD; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708610690;
+	t=1708610693;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GFm+BsVb+EJLE4T/S60F9nhII3K5Okpm0T3KX+Ypj6g=;
-	b=ZZ38NdKGJjXCAsgG44/Qo//cf/3cc1EknNNpxFahUoIgcacNCf55oBecrLxSCFmnIx/6Yc
-	zc0joimqN7Kl9zD1PYmr5FlyOXa9qomyj3kBYRaaA7C375f+IuMQnFTecYf2S6/jKeHeH3
-	JIJykJuzg6dwPf8qafigyzC4+gneD6Q=
+	bh=o+8qigIYBf+CF6nmzaQESLXIfknRBaMPQJkianD0US0=;
+	b=GMb+VdCDD/mQRiGk4B7cYFJq6Uvre0TApLBB9BKJ+sRd1zHzqt/ccv8JB7NwYBykKXKcVg
+	yGsJtPCbMDS2g3UmDUDyGkzjAGtoVsFp1hOGY9p3OVE2ZXd6DuJMgkbwGJhkPF9OGmvazP
+	YrigqBnLGrT2H9Joq7NpfDGHlVTmvWM=
 From: Gang Li <gang.li@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@redhat.com>,
@@ -56,9 +56,9 @@ Cc: David Hildenbrand <david@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
 	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v6 2/8] hugetlb: split hugetlb_hstate_alloc_pages
-Date: Thu, 22 Feb 2024 22:04:15 +0800
-Message-Id: <20240222140422.393911-3-gang.li@linux.dev>
+Subject: [PATCH v6 3/8] hugetlb: pass *next_nid_to_alloc directly to for_each_node_mask_to_alloc
+Date: Thu, 22 Feb 2024 22:04:16 +0800
+Message-Id: <20240222140422.393911-4-gang.li@linux.dev>
 In-Reply-To: <20240222140422.393911-1-gang.li@linux.dev>
 References: <20240222140422.393911-1-gang.li@linux.dev>
 Precedence: bulk
@@ -70,134 +70,103 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-1G and 2M huge pages have different allocation and initialization logic,
-which leads to subtle differences in parallelization. Therefore, it is
-appropriate to split hugetlb_hstate_alloc_pages into gigantic and
-non-gigantic.
+With parallelization of hugetlb allocation across different threads, each
+thread works on a differnet node to allocate pages from, instead of all
+allocating from a common node h->next_nid_to_alloc.  To address this, it's
+necessary to assign a separate next_nid_to_alloc for each thread.
 
-This patch has no functional changes.
+Consequently, the hstate_next_node_to_alloc and for_each_node_mask_to_alloc
+have been modified to directly accept a *next_nid_to_alloc parameter,
+ensuring thread-specific allocation and avoiding concurrent access issues.
 
 Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 Tested-by: David Rientjes <rientjes@google.com>
 Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
 Reviewed-by: Muchun Song <muchun.song@linux.dev>
 ---
- mm/hugetlb.c | 87 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 43 insertions(+), 44 deletions(-)
+ mm/hugetlb.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 794f3e6a19bb6..647e52596e2da 100644
+index 647e52596e2da..d1ce1a52ad504 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -3509,6 +3509,43 @@ static void __init hugetlb_hstate_alloc_pages_errcheck(unsigned long allocated,
- 	}
- }
- 
-+static unsigned long __init hugetlb_gigantic_pages_alloc_boot(struct hstate *h)
-+{
-+	unsigned long i;
-+
-+	for (i = 0; i < h->max_huge_pages; ++i) {
-+		if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
-+			break;
-+		cond_resched();
-+	}
-+
-+	return i;
-+}
-+
-+static unsigned long __init hugetlb_pages_alloc_boot(struct hstate *h)
-+{
-+	unsigned long i;
-+	struct folio *folio;
-+	LIST_HEAD(folio_list);
-+	nodemask_t node_alloc_noretry;
-+
-+	/* Bit mask controlling how hard we retry per-node allocations.*/
-+	nodes_clear(node_alloc_noretry);
-+
-+	for (i = 0; i < h->max_huge_pages; ++i) {
-+		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
-+						&node_alloc_noretry);
-+		if (!folio)
-+			break;
-+		list_add(&folio->lru, &folio_list);
-+		cond_resched();
-+	}
-+
-+	prep_and_add_allocated_folios(h, &folio_list);
-+
-+	return i;
-+}
-+
- /*
-  * NOTE: this routine is called in different contexts for gigantic and
-  * non-gigantic pages.
-@@ -3522,10 +3559,7 @@ static void __init hugetlb_hstate_alloc_pages_errcheck(unsigned long allocated,
+@@ -1464,15 +1464,15 @@ static int get_valid_node_allowed(int nid, nodemask_t *nodes_allowed)
+  * next node from which to allocate, handling wrap at end of node
+  * mask.
   */
- static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+-static int hstate_next_node_to_alloc(struct hstate *h,
++static int hstate_next_node_to_alloc(int *next_node,
+ 					nodemask_t *nodes_allowed)
  {
--	unsigned long i;
--	struct folio *folio;
--	LIST_HEAD(folio_list);
--	nodemask_t *node_alloc_noretry;
-+	unsigned long allocated;
+ 	int nid;
  
- 	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
- 	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-@@ -3538,47 +3572,12 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 		return;
+ 	VM_BUG_ON(!nodes_allowed);
  
- 	/* below will do all node balanced alloc */
--	if (!hstate_is_gigantic(h)) {
--		/*
--		 * Bit mask controlling how hard we retry per-node allocations.
--		 * Ignore errors as lower level routines can deal with
--		 * node_alloc_noretry == NULL.  If this kmalloc fails at boot
--		 * time, we are likely in bigger trouble.
--		 */
--		node_alloc_noretry = kmalloc(sizeof(*node_alloc_noretry),
--						GFP_KERNEL);
--	} else {
--		/* allocations done at boot time */
--		node_alloc_noretry = NULL;
--	}
--
--	/* bit mask controlling how hard we retry per-node allocations */
--	if (node_alloc_noretry)
--		nodes_clear(*node_alloc_noretry);
--
--	for (i = 0; i < h->max_huge_pages; ++i) {
--		if (hstate_is_gigantic(h)) {
--			/*
--			 * gigantic pages not added to list as they are not
--			 * added to pools now.
--			 */
--			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
--				break;
--		} else {
--			folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
--							node_alloc_noretry);
--			if (!folio)
--				break;
--			list_add(&folio->lru, &folio_list);
--		}
--		cond_resched();
--	}
--
--	/* list will be empty if hstate_is_gigantic */
--	prep_and_add_allocated_folios(h, &folio_list);
-+	if (hstate_is_gigantic(h))
-+		allocated = hugetlb_gigantic_pages_alloc_boot(h);
-+	else
-+		allocated = hugetlb_pages_alloc_boot(h);
+-	nid = get_valid_node_allowed(h->next_nid_to_alloc, nodes_allowed);
+-	h->next_nid_to_alloc = next_node_allowed(nid, nodes_allowed);
++	nid = get_valid_node_allowed(*next_node, nodes_allowed);
++	*next_node = next_node_allowed(nid, nodes_allowed);
  
--	hugetlb_hstate_alloc_pages_errcheck(i, h);
--	kfree(node_alloc_noretry);
-+	hugetlb_hstate_alloc_pages_errcheck(allocated, h);
+ 	return nid;
+ }
+@@ -1495,10 +1495,10 @@ static int hstate_next_node_to_free(struct hstate *h, nodemask_t *nodes_allowed)
+ 	return nid;
  }
  
- static void __init hugetlb_init_hstates(void)
+-#define for_each_node_mask_to_alloc(hs, nr_nodes, node, mask)		\
++#define for_each_node_mask_to_alloc(next_node, nr_nodes, node, mask)		\
+ 	for (nr_nodes = nodes_weight(*mask);				\
+ 		nr_nodes > 0 &&						\
+-		((node = hstate_next_node_to_alloc(hs, mask)) || 1);	\
++		((node = hstate_next_node_to_alloc(next_node, mask)) || 1);	\
+ 		nr_nodes--)
+ 
+ #define for_each_node_mask_to_free(hs, nr_nodes, node, mask)		\
+@@ -2350,12 +2350,13 @@ static void prep_and_add_allocated_folios(struct hstate *h,
+  */
+ static struct folio *alloc_pool_huge_folio(struct hstate *h,
+ 					nodemask_t *nodes_allowed,
+-					nodemask_t *node_alloc_noretry)
++					nodemask_t *node_alloc_noretry,
++					int *next_node)
+ {
+ 	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
+ 	int nr_nodes, node;
+ 
+-	for_each_node_mask_to_alloc(h, nr_nodes, node, nodes_allowed) {
++	for_each_node_mask_to_alloc(next_node, nr_nodes, node, nodes_allowed) {
+ 		struct folio *folio;
+ 
+ 		folio = only_alloc_fresh_hugetlb_folio(h, gfp_mask, node,
+@@ -3310,7 +3311,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+ 		goto found;
+ 	}
+ 	/* allocate from next node when distributing huge pages */
+-	for_each_node_mask_to_alloc(h, nr_nodes, node, &node_states[N_MEMORY]) {
++	for_each_node_mask_to_alloc(&h->next_nid_to_alloc, nr_nodes, node, &node_states[N_MEMORY]) {
+ 		m = memblock_alloc_try_nid_raw(
+ 				huge_page_size(h), huge_page_size(h),
+ 				0, MEMBLOCK_ALLOC_ACCESSIBLE, node);
+@@ -3679,7 +3680,7 @@ static int adjust_pool_surplus(struct hstate *h, nodemask_t *nodes_allowed,
+ 	VM_BUG_ON(delta != -1 && delta != 1);
+ 
+ 	if (delta < 0) {
+-		for_each_node_mask_to_alloc(h, nr_nodes, node, nodes_allowed) {
++		for_each_node_mask_to_alloc(&h->next_nid_to_alloc, nr_nodes, node, nodes_allowed) {
+ 			if (h->surplus_huge_pages_node[node])
+ 				goto found;
+ 		}
+@@ -3794,7 +3795,8 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 		cond_resched();
+ 
+ 		folio = alloc_pool_huge_folio(h, nodes_allowed,
+-						node_alloc_noretry);
++						node_alloc_noretry,
++						&h->next_nid_to_alloc);
+ 		if (!folio) {
+ 			prep_and_add_allocated_folios(h, &page_list);
+ 			spin_lock_irq(&hugetlb_lock);
 -- 
 2.20.1
 
