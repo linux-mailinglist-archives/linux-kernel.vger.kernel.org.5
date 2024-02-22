@@ -1,141 +1,136 @@
-Return-Path: <linux-kernel+bounces-76568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C2B685F946
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:14:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB8F785F956
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A6261C20DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:14:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1943F1C232C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CBA9134CC2;
-	Thu, 22 Feb 2024 13:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F037D1350D6;
+	Thu, 22 Feb 2024 13:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OAeTY3fS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="jT4sZDQj"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AC712FF95;
-	Thu, 22 Feb 2024 13:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE4A13341F;
+	Thu, 22 Feb 2024 13:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708607623; cv=none; b=YjHn3DqxCZ2xjQju6PqyiMM/zzYz1bZJi9ggTx+FLuyQN3gB85NCGOMR4yNbBiBkgSCWF29jn6c/ADB15iQ4SMkm180Dc5K2sYH+gM/Cn7cOUYhp1ddSiBPMR7qBGnyGRqB0o9NcpCso2/s/I/uS1B857N9TBv8JxChT8cg9yb8=
+	t=1708607688; cv=none; b=gqBUNhX09X6bKbx08oY/aok34g432oT/XZeSAj0XTkk6PCytE19H/UdM9ZztCekUaUZ+Jnh80knTAZZFo/oruzkkW9IHIwAuu3mwv2D6/9xTocDcpZ82GRBw5QsEzjGwNpuv68DydPLAed1Y4p1evkUFdv77+KdJXgOgdZXMDBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708607623; c=relaxed/simple;
-	bh=6OzfR5St32D1ssiPndCMGGUD7Z7DoQf2u0dqtnL026Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mY8bUIncS9L3Y7a1UxHytBU0PT8kQQRymiWAWp3gALPRMCHuUtlQh8FOEDx8zbtwco5EmvX3yjN8GqdH22IoBk91NsUvoYd0hQ0yLl5Qj5yc20lr19ofPZ/EmY0NNFCyS66dI3C9FNUqMZxQMoRnfx6F9wyGRQQ7GB3+Za6rPDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OAeTY3fS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C78C433F1;
-	Thu, 22 Feb 2024 13:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708607623;
-	bh=6OzfR5St32D1ssiPndCMGGUD7Z7DoQf2u0dqtnL026Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OAeTY3fS/OcZeu4gttXoRy4eOkX7GsE7tkpmuOObXKBrKxsP1cLy0sSdOOmEdJwLt
-	 bBio7Khp5uxXWBSTmNPmu+KWattjJtUwz9GaLqf83TJF6WQTwR+r6nyFnCGhTGB9e+
-	 D/eH69N/XwQmFyyswnQeF98uEnS/xoQ2YvUE+4HThieiyNzAubRL0qJ7175AizmlLw
-	 lpxjV3Ho5kv8TIhemS9HkrjVVWzuNu6ArvMTU8oLj6m+DKiOmRu74kgRiQGo8JSD0Y
-	 3fREI6cO1lkdXAA9av0+DeI0VMcvVbsz3ciIghVmjUynl5x6vlAlwnZsI6VVHppm7P
-	 N/Otv6CbOTTOw==
-Date: Thu, 22 Feb 2024 13:13:38 +0000
-From: Simon Horman <horms@kernel.org>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 2/2] selftests: mptcp: explicitly trigger the
- listener diag code-path
-Message-ID: <20240222131338.GA960874@kernel.org>
-References: <cover.1708515908.git.pabeni@redhat.com>
- <1116d80f808ea870f3f77fe927dbd6c622d062ae.1708515908.git.pabeni@redhat.com>
+	s=arc-20240116; t=1708607688; c=relaxed/simple;
+	bh=7PbEL0xaSE2/nfsjSGjetHz7DwXTgQaYwcMTBucrhss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HVW93HEABAd23U4/x0jnmAilAGx44XejLN4w5zJbEknnnZQEmGlqhrrKe+082pYV0xLzw6pEacGDy3KQOOFtQMMJF4Qh5sfYUJDcT0DKSiHTd0qWtzupiqNvXIO/wa5c07QuA0sjYoLFNTDXelAcAQBcUfZnuIBQqb0XAmKO8pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=jT4sZDQj; arc=none smtp.client-ip=157.90.84.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (pd9e59c8a.dip0.t-ipconnect.de [217.229.156.138])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 100502FC0048;
+	Thu, 22 Feb 2024 14:14:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1708607676;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9kEwJ6CVKjeTV/UU4ZV2snp8TyY3Zz/wXMxCmc/s4Y8=;
+	b=jT4sZDQjgVqsUv6H+vH93l0lNim+8BdierhwIrRCoqBC1LqB5KliVgLTF/Q6wzbltOPbK1
+	+Z84A6myGtJxl/WtgyOAD8fxeo6mhJoRjqGBpylu1ByBVDG+Z45lIBmKjLlt8NGof+RFCK
+	qZhf597EmPiTKb7Uf2I38W6RbylvXg4=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
+Date: Thu, 22 Feb 2024 14:14:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1116d80f808ea870f3f77fe927dbd6c622d062ae.1708515908.git.pabeni@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Future handling of complex RGB devices on Linux v3
+Content-Language: en-US
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Lee Jones <lee@kernel.org>, jikos@kernel.org,
+ linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
+ Pavel Machek <pavel@ucw.cz>, Gregor Riepl <onitake@gmail.com>
+References: <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
+ <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
+ <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+ <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+ <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
+ <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
+ <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
+ <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
+ <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
+ <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
+ <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
+ <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 22, 2024 at 12:46:59PM +0100, Paolo Abeni wrote:
->l The mptcp diag interface already experienced a few locking bugs
-> that lockdep and appropriate coverage have detected in advance.
-> 
-> Let's add a test-case triggering the relevant code path, to prevent
-> similar issues in the future.
-> 
-> Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-> ---
->  tools/testing/selftests/net/mptcp/diag.sh | 30 +++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-> index 60a7009ce1b5..3ab584b38566 100755
-> --- a/tools/testing/selftests/net/mptcp/diag.sh
-> +++ b/tools/testing/selftests/net/mptcp/diag.sh
-> @@ -81,6 +81,21 @@ chk_msk_nr()
->  	__chk_msk_nr "grep -c token:" "$@"
->  }
->  
-> +chk_listener_nr()
-> +{
-> +	local expected=$1
-> +	local msg="$2"
-> +
-> +	if [ $expected -gt 0 ] && \
-> +	   ! mptcp_lib_kallsyms_has "mptcp_diag_dump_listeners"; then
-> +		printf "%-50s%s\n" "$msg - mptcp" "[ skip ]"
-> +		mptcp_lib_result_skip "many listener sockets"
-> +	else
-> +		__chk_nr "ss -inmlHMON $ns | wc -l" "$expected" "$msg - mptcp"
-> +	fi
-> +	__chk_nr "ss -inmlHtON $ns | wc -l" "$expected" "$msg - subflows"
-> +}
-> +
->  wait_msk_nr()
->  {
->  	local condition="grep -c token:"
-> @@ -279,5 +294,20 @@ flush_pids
->  chk_msk_inuse 0 "many->0"
->  chk_msk_cestab 0 "many->0"
->  
-> +chk_listener_nr 0 "no listener sockets"
-> +NR_SERVERS=100
-> +for I in $(seq 1 $NR_SERVERS); do
-> +	ip netns exec $ns ./mptcp_connect -p $((I + 20001)) -l 0.0.0.0 2>&1 >/dev/null &
-> +	mptcp_lib_wait_local_port_listen $ns $((I + 20001))
-> +done
-> +
-> +chk_listener_nr $NR_SERVERS "many listener sockets"
-> +
-> +# gracefull termination
+Hi,
 
-nit, as you plan to re-spin anyway: graceful
+Thanks everyone for the exhaustive feedback. And at least this thread is a good 
+comprehesive reference for the future ^^.
 
-> +for I in $(seq 1 $NR_SERVERS); do
-> +	echo a | ip netns exec $ns ./mptcp_connect -p $((I + 20001)) 127.0.0.1 2>&1 >/dev/null
+To recap the hopefully final UAPI for complex RGB lighting devices:
 
-I'm not sure of the validity of this but shellcheck complains that:
+- By default there is a singular /sys/class/leds/* entry that treats the device 
+as if it was a single zone RGB keyboard backlight with no special effects.
 
-  SC2069 (warning): To redirect stdout+stderr, 2>&1 must be last (or use '{ cmd > file; } 2>&1' to clarify).
+- There is an accompanying misc device with the sysfs attributes "name", 
+"device_type",  "firmware_version_string", "serial_number" for device 
+identification and "use_leds_uapi" that defaults to 1.
 
-Also for the same constriction slightly earlier in this patch.
+     - If set to 0 the /sys/class/leds/* entry disappears. The driver should 
+keep the last state the backlight was in active if possible.
 
-> +done
-> +flush_pids
-> +
->  mptcp_lib_result_print_all_tap
->  exit $ret
-> -- 
-> 2.43.0
-> 
-> 
+     - If set 1 it appears again. The driver should bring it back to a static 1 
+zone setting while avoiding flicker if possible.
+
+- If the device is not controllable by for example hidraw, the misc device might 
+also implement additional ioctls or sysfs attributes to allow a more complex low 
+level control for the keyboard backlight. This is will be a highly vendor 
+specific UAPI.
+
+     - The actual logic interacting with this low level UAPI is implemented by a 
+userspace driver
+
+Implementation wise: For the creation of the misc device with the use_leds_uapi 
+switch a helper function/macro might be useful? Wonder if it should go into 
+leds.h, led-class-multicolor.h, or a new header file?
+
+- Out of my head it would look something like this:
+
+led_classdev_add_optional_misc_control(
+     struct led_classdev *led_cdev,
+     char* name,
+     char* device_type,
+     char* firmware_version_string,
+     char* serial_number,
+     void (*deregister_led)(struct led_classdev *led_cdev),
+     void (*reregister_led)(struct led_classdev *led_cdev))
+
+Let me know your thoughts and hopefully I can start implementing it soon for one 
+of our devices.
+
+Kind regards,
+
+Werner Sembach
+
 
