@@ -1,327 +1,175 @@
-Return-Path: <linux-kernel+bounces-76411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E90F785F6F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:31:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7C485F70B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1602D1C211D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:31:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7BC2822DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDAB46544;
-	Thu, 22 Feb 2024 11:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BA946B83;
+	Thu, 22 Feb 2024 11:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="23gbb3FY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oQgyZtfU"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="t48+/f5Q"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE0222099;
-	Thu, 22 Feb 2024 11:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CEA8383BD;
+	Thu, 22 Feb 2024 11:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708601472; cv=none; b=emfVJPqLYPJP9lic2M3r7TcDPrX+uNY51+wmI6zlxEnaCqJsCgT7ssPcqdDAlf0ne9gfNlR9o0hdecFF4ol4LjeIM6uujHJaGLrhBo/mPSGUL4lUWvUoat3RTiDZOuqN74mFm4i1F3zsgh/EMePX6f+UtMqBSsasibLXJ2Qzuks=
+	t=1708601607; cv=none; b=GTGm/7ydWKiFcCofvqtY6HJGms3Chz4JouYLXM07URIdXc98xLaWxr23EoGLsLUFzWTuWNCob1Jff8kWDbwVzrEQdeZS5fa1cw6tC/PWdq49viDTi3y3JA3YRP+IC8Jj40hTrturSdLT3BFpLwbKJ19M+0lkH/6IbltSz+pkA9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708601472; c=relaxed/simple;
-	bh=S5PpldvEfCWgMN5Vk/QEybamk2yANU02lkkVyahF9H8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=V00gCegT7tY4Bu/7n41DMwm0DSJo098xagqMBnlfWLWr8UkyJyE6JWlF5pWMNYlJjGeKhNcQ1xXV7CL8a6Wu0P6J7Yxz6AVJSS0AnE6e1oee18HGsnsClagYa1v/CWXb4IXPRhHrXX0dYledwLvLy6iCNGTKcvI0wvgAE0vRqq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=23gbb3FY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oQgyZtfU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 22 Feb 2024 11:31:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708601468;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gO8KPtxyUezMZfkFT2x7lO+VYm55SC6jTQTVdpKarbw=;
-	b=23gbb3FY2Okqnwa51OCLMp98oNM7XaJs+67IUDxGI6bf3O69G2Iu4h0AUSPg/HI7z5OkJU
-	Vp9/vkKa3E7prNauWU409vL+6uMptHXPTsOT82g3SzN+gqW8Sr/4a/QUSUm4Wo56vWPDGv
-	WiJaCjMksOkBx8B6FVUG2rM6+Ll03btdjnWrZSO54DLUZ7DogsaBoIwv5zClArPrhL5e/k
-	D84FVQ8KvZ0AdI621aHIijDShGOZG2ubkKH9+GVeh3FDTp06qAXiGnY0e8esVqM5Csvn3Z
-	G5ElVWKCegntt6GjffSZ6TtU/r4sr7DfFxl2JoW1vSqvFoS3P9kLsQbzyuY4ew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708601468;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gO8KPtxyUezMZfkFT2x7lO+VYm55SC6jTQTVdpKarbw=;
-	b=oQgyZtfUY5PwFXMzbsxfGNbodNXTkiY+Gpj41D5g2n3VndHhP/2+Mb69eUAZQ5TjLCfT1A
-	fG8A4747UahgtbBg==
-From: "tip-bot2 for Nikolay Borisov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/insn: Remove superfluous checks from instruction
- decoding routines
-Cc: Nikolay Borisov <nik.borisov@suse.com>, Ingo Molnar <mingo@kernel.org>,
- Josh Poimboeuf <jpoimboe@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240222111636.2214523-2-nik.borisov@suse.com>
-References: <20240222111636.2214523-2-nik.borisov@suse.com>
+	s=arc-20240116; t=1708601607; c=relaxed/simple;
+	bh=dE8sWUiPLq0FaWrSd12fT0dLFSxfOZH6t/B1AZQdSaw=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=LeTctDtRimHuLMLch3ChswQwhQnGCBzvXelghbbHlCKfSc4Bs3WDShTsmblytGm3zCa+MQHbTKtaLtpNahCiidKlWp/KPd+pgjnlJDd4JnNnf1LIP3nrZMOEwY2bRZDJTbpGFvv9b9N7iO9obwRu+OoqzeDDvAvSakW1qmya5gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=t48+/f5Q; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MBX53d059115;
+	Thu, 22 Feb 2024 05:33:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708601585;
+	bh=bj4DBD9JzM1ZhZS2ZLCo1fD79T0JhKNn65e+gvIiMAI=;
+	h=From:Subject:Date:To:CC;
+	b=t48+/f5QGgNDJk8O8T/IxbEEbfEkgV3Veqg/Hyu58PtBUdxX6cNC3GHhCSmOppJI0
+	 8La/aN5t9Oc/twLQcr4Htm2kSWF4erVnL4bnqPd81ziol4WHm9zfL3ygojxsa/rwxM
+	 7qoIsEh3Nb77NTesn5/RW/Z/4aWAJ/XZHtjTvfI0=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MBX5v4007284
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 22 Feb 2024 05:33:05 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 22
+ Feb 2024 05:33:04 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 22 Feb 2024 05:33:04 -0600
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MBX3U1128346;
+	Thu, 22 Feb 2024 05:33:04 -0600
+From: Jai Luthra <j-luthra@ti.com>
+Subject: [PATCH RFC 00/21] media: cadence,ti: CSI2RX Multistream Support
+Date: Thu, 22 Feb 2024 17:01:16 +0530
+Message-ID: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170860146746.398.2924400958195588835.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIQw12UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyND3dzSnJLM4pKi1MRc3bSkpESztLRUE/NEYyWgjoKi1LTMCrBp0Up
+ Bbs5KsbW1AMsf+ZFiAAAA
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans
+ Verkuil <hverkuil-cisco@xs4all.nl>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Maxime Ripard <mripard@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Aradhya
+ Bhatia <a-bhatia1@ti.com>, Devarsh Thakkar <devarsht@ti.com>,
+        Changhuang
+ Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu
+	<jack.zhu@starfivetech.com>,
+        Julien Massot <julien.massot@collabora.com>,
+        Jayshri Pawar <jpawar@cadence.com>, Jai Luthra <j-luthra@ti.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3027; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=dE8sWUiPLq0FaWrSd12fT0dLFSxfOZH6t/B1AZQdSaw=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBl1zDSRemMopB1oyhk0qqhqMq7jed7QD5MkvQB+
+ HQ5MAOBls6JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZdcw0gAKCRBD3pH5JJpx
+ RZd4D/wKmk5+oJ5+9MHqCQj2Du6+Y4Sw2Z3uehl3kGI/oZqnSTogESbxfsvOEjmnf8N4/eG3BuM
+ lq/F3xa1BJLVY6VxYsoyNx1lA7koLinFK90BDsdN+ohE/sLOfkyXkSxtppzsyzdQe6FLJZTLjHn
+ MG95f+lUB8szac6peQ4HURinOHy6SZJ5EKb0IJCJOGNLU5e7AcleFDAg5/V8p2jKqUHgHMV/mXZ
+ OYoHZpJ5OHN/wcyp0uAVOkp7VpC9KeU+gbxWvQ84jVTYEI8csZDFS6Ui6fNej3PvbTchq9cuqXr
+ bPYYEAepIUfPeaM02Hh3lCX22OCLGriIWuyGFuaODZtMerUArBD49VeDj4wMCIpRyLzIp9/LvOY
+ y2jJRTezH5OG3XgiV6DETNma0SUEtWMdwOlLbol9vKCAL3eR7+0AtSnMM2r7Amq9uiDu4QxJOET
+ fK+Uuteq7cgjAo5AWUYIAYceHSJnjmn9U/e5OviUp0Q+4F3SKpNIwWCtQLwMYL7WTYLdZrJ7nE/
+ S0NC0iXk6G0UyQJGU/FjPm+vScORoHyzkLOadbWPhbgm9J79VMUnpeEJ7Dc9VWwFLeWKQBfEc1q
+ TUwTKKAE7IIWQVPteAcTgCFEHJqD3M/s+2ziMczZq5SRa/Eqk+nQvkHgO4K8HncqVqirLp5q0di
+ Ai2U0GAc7uxwBfA==
+X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
+ fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The following commit has been merged into the x86/asm branch of tip:
+This series adds multi-stream support for Cadence CSI2RX and TI CSI2RX
+Shim drivers, along with minor improvements and bug fixes. It is a
+follow up to [1] which added single-camera support for TI CSI2RX.
 
-Commit-ID:     427e1646f1ef6c714a5bade30ca0302edc5d46a0
-Gitweb:        https://git.kernel.org/tip/427e1646f1ef6c714a5bade30ca0302edc5d46a0
-Author:        Nikolay Borisov <nik.borisov@suse.com>
-AuthorDate:    Thu, 22 Feb 2024 13:16:35 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 22 Feb 2024 12:23:04 +01:00
+Posting this as an RFC as it is late in this merge window, will post a
+non-RFC v2 fixing any comments after v6.9-rc1 is tagged.
 
-x86/insn: Remove superfluous checks from instruction decoding routines
+Some of the patches are split to ease review, and are prefixed with
+"SQUASH" in the subject. They can be squashed in subsequent revisions,
+as they should ideally go as a single commit.
 
-It's pointless checking if a particular part of an instruction is
-decoded before calling the routine responsible for decoding it as this
-check is duplicated in the routines itself. Streamline the code by
-removing the superfluous checks. No functional difference.
+PATCH 1-3:   Misc. fixes and improvements
+PATCH 4-10:  Support multiple DMA contexts/video nodes in TI CSI2RX
+PATCH 11-12: Use get_frame_desc to propagate virtual channel information
+	     across the different subdevs in the media pipeline
+PATCH 13-20: Use new multi-stream APIs across the drivers to support
+	     multiplexed cameras from sources like UB960 (FPDLink)
+PATCH 21:    Optimize stream on by submitting all queued buffers to DMA
 
-Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20240222111636.2214523-2-nik.borisov@suse.com
+[1]: https://lore.kernel.org/all/20231009-upstream_csi-v10-0-330aaed24c5d@ti.com/
+
+Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
- arch/x86/lib/insn.c       | 56 ++++++++++++++------------------------
- tools/arch/x86/lib/insn.c | 56 ++++++++++++++------------------------
- 2 files changed, 42 insertions(+), 70 deletions(-)
+Jai Luthra (15):
+      media: ti: j721e-csi2rx: Fix races while restarting DMA
+      dt-bindings: media: ti,j721e-csi2rx-shim: Support 32 dma chans
+      media: ti: j721e-csi2rx: separate out device and context
+      media: ti: j721e-csi2rx: add a subdev for the core device
+      SQUASH: media: ti: j721e-csi2rx: Fix link validation for multi-stream
+      media: ti: j721e-csi2rx: add support for processing virtual channels
+      media: cadence: csi2rx: Use new enable stream APIs
+      media: cadence: csi2rx: Enable stream-wise routing
+      SQUASH: media: cadence: csi2rx: Enable per-stream controls
+      SQUASH: media: cadence: csi2rx: Filter using MIPI virtual channels
+      SQUASH: media: cadence: csi2rx: Filter streams in get_frame_desc
+      media: ti: j721e-csi2rx: add multistream support
+      SQUASH: media: ti: j721e-csi2rx: Enable per-stream controls
+      SQUASH: media: ti: j721e-csi2rx: Assert pixel reset before stopping last stream
+      media: ti: j721e-csi2rx: Submit all available buffers
 
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 55e371c..3946bdc 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -268,11 +268,9 @@ int insn_get_opcode(struct insn *insn)
- 	if (opcode->got)
- 		return 0;
- 
--	if (!insn->prefixes.got) {
--		ret = insn_get_prefixes(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_prefixes(insn);
-+	if (ret)
-+		return ret;
- 
- 	/* Get first opcode */
- 	op = get_next(insn_byte_t, insn);
-@@ -339,11 +337,9 @@ int insn_get_modrm(struct insn *insn)
- 	if (modrm->got)
- 		return 0;
- 
--	if (!insn->opcode.got) {
--		ret = insn_get_opcode(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_opcode(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (inat_has_modrm(insn->attr)) {
- 		mod = get_next(insn_byte_t, insn);
-@@ -386,11 +382,9 @@ int insn_rip_relative(struct insn *insn)
- 	if (!insn->x86_64)
- 		return 0;
- 
--	if (!modrm->got) {
--		ret = insn_get_modrm(insn);
--		if (ret)
--			return 0;
--	}
-+	ret = insn_get_modrm(insn);
-+	if (ret)
-+		return 0;
- 	/*
- 	 * For rip-relative instructions, the mod field (top 2 bits)
- 	 * is zero and the r/m field (bottom 3 bits) is 0x5.
-@@ -417,11 +411,9 @@ int insn_get_sib(struct insn *insn)
- 	if (insn->sib.got)
- 		return 0;
- 
--	if (!insn->modrm.got) {
--		ret = insn_get_modrm(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_modrm(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (insn->modrm.nbytes) {
- 		modrm = insn->modrm.bytes[0];
-@@ -460,11 +452,9 @@ int insn_get_displacement(struct insn *insn)
- 	if (insn->displacement.got)
- 		return 0;
- 
--	if (!insn->sib.got) {
--		ret = insn_get_sib(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_sib(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (insn->modrm.nbytes) {
- 		/*
-@@ -628,11 +618,9 @@ int insn_get_immediate(struct insn *insn)
- 	if (insn->immediate.got)
- 		return 0;
- 
--	if (!insn->displacement.got) {
--		ret = insn_get_displacement(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_displacement(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (inat_has_moffset(insn->attr)) {
- 		if (!__get_moffset(insn))
-@@ -703,11 +691,9 @@ int insn_get_length(struct insn *insn)
- 	if (insn->length)
- 		return 0;
- 
--	if (!insn->immediate.got) {
--		ret = insn_get_immediate(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_immediate(insn);
-+	if (ret)
-+		return ret;
- 
- 	insn->length = (unsigned char)((unsigned long)insn->next_byte
- 				     - (unsigned long)insn->kaddr);
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index 8fd63a0..5d81924 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -268,11 +268,9 @@ int insn_get_opcode(struct insn *insn)
- 	if (opcode->got)
- 		return 0;
- 
--	if (!insn->prefixes.got) {
--		ret = insn_get_prefixes(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_prefixes(insn);
-+	if (ret)
-+		return ret;
- 
- 	/* Get first opcode */
- 	op = get_next(insn_byte_t, insn);
-@@ -339,11 +337,9 @@ int insn_get_modrm(struct insn *insn)
- 	if (modrm->got)
- 		return 0;
- 
--	if (!insn->opcode.got) {
--		ret = insn_get_opcode(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_opcode(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (inat_has_modrm(insn->attr)) {
- 		mod = get_next(insn_byte_t, insn);
-@@ -386,11 +382,9 @@ int insn_rip_relative(struct insn *insn)
- 	if (!insn->x86_64)
- 		return 0;
- 
--	if (!modrm->got) {
--		ret = insn_get_modrm(insn);
--		if (ret)
--			return 0;
--	}
-+	ret = insn_get_modrm(insn);
-+	if (ret)
-+		return 0;
- 	/*
- 	 * For rip-relative instructions, the mod field (top 2 bits)
- 	 * is zero and the r/m field (bottom 3 bits) is 0x5.
-@@ -417,11 +411,9 @@ int insn_get_sib(struct insn *insn)
- 	if (insn->sib.got)
- 		return 0;
- 
--	if (!insn->modrm.got) {
--		ret = insn_get_modrm(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_modrm(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (insn->modrm.nbytes) {
- 		modrm = insn->modrm.bytes[0];
-@@ -460,11 +452,9 @@ int insn_get_displacement(struct insn *insn)
- 	if (insn->displacement.got)
- 		return 0;
- 
--	if (!insn->sib.got) {
--		ret = insn_get_sib(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_sib(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (insn->modrm.nbytes) {
- 		/*
-@@ -628,11 +618,9 @@ int insn_get_immediate(struct insn *insn)
- 	if (insn->immediate.got)
- 		return 0;
- 
--	if (!insn->displacement.got) {
--		ret = insn_get_displacement(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_displacement(insn);
-+	if (ret)
-+		return ret;
- 
- 	if (inat_has_moffset(insn->attr)) {
- 		if (!__get_moffset(insn))
-@@ -703,11 +691,9 @@ int insn_get_length(struct insn *insn)
- 	if (insn->length)
- 		return 0;
- 
--	if (!insn->immediate.got) {
--		ret = insn_get_immediate(insn);
--		if (ret)
--			return ret;
--	}
-+	ret = insn_get_immediate(insn);
-+	if (ret)
-+		return ret;
- 
- 	insn->length = (unsigned char)((unsigned long)insn->next_byte
- 				     - (unsigned long)insn->kaddr);
+Jayshri Pawar (1):
+      media: cadence: csi2rx: Support runtime PM
+
+Pratyush Yadav (5):
+      media: cadence: csi2rx: configure DPHY before starting source stream
+      media: ti: j721e-csi2rx: prepare SHIM code for multiple contexts
+      media: ti: j721e-csi2rx: allocate DMA channel based on context index
+      media: ti: j721e-csi2rx: get number of contexts from device tree
+      media: cadence: csi2rx: add get_frame_desc wrapper
+
+ .../bindings/media/ti,j721e-csi2rx-shim.yaml       |  40 +-
+ drivers/media/platform/cadence/cdns-csi2rx.c       | 460 +++++++++--
+ .../media/platform/ti/j721e-csi2rx/j721e-csi2rx.c  | 853 +++++++++++++++------
+ 3 files changed, 1052 insertions(+), 301 deletions(-)
+---
+base-commit: d894a2a286fccd6e47cd1cac4c2d4ff5d300d7c7
+change-id: 20240221-multistream-fbba6ffe47a3
+
+Best regards,
+-- 
+Jai Luthra <j-luthra@ti.com>
+
 
