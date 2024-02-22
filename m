@@ -1,196 +1,116 @@
-Return-Path: <linux-kernel+bounces-76703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDDE385FB47
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:31:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304E185FB4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:33:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 873A0282650
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:31:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 624751C22C63
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3AB1474D4;
-	Thu, 22 Feb 2024 14:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014DC1474A2;
+	Thu, 22 Feb 2024 14:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="St/l5Cmf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eMQy/uoZ"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F066134CC2;
-	Thu, 22 Feb 2024 14:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E1F4436C;
+	Thu, 22 Feb 2024 14:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708612303; cv=none; b=ffNDwqUYrmG7yGBc0JCVWnEowoPKmFCDN3T3Y6JQJluBM2VwNyTjjok9hsUZm+7Xh4+aTe4I+Y9KWQeNC4fJkCbVH+YhYSKIhgeUGBETzOwVpv3/aYFk0vIuILPqjcfprMu6KIjcisG9p+vC2nPOVHk4urNia9h2c1lZ9UBRQ9U=
+	t=1708612404; cv=none; b=I+PhHyfZFDnTdqMCVg/fU5k1F93l+TYUVl0+nSuC5VYKvT/PVlDioR7GU9zUNoetxEYMVJmbeuFvSJwry5a49HA3WIHQwch0IRdTIsyHvveeYRsoRwMeGDMQmHCWV0uBJKVcHgiA3DZ2kkYEPOQ71AL0TSGBJj3S84pq0lLTAPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708612303; c=relaxed/simple;
-	bh=fWM5/IIptB8qiMmDicnhEXv1YrCPrUbI/y/AmEvYnR4=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BH4Nsr2YwQvlvpiUSz3/hzma+aOugas5djYAmWsYWSvmx7NW+0414PTHRD+I7guhGdcJ+EwdFNBDB84C2ytxatYRes47GilVoEX/Hs6NRhDBZ8NRO0CxkDHl0PQV5mOIUulQXHw7gUBtYt4W7xZEnZVl0PGbQttMxCHGeZPbQXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=St/l5Cmf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F57C433C7;
-	Thu, 22 Feb 2024 14:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708612303;
-	bh=fWM5/IIptB8qiMmDicnhEXv1YrCPrUbI/y/AmEvYnR4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=St/l5Cmfq8JVGWmQlPPDcs0go0XirWQniOnrthUt/k7WDo+z5s8LNdUj8+m7PHqix
-	 rw+j0GpJNSUYfBgYUmlOliR2QN5VROEjgj4GKOOVoBED2LD8mcZ9kO9zSOKt9fv2Jp
-	 Mw4P8onpPP8o6enDqdvXx9qvD9IzbPVSjLCqloIDMgWsf6iuhLoa1pvjaNmcU9/im/
-	 Iv3ZJ6KqOs2JDB20SflQKX8YdCQF6x8USnsGMmSQlWVUtDkS0/O4LHaZO4/An25niG
-	 GEmXXg8hWckXwyAJ5uSKM0A2jQdnqq8kQsXKhIx9w9bsvgCwLbFOiTYOWxE/rypZyW
-	 mnD1YIh8oHTXg==
-Received: from 82-132-212-42.dab.02.net ([82.132.212.42] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rdA6u-005lAs-PH;
-	Thu, 22 Feb 2024 14:31:40 +0000
-Date: Thu, 22 Feb 2024 14:31:38 +0000
-Message-ID: <87frxka7ud.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Paolo Bonzini <pbonzini@redhat.com>,
-    Oliver Upton <oliver.upton@linux.dev>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Christoffer Dall <cdall@cs.columbia.edu>,
-	KVM <kvm@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the kvm-arm tree
-In-Reply-To: <b9d9a871-ba64-4c13-a186-0c60adc8d245@redhat.com>
-References: <20240222220349.1889c728@canb.auug.org.au>
-	<20240222111129.GA946362@e124191.cambridge.arm.com>
-	<20240222224041.782761fd@canb.auug.org.au>
-	<b9d9a871-ba64-4c13-a186-0c60adc8d245@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708612404; c=relaxed/simple;
+	bh=7Nxd9L0hTx4wS4KdRxCSjT6nCn4X+i13aWUcdkoxH2o=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=B87Z1aRG+hAIAaXOPWtbYGQTJbC7tU1OX0bkkwb4gzdvNDwSWceXcpeRQF4kmq7Zm12z4daqOZRbRSxXimkUBV6WeMJr6m2SzutFcb+zX+TSGY74tKYAsXfwGluWPWmhXTGiDYZnK2o5c0otiVZBb3V9d1+ZhG9KF/KsCTBn+FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eMQy/uoZ; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a293f2280c7so1145202566b.1;
+        Thu, 22 Feb 2024 06:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708612401; x=1709217201; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ldyzz6/JzuL7eIas6PfwBWLiCcFLpsFRhU47ib609w8=;
+        b=eMQy/uoZ7i3VOPPd+/IwRfRO+1+PJDPiLBizbL9YThX0mrnXL4CfcRksN+fUmAYQr1
+         c29IcXO7Ue+ZLSlSLNGHVoYDi4JqYR7teXw2GgXPFZ6U7apBj/OnMORsI3S9TX8i/QQi
+         jjmk7OvryjKJOHofcIec1LWzXXQiIXMBIUL/9cp4UDz0lEftanY6aoluFePIwdu05+Q1
+         6m1i9XFLexxRFJvinV0fhZnsGxUicmjccD2ZrhhSeBpN/kElACrQuzbLKMwtDrmeCGTc
+         9VgMfxBScDQ9dwPjhAnGRwemL6hHNcT7D+QvOzkefjxqbp3tm3IP4TCmp3FMUeZq/he5
+         Z81Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708612401; x=1709217201;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ldyzz6/JzuL7eIas6PfwBWLiCcFLpsFRhU47ib609w8=;
+        b=gAbfHcU2ZlRDmU2bTRnj9+szhP2o05Bp1eb62cT8sUP/Q2XIamGBkKdeLJv1v5skrw
+         EpRmcz/E1AYxQtOl5TkeLXUDgSFv3tJUjckifP9HuzNJhztJki5+53KRbpc46KUEJDnb
+         3gzC/031/MLRO0lMk3r6cVQF7RY0aOfXWEHiZPvY20TLjE8KOsqvcQrEGOLSPchQ/kn6
+         h1tHifuvI5QsinYAl88IK7rXeGqCziHaApwYaux178tmSLFFtCTsY9upO9oFNIiw12vu
+         vW3EzVDJqwFq3neCkOeW/ovx/7Oz7PFv166ayMF8ytzOhAc/5i0GoRz+B5gkx4EPhLRD
+         YVKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBr6h/69lu3vRmV3moOnSRwBPhhytjUyYFOBuIC1uryRYkmm8psPqxapjk5oeM0uTp/5hUeE4IGyKFA/h85a12FSobDi3ULzYdcMkU
+X-Gm-Message-State: AOJu0YwYLywiBTC4uUy9b6ghJcFNblZS/vU90TVDi9X/yTrWB7F8h9Qm
+	9M1eY01WUAaiUlpGANkjJ39dII5uUqWCXLWNhjyg5DUgpoYXrcD4zZObg0JM
+X-Google-Smtp-Source: AGHT+IE/mq6F4oG3XuFKcZ0cPjBTjZcJco4+3Mo3sbwsAXaFVeGGVeSxCh/cb3xzKOmdp5YiV9BS1Q==
+X-Received: by 2002:a17:906:69b:b0:a3f:6302:1e61 with SMTP id u27-20020a170906069b00b00a3f63021e61mr2516651ejb.73.1708612400745;
+        Thu, 22 Feb 2024 06:33:20 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:e4dd:831d:c00a:fc45])
+        by smtp.gmail.com with ESMTPSA id vu12-20020a170907a64c00b00a3f15cb8d9dsm2245506ejc.126.2024.02.22.06.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 06:33:20 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: remove entry to non-existing file in MOBILEYE MIPS SOCS
+Date: Thu, 22 Feb 2024 15:33:12 +0100
+Message-Id: <20240222143312.27757-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 82.132.212.42
-X-SA-Exim-Rcpt-To: pbonzini@redhat.com, oliver.upton@linux.dev, sfr@canb.auug.org.au, joey.gouly@arm.com, cdall@cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Thu, 22 Feb 2024 13:11:59 +0000,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
->=20
-> On 2/22/24 12:40, Stephen Rothwell wrote:
-> >> This fails because https://git.kernel.org/pub/scm/linux/kernel/git/arm=
-64/linux.git/commit/?id=3Dfdd867fe9b32
-> >> added new fields to that register (ID_AA64DFR1_EL1)
-> >>=20
-> >> and commit b80b701d5a6 ("KVM: arm64: Snapshot all non-zero RES0/RES1 s=
-ysreg fields for later checking")
-> >> took a snapshot of the fields, so the RES0 (reserved 0) bits don't mat=
-ch anymore.
-> >>=20
-> >> Not sure how to resolve it in the git branches though.
-> >=20
-> > Thanks.  I will apply this patch to the merge of the kvm-arm tree from
-> > tomorrow (and at the end of today's tree).
->=20
-> Marc, Oliver, can you get a topic branch from Catalin and friends for
-> this sysreg patch, and apply the fixup directly to the kvm-arm branch
-> in the merge commit?
->=20
-> Not _necessary_, as I can always ask Linus to do the fixup, but
-> generally he prefers to have this sorted out by the maintainers if it
-> is detected by linux-next.
+Commit f34158edd249 ("MAINTAINERS: Add entry for Mobileye MIPS SoCs") adds
+the section MOBILEYE MIPS SOCS with a file entry to the non-existing file
+include/dt-bindings/soc/mobileye,eyeq5.h.
 
-I think that's not the correct thing to do at this time. I should have
-timed the introduction of these checks a bit later, after the merge
-window.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+broken reference.
 
-But more to the point, the proposed patch is also not the best thing
-to merge, because it hides that there is a discrepancy between what
-the architecture describes, and what KVM knows. I really want to know
-about it, or it will be yet another bug that we wont detect easily.
-Specially for ID_AA64DFR*_EL1 which are a bloody mine-field.
+Possibly, this file was part of an early patch series, but in the final
+patch series, this file does not appear anymore.
 
-So I'd rather we make the check optional, and we'll play catch up for
-a bit longer. Something like the patch below.
+Delete this file entry in the MOBILEYE MIPS SOCS section.
 
-Oliver, do you mind queuing this ASAP (also pushed out to my dev
-branch)?
-
-Thanks,
-
-	M.
-
-=46rom 85d861a6ca055c7681c826c580e7c90d74c26ac5 Mon Sep 17 00:00:00 2001
-From: Marc Zyngier <maz@kernel.org>
-Date: Thu, 22 Feb 2024 14:12:09 +0000
-Subject: [PATCH] KVM: arm64: Make build-time check of RES0/RES1 bits option=
-al
-
-In order to ease the transition towards a state of absolute
-paranoia where all RES0/RES1 bits gets checked against what
-KVM know of them, make the checks optional and garded by a
-config symbol (CONFIG_KVM_ARM64_RES_BITS_PARANOIA) default to n.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/arm64/kvm/Kconfig          | 11 +++++++++++
- arch/arm64/kvm/check-res-bits.h |  4 ++++
- 2 files changed, 15 insertions(+)
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index 5c2a672c06a8..fa9389270cfe 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -67,4 +67,15 @@ config PROTECTED_NVHE_STACKTRACE
-=20
- 	  If unsure, or not using protected nVHE (pKVM), say N.
-=20
-+config KVM_ARM64_RES_BITS_PARANOIA
-+	bool "Build-time check of RES0/RES1 bits"
-+	depends on KVM
-+	default n
-+	help
-+	  Say Y here to validate that KVM's knowledge of most system
-+	  registers' RES0/RES1 bits matches when the rest of the kernel
-+	  defines. Expect the build to fail badly if you enable this.
-+
-+	  Just say N.
-+
- endif # VIRTUALIZATION
-diff --git a/arch/arm64/kvm/check-res-bits.h b/arch/arm64/kvm/check-res-bit=
-s.h
-index 967b5d171d53..2d98e60efc3c 100644
---- a/arch/arm64/kvm/check-res-bits.h
-+++ b/arch/arm64/kvm/check-res-bits.h
-@@ -21,6 +21,8 @@
-  */
- static inline void check_res_bits(void)
- {
-+#ifdef CONFIG_KVM_ARM64_RES_BITS_PARANOIA
-+
- 	BUILD_BUG_ON(OSDTRRX_EL1_RES0		!=3D (GENMASK_ULL(63, 32)));
- 	BUILD_BUG_ON(MDCCINT_EL1_RES0		!=3D (GENMASK_ULL(63, 31) | GENMASK_ULL(28=
-, 0)));
- 	BUILD_BUG_ON(MDSCR_EL1_RES0		!=3D (GENMASK_ULL(63, 36) | GENMASK_ULL(28, =
-28) | GENMASK_ULL(25, 24) | GENMASK_ULL(20, 20) | GENMASK_ULL(18, 16) | GEN=
-MASK_ULL(11, 7) | GENMASK_ULL(5, 1)));
-@@ -118,4 +120,6 @@ static inline void check_res_bits(void)
- 	BUILD_BUG_ON(TRBMAR_EL1_RES0		!=3D (GENMASK_ULL(63, 12)));
- 	BUILD_BUG_ON(TRBTRG_EL1_RES0		!=3D (GENMASK_ULL(63, 32)));
- 	BUILD_BUG_ON(TRBIDR_EL1_RES0		!=3D (GENMASK_ULL(63, 12) | GENMASK_ULL(7, =
-6)));
-+
-+#endif
- }
---=20
-2.39.2
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 28b2013031bd..19ac6a8e46b2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14914,7 +14914,6 @@ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
+ F:	arch/mips/boot/dts/mobileye/
+ F:	arch/mips/configs/eyeq5_defconfig
+ F:	arch/mips/mobileye/board-epm5.its.S
+-F:	include/dt-bindings/soc/mobileye,eyeq5.h
+ 
+ MODULE SUPPORT
+ M:	Luis Chamberlain <mcgrof@kernel.org>
+-- 
+2.17.1
 
-
---=20
-Without deviation from the norm, progress is not possible.
 
