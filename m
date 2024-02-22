@@ -1,98 +1,121 @@
-Return-Path: <linux-kernel+bounces-75748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E09285EE64
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:00:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC1585EE6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:06:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 282BA283E2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:00:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CDA21F232B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5157511C83;
-	Thu, 22 Feb 2024 01:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ogw8MftI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5F2111AA;
+	Thu, 22 Feb 2024 01:05:44 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8CA28EF;
-	Thu, 22 Feb 2024 01:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061F812E49;
+	Thu, 22 Feb 2024 01:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708563625; cv=none; b=rk0wrZGw5sgMLM0GwwIcLeyuUGIxzSw6L5ZxJASl5rZsRA1TY5uZwC9dfOz0BIixmPs+ykw7dFS8iyNG4kdlANCvo92x7ipzE/IQbwv8iARBKcUUM7D01F+0DUPAmdJMujfpyKaXRfPBoO+UlC99enQL66znMRS7R+WXOTG7GKI=
+	t=1708563944; cv=none; b=GI5At/X6pjMZHC7Iw+ICeOUS07CV9pbKhJllmGrSV2Hljp3uAhtN7ZMJ5+KReYgWsbhZKdYoKBmdZJ1QFwX2dnGl+1kaXRtZB6dT4DtIDv2brpqYqxxjYmYASBXMrp+EK5Bd+d7yyIa6bDsAGia9P3lsmdUHaBHRxhEAUbMZkkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708563625; c=relaxed/simple;
-	bh=ggpfbAk/8v/uRbo53fh+Pe5sfNyqrpSgwKHDrVgb8PQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qgs1x/ig8oAq5TtvTv2CV9dll5kvw13n+/V0Svb2HBKVauPr9g4bYOh98wxUBwgqRmD+foIlB9rj0Jq0HRuZrgKf4ldoUK2gOGSf6723R0+FunUTRvNkdKktBb8SPehdkE511G1STjJyfABVInHGoVqoctrhs+RdF+xFJOhhkHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ogw8MftI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02E85C433C7;
-	Thu, 22 Feb 2024 01:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708563625;
-	bh=ggpfbAk/8v/uRbo53fh+Pe5sfNyqrpSgwKHDrVgb8PQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ogw8MftII1she2XJ/vthGAOx21yXJm/UADxrQwTaBYHTGurb4Bl5WhdgC01NEjlMW
-	 uPEh4cxfQg7LdyNMO9p5RAFgIlMyDeK7naLh2PZHJPKiv8Nvovbrai68h9555iGAu+
-	 6mNBcfnYDF8p1SJgyfNqJjOba3k8AKAPse70Psxx5vwjYx5XVtVdQ5l6j5ppSe9zq8
-	 8x+MZWjstN3ehwaqktbqT07NythCCrcMTzbsl/BtagtPF0a7tA1CrbjUe9BAeSMs0O
-	 4UAj+ly3OU6rAhOZ3nH6A+/LxGb7QRSq70tk9JKZRKjmbUlCuxyjwlmhjEF49fp0+M
-	 qCC/X222RBsQg==
-Date: Wed, 21 Feb 2024 17:00:23 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
- =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v8 08/13] netlink: specs: add ethnl PHY_GET
- command set
-Message-ID: <20240221170023.452a01ca@kernel.org>
-In-Reply-To: <20240220184217.3689988-9-maxime.chevallier@bootlin.com>
-References: <20240220184217.3689988-1-maxime.chevallier@bootlin.com>
-	<20240220184217.3689988-9-maxime.chevallier@bootlin.com>
+	s=arc-20240116; t=1708563944; c=relaxed/simple;
+	bh=FsJU68LcNxW7h4DF/UR5XSZahK63i7JaNo9cTyHunOc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=De3FxXe8O5Leh0LMqIk9oz3t2S6S3ZgPptW1XpbruiVaXOWTh9jDz9zwmTv3kFK/aTueHff5xLgg30PuRv3lfTI9+1qtpSeLB4N33V6Rc4JwnSXzYQpGiKoijnGk11SLgg3zAZiTGEwasJFHplGmyBUQ4sjXny6eLiGKMrDdISQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 400B7C0C28;
+	Thu, 22 Feb 2024 01:05:35 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id AA0B12002C;
+	Thu, 22 Feb 2024 01:05:31 +0000 (UTC)
+Message-ID: <bccc704fc78b362bbc57a79eb240219f5ec1548e.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add check for snprintf to scnprintf
+From: Joe Perches <joe@perches.com>
+To: Justin Stitt <justinstitt@google.com>, Andy Whitcroft
+ <apw@canonical.com>,  Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas
+ Bulwahn <lukas.bulwahn@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>, 
+ linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, Finn
+ Thain <fthain@linux-m68k.org>
+Date: Wed, 21 Feb 2024 17:05:30 -0800
+In-Reply-To: <20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com>
+References: <20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: AA0B12002C
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: cyucsypd3qhnw59f9ezfa9557qf9fsux
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/0uf+Q0wPPk+E8Q442h+fw1PySOnfqySI=
+X-HE-Tag: 1708563931-486686
+X-HE-Meta: U2FsdGVkX18di8ZY8Lx3J5yZpNPSNulE1qFL0I57DOQ/eaeZywd5jWcZRnNYgG9paRrRvpE8dgeSdevTISn2cf5OLsschxZqnxdaV1U5bNYMB3HbohNNP5DYTyH/PCP14IZjr+ZnLIkcEeros7ZlNQRMMqz4Ni7+YyLmDTb0JAFt3G9VePngpbF4XmwmG9sh/6SyPr8V6K9g2CDvS5wCUfX3QM1aG5Sy5CpwLE/PqbIfkPajWImacyXWI/iqxo5uv0vHoGTbjA3Yxs1mFm2ZeUCYNDIg8ZjVri0JAGKtNHgh2k87u6OTNysp4pnrxxTnFgYssMhs6MUiHAv81+a8lpqWmNmVDE6SHhaczHD1CMIkD+TYjS9Tvifnq0tmLhABz9CAq/DpfO0DUcwLyio6P2DOZkvwIz3/+8iJBFJGhF2nKDWH/YNEfEVEj6Lw9H/awthTWL3Qe14EoJjIDXsp/1y6fHCrG7WPSjezpj4e8tI=
 
-On Tue, 20 Feb 2024 19:42:11 +0100 Maxime Chevallier wrote:
-> +      -
-> +        name: upstream-phy-index
-> +        type: u32
+On Wed, 2024-02-21 at 22:11 +0000, Justin Stitt wrote:
+> I am going to quote Lee Jones who has been doing some snprintf ->
+> scnprintf refactorings:
+>=20
+> "There is a general misunderstanding amongst engineers that
+> {v}snprintf() returns the length of the data *actually* encoded into the
+> destination array.  However, as per the C99 standard {v}snprintf()
+> really returns the length of the data that *would have been* written if
+> there were enough space for it.  This misunderstanding has led to
+> buffer-overruns in the past.  It's generally considered safer to use the
+> {v}scnprintf() variants in their place (or even sprintf() in simple
+> cases).  So let's do that."
+>=20
+> To help prevent new instances of snprintf() from popping up, let's add a
+> check to checkpatch.pl.
+>=20
+> Suggested-by: Finn Thain <fthain@linux-m68k.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v2:
+> - Had a vim moment and deleted a character before sending the patch.
+> - Replaced the character :)
+> - Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v1-1=
+-3ac5025b5961@google.com
+> ---
+> From a discussion here [1].
+>=20
+> [1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@lin=
+ux-m68k.org/
 
-The C define appears to be called:
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -7012,6 +7012,12 @@ sub process {
+>  			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see:=
+ https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+>  		}
+> =20
+> +# snprintf uses that should likely be {v}scnprintf
+> +		if ($line =3D~ /\bsnprintf\s*\(\s*/) {
+> +				WARN("SNPRINTF",
+> +				     "Prefer scnprintf over snprintf\n" . $herecurr);
 
-	ETHTOOL_A_PHY_UPSTREAM_INDEX,		/* u32 */
+There really should be some sort of reference link here
+similar to the one above this.
 
-either it needs to gain the PHY_ or the spec needs to lose the phy-,
-otherwise C code gen gets upset:
+Also, I rather doubt _all_ of these should be changed just
+for churn's sake.
 
-ethtool-user.c:689:10: error: =E2=80=98ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX=E2=
-=80=99 undeclared here (not in a function); did you mean =E2=80=98ETHTOOL_A=
-_PHY_UPSTREAM_INDEX=E2=80=99?
-  689 |         [ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX] =3D { .name =3D "upstrea=
-m-phy-index", .type =3D YNL_PT_U32, },
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |          ETHTOOL_A_PHY_UPSTREAM_INDEX
+Maybe add a test for some return value use like
 
-Unfortunately ethtool in the in-between state where we can auto-gen
-user space code (or rather most of it) but the uAPI header is not
-auto-generated so we need to take extra care to keep things in sync :(
+		if (defined($stat) &&
+		    $stat =3D~ /$Lval\s*=3D\s*snprintf\s*\(/) {
+			etc...
+
+Maybe offer to --fix it too.
+
 
