@@ -1,129 +1,140 @@
-Return-Path: <linux-kernel+bounces-77485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A5086063B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:08:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9817C860642
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:10:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33323B233D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:08:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B3A81F25ACF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BB620DE8;
-	Thu, 22 Feb 2024 23:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949C918AED;
+	Thu, 22 Feb 2024 23:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PiPDXQiK"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WCaHFbZw"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8670818059;
-	Thu, 22 Feb 2024 23:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5F417BCA
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708643298; cv=none; b=UANWh0B9F9yeGk/3/UKePqbIkp2bDjwBMj3s2p9pFEKYUICoqQ19xayPdO6SWLZmoZx22U8FAePrkd5puDxJQI5XycbCdHWrmDjbebNgehx/dIKUt+rgF1o+2fdpXJjmCZEoIwqaItsfLF/oIEy/pDkoF9NK9iMm0wJAyiEVGY4=
+	t=1708643342; cv=none; b=U7lQHQD0OzPIfKzNU3o3qyK/Xx7ezCmVWRToATU/Mw9iUH/KWH545QS/UiffVzxyW+q9Jg2HwE7R1D1o6fUbtox528YB1u55Px7euJS/yQ6C+rp29iZQ3s1sJm399W2fiieH9pSWoyxe1QkrZXj8vFCB99W2HlAO2d7mgtetsPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708643298; c=relaxed/simple;
-	bh=WV7is+GZWotLOyr/LJfdqKxKuPjO3bhLxlur0mKeBeU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lQq0+03W5xV4kqWjCSJIsPbhg4/TPGHsM+rtF92tE4e97497kjf0tohJ11IPr79evMcFHxAH1nIMmXr49BbyWSseEhuNAN3DIVnaYucSEhuycYzScoDU5EtVxhxwI6gdmOUfKuaUJSbwfTl52NXVdLGPuz3EGZDgU8O5B/7sVbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PiPDXQiK; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41MN6CoO009088;
-	Thu, 22 Feb 2024 23:08:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=XkoTJEI1H9WS/l6Sp9i9Pr6+5+Uqu6NrC2M+bSJ0ppE=; b=Pi
-	PDXQiKuPVVL526K2VkjiLlt+j6r+Pw9K+9ztVG9DOJ3352Bmp6l85nG4LU5Ln1q5
-	z/2xfkbAThK+zuWeYeVxBvFxhV7x56acV61jLhJuft+CZQsrwgId985mkr+QNSVU
-	opipVSW1V5ICNPmrP836KU+EyX2jy6KaNBXbG9RGfI+6maNt2j7xHxJklKMTtquT
-	Re7Zlkv97SVLrdg2vsbRQSvOq4TXQ3m0A8KeqK306ezu7Hu2TvrD+oeWaisWYMLN
-	O3rUJq/YHtnLj7Ng3HeFgQ+8BAqiBpsT/YMKmlaXiZcyAboWDU1CSVfOIUc+x9b6
-	p7HKaLxFoXOhd8fZTv5A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we3231gjh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 23:08:12 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MN8BOe014137
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 23:08:11 GMT
-Received: from hu-uchalich-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 22 Feb 2024 15:08:08 -0800
-From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-Subject: [PATCH v3 5/5] arm64: dts: qcom: sm8650: Add mapping to llcc Broadcast_AND region
-Date: Thu, 22 Feb 2024 15:07:57 -0800
-Message-ID: <36fed182281d560050b5d4432aebbd8ff7387934.1708629933.git.quic_uchalich@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1708629933.git.quic_uchalich@quicinc.com>
-References: <cover.1708629933.git.quic_uchalich@quicinc.com>
+	s=arc-20240116; t=1708643342; c=relaxed/simple;
+	bh=CUEbmC3xxg97bqbF8nhMBRdSGGgUTSxwxVsPeikIJGo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=kNBzRua7tNb7DjLyoT5mFecVX4shGWWYozMgDqYgRsNoCIplrnNGyfqKsn/XdgwQbu5xr+4ZI+D9rmPPHuAjYFnHvlZVq6L98ymoUNt3P8YXVonEPqbsoYqKoP+cVM09H+33bPdMbbD2HsU5C9dlPlPLObtfROC9uzecP3+SdN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WCaHFbZw; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708643341; x=1740179341;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=CUEbmC3xxg97bqbF8nhMBRdSGGgUTSxwxVsPeikIJGo=;
+  b=WCaHFbZwyiEKDrBeuJWZNqt7vtiL341LVfYjouLZzJO0zzuSghYiX+/e
+   0cPRErL2POOY+ueGSxy2xSC5sj5Cm534n1K67v43b2im26VCwkj7KcuzP
+   wtzF9qjc1/8lzLUDQ6ejKOMztrWVk9nlYSP4woe3YCzTNtD0zrlf3FIpn
+   jN1QssvPfmK30KPVPD0aYVR8m/C/g1Ce1t62cBT1xdpwG56tmVn9bl94U
+   dA4MFseVTBVHTYwKu09JkIha2VriGnyJPLETmQ2YW/0wvzHXcDDcnsGjH
+   Q5mmGsAAOfCBR/NRInfOaNU2tMS0dQEFzFfXadJR5QYm+rA/rHbENvlif
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6689157"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="6689157"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 15:09:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="936918708"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="936918708"
+Received: from rdegger-desk1.amr.corp.intel.com (HELO [10.209.74.18]) ([10.209.74.18])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 15:08:52 -0800
+Message-ID: <3e237f17-7992-4852-8888-7a6e5a6de31c@linux.intel.com>
+Date: Thu, 22 Feb 2024 15:08:52 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: nzTreteax4TBr0_D2hI8lbzbSn3Wp10F
-X-Proofpoint-GUID: nzTreteax4TBr0_D2hI8lbzbSn3Wp10F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- clxscore=1015 suspectscore=0 malwarescore=0 mlxlogscore=609 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220178
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] virt: tdx-guest: Handle GetQuote request error code
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+To: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>,
+ linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev
+References: <20240111033245.2632484-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240111033245.2632484-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Mapping Broadcast_AND region for LLCC in SM8650.
+Hi x86 Maintainers,
 
-Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+On 1/10/24 7:32 PM, Kuppuswamy Sathyanarayanan wrote:
+> During the TDX guest attestation process, TSM ConfigFS ABI is used by
+> the user attestation agent to get the signed VM measurement data (a.k.a
+> Quote), which can be used by a remote verifier to validate the
+> trustworthiness of the guest. When a user requests for the Quote data
+> via the ConfigFS ABI, the TDX Quote generation handler
+> (tdx_report_new()) forwards the request to VMM (or QE) via a hypercall,
+> and then shares the output with the user.
+>
+> Currently, when handling the Quote generation request, tdx_report_new()
+> handler only checks whether the VMM successfully processed the request
+> and if it is true it returns success and shares the output to the user
+> without actually validating the output data. Since the VMM can return
+> error even after processing the Quote request, always returning success
+> for the processed requests is incorrect and will create confusion to
+> the user. Although for the failed request, output buffer length will
+> be zero and can also be used by the user to identify the failure case,
+> it will be more clear to return error for all failed cases.
+>
+> Validate the Quote data output status and return error code for all
+> failed cases.
+>
+> Fixes: f4738f56d1dc ("virt: tdx-guest: Add Quote generation support using TSM_REPORTS")
+> Reported-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Closes: https://lore.kernel.org/linux-coco/6bdf569c-684a-4459-af7c-4430691804eb@linux.intel.com/T/#u
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index 2df77123a8c7..daa5738b955e 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -4735,12 +4735,14 @@ system-cache-controller@25000000 {
- 			      <0 0x25400000 0 0x200000>,
- 			      <0 0x25200000 0 0x200000>,
- 			      <0 0x25600000 0 0x200000>,
--			      <0 0x25800000 0 0x200000>;
-+			      <0 0x25800000 0 0x200000>,
-+			      <0 0x25a00000 0 0x200000>;
- 			reg-names = "llcc0_base",
- 				    "llcc1_base",
- 				    "llcc2_base",
- 				    "llcc3_base",
--				    "llcc_broadcast_base";
-+				    "llcc_broadcast_base",
-+				    "llcc_broadcast_and_base";
- 
- 			interrupts = <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+Can you consider merging this fix? It already got acks from Kirill, Kai and Li. Do
+you want me rebase it and resend it with updated tags?
+
+>
+> Changes since v1:
+>  * Updated the commit log (Kirill)
+>
+>  drivers/virt/coco/tdx-guest/tdx-guest.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/virt/coco/tdx-guest/tdx-guest.c b/drivers/virt/coco/tdx-guest/tdx-guest.c
+> index 1253bf76b570..61368318fa39 100644
+> --- a/drivers/virt/coco/tdx-guest/tdx-guest.c
+> +++ b/drivers/virt/coco/tdx-guest/tdx-guest.c
+> @@ -228,6 +228,12 @@ static int tdx_report_new(struct tsm_report *report, void *data)
+>  		goto done;
+>  	}
+>  
+> +	if (quote_buf->status != GET_QUOTE_SUCCESS) {
+> +		pr_err("GetQuote request failed, ret %llx\n", quote_buf->status);
+> +		ret = -EIO;
+> +		goto done;
+> +	}
+> +
+>  	buf = kvmemdup(quote_buf->data, quote_buf->out_len, GFP_KERNEL);
+>  	if (!buf) {
+>  		ret = -ENOMEM;
+
 -- 
-2.25.1
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
