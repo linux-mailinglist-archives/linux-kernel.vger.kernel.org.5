@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-77377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9AE186048B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:13:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFAE286048C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B9DFB299D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:13:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 610FB1F21EC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D572137924;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A250D13792A;
 	Thu, 22 Feb 2024 21:12:52 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089F012D1F9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27757137903;
 	Thu, 22 Feb 2024 21:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708636372; cv=none; b=gHZnUNM7uCeJRP18DSFZ3IPImu5A4bFXYUiq1zROh26ec+RcpSLwHGLpPiNsAsWDTTPyy1DIO5CVD7Srk/LAdG78K4kFwD5N1UgODh26kgIaJLh0xw3eNWeD8XDvZDBdylS0W0k9yI6+QFLq/6wrJpma8BPOG4nDbKYhRazqNTc=
+	t=1708636372; cv=none; b=GGcUBHFbSJnsi7CXPgq+kC/fJ50vYk6LBSFaT8JeEAcQb11ujQhsBEntl3IwkJEtWUhv2YkO/4mQLizlN6Pl+D1OdhdRgKfpYoNog8mED/scJgxQO3sTZ00/eUok8hvUBD3y20p8a2gnKWHIIG82HsEDE4Xpmk11CkwxG0LKKL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708636372; c=relaxed/simple;
-	bh=ASKKBEQ/kPwz5mh0vibiuZNuVaq8X/g1jUk/IeZwsxE=;
+	bh=K36FV3Egg1ePTt42OBtqs/A8IUwW7W91nGRmDT5sWiQ=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=ak7iD70+I0Mk0DIRHsL0IgGl4vtilJglWGs+jkb4cGpqR3FwEo+6zqefTfqFybrbZzOoXs+2kUML0lpWQYDuk/njfs3gMwJddItdJw6sLzgHUHBf01ZZe1sVBedqSN3U+5DqBDZTlGsmm8uxPIB7Ua1bUkUnNn3RXDLUhm1V7Tw=
+	 Content-Type; b=KHdyQvmjQ3JirmBSTwtjcV5zNdwv8C80GcnreA5rBeLFgBPB8NkjVTD/KKk0AonqGFNmLpHyoquo5Z91IOmoU36LIIOoGmz4cGEbRbel9KWmOUIvVELtil3G2m0LDJVivDf5Qxh2909Fb7iTwPgJVxGXieWX7bee6YseczLJff4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B556DC433A6;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC94C43394;
 	Thu, 22 Feb 2024 21:12:51 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rdGOw-00000006hqt-3tgc;
-	Thu, 22 Feb 2024 16:14:42 -0500
-Message-ID: <20240222211442.793074999@goodmis.org>
+	id 1rdGOx-00000006hrN-0MMp;
+	Thu, 22 Feb 2024 16:14:43 -0500
+Message-ID: <20240222211442.949327725@goodmis.org>
 User-Agent: quilt/0.67
-Date: Thu, 22 Feb 2024 16:14:17 -0500
+Date: Thu, 22 Feb 2024 16:14:18 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -45,7 +45,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>,
  Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH v2 2/4] tracing: Do not calculate strlen() twice for __string() fields
+Subject: [PATCH v2 3/4] tracing: Use ? : shortcut in trace macros
 References: <20240222211415.255659509@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -57,64 +57,90 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The TRACE_EVENT() macro handles dynamic strings by having:
+Instead of having:
 
-  TP_PROTO(struct some_struct *s),
-  TP_ARGS(s),
-  TP_STRUCT__entry(
-        __string(my_string, s->string)
- ),
- TP_fast_assign(
-        __assign_str(my_string, s->string);
- )
- TP_printk("%s", __get_str(my_string))
+  #define __assign_str(dst, src)					\
+	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?		\
+		__data_offsets.dst##_ptr_ : "(null)",			\
+		__get_dynamic_array_len(dst))
 
-There's even some code that may call a function helper to find the
-s->string value. The problem with the above is that the work to get the
-s->string is done twice. Once at the __string() and again in the
-__assign_str().
+Use the ? : shortcut and compact it down to:
 
-The length of the string is calculated via a strlen(), not once, but
-twice. Once during the __string() macro and again in __assign_str(). But
-the length is actually already recorded in the data location and here's no
-reason to call strlen() again.
+  #define __assign_str(dst, src)					\
+	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ? : "(null)",	\
+	       __get_dynamic_array_len(dst))
 
-Just use the saved length that was saved in the __string() code for the
-__assign_str() code.
-
+Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/trace/stages/stage6_event_callback.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/trace/stages/stage5_get_offsets.h    |  4 ++--
+ include/trace/stages/stage6_event_callback.h | 14 ++++++--------
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
+diff --git a/include/trace/stages/stage5_get_offsets.h b/include/trace/stages/stage5_get_offsets.h
+index 45f8151cf622..20b801ed3fd4 100644
+--- a/include/trace/stages/stage5_get_offsets.h
++++ b/include/trace/stages/stage5_get_offsets.h
+@@ -47,7 +47,7 @@
+ 
+ #undef __string
+ #define __string(item, src) __dynamic_array(char, item,			\
+-		    strlen((src) ? (const char *)(src) : "(null)") + 1)	\
++		    strlen((const char *)(src) ? : "(null)") + 1)	\
+ 	__data_offsets->item##_ptr_ = src;
+ 
+ #undef __string_len
+@@ -70,7 +70,7 @@
+ 
+ #undef __rel_string
+ #define __rel_string(item, src) __rel_dynamic_array(char, item,		\
+-		    strlen((src) ? (const char *)(src) : "(null)") + 1)	\
++		    strlen((const char *)(src) ? : "(null)") + 1)	\
+ 	__data_offsets->item##_ptr_ = src;
+ 
+ #undef __rel_string_len
 diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
-index b3e2f321e787..c0e5d097324e 100644
+index c0e5d097324e..38732855eadb 100644
 --- a/include/trace/stages/stage6_event_callback.h
 +++ b/include/trace/stages/stage6_event_callback.h
-@@ -32,8 +32,9 @@
+@@ -32,15 +32,14 @@
  
  #undef __assign_str
  #define __assign_str(dst, src)						\
--	strcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?		\
--	       __data_offsets.dst##_ptr_ : "(null)")
-+	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?		\
-+	       __data_offsets.dst##_ptr_ : "(null)",			\
-+	       __get_dynamic_array_len(dst))
+-	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?		\
+-	       __data_offsets.dst##_ptr_ : "(null)",			\
++	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ? : "(null)",	\
+ 	       __get_dynamic_array_len(dst))
  
  #undef __assign_str_len
  #define __assign_str_len(dst, src, len)					\
-@@ -94,8 +95,9 @@
+ 	do {								\
+-		memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ?	\
+-		       __data_offsets.dst##_ptr_ : "(null)", len);	\
++		memcpy(__get_str(dst),					\
++		       __data_offsets.dst##_ptr_ ? : "(null)", len);	\
+ 		__get_str(dst)[len] = '\0';				\
+ 	} while(0)
+ 
+@@ -95,15 +94,14 @@
  
  #undef __assign_rel_str
  #define __assign_rel_str(dst, src)					\
--	strcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ?		\
--	       __data_offsets.dst##_ptr_ : "(null)")
-+	memcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ?		\
-+	       __data_offsets.dst##_ptr_ : "(null)",			\
-+	       __get_rel_dynamic_array_len(dst))
+-	memcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ?		\
+-	       __data_offsets.dst##_ptr_ : "(null)",			\
++	memcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ? : "(null)", \
+ 	       __get_rel_dynamic_array_len(dst))
  
  #undef __assign_rel_str_len
  #define __assign_rel_str_len(dst, src, len)				\
+ 	do {								\
+-		memcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ?	\
+-		       __data_offsets.dst##_ptr_ : "(null)", len);	\
++		memcpy(__get_rel_str(dst),				\
++		       __data_offsets.dst##_ptr_ ? : "(null)", len);	\
+ 		__get_rel_str(dst)[len] = '\0';				\
+ 	} while (0)
+ 
 -- 
 2.43.0
 
