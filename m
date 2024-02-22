@@ -1,138 +1,201 @@
-Return-Path: <linux-kernel+bounces-77404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9D58604D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:31:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 215B08604D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 374481F28DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:31:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45F441C23CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:32:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E8D73F39;
-	Thu, 22 Feb 2024 21:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F0D73F35;
+	Thu, 22 Feb 2024 21:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NjtoY/GP"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hz2uvLbw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kDf189rS";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hz2uvLbw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kDf189rS"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126CB6AF97
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9692571738;
+	Thu, 22 Feb 2024 21:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708637481; cv=none; b=EjHbTvnA2fWH0YqklzemRVVquM6CEQRiop5xXscCqQbY4Gz5CnjKHhKbUW7IkjM9V0zUkpRsu4CYdULdrk5HhSZV2X40BvgPFJxTA3inbcFGxN58ZSC/ihdDBWUfhzPhKikgXDF7SP48H5olTHA0GSGoQ84dtMQAFQ/zkeJMHzM=
+	t=1708637536; cv=none; b=szTQD/2w3qmFZUsbvdOznTeCy6asNqJUrzrLEub5GFzstSuDVR6DCJtBWLrQq3/wI9KLtKW8nHsycDcnBPGXO78sYDiJuvdOYu2ZIJhMl0sMMeO7d/pqpxn2nGWMZzFI2cnP6k6wEHRXd2S9G1vaQdRmrlBMUt0Mw4kaouiEe0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708637481; c=relaxed/simple;
-	bh=xAanuVIzGPNFptuV54Hc6FdgHRzcb9KawKfKsoO4UBk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JX0x/3gjv224N7ixgS+c4WGhkYmDpfYA8AxCcdxiMCo1VrxpJD+lbeznUzsB0vHWyyHsj3lPtHMKg408n8YlvaRL4mG5o5XZLXUMUupIc+QiAJ3e7P84vUi9zi4geQrqz1J0NMdm/Tgo06we+DrZOmaalHGuRsdos4lkiKQwhJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NjtoY/GP; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6083befe2a7so2626787b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708637479; x=1709242279; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wUw2xYuDibxwJNkicWQfSsXUxs7Znk2YsGnDeUj+5YE=;
-        b=NjtoY/GPCXwUmJja7uxX5oM5qWQE/T0wIckU5bu3be/2uHzJr3+o4dx6//iLkJOjDJ
-         jWti1378vDD46ZDTtoneUT6k8xUDqxmeU0eG+dQOgWRQZnK9P4TrD6wk+NDRv+ULcTp1
-         iTz70T8G86BylNNtiazhHDtFjrzZT8phQ8MO3xPnBGQdEP0p+ZhYUIbD8mPH5xEFnmcr
-         Vs7gKdji4CAW08jcKCJJKRWgcd/lpWy3U9fvmjUqsQFaaBJu/rqVj+ZuDbp9xfgG6jvK
-         MdI1ex3TYRtVNTj6xo++tmwwZhdHgzosMcBISGbXFNLRch+R+rQno+5ivCx6aEy79cUU
-         Ssuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708637479; x=1709242279;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wUw2xYuDibxwJNkicWQfSsXUxs7Znk2YsGnDeUj+5YE=;
-        b=YPOS/oQQS7jfXKwwO0dK36ya4xQNF0bQKLfdQIwtAxXRjnUKQMifdgYCoaVItZ/R6W
-         74nXXQWF3XJX8II2jrLimaOObu2UDftCuub8KfN1m3u/einsMS+oq5s6xOK1PqR+8+dn
-         FVLbFxnoxMbRNORu9DFUfNUPMP78A7CslNApAxzomuk2I/hwgDnbtCxu3iOKAsCI9IZT
-         JXyvKZ65tlmGebNs4SwTwDEXaDt/7sIcySDnQscmo0fhvwJY3mjg85Xc4WL3cNhMKX/D
-         9GSVlUTXTvp8O4MY4z7X3qVipe6e/anqO2gDUi9kmF/15RSDV++AgmcPVqI11aPL5WVe
-         Cdvg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZSMePFIN4qeRf38HM6OsmGPYoYOmEFsnovRvKYYpzOv+/wpL1CV+iACEMJxHMJsqJUB28cf4z1f+tuBX5Era1NxD752y+nAHTVzsB
-X-Gm-Message-State: AOJu0YxMwQvPxz2U5h2cnL9njfkuBwur875cD4ZQDC4nvbz+lnX/HxpW
-	xXo6180gHXV4cc0QsEh8WBU4idfokuJzG5Md406du8/Q6Yn9R4Yx
-X-Google-Smtp-Source: AGHT+IEJzEq+ITFpoFT5d2FCW0FabJu/wW6r9SFjgCowaIPDswaadHMeAEHodcDXQSdliSMncRMnMA==
-X-Received: by 2002:a81:451d:0:b0:608:b15e:4686 with SMTP id s29-20020a81451d000000b00608b15e4686mr380500ywa.16.1708637478751;
-        Thu, 22 Feb 2024 13:31:18 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:6d56:5106:b1c5:46d5])
-        by smtp.gmail.com with ESMTPSA id u129-20020a816087000000b006083c19ea91sm2041632ywb.66.2024.02.22.13.31.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 13:31:18 -0800 (PST)
-Date: Thu, 22 Feb 2024 13:31:17 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-	Jani Nikula <jani.nikula@intel.com>
-Subject: Re: Re: [PATCH v3 1/3] bits: introduce fixed-type genmasks
-Message-ID: <Zde9Je1C0LLbXE6z@yury-ThinkPad>
-References: <20240208074521.577076-1-lucas.demarchi@intel.com>
- <20240208074521.577076-2-lucas.demarchi@intel.com>
- <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
- <ZdZlVn9BI-0q1Xdn@smile.fi.intel.com>
- <btssirjumey2kcp5dyhe6m3embdwd5bswjz3c6swrhxfijfhld@lztxaptkegw6>
- <ZddfF7kb54o2c/QR@yury-ThinkPad>
- <Zddiav19kX8FGKY9@smile.fi.intel.com>
+	s=arc-20240116; t=1708637536; c=relaxed/simple;
+	bh=AWl+DXGsKjgrNy+G5SN3TUq9VMTt8GW/MbSwwKglgPE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=ktsQ0QUZjZ3hsvRA7ulfg/SZGdDW0o1ABRYyJyq1VG6uuHDORc8uqsCWUMtqnI8wh/0063eDu2iWHux7fF4MSb5+PG8xD6OhG2pBSyc6KyYPDoSIyMZP+8P+G0uGuWu9Gn9D+1VyERMa807eSM8As1XyKdFyytF6tlFRxwTAAWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hz2uvLbw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kDf189rS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hz2uvLbw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kDf189rS; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B199E1F792;
+	Thu, 22 Feb 2024 21:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708637532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4dJOBkFLnxSfVfNOF9l/CCf3u4xOydj32a58ss033A=;
+	b=Hz2uvLbwv3ySBAjtMwkbTlQTdX7wPSRyGHjLq60rqYcQW7V2tlpxkwcCt82iFjAa7yLg8V
+	RswXjXVsG2695EN0deDToDYPUqw96mBljD+4YMrMAeG8g30n2qgcr4X6kbPFCCHTBS2MTj
+	pJf7uajW41VxcnJ/Ifl1tLTzwXebM/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708637532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4dJOBkFLnxSfVfNOF9l/CCf3u4xOydj32a58ss033A=;
+	b=kDf189rSbTDbyB9qlHlOiIuNgW9VbqNhcMeHK99WXfYncNrUhEHGTuNFVBho8OjE8Jnxk4
+	E0Fmqb2XwF6s8LDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708637532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4dJOBkFLnxSfVfNOF9l/CCf3u4xOydj32a58ss033A=;
+	b=Hz2uvLbwv3ySBAjtMwkbTlQTdX7wPSRyGHjLq60rqYcQW7V2tlpxkwcCt82iFjAa7yLg8V
+	RswXjXVsG2695EN0deDToDYPUqw96mBljD+4YMrMAeG8g30n2qgcr4X6kbPFCCHTBS2MTj
+	pJf7uajW41VxcnJ/Ifl1tLTzwXebM/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708637532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4dJOBkFLnxSfVfNOF9l/CCf3u4xOydj32a58ss033A=;
+	b=kDf189rSbTDbyB9qlHlOiIuNgW9VbqNhcMeHK99WXfYncNrUhEHGTuNFVBho8OjE8Jnxk4
+	E0Fmqb2XwF6s8LDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D3BF13A8C;
+	Thu, 22 Feb 2024 21:32:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9oD+IVy912ViLQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 22 Feb 2024 21:32:12 +0000
+Message-ID: <a6890607-4418-4356-a7f8-155f01ede14d@suse.cz>
+Date: Thu, 22 Feb 2024 22:32:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zddiav19kX8FGKY9@smile.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm, mmap: fix vma_merge() case 7 with vma_ops->close
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Michal Hocko <mhocko@suse.com>, stable@vger.kernel.org
+References: <20240222165549.32753-2-vbabka@suse.cz>
+ <20240222185642.rmnp76oquu5wfo6c@revolver>
+ <20240222192746.cb65qvtmhaikfeko@revolver>
+ <18565605-7f68-4950-b66f-496c1f3c393b@suse.cz>
+In-Reply-To: <18565605-7f68-4950-b66f-496c1f3c393b@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.29
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.cz:email];
+	 FREEMAIL_TO(0.00)[Oracle.com,linux-foundation.org,kvack.org,vger.kernel.org,gmail.com,suse.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
-On Thu, Feb 22, 2024 at 05:04:10PM +0200, Andy Shevchenko wrote:
-> On Thu, Feb 22, 2024 at 06:49:59AM -0800, Yury Norov wrote:
-> > On Wed, Feb 21, 2024 at 03:59:06PM -0600, Lucas De Marchi wrote:
+On 2/22/24 22:19, Vlastimil Babka wrote:
+> On 2/22/24 20:27, Liam R. Howlett wrote:
+>> * Liam R. Howlett <Liam.Howlett@Oracle.com> [240222 13:56]:
+>>> * Vlastimil Babka <vbabka@suse.cz> [240222 11:56]:
+>>> This separates the check for potentially merging previous to a later
+>>> failure case.  Would it be better to check:
+>>> 	if (curr && curr->vm_ops && curr->vm_ops->close)
+>>> 
+>>> and not set merge_prev = true, ie we cannot merge with the predecessor?
 > 
-> ...
+> Good suggestion, thanks!
+
+Or actually as Lorenzo informed me, it would affect case 5 as well and we
+don't want that. And special casing 5 vs 7 that early would be ugly again.
+
+So I'll just do the code dedup Lorenzo suggested...
+
+>>> That way we would exit as merge_prev == false.
+>>> 
+>>> We would have the added benefit of not having to look at merge_prev &
+>>> merge_next case with this vm_ops->close in mind (case 1 and 6).. because
+>>> I'm pretty sure we can currently get to case 6 in this way:
+>>> 
+>>> merge_prev = true
+>>> check for merge_next.. can_vma_merge_before(next...);
+>>> is_mergeable_vma(next.... , true);
+>>> if (true && next->vm_ops && next->vm_ops->close) /* Fine for next.. */
+>>> 
+>>> Remove curr by case 6 without checking curr->vm_ops &&
+>>> curr->vm_ops->close
+>>> 
+>>> If I am correct, then are we blaming the right commit?
 > 
-> > +#define __GENMASK(t, h, l) \
-> > +	((~0 - (1 << (l)) + 1) & (~0 >> (BITS_PER_LONG - 1 - (h))))
+> It was bisected with no nondeterminism in the test, so yeah.
 > 
-> What's wrong on using the UL/ULL() macros?
-
-Nothing wrong except that in the !__ASSEMBLY section they all are
-useless. And having that in mind, useless macros may hurt readability.
- 
-> Also it would be really good to avoid bifurcation of the implementations of
-> __GENMASK() for both cases.
-
-Not exactly. It would be really good if GENMASK_XX() will share the
-implementation (and they do). The underscored helper macro is not
-intended to be used directly, and I think nobody cares.
-
-> ...
+>> I am not correct.
+>> The file check will ensure the same ops, so the file and ops must match.
+>> As long as both are checked on one VMA then it will work as required.
 > 
-> > -#define __GENMASK(h, l) \
-> > -	(((~UL(0)) - (UL(1) << (l)) + 1) & \
-> > -	 (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+> Right, otherwise we would have bigger issues even before the buggy commit,
+> we were never checking curr's vma_ops before.
 > 
-> This at bare minimum can be left untouched for asm case, no?
+>>> 
+>>> Perhaps we should just fail earlier when we find a curr with the close
+>>> ops?
+>> 
+>> I'd rather fail earlier, but it's not a big deal.
+> 
+> Your suggestion will indeed result in a nicer and more obvious code, so will
+> do, thanks!
+> 
+>>> 
+>>> >  			} else {			/* case 5 */
+>>> > +				err = dup_anon_vma(prev, curr, &anon_dup);
+>>> >  				adjust = curr;
+>>> >  				adj_start = (end - curr->vm_start);
+>>> >  			}
+>>> > -- 
+>>> > 2.43.1
+>>> > 
+> 
 
-As soon as we have to have different versions for the macro depending
-on __ASSEMBLY__, I would prefer to remove all compatibility black
-magic. After all, the <linux/bits.h> machinery to me is about the same
-level of abstraction as the stuff in <linux/const.h>, and in future we
-can try to remove dependency on it.
-
-This all is not a big deal to me. I can keep the old implementation
-for the asm, if you think it's really important.
-
-What are you thinking guys?
-
-Thanks,
-Yury
 
