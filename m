@@ -1,247 +1,216 @@
-Return-Path: <linux-kernel+bounces-77006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D79385FFF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DEC86000D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E1C28C582
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:45:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45F6128B6AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61B91586D2;
-	Thu, 22 Feb 2024 17:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D1B157E8C;
+	Thu, 22 Feb 2024 17:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="E7QJpt6e"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2055.outbound.protection.outlook.com [40.107.94.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D073515699B;
-	Thu, 22 Feb 2024 17:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623902; cv=fail; b=uq+tuedmr0DW1zvz1IHs0tV3e2wwCWYPdOrq+6GntICh1sFkvc6Si/TdOqgteVxyWSkFf4JeQ3XCZYZYT6UgL7iuKsvothbFjYCh/TPqVrCEk2sdHzMrFmQUhiFIexARPtZNEWl6XyumNyjvX4PX8s79Mc8fnJBm0fM1s9zl3T0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623902; c=relaxed/simple;
-	bh=aOVe9Bw4qNzg2tfNsB0A02CI7kSYLm3plNpHpKzp8Gk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ea2361du4j2/lZ6SpXCp2tT94aRknIorllqgC/FuuOSlJDSwsoClwSsBJZqeQxBOdcP2saRtriffr+tUCbYIA8DlDvQJIZeQ5gCsCtfIt9BEAkmNbPTWJUHHKWszMGkNjm94RCUkZieYCKn5MJmI8LaNIvC4pin3Bcr/cqoQ1Ws=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=E7QJpt6e; arc=fail smtp.client-ip=40.107.94.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RvZXXpqivo1SGZqrlJloDtyqcBvtY8q8LjpUWTkBUtg91FiTFerL78ZxdR2EAGkp/d8dKCbM3CDB3WDRFaTYhcXuK7/WHldi4hjHO0BrGiFj14H3lqAhh5JWuEnDSI2qCS9d2rfczAkrs7Qv9YnSqu2SZncQfw05K2tSBIStupYdBg45NGwTrzl1owX7mJ1oCTXbws8+P1pO+WyXMpjdLT2ru2njudfX04XgzGPHHlCziyfH58347afbRNv/GEOeOM1i6aFpyjzE1nzUZ8+RhdKooRBqbvdlzMHsL7VpCwnMytnTteoO1xDDPzZHreXB+8ZyNWYhCu4N563PZvEZmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5XbFOAM2dx7oY57lt9KKSiBSqgsJ1pciuGTAMTW9/FM=;
- b=R9ymg6n/XxBtGqRKtWwK8LrZ5cuSD8+qmN1G6Fe/14OCny8DqaC0g2b7yQ07e7XbbOehRFEzcZvrh9EYFne8LvDOYF6+VtrPW1iIyIQ16pKQObQyp8HgbPKwF45HFuzaDHrdAKbtDcv9vgfoJgp8GjcL63xaw7pnRZWoBZ9TYOhpfoq0t8TtxELhuKzxLQvRDkVYwomaiC6YxR+HbqO4huTB2z7BSG854IJJTiZquHvTQ0Iap+7pltKvtSB9a3GbS6GDhKfPto0wVLQ21AJ9sZ9D/YCsyhuv7i2lsOS/yIxQr/ZVEiFULYWzqJ+LKL/R15ecyV19Cadd7CBgXn4Pcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5XbFOAM2dx7oY57lt9KKSiBSqgsJ1pciuGTAMTW9/FM=;
- b=E7QJpt6ebt+1YDvEBs0o32mKLUjESh0F30mwOfbPooOxdmoTV4ArE+box7CT4Ej8orM7ZxhPWApKYyM0IptyoNWKC+V5seKfOF35M93+eJNPn9CeTM6eIAHnKWTTKSeQEbgwx1YJD5mGOB4Yprzyg8fsJOE2Wby37eMTdG6lh4ZM1aJJCe6W3W9u9gbtMslf6TFM4d91mgpe+FR1ntBPl9HEsW1yy4wr9swDsZCFDJWrOmtpq3z03ciJXEHGZaFAOg5kvxt+ZHvAqr7to1UOeRThnEnxcuGs9PCR3k8xqNJKMtMLyEQIEzGHpdmiRURTn5cw1qlghzGfjI0vdjOfBQ==
-Received: from CY5P221CA0060.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:4::12) by
- SA1PR12MB8119.namprd12.prod.outlook.com (2603:10b6:806:337::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.23; Thu, 22 Feb
- 2024 17:44:57 +0000
-Received: from CY4PEPF0000EE39.namprd03.prod.outlook.com
- (2603:10b6:930:4:cafe::b6) by CY5P221CA0060.outlook.office365.com
- (2603:10b6:930:4::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
- Transport; Thu, 22 Feb 2024 17:44:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CY4PEPF0000EE39.mail.protection.outlook.com (10.167.242.13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 17:44:57 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 22 Feb
- 2024 09:44:43 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Thu, 22 Feb 2024 09:44:43 -0800
-Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Thu, 22 Feb 2024 09:44:39 -0800
-From: Vidya Sagar <vidyas@nvidia.com>
-To: <bhelgaas@google.com>, <macro@orcam.me.uk>, <ajayagarwal@google.com>,
-	<ilpo.jarvinen@linux.intel.com>, <david.e.box@linux.intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <hkallweit1@gmail.com>,
-	<johan+linaro@kernel.org>, <xueshuai@linux.alibaba.com>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
-	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [PATCH V4] PCI/ASPM: Update saved buffers with latest ASPM
-Date: Thu, 22 Feb 2024 23:14:36 +0530
-Message-ID: <20240222174436.3565146-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240108124248.1552420-1-vidyas@nvidia.com>
-References: <20240108124248.1552420-1-vidyas@nvidia.com>
+	dkim=pass (1024-bit key) header.d=baikalelectronics.ru header.i=@baikalelectronics.ru header.b="N4CfgLMK"
+Received: from post.baikalelectronics.com (post.baikalelectronics.com [213.79.110.86])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F43F45C18;
+	Thu, 22 Feb 2024 17:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.79.110.86
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708624225; cv=none; b=mQZ96CfkbUnvk7+sKgQz6kIG/LXBTWZe/7luJmjmdIVfK9tHBboEDPJLMWWrZ0MmhlEldG9/cqkkFyV7EHU7ZpI7vSfLk5Pw2j/ZOxeho63ofouO0F62mmKHYEomymdhmqHKWVHs9rzevejhn2D2m1fiY9bwxxDBGHloMKUD9wI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708624225; c=relaxed/simple;
+	bh=3qmplO43I9PzDk/n4V+hkSgfw8S4LC83IjeuJyEm4HI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cq1vl3GTNW4u+Qe4F6YDKwCIAWuVNTIt5zIC5Odz9h5c4LLcTN36PHNniJE6378WjbhOmiy/o3CGwUw9fjAkmWpkJvgn1jM/2ri+6quj2CYLvJRZBvWsqoyOn4Qa5gNLoedUHyqA19LYyLQ/4Yu1HqhGohvnMYzzPazLWwFFT3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baikalelectronics.ru; spf=pass smtp.mailfrom=baikalelectronics.ru; dkim=pass (1024-bit key) header.d=baikalelectronics.ru header.i=@baikalelectronics.ru header.b=N4CfgLMK; arc=none smtp.client-ip=213.79.110.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baikalelectronics.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baikalelectronics.ru
+Received: from post.baikalelectronics.com (localhost.localdomain [127.0.0.1])
+	by post.baikalelectronics.com (Proxmox) with ESMTP id 45F81E0EC2;
+	Thu, 22 Feb 2024 20:44:58 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	baikalelectronics.ru; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:from:from:message-id
+	:mime-version:reply-to:subject:subject:to:to; s=post; bh=ECxaRkn
+	9yfqjrxSfI8sHbBDrza4hdFLYIVczvySlchw=; b=N4CfgLMKNqKY1JTx83U2XNW
+	HLxS2lzaYHex5BfzTb83yqoyLz27fK3KU+zjqSveb1yOUgUQbtykgEw8chgV3XBP
+	pOZkKAjU/65EB0Gb+WUD3ebZ8vJ2fqcvyCjN1Psmq0jNEhILTMAE16xR46a8K/QB
+	Rdq3Fno/FUkxZddqDTfA=
+Received: from mail.baikal.int (mail.baikal.int [192.168.51.25])
+	by post.baikalelectronics.com (Proxmox) with ESMTP id 1530EE0DE6;
+	Thu, 22 Feb 2024 20:44:58 +0300 (MSK)
+Received: from localhost (10.8.30.70) by mail (192.168.51.25) with Microsoft
+ SMTP Server (TLS) id 15.0.1395.4; Thu, 22 Feb 2024 20:44:57 +0300
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+	<npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Aneesh
+ Kumar K.V <aneesh.kumar@kernel.org>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+	<frowand.list@gmail.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Serge Semin <Sergey.Semin@baikalelectronics.ru>, Serge Semin
+	<fancer.lancer@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring
+	<robh@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+	<linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v10 0/1] dt-bindings: usb: Harmonize xHCI/EHCI/OHCI/DWC3 nodes name
+Date: Thu, 22 Feb 2024 20:44:50 +0300
+Message-ID: <20240222174456.25903-1-Sergey.Semin@baikalelectronics.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE39:EE_|SA1PR12MB8119:EE_
-X-MS-Office365-Filtering-Correlation-Id: d29ad02b-aa38-4e46-387a-08dc33cdfc69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	/OLxc7SHXWlGfzN1J9BHrxxMwvS9PA7C1lGDWZ1xzvNP9ro0FYyE8zvzNGbIBiQIUhACIaoHriwfdxcbB69zq5ZPFQyIYCpzNHJbSeSOAz/JFKnAMn69b1T3yAbgvcUbFEiXlWpiI3BysvhxwkXuADjytgLqJNsFKXw4+Rg2nrXUfDcl7aZEahGPXAHAWzGvCjX4Q/eWgjL98JyTeqQiL71iIu0gSyeCDzWhFatdrLLDn/THE0jiZ4SkJxDMMqvkhFMI1tri5LdEtEuDIEAZ0ZXXW1Z+RK3YpgTSWTGZnzJLgiOMSoH8kV+p+wTpDWPWqADACRTUoFPdNypq5Bee1YUAdYD76YQyO5E/h+iWf4DGhHoFSlYZfc0SXv5USZT7/T1rJQVkqwgdg9WsHGD0ex7I9kRv+RZfkaPTlXXCenP0yuYY7/DdpOGFOf4f0Z2mwSCbOCUtCGrJ9dpt4IkCfKmT29mIzgBlKhCvawSFoO/g6yQ42THXtrs1JhlZUmDA47g14fe6vgfc+UpECOVrbE7w2PI3pfzV/s11B7Xt+Al0Nqe2l47ajKsjJOkEV5xkbAF3bKPsQKFdKkF4IrbTqaPddIN7dGncGlA7ylR6CmoNZQHsQXnvzhinVpE4FYrsUKw2zeqk998GOhJWxF+wO3/DvlcTGiDUmXvLrLsPwGg=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 17:44:57.4896
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d29ad02b-aa38-4e46-387a-08dc33cdfc69
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE39.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8119
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 
-Many PCIe device drivers save the configuration state of their respective
-devices during probe and restore the same when their 'slot_reset' hook
-is called through PCIe Error Recovery Handler.
+As the subject states this series is an attempt to harmonize the xHCI,
+EHCI, OHCI and DWC USB3 DT nodes with the DT schema introduced in the
+framework of the patchset [1].
 
-If the system has a change in ASPM policy after the driver's probe is
-called and before error event occurred, 'slot_reset' hook restores the
-PCIe configuration state to what it was at the time of probe but not to
-what it was just before the occurrence of the error event.
-This effectively leads to a mismatch in the ASPM configuration between
-the device and its upstream parent device.
+Firstly as Krzysztof suggested we've deprecated a support of DWC USB3
+controllers with "synopsys,"-vendor prefix compatible string in favor of
+the ones with valid "snps,"-prefix. It's done in all the DTS files,
+which have been unfortunate to define such nodes.
 
-Update the saved configuration state of the device with the latest info
-whenever there is a change w.r.t ASPM policy.
+Secondly we suggest to fix the snps,quirk-frame-length-adjustment property
+declaration in the Amlogic meson-g12-common.dtsi DTS file, since it has
+been erroneously declared as boolean while having uint32 type. Neil said
+it was ok to init that property with 0x20 value.
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
-V4:
-* Rebased on top of pci/aspm branch
+Thirdly the main part of the patchset concern fixing the xHCI, EHCI/OHCI
+and DWC USB3 DT nodes name as in accordance with their DT schema the
+corresponding node name is suppose to comply with the Generic USB HCD DT
+schema, which requires the USB nodes to have the name acceptable by the
+regexp: "^usb(@.*)?". Such requirement had been applicable even before we
+introduced the new DT schema in [1], but as we can see it hasn't been
+strictly implemented for a lot the DTS files. Since DT schema is now
+available the automated DTS validation shall make sure that the rule isn't
+violated.
 
-V3:
-* Addressed sathyanarayanan.kuppuswamy's review comments
+Note most of these patches have been a part of the last three patches of
+[1]. But since there is no way to have them merged in in a combined
+manner, I had to move them to the dedicated series and split them up so to
+be accepted by the corresponding subsystem maintainers one-by-one.
 
-V2:
-* Rebased on top of the tree code
-* Addressed Bjorn's review comments
+[1] Link: https://lore.kernel.org/linux-usb/20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru
+Changelog v1:
+- As Krzysztof suggested I've created a script which checked whether the
+  node names had been also updated in all the depended dts files. As a
+  result I found two more files which should have been also modified:
+  arch/arc/boot/dts/{axc003.dtsi,axc003_idu.dtsi}
+- Correct the USB DWC3 nodes name found in
+  arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} too.
 
- drivers/pci/pcie/aspm.c | 28 ++++++++++++++++++++++++++--
- 3 files changed, 28 insertions(+), 4 deletions(-)
+Link: https://lore.kernel.org/linux-usb/20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru
+Changelog v2:
+- Drop the patch:
+  [PATCH 01/29] usb: dwc3: Discard synopsys,dwc3 compatibility string
+  and get back the one which marks the "synopsys,dwc3" compatible string
+  as deprecated into the DT schema related series.
+- Drop the patches:
+  [PATCH 03/29] arm: dts: am437x: Correct DWC USB3 compatible string
+  [PATCH 04/29] arm: dts: exynos: Correct DWC USB3 compatible string
+  [PATCH 07/29] arm: dts: bcm53x: Harmonize EHCI/OHCI DT nodes name
+  [PATCH 08/29] arm: dts: stm32: Harmonize EHCI/OHCI DT nodes name
+  [PATCH 16/29] arm: dts: bcm5301x: Harmonize xHCI DT nodes name
+  [PATCH 19/29] arm: dts: exynos: Harmonize DWC USB3 DT nodes name
+  [PATCH 21/29] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  [PATCH 22/29] arm: dts: omap5: Harmonize DWC USB3 DT nodes name
+  [PATCH 24/29] arm64: dts: allwinner: h6: Harmonize DWC USB3 DT nodes name
+  [PATCH 26/29] arm64: dts: exynos: Harmonize DWC USB3 DT nodes name
+  [PATCH 27/29] arm64: dts: layerscape: Harmonize DWC USB3 DT nodes name
+  since they have been applied to the corresponding maintainers repos.
+- Fix drivers/usb/dwc3/dwc3-qcom.c to be looking for the "usb@"-prefixed
+  sub-node and falling back to the "dwc3@"-prefixed one on failure.
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index cfc5b84dc9c9..3db606ba9344 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1648,7 +1648,7 @@ static int pci_save_pcie_state(struct pci_dev *dev)
- 	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &cap[i++]);
- 	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
- 
--	pci_save_aspm_state(dev);
-+	pci_save_aspm_l1ss_state(dev);
- 	pci_save_ltr_state(dev);
- 
- 	return 0;
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index b217e74966eb..9fe78eb8b07d 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -95,7 +95,7 @@ void pci_msix_init(struct pci_dev *dev);
- bool pci_bridge_d3_possible(struct pci_dev *dev);
- void pci_bridge_d3_update(struct pci_dev *dev);
- void pci_aspm_get_l1ss(struct pci_dev *pdev);
--void pci_save_aspm_state(struct pci_dev *pdev);
-+void pci_save_aspm_l1ss_state(struct pci_dev *pdev);
- void pci_restore_aspm_state(struct pci_dev *pdev);
- void pci_save_ltr_state(struct pci_dev *dev);
- void pci_restore_ltr_state(struct pci_dev *dev);
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index 7f1d674ff171..a62648dd52bc 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -24,13 +24,29 @@
- 
- #include "../pci.h"
- 
-+static void pci_save_aspm_state(struct pci_dev *dev)
-+{
-+	struct pci_cap_saved_state *save_state;
-+	u16 *cap;
-+
-+	if (!pci_is_pcie(dev))
-+		return;
-+
-+	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
-+	if (!save_state)
-+		return;
-+
-+	cap = (u16 *)&save_state->cap.data[0];
-+	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &cap[1]);
-+}
-+
- void pci_aspm_get_l1ss(struct pci_dev *pdev)
- {
- 	/* Read L1 PM substate capabilities */
- 	pdev->l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
- }
- 
--void pci_save_aspm_state(struct pci_dev *pdev)
-+void pci_save_aspm_l1ss_state(struct pci_dev *pdev)
- {
- 	struct pci_cap_saved_state *save_state;
- 	u16 l1ss = pdev->l1ss;
-@@ -309,10 +325,12 @@ static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
- 	struct pci_bus *linkbus = link->pdev->subordinate;
- 	u32 val = enable ? PCI_EXP_LNKCTL_CLKREQ_EN : 0;
- 
--	list_for_each_entry(child, &linkbus->devices, bus_list)
-+	list_for_each_entry(child, &linkbus->devices, bus_list) {
- 		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
- 						   PCI_EXP_LNKCTL_CLKREQ_EN,
- 						   val);
-+		pci_save_aspm_state(child);
-+	}
- 	link->clkpm_enabled = !!enable;
- }
- 
-@@ -931,6 +949,12 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
- 		pcie_config_aspm_dev(parent, upstream);
- 
- 	link->aspm_enabled = state;
-+
-+	/* Update latest ASPM configuration in saved context */
-+	pci_save_aspm_state(link->downstream);
-+	pci_save_aspm_l1ss_state(link->downstream);
-+	pci_save_aspm_state(parent);
-+	pci_save_aspm_l1ss_state(parent);
- }
- 
- static void pcie_config_aspm_path(struct pcie_link_state *link)
+Link: https://lore.kernel.org/linux-usb/20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Drop the patches:
+  [PATCH v2 04/18] arm: dts: hisi-x5hd2: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 06/18] arm64: dts: hisi: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 07/18] mips: dts: jz47x: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 08/18] mips: dts: sead3: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 09/18] mips: dts: ralink: mt7628a: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 11/18] arm64: dts: marvell: cp11x: Harmonize xHCI DT nodes name
+  [PATCH v2 12/18] arm: dts: marvell: armada-375: Harmonize DWC USB3 DT nodes name
+  [PATCH v2 16/18] arm64: dts: hi3660: Harmonize DWC USB3 DT nodes name
+  since they have been applied to the corresponding maintainers repos.
+
+Link: https://lore.kernel.org/linux-usb/20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Just resend.
+
+Link: https://lore.kernel.org/linux-usb/20201210091756.18057-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Drop the patch:
+  [PATCH v4 02/10] arm64: dts: amlogic: meson-g12: Set FL-adj property value
+  since it has been applied to the corresponding maintainers repos.
+- Get back the patch:
+  [PATCH 21/29] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  as it has been missing in the kernel 5.11-rc7
+- Rebase onto the kernel 5.11-rc7.
+
+Link: https://lore.kernel.org/lkml/20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru
+Changelog v6:
+- Just resend and add linux-usb.vger.kernel.org to the list of Ccecipients.
+
+Link: https://lore.kernel.org/linux-usb/20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-usb/20210212205521.14280-1-Sergey.Semin@baikalelectronics.ru
+Changelog v7:
+- Replace "of_get_child_by_name(np, "usb") ?: of_get_child_by_name(np, "dwc3");"
+  pattern with using of_get_compatible_child() method in the Qcom DWC3 driver.
+- Drop the patches:
+  [PATCH v6 01/10] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  [PATCH v6 02/10] arm: dts: keystone: Correct DWC USB3 compatible string
+  [PATCH v6 06/10] arm: dts: keystone: Harmonize DWC USB3 DT nodes name
+  since they have been applied to the corresponding maintainers repos.
+- Cleanup the list of recipients.
+- Rebase onto kernel 5.12-rc4.
+
+Link: https://lore.kernel.org/lkml/20210324204836.29668-1-Sergey.Semin@baikalelectronics.ru
+Changelog v8:
+- Just resend.
+
+Link: https://lore.kernel.org/lkml/20210409113029.7144-1-Sergey.Semin@baikalelectronics.ru
+Changelog v9:
+- Drop the patches:
+  [PATCH RESEND v8 1/8] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  [PATCH RESEND v8 7/8] usb: dwc3: qcom: Detect DWC3 DT-nodes using compatible string
+  since they have been applied to the corresponding maintainers repos.
+- Rebase onto the kernel 5.19-rcX.
+
+Link: https://lore.kernel.org/lkml/20220624141622.7149-1-Sergey.Semin@baikalelectronics.ru
+Changelog v10:
+- Just resend.
+- Rebase onto the kernel 6.8-rc3.
+- Drop the already merged in patches:
+  [PATCH RESEND v9 1/5] arc: dts: Harmonize EHCI/OHCI DT nodes name
+  [PATCH RESEND v9 2/5] arm: dts: lpc18xx: Harmonize EHCI/OHCI DT nodes name
+  [PATCH RESEND v9 4/5] arm: dts: stih407-family: Harmonize DWC USB3 DT nodes name
+  [PATCH RESEND v9 5/5] arm64: dts: apm: Harmonize DWC USB3 DT nodes name
+
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-usb@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (1):
+  powerpc: dts: akebono: Harmonize EHCI/OHCI DT nodes name
+
+ arch/powerpc/boot/dts/akebono.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
 -- 
-2.25.1
+2.43.0
+
 
 
