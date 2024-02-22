@@ -1,139 +1,221 @@
-Return-Path: <linux-kernel+bounces-77243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5567886027E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:19:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016EA860307
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F96B28E401
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:19:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 137DBB31EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1BB6AF82;
-	Thu, 22 Feb 2024 19:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BC154911;
+	Thu, 22 Feb 2024 19:18:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JKtSC+px"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gh5roxf1"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF7B1EA95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B246F14B82B
 	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708629501; cv=none; b=talyniUr+N/jkPX4XPO1xBOPNUlPF6V3CSpj2G2jr41oQ5PSzRzhUkP77h+qENCgo40n6w481w4CjWmpUxashPTnSa5PPnY2y2/Ky/FjtpGq3cJRi2DtWvinI4pxy7+XW4gf9h6x2ddSFk9rtN8HVkZJykkeoOIHNXm7cAQR51o=
+	t=1708629498; cv=none; b=fGauyE4wfI2E69dELPES5+59DmNz6VCK6TCZr30UXoxIdu4SI17w7tpozGtgKJsVCeVQwcDB1R7sKWb1iAKoqJnbcxzSQJqcfNqBzJkXT2E7+yBgDUwxmrtiaz1Q5HkTY6yKCVcy5ftnDRVBH0xI+qjGF/pql03YJXQEjMjpAeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708629501; c=relaxed/simple;
-	bh=xVVob+Z7aWmWX37Km9Dh5DfsqExi/AgPNz1ll0QzV18=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cBm7Z8u+LyLrMhc8QYWKnYNBvjHSkgkvfzXZ6oqDOazcR+U2g36jNsX2E4wDAjQfBpnyyMc8TzS6yg3CxLHznzCFVix+n8lwQvKE5Cn6QJ/Jh9QNZXYabMxNHIHAhRqBvOhpre1NFI2qsKlI1LNyRxMseKVcI3+rXl+HeW2Xqfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JKtSC+px; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708629495;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QkFttZQemmEwyaRYG2D+K70dFQfSH+R53teWu1VY0ro=;
-	b=JKtSC+pxZn9Nl6ElYvtz6nGHbDkzybIYb841E7zN3cnpnWCLk/hm/yo+/h+2n4Yb29RHWI
-	BTUjT55dknrekLWdG7wshssXFBNLP/IjyUr+cl+lwZjG58dOqE1kthWmlN40qKi5ZbrWtj
-	31aBlX50zR0ERY+g7r/H97Bsfy8j0t8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-401-GxExdSMePiK7DYo61fWS7A-1; Thu, 22 Feb 2024 14:18:14 -0500
-X-MC-Unique: GxExdSMePiK7DYo61fWS7A-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d36736772so31642f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:18:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708629493; x=1709234293;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1708629498; c=relaxed/simple;
+	bh=ipRg99dKoCexGU0mT0wMiy7MuLoK0LzRc3yx/o9w7ng=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lpCN/6QW4FY7miafjMy5j5XaxIlFqRsNM4v3BllWAZ7S2jgXmk6a3PAWkH0kU6eyXvN2q3+GnZVuvB/8Pax03Wn/8TJSOrpp+FF042RQ676JO2WXl8dM2XbB5lQC2IeSBhocMuE+2OUqmgjrfgthoWJ/nZqLrYwWXmgqf3ueTGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gh5roxf1; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e7f7b3d95so7429066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:18:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708629495; x=1709234295; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QkFttZQemmEwyaRYG2D+K70dFQfSH+R53teWu1VY0ro=;
-        b=Drz6L58MTqnCo8t6ykpGuznDF/dPbtcN107QoBilJEL7meymck6F9XlsRKns2M59fb
-         GJuFAdBtz8/jbzRGDLKj+7mtwWVxgxFVTbwtBJj18DMVDffu34JWXeghmuhGzEbzg4ql
-         M8Ep4ly9GFi8JnLMcwozE+d1zshilOAUg3PSEwlBH2EpJEzfIwq06glQkVmj1WL2ff63
-         biDNdt01PIuKcMu4vLhPcgscKFT44ZPf2L13wiLrPzhO0dLYe1s4Pkq7HuEcWWlrMUr9
-         8WpNddB1McFGPcMODjB45mcnj46R7qMUtv/upgc+Faufw7Fcs3OKob/xt+y88Gb2J9+i
-         HDxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3xBf0zECQu7x9+6Fr6i2yvn6avT2qP2oMeCxNfwdv2QkU/j/msjFDc3y04bWwGZFd592fJe27ygHgEdx8kHEjoOXjimOLLTSEkdj9
-X-Gm-Message-State: AOJu0YxrR1D6OaXXxJEQGT+xJL7F2QGwRJ/dL1rSnfXcZP16JaaB4Dzm
-	VJIwpaqJk8I2L6AwzQvmGM9ZZPE+vUzFBTGnS/+HzDX878m9Mmz1nYR+cWXn7KBREHQvRJeOxf5
-	qxnghduqfvSLgleKGx1XWxXQDGgqWIzoN6Qpq1nZgcXwCIWd4EAlZYV2JCHz1hw==
-X-Received: by 2002:a5d:5604:0:b0:33d:3098:3ccf with SMTP id l4-20020a5d5604000000b0033d30983ccfmr57325wrv.33.1708629493455;
-        Thu, 22 Feb 2024 11:18:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG38ddyZFSkIeEFCaLW3FvivRrTjKt4RKwbqN6Gy7UGOlk8YwQCEsIP+k/ia5ry299E4TVfSg==
-X-Received: by 2002:a5d:5604:0:b0:33d:3098:3ccf with SMTP id l4-20020a5d5604000000b0033d30983ccfmr57320wrv.33.1708629493149;
-        Thu, 22 Feb 2024 11:18:13 -0800 (PST)
-Received: from redhat.com ([172.93.237.99])
-        by smtp.gmail.com with ESMTPSA id o11-20020adfcf0b000000b0033b4dae972asm21160901wrj.37.2024.02.22.11.18.10
+        bh=aKmv8VA9qwrVjGnHU1RMltzYyr4GiBIOxbbvEQt4SA4=;
+        b=gh5roxf1SfFK6hI5zJdOkjMdDzFFNGAaf4SG2gf1cZ+Tp6541pkE5BcPi/93csXX5K
+         W0Q0zK+LjeiTwmud5ojM9U91txQqZAE19gHw3LQCaU2RAwZgCxU9eKzm3y+8RubCvlZq
+         K/PP6KRDbSwgqWIiXmTnPg6Yw3TwUere0k3FIaOnUy5qeyv/Rjr044C2vzU5gDMQgVsV
+         uwDrZPDz+lqhcJlL4YKmOUNCgx679J8FmVlZWqo1GtW9NGl4mqkmX3dTanOdz1MQ0xz0
+         +U6L/LQRfreZisLrQJlq4I/RxruHUjavualesdZwtEvLXL3jXQTcwXzpl61kQX1i+J6N
+         raSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708629495; x=1709234295;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aKmv8VA9qwrVjGnHU1RMltzYyr4GiBIOxbbvEQt4SA4=;
+        b=sVOzsAb3jR1OcHsmsYFiKoXqfe44ORSzFg2Uvnd/+q/qqcD+ZkEqlV5TCPp3ToqotM
+         6oZsDpXtZiuBpK8uV+n8zs0PlIGrdqJjudlw06DWU4tqtmjyKK9WkQHesZv7UjOlxFTK
+         TfIZ6HItW4OWkwEAPkk4TvuCOlhgkqLUSeL9JEO0l52NP8sxVFQPs6A9MLvQKwITj1Mv
+         oHhVof4/lUFr0MvkrRdDlpwYV+qTboXHYP2sKivjRTkJfn/izo9DrAfoaXrQyeUTFZTR
+         relhz00pt1IeAbBTba4+vS1r9J1taegqGU4EEjrx7M6BkLr3K4YAWYoJqL5AEXEBWZYJ
+         jJGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV1ty9ZnxACdgxK0+2qOStO99kFkfGn3YMp0a4Mp/znJpF+5qA+mTxsI6Z7SiHvbXvn/lyzcF08muTnijTJGPArjn8TMGETP8t5MemZ
+X-Gm-Message-State: AOJu0YwCCWBzQUdbazjiVxg5NRYxhtbc1690NzNg2M9J8g4PCbRv1LTb
+	tGy+NR3VRH9/+AUstspU4chZNYoz+SIvvhFmB8OSejdK5LJ5LQk3
+X-Google-Smtp-Source: AGHT+IGgtYpDu1X4LtE8dy25QBXvH7D+LGd/bcwDqJXyxCvF0xkzXLXvaCPTDclOjmCat6T4CZzXoA==
+X-Received: by 2002:a17:906:1854:b0:a3e:73c8:d383 with SMTP id w20-20020a170906185400b00a3e73c8d383mr10308795eje.49.1708629494886;
+        Thu, 22 Feb 2024 11:18:14 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id vu2-20020a170907a64200b00a3fa275de38sm425296ejc.162.2024.02.22.11.18.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 11:18:12 -0800 (PST)
-Date: Thu, 22 Feb 2024 14:18:07 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Cindy Lu <lulu@redhat.com>
-Cc: jasowang@redhat.com, xieyongji@bytedance.com,
-	linux-kernel@vger.kernel.org, maxime.coquelin@redhat.com
-Subject: Re: [PATCH v4 0/5] vduse: Add support for reconnection
-Message-ID: <20240222141559-mutt-send-email-mst@kernel.org>
-References: <20240207054701.616094-1-lulu@redhat.com>
+        Thu, 22 Feb 2024 11:18:14 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Samuel Holland <samuel@sholland.org>,
+ =?utf-8?B?T25kxZllag==?= Jirman <megi@xff.cz>
+Cc: Ondrej Jirman <megi@xff.cz>, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH 2/3] drm/sun4i: Add more parameters to sunxi_engine commit
+ callback
+Date: Thu, 22 Feb 2024 20:18:13 +0100
+Message-ID: <9236885.CDJkKcVGEf@jernej-laptop>
+In-Reply-To: <20240216190430.1374132-3-megi@xff.cz>
+References:
+ <20240216190430.1374132-1-megi@xff.cz> <20240216190430.1374132-3-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207054701.616094-1-lulu@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 07, 2024 at 01:43:27PM +0800, Cindy Lu wrote:
-> Here is the reconnect support in vduse,
-> 
-> Kernel will allocate pages for reconnection.
-> Userspace needs to use mmap to map the memory to userspace and use these pages to
-> save the reconnect information.
+Dne petek, 16. februar 2024 ob 20:04:25 CET je Ond=C5=99ej Jirman napisal(a=
+):
+> From: Ondrej Jirman <megi@xff.cz>
+>=20
+> These will be needed later on when we move layer configuration to
+> crtc update.
+>=20
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
 
-What is "reconnect"? Not really clear from documentation - it seems to
-be assumed that reader has an idea but most don't.
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Also what's with all the typos? reconnect with 3 nnn s, sutiable and so
-on. Can you pls run a speller?
+Best regards,
+Jernej
 
-> test passd in vduse+dpdk-testpmd
-> 
-> change in V2
-> 1. Address the comments from v1
-> 2. Add the document for reconnect process
-> 
-> change in V3
-> 1. Move the vdpa_vq_state to the uAPI.  vduse will use this to synchronize the vq info between the kernel and userspace app.
-> 2. Add a new ioctl VDUSE_DEV_GET_CONFIG. userspace app use this to get config space
-> 3. Rewrite the commit message.
-> 4. Only save the address for the page address and remove the index.
-> 5. remove the ioctl VDUSE_GET_RECONNECT_INFO, userspace app will use uAPI VDUSE_RECONNCT_MMAP_SIZE to mmap
-> 6. Rewrite the document for the reconnect process to make it clearer.
-> 
-> change in v4
-> 1. Change the number of map pages to VQ numbers. UserSpace APP can define and maintain the structure for saving reconnection information in userspace. The kernel will not maintain this information.
-> 2. Rewrite the document for the reconnect process to make it clearer.
-> 3. add the new ioctl for VDUSE_DEV_GET_CONFIG/VDUSE_DEV_GET_STATUS
-> 
-> Cindy Lu (5):
->   vduse: Add new ioctl VDUSE_DEV_GET_CONFIG
->   vduse: Add new ioctl VDUSE_DEV_GET_STATUS
->   vduse: Add function to get/free the pages for reconnection
->   vduse: Add file operation for mmap
->   Documentation: Add reconnect process for VDUSE
-> 
->  Documentation/userspace-api/vduse.rst |  32 +++++++
->  drivers/vdpa/vdpa_user/vduse_dev.c    | 125 ++++++++++++++++++++++++++
->  include/uapi/linux/vduse.h            |   5 ++
->  3 files changed, 162 insertions(+)
-> 
-> -- 
-> 2.43.0
+> ---
+>  drivers/gpu/drm/sun4i/sun4i_backend.c |  4 +++-
+>  drivers/gpu/drm/sun4i/sun4i_crtc.c    |  2 +-
+>  drivers/gpu/drm/sun4i/sun8i_mixer.c   |  5 ++++-
+>  drivers/gpu/drm/sun4i/sunxi_engine.h  | 13 ++++++++++---
+>  4 files changed, 18 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_backend.c b/drivers/gpu/drm/sun4=
+i/sun4i_backend.c
+> index 335fd0edb904..e89eb96d3131 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_backend.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_backend.c
+> @@ -69,7 +69,9 @@ static void sun4i_backend_disable_color_correction(stru=
+ct sunxi_engine *engine)
+>  			   SUN4I_BACKEND_OCCTL_ENABLE, 0);
+>  }
+> =20
+> -static void sun4i_backend_commit(struct sunxi_engine *engine)
+> +static void sun4i_backend_commit(struct sunxi_engine *engine,
+> +				 struct drm_crtc *crtc,
+> +				 struct drm_atomic_state *state)
+>  {
+>  	DRM_DEBUG_DRIVER("Committing changes\n");
+> =20
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_crtc.c b/drivers/gpu/drm/sun4i/s=
+un4i_crtc.c
+> index c06d7cd45388..18e74047b0f5 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_crtc.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_crtc.c
+> @@ -91,7 +91,7 @@ static void sun4i_crtc_atomic_flush(struct drm_crtc *cr=
+tc,
+> =20
+>  	DRM_DEBUG_DRIVER("Committing plane changes\n");
+> =20
+> -	sunxi_engine_commit(scrtc->engine);
+> +	sunxi_engine_commit(scrtc->engine, crtc, state);
+> =20
+>  	if (event) {
+>  		crtc->state->event =3D NULL;
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/=
+sun8i_mixer.c
+> index 1e681314e379..bdeb9b80e038 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/reset.h>
+> =20
+> +#include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+>  #include <drm/drm_crtc.h>
+>  #include <drm/drm_framebuffer.h>
+> @@ -249,7 +250,9 @@ int sun8i_mixer_drm_format_to_hw(u32 format, u32 *hw_=
+format)
+>  	return -EINVAL;
+>  }
+> =20
+> -static void sun8i_mixer_commit(struct sunxi_engine *engine)
+> +static void sun8i_mixer_commit(struct sunxi_engine *engine,
+> +			       struct drm_crtc *crtc,
+> +			       struct drm_atomic_state *state)
+>  {
+>  	DRM_DEBUG_DRIVER("Committing changes\n");
+> =20
+> diff --git a/drivers/gpu/drm/sun4i/sunxi_engine.h b/drivers/gpu/drm/sun4i=
+/sunxi_engine.h
+> index ec8cf9b2bda4..ec0c4932f15c 100644
+> --- a/drivers/gpu/drm/sun4i/sunxi_engine.h
+> +++ b/drivers/gpu/drm/sun4i/sunxi_engine.h
+> @@ -7,6 +7,7 @@
+>  #define _SUNXI_ENGINE_H_
+> =20
+>  struct drm_plane;
+> +struct drm_crtc;
+>  struct drm_device;
+>  struct drm_crtc_state;
+>  struct drm_display_mode;
+> @@ -59,7 +60,9 @@ struct sunxi_engine_ops {
+>  	 *
+>  	 * This function is optional.
+>  	 */
+> -	void (*commit)(struct sunxi_engine *engine);
+> +	void (*commit)(struct sunxi_engine *engine,
+> +		       struct drm_crtc *crtc,
+> +		       struct drm_atomic_state *state);
+> =20
+>  	/**
+>  	 * @layers_init:
+> @@ -144,12 +147,16 @@ struct sunxi_engine {
+>  /**
+>   * sunxi_engine_commit() - commit all changes of the engine
+>   * @engine:	pointer to the engine
+> + * @crtc:	pointer to crtc the engine is associated with
+> + * @state:	atomic state
+>   */
+>  static inline void
+> -sunxi_engine_commit(struct sunxi_engine *engine)
+> +sunxi_engine_commit(struct sunxi_engine *engine,
+> +		    struct drm_crtc *crtc,
+> +		    struct drm_atomic_state *state)
+>  {
+>  	if (engine->ops && engine->ops->commit)
+> -		engine->ops->commit(engine);
+> +		engine->ops->commit(engine, crtc, state);
+>  }
+> =20
+>  /**
+>=20
+
+
+
 
 
