@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-77230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A37786025A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:12:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2A586025B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:12:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D7DC29149A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31CB31F2A2FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CEF38FB2;
-	Thu, 22 Feb 2024 19:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C79F548FD;
+	Thu, 22 Feb 2024 19:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I84LOwF5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UuFDFpx/"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E3D54916
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE86548F8
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708629103; cv=none; b=NrC+qFjU9GhlSJ2FDjBse8nuZ7C2oGHR8C9VKqEvgXDrmyA4omzusPKVpAwOmUPI6epmbgbn9qwUequ1/oNOLcpiNWAjeRGGvFquDy4vCm/Q8uRbtZzKlAsjsq2PDUFiUikch/wQ2S9pMgq7f5HLKQaGbiGYlDC/F0lS+luzAgs=
+	t=1708629125; cv=none; b=G10K5LCaJgI3R+D1A+u8qnUX9Dvgjz++MTkZEhgNPwGshcGb6F6+5QFCrIZ81iyS7SGSz5JlaRz4jBkhBNMk5yJjKJ8nRoth2mTnFWuKtZmTEJAR86AFRjIBh/awshTfMbAGbp43X8vgTCR0aca36HyhBkaDcrLmNa1a5QNm2xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708629103; c=relaxed/simple;
-	bh=RA6xo9xVnozyL9f904nf23vVB8S14SsR+KowggJ7wsA=;
+	s=arc-20240116; t=1708629125; c=relaxed/simple;
+	bh=0Qks+DDhYCmzTTbFrd2ThMT4amH+aqvX5uPDsqGmmfM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EHm/JDAlGMZ9Ejci0hGz/DshkJJoPueh1Es7dsIPOJ9197+uKpWggElzRQCc4MTDJdWEBS9reebDrj9aArtPb5ycmbD5YuKit0ufu1NtmkKwI97Bl/c+CbpZ0OudUa9TP06CcWRCDnOGaD38ecsRHiXXGA7HHT8A802ANKoyqWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I84LOwF5; arc=none smtp.client-ip=192.198.163.11
+	 In-Reply-To:Content-Type; b=cdpxS027xdOyq9zKhUnFybwpwDH9XiMYOMHMj7e/2nEBz4kva6Y2nahw95HcpnTGmzsE+XBDHuLQTIUzdN5fas47T9UNMFSxCH5D1UIiG/pzGMgWXi688rDsdZwgGhVVt9v/oU/g7CtsGFDhHVztyoi6nbt0wOO7W4FpBrsTNjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UuFDFpx/; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708629101; x=1740165101;
+  t=1708629124; x=1740165124;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=RA6xo9xVnozyL9f904nf23vVB8S14SsR+KowggJ7wsA=;
-  b=I84LOwF5phxlaYQwJNAEK+oPCfvzb2EDMFF6ba6W2v5dHcLudbvVM6dT
-   RpxAW1pEA1quttPoq2ZkyG/ekAZfO2sO8aE+AqT0DBCajR1GoMdiqKzYS
-   zTTbAaw/88wSW4EAboMduq3G6HtSv3TtlHKY5vxhuilIe7ViiDBnriCPe
-   /WRBhm65AoXcE5Gj1nxhIH/A7/PJcuQxbrO/E3JJ7gO1kiVldk052rb9u
-   tCdy1UCYqu42jJxkO84B3IjV/08hNseLB1XdRpQ2yXQ1cumJ4xNGvMHlG
-   L8MQvfr3HylQLm9ng3Wfhu0vt/6eFMZYXo4AOW68BFltqWu2MbFogx2ma
+  bh=0Qks+DDhYCmzTTbFrd2ThMT4amH+aqvX5uPDsqGmmfM=;
+  b=UuFDFpx/zfej6bKB1Xms9AXicfDRfwmckVwYBEXmdxbpYyyJUCVMRYVL
+   KyQ0kIUGoK3eLmQ2xYY7LFSX5Zq4Hgd0MeT9QtY0oKp42k1zCxkTxuqAk
+   aeqTGAdQX1wOu8A9Hi/uLdaiyFV2XSs0CfLJgz2EkaoGTr+9w5s+n2F3u
+   a4MpCP5PTb4W/iUKMO+zp58rkNMeKLGzzd0dyqvGgiss5PQpqtjbiiuyk
+   XL9loAtXlPPCPUvGgtb15ObsnH64sOQAlClFOOAXiQBfMD+5t/6IWDDIP
+   r7V+5jrkFhrYCjzaHabI1wk91sT54aoMLWjETmC9/xmbs7BLByx9/Zjdt
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13507446"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13507555"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="13507446"
+   d="scan'208";a="13507555"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:11:40 -0800
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:12:03 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10174895"
+   d="scan'208";a="10175034"
 Received: from jwbates1-mobl.amr.corp.intel.com (HELO [10.209.48.22]) ([10.209.48.22])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:11:38 -0800
-Message-ID: <55c537d9-4fd2-4b61-a30d-4cdbeb037875@intel.com>
-Date: Thu, 22 Feb 2024 11:11:37 -0800
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:12:02 -0800
+Message-ID: <7c0b97b7-48c0-4f8e-829a-8e237808d47f@intel.com>
+Date: Thu, 22 Feb 2024 11:12:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,8 +62,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-stable 1/2] x86/mm: further clarify
- switch_mm_irqs_off() documentation
+Subject: Re: [PATCH mm-stable 2/2] x86/mm: always pass NULL as the first
+ argument of switch_mm_irqs_off()
 Content-Language: en-US
 To: Yosry Ahmed <yosryahmed@google.com>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -72,6 +72,7 @@ Cc: Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
  Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
  x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 References: <20240222190911.1903054-1-yosryahmed@google.com>
+ <20240222190911.1903054-2-yosryahmed@google.com>
 From: Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -116,19 +117,14 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
  hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
  vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20240222190911.1903054-1-yosryahmed@google.com>
+In-Reply-To: <20240222190911.1903054-2-yosryahmed@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 2/22/24 11:09, Yosry Ahmed wrote:
-> Commit accf6b23d1e5a ("x86/mm: clarify "prev" usage in
-> switch_mm_irqs_off()") attempted to clarify x86's usage of the arguments
-> passed by generic code, specifically the "prev" argument the is unused
-> by x86. However, it could have done a better job with the comment above
-> switch_mm_irqs_off(). Rewrite this comment according to Dave Hansen's
-> suggestion.
-
-Looks good, thanks for sending this!
+> The first argument of switch_mm_irqs_off() is unused by the x86
+> implementation. Make sure that x86 code never passes a non-NULL value to
+> make this clear. Update the only non violating caller, switch_mm().
 
 Acked-by: Dave Hansen <dave.hansen@intel.com>
 
