@@ -1,158 +1,85 @@
-Return-Path: <linux-kernel+bounces-75863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56A0085EFFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:41:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AEE785EFFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91C7E1C21EF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:41:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BB261F24D3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546DD17573;
-	Thu, 22 Feb 2024 03:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eO52uUaY"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A823F1775F;
+	Thu, 22 Feb 2024 03:41:06 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112F328EF;
-	Thu, 22 Feb 2024 03:40:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EBD28EF
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708573255; cv=none; b=bpHn0yZEmeJXtfh11BYvb2GnaeEMu2PfkjfC2mWaphKeHQtu33M+EE8qnNyyIfijipem0b2MW8HfPCEoJ0/UfSUfHi1AP8Y0yjsDZkxZnWVZB6nkHGelDqePKUD+me9Kos2/0xYoxjyi16ec3bUfymIF1K+wvRI88El+6zNrEUE=
+	t=1708573266; cv=none; b=CYSLqziDz70cJXKtzVTXLbmV+6oBDs2VtDkZLk5fTnGCXqmrv0O67E2X8pPhErPZw8UzpU7nqbZIiag34ZRQOUze/nVs64V/4PAcbgGcCQzsrKSpAjzebnOsrsCzGYXkcjwIX+cyzM2pDQvOL9Yj5DgMrxe+FG0Gw6ZuKtalvno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708573255; c=relaxed/simple;
-	bh=H1D9PDnVVG40/hjTEiTfCsbHBqVee9qL3NCQwHhswqI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sjZ4j+9fDZyWiyCUEZrVKgvfy0fjvVoPEIxbeKBB27HpT3x0yQnVTv/gUJHp1JeOm2tOkDqkI44xjGW/LFGj7BdEAumK/Bp2w0fPXFqSq459kWWvjqP4pWUUswru/mDT8KMT/q/bX6Qqccq8JP93uQoY5QcuWX2Ruf5P3h/7vEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eO52uUaY; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M1tnR2015354;
-	Thu, 22 Feb 2024 03:40:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=Ds2yZ/R7d+RJNs02PAlJC
-	WH5zE4c0b1LVXuVtLmrDDY=; b=eO52uUaYx4Y8uQ8BsYzqGugmFo9cihMcFgvg1
-	zLl3F2+Z6x69+KyYofIc9HUSSupDJaoadJE3tjfzS66CUucvHQp4uH45Q0tWmtRG
-	FXYnsV5aZZdEiRAgDM3SQ2OyAFNfd0ZdJbYMem87T6k9Fd+cl7FRaLEwB3tEym/y
-	2B92LyQ+wVrB8SfJj+Y9LyjlhbCRP5Dr8dQpRcIEINiTkgnunG/wt64tcwyZFcg1
-	2ssM0tcfirzIsgLCZL9EBAziVge55MrAuxG5bvbA94mg+WcsKeRTBShyv0auFJ6b
-	gYqzb06JQcxxQ1Aisg6VClR01TLUEoCQbIYOGtsh8lIjtzrPA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdw13866p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 03:40:41 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M3ed73030760
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 03:40:40 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 21 Feb 2024 19:40:39 -0800
-Date: Wed, 21 Feb 2024 19:40:38 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Abel Vesa <abel.vesa@linaro.org>
-CC: Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar
-	<quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        "Maarten
- Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Johan Hovold <johan@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC 3/3] drm/msm/dp: Add support for the X1E80100
-Message-ID: <20240222034038.GC2273464@hu-bjorande-lv.qualcomm.com>
-References: <20240221-x1e80100-display-refactor-connector-v1-0-86c0e1ebd5ec@linaro.org>
- <20240221-x1e80100-display-refactor-connector-v1-3-86c0e1ebd5ec@linaro.org>
+	s=arc-20240116; t=1708573266; c=relaxed/simple;
+	bh=aoUmwboxcQssiTsohUlnKaa6wq/qekuPRi030rCJNCw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=uNZWDRq/nSEhuYQvQNshM+VG1cGgRDZxU3jgTHhiJznNKb/mr7EuhF5dDsIyXOKWVVMDKZpgjNoGH82ZJJwbhZx+ryH5a3KrATDTjwiRLF0mOk7O8Iq88UfwBIp61xEQ9sTxZUfXnp57mULx9Atbm+rn3TiCeYPLZEwpES+ce8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36541324e57so26561545ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:41:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708573264; x=1709178064;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAzFF/W+Tz54pu8G8JB7QVdFqeLOi+89YAZw0zJOldg=;
+        b=k6GfG6BqNbPN8ELJa1Or7LdjnC9G253f4QYffVPXEMR88XD1jAPfJWYrFGsNVa+MsX
+         AFOdVGtOAYuEdDwIHZwz5YUQyvO1EJ4+N9oHh//ZT99ku7+3UaTxJrB8pUJCJIt7ngAc
+         bsRYzo6go318kSpIr0u3g3Hszbh327qlc/e1YmkwJJlOQx5K0iL2f9GE9/DkJ/ZKm/XQ
+         tccxBML8m3xjO2k/jLxkZ/JqZ2ZJmoQEOZFzTmgwBKRLFwCoMf3ssppWBgwLFAKy9LDO
+         W9Tsg9orFxirBXd/k5Is+PWc4XxIbL5KJIXeYOfl7SgkoRDbniFntZxYcgOTRRAnomL+
+         MemA==
+X-Gm-Message-State: AOJu0YxgFSIY3dNsPauWSKmlL4mT/zdBgqBVTQZ15vsV7HCRfVaSDdQU
+	jz2YB4AriXHpRpnx/lVy/6JDhEmdtXkoJZhNWqvVlhAZqMhIwLd/Db14C9D0clnZv/IVXdqYpH4
+	Xx/A5jxHQtwEDYO7L90Utd9vDPN0u7HwjGn4Y+M6mNQjOa/Gxqu211lUW8w==
+X-Google-Smtp-Source: AGHT+IFXQ0s2KhqVzZuuwD75OfnZVmpMGvXQF2DYLFJL6XnQqXRM8VEKnB2D+v+Wn3OuiFANbjvmJUL4c1yuzLDU3lB4vG8i+u1E
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240221-x1e80100-display-refactor-connector-v1-3-86c0e1ebd5ec@linaro.org>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ujOmDQbP3bxRMRsHhIRF5eLpgclOwkFe
-X-Proofpoint-GUID: ujOmDQbP3bxRMRsHhIRF5eLpgclOwkFe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_01,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0
- clxscore=1015 lowpriorityscore=0 spamscore=0 priorityscore=1501
- phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2402120000 definitions=main-2402220026
+X-Received: by 2002:a05:6e02:2143:b0:365:1780:2ca9 with SMTP id
+ d3-20020a056e02214300b0036517802ca9mr1105869ilv.5.1708573264058; Wed, 21 Feb
+ 2024 19:41:04 -0800 (PST)
+Date: Wed, 21 Feb 2024 19:41:04 -0800
+In-Reply-To: <20240222031539.2038610-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a22870611f036b5@google.com>
+Subject: Re: [syzbot] [net?] WARNING in mpls_gso_segment
+From: syzbot <syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 21, 2024 at 12:50:33AM +0200, Abel Vesa wrote:
-> Add the X1E80100 DP descs and compatible. This platform will be using
-> a single compatible for both eDP and DP mode. The actual mode will
-> be set in devicetree via is-edp flag.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 9e58285d4ec6..7b8c695d521a 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -171,6 +171,14 @@ static const struct msm_dp_desc sm8650_dp_descs[] = {
->  	{}
->  };
->  
-> +static const struct msm_dp_desc x1e80100_dp_descs[] = {
-> +	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .wide_bus_en = true },
-> +	{ .io_start = 0x0ae98000, .id = MSM_DP_CONTROLLER_1, .wide_bus_en = true },
-> +	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .wide_bus_en = true },
-> +	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_3, .wide_bus_en = true },
-> +	{}
-> +};
-> +
->  static const struct of_device_id dp_dt_match[] = {
->  	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_descs },
->  	{ .compatible = "qcom,sc7280-dp", .data = &sc7280_dp_descs },
-> @@ -179,6 +187,7 @@ static const struct of_device_id dp_dt_match[] = {
->  	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_descs },
->  	{ .compatible = "qcom,sc8280xp-dp", .data = &sc8280xp_dp_descs },
->  	{ .compatible = "qcom,sc8280xp-edp", .data = &sc8280xp_edp_descs },
-> +	{ .compatible = "qcom,x1e80100-dp", .data = &x1e80100_dp_descs },
+Hello,
 
-This doesn't look like alphabetical order.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Regards,
-Bjorn
+Reported-and-tested-by: syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com
 
->  	{ .compatible = "qcom,sdm845-dp", .data = &sc7180_dp_descs },
->  	{ .compatible = "qcom,sm8350-dp", .data = &sm8350_dp_descs },
->  	{ .compatible = "qcom,sm8650-dp", .data = &sm8650_dp_descs },
-> 
-> -- 
-> 2.34.1
-> 
+Tested on:
+
+commit:         6d5c3656 PPPoL2TP: Add more code snippets
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
+console output: https://syzkaller.appspot.com/x/log.txt?x=1234b4f8180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=970c7b6c80a096da
+dashboard link: https://syzkaller.appspot.com/bug?extid=99d15fcdb0132a1e1a82
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11727f68180000
+
+Note: testing is done by a robot and is best-effort only.
 
