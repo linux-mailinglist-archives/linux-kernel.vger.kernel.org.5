@@ -1,86 +1,136 @@
-Return-Path: <linux-kernel+bounces-75739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EFE85EE3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:43:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC7C85EE3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:43:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142981F234BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:43:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00AEC1F23E3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF8210A1D;
-	Thu, 22 Feb 2024 00:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F1310A23;
+	Thu, 22 Feb 2024 00:43:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XRsRf3h1"
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="1WFKZv0p"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939EC290E;
-	Thu, 22 Feb 2024 00:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A3D12B80
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708562574; cv=none; b=ogtfoCbvuz6gqD/RAFAyR2Ahq4zzbChvKO9NuP8c5u/GCtMgGhBbe5/+ytmuFQDcTjIrUa9ly2TppYQzQYAOF3h/FzRWPH2N92pzEvLSV/Pi3J+rq+GyjsKXorF5x8dVilfaBAMM7V8YaDkbiwbl41BkXy2veXdEr2LlI7sBPiA=
+	t=1708562586; cv=none; b=DtjxOg2girA058awE9wLKYigjQO0aWWFyWd8WNAq2E08MsakiqFpLVU8aoxqF78xNyquFGLjSmJaUTh1dxm4OcS8MSNvgJF36yBD0WXpuy+TFTBfLZF3H4PeBW8pJQ2f79TPi/5u9rlBGbHsMrPYKKlcNLuifsExjFVwQRzmdTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708562574; c=relaxed/simple;
-	bh=XElSFnnAK4/2BauxNxlIJOy+CLSVH6//ipTSu2hNyKg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X5sfxqBvoLZ8GbAhWDJ2jgfSahPor2Q51VEz/5NaMQhwi9Hqbtcoo7ihvr5vh3JASdARRmPVSqWGcqnw6oOOuhjNrkMOljOTx/SdvaJxCx4HD32EV4KnuG9m2huUTofCJHKs4oxe/Vko1SDMUbYDtS/s4GoK6cjaPLBKn7T5phQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XRsRf3h1; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708562568; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=bc767eLSlzPgendXABGin4+FYXyl7PNu++RDaun+rLo=;
-	b=XRsRf3h1cCKksr+NRWNkw2cLqsqBJcwntM+02YfFEDYxeRX5s7ddN6BBkRsMf8I1OSmflOMQKHFWwtm2gSM/Li5lukRyP9yuO/2/PwlNEfEr/jRGcWaqiDGfHbqIVvkeQf9d4PKSBtjPpvqr9hiW0JVJE9bUgk5vdNAGmvqcceY=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W1.6KSP_1708562566;
-Received: from 192.168.71.128(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W1.6KSP_1708562566)
-          by smtp.aliyun-inc.com;
-          Thu, 22 Feb 2024 08:42:47 +0800
-Message-ID: <85099656-4d7c-4992-a149-0942ebbea1d1@linux.alibaba.com>
-Date: Thu, 22 Feb 2024 08:42:46 +0800
+	s=arc-20240116; t=1708562586; c=relaxed/simple;
+	bh=70s578QhfI8VfYwqTA58Ok69jNRS8MFE5JRxsyKVwPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kLEkc9qV0BzSrjanzZGp9xVYwF4HSJxWckfEz//r2S8LFbXDIADZsGJH0xg772I3n+ZFYitjESKreUeEa2clg1XyNPqynr2Kdbov1O+NSAzGeBOOatYu6ow0Si1IYoD+im31nCrPvKgVbixuTytgJjOXRjZOaSUBA0DzKPpLYEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=1WFKZv0p; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2909978624eso4421625a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:43:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708562584; x=1709167384; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CR24aAbNKMU+aX5oJp3mmjRiDv2V+IvxS0ZLhqmyJiA=;
+        b=1WFKZv0pAJBZfWvLdsKJB6k92Da4ZkbHRhMmH6TNJ3nFMgzqUzSvKPNmtWBdrWlO4y
+         TltR+v3HZ8wcnoCcHckct0296eRkpvkrEFZw8XbUmMbnT/qvwkonqAh3LvWQ5Q3+8o4l
+         sslqqSQTeiaxJxmXlhUWfgMdsgsy443CCK8sin/7EZNx7tjlGzz2Nv2Sy+5HIXN3yuC7
+         ULVMK0KOb+TABB8I+oCuzeteXl9fDgWXwPw//jwgewZLEkC4/12DQfN7sfFILPAnfwZd
+         eXeaXULuroei2yw5d0tPIHywO+liURlP0wX5GaT7ERWe3ZD+2Fto0itXynUtSWargjyB
+         dFuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708562584; x=1709167384;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CR24aAbNKMU+aX5oJp3mmjRiDv2V+IvxS0ZLhqmyJiA=;
+        b=pA3jEbSnmqR27QjRX5n8TBoFZHFHcNCoqS3cyAMnnzTwg1mMAJawGT97+LHMrEwyut
+         tGP8drDTaRhSMCIC/5huK1465nusSMEPNYFxgJrzyFx9ec8XVmpZTLnJzsYbg4aZjcnd
+         5R5TUeuKJ8iugUHYjt1xK0kU2GG6rhKYmaz0WXTYmqDfQNSrzTX/rNDIg0eNxspnxlCG
+         xTw3ud4kpchfL3mWFszvu3UdxzB2DCdXyXXidK/FbnNFC+qa5zIbyLoUe+U+T3W7Teye
+         JDzWZzgKzlK0tLMXfVVae5X7u5m/EfCt/2bh+tjh7MVS//HPcqep7fq085lMR19FZcnn
+         3G8A==
+X-Forwarded-Encrypted: i=1; AJvYcCXx3T9U9Brq6QvSwkFEg5V8Su/bz8Ve9xgwE9iGkthEb+i8oKlWOPPfLnpH8KoLPU2O4Gr8EEPXcs9A0Hmbeo7V/Jp6qax85VRa17Pt
+X-Gm-Message-State: AOJu0YyGiNCuvokeV99z1ex2ogjaDbxdLRIyJuWJeaqKDb8zK2cf6e1F
+	vBFwMv/nbUYdGKTXeLz/Xdx2S+CsIo8FcP6S9riYiL8cnh1nWSTvFKvkZuloXpc=
+X-Google-Smtp-Source: AGHT+IED8Qc8cv5em+hY8R0laXHeLyNpZm08160QFNjQ7Gn8Te5H8kX7oc01tG3ELGqs1k3ZjWLKiQ==
+X-Received: by 2002:a17:90b:606:b0:299:99f4:5911 with SMTP id gb6-20020a17090b060600b0029999f45911mr9465260pjb.29.1708562584637;
+        Wed, 21 Feb 2024 16:43:04 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id bx12-20020a17090af48c00b0029a4089fbf0sm390177pjb.16.2024.02.21.16.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 16:43:04 -0800 (PST)
+Date: Wed, 21 Feb 2024 16:42:59 -0800
+From: Deepak Gupta <debug@rivosinc.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: rick.p.edgecombe@intel.com, Szabolcs.Nagy@arm.com,
+	kito.cheng@sifive.com, keescook@chromium.org,
+	ajones@ventanamicro.com, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
+	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
+	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
+	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
+	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
+	xiao.w.wang@intel.com, apatel@ventanamicro.com,
+	mchitale@ventanamicro.com, waylingii@gmail.com,
+	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
+	shikemeng@huaweicloud.com, david@redhat.com, charlie@rivosinc.com,
+	panqinglin2020@iscas.ac.cn, willy@infradead.org,
+	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
+	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
+	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+	cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
+	ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
+	baruch@tkos.co.il, zhangqing@loongson.cn, catalin.marinas@arm.com,
+	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
+	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
+	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v1 18/28] prctl: arch-agnostic prtcl for indirect
+ branch tracking
+Message-ID: <ZdaYk8XERnOtiR3P@debug.ba.rivosinc.com>
+References: <20240125062739.1339782-1-debug@rivosinc.com>
+ <20240125062739.1339782-19-debug@rivosinc.com>
+ <ZcJas4tZNzOJv6hW@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] erofs: fix refcount on the metabuf used for inode
- lookup
-To: Sandeep Dhavale <dhavale@google.com>, Gao Xiang <xiang@kernel.org>,
- Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
- Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc: quic_wenjieli@quicinc.com, stable@vger.kernel.org,
- kernel-team@android.com, linux-erofs@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240221210348.3667795-1-dhavale@google.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20240221210348.3667795-1-dhavale@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZcJas4tZNzOJv6hW@finisterre.sirena.org.uk>
+
+On Tue, Feb 06, 2024 at 04:13:39PM +0000, Mark Brown wrote:
+>On Wed, Jan 24, 2024 at 10:21:43PM -0800, debug@rivosinc.com wrote:
+>
+>> To allow userspace to enable this feature for itself, following prtcls are
+>> defined:
+>>  - PR_GET_INDIR_BR_LP_STATUS: Gets current configured status for indirect branch
+>>    tracking.
+>>  - PR_SET_INDIR_BR_LP_STATUS: Sets a configuration for indirect branch tracking
+>>    Following status options are allowed
+>>            - PR_INDIR_BR_LP_ENABLE: Enables indirect branch tracking on user
+>>              thread.
+>>            - PR_INDIR_BR_LP_DISABLE; Disables indirect branch tracking on user
+>>              thread.
+>>  - PR_LOCK_INDIR_BR_LP_STATUS: Locks configured status for indirect branch
+>>    tracking for user thread.
+>
+>FWIW the arm64 BTI feature is enabled per page of executable memory
+>rather than in CPU state so it'd be hard for us to adopt this interface.
+>I don't think that's a blocker, just noting it.
+
+Got it, makes sense.
 
 
-
-On 2024/2/22 05:03, Sandeep Dhavale wrote:
-> In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
-> we do not assign the target metabuf. This causes the caller
-> erofs_namei()'s erofs_put_metabuf() at the end to be not effective
-> leaving the refcount on the page.
-> As the page from metabuf (buf->page) is never put, such page cannot be
-> migrated or reclaimed. Fix it now by putting the metabuf from
-> previous loop and assigning the current metabuf to target before
-> returning so caller erofs_namei() can do the final put as it was
-> intended.
-> 
-> Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
-
-Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-
-Thanks,
-Gao Xiang
 
