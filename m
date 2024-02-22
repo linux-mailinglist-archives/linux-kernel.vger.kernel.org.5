@@ -1,155 +1,120 @@
-Return-Path: <linux-kernel+bounces-77222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F8B3860267
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:14:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7FB6860252
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:10:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5086B2F46F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:10:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BCA21F27E99
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E1A6AFB8;
-	Thu, 22 Feb 2024 19:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FE0548FB;
+	Thu, 22 Feb 2024 19:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="at+/eijH"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YnvXnOuw"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2646AAD;
-	Thu, 22 Feb 2024 19:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE13D14B815
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708628944; cv=none; b=uoMRybqwzgM3UeaoXaq9r3dXNuhl3BFy3JbwOm5Ijkby/gkdZ80ham/mzZGU2RzX5rBmFcv7uFqB51WHtSw+1W9kmi7m/ykFc0UsYHm0T091i3H/LVHvTgs0aA4e2St2j/56UFbctsz3JJRtutdalLBloWB8tYLL4xS1F59shY4=
+	t=1708628956; cv=none; b=ULwnxjfGAxT9ckcDKNwRmA/IoHphzewyBCA0D3H086iY5akxzXpms2AMy3QyNUoO7I9dsRNBWpZ1ZIXpNXHc0kWbJLwGKv4r2+LR8hbjpobQWI8yjDFK3/yw1IyIQt6OQTNPVCwwl1mqgLu2sOjdHwh4KYevVf0eBokz7Ac0pbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708628944; c=relaxed/simple;
-	bh=RJ0wnZP3bPYHw5LH8oH4Ou1+0h6qBwHl/euNr1MM60c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pKPQj1iinX4+HQq3B2o8qYiOZU62mxHQT0H3lP5K15MiTzMWhFuBHz9Zr1cGDLvyXDC8Gi9SbvSdImlBIrh07n5AEoQ/FvNKPCD0UeEUup+TpaBba5w8vOktU2GgXPB303EKO3tmBaQPSyjQpS3nnDrSS+7nnfrXxvDoSxMzuRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=at+/eijH; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so2252601fa.0;
-        Thu, 22 Feb 2024 11:09:02 -0800 (PST)
+	s=arc-20240116; t=1708628956; c=relaxed/simple;
+	bh=qMCWVXQCkH7/OsVC8XV8wlWhGBfIObVlwCTkLB6YOOE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=PaQ7sLHgeLqz90xkEfIU1e9MQgTbrRF2lX4xDQTRrKIxsN8J2xLA29fIwLg31cjI56VSGq6oEgKakNAMXP1/MX+EJdO9AxkKywOcIgjb1IElvGaJPkFbEAVIc7WkihizRGgYfBgb5OGVK2MUJaWx5vp5aZI1VSfdBwi/0lCH0r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YnvXnOuw; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6ade10cb8so303776276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:09:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708628941; x=1709233741; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gj4OdywnDrbhFJ8ybCj43LZc89cJ1Nm8au4Dqi6GFss=;
-        b=at+/eijH+MZcw/2iI9hvboXH0p1EI6ISd9cK5gdaLGWVCkhrhG0eWXRB1gfrUrP8RA
-         apI4UmqUWR4/IsNbMm5ZkGmS/9CdphdfDRRnHykbOd4dKNtZ3N4ELs92fuXm32MFn2q+
-         SeKlL8RC0xjXLw4fpDWs5/QrFRWWapUq63CbMcJOndg8CKjbD65mf5f+GFluVRGde+Zb
-         P8cN8StmzliYmKUzzlOlajTjSiZGUaeZKbeiIVFI4xTuZqBX8yiBbrrtVZTmdg6mcl2Y
-         9x7/VxuqgZm6rPZvQm3PSgrxeQe0zw9Ux6yON0BePUquWihIJWYhOBaW22HZpelUuJAg
-         9kUw==
+        d=google.com; s=20230601; t=1708628953; x=1709233753; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nIzMjlB25RgjrxXtl1pB1geOeDMH3Njm73h3nfH079U=;
+        b=YnvXnOuws707cMoTDh+7wSc7NDDp47PM2vWtPE6A9K9+oWNJ0YlBbcnUqBpKE6ej7U
+         t+mGJeecc2iCJYT0Kh83xvl77zm8khaKraP0jntNSCpt1TkPORv70uwthyGwbUlwgwGJ
+         yAyW5rvcPnqikmjJh4AF2vNN/8jkPDNVk7Yp+DoSeY2eumbSmPi6QcclG6yM/NEv7h33
+         w6+SLa4BbP66USwmlEWcbOqS8AL7zlZsQhJyUMB2xqenwFOcDe/LnI8+bLLVGoXnazJr
+         r7WAeUrHIHF8L5BvEonoVQk1LuKG1RcXMlf7VDTmOXUVr0FP5GJ874jRagaXJMURzwou
+         Ux9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708628941; x=1709233741;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gj4OdywnDrbhFJ8ybCj43LZc89cJ1Nm8au4Dqi6GFss=;
-        b=OHqfEyLGHHTnJRt88EnTimmmG3M1zYVY2XHl5hoyqTXUMTmgRus4Z6D6Di56pbCBeO
-         M4DopVz9tqtIrTtyKXiSKjoTxCxqTK652AfghpvWYsOHC6cBMHWL/XmCtKsTjtOaL7Mc
-         dbeBv+WCKY9F6dp4EkcZOnmMIQt3G6VlCULjWK2r4OWVq18b7E9Tt1j1H6hBqGytKi7R
-         Nm7za8yGRvos4YuI/+5vYdocQ7eOvhwhi4oCaOKGOTAxA5M888hMxpu7Cseds1GO+zQA
-         5MBRg618f+7qrQKBNueURkt3Og1zX4PkC8wF0BUO8z5UPr7BItr04jD1o3Zzga6oALE8
-         5TIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXBo5E8Uv+vxuWeAP33TF1Rf01z/ov+RzvI7k4c4jQMatOu8NC5WXDc51gTdMP8j8YUySBlGnJNq7/glLLn/D4hPHu5sTmqfpoh/SMIL3RqONo32bZTDLkEsBl0UVoISeMFumKajuIJ1f6tYQyRB3iZKItsgHuJuIfkrySxvx5tBiNYXog=
-X-Gm-Message-State: AOJu0YyW2TZX3VEMK8kD+vkmu+0Uuy81jEX6NWVqXPwHqh8MHMKNlJAs
-	fA9ZdXlaIvrB6IIjLJX25nTRbtXX0ukCUx9vSr2nHswesOtPM4N6
-X-Google-Smtp-Source: AGHT+IHe4b3hq/UBTGy8TGAsD8s1quxqZkNvTf7s10vKGsFhX0a+cS0Vaxi79AU03ziWQo+MQ29JhA==
-X-Received: by 2002:a05:651c:210f:b0:2d2:6574:4011 with SMTP id a15-20020a05651c210f00b002d265744011mr1451054ljq.30.1708628940711;
-        Thu, 22 Feb 2024 11:09:00 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id g14-20020a056402428e00b005642bcfed99sm5293270edc.23.2024.02.22.11.08.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 11:09:00 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>,
- Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
- Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
- Maxime Ripard <mripard@kernel.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
- Sui Jingfeng <sui.jingfeng@linux.dev>
-Subject: Re: [PATCH v7 34/36] drm/sun4i: hdmi: Switch to container_of_const
-Date: Thu, 22 Feb 2024 20:08:58 +0100
-Message-ID: <2172115.irdbgypaU6@jernej-laptop>
-In-Reply-To: <20240222-kms-hdmi-connector-state-v7-34-8f4af575fce2@kernel.org>
-References:
- <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
- <20240222-kms-hdmi-connector-state-v7-34-8f4af575fce2@kernel.org>
+        d=1e100.net; s=20230601; t=1708628953; x=1709233753;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nIzMjlB25RgjrxXtl1pB1geOeDMH3Njm73h3nfH079U=;
+        b=F5YjSowNb/8srVc8BIcXoT5pvN/a9VdTzA4uOLPqe+mveZz34eNsNXI90AQ0+xAGxv
+         GpI1Ojien4rerC/3bd3y0VFEJl84hCwSrFYfQ0RB3DBt1cS2LUg4BKLixF2VN1WT9Rz+
+         7dTYw2mjmhhkJY3Dmn4XK3xU3ZZrkbBf9DA4LezQoVt1b9VCLsAV/ZVs8woGLiSp9pvo
+         9h01t8otcrxfB67YGpoNtBR+emXchCGPzshwA97Nbi0+ybYzfrt7PXvxSNCfZfn7mBzN
+         M3KpZmlIo60f/OkrvKpGHmQlDhj3x4DWmq5YalRZQdZNR8iphtLsab1nBTEIpiA7s4f+
+         5Kxg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhGMc+AreF0q3/6VgvBzrf3rm6sxEaKc80YzA0k+UIi2y3leCYlc25eNAWqS1UnJ6lyeAviUomfoODHt3hva1P8u1MD5tl9veiKgJ+
+X-Gm-Message-State: AOJu0YyRnXFAOx5u2bvg/o5kzDdqX/CNCQcU+qOzwqAl38gHqWIoDFvY
+	inHnD6y6rQr6NrJUcJqqGC9XyFc+FGTaAe+Y8ttgontKYdQUM8bnVfOmrhUuFFve93zKc7y3UED
+	oGx/fX4uPk/l4Ppa76Q==
+X-Google-Smtp-Source: AGHT+IFhLOIIoOxOJTeZtK8v5l/nxmb62wdg4S32WZNNAZyEiVU1cXXF13e3K+xCwfoSZI1v2GPL5kT56V9ooklX
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a25:7496:0:b0:dcc:5463:49a8 with SMTP
+ id p144-20020a257496000000b00dcc546349a8mr657549ybc.6.1708628953740; Thu, 22
+ Feb 2024 11:09:13 -0800 (PST)
+Date: Thu, 22 Feb 2024 19:09:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Message-ID: <20240222190911.1903054-1-yosryahmed@google.com>
+Subject: [PATCH mm-stable 1/2] x86/mm: further clarify switch_mm_irqs_off() documentation
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dave Hansen <dave.hansen@intel.com>, Ingo Molnar <mingo@redhat.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, x86@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Dne =C4=8Detrtek, 22. februar 2024 ob 19:14:20 CET je Maxime Ripard napisal=
-(a):
-> container_of_const() allows to preserve the pointer constness and is
-> thus more flexible than inline functions.
->=20
-> Let's switch all our instances of container_of() to container_of_const().
->=20
-> Reviewed-by: Sui Jingfeng <sui.jingfeng@linux.dev>
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+Commit accf6b23d1e5a ("x86/mm: clarify "prev" usage in
+switch_mm_irqs_off()") attempted to clarify x86's usage of the arguments
+passed by generic code, specifically the "prev" argument the is unused
+by x86. However, it could have done a better job with the comment above
+switch_mm_irqs_off(). Rewrite this comment according to Dave Hansen's
+suggestion.
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Fixes: accf6b23d1e5 ("x86/mm: clarify "prev" usage in switch_mm_irqs_off()")
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ arch/x86/mm/tlb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Best regards,
-Jernej
-
-> ---
->  drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun=
-4i/sun4i_hdmi_enc.c
-> index bae69d696765..c276d984da6b 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-> @@ -30,19 +30,11 @@
->  #include "sun4i_drv.h"
->  #include "sun4i_hdmi.h"
-> =20
-> -static inline struct sun4i_hdmi *
-> -drm_encoder_to_sun4i_hdmi(struct drm_encoder *encoder)
-> -{
-> -	return container_of(encoder, struct sun4i_hdmi,
-> -			    encoder);
-> -}
-> +#define drm_encoder_to_sun4i_hdmi(e)		\
-> +	container_of_const(e, struct sun4i_hdmi, encoder)
-> =20
-> -static inline struct sun4i_hdmi *
-> -drm_connector_to_sun4i_hdmi(struct drm_connector *connector)
-> -{
-> -	return container_of(connector, struct sun4i_hdmi,
-> -			    connector);
-> -}
-> +#define drm_connector_to_sun4i_hdmi(c)		\
-> +	container_of_const(c, struct sun4i_hdmi, connector)
-> =20
->  static int sun4i_hdmi_setup_avi_infoframes(struct sun4i_hdmi *hdmi,
->  					   struct drm_display_mode *mode)
->=20
->=20
-
-
-
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index bf9605caf24f7..b67545baf6973 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -493,10 +493,10 @@ static inline void cr4_update_pce_mm(struct mm_struct *mm) { }
+ #endif
+ 
+ /*
+- * The "prev" argument passed by the caller does not always match CR3. For
+- * example, the scheduler passes in active_mm when switching from lazy TLB mode
+- * to normal mode, but switch_mm_irqs_off() can be called from x86 code without
+- * updating active_mm. Use cpu_tlbstate.loaded_mm instead.
++ * This optimizes when not actually switching mm's.  Some architectures use the
++ * 'unused' argument for this optimization, but x86 must use
++ * 'cpu_tlbstate.loaded_mm' instead because it does not always keep
++ * 'current->active_mm' up to date.
+  */
+ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
+ 			struct task_struct *tsk)
+-- 
+2.44.0.rc1.240.g4c46232300-goog
 
 
