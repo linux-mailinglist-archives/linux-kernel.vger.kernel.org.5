@@ -1,209 +1,161 @@
-Return-Path: <linux-kernel+bounces-77153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0A08601BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:42:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB838601BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:42:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77B75B29287
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:42:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B36E61F248A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A351814B834;
-	Thu, 22 Feb 2024 18:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A4B548F3;
+	Thu, 22 Feb 2024 18:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N+pn9yTb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VgvBuxX7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N+pn9yTb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VgvBuxX7"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VOrdrx5y"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE73714B827;
-	Thu, 22 Feb 2024 18:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA1514B826
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708627085; cv=none; b=PrCXR4+ESDoyKti1YHs7+WET49VZHmMsNWwhLXeAzKKuCccx597h8eoh44k8SF8CYBeN65/sw+QN2jT7pPjSkrCzNw4sVjlFY2e9gWPx6Xo2ctUQaaPXSvvTTk2MGYl0XiWtkkrXKtZxbJxW4+A6x44idxthjSUG7PDVgG3DgcE=
+	t=1708627169; cv=none; b=vCMrd4IXzaUPVaw8pGkdrz/c404+7KtoUYaqlcMWc04TBRN5Mxjaf0aVJsCpyZGqM9q3czpXEuG8fCpGcLdc0zSZJV9tHVNjzQ52Ow+BSFerwIJrSQLzp+h7GO9DhmhnxOocvxmwKGrAeRLcsFU2qAnDBjAIOu3ocjMJcMwInak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708627085; c=relaxed/simple;
-	bh=8vYNCqNNX89BjSsPSWBHrVLZtTK9S9blY5nV8P91NOc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FWJQTWQGB8d0yaByhVqjlVj9ERMVWrEUvo2mEL49sdFZI3uY+wG2U0zctKO1vQuStFLyvZWYicp+qhUXLv0MhftByenr+1voYtoOD+YwEFGbm+hmjtVdSoq5dg3TO02zCtLB9MQl+3Q0p5ZTP1eHp+Fh/DdLWrypFvT9P36HAQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N+pn9yTb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VgvBuxX7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N+pn9yTb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VgvBuxX7; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 24AA51F78D;
-	Thu, 22 Feb 2024 18:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708627081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dCBA+iiqNypvt9FIAH32F6GqtCLU6aMV152Z2G6fwkA=;
-	b=N+pn9yTbIexOSNFKOOlEUDM0nUL3NCTHnNbebCxq5fOyfc+yPYgOoCxV6KW6OEYfXLx2Xh
-	PbCl65G5UW8ImgLhCf/lfCH02mpKKIvDVoDC2wvsj8O1CVSSBx9DC3P/n/R58IzzWBIqlb
-	3zKlUhaAo5s8ijOxN4PeR3vCjgbqhjU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708627081;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dCBA+iiqNypvt9FIAH32F6GqtCLU6aMV152Z2G6fwkA=;
-	b=VgvBuxX7qt8PJeUdvuYXjjyW31WowyfMW1Jgw31+H9DYlRDJe4WSjse3FFBFl8AxXry0Wx
-	/AKVjSpevgQJdCDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708627081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dCBA+iiqNypvt9FIAH32F6GqtCLU6aMV152Z2G6fwkA=;
-	b=N+pn9yTbIexOSNFKOOlEUDM0nUL3NCTHnNbebCxq5fOyfc+yPYgOoCxV6KW6OEYfXLx2Xh
-	PbCl65G5UW8ImgLhCf/lfCH02mpKKIvDVoDC2wvsj8O1CVSSBx9DC3P/n/R58IzzWBIqlb
-	3zKlUhaAo5s8ijOxN4PeR3vCjgbqhjU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708627081;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dCBA+iiqNypvt9FIAH32F6GqtCLU6aMV152Z2G6fwkA=;
-	b=VgvBuxX7qt8PJeUdvuYXjjyW31WowyfMW1Jgw31+H9DYlRDJe4WSjse3FFBFl8AxXry0Wx
-	/AKVjSpevgQJdCDQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1376D13419;
-	Thu, 22 Feb 2024 18:38:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id yW14BImU12WrGgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 18:38:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7C61DA0807; Thu, 22 Feb 2024 19:37:56 +0100 (CET)
-Date: Thu, 22 Feb 2024 19:37:56 +0100
-From: Jan Kara <jack@suse.cz>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Jan Kara <jack@suse.cz>, oe-lkp@lists.linux.dev, lkp@intel.com,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Guo Xuenan <guoxuenan@huawei.com>, linux-fsdevel@vger.kernel.org,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [readahead]  ab4443fe3c:
- vm-scalability.throughput -21.4% regression
-Message-ID: <20240222183756.td7avnk2srg4tydu@quack3>
-References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
- <20240221111425.ozdozcbl3konmkov@quack3>
- <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
- <20240222115032.u5h2phfxpn77lu5a@quack3>
+	s=arc-20240116; t=1708627169; c=relaxed/simple;
+	bh=ngJA9wPfkmM6Lvm9Tf7sAD8tyb/EoHcgny8Y03g0LKs=;
+	h=Subject:To:Cc:From:Date:Message-Id; b=mDNAdMJxzLhbSt9ARrF3or5dNQhSkijBQt/XlzhP03NSh8CgfYclMrVGzHxwKrxeJvvA11U0Vv/cI8yf10+j0oRXHHTVKm7qpjIOwgfrm5gl/OxBhIgsi9XCoJ4WFOFQTBWFYE328DVJ0/DrKpZqmr6YLRFWcK4YgNZ5cRbAdn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VOrdrx5y; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708627168; x=1740163168;
+  h=subject:to:cc:from:date:message-id;
+  bh=ngJA9wPfkmM6Lvm9Tf7sAD8tyb/EoHcgny8Y03g0LKs=;
+  b=VOrdrx5yBQ4ovUFDBEPeo5RlmcsLtmcYbGuuAwgUOK5ZHTdYzlWCdh1z
+   Vs6Wu3i7TffhgljO421jHiNFHH2r4X+WkwLua6X5VnLJxkqUQzmVPsNll
+   KA9IB7wxHXRz85guK8kdXKdII2aG/7Yf8c+Yz0az+DhYdMn7ytb1w3jFW
+   L2TGbwDOWATfLLWdhJ97RGrhushBluSAdg/TQKABv2rVxpsHUBGbXy+4S
+   IXndY+rn9m9oGYw0w2fKop60MRDRQaGFcKJHjdljqRP7vIZQ0fQeHy8HX
+   YVyC7mZ9bN5VQG4/b4EhCXI8FxIqZqHe7XiQaEBULcCLurNM3YDeU72MR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="14300035"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="14300035"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:39:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="5775805"
+Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
+  by fmviesa006.fm.intel.com with ESMTP; 22 Feb 2024 10:39:26 -0800
+Subject: [RFC][PATCH 00/34] [RFC] x86: Rework system-wide configuration masquerading as per-cpu data
+To: linux-kernel@vger.kernel.org
+Cc: kirill.shutemov@linux.intel.com,pbonzini@redhat.com,tglx@linutronix.de,x86@kernel.org,bp@alien8.de,Dave Hansen <dave.hansen@linux.intel.com>,rafael@kernel.org,lenb@kernel.org,mpatocka@redhat.com,snitzer@redhat.com,daniel@ffwll.ch,jgross@suse.com
+From: Dave Hansen <dave.hansen@linux.intel.com>
+Date: Thu, 22 Feb 2024 10:39:26 -0800
+Message-Id: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222115032.u5h2phfxpn77lu5a@quack3>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -7.80
-X-Spamd-Result: default: False [-7.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
 
-On Thu 22-02-24 12:50:32, Jan Kara wrote:
-> On Thu 22-02-24 09:32:52, Oliver Sang wrote:
-> > On Wed, Feb 21, 2024 at 12:14:25PM +0100, Jan Kara wrote:
-> > > On Tue 20-02-24 16:25:37, kernel test robot wrote:
-> > > > kernel test robot noticed a -21.4% regression of vm-scalability.throughput on:
-> > > > 
-> > > > commit: ab4443fe3ca6298663a55c4a70efc6c3ce913ca6 ("readahead: avoid multiple marked readahead pages")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > > > 
-> > > > testcase: vm-scalability
-> > > > test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480CTDX (Sapphire Rapids) with 512G memory
-> > > > parameters:
-> > > > 
-> > > > 	runtime: 300s
-> > > > 	test: lru-file-readtwice
-> > > > 	cpufreq_governor: performance
-> > > 
-> > > JFYI I had a look into this. What the test seems to do is that it creates
-> > > image files on tmpfs, loopmounts XFS there, and does reads over file on
-> > > XFS. But I was not able to find what lru-file-readtwice exactly does,
-> > > neither I was able to reproduce it because I got stuck on some missing Ruby
-> > > dependencies on my test system yesterday.
-> > 
-> > what's your OS?
-> 
-> I have SLES15-SP4 installed in my VM. What was missing was 'git' rubygem
-> which apparently is not packaged at all and when I manually installed it, I
-> was still hitting other problems so I rather went ahead and checked the
-> vm-scalability source and wrote my own reproducer based on that.
-> 
-> I'm now able to reproduce the regression in my VM so I'm investigating...
+tl;dr: This tries to be more regimented in how system-wide x86 processor
+configuration data is initialized.  It does that by moving fields out of
+the per-cpu 'struct cpuinfo_x86' and into a new structure.  It also
+requires that the boot CPU set these data up *once* and then be left
+alone.
 
-So I was experimenting with this. What the test does is it creates as many
-files as there are CPUs, files are sized so that their total size is 8x the
-amount of available RAM. For each file two tasks are started which
-sequentially read the file from start to end. Trivial repro from my VM with
-8 CPUs and 64GB of RAM is like:
+This is a more comprehensive approach to avoid the random tinkering
+in patches like these:
 
-truncate -s 60000000000 /dev/shm/xfsimg
-mkfs.xfs /dev/shm/xfsimg
-mount -t xfs -o loop /dev/shm/xfsimg /mnt
-for (( i = 0; i < 8; i++ )); do truncate -s 60000000000 /mnt/sparse-file-$i; done
-echo "Ready..."
-sleep 3
-echo "Running..."
-for (( i = 0; i < 8; i++ )); do
-	dd bs=4k if=/mnt/sparse-file-$i of=/dev/null &
-	dd bs=4k if=/mnt/sparse-file-$i of=/dev/null &
-done 2>&1 | grep "copied"
-wait
-umount /mnt
+	https://lore.kernel.org/all/20240131230902.1867092-1-pbonzini@redhat.com/
 
-The difference between slow and fast runs seems to be in the amount of
-pages reclaimed with direct reclaim - after commit ab4443fe3c we reclaim
-about 10% of pages with direct reclaim, before commit ab4443fe3c only about
-1% of pages is reclaimed with direct reclaim. In both cases we reclaim the
-same amount of pages corresponding to the total size of files so it isn't
-the case that we would be rereading one page twice.
+--
 
-I suspect the reclaim difference is because after commit ab4443fe3c we
-trigger readahead somewhat earlier so our effective workingset is somewhat
-larger. This apparently gives harder time to kswapd and we end up with
-direct reclaim more often.
+'struct cpuinfo_x86' is a mess.  At a high level, it can be thought
+of as a CPU enumeration cache that (among other things) avoids using
+CPUID constantly.  There's a copy of it for each CPU, but often the
+'boot_cpu_data' version is the only one that counts.  Its fields are
+written in basically random order, including a memcpy() into the
+secondary processor copies from 'boot_cpu_data'.
 
-Since this is a case of heavy overload on the system, I don't think the
-throughput here matters that much and AFAICT the readahead code does
-nothing wrong here. So I don't think we need to do anything here.
+This series focuses on a subset of the 'cpuinfo_x86' fields that must
+be consistent across all CPUs:
+ * The virtual and physical sizes supported by the CPU
+ * The number of those physical bits that the caches comprehend
+ * The size of a cacheline that CLFLUSH works on
+ * The actual alignment that matters to the caches (can be different
+   from that CLFLUSH size)
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+There are a few random folks cc'd here because their subsystem reads
+one or more of these things in an x86 #ifdef of some kind.
+
+There's a mishmash of ways to obtain these from CPUID, plus fixups
+for erratum and general processor wonkiness.  There are also defaults
+for these for processors that, for instance, don't even _have_ CPUID
+support.  I think virt/phys_bits can be set and overwritten no fewer
+than five times!
+
+Let's bring some order to the chaos.
+
+First, create some abstractions so that there are no longer direct
+explicit accesses to some 'boot_cpu_data' fields.  This also provides
+a way to do sanity checking so nothing consumes garbage.
+
+Second, separate out the address configuration inputs from the
+resulting values.  The inputs are provided in early boot by the boot
+processor and stashed in x86_addr_config.
+
+Third, remove global, shared configuration from 'struct cpuinfo_x86'.
+Put it in a new structure: 'struct x86_sys_config'.
+
+This creates a simple set of rules:
+ 1. The boot CPU populates 'bsp_addr_config' and nothing ever writes
+    to it again
+ 2. get_cpu_address_sizes() reads 'bsp_addr_config' and writes
+    'x86_config'
+ 3. 'bsp_addr_config' is never read again
+ 4. 'x86_config' is never written again
+
+The centralized helpers also now provide a chance of enforcing those
+rules.  Finish up the series by enforcing those rules and spitting out
+a warning when they are violated.  This warning mechanism works in
+*very* early boot and is a little unusual.  It could use some more
+eyeballs (Subject: Enforce read-only x86_config state).
+
+=== FAQ ===
+
+== Why are both 'bsp_addr_config' and 'x86_config' needed? ==
+
+Having defined, separate lifetimes helps enforce the new rules.
+
+Once everything is in place 'bsp_addr_config' is only used at boot and
+can be marked __init.  Mostpost can help find users of it that leak to
+after boot.  Secondary CPU startup code can't be __init (because of
+CPU hotplug) this helps ensure that 'bsp_addr_config' can only be
+referenced from boot CPU code.
+
+'x86_config' can also be __ro_after_init, which helps mitigate the
+chance of it becoming tweaked after boot and growing into a little
+mini version of 'boot_cpu_data' with all the same problems.
+
+--
+
+Ideas for future work (probably in another series):
+
+ * Consolidate defaults in x86_config accessors and
+   get_cpu_address_sizes() down to one copy
+ * Can we do something more aggressive with x86_clflush_size()?  Is
+   it ever anything other than 64 bytes on 64-bit?
+
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Mike Snitzer <snitzer@redhat.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Juergen Gross <jgross@suse.com>
 
