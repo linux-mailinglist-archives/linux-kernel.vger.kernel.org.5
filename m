@@ -1,115 +1,139 @@
-Return-Path: <linux-kernel+bounces-76654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A7D85FA90
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:59:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF84085FA96
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 633401F25A71
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:59:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B08C28361E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FD61420B8;
-	Thu, 22 Feb 2024 13:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/XGtNPC"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE120145FF6;
+	Thu, 22 Feb 2024 14:00:07 +0000 (UTC)
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF09135A6F;
-	Thu, 22 Feb 2024 13:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09308135403;
+	Thu, 22 Feb 2024 14:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610334; cv=none; b=ii1mCsGtK9E0OwbvQ3aMW4tw2BsVxV2O49iukb1Phen5kDPI0onDte08g0S+exlFKqntF3ga9xR8OLajMo1rTiLzRSKV7rHd/PfiHORSnHNarDfBvOGwtjAq0XrSGMsGhuCeNDtYtvxxAjh+ThZPNr/mS83Dy8RmrLAMAmWXEeA=
+	t=1708610407; cv=none; b=cECg+DKR/paMp6nBEBMemt7suyMtsGODO9lvkuw8mgs16VB32PX5OpUsqx4CIZc5+hxzFCQyVf9gZkIYntTcLR9UR9C1SCrIENK7zO0WOUZHeqdt1Q9DICnIJhR16Y0DqGx/SBx2AFlA3a4y3xQPXPdLXhuMutIURqOf/x9wkfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610334; c=relaxed/simple;
-	bh=BPj7ZTa0ybr98UPnmaRLp0/4ee86tORekl3Li+MJZ0A=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=BUbKaEjVYnLFcrZ/ly2ISLhfQungEHgkZGPH4CiUsWEXn5qXqV4vqR7sfLEGLlK2Joe0y2MgzSlWwGxm1ss9/kBIMbCAFQ4Sb8/7VmTSXiwtU3IeH8jPYowSpY4h4IFRNeu6kZSabgQMvhb9pcqdAKJHDOQkPaJJ0KmIPoIovJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/XGtNPC; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1708610407; c=relaxed/simple;
+	bh=faC93JEXJFCufNC5dOS6ApNeW8gKvRR+kMj0RPtYFkQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SF7tB6DRQ1XgTvMipaTQlB1vulN5vxcLOCYtwrJNXSdJGTUxn1tKysc17kXMpDyj4tSPRcW/DndCAgFzDqwS5j0HFrG/1FTy+xJU8vrdqqoZt9oRexi7sQXWkn9vD8p1DsjVGPEwOtAz25wSZ3+ENx0qEcBh+C11avOhM2FIEL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5645efb2942so1522584a12.1;
-        Thu, 22 Feb 2024 05:58:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708610331; x=1709215131; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wsFRRGkWpORaXCmeXzSxC+JNHyxXCgQHjaZ6TzY3sLk=;
-        b=R/XGtNPCZln/c+4ZCHVeaZ4DD+R1bYGfrmp0e5lJstvDmlfIYKLT66SN3URkCHso8e
-         yJZw08H6tvFIYiI7ImgBWinfTDjZ0ZjP7E0xayb7wdKRm68OvzdNXLD6aE6fI9N4r5CE
-         qhN2mxONVR30/iIUuWrgM4Tj5sQjA3G81umyWAkyz3+qvlvYW11O6IaYhPFZGJxCuZZB
-         4CfeKakatucNFmlUYhjC3OLddWTDeYj9j3xoPc6d4dKyDuiPN9aOftCN99P2q84Hj+NI
-         ZymJe7uyXH2uCPrNJqUfkK0Odz3VS3PLRwcgtadSbNvEo2mmeGupqGiuoBR102AsoNFP
-         tqKA==
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a0333a9779so134114eaf.0;
+        Thu, 22 Feb 2024 06:00:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708610331; x=1709215131;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708610405; x=1709215205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wsFRRGkWpORaXCmeXzSxC+JNHyxXCgQHjaZ6TzY3sLk=;
-        b=gZLcuZqN86OyNOyUGYe75goJeai6LkZdVJgbWjY+Xj+Z9BcOYJhhGPC5clPVaSg/cj
-         P0qkStfSxuXJwLxIsmUBax7ZlkLoStgGJme+S4nD4xYzfj4VXvaU7wi0Q4yro77SqT4M
-         SloOFWQB51v9DWj596XlT0AvTgVrGWelEHsVGLA5l3Rjnkf6oM98ZQM8GxxeZqVXoVMH
-         QtnYEV9tEoR66wdRtRqJKC6juv5+Y3i63o6ZkV+yLCqXJAbjXvSqWaL4YctVN3n4Y8dv
-         bS2YehTWqCO3C+3uwUdoOnQ28WWoVH22E+KefPtgl+cd0/jIiNepk+CdapL1syUATJ3x
-         cDoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVF+sLLeX8pnNFgqxj1M3ErvJoI+ACI9TWOO7UuAAtmTVPJcEV06RV4ZkHvpVWh/FjH/cWLC/WVvbhtMJ1OsS5drwuSaEiWe1qFz0cQLMbhvXMETRQYUvokNaExSjPPHMT+diKw8te3
-X-Gm-Message-State: AOJu0YxC6WfRbtwbaqc7z5jT/5G/KJ8OWk47r2vyh0AW0HhqgAvRdikB
-	KwBwRTdTQ/R4DI9v30Z04c7/JzcO8+OIQlAonLTM8LHKuuwst3+P
-X-Google-Smtp-Source: AGHT+IFIlQeNdFyMQvX3AKp0V/AMXaTukTRqPqjOa9oGpQBWhBKGNXokCjDwSjAF5L3jJ+ukTvxjOg==
-X-Received: by 2002:a17:907:72c1:b0:a3f:4fd7:3cef with SMTP id du1-20020a17090772c100b00a3f4fd73cefmr2878725ejc.2.1708610330935;
-        Thu, 22 Feb 2024 05:58:50 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:e4dd:831d:c00a:fc45])
-        by smtp.gmail.com with ESMTPSA id m8-20020a1709060d8800b00a3eeb10acb4sm2805317eji.185.2024.02.22.05.58.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 05:58:50 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Vinod Koul <vkoul@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	dmaengine@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust file entry in MEDIATEK DMA DRIVER
-Date: Thu, 22 Feb 2024 14:58:47 +0100
-Message-Id: <20240222135847.5160-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        bh=2wGnYwIfq9nup3u9bw55avJLf6TS9fj3kCr0bhf4Ym8=;
+        b=cnUzz2lmsOqJs3jlzy8yNVZGDcTSNHIrKHCGqoldcWIucfjqCBve+f1miGMHg+qy+h
+         Kkget2JI5pw50dSUH3WS9urkcWCBbtIqFqDQSr7KG0qFhgfbmIoSWS+CDHBmRhdcRi1s
+         00l9cKtRN+HebfPFQvKdZ82gJdnCopKb0y3rW4jKEEk7bvlNYUePPhbMmuu3Q6fVpeQV
+         cXd7NEVjYVbiGYXgSbuUUSb5j/ur3rJCzbroiOJyUoSgzvdXCZiBuXGrajfri/KJ82hq
+         3F0ecUHM6ZDaSDQDb5fN9fou/oPvbG4o74JFPWHk7+8NeGHv0Yj5+1bK7cxN4cJNaWwe
+         2FCg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEPAyK6h/JXcQk/dQ3VZShRs8K9Z1xlcvAHMymYDP9etpzQaKOo/IIqp+6wah1EcPgND0CFs/lgiMSjx8UFqIHjkDlKkmpVOLT5SbmUt0wGkqaPRmkFXK0WIGMJHnncRJBMirrd/DS9m2oRmKPJ/uctlhPXZcXYvIiGv3j1abB9+BbCYsIim+NTS+xgeU7oBlJW5ge+Xn81mQLA9i5qQ==
+X-Gm-Message-State: AOJu0Yza3Z7YAwUB1O1YIKSlQq6BuffQc85zMGP8wdX8yugE7eJnZ15e
+	sBTB+Ivvvsu6Pa3PPIURT1UWcQ+sNHcPtIr8St+6+cQkeINNUTkzveAWSpD5gL6dAuo0PxT7R7j
+	etT6rUfeFvzldzzvKnDDIhwXzfuc=
+X-Google-Smtp-Source: AGHT+IFk/cRrA9w3h6K7wqQ/CveV9XXnLmyjBHYg13D8CnoEJk666aXdvpwHpLKnzNNGD1cS009+cnPg4rM90X+uxuM=
+X-Received: by 2002:a05:6820:134d:b0:59f:881f:9318 with SMTP id
+ b13-20020a056820134d00b0059f881f9318mr26243164oow.0.1708610404960; Thu, 22
+ Feb 2024 06:00:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <6017196.lOV4Wx5bFT@kreacher> <9235101.CDJkKcVGEf@kreacher> <cd710cd4-c723-48e0-80d2-72d9d95f9e0c@linaro.org>
+In-Reply-To: <cd710cd4-c723-48e0-80d2-72d9d95f9e0c@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 22 Feb 2024 14:59:53 +0100
+Message-ID: <CAJZ5v0jD=AmR0w49wDhDJ2Bq1KewUmGApe_Gc=v7SNb-jtqNPA@mail.gmail.com>
+Subject: Re: [PATCH v2 8/9] thermal: of: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
+	Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>, 
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, 
+	netdev@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>, linux-wireless@vger.kernel.org, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit fa3400504824 ("dt-bindings: dma: convert MediaTek High-Speed
-controller to the json-schema")  converts mtk-hsdma.txt to
-mediatek,mt7622-hsdma.yaml, but misses to adjust its reference in
-MAINTAINERS.
+On Thu, Feb 22, 2024 at 2:48=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 12/02/2024 19:40, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > It is now possible to flag trip points with THERMAL_TRIP_FLAG_RW_TEMP
+> > to allow their temperature to be set from user space via sysfs instead
+> > of using a nonzero writable trips mask during thermal zone registration=
+,
+> > so make the OF thermal code do that.
+> >
+> > No intentional functional impact.
+> >
+> > Note that this change is requisite for dropping the mask argument from
+> > thermal_zone_device_register_with_trips() going forward.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > v1 -> v2: Rename trip flag (Stanislaw).
+> >
+> > ---
+> >   drivers/thermal/thermal_of.c |    8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_of.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/thermal/thermal_of.c
+> > +++ linux-pm/drivers/thermal/thermal_of.c
+> > @@ -117,6 +117,8 @@ static int thermal_of_populate_trip(stru
+> >               return ret;
+> >       }
+> >
+> > +     trip->flags =3D THERMAL_TRIP_FLAG_RW_TEMP;
+> > +
+> >       return 0;
+> >   }
+>
+> Even if you are not at the origin of this default behavior. I'm
+> wondering if we should be more protective against changes from userspace
+> when the firmware is telling us to protect the silicon at a specific
+> temperature.
+>
+> What do you think if we set the THERMAL_TRIP_FLAG_RW_TEMP only if the
+> trip point is not bound to a cooling device?
+>
+> So trip points without associated cooling device can be writable but
+> others can be considered as managed by the kernel and no modifiable.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-broken reference.
+This sounds reasonable to me.
 
-Repair this file reference in MEDIATEK DMA DRIVER.
+This is mostly relevant to thermal_of anyway, because the other
+drivers asking for writable trip temperature seem to want it
+regardless.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> (This comment does not put in question this patch BTW)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e27cc69a867c..28b2013031bd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13743,7 +13743,7 @@ L:	dmaengine@vger.kernel.org
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/dma/mtk-*
-+F:	Documentation/devicetree/bindings/dma/mediatek,*
- F:	drivers/dma/mediatek/
- 
- MEDIATEK ETHERNET DRIVER
--- 
-2.17.1
-
+OK
 
