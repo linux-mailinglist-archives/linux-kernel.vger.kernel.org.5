@@ -1,176 +1,164 @@
-Return-Path: <linux-kernel+bounces-77460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D65A860590
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B24860594
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2111289CBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:18:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C7DE28861C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFAC131E32;
-	Thu, 22 Feb 2024 22:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E90F131E32;
+	Thu, 22 Feb 2024 22:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rJsWt/14"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wk8sM5Jr"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD1412D1EC
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0D712D21C
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640306; cv=none; b=AmN5oMqfQzO3gIgxn7oimh+YDYX5NxJDBJxWCDgDcnfWkFGer2c5M3RjCIHWNaJLdaRwkL6oX8Ed+YscFJbh+lRSZdsSADWC6bPpQThkOZQyjrqspyp0j52jkaPzLmUnSnSxHqPdyVe+9yDLlficpFKd/Jsgjm0tZqg7Z+Yq4qs=
+	t=1708640624; cv=none; b=gZn4D8VtH4NYaxxepk0SXqb0n89oQxs48EgauisyheXryB4qGBPNilAeqALDJuKpcY3a70P2n/Q2CfNNtouIuhPoMXfMAJR24ZRIQfsYnIC8VDskSfIwM65VHUBagD2Bgwdb93jOp2Jndqit2VAhFCetgQKGekFfsie1lMa6v2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640306; c=relaxed/simple;
-	bh=GySJPqsa46qjefpa40BPSAtIQnwOgTHwplk+ekXDzDE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Gxk5+LIhK4yDMmv11jDU0oskLlcHC1OUZWAKUB6qNlGtuBwXVFS2rQYd3xbopCKpuYvD0cNctHQXSvrNXuPRnxPGpXBGkqDSlt7mVIkSfgpBdqNxqxXGlQQwDsCwsOlYzzAHDSM6pQZgXINaeI6Cuj0Rs7MnQR6SJDTyD7W4BVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rJsWt/14; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608852fc324so4285427b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:18:24 -0800 (PST)
+	s=arc-20240116; t=1708640624; c=relaxed/simple;
+	bh=0xRi+wRovLEtle3IAhjBAqJ3i0Q5IwxvEzplbN5MjGY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=juEkYIIj1miDq+ioDgo3Rd2olAlMiY60BIIfnAVRA7ctkZmHkW66ALQapY8TYHw80DDsaDQZet3sooFpPdUMAdT01L/IfDlwYOH9wDA9ZvKK5OTt9JF7X9Jd2ttuvKacgDRGHUXBcmG25cMH1sAcXztErwbNAK2pwNvIe0Yo9sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Wk8sM5Jr; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc0e5b223eso1285045ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:23:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708640304; x=1709245104; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jUpDAbHl4PhD0AQm18/km5kyUpNrcIzm2UavY3bA4II=;
-        b=rJsWt/14Ooh9gkTpYqJaWE+BHDdlSxNCjv+72F2ypfWwGHeImntlVsbnrmD/lHZ0cl
-         e9NhdKM8n1uGZ7Dxj3YYL0eFmoiDwkValG/EgjcboX9Ig+5PCLJYnNyCdnfGga/ZgAQs
-         IPoOSKOygR4iEqcyRJn8RXlYMX6UVNV/KcB1TxFsZHNi2wJzxi1TTkTrGI19qKfv0aHM
-         lXjfEY6HRyo8DZeQh5RyvyyXjBrfmExJetxAEdvqdN0hBmXCXqmvaR+92IB8m8LMsqFa
-         FRc+BKaH0TnWphuHLUo9oYPUePfNt2DyFi7A5UyPQef2byfX9ohR6Zq7QBkgnWEMsGSU
-         YcjQ==
+        d=chromium.org; s=google; t=1708640622; x=1709245422; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q+5ilM19CFuUy0zgxwZQpQ+MBc9LAqwOhihVDIFuqNw=;
+        b=Wk8sM5Jr5RVyv1CJ8e2xQ7BJ05jg8DtIk2sQRodjsmsowBM38MTt9Ik6ECevL8beVg
+         CxDVqSaPBAl0NpcyJI092dcwpNPngExtl8mRPRMIv+wCZ6leaMpld2aW1BD2rUi2KQpu
+         LuBWqlxFSzqTpjHIUZ+R6pNOHGE8H6M/i6id8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708640304; x=1709245104;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jUpDAbHl4PhD0AQm18/km5kyUpNrcIzm2UavY3bA4II=;
-        b=SPDhGLdGXpyD8gGI5OJh4HYnO/dkvwjSu8Snv4Pn4sxqT7wjZYjJ3ciCPjGLYNTBGW
-         Ab5/xALiDIxgZfqyEus/Z9jw7ykZbeVBvvqn2AKTq7wCh0fHxjCSYxRVMBR8WShWoMgq
-         ZE0VJcUQ3MWG95DI5I5WsHeNFe0H0QH0BRF5Qvo22Q4w+f/qskUV1YNroUSw6aM0B1ZL
-         9FtHpis1xScB04p0j6k578Cdl8EITDxOrNCeCzOHyPd//+sjhIKmAROq3vvav8nzsiiC
-         Akg6p3TEyIpa3pfraD2KzNuLOEPCpXIILGyAE12VQb5fjalYiBlkduDshanl6qQ/VtnC
-         ndVA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXacJJCZQJttV7Xtsc7IE3aJik9yYmqaOyyo6FpZTNuOWD+yHUyK2ZwBRfmpn1Jm+MXdYREXNscKyITwqTnI6ijYmQfHSELVwDWVeb
-X-Gm-Message-State: AOJu0YxGHTuasr38IgeMT6uXnhWcrcrKh6xZwnvIKChcA7flFyhlggFV
-	hEep7r+aI0Jo+XNiIDRSLVYCEzj5WgzUVjbV5zHcDES/Vf2jpG/T4MOjBkWqa4sX2Me5HcqlPQ=
-	=
-X-Google-Smtp-Source: AGHT+IFExReO3c4IzKQGndU5Mktj19q0+l1b3yNa4AC256uF/PSrXSms4ghCI5J9w09x/QJbDNAG34ZKqQ==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a05:690c:fcb:b0:608:406d:6973 with SMTP id
- dg11-20020a05690c0fcb00b00608406d6973mr118080ywb.5.1708640303929; Thu, 22 Feb
- 2024 14:18:23 -0800 (PST)
-Date: Thu, 22 Feb 2024 22:18:14 +0000
+        d=1e100.net; s=20230601; t=1708640622; x=1709245422;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q+5ilM19CFuUy0zgxwZQpQ+MBc9LAqwOhihVDIFuqNw=;
+        b=naL/Dx/WOJkifwyejwVfB5EMSJSslj/PMb6AW4d6Gy6yD8s/GwFvIdiL7WpYAlw1Sg
+         ma1Ba/o9TwYo5l9f/1wF7RkXGV9Hl2WNSjxbH/6NqlvQmGmF6QpQPdUw7btTadziEE4x
+         2AV707bWqx+IMVQytsrY7FVcqKLe26Q7g9dNyAS62/sfUtNopkJNpXJJf6rJ3kBpNbrG
+         eo6YOP7sqj0aohAAEdF7rpI19pU9mqwkAAHfwgPRQQDOoglUROTftbh1CZgtH8XvWBVq
+         Yh1+pMSeEjueormC0bsY/5yRyX0YBsP/btnfvpQIS2OweE1vdDUiDYWUj3R4F5pASpUq
+         Noww==
+X-Forwarded-Encrypted: i=1; AJvYcCVI4+K9s73kn6gi6TdSuso4AqSxXwgh/cZ8zdkz1C40ejQ2zuXzbI3I4SZ/DPiUYg1o/Q1WcZgGAC6+OXG/P9IwA7C7ntZwq4DlXSQG
+X-Gm-Message-State: AOJu0YzIJLWv3jv6oPvXikD/Mgv/vD0i+BI1fJIfWhu72MMksxo5yBL+
+	Z89y2UTMGu7TDjqLhUr7JHL/IuICgl2nwXUy/iTmUMP3IxwS4BdIks+G2LzuBg==
+X-Google-Smtp-Source: AGHT+IHTlMT87C9FVzzBUlliIz9cjmezsgccL1stCQ33LCcAcJX6p5zAFxvPwu7ziBvSPYuZmtGtZw==
+X-Received: by 2002:a17:902:e5cb:b0:1db:d13e:26fb with SMTP id u11-20020a170902e5cb00b001dbd13e26fbmr266381plf.5.1708640622569;
+        Thu, 22 Feb 2024 14:23:42 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902c98c00b001d8aadaa7easm10458002plc.96.2024.02.22.14.23.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 14:23:41 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+	linux-iio@vger.kernel.org,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] [RFC] iio: pressure: dlhl60d: Check mask_width for IRQs
+Date: Thu, 22 Feb 2024 14:23:39 -0800
+Message-Id: <20240222222335.work.759-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240222221814.3572215-1-rmoar@google.com>
-Subject: [PATCH] kunit: tool: add parsing of all files in directory
-From: Rae Moar <rmoar@google.com>
-To: shuah@kernel.org, davidgow@google.com, dlatypov@google.com, 
-	brendan.higgins@linux.dev, kevko@google.com
-Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1986; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=0xRi+wRovLEtle3IAhjBAqJ3i0Q5IwxvEzplbN5MjGY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl18lq4o+31/1R0DWW8xWF6Y+7BP30IH/M1esol
+ O1U6dy83cuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZdfJagAKCRCJcvTf3G3A
+ JtaRD/9phV+1oaxweCDWM7RyA5yYZNO0eEqTdKf4RB6phXBkx9kEI7rGUVfbyrXtZ0NC+Nx1rNv
+ YPwLgODU6hZ6heWm1tX+r26uJ4XR7UM/wqORisZmp8e9X4iicnJtPPF9BpC8YsWfbDf5EFw09ip
+ N+4mhNwKHfW6hvAG4l0ujSvKtJnIGTaKy8JowAz0VRswGgw/xGbQatKmvPuABoOxt3HMXXBP3Qm
+ gSzJQ09JSv2A74EpZAcRKvX1qg8a3bAdPrHyQFHmZNt1sqW54K2KWU+w2umluFntRwtv9AfItiv
+ 81zNznm5WHoKMz83Y8VyHE5bBcUpRp06+1+KfnAZ6JdexzUsQ3Sw7t1rqTfUsRLjreMaplHPbf1
+ Xbv4YatUXU3FeQ0kuvAH3z66vmuGvG9j4GvjxjvJ1tgJ/aFAD6gsayqP1j07Op5om1MCgspydfv
+ ATbWJR60pbqyr37CFhZ7LDB3ko/cKUq+FBUFl8Ot4iN0ffVMOtLLHNTY0Os0A/L2ZyM9MLilnLF
+ 4M5PfHPjKrAeU869+gMxnFWfA/vTdZ3ti4rVtvLwYPzpCbTxcRmOTNY7zo9bA8HEUqHelVjo0Bv
+ f0RfC+TisOs7I5itK9ke182+3YIAUbVYWtkOFQluiu5dsJCzihtVr6/0MVdORj1rVJ+Jq4pW1CP
+ x2bqQQk KFcoGfpA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-Add ability to parse all files within a directory. Additionally add the
-ability to parse all results in the KUnit debugfs repository.
+Clang tripped over a FORTIFY warning in this code, and while it seems it
+may be a false positive in Clang due to loop unwinding, the code in
+question seems to make a lot of assumptions. Comments added, and the
+Clang warning[1] has been worked around by growing the array size.
+Also there was an uninitialized 4th byte in the __be32 array that was
+being sent through to iio_push_to_buffers().
 
-How to parse all files in directory:
-
-/tools/testing/kunit/kunit.py parse [directory path]
-
-How to parse KUnit debugfs repository:
-
-/tools/testing/kunit/kunit.py parse debugfs
-
-For each file, the parser outputs the file name, results, and test
-summary. At the end of all parsing, the parser outputs a total summary
-line.
-
-This feature can be easily tested on the tools/testing/kunit/test_data/
-directory.
-
-Signed-off-by: Rae Moar <rmoar@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/2000 [1]
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/kunit/kunit.py | 45 ++++++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 12 deletions(-)
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Nuno Sá" <nuno.sa@analog.com>
+Cc: linux-iio@vger.kernel.org
+---
+ drivers/iio/pressure/dlhl60d.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index bc74088c458a..827e6dac40ae 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -511,19 +511,40 @@ def exec_handler(cli_args: argparse.Namespace) -> None:
+diff --git a/drivers/iio/pressure/dlhl60d.c b/drivers/iio/pressure/dlhl60d.c
+index 28c8269ba65d..9bbecd0bfe88 100644
+--- a/drivers/iio/pressure/dlhl60d.c
++++ b/drivers/iio/pressure/dlhl60d.c
+@@ -250,20 +250,27 @@ static irqreturn_t dlh_trigger_handler(int irq, void *private)
+ 	struct dlh_state *st = iio_priv(indio_dev);
+ 	int ret;
+ 	unsigned int chn, i = 0;
+-	__be32 tmp_buf[2];
++	/* This was only an array pair of 4 bytes. */
++	__be32 tmp_buf[4] = { };
  
+ 	ret = dlh_start_capture_and_read(st);
+ 	if (ret)
+ 		goto out;
  
- def parse_handler(cli_args: argparse.Namespace) -> None:
--	if cli_args.file is None:
-+	parsed_files = []
-+	total_test = kunit_parser.Test()
-+	total_test.status = kunit_parser.TestStatus.SUCCESS
-+	if cli_args.file_path is None:
- 		sys.stdin.reconfigure(errors='backslashreplace')  # type: ignore
- 		kunit_output = sys.stdin  # type: Iterable[str]
--	else:
--		with open(cli_args.file, 'r', errors='backslashreplace') as f:
-+	elif cli_args.file_path == "debugfs":
-+		for (root, _, files) in os.walk("/sys/kernel/debug/kunit"):
-+			for file in files:
-+				if file == "results":
-+					parsed_files.append(os.path.join(root, file))
-+	elif os.path.isdir(cli_args.file_path):
-+		for (root, _, files) in os.walk(cli_args.file_path):
-+			for file in files:
-+				parsed_files.append(os.path.join(root, file))
-+	elif os.path.isfile(cli_args.file_path):
-+		parsed_files.append(cli_args.file_path)
++	/* Nothing was checking masklength vs ARRAY_SIZE(tmp_buf)? */
++	if (WARN_ON_ONCE(indio_dev->masklength > ARRAY_SIZE(tmp_buf)))
++		goto out;
 +
-+	for file in parsed_files:
-+		print(file)
-+		with open(file, 'r', errors='backslashreplace') as f:
- 			kunit_output = f.read().splitlines()
--	# We know nothing about how the result was created!
--	metadata = kunit_json.Metadata()
--	request = KunitParseRequest(raw_output=cli_args.raw_output,
--					json=cli_args.json)
--	result, _ = parse_tests(request, metadata, kunit_output)
--	if result.status != KunitStatus.SUCCESS:
--		sys.exit(1)
-+		# We know nothing about how the result was created!
-+		metadata = kunit_json.Metadata()
-+		request = KunitParseRequest(raw_output=cli_args.raw_output,
-+						json=cli_args.json)
-+		_, test = parse_tests(request, metadata, kunit_output)
-+		total_test.subtests.append(test)
-+
-+	if len(parsed_files) > 1: # if more than one file was parsed output total summary
-+		print('All files parsed.')
-+		stdout.print_with_timestamp(kunit_parser.DIVIDER)
-+		kunit_parser.bubble_up_test_results(total_test)
-+		kunit_parser.print_summary_line(total_test)
+ 	for_each_set_bit(chn, indio_dev->active_scan_mask,
+ 		indio_dev->masklength) {
+-		memcpy(tmp_buf + i,
++		/* This is copying 3 bytes. What about the 4th? */
++		memcpy(&tmp_buf[i],
+ 			&st->rx_buf[1] + chn * DLH_NUM_DATA_BYTES,
+ 			DLH_NUM_DATA_BYTES);
+ 		i++;
+ 	}
  
++	/* How do we know the iio buffer_list has only 2 items? */
+ 	iio_push_to_buffers(indio_dev, tmp_buf);
  
- subcommand_handlers_map = {
-@@ -569,8 +590,8 @@ def main(argv: Sequence[str]) -> None:
- 					    help='Parses KUnit results from a file, '
- 					    'and parses formatted results.')
- 	add_parse_opts(parse_parser)
--	parse_parser.add_argument('file',
--				  help='Specifies the file to read results from.',
-+	parse_parser.add_argument('file_path',
-+				  help='Specifies the file path to read results from.',
- 				  type=str, nargs='?', metavar='input_file')
- 
- 	cli_args = parser.parse_args(massage_argv(argv))
-
-base-commit: 08c454e26daab6f843e5883fb96f680f11784fa6
+ out:
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+2.34.1
 
 
