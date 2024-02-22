@@ -1,189 +1,116 @@
-Return-Path: <linux-kernel+bounces-76152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327A385F386
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:54:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E7D185F4E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:46:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C051F22E1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:54:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3103A1C2184E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6C72C698;
-	Thu, 22 Feb 2024 08:54:47 +0000 (UTC)
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358B23D396;
+	Thu, 22 Feb 2024 09:45:44 +0000 (UTC)
+Received: from 13.mo582.mail-out.ovh.net (13.mo582.mail-out.ovh.net [188.165.56.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CFB2BD1C
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:54:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.110.167.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDC83C486
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.56.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708592087; cv=none; b=TTj3ztONC/HLVKvjOksBFCjEV+r1Z9AzDlyubxOmGI4tdLCw9KOW6KuB0AQaokeRybniHH89QyLWNJFtGKIoAU1xxtcWaMMrSaRofMiAqG5gsh3DrOOFhYbFip6ive+4rfFcIhlgph3kAIZrQAdu7LMH5wlBA2/3S/PvskDcr/A=
+	t=1708595143; cv=none; b=gsqEWjzdypp8mWudwNd5dj2vvwqrg00c+yh3ZU4r5LaBf/LkszqfvfNc/5+zU+bUvNLFou9fXxadV40M4Iwg0jmIGwKWpDJiJkr86KgO9esA8qCXxWuh+QCTvDCwGCVTVb9shTouxd3rKT5P6NylWMNyyD2vcotkCvqWgo9ma2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708592087; c=relaxed/simple;
-	bh=Q09ggyJX4LTHC+Qx+tTl+VcdUVE6MRDSmOxeTtRF1M0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=L9XAD8C/xALgOTaT9Bl24YIaF9zFEF0URjn4e/6+iw4Wnhu1KtkHUNCrMdKsPlFEVJEyHSw/TgmsPFLipa+NQ+zPfZFuicA+uGggxPMofW0z2s5dJ3psZ2mQP3116FaYTmUDU77btc0u1hsFaOznRtJ+Psfyj7Ezy0cdbY/knzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=203.110.167.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1708592081-1eb14e0c7c45a80001-xx1T2L
-Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx2.zhaoxin.com with ESMTP id IHwyCNpP3iJxhYfP (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 22 Feb 2024 16:54:42 +0800 (CST)
-X-Barracuda-Envelope-From: WeitaoWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
- (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 22 Feb
- 2024 16:54:41 +0800
-Received: from L440.zhaoxin.com (10.29.8.21) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 22 Feb
- 2024 16:54:41 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-From: Weitao Wang <WeitaoWang-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-To: <oneukum@suse.com>, <stern@rowland.harvard.edu>,
-	<gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-	<usb-storage@lists.one-eyed-alien.net>
-CC: <WeitaoWang@zhaoxin.com>
-Subject: [PATCH] USB:UAS:return ENODEV when submit urbs fail with device not attached.
-Date: Fri, 23 Feb 2024 00:54:41 +0800
-X-ASG-Orig-Subj: [PATCH] USB:UAS:return ENODEV when submit urbs fail with device not attached.
-Message-ID: <20240222165441.6148-1-WeitaoWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.32.0
+	s=arc-20240116; t=1708595143; c=relaxed/simple;
+	bh=LPJlLHDkajqw80z9ma4e+vfl3sbURWj1jM2baBv2XzU=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=deTePJkKYPeLLlQrJGdJ3rsaJm5oS513KMJU/729Nmq94dVB5RjcbLpqlTwri209t4SjEJWgxuy42LShcg8lfIh99BLKFxAMExeTu0daNEOiUfauy5uun/7AereJr/WTv/QOztzbTzr/gEP/lqhzgap6+hT0+9KV2PbW4ytLKUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl; spf=pass smtp.mailfrom=milecki.pl; arc=none smtp.client-ip=188.165.56.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=milecki.pl
+Received: from director4.ghost.mail-out.ovh.net (unknown [10.109.140.39])
+	by mo582.mail-out.ovh.net (Postfix) with ESMTP id 4TgR8h1ygcz1Bcr
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:27:32 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-62nvk (unknown [10.110.168.159])
+	by director4.ghost.mail-out.ovh.net (Postfix) with ESMTPS id BBB0C1FEA0;
+	Thu, 22 Feb 2024 08:27:30 +0000 (UTC)
+Received: from milecki.pl ([37.59.142.108])
+	by ghost-submission-6684bf9d7b-62nvk with ESMTPSA
+	id DFvxKHIF12Uj8g8AoXgo/A
+	(envelope-from <rafal@milecki.pl>); Thu, 22 Feb 2024 08:27:30 +0000
+Authentication-Results:garm.ovh; auth=pass (GARM-108S00278859a77-0453-42f0-9082-a2d4777bd21b,
+                    A5D7B7EF969FCE09FFB803620F60B84AE0971723) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp:178.33.236.78
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Date: Thu, 22 Feb 2024 09:27:30 +0100
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
+ <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
+ <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
+ kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
+ <dregan@broadcom.com>, devicetree@vger.kernel.org, Conor Dooley
+ <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH v5 05/12] arm64: dts: broadcom: bcmbca: Add NAND
+ controller node
+In-Reply-To: <20240207202257.271784-6-william.zhang@broadcom.com>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+ <20240207202257.271784-6-william.zhang@broadcom.com>
+Message-ID: <cd32d304d740e3c1875e449d459c805a@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
-X-Barracuda-Start-Time: 1708592081
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 4195
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: 1.09
-X-Barracuda-Spam-Status: No, SCORE=1.09 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=DATE_IN_FUTURE_06_12, DATE_IN_FUTURE_06_12_2
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.121168
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.01 DATE_IN_FUTURE_06_12   Date: is 6 to 12 hours after Received: date
-	3.10 DATE_IN_FUTURE_06_12_2 DATE_IN_FUTURE_06_12_2
+X-Ovh-Tracer-Id: 392939071277214476
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrfeefgdduudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghfkfigihgtgfesthekjhdttddtjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepjeejkeekgeejtdffffevffeivedtueeifeeuffegkeehkeeliedugfelfedutdeunecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipddujeekrdeffedrvdefiedrjeekpdefjedrheelrddugedvrddutdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekvddpmhhouggvpehsmhhtphhouhht
 
-In the scenario of entering hibernation with udisk in the system, if the
-udisk was gone or resume fail in the thaw phase of hibernation. Its state
-will be set to NOTATTACHED. However, usb_hub_wq was already freezed and
-can't not handle disconnect event. Then, sync cache SCSI command will be
-sent to this udisk on the poweroff phase of hibernation, that will cause
-uas_submit_urbs to be called to submit URB to sense/data/cmd pipe. Then,
-usb_submit_urb return value -ENODEV when device was set to NOTATTACHED
-state. However, uas_submit_urbs always return "SCSI_MLQUEUE_DEVICE_BUSY"
-regardless of the reason for submission failure.That will lead the SCSI
-layer go into an ugly loop and system fail to go into hibernation.
+On 2024-02-07 21:22, William Zhang wrote:
+> diff --git a/arch/arm64/boot/dts/broadcom/bcmbca/bcm4908.dtsi
+> b/arch/arm64/boot/dts/broadcom/bcmbca/bcm4908.dtsi
+> index 2f124b027bbf..336016e334d9 100644
+> --- a/arch/arm64/boot/dts/broadcom/bcmbca/bcm4908.dtsi
+> +++ b/arch/arm64/boot/dts/broadcom/bcmbca/bcm4908.dtsi
+> @@ -589,7 +589,7 @@ hsspi: spi@1000 {
+>  			status = "disabled";
+>  		};
+> 
+> -		nand-controller@1800 {
+> +		nand_controller: nand-controller@1800 {
+>  			#address-cells = <1>;
+>  			#size-cells = <0>;
+>  			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.1", 
+> "brcm,brcmnand";
+> @@ -597,7 +597,7 @@ nand-controller@1800 {
+>  			reg-names = "nand", "nand-int-base";
+>  			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+>  			interrupt-names = "nand_ctlrdy";
+> -			status = "okay";
+> +			status = "disabled";
+> 
+>  			nandcs: nand@0 {
+>  				compatible = "brcm,nandcs";
 
-To fix this issue, let uas_submit_urbs function to return real error
--ENODEV when submit URB with device in the NOTATTACHED state. In the error
-checking inside of function uas_queuecommand_lck, reporting DID_ERROR will
-cause device poweroff fail and system shutdown instead of entering
-hibernation. So,replace DID_ERROR with DID_NO_CONNECT to report to SCSI
-upper layer.
+You disable NAND controller here breaking support for all dependant
+devices.
 
-Signed-off-by: Weitao Wang <WeitaoWang-oc@zhaoxin.com>
----
- drivers/usb/storage/uas.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+I see you fix it afterwards in PATCH 06/12 but it's still a poor way of
+handling such change and this issue can be hit e.g. during git bisect.
 
-diff --git a/drivers/usb/storage/uas.c b/drivers/usb/storage/uas.c
-index 9707f53cfda9..967f18db525a 100644
---- a/drivers/usb/storage/uas.c
-+++ b/drivers/usb/storage/uas.c
-@@ -533,7 +533,7 @@ static struct urb *uas_alloc_cmd_urb(struct uas_dev_info *devinfo, gfp_t gfp,
-  * daft to me.
-  */
- 
--static struct urb *uas_submit_sense_urb(struct scsi_cmnd *cmnd, gfp_t gfp)
-+static int uas_submit_sense_urb(struct scsi_cmnd *cmnd, gfp_t gfp)
- {
- 	struct uas_dev_info *devinfo = cmnd->device->hostdata;
- 	struct urb *urb;
-@@ -541,16 +541,15 @@ static struct urb *uas_submit_sense_urb(struct scsi_cmnd *cmnd, gfp_t gfp)
- 
- 	urb = uas_alloc_sense_urb(devinfo, gfp, cmnd);
- 	if (!urb)
--		return NULL;
-+		return -ENOMEM;
- 	usb_anchor_urb(urb, &devinfo->sense_urbs);
- 	err = usb_submit_urb(urb, gfp);
- 	if (err) {
- 		usb_unanchor_urb(urb);
- 		uas_log_cmd_state(cmnd, "sense submit err", err);
- 		usb_free_urb(urb);
--		return NULL;
- 	}
--	return urb;
-+	return err;
- }
- 
- static int uas_submit_urbs(struct scsi_cmnd *cmnd,
-@@ -562,9 +561,9 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 
- 	lockdep_assert_held(&devinfo->lock);
- 	if (cmdinfo->state & SUBMIT_STATUS_URB) {
--		urb = uas_submit_sense_urb(cmnd, GFP_ATOMIC);
--		if (!urb)
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+		err = uas_submit_sense_urb(cmnd, GFP_ATOMIC);
-+		if (err)
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		cmdinfo->state &= ~SUBMIT_STATUS_URB;
- 	}
- 
-@@ -582,7 +581,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 		if (err) {
- 			usb_unanchor_urb(cmdinfo->data_in_urb);
- 			uas_log_cmd_state(cmnd, "data in submit err", err);
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 		cmdinfo->state &= ~SUBMIT_DATA_IN_URB;
- 		cmdinfo->state |= DATA_IN_URB_INFLIGHT;
-@@ -602,7 +601,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 		if (err) {
- 			usb_unanchor_urb(cmdinfo->data_out_urb);
- 			uas_log_cmd_state(cmnd, "data out submit err", err);
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 		cmdinfo->state &= ~SUBMIT_DATA_OUT_URB;
- 		cmdinfo->state |= DATA_OUT_URB_INFLIGHT;
-@@ -621,7 +620,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 		if (err) {
- 			usb_unanchor_urb(cmdinfo->cmd_urb);
- 			uas_log_cmd_state(cmnd, "cmd submit err", err);
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 		cmdinfo->cmd_urb = NULL;
- 		cmdinfo->state &= ~SUBMIT_CMD_URB;
-@@ -698,7 +697,7 @@ static int uas_queuecommand_lck(struct scsi_cmnd *cmnd)
- 	 * of queueing, no matter how fatal the error
- 	 */
- 	if (err == -ENODEV) {
--		set_host_byte(cmnd, DID_ERROR);
-+		set_host_byte(cmnd, DID_NO_CONNECT);
- 		scsi_done(cmnd);
- 		goto zombie;
- 	}
+Also: given that 99% of BCM4908 devices use NAND controller can we just
+save ourselves efforts and keep it enabled in .dtsi?
+
 -- 
-2.32.0
-
+Rafał Miłecki
 
