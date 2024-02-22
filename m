@@ -1,147 +1,157 @@
-Return-Path: <linux-kernel+bounces-76180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE80C85F3EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:06:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53F485F3EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C3201C23BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:06:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5DA1F25048
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F5737152;
-	Thu, 22 Feb 2024 09:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2CA3716F;
+	Thu, 22 Feb 2024 09:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YVIstuwt"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bqwri99i";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oHdJI6L1";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bqwri99i";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oHdJI6L1"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70160182D2
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A380D182D2;
+	Thu, 22 Feb 2024 09:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708592774; cv=none; b=HZoTN5i1VXGsgbsfOGc2ZJmj+ynzaf21gPIL07VsRG/rDjiVCW5IkkqOw3hdAzsW3R4DXvFLiiIaEiHh75LylznZ9qVJFD+6Bv9IN7JuQOhKCJ2LHtRFDwVfe2UVdDFhAaZB84DtxxkXVaVI/ov79IlzqytSNF5baLofQ3PgCTk=
+	t=1708592754; cv=none; b=t8elg1SLy2wHMw13rHcekoeXLDmtcFjRgDpOqamiAwGrH21AM7NjU9LPLtGYkcpavnb7CJMKtIaALA63kkbmlAmGQRWOezGR7WpfD1W71MQGsLhy6AD8vp91EAfVjcR8oEinCAFiIWFW9pPQorznaaOg0dAm3sCzRmW2o86JJfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708592774; c=relaxed/simple;
-	bh=8c/Xh5sRpC4JqMGbwZlEN2x9qcwZFAlKpVkj5lFERAo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XQsSt5LRvR7XUgee42XFpw6pQ0ms0h+uQS03MHPTfQ9Slv9gCbw/v2KzJIDSGRdiXqaYToFq/v8ptIjY6TSPgIOwouGWVg6DFDXQRUZxrc3eKVd8A0GOKJZnsMkf5HbjvgLgF89v5CBd5PuTwcfN2Pyu50R7I4z1Y7o2qM2h/7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YVIstuwt; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M6mhop019458;
-	Thu, 22 Feb 2024 09:05:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=b7MKLBW
-	4+oeVN4wDzAN30WAcbkMR7wXtDIhD/4exjd4=; b=YVIstuwtn/vitABEqDTJki2
-	aRlRB8Otas4WX55YjnfBq/cyRdIrRl252rNd7gqOo9L0iI0Pq3rsrvM3qEp/+FBh
-	brCLG7SXnMrn0AK6wXUBr9avlGs8zbwLBRMw0drvVlvAWNNurk+yuP2U6h4JXty4
-	09+of8onv4gGZeor2WtMDGPa4bLIr7FSsyxNIt4ShmLgwvcapilcxtFUQHX3Asdu
-	HPZNG0CDQvaQeVV87z4w57zom5X/qxcn0H9qqewIShK0ehYO9GspGyDF8j6YHavu
-	+xrLB/Qr9wvWpvOWJuypn2Mvy8lb/yZUY7vZf60ItDz47Rle/YqpbnR1sm9lbEQ=
-	=
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we1b0gf0r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 09:05:57 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M95vR1027616
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 09:05:57 GMT
-Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 22 Feb 2024 01:05:55 -0800
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-To: <pmladek@suse.com>, <rostedt@goodmis.org>, <john.ogness@linutronix.de>,
-        <senozhatsky@chromium.org>
-CC: <linux-kernel@vger.kernel.org>, Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: [PATCH] printk: Add atomic context check inside console_unlock()
-Date: Thu, 22 Feb 2024 14:35:38 +0530
-Message-ID: <20240222090538.23017-1-quic_mojha@quicinc.com>
-X-Mailer: git-send-email 2.43.0.254.ga26002b62827
+	s=arc-20240116; t=1708592754; c=relaxed/simple;
+	bh=+vn1ckrtx6RQRz3eYg5eAEtVg2EE5KZ8R/asI7H1qUU=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bfTK3ZYQttsj2oAyvRkyKzXyRIKwUgP8qfRTrc5qZ2pX8qUC99vxaXOohJ8Y37SR2qqD4XUzBw13zP+opcoDzUCDhMGxLguYdLY2HOv8irE8RpfQ0+fKk6YcN6o6bwrQZKYcElufDV3vHtEkhvBzwgmWxMOeZ6XTF2WTugGRZJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bqwri99i; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oHdJI6L1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bqwri99i; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oHdJI6L1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A14081F452;
+	Thu, 22 Feb 2024 09:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708592750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ttaLeBa6Qt+Edx6r7FQgoY9x3tYtNqF1wyVE0b0N7DE=;
+	b=bqwri99i1QH2wmnjSrvjlkJ5dHkkUE/dlBi64+ydWv6GhDzXZbkwryfDO+m1tWuh6OE8r6
+	un/SoOaGQBeFX0PXhDRVR+9ywkusq93xXTPDT/mdHQuaiGJ/KEHoAdWRddxeE9XImif/7y
+	+VRL/NgSLAhhyNbEz0eIHxLclPBeCxM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708592750;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ttaLeBa6Qt+Edx6r7FQgoY9x3tYtNqF1wyVE0b0N7DE=;
+	b=oHdJI6L1KVsC8yy2wNGf5T/J6pqSJe7T1aBZAJ2KsvrqX1TeZ+E4LJ4AC2XUNwkokc4tgL
+	AsDhlKJCgGp8aBCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708592750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ttaLeBa6Qt+Edx6r7FQgoY9x3tYtNqF1wyVE0b0N7DE=;
+	b=bqwri99i1QH2wmnjSrvjlkJ5dHkkUE/dlBi64+ydWv6GhDzXZbkwryfDO+m1tWuh6OE8r6
+	un/SoOaGQBeFX0PXhDRVR+9ywkusq93xXTPDT/mdHQuaiGJ/KEHoAdWRddxeE9XImif/7y
+	+VRL/NgSLAhhyNbEz0eIHxLclPBeCxM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708592750;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ttaLeBa6Qt+Edx6r7FQgoY9x3tYtNqF1wyVE0b0N7DE=;
+	b=oHdJI6L1KVsC8yy2wNGf5T/J6pqSJe7T1aBZAJ2KsvrqX1TeZ+E4LJ4AC2XUNwkokc4tgL
+	AsDhlKJCgGp8aBCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C17D13A8C;
+	Thu, 22 Feb 2024 09:05:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id h/N6GG4O12VBeQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 22 Feb 2024 09:05:50 +0000
+Date: Thu, 22 Feb 2024 10:05:50 +0100
+Message-ID: <87sf1k6f81.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: echoaudio: remove redundant assignment to variable clock
+In-Reply-To: <20240221113809.3410109-1-colin.i.king@gmail.com>
+References: <20240221113809.3410109-1-colin.i.king@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2cY2Txy475aLHp0j55uuqHQs-E4pPdlS
-X-Proofpoint-GUID: 2cY2Txy475aLHp0j55uuqHQs-E4pPdlS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_06,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220071
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=bqwri99i;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=oHdJI6L1
+X-Spamd-Result: default: False [0.40 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.79)[84.62%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 0.40
+X-Rspamd-Queue-Id: A14081F452
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Situation of schedule while atomic context can happen in a
-scenario if CPU-Y executing a async probe of ufs and while
-printing a line it is started spinning for console lock
-after preemption disable on CPU-Y and later it got the handover
-of console lock from CPU-X and in console_unlock() it get
-schedule with preempt disable as console_may_schedule was one
-and due to which do_cond_resched was one.
+On Wed, 21 Feb 2024 12:38:09 +0100,
+Colin Ian King wrote:
+> 
+> The variable clock is being assigned a value that is never read,
+> it is being re-assigned a new value in every case in the following
+> switch statement. The assignment is redundant and can be removed.
+> 
+> Cleans up clang scan build warning:
+> sound/pci/echoaudio/echoaudio_3g.c:277:2: warning: Value stored
+> to 'clock' is never read [deadcode.DeadStores]
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-         CPU-X                          CPU-Y
+Thanks, applied.
 
-                                      worker_thread
-                                       process_one_work
-                                        async_run_entry_fn
-                                         ufshcd_async_scan
-                                          ufshcd_device_init
-really_probe+0x1c8                         ufshcd_probe_hba
- platform_probe+0xc0                        ufshcd_config_mcq
-  qcom_geni_serial_probe+0x374               _dev_info
-   uart_add_one_port+0x10                     __dev_printk
-    serial_ctrl_register_port+0x10             dev_printk_emit
-     serial_core_register_port+0x5dc            dev_vprintk_emit
-      register_console+0x284                      vprintk_emit
-       console_init_seq()                          preempt_disable();
-	                                           console_trylock_spinning()
-        console_lock();
-         console_flush_all()
 
-Hand over of console lock happen from CPU-X to CPU-Y
-                                                   console_unlock()
-          console_lock+0x74                         console_flush_all
-	   down[jt]+0x40                             __might_resched
-	    __down+0x18
-             __down_common+0x68
-              ___down_common+0xdc
-               schedule_timeout+0x4c
-                schedule+0x78
-                 __schedule+0x6c0
-
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
----
- kernel/printk/printk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index f2444b581e16..8b666feff65d 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3028,7 +3028,7 @@ void console_unlock(void)
- 	 * messages practically incapacitating the system. Therefore, create
- 	 * a local to use for the printing loop.
- 	 */
--	do_cond_resched = console_may_schedule;
-+	do_cond_resched = in_atomic() || console_may_schedule;
- 
- 	do {
- 		console_may_schedule = 0;
--- 
-2.43.0.254.ga26002b62827
-
+Takashi
 
