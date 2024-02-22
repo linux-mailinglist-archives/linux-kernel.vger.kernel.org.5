@@ -1,116 +1,97 @@
-Return-Path: <linux-kernel+bounces-75936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB7A85F0EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:24:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F58585F0EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15200B23C62
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:24:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8D31F22FDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2995F9E0;
-	Thu, 22 Feb 2024 05:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E393EFC16;
+	Thu, 22 Feb 2024 05:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MB8rzZ4p"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ix51u0ti"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316781C14;
-	Thu, 22 Feb 2024 05:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9846B79F5
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708579435; cv=none; b=bWDmnyqPkDbgDXx+xo8pTageheI4sjQrHQN6/PYtljFGb+zYGH5tod38K3y9gkaDp712S7GRR+IjnU3hKFVWQPOgAIpGh+o5FHHqj9RLLh+CDg0XBcx17LNf2fqNlzj+E/H0bH6gnasdo7nwWaAJwTY6f189c1eMCDlZzEwPI50=
+	t=1708579506; cv=none; b=kIW7Sk0IXwxoE4wGYr6NL8K+wudcOyxohq01Fim2sZ3RDFwbsd/pXnjTHRFoHzM3q7QsUBtNMuHyBieh1MmnThm5Yqnkg3Nzm87foX/HW06AdQ2dq45jdsk4lqgqBApUHzF8uWSQO1/RUyPy/xImEeJLktd7Z37I9UhQK8q0pNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708579435; c=relaxed/simple;
-	bh=oOyXXaM42M394k31mWSYzMIXwBXz0g5QPtbRtGpl334=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=D390IxaMACaRWYtQIzjoPT9spfRXsz3DuMeWwC3sw12eGnz+NR7eE+hLVYw9BxHY1bV3sRm0557yP3rDCceSy2YeNVLyYsdR/7NRW9udvwfru5mV1YI74oaOAnkTSsDtQ9rArJH9JGYMC2QVFWEoW9tOBew1DFGoQJ+CeyM0LL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MB8rzZ4p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7139FC433C7;
-	Thu, 22 Feb 2024 05:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708579434;
-	bh=oOyXXaM42M394k31mWSYzMIXwBXz0g5QPtbRtGpl334=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=MB8rzZ4poIEv2PIzSdjhgHgCztPjWnhjitgxz8CtVroogptmQCCuzJtbFiVkaehdg
-	 6I18tQogN516AL62cVl2MJ45tpxcO9AiQ1Zh1SqBv4VZiW1ItAL2G3zBJNbsPTV1Ed
-	 L2UzQKuQqO9VA6UD4T8kh8aFvGZ6OQ5bs1eEXpeooCiRK9O4zBf4pFX2t/51eWv0Cg
-	 SnAbAg9ZPXD4YiGpw9WlTh/OpI2VdMd3qWeaDn6UnmYQ6BzQy6yfHhrjOYB/Eka7oQ
-	 BNWQ5RaGgLd7bIYKbHS0igveRzcrkDQ+/+X74wLSBJWEsd6uAVzHRcGq0mniE7d0xU
-	 2leHNkHaKiJjA==
-Date: Wed, 21 Feb 2024 22:23:53 -0700
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1708579506; c=relaxed/simple;
+	bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a/FpctOqniGmRX27VnARkIvjWu+fPb0MJH3bg6zM+5PcrlQ6jYCdTogj1/oDyA+uHJ3veC5mONUu0V067OMr8xZH6YTzxFpGoMysYQ+1PcNDfOrd7g3Dc10A1oCuGmBi181KBwDLm8VRtwZlfI6CN1iPyaSfWCUMbsk9eMNUQNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ix51u0ti; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso82489f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:25:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708579503; x=1709184303; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
+        b=ix51u0tiPc2BdlkZS3k/4vhnj5pk1TgWrLfxU9VZcC9OMdkLtAL1zTmT9mEmwT44/a
+         uVVeCSQyE4g+3D08w1fV5LK+6r/T3hpZIEr7ae0gU4YtF0Od1LuevAeYT2FQYSA9yNFO
+         tFVW+iHZ3P/oH2vwH7EoGWByWet7QGyalF7baflv09xeIRgavmq5SCXqD5GcWOR87BR0
+         oYE708MaWijQ7ZlYAfPHiCoU9OKKsPPfBB+h3fM8BteFuPj4PqEYo/aC9IOCUU/zE9FR
+         Mbf2OrBj2UTawxgAdxfvZTcuspg7td3MccE2vyR00lyw2yUut6VupJGX49hlwHQQpRft
+         tbkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708579503; x=1709184303;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
+        b=nRYvog6oHwIOqiuIcMCZeJVoZwlYchogO+E5vBVPT8EmJ+SDVjtIV9PxSa3yydGjsW
+         o+Lt//WWkrl933/tbFfzxu5JVkrcQisvhfK2E+FfzfE0eR3vL6LGVohpIo+voI3t+B7Y
+         LnasPaVlZVegUoodrVrmH8YvXbGEOfiTnCa81viKXQ0YtDn8JWEX0h98GfLP0Nir+VV4
+         uUQhcTROASXCJ9iGgDoAc162d6lwX59srZIcPm5hBWUVLeIMwBoOfVHPMpQQcDepAghG
+         1wOL83jmH0wAeFSGty4cFnHa75arrq/eIYYqRnRvlAEbvDzkfhRRSbjUNoIjDaV1CLTW
+         Gz3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWXtXFCPhxnLNKfDSy03RcuV2fvWRjLBV+NHAwTUtMtQfJ9oo9mkipBxBEwgwoEXmTMqec0AqUN6nIYLnVTCZsk85CR/ZzP0p+DFzqN
+X-Gm-Message-State: AOJu0Yzdt/+uG02UIwD2i9CwL1RsmUVohdyq8OnlYo3cTO0KqfV3WCR9
+	VX8+klyp4y841XIZgSzhIeinelHGGMzYpcD42JWjgagXyOFmDg8uChWQV5Lh9Lo=
+X-Google-Smtp-Source: AGHT+IGccZ0j73/5DrOmMr+HWme+77iCv5MXgbQTR75Cls7ZJMbT2w/CLOu9Xq8tSwrznHtU3sy6jg==
+X-Received: by 2002:a5d:4d8e:0:b0:33d:6fe1:8dc2 with SMTP id b14-20020a5d4d8e000000b0033d6fe18dc2mr1057619wru.3.1708579502807;
+        Wed, 21 Feb 2024 21:25:02 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id e2-20020a056000120200b0033cf80ad6f5sm18922729wrx.60.2024.02.21.21.25.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 21:25:02 -0800 (PST)
+Date: Thu, 22 Feb 2024 08:24:58 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: "Colin King (gmail)" <colin.i.king@gmail.com>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
+ ret
+Message-ID: <bc2cef70-6adf-48cb-814c-a1087939ec17@moroto.mountain>
+References: <20240221115203.3413554-1-colin.i.king@gmail.com>
+ <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
+ <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
+ <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Len Brown <lenb@kernel.org>, kernel-team@android.com, 
- devicetree@vger.kernel.org, 
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- linux-kernel@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, 
- linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org, 
- Ard Biesheuvel <ardb@kernel.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Daniel Scally <djrscally@gmail.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>
-In-Reply-To: <20240222034624.2970024-4-saravanak@google.com>
-References: <20240222034624.2970024-1-saravanak@google.com>
- <20240222034624.2970024-4-saravanak@google.com>
-Message-Id: <170857943207.1269080.12494800385688440904.robh@kernel.org>
-Subject: Re: [PATCH v4 3/4] dt-bindings: Add post-init-providers property
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
 
+To be honest, the point of explaining how to run Smatch was really to
+let you know that you're now on your own.
 
-On Wed, 21 Feb 2024 19:46:21 -0800, Saravana Kannan wrote:
-> The post-init-providers property can be used to break a dependency cycle by
-> marking some provider(s) as a post device initialization provider(s). This
-> allows an OS to do a better job at ordering initialization and
-> suspend/resume of the devices in a dependency cycle.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  .../bindings/post-init-providers.yaml         | 105 ++++++++++++++++++
->  MAINTAINERS                                   |  13 ++-
->  2 files changed, 112 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/post-init-providers.yaml
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@1000: failed to match any schema with compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@1000: failed to match any schema with compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@2000: failed to match any schema with compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@2000: failed to match any schema with compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240222034624.2970024-4-saravanak@google.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+regards,
+dan carpenter
 
 
