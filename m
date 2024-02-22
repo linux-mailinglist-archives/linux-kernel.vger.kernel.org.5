@@ -1,157 +1,124 @@
-Return-Path: <linux-kernel+bounces-76740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0867985FBD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:05:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8631285FBD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A0FB1F2494A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC2F1F24A52
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDCA14C5AA;
-	Thu, 22 Feb 2024 15:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XAhG3C6l"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2120A14A09F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9520C149015;
 	Thu, 22 Feb 2024 15:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E1OCiMUn"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7672B1474C8
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708614291; cv=none; b=RMnf7qWZTL/W0UhBhbtUJC5zIhlQEahmnGY4d2tqc0t20mM9yregfLfRwrmlXUJ0y61YgPoS4T1AG7Ima5EM+8KqucMEe0EkD9EAGDz5bh3i3Wwc5nWwcWRrKDgNMfz5WIQZxK4nP8YYSEKff9eaipdvkKqG7Y28fYix+cQIyrg=
+	t=1708614288; cv=none; b=r1Eqj1VWOaXEJRiToDw5R0WS3rhJoQ6ie24h1jJ8rWhi9slZ1d7jdTWFdwG3B+BK2ODA5ozOwQxI4ot6wMmKcATCrqWuEqRQIj2lUhUyhuqGPTZTnPDZc78Z8h2g7/6nnuhfgBoyeHGvemH5yU1qUHv/8ARiO+jg74Jd0FAE9F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708614291; c=relaxed/simple;
-	bh=tLdgo1sCtJ0emV13YZ9Zs1IhgApVirrJo8aoC37yYq8=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pR+x7JcKKqBJJ9rZtoYlZEUc+pFVWSO8VXbjn05Z0e0lGFu36DtBylhOz/EFpxlK2paIYFhgK/zEBpIJTXOeJj1pPw7Aqraj/vBAywEndymRFJE7ALl3r0IIinaGWnFqIBkvq4yER/gHxmYy5YnS1e/p+Xj+9A6lJ+ai3Q10u7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XAhG3C6l; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M7iWuK024680;
-	Thu, 22 Feb 2024 15:04:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=Q41hDQ++x7HXRNek8ydp2
-	FcmEDLeuAZTGmbaK9Fam8g=; b=XAhG3C6lKi+6qZ19iMOchCk/0cDyANDay/Q3Y
-	lEh8TvwZ5UBwIJDY4wWs/HPpeo0BtMaSCWpf1YtcmNTYR2paWzQJ8xZ7zJIGD3WU
-	0ORyEvIkCr7kUttnOOf8UIYCis3PE5mYLsctdmyHZGlAJC5EqHPz01wDzdFkMnjP
-	pH8OloFfPgKn7AvFEwdUkxRNYm+qOIiIrbuRaC26myhT3SgAttt/CKF6Ja7zd+n2
-	r5DP0NGSVvadR4pltqz0hCetClweaVc8Zb5moe5iQyI9rS7xXX2y+CAli8elJk9F
-	DJi1U+HtbCWt1e7olBrRK7Xyomu/1amnNjH9/wSLOYzruf08A==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we24ah67a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 15:04:25 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MF4Oqx032174
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 15:04:24 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 22 Feb 2024 07:04:24 -0800
-Date: Thu, 22 Feb 2024 07:04:23 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Douglas Anderson
-	<dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar
-	<quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        "Bjorn
- Andersson" <andersson@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Enable MDP turbo mode
-Message-ID: <20240222150423.GI2936378@hu-bjorande-lv.qualcomm.com>
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
- <20240221-rb3gen2-dp-connector-v1-3-dc0964ef7d96@quicinc.com>
- <CAA8EJpo=9vhM+5YzaFxUoYRuEWQyrMS8wLNPSF3K=bN5JwWyDw@mail.gmail.com>
- <8313a7c3-3ace-4dee-ad27-8f51a06cd58c@linaro.org>
- <CAA8EJpqFj5nf8d_=Uoup7qg+nQrxqQU-DHbL3uSP138m9AcXLw@mail.gmail.com>
- <8fcb5816-2d59-4e27-ba68-8e0ed6e7d839@linaro.org>
- <CAA8EJporaUuddHHqpyYHiYSu=toHmrDxSHf9msZUJoym4Nz72g@mail.gmail.com>
+	s=arc-20240116; t=1708614288; c=relaxed/simple;
+	bh=QyQ8Hs/9cOFc3/EVyHCVJmCChnrYQ6OCQihzLDwqsoY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WWtP2UTXVkAhQFy8P3EeyQKabKgKFssdCLDhFX7NXa8/H9puxOMdOBad9ya1rhFWRQ34awBfo0h43tVYaiB/G8m4032wFkCDtqvA2rAeEjgcRAfDKiGTTqX/pTUmx1no1K7wo0Kcd/RzVtIRpS6AFEKp7JU6/kmwNBMb5MMk+Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E1OCiMUn; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so11049665276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:04:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708614286; x=1709219086; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=z/iYiJ+7TFli2f3JsUK+qy0WxM4Y33Yr3gEgMfzxYgQ=;
+        b=E1OCiMUnx5SanbackOg1n7qpTvJdusU/kwNPgBnuo1f8s5I+CA2U5dQJAadzwkCtWt
+         Q4c/tSsgQ3AMdzFej6qYn1u93pWF6nMJITXduAPlkU5+7+y4ABEEuKutqV4GsOh/pP5E
+         w0BqIoBcaoWuVfpfB+V7lgZ1kuRclYC7rM7KAiUOJ0YfqBibUQ3XFGzh694cQe55hKTS
+         nwI7kWjD4mZKvBNt86j9JFPoWkcsRdbiVsXNEoMQwWsznxwtXhlnEsk+GD8Y47hIIp05
+         hVzEu/1EBkzVYmreSxQYve8qQgmNvClQAVwJWgt6CGMyMYcqV7QnUNd1nO53bJIVpELB
+         OMhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708614286; x=1709219086;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z/iYiJ+7TFli2f3JsUK+qy0WxM4Y33Yr3gEgMfzxYgQ=;
+        b=cFTAA2lqkLFBEjH9CTurgD0F5i3GXeI3UNl/clzS0IDOxK0qHrdTkAHxRA+P65Ywf1
+         5gG9DCKTsvbqiay1dJzzej7ZPiAfpI9of7RjaNgnjQZuzQ3hZ0iIx0+TVwWY/wQEuggU
+         kE3e+b5nkm41k1D4HTvFR9kKPCc4Esqre1haycsAKRRII9gcVDNydsPa5BXpumx1ybvI
+         CESxnmddQOtHk83G1bNRqwg7W6x1oAUsnaVrPFiam3RBk3W+nfM2bIe0y6kVlW/BdD57
+         s1D209zqHUroEpoTlW9HdUmpPy5IvexWgNluXh5LbIxTKN9kh0TpLGOmDzRR6InT5UPU
+         FqNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0PsIg7uBHpyE0Mx3ilQeis2vz1G8z67kHrFafywf5guRMiAh3dne2DfEYIUQCrmfbywDIOu+maQgvzz6J6IWQ9UyLtnq+HRpMFU3L
+X-Gm-Message-State: AOJu0YzzEuOWUQzryFsVR/mTSddR1n8im1eXtSuuTlwGkT6B8U38n0iN
+	+naUUmrjg77GD1HvBHpjDPFSIU0HIxuNp9/OmA0DnOkMtny8U0I4F2rZAlyDcYJUP/OmzdmFdal
+	Y0Q==
+X-Google-Smtp-Source: AGHT+IHooslmJai+EOheQ0H5t3h6KvQduhgxHrEfBv/XJ327uTFnVL1/dQvOjGkq8HhKJXpBhl9cTVHMDrs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ce0b:0:b0:dc2:5456:d9ac with SMTP id
+ x11-20020a25ce0b000000b00dc25456d9acmr77928ybe.5.1708614286362; Thu, 22 Feb
+ 2024 07:04:46 -0800 (PST)
+Date: Thu, 22 Feb 2024 07:04:44 -0800
+In-Reply-To: <c8c37018-8681-458f-96b7-82bae88ebcd3@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20240222100412.560961-1-arnd@kernel.org> <c8c37018-8681-458f-96b7-82bae88ebcd3@xen.org>
+Message-ID: <ZddijN0ShU23sdJw@google.com>
+Subject: Re: [PATCH] KVM: x86/xen: fix 32-bit pointer cast
+From: Sean Christopherson <seanjc@google.com>
+To: paul@xen.org
+Cc: Arnd Bergmann <arnd@kernel.org>, David Woodhouse <dwmw2@infradead.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>, 
+	Christian Brauner <brauner@kernel.org>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJporaUuddHHqpyYHiYSu=toHmrDxSHf9msZUJoym4Nz72g@mail.gmail.com>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Cohb87XPDhqkiAa09wtNUJyEMXFtcRPd
-X-Proofpoint-ORIG-GUID: Cohb87XPDhqkiAa09wtNUJyEMXFtcRPd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_11,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 mlxscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220120
 
-On Thu, Feb 22, 2024 at 11:46:26AM +0200, Dmitry Baryshkov wrote:
-> On Thu, 22 Feb 2024 at 11:28, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >
-> >
-> >
-> > On 2/22/24 10:04, Dmitry Baryshkov wrote:
-> > > On Thu, 22 Feb 2024 at 10:56, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> > >>
-> > >>
-> > >>
-> > >> On 2/22/24 00:41, Dmitry Baryshkov wrote:
-> > >>> On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
-> > >>>>
-> > >>>> The max frequency listed in the DPU opp-table is 506MHz, this is not
-> > >>>> sufficient to drive a 4k@60 display, resulting in constant underrun.
-> > >>>>
-> > >>>> Add the missing MDP_CLK turbo frequency of 608MHz to the opp-table to
-> > >>>> fix this.
-> > >>>
-> > >>> I think we might want to keep this disabled for ChromeOS devices. Doug?
-> > >>
-> > >> ChromeOS devices don't get a special SoC
-> > >
-> > > But they have the sc7280-chrome-common.dtsi, which might contain a
-> > > corresponding /delete-node/ .
-> >
-> > What does that change? The clock rates are bound to the
-> > SoC and the effective values are limited by link-frequencies
-> > or the panel driver.
+On Thu, Feb 22, 2024, Paul Durrant wrote:
+> On 22/02/2024 10:03, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > shared_info.hva is a 64-bit variable, so casting to a pointer causes
+> > a warning in 32-bit builds:
+> > 
+> > arch/x86/kvm/xen.c: In function 'kvm_xen_hvm_set_attr':
+> > arch/x86/kvm/xen.c:660:45: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+> >    660 |                         void __user * hva = (void *)data->u.shared_info.hva;
+> > 
+> > Replace the cast with a u64_to_user_ptr() call that does the right thing.
 > 
-> Preventing the DPU from overheating? Or spending too much power?
-> 
+> Thanks Arnd. I'd just got a ping from kernel test robot for lack of __user
+> qualifier in the cast
+> (https://lore.kernel.org/oe-kbuild-all/202402221721.mhF8MNVh-lkp@intel.com/),
+> which this should also fix.
 
-Perhaps I'm misunderstanding the implementation then, are we always
-running at the max opp? I thought the opp was selected based on the
-current need for performance?
+Ya, 'tis a good bot.  I squashed this in.   Paul/David, new hashes for the
+affected commits are below.
 
-Regards,
-Bjorn
+Thanks Arnd!
 
-> -- 
-> With best wishes
-> Dmitry
+  KVM: x86/xen: allow shared_info to be mapped by fixed HVA
+  https://github.com/kvm-x86/linux/commit/b9220d32799a
+  KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
+  https://github.com/kvm-x86/linux/commit/3991f35805d0
+  KVM: selftests: map Xen's shared_info page using HVA rather than GFN
+  https://github.com/kvm-x86/linux/commit/9397b5334af1
+  KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
+  https://github.com/kvm-x86/linux/commit/b4dfbfdc9538
+  KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+  https://github.com/kvm-x86/linux/commit/615451d8cb3f
+  KVM: pfncache: check the need for invalidation under read lock first
+  https://github.com/kvm-x86/linux/commit/9fa336e343b2
+  KVM: x86/xen: allow vcpu_info content to be 'safely' copied
+  https://github.com/kvm-x86/linux/commit/003d914220c9
 
