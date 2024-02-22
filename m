@@ -1,470 +1,283 @@
-Return-Path: <linux-kernel+bounces-76731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F3DC85FBAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:57:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6525185FBB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8333A1C22CD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:57:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA8391F25AA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF103149013;
-	Thu, 22 Feb 2024 14:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3ED148FE0;
+	Thu, 22 Feb 2024 14:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jAb52KRx"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lvZPHHGS";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ZZ4X2uYX"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA943FE5D;
-	Thu, 22 Feb 2024 14:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708613814; cv=none; b=aANCJWez/FCzbaIYay7Di0gEKjw7Gb8IMFSyc1jlNHf48IbKorIfW7S5MTvWLh0p+wo/NUbyMohOUOfnp42j9zIMCTBHva2DFxbJmLcqtod7uX4FXxCTP5ZNU9sJswe44GztNu2Z93u+RkaKmhFHy/FYS/qZkUm+tEpHMcmXMTc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708613814; c=relaxed/simple;
-	bh=XneGK6Exzo1Jm3YnV48RaFOJrXT2jpkfZgNEdT9xses=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=YUiYap37qQ82A2lDbtY3+R3yZf/IHm1+SankoPQcwbAG3JIL/ld3MG6SdHVarnEvW2xSGiQU23seCOH+tpLv+VenE40ri2KzoHjay/DDzfUZCuATiO92LDYTMfxNErbKOHa34IMOw/rLtK1nYOWJRu+yXgmRNGaIOL7f6b8Z1aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jAb52KRx; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DC8491C0008;
-	Thu, 22 Feb 2024 14:56:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708613808;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rRBXK6n4FJ5HDMqegXF0krUuUtLSALSJ5mz8c29U9UM=;
-	b=jAb52KRx0FnHsbbjkDUsePmch2p6F1jGraLhFlv2FD6Ig1OCUkD6TkYnkVC3Oc9fybkLVH
-	9wfrDXdWTbFRbBNwQ4k48zjoaDvhY4xGh59VHlzLoml3h3xSZxdSQlGP0gDTfzEqUBo8GK
-	SrmYpF08oTjIoIw8tIBM92qXaSgDTyYGmVbo18EdfXVks5z9NGiYX5hYfYd69ECjDP0ZRb
-	5EpdSAAN6SpB4epviZOlyx3aFRqYH70G7lUgQfYVwE+j0MQyNWc33IfqXJGv1seH+2pnS2
-	483rOxDlw3IkMQbVFHWOLGOrc3Q2cuy5hERJz3VMtOXHxy8NVH5jSEXX2cuqwQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BA917BAA
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708613917; cv=fail; b=R5ILwzUnxJKjYQRlov7PYzDEXiedqIPmPvo8+XBlH1RvS/PT1wCddCUZZKr4FHr/6D/PSH5TnvKsyzCxk71vkgkvVc2vSMMPPBFrNpoN4ySSXjgNrkbVf2c/2qVaECzNQ1Y3ynKNxTsIhNfUvYYVfa97To8Nyla2lP2NuVs3jy0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708613917; c=relaxed/simple;
+	bh=cQ50wK6D/KIoZam/nLzO3B2Iz6SRq1bsn1KT5zQQPRw=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=MYDjmbS+jblR2nAJsw1Cd12xp1lYmQl6lJUjXdDqFsGzk6+3zR/Y/rqDLZN2LPR6G8/Ca+swl0hXj4djmR8G7WxVIvD9+WKuckNwcEEsOiXYtDggTVzFRlb5NhSvlttEoFoHxSTvEDHG/Eo4Bt3PwKpXhb3YR4iRlHUeX+n+9Fc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=lvZPHHGS; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ZZ4X2uYX; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41MBe2v2018113;
+	Thu, 22 Feb 2024 14:58:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=ub0Mpv5cHB6P5XhXuBcDWOOKEggKcKWL4jvtdH/6Fcc=;
+ b=lvZPHHGSIybCXDpOuwXj8rNu+iMQSqxM441Z0jvj4GUPsOX0frGx6m7taJe5ctw34Pnq
+ 7fPScBJziERTBuHObO7SbG65H6o2RXRBeqPL82sfPhyWlePv/YB4j8VOes92wMj79NS/
+ yBzzpEP7FrvZAziRzsauUzUbnogrxaypx9F++AVatHRNlI/2iHmFaQlZ8Cecs8ddKzZt
+ MU9oj9FD/RJlc/VpMHqO/hOYxJjVYXFqBofF+LmMscgVuqC+MMDx2N3RG8kwHHYoRPk8
+ XyPijKSBS7UFDBMNgRZy8zSWLyzKL709OAH4Bwd4yKD4SYd14kGYjl/8aK1iLcIk1KB5 jA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wakqccwtd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Feb 2024 14:58:29 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41MEoj7v024858;
+	Thu, 22 Feb 2024 14:58:27 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak8arrva-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Feb 2024 14:58:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H4CZ32fBxw9m/FTdRwQ5hiS+htqIKNSIt55WzqdRqTcEA1y+H0xxq8/V6E6ZxwIQS5G7/XqSIODhy5rSTxDt7cZ0cw327qpailJlr4P1oRuVUdo29yVG4Z8tBthlyMqCQ5shURQSqBCjXEk+p/CPrcXM5NMWVlrk/tXp2sFqxdV2bMMPWcujJK6wQFzv1NXuxqEN+AsqklqBbxkDkZ+Q9Y0Sz8o1r5kiAHidgzYHSadhrYETJVDjXt0QX3Zau8EniHFjzMyCyZ9SGdVK+RFJ8drtMkA2sUoBYqGpmylxW0x63gfznTPerbBY9eNcUq4blkih3WaExZG8U8zvt6qvgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ub0Mpv5cHB6P5XhXuBcDWOOKEggKcKWL4jvtdH/6Fcc=;
+ b=OVvrkpGC8hHHwPgWBidt8fqPMbJ+SgAcaxi5VpedESBfVfE/2WpUcUDWSltfW2/BjcMf53fN0wF0VBbEyghZK4MmdiGuE/81+Vzdmvoi1mak7bwTXgqVdVOCUKc2+9ovJDNfDInE1pzfNipKyxYmUmLOxKmVBVm1PCvBgAk2ubxd0nGQ/dH9OUuTDxqWbImftgy++zyD65E3jVJzoC/TuaB+EMNhEDVUXq2lGciIglC9/sHg3BdJ+OQwVEzHB7u33wnWueYSb9pxzZ1XqXNZ1Ns3rCIAWgwSOrbdqPA1Gqfmpoz4+w6oYb8ywnRAn6eOUeyJUqIHyTdFaUe1mtSYng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ub0Mpv5cHB6P5XhXuBcDWOOKEggKcKWL4jvtdH/6Fcc=;
+ b=ZZ4X2uYX+7nfve89nNrFIe3eUWYe8X2Vb/GSWXCLbX051wGHjTkua4w6AgawKcEjOC/8kI03V8ymkdSvNHWgmBk7dGs/2g+Ce8sltnUyOvX6f6Opw4gxW6hdZLp2NtAkMADFgHtLRidYWF/syQ3QKMy6Ep288NtwpPeh6uX5PGQ=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SJ2PR10MB7110.namprd10.prod.outlook.com (2603:10b6:a03:4cd::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Thu, 22 Feb
+ 2024 14:58:25 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7316.018; Thu, 22 Feb 2024
+ 14:58:25 +0000
+From: John Garry <john.g.garry@oracle.com>
+To: mcgrof@kernel.org, russ.weight@linux.dev, gregkh@linuxfoundation.org,
+        rafael@kernel.org
+Cc: linux-kernel@vger.kernel.org, masahiroy@kernel.org,
+        John Garry <john.g.garry@oracle.com>
+Subject: [PATCH] firmware_loader: Use init_utsname()->release
+Date: Thu, 22 Feb 2024 14:58:19 +0000
+Message-Id: <20240222145819.96646-1-john.g.garry@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BL1PR13CA0361.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::6) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 22 Feb 2024 15:56:47 +0100
-Message-Id: <CZBP1N5MVGE0.1WZ8ZWXXYT9WK@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v7 07/14] clk: eyeq5: add platform driver, and init
- routine at of_clk_init()
-Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
- <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>, "Vladimir
- Kondratiev" <vladimir.kondratiev@mobileye.com>,
- <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
-To: <andy.shevchenko@gmail.com>
-X-Mailer: aerc 0.15.2
-References: <20240221-mbly-clk-v7-0-31d4ce3630c3@bootlin.com>
- <20240221-mbly-clk-v7-7-31d4ce3630c3@bootlin.com>
- <ZdbWRFyq42XFdp9E@surfacebook.localdomain>
-In-Reply-To: <ZdbWRFyq42XFdp9E@surfacebook.localdomain>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ2PR10MB7110:EE_
+X-MS-Office365-Filtering-Correlation-Id: e28f635e-d8c9-4c2e-dc5f-08dc33b6b878
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	yVI8Lz9Axc4IMYnwBVSpBW6wadRWAuE+8O+wOmTsxzeI2kuQkx7ZiQvUQkyb+ij9eTfcglR9W0LGNdwkT8fotM3nVyo11iPVGqaYM7iB5AW44RtvqAUMJiAEQCWojPti0hU7Q9EPE0DcoXBqcWavqZtE5+aca/+u4goqVfPWgiOAmCZabakTnFNUOnkZ9xne/EB9TOkUxjk7hXxC4Bj+tGcLOrLYObCOIuY/YQeDq9c0apM+HcF0BGHAmD4bfS33xkUA6MvRUpzjA7dHNO5nVov3//VlF87DswGNaaiODa4RhsE2I3hDPjgqPRezXPxQZgiZv/aWeyNX998geZdoe8AnwrAQeNjNPmkqhLqsnDQvm1G88lqXkb9d7q+ZujloX0sce0c5p/wxtQWBEulJMEZTBuu2csHHBQVKqUqEHA+VT/0rQBYpKlrt+HjhrMvejX0hf4OFsqN1WvZTdeUwJwwk7xcfveWQxPrPivp3ujeE8OA2ghlk3Yn2G7/f503kIPcJNmnkE1VoVy8pY8EYpw==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?lZjO/Ev8/L412+UXNLk2HNAv6LGSIroLwXokZTKv1fp83B5y5YaaHQ159aq+?=
+ =?us-ascii?Q?LOXLcOT0EWCjDfNu2FvHs2fiaLzmsEp3DAWxkVB7VD/8l/i/Ty7oV/4AaKFC?=
+ =?us-ascii?Q?sLDy1SMLrPsqKz/VE+WR4ZgOknLhOJ8RHivR7575riv2FiIddLpuJCRqKAtZ?=
+ =?us-ascii?Q?YMK3jTWBnSA62G6D/ykejY3vBEw63uv9Q4LUJd7Oepf1jqpjBjHiKgasCKS6?=
+ =?us-ascii?Q?B5isj/7IrSBLena3SONLoi7hRjHfNoQtSU2KZPyCRttH9ZiHOZifGQD2Aq01?=
+ =?us-ascii?Q?6mknj54e+2ckyW4w4SXz13FtSg/OO3oAyFPmHMnh3vRMRgINr7bJwTYqhZoX?=
+ =?us-ascii?Q?iKrBsg1cKDWtaHefFtQVtu/7NOGjhZvW2XEhi9odgnUv34YmDimok/z7z7ee?=
+ =?us-ascii?Q?M3P1YDkIij7i6bdtzWXD9S36ONcnDrW356P0LhlmYptlLCSRkLWDk8axDFcP?=
+ =?us-ascii?Q?ktYrfAYl9V5tBfDfTLalBX53FmL0D3mQC0BNgNG1d/wk6kjgJQXEvt5HtJBz?=
+ =?us-ascii?Q?can225CGam1wYwL3dik1WExeOsktA544NNwcs/5gVgVMlfjMNrcC018URLWk?=
+ =?us-ascii?Q?Z8LFg7z6RKHn1a9dGG6R+h0qdfGUeEUiEl7Y3955bnXfxVbFKc2b3KE3qUwZ?=
+ =?us-ascii?Q?uyAX1Yj19kOQ6PS3OLJq+crNTjDvr4yVo2MRTTOn3weW/+FO7/6fKKRx1p5y?=
+ =?us-ascii?Q?tjTYY0hkHShz0VMKrLZRg9bReUH1JIN7bAp3KDVdo84IZCg9trsAab6VD3hF?=
+ =?us-ascii?Q?kbVvxd+7fDg5n/X3JWmVG7U+YAnSrrE0wWkYUAaoqCl7WwyDSxFbLeaBXpKc?=
+ =?us-ascii?Q?u8dznp1HqKjkpGeIoDYlBmpuQYAXvSSqSd8EielkJj6Y6WjJ7X65mHwry82A?=
+ =?us-ascii?Q?G7RR/et2Rj8uP5eK3lddSDvzVqXnmJERuLdwdHH8GEs8ff9UZ5rgFVFeZ0xr?=
+ =?us-ascii?Q?pFOFwq+xPw/0cd+DDsugT5Z1brICJ9UdZWXTn0EUERz6r2cpkdLLwOb3UeuF?=
+ =?us-ascii?Q?2kIhcb4QSNGsrHx6dDNvBa6IeDxW++hocT6gveKMCn5xgdzzEwaS5k6rW3HG?=
+ =?us-ascii?Q?127buGPjL26y6JlQ2GhtgvCpFpVd8N6jrPMUQ8b3OAJH4RzvtDro0LZK1QPy?=
+ =?us-ascii?Q?DhQUineh/oqF4Eu3JLTuqj2+c78lJB/yGMTzyiIkjDA3gU7n5701CAytDQak?=
+ =?us-ascii?Q?HhN2vHAKB028ghpgfDKpeIQP336XyBAUYAcX06vY9y9R/iMz7sewfNdwuP/V?=
+ =?us-ascii?Q?Qz5F7OxuLjRf3HWyrDrijfimP14GokDE9mMacF/CJU3Q0o0mQCWHgBiOmNbp?=
+ =?us-ascii?Q?8Ml3D1zAPC7ElLkKgDiTboT/SQF6uK5+r5tToKNnyfy71AW7b9hOivH/cB1u?=
+ =?us-ascii?Q?eodal97kLg9CWHu3rqyrZqP40p//TzcAdB+Uo+Ui6PCjkSvx1h2sCyRttHdw?=
+ =?us-ascii?Q?AzzN8mS2c+ISWx1/nYaxf4tsYj6tHz89XUWL/Jj9bJsV1PAkWw7ZgGUltiEs?=
+ =?us-ascii?Q?JNz2qBPt8qvvjq8leLXE4lOaHOP0OrZcSMxnNgFvBAtqXVc9Bdr2PPBCOvRB?=
+ =?us-ascii?Q?Xot7l/m1CvFVhDSk94wGDWu008tDq9scoQEVDHPJ1HP8DnKyVPxe4JaAAwj3?=
+ =?us-ascii?Q?ag=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	ilEmMoiIhwGJ/L4DTkNMtqu9Sj/VmyjtuSA2HPWCp4WhaMqUlIEKgKiitjcZWgXhI9v4dMSJ+PBt4f2IkCqyXGSra/ZX8vSc5pOONhKnsjPM6X+Qv8Jus+UQ9GUwjBTHZXkdNLlYMYF3+zM6MJ/BnVJRIZQj45gFVwpd+9RtH8oHEegglb7iil/KRB//2IWrYdD9zxv+bhRgbqDwoDuFUl05TXdpgLcsKLgiQltWjrPfwKVb1jaKAFVfIq8LHB7HRCjYzR84Za+JrESPMkygXcWPLrYdTM+Z6LnFOvzwcHA8ewxW+PafRtzYBJscBp7OpWoJJI4i359sbdxE1WbMrHuzTp45uesS7VDHofaYePx2/7e/voMw4EU8wXD19lAcWcUOcEhuEFOAsDfqLXeT8eOoWzgid8tkdtM1dHN9tsFhmwWw4A+cyUtvTbLrxlRAzP3ySH8ATpnbNUbGwKf0bPms3Yg4LB4/PGwxcg8+T760Dvf6DmDraSaTwOYFeUGxVPmylxCvVwhx+qCAgS9w+6CzaRk5Q5EnwhlsIf7lW8YFKlOfxERNmyBUJHFx33AAfAbCqBvZkEKtvUzWSjzbs0WK9Tb6KzyXpbbiZZx3fBQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e28f635e-d8c9-4c2e-dc5f-08dc33b6b878
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 14:58:25.2767
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +G8dBjwoP8PJiUuL4ZRUvjHxwUs6Yvp5TEG6gQOMhHBxEnmBq9sg7wKQ/bDZJjBVIUNaBjYvp2CPanQzRYNDnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7110
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_11,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402220119
+X-Proofpoint-GUID: mxKM1sxXNxJlIbV_vXYwRMunLl_GABYc
+X-Proofpoint-ORIG-GUID: mxKM1sxXNxJlIbV_vXYwRMunLl_GABYc
 
-Hello,
+Instead of using UTS_RELEASE, use init_utsname()->release, which means
+that we don't need to rebuild the code just for the git head commit
+changing.
 
-On Thu Feb 22, 2024 at 6:06 AM CET,  wrote:
-> Wed, Feb 21, 2024 at 07:22:15PM +0100, Th=C3=A9o Lebrun kirjoitti:
-> > Add the Mobileye EyeQ5 clock controller driver. It might grow to add
-> > support for other platforms from Mobileye.
-> >=20
-> > It handles 10 read-only PLLs derived from the main crystal on board. It
-> > exposes a table-based divider clock used for OSPI. Other platform
-> > clocks are not configurable and therefore kept as fixed-factor
-> > devicetree nodes.
-> >=20
-> > Two PLLs are required early on and are therefore registered at
-> > of_clk_init(). Those are pll-cpu for the GIC timer and pll-per for the
-> > UARTs.
->
-> ...
->
-> > +config COMMON_CLK_EYEQ5
-> > +	bool "Clock driver for the Mobileye EyeQ5 platform"
->
-> > +	depends on OF
->
-> Is this functional dependency? For compilation it seems you don't need
-> it, also see below.
+Since UTS_RELEASE is used for fw_path[] and this points to const data,
+append init_utsname()->release dynamically to an intermediate string.
 
-Indeed it is a functional dependency. See of_iomap() or
-of_property_match_string() usage for example. If CONFIG_OF=3Dn both build
-fine but have no behavior. In the case of such a driver having a
-polyfill that does nothing is not helpful, it'd be more useful to have
-the build fail.
+The check for appending uts release is if the string in fw_path[] ends
+in '/'. Since fw_path[] may include a path from the kernel command line
+in fw_path_para, and it would be valid for this string to end in '/',
+check for fw_path_para when appending uts release. 
 
-> > +	depends on MACH_EYEQ5 || COMPILE_TEST
-> > +	default MACH_EYEQ5
-> > +	help
-> > +		This driver provides the clocks found on the Mobileye EyeQ5 SoC. Its
-> > +		registers live in a shared register region called OLB. It provides 1=
-0
-> > +		read-only PLLs derived from the main crystal clock which must be con=
-stant
-> > +		and one divider clock based on one PLL.
->
-> Wrong indentation, have you run checkpatch?
+Signed-off-by: John Garry <john.g.garry@oracle.com>
+---
+Note: As mentioned by Masahiro in [0], when CONFIG_MODVERSIONS=y it
+could be possible for a driver to be built as a module with a different
+kernel baseline and so use a different UTS_RELEASE from the baseline. So
+now using init_utsname()->release could lead to a change in behaviour
+in this driver. However, considering the nature of this driver and how it
+would not make sense to build as module against a different tree, this
+change should be ok.
 
-`./scripts/checkpatch.pl --strict` on this commit does not complain
-about this help block indentation. I'll fix it anyway.
+[0] https://lore.kernel.org/lkml/CAK7LNAQ_r5yUjNpOppLkDBQ12sDxBYQTvRZGn1ng8D1POfZr_A@mail.gmail.com/
 
->
-> ...
->
-> > +#include <linux/bitfield.h>
-> > +#include <linux/bits.h>
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/mod_devicetable.h>
->
-> > +#include <linux/of_address.h>
->
-> Misused header. Also see below.
+diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+index 3c67f24785fc..9a3671659134 100644
+--- a/drivers/base/firmware_loader/main.c
++++ b/drivers/base/firmware_loader/main.c
+@@ -38,7 +38,7 @@
+ #include <linux/zstd.h>
+ #include <linux/xz.h>
+ 
+-#include <generated/utsrelease.h>
++#include <linux/utsname.h>
+ 
+ #include "../base.h"
+ #include "firmware.h"
+@@ -471,9 +471,9 @@ static int fw_decompress_xz(struct device *dev, struct fw_priv *fw_priv,
+ static char fw_path_para[256];
+ static const char * const fw_path[] = {
+ 	fw_path_para,
+-	"/lib/firmware/updates/" UTS_RELEASE,
++	"/lib/firmware/updates/", /* UTS_RELEASE is appended later */
+ 	"/lib/firmware/updates",
+-	"/lib/firmware/" UTS_RELEASE,
++	"/lib/firmware/", /* UTS_RELEASE is appended later */
+ 	"/lib/firmware"
+ };
+ 
+@@ -496,7 +496,7 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
+ 	size_t size;
+ 	int i, len, maxlen = 0;
+ 	int rc = -ENOENT;
+-	char *path, *nt = NULL;
++	char *path, *fw_path_string, *nt = NULL;
+ 	size_t msize = INT_MAX;
+ 	void *buffer = NULL;
+ 	dev_err(device, "%s suffix=%s\n", __func__, suffix);
+@@ -511,6 +511,12 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
+ 	if (!path)
+ 		return -ENOMEM;
+ 
++	fw_path_string = __getname();
++	if (!fw_path_string) {
++		__putname(path);
++		return -ENOMEM;
++	}
++
+ 	wait_for_initramfs();
+ 	for (i = 0; i < ARRAY_SIZE(fw_path); i++) {
+ 		size_t file_size = 0;
+@@ -521,16 +527,32 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
+ 		if (!fw_path[i][0])
+ 			continue;
+ 
++		len = snprintf(fw_path_string, PATH_MAX, "%s", fw_path[i]);
++		if (len >= PATH_MAX) {
++			rc = -ENAMETOOLONG;
++			break;
++		}
++
++		/* Special handling to append UTS_RELEASE */
++		if ((fw_path[i] != fw_path_para) && (fw_path[i][len - 1] == '/')) {
++			len = snprintf(fw_path_string, PATH_MAX, "%s%s",
++					fw_path[i], init_utsname()->release);
++			if (len >= PATH_MAX) {
++				rc = -ENAMETOOLONG;
++				break;
++			}
++		}
++
+ 		/* strip off \n from customized path */
+-		maxlen = strlen(fw_path[i]);
++		maxlen = strlen(fw_path_string);
+ 		if (i == 0) {
+-			nt = strchr(fw_path[i], '\n');
++			nt = strchr(fw_path_string, '\n');
+ 			if (nt)
+-				maxlen = nt - fw_path[i];
++				maxlen = nt - fw_path_string;
+ 		}
+ 
+ 		len = snprintf(path, PATH_MAX, "%.*s/%s%s",
+-			       maxlen, fw_path[i],
++			       maxlen, fw_path_string,
+ 			       fw_priv->fw_name, suffix);
+ 		if (len >= PATH_MAX) {
+ 			rc = -ENAMETOOLONG;
+@@ -588,6 +610,7 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
+ 		break;
+ 	}
+ 	__putname(path);
++	__putname(fw_path_string);
+ 
+ 	return rc;
+ }
+-- 
+2.31.1
 
-It provides of_iomap() and isn't indirectly included by anything else.
-Removing this include leads to a build error.
-
->
-> > +#include <linux/platform_device.h>
->
-> You have semi-random list of inclusions. Please, follow the IWUY principl=
-e.
->
-> Here I see _at least_ missing
-> array_size.h
-> err.h
-> io.h
-> slab.h
-> types.h
-
-Here is the list I land on. I've read the file from top to bottom
-checking out each symbol.
-
-#include <linux/array_size.h>
-#include <linux/bitfield.h>
-#include <linux/bits.h>
-#include <linux/clk-provider.h>
-#include <linux/device.h>
-#include <linux/err.h>
-#include <linux/init.h>
-#include <linux/io.h>
-#include <linux/module.h>
-#include <linux/of.h>
-#include <linux/of_address.h>
-#include <linux/platform_device.h>
-#include <linux/printk.h>
-#include <linux/slab.h>
-#include <linux/types.h>
-#include <dt-bindings/clock/mobileye,eyeq5-clk.h>
-
->
-> =20
-> ...
->
-> > +static int eq5c_pll_parse_registers(u32 r0, u32 r1, unsigned long *mul=
-t,
-> > +				    unsigned long *div, unsigned long *acc)
-> > +{
-> > +	if (r0 & PCSR0_BYPASS) {
-> > +		*mult =3D 1;
-> > +		*div =3D 1;
-> > +		*acc =3D 0;
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (!(r0 & PCSR0_PLL_LOCKED))
-> > +		return -EINVAL;
-> > +
-> > +	*mult =3D FIELD_GET(PCSR0_INTIN, r0);
-> > +	*div =3D FIELD_GET(PCSR0_REF_DIV, r0);
-> > +	if (r0 & PCSR0_FOUTPOSTDIV_EN)
->
-> > +		*div *=3D FIELD_GET(PCSR0_POST_DIV1, r0) *
-> > +			FIELD_GET(PCSR0_POST_DIV2, r0);
->
-> One line?
->
-> > +	/* Fractional mode, in 2^20 (0x100000) parts. */
-> > +	if (r0 & PCSR0_DSM_EN) {
-> > +		*div *=3D 0x100000;
-> > +		*mult =3D *mult * 0x100000 + FIELD_GET(PCSR1_FRAC_IN, r1);
-> > +	}
-> > +
-> > +	if (!*mult || !*div)
-> > +		return -EINVAL;
-> > +
-> > +	/* Spread spectrum. */
-> > +	if (!(r1 & (PCSR1_RESET | PCSR1_DIS_SSCG))) {
-> > +		/*
-> > +		 * Spread is 1/1000 parts of frequency, accuracy is half of
-> > +		 * that. To get accuracy, convert to ppb (parts per billion).
-> > +		 */
-> > +		u32 spread =3D FIELD_GET(PCSR1_SPREAD, r1);
->
-> Missing blank line.
->
-> > +		*acc =3D spread * 500000;
-> > +		if (r1 & PCSR1_DOWN_SPREAD) {
-> > +			/*
-> > +			 * Downspreading: the central frequency is half a
-> > +			 * spread lower.
-> > +			 */
-> > +			*mult *=3D 2000 - spread;
-> > +			*div *=3D 2000;
-> > +		}
-> > +	} else {
-> > +		*acc =3D 0;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
->
-> Looking at this function what I would do is to replace mul/div pair by
-> respective struct uXX_fract, add something like
->
-> #define mult_fract(fract, ...)		\
-> 	...
->
-> and replace those
->
-> 	*mult/*div *=3D ...
->
-> with
->
-> 	mult_fract(fract, 2000);
->
-> etc.
-
-I'm not sure I see the logic (?). We multiply div and mult by the same
-constant once, in the fractional mode if-statement. Would it clarify
-the code to add a new type?
-
-Let's try it out, the code would become:
-
-struct eq5c_fract { unsigned long mult, div; };
-
-static void mult_fract(struct eq5c_fract *fract, unsigned long c)
-{
-	fract->mul *=3D c;
-	fract->div *=3D c;
-}
-
-static int eq5c_pll_parse_registers(u32 r0, u32 r1,
-				    struct eq5c_fract *fract,
-				    unsigned long *acc)
-{
-	if (r0 & PCSR0_BYPASS) {
-		fract->mult =3D 1;
-		fract->div =3D 1;
-		*acc =3D 0;
-		return 0;
-	}
-
-	if (!(r0 & PCSR0_PLL_LOCKED))
-		return -EINVAL;
-
-	fract->mult =3D FIELD_GET(PCSR0_INTIN, r0);
-	fract->div =3D FIELD_GET(PCSR0_REF_DIV, r0);
-	if (r0 & PCSR0_FOUTPOSTDIV_EN)
-		fract->div *=3D FIELD_GET(PCSR0_POST_DIV1, r0) * FIELD_GET(PCSR0_POST_DIV=
-2, r0);
-
-	/* Fractional mode, in 2^20 (0x100000) parts. */
-	if (r0 & PCSR0_DSM_EN) {
-		mult_fract(fract, 0x100000);
-		fract->mult +=3D FIELD_GET(PCSR1_FRAC_IN, r1);
-	}
-
-	if (!fract->mult || !fract->div)
-		return -EINVAL;
-
-	/* Spread spectrum. */
-	if (!(r1 & (PCSR1_RESET | PCSR1_DIS_SSCG))) {
-		/*
-		 * Spread is 1/1000 parts of frequency, accuracy is half of
-		 * that. To get accuracy, convert to ppb (parts per billion).
-		 */
-		u32 spread =3D FIELD_GET(PCSR1_SPREAD, r1);
-		*acc =3D spread * 500000;
-		if (r1 & PCSR1_DOWN_SPREAD) {
-			/*
-			 * Downspreading: the central frequency is half a
-			 * spread lower.
-			 */
-			fract->mult *=3D 2000 - spread;
-			fract->div *=3D 2000;
-		}
-	} else {
-		*acc =3D 0;
-	}
-
-	return 0;
-}
-
-As-is, I'm not convinced. Maybe some other helpers would help? Still
-unsure: it would add indirection. If we did a lot of this fract
-manipulation (or if helpers existed globally) I'd understand but here
-we are talking about a 50 lines function.
-
->
-> ...
->
-> > +static int eq5c_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev =3D &pdev->dev;
-> > +	struct device_node *np =3D dev->of_node;
-> > +	void __iomem *base_plls, *base_ospi;
-> > +	struct clk_hw *hw;
-> > +	int i;
->
-> > +	if (IS_ERR(eq5c_clk_data))
-> > +		return PTR_ERR(eq5c_clk_data);
-> > +	else if (!eq5c_clk_data)
-> > +		return -EINVAL;
->
-> Besides unneeded 'else', why so complicated? Can't you choose one: either=
- NULL
-> or error pointer for the invalid state?
-
-IS_ERR(eq5c_clk_data) is in the case of an error in eq5c_init()
-execution. It allows eq5c_init() to pick the error int to return from
-probe. eq5c_clk_data =3D=3D NULL is in the case of eq5c_init() not being
-called, ie if arch doesn't call of_clk_init().
-
->
-> > +	base_plls =3D devm_platform_ioremap_resource_byname(pdev, "plls");
-> > +	base_ospi =3D devm_platform_ioremap_resource_byname(pdev, "ospi");
->
-> > +	if (!base_plls || !base_ospi)
-> > +		return -ENODEV;
->
-> Huh?! Are they not an error pointers and never be NULL?
-
-They are indeed error pointers; I'll be fixing that.
-
->
-> > +	for (i =3D 0; i < ARRAY_SIZE(eq5c_plls); i++) {
-> > +		const struct eq5c_pll *pll =3D &eq5c_plls[i];
-> > +		unsigned long mult, div, acc;
-> > +		u32 r0, r1;
-> > +		int ret;
-> > +
-> > +		r0 =3D readl(base_plls + pll->reg);
-> > +		r1 =3D readl(base_plls + pll->reg + sizeof(r0));
-> > +
-> > +		ret =3D eq5c_pll_parse_registers(r0, r1, &mult, &div, &acc);
-> > +		if (ret) {
-> > +			dev_warn(dev, "failed parsing state of %s\n", pll->name);
-> > +			continue;
-> > +		}
-> > +
-> > +		hw =3D clk_hw_register_fixed_factor_with_accuracy_fwname(dev, np,
-> > +				pll->name, "ref", 0, mult, div, acc);
-> > +		eq5c_clk_data->hws[pll->index] =3D hw;
->
-> Why do you feel the data with errorneous one (in some cases)? It's quite
-> unusual pattern.
-
-Actually many clk drivers put ERR_PTR(...) when a clock is not
-present/available/whatever. See:
-
-	$ git grep 'hws\[.*ERR_PTR' drivers/clk/
-
-Options from my POV are:
-
- - Put the error as-is.
- - Shadow the error with ENOENT or ENODEV.
- - Put NULL.
-
-I picked option 1. Would option 3 be better?
-
-I start eq5c_init() by marking all clocks as EPROBE_DEFER. So we must
-overwrite a value to all clks once we tried creating them. I thought
-putting the clk_hw_register_*() error would make sense.
-
-That makes me notice that if eq5c_pll_parse_registers() fails I don't
-put a value in the clk hw and leave the EPROBE_DEFER. I'll fix that.
-
->
-> > +		if (IS_ERR(hw)) {
-> > +			dev_err(dev, "failed registering %s: %ld\n",
-> > +				pll->name, PTR_ERR(hw));
-> > +		}
->
-> Besides unnecessity of {} can't you unify the output format by using
-> dev_err_probe() in all error messages in ->probe()?
-
-Sure, will remove {} and use dev_err_probe().
-
->
-> > +	}
-> > +
-> > +	hw =3D clk_hw_register_divider_table_parent_hw(dev, EQ5C_OSPI_DIV_CLK=
-_NAME,
-> > +			eq5c_clk_data->hws[EQ5C_PLL_PER], 0,
-> > +			base_ospi, 0, EQ5C_OSPI_DIV_WIDTH, 0,
-> > +			eq5c_ospi_div_table, NULL);
->
-> > +	eq5c_clk_data->hws[EQ5C_DIV_OSPI] =3D hw;
->
-> Same as above.
->
-> > +	if (IS_ERR(hw)) {
-> > +		dev_err(dev, "failed registering %s: %ld\n",
-> > +			EQ5C_OSPI_DIV_CLK_NAME, PTR_ERR(hw));
-> > +	}
->
-> Same as above.
->
-> > +	return 0;
-> > +}
->
-> ...
->
-> > +static struct platform_driver eq5c_driver =3D {
-> > +	.probe =3D eq5c_probe,
-> > +	.driver =3D {
-> > +		.name =3D "clk-eyeq5",
-> > +		.of_match_table =3D eq5c_match_table,
-> > +	},
-> > +};
->
-> > +
->
-> Redundant blank line.
->
-> > +builtin_platform_driver(eq5c_driver);
->
-> ...
->
-> > +	index_plls =3D of_property_match_string(np, "reg-names", "plls");
-> > +	index_ospi =3D of_property_match_string(np, "reg-names", "ospi");
-> > +	if (index_plls < 0 || index_ospi < 0) {
-> > +		ret =3D -ENODEV;
->
-> Why error codes are shadowed?
-
-Good question, I'll fix that.
-
-Thanks for your review! I've seen all remarks but not answered them all.
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
