@@ -1,67 +1,82 @@
-Return-Path: <linux-kernel+bounces-76826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A9E85FD35
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 135F485FCF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E811C2545B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:55:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E3431C22784
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1083B152DF4;
-	Thu, 22 Feb 2024 15:55:01 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2B4150983;
+	Thu, 22 Feb 2024 15:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I5F/XIpi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A03150998;
-	Thu, 22 Feb 2024 15:54:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D71914F9CF;
+	Thu, 22 Feb 2024 15:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617300; cv=none; b=UzpS+5BWOFXbq+j/oIP0UfVomSeadJr4VAuIZiNwIXk8jVPAfLTIcAvinqteid9QllUBx/DZS0hYXMLLh4OuTOul1f+yjsMCkPMF/JHHN/8BLNtL0xtk/SLCXPHbiCI14mH/iLuglkr5NJtrZDWNJjSxhX+3Yft1idL7ZORTZ+k=
+	t=1708616865; cv=none; b=QFl+DAcOKcG+/qVYIR6VTlP5NVrjva0tivBaezTv6oUdEvlPc/mTY3OIJT6vb0bhCEqrvSczV/5uVLHh4nKTPKp4IAxRaFr/dD1y3la/nErqkE6qbKLmbw8N5cBE8G/raxYlf9SGVnAGYNRtIxZo+DRFfjinXlBn6i+Fwffx6Do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617300; c=relaxed/simple;
-	bh=gluI6aLWg3nMLpFfEKPO6lsypiaxhhT0+Fr929aqaTI=;
+	s=arc-20240116; t=1708616865; c=relaxed/simple;
+	bh=qNO63zIkGbx+1iQfTUn4yfr86/RWZAYZ7RtIlx0aB0A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QRD3UOv3GxFG6uaHx8jho49sGmYVIv3HegFEYntOT9Ao1zetfQsZjdB9kfUAefFNl+2+Nt0OrP7ziIs18xP+YNweY40MKVXrKuvfhrXdSbd5zFlatVBr5Ew6/BvLgyT0i39mDRCm3VTLOx4MrT9L4H/FADI9Yyp2YiSAKgT1emM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 097AD2800B1CD;
-	Thu, 22 Feb 2024 16:45:30 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id ECB1B53E15B; Thu, 22 Feb 2024 16:45:29 +0100 (CET)
-Date: Thu, 22 Feb 2024 16:45:29 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Xing, Cedric" <cedric.xing@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dan Middleton <dan.middleton@linux.intel.com>,
-	Samuel Ortiz <sameo@rivosinc.com>, Qinkun Bao <qinkun@google.com>,
-	"Yao, Jiewen" <jiewen.yao@intel.com>,
-	Dionna Amalie Glaze <dionnaglaze@google.com>, biao.lu@intel.com,
-	linux-coco@lists.linux.dev, linux-integrity@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [RFC PATCH v2 0/4] tsm: Runtime measurement registers ABI
-Message-ID: <20240222154529.GA9465@wunner.de>
-References: <a255bc36-2438-41b7-b304-bcf7a6628bef@linux.intel.com>
- <42e14f74d3819c95fdb97cd2e9b2829dcb1b1563.camel@HansenPartnership.com>
- <1557f98a-3d52-4a02-992b-4401c7c85dd7@linux.intel.com>
- <85b7a4a679eada1d17b311bf004c2d9e18ab5cd3.camel@HansenPartnership.com>
- <b8140cc8-a56b-40f6-a593-7be49db14c77@intel.com>
- <fe1722c3618a8216cb53b8fd3f1b7cbb6fdff5a0.camel@HansenPartnership.com>
- <65c2e4aa54a0_d4122947f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <22088ed3-51a4-415f-932c-db84c92a2812@intel.com>
- <527da630-4952-4b1d-80c0-5a87997ff9fd@linux.intel.com>
- <332775d7218843d6cc168c963d76e6841eab5d5b.camel@HansenPartnership.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XRpkuqOc8puvUYzPW4ImP1PNT0vpEMb2yPQtF4my47NmHWANJAAA3b0HlJUO+waWJwIZ2uc1i/c4CFBlooAE0rJTPu4alDJCPYhqzVltDHQ0PzvFRMOFbkde11xifZxGitUPY6IeFuDx9pnHHyXznxFCqjAGg0GTO0zCUgB70CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I5F/XIpi; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708616863; x=1740152863;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qNO63zIkGbx+1iQfTUn4yfr86/RWZAYZ7RtIlx0aB0A=;
+  b=I5F/XIpiFZaWge5uEF4T6e5YwleZuX3hmtUyiMnn35h+h+WMCrdg704h
+   b0tj9IFNEiQ4Ab0eqIQI3CZTomamEuyqGzrXb52/244S4KufmRA6YwfCm
+   LQ++olQqQMh5XSUd/jYJDHztUBa0h4I97UBBhQVjdPx8pevzplKlx1CNX
+   x1wZpagItgybI8NCxC2tgGdktw9REDGcwbVFFcpv/1CEpI3EU23XY4RDc
+   a5LNhhIxwgMy8zJGNpoyNVDascT0aQZ/+aMB9A9AznyafRNCmY5CqJE8q
+   zWf0oxQyLDceMj9xAAzgIY6BenYVpUFYegsVnVkINeFH5h7jeKzt2O+Lw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2986570"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="2986570"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 07:47:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913545306"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="913545306"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 07:47:38 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rdBIN-00000006fSw-0zPE;
+	Thu, 22 Feb 2024 17:47:35 +0200
+Date: Thu, 22 Feb 2024 17:47:34 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v4 4/5] net: wan: fsl_qmc_hdlc: Add runtime timeslots
+ changes support
+Message-ID: <Zddslpw398MJ49SS@smile.fi.intel.com>
+References: <20240222142219.441767-1-herve.codina@bootlin.com>
+ <20240222142219.441767-5-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,97 +85,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <332775d7218843d6cc168c963d76e6841eab5d5b.camel@HansenPartnership.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240222142219.441767-5-herve.codina@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi James,
+On Thu, Feb 22, 2024 at 03:22:17PM +0100, Herve Codina wrote:
+> QMC channels support runtime timeslots changes but nothing is done at
+> the QMC HDLC driver to handle these changes.
+> 
+> Use existing IFACE ioctl in order to configure the timeslots to use.
 
-On Wed, Feb 07, 2024 at 04:46:36PM -0500, James Bottomley wrote:
-> Just to correct this: IMA uses its own log format, but I think this was
-> a mistake long ago and the new log should use TCG2 format so all the
-> tools know how to parse it.
+..
 
-At last year's Plumbers BoF on PCI device authentication & encryption,
-you requested that the kernel exposes proof of SPDM signature validation
-so that user space can verify after the fact that the kernel did
-everything correctly.
+> +static int qmc_hdlc_xlate_slot_map(struct qmc_hdlc *qmc_hdlc,
+> +				   u32 slot_map, struct qmc_chan_ts_info *ts_info)
+> +{
+> +	DECLARE_BITMAP(ts_mask_avail, 64);
+> +	DECLARE_BITMAP(ts_mask, 64);
+> +	DECLARE_BITMAP(map, 64);
 
-Your above comment seems to indicate that you prefer TCG2 CEL as the
-format to expose the information, however the format seems ill-suited
-for the purpose:
+Perhaps more 1:1 naming?
 
-Per TCG PFP v1.06r52 sec 3.3.7, an SPDM CHALLENGE event merely logs
-the nonce used.  That's not sufficient to verify the signature:
-The signature is computed over a hash of the concatenation of all
-the messages exchanged with the device:
+	DECLARE_BITMAP(rx_ts_mask_avail, 64);
+	DECLARE_BITMAP(tx_ts_mask, 64);
+	DECLARE_BITMAP(slot_map, 64);
 
-* GET_VERSION request + VERSION response
-* GET_CAPABILITIES request + CAPABILITIES response
-* NEGOTIATE_ALGORITHMS request + ALGORITHMS response
-* GET_DIGESTS request + DIGESTS response
-* GET_CERTIFICATE request + CERTIFICATE response (can be multiple)
-* CHALLENGE request + CHALLENGE_AUTH response
+> +	/* Tx and Rx available masks must be identical */
+> +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
+> +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
+> +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
+> +		return -EINVAL;
+> +	}
+> +
+> +	bitmap_from_u64(ts_mask_avail, ts_info->rx_ts_mask_avail);
+> +	bitmap_from_u64(map, slot_map);
+> +	bitmap_scatter(ts_mask, map, ts_mask_avail, 64);
+> +
+> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots %*pb -> (%*pb, %*pb)\n",
+> +			64, map, 64, ts_mask_avail, 64, ts_mask);
 
-The content of those SPDM messages is not necessarily static:
-E.g. the SPDM requester (the kernel) presents all supported algorithms
-and the SPDM responder (the device) selects one of them.
 
-If only the nonce is saved in the log, the verifier in user space would
-need to know exactly which algorithms were supported by the SPDM requester
-at the time the request was sent (could since have changed through a
-kernel update).  It also needs to know exactly which algorithm the
-SPDM responder picked.
+You can save a bit of code and stack:
 
-Armed with the knowledge which algorithm bits were set, the verifier
-would have to reconstruct the messages that were exchanged between
-SPDM requester and responder so that it can calculate the hash over
-their concatenation and verify the signature.
+		dev_err(qmc_hdlc->dev, "Cannot translate timeslots %64pb -> (%64pb, %64pb)\n",
+			slot_map, rx_ts_mask_avail, tx_ts_mask);
 
-The algorithm selection is but one example of bits that can vary between
-different requesters/responders and between different points in time.
-The SPDM protocol allows a great deal of flexibility/agility here.
+> +		return -EINVAL;
+> +	}
+> +
+> +	bitmap_to_arr64(&ts_info->tx_ts_mask, ts_mask, 64);
+> +	ts_info->rx_ts_mask = ts_info->tx_ts_mask;
+> +	return 0;
+> +}
 
-The nonces sent by requester and responder are not the only bits that are
-variable, is what I'm trying to say.  Storing the nonces in the log is
-sufficient to prove their freshness, but it is not sufficient to prove
-correct validation of the signature.
+..
 
-I'd have to store the full concatenation of all exchanged SPDM messages
-in the log to facilitate that.  Personally I have no problem doing so,
-but it won't be possible with the CEL format as currently specified by TCG.
+> +static int qmc_hdlc_xlate_ts_info(struct qmc_hdlc *qmc_hdlc,
+> +				  const struct qmc_chan_ts_info *ts_info, u32 *slot_map)
 
-So on the one hand I'd like to fulfil your Plumbers request to expose
-proof of correct signature validation and on the other hand you're
-requesting CEL format which is insufficient to fulfil the request.
-I don't really know how to reconcile that.
+Similar comments apply as per above function.
 
-I do see value in exposing the full concatenation of all exchanged
-SPDM messages:  It would allow piping that into wireshark or tshark
-to decode the messages into human-readable form, which might be useful
-for debugging SPDM communication with the device.
+..
 
-In fact, an SPDM dissector for wireshark already exists, though it's
-not up-to-date (last change 3 years ago) and probably needs a cleanup
-before it can be upstreamed:  https://github.com/jyao1/wireshark-spdm/
+> +	ret = qmc_chan_get_ts_info(qmc_hdlc->qmc_chan, &ts_info);
+> +	if (ret) {
+> +		dev_err(qmc_hdlc->dev, "get QMC channel ts info failed %d\n", ret);
+> +		return ret;
 
-I'm considering adding a custom sysfs interface which exposes the last,
-say, 64 SPDM events of each device, comprising:
+		return dev_err_probe(...);
 
-* type of event (CHALLENGE or GET_MEASUREMENTS)
-* timestamp
-* all exchanged messages
-* hash of all exchanged messages
-* hash algorithm used
-* signature received from device
-* certificate chain used for signature validation
+> +	}
 
-The memory consumption for all that data would be significant and the
-format wouldn't be TCG2 CEL, but it would fulfil your request to provide
-proof of signature verification.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thoughts?
 
-Thanks,
-
-Lukas
 
