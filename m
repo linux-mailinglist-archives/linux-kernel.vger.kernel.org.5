@@ -1,123 +1,134 @@
-Return-Path: <linux-kernel+bounces-76303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A06A85F568
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:14:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9EB85F56C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C5991C234F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:14:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 381A0285B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4063B2B6;
-	Thu, 22 Feb 2024 10:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E723A8EE;
+	Thu, 22 Feb 2024 10:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="f9Q6/AWH"
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="feNqPlSB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F50536B04;
-	Thu, 22 Feb 2024 10:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6D93E493;
+	Thu, 22 Feb 2024 10:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596830; cv=none; b=izNYcw9kHMh6S2yy2VKvPAUGznkg+LPYnb0IyelBBXPhoz+JEmyUr9NwKc/+MlKHTrJK2kf/g3BUYJC+cbDHC084tGhEpVsvzZYY8aBCmArJ31DUvsycaQadkVh9RZXjZJlC/8crpgSrQ5gquZsQ7z6jmULATnFtpzNKc9u3Ntg=
+	t=1708596840; cv=none; b=DIbD2jieqFQ9VCy0n42vPYAsyHWvMbQ5zy3Qv8eo9KUMTB6qimznpKz7pp/cw5ivl7dm7j+k4lgwzrZPxChVLPTEft5QbkCYGWHNLTFtv6O/6n8OWWUFEY4td+cgA2CYsdFfk6uxwUJ+LDEHjKxXHFYCcuOj6wm3A6t5jT8eD3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596830; c=relaxed/simple;
-	bh=oodbZWvTEemwzj3mJtwBbb3QxaynjlmsQCl4euKBi8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ogu2BEcFgHFC6o0ar1RQC6QK0E3kuL/LMpze2Ero5tHZQ8tqsL3w0EYT+htMrrMvag+6IP+ArNVW6C5cnchNWcwKYfAjMMLVZM+K4+kGOWwZTmrl0Q0d5oGqo9hR3G1YS+AMnoBj75IXD/pB+qgsqTzJYAYRyII0SAW5gwtaG6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=f9Q6/AWH; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1708596824; bh=oodbZWvTEemwzj3mJtwBbb3QxaynjlmsQCl4euKBi8w=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=f9Q6/AWHFaCV5i7PVa37Pf3A1FwEcLSQE60jeXxYf0draOKc+RfHpRyNb7w7DvKDc
-	 Ns7GlkvCm9iAl2r3xbATCjpbXlXItNcZyor2UiB4pJbRW5mZRM6cXALA6Y2MGruL29
-	 76MF+RaL1gY5oAbKMpiS1QqifS2PzYy9UirV3kmY=
-Received: from [IPV6:240e:688:100:1:5f9c:42f0:f9f2:a909] (unknown [IPv6:240e:688:100:1:5f9c:42f0:f9f2:a909])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 320EE60094;
-	Thu, 22 Feb 2024 18:13:44 +0800 (CST)
-Message-ID: <f93aed43-7100-445a-9909-52427dc201bd@xen0n.name>
-Date: Thu, 22 Feb 2024 18:13:43 +0800
+	s=arc-20240116; t=1708596840; c=relaxed/simple;
+	bh=Lhz2AqoIMkXphBZI972Ssa/mwT4KCllOKyWHciLNGxg=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=N+XalRNXXy56csNAAAMwxF0gJlBxYbzf4+ZuV2XcBlxBAcQ0bIlM3XSbPmhPuegQZ1YnBl/14DDt0uebv/w2ytQ+eL1GFXipWcNDKAMNrnoT/aqqTvr3BQAA3+8CezI5K0q0bCJCdFwjYyM68VdoM5u0JJ14iCCjlGM/BhW2Tkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=feNqPlSB; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708596839; x=1740132839;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Lhz2AqoIMkXphBZI972Ssa/mwT4KCllOKyWHciLNGxg=;
+  b=feNqPlSBVG1FtdTIc8mIFTyQ4DPu2me/OvyPuxBeCRUfKMNykeeIT9Hy
+   9LpCK3vJK2ygh4XLT96PY0DY9j3HaZGbOHnIciXytFWTxoYnaffJ2vF5H
+   ZcPeOWN5KrplkXmsKqtq9rO+ScPG6JJdPWlt+2ZHt38RCkzCPl0jvVVwX
+   m24U6yHJlQLgHXjszpZH8nr+46WMpEpPsi6VBurmqqmGRJcQ/+s5US/Ws
+   YGyVoquw3EUvogSW5V92lVYmlGzjiQa/PGsgucbT8duM0m5OxCpPqQn9g
+   zanBTwEZd9A7bnykQRMhYbgs5vOVsxWVqFoMsqRoTfDJNhtKvA+NsoAo1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2951225"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="2951225"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:13:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="827526207"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="827526207"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.249.55])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:13:55 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 22 Feb 2024 12:13:50 +0200 (EET)
+To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+cc: Fenghua Yu <fenghua.yu@intel.com>, 
+    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
+    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] selftests/resctrl: Simplify cleanup in ctrl-c
+ handler
+In-Reply-To: <c472e478-eaf1-0003-cf2d-c861e620fce2@linux.intel.com>
+Message-ID: <064e7069-9ed7-b7b2-b0e9-3e730cca39ff@linux.intel.com>
+References: <cover.1708596015.git.maciej.wieczor-retman@intel.com> <3a6639cd338a706bd2ed341aa6c717e1e79cc1f0.1708596015.git.maciej.wieczor-retman@intel.com> <c472e478-eaf1-0003-cf2d-c861e620fce2@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/6] LoongArch: Add pv ipi support on LoongArch VM
-Content-Language: en-US
-To: maobibo <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
- Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org
-References: <20240201031950.3225626-1-maobibo@loongson.cn>
- <0f4d83e2-bff9-49d9-8066-9f194ce96306@xen0n.name>
- <447f4279-aea9-4f35-b87e-a3fc8c6c20ac@xen0n.name>
- <4a6e25ec-cdb6-887a-2c64-3df12d30c89a@loongson.cn>
- <7867d9c8-22fb-4bfc-92dc-c782d29c56f9@xen0n.name>
- <542a8f4e-cec3-92d0-1cdd-43d112eec605@loongson.cn>
-From: WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <542a8f4e-cec3-92d0-1cdd-43d112eec605@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323328-2000140883-1708596830=:1961"
 
-On 2/22/24 18:06, maobibo wrote:
-> 
-> 
-> On 2024/2/22 下午5:34, WANG Xuerui wrote:
->> On 2/17/24 11:15, maobibo wrote:
->>> On 2024/2/15 下午6:25, WANG Xuerui wrote:
->>>> On 2/15/24 18:11, WANG Xuerui wrote:
->>>>> Sorry for the late reply (and Happy Chinese New Year), and thanks 
->>>>> for providing microbenchmark numbers! But it seems the more 
->>>>> comprehensive CoreMark results were omitted (that's also absent in 
->>>>> v3)? While the 
->>>>
->>>> Of course the benchmark suite should be UnixBench instead of 
->>>> CoreMark. Lesson: don't multi-task code reviews, especially not 
->>>> after consuming beer -- a cup of coffee won't fully cancel the 
->>>> influence. ;-)
->>>>
->>> Where is rule about benchmark choices like UnixBench/Coremark for ipi 
->>> improvement?
->>
->> Sorry for the late reply. The rules are mostly unwritten, but in 
->> general you can think of the preference of benchmark suites as a 
->> matter of "effectiveness" -- the closer it's to some real workload in 
->> the wild, the better. Micro-benchmarks is okay for illustrating the 
->> points, but without demonstrating the impact on realistic workloads, a 
->> change could be "useless" in practice or even decrease various 
->> performance metrics (be that throughput or latency or anything that 
->> matters in the certain case), but get accepted without notice.
-> yes, micro-benchmark cannot represent the real world, however it does 
-> not mean that UnixBench/Coremark should be run. You need to point out 
-> what is the negative effective from code, or what is the possible real 
-> scenario which may benefit. And points out the reasonable benchmark 
-> sensitive for IPIs rather than blindly saying UnixBench/Coremark.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I was not meaning to argue with you, nor was I implying that your 
-changes "must be regressing things even though I didn't check myself" -- 
-my point is, *any* comparison with realistic workload that shows the 
-performance mostly unaffected inside/outside KVM, would give reviewers 
-(and yourself too) much more confidence in accepting the change.
+--8323328-2000140883-1708596830=:1961
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-For me, personally I think a microbenchmark could be enough, because the 
-only externally-visible change is the IPI mechanism overhead, but please 
-consider other reviewers that may or may not be familiar enough with 
-LoongArch to be able to notice the "triviality". Also, given the 6-patch 
-size of the series, it could hardly be considered "trivial".
+On Thu, 22 Feb 2024, Ilpo J=E4rvinen wrote:
 
--- 
-WANG "xen0n" Xuerui
+> On Thu, 22 Feb 2024, Maciej Wieczor-Retman wrote:
+>=20
+> > Ctrl-c handler isn't aware of what test is currently running. Because o=
+f
+> > that it executes all cleanups even if they aren't necessary. Since the
+> > ctrl-c handler uses the sa_sigaction system no parameters can be passed
+> > to it as function arguments.
+> >=20
+> > Add a global variable to make ctrl-c handler aware of the currently run
+> > test and only execute the correct cleanup callback.
+> >=20
+> > Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+> > ---
 
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+> > diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/test=
+ing/selftests/resctrl/resctrl_val.c
+> > index 5a49f07a6c85..d572815436f3 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> > +++ b/tools/testing/selftests/resctrl/resctrl_val.c
+> > @@ -62,6 +62,7 @@ struct imc_counter_config {
+> >  static char mbm_total_path[1024];
+> >  static int imcs;
+> >  static struct imc_counter_config imc_counters_config[MAX_IMCS][2];
+> > +const struct resctrl_test *current_test;
+>=20
+> static const struct
+>=20
+> >  void membw_initialize_perf_event_attr(int i, int j)
+> >  {
+> > @@ -472,7 +473,7 @@ void ctrlc_handler(int signum, siginfo_t *info, voi=
+d *ptr)
+> >  =09if (bm_pid)
+> >  =09=09kill(bm_pid, SIGKILL);
+> >  =09umount_resctrlfs();
+> > -=09tests_cleanup();
+> > +=09current_test->cleanup();
+>=20
+> These calls should have if (current_test->cleanup()) guard. Isn't the=20
 
+Err, if (current_test->cleanup) is what I meant.
+
+> non-contiguous already test w/o the cleanup function?
+>=20
+> Other than those two, this looked okay.
+
+--=20
+ i.
+
+--8323328-2000140883-1708596830=:1961--
 
