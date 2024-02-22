@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-76789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C24785FC9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E01185FCA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE46D286AA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:39:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17B83286461
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD04814F9E7;
-	Thu, 22 Feb 2024 15:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C089214D45C;
+	Thu, 22 Feb 2024 15:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="keKtKI/3"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2047.outbound.protection.outlook.com [40.107.223.47])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="sUC9aYru"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2078.outbound.protection.outlook.com [40.107.95.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8FF14E2C1;
-	Thu, 22 Feb 2024 15:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D66E7150993;
+	Thu, 22 Feb 2024 15:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.78
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708616348; cv=fail; b=uogPUzSJ4iYK8T2Wcn+jzJt7wRtMrwP3Vu0Czr36xYiqG9NCCy7QKZuDxWeYxHtnspKlSSW76STHTDZvmZx+MAfzetZBbDenWPxCLZGWQpT9+X2H9YIa55v/SyWW2Z18c8MKmgcNHAht451gbR/ABAgwxcy8uYW/ZGLRrMaWdE4=
+	t=1708616358; cv=fail; b=MEg1s+by47U292Pzd/QPvkanEDz0CkDbjMVZb39o3M5d+mfYEEgGy2y3l2i/0cUlsBlGFdjQfMJn8IGdGkt/kqDZhQK+addIffwLKXpDWGm0gafqAEOz1roPWNOXqWesy3K3kRtXlv95JD4XdqPhEkHjT1ynD/dFge+i8IfhHY0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708616348; c=relaxed/simple;
-	bh=pVgDWY7Vh3oh0pn7BCdgxn5a1A4hpSLzYjWaE6znHuQ=;
+	s=arc-20240116; t=1708616358; c=relaxed/simple;
+	bh=1PKypLK2oER96MwVi6ukeVIyBLYb4YYpkyI91O/2gI0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nXAltRsV3kfVxy3YeGz0+r+oIwmM7rKLekSgnfLFH1XAQeApbW8eyPs5YEMaFClMxby8bhwOcwIraYllcPnu+UpWs+H+QR8jYcfAvIuGKAlnIbJPawp0bwe3dSjON+fH+GeSfs3ehPDXrGcaRBMOawaDIZMDCwPYitMUqD1QRvE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=keKtKI/3; arc=fail smtp.client-ip=40.107.223.47
+	 MIME-Version:Content-Type; b=AZ+TOdlPs2W9AjBbji+4xyH4CToMhXNGciMsp+BcQDz2vexis+BQw2HbB/RylPhM3w8xVIqB5jSedQx0Gu8tz0NL+0AxYcpQw4EHVnShHZ5fHtL0mRC80fsnSZhwnmrMd/HTlH3OEgYrs5ObnhIrdq2TWSu/CwcjC97QtyKg2R0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=sUC9aYru; arc=fail smtp.client-ip=40.107.95.78
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NWfnovSjWeoXuP4/jqljzMBmjbCAsTOnRf5wRc+UNqlRKSILMZk1TiUNudyDwsgLCyNVeXRHana8ls1UXHETCp/vuyvFh/WlclTAlJ1d+jzh81ki6vwqVBsNslnnEMi4RVfzcWmxI7BYBlLPPXXx7I6RRkU12fY/+TCreQtTXXiRfivXY3Pm3zWCq0R+hOmC44nglegN6SZIPBEhlgzi3xJF8M6fy/ymdkqQKeKvQhazHKYA3Xb9ZVryWcmBh7SVeKm3JLYt/28nk3yeFiRaqy3lf8aq7dgk/wrNR9i18LIPn6XfSIzNg2izOB4ilYGpSAfvgcHBxRGYwZuyn3heQw==
+ b=VfFlIxyjqGymg1To4zdxOfub+3v3boceeAMcx0eKvtcl0Wg68M8ZHfa7nBPKe38ZO8ULjrDNQGg2J+jpJI13xVSDrVxhqp10b8jgU23P2lLgTFbzgdfLYXGfEfG2izxT4DzGLJsMlsUOvJysEBj89hg0KTc4Yw4agDA44woz8uQnBQ3dVAAyBkjPUa027kZP0E66D1caesfD0zL7NknNouzshsITSNpquLBgWQPsdQV3DpxU2BCj65QjNcqU5e73hai8d1V/43d5tVhZzxEcvqj7cz+QIibACc9rWUE2hDUmtXwJYgkG7re8B2QYt/O/SkSf6/+MrXXDJfPh/Lfcjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hsoY10WdZw6+Rl0HTPa8ePLCVGbbC6QEqqiTEj/qlTA=;
- b=SDNTc3c4Fsg2ZONFLn3pzWQzrNQzvdDuLnTK/sCtoxj2knxfak1DSUlng+KX90swRcj343R/3htFTgQypauWCqSbFUJ7ImjT+rB6QppzWhG1MU0FbeZ87hxr/IhHZydwLRNu2MP/AkRXyB7aVbpERLU/CcbQkCRuU9yuklIXMNyzzx04WeX4uk89Se9bjdD3H2RGteNhjXxi2Awl+Z/qOqdotIspm/B4BOggNh7XHnb3OA/0ayxNQ6CcY4X6zrCvKJP93qriFOPsoa085hqVdMkuqTym5Ts+JmLy0HKsUPxD9Igbpftn2co86LghpsnZpej/0TGqZl3LL67iOQiBmA==
+ bh=5Jyx6kzP7fUom9fCjOWZFl/O6SQxEPBB9/Nh0WvrjGs=;
+ b=csjzH+pNYpVInXB1p4n5cs+ons7WWDb0LHHaMgycIRzO5mFo5TyW2dobxeu91gW7IHyyliugg5sJ7cx7dUCJJHsAiWtlq4FsnPin9HsPAA9fxk1z+jdXbQJvOCr0NCbwvIEwjLGUxQl4IkhzuzUqvHjBhfZzn808I7TH342kVhCTEA/xuckupbXhKxb+BHY2qof+WY8VNZm7tEDzEI4DBvsgVY3AC5UHrkGwDCdiHohsQMBwIO3fWkg4l+sRFxyxnuNlw3FC7EsfKXhKKPQZK+DunposQTiJJOZaJxNJ0axvtsbC56+YIQvBLlJ0W16fX7AUQTMICVgSnHSdkNYa0Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=microchip.com smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hsoY10WdZw6+Rl0HTPa8ePLCVGbbC6QEqqiTEj/qlTA=;
- b=keKtKI/3l4Z3hxgkIjSso7SRClfFgFpYwpvOwARZBxILYGdBMnsr6W4Qisy3NhGWGhad62GLbfPWLLL3wEgfHibNSARMQsz8Oc27DvCHvtkpx4ZGqIEVnGn4m06b6o4vYIF4UJAlx/z6fbVdGOvgNnYklJ3/TfP/LAboGI6elVw=
-Received: from BN0PR04CA0117.namprd04.prod.outlook.com (2603:10b6:408:ec::32)
- by CH2PR12MB4970.namprd12.prod.outlook.com (2603:10b6:610:67::9) with
+ bh=5Jyx6kzP7fUom9fCjOWZFl/O6SQxEPBB9/Nh0WvrjGs=;
+ b=sUC9aYrupW304aMvoz2/tM6mmVmIPQuUEEwKUAKelebyhS1ddkZbI+HdTgxBxvecFPT7m9rgdImTihEUm3o5mhtF+5tDP8gmvwX0pYkNcxAgjxN6OBiZ4tBeB+MsXU8ObH9aHW9I5Pkx3ZUA+OgRU0lsneMtnUWUTk+pLib7TU8=
+Received: from BN8PR12CA0025.namprd12.prod.outlook.com (2603:10b6:408:60::38)
+ by CY8PR12MB8340.namprd12.prod.outlook.com (2603:10b6:930:7a::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Thu, 22 Feb
- 2024 15:39:03 +0000
-Received: from BN1PEPF00004681.namprd03.prod.outlook.com
- (2603:10b6:408:ec:cafe::b9) by BN0PR04CA0117.outlook.office365.com
- (2603:10b6:408:ec::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Thu, 22 Feb
+ 2024 15:39:12 +0000
+Received: from BN1PEPF00004685.namprd03.prod.outlook.com
+ (2603:10b6:408:60:cafe::4) by BN8PR12CA0025.outlook.office365.com
+ (2603:10b6:408:60::38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
- Transport; Thu, 22 Feb 2024 15:39:03 +0000
+ Transport; Thu, 22 Feb 2024 15:39:11 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,20 +62,16 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN1PEPF00004681.mail.protection.outlook.com (10.167.243.87) with Microsoft
+ BN1PEPF00004685.mail.protection.outlook.com (10.167.243.86) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 15:39:03 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
+ 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 15:39:11 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 22 Feb
- 2024 09:39:03 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 22 Feb
- 2024 07:39:02 -0800
+ 2024 09:39:07 -0600
 Received: from xhdvineethc40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 22 Feb 2024 09:38:58 -0600
+ Transport; Thu, 22 Feb 2024 09:39:03 -0600
 From: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
 To: <nicolas.ferre@microchip.com>, <claudiu.beznea@tuxon.dev>,
 	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -84,9 +80,9 @@ To: <nicolas.ferre@microchip.com>, <claudiu.beznea@tuxon.dev>,
 	<linux@armlinux.org.uk>, <vadim.fedorenko@linux.dev>, <andrew@lunn.ch>
 CC: <vineeth.karumanchi@amd.com>, <netdev@vger.kernel.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <git@amd.com>
-Subject: [PATCH net-next v2 1/4] net: macb: queue tie-off or disable during WOL suspend
-Date: Thu, 22 Feb 2024 21:08:45 +0530
-Message-ID: <20240222153848.2374782-2-vineeth.karumanchi@amd.com>
+Subject: [PATCH net-next v2 2/4] net: macb: Add ARP support to WOL
+Date: Thu, 22 Feb 2024 21:08:46 +0530
+Message-ID: <20240222153848.2374782-3-vineeth.karumanchi@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240222153848.2374782-1-vineeth.karumanchi@amd.com>
 References: <20240222153848.2374782-1-vineeth.karumanchi@amd.com>
@@ -98,204 +94,211 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+Received-SPF: None (SATLEXMB04.amd.com: vineeth.karumanchi@amd.com does not
+ designate permitted sender hosts)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00004681:EE_|CH2PR12MB4970:EE_
-X-MS-Office365-Filtering-Correlation-Id: 71c73af5-5f9f-42bb-afa2-08dc33bc65f1
+X-MS-TrafficTypeDiagnostic: BN1PEPF00004685:EE_|CY8PR12MB8340:EE_
+X-MS-Office365-Filtering-Correlation-Id: 380395c1-66e3-443a-3642-08dc33bc6a8b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	6J2Yt+8RWBqy0yz1yVyyc7IOePaE/2cfeeNqOyBmEugQuLSyME83NzpG0kw8Xei5rIF9d/dhWuEkaPFg9du0yB2aOhjPY0qFT8n1ExW/ecc7fchS3E4qQedCGKHMnyCkpkqHaqFXAzW6Ol9M9emLZQgNSm1cM1XAQg90QNBjIWHQE1nT15KRp2zThwJ6ilZgN1ifG0rTpf1GZWChxtqoQs+5/238ptNnMKHRFGqe72Yn5ZZGFtOldN5B1dh+Y23x0oRHvf0cRKk2J2y/nIf1DsSPXbW6VxqUuHM91a6DZc6rhyPWkYNt8FngGa715gZM3ysY6XNSbU6MFwp+7kZ/6D2YanxKa/0UULtUUjpulGp2SXeYzdIlJ0whFzF53t2LxLUhB46kNWAY1eqnhPkiyCt3MO0Y52NrlWKO0zOQDfn0tIHkGx95GlTjPwPWUfN85wHrE3nypMCOL7B5E1MsO3hYxfTvIgDWQBpSdrREJU6wCd57LHCXsHoeDPBXedaNXvCUJ8zgKK2npLs2RNxtcAMZGbYzKqbot5WSZP4p6ndhQ7rG1hQi9Yuufj1k/KAYfRhIehFf7smRXmE7Bc4BMe3xaBzr3ldrI0d+mB9E2b3sM0IF8MDRDPHumd2WrD9d8JYhKCu0NPTkS4T6gxRT1hpTRabEVDigyRtdfMK84EU=
+	nIrukuAaEzigbLrbDqZPJg/t1E4QDQoD5txaLJCQsYwgb1mfZghbyyeJ0s4pr7kB40jp/eGg1+TQJfkX6FztAhh+yxoTmeqQhzPVQtAiFY9OwWsk9SpJQnObQe0DW1EGMa0aRn6Oqr588O8lmkg9U2Y19nbtVRy4uq2W7vDfMdZG4xURZXkDwNRnWEeGbIzMV/D5/wcwJs4jbly7jrD1j5kkG84EBZ0+KxRYuvBzItoN8azClOCIlMWW/6kED+sZfheyY0EyuFZMUg+in06YOkZHs+nSzYI+JuoHNOdsWPIJ0nVeXRqgCMYCos49/ZmishLKlHgSlfEbWu2mDXwQq0np8PJQQOIV5zv+/pkV64TnktR2HZvVuKIO3fnXCOG1g5bmFU2pXtrwuR1UacQjqWjNj3Tm5RZCcHxiCYU+4Zje5A6jszb2tjNtlpbPmBk75I4fAfumRFKszfe/SZq7LotFL/W4h9BrB7LuCd54G9wCKPlcsAHGIgNYoiFw2HzADhbE2p0XeVL9SRGF4AJoE5fNMhH/37hIqGcTiGJ+mMgpuP/hMCtT0H2HAkuLthlg7cRgbK9QQzDlJVMDo9W65oAlGC5ZMCp5jXQoQAXPUg4e9UoRUw+/IUBfBwdHyp1einNZxz7Ox/yEjtzpHHwoWZ5vfabcTriAMIcyDJyX6pg=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006)(921011);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004)(921011);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 15:39:03.6505
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 15:39:11.3831
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71c73af5-5f9f-42bb-afa2-08dc33bc65f1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 380395c1-66e3-443a-3642-08dc33bc6a8b
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00004681.namprd03.prod.outlook.com
+	BN1PEPF00004685.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4970
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8340
 
-When GEM is used as a wake device, it is not mandatory for the RX DMA
-to be active. The RX engine in IP only needs to receive and identify
-a wake packet through an interrupt. The wake packet is of no further
-significance; hence, it is not required to be copied into memory.
-By disabling RX DMA during suspend, we can avoid unnecessary DMA
-processing of any incoming traffic.
+-Add wake-on LAN support using ARP with the provision to select
+ through ethtool. Advertise wakeup capability in the probe and
+ get the supported modes from OS policy (MACB_CAPS_WOL).
 
-During suspend, perform either of the below operations:
+-Re-order MACB_WOL_<> macros for ease of extension.
+-Add ARP support configurable through ethtool, "wolopts" variable in
+ struct macb contains the current WOL options configured through ethtool.
 
-- tie-off/dummy descriptor: Disable unused queues by connecting
-  them to a looped descriptor chain without free slots.
-
-- queue disable: The newer IP version allows disabling individual queues.
+-For WOL via ARP, ensure the IP address is assigned and
+ report an error otherwise.
 
 Co-developed-by: Harini Katakam <harini.katakam@amd.com>
 Signed-off-by: Harini Katakam <harini.katakam@amd.com>
 Signed-off-by: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
 ---
- drivers/net/ethernet/cadence/macb.h      |  7 +++
- drivers/net/ethernet/cadence/macb_main.c | 60 ++++++++++++++++++++++--
- 2 files changed, 64 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/cadence/macb.h      |  2 +
+ drivers/net/ethernet/cadence/macb_main.c | 52 +++++++++++++++++-------
+ 2 files changed, 40 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
-index aa5700ac9c00..50cd35ef21ad 100644
+index 50cd35ef21ad..c9ca61959f3c 100644
 --- a/drivers/net/ethernet/cadence/macb.h
 +++ b/drivers/net/ethernet/cadence/macb.h
-@@ -645,6 +645,10 @@
- #define GEM_T2OFST_OFFSET			0 /* offset value */
- #define GEM_T2OFST_SIZE				7
- 
-+/* Bitfields in queue pointer registers */
-+#define MACB_QUEUE_DISABLE_OFFSET		0 /* disable queue */
-+#define MACB_QUEUE_DISABLE_SIZE			1
-+
- /* Offset for screener type 2 compare values (T2CMPOFST).
-  * Note the offset is applied after the specified point,
-  * e.g. GEM_T2COMPOFST_ETYPE denotes the EtherType field, so an offset
-@@ -733,6 +737,7 @@
- #define MACB_CAPS_NEEDS_RSTONUBR		0x00000100
+@@ -738,6 +738,7 @@
  #define MACB_CAPS_MIIONRGMII			0x00000200
  #define MACB_CAPS_NEED_TSUCLK			0x00000400
-+#define MACB_CAPS_QUEUE_DISABLE			0x00000800
+ #define MACB_CAPS_QUEUE_DISABLE			0x00000800
++#define MACB_CAPS_WOL				0x00001000
  #define MACB_CAPS_PCS				0x01000000
  #define MACB_CAPS_HIGH_SPEED			0x02000000
  #define MACB_CAPS_CLK_HW_CHG			0x04000000
-@@ -1254,6 +1259,8 @@ struct macb {
- 	u32	(*macb_reg_readl)(struct macb *bp, int offset);
- 	void	(*macb_reg_writel)(struct macb *bp, int offset, u32 value);
+@@ -1306,6 +1307,7 @@ struct macb {
+ 	unsigned int		jumbo_max_len;
  
-+	struct macb_dma_desc	*rx_ring_tieoff;
-+	dma_addr_t		rx_ring_tieoff_dma;
- 	size_t			rx_buffer_size;
+ 	u32			wol;
++	u32			wolopts;
  
- 	unsigned int		rx_ring_size;
+ 	/* holds value of rx watermark value for pbuf_rxcutthru register */
+ 	u32			rx_watermark;
 diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 898debfd4db3..f34933ef03b0 100644
+index f34933ef03b0..62d796ef4035 100644
 --- a/drivers/net/ethernet/cadence/macb_main.c
 +++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -2477,6 +2477,12 @@ static void macb_free_consistent(struct macb *bp)
- 	unsigned int q;
- 	int size;
+@@ -38,6 +38,7 @@
+ #include <linux/ptp_classify.h>
+ #include <linux/reset.h>
+ #include <linux/firmware/xlnx-zynqmp.h>
++#include <linux/inetdevice.h>
+ #include "macb.h"
  
-+	if (bp->rx_ring_tieoff) {
-+		dma_free_coherent(&bp->pdev->dev, macb_dma_desc_get_size(bp),
-+				  bp->rx_ring_tieoff, bp->rx_ring_tieoff_dma);
-+		bp->rx_ring_tieoff = NULL;
-+	}
-+
- 	bp->macbgem_ops.mog_free_rx_buffers(bp);
+ /* This structure is only used for MACB on SiFive FU540 devices */
+@@ -84,8 +85,9 @@ struct sifive_fu540_macb_mgmt {
+ #define GEM_MTU_MIN_SIZE	ETH_MIN_MTU
+ #define MACB_NETIF_LSO		NETIF_F_TSO
  
- 	for (q = 0, queue = bp->queues; q < bp->num_queues; ++q, ++queue) {
-@@ -2568,6 +2574,16 @@ static int macb_alloc_consistent(struct macb *bp)
- 	if (bp->macbgem_ops.mog_alloc_rx_buffers(bp))
- 		goto out_err;
+-#define MACB_WOL_HAS_MAGIC_PACKET	(0x1 << 0)
+-#define MACB_WOL_ENABLED		(0x1 << 1)
++#define MACB_WOL_ENABLED		(0x1 << 0)
++#define MACB_WOL_HAS_MAGIC_PACKET	(0x1 << 1)
++#define MACB_WOL_HAS_ARP_PACKET		(0x1 << 2)
  
-+	/* Required for tie off descriptor for PM cases */
-+	if (!(bp->caps & MACB_CAPS_QUEUE_DISABLE)) {
-+		bp->rx_ring_tieoff = dma_alloc_coherent(&bp->pdev->dev,
-+							macb_dma_desc_get_size(bp),
-+							&bp->rx_ring_tieoff_dma,
-+							GFP_KERNEL);
-+		if (!bp->rx_ring_tieoff)
-+			goto out_err;
-+	}
-+
- 	return 0;
- 
- out_err:
-@@ -2575,6 +2591,19 @@ static int macb_alloc_consistent(struct macb *bp)
- 	return -ENOMEM;
- }
- 
-+static void macb_init_tieoff(struct macb *bp)
-+{
-+	struct macb_dma_desc *desc = bp->rx_ring_tieoff;
-+
-+	if (bp->caps & MACB_CAPS_QUEUE_DISABLE)
-+		return;
-+	/* Setup a wrapping descriptor with no free slots
-+	 * (WRAP and USED) to tie off/disable unused RX queues.
-+	 */
-+	macb_set_addr(bp, desc, MACB_BIT(RX_WRAP) | MACB_BIT(RX_USED));
-+	desc->ctrl = 0;
-+}
-+
- static void gem_init_rings(struct macb *bp)
+ #define HS_SPEED_10000M			4
+ #define MACB_SERDES_RATE_10G		1
+@@ -3278,18 +3280,18 @@ static void macb_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
  {
- 	struct macb_queue *queue;
-@@ -2598,6 +2627,7 @@ static void gem_init_rings(struct macb *bp)
- 		gem_rx_refill(queue);
- 	}
+ 	struct macb *bp = netdev_priv(netdev);
  
-+	macb_init_tieoff(bp);
+-	if (bp->wol & MACB_WOL_HAS_MAGIC_PACKET) {
++	if (bp->wol & (MACB_WOL_HAS_MAGIC_PACKET | MACB_WOL_HAS_ARP_PACKET))
+ 		phylink_ethtool_get_wol(bp->phylink, wol);
+-		wol->supported |= WAKE_MAGIC;
+-
+-		if (bp->wol & MACB_WOL_ENABLED)
+-			wol->wolopts |= WAKE_MAGIC;
+-	}
++	wol->supported |= (bp->wol & MACB_WOL_HAS_MAGIC_PACKET) ? WAKE_MAGIC : 0;
++	wol->supported |= (bp->wol & MACB_WOL_HAS_ARP_PACKET) ? WAKE_ARP : 0;
++	/* Pass wolopts to ethtool */
++	wol->wolopts = bp->wolopts;
  }
  
- static void macb_init_rings(struct macb *bp)
-@@ -2615,6 +2645,8 @@ static void macb_init_rings(struct macb *bp)
- 	bp->queues[0].tx_head = 0;
- 	bp->queues[0].tx_tail = 0;
- 	desc->ctrl |= MACB_BIT(TX_WRAP);
+ static int macb_set_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+ {
+ 	struct macb *bp = netdev_priv(netdev);
++	bp->wolopts = 0;
+ 	int ret;
+ 
+ 	/* Pass the order to phylink layer */
+@@ -3300,11 +3302,14 @@ static int macb_set_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+ 	if (!ret || ret != -EOPNOTSUPP)
+ 		return ret;
+ 
+-	if (!(bp->wol & MACB_WOL_HAS_MAGIC_PACKET) ||
+-	    (wol->wolopts & ~WAKE_MAGIC))
++	if (!(bp->wol & (MACB_WOL_HAS_MAGIC_PACKET | MACB_WOL_HAS_ARP_PACKET)) ||
++	    (wol->wolopts & ~(WAKE_MAGIC | WAKE_ARP)))
+ 		return -EOPNOTSUPP;
+ 
+-	if (wol->wolopts & WAKE_MAGIC)
++	bp->wolopts |= (wol->wolopts & WAKE_MAGIC) ? WAKE_MAGIC : 0;
++	bp->wolopts |= (wol->wolopts & WAKE_ARP) ? WAKE_ARP : 0;
 +
-+	macb_init_tieoff(bp);
- }
++	if (bp->wolopts)
+ 		bp->wol |= MACB_WOL_ENABLED;
+ 	else
+ 		bp->wol &= ~MACB_WOL_ENABLED;
+@@ -5087,7 +5092,6 @@ static int macb_probe(struct platform_device *pdev)
+ 	bp->wol = 0;
+ 	if (of_property_read_bool(np, "magic-packet"))
+ 		bp->wol |= MACB_WOL_HAS_MAGIC_PACKET;
+-	device_set_wakeup_capable(&pdev->dev, bp->wol & MACB_WOL_HAS_MAGIC_PACKET);
  
- static void macb_reset_hw(struct macb *bp)
-@@ -5215,6 +5247,7 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 	bp->usrio = macb_config->usrio;
+ 
+@@ -5115,6 +5119,11 @@ static int macb_probe(struct platform_device *pdev)
+ 	/* setup capabilities */
+ 	macb_configure_caps(bp, macb_config);
+ 
++	if (bp->caps & MACB_CAPS_WOL)
++		bp->wol |= (MACB_WOL_HAS_ARP_PACKET | MACB_WOL_HAS_MAGIC_PACKET);
++
++	device_set_wakeup_capable(&pdev->dev, (bp->wol) ? true : false);
++
+ #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+ 	if (GEM_BFEXT(DAW64, gem_readl(bp, DCFG6))) {
+ 		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(44));
+@@ -5244,6 +5253,7 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 	struct net_device *netdev = dev_get_drvdata(dev);
+ 	struct macb *bp = netdev_priv(netdev);
+ 	struct macb_queue *queue;
++	struct in_ifaddr *ifa;
  	unsigned long flags;
  	unsigned int q;
  	int err;
-+	u32 tmp;
- 
- 	if (!device_may_wakeup(&bp->dev->dev))
- 		phy_exit(bp->sgmii_phy);
-@@ -5224,17 +5257,38 @@ static int __maybe_unused macb_suspend(struct device *dev)
+@@ -5256,6 +5266,12 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 		return 0;
  
  	if (bp->wol & MACB_WOL_ENABLED) {
++		/* Check for IP address in WOL ARP mode */
++		ifa = rcu_dereference(__in_dev_get_rcu(bp->dev)->ifa_list);
++		if ((bp->wolopts & WAKE_ARP) && !ifa) {
++			netdev_err(netdev, "IP address not assigned\n");
++			return -EOPNOTSUPP;
++		}
  		spin_lock_irqsave(&bp->lock, flags);
--		/* Flush all status bits */
--		macb_writel(bp, TSR, -1);
--		macb_writel(bp, RSR, -1);
-+
-+		/* Disable Tx and Rx engines before  disabling the queues,
-+		 * this is mandatory as per the IP spec sheet
-+		 */
-+		tmp = macb_readl(bp, NCR);
-+		macb_writel(bp, NCR, tmp & ~(MACB_BIT(TE) | MACB_BIT(RE)));
- 		for (q = 0, queue = bp->queues; q < bp->num_queues;
- 		     ++q, ++queue) {
-+			/* Disable RX queues */
-+			if (bp->caps & MACB_CAPS_QUEUE_DISABLE) {
-+				queue_writel(queue, RBQP, MACB_BIT(QUEUE_DISABLE));
-+			} else {
-+				/* Tie off RX queues */
-+				queue_writel(queue, RBQP,
-+					     lower_32_bits(bp->rx_ring_tieoff_dma));
-+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
-+				queue_writel(queue, RBQPH,
-+					     upper_32_bits(bp->rx_ring_tieoff_dma));
-+#endif
-+			}
- 			/* Disable all interrupts */
- 			queue_writel(queue, IDR, -1);
- 			queue_readl(queue, ISR);
- 			if (bp->caps & MACB_CAPS_ISR_CLEAR_ON_WRITE)
- 				queue_writel(queue, ISR, -1);
- 		}
-+		/* Enable Receive engine */
-+		macb_writel(bp, NCR, tmp | MACB_BIT(RE));
-+		/* Flush all status bits */
-+		macb_writel(bp, TSR, -1);
-+		macb_writel(bp, RSR, -1);
+ 
+ 		/* Disable Tx and Rx engines before  disabling the queues,
+@@ -5289,6 +5305,14 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 		macb_writel(bp, TSR, -1);
+ 		macb_writel(bp, RSR, -1);
+ 
++		tmp = (bp->wolopts & WAKE_MAGIC) ? MACB_BIT(MAG) : 0;
++		if (bp->wolopts & WAKE_ARP) {
++			tmp |= MACB_BIT(ARP);
++			/* write IP address into register */
++			tmp |= MACB_BFEXT(IP,
++					 (__force u32)(cpu_to_be32p((uint32_t *)&ifa->ifa_local)));
++		}
 +
  		/* Change interrupt handler and
  		 * Enable WoL IRQ on queue 0
  		 */
+@@ -5304,7 +5328,7 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 				return err;
+ 			}
+ 			queue_writel(bp->queues, IER, GEM_BIT(WOL));
+-			gem_writel(bp, WOL, MACB_BIT(MAG));
++			gem_writel(bp, WOL, tmp);
+ 		} else {
+ 			err = devm_request_irq(dev, bp->queues[0].irq, macb_wol_interrupt,
+ 					       IRQF_SHARED, netdev->name, bp->queues);
+@@ -5316,7 +5340,7 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 				return err;
+ 			}
+ 			queue_writel(bp->queues, IER, MACB_BIT(WOL));
+-			macb_writel(bp, WOL, MACB_BIT(MAG));
++			macb_writel(bp, WOL, tmp);
+ 		}
+ 		spin_unlock_irqrestore(&bp->lock, flags);
+ 
 -- 
 2.34.1
 
