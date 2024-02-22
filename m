@@ -1,114 +1,143 @@
-Return-Path: <linux-kernel+bounces-75841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E5085EFBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:18:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36B4185EFC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EA111C21281
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:18:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC612B219F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9111642F;
-	Thu, 22 Feb 2024 03:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444681754E;
+	Thu, 22 Feb 2024 03:19:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nHxwYSsW"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="w7PD8r1N"
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92CF196
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE67156E4;
+	Thu, 22 Feb 2024 03:19:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708571887; cv=none; b=aQXs6c/5mjXqmJcnGozpMHEZJf22mPs8Ts/1QYkAXVvZzCiFkpxuLGwG9bcUb5qSnnGd4jIc5+Mmmb8Mc6+GlrmHEqfY8JdFQLyykbE/FL3f5TENF+/uNGS19Uey54KDE68HhN2T27QoX1Go9T/+v9CuaISUvnahP96O+O8fwyY=
+	t=1708571986; cv=none; b=iuLBS5m7GYZ9qzrU+U5Zj8cBZ0ftzpvktRvG3f2qaYjFWjDYjiiuVvViEmOcxYhVtzK6pCG0V5ImKAm7Ek79qQE2YqrGIPR9RTb0WOAZHJymby5Z095SZMEG2DMEbk9rFWKnHF5mA3LM//tQvzypUuedeJzmjpeSvqAGsUEgfXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708571887; c=relaxed/simple;
-	bh=ut2MQZOrqW8b0JO5evMbU/RELMHsuGLLv4B+MctT77A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JkzIoElZTYmZdNvdMFmn5fl0uUwuc1SWYWyD6T4ksNI3L+ifQvlASjhxpFUSmENR1VW0eGu5UPF8EDm9qXsCELqxHa3OOZkmhRTbgpGvsuxCeNR8oAnalCPEdsSpFTgtIPdpQ6d6U9ka1GBnkwIvjLVYcLp7nzBkbzPnCV/KC0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nHxwYSsW; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bbbc6bcc78so5354240b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:18:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708571885; x=1709176685; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TOJkSuhWivZJymWAMGzD3PY6qOFwlgiao1u3KjRQcJ4=;
-        b=nHxwYSsWjsmmrhO+rvpZykPpCW+B/u5OqRRJE8QfY7A5aAWfWFU735wIRnUcc6xhHm
-         gAYFKn7L+beebHhAy0y36kde7Lh6ZvO3FumzKNj39o2IOGXXNfCwl35Q4dCgYI1zv45l
-         za740SeEKeQQuWvm+2zm38UM3mhcrOsoRpXu0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708571885; x=1709176685;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TOJkSuhWivZJymWAMGzD3PY6qOFwlgiao1u3KjRQcJ4=;
-        b=ncyx+mol+Y67kwL8lYLeSOs0Rc2VRpfLVcYKq4pBP22rhUzTTTxC+Q4oEZssnpyTDq
-         WO9H3x6PI/NHyoHLkdXg2yI8MEGMeqWQ96T7jIPe0nWdIEELeYducm7ua4K/m8MZqzAl
-         0EcQgyA/kTTUIP+Pd8sZL2d7mUxjr012rFv0xMAv4914oBKu5+cxCK4bQljMmr4VQLAz
-         bIr+M0ufyzxfn1Q8JYIfAkuTP3JZPyyS4svf/qC+pTML85tKd44lgpGHPT9yWBpDu2ey
-         VNxjeKIqOMlTFCAH513g2IbPSXn8t7Z8pbhsxNkKlzaalt9od7l+1OA0Oh9XtTuGAppB
-         R8+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWFUWwkzFgeYICvxI+kcSsAI6nfaslGujVEk0Tnggx2iboRNRl9xvD2W7dlmxu3xhzO6jW8zLAUUai0fApWywgR6VZlTViqAeNRn7Lc
-X-Gm-Message-State: AOJu0YwPdwO3hx1Z72TGoRRSeWoPK6Jzn0U6wmSxcj9ebFbURrhWHlAK
-	G8IrLKYr3Mfll3OFvYQfwbW0RH3o6CupCI4leyVe3NE5Fh0IbcmINLVSzr9+OA==
-X-Google-Smtp-Source: AGHT+IGTMpsL/5XtthAE7430SoPB33wlJCVuiERPjUrN4eGkK2pC/FKYBLUB64cCqoQX26AfYHp6nw==
-X-Received: by 2002:a05:6808:e85:b0:3c0:33b5:d1b0 with SMTP id k5-20020a0568080e8500b003c033b5d1b0mr22625106oil.10.1708571884942;
-        Wed, 21 Feb 2024 19:18:04 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:480:9ded:eece:6cb3])
-        by smtp.gmail.com with ESMTPSA id d24-20020aa78158000000b006e146124ae7sm9696211pfn.186.2024.02.21.19.18.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 19:18:04 -0800 (PST)
-Date: Thu, 22 Feb 2024 12:18:01 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kconfig: add some Kconfig env variables to make help
-Message-ID: <20240222031801.GG11472@google.com>
-References: <20240222031226.493692-1-senozhatsky@chromium.org>
+	s=arc-20240116; t=1708571986; c=relaxed/simple;
+	bh=ZR4uoLQTiEOwo3CnieSljcC/pC2fqYtStebX1jAXWJA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eSCR4ac1oDWsSFnQvbxgfxc4Posn7XLEuw/nLLU6r88kMHXooeTE+tkXTonpVUx5TVndC47aVNKbnC1xmIedInLdTJYoldQKzsUEIgbuJKh7tpFBA8F+DE/alVmwwHLGGmuYKRxTE1TTpaYZ6/WK4x00wEUHSebZ2rqjcqfLIlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=w7PD8r1N; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708571981; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=V9/JqdFP6+H5ZwF5GLxGFsL2hRG+X43V/o/Ie5ISJlI=;
+	b=w7PD8r1NPQ2OClkdgI7DKPnp8Of/q/UEv9hYF3u3DZjeKfgslGyn+f5a1phMX83XibkpD2+8jOU4Doox+YtB3uIt1ct38PlNHQlASziveVFTUucvoEx/9l6kfum10V3+jJMX0cD2/2TX6n4Mnr0RR8WgK25UlIF0hU9Y6RQLgy0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1.d02z_1708571979;
+Received: from 30.221.147.146(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W1.d02z_1708571979)
+          by smtp.aliyun-inc.com;
+          Thu, 22 Feb 2024 11:19:40 +0800
+Message-ID: <27a77b2a-ad9c-4247-9ddb-61fdf5bb3891@linux.alibaba.com>
+Date: Thu, 22 Feb 2024 11:19:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222031226.493692-1-senozhatsky@chromium.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] erofs: fix refcount on the metabuf used for inode
+ lookup
+Content-Language: en-US
+To: Sandeep Dhavale <dhavale@google.com>, Gao Xiang <xiang@kernel.org>,
+ Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>
+Cc: quic_wenjieli@quicinc.com, stable@vger.kernel.org,
+ kernel-team@android.com, linux-erofs@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+References: <20240221210348.3667795-1-dhavale@google.com>
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <20240221210348.3667795-1-dhavale@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On (24/02/22 12:12), Sergey Senozhatsky wrote:
-> Add a new section "Configuration environment variables" to
-> `make help` output in order to make it easier for people to
-> discover KCONFIG_WERRROR, etc.
+
+
+On 2/22/24 5:03 AM, Sandeep Dhavale wrote:
+> In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
+> we do not assign the target metabuf. This causes the caller
+> erofs_namei()'s erofs_put_metabuf() at the end to be not effective
+> leaving the refcount on the page.
+> As the page from metabuf (buf->page) is never put, such page cannot be
+> migrated or reclaimed. Fix it now by putting the metabuf from
+> previous loop and assigning the current metabuf to target before
+> returning so caller erofs_namei() can do the final put as it was
+> intended.
 > 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+
+
+LGTM.
+
+Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+
+
 > ---
->  scripts/kconfig/Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
+> Changes since v1
+> - Rearrange the cases as suggested by Gao so there is less duplication
+>     of the code and it is more readable
 > 
-> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> index ea1bf3b3dbde..109e28fd6209 100644
-> --- a/scripts/kconfig/Makefile
-> +++ b/scripts/kconfig/Makefile
-> @@ -158,6 +158,10 @@ help:
->  		if help=$$(grep -m1 '^# Help: ' $(f)); then \
->  			printf '  %-25s - %s\n' '$(notdir $(f))' "$${help#*: }"; \
->  		fi;)
-> +	@echo  ''
-> +	@echo  'Configuration environment variables:'
-> +	@echo  '  KCONFIG_WERROR                 - Turn some Kconfig warnings into error conditions'
-> +	@echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfing warn about all unrecognized config symbols'
-
-													^^ Kconfig   fat fingers
-
+>  fs/erofs/namei.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
+> index d4f631d39f0f..f0110a78acb2 100644
+> --- a/fs/erofs/namei.c
+> +++ b/fs/erofs/namei.c
+> @@ -130,24 +130,24 @@ static void *erofs_find_target_block(struct erofs_buf *target,
+>  			/* string comparison without already matched prefix */
+>  			diff = erofs_dirnamecmp(name, &dname, &matched);
 >  
->  # ===========================================================================
->  # object files used by all kconfig flavours
-> -- 
-> 2.44.0.rc0.258.g7320e95886-goog
-> 
+> -			if (!diff) {
+> -				*_ndirents = 0;
+> -				goto out;
+> -			} else if (diff > 0) {
+> -				head = mid + 1;
+> -				startprfx = matched;
+> -
+> -				if (!IS_ERR(candidate))
+> -					erofs_put_metabuf(target);
+> -				*target = buf;
+> -				candidate = de;
+> -				*_ndirents = ndirents;
+> -			} else {
+> +			if (diff < 0) {
+>  				erofs_put_metabuf(&buf);
+> -
+>  				back = mid - 1;
+>  				endprfx = matched;
+> +				continue;
+> +			}
+> +
+> +			if (!IS_ERR(candidate))
+> +				erofs_put_metabuf(target);
+> +			*target = buf;
+> +			if (!diff) {
+> +				*_ndirents = 0;
+> +				return de;
+>  			}
+> +			head = mid + 1;
+> +			startprfx = matched;
+> +			candidate = de;
+> +			*_ndirents = ndirents;
+>  			continue;
+>  		}
+>  out:		/* free if the candidate is valid */
+
+-- 
+Thanks,
+Jingbo
 
