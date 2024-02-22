@@ -1,209 +1,96 @@
-Return-Path: <linux-kernel+bounces-77129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C4786017F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:35:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113B2860182
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4B81C2260E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:35:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3926B1C23513
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569B815E5D4;
-	Thu, 22 Feb 2024 18:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RHBw1l36"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5559D548F4;
+	Thu, 22 Feb 2024 18:22:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0329415E5C1;
-	Thu, 22 Feb 2024 18:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B04F548E6
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708626009; cv=none; b=YVF5PzATnktkm6jtYQHMBB067ONbI3IO/5SS5fMWEzttz70IoyCH5GB0Qvq/b2Ydc3htM2oJzioKKzvfF4JrHZ9Cc5A3qSGY9t2l3h7P+9qY5bOi0BIMmbrN1twb1Bqij5cUubsIo20Qbto9JH6qjdll7Q3soTx4VrJKYeHwARY=
+	t=1708626125; cv=none; b=Z30eK5Gtcsc+zp6dNnFogBZ4fAdS4ORLY8Ux7PplM78fgniMV9p5W+1INcmU+qY0Kib+8v2OQNBAllMkmmzYAv7yJ1bcFuxMmQidpKfNX8UMV8xVjT1QMtJmKHeARR+IxjHbFAfVQoJLLPvw63g7gRLdzSFzer17QumRgZNrwDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708626009; c=relaxed/simple;
-	bh=G2HcIEgeyj0zzkIAObPGJCNbc6FFcutORUYAPK63Hzs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GkD0z28sRnQU4MGdzvo1v7QmmB5JJGIC8ucBIHYjPxR+PF+Xiv2fwDOvvAoLM/n2BCwCvXGt7keutBbkUMGxStagIYStmnqOFdCQ63gu7FKsOABDskF3NDZv2EOZBwy1vztrMjJKzDx3LuT/cs5vxmzPDVuWDqnXRRiHPmXN/HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RHBw1l36; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708626009; x=1740162009;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=G2HcIEgeyj0zzkIAObPGJCNbc6FFcutORUYAPK63Hzs=;
-  b=RHBw1l36hP1KnMTB5lhuXQ7FsUSBO+W70DXO/mD7QSwlQCIEyecn5x8B
-   kZnWO47KZSSIX+mVEzhnCcaCSBphhxf8AVjEJMftTMS9x4xW3llJKaOAm
-   EjO5VjydzXDsU5yRfDQjJLenVQOraatCAUEB9KuAg7PJwpX7VoJLWCdI3
-   wiIovn2LPp961EpGuTbibeODuV2dnlHmKH/TvjA5Dj5mJB75ee+9Qw8iJ
-   ixSqouwkqsdGQ7S7vgaKrZLCBia+siO+hhhK5BDIPzBZg63bEiSj9nKeu
-   3acKSExhPm/XzzYUNL6p+4/2yja2TwdWCgafm9aYLQqjZVQqSmpqKr0/S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13435014"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="13435014"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:20:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10264722"
-Received: from rdegger-desk1.amr.corp.intel.com (HELO [10.209.74.18]) ([10.209.74.18])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:20:07 -0800
-Message-ID: <83f0d77b-8ea4-4443-8077-6139bc905952@linux.intel.com>
-Date: Thu, 22 Feb 2024 10:20:06 -0800
+	s=arc-20240116; t=1708626125; c=relaxed/simple;
+	bh=97Tg+DwGMA04csHe9nB+KIigBSYghq8PAkVFMvrJ57Q=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=QaqBq3BZjLFZScHx42HdRajSFsxf1XXKpGiYzRzmqlVs8SGam8GClvekPoWjdcnD1Ce39az/v7MqN5vBdbDvurxFi34I6upwAME5sHIYphleDDe4Zzde/4RzbzL+ec7bnK8jms+4/NSS18QZaxaPUTc+neexwMikq2WvlYpl2sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3650bfcb2bfso725325ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:22:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708626123; x=1709230923;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RtNEI/4Zr5JmjLe0NXFrbfZxQOyOn8Q5SFKbwujF9s8=;
+        b=kf//xhkmUALTHtPc66ELu46QBfNVUO/vZFi6vMoU4gSKBbFEgUtXbYtcgZ27AmQ70w
+         8Za+7eYvbzYbTincrv4strXrVOu5HtsgQ/+4wlIFRya7+5RUK/ODuMJi7+9Yanqfpqw7
+         6m7v0rwbMt3qUV+HyAEd0EbUY0Jo8+5cXGBbYY7iS532gQ/rOiXTruA0FFHMaXtJfuUb
+         N/SSWgVyCX22au891xpsAobMLXiGrMGkmPo91xOazaaqhfJObYmJXSisrayt3XC0cfyz
+         HDmtUhTvd/RF7A+U32e2+VNDWet++YfTRwz98yM8jFntEKWAO41mpW8UUxE1SopHr7Op
+         ot3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVuwHru9pSYcG7YvZsv3DJx2kBTZsgVyprMKo2KU9FojZXAE3n7rJdd8PKX3wIL+2bGcPRAOqlzjDeJNh5oIx8WIQlQvAsFhyNnM6Bm
+X-Gm-Message-State: AOJu0Yyhm6aPAB0G8MuSWAHzSl5AbdgKEHgiZr8YOsFEjQYjscyb7uDE
+	cesrYzJDIU9lNaJ2dm3+m2jlUix/vnKG21wK10QuQXWy2l6iiNYC3Aaafth4YLtSiGkApoiHvJ9
+	K+X4nZgJmkcX/4xJ7Y0Om7uEh45OOyXtrlzmFhq03ytgVrISJPjlGPhw=
+X-Google-Smtp-Source: AGHT+IEpFT1CSBFiFs4xWJdv7kZs+tazOCwxhjUWG9LceWLo6+LE/qsPZ5lQjxIH/lO5QVtrkHfhN19TP5j+QgQ2OCYE9xNt/3y9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4] PCI/ASPM: Update saved buffers with latest ASPM
-Content-Language: en-US
-To: Vidya Sagar <vidyas@nvidia.com>, bhelgaas@google.com, macro@orcam.me.uk,
- ajayagarwal@google.com, ilpo.jarvinen@linux.intel.com,
- david.e.box@linux.intel.com, hkallweit1@gmail.com, johan+linaro@kernel.org,
- xueshuai@linux.alibaba.com
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
- mmaddireddy@nvidia.com, sagar.tv@gmail.com
-References: <20240108124248.1552420-1-vidyas@nvidia.com>
- <20240222174436.3565146-1-vidyas@nvidia.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240222174436.3565146-1-vidyas@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1745:b0:363:cf28:f1cc with SMTP id
+ y5-20020a056e02174500b00363cf28f1ccmr191061ill.3.1708626123755; Thu, 22 Feb
+ 2024 10:22:03 -0800 (PST)
+Date: Thu, 22 Feb 2024 10:22:03 -0800
+In-Reply-To: <0000000000008a0fa9060e1d198e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000029237c0611fc8535@google.com>
+Subject: Re: [syzbot] [mm?] [reiserfs?] general protection fault in
+ free_swap_cache (4)
+From: syzbot <syzbot+fd93e36ced1a43a58f75@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org, 
+	bristot@redhat.com, bsegall@google.com, chouhan.shreyansh630@gmail.com, 
+	dietmar.eggemann@arm.com, jack@suse.cz, jeffm@suse.com, juri.lelli@redhat.com, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, mgorman@suse.de, mingo@redhat.com, peterz@infradead.org, 
+	reiserfs-devel@vger.kernel.org, rkovhaev@gmail.com, rostedt@goodmis.org, 
+	syzkaller-bugs@googlegroups.com, vincent.guittot@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
-On 2/22/24 9:44 AM, Vidya Sagar wrote:
-> Many PCIe device drivers save the configuration state of their respective
-> devices during probe and restore the same when their 'slot_reset' hook
-> is called through PCIe Error Recovery Handler.
->
-> If the system has a change in ASPM policy after the driver's probe is
-> called and before error event occurred, 'slot_reset' hook restores the
-> PCIe configuration state to what it was at the time of probe but not to
-> what it was just before the occurrence of the error event.
-> This effectively leads to a mismatch in the ASPM configuration between
-> the device and its upstream parent device.
->
-> Update the saved configuration state of the device with the latest info
-> whenever there is a change w.r.t ASPM policy.
->
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
-> V4:
-> * Rebased on top of pci/aspm branch
->
-> V3:
-> * Addressed sathyanarayanan.kuppuswamy's review comments
->
-> V2:
-> * Rebased on top of the tree code
-> * Addressed Bjorn's review comments
->
->  drivers/pci/pcie/aspm.c | 28 ++++++++++++++++++++++++++--
->  3 files changed, 28 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index cfc5b84dc9c9..3db606ba9344 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1648,7 +1648,7 @@ static int pci_save_pcie_state(struct pci_dev *dev)
->  	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &cap[i++]);
->  	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
->  
-> -	pci_save_aspm_state(dev);
-> +	pci_save_aspm_l1ss_state(dev);
->  	pci_save_ltr_state(dev);
->  
->  	return 0;
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index b217e74966eb..9fe78eb8b07d 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -95,7 +95,7 @@ void pci_msix_init(struct pci_dev *dev);
->  bool pci_bridge_d3_possible(struct pci_dev *dev);
->  void pci_bridge_d3_update(struct pci_dev *dev);
->  void pci_aspm_get_l1ss(struct pci_dev *pdev);
-> -void pci_save_aspm_state(struct pci_dev *pdev);
-> +void pci_save_aspm_l1ss_state(struct pci_dev *pdev);
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-is this rename a review request? It is not clear from the commit log
-why you are doing it?
+    fs: Block writes to mounted block devices
 
->  void pci_restore_aspm_state(struct pci_dev *pdev);
->  void pci_save_ltr_state(struct pci_dev *dev);
->  void pci_restore_ltr_state(struct pci_dev *dev);
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 7f1d674ff171..a62648dd52bc 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -24,13 +24,29 @@
->  
->  #include "../pci.h"
->  
-> +static void pci_save_aspm_state(struct pci_dev *dev)
-> +{
-> +	struct pci_cap_saved_state *save_state;
-> +	u16 *cap;
-> +
-> +	if (!pci_is_pcie(dev))
-> +		return;
-> +
-> +	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
-> +	if (!save_state)
-> +		return;
-> +
-> +	cap = (u16 *)&save_state->cap.data[0];
-> +	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &cap[1]);
-> +}
-> +
->  void pci_aspm_get_l1ss(struct pci_dev *pdev)
->  {
->  	/* Read L1 PM substate capabilities */
->  	pdev->l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
->  }
->  
-> -void pci_save_aspm_state(struct pci_dev *pdev)
-> +void pci_save_aspm_l1ss_state(struct pci_dev *pdev)
->  {
->  	struct pci_cap_saved_state *save_state;
->  	u16 l1ss = pdev->l1ss;
-> @@ -309,10 +325,12 @@ static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
->  	struct pci_bus *linkbus = link->pdev->subordinate;
->  	u32 val = enable ? PCI_EXP_LNKCTL_CLKREQ_EN : 0;
->  
-> -	list_for_each_entry(child, &linkbus->devices, bus_list)
-> +	list_for_each_entry(child, &linkbus->devices, bus_list) {
->  		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
->  						   PCI_EXP_LNKCTL_CLKREQ_EN,
->  						   val);
-> +		pci_save_aspm_state(child);
-> +	}
->  	link->clkpm_enabled = !!enable;
->  }
->  
-> @@ -931,6 +949,12 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
->  		pcie_config_aspm_dev(parent, upstream);
->  
->  	link->aspm_enabled = state;
-> +
-> +	/* Update latest ASPM configuration in saved context */
-> +	pci_save_aspm_state(link->downstream);
-> +	pci_save_aspm_l1ss_state(link->downstream);
-> +	pci_save_aspm_state(parent);
-> +	pci_save_aspm_l1ss_state(parent);
->  }
->  
->  static void pcie_config_aspm_path(struct pcie_link_state *link)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170ec4b4180000
+start commit:   610a9b8f49fb Linux 6.7-rc8
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=48ca880a5d56f9b1
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd93e36ced1a43a58f75
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f4cc41e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d526ade80000
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
