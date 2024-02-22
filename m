@@ -1,143 +1,162 @@
-Return-Path: <linux-kernel+bounces-77337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044B58603F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:49:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D58860401
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE18028D134
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:49:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F4CD289A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DA271740;
-	Thu, 22 Feb 2024 20:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1EC7174C;
+	Thu, 22 Feb 2024 20:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4hnrQlT2"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SEO8GbkQ"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218C0107B4
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAF914B81E;
+	Thu, 22 Feb 2024 20:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708634966; cv=none; b=D2qhoIuWRssca8uZ/7TrowuU4WYFElsCL8nhk3tpLNgekecDoqJMvsS0CRbaMBW+9tTaOWcjb0FyZ8PD0G08Y20QqD6L9t6A4/+SxYCNDwc7IL2VUGKgAt1u5HdyASLPyBsKGWzYJjEyWd0eiL+7OznJuKyMRvFSZTyv+6acHtM=
+	t=1708635089; cv=none; b=FDLK24Emtj5WQjIJgNzuvpBHwKjQLMn4ncto9X3SRClHBaiCupCKnhOXNkLaVxa8O3Axdypc6hWyjXntgqoXIQMdzn30ezze6vA8xrRuGRCIUj8ibcvJswGXkbblw8EJLRrHC5mAbTdb8st+tctNexCI/vNtEOlH9BWaJD4ptD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708634966; c=relaxed/simple;
-	bh=t6lIHG5+4nq4OdH6rjR/34noTWcvT5l1VGyYFtSM6QE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ATKNCHR/F2OUj8q0RkUzKjMbqB4/08yF+GDvLFJaa9sk6ZpG7NyoK5G8xb43IGa/UryuQgIOsBAP2NkIX3OTCGcmEDfPEon/7XB6VJ0N/RMxuQYWp9MCHyMrOuoCZEbD8jklTQIRtTC/StUsPHlWia/gxNYdBKlnKjk2YwTBm68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4hnrQlT2; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-29a5bae5b3fso152983a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:49:23 -0800 (PST)
+	s=arc-20240116; t=1708635089; c=relaxed/simple;
+	bh=b7+uHMUj2gcp+zIE9cIZoMRwuVWLu76/OjKqXpXLskM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=CSZjqTmPOumCKHSBCM3QW86FreZwJVc0Q7USpGjNY19j+xiO1GP1qyNMul4bzHnoTpHhYj52vIXtsnVHDnV919tqF8W6YjD8wWwO8v5rb3FaQtjYMmJ2+DScqM53jAMJYLZBxXhDx1PwUaWhAxLJAXQ0UUV39GIkgbjrK/SXgpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SEO8GbkQ; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41241f64c6bso1433725e9.0;
+        Thu, 22 Feb 2024 12:51:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708634963; x=1709239763; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SRK9EHuaQ+JCWCMfavbkHoRAzX9PoIfHas8OXdMxkpQ=;
-        b=4hnrQlT25VPjn6pjfdLMqVPQrgy3o6Ag8Qug1l3WsqX8/NSwoHp14937uhHjxKCPEv
-         m35hgFl8uG8a35XKHoLcufELeTvuGKdLVaEgjT1G/RCGLJs1E7aUz7RW/GL4uBrRNlVQ
-         j2WItNtDvobYjy7Lbu9I2n1Ve4qM8wh8xNBtuL5E49RDRa0JYfhx0YDZWyEQzW419QJS
-         VRfj4cTwt38eEUoou+HacWr/xM7MdlcZA5GLZU+fuP2HieVzhV8x1J9DEN5PJzFNP692
-         99TobyXAFOb01ueQVTOhT5EeduMQhY6pDbsOKGVpSRE1MKezjnAqMTfi1Q2r0UZKCc+t
-         B7Ug==
+        d=gmail.com; s=20230601; t=1708635086; x=1709239886; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=guv65Bw2FKNAkGv/Wh3qjRvziyHipb80uH1upaj5asE=;
+        b=SEO8GbkQjuSEdBpLf/tV39fpiOmeSMi5c19n32c17suUTKsxvziO4cvYptMAc2E8sT
+         ZLkzDv8taGlNBoCu7uBb6+j/68ZVwihrpbet7D+h9FCM8xRC4oTZyVhXFHPqsHjS6T4q
+         6ccUEi+vLkhA0I5lFEqcx6c5bfuPv0hXkohnstzQFW89bqiFFfCVaNaYh53XThXMnWbf
+         t3StLNEcDF362NfJM0o+wUBKCme8jiymapMcrhIYTjvbhWE/yU9AHws1f0X7jM65C+yw
+         3W0eMWP1K95oukyWpHMJyzUlFBWwDbPBoYG0aguyDwQ++fpqlBwytDmYSMC2QRe395gj
+         PufA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708634963; x=1709239763;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SRK9EHuaQ+JCWCMfavbkHoRAzX9PoIfHas8OXdMxkpQ=;
-        b=uikfsUJdtH2i5NoSkNBv+9J21Ap+GEkYIVUjLt7YLcC4U94x1AJSf5Ea6sFZVHrZ6I
-         xP3+TA4j7lM/fqN2qDJUC6T7f/c/Pjt0cmlmxOEx4A/SQjs6Yg0uJwIG//bVuQJKmQJS
-         fFjptX/JHJ6dTlYsDOf9fG5HnPCX8RUxw++kUUAYCTEhCTCg6nrDKfR1lvvsZKQjg3lq
-         XVNfH5kOJ+vMfpK/nFj5W0OAcHxVHtM9JEhbyAmauZFnICUkAmlyL59UwrSRAHIeIt7p
-         WAk/lX4Ebgkwb8mhmmQyWQj7BRIkb+EYz/EaeHyu9JS66HxvFAxhJ8nWJ30/vBMihH0e
-         eCDQ==
-X-Gm-Message-State: AOJu0Ywz59HFqQdwfmsvgYxD9Yr4uY7qAX93uBEzyVABnjw0bGDZIQ+s
-	vIXYONTc3IunTxSFVsykQ49ruaOmmoCx1KrqHLgygWzQtoYMXqslfQtAwCUZ0qKd8CA5to+myur
-	EKd1DIiQgE59jlP4+zwxeB3QgkIuQ2aMX+AoQLMN8nBIomNI4ucL4yt1T0cR6TfatiQDv+NDQrl
-	6POyj3xXB3UimEnJBzx+d0F8DYhpkYqbYxfNjMBL+grjec
-X-Google-Smtp-Source: AGHT+IFZIu/dpLQatqQ76wt+ZwIKWWabdruAAQksE7eS0lDLNXhBRdw4mkS8madTKLUUBmxEESOqEWeliMC3
-X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a17:90b:2e05:b0:299:998d:1251 with SMTP id
- sl5-20020a17090b2e0500b00299998d1251mr76807pjb.6.1708634962783; Thu, 22 Feb
- 2024 12:49:22 -0800 (PST)
-Date: Thu, 22 Feb 2024 12:49:03 -0800
+        d=1e100.net; s=20230601; t=1708635086; x=1709239886;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=guv65Bw2FKNAkGv/Wh3qjRvziyHipb80uH1upaj5asE=;
+        b=rkEx4hdlc1qtX/oSQ5v+weq9Kr+595ZZp7hE5pLdmGZA4T5aYe2Uka+b9bPkfKb2eT
+         7OCV3Z4HzNmWrizN0O7YNdHbGmVQYA4dyEx8GerUJ6lFSFT2Xck6R8jGkujjI70ebDzt
+         wnr+tE2BikZBeGrcOeAQ5r32xFbAGbeJca+iwnQ+x/ASObwiAAU4hFRUVdoFpAJ8Q7Ng
+         uHOUGe84ApmwoROF7HcvGOqmcKD1dW9GWs5xcovyoHjgguyamqNSPSnAmYcTPnelt7mY
+         d2ofszX72FomCLwujaDGCCyIKoQVgCi4+rhCLYDpQwxlovfeeJwWGzkvYION3iMf6lKU
+         EeKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7obJseBEHLIfz6h6+Rg60NtfxtaPN+9UNTDx2zwzxt3Y2pi4xmhHX43vT3GgCzmXa4QPG8Pkrd4TxTsjvVPq+CCeTjIn8DDF0hdyTL2YpSYXlsX6JDcL3Ye+mv5MApZmF8hAn
+X-Gm-Message-State: AOJu0Yw6CmuIRhkBKvEvm3m1ehAaUZREQUplRq0KeJySwatqVRSFz8Ju
+	PCNGuILYI0C3QnAACPxaVZhVaBU/EKiyF2nq05OiDoa0ouOUKr/n
+X-Google-Smtp-Source: AGHT+IE0n6HgLNGjGpC3ZDTFWzOuU4YGgUV4uR5pCVv8QuVPQoewa8q/MLB34RVI3dgsLFURyluCEg==
+X-Received: by 2002:a5d:6108:0:b0:33d:20ca:8415 with SMTP id v8-20020a5d6108000000b0033d20ca8415mr149778wrt.63.1708635085743;
+        Thu, 22 Feb 2024 12:51:25 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id w17-20020adfcd11000000b0033cdbe335bcsm166783wrm.71.2024.02.22.12.51.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 12:51:25 -0800 (PST)
+Message-ID: <a4cd1adb-74d4-4eea-9f74-0d0ac3d79e44@gmail.com>
+Date: Thu, 22 Feb 2024 21:51:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240222204917.1719153-1-jstultz@google.com>
-Subject: [PATCH] [RFC] sched: Add trace_sched_waking() tracepoint to sched_ttwu_pending()
-From: John Stultz <jstultz@google.com>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: John Stultz <jstultz@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, kernel-team@android.com, 
-	Zimuzo Ezeozue <zezeozue@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Subject: [PATCH net-next 1/2] net: vxlan: enable local address bind for vxlan
+ sockets
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, idosch@nvidia.com, razor@blackwall.org,
+ amcohen@nvidia.com, petrm@nvidia.com, jbenc@redhat.com, b.galvani@gmail.com,
+ bpoirier@nvidia.com, gavinl@nvidia.com, martin.lau@kernel.org,
+ daniel@iogearbox.net, herbert@gondor.apana.org.au, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
+In-Reply-To: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Zimuzo reported seeing occasional cases in perfetto traces where
-tasks went from sleeping directly to trace_sched_wakeup()
-without always seeing a trace_sched_waking().
+This patch adds support for binding to a local address in vxlan sockets.
+It achieves this by using vxlan_addr union to represent a local address
+to bind to, and copying it to udp_port_cfg in vxlan_create_sock.
 
-Looking at the code, trace_sched_wakeup() is only called in
-ttwu_do_wakeup()
-
-The call paths that get you to ttwu_do_wakeup() are:
-try_to_wake_up() -> ttwu_do_wakeup()
-try_to_wake_up() -> ttwu_runnable() -> ttwu_do_wakeup()
-try_to_wake_up() -> ttwu_queue() -> ttwu_do_activate() -> ttwu_do_wakeup()
-sched_ttwu_pending() -> ttwu_do_activate() -> ttwu_do_wakeup()
-
-where trace_sched_waking() is currently called only in
-try_to_wake_up().
-
-So this patch adds a trace_sched_waking() call to
-sched_ttwu_pending(), so we see the same state machine
-transitions.
-
-With this change, the number of unexpected state transitions
-in perfetto was greatly reduced.
-
-This has been in my drafts for awhile, so I wanted to send
-this out for thoughts/feedback.
-
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: kernel-team@android.com
-Reported-by: Zimuzo Ezeozue <zezeozue@google.com>
-Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
 ---
- kernel/sched/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/vxlan/vxlan_core.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9116bcc90346..233f06360d6a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3894,6 +3894,7 @@ void sched_ttwu_pending(void *arg)
- 		if (WARN_ON_ONCE(task_cpu(p) != cpu_of(rq)))
- 			set_task_cpu(p, cpu_of(rq));
+diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_core.c
+index 16106e088c63..b5f3f946ebcd 100644
+--- a/drivers/net/vxlan/vxlan_core.c
++++ b/drivers/net/vxlan/vxlan_core.c
+@@ -3479,8 +3479,9 @@ static const struct ethtool_ops vxlan_ethtool_ops = {
+ 	.get_link_ksettings	= vxlan_get_link_ksettings,
+ };
  
-+		trace_sched_waking(p);
- 		ttwu_do_activate(rq, p, p->sched_remote_wakeup ? WF_MIGRATED : 0, &rf);
+-static struct socket *vxlan_create_sock(struct net *net, bool ipv6,
+-					__be16 port, u32 flags, int ifindex)
++static struct socket *vxlan_create_sock(struct net *net, bool ipv6, __be16 port,
++					u32 flags, int ifindex,
++					union vxlan_addr addr)
+ {
+ 	struct socket *sock;
+ 	struct udp_port_cfg udp_conf;
+@@ -3493,8 +3494,15 @@ static struct socket *vxlan_create_sock(struct net *net, bool ipv6,
+ 		udp_conf.use_udp6_rx_checksums =
+ 		    !(flags & VXLAN_F_UDP_ZERO_CSUM6_RX);
+ 		udp_conf.ipv6_v6only = 1;
++		memcpy(&udp_conf.local_ip6.s6_addr32,
++		       &addr.sin6.sin6_addr.s6_addr32,
++		       sizeof(addr.sin6.sin6_addr.s6_addr32));
+ 	} else {
+ 		udp_conf.family = AF_INET;
++		udp_conf.local_ip.s_addr = addr.sin.sin_addr.s_addr;
++		memcpy(&udp_conf.local_ip.s_addr,
++		       &addr.sin.sin_addr.s_addr,
++		       sizeof(addr.sin.sin_addr.s_addr));
  	}
  
+ 	udp_conf.local_udp_port = port;
+@@ -3512,7 +3520,8 @@ static struct socket *vxlan_create_sock(struct net *net, bool ipv6,
+ /* Create new listen socket if needed */
+ static struct vxlan_sock *vxlan_socket_create(struct net *net, bool ipv6,
+ 					      __be16 port, u32 flags,
+-					      int ifindex)
++					      int ifindex,
++					      union vxlan_addr addr)
+ {
+ 	struct vxlan_net *vn = net_generic(net, vxlan_net_id);
+ 	struct vxlan_sock *vs;
+@@ -3527,7 +3536,7 @@ static struct vxlan_sock *vxlan_socket_create(struct net *net, bool ipv6,
+ 	for (h = 0; h < VNI_HASH_SIZE; ++h)
+ 		INIT_HLIST_HEAD(&vs->vni_list[h]);
+ 
+-	sock = vxlan_create_sock(net, ipv6, port, flags, ifindex);
++	sock = vxlan_create_sock(net, ipv6, port, flags, ifindex, addr);
+ 	if (IS_ERR(sock)) {
+ 		kfree(vs);
+ 		return ERR_CAST(sock);
+@@ -3591,7 +3600,7 @@ static int __vxlan_sock_add(struct vxlan_dev *vxlan, bool ipv6)
+ 	if (!vs)
+ 		vs = vxlan_socket_create(vxlan->net, ipv6,
+ 					 vxlan->cfg.dst_port, vxlan->cfg.flags,
+-					 l3mdev_index);
++					 l3mdev_index, vxlan->cfg.saddr);
+ 	if (IS_ERR(vs))
+ 		return PTR_ERR(vs);
+ #if IS_ENABLED(CONFIG_IPV6)
 -- 
-2.44.0.rc0.258.g7320e95886-goog
-
+2.36.1
 
