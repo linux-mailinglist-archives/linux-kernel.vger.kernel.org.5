@@ -1,132 +1,106 @@
-Return-Path: <linux-kernel+bounces-76963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA4885FF22
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:19:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7943585FF25
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:19:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC7DE1F2C857
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:19:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A608289B3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9584159561;
-	Thu, 22 Feb 2024 17:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56E815530A;
+	Thu, 22 Feb 2024 17:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w5FaFJCO"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gMOPKaTA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCF5157E6C
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589AC1552EF;
+	Thu, 22 Feb 2024 17:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708622238; cv=none; b=SPxUJHxdrJXBvk0zoT8q8Hf5RW4fvFZoWg2Nf8i75mIEbS4aUH3+dEYF215aCpIludX4quEkyF+ao0Loqvw8+C2u3nKey+RcCjJYI73aLdnAzGfeO6ycU+IUrdnNgPFUVQnsHa6k0ZJc+iGzLlzBeFbpbpJVVCVEm+J89NwqrNU=
+	t=1708622282; cv=none; b=eRnssKK2D9nZ3MrI+rOp1QqqXB3NU9Q6hjPQTKDJwvfRVRxmm8a2ccwguo8a/UmK2YNLKhZz/fxzI8ea41DUVQx6SPhe3xmAYoBoTEwS8W12TphWIGqfnQ0bCLi0eTwCUh/FlndSdcc508Nk4z3fwZ0KvMfPOqYMFhQlxrskdxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708622238; c=relaxed/simple;
-	bh=4o1+/xiccn6IbZFyFdK5VsobG9GOTyhsglvL8I9FFnU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ovYh2MMf0Ovkf2LTJdSbNq9PjX6xxxVQuqoBBNdBxmGLcoyJCRPVezS8aFwWnf72sutZoqUIfwgVEAKzPzMTk0p3o+aE17gpX8d5A1lcwvdoXR6zuo0JcKO8tsaZ9Nn+lQFvlSzfYL2QNpVwIm6OHUERlX8LZKvaOd5FTDsZmek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w5FaFJCO; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4127190ad83so21705505e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:17:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708622235; x=1709227035; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MvlvisPT5Ben13N2VpV4ugUj5QGv6luxiD0ao9BxeLo=;
-        b=w5FaFJCO9D3RAF9eLMmVH3O+Yto/r9JtGBF+hRwr4fn6LD0Ga9YcnM4c5OIy/ZsU8B
-         0Ikzg1yHEe6uLBX/p/EXm8Njv4sWlT6baWKiDSZuOlLUUpvAXjYsyo99OszN9HRvZoHc
-         VuNih3CzpHGcn5SV+gQtO2kG+ghLssrYcvm9tgRRvCyLJyipvSUl2zHPyD0qimO5kVPw
-         +m4Poay8z1kKhaUM0Ii4XjfkTu2Bao13C4gLVoCyZnRKUI1uDBLmIVoiSbF43s8DLZyc
-         qVYaC2/XsLMU4ZM5Pn3cP61aWAOR8Ek05PfQBk+XqM61Ep3RG6m62GEOlItDu9gynIcX
-         l1aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708622235; x=1709227035;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MvlvisPT5Ben13N2VpV4ugUj5QGv6luxiD0ao9BxeLo=;
-        b=Ei8hQtDUc3OeY1aX/uhaOI4ac+kUx4guWjQ544JzfjnWkCNVYZZ5h7lTcCKXDKzXos
-         glg6bmKcb4QYSTmMyh5kMHiQiEIGzYudDHubVW7eyD3Ww39hWk8zQ9qMCrrQ/OOdjMIv
-         A4EWRKVIE3QLFurd3vASEntIUEzIQtNBYpWORQYUeBls0qA4ldqWGnJz6fPzdLB68Gxd
-         Q3+9LdWlestAH9N+zBCCGBdq1wz9eUIWkGNlHuuAunGZV6JSBDQ8QZx+h9JKqmp8ArVS
-         o/jFoTV+fqWJR8Zeh7wfZN6NoVQlTmT0toHqYN08pcQLsF3/7FmS7MVENdae8ouLaEFx
-         hiig==
-X-Forwarded-Encrypted: i=1; AJvYcCXpYd6JNGworbV1UKyLIl+rryDkpv3WWaszvBC7lJZv/Z35FvEca3HzUm92fq44wT78gXTJ801AomSnhVjuGF/nbox9rxMK2SFHMybB
-X-Gm-Message-State: AOJu0YzaO6y8+5pKtG3uq4AEd71DcUVi2u1svmAK8gF8LuhGGbr7TsFy
-	dcjzQaBQc+jfo2DLFIK5XFsf5FzdrPDCkdAJ6cHB1g4gKIMgZS0hrxyEt+vIFpw=
-X-Google-Smtp-Source: AGHT+IFh0J92vILaksmRT7F3B/QT/Hprse3K5+Rx3tOAYoCDqO3ED1yTgMeYAb00DS3QuDi++fmveA==
-X-Received: by 2002:a05:600c:a386:b0:411:ee70:ed5c with SMTP id hn6-20020a05600ca38600b00411ee70ed5cmr16596123wmb.12.1708622235258;
-        Thu, 22 Feb 2024 09:17:15 -0800 (PST)
-Received: from [127.0.1.1] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id u7-20020a7bc047000000b0040fe4b733f4sm6656512wmc.26.2024.02.22.09.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 09:17:14 -0800 (PST)
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date: Thu, 22 Feb 2024 17:17:04 +0000
-Subject: [PATCH v6 6/6] media: qcom: camss: vfe-17x: Rename camss-vfe-170
- to camss-vfe-17x
+	s=arc-20240116; t=1708622282; c=relaxed/simple;
+	bh=O/0Gz7vAaC3S8gLPnPm8qA1Nclu74fJDM5Pg0xVTtyk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NzjDIUF9IvfdIP2yLDHXXWKQ8MvePZkE77ehgK0hRtyqCaHVRLFsp7WXHhZt/PPGEJoRzw7VGJuNXxJVzGMT02IqEmdY57wGI3OUsqnHVyVz5YoSiGThLAU05yxjdkjwMGe+rZRTNPExw43o3oiXPNRmcnQZsMbiRLs8nfhkDWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gMOPKaTA; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708622280; x=1740158280;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=O/0Gz7vAaC3S8gLPnPm8qA1Nclu74fJDM5Pg0xVTtyk=;
+  b=gMOPKaTAF61gyHWbKikw3IZ5Ad3/ps94TsUA83JbXox+p7cqN8JXRpfI
+   2h11bQghu19s5B3quAH4SBcluJqlzZ4wIdn0QD5CJGLoGQrsKDVwuIKND
+   JVVlMW57X5sxHWTL4/MbdyD5r7yGSHRSrGYmPbYd+fvjojOsF8tJdI5BI
+   sdc4KWAiW+NgVSZkIUnrKNp9lfn9GQrrH9ptXuvOm3rSbFtiTsBL/VoJ9
+   iHavKs9s4ZawdOnHywo8G3bpqgmzs6tyJyrmHQEr/cfbm5jprmyG3uNeG
+   Cy+IJChzDwVruqTAkoyKU8dMKCK9DjfF5Am9fk3GY+743zOxk1QJ9QJ4G
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6683638"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="6683638"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 09:17:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913558245"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="913558245"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 09:17:58 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rdChn-00000006ggT-3yHX;
+	Thu, 22 Feb 2024 19:17:55 +0200
+Date: Thu, 22 Feb 2024 19:17:55 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] kernel.h: Move lib/cmdline.c prototypes to
+ string.h
+Message-ID: <ZdeBwyCyFx13LTEC@smile.fi.intel.com>
+References: <20231003130142.2936503-1-andriy.shevchenko@linux.intel.com>
+ <202310031638.D39E80C32B@keescook>
+ <CAHp75VeqvxjqXjmF8ymEYevJkCoQVnkJiuBkccHuGsU_E14LzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240222-b4-camss-sc8280xp-v6-6-0e0e6a2f8962@linaro.org>
-References: <20240222-b4-camss-sc8280xp-v6-0-0e0e6a2f8962@linaro.org>
-In-Reply-To: <20240222-b4-camss-sc8280xp-v6-0-0e0e6a2f8962@linaro.org>
-To: hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com, 
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Robert Foss <rfoss@kernel.org>, 
- Todor Tomov <todor.too@gmail.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org, 
- matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc: linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-X-Mailer: b4 0.13-dev-4e032
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VeqvxjqXjmF8ymEYevJkCoQVnkJiuBkccHuGsU_E14LzA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-vfe-170 and vfe-175 can be supported in the same file with some minimal
-indirection to differentiate between the silicon versions.
+On Wed, Oct 04, 2023 at 12:27:41PM +0300, Andy Shevchenko wrote:
+> On Wed, Oct 4, 2023 at 2:39 AM Kees Cook <keescook@chromium.org> wrote:
+> > On Tue, Oct 03, 2023 at 04:01:42PM +0300, Andy Shevchenko wrote:
+> > > The lib/cmdline.c is basically a set of some small string parsers
+> > > which are wide used in the kernel. Their prototypes belong to the
+> > > string.h rather then kernel.h.
+> >
+> > I think these should live in string_helpers.h not string.h (which is, in
+> > theory, supposed to be used for the standard C string library functions,
+> > though that's not 100% currently)...
+> 
+> These are being used in the early stages where usually we have
+> string.h. So, I would argue, but if you insist, I can move them. What
+> about lib/argv_slit.c then? Because semantically it's quite close to
+> what the lib/cmdline.c is doing.
 
-sdm845 uses vfe-170, sc8280xp uses vfe-175-200. Lets rename the file to
-capture its wider scope than vfe-170 only.
-
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/Makefile                             | 2 +-
- drivers/media/platform/qcom/camss/{camss-vfe-170.c => camss-vfe-17x.c} | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
-index 4e2222358973..0d4389ab312d 100644
---- a/drivers/media/platform/qcom/camss/Makefile
-+++ b/drivers/media/platform/qcom/camss/Makefile
-@@ -14,7 +14,7 @@ qcom-camss-objs += \
- 		camss-vfe-4-1.o \
- 		camss-vfe-4-7.o \
- 		camss-vfe-4-8.o \
--		camss-vfe-170.o \
-+		camss-vfe-17x.o \
- 		camss-vfe-480.o \
- 		camss-vfe-gen1.o \
- 		camss-vfe.o \
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-17x.c
-similarity index 100%
-rename from drivers/media/platform/qcom/camss/camss-vfe-170.c
-rename to drivers/media/platform/qcom/camss/camss-vfe-17x.c
+So, if no further ARs, can we got this applied and move on?
 
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
+
 
 
