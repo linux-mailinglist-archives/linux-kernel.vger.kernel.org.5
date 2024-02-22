@@ -1,113 +1,106 @@
-Return-Path: <linux-kernel+bounces-77197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9F08601F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:54:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B17798601F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC3D1F25587
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:54:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E344A1C26589
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AEE6E602;
-	Thu, 22 Feb 2024 18:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jZnn94kL"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F56871744;
+	Thu, 22 Feb 2024 18:47:48 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17CA6E5E1
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F006E5E1;
+	Thu, 22 Feb 2024 18:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708627627; cv=none; b=PHRq0T2KZVAw0MmjIAuh5UoMd8f+p19J53aC9Y06mUhybPInPs5aYEoQmUUyvVNq7kAy/3ZHrNlYOmkGw3jdJwjEZeD9q4QvQ/qxn0bmXwXZTTEsCOro9/ihcpLlNcOH90Gvr9ARyx2H09JKrN6q6oxlclZ9sDMSFwgrdF3JZU0=
+	t=1708627667; cv=none; b=FlcVVQYpcoQ9vxxDfHhNtzCGKQjwcd4sez0MDHbBWjTTmADyWkoFqcYDOGz9jcdEHVFLTcHB9CQag4e74JfxsxUhwkOTgcyF1rBR4JviX91ctPPvutDKmYpXl43ht5vpn/YlpWVPtZ/3Ug1D5fbrzx4odWoA80jjFgst1qZfWkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708627627; c=relaxed/simple;
-	bh=NwoZ/s/YB6zInacwyEad3YhKFkgtInk+ILfXRdyVvto=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lDIHlzLh2k0COtwKvozwR7MhfLC9AXjOtSzT2YXvdppYcnj6yD4YuLxA3cEZPAQSy6s4M2OhvW5EiMM/4cuknc+2lgxPs6zFV6bwo4idcOplwKhqz+uJfD/eT65n0zrC9SAAc0ijBDmkGYou9BHMIhQxi6FsxqmjxLBSL26D3dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jZnn94kL; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e4560664b5so1934528b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708627625; x=1709232425; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W4vpO/kuwhEAbu5lyhpp3cdM+wCLzEUK+hlVl6YVNB0=;
-        b=jZnn94kLXyYka+9eXc6AizHVEys8TFY2OiJFG7PIg2WwOoOPGz/WnjIUBC7K1XuDyA
-         N9WXbD4i43+FAb+UXraPUYghcAZtBZ9c/hsS++vfJPdXD4DWX6Tn2LFckfPHMQVQ39OA
-         b5jXaD5DSRAvbP8DPkBMeXcy0mMxLq472fvQY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708627625; x=1709232425;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W4vpO/kuwhEAbu5lyhpp3cdM+wCLzEUK+hlVl6YVNB0=;
-        b=ep6i6jhEKD9Kmg77Lbs7HcpDg8FQvwrCrXv3Wjf/JADWyE6EMI7BtoppXzCvYpf47o
-         zFIIcP9kysQ1PuI+6/pMXc86xB3FZdEKYuVi8lDX1dS0dxwKF8htmUIWUEqDpTzk0f8f
-         Bg/9LERqhPQ9dVSDbzMswEeWtPlrRFbTS+OZ3fbFk602wsWZoomKxoTfaBvgLyWRd/we
-         Zb5h+jotNJFM1zUxSkSz+eH3XqxHNLNarI4dGnogzSlsnnMfycknfwsPvXQWT0mfVZ0Z
-         90Dcs6nW0hhM23dSDeMoOyu8LcM3GrizDz47noJTzVn+4soOhYqgN14JKfhidrtAeOcb
-         gD2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUQmM6Sir6ZIaRA/+GJm2czbTXqJgInFqFORAEM8Kr2VdnfTwWf7V/nXE71n9L+EgxVoifAcPo7G+VYSISnuW2c8mDolPW3l7QmsVPk
-X-Gm-Message-State: AOJu0YxiY4IP9ywdIO8sMvTsRCBEo++rLTjKEmk1ZdasTrdcjlOOkCub
-	SpYMWYo9sNZOpJ2mvbU4+EoQpfr/9VqNWcresBGBMjUGkwjStacDl2UI+JDP9A==
-X-Google-Smtp-Source: AGHT+IHgy3WwdGAsnQPmK2m2JDsitnCNDlW/VOsDIP4yBtdVhbhIse0VsuYogkkxJuuqsoNLgdNNGw==
-X-Received: by 2002:a05:6a00:6c95:b0:6e4:6a3f:f065 with SMTP id jc21-20020a056a006c9500b006e46a3ff065mr12647864pfb.10.1708627625231;
-        Thu, 22 Feb 2024 10:47:05 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s12-20020aa7828c000000b006e0651ec05csm11280323pfm.43.2024.02.22.10.47.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 10:47:04 -0800 (PST)
-Date: Thu, 22 Feb 2024 10:47:04 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Joanne Koong <joannelkoong@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v6] bpf: Replace bpf_lpm_trie_key 0-length array with
- flexible array
-Message-ID: <202402221046.020C94D@keescook>
-References: <20240222155612.it.533-kees@kernel.org>
+	s=arc-20240116; t=1708627667; c=relaxed/simple;
+	bh=GDp40XzKQ0cQgRksU/oyFZVrTyRlcWTheyhy8HJaaAo=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NF4jdWiEift7gy17B6LKvRXreDHnRZ0EuJR+Xkjb0yZR12bJwYRFT6nh0XRIYlTk/FCHLNs4WZnOyYwb2ljmNgrdOHMnMBfDjtTHLcZQ0F5bDqMGG4bAD1/cz7f83sFrXUOCZBg7FbZtNhgX6H8MquO/HFwHKsQInL6Vbfx0vto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TghqC0q26z6J9St;
+	Fri, 23 Feb 2024 02:43:19 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 66F81140119;
+	Fri, 23 Feb 2024 02:47:42 +0800 (CST)
+Received: from localhost (10.195.247.94) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 22 Feb
+ 2024 18:47:41 +0000
+Date: Thu, 22 Feb 2024 18:47:38 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC: Linux ACPI <linux-acpi@vger.kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, Mika Westerberg
+	<mika.westerberg@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	"Russell King (Oracle)" <linux@armlinux.org.uk>
+Subject: Re: [PATCH v1 4/4] ACPI: scan: Make acpi_processor_add() check the
+ device enabled bit
+Message-ID: <20240222184738.00000bf7@Huawei.com>
+In-Reply-To: <3298279.44csPzL39Z@kreacher>
+References: <4562925.LvFx2qVVIh@kreacher>
+	<3298279.44csPzL39Z@kreacher>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222155612.it.533-kees@kernel.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Feb 22, 2024 at 07:56:15AM -0800, Kees Cook wrote:
-> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> flexible array. Found with GCC 13:
+On Wed, 21 Feb 2024 21:03:17 +0100
+"Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-Yay! This finally passes all of CI:
-https://patchwork.kernel.org/project/netdevbpf/patch/20240222155612.it.533-kees@kernel.org/
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Modify acpi_processor_add() return an error if _STA returns the enabled
+> bit clear for the given processor device, so as to avoid using processors
+> that don't decode their resources, as per the ACPI specification. [1]
+> 
+> Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-device-status # [1]
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
--- 
-Kees Cook
+This does the job for us so if you are happier with this approach
+that works for me.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/acpi/acpi_processor.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> Index: linux-pm/drivers/acpi/acpi_processor.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/acpi_processor.c
+> +++ linux-pm/drivers/acpi/acpi_processor.c
+> @@ -381,6 +381,9 @@ static int acpi_processor_add(struct acp
+>  	struct device *dev;
+>  	int result = 0;
+>  
+> +	if (!acpi_device_is_enabled(device))
+> +		return -ENODEV;
+> +
+>  	pr = kzalloc(sizeof(struct acpi_processor), GFP_KERNEL);
+>  	if (!pr)
+>  		return -ENOMEM;
+> 
+> 
+> 
+
 
