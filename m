@@ -1,157 +1,124 @@
-Return-Path: <linux-kernel+bounces-76970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8DB85FF36
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:23:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F62B85FF3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A005B1C231CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0418D1F26C97
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191A3155309;
-	Thu, 22 Feb 2024 17:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C39155A55;
+	Thu, 22 Feb 2024 17:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FAqPRzD9"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="ezEI1lab"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0401153BEF
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BB81474B6;
+	Thu, 22 Feb 2024 17:23:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708622612; cv=none; b=p5DTjcwVICx59GWjNY3enfEJgbq+PhsEYNKM/X6uJ8kOMjex6ame9sjI61AAkoFfUwkvcUh8EBKljIJu3cSeZtQ9YpEMmcg8zds1XdCFnGTukwBQ6Gw3a1SFvVNL/Zz09jWwCg9/qRizTbXQ9bZge7RY70goAy/Ra2+k3DMUc8I=
+	t=1708622613; cv=none; b=s8Y847pYBOW/BlcEK1mduOs3LMmoPzg4nG9NtQajsAFXrga2XgP9yJAwBTzKY8dYDgtCAWQh6WmuWicPtD5poK4KLUVvS7ZShKDI3MHT3yUxTTe1y/kVeocxm6tefkzT8iFIUAAPlrlJq2yZVQCd0wdp5TbycUu8QCGIfR11WyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708622612; c=relaxed/simple;
-	bh=4jW0W6cCUGq+Vj27G4izsaSdQrW4RTJrJsFE6MdaGx8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PMAw5DNfEJqEzSHYD08t+KJMp/IlaYtxmuOgDW6PMQBRRGiDUCm6JImTygbnBDzK//Fu1Rt18TTKqLWNnbkpOHH5NzNvP98j6GSfdFPz0rb4PeyxGk3ZoTCKnDVHoQRXnberrgJb3qNeotKG96Mg+jumzJ5vIdBnk0EQ+jfzgpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FAqPRzD9; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512a65cd2c7so34388e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:23:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708622609; x=1709227409; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Wwn55XF9jadQNrfmAniuHffh9iFi2P2VnkAxjmEZJw=;
-        b=FAqPRzD93iVWtAMx3H2Id/4FgCubcMk3vGdzsW6oepYWzs1BDmESr6CHv4AlZRJ38C
-         RO7FXvzfKz7VBd96p6yVt9XEnJc568asmnVrM2KconkRSKi/5p9CYNagH/5DjhkS/RWR
-         BHBMw8e48YHZkq0faB4EUprQNuAEU/7PBv+BtXkUg2FaJUrR4yvSMl4wMUBr3MraM3Ho
-         WK/RyG51WLKIWMqoRYjaV05ZUNPK1PcFVlT34S8n6QytiuKxTWo+SUgWbiMdLWTv9bKa
-         bBMyij2M5lO/vSaHWuCLVEwNL3abo20jTMeLhdZHwX3gB4o1JayRP09fbmEKTKQIsk4n
-         x9cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708622609; x=1709227409;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Wwn55XF9jadQNrfmAniuHffh9iFi2P2VnkAxjmEZJw=;
-        b=ucaT+v4UAbia3KbnF6sWqbENDF6+8eIlS9WEKfki/dTi6TqMghi1jEQ6xxjO5d+QG5
-         6sDF5xpexIMOGkirvOlFDEQZN5EkJPftu/+NESRnKWo7dGd1V2YXmLY0QT62aL6tDKZd
-         im9Yo9s7YXqhzUh5eDRf0fr5J8c4jlKRX4tqjS9Xq4fDEQi2Al8Y9MZDw3baOwjoQ49K
-         xV3BEdoWh8yNgX7pxtwxt+Zh3wAHywGfDfgmAaYESZtGN4LnPFua5g3kVC+k5Xa7mzkI
-         Gma2Hb4u3wPq/gIFPe/gHkK+/KCaChjwiJ+ofbKoAKSUyCrnlwRb9DLLTdM54qJpTcDX
-         7Q7w==
-X-Forwarded-Encrypted: i=1; AJvYcCVFDCnYXZhBAcsL4VTViBWxuulc4YADUIeuoBVsc01gHk4+42kPi/O60CtbgZqrhZusPKrRsYsKlQRqEw4ZxzTXC4/TPQEfrvoZbkwe
-X-Gm-Message-State: AOJu0YzNS6kqsllZ+4aTit8NiwOcBpZKwn3ZUgp7Ad86uBSSIHk/RA/i
-	95jpOULnj2rn797zLyXd8arha70QUrPF6+O56/rUae0i/0lbwExCulbzpUmjK2Y=
-X-Google-Smtp-Source: AGHT+IFp7sTUiYgIGlUB3YE9o3AW00zKA8Lk/bxSeBi0s+GfDNtWhFbVeSAyLfE88MKucbg50kgxiw==
-X-Received: by 2002:a05:6512:1328:b0:511:8688:a884 with SMTP id x40-20020a056512132800b005118688a884mr17221001lfu.0.1708622608928;
-        Thu, 22 Feb 2024 09:23:28 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id x1-20020a056402414100b005655be36730sm74577eda.6.2024.02.22.09.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 09:23:28 -0800 (PST)
-Message-ID: <8a06fde1-cc5f-4350-8e93-ffa29873ef86@linaro.org>
-Date: Thu, 22 Feb 2024 18:23:25 +0100
+	s=arc-20240116; t=1708622613; c=relaxed/simple;
+	bh=G4iGZXz5pANw6P6dixF3j3pUndbXm1HnCQBrGRH5/6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XXlHMySniOq0uzeVqB1BXU20amLB4lJFEvNeEQ5x9a4NzoSriSTass+SThhMf7U+mFgCv6tYMnMFUZKWMP0OR2LCjDrZGAGkjLM9sdGFNHHhGwdRf0adtf4UwTqh2hZL9e+HhtjyuqCzEPy8xsgG7ZWm20amvaC24dfeFA3Irps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=ezEI1lab; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 013ED1C0080; Thu, 22 Feb 2024 18:23:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708622607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2YjIr5aUgTsjvLi9xKmkXNDQcBTORFOndacLAudYXZw=;
+	b=ezEI1labo1josuTpKvSGarOXtuMPuKQbWe9fuLiN+78ANCflfREpDesPvqpd0WhQeMiDGq
+	gpAH0ncJG9L8QPdHbrX8ZG4ZI19nY1nxkQgAx1w6ICGbWBtKEr8/x5leIGYnCAxSWAUYnT
+	S0DLIRatlkRt4yd4T3ag6Mt+d9LDUso=
+Date: Thu, 22 Feb 2024 18:23:27 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Werner Sembach <wse@tuxedocomputers.com>, Lee Jones <lee@kernel.org>,
+	jikos@kernel.org, linux-kernel@vger.kernel.org,
+	Jelle van der Waa <jelle@vdwaa.nl>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	linux-input@vger.kernel.org, ojeda@kernel.org,
+	linux-leds@vger.kernel.org
+Subject: Re: Future handling of complex RGB devices on Linux v2
+Message-ID: <ZdeDD9u965bM+CCc@duo.ucw.cz>
+References: <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+ <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+ <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
+ <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
+ <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
+ <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
+ <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
+ <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dt-bindings: display: st7701: Add Hardkernel
- ODROID-GO Ultra panel
-To: Adam Green <greena88@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240221194528.1855714-1-greena88@gmail.com>
- <20240222164332.3864716-1-greena88@gmail.com>
- <20240222164332.3864716-3-greena88@gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240222164332.3864716-3-greena88@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8HNHTJiCVl5tEqHo"
+Content-Disposition: inline
+In-Reply-To: <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
 
-On 22/02/2024 17:43, Adam Green wrote:
-> The ODROID-GO Ultra panel is a panel specific to the Hardkernel
-> ODROID-GO Ultra. It is 5 inches in size (diagonally) with a
-> resolution of 480x854.
-> 
-> Signed-off-by: Adam Green <greena88@gmail.com>
-> ---
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+--8HNHTJiCVl5tEqHo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+Hi!
 
+> > Yeah, so ... this is not a interface. This is a backdoor to pass
+> > arbitrary data. That's not going to fly.
+>=20
+> Pavel, Note the data will be interpreted by a kernel driver and
+> not passed directly to the hw.
+
+Yes, still not flying :-).
+
+> With that said I tend to agree that this seems to be a bit too
+> generic.
+
+Exactly.
+
+> Given that these devices are all different in various ways
+> and that we only want this for devices which cannot be accessed
+> from userspace directly (so a limit set of devices) I really
+> think that just doing custom ioctls per vendor is best.
+
+I don't think that's good idea in the long term. Kernel should provide
+hardware abstraction, so that userspace does not need to know about
+hardware. Obviously there are exceptions, but this should not be one
+of those.
+
+BR,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--8HNHTJiCVl5tEqHo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdeDDwAKCRAw5/Bqldv6
+8qiyAJwLN/fdcmrJOkkG2EAbYAv8zFZEFgCfZXqQdlbGlNFyskYJxo9aqek7NBI=
+=F8Cz
+-----END PGP SIGNATURE-----
+
+--8HNHTJiCVl5tEqHo--
 
