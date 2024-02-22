@@ -1,133 +1,120 @@
-Return-Path: <linux-kernel+bounces-76773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F63685FC4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:26:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F10C85FC58
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 279B528BCE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:26:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 577D01C2283C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D91A14C5B9;
-	Thu, 22 Feb 2024 15:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42AE14D447;
+	Thu, 22 Feb 2024 15:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pio1KZOA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="j7/NqDai"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UTNThF7g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087E91482E9;
-	Thu, 22 Feb 2024 15:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D9D39FC7;
+	Thu, 22 Feb 2024 15:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708615583; cv=none; b=c9zHV1PJw5SS1x3E2SkISxnUKbSYDZsxMICv7TnCkDiDaZPaM854R/VUBvBr4fj4LnfNbNK5mUVtGybhkNqxb2sXE4clAQ5pIgVUMKsgCRQLrcGVzPnPnRY0uyRMeBK8GnpKIV4W2ssHTS3+ah04AbRxcVujE7d2FTc7125G87Q=
+	t=1708615679; cv=none; b=W22T/z2A85CvFeH/kZBcOSubGQNWf8Vn1LDi+O32KDQ6mZREngdzHxyuiNDbBQfWvSP3TwoiS8A8HPkU/QOqkFchCT19knx09tk+j76n/fjACCThH2F1bQ0zKOsWPXyY1f2DVqOvTQ2BL1dJYr6cX8GpFpG4sJK2T0oS8fr4EBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708615583; c=relaxed/simple;
-	bh=aBxShmCQnv+lCev5pCXP4qCrRRJuAJM27nBlLpFQVHk=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=OMnqgj+VUE4m+0Z3k4W5SJJVUMMj7yJYfgZVocte/cDxOGixU3CQ6xSnOghPVPxN6oVRiLTjBQaLuD3n67qJHs55uYYmHxFWQgXciPFBfPEGMDRCuZZnTz7k/9wvG9ccr/Lcprmky2Y7k1ByRd9kz/4ofhTkFOhOuloKGfU/qic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pio1KZOA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=j7/NqDai; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 22 Feb 2024 15:26:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708615580;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJTZHbG3QoxvICbJJHJp3HSuehI6CNbyljf0NqiXkmw=;
-	b=pio1KZOAScviyeJPCNLofRoXy3Hucy6klAexXAAwM9csJihs4yoigYYCPloQnd1xzWUbLy
-	EYrf/ewxOgqr8vQ/Pt33DYpFKrc7oVS5qdfTJCsFKx2mOm2MCkzq0wRqjK55wiWcqaYtlo
-	83DSlvOii/Ke9vR7pjSO/SV2CDebVOstyUb3NXk5ksy4NqUcOd/2uZsGvGJLS0YsMrP37f
-	3gbPNJXTUMv7pYKbNufEi6dO2rdXihWSxCA81z//FXpen8a5lLtRZ8XPG8PnNrlHJxVVed
-	e9zoLHWbB1+GjABMSWKdGKvmVSkKTIx9l3jRNkULJ0r37Wf8EkyggxQsHK+g2g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708615580;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJTZHbG3QoxvICbJJHJp3HSuehI6CNbyljf0NqiXkmw=;
-	b=j7/NqDaiuaYazzBcL2R+owAzPQr3C/9TA1HyNx/uprwBbMyrO3WEs9jelIeykTMT3U9435
-	MWilaW2oiLUf1oAw==
-From: "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Remove lockdep annotation that triggers
- false positive
-Cc: Tony Luck <tony.luck@intel.com>, James Morse <james.morse@arm.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <ZdUSwOM9UUNpw84Y@agluck-desk3>
-References: <ZdUSwOM9UUNpw84Y@agluck-desk3>
+	s=arc-20240116; t=1708615679; c=relaxed/simple;
+	bh=b+/c1g1bevjJS6ENQgxxzjivp4907xG9QQXiNgmqTj8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a3jiCuznv23xcvfefuQujkqAh7VDrRv2VBdyjasynmWhHEvN+S2cst5qgH5e2Hg0dnGp6vDGwXjADNQ9BWs/1B4+a5qewJNGWw0zVZ0z6qMmoCr0nZf1Xzx3ZjIJT7HxAJRhA1pZw+4mQkSGPT0UydKTILLKfoQq7nHyRmrWhMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UTNThF7g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01BF5C433F1;
+	Thu, 22 Feb 2024 15:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708615678;
+	bh=b+/c1g1bevjJS6ENQgxxzjivp4907xG9QQXiNgmqTj8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UTNThF7gTQurO5gdJ1GkI+CaFtktmaiJxxkHcV8C6mOXZmDmZndo3Eend4/T+PPZ1
+	 OecMMs9q6H0fyqzWuRIEOLvguIG5tCiDI3ok4ALjmGF9A316+J38Bd1PVzWqiOyTvX
+	 7QPL1hZKe3EDURzVhYdtZEpv6XcqVlH5z31pKdyKY1AZHNMOEakzwvsjU4jXMxxoSA
+	 DdFVnfIHSh0YnUrEjAraDFTpmT2ajq6N9QDwulqfdSLNDDWq5UYSfXRaF4qTJXv57I
+	 ZH2lHiVy1Czeym3zx9SuBYLK33jTyNuNX5ae8Z0Et6AVVneuy5H+MKB1oWev60wKzG
+	 n2OiDppEBRI+A==
+Date: Thu, 22 Feb 2024 16:27:50 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, 
+	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/25] fs: use type-safe uid representation for
+ filesystem capabilities
+Message-ID: <20240222-fluchen-viren-50e216b653fb@brauner>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170861557937.398.13612434980010892059.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
 
-The following commit has been merged into the x86/cache branch of tip:
+On Wed, Feb 21, 2024 at 03:24:31PM -0600, Seth Forshee (DigitalOcean) wrote:
+> This series converts filesystem capabilities from passing around raw
+> xattr data to using a kernel-internal representation with type safe
+> uids, similar to the conversion done previously for posix ACLs.
+> Currently fscaps representations in the kernel have two different
+> instances of unclear or confused types:
+> 
+> - fscaps are generally passed around in the raw xattr form, with the
+>   rootid sometimes containing the user uid value and at other times
+>   containing the filesystem value.
+> - The existing kernel-internal representation of fscaps,
+>   cpu_vfs_cap_data, uses the kuid_t type, but the value stored is
+>   actually a vfsuid.
+> 
+> This series eliminates this confusion by converting the xattr data to
+> the kernel representation near the userspace and filesystem boundaries,
+> using the kernel representation within the vfs and commoncap code. The
+> internal representation is renamed to vfs_caps to reflect this broader
+> use, and the rootid is changed to a vfsuid_t to correctly identify the
+> type of uid which it contains.
+> 
+> New vfs interfaces are added to allow for getting and setting fscaps
+> using the kernel representation. This requires the addition of new inode
+> operations to allow overlayfs to handle fscaps properly; all other
+> filesystems fall back to a generic implementation. The top-level vfs
+> xattr interfaces will now reject fscaps xattrs, though the lower-level
+> interfaces continue to accept them for reading and writing the raw xattr
+> data.
+> 
+> Based on previous feedback, new security hooks are added for fscaps
+> operations. These are really only needed for EVM, and the selinux and
+> smack implementations just peform the same operations that the
+> equivalent xattr hooks would have done. Note too that this has not yet
+> been updated based on the changes to make EVM into an LSM.
+> 
+> The remainder of the changes are preparatory work, addition of helpers
+> for converting between the xattr and kernel fscaps representation, and
+> various updates to use the kernel representation and new interfaces.
 
-Commit-ID:     c0d848fcb09d80a5f48b99f85e448185125ef59f
-Gitweb:        https://git.kernel.org/tip/c0d848fcb09d80a5f48b99f85e448185125ef59f
-Author:        James Morse <james.morse@arm.com>
-AuthorDate:    Wed, 21 Feb 2024 12:23:06 
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 22 Feb 2024 16:15:38 +01:00
+I still think that the generic_{get,set,remove}_fscaps() helpers falling
+back to plain *vfs_*xattr() calls is a hackish. So ideally I'd like to
+see this killed in a follow-up series and make all fses that support
+them use the inode operation.
 
-x86/resctrl: Remove lockdep annotation that triggers false positive
+> 
+> I have tested this code with xfstests, ltp, libcap2, and libcap-ng with
+> no regressions found.
 
-get_domain_from_cpu() walks a list of domains to find the one that
-contains the specified CPU. This needs to be protected against races
-with CPU hotplug when the list is modified. It has recently gained
-a lockdep annotation to check this.
-
-The lockdep annotation causes false positives when called via IPI as the
-lock is held, but by another process. Remove it.
-
-  [ bp: Refresh it ontop of x86/cache. ]
-
-Fixes: fb700810d30b ("x86/resctrl: Separate arch and fs resctrl locks")
-Reported-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/all/ZdUSwOM9UUNpw84Y@agluck-desk3
----
- arch/x86/kernel/cpu/resctrl/core.c |  9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 8a4ef4f..83e4034 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -362,15 +362,6 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
- {
- 	struct rdt_domain *d;
- 
--	/*
--	 * Walking r->domains, ensure it can't race with cpuhp.
--	 * Because this is called via IPI by rdt_ctrl_update(), assertions
--	 * about locks this thread holds will lead to false positives. Check
--	 * someone is holding the CPUs lock.
--	 */
--	if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && IS_ENABLED(CONFIG_LOCKDEP))
--		WARN_ON_ONCE(!lockdep_is_cpus_held());
--
- 	list_for_each_entry(d, &r->domains, list) {
- 		/* Find the domain that contains this CPU */
- 		if (cpumask_test_cpu(cpu, &d->cpu_mask))
++1
 
