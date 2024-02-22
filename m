@@ -1,118 +1,166 @@
-Return-Path: <linux-kernel+bounces-75885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 444DE85F04B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:01:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5E0385F04F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82B71F24AEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:01:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5641A1F24CDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6C017755;
-	Thu, 22 Feb 2024 04:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B880517983;
+	Thu, 22 Feb 2024 04:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="UVIb7hVQ"
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CFi4hf+Y"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C53BFBF2;
-	Thu, 22 Feb 2024 04:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F94B17743
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708574479; cv=none; b=VIr3kveVb1hmE9OlexbmrDspSQzoUluTvmmVfg7E3XdvSSkYXIb/MMZJvzdx2GF6q/FBAeVUKBNI8jcgGyM3B5r2MZ5+wNbLWTnADvfGbaFst1eR/acbBbMVK2Hu7JHgo/d8tvyxU4/HDZccABRH7mlaX29GSw0EJfULCwiLEgo=
+	t=1708574513; cv=none; b=EXhL8hFMm2GVRhkLxqSoMZBiM7qsZoRvSpFCLbaZI76xWe/6/H6f0BfHDbTEDKAEHZBRJErdAWf/UNIqNYpvC3CXUBmrl2f7aJCSUKsLEnNGLUft5jIX5SWFU7SAEg4Haf2HTKk67/ai33f9DhcxaYwyKAeXFUcxBLRdAHn9yHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708574479; c=relaxed/simple;
-	bh=OJZtJeG9oFC0CHpkLX/+q6CW2oV5Xm1b7Y/agkt23OU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V2ixyQBF3O18GxYOZDbO+MyaA0nip3psTNjSrso7GLqjdG/4ikjvDfnBcRejwmFIkaEEUC+TG+F/u0vrpLJQ7VONu83yJrQyWh6kPTkWT6YJRgBWKWKnoZ1rvhO2Id91WH4o7dL5Ih6OqJ6Eqmo+hpjm0EO73epZ9nEVmWW6bdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=UVIb7hVQ; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M2JpOs008937;
-	Thu, 22 Feb 2024 04:00:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=7MhjdBIzVbtJC+qrWqwmXmRz5gU4c1bPbqnR2zTbpeE=; b=
-	UVIb7hVQI1QU1gxPmSCLwsc1C1zChrc3VTuPstp5OAIdDxWofg4iV4BTbMeK1SDK
-	mweU9Q0EWco3IgGMecMXSIadmzwq5xUkkU6nG2KZvYVn9J9ne6/BA7I376RGFYds
-	Z0w+xk55+AHLQ9Y1D8evNwCzidBDersq4SyeGEdxM1OlxRjiZ4fJ/DbugC+mb1q+
-	SUpuHVX7Wqik0AZjSggAy0Qd5xnctCZpu6YLuyF8YD5fLckSqOfMHMGITIduno+Q
-	x5Jb/MQJdNmhodVGPJqgCr2VcVLMFuzLh+YnaQmlh1T00vp9o6cIBOXnjEznOpva
-	SqmI8Dk9uUm7BELKXRkHlQ==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wd218hjn1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 22 Feb 2024 04:00:51 +0000 (GMT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 21 Feb 2024 20:00:50 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 20:00:47 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com>
-CC: <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
-        <fw@strlen.de>, <horms@kernel.org>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH net-next] net/mpls: fix WARNING in mpls_gso_segment
-Date: Thu, 22 Feb 2024 12:00:45 +0800
-Message-ID: <20240222040046.2568269-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000043b1310611e388aa@google.com>
-References: <00000000000043b1310611e388aa@google.com>
+	s=arc-20240116; t=1708574513; c=relaxed/simple;
+	bh=1DqHzr3QAz4XD2JcRhhUcwAQtSo1ubyexqzQLkSXPMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jS3ZnRAXYWqnWmkmr99tSUoLDqjiAPxfOQLDeiDzE7DQgrPHuWIdtHSiy3/xs6kd3+UUBoo6N6COkgZvSnFm+uPNC3kJdpuSV9Q7kRVq8LVws+exUX/6xX/UvhWljUBwJJ+F/cM/jxAXZyQI8imBhV+RYDuEHsHJJlCrS+R44+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CFi4hf+Y; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-607d9c4fa90so77100587b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708574511; x=1709179311; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sj35YOjK6RKB4C5ExxVych1pGfUJCfir8o97Bxs9Vxs=;
+        b=CFi4hf+YefGisns3uINQkbPASHrd3kl9MHjhhDfd4oIuHPw3Al78SNgYAauNHVUL74
+         MRIuDRRL/eaMxu55ej7amZuMPHr4/503HAcIoBYbMOehmmjbKgKhF0JwWwmExTSx2RM9
+         daHK7UgHZliQvW6eZo5Vhrv2/ut3o6UfsiaXVvdOia21j/2omxB7ae21OXIef655zuCd
+         zFvqHJeG0jqQC6MN6tMW2iUBS7Xt/lomRjI6B/XzGugelCpu/OIedyb/XZXc/yLeIJDz
+         S1hF/uSOEPgw6FB3OXuHrEtVVHxSnjb7sVFnEEpGVscVFqj4RsGAWCnVeZZhefTUkE+B
+         kQXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708574511; x=1709179311;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sj35YOjK6RKB4C5ExxVych1pGfUJCfir8o97Bxs9Vxs=;
+        b=MqBqquqaiHFZdTnP3dD3dPu+7FplTo+Xo+G5iH2FBDp4loFuFit5d0Cp5in2g1RBTu
+         nwkSYsOSnblspPv16fiUu+vzoulxv+QQ1aFPRQYrKmVCrfl597q/XMVWi3Ub8yXGnV8W
+         dGKvy0K5IYUbAhJak/xJP8hstOVZrG3aIbPMi8XdI+ssrhBeAsu2dAoqdjnUr6VflJSk
+         j+xElsVHlsK+DQ3VFnXnBV9zLws+7anI8xxMsY9Jm+jugQTrvcfm+7GAycoQnlvbRuzl
+         tLZpNRXJZER4Sw+cTQvFxk6B1F+DJtpLBF0/od5IBkFvtTVEl2viIiH8DCDSNXriIhXr
+         iDzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWuQ7vqn9jmtxjbQWOGegmmT3oaGyEi/r7T/kQcpv8TGY8XfwYsxatSbbZZ4bfzAeNDLU+gebSZFa7vgYzKrnkdFpdaVQNKkcSQsqDW
+X-Gm-Message-State: AOJu0YyB92bvHaCHbaGm1KYFZLK8pbaLAiZizdA9CKztebxoFi3REN6l
+	N39jMyGCOgmXuOJi8qwuGgaXTPF9ijN9b+/kZUkEloJTWFWQ49ssfVBIDtYf+NYTHz8QSyKoVZV
+	M7oixMD8pdymdmAVwRLqo07YyV2dtwBoc4eHZ7w==
+X-Google-Smtp-Source: AGHT+IG7ga8Qwv736rdMo9Jd6hOdoA/3LAjM8sRFm6VRm7EEEGVF9fa5s36oG1kV9WzIB5M4xsWL1nKyzNF2W5KfJjg=
+X-Received: by 2002:a25:2944:0:b0:dbc:decf:e511 with SMTP id
+ p65-20020a252944000000b00dbcdecfe511mr1272238ybp.6.1708574511204; Wed, 21 Feb
+ 2024 20:01:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: yxP3AvRov-tsgP_uT6gijPle0aFETzCU
-X-Proofpoint-ORIG-GUID: yxP3AvRov-tsgP_uT6gijPle0aFETzCU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_01,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=922 mlxscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 clxscore=1011
- bulkscore=0 malwarescore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220028
+References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
+ <20240221-rb3gen2-dp-connector-v1-1-dc0964ef7d96@quicinc.com>
+ <CAA8EJprXXjvanBU_HGv7X_dS3nyZ867AsvKj5+S3pnWcpsk1ug@mail.gmail.com> <20240222034727.GG2936378@hu-bjorande-lv.qualcomm.com>
+In-Reply-To: <20240222034727.GG2936378@hu-bjorande-lv.qualcomm.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 22 Feb 2024 06:01:39 +0200
+Message-ID: <CAA8EJpotx0PiJ6geGUerOihnH3v5a=cm4ngpHsU1aKDOYtoAeg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] drm/msm/dp: Add DP support to combo instance in SC7280
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-When the network header pointer is greater than the inner network header, the
-difference between the two can cause mpls_hlen overflow.
+On Thu, 22 Feb 2024 at 05:47, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
+>
+> On Thu, Feb 22, 2024 at 01:38:45AM +0200, Dmitry Baryshkov wrote:
+> > On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
+> > >
+> > > When upstreamed the SC7280 DP controllers where described as one being
+> > > DP and one eDP, but they can infact both be DP or eDP.
+> > >
+> > > Extend the list of DP controllers to cover both instances, and rely on
+> > > the newly introduced mechanism for selecting which mode they should
+> > > operate in.
+> > >
+> > > Move qcom,sc7280-edp to a dedicated list, to ensure existing DeviceTree
+> > > will continue to select eDP.
+> > >
+> > > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > > ---
+> > >  drivers/gpu/drm/msm/dp/dp_display.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > index 7b8c695d521a..1792ba9f7259 100644
+> > > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> > > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > @@ -129,7 +129,12 @@ static const struct msm_dp_desc sc7180_dp_descs[] = {
+> > >  };
+> > >
+> > >  static const struct msm_dp_desc sc7280_dp_descs[] = {
+> > > -       { .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_en = true },
+> > > +       { .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .wide_bus_en = true },
+> > > +       { .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_1, .wide_bus_en = true },
+> >
+> > I think we need to keep .connector_type here, don't we?
+> >
+>
+> No, Abel removes the need for that in his patches - and while that logic
+> is slightly broken in the RFC I think it looks good.
 
-Reported-and-tested-by: syzbot+99d15fcdb0132a1e1a82@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- net/mpls/mpls_gso.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Let's see v2 first.
 
-diff --git a/net/mpls/mpls_gso.c b/net/mpls/mpls_gso.c
-index 533d082f0701..2ab24b2fd90f 100644
---- a/net/mpls/mpls_gso.c
-+++ b/net/mpls/mpls_gso.c
-@@ -25,11 +25,11 @@ static struct sk_buff *mpls_gso_segment(struct sk_buff *skb,
- 	netdev_features_t mpls_features;
- 	u16 mac_len = skb->mac_len;
- 	__be16 mpls_protocol;
--	unsigned int mpls_hlen;
-+	int mpls_hlen;
- 
- 	skb_reset_network_header(skb);
- 	mpls_hlen = skb_inner_network_header(skb) - skb_network_header(skb);
--	if (unlikely(!mpls_hlen || mpls_hlen % MPLS_HLEN))
-+	if (unlikely(mpls_hlen <= 0 || mpls_hlen % MPLS_HLEN))
- 		goto out;
- 	if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
- 		goto out;
+>
+> Regards,
+> Bjorn
+>
+> > > +       {}
+> > > +};
+> > > +
+> > > +static const struct msm_dp_desc sc7280_edp_descs[] = {
+> > >         { .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_1, .connector_type = DRM_MODE_CONNECTOR_eDP, .wide_bus_en = true },
+> > >         {}
+> > >  };
+> > > @@ -182,7 +187,7 @@ static const struct msm_dp_desc x1e80100_dp_descs[] = {
+> > >  static const struct of_device_id dp_dt_match[] = {
+> > >         { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_descs },
+> > >         { .compatible = "qcom,sc7280-dp", .data = &sc7280_dp_descs },
+> > > -       { .compatible = "qcom,sc7280-edp", .data = &sc7280_dp_descs },
+> > > +       { .compatible = "qcom,sc7280-edp", .data = &sc7280_edp_descs },
+> > >         { .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_descs },
+> > >         { .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_descs },
+> > >         { .compatible = "qcom,sc8280xp-dp", .data = &sc8280xp_dp_descs },
+> > >
+> > > --
+> > > 2.25.1
+> > >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
+
+
+
 -- 
-2.43.0
-
+With best wishes
+Dmitry
 
