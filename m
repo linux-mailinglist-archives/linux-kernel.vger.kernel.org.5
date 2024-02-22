@@ -1,77 +1,131 @@
-Return-Path: <linux-kernel+bounces-77531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83C18606E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:27:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB9008606EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24AB7B23E35
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:27:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DDA01F24917
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49ED713BACA;
-	Thu, 22 Feb 2024 23:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61EC13BAEE;
+	Thu, 22 Feb 2024 23:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4/nyA5B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oiqQjQXk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C62137933;
-	Thu, 22 Feb 2024 23:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3474D17BDC;
+	Thu, 22 Feb 2024 23:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708644052; cv=none; b=HEcq6ODCK1wWO6jw5VLS0nKKDFbcsTqbd6pR/QQmGi4yW5AB47LoavFztkiza8PMTECwaGQLUcmwjgWOmYUj2zB/+nkK8bIsgRPv4Zldmj8aU1DViKBflWR8MlcyWi5sqcD7NnJSC7OV9uP/G0Dck5gDaDtme4KprZa+8rehb8k=
+	t=1708644089; cv=none; b=gw82owJN3IHfm1+bSXLmM/+ZkPwd7C7WbFViOGnVsx5MVaiSS4QOjHnTiPpO5isNLrEb1/Q/Gafdlue/I9SY/izQ95oPLOhs1ktiFeOSDR64MEJHOv0ErGYYQzVjXel0NVBZ1dApNpCDoe29OjF1TIIlGU7RMB5Dtt5c3vriE88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708644052; c=relaxed/simple;
-	bh=Y6o9VsjyTfZlt/ma3RPwq/TFdMyO1XRt/4IORTwFDy0=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=SwTQR+A2PxdeBawb1EID2TL7qEEl21pShpnwxl5iZ2H8XY6vTdHm+blvmXIaBv6F6ip15ND0VoSgThJqHYj1424has7UfVEDNWCxuMmrqUUERt4tY8oafo3PQNJDcBof/FxqxbM8ybTU4hYApeSAgPAjRsyEMCfEhoRgbwAm7JI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L4/nyA5B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E16C8C433C7;
-	Thu, 22 Feb 2024 23:20:51 +0000 (UTC)
+	s=arc-20240116; t=1708644089; c=relaxed/simple;
+	bh=pZp7Cq133hnhkzb3KGXJsaA22cEGiiFZa+XYZJG7R0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQ4SuLVbcrPPf8r8qUTF035IoHXwxITnHSSet96NAkLq1cqIkm+S9KOz5xO/48eRETWZOtptMpn6WMRA31QMP4cXShEf3B3NUbwclXhMdC3lYtGPfWMCzGwN3Btb7V8AnloDTDJoFW3v8cZLIwE0+KsL0FfcZ3xs/E4Fkp8l+mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oiqQjQXk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81A9C43390;
+	Thu, 22 Feb 2024 23:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708644052;
-	bh=Y6o9VsjyTfZlt/ma3RPwq/TFdMyO1XRt/4IORTwFDy0=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=L4/nyA5B3xHgkBMZCAKK8tZodBCng8xc5aBKftryCDGHYUE4LwIywUXsACUZaSPkP
-	 a8eHL/07HPfMIgQ9cRwdYP3kqEt9m9Jd/6BzYYVo2VwQs2lCvXXOM/km7WKCyEt/Dz
-	 MeORyVyf3Sg86ZaPkelEmgUK+AICfFuKUMe0hsophLShjQwQosOm7gTPwvqbZYyNKZ
-	 GjnrIOb7IYMuWn9RFj6NBbe8zH5Tl8PU9FGgxhEl/Y9baO+1ih39j/jTO1xmvhmVj4
-	 OzXxd/b+G7Yz7X6kcXapWS33amTt2jJQiW6nFl9aDDBnbnsgspbm2rCGFa87AupdKf
-	 oAU4tLbfeS9PA==
-Message-ID: <c79909e4e55badc8f094d2ff8c4d34ca.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1708644088;
+	bh=pZp7Cq133hnhkzb3KGXJsaA22cEGiiFZa+XYZJG7R0s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oiqQjQXkvHAkwxOmbJpU/abDHDhqW3BwbtLiBlgGnSHmmZHS6Cml46j5by8cofClW
+	 c768ET0gPfKlPrjPx8SXhB7Rlq1omIIPJ88tumE7/aratGKS802tl6DdD5e1aLwtVu
+	 kLEiApQYynPdY7bwyROSOpZeEXL5FRcTNDxsWNBAqxl554eNKJ5IyRt2WtiHtIfv9F
+	 BEZBqCBDAXIRG0Jkutn59CK+sZWSplR4L+mIFfRlkLYznSEN+LHrVNOjW3Q4xhzZxZ
+	 FOhsFCpiU/aybRtAHvC0uc6eCuA3xjgwY47D+7ZPp3Mm3jUSZwsD5epm49NMfA/4sb
+	 0vXssyHoN2gNQ==
+Date: Thu, 22 Feb 2024 16:21:18 -0700
+From: Rob Herring <robh@kernel.org>
+To: Dharma.B@microchip.com
+Cc: lee@kernel.org, alexandre.belloni@bootlin.com,
+	linux-pwm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	Conor.Dooley@microchip.com, thierry.reding@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, claudiu.beznea@tuxon.dev,
+	Hari.PrasathGE@microchip.com, airlied@gmail.com,
+	Manikandan.M@microchip.com, sam@ravnborg.org,
+	u.kleine-koenig@pengutronix.de, devicetree@vger.kernel.org,
+	conor+dt@kernel.org, tzimmermann@suse.de,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	linux-arm-kernel@lists.infradead.org, bbrezillon@kernel.org,
+	linux-kernel@vger.kernel.org, krzysztof.kozlowski@linaro.org,
+	daniel@ffwll.ch
+Subject: Re: (subset) [linux][PATCH v6 3/3] dt-bindings: mfd: atmel,hlcdc:
+ Convert to DT schema format
+Message-ID: <20240222232118.GA3786028-robh@kernel.org>
+References: <20240202001733.91455-1-dharma.b@microchip.com>
+ <20240202001733.91455-4-dharma.b@microchip.com>
+ <170738899221.920003.15342446791449663430.b4-ty@kernel.org>
+ <cedecdb7-fe4a-42ea-9a11-faa82f84b57d@linaro.org>
+ <ffd43756-b24e-4f19-be33-0e33047ad70c@microchip.com>
+ <20240220082026.GG10170@google.com>
+ <9dbfbeac-3a00-4571-95c0-83e4d47737c5@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com>
-References: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com>
-Subject: Re: [PATCH] clk: allow to skip clk_core_req_round_rate_nolock()
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: kernel@salutedevices.com, Jan Dakinevich <jan.dakinevich@salutedevices.com>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 22 Feb 2024 15:20:49 -0800
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9dbfbeac-3a00-4571-95c0-83e4d47737c5@microchip.com>
 
-Quoting Jan Dakinevich (2024-01-26 12:14:33)
-> Calling of clk_core_req_round_rate_nolock() can be time-consuming in a
-> case of deep hierarchy with multiple dividers/parents. But if the clock
-> already has exactly the same rate as desired, there is no need to
-> determine how it could be rounded.
+On Tue, Feb 20, 2024 at 08:30:38AM +0000, Dharma.B@microchip.com wrote:
+> Hi Lee,
+> 
+> On 20/02/24 1:50 pm, Lee Jones wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On Tue, 20 Feb 2024, Dharma.B@microchip.com wrote:
+> > 
+> >> Hi Krzysztof,
+> >>
+> >> On 12/02/24 3:53 pm, Krzysztof Kozlowski wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>>
+> >>> On 08/02/2024 11:43, Lee Jones wrote:
+> >>>> On Fri, 02 Feb 2024 05:47:33 +0530, Dharma Balasubiramani wrote:
+> >>>>> Convert the atmel,hlcdc binding to DT schema format.
+> >>>>>
+> >>>>> Align clocks and clock-names properties to clearly indicate that the LCD
+> >>>>> controller expects lvds_pll_clk when interfaced with the lvds display. This
+> >>>>> alignment with the specific hardware requirements ensures accurate device tree
+> >>>>> configuration for systems utilizing the HLCDC IP.
+> >>>>>
+> >>>>> [...]
+> >>>>
+> >>>> Applied, thanks!
+> >>>>
+> >>>> [3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
+> >>>>         commit: cb946db1335b599ece363d33966bf653ed0fa58a
+> >>>>
+> >>>
+> >>> Next is still failing.
+> >>>
+> >>> Dharma,
+> >>> You must explain and clearly mark dependencies between patches.
+> >>
+> >> I sincerely apologize for any confusion caused by the oversight. I have
+> >> organized the patches according to their dependencies in the patch
+> >> series, but unfortunately, I neglected to explicitly mention these
+> >> dependencies. I understand the importance of clear communication in our
+> >> collaborative efforts. Please feel free to provide guidance on how I can
+> >> assist you further in resolving this matter.
+> > 
+> > If this continues to be an issue, I can just remove the commit.
+> 
+> There won't be any issue if both pwm and display binding goes before the 
+> mfd binding.
+> 
+> Could you please pick the display binding as well?
 
-What exactly are you trying to avoid? Is this an optimization or a bug
-fix? TL;DR: I'm unlikely to apply this patch.
+As this is still not resolved, I've applied the display binding. Not 
+ideal, but should fix next.
 
-I could see some driver implementing round_rate()/determine_rate() in a
-way that rounds the rate passed in, so that even if the rate is what the
-clk is running at _right now_, it still wants to change it to something
-else, or at least call down into the driver to call the set_rate clk_op.
-Applying this patch will break that. The contract is that
-clk_set_rate(rate) =3D=3D clk_set_rate(clk_round_rate(rate)). It doesn't
-look like anything needs to change.
+Rob
 
