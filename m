@@ -1,273 +1,115 @@
-Return-Path: <linux-kernel+bounces-76561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0398285F92B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:10:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 984D685F933
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2779C1C21DCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AB3C285331
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B05131725;
-	Thu, 22 Feb 2024 13:10:17 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B06133284;
+	Thu, 22 Feb 2024 13:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Yc3SpNAl"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3627C3C480;
-	Thu, 22 Feb 2024 13:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94AE12EBCC
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708607417; cv=none; b=YBknTdN2iGfOBnbZSBIA2h/0rkK7U2q/gqCQuNDFRsow2u8ieN1WwoIq395ci82J0tZjh0oia0nqnJf61EHm53Ic8zNgHQ5diXwPt0RmpoF7ZRhjhH2NC9O0IEfNASwaM+djYkvCBFS126IpJ2jGqNUwNJHTI9NLz4pD5BvzEnQ=
+	t=1708607455; cv=none; b=ufjn4d9glDiXbvW7eXBtssZUFubifE+2ynIxPC45CEjzEXo/cRIJOEvGbu5+padhn9onfpOtya3uuA8uX86mSb0naBYWfX8vJ8Ep8LaENadDHICd4mjoYFKq9MtOEqHViU94pRu0cKBxZqXH2PH1T4BigamHucytxVAcAEColIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708607417; c=relaxed/simple;
-	bh=ZzftmtglKci0zpgxoEpyBLyNZWJSrRUbiNCxtC/QWAg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IDcD8uLCI/SEcOdu3D/eq9qxb7YGiJ+2dHTEl4Ybk5dc8QW74ysM+lYKSEm+T0/x2Tvko311PeVB9xBGSetmhQvddXnP3T+vcVlhzZPGO0jpAmNX9CdUATObTjEFUZesTawAcczCl3lLULe/5icrjs4nSweBgrK9LO1Uch4HNjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 7883e718e97da4f2; Thu, 22 Feb 2024 14:10:09 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 3DE6466A2D4;
-	Thu, 22 Feb 2024 14:10:09 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
- LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Subject:
- [PATCH v2.1 1/6] thermal: core: Store zone trips table in struct
- thermal_zone_device
-Date: Thu, 22 Feb 2024 14:10:09 +0100
-Message-ID: <12405371.O9o76ZdvQC@kreacher>
-In-Reply-To: <1883976.tdWV9SEqCh@kreacher>
-References: <4551531.LvFx2qVVIh@kreacher> <1883976.tdWV9SEqCh@kreacher>
+	s=arc-20240116; t=1708607455; c=relaxed/simple;
+	bh=SGQVs5xxceT8/USGNqqeQ6uWxE7eZGHnoNAkPYvICYQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pxJ4ObfgRKzOqVVVYh1+C0iMqpHn8jTDTqYv91pq2KJ8yatjCo4k9WZISXPiT2Hn0lSsh0a0MaxlWELcFS9+DZEJE60qzg74fMZtM0DBjuE+UazI+WwuBRg+xN9vi160pfpTra3y6lPR38yhZj5Ppi+Vy2TZ6x+mrC+953PqQPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Yc3SpNAl; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3e75e30d36so150483666b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:10:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1708607452; x=1709212252; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=se6gwk0fwHmTpR5MGtDkHZ8SwA4LJ2DR5cRZWhWZG0c=;
+        b=Yc3SpNAlrmTHJGX0w2qrDJv0r3ScLH1awPDKhzSWU7MZNWrAhrj8hI/Z7Zu3msbQCX
+         JEXO5xYeavatsIIlwbLwxXorZFZhWkvpqpP3jUAmj5PNp5OXAg4xwXWzkAD3fC+TtbuJ
+         TA61CmzecgsmGHK1eldjxeT1t2Xwt9W2mo0oE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708607452; x=1709212252;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=se6gwk0fwHmTpR5MGtDkHZ8SwA4LJ2DR5cRZWhWZG0c=;
+        b=XfX51xIWbzTaWNqPCtpK4IX85NnJTI3EPBQg+45RxjJ9KmSfMwZWU7dXYZoVtFvyaI
+         cHemFAiK3hUKUheCoObnKG5dA6A6EgwLZTkI9ZaW1wFFf4nSsecgl5hoJUMpxq/seRZ2
+         NcclH+r3sx3QF3ArBzM2J4jdRWL0mYNsjUQrW35FbKF2YH2fzv/ddFQEVL1AuVBvtlaZ
+         jgrV7js62VcSTZjc1o4NkY+D9Vbzp7tAfxeC1BzjQHxHbYDWmRmJPzRvoFDsdiyF6QTl
+         QlLvCb2qFmGSW9z2Bw3xYDKlTG+Cc53uJ7cckmxIdFDwMTsox7cIbVglCHGlx6iqMaBJ
+         4pBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkTLrlKsrCy0JPjYxfp7mFwdmE6bwEjl7wuPqq8Q3UzQxStry6/Dc0jy+T+iGacCkSHP631dZXs+s8eum3xBGFx6lGXqLeTFRHIYlR
+X-Gm-Message-State: AOJu0Yw/h59oHh4RkPl3U1SnImklFvLH/g0t774NqSxJ6fNxZPv83V1k
+	LIuUx3d31M+Ao9JJBbdzFtD0TDrzmNUSVurVWjdTzrofYiBbYukRhhgBr6xCLQzEQv2GdXI5upi
+	EALwqKNpHwd5vtcc/KhKdIX+mDn3fVieJal3hLw==
+X-Google-Smtp-Source: AGHT+IEKz+crKs+wjRqOw0ZOK6TJKCGag7XXciDUGUNsfdyRPPgjaSMU2GrS1sJv9HgRuG8BjodWUuYih63QgGNfnfk=
+X-Received: by 2002:a17:907:76f7:b0:a3e:b57f:2b8a with SMTP id
+ kg23-20020a17090776f700b00a3eb57f2b8amr2222160ejc.10.1708607452084; Thu, 22
+ Feb 2024 05:10:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
+ <20240222110138.ckai4sxiin3a74ku@quack3> <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
+ <20240222114417.wpcdkgsed7wklv3h@quack3> <2tsfxaf2blhcxlkfcagfavz3mnuga3qsjgpytbstvykmcq2prj@icc7vub55i3p>
+In-Reply-To: <2tsfxaf2blhcxlkfcagfavz3mnuga3qsjgpytbstvykmcq2prj@icc7vub55i3p>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 22 Feb 2024 14:10:40 +0100
+Message-ID: <CAJfpegsinKngjHmZPxXvGULusEw359FhBkVh4A9O_+pqccjUzw@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrfeeggdegjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedugedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=14 Fuz1=14 Fuz2=14
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, 22 Feb 2024 at 12:55, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> On Thu, Feb 22, 2024 at 12:44:17PM +0100, Jan Kara wrote:
+> > On Thu 22-02-24 06:27:14, Kent Overstreet wrote:
 
-The current code expects thermal zone creators to pass a pointer to a
-writable trips table to thermal_zone_device_register_with_trips() and
-that trips table is then used by the thermal core going forward.
+> > > My intent is to make a real effort towards getting better interfaces
+> > > going, prod those maintainers, _then_ look at adding those hacks (that
+> > > will necessarily be short term solutions since 64 bits is already
+> > > looking cramped).
+> >
+> > OK, fine by me :) So one thing is still not quite clear to me - how do you
+> > expect the INO_NOT_UNIQUE flag to be used by these apps? Do you expect them
+> > to use st_dev + st_ino by default and fall back to fsid + fhandle only when
+> > INO_NOT_UNIQUE is set?
+>
+> Shouldn't matter. If they care about performance and they're in some
+> strange situation where the syscal overhead matters,
 
-Consequently, the callers of thermal_zone_device_register_with_trips()
-are required to hold on to the trips table passed to it until the given
-thermal zone is unregistered, at which point the trips table can be
-freed, but at the same time they are not expected to access that table
-directly.  This is both error prone and confusing.
+If it's expensive, then just make the overhead smaller (by adding fh
+and uuid to statx(2), for example).
 
-To address it, turn the trips table pointer in struct thermal_zone_device
-into a flex array (counted by its num_trips field), allocate it during
-thermal zone device allocation and copy the contents of the trips table
-supplied by the zone creator (which can be const now) into it, which
-will allow the callers of thermal_zone_device_register_with_trips() to
-drop their trip tables right after the zone registration.
+Using st_ino is also racy in some filesystems, due to the fact that
+the ino can be reused.  If userspace is converted, it should be
+converted properly, there's just no excuse to add conditional code
+like that, which makes things more complex and less reliable.
 
-This requires the imx thermal driver to be adjusted to store the new
-temperature in its internal trips table in imx_set_trip_temp(), because
-it will be separate from the core's trips table now and it has to be
-explicitly kept in sync with the latter.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
-
-v2 -> v2.1:
-   * Remove the trips table freeing from thermal_of (Daniel).
-   * Add R-by from Daniel.
-
-v1 -> v2:
-   * Rebase.
-   * Drop all of the redundant trips[] checks against NULL.
-   * Add imx change to still allow it to use its local trips table.
-   * Add R-by from Stanislaw (which is still applicable IMV).
-
----
- drivers/thermal/imx_thermal.c  |    1 +
- drivers/thermal/thermal_core.c |   17 ++++++++---------
- drivers/thermal/thermal_of.c   |    2 --
- drivers/thermal/thermal_trip.c |    2 +-
- include/linux/thermal.h        |   10 +++++-----
- 5 files changed, 15 insertions(+), 17 deletions(-)
-
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -137,7 +137,6 @@ struct thermal_cooling_device {
-  * @trip_hyst_attrs:	attributes for trip points for sysfs: trip hysteresis
-  * @mode:		current mode of this thermal zone
-  * @devdata:	private pointer for device private data
-- * @trips:	an array of struct thermal_trip
-  * @num_trips:	number of trip points the thermal zone supports
-  * @passive_delay_jiffies: number of jiffies to wait between polls when
-  *			performing passive cooling.
-@@ -167,6 +166,7 @@ struct thermal_cooling_device {
-  * @poll_queue:	delayed work for polling
-  * @notify_event: Last notification event
-  * @suspended: thermal zone suspend indicator
-+ * @trips:	array of struct thermal_trip objects
-  */
- struct thermal_zone_device {
- 	int id;
-@@ -179,7 +179,6 @@ struct thermal_zone_device {
- 	struct thermal_attr *trip_hyst_attrs;
- 	enum thermal_device_mode mode;
- 	void *devdata;
--	struct thermal_trip *trips;
- 	int num_trips;
- 	unsigned long passive_delay_jiffies;
- 	unsigned long polling_delay_jiffies;
-@@ -200,10 +199,11 @@ struct thermal_zone_device {
- 	struct list_head node;
- 	struct delayed_work poll_queue;
- 	enum thermal_notify_event notify_event;
-+	bool suspended;
- #ifdef CONFIG_THERMAL_DEBUGFS
- 	struct thermal_debugfs *debugfs;
- #endif
--	bool suspended;
-+	struct thermal_trip trips[] __counted_by(num_trips);
- };
- 
- /**
-@@ -322,7 +322,7 @@ int thermal_zone_get_crit_temp(struct th
- #ifdef CONFIG_THERMAL
- struct thermal_zone_device *thermal_zone_device_register_with_trips(
- 					const char *type,
--					struct thermal_trip *trips,
-+					const struct thermal_trip *trips,
- 					int num_trips, void *devdata,
- 					struct thermal_zone_device_ops *ops,
- 					const struct thermal_zone_params *tzp,
-@@ -381,7 +381,7 @@ void thermal_zone_device_critical(struct
- #else
- static inline struct thermal_zone_device *thermal_zone_device_register_with_trips(
- 					const char *type,
--					struct thermal_trip *trips,
-+					const struct thermal_trip *trips,
- 					int num_trips, void *devdata,
- 					struct thermal_zone_device_ops *ops,
- 					const struct thermal_zone_params *tzp,
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -1227,9 +1227,6 @@ int thermal_zone_get_crit_temp(struct th
- 	if (tz->ops->get_crit_temp)
- 		return tz->ops->get_crit_temp(tz, temp);
- 
--	if (!tz->trips)
--		return -EINVAL;
--
- 	mutex_lock(&tz->lock);
- 
- 	for (i = 0; i < tz->num_trips; i++) {
-@@ -1271,10 +1268,12 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_
-  * IS_ERR*() helpers.
-  */
- struct thermal_zone_device *
--thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *trips, int num_trips,
--					void *devdata, struct thermal_zone_device_ops *ops,
--					const struct thermal_zone_params *tzp, int passive_delay,
--					int polling_delay)
-+thermal_zone_device_register_with_trips(const char *type,
-+					const struct thermal_trip *trips,
-+					int num_trips, void *devdata,
-+					struct thermal_zone_device_ops *ops,
-+					const struct thermal_zone_params *tzp,
-+					int passive_delay, int polling_delay)
- {
- 	struct thermal_zone_device *tz;
- 	int id;
-@@ -1308,7 +1307,7 @@ thermal_zone_device_register_with_trips(
- 	if (!thermal_class)
- 		return ERR_PTR(-ENODEV);
- 
--	tz = kzalloc(sizeof(*tz), GFP_KERNEL);
-+	tz = kzalloc(struct_size(tz, trips, num_trips), GFP_KERNEL);
- 	if (!tz)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -1340,7 +1339,7 @@ thermal_zone_device_register_with_trips(
- 	tz->ops = ops;
- 	tz->device.class = thermal_class;
- 	tz->devdata = devdata;
--	tz->trips = trips;
-+	memcpy(tz->trips, trips, num_trips * sizeof(*trips));
- 	tz->num_trips = num_trips;
- 
- 	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
-Index: linux-pm/drivers/thermal/imx_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/imx_thermal.c
-+++ linux-pm/drivers/thermal/imx_thermal.c
-@@ -355,6 +355,7 @@ static int imx_set_trip_temp(struct ther
- 		return -EINVAL;
- 
- 	imx_set_alarm_temp(data, temp);
-+	trips[IMX_TRIP_PASSIVE].temperature = temp;
- 
- 	pm_runtime_put(data->dev);
- 
-Index: linux-pm/drivers/thermal/thermal_trip.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -122,7 +122,7 @@ void __thermal_zone_set_trips(struct the
- int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
- 			    struct thermal_trip *trip)
- {
--	if (!tz || !tz->trips || trip_id < 0 || trip_id >= tz->num_trips || !trip)
-+	if (!tz || trip_id < 0 || trip_id >= tz->num_trips || !trip)
- 		return -EINVAL;
- 
- 	*trip = tz->trips[trip_id];
-Index: linux-pm/drivers/thermal/thermal_of.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_of.c
-+++ linux-pm/drivers/thermal/thermal_of.c
-@@ -440,12 +440,10 @@ static int thermal_of_unbind(struct ther
-  */
- static void thermal_of_zone_unregister(struct thermal_zone_device *tz)
- {
--	struct thermal_trip *trips = tz->trips;
- 	struct thermal_zone_device_ops *ops = tz->ops;
- 
- 	thermal_zone_device_disable(tz);
- 	thermal_zone_device_unregister(tz);
--	kfree(trips);
- 	kfree(ops);
- }
- 
-
-
-
+Thanks,
+Miklos
 
