@@ -1,189 +1,197 @@
-Return-Path: <linux-kernel+bounces-76985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575A885FF85
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:36:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4617985FF8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C1F41C218CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:36:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69D8D1C222BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A61155A5D;
-	Thu, 22 Feb 2024 17:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42752155A45;
+	Thu, 22 Feb 2024 17:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ESR0p+cS"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="kLXdkK8R"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D1A153BFD
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BF01E48B;
+	Thu, 22 Feb 2024 17:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623378; cv=none; b=ShvxId5C0XUlARt+L2db3yFvasmK7g1tFuV8xusawKzK9xXbyOL5iB0KV6wu4ENXobjzMOKQ8N9+EfMGRL2egghZIdTQs0c8obNwQTHX34JKuLDiAWBbPIKZBuGFCO5DWeMyX713lAuimAUctbrjFMEDx7hiGzQ7HTgRKf8rkpY=
+	t=1708623502; cv=none; b=mC0c0IIW0/NPhrQBrZNetrtE+bMptafK/sd93xgALlyF88gw4/dgcI0uNj1od0wtD0UoA2BgqhN7Zlm6sI+UaWKY+Q7vRx4PLENPyNZ+gAeybOTeTbY28lyPqSWkjdWy7h5+VaWmpKN30wTcFL3jGyxQuIr6upW/qtZxOnTsy/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623378; c=relaxed/simple;
-	bh=d65n5xxTD0/aMcmzOPHCt3iAilOWcSe0SlSiiwYdBzo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m2WasJ1jMJcNT/RnD5SFTl1bUuGuE0sYwFGQwRjm2cxCgE6e5KjiAV+m3XMaiyQYHKML46ZotH2LxO+oCYkQkKm1iQEDvxvH1SCevum4mBhRQ/ZjAw9COWYi31gIz9aLTzWMj8gT9F+3EhYxiZXEVJf5sZQBG2Oph7zZrBqJxAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ESR0p+cS; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso6842a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:36:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708623374; x=1709228174; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OmEKVyetFL548x1phH+vDmo2g1KI7fqBu5h2gLzPo5M=;
-        b=ESR0p+cSLbdxqzoHOZabd9oYJwWEocaERPdJJs4ITL6QBBGaaJMHK4fVfg+ZvRsQyi
-         EYORRqjXcYZlZZXs74sZMngIj4N+C6OmIzT9oO+S9mGwDejeyphXxyevGC+91dCUldJO
-         rhmPzkAbE/aALEtx0qRCEcfl5oe/vQVDclbLqJXoXqdyKTjuMyCYqpziKiMh4UMWmA1V
-         An/H5izoWpgYF8AT0hsN37q32SxvCluK+P5LB63hDrOcwGgghKcLdNBBzrxtU8ySWqEu
-         u5akKAqWLRhfH4feiw2SrT4nLBSE6aCW7XU5FDe436WCTE5Q2dJ/BhjCpUo2UhQ1YUkD
-         D4Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708623374; x=1709228174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OmEKVyetFL548x1phH+vDmo2g1KI7fqBu5h2gLzPo5M=;
-        b=rHbspdy2s8hDMOXuym2j93Ir+mxK4LiLr9waxsIxok28XodJWe5W9IlAhkaXCXmb1H
-         XSkac+PS1F71GchhUzuWoBYsn5k0ErLI2bQf6vNB0ec1zwo6rWcXs1fOWFhOUJ9JIpXS
-         27l7xTtpimsCyERd79voZHLExof7rbvyVdYhMvdtFhLnPn6bTJj3HJjoMdp87aV4OveB
-         aeGy3S6mXHemuhSM8EaoHc52Z+YdMevtoq+rELw8CotyH1sfuxVWkuOmvNDzkzNNrL8n
-         nts/KOHymt1kr8NntbW3E68HIm4JqvSiYFByMvZVdsSpYGKWEmxInIs+SrIbrwd/MIQE
-         igIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkMPojoY8ka6eIHblSJXd/+QxTRrk0YbgKNTWcU3WbHvD1OnkelwTFcZg22wDGK+EMppTFKFlmuPMvkmRCgw8CSyeqCiTlk6VJ6FIq
-X-Gm-Message-State: AOJu0Yw/SC2OmpYaO6h36Q1LpyOtwVU+NuGDuY+LhwBl3ma8idZftOr0
-	omcp/7AjPB9FHEa234pClCKs+mP2mPiZ9Eofnt8PNnYItB0ihFSQRzzFLewAxmEjat+lSBQGe3W
-	1NyRv6FF0SGY386xTS4Ae9KWpdDUX+SEuatap
-X-Google-Smtp-Source: AGHT+IH+4QsAKS6v2wz/3Ohm5UGixFC1Is/yek5Qgz+ij5+wrc7QXl4sCi0AbqHTx6nwjSX1cBP+z7ipSxtuApYMC+k=
-X-Received: by 2002:a50:c309:0:b0:565:4b98:758c with SMTP id
- a9-20020a50c309000000b005654b98758cmr128301edb.4.1708623373891; Thu, 22 Feb
- 2024 09:36:13 -0800 (PST)
+	s=arc-20240116; t=1708623502; c=relaxed/simple;
+	bh=f9GmT+/ev22Rw8JyJfD4dn404A17xW0UMwar264CfIQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BNvkMEJAwRNnt39Yo/QryKCS1TWAGL6E9YhZpqm8nxKWHV3tMVf8ubYFlqAz+daKZl3Z2QZFMRkLCGxEJtcYwGdbMilbcvcMAiZ9FPPbhuee1WGsTZJOU+hLB3bXhvRFFYyYCkfEFcO3U+yEAyideBsDy1u88k+kTJDIGqK6epo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=kLXdkK8R; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 37AA61C0080; Thu, 22 Feb 2024 18:38:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708623497;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cxr6GJjOhaFoEBz5sAagQbB41dqp9VPFsBRGUex2Ge8=;
+	b=kLXdkK8RS/VsXpCtaJGevFjtXHj4xPsfEND+iP2dQKQRhHmvXjnVOipvkka8dVEATAkRUj
+	yhx99MwrgebVfBz1J3xdkaCvKrmmgDAgZiVyJRbcwyZXPWTVemKTovWtlSpWJfVVcToTRz
+	xjWeoSGf9Bo0gv5zMgAXZqGjzcreQM0=
+Date: Thu, 22 Feb 2024 18:38:16 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+Cc: Werner Sembach <wse@tuxedocomputers.com>,
+	Hans de Goede <hdegoede@redhat.com>, Lee Jones <lee@kernel.org>,
+	jikos@kernel.org, linux-kernel@vger.kernel.org,
+	Jelle van der Waa <jelle@vdwaa.nl>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	linux-input@vger.kernel.org, ojeda@kernel.org,
+	linux-leds@vger.kernel.org
+Subject: Re: Future handling of complex RGB devices on Linux v2
+Message-ID: <ZdeGiMf2npmzJidU@duo.ucw.cz>
+References: <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+ <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+ <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
+ <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
+ <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
+ <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
+ <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
+ <20240222110457.71618f27@eldfell>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221092728.1281499-1-davidgow@google.com> <20240221092728.1281499-3-davidgow@google.com>
- <20240221201008.ez5tu7xvkedtln3o@google.com> <CABVgOSn+VxTb5TOmZd82HN04j_ZG9J2G-AoJmdxWG8QDh9xGxg@mail.gmail.com>
-In-Reply-To: <CABVgOSn+VxTb5TOmZd82HN04j_ZG9J2G-AoJmdxWG8QDh9xGxg@mail.gmail.com>
-From: Daniel Latypov <dlatypov@google.com>
-Date: Thu, 22 Feb 2024 09:36:01 -0800
-Message-ID: <CAGS_qxoW0v0eM646zLu=SWL1O5UUp5k08SZsQO51gCDx_LnhcQ@mail.gmail.com>
-Subject: Re: [PATCH 2/9] lib/cmdline: Fix an invalid format specifier in an
- assertion msg
-To: David Gow <davidgow@google.com>
-Cc: Justin Stitt <justinstitt@google.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Rae Moar <rmoar@google.com>, Matthew Auld <matthew.auld@intel.com>, 
-	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Kees Cook <keescook@chromium.org>, =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Matthew Brost <matthew.brost@intel.com>, 
-	Willem de Bruijn <willemb@google.com>, Florian Westphal <fw@strlen.de>, Cassio Neri <cassio.neri@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Arthur Grillo <arthur.grillo@usp.br>, 
-	Brendan Higgins <brendan.higgins@linux.dev>, Stephen Boyd <sboyd@kernel.org>, 
-	David Airlie <airlied@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	"David S . Miller" <davem@davemloft.net>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org, 
-	linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, linux-hardening@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eHiECiusCvm6EcTi"
+Content-Disposition: inline
+In-Reply-To: <20240222110457.71618f27@eldfell>
+
+
+--eHiECiusCvm6EcTi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 10:22=E2=80=AFPM David Gow <davidgow@google.com> wr=
-ote:
->
-> On Thu, 22 Feb 2024 at 04:10, 'Justin Stitt' via KUnit Development
-> <kunit-dev@googlegroups.com> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Feb 21, 2024 at 05:27:15PM +0800, David Gow wrote:
-> > > The correct format specifier for p - n (both p and n are pointers) is
-> > > %td, as the type should be ptrdiff_t.
-> >
-> > I think %tu is better. d specifies a signed type. I don't doubt that th=
-e
-> > warning is fixed but I think %tu represents the type semantics here.
-> >
->
-> While I agree that this should never be negative, I'd still lean on
-> this being a signed type, for two reasons:
-> - I think, if there's a bug in this code, it's easier to debug this if
-> a 'negative' value were to appear as such.
-> - While, as I understand it, the C spec does provide for a
-> ptrdiff_t-sized unsigned printf specifier in '%tu', the difference
-> between two pointers is always signed:
->
-> "When two pointers are subtracted, both shall point to elements of the
-> same array object,
-> or one past the last element of the array object; the result is the
-> difference of the
-> subscripts of the two array elements. The size of the result is
-> implementation-defined,
-> and its type (a signed integer type) is ptrdiff_t defined in the
-> <stddef.h> header"
->
-> (Technically, the kernel's ptrdiff_t type isn't defined in stddef.h,
-> so a bit of deviation from the spec is happening anyway, though.)
->
-> If there's a particularly good reason to make this unsigned in this
-> case, I'd be happy to change it, of course. But I'd otherwise prefer
-> to keep it as-is.
+Hi!
 
-Copying the line for context, it's about `p-r` where
-  p =3D memchr_inv(&r[1], 0, sizeof(r) - sizeof(r[0]));
-`p-r` should never be negative unless something has gone horribly
-horribly wrong.
+> > > so after more feedback from the OpenRGB maintainers I came up with an=
+ even
+> > > more generic proposal:
+> > > https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916#note_1753072=
+869 =20
+> >=20
+> > > >evaluate-set-command ioctl taking:
+> > > >{
+> > > >=A0=A0=A0 enum command=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 /* one=
+ of supported_commands */
+> > > >=A0=A0=A0 union data
+> > > >=A0=A0=A0 {
+> > > >=A0=A0=A0 =A0=A0=A0 char raw[3072],
+> > > >=A0=A0=A0 =A0=A0=A0 {
+> > > >=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 <input struct for command 0>
+> > > >=A0=A0=A0 =A0=A0=A0 }, =20
+> >=20
+> > Yeah, so ... this is not a interface. This is a backdoor to pass
+> > arbitrary data. That's not going to fly.
+> >=20
+> > For keyboards, we don't need complete new interface; we reasonable
+> > extensions over existing display APIs -- keyboards are clearly 2D.
+>=20
+> I suppose they could be seen as *a* display, but if you are referring
+> to DRM KMS UAPI, then no, I don't see that fitting at all:
 
-So in this particular case, either %tu or %td would be fine.
+So -- we already have very similar displays in
+drivers/auxdisplay. drivers/auxdisplay/cfag12864b.c is 128x64 display,
+1-bit display for example.
 
-(sorta bikeshedding warning)
-But, I'd personally lean towards using the signed %td in tests to
-guard against typos in test code as _a guiding principle._
+> - the "pixel grid" is not orthogonal, it's not a rectangle, and it
+>   might not be a grid at all
 
-This is especially true given that the failure messages aren't
-verified since they are mostly "dead code."
-You can have crazy incorrect things going on in the format arguments,
-see patch 1/9 in this series [1]. One of kunit's own tests would do a
-read from a ~random memory region if that specific assertion failed.
-Not a good look ;)
-We never noticed until this series enabled the format string checks.
-You also can't expect reviewers to go through and modify every
-assertion to fail to see what the failure mode looks like, so these
-kinds of errors will continue to slip through.
+It is quite close to orthogonal. I'd suggest simply pretending it is
+orthogonal grid with some pixels missing :-). We already have
+cellphone displays with rounded corners and holes in them, so I
+suspect handling of missing pixels will be neccessary anyway.
 
-*So IMO, we should generally adopt a more defensive stance when it
-comes to these.*
+> - Timings and video modes? DRM KMS has always been somewhat awkward for
+>   display devices that do not have an inherent scanout cycle and timings
+>   totally depend on the amount of pixels updated at a time
+>   (FB_DAMAGE_CLIPS), e.g. USB displays (not USB-C DP alt mode).
+>   They do work, but they are very different from the usual hardware
+>   involved with KMS, require special consideration in userspace, and
+>   they still are actual displays while what we're talking about here
+>   are not.
 
-Also consider the user experience if there is a failure and I
-accidentally wrote `r-p` here.
-Someone else sees an error report from this test and needs to investigate.
+As you say, there are other displays with similar problems.
 
-What message is easier to deal with?
->  in test 18 at -5 out of bound
-or
-> in test 18 at 18446744073709551611 out of bound
+> - KMS has no concept of programmed autonomous animations, and likely
+>   never will. They are not useful with actual displays.
 
-Sure, I can eventually figure out what both messages mean, but it's a
-immediately obvious from the first that there's a
-a) real error: something is wrong at index 5
-b) test code error: there's a flipped sign somewhere
+Yep. We need some kind of extension here, and this is likely be quite
+vendor-specific, as animations will differ between vendors. I guess
+"please play pattern xyzzy with parametrs 3 and 5" might be enough for this.
 
-So I'd strongly prefer the current version of the patch over one with %tu.
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
+> - Userspace will try to light up KMS outputs automatically and extend
+>   the traditional desktop there. This was already a problem for
+>   head-mounted displays (HMD) where it made no sense. That was worked
+>   around with an in-kernel list of HMDs and some KMS property
+>   quirking.
 
-[1] https://lore.kernel.org/linux-kselftest/20240221092728.1281499-2-davidg=
-ow@google.com/
+This will need fixing for cfag12864b.c, no? Perhaps userspace should
+simply ignore anything smaller than 240x160 or something...
 
-Thanks,
-Daniel
+> Modern KMS UAPI very much aims to be a generic UAPI that abstracts
+> display devices. It already breaks down a little for things like USB
+> displays and virtual machines (e.g. qemu, vmware, especially with
+> remote viewers), which I find unfortunate. With HMDs the genericity
+> breaks down in other ways, but I'd claim HMDs are a better fit still
+> than full-featured VM virtual displays (cursor plane hijacking). With
+> non-displays like keyboards the genericity would be completely lost, as
+> they won't work at all the same way as displays. You cannot even show
+> proper images there, only coarse light patterns *IF* you actually know
+> the pixel layout. But the pixel layout is(?) hardware-specific which is
+> the opposite of generic.
+>=20
+> While you could dress keyboard lights etc. up with DRM KMS UAPI, the
+> userspace would have to be written from scratch for them, and you
+> somehow need to make existing KMS userspace to never touch those
+> devices. What's the point of using DRM KMS UAPI in the first place,
+> then?
+
+Well, at least we have good UAPI to work with. Other options were 100
+files in /sys/class/leds, pretending it is a linear array of leds,
+just passing raw data around, and pretending it is grid of RGB888
+data.
+
+Anyway, there are devices such as these: (8x8 LED display).
+
+https://www.laskakit.cz/8x8-led-matice-s-max7219-3mm-cervena/
+
+We should think about what interface we want for these, and then I
+believe we should make RGB keyboards use something similar.
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--eHiECiusCvm6EcTi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdeGiAAKCRAw5/Bqldv6
+8vu+AKCMmNbj0QTQPgn6C+lJcqoWg1JfPQCfYj+NkTuf5W57SoPzN7P2Xxr2q5Q=
+=TCxg
+-----END PGP SIGNATURE-----
+
+--eHiECiusCvm6EcTi--
 
