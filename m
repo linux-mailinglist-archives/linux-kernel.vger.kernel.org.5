@@ -1,135 +1,158 @@
-Return-Path: <linux-kernel+bounces-76903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1A985FE67
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:47:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F298085FE69
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BC351F22869
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:47:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACF3C2862C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA9A153BEF;
-	Thu, 22 Feb 2024 16:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC1A153BDC;
+	Thu, 22 Feb 2024 16:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mjxHJISS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZhLv5tn6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D7218657;
-	Thu, 22 Feb 2024 16:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F05B2BAE8
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620450; cv=none; b=Ev2lgifBO/PUvtd1qjIiZRT16gOj1jnGZ2SntgrsomhynB/uRC4bwHcjGnBCKu3WdixLVeiBkBFLDaWkSWVQqiA9+pCbKZ0+Wu8VQq8Gb4ILCj8z3p5bCkCLDgKvOhfOeKfIqCE76POBvDn1kmXPuFsL027y8IZlD4ritwf+U9U=
+	t=1708620501; cv=none; b=e+Cyw2sLjZDYtF+CAux3F1wbdcBzFiUgXBZQfurgFOBSvkTXipFILDekFt7X0TVJakjioiNeAO/+XYT/jBGD3VYhMjiKuXE6CgmZbyGvO8CeyY6mnA20JRmeXnd7aTeJ5HhN6KwsFiEALMPa9E3QLE4FRPCncEcv5Q9QMy35UGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620450; c=relaxed/simple;
-	bh=rZ8aZS6VSxj1TAeS8bays2vC+U6OkHH9YohfP+YSMeA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e5rGBOK6ThrkNW0OaQXPN9lKFoW4lHW1Kc0iCIkBKMuypNcErtAxyJJ/hkposH9ko1yO8YJTuOxgvqHuEaZqTpyx0vJd0fKj+4sbfTTayLAuAFQTHCHTDLTzW1ava2+QlzIOAZa74qr7V9K0S7d2zYkchQDp6kpeseU2mgBYAUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mjxHJISS; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1708620501; c=relaxed/simple;
+	bh=4Yn/fuUAW7tuInLQoXGor6dDoA5+Z6D7KzsiD46bi+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aOs+bvVWnanEJzDgcEJj5qbxCJztS/z/ai1Q7hnhGK7Ba85M/6Z/hLDzooifcgTaEjvvUwNPgHtcqeGpYxobMtFOxr37IP02Ep4Qr+8WLBoAQ2wDydCl/pZun1CS+HJK8Wo8y3toX4++fiLdLdL99TCEeJ3ik/uSVSUIHmeUIDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZhLv5tn6; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708620449; x=1740156449;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rZ8aZS6VSxj1TAeS8bays2vC+U6OkHH9YohfP+YSMeA=;
-  b=mjxHJISS6J/wlhPCBAefyrIiwmisu1R6+sSSCIOmdu//2KZ0lRxo4164
-   Bn5aVcjrLXjWBPloQx3K7uDCcKY2oC9Iuro/PUzPIHb5ixj6SbG3dsHJw
-   //jIxHE2UmFYFGdYDILzGYfRFYKtJyDoQZBEtDdSXP0Gkb9FySswenMFe
-   axUWf+8wLOwMtI00llGeSQ8Uu7Pm8k+GxI2BHdnVcnSyldG4QgGHV7fN4
-   tWmqUvks78UI9ekmm2C/VC1yhzTVYBhMnaf0xUqbnN84D63nMZYM2fLcN
-   5+Ck6GVEJgIJNj1rX+iyIrd9DF1O8hVdUBmN6rwq/83eihjPs87bBo4YO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2732222"
+  t=1708620500; x=1740156500;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4Yn/fuUAW7tuInLQoXGor6dDoA5+Z6D7KzsiD46bi+g=;
+  b=ZhLv5tn6DnSxeSRdkd4JIn3CRH26nyfgyl/d0QSKSOianGt0qaJbFJ8p
+   Q+lLUS6MluYuoNAcNYFV9eeXH7Q5tEDlis+uUtI0G1TYctUIgsI9l0jeK
+   GWryMY8fyuSDgZs5se8gHbG91mruHT1Z8mrL8NDeqf+liB61PSyJKCnwG
+   aeUflHxT0HTL+4alOPWSQ6kTF2vEFA3AAQe3rwomqYcOHFZtK2jRlXAZu
+   oAFySYwmYRtrDWdZCV9R5ta8wEMH8J+xeLs4ZB3tjVmuzCOIOTp7V/ryb
+   WUEa9VCW1OfXrMNBXKQYQcqwUQyWiBuqPfTPhp1Qwvkk2LpxRk98T81Fr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="25320206"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="2732222"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 08:47:28 -0800
+   d="scan'208";a="25320206"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 08:48:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913553757"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="913553757"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 08:47:23 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rdCEB-00000006gCi-0sPe;
-	Thu, 22 Feb 2024 18:47:19 +0200
-Date: Thu, 22 Feb 2024 18:47:18 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
-	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>
-Subject: Re: [PATCH v1 10/14] serial: 8250_of: Switch to use
- uart_read_port_properties()
-Message-ID: <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
-References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
- <20240221183442.4124354-11-andriy.shevchenko@linux.intel.com>
- <0a828f2c50de712940fb9a881702ac1678a35b7c.camel@codeconstruct.com.au>
- <ZddKzHplwOX7naLv@smile.fi.intel.com>
- <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
+   d="scan'208";a="10229282"
+Received: from jwbates1-mobl.amr.corp.intel.com (HELO [10.209.48.22]) ([10.209.48.22])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 08:48:20 -0800
+Message-ID: <88cb9996-0e9b-49ec-bc94-f816a5b64870@intel.com>
+Date: Thu, 22 Feb 2024 08:48:17 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] x86/mm: clarify "prev" usage in switch_mm_irqs_off()
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>, Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
+ <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240126080644.1714297-1-yosryahmed@google.com>
+ <20240126080644.1714297-2-yosryahmed@google.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240126080644.1714297-2-yosryahmed@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 22, 2024 at 06:43:08PM +0200, Andy Shevchenko wrote:
-> On Thu, Feb 22, 2024 at 03:23:24PM +0200, Andy Shevchenko wrote:
-> > On Thu, Feb 22, 2024 at 11:07:05AM +1030, Andrew Jeffery wrote:
-> > > On Wed, 2024-02-21 at 20:31 +0200, Andy Shevchenko wrote:
-> > > > Since we have now a common helper to read port properties
-> > > > use it instead of sparse home grown solution.
-> > > 
-> > > I did some brief testing of the series for the Aspeed machines under
-> > > qemu, building them on top of v6.8-rc5:
-> > > 
-> > > export ARCH=arm
-> > > export CROSS_COMPILE=arm-linux-gnueabihf-
-> > > make aspeed_g5_defconfig
-> > > make -j$(nproc)
-> > > qemu-system-arm -M rainier-bmc -nographic -no-reboot -kernel arch/arm/boot/zImage -dtb arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dtb -initrd ...
-> > > 
-> > > I got an oops during boot, which bisected to this change:
-> > 
-> > Thank you for prompt testing! I will look at it.
+On 1/26/24 00:06, Yosry Ahmed wrote:
+> +/*
+> + * The "prev" argument passed by the caller does not always match CR3. For
+> + * example, the scheduler passes in active_mm when switching from lazy TLB mode
+> + * to normal mode, but switch_mm_irqs_off() can be called from x86 code without
+> + * updating active_mm. Use cpu_tlbstate.loaded_mm instead.
+> + */
+> +void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
+>  			struct task_struct *tsk)
+
+One nit here: It's not obvious that "unused" is 'the "prev" argument'.
+
+Would something like this be more clear?
+
+/*
+ * This optimizes when not actually switching mm's.  Some architectures
+ * use the 'unused' argument for this optimization, but x86 must use
+ * 'cpu_tlbstate.loaded_mm' instead because it does not always keep
+ * ->active_mm up to date.
+ */
+
+Also, I think it might be useful to have the rule that arch/x86 code
+_always_ calls switch_mm_irqs_off() with the first argument (the
+newly-named 'unused') set to NULL.  I think there's only one site:
+
+> void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+>                struct task_struct *tsk)
+> {
+>         unsigned long flags;
 > 
-> I found the issue, will be fixed in next version.
-
-Whoever is going to test this series, the
-
--		port->iotype = use_defaults ? UPIO_MEM : port->iotype;
-+		port->iotype = UPIO_MEM;
-
-should be applied to uart_read_port_properties() implementation.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+>         local_irq_save(flags);
+>         switch_mm_irqs_off(prev, next, tsk);
+>         local_irq_restore(flags);
+> }
 
 
