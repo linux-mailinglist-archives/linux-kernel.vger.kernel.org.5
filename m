@@ -1,202 +1,114 @@
-Return-Path: <linux-kernel+bounces-76157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45D4585F399
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:56:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A4485F39B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F416B28422D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DA2D28419A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1777364B3;
-	Thu, 22 Feb 2024 08:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA21374F0;
+	Thu, 22 Feb 2024 08:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LKwLzXgw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tt1SuvTc"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D21A2BB13;
-	Thu, 22 Feb 2024 08:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35D137157
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708592179; cv=none; b=ks86MkCox0H/vbRwuphgnfQSi5AhuRkny9gSTjrkgDH/GIqlDuZM9XepyIAeQzkOtksVODvCaBiXYpKpnzsTtZOxV4op6MX//4ZoKuHQbdvSEhMcSoXojAju+R1kF01l44V6PFoXdNlldHvW6YgM039nINE/lOxABBJZK9U9xQo=
+	t=1708592183; cv=none; b=HO/PpbjlHexrP0q7zwKlpeNH6qA7sG3BX6gBmVGZFps2BAQZIW46xnnTvWGYnMevrWcOBu/QOZkRpYMFl259JJ+yiepLv087HMWls5XY2FLpZIMpp3P1v1T8oIMhZEjwGY7snQWPe7PzyJd4xBv2zQWUtWGXvOvB75beO80maAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708592179; c=relaxed/simple;
-	bh=AuwUkPFckUyTiGUSQ4l57RJbPEcUt9jkQMJMV60bK+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mvQYBdpaTK8fqOV2AbBAlPxfAg0/QjHOc08BwkhkqbNdmXjU5WwBxE6cC7oEw8YBqkCIQMTZL3wkk7E/x7HU7q0gfUkq2esqNKfgpS3ByMIXYRCWcHVEUhAQUDKhZ+XKbGA1FwPnTl+YdZf+1qh7hK5HwzmLRB5TvAP4VXPVIKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LKwLzXgw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 299CFC433F1;
-	Thu, 22 Feb 2024 08:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708592178;
-	bh=AuwUkPFckUyTiGUSQ4l57RJbPEcUt9jkQMJMV60bK+o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LKwLzXgwnUQISRQN8b0HiG9097CDoF463ushTc7nbxWeS9jfqUeZHgzPJl+YLzmaX
-	 Ejt7GVR1OzTzk6rAkRvAP8C4uIGk94cARAMTsBDuXQGniOC04ZZvpCaJFRtld4LRz2
-	 Hy3LffLQ3VRRjTsf7GNSPBZQpU66xKtrY1sdP6a33jg0mg6t9NQgCoat3ijnfhUJOR
-	 rC7m39ROxUNPH79PIhzw3f4YZX1qnq3e8gAm944pfHm7l6/WfaMp41MM69uNNwaaU4
-	 lG6SSPykpCXwAepmR8FJeW+tyMBFnOL7QDk1+/f0HYDimJYpjs54LP9X5L0ZZlXQyQ
-	 ckODHMOawaI6A==
-Date: Thu, 22 Feb 2024 08:56:13 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: robh@kernel.org, tglx@linutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, Nicolas.Ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v3] dt-bindings: interrupt-controller: Convert Atmel AIC
- to json-schema
-Message-ID: <20240222-stiffly-squeeze-b4ec2b49a4fe@spud>
-References: <20240222035158.195265-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1708592183; c=relaxed/simple;
+	bh=PzWYmYYSNCTetX2Me8zFPVyu3GzRmF0jBDFkhc1OSIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=REf6O7vIylis7QESYagjLZvp/YV9LCtYMcApxS6/OGlQfnGpVnVVDHlA3l5xTNzV1zUXUo8CuzW6WJmlFcXpDXot3GLK2ns48LsBbu4DPPclupBwmuTkab4H75TKbXxwTkSrlXKXSKCURnnIRUIig86ahuwp1TOExXTqsAsXHOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tt1SuvTc; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512c2e8c6cfso3735801e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:56:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708592180; x=1709196980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/rbknJKtPFhf19eCJkjQJRk7bzdoJAzars+eP6UgUck=;
+        b=tt1SuvTcmhX/UCXySUqYxJbudDk948Hmzl+sIzZcSIf7A/hX0ljPaTjcSxcJU3CPvs
+         cuAdC4YWEfZQxW4bJOtVE41OEpZ0i1C1QbAPtZuHp1Vv7eMTb6qEokwuFMvHA176k804
+         Q3RyUZ0CeRbRFWHH0lAfk030GkeDs5nQlRBV7bknNVzAIrMIpKYo1eh8kBWlw8ArJfKW
+         3gf3A3MEVvyLlq2B9HERojsq93aC2E2vx7jB5Y+Y6etVkNj49zNifBEnCRWLrzTW8gPL
+         2XsoiB9+hPWh5q4jwbF/7+AwxeBC7wik+kVlOym0KIktL6lBzQhhzClJDxfMUsshsENh
+         BrLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708592180; x=1709196980;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rbknJKtPFhf19eCJkjQJRk7bzdoJAzars+eP6UgUck=;
+        b=NFZigGxs9ys5Ju8WZp42+rzwUykHUrg439C5XQ9GFlnDBqDSUI6o+bho1O93o+uxRZ
+         bPrA9pDOcDP+vyQ1QQ3sPym7W/OgJyVLPeQKRkIU00tdhFij2Jdp2s7weupUOUAI8zy5
+         mQmRT+RTgGBXrLzfbt76G/uePP1wwpVNOkrsasScJnaQwRuSMDyvNXAy7KmjLX/XN9RE
+         nHVn8ccn7VeqXvGKD9fVP1B6JezqJPy+X44s0PZ3jVLhKhkFMurjQOzJhKid/ihYHPQD
+         6pyCgnTtSPJHaikr7fttzu2Xj/5g6buaXxqDri1CgOvq9RgAG02IP6oQ/pRx7XoDHbfR
+         8bMg==
+X-Forwarded-Encrypted: i=1; AJvYcCUlDlnKxyQDxl918G1fIrnMGbXgPRAe0zZelrEDgxuh1wmyrFRkZ+LgEnW2yEvTfPQd7q7HbSYLdYeMaq0VWbUjKD6p0fo6D1XM1wvS
+X-Gm-Message-State: AOJu0YynHzV0ir4LOiG1eyuVqeib8rSFT6Px/QBQdN/BymQ4eNE/AY0H
+	1Fb2XETDMyaWxBvKSZsURB/kzrWkrGOAvDYWYlxsFdQxCwWoByJk9+GHSnbGMzM=
+X-Google-Smtp-Source: AGHT+IHI8kwr2TPMWaQcsVFQfDZ5jtmRdq5MbORSZf5eQi7OWgR6bfpA0ultcao4TPa7mA7fVEj4RQ==
+X-Received: by 2002:ac2:4e08:0:b0:512:b935:c542 with SMTP id e8-20020ac24e08000000b00512b935c542mr8260265lfr.59.1708592180008;
+        Thu, 22 Feb 2024 00:56:20 -0800 (PST)
+Received: from [87.246.222.6] (netpanel-87-246-222-6.pol.akademiki.lublin.pl. [87.246.222.6])
+        by smtp.gmail.com with ESMTPSA id b6-20020ac24106000000b0051176ff32c1sm1992022lfi.62.2024.02.22.00.56.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 00:56:19 -0800 (PST)
+Message-ID: <080d8b12-ef88-4f45-860c-826c1b1b5895@linaro.org>
+Date: Thu, 22 Feb 2024 09:56:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lHpyoJFoRpJTBuEw"
-Content-Disposition: inline
-In-Reply-To: <20240222035158.195265-1-dharma.b@microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Enable MDP turbo mode
+Content-Language: en-US
+To: Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ cros-qcom-dts-watchers@chromium.org, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
+ <20240221-rb3gen2-dp-connector-v1-3-dc0964ef7d96@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240221-rb3gen2-dp-connector-v1-3-dc0964ef7d96@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+	
 
---lHpyoJFoRpJTBuEw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2/22/24 00:19, Bjorn Andersson wrote:
+> The max frequency listed in the DPU opp-table is 506MHz, this is not
+> sufficient to drive a 4k@60 display, resulting in constant underrun.
+> 
+> Add the missing MDP_CLK turbo frequency of 608MHz to the opp-table to
+> fix this.
+> 
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/atmel=
-,aic.yaml b/Documentation/devicetree/bindings/interrupt-controller/atmel,ai=
-c.yaml
-> new file mode 100644
-> index 000000000000..0d51bd78bf2b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.ya=
-ml
-> @@ -0,0 +1,89 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/atmel,aic.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Advanced Interrupt Controller (AIC)
-> +
-> +maintainers:
-> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
-> +  - Dharma balasubiramani <dharma.b@microchip.com>
-> +
-> +description:
-> +  The Advanced Interrupt Controller (AIC) is an 8-level priority, indivi=
-dually
-> +  maskable, vectored interrupt controller providing handling of up to one
-> +  hundred and twenty-eight interrupt sources.
-> +
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> +allOf:
-> +  - $ref: /schemas/interrupt-controller.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: atmel,at91rm9200-aic
-> +    then:
-> +      properties:
-> +        atmel,external-irqs:
-> +          minItems: 1
-> +          maxItems: 7
-> +    else:
-> +      properties:
-> +        atmel,external-irqs:
-> +          minItems: 1
-> +          maxItems: 1
-
-When there's property restrictions being applied, move the allof down
-to...
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - atmel,at91rm9200-aic
-> +      - atmel,sama5d2-aic
-> +      - atmel,sama5d3-aic
-> +      - atmel,sama5d4-aic
-> +      - microchip,sam9x60-aic
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 3
-> +    description: |
-> +      The 1st cell is the IRQ number (Peripheral IDentifier on datasheet=
-).
-> +      The 2nd cell specifies flags:
-> +        bits[3:0] trigger type and level flags:
-> +          1 =3D low-to-high edge triggered.
-> +          2 =3D high-to-low edge triggered.
-> +          4 =3D active high level-sensitive.
-> +          8 =3D active low level-sensitive.
-> +        Valid combinations: 1, 2, 3, 4, 8.
-> +        Default for internal sources: 4 (active high).
-> +      The 3rd cell specifies irq priority from 0 (lowest) to 7 (highest).
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  atmel,external-irqs:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description: u32 array of external irqs.
-
-=2E..here. Both work, but seeing the restrictions before you see any of
-the properties is not the most understandable.
-
-Cheers,
-Conor.
-
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +  - atmel,external-irqs
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    interrupt-controller@fffff000 {
-> +      compatible =3D "atmel,at91rm9200-aic";
-> +      reg =3D <0xfffff000 0x200>;
-> +      interrupt-controller;
-> +      #interrupt-cells =3D <3>;
-> +      atmel,external-irqs =3D <31>;
-> +    };
-> +...
->=20
-> base-commit: 4f5e5092fdbf5cec6bedc19fbe69cce4f5f08372
-> --=20
-> 2.25.1
->=20
-
---lHpyoJFoRpJTBuEw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdcMLQAKCRB4tDGHoIJi
-0iOsAP9m+bcNCJqOinLb0AteBdy7mXRGcB1XbQsicq2MgSjpjQD+MssNTCXfQ6vt
-gzfH0TbEBfWso1aovIY/r1JDSDcpoA8=
-=wd3E
------END PGP SIGNATURE-----
-
---lHpyoJFoRpJTBuEw--
+Konrad
 
