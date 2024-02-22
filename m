@@ -1,122 +1,162 @@
-Return-Path: <linux-kernel+bounces-76547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFA6285F8E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:55:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D00585F8F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:56:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E14EC1C24BF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67132880E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4105C12EBC0;
-	Thu, 22 Feb 2024 12:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE2B12F381;
+	Thu, 22 Feb 2024 12:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VGdiXxTn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hicX5ReW"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2A760B90;
-	Thu, 22 Feb 2024 12:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4685A47F64;
+	Thu, 22 Feb 2024 12:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708606502; cv=none; b=B33UlLxPdDI/+x9V1ykFfrV7mM5GL+iIDLfYho/MDwR3esR4DqHhGeLDvMp5JVG+8CHljfRiNPAzOSwsuyQq4D89C00Ljfj3nhnByykNVblH1ihS0k28GIRMviq4a014XBr9lyd6ELvnJZobZ+4E4JomZaLcm/0NXr3kIif3L94=
+	t=1708606572; cv=none; b=TUl7CUEt9BwvKFEYqlHCspVgUImro+Ql7KKm5jLPivhcE/QBGW4nQgeOZyXpPWxsWcRgDwAXw381CUOoMvd8Y728k6jMSswNlYmo5+VTiev3qYq5zVFH64oZfbxiQKrl9KsUesiOyL3Xuz3ceSok+MPsOa9ytyEKN5aji+TM7t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708606502; c=relaxed/simple;
-	bh=cVfB0yeCoQ1d3ZYvhoeMYL94HZ5I4I0dl5HnrRLOySE=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YCs7DTvv53BFh3ave0Qj76p6zjSV/Qmq5uvH4pmqjNrs4IFpfe7ga1XrscMOpVsnaxOZQFkICxW4WL2aeRMV+grBbNeJ/mM4mmrGooSdrEIMGXlmfNregNqoeJiiFeWXMm88cPh9BqLVoWnVKJmOTv/Nj7ZFFLI6Ng2zvopH9bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VGdiXxTn; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708606501; x=1740142501;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=cVfB0yeCoQ1d3ZYvhoeMYL94HZ5I4I0dl5HnrRLOySE=;
-  b=VGdiXxTn6I6vgnNbzzpMG0q/OYAbWf9qTb0sJwQrzXPB/ZJFuSHXlS8Y
-   N9QpQJ1+30n8pmlgVCSPxVuZ6LSZM+qS/tIco8fvkbVXxW2JJXTCaFH9J
-   k5QJyX0xVJnrK7rOzJWZ/UuwgJh6dxzNVU2kVdJ90komTU1nRTB9En8pQ
-   n9FDzPe6khrlCUlUIRO2w5MyA65DC4ymB0/HE7wMCgUGqxnA5Ea3fVCr7
-   3G72892XXsL9K9g0oO4O74OCMYUt0WIaNIe2v3iszFA9SvJ4XDrLIA1jq
-   uJWJaOsGZE8NMgO8F0xk7wdEicU6M+pDjVnoMd3PAjS2dFd4/+GUWMptR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="14243689"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="14243689"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:55:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913518859"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="913518859"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.222]) ([10.249.171.222])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 04:54:56 -0800
-Message-ID: <9c4637d5-6496-4c68-b2db-4be1e56ca746@linux.intel.com>
-Date: Thu, 22 Feb 2024 20:54:54 +0800
+	s=arc-20240116; t=1708606572; c=relaxed/simple;
+	bh=7dqHVymEpv+mbY9Ii99AQPmzVOgGT6bep74WvflVCio=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=c60sinTakyKydZPhYLbmeSrqqK+EStADd6oBOiK0BMnXr6Yj7pnAzAOQs+kwBD1SQ8Dt3idoVIUJyitW4NT37lXMWSwZ8ABvcy2gLtyxyagMmw74fGj/WWy6xviO35NU3EOcyZj2fGP65Et2XXFPxHR/4+cNoH2ci2z9nwGOwK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hicX5ReW; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M1cGao002544;
+	Thu, 22 Feb 2024 12:55:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=F0djyJzQX2boq62he0FY77tfcSeF1hlmz7vhqN4MXI8=; b=hi
+	cX5ReW/Wtbbl0RCaW7zmhbOWSWfcCYUzS2uyeit+CfyTYagLhSoI5dpbWZgLsyft
+	S/15vAvWsFnB+EV4bAROnOpfa2NdbCJzoAivOTohuNShB5mrz1k2unXHRho32bqd
+	c+C0Cwn/Ec2vPogIhW23JJkl5R7C+1nYK6YViS0yRBBapWCkHpiuvMmdKL+eSphF
+	68sWDc/j0mPawcjX4Oq4aqagiqJnxdaQxQyPyV57+Y/DkTvLLRiBFwRm9pDYljD7
+	ZJVKwCbrx03RZSZYIctC8rrQZ1XhgwopqWjvo+GjY9hwBrRAQUvxi3jPFh4InwdW
+	dpKuznfDkvBJjFTsFIMA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdvsehkac-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 12:55:56 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MCtseU013656
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 12:55:54 GMT
+Received: from hu-sarohasa-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 22 Feb 2024 04:55:45 -0800
+From: Sarosh Hasan <quic_sarohasa@quicinc.com>
+To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu
+	<joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Prasad Sodagudi
+	<psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
+	<robh@kernel.org>
+CC: <kernel@quicinc.com>, Sneh Shah <quic_snehshah@quicinc.com>,
+        Suraj Jaiswal
+	<quic_jsuraj@quicinc.com>
+Subject: [PATCH net-next] net: stmmac: dwmac-qcom-ethqos: Update link clock rate only for RGMII
+Date: Thu, 22 Feb 2024 18:25:17 +0530
+Message-ID: <20240222125517.3356-1-quic_sarohasa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, kevin.tian@intel.com, dwmw2@infradead.org,
- will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
- dan.carpenter@linaro.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- Haorong Ye <yehaorong@bytedance.com>
-Subject: Re: [PATCH v13 1/3] PCI: make pci_dev_is_disconnected() helper public
- for other drivers
-Content-Language: en-US
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, bhelgaas@google.com,
- robin.murphy@arm.com, jgg@ziepe.ca
-References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
- <20240222090251.2849702-2-haifeng.zhao@linux.intel.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240222090251.2849702-2-haifeng.zhao@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6qj-1LaJaYXMpzY-ZwzeqVmwy3LF1NrY
+X-Proofpoint-GUID: 6qj-1LaJaYXMpzY-ZwzeqVmwy3LF1NrY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_10,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=998 adultscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 clxscore=1011
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402220103
 
-On 2024/2/22 17:02, Ethan Zhao wrote:
-> Make pci_dev_is_disconnected() public so that it can be called from
-> Intel VT-d driver to quickly fix/workaround the surprise removal
-> unplug hang issue for those ATS capable devices on PCIe switch downstream
-> hotplug capable ports.
-> 
-> Beside pci_device_is_present() function, this one has no config space
-> space access, so is light enough to optimize the normal pure surprise
-> removal and safe removal flow.
-> 
-> Tested-by: Haorong Ye<yehaorong@bytedance.com>
-> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
-> ---
->   drivers/pci/pci.h   | 5 -----
->   include/linux/pci.h | 5 +++++
->   2 files changed, 5 insertions(+), 5 deletions(-)
+Updating link clock rate for different speeds is only needed when
+using RGMII, as that mode requires changing clock speed when the link
+speed changes. Let's restrict updating the link clock speed in
+ethqos_update_link_clk() to just RGMII. Other modes such as SGMII
+only need to enable the link clock (which is already done in probe).
 
-Hi PCI subsystem maintainers,
+Signed-off-by: Sarosh Hasan <quic_sarohasa@quicinc.com>
+---
+ .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 ++++++++++---------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-The iommu drivers (including, but not limited to, the Intel VT-d driver)
-require a helper to check the physical presence of a PCI device in two
-scenarios:
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index 31631e3f89d0..9cd144fb3005 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -169,21 +169,23 @@ static void rgmii_dump(void *priv)
+ static void
+ ethqos_update_link_clk(struct qcom_ethqos *ethqos, unsigned int speed)
+ {
+-	switch (speed) {
+-	case SPEED_1000:
+-		ethqos->link_clk_rate =  RGMII_1000_NOM_CLK_FREQ;
+-		break;
++	if (phy_interface_mode_is_rgmii(ethqos->phy_mode)) {
++		switch (speed) {
++		case SPEED_1000:
++			ethqos->link_clk_rate =  RGMII_1000_NOM_CLK_FREQ;
++			break;
+ 
+-	case SPEED_100:
+-		ethqos->link_clk_rate =  RGMII_ID_MODE_100_LOW_SVS_CLK_FREQ;
+-		break;
++		case SPEED_100:
++			ethqos->link_clk_rate =  RGMII_ID_MODE_100_LOW_SVS_CLK_FREQ;
++			break;
+ 
+-	case SPEED_10:
+-		ethqos->link_clk_rate =  RGMII_ID_MODE_10_LOW_SVS_CLK_FREQ;
+-		break;
+-	}
++		case SPEED_10:
++			ethqos->link_clk_rate =  RGMII_ID_MODE_10_LOW_SVS_CLK_FREQ;
++			break;
++		}
+ 
+-	clk_set_rate(ethqos->link_clk, ethqos->link_clk_rate);
++		clk_set_rate(ethqos->link_clk, ethqos->link_clk_rate);
++	}
+ }
+ 
+ static void ethqos_set_func_clk_en(struct qcom_ethqos *ethqos)
+-- 
+2.17.1
 
-- During the iommu_release_device() path: This ensures the device is
-   physically present before sending device TLB invalidation to device.
-
-- During the device driver lifecycle when a device TLB invalidation
-   timeout event is generated by the IOMMU hardware: This helps handle
-   situations where the device might have been hot-removed.
-
-While there may be some adjustments needed in patch 3/3, I'd like to
-confirm with you whether it's feasible to expose this helper for general
-use within the iommu subsystem.
-
-If you agree with this change, I can route this patch to Linus through
-the iommu tree with an "acked-by" or "reviewed-by" tag from you.
-
-Best regards,
-baolu
 
