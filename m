@@ -1,157 +1,146 @@
-Return-Path: <linux-kernel+bounces-76334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0942A85F5BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:30:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27CC985F5C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:30:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B270C1F293F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:30:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BDC51C221DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B29D3B79E;
-	Thu, 22 Feb 2024 10:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F70E3DB86;
+	Thu, 22 Feb 2024 10:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GLpeCnbB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TW9B5rlP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 862A118657;
-	Thu, 22 Feb 2024 10:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD003CF6B;
+	Thu, 22 Feb 2024 10:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597794; cv=none; b=NZEIvIqEeNmxnln9Lf1RkrxYmrPbaGfjry+nRXlm+glMciteVa6VNK8JEP/woB5zstmV/xxcJllEDEwjbePXjL7PC4PhxIN4loR2rY0okG+VvrUpzmDhVUprqYazEIiWuXnp0w6q9vTSgxvKr0u7JUQlVbs+haRWzvNR7OgXpDY=
+	t=1708597796; cv=none; b=SLOV0jhnW5i2XABz8PVP7/2uBQE6w04E5+kbrM3/xL2xGKH6XPnbz9G3cNqAhbgqlXrn+Xlqxy5GWR6n4O2uBECFYTrET6B69dnhqy6bt6LCATBYVZknU2g/ECAsayQyQS6/xM0p7IybK9QvkxqhNk9oSFxaasheH7CB68tmeJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597794; c=relaxed/simple;
-	bh=Wzsp+43YqM+LlxN0cpsEdEREeR6hPbCyLnqKwXy8YPk=;
+	s=arc-20240116; t=1708597796; c=relaxed/simple;
+	bh=afYuJSyH4RiPAE1WvxVP1Cil3M0pG313XkEHICNyg8A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YicjJGAARkMssK75v+eKJ7/HNVyMBHxbKASrrKMg/APAi5OTV2EkFRr3u4fWK6BjWxroJbYMa1Ihzw1CK2q9ROSfRpXQ6EU1RQix1YZ4WadJOAvGiFkrkm43hAV9awydBHRbg5Wsomy3ZiBTnX9RcO4t2Bq3TOzcSqRI4ix/MGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GLpeCnbB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86506C433F1;
+	 Content-Type:Content-Disposition:In-Reply-To; b=cHDK71ME7BxSHO5QGx4vgxpvWtnQbxKsFX+gZ2VHsYddY4cqiUBvA8cCV3SlolkaR2DXy3kR/NVS2VBzyR55x5UU6mkNWEy2GHy58RbdURr0j/yQN4lx82iPfHkfmRLRnzHPHbPJIKZPSsb6MWSKmraoxe9qCu5xvAmstKvZ0Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TW9B5rlP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C18CEC43390;
 	Thu, 22 Feb 2024 10:29:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708597794;
-	bh=Wzsp+43YqM+LlxN0cpsEdEREeR6hPbCyLnqKwXy8YPk=;
+	s=k20201202; t=1708597796;
+	bh=afYuJSyH4RiPAE1WvxVP1Cil3M0pG313XkEHICNyg8A=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GLpeCnbBnu29hs6MZNOozG2jG6b1fFuTJVhE3nvd7tjl6OJrs/6etqCnvwC1gydFc
-	 fZaiIs07i5pfwnXJ+lyW5Irfyo1A4zz85pj1wabeJ7hHUqk2KOdpUel/X2TixStzQz
-	 V58Kw1xhT+bVoCZNonvGZgNysqVEW/SraW2A6pjK7nU1YpFwSWACfR/7CkFRkFf7mE
-	 OPikCWYMo91ZsmfU/RQ/POBakSS1xVnR7T2/P/ZpO+odkg+uBRfP4f62sytseG05jY
-	 P0L90QvV7eZlk0m9ZoDBIDUf8lS9dwxaWtHQuXvP5xb8VBZaX1IWZFRjlm6KMap4uX
-	 Ng7/DDdFyaRkg==
-Date: Thu, 22 Feb 2024 11:29:51 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Frank Oltmanns <frank@oltmanns.dev>
-Cc: Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] drm/panel: st7703: Drive XBD599 panel at higher
- clock rate
-Message-ID: <ia7e7gqozltl5wkfdvwtf2rw2ko2dt67qxtuqbavsroyv4ifys@x4mbulqhhri5>
-References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
- <poua4bzyciiwt65sqjf2whqfdumvoe4h3bkjpf64px2vwgumrf@sai73byg2iju>
- <87sf1zxb0s.fsf@oltmanns.dev>
+	b=TW9B5rlPPl5eawcAop2ve7LU3/6MAaYknJCqr38lGgRhKsfs5J79IBTheSjcbNMtA
+	 NhO9WKjam+jcU9OHLqTknnaajMPieIFd8dtTRJhdBI5KPbNJMGCupBA0lmiagn4piM
+	 kferNd5Idv7e5m+eYzZG7rAbNLsIQrLB5vJuJqhKdf2KSVBQMExjLX7kF/6NZ0oZqs
+	 Bzgy1+ugtB9hdLQgL+vA+mJeCKM4dWp5+XkPPCXRbYyZFBzByT6ti/QSvuq0Q/qlyQ
+	 YZdEuQdlMP3WPaQKTTGZpDNGzIafV/e9gJtu1BUzbPhp2liL/Q5MDOlPcNfMkAnn5/
+	 MTWWYKprZh3Dw==
+Date: Thu, 22 Feb 2024 10:29:51 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	denis.ciocca@st.com, linus.walleij@linaro.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] dt-bindings: iio: st-sensors: Add IIS2MDC magnetometer
+Message-ID: <20240222-fretted-riches-bf15f5d63018@spud>
+References: <20240221175810.3581399-1-m.felsch@pengutronix.de>
+ <20240221-undecided-union-4078db711693@spud>
+ <20240221191644.5r3ylr5w3cnfnrzj@pengutronix.de>
+ <20240221-imitate-molar-81d93285ac77@spud>
+ <20240221194518.3sm4o5i274ldpvzf@pengutronix.de>
+ <20240221-lubricant-machine-79054f117eb0@spud>
+ <20240222084717.rcckoyjeh4shmcxr@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bml6dpjoov3orz5g"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ahPoXcnEvQcnarTl"
 Content-Disposition: inline
-In-Reply-To: <87sf1zxb0s.fsf@oltmanns.dev>
+In-Reply-To: <20240222084717.rcckoyjeh4shmcxr@pengutronix.de>
 
 
---bml6dpjoov3orz5g
+--ahPoXcnEvQcnarTl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 11, 2024 at 04:42:43PM +0100, Frank Oltmanns wrote:
->=20
-> On 2024-02-08 at 20:05:08 +0100, Maxime Ripard <mripard@kernel.org> wrote:
-> > [[PGP Signed Part:Undecided]]
-> > Hi Frank,
-> >
-> > On Mon, Feb 05, 2024 at 04:22:28PM +0100, Frank Oltmanns wrote:
-> >> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
-> >> The SOC requires pll-mipi to run at more than 500 MHz.
-> >>
-> >> This is the relevant clock tree:
-> >>  pll-mipi
-> >>     tcon0
-> >>        tcon-data-clock
-> >>
-> >> tcon-data-clock has to run at 1/4 the DSI per-lane bit rate. The XBD599
-> >> has 24 bpp and 4 lanes. Therefore, the resulting requested
-> >> tcon-data-clock rate is:
-> >>     crtc_clock * 1000 * (24 / 4) / 4
-> >>
-> >> tcon-data-clock runs at tcon0 / 4 (fixed divisor), so it requests a
-> >> parent rate of
-> >>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
-> >>
-> >> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mip=
-i.
-> >>
-> >> pll-mipi's constraint to run at 500MHz or higher forces us to have a
-> >> crtc_clock >=3D 83333 kHz if we want a 60 Hz vertical refresh rate.
-> >>
-> >> Change [hv]sync_(start|end) so that we reach a clock rate of 83502 kHz
-> >> so that it is high enough to align with pll-pipi limits.
-> >>
-> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> >
-> > That commit log is great, but it's kind of off-topic. It's a panel
-> > driver, it can be used on any MIPI-DSI controller, the only relevant
-> > information there should be the panel timings required in the datasheet.
-> >
-> > The PLL setup is something for the MIPI-DSI driver to adjust, not for
-> > the panel to care for.
-> >
->=20
-> I absolutely agree. It even was the reason for my submission of a
-> sunxi-ng patch series last year that was accepted, to make pll-mipi more
-> flexible. :)
->=20
-> The only remaining option I currently see for adjusting the sunxi-ng
-> driver to further accomodate the panel, is trying to use a higher
-> divisor than 4 for calculating tcon-data-clock from tcon0. I remember
-> reading a discussion about this, but as far as I remember that proposal
-> was rejected (by you, IIRC).
->=20
-> While I appreciate other suggestion as well, I'll look into options for
-> using a different divisor than 4.
+On Thu, Feb 22, 2024 at 09:47:17AM +0100, Marco Felsch wrote:
+> On 24-02-21, Conor Dooley wrote:
+> > On Wed, Feb 21, 2024 at 08:45:18PM +0100, Marco Felsch wrote:
+> > > On 24-02-21, Conor Dooley wrote:
+> > > > On Wed, Feb 21, 2024 at 08:16:44PM +0100, Marco Felsch wrote:
+> > > > > On 24-02-21, Conor Dooley wrote:
+> > > > > > On Wed, Feb 21, 2024 at 06:58:10PM +0100, Marco Felsch wrote:
 
-Like I said, I'm not against the patch at all, it looks great to me on
-principle. I just think you should completely rephrase the commit log
-using the datasheet as the only reliable source of the display timings.
-Whether sun4i can work around the panel requirements is something
-completely orthogonal to the discussion, and thus the commit log.
+> > > > Besides, having fallback compatibles is the norm when one device ha=
+s the
+> > > > same programming model as another.
+> > >=20
+> > > Not for this binding according the driver.
+> >=20
+> > If they don't have the same programming model, then describing them as
+> > "equivalent" wouldn't be correct. That said, they seem to use the same
+> > sensor settings when alls said and done (see st_magn_sensors_settings),
+> > so I think they are actually compatible even if the driver has separate
+> > match data for each.
+>=20
+> I told you that I have checked the driver and skimed the datasheets and
+> came to the exact same conclusion.
 
-Maxime
+Did you tell me that? I did't see it.
 
---bml6dpjoov3orz5g
+Anyway, I think what happened is that I interpreted "Not for this
+binding according the driver" as a comment about the programming model
+being different, but you meant it in reference to the fallback. Since
+they do have the same programming model the fallback is appropriate,
+even if the driver knows about the iis2mdc compatible.
+I'd squash in the following, similar to what was done for the
+st,iis328dq that was added recently:
+
+diff --git a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml b/Doc=
+umentation/devicetree/bindings/iio/st,st-sensors.yaml
+index ee593c8bbb65..ee6c3800436d 100644
+--- a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
++++ b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
+@@ -64,7 +64,6 @@ properties:
+           - st,lsm9ds0-gyro
+       - description: STMicroelectronics Magnetometers
+         enum:
+-          - st,iis2mdc
+           - st,lis2mdl
+           - st,lis3mdl-magn
+           - st,lsm303agr-magn
+@@ -73,6 +72,9 @@ properties:
+           - st,lsm303dlhc-magn
+           - st,lsm303dlm-magn
+           - st,lsm9ds1-magn
++      - items:
++          - const: st,iis2mdc
++          - const: st,lis2mdl
+       - description: STMicroelectronics Pressure Sensors
+         enum:
+           - st,lps001wp-press
+
+--ahPoXcnEvQcnarTl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdciHgAKCRDj7w1vZxhR
-xfJ1APsGJxlhH6N9Zf5Bg18E9npao1trsNfER/3ulA49l/e3zQEArlyYygxuPvKn
-3nkhyF0YeukoDf5065tfHAeU7wy1JQA=
-=mdeZ
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdciHwAKCRB4tDGHoIJi
+0rYLAP9zXNYPi9SZuObV9gQE3XitJbRNMbErzItFTaLr7pgDwgD+NA+JrD+s8dqv
+AQAMzEvicv1YL6dcsEnWJJyJKjz4fgw=
+=TXSE
 -----END PGP SIGNATURE-----
 
---bml6dpjoov3orz5g--
+--ahPoXcnEvQcnarTl--
 
