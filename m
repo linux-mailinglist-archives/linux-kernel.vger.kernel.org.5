@@ -1,112 +1,136 @@
-Return-Path: <linux-kernel+bounces-76466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F7E85F78E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D552885F792
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A0C62821F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:55:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89FDA1F219D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E881482D3;
-	Thu, 22 Feb 2024 11:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F5047781;
+	Thu, 22 Feb 2024 11:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NkRu5pwR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lRDl0nHn"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE4047F58
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9F145C08
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602838; cv=none; b=YWcY/nWa/osAAqG5PqEs29qS+08pao/ulrQ1/hmN1ghXSiUyDHrGyHINwwBpKGZs+edqgM1Mrrb/2pDlGq7idtRaIaxuksn7t7TmM+91VsFhyUvjmqFnsZZxk22XpznbtsY+cfUVVSS168/TTTOmeHFOdfVzJ9t1qHecCHHDNT4=
+	t=1708602934; cv=none; b=H9XHi9XdhhGRcUZBhs0MJIystG63QVylEiQ3ephbMbMYffmgptut4Unni5Jdk7Qtc5vXdIgMpWG+jcSyPCgZNL4b9OMa8GWvwzj9ydGj1rVgIYkmqeKL98JoygDPdGl5K383v8qAmH5dE3xeGYkIpneSyTXp/fs01WwzzY3E14I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602838; c=relaxed/simple;
-	bh=hK4pxYV9GrDhdvp+ZHYHLQFmxepY3EOddcsHm2aSlD4=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=qVtuIzQW0H+ts4l1wOWYA96mYbEM8YLN4zekt4q7RmbB2DjHZWWM5oeru2E5VG7K+1Vt1aOveSNGtpFNsIPkZgjK8OdCWE0Uls27LK4ig3vdnmfLa8yUaum9Xf2HV2ASMwfYlb/bNnjkvPIwtMWeNs1jTvRlXXok6RomzNpeU/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NkRu5pwR; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708602837; x=1740138837;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hK4pxYV9GrDhdvp+ZHYHLQFmxepY3EOddcsHm2aSlD4=;
-  b=NkRu5pwRouYfMeGjnskUOZDUDTwzQRSklGZPEyGeUcN3TdVM/FBmT7fw
-   Ea15iG7t2IMSVZtMJPPj262GR6tGLTA4jeNrhuulx/i9VkywGOQlvn/Rl
-   ksKpVoXGkJzbf+un/XADjjz0RUgupCgh6d1aAYrVZDdotpRpnNVEbtqEn
-   hb+WE+oJVWtp1yGMh4gk2urHJAPvS6nEaWe83zUFBQGsMMWLqeMCfEtzW
-   +/W5+WQ2t1uT3d53i0YbnlJpblBCMgL4RJVpXhsxNZ1W0qrLKWrZnOrXt
-   vj+ZC5QrrST6lrHY07NXCdlz0y6/KgEJG8eiSEmGxzW7uJuALP/SRAAVM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13522715"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="13522715"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:53:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="5437426"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.171.222]) ([10.249.171.222])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:53:54 -0800
-Message-ID: <4c64bfb2-26b1-4fed-af30-5acd4ac2759e@linux.intel.com>
-Date: Thu, 22 Feb 2024 19:53:51 +0800
+	s=arc-20240116; t=1708602934; c=relaxed/simple;
+	bh=0CJpr26zan7TdkdLzjJcZGBNSSb45N51xiEhwd3+uaw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LM6tIQ3CVBDX7kKH3F3ov9rUIMU5QB+jPJjxzl5JjKBbOs2By2xZq+0VkbR+9dykOSsg8vbBWjqRu90TRGl/Xo11LIdPn6l/15a4jttONJShBD6nAQZz1GVSAa8isXbXweHSEFCwUcPPt8LM5bPGhEVLziTD2i2qTk/81GAWRLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lRDl0nHn; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 22 Feb 2024 06:55:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708602930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZOSNF//i8qwwUlDAqBjDcUQ68DsRV1xIVPVD8Mb3zPM=;
+	b=lRDl0nHnJJsSXURYD+j4aDEP5upGN1kgw5NWTCfYi+JVsZEyXn78qm2NmO8/+ePcYaOOIB
+	XlFrD8tQcHtTeRssf1+3QzUcCWLKu1/iNUq03e3Ehdu/wB04e1Htiua1y9wVPWYvuE1znI
+	gkxm21v3AaWlXjatwcNzTsKJaHhyumk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Jan Kara <jack@suse.cz>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Josef Bacik <josef@toxicpanda.com>, 
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+Message-ID: <2tsfxaf2blhcxlkfcagfavz3mnuga3qsjgpytbstvykmcq2prj@icc7vub55i3p>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting>
+ <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
+ <20240222110138.ckai4sxiin3a74ku@quack3>
+ <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
+ <20240222114417.wpcdkgsed7wklv3h@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Eric Badger <ebadger@purestorage.com>,
- David Woodhouse <dwmw2@infradead.org>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- "open list:INTEL IOMMU (VT-d)" <iommu@lists.linux.dev>,
- open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iommu/vt-d: Check for non-NULL domain on device release
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240113181713.1817855-1-ebadger@purestorage.com>
- <20240116152215.GE50608@ziepe.ca>
- <7455b538-e934-4377-9ab5-004ee991b3d2@linux.intel.com>
- <20240221154012.GC13491@ziepe.ca>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240221154012.GC13491@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222114417.wpcdkgsed7wklv3h@quack3>
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/2/21 23:40, Jason Gunthorpe wrote:
-> On Wed, Jan 31, 2024 at 03:10:53PM +0800, Baolu Lu wrote:
->> I like this suggestion.
->>
->> Currently, the device_release callback for an iommu driver does the
->> following:
->>
->> a) Silent IOMMU DMA translation. This is done by detaching the existing
->>     domain from the IOMMU and bringing the IOMMU into a blocking state
->>     (some drivers might be in identity state);
->> b) Releases the resources allocated in the probe callback and restores
->>     the device to its previous state before the probe.
->>
->>  From my understanding of your suggestion, we should move a) out of the
->> release callback and make it a special domain, which could be a blocking
->> domain or identity domain, depending on the iommu hardware.
->>
->> In the end, the release_device callback of an iommu driver should focus
->> on the opposite operation of device_probe. This makes the concept
->> clearer.
-> Right
+On Thu, Feb 22, 2024 at 12:44:17PM +0100, Jan Kara wrote:
+> On Thu 22-02-24 06:27:14, Kent Overstreet wrote:
+> > On Thu, Feb 22, 2024 at 12:01:38PM +0100, Jan Kara wrote:
+> > > On Thu 22-02-24 04:42:07, Kent Overstreet wrote:
+> > > > On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
+> > > > > On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
+> > > > > >
+> > > > > > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> > > > > > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > > > > > >
+> > > > > > > > Recently we had a pretty long discussion on statx extensions, which
+> > > > > > > > eventually got a bit offtopic but nevertheless hashed out all the major
+> > > > > > > > issues.
+> > > > > > > >
+> > > > > > > > To summarize:
+> > > > > > > >  - guaranteeing inode number uniqueness is becoming increasingly
+> > > > > > > >    infeasible, we need a bit to tell userspace "inode number is not
+> > > > > > > >    unique, use filehandle instead"
+> > > > > > >
+> > > > > > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> > > > > > > together uniquely identify the file within the system."
+> > > > > > >
+> > > > > >
+> > > > > > Which is what btrfs has done forever, and we've gotten yelled at forever for
+> > > > > > doing it.  We have a compromise and a way forward, but it's not a widely held
+> > > > > > view that changing st_dev to give uniqueness is an acceptable solution.  It may
+> > > > > > have been for overlayfs because you guys are already doing something special,
+> > > > > > but it's not an option that is afforded the rest of us.
+> > > > > 
+> > > > > Overlayfs tries hard not to use st_dev to give uniqueness and instead
+> > > > > partitions the 64bit st_ino space within the same st_dev.  There are
+> > > > > various fallback cases, some involve switching st_dev and some using
+> > > > > non-persistent st_ino.
+> > > > 
+> > > > Yeah no, you can't crap multiple 64 bit inode number spaces into 64
+> > > > bits: pigeonhole principle.
+> > > > 
+> > > > We need something better than "hacks".
+> > > 
+> > > I agree we should have a better long-term plan than finding ways how to
+> > > cram things into 64-bits inos. However I don't see a realistic short-term
+> > > solution other than that.
+> > > 
+> > > To explicit: Currently, tar and patch and very likely other less well-known
+> > > tools are broken on bcachefs due to non-unique inode numbers. If you want
+> > > ot fix them, either you find ways how bcachefs can cram things into 64-bit
+> > > ino_t or you go and modify these tools (or prod maintainers or whatever) to
+> > > not depend on ino_t for uniqueness. The application side of things isn't
+> > > going to magically fix itself by us telling "bad luck, ino_t isn't unique
+> > > anymore".
+> > 
+> > My intent is to make a real effort towards getting better interfaces
+> > going, prod those maintainers, _then_ look at adding those hacks (that
+> > will necessarily be short term solutions since 64 bits is already
+> > looking cramped).
 > 
-> Can someone make some patches to fix Eric's bug? We don't really need
-> to do the release_domain stuff if the driver just self-attaches one of
-> its known static domain types (blocking/identity)
+> OK, fine by me :) So one thing is still not quite clear to me - how do you
+> expect the INO_NOT_UNIQUE flag to be used by these apps? Do you expect them
+> to use st_dev + st_ino by default and fall back to fsid + fhandle only when
+> INO_NOT_UNIQUE is set?
 
-I will follow up with a formal patch series.
-
-Best regards,
-baolu
+Shouldn't matter. If they care about performance and they're in some
+strange situation where the syscal overhead matters, they can use
+fhandle only when the bit is set, but I'd personally prefer to see
+everyone on the same codepath and just always using fh.
 
