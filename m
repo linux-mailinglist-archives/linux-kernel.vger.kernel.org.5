@@ -1,191 +1,141 @@
-Return-Path: <linux-kernel+bounces-76793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D98B85FCAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:41:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AB7E85FCB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB8871F26931
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:41:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAE002880A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F5114F9D0;
-	Thu, 22 Feb 2024 15:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D2314F9F0;
+	Thu, 22 Feb 2024 15:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OM0uGCBz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="prTh+oj8"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B611D14E2EA;
-	Thu, 22 Feb 2024 15:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E92814E2C1
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708616377; cv=none; b=uIwH4rzAyT6+162aY/Q43Z4OtXmP9jmg8cMEYZX8cMBk6axVb68hS19YMziCvHmzy+Hl1Pf9WKsqM6mae14ehxJIOfhNdex9hQge5H554e/0C6mI/y2FKF5KNs3wZ+GMAcLPss/j4a84G0/nxJoJr9rTD9xn1abYSmfXKBI0xqs=
+	t=1708616401; cv=none; b=o0hz+2iOfz661DC39zxLZchGhSQPK9t6kX7QlOAd/lfGVsGkn4DYoQf2v0UrfEU8q0TSZM5HmJBzeimdJtFvaEZTcL5ksOXvwBATUyz/rMkEU8TqYqxn4z0NI20/5HBcKTMhWtceL8Cao8oIFQ4El/Wc8LURwKGrx9Z1/kMtSsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708616377; c=relaxed/simple;
-	bh=VwHg7LUdcIrFoPjrcD5ddqTta7KlIaNL26jH4Yy3jIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sE0XxqQv+/cfvJOOy1GB5XU8q8PPEeMttZSnFsZvCCDYJF43dt+MI6/wXSlXsGO9o+Aq+r2WLYDtLz8FUOtv2JzwoqN8xo7QyEsxb54F7VRWf3QiG7M3AkZeQCObLqekbB3kwkvHjNncDWaPUB15BQ9ow4FUPa7JmZMeLN9v28Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OM0uGCBz; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708616375; x=1740152375;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VwHg7LUdcIrFoPjrcD5ddqTta7KlIaNL26jH4Yy3jIM=;
-  b=OM0uGCBzKRcWGJByDuqLzYS3Tf5nT1AwoTlclXoLB4dAKtEkUI1QR2Pn
-   hGsGva+jZRo6OL/yZrhjkPXclK0gEjIc8OuXoEONlsjWQMEjiMMZtcZ6H
-   zLVCLvXR8RLt8wVACPcLomJUm2SVgwWPHb344mU6tZKNGYq5cHaHgdpON
-   h2rat+VDy5yQsQkMt+EiNTITVC/MpXPKIFKUmqBV5Grxk1OF5+hJl8a+s
-   ZNOQXEN8jmWLykE0h5UIECO5xKqReXwBK/2YcwG9Wk8kLL4G2t7vrZvLt
-   HCFhgNVgC5tmxDn4u05L8vHEsZObut6M5G3qLxw2EqIBLZoErr0/f54aq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2985497"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="2985497"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 07:39:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913544289"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="913544289"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 07:39:31 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rdBAV-00000006fLv-3ofM;
-	Thu, 22 Feb 2024 17:39:27 +0200
-Date: Thu, 22 Feb 2024 17:39:27 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4 3/5] lib/bitmap: Introduce bitmap_scatter() and
- bitmap_gather() helpers
-Message-ID: <Zddqr3aN4rU-upai@smile.fi.intel.com>
-References: <20240222142219.441767-1-herve.codina@bootlin.com>
- <20240222142219.441767-4-herve.codina@bootlin.com>
+	s=arc-20240116; t=1708616401; c=relaxed/simple;
+	bh=irUaaTgSHl9McK+IT2Ipld7BjAvthbn+fFnbtiJW/dk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BfXL2IXgC4JmWsXHhhLLAHhGJBdEkGp/r64zzyvnj3Lo27mahNM6ag/kRxNxlfgRLFAL9stK0oLbpewrZQ8m9995PicTLvbxxuQLOwKoe40a1a70LEB8AmZqE3dSRhQcZhTXVd3/SBmjQvEHOPzmxj1JFCd2dmC01G6hHpBhgZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=prTh+oj8; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512b84bdaf1so5896074e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:39:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708616397; x=1709221197; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c1npCLJELsPSC1JsXp5VaFpN9TsOulzmiEht9MHB0lk=;
+        b=prTh+oj83tNb8/rX1g5my1Cv2cx4hoVfk1RyWnVChP8jt0Diog2uFzZDeNQBlpcRHn
+         HPbKkYZaBUJWX5vo9k8ay8dW0A1DhGP9PFbuL7iaGv4S6qdWADLvX/aB+T4JtC76HvrE
+         OFTxb55rM5Ke1hUpMk/IT1bxs9n+/w/JRqVSF/w9bA3isnW/oifNhomq6uvWWnbQkhU3
+         RgY4PNLZ8pNhi785w532Y/9mNcm5zVYmBtVg+dkUFMe48eIHO4ND8yw2gAWk2RTX9r2z
+         CruoXDNG5XmOJC30hkNkVR4t4aGAYyZfMVx0JMLUvDS5u/o/KKT7W74lMhMx15P0yGJS
+         j1cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708616397; x=1709221197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c1npCLJELsPSC1JsXp5VaFpN9TsOulzmiEht9MHB0lk=;
+        b=q8Gu4yKd8zCK4igQJ2yrG1p5LaM/317ciykxnOTqDzk92sodfMTkaJnTgCMHJAUmba
+         Uw5YWnp3QSpVd3zviO1Zspchbb0pF342j4dETNAsLN2vcPkm2hyrYJlm/EQB7++CY2iA
+         bKSinQ4nEK26mCmIye8ugMZBHV0jsaP/vGaiyGvggT+TLf1MBNrGI8czreneuyhZUSRD
+         jA/7dCwFadmneboYKZkIqgwUqF3VZ6OFh39I8sXHtnb0eXAsV9FYzKjyDoVmMsVLeaGj
+         WsjVP5Ets30zgxhmjZByVqjR0AzLv3JPyWg1DRS0ZbvohDjoZOjW/QZTwsb48phsSE0V
+         6OeQ==
+X-Gm-Message-State: AOJu0YwOl1tO1myzVqGhdDfKq+zfDsbmpa3Mf8YeTT0SZNkaw7ij85so
+	3vKwDBKpxaUr0NzX/amJ7Wieqz3waXbPi/KDcL5/9I2o+zHpUZRHOhjC8yCb+0c=
+X-Google-Smtp-Source: AGHT+IF5oA+zj1hJdLGm59l4SglX5mVSDyz7ZtNxq7Z4/wQ0vArID2KuXJIuLjHr2LPtjtbbTxicyw==
+X-Received: by 2002:a05:6512:3d8d:b0:512:be44:656f with SMTP id k13-20020a0565123d8d00b00512be44656fmr8689020lfv.63.1708616397318;
+        Thu, 22 Feb 2024 07:39:57 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id u11-20020a5d468b000000b0033d4adb3ebbsm14270878wrq.26.2024.02.22.07.39.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 07:39:56 -0800 (PST)
+Message-ID: <4eda4893-8db5-47f0-8566-ecf379e987c7@linaro.org>
+Date: Thu, 22 Feb 2024 16:39:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222142219.441767-4-herve.codina@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2.2 1/6] thermal: core: Store zone trips table in struct
+ thermal_zone_device
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux ACPI <linux-acpi@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
+ Zhang Rui <rui.zhang@intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+References: <4551531.LvFx2qVVIh@kreacher> <1883976.tdWV9SEqCh@kreacher>
+ <12406375.O9o76ZdvQC@kreacher>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <12406375.O9o76ZdvQC@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 03:22:16PM +0100, Herve Codina wrote:
-> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 22/02/2024 14:52, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> These helpers scatters or gathers a bitmap with the help of the mask
-> position bits parameter.
+> The current code expects thermal zone creators to pass a pointer to a
+> writable trips table to thermal_zone_device_register_with_trips() and
+> that trips table is then used by the thermal core going forward.
 > 
-> bitmap_scatter() does the following:
->   src:  0000000001011010
->                   ||||||
->            +------+|||||
->            |  +----+||||
->            |  |+----+|||
->            |  ||   +-+||
->            |  ||   |  ||
->   mask: ...v..vv...v..vv
->         ...0..11...0..10
->   dst:  0000001100000010
+> Consequently, the callers of thermal_zone_device_register_with_trips()
+> are required to hold on to the trips table passed to it until the given
+> thermal zone is unregistered, at which point the trips table can be
+> freed, but at the same time they are not expected to access that table
+> directly.  This is both error prone and confusing.
 > 
-> and bitmap_gather() performs this one:
->    mask: ...v..vv...v..vv
->    src:  0000001100000010
->             ^  ^^   ^   0
->             |  ||   |  10
->             |  ||   > 010
->             |  |+--> 1010
->             |  +--> 11010
->             +----> 011010
->    dst:  0000000000011010
+> To address it, turn the trips table pointer in struct thermal_zone_device
+> into a flex array (counted by its num_trips field), allocate it during
+> thermal zone device allocation and copy the contents of the trips table
+> supplied by the zone creator (which can be const now) into it, which
+> will allow the callers of thermal_zone_device_register_with_trips() to
+> drop their trip tables right after the zone registration.
 > 
-> bitmap_gather() can the seen as the reverse bitmap_scatter() operation.
+> This requires the imx thermal driver to be adjusted to store the new
+> temperature in its internal trips table in imx_set_trip_temp(), because
+> it will be separate from the core's trips table now and it has to be
+> explicitly kept in sync with the latter.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+> Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+> 
+> v2.1 -> v2.2:
+>     * Add missing kfree(trips) to thermal_of_zone_register() (Daniel).
 
-> The original work was done by Andy Shevchenko.
+OK for me
 
-Mine SoB is enough for a credit, but thank you :-)
-
-..
-
-> +/**
-> + * bitmap_gather - Gather a bitmap according to given mask
-> + * @dst: gathered bitmap
-> + * @src: scattered bitmap
-> + * @mask: mask representing bits to extract from in the scattered bitmap
-> + * @nbits: number of bits in each of these bitmaps
-> + *
-> + * Gathers bitmap with sparse bits according to the given @mask.
-> + *
-> + * Example:
-> + * If @src bitmap = 0x0302, with @mask = 0x1313, @dst will be 0x001a.
-> + *
-> + * Or in binary form
-> + * @src			@mask			@dst
-> + * 0000001100000010	0001001100010011	0000000000011010
-> + *
-> + * (Bits 0, 1, 4, 8, 9, 12 are copied to the bits 0, 1, 2, 3, 4, 5)
-> + *
-> + * A more 'visual' description of the operation:
-> + * mask: ...v..vv...v..vv
-> + * src:  0000001100000010
-> + *          ^  ^^   ^   0
-> + *          |  ||   |  10
-> + *          |  ||   > 010
-> + *          |  |+--> 1010
-> + *          |  +--> 11010
-> + *          +----> 011010
-> + * dst:  0000000000011010
-
-Cool!
-
-> + * A relationship exists between bitmap_gather() and bitmap_scatter() (See
-
-Either '... (see'
-or '(). See'
-
-> + * bitmap_scatter() for the bitmap scatter detailed operations).
-
-> + * Suppose scattered computed using bitmap_scatter(scattered, src, mask, n).
-> + * The operation bitmap_gather(result, scattered, mask, n) leads to a result
-> + * equal or equivalent to src.
-
-This paragraph...
-
-> + * The result can be 'equivalent' because bitmap_scatter() and bitmap_gather()
-> + * are not bijective.
-
-
-> + * The result and src values are equivalent in that sense that a call to
-> + * bitmap_scatter(res, src, mask, n) and a call to bitmap_scatter(res, result,
-> + * mask, n) will lead to the same res value.
-
-..seems duplicating this one.
-
-I would drop the latter one.
-
-> + */
 
 -- 
-With Best Regards,
-Andy Shevchenko
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
