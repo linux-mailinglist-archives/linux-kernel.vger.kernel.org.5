@@ -1,114 +1,128 @@
-Return-Path: <linux-kernel+bounces-76507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E4185F816
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:24:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0A485F819
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0331C21961
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:24:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD0C1F25280
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935AF60B8E;
-	Thu, 22 Feb 2024 12:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA39060BA4;
+	Thu, 22 Feb 2024 12:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="EUAlNGrf"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RxjsYAIP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5420960879;
-	Thu, 22 Feb 2024 12:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F35B72BB1B;
+	Thu, 22 Feb 2024 12:24:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708604659; cv=none; b=ePxy7uIi7iQ7cKyMmGQWM+24c96c9ThS1XvFG1/6J0HKVUbl4BbSiVNiIILHhWcidGIsL6IH0q+fxKAldb+oJsuBwsYLYPEzsUt34Fg+bTNQwj1xmRk4N6k3duHVkVoO1sKaW20HbVz1WD+DwJDGE7rb3RyyBp0779PnHrXYvvM=
+	t=1708604687; cv=none; b=aZ1ubA5i+q4JC/vNgpKfWMvsalJErXS+5oYUbLrfH6EDTGVNsSM/lannvOYsBEv7qEEnRKAjRrreMhee8vcr1T78clJtJdHnCE+/w8rjB1HCl7fKGnlsDtA30od6pS9AuBDlsXL3YB29DhtsdfRVWMETzK8qABRzLCQyj3fmElo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708604659; c=relaxed/simple;
-	bh=SzkRLezEcoWqN5XMk5IQjv+zaBzCE6hGL4TlzpzvRx8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jqq4cIuBMIuT1LY29CoWzB3VSng2OipdaLLoCvlXV8qIzVgBNRA2k5Lgof1pOLUBq76zDChdPRGjhccMqpSs9+oR2ddBlDgRRDYkBadcrUKBX4GX62+JfzcS0sLS69GVzlW7niJSEdXI0tB4zbCa0ugK/s73jZOLCJYZwcwAs6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=EUAlNGrf; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 49C831B3C16;
-	Thu, 22 Feb 2024 13:24:12 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1708604653; bh=SzkRLezEcoWqN5XMk5IQjv+zaBzCE6hGL4TlzpzvRx8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EUAlNGrf23R8w4oEXhdN8ZTdwZg1H7M4/emZPySrk6K9Tl0SxhgdNcc+GVXJzkF3K
-	 jhjEkvp7rH7EDvKJP8N1WoE10a3c92Pf6/xWI/KNQXgf4YwqDhpDsD2Sz7vm2z7Lxu
-	 QrFdVlvJFDd25mDM+o2lNSY2HQW6+zwnWeoZrkjI/dzsAj1ADwvpfvp+aYsPDhk7+s
-	 +uJNHsQG4WSVKSkZg/cEwEkmeqqHv63GsosLISth1I21E6qnsVSxAZUr46A8h1ti5w
-	 8xB2a1phVtvV+YvhVd8sMVHnIsWVImqVlHlq4wr1kEZ6CyLBGnCxeEbIFEyPI2fo5P
-	 PuGFeTj8+894w==
-Date: Thu, 22 Feb 2024 13:24:10 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- kent.overstreet@linux.dev, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v4 06/36] mm: enumerate all gfp flags
-Message-ID: <20240222132410.6e1a2599@meshulam.tesarici.cz>
-In-Reply-To: <Zdc6LUWnPOBRmtZH@tiehlicka>
-References: <20240221194052.927623-1-surenb@google.com>
-	<20240221194052.927623-7-surenb@google.com>
-	<Zdc6LUWnPOBRmtZH@tiehlicka>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1708604687; c=relaxed/simple;
+	bh=vepoCvUA87NndiRWHPhBF1/XeR6TA9jZpkQrmwbjNUM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=erLHIVhOOD8msiT/s+bWX/+RWZ4oNfCMeFdUGEssWjZKPUJH9nHkvHuMLEq8yfTOk8JwFIklsoJouhDAqJacNpROhWPUwjQJi92u4Ps3wBHSJjuZiiUlw2ZQ5PMHCuzpv5EYUx6d2gBLvsedx6gAhsoi7jVYrbepxzuSdViGefg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RxjsYAIP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C72B5C433C7;
+	Thu, 22 Feb 2024 12:24:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708604686;
+	bh=vepoCvUA87NndiRWHPhBF1/XeR6TA9jZpkQrmwbjNUM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RxjsYAIPU0mncAH7vf7kcWpQARm8xbPVWHRkKQqPfZ3aujv4lELoWzaa/Wo9KXyc8
+	 g+dlCFRr9WSdoulAVmAb3VYjUVmDU10iRtdRT3GjulsF2J8FJRGdXcFGJONp5WA6iN
+	 03Zxb91VTkWK2KFjpEdxxaohbUWzZD5OygXgwt1evDdGRsi523YqCRspx4Xzb33/+q
+	 Hk1qrKY1AmFEkipAgn6xZ3lnkgyKx4Zc+MeYcfy9hylgZQ90uvg1xtUyFV89I5iG/g
+	 z2tQDcrBw2wUiE7/WoGATr/LL18XqyzDHCciq3ySsPXiKeygxbO4ulfkltG5fmgFwp
+	 FBe53I2NoMv3g==
+Date: Thu, 22 Feb 2024 12:24:38 +0000
+From: Will Deacon <will@kernel.org>
+To: Xu Yang <xu.yang_2@nxp.com>
+Cc: Frank.li@nxp.com, mark.rutland@arm.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, john.g.garry@oracle.com, jolsa@kernel.org,
+	namhyung@kernel.org, irogers@google.com, linux-imx@nxp.com,
+	mike.leach@linaro.org, leo.yan@linaro.org, peterz@infradead.org,
+	mingo@redhat.com, acme@kernel.org,
+	alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	imx@lists.linux.dev
+Subject: Re: [PATCH v4 5/6] perf: imx_perf: limit counter ID from user space
+ and optimize counter usage
+Message-ID: <20240222122438.GD8308@willie-the-truck>
+References: <20240131055811.3035741-1-xu.yang_2@nxp.com>
+ <20240131055811.3035741-5-xu.yang_2@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240131055811.3035741-5-xu.yang_2@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Thu, 22 Feb 2024 13:12:29 +0100
-Michal Hocko <mhocko@suse.com> wrote:
+On Wed, Jan 31, 2024 at 01:58:10PM +0800, Xu Yang wrote:
+> The user can pass any counter ID to perf app. However, current pmu driver
+> doesn't judge the validity of the counter ID. This will add necessary
+> check for counter ID from user space. Besides, this pmu has 10 counters
+> except cycle counter which can be used to count reference events and
+> counter specific evnets. This will also add supports to auto allocate
+> counter if the user doesn't pass it the perf. Then, the usage of counter
+> will be optimized.
+> 
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> 
+> ---
+> Changes in v2:
+>  - limit counter ID from user to 0-10
+>  - combine dynamic and static allocation of counter
+> Changes in v3:
+>  - no changes
+> Changes in v4:
+>  - rename ddr_perf_is_specific_event()
+>  - use macro definitions to parse config attr
+> ---
+>  drivers/perf/fsl_imx9_ddr_perf.c | 72 +++++++++++++++++++++++++++++++-
+>  1 file changed, 71 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
+> index 94041f06c152..e71496809c52 100644
+> --- a/drivers/perf/fsl_imx9_ddr_perf.c
+> +++ b/drivers/perf/fsl_imx9_ddr_perf.c
+> @@ -51,6 +51,7 @@
+>  
+>  #define NUM_COUNTERS		11
+>  #define CYCLES_COUNTER		0
+> +#define CYCLES_EVENT_ID		0
+>  
+>  #define CONFIG_EVENT_MASK	0x00FF
+>  #define CONFIG_EVENT_OFFSET	0
+> @@ -240,6 +241,19 @@ static struct attribute *ddr_perf_events_attrs[] = {
+>  	NULL,
+>  };
+>  
+> +/*
+> + * An event is either reference evnet or counter specific event.
+> + * For counter specific event, the event count will only be incremented
+> + * on the corresponding counter.
+> + */
+> +static bool ddr_perf_is_counter_specific_event(int event)
+> +{
+> +	if (event >= 64 && event <= 73)
+> +		return true;
+> +	else
+> +		return false;
 
-> On Wed 21-02-24 11:40:19, Suren Baghdasaryan wrote:
-> > Introduce GFP bits enumeration to let compiler track the number of used
-> > bits (which depends on the config options) instead of hardcoding them.
-> > That simplifies __GFP_BITS_SHIFT calculation.
-> >=20
-> > Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org> =20
->=20
-> I thought I have responded to this patch but obviously not the case.
-> I like this change. Makes sense even without the rest of the series.
-> Acked-by: Michal Hocko <mhocko@suse.com>
+Just collapse this to 'return event >= 64 && event <= 73;'
 
-Thank you, Michal. I also hope it can be merged without waiting for the
-rest of the series.
-
-Petr T
+Will
 
