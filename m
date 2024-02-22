@@ -1,132 +1,89 @@
-Return-Path: <linux-kernel+bounces-76920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED9A85FEB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:06:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9E9185FF06
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:17:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22A101C21B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:06:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A58C1F2C289
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066FC154C11;
-	Thu, 22 Feb 2024 17:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76AB3157E8F;
+	Thu, 22 Feb 2024 17:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qMv3dQYD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=tfwno.gf header.i=@tfwno.gf header.b="OsbdC2An"
+Received: from mail.cock.li (mail.cock.li [37.120.193.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3C715099F;
-	Thu, 22 Feb 2024 17:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268EB154BE3;
+	Thu, 22 Feb 2024 17:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.193.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708621604; cv=none; b=kswNrQDrVARku7F8IK9dDiqbiristj14HmZihWpgrYn4PcO5FoM2fYxg8qihpzYw6mLFV9PafF+jUoEbyQGxsItbg1j95tilD3brUBiYLfHq1r6EHwwXW98v1gSvmX41N5lcTi4krVo3vrt7CQBgDq+IZ1CwmQV2K378igfsfEQ=
+	t=1708622168; cv=none; b=CMltMnE3fVlI3b8Cp0GqyoiSfo4jjPhaVm3nJHGp7nN8Y0r5Yd1+y8Bx5sLvMIKAXhpI7DgWnW0EUukmJa8mPfElIL03FrmgKqMKYUVbWtuc/roCQEuxNNoVfcRLUQW2aQ/6uFWQUse9E6n98WCIpQ5jDgwSMFlm+tfZo1Hu35k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708621604; c=relaxed/simple;
-	bh=kE8TIXCP4omiH8Tb48QLZ4vtCQlIIcYaY2PACwfRHLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=PXA93MwD/OdzL+FQOQgzWsH6W7CUa0KVCL6dkosrFMrtcALwmOscIayTgaSUL9i4jbbFTSRBUx1GCeO+9MDVX2VAQ68qHtDrZQ7XUMR+x7jdgR/9eYp1SQimodLGt31HTOv7Rq5GBoAFJqbIIX5G8YL5WLXYUf9z0AF4+3IciJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qMv3dQYD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5688BC433C7;
-	Thu, 22 Feb 2024 17:06:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708621603;
-	bh=kE8TIXCP4omiH8Tb48QLZ4vtCQlIIcYaY2PACwfRHLU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=qMv3dQYDhbkA55iCtTxciIgE1L7pMg9o9uWTVAV+VOYkCajdj9ypNeK3dAMJjedon
-	 Yfm16dXgjEDaJvw7MKL3T1NUQJuoykxKJy3QBBvO7KjZn6mhHuhTJGHvovxIKU2zrR
-	 zDIG+iHYedR7cXvE6GdAAvt5KB235VxZ/Plmw5wAIXTGdCIAdrxI/gYIsiztfOlUMO
-	 sRy4h/QB7EziUrqeYVH8Xhch+hYzriJXTd6xGKvdtvOfJu8/ojjSIEqc2no6ipAGbJ
-	 +fGCcGAK0vbTCM29gk3bUyqBGrb/tWnTENLA+Bk37mXCqwO4TnK5iKODRwQgZELV7b
-	 cavlvjo3SyKpg==
-Date: Thu, 22 Feb 2024 11:06:41 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Vidya Sagar <vidyas@nvidia.com>
-Cc: bhelgaas@google.com, rafael@kernel.org, lenb@kernel.org,
-	will@kernel.org, lpieralisi@kernel.org, kw@linux.com,
-	robh@kernel.org, frowand.list@gmail.com, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
-	mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V3] PCI: Add support for preserving boot configuration
-Message-ID: <20240222170641.GA15593@bhelgaas>
+	s=arc-20240116; t=1708622168; c=relaxed/simple;
+	bh=7EBMd3pVgEsAVmo80nV1cVmtlTC7XkSbAO9djDDzbhM=;
+	h=MIME-Version:Content-Type:Date:From:To:Subject:Message-ID; b=XQEyaZpievPJrk2QgB/hl/DL9wIFUxDfMujV0lh+VLWzwp4AdW08nmZySb0TwtnmP2s4ZwSjV48jIM4D2EY+uzW80tDHFiARHIOji4aknXDI+e5AscqYolq3i5jXXyvjJglCNCbi312QHCxJ+Xb46wJoU2lShdDiseRcYjJnvRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tfwno.gf; spf=pass smtp.mailfrom=tfwno.gf; dkim=pass (2048-bit key) header.d=tfwno.gf header.i=@tfwno.gf header.b=OsbdC2An; arc=none smtp.client-ip=37.120.193.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tfwno.gf
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tfwno.gf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222124110.2681455-1-vidyas@nvidia.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tfwno.gf; s=mail;
+	t=1708621644; bh=7EBMd3pVgEsAVmo80nV1cVmtlTC7XkSbAO9djDDzbhM=;
+	h=Date:From:To:Subject:From;
+	b=OsbdC2An85JTOPyX1I5CUzDShB90oIzC1giRiqFW40crgHQWNeKbpjyq/baorPEHp
+	 oRmuVLRu946XtmfCLEkA4qhA0vOhaBUfQh3i2vrWmJuaWN+znDOuAnIX+SvclhlbXS
+	 usINoHJFF3kzvGVDsN7MnftCmcykOhmTrnddLqG4xcCiAGESrRa27HUQZyWTb4n6n5
+	 ENC+6jo7li80PZ2TXOuSJ3XRtiR7HT1Ss5fL1z5IGyImHlUEHndbjXoNAgUOdgyzDK
+	 nkwH+OoKj66VIMhzPqK70+5UZxRrcrMqj0Onds3tJb7hwg7ErEXIZj5zRslOSyCGx0
+	 IsRtPzlq29j6w==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Thu, 22 Feb 2024 17:07:23 +0000
+From: ns@tfwno.gf
+To: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
+ <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
+ linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: make install doesn't install proper files for some architectures
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <06e09da69e6c34d03a303c11088d9ffd@tfwno.gf>
+X-Sender: ns@tfwno.gf
 
-On Thu, Feb 22, 2024 at 06:11:10PM +0530, Vidya Sagar wrote:
-> Add support for preserving the boot configuration done by the
-> platform firmware per host bridge basis, based on the presence of
-> 'linux,pci-probe-only' property in the respective PCIe host bridge
-> device-tree node. It also unifies the ACPI and DT based boot flows
-> in this regard.
+Greetings,
 
-> +/**
-> + * of_pci_bridge_check_probe_only - Return true if the boot configuration
-> + *                                  needs to be preserved
+The kernel's build system has an install target. Most of the time this
+works fine, but it is limited to only one file, which can make it busted
+for some arches.
 
-I don't like the "check_probe_only" name because it's a boolean
-function but the name doesn't tell me what a true/false return value
-means.  Something like "preserve_resources" would be better.  If you
-want "probe_only", even removing the "check" would help.
+One example of a target where it is busted is a generic ppc32 kernel,
+where there are plenty of supported platforms, some of which can boot
+perfectly fine through Open Firmware & some which are from bad, bad
+times o' yore where you had to embed the DT straight into the kernel. &
+some more on top of that. When you run make install for ppc32, it only
+installs the uncompressed vmlinux. This is almost certainly not the
+correct decision for _any_ of the platforms in question, & it totally
+leaves out the properly wrapped images that many of these platforms
+absolutely need in order to boot (e.g. PS3 & Wii, which need an image
+with an embedded DT).
 
-> + * @node: Device tree node with the domain information.
-> + *
-> + * This function looks for "linux,pci-probe-only" property for a given
-> + * PCIe controller's node and returns true if found. Having this property
-> + * for a PCIe controller ensures that the kernel doesn't re-enumerate and
-> + * reconfigure the BAR resources that are already done by the platform firmware.
+This is not really great. By contrast, the all target built all the
+specific images that my config selected. I didn't have to read the
+arch's boot Makefile to figure out what files I have to build. Is there
+any target which does the same but for installing every image the all
+target produced? It'd be a much better experience than leaving the
+details of every arch & bizzare platform supported by it up to (most
+likely incomplete) scripts, when the Makefiles already have all that
+information properly written. I suppose it'd also come in handy if e.g.
+x86 had a saner image format [1] in the future or something of the sort.
 
-This is generic PCI, not PCIe-specific (also in commit log and comment
-below).
-
-I think "enumeration" specifically refers to discovering what devices
-are present, and the kernel always does that, so drop that part.
-Reconfiguring BARs and bridge windows is what we want to prevent.
-
-> + * NOTE: The scope of "linux,pci-probe-only" defined within a PCIe bridge device
-> + *       is limited to the hierarchy under that particular bridge device. whereas
-> + *       the scope of "linux,pci-probe-only" defined within chosen node is
-> + *       system wide.
-> + *
-> + * Return: true if the property exists false otherwise.
-> + */
-
-> +bool of_pci_bridge_check_probe_only(struct device_node *node)
-> +{
-> +	return of_property_read_bool(node, "linux,pci-probe-only");
-> +}
-> +EXPORT_SYMBOL_GPL(of_pci_bridge_check_probe_only);
-
-Why does this need to be exported for modules and exposed via
-include/linux/pci.h?
-
-> +static void pci_check_config_preserve(struct pci_host_bridge *host_bridge)
-> +{
-> +	if (&host_bridge->dev) {
-
-Checking &host_bridge->dev doesn't seem like the right way to
-determine whether this is an ACPI host bridge.
-
-> +		union acpi_object *obj;
-> +
-> +		/*
-> +		 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
-> +		 * exists and returns 0, we must preserve any PCI resource
-> +		 * assignments made by firmware for this host bridge.
-> +		 */
-> +		obj = acpi_evaluate_dsm(ACPI_HANDLE(&host_bridge->dev), &pci_acpi_dsm_guid, 1,
-> +					DSM_PCI_PRESERVE_BOOT_CONFIG, NULL);
-> +		if (obj && obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 0)
-> +			host_bridge->preserve_config = 1;
-> +		ACPI_FREE(obj);
-> +	}
+[1]: 
+https://source.denx.de/u-boot/u-boot/-/blob/master/doc/usage/fit/x86-fit-boot.rst
 
