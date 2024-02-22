@@ -1,112 +1,160 @@
-Return-Path: <linux-kernel+bounces-75846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CBE85EFCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:26:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5E885EFEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:32:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08BB01F23B2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:26:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B63C82850EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C343017560;
-	Thu, 22 Feb 2024 03:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PtNW7RHd"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF511775E;
+	Thu, 22 Feb 2024 03:32:10 +0000 (UTC)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88CA17553
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C52A17578;
+	Thu, 22 Feb 2024 03:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.248.80.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708572368; cv=none; b=i6h0zUpzpDqFm0H+GYOSL4sNWb25edrZsvM3CWSHbvaJyifa8q/dWxfWu+BIZ2sOaY0mimbHj+pHdPRUr88c8Rr4FACp9mUGJ7hFl5vGmMuQZ8crxMnvrOC0YiRnOIzBBtnOqovECDAN2XmavAq3rq1ljTUjlUnYFmhb0rNms1g=
+	t=1708572730; cv=none; b=dCtxiqdggmHKS2LTygLPTkWzgujsN2/QboyKkaMNigBwIQLTMCN4jHDnIVUrUl7+RBLXSaMV+K72wumEhp1ZSt0xT8NBs97OjSZQhEgn1XE6Ti+MRiR1gtsKXT9qNeD55bfi1FxmhoiCtVjrynvqaGXl/O0odUkfaGIJsGndvJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708572368; c=relaxed/simple;
-	bh=bzZ3fX2DEFw0nOMx3kh5bVpyXkZ4XTMyHUYzy2/dFvM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q6rC/sPag/KO1d8/aQeQ/5tEpZ9wF3L4/3ANW8Q/7wfTPWhjTvwTQtrt9T7bUUewliuafmnPiNFH4CMJdQsohu+xY8WBwEhMYwaxUHV11PEbLGDWrtCjgA0VOgNtCnamloocvjVPxN4SH7cKd64LLl7jMN9S6rVAVYJDEZEFpN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PtNW7RHd; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc29f1956cso10342805ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:26:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708572366; x=1709177166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YSw2XZua5CqiB9gf2+U2cFgOtZgxjplbw5UzRI5t8LU=;
-        b=PtNW7RHdSMdHfUYrTsy76NtBVVgA8/SHqYhhQXDHUy+3s1RGfxVBTDkUnK0a0Dz3s9
-         i2Ej0BBZ36oH61+7st7Of3JSYygAq6ifRdVKOej0UAsrflrZ5t9ws1ZeTq3wGkq1CnoH
-         FkaT7hFwiJu/eNpJPJgpVHO4jk5t1dVueqPno=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708572366; x=1709177166;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YSw2XZua5CqiB9gf2+U2cFgOtZgxjplbw5UzRI5t8LU=;
-        b=XkOAyevRTyZrBdh67JYxOEc7IdiG/IwY6CIGwohQHCJJrlgYNJXf9Zgj4AgJIgiISp
-         o/uHViaQyVrlH2+59s99jhuVJFsVc//yQvzg5J4rJLniNQS+hoNgVNv/NbIsAwFJrjzZ
-         TVQ/MSG30kyS+87E3Vo9R+ooV5PPMyxKPfSjhnSz1j4fd+Cq2pc0Ivr0W3S2q4SSmDTM
-         DNsgKVvliepXeeySPA8ygCxywUelgFkOimPZLf1UKfXh/I2V+L4inIg/CpISOh+VDa/A
-         jdxZqUJVJGNCF4ofG0R1d2f6XPH75MPBKFgyH5tvBL8jO3UtJAmE29x39FySkSj6nNVX
-         y/uQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHYS5g+64AYHXh9VxopKpnXGWXHDmi7Tn8ykioBPMaQxuQrKkG8NTVyMCUgl+YJXAap7BPvEL2c+8hMLj4tswzAHgqDoPm3PVa8IjL
-X-Gm-Message-State: AOJu0Yw0i4m8vyUAWOiJN6HW2IAFukK7K0RoXWIX058pVWKdFelu7C3Q
-	AEm577NHArr10EYaheTqWbpCOo27GOVJMyZLtWsNSlpVNfayTDYiSQhQPxszwg==
-X-Google-Smtp-Source: AGHT+IGOe3WWge9cSMFBSWmiMSAx9ofR2X6nwTUk1YuqlzcKU1YRsNpuiCLjQXeKqRqct+Nd87AuhA==
-X-Received: by 2002:a17:902:d2ca:b0:1db:e1f4:d483 with SMTP id n10-20020a170902d2ca00b001dbe1f4d483mr13653262plc.12.1708572365981;
-        Wed, 21 Feb 2024 19:26:05 -0800 (PST)
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:480:9ded:eece:6cb3])
-        by smtp.gmail.com with ESMTPSA id v11-20020a170902f0cb00b001d937bc5602sm8818337pla.227.2024.02.21.19.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 19:26:05 -0800 (PST)
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv2] kconfig: add some Kconfig env variables to make help
-Date: Thu, 22 Feb 2024 12:25:31 +0900
-Message-ID: <20240222032559.496127-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240222031801.GG11472@google.com>
-References: <20240222031801.GG11472@google.com>
+	s=arc-20240116; t=1708572730; c=relaxed/simple;
+	bh=E7Z8pSK89+sDDxGUmJjzBockun9fP/w10U/EGjDCcDY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fmk9l2vGwoM5PWCUuYt/5Jw1sfDXxeQ1N7XXTiXn/NweDN8gdQzkL11d0OlTl62/heRRshDLaqvkE890dG7KCO7Dlub4SVCWWbYj3JzD8o/paczolIESdiXxfwEt7VTzTpyfJGep3TkHluuQ76AUeRzpbUEQiXIZggG+WyMZXhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com; spf=pass smtp.mailfrom=andestech.com; arc=none smtp.client-ip=60.248.80.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andestech.com
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+	by Atcsqr.andestech.com with ESMTP id 41M3PcR8080879;
+	Thu, 22 Feb 2024 11:25:38 +0800 (+08)
+	(envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Thu, 22 Feb 2024 11:25:35 +0800
+Date: Thu, 22 Feb 2024 11:25:35 +0800
+From: Yu-Chien Peter Lin <peterlin@andestech.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+CC: <acme@kernel.org>, <adrian.hunter@intel.com>, <ajones@ventanamicro.com>,
+        <alexander.shishkin@linux.intel.com>, <andre.przywara@arm.com>,
+        <anup@brainfault.org>, <aou@eecs.berkeley.edu>,
+        <atishp@atishpatra.org>, <conor+dt@kernel.org>,
+        <conor.dooley@microchip.com>, <conor@kernel.org>,
+        <devicetree@vger.kernel.org>, <evan@rivosinc.com>,
+        <geert+renesas@glider.be>, <guoren@kernel.org>, <heiko@sntech.de>,
+        <irogers@google.com>, <jernej.skrabec@gmail.com>, <jolsa@kernel.org>,
+        <jszhang@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-sunxi@lists.linux.dev>, <locus84@andestech.com>,
+        <magnus.damm@gmail.com>, <mark.rutland@arm.com>, <mingo@redhat.com>,
+        <n.shubin@yadro.com>, <namhyung@kernel.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <peterz@infradead.org>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>, <rdunlap@infradead.org>,
+        <robh+dt@kernel.org>, <samuel@sholland.org>,
+        <sunilvl@ventanamicro.com>, <tim609@andestech.com>, <uwu@icenowy.me>,
+        <wens@csie.org>, <will@kernel.org>, <inochiama@outlook.com>,
+        <unicorn_wang@outlook.com>, <wefu@redhat.com>,
+        Randolph <randolph@andestech.com>, Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v8 02/10] irqchip/riscv-intc: Allow large non-standard
+ interrupt number
+Message-ID: <Zda-r16ysaKzPdLV@APC323>
+References: <20240129092553.2058043-1-peterlin@andestech.com>
+ <20240129092553.2058043-3-peterlin@andestech.com>
+ <877cj8issa.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <877cj8issa.ffs@tglx>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:Atcsqr.andestech.com 41M3PcR8080879
 
-Add a new section "Configuration environment variables" to
-`make help` output in order to make it easier for people to
-discover KCONFIG_WERROR, etc.
+Hi Thomas,
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- scripts/kconfig/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+On Tue, Feb 13, 2024 at 11:04:53AM +0100, Thomas Gleixner wrote:
+> On Mon, Jan 29 2024 at 17:25, Yu Chien Peter Lin wrote:
+> >  static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+> >  {
+> >  	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
+> >  
+> > -	if (unlikely(cause >= BITS_PER_LONG))
+> > -		panic("unexpected interrupt cause");
+> > -
+> > -	generic_handle_domain_irq(intc_domain, cause);
+> > +	if (generic_handle_domain_irq(intc_domain, cause))
+> > +		pr_warn_ratelimited("Failed to handle interrupt (cause: %ld)\n",
+> > +				    cause);
+> 
+> Either let the cause stick out or you need brackets. See:
+> 
+>   https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#bracket-rules
+> 
+> >  }
+> >  
+> >  /*
+> > @@ -93,6 +95,14 @@ static int riscv_intc_domain_alloc(struct irq_domain *domain,
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	/*
+> > +	 * Only allow hwirq for which we have corresponding standard or
+> > +	 * custom interrupt enable register.
+> > +	 */
+> > +	if ((riscv_intc_nr_irqs <= hwirq && hwirq < riscv_intc_custom_base) ||
+> > +	    (riscv_intc_custom_base + riscv_intc_custom_nr_irqs) <= hwirq)
+> > +		return -EINVAL;
+> 
+> Duh. This mix of ordering required to read this 3 times. What's wrong
+> with writing this consistently:
+> 
+> 	if ((hwirq >= riscv_intc_nr_irqs && hwirq < riscv_intc_custom_base) ||
+> 	    (hwirq >= iscv_intc_custom_base + riscv_intc_custom_nr_irqs)
+> 		return -EINVAL;
+> 
+> Hmm?
+> 
+> > -	pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
+> > +	pr_info("%d local interrupts mapped\n", riscv_intc_nr_irqs);
+> > +	if (riscv_intc_custom_nr_irqs)
+> > +		pr_info("%d custom local interrupts mapped\n",
+> > +			riscv_intc_custom_nr_irqs);
+> 
+> See bracket rules.
+>   
+> >  	return 0;
+> >  }
+> > @@ -166,6 +178,10 @@ static int __init riscv_intc_init(struct device_node *node,
+> >  		return 0;
+> >  	}
+> >  
+> > +	riscv_intc_nr_irqs = BITS_PER_LONG;
+> > +	riscv_intc_custom_base = riscv_intc_nr_irqs;
+> 
+> Why don't you initialize the static variables with constants right away?
+> 
+> > +	riscv_intc_custom_nr_irqs = 0;
+> 
+> It's already 0, no?
+> 
+> >  	return riscv_intc_init_common(of_node_to_fwnode(node));
+> >  }
+> 
+> Thanks,
+> 
+>         tglx
 
-diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-index ea1bf3b3dbde..0044d49e149c 100644
---- a/scripts/kconfig/Makefile
-+++ b/scripts/kconfig/Makefile
-@@ -158,6 +158,10 @@ help:
- 		if help=$$(grep -m1 '^# Help: ' $(f)); then \
- 			printf '  %-25s - %s\n' '$(notdir $(f))' "$${help#*: }"; \
- 		fi;)
-+	@echo  ''
-+	@echo  'Configuration environment variables:'
-+	@echo  '  KCONFIG_WERROR                 - Turn some Kconfig warnings into error conditions'
-+	@echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig warn about all unrecognized config symbols'
- 
- # ===========================================================================
- # object files used by all kconfig flavours
--- 
-2.44.0.rc0.258.g7320e95886-goog
+Thanks for pointing these out, I'll fix them in PATCH v9.
 
+Regards,
+Peter Lin
 
