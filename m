@@ -1,67 +1,79 @@
-Return-Path: <linux-kernel+bounces-77451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76AF0860577
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:12:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C8B486044D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06F99B21688
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:12:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C15282DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0836E137906;
-	Thu, 22 Feb 2024 22:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8739273F05;
+	Thu, 22 Feb 2024 21:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="c9kPgATR"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="kj3niGRs"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F14FD73F20;
-	Thu, 22 Feb 2024 22:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E172A10A05
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708639938; cv=none; b=V2oCFtMb9QbHBEFKekuTGIgldCMj8AjJQSv2vArGrhZluE3y6sh0zyUR0NH6/q+3aNFWnBKkk8DeAmTjwNk+tMRKqb/CTpg+/dPfXr0p8GvfYDnc/InB2FaZTOTrMhfCgM6HTACgBHUoNpJ/vg0/jJ7JckRIP590tU2pAf74w7o=
+	t=1708635896; cv=none; b=Y9NZjXjCcufen8gKtR/WSopab1ttwALrLSFDlDNdi2Dcw13CoK/eqnSLCCBf7CnjqzqVZqsyzdcpVYwLGfnLv64f9mnsFES1Igw5/AIP5rIhaQ2Vf+teNaH0fpoYMXNyAok44HMLVmA881hJ6K649L6lM7LS6sOcYYpagAWUIZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708639938; c=relaxed/simple;
-	bh=OEjaR8q/hH/zJzrJq00dzosvg9sB+rc7P5n3BrRx+nE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oxWmN8hKLAG6O2QSbdxJR9xILmEUYExD+A1QHdxFcpSP23osuPPGN8/eK1d4MEGkyczAN1gnYN1+RmKzicIgTyEyIiPDLrA2GgAYgMGxqBZgecMESXov2350zmbCAVV3p9jArzVA2P/HD1shf1BmcZd/nxvaV8I34iNircw3aBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=none smtp.helo=mx0b-0016f401.pphosted.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=c9kPgATR; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41ML8Xtm001858;
-	Thu, 22 Feb 2024 14:12:14 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=y6gHklRy
-	6mgfq/+kDFgxdQdIm96X6dvMx3GA+sAwVL0=; b=c9kPgATRBaAkorffM3JBrXZu
-	JiSZ77CYf1mkHC4JSlijR3S6i+cXxCFkUFUfLhpo4jjsn3zFJVwIx7XM+wIc9b8j
-	RyEnFYtReEnCSEHMOUtzs7h2pzbah9gUED2AAo5DiqiQjubzgP6AvU/IVJFMTtzU
-	eKTbCyNsSozfA5VK+KbdwTlGl+ZyNVXHO96NbSsxNND1jnuFEc9F3WCoPEEkW31d
-	39vG/d8EIBBkmrI+reGw8c/j1cotViJTiMOH7Fj86F50Nfcrx9tYi2lWoAJ4lIrB
-	8sDkkzLW1kW5MJHCGaPsP+AO7w0DLpIqBZ8/VWwfW+Lrtdg6jA6rOcEw5I4EuQ==
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3wedwxg5qs-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 14:12:14 -0800 (PST)
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 22 Feb
- 2024 14:12:12 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 22 Feb 2024 14:12:12 -0800
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-	by maili.marvell.com (Postfix) with ESMTP id 5752E3F7210;
-	Thu, 22 Feb 2024 12:09:39 -0800 (PST)
-From: Elad Nachman <enachman@marvell.com>
-To: <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <enachman@marvell.com>, <stable@vger.kernel.org>
-Subject: [PATCH v3 1/2] mmc: xenon: fix PHY init clock stability
-Date: Thu, 22 Feb 2024 22:09:30 +0200
-Message-ID: <20240222200930.1277665-1-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708635896; c=relaxed/simple;
+	bh=ran8Je2iMoBhGTmTE0156DaLQN4qGsGHL9nwmBGcRnk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rh/MbeqgiQCpiH0TOn2RgrJ222/Qz9fnha+WMFYUaaECEG61S1obSXDxLDHyLEVcCX5N/XYmU4aEAVSVA48zZuasggMWZCgwXtp3mPTykcKtM7kW+guOR7rrjjph4+9SdV4DFbK56IBYf0E/QgPGJLdW7ILxBzMBwkKV2xVAuoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=kj3niGRs; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4128cfb6b6fso1490275e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:04:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708635893; x=1709240693; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kOQLFsiqb5qCymG8P6e7uSuK+7t+6bDXL1THgZ9mI/w=;
+        b=kj3niGRspx0IkX4hEi5tacLhVBW/Um2QFD8raxBUe6RPhJPG4EVfyqXCC9fYlP/oQF
+         4kXS5E4Tffic91bZzDeavuuMYLgMIUBOtPVTVG6Y0/aqno6Gghock3YDqSYtM8lU36Ht
+         ETkTJQKOyrpM+8G2BlItvQJ2Sen8n3EY5JJtSe99+KaFp2nkKMRSKI6qskMj3AIoICRq
+         BKxRz75l9u80ULhVV1KurTMjMK9QkRXP9X7wHlO5+ROFj38pMDJCa53R7LscX3osYC4U
+         xx6Av9E/U9njf8OGumgr+6wb9u72g1FVYkpjuKnt71acRHV8pXyZVq9X/m6Jmk+KgAvX
+         CqAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708635893; x=1709240693;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kOQLFsiqb5qCymG8P6e7uSuK+7t+6bDXL1THgZ9mI/w=;
+        b=Ieudb/qfWpAYdLjfi6UH0x+WYvv2YGY4UtNSrnIB26vB8iG35rYxauohKQuNb4Botd
+         MAP4z8dhzFQRdqVd8PUtani32keziut2nMa5XndL/Vc3KIPkAScGNbLFr13hR/7Y17Xq
+         UWFEbwFq/+q7SsAXfr2lxnTRut7sw2f1zrHcQLrf4GDX+7J2ja7eSGWnUEjeBrDs1DCv
+         4kPyZ9XbNVKRxEgD4qET4iN4iJTcMnTwyY51kX5oUKdxjfEZyK23GhbGpSGjRgHTAyGa
+         zx83Bens2c5NnWiPqC2TNs3O/k0+7txYv1PsJQY0wpRFaswFwl0dlDPYGDoZhhUQ8O90
+         R0+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXToqtu/u/AhSaQYy9QZsOUnHeUrA1cA0Nj43zjVVbeMtT2ap7vfbxRpwybPKwXGlmOMPJMEEqBNdlun8OZSeZ0P1b8nW1N2eJ/ouzG
+X-Gm-Message-State: AOJu0YyRywgCUfv0nnMzwrMmebTm0yMuveyW4P/KGXKTAc8w7Dq+9AxI
+	M8w5KVzg3LsrxjOwiEIHbPIjzvhJAGSPcMNS2u5tEkv+3R2DU6ugqQ2KSQIsuTg=
+X-Google-Smtp-Source: AGHT+IGcEIy0aRkgnqgPKoNYu2q1ZmfqggYnA/rqAOy/ngPCFdYHUZXsRoDVfrh6yOEMsPHbIRNvYg==
+X-Received: by 2002:a05:600c:4f11:b0:412:681a:1eaa with SMTP id l17-20020a05600c4f1100b00412681a1eaamr7886492wmq.26.1708635893035;
+        Thu, 22 Feb 2024 13:04:53 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:465e:5c78:c1d5:890b])
+        by smtp.gmail.com with ESMTPSA id jv15-20020a05600c570f00b004125f34fd7csm7328136wmb.31.2024.02.22.13.04.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 13:04:52 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] arm64: gitignore: ignore relacheck
+Date: Thu, 22 Feb 2024 22:04:41 +0100
+Message-Id: <20240222210441.33142-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,74 +81,27 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: JdPCkikJJ_yuG4mu4kOEIp3h1iOolA97
-X-Proofpoint-ORIG-GUID: JdPCkikJJ_yuG4mu4kOEIp3h1iOolA97
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
 
-From: Elad Nachman <enachman@marvell.com>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Each time SD/mmc phy is initialized, at times, in some of
-the attempts, phy fails to completes its initialization
-which results into timeout error. Per the HW spec, it is
-a pre-requisite to ensure a stable SD clock before a phy
-initialization is attempted.
+Add the generated executable for relacheck to the list of ignored files.
 
-Fixes: 06c8b667ff5b ("mmc: sdhci-xenon: Add support to PHYs of Marvell Xenon SDHC")
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Elad Nachman <enachman@marvell.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/mmc/host/sdhci-xenon-phy.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/arm64/kernel/pi/.gitignore | 3 +++
+ 1 file changed, 3 insertions(+)
+ create mode 100644 arch/arm64/kernel/pi/.gitignore
 
-diff --git a/drivers/mmc/host/sdhci-xenon-phy.c b/drivers/mmc/host/sdhci-xenon-phy.c
-index 8cf3a375de65..c3096230a969 100644
---- a/drivers/mmc/host/sdhci-xenon-phy.c
-+++ b/drivers/mmc/host/sdhci-xenon-phy.c
-@@ -11,6 +11,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/ktime.h>
-+#include <linux/iopoll.h>
- #include <linux/of_address.h>
- 
- #include "sdhci-pltfm.h"
-@@ -216,6 +217,19 @@ static int xenon_alloc_emmc_phy(struct sdhci_host *host)
- 	return 0;
- }
- 
-+static int xenon_check_stability_internal_clk(struct sdhci_host *host)
-+{
-+	u32 reg;
-+	int err;
+diff --git a/arch/arm64/kernel/pi/.gitignore b/arch/arm64/kernel/pi/.gitignore
+new file mode 100644
+index 000000000000..efb29b663e85
+--- /dev/null
++++ b/arch/arm64/kernel/pi/.gitignore
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0-only
 +
-+	err = read_poll_timeout(sdhci_readw, reg, reg & SDHCI_CLOCK_INT_STABLE,
-+				1100, 20000, false, host, SDHCI_CLOCK_CONTROL);
-+	if (err)
-+		dev_err(mmc_dev(host->mmc), "phy_init: Internal clock never stabilized.\n");
-+
-+	return err;
-+}
-+
- /*
-  * eMMC 5.0/5.1 PHY init/re-init.
-  * eMMC PHY init should be executed after:
-@@ -232,6 +246,11 @@ static int xenon_emmc_phy_init(struct sdhci_host *host)
- 	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
- 	struct xenon_emmc_phy_regs *phy_regs = priv->emmc_phy_regs;
- 
-+	int ret = xenon_check_stability_internal_clk(host);
-+
-+	if (ret)
-+		return ret;
-+
- 	reg = sdhci_readl(host, phy_regs->timing_adj);
- 	reg |= XENON_PHY_INITIALIZAION;
- 	sdhci_writel(host, reg, phy_regs->timing_adj);
++relacheck
 -- 
-2.25.1
+2.40.1
 
 
