@@ -1,139 +1,160 @@
-Return-Path: <linux-kernel+bounces-77294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C9186036B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA1C86036F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:03:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31361F25183
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:03:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52E9C1F24CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BEA6E5EA;
-	Thu, 22 Feb 2024 20:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4369D6E615;
+	Thu, 22 Feb 2024 20:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S21aCnUn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0otoRoc"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EC85491B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E432C6E608
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708632172; cv=none; b=QcuWhHlKNx8/l35JImQ5e5maJ35GbJbSOTw8LmvNJosfjqq6sTjrvWYwdGjmOlAeiJXet6Dpyp117LHFkg9tl5ANnlBSFh0FYBoItWxaIVPTzKHMqU8xy7bZk8k+ur6xTjCdmYzlweT4+NxW9r0PKB38m9ZWA7bzHOupG5fVSSA=
+	t=1708632178; cv=none; b=lRmivGEevyhbXseF5yv2adroKQWVyoqKMulLwwYKyn+HDaYoJim+SslN3Mcmqigc7cWsLzhrTan5mh1haciNJGSkwWXCGyTphU7U2rtGc64DKk4f33fOGeOjQ23ziSKxJs5mIRqUM2QgHjTIsPJ5veN/7gxJTHHFg7Psjg1DdcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708632172; c=relaxed/simple;
-	bh=aknFNqqxJry03mMtGqJFoI/wKDCcG2OQaTtQxGeRRpc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k02KehHdSFBAMbgsbL+7RTLQjyMmloA2wdd5Wo35HzKvrfM1TD9iwEYgstzpY43E4W/EA7hs5nKdYgDIJik3nuvni0Es+N7nfE2zcYyZl0QraUVo93vjxv500TN7H0c9ZZwUE8ZiN6aYiiyP4zblwuC3R7llu3tvmyxK2/JHPaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S21aCnUn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708632170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ip/bb26cz2+ipekHalCr5lDscUM2updhLQwbQoyojpM=;
-	b=S21aCnUn86z6lXnROnz6zQFhwE5wuDStvNT1sCROM2Z70fZqVSHvuHIrAyFWq/7YiVjccF
-	DbAlzjUedDj3lydIfnqqEEZgYiNYBuF/fLPWms0Cc4+kRlj7OaGOL0PoLRX3Trg7IEuhLu
-	DLDebTY9YWvPMDA6dbJSn9CbZmBNj/0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-s56VkiN_Mom4TVbT7bVcQA-1; Thu, 22 Feb 2024 15:02:48 -0500
-X-MC-Unique: s56VkiN_Mom4TVbT7bVcQA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4121ac8634aso370055e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:02:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708632167; x=1709236967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1708632178; c=relaxed/simple;
+	bh=Xi2wjrOo72UA133tK1EqoNVejEiGxEbbLe93GFk7rNE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SHg9AF4ejSPf6x6ieQL/ZK3X+JARdoxYbA7tElb3A0uQskksZd9LlAyV8cp+fIdVnJNAmIXn8zJBEwo76eH3bpVI9GxNHWFwMFBHfUw9hNz7xJ4SN9pIL03afqgBt0iKKRDHsSYg5EaKcWnhRjkXgubAXD0r2K1Ka1DDDbrpLaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B0otoRoc; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3d484a58f6so16123666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708632175; x=1709236975; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ip/bb26cz2+ipekHalCr5lDscUM2updhLQwbQoyojpM=;
-        b=GYYXmglAVFN8cEjTzpWKQkGUNbJG0wEwERvAcW1+5tCcttu6tQ1m+jKJHTyIZ5eyzN
-         JLwJ7fgwCLjebFsDeWOFrwExD0ulM0L0jQSqpaFrEOkoKE5GSayQD1ooDOjedubzwa6V
-         l8ylSDb4PMsICoxEaj9Mldxjef6QZ+8s0tcRs6dV4/oMDC8SFsH/5omtJfa4QhnCXt6P
-         FVYASaOZg/alWF8A5v78SkOQAYPXllxmUoNU9ujZmG4YxdZWcwBWURWF74OAc3jr6zqF
-         a2fiUqKguI1YKDyFpbx73K/qfffQ/ru1DQEy8Gz1QZfPE5U/sGrNFsJdCavMjGVXN3Xx
-         CS0w==
-X-Forwarded-Encrypted: i=1; AJvYcCUDwCPxCgPmHrPd9xz3x0k4nBslq9Nmqas+JjM2oO+mCRiHPZO6Jv6bq6RZnwpkIo8bNpteI3/14jARy7T3N3rNDu8YV3Va1mzoOdCy
-X-Gm-Message-State: AOJu0Yz138AiDujQvSqVbRtjt1PyhmWKbAZgK/3KbchsKDIKqHruaYSS
-	rDGAOr+1m4ClWdutT6s88f58/A8niZpmyxV+jQxP0lwWZbHOpiZGBhb+4l+6YWWfroL+obkjxLm
-	ZFc1iOJuihClFv5WzMHzUxOxNrlcUbH82dUAkc3lAbmEoeOBSyx8nTC+smBVKog==
-X-Received: by 2002:a5d:480d:0:b0:33d:9d4a:b28 with SMTP id l13-20020a5d480d000000b0033d9d4a0b28mr114027wrq.18.1708632167135;
-        Thu, 22 Feb 2024 12:02:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFGY5xEB+oirt/8WYolwR+t/b3r7Lw8iYBr645QsLpjupov8MKzMLmF73APkFMsTjyAiTEk6A==
-X-Received: by 2002:a5d:480d:0:b0:33d:9d4a:b28 with SMTP id l13-20020a5d480d000000b0033d9d4a0b28mr114007wrq.18.1708632166787;
-        Thu, 22 Feb 2024 12:02:46 -0800 (PST)
-Received: from redhat.com ([172.93.237.99])
-        by smtp.gmail.com with ESMTPSA id bi21-20020a05600c3d9500b004128808db91sm3049224wmb.23.2024.02.22.12.02.42
+        bh=D91+NNYRuFeok9CBgQ7kElLom/IZjF4ZNUVGAGFMcWc=;
+        b=B0otoRoc0CfE85w2JjcRQiXCa5soa7aFi5pCkPaS8x6BkDYp6cc4e70OvKvOPVMe9n
+         NehrWU/5inhB62msyB7QhRPGtfUlf9TKQhWd1uqkN16SnY54YjKfSKyXZgDHyJWn2pf/
+         rurkAnty9Ipwu+fbZ+ezBOzN8HQATMKqH0p+jqcNwmLEetbMJmfDYvoeou0hSp0GSsru
+         vQsRYK4kfrgtVjyEXDQfreSsBVXUPoHVbLlpWWnSUdlUdAauP2xv/EUyO0MfZXdPPhHj
+         oaGPv6ehl4asIvsMlmywHOoaVEhv3uc7vpFP/rANawgtxH2y7buiKOXZJ8WzD8JkgWgt
+         By2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708632175; x=1709236975;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D91+NNYRuFeok9CBgQ7kElLom/IZjF4ZNUVGAGFMcWc=;
+        b=l30O2H+TUeyaO2xZ69NTHXoCxyrE5LAmk0N477pH1SOg5WN2i+9DEr5wysizdxQdWr
+         MQ2fy3AyI5iRwuUSHideNZErHFGKhAp4q7acDY4mL1EiacnHhRsrG0dwjCTSDfeqnmzM
+         gyxpfqhldLmtZIt12drqQ+/YyUqoC+NPusqqTb/QzGdZwOxNHifJPhFYFG1UqkX2hbRL
+         0FXPlogBWiUe9GFAAgEu87qYD9+enNMZ8wtBtZBqjkn+WQZRyu32D3nnnzDS3U2QZsZK
+         jqZ/q33MXbsGWyEl8lRZZ9PvuFeHZcusJ8faOZt9ZLaMFiEyh3wGNDN9dV/TdXOdiwn/
+         gtaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3cBePhnpCJnsGUKacyCnkk/tQhfiluMhZaS68srNfjRIpR5h61jbZ/+USniAh6VP5o8dEmzun3wS51LYYOhJ17y3CF776hvhyBRJr
+X-Gm-Message-State: AOJu0YwglNCQKU3EpfU5bthDAEV6MieTgW9GDsTL4OLobLHBbGd6+w6e
+	VPDJqdmNYsjZgLEQ6VMyoFnPBUi4VtybTCs7xYc/KJxzzehZuutn
+X-Google-Smtp-Source: AGHT+IEgvTKQkasQRFEm9qA5fvN8XNPWdx6hB/jSsMaHVhviWIDzjakARe/kyNDcFAl7qhoDmu/LtA==
+X-Received: by 2002:a17:906:b106:b0:a3e:e869:a151 with SMTP id u6-20020a170906b10600b00a3ee869a151mr5856787ejy.45.1708632174997;
+        Thu, 22 Feb 2024 12:02:54 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id l20-20020a1709067d5400b00a3e85909a1csm4520555ejp.182.2024.02.22.12.02.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 12:02:46 -0800 (PST)
-Date: Thu, 22 Feb 2024 15:02:39 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Andrew Melnychenko <andrew@daynix.com>
-Cc: jasowang@redhat.com, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yuri.benditovich@daynix.com,
-	yan@daynix.com
-Subject: Re: [PATCH 1/1] vhost: Added pad cleanup if vnet_hdr is not present.
-Message-ID: <20240222150212-mutt-send-email-mst@kernel.org>
-References: <20240115194840.1183077-1-andrew@daynix.com>
- <20240115172837-mutt-send-email-mst@kernel.org>
+        Thu, 22 Feb 2024 12:02:54 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: =?utf-8?B?T25kxZllag==?= Jirman <megi@xff.cz>,
+ Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Samuel Holland <samuel@sholland.org>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
+Date: Thu, 22 Feb 2024 21:02:53 +0100
+Message-ID: <2448947.jE0xQCEvom@jernej-laptop>
+In-Reply-To: <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
+References:
+ <20240216190430.1374132-1-megi@xff.cz> <20240216190430.1374132-4-megi@xff.cz>
+ <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115172837-mutt-send-email-mst@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 15, 2024 at 05:32:25PM -0500, Michael S. Tsirkin wrote:
-> On Mon, Jan 15, 2024 at 09:48:40PM +0200, Andrew Melnychenko wrote:
-> > When the Qemu launched with vhost but without tap vnet_hdr,
-> > vhost tries to copy vnet_hdr from socket iter with size 0
-> > to the page that may contain some trash.
-> > That trash can be interpreted as unpredictable values for
-> > vnet_hdr.
-> > That leads to dropping some packets and in some cases to
-> > stalling vhost routine when the vhost_net tries to process
-> > packets and fails in a loop.
-> > 
-> > Qemu options:
-> >   -netdev tap,vhost=on,vnet_hdr=off,...
-> > 
-> > Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
-> > ---
-> >  drivers/vhost/net.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> > index f2ed7167c848..57411ac2d08b 100644
-> > --- a/drivers/vhost/net.c
-> > +++ b/drivers/vhost/net.c
-> > @@ -735,6 +735,9 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
-> >  	hdr = buf;
-> >  	gso = &hdr->gso;
-> >  
-> > +	if (!sock_hlen)
-> > +		memset(buf, 0, pad);
-> > +
-> >  	if ((gso->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) &&
-> >  	    vhost16_to_cpu(vq, gso->csum_start) +
-> >  	    vhost16_to_cpu(vq, gso->csum_offset) + 2 >
-> 
-> 
-> Hmm need to analyse it to make sure there are no cases where we leak
-> some data to guest here in case where sock_hlen is set ...
+Dne sreda, 21. februar 2024 ob 14:45:20 CET je Maxime Ripard napisal(a):
+> Hi,
+>=20
+> On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ond=C5=99ej Jirman wrote:
+> > From: Ondrej Jirman <megi@xff.cz>
+> >=20
+> > Identical configurations of planes can lead to different (and wrong)
+> > layer -> pipe routing at HW level, depending on the order of atomic
+> > plane changes.
+> >=20
+> > For example:
+> >=20
+> > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
+> >   is enabled. This is a typical situation at boot.
+> >=20
+> > - When a compositor takes over and layer 3 is enabled,
+> >   sun8i_ui_layer_enable() will get called with old_zpos=3D0 zpos=3D1, w=
+hich
+> >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+> >=20
+> > What happens is that sun8i_ui_layer_enable() function may disable
+> > blender pipes even if it is no longer assigned to its layer.
+> >=20
+> > To correct this, move the routing setup out of individual plane's
+> > atomic_update into crtc's atomic_update, where it can be calculated
+> > and updated all at once.
+> >=20
+> > Remove the atomic_disable callback because it is no longer needed.
+> >=20
+> > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+>=20
+> I don't have enough knowledge about the mixers code to comment on your
+> patch, so I'll let Jernej review it. However, this feels to me like the
+> pipe assignment is typically the sort of things that should be dealt
+> with device-wide, and in atomic_check.
+
+In DE2 and DE3.0, you cannot move planes between mixers (crtcs), because ea=
+ch
+one is hardwired to specific mixer. Movable planes are the feature of DE3.3
+and one of the pain points for upstreaming the code. Anyway, this commit on=
+ly
+addresses current issue of enabling and disabling planes and handling zpos.
+
+In atomic check you can only precalculate final register values, but I don't
+see any benefit doing that. I think that this code elegantly solves current
+issue of enabling or disabling wrong plane in certain situations, so:
+
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Note, if there is new revision, please rewrite blender regmap_update_bits()
+to regmap_write(). Since there is HW issue with reads, I would like to
+get rid of regmap_update_bits() calls eventually.
+
+Best regards,
+Jernej
+
+>=20
+> If I'm talking non-sense, it would be great to mention at least why that
+> can't be an option in the commit log.
+>=20
+> Maxime
+>=20
 
 
-Could you post this analysis pls?
 
-> > -- 
-> > 2.43.0
 
 
