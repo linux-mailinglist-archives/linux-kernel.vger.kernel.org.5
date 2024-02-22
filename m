@@ -1,126 +1,157 @@
-Return-Path: <linux-kernel+bounces-76333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3AFF85F5B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:28:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0942A85F5BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:30:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4BE11C23DC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:28:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B270C1F293F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01D03F8FD;
-	Thu, 22 Feb 2024 10:28:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B29D3B79E;
+	Thu, 22 Feb 2024 10:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zDvvYDNU"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GLpeCnbB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65273F8ED
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 862A118657;
+	Thu, 22 Feb 2024 10:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597704; cv=none; b=VuZDfiqebRLpNYuJYsTpZRzSak5zPIsI4XbzMfec70jr+9QjAH8s6bTDSZQPXUL4itPW65Stf2GAS4/BekJ5PC04NafPH/YBGCGBfRE1RRSNy1AAPO2sdeQ2fnZjFvcYYNrMShykrsnLuifJnIIoZK7ziiDT0lHJTtrfdaFJyRU=
+	t=1708597794; cv=none; b=NZEIvIqEeNmxnln9Lf1RkrxYmrPbaGfjry+nRXlm+glMciteVa6VNK8JEP/woB5zstmV/xxcJllEDEwjbePXjL7PC4PhxIN4loR2rY0okG+VvrUpzmDhVUprqYazEIiWuXnp0w6q9vTSgxvKr0u7JUQlVbs+haRWzvNR7OgXpDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597704; c=relaxed/simple;
-	bh=e1Nf+e6QJOb88993HOv4a91YL5tPMYCzJk2a1amXTMY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lTHcSYgV5PFQm+VRlwH+j/mSbuBZW/rYigrZfo8ppeUruNMKvOIOiwGwFBwM7ICSr8JfI2PAnxHGno1eosBy7tWUezunJ+VFz8RjVS5FhppCAQzXNdbQZ5eg26aff/63lCnMh7GNiH8yImJCGRugBy1PvOu/lVr8ykG+fAj49EM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zDvvYDNU; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33d01faf711so4933498f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:28:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708597699; x=1709202499; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H2dv+kRmhG2H1KzIBT+MOGitjcmQKTmnVtmgNOX7NH8=;
-        b=zDvvYDNUOigd6PX2cmbfo5PZUdYexIsTAp65NMHGG4d79idVU94oWDtHQMV/sgUTUP
-         sO0eVjXLz8bkICLmJrYrbM+uGbACc0vRRMCTvt24h9CwXvBcCl8EHgBOe9UzyvAyz7jy
-         BobfgA0iMSa9BF6bVmNRmVaWtOtiBGxiHfOYu2lvftTlIPM/9PUq4hRkyuCkzBzHHiMW
-         5eWhTD+xb9Ia+KrAJFUVrDHqz/aA8AfeiTiNqWmWCJcOT/0/gTDr/972jtGiLUnhNfww
-         OsOuMpLXc5p9trazEHNhTZZw1o/OgGJRthlZjbBuCAc8B66k0wdA1cIM8PyKpAybgbOd
-         apwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708597699; x=1709202499;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H2dv+kRmhG2H1KzIBT+MOGitjcmQKTmnVtmgNOX7NH8=;
-        b=cNzP34sfW8q4WfGR3jPNEiPIASQCWr0AUrxdlTdcvyD9qymWxMOt1aVLlB8VQKDwIG
-         ajDXQauNa5oUdw3MNUKSuGYAbUxUGvj0m7uGh9vYZVZ6JeXxtmVtKLPzb1ZvZrAfq/qZ
-         s3k7SfWYZ2jlKs1/rFjcttCoaBeb1rWC9LaH8lzWgtoFou1udVjTqeRAFTEWAFR2jUCb
-         dpwmg8BeV3ekEg75cf2moXd83snlMJ+6M2wmRfUQ2W0U9ni5OsBNKUEHHXf522hIeZ3I
-         NRF+xyZ4RkJ5nOJ1VeL92LH5qSFumyjeiFFqW6b08FEaAfnRQDkTyx0pQBYCnGW8oU+d
-         zETw==
-X-Gm-Message-State: AOJu0Yw5VJ6qfwh4LupkJDLQpdsVVsKUqp2qJErJdrbvvwEnQyrXW451
-	LCkdtwIijtyx3rj4z6Bo76H8lQTbtk9KX1mXXWEELrG22CjH1Z6q5xcBy9k6mVI=
-X-Google-Smtp-Source: AGHT+IFsDXoJccsFatQLWow2/gzhs6hnmqbEzWti/zh0leKEGUX5CqBgt0fzP7VQ1mTJLDRV15YYgw==
-X-Received: by 2002:a5d:58cc:0:b0:33d:3c58:7c56 with SMTP id o12-20020a5d58cc000000b0033d3c587c56mr8240810wrf.54.1708597699137;
-        Thu, 22 Feb 2024 02:28:19 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id bx9-20020a5d5b09000000b0033d202abf01sm5124036wrb.28.2024.02.22.02.28.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 02:28:18 -0800 (PST)
-Message-ID: <71157ea2-23bc-465e-89e6-2161dbcc32e6@linaro.org>
-Date: Thu, 22 Feb 2024 11:28:18 +0100
+	s=arc-20240116; t=1708597794; c=relaxed/simple;
+	bh=Wzsp+43YqM+LlxN0cpsEdEREeR6hPbCyLnqKwXy8YPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YicjJGAARkMssK75v+eKJ7/HNVyMBHxbKASrrKMg/APAi5OTV2EkFRr3u4fWK6BjWxroJbYMa1Ihzw1CK2q9ROSfRpXQ6EU1RQix1YZ4WadJOAvGiFkrkm43hAV9awydBHRbg5Wsomy3ZiBTnX9RcO4t2Bq3TOzcSqRI4ix/MGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GLpeCnbB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86506C433F1;
+	Thu, 22 Feb 2024 10:29:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708597794;
+	bh=Wzsp+43YqM+LlxN0cpsEdEREeR6hPbCyLnqKwXy8YPk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GLpeCnbBnu29hs6MZNOozG2jG6b1fFuTJVhE3nvd7tjl6OJrs/6etqCnvwC1gydFc
+	 fZaiIs07i5pfwnXJ+lyW5Irfyo1A4zz85pj1wabeJ7hHUqk2KOdpUel/X2TixStzQz
+	 V58Kw1xhT+bVoCZNonvGZgNysqVEW/SraW2A6pjK7nU1YpFwSWACfR/7CkFRkFf7mE
+	 OPikCWYMo91ZsmfU/RQ/POBakSS1xVnR7T2/P/ZpO+odkg+uBRfP4f62sytseG05jY
+	 P0L90QvV7eZlk0m9ZoDBIDUf8lS9dwxaWtHQuXvP5xb8VBZaX1IWZFRjlm6KMap4uX
+	 Ng7/DDdFyaRkg==
+Date: Thu, 22 Feb 2024 11:29:51 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Frank Oltmanns <frank@oltmanns.dev>
+Cc: Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] drm/panel: st7703: Drive XBD599 panel at higher
+ clock rate
+Message-ID: <ia7e7gqozltl5wkfdvwtf2rw2ko2dt67qxtuqbavsroyv4ifys@x4mbulqhhri5>
+References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
+ <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
+ <poua4bzyciiwt65sqjf2whqfdumvoe4h3bkjpf64px2vwgumrf@sai73byg2iju>
+ <87sf1zxb0s.fsf@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] thermal: ACPI: Discard trips table after zone
- registration
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux ACPI <linux-acpi@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
- Zhang Rui <rui.zhang@intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-References: <4551531.LvFx2qVVIh@kreacher> <13457348.uLZWGnKmhe@kreacher>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <13457348.uLZWGnKmhe@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-On 14/02/2024 13:30, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Because the thermal core creates and uses its own copy of the trips
-> table passed to thermal_zone_device_register_with_trips(), it is not
-> necessary to hold on to a local copy of it any more after the given
-> thermal zone has been registered.
-> 
-> Accordingly, modify the ACPI thermal driver to store the trips table
-> passed to thermal_zone_device_register_with_trips() in a local variable
-> which is automatically discarded when acpi_thermal_add() returns to
-> its caller.
-> 
-> Also make some additional code simplifications unlocked by the above
-> change.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bml6dpjoov3orz5g"
+Content-Disposition: inline
+In-Reply-To: <87sf1zxb0s.fsf@oltmanns.dev>
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+--bml6dpjoov3orz5g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+On Sun, Feb 11, 2024 at 04:42:43PM +0100, Frank Oltmanns wrote:
+>=20
+> On 2024-02-08 at 20:05:08 +0100, Maxime Ripard <mripard@kernel.org> wrote:
+> > [[PGP Signed Part:Undecided]]
+> > Hi Frank,
+> >
+> > On Mon, Feb 05, 2024 at 04:22:28PM +0100, Frank Oltmanns wrote:
+> >> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
+> >> The SOC requires pll-mipi to run at more than 500 MHz.
+> >>
+> >> This is the relevant clock tree:
+> >>  pll-mipi
+> >>     tcon0
+> >>        tcon-data-clock
+> >>
+> >> tcon-data-clock has to run at 1/4 the DSI per-lane bit rate. The XBD599
+> >> has 24 bpp and 4 lanes. Therefore, the resulting requested
+> >> tcon-data-clock rate is:
+> >>     crtc_clock * 1000 * (24 / 4) / 4
+> >>
+> >> tcon-data-clock runs at tcon0 / 4 (fixed divisor), so it requests a
+> >> parent rate of
+> >>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
+> >>
+> >> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mip=
+i.
+> >>
+> >> pll-mipi's constraint to run at 500MHz or higher forces us to have a
+> >> crtc_clock >=3D 83333 kHz if we want a 60 Hz vertical refresh rate.
+> >>
+> >> Change [hv]sync_(start|end) so that we reach a clock rate of 83502 kHz
+> >> so that it is high enough to align with pll-pipi limits.
+> >>
+> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> >
+> > That commit log is great, but it's kind of off-topic. It's a panel
+> > driver, it can be used on any MIPI-DSI controller, the only relevant
+> > information there should be the panel timings required in the datasheet.
+> >
+> > The PLL setup is something for the MIPI-DSI driver to adjust, not for
+> > the panel to care for.
+> >
+>=20
+> I absolutely agree. It even was the reason for my submission of a
+> sunxi-ng patch series last year that was accepted, to make pll-mipi more
+> flexible. :)
+>=20
+> The only remaining option I currently see for adjusting the sunxi-ng
+> driver to further accomodate the panel, is trying to use a higher
+> divisor than 4 for calculating tcon-data-clock from tcon0. I remember
+> reading a discussion about this, but as far as I remember that proposal
+> was rejected (by you, IIRC).
+>=20
+> While I appreciate other suggestion as well, I'll look into options for
+> using a different divisor than 4.
 
+Like I said, I'm not against the patch at all, it looks great to me on
+principle. I just think you should completely rephrase the commit log
+using the datasheet as the only reliable source of the display timings.
+Whether sun4i can work around the panel requirements is something
+completely orthogonal to the discussion, and thus the commit log.
+
+Maxime
+
+--bml6dpjoov3orz5g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdciHgAKCRDj7w1vZxhR
+xfJ1APsGJxlhH6N9Zf5Bg18E9npao1trsNfER/3ulA49l/e3zQEArlyYygxuPvKn
+3nkhyF0YeukoDf5065tfHAeU7wy1JQA=
+=mdeZ
+-----END PGP SIGNATURE-----
+
+--bml6dpjoov3orz5g--
 
