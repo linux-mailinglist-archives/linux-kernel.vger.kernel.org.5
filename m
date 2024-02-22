@@ -1,133 +1,156 @@
-Return-Path: <linux-kernel+bounces-76465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAD0985F78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA5A85F78B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C3CF1F22A5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:55:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2745628578D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1868481B3;
-	Thu, 22 Feb 2024 11:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6CE47A62;
+	Thu, 22 Feb 2024 11:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KkD3StkC"
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="drqElOnw"
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAA2208A2
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5062346558
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602834; cv=none; b=Eo3r6f26f9R7NUeoqZbuVt/COjOrfo25Tck132rqzsb0NaN5qUJOgYV9FyYcuptEBgOnhFRaNB9emNS6bWrWadwDK76wCU+Y9m5I4K1hYMNgGKmS5yzbzMbQFWNgV4a62hKdTZrO6wbVzEpYopEA9Jm5XIhBPiSc3COMZAT4uh8=
+	t=1708602831; cv=none; b=B66ft8ErgDaj77Ac9oGkvg/iKW7Qdd4s7xFwg/EkrC+hqOGDKftl4ZJeea2V4ea3YY5YXGi2Hgy2RtkHoKPzMsubswZcmaikCVrhmuvtt1XQKCcwXqaaZAz1UsIDYXnPH7WUPU1wcAGxZJWl87jzEtmNKKRUHDSfFGxt3YMXNN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602834; c=relaxed/simple;
-	bh=0KgFO67Y6WxclwJDn2crqA+5H0FuWWpsVC82Nr7HA2c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Sz4vQO+wgMOPwVV886xs3vhrn0AhsUX2tw9dKpTNlp+aUAkgbpgUeOldYrbD2XvWZHKj0v3HB6hF1EcVwRGOmkf0iOl+5DSKS7EDvDUB2RHLsoDqJ3JMQQobxiz3Fw5lyzBkZhohQ4oG1fGISxcWNOVjLIEtGlQq1gOg8QWrLxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KkD3StkC; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708602828; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=jRGUipf9sjRgAhn1TLOVo6LsSXfi8+r33WymnSOzv7s=;
-	b=KkD3StkC2FtFlfNHMecMM3vDnaD6Je72j/iML4BM4X/4gejbAbe6f/IYxA12DljgHrE8O0v6dT/FS3OZqvgY4VzcKiJRLQrCQvJunTCtpdBAv2OR7wpOgJqt4S8UycL4m/J7yqFOsp9XnHsUMmhjYMJXYu7HXODSc2iYOzsiuBw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W10vJn7_1708602815;
-Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W10vJn7_1708602815)
-          by smtp.aliyun-inc.com;
-          Thu, 22 Feb 2024 19:53:47 +0800
-From: Yuanhe Shu <xiangzao@linux.alibaba.com>
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	xiangzao@linux.alibaba.com,
-	liusong@linux.alibaba.com
-Subject: [PATCH] mm, thp: display [never] for defrag when THP is set to never
-Date: Thu, 22 Feb 2024 19:53:23 +0800
-Message-Id: <20240222115323.4925-1-xiangzao@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1708602831; c=relaxed/simple;
+	bh=/GZnl1bApZlEPKB/0OjNOdfWl1yXpoyVVjwgwuxpGQ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M+hXVyx+tW3Q0JFZGrtaLXhwzGpje3jfje3pkeuhUtDvMlO5SerWynHYl9INBUZfxLUtkFivyZx3uOUp+Fo9733pnpLX6yknCBlregXygz53bCoYo2LFAI9NVKS9KBRAwT/oFEFAHKH1mDw4eEc9kDRuiK0WA4Pa4EMyB2p6I/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=drqElOnw; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 22 Feb 2024 06:53:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708602827;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1oV0lp1K4Ub7tESvDeFqVDjAAwFBAw9Dokd5x1fT4D0=;
+	b=drqElOnwL3FwHj1AMzKxLETAoI5EamXZIjhfyV0ps8yqhsMnbw8hmnguls1XP3MXWFfwmP
+	Hs/PZOSzbbZtnYkLWR4clg1W6XFaNomccWlPYLiIDu4gIbcbGQ+lA8+YclNzl4JrC9QnZU
+	QPvkzbsPkVgeL1M06zYMpKhmhk8JnHg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org, Christian Brauner <christian@brauner.io>, 
+	=?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>
+Subject: Re: [LSF TOPIC] beyond uidmapping, & towards a better security model
+Message-ID: <lgsh46klnmhaqsgzguoces452gbuzpzpg6jqr3cndblhpq34ez@jm2kobculj2p>
+References: <tixdzlcmitz2kvyamswcpnydeypunkify5aifsmfihpecvat7d@pmgcepiilpi6>
+ <141b4c7ecda2a8c064586d064b8d1476d8de3617.camel@HansenPartnership.com>
+ <qlmv2hjwzgnkmtvjpyn6zdnnmja3a35tx4nh6ldl23tkzh5reb@r3dseusgs3x6>
+ <bfbb1e9b521811b234f4f603c2616a9840da9ece.camel@HansenPartnership.com>
+ <4ub23tni5bwxthqzsn2uvfs5hwr6gd3oitbckd5xwxdbgci4lj@xddn3dh6y23x>
+ <c0d77327b15e84df19a019300347063a0b74e1a5.camel@HansenPartnership.com>
+ <giojfztuhxc5ilv24htcyhlerc6otajpa32cjtze4gghevg2jr@vwykmx7526ae>
+ <67a0b68946d39928502ce2d3e3ad834aa8d73d02.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <67a0b68946d39928502ce2d3e3ad834aa8d73d02.camel@HansenPartnership.com>
+X-Migadu-Flow: FLOW_OUT
 
-When transparent_hugepage is set to never by cmdline or echo, defrag
-still show what it used to be and can be modified which makes user
-confusing whether defrag would take effect.
+On Thu, Feb 22, 2024 at 09:45:32AM +0100, James Bottomley wrote:
+> On Wed, 2024-02-21 at 22:37 -0500, Kent Overstreet wrote:
+> > On Thu, Feb 22, 2024 at 01:33:14AM +0100, James Bottomley wrote:
+> > > On Wed, 2024-02-21 at 18:01 -0500, Kent Overstreet wrote:
+> > > > Strings are just arrays of integers, and anyways this stuff would
+> > > > be within helpers.
+> > > 
+> > > Length limits and comparisons are the problem
+> > 
+> > We'd be using qstrs for this, not c strings, so they really are
+> > equivalent to arrays for this purpose.
+> > 
+> > > 
+> > > > 
+> > > > But what you're not seeing is the beauty and simplicity of
+> > > > killing
+> > > > the mapping layer.
+> > > 
+> > > Well, that's the problem: you don't for certain use cases.  That's
+> > > what I've been trying to explain.  For the fully unprivileged use
+> > > case, sure, it all works (as does the upper 32 bits proposal or the
+> > > integer array ... equally well.
+> > > 
+> > > Once you're representing to the userns contained entity they have a
+> > > privileged admin that can write to the fsimage as an apparently
+> > > privileged user then the problems begin.
+> > 
+> > In what sense?
+> > 
+> > If they're in a userns and all their mounts are username mapped,
+> > that's completely fine from a userns POV; they can put a suid root
+> > binary into the fs image but when they mount that suid root will be
+> > suid to the root user of their userns.
+> 
+> if userns root can alter a suid root binary that's bind mounted from
+> the root namespace then that's a security violation because a user in
+> the root ns could use the altered binary to do a privilege escalation
+> attack.
 
-Actually if transparent_hugepage is set to never, defrag will not take
-effect. Just Display never and remain unchangeable to for defrag when
-transparent_hugepage is set to never.
+That's a completely different situation; now you're talking about suid
+root, where root is _outside_ the userns, and if you're playing tricks
+to make something from a user from outside the ns that is not
+representable in the ns visible in that ns, and now you're making that
+something suid, of course you're going to have trouble defining self
+consistent behaviour.
 
-Suggested-by: Liu Song <liusong@linux.alibaba.com>
-Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
----
- mm/huge_memory.c | 38 ++++++++++++++++++++++++--------------
- 1 file changed, 24 insertions(+), 14 deletions(-)
+So I'm not sure what point you were trying to make, but it does
+illustrate some key points.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 94c958f7ebb5..03cd22a87b93 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -349,21 +349,25 @@ static ssize_t defrag_show(struct kobject *kobj,
- {
- 	const char *output;
- 
--	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG,
--		     &transparent_hugepage_flags))
--		output = "[always] defer defer+madvise madvise never";
--	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG,
--			  &transparent_hugepage_flags))
--		output = "always [defer] defer+madvise madvise never";
--	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG,
--			  &transparent_hugepage_flags))
--		output = "always defer [defer+madvise] madvise never";
--	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
--			  &transparent_hugepage_flags))
--		output = "always defer defer+madvise [madvise] never";
--	else
-+	if (!test_bit(TRANSPARENT_HUGEPAGE_FLAG, &transparent_hugepage_flags) &&
-+	    !test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags))
- 		output = "always defer defer+madvise madvise [never]";
--
-+	else {
-+		if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG,
-+			&transparent_hugepage_flags))
-+			output = "[always] defer defer+madvise madvise never";
-+		else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG,
-+				&transparent_hugepage_flags))
-+			output = "always [defer] defer+madvise madvise never";
-+		else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG,
-+				&transparent_hugepage_flags))
-+			output = "always defer [defer+madvise] madvise never";
-+		else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
-+				&transparent_hugepage_flags))
-+			output = "always defer defer+madvise [madvise] never";
-+		else
-+			output = "always defer defer+madvise madvise [never]";
-+	}
- 	return sysfs_emit(buf, "%s\n", output);
- }
- 
-@@ -371,6 +375,12 @@ static ssize_t defrag_store(struct kobject *kobj,
- 			    struct kobj_attribute *attr,
- 			    const char *buf, size_t count)
- {
-+	if (!test_bit(TRANSPARENT_HUGEPAGE_FLAG, &transparent_hugepage_flags) &&
-+	    !test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags)) {
-+		pr_warn("transparent_hugepage not enabled, defrag takes no effect\n");
-+		return -EINVAL;
-+	}
-+
- 	if (sysfs_streq(buf, "always")) {
- 		clear_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG, &transparent_hugepage_flags);
- 		clear_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG, &transparent_hugepage_flags);
--- 
-2.39.3
+Any time you're creating a system where different agents can have
+different but overlapping views of the world, you're going to have some
+really fun corner cases and it's going to be hard to reason about.
 
+(if you buy me a really nice scotch somitem I'll tell you about fsck for
+a snapshotting filesystem, where for performance reasons fsck has to
+process keys from all snapshots simultaneously).
+
+So such things are best avoided, if we can. For another example, see if
+you know anyone who's had to track down what's keeping a mount alive,
+then the something was a systemd service running in a private namespace.
+
+Systems where we can recursively enumerate the world are much nicer to
+work with.
+
+Now, back to user namespaces: they shouldn't exist.
+
+And they wouldn't exist, if usernames had started out as a recursive
+structure instead of a flat namespace. But since they started out as a
+flat namespace, and only _later_ we realized they actually needed to be
+a tree structure - but we have to preserve for compatibility the _view_
+of the world as a flat namespace! - that's why we have user namespaces.
+
+And you get all sorts of super weird corner cases like you just
+described.
+
+So let's take a step back from all that, and instead of reasoning from
+"what weird corner cases from our current system do we have to support"
+- instead, just seem what we can do with a cleaner model and get that
+properly specified. A good model helps you make sense of the world even
+in crazy situations.
+
+With that in mind, back to your bind mount thing: if you chroot(), and
+you try to access a symlink that points outside the chroot, what
+happens?
 
