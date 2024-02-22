@@ -1,129 +1,146 @@
-Return-Path: <linux-kernel+bounces-75782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13DA985EEDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:06:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F08E85EEE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97C71B23545
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:06:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DC40B229E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA3E168BD;
-	Thu, 22 Feb 2024 02:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2B517567;
+	Thu, 22 Feb 2024 02:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ANE5BU/y"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="cVYzlEJT"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DEF1428E;
-	Thu, 22 Feb 2024 02:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4C01400A
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708567554; cv=none; b=QjNFJbb3Ol2YZlnCy2bagkC3HYpon9bfVj1OFjayQOto7yZ2i2utzreeLSW75KToAVeNklwc14O0nFU2e5JQqvOJ/BCV0ByXuBGmWyMtkdGqQ7J3KI+Mw7dMbeKq5Myqm6qDdAmKOqcuAT1pJJsUMcPdJRnVCNNLD4DIzIg+sHA=
+	t=1708567556; cv=none; b=iKrttuxvEhLZEb61SSF5jIOmxV4rNP7ct08nUTGqs6HI2T6V3702Ihl/kdZSPfMtZCjivVsOMoiD7+u8Ysnkq1HjpnvbLxs0SfUlF/+t+wOJ9Eo/9sUtDGYXj5sL8bc+wVk2DD0GTyPrvC0QBOO6jCN9azDkAqn5UitOrzBED7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708567554; c=relaxed/simple;
-	bh=WQlrre1Af5DqGIugnUw+jmEueTMMr/mxLhUYg0DM6WE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fzSPn4Mltfy4GHU7iGfvsbnjz2uYBvRQBwxrNVGl1vRQw4/qp7uuhlSWd8rfdMwZkGOm/TfjKy8svvinSFLsFUSaOnwHDNalABsLq0siLDx9584+Yww/LvTPChvAEQ9tqqXyVWGzBWuF2lccxzMzCMO3y3FBn+dHQC9j4oJR6ZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ANE5BU/y; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M25IGx025387;
-	Thu, 22 Feb 2024 02:05:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=HoXQqCATqr7GEXryHy+jw904VeUxzRGQm/kjpO84j1M=; b=AN
-	E5BU/yhJXaW8MSIfTTHiGlb6R1pErQRjpgopC4Yxamq4xGK/GRA6dWRqQBjaKYXF
-	SKq0YGuxcW8PKAgo67NzR3dpqlWY3oN3OeV5EoJFfgjUeRsoNAGSjoTSMK942z9N
-	eKbW3IfikF/197kCdq9IE/XUpjoLmnheAGQHxU+G410BSRU3v4ylDA0kKjh3pJ6n
-	CLxTUabhdMtW6pwUV2tiaNp4qbIigw6vRsyALi6lJU49L9UKke8MccO6AdvBO4rC
-	XA4wse66m5xTaSjyulD3BgyOLQkS35S9LB8LXIkzu0ghsy1Jm4lllzUcKJK7szHZ
-	T18ao7zK5xUYV8z9aF6g==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdgge1uea-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 02:05:36 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M25ZDP016088
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 02:05:35 GMT
-Received: from [10.253.11.235] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
- 2024 18:05:33 -0800
-Message-ID: <cca63e1e-e16e-476c-b646-b6ff2cfb70a5@quicinc.com>
-Date: Thu, 22 Feb 2024 10:05:30 +0800
+	s=arc-20240116; t=1708567556; c=relaxed/simple;
+	bh=ozCZhRUwbru42YhRIa9D6DyDB6aCfOEQUSg9R1xBB10=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=fvOrB7ekRaPTerR4iLmlFou7D/3bTGRp7JD7LOyBNoJp0LtLTH7V+eS3cLnNMAgLMWUaXNWAFVGqFbfB/UhuIHQmqYxDOtDVL293FBz2gmdvxv8ODDO2XTs8cC4acvxR8wFzDjYje33i7+envn009qdXlH+Ch4puaXMVv1R0exQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cVYzlEJT; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-d9a541b720aso12410130276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:05:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708567550; x=1709172350; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wYRM8eOs48YYKU37Y3bVOmsx2y3KEiVB2XVZoknd41E=;
+        b=cVYzlEJTdhrtb28wLvzhrntIuzRcvWlBiSAeZZnOCZyT2NEeYQ4kJBX7V+um3fKswu
+         YjUyO7gChTG+/z8ZuKHxPtPwwySBAqYwVAPSom4+sT2ssnEXpXRMakA/AP/5rDSc9Ggw
+         64UKDDqjdbNKoQZ0mIVp2SU94fkQMB3jV5QDO1Gwz+TQEHHbnnLaWuReROBbOG0t8APu
+         zY4hD6RYL69F8nnrdoLmU+Tla3SoMinsOtbcc5rl6s/RBNUX7hQbzarG7s6jj8pahwSc
+         IBZdJzCQXhSW8dNWA2YFFhi+zWKhiRj3LOm8dZ8IjDsrHBzba/tBGtv83gl8suopIBB+
+         jDvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708567550; x=1709172350;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wYRM8eOs48YYKU37Y3bVOmsx2y3KEiVB2XVZoknd41E=;
+        b=vHwNDLlOMY0y0RAEZXrb8jFsXrk3gQQp8lrJkorAS2gnvDmvdhhN7VNxEu0+qSaewR
+         aLyONHfjdGmCPdcIC19BTQwk5QWmvqy7Gcxr89f5mJ9FrFWFO1rzwSG+fd5OQpuEE60+
+         vDAqgEMjgBPp892l9ID3nnw9f6bXYDsRtxhuUZP2e6YjXkTWhijaBdoqZry3uu6nlQBZ
+         uJ+nR2NwMhU9EhpcuMFL8eQuNQV9CwW5E5wMdHkM6XPYSQSZ0vgSHM0KwfGFR7iwTiyj
+         JMkuRS2YT4h5E2YGVw8hJMmQJXLexyFrxFuiK17ARfyiqu8nWW57sCa4ndD/KInM9jPl
+         tVdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqMCE4HILPEQwq0U0iNbtrW0MgiX4rrokLoe9Fm0wNp88dGkLyBHDBAXvdzO9yllqzhrrxLcrghq8K4rrTdiiH25PffB0/JoyMWPgU
+X-Gm-Message-State: AOJu0YxpNVk84/D5Xqqo//2Lg+FDk5l+UVOtLwN5IPsVoMxVxoRGlEmO
+	PXAYYWCYxkR4I6rEyfY/Ax+0KV3722h4HAQXWJAtGeaYPaz19QaTj2FAfy54OZF0qKxTsh3GLxw
+	ivg==
+X-Google-Smtp-Source: AGHT+IGLZRXp0J9qN8JJcoB3W0uf+vPPo31BgwKOSu3YKTJjr76LRxvOfOEDc1mZvTNorZoF2DnNDi6XZz8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:134d:b0:dcb:e4a2:1ab1 with SMTP id
+ g13-20020a056902134d00b00dcbe4a21ab1mr276046ybu.11.1708567549779; Wed, 21 Feb
+ 2024 18:05:49 -0800 (PST)
+Date: Wed, 21 Feb 2024 18:05:48 -0800
+In-Reply-To: <20230722005227.GK25699@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: ufs: core: Fix setup_xfer_req invocation
-To: Bart Van Assche <bvanassche@acm.org>, Rohit Ner <rohitner@google.com>,
-        Bean Huo <beanhuo@micron.com>, Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jaegeuk Kim
-	<jaegeuk@kernel.org>
-CC: Avri Altman <avri.altman@wdc.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240220090805.2886914-1-rohitner@google.com>
- <1920a2f6-e398-47af-a5d7-9dad9c70e03d@acm.org>
- <c7635c10-1724-4db5-9568-d554e1c64f72@quicinc.com>
- <0f959cca-ad29-4b8b-966d-55eb37156ef8@acm.org>
-Content-Language: en-US
-From: Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <0f959cca-ad29-4b8b-966d-55eb37156ef8@acm.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: YmPo6bM0N78jZsWaMbNB5podNQkPmEvc
-X-Proofpoint-ORIG-GUID: YmPo6bM0N78jZsWaMbNB5podNQkPmEvc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-21_10,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- spamscore=0 malwarescore=0 suspectscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxlogscore=809
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220014
+Mime-Version: 1.0
+References: <cover.1689893403.git.isaku.yamahata@intel.com>
+ <f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com>
+ <ZLqSH/lEbHEnQ9i8@google.com> <20230722005227.GK25699@ls.amr.corp.intel.com>
+Message-ID: <Zdar_PrV4rzHpcGc@google.com>
+Subject: Re: [RFC PATCH v4 04/10] KVM: x86: Introduce PFERR_GUEST_ENC_MASK to
+ indicate fault is private
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@gmail.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Michael Roth <michael.roth@amd.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, Sagi Shahar <sagis@google.com>, 
+	David Matlack <dmatlack@google.com>, Kai Huang <kai.huang@intel.com>, 
+	Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com, linux-coco@lists.linux.dev, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Ackerley Tng <ackerleytng@google.com>, 
+	Vishal Annapurve <vannapurve@google.com>, Yuan Yao <yuan.yao@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-
-
-On 2/22/2024 1:55 AM, Bart Van Assche wrote:
-> On 2/21/24 01:13, Can Guo wrote:
->> I am going to push some BUG fixes for Qualcomm UFSHCI MCQ engine, one 
->> of which would count on a vops in ufshcd_send_command(). My original 
->> plan was to add a new vops.mcq_setup_xfer_req() to differentiate from 
->> the existing one used in legacy mode. But if Rohit moves the existing 
->> .setup_xfer_req() up, I can use it instead of introducing the new one.
+On Fri, Jul 21, 2023, Isaku Yamahata wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> Date: Wed, 14 Jun 2023 12:34:00 -0700
+> Subject: [PATCH 4/8] KVM: x86: Use PFERR_GUEST_ENC_MASK to indicate fault is
+>  private
 > 
-> Hi Can,
+> SEV-SNP defines PFERR_GUEST_ENC_MASK (bit 32) in page-fault error bits to
+> represent the guest page is encrypted.  Use the bit to designate that the
+> page fault is private and that it requires looking up memory attributes.
+> The vendor kvm page fault handler should set PFERR_GUEST_ENC_MASK bit based
+> on their fault information.  It may or may not use the hardware value
+> directly or parse the hardware value to set the bit.
 > 
-> If an if-statement can be avoided in the hot path by introducing a new
-> callback pointer for MCQ code then I prefer the approach of introducing
-> a new callback instead of moving the setup_xfer_req() call.
-
-Hi Bart,
-
-The if-statement you are mentioning here, is it the if (hba->vops && 
-hba->vops->setup_xfer_req) or if (is_mcq_enabled(hba))?
-
-Thanks,
-
-Can Guo.
-
+> For KVM_X86_SW_PROTECTED_VM, ask memory attributes for the fault
+> privateness.  For async page fault, carry the bit and use it for kvm page
+> fault handler.
 > 
-> Thanks,
-> 
-> Bart.
-> 
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+
+..
+
+> @@ -4315,7 +4316,8 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
+>  	      work->arch.cr3 != kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu))
+>  		return;
+>  
+> -	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
+> +	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, work->arch.error_code,
+> +			      true, NULL);
+
+This is unnecessary, KVM doesn't suppoort async page fault behavior for private
+memory (and doesn't need to, because guest_memmfd() doesn't support swap).
+
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index 7f9ec1e5b136..3a423403af01 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -295,13 +295,13 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  		.user = err & PFERR_USER_MASK,
+>  		.prefetch = prefetch,
+>  		.is_tdp = likely(vcpu->arch.mmu->page_fault == kvm_tdp_page_fault),
+> +		.is_private = err & PFERR_GUEST_ENC_MASK,
+
+This breaks SEV and SEV-ES guests, because AFAICT, the APM is lying by defining
+PFERR_GUEST_ENC_MASK in the context of SNP.  The flag isn't just set when running
+SEV-SNP guests, it's set for all C-bit=1 effective accesses when running on SNP
+capable hardware (at least, that's my observation).
+
+Grumpiness about discovering yet another problem that I would have expected
+_someone_ to stumble upon...
+
+FYI, I'm going to post a rambling series to cleanup code in the page fault path
+(it started as a cleanup of the "no slot" code and then grew a few more heads).
+One of the patches I'm going to include is something that looks like this patch,
+but I'm going to use a KVM-defined synthetic bit, because stuffing a bit that KVM
+would need _clear_ on _some_ hardware is gross.
 
