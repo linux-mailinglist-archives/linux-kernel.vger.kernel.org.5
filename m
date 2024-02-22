@@ -1,97 +1,101 @@
-Return-Path: <linux-kernel+bounces-75937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F58585F0EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:25:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC34B85F0F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8D31F22FDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:25:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29A1E1C21699
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E393EFC16;
-	Thu, 22 Feb 2024 05:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E832F501;
+	Thu, 22 Feb 2024 05:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ix51u0ti"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NyCCma0o"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9846B79F5
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17DC879CB;
+	Thu, 22 Feb 2024 05:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708579506; cv=none; b=kIW7Sk0IXwxoE4wGYr6NL8K+wudcOyxohq01Fim2sZ3RDFwbsd/pXnjTHRFoHzM3q7QsUBtNMuHyBieh1MmnThm5Yqnkg3Nzm87foX/HW06AdQ2dq45jdsk4lqgqBApUHzF8uWSQO1/RUyPy/xImEeJLktd7Z37I9UhQK8q0pNQ=
+	t=1708579793; cv=none; b=d4jCTp+XJRBlY+6GHVTE/IRlpSJ5gU4w1QZryXO7oyZVaS2nU+i/WXctdckg8W90Qk3PihxYnCN9jtVw83SBpRzMXhKaiOHlY1RpXhsaH7dCLozWsP9wGFEGgVfqDLbl+Tj1S47d+HhU66+9U0XQGN0HTXvIzKrCn2aGy5v2kl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708579506; c=relaxed/simple;
-	bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a/FpctOqniGmRX27VnARkIvjWu+fPb0MJH3bg6zM+5PcrlQ6jYCdTogj1/oDyA+uHJ3veC5mONUu0V067OMr8xZH6YTzxFpGoMysYQ+1PcNDfOrd7g3Dc10A1oCuGmBi181KBwDLm8VRtwZlfI6CN1iPyaSfWCUMbsk9eMNUQNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ix51u0ti; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso82489f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:25:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708579503; x=1709184303; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
-        b=ix51u0tiPc2BdlkZS3k/4vhnj5pk1TgWrLfxU9VZcC9OMdkLtAL1zTmT9mEmwT44/a
-         uVVeCSQyE4g+3D08w1fV5LK+6r/T3hpZIEr7ae0gU4YtF0Od1LuevAeYT2FQYSA9yNFO
-         tFVW+iHZ3P/oH2vwH7EoGWByWet7QGyalF7baflv09xeIRgavmq5SCXqD5GcWOR87BR0
-         oYE708MaWijQ7ZlYAfPHiCoU9OKKsPPfBB+h3fM8BteFuPj4PqEYo/aC9IOCUU/zE9FR
-         Mbf2OrBj2UTawxgAdxfvZTcuspg7td3MccE2vyR00lyw2yUut6VupJGX49hlwHQQpRft
-         tbkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708579503; x=1709184303;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8H/BzytqOZYzFjZacY932uXfieYnQyStCWl2l/du+ws=;
-        b=nRYvog6oHwIOqiuIcMCZeJVoZwlYchogO+E5vBVPT8EmJ+SDVjtIV9PxSa3yydGjsW
-         o+Lt//WWkrl933/tbFfzxu5JVkrcQisvhfK2E+FfzfE0eR3vL6LGVohpIo+voI3t+B7Y
-         LnasPaVlZVegUoodrVrmH8YvXbGEOfiTnCa81viKXQ0YtDn8JWEX0h98GfLP0Nir+VV4
-         uUQhcTROASXCJ9iGgDoAc162d6lwX59srZIcPm5hBWUVLeIMwBoOfVHPMpQQcDepAghG
-         1wOL83jmH0wAeFSGty4cFnHa75arrq/eIYYqRnRvlAEbvDzkfhRRSbjUNoIjDaV1CLTW
-         Gz3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWXtXFCPhxnLNKfDSy03RcuV2fvWRjLBV+NHAwTUtMtQfJ9oo9mkipBxBEwgwoEXmTMqec0AqUN6nIYLnVTCZsk85CR/ZzP0p+DFzqN
-X-Gm-Message-State: AOJu0Yzdt/+uG02UIwD2i9CwL1RsmUVohdyq8OnlYo3cTO0KqfV3WCR9
-	VX8+klyp4y841XIZgSzhIeinelHGGMzYpcD42JWjgagXyOFmDg8uChWQV5Lh9Lo=
-X-Google-Smtp-Source: AGHT+IGccZ0j73/5DrOmMr+HWme+77iCv5MXgbQTR75Cls7ZJMbT2w/CLOu9Xq8tSwrznHtU3sy6jg==
-X-Received: by 2002:a5d:4d8e:0:b0:33d:6fe1:8dc2 with SMTP id b14-20020a5d4d8e000000b0033d6fe18dc2mr1057619wru.3.1708579502807;
-        Wed, 21 Feb 2024 21:25:02 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id e2-20020a056000120200b0033cf80ad6f5sm18922729wrx.60.2024.02.21.21.25.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 21:25:02 -0800 (PST)
-Date: Thu, 22 Feb 2024 08:24:58 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: "Colin King (gmail)" <colin.i.king@gmail.com>,
-	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
- ret
-Message-ID: <bc2cef70-6adf-48cb-814c-a1087939ec17@moroto.mountain>
-References: <20240221115203.3413554-1-colin.i.king@gmail.com>
- <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
- <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
- <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
+	s=arc-20240116; t=1708579793; c=relaxed/simple;
+	bh=ofLyyiFf7xCRt/r9ZJI7o/EjhAqBQyKKz0lTvUjnpgU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GSohMEAzi9ePwfZ7oizZBITfqeirR6QtYk3dUXoYGY7Wj/CvURhS7iylwxdv1Mx8Qs3NpoJna6ZIYK+2RvYfMjgUNMICpTYTTqGJssLpWF/cS1bJKu5Nua8SAtACtKdzy09QV09s0wo73T5GhxVkwom0DBJ2Q+hw3LT8j8siIH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NyCCma0o; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41M5Tbxg005794;
+	Wed, 21 Feb 2024 23:29:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708579777;
+	bh=KDg485EZWUcOWKS2M9SaXYKG2jmQ06agzR2T0TO5Fhw=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=NyCCma0oYp04XBec/Zz7kXqniIrF5LsPbVMoua0gclBfayzGjCGkxC6GLXggffuUy
+	 UolfLbk3upVCXmEJtSxiAg1BHWATCY5PtXrde4n2XgPwguNdQDa40tHYJzLT2dTUof
+	 OXMgfGd+S1Dp0nSzYJOjVP5yDOAo/uGPMVnD3Bcw=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41M5Tbs1010202
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 21 Feb 2024 23:29:37 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 21
+ Feb 2024 23:29:38 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 21 Feb 2024 23:29:37 -0600
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41M5TaS6113449;
+	Wed, 21 Feb 2024 23:29:37 -0600
+Date: Thu, 22 Feb 2024 10:59:36 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: Andrew Davis <afd@ti.com>
+CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j721e-evm-pcie0-ep: Extend overlay
+ for PCIE1 in EP Mode
+Message-ID: <7709aff8-869e-4496-a734-702bcefb0993@ti.com>
+References: <20240220105006.1056824-1-s-vadapalli@ti.com>
+ <415ee6d4-fe26-4582-80f3-9b503d308fdf@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <27hacgxfzyeatjx27nb4k5rb5cajt5yw4c2papfr4h64urb7qx@teo2ha6msqnl>
+In-Reply-To: <415ee6d4-fe26-4582-80f3-9b503d308fdf@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-To be honest, the point of explaining how to run Smatch was really to
-let you know that you're now on your own.
+On Wed, Feb 21, 2024 at 10:53:14AM -0600, Andrew Davis wrote:
+> On 2/20/24 4:50 AM, Siddharth Vadapalli wrote:
+> > Update the existing overlay which configures PCIE0 instance of PCIe on
+> > J721E-EVM in Endpoint mode of operation, in order to configure PCIE1
+> > instance of PCIe as well in Endpoint mode of operation. Hence, change the
+> > name of the overlay to reflect its updated functionality.
+> > 
+> 
+> What if I only want PCIe0 to be in EP mode? Why not make a separate
+> DTBO for PCIe1, that way I can have one in EP and the other in RC,
+> and mix and match as needed.
 
-regards,
-dan carpenter
+Thank you for reviewing the patch. I had planned to create a different
+overlay initially but felt that I would be asked to combine it with the
+existing PCIe0 overlay.. I will create a separate overlay since that
+seems to be acceptable and post the v2 patch.
 
+Regards,
+Siddharth.
 
