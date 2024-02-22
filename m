@@ -1,145 +1,124 @@
-Return-Path: <linux-kernel+bounces-76358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7AFB85F61F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:52:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D97F785F626
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:53:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BAAA1F25DA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:52:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163FE1C24206
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56D940BEA;
-	Thu, 22 Feb 2024 10:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1B0495E0;
+	Thu, 22 Feb 2024 10:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0p5hm1l"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="TYHKYtNR"
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB626405D8
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C564F38FA9;
+	Thu, 22 Feb 2024 10:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708599060; cv=none; b=qZvnEdsRZC/WQyaTFemEUoz3XqaNP5znmnCvVIY3gh2d5Qpa4r98Zfkgfyri0p7HVLihIN8CIzfvqGvE3fKSd5lw0yNua6qV1nBlMsrnLwUHUhNaYNjFp2rLzoRL/yel3f9BwhcAQdIsDsmyIdfZVg3Zwd8RO58e24Z7F6mdCSs=
+	t=1708599081; cv=none; b=DUhMSRhNzfm6Nnr9RqZPCITCASKsCe8fZ80/qi0mQVfgz85ijAyB5Ggyyy/l03sCSKOTnWehRCZBShO5PTQxPeP+M0dCHvu8BishmJ3zJjBlskUPh6pncDclO0k9ahgBurVsmE2PNXUKTcUEqn7BTKlJKJ81XOpUykVlXBWHRy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708599060; c=relaxed/simple;
-	bh=EVQhz28HZUN188e0eL+Dyc0cihFu/SgKCWEgr94uD6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i7/WkE8m+pOSe2GiTgrBMFw5WGADz6onVCl+a2scaI7V3+a1qn80wIbOY4njJvJI+KEGbG4gcOV2iWFYlmD5kfn2sis9n6OdtR7rA9tVNcDMd9l/hGdwMttdef/F0fvPz5ywLDbk92UjYeYy6zItUkmBmLWdoEV+RhC3PXNkTB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n0p5hm1l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3786CC433C7;
-	Thu, 22 Feb 2024 10:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708599059;
-	bh=EVQhz28HZUN188e0eL+Dyc0cihFu/SgKCWEgr94uD6M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n0p5hm1lD1ToRpGsDkIWAaGWCkl7OvuZ7r8FZJv737CbeBogXUWcxkkyBz3d3Vuy/
-	 QouUxOn9Zd7RxOAr6AP1ZGs6OC92qbF+QFFI4LPmkabsmMbbqSI6JvcwoAnpdsaTuk
-	 PB9hwv30pzs0rhSq7QDE0RE29CSPUotchDQTHQYPxZaBXp8fcR8jk8DiyKycUjobrN
-	 ueIA0FWPaIh+Gum7noWDYHFnSbI6IQPO7jF5n+sRC5EmDy0ng8WxiU7iHp8ljGKUTm
-	 kQZKVn9TV8QbTFB9NNZT71/QsGK5m8eE5dx+V+nmtHdkTDmS0tiwXt0RAwOV1pd04c
-	 qU+C8q75eY8dA==
-Date: Thu, 22 Feb 2024 11:50:56 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Christian Loehle <christian.loehle@arm.com>
-Subject: Re: [PATCH v11b 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZdcnEGQK0VO39QT+@lothringen>
-References: <20240221090548.36600-19-anna-maria@linutronix.de>
- <20240222103710.32582-1-anna-maria@linutronix.de>
+	s=arc-20240116; t=1708599081; c=relaxed/simple;
+	bh=yOIwRd5ViCvQ9E5IPM/+zp/3BLFVwABgQS8E6A6HShU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=awNFV2m1ZE66mvWymod2F/yB0LE6zQhrM4+Lmh+zeGVfBiVOK0i1xdTNsrsveRoDPrL24rCsZrXfbozXGyr/x7QeQapo45pTear6pBa1J5KXaHRfWk7BLGmnF3gzkxN2pWPCl8DYY1yQPHLLHcsX/IG/kXAqRR88ANxyGR14Ivc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=TYHKYtNR; arc=none smtp.client-ip=115.28.160.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+	t=1708599075; bh=yOIwRd5ViCvQ9E5IPM/+zp/3BLFVwABgQS8E6A6HShU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TYHKYtNR1nbu06VwzdMvhYZk/w3K1gfQCnxFmmbAN5WnDfCsl7Hbk/GPV1AAfMM+t
+	 xVZ5PUr5DxlxPBvjReWLnwB6yCCcc2srYjaLBK+/AGagw4S6iWyQbMwHQd35qu8mQK
+	 26ORXlJgEeeZ+GNzujl7cDwq/J1s36sJRxzTnVJs=
+Received: from ld50.lan (unknown [IPv6:240e:388:8d00:6500:58fe:4c0e:8c24:2aff])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id CE79860094;
+	Thu, 22 Feb 2024 18:51:13 +0800 (CST)
+From: WANG Xuerui <kernel@xen0n.name>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>,
+	kvm@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	WANG Xuerui <git@xen0n.name>
+Subject: [PATCH for-6.8 v4 0/3] KVM: LoongArch: Fix wrong CPUCFG ID handling
+Date: Thu, 22 Feb 2024 18:51:06 +0800
+Message-ID: <20240222105109.2042732-1-kernel@xen0n.name>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222103710.32582-1-anna-maria@linutronix.de>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 11:37:10AM +0100, Anna-Maria Behnsen wrote:
-> +static bool tmigr_inactive_up(struct tmigr_group *group,
-> +			      struct tmigr_group *child,
-> +			      void *ptr)
-> +{
-> +	union tmigr_state curstate, newstate, childstate;
-> +	struct tmigr_walk *data = ptr;
-> +	bool walk_done;
-> +	u8 childmask;
-> +
-> +	childmask = data->childmask;
-> +	curstate.state = atomic_read_acquire(&group->migr_state);
-> +	childstate.state = 0;
-> +
-> +	for (;;) {
-> +		if (child)
-> +			childstate.state = atomic_read(&child->migr_state);
-> +
-> +		newstate = curstate;
-> +		walk_done = true;
-> +
-> +		/* Reset active bit when the child is no longer active */
-> +		if (!childstate.active)
-> +			newstate.active &= ~childmask;
-> +
-> +		if (newstate.migrator == childmask) {
-> +			/*
-> +			 * Find a new migrator for the group, because the child
-> +			 * group is idle!
-> +			 */
-> +			if (!childstate.active) {
-> +				unsigned long new_migr_bit, active = newstate.active;
-> +
-> +				new_migr_bit = find_first_bit(&active, BIT_CNT);
-> +
-> +				if (new_migr_bit != BIT_CNT) {
-> +					newstate.migrator = BIT(new_migr_bit);
-> +				} else {
-> +					newstate.migrator = TMIGR_NONE;
-> +
-> +					/* Changes need to be propagated */
-> +					walk_done = false;
-> +				}
-> +			}
-> +		}
-> +
-> +		newstate.seq++;
-> +
-> +		WARN_ON_ONCE((newstate.migrator != TMIGR_NONE) && !(newstate.active));
-> +
-> +		if (atomic_try_cmpxchg(&group->migr_state, &curstate.state,
-> +				       newstate.state))
-> +			break;
-> +		/*
-> +		 * Add memory barrier to make sure child and group states order
-> +		 * of read is preserved. This barrier is only required when
-> +		 * atomic_try_cmpxchg() failed.
-> +		 */
-> +		smp_mb__after_atomic();
+From: WANG Xuerui <git@xen0n.name>
 
-Ideally memory barrier comments should tell:
+Hi,
 
-1) What it orders (you did)
-2) What it pairs with (the acquire)
+While trying to add loongarch to the Rust kvm-bindings crate, I
+accidentally discovered faulty logic in the handling of CPUCFG IDs
+("leaves" for those more familiar with x86), that could result in
+incorrectly accepting every possible int for the ID; fortunately it is
+6.8 material that hasn't seen a release yet, so a fix is possible.
 
-And also the acquire barrier should be commented as well accordingly. This all
-of course can be done in a further patch (I might lose track beyond 11c)
+The first patch contains the fix, while the rest are general
+drive-by refactoring and comment cleanups.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Although it is currently the Chinese holiday season, Huacai told me
+over IM that he's able to test the series and handle the upstreaming, so
+going through the loongarch tree seems to be the way forward for the
+series.
+
+v4 changes:
+
+- Restored the range check with `if` to simplify future additions to the
+  switch cases according to Bibo's suggestion
+- Require upper 32 bits of new CPUCFG values to be unset, according to
+  off-list suggestion by Huacai
+
+v3 changes:
+
+- Fixed the validation by accepting every CPUCFG IDs from 0 to 20
+  inclusive, instead of only 2; this was a misunderstanding of mine
+  regarding the userland. (currently the only known user, the QEMU
+  target/loongarch KVM code, expects to be able to set all these 21
+  CPUCFG leaves, even though 7~15 are undefined according to the
+  LoongArch reference manual.) This also had the effect of squashing the
+  first 2 patches.
+- Made the _kvm_get_cpucfg_mask return a mask in all valid cases,
+  allowing the mask check to be lifted out of the CPUCFG2 case.
+- Swapped the "LoongArch:" and "KVM:" tags because right now the patches
+  are likely to reach mainline through the loongarch tree, and having
+  the "LoongArch:" prefix first is the convention here.
+
+v2 changes:
+
+- Squashed the v1 patches 4 and 5 according to Huacai's review
+- Reworded comments according to Huacai's suggestion
+- Use WARN_ON_ONCE (instead of BUG) to replace unreachable() for not
+  crashing the kernel (per checkpatch.pl suggestion)
+
+WANG Xuerui (3):
+  LoongArch: KVM: Fix input validation of _kvm_get_cpucfg and
+    kvm_check_cpucfg
+  LoongArch: KVM: Rename _kvm_get_cpucfg to _kvm_get_cpucfg_mask
+  LoongArch: KVM: Streamline kvm_check_cpucfg and improve comments
+
+ arch/loongarch/kvm/vcpu.c | 81 +++++++++++++++++++--------------------
+ 1 file changed, 40 insertions(+), 41 deletions(-)
+
+-- 
+2.43.2
+
 
