@@ -1,129 +1,269 @@
-Return-Path: <linux-kernel+bounces-76916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0C1D85FE92
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:00:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7720F85FE95
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6504AB25A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:00:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BBA32828B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333AB154BEC;
-	Thu, 22 Feb 2024 16:59:50 +0000 (UTC)
-Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2541154437;
+	Thu, 22 Feb 2024 17:02:29 +0000 (UTC)
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A1A153BCE;
-	Thu, 22 Feb 2024 16:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.136.29.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45688155308;
+	Thu, 22 Feb 2024 17:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708621189; cv=none; b=qoFtupPngJHVGEXcnUGh+iQ5jItvmsuL8RNHCMQpleEwofYnAsdpgaqakgOuCO7ba5t1jLKGD1E/B6M+1Z8gZ5bgJBcdHLfHiBMYEdxM2xOW3fUEmVeKqUNzUTQbdJCsMaix3/Q9S/c68+8BWN32W23W9HV7PTBxwJgV8eMvx/4=
+	t=1708621348; cv=none; b=DdpBZ/6B7DbP00rQ8YtP4AsXVn3vC4q9qU7y1V9H64XaUApKTfJOe9RPZEb3RqqzMj8yD4ZSX6AGbY+mYnI0rAvGjwbYEsqNYor3RGlM+cp8diR3UbEFH9dZhr5nPDuF5I8bgq0OVUAHYcfzVgO64/fVajaYSQySbnfbJRoz+u8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708621189; c=relaxed/simple;
-	bh=mFjlaeGN07dgGRzQB14f7xCSu7QrFn9u6AqzQ15Qs2M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PoL54RP0QvHuGz87/NEZnnshhremJAIctAIuCNDMECpD+oK3uq+B2KmWX4AshIrUVHHQr8wuvRxCASOphr7aCFgitCC1qIPiE+wtRsPs+OikF6dBET6MIPrwx7IT9ciCB2+u7nol3172wJhZhxRusnBiVtHoX8fahIKpYzInOZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com; spf=pass smtp.mailfrom=proxmox.com; arc=none smtp.client-ip=94.136.29.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id E5CD544ADC;
-	Thu, 22 Feb 2024 17:59:43 +0100 (CET)
-Message-ID: <2b0ed3ba-d8da-401e-9495-6b6670d7b418@proxmox.com>
-Date: Thu, 22 Feb 2024 17:59:42 +0100
+	s=arc-20240116; t=1708621348; c=relaxed/simple;
+	bh=o2z62yIkjV+//Puh8dbCXY7hYl26G7rkj5+/iE/jb38=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CZFFPSJikqm8HvM0JgMgSvPKHZtnTjxumggVcIRtD6wfqQbROWaHKm2MXIK0kLxXB6d3MawRGwjiEQ0w0udUDWbYf0vrqoIf1UmfFcHLMrtZELd6F6Fkug+wR0j1DSgf8M5l+kHKFJ+qzCC2JB5xnwcNUIy5Op1h+Ztb9dnNOtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d934c8f8f7so75771255ad.2;
+        Thu, 22 Feb 2024 09:02:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708621336; x=1709226136;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fbb24HI7mwnQHPbFmcorW8M6W1udgr86FpNgr1pAX8g=;
+        b=a08VLnpcRAtYrzxdfTxVBHyGJs12bqsc5GigEI4/3Kgsc0JCp0UYZ+9ATRq1tjSDK2
+         Oc5nK1/4ipxni8BveRhKjD0+w3c6bmpO3liqxk7oGRN14oPvNsZMuV4FP/NKtTgK9Jvk
+         5A7JdoUsCEsXbVUZvpG91M2wRtKbd8jRyTph0JptxuyQRMCF6nRt9Ygb6SJrApdjXmzz
+         6YeJjISoR6INsIkMHRhMUxTGu2W/PXGNoYki/p9cFc4g/AeTqIJ+AdOhUxMYRtzNSBNQ
+         k7h6zWjqTbKDZArRbUbMGcednB0f72ZWf9tBoHaG5zEbRs49ofzQhYHtEPGc2SxZ0jPj
+         zA3g==
+X-Forwarded-Encrypted: i=1; AJvYcCXc0PZlR7ztUUAEnhT/F5AX4/C7KQQPb7nraYuM6wqZ62Yay9Tgw9xUl5nvp2kZFHUOGuxgnOHMgJdj+b6ThXUcehz7cXwpRqFKOHYTTzvpFKf+0vJx/qQXJ/JUOGbmV7f2ZT3C0bj2pRCFeIxB0A==
+X-Gm-Message-State: AOJu0YwkUG7vey/RaphInatUGcVZja/KFYQaEMU9gskpck0PhekHf+7I
+	61TAts49pGe9S4nmwNYh+e3PY4KDZul4GLys/LuT1VZUPp09KhpsfAZvdrziyHNq2yC2N9fU5MC
+	L3lQiqmHFCn9YfaEPxjo4xpOrS2E=
+X-Google-Smtp-Source: AGHT+IHYXCG6IOXf5XV2s2UWgsjmMaTvB0nmyPHwa3sjr4YhsdqIJOztejAmg68niMfDbOQaYHVUmH07AFwpiDMW4MM=
+X-Received: by 2002:a17:90a:3486:b0:299:398e:5cee with SMTP id
+ p6-20020a17090a348600b00299398e5ceemr14241027pjb.13.1708621336292; Thu, 22
+ Feb 2024 09:02:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] KVM: x86/mmu: Retry fault before acquiring mmu_lock if
- mapping is changing
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Yan Zhao <yan.y.zhao@intel.com>, Kai Huang <kai.huang@intel.com>,
- Yuan Yao <yuan.yao@linux.intel.com>, Xu Yilun <yilun.xu@linux.intel.com>
-References: <20240222012640.2820927-1-seanjc@google.com>
-From: Friedrich Weber <f.weber@proxmox.com>
-In-Reply-To: <20240222012640.2820927-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240126145605.1005472-1-mark.rutland@arm.com> <CAP-5=fURS0OQxHcukS1+NprgyMpAQSr3+BMiYPj5x7=+tcZ8hw@mail.gmail.com>
+In-Reply-To: <CAP-5=fURS0OQxHcukS1+NprgyMpAQSr3+BMiYPj5x7=+tcZ8hw@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 22 Feb 2024 09:02:04 -0800
+Message-ID: <CAM9d7cj=tN8ACGFMmkdL_RE5R-4SCd8Zg3trJ15TvOJKpcXABQ@mail.gmail.com>
+Subject: Re: [PATCH v2] perf print-events: make is_event_supported() more robust
+To: marcan@marcan.st, maz@kernel.org
+Cc: Ian Rogers <irogers@google.com>, Mark Rutland <mark.rutland@arm.com>, 
+	linux-kernel@vger.kernel.org, acme@redhat.com, james.clark@arm.com, 
+	john.g.garry@oracle.com, leo.yan@linaro.org, 
+	linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, 
+	mike.leach@linaro.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22/02/2024 02:26, Sean Christopherson wrote:
-> Retry page faults without acquiring mmu_lock, and without even faulting
-> the page into the primary MMU, if the resolved gfn is covered by an active
-> invalidation.  Contending for mmu_lock is especially problematic on
-> preemptible kernels as the mmu_notifier invalidation task will yield
-> mmu_lock (see rwlock_needbreak()), delay the in-progress invalidation, and
-> ultimately increase the latency of resolving the page fault.  And in the
-> worst case scenario, yielding will be accompanied by a remote TLB flush,
-> e.g. if the invalidation covers a large range of memory and vCPUs are
-> accessing addresses that were already zapped.
-> 
-> Faulting the page into the primary MMU is similarly problematic, as doing
-> so may acquire locks that need to be taken for the invalidation to
-> complete (the primary MMU has finer grained locks than KVM's MMU), and/or
-> may cause unnecessary churn (getting/putting pages, marking them accessed,
-> etc).
-> 
-> Alternatively, the yielding issue could be mitigated by teaching KVM's MMU
-> iterators to perform more work before yielding, but that wouldn't solve
-> the lock contention and would negatively affect scenarios where a vCPU is
-> trying to fault in an address that is NOT covered by the in-progress
-> invalidation.
-> 
-> Add a dedicated lockess version of the range-based retry check to avoid
-> false positives on the sanity check on start+end WARN, and so that it's
-> super obvious that checking for a racing invalidation without holding
-> mmu_lock is unsafe (though obviously useful).
-> 
-> Wrap mmu_invalidate_in_progress in READ_ONCE() to ensure that pre-checking
-> invalidation in a loop won't put KVM into an infinite loop, e.g. due to
-> caching the in-progress flag and never seeing it go to '0'.
-> 
-> Force a load of mmu_invalidate_seq as well, even though it isn't strictly
-> necessary to avoid an infinite loop, as doing so improves the probability
-> that KVM will detect an invalidation that already completed before
-> acquiring mmu_lock and bailing anyways.
-> 
-> Do the pre-check even for non-preemptible kernels, as waiting to detect
-> the invalidation until mmu_lock is held guarantees the vCPU will observe
-> the worst case latency in terms of handling the fault, and can generate
-> even more mmu_lock contention.  E.g. the vCPU will acquire mmu_lock,
-> detect retry, drop mmu_lock, re-enter the guest, retake the fault, and
-> eventually re-acquire mmu_lock.  This behavior is also why there are no
-> new starvation issues due to losing the fairness guarantees provided by
-> rwlocks: if the vCPU needs to retry, it _must_ drop mmu_lock, i.e. waiting
-> on mmu_lock doesn't guarantee forward progress in the face of _another_
-> mmu_notifier invalidation event.
-> 
-> Note, adding READ_ONCE() isn't entirely free, e.g. on x86, the READ_ONCE()
-> may generate a load into a register instead of doing a direct comparison
-> (MOV+TEST+Jcc instead of CMP+Jcc), but practically speaking the added cost
-> is a few bytes of code and maaaaybe a cycle or three.
-> 
-> Reported-by: Yan Zhao <yan.y.zhao@intel.com>
-> Closes: https://lore.kernel.org/all/ZNnPF4W26ZbAyGto@yzhao56-desk.sh.intel.com
-> Reported-by: Friedrich Weber <f.weber@proxmox.com>
-> Cc: Kai Huang <kai.huang@intel.com>
-> Cc: Yan Zhao <yan.y.zhao@intel.com>
-> Cc: Yuan Yao <yuan.yao@linux.intel.com>
-> Cc: Xu Yilun <yilun.xu@linux.intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
+Hector and Marc, can you please take a look?
 
-Couldn't find the base-commit 21dbc438 (might not have looked at the
-right place though), so I applied this patch on top of c48617fb ("Merge
-tag 'kvmarm-fixes-6.8-3' ...") from kvm/kvm.git. Can confirm the patch
-fixes the temporary guest hangs in combination with KSM and NUMA
-balancing [1]. Thanks!
+Thanks,
+Namhyung
 
-[1]
-https://lore.kernel.org/kvm/832697b9-3652-422d-a019-8c0574a188ac@proxmox.com/
 
+On Wed, Feb 21, 2024 at 12:19=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Fri, Jan 26, 2024 at 6:56=E2=80=AFAM Mark Rutland <mark.rutland@arm.co=
+m> wrote:
+> >
+> > Currently the perf tool doesn't detect support for extended event types
+> > on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
+> > hardware events into per-PMU events. This is due to the detection of
+> > extended event types not handling mandatory filters required by the
+> > M1/M2 PMU driver.
+> >
+> > PMU drivers and the core perf_events code can require that
+> > perf_event_attr::exclude_* filters are configured in a specific way and
+> > may reject certain configurations of filters, for example:
+> >
+> > (a) Many PMUs lack support for any event filtering, and require all
+> >     perf_event_attr::exclude_* bits to be clear. This includes Alpha's
+> >     CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
+> >     ARMv7,
+> >
+> > (b) When /proc/sys/kernel/perf_event_paranoid >=3D 2, the perf core
+> >     requires that perf_event_attr::exclude_kernel is set.
+> >
+> > (c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
+> >     set as the hardware PMU does not count while a guest is running (bu=
+t
+> >     might be extended in future to do so).
+> >
+> > In is_event_supported(), we try to account for cases (a) and (b), first
+> > attempting to open an event without any filters, and if this fails,
+> > retrying with perf_event_attr::exclude_kernel set. We do not account fo=
+r
+> > case (c), or any other filters that drivers could theoretically require
+> > to be set.
+> >
+> > Thus is_event_supported() will fail to detect support for any events
+> > targeting an Apple M1/M2 PMU, even where events would be supported with
+> > perf_event_attr:::exclude_guest set.
+> >
+> > Since commit:
+> >
+> >   82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number i=
+n perf_event_attr.type")
+> >
+> > ... we use is_event_supported() to detect support for extended types,
+> > with the PMU ID encoded into the perf_event_attr::type. As above, on an
+> > Apple M1/M2 system this will always fail to detect that the event is
+> > supported, and consequently we fail to detect support for extended type=
+s
+> > even when these are supported, as they have been since commit:
+> >
+> >   5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capabil=
+ity")
+> >
+> > Due to this, the perf tool will not automatically expand plain
+> > PERF_TYPE_HARDWARE events into per-PMU events, even when all the
+> > necessary kernel support is present.
+> >
+> > This patch updates is_event_supported() to additionally try opening
+> > events with perf_event_attr::exclude_guest set, allowing support for
+> > events to be detected on Apple M1/M2 systems. I believe that this is
+> > sufficient for all contemporary CPU PMU drivers, though in future it ma=
+y
+> > be necessary to check for other combinations of filter bits.
+> >
+> > I've deliberately changed the check to not expect a specific error code
+> > for missing filters, as today ;the kernel may return a number of
+> > different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
+> > -EOPNOTSUPP) depending on why and where the filter configuration is
+> > rejected, and retrying for any error is more robust.
+> >
+> > Note that this does not remove the need for commit:
+> >
+> >   a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priori=
+ty than sysfs/JSON")
+> >
+> > ... which is still necessary so that named-pmu/event/ events work on
+> > kernels without extended type support, even if the event name happens t=
+o
+> > be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case fo=
+r
+> > the M1/M2 PMU's 'cycles' and 'instructions' events).
+> >
+> > Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU num=
+ber in perf_event_attr.type")
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Tested-by: Ian Rogers <irogers@google.com>
+> > Tested-by: James Clark <james.clark@arm.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Cc: Hector Martin <marcan@marcan.st>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: James Clark <james.clark@arm.com>
+> > Cc: John Garry <john.g.garry@oracle.com>
+> > Cc: Leo Yan <leo.yan@linaro.org>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Mike Leach <mike.leach@linaro.org>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Cc: Thomas Richter <tmricht@linux.ibm.com>
+> > Cc: Will Deacon <will@kernel.org>
+>
+> Ping. Could we land this one?
+>
+> Thanks,
+> Ian
+>
+> > ---
+> >  tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
+> >  1 file changed, 19 insertions(+), 8 deletions(-)
+> >
+> > Since v1 [1]:
+> > * Fix typos in commit message
+> > * Accumulate tags
+> >
+> > [1] https://lore.kernel.org/lkml/20240116170348.463479-1-mark.rutland@a=
+rm.com/
+> >
+> > Mark.
+> >
+> > diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-eve=
+nts.c
+> > index b0fc48be623f3..4f67e8f00a4d6 100644
+> > --- a/tools/perf/util/print-events.c
+> > +++ b/tools/perf/util/print-events.c
+> > @@ -232,7 +232,6 @@ void print_sdt_events(const struct print_callbacks =
+*print_cb, void *print_state)
+> >  bool is_event_supported(u8 type, u64 config)
+> >  {
+> >         bool ret =3D true;
+> > -       int open_return;
+> >         struct evsel *evsel;
+> >         struct perf_event_attr attr =3D {
+> >                 .type =3D type,
+> > @@ -246,20 +245,32 @@ bool is_event_supported(u8 type, u64 config)
+> >
+> >         evsel =3D evsel__new(&attr);
+> >         if (evsel) {
+> > -               open_return =3D evsel__open(evsel, NULL, tmap);
+> > -               ret =3D open_return >=3D 0;
+> > +               ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> >
+> > -               if (open_return =3D=3D -EACCES) {
+> > +               if (!ret) {
+> >                         /*
+> > -                        * This happens if the paranoid value
+> > +                        * The event may fail to open if the paranoid v=
+alue
+> >                          * /proc/sys/kernel/perf_event_paranoid is set =
+to 2
+> > -                        * Re-run with exclude_kernel set; we don't do =
+that
+> > -                        * by default as some ARM machines do not suppo=
+rt it.
+> > -                        *
+> > +                        * Re-run with exclude_kernel set; we don't do =
+that by
+> > +                        * default as some ARM machines do not support =
+it.
+> >                          */
+> >                         evsel->core.attr.exclude_kernel =3D 1;
+> >                         ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> >                 }
+> > +
+> > +               if (!ret) {
+> > +                       /*
+> > +                        * The event may fail to open if the PMU requir=
+es
+> > +                        * exclude_guest to be set (e.g. as the Apple M=
+1 PMU
+> > +                        * requires).
+> > +                        * Re-run with exclude_guest set; we don't do t=
+hat by
+> > +                        * default as it's equally legitimate for anoth=
+er PMU
+> > +                        * driver to require that exclude_guest is clea=
+r.
+> > +                        */
+> > +                       evsel->core.attr.exclude_guest =3D 1;
+> > +                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
+> > +               }
+> > +
+> >                 evsel__delete(evsel);
+> >         }
+> >
+> > --
+> > 2.30.2
+> >
 
