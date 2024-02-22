@@ -1,137 +1,129 @@
-Return-Path: <linux-kernel+bounces-76980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A755F85FF61
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC2285FF68
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:30:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D6681F235F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:30:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4BEC1F23445
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1ABF157E93;
-	Thu, 22 Feb 2024 17:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2AE155A39;
+	Thu, 22 Feb 2024 17:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aNphZxL0"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrbR7OFo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3CA156996;
-	Thu, 22 Feb 2024 17:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1742C39FC7;
+	Thu, 22 Feb 2024 17:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708622946; cv=none; b=j5P67ve0zM8rAs5rho6Alikxh9Wxg1xTep0AczCuTuuHwLwWgjvUDfxVNbmsD8yHeE7/RsVRnung6uAiMxyNw8v2FRrXh/s2YcgQ74s25EvaBZnUK7S/XrPi7FvCa5XJ8X1Tv2KkTXLDslQ917M8QPOg5czXIVI9vle+scLxRS4=
+	t=1708623042; cv=none; b=qj7mi2/ITYK9oqcm4c6E0mjeg+zXFw7QL0hJjNqBPJ/toGRhjBE4m1L5aBu2Z50CVz2W3nzqh+YaiISNXqs23Y9pnHMXyvvI+guP9nyp19WnMFCSgFWf7Vj3UNzbfBhJLr7eQulHBncw8bM5WvAPDW7VEH27ya3IqNO8VBLcguc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708622946; c=relaxed/simple;
-	bh=dYJgTChdgJOJkHz2iKj/s8ZaCL8CFt3VgKsr1t0sTfA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pxsZUB5hAVu1qhq2bK6OJe/tU4vzOKLFytzqCuMLHypkP4nHocwdYfPuMfqdXD/B08OMAh0QJ15KsALFIFVY7PCydxBLyu/HldZCFECNiOsamJDUiRMWV9lP9QJlJ1eeM6lVwRTH/v8gLuDxe7NBwpsiRdezD7x3oqcwK3xGuoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aNphZxL0; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512d5744290so26670e87.2;
-        Thu, 22 Feb 2024 09:29:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708622942; x=1709227742; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kleuODmxCYyEFzznYD1sQ1n9j2n/3CqsHs6HaC1c8NI=;
-        b=aNphZxL0v0k/zHS0RrJ4rWf20GIh8k33hYKKSMwmSu0PGBiRoIUx7Cq108NcZA4amX
-         IriMzMEQwSJrmbG7Ia9H/eUHpw9w3mhgjI4EQoDaQz9wG9ITrxUz3uQwqgWycik1E8/Q
-         CRIs9paVBd7V4kTOxZgXdEVSDMPuNppJGb/Fixv/K/IIbTJhMENFb4PXRhUWe++UDbYH
-         j0noJ8g7jPjASGFAmqzdiOeOPTwLMvIh041Elgefy5DpHmWeEXEj8Gv9FOKhikQFARfT
-         Y1BrRLdwiXVodlkj6X2VPbcw2/PGELZhQ351WXA0sA3qSgzxmQ2BNw3r9cMksXFRvLPr
-         BcSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708622942; x=1709227742;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kleuODmxCYyEFzznYD1sQ1n9j2n/3CqsHs6HaC1c8NI=;
-        b=KkrikvMzw1ZnpWGr05IKD/ndvk7xUjJv9M3QCaFViI6R7S4MZnmna6koDMva685RCV
-         1kGscAPOgn9lO6CdHFHueVDBPQyjd/V39+GImfGXBzYn0TqdCpDHVr5H5pcHRizHNeei
-         1mpVzEMQYK0WjvY2AXCYzZ3Vu/sq6SOgSV8E6kKISSfbIStx/a4LawEfgMgkYyJnXP/c
-         cAytn7iH5Q07nYk673Vwar4bcZFWAcjFXCH3nk80SCBcNjCRn0uit+obk+SBzGFZFgbX
-         DjHNmDABVb6hXAU9+BNIXKvmRyGsg6PtfU2T7/hxBIjDuf5woxLIQVI1GevdCK3wzfmj
-         vbfw==
-X-Forwarded-Encrypted: i=1; AJvYcCWKpfhCPVzow19ygAdyjPDEs8yoiE/wZGOO5UN88CehBw5akb1T3sbQKhn42O6bioWc4CG/tlPSYXp9yUQRuZg5pxk9LNCzgRxZKpTrZ8w0NM1bFKVGVGLmT8KVDhHZZ8x5qPud2eXV
-X-Gm-Message-State: AOJu0Yxa7qnw0zLr80aV34bHTYx40waCtMdrGbDK5uythoN2DZay8bSe
-	L4XEKD9l4dQU5i09B32zwE50nDAsw5BffDnPObG1UaJd7vCiq9j1FDXP3oCaQ6k=
-X-Google-Smtp-Source: AGHT+IETpd4ZguYLp5vVtxrCopYEHB3OeNgESpMy63hVg8FTDBHOKN5KOTlEjjqjo3M4EE7SSO5AJg==
-X-Received: by 2002:ac2:4d1b:0:b0:512:da6e:7719 with SMTP id r27-20020ac24d1b000000b00512da6e7719mr2090221lfi.4.1708622942293;
-        Thu, 22 Feb 2024 09:29:02 -0800 (PST)
-Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id i19-20020ac25233000000b00512cc96c403sm898561lfl.238.2024.02.22.09.29.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 09:29:01 -0800 (PST)
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Serge Semin <fancer.lancer@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] spi: dw: Drop default number of CS setting
-Date: Thu, 22 Feb 2024 20:28:47 +0300
-Message-ID: <20240222172853.25082-5-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240222172853.25082-1-fancer.lancer@gmail.com>
-References: <20240222172853.25082-1-fancer.lancer@gmail.com>
+	s=arc-20240116; t=1708623042; c=relaxed/simple;
+	bh=8dkiuR42Ay/FRMA2iw0COAQGckjNrMYLquYYR2M/lIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lL7EuGB7ao8Ke2R2H3wrzIn2/lnR4K7I3Xsvg3uYbRi1Yzv0Iyl9yZoqTh04LhvpaPGO0FkgS0yzzri15w75F5nWQPwv8IsNQTDb7uMNp/864bRuC6fUHwiM/6QI1XriRx2kkiAYtkW0jZtLikm7gCXRVYiRrGQpRHZ7JhRq4zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrbR7OFo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74EC9C43390;
+	Thu, 22 Feb 2024 17:30:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708623041;
+	bh=8dkiuR42Ay/FRMA2iw0COAQGckjNrMYLquYYR2M/lIA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KrbR7OFoLPGODCmGI+TDfzEExz/Qee9nZii1IsdYTaZldFXQF4cyRr/V3KKe+bot/
+	 e5b5/0w/aJHY3/4vR5uVmjCciqHlsoIXN2eYoISW3Na+AVl4f/Y1u76S2gxxR7qwZu
+	 xnD9QIwRo11sgBnzNvl90hEZGfReZt58IvoK+lXThAGL61tbuU7gtBJ2CeLNrN6v/0
+	 yE87uui9DNn8vEdpzF0VilK/ynHv4fmqTb6NalpeOPPVbHQOUxnCHTkuDA7Tz52PAo
+	 QMQGvKZHkbz9EoAd0hVppnS5hKaANUGIbTFboVdFEWizHgpMoTyciVIy9n5aBfmkFd
+	 AZndupAuEswzQ==
+Date: Thu, 22 Feb 2024 17:30:37 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Xin Ji <xji@analogixsemi.com>,
+	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH] dt-bindings: usb: analogix,anx7411: drop redundant
+ connector properties
+Message-ID: <20240222-runny-routing-8e7801a09113@spud>
+References: <20240222082819.10321-1-krzysztof.kozlowski@linaro.org>
+ <20240222-election-doorstop-8c179803c47e@spud>
+ <838ed10f-7f0a-48e8-a195-a155e4766f49@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="KCmP/T33K8VIerl3"
+Content-Disposition: inline
+In-Reply-To: <838ed10f-7f0a-48e8-a195-a155e4766f49@linaro.org>
 
-DW APB/AHB SSI core now supports the procedure automatically detecting the
-number of native chip-select lines. Thus there is no longer point in
-defaulting to four CS if the platform doesn't specify the real number
-especially seeing the default number didn't correspond to any original DW
-APB/AHB databook.
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+--KCmP/T33K8VIerl3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
----
+On Thu, Feb 22, 2024 at 05:56:12PM +0100, Krzysztof Kozlowski wrote:
+> On 22/02/2024 17:08, Conor Dooley wrote:
+> > On Thu, Feb 22, 2024 at 09:28:19AM +0100, Krzysztof Kozlowski wrote:
+> >> The binding references usb-connector.yaml schema, which lists all
+> >> allowed properties and ends with unevaluatedProperties:false, so we can
+> >> simplify analogix,anx7411 binding by dropping everything covered by
+> >> usb-connector.yaml.
+> >>
+> >> Suggested-by: Pavel Machek <pavel@ucw.cz>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >> ---
+> >>  .../devicetree/bindings/usb/analogix,anx7411.yaml   | 13 -------------
+> >>  1 file changed, 13 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/usb/analogix,anx7411.ya=
+ml b/Documentation/devicetree/bindings/usb/analogix,anx7411.yaml
+> >> index e4d893369d57..3f5857aee3b0 100644
+> >> --- a/Documentation/devicetree/bindings/usb/analogix,anx7411.yaml
+> >> +++ b/Documentation/devicetree/bindings/usb/analogix,anx7411.yaml
+> >> @@ -23,24 +23,11 @@ properties:
+> >>    connector:
+> >>      type: object
+> >>      $ref: ../connector/usb-connector.yaml
+> >> -    unevaluatedProperties: false
+> >=20
+> > The connector schema sets `additionalProperties: true`. Is removing this
+> > correct?
+> >=20
+>=20
+> I think you look at some old version:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/devicetree/bindings/connector/usb-connector.yaml?h=3Dv6.8-rc5#=
+n327
 
-Changelog v2:
-- Drop temporal variable and pass dws_spi::num_cs directly.
----
- drivers/spi/spi-dw-mmio.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Huh, you are correct. I had a stable kernel checked out somehow in the
+git worktree I apply dt patches to while reviewing them rather than
+linux-next. Sorry about that..
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-index cc74cbe03431..c56de35eca98 100644
---- a/drivers/spi/spi-dw-mmio.c
-+++ b/drivers/spi/spi-dw-mmio.c
-@@ -320,7 +320,6 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
- 	struct resource *mem;
- 	struct dw_spi *dws;
- 	int ret;
--	int num_cs;
- 
- 	dwsmmio = devm_kzalloc(&pdev->dev, sizeof(struct dw_spi_mmio),
- 			GFP_KERNEL);
-@@ -364,11 +363,8 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
- 				     &dws->reg_io_width))
- 		dws->reg_io_width = 4;
- 
--	num_cs = 4;
--
--	device_property_read_u32(&pdev->dev, "num-cs", &num_cs);
--
--	dws->num_cs = num_cs;
-+	/* Rely on the auto-detection if no property specified */
-+	device_property_read_u32(&pdev->dev, "num-cs", &dws->num_cs);
- 
- 	init_func = device_get_match_data(&pdev->dev);
- 	if (init_func) {
--- 
-2.43.0
+Cheers,
+Conor.
 
+--KCmP/T33K8VIerl3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdeEvQAKCRB4tDGHoIJi
+0v0NAPwLF928qfOKaGLUcPyTY2d5VS2sykFrvFXmuGYywqZj+QD+Ko2s6NTikrHJ
+0RiYWScGqZjgz7d2ASenP/OUGUoEtgQ=
+=ishp
+-----END PGP SIGNATURE-----
+
+--KCmP/T33K8VIerl3--
 
