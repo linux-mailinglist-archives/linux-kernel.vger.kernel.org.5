@@ -1,80 +1,82 @@
-Return-Path: <linux-kernel+bounces-77042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E85C860063
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:07:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4586C86006C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 542AF1F224CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:07:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83761F25E79
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B092157E78;
-	Thu, 22 Feb 2024 18:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7100F158D99;
+	Thu, 22 Feb 2024 18:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nOj4Yd1j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hmO+2am9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE62B4776E;
-	Thu, 22 Feb 2024 18:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FFB158D83;
+	Thu, 22 Feb 2024 18:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625218; cv=none; b=T1a7wKMO0ycM/+kX/6YX6IEHKgjtE6EzueUXJUOeA/yb4vJupKijLM7ViWFGLfuap/cFoO85uo6Gd96yLM0WHlR8U+8rPjpb5E5yRxhtotGklW3olbFVp2JvT20QX56sqKgbExcqnK3TiaGn2v5VqGIJBELGfvmBiACxaZk+I/s=
+	t=1708625225; cv=none; b=iGjwotLHHPPQFSiHTV/CBpmvci1u67lI8b0EwVIwbCXa725H4EU+zgip4qy25pE34eQsd4ZXQERJCUc2d4gDXagyjbYYk5X0mkF+cfybRTofAnLuylGTCCHF33WNoWYtlpvEayqJMY77SJwT3vdPf7GQXSV4EgMzmcIfWerdmm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625218; c=relaxed/simple;
-	bh=lBeRCmby1gUQMllOcKWPl1MR8+1XX3jNUKV55GgSZAs=;
+	s=arc-20240116; t=1708625225; c=relaxed/simple;
+	bh=ZtNhYpZN7rqPE9bUe0k8mpZXmH6Y6GMI25YBDA2i5Aw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Pz1NfmJtkI6zarhZP2Aolm+SDJBLZA8u812OKxykK6j4SQxokbZqKKkVJn4k9E5BqQKAzcBPs5ZA9cJ0I00ykuAWAVAPxd5eAN5xE81f9qjKfrEYxgLAVC5sUkJAQSGkrnrreICm1Ynpuk5aLYvw65UoxGa6OnL35N2vIntvYAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nOj4Yd1j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B1C1C433C7;
-	Thu, 22 Feb 2024 18:06:53 +0000 (UTC)
+	 MIME-Version:Content-Type; b=pHxLDZLKDJZ8mSSZDDOc0wTTkCOFd6bOIOS9lxlSyN1dxdwxcpbcy+B9NzQjdOVLRLbtJSO+YsGe7ovSZSDYAzGF5nUXEql9tIbSKIdVvCRA8S+eGmDpwDRdb8sKI3LGNBnaGqcGjM/SLfiTyylHtF0xe+d+8PEP8oSs/ogEVMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hmO+2am9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D56E2C43390;
+	Thu, 22 Feb 2024 18:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708625218;
-	bh=lBeRCmby1gUQMllOcKWPl1MR8+1XX3jNUKV55GgSZAs=;
+	s=k20201202; t=1708625225;
+	bh=ZtNhYpZN7rqPE9bUe0k8mpZXmH6Y6GMI25YBDA2i5Aw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nOj4Yd1jSGV/rjAPstPTsYiX+lJPz6EK1NrTGv2/aKwxPtNlK3XwRyBkMo2xXsyU7
-	 ZwP1xxts/KJzXw/q2GLcL0qJKGA8sqCttvVHRLDYP543X2ZKIrP5l2h+pCsMICnhMt
-	 e9j9u43vWXrN1kcjmvE8GYsSaRLw2+oMCAyW5Xgcm5fJSSPBXDZdVXWgA+eyBhd8/R
-	 rwFR6MgB5qq07jMnfwASdMorZ21XXlunJxKEGF0zcbNs7ZzLyA+lrHr9bP9jhjzfVR
-	 c+DG0836DiJFLKJ06sWpb/3wztPPnoTAPxIwMnYk9M2p9SJrYI0wD2M8tWQm2K2AHG
-	 j2KkN8BtsSSBg==
+	b=hmO+2am9MHLbtPB3UvcT421hW55I4NzSmdJKNRlpbEEeFchi48eKfBYTj3XRmMBAg
+	 bSBL+BphdA3zplWNs4th5WheQvwHQuEa2Rc0jZZb40+RgADhdRQMtFfhyDffSUsHBl
+	 Wey+6FFHszS0p2VXI44nqQIbNjmUWSraIx0+gX6kMnnfZFSBfUmMjBXoXxIOeAbziY
+	 Kq5PRC3Afd1boEMP78FK1RGbhcPzqWvwz5By3iUVW34ceq7ncanStz+PFMRgbvYhUN
+	 ms9vrxkpBgCeYeI8SKTRXSf19aY3o8U1SXXuvTwaHQbmahgKjcXzzlZJ2MJS4KOk0J
+	 OTK4j6x55QrjQ==
 From: Will Deacon <will@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+To: Marijn Suijten <marijn.suijten@somainline.org>,
+	Maxime Ripard <mripard@kernel.org>,
 	Joerg Roedel <joro@8bytes.org>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Michael Turquette <mturquette@baylibre.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
 	Sean Paul <sean@poorly.run>,
-	Rob Herring <robh@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Clark <robdclark@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
 	Conor Dooley <conor+dt@kernel.org>,
-	David Airlie <airlied@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Andersson <andersson@kernel.org>
+	Rob Clark <robdclark@gmail.com>,
+	David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>
 Cc: catalin.marinas@arm.com,
 	kernel-team@android.com,
 	Will Deacon <will@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-kernel@vger.kernel.org,
-	freedreno@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
 	iommu@lists.linux.dev,
-	linux-clk@vger.kernel.org,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/8] A702 support
-Date: Thu, 22 Feb 2024 18:06:24 +0000
-Message-Id: <170861662823.1923805.14686424405847288477.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	freedreno@lists.freedesktop.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 0/7] drm/msm: Add support for the A750 GPU found on the SM8650 platform
+Date: Thu, 22 Feb 2024 18:06:25 +0000
+Message-Id: <170861684323.1924954.5000298340107956205.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
-References: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
+In-Reply-To: <20240216-topic-sm8650-gpu-v3-0-eb1f4b86d8d3@linaro.org>
+References: <20240216-topic-sm8650-gpu-v3-0-eb1f4b86d8d3@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,20 +86,22 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Mon, 19 Feb 2024 14:35:45 +0100, Konrad Dybcio wrote:
-> Bit of a megaseries, bunched together for your testing convenience..
-> Needs mesa!27665 [1] on the userland part, kmscube happily spins.
+On Fri, 16 Feb 2024 12:03:47 +0100, Neil Armstrong wrote:
+> Unlike the the very close A740 GPU on the SM8550 SoC, the A750 GPU
+> doesn't have an HWCFG block but a separate register set.
 > 
-> I'm feeling quite lukewarm about the memory barriers in patch 3..
-> 
-> Patch 1 for Will/smmu, 5-6 for drm/msm, rest for qcom
+> The missing registers are added in the a6xx.xml.h file that would
+> require a subsequent sync and the non-existent hwcfg is handled
+> in a6xx_set_hwcg().
 > 
 > [...]
 
-Applied SMMU bindings patch to will (for-joerg/arm-smmu/bindings), thanks!
+Applied SMMU binding changes to will (for-joerg/arm-smmu/bindings), thanks!
 
-[1/8] dt-bindings: arm-smmu: Add QCM2290 GPU SMMU
-      https://git.kernel.org/will/c/0eca305f8e0d
+[2/7] dt-bindings: arm-smmu: Fix SM8[45]50 GPU SMMU 'if' condition
+      https://git.kernel.org/will/c/2777781ca9b6
+[3/7] dt-bindings: arm-smmu: Document SM8650 GPU SMMU
+      https://git.kernel.org/will/c/8a05f74d567a
 
 Cheers,
 -- 
