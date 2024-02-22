@@ -1,188 +1,126 @@
-Return-Path: <linux-kernel+bounces-76927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D3F85FEC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F86185FECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20C911F28FF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:10:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261CD1F29197
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B38154437;
-	Thu, 22 Feb 2024 17:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB0F154C14;
+	Thu, 22 Feb 2024 17:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c4bDD6t5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MwShxTs1";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Mo6zLQVV"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E8F1E488;
-	Thu, 22 Feb 2024 17:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827A018657;
+	Thu, 22 Feb 2024 17:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708621805; cv=none; b=r6H9gydfECnO25NaQwePT2f2ufXYI8y/9vbGEBPRkaFLK+NDtE8m3E/lUko1nZtZldHbqu9cIUPHtpGO+ByI/UAs9W0Ucgf5YO0IrfvKuKHTsLv0Lg1SqvVrwjI3RYI89YB5sQFSwaFhae9uT1sEJB71sGpBtf+d9GD+RMuCE8I=
+	t=1708621872; cv=none; b=a9/OUIuUCw3rn6OqG9+Nvlgl6s9jpT0iVb0FPnRkKROmlaMTpUwgVPzm32SJMAAUxfIzeK54hYWcv/CDX5UxgENhTMClLy47I3kLnyNnteaYusAHAQS6E3KVDQpCccOpsMMJ4AwesBF3ysajBT3l9YbfX20i2cQUmhUYCp9nH9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708621805; c=relaxed/simple;
-	bh=cd1O8F9z5fM7xYm0JoMaYk2KP84cNakz7hFNs+2d+I8=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=BgG+0WwcBErKZj17W0aHempCo9CZCF2mrQEy8SOUiRKGN9QL8sXQazZnB8et/7XL2gedWgxylD3BanWOYY17LHoaEBWXX25TECWI4JoQw8bQoe1c2+RpLUSmKfnKoZ5ueC7KMjjfBAa+7rewxmJFqsKuPh1RwO8mY7mYVTSWiXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c4bDD6t5; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708621804; x=1740157804;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=cd1O8F9z5fM7xYm0JoMaYk2KP84cNakz7hFNs+2d+I8=;
-  b=c4bDD6t59domRcpyQz+xM1ZzTP9Bgof6cjBbxRMv4PHwOhAPet6pLFif
-   dg4eIBZfwlDsQWFL3nzrpeCHekuy4Ijb3c7Gbw94TN3HyTD8BpdjCk5Vi
-   cboDsUBW+ICuTmTrPDtIsjw3qpPsAHxnIDDOEAoymPvxO8qhd5gwm/4v+
-   Qj59VFZJAeGa1mkMF15Q0OSLNcsJX+kqyj4KSozb2T2FpAsUsmoLeFbsQ
-   HiO2l9tvEzhQ8dtYRFbGQ3jzmOJjf5VUHbOMaTRiOvQHg+ZlpbKiqi9KH
-   6d6szEERmkGbY7Msm63y1cPc4go5TMjSrZHNkJSSjNOyMMVsp9Ac8M1Wt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="20300407"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="20300407"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 09:09:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10147290"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 22 Feb 2024 09:09:53 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
- <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
-Date: Thu, 22 Feb 2024 11:09:52 -0600
+	s=arc-20240116; t=1708621872; c=relaxed/simple;
+	bh=MM1JJIPhpSFC52meHfm3jKUwwDEzuYxplUwdvanFmRE=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=tBLhGpptlCBxkLF6pvYeAkjI24qkPctcU9Q32zqcLtjPMiVUzTvhJdQ+C60WkKS72u+Ut3hADvNI4I5tnYA2NttelHv1wFidICG69/88YTTIzu3GaX/5ynjtussXofgrDSgrokZBizZVe5DLbGD3nMkAUUNQG5hkrBTYOWciywg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MwShxTs1; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Mo6zLQVV; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 22 Feb 2024 17:11:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708621868;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n3ebpby9F9c9txMOY2uW4k2z/FPljp4f41sJjxGz3Ww=;
+	b=MwShxTs1EjJtIx0OkmLYwhazAQyfiq3M1mWUcnUCYQXRlAnMVGSY3et2Z+XVFBnuF+OCIe
+	1Zp0vHvZEkUKd8KcFB/gvKS8CNzj3wh66tgVMuNGXg33P2MAPrQrPZHilwsvbwGkv78/Yr
+	hJnIjDZzvu7Bg3pdSt3zKm9yMiMd4EhojvmIg2o2MZLLtw5q/AHJLv2uenue9BOuhAFNbP
+	vFRYOIq1LY0SC9QoJA/Qh7jaBuwXaak4omi56mMLM0cZR5mczqq38i+VjpgH7iPL/2yg1D
+	GqVjSee8qQzrYK+8hqezteIEtQmqLTBhXkBZRJz9IXMao932QzGb4XwawjuYSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708621868;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n3ebpby9F9c9txMOY2uW4k2z/FPljp4f41sJjxGz3Ww=;
+	b=Mo6zLQVVN+nX247/QVEzg3ye1PsoHpU+O4rVgX3cBHdEpIhj4MOW5UH0cLWI7+RI/FZcAq
+	9MG8WymLjZmpPJBg==
+From: "tip-bot2 for Huqiang Qin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] arm64: dts: Add gpio_intc node for Amlogic-T7 SoCs
+Cc: Huqiang Qin <huqiang.qin@amlogic.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240222074640.1866284-4-huqiang.qin@amlogic.com>
+References: <20240222074640.1866284-4-huqiang.qin@amlogic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-ID: <170862186740.398.15170945026800873163.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 
-On Wed, 21 Feb 2024 05:06:02 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+The following commit has been merged into the irq/core branch of tip:
 
->
->> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
->> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool  
->> reclaim)
->>  {
->> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
->> +	for (;;) {
->> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
->> +					PAGE_SIZE))
->> +			break;
->> +
->> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
->> +			return -ENOMEM;
->> +
->> +		if (signal_pending(current))
->> +			return -ERESTARTSYS;
->> +
->> +		if (!reclaim) {
->> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
->> +			return -EBUSY;
->> +		}
->> +
->> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
->> +			/* All pages were too young to reclaim, try again a little later */
->> +			schedule();
->> +	}
->> +
->> +	return 0;
->>  }
->>
->
-> Seems this code change is 90% similar to the existing code in the
-> sgx_alloc_epc_page():
->
-> 	...
-> 	for ( ; ; ) {
->                 page = __sgx_alloc_epc_page();
->                 if (!IS_ERR(page)) {
->                         page->owner = owner;
->                         break;
->                 }
->
->                 if (list_empty(&sgx_active_page_list))
->                         return ERR_PTR(-ENOMEM);
->
->                 if (!reclaim) {
->                         page = ERR_PTR(-EBUSY);
->                         break;
->                 }
->
->                 if (signal_pending(current)) {
->                         page = ERR_PTR(-ERESTARTSYS);
->                         break;
->                 }
->
->                 sgx_reclaim_pages();
->                 cond_resched();
->         }
-> 	...
->
-> Is it better to move the logic/code change in try_charge() out to
-> sgx_alloc_epc_page() to unify them?
->
-> IIUC, the logic is quite similar: When you either failed to allocate one  
-> page,
-> or failed to charge one page, you try to reclaim EPC page(s) from the  
-> current
-> EPC cgroup, either directly or indirectly.
->
-> No?
+Commit-ID:     3f734564a03df595c671316314b65a465d333f4a
+Gitweb:        https://git.kernel.org/tip/3f734564a03df595c671316314b65a465d333f4a
+Author:        Huqiang Qin <huqiang.qin@amlogic.com>
+AuthorDate:    Thu, 22 Feb 2024 15:46:39 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 22 Feb 2024 18:04:43 +01:00
 
-Only these lines are the same:
-                 if (!reclaim) {
-                         page = ERR_PTR(-EBUSY);
-                         break;
-                 }
+arm64: dts: Add gpio_intc node for Amlogic-T7 SoCs
 
-                 if (signal_pending(current)) {
-                         page = ERR_PTR(-ERESTARTSYS);
-                         break;
-                 }
+Add GPIO interrupt controller device.
 
-In sgx_alloc_epc_page() we do global reclamation but here we do per-cgroup  
-reclamation. That's why the logic of other lines is different though they  
-look similar due to similar function names. For the global reclamation we  
-need consider case in that cgroup is not enabled. Similarly  
-list_empty(&sgx_active_page_list) would have to be changed to check root  
-cgroup if cgroups enabled otherwise check global LRU.  The (!reclaim) case  
-is also different.  So I don't see an obvious good way to abstract those  
-to get meaningful savings.
+Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Link: https://lore.kernel.org/r/20240222074640.1866284-4-huqiang.qin@amlogic.com
 
-Thanks
-Haitao
+---
+ arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+index a03c766..2bfe2c4 100644
+--- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
++++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+@@ -171,6 +171,16 @@
+ 				};
+ 			};
+ 
++			gpio_intc: interrupt-controller@4080 {
++				compatible = "amlogic,t7-gpio-intc",
++					     "amlogic,meson-gpio-intc";
++				reg = <0x0 0x4080 0x0 0x20>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				amlogic,channel-interrupts =
++					<10 11 12 13 14 15 16 17 18 19 20 21>;
++			};
++
+ 			uart_a: serial@78000 {
+ 				compatible = "amlogic,t7-uart", "amlogic,meson-s4-uart";
+ 				reg = <0x0 0x78000 0x0 0x18>;
 
