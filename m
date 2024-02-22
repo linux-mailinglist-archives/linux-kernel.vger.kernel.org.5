@@ -1,223 +1,180 @@
-Return-Path: <linux-kernel+bounces-76413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B88C85F701
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:33:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971C785F755
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F1BA1C22F3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:33:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFC1C1C23410
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAC8446D5;
-	Thu, 22 Feb 2024 11:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E861247A40;
+	Thu, 22 Feb 2024 11:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aK8vYuGn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hVPCwmQS"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA43822099
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AEB405D4;
+	Thu, 22 Feb 2024 11:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708601594; cv=none; b=ND7UfYumLAwRn/GLwkbg4BZyqgQZbo0UVR5lQDTT0+pwEzP8w/pxadL0j9Wbblsqflgi/GOvWKp7A2DyiDaw5aegQz0Y8xqHvozs8i7mSi595jxMeXlu3nX3pyqv56FjUwBERi1Iv2ryu6u/mlDN2Nd2pr+Cd7ppQzs3NfRXORQ=
+	t=1708601787; cv=none; b=b9ROeWdo0Dz5NEp+mjS1xwFHL1RYGQJ2zmSZeo1hNsex3zxQ8kHnaiM2avdVico07ax9E6bbOMM+hu9PPjp9pIzIkyBbCZ5JbXMj57AtEAbKXdArV1YI+ur75iYJIGtlYGjw4Wgwor00BFy1BXCcXy80iSdphhV+/GUcOj/0Bwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708601594; c=relaxed/simple;
-	bh=RVpTuJ8zcEAcdKLVeq1kt8dEhu5xJiw9xVU+t9vEWO8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ublA+dsRUKQVelFAgXod1Ot1GQfcINwD0u21PYBx8jmKJiBN2WOjPgM0lPFL5M8OHe1im9dWS7MpFZXQ64xIGCuIWdTUKzg+RcWfNVBsszE060su6SSKZhAUYolC3Bx6A7lCMKSv16X014zbDnhVFDQuEC3RgKbMUziXEsB/8is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aK8vYuGn; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708601593; x=1740137593;
-  h=date:from:to:cc:subject:message-id;
-  bh=RVpTuJ8zcEAcdKLVeq1kt8dEhu5xJiw9xVU+t9vEWO8=;
-  b=aK8vYuGnJdQUW+S4cvgn4bUUnkkymwudktbO5Zqh7SqaA7UvBAwq/qOD
-   r2s7+n8P4GoNrPC2nuDdq2pXotlcg7AEhbcQdIl+hOg9FFp29Vzu6Z9or
-   4fWGBIqH+FhxHduyJqHzLaH998k0XnWNZexLAKuaapw5qEbvRHs6sOs87
-   Dx0h9r86EGAuGSeKkTrLvAa3Xno1URE+70RuNUuz2RdQw8UIK8piIAMJO
-   ih483vMfbelWjpdhco/Anhk4gLXe9IOnBWTHXEKYpaSNrQfRXyB+O/+65
-   chtPfC0X6JBkKYxRMMo2bdrKviTMCZW7Ol25SVMj4t6tkIUzCUQjBTxQD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2930253"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="2930253"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:33:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="5834139"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 22 Feb 2024 03:33:11 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rd7K8-0006GQ-2a;
-	Thu, 22 Feb 2024 11:33:08 +0000
-Date: Thu, 22 Feb 2024 19:32:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- eb0e1ebb1772302213f4882f5fada2b3f6362e66
-Message-ID: <202402221952.C86tJ5qF-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1708601787; c=relaxed/simple;
+	bh=Nq5AC/M/SyoGFJBpxXGvnqX2nW9FIGfWcanhZYMjTio=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hYIXuPYjEw7YdlAxODYWfcy/oi/q/7SAeHy29r0u4di4L38e2uMIZkEHToK+J0fd9WP/yg2m7yyJEJ9d8tUaBjHrw1GkKNmMoQRNtLCeXPHFrH3IJ45mov8ddBa6QjHeFiTufvIeIy3coRhShLwhlR+AuWNqYnX0/c5AtoQahHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hVPCwmQS; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EF9471C0003;
+	Thu, 22 Feb 2024 11:36:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708601776;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=maOFycEoHJZpXjV4st8F3wfV32IoWjfu72XKDbdjfwo=;
+	b=hVPCwmQSoeoUKbWUs1Ur9iVK0qZEx/otlw7f6S/vyZcezk6GhfjjgCPYREND+Z0VzugqP2
+	rn2BMSz4GgdJ5WOkp+bCNP8sYEpwjP+kfBdY7KCTcvzXMrw7IXetqpZJOaDVtZw97oH3mu
+	ZAKscrCcb7PpkbbMRRnZQS/HMTdU7gNvjdbOuusrumIaUn1lkqLnT1eE8iza+8MkM0ZP+v
+	4T3F9mewzRPWMQ1g0UqcZ1wB9Y7ieo/Nb43z6VddHRfkGiDQR29wvTS8Qcpzz6xHqCODTt
+	cHFwVUGXGQVCTpWzX6oZQrHG8Gs1xBsLxT76XlZma2JiaHwv6b9Ry/4kdrhcUg==
+Date: Thu, 22 Feb 2024 12:36:15 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Saravana Kannan
+ <saravanak@google.com>
+Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip
+ device is removed
+Message-ID: <20240222123615.2cbada98@bootlin.com>
+In-Reply-To: <CAMRc=MdCm4UXMkzvG17Vd=6ajE+feihgYc66qUNTTKXhN0--dA@mail.gmail.com>
+References: <20240220111019.133697-1-herve.codina@bootlin.com>
+	<20240220111019.133697-3-herve.codina@bootlin.com>
+	<20240220142959.GA244726@rigel>
+	<20240222005744.GA3603@rigel>
+	<20240222010530.GA11949@rigel>
+	<CAMRc=MdCm4UXMkzvG17Vd=6ajE+feihgYc66qUNTTKXhN0--dA@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: eb0e1ebb1772302213f4882f5fada2b3f6362e66  irqchip/vic: Fix a kernel-doc warning
+Hi Bartosz,
 
-elapsed time: 1076m
+On Thu, 22 Feb 2024 00:31:08 -0800
+Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-configs tested: 135
-configs skipped: 5
+> On Thu, 22 Feb 2024 02:05:30 +0100, Kent Gibson <warthog618@gmail.com> said:
+> > On Thu, Feb 22, 2024 at 08:57:44AM +0800, Kent Gibson wrote:  
+> >> On Tue, Feb 20, 2024 at 10:29:59PM +0800, Kent Gibson wrote:  
+> >> > On Tue, Feb 20, 2024 at 12:10:18PM +0100, Herve Codina wrote:  
+> >>
+> >> ...
+> >>  
+> >> > >  }
+> >> > >
+> >> > > +static int linereq_unregistered_notify(struct notifier_block *nb,
+> >> > > +				       unsigned long action, void *data)
+> >> > > +{
+> >> > > +	struct linereq *lr = container_of(nb, struct linereq,
+> >> > > +					  device_unregistered_nb);
+> >> > > +	int i;
+> >> > > +
+> >> > > +	for (i = 0; i < lr->num_lines; i++) {
+> >> > > +		if (lr->lines[i].desc)
+> >> > > +			edge_detector_stop(&lr->lines[i]);
+> >> > > +	}
+> >> > > +  
+> >> >
+> >> > Firstly, the re-ordering in the previous patch creates a race,
+> >> > as the NULLing of the gdev->chip serves to numb the cdev ioctls, so
+> >> > there is now a window between the notifier being called and that numbing,
+> >> > during which userspace may call linereq_set_config() and re-request
+> >> > the irq.
+> >> >
+> >> > There is also a race here with linereq_set_config().  That can be prevented
+> >> > by holding the lr->config_mutex - assuming the notifier is not being called
+> >> > from atomic context.
+> >> >  
+> >>
+> >> It occurs to me that the fixed reordering in patch 1 would place
+> >> the notifier call AFTER the NULLing of the ioctls, so there will no longer
+> >> be any chance of a race with linereq_set_config() - so holding the
+> >> config_mutex semaphore is not necessary.
+> >>  
+> >
+> > NULLing -> numbing
+> >
+> > The gdev->chip is NULLed, so the ioctls are numbed.
+> > And I need to let the coffee soak in before sending.
+> >  
+> >> In which case this patch is fine - it is only patch 1 that requires
+> >> updating.
+> >>
+> >> Cheers,
+> >> Kent.  
+> >  
+> 
+> The fix for the user-space issue may be more-or-less correct but the problem is
+> deeper and this won't fix it for in-kernel users.
+> 
+> Herve: please consider the following DT snippet:
+> 
+> 	gpio0 {
+> 		compatible = "foo";
+> 
+> 		gpio-controller;
+> 		#gpio-cells = <2>;
+> 		interrupt-controller;
+> 		#interrupt-cells = <1>;
+> 		ngpios = <8>;
+> 	};
+> 
+> 	consumer {
+> 		compatible = "bar";
+> 
+> 		interrupts-extended = <&gpio0 0>;
+> 	};
+> 
+> If you unbind the "gpio0" device after the consumer requested the interrupt,
+> you'll get the same splat. And device links will not help you here (on that
+> note: Saravana: is there anything we could do about it? Have you even
+> considered making the irqchip subsystem use the driver model in any way? Is it
+> even feasible?).
+> 
+> I would prefer this to be fixed at a lower lever than the GPIOLIB character
+> device.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I think this use case is covered.
+When the consumer device related to the consumer DT node is added, a
+consumer/supplier relationship is created:
+parse_interrupts() parses the 'interrups-extended' property
+  https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.c#L1316
+and so, of_link_to_phandle() creates the consumer/supplier link.
+  https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.c#L1316
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240222   gcc  
-arc                   randconfig-002-20240222   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   gcc  
-arm                                 defconfig   clang
-arm                        multi_v7_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm                   randconfig-001-20240222   gcc  
-arm                   randconfig-002-20240222   gcc  
-arm                           tegra_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-002-20240222   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240222   gcc  
-csky                  randconfig-002-20240222   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240222   gcc  
-i386         buildonly-randconfig-002-20240222   clang
-i386         buildonly-randconfig-003-20240222   clang
-i386         buildonly-randconfig-004-20240222   gcc  
-i386         buildonly-randconfig-005-20240222   clang
-i386         buildonly-randconfig-006-20240222   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240222   clang
-i386                  randconfig-002-20240222   clang
-i386                  randconfig-003-20240222   gcc  
-i386                  randconfig-004-20240222   clang
-i386                  randconfig-005-20240222   gcc  
-i386                  randconfig-006-20240222   clang
-i386                  randconfig-011-20240222   gcc  
-i386                  randconfig-012-20240222   clang
-i386                  randconfig-013-20240222   gcc  
-i386                  randconfig-014-20240222   gcc  
-i386                  randconfig-015-20240222   clang
-i386                  randconfig-016-20240222   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240222   gcc  
-loongarch             randconfig-002-20240222   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       alldefconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      pic32mzda_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240222   gcc  
-nios2                 randconfig-002-20240222   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240222   gcc  
-parisc                randconfig-002-20240222   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-powerpc64             randconfig-003-20240222   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240222   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240222   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240222   gcc  
-sh                    randconfig-002-20240222   gcc  
-sh                          rsk7264_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240222   gcc  
-sparc64               randconfig-002-20240222   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240222   gcc  
-xtensa                randconfig-002-20240222   gcc  
-xtensa                    xip_kc705_defconfig   gcc  
+We that link present, if the supplier is removed, the consumer is removed
+before.
+The consumer should release the interrupt during its remove process (i.e
+explicit in its .remove() or explicit because of a devm_*() call).
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+At least, it is my understanding.
+
+Best regards,
+Hervé
 
