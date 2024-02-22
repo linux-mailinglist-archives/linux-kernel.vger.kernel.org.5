@@ -1,160 +1,144 @@
-Return-Path: <linux-kernel+bounces-75903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A347A85F076
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0274F85F077
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F0DB2830F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:36:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F61284614
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72671388;
-	Thu, 22 Feb 2024 04:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F08F7483;
+	Thu, 22 Feb 2024 04:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MlZfSV4f"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TOSUhHFv"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA9610E5
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655DE6FD0
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708576592; cv=none; b=H6ez4AwClBXTEZrCHImqzPV2FpT3srNPRqhlkRNeCJ7JTxhH7NWqmJyEtqHiEzrZ+B/M1X/Z4tIlLDlCoKaZXTeSXsLsxkfwYEAi9aFJXau4CgJK8LCSUVnDyA+V9RqKhcZeC6ghuk3gr2mwhxCL6vvDoh9l3tPc85C75moW2jc=
+	t=1708576602; cv=none; b=RHkrceksPJfCb2X1yKBoFI2ogTBU8xZq0GflMrYbqVZXLWCQgos8dBUlNi9sOUYovfWGoROExX2sw02ciwpnlbl9MdB9A0ZR0Q9m0oPKNRz+76MxGHHvLxXQwvs+XK//cqFRpv5LSsjg8rQam/F+QljOHwUHnakEckCys1Ap4Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708576592; c=relaxed/simple;
-	bh=/te6BUN5uNGb3X5VKlBOeewCkUInzQPYhE0UrDEOiJA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uvMrxsXgt5gPDMmrp4yNQDUEhdOS/zNeOFl9sYaLFiLdMQP21ZAGb8eknm0CyI8sz5o1F23NzJWmGLTK50Vv9gdo2xqmvLLfLTlL/0e+U2ZfOdDQGeEBJKijIOXN3Mhc+9YjfBIoVmMweQtm0JRN8DgKyDuOhrqrq63lrDpzaZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MlZfSV4f; arc=none smtp.client-ip=209.85.222.176
+	s=arc-20240116; t=1708576602; c=relaxed/simple;
+	bh=HdN7+AKC8DWX5bPv9sXsmOVezlzmjLelKL9yNEc//sc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TXZj9VNaMYGGdZICjTezuMNTnZRcVTC3Xs5YEFKepgJkSq9YLV2ST16OeF1dtl7kqO1jPxI53qH2DOK+BUX8gR3umhNcP0G2FGyWWEELZApYIwiPOl/S1jure7uRKyCV5DL3UfAeMPaNo5QTgbl1QbhJIOl7Ny0SKztjBnMGgQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TOSUhHFv; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78725b62cf2so363244985a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:36:30 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-290ec261a61so4497840a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 20:36:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708576589; x=1709181389; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1708576601; x=1709181401; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/wj82xEL3MXTSUC7EkK9OL5XKxFUXCZ97I1b2wdmhvE=;
-        b=MlZfSV4f8P0EYrlY86nLs9xlCk0bfZPFYGHFSW4qcAHBTs/LmWS9D6P8LBuK6vJ+pw
-         XEZugNqQn/hV5c6MRSvghBEYKjdQZCQRTTx90XSvb6GanDNPNbWT3LDShAk4Ft9eyctU
-         PyvYpglndC0X0j0lOP3BSFlweM1awTB+/74SDgLMPFdw/xgZRyRR3z9qS0U9OJNoFScK
-         3Sp+nD3XcF1TB8w74QIdn3V0QLVzDNZN8qwPqeiyaL4EcwZxkQWBPUsohibV+s6bxdqX
-         asNgwN8c9xvCUZXJo7ArlBv3s6XKUcD0XBdfFUT4dIOS8hYILEccDSRQG5wB2WmJvRGp
-         yDbw==
+        bh=xti1IqxCGmLTinz1Gq6w2C6CFTv920wHr0FWiWByAAk=;
+        b=TOSUhHFvGQGb/w6nFByf4TMBpeHPLDR8lrchwfaZGzjXyG1WMwKAHPIdQcBnPcc4ze
+         9WngE/nEJc6jlKQEtBuOluUPuyN29o1CZLQXT/H6Br92CRBpyWAbWwbUJj3CY83YZ8LX
+         KJSNdfw4i+tjXYDmknxNdzHPPurJfY4cqB/DqnMSTQ5Qb8FChB+gQunl++by3YrCpsAz
+         cEY3wzIgn+HsCiN9vFT+h8oDaaSn/zOiDRLvwIA65fkS+EHLeH05/Dlm/Q2JYohJ9DMC
+         +abaYAPyqXA4D8xLn6FPJCvstdVmspqmyhHgK6zgZtiXWRJ7XVp7x6b9wO4bvAPw7Un6
+         D9/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708576589; x=1709181389;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708576601; x=1709181401;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/wj82xEL3MXTSUC7EkK9OL5XKxFUXCZ97I1b2wdmhvE=;
-        b=EaS5daCMkG9Hy0vBbCnJA3NuhBAwYqS1nppZcNjWIu3cqCPy5IJPJ1gSVv7xmB9MRJ
-         He6H9kIfNz/mFEcchGBUIrX3svJt8NY0HEeDxZ0NU4fxBp/p2FOjrG2+BVExAs8bHO2B
-         97ufjrA88aSMX+RZlFyyKgLxVc1bi5t8ext2sjEsb3DVyei3cID4KADFGh1O+uMmTbPW
-         /lHgP2Y5EQndegtCiHx3ZmKMvVdgmccOefYF7gOO+TWDDj98WfGrFxNiTJmbVzd81JsJ
-         HS9rFSJ/v7KjHfXvq6IKcxDrcDv/GucVIQ/YIwLSqU8TT53sRHpAbQltctGTr8w2Acfl
-         kHqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXgL0Uoy/Brsc/j+bFkICXEnE0oNTlCTOeBOgcfDBwGS2GOArOgZXtgHjllgCVC+HSSmx9y1oUaVsm4prrGTNBcGoADNVITS0C8FZQr
-X-Gm-Message-State: AOJu0YwxCtIfvULI64SdpXpdkOUuQZLkZ3BezPg0xZex82brn6+cws2e
-	8A8BFxWT+zMRZonUTO67IgFy16Sp9skqQq82abwNscOIL9YcP2dh
-X-Google-Smtp-Source: AGHT+IGTT+ZtO31I2bVygnmpS3RxMRkbe0updWAXzmCjZgGcSoOrGB9oHZx3tgRMo8/wMk/SvSNTvA==
-X-Received: by 2002:a05:620a:470c:b0:787:94b6:a97d with SMTP id bs12-20020a05620a470c00b0078794b6a97dmr2229446qkb.54.1708576589473;
-        Wed, 21 Feb 2024 20:36:29 -0800 (PST)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id u8-20020a05620a084800b0078783b32229sm1275370qku.7.2024.02.21.20.36.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 20:36:29 -0800 (PST)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id A73F41200043;
-	Wed, 21 Feb 2024 23:36:28 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 21 Feb 2024 23:36:28 -0500
-X-ME-Sender: <xms:TM_WZTIpyypMwzU17vUlc92fKMtZGqqa99ybYV3xaYZZ8PSYMeVJxQ>
-    <xme:TM_WZXKSkV0wwFXTVKZH3EqDfgpggYDUIwSurssqe_j_0TxpNmKdr2l76Z5WEfpUc
-    qA7OMtYzHxYdsgMyQ>
-X-ME-Received: <xmr:TM_WZbseBnVH6BHDI-bjvPsqj0vlge_heb-jkLRVtKWg05shOHy4AlGn8439kg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeefgdejudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
-    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:TM_WZcaDfhazMZ-7Uzt2otggzeYYw9WobI0plgjD_XjxKRr8xAcz6A>
-    <xmx:TM_WZabDDam6zYsjwfjAO6B-TCNLEtPryIrEyozc6BuikQIawhfDsQ>
-    <xmx:TM_WZQAOkipDdOFkuvnsZmntpkTqdtcv0OQYDg8zAiMxHL5F7ZaMdQ>
-    <xmx:TM_WZS6dLPMRtFUxAqX9MWhzhkXNKz35gWh3nY4k8G06LRChOjus6Bh3Cfg>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 Feb 2024 23:36:27 -0500 (EST)
-Date: Wed, 21 Feb 2024 20:36:05 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	George Stark <gnstark@salutedevices.com>
-Subject: Re: [PATCH 4/4] locking/rwsem: Make DEBUG_RWSEMS and PREEMPT_RT
- mutually exclusive
-Message-ID: <ZdbPNV1qa2GBF8rj@boqun-archlinux>
-References: <20240213031656.1375951-1-longman@redhat.com>
- <20240213031656.1375951-5-longman@redhat.com>
+        bh=xti1IqxCGmLTinz1Gq6w2C6CFTv920wHr0FWiWByAAk=;
+        b=wV2z/vAA+QRx53PUkUtS+jF31um43rEUuLfM9OCFJ0j0dfEEsI1fUOmiG0b2ezOSGU
+         JMrAvDHfiAqi5oN+R55JZ2T7MwJEbwpZfNCWl3BDtOnaq9r4LUatgJv61hX+ke+HHX/6
+         FvEMxEhiNcoPO2NVUJbGQoSfx0FOPw91OqjkCbbmVl1LiG2ZGeMLxm9ChRW3WGxnL2oB
+         xSwdvFZ3/gChYKFpZ5srISrPb0IUBZOgR1tAab6wZWC/uTcohfzy5U/K3177uODIclT4
+         70Mars14wxCqBT9PDPspKHAVhcfPcBEtcLz6vRbovzPg5JYKcntQ0Oup70x1umS1RE4r
+         tUTA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPGpXfAK2tNIVqbiv+Om8cyMKZeUiADwpprsJmDQ6JbdPeeQhO4JFNgZyDfsxRrh3iTkO33WiR4IgsrC+iuR8sWqAj+4UyBjvF29Iz
+X-Gm-Message-State: AOJu0YzX7893mS2czrkRWELiAuoIbIuVa/c3ivEdZcR8iryMgCkleMLa
+	C6e8G/63Y+RsM6jExnNqja02eI0bMT+TNhKNvKb2cc3CJ6jbvsrnzuc8eJ58utE2yUeZi++6Vb8
+	GE5PLNu725TrIZ1XmMuPFm2K05zQ=
+X-Google-Smtp-Source: AGHT+IGuUaomOTMXbjHqAw7vmI3o8jPBOJee8wUfvS7bnIWEcW+C4o9IAtihYglDqC8s29Gq7BRG0hv36UkI1a62WXo=
+X-Received: by 2002:a17:90a:17a4:b0:299:b60:ff0e with SMTP id
+ q33-20020a17090a17a400b002990b60ff0emr16959288pja.13.1708576600716; Wed, 21
+ Feb 2024 20:36:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213031656.1375951-5-longman@redhat.com>
+References: <20240221174333.700197-1-tj@kernel.org> <20240221174333.700197-7-tj@kernel.org>
+In-Reply-To: <20240221174333.700197-7-tj@kernel.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Thu, 22 Feb 2024 12:36:29 +0800
+Message-ID: <CAJhGHyAOzXVwGy5T-KXpwXgcWp6jLaTGGzspPqQU4Dw+x1GqUg@mail.gmail.com>
+Subject: Re: [PATCH 6/7] workqueue: Allow cancel_work_sync() and
+ disable_work() from atomic contexts on BH work items
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	allen.lkml@gmail.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 10:16:56PM -0500, Waiman Long wrote:
-> The debugging code enabled by CONFIG_DEBUG_RWSEMS will only be
-> compiled in when CONFIG_PREEMPT_RT isn't set. There is no point to
-> allow CONFIG_DEBUG_RWSEMS to be set in a kernel configuration where
-> CONFIG_PREEMPT_RT is also set. Make them mutually exclusive.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+Hello
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+On Thu, Feb 22, 2024 at 1:43=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 
-Regards,
-Boqun
+> @@ -4077,11 +4076,37 @@ static bool __flush_work(struct work_struct *work=
+, bool from_cancel)
+>
+>         rcu_read_lock();
+>         pool =3D start_flush_work(work, &barr, from_cancel);
+> +       is_bh =3D pool && (pool->flags & POOL_BH);
+>         rcu_read_unlock();
+>         if (!pool)
+>                 return false;
+>
+> -       wait_for_completion(&barr.done);
+> +       if (is_bh && from_cancel) {
 
-> ---
->  lib/Kconfig.debug | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 975a07f9f1cc..cb695bc76d30 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1303,7 +1303,7 @@ config PROVE_LOCKING
->  	select DEBUG_SPINLOCK
->  	select DEBUG_MUTEXES if !PREEMPT_RT
->  	select DEBUG_RT_MUTEXES if RT_MUTEXES
-> -	select DEBUG_RWSEMS
-> +	select DEBUG_RWSEMS if !PREEMPT_RT
->  	select DEBUG_WW_MUTEX_SLOWPATH
->  	select DEBUG_LOCK_ALLOC
->  	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
-> @@ -1426,7 +1426,7 @@ config DEBUG_WW_MUTEX_SLOWPATH
->  
->  config DEBUG_RWSEMS
->  	bool "RW Semaphore debugging: basic checks"
-> -	depends on DEBUG_KERNEL
-> +	depends on DEBUG_KERNEL && !PREEMPT_RT
->  	help
->  	  This debugging feature allows mismatched rw semaphore locks
->  	  and unlocks to be detected and reported.
-> -- 
-> 2.39.3
-> 
+Can "*work_data_bits(work) & WORK_OFFQ_BH" be used here?
+If so, the previous patch will not be needed.
+
+Thanks.
+Lai
+
+> +               /*
+> +                * We're flushing a BH work item which is being canceled.=
+ It
+> +                * must have been executing during start_flush_work() and=
+ can't
+> +                * currently be queued. If @work is still executing, we k=
+now it
+> +                * is running in the BH context and thus can be busy-wait=
+ed.
+> +                *
+> +                * On RT, prevent a live lock when %current preempted sof=
+t
+> +                * interrupt processing or prevents ksoftirqd from runnin=
+g by
+> +                * keeping flipping BH. If the BH work item runs on a dif=
+ferent
+> +                * CPU then this has no effect other than doing the BH
+> +                * disable/enable dance for nothing. This is copied from
+> +                * kernel/softirq.c::tasklet_unlock_spin_wait().
+> +                */
+> +               while (!try_wait_for_completion(&barr.done)) {
+> +                       if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> +                               local_bh_disable();
+> +                               local_bh_enable();
+> +                       } else {
+> +                               cpu_relax();
+> +                       }
+> +               }
+> +       } else {
+> +               wait_for_completion(&barr.done);
+> +       }
+> +
+>         destroy_work_on_stack(&barr.work);
+>         return true;
+>  }
 
