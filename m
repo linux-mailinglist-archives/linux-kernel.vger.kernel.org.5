@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-76311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E5CB85F580
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:19:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AC285F583
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:21:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13321285A35
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:19:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A2F11F26393
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E7D39FDC;
-	Thu, 22 Feb 2024 10:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C4239FF0;
+	Thu, 22 Feb 2024 10:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dtTxxUvY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bpc1IHFM"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38A417BB7
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D55738FB9
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597169; cv=none; b=gG03JqDhYTZSvWuNliPyGeiJO8ZHwX24X5TO8PpvsCyAStX0Ob8HhsANq80eJzx66toze1JdhcJr9XPHE+gPubFRCjEepFNiJxoPC7ZTTQlSdMLNtHSmLQ9yatnB+Bxc5xUfsGqxmK1apnPsHDOYgFsCZ0bZAKHvINcbH7Goc/w=
+	t=1708597274; cv=none; b=YaIX+RC5ej9oPAlQwkWUebZv9DdaSYxjZrDVlwJImU1iEUKCBZvBzSRjWjJmVI+mgZgBcdhnK0eJ8BFVdeUNndbp3Uf7H4/uwhbFStprxADqzdGmI6imXp+zFmx7FUf1czs2wXkVReRW69OdxRNjymtV9XYQXmNDZo6dF6GutsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597169; c=relaxed/simple;
-	bh=Kc0q/2VU//xboB0VLVYzl5beipgTJCTZ9HufFwQW4YY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KVkBoe89P5mzqfpNWbTZQ2wkDLirIzNVa3YvBQKyQea/x308GfJLty3LyFdOJyFSbKpSsUUYupWsdBeb5NLcpWtDxmV0a9NewpwgzrhoXFdbdF+l8A6SZdDXCpa3Fwt50U+hLDRBs43i5PxTNjcrtrEpf5ZCpmUcfqrIrGwI3UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dtTxxUvY; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1708597274; c=relaxed/simple;
+	bh=PtIGk5S46KOiNJqZcIIQF1M5p8ykG2K5Ec0HJBPx/vE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=EyK5kfpy9fhntY83/uuUNasR1Ju7rKHLE1F39FWECRDM7LJuse3e/8ikjmWtaxKIBYzvw9aAU36GN9ceTKzAmIUwtHgEv2EnO0okQSZ3A0YlsHGa5Zohg6Po8YyKHzZZFooprKWr+WSkERz9ouV5BzhiqsdzGTkdsCKE8XbrZBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bpc1IHFM; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708597166;
+	s=mimecast20190719; t=1708597272;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aN2CoCAXzjDD0pifuFrV69E7GpRNjCsHr9lhDc//c14=;
-	b=dtTxxUvY6vQkI5PL4lFjjLTxP0Su276GJ28o1N01QetiZoqkaqWYS7twRUeNzour7HsUji
-	Xa0GWSbSAS05nVI4irdNwG5DO9AujhG3wbsLP5bT4mzeYkoUflkFeGEcdid2P3ILokOGSU
-	FUInxR4sZoY7iYfZJ7pdOX4LJr1FQXQ=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Lcwqmq+d6xKT8k1pc3qQTHCV2WC3c9SdtMQAG9J3Qr8=;
+	b=bpc1IHFMi13EPfr9p66/W4zcaNmaZlcMXY4aTZqWO20ZW6ACShrkdXDalF4rylE6QFDRNC
+	NCBrq1bK0IyL3lUS3qeaog2McTgY6iZfNgB7nhATZeEL1ZDO9g6J/re0esV/sWP1xb4ssa
+	Tua7zSlp4BNcHoExsplP1n+iWXnRaC8=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-345-iaBqRFKzNaiBkn4q8NGqoA-1; Thu, 22 Feb 2024 05:19:25 -0500
-X-MC-Unique: iaBqRFKzNaiBkn4q8NGqoA-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d25a02f48fso10523261fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:19:24 -0800 (PST)
+ us-mta-387-caB5u68FNsicmtRet2THUg-1; Thu, 22 Feb 2024 05:21:10 -0500
+X-MC-Unique: caB5u68FNsicmtRet2THUg-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-512add274bfso1111716e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:21:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708597163; x=1709201963;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aN2CoCAXzjDD0pifuFrV69E7GpRNjCsHr9lhDc//c14=;
-        b=Vws89wcNuS/4GHm44i4roo5gsNuBXnD8aBcj8gQ9bJW9OT0hYHIKW+SwAo8xrfgl6Q
-         m77VPaUaJdyEc3TrOfZ8yLJ4q3YuUyngzSxpyM2iUB053+mN7EacmUpT+OKeOfdSnL+9
-         IUTjm2Xjx3vtw5QpzHOSnPEwK+9t9Ka0sQwC+GjrapEv8LVoDPfWP5wa37gG7LtST/J6
-         TfHeKuR8HfstOlOIpYwldU7Y6QF1YXfmQg9KGkyTjORhV2dQs2Jkaadse/8JdLt7jS+L
-         HHzxEPp4Td+MqhnpbxqbqKMjiMPEUkSy5Ytoxlu4DqRaOhFDuBaYCv5KEhZEvCxgcmmk
-         EdbQ==
-X-Gm-Message-State: AOJu0Yx9e030c30U6tx/KbJisNpv1BPkoQzB4dlZh+uR+dTv6dEEZnjb
-	XpTD5ao+8ot9K5Opt6m1DYeZU2jtHEwR5xfnqjIIG1upX9NOUU+tqsSeazXegv82ZCdDPA8ApBa
-	pC0I/0OE9URraeQRpVUmrf2iBfkLcHC3Gg1DAc2In3emvnnL3J7akEVk2iNDdTA==
-X-Received: by 2002:a2e:964a:0:b0:2d2:532f:bdf2 with SMTP id z10-20020a2e964a000000b002d2532fbdf2mr2827529ljh.51.1708597163756;
-        Thu, 22 Feb 2024 02:19:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEBLRHY/USPLYOTCgsVmAMVFjziJJbZ7u64lgCEmUSGCDYG3txCczGdqjeNiGjsPvptaXoZpA==
-X-Received: by 2002:a2e:964a:0:b0:2d2:532f:bdf2 with SMTP id z10-20020a2e964a000000b002d2532fbdf2mr2827506ljh.51.1708597163260;
-        Thu, 22 Feb 2024 02:19:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708597250; x=1709202050;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Lcwqmq+d6xKT8k1pc3qQTHCV2WC3c9SdtMQAG9J3Qr8=;
+        b=ftMZuxARjjW047r0IRxqXAKa0rOtgaRf2apUnLqklMuUq6RdiU2qWRJTRTf36vyUGq
+         r7/53Y5cyvUidmcDI6JJ+PkpsIFp+MtQE2HIDntiYOBW/aT1aX4ktzLufaJT14yVj5ml
+         2ovR3r5vgid2w1u2tHay+1nPh0tt3j+Jr+I4HueEw9pejfnlpGWiTF4A0RbiJgBVSStp
+         EN63pS3QkO4uliHHH+6bMGg6wVvrFNJCCRSfE4JebGdMm/wA9pPWSEgacZHUHsM2HXen
+         oMHLjW3JqVVDOqyOpkExRq6sRGuq+J9u5mpPWDGm090r3XHrvMYvI3I+k5SkPFGNjbhW
+         t/mA==
+X-Gm-Message-State: AOJu0YzpMEsIGhI8NelXSFWH99Jff1XjJU6sg6kgCIZ/5Uoj7IJ2trms
+	5RVIuM4YFzqrJLnQ/mclb/d9EOPKjxXHe/zw0XBQbtHtdpxqX5apmbCYZ1M7/BQbqQxSfDGLryR
+	pZny20pbKUFGHJsbYp7rcLXUx8c1KmLB2Gdq8d/qOpfw5JCJEZnA/8H4/orxlFQ==
+X-Received: by 2002:ac2:4893:0:b0:512:9e78:998c with SMTP id x19-20020ac24893000000b005129e78998cmr8731716lfc.9.1708597250164;
+        Thu, 22 Feb 2024 02:20:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZGHDJwTeoaSkxVBGscC/OhuKuPQZf4f5Gqv2aI1oHCnc5cOR7OlCp5eekB6/sFE3drryEiQ==
+X-Received: by 2002:ac2:4893:0:b0:512:9e78:998c with SMTP id x19-20020ac24893000000b005129e78998cmr8731700lfc.9.1708597249777;
+        Thu, 22 Feb 2024 02:20:49 -0800 (PST)
 Received: from ?IPV6:2003:cb:c70f:8b00:ed48:6d18:2152:1cda? (p200300cbc70f8b00ed486d1821521cda.dip0.t-ipconnect.de. [2003:cb:c70f:8b00:ed48:6d18:2152:1cda])
-        by smtp.gmail.com with ESMTPSA id a10-20020a05600c224a00b004128da16dddsm185325wmm.15.2024.02.22.02.19.22
+        by smtp.gmail.com with ESMTPSA id a10-20020a05600c224a00b004128da16dddsm185325wmm.15.2024.02.22.02.20.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 02:19:22 -0800 (PST)
-Message-ID: <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
-Date: Thu, 22 Feb 2024 11:19:21 +0100
+        Thu, 22 Feb 2024 02:20:49 -0800 (PST)
+Message-ID: <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+Date: Thu, 22 Feb 2024 11:20:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,6 +84,7 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
  swap_cluster_info:flags
 Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
 To: Ryan Roberts <ryan.roberts@arm.com>,
  Andrew Morton <akpm@linux-foundation.org>,
  Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
@@ -93,7 +94,7 @@ To: Ryan Roberts <ryan.roberts@arm.com>,
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
 References: <20231025144546.577640-1-ryan.roberts@arm.com>
  <20231025144546.577640-2-ryan.roberts@arm.com>
-From: David Hildenbrand <david@redhat.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
  dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
@@ -139,35 +140,42 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231025144546.577640-2-ryan.roberts@arm.com>
+In-Reply-To: <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 25.10.23 16:45, Ryan Roberts wrote:
-> As preparation for supporting small-sized THP in the swap-out path,
-> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
-> which, when present, always implies PMD-sized THP, which is the same as
-> the cluster size.
+On 22.02.24 11:19, David Hildenbrand wrote:
+> On 25.10.23 16:45, Ryan Roberts wrote:
+>> As preparation for supporting small-sized THP in the swap-out path,
+>> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
+>> which, when present, always implies PMD-sized THP, which is the same as
+>> the cluster size.
+>>
+>> The only use of the flag was to determine whether a swap entry refers to
+>> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
+>> Instead of relying on the flag, we now pass in nr_pages, which
+>> originates from the folio's number of pages. This allows the logic to
+>> work for folios of any order.
+>>
+>> The one snag is that one of the swap_page_trans_huge_swapped() call
+>> sites does not have the folio. But it was only being called there to
+>> avoid bothering to call __try_to_reclaim_swap() in some cases.
+>> __try_to_reclaim_swap() gets the folio and (via some other functions)
+>> calls swap_page_trans_huge_swapped(). So I've removed the problematic
+>> call site and believe the new logic should be equivalent.
 > 
-> The only use of the flag was to determine whether a swap entry refers to
-> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
-> Instead of relying on the flag, we now pass in nr_pages, which
-> originates from the folio's number of pages. This allows the logic to
-> work for folios of any order.
+> That is the  __try_to_reclaim_swap() -> folio_free_swap() ->
+> folio_swapped() -> swap_page_trans_huge_swapped() call chain I assume.
 > 
-> The one snag is that one of the swap_page_trans_huge_swapped() call
-> sites does not have the folio. But it was only being called there to
-> avoid bothering to call __try_to_reclaim_swap() in some cases.
-> __try_to_reclaim_swap() gets the folio and (via some other functions)
-> calls swap_page_trans_huge_swapped(). So I've removed the problematic
-> call site and believe the new logic should be equivalent.
+> The "difference" is that you will now (1) get another temporary
+> reference on the folio and (2) (try)lock the folio every time you
+> discard a single PTE of a (possibly) large THP.
+> 
 
-That is the  __try_to_reclaim_swap() -> folio_free_swap() -> 
-folio_swapped() -> swap_page_trans_huge_swapped() call chain I assume.
+Thinking about it, your change will not only affect THP, but any call to 
+free_swap_and_cache().
 
-The "difference" is that you will now (1) get another temporary 
-reference on the folio and (2) (try)lock the folio every time you 
-discard a single PTE of a (possibly) large THP.
+Likely that's not what we want. :/
 
 -- 
 Cheers,
