@@ -1,185 +1,719 @@
-Return-Path: <linux-kernel+bounces-75957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566AE85F123
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:52:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E6D85F125
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:53:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7BF11F244C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:52:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66CB41C22676
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7696B1426C;
-	Thu, 22 Feb 2024 05:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA911774E;
+	Thu, 22 Feb 2024 05:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBdSbnGQ"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="I4NBAazq"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D2810A12;
-	Thu, 22 Feb 2024 05:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3FC17738;
+	Thu, 22 Feb 2024 05:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708581160; cv=none; b=nR/9k6f+3usFlSJdfnW0cwlKANGRkDp5hY5ib1tc9wgC8kOqdAUEiCyz+HmJ4xkWWdP6LGzeRlvPCsEE8kZ5JdFUg7f5ePd+8mmBQBHHcFkUTRGSFv1xj3vknwt8iEUy6frnGj5n4rhK1WRXB5V4p3VPdW8puJ9DFsORAgfycY4=
+	t=1708581169; cv=none; b=ssscfrsoZMNHvvMua63BPMEGpkauQAmx66jQZNX3UzgAWS7m3SptFTrbPtF0q1IEs1/WvF0ve9ZagLZKftxI0yrxERFASsgmGPopmysguHqyKF+ScuNHWBlpYs1LT9GweKB+ie5cbs56U7YiXTHsmEM7dZhnWVYcq9dIrHNzG2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708581160; c=relaxed/simple;
-	bh=FmpeXwY298dFTsBLYLuwofqCqU5dk5P0Wqy+OQi80qs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dNQPpjYfQfJHiYBNT3ZmVFGEqQZSysDjp7H2YXyO/w+dsU+LW9rg3Lu+5plTb/llZR5hKU6USTucJ479lKOW9bRsWqCNZuiVhL/cGpd2MTmqtt4Eql/AHsHqEsjUfYTwc07T7Y3mLGBgQh8E4SLZ8gw72aa2QU4qbQnQVL9OoH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QBdSbnGQ; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5129cdae3c6so1734569e87.1;
-        Wed, 21 Feb 2024 21:52:38 -0800 (PST)
+	s=arc-20240116; t=1708581169; c=relaxed/simple;
+	bh=WkRNE9RipV8i05ji2c35EOvNQIDfJ5vChNFKnU9Zh/E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WbKOJ4ybx2RgQDu1zKB/6ygHOU2xUWYsxuffHnX+FyX96mDdgxdOkSJlf8E7kVaso14XqyBm270vYXJc0L0xjLgLSNNWqy4/Ahc/qda8XRNq10SIjqwWK90GqIuYgR4714zfJrc4H1m7xbT7c00+Vc2NO2BJBEZF9Bkw6olx71Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=I4NBAazq; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-168-240.adl-adc-lon-bras34.tpg.internode.on.net [118.210.168.240])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id ED3EF20075;
+	Thu, 22 Feb 2024 13:52:42 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708581157; x=1709185957; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sXA7lyFstanngNGr2/M9csPhL2B/gz+98wMPcW+AEzc=;
-        b=QBdSbnGQNYtJulCicxMIg/EqS/Gu8sEJzuX1DFfCFE8l5HxnTW9VbUg9b7v82qD0nT
-         VYFIXV796gv/IZ1dLXrSWK5lihtutTQZ8AEAlv/zqPLDokFvhHcqjylYtUHegXNs4Ks5
-         l3b6tvwLoGY3R96VrKJTIKqnDS1kA9FF8e7u3CbiQrkjQ5tZnAK6ONtYw2bprqzRWRvP
-         SRUXFlzfxBiEj3PI0dFdhUBn0bp3GyBM3pdry2BuioOcjCHfW71FegHtCWrw637JTO7E
-         prT0GWnEuPfh0yY/0ZSwkMljmu4Nz/vkuKwT9kzuZxk3o6/ftUNcZ4kMA7CkiCymAW7K
-         mLig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708581157; x=1709185957;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sXA7lyFstanngNGr2/M9csPhL2B/gz+98wMPcW+AEzc=;
-        b=Rzpg/fklhteVYhopQ23+6ap0fa4jjzmFAEvnojXJnM8qOTrH3282XX2gGDhlJWOeui
-         ek0UI2QpcJwPpADpjQNrj3SuvWzQrYHw4q9D+0FO8tg2Bz0n2koRyR083b+1bMBJklj6
-         l/UuCneNmn/0D2mIHwQ8b+jnM6WyvM1PjvkVc3K2HuvFcsieade3HrjeL1zqwo0KVNqT
-         TxtOGHNo+tYCeIWzs1Ym/JF/TqlddOzCEDCsE74nXDvynIXaKn1xOJVMpW7CZ1g/7DfB
-         DCnNYgie91rQleda6Ocs2PLQkXT0jbOmZdwoA2ihiISaJXnMqQcpL+nK+kU1eN1G11+Z
-         53oA==
-X-Forwarded-Encrypted: i=1; AJvYcCUH8LRfLmkI0EdY8tOf6PICWVwwbiVRMCJd2PwrrIKghTqhjR0RxnV/EmnVKC94y9yNR1Kd/3cO/YreuKmqNBBXAxyEX3Kxtg0EHD/X/kPizWJQCJwXOw8/tNSKmaSCUIscFI0vz3puaEXwXMKZLiwYMtNxgCkaLHdqyfY3D02LwGHbII4c
-X-Gm-Message-State: AOJu0Yw1TilZTT6aZxVMvtIXSuAgbo5ItaHPXM6KsyThsVDvJ4HXkJaY
-	LJoYT2sx9B7/uyTpYhuWORjXyn4B0c+tFsqPa5y8K0rr4x5sgwFn
-X-Google-Smtp-Source: AGHT+IHJnkBj1yFw5Q7Fs1/yOwoPxmv+yiz/WNbQ2xn3rIQim8+VnKeb88VVH+vmUoYLD8PkSVZGOw==
-X-Received: by 2002:a05:6512:4020:b0:512:9e58:b1ad with SMTP id br32-20020a056512402000b005129e58b1admr11885177lfb.57.1708581156995;
-        Wed, 21 Feb 2024 21:52:36 -0800 (PST)
-Received: from localhost ([2a05:3580:f312:6c02:29d4:49b1:c3dc:494c])
-        by smtp.gmail.com with ESMTPSA id c6-20020ac25306000000b00512ab050435sm57420lfh.100.2024.02.21.21.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 21:52:31 -0800 (PST)
-Date: Thu, 22 Feb 2024 08:52:23 +0300
-From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Alain Volmat <alain.volmat@foss.st.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
-	Pavel Machek <pavel@ucw.cz>,
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: Re: [PATCH 1/2] dt-bindings: media: i2c: add galaxycore,gc2145 DVP
- bus support
-Message-ID: <ZdbdDqbaA9pyw88s@skv.local>
-Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
-	Pavel Machek <pavel@ucw.cz>,
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>
-References: <20240217220308.594883-1-andrej.skvortzov@gmail.com>
- <20240217220308.594883-2-andrej.skvortzov@gmail.com>
- <ZdSC_xulFQ84TtLT@kekkonen.localdomain>
+	d=codeconstruct.com.au; s=2022a; t=1708581163;
+	bh=BnzXSf7NRVVN6BdovXPH7hrGQTBu4DMHfok/NYEng9I=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=I4NBAazqHD18TYZt090qAPQSc7JvqbYz3cV6JphSdmbully5ShrM6JTQwgzhPj/Lp
+	 zn44xovBVx3lAcDm7Oz4jI9xVeLCbN1AVKdllAbX+rsV4as7gcdABH4RRotF1NjAek
+	 msGePzx5ogoSyqD53D0zyekDkEr86ZxcNPUaw9R/K9Rd91MSo5BAqvR5mlHoWIQQve
+	 AznY5f/wVIWs/s28nM67iKYxotgU1VNaaZDH+q/dOfzRtArTumxasn6x3/OPce+KDY
+	 QUMjo6FjO6tRNseTB7DR5RLoOuQYMvwvzr3ZYIjU8RPZl/7VPslK6jtIw6OIC+5RRd
+	 kt8EVCkSof5Lw==
+Message-ID: <a4bb9821f672729941e988db20bf8bc275f37279.camel@codeconstruct.com.au>
+Subject: Re: [PATCH] ARM: dts: aspeed: x4tf: Add dts for asus x4tf project
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Kelly Hung <ppighouse@gmail.com>, robh+dt@kernel.org
+Cc: krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+	openbmc@lists.ozlabs.org, kelly_hung@asus.com, Allenyy_Hsu@asus.com
+Date: Thu, 22 Feb 2024 16:22:42 +1030
+In-Reply-To: <20240222032504.1147489-1-Kelly_Hung@asus.com>
+References: <20240222032504.1147489-1-Kelly_Hung@asus.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZdSC_xulFQ84TtLT@kekkonen.localdomain>
 
-On 24-02-20 10:46, Sakari Ailus wrote:
-> Hi Andrey,
-> 
-> Thanks for the patchset.
-> 
-> On Sun, Feb 18, 2024 at 01:03:07AM +0300, Andrey Skvortsov wrote:
-> > Don't require link-frequencies like it's done for ov5640, that
-> > supports both CSI-2 and DVP. And v4l2_fwnode_endpoint_alloc_parse
-> > ignores link-frequencies property for DVP endpoint. It's used only for
-> > CSI-2 endpoints
-> > 
-> > Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> > ---
-> >  .../bindings/media/i2c/galaxycore,gc2145.yaml | 33 +++++++++++++++++--
-> >  1 file changed, 30 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-> > index 1726ecca4c77..fb376b9d0f2a 100644
-> > --- a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-> > +++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-> > @@ -61,9 +61,6 @@ properties:
-> >          properties:
-> >            link-frequencies: true
-> >  
-> > -        required:
-> > -          - link-frequencies
-> 
-> That seems like a bad idea to me.
-> 
-> While for parallel interface it may not be often important, for CSI-2 it
-> should stay.
+On Thu, 2024-02-22 at 11:25 +0800, Kelly Hung wrote:
+> Base on aspeed-g6.dtsi and can boot into BMC console.
+>=20
+> Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
+> ---
+>  arch/arm/boot/dts/aspeed/Makefile             |   3 +-
+>  .../boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts  | 651 ++++++++++++++++++
+>  2 files changed, 653 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+>=20
+> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed=
+/Makefile
+> index d3ac20e316d0..f7cc69b636fc 100644
+> --- a/arch/arm/boot/dts/aspeed/Makefile
+> +++ b/arch/arm/boot/dts/aspeed/Makefile
+> @@ -62,4 +62,5 @@ dtb-$(CONFIG_ARCH_ASPEED) +=3D \
+>  	aspeed-bmc-ufispace-ncplite.dtb \
+>  	aspeed-bmc-vegman-n110.dtb \
+>  	aspeed-bmc-vegman-rx20.dtb \
+> -	aspeed-bmc-vegman-sx20.dtb
+> +	aspeed-bmc-vegman-sx20.dtb \
+> +	aspeed-bmc-asus-x4tf.dtb
 
-I'll add this type and make link-frequencies required based on that
-for CSI-2 bus.
+Please keep the list sorted alphabetically.
 
-> 
-> > -
-> >      required:
-> >        - endpoint
-> >  
-> > @@ -110,4 +107,34 @@ examples:
-> >          };
-> >      };
-> >  
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        camera@3c {
-> > +            compatible = "galaxycore,gc2145";
-> > +            reg = <0x3c>;
-> > +            clocks = <&clk_ext_camera>;
-> > +            iovdd-supply = <&scmi_v3v3_sw>;
-> > +            avdd-supply = <&scmi_v3v3_sw>;
-> > +            dvdd-supply = <&scmi_v3v3_sw>;
-> > +            powerdown-gpios = <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
-> > +            reset-gpios = <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
-> > +
-> > +            port {
-> > +                endpoint {
-> > +                    remote-endpoint = <&parallel_from_gc2145>;
-> > +                    bus-width = <8>;
-> > +                    hsync-active = <1>;
-> > +                    vsync-active = <1>;
-> > +                    data-active = <1>;
-> > +                    pclk-sample = <1>;
-> 
-> Are there defaults for these if there are no such properties?
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts b/arch/arm=
+/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+> new file mode 100644
+> index 000000000000..fbe39eaec154
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+> @@ -0,0 +1,651 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +// Copyright 2024 ASUS Corp.
+> +
+> +/dts-v1/;
+> +
+> +#include "aspeed-g6.dtsi"
+> +#include "aspeed-g6-pinctrl.dtsi"
+> +#include <dt-bindings/i2c/i2c.h>
+> +#include <dt-bindings/gpio/aspeed-gpio.h>
+> +
+> +/ {
+> +	model =3D "ASUS-X4TF";
+> +	compatible =3D "asus,x4tf", "aspeed,ast2600";
+> +
+> +	aliases {
+> +		serial4 =3D &uart5;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path =3D "serial4:115200n8";
+> +	};
+> +
+> +	memory@80000000 {
+> +		device_type =3D "memory";
+> +		reg =3D <0x80000000 0x40000000>;
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		ranges;
+> +
+> +		video_engine_memory: video {
+> +			size =3D <0x04000000>;
+> +			alignment =3D <0x01000000>;
+> +			compatible =3D "shared-dma-pool";
+> +			reusable;
+> +		};
+> +	};
+> +
+> +	iio-hwmon {
+> +		compatible =3D "iio-hwmon";
+> +		io-channels =3D <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
+> +				<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
+> +				<&adc1 0>, <&adc1 1>, <&adc1 2>, <&adc1 3>,
+> +				<&adc1 4>, <&adc1 5>, <&adc1 6>, <&adc1 7>;
+> +	};
+> +
+> +	leds {
+> +		compatible =3D "gpio-leds";
+> +
+> +		led-heartbeat {
+> +			gpios =3D <&gpio0 ASPEED_GPIO(P, 7) GPIO_ACTIVE_LOW>;
+> +			linux,default-trigger =3D "heartbeat";
+> +		};
+> +
+> +		led-uid {
+> +			gpios =3D <&gpio0 ASPEED_GPIO(P, 1) (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAI=
+N)>;
+> +			default-state =3D "off";
+> +		};
+> +
+> +		led-status_Y {
+> +			gpios =3D <&gpio1 ASPEED_GPIO(B, 1) GPIO_ACTIVE_LOW>;
+> +			default-state =3D "off";
+> +		};
+> +
+> +		led-sys_boot_status {
+> +			gpios =3D <&gpio1 ASPEED_GPIO(B, 0) GPIO_ACTIVE_LOW>;
+> +			default-state =3D "off";
+> +		};
+> +	};
+> +};
+> +
+> +&adc0 {
+> +	vref =3D <2500>;
+> +	status =3D "okay";
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_adc0_default &pinctrl_adc1_default
+> +		&pinctrl_adc2_default &pinctrl_adc3_default
+> +		&pinctrl_adc4_default &pinctrl_adc5_default
+> +		&pinctrl_adc6_default &pinctrl_adc7_default>;
+> +};
+> +
+> +&adc1 {
+> +	vref =3D <2500>;
+> +	status =3D "okay";
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_adc8_default &pinctrl_adc9_default
+> +		&pinctrl_adc10_default &pinctrl_adc11_default
+> +		&pinctrl_adc12_default &pinctrl_adc13_default
+> +		&pinctrl_adc14_default &pinctrl_adc15_default>;
+> +};
+> +
+> +&peci0 {
+> +	status =3D "okay";
+> +};
+> +
+> +&lpc_snoop {
+> +	snoop-ports =3D <0x80>;
+> +	status =3D "okay";
+> +};
+> +
+> +&mdio2 {
+> +	status =3D "okay";
+> +
+> +	ethphy2: ethernet-phy@0 {
+> +		compatible =3D "ethernet-phy-ieee802.3-c22";
+> +		reg =3D <0>;
+> +	};
+> +};
+> +
+> +&mdio3 {
+> +	status =3D "okay";
+> +
+> +	ethphy3: ethernet-phy@0 {
+> +		compatible =3D "ethernet-phy-ieee802.3-c22";
+> +		reg =3D <0>;
+> +	};
+> +};
 
-good point. I'll add them to the endpoint properties description then.
+Are these necessary given you have `use-ncsi` specified for the MACs
+below?
 
--- 
-Best regards,
-Andrey Skvortsov
+> +
+> +&mac2 {
+> +	status =3D "okay";
+> +	phy-mode =3D "rmii";
+> +	use-ncsi;
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_rmii3_default>;
+> +};
+> +
+> +&mac3 {
+> +	status =3D "okay";
+> +	phy-mode =3D "rmii";
+> +	use-ncsi;
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_rmii4_default>;
+> +};
+> +
+> +&fmc {
+> +	status =3D "okay";
+> +
+> +	flash@0 {
+> +		status =3D "okay";
+> +		m25p,fast-read;
+> +		label =3D "bmc-spi";
+> +		spi-max-frequency =3D <50000000>;
+> +
+> +		partitions {
+> +			compatible =3D "fixed-partitions";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +
+> +			bmc@0 {
+> +				label =3D "bmc";
+> +				reg =3D <0x0 0x4000000>;
+> +			};
+> +
+> +			u-boot@0 {
+> +				label =3D "u-boot";
+> +				reg =3D <0x0 0x200000>;
+> +			};
+> +
+> +			u-boot-env@1f0000 {
+> +				label =3D "u-boot-env";
+> +				reg =3D <0x1f0000 0x10000>;
+> +			};
+> +
+> +			kernel@200000 {
+> +				label =3D "kernel";
+> +				reg =3D <0x200000 0xc00000>;
+> +			};
+> +
+> +			rofs@a00000 {
+> +				label =3D "rofs";
+> +				reg =3D <0xa00000 0x2a00000>;
+> +			};
+> +
+> +			rwfs@2a00000 {
+> +				label =3D "rwfs";
+> +				reg =3D <0x2a00000 0x43f0000>;
+> +			};
+
+Is this different to the default OpenBMC layouts? Can you use the
+appropriate DTSI?
+
+> +		};
+> +	};
+> +};
+> +
+> +&spi1 {
+> +	status =3D "okay";
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_spi1_default>;
+> +
+> +	flash@0 {
+> +		status =3D "okay";
+> +		label =3D "bios-spi";
+> +		spi-max-frequency =3D <50000000>;
+> +
+> +		partitions {
+> +			compatible =3D "fixed-partitions";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +
+> +			biosfullimg@0 {
+> +				reg =3D <0x0 0x2000000>; //32768 *1024 =3D 32 MB
+> +				label =3D "biosfullimg";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c1 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c2 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c3 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c4 {
+> +	status =3D "okay";
+> +
+> +	temperature-sensor@48 {
+> +		compatible =3D "ti,tmp75";
+> +		reg =3D <0x48>;
+> +	};
+> +
+> +	temperature-sensor@49 {
+> +		compatible =3D "ti,tmp75";
+> +		reg =3D <0x49>;
+> +	};
+> +
+> +	pca9555_4_20: gpio@20 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x20>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +	};
+> +
+> +	pca9555_4_22: gpio@22 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x22>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +	};
+> +
+> +	pca9555_4_24: gpio@24 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x24>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +		gpio-line-names =3D
+> +		/*A0 - A3 0*/	"", "STRAP_BMC_BATTERY_GPIO1", "", "",
+> +		/*A4 - A7 4*/	"", "", "", "",
+> +		/*B0 - B7 8*/	"", "", "", "", "", "", "", "";
+> +	};
+> +
+> +	pca9555_4_26: gpio@26 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x26>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +	};
+> +
+> +	i2c-mux@70 {
+> +		compatible =3D "nxp,pca9546";
+> +		status =3D "okay";
+> +		reg =3D <0x70>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +
+> +		channel_1: i2c@0 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0>;
+> +		};
+> +
+> +		channel_2: i2c@1 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <1>;
+> +		};
+> +
+> +		channel_3: i2c@2 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <2>;
+> +		};
+> +
+> +		channel_4: i2c@3 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <3>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c5 {
+> +	status =3D "okay";
+> +
+> +	pca9555_5_24: gpio@24 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x24>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +	};
+> +
+> +	i2c-mux@70  {
+> +		compatible =3D "nxp,pca9546";
+> +		status =3D "okay";
+> +		reg =3D <0x70 >;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +
+> +		channel_5: i2c@0 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0>;
+> +
+> +			pca9555_5_5_20: gpio@20 {
+> +				compatible =3D "nxp,pca9555";
+> +				reg =3D <0x20>;
+> +				gpio-controller;
+> +				#gpio-cells =3D <2>;
+> +				gpio-line-names =3D
+> +					"", "", "", "", "", "", "", "",
+> +					"", "", "SYS_FAN6", "SYS_FAN5",
+> +					"SYS_FAN4", "SYS_FAN3",
+> +					"SYS_FAN2", "SYS_FAN1";
+> +			};
+> +
+> +			pca9555_5_5_21: gpio@21 {
+> +				compatible =3D "nxp,pca9555";
+> +				reg =3D <0x21>;
+> +				gpio-controller;
+> +				#gpio-cells =3D <2>;
+> +			};
+> +
+> +			power-monitor@44 {
+> +				compatible =3D "ti,ina219";
+> +				reg =3D <0x44>;
+> +				shunt-resistor =3D <2>;
+> +			};
+> +		};
+> +
+> +		channel_6: i2c@1 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <1>;
+> +		};
+> +
+> +		channel_7: i2c@2 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <2>;
+> +		};
+> +
+> +		channel_8: i2c@3 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <3>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c6 {
+> +	status =3D "okay";
+> +
+> +	pca9555_6_27: gpio@27 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x27>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +	};
+> +
+> +	pca9555_6_20: gpio@20 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x20>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +		gpio-line-names =3D
+> +		/*A0 0*/	"", "", "", "", "", "", "", "",
+> +		/*B0 8*/	"Drive_NVMe1", "Drive_NVMe2", "", "",
+> +		/*B4 12*/	"", "", "", "";
+> +	};
+> +
+> +	pca9555_6_21: gpio@21 {
+> +		compatible =3D "nxp,pca9555";
+> +		reg =3D <0x21>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +	};
+> +};
+> +
+> +&i2c7 {
+> +	status =3D "okay";
+> +
+> +	i2c-mux@70 {
+> +		compatible =3D "nxp,pca9546";
+> +		status =3D "okay";
+> +		reg =3D <0x70>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +		idle-state =3D <1>;
+> +
+> +		channel_9: i2c@0 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0>;
+> +
+> +			temperature-sensor@48 {
+> +				compatible =3D "ti,tmp75";
+> +				reg =3D <0x48>;
+> +			};
+> +
+> +			temperature-sensor@49 {
+> +				compatible =3D "ti,tmp75";
+> +				reg =3D <0x49>;
+> +			};
+> +
+> +			power-monitor@40 {
+> +				compatible =3D "ti,ina219";
+> +				reg =3D <0x40>;
+> +				shunt-resistor =3D <2>;
+> +			};
+> +
+> +			power-monitor@41 {
+> +				compatible =3D "ti,ina219";
+> +				reg =3D <0x41>;
+> +				shunt-resistor =3D <5>;
+> +			};
+> +		};
+> +
+> +		channel_10: i2c@1 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <1>;
+> +		};
+> +
+> +		channel_11: i2c@2 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <2>;
+> +		};
+> +
+> +		channel_12: i2c@3 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <3>;
+> +		};
+> +	};
+> +
+> +	i2c-mux@71 {
+> +		compatible =3D "nxp,pca9546";
+> +		status =3D "okay";
+> +		reg =3D <0x71>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +		i2c-mux-idle-disconnect;
+> +
+> +		channel_13: i2c@0 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0>;
+> +		};
+> +
+> +		channel_14: i2c@1 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <1>;
+> +		};
+> +
+> +		channel_15: i2c@2 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <2>;
+> +		};
+> +
+> +		channel_16: i2c@3 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <3>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c8 {
+> +	status =3D "okay";
+> +
+> +	i2c-mux@70 {
+> +		compatible =3D "nxp,pca9546";
+> +		status =3D "okay";
+> +		reg =3D <0x70>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +		i2c-mux-idle-disconnect;
+> +
+> +		channel_17: i2c@0 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0>;
+> +		};
+> +
+> +		channel_18: i2c@1 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <1>;
+> +
+> +			temperature-sensor@48 {
+> +				compatible =3D "ti,tmp75";
+> +				reg =3D <0x48>;
+> +			};
+> +
+> +			power-monitor@41 {
+> +				compatible =3D "ti,ina219";
+> +				reg =3D <0x41>;
+> +				shunt-resistor =3D <5>;
+> +			};
+> +		};
+> +
+> +		channel_19: i2c@2 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <2>;
+> +		};
+> +
+> +		channel_20: i2c@3 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <3>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c9 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c10 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c11 {
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c14 {
+> +	status =3D "okay";
+> +	multi-master;
+> +
+> +	eeprom@50 {
+> +		compatible =3D "atmel,24c08";
+> +		reg =3D <0x50>;
+> +	};
+> +
+> +	eeprom@51 {
+> +		compatible =3D "atmel,24c08";
+> +		reg =3D <0x51>;
+> +	};
+> +};
+> +
+> +&sgpiom0 {
+> +	status =3D "okay";
+> +	ngpios =3D <128>;
+> +};
+> +
+> +&video {
+> +	status =3D "okay";
+> +	memory-region =3D <&video_engine_memory>;
+> +};
+> +
+> +&sdc {
+> +	status =3D "okay";
+> +};
+> +
+> +&lpc_snoop {
+> +	status =3D "okay";
+> +	snoop-ports =3D <0x80>;
+> +};
+> +
+> +&kcs1 {
+> +	aspeed,lpc-io-reg =3D <0xca0>;
+> +	status =3D "okay";
+> +};
+> +
+> +&kcs2 {
+> +	aspeed,lpc-io-reg =3D <0xca8>;
+> +	status =3D "okay";
+> +};
+> +
+> +&kcs3 {
+> +	aspeed,lpc-io-reg =3D <0xca2>;
+> +	status =3D "okay";
+> +};
+> +
+> +&uart3 {
+> +	status =3D "okay";
+> +};
+> +
+> +&uart4 {
+> +	status =3D "okay";
+> +	/* GPIOB6 will be used in ASD function, do not set to be TXD4 */
+> +	pinctrl-0 =3D <&pinctrl_txd2_default &pinctrl_rxd2_default>;
+
+Are you sure this works? You're configuring the pins for UART2 on the
+node for UART4. Enable UART2 instead?
+
+Andrew
 
