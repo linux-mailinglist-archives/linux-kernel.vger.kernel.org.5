@@ -1,184 +1,176 @@
-Return-Path: <linux-kernel+bounces-77454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D4186057C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D65A860590
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:18:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FE4228948F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:14:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2111289CBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4508B137903;
-	Thu, 22 Feb 2024 22:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFAC131E32;
+	Thu, 22 Feb 2024 22:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="S+AOktY+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/wOuXm+Z";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="S+AOktY+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/wOuXm+Z"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rJsWt/14"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9FD373F10
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD1412D1EC
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640076; cv=none; b=AVWxWewg9FdUMJCDQc1Im7z8XHFS21WmIl+/ozQFmM9WG0UImkYfKYLMUeOlL9eTK1+0zyJxXm5Uqp+Q2VEq6S2HwsBVIjRznd686To5W+BRoITLdKk3K0u+s4o7+l8xI/hkEhxhrUfwHRTyQB81HxeaaQSdViqVaebumDM8RF8=
+	t=1708640306; cv=none; b=AmN5oMqfQzO3gIgxn7oimh+YDYX5NxJDBJxWCDgDcnfWkFGer2c5M3RjCIHWNaJLdaRwkL6oX8Ed+YscFJbh+lRSZdsSADWC6bPpQThkOZQyjrqspyp0j52jkaPzLmUnSnSxHqPdyVe+9yDLlficpFKd/Jsgjm0tZqg7Z+Yq4qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640076; c=relaxed/simple;
-	bh=CCWvmYyAAfCjtNJbIiOfHLAVoscoYeZZ2nmAaa5xvjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XTK7qb8ofAzY7STKbPkMlJ7H/oMQM0wG4OelgJQNvyvTznUc+0U8YuA+skp1VCclolxhXoofocMPj/kWOecHpwLrgzAAB8ZARS7PAH9M4QPUaTgwh3dpDXd1+ZtR9GozLbE+4W4zOB0dc5pQJdvsvjs+Nec3Iwldg/tdzbW5Lv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=S+AOktY+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/wOuXm+Z; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=S+AOktY+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/wOuXm+Z; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9A9AB1F799;
-	Thu, 22 Feb 2024 22:14:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708640072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s3x1kXri66JyHJOjJiePnNdMjnDBmEbBOnkticzR0VQ=;
-	b=S+AOktY+cQNOIwM2Du5uSUZhxwzrPjB1rlMQoamhOh4z18lJYbtQXVkN3jzxUA+igqzIC5
-	vap7UwdO0tEiomvKHCuyIln14POsKalV86LWQZt5Ut7dJeOyBI9zOogE43ZRQSZaTz0b57
-	qvMZXY9Vw77O/EYQ+vXNettiumsvOcc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708640072;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s3x1kXri66JyHJOjJiePnNdMjnDBmEbBOnkticzR0VQ=;
-	b=/wOuXm+ZPVGVBWhE923F8HxmuuKJeAvFCntErDyRom5JpHFxn75bYH+8LmpKz40lzjRcjZ
-	sE16Fb/Bx5OFAhAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708640072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s3x1kXri66JyHJOjJiePnNdMjnDBmEbBOnkticzR0VQ=;
-	b=S+AOktY+cQNOIwM2Du5uSUZhxwzrPjB1rlMQoamhOh4z18lJYbtQXVkN3jzxUA+igqzIC5
-	vap7UwdO0tEiomvKHCuyIln14POsKalV86LWQZt5Ut7dJeOyBI9zOogE43ZRQSZaTz0b57
-	qvMZXY9Vw77O/EYQ+vXNettiumsvOcc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708640072;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s3x1kXri66JyHJOjJiePnNdMjnDBmEbBOnkticzR0VQ=;
-	b=/wOuXm+ZPVGVBWhE923F8HxmuuKJeAvFCntErDyRom5JpHFxn75bYH+8LmpKz40lzjRcjZ
-	sE16Fb/Bx5OFAhAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1608113A6B;
-	Thu, 22 Feb 2024 22:14:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id liI/AkjH12XxQQAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Thu, 22 Feb 2024 22:14:32 +0000
-Date: Thu, 22 Feb 2024 23:15:39 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, muchun.song@linux.dev, david@redhat.com,
-	linmiaohe@huawei.com, naoya.horiguchi@nec.com, mhocko@kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] mm: hugetlb: make the hugetlb migration strategy
- consistent
-Message-ID: <ZdfHi142dvQuN7B-@localhost.localdomain>
-References: <cover.1708507022.git.baolin.wang@linux.alibaba.com>
- <0514e5139b17ecf3cd9e09d86c93e586c56688dc.1708507022.git.baolin.wang@linux.alibaba.com>
+	s=arc-20240116; t=1708640306; c=relaxed/simple;
+	bh=GySJPqsa46qjefpa40BPSAtIQnwOgTHwplk+ekXDzDE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Gxk5+LIhK4yDMmv11jDU0oskLlcHC1OUZWAKUB6qNlGtuBwXVFS2rQYd3xbopCKpuYvD0cNctHQXSvrNXuPRnxPGpXBGkqDSlt7mVIkSfgpBdqNxqxXGlQQwDsCwsOlYzzAHDSM6pQZgXINaeI6Cuj0Rs7MnQR6SJDTyD7W4BVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rJsWt/14; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608852fc324so4285427b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:18:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708640304; x=1709245104; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jUpDAbHl4PhD0AQm18/km5kyUpNrcIzm2UavY3bA4II=;
+        b=rJsWt/14Ooh9gkTpYqJaWE+BHDdlSxNCjv+72F2ypfWwGHeImntlVsbnrmD/lHZ0cl
+         e9NhdKM8n1uGZ7Dxj3YYL0eFmoiDwkValG/EgjcboX9Ig+5PCLJYnNyCdnfGga/ZgAQs
+         IPoOSKOygR4iEqcyRJn8RXlYMX6UVNV/KcB1TxFsZHNi2wJzxi1TTkTrGI19qKfv0aHM
+         lXjfEY6HRyo8DZeQh5RyvyyXjBrfmExJetxAEdvqdN0hBmXCXqmvaR+92IB8m8LMsqFa
+         FRc+BKaH0TnWphuHLUo9oYPUePfNt2DyFi7A5UyPQef2byfX9ohR6Zq7QBkgnWEMsGSU
+         YcjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708640304; x=1709245104;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jUpDAbHl4PhD0AQm18/km5kyUpNrcIzm2UavY3bA4II=;
+        b=SPDhGLdGXpyD8gGI5OJh4HYnO/dkvwjSu8Snv4Pn4sxqT7wjZYjJ3ciCPjGLYNTBGW
+         Ab5/xALiDIxgZfqyEus/Z9jw7ykZbeVBvvqn2AKTq7wCh0fHxjCSYxRVMBR8WShWoMgq
+         ZE0VJcUQ3MWG95DI5I5WsHeNFe0H0QH0BRF5Qvo22Q4w+f/qskUV1YNroUSw6aM0B1ZL
+         9FtHpis1xScB04p0j6k578Cdl8EITDxOrNCeCzOHyPd//+sjhIKmAROq3vvav8nzsiiC
+         Akg6p3TEyIpa3pfraD2KzNuLOEPCpXIILGyAE12VQb5fjalYiBlkduDshanl6qQ/VtnC
+         ndVA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXacJJCZQJttV7Xtsc7IE3aJik9yYmqaOyyo6FpZTNuOWD+yHUyK2ZwBRfmpn1Jm+MXdYREXNscKyITwqTnI6ijYmQfHSELVwDWVeb
+X-Gm-Message-State: AOJu0YxGHTuasr38IgeMT6uXnhWcrcrKh6xZwnvIKChcA7flFyhlggFV
+	hEep7r+aI0Jo+XNiIDRSLVYCEzj5WgzUVjbV5zHcDES/Vf2jpG/T4MOjBkWqa4sX2Me5HcqlPQ=
+	=
+X-Google-Smtp-Source: AGHT+IFExReO3c4IzKQGndU5Mktj19q0+l1b3yNa4AC256uF/PSrXSms4ghCI5J9w09x/QJbDNAG34ZKqQ==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:690c:fcb:b0:608:406d:6973 with SMTP id
+ dg11-20020a05690c0fcb00b00608406d6973mr118080ywb.5.1708640303929; Thu, 22 Feb
+ 2024 14:18:23 -0800 (PST)
+Date: Thu, 22 Feb 2024 22:18:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0514e5139b17ecf3cd9e09d86c93e586c56688dc.1708507022.git.baolin.wang@linux.alibaba.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=S+AOktY+;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="/wOuXm+Z"
-X-Spamd-Result: default: False [-2.96 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.65)[98.45%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 9A9AB1F799
-X-Spam-Level: 
-X-Spam-Score: -2.96
-X-Spam-Flag: NO
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240222221814.3572215-1-rmoar@google.com>
+Subject: [PATCH] kunit: tool: add parsing of all files in directory
+From: Rae Moar <rmoar@google.com>
+To: shuah@kernel.org, davidgow@google.com, dlatypov@google.com, 
+	brendan.higgins@linux.dev, kevko@google.com
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 21, 2024 at 05:27:54PM +0800, Baolin Wang wrote:
-> Based on the analysis of the various scenarios above, determine whether fallback is
-> permitted according to the migration reason in alloc_hugetlb_folio_nodemask().
+Add ability to parse all files within a directory. Additionally add the
+ability to parse all results in the KUnit debugfs repository.
 
-Hi Baolin,
+How to parse all files in directory:
 
-The high level reasoning makes sense to me, taking a step back and
-thinking about all cases and possible outcomes makes sense to me.
+/tools/testing/kunit/kunit.py parse [directory path]
 
-I plan to look closer, but I something that caught my eye:
+How to parse KUnit debugfs repository:
 
+/tools/testing/kunit/kunit.py parse debugfs
 
->  	}
->  	spin_unlock_irq(&hugetlb_lock);
->  
-> +	if (gfp_mask & __GFP_THISNODE)
-> +		goto alloc_new;
-> +
-> +	/*
-> +	 * Note: the memory offline, memory failure and migration syscalls can break
-> +	 * the per-node hugetlb pool. Other cases can not allocate new hugetlb on
-> +	 * other nodes.
-> +	 */
-> +	switch (reason) {
-> +	case MR_MEMORY_HOTPLUG:
-> +	case MR_MEMORY_FAILURE:
-> +	case MR_SYSCALL:
-> +	case MR_MEMPOLICY_MBIND:
-> +		allowed_fallback = true;
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	if (!allowed_fallback)
-> +		gfp_mask |= __GFP_THISNODE;
+For each file, the parser outputs the file name, results, and test
+summary. At the end of all parsing, the parser outputs a total summary
+line.
 
-I think it would be better if instead of fiddling with gfp here,
-have htlb_alloc_mask() have a second argument with the MR_reason,
-do the switch there and enable GFP_THISNODE.
-Then alloc_hugetlb_folio_nodemask() would already get the right mask.
+This feature can be easily tested on the tools/testing/kunit/test_data/
+directory.
 
-I think that that might be more clear as it gets encapsulated in the
-function that directly gives us the gfp.
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+ tools/testing/kunit/kunit.py | 45 ++++++++++++++++++++++++++----------
+ 1 file changed, 33 insertions(+), 12 deletions(-)
 
-Does that makes sense?
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index bc74088c458a..827e6dac40ae 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -511,19 +511,40 @@ def exec_handler(cli_args: argparse.Namespace) -> None:
+ 
+ 
+ def parse_handler(cli_args: argparse.Namespace) -> None:
+-	if cli_args.file is None:
++	parsed_files = []
++	total_test = kunit_parser.Test()
++	total_test.status = kunit_parser.TestStatus.SUCCESS
++	if cli_args.file_path is None:
+ 		sys.stdin.reconfigure(errors='backslashreplace')  # type: ignore
+ 		kunit_output = sys.stdin  # type: Iterable[str]
+-	else:
+-		with open(cli_args.file, 'r', errors='backslashreplace') as f:
++	elif cli_args.file_path == "debugfs":
++		for (root, _, files) in os.walk("/sys/kernel/debug/kunit"):
++			for file in files:
++				if file == "results":
++					parsed_files.append(os.path.join(root, file))
++	elif os.path.isdir(cli_args.file_path):
++		for (root, _, files) in os.walk(cli_args.file_path):
++			for file in files:
++				parsed_files.append(os.path.join(root, file))
++	elif os.path.isfile(cli_args.file_path):
++		parsed_files.append(cli_args.file_path)
++
++	for file in parsed_files:
++		print(file)
++		with open(file, 'r', errors='backslashreplace') as f:
+ 			kunit_output = f.read().splitlines()
+-	# We know nothing about how the result was created!
+-	metadata = kunit_json.Metadata()
+-	request = KunitParseRequest(raw_output=cli_args.raw_output,
+-					json=cli_args.json)
+-	result, _ = parse_tests(request, metadata, kunit_output)
+-	if result.status != KunitStatus.SUCCESS:
+-		sys.exit(1)
++		# We know nothing about how the result was created!
++		metadata = kunit_json.Metadata()
++		request = KunitParseRequest(raw_output=cli_args.raw_output,
++						json=cli_args.json)
++		_, test = parse_tests(request, metadata, kunit_output)
++		total_test.subtests.append(test)
++
++	if len(parsed_files) > 1: # if more than one file was parsed output total summary
++		print('All files parsed.')
++		stdout.print_with_timestamp(kunit_parser.DIVIDER)
++		kunit_parser.bubble_up_test_results(total_test)
++		kunit_parser.print_summary_line(total_test)
+ 
+ 
+ subcommand_handlers_map = {
+@@ -569,8 +590,8 @@ def main(argv: Sequence[str]) -> None:
+ 					    help='Parses KUnit results from a file, '
+ 					    'and parses formatted results.')
+ 	add_parse_opts(parse_parser)
+-	parse_parser.add_argument('file',
+-				  help='Specifies the file to read results from.',
++	parse_parser.add_argument('file_path',
++				  help='Specifies the file path to read results from.',
+ 				  type=str, nargs='?', metavar='input_file')
+ 
+ 	cli_args = parser.parse_args(massage_argv(argv))
 
-
+base-commit: 08c454e26daab6f843e5883fb96f680f11784fa6
 -- 
-Oscar Salvador
-SUSE Labs
+2.44.0.rc0.258.g7320e95886-goog
+
 
