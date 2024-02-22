@@ -1,164 +1,116 @@
-Return-Path: <linux-kernel+bounces-75718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B6E85EDE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:22:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C98285EDED
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E589C1F22AB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:22:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DCA284F60
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06BAF516;
-	Thu, 22 Feb 2024 00:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661BFAD5C;
+	Thu, 22 Feb 2024 00:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="MgcZg+65"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NXJQW0/B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F5C320B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2F4A35;
+	Thu, 22 Feb 2024 00:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708561317; cv=none; b=UG/VEPrTeiJ9AmDjzQ92J3MP8ngiM/3pUysovik47nS8vxrAmA1w+8c5a36kNGaZ70FjnbQvQHh/9ty1FjFIxO4NgP+kzw5tTfoHkUDfUwuOVnByW88KZWRLDkZncLhjKMfZLUOX8MA1elu9lGIGS4wg/xP3aJXN1kTwBrYkYj0=
+	t=1708561386; cv=none; b=g1msZsXWupRhm2fn+JL9diatdP+tNO6L6F6rdgR8frHH2VdpVAFVvNKxjTfhu+4zHG1U8mrxRF9kzfgRcVk3TZ1rftlOeTE2ZYu+bDQOVqHP0CNRkgLtpjJG++deMrrrz2+vELfYHPDCoHjCPCKq5+IcCGMWYdWDDnHK4zjwQFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708561317; c=relaxed/simple;
-	bh=ULWx7GnGcbkzH+Hk8ucwqEKl61im90Y5FaAmJnZtJAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VKJJO7SddpjYqf7be5D6TL5wBU5XV3lZ/pk2dvYlG/p4T1WUDnJ/PduyS6YJsb728jfOg2Rj4+11T6FiMsOqOf92nz5bcb5nA1a8JHo/UaQ6VxLOL2ZgYHpIgyv1AfjcPcatnhkjL1fQLjzE+3HvIyOoi7zizNeTquOQrR/OeWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=MgcZg+65; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68f51ba7043so31242466d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:21:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1708561314; x=1709166114; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9rn4mWdOER6tRcIB1iLpkedD4oyQHhFAy8BqoLay5HA=;
-        b=MgcZg+65Vvf3eaGqKA5NYMlqvoMc4UiKldYMGimRMSN8bQIK0NRXQ0FKRKAKjOxSot
-         Bssdjpj+HfxFZnetE6jgTuKheGtF04qKzVcAnNV+4tCtvAHwPezDYUR4YQFpEoqUcuy2
-         JIN5YhHfBLRlvutKyOMDClQJz2G4qTwAEE+MexxY7vThbI0GkkQu5VUYYb5nHB/tKNGV
-         3/BWBcxXhWtHmBoFUeiHkxr04IXKyVGw40F2MhTtUVwlWHK4vPpBDRh8KFKKEJQulrlb
-         QjbpgcDelPqeQk96DbvIYt0Mp3aSz/ncDX7G4L4DxVyr1LJwaLeo1SocD6ekZzsS2aIy
-         psvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708561314; x=1709166114;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rn4mWdOER6tRcIB1iLpkedD4oyQHhFAy8BqoLay5HA=;
-        b=O9TfYq2EoLf6/uo4hINY9ycbdl4zO3vb1QRZ8cRVsR6RZsdbf5kOzn4l0pObCRBzED
-         o3DENy3rEU0Sb/HWYfdiS5H8PXUM9bQa1hppKc/mkp9uQDd1Vl3EJbapFc30KKOEWefy
-         YvTOcp1t3mHqytRtcDFnZic8VjkBRIAHXYap7EGwYD8yejvDkUEEATqdUnn8h500fTbv
-         9RlOmxvShkvdwMMkBWJpiDDHjwEJKEyzlSvskbJrmyg1Ke2Jx3GvHrMgbyj8l8xNyOCz
-         GfilUiD47EjopIrKtWQJZUir525iSQ26GBbCa5ENY52S24tHuEaDKr4I1XF1ltT3cqx4
-         ZmHw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8GllZh3aqfI3t44PPeSFTfh6mH1I9PRCwZZ62eoJFe2X30Z1z/kwY7ak1qxAK4GKA8byti0rqzUpEVULOZQP1WyoMC1/It3uG9BqA
-X-Gm-Message-State: AOJu0Yww2HG4vmHMc4lotjSziU2p3nW+gMer1ao9U/spAFERKemz1gzT
-	hdjR1WyL3N9G2RnqKMY1Gu0jPy3ZoyVUOP7UdhTEN4N5leTw+k3bpEqxYE6EXpY=
-X-Google-Smtp-Source: AGHT+IGSJoZu17XCLPx2AJSIv4qmgm+x+WexJaUrwx1qRLzsVh+X4k/87Gsnxjx0m8GySXbzSbUfyw==
-X-Received: by 2002:ad4:5ce3:0:b0:68f:8d7c:73cd with SMTP id iv3-20020ad45ce3000000b0068f8d7c73cdmr10367841qvb.8.1708561314072;
-        Wed, 21 Feb 2024 16:21:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id lb25-20020a056214319900b0068f9bb1a247sm1871280qvb.19.2024.02.21.16.21.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 16:21:53 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rcwqW-00DQWC-Tn;
-	Wed, 21 Feb 2024 20:21:52 -0400
-Date: Wed, 21 Feb 2024 20:21:52 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: Will Deacon <will@kernel.org>, akpm@linux-foundation.org,
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com, joro@8bytes.org,
-	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-	samuel@sholland.org, suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
-	yu-cheng.yu@intel.com, rientjes@google.com
-Subject: Re: [PATCH v3 10/10] iommu: account IOMMU allocated memory
-Message-ID: <20240222002152.GG13491@ziepe.ca>
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <20231226200205.562565-11-pasha.tatashin@soleen.com>
- <20240213131210.GA28926@willie-the-truck>
- <CA+CK2bB4Z+z8tocO79AdsAy+gmN_4aVHgFUsm_gYLUJ2zV1A6A@mail.gmail.com>
- <20240216175752.GB2374@willie-the-truck>
- <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+	s=arc-20240116; t=1708561386; c=relaxed/simple;
+	bh=eUWPi2XweW42m5sudJBaw7LCj+SQtvsiVFN93Jf+Jgg=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=mrDBYhQ3TWYkk5GXKs5/nh0RmJhW8lLAZgS1NqWPT/hcZ4Wh4b1z493xjjIb6893odjoupEf0M/g5cFMKzCLvM8msfJ6eP9C1VikbJv0g8P2GbqqQLYpTLcD+gkAhisQVT+hgCxRokSlEtWlCj63/CXN268iR7XxlUqqq8m937E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NXJQW0/B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD9DC433C7;
+	Thu, 22 Feb 2024 00:23:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708561386;
+	bh=eUWPi2XweW42m5sudJBaw7LCj+SQtvsiVFN93Jf+Jgg=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=NXJQW0/BrFNtBUe9GuH3ljh6EoHVSUAeDxJFN3aX+8OMHd1RQwkogjQTHeTsreqC9
+	 E3rAFb4R6LLLsHq8hHhJHaUbFUCM9MvkcCMR1ce4Zw8wAovi1EPYzWaTfGSZTExeTL
+	 BXOIF1a6EULI5Oi5te88SXGIEAkt5DEvdgDzgOLCaNy4c+c1yLqg7OXQxO30X8J+TX
+	 ZiWeL2aCSrIkBPfabz+z4dqXvTOu4zZ+8Ce6TnsJ2XvwvStfN2z4yd27pEz05TPsmm
+	 cfFVRKGteQ4NGcWB7zB3LURn1nbHxG8STiKtyeSpMT+zgvp55rYAuyUv9aKJxyUA3W
+	 7WW8HeDDVRxmw==
+Date: Wed, 21 Feb 2024 17:23:04 -0700
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+To: Saravana Kannan <saravanak@google.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, Daniel Scally <djrscally@gmail.com>, 
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>, kernel-team@android.com, 
+ linux-efi@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-acpi@vger.kernel.org, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+In-Reply-To: <20240221233026.2915061-4-saravanak@google.com>
+References: <20240221233026.2915061-1-saravanak@google.com>
+ <20240221233026.2915061-4-saravanak@google.com>
+Message-Id: <170856138383.540970.12743608676098316685.robh@kernel.org>
+Subject: Re: [PATCH v3 3/4] dt-bindings: Add post-init-providers property
 
-On Fri, Feb 16, 2024 at 02:48:00PM -0500, Pasha Tatashin wrote:
-> On Fri, Feb 16, 2024 at 12:58 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Tue, Feb 13, 2024 at 10:44:53AM -0500, Pasha Tatashin wrote:
-> > > > >  SecPageTables
-> > > > > -              Memory consumed by secondary page tables, this currently
-> > > > > -              currently includes KVM mmu allocations on x86 and arm64.
-> > > > > +              Memory consumed by secondary page tables, this currently includes
-> > > > > +              KVM mmu and IOMMU allocations on x86 and arm64.
-> > >
-> > > Hi Will,
-> > >
-> > > > While I can see the value in this for IOMMU mappings managed by VFIO,
-> > > > doesn't this end up conflating that with the normal case of DMA domains?
-> > > > For systems that e.g. rely on an IOMMU for functional host DMA, it seems
-> > > > wrong to subject that to accounting constraints.
-> > >
-> > > The accounting constraints are only applicable when GFP_KERNEL_ACCOUNT
-> > > is passed to the iommu mapping functions. We do that from the vfio,
-> > > iommufd, and vhost. Without this flag, the memory useage is reported
-> > > in /proc/meminfo as part of  SecPageTables field, but not constrained
-> > > in cgroup.
-> >
-> > Thanks, Pasha, that explanation makes sense. I still find it bizarre to
-> > include IOMMU allocations from the DMA API in SecPageTables though, and
-> > I worry that it will confuse people who are using that metric as a way
-> > to get a feeling for how much memory is being used by KVM's secondary
-> > page-tables. As an extreme example, having a non-zero SecPageTables count
-> > without KVM even compiled in is pretty bizarre.
+
+On Wed, 21 Feb 2024 15:30:23 -0800, Saravana Kannan wrote:
+> The post-init-providers property can be used to break a dependency cycle by
+> marking some provider(s) as a post device initialization provider(s). This
+> allows an OS to do a better job at ordering initialization and
+> suspend/resume of the devices in a dependency cycle.
 > 
-> I agree; I also prefer a new field in /proc/meminfo named
-> 'IOMMUPageTables'. This is what I proposed at LPC, but I was asked to
-> reuse the existing 'SecPageTables' field instead. The rationale was
-> that 'secondary' implies not only KVM page tables, but any other
-> non-regular page tables.
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  .../bindings/post-init-providers.yaml         | 105 ++++++++++++++++++
+>  MAINTAINERS                                   |  13 ++-
+>  2 files changed, 112 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/post-init-providers.yaml
+> 
 
-Right, SeanC mentioned that the purpose of SecPageTables was to
-capture all non-mm page table radix allocations.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> I would appreciate the opinion of IOMMU maintainers on this: is it
-> preferable to bundle the information with 'SecPageTables' or maintain
-> a separate field?
+yamllint warnings/errors:
 
-I think you should keep them together. I don't think we should be
-introducing new counters, in general.
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@1000: failed to match any schema with compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
+Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@1000: failed to match any schema with compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
+Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@2000: failed to match any schema with compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
+Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@2000: failed to match any schema with compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
 
-Detailed memory profile should come from some kind of more dynamic and
-universal scheme. Hopefully that other giant thread about profiling
-will reach some conclusion.
+doc reference errors (make refcheckdocs):
+Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/post-init-supplier.yaml
+MAINTAINERS: Documentation/devicetree/bindings/post-init-supplier.yaml
 
-Jason
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240221233026.2915061-4-saravanak@google.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
