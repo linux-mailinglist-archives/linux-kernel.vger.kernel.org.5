@@ -1,118 +1,215 @@
-Return-Path: <linux-kernel+bounces-76235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F4185F497
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:37:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0333485F4AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 789451F21CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:37:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EEA81F21F39
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5B92BB0C;
-	Thu, 22 Feb 2024 09:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8193A1C6;
+	Thu, 22 Feb 2024 09:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HoxynaFw"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="B5zhm8MY"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7895017F3;
-	Thu, 22 Feb 2024 09:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4847E3B2B6
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708594647; cv=none; b=Ki/RVzI8k6k5jLqDjq1mr/8PgFkTxRlfq6w/6yZt83bEi3Z4Ra/jr27Ykt9llczfFGqemlRgBQUdekobPK4K+nE5qvu5aqlM63JA1cQ5DxH2ZFc81nbK2KukJpgg7sD66PmPWIAFOq37FWU3+rAVhr/tyW+/IJ4pprPYv8dcBaw=
+	t=1708594852; cv=none; b=P/h4Oybntx7YRu9pdnhBlpb1ID9haowQdjr+KPsSsYDVScDLHyOOeXiRXj7mKgb7hSfW/x9gT8COwPwG1KuI4n0F/nJBPoAnDAAKNWIFauzWpDBodlV4C4g9AhT2TWsXLiH+lNA6RehXDxLDvxRxaVHoAigDpXUdyTAZIwjVCJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708594647; c=relaxed/simple;
-	bh=RtpS10nroKrcjNGLR+XIwHm6KuoDQ2zN2AhYjSQtQ/0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=fJnMjaYAu/UnUbWclLb6It2ZL8F+g9odZ5rea2Mb+p0aS6aA2+s/82VX4pDTHlGHAwJ4B1+z4jKsyK4hR83oF5djzoGrnI+ecCUsCn/iGJHcgZax12fqvTivBHcrgMLKFfIyPNN1dXYqob3H3ME/abaRic6gUFkPe2+3GOFdc1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HoxynaFw; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 38A54FF809;
-	Thu, 22 Feb 2024 09:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708594642;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RtpS10nroKrcjNGLR+XIwHm6KuoDQ2zN2AhYjSQtQ/0=;
-	b=HoxynaFwGBjgKqM3kaCHwq/Y4pT/rSyw1Hz7J/pn8wj94own9puofpBHibT2bUW9syI43e
-	9xij4loTsECllDsOAotsurK3oTO4xwc0g7o/mf2RdWT1OOxhnesgytZW11JZb0FOyXszQ+
-	QUk6vkkF9F4XJu+XQ7Sb3YH7/aKy8MvP8tQNIBXXhIK+7QRX1UTGr15r6OZQXGFrK7KRX0
-	2CO8q88AiaPVrnz01yceCpouuymaTkhShbCQGNK7ACt9mWa/39o7nz5Plamn65gwrOcv4g
-	p3579NftsvVpsWGVsdHfaezX5GV8MKBjpHLCT5SJb1ZE03o2ejOsJjJEGvo0pw==
+	s=arc-20240116; t=1708594852; c=relaxed/simple;
+	bh=U5A3cMOJuT9FC8OcV7iHHe6jSA8P8czbVBAGeCesJBQ=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=ufCWYcSLWtlCvMjks8MUUAfd30mXgQKzyHwAOBgvrOGnPyW+Y/08Du9pb/kiDXfd3TllWIlBt/3oy4cyekCyoFBsMKPK1e1+2mTeRh23doBpXmp9FplTDNT9tUcbDt1Nkuv5NmZkV3wUPdSVp5WIQsE1I1Cy+fzcqkRyv2+nJZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=B5zhm8MY; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d2b354c72so3672824f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708594846; x=1709199646; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=eDfk374ak2aj4U9CiiV0QysDtfpirDyDxvL4BxqbaqM=;
+        b=B5zhm8MYoBAp/zYDtkOcy24LUVGREDYQrybwvlvBfOPOZZzQGP2pR2gDzfAHmdTzcI
+         nMyB/v6bx8Cq/7ET4TPotLa/QaEVwBB5YMgwv+szO65jVe89qtK19LHYmFA29THKsKFy
+         x8xCgLKemNErPKUtfP8EKASz1J6FU9lPrtanW2rfkQZpzohginanjwv1r7/3kx902a7L
+         yQJl/5mIIVAOsksfet48EpRopJBda/OkmORJExeuNRRAQn71GUolQkDs03EZ2oVGqnTN
+         +93gfQJ86e41+Aqb3wKLsIiZzK7zSfXYRR/g5eV/ExcO1ZJJH7P5gGHyPhtCjTcqMcKJ
+         2TlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708594846; x=1709199646;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eDfk374ak2aj4U9CiiV0QysDtfpirDyDxvL4BxqbaqM=;
+        b=FpUXd4Lnp0HcK0bxxTpE5r0sdzylqsmHuKaNRlYz1n74TQ2F6FCrxw+xMw4Au3wrZS
+         LFh0yFxDq4iYA/iVAaP7dSgsdW8R3owvaWARhMhlTT13J+aCHZfrBgJC1jUsOl3TwBHj
+         AA8FUbl6He5rgEQ4d3nUGzHq5+L6eT4PthpZ2hJPnDPQjR7zIeMRyAK82Jf0vhJ+wooM
+         gCEeYwqx/jDWT8FvH29bcZmFBbLEt81ne9JbWI7w29gunB1SNsIq2BZkQLNjSFVKRmMm
+         nigUvMggihP5B+hC8b3OdO2S6m99kxjJaWtw/khh/gR2CLNRugbMV1YfUXDkmNIy047V
+         PW4w==
+X-Forwarded-Encrypted: i=1; AJvYcCX2gXb0GsObNxG663jWCHBuJ+0m4FvUljEx9Ip+caC7L2qtrCb7GE6l4zq0u0M2Y2eKwU08XblopE8/C0XaB9XD9mFh5vwI1fH1N1gx
+X-Gm-Message-State: AOJu0Yy0OsA2SRsEMb3sERhTdzlVhT9M2su6My/81OOmrzVX88PaKea6
+	xzrZmbmW/BCIwfZRUuRJo4Q8jU+Ze7rSJtlItpSLz2codXP3MFHt+QHl5GGSHOg=
+X-Google-Smtp-Source: AGHT+IG5rkzGOGgFCat5JaFS4ufYwwZ9KH5dC97ai2bBbn/Ybhk9OGrUNxlKouDoMUdjhRCttgQ9Lg==
+X-Received: by 2002:adf:fec7:0:b0:33d:6cc0:b884 with SMTP id q7-20020adffec7000000b0033d6cc0b884mr5221035wrs.10.1708594846378;
+        Thu, 22 Feb 2024 01:40:46 -0800 (PST)
+Received: from localhost ([2a01:e0a:3c5:5fb1:e0f9:f458:9920:7af9])
+        by smtp.gmail.com with ESMTPSA id bk30-20020a0560001d9e00b0033cddadde6esm20291902wrb.80.2024.02.22.01.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 01:40:45 -0800 (PST)
+References: <20240222082523.1812-1-greena88@gmail.com>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Adam Green <greena88@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
+ <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: meson-g12b-odroid-n2*: Add support for
+ overclocking Hardkernel ODROID-N2 boards.
+Date: Thu, 22 Feb 2024 10:37:28 +0100
+In-reply-to: <20240222082523.1812-1-greena88@gmail.com>
+Message-ID: <1j8r3cet0i.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 22 Feb 2024 10:37:18 +0100
-Message-Id: <CZBI90SFODAR.TZ3L2XO2F8IF@bootlin.com>
-Subject: Re: [PATCH 18/23] gpio: nomadik: support mobileye,eyeq5-gpio
-Cc: "Bartosz Golaszewski" <brgl@bgdev.pl>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Philipp Zabel" <p.zabel@pengutronix.de>, "Thomas Bogendoerfer"
- <tsbogend@alpha.franken.de>, <linux-gpio@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mips@vger.kernel.org>,
- "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Linus Walleij" <linus.walleij@linaro.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
- <20240214-mbly-gpio-v1-18-f88c0ccf372b@bootlin.com>
- <CACRpkdYLBGsphNkmWyPXQZvFaO2hHGHGTMt1eqz-HAa2k5F3bg@mail.gmail.com>
- <CZAW47LJHQVD.1Z9GFT8UENYXT@bootlin.com>
- <CACRpkdZQ9LEqKvugDCMEXPPLMCUJ-f9rYQOpmsSEJhtW0zjNsg@mail.gmail.com>
-In-Reply-To: <CACRpkdZQ9LEqKvugDCMEXPPLMCUJ-f9rYQOpmsSEJhtW0zjNsg@mail.gmail.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Hello,
 
-On Wed Feb 21, 2024 at 8:36 PM CET, Linus Walleij wrote:
-> On Wed, Feb 21, 2024 at 5:16=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
-tlin.com> wrote:
->
-> > > Trying to figure it out...
-> >
-> > Can I help in the debugging process?
->
-> Nah, I found it :)
->
-> > Reading the code once again I'd guess
-> > of_device_get_match_data(&gpio_pdev->dev) could be the root cause. We
-> > are accessing match data for the GPIO device while probing the pinctrl
-> > device. Maybe something isn't initialised properly yet? The rest looks
-> > rather harmless, I've checked all conditional expressions.
->
-> Yep spot on. The nmk_gpio_populate_chip() is sometimes called from
-> the pinctrl driver before the gpio probe() has been called, so the match
-> data is NULL and we crash.
->
-> This looks like it does for historical reasons and there could be better
-> ways to fix it now that Saravana Kannan has fixed up the probe ordering
-> code.
->
-> The following is one way to fix it for now using device_is_compatible()
-> (illustrating some other changes I did as well):
+On Thu 22 Feb 2024 at 08:25, Adam Green <greena88@gmail.com> wrote:
 
-Thanks for the debugging and the proposed fix. Indeed matching on
-compatible to avoid match data for a bool makes sense.
+> Hardkernel actively supports overclocking these boards in their own
+> documentation. (https://wiki.odroid.com/odroid-n2/hardware/overclocking)
+>
+> This aligns the SoC opps with those in the board vendors bsp source.
 
-Thanks,
+Patch title is too long - checkpatch.pl should have given a you warning
+for this.
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Not sure it is wise support overclocking directly in mainline, not by
+default at least. Maybe as an overlay ? even this I'm not too sure.
+
+>
+> Signed-off-by: Adam Green <greena88@gmail.com>
+> ---
+>  .../dts/amlogic/meson-g12b-odroid-n2-plus.dts | 25 +++++++++++++++++++
+>  .../boot/dts/amlogic/meson-g12b-odroid-n2.dts | 17 +++++++++++++
+>  .../dts/amlogic/meson-g12b-odroid-n2l.dts     | 25 +++++++++++++++++++
+>  3 files changed, 67 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
+> index ce1198ad34e4..1731d542a00c 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
+> @@ -15,6 +15,31 @@ / {
+>  	model = "Hardkernel ODROID-N2Plus";
+>  };
+>  
+> +&cpu_opp_table_0 {
+> +	opp-1908000000 {
+> +		opp-hz = /bits/ 64 <1908000000>;
+> +		opp-microvolt = <1030000>;
+> +	};
+> +	opp-2016000000 {
+> +		opp-hz = /bits/ 64 <2016000000>;
+> +		opp-microvolt = <1040000>;
+> +		turbo-mode;
+> +	};
+> +};
+> +
+> +&cpub_opp_table_1 {
+> +	opp-2304000000 {
+> +		opp-hz = /bits/ 64 <2304000000>;
+> +		opp-microvolt = <1030000>;
+> +		turbo-mode;
+> +	};
+> +	opp-2400000000 {
+> +		opp-hz = /bits/ 64 <2400000000>;
+> +		opp-microvolt = <1040000>;
+> +		turbo-mode;
+> +	};
+> +};
+> +
+>  &vddcpu_a {
+>  	regulator-min-microvolt = <680000>;
+>  	regulator-max-microvolt = <1040000>;
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
+> index a198a91259ec..0c71e8bc0124 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
+> @@ -13,3 +13,20 @@ / {
+>  	compatible = "hardkernel,odroid-n2", "amlogic,s922x", "amlogic,g12b";
+>  	model = "Hardkernel ODROID-N2";
+>  };
+> +
+> +&cpu_opp_table_0 {
+> +	opp-1992000000 {
+> +		turbo-mode;
+> +	};
+> +};
+> +
+> +&cpub_opp_table_1 {
+> +	opp-1908000000 {
+> +		turbo-mode;
+> +	};
+> +	opp-2004000000 {
+> +		opp-hz = /bits/ 64 <2004000000>;
+> +		opp-microvolt = <1022000>;
+> +		turbo-mode;
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2l.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2l.dts
+> index e26f3e3258e1..b16a69d0cad6 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2l.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2l.dts
+> @@ -97,6 +97,31 @@ codec {
+>  	};
+>  };
+>  
+> +&cpu_opp_table_0 {
+> +	opp-1908000000 {
+> +		opp-hz = /bits/ 64 <1908000000>;
+> +		opp-microvolt = <1030000>;
+> +	};
+> +	opp-2016000000 {
+> +		opp-hz = /bits/ 64 <2016000000>;
+> +		opp-microvolt = <1040000>;
+> +		turbo-mode;
+> +	};
+> +};
+> +
+> +&cpub_opp_table_1 {
+> +	opp-2304000000 {
+> +		opp-hz = /bits/ 64 <2304000000>;
+> +		opp-microvolt = <1030000>;
+> +		turbo-mode;
+> +	};
+> +	opp-2400000000 {
+> +		opp-hz = /bits/ 64 <2400000000>;
+> +		opp-microvolt = <1040000>;
+> +		turbo-mode;
+> +	};
+> +};
+> +
+>  &eth_phy {
+>  	status = "disabled";
+>  };
+
+
+-- 
+Jerome
 
