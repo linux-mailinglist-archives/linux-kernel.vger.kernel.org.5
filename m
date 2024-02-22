@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-76744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A1685FBDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:06:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D34885FBDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:06:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5BFC1F2143D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44DAA288403
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F1C14D42B;
-	Thu, 22 Feb 2024 15:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B7514E2CA;
+	Thu, 22 Feb 2024 15:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UZTIuq7l"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HI7DptFb"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF4F14A4E5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC4B14AD11
 	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708614363; cv=none; b=s8AEYHGJ5r1qAyIT0OTBCLov3rOQDZw9iSQgfBzva4sSEhreVFGW9VY/o8tV3ILmOitl7yQ2WB2y4uqphOAaKVRNLGzelPqHEJBbumDNhR4+HMqfS6oov1sPOpXaeW9Jls40DkdTEzVyw5GOQpt+XrIrAlL/spOebm2qXe/4KHM=
+	t=1708614364; cv=none; b=LV2VKvmMXmWGffj4KcPO4hiaZAjCm9bsFBm3czk19hu2UZFmnw0JHXvkxQXeYfBa9N8Ra9wlmnLqNnbNS3jx4CfF+nmwsCHw60z6VBmCECPq7e/JkdqZqtSVYLM0eI1JkimKyrZezbaDfsNCs8qDWa0NyDUZS9qyRvgeSPa5LPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708614363; c=relaxed/simple;
-	bh=RTHbRgi+bBhmJDsk8kqG9ZoJRZNpKRFGxYgrgpT/juI=;
+	s=arc-20240116; t=1708614364; c=relaxed/simple;
+	bh=jmNJZxpioD2ev6CzuLGJoXoioGPNxz85LSb8buJEQ6o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TRgE203QCW5EoRrR4H3Q4rRoC+4v0kCJeOF2QQt4Au/urrjl9iSWGU2eKMaasBONGesxSJUi7s5yjiYKfdPfKRUp9fPbSrDXj3L5JsLwUirNpHAJ9qGAKMwxFdPjBc6H3YnNINxRQtcCSgsLH0i7eee5GaHGRE0huM83i0PQ26A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UZTIuq7l; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=MUhpMv4YzdUugyVTBBiqYcC5B+AGpPFSvixG1bb683Ij3YkBla+88hSUggAfS0LYSMSEmk0Kro9exaDN171VwhTs42P4HX3n3PU0hw8rH1bgxK/omjb/jmhKgDgmN4AzujVWtOmkM2GP0wyt6Q+SzVRPUtlapYGUzP760DqBbWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HI7DptFb; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,24 +36,24 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/g3EhhfkwV+ucAnH60NhMP9M6t2hq0UZAW1GW7z7sHY=;
-	b=UZTIuq7l/cc5h1vEiuNPuIDj3QEXtPfDTna6rGHl1vTCmOY+X6rWeTzxz7XG3SETjaXepm
-	IgBU3KE3ZlvZK0Jj/eoqBcfoPD3kZkBjtdrIYtdk7CjVEPvDNk0Pw35N029rml5XjEI7Uz
-	897VwfQKUAd+dl0zm5O0vlgCm7QYpxw=
+	bh=FbM+mRMvNwlvXjAUfTOnQe38QADdr2GSal9VUe0AgiQ=;
+	b=HI7DptFb+ethCiHlrmhJksYHq/H9qn/NttII1VOipXpW1FppMVFX9Zr4z3s/NFfFtnNE1J
+	LxIn/v3XNzz+zvO6/5EbyHEnqMLalMmgIOhydCu0P/V0K/gq9LfiKiyEdgilZ1YQLFCQ5C
+	GOz8AGDoVtZOtJHncv5EB8Y/LacY06I=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-CHC9rYMrPeCQuXkqIvx8EQ-1; Thu, 22 Feb 2024 10:05:57 -0500
-X-MC-Unique: CHC9rYMrPeCQuXkqIvx8EQ-1
+ us-mta-488-Em10oE56NmmLMvffq-YPhw-1; Thu, 22 Feb 2024 10:05:58 -0500
+X-MC-Unique: Em10oE56NmmLMvffq-YPhw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78064185A783;
-	Thu, 22 Feb 2024 15:05:56 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2C1D785A58A;
+	Thu, 22 Feb 2024 15:05:57 +0000 (UTC)
 Received: from llong.com (unknown [10.22.33.9])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D5B2C111D3D9;
-	Thu, 22 Feb 2024 15:05:55 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 87B5B112131D;
+	Thu, 22 Feb 2024 15:05:56 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -63,9 +63,9 @@ To: Peter Zijlstra <peterz@infradead.org>,
 Cc: linux-kernel@vger.kernel.org,
 	George Stark <gnstark@salutedevices.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 2/4] locking/mutex: Clean up mutex.h
-Date: Thu, 22 Feb 2024 10:05:38 -0500
-Message-Id: <20240222150540.79981-3-longman@redhat.com>
+Subject: [PATCH v2 3/4] locking/rwsem: Clarify that RWSEM_READER_OWNED is just a hint
+Date: Thu, 22 Feb 2024 10:05:39 -0500
+Message-Id: <20240222150540.79981-4-longman@redhat.com>
 In-Reply-To: <20240222150540.79981-1-longman@redhat.com>
 References: <20240222150540.79981-1-longman@redhat.com>
 Precedence: bulk
@@ -77,56 +77,39 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-CONFIG_DEBUG_MUTEXES and CONFIG_PREEMPT_RT are mutually exclusive. They
-can't be both set at the same time.  Move up the mutex_destroy() function
-declaration and the __DEBUG_MUTEX_INITIALIZER() macro above the "#ifndef
-CONFIG_PREEMPT_RT" section to eliminate duplicated mutex_destroy()
-declaration.
-
-Also remove the duplicated mutex_trylock() function declaration in the
-CONFIG_PREEMPT_RT section.
+Clarify in the comments that the RWSEM_READER_OWNED bit in the owner
+field is just a hint, not an authoritative state of the rwsem.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- include/linux/mutex.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ kernel/locking/rwsem.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 7e208d46ba5b..67edc4ca2bee 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -32,11 +32,9 @@
- # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
- #endif
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 2340b6d90ec6..c6d17aee4209 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -35,7 +35,7 @@
+ /*
+  * The least significant 2 bits of the owner value has the following
+  * meanings when set.
+- *  - Bit 0: RWSEM_READER_OWNED - The rwsem is owned by readers
++ *  - Bit 0: RWSEM_READER_OWNED - rwsem may be owned by readers (just a hint)
+  *  - Bit 1: RWSEM_NONSPINNABLE - Cannot spin on a reader-owned lock
+  *
+  * When the rwsem is reader-owned and a spinning writer has timed out,
+@@ -1002,8 +1002,8 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
  
--#ifndef CONFIG_PREEMPT_RT
--
- #ifdef CONFIG_DEBUG_MUTEXES
- 
--#define __DEBUG_MUTEX_INITIALIZER(lockname)				\
-+# define __DEBUG_MUTEX_INITIALIZER(lockname)				\
- 	, .magic = &lockname
- 
- extern void mutex_destroy(struct mutex *lock);
-@@ -49,6 +47,7 @@ static inline void mutex_destroy(struct mutex *lock) {}
- 
- #endif
- 
-+#ifndef CONFIG_PREEMPT_RT
- /**
-  * mutex_init - initialize the mutex
-  * @mutex: the mutex to be initialized
-@@ -101,9 +100,6 @@ extern bool mutex_is_locked(struct mutex *lock);
- 
- extern void __mutex_rt_init(struct mutex *lock, const char *name,
- 			    struct lock_class_key *key);
--extern int mutex_trylock(struct mutex *lock);
--
--static inline void mutex_destroy(struct mutex *lock) { }
- 
- #define mutex_is_locked(l)	rt_mutex_base_is_locked(&(l)->rtmutex)
- 
+ 	/*
+ 	 * To prevent a constant stream of readers from starving a sleeping
+-	 * waiter, don't attempt optimistic lock stealing if the lock is
+-	 * currently owned by readers.
++	 * writer, don't attempt optimistic lock stealing if the lock is
++	 * very likely owned by readers.
+ 	 */
+ 	if ((atomic_long_read(&sem->owner) & RWSEM_READER_OWNED) &&
+ 	    (rcnt > 1) && !(count & RWSEM_WRITER_LOCKED))
 -- 
 2.39.3
 
