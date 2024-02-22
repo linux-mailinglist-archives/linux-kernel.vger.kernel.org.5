@@ -1,254 +1,172 @@
-Return-Path: <linux-kernel+bounces-75879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6320385F038
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:52:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1008485F03C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83AA31C22D47
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:52:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89E261F241AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13E31772F;
-	Thu, 22 Feb 2024 03:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1384D1775B;
+	Thu, 22 Feb 2024 03:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="PvLgNeIU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n6zlQWiM"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BC812E40;
-	Thu, 22 Feb 2024 03:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E20217558
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708573964; cv=none; b=Vfv8+9vGHJGVghJli+mCaQHZI8zQflTXZF3hdbiCyPSOYtmVmNJdGB5uwi6VuQlLjmZVhV9wE0H1uImM3/0FytK3FsZYAO2bXRwrP5GFUGCKiQFogyDYpD78GA27CHylXY405bURo5A8+sKLFhjpPR+mvaeQKwHnAz6DCpDB8WU=
+	t=1708574003; cv=none; b=Qqf8rAEAIGn0SOtzq0TvqOX3N1ttcGsT4ozRFFICco979fL6WySSJ4bADnevQEO3tAM0m+LJX6+WZAFjGtuFbzGRBzNEgkmw35wtZHEb1hCzK2RvDiZLpqUKnfGun7l7jLgd41UU37oYF0ude8RJuwELKVb9cHgYZd2dc3ebrgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708573964; c=relaxed/simple;
-	bh=cSLePklJRGa7EwTCUgV8JALvq9ooAhj+vmAxxI7oRD8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dfcZ7jW3h3FU3GmEfftUdoz0IYEksElWfbrhsejMYXnoDXu85f9lt2yETkv/UMAQvXgzNkorXLlE0HbgFSCwCQpqOn2OjGsxiKVlIWbiyFbK8jh+apeDnAOCcpmd3tGBEu7hIiVtp0rpDnYT0wvLBv/BDWYe4LaaoBylZbIPVHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=PvLgNeIU; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1708573962; x=1740109962;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cSLePklJRGa7EwTCUgV8JALvq9ooAhj+vmAxxI7oRD8=;
-  b=PvLgNeIUeJvqJIZ/40E8rIu7Fnhi3Cd5lLsRAr5Esjp8lMrY5c1yWdYk
-   0FilG8ukLLG2z56J/7Ca73NtGvAYuLfdBuBgLJina7avt79gki2yD51YM
-   1FSHVklHtUhangyTTrw5lieBXV17lwdBuhuOJpvt0azj+ccbKRy7IcbWc
-   rUePGzgWaAzPxi4jAynACLz7syzTlqVIxCj7jRFhsMyO7KDslmUnNk/wB
-   GTIvNN/6JLwD659aTgeLV0biXc3PlPCREFVm7QId2SXyXZeLugudUZiWf
-   iJ1Y8dFLhg0/WxzyXEV7ER3UZeGXfDi+JtnL2SxpoJMVikvyku8THcrX9
-   Q==;
-X-CSE-ConnectionGUID: Hyb6skOcSdW7f9xiLL00sA==
-X-CSE-MsgGUID: 5TaGlClNQhmCF4oHXNQfaQ==
-X-IronPort-AV: E=Sophos;i="6.06,177,1705388400"; 
-   d="scan'208";a="16633854"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Feb 2024 20:52:41 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 21 Feb 2024 20:52:07 -0700
-Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 20:52:03 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <robh@kernel.org>, <tglx@linutronix.de>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC: Dharma Balasubiramani <dharma.b@microchip.com>, Conor Dooley
-	<conor.dooley@microchip.com>
-Subject: [PATCH v3] dt-bindings: interrupt-controller: Convert Atmel AIC to json-schema
-Date: Thu, 22 Feb 2024 09:21:58 +0530
-Message-ID: <20240222035158.195265-1-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708574003; c=relaxed/simple;
+	bh=tZSUF+07IUAnAMW8uKD39BXTVkVqbfNvcpIp6GexzPY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EgTG2R6QEM3CCJBYNSoI+xlDA73J2lfX4C5Ke44GNGEWT46ksCdJmMsb5Vd49uM7IB6/On1JTuZOy6+A6mU9yPdS4MSn8aFUrWAELpxvWWp5ULL8lm28ziHwI6/LlD+KCXA+ovvpAvb2ls5Tx2meqV3MYtOHt/h0mUy01cAuA98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n6zlQWiM; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e45d0c9676so340459b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:53:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708574001; x=1709178801; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OLPExIgj7iCP20OJfok9slllim21o6Wl4PPsBW1kw1Q=;
+        b=n6zlQWiMXMj03mCZFl3jhTB/TmN5O1XCkaQLi1KBKPsc+rpnxqKuLtfwEPIphhuDMP
+         VSv9jJbICsLibjIdbmszWg2FLyEJRvBM3dSEe8KhynipE+RbEZlUiSOvBevQM/ckrhAD
+         dm0NFYQWXRfRaSFlWEpbvNYQIT/Hd6kAdJHi3NFNQqOkkXXT2j5SnA0wsmBBMjlJBqMA
+         vRGUBsI7scAuhv1hkQPHCB+RC6hadmdAb3uosuqBK5Ck0agzbyAhWdJkE12SEryZoMaw
+         Fa97CnHwTH/H+mH2ZGTCXlCxQFYKRPZ0FvPWyH1/jUGkkCMjAQ2wNeaJXdndVdVUbI1G
+         YE8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708574001; x=1709178801;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OLPExIgj7iCP20OJfok9slllim21o6Wl4PPsBW1kw1Q=;
+        b=FH/nVYeA2B7EnFvpYMq1PpLm9uq7etb0CY4Kb/Nqc4PMkcFsSnPOR7zg7boZgjY+az
+         HGVXa/NUc0lARm4Qy6RfTfJcZXw3hFcXjJSzaHeNtXy7KIFMGmAkN/m4wWBAten27Qnf
+         R8tGhgPCe5EZo8J9A7wO/yv5u9l4LPSuMazJpReX9MQ9XNqGlM5z6ElVPps5TTVu5u+k
+         fZ0Tv5pA+eBZHSHVuffB01l6NFNjq9lOu1pMOK+NoQGuD5uCn4vxzlByPypxhRzT8pPH
+         w2ngVFYl5eVC1SgIlcHmooVphUwS5P98EIqE3toHjCVzAgDOe/mFT6Jm8eGPsOEn/nZY
+         90DA==
+X-Forwarded-Encrypted: i=1; AJvYcCUeFZa5bgNQ330kIozFGKEuzg16k0zjPDOW9MHxxF5WDDzsVxfRPksd3A5PrwK0AkpWusN4VGk2UP1WXdzZgq/WHk7RvYtSJmAsV4Tg
+X-Gm-Message-State: AOJu0YyimEsP9E7nA+zdiIAK2UcYa8UnCcV6MtgshDyMvnjfh5jmeWvI
+	9TGYKyLGeUq2Py1m9e+nx+dkfMSvsnZ3CFL+PB3IRpYqC2sait5LhniUyv9d1Q==
+X-Google-Smtp-Source: AGHT+IGPdc5oeMDvakyByul0H+HAc4a+oalJcnes6Zq18SNWiS4uQ6DEtIJa0l0Ew5uFaIh4UTPyUA==
+X-Received: by 2002:a05:6a20:9f86:b0:19e:6ea7:dfb with SMTP id mm6-20020a056a209f8600b0019e6ea70dfbmr2314079pzb.28.1708574000786;
+        Wed, 21 Feb 2024 19:53:20 -0800 (PST)
+Received: from thinkpad ([117.193.212.166])
+        by smtp.gmail.com with ESMTPSA id z2-20020a634c02000000b005dc816b2369sm9549117pga.28.2024.02.21.19.53.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Feb 2024 19:53:20 -0800 (PST)
+Date: Thu, 22 Feb 2024 09:23:12 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] dt-bindings: PCI: qcom: Do not require
+ 'msi-map-mask'
+Message-ID: <20240222035312.GA3374@thinkpad>
+References: <20240212165043.26961-1-johan+linaro@kernel.org>
+ <20240212165043.26961-3-johan+linaro@kernel.org>
+ <e396cf20-8598-4437-b635-09a4a737a772@linaro.org>
+ <Zcy4Atjmb6-wofCL@hovoldconsulting.com>
+ <59bd6e54-0d5d-4e1a-818a-475a96c223ff@linaro.org>
+ <20240216165406.GD39963@thinkpad>
+ <ZdRXpQnbDbojlMkV@hovoldconsulting.com>
+ <20240221052607.GB11693@thinkpad>
+ <ZdXQ4h03J9pi81Vq@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <ZdXQ4h03J9pi81Vq@hovoldconsulting.com>
 
-Convert the Atmel AIC binding document to DT schema format using
-json-schema.
+On Wed, Feb 21, 2024 at 11:30:58AM +0100, Johan Hovold wrote:
+> On Wed, Feb 21, 2024 at 10:56:07AM +0530, Manivannan Sadhasivam wrote:
+> > On Tue, Feb 20, 2024 at 08:41:25AM +0100, Johan Hovold wrote:
+> > > On Fri, Feb 16, 2024 at 10:24:06PM +0530, Manivannan Sadhasivam wrote:
+> 
+> > > > msi-map-mask is definitely needed as it would allow all the devices under the
+> > > > same bus to reuse the MSI identifier. Currently, excluding this property will
+> > > > not cause any issue since there is a single device under each bus. But we cannot
+> > > > assume that is going to be the case on all boards.
+> > > 
+> > > Are you saying that there is never a use case for an identity mapping?
+> > > Just on Qualcomm hardware or in general?
+> > > 
+> > > It looks like we have a fairly large number of mainline devicetrees that
+> > > do use an identity mapping here (i.e. do not specify 'msi-map-mask') and
+> > > the binding document also has an explicit example of this.
+> > > 
+> > > 	Documentation/devicetree/bindings/pci/pci-msi.txt
+> > 
+> > I don't know how other platforms supposed to work without this property for more
+> > than one devices. Maybe they were not tested enough?
+> 
+> Seems a bit far fetched since it's also an example in the binding.
+> 
+> In fact, only the two Qualcomm platforms that you added 'msi-map-mask'
+> for use it.
+> 
+> > But for sure, Qcom SoCs require either per device MSI identifier or
+> > msi-map-mask.
+> 
+> But isn't the mapping set up by the boot firmware and can differ between
+> platforms?
+> 
+> The mapping on sc8280xp looks quite different from sm8450/sm8650:
+> 
+> 	msi-map = <0x0 &gic_its 0x5981 0x1>,
+> 		  <0x100 &gic_its 0x5980 0x1>;
+> 	msi-map-mask = <0xff00>;
+> 
+> Here it's obvious that the mask is needed, whereas for sc8280xp:
+> 
+> 	msi-map = <0x0 &its 0xa0000 0x10000>;
+> 
+> it's not obvious what the mask should be. In fact, it looks like
+> Qualcomm intended a linear mapping here as the length is 0x10000 and
+> they left out the mask.
+> 
+> And after digging through the X13s ACPI tables, this is indeed how the
+> hardware is configured, which means that we should not use a
+> 'msi-map-mask' property for sc8280xp and that this patch is correct.
+> 
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
----
-Changelog
-v2 -> v3
-- Add constraints to the "atmel,external-irqs" property.
-- Move 'reg' before 'interrupt-controller' in the example.
-v1 -> v2
-- Drop the '|' as there is no formatting to preserve.
-- Remove unnecessary marketing statement from description.
-- Drop the description for interrupts and reg, it's obvious.
-- Put reg after compatible.
-- Drop comment in example.
-- Drop the example of device that is wired to an AIC as it's(dma) binding is
-  not yet available.
----
- .../interrupt-controller/atmel,aic.txt        | 43 ---------
- .../interrupt-controller/atmel,aic.yaml       | 89 +++++++++++++++++++
- 2 files changed, 89 insertions(+), 43 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
+Right. Confirmed the same with the hw team. On Qcom SoCs ITS mapping is
+relatively similar to SMMU stream IDs. So on SM8450 and other mobile targets
+making use of SMMUv2, only 128 SIDs are available, hence only 128 MSI
+identifiers. But on SC8280XP and other similar ones, SMMUv3 is used, so there
+are 65536 SIDs available and also the MSI identifiers. So yes, this SoC indeed
+supports linear mapping of MSI identifiers and so the mask is not required.
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
-deleted file mode 100644
-index 7079d44bf3ba..000000000000
---- a/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
-+++ /dev/null
-@@ -1,43 +0,0 @@
--* Advanced Interrupt Controller (AIC)
--
--Required properties:
--- compatible: Should be:
--    - "atmel,<chip>-aic" where  <chip> can be "at91rm9200", "sama5d2",
--      "sama5d3" or "sama5d4"
--    - "microchip,<chip>-aic" where <chip> can be "sam9x60"
--
--- interrupt-controller: Identifies the node as an interrupt controller.
--- #interrupt-cells: The number of cells to define the interrupts. It should be 3.
--  The first cell is the IRQ number (aka "Peripheral IDentifier" on datasheet).
--  The second cell is used to specify flags:
--    bits[3:0] trigger type and level flags:
--      1 = low-to-high edge triggered.
--      2 = high-to-low edge triggered.
--      4 = active high level-sensitive.
--      8 = active low level-sensitive.
--      Valid combinations are 1, 2, 3, 4, 8.
--      Default flag for internal sources should be set to 4 (active high).
--  The third cell is used to specify the irq priority from 0 (lowest) to 7
--  (highest).
--- reg: Should contain AIC registers location and length
--- atmel,external-irqs: u32 array of external irqs.
--
--Examples:
--	/*
--	 * AIC
--	 */
--	aic: interrupt-controller@fffff000 {
--		compatible = "atmel,at91rm9200-aic";
--		interrupt-controller;
--		#interrupt-cells = <3>;
--		reg = <0xfffff000 0x200>;
--	};
--
--	/*
--	 * An interrupt generating device that is wired to an AIC.
--	 */
--	dma: dma-controller@ffffec00 {
--		compatible = "atmel,at91sam9g45-dma";
--		reg = <0xffffec00 0x200>;
--		interrupts = <21 4 5>;
--	};
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
-new file mode 100644
-index 000000000000..0d51bd78bf2b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/atmel,aic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Advanced Interrupt Controller (AIC)
-+
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com>
-+  - Dharma balasubiramani <dharma.b@microchip.com>
-+
-+description:
-+  The Advanced Interrupt Controller (AIC) is an 8-level priority, individually
-+  maskable, vectored interrupt controller providing handling of up to one
-+  hundred and twenty-eight interrupt sources.
-+
-+allOf:
-+  - $ref: /schemas/interrupt-controller.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: atmel,at91rm9200-aic
-+    then:
-+      properties:
-+        atmel,external-irqs:
-+          minItems: 1
-+          maxItems: 7
-+    else:
-+      properties:
-+        atmel,external-irqs:
-+          minItems: 1
-+          maxItems: 1
-+
-+properties:
-+  compatible:
-+    enum:
-+      - atmel,at91rm9200-aic
-+      - atmel,sama5d2-aic
-+      - atmel,sama5d3-aic
-+      - atmel,sama5d4-aic
-+      - microchip,sam9x60-aic
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 3
-+    description: |
-+      The 1st cell is the IRQ number (Peripheral IDentifier on datasheet).
-+      The 2nd cell specifies flags:
-+        bits[3:0] trigger type and level flags:
-+          1 = low-to-high edge triggered.
-+          2 = high-to-low edge triggered.
-+          4 = active high level-sensitive.
-+          8 = active low level-sensitive.
-+        Valid combinations: 1, 2, 3, 4, 8.
-+        Default for internal sources: 4 (active high).
-+      The 3rd cell specifies irq priority from 0 (lowest) to 7 (highest).
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  atmel,external-irqs:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: u32 array of external irqs.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - atmel,external-irqs
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    interrupt-controller@fffff000 {
-+      compatible = "atmel,at91rm9200-aic";
-+      reg = <0xfffff000 0x200>;
-+      interrupt-controller;
-+      #interrupt-cells = <3>;
-+      atmel,external-irqs = <31>;
-+    };
-+...
+Thanks!
 
-base-commit: 4f5e5092fdbf5cec6bedc19fbe69cce4f5f08372
+- Mani
+
 -- 
-2.25.1
-
+மணிவண்ணன் சதாசிவம்
 
