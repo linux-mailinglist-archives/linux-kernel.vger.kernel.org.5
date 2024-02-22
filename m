@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-77138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CE41860195
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:38:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D06860196
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68331F2343C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:38:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5BDD1C24936
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE4D73F3F;
-	Thu, 22 Feb 2024 18:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D1012D205;
+	Thu, 22 Feb 2024 18:27:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GB1PlgXH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OpFf+2VA"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B2971724;
-	Thu, 22 Feb 2024 18:27:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27196E61C;
+	Thu, 22 Feb 2024 18:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708626439; cv=none; b=Ceaz6gB8It3uFoE0a1Hyd9RK7BkKgg2ghTTFgJFHQpu6S+clistD+478KKdkb9JVxsQUFPmR3pOrxwBCdgvuDIfcsmWJGrsrC4PzddNBFC1141WwgPLEtoKDVSzCDs4TwLdzUyEmn16BNZVzRrrA3RudECpGpmVjoFDkCwIv/Fw=
+	t=1708626459; cv=none; b=DTAu/TIVce5VfzL8KoJSHUt8PeAp/FOd++TjX0+OiwoB+vQjdgWFieMt3IyQAK+l/KnsakSJIGpoKjDqBJ05Rceouw029xBbqV9woVAQlL4+Up5PghHGkyfLM4dOvllB31plTb0WMQPOyl08yoSZ18odI7h3R+B9/6vEKNkCgWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708626439; c=relaxed/simple;
-	bh=s0nsI6gFwFYbbyTINrCgFKsHCJWkS0retC9bFIx1kXI=;
+	s=arc-20240116; t=1708626459; c=relaxed/simple;
+	bh=xM/QGOiRYmmtfXJfmB0d8tNDu2LXbkjtP1X6XvDL9RM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D7RR8gymu5r2dt6IHM0ml7jjXeQdgIYbUE0+aUbBYzMPSEC6b05bMjFA3sR7eUOJQ9Uj9o/ZDqjSTgcohzQpkCq9wqZhvQM8Wofm5W0wCsPnF8CDNPNHfU5ayQKQEOFCRlBPFAWmh9hpcn0Eq7rOneA0YKzFHIdpwUkw2eOMelY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GB1PlgXH; arc=none smtp.client-ip=198.175.65.15
+	 In-Reply-To:Content-Type; b=c0XTaXcgSZ5K6gNrf91f+VwVrUSICFW28lAiMhuxlSMM8qa5L2RUi8/HNdx3zMm8i4X3CH8Eafm9AZGmnEvpbcMEFiEpsCanoK6SrGsdSaxWHbim/sABTLwe+1ExSdbtowZkSWoADBJfnu6bedQ0Q3vpgCHRzs6OKfGk+YBsU4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OpFf+2VA; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708626437; x=1740162437;
+  t=1708626458; x=1740162458;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=s0nsI6gFwFYbbyTINrCgFKsHCJWkS0retC9bFIx1kXI=;
-  b=GB1PlgXHAbChaU6RQwCHOY+xSjZMTyUcBS57PrVJsGb6Z1OXSjBFaznq
-   Vhjp7x3g9VHsWcFjZDzayDdn83x2et60xmRlBcFRoEpBKDRWEhw8Esv6I
-   qeR6nl7je9k8HB/mFrkE6f8xbKJU3LAW/15C8cVNRf4l2JtKcgtFrhsPh
-   cumtKOMw2uatGnV8043uRsGo56pg0LjpRHgiK5wGyQsvnf1hRNCH63m4K
-   7SObG53GmQ7QyO6FD1bQ573sap/qqr8Q2KEKY3sGoTVM6sxig9qx2/S+f
-   LQdxt4+Ff3pUe5YGNhtpiRVkibkuDDhROy8J/o1qdCSnFh+b8MPLKvIWw
+  bh=xM/QGOiRYmmtfXJfmB0d8tNDu2LXbkjtP1X6XvDL9RM=;
+  b=OpFf+2VAFtINfUB28rfoiacXPE7CqLCfTHTpJHWStwC+yk8edRBCgdMN
+   7CagJQ86Xz7IGl5RWN+rXLc7Y2yEqs4TI4DsEos81513YSts4eJDYmJ4G
+   5+G7y33H8bVXrizQiixVVpkMgyh6+MBV2QdeCuS6n9dSkeHrUMJxICJZW
+   7NgfLwUnUZCgfDw26bdzF1T7pGFTGClgM9dfOky+FMcnCl2V2nrwGjFvk
+   +3aOiJYe5w5GCPiZr+oi7PuVSAk5MWgF9iEH5+Sj2EzMZcxDsLmUxFus1
+   I6WLRSJBEAVPYkRy7QrRES7zJchM1eiq6xcDrQpO7ckaI0RmXkk3PYwn+
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6697277"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6697326"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="6697277"
+   d="scan'208";a="6697326"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:27:12 -0800
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:27:37 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="5552089"
+   d="scan'208";a="5552216"
 Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.114.198]) ([10.246.114.198])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:27:11 -0800
-Message-ID: <3725d3da-645b-4aa9-ba05-94f055ed77cb@intel.com>
-Date: Thu, 22 Feb 2024 11:27:09 -0700
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:27:36 -0800
+Message-ID: <fa47fa0a-288b-46e2-b03f-6d4061ab0fd2@intel.com>
+Date: Thu, 22 Feb 2024 11:27:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,7 +62,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3 v5] cleanup: Add cond_guard() to conditional guards
+Subject: Re: [PATCH 3/3 v5] cxl/memdev: Use cond_guard() in
+ cxl_inject_poison()
 Content-Language: en-US
 To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
  Peter Zijlstra <peterz@infradead.org>,
@@ -71,81 +72,78 @@ Cc: linux-cxl@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  Ira Weiny <ira.weiny@intel.com>
 References: <20240217105904.1912368-1-fabio.maria.de.francesco@linux.intel.com>
- <20240217105904.1912368-2-fabio.maria.de.francesco@linux.intel.com>
+ <20240217105904.1912368-4-fabio.maria.de.francesco@linux.intel.com>
 From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240217105904.1912368-2-fabio.maria.de.francesco@linux.intel.com>
+In-Reply-To: <20240217105904.1912368-4-fabio.maria.de.francesco@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
 On 2/17/24 3:59 AM, Fabio M. De Francesco wrote:
-> Add cond_guard() macro to conditional guards.
-> 
-> cond_guard() is a guard to be used with the conditional variants of locks,
-> like down_read_trylock() or mutex_lock_interruptible().
-> 
-> It takes a statement (or statement-expression) that is passed as its
-> second argument. That statement (or statement-expression) is executed if
-> waiting for a lock is interrupted or if a _trylock() fails in case of
-> contention.
-> 
-> Usage example:
-> 
-> 	cond_guard(mutex_intr, return -EINTR, &mutex);
-> 
-> Consistent with other usage of _guard(), locks are unlocked at the exit of
-> the scope where cond_guard() is called. This macro can be called multiple
-> times in the same scope.
+> Use cond_guard() in cxl_inject_poison() to not open code two up_write()
+> in an 'out' block. If the down_read_interruptible() fail, the statements
+> passed as the second argument of cond_guard() return -EINTR.
 > 
 > Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Cc: Peter Zijlstra <peterz@infradead.org>
 > Suggested-by: Dan Williams <dan.j.williams@intel.com>
 > Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
 
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 > ---
->  include/linux/cleanup.h | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  drivers/cxl/core/memdev.c | 19 +++++--------------
+>  1 file changed, 5 insertions(+), 14 deletions(-)
 > 
-> diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-> index c2d09bc4f976..602afb85da34 100644
-> --- a/include/linux/cleanup.h
-> +++ b/include/linux/cleanup.h
-> @@ -134,6 +134,19 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
->   *	an anonymous instance of the (guard) class, not recommended for
->   *	conditional locks.
->   *
-> + * cond_guard(name, fail, args...):
-> + *	a guard to be used with the conditional variants of locks, like
-> + *	down_read_trylock() or mutex_lock_interruptible(). 'fail' is a
-> + *	statement or statement-expression that is executed if waiting for a
-> + *	lock is interrupted or if a _trylock() fails in case of contention.
-> + *
-> + *	Example:
-> + *
-> + *		cond_guard(mutex_intr, return -EINTR, &mutex);
-> + *
-> + * 	This macro can be called multiple times in the same scope, for it
-> + * 	declares unique instances of type 'name'.
-> + *
->   * scoped_guard (name, args...) { }:
->   *	similar to CLASS(name, scope)(args), except the variable (with the
->   *	explicit name 'scope') is declard in a for-loop such that its scope is
-> @@ -165,6 +178,13 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+> diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+> index dae8802ecdb0..bd97eea65bb0 100644
+> --- a/drivers/cxl/core/memdev.c
+> +++ b/drivers/cxl/core/memdev.c
+> @@ -331,19 +331,13 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
+>  	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+>  		return 0;
 >  
->  #define __guard_ptr(_name) class_##_name##_lock_ptr
+> -	rc = down_read_interruptible(&cxl_region_rwsem);
+> -	if (rc)
+> -		return rc;
+> +	cond_guard(rwsem_read_intr, return -EINTR, &cxl_region_rwsem);
 >  
-> +#define __cond_guard(__unique, _name, _fail, args...) \
-> +	CLASS(_name, __unique)(args); \
-> +	if (!__guard_ptr(_name)(&__unique)) _fail; \
-> +	else { }
-> +#define cond_guard(_name, _fail, args...) \
-> +	__cond_guard(__UNIQUE_ID(scope), _name, _fail, args)
-> +
->  #define scoped_guard(_name, args...)					\
->  	for (CLASS(_name, scope)(args),					\
->  	     *done = NULL; __guard_ptr(_name)(&scope) && !done; done = (void *)1)
+> -	rc = down_read_interruptible(&cxl_dpa_rwsem);
+> -	if (rc) {
+> -		up_read(&cxl_region_rwsem);
+> -		return rc;
+> -	}
+> +	cond_guard(rwsem_read_intr, return -EINTR, &cxl_dpa_rwsem);
+>  
+>  	rc = cxl_validate_poison_dpa(cxlmd, dpa);
+>  	if (rc)
+> -		goto out;
+> +		return rc;
+>  
+>  	inject.address = cpu_to_le64(dpa);
+>  	mbox_cmd = (struct cxl_mbox_cmd) {
+> @@ -353,7 +347,7 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
+>  	};
+>  	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+>  	if (rc)
+> -		goto out;
+> +		return rc;
+>  
+>  	cxlr = cxl_dpa_to_region(cxlmd, dpa);
+>  	if (cxlr)
+> @@ -366,11 +360,8 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
+>  		.length = cpu_to_le32(1),
+>  	};
+>  	trace_cxl_poison(cxlmd, cxlr, &record, 0, 0, CXL_POISON_TRACE_INJECT);
+> -out:
+> -	up_read(&cxl_dpa_rwsem);
+> -	up_read(&cxl_region_rwsem);
+>  
+> -	return rc;
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL_NS_GPL(cxl_inject_poison, CXL);
+>  
 
