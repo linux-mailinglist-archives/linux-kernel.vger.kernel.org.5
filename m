@@ -1,49 +1,45 @@
-Return-Path: <linux-kernel+bounces-77443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00D3860565
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:06:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D21C5860566
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71681B241BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DFF428641E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42289137922;
-	Thu, 22 Feb 2024 22:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE25137924;
+	Thu, 22 Feb 2024 22:05:55 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9AD12D1F9
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E8812D20E
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708639535; cv=none; b=Zc6rfalgfS6RpC+BVk6mjEYh7VQ1hZDuh4NhUBe6Bx5WBHk2Le9tF5TKADUGO1GN1692QTR4XMVLpq2+a1CL/y4TIV4rAE5cCrrL1HvtqNZNIWONJlyMPd6dsInowy6m+wx9LO7Ut8eWmRm4TSlMnJ/jWnRUuZuRZBSqT9oAmzI=
+	t=1708639555; cv=none; b=Kkrm4fl8yQbchfAOvkW9yGmZXkBIf6bveoUk+Y4lViBi99fxZ9bPtD8LI27aIFgzwHGEd0FJrPwjbW0SxuJUTEcs802eOO57MQE/mY2hhD0zIbypCjAaw9Tb+xdSrVOc4dYHc44q2YI39VD8ZQTPZgTr/26xFwfn3kFRCdiVb58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708639535; c=relaxed/simple;
-	bh=fescA2HCA+KDAyGQ4evjhwnLChU3ktYbPThY1amsb0o=;
+	s=arc-20240116; t=1708639555; c=relaxed/simple;
+	bh=JhRplTuUNMSmK348Jo4Y667OPS72zBZ8QHse7XhYbrA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CAHmYL/K6Aqw8gMj8b5E7qjQ1vSuNU4rVmhO+TkgXK6dRgV5fzNUMl7OKSQItG+RBS3KS8m9lDx6tTbnupQcXJZ89utugTtwgOkQxEy8fBzuy9azkFs2HVY0avpDU6i6wRslTOhSlWP4bEHBoY/qQ3mUJUFJTlCg+gOfme8kmJM=
+	 MIME-Version:Content-Type; b=QOzsuvskDt25nzCMQuTN9aGps/IfiDNt6xUtCx8pkdoDhHTH8U3A9bjwIxTdHK0OhhTYKqDZn/ZNGrt3E3Z8Z4PjUWMoDvLu/Y5kykHG7e4aMR66xzHz1Nw9+w1AeSmpx0vsHy90v7D/X15W/tWFIG4KfoJw8nFbu7Vvg5H9g4I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E040C433F1;
-	Thu, 22 Feb 2024 22:05:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62FFAC433F1;
+	Thu, 22 Feb 2024 22:05:53 +0000 (UTC)
 From: Catalin Marinas <catalin.marinas@arm.com>
-To: will@kernel.org,
-	revest@chromium.org,
-	rostedt@goodmis.org,
-	mark.rutland@arm.com,
-	arnd@arndb.de,
-	pengdonglin@sangfor.com.cn,
-	Kemeng Shi <shikemeng@huaweicloud.com>
+To: Will Deacon <will@kernel.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
 Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: make member of struct pt_regs and it's offset macro in the same order
-Date: Thu, 22 Feb 2024 22:05:31 +0000
-Message-Id: <170863948634.1616990.12613009434270992544.b4-ty@arm.com>
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] arm64: gitignore: ignore relacheck
+Date: Thu, 22 Feb 2024 22:05:51 +0000
+Message-Id: <170863954734.1625463.11560852190517987488.b4-ty@arm.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240130175504.106364-1-shikemeng@huaweicloud.com>
-References: <20240130175504.106364-1-shikemeng@huaweicloud.com>
+In-Reply-To: <20240222210441.33142-1-brgl@bgdev.pl>
+References: <20240222210441.33142-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,16 +49,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Wed, 31 Jan 2024 01:55:04 +0800, Kemeng Shi wrote:
-> In struct pt_regs, member pstate is after member pc. Move offset macro
-> of pstate after offset macro of pc to improve readability a little.
+On Thu, 22 Feb 2024 22:04:41 +0100, Bartosz Golaszewski wrote:
+> Add the generated executable for relacheck to the list of ignored files.
 > 
 > 
 
-Applied to arm64 (for-next/misc), thanks!
+Applied to arm64 (for-next/stage1-lpa2), thanks!
 
-[1/1] arm64: make member of struct pt_regs and it's offset macro in the same order
-      https://git.kernel.org/arm64/c/58a0484eaf5e
+[1/1] arm64: gitignore: ignore relacheck
+      https://git.kernel.org/arm64/c/275826914925
 
 -- 
 Catalin
