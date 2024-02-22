@@ -1,86 +1,114 @@
-Return-Path: <linux-kernel+bounces-76505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D67C885F80D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47E4185F816
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A981C215A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:24:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0331C21961
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE69605B8;
-	Thu, 22 Feb 2024 12:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935AF60B8E;
+	Thu, 22 Feb 2024 12:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isDtrnur"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="EUAlNGrf"
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 809675B5A3;
-	Thu, 22 Feb 2024 12:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5420960879;
+	Thu, 22 Feb 2024 12:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708604641; cv=none; b=SlQ7U6WXCKVvgBsEC5HdAwxQwrmSWq3ONagJrnYIjXE3Qq7izCyLQaxnPjUyHpiNW18ABZMhEEpifIpotd1ekYHdBYJvFY3tdSWSijR5s4MVMHsUKJLDFC7VqH5w13HOS9ZBH41NN1uTlVtF9l2/2XVPbbYh1Db5IS76jf5fK3o=
+	t=1708604659; cv=none; b=ePxy7uIi7iQ7cKyMmGQWM+24c96c9ThS1XvFG1/6J0HKVUbl4BbSiVNiIILHhWcidGIsL6IH0q+fxKAldb+oJsuBwsYLYPEzsUt34Fg+bTNQwj1xmRk4N6k3duHVkVoO1sKaW20HbVz1WD+DwJDGE7rb3RyyBp0779PnHrXYvvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708604641; c=relaxed/simple;
-	bh=UQcJF0MxGv8FI6zkieEqniVVC2e2rV9dcda8hmiOZeU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nxgXGkHkpMKVkGPtZKqrn5yhcyKjHlu8kYdjwLaCIujRY9kfqWzkCmQsVqCNq5wZnNRT+vDSahzClCruAU5sPwUnmchJa6+k095QxzxaQB8Uam5wv/3OytaS/Z3tdGlWuVAJ2Bzjy+viIcDrWfVP1V+RkfHEffVkx0BBj81D10k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isDtrnur; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2C60C433F1;
-	Thu, 22 Feb 2024 12:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708604641;
-	bh=UQcJF0MxGv8FI6zkieEqniVVC2e2rV9dcda8hmiOZeU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=isDtrnurIw+5Awb+A0d791uKs9I8QT3zdq69bW1sofnwb5nAt8Kac80quAWL5f3RV
-	 P0+Jf36cR2xhYg4PTXu7SSFojqatfSknDlf+AF3Q29HmyfPVs1in/4OXO8zPTOKbfI
-	 QNBkantiKyCCvPLHlSF965Sk67dW7xv143FncXNIkPjzypclgtw24uIPs5j1XsjRbh
-	 Fm+NW7BsRao4R1z2VB7SftScm3I3iOmFrO9L08phdYEM8bPmwPwpIuZK6uX2EqVQXr
-	 nPyLhD8MF5u7g1FNwOvciDMhL6+0+crtpTgBQHvPfe5nZcPZunwlu6Z6E0z83gsZiy
-	 Uo0qWYln/uhuQ==
-Date: Thu, 22 Feb 2024 07:24:00 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Daniel Wagner <dwagner@suse.de>, Hannes Reinecke <hare@suse.de>,
-	Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-	james.smart@broadcom.com, sagi@grimberg.me, kch@nvidia.com,
-	linux-nvme@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.10 13/16] nvmet-fc: do not tack refs on
- tgtports from assoc
-Message-ID: <Zdc84CT6LXmbz2DQ@sashalap>
-References: <20240207212700.4287-1-sashal@kernel.org>
- <20240207212700.4287-13-sashal@kernel.org>
- <ZdJVw8PbwTDngATQ@duo.ucw.cz>
+	s=arc-20240116; t=1708604659; c=relaxed/simple;
+	bh=SzkRLezEcoWqN5XMk5IQjv+zaBzCE6hGL4TlzpzvRx8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Jqq4cIuBMIuT1LY29CoWzB3VSng2OipdaLLoCvlXV8qIzVgBNRA2k5Lgof1pOLUBq76zDChdPRGjhccMqpSs9+oR2ddBlDgRRDYkBadcrUKBX4GX62+JfzcS0sLS69GVzlW7niJSEdXI0tB4zbCa0ugK/s73jZOLCJYZwcwAs6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=EUAlNGrf; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 49C831B3C16;
+	Thu, 22 Feb 2024 13:24:12 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1708604653; bh=SzkRLezEcoWqN5XMk5IQjv+zaBzCE6hGL4TlzpzvRx8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EUAlNGrf23R8w4oEXhdN8ZTdwZg1H7M4/emZPySrk6K9Tl0SxhgdNcc+GVXJzkF3K
+	 jhjEkvp7rH7EDvKJP8N1WoE10a3c92Pf6/xWI/KNQXgf4YwqDhpDsD2Sz7vm2z7Lxu
+	 QrFdVlvJFDd25mDM+o2lNSY2HQW6+zwnWeoZrkjI/dzsAj1ADwvpfvp+aYsPDhk7+s
+	 +uJNHsQG4WSVKSkZg/cEwEkmeqqHv63GsosLISth1I21E6qnsVSxAZUr46A8h1ti5w
+	 8xB2a1phVtvV+YvhVd8sMVHnIsWVImqVlHlq4wr1kEZ6CyLBGnCxeEbIFEyPI2fo5P
+	 PuGFeTj8+894w==
+Date: Thu, 22 Feb 2024 13:24:10 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+ kent.overstreet@linux.dev, vbabka@suse.cz, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 06/36] mm: enumerate all gfp flags
+Message-ID: <20240222132410.6e1a2599@meshulam.tesarici.cz>
+In-Reply-To: <Zdc6LUWnPOBRmtZH@tiehlicka>
+References: <20240221194052.927623-1-surenb@google.com>
+	<20240221194052.927623-7-surenb@google.com>
+	<Zdc6LUWnPOBRmtZH@tiehlicka>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <ZdJVw8PbwTDngATQ@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 18, 2024 at 08:08:51PM +0100, Pavel Machek wrote:
->Hi!
->
->> From: Daniel Wagner <dwagner@suse.de>
->>
->> [ Upstream commit 1c110588dd95d21782397ff3cbaa55820b4e1fad ]
->>
->> The association life time is tied to the life time of the target port.
->> That means we should not take extra a refcount when creating a
->> association.
->
->I don't see this one queued for 6.1 or 6.6. What went wrong here?
+On Thu, 22 Feb 2024 13:12:29 +0100
+Michal Hocko <mhocko@suse.com> wrote:
 
-Yup, this should have been dropped from all trees. Thanks!
+> On Wed 21-02-24 11:40:19, Suren Baghdasaryan wrote:
+> > Introduce GFP bits enumeration to let compiler track the number of used
+> > bits (which depends on the config options) instead of hardcoding them.
+> > That simplifies __GFP_BITS_SHIFT calculation.
+> >=20
+> > Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org> =20
+>=20
+> I thought I have responded to this patch but obviously not the case.
+> I like this change. Makes sense even without the rest of the series.
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
+Thank you, Michal. I also hope it can be merged without waiting for the
+rest of the series.
 
--- 
-Thanks,
-Sasha
+Petr T
 
