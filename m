@@ -1,269 +1,206 @@
-Return-Path: <linux-kernel+bounces-76918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7720F85FE95
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA00985FE96
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BBA32828B4
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98D0F2829E6
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2541154437;
-	Thu, 22 Feb 2024 17:02:29 +0000 (UTC)
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DCE15530F;
+	Thu, 22 Feb 2024 17:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="q2QzjfdH";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zyQ3Frww";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="q2QzjfdH";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zyQ3Frww"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45688155308;
-	Thu, 22 Feb 2024 17:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB59F1552F5
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708621348; cv=none; b=DdpBZ/6B7DbP00rQ8YtP4AsXVn3vC4q9qU7y1V9H64XaUApKTfJOe9RPZEb3RqqzMj8yD4ZSX6AGbY+mYnI0rAvGjwbYEsqNYor3RGlM+cp8diR3UbEFH9dZhr5nPDuF5I8bgq0OVUAHYcfzVgO64/fVajaYSQySbnfbJRoz+u8=
+	t=1708621347; cv=none; b=gSMhgX5+txQW8Ai395B9YWPIuMcHxlL5ftQQUUFzREmX5OarKm7WjF4kj3fBgYuCDBDNcYoM2ppukegHqg7Z9dQI88AHDrHQa1YvTTPM4r5kLJcsPJb97doT1mekf5rxwpS5vAJtlaOjVjA3A9mTiMT6U7CWtb/emoUNoZXKoWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708621348; c=relaxed/simple;
-	bh=o2z62yIkjV+//Puh8dbCXY7hYl26G7rkj5+/iE/jb38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CZFFPSJikqm8HvM0JgMgSvPKHZtnTjxumggVcIRtD6wfqQbROWaHKm2MXIK0kLxXB6d3MawRGwjiEQ0w0udUDWbYf0vrqoIf1UmfFcHLMrtZELd6F6Fkug+wR0j1DSgf8M5l+kHKFJ+qzCC2JB5xnwcNUIy5Op1h+Ztb9dnNOtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d934c8f8f7so75771255ad.2;
-        Thu, 22 Feb 2024 09:02:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708621336; x=1709226136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fbb24HI7mwnQHPbFmcorW8M6W1udgr86FpNgr1pAX8g=;
-        b=a08VLnpcRAtYrzxdfTxVBHyGJs12bqsc5GigEI4/3Kgsc0JCp0UYZ+9ATRq1tjSDK2
-         Oc5nK1/4ipxni8BveRhKjD0+w3c6bmpO3liqxk7oGRN14oPvNsZMuV4FP/NKtTgK9Jvk
-         5A7JdoUsCEsXbVUZvpG91M2wRtKbd8jRyTph0JptxuyQRMCF6nRt9Ygb6SJrApdjXmzz
-         6YeJjISoR6INsIkMHRhMUxTGu2W/PXGNoYki/p9cFc4g/AeTqIJ+AdOhUxMYRtzNSBNQ
-         k7h6zWjqTbKDZArRbUbMGcednB0f72ZWf9tBoHaG5zEbRs49ofzQhYHtEPGc2SxZ0jPj
-         zA3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXc0PZlR7ztUUAEnhT/F5AX4/C7KQQPb7nraYuM6wqZ62Yay9Tgw9xUl5nvp2kZFHUOGuxgnOHMgJdj+b6ThXUcehz7cXwpRqFKOHYTTzvpFKf+0vJx/qQXJ/JUOGbmV7f2ZT3C0bj2pRCFeIxB0A==
-X-Gm-Message-State: AOJu0YwkUG7vey/RaphInatUGcVZja/KFYQaEMU9gskpck0PhekHf+7I
-	61TAts49pGe9S4nmwNYh+e3PY4KDZul4GLys/LuT1VZUPp09KhpsfAZvdrziyHNq2yC2N9fU5MC
-	L3lQiqmHFCn9YfaEPxjo4xpOrS2E=
-X-Google-Smtp-Source: AGHT+IHYXCG6IOXf5XV2s2UWgsjmMaTvB0nmyPHwa3sjr4YhsdqIJOztejAmg68niMfDbOQaYHVUmH07AFwpiDMW4MM=
-X-Received: by 2002:a17:90a:3486:b0:299:398e:5cee with SMTP id
- p6-20020a17090a348600b00299398e5ceemr14241027pjb.13.1708621336292; Thu, 22
- Feb 2024 09:02:16 -0800 (PST)
+	s=arc-20240116; t=1708621347; c=relaxed/simple;
+	bh=Otwg0s0yngddDxcSY4m5qW+cCqDwGxFtTGVIh2GYHSg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MiCRBsW8geZ58ci5wKotvDW6qy0QNNvRYL8CPFDT9v1RiR7mGswHxi2AziEpnMX/1K6Qh6w0BfFAO9g1LjAqizgj2uKC+yjUFOjHbYGflR2EUpVI1ChvksT97Kp2rECDZv9JsTAv+ov6BCG1FENUTinQJtvG5fGMGhCnSCPQ1f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=q2QzjfdH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zyQ3Frww; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=q2QzjfdH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zyQ3Frww; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0876E22040;
+	Thu, 22 Feb 2024 17:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708621335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HLucWJAnSoNf82M7QH7aDsfl6ohwEWpNqi7zovHhgTk=;
+	b=q2QzjfdHd5YffiUmCT5S74RFu/H3Wl8qNGgac1dXuh76sRccZS+SHdnQYIN+HBgi7fjLvn
+	YwMiJXnBPogtzlYtvTccsbUqVl7uzyxnmfhvT0x58Uak4CF6vZ0LS6TevsnDxJAWEwiAkf
+	ZdbyK9LBKukLWcRLqavsewlhLR8y3E8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708621335;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HLucWJAnSoNf82M7QH7aDsfl6ohwEWpNqi7zovHhgTk=;
+	b=zyQ3FrwwpKxW+a2lRJUo42X3qXwU971H7n9y+5ymLLEsE2QSSaWnVDGJEEPkWvRzJij2EO
+	jC6SxQ7cJQ9qYGBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708621335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HLucWJAnSoNf82M7QH7aDsfl6ohwEWpNqi7zovHhgTk=;
+	b=q2QzjfdHd5YffiUmCT5S74RFu/H3Wl8qNGgac1dXuh76sRccZS+SHdnQYIN+HBgi7fjLvn
+	YwMiJXnBPogtzlYtvTccsbUqVl7uzyxnmfhvT0x58Uak4CF6vZ0LS6TevsnDxJAWEwiAkf
+	ZdbyK9LBKukLWcRLqavsewlhLR8y3E8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708621335;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HLucWJAnSoNf82M7QH7aDsfl6ohwEWpNqi7zovHhgTk=;
+	b=zyQ3FrwwpKxW+a2lRJUo42X3qXwU971H7n9y+5ymLLEsE2QSSaWnVDGJEEPkWvRzJij2EO
+	jC6SxQ7cJQ9qYGBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E93FD13419;
+	Thu, 22 Feb 2024 17:02:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Fot9NxZ+12XJBwAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Thu, 22 Feb 2024 17:02:14 +0000
+Date: Thu, 22 Feb 2024 18:02:09 +0100
+From: Daniel Wagner <dwagner@suse.de>
+To: Hannes Reinecke <hare@suse.de>
+Cc: James Smart <james.smart@broadcom.com>, 
+	Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] nvme-fc: do not retry when auth fails or
+ connection is refused
+Message-ID: <hxr2hztb64dank3jvbnrlciaebo4k2qkkrg3brhrppizeyelpo@ewupxurl7iqm>
+References: <20240221132404.6311-1-dwagner@suse.de>
+ <20240221132404.6311-3-dwagner@suse.de>
+ <d5b3d5b2-ec27-4057-aa76-63fe17066cfc@suse.de>
+ <sqmla42yoidail73xukhxb6uoyayo66pxpdlrhns3v533wm7wy@ppyr7t5gk3u3>
+ <609e0031-e97c-466b-8cbd-47755374b117@suse.de>
+ <3xhhdconprn3vvkky4yj4iazku4eiqxl6l6rw6z5tivvdjwaby@ts7satqbih7w>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126145605.1005472-1-mark.rutland@arm.com> <CAP-5=fURS0OQxHcukS1+NprgyMpAQSr3+BMiYPj5x7=+tcZ8hw@mail.gmail.com>
-In-Reply-To: <CAP-5=fURS0OQxHcukS1+NprgyMpAQSr3+BMiYPj5x7=+tcZ8hw@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 22 Feb 2024 09:02:04 -0800
-Message-ID: <CAM9d7cj=tN8ACGFMmkdL_RE5R-4SCd8Zg3trJ15TvOJKpcXABQ@mail.gmail.com>
-Subject: Re: [PATCH v2] perf print-events: make is_event_supported() more robust
-To: marcan@marcan.st, maz@kernel.org
-Cc: Ian Rogers <irogers@google.com>, Mark Rutland <mark.rutland@arm.com>, 
-	linux-kernel@vger.kernel.org, acme@redhat.com, james.clark@arm.com, 
-	john.g.garry@oracle.com, leo.yan@linaro.org, 
-	linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, 
-	mike.leach@linaro.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3xhhdconprn3vvkky4yj4iazku4eiqxl6l6rw6z5tivvdjwaby@ts7satqbih7w>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=q2QzjfdH;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=zyQ3Frww
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -5.51
+X-Rspamd-Queue-Id: 0876E22040
+X-Spam-Flag: NO
 
-Hector and Marc, can you please take a look?
+On Thu, Feb 22, 2024 at 08:45:04AM +0100, Daniel Wagner wrote:
+> On Thu, Feb 22, 2024 at 07:46:12AM +0100, Hannes Reinecke wrote:
+> > On 2/21/24 17:37, Daniel Wagner wrote:
+> > > On Wed, Feb 21, 2024 at 04:53:44PM +0100, Hannes Reinecke wrote:
+> > > In this case yes, I've tested on top of this patch. This breaks the loop
+> > > where the provided key is invalid or is missing. The loop would happy
+> > > retry until reaching max of retries.
+> > 
+> > But that's to be expected, no?
+> 
+> Why? If the key is wrong/missing it will be likely wrong/missing the
+> next retry again. So what's the point in retrying?
+> 
+> > After all, that's _precisely_ what
+> > NVME_SC_DNR is for;
+> > if you shouldn't retry, that bit is set.
+> > If it's not set, you should.
+> 
+> Okay, in this case there is a bug in the auth code somewhere.
 
-Thanks,
-Namhyung
+With the change below nvme/041 also passes:
 
+modified   drivers/nvme/host/fabrics.c
+@@ -467,7 +467,7 @@ int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
+ 		if (result & NVME_CONNECT_AUTHREQ_ASCR) {
+ 			dev_warn(ctrl->device,
+ 				 "qid 0: secure concatenation is not supported\n");
+-			ret = NVME_SC_AUTH_REQUIRED;
++			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
+ 			goto out_free_data;
+ 		}
+ 		/* Authentication required */
+@@ -475,7 +475,7 @@ int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
+ 		if (ret) {
+ 			dev_warn(ctrl->device,
+ 				 "qid 0: authentication setup failed\n");
+-			ret = NVME_SC_AUTH_REQUIRED;
++			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
+ 			goto out_free_data;
+ 		}
+ 		ret = nvme_auth_wait(ctrl, 0);
+@@ -540,8 +540,9 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
+ 		/* Secure concatenation is not implemented */
+ 		if (result & NVME_CONNECT_AUTHREQ_ASCR) {
+ 			dev_warn(ctrl->device,
+-				 "qid 0: secure concatenation is not supported\n");
+-			ret = NVME_SC_AUTH_REQUIRED;
++				 "qid %d: secure concatenation is not supported\n",
++				 qid);
++			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
+ 			goto out_free_data;
+ 		}
+ 		/* Authentication required */
+@@ -549,7 +550,7 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
+ 		if (ret) {
+ 			dev_warn(ctrl->device,
+ 				 "qid %d: authentication setup failed\n", qid);
+-			ret = NVME_SC_AUTH_REQUIRED;
++			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
+ 		} else {
+ 			ret = nvme_auth_wait(ctrl, qid);
+ 			if (ret)
 
-On Wed, Feb 21, 2024 at 12:19=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> On Fri, Jan 26, 2024 at 6:56=E2=80=AFAM Mark Rutland <mark.rutland@arm.co=
-m> wrote:
-> >
-> > Currently the perf tool doesn't detect support for extended event types
-> > on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
-> > hardware events into per-PMU events. This is due to the detection of
-> > extended event types not handling mandatory filters required by the
-> > M1/M2 PMU driver.
-> >
-> > PMU drivers and the core perf_events code can require that
-> > perf_event_attr::exclude_* filters are configured in a specific way and
-> > may reject certain configurations of filters, for example:
-> >
-> > (a) Many PMUs lack support for any event filtering, and require all
-> >     perf_event_attr::exclude_* bits to be clear. This includes Alpha's
-> >     CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
-> >     ARMv7,
-> >
-> > (b) When /proc/sys/kernel/perf_event_paranoid >=3D 2, the perf core
-> >     requires that perf_event_attr::exclude_kernel is set.
-> >
-> > (c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
-> >     set as the hardware PMU does not count while a guest is running (bu=
-t
-> >     might be extended in future to do so).
-> >
-> > In is_event_supported(), we try to account for cases (a) and (b), first
-> > attempting to open an event without any filters, and if this fails,
-> > retrying with perf_event_attr::exclude_kernel set. We do not account fo=
-r
-> > case (c), or any other filters that drivers could theoretically require
-> > to be set.
-> >
-> > Thus is_event_supported() will fail to detect support for any events
-> > targeting an Apple M1/M2 PMU, even where events would be supported with
-> > perf_event_attr:::exclude_guest set.
-> >
-> > Since commit:
-> >
-> >   82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number i=
-n perf_event_attr.type")
-> >
-> > ... we use is_event_supported() to detect support for extended types,
-> > with the PMU ID encoded into the perf_event_attr::type. As above, on an
-> > Apple M1/M2 system this will always fail to detect that the event is
-> > supported, and consequently we fail to detect support for extended type=
-s
-> > even when these are supported, as they have been since commit:
-> >
-> >   5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capabil=
-ity")
-> >
-> > Due to this, the perf tool will not automatically expand plain
-> > PERF_TYPE_HARDWARE events into per-PMU events, even when all the
-> > necessary kernel support is present.
-> >
-> > This patch updates is_event_supported() to additionally try opening
-> > events with perf_event_attr::exclude_guest set, allowing support for
-> > events to be detected on Apple M1/M2 systems. I believe that this is
-> > sufficient for all contemporary CPU PMU drivers, though in future it ma=
-y
-> > be necessary to check for other combinations of filter bits.
-> >
-> > I've deliberately changed the check to not expect a specific error code
-> > for missing filters, as today ;the kernel may return a number of
-> > different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
-> > -EOPNOTSUPP) depending on why and where the filter configuration is
-> > rejected, and retrying for any error is more robust.
-> >
-> > Note that this does not remove the need for commit:
-> >
-> >   a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priori=
-ty than sysfs/JSON")
-> >
-> > ... which is still necessary so that named-pmu/event/ events work on
-> > kernels without extended type support, even if the event name happens t=
-o
-> > be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case fo=
-r
-> > the M1/M2 PMU's 'cycles' and 'instructions' events).
-> >
-> > Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU num=
-ber in perf_event_attr.type")
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Tested-by: Ian Rogers <irogers@google.com>
-> > Tested-by: James Clark <james.clark@arm.com>
-> > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > Cc: Hector Martin <marcan@marcan.st>
-> > Cc: Ian Rogers <irogers@google.com>
-> > Cc: James Clark <james.clark@arm.com>
-> > Cc: John Garry <john.g.garry@oracle.com>
-> > Cc: Leo Yan <leo.yan@linaro.org>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Mike Leach <mike.leach@linaro.org>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Cc: Thomas Richter <tmricht@linux.ibm.com>
-> > Cc: Will Deacon <will@kernel.org>
->
-> Ping. Could we land this one?
->
-> Thanks,
-> Ian
->
-> > ---
-> >  tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
-> >  1 file changed, 19 insertions(+), 8 deletions(-)
-> >
-> > Since v1 [1]:
-> > * Fix typos in commit message
-> > * Accumulate tags
-> >
-> > [1] https://lore.kernel.org/lkml/20240116170348.463479-1-mark.rutland@a=
-rm.com/
-> >
-> > Mark.
-> >
-> > diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-eve=
-nts.c
-> > index b0fc48be623f3..4f67e8f00a4d6 100644
-> > --- a/tools/perf/util/print-events.c
-> > +++ b/tools/perf/util/print-events.c
-> > @@ -232,7 +232,6 @@ void print_sdt_events(const struct print_callbacks =
-*print_cb, void *print_state)
-> >  bool is_event_supported(u8 type, u64 config)
-> >  {
-> >         bool ret =3D true;
-> > -       int open_return;
-> >         struct evsel *evsel;
-> >         struct perf_event_attr attr =3D {
-> >                 .type =3D type,
-> > @@ -246,20 +245,32 @@ bool is_event_supported(u8 type, u64 config)
-> >
-> >         evsel =3D evsel__new(&attr);
-> >         if (evsel) {
-> > -               open_return =3D evsel__open(evsel, NULL, tmap);
-> > -               ret =3D open_return >=3D 0;
-> > +               ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
-> >
-> > -               if (open_return =3D=3D -EACCES) {
-> > +               if (!ret) {
-> >                         /*
-> > -                        * This happens if the paranoid value
-> > +                        * The event may fail to open if the paranoid v=
-alue
-> >                          * /proc/sys/kernel/perf_event_paranoid is set =
-to 2
-> > -                        * Re-run with exclude_kernel set; we don't do =
-that
-> > -                        * by default as some ARM machines do not suppo=
-rt it.
-> > -                        *
-> > +                        * Re-run with exclude_kernel set; we don't do =
-that by
-> > +                        * default as some ARM machines do not support =
-it.
-> >                          */
-> >                         evsel->core.attr.exclude_kernel =3D 1;
-> >                         ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
-> >                 }
-> > +
-> > +               if (!ret) {
-> > +                       /*
-> > +                        * The event may fail to open if the PMU requir=
-es
-> > +                        * exclude_guest to be set (e.g. as the Apple M=
-1 PMU
-> > +                        * requires).
-> > +                        * Re-run with exclude_guest set; we don't do t=
-hat by
-> > +                        * default as it's equally legitimate for anoth=
-er PMU
-> > +                        * driver to require that exclude_guest is clea=
-r.
-> > +                        */
-> > +                       evsel->core.attr.exclude_guest =3D 1;
-> > +                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
-> > +               }
-> > +
-> >                 evsel__delete(evsel);
-> >         }
-> >
-> > --
-> > 2.30.2
-> >
+Is this what you had in mind?
 
