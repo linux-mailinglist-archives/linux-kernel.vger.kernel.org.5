@@ -1,163 +1,115 @@
-Return-Path: <linux-kernel+bounces-75829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A183C85EFA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:05:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C31A485EFA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:06:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ABB2282E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:05:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00B231C21D7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369442BD1C;
-	Thu, 22 Feb 2024 03:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OEdOwaDZ"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7632217C71;
+	Thu, 22 Feb 2024 03:05:11 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E829D22F19
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB7D1799F
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708570972; cv=none; b=MAXZk6E8DaFjuA6pM2DKh5igpWpdZTB1usZCra5hSgDsALw+6IJVxLMRaX2cNipdSiq2sK02yhNj0W9TYsz0+SHoVUeMHFQuM+4aZ98jlPYMmsdR8TMBEZpRzZmoMAhILfip644Yht1tDfdtSxMwOSxwBoAx/S+mknhovOB4ijM=
+	t=1708571111; cv=none; b=lnWF/wPHyA21MbrJEY+sSsIDr3LMVswwABgdPwNp5l+ztiIvgAHe5AXOq3a65hgyQxug+sCWuCcn/aD6yzhuErz6I8YFK/JUJkS8VAWt+v5hLWMpb6ZM/EwElC62z0yVb0qMCVwstddsH10Dw5/m/gqpQm1B0p7BxIOF2hTO7O4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708570972; c=relaxed/simple;
-	bh=Llmts9er0YO12okZvDKZ3o7U9Ne08vcPhXCSWiCXxzg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cQm6zyLQFs9lYWIHutOxllArBXMYSbhXpk0GoJU22mVUs1snlP7bw7h5SLr2AR/y8DlyTK33MaykK1u5DIdzWqPNK2XkmgaUuLgl54bCcGR1BL3DXmuNl55dKJsc3BeHWGDL3eUeiJBsKl++fSr6CZTWdVeL63jY4cYMMo5yxnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OEdOwaDZ; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c0485fc8b8so5771686b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:02:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708570968; x=1709175768; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=grJN+AzJeONYxPFqwVKM9Uij+OT9i/pLW+mGEwKkNHk=;
-        b=OEdOwaDZEyzv3jCpS1Aj7LPzyHni8izsPie0M4uXcQNTMmTQQsG+tkEKPWaPaDJ2g2
-         HwR6l5ev9xDmrmdkG8FEJ2EDIQRmFi5N5DS7ml8XNjPkSt+pn5S4d/BR0aGXuVHv48iP
-         dLrjOhAO1lPCTb4+2Q1IudQlQNyVxdI72vnLsjke53Ez6eRywElliKwgT3nTJwhIm/Yw
-         ySQTjoB5fScB9ujfKecJFV9lGgJX+PQlgBKO2Cbj9MSY/LnMO3brt2JdnHAZyWlQSnZq
-         fbMCtbbPsgb42q2Ligj7eWFgsJsKrf4IKXlpTM8UPh1gjT8A/txaYzI3KMDHNjkkNFPu
-         nErg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708570968; x=1709175768;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=grJN+AzJeONYxPFqwVKM9Uij+OT9i/pLW+mGEwKkNHk=;
-        b=kShHkXvJq2lshA9Sg7pF4Fw0uMBaZWIcIGy/AJNaUxALynpFChNECxUp8g+q/ouZTg
-         rN5ETnAXkeOZDu69YTjtYjyy1eGrqRswpmpGIw7R5SzFoCfHAIdUIGTFnwffY6DqluSA
-         5qxScxiiLYwcuR/237DuBzKC+9MICwkb1PI9dpBrdOQp5uffVJdjWsEDfsCyF68UuQ0E
-         8Q87ObY3PzefvkpdAbb0qVc5p1BasKIXZpN9nrEGcMdr+WLxVrdyjrVnvKQ5G9/vZw2B
-         Tj2MQMyMp5JAwjbt2mbSwJdWKQlQSYEMKhhOcsYBURsgO+5FcwwXooV36DUIF/7o2rRT
-         NRjw==
-X-Forwarded-Encrypted: i=1; AJvYcCVsIPDVY8/i5IS3mWpYAwJXPlMYuv+uS5bzM/SUFWXm8YIhYgWKKTACkKfTR1JH3Ds/IyX7s/LUqVBmiygwypRnsXHxbW67ghmeHUI3
-X-Gm-Message-State: AOJu0YyKLKgqHcvgZaz5dOhZMCRjo8jVdw0vjOM/Tx2yMQBWxUGF5ci1
-	Si8CRKYRhbNBpQvcPoI+8zdmt5lO0lr+0prgBz6I7D3gYLzg10uJGK0dgFG6BSo=
-X-Google-Smtp-Source: AGHT+IHrF5e0wG7OyXIrS2TJJWIdex+esm8ZSi5i1AGtQTA2hm3QzTV/2zJRMkDX0FoZBhRVH6mnVw==
-X-Received: by 2002:a05:6808:30a6:b0:3c1:6008:1c64 with SMTP id bl38-20020a05680830a600b003c160081c64mr10012978oib.54.1708570968752;
-        Wed, 21 Feb 2024 19:02:48 -0800 (PST)
-Received: from localhost ([136.62.192.75])
-        by smtp.gmail.com with ESMTPSA id u19-20020a056808001300b003c14520c78csm1794653oic.54.2024.02.21.19.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 19:02:48 -0800 (PST)
-From: Sam Protsenko <semen.protsenko@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>
-Cc: Alim Akhtar <alim.akhtar@samsung.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Tomasz Figa <tomasz.figa@gmail.com>,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 15/15] arm64: dts: exynos: Add CPU clocks for Exynos850
-Date: Wed, 21 Feb 2024 21:02:35 -0600
-Message-Id: <20240222030235.27815-16-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240222030235.27815-1-semen.protsenko@linaro.org>
-References: <20240222030235.27815-1-semen.protsenko@linaro.org>
+	s=arc-20240116; t=1708571111; c=relaxed/simple;
+	bh=VMRkbLEjqUTkcPnLk3R6EX0JT8iU2w6INN6blLRwMh0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YbiDrF4ODRLfPnuM90L0a3iL21QhUSJNkHw+my6/8IqyiQ8Upx4u7/+m5SQnWVV2RYWUPSqAdbM2ZgeXFYl13gpBa/lJ6WcvrQ4Cpt4oXNDVDiOVZ4Bg9oZlSnYFXMKkLGq1ABy2woznMHTH3GufDJWWpDHfouGMZFMQ6et3RNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: dec48d24f8744cd390939199d634908f-20240222
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:2a7a28f5-87e9-4e39-82bc-737083c6beef,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:2a7a28f5-87e9-4e39-82bc-737083c6beef,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:65d82b84-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:24022208111331ZIVHI4,BulkQuantity:5,Recheck:0,SF:64|66|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:40,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,
+	TF_CID_SPAM_SNR
+X-UUID: dec48d24f8744cd390939199d634908f-20240222
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 204878516; Thu, 22 Feb 2024 11:04:57 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id A2911E000EBC;
+	Thu, 22 Feb 2024 11:04:57 +0800 (CST)
+X-ns-mid: postfix-65D6B9D9-567320297
+Received: from [172.20.15.254] (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 72739E000EBC;
+	Thu, 22 Feb 2024 11:04:56 +0800 (CST)
+Message-ID: <0f51c6ba-a6c0-4fbf-9b00-21cea6d59ca9@kylinos.cn>
+Date: Thu, 22 Feb 2024 11:04:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cred: Use KMEM_CACHE instead of kmem_cache_create
+To: Paul Moore <paul@paul-moore.com>
+Cc: axboe@kernel.dk, elena.reshetova@intel.com, linux-kernel@vger.kernel.org
+References: <20240130094037.76895-1-chentao@kylinos.cn>
+ <CAHC9VhQG6XAm3R3wtgFrb0b0UHoxkSV2yziVAnUy2x7Ovun_pQ@mail.gmail.com>
+ <CAHC9VhRLNHT0ar2YPkZBsyha_mh6Ggf6=V2gnbFkdo7ryXmHnQ@mail.gmail.com>
+Content-Language: en-US
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <CAHC9VhRLNHT0ar2YPkZBsyha_mh6Ggf6=V2gnbFkdo7ryXmHnQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Define CPU cluster 0 and CPU cluster 1 CMUs, which generate CPU clocks,
-and add corresponding CPU clocks to CPU nodes.
+Thanks for your reply.
+On 2024/2/22 08:10, Paul Moore wrote:
+> On Thu, Feb 15, 2024 at 10:54=E2=80=AFPM Paul Moore <paul@paul-moore.co=
+m> wrote:
+>> On Tue, Jan 30, 2024 at 4:40=E2=80=AFAM Kunwu Chan <chentao@kylinos.cn=
+> wrote:
+>>>
+>>> commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+>>> introduces a new macro.
+>>> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+>>> to simplify the creation of SLAB caches.
+>>>
+>>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>>> ---
+>>>   kernel/cred.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> This seems reasonable to me, unless I see any objections I can pull
+>> this via the LSM tree next week.
+>=20
+> Actually, never mind, the original posting has some non-ASCII junk in
+> the patch and I'm not able to import it cleanly.
+Thanks for reply.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
-Changes in v2:
-  - Add "for Exynos850" part to the commit title
+I checked the patch with the checkpatch.pl script and applied it to=20
+another machine to compile and found no issues.
+Seems ok to me, what should I do next to clean up that non-ASCII junk.
 
- arch/arm64/boot/dts/exynos/exynos850.dtsi | 26 +++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-index 2ba67c3d0681..0706c8534ceb 100644
---- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-@@ -93,6 +93,8 @@ cpu0: cpu@0 {
- 			compatible = "arm,cortex-a55";
- 			reg = <0x0>;
- 			enable-method = "psci";
-+			clocks = <&cmu_cpucl0 CLK_CLUSTER0_SCLK>;
-+			clock-names = "cluster0_clk";
- 		};
- 		cpu1: cpu@1 {
- 			device_type = "cpu";
-@@ -117,6 +119,8 @@ cpu4: cpu@100 {
- 			compatible = "arm,cortex-a55";
- 			reg = <0x100>;
- 			enable-method = "psci";
-+			clocks = <&cmu_cpucl1 CLK_CLUSTER1_SCLK>;
-+			clock-names = "cluster1_clk";
- 		};
- 		cpu5: cpu@101 {
- 			device_type = "cpu";
-@@ -254,6 +258,28 @@ cmu_peri: clock-controller@10030000 {
- 				      "dout_peri_uart", "dout_peri_ip";
- 		};
- 
-+		cmu_cpucl1: clock-controller@10800000 {
-+			compatible = "samsung,exynos850-cmu-cpucl1";
-+			reg = <0x10800000 0x8000>;
-+			#clock-cells = <1>;
-+
-+			clocks = <&oscclk>, <&cmu_top CLK_DOUT_CPUCL1_SWITCH>,
-+				 <&cmu_top CLK_DOUT_CPUCL1_DBG>;
-+			clock-names = "oscclk", "dout_cpucl1_switch",
-+				      "dout_cpucl1_dbg";
-+		};
-+
-+		cmu_cpucl0: clock-controller@10900000 {
-+			compatible = "samsung,exynos850-cmu-cpucl0";
-+			reg = <0x10900000 0x8000>;
-+			#clock-cells = <1>;
-+
-+			clocks = <&oscclk>, <&cmu_top CLK_DOUT_CPUCL0_SWITCH>,
-+				 <&cmu_top CLK_DOUT_CPUCL0_DBG>;
-+			clock-names = "oscclk", "dout_cpucl0_switch",
-+				      "dout_cpucl0_dbg";
-+		};
-+
- 		cmu_g3d: clock-controller@11400000 {
- 			compatible = "samsung,exynos850-cmu-g3d";
- 			reg = <0x11400000 0x8000>;
--- 
-2.39.2
+And i use :perl -ne 'print if /[^[:ascii:]]/'=20
+0001-cred-Use-KMEM_CACHE-instead-of-kmem_cache_create.patch seems ok too.
+>=20
+--=20
+Thanks,
+   Kunwu
 
 
