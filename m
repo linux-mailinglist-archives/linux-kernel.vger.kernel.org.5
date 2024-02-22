@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-77068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E4678600D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:17:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB1448600DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFD061C24AD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:17:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56CEDB26753
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B7115B98C;
-	Thu, 22 Feb 2024 18:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372E515CD64;
+	Thu, 22 Feb 2024 18:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Prc0E+AP"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iIbz+QgS"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F37E15B0FE;
-	Thu, 22 Feb 2024 18:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D801815B971;
+	Thu, 22 Feb 2024 18:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625679; cv=none; b=JP9HPt+nmhhwyJm1aiZYu3ZGHP8xY3YG/mazqRungWEB3WOJsKtlW2aRcyANLKlmAIzClQudgs597sqVrPxzOICd4G+0z1na9ZqnzBa8FSC5KUSrYunaM3uiVZ/uXflX79Zkn/8+BVq/rV1R4q8HXajfoWS9kxLA4wJI0J7wE9o=
+	t=1708625680; cv=none; b=MoxpTHG66W+nmma0VWkIzN7wTZkPrbiylGcC3/IC2GW1RqDzUuPJ4gIPYrtty3FDjEFAbw20KljBZvYC0QtnIFxgGwfn9VKp3qOwyDj6o5XAiWaPvPlk8nk2bX4pIrUQmTGABxo8yEUGSicZVmvDRmydSp9y5FVnvdPBtuP+Y9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625679; c=relaxed/simple;
-	bh=j1JuK72lFu/VKsjL5teL4R8pfxfWUvJcKM4VxQumWtg=;
+	s=arc-20240116; t=1708625680; c=relaxed/simple;
+	bh=VQAh5ZV9wY5Ul9uQ7BUU57UTPtumS14kEbBWZKhZ10Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R5oe2EwE20rT0Rg6y6l2J4BNDpYzwugWb+FPSSP8Nc1Ztqs4E49Jw6s5tdPduVBLHntE1qXyvCOeI3BbJJF9G7QgNxH6kbXCaQff7U0XSQeFdL4bnn4tujnystVGXG8UvqCnhRrVXjENUhqLIADx0iuVaWp50rbfe5l+HbAVcYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Prc0E+AP; arc=none smtp.client-ip=209.85.167.51
+	 MIME-Version; b=cp/WNUNtjfeDEtfMijk+aLVwJBuMJv/0HURJF5WDQHPXvaQhvG2FEbL434MErhDFDX57InCH5fjvU3oJZnxms8bXJsejNAYhh6ClsPUHqI8O/0vyfXouFuUG27OjaEEVlj9p4T49hH1yiOe0h3x/AcmnO4iBpzEfAn499nDp5hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iIbz+QgS; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512be6fda52so122393e87.0;
-        Thu, 22 Feb 2024 10:14:36 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5129e5b8cecso98167e87.3;
+        Thu, 22 Feb 2024 10:14:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708625675; x=1709230475; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708625677; x=1709230477; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=75JkZwTsL4Dcbz0CcBW0plC9VrJj9UCwkyPRaMtpo4c=;
-        b=Prc0E+APlCFXmIzm//SPQvX66/whInYBWH23ERhAlOGbf8ogHx+B0Au+3pmoWFysrl
-         ojjViEgrowpvV7R+I2+KvmzxWN7fW/C4jtrtSh7HynGH+cn+k3HffFAkTtRzN8POZrHK
-         Wk45Fw4qdJTZ17T7+YLB0lMA8yYCoIsrW3wV2wLz6XWymvpBIHyzJFgTBSsBKDObF9pX
-         rM/Bhu0v5DcNNywuoV7aqDPY5nWADlJP1UKCa3D5ecSi03mc18j0WylrwG+7yF7+FR7I
-         JpNiTHCHMOl5iOgMcDTzeFjgIaZL07BJHgapUenSUfqesajvas1nD6Br1cdwrIgUtw7v
-         8LVw==
+        bh=/KDD/bgajALRVWO+j8th9FkNjs1Uxn5aRXvljpgi1rg=;
+        b=iIbz+QgSSQ++rAYG1JPchJDVB0s6ppR4L+a/x5JMhsLoDqA1C6kiO5YfHWST8lMdyB
+         C8agKesKgqtxzRUXWZ67u7LxDjDPL/BQbBH+HYqLdjbyr3CeS17ekKV2TyXbKSyKFYvF
+         WBEKBRGvvVgXCidbdFAs47yqNTgVyZs2kRj9Gpmc2RECmNPzWOhmWrDB3BFyUiB8hvpg
+         9yVEDrR5Rkjpj+Hb/fpwkik71ob4ajadZ6Fs/QO/XQOGPoJT/ZMzaIVqYqovD3kU0L07
+         dWGPPp/bvY5iHk+quT7EbVOXf5eXDD3/zkl+6xrhP5GL0JkRVFJqJOKCNqbLgBdkpE75
+         BCCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708625675; x=1709230475;
+        d=1e100.net; s=20230601; t=1708625677; x=1709230477;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=75JkZwTsL4Dcbz0CcBW0plC9VrJj9UCwkyPRaMtpo4c=;
-        b=C4iFaPCPNbmOxpuBaERaIbBfQPPCLpujWcPY2fFjFQedYhGnw8RHYgiUV912M81uHF
-         y0YoPA02Nwx7fikzUzVboifFyZwB7AKbjG4aN/VJfmw+NVMptTUsCjlAExroc3yT6Bb+
-         4wNppgVdJoaZIp3ayX5pjdQMOSCBvMo9Fqs8bMLlgUOZnmH20khWFUYemoarl19VvpUZ
-         MjPQ3l0ya+nGNkY7F56et2bdkH6ilqDm33tccWPv3Im5hhu7CdeXeCp3tenwJCWnS84K
-         9agrsY9aiLEspS7ooucVKY1JcZnRTpmnlGHx/lCIUB4syVWQL0czy8wq0Jd70mKFZt8o
-         8DJw==
-X-Forwarded-Encrypted: i=1; AJvYcCVS69ea1e3rNE+QC5Nx+f4Dtu8zsP7uZ+9D5j1/lI8dr1PLRqDslsT0NLM/EeZmflDeY+0T8kKYewQNACcrowNQ0+OD/hiLMgLiviwfV/N1lwziGfLPwPxJsVB16av4U3wkVt23TPrF+w==
-X-Gm-Message-State: AOJu0Yy9Kp9Sdco65/fwNLe45T994M/67irfGUTRYUV0N/hBbXHzXpVu
-	9H9YoQbcal8gaKx2bP80zuA+hvi7Oxz7KyGrI6gctX9VUxujTaBm
-X-Google-Smtp-Source: AGHT+IHL5/hu6VK7d3WPOWjLHTAPQ0FqlAB/KtPSK88tLkHZmTgfAUxJRAjJ8Q5xs1zpJYKDO1R7kg==
-X-Received: by 2002:a19:5e42:0:b0:512:aa57:f38b with SMTP id z2-20020a195e42000000b00512aa57f38bmr10450667lfi.53.1708625675351;
-        Thu, 22 Feb 2024 10:14:35 -0800 (PST)
+        bh=/KDD/bgajALRVWO+j8th9FkNjs1Uxn5aRXvljpgi1rg=;
+        b=TDMVltf7IDpjTJ1/IMF/ZgpGuo8FaQXb6JAs3Pxs4CLDZAktXlAggQAQJlHPQpbmtb
+         IgS4chj6a8mZeWt7ntTl6gLuiNfBUaBZwns+JRUBqCzZtfPG4qwikUUkwNvVgNyMz4U/
+         zHC3/ERqb/8PwpIhFNEo0cPS+Yp0OFcTqC9v8vgqnjoQQIHBlIe8Xb76CmINy0iYTEPb
+         kgH+DQ5kJNBqoDziruE/tEvir7xcdmIH2gGeST40lIr5dXqa4mn7K+H+HfHUvFDZ6Ja4
+         2vwae5Zq+VJXdo4IQsNXHX9UwHtnDNDK+fo5meuwi7SlamsFt1nLqIHRaTP0WloNy+2b
+         3F1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUCRUeojL91m34YbZGX8xiOqaGhqoIeIR+zV6+IDBdXqnP+GxiWi+LGKtEWJOO3lepFwsXyeHvDPafcRtF2NDLd80qUWfOlC1rfKT7XzLuQeafye1CtLDJzPqHHJUxParp20I9w3zd9fw==
+X-Gm-Message-State: AOJu0YyBnZg3K70pC93r6O4Uk5ZRu/Oixmj+PJMQ5gLT0HsnuYbBQevz
+	Jxt3amDkVIQ2sbXqpWAQgzYhcJy16Z/VKjGHiTKUVhxnpMXTjAA4
+X-Google-Smtp-Source: AGHT+IEqX3LxEhT5jkFdrvdQSh0VSFYxzZfMDjApSMdtK11qjBKsdW+5JPn+EfVyBINk1xssUQMbPQ==
+X-Received: by 2002:a05:6512:1327:b0:512:99a3:62eb with SMTP id x39-20020a056512132700b0051299a362ebmr13469414lfu.54.1708625676990;
+        Thu, 22 Feb 2024 10:14:36 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id x18-20020a056512047200b00512a62a176bsm2030675lfd.26.2024.02.22.10.14.34
+        by smtp.gmail.com with ESMTPSA id a10-20020ac25e6a000000b00512dd50af1dsm296800lfr.22.2024.02.22.10.14.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 10:14:35 -0800 (PST)
+        Thu, 22 Feb 2024 10:14:36 -0800 (PST)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Michal Simek <michal.simek@amd.com>,
 	Alexander Stein <alexander.stein@ew.tq-group.com>,
@@ -82,9 +82,9 @@ Cc: Serge Semin <fancer.lancer@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-edac@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 08/20] EDAC/synopsys: Drop internal CE and UE counters
-Date: Thu, 22 Feb 2024 21:12:53 +0300
-Message-ID: <20240222181324.28242-9-fancer.lancer@gmail.com>
+Subject: [PATCH v5 09/20] EDAC/synopsys: Drop local to_mci() macro definition
+Date: Thu, 22 Feb 2024 21:12:54 +0300
+Message-ID: <20240222181324.28242-10-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240222181324.28242-1-fancer.lancer@gmail.com>
 References: <20240222181324.28242-1-fancer.lancer@gmail.com>
@@ -96,71 +96,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-First of all these counters aren't exposed anyhow from the driver.
-Secondly the EDAC core already tracks the total amount of the correctable
-and uncorrectable errors (see mem_ctl_info.{ce_mc,ue_mc} fields usage).
-Drop the useless internal counters then for good.
+The to_mci() macro was added in commit 1a81361f75d8 ("EDAC, synopsys: Add
+Error Injection support for ZynqMP DDR controller") together with the
+errors injection debug feature. It turns out the absolutely the same
+macro-function has already been defined in the edac_mc.h (former
+edac_core.h) header file. No idea why it was needed to have a local
+version of the macro, but there is no point in it now. Drop the local
+macro-function definition for good.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-
 ---
-
-Changelog v4:
-- Drop redundant empty line.
-- Drop private counters access from the check_errors() method too.
----
- drivers/edac/synopsys_edac.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ drivers/edac/synopsys_edac.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 6976ef84e952..5099246db90e 100644
+index 5099246db90e..21b0d791cb8b 100644
 --- a/drivers/edac/synopsys_edac.c
 +++ b/drivers/edac/synopsys_edac.c
-@@ -304,8 +304,6 @@ struct synps_ecc_status {
-  * @message:		Buffer for framing the event specific info.
-  * @stat:		ECC status information.
-  * @p_data:		Platform data.
-- * @ce_cnt:		Correctable Error count.
-- * @ue_cnt:		Uncorrectable Error count.
-  * @poison_addr:	Data poison address.
-  * @row_shift:		Bit shifts for row bit.
-  * @col_shift:		Bit shifts for column bit.
-@@ -319,8 +317,6 @@ struct synps_edac_priv {
- 	char message[SYNPS_EDAC_MSG_SIZE];
- 	struct synps_ecc_status stat;
- 	const struct synps_platform_data *p_data;
--	u32 ce_cnt;
--	u32 ue_cnt;
+@@ -940,7 +940,6 @@ static const struct of_device_id synps_edac_match[] = {
+ MODULE_DEVICE_TABLE(of, synps_edac_match);
+ 
  #ifdef CONFIG_EDAC_DEBUG
- 	ulong poison_addr;
- 	u32 row_shift[18];
-@@ -592,13 +588,8 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
- 	if (status)
- 		return IRQ_NONE;
- 
--	priv->ce_cnt += priv->stat.ce_cnt;
--	priv->ue_cnt += priv->stat.ue_cnt;
- 	handle_error(mci, &priv->stat);
- 
--	edac_dbg(3, "Total error count CE %d UE %d\n",
--		 priv->ce_cnt, priv->ue_cnt);
--
- 	if (priv->p_data->quirks & SYNPS_ZYNQMP_IRQ_REGS)
- 		writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
- 
-@@ -624,12 +615,7 @@ static void check_errors(struct mem_ctl_info *mci)
- 	if (status)
- 		return;
- 
--	priv->ce_cnt += priv->stat.ce_cnt;
--	priv->ue_cnt += priv->stat.ue_cnt;
- 	handle_error(mci, &priv->stat);
--
--	edac_dbg(3, "Total error count CE %d UE %d\n",
--		 priv->ce_cnt, priv->ue_cnt);
- }
+-#define to_mci(k) container_of(k, struct mem_ctl_info, dev)
  
  /**
+  * ddr_poison_setup -	Update poison registers.
 -- 
 2.43.0
 
