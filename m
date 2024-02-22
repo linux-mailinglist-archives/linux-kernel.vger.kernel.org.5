@@ -1,91 +1,108 @@
-Return-Path: <linux-kernel+bounces-76843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4317685FD81
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E72C585FD88
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5535C1C248F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:03:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 242621C24ED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:04:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DC1150996;
-	Thu, 22 Feb 2024 16:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28BC151CDD;
+	Thu, 22 Feb 2024 16:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PS7wXuAw"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/ISuEyS"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC9314F9E7;
-	Thu, 22 Feb 2024 16:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45ADE150986;
+	Thu, 22 Feb 2024 16:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617804; cv=none; b=KZO9JwL4+YA56d613zqzJINxFGAnQMudg0NaGN1ThWB6SX4ToZBXjFX6cHaxPRBpY82sC5eNIxQTSdDBoqD890KOFo12wohUHPALldDlzn+XExaxcs5rLPZjUJN8eWJZoCgFzaLYPmgS/tTER0ijiCIFsau7obKXL8nI9B/XdtE=
+	t=1708617865; cv=none; b=KyBxulLpAXt5Mqx9WQN1vl7j8YJyapLWm36ZDCTiPAIc9ERFaQ5H29bAyzZIjoyww4hVVl8h81rKokLIyR84OL4YG7PKiqSjiIx0f8kkLtqCHidXWQO/PWVDGfE2jFGkks8Hr6tpeLIRUFli21JQbMytqDw4chKobXhUbRRfgPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617804; c=relaxed/simple;
-	bh=/wFw9YSuI9zcQ/LNkPy0aQWduY5c3j/BYq0CnuD5GsQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOQzEVlzyczduGUwsi+rH6bVw8p4BtPcHHVHG5U4529hkIuPJdStEkvk0RoHXvf7oSrjuRF6sw3NxbgrLc5Eu8XuU1Tr+Z7XgCMkvmQUGKxBqDqDEN23aMaD6ISeiu6+YHjmEX5ixwOl6d91lLOWxEy+jyxhXNRME8H5HxTsdbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PS7wXuAw; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=hTo2vh8op0bT3tEUtwhGOi1VLFI+ijx3iYvYYb7CfwI=; b=PS7wXuAw8lZ8GBrFmVpTkfUOGH
-	6W0EWv2KQFOAZU8YkN1qlzhthap25pdsmMxha+7oQW8VHAUR/Vm9zaQC5pyl5aSxpqh0p0RJy3k7F
-	Xr8OOUKPjXXKFqPnkiOz59lZeN59A5x82yKYHgNrOZ3SRxjk3XZOMxE+PkbCSgKi47YlfwxsdVbj3
-	D3zeBJx7Poy66QyzmC6JrC0CMK4sTBuok7/hvVZArSQkybxkWQoTHjY503K/r5enpDsbnz2CmZZVd
-	AOudf+5EmYTxTIcPCEL6+A7WihJsnXjq7fWh4KQq4kVZuKLB5q78mdZK5Yp2lEjwm2CHPSKqhkxg+
-	vA6R/wLw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdBXc-00000005XBO-2mrq;
-	Thu, 22 Feb 2024 16:03:20 +0000
-Date: Thu, 22 Feb 2024 08:03:20 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	Joel Granados <j.granados@samsung.com>,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/4] sysctl: move sysctl type to ctl_table_header
-Message-ID: <ZddwSOaFcr0jUmdA@bombadil.infradead.org>
-References: <20240222-sysctl-empty-dir-v1-0-45ba9a6352e8@weissschuh.net>
+	s=arc-20240116; t=1708617865; c=relaxed/simple;
+	bh=JVBLLr+iZprmUmwCC+R0KK2nXOwL2BBt8Mfr8ABnv2g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KtHqGdHAe9/+qFFCrCWXhpxsXyZmLOrhdWmQy2/GLje44Jo59yVHMtxxndnxJm0e21v2+T96T4IY2TRCi/XSow5hvzJClX5hr+W2Bz0Exyap/G32/84CxfmxqpnIioUZQbqtyF3jQvhzk5VQU+KFPSBMwNb+uXN5iwtjs4Fghgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c/ISuEyS; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41279203064so11996485e9.1;
+        Thu, 22 Feb 2024 08:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708617861; x=1709222661; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JVBLLr+iZprmUmwCC+R0KK2nXOwL2BBt8Mfr8ABnv2g=;
+        b=c/ISuEySjzZoXx3vE4Fdtk4MEdz4pgt9Q49BMWQTITPe23PuMDhoYEeDqbhmijM3+L
+         xkgv5waOYJQ1Ms5cx/y4YkxlxIwBwjJIg1Sd2j8oTtKyLQT4pjw3hU8kmL03RTQNbnST
+         1VUvOgyWGDWdaF/PgTkgbNVKWmkhy/yufZCqQsObhw3e5OPMuKRmg/TGeTpLGebNC8td
+         1vOxf8+2RNyj2TnxVe/h0xiRang1ev4I+h+BlfEsmZPfB9tZ0aSG8OwuJNBJPf/x8keh
+         eMkZwlNiJaUXgwQFmFQ9sauFdLWrG9QwrRDdaFMB3wpfl+Si2N4/nBi3N8sU31k+h4mU
+         Tn8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708617861; x=1709222661;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JVBLLr+iZprmUmwCC+R0KK2nXOwL2BBt8Mfr8ABnv2g=;
+        b=CcEQoG6s5i+k55EVRT97RfxQyXdKdkTOGWq5l+C1/zapyspwiPgL5cYXsTTMPUkWnW
+         nRGROMJiYv3B9Dszd4vC3aMxWL3OC+tqL1DhO+xtrnKIJvHMd+7LDeSAXzXMCEuFU/Lj
+         yZLxqAgXJz73kHfmtsLGHZvRQegcfpA2eU52zecqX0Xmxy8dpWNIPxQKiQUNkNcd1vgp
+         KbD/kZEz/wYHjdXbaPSe6LSoDqFsk3UhyIqvA5lGLbdZu8m/mKVJVUvdqeSA34y00PRx
+         8fAtm8oEmgtHY9EFOUsLWnhBYaUIxyn82Kg2bMz/rBelmzjjf43h4GZkAIHIkwQeC4zU
+         dAMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7/NRctY4VmS+6N9uomRDczrdABAB0deQ3Smo87/JR4A95jtYrZtkyR354DMOyFLK8RLGIauTL5VJtbf1yQAw8bCUmxSe43Zc8QibRDPBDLmST6CckRvc87WX1nZlnKXrxsT2/I8yub2Pe0p+07dL0U2f3T1kcJliB
+X-Gm-Message-State: AOJu0YyngMiM81Ca06m0IUPsLybWsiIoSXOUbI0tZd6hG15w2yULLIv9
+	qKJMCQe0ODrQOE5dMu/lcvki7hQUBxkrN0jnffgC5Jzek7UBE7SIm8Hqh/C2FgL0h4cNY+s4K0W
+	cFVuOUeWdyKHWfeChd0Qs9cUHC1c=
+X-Google-Smtp-Source: AGHT+IGB2NfIFYABbvqpx+xGpqV1zazBTchiC+Rsgsxx7Uav42ncBZx3rYUdxZGSjR+FGf5b0qDXtAOwJep8kJ5sQgk=
+X-Received: by 2002:a5d:64e5:0:b0:33d:5e4d:51c0 with SMTP id
+ g5-20020a5d64e5000000b0033d5e4d51c0mr8963375wri.25.1708617861318; Thu, 22 Feb
+ 2024 08:04:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240222-sysctl-empty-dir-v1-0-45ba9a6352e8@weissschuh.net>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <87r0jwquhv.ffs@tglx> <c4c422ac-d017-9944-7d03-76ad416b19a4@igalia.com>
+In-Reply-To: <c4c422ac-d017-9944-7d03-76ad416b19a4@igalia.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 22 Feb 2024 08:04:09 -0800
+Message-ID: <CAADnVQ+9vTBj9GgxotLF0_oV7cNFRebmcq_DNUm+cRJHQXCz1Q@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in copy_from_kernel_nofault
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>, Jann Horn <jannh@google.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Borislav Petkov <bp@alien8.de>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	bpf <bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"luto@kernel.org" <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 08:07:35AM +0100, Thomas Weißschuh wrote:
-> Praparation series to enable constification of struct ctl_table further
-> down the line.
-> No functional changes are intended.
-> 
-> These changes have been split out and reworked from my original
-> const sysctl patchset [0].
-> I'm resubmitting the patchset in smaller chunks for easier review.
-> Each split-out series is meant to be useful on its own.
-> 
-> Changes since the original series:
-> * Explicit initializartion of header->type in init_header()
-> * Some additional cleanups
-> 
-> [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net/
+On Thu, Feb 22, 2024 at 6:30=E2=80=AFAM Guilherme G. Piccoli
+<gpiccoli@igalia.com> wrote:
+>
+> Hi Thomas et.al,
+>
+> I've been testing some syzkaller reports and found 2 other bugs that are
+> fixed by this patch (see other report at [0]).
+>
+> So, is there anything we could do in order to get it properly submitted
+> / merged? Lemme know if I can help in anything, I could submit it myself
+> if you prefer, keeping you as author and adding the tested tags.
+> BTW, feel free to add:
+>
+> Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 
-This all looks super sexy to me, but I'd love Eric's feedback on patch
-series before merging as he may know some other facts over sysctl_mount_point
-I might be missing.
-
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-
-  Luis
+The fix is bpf and net trees and probably will be sent to Linus today
+as part of net PR.
 
