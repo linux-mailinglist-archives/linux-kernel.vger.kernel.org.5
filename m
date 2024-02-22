@@ -1,71 +1,113 @@
-Return-Path: <linux-kernel+bounces-77354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC4F860441
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:00:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8420860445
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CE81C21F18
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:00:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CB5C28A3A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E456771749;
-	Thu, 22 Feb 2024 21:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED97E6AF9F;
+	Thu, 22 Feb 2024 21:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RzVo8jjC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tyupwmMg"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E12671752
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB286AFB7
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708635607; cv=none; b=uznKBq3SOO+/NmQ96tzGdkHvm1qlGXvaGV0kaTb6byfebo+N8NhPwjtm1JPTmPXWl8WEcaEoQHyKC8V2GNMj+pxMfe0TVDxVtjTJ1A1xv6abzN9i2YvuJvdB+WIMKjrg8Lg0tgbBnGL4b+Fg4rBDwv1kXKG+tVndbKwmC2Suvj8=
+	t=1708635622; cv=none; b=pfhlgvWqy3RSVUh1ZLB3wp3h2uJYFbuf7C7y2uL4dlNHgQmzDIBQOebZDShej7L6Fw/0A0A9HB6wt7AmvMeW5/f83C58HGejgLhsw7f/VmW1xU0MBj5ny4O23CiIUMN2h2UUS5eIq8tj24B1hZB95BgqVOn4YvVztKe1J6lWOlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708635607; c=relaxed/simple;
-	bh=HymouZr2YHKpHb3mvgD1ibkZ/BT1PspGINwhb5XB978=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=g61s2NQtQinzhaIeGg/p8z5g08hxk+mFDYXRlabqvdCBVLOzudMO6MAbsQZ+sEvPQ9JziPHOr+dR0cRvzcDEpqJ1NDF6M6Z4E7ZzwYshRu5p/CfgWkOOPOg2JEk0Dv3LpBknfeySxYHRmeBXk0ZAvJ7kXwg77u+qsOyWl3LSKTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=RzVo8jjC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E32C433F1;
-	Thu, 22 Feb 2024 21:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708635606;
-	bh=HymouZr2YHKpHb3mvgD1ibkZ/BT1PspGINwhb5XB978=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RzVo8jjCWjxbKTR0lq4p74IvclPrBtHc0dD6boesc39QJaNz4PlZn+6LQH1Mbcst+
-	 6Z8ynsaGqqGbItqtA8y89ryPQyb/BTsyh23/5cSpzmc4BvRsvS8/43kmPr0MVMBp2/
-	 pnPQSdlh8lZQANoKTmmsTr/QU8xbguAK4lvXf0Uo=
-Date: Thu, 22 Feb 2024 13:00:05 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: aarcange@redhat.com, surenb@google.com, david@redhat.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: userfaultfd: fix unexpected change to src_folio
- when UFFDIO_MOVE fails
-Message-Id: <20240222130005.c3f24eed1c1a27c66947e9df@linux-foundation.org>
-In-Reply-To: <20240222080815.46291-1-zhengqi.arch@bytedance.com>
-References: <20240222080815.46291-1-zhengqi.arch@bytedance.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708635622; c=relaxed/simple;
+	bh=HFx919FoBoatQ0QsWPsYN4OR0O/n414ORi4Ge3ph5Q4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nM8tauyczieWg/9SPwvcBUEbJS226jcioGMHa1N4/wxQ6yHhcTtyIaADXsFLjYWT1U372fO8gmI4IzPh5HWoHJTaDHyVEwDudKyi7krkYyfnlNMmf6DZIhj7bGMAs//FiazLiHPoL5hNalkRRhyoxX8FsKbG+WHuJ7RCn/yhOLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tyupwmMg; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dbed0710c74so140673276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:00:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708635619; x=1709240419; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dmvjj7fhOobzTivUlelD//oyOg39L8TaqEJkHM6CbjU=;
+        b=tyupwmMgbdwGS1cp/Ek63vQhmqjDH9Ux5eZfR1JfKBmiID2zkGljsHX9TgPpJVqR3u
+         E9ZsJ2eneLV5Lm+LJN06G3j2N/ZieEGXF6rs+hi9RrKewv6sORYoKhvYifFIfxEgacoI
+         /p3b3ZJtJvRW2I68jvEDOJAc60zc6IcoqyX8tpgef3TFwlxvXMxHU7xkOZdPnEkyrHIo
+         HIUCJbRBsJp8JFLGT8ANy8VUpK3Y5cHQCRE7L3jxlRbbm9u39Pb7bkbJf4b5iYzdeIJ8
+         Hkvwty/42rwICyhj0mVZs4KLm1PM9h0ET1Ed4/fX3LuamhOBAjY5Q+NZXEJtOeDa8NgE
+         o67w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708635619; x=1709240419;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dmvjj7fhOobzTivUlelD//oyOg39L8TaqEJkHM6CbjU=;
+        b=nf3eNG0pN7GYYqcr91d6zGvo009MvPEla7P4R2SRb4J1aqE9lixi1wXwyVLBioEglT
+         Wf9Lw81WHT+dAu8oN9wWJOuMxZT9Ea3iJupuloizFABFMM61Kl568a2BuAEDa8PtHyKP
+         ISAYET7c60pP+dO6tYoLUjcvJ75y0+rpilJoc80ysNNnOId7yBkqzWG4qE10AB2uygvQ
+         WUCdjUczag0pDYEgU4YYgdBO0/bXEcrQv8aAzpOeJEseTtbrE8ojrKMnS7I2V6xQMueQ
+         SzQusNgudK/B2/1dPb3n2QAvnM11UEREjb2u2RAp9/idJQidMa3Kv8uSnUhrhn+A6Vr9
+         BIgA==
+X-Forwarded-Encrypted: i=1; AJvYcCWIHkq2WvLKE/2o1BNb/gcgk6ritdV/z2uH72avjVbY186Q46MeSOxAJjlUNmPek4jmuxUPv4951X9++CW1DiCmyS+lYQx2MBsB4U8M
+X-Gm-Message-State: AOJu0YykX7XgzuJQdnlT6T0ZMzuxcFQCTcPX7QRmBu+rYnuokwvLYRYy
+	DVLKAm/bAGoHR2DeUEHDV1iSC7wohLenfBqfi8qcqT0cTRdckJPZEL68p8VjER8Wr2ipAlo/ipl
+	rs7Jwd6w0oyEXEMgRn/GrRZ98Ts88Tv4FKhEVmA==
+X-Google-Smtp-Source: AGHT+IFdnFEXZ/1Ob2Rd+e7Qs1/dnY3m9z+vfb8chmIF2GjOTnC5mGKNn2WgjovOSKHSnuhiBw7HcB/7y1Jd6eekJXs=
+X-Received: by 2002:a5b:d05:0:b0:dcc:8aaa:3ed3 with SMTP id
+ y5-20020a5b0d05000000b00dcc8aaa3ed3mr303376ybp.16.1708635619664; Thu, 22 Feb
+ 2024 13:00:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240217150228.5788-1-johan+linaro@kernel.org> <20240217150228.5788-2-johan+linaro@kernel.org>
+In-Reply-To: <20240217150228.5788-2-johan+linaro@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 22 Feb 2024 23:00:08 +0200
+Message-ID: <CAA8EJprBs8ASwZMAHFMQUEg7NN67rzRtUX--8h72-7F9R_=o6Q@mail.gmail.com>
+Subject: Re: [PATCH 1/6] drm/bridge: aux-hpd: fix OF node leaks
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Vinod Koul <vkoul@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Rob Clark <robdclark@gmail.com>, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 22 Feb 2024 16:08:15 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+On Sat, 17 Feb 2024 at 17:03, Johan Hovold <johan+linaro@kernel.org> wrote:
+>
+> The two device node references taken during allocation need to be
+> dropped when the auxiliary device is freed.
+>
+> Fixes: 6914968a0b52 ("drm/bridge: properly refcount DT nodes in aux bridge drivers")
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-> After ptep_clear_flush(), if we find that src_folio is pinned we will fail
-> UFFDIO_MOVE and put src_folio back to src_pte entry, but the change to
-> src_folio->{mapping,index} is not restored in this process. This is not
-> what we expected, so fix it.
-> 
-> Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-What are the expected worst-case userspace-visible runtime effects of
-this flaw?
+> ---
+>  drivers/gpu/drm/bridge/aux-hpd-bridge.c | 3 +++
+>  1 file changed, 3 insertions(+)
+
+
+-- 
+With best wishes
+Dmitry
 
