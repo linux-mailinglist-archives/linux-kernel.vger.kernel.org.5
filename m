@@ -1,175 +1,120 @@
-Return-Path: <linux-kernel+bounces-76108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 913FA85F302
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:32:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B46185F306
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:32:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4641C2841D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:32:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A18F1F265C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64C4822EFB;
-	Thu, 22 Feb 2024 08:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F352511F;
+	Thu, 22 Feb 2024 08:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8dz2Yh8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQ8wZRqx"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86183225CE;
-	Thu, 22 Feb 2024 08:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9FB7469
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708590732; cv=none; b=JxFiUDQLEGumF+6H06RQvmcY7j8E7UveswHVTl8l2m+7z/sP3HUxD7aBYOdxyMjgstTeLt+nHl4XKHBdWbQCFiC5L1BSge8ivtWx1yNegROzeWxMH6m1X49T7Y/UIOYe9D4QfPYXU8ihYa4hxdSvOhwZ2JmS32bm1MhASUsU7WI=
+	t=1708590741; cv=none; b=AwAL3WQenE5UpZUcj1QVEzPHtc+6D6kP8wtDQMrrYbWDUG0nbD0nJ/CLQztPgN4yJ7N6GMw1jNFwWzfC6gDdhMa/1HeayQCY9CtBfaW2W0x96v0n/LbPLKVfxUYsiByCjPuoosdFtbNUvA76y38EDKbOsl7zsT9obRxJJPu4hZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708590732; c=relaxed/simple;
-	bh=N7a5IF82ize/+pzYCn6kEa3/rgM3v7OL3ujPEwZlvg8=;
+	s=arc-20240116; t=1708590741; c=relaxed/simple;
+	bh=L9L8UdAHgkw3u3z3JRXM7P1REEFXeO0sAapccYOXKUM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TS4JR5XnlnfYVu2lGISdz4fa58gfBQ6VVmO0ZxSlwoQ8XnA9XlwlwUxoQDVXxniRrCbC0h4jtDZo6YybSEYfNKZptXk6hhJwqkbyv67LARQfbKMpkA8OyE6efC0KFaVRkErv7uU0nUs/QhQt13KLDXwX58PyoI/XpAHQsAIgxGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8dz2Yh8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C776AC433C7;
-	Thu, 22 Feb 2024 08:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708590732;
-	bh=N7a5IF82ize/+pzYCn6kEa3/rgM3v7OL3ujPEwZlvg8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F8dz2Yh8UDjroLtHv0F9r3QcElMUbyQi+Y1f9K48WIJjH0DM7VWXyWr6NBgBE4kVx
-	 yUv8+iKVg02/jHN029nS3NsIwpi2qGin7BZuGxBsF6BT/P9WiTCQW7niaAuWJkf9hN
-	 r5g2DsWl7+53idn3FLJ4xMx1dd+uqZIC5boLQTRmoyRWkiTf9yTDC87IKLuo0BIyH5
-	 2wFn/ljKYkZhjV65XsYnRRmNhGJst7R6znw64oeB/qiBWhgjPSECUicSYSn1GZPKoa
-	 MHyDfYFyoeQt3LUENvnhPx8y04eXRsKWlxqkmiHD7V0a9jfF8pfjtf1qncVr4eMhpW
-	 2EBRboHk9q+ow==
-Date: Thu, 22 Feb 2024 09:32:09 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Daniel Vetter <daniel.vetter@ffwll.ch>, Intel Graphics <intel-gfx@lists.freedesktop.org>, 
-	DRI <dri-devel@lists.freedesktop.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <4hdbpzyab7djy7gxsn6qjhgmr3qczstfgwhefgar4nuxohajdq@5hn6m3b4m64n>
-References: <20240222124610.383e1ce3@canb.auug.org.au>
- <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fMBFkcY//x4RUBORy1sX+wKBlCjhloQBvq1h0roUeVM1R86zey3+Buq1N15dju9wrdyV3pK4MQlCSWQl1VsPVyS0hwRRF1QKeDUJ95AdWu2/uKOtz1PtRtf81WXpggzQ652rP7PWCmoGjCIbp+x9SIogaN4G9xiSCCmiDlvuRTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQ8wZRqx; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e46b5e7c43so2315591b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:32:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708590740; x=1709195540; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lMWItRQLuK9R7O/ER6wnV+LzSM/KkJ/vGjp2HMnJ18k=;
+        b=WQ8wZRqxM5kOKcn3nMUBzQx5zGzQ6siOsRnPgJwlEymUcDtb7vpPVencdf3ZIzem7m
+         nnS7JvViIv/na0ToqrfZR6yBrUHYaZEECKRBcLWwq/JS1I4Qkuu2TXpNVoaiO58N9GV1
+         jO9wXpa5S622BQVccHOLqJhssKltvJSqLueuqmiefPlSXktLxi887n5KqdlHAvMXJ303
+         TzFc/JFxZin2Zpoky+CUqkymp0Izz+khCsCOTcHD9cTNY/aDTU+Cjqcr4av8/4HES1Xg
+         tbIrK4DoIPUpL9xe3/s6QarmxeQoV5USgr/RDDOIFaw9EWrl7SIgTTaai0lQcQkjxOXj
+         kEqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708590740; x=1709195540;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lMWItRQLuK9R7O/ER6wnV+LzSM/KkJ/vGjp2HMnJ18k=;
+        b=QZbAjMEjoaB/kokDP1pbyeZlGBry/WBRo/HZ1StuwbR73QV/K8X0xCLBwX1HpM9Ggq
+         /qUmTX43cI/9sAdlnZpExpLgDYvAV0pzVqoQsUMo4HPlnjjxubCJEj9IGhxt88XSR1by
+         Raa5gHxDpKWlE5Dg4N2UoP9IdPbJY7kj93tEbOqKUMNgYLrSUIOT7voL6667raULucbV
+         i4cjeuSjDDmo2gjGuLXYcstmxrV2FJCGr6g6fh6CyBqSL3ump1N4u1+b18l7SKUZkHPH
+         m5YzoEHqgO3WWQP+2vuIm2YjqFDrXH8RjWQVJ2UG6O0cvlC2XVJKn5TboWBEPd/i6Vwu
+         cn4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUyAJT8GR6q23KBPC0qe+VnYkVGNOE1xDHN/6JxYuOAw8QPG1Dq5eq4tb1njs+d8Q3f/UwijDAIvoz1k6lZv/U2DjnjgbuVilYRaaHy
+X-Gm-Message-State: AOJu0Yxm5vH1J6k/F6N7/EjlERvIX9NCbMVEF/y33fnLLO7fIqsmFTQU
+	8eF1HU8RrFZQRD2fIfAnn0virl49n74KeMH3Lv0IBaLryAbaJr9m+gU6cpT53gs=
+X-Google-Smtp-Source: AGHT+IEJ/ErXfRjDfnw+40qm4JkSBBudXUJ46+gZtyp3W2miWkvvqHN+J0Ed76vt6iRVz4gD9BMQbQ==
+X-Received: by 2002:a05:6a21:9207:b0:19e:9c32:6073 with SMTP id tl7-20020a056a21920700b0019e9c326073mr23295694pzb.12.1708590739628;
+        Thu, 22 Feb 2024 00:32:19 -0800 (PST)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001d9aa663282sm9360917plg.266.2024.02.22.00.32.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 00:32:19 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 21 Feb 2024 22:32:17 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+	allen.lkml@gmail.com, kernel-team@meta.com
+Subject: Re: [PATCH 6/7] workqueue: Allow cancel_work_sync() and
+ disable_work() from atomic contexts on BH work items
+Message-ID: <ZdcGkd3u190NzCw8@slm.duckdns.org>
+References: <20240221174333.700197-1-tj@kernel.org>
+ <20240221174333.700197-7-tj@kernel.org>
+ <CAJhGHyAOzXVwGy5T-KXpwXgcWp6jLaTGGzspPqQU4Dw+x1GqUg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="27unys4ydult4g2a"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyAOzXVwGy5T-KXpwXgcWp6jLaTGGzspPqQU4Dw+x1GqUg@mail.gmail.com>
 
+Hello,
 
---27unys4ydult4g2a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 22, 2024 at 12:36:29PM +0800, Lai Jiangshan wrote:
+> On Thu, Feb 22, 2024 at 1:43 AM Tejun Heo <tj@kernel.org> wrote:
+> 
+> > @@ -4077,11 +4076,37 @@ static bool __flush_work(struct work_struct *work, bool from_cancel)
+> >
+> >         rcu_read_lock();
+> >         pool = start_flush_work(work, &barr, from_cancel);
+> > +       is_bh = pool && (pool->flags & POOL_BH);
+> >         rcu_read_unlock();
+> >         if (!pool)
+> >                 return false;
+> >
+> > -       wait_for_completion(&barr.done);
+> > +       if (is_bh && from_cancel) {
+> 
+> Can "*work_data_bits(work) & WORK_OFFQ_BH" be used here?
+> If so, the previous patch will not be needed.
 
-Hi Biju,
+Hmm... yeah, if we test from_cancel first, we should know that the work item
+is offq and then can depend on OFFQ_BH. Maybe I'm missing something. Will
+try that.
 
-On Thu, Feb 22, 2024 at 08:14:14AM +0000, Biju Das wrote:
-> > -----Original Message-----
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Sent: Thursday, February 22, 2024 1:46 AM
-> > Subject: linux-next: build failure after merge of the drm-misc tree
-> >=20
-> > Hi all,
-> >=20
-> > After merging the drm-misc tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >=20
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:47:6: error: redefinition =
-of
-> > 'rzg2l_du_vsp_enable'
-> >    47 | void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *crtc)
-> >       |      ^~~~~~~~~~~~~~~~~~~
-> > In file included from drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.h:18,
-> >                  from drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:30:
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:72:20: note: previous
-> > definition of 'rzg2l_du_vsp_enable' with type 'void(struct rzg2l_du_crtc
-> > *)'
-> >    72 | static inline void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *cr=
-tc)
-> > { };
-> >       |                    ^~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:61:6: error: redefinition =
-of
-> > 'rzg2l_du_vsp_disable'
-> >    61 | void rzg2l_du_vsp_disable(struct rzg2l_du_crtc *crtc)
-> >       |      ^~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:73:20: note: previous
-> > definition of 'rzg2l_du_vsp_disable' with type 'void(struct rzg2l_du_cr=
-tc
-> > *)'
-> >    73 | static inline void rzg2l_du_vsp_disable(struct rzg2l_du_crtc
-> > *crtc) { };
-> >       |                    ^~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:66:6: error: redefinition =
-of
-> > 'rzg2l_du_vsp_atomic_flush'
-> >    66 | void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_crtc *crtc)
-> >       |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:74:20: note: previous
-> > definition of 'rzg2l_du_vsp_atomic_flush' with type 'void(struct
-> > rzg2l_du_crtc *)'
-> >    74 | static inline void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_cr=
-tc
-> > *crtc) { };
-> >       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:76:19: error: redefinition=
- of
-> > 'rzg2l_du_vsp_get_drm_plane'
-> >    76 | struct drm_plane *rzg2l_du_vsp_get_drm_plane(struct rzg2l_du_cr=
-tc
-> > *crtc,
-> >       |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:75:33: note: previous
-> > definition of 'rzg2l_du_vsp_get_drm_plane' with type 'struct drm_plane
-> > *(struct rzg2l_du_crtc *, unsigned int)'
-> >    75 | static inline struct drm_plane *rzg2l_du_vsp_get_drm_plane(stru=
-ct
-> > rzg2l_du_crtc *crtc,
-> >       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:302:5: error: redefinition=
- of
-> > 'rzg2l_du_vsp_init'
-> >   302 | int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp, struct device_n=
-ode
-> > *np,
-> >       |     ^~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:66:19: note: previous
-> > definition of 'rzg2l_du_vsp_init' with type 'int(struct rzg2l_du_vsp *,
-> > struct device_node *, unsigned int)'
-> >    66 | static inline int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp,
-> > struct device_node *np,
-> >       |                   ^~~~~~~~~~~~~~~~~
-> >=20
-> > Caused by commit
-> >=20
-> >   768e9e61b3b9 ("drm: renesas: Add RZ/G2L DU Support")
-> >=20
-> > I have used the drm-misc tree from next-20240221 for today.
->=20
-> I will send an incremental patch to fix this build error with x86 on drm-=
-next.
+Thanks.
 
-Any chance you can do it today? We need to send the drm-misc-next PR.
-
-Maxime
-
---27unys4ydult4g2a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdcGiAAKCRDj7w1vZxhR
-xeWEAQDsnNF+oM0G4cjC34BmXGz+r23Jn7SE6VAbXNQULFhk2QD9FOJWgAdMVDMF
-iQ8KOfo32ZmEWCJgyT0sNdl2ytAtVwI=
-=zRxw
------END PGP SIGNATURE-----
-
---27unys4ydult4g2a--
+-- 
+tejun
 
