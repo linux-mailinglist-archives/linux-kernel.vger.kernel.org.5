@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-76649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6500D85FA78
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:57:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832BB85FA7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5DF51F252DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:57:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22A771F240CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248DD1474B3;
-	Thu, 22 Feb 2024 13:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B245137C3B;
+	Thu, 22 Feb 2024 13:57:23 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BC81474A6;
-	Thu, 22 Feb 2024 13:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F35A1474C1;
+	Thu, 22 Feb 2024 13:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610239; cv=none; b=SvOTPgl4BKeyOPUP/ze1mCmrX3ae34cWekTeAcfrjufREXAaQlt2mxltbo4BHK64Fg/9ddprukMOtmsEoLygXXe60RGfKy6JZVqva666xxiDN/2qoLlKPovem2hawAD5Vp5TYL9mhKsOx1RzWOTqRazcUnZced0ucEYIuqWp9Q0=
+	t=1708610242; cv=none; b=KYJzgxKiO2MBQ1aAAeTSzukZ8Q1OpNVpkzNALYAhLnRM0t6YEYxWkLFXtE56x3qbwKGhUZnQyY8JROm0ue26pTzF9xz3hR7eUQeZHkFezgeqzlM5KxWwEnYiRVvXuuH+VQsAe5Jr93QyWgCNj9UtRWVysmMaQmepUMnw6atKdu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610239; c=relaxed/simple;
-	bh=1qnYusaNpig0INkVHatCtHGPaVx9Aabdn3o6JWMH1vQ=;
+	s=arc-20240116; t=1708610242; c=relaxed/simple;
+	bh=+gm91ZtyDofHjM2c3cnsnbGIdaQIAtNdEWIE4qR/lL4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KrO+NWikbwHRFolyCZ6msXTfzyjDACArTk7bjCEvmc2up/D0LzGSLlfivtnCUPqdmPd3KUkzDr8S9ipNFD2eqKRFw+VmQJSbtBmiRN4vtBrd36CWonwgA7v9IKOnXnJslH/iHARNMf6KT4SKlRYoGzkURuB4CrGg9EeVaAQ+eOY=
+	 MIME-Version; b=TSlJEyo3bWGclTIMNMLE8SMll0EAk/cP4wF0ZZ+d+RvbClSCxy6lRKn9fW1t9SaXwrrr/0BDe7GkbBnYj7tRfRtTynJKapn6enbR8gh6r6P3NVU4vsVVteYJslHtPW+wailNrZ4+V9XwUc7dar+HwtYS/aOkfgxdf77SYZg/ZvA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0D0ADA7;
-	Thu, 22 Feb 2024 05:57:55 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4934B1007;
+	Thu, 22 Feb 2024 05:57:59 -0800 (PST)
 Received: from e126645.arm.com (unknown [10.57.50.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 18EB93F762;
-	Thu, 22 Feb 2024 05:57:14 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 946493F762;
+	Thu, 22 Feb 2024 05:57:18 -0800 (PST)
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Cristian Marussi <cristian.marussi@arm.com>,
@@ -44,9 +44,9 @@ Cc: Cristian Marussi <cristian.marussi@arm.com>,
 	Viresh Kumar <viresh.kumar@linaro.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 2/3] firmware: arm_scmi: Populate fast channel rate_limit
-Date: Thu, 22 Feb 2024 14:57:00 +0100
-Message-Id: <20240222135702.2005635-3-pierre.gondois@arm.com>
+Subject: [PATCH 3/3] cpufreq: scmi: Set transition_delay_us
+Date: Thu, 22 Feb 2024 14:57:01 +0100
+Message-Id: <20240222135702.2005635-4-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240222135702.2005635-1-pierre.gondois@arm.com>
 References: <20240222135702.2005635-1-pierre.gondois@arm.com>
@@ -58,198 +58,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Arm SCMI spec. v3.2, s4.5.3.12 PERFORMANCE_DESCRIBE_FASTCHANNEL
-defines a per-domain rate_limit for performance requests:
-"""
-Rate Limit in microseconds, indicating the minimum time
-required between successive requests. A value of 0
-indicates that this field is not applicable or supported
-on the platform.
-""""
-The field is first defined in SCMI v2.0.
-
-Add support to fetch this value and advertise it through
-a fast_switch_rate_limit() callback.
+Make use of the newly added callbacks:
+- rate_limit_get()
+- fast_switch_rate_limit()
+to populate policies's `transition_delay_us`, defined as the
+'Preferred average time interval between consecutive
+invocations of the driver to set the frequency for this policy.'
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/firmware/arm_scmi/driver.c    |  5 ++++-
- drivers/firmware/arm_scmi/perf.c      | 32 +++++++++++++++++++++++----
- drivers/firmware/arm_scmi/powercap.c  | 12 ++++++----
- drivers/firmware/arm_scmi/protocols.h |  4 +++-
- include/linux/scmi_protocol.h         |  4 ++++
- 5 files changed, 47 insertions(+), 10 deletions(-)
+ drivers/cpufreq/scmi-cpufreq.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 3ea64b22cf0d..1d38ecfafc59 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1617,7 +1617,7 @@ static void
- scmi_common_fastchannel_init(const struct scmi_protocol_handle *ph,
- 			     u8 describe_id, u32 message_id, u32 valid_size,
- 			     u32 domain, void __iomem **p_addr,
--			     struct scmi_fc_db_info **p_db)
-+			     struct scmi_fc_db_info **p_db, u32 *rate_limit)
- {
- 	int ret;
- 	u32 flags;
-@@ -1661,6 +1661,9 @@ scmi_common_fastchannel_init(const struct scmi_protocol_handle *ph,
- 		goto err_xfer;
- 	}
- 
-+	if (rate_limit)
-+		*rate_limit = le32_to_cpu(resp->rate_limit) & GENMASK(19, 0);
-+
- 	phys_addr = le32_to_cpu(resp->chan_addr_low);
- 	phys_addr |= (u64)le32_to_cpu(resp->chan_addr_high) << 32;
- 	addr = devm_ioremap(ph->dev, phys_addr, size);
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-index 37c80376bd0a..fbcbd703198a 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -789,23 +789,27 @@ static void scmi_perf_domain_init_fc(const struct scmi_protocol_handle *ph,
- 
- 	ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
- 				   PERF_LEVEL_GET, 4, dom->id,
--				   &fc[PERF_FC_LEVEL].get_addr, NULL);
-+				   &fc[PERF_FC_LEVEL].get_addr, NULL,
-+				   &fc[PERF_FC_LEVEL].rate_limit);
- 
- 	ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
- 				   PERF_LIMITS_GET, 8, dom->id,
--				   &fc[PERF_FC_LIMIT].get_addr, NULL);
-+				   &fc[PERF_FC_LIMIT].get_addr, NULL,
-+				   &fc[PERF_FC_LIMIT].rate_limit);
- 
- 	if (dom->info.set_perf)
- 		ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
- 					   PERF_LEVEL_SET, 4, dom->id,
- 					   &fc[PERF_FC_LEVEL].set_addr,
--					   &fc[PERF_FC_LEVEL].set_db);
-+					   &fc[PERF_FC_LEVEL].set_db,
-+					   &fc[PERF_FC_LEVEL].rate_limit);
- 
- 	if (dom->set_limits)
- 		ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
- 					   PERF_LIMITS_SET, 8, dom->id,
- 					   &fc[PERF_FC_LIMIT].set_addr,
--					   &fc[PERF_FC_LIMIT].set_db);
-+					   &fc[PERF_FC_LIMIT].set_db,
-+					   &fc[PERF_FC_LIMIT].rate_limit);
- 
- 	dom->fc_info = fc;
- }
-@@ -974,6 +978,25 @@ static bool scmi_fast_switch_possible(const struct scmi_protocol_handle *ph,
- 	return dom->fc_info && dom->fc_info[PERF_FC_LEVEL].set_addr;
+diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+index 4ee23f4ebf4a..0b483bd0d3ca 100644
+--- a/drivers/cpufreq/scmi-cpufreq.c
++++ b/drivers/cpufreq/scmi-cpufreq.c
+@@ -144,6 +144,29 @@ scmi_get_cpu_power(struct device *cpu_dev, unsigned long *power,
+ 	return 0;
  }
  
-+static int scmi_fast_switch_rate_limit(const struct scmi_protocol_handle *ph,
-+				       u32 domain, u32 *rate_limit)
++static int
++scmi_get_rate_limit(u32 domain, bool has_fast_switch)
 +{
-+	struct perf_dom_info *dom;
++	int ret, rate_limit;
 +
-+	if (!rate_limit)
-+		return -EINVAL;
++	if (has_fast_switch) {
++		/*
++		 * Fast channels are used whenever available,
++		 * so use their rate_limit value if populated.
++		 */
++		ret = perf_ops->fast_switch_rate_limit(ph, domain,
++						       &rate_limit);
++		if (!ret && rate_limit)
++			return rate_limit;
++	}
 +
-+	dom = scmi_perf_domain_lookup(ph, domain);
-+	if (IS_ERR(dom))
-+		return PTR_ERR(dom);
++	ret = perf_ops->rate_limit_get(ph, domain, &rate_limit);
++	if (ret)
++		return 0;
 +
-+	if (!dom->fc_info)
-+		return -EINVAL;
-+
-+	*rate_limit = dom->fc_info[PERF_FC_LEVEL].rate_limit;
-+	return 0;
++	return rate_limit;
 +}
 +
- static enum scmi_power_scale
- scmi_power_scale_get(const struct scmi_protocol_handle *ph)
+ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
  {
-@@ -996,6 +1019,7 @@ static const struct scmi_perf_proto_ops perf_proto_ops = {
- 	.freq_get = scmi_dvfs_freq_get,
- 	.est_power_get = scmi_dvfs_est_power_get,
- 	.fast_switch_possible = scmi_fast_switch_possible,
-+	.fast_switch_rate_limit = scmi_fast_switch_rate_limit,
- 	.power_scale_get = scmi_power_scale_get,
- };
+ 	int ret, nr_opp, domain;
+@@ -250,6 +273,9 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+ 	policy->fast_switch_possible =
+ 		perf_ops->fast_switch_possible(ph, domain);
  
-diff --git a/drivers/firmware/arm_scmi/powercap.c b/drivers/firmware/arm_scmi/powercap.c
-index a4c6cd4716fe..604184c044ff 100644
---- a/drivers/firmware/arm_scmi/powercap.c
-+++ b/drivers/firmware/arm_scmi/powercap.c
-@@ -703,20 +703,24 @@ static void scmi_powercap_domain_init_fc(const struct scmi_protocol_handle *ph,
- 	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
- 				   POWERCAP_CAP_SET, 4, domain,
- 				   &fc[POWERCAP_FC_CAP].set_addr,
--				   &fc[POWERCAP_FC_CAP].set_db);
-+				   &fc[POWERCAP_FC_CAP].set_db,
-+				   &fc[POWERCAP_FC_CAP].rate_limit);
++	policy->transition_delay_us =
++		scmi_get_rate_limit(domain, policy->fast_switch_possible);
++
+ 	return 0;
  
- 	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
- 				   POWERCAP_CAP_GET, 4, domain,
--				   &fc[POWERCAP_FC_CAP].get_addr, NULL);
-+				   &fc[POWERCAP_FC_CAP].get_addr, NULL,
-+				   &fc[POWERCAP_FC_CAP].rate_limit);
- 
- 	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
- 				   POWERCAP_PAI_SET, 4, domain,
- 				   &fc[POWERCAP_FC_PAI].set_addr,
--				   &fc[POWERCAP_FC_PAI].set_db);
-+				   &fc[POWERCAP_FC_PAI].set_db,
-+				   &fc[POWERCAP_FC_PAI].rate_limit);
- 
- 	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
- 				   POWERCAP_PAI_GET, 4, domain,
--				   &fc[POWERCAP_FC_PAI].get_addr, NULL);
-+				   &fc[POWERCAP_FC_PAI].get_addr, NULL,
-+				   &fc[POWERCAP_PAI_GET].rate_limit);
- 
- 	*p_fc = fc;
- }
-diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
-index e683c26f24eb..8b5d9ce4a33a 100644
---- a/drivers/firmware/arm_scmi/protocols.h
-+++ b/drivers/firmware/arm_scmi/protocols.h
-@@ -234,6 +234,7 @@ struct scmi_fc_info {
- 	void __iomem *set_addr;
- 	void __iomem *get_addr;
- 	struct scmi_fc_db_info *set_db;
-+	u32 rate_limit;
- };
- 
- /**
-@@ -268,7 +269,8 @@ struct scmi_proto_helpers_ops {
- 				 u8 describe_id, u32 message_id,
- 				 u32 valid_size, u32 domain,
- 				 void __iomem **p_addr,
--				 struct scmi_fc_db_info **p_db);
-+				 struct scmi_fc_db_info **p_db,
-+				 u32 *rate_limit);
- 	void (*fastchannel_db_ring)(struct scmi_fc_db_info *db);
- };
- 
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index acd956ffcb84..fafedb3b6604 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -139,6 +139,8 @@ struct scmi_perf_domain_info {
-  *	at a given frequency
-  * @fast_switch_possible: indicates if fast DVFS switching is possible or not
-  *	for a given device
-+ * @fast_switch_rate_limit: gets the minimum time (us) required between
-+ *	successive fast_switching requests
-  * @power_scale_mw_get: indicates if the power values provided are in milliWatts
-  *	or in some other (abstract) scale
-  */
-@@ -168,6 +170,8 @@ struct scmi_perf_proto_ops {
- 			     unsigned long *rate, unsigned long *power);
- 	bool (*fast_switch_possible)(const struct scmi_protocol_handle *ph,
- 				     u32 domain);
-+	int (*fast_switch_rate_limit)(const struct scmi_protocol_handle *ph,
-+				      u32 domain, u32 *rate_limit);
- 	enum scmi_power_scale (*power_scale_get)(const struct scmi_protocol_handle *ph);
- };
- 
+ out_free_opp:
 -- 
 2.25.1
 
