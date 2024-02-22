@@ -1,219 +1,162 @@
-Return-Path: <linux-kernel+bounces-76208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1917385F430
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:22:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF7D485F438
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2DBD285A9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:22:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B26FB278D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47554381A0;
-	Thu, 22 Feb 2024 09:22:10 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C270338DDA;
+	Thu, 22 Feb 2024 09:23:00 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD8636B04;
-	Thu, 22 Feb 2024 09:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD64376FA;
+	Thu, 22 Feb 2024 09:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708593729; cv=none; b=cXtJxxr9G/WFc9n3VOd9YI5zUOSRYz5N4RARjyqJlQeBdQ4cL6KZHrlf0gFtiQLluxt739KIOwFxlmmqdlKxLx07o+MTK6Xdv2lBOiawFRHgv+3XgoirdkT2zsp6mnZ88ir4twRgBHvctrd9EmB4+FDE6EHuaChxH/z63JEo2Ls=
+	t=1708593780; cv=none; b=UpXqGiQ+p7rQMLvGwJFT4aalbBqj2vhsmSFKCfUrwFIXZfJMEOQ5VEVFfTTZvJkZ3qmYLoSLThsX++e699Dc5jPd1gD/aj9ApIMIy2oL5GjKsgZf8yFzOcfyPu2qBwIE4EtZsXgj/WbEiXy/6AVGPTAvCWbLPvcRJy0FHhXz6ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708593729; c=relaxed/simple;
-	bh=5v9yH/V+iT/XBq13O4b1uFWQSJMXaxAV6nRnWvjhvLg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fX0RkHX4kytmvB1aAs2WLCKVERpIaYiNwv4fgdFckUimcbSq1sifo+W4hAEMurndRK32jt7rZep8AgOsxsr+qwXsEng+tgvYbkrQjhs/6VeKYV6dvpA1sZBcAvohjbDC+OLQthDNgPUQbKFz0ohjuLwqqKEoKzkiLunfk7u/0PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TgSK54Lf4z1X3Cc;
-	Thu, 22 Feb 2024 17:19:53 +0800 (CST)
-Received: from kwepemd500009.china.huawei.com (unknown [7.221.188.237])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9CD171400D9;
-	Thu, 22 Feb 2024 17:22:03 +0800 (CST)
-Received: from kwepemd100011.china.huawei.com (7.221.188.204) by
- kwepemd500009.china.huawei.com (7.221.188.237) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 22 Feb 2024 17:22:03 +0800
-Received: from M910t (10.110.54.157) by kwepemd100011.china.huawei.com
- (7.221.188.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Thu, 22 Feb
- 2024 17:22:02 +0800
-Date: Thu, 22 Feb 2024 17:21:19 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Luis Chamberlain <mcgrof@kernel.org>
-CC: Changbin Du <changbin.du@huawei.com>, <live-patching@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>, <linux-modules@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Xiaoyi Su <suxiaoyi@huawei.com>, "Eric
- Chanudet" <echanude@redhat.com>
-Subject: Re: [PATCH v3] modules: wait do_free_init correctly
-Message-ID: <20240222092119.tp6kls4ycnsflcgm@M910t>
-References: <20240217081810.4155871-1-changbin.du@huawei.com>
- <ZdY1oHl8L8wDEvlW@bombadil.infradead.org>
+	s=arc-20240116; t=1708593780; c=relaxed/simple;
+	bh=Y9MCsGargnZMdYbvCa0RXPzvIXitJU5Yea7omJUm5oc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Oz9IU/6AG92nfJdjC59l/b9VIZ2eZKKmCe+0OunesMfdjVCAhbnH7c2QJXg/PIad61OZLsliJj+gjeZ1x+KAfWArWpPb+XQwV0PiQWCaU65i74UY7wdr8Z2S9hGUxNplezvN8yhG01980GrlaaAb6M6R///vrd0L/Ub3iy9aEgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 41M9MOXf042231;
+	Thu, 22 Feb 2024 17:22:24 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TgSMH4w5yz2KL7sp;
+	Thu, 22 Feb 2024 17:21:47 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 22 Feb 2024 17:22:22 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>,
+        Jens Axboe
+	<axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [PATCHv2 1/2] sched: introduce helper function to calculate distribution over sched class
+Date: Thu, 22 Feb 2024 17:22:19 +0800
+Message-ID: <20240222092220.642294-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZdY1oHl8L8wDEvlW@bombadil.infradead.org>
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100011.china.huawei.com (7.221.188.204)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 41M9MOXf042231
 
-On Wed, Feb 21, 2024 at 09:40:48AM -0800, Luis Chamberlain wrote:
-> + live-patching folks,
-> 
-> Finally, things are starting to be much clearer. Thanks for the time
-> for working on this, some more comments below and a question which
-> I think deserves some attention.
-> 
-> On Sat, Feb 17, 2024 at 04:18:10PM +0800, Changbin Du wrote:
-> > The synchronization here is just to ensure the module init's been freed
-> > before doing W+X checking. 
-> 
-> Some nits, this should read instead:
-> 
-> Fix the ordering of freeing of a module init so that it happens before
-> W+X checking.
-> 
-> > But the commit 1a7b7d922081 ("modules: Use
-> > vmalloc special flag") moves do_free_init() into a global workqueue
-> > instead of call_rcu(). So now rcu_barrier() can not ensure that do_free_init
-> > has completed. We should wait it via flush_work().
-> 
-> Remove "But" and adjust as:
-> 
-> Commit 1a7b7d922081 ("modules: Use vmalloc special flag") moved
-> calling do_free_init() into a global workqueue instead of relying on it
-> being called through call_rcu(..., do_free_init), which used to allowed us
-> call do_free_init() asynchronously after the end of a subsequent grace             
-> period. The move to a global workqueue broke the gaurantees for code
-> which needed to be sure the do_free_init() would complete with rcu_barrier().
-> To fix this callers which used to rely on rcu_barrier() must now instead
-> use flush_work(&init_free_wq).
->
-Sure, thanks!
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-> > Without this fix, we still could encounter false positive reports in
-> > W+X checking,
-> 
-> This is good thanks for the clarification.
-> 
-> I think it would be useful for the commit log then to describe also that
-> it is not that the freeing was not happening, it is just that our sanity
-> checkers raced against the permission checkers which assume init memory
-> is already gone.
-> 
-okay, I'll apend this detailed explanation.
+As RT, DL, IRQ time could be deemed as lost time of CFS's task, some
+timing value want to know the distribution of how these spread
+approximately by using utilization account value (nivcsw is not enough
+sometimes). This commit would like to introduce a helper function to
+achieve this goal.
 
-> > and the rcu synchronization is unnecessary which can
-> > introduce significant delay.
-> 
-> While this can be true, I am not sure if we can remove it. See below.
-> 
-> > Eric Chanudet reports that the rcu_barrier introduces ~0.1s delay on a
-> > PREEMPT_RT kernel.
-> 
-> That's a separate issue.
-> 
-> >   [    0.291444] Freeing unused kernel memory: 5568K
-> >   [    0.402442] Run /sbin/init as init process
-> > 
-> > With this fix, the above delay can be eliminated.
-> > 
-> > Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
-> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> > Cc: Xiaoyi Su <suxiaoyi@huawei.com>
-> > Cc: Eric Chanudet <echanude@redhat.com>
-> > 
-> > ---
-> > v3:
-> >   - amend comment in do_init_module() and update commit msg.
-> > v2:
-> >   - fix compilation issue for no CONFIG_MODULES found by 0-DAY.
-> > ---
-> >  include/linux/moduleloader.h | 8 ++++++++
-> >  init/main.c                  | 5 +++--
-> >  kernel/module/main.c         | 9 +++++++--
-> >  3 files changed, 18 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
-> > index 001b2ce83832..89b1e0ed9811 100644
-> > --- a/include/linux/moduleloader.h
-> > +++ b/include/linux/moduleloader.h
-> > @@ -115,6 +115,14 @@ int module_finalize(const Elf_Ehdr *hdr,
-> >  		    const Elf_Shdr *sechdrs,
-> >  		    struct module *mod);
-> >  
-> > +#ifdef CONFIG_MODULES
-> > +void flush_module_init_free_work(void);
-> > +#else
-> > +static inline void flush_module_init_free_work(void)
-> > +{
-> > +}
-> > +#endif
-> > +
-> >  /* Any cleanup needed when module leaves. */
-> >  void module_arch_cleanup(struct module *mod);
-> >  
-> > diff --git a/init/main.c b/init/main.c
-> > index e24b0780fdff..f0b7e21ac67f 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -99,6 +99,7 @@
-> >  #include <linux/init_syscalls.h>
-> >  #include <linux/stackdepot.h>
-> >  #include <linux/randomize_kstack.h>
-> > +#include <linux/moduleloader.h>
-> >  #include <net/net_namespace.h>
-> >  
-> >  #include <asm/io.h>
-> > @@ -1402,11 +1403,11 @@ static void mark_readonly(void)
-> >  	if (rodata_enabled) {
-> >  		/*
-> >  		 * load_module() results in W+X mappings, which are cleaned
-> > -		 * up with call_rcu().  Let's make sure that queued work is
-> > +		 * up with init_free_wq. Let's make sure that queued work is
-> >  		 * flushed so that we don't hit false positives looking for
-> >  		 * insecure pages which are W+X.
-> >  		 */
-> > -		rcu_barrier();
-> 
-> Was this the only source of waiters that used rcu_barrier() to sync ?
-> What about kallsyms, live-patching ?
-> 
-> This original source to the addition of this rcu_barrier() (in a slight
-> older modified form with with rcu_barrier_sched()) was commit
-> ae646f0b9ca13 ("init: fix false positives in W+X checking") since
-> v4.17 in 2018, 6 years ago. So I'm hoping we don't have any other
-> side-by new users which have grown dependent on this rcu_barrier() for
-> other call_rcu()'s they may have used, but it is hard to tell.
-> 
-Per the condtion 'rodata_enabled' and comments, I think the rcu_barrier() is
-only used to synchronize with freeing module init memory.
+eg.
+Effective part of A = Total_time * cpu_util_cfs / cpu_util
 
-> So while I agree that flush work is the right solution, removing the
-> rcu_barrier() is technically another change which could potentially
-> regress for other reasons now. It is perhaps safe, but I'm used to
-> surprises for minor changes like these. So I think it makes sense to
-> lift it now, and test it in the wild to see what could possibly break,
-> I'd much prefer to split this as two separate commits. One which does
-> the fix, and another that lifts the rcu_barrier() with the stated
-> rationale and savings on time of ~0.1s on PREEMPT_RT kernels.
->
-But the only change in patch is to replace rcu_barrier() with flush_module_init_free_work().
+Timing value A
+(should be a process last for several TICKs or statistics of a repeadted
+process)
 
-Do you mean that keep both flush_module_init_free_work() and rcu_barrier() here?
-It sounds a little bit weird IMHO.
+Timing start
+|
+|
+preempted by RT, DL or IRQ
+|\
+| This period time is nonvoluntary CPU give up, need to know how long
+|/
+sched in again
+|
+|
+|
+Timing end
 
->   Luis
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+change of v2: using two parameter to pass se_prop and rq_prop out
+---
+---
+ include/linux/sched.h |  3 +++
+ kernel/sched/core.c   | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 77f01ac385f7..d6d5914fad10 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2318,6 +2318,9 @@ static inline bool owner_on_cpu(struct task_struct *owner)
+ 
+ /* Returns effective CPU energy utilization, as seen by the scheduler */
+ unsigned long sched_cpu_util(int cpu);
++/* Returns task's and cfs_rq's proportion among whole core */
++unsigned long cfs_prop_by_util(struct task_struct *tsk, unsigned long *se_prop,
++			unsigned long *rq_prop);
+ #endif /* CONFIG_SMP */
+ 
+ #ifdef CONFIG_RSEQ
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 802551e0009b..b8c29dff5d37 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7494,6 +7494,41 @@ unsigned long sched_cpu_util(int cpu)
+ {
+ 	return effective_cpu_util(cpu, cpu_util_cfs(cpu), ENERGY_UTIL, NULL);
+ }
++
++/*
++ * Calculate the approximate proportion of timing value consumed by the specified
++ * tsk and all cfs tasks of this core.
++ * The user must be aware of this is done by avg_util which is tracked by
++ * the geometric series of decaying the load by y^32 = 0.5 (unit is 1ms).
++ * That is, only the period last for at least several TICKs or the statistics
++ * of repeated timing value are suitable for this helper function.
++ * This function is actually derived from effective_cpu_util but without
++ * limiting the util to the core's capacity.
++ * se_prop and rq_prop is valid only when return value is 1
++ */
++unsigned long cfs_prop_by_util(struct task_struct *tsk, unsigned long *se_prop,
++			unsigned long *rq_prop)
++{
++	unsigned int cpu = task_cpu(tsk);
++	struct sched_entity *se = &tsk->se;
++	struct rq *rq = cpu_rq(cpu);
++	unsigned long util, irq, max;
++
++	if (tsk->sched_class != &fair_sched_class)
++		return 0;
++
++	max = arch_scale_cpu_capacity(cpu);
++	irq = cpu_util_irq(rq);
++
++	util = cpu_util_rt(rq) + cpu_util_cfs(cpu) + cpu_util_dl(rq);
++	util = scale_irq_capacity(util, irq, max);
++	util += irq;
++
++	*se_prop = se->avg.util_avg * 100 / util;
++	*rq_prop = cpu_util_cfs(cpu) * 100 / util;
++	return 1;
++}
++
+ #endif /* CONFIG_SMP */
+ 
+ /**
 -- 
-Cheers,
-Changbin Du
+2.25.1
+
 
