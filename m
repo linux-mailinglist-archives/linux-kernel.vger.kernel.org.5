@@ -1,174 +1,286 @@
-Return-Path: <linux-kernel+bounces-76486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED2185F7C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:11:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E34A585F7CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60F8D1F21323
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:11:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 128B21C240F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C312C5FBA6;
-	Thu, 22 Feb 2024 12:11:23 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9F45789F;
-	Thu, 22 Feb 2024 12:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AAB60B86;
+	Thu, 22 Feb 2024 12:12:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FE4RHYf6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nU7WDITh"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6E53FE47;
+	Thu, 22 Feb 2024 12:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708603883; cv=none; b=UBfZ70c3fTv4jXo1OFshU5QowB3EHxlQenKK3IYQeKX7gxAdp8jZNxBonN652ySVFYqGGfySsvvvcE91CvOmJ6rteXv8i4U8odlpoPY5hRg5URot96SW6dgAl7jiTFpp2uphqP1rxpqE7Yul3PfU833I4MNDHi7lDX7vDhsiksE=
+	t=1708603954; cv=none; b=c/3niIbK4iQypS4Wa2FvX+lHapaSqvNt3OhoW6xZlOJzrfQeiAFBFdFuY9/mXcDQy6Yfm3j99V2938d0bqBsJIFO6yOQon6VgNt+UwOCgkHEEw0bn6mjXzydMCuqSTGfUKFm5MDQODAR0WcDujvRK2yNL4OgJ3eK2dnwHZOdY9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708603883; c=relaxed/simple;
-	bh=mCi8+XxhULFtYlGGHGY0wqqU3zZCjmarzxh4FL+3HgE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=sNbUYbY+l0slrhVdwUcUQhuH8ZVMUFwYw++V61Gjmofx0FEWgOM/ZAWccYkN6YannptX1u6DLxKM6LJOxCmi0uvctNRBDPPjPC/u8Dwl4QJth61gP/nezfsiWMO2tIVwr6SuVmV3dE8v1yx0LZlFiw2cyWObq9pAM91Q3RniG+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8AxuujlOddlMjUQAA--.22305S3;
-	Thu, 22 Feb 2024 20:11:17 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxVMziOddlQcs+AA--.36218S3;
-	Thu, 22 Feb 2024 20:11:16 +0800 (CST)
-Subject: Re: [PATCH for-6.8 v4 3/3] LoongArch: KVM: Streamline
- kvm_check_cpucfg and improve comments
-To: WANG Xuerui <kernel@xen0n.name>, Paolo Bonzini <pbonzini@redhat.com>,
- Huacai Chen <chenhuacai@kernel.org>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, kvm@vger.kernel.org,
- loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- WANG Xuerui <git@xen0n.name>
-References: <20240222105109.2042732-1-kernel@xen0n.name>
- <20240222105109.2042732-4-kernel@xen0n.name>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <719c1a92-6ddc-f73a-0609-aa5d40dbee8a@loongson.cn>
-Date: Thu, 22 Feb 2024 20:11:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1708603954; c=relaxed/simple;
+	bh=FVdZu1RyDYBRnbvcrBaCROcUhkIvKg3pVHlVzcbPamI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nYtL1DhLBfbrV8fCl4s8i5iqXtGlPvIeWEtfIKqidqleCOAvZoivcXNF0zWzIX0USOxjfLcWJ3CR/HtSsalVUKr/qWQJCcIZhJwFw+nWbbZj/b/UnQtMqKExKB7k1RG1lf9LKeWmt/FgzujjGZRSXIboykJ4DNt9kFS2wiY7DOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FE4RHYf6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nU7WDITh; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E40B71F457;
+	Thu, 22 Feb 2024 12:12:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708603950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iDZS9rn1ORcB7JdPkuWo18rKAM4Uqo344IyJ6OSxvyU=;
+	b=FE4RHYf6KQniBvu69hMH61YFsJGUm+be/AWgzv3XVTDS8haXVcKEcmtqhLYtyoH79wE+BF
+	9rTbXWAQMLmYQg3dhbWCm6OQO7Hl7M/EukNOai/eLMIyuZ/W9oozZ458YgCq5yQMsvEOG9
+	9pG+sSYy3ZZ9rbeHDquU39srhn5O5Vc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708603949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iDZS9rn1ORcB7JdPkuWo18rKAM4Uqo344IyJ6OSxvyU=;
+	b=nU7WDIThkhntaO85yrfZH+rTOcDv2P9JE96isJ7T+1A7OWnrrCYh5wjA2AMoxhC/+10aqG
+	iaI/IirNep5cQnEr9Hn5ohr48ApPMWRLfdMJkWuT0SulHAuto1+doT2DtrDHrf4LrtEqzZ
+	KGRJHRN6xIdAfHSvGSq+zmWiPenhKQM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B76F9133DC;
+	Thu, 22 Feb 2024 12:12:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tUIxLC0612VEJwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 22 Feb 2024 12:12:29 +0000
+Date: Thu, 22 Feb 2024 13:12:29 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz,
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org,
+	Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Subject: Re: [PATCH v4 06/36] mm: enumerate all gfp flags
+Message-ID: <Zdc6LUWnPOBRmtZH@tiehlicka>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-7-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240222105109.2042732-4-kernel@xen0n.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxVMziOddlQcs+AA--.36218S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXFWfWFW5uFW7urWkWFWfZwc_yoW5ZF4DpF
-	y3WwsxX3y5KryxJws29w1kXr45Ar4kGFnrXFZ5A3sYvw47ArnrGr40ya9av347C393AF1U
-	WF4DWay3CayDAagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv
-	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26F
-	4j6r4UJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU
-	cCD7UUUUU
+In-Reply-To: <20240221194052.927623-7-surenb@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.00)[10.38%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[75];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.cz,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com,tesarici.cz];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
+On Wed 21-02-24 11:40:19, Suren Baghdasaryan wrote:
+> Introduce GFP bits enumeration to let compiler track the number of used
+> bits (which depends on the config options) instead of hardcoding them.
+> That simplifies __GFP_BITS_SHIFT calculation.
+> 
+> Suggested-by: Petr Tesařík <petr@tesarici.cz>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
+I thought I have responded to this patch but obviously not the case.
+I like this change. Makes sense even without the rest of the series.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-On 2024/2/22 下午6:51, WANG Xuerui wrote:
-> From: WANG Xuerui <git@xen0n.name>
-> 
-> All the checks currently done in kvm_check_cpucfg can be realized with
-> early returns, so just do that to avoid extra cognitive burden related
-> to the return value handling.
-> 
-> While at it, clean up comments of _kvm_get_cpucfg_mask and
-> kvm_check_cpucfg, by removing comments that are merely restatement of
-> the code nearby, and paraphrasing the rest so they read more natural
-> for English speakers (that likely are not familiar with the actual
-> Chinese-influenced grammar).
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: WANG Xuerui <git@xen0n.name>
+It seems that KASAN flags already __GFP_BITS_SHIFT which just proves how
+fragile this existing scheme is.
+
 > ---
->   arch/loongarch/kvm/vcpu.c | 42 +++++++++++++++++++--------------------
->   1 file changed, 20 insertions(+), 22 deletions(-)
+>  include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
+>  1 file changed, 62 insertions(+), 28 deletions(-)
 > 
-> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-> index 9f63bbaf19c1..128b89d00ced 100644
-> --- a/arch/loongarch/kvm/vcpu.c
-> +++ b/arch/loongarch/kvm/vcpu.c
-> @@ -305,20 +305,16 @@ static int _kvm_get_cpucfg_mask(int id, u64 *v)
->   
->   	switch (id) {
->   	case 2:
-> -		/* Return CPUCFG2 features which have been supported by KVM */
-> +		/* CPUCFG2 features unconditionally supported by KVM */
->   		*v = CPUCFG2_FP     | CPUCFG2_FPSP  | CPUCFG2_FPDP     |
->   		     CPUCFG2_FPVERS | CPUCFG2_LLFTP | CPUCFG2_LLFTPREV |
->   		     CPUCFG2_LAM;
->   		/*
-> -		 * If LSX is supported by CPU, it is also supported by KVM,
-> -		 * as we implement it.
-> +		 * For the ISA extensions listed below, if one is supported
-> +		 * by the host, then it is also supported by KVM.
->   		 */
->   		if (cpu_has_lsx)
->   			*v |= CPUCFG2_LSX;
-> -		/*
-> -		 * if LASX is supported by CPU, it is also supported by KVM,
-> -		 * as we implement it.
-> -		 */
->   		if (cpu_has_lasx)
->   			*v |= CPUCFG2_LASX;
->   
-> @@ -349,24 +345,26 @@ static int kvm_check_cpucfg(int id, u64 val)
->   
->   	switch (id) {
->   	case 2:
-> -		/* CPUCFG2 features checking */
->   		if (!(val & CPUCFG2_LLFTP))
-> -			/* The LLFTP must be set, as guest must has a constant timer */
-> -			ret = -EINVAL;
-> -		else if ((val & CPUCFG2_FP) && (!(val & CPUCFG2_FPSP) || !(val & CPUCFG2_FPDP)))
-> -			/* Single and double float point must both be set when enable FP */
-> -			ret = -EINVAL;
-> -		else if ((val & CPUCFG2_LSX) && !(val & CPUCFG2_FP))
-> -			/* FP should be set when enable LSX */
-> -			ret = -EINVAL;
-> -		else if ((val & CPUCFG2_LASX) && !(val & CPUCFG2_LSX))
-> -			/* LSX, FP should be set when enable LASX, and FP has been checked before. */
-> -			ret = -EINVAL;
-> -		break;
-> +			/* Guests must have a constant timer */
-> +			return -EINVAL;
-> +		if ((val & CPUCFG2_FP) && (!(val & CPUCFG2_FPSP) || !(val & CPUCFG2_FPDP)))
-> +			/* Single and double float point must both be set when FP is enabled */
-> +			return -EINVAL;
-> +		if ((val & CPUCFG2_LSX) && !(val & CPUCFG2_FP))
-> +			/* LSX architecturally implies FP but val does not satisfy that */
-> +			return -EINVAL;
-> +		if ((val & CPUCFG2_LASX) && !(val & CPUCFG2_LSX))
-> +			/* LASX architecturally implies LSX and FP but val does not satisfy that */
-> +			return -EINVAL;
-> +		return 0;
->   	default:
-> -		break;
-> +		/*
-> +		 * Values for the other CPUCFG IDs are not being further validated
-> +		 * besides the mask check above.
-> +		 */
-> +		return 0;
->   	}
-> -	return ret;
->   }
->   
->   static int kvm_get_one_reg(struct kvm_vcpu *vcpu,
-> 
-Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+> diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+> index 1b6053da8754..868c8fb1bbc1 100644
+> --- a/include/linux/gfp_types.h
+> +++ b/include/linux/gfp_types.h
+> @@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
+>   * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
+>   */
+>  
+> +enum {
+> +	___GFP_DMA_BIT,
+> +	___GFP_HIGHMEM_BIT,
+> +	___GFP_DMA32_BIT,
+> +	___GFP_MOVABLE_BIT,
+> +	___GFP_RECLAIMABLE_BIT,
+> +	___GFP_HIGH_BIT,
+> +	___GFP_IO_BIT,
+> +	___GFP_FS_BIT,
+> +	___GFP_ZERO_BIT,
+> +	___GFP_UNUSED_BIT,	/* 0x200u unused */
+> +	___GFP_DIRECT_RECLAIM_BIT,
+> +	___GFP_KSWAPD_RECLAIM_BIT,
+> +	___GFP_WRITE_BIT,
+> +	___GFP_NOWARN_BIT,
+> +	___GFP_RETRY_MAYFAIL_BIT,
+> +	___GFP_NOFAIL_BIT,
+> +	___GFP_NORETRY_BIT,
+> +	___GFP_MEMALLOC_BIT,
+> +	___GFP_COMP_BIT,
+> +	___GFP_NOMEMALLOC_BIT,
+> +	___GFP_HARDWALL_BIT,
+> +	___GFP_THISNODE_BIT,
+> +	___GFP_ACCOUNT_BIT,
+> +	___GFP_ZEROTAGS_BIT,
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +	___GFP_SKIP_ZERO_BIT,
+> +	___GFP_SKIP_KASAN_BIT,
+> +#endif
+> +#ifdef CONFIG_LOCKDEP
+> +	___GFP_NOLOCKDEP_BIT,
+> +#endif
+> +	___GFP_LAST_BIT
+> +};
+> +
+>  /* Plain integer GFP bitmasks. Do not use this directly. */
+> -#define ___GFP_DMA		0x01u
+> -#define ___GFP_HIGHMEM		0x02u
+> -#define ___GFP_DMA32		0x04u
+> -#define ___GFP_MOVABLE		0x08u
+> -#define ___GFP_RECLAIMABLE	0x10u
+> -#define ___GFP_HIGH		0x20u
+> -#define ___GFP_IO		0x40u
+> -#define ___GFP_FS		0x80u
+> -#define ___GFP_ZERO		0x100u
+> +#define ___GFP_DMA		BIT(___GFP_DMA_BIT)
+> +#define ___GFP_HIGHMEM		BIT(___GFP_HIGHMEM_BIT)
+> +#define ___GFP_DMA32		BIT(___GFP_DMA32_BIT)
+> +#define ___GFP_MOVABLE		BIT(___GFP_MOVABLE_BIT)
+> +#define ___GFP_RECLAIMABLE	BIT(___GFP_RECLAIMABLE_BIT)
+> +#define ___GFP_HIGH		BIT(___GFP_HIGH_BIT)
+> +#define ___GFP_IO		BIT(___GFP_IO_BIT)
+> +#define ___GFP_FS		BIT(___GFP_FS_BIT)
+> +#define ___GFP_ZERO		BIT(___GFP_ZERO_BIT)
+>  /* 0x200u unused */
+> -#define ___GFP_DIRECT_RECLAIM	0x400u
+> -#define ___GFP_KSWAPD_RECLAIM	0x800u
+> -#define ___GFP_WRITE		0x1000u
+> -#define ___GFP_NOWARN		0x2000u
+> -#define ___GFP_RETRY_MAYFAIL	0x4000u
+> -#define ___GFP_NOFAIL		0x8000u
+> -#define ___GFP_NORETRY		0x10000u
+> -#define ___GFP_MEMALLOC		0x20000u
+> -#define ___GFP_COMP		0x40000u
+> -#define ___GFP_NOMEMALLOC	0x80000u
+> -#define ___GFP_HARDWALL		0x100000u
+> -#define ___GFP_THISNODE		0x200000u
+> -#define ___GFP_ACCOUNT		0x400000u
+> -#define ___GFP_ZEROTAGS		0x800000u
+> +#define ___GFP_DIRECT_RECLAIM	BIT(___GFP_DIRECT_RECLAIM_BIT)
+> +#define ___GFP_KSWAPD_RECLAIM	BIT(___GFP_KSWAPD_RECLAIM_BIT)
+> +#define ___GFP_WRITE		BIT(___GFP_WRITE_BIT)
+> +#define ___GFP_NOWARN		BIT(___GFP_NOWARN_BIT)
+> +#define ___GFP_RETRY_MAYFAIL	BIT(___GFP_RETRY_MAYFAIL_BIT)
+> +#define ___GFP_NOFAIL		BIT(___GFP_NOFAIL_BIT)
+> +#define ___GFP_NORETRY		BIT(___GFP_NORETRY_BIT)
+> +#define ___GFP_MEMALLOC		BIT(___GFP_MEMALLOC_BIT)
+> +#define ___GFP_COMP		BIT(___GFP_COMP_BIT)
+> +#define ___GFP_NOMEMALLOC	BIT(___GFP_NOMEMALLOC_BIT)
+> +#define ___GFP_HARDWALL		BIT(___GFP_HARDWALL_BIT)
+> +#define ___GFP_THISNODE		BIT(___GFP_THISNODE_BIT)
+> +#define ___GFP_ACCOUNT		BIT(___GFP_ACCOUNT_BIT)
+> +#define ___GFP_ZEROTAGS		BIT(___GFP_ZEROTAGS_BIT)
+>  #ifdef CONFIG_KASAN_HW_TAGS
+> -#define ___GFP_SKIP_ZERO	0x1000000u
+> -#define ___GFP_SKIP_KASAN	0x2000000u
+> +#define ___GFP_SKIP_ZERO	BIT(___GFP_SKIP_ZERO_BIT)
+> +#define ___GFP_SKIP_KASAN	BIT(___GFP_SKIP_KASAN_BIT)
+>  #else
+>  #define ___GFP_SKIP_ZERO	0
+>  #define ___GFP_SKIP_KASAN	0
+>  #endif
+>  #ifdef CONFIG_LOCKDEP
+> -#define ___GFP_NOLOCKDEP	0x4000000u
+> +#define ___GFP_NOLOCKDEP	BIT(___GFP_NOLOCKDEP_BIT)
+>  #else
+>  #define ___GFP_NOLOCKDEP	0
+>  #endif
+> -/* If the above are modified, __GFP_BITS_SHIFT may need updating */
+>  
+>  /*
+>   * Physical address zone modifiers (see linux/mmzone.h - low four bits)
+> @@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
+>  #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
+>  
+>  /* Room for N __GFP_FOO bits */
+> -#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
+> +#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
+>  #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
+>  
+>  /**
+> -- 
+> 2.44.0.rc0.258.g7320e95886-goog
 
+-- 
+Michal Hocko
+SUSE Labs
 
