@@ -1,92 +1,79 @@
-Return-Path: <linux-kernel+bounces-75845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A0285EFC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:25:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67CBE85EFCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AC921F231E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:25:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08BB01F23B2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396371772F;
-	Thu, 22 Feb 2024 03:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C343017560;
+	Thu, 22 Feb 2024 03:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAP38SUO"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PtNW7RHd"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B081755B;
-	Thu, 22 Feb 2024 03:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88CA17553
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708572315; cv=none; b=IL3LT0+krooHSVcbWi/l3/046ZVfeNezpTp/dhKTdXAarhRPTqXzphjNvA+nxvaDPhkSHCPaBQk9vVPSb2vBa4ZxE51Wv8T1c4x7RQcz6aqYhBDvL/CZG8fx83hbJjOtDwl88O93Am3mItgbCmi9O8VcSeVSMrkWq2HbuywhN1Q=
+	t=1708572368; cv=none; b=i6h0zUpzpDqFm0H+GYOSL4sNWb25edrZsvM3CWSHbvaJyifa8q/dWxfWu+BIZ2sOaY0mimbHj+pHdPRUr88c8Rr4FACp9mUGJ7hFl5vGmMuQZ8crxMnvrOC0YiRnOIzBBtnOqovECDAN2XmavAq3rq1ljTUjlUnYFmhb0rNms1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708572315; c=relaxed/simple;
-	bh=LbLLQRWjAmTW+TCrAgKFeNWDqld2wMMlaegq1z3AipA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PHb7OoP+QE9qanMXDt4IztvpFbOTdzHm+Kmk03RA2KHIMzz9lyomcUa4a+yuLiC2Syxgv6tbUMbLdkOklnet/6sN9kKSf+brdB4tESvOxgZ6FPFi+dnp6kBeE1vcZv37JLFUbKTIjMWcGm1O4ACBhRUfVk8To11Y3jCHsKzumVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iAP38SUO; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d7431e702dso73130785ad.1;
-        Wed, 21 Feb 2024 19:25:13 -0800 (PST)
+	s=arc-20240116; t=1708572368; c=relaxed/simple;
+	bh=bzZ3fX2DEFw0nOMx3kh5bVpyXkZ4XTMyHUYzy2/dFvM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=q6rC/sPag/KO1d8/aQeQ/5tEpZ9wF3L4/3ANW8Q/7wfTPWhjTvwTQtrt9T7bUUewliuafmnPiNFH4CMJdQsohu+xY8WBwEhMYwaxUHV11PEbLGDWrtCjgA0VOgNtCnamloocvjVPxN4SH7cKd64LLl7jMN9S6rVAVYJDEZEFpN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PtNW7RHd; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc29f1956cso10342805ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:26:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708572313; x=1709177113; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1708572366; x=1709177166; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LJjLHFzHOOxg5aRXQc96zwBJZ9WYrMKJ+K0shUjS2Ls=;
-        b=iAP38SUOd5o0MxEZmRUOaACmWwdT0gjx/BFpchD3aYwVkfkWx4FgUrJCRkfQM10teG
-         sj4/ZewyTYkOEhQRo/w9nuZl40B9KlhKPZiGZmwoF1TMSp2tn8kiqT6yr3PIK91gPgz9
-         6gFASbGasGDWSvmUjuIli5Wpj/xbu6V+l7CWYZCIXNFg3/HzETVUe1eVRkTu7/I/cc8U
-         URw7cvmxLffNE+Ppx1vkME1ito//3FRDRbEfSG4N+ZocDbeCZmnB1e/YeenkbLBQGw56
-         ccECiSyu7KFDKlEzBxum7UHPGWh8LB7Z7NxgToSDIvlWbg5ufFFMiazTli8HEO8gcQcR
-         79og==
+        bh=YSw2XZua5CqiB9gf2+U2cFgOtZgxjplbw5UzRI5t8LU=;
+        b=PtNW7RHdSMdHfUYrTsy76NtBVVgA8/SHqYhhQXDHUy+3s1RGfxVBTDkUnK0a0Dz3s9
+         i2Ej0BBZ36oH61+7st7Of3JSYygAq6ifRdVKOej0UAsrflrZ5t9ws1ZeTq3wGkq1CnoH
+         FkaT7hFwiJu/eNpJPJgpVHO4jk5t1dVueqPno=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708572313; x=1709177113;
+        d=1e100.net; s=20230601; t=1708572366; x=1709177166;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LJjLHFzHOOxg5aRXQc96zwBJZ9WYrMKJ+K0shUjS2Ls=;
-        b=nAkGIY7xqm0girsCumoSAuOmFq+uPCNw8QEOqk7t59AnEMO2xTTVAwn7zVamlC9Alm
-         n62XCN2GZunilzNuQy4YMri8OJYoOAJbJRjL/b8I6e4rUsdAHYfkmL/+VNPbYDjxNCo+
-         rByAJxGtMhnVLMMpwKkGx+6OxOuGO4LM1mhnlP1KV1rp+Ic8IQUePJ+jszrt7HyTbvX0
-         uJ66+A1p34EOdZxl8Adry1qiq7xqJbo3tI95zQv9sEo1JFqehz3Roq8ltKFBuW30RiDD
-         MRuoGH0Akm8/L7xSxyZPRSWluQ89767WKH9kUUHtaqdjRb6DL4GfV0xJ58gW/P8wP3Ao
-         YvcA==
-X-Forwarded-Encrypted: i=1; AJvYcCXvsyFElRG6WylO8EqeZKjMZu9KS+om3jAq73WXflvm5XemjMw7VtlI9TO/JYamNwMjUwGNH61WXFHkQKZwHTBE7DFF+jsRn2UY8Me5mpbK9RfO1b2jtNjxmCQaUysbjchYggSTHJWPhQ==
-X-Gm-Message-State: AOJu0YzISj8Atr9iYLNCiZUN/5EL/L/hBYMgps5Lq1UdgHJ1niq9sM2j
-	j4AzghvEL6rTO7wsB+y0dgKGKKpfG5j0L9g74SJ1vQL6qCx5gceU
-X-Google-Smtp-Source: AGHT+IEG/CFzCGbmOpgJHBmhgewL9gM9hzsrOSEcXfQgEffeWwtQjBoIKYJQnj72kGXSs/nyQbdZKA==
-X-Received: by 2002:a05:6a20:c704:b0:19e:3a9f:f925 with SMTP id hi4-20020a056a20c70400b0019e3a9ff925mr19940646pzb.14.1708572313445;
-        Wed, 21 Feb 2024 19:25:13 -0800 (PST)
-Received: from localhost.localdomain (125-229-150-10.hinet-ip.hinet.net. [125.229.150.10])
-        by smtp.gmail.com with ESMTPSA id h15-20020a170902f7cf00b001db4433ef95sm8781580plw.152.2024.02.21.19.25.11
+        bh=YSw2XZua5CqiB9gf2+U2cFgOtZgxjplbw5UzRI5t8LU=;
+        b=XkOAyevRTyZrBdh67JYxOEc7IdiG/IwY6CIGwohQHCJJrlgYNJXf9Zgj4AgJIgiISp
+         o/uHViaQyVrlH2+59s99jhuVJFsVc//yQvzg5J4rJLniNQS+hoNgVNv/NbIsAwFJrjzZ
+         TVQ/MSG30kyS+87E3Vo9R+ooV5PPMyxKPfSjhnSz1j4fd+Cq2pc0Ivr0W3S2q4SSmDTM
+         DNsgKVvliepXeeySPA8ygCxywUelgFkOimPZLf1UKfXh/I2V+L4inIg/CpISOh+VDa/A
+         jdxZqUJVJGNCF4ofG0R1d2f6XPH75MPBKFgyH5tvBL8jO3UtJAmE29x39FySkSj6nNVX
+         y/uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHYS5g+64AYHXh9VxopKpnXGWXHDmi7Tn8ykioBPMaQxuQrKkG8NTVyMCUgl+YJXAap7BPvEL2c+8hMLj4tswzAHgqDoPm3PVa8IjL
+X-Gm-Message-State: AOJu0Yw0i4m8vyUAWOiJN6HW2IAFukK7K0RoXWIX058pVWKdFelu7C3Q
+	AEm577NHArr10EYaheTqWbpCOo27GOVJMyZLtWsNSlpVNfayTDYiSQhQPxszwg==
+X-Google-Smtp-Source: AGHT+IGOe3WWge9cSMFBSWmiMSAx9ofR2X6nwTUk1YuqlzcKU1YRsNpuiCLjQXeKqRqct+Nd87AuhA==
+X-Received: by 2002:a17:902:d2ca:b0:1db:e1f4:d483 with SMTP id n10-20020a170902d2ca00b001dbe1f4d483mr13653262plc.12.1708572365981;
+        Wed, 21 Feb 2024 19:26:05 -0800 (PST)
+Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:480:9ded:eece:6cb3])
+        by smtp.gmail.com with ESMTPSA id v11-20020a170902f0cb00b001d937bc5602sm8818337pla.227.2024.02.21.19.26.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 19:25:13 -0800 (PST)
-From: Kelly Hung <ppighouse@gmail.com>
-X-Google-Original-From: Kelly Hung <Kelly_Hung@asus.com>
-To: robh+dt@kernel.org
-Cc: krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	joel@jms.id.au,
-	andrew@codeconstruct.com.au,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
+        Wed, 21 Feb 2024 19:26:05 -0800 (PST)
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org,
-	kelly_hung@asus.com,
-	Allenyy_Hsu@asus.com,
-	Kelly Hung <Kelly_Hung@asus.com>
-Subject: [PATCH] dt-bindings: arm: aspeed: add ASUS X4TF board
-Date: Thu, 22 Feb 2024 11:25:04 +0800
-Message-Id: <20240222032504.1147489-2-Kelly_Hung@asus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240222032504.1147489-1-Kelly_Hung@asus.com>
-References: <20240222032504.1147489-1-Kelly_Hung@asus.com>
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCHv2] kconfig: add some Kconfig env variables to make help
+Date: Thu, 22 Feb 2024 12:25:31 +0900
+Message-ID: <20240222032559.496127-1-senozhatsky@chromium.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+In-Reply-To: <20240222031801.GG11472@google.com>
+References: <20240222031801.GG11472@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,26 +82,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Document the new compatibles used on ASUS X4TF.
+Add a new section "Configuration environment variables" to
+`make help` output in order to make it easier for people to
+discover KCONFIG_WERROR, etc.
 
-Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ scripts/kconfig/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-index 749ee54a3ff8..60a494b7aaaf 100644
---- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-+++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-@@ -74,6 +74,7 @@ properties:
-               - ampere,mtmitchell-bmc
-               - aspeed,ast2600-evb
-               - aspeed,ast2600-evb-a1
-+              - asus, x4tf
-               - facebook,bletchley-bmc
-               - facebook,cloudripper-bmc
-               - facebook,elbert-bmc
+diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+index ea1bf3b3dbde..0044d49e149c 100644
+--- a/scripts/kconfig/Makefile
++++ b/scripts/kconfig/Makefile
+@@ -158,6 +158,10 @@ help:
+ 		if help=$$(grep -m1 '^# Help: ' $(f)); then \
+ 			printf '  %-25s - %s\n' '$(notdir $(f))' "$${help#*: }"; \
+ 		fi;)
++	@echo  ''
++	@echo  'Configuration environment variables:'
++	@echo  '  KCONFIG_WERROR                 - Turn some Kconfig warnings into error conditions'
++	@echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig warn about all unrecognized config symbols'
+ 
+ # ===========================================================================
+ # object files used by all kconfig flavours
 -- 
-2.25.1
+2.44.0.rc0.258.g7320e95886-goog
 
 
