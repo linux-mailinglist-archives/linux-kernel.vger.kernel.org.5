@@ -1,127 +1,130 @@
-Return-Path: <linux-kernel+bounces-77203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C18008601F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:56:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89F258601F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F25DA1C26B77
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AB7928C385
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2420A12D204;
-	Thu, 22 Feb 2024 18:51:07 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B424F12D21E;
+	Thu, 22 Feb 2024 18:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dhoyhb2W"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8843512D1FB;
-	Thu, 22 Feb 2024 18:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DB11EB3D;
+	Thu, 22 Feb 2024 18:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708627866; cv=none; b=RX0qEcM1XA4PD5iRTCrjKVVvzRYi3wJ2dCZ+JV7Dg7btBGVKwaZF4uoK68rSeC8qUQ4B8BI3yMkdWyB1jfokuPVxq/RKsVRzMImupNzvMerFnMZwIrNJlF87UpJVz2mudObXenCCN+nHy1Xle86QjYU4Xlt5xZyVhrto84Lny7A=
+	t=1708627924; cv=none; b=XjRGj7KIjl86gVrvN/ANwiA0LWyy/U05cebQRpbhTnKsKz7ryVtlfxjQiaRRoo02+1UD2F0O2TB1LYyB3Xf+bxftA4I8wDO0L7h22D5ClJsZXJ/MPhj5yUev/LJRQbof9qAZI+jesGLx/p0TmAlxiFCg/eVY63HDJKDVukoszgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708627866; c=relaxed/simple;
-	bh=uF8n5frPiummjo0/NnhXvolUhAv0sKOfCyhG9BGm5qg=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=t6eF6+kYRfrXZtdqwM/VZk86Jcc6TwFT7BvKFSW9snXyhdnjcUigcWUWvSGM0iL3X1Mu/oXLLFg2rTKeuPT+0lMQ6V1w9ulE88WuI3FuYqah4bbEuA7FPAfkJ35dl2aaGzw3vY+O9Pk6S80+E7WHsrCOaadKENODm5RHjYwt8xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tghvv6sT0z6K8pZ;
-	Fri, 23 Feb 2024 02:47:23 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id CAE851412EB;
-	Fri, 23 Feb 2024 02:51:01 +0800 (CST)
-Received: from localhost (10.195.247.94) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 22 Feb
- 2024 18:51:01 +0000
-Date: Thu, 22 Feb 2024 18:50:59 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC: Linux ACPI <linux-acpi@vger.kernel.org>, LKML
-	<linux-kernel@vger.kernel.org>, Mika Westerberg
-	<mika.westerberg@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1 1/4] ACPI: scan: Fix device check notification
- handling
-Message-ID: <20240222185059.00005f40@Huawei.com>
-In-Reply-To: <4886572.GXAFRqVoOG@kreacher>
-References: <4562925.LvFx2qVVIh@kreacher>
-	<4886572.GXAFRqVoOG@kreacher>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708627924; c=relaxed/simple;
+	bh=Rqlhl8scJWK1KFRqpMadZ1k19G5+0GHAMj4w2ohm/zY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SgY2HlxO6t/YQL1NjjNysBUdk3ePrbH+JqrV9tkeJyFHhWwK0sbNMn90Tkh8iAGlmoTBoi77h3vAu6/RKeXqmAmAF4dwihN8oAa9VsOb2Fj6PV40+WLp/WTNTZQfIMg9+bTbQjZZ0Eq7S3sSVcZVILndEAnczvywePKQPFoYCjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dhoyhb2W; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc09556599so917605ad.1;
+        Thu, 22 Feb 2024 10:52:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708627922; x=1709232722; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CX+buwoA+SqSG7r/CEcjs5/GgQYEZL4oqoCzZ/o1bnQ=;
+        b=dhoyhb2WM2xHU8UYV/bu557UmKK5fTA57zIUepJs3xoaogtKo68dh185NAt0azrd9C
+         o58m3rcwZ8KKzagRZNcAByGNqHJtJk6vhfnw23CBl8o8BrCHlvnOrKL1VflUjgAIecWO
+         tt1M7tQHFt4DBCfhfarYWIETCECUeNfggXPPnK3LT+9cMZmihpQ9hevuSdvCa7qFM9Qf
+         3mhgkfobB9ZgSQl8UQ/JR6Gw6ZTuwqJFBSp892bJUelyzB9KVh6/z78I04vEZd1cL852
+         NiYux7wC+XDgj4j2bPqIDlmc8JYjSEJ3oqujkbqbdRNvu2K0tisiuteurk04p8scNusa
+         Bmnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708627922; x=1709232722;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CX+buwoA+SqSG7r/CEcjs5/GgQYEZL4oqoCzZ/o1bnQ=;
+        b=iEL5HFHJPTeKl3hNEB1yMZ85vbcgs4z6OQPXcYw+NNXPWX6GuoZriKbFDjGkBR8J5H
+         iLtqOKR2gvJj0ZBGYEE4lHWB0H/ZHotI0DebN56eI7HCzQux2/P9HOaLvlNSVzZoMYB4
+         9TShXrsz7floV8TefG5Hxkdq66dNIzepQZC9DpSMT2vJkA8aRxLpqRGtn3TysYwXT/Gk
+         31YwJGikXEwcjDdgY+eBGITx/DPMc/UPW0v8x93ii9b8+hl/qQ6fJwHOGhqoHPuZAS+t
+         vWxIjKfon2sn/Jpx6Yqdd15ZWS77WZ7dGDXbkCKPz/m0OeguOFkHAjxRFlLdhJPtWzSO
+         53LQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXpgrDVCrIIR4+nj2Rrx5a/hzYphmqCj1NOg0MAuvFWOZPzID1+gHvnO2NvORHNW188McOEDSdEAfpp7gzi4a0Ro2jCXna/elXasTuQBKbBciz4Kz0Qgw/m5tEWwvggMxR5YQ0rMIW1aubdDgqqSki7MP48OvczX/B/PBf7M4iqJd+DwM4GwKC7
+X-Gm-Message-State: AOJu0Yw0G+P4R23tgmuyLOVk98kD+aqq+LV1i8M7qLfHGMz0CCx5Ygtf
+	jo/rwDh25TINf4dnjMw/+6SzIM1HqFoXIpUZCftu7a/Me0NGXiWF
+X-Google-Smtp-Source: AGHT+IF11qcXZe+TAthoK9MJjpLgyxNCAn9qgPH8lHdKb4SzYXPbd+d0D2xNb+iqjUlMyv4QiBwmcQ==
+X-Received: by 2002:a17:903:1212:b0:1d9:14fb:d142 with SMTP id l18-20020a170903121200b001d914fbd142mr26128212plh.32.1708627921888;
+        Thu, 22 Feb 2024 10:52:01 -0800 (PST)
+Received: from debian ([2601:641:300:14de:f32d:6b5:d03a:44f])
+        by smtp.gmail.com with ESMTPSA id mp14-20020a17090b190e00b002993f72ed02sm12374377pjb.34.2024.02.22.10.52.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 10:52:01 -0800 (PST)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Thu, 22 Feb 2024 10:51:41 -0800
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Robert Richter <rrichter@amd.com>, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] cxl/hdm: Clean up a debug printk
+Message-ID: <ZdeXvYEs_fMks3rU@debian>
+References: <3d3d969d-651d-4e9d-a892-900876a60ab5@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d3d969d-651d-4e9d-a892-900876a60ab5@moroto.mountain>
 
-On Wed, 21 Feb 2024 21:01:02 +0100
-"Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
-
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Feb 22, 2024 at 09:14:02AM +0300, Dan Carpenter wrote:
+> Smatch complains that %pa is for phys_addr_t types and "size" is a u64.
 > 
-> It is generally invalid to fail a Device Check notification if the scan
-> handler has not been attached to the given device after a bus rescan,
-> because there may be valid reasons for the scan handler to refuse
-> attaching to the device (for example, the device is not ready).
+>     drivers/cxl/core/hdm.c:521 cxl_dpa_alloc() error: '%pa' expects
+>     argument of type 'phys_addr_t*', argument 4 has type 'ullong*
 > 
-> For this reason, modify acpi_scan_device_check() to return 0 in that
-> case without printing a warning.
+> Looking at this, to me it seems more useful to print the sizes as
+> decimal instead of hex.  Let's do that.
 > 
-> While at it, reduce the log level of the "already enumerated" message
-> in the same function, because it is only interesting when debugging
-> notification handling
-> 
-> Fixes: 443fc8202272 ("ACPI / hotplug: Rework generic code to handle suprise removals")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Seems reasonable to me.  Not sure it fixes any bugs anyone has seen
-in the wild though. I'd not give it a fixes tag without such a
-known case, but your subsystem so fair enough!
-
-Thanks for resolving how to handle the processor case.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > ---
->  drivers/acpi/scan.c |    8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -314,18 +314,14 @@ static int acpi_scan_device_check(struct
->  		 * again).
->  		 */
->  		if (adev->handler) {
-> -			dev_warn(&adev->dev, "Already enumerated\n");
-> -			return -EALREADY;
-> +			dev_dbg(&adev->dev, "Already enumerated\n");
-> +			return 0;
->  		}
->  		error = acpi_bus_scan(adev->handle);
->  		if (error) {
->  			dev_warn(&adev->dev, "Namespace scan failure\n");
->  			return error;
->  		}
-> -		if (!adev->handler) {
-> -			dev_warn(&adev->dev, "Enumeration failure\n");
-> -			error = -ENODEV;
-> -		}
->  	} else {
->  		error = acpi_scan_device_not_enumerated(adev);
->  	}
-> 
-> 
-> 
 
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
+
+>  drivers/cxl/core/hdm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 7d97790b893d..0b1843631b26 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -518,9 +518,9 @@ int cxl_dpa_alloc(struct cxl_endpoint_decoder *cxled, unsigned long long size)
+>  	}
+>  
+>  	if (size > avail) {
+> -		dev_dbg(dev, "%pa exceeds available %s capacity: %pa\n", &size,
+> +		dev_dbg(dev, "%llu exceeds available %s capacity: %llu\n", size,
+>  			cxled->mode == CXL_DECODER_RAM ? "ram" : "pmem",
+> -			&avail);
+> +			(u64)avail);
+>  		rc = -ENOSPC;
+>  		goto out;
+>  	}
+> -- 
+> 2.43.0
+> 
 
