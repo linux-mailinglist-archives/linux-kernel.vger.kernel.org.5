@@ -1,141 +1,122 @@
-Return-Path: <linux-kernel+bounces-77312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB36C86039D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:23:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 319F48603A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4A01C23E84
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:23:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB1B31F270FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F8F6E5F4;
-	Thu, 22 Feb 2024 20:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OPQUVRXh"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD536E5F8;
+	Thu, 22 Feb 2024 20:24:20 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246A514B81E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E383C6E5FB
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708633415; cv=none; b=PozKwQIWs0AZVxY+pnW164nqvjdwwqXxbciMIg8F4h9a6l7Zdxb4Kk+4lVa8eWkc9VGPCUUe/1eOftspf0mFlX5yzZwsGJXStEoYAds103xp9yMI2ui0qnk2w1TBFv86ytURkCPKkd87MEnOK0e14ALv0+OO2z7GizgNsP9y6Rk=
+	t=1708633460; cv=none; b=rEYXBbHPkKjI+Ot5oz891+koYpPnm26IIiT4ti4Y69zOdNAmQMY1wmECDojXEmV6BpkNk+YDHYoOErrqV4UmFfosOI054V+e39m6gx8Kzjc8lFUNqThnvVeVOhwKTZvbdqDtjxsOo/tRzO8rlORAzysZC7UYa1JZjdwhONeVcC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708633415; c=relaxed/simple;
-	bh=4fRBgKaN3slJsS+si0oakQ81lVv2fxpNPglrqvJUjmk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DXLc/xtrhCVD68U3opmswPsh9KZTDaR2HfhYYIMgGsqOiR4C8/DN1QeBTg3upBtYPM4PiFky8+dm22WUXtKRGKMw8/WHjQkdlVWBhmY5JYxcX8tLJ5qP4/XEOmCB69bLW+sMoS9mjUurRFbz5HwP3Y1x97cHIxUUQkx1edfqhmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OPQUVRXh; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-299a2456948so192430a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:23:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708633413; x=1709238213; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K4zRRdKL9lsMMNiFrqHRK+mlIK8Wb18NpLnVMWick6o=;
-        b=OPQUVRXhjKjTnYTK2k/nV44Obfd/oHhReRXA/1mOUsqDyfrAhdD/9tE5N05A1azN+D
-         N43pP2LJJR51xu4Csg9GSzPYVxy6Z9cfoji2n5m5SPBNv6QQ0bNzptQ6toTor1mk4CQO
-         KW5g2D5F3Vn7zF3pgaIZ/RpJrrc+QO7lt2kVe8toT5IRpG6XznSAjjgmJptCnMRppPmL
-         PPrwhyfj4khFQR+breOkhlZcwG+0AW3eDX+p8+iyYosBFg1oC6oHAqkLu6EH+e7VFIBb
-         JBt1niv7UKxrV5WdDcZTQP1P29ncGVQMYnH5hT98DD1857QJJK5hJRhkro6c4/EMDz1c
-         nVyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708633413; x=1709238213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K4zRRdKL9lsMMNiFrqHRK+mlIK8Wb18NpLnVMWick6o=;
-        b=iSbs77uo1OzSe80AkLpeMp46ZuxkNdZyfOZDejbXHGu3IaUMZTsubBd4292BbSv8s6
-         qYPd5d0IoU0b78PDeDHKocmMtvpr04z3kPbBg+8bKXZVsXqgFEsYiReLApHyzgaY6V+P
-         eZ2VwN0JbnIH7N3yZaokabQXUWWAEozrmpuLZHZS9NbEFhi54unUofsXQGYDgJ1NjMrr
-         XmNTdOVGLl3fXB0AFfDbHAdPyJ2RD5FoEfVsYG4hHRnp41thpXhPSiCKSCNvlBzIp/Ev
-         bf8p7wea08x4NHTmbDDd/S5PNvjdbWNYWfWZv9yUyPlMK0Qve67sLrYo1ihYzoIHx1Aq
-         e8xg==
-X-Forwarded-Encrypted: i=1; AJvYcCVtVVz6Te1Z15wp4z1e85ytZapZsdrwhX1wu9+yvhX9ilz9eO+e9mXUZOEH7cIciRpFJ57zpue8Z2Q6dCBshOg9al248TNWFHGLNYOZ
-X-Gm-Message-State: AOJu0YwFNsxonG5dU91YJ+BQtTgw7QsbjDGMSh+TYqKETLX1K7A1xW2k
-	yqysDsNB+6a6fCB18KhHOSYQwh63IOhLP3ZQ2kkkgXjNRfri8I0YjmPRy7dW3/gRAvHINdamgBm
-	zJKV3CjNh+4zZ2OMf+OKpTXJ+92I=
-X-Google-Smtp-Source: AGHT+IEYlyvmciMoWJ2MEC+vVPayK8seyKA+JhIYdvSeWsSf/2H2RqRaxwur2uqaxKGel2jPOVp8zUj+CrLX0nG0JUU=
-X-Received: by 2002:a17:90b:b01:b0:29a:4300:e2c with SMTP id
- bf1-20020a17090b0b0100b0029a43000e2cmr3476015pjb.34.1708633413413; Thu, 22
- Feb 2024 12:23:33 -0800 (PST)
+	s=arc-20240116; t=1708633460; c=relaxed/simple;
+	bh=hAkN/NX5yXEi2GCHP9KAWQTzICfcHQzGYpzH+Sy/CgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bAH7TwYhjTcT1NBisHk5qhtr/ttx4K+eFaSnGhO8nUaorm8/HaMwyTj1unRH7HPf5icDGNp6XMGPsdjCq+U+zNqScgknG7+tTet3VkDMa1oMOBJkvv9H3bAaaqUdp/YUkj0SsxVV+NlLpQDi4P+UnjQICnyDvRvrXvks+R0ZjQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rdFbr-0001Zu-3z; Thu, 22 Feb 2024 21:23:59 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rdFbp-002IPq-J9; Thu, 22 Feb 2024 21:23:57 +0100
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rdFbp-002ruz-1c;
+	Thu, 22 Feb 2024 21:23:57 +0100
+Date: Thu, 22 Feb 2024 21:23:57 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux@roeck-us.net, heikki.krogerus@linux.intel.com, jun.li@nxp.com,
+	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v2 1/4] dt-bindings: usb: typec-tcpci: add tcpci fallback
+ binding
+Message-ID: <20240222202357.2etmuoy6i6qr6bnq@pengutronix.de>
+References: <20240215212852.1202339-1-m.felsch@pengutronix.de>
+ <20240215212852.1202339-2-m.felsch@pengutronix.de>
+ <4e464a7a-6a38-461a-b03e-442cc43d1719@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129054551.57728-1-ioworker0@gmail.com> <CAK1f24keWtJNVv37r2vNsqnmMLRMvF-F76WR5RD_Y-BbAgEaYQ@mail.gmail.com>
- <CAK1f24nk19eciysFqvTd=rqpiKePhstDWEEQ_mvT89WCDNrWNQ@mail.gmail.com>
-In-Reply-To: <CAK1f24nk19eciysFqvTd=rqpiKePhstDWEEQ_mvT89WCDNrWNQ@mail.gmail.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Thu, 22 Feb 2024 12:23:21 -0800
-Message-ID: <CAHbLzkoNFn6UE4Hn0gXTm2pLHD7pK4gYUe1zVh3247m30A5u2g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
- MMF_DISABLE_THP check
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
-	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e464a7a-6a38-461a-b03e-442cc43d1719@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Feb 21, 2024 at 11:51=E2=80=AFPM Lance Yang <ioworker0@gmail.com> w=
-rote:
->
-> Hey,
->
-> On an Intel Core i5 CPU, the time taken by
-> khugepaged to scan the address space of
-> the process, which has been set with the
-> MMF_DISABLE_THP flag after being added
-> to the mm_slots list, is as follows (shorter is better):
->
-> VMA Count |   Old   |   New   |  Change
-> ---------------------------------------
->     50     |   23us  |    9us  |  -60.9%
->    100     |   32us  |    9us  |  -71.9%
->    200     |   44us  |    9us  |  -79.5%
->    400     |   75us  |    9us  |  -88.0%
->    800     |   98us  |    9us  |  -90.8%
->
-> IIUC, once the count of VMAs for the process
-> exceeds page_to_scan, khugepaged needs to
-> wait for scan_sleep_millisecs ms before scanning
-> the next process. IMO, unnecessary scans could
-> actually be skipped with a very inexpensive
-> mm->flags check in this case.
+On 24-02-22, Krzysztof Kozlowski wrote:
+> On 15/02/2024 22:28, Marco Felsch wrote:
+> > The NXP PTN5110 [1] is an TCPCI [2] compatible chip, so add the fallback
+> > binding.
+> > 
+> > [1] https://www.nxp.com/docs/en/data-sheet/PTN5110.pdf
+> > [2] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
+> > 
+> > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > ---
+> > v2:
+> > - rephrase commit message
+> > 
+> >  Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml b/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
+> > index eaedb4cc6b6c..7bd7bbbac9e0 100644
+> > --- a/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
+> > @@ -11,7 +11,9 @@ maintainers:
+> >  
+> >  properties:
+> >    compatible:
+> > -    const: nxp,ptn5110
+> > +    enum:
+> > +      - nxp,ptn5110
+> > +      - tcpci
+> 
+> That's not a fallback, but enum. Fallback is "items" and then you could
 
-Thanks for following up on this, can you please capture all the
-information in the commit log?
+Damn, you're right. Sorry.
 
->
-> Best,
-> Lance
->
-> On Wed, Jan 31, 2024 at 5:30=E2=80=AFPM Lance Yang <ioworker0@gmail.com> =
-wrote:
-> >
-> > Updating the change log.
-> [...]
->
-> > On Mon, Jan 29, 2024 at 1:46=E2=80=AFPM Lance Yang <ioworker0@gmail.com=
-> wrote:
-> > >
-> > > khugepaged scans the entire address space in the
-> > > background for each given mm, looking for
-> > > opportunities to merge sequences of basic pages
-> > > into huge pages. However, when an mm is inserted
-> > > to the mm_slots list, and the MMF_DISABLE_THP flag
-> > > is set later, this scanning process becomes
-> > > unnecessary for that mm and can be skipped to avoid
-> > > redundant operations, especially in scenarios with
-> > > a large address space.
-> [...]
-> > > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> also send a follow-up patchset (separate, so Greg won't take it) fixing
+> DTS (if not, let me know, so I will fix it).
+
+Sry. but I don't get this. Why do I need to send a follow-up? Greg did
+not apply anything, at least I didn't received an e-mail, that this
+patchset was picked.
+
+Regards,
+  Marco
+
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
 
