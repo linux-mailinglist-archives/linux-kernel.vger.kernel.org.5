@@ -1,191 +1,112 @@
-Return-Path: <linux-kernel+bounces-75949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB5F85F10C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:44:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC7E85F10E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C70F01F22838
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:44:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E5EE1C2127D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A84E10A12;
-	Thu, 22 Feb 2024 05:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337F8168BD;
+	Thu, 22 Feb 2024 05:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EpdSbFdc"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SHliQxYt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE3B79D0;
-	Thu, 22 Feb 2024 05:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761BD15EB0;
+	Thu, 22 Feb 2024 05:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708580653; cv=none; b=rhHaBHG4TQzsgwosh5NkfT0U8j9bDrZRHD4AbKt8YUpXzc+xItYYPU4G7cUQzAeqda3a2KVpcdYV68NZYqOyUJ7PP0NLLUf0BeVk/T/2claI4306X82d9DRrZjSOhHOXxfxexxCQpKLVzlQ4HNMRjyUw4/vR8bfdEnJyOPa91vs=
+	t=1708580657; cv=none; b=VMMUPcBQFYwnaB/I/nre6t2DVxlT7Cis4/dr2Due6X7THGUcUKrr6lfbsLRxZWDrgjVXqIEmJhwt6L3sJvLxXhWC5Lievp4X7T/wEbXSuLaZBlmCGzcApum8siXX2giE4G3xFYuSypyS+QI7orIcBmQSzAszTGFz7hNzZr+xCcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708580653; c=relaxed/simple;
-	bh=fNkY2cGJB7TOrIUY+d6j/l7H2SX/i58LD0oTMcpbeLw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EtDRxd5abONY8yjvSJr7u2JrQqWd6rfUq2gT9gu5Sy8An1Hj4irpa2988CacQ9C5iHlJBtdCuX70atNXjDO/+jAl5mU++lGBs7OA/E7VDnfqfA6CZthFOZ3jSmuMs7C39iTRfcPkq1krFVQ4qwrRAP6qn3wx8DHY7ck72U4ueJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EpdSbFdc; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M3uHrm025369;
-	Thu, 22 Feb 2024 05:43:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=oCC3QGnbRxCLzx4KRoEqeteCKzjPTUEElYcaAwDBXsA=; b=Ep
-	dSbFdcHg36DzMP+JDwlh8qUWQsDI5VNBZ77uN0CcNosWOQiqoPVRIwaRo04yegZa
-	s6SXEz3LzZSmD1m4zEucXUXc1VmPodUKofzy9JNs4r2+iBJF1VH2i7lIeox9ndHm
-	B4mphwC+1WHT8KzJ12+JBi25nXePzQ7szJ61v9/2nd2+r4IFs+opa3wY1L6S+CkZ
-	f9MpsVg/s0srg209fAAEbSsZBayBSG+jRztc4EwDydf78ThCRadzqqAU3cc4jQaS
-	P6D2CS6bc4kv2G9dZLR+73nuwlm4EL0Q6nPx2vh9DBLaIx+OktUVECG4k6pa/W7D
-	1R5te5KbHh9CyynxSvPw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdpjn95rq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 05:43:53 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M5hqFj004786
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 05:43:52 GMT
-Received: from [10.214.82.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
- 2024 21:43:48 -0800
-Message-ID: <fe4ec29f-7521-4369-a382-bae50dbf0ee5@quicinc.com>
-Date: Thu, 22 Feb 2024 11:13:48 +0530
+	s=arc-20240116; t=1708580657; c=relaxed/simple;
+	bh=EoK1x3aOU4KJEXAJZ+xJQ2/KF+ApDpnlxBCrJBs7IDA=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=mID7hZdK9THopGcxNS28GYf4JNoZeFWw1j9OoTrEfnnpqfg19ymSzGZQNu21EMNZeP5Bkrk06C0vdfEDkCjs7obE+rwjW7r9rG5XC9r7ZUKR6qgQwMc+IAcPPUY3yT0hyzfwKpnyRbxicoov00WCxX40m0g3XGn1KPRl2aKocxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SHliQxYt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAA1DC433B1;
+	Thu, 22 Feb 2024 05:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708580657;
+	bh=EoK1x3aOU4KJEXAJZ+xJQ2/KF+ApDpnlxBCrJBs7IDA=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=SHliQxYtc3GAHDCZrE6/bnd/TwGUUVslEgbgQID/TSKeNsFWQ/cDA3VlhWj8r2cF4
+	 ckru0rEbjgYXo8sv7c9YfAX1wdfMUdbKVQIcvmxO9C551bX6KsCxvd1falGRYAXTNN
+	 EoYR/uOHKe4t+A4LsvJv259Hq8JZZpIF8eEvWSqXR39vqMr4jUJvP+YFAjC3cOJ+Nc
+	 AWe7mXTZJfdtPAe+lrTGCBy+6Tp7SjBOcFmPS/SGjrr0G0kzDUrKSap/GX0tNzTSMZ
+	 LoF3PVg+tj7haBr2C5ux08x3ItGcPgSWhK8QwBG64J6EC+B31vkDvxtfAQau85I+Ww
+	 5LWslA7+hqnBg==
+Message-ID: <500e265eb7c6a03a40e0067c8806e059.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/7] Introduction of a remoteproc tee to load signed
- firmware
-Content-Language: en-US
-To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Jens
- Wiklander <jens.wiklander@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <op-tee@lists.trustedfirmware.org>, <devicetree@vger.kernel.org>
-References: <20240214172127.1022199-1-arnaud.pouliquen@foss.st.com>
-From: Naman Jain <quic_namajain@quicinc.com>
-In-Reply-To: <20240214172127.1022199-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: -lkiXDkqUkLoLXNDx0na_5iwoAA8Refh
-X-Proofpoint-GUID: -lkiXDkqUkLoLXNDx0na_5iwoAA8Refh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_03,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220042
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240214183006.3403207-7-cristian.marussi@arm.com>
+References: <20240214183006.3403207-1-cristian.marussi@arm.com> <20240214183006.3403207-7-cristian.marussi@arm.com>
+Subject: Re: [PATCH 6/7] clk: scmi: Allocate CLK operations dynamically
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: sudeep.holla@arm.com, james.quinlan@broadcom.com, f.fainelli@gmail.com, vincent.guittot@linaro.org, peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com, quic_nkela@quicinc.com, souvik.chakravarty@arm.com, Cristian Marussi <cristian.marussi@arm.com>, Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org
+To: Cristian Marussi <cristian.marussi@arm.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Wed, 21 Feb 2024 21:44:14 -0800
+User-Agent: alot/0.10
 
-On 2/14/2024 10:51 PM, Arnaud Pouliquen wrote:
-> Updates from the previous version [1]:
-> 
-> This version proposes another approach based on an alternate load and boot
-> of the coprocessor. Therefore, the constraint introduced by tee_remoteproc
-> is that the firmware has to be authenticated and loaded before the resource
-> table can be obtained.
-> 
-> The existing boot sequence is: >
->    1) Get the resource table and store it in a cache,
->       calling rproc->ops->parse_fw().
->    2) Parse the resource table and handle resources,
->       calling rproc_handle_resources.
->    3) Load the firmware, calling rproc->ops->load().
->    4) Start the firmware, calling rproc->ops->start().
->   
-> => Steps 1 and 2 are executed in rproc_fw_boot(), while steps 3 and 4 are
->     executed in rproc_start().
-> => the use of rproc->ops->load() ops is mandatory
-> 
-> The boot sequence needed for TEE boot is:
-> 
->    1) Load the firmware.
->    2) Get the loaded resource, no cache.
->    3) Parse the resource table and handle resources.
->    4) Start the firmware.
+Quoting Cristian Marussi (2024-02-14 10:30:05)
+> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> index 5747b6d651f0..b91a0dbd2fe0 100644
+> --- a/drivers/clk/clk-scmi.c
+> +++ b/drivers/clk/clk-scmi.c
+> @@ -158,51 +158,6 @@ static int scmi_clk_atomic_is_enabled(struct clk_hw =
+*hw)
+>         return !!enabled;
+>  }
+> =20
+> -/*
+> - * We can provide enable/disable/is_enabled atomic callbacks only if the
+> - * underlying SCMI transport for an SCMI instance is configured to handle
+> - * SCMI commands in an atomic manner.
+> - *
+> - * When no SCMI atomic transport support is available we instead provide=
+ only
+> - * the prepare/unprepare API, as allowed by the clock framework when ato=
+mic
+> - * calls are not available.
+> - *
+> - * Two distinct sets of clk_ops are provided since we could have multipl=
+e SCMI
+> - * instances with different underlying transport quality, so they cannot=
+ be
+> - * shared.
+> - */
+> -static const struct clk_ops scmi_clk_ops =3D {
+> -       .recalc_rate =3D scmi_clk_recalc_rate,
+> -       .round_rate =3D scmi_clk_round_rate,
+> -       .set_rate =3D scmi_clk_set_rate,
+> -       .prepare =3D scmi_clk_enable,
+> -       .unprepare =3D scmi_clk_disable,
+> -       .set_parent =3D scmi_clk_set_parent,
+> -       .get_parent =3D scmi_clk_get_parent,
+> -       .determine_rate =3D scmi_clk_determine_rate,
+> -};
+> -
+> -static const struct clk_ops scmi_atomic_clk_ops =3D {
 
-Hi,
-What problem are we really addressing here by reordering load, parse of
-FW resources?
-Basically, what are the limitations of the current design you are 
-referring to?
-I understood that TEE is designed that way.
+It's not great to move these function pointer structs out of RO memory
+to RW. I'm also not convinced that it's any better to construct them at
+runtime. Isn't there a constant set of possible clk configurations? Or
+why can't we simply add some failures to the clk_ops functions instead?
 
-> 
-> Then the crash recovery also has to be managed.For recovery, the cache is
-> used to temporarily save the resource table and then reapply it on
-> restart:
->    1) Stop the remote processor, calling rproc->ops->stop().
->    2) Load the firmware, calling rproc->ops->load().
->    3) Copy cached resource table.
->    4) Start the remote processor, calling rproc->ops->start().
-> 
-> => This sequence is also needed when TEE manages the boot of the remote
->     processor.
-> => The rproc->ops->load() is also used in recovery sequence.
-> 
-> Based on the sequences described above, the proposal is to:
-> 
-> - Rework tee_rproc API to better match the rproc_ops structure.
->    This allows to simply map the function to implement the load ops, which
->    is not optional. The tee_rproc_load_fw() is updated in consequence.
-> - Remove the call of rproc_load_segments from rproc_start() to dissociate
->    the load and the start. This is necessary to implement the boot sequence
->    requested for the TEE remote proc support.
-> - Introduce an rproc_alt_fw_boot() function that is an alternative boot
->    sequence, which implements the sequence requested for the TEE remoteproc
->    support.
-> 
-> 
-> [1] https://lore.kernel.org/lkml/20240118100433.3984196-1-arnaud.pouliquen@foss.st.com/T/
-> 
-> 
-> Description of the feature:
-> 
-> This series proposes the implementation of a remoteproc tee driver to
-> communicate with a TEE trusted application responsible for authenticating and
-> loading the remoteproc firmware image in an Arm secure context.
-> 
-> 1) Principle:
-> 
-> The remoteproc tee driver provides services to communicate with the OP-TEE
-> trusted application running on the Trusted Execution Context (TEE).
-
-s/Context/Environment?
-
-> The trusted application in TEE manages the remote processor lifecycle:
-> 
-> - authenticating and loading firmware images,
-> - isolating and securing the remote processor memories,
-> - supporting multi-firmware (e.g., TF-M + Zephyr on a Cortex-M33),
-> - managing the start and stop of the firmware by the TEE.
-> 
-
-Regards,
-Naman Jain
-
+> -       .recalc_rate =3D scmi_clk_recalc_rate,
+> -       .round_rate =3D scmi_clk_round_rate,
+> -       .set_rate =3D scmi_clk_set_rate,
+> -       .enable =3D scmi_clk_atomic_enable,
+> -       .disable =3D scmi_clk_atomic_disable,
+> -       .is_enabled =3D scmi_clk_atomic_is_enabled,
 
