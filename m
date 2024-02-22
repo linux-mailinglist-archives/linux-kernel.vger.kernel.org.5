@@ -1,215 +1,297 @@
-Return-Path: <linux-kernel+bounces-77341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BA6786040B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:53:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D6386040D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A09428633B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:53:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EDEFB27C5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD63B71759;
-	Thu, 22 Feb 2024 20:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A662571752;
+	Thu, 22 Feb 2024 20:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EL6N70+n"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N22bPVM+"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5A66E5E3;
-	Thu, 22 Feb 2024 20:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4EC6E5E3;
+	Thu, 22 Feb 2024 20:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708635209; cv=none; b=iIitNdBDc+xe99SnOWhXkHCm67LeEXqbh7CvWxJbusdeVbGqmsrtRwv7KPz5fQo0amD07xyJ7f7pJY8j+9ahyvKFpGossMYmFUIGKwyQhJ9U5Hwbb2wZvLSDWNbahnipWbLH2XlFkxhL7vTmjGYjPON0D/F5I2YAQ3ANT85DeFM=
+	t=1708635252; cv=none; b=At4TuvJ9uOZhbAUvfHuqs/sWtL+GqTzBfE2dO1XvdCsIvjozom0Z+fbrCtJwtwCeH+2//tp6Pgtxl7YiiLLdE0lGru9hrDQ7mVvkK8TZxbweRfN8J/Sagp0vjrPBR/Jj+C8MyUcSiFWRvAoV7f8e2jw4sLobFGfuv2On4Scr47I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708635209; c=relaxed/simple;
-	bh=eyjeZcCLCTi4jrpIdDE5O7VkZlZmsd4qxF0wsl8QrJY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r09LLDk3PrPRT089+1iCgyCzyiDCjIg/PiFkmjw/Aj9h4vXCe2DnTLiZXD8SS9hjq3/Z+SUPonasRDkjM+VpAy2qw62LILXxpIul1iVeQgv/TeZG20Pk0IUIxTL62m+UbNwr9CEW7M7yERPwkVtbyZtcp6QN+P4A7yDjfJGG2ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EL6N70+n; arc=none smtp.client-ip=209.85.221.46
+	s=arc-20240116; t=1708635252; c=relaxed/simple;
+	bh=0F2DEWJKK5N2NFCavl6kJAKd82nDyEZqhWVCf1w/iUQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=H19//2b/XMC+f8/Sqho9B/Yuugfc9PLyiZ4BsU0f9t9TERECMTX5Pbtnd6uYxli4tjSKrn2tHmwp/xsglPfeauET5YAAo6HeOl8gEhZwDhtNk4BI9CYqzdjWNdBfCxQLGSTdGUhwciLo3XPmpr2qE558MNxRItwOvv8TKiijUpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N22bPVM+; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d28468666so117103f8f.0;
-        Thu, 22 Feb 2024 12:53:27 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41276a43dc3so1313365e9.0;
+        Thu, 22 Feb 2024 12:54:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708635206; x=1709240006; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JceZ3Vo9jkBaqN7Hbzl8yHHaM89HOhD751Rid2kTckg=;
-        b=EL6N70+no0FDaVNKw0/qENHnLiyyuAfGqo/GX+coolbRN3moL1/vhX2gr6Ka+6igOY
-         3jhR5vNVQfnSOQWKDVJDgEMMHIAm+0w1JjUVmMqrSKkUWysC/y1n0iKLSLlMA1v7YY1j
-         w/1imxNMv5bi1rvXzt6Uz4q2shF4wN87gmaw20jpk8Whzllyy2j0uk0k2FiqK9Sh77WV
-         SuaeItKKy1AuBJf+dU1p4Q095h6wW5lj0PZoYXQ+tQBMJq/16h2AOq8n1VDLoWWhgcA9
-         g6+4VfG2GkDbl1XOyVX5uJ1YpEZip58m3Sej70XSo7G+oVvFJH8DHn+4BYXHgc9oqjoe
-         mHsQ==
+        d=gmail.com; s=20230601; t=1708635249; x=1709240049; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i0qkBgH6sMnGdyvHu5M045vbpyOXVfVY2aQr4d/ePlk=;
+        b=N22bPVM+9qLhS1YSJTeyQhVY2c7mEnSPdFzwCJMk+yixbrNL/3ExHXzy3DMDKBOJrV
+         aqmT9ffiSWH9YPSNF/3bFV1DUEB/a5VsjEw4RnoefdBRIM3bDxBxaW79GnacdQPTtprS
+         uVmuxrhwIrpN7ZKexvQp9amdTI6VuZwPXPJqfIHaQ59HftUkgKO8SC74AfGVeeupMQYL
+         jIME0RmaaJBRwS/XbyjYCmJYIdLfvvhP9mYopHvUrGIoSqpC3XCcqo/sGstzZwUEVEiY
+         5R9KbA8UTdtWn+1KTb8V6VK6X+F8y6kCmLxk+27qGBxdv3ZQ95lJllZx1KOrNoI8RFPX
+         +jIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708635206; x=1709240006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JceZ3Vo9jkBaqN7Hbzl8yHHaM89HOhD751Rid2kTckg=;
-        b=CFTyVlpwuVu5wo2k/4SxqXfvOKAvksM+FQRVWox2D59IsxWVqWvJMZfdQM5rIHH92m
-         JUYDwQQlGxtjLQdQkLmVlBdI2VvjiIQZEF4tBqSYj5vIP1Uc+7sF5QZmbURqZWu6Re2C
-         lhC69zP3NSoCU+Ui/L7y9OayeW4z23IuCCmNPc+OGWlqYR3v5wLw8hAtfgH2qcbXNDnm
-         gEFq7V7VD/ij/l5n0zOYasIy7SEvoDTVJ686/gyyz4lzOz1yY8Nj2fKBUjafNCGpwsE+
-         /AOuht++Rb3RHFLIeVwrqzbtkJpQz24VV/pJVH/ynbUWW7L0jYf6IpqHVxz71MHZIzL4
-         Uy7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUp5wbywhCtYBg+uXe45xThensWhGkLVcM+KzX14T0HPZ/iAaBpPEvDFl2IIJlEnP4bDFdHhX3VWO/Ye6gCYBl37XPdH8wCgcID00Pr5GB387hvgbXpJmM995RI276q2JmIT5Co0GwWl+rXmICBXlr97yPQX/4dGOcmWoKPxretfwBGuxlBmOAykQVz/twhwpaRGmgmQPLkNhSUQ1WFLesGp+hAdUzbZdSTskMeBJk2WgLBgh82nHMXaew=
-X-Gm-Message-State: AOJu0Yx6DeE10+UC8u2V+jCO8JLUKq2r18X/t9qtZKhndyAxkfeUNaJs
-	CdoZkfxaJVyHler3v6UDkbsSxlnrlsEDLPhVLtwZQFLBhy7bLGHOnjLTf+Y+VHYvh04+Zr6PxHc
-	4QLEXRpuiR0NrW8OPlvcpQq7cRB0=
-X-Google-Smtp-Source: AGHT+IGQXXSZAMioHJFxzZ3gh0Hr4+cQqIJfOhMlIaWn+NbO9UO7H6CsfSYUHm489vRzTeoH9KgIH7yb2O+eyZOdVec=
-X-Received: by 2002:a5d:6346:0:b0:33d:3a0e:9168 with SMTP id
- b6-20020a5d6346000000b0033d3a0e9168mr177429wrw.3.1708635206226; Thu, 22 Feb
- 2024 12:53:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708635249; x=1709240049;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i0qkBgH6sMnGdyvHu5M045vbpyOXVfVY2aQr4d/ePlk=;
+        b=DWDQbqqEQrrobdXG42xqiRWODv+nsU1IBtwwqd79aC0kQX2DR0NRwPwJ49sp57SHAu
+         Mi92PKepRViaeKrSHuzaTkJF/FbmNGhOGhLeA0xLSL9A5JSzKYFWM0giaQEG1MX5IT6d
+         IQ4mP/ksyE4lPzL+mEibIf53p71/zGtwD1eDr9EyidYsEKqDnAbsY61Gp7e/cRghZYi3
+         Gp2f3IDl4QsrKaatKK9st/+0JyYQQHpVjiyvlzvTDQLVCTGB+yAAv8O2fGe8AuUTzobO
+         y6HoWGHOF6inaxMei2fPlzh12GZ7u1F5o7O890pfNG9ZxGbabDgWM2pxrJqPkPhOecbo
+         eGGg==
+X-Forwarded-Encrypted: i=1; AJvYcCXF9tKUxIIZ/nv4hCo+9++P7/JeBh3vwM/RsTgoZUQjlERQW6y+yBkO8NcUGNkg+NR+1JqELK9ohyq5bHBH6WxVo6F+ocb4/EIGx1kaAzoCOJKtrA2sz07W+A67BA8SVtpX59oE
+X-Gm-Message-State: AOJu0Yzyne2Q9z96idsMKBXnimfNdzw8p8TOGhHOh0BHfSQ0VL4vXIGW
+	NQizEajIRGpXCO3ZExcOtgGBnB2a1eOk8SsUfasx80i4Auxq0+tC629/jTTw
+X-Google-Smtp-Source: AGHT+IHol3Xx0+cHHCU4aFeclZ+ObkUo6KMG8G8mdSWj/yo4AsTHuxzGZ7SrN2o1r6jpzrCcSmZVNQ==
+X-Received: by 2002:a05:600c:4711:b0:412:6b21:dad9 with SMTP id v17-20020a05600c471100b004126b21dad9mr9156387wmo.25.1708635249050;
+        Thu, 22 Feb 2024 12:54:09 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id w16-20020a05600c475000b004128c73beffsm2653073wmo.34.2024.02.22.12.54.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 12:54:08 -0800 (PST)
+Message-ID: <79a8ba83-86bf-4c22-845c-8f285c2d1396@gmail.com>
+Date: Thu, 22 Feb 2024 21:53:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org> <20240221-hid-bpf-sleepable-v3-6-1fb378ca6301@kernel.org>
-In-Reply-To: <20240221-hid-bpf-sleepable-v3-6-1fb378ca6301@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 22 Feb 2024 12:53:15 -0800
-Message-ID: <CAADnVQK_2qhcZD0Wtd=8Bb8NVwBCg5Q+j8bF0HY8Hm91ACNrNA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v3 06/16] bpf/helpers: introduce
- bpf_timer_set_sleepable_cb() kfunc
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH net-next 2/2] net: geneve: enable local address bind for
+ geneve sockets
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, idosch@nvidia.com, razor@blackwall.org,
+ amcohen@nvidia.com, petrm@nvidia.com, jbenc@redhat.com, b.galvani@gmail.com,
+ bpoirier@nvidia.com, gavinl@nvidia.com, martin.lau@kernel.org,
+ daniel@iogearbox.net, herbert@gondor.apana.org.au, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
+In-Reply-To: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 8:25=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
->
-> In this patch, bpf_timer_set_sleepable_cb() is functionally equivalent
-> to bpf_timer_set_callback(), to the exception that it enforces
-> the timer to be started with BPF_F_TIMER_SLEEPABLE.
->
-> But given that bpf_timer_set_callback() is a helper when
-> bpf_timer_set_sleepable_cb() is a kfunc, we need to teach the verifier
-> about its attached callback.
-> Marking that callback as sleepable will be done in a separate patch
->
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
-> ---
->
-> new in v3 (split from v2 02/10)
-> ---
->  kernel/bpf/helpers.c  | 48 +++++++++++++++++++++++++++++++++++++++++++++=
-+--
->  kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++--
->  2 files changed, 75 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index f9add0abe40a..2c6dc3d0ffff 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1108,6 +1108,7 @@ struct bpf_hrtimer {
->         void __rcu *callback_fn;
->         void *value;
->         struct semaphore sleepable_lock;
-> +       bool is_sleepable;
->  };
->
->  /* the actual struct hidden inside uapi struct bpf_timer */
-> @@ -1270,8 +1271,8 @@ static const struct bpf_func_proto bpf_timer_init_p=
-roto =3D {
->         .arg3_type      =3D ARG_ANYTHING,
->  };
->
-> -BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void =
-*, callback_fn,
-> -          struct bpf_prog_aux *, aux)
-> +static int __bpf_timer_set_callback(struct bpf_timer_kern *timer, void *=
-callback_fn,
-> +                                   struct bpf_prog_aux *aux, bool is_sle=
-epable)
->  {
->         struct bpf_prog *prev, *prog =3D aux->prog;
->         struct bpf_hrtimer *t;
-> @@ -1311,12 +1312,19 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_tim=
-er_kern *, timer, void *, callb
->                 t->prog =3D prog;
->         }
->         rcu_assign_pointer(t->callback_fn, callback_fn);
-> +       t->is_sleepable =3D is_sleepable;
->         up(&t->sleepable_lock);
->  out:
->         __bpf_spin_unlock_irqrestore(&timer->lock);
->         return ret;
->  }
->
-> +BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void =
-*, callback_fn,
-> +          struct bpf_prog_aux *, aux)
-> +{
-> +       return __bpf_timer_set_callback(timer, callback_fn, aux, false);
-> +}
-> +
->  static const struct bpf_func_proto bpf_timer_set_callback_proto =3D {
->         .func           =3D bpf_timer_set_callback,
->         .gpl_only       =3D true,
-> @@ -1342,6 +1350,11 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern =
-*, timer, u64, nsecs, u64, fla
->                 goto out;
->         }
->
-> +       if (t->is_sleepable && !(flags & BPF_F_TIMER_SLEEPABLE)) {
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
->         if (flags & BPF_F_TIMER_ABS)
->                 mode =3D HRTIMER_MODE_ABS_SOFT;
->         else
-> @@ -2606,6 +2619,36 @@ __bpf_kfunc void bpf_throw(u64 cookie)
->         WARN(1, "A call to BPF exception callback should never return\n")=
-;
->  }
->
-> +/**
-> + * bpf_timer_set_sleepable_cb() - Configure the timer to call %callback_=
-fn
-> + * static function in a sleepable context.
-> + * @timer: The bpf_timer that needs to be configured
-> + * @callback_fn: a static bpf function
-> + *
-> + * @returns %0 on success. %-EINVAL if %timer was not initialized with
-> + * bpf_timer_init() earlier. %-EPERM if %timer is in a map that doesn't
-> + * have any user references.
-> + * The user space should either hold a file descriptor to a map with tim=
-ers
-> + * or pin such map in bpffs. When map is unpinned or file descriptor is
-> + * closed all timers in the map will be cancelled and freed.
-> + *
-> + * This kfunc is equivalent to %bpf_timer_set_callback except that it te=
-lls
-> + * the verifier that the target callback is run in a sleepable context.
-> + */
-> +__bpf_kfunc int bpf_timer_set_sleepable_cb(struct bpf_timer_kern *timer,
-> +                                          int (callback_fn)(void *map, i=
-nt *key, struct bpf_timer *timer))
-> +{
-> +       struct bpf_throw_ctx ctx =3D {};
-> +
-> +       arch_bpf_stack_walk(bpf_stack_walker, &ctx);
-> +       WARN_ON_ONCE(!ctx.aux);
+This patch adds support for binding to a local address in geneve sockets.
+It achieves this by adding a geneve_addr union to represent local address
+to bind to, and copying it to udp_port_cfg in geneve_create_sock.
 
-Sorry. Why such complexity?
-Please see how do_misc_fixups() handles BPF_FUNC_timer_set_callback.
+Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+---
+ drivers/net/geneve.c               | 58 +++++++++++++++++++++++++++---
+ include/net/geneve.h               |  6 ++++
+ include/uapi/linux/if_link.h       |  2 ++
+ tools/include/uapi/linux/if_link.h |  2 ++
+ 4 files changed, 63 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index 32c51c244153..d0b4cb0e7c51 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -57,6 +57,7 @@ struct geneve_config {
+ 	bool			ttl_inherit;
+ 	enum ifla_geneve_df	df;
+ 	bool			inner_proto_inherit;
++	union geneve_addr saddr;
+ };
+ 
+ /* Pseudo network device */
+@@ -451,7 +452,8 @@ static int geneve_udp_encap_err_lookup(struct sock *sk, struct sk_buff *skb)
+ }
+ 
+ static struct socket *geneve_create_sock(struct net *net, bool ipv6,
+-					 __be16 port, bool ipv6_rx_csum)
++					 __be16 port, bool ipv6_rx_csum,
++					 union geneve_addr *local_addr)
+ {
+ 	struct socket *sock;
+ 	struct udp_port_cfg udp_conf;
+@@ -463,9 +465,15 @@ static struct socket *geneve_create_sock(struct net *net, bool ipv6,
+ 		udp_conf.family = AF_INET6;
+ 		udp_conf.ipv6_v6only = 1;
+ 		udp_conf.use_udp6_rx_checksums = ipv6_rx_csum;
++		memcpy(&udp_conf.local_ip6,
++		       &local_addr->sin6.sin6_addr,
++		       sizeof(local_addr->sin6.sin6_addr));
+ 	} else {
+ 		udp_conf.family = AF_INET;
+ 		udp_conf.local_ip.s_addr = htonl(INADDR_ANY);
++		memcpy(&udp_conf.local_ip,
++		       &local_addr->sin.sin_addr,
++		       sizeof(local_addr->sin.sin_addr));
+ 	}
+ 
+ 	udp_conf.local_udp_port = port;
+@@ -572,7 +580,8 @@ static int geneve_gro_complete(struct sock *sk, struct sk_buff *skb,
+ 
+ /* Create new listen socket if needed */
+ static struct geneve_sock *geneve_socket_create(struct net *net, __be16 port,
+-						bool ipv6, bool ipv6_rx_csum)
++						bool ipv6, bool ipv6_rx_csum,
++						union geneve_addr *local_addr)
+ {
+ 	struct geneve_net *gn = net_generic(net, geneve_net_id);
+ 	struct geneve_sock *gs;
+@@ -584,7 +593,7 @@ static struct geneve_sock *geneve_socket_create(struct net *net, __be16 port,
+ 	if (!gs)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	sock = geneve_create_sock(net, ipv6, port, ipv6_rx_csum);
++	sock = geneve_create_sock(net, ipv6, port, ipv6_rx_csum, local_addr);
+ 	if (IS_ERR(sock)) {
+ 		kfree(gs);
+ 		return ERR_CAST(sock);
+@@ -672,7 +681,8 @@ static int geneve_sock_add(struct geneve_dev *geneve, bool ipv6)
+ 	}
+ 
+ 	gs = geneve_socket_create(net, geneve->cfg.info.key.tp_dst, ipv6,
+-				  geneve->cfg.use_udp6_rx_checksums);
++				  geneve->cfg.use_udp6_rx_checksums,
++				  &geneve->cfg.saddr);
+ 	if (IS_ERR(gs))
+ 		return PTR_ERR(gs);
+ 
+@@ -1203,7 +1213,7 @@ static void geneve_setup(struct net_device *dev)
+ }
+ 
+ static const struct nla_policy geneve_policy[IFLA_GENEVE_MAX + 1] = {
+-	[IFLA_GENEVE_UNSPEC]		= { .strict_start_type = IFLA_GENEVE_INNER_PROTO_INHERIT },
++	[IFLA_GENEVE_UNSPEC]		= { .strict_start_type = IFLA_GENEVE_LOCAL6 },
+ 	[IFLA_GENEVE_ID]		= { .type = NLA_U32 },
+ 	[IFLA_GENEVE_REMOTE]		= { .len = sizeof_field(struct iphdr, daddr) },
+ 	[IFLA_GENEVE_REMOTE6]		= { .len = sizeof(struct in6_addr) },
+@@ -1218,6 +1228,8 @@ static const struct nla_policy geneve_policy[IFLA_GENEVE_MAX + 1] = {
+ 	[IFLA_GENEVE_TTL_INHERIT]	= { .type = NLA_U8 },
+ 	[IFLA_GENEVE_DF]		= { .type = NLA_U8 },
+ 	[IFLA_GENEVE_INNER_PROTO_INHERIT]	= { .type = NLA_FLAG },
++	[IFLA_GENEVE_LOCAL]	= { .len = sizeof_field(struct iphdr, saddr) },
++	[IFLA_GENEVE_LOCAL6]	= { .len = sizeof(struct in6_addr) },
+ };
+ 
+ static int geneve_validate(struct nlattr *tb[], struct nlattr *data[],
+@@ -1544,6 +1556,31 @@ static int geneve_nl2info(struct nlattr *tb[], struct nlattr *data[],
+ 		cfg->inner_proto_inherit = true;
+ 	}
+ 
++	if (data[IFLA_GENEVE_LOCAL]) {
++		if (changelink && cfg->saddr.sa.sa_family != AF_INET) {
++			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_LOCAL], "New local address family does not match old");
++			return -EOPNOTSUPP;
++		}
++
++		cfg->saddr.sin.sin_addr.s_addr = nla_get_in_addr(data[IFLA_GENEVE_LOCAL]);
++		cfg->saddr.sa.sa_family = AF_INET;
++	}
++
++	if (data[IFLA_GENEVE_LOCAL6]) {
++		if (!IS_ENABLED(CONFIG_IPV6)) {
++			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_LOCAL6], "IPv6 support not enabled in the kernel");
++			return -EPFNOSUPPORT;
++		}
++
++		if (changelink && cfg->saddr.sa.sa_family != AF_INET6) {
++			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_LOCAL6], "New local address family does not match old");
++			return -EOPNOTSUPP;
++		}
++
++		cfg->saddr.sin6.sin6_addr = nla_get_in6_addr(data[IFLA_VXLAN_LOCAL6]);
++		cfg->saddr.sa.sa_family = AF_INET6;
++	}
++
+ 	return 0;
+ change_notsup:
+ 	NL_SET_ERR_MSG_ATTR(extack, data[attrtype],
+@@ -1724,6 +1761,7 @@ static size_t geneve_get_size(const struct net_device *dev)
+ 		nla_total_size(sizeof(__u8)) + /* IFLA_GENEVE_UDP_ZERO_CSUM6_RX */
+ 		nla_total_size(sizeof(__u8)) + /* IFLA_GENEVE_TTL_INHERIT */
+ 		nla_total_size(0) +	 /* IFLA_GENEVE_INNER_PROTO_INHERIT */
++		nla_total_size(sizeof(struct in6_addr)) + /* IFLA_GENEVE_LOCAL{6} */
+ 		0;
+ }
+ 
+@@ -1745,6 +1783,11 @@ static int geneve_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 		if (nla_put_in_addr(skb, IFLA_GENEVE_REMOTE,
+ 				    info->key.u.ipv4.dst))
+ 			goto nla_put_failure;
++
++		if (nla_put_in_addr(skb, IFLA_GENEVE_LOCAL,
++				    info->key.u.ipv4.src))
++			goto nla_put_failure;
++
+ 		if (nla_put_u8(skb, IFLA_GENEVE_UDP_CSUM,
+ 			       !!(info->key.tun_flags & TUNNEL_CSUM)))
+ 			goto nla_put_failure;
+@@ -1754,6 +1797,11 @@ static int geneve_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 		if (nla_put_in6_addr(skb, IFLA_GENEVE_REMOTE6,
+ 				     &info->key.u.ipv6.dst))
+ 			goto nla_put_failure;
++
++		if (nla_put_in6_addr(skb, IFLA_GENEVE_LOCAL6,
++				     &info->key.u.ipv6.src))
++			goto nla_put_failure;
++
+ 		if (nla_put_u8(skb, IFLA_GENEVE_UDP_ZERO_CSUM6_TX,
+ 			       !(info->key.tun_flags & TUNNEL_CSUM)))
+ 			goto nla_put_failure;
+diff --git a/include/net/geneve.h b/include/net/geneve.h
+index 5c96827a487e..8dcd7fff2c0f 100644
+--- a/include/net/geneve.h
++++ b/include/net/geneve.h
+@@ -68,6 +68,12 @@ static inline bool netif_is_geneve(const struct net_device *dev)
+ 	       !strcmp(dev->rtnl_link_ops->kind, "geneve");
+ }
+ 
++union geneve_addr {
++	struct sockaddr_in sin;
++	struct sockaddr_in6 sin6;
++	struct sockaddr sa;
++};
++
+ #ifdef CONFIG_INET
+ struct net_device *geneve_dev_create_fb(struct net *net, const char *name,
+ 					u8 name_assign_type, u16 dst_port);
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index ab9bcff96e4d..e4a0cdea734b 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -1419,6 +1419,8 @@ enum {
+ 	IFLA_GENEVE_TTL_INHERIT,
+ 	IFLA_GENEVE_DF,
+ 	IFLA_GENEVE_INNER_PROTO_INHERIT,
++	IFLA_GENEVE_LOCAL,
++	IFLA_GENEVE_LOCAL6,
+ 	__IFLA_GENEVE_MAX
+ };
+ #define IFLA_GENEVE_MAX	(__IFLA_GENEVE_MAX - 1)
+diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
+index a0aa05a28cf2..438bd867ec38 100644
+--- a/tools/include/uapi/linux/if_link.h
++++ b/tools/include/uapi/linux/if_link.h
+@@ -888,6 +888,8 @@ enum {
+ 	IFLA_GENEVE_TTL_INHERIT,
+ 	IFLA_GENEVE_DF,
+ 	IFLA_GENEVE_INNER_PROTO_INHERIT,
++	IFLA_GENEVE_LOCAL,
++	IFLA_GENEVE_LOCAL6,
+ 	__IFLA_GENEVE_MAX
+ };
+ #define IFLA_GENEVE_MAX	(__IFLA_GENEVE_MAX - 1)
+-- 
+2.36.1
 
