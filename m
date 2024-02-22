@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-76414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E7C485F70B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:33:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D5785F70D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7BC2822DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:33:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3068C1C23457
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BA946B83;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA4B4596E;
 	Thu, 22 Feb 2024 11:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="t48+/f5Q"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rVeJYGXd"
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CEA8383BD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDF7381A1;
 	Thu, 22 Feb 2024 11:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708601607; cv=none; b=GTGm/7ydWKiFcCofvqtY6HJGms3Chz4JouYLXM07URIdXc98xLaWxr23EoGLsLUFzWTuWNCob1Jff8kWDbwVzrEQdeZS5fa1cw6tC/PWdq49viDTi3y3JA3YRP+IC8Jj40hTrturSdLT3BFpLwbKJ19M+0lkH/6IbltSz+pkA9U=
+	t=1708601607; cv=none; b=LyWEGs0/m9BL5VLRyxKgWnEi0cc8wcBMFbJxyrEHMXS7KuS0kj2A6W3sFl41VhC7m6u7yizUm7gxpe26BBWGh+MKjQfYnInCYhu64wFRNqzFOo0RO20/GB968R6oO6oYja3HCV4sLuJFtU38c1ydJbRlOPWzooqgF4GUt9soSso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708601607; c=relaxed/simple;
-	bh=dE8sWUiPLq0FaWrSd12fT0dLFSxfOZH6t/B1AZQdSaw=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=LeTctDtRimHuLMLch3ChswQwhQnGCBzvXelghbbHlCKfSc4Bs3WDShTsmblytGm3zCa+MQHbTKtaLtpNahCiidKlWp/KPd+pgjnlJDd4JnNnf1LIP3nrZMOEwY2bRZDJTbpGFvv9b9N7iO9obwRu+OoqzeDDvAvSakW1qmya5gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=t48+/f5Q; arc=none smtp.client-ip=198.47.19.141
+	bh=RGZevRFsIBvLsB1s0og8plkNvtCkfORtLILdFlyUzw0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=fp5C4e2uJGdKQmVpuFdiwsxAyomKseQhxVGOiMCups42qgWeRL4TQ3coJsOyswYtLO4IfsjzeI8CeIzawgaz0D2BNYXN5r9ABvzKX8qBux0t3nzWMsDWfbTg1TOPkIQajjXdARk9cUB8APDTroCfa8uStlh72rm/yNhFrIUd5qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=rVeJYGXd; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MBX53d059115;
-	Thu, 22 Feb 2024 05:33:05 -0600
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MBX7O6059121;
+	Thu, 22 Feb 2024 05:33:07 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708601585;
-	bh=bj4DBD9JzM1ZhZS2ZLCo1fD79T0JhKNn65e+gvIiMAI=;
-	h=From:Subject:Date:To:CC;
-	b=t48+/f5QGgNDJk8O8T/IxbEEbfEkgV3Veqg/Hyu58PtBUdxX6cNC3GHhCSmOppJI0
-	 8La/aN5t9Oc/twLQcr4Htm2kSWF4erVnL4bnqPd81ziol4WHm9zfL3ygojxsa/rwxM
-	 7qoIsEh3Nb77NTesn5/RW/Z/4aWAJ/XZHtjTvfI0=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MBX5v4007284
+	s=ti-com-17Q1; t=1708601587;
+	bh=unATImeiTgCx2h83hV/vvpZDGrNkG9tQmTwgLhrnhvI=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC;
+	b=rVeJYGXdT7Ymnf2W3KyFM42kDH/batnZnLLyh2+TyVQiP/CSD3IFOLukhWUeaWN0X
+	 oqjXbTnCOzloDPiHKZNvVcL0jOdCOypZNvv9ySWUTH7vSaWBO8wDQL9UD1cpCXN8Ff
+	 TvooYNuJos6qSxv4qPQglQ/tS7xreZdjB5qNv6g0=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MBX7VF056960
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 22 Feb 2024 05:33:05 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 22 Feb 2024 05:33:07 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 22
- Feb 2024 05:33:04 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 05:33:06 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 22 Feb 2024 05:33:04 -0600
+ Frontend Transport; Thu, 22 Feb 2024 05:33:06 -0600
 Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MBX3U1128346;
-	Thu, 22 Feb 2024 05:33:04 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MBX5bj090878;
+	Thu, 22 Feb 2024 05:33:06 -0600
 From: Jai Luthra <j-luthra@ti.com>
-Subject: [PATCH RFC 00/21] media: cadence,ti: CSI2RX Multistream Support
-Date: Thu, 22 Feb 2024 17:01:16 +0530
-Message-ID: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
+Date: Thu, 22 Feb 2024 17:01:17 +0530
+Subject: [PATCH RFC 01/21] media: ti: j721e-csi2rx: Fix races while
+ restarting DMA
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,9 +67,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAIQw12UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDIyND3dzSnJLM4pKi1MRc3bSkpESztLRUE/NEYyWgjoKi1LTMCrBp0Up
- Bbs5KsbW1AMsf+ZFiAAAA
+Message-ID: <20240222-multistream-v1-1-1837ed916eeb@ti.com>
+References: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
+In-Reply-To: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
 To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
         Mauro Carvalho Chehab
 	<mchehab@kernel.org>,
@@ -92,84 +93,61 @@ CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Julien Massot <julien.massot@collabora.com>,
         Jayshri Pawar <jpawar@cadence.com>, Jai Luthra <j-luthra@ti.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3027; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=dE8sWUiPLq0FaWrSd12fT0dLFSxfOZH6t/B1AZQdSaw=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBl1zDSRemMopB1oyhk0qqhqMq7jed7QD5MkvQB+
- HQ5MAOBls6JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZdcw0gAKCRBD3pH5JJpx
- RZd4D/wKmk5+oJ5+9MHqCQj2Du6+Y4Sw2Z3uehl3kGI/oZqnSTogESbxfsvOEjmnf8N4/eG3BuM
- lq/F3xa1BJLVY6VxYsoyNx1lA7koLinFK90BDsdN+ohE/sLOfkyXkSxtppzsyzdQe6FLJZTLjHn
- MG95f+lUB8szac6peQ4HURinOHy6SZJ5EKb0IJCJOGNLU5e7AcleFDAg5/V8p2jKqUHgHMV/mXZ
- OYoHZpJ5OHN/wcyp0uAVOkp7VpC9KeU+gbxWvQ84jVTYEI8csZDFS6Ui6fNej3PvbTchq9cuqXr
- bPYYEAepIUfPeaM02Hh3lCX22OCLGriIWuyGFuaODZtMerUArBD49VeDj4wMCIpRyLzIp9/LvOY
- y2jJRTezH5OG3XgiV6DETNma0SUEtWMdwOlLbol9vKCAL3eR7+0AtSnMM2r7Amq9uiDu4QxJOET
- fK+Uuteq7cgjAo5AWUYIAYceHSJnjmn9U/e5OviUp0Q+4F3SKpNIwWCtQLwMYL7WTYLdZrJ7nE/
- S0NC0iXk6G0UyQJGU/FjPm+vScORoHyzkLOadbWPhbgm9J79VMUnpeEJ7Dc9VWwFLeWKQBfEc1q
- TUwTKKAE7IIWQVPteAcTgCFEHJqD3M/s+2ziMczZq5SRa/Eqk+nQvkHgO4K8HncqVqirLp5q0di
- Ai2U0GAc7uxwBfA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1532; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=RGZevRFsIBvLsB1s0og8plkNvtCkfORtLILdFlyUzw0=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBl1zDaW9QfFKtaA48EMnvlA0N0UPpud5MN0AiqU
+ qz3gSThwtSJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZdcw2gAKCRBD3pH5JJpx
+ RZpWD/9TrlLiXZwWyOpm0PdGXZeBKB+af2zmPStZLGcfOE2aiYqIvQXZasnffBaD+rtu0LF9vKc
+ LSuRyNTfIbaKkideXMz5oYsyu46z9AeJ6+MLj2D3iEYabvJZknCGVOK5Xx1xyKGhBnAcd9XucDl
+ zEPeX3tcpyBN8fwIaJ27pMs+HCW/9AEyZA+/DwVLrtz2UTYNmSHOz5cgaAXy2U2URgP66oi3VLU
+ sEym4xvzKCa4uwid9Ns+O+bfgaFgyJMuHmGWwPig2nmVpTF4m5IiTsaOl5+h+a8XvYDDLoCyMcV
+ 8dorGmBTMb0WhPzeJ5GA7Dkw8lN+gbinoHomqJlf/B0gw5v1Ln6PQuWlY//NPyeWNL12lbCnHE2
+ blYQ3L6zQE7eRI49fuN891rkdnHy3mnvzXySDNvx62kNG50yt7N1xthBjYH9FnutwaXcPzUe4MU
+ lex+cUEG8cEBn7iT8ZkoNO2jUdQvk06e/+mOPv3KqzGzFFsNRhYhQpMAw6BYVPav+0x/4mtEcuD
+ HSVaMyIRajwZ2Jpa//Fc5g9TPDaIR27LMer1l4X5D/Iz2PzLnmfrZ2xxma8fU6wqR3ABHdwBF8+
+ 2dJ8GlCphRINgnAea64x8tbbhCsvt3J/69JwpD/e/PBQdYGeFjPQPfbsiw3gDyKPUewiXs0rdow
+ Bxk05JYwsUwjIBQ==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This series adds multi-stream support for Cadence CSI2RX and TI CSI2RX
-Shim drivers, along with minor improvements and bug fixes. It is a
-follow up to [1] which added single-camera support for TI CSI2RX.
+After the frame is submitted to DMA, it may happen that the submitted
+list is not updated soon enough, and the DMA callback is triggered
+before that.
 
-Posting this as an RFC as it is late in this merge window, will post a
-non-RFC v2 fixing any comments after v6.9-rc1 is tagged.
+This can lead to kernel crashes, so move everything in a single
+lock/unlock section to prevent such races.
 
-Some of the patches are split to ease review, and are prefixed with
-"SQUASH" in the subject. They can be squashed in subsequent revisions,
-as they should ideally go as a single commit.
-
-PATCH 1-3:   Misc. fixes and improvements
-PATCH 4-10:  Support multiple DMA contexts/video nodes in TI CSI2RX
-PATCH 11-12: Use get_frame_desc to propagate virtual channel information
-	     across the different subdevs in the media pipeline
-PATCH 13-20: Use new multi-stream APIs across the drivers to support
-	     multiplexed cameras from sources like UB960 (FPDLink)
-PATCH 21:    Optimize stream on by submitting all queued buffers to DMA
-
-[1]: https://lore.kernel.org/all/20231009-upstream_csi-v10-0-330aaed24c5d@ti.com/
-
+Fixes: b4a3d877dc92 ("media: ti: Add CSI2RX support for J721E")
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
-Jai Luthra (15):
-      media: ti: j721e-csi2rx: Fix races while restarting DMA
-      dt-bindings: media: ti,j721e-csi2rx-shim: Support 32 dma chans
-      media: ti: j721e-csi2rx: separate out device and context
-      media: ti: j721e-csi2rx: add a subdev for the core device
-      SQUASH: media: ti: j721e-csi2rx: Fix link validation for multi-stream
-      media: ti: j721e-csi2rx: add support for processing virtual channels
-      media: cadence: csi2rx: Use new enable stream APIs
-      media: cadence: csi2rx: Enable stream-wise routing
-      SQUASH: media: cadence: csi2rx: Enable per-stream controls
-      SQUASH: media: cadence: csi2rx: Filter using MIPI virtual channels
-      SQUASH: media: cadence: csi2rx: Filter streams in get_frame_desc
-      media: ti: j721e-csi2rx: add multistream support
-      SQUASH: media: ti: j721e-csi2rx: Enable per-stream controls
-      SQUASH: media: ti: j721e-csi2rx: Assert pixel reset before stopping last stream
-      media: ti: j721e-csi2rx: Submit all available buffers
+ drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Jayshri Pawar (1):
-      media: cadence: csi2rx: Support runtime PM
+diff --git a/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c b/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
+index be47a4a24f97..e2cac8d73d78 100644
+--- a/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
++++ b/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
+@@ -810,15 +810,14 @@ static void ti_csi2rx_buffer_queue(struct vb2_buffer *vb)
+ 			dev_warn(csi->dev,
+ 				 "Failed to drain DMA. Next frame might be bogus\n");
+ 
++		spin_lock_irqsave(&dma->lock, flags);
+ 		ret = ti_csi2rx_start_dma(csi, buf);
+ 		if (ret) {
+-			dev_err(csi->dev, "Failed to start DMA: %d\n", ret);
+-			spin_lock_irqsave(&dma->lock, flags);
+ 			vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+ 			dma->state = TI_CSI2RX_DMA_IDLE;
+ 			spin_unlock_irqrestore(&dma->lock, flags);
++			dev_err(csi->dev, "Failed to start DMA: %d\n", ret);
+ 		} else {
+-			spin_lock_irqsave(&dma->lock, flags);
+ 			list_add_tail(&buf->list, &dma->submitted);
+ 			spin_unlock_irqrestore(&dma->lock, flags);
+ 		}
 
-Pratyush Yadav (5):
-      media: cadence: csi2rx: configure DPHY before starting source stream
-      media: ti: j721e-csi2rx: prepare SHIM code for multiple contexts
-      media: ti: j721e-csi2rx: allocate DMA channel based on context index
-      media: ti: j721e-csi2rx: get number of contexts from device tree
-      media: cadence: csi2rx: add get_frame_desc wrapper
-
- .../bindings/media/ti,j721e-csi2rx-shim.yaml       |  40 +-
- drivers/media/platform/cadence/cdns-csi2rx.c       | 460 +++++++++--
- .../media/platform/ti/j721e-csi2rx/j721e-csi2rx.c  | 853 +++++++++++++++------
- 3 files changed, 1052 insertions(+), 301 deletions(-)
----
-base-commit: d894a2a286fccd6e47cd1cac4c2d4ff5d300d7c7
-change-id: 20240221-multistream-fbba6ffe47a3
-
-Best regards,
 -- 
-Jai Luthra <j-luthra@ti.com>
+2.43.0
 
 
