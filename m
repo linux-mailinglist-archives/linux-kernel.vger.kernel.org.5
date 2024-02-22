@@ -1,197 +1,171 @@
-Return-Path: <linux-kernel+bounces-77384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B16286049B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:17:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C20368604A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:19:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A6371F2669D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:17:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70368282069
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA88D73F3D;
-	Thu, 22 Feb 2024 21:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F46373F2D;
+	Thu, 22 Feb 2024 21:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="kLqJfTad"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b="dY1I6vGF";
+	dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b="cIqJsB97"
+Received: from esa.hc4959-67.iphmx.com (esa.hc4959-67.iphmx.com [139.138.35.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5572912D1E4;
-	Thu, 22 Feb 2024 21:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708636630; cv=none; b=ci7sfUvTCgAymb+CfZDY1/yeHwbkaqAZ7PQx1RWlBxz73lZJhkSFawtr3tYvrRa5yJYiNSJzfEI27n2vSlOgnp3BBJcgHXb42wn34jDcsZwcAbOYb+AVwWxP95c38CrUZksP1+f65SWrOdswKjeCOarQGv0GaRewxzuIRhmb9Vc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708636630; c=relaxed/simple;
-	bh=M8tOhP9vVT2zqHrXHSSFO6m8Wbbuioy5RDsNkfbHSEw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TyqPKmFF6Y6dM/dz82ZYyGzZWPR6SOOlQVH0Py7pMepQGnzsucQsb6bc3mslqdeH2BdGdpMdEA/qW+/ykuCOqcOS8TLW8Yd0wHmMjQOXnbEtzuLP75n0XWHOIpFYdG2lbAfZZJqDZpWQlw+3g+r85agEG5PBYQRiKFMo3qpTsAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=kLqJfTad; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e471f5f1a5so76456b3a.1;
-        Thu, 22 Feb 2024 13:17:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708636627; x=1709241427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3mzUEcrROuIEmoz2lID89JhamlaTPR97gp/6PZMhGpY=;
-        b=EDJN5lTE2BBH4LfCGUb+rP5XGnW5qf6QxgwbVAPsVJepKghW9wgHKTMK/v7xl0GH/K
-         k7w1AlcBG0qG/Y8MK5NwA/5bw9LG8w9KJneE2NxHmv4WIvjAbtU2BOFNWkC1eHgooiUf
-         IKmmPpMWJdg/wdaV4mpnUdS3SDycBIDhPPc2vonY92MoIQejMbquCm4ChQpBtOxNdZMw
-         uLKxavKbJ+gjcXnc+NI58L+hW1/c7MZGJma+bI2ulFbAn5k3Dveow2IZnuUeIw9EPTxz
-         bqpJQgfuAhkjHNp0XcQ4c1XtJc3hidicWVDeu6Rjx4Zj0MJWT+9KHrTTs7aAPyttRXnl
-         6pFw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNk3uXUN5ovgg8F3L+SfJlqca4qJbZyPByV2rD4dbz39D2PqdqXi17Cgqi29TfaLPJlIHCWQt/sxQOBqJynfQRV+HNe3+xSlW6dz67
-X-Gm-Message-State: AOJu0Yx/olgIQqQ2zQMWaGhBXoV4ujgiTeTzFAsN9Gg9EqDYQ7p1DlnT
-	iqeWeC4IH3JtpgmuaFrlp+ouHyPmM1XOJk1zXS/oMXCIRRrZqbuuJUMZtIg9
-X-Google-Smtp-Source: AGHT+IFIatEutbGRxbG0rE/AhqKtAUzidtuAWgdwZV9bDbTlEwkK2c/a3mSRVionJ+/NJDt/WRfz5Q==
-X-Received: by 2002:a62:ce0e:0:b0:6e3:f013:463 with SMTP id y14-20020a62ce0e000000b006e3f0130463mr64614pfg.28.1708636627524;
-        Thu, 22 Feb 2024 13:17:07 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id du22-20020a056a002b5600b006e45d5f0645sm9074358pfb.101.2024.02.22.13.17.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 13:17:06 -0800 (PST)
-Date: Thu, 22 Feb 2024 18:17:52 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708636625;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3mzUEcrROuIEmoz2lID89JhamlaTPR97gp/6PZMhGpY=;
-	b=kLqJfTadNsH5JMqLyu+Iae59QBo+Uiv3E+A7jRKUvMYIhqRNlLCFBoPHTouBdCMoG8OR8R
-	LaMD6ln9taWUWtZmLwUp7fnYVtD1os4oazkCPT8RfIJSSvG6Zk3LTII/k4yI2/BUm67XLu
-	q2L8E/SWnj8ih9oA1roqfrEpqwvg3wkxq6gbxrkBLN4FxqD0m65RrntEUks1F2LZIGBxl2
-	QgGdOuI34Y8AMYIIppPLrXttPll+GDyJetkZRY8Tg6gEudboJ6TJeaZjjiP4a/LMg7ZTxQ
-	mBZFL+6jyXrBDrrDLwAJ6earTJeZvK4Hi1eWe9UKV8bOR6PGNoXImkGvwFbjyw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] power: supply: sysfs: constify the struct device_type
- usage
-Message-ID: <fzakqxmfrx7jh73ylxikjd2ehltqgkncfn2ks4chbncssfzch7@g6epshmmdanp>
-References: <20240220-device_cleanup-power-v1-1-e2b9e0cea072@marliere.net>
- <j2boiqkk7fwexefgwxoytk2gdx4an5snfm4bjtflnr7wwxf5yj@g5dcmcaor453>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C77F6AF97;
+	Thu, 22 Feb 2024 21:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.138.35.140
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708636744; cv=fail; b=KIHwX85En8d6vd/lpuIrgUkehNNr8aFisBg+UtbCMzGy1RNSnDTv8gE3jpx6YhFZyzeGO0blHm7oZH0Z/5XUZSOgj78kYw0jAgz3iXdOdsqwDywlWm3hVsztJ/4YQCuIJMR4RPZnEzc/LRfShSIE4E5nFRqprx38Tah981UbRRw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708636744; c=relaxed/simple;
+	bh=JNVVi396xa2NT0d8ZYJ2mo33jD9euRVOh7oeAnHzPq4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oy65GT8bQM1mpqnE1/U2r0/MbcravHTtGz2CBSmm5J+irNLHqiWhjqYsy4GWxH0N85pxxki3tuumRHbSHbC5ETYob7WEPb6W2wiHLQRfB8nVrlm2I5Y6eOElpiGoLHAjni9alIRs6ykRM7mgahTXHcLbzUV8/8RKEkNxfzlGD7Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seagate.com; spf=pass smtp.mailfrom=seagate.com; dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b=dY1I6vGF; dkim=pass (1024-bit key) header.d=seagate.com header.i=@seagate.com header.b=cIqJsB97; arc=fail smtp.client-ip=139.138.35.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seagate.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seagate.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=seagate.com; i=@seagate.com; q=dns/txt; s=stxiport;
+  t=1708636742; x=1740172742;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JNVVi396xa2NT0d8ZYJ2mo33jD9euRVOh7oeAnHzPq4=;
+  b=dY1I6vGFy6FpzX65CVOpsQ+iinqqTRBpynWpuJC5L9nxE6YqTWtV6TRH
+   WFJKvwiCQ1EwQsVaI/E8dRgoh9zuMoW0g+beHnVEF0uWX7DILSdS9LuZN
+   YK1tstFo9j8dsFn9IQa3foz0y+gyWFH50YQYoBZ99huKMNGFVCPNou9A7
+   A=;
+Received: from mail-mw2nam10lp2101.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.101])
+  by ob1.hc4959-67.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 13:18:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JdCKYn+YFOPfBGCvyAO0gx0tErqpuDiRyaHCmjYCQa0P4gzvu/iyPaVEXaTVA/WLfUcj2wrHtswhskWxAN13Oaub56Nwz7ORa1s9s8pcxatMDHiuPO+idMWlbe6Bg2ljj6V8sNQHi2uzuC6mQ2lHDP0Aqc1koq+XR1PMR+7Kb//+XPxbQIK0ycYc7G1zgNkoQph4wtPAMW5bfc/0eNhaDUZF6RhvltCpK2qswiAQ9w2m7XEAb05/8/M7DME9SxOU6XUbAKU+LA6k7/NL/GcQ8GOc/3/41rCupsB2SQJmn1QD34WlNh6f0r+36y6NeD3l7Z5tBeP95CN6CEDSJksXvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vbTru4NpSzd4dLsf2NWBCpxiTGNnAhW2bzL5MXGRl4s=;
+ b=USsV3NZuuD17ATWToEooE4EAM/eTjVh8eQ5mkCS+LFXU/Bhi22/IpPoogpzX3R4DaXsBkua+cG5kMsplgE51txB5ltd/WbN2fggdQv4S/+CkTMgyqpLQOxj51lQ1Wnim67opAf49QdrHVMsp96DGEhCALMI5wCEnww2JY0FxCr7rRxQ7tDMhBgwQFYjZY8cy/Bf0FqNwE40c8/dmscOKbWm6S78l1EdWhg+VNn7cS5cqkxbEjhnc+Kd9MbHdDYymQA6WEwHyJSFUjwT72sX4tabQgMJxrw3echhVLoIZBGijX7xjYL2Em9F4C0K24OUtOpbMYgnCwaiI9KjJJLdCSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 192.55.16.51) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=seagate.com;
+ dmarc=fail (p=reject sp=reject pct=100) action=oreject
+ header.from=seagate.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seagate.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vbTru4NpSzd4dLsf2NWBCpxiTGNnAhW2bzL5MXGRl4s=;
+ b=cIqJsB97ast7Au1ZsttSzKFAuBAAlIKlPsfn9EEmaSCxmgacBxcyDHo0jDssYdDYcInPYnSYn62XKxk8HhMMXdbbrRnZZFg5mqsDsELsKRlfX8+e9OeuceJLzVTLCWKX2+tWg7MsdpRZb9jOpF0ccMdWMygOBFmfF3t0AASsQrY=
+Received: from CY5PR15CA0158.namprd15.prod.outlook.com (2603:10b6:930:67::20)
+ by BL3PR20MB4922.namprd20.prod.outlook.com (2603:10b6:208:3b1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Thu, 22 Feb
+ 2024 21:18:51 +0000
+Received: from CY4PEPF0000E9D5.namprd05.prod.outlook.com
+ (2603:10b6:930:67:cafe::69) by CY5PR15CA0158.outlook.office365.com
+ (2603:10b6:930:67::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
+ Transport; Thu, 22 Feb 2024 21:18:51 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is 192.55.16.51)
+ smtp.mailfrom=seagate.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=oreject header.from=seagate.com;
+Received: from sgspzesaa002.seagate.com (192.55.16.51) by
+ CY4PEPF0000E9D5.mail.protection.outlook.com (10.167.241.76) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 21:18:49 +0000
+Received: from sgspiesaa001.seagate.com ([10.4.144.52])
+  by sgspzesaa002.seagate.com with ESMTP; 22 Feb 2024 13:11:41 -0800
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="114056584"
+STX-Internal-Mailhost: TRUE
+Received: from unknown (HELO nick-desk.colo.seagate.com) ([10.37.50.20])
+  by sgspiesaa001.seagate.com with ESMTP; 22 Feb 2024 13:03:50 -0800
+From: Nick Spooner <nicholas.spooner@seagate.com>
+To: gregkh@linuxfoundation.org
+Cc: akpm@linux-foundation.org,
+	allen.lkml@gmail.com,
+	conor@kernel.org,
+	f.fainelli@gmail.com,
+	jonathanh@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	lkft-triage@lists.linaro.org,
+	patches@kernelci.org,
+	patches@lists.linux.dev,
+	pavel@denx.de,
+	rwarsow@gmx.de,
+	shuah@kernel.org,
+	srw@sladewatkins.net,
+	stable@vger.kernel.org,
+	sudipm.mukherjee@gmail.com,
+	torvalds@linux-foundation.org,
+	Nick Spooner <nicholas.spooner@seagate.com>
+Subject: Re: [PATCH 6.7 000/313] 6.7.6-rc2 review
+Date: Thu, 22 Feb 2024 14:18:18 -0700
+Message-Id: <20240222211817.24480-1-nicholas.spooner@seagate.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240221125951.434262489@linuxfoundation.org>
+References: <20240221125951.434262489@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <j2boiqkk7fwexefgwxoytk2gdx4an5snfm4bjtflnr7wwxf5yj@g5dcmcaor453>
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D5:EE_|BL3PR20MB4922:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 01a32c59-c978-41bf-ddd0-08dc33ebdd97
+STX-Hosted-IronPort-Oubound: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Kq/k5AlsaMfBaXukzuJswda4dJt3igv7Nc+pBINHNpGjhU0m1dMSoXqSM2L03FMSC9mRNlM/qe957kvz7H0IMTf6hBzEO1YPqmzq6G8TWzokQwBl8vmswZMycEJfFKhiN3pDgciVfNWGB9MqtSodm6kGxkrxzMsOwIHJNqe/1uc8SV9TnaV5GyeuGarCFuwkFGj32Aued4ClM31dXtMbklNhR1hfssqfMvClFAojUwA0DNNCDD7k5h6cceZClue/PJftgQGqGUPmJAoOzL67Tejv4gT0hPnoajkYNXWb2/Ndk7+EvYnRU/4c9a6FpWKLGe8UX51rTjQPdkB1ZMI1OW3Wh91cHdP5yCxkP5JKYUcK3KcjXN9cYc9RIhEu6BX/9H+gt7dFWTssf9yDj85WtojF0zoHCki4KM2ies9dghMGDm1c3zIR/rKG29j9DvUKhXBvh6koZeIbdN3WBB6iCNzp6YC2EU932T84khhPVBLNJ9ElehVYSS3xOC501gbljl5CK4mtXedPEy9ArWAbf+qcfOiqywl19CFc/YPahTcScPlbQ3CTpdDlhLzVezA7VowXKbR0O5EdVssW8WuD+Dss4dJ/MthGu3sIIvkcX8xLKhVUsYM+zFxHtmj9TCJTJ/r8uHL1kI1Mme7yQi478Q==
+X-Forefront-Antispam-Report:
+	CIP:192.55.16.51;CTRY:SG;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sgspzesaa002.seagate.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	fcqIkdSuodgUiAPVjs4bAHo0+7F5VJsfGSDGPo4WE5d8ZCuTOuAwdzCpVHGjNXS4Huu8r5TxbUSkwkfRQv8vgAStm0Oig46poStDDyZxUTZ5gA1i37WcPCAJ8Ni5e/t+Vn7FjeJTgQOdELlF0u4RITa9PajFLHSXOktq2cXGShOfGEagUC2Lj/bUkXuILMjQOMlgirgaOLHsJcs+hK9ssjBGfMPCVx6el269PaxSUC61mHadPYMPbnVe+qryKFJ5hOOmMbfjnpwIUMc5D7BVLIRo7HIdYnEo1YW+C1o/BV+O8vM7hhUCvCB3+3ng1TQvSnInU+XFt3BlR66CBQi60D1ucALJ2b146QF8xQ5gz52m7P9fdRjubvFUjO4m7SWAqrEW2+TqrD+1oqakQY9H370icN9CWjgt6ksu3pXdGIC3KCpfh2lqQAWW8r/8n9ga0ap8F6b7oGSsdyhbZ/u8lkzWg1M0pjT3mpPYk7TvOSSC3LcqTijxbAcgCM3Ig9dmNXSZxGadoen4zsKIQvsfwEQeLNxa6B5CDYsrGqkiniQX8AkF/lwmMKStSGIDWSHB353mS/2/RkRY4BKtaxZZMbhxMUnTX6mge8k73VA2UZ9YKF6xzfwuShw3Ck+f2sgF
+X-OriginatorOrg: seagate.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 21:18:49.7972
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01a32c59-c978-41bf-ddd0-08dc33ebdd97
+X-MS-Exchange-CrossTenant-Id: d466216a-c643-434a-9c2e-057448c17cbe
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d466216a-c643-434a-9c2e-057448c17cbe;Ip=[192.55.16.51];Helo=[sgspzesaa002.seagate.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9D5.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR20MB4922
 
-Hi Sebastian,
+> This is the start of the stable review cycle for the 6.7.6 release.
+> There are 313 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.6-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 21 Feb 21:46, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Tue, Feb 20, 2024 at 03:40:06PM -0300, Ricardo B. Marliere wrote:
-> > Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-> > core can properly handle constant struct device_type. Move the
-> > power_supply_dev_type variable to be a constant structure as well, placing
-> > it into read-only memory which can not be modified at runtime.
-> > 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> >  drivers/power/supply/power_supply.h       | 4 ++--
-> >  drivers/power/supply/power_supply_core.c  | 2 +-
-> >  drivers/power/supply/power_supply_sysfs.c | 9 ++++++---
-> >  3 files changed, 9 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/power/supply/power_supply.h b/drivers/power/supply/power_supply.h
-> > index 645eee4d6b6a..d547dbe5676f 100644
-> > --- a/drivers/power/supply/power_supply.h
-> > +++ b/drivers/power/supply/power_supply.h
-> > @@ -15,12 +15,12 @@ struct power_supply;
-> >  
-> >  #ifdef CONFIG_SYSFS
-> >  
-> > -extern void power_supply_init_attrs(struct device_type *dev_type);
-> > +extern void power_supply_init_attrs(const struct device_type *dev_type);
-> >  extern int power_supply_uevent(const struct device *dev, struct kobj_uevent_env *env);
-> >  
-> >  #else
-> >  
-> > -static inline void power_supply_init_attrs(struct device_type *dev_type) {}
-> > +static inline void power_supply_init_attrs(const struct device_type *dev_type) {}
-> >  #define power_supply_uevent NULL
-> >  
-> >  #endif /* CONFIG_SYSFS */
-> > diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
-> > index ecef35ac3b7e..fda21cf4111c 100644
-> > --- a/drivers/power/supply/power_supply_core.c
-> > +++ b/drivers/power/supply/power_supply_core.c
-> > @@ -31,7 +31,7 @@ EXPORT_SYMBOL_GPL(power_supply_class);
-> >  
-> >  static BLOCKING_NOTIFIER_HEAD(power_supply_notifier);
-> >  
-> > -static struct device_type power_supply_dev_type;
-> > +static const struct device_type power_supply_dev_type;
-> 
-> This creates an empty struct, which is being used in this file...
-> 
-> >  
-> >  #define POWER_SUPPLY_DEFERRED_REGISTER_TIME	msecs_to_jiffies(10)
-> >  
-> > diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-> > index 977611e16373..ed365ca54c90 100644
-> > --- a/drivers/power/supply/power_supply_sysfs.c
-> > +++ b/drivers/power/supply/power_supply_sysfs.c
-> > @@ -399,12 +399,15 @@ static const struct attribute_group *power_supply_attr_groups[] = {
-> >  	NULL,
-> >  };
-> >  
-> > -void power_supply_init_attrs(struct device_type *dev_type)
-> > +static const struct device_type power_supply_dev_type = {
-> > +	.name = "power_supply",
-> > +	.groups = power_supply_attr_groups,
-> > +};
-> 
-> ... and this creates the correct one in power_supply_sysfs.c, but it
-> is not being used at all. Maybe get some sleep and/or read again
-> what 'static' means for a global variable?
+Compiled and tested on my x86 machine, found no regressions.
 
-Oh, silly me. This was a stupid patch indeed, sorry about that. I'll
-send a proper fix later!
+Tested-by: Nick Spooner <nicholas.spooner@seagate.com>
 
-Thanks for reviewing,
--	Ricardo.
-
-
-> 
-> > +void power_supply_init_attrs(const struct device_type *dev_type)
-> >  {
-> 
-> This function no longer uses dev_type argument, so you can remove
-> it.
-> 
-> -- Sebastian
-> 
-> >  	int i;
-> >  
-> > -	dev_type->groups = power_supply_attr_groups;
-> > -
-> 
-> >  	for (i = 0; i < ARRAY_SIZE(power_supply_attrs); i++) {
-> >  		struct device_attribute *attr;
-> >  
-> > 
-> > ---
-> > base-commit: a9b254892ce1a447b06c5019cbf0e9caeb48c138
-> > change-id: 20240220-device_cleanup-power-037594022cb1
-> > 
-> > Best regards,
-> > -- 
-> > Ricardo B. Marliere <ricardo@marliere.net>
-> > 
-
-
+Thanks,
+Nick Spooner
 
