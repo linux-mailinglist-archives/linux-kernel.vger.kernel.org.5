@@ -1,201 +1,167 @@
-Return-Path: <linux-kernel+bounces-76874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF2485FDFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:25:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AABA85FDFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:25:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44F09B226B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1181C25765
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D271534E3;
-	Thu, 22 Feb 2024 16:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637821534F7;
+	Thu, 22 Feb 2024 16:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DYcKR5D2"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2044.outbound.protection.outlook.com [40.107.93.44])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="U380Pm1Q"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6803414C5AB;
-	Thu, 22 Feb 2024 16:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708619136; cv=fail; b=ayJb7p7r86H1wZZtu4siAgP6pE14yYsS4BJaPxzDM7jbRkDfmbb/E+mXRHy704IgXDhv6MRY0N63nD/aN2rOMstlGORoWehaSzUkMHW+rz+sxmLVWOfofMdqyEiduOwAxFci6+aRs96AUHe5LAzXknMPQvhkFp/TGm+kN2B9BvA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708619136; c=relaxed/simple;
-	bh=CxxrYfUrnHIk9YsdLjdFg+YL7bqT3gB+OzRqYGtVhh8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=MtKdwwO4scOlwYEguxd9V7baVYaFSeR4NGs5FeoPLkdQLC3ipq6fFBzAaviVlDLizfYapgzZlbMGQyZd+vkKU4o/6Aiwf9Du1KIs8J3726izeBBM8w82xrJ7QTbNWIkRWcQ49q6cGqty5mXheA/4A+t9cXMRKaT1AlS+zNRlzf4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DYcKR5D2; arc=fail smtp.client-ip=40.107.93.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FINb9CdOqwiB6GL1VUqkm3vkTmMe1NNU8dSG7MJ2nNzrjGwbJK6dU81ZTEDBse5Y1rqTlpF8Hj+Li39F8y2TMuPJ99rBIu57lpT7U1QvlT9Ewp+OHo4uNDw8fS39oqIbthtNCCpQm8JqapLkH0SHB7QJRfqvBUh+XxQ/3oTdtOtiH8WU+alGY2wN/L9piZcHzT7nQm4UAhg6GrmRnAFl5mzfvgLTu4VQH2xdgC4XfoDqZ5i9uGGLurG9C+iIj713Q7NwDZ+wZekb8qfPSkc0VX6cBtjiXTQlGmhP/kYxGGFyzAbz/C1DS/HPX1dLm22kwTkx5055AYlLZ4Dkz6w3Pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5HS1nTxAMJ4jJWcv/kzaDhy/sq4PKGej8exUWYgLOww=;
- b=nifyBneb6WAVUSyQ7buLbiRbb/m6UpOUsI/kDo2zPNsonRolnsYhQSqDlE7yX1rjw/DXja6gWdZdJTg9I0en/ufdWSXlH92ONu2GsFB+WwMFvvbQb1dA8VykC/84UqI1UTEeUm94yi4FRRFtEdR9J9cGIeAAazhC/htuEN69P9mwgnIzg7kxzxTGZBaLrQXntT0m0J9C7dS0StFLQi0S/WCn0VEwwOWKL3cK0yiHc2kpfiRHFs9X1/AuEkV+DGzNWML4tWvGR7BJvY6yAILlpgpsTuSethmZWEh5vx9GGcA7RshPxUGxmBfulAEf3vpajUvSs6dtunvhANEsJtJqqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5HS1nTxAMJ4jJWcv/kzaDhy/sq4PKGej8exUWYgLOww=;
- b=DYcKR5D2R9ojxiy500DYIUfezKd+FD2gZqhljkNfeSewOz1Vk+1jwWfC2/yeEK9I/Rn6jOl+tW+4Jv4oiqoNKS859wXpIiTXB7S66DEGdrh+5CXmXWVwXOGLjWuQOSV1pJV3bPlWrBnvVaNtQBIg1TdqCxdnqexv+YzfeGYkyVY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MW6PR12MB8914.namprd12.prod.outlook.com (2603:10b6:303:244::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Thu, 22 Feb
- 2024 16:25:31 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::dd00:9ab5:4d11:2d1a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::dd00:9ab5:4d11:2d1a%7]) with mapi id 15.20.7316.018; Thu, 22 Feb 2024
- 16:25:31 +0000
-Message-ID: <46329386-c779-4e9c-80b0-c0f01e51d0a5@amd.com>
-Date: Thu, 22 Feb 2024 10:25:27 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] fbcon: Defer console takeover for splash screens
- to first switch
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>,
- Daniel van Vugt <daniel.van.vugt@canonical.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Helge Deller <deller@gmx.de>, Daniel Vetter <daniel@ffwll.ch>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Jani Nikula <jani.nikula@intel.com>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <bb8d631d-9f6c-48e8-a504-8931ee21014d@amd.com>
- <20240219090239.22568-1-daniel.van.vugt@canonical.com>
- <20240219090239.22568-2-daniel.van.vugt@canonical.com>
- <rwifwv74dhd5dipnoi2txnecsydvfnrbog2ntk76hplf3tpdzt@5d4goejupypn>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <rwifwv74dhd5dipnoi2txnecsydvfnrbog2ntk76hplf3tpdzt@5d4goejupypn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0261.namprd03.prod.outlook.com
- (2603:10b6:5:3b3::26) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5A9151CF3
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708619149; cv=none; b=NWvXW80lFWKdzWQ7ZYc+CGA1905OKcN3UDwtcbgcvpxDqIPQLcmNifSUI8ek2xXEyWFvfhbZP9obodGn/0Qcda61LFtDWGIasVzfy0e0O/vhJm4ToTl/6q9/BhATzsYiAlA3YHwp3+3SspY3CqIpgmBSPZB15w5/1azbvWsUZTc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708619149; c=relaxed/simple;
+	bh=xI8c7R5FVGAN8wMc43qy4e84ldQjvtEyCbHUZkIpLIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EWadUo9FavauwqMcHA6zZdgDQisWEwIJQnOXVBThOi+WbrnvxrE5fshecBXDudQvw9lNNJFu111C9XI2NngzquXXkTg0Ae8Cta6HMd8TeZhQNMtcqPbXewAx8XGWnoPb8h29HyvID86joRiYVxZLWAA7PmBCMh9HbIcFZ5Y421g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=U380Pm1Q; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1708619137;
+	bh=xI8c7R5FVGAN8wMc43qy4e84ldQjvtEyCbHUZkIpLIU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=U380Pm1Q6KPMQNXOd51fT6xFpNJ2kPyBc5J9yYeWnOvCr8lexvxAozkD65j/w9CHw
+	 Z4BgxLFI7tuSISraqJtwhoA2LOod7y7By2eqFS/o8b5v/OO8MXHXpD3F+ocbWULJOD
+	 GQ99vF4e2dH5pN85X+PeKSlzKisaMCSO37xiCg5L0/aQqcT3XzqXPE+UG/UD9hCBfI
+	 D9YucIRUvZQFBLsv0v9JLrMLyh7vbVOhmjLqIeTYlA2Y3kuWKAGQwgjr95Xio0+M0b
+	 zKVgfUf8ouryxnIg71qbPaq5LzxSKtTjZuqvaXprYvqqcdWVbcQGjbNN07uRBR1ZpU
+	 TqACuGkL1BVhQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TgdmK1WQKzdPk;
+	Thu, 22 Feb 2024 11:25:37 -0500 (EST)
+Message-ID: <c411eda5-5378-4511-bea3-d1566174c8c7@efficios.com>
+Date: Thu, 22 Feb 2024 11:25:36 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW6PR12MB8914:EE_
-X-MS-Office365-Filtering-Correlation-Id: 92c41afe-9120-48a7-daf4-08dc33c2e330
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uq8mri15awSGuZAcfd92+r2jLRHHovz2xRpCtxNNcbiwMq0MQ6KlQL1HH5+4Lwh5cb5TFsvU0SaSUPDRAWsEEhHtyFfGFx7NR8U/bHvSwLbi60cAg+NlkcbNuh/wog78nTYyZC2vgTsifQGI2Xrc714tJr1zY6P1Xqmysj0/fAgZt+dKUIQOyq+FUTsa6qexQLlg0rTc5XFxNku1Sd0/KrpUEq3vkntxsRL7eq1d6/93XaTVfvRQTeUNNarVUgGCNs/gaKxOKT8++6fT696glVQFpDYejdA4TFnjJky9d9w/5OmWYPkPplET6xZHCIb0L+rZe01J9dc/xGGX/SaFb7LLOdDiEnwARQqQ/9fhMpUK9Q4mUUgSEA/4qJS2lPWiQChmlxUSEK9KWqcWhJo0OtYncxDghbIM1ULp7IEYJXvi5YCAVGspwZ0m2riNgEyvDukq7JN7GdDQHNo9+o43S8g/epQyC81fymXMR7ERyPStHN6KBUwYLjmEsd/MxrDiXKrHCWf32SGY0HYS/bGVwKKXNcNHhczpw23Un/rI9mmuqq90qmSHF4KdD0Ur7KxS
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Nms4WlVQSHJzNFM4Y2Q0T2ZaUFVqUU1kNDRaMlBWZU5LdTdNeGxycS9keWF5?=
- =?utf-8?B?eWE1Q0dDSEVmRU8wd2dXaE1icENtcnA1Zm9FU0ZuVDhhMVN2dWloOCs1bFNy?=
- =?utf-8?B?QVhKTDRRWVh2eDcwVjNhbTVHYlYvL0tmWldwcjZWM2dxNExFNGlrMlozYnZw?=
- =?utf-8?B?TTVsZFByVTE5dkxWVUt2WUhMeHlYZ3Y4N3h0MEFyMDlWZUlya0xsTTRSZGZ0?=
- =?utf-8?B?OHNYeDRTWU5FSTl4VlE4NHZFcXgrVHIySnl4dHJpVGU2WjlFZ21jMndTLzhj?=
- =?utf-8?B?bDRRSjJ2Mmwyc1FmOW1OSHU1OUZ5ckloZGxYS3NJbzF1cWk3cUl6cEtqc1JU?=
- =?utf-8?B?ckRJd1E5VytJbUpvT0xDVXVYa0VRblpHSENVM3A3M2ZzZGVMM2Yra2lMaVFr?=
- =?utf-8?B?Ymg2TCtHRzVwdGNHRHYwMi8vKzhEc1J0RG91d0VIeUZIZ3lqd1dmZytKQ3J6?=
- =?utf-8?B?K0lISnNvemxMdDB5bmJqUHVvNGxnN1prQVBPSkVpU2EyOXBJK0dpYlVjdEMv?=
- =?utf-8?B?a05BQld3b1dhZmhQWXRudmRjM3FkM0w2d3pmWm5HcnBuWitZV3BZeEE3VkFJ?=
- =?utf-8?B?NGxLclZrSTZKZExYaXl0R3JJMWhaN1dXUG1TaHV1Mk1NWUY4RmQrL1Z1S1Mx?=
- =?utf-8?B?Q2JkWlBrcHpzQ1VOZjFaM0lQTHFrVzgwYUg2bmpkcXNBSmNoS29EV1ZpVTRG?=
- =?utf-8?B?T2x6MHExNlZuaUJ1SzFoV25zS0V2YU5URkNVbWRwUEZDZStOUzRrSFBPenRL?=
- =?utf-8?B?czlMVHkzS1l5VHlFN3FHQXlEaTZRQ2ZUVDZhaEVqQTE1aU5VTjdGY0ZjN3k1?=
- =?utf-8?B?VDZTYXBqUWIxZy9aZlQ4MG1UZFVQTXJXc0xSNjBRVjJQQUNoeE95Z1VESllW?=
- =?utf-8?B?QmY5M3BZRGovYUhWQXExeWlGZ1dIRnR5dm1MUnBZa1B1bWNaWFhadDBnb05q?=
- =?utf-8?B?aFA3YWRIUjd3Q0NEMnd4ZUFVcEtUZnR3clZUclpOOWNlaytTcUFlWS9tY0JU?=
- =?utf-8?B?WjhLck50dElCUGZ3MVNrZkdRdE5JRVFLYlIrNndUV2xLUVFpZklld3lBUU1h?=
- =?utf-8?B?NjRnK0tFdEVDQmVRQzFDZGlLRkd6RTBaV2V4TFUyeW1lSjFnS1ptVnJ1UU1J?=
- =?utf-8?B?TzY2ZDQ4SUk4bnQwUDNVUm1ZaFAwUjVFNmk1L1ZyVGh0d1Z3US9aelFBZmtE?=
- =?utf-8?B?Tk1tbEEyRG00U1BMemVnNjkvNDNGVkViaThKbWVHTnRPU2dmRXg1eGNPTlZl?=
- =?utf-8?B?UkRnbHoybnN1amhNUkR6TWlYY3E4cW9MdWdjN1puc01HRkd0RklkRThJOXVD?=
- =?utf-8?B?VVZjMTl6NkkxMHNyOFlEM1hMZlNBZjA2U21vMGh5T0xEdzBnQlRMemNrNGE3?=
- =?utf-8?B?aXNCS3duSDBjbW9NcUtVRXZLYW1vdVBQY0hqaERQZXdsNFZsRkxjZE1JeWhB?=
- =?utf-8?B?MElpMW8xL3dmS2E2eFZ1UHlhQk01cVIxNVJyT05LVXozWDZ3cmpzNG5aR240?=
- =?utf-8?B?ZmtTZGFsaVBXa1Y1R3JTZzQ5cVpLUWtkWUp6azQ0cmo3WFFIVnZKWm11Q2Zj?=
- =?utf-8?B?MW1SS2hkRWdUKzhYNitFWWJzQnRpUkpwaDdDQW40TVJDSDVpaXNBelF5VzBQ?=
- =?utf-8?B?eERWL2UyQjF6cjFxeHhjOTUzeFUvSkNmRmlMVUJSdTlBdFE2WDZHSTErRFEw?=
- =?utf-8?B?R0MxK0ZPNnpWRTZKNkZySm9xRlFBdFdUWUhzR3E3M0tUSHpVM0tmMzAwZEZ1?=
- =?utf-8?B?Nzd3ZUQ5S2o0S3h4eHJnb0tUZWZtL08zTWFJNWFPRlFkWTB5akoydXN6bTdQ?=
- =?utf-8?B?Y2ZTdEV5WE13QnZUTCt4cERMbHlkQ0FXQVkrOVBrTzNpQWpTUnVDT2VoNzNE?=
- =?utf-8?B?cVFXU1dCbFd3RGw1Q0VudkdXcUw2Y1BHZXBFVitWQXRhYUMyeUQ4dncwWkxI?=
- =?utf-8?B?MlBBNWJ0UXgxY0c1Z29VVVNXUXpzTUVwc2lCYXdlb01BMjlrblVQVHk1RTJR?=
- =?utf-8?B?eTJ2dGRuc1YzT3lTU0VFNkpteXdrOUkwMzMrQ2NMRFBxVCtmcitzendlRWhl?=
- =?utf-8?B?VEU0MGdlUlNLNldPVE5lVWtycy9wZU5FNmI2K2xJRFE0M0FtM1pmVjFNZk5p?=
- =?utf-8?Q?aad1LhfD8sBzGi1NuxuLxDnVg?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92c41afe-9120-48a7-daf4-08dc33c2e330
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 16:25:31.0162
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZpSr0Ozllv16ZhscFAnCC6/u1FuDzhRr7pgwuo7+zNYJDv4ts20uFgV1x0TYOPZlhUMcrzvf/G7QqZ173uZSlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8914
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] exit: add a tracepoint for profiling a task that is
+ starting to exit
+Content-Language: en-US
+To: wenyang.linux@foxmail.com, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Mel Gorman
+ <mgorman@techsingularity.net>, Peter Zijlstra <peterz@infradead.org>,
+ linux-kernel@vger.kernel.org
+References: <tencent_09CF49556CD442411A93D0E92ACC2B7E5D08@qq.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <tencent_09CF49556CD442411A93D0E92ACC2B7E5D08@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2/22/2024 05:08, Maxime Ripard wrote:
-> Hi Daniel,
+On 2024-02-22 11:04, wenyang.linux@foxmail.com wrote:
+> From: Wen Yang <wenyang.linux@foxmail.com>
 > 
-> On Mon, Feb 19, 2024 at 05:02:34PM +0800, Daniel van Vugt wrote:
->> Until now, deferred console takeover only meant defer until there is
->> output. But that risks stepping on the toes of userspace splash screens
->> as console messages may appear before the splash screen.
->>
->> This becomes more likely the later the splash screen starts, but even
->> systems whose splash exists in initrd may not be not immune because they
->> still rely on racing against all possible kernel messages that might
->> trigger the fbcon takeover. And those kernel messages are hardware
->> dependent so what boots silently on one machine may not be so quiet on
->> the next. We also want to shield users from seeing warnings about their
->> hardware/firmware that they don't always have the power to fix themselves,
->> and may not be deemed worthy of fixing by the vendor.
->>
->> So now we check the command line for the expectation of userspace splash
->> (CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION) and if present
->> then defer fbcon's takeover until the first console switch. In the case
->> of Plymouth, its value would typically be "splash". This keeps the boot
->> experience clean and silent so long as the command line requests so.
->>
->> Closes: https://bugs.launchpad.net/bugs/1970069
->> Cc: Mario Limonciello <mario.limonciello@amd.com>
->> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
+> Currently coredump_task_exit() takes some time to wait for the generation
+> of the dump file. But if the user-space wants to receive a notification
+> as soon as possible it maybe inconvenient.
+> 
+> Commit 2d4bcf886e42 ("exit: Remove profile_task_exit & profile_munmap")
+> simplified the code, but also removed profile_task_exit(), which may
+> prevent third-party kernel modules from detecting process exits timely.
+> 
+> Add the new trace_sched_profile_task_exit() this way a user-space monitor
+> could detect the exits and potentially make some preparations in advance.
 
-I did test this series on an Ubuntu userspace and it works as you 
-suggest it should.
+I don't see any explanation justifying adding an extra tracepoint
+rather than just moving trace_sched_process_exit() earlier in do_exit().
 
-Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+Why is moving trace_sched_process_exit() earlier in do_exit() an issue,
+considering that any tracer interested in knowing the point where a task
+is really reclaimed (from zombie state) is trace_sched_process_free()
+called from delayed_put_task_struct() ?
+
+Thanks,
+
+Mathieu
 
 > 
-> It's not clear to me why we should want to make it an option? If one
-> strategy is better than the other, and I guess the new one is if you
-> consider it fixes a bug and bothered to submit it upstream, why not just
-> get rid of the old one entirely?
+> Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>   include/trace/events/sched.h | 28 ++++++++++++++++++++++++++++
+>   kernel/exit.c                |  1 +
+>   2 files changed, 29 insertions(+)
 > 
-> I guess my question is: why do we want the choice, and what are the
-> tradeoff each strategy brings?
-> 
-> Maxime
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index dbb01b4b7451..750b2f0bdf69 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -341,6 +341,34 @@ DEFINE_EVENT(sched_process_template, sched_wait_task,
+>   	TP_PROTO(struct task_struct *p),
+>   	TP_ARGS(p));
+>   
+> +/*
+> + * Tracepoint for profiling a task that is starting to exit:
+> + */
+> +TRACE_EVENT(sched_profile_task_exit,
+> +
+> +	TP_PROTO(struct task_struct *task, long code),
+> +
+> +	TP_ARGS(task, code),
+> +
+> +	TP_STRUCT__entry(
+> +		__array(	char,	comm,	TASK_COMM_LEN	)
+> +		__field(	pid_t,	pid			)
+> +		__field(	int,	prio			)
+> +		__field(	long,	code			)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
+> +		__entry->pid		= task->pid;
+> +		__entry->prio		= task->prio;
+> +		__entry->code		= code;
+> +	),
+> +
+> +	TP_printk("comm=%s pid=%d prio=%d exit_code=0x%lx",
+> +		  __entry->comm, __entry->pid, __entry->prio,
+> +		  __entry->code)
+> +);
+> +
+>   /*
+>    * Tracepoint for a waiting task:
+>    */
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index 493647fd7c07..f675f879a1b2 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -826,6 +826,7 @@ void __noreturn do_exit(long code)
+>   
+>   	WARN_ON(tsk->plug);
+>   
+> +	trace_sched_profile_task_exit(tsk, code);
+>   	kcov_task_exit(tsk);
+>   	kmsan_task_exit(tsk);
+>   
 
-The reason for choice is that it keys off a kernel command line 
-parameter that is inconsistent across distributions.
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
-For example Ubuntu uses "splash", Fedora used "rhgb" etc.
-
-Even the plymouth userspace maintains a list for it's behaviors of what 
-parameters to look for to start at bootup.  So the obvious alternative 
-is to clone that list in the kernel.
 
