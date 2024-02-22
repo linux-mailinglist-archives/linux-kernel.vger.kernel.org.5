@@ -1,132 +1,133 @@
-Return-Path: <linux-kernel+bounces-76463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC98385F78A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:54:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD0985F78D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7A04283416
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:54:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C3CF1F22A5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B547445BFE;
-	Thu, 22 Feb 2024 11:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1868481B3;
+	Thu, 22 Feb 2024 11:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PWd/6cen"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KkD3StkC"
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E34341760
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAA2208A2
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602802; cv=none; b=CBmmbnB7nPu6gUR0n9r4OKpQATZTHXZQKcUalD2wt+0khKZ+qUu1vhQXFM42GyxGPfvSV5R9T8UiBjPhakZ+iLOTrgOsGw+OuXOLzy4aH3ZD27iNPknhLLj0+ZgruPNpsoy97D18w0iIeTQX1E9m1QbtQn92SkNI99FPEtEUD90=
+	t=1708602834; cv=none; b=Eo3r6f26f9R7NUeoqZbuVt/COjOrfo25Tck132rqzsb0NaN5qUJOgYV9FyYcuptEBgOnhFRaNB9emNS6bWrWadwDK76wCU+Y9m5I4K1hYMNgGKmS5yzbzMbQFWNgV4a62hKdTZrO6wbVzEpYopEA9Jm5XIhBPiSc3COMZAT4uh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602802; c=relaxed/simple;
-	bh=DqtCVXd3K6o8XwOjhMFp+W2TlXwJY9ec3AL5OMYc8p8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nHJsXnRoIfkCGUTztoUdaI0ibqBlUvqLb6okqni2TGKbDOoodAbRtzsrDeiKUc6+9GwTpm7729Jc1B+0X2pwZhlRwNUzaoDlehyv6WBTxPSKdlrbyCM6wMebEX1tRobwqR75JAQYaDyRJyfvfKrA1WxJ8eTi2dDgpIpW7ziaFtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PWd/6cen; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4c78b074fe0so523430e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708602799; x=1709207599; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8U6oZWtdBlqxrlpBkHzojkkfHCgCtDDcP83kB8UZ02g=;
-        b=PWd/6cen62NDE973eKHBGeOKMRkJdhZybl/HlkTxtdWu+9d9i6gU0p4E1uOJcl18Cr
-         XrqBtTyHNCxXcaFZf2uwGpo73aZoLsqXKYSoi7p0cf3KLKw5dG48RMC9b0jbVfDjuQLa
-         Ifbt2uFD2WbqMnR9IGAJjsXsQwgEuPL3I7Xr5gMMBsG5scHl5z0VQ8EvuGfsGRkHvP7t
-         Rjb853HNrGBxx84bMd1nh2wNe7koTS90y14Y3RRopnlPqSxObuvUWnOOsYRszlIUQ1JD
-         n1kowBKRHwfdv3kDE1pOwh7o9Y1qMgL8TqYsl1IpTb6O4a6IdJU8I3PeBkdztqW/tDt+
-         aBHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708602799; x=1709207599;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8U6oZWtdBlqxrlpBkHzojkkfHCgCtDDcP83kB8UZ02g=;
-        b=hniu/CSODTShhrAHTPXdh92hE8BQw6onkfmxODkf6TIDNp6kZKORt4DGC4xJlN6iEq
-         LdCW4kJNEwpIUaaxlw7Jza9HFgFsDT8sk2Hnb2NkMCsW/+PyN71C3YSbTwX9RgbMultp
-         6eTQSoiis3wabckrFFnJlWC/lZRKhqpRpad71U/ZzUEVVwIeaFK4hPur5pCKuaCwyeQB
-         G8io1TRyWWjmEhMJGyxZ03+Ra2syDfBv6cuZ/HfiMunM8ycLlXycP4LvLY10irGe9pr8
-         //kVDg3A7dNrB57BCFD2K0UN3lQ8aOjNPIDmouug6tVgwp4Rb5l5EZhfQqNExaN7QLu+
-         b2HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV6KFFycP/pN2vW7t9tOiQpihLDWSpofFEcKEzmNinM+5kayXEqIV3vVnSMW8sZ5pxFN7RTXVjudBU5Pz7xMkTODg4uBljLD36bIf1Q
-X-Gm-Message-State: AOJu0YyMqntmVMFCG1wLVrGHWnRUQejSKh1Js0WJssnBSYh9li9vtpNP
-	K+vHTyRUr4lyIm/lPWhJqqC0wKcoyTw+gZQlneeWXcJTaGa/2hVxtLRMmN3S7/QP/wyAUhOAmEC
-	6FRfeBayAVVTYU63x5ymzr5cdLrjiAVCu/hGDjw==
-X-Google-Smtp-Source: AGHT+IGP3nsKeDdSkq6Krv45GcMwiPqqieAaRTPq1e3wSY46XuEvaAAzEwmjT1pNKM+4zywJhjwm6P2I+8S3jTvvYtk=
-X-Received: by 2002:a1f:c742:0:b0:4cd:20ea:35aa with SMTP id
- x63-20020a1fc742000000b004cd20ea35aamr9444912vkf.8.1708602799232; Thu, 22 Feb
- 2024 03:53:19 -0800 (PST)
+	s=arc-20240116; t=1708602834; c=relaxed/simple;
+	bh=0KgFO67Y6WxclwJDn2crqA+5H0FuWWpsVC82Nr7HA2c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Sz4vQO+wgMOPwVV886xs3vhrn0AhsUX2tw9dKpTNlp+aUAkgbpgUeOldYrbD2XvWZHKj0v3HB6hF1EcVwRGOmkf0iOl+5DSKS7EDvDUB2RHLsoDqJ3JMQQobxiz3Fw5lyzBkZhohQ4oG1fGISxcWNOVjLIEtGlQq1gOg8QWrLxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KkD3StkC; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708602828; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=jRGUipf9sjRgAhn1TLOVo6LsSXfi8+r33WymnSOzv7s=;
+	b=KkD3StkC2FtFlfNHMecMM3vDnaD6Je72j/iML4BM4X/4gejbAbe6f/IYxA12DljgHrE8O0v6dT/FS3OZqvgY4VzcKiJRLQrCQvJunTCtpdBAv2OR7wpOgJqt4S8UycL4m/J7yqFOsp9XnHsUMmhjYMJXYu7HXODSc2iYOzsiuBw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W10vJn7_1708602815;
+Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W10vJn7_1708602815)
+          by smtp.aliyun-inc.com;
+          Thu, 22 Feb 2024 19:53:47 +0800
+From: Yuanhe Shu <xiangzao@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	xiangzao@linux.alibaba.com,
+	liusong@linux.alibaba.com
+Subject: [PATCH] mm, thp: display [never] for defrag when THP is set to never
+Date: Thu, 22 Feb 2024 19:53:23 +0800
+Message-Id: <20240222115323.4925-1-xiangzao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221125954.917878865@linuxfoundation.org>
-In-Reply-To: <20240221125954.917878865@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 22 Feb 2024 17:23:07 +0530
-Message-ID: <CA+G9fYvyOG+U1z351dafUXuZMoF1rgpGsvTHTFECB==2VZVPpQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/379] 5.10.210-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	Beyond <Wang.Beyond@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Alex Deucher <alexander.deucher@amd.com>, Sasha Levin <sashal@kernel.org>, 
-	Felix Kuehling <Felix.Kuehling@amd.com>, 
-	Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>, 
-	Mario Limonciello <mario.limonciello@amd.com>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 21 Feb 2024 at 19:25, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.210 release.
-> There are 379 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.210-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+When transparent_hugepage is set to never by cmdline or echo, defrag
+still show what it used to be and can be modified which makes user
+confusing whether defrag would take effect.
 
-The i386 allmodconfig builds failed on stable-rc 5.15, 5.10 and 5.4.
+Actually if transparent_hugepage is set to never, defrag will not take
+effect. Just Display never and remain unchangeable to for defrag when
+transparent_hugepage is set to never.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Suggested-by: Liu Song <liusong@linux.alibaba.com>
+Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+---
+ mm/huge_memory.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-make[2]: *** [/builds/linux/scripts/Makefile.modpost:133:
-modules-only.symvers] Error 1
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 94c958f7ebb5..03cd22a87b93 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -349,21 +349,25 @@ static ssize_t defrag_show(struct kobject *kobj,
+ {
+ 	const char *output;
+ 
+-	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG,
+-		     &transparent_hugepage_flags))
+-		output = "[always] defer defer+madvise madvise never";
+-	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG,
+-			  &transparent_hugepage_flags))
+-		output = "always [defer] defer+madvise madvise never";
+-	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG,
+-			  &transparent_hugepage_flags))
+-		output = "always defer [defer+madvise] madvise never";
+-	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
+-			  &transparent_hugepage_flags))
+-		output = "always defer defer+madvise [madvise] never";
+-	else
++	if (!test_bit(TRANSPARENT_HUGEPAGE_FLAG, &transparent_hugepage_flags) &&
++	    !test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags))
+ 		output = "always defer defer+madvise madvise [never]";
+-
++	else {
++		if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG,
++			&transparent_hugepage_flags))
++			output = "[always] defer defer+madvise madvise never";
++		else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG,
++				&transparent_hugepage_flags))
++			output = "always [defer] defer+madvise madvise never";
++		else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG,
++				&transparent_hugepage_flags))
++			output = "always defer [defer+madvise] madvise never";
++		else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
++				&transparent_hugepage_flags))
++			output = "always defer defer+madvise [madvise] never";
++		else
++			output = "always defer defer+madvise madvise [never]";
++	}
+ 	return sysfs_emit(buf, "%s\n", output);
+ }
+ 
+@@ -371,6 +375,12 @@ static ssize_t defrag_store(struct kobject *kobj,
+ 			    struct kobj_attribute *attr,
+ 			    const char *buf, size_t count)
+ {
++	if (!test_bit(TRANSPARENT_HUGEPAGE_FLAG, &transparent_hugepage_flags) &&
++	    !test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags)) {
++		pr_warn("transparent_hugepage not enabled, defrag takes no effect\n");
++		return -EINVAL;
++	}
++
+ 	if (sysfs_streq(buf, "always")) {
+ 		clear_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG, &transparent_hugepage_flags);
+ 		clear_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG, &transparent_hugepage_flags);
+-- 
+2.39.3
 
-Steps to reproduce:
- tuxmake --runtime podman --target-arch i386 --toolchain gcc-12
---kconfig allmodconfig
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.148-477-gae70058cf980/testrun/22797307/suite/build/test/gcc-12-allmodconfig/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.209-380-gd2880f0e0d6f/testrun/22797354/suite/build/test/gcc-12-allmodconfig/details/
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
