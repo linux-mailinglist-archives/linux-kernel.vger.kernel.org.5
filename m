@@ -1,101 +1,77 @@
-Return-Path: <linux-kernel+bounces-75698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E7185ED86
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:05:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B01E285ED88
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:05:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02B9BB25E6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:05:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 411DBB253D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3003C8C0B;
-	Thu, 22 Feb 2024 00:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273DA14298;
+	Thu, 22 Feb 2024 00:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bwr8FRRO"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TIMkT15W"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBE72919
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11D1B647
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560267; cv=none; b=VgdFQ4GENCQYLKNNphBD4J6yCsHo+SlZ1Bj6Gizlq5QR0jRtS2rsyuqyD6z8Rda/1staNDDHAPmZpzVrskiX66lQ5NUBhdKj+sQFt60zkHtubh5bEx6UFy1lHfhXpji38D7N+zzuK/CX3ITrhUvFDZypwAg7aT3n7XVY7My8xFI=
+	t=1708560270; cv=none; b=GbqI6lIRhCUIFESOdsBK/666BDLSnw22+g9sbAijuGrGxIqqVGdy2xMltiJt+0OQeR0qLczZ22Jwv1hYhIqzBV274jHAp7jLH1aUhHMwMsANHRpx7haoDbzeIqekVvNXwn/VZjgE2PZsEKx3IjDsw2E7jT6oxfdMR5BCF93yMu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560267; c=relaxed/simple;
-	bh=lT1thb2VEXL2bWUBArUywP/XYHhdK1ewl190KRXCA08=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iTMEYKQ5MSi4cjOfxWUqrMRBNs1aMO5Qp53a0cqHOqJLUFbZpYuTt52qefBbDveTPjTq4J2cs6KdtQtuD4kAY3988FaksodrHL0Abmi275dZOhkV21fW8Kr/epht2vlk+dnHMULiNmwllwe6QfCyxVCG399+SPvXd/IMdeqsSk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bwr8FRRO; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-607eefeea90so3318307b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:04:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708560265; x=1709165065; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lT1thb2VEXL2bWUBArUywP/XYHhdK1ewl190KRXCA08=;
-        b=bwr8FRRONtSw9n+YxN3OtX+iz3wM9Xxk6BMciDYGgv2EO2kXiqT6zCKZunD73hJvH5
-         XyNr37kwaVOlxvW0fFpq/HhUErWRDUoxAk5nF7vt366i1qF36kOcgfvjj2KOh8iLPnou
-         pAqLQfzfVTNknVIO8a2PRrC19nvFJ/y0zASTuAclGminNYYfSp8TNu56t+Jk7QakwT6g
-         f0xznJYosLMS2wPLyZCU+U/DzRSUO3MHN/CQbYeOrTE3sHHpuh9krr97tnYEgYKREPTy
-         RRY9Gt82jmDR5eHLQdQRBvdfOYhqYED2X3L4zJTPGGKFymNpcyCjpUy2YX6QS7DhgKeB
-         TrWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708560265; x=1709165065;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lT1thb2VEXL2bWUBArUywP/XYHhdK1ewl190KRXCA08=;
-        b=l64BCaEKEynkVnnaNZ29NHhuOfTa6xb8r7W0cWp++0xouJ6Ly0ajX11HQYkLKVULvH
-         ewupnS04wfz/dzIzgVlChECx/qGDPpR6tNo/bmDKgCqL4M+fcr1h9UXeh5C4eQZudQtg
-         TUkWgqL9c3weHcm0rDL2YRzJ3dylURPM81PHGi3xGjZw2ezSJuPUZl+iRkmDUNTqle0x
-         5yfDLeA5Sd72mFxli6zwfQw9XkZ+79BARBMEzm/g9GXWoQwnokkoKNFph6QMWdtb0oXq
-         ag8LXD3r0m8lGU8bj+iCZyU/I6QyhNYO5d7wtwcZ5jRjsltunGMbPuWjgiExn8CQrbat
-         bVMg==
-X-Gm-Message-State: AOJu0YxQtuL2BZe443bRaNeEFR/M/8o8xTpNGxVURQ4j8xr4MEbr/Omj
-	qrnhDNeKOkDAt7OSuJAmP6HSl/cbZSIVeJsGyWY+o0wXlAsVlE0rzR/AutwcGmqcYmVVFLcmTVj
-	G8QtQTj9TjHO3SIjrRkxJfw7mYBrnuzvmz9llRgO023nCpQTx
-X-Google-Smtp-Source: AGHT+IG4AZWIqfRYBzUoTqXosaKSEiAemgDz9Q5erFqe6YRZIMSkJ5xuW2wcvxkYhivEUZOALJs1NdrFvv8l2PCzhoU=
-X-Received: by 2002:a0d:e88b:0:b0:608:77cc:3e82 with SMTP id
- r133-20020a0de88b000000b0060877cc3e82mr643102ywe.6.1708560264757; Wed, 21 Feb
- 2024 16:04:24 -0800 (PST)
+	s=arc-20240116; t=1708560270; c=relaxed/simple;
+	bh=4WKkWotYZ1Oazo/PiLbdh34LV4deHtqfIISRRq7ZkH8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PJdFFNhLH2Gvbf9Soo36cabRLizfSCZQYjHlkRy9BuoEtcmMLc+3Xzvu+rBfPvKP0hxGffcdadROaFJCLxcCX3R5eKmLTu//DuF5mnmSFPfekCDCFIvsfrIqouq4QDgbpLxNCXKby2sPQPXtED11YSH+OihWPbxE/Zrug4qzydE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TIMkT15W; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 21 Feb 2024 19:04:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708560266;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DacZQ2bgLZrPyV3TE+Kd66Fku/+A0+dgRbmVjv/psVo=;
+	b=TIMkT15Wa83yuKPGA7xJBGstG2DmQTXX6m46kts3xS2DRGpqIxD0qfriZ6Uj8+J3aTLC7Q
+	S6zwVQOMpY4HUNWunGEpmApf7YuNFrH33khwHIE+k2HD/Nd2OVamTuJeO+x5YYbufH81xm
+	9C6yHywEYXYfmMNWDGv86G2xOms2uFI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
+ ret
+Message-ID: <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
+References: <20240221115203.3413554-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221064104.7863-1-rdunlap@infradead.org>
-In-Reply-To: <20240221064104.7863-1-rdunlap@infradead.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 22 Feb 2024 01:04:13 +0100
-Message-ID: <CACRpkdb6x4pPuSr1UEpjaXQ4hBk7bzRfJtSWQtftfpD_N8-2NQ@mail.gmail.com>
-Subject: Re: [PATCH] irqchip: vic: fix a kernel-doc warning
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221115203.3413554-1-colin.i.king@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 21, 2024 at 7:41=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
+On Wed, Feb 21, 2024 at 11:52:03AM +0000, Colin Ian King wrote:
+> Variable ret is being assigned a value that is never read, it is
+> being re-assigned a couple of statements later on. The assignment
+> is redundant and can be removed.
+> 
+> Cleans up clang scan build warning:
+> fs/bcachefs/super-io.c:806:2: warning: Value stored to 'ret' is
+> never read [deadcode.DeadStores]
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-> Drop one extraneous struct member to quieten a warning:
->
-> drivers/irqchip/irq-vic.c:73: warning: Excess struct member 'parent_irq' =
-description in 'vic_device'
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+I'll take this, but - entirely too much of the traffic on this list is
+getting taken up by static analyzer bullshit, we need to cut down on
+this
 
