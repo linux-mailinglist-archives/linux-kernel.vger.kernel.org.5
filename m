@@ -1,150 +1,139 @@
-Return-Path: <linux-kernel+bounces-76658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 960DF85FAAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:02:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8E085FAB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 481411F2830E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:02:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7481C259A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3451353E1;
-	Thu, 22 Feb 2024 14:02:24 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF31F14691B;
+	Thu, 22 Feb 2024 14:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TySaKi8K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE6D137C29;
-	Thu, 22 Feb 2024 14:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7791468FA;
+	Thu, 22 Feb 2024 14:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610543; cv=none; b=OlgeQhHtOArxf6MgasqfaSalVKuoQJmeVw9+xFHyXuCoPhhQyszWJcEhPVHtz0wKkD3M8HEg1yJmxlIixeWP/jB8kJuxTP1cziQd/2IeUO6TsU6qXmL/ReX6kRYjWIRGP+ZSBxJb6hf51L7h2zTVIGblFco4dpCKLjR+KN5m6kk=
+	t=1708610683; cv=none; b=kNDPFcZHzW7zvdiGnWZtT0qNrO4gf2WcZ06z75KpZAqihFWH4qLeEeZxh/Xii1k2vBDgEuKuhhcJ4FoGtJWtcFgCT3/dSqeGeMoa6HX2FHI5jXJ5Jp9iKD/2P3NMtDDkwJYAFuDhXD2bRc5MAI2wxYZvMBt7WNizMtAVWibrd9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610543; c=relaxed/simple;
-	bh=0Ca7pcaxdTC94QZGuqXAmtVUf+PPMCRljrZfstySUqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a7E9F3c3keu+bWbIo3dN47QxnFZ5/kdRi8sm/ONy2PP9hXgyIZFN8lCv/BupZjoF0M2jJ/J4UVvMPhyBVijvRtUCdlfFiIke35JWcA038SrzQYLyQswTxZf1DUyohRcGgY2e/fLDJzVniIS3p2bn+1KPiH3KdlptV5G8uNZy+5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="6613447"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="6613447"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 06:02:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="936853609"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="936853609"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 06:02:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1rd9eN-00000006e1a-1QX8;
-	Thu, 22 Feb 2024 16:02:11 +0200
-Date: Thu, 22 Feb 2024 16:02:10 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Walle <michael@walle.cc>, Arnd Bergmann <arnd@arndb.de>,
-	ChiaEn Wu <chiaen_wu@richtek.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-	Mike Looijmans <mike.looijmans@topic.nl>,
-	Haibo Chen <haibo.chen@nxp.com>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	David Lechner <dlechner@baylibre.com>,
-	Ceclan Dumitru <dumitru.ceclan@analog.com>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH v14 3/3] iio: adc: ad7173: add AD7173 driver
-Message-ID: <ZddT4mmxf3W55ea8@smile.fi.intel.com>
-References: <20240222110817.29670-1-mitrutzceclan@gmail.com>
- <20240222110817.29670-3-mitrutzceclan@gmail.com>
+	s=arc-20240116; t=1708610683; c=relaxed/simple;
+	bh=1D90OTPu4zbi0aXCq6zV1eVFGZJcyQxAFGiZtTpgXYs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h5/x/6+YZGkaD+tjdZqKn/I72RxB0k3fjN8tbejAuGtP7NnWB5Yt5mOtGNeNZe3f5BsE/AD52OpdA8wOC8SvB5GmzQGuq177ZpgPOPZdTFkB8FLiSG9rtTPaKo8UIY4C0l4utPfgNHKbEP8VjN5AOMRRxWTTTX9zG4Tua2jlQHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TySaKi8K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55D5EC433F1;
+	Thu, 22 Feb 2024 14:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708610682;
+	bh=1D90OTPu4zbi0aXCq6zV1eVFGZJcyQxAFGiZtTpgXYs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TySaKi8Kg28e8vkLld/dJCh4yGaJgQVGxFP4nqUT+y7Zb9s63P4GIyQD/epU9A35u
+	 FV7tzwLO0xRmcZ5j3PVgxp+Dm08eGrWwwL861ER+W8RjPhD66rH9sQRtS6J3hXqEjH
+	 V3zYjMqzpOq7qe+Z0SCL/DwlNTEVveIZaAqe0aFQEmLck5y8tw+8mS7GdYHztT7xu6
+	 LbXmezJ/S+kmUzJ9DLQROvG10ujGBh5SHasl2sa48EbsQCjZbooUA7Maxh0jEdDUhP
+	 U09TeCKWsVablS1xDY6f6dRFfQDFPtrJGcMT1lyF7g+HukuWvw540pQ53Yw66CO72O
+	 iuXd0IqFTDHpw==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs fixes
+Date: Thu, 22 Feb 2024 15:03:24 +0100
+Message-ID: <20240222-vfs-fixes-90812d8f4995@brauner>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222110817.29670-3-mitrutzceclan@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2746; i=brauner@kernel.org; h=from:subject:message-id; bh=1D90OTPu4zbi0aXCq6zV1eVFGZJcyQxAFGiZtTpgXYs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaReD8mNrY28LOPLa3dge91vu/STNyecELUvqPb9Xfbjn 1rARsnUjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIlo6DIyvNisovBbffHLd7ZH 958+mp2UKhP0I/v8R3HmXcwLb2yM0GT4p5HnryZTqMBdI3wp6Uvhr9Yn06snxRyJ0PwonB6tOlm MBwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 01:07:43PM +0200, Dumitru Ceclan wrote:
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel
-> applications or higher speed multiplexed applications. The Sigma-Delta
-> ADC is intended primarily for measurement of signals close to DC but also
-> delivers outstanding performance with input bandwidths out to ~10kHz.
+Hey Linus,
 
-A couple more comments which Jonathan might address when applying,
-up to him.
+/* Summary */
+This contains a few fixes:
 
-..
+* Fix a memory leak in cachefiles.
+* Restrict aio cancellations to I/O submitted through the aio interfaces as
+  this is otherwise causing issues for I/O submitted via io_uring.
+* Increase buffer for afs volume status to avoid overflow.
+* Fix a missing zero-length check in unbuffered writes in the netfs library.
+  If generic_write_checks() returns zero make netfs_unbuffered_write_iter()
+  return right away.
+* Prevent a leak in i_dio_count caused by netfs_begin_read() operaing pas
+  i_size. It will return early and leave i_dio_count incremented.
+* Account for ipv4 addresses as well ass ipv6 addresses when processing
+  incoming callbacks in afs.
 
-With
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
 
-	struct device *dev = &st->sd.spi->dev;
+All patches are based on v6.8-rc2 and have been sitting in linux-next.
+No build failures or warnings were observed.
 
-the below will be neater.
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflicts showed up doing a test-merge with
+current mainline.
 
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
-> +	struct ad7173_state *st = iio_priv(indio_dev);
-> +	u8 buf[AD7173_RESET_LENGTH];
-> +	unsigned int id;
-> +	int ret;
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
-..
+are available in the Git repository at:
 
-> +	if (id != st->info->id)
-> +		dev_warn(&st->sd.spi->dev,
-> +			 "Unexpected device id: 0x%04X, expected: 0x%04X\n",
-> +			 id, st->info->id);
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.8-rc6.fixes
 
-(like here)
+for you to fetch changes up to b820de741ae48ccf50dd95e297889c286ff4f760:
 
-..
+  fs/aio: Restrict kiocb_set_cancel_fn() to I/O submitted via libaio (2024-02-21 16:31:49 +0100)
 
-> +	st->config_usage_counter = 0;
-> +	st->config_cnts = devm_kcalloc(&st->sd.spi->dev, st->info->num_configs,
-> +				       sizeof(u64), GFP_KERNEL);
+Please consider pulling these changes from the signed vfs-6.8-rc6.fixes tag.
 
-sizeof(*st->config_cnts) ?
+Thanks!
+Christian
 
-(or here)
+----------------------------------------------------------------
+vfs-6.8-rc6.fixes
 
-> +	if (!st->config_cnts)
-> +		return -ENOMEM;
+----------------------------------------------------------------
+Baokun Li (1):
+      cachefiles: fix memory leak in cachefiles_add_cache()
 
-..
+Bart Van Assche (1):
+      fs/aio: Restrict kiocb_set_cancel_fn() to I/O submitted via libaio
 
-> +	ret = fwnode_property_match_property_string(dev_fwnode(dev),
+Daniil Dulov (1):
+      afs: Increase buffer size in afs_update_volume_status()
 
+David Howells (1):
+      netfs: Fix missing zero-length check in unbuffered write
 
-device_property_match_property_string()
+Marc Dionne (2):
+      netfs: Fix i_dio_count leak on DIO read past i_size
+      afs: Fix ignored callbacks over ipv4
 
-> +						    "clock-names",
-> +						    ad7173_clk_sel,
-> +						    ARRAY_SIZE(ad7173_clk_sel));
-
-..
-
-> +	if (num_channels == 0)
-> +		return dev_err_probe(dev, -EINVAL, "No channels specified\n");
-
--ENODATA?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+ fs/afs/internal.h         |  6 ++----
+ fs/afs/main.c             |  3 +--
+ fs/afs/server.c           | 14 +++++---------
+ fs/afs/volume.c           |  4 ++--
+ fs/aio.c                  |  9 ++++++++-
+ fs/cachefiles/cache.c     |  2 ++
+ fs/cachefiles/daemon.c    |  1 +
+ fs/netfs/buffered_write.c |  3 +++
+ fs/netfs/direct_write.c   |  5 ++++-
+ fs/netfs/io.c             |  2 ++
+ include/linux/fs.h        |  2 ++
+ 11 files changed, 32 insertions(+), 19 deletions(-)
 
