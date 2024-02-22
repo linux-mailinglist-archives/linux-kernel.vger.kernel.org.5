@@ -1,149 +1,116 @@
-Return-Path: <linux-kernel+bounces-77139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2D06860196
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:38:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A61986019E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:39:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5BDD1C24936
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FAB91F26C28
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D1012D205;
-	Thu, 22 Feb 2024 18:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCB713BAF8;
+	Thu, 22 Feb 2024 18:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OpFf+2VA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d1BfJQiR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27196E61C;
-	Thu, 22 Feb 2024 18:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197B7137923
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708626459; cv=none; b=DTAu/TIVce5VfzL8KoJSHUt8PeAp/FOd++TjX0+OiwoB+vQjdgWFieMt3IyQAK+l/KnsakSJIGpoKjDqBJ05Rceouw029xBbqV9woVAQlL4+Up5PghHGkyfLM4dOvllB31plTb0WMQPOyl08yoSZ18odI7h3R+B9/6vEKNkCgWM=
+	t=1708626555; cv=none; b=cEKVmv45NV7KVE+umKItjGjUzRrtLBZ3S73H7/tw0mqfWVjW6MFzOTepJtED4hsY5FVPqV1Blvd5YlWbIAVU3Nbh2L5hc5rjIo412HtRdTvz75uohsYpMlYqGj0xLb/jW5AXgITFXwxQZQCVE9fFchLEZiyYD0NW94GPrw5tbgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708626459; c=relaxed/simple;
-	bh=xM/QGOiRYmmtfXJfmB0d8tNDu2LXbkjtP1X6XvDL9RM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c0XTaXcgSZ5K6gNrf91f+VwVrUSICFW28lAiMhuxlSMM8qa5L2RUi8/HNdx3zMm8i4X3CH8Eafm9AZGmnEvpbcMEFiEpsCanoK6SrGsdSaxWHbim/sABTLwe+1ExSdbtowZkSWoADBJfnu6bedQ0Q3vpgCHRzs6OKfGk+YBsU4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OpFf+2VA; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708626458; x=1740162458;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xM/QGOiRYmmtfXJfmB0d8tNDu2LXbkjtP1X6XvDL9RM=;
-  b=OpFf+2VAFtINfUB28rfoiacXPE7CqLCfTHTpJHWStwC+yk8edRBCgdMN
-   7CagJQ86Xz7IGl5RWN+rXLc7Y2yEqs4TI4DsEos81513YSts4eJDYmJ4G
-   5+G7y33H8bVXrizQiixVVpkMgyh6+MBV2QdeCuS6n9dSkeHrUMJxICJZW
-   7NgfLwUnUZCgfDw26bdzF1T7pGFTGClgM9dfOky+FMcnCl2V2nrwGjFvk
-   +3aOiJYe5w5GCPiZr+oi7PuVSAk5MWgF9iEH5+Sj2EzMZcxDsLmUxFus1
-   I6WLRSJBEAVPYkRy7QrRES7zJchM1eiq6xcDrQpO7ckaI0RmXkk3PYwn+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6697326"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="6697326"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:27:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="5552216"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.114.198]) ([10.246.114.198])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:27:36 -0800
-Message-ID: <fa47fa0a-288b-46e2-b03f-6d4061ab0fd2@intel.com>
-Date: Thu, 22 Feb 2024 11:27:35 -0700
+	s=arc-20240116; t=1708626555; c=relaxed/simple;
+	bh=/wOS2SUpgSsEw/ISAn+302Uf7UW8Yp6RwMhfod64tJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ROn4rbKTinJCqmwSu7S4LJrEDPUt32j98JTYTE4Fl2NTEDGQKIQNrvoSh+gaRHSbe6XNlk/cZlzhh6OkgzifJrnGZgH8TUEfOVsQFunlw4uh44mFQIhPAUs6CyJ24JEVR+ikCeF4NPEpOIfH/ckBrHvi9/P4yN5e3ebR9XI4dkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d1BfJQiR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708626553;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=bvj8T6fBipY3xpufjhC25WSBfuxca3GiHOALi4Tt8m0=;
+	b=d1BfJQiR7Lcgoyn3/Bde+LnP19d1wKn5+7LVzEpMWJPIVJ7N51GmiaLdmABQpi7fl/Erb5
+	+J9ou+dUUDNAflfXnwmZ8uiG2mvD9AXp0l671VLQzPgbp7zE352eE6OsDaVF0mBpDwum2J
+	jKyYnD4ryUmdM0yyVdOGHp4Ml3nTYCA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-490-H1RAiGg0N6q0UzIEJeJIww-1; Thu, 22 Feb 2024 13:29:09 -0500
+X-MC-Unique: H1RAiGg0N6q0UzIEJeJIww-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3A3A5106D039;
+	Thu, 22 Feb 2024 18:29:09 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.3])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 06861492BC8;
+	Thu, 22 Feb 2024 18:29:09 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 762B5401344BE; Thu, 22 Feb 2024 15:27:41 -0300 (-03)
+Date: Thu, 22 Feb 2024 15:27:41 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next] net/core/dev.c: enable timestamp static key if CPU
+ isolation is configured
+Message-ID: <ZdeSHbRa3rtHE+2E@tpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3 v5] cxl/memdev: Use cond_guard() in
- cxl_inject_poison()
-Content-Language: en-US
-To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org
-Cc: linux-cxl@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Ira Weiny <ira.weiny@intel.com>
-References: <20240217105904.1912368-1-fabio.maria.de.francesco@linux.intel.com>
- <20240217105904.1912368-4-fabio.maria.de.francesco@linux.intel.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240217105904.1912368-4-fabio.maria.de.francesco@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
 
+For systems that use CPU isolation (via nohz_full), creating or destroying
+a socket with  timestamping (SOF_TIMESTAMPING_OPT_TX_SWHW) might cause a
+static key to be enabled/disabled. This in turn causes undesired
+IPIs to isolated CPUs.
 
-On 2/17/24 3:59 AM, Fabio M. De Francesco wrote:
-> Use cond_guard() in cxl_inject_poison() to not open code two up_write()
-> in an 'out' block. If the down_read_interruptible() fail, the statements
-> passed as the second argument of cond_guard() return -EINTR.
-> 
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+So enable the static key unconditionally, if CPU isolation is enabled,
+thus avoiding the IPIs.
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  drivers/cxl/core/memdev.c | 19 +++++--------------
->  1 file changed, 5 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
-> index dae8802ecdb0..bd97eea65bb0 100644
-> --- a/drivers/cxl/core/memdev.c
-> +++ b/drivers/cxl/core/memdev.c
-> @@ -331,19 +331,13 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
->  	if (!IS_ENABLED(CONFIG_DEBUG_FS))
->  		return 0;
->  
-> -	rc = down_read_interruptible(&cxl_region_rwsem);
-> -	if (rc)
-> -		return rc;
-> +	cond_guard(rwsem_read_intr, return -EINTR, &cxl_region_rwsem);
->  
-> -	rc = down_read_interruptible(&cxl_dpa_rwsem);
-> -	if (rc) {
-> -		up_read(&cxl_region_rwsem);
-> -		return rc;
-> -	}
-> +	cond_guard(rwsem_read_intr, return -EINTR, &cxl_dpa_rwsem);
->  
->  	rc = cxl_validate_poison_dpa(cxlmd, dpa);
->  	if (rc)
-> -		goto out;
-> +		return rc;
->  
->  	inject.address = cpu_to_le64(dpa);
->  	mbox_cmd = (struct cxl_mbox_cmd) {
-> @@ -353,7 +347,7 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
->  	};
->  	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
->  	if (rc)
-> -		goto out;
-> +		return rc;
->  
->  	cxlr = cxl_dpa_to_region(cxlmd, dpa);
->  	if (cxlr)
-> @@ -366,11 +360,8 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
->  		.length = cpu_to_le32(1),
->  	};
->  	trace_cxl_poison(cxlmd, cxlr, &record, 0, 0, CXL_POISON_TRACE_INJECT);
-> -out:
-> -	up_read(&cxl_dpa_rwsem);
-> -	up_read(&cxl_region_rwsem);
->  
-> -	return rc;
-> +	return 0;
->  }
->  EXPORT_SYMBOL_NS_GPL(cxl_inject_poison, CXL);
->  
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index c588808be77f..15a32f5900e6 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -155,6 +155,7 @@
+ #include <net/netdev_rx_queue.h>
+ #include <net/page_pool/types.h>
+ #include <net/page_pool/helpers.h>
++#include <linux/sched/isolation.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+@@ -11851,3 +11852,14 @@ static int __init net_dev_init(void)
+ }
+ 
+ subsys_initcall(net_dev_init);
++
++static int __init net_dev_late_init(void)
++{
++	/* avoid static key IPIs to isolated CPUs */
++	if (housekeeping_enabled(HK_TYPE_MISC))
++		net_enable_timestamp();
++
++	return 0;
++}
++
++late_initcall(net_dev_late_init);
+
 
