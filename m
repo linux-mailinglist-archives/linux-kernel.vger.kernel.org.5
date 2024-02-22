@@ -1,43 +1,46 @@
-Return-Path: <linux-kernel+bounces-77142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C727A86019C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:39:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D14A8601A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 045B51C249A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:39:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 133151F27271
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7091D13BAD2;
-	Thu, 22 Feb 2024 18:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5069F140394;
+	Thu, 22 Feb 2024 18:30:04 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A69137923;
-	Thu, 22 Feb 2024 18:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FC0140377;
+	Thu, 22 Feb 2024 18:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708626548; cv=none; b=fI7/oXZJsE/3h0hGBRnNX/dUu0kD4t2j5bcz/TJ9VLsPgbr1bl8+fu+7igKcMwQ9vcVyxjrZ4nEb7b3fXzmN2hOew5LgmOKbPwcjhz47YmesdDqkWCGZiOorCo4lsSwHvxfN1coTeqpq3l/BH8w/6/zNIityso+/9GHvtmFqDfU=
+	t=1708626603; cv=none; b=jSIAetVkdBnRU24eKKPpG9TzrismM2Fq/9ritCi7MIVnve9SKAl8ZpvUp500o/0TByj8MXC3t7HSJ3HWBCP6/cNOYUaTvrBx9dUMcV53cZh8+U/an01f6dBDBBXdaBZtuqSHb2Ff0ZDc4ED+33BzPVN6mzYbfWL7OLftje+9piU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708626548; c=relaxed/simple;
-	bh=pBekZ+WsAj+6n/8strTHjSgCBwuZw+ZZ7K+e+nZzKYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=F8tI2NmIuiDAoXlden6hm+wB5PkTGq7UiZ79tObuFZ8raj0vUcOvcFgLmHXMBIkhRssFZclIz+unGCHowEKQVEaKVfh+wzDOjhqwsv6WGNHpRL011IPevvg34x1y5fyHtn+RXiTNVUDMOyo9IXHn4+puA3nuGeN1jc0o2IYeit0=
+	s=arc-20240116; t=1708626603; c=relaxed/simple;
+	bh=Npnj8evtP1IDJMxVpAu3m1ovc7BdIp5IIXBqQcwayR0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZurJ8YnUDgCZC5vIuVtGshWXynOYlJcKZ5t8Fh2s6cgVNAZJeIJUxhEG4p8LDEtbNVTCAK/ICQgC2wy7dltTcE6EKxjvS5CH97O3jiaaJjVw1wsW2hBS4EZgvl8VfVDvRAogjPC+QMMambvtrJrgKSrL0rwBx2o40I6sfPK03Lw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E11C433F1;
-	Thu, 22 Feb 2024 18:29:06 +0000 (UTC)
-Date: Thu, 22 Feb 2024 13:30:57 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F3EBC433F1;
+	Thu, 22 Feb 2024 18:30:02 +0000 (UTC)
+Date: Thu, 22 Feb 2024 13:31:53 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: dri-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
- intel-gfx@lists.freedesktop.org, "Ville =?UTF-8?B?U3lyasOkbMOk?="
- <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>, David
- Airlie <airlied@gmail.com>
-Subject: [PATCH] drm/i915: Add missing ; to __assign_str() macros in
- tracepoint code
-Message-ID: <20240222133057.2af72a19@gandalf.local.home>
+To: Chuck Lever <chuck.lever@oracle.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, linux-nfs@vger.kernel.org, Jeff
+ Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
+ <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+ <tom@talpey.com>
+Subject: Re: [PATCH] NFSD: Fix nfsd_clid_class use of __string_len() macro
+Message-ID: <20240222133153.39260aa9@gandalf.local.home>
+In-Reply-To: <ZdeRnhXLhlXN4AqE@manet.1015granger.net>
+References: <20240222122828.3d8d213c@gandalf.local.home>
+	<ZdeRnhXLhlXN4AqE@manet.1015granger.net>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,51 +51,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, 22 Feb 2024 13:25:34 -0500
+Chuck Lever <chuck.lever@oracle.com> wrote:
 
-I'm working on improving the __assign_str() and __string() macros to be
-more efficient, and removed some unneeded semicolons. This triggered a bug
-in the build as some of the __assign_str() macros in intel_display_trace
-was missing a terminating semicolon.
 
-Fixes: 2ceea5d88048b ("drm/i915: Print plane name in fbc tracepoints")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- drivers/gpu/drm/i915/display/intel_display_trace.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Do you want me to take this through the nfsd tree, or would you like
+> an Ack from me so you can handle it as part of your clean up? Just
+> in case:
+> 
+> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> 
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display_trace.h b/drivers/gpu/drm/i915/display/intel_display_trace.h
-index 99bdb833591c..7862e7cefe02 100644
---- a/drivers/gpu/drm/i915/display/intel_display_trace.h
-+++ b/drivers/gpu/drm/i915/display/intel_display_trace.h
-@@ -411,7 +411,7 @@ TRACE_EVENT(intel_fbc_activate,
- 			   struct intel_crtc *crtc = intel_crtc_for_pipe(to_i915(plane->base.dev),
- 									 plane->pipe);
- 			   __assign_str(dev, __dev_name_kms(plane));
--			   __assign_str(name, plane->base.name)
-+			   __assign_str(name, plane->base.name);
- 			   __entry->pipe = crtc->pipe;
- 			   __entry->frame = intel_crtc_get_vblank_counter(crtc);
- 			   __entry->scanline = intel_get_crtc_scanline(crtc);
-@@ -438,7 +438,7 @@ TRACE_EVENT(intel_fbc_deactivate,
- 			   struct intel_crtc *crtc = intel_crtc_for_pipe(to_i915(plane->base.dev),
- 									 plane->pipe);
- 			   __assign_str(dev, __dev_name_kms(plane));
--			   __assign_str(name, plane->base.name)
-+			   __assign_str(name, plane->base.name);
- 			   __entry->pipe = crtc->pipe;
- 			   __entry->frame = intel_crtc_get_vblank_counter(crtc);
- 			   __entry->scanline = intel_get_crtc_scanline(crtc);
-@@ -465,7 +465,7 @@ TRACE_EVENT(intel_fbc_nuke,
- 			   struct intel_crtc *crtc = intel_crtc_for_pipe(to_i915(plane->base.dev),
- 									 plane->pipe);
- 			   __assign_str(dev, __dev_name_kms(plane));
--			   __assign_str(name, plane->base.name)
-+			   __assign_str(name, plane->base.name);
- 			   __entry->pipe = crtc->pipe;
- 			   __entry->frame = intel_crtc_get_vblank_counter(crtc);
- 			   __entry->scanline = intel_get_crtc_scanline(crtc);
--- 
-2.43.0
+As my patches depend on this, I can take it with your ack.
 
+Thanks!
+
+-- Steve
 
