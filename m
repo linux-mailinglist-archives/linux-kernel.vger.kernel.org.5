@@ -1,121 +1,293 @@
-Return-Path: <linux-kernel+bounces-76224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83BC985F471
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3223985F482
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B3D32862FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:34:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE20A2817C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E926381D5;
-	Thu, 22 Feb 2024 09:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0053E498;
+	Thu, 22 Feb 2024 09:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WBIqfH02"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="L0Flea2T"
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850D03717D
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B42B3A1CA;
+	Thu, 22 Feb 2024 09:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708594466; cv=none; b=KoPO0pTh6uwgjv6feogxd+ETpGFWadhR7UHPivltJ1AbANeFJsPFPtFUR2RCfapj9MNlOlB0U23VtOt59Na0qvj2bgenyDrAM5c7qcyovB0wxnxes3DCxUKoIBWoL3jnDvYACoSIrYgD/W9dmpQctTRJc6qkC2e/MVQsDZaMfec=
+	t=1708594483; cv=none; b=eSXnSD1YLt0A37UP7MJnUsM469uDdzM/QV/KL7D9Q85+BHrtti3cbS1TDsIpMXAWl4wEA5Y9gzOFC9140leRVGopnU17EO79hMnMnom+0eFYHaWKRRDU0MoqrX2nRADRaS57UBnF8baISz+EuzH/3qdtF2CyYFPxd51xv/+QMDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708594466; c=relaxed/simple;
-	bh=jsymz0ZV3wQosB1mc7TrX/RgyOGB8OgHkdfOjJ/GU7E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=uRACuSVnOD6C7FkIdWqThZDF/7JTuFnZl5+uir8im9BhmzV+gC2lYOOs0UO4MGIiRblKYvNYPC0+EUfVryUUJbhw5c1fZLZ4FrNUxAWsO0fch80IezC9SEtg29Fr6l9KhIR6exW+xkkxYhGhmw6ekSF9oqUxHr6oij5BDgnDbVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WBIqfH02; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708594463;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=FvjULRwSsFiCewjz9HeM0ecz107mFZQPYxRhheoHiRQ=;
-	b=WBIqfH02LJd0eyDGenVH9+gzFgJ7jFk+9LQ8Ylh3uGODyVt6NwrSPAHmBPYZ62NBRrBGPd
-	kUA9Zg/k+qY7iZnS25io0NH8Px2n2fjG33YaPz1p9bR1oLdAv6lQVHPnhhsadm/nrItUiO
-	7Ot4mEAujc4WiImXPIUBRy0meRZr7so=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-1-T8toOdbYN2KNAKyJkAURsg-1; Thu, 22 Feb 2024 04:34:21 -0500
-X-MC-Unique: T8toOdbYN2KNAKyJkAURsg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-411e53af2adso12223725e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:34:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708594460; x=1709199260;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FvjULRwSsFiCewjz9HeM0ecz107mFZQPYxRhheoHiRQ=;
-        b=dX0VdS9haqH5bYcjP+5ZFfDt+d1dadoorPGnVwyP7egFtonvLmj5xzOMA964/NGYco
-         EEtXmyKbTCGj3FZWAjAvbbfJwm+w2DNkBll2HQUHvJ9GJNzu6F06l08gVKyZwxNR32UZ
-         Z++DcOA0l5nRim125H0U0NKbK/iYaaTg+NpG8DWRIUmp59P3HCGLs87Tlf3iA18SteyV
-         neD0H5znIWMFnoSrQS7ENOjusb5b87Paf9mZYBdPu3RILYNj2S2d10dWCqZjPhDPQiVT
-         jRX7QhV4DMVICh6W5WcREII5QOfJiPi+YLUE3DUz/LEJQXXBf0bzDWOD4+IFbiKZyVoN
-         zKOA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2fYyq9pPzDusoyR1Z6xMdoeKC+ryknB4v4j57cZvU7uDCbc32Mm5bwgrs7UBpFJLFIXWIjO/MCt5T9PlbeMSmyS7+jzI7W5DJTc9H
-X-Gm-Message-State: AOJu0YzKUgdf5cnCwvKiT1qODdbYDY6DNPR8EVx1vbPaMVY4OIFOiTVD
-	gMJ0ZxLYH+OovDQFhiN4llpQhhboQv2fUWtyhcudQz+pg1Aw+crmESIjKxk/XUw67Nox+yHMaUK
-	3n0EKg89B8Iws9d0agQNOkhNpB3CRXB2XbQTaV4fBas7BJvbEYESwN9rmK0+aIA==
-X-Received: by 2002:a05:600c:3b94:b0:412:5f44:65b0 with SMTP id n20-20020a05600c3b9400b004125f4465b0mr9416735wms.4.1708594459940;
-        Thu, 22 Feb 2024 01:34:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFBkknNINCo8PnnlTgxopzPomoqyRPK5E97Pf6S7enUCC1L4kHnSRCcWla8GPghp0VDTO3qYg==
-X-Received: by 2002:a05:600c:3b94:b0:412:5f44:65b0 with SMTP id n20-20020a05600c3b9400b004125f4465b0mr9416726wms.4.1708594459603;
-        Thu, 22 Feb 2024 01:34:19 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-224-236.dyn.eolo.it. [146.241.224.236])
-        by smtp.gmail.com with ESMTPSA id f19-20020a05600c155300b00411ff030f06sm21781711wmg.9.2024.02.22.01.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 01:34:19 -0800 (PST)
-Message-ID: <2e3cf929a1aad9017cf57871c58675186f6d7939.camel@redhat.com>
-Subject: Re: [PATCH] net/core/dev.c: enable timestamp static key if CPU
- isolation is configured
-From: Paolo Abeni <pabeni@redhat.com>
-To: Marcelo Tosatti <mtosatti@redhat.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker
-	 <frederic@kernel.org>, Valentin Schneider <vschneid@redhat.com>
-Date: Thu, 22 Feb 2024 10:34:17 +0100
-In-Reply-To: <ZdSAWAwUxc5R46NH@tpad>
-References: <ZdSAWAwUxc5R46NH@tpad>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1708594483; c=relaxed/simple;
+	bh=YyGVL3DTq1NGBUlNTsaZWPygzXSkQqFhl2iQhk+tfEY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KZlFdLn8VWRkR6KND5TGTegIjMQ9T7iKqyXQPnyZB+VDwnR80ZhDW73zkqZjHVtEW6FPJZyQGhA4ruKjeD93jAevkFJ4xRjyzGN8uS5D6JxYUniDxzrefuU6n0Zhk89dIWiby25h1CNsYrAd6i3c+iNuujMqMG6JrR3o7ZYYPpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=L0Flea2T; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708594472; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=nB7HiCRDXz45RwbXKMqlhFZOk/rJjNAZ2WqhNw3OoCA=;
+	b=L0Flea2T4OQ1SOTJzZa2KDfgewcczM1wcVoyoiqurou5Hj6CdRQK5vp2s17N/LNrBRQpuWSeyPJjylAPTTLertTws+H0g3MKutVuJ5HWMVadpBf6Zq+Jvwr4qqh4X9FaKQLxrjtqd7BNUl2FEM3WsB99805/Y3kWhH5kZUSRECI=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W10iny._1708594467;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W10iny._1708594467)
+          by smtp.aliyun-inc.com;
+          Thu, 22 Feb 2024 17:34:30 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	akpm@linux-foundation.org,
+	liusong@linux.alibaba.com,
+	tglx@linutronix.de,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv9 1/3] watchdog/softlockup: low-overhead detection of interrupt storm
+Date: Thu, 22 Feb 2024 17:34:18 +0800
+Message-Id: <20240222093420.13956-2-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20240222093420.13956-1-yaoma@linux.alibaba.com>
+References: <20240222093420.13956-1-yaoma@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-02-20 at 07:35 -0300, Marcelo Tosatti wrote:
-> For systems that use CPU isolation (via nohz_full), creating or destroyin=
-g
-> a socket with  timestamping (SOF_TIMESTAMPING_OPT_TX_SWHW) might cause a
-> static key to be enabled/disabled. This in turn causes undesired=20
-> IPIs to isolated CPUs.
->=20
-> So enable the static key unconditionally, if CPU isolation is enabled,
-> thus avoiding the IPIs.
->=20
-> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+The following softlockup is caused by interrupt storm, but it cannot be
+identified from the call tree. Because the call tree is just a snapshot
+and doesn't fully capture the behavior of the CPU during the soft lockup.
+  watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+  ...
+  Call trace:
+    __do_softirq+0xa0/0x37c
+    __irq_exit_rcu+0x108/0x140
+    irq_exit+0x14/0x20
+    __handle_domain_irq+0x84/0xe0
+    gic_handle_irq+0x80/0x108
+    el0_irq_naked+0x50/0x58
 
-This looks like net-next material, but it does not apply cleanly to the
-net-next tree. Could you please rebase and repost including the 'net-
-next' tag into the patch prefix?
+Therefore，I think it is necessary to report CPU utilization during the
+softlockup_thresh period (report once every sample_period, for a total
+of 5 reportings), like this:
+  watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+  CPU#28 Utilization every 4s during lockup:
+    #1: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #2: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #3: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #4: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+  ...
 
-Thanks!
+This would be helpful in determining whether an interrupt storm has
+occurred or in identifying the cause of the softlockup. The criteria for
+determination are as follows:
+  a. If the hardirq utilization is high, then interrupt storm should be
+  considered and the root cause cannot be determined from the call tree.
+  b. If the softirq utilization is high, then we could analyze the call
+  tree but it may cannot reflect the root cause.
+  c. If the system utilization is high, then we could analyze the root
+  cause from the call tree.
 
-Paolo
+The mechanism requires a considerable amount of global storage space
+when configured for the maximum number of CPUs. Therefore, adding a
+SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob that defaults to "yes"
+if the max number of CPUs is <= 128.
+
+Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Liu Song <liusong@linux.alibaba.com>
+---
+ kernel/watchdog.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++-
+ lib/Kconfig.debug | 13 +++++++
+ 2 files changed, 110 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 81a8862295d6..69e72d7e461d 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -16,6 +16,8 @@
+ #include <linux/cpu.h>
+ #include <linux/nmi.h>
+ #include <linux/init.h>
++#include <linux/kernel_stat.h>
++#include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/sysctl.h>
+ #include <linux/tick.h>
+@@ -35,6 +37,8 @@ static DEFINE_MUTEX(watchdog_mutex);
+ # define WATCHDOG_HARDLOCKUP_DEFAULT	0
+ #endif
+ 
++#define NUM_SAMPLE_PERIODS	5
++
+ unsigned long __read_mostly watchdog_enabled;
+ int __read_mostly watchdog_user_enabled = 1;
+ static int __read_mostly watchdog_hardlockup_user_enabled = WATCHDOG_HARDLOCKUP_DEFAULT;
+@@ -333,6 +337,95 @@ __setup("watchdog_thresh=", watchdog_thresh_setup);
+ 
+ static void __lockup_detector_cleanup(void);
+ 
++#ifdef CONFIG_SOFTLOCKUP_DETECTOR_INTR_STORM
++enum stats_per_group {
++	STATS_SYSTEM,
++	STATS_SOFTIRQ,
++	STATS_HARDIRQ,
++	STATS_IDLE,
++	NUM_STATS_PER_GROUP,
++};
++
++static const enum cpu_usage_stat tracked_stats[NUM_STATS_PER_GROUP] = {
++	CPUTIME_SYSTEM,
++	CPUTIME_SOFTIRQ,
++	CPUTIME_IRQ,
++	CPUTIME_IDLE,
++};
++
++static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
++static DEFINE_PER_CPU(u8, cpustat_util[NUM_SAMPLE_PERIODS][NUM_STATS_PER_GROUP]);
++static DEFINE_PER_CPU(u8, cpustat_tail);
++
++/*
++ * We don't need nanosecond resolution. A granularity of 16ms is
++ * sufficient for our precision, allowing us to use u16 to store
++ * cpustats, which will roll over roughly every ~1000 seconds.
++ * 2^24 ~= 16 * 10^6
++ */
++static u16 get_16bit_precision(u64 data_ns)
++{
++	return data_ns >> 24LL; /* 2^24ns ~= 16.8ms */
++}
++
++static void update_cpustat(void)
++{
++	int i;
++	u8 util;
++	u16 old_stat, new_stat;
++	struct kernel_cpustat kcpustat;
++	u64 *cpustat = kcpustat.cpustat;
++	u8 tail = __this_cpu_read(cpustat_tail);
++	u16 sample_period_16 = get_16bit_precision(sample_period);
++
++	kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
++
++	for (i = 0; i < NUM_STATS_PER_GROUP; i++) {
++		old_stat = __this_cpu_read(cpustat_old[i]);
++		new_stat = get_16bit_precision(cpustat[tracked_stats[i]]);
++		util = DIV_ROUND_UP(100 * (new_stat - old_stat), sample_period_16);
++		__this_cpu_write(cpustat_util[tail][i], util);
++		__this_cpu_write(cpustat_old[i], new_stat);
++	}
++
++	__this_cpu_write(cpustat_tail, (tail + 1) % NUM_SAMPLE_PERIODS);
++}
++
++static void print_cpustat(void)
++{
++	int i, group;
++	u8 tail = __this_cpu_read(cpustat_tail);
++	u64 sample_period_second = sample_period;
++
++	do_div(sample_period_second, NSEC_PER_SEC);
++
++	/*
++	 * We do not want the "watchdog: " prefix on every line,
++	 * hence we use "printk" instead of "pr_crit".
++	 */
++	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
++	       smp_processor_id(), sample_period_second);
++
++	for (i = 0; i < NUM_SAMPLE_PERIODS; i++) {
++		group = (tail + i) % NUM_SAMPLE_PERIODS;
++		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
++			"%3u%% hardirq,\t%3u%% idle\n", i + 1,
++			__this_cpu_read(cpustat_util[group][STATS_SYSTEM]),
++			__this_cpu_read(cpustat_util[group][STATS_SOFTIRQ]),
++			__this_cpu_read(cpustat_util[group][STATS_HARDIRQ]),
++			__this_cpu_read(cpustat_util[group][STATS_IDLE]));
++	}
++}
++
++static void report_cpu_status(void)
++{
++	print_cpustat();
++}
++#else
++static inline void update_cpustat(void) { }
++static inline void report_cpu_status(void) { }
++#endif
++
+ /*
+  * Hard-lockup warnings should be triggered after just a few seconds. Soft-
+  * lockups can have false positives under extreme conditions. So we generally
+@@ -364,7 +457,7 @@ static void set_sample_period(void)
+ 	 * and hard thresholds) to increment before the
+ 	 * hardlockup detector generates a warning
+ 	 */
+-	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
++	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / NUM_SAMPLE_PERIODS);
+ 	watchdog_update_hrtimer_threshold(sample_period);
+ }
+ 
+@@ -504,6 +597,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 	 */
+ 	period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
+ 
++	update_cpustat();
++
+ 	/* Reset the interval when touched by known problematic code. */
+ 	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
+ 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
+@@ -539,6 +634,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+ 			smp_processor_id(), duration,
+ 			current->comm, task_pid_nr(current));
++		report_cpu_status();
+ 		print_modules();
+ 		print_irqtrace_events(current);
+ 		if (regs)
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 975a07f9f1cc..49f652674bd8 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1029,6 +1029,19 @@ config SOFTLOCKUP_DETECTOR
+ 	  chance to run.  The current stack trace is displayed upon
+ 	  detection and the system will stay locked up.
+ 
++config SOFTLOCKUP_DETECTOR_INTR_STORM
++	bool "Detect Interrupt Storm in Soft Lockups"
++	depends on SOFTLOCKUP_DETECTOR && IRQ_TIME_ACCOUNTING
++	default y if NR_CPUS <= 128
++	help
++	  Say Y here to enable the kernel to detect interrupt storm
++	  during "soft lockups".
++
++	  "soft lockups" can be caused by a variety of reasons. If one is
++	  caused by an interrupt storm, then the storming interrupts will not
++	  be on the callstack. To detect this case, it is necessary to report
++	  the CPU stats and the interrupt counts during the "soft lockups".
++
+ config BOOTPARAM_SOFTLOCKUP_PANIC
+ 	bool "Panic (Reboot) On Soft Lockups"
+ 	depends on SOFTLOCKUP_DETECTOR
+-- 
+2.37.1 (Apple Git-137.1)
 
 
