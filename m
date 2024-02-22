@@ -1,404 +1,189 @@
-Return-Path: <linux-kernel+bounces-76765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A6E85FC2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:20:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0520385FC27
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAF9F1F24EB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:20:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 826BFB25DC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942B914D44C;
-	Thu, 22 Feb 2024 15:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212E114AD2C;
+	Thu, 22 Feb 2024 15:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqftgMjW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=hammerspace.com header.i=@hammerspace.com header.b="Y8eeQb//"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2102.outbound.protection.outlook.com [40.107.237.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AFCE14C586;
-	Thu, 22 Feb 2024 15:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708615217; cv=none; b=pEh8HaDtR2+20lqKM9CdlGsnUKvai9G0dsr7EPhhNXtdSewyCoOvmFMg2MAEr1DZP7kxJAePik1fr6q+y1U7ZAQxShTSFQL08Iz1fsFftJ00l/l67dE6wthAw46lwxZ4ybGHPvZTtO+QW2uqpwtFz6xxI0/CTEl3A6itWkXGp6s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708615217; c=relaxed/simple;
-	bh=bml6ArFFJiK9FnYAWmn7RGCZrjEyDDwWD5hm+jZMO0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nnimt7SFlpu2SKl+TofhDE6clODJ1ZJYh4lss+FHPi2xnKGUL/1Ey543rcMoe+wyYnGikLRIgf+oKMQ8yI3Yb3H4YlWehfE89TtP2djAOZilmlaWzWS+ANRx/BBX5mgs6+9cUg7WXA/YuX0kkexv5s9RwNdKCKI7mp0Cu0+meMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gqftgMjW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3351DC433C7;
-	Thu, 22 Feb 2024 15:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708615216;
-	bh=bml6ArFFJiK9FnYAWmn7RGCZrjEyDDwWD5hm+jZMO0o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gqftgMjWYOF9UPiyM8r9+2nv8zPGgJDKe7h4qZcmhX8n6WCVe/NIJDb7JIxYL5WeQ
-	 h9Pf+CJ8nHdi3DuCu34SgjvFDP7e1lP3LXl8N3riHnp5XoOM+N0XOKUbjl1a71PmSk
-	 +IvV0WxzzNHQJRsAr5OHPsbwPlppuJHq0+VGF0in9geLIlTrLRB9/TZDaiT5C/4kiS
-	 VKf7+ttF2Ovqs7aHvwMd9iS0g9PwfoW6r1nKbBYm+eYw4wBy3ET7GyFrP5bzi8Gt0w
-	 9eTr97ZAUn/ngpuRKDfU9HT3AJlBlyihrNFE0KIFjA9Pnt9LyfoWxEHEfNP71+Z8fS
-	 4q3RZvbTlzBeg==
-Date: Thu, 22 Feb 2024 16:20:08 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, 
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 06/25] capability: provide helpers for converting
- between xattrs and vfs_caps
-Message-ID: <20240222-wieweit-eiskunstlauf-0dbab2007754@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-6-3039364623bd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138FB1474AC;
+	Thu, 22 Feb 2024 15:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.102
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708615216; cv=fail; b=I8BjaNZY5pwz1s0jBuR8Gb2d+PS0hBvyYUkQD0te2V+1SslAApz21IakOyBs2+aEZlS7Tm+M5vv/j3IDqWKwTAN716bsNSEk9/dZCHJv7IqpP2bGHxoFJIZtVu8iKWJ1zj1e7vT3BLWpPGi71En95/pzl+MsQ1TJ/RQDqBaKpFU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708615216; c=relaxed/simple;
+	bh=2JiwPU5lMEC4g6FVBtQQZwC/yDCpGHFsM8xwX1sYdxY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=XVbZfrBZZ4qMqw3ZmD3iFZYL4j+fU3WvwOThIde2ZzsraEVSqcz8JqSpOpKRIa5PiYlYlg9wPepqHX90QZCovPlczJCeh83mWRGVOL6lH7Dd4+0SPtEjpl6UzWiZt/QOY+sTpjnMO/NeWEJZYjaaKz0nrSW0P9pFHn4n1q8Pj0k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hammerspace.com; spf=pass smtp.mailfrom=hammerspace.com; dkim=pass (1024-bit key) header.d=hammerspace.com header.i=@hammerspace.com header.b=Y8eeQb//; arc=fail smtp.client-ip=40.107.237.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hammerspace.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hammerspace.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dFsD7bWOhaB/4LP7aksSdRlsZLy0p3KmrwXqXWdrwCxMuUgfzHMRl1LLqmqHI76AMNdmKlrzAaBJy4UejclFo+j3V1K+el1ghbCHTlVcCf4wfZhc39aBRAVVyV1dlP1clNRBivHk631YVlhyTXFj5XzdUkOwGOyfD97YLplMCUFp/UNrmMOjHcCve6PPq+RlarxsvZ3SjsCqkBbFYH2ChUDOZDK/Tjb7EaXezgDZmOIfESIJoMqr7G3Ixzi6fuAHA7U7WPCS1FdTM3C58xJpeNL7mdm0lXOu7HFyLU2njvlSBJTD3XuyWKRZR9NpQkbGeUEIIqwzDYdcFPwi0ThmSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2JiwPU5lMEC4g6FVBtQQZwC/yDCpGHFsM8xwX1sYdxY=;
+ b=aKn07JQ1bVGxtubOLkIFh6u2GMs11LdCr5uwwoHzkPpXOLN7OrzfT9x5Qsdp6iEoXnfD/+HbOE52gPcBg+vZDsYWhwBnt3tSgdcIF8FUmGUuK0e3tYtHqWN/DB9aSHutecJQ/jCmvQA057LEM26xWnoPTbsHSM6ZgJnAvHUegfvDbQCnJIoeFjFzeuiWFw3XAWMVteE3ptcIYauezIXm1VCh2rBBuATIA90r9xPPvonS9APBk2uErnPq/gEGaXa/+ttThx5PuhIcJy9sPIAYtnPtw0xaNiN+lmXiDu8+Yt5GXa6dYWXu2zhfZVSRw5xTH0mlxwgzFevjLyffnGs1eA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2JiwPU5lMEC4g6FVBtQQZwC/yDCpGHFsM8xwX1sYdxY=;
+ b=Y8eeQb//p3sLI4nCuB5/3snIMAb7iGxL8QkWAIbLiWmQigCrTe0EVWjeCDtb6gTBS2+Yk0m01TMXPz2geXpfGncFEcShR5O66TD5SsdFb3WBAwa0F+LImGEhCkz2v2ycuhvzzerD+AMfsGNchQVhO5M+HAtX2cIelR7WryS/K/I=
+Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
+ by DS7PR13MB4672.namprd13.prod.outlook.com (2603:10b6:5:297::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Thu, 22 Feb
+ 2024 15:20:10 +0000
+Received: from CH0PR13MB5084.namprd13.prod.outlook.com
+ ([fe80::b349:9f81:ad39:865c]) by CH0PR13MB5084.namprd13.prod.outlook.com
+ ([fe80::b349:9f81:ad39:865c%4]) with mapi id 15.20.7316.018; Thu, 22 Feb 2024
+ 15:20:10 +0000
+From: Trond Myklebust <trondmy@hammerspace.com>
+To: "chuck.lever@oracle.com" <chuck.lever@oracle.com>, "zhitao.li@smartx.com"
+	<zhitao.li@smartx.com>, "kolga@netapp.com" <kolga@netapp.com>,
+	"anna@kernel.org" <anna@kernel.org>, "tom@talpey.com" <tom@talpey.com>,
+	"jlayton@kernel.org" <jlayton@kernel.org>, "neilb@suse.de" <neilb@suse.de>,
+	"Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>
+CC: "huangping@smartx.com" <huangping@smartx.com>, "linux-nfs@vger.kernel.org"
+	<linux-nfs@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: PROBLEM: NFS client IO fails with ERESTARTSYS when another mount
+ point with the same export is unmounted with force [NFS] [SUNRPC]
+Thread-Topic: PROBLEM: NFS client IO fails with ERESTARTSYS when another mount
+ point with the same export is unmounted with force [NFS] [SUNRPC]
+Thread-Index: AQHaZJ7Q0fUwEoXw10Oowo706qnhILEU0AGAgAFkuACAAEdGAA==
+Date: Thu, 22 Feb 2024 15:20:09 +0000
+Message-ID: <16d8c8e88490ee92750b26f2c438e1329dea0061.camel@hammerspace.com>
+References:
+ <CAPKjjnrYvzH8hEk9boaBt-fETX3VD2cjjN-Z6iNgwZpHqYUjWw@mail.gmail.com>
+	 <77a58302766cb6c8fac45682ede63569df80cd5d.camel@hammerspace.com>
+	 <1179779e2f74e3e5cb2be30cf89e6362aaab706d.camel@kernel.org>
+In-Reply-To: <1179779e2f74e3e5cb2be30cf89e6362aaab706d.camel@kernel.org>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=hammerspace.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH0PR13MB5084:EE_|DS7PR13MB4672:EE_
+x-ms-office365-filtering-correlation-id: 1634e068-6f03-43ad-b5b4-08dc33b9c229
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Pb8YN7CxgKOBgtYoLIy4bCXXj5JdQXqgStTLoejOKWYh1GvUeCIcgNZ+SMcbPcCKHHc4LcoV2EPvbgcuPOeIQuFI1qQRjFoFcmD4Vk5Z2UGJ0NInRfSh9C9z0aJOot9eIvvDZkprkN/Lozilllzyukb2cBc4fO/ftGbdsI5LpSVG9XoCVwzdcgxkV5szG4ZRF5Su7YbZtYW13DmdwAEXJyVuOB+SRT7LFXJFYH9O2OHen5JihT4JIuv//3ne/EA57hC3CTaBVuKXTmbZQAB2ALIFipoHGuE/wG1kj6Nk5Tsa8dXgZIBMz+4DUIzW/H4vLONApbxSM8g/kM6EsSPR7zC1V61JpNOP8/MTPD9D0rBkZLhG0KCd5R5lGcu1bpeEungGoqwYWK0tF8KTVqFY27qVParlc2pjQc6ii0J0pQer/KO+h9ZofcO8OnNx2TzuyROq6cZlSLqtbEF1OQmgOuXWAC4ggSNVR5q3g0zkmUXWrG0mG/LUtLHBslNQNBXdJBhVxbRELKumXaUkWovb9dMZp96JWBtBTS3gPsTMzbnKaAJ4+4oIo3/9bSbrNCbSdcOSyi/vV7byBQURrNZnGEKxBpn14iUsEfHiQJj74zLhZJyRTenOLW7g9XHi8sNI
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230473577357003)(230273577357003)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?YWxyOEVaQ1pYQWNUTHVJc0hhakVqNjFZbjcxc0ZiQ0xHcTdNQzZOZGhiL1N3?=
+ =?utf-8?B?K1RsZERYY0RFWXg0enpMeWExUmtMbHh1S01HeVhsQnoyUjFJY2hoblZQYllj?=
+ =?utf-8?B?cnRxUkt5Y08yN3UrVGFVNG53bFhML3ljMHYzNEFoMG8wOTZkZmpWSUhiVGRI?=
+ =?utf-8?B?MlZmL3VGdElWc1BKMWpqRmNkYnUvK2xsQ3NJajRUNlV0UFU3REFZdEdCbHJ1?=
+ =?utf-8?B?dmsvQUNWM2gwak84MUI0L09HZVFpZm5UbHppZXBHUjVXVENzV01DazhrcDRt?=
+ =?utf-8?B?TDNrRFpYSDYyZ3pnellOTDVXc0NBSGdaZlpkZ2puTkU3aE9XRTdZd0h4OW50?=
+ =?utf-8?B?NXJkOXBFQzhTNmcyczFOY0JpOEptL3RqMFJrOEF2SjV1M1Nob3lTaGhYK3la?=
+ =?utf-8?B?Vi80VGJVS3hZTi9GWHdQYUpqWWQzY3RYRUMyRlpNVEVHMXU1MGREWDlOdmU4?=
+ =?utf-8?B?Z0JuRnVwRER3N0NEQU4rRU5RYzNzWllWaWpxUWtjYkJwVXpXMnh5cC8yYzdH?=
+ =?utf-8?B?RnlqeW9hNGtqZ3phNmpBalZoK0dOcmRRK2NBNXB6Znk3Tk9pRTFGUXQzbWow?=
+ =?utf-8?B?MDVPVVZWUzFISlJWYVdHRzloeDl0em53ZGl5clUxZG5iV1pNWnpzRmh4cDVU?=
+ =?utf-8?B?R1oyczhvbjBTTFNMWVRxdk1pSU9sTHc1ZGhrYnZtN1RXZk1TNStzYjJpWjFo?=
+ =?utf-8?B?ekdJTCtPYWRYRm0xUW5GOXRJMlU3d3l3ejErTnd0MjRxQTBsZ3lFSXAxK3lP?=
+ =?utf-8?B?ZUEyVGJCdHpXbTh2b3FKSW4vZi9qSDZWUjZYYVAzR2VZbUFQRXA2Ym4wMjJD?=
+ =?utf-8?B?UlpZa2dVNE9PcUc5RTRJZVBtM3ZzL1RkSTV1MmJPZnR1bjF0a283emRqVFI5?=
+ =?utf-8?B?YVY3NXRVQy8wRnh3ZmxyM2IvS0JpUytmS3RCejNzcFY4NkhxYktLYW1tWmFh?=
+ =?utf-8?B?amdWb1psa09Kei9xVlEvYjEzcGNTaVZvR3hoOXRLRHlzWW1XNEJGMEluR2RH?=
+ =?utf-8?B?RDNCUFZEWFhOOXdvU3dqVFNNSldOWkx6bjM5SU50VldaWW9NelRyMTVVdUd4?=
+ =?utf-8?B?b09Qb1JIM2ttRjhQL05POHRIZGhmQU92eHN6T3FSRG40c05hT1pxQWZMWmR3?=
+ =?utf-8?B?UGlpRXFKRmJVRFp3QWQ0NmhVNzRpY3RvTTdmWC9SVDhyNVFPZ3l6ZmwxdzRU?=
+ =?utf-8?B?VjQzNkpDdnA3MFhQUzN4QUJlOHZVYXNnV0Z2dEJNdytuR1c4UjBYTXEyb04v?=
+ =?utf-8?B?Mk5FYmxtUW1VNEM5cnVhUG0yWmRLQWFCQlJ5QjVuaDlsTGVIOHZpbmVaMXZZ?=
+ =?utf-8?B?V1JEOFJzcVMwekVlbjRnYjBsZFRyRkRST3JINHNETHJ2bDlkbXZ2UUc0bHFK?=
+ =?utf-8?B?c0hzNUJaWHVIZ0Z6NXgvMDE2WG1tKzdwUUVURXdlVkx5dk9qa1E0MWYxL0lD?=
+ =?utf-8?B?U3hSRlI5ZWxpaDJNSWk0OWtkUThiTlk5R0pMOWFpcFFPQ01wV3ExbjVLa1RR?=
+ =?utf-8?B?SFNjWlNEN3F6Z09HblMzbFlNeDR5UzQzalBPdTNETjBlODZMMSt0aTExODkz?=
+ =?utf-8?B?eS9BbXZYRTR0QUpJT3FRSWdsODRTN2haR2crek9UbXFZS3V3T0ErcW1UOGpG?=
+ =?utf-8?B?Z3JoeXRGVkhhN2pjNXlCdFdQYkFIb3UzZFBGcDNzKzFUNkNsTHhVN0VjM1o5?=
+ =?utf-8?B?Z3RMbTZVUG8xbWVvcXlTcGNSb0wzMlc5OVdHK2Z5eGRzUW5meVh0Vm54K0Vh?=
+ =?utf-8?B?cmVzVldGaDQxcys3aHBpWXdRcWxJaTZSbDJnZGd1bTArOVVCVkREZkxyWTlt?=
+ =?utf-8?B?MzVMazhCdjFROW43ZE9CT0x6Wld2OWw5K3poTVFYZVVVTVhleTFEMjN3MFBC?=
+ =?utf-8?B?ZUdhZmx1V3hIYzRiNEppbDJsSHBKNmdIclRGakZLcHdxeXhzRUROWjFKUHda?=
+ =?utf-8?B?aTA1bjJCY0hVc1ZCNmZWQytNMmFBVDJDK3ZKRDhVK2RZNEE1THpWdll6V0Ru?=
+ =?utf-8?B?aE81NDR5VDB0cUgydkI0ZERyTE9ybjJRYVNHRUJmRmQxQ0s4TkFoaEVDTXVu?=
+ =?utf-8?B?SVpNWUVSTUZ5VTQxWW15aHZkTDFmVmtBWTc1eTlZQ1dZeEdFNHN1aTV1M1Q3?=
+ =?utf-8?B?UnptRDlEeVl3M0U4WHVWRy8wcUpYZEd2MmkrTEZSOHlQVWVTMzZINDZQRmFS?=
+ =?utf-8?B?SE55NTVjOVZFT1pnaW9FNXUvaWlhMUVwTVZoYW9INWtKcHdTVkc0QnF1QW5B?=
+ =?utf-8?B?dk1aL0VXOWd6R2tCY1daZXRrZktRPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1936BCB4115DE045BCD8944AE6516189@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240221-idmap-fscap-refactor-v2-6-3039364623bd@kernel.org>
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR13MB5084.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1634e068-6f03-43ad-b5b4-08dc33b9c229
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2024 15:20:09.9197
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ER4a/q/pxdIV1Qg5HKf2yDxzFB0ixhLaT3ySN2DMHuG3vURZCgbXixsxvQTCz7DFq6FQ0Ko5SlPapEAZkE2DNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR13MB4672
 
-On Wed, Feb 21, 2024 at 03:24:37PM -0600, Seth Forshee (DigitalOcean) wrote:
-> To pass around vfs_caps instead of raw xattr data we will need to
-> convert between the two representations near userspace and disk
-> boundaries. We already convert xattrs from disks to vfs_caps, so move
-> that code into a helper, and change get_vfs_caps_from_disk() to use the
-> helper.
-> 
-> When converting vfs_caps to xattrs we have different considerations
-> depending on the destination of the xattr data. For xattrs which will be
-> written to disk we need to reject the xattr if the rootid does not map
-> into the filesystem's user namespace, whereas xattrs read by userspace
-> may need to undergo a conversion from v3 to v2 format when the rootid
-> does not map. So this helper is split into an internal and an external
-> interface. The internal interface does not return an error if the rootid
-> has no mapping in the target user namespace and will be used for
-> conversions targeting userspace. The external interface returns
-> EOVERFLOW if the rootid has no mapping and will be used for all other
-> conversions.
-> 
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  include/linux/capability.h |  10 ++
->  security/commoncap.c       | 228 +++++++++++++++++++++++++++++++++++----------
->  2 files changed, 187 insertions(+), 51 deletions(-)
-> 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index eb46d346bbbc..a0893ac4664b 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -209,6 +209,16 @@ static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
->  		ns_capable(ns, CAP_SYS_ADMIN);
->  }
->  
-> +/* helpers to convert between xattr and in-kernel representations */
-> +int vfs_caps_from_xattr(struct mnt_idmap *idmap,
-> +			struct user_namespace *src_userns,
-> +			struct vfs_caps *vfs_caps,
-> +			const void *data, size_t size);
-> +ssize_t vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> +			  struct user_namespace *dest_userns,
-> +			  const struct vfs_caps *vfs_caps,
-> +			  void *data, size_t size);
-> +
->  /* audit system wants to get cap info from files as well */
->  int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
->  			   const struct dentry *dentry,
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index a0b5c9740759..7531c9634997 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -619,54 +619,41 @@ static inline int bprm_caps_from_vfs_caps(struct vfs_caps *caps,
->  }
->  
->  /**
-> - * get_vfs_caps_from_disk - retrieve vfs caps from disk
-> + * vfs_caps_from_xattr - convert raw caps xattr data to vfs_caps
->   *
-> - * @idmap:	idmap of the mount the inode was found from
-> - * @dentry:	dentry from which @inode is retrieved
-> - * @cpu_caps:	vfs capabilities
-> + * @idmap:      idmap of the mount the inode was found from
-> + * @src_userns: user namespace for ids in xattr data
-> + * @vfs_caps:   destination buffer for vfs_caps data
-> + * @data:       rax xattr caps data
-> + * @size:       size of xattr data
->   *
-> - * Extract the on-exec-apply capability sets for an executable file.
-> + * Converts a raw security.capability xattr into the kernel-internal
-> + * capabilities format.
->   *
-> - * If the inode has been found through an idmapped mount the idmap of
-> - * the vfsmount must be passed through @idmap. This function will then
-> - * take care to map the inode according to @idmap before checking
-> - * permissions. On non-idmapped mounts or if permission checking is to be
-> - * performed on the raw inode simply pass @nop_mnt_idmap.
-> + * If the xattr is being read or written through an idmapped mount the
-> + * idmap of the vfsmount must be passed through @idmap. This function
-> + * will then take care to map the rootid according to @idmap.
-> + *
-> + * Return: On success, return 0; on error, return < 0.
->   */
-> -int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
-> -			   const struct dentry *dentry,
-> -			   struct vfs_caps *cpu_caps)
-> +int vfs_caps_from_xattr(struct mnt_idmap *idmap,
-> +			struct user_namespace *src_userns,
-> +			struct vfs_caps *vfs_caps,
-> +			const void *data, size_t size)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
->  	__u32 magic_etc;
-> -	int size;
-> -	struct vfs_ns_cap_data data, *nscaps = &data;
-> -	struct vfs_cap_data *caps = (struct vfs_cap_data *) &data;
-> +	const struct vfs_ns_cap_data *ns_caps = data;
-> +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
->  	kuid_t rootkuid;
-> -	vfsuid_t rootvfsuid;
-> -	struct user_namespace *fs_ns;
-> -
-> -	memset(cpu_caps, 0, sizeof(struct vfs_caps));
-> -
-> -	if (!inode)
-> -		return -ENODATA;
->  
-> -	fs_ns = inode->i_sb->s_user_ns;
-> -	size = __vfs_getxattr((struct dentry *)dentry, inode,
-> -			      XATTR_NAME_CAPS, &data, XATTR_CAPS_SZ);
-> -	if (size == -ENODATA || size == -EOPNOTSUPP)
-> -		/* no data, that's ok */
-> -		return -ENODATA;
-> -
-> -	if (size < 0)
-> -		return size;
-> +	memset(vfs_caps, 0, sizeof(*vfs_caps));
->  
->  	if (size < sizeof(magic_etc))
->  		return -EINVAL;
->  
-> -	cpu_caps->magic_etc = magic_etc = le32_to_cpu(caps->magic_etc);
-> +	vfs_caps->magic_etc = magic_etc = le32_to_cpu(caps->magic_etc);
->  
-> -	rootkuid = make_kuid(fs_ns, 0);
-> +	rootkuid = make_kuid(src_userns, 0);
->  	switch (magic_etc & VFS_CAP_REVISION_MASK) {
->  	case VFS_CAP_REVISION_1:
->  		if (size != XATTR_CAPS_SZ_1)
-> @@ -679,39 +666,178 @@ int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
->  	case VFS_CAP_REVISION_3:
->  		if (size != XATTR_CAPS_SZ_3)
->  			return -EINVAL;
-> -		rootkuid = make_kuid(fs_ns, le32_to_cpu(nscaps->rootid));
-> +		rootkuid = make_kuid(src_userns, le32_to_cpu(ns_caps->rootid));
->  		break;
->  
->  	default:
->  		return -EINVAL;
->  	}
->  
-> -	rootvfsuid = make_vfsuid(idmap, fs_ns, rootkuid);
-> -	if (!vfsuid_valid(rootvfsuid))
-> -		return -ENODATA;
-> +	vfs_caps->rootid = make_vfsuid(idmap, src_userns, rootkuid);
-> +	if (!vfsuid_valid(vfs_caps->rootid))
-> +		return -EOVERFLOW;
->  
-> -	/* Limit the caps to the mounter of the filesystem
-> -	 * or the more limited uid specified in the xattr.
-> +	vfs_caps->permitted.val = le32_to_cpu(caps->data[0].permitted);
-> +	vfs_caps->inheritable.val = le32_to_cpu(caps->data[0].inheritable);
-> +
-> +	/*
-> +	 * Rev1 had just a single 32-bit word, later expanded
-> +	 * to a second one for the high bits
->  	 */
-> -	if (!rootid_owns_currentns(rootvfsuid))
-> -		return -ENODATA;
-> +	if ((magic_etc & VFS_CAP_REVISION_MASK) != VFS_CAP_REVISION_1) {
-> +		vfs_caps->permitted.val += (u64)le32_to_cpu(caps->data[1].permitted) << 32;
-> +		vfs_caps->inheritable.val += (u64)le32_to_cpu(caps->data[1].inheritable) << 32;
-
-That + makes this even more difficult to read. This should be rewritten.
-
-> +	}
-> +
-> +	vfs_caps->permitted.val &= CAP_VALID_MASK;
-> +	vfs_caps->inheritable.val &= CAP_VALID_MASK;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Inner implementation of vfs_caps_to_xattr() which does not return an
-> + * error if the rootid does not map into @dest_userns.
-> + */
-> +static ssize_t __vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> +				   struct user_namespace *dest_userns,
-> +				   const struct vfs_caps *vfs_caps,
-> +				   void *data, size_t size)
-> +{
-> +	struct vfs_ns_cap_data *ns_caps = data;
-> +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
-> +	kuid_t rootkuid;
-> +	uid_t rootid;
-> +
-> +	memset(ns_caps, 0, size);
-> +
-> +	rootid = 0;
-> +	switch (vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) {
-> +	case VFS_CAP_REVISION_1:
-> +		if (size < XATTR_CAPS_SZ_1)
-> +			return -EINVAL;
-> +		size = XATTR_CAPS_SZ_1;
-> +		break;
-> +	case VFS_CAP_REVISION_2:
-> +		if (size < XATTR_CAPS_SZ_2)
-> +			return -EINVAL;
-> +		size = XATTR_CAPS_SZ_2;
-> +		break;
-> +	case VFS_CAP_REVISION_3:
-> +		if (size < XATTR_CAPS_SZ_3)
-> +			return -EINVAL;
-> +		size = XATTR_CAPS_SZ_3;
-> +		rootkuid = from_vfsuid(idmap, dest_userns, vfs_caps->rootid);
-> +		rootid = from_kuid(dest_userns, rootkuid);
-> +		ns_caps->rootid = cpu_to_le32(rootid);
-> +		break;
->  
-> -	cpu_caps->permitted.val = le32_to_cpu(caps->data[0].permitted);
-> -	cpu_caps->inheritable.val = le32_to_cpu(caps->data[0].inheritable);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	caps->magic_etc = cpu_to_le32(vfs_caps->magic_etc);
-> +
-> +	caps->data[0].permitted = cpu_to_le32(lower_32_bits(vfs_caps->permitted.val));
-> +	caps->data[0].inheritable = cpu_to_le32(lower_32_bits(vfs_caps->inheritable.val));
->  
->  	/*
->  	 * Rev1 had just a single 32-bit word, later expanded
->  	 * to a second one for the high bits
->  	 */
-> -	if ((magic_etc & VFS_CAP_REVISION_MASK) != VFS_CAP_REVISION_1) {
-> -		cpu_caps->permitted.val += (u64)le32_to_cpu(caps->data[1].permitted) << 32;
-> -		cpu_caps->inheritable.val += (u64)le32_to_cpu(caps->data[1].inheritable) << 32;
-> +	if ((vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) != VFS_CAP_REVISION_1) {
-> +		caps->data[1].permitted =
-> +			cpu_to_le32(upper_32_bits(vfs_caps->permitted.val));
-> +		caps->data[1].inheritable =
-> +			cpu_to_le32(upper_32_bits(vfs_caps->inheritable.val));
->  	}
->  
-> -	cpu_caps->permitted.val &= CAP_VALID_MASK;
-> -	cpu_caps->inheritable.val &= CAP_VALID_MASK;
-> +	return size;
-> +}
-> +
-> +
-> +/**
-> + * vfs_caps_to_xattr - convert vfs_caps to raw caps xattr data
-> + *
-> + * @idmap:       idmap of the mount the inode was found from
-> + * @dest_userns: user namespace for ids in xattr data
-> + * @vfs_caps:    source vfs_caps data
-> + * @data:        destination buffer for rax xattr caps data
-> + * @size:        size of the @data buffer
-> + *
-> + * Converts a kernel-internal capability into the raw security.capability
-> + * xattr format.
-> + *
-> + * If the xattr is being read or written through an idmapped mount the
-> + * idmap of the vfsmount must be passed through @idmap. This function
-> + * will then take care to map the rootid according to @idmap.
-> + *
-> + * Return: On success, return the size of the xattr data. On error,
-> + * return < 0.
-> + */
-> +ssize_t vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> +			  struct user_namespace *dest_userns,
-> +			  const struct vfs_caps *vfs_caps,
-> +			  void *data, size_t size)
-> +{
-> +	struct vfs_ns_cap_data *caps = data;
-> +	int ret;
-
-This should very likely be ssize_t ret.
-
-> +
-> +	ret = __vfs_caps_to_xattr(idmap, dest_userns, vfs_caps, data, size);
-> +	if (ret > 0 &&
-> +	    (vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) == VFS_CAP_REVISION_3 &&
-> +	     le32_to_cpu(caps->rootid) == (uid_t)-1)
-> +		return -EOVERFLOW;
-> +	return ret;
-> +}
-> +
-> +/**
-> + * get_vfs_caps_from_disk - retrieve vfs caps from disk
-> + *
-> + * @idmap:	idmap of the mount the inode was found from
-> + * @dentry:	dentry from which @inode is retrieved
-> + * @cpu_caps:	vfs capabilities
-> + *
-> + * Extract the on-exec-apply capability sets for an executable file.
-> + *
-> + * If the inode has been found through an idmapped mount the idmap of
-> + * the vfsmount must be passed through @idmap. This function will then
-> + * take care to map the inode according to @idmap before checking
-> + * permissions. On non-idmapped mounts or if permission checking is to be
-> + * performed on the raw inode simply pass @nop_mnt_idmap.
-> + */
-> +int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
-> +			   const struct dentry *dentry,
-> +			   struct vfs_caps *cpu_caps)
-> +{
-> +	struct inode *inode = d_backing_inode(dentry);
-> +	int size, ret;
-> +	struct vfs_ns_cap_data data, *nscaps = &data;
-> +
-> +	if (!inode)
-> +		return -ENODATA;
->  
-> -	cpu_caps->rootid = rootvfsuid;
-> +	size = __vfs_getxattr((struct dentry *)dentry, inode,
-> +			      XATTR_NAME_CAPS, &data, XATTR_CAPS_SZ);
-> +	if (size == -ENODATA || size == -EOPNOTSUPP)
-> +		/* no data, that's ok */
-> +		return -ENODATA;
-> +
-> +	if (size < 0)
-> +		return size;
-> +
-> +	ret = vfs_caps_from_xattr(idmap, inode->i_sb->s_user_ns,
-> +				  cpu_caps, nscaps, size);
-> +	if (ret == -EOVERFLOW)
-> +		return -ENODATA;
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Limit the caps to the mounter of the filesystem
-> +	 * or the more limited uid specified in the xattr.
-> +	 */
-> +	if (!rootid_owns_currentns(cpu_caps->rootid))
-> +		return -ENODATA;
->  
->  	return 0;
->  }
-> 
-> -- 
-> 2.43.0
-> 
+T24gVGh1LCAyMDI0LTAyLTIyIGF0IDA2OjA1IC0wNTAwLCBKZWZmIExheXRvbiB3cm90ZToNCj4g
+T24gV2VkLCAyMDI0LTAyLTIxIGF0IDEzOjQ4ICswMDAwLCBUcm9uZCBNeWtsZWJ1c3Qgd3JvdGU6
+DQo+ID4gT24gV2VkLCAyMDI0LTAyLTIxIGF0IDE2OjIwICswODAwLCBaaGl0YW8gTGkgd3JvdGU6
+DQo+ID4gPiBbWW91IGRvbid0IG9mdGVuIGdldCBlbWFpbCBmcm9tIHpoaXRhby5saUBzbWFydHgu
+Y29tLiBMZWFybiB3aHkNCj4gPiA+IHRoaXMNCj4gPiA+IGlzIGltcG9ydGFudCBhdCBodHRwczov
+L2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb27CoF0NCj4gPiA+IA0KPiA+ID4g
+SGksIGV2ZXJ5b25lLA0KPiA+ID4gDQo+ID4gPiAtIEZhY3RzOg0KPiA+ID4gSSBoYXZlIGEgcmVt
+b3RlIE5GUyBleHBvcnQgYW5kIEkgbW91bnQgdGhlIHNhbWUgZXhwb3J0IG9uIHR3bw0KPiA+ID4g
+ZGlmZmVyZW50IGRpcmVjdG9yaWVzIGluIG15IE9TIHdpdGggdGhlIHNhbWUgb3B0aW9ucy4gVGhl
+cmUgaXMgYW4NCj4gPiA+IGluZmxpZ2h0IElPIHVuZGVyIG9uZSBtb3VudGVkIGRpcmVjdG9yeS4g
+QW5kIHRoZW4gSSB1bm1vdW50DQo+ID4gPiBhbm90aGVyDQo+ID4gPiBtb3VudGVkIGRpcmVjdG9y
+eSB3aXRoIGZvcmNlLiBUaGUgaW5mbGlnaHQgSU8gZW5kcyB1cCB3aXRoDQo+ID4gPiAiVW5rbm93
+bg0KPiA+ID4gZXJyb3IgNTEyIiwgd2hpY2ggaXMgRVJFU1RBUlRTWVMuDQo+ID4gPiANCj4gPiAN
+Cj4gPiBBbGwgb2YgdGhlIGFib3ZlIGlzIHdlbGwga25vd24uIFRoYXQncyBiZWNhdXNlIGZvcmNl
+ZCB1bW91bnQNCj4gPiBhZmZlY3RzDQo+ID4gdGhlIGVudGlyZSBmaWxlc3lzdGVtLiBXaHkgYXJl
+IHlvdSB1c2luZyBpdCBoZXJlIGluIHRoZSBmaXJzdA0KPiA+IHBsYWNlPyBJdA0KPiA+IGlzIG5v
+dCBpbnRlbmRlZCBmb3IgY2FzdWFsIHVzZS4NCj4gPiANCj4gDQo+IFdoaWxlIEkgYWdyZWUgVHJv
+bmQncyBhYm92ZSBzdGF0ZW1lbnQsIHRoZSBrZXJuZWwgaXMgbm90IHN1cHBvc2VkIHRvDQo+IGxl
+YWsgZXJyb3IgY29kZXMgdGhhdCBoaWdoIGludG8gdXNlcmxhbmQuIEFyZSB5b3Ugc2VlaW5nIEVS
+RVNUQVJUU1lTDQo+IGJlaW5nIHJldHVybmVkIHRvIHN5c3RlbSBjYWxscz8gSWYgc28sIHdoaWNo
+IG9uZXM/DQoNClRoZSBwb2ludCBvZiBmb3JjZWQgdW1vdW50IGlzIHRvIGtpbGwgYWxsIFJQQyBj
+YWxscyBhc3NvY2lhdGVkIHdpdGggdGhlDQpmaWxlc3lzdGVtIGluIG9yZGVyIHRvIHVuYmxvY2sg
+dGhlIHVtb3VudC4gQmFzaWNhbGx5LCBpdCB0cmlnZ2VycyB0aGlzDQpjb2RlIGJlZm9yZSB0aGUg
+dW5tb3VudCBzdGFydHM6DQoNCnZvaWQgbmZzX3Vtb3VudF9iZWdpbihzdHJ1Y3Qgc3VwZXJfYmxv
+Y2sgKnNiKQ0Kew0KICAgICAgICBzdHJ1Y3QgbmZzX3NlcnZlciAqc2VydmVyOw0KICAgICAgICBz
+dHJ1Y3QgcnBjX2NsbnQgKnJwYzsNCg0KICAgICAgICBzZXJ2ZXIgPSBORlNfU0Ioc2IpOw0KICAg
+ICAgICAvKiAtRUlPIGFsbCBwZW5kaW5nIEkvTyAqLw0KICAgICAgICBycGMgPSBzZXJ2ZXItPmNs
+aWVudF9hY2w7DQogICAgICAgIGlmICghSVNfRVJSKHJwYykpDQogICAgICAgICAgICAgICAgcnBj
+X2tpbGxhbGxfdGFza3MocnBjKTsNCiAgICAgICAgcnBjID0gc2VydmVyLT5jbGllbnQ7DQogICAg
+ICAgIGlmICghSVNfRVJSKHJwYykpDQogICAgICAgICAgICAgICAgcnBjX2tpbGxhbGxfdGFza3Mo
+cnBjKTsNCn0NCg0KU28geWVzLCB0aGF0IGRvZXMgc2lnbmFsIGFsbCB0aGUgd2F5IHVwIHRvIHRo
+ZSBhcHBsaWNhdGlvbiBsZXZlbCwgYW5kDQppdCBpcyB2ZXJ5IG11Y2ggaW50ZW5kZWQgdG8gZG8g
+c28uDQotLSANClRyb25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWludGFpbmVyLCBI
+YW1tZXJzcGFjZQ0KdHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoNCg==
 
