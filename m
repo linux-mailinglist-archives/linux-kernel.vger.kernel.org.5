@@ -1,183 +1,179 @@
-Return-Path: <linux-kernel+bounces-77453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853FE86057B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7743186057E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B17F0289727
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:14:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DBC287B00
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E22A12D21F;
-	Thu, 22 Feb 2024 22:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031D2137905;
+	Thu, 22 Feb 2024 22:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N8WmRuVQ"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q2UHzjR7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92F012D218;
-	Thu, 22 Feb 2024 22:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C96573F20;
+	Thu, 22 Feb 2024 22:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640067; cv=none; b=tR8ZK1WUodXQNUxSarLh1KWRHM8IA5GeMByZHf2PQOV1BdZj0j8HLnQjOkP/BEQ9pjYW/zcHtzYmqQOLKVx6T1ch5uSGHWbxr5mkM2FhiTPbdOD8RhTYUK6G/xodfEwJISe9esGCRP7d4+t2dBP2dCsljs6M/JPAen/QwoK9iYI=
+	t=1708640102; cv=none; b=KJ2W6EclxRBZz86Ra3eRLLITq2EsJ4kYsT2wj0ykCQtjkncMvmwFbFrh4DJeK+9sBTq9qhpeBmLSP4wFKzdrSJdCv3asYljKEki4ttRRRLfyVjbh1hwhO81o0ZWS4nsDypd6vmz/QDk/q8Mhn6/Ou1NNIPNnRWKvUsP1yw/E5OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640067; c=relaxed/simple;
-	bh=filPK0hW9sEluA5e/J32dWICU2fqEy2+asFrOlW3po4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cz/JJSuC0zlplT02mAKKpDTY2yj4238MdV+4itrBdx58taQmR7SsNJ4fiDBY9yzoJVshaMlXJIH7tY/Bfsmgq/2fyNIxXbtxphHJQ8K4vroN5alhClwNadbzfrLMlzCiQ/6y5B576peeDJWTQKTG9jFNJ76Jyx/MYHk+71PfjfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N8WmRuVQ; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5649c25369aso145752a12.2;
-        Thu, 22 Feb 2024 14:14:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708640064; x=1709244864; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bS8XuNs9Y5my5ivjgr100IJoKR3ZSqRXyi3h5KnP/KI=;
-        b=N8WmRuVQKWKrI3KNBEbwNDINNdZSFVaLDbNmuhnfS0/THSUpSZ2II8W5MRbKo6d5WR
-         QgS8rFBKiy3QDiyOUbDW/HAXlb2Ogy7DRsnrFUc4RFitg5M+PhPESrrwrewoYJY7DeqA
-         jDNG00fjWnMnigONPHBWQ7hz1rwPAMXQ9S86uOzWId9wQvR+Fh81RByixldefhrCzdK4
-         aNo7YmJjexfkXIj3mGFytbRrfb/BKPzCqp8iNQMH7ysSpMse4U+dP6FmU2NuOhJ138hG
-         bTrVsND+VLlr+Siy/aGMAC70AcGsKGz2nCz2dPcW75DthaobqTYiaemp7hP2V5AXGMRD
-         2zLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708640064; x=1709244864;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bS8XuNs9Y5my5ivjgr100IJoKR3ZSqRXyi3h5KnP/KI=;
-        b=RIBZCBaqJDSdeO8FIMCfEIsUCmK9OjAazhWecBNmOhrW8nBkqlf1anE8d3A70ZrUvd
-         Vrly1lHocbPonUGpkzVC+RcDF8/cc6bhncZJa+HCFTf1bjURSGmZrzGvRvkacgRaa09u
-         h96U1p7gL7ky+039kBRP7QKwoDBOy/rDiO38Yw05l4Dt/8CHcNxTIVlGs2AZpkog6pkF
-         pYjf/nDvMMqmDec5nudxrB8IbRJbFiWPR5OnxLgS5BDDA0JkkXbFUJFwCqzdHHBW5+E3
-         aFB/GPVsJTBJ5wELtnzmEbwMod6eZV4xwQZxBb+yBUie7sBRTonO3wdic/O6nLwI5TO1
-         qfiA==
-X-Forwarded-Encrypted: i=1; AJvYcCXLHKKyXgLCJ7ED2UhtP24Wb9w3dNtRVJ2Y2tAPU1nc5PlvHvQO5wCP+mDawFZ1fOgh0y66m4DfnvonhFnwKIb3Y4xxZWNixS0JRiPWLAlN5bHe/GJgQRNMPQEdMf9MkRyVkbJVWRT/SA==
-X-Gm-Message-State: AOJu0YyQyQVdp2f+PtOyUxVykld4eS2QDcRTjqBB+WZyWyqAgP4UJTJU
-	vMHhgm+Nt9WomnBWd/xn9dn+n7rwQ+NSL2lwQ67w6wmvchMOD3Fdh881z5prmBsM9BDUoQ+4bBW
-	e+PUDVRZvU+qm4qxJkS8AwDD5+OI=
-X-Google-Smtp-Source: AGHT+IEk72eRjdWU6OGClnZibRF8XqeL8yZeZipoHY4DOTpTBKjtMNck5AsaCjWZ1Q0ZHavd9KwBnr4+AKV0MREnQmk=
-X-Received: by 2002:a17:906:e0c8:b0:a3c:f016:22a4 with SMTP id
- gl8-20020a170906e0c800b00a3cf01622a4mr75745ejb.37.1708640063865; Thu, 22 Feb
- 2024 14:14:23 -0800 (PST)
+	s=arc-20240116; t=1708640102; c=relaxed/simple;
+	bh=cGR6QfVp36GMgGkFzkzQQaTyVm1xEpIt1P0nxWtQPBo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=MF2PG0poQHAlpGg4uWwdF0kpEFIJFzDskoSYHMXcHJWuOHrY9RAN8nBXfULxX9vzDQ0v4k/xQHfoBR1StZz7kbgp0c5ucxz75KFPmYe9TGtz3Ik7qqir+KqctRHDUjXmj/eNjOl0MnDVNltBx2fOd4rhANR3Tz7MIrKbcFXpvnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q2UHzjR7; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708640101; x=1740176101;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=cGR6QfVp36GMgGkFzkzQQaTyVm1xEpIt1P0nxWtQPBo=;
+  b=Q2UHzjR7bfoqlyiWWQGds/5mXTi3b3o7JeZnaiz+gLCucj0l1JVTejcB
+   FQ1YLFaIoUOuf5H0QODzwpyq9Uqu43gcDZu+Bpp3iOYU3ZghdV30JzDNp
+   10X7fuSRnZTU+fYEAKhIOJBYuaF6E8ln6amFKkEXCP5zV62c/BAd2UUGQ
+   aXsZTUC1nuxw1erqcDdZ9HPG1M32X4vAK/Pk8dB+U0BUODWoweFDSbeBn
+   ojhVDrYZtoREjTBYcVnThVtdyhzcIDTfdhIx6FiAnoyKtqkhkKjJiygT7
+   hGXqZZyj+k5NI+q+MfPsNDyFOqirDzI+YP84rfg8KLxO4de6Xe5FYilO6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13611153"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="13611153"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 14:15:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="10244497"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 14:14:59 -0800
+Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
+	by linux.intel.com (Postfix) with ESMTP id CD33A580DB2;
+	Thu, 22 Feb 2024 14:14:58 -0800 (PST)
+Message-ID: <e5260a4ae90e3907978b47492622678270ad50b7.camel@linux.intel.com>
+Subject: Re: [PATCH V4] PCI/ASPM: Update saved buffers with latest ASPM
+From: "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+  Bjorn Helgaas <helgaas@kernel.org>
+Cc: Vidya Sagar <vidyas@nvidia.com>, bhelgaas@google.com, macro@orcam.me.uk,
+  ajayagarwal@google.com, ilpo.jarvinen@linux.intel.com,
+ hkallweit1@gmail.com,  johan+linaro@kernel.org, xueshuai@linux.alibaba.com,
+ linux-pci@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ treding@nvidia.com, jonathanh@nvidia.com,  kthota@nvidia.com,
+ mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Date: Thu, 22 Feb 2024 14:14:58 -0800
+In-Reply-To: <057c9a17-bbf2-49c5-b7ee-d3357d5b5100@linux.intel.com>
+References: <20240222185434.GA24540@bhelgaas>
+	 <057c9a17-bbf2-49c5-b7ee-d3357d5b5100@linux.intel.com>
+Autocrypt: addr=david.e.box@linux.intel.com; prefer-encrypt=mutual;
+ keydata=mQENBF2w2YABCACw5TpqmFTR6SgsrNqZE8ro1q2lUgVZda26qIi8GeHmVBmu572RfPydisEpCK246rYM5YY9XAps810ZxgFlLyBqpE/rxB4Dqvh04QePD6fQNui/QCSpyZ6j9F8zl0zutOjfNTIQBkcar28hazL9I8CGnnMko21QDl4pkrq1dgLSgl2r2N1a6LJ2l8lLnQ1NJgPAev4BWo4WAwH2rZ94aukzAlkFizjZXmB/6em+lhinTR9hUeXpTwcaAvmCHmrUMxeOyhx+csO1uAPUjxL7olj2J83dv297RrpjMkDyuUOv8EJlPjvVogJF1QOd5MlkWdj+6vnVDRfO8zUwm2pqg25DABEBAAG0KkRhdmlkIEUuIEJveCA8ZGF2aWQuZS5ib3hAbGludXguaW50ZWwuY29tPokBTgQTAQgAOBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEH7Mry1gl3p/NusIAK9z1xnXphedgZMGNzifGUs2UUw/xNl91Q9qRaYGyNYATI6E7zBYmynsUL/4yNFnXK8P/I7WMffiLoMqmUvNp9pG6oYYj8ouvbCexS21jgw54I3m61M+wTokieRIO/GettVlCGhz7YHlHtGGqhzzWB3CGPSJMwsouDPvyFFE+28p5d2v9l6rXSb7T297Kh50VX9Ele8QEKngrG+Z/u2lr/bHEhvx24vI8ka22cuTaZvThYMwLTSC4kq9L9WgRv31JBSa1pcbcHLOCoUl0RaQwe6J8w9hN2uxCssHrrfhSA4YjxKNIIp3YH4IpvzuDR3AadYz1klFTnEOxIM7fvQ2iGu5AQ0EXbDZgAEIAPGbL3wvbYUDGMoBSN89GtiC6ybWo28JSiYIN5N9LhDTwfWROenkRvmTESaE5fAM24sh8S0h+F+eQ7j/E/RF3pM31gSovTKw0Pxk7GorK
+	FSa25CWemxSV97zV8fVegGkgfZkBMLUId+AYCD1d2R+tndtgjrHtVq/AeN0N09xv/d3a+Xzc4ib/SQh9mM50ksqiDY70EDe8hgPddYH80jHJtXFVA7Ar1ew24TIBF2rxYZQJGLe+Mt2zAzxOYeQTCW7WumD/ZoyMm7bg46/2rtricKnpaACM7M0r7g+1gUBowFjF4gFqY0tbLVQEB/H5e9We/C2zLG9r5/Lt22dj7I8A6kAEQEAAYkBNgQYAQgAIBYhBBFoZ8DYRC+DyeuV6X7Mry1gl3p/BQJdsNmAAhsMAAoJEH7Mry1gl3p/Z/AH/Re8YwzY5I9ByPM56B3Vkrh8qihZjsF7/WB14Ygl0HFzKSkSMTJ+fvZv19bk3lPIQi5lUBuU5rNruDNowCsnvXr+sFxFyTbXw0AQXIsnX+EkMg/JO+/V/UszZiqZPkvHsQipCFVLod/3G/yig9RUO7A/1efRi0E1iJAa6qHrPqE/kJANbz/x+9wcx1VfFwraFXbdT/P2JeOcW/USW89wzMRmOo+AiBSnTI4xvb1s/TxSfoLZvtoj2MR+2PW1zBALWYUKHOzhfFKs3cMufwIIoQUPVqGVeH+u6Asun6ZpNRxdDONop+uEXHe6q6LzI/NnczqoZQLhM8d1XqokYax/IZ4=
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1f598a72-dd9f-4c6c-af7f-29751f84bd23@alliedtelesis.co.nz>
- <Zde966nsJ76QOuzm@surfacebook.localdomain> <f5e74774-226a-4678-a6f9-b4f17250ad91@alliedtelesis.co.nz>
- <CAHp75Vfq3Pc+Eo3Z5mhORZwwuKF+Y7_47dTO8qARcfba4nmj2w@mail.gmail.com> <9d00e1b1-120b-4c2b-89c5-0ac736bf6441@alliedtelesis.co.nz>
-In-Reply-To: <9d00e1b1-120b-4c2b-89c5-0ac736bf6441@alliedtelesis.co.nz>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 23 Feb 2024 00:13:47 +0200
-Message-ID: <CAHp75VdnXtVwrLrcGjnYMfNx7roBvQm9DMr6_ndjZeAbRDbs_Q@mail.gmail.com>
-Subject: Re: Linux support for a 7 segment LED display
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pavel Machek <pavel@ucw.cz>, 
-	"lee@kernel.org" <lee@kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 12:08=E2=80=AFAM Chris Packham
-<Chris.Packham@alliedtelesis.co.nz> wrote:
-> On 23/02/24 10:59, Andy Shevchenko wrote:
-> > On Thu, Feb 22, 2024 at 11:53=E2=80=AFPM Chris Packham
-> > <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >> On 23/02/24 10:34, andy.shevchenko@gmail.com wrote:
-> >>> Sun, Feb 11, 2024 at 08:46:12PM +0000, Chris Packham kirjoitti:
-> >>>> Hi Blinkenlight enthusiasts,
-> >>>>
-> >>>> I'm looking for something that I figured must exists but maybe it's =
-so
-> >>>> niche that no-one has bothered to upstream a driver for it.
-> >>>>
-> >>>> I have a requirement to support a 7-segment LED display[1] (one that=
- can
-> >>>> display a single digit from 0-9). Hardware wise it's just a bunch of
-> >>>> individual GPIOs connected to each segment (plus an extra one for a
-> >>>> dot). I can't see anything obvious in drivers/leds but maybe I'm loo=
-king
-> >>>> in the wrong place. Or maybe it's the kind of thing on PC hardware t=
-hat
-> >>>> is just driven by the BIOS without the operating system knowing abou=
-t it.
-> >>>>
-> >>>> Is there an existing in-kernel driver for such a thing?
-> >>> No, and can't be. Here is just a mapping table and other drivers that=
- use
-> >>> 7-segment LED displays to be connected to.
-> >>>
-> >>> What you need is something else, i.e. special case of leds-gpio (whic=
-h should
-> >>> be somewhere else) that does something like this. To me it sounds lik=
-e a
-> >>> mixture between line-display.h (from auxdisplay) and gpio-aggregator.
-> >>>
-> >>> How many digits do you want to connect? How are they going to be conn=
-ected
-> >>> (static display, or dynamic when you need to refresh in certain perio=
-ds of
-> >>> time)? Depending on the answer it might take one or another approach.
-> >> It sounds like a auxdisplay driver might be the way to go. My hardware
-> >> happens to have a single 7seg block but there's no reason the driver
-> >> needs to be restricted to that. At some point it obviously becomes
-> >> better to fit something like the ht16k33 to offload the character
-> >> display but for one or 2 digits a PCA953x plus the LED block would do
-> >> just fine.
-> > I have hc595 (SPI GPIO) connected to a single digit 7-segment LED.
-> > Since it can be also serialized, line display APIs seem plausible to
-> > fit. What we need is a proxy between the two. And I think
-> > gpio-aggregator is the best for that. It needs an additional
-> > compatible string and the registration for line display (overall
-> > something like 50 LoCs). We can even call that hardware compatible as
-> > line-display-gpio (or so).
-> >
-> > Cc: Geert and Krzysztof (for the comments on the idea above).
->
-> Would the gpio-aggregator be necessary?
+On Thu, 2024-02-22 at 11:54 -0800, Kuppuswamy Sathyanarayanan wrote:
+>=20
+> On 2/22/24 10:54 AM, Bjorn Helgaas wrote:
+> > On Thu, Feb 22, 2024 at 10:20:06AM -0800, Kuppuswamy Sathyanarayanan wr=
+ote:
+> > > On 2/22/24 9:44 AM, Vidya Sagar wrote:
+> > > > Many PCIe device drivers save the configuration state of their
+> > > > respective
+> > > > devices during probe and restore the same when their 'slot_reset' h=
+ook
+> > > > is called through PCIe Error Recovery Handler.
+> > > >=20
+> > > > If the system has a change in ASPM policy after the driver's probe =
+is
+> > > > called and before error event occurred, 'slot_reset' hook restores =
+the
+> > > > PCIe configuration state to what it was at the time of probe but no=
+t to
+> > > > what it was just before the occurrence of the error event.
+> > > > This effectively leads to a mismatch in the ASPM configuration betw=
+een
+> > > > the device and its upstream parent device.
+> > > >=20
+> > > > Update the saved configuration state of the device with the latest =
+info
+> > > > whenever there is a change w.r.t ASPM policy.
+> > > >=20
+> > > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> > > > ---
+> > > > V4:
+> > > > * Rebased on top of pci/aspm branch
+> > > >=20
+> > > > V3:
+> > > > * Addressed sathyanarayanan.kuppuswamy's review comments
+> > > >=20
+> > > > V2:
+> > > > * Rebased on top of the tree code
+> > > > * Addressed Bjorn's review comments
+> > > >=20
+> > > > =C2=A0drivers/pci/pcie/aspm.c | 28 ++++++++++++++++++++++++++--
+> > > > =C2=A03 files changed, 28 insertions(+), 4 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > index cfc5b84dc9c9..3db606ba9344 100644
+> > > > --- a/drivers/pci/pci.c
+> > > > +++ b/drivers/pci/pci.c
+> > > > @@ -1648,7 +1648,7 @@ static int pci_save_pcie_state(struct pci_dev
+> > > > *dev)
+> > > > =C2=A0	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &cap[i++]);
+> > > > =C2=A0	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
+> > > > =C2=A0
+> > > > -	pci_save_aspm_state(dev);
+> > > > +	pci_save_aspm_l1ss_state(dev);
+> > > > =C2=A0	pci_save_ltr_state(dev);
+> > > > =C2=A0
+> > > > =C2=A0	return 0;
+> > > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > > > index b217e74966eb..9fe78eb8b07d 100644
+> > > > --- a/drivers/pci/pci.h
+> > > > +++ b/drivers/pci/pci.h
+> > > > @@ -95,7 +95,7 @@ void pci_msix_init(struct pci_dev *dev);
+> > > > =C2=A0bool pci_bridge_d3_possible(struct pci_dev *dev);
+> > > > =C2=A0void pci_bridge_d3_update(struct pci_dev *dev);
+> > > > =C2=A0void pci_aspm_get_l1ss(struct pci_dev *pdev);
+> > > > -void pci_save_aspm_state(struct pci_dev *pdev);
+> > > > +void pci_save_aspm_l1ss_state(struct pci_dev *pdev);
+> > > is this rename a review request? It is not clear from the commit log
+> > > why you are doing it?
+> > David's changes already on pci/aspm added pci_save_aspm_state(), but
+> > it actually only saves L1SS data, and Vidya needs to save the non-L1SS
+> > data also.
+> >=20
+> > I think I'm going to rework David's changes a little bit so this is
+> > named pci_save_aspm_l1ss_state() from the beginning so we won't need
+> > the rename here.
 
-Probably not. we just need to consume GPIOs, no need to provide...
+Ack
 
-> I was thinking something like
-> this in the devicetree
->
-> \{
->      led-7seg {
->          compatible =3D "kingbright,sa36";
->          seg-gpios =3D <&gpioN 0 GPIO_ACTIVE_HIGH>,
->              <&gpioN 1 GPIO_ACTIVE_HIGH>,
->              <&gpioN 2 GPIO_ACTIVE_HIGH>,
->              <&gpioN 3 GPIO_ACTIVE_HIGH>,
->              <&gpioN 4 GPIO_ACTIVE_HIGH>,
->              <&gpioN 5 GPIO_ACTIVE_HIGH>,
->              <&gpioN 6 GPIO_ACTIVE_HIGH>;
->      };
-> };
+>=20
+> Got it.
+>=20
+> Change wise, this patch looks fine to me.
+>=20
+> Reviewed-by: Kuppuswamy Sathyanarayanan
+> <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-Right, but also with some additional properties, like
-- type of the indicator (7, 14, etc segments, for now we have only
-these two supported)
-- use-dot (+1 led per each digit)
-- characters (how many digits we have, so we need respective amount of GPIO=
-s)
+LGTM too.
 
-With this it's indeed belongs directly to auxdisplay as we have almost
-everything is done already there.
+Reviewed-by: David E. Box <david.e.box@linux.intel.com>
 
-> >> The information we want to display is mostly static (basically a numer=
-ic
-> >> unit identifier) but there are cases where we may want to alternate
-> >> between this and "F" to indicate some fault condition
-
---=20
-With Best Regards,
-Andy Shevchenko
 
