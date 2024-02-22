@@ -1,89 +1,93 @@
-Return-Path: <linux-kernel+bounces-77547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53592860728
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:55:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39542860729
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:55:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD07D1F23192
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:55:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AA9D1C211A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:55:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B6E140366;
-	Thu, 22 Feb 2024 23:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B2C13BAF6;
+	Thu, 22 Feb 2024 23:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aIXUSj9r"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="N4cPvAnS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YBRqsSVJ"
+Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04224433DF;
-	Thu, 22 Feb 2024 23:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B35B13BAD8;
+	Thu, 22 Feb 2024 23:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708646104; cv=none; b=MviTEfhqNDGC/cVqcjs7VRabNAeON6lAoSKqaSr8Lf5BOZuUTfBYuf/a+N0r4gC22/+N9+eXeHW5Ebs+48y6OSYH5vbnxmh9UtiZASugZOjYBxedYmKqNw59+WR3D/e8UMkSLBYoLzZlmMEYdOR2zxFUCbvixCjXrSdxpgnBXps=
+	t=1708646116; cv=none; b=MWiB9+bP5N09+fqQbOKN+YXKNdCN+cr90YZmK6+hh1DznZzSwatuXcUC4lKAI4obHTUlDuNAH/ujVziG/ZJjQggTDFRTWp8U11O1/mOIwchqQaqBWbu/VzBXB9nRslZeOK/4OplNMQ921QUZQAdYSaoRxTQSOvzjVqHzttIsKTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708646104; c=relaxed/simple;
-	bh=JAWPRH05PCaJ/qhm7l++x2p8cgx/eVbDSM0nYdWb/ZY=;
+	s=arc-20240116; t=1708646116; c=relaxed/simple;
+	bh=5DbrVE98gnMbW/sOxH/2/zMMJkQFjIVpVGo0lc7VS5c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HaanTRzLP8uDs+1++NVu0CxFXkFY42ZvIXZuiN47w+B9fv+Xpv+QPAG174rFCK+GSRqTT33BWfwZqmUKvE4izAVLzPjcXBnXTVGWA+jB70FLxsoBPnATEyqDpH/sd8z6by8KlV95Ctv+++GZISf5aviJI2rrRgv6XsG20AdV4ZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aIXUSj9r; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708646102; x=1740182102;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JAWPRH05PCaJ/qhm7l++x2p8cgx/eVbDSM0nYdWb/ZY=;
-  b=aIXUSj9rLu8236qaPreso3z2uIcoT/btnevBJDcnxXzuPzPxhiw3Dinw
-   mb8Io15UdaUTCBVFvqgR0YE76byDuzB/cHLAvsQyXTcJo68L33PEbe1jj
-   pgYjeCABccKhDFZ5hGn5qfHTWnMnUkasaRZgv8eGbpx1WT+WqNYHMpd9e
-   P5FQoDdPwoX3YUJt72tNvYRN4Ov3NAMEdjAfuytDx4GMTZclfPlaMYM9F
-   8G4rUsuRf5otYE9R4jQiphvcMujd4Rxztbtt07xY4GmuXhVUBiwNptxVt
-   bYELbBa4G6hFdfbU7L3/unVi1XUhzQaXUwuVmyIze1r77kowqZ3l9M4Ud
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="25387136"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="25387136"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 15:53:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="28809352"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 22 Feb 2024 15:52:39 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rdIrl-0006o6-0y;
-	Thu, 22 Feb 2024 23:52:37 +0000
-Date: Fri, 23 Feb 2024 07:52:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
-	javierm@redhat.com, deller@gmx.de, suijingfeng@loongson.cn
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>
-Subject: Re: [PATCH 3/3] arch: Rename fbdev header and source files
-Message-ID: <202402230737.e7gWpGUp-lkp@intel.com>
-References: <20240221161431.8245-4-tzimmermann@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PEkZxyjJFLwcg7N66MuWC81cP1AgiYr3+GjBYyn+Vg5Um7Sr7rdEm2zMQEZjurbV6qKkbfZGm7U82puR5rhnDccD25nUxmRAxbfFP+b4Wy4xEWP6yC/Wi0cDJb0Ikb3UfQkmP6qqw2+sloXtbi/5AhdLGgIri4oJ/Mr/CwVE1T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=N4cPvAnS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YBRqsSVJ; arc=none smtp.client-ip=64.147.123.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 321511C0007D;
+	Thu, 22 Feb 2024 18:55:13 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 22 Feb 2024 18:55:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708646112; x=1708732512; bh=Pl5vMqRidv
+	VS3SQYlynbhIdESVfcbmX9djCvU9x2wXo=; b=N4cPvAnSweShcMB1XLNY81DJ8+
+	F9vxf7JZsBOALVaHY4hy7dNmzenRz0fc3qEiY9paB/b0NBeIp5sDZpCRTClkmrXT
+	VoEDj029veG9v0ax7UIGWq+CnJ1ZvrHf56u7WgY4iU9IbFx6JXOmQsWPJ5kKd3Fq
+	WZi/EdWvHsVsFS3VgzFzFuxIL+aZpK0i9FmowqUqbLK5kWoa4GviFJBuz7O8HMm4
+	Km8spXAlnD0n3XutD38kSl7FGygO2CrjrAf4f1EMWZ7XYhW0ICxOa8M8xRxhnCiM
+	EQJsjiHYgFS/xIWVbrliXV6Nr6y3aTtx5lCoS5UE4Wa8lGY6896PQNw/cTiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708646112; x=1708732512; bh=Pl5vMqRidvVS3SQYlynbhIdESVfc
+	bmX9djCvU9x2wXo=; b=YBRqsSVJqK9CrlMIbF99AtjQTUSNF7AuV8tjQbV4cXGQ
+	h8ZrPtfg7cZ2M5/BlCVKChYXo9Auv74w8I0GI+jIlVdM28Hm/Lk8XM3N1h/Hzxti
+	6k9fwoWlpH99hNDsk5H3v/YhEhi+kwxPqEzQfBTXVT3KKvO16O0Oek+xXqsoGH4W
+	YwtytgyWLRYEhvJZaJWc7/PtOk51DXLnsPs+spM98F6mgkB/ZaArcw4ethBDoTT/
+	8RSpnpQisPHK94yg9HKVqM9+ntyjwGcmfS6zVdcTuUAPN6VRvOYZTBubekNMV4AZ
+	+4yvgn/6SH2/ewjkyxOiRgJwUoOl1Q43GiyEVuuC7A==
+X-ME-Sender: <xms:4N7XZe6s6BpoK6IEAWAFRjpHeFKUZzyZWLgnSR3JBBDASNZlSlslkQ>
+    <xme:4N7XZX6RzZecA_xZLHaIjL6lyzbcqHntZ2HZpfup94tnoLyAshLUEl71C3WR-7RJM
+    2b7fcb6XFBH6O3io3Q>
+X-ME-Received: <xmr:4N7XZdd-xq5EiOWyEpcaThNuPZzguC_f547wle3yoTRQWXub6k6SJujrLes>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeehgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
+    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:4N7XZbKXkGX29ehCbjpcgVU4jL-4-moyeK7IRn6-scv4A-DF-ykHew>
+    <xmx:4N7XZSJHNpeHj57N8yS51lGisUE5ONhHklevuzQddTD9cp42N6xnlg>
+    <xmx:4N7XZcxxQ7asKFnZjtFl_JaS4qpJeBov9hB1_G1QWS4WcR74EXakBg>
+    <xmx:4N7XZa8ps-2IUHLj4xLwptKNuuZuRMO_Q5rBcAjR_RrVETEF_ey_kxew_OY>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 22 Feb 2024 18:55:11 -0500 (EST)
+Date: Thu, 22 Feb 2024 16:55:09 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Kees Cook <keescook@chromium.org>
+Cc: "Tobin C. Harding" <me@tobin.cc>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Guixiong Wei <guixiongwei@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] leaking_addresses: Provide mechanism to scan
+ binary files
+Message-ID: <Zdfe3Ze/PKLxvvt7@tycho.pizza>
+References: <20240222215755.it.764-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,75 +96,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221161431.8245-4-tzimmermann@suse.de>
+In-Reply-To: <20240222215755.it.764-kees@kernel.org>
 
-Hi Thomas,
+Hi Kees,
 
-kernel test robot noticed the following build errors:
+On Thu, Feb 22, 2024 at 02:00:47PM -0800, Kees Cook wrote:
+> Hi,
+> 
+> Since I was in this script for the binary file scanning, I did other
+> clean-ups and tweaked the MAINTAINERS file per Tycho's suggestion.
 
-[auto build test ERROR on tip/x86/core]
-[also build test ERROR on deller-parisc/for-next arnd-asm-generic/master linus/master v6.8-rc5]
-[cannot apply to next-20240222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks, the whole series is:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-Select-fbdev-helpers-with-CONFIG_VIDEO/20240222-001622
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20240221161431.8245-4-tzimmermann%40suse.de
-patch subject: [PATCH 3/3] arch: Rename fbdev header and source files
-config: um-randconfig-002-20240222 (https://download.01.org/0day-ci/archive/20240223/202402230737.e7gWpGUp-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project edd4aee4dd9b5b98b2576a6f783e4086173d902a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240223/202402230737.e7gWpGUp-lkp@intel.com/reproduce)
+Reviewed-by: Tycho Andersen <tandersen@netflix.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402230737.e7gWpGUp-lkp@intel.com/
+I also pinged Tobin off-list with this thread, perhaps he will respond
+here.
 
-All errors (new ones prefixed by >>):
-
-   /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
-   /usr/bin/ld: drivers/video/fbdev/core/fb_io_fops.o: in function `fb_io_mmap':
->> drivers/video/fbdev/core/fb_io_fops.c:164: undefined reference to `pgprot_framebuffer'
-   clang: error: linker command failed with exit code 1 (use -v to see invocation)
-
-
-vim +164 drivers/video/fbdev/core/fb_io_fops.c
-
-6b180f66c0dd62 Thomas Zimmermann 2023-09-27  140  
-33253d9e01d405 Thomas Zimmermann 2023-11-27  141  int fb_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
-33253d9e01d405 Thomas Zimmermann 2023-11-27  142  {
-33253d9e01d405 Thomas Zimmermann 2023-11-27  143  	unsigned long start = info->fix.smem_start;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  144  	u32 len = info->fix.smem_len;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  145  	unsigned long mmio_pgoff = PAGE_ALIGN((start & ~PAGE_MASK) + len) >> PAGE_SHIFT;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  146  
-b3e8813773c568 Thomas Zimmermann 2023-11-27  147  	if (info->flags & FBINFO_VIRTFB)
-b3e8813773c568 Thomas Zimmermann 2023-11-27  148  		fb_warn_once(info, "Framebuffer is not in I/O address space.");
-b3e8813773c568 Thomas Zimmermann 2023-11-27  149  
-33253d9e01d405 Thomas Zimmermann 2023-11-27  150  	/*
-33253d9e01d405 Thomas Zimmermann 2023-11-27  151  	 * This can be either the framebuffer mapping, or if pgoff points
-33253d9e01d405 Thomas Zimmermann 2023-11-27  152  	 * past it, the mmio mapping.
-33253d9e01d405 Thomas Zimmermann 2023-11-27  153  	 */
-33253d9e01d405 Thomas Zimmermann 2023-11-27  154  	if (vma->vm_pgoff >= mmio_pgoff) {
-33253d9e01d405 Thomas Zimmermann 2023-11-27  155  		if (info->var.accel_flags)
-33253d9e01d405 Thomas Zimmermann 2023-11-27  156  			return -EINVAL;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  157  
-33253d9e01d405 Thomas Zimmermann 2023-11-27  158  		vma->vm_pgoff -= mmio_pgoff;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  159  		start = info->fix.mmio_start;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  160  		len = info->fix.mmio_len;
-33253d9e01d405 Thomas Zimmermann 2023-11-27  161  	}
-33253d9e01d405 Thomas Zimmermann 2023-11-27  162  
-33253d9e01d405 Thomas Zimmermann 2023-11-27  163  	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
-33253d9e01d405 Thomas Zimmermann 2023-11-27 @164  	vma->vm_page_prot = pgprot_framebuffer(vma->vm_page_prot, vma->vm_start,
-33253d9e01d405 Thomas Zimmermann 2023-11-27  165  					       vma->vm_end, start);
-33253d9e01d405 Thomas Zimmermann 2023-11-27  166  
-33253d9e01d405 Thomas Zimmermann 2023-11-27  167  	return vm_iomap_memory(vma, start, len);
-33253d9e01d405 Thomas Zimmermann 2023-11-27  168  }
-33253d9e01d405 Thomas Zimmermann 2023-11-27  169  EXPORT_SYMBOL(fb_io_mmap);
-33253d9e01d405 Thomas Zimmermann 2023-11-27  170  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Tycho
 
