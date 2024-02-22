@@ -1,154 +1,118 @@
-Return-Path: <linux-kernel+bounces-76911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2DC85FE82
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFAB885FE86
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:55:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6FE51F259DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:55:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F5D51F282BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F75153BF8;
-	Thu, 22 Feb 2024 16:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D42A153BFA;
+	Thu, 22 Feb 2024 16:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="RF/RoxGX"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2088.outbound.protection.outlook.com [40.107.93.88])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SC44U0yB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pSdHSt0Y"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683DB15098A;
-	Thu, 22 Feb 2024 16:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620907; cv=fail; b=jyTDApxMUytM7cnoqM9NuWbiArcANFOmoUr6WvDgsJ7w6MEWsKNJLohN6izGp2f/V4siRDLsrAmaAy8nl6kIhz00utDriv/P4hPmP4Lj/4mI72OVFjZDlUnBULpfPqhmED2N4Uam2vk8x4CHFJydcrgyK4+cqVuhGTeCZ4Mlzhc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620907; c=relaxed/simple;
-	bh=ZCnjNbBQgJ/MQjlQeOCEPc8uZa2nulbupCi6Cdzb6X0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KrBR4S5a5iI3HNH79Hl8WnAejd1bMkicd7NNNZRsKs2VIveL9tHK4mh1GVmhfDZ6/bwBRdQgzww9KczgsdzoR3HxF7UEZeHrJ6XIiPbIfEvAvtQQ1PNZTjoo/8uqZCJmKqihr1vU7eWhnoXayZXgNstnETR2z++zIReBNaRU3yc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=RF/RoxGX; arc=fail smtp.client-ip=40.107.93.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jEVkVNHNAAxfbPFwtEjYD2Lx+7Qh/yr/2L7Jvb8LBgNL3tD8IeUtJ/AOopqnpmYaYYl7hKH1aH7FkUyOjO5P38Px5Yr/kJrFYMzM3vqekq3ciK9Yfj69uMGJ/pj53O2ge+VF4fadSiWWzcX7fqdr8onHVoW3OC8Y+zraundb90mByrk0uMLvaNJnrXbD1GMX7NMdI57sgaytuIYA26ZCLvJS1GBNb8rkgOROA2tuUHoAPaHYmWWztR1h6OPR3jQD9c4qmP4elMGztWq8AdtyYofZbg78qa9/8IjyXbS0IRzO3K3CtE9fjyj7ByBwpsUDCUX3TF+XK2URKndEm8Od6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZEWrLJhcJNx3jvUGP3CWe4rhsGDi+5feYj/NA/b8cbE=;
- b=KjsJFVKJcQiVm0M8BY7JEWV0YOEokY0whO12FM93kL8nC2fBaHrYDANQVm7SHrsJ8od6NvPJQ6gaDzJGjkJwvk+LK0tiga6TBrD/14Sk/7IPi1SKEFq+uDEQkBVTkpAsadxpKEIAibBZ4UawnNDn5Cam21ioThOSGHO/q/VfysunE01fjTLv0xkmwKIFkbw7upA31qrijmiSS0LGPs1QZsFAjGnu3pcDq33SEa2TtfTwGguSXVutZcNQ4/YqFh+WrmNMkKYkHRAkpaHC5FxJTvIn40UWrvdOYx7f9v3UhRSbat5mnp0QpKnNCoeRO3FKAbf94Lm89wWtUYDK5N8jSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZEWrLJhcJNx3jvUGP3CWe4rhsGDi+5feYj/NA/b8cbE=;
- b=RF/RoxGX0/TEX2zOU5FzYZ7n2lzFyhhezxKPIK0G0BpHaJljNbi10OAqYuKRIQ009Lln6uVfYGolLLNgm3ne6RRqrryYKnWRLEkrZIpnLFDO+3ejM0RovlOJ0yFpDNt0Z1jkiWJ5oWSd0d47PZPyEfShBCkXWB6eMxRR+dw0kwE=
-Received: from BYAPR05CA0097.namprd05.prod.outlook.com (2603:10b6:a03:e0::38)
- by MN2PR12MB4360.namprd12.prod.outlook.com (2603:10b6:208:266::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Thu, 22 Feb
- 2024 16:55:02 +0000
-Received: from SJ1PEPF00001CDF.namprd05.prod.outlook.com
- (2603:10b6:a03:e0:cafe::46) by BYAPR05CA0097.outlook.office365.com
- (2603:10b6:a03:e0::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14 via Frontend
- Transport; Thu, 22 Feb 2024 16:55:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ1PEPF00001CDF.mail.protection.outlook.com (10.167.242.7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 16:55:00 +0000
-Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 22 Feb
- 2024 10:54:59 -0600
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-To: <bp@alien8.de>, <tony.luck@intel.com>, <linux-edac@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <avadhut.naik@amd.com>,
-	<john.allen@amd.com>, Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: [PATCH] RAS/AMD/ATL: Fix bit overflow in denorm_addr_df4_np2()
-Date: Thu, 22 Feb 2024 10:54:49 -0600
-Message-ID: <20240222165449.23582-1-yazen.ghannam@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8BD14F9FF;
+	Thu, 22 Feb 2024 16:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708620937; cv=none; b=SuhxUYRRZmB1ZYTlznlsvfpucrzcK1uAlD0sa6761dO9yc+K0FWWyn8KX0JRx8UbKblDjOS7O+poe3oETg/7MJmEq+xvDMgY7TX3YPR4IhagKQGwc2TAUpf2HFlMcC70OD8gaV7lFLVNNEv2Jp2+iQ4oSEsuKwXF3cdDaWEDMDY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708620937; c=relaxed/simple;
+	bh=npytPVw5M3sUKok7yybHeugon47SNE8jW3hGSR/Wa0c=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=ecD2aZmW3rEQ2cgvDkR8FgKh/jRoJ/9tQtTrI3pIBfhMzrloc+j+wRHDIi+ICgruCuS2FzRyhiChpK1VcRV2YBQ/As457ajiHtWoo1mSK6HuDp9oRvxGpntdBpMs+UZzJyI2mbNFMxWkIbtnetleAedSovOfkekwMD4K4vekFYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SC44U0yB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pSdHSt0Y; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 22 Feb 2024 16:55:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708620933;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5nqywM3EaFuT0LLG5+8nJBAP5oaXlvRtzzWjT/BqrDU=;
+	b=SC44U0yB2I/+7YxiPAE02ZqznBBXruIoQ4+jG9Emt12zslkCEBJdDT/duLku72pBo/GgD9
+	JNrAwSozVgGKic/us5J1wYQvxG24+lYxa3WHcHh5ZJrTYya+qC2sPyalNLdNXT+DK5p2E8
+	rARD3pF8BNFt5pwWpq4rqI9lJQcx9v1LnoksJNmB9BeX2pCuyN8R4FpJToimBdjLb6zAlN
+	Zob69ISlNj+EbjdN7rcjN+KmDK3y9cWUbsGbLSjumTqskRAK+HB9FiwkIbg2hGjZuA9gkm
+	/RHSVfh83XeZ1GVc+Z84Kyp/1bL9+2hkIhvZrQHiTuFZYnxnmXnt7A3Tb5xs1A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708620933;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5nqywM3EaFuT0LLG5+8nJBAP5oaXlvRtzzWjT/BqrDU=;
+	b=pSdHSt0Yd/wY08rP6vqSmB8iHrBW1OiO7mpx3HivMMaRByFiyJQrdFVFiE5zaG0XTpBi5p
+	Ka6Z5IU4w+N8e6Dw==
+From: "tip-bot2 for Max Kellermann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: smp/core] cpu: Remove stray semicolon
+Cc: Max Kellermann <max.kellermann@ionos.com>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240222114727.1144588-1-max.kellermann@ionos.com>
+References: <20240222114727.1144588-1-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CDF:EE_|MN2PR12MB4360:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9388dc5d-d93b-47bf-c046-08dc33c70261
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uVDuEwiifQjNVyFxnw41Z97EY98pyi9pikpprgj/52Xdzs6uVDULei2LHbVIoSIgIiEPFU4bB7Tv/ICu03/mNehOrjkZTd/pc0U7U/SmAPH0vZHACB6zywIB/7JISsFFiy85luFFEaeCyyRpIiLmY6g9qfH3vgWxcrcn5RKK+rHXUCtE6nB5uWIx82eXt5uEjAyAbj6JRNx1mZt633TcBhPA6nlZLS5yI1aCFetZlvJauJEGyUNM7ikrA/z1uHyjW0scu587Njs/itqYRrnv513xOqNEgCJ3Nz7WZOXZdkkVXqDZvzxGEMNxGUc6KiB6I0FOy10IAnzxxPA2qUVaCY4osQIl/Dn2FNeCExx90z6V76KdkCaTr1SX3UB/BMQ0YeD/qyl4ybQ4wVuJ8TBRqEJiYJl0LzoZSne2cd98toT8+95gK7JxwZlRRxUOXW4l8rLYi9M3czHM2PfG6t3tF6U3sjXHImJ5pPxw8dxxBEjOAOUPSpiwH2JFbWd+04ohP4XTFbnyUG9MCpA35E+wmrt8Z8EnMZCHBZC0zmJSlYMMSBrtn6HfgjjSbfEhImWUE5kfFjRVIhQOOkXuz9LtQIoHGJw6qfCZwo1A8eUS9xV4VC47o/h5l+g2ygah3rgC4rzZMz8NPSGPTwvNj37JYw==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 16:55:00.9830
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9388dc5d-d93b-47bf-c046-08dc33c70261
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CDF.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4360
+Message-ID: <170862093279.398.1951043939056036811.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-The hash_pa8 and hashed_bit values in denorm_addr_df4_np2() are
-currently defined as u8 types. These variables represent single bits.
+The following commit has been merged into the smp/core branch of tip:
 
-'hash_pa8' is set based on logical AND operations using masks with more
-than 8 bits. So the calculated value will not fit in this variable. It
-will always be '0'. The 'hash_pa8' check later in the function will fail
-which produces incorrect results for some cases.
+Commit-ID:     266e95786452d97f42dcb9a881bba223584b9648
+Gitweb:        https://git.kernel.org/tip/266e95786452d97f42dcb9a881bba223584b9648
+Author:        Max Kellermann <max.kellermann@ionos.com>
+AuthorDate:    Thu, 22 Feb 2024 12:47:27 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 22 Feb 2024 17:51:14 +01:00
 
-Change these variables to bool type. This clarifies that they are
-single bit values. Also, this allows the compiler to ensure they hold
-the proper results. Remove an unnecessary shift operation.
+cpu: Remove stray semicolon
 
-Fixes: 3f3174996be6 ("RAS: Introduce AMD Address Translation Library")
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+This syntax error was introduced by commit da92df490eea ("cpu: Mark
+cpu_possible_mask as __ro_after_init").
+
+Fixes: da92df490eea ("cpu: Mark cpu_possible_mask as __ro_after_init")
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240222114727.1144588-1-max.kellermann@ionos.com
+
 ---
- drivers/ras/amd/atl/denormalize.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ras/amd/atl/denormalize.c b/drivers/ras/amd/atl/denormalize.c
-index 49a900e066f1..f46bce119255 100644
---- a/drivers/ras/amd/atl/denormalize.c
-+++ b/drivers/ras/amd/atl/denormalize.c
-@@ -545,7 +545,7 @@ static int denorm_addr_df4_np2(struct addr_ctx *ctx)
- 	unsigned int mod_value, shift_value;
- 	u16 mask = df_cfg.component_id_mask;
- 	u64 temp_addr_a, temp_addr_b;
--	u8 hash_pa8, hashed_bit;
-+	bool hash_pa8, hashed_bit;
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 7b36b3a..cc4a806 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -3106,7 +3106,7 @@ const DECLARE_BITMAP(cpu_all_bits, NR_CPUS) = CPU_BITS_ALL;
+ EXPORT_SYMBOL(cpu_all_bits);
  
- 	switch (ctx->map.intlv_mode) {
- 	case DF4_NPS4_3CHAN_HASH:
-@@ -578,7 +578,6 @@ static int denorm_addr_df4_np2(struct addr_ctx *ctx)
- 		temp_addr_a	= remove_bits(shift_value, shift_value, ctx->ret_addr);
- 	} else {
- 		hash_pa8	= (ctx->coh_st_fabric_id & df_cfg.socket_id_mask);
--		hash_pa8	>>= df_cfg.socket_id_shift;
- 		temp_addr_a	= ctx->ret_addr;
- 	}
- 
--- 
-2.34.1
-
+ #ifdef CONFIG_INIT_ALL_POSSIBLE
+-struct cpumask __cpu_possible_mask __ro_after_init;
++struct cpumask __cpu_possible_mask __ro_after_init
+ 	= {CPU_BITS_ALL};
+ #else
+ struct cpumask __cpu_possible_mask __ro_after_init;
 
