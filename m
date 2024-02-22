@@ -1,71 +1,74 @@
-Return-Path: <linux-kernel+bounces-76891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3602185FE3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC3085FE44
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:42:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9107FB263DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:42:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA828B28245
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41347153BC9;
-	Thu, 22 Feb 2024 16:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF967153BCA;
+	Thu, 22 Feb 2024 16:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="rk4yls/b"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="jO2vW6mg"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F961474B6;
-	Thu, 22 Feb 2024 16:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E4D1534F5;
+	Thu, 22 Feb 2024 16:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620144; cv=none; b=T7DMZ05pnLEmZn262Vukqz7dEn6qpy4cuyHBMokNPUa+SgaOCLJ+3wdfaUgh4rd4qzY3H6SxkKIaGVt9FvbWV+05M1LSCJH9m2wg5DMQnadfOJHqbROEC54TDVGYHlhKao3ZVxbCuf/wq3yEBCqrXUrti4MNHpjehlrL7gnvwFk=
+	t=1708620161; cv=none; b=O7rpBk+Oiugxr+oiAnXEDdejslCX+4CXwfhefGy2/tQEXchx6jCbk0yAR/agNILyexSYgot1Q79ZFFXi+FKoq5Vqwy6/1PWQV9GLAHl13IPzvZbvN1eHXM01vWj5BJGRuyTSx5jj9aUEI77UgPpOYDKT4yROA3OYoLrPCKkvDD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620144; c=relaxed/simple;
-	bh=TlsyCxsx6t2l1kb/1VF6kn77np7doIMVXGCQWbJ2Xl4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VCVtsUFtdCVWlyUIpqNL1Qc4kqMkhufziXxWxgq/4PEOtksZQNH9uqDnrt7qoL7vRyPr0ZegAag+RJow0mh2O7hPe195SR/FcB+EjrJ49c0+tlXhDfB6V1J/IH63IKy9ArMXzLTSNASpTExieFMqCnUtl7EqGyxGlQhv8ZeAH1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=rk4yls/b; arc=none smtp.client-ip=68.232.153.233
+	s=arc-20240116; t=1708620161; c=relaxed/simple;
+	bh=JiyMeQ4zLEjBU6MJmXNxDjwaVSeLnLIjl5e47ySMs2Y=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C0xQlBKO2E4902ibO2Xg4iMUnO9yLkiml/7lyyEyhybLt7apvXBMq/4CnvZN5ZZ0CmpvOvWAE0KD9Dd0NurVjNPeFgoXIpJVQ1WHPEJGoxZQqvwUyw/6hxn8FBVeyIPC8ASVl+gXHIDe9vRu179xPbsddZeniC25iDvKP55jE7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=jO2vW6mg; arc=none smtp.client-ip=68.232.153.233
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1708620141; x=1740156141;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TlsyCxsx6t2l1kb/1VF6kn77np7doIMVXGCQWbJ2Xl4=;
-  b=rk4yls/byXnhC99PcxzM3AtN4pBh7csMBHI5Z6Ui2gQVw5yZ6NfBf87N
-   egV4Z0vhKWqb2xq8u713BzFp7prhDoNIEFho1nFoRrIu6spxobkVD+X49
-   z7WyHoSqug8HamhR3FrOdgy9NlaIR0nAS9Gnacq3EzU8pP0g3xCrzkzMr
-   WOHEdLjvebIANO5Iv2QcdaoIlpeeCyWRTPOQgsihfDsk9vzRG1wF04tjd
-   sTFzKSK89R+f3RzBvjFEzh/96EOVhi1WUHrR6NpvddyI8hsG6cc4kfBuQ
-   bwq1lZ79jupRKPiKuacm69/GUortAv5phdmYYVHXxtQQssqUhBKZ0vvfn
-   w==;
-X-CSE-ConnectionGUID: OvPE6kvdT3CJBCGLPKRzYQ==
-X-CSE-MsgGUID: wQakEbkGSSSHtESXrSmXTA==
+  t=1708620159; x=1740156159;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JiyMeQ4zLEjBU6MJmXNxDjwaVSeLnLIjl5e47ySMs2Y=;
+  b=jO2vW6mgjSYVHtF6oSVHMoJE0rnSa4bTay/STEP+k3wu+XTPBxygRd9V
+   aR8xeoBLa3/MtsEEOKoaVcTQz4/JzJOK9vRFZihTC3msyxmifemrLdWbQ
+   bVavZjo8rlsNiaRbeAgjFLr3jXJ1sWkLVgVhyFp01UyFlLwFZW8CT2Y7S
+   nkWHcaXd/fvPREYe4zifYbr8+XzZSGwoXu49qlae7Pr5BQwO0jQboCOJJ
+   4Fm2OT/qF6qxxl4pSgQEDiId3M1IWN0tFbab4+Ry3MUOKQqulN4N3P/bD
+   oa7PIKOsoqYmJZ49eTHJVPQl3Tlr4XD8mqkJI9JHfp40q/+CeoNh7hcU/
+   Q==;
+X-CSE-ConnectionGUID: WIlLG2AjSwCpN2W80dryxA==
+X-CSE-MsgGUID: 0Iq3Xyz7Ta++c4VkQ+G2IQ==
 X-IronPort-AV: E=Sophos;i="6.06,179,1705388400"; 
-   d="scan'208";a="18201586"
+   d="scan'208";a="247417429"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Feb 2024 09:42:20 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Feb 2024 09:42:38 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 09:42:17 -0700
+ 15.1.2507.35; Thu, 22 Feb 2024 09:42:34 -0700
 Received: from marius-VM.mshome.net (10.10.85.11) by chn-vm-ex01.mchp-main.com
  (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 22 Feb 2024 09:42:14 -0700
+ Transport; Thu, 22 Feb 2024 09:42:31 -0700
 From: <marius.cristea@microchip.com>
 To: <jic23@kernel.org>, <lars@metafoo.de>, <robh+dt@kernel.org>,
 	<jdelvare@suse.com>, <linux@roeck-us.net>, <linux-hwmon@vger.kernel.org>
 CC: <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
 	<linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <marius.cristea@microchip.com>
-Subject: [PATCH v5 0/2] adding support for Microchip PAC193X Power Monitor
-Date: Thu, 22 Feb 2024 18:42:04 +0200
-Message-ID: <20240222164206.65700-1-marius.cristea@microchip.com>
+Subject: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for PAC193X
+Date: Thu, 22 Feb 2024 18:42:05 +0200
+Message-ID: <20240222164206.65700-2-marius.cristea@microchip.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240222164206.65700-1-marius.cristea@microchip.com>
+References: <20240222164206.65700-1-marius.cristea@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,104 +80,142 @@ Content-Type: text/plain
 
 From: Marius Cristea <marius.cristea@microchip.com>
 
-Adding support for Microchip PAC193X series of Power Monitor with
-Accumulator chip family. This driver covers the following part numbers:
- - PAC1931, PAC1932, PAC1933 and PAC1934
+This is the device tree schema for iio driver for
+Microchip PAC193X series of Power Monitors with Accumulator.
 
-  This device is at the boundary between IIO and HWMON (if you are
-looking just at the "shunt resistors, vsense, power, energy"). The
-device also has ADC internally that can measure voltages (up to 4
-channels) and also currents (up to 4 channels). The current is measured as
-voltage across the shunt_resistor.
-
-  I have started with a simple driver (this one that is more appropriate to be
-a HWMON) and willing to add more functionality later (like data buffering that
-is quite important for example if someone wants to profile power consumption
-of the processor itself, or a peripheral device, or a battery, this kind of
-functionality was requested by our customers).
-
-  The above statement it's a left over comment / attempt to summarize the
-discussion of whether IIO or HWMON was a better home for a driver for this
-device.  Based on current feature set that's not an obvious decision, but there
-are other planned features that fit better in IIO.
-
-Differences related to previous patch:
-v5:
-- fix review comments:
-  - remove | from device tree binding (not needed because there is no
-    formatting to preserve).
-  - update in_shunt_resistor_X attribute to in_shunt_resistorX
-  - use channel enable to reset the energy counter for each acctive channels
-  - update values of IIO elements to be in naturally aligned power of 2
-  - use address in the attribute (IIO_DEVICE_ATTR) to extract address field
-  - update the code to use mod_delayed_work
-  - change from kfree to ACPI_FREE
-  - fix "0-day" issue related to double counter increment
-  - check functions return in case of errors (like devm_kzalloc that could fail)
-  - fix coding style issues
-
-v4:
-  - remove the "reset_accumulators" proprietary attribute
-  - add enable/disable for energy channels
-  - remove "reset_accumulators" attribute
-  - remove unused/redundant defines
-  - rename variable to be more relevant into a certain context
-  - make "storagebits" naturally aligned power of 2
-  - fix coding style issues
-  - use to_iio_dev_attr to access address field in the IIO_DEVICE_ATTR()
-  - remove unnecesarry "break" from switch case
-  - remove double increment and initialization of a variable
-  - use address as index in IIO_DEVICE_ATTR
-  - properly handle memory allocation failure
-
-v3:
-- this version was sent also to HWMON list
-- fix review comments:
-  - drop redundant description from device tree bindings
-  - reorder "patternProperties:" to follow "properties:" in device tree bindings
-  - update comments to proper describe code
-  - use numbers instead of defines for clarity in some part of the code
-  - use the new "guard(mutex)"
-  - use "clamp()" instead of duplicating code
-  - remove extra layer of checking in some switch cases
-  - use "i2c_get_match_data()"
-  - replace while with for loops for the code to look cleaner
-  - reverse the logic to reduce indent.
-  - add comment related to channels numbering
-  - remove memory duplicate when creating dynamic channels
-  - add "devm_add_action_or_reset" to handle the "cancel_delayed_work_sync"
-  - remove "pac1934_remove()" function
-
-v2:
-- fix review comments:
-  - change the device tree bindings
-  - use label property
-  - fix coding style issues
-  - remove unused headers
-  - use get_unaligned_bexx instead of own functions
-  - change to use a system work queue
-  - use probe_new instead of old probe
-
-v1:
-- first version committed to review
-
-Marius Cristea (2):
-  dt-bindings: iio: adc: adding support for PAC193X
-  iio: adc: adding support for PAC193x
-
- .../ABI/testing/sysfs-bus-iio-adc-pac1934     |    9 +
- .../bindings/iio/adc/microchip,pac1934.yaml   |  120 ++
- MAINTAINERS                                   |    7 +
- drivers/iio/adc/Kconfig                       |   11 +
- drivers/iio/adc/Makefile                      |    1 +
- drivers/iio/adc/pac1934.c                     | 1637 +++++++++++++++++
- 6 files changed, 1785 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-pac1934
+Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ .../bindings/iio/adc/microchip,pac1934.yaml   | 120 ++++++++++++++++++
+ 1 file changed, 120 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
- create mode 100644 drivers/iio/adc/pac1934.c
 
-
-base-commit: b1a1eaf6183697b77f7243780a25f35c7c0c8bdf
+diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+new file mode 100644
+index 000000000000..52be5ada1eb6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+@@ -0,0 +1,120 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip PAC1934 Power Monitors with Accumulator
++
++maintainers:
++  - Marius Cristea <marius.cristea@microchip.com>
++
++description: |
++  This device is part of the Microchip family of Power Monitors with
++  Accumulator.
++  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found here:
++    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
++
++properties:
++  compatible:
++    enum:
++      - microchip,pac1931
++      - microchip,pac1932
++      - microchip,pac1933
++      - microchip,pac1934
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  interrupts:
++    maxItems: 1
++
++  slow-io-gpios:
++    description:
++      A GPIO used to trigger a change is sampling rate (lowering the chip power
++      consumption). If configured in SLOW mode, if this pin is forced high,
++      sampling rate is forced to eight samples/second. When it is forced low,
++      the sampling rate is 1024 samples/second unless a different sample rate
++      has been programmed.
++
++patternProperties:
++  "^channel@[1-4]+$":
++    type: object
++    $ref: adc.yaml
++    description:
++        Represents the external channels which are connected to the ADC.
++
++    properties:
++      reg:
++        items:
++          minimum: 1
++          maximum: 4
++
++      shunt-resistor-micro-ohms:
++        description:
++          Value in micro Ohms of the shunt resistor connected between
++          the SENSE+ and SENSE- inputs, across which the current is measured.
++          Value is needed to compute the scaling of the measured current.
++
++    required:
++      - reg
++      - shunt-resistor-micro-ohms
++
++    unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        power-monitor@10 {
++            compatible = "microchip,pac1934";
++            reg = <0x10>;
++
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            channel@1 {
++                reg = <0x1>;
++                shunt-resistor-micro-ohms = <24900000>;
++                label = "CPU";
++            };
++
++            channel@2 {
++                reg = <0x2>;
++                shunt-resistor-micro-ohms = <49900000>;
++                label = "GPU";
++            };
++
++            channel@3 {
++                reg = <0x3>;
++                shunt-resistor-micro-ohms = <75000000>;
++                label = "MEM";
++                bipolar;
++            };
++
++            channel@4 {
++                reg = <0x4>;
++                shunt-resistor-micro-ohms = <100000000>;
++                label = "NET";
++                bipolar;
++            };
++        };
++    };
++
++...
 -- 
 2.34.1
 
