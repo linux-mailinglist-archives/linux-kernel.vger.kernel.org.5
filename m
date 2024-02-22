@@ -1,297 +1,177 @@
-Return-Path: <linux-kernel+bounces-77342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D6386040D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:54:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4AF3860413
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:56:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EDEFB27C5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:54:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B23C11C25590
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A662571752;
-	Thu, 22 Feb 2024 20:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D6371754;
+	Thu, 22 Feb 2024 20:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N22bPVM+"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N8bfosCG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4EC6E5E3;
-	Thu, 22 Feb 2024 20:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E531B59A;
+	Thu, 22 Feb 2024 20:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708635252; cv=none; b=At4TuvJ9uOZhbAUvfHuqs/sWtL+GqTzBfE2dO1XvdCsIvjozom0Z+fbrCtJwtwCeH+2//tp6Pgtxl7YiiLLdE0lGru9hrDQ7mVvkK8TZxbweRfN8J/Sagp0vjrPBR/Jj+C8MyUcSiFWRvAoV7f8e2jw4sLobFGfuv2On4Scr47I=
+	t=1708635397; cv=none; b=Y35avILvVKQZV1ScsyTj/oLRzBxITVBo1lvzccyST9YQz+P0AIV+q1btLIl9DhPfopMGbcpCvGv6bCrhtW+e5IIXE9M3iHN1gKdvBAowCimqth0h9WqvPXbRlvqOArVWnhGpxOscEvT+QUYFwM/cJdBUrgbijDO5LfAb4SxEbic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708635252; c=relaxed/simple;
-	bh=0F2DEWJKK5N2NFCavl6kJAKd82nDyEZqhWVCf1w/iUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=H19//2b/XMC+f8/Sqho9B/Yuugfc9PLyiZ4BsU0f9t9TERECMTX5Pbtnd6uYxli4tjSKrn2tHmwp/xsglPfeauET5YAAo6HeOl8gEhZwDhtNk4BI9CYqzdjWNdBfCxQLGSTdGUhwciLo3XPmpr2qE558MNxRItwOvv8TKiijUpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N22bPVM+; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41276a43dc3so1313365e9.0;
-        Thu, 22 Feb 2024 12:54:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708635249; x=1709240049; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i0qkBgH6sMnGdyvHu5M045vbpyOXVfVY2aQr4d/ePlk=;
-        b=N22bPVM+9qLhS1YSJTeyQhVY2c7mEnSPdFzwCJMk+yixbrNL/3ExHXzy3DMDKBOJrV
-         aqmT9ffiSWH9YPSNF/3bFV1DUEB/a5VsjEw4RnoefdBRIM3bDxBxaW79GnacdQPTtprS
-         uVmuxrhwIrpN7ZKexvQp9amdTI6VuZwPXPJqfIHaQ59HftUkgKO8SC74AfGVeeupMQYL
-         jIME0RmaaJBRwS/XbyjYCmJYIdLfvvhP9mYopHvUrGIoSqpC3XCcqo/sGstzZwUEVEiY
-         5R9KbA8UTdtWn+1KTb8V6VK6X+F8y6kCmLxk+27qGBxdv3ZQ95lJllZx1KOrNoI8RFPX
-         +jIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708635249; x=1709240049;
-        h=content-transfer-encoding:in-reply-to:references:to:from:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=i0qkBgH6sMnGdyvHu5M045vbpyOXVfVY2aQr4d/ePlk=;
-        b=DWDQbqqEQrrobdXG42xqiRWODv+nsU1IBtwwqd79aC0kQX2DR0NRwPwJ49sp57SHAu
-         Mi92PKepRViaeKrSHuzaTkJF/FbmNGhOGhLeA0xLSL9A5JSzKYFWM0giaQEG1MX5IT6d
-         IQ4mP/ksyE4lPzL+mEibIf53p71/zGtwD1eDr9EyidYsEKqDnAbsY61Gp7e/cRghZYi3
-         Gp2f3IDl4QsrKaatKK9st/+0JyYQQHpVjiyvlzvTDQLVCTGB+yAAv8O2fGe8AuUTzobO
-         y6HoWGHOF6inaxMei2fPlzh12GZ7u1F5o7O890pfNG9ZxGbabDgWM2pxrJqPkPhOecbo
-         eGGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXF9tKUxIIZ/nv4hCo+9++P7/JeBh3vwM/RsTgoZUQjlERQW6y+yBkO8NcUGNkg+NR+1JqELK9ohyq5bHBH6WxVo6F+ocb4/EIGx1kaAzoCOJKtrA2sz07W+A67BA8SVtpX59oE
-X-Gm-Message-State: AOJu0Yzyne2Q9z96idsMKBXnimfNdzw8p8TOGhHOh0BHfSQ0VL4vXIGW
-	NQizEajIRGpXCO3ZExcOtgGBnB2a1eOk8SsUfasx80i4Auxq0+tC629/jTTw
-X-Google-Smtp-Source: AGHT+IHol3Xx0+cHHCU4aFeclZ+ObkUo6KMG8G8mdSWj/yo4AsTHuxzGZ7SrN2o1r6jpzrCcSmZVNQ==
-X-Received: by 2002:a05:600c:4711:b0:412:6b21:dad9 with SMTP id v17-20020a05600c471100b004126b21dad9mr9156387wmo.25.1708635249050;
-        Thu, 22 Feb 2024 12:54:09 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id w16-20020a05600c475000b004128c73beffsm2653073wmo.34.2024.02.22.12.54.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 12:54:08 -0800 (PST)
-Message-ID: <79a8ba83-86bf-4c22-845c-8f285c2d1396@gmail.com>
-Date: Thu, 22 Feb 2024 21:53:50 +0100
+	s=arc-20240116; t=1708635397; c=relaxed/simple;
+	bh=sCttGzEdOK4egxBE3FWWdZH3y2xnyCFiswncLgXt6Rg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UAZttES2/IsJBMRIIgsDElLlGaPhbY0EO4iaiXt8x/v/sR1jcnnGoEB/QLNvOo9/bEWR0OwZ8zDQhO7nKl8CVv76A0/a4BGTg+0civ+x4aubFyaSnRWAb3KyH5xiQNj9EtZJi8SinLxf+/3+1koKW0QH/2aHUu2zaabXEO4pNbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N8bfosCG; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708635395; x=1740171395;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sCttGzEdOK4egxBE3FWWdZH3y2xnyCFiswncLgXt6Rg=;
+  b=N8bfosCGk0L2ma29fRmEt1qxN9bnEs8Ek5rKCqE4Z6N4am9a1znKVNhG
+   mSH0Gn6U40Pvny4x8DxLeLo4zS+nyfBBi79Td2pUvoTJ3wKfXPnubYhYg
+   HQnwTEiZwIqWzsD6tV6E3HFdFnIpb6kPhXUBA0bVohSAQYqYZO0SECFrl
+   ZadsT6xewg94aViKLoBxRkGwsFu0hNsEHH0ztmM0vV62uUOfPD9o9NSK7
+   SoaDd2SsYRkIf6FVs7IW+JY+M4gGzMxd5ywe4wXIVB10pA6tuwLZmR8w+
+   i2bNzdG7z5L1APxg9Qya+638oTwSfr1lH6uZnQSZT98vgVIhrGZWMzYCP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2759041"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="2759041"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 12:56:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="827603218"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="827603218"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 22 Feb 2024 12:56:24 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rdG7B-0006hW-1B;
+	Thu, 22 Feb 2024 20:56:21 +0000
+Date: Fri, 23 Feb 2024 04:55:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Joe Damato <jdamato@fastly.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Larysa Zaremba <larysa.zaremba@intel.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH net-next 1/2] netdev-genl: Add ifname for queue and NAPI
+ APIs
+Message-ID: <202402230429.g2qC2zMK-lkp@intel.com>
+References: <1708531057-67392-2-git-send-email-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH net-next 2/2] net: geneve: enable local address bind for
- geneve sockets
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, idosch@nvidia.com, razor@blackwall.org,
- amcohen@nvidia.com, petrm@nvidia.com, jbenc@redhat.com, b.galvani@gmail.com,
- bpoirier@nvidia.com, gavinl@nvidia.com, martin.lau@kernel.org,
- daniel@iogearbox.net, herbert@gondor.apana.org.au, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
-In-Reply-To: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1708531057-67392-2-git-send-email-jdamato@fastly.com>
 
-This patch adds support for binding to a local address in geneve sockets.
-It achieves this by adding a geneve_addr union to represent local address
-to bind to, and copying it to udp_port_cfg in geneve_create_sock.
+Hi Joe,
 
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- drivers/net/geneve.c               | 58 +++++++++++++++++++++++++++---
- include/net/geneve.h               |  6 ++++
- include/uapi/linux/if_link.h       |  2 ++
- tools/include/uapi/linux/if_link.h |  2 ++
- 4 files changed, 63 insertions(+), 5 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-index 32c51c244153..d0b4cb0e7c51 100644
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -57,6 +57,7 @@ struct geneve_config {
- 	bool			ttl_inherit;
- 	enum ifla_geneve_df	df;
- 	bool			inner_proto_inherit;
-+	union geneve_addr saddr;
- };
- 
- /* Pseudo network device */
-@@ -451,7 +452,8 @@ static int geneve_udp_encap_err_lookup(struct sock *sk, struct sk_buff *skb)
- }
- 
- static struct socket *geneve_create_sock(struct net *net, bool ipv6,
--					 __be16 port, bool ipv6_rx_csum)
-+					 __be16 port, bool ipv6_rx_csum,
-+					 union geneve_addr *local_addr)
- {
- 	struct socket *sock;
- 	struct udp_port_cfg udp_conf;
-@@ -463,9 +465,15 @@ static struct socket *geneve_create_sock(struct net *net, bool ipv6,
- 		udp_conf.family = AF_INET6;
- 		udp_conf.ipv6_v6only = 1;
- 		udp_conf.use_udp6_rx_checksums = ipv6_rx_csum;
-+		memcpy(&udp_conf.local_ip6,
-+		       &local_addr->sin6.sin6_addr,
-+		       sizeof(local_addr->sin6.sin6_addr));
- 	} else {
- 		udp_conf.family = AF_INET;
- 		udp_conf.local_ip.s_addr = htonl(INADDR_ANY);
-+		memcpy(&udp_conf.local_ip,
-+		       &local_addr->sin.sin_addr,
-+		       sizeof(local_addr->sin.sin_addr));
- 	}
- 
- 	udp_conf.local_udp_port = port;
-@@ -572,7 +580,8 @@ static int geneve_gro_complete(struct sock *sk, struct sk_buff *skb,
- 
- /* Create new listen socket if needed */
- static struct geneve_sock *geneve_socket_create(struct net *net, __be16 port,
--						bool ipv6, bool ipv6_rx_csum)
-+						bool ipv6, bool ipv6_rx_csum,
-+						union geneve_addr *local_addr)
- {
- 	struct geneve_net *gn = net_generic(net, geneve_net_id);
- 	struct geneve_sock *gs;
-@@ -584,7 +593,7 @@ static struct geneve_sock *geneve_socket_create(struct net *net, __be16 port,
- 	if (!gs)
- 		return ERR_PTR(-ENOMEM);
- 
--	sock = geneve_create_sock(net, ipv6, port, ipv6_rx_csum);
-+	sock = geneve_create_sock(net, ipv6, port, ipv6_rx_csum, local_addr);
- 	if (IS_ERR(sock)) {
- 		kfree(gs);
- 		return ERR_CAST(sock);
-@@ -672,7 +681,8 @@ static int geneve_sock_add(struct geneve_dev *geneve, bool ipv6)
- 	}
- 
- 	gs = geneve_socket_create(net, geneve->cfg.info.key.tp_dst, ipv6,
--				  geneve->cfg.use_udp6_rx_checksums);
-+				  geneve->cfg.use_udp6_rx_checksums,
-+				  &geneve->cfg.saddr);
- 	if (IS_ERR(gs))
- 		return PTR_ERR(gs);
- 
-@@ -1203,7 +1213,7 @@ static void geneve_setup(struct net_device *dev)
- }
- 
- static const struct nla_policy geneve_policy[IFLA_GENEVE_MAX + 1] = {
--	[IFLA_GENEVE_UNSPEC]		= { .strict_start_type = IFLA_GENEVE_INNER_PROTO_INHERIT },
-+	[IFLA_GENEVE_UNSPEC]		= { .strict_start_type = IFLA_GENEVE_LOCAL6 },
- 	[IFLA_GENEVE_ID]		= { .type = NLA_U32 },
- 	[IFLA_GENEVE_REMOTE]		= { .len = sizeof_field(struct iphdr, daddr) },
- 	[IFLA_GENEVE_REMOTE6]		= { .len = sizeof(struct in6_addr) },
-@@ -1218,6 +1228,8 @@ static const struct nla_policy geneve_policy[IFLA_GENEVE_MAX + 1] = {
- 	[IFLA_GENEVE_TTL_INHERIT]	= { .type = NLA_U8 },
- 	[IFLA_GENEVE_DF]		= { .type = NLA_U8 },
- 	[IFLA_GENEVE_INNER_PROTO_INHERIT]	= { .type = NLA_FLAG },
-+	[IFLA_GENEVE_LOCAL]	= { .len = sizeof_field(struct iphdr, saddr) },
-+	[IFLA_GENEVE_LOCAL6]	= { .len = sizeof(struct in6_addr) },
- };
- 
- static int geneve_validate(struct nlattr *tb[], struct nlattr *data[],
-@@ -1544,6 +1556,31 @@ static int geneve_nl2info(struct nlattr *tb[], struct nlattr *data[],
- 		cfg->inner_proto_inherit = true;
- 	}
- 
-+	if (data[IFLA_GENEVE_LOCAL]) {
-+		if (changelink && cfg->saddr.sa.sa_family != AF_INET) {
-+			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_LOCAL], "New local address family does not match old");
-+			return -EOPNOTSUPP;
-+		}
-+
-+		cfg->saddr.sin.sin_addr.s_addr = nla_get_in_addr(data[IFLA_GENEVE_LOCAL]);
-+		cfg->saddr.sa.sa_family = AF_INET;
-+	}
-+
-+	if (data[IFLA_GENEVE_LOCAL6]) {
-+		if (!IS_ENABLED(CONFIG_IPV6)) {
-+			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_LOCAL6], "IPv6 support not enabled in the kernel");
-+			return -EPFNOSUPPORT;
-+		}
-+
-+		if (changelink && cfg->saddr.sa.sa_family != AF_INET6) {
-+			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_LOCAL6], "New local address family does not match old");
-+			return -EOPNOTSUPP;
-+		}
-+
-+		cfg->saddr.sin6.sin6_addr = nla_get_in6_addr(data[IFLA_VXLAN_LOCAL6]);
-+		cfg->saddr.sa.sa_family = AF_INET6;
-+	}
-+
- 	return 0;
- change_notsup:
- 	NL_SET_ERR_MSG_ATTR(extack, data[attrtype],
-@@ -1724,6 +1761,7 @@ static size_t geneve_get_size(const struct net_device *dev)
- 		nla_total_size(sizeof(__u8)) + /* IFLA_GENEVE_UDP_ZERO_CSUM6_RX */
- 		nla_total_size(sizeof(__u8)) + /* IFLA_GENEVE_TTL_INHERIT */
- 		nla_total_size(0) +	 /* IFLA_GENEVE_INNER_PROTO_INHERIT */
-+		nla_total_size(sizeof(struct in6_addr)) + /* IFLA_GENEVE_LOCAL{6} */
- 		0;
- }
- 
-@@ -1745,6 +1783,11 @@ static int geneve_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 		if (nla_put_in_addr(skb, IFLA_GENEVE_REMOTE,
- 				    info->key.u.ipv4.dst))
- 			goto nla_put_failure;
-+
-+		if (nla_put_in_addr(skb, IFLA_GENEVE_LOCAL,
-+				    info->key.u.ipv4.src))
-+			goto nla_put_failure;
-+
- 		if (nla_put_u8(skb, IFLA_GENEVE_UDP_CSUM,
- 			       !!(info->key.tun_flags & TUNNEL_CSUM)))
- 			goto nla_put_failure;
-@@ -1754,6 +1797,11 @@ static int geneve_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 		if (nla_put_in6_addr(skb, IFLA_GENEVE_REMOTE6,
- 				     &info->key.u.ipv6.dst))
- 			goto nla_put_failure;
-+
-+		if (nla_put_in6_addr(skb, IFLA_GENEVE_LOCAL6,
-+				     &info->key.u.ipv6.src))
-+			goto nla_put_failure;
-+
- 		if (nla_put_u8(skb, IFLA_GENEVE_UDP_ZERO_CSUM6_TX,
- 			       !(info->key.tun_flags & TUNNEL_CSUM)))
- 			goto nla_put_failure;
-diff --git a/include/net/geneve.h b/include/net/geneve.h
-index 5c96827a487e..8dcd7fff2c0f 100644
---- a/include/net/geneve.h
-+++ b/include/net/geneve.h
-@@ -68,6 +68,12 @@ static inline bool netif_is_geneve(const struct net_device *dev)
- 	       !strcmp(dev->rtnl_link_ops->kind, "geneve");
- }
- 
-+union geneve_addr {
-+	struct sockaddr_in sin;
-+	struct sockaddr_in6 sin6;
-+	struct sockaddr sa;
-+};
-+
- #ifdef CONFIG_INET
- struct net_device *geneve_dev_create_fb(struct net *net, const char *name,
- 					u8 name_assign_type, u16 dst_port);
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index ab9bcff96e4d..e4a0cdea734b 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -1419,6 +1419,8 @@ enum {
- 	IFLA_GENEVE_TTL_INHERIT,
- 	IFLA_GENEVE_DF,
- 	IFLA_GENEVE_INNER_PROTO_INHERIT,
-+	IFLA_GENEVE_LOCAL,
-+	IFLA_GENEVE_LOCAL6,
- 	__IFLA_GENEVE_MAX
- };
- #define IFLA_GENEVE_MAX	(__IFLA_GENEVE_MAX - 1)
-diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
-index a0aa05a28cf2..438bd867ec38 100644
---- a/tools/include/uapi/linux/if_link.h
-+++ b/tools/include/uapi/linux/if_link.h
-@@ -888,6 +888,8 @@ enum {
- 	IFLA_GENEVE_TTL_INHERIT,
- 	IFLA_GENEVE_DF,
- 	IFLA_GENEVE_INNER_PROTO_INHERIT,
-+	IFLA_GENEVE_LOCAL,
-+	IFLA_GENEVE_LOCAL6,
- 	__IFLA_GENEVE_MAX
- };
- #define IFLA_GENEVE_MAX	(__IFLA_GENEVE_MAX - 1)
+[auto build test WARNING on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Joe-Damato/netdev-genl-Add-ifname-for-queue-and-NAPI-APIs/20240222-000134
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/1708531057-67392-2-git-send-email-jdamato%40fastly.com
+patch subject: [PATCH net-next 1/2] netdev-genl: Add ifname for queue and NAPI APIs
+config: powerpc-acadia_defconfig (https://download.01.org/0day-ci/archive/20240223/202402230429.g2qC2zMK-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project edd4aee4dd9b5b98b2576a6f783e4086173d902a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240223/202402230429.g2qC2zMK-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402230429.g2qC2zMK-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> net/core/netdev-genl.c:388:14: warning: variable 'ifname' is uninitialized when used here [-Wuninitialized]
+     388 |         nla_strscpy(ifname, info->attrs[NETDEV_A_QUEUE_IFNAME], IFNAMSIZ);
+         |                     ^~~~~~
+   net/core/netdev-genl.c:376:14: note: initialize the variable 'ifname' to silence this warning
+     376 |         char *ifname;
+         |                     ^
+         |                      = NULL
+   1 warning generated.
+
+
+vim +/ifname +388 net/core/netdev-genl.c
+
+   370	
+   371	int netdev_nl_queue_get_doit(struct sk_buff *skb, struct genl_info *info)
+   372	{
+   373		u32 q_id, q_type, ifindex;
+   374		struct net_device *netdev;
+   375		struct sk_buff *rsp;
+   376		char *ifname;
+   377		int err;
+   378	
+   379		if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_ID) ||
+   380		    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_TYPE) ||
+   381		    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_IFINDEX) ||
+   382		    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_IFNAME))
+   383			return -EINVAL;
+   384	
+   385		q_id = nla_get_u32(info->attrs[NETDEV_A_QUEUE_ID]);
+   386		q_type = nla_get_u32(info->attrs[NETDEV_A_QUEUE_TYPE]);
+   387		ifindex = nla_get_u32(info->attrs[NETDEV_A_QUEUE_IFINDEX]);
+ > 388		nla_strscpy(ifname, info->attrs[NETDEV_A_QUEUE_IFNAME], IFNAMSIZ);
+   389	
+   390		rsp = genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
+   391		if (!rsp)
+   392			return -ENOMEM;
+   393	
+   394		rtnl_lock();
+   395	
+   396		netdev = __dev_get_by_index(genl_info_net(info), ifindex);
+   397	
+   398		if (strcmp(netdev->name, ifname)) {
+   399			err = -ENODEV;
+   400		} else {
+   401			if (netdev)
+   402				err = netdev_nl_queue_fill(rsp, netdev, q_id, q_type, info);
+   403			else
+   404				err = -ENODEV;
+   405		}
+   406	
+   407		rtnl_unlock();
+   408	
+   409		if (err)
+   410			goto err_free_msg;
+   411	
+   412		return genlmsg_reply(rsp, info);
+   413	
+   414	err_free_msg:
+   415		nlmsg_free(rsp);
+   416		return err;
+   417	}
+   418	
+
 -- 
-2.36.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
